@@ -15,6 +15,7 @@
     var btnAddAnnotation  = document.getElementById("btn-add-annotation");
     var annotationsEl     = document.getElementById("annotations");
     var btnSave           = document.getElementById("btn-save");
+    var btnExitPreview    = document.getElementById("btn-exit-preview");
     var modalOverlay      = document.getElementById("modal-overlay");
     var modalMessage      = document.getElementById("modal-message");
     var modalConfirm      = document.getElementById("modal-confirm");
@@ -25,16 +26,40 @@
     var currentSlide      = null;   // filename, e.g. "slide_01.svg"
     var selectedElementIds = new Set(); // id attrs of selected SVG elements
     var slideAnnotations  = {};     // {element_id: annotation_text} for current slide
+    var liveMode          = false;
+    var slidePollTimer    = null;
+    var pendingModalAction = "submit";
 
     // ================================================================
     //  1.  loadSlides  -- GET /api/slides
     // ================================================================
     function loadSlides() {
-        fetch("/api/slides")
+        return fetch("/api/slides")
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 slideListEl.innerHTML = "";
-                (data.slides || []).forEach(function (s) {
+                var slides = data.slides || [];
+
+                if (slides.length === 0) {
+                    var empty = document.createElement("div");
+                    empty.className = "slide-list-empty";
+                    empty.textContent = liveMode
+                        ? "Waiting for generated slides..."
+                        : "No slides found";
+                    slideListEl.appendChild(empty);
+                    if (!currentSlide) {
+                        svgPlaceholder.style.display = "block";
+                        svgPlaceholder.textContent = liveMode
+                            ? "Live preview is ready. Generated slides will appear here."
+                            : "No slides found";
+                        svgContent.style.display = "none";
+                    }
+                    return;
+                }
+
+                var currentExists = false;
+                slides.forEach(function (s) {
+                    if (s.name === currentSlide) currentExists = true;
                     var item = document.createElement("div");
                     item.className = "slide-item" + (s.name === currentSlide ? " active" : "");
                     item.setAttribute("data-name", s.name);
@@ -56,6 +81,10 @@
                     });
                     slideListEl.appendChild(item);
                 });
+
+                if (!currentSlide || !currentExists) {
+                    selectSlide(slides[0].name);
+                }
             })
             .catch(function (err) {
                 console.error("loadSlides:", err);
@@ -86,6 +115,12 @@
             .then(function (data) {
                 if (data.error) {
                     console.error("selectSlide:", data.error);
+                    if (liveMode) {
+                        currentSlide = null;
+                        svgPlaceholder.style.display = "block";
+                        svgPlaceholder.textContent = "Slide is still being written. Waiting for the next refresh...";
+                        svgContent.style.display = "none";
+                    }
                     return;
                 }
                 // Render SVG
@@ -546,21 +581,51 @@
     }
 
     // ================================================================
-    // 10.  Save all  -- two-step: confirm then save + shutdown
+    // 10.  Save all  -- two-step: confirm then save
     // ================================================================
-    var CONFIRM_MSG = "Submitting will close this page. Make sure you've added all the annotations you want.";
-    var SUCCESS_MSG = "Annotations submitted.\n\nReturn to the chat and tell the AI you're ready — it will apply your edits.";
+    var CONFIRM_MSG = "Submit annotations to disk?\n\nThe preview service will stay open. Use Exit preview when you want to stop it.";
+    var SUCCESS_MSG = "Annotations submitted.\n\nReturn to the chat and tell the AI you're ready — it will apply your edits. The preview service is still running.";
+    var EXIT_CONFIRM_MSG = "Exit preview and stop the local server?\n\nUnsaved annotations will be discarded.";
+    var EXIT_SUCCESS_MSG = "Preview stopped.\n\nYou can close this tab and return to the chat.";
 
     btnSave.addEventListener("click", function () {
-        // Step 1: show confirmation
+        pendingModalAction = "submit";
         modalMessage.textContent = CONFIRM_MSG;
+        modalConfirm.textContent = "Submit";
+        modalConfirm.style.display = "";
+        modalCancel.style.display = "";
+        modalOverlay.style.display = "flex";
+    });
+
+    btnExitPreview.addEventListener("click", function () {
+        pendingModalAction = "exit";
+        modalMessage.textContent = EXIT_CONFIRM_MSG;
+        modalConfirm.textContent = "Exit preview";
         modalConfirm.style.display = "";
         modalCancel.style.display = "";
         modalOverlay.style.display = "flex";
     });
 
     modalConfirm.addEventListener("click", function () {
-        // Step 2: save + shutdown
+        if (pendingModalAction === "exit") {
+            modalConfirm.style.display = "none";
+            modalCancel.style.display = "none";
+            modalMessage.textContent = "Stopping preview server...";
+            fetch("/api/shutdown", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reason: "exit-preview" })
+            })
+                .then(function () {
+                    modalMessage.textContent = EXIT_SUCCESS_MSG;
+                })
+                .catch(function () {
+                    modalMessage.textContent = EXIT_SUCCESS_MSG;
+                });
+            return;
+        }
+
+        // Step 2: save annotations. Service lifetime is controlled only by Exit preview.
         modalConfirm.style.display = "none";
         modalCancel.style.display = "none";
 
@@ -571,7 +636,7 @@
                     modalMessage.textContent = "Save failed: " + data.error;
                 } else {
                     modalMessage.textContent = SUCCESS_MSG;
-                    fetch("/api/shutdown", { method: "POST" }).catch(function () {});
+                    loadSlides();
                 }
             })
             .catch(function (err) {
@@ -580,15 +645,17 @@
     });
 
     modalCancel.addEventListener("click", function () {
+        modalConfirm.textContent = "Submit";
         modalOverlay.style.display = "none";
     });
 
     // Close modal on overlay click
     modalOverlay.addEventListener("click", function (e) {
-        if (e.target === modalOverlay) {
-            modalOverlay.style.display = "none";
-        }
-    });
+            if (e.target === modalOverlay) {
+                modalConfirm.textContent = "Submit";
+                modalOverlay.style.display = "none";
+            }
+        });
 
     // ================================================================
     //  Utility
@@ -632,6 +699,30 @@
             }
             return data;
         });
+    }
+
+    function loadConfig() {
+        return fetch("/api/config")
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                liveMode = !!data.live;
+                if (liveMode) {
+                    document.title = "PPT Master - Live Preview";
+                } else {
+                    document.title = "PPT Master - Visual Editor";
+                }
+                btnSave.textContent = "Submit annotations";
+            })
+            .catch(function () {
+                liveMode = false;
+            });
+    }
+
+    function startSlidePolling() {
+        if (!liveMode || slidePollTimer) return;
+        slidePollTimer = window.setInterval(function () {
+            loadSlides();
+        }, 2000);
     }
 
     // ================================================================
@@ -758,7 +849,10 @@
     // ================================================================
     //  Boot
     // ================================================================
-    loadSlides();
+    loadConfig().then(function () {
+        loadSlides();
+        startSlidePolling();
+    });
     initRubberBand();
     initKeyboardShortcuts();
 })();

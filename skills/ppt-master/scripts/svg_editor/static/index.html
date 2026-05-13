@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPT Master - Visual Edit</title>
+    <title>PPT Master - Live Preview</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -35,7 +35,10 @@
                 <div class="section-label">Annotations on this slide</div>
                 <div id="annotations"></div>
             </div>
-            <button id="btn-save" class="btn-save">Submit annotations</button>
+            <div id="preview-actions">
+                <button id="btn-save" class="btn-save">Submit annotations</button>
+                <button id="btn-exit-preview" class="btn-exit-preview">Exit preview</button>
+            </div>
         </div>
     </div>
     <div id="modal-overlay" style="display:none;">

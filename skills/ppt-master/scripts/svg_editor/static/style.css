@@ -50,6 +50,13 @@ html, body {
     padding: 8px 0;
 }
 
+.slide-list-empty {
+    padding: 12px 16px;
+    color: #5a5a7a;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
 /* Scrollbar */
 #slide-list::-webkit-scrollbar {
     width: 6px;
@@ -369,9 +376,16 @@ html, body {
     font-style: italic;
 }
 
-/* --- Save button --- */
+/* --- Action buttons --- */
+#preview-actions {
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
 #btn-save {
-    margin: 12px 16px 16px;
     padding: 11px 0;
     font-size: 14px;
     font-weight: 600;
@@ -390,6 +404,28 @@ html, body {
 
 #btn-save:active {
     background: #d5a522;
+}
+
+#btn-exit-preview {
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c0c0d8;
+    background: transparent;
+    border: 1px solid #3a3a5a;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+#btn-exit-preview:hover {
+    color: #ffffff;
+    background: #2a2a4a;
+    border-color: #5a5a7a;
+}
+
+#btn-exit-preview:active {
+    background: #1e1e36;
 }
 
 /* ======================== MODAL ======================== */

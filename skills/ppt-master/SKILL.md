@@ -11,7 +11,7 @@ description: >
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
-**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist → [Image_Generator] → Executor → Post-processing → Export`
+**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export`
 
 > [!CAUTION]
 > ## 🚨 Global Execution Discipline (MANDATORY)
@@ -77,7 +77,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
-| `visual-edit` | `workflows/visual-edit.md` | Browser-based visual editor for fine-grained edits — run only when the user explicitly requests it after export |
+| `visual-edit` | `workflows/visual-edit.md` | Browser-based re-entry editor for finished/exported decks — reopen after edits are applied, not the main generation viewer |
 
 ---
 
@@ -289,6 +289,19 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 
+**Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running through Executor + Export:
+```bash
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
+```
+- This is the main generation preview, not the finished-deck `visual-edit` workflow.
+- Start it immediately when Executor begins; `svg_output/` may be empty.
+- Run it as a long-running side process/session; do not wait for the server process to exit before generating SVG pages.
+- The editor opens `http://localhost:5050` by default and polls for new SVG pages in live mode.
+- **Add annotation** creates a local annotation; **Submit annotations** writes annotations to disk and keeps the service running; **Exit preview** is the only UI action that stops Flask.
+- If the user clicks **Exit preview**, generation should continue without preview unless the user asks to reopen it.
+- If port `5050` is occupied, pass `--port <other>` and report the actual URL.
+- Do not wait for user confirmation after startup; continue the serial Executor pipeline.
+
 **Pre-generation Batch Read (Mandatory)**: before the first SVG, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` and every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts). One read per file, up front — do not re-read these during page generation. See executor-base.md §1.0.
 
 **Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus the per-page `page_rhythm` / `page_layouts` / `page_charts` lookups (resolves to template SVGs already loaded in the batch read above). Resists context-compression drift on long decks. See executor-base.md §2.1.
@@ -297,6 +310,14 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
+
+**Live Annotation Handling (Mandatory)**: after each page generation and before Step 7, check for submitted annotations:
+```bash
+python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>
+```
+- If no annotations are found, continue.
+- If annotations are found, apply them to the targeted SVG elements, remove `data-edit-target` / `data-edit-annotation`, then run `svg_quality_checker.py`.
+- Do not proceed past a touched page with quality-check `error`s.
 
 **Quality Check Gate (Mandatory)** — after all SVGs, BEFORE speaker notes:
 ```bash
@@ -311,7 +332,9 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 **✅ Checkpoint — Confirm all SVGs and notes are fully generated and quality-checked. Proceed directly to Step 7 post-processing**:
 ```markdown
 ## ✅ Executor Phase Complete
+- [x] Live preview started and kept available at the reported URL
 - [x] All SVGs generated to svg_output/
+- [x] Submitted live annotations checked/applied or confirmed absent
 - [x] svg_quality_checker.py passed (0 errors)
 - [x] Speaker notes generated at notes/total.md
 ```
@@ -383,7 +406,7 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). The default auto-split already gives native the high-fidelity source it needs without touching legacy.
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-> Post-export iteration: whenever the user asks to change anything on a generated slide ("改一下", "调字号", "那里看着不对", "把图片换大点"), the [`visual-edit`](workflows/visual-edit.md) workflow is available — surface it as an option. If the user describes the change with enough specificity to apply directly ("第 3 页副标题字号改 32"), edit the SVG directly instead; if they're vaguely pointing at "somewhere" on the deck, run the workflow.
+> Finished-deck re-entry: the main pipeline automatically starts live preview in Step 6. If the deck has been exported and the user later wants another visual edit pass, run [`visual-edit`](workflows/visual-edit.md); that workflow automatically reopens the same editor service in finished-deck mode, applies annotations, re-exports, and reopens again.
 
 ---
 

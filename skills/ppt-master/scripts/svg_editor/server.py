@@ -11,6 +11,7 @@ Usage:
 Examples:
     python3 scripts/svg_editor/server.py projects/my-project
     python3 scripts/svg_editor/server.py projects/my-project --port 8080
+    python3 scripts/svg_editor/server.py projects/my-project --live
 
 Dependencies:
     flask>=3.0.0
@@ -89,7 +90,7 @@ def _inline_icons(content: str) -> str:
     return new_content
 
 
-def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
+def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) -> Flask:
     """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
     svg_dir = project_path / 'svg_output'
@@ -99,6 +100,7 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config['PROJECT_PATH'] = project_path
     app.config['SVG_DIR'] = svg_dir
+    app.config['LIVE_MODE'] = live
 
     # In-memory annotation store: {filename: {element_id: annotation_text}}
     app.config['ANNOTATIONS'] = {}
@@ -111,6 +113,8 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
         app.config['LAST_REQUEST_TIME'] = time.time()
 
     def _idle_watchdog():
+        if idle_timeout <= 0:
+            return
         while True:
             time.sleep(10)
             elapsed = time.time() - app.config['LAST_REQUEST_TIME']
@@ -125,9 +129,12 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
 
     @app.route('/api/shutdown', methods=['POST'])
     def shutdown():
+        data = request.get_json(silent=True) or {}
+        reason = data.get('reason') or 'shutdown'
+
         def _stop():
             time.sleep(0.5)  # Let HTTP response flush before killing the process
-            print("SVG Editor shutting down (user saved annotations).")
+            print(f"SVG Editor shutting down ({reason}).")
             # os._exit: save-all already wrote to disk; 0.5s delay ensures response is sent.
             os._exit(0)
         threading.Thread(target=_stop, daemon=True).start()
@@ -136,6 +143,12 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     @app.route('/')
     def index():
         return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/api/config')
+    def get_config():
+        return jsonify({
+            'live': app.config['LIVE_MODE'],
+        })
 
     @app.route('/images/<path:filename>')
     def serve_image(filename: str):
@@ -178,22 +191,20 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
         annotations = app.config['ANNOTATIONS']
         slides = []
         for svg_file in sorted(svg_dir.glob('*.svg')):
-            has_disk_anns = False
+            disk_annotations = []
             try:
                 tree = ET.parse(str(svg_file))
-                for elem in tree.getroot().iter():
-                    if elem.get('data-edit-target') == 'true':
-                        has_disk_anns = True
-                        break
+                disk_annotations = parse_annotations(tree.getroot())
             except ET.ParseError:
                 pass
 
-            has_mem_anns = svg_file.name in annotations and len(annotations[svg_file.name]) > 0
+            mem_count = len(annotations.get(svg_file.name, {}))
+            annotation_count = max(len(disk_annotations), mem_count)
 
             slides.append({
                 'name': svg_file.name,
-                'annotated': has_disk_anns or has_mem_anns,
-                'annotation_count': len(annotations.get(svg_file.name, {})),
+                'annotated': annotation_count > 0,
+                'annotation_count': annotation_count,
             })
 
         return jsonify({'slides': slides})
@@ -354,7 +365,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
     parser.add_argument('--port', type=int, default=5050, help='Port to listen on (default: 5050)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
-    parser.add_argument('--timeout', type=int, default=900, help='Idle timeout in seconds (default: 900 = 15min)')
+    parser.add_argument(
+        '--live',
+        action='store_true',
+        help='Run as Executor live preview: allow empty svg_output/ and keep serving after annotation submit',
+    )
+    parser.add_argument(
+        '--timeout',
+        type=int,
+        default=None,
+        help='Idle timeout in seconds (default: 900; live mode default: 0 = disabled)',
+    )
     return parser
 
 
@@ -363,17 +384,29 @@ def main(argv: Optional[list[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     project_path = Path(args.project_dir).resolve()
-    if not (project_path / 'svg_output').exists():
-        print(f"Error: {project_path / 'svg_output'} does not exist", file=sys.stderr)
+    svg_output = project_path / 'svg_output'
+    if not svg_output.exists():
+        if args.live:
+            svg_output.mkdir(parents=True, exist_ok=True)
+        else:
+            print(f"Error: {svg_output} does not exist", file=sys.stderr)
+            return 1
+    elif not svg_output.is_dir():
+        print(f"Error: {svg_output} is not a directory", file=sys.stderr)
         return 1
 
-    app = create_app(str(project_path), idle_timeout=args.timeout)
+    idle_timeout = args.timeout
+    if idle_timeout is None:
+        idle_timeout = 0 if args.live else 900
+
+    app = create_app(str(project_path), idle_timeout=idle_timeout, live=args.live)
 
     url = f'http://localhost:{args.port}'
     if not args.no_browser:
         webbrowser.open(url)
 
-    print(f"SVG Editor running at {url}")
+    mode = "live preview" if args.live else "visual edit"
+    print(f"SVG Editor running at {url} ({mode})")
     print(f"Project: {project_path}")
     app.run(host='127.0.0.1', port=args.port, debug=False)
     return 0
