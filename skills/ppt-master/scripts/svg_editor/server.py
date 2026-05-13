@@ -300,7 +300,11 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
     @app.route('/api/slide/<name>/annotate/<element_id>', methods=['DELETE'])
     def delete_annotate(name: str, element_id: str):
         annotations = app.config['ANNOTATIONS']
-        if name in annotations and element_id in annotations[name]:
+        # Ensure the file key exists so save-all knows to rewrite this file
+        # even if no new annotations were added (pure delete path).
+        if name not in annotations:
+            annotations[name] = {}
+        if element_id in annotations[name]:
             del annotations[name][element_id]
 
         return jsonify({
@@ -315,8 +319,8 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
         modified = []
 
         for filename, anns in annotations.items():
-            if not anns:
-                continue
+            # anns may be empty when the user deleted all annotations — still
+            # need to write so the on-disk data-edit-* attributes are cleared.
 
             svg_file = _safe_svg_path(filename)
             if svg_file is None or not svg_file.exists():
