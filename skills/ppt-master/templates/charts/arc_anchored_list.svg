@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Arc-Anchored List Template
+    Purpose: 3-5 parallel tracks/aspects unified by a left-edge radial fan acting as visual anchor
+    Use cases: Multi-track growth plans, parallel improvement areas, four-pillar overview with a unifying core
+    Design Principles:
+      - Shared center sits on the slide's LEFT EDGE (x=0): every wedge and the hub are TRUE half-shapes, not clipped full circles
+      - Hub drawn as an explicit half-disc path (flat edge on slide left, curved edge bulging right) so it stays a half-shape after SVG->PPTX round-trip
+      - Four 43 deg wedges spanning -89..-46 / -44..-1 / 1..44 / 46..89, with 2 deg angular gaps; R_in=145, R_out=280
+      - Numbered badge per wedge sits at mid-radius midpoint; row content (title + body + right-end color square) aligned to wedge mid-y
+      - Single hue progression top->bottom; wedge color drives row title color and end-cap color
+    -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- ==================== Header ==================== -->
+    <text x="640" y="58" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Four-Track Improvement Plan</tspan></text>
+    <text x="640" y="86" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>RADIAL ANCHOR · FOUR PARALLEL TRACKS</tspan></text>
+
+    <!-- ==================== Left Radial Half-Fan ==================== -->
+    <!-- Shared center at (0, 400) on slide left edge ; R_hub=115, R_in=145, R_out=280 -->
+    <g id="fan">
+        <!-- Wedge 1: -89 to -46 deg (top), mid -67.5 -->
+        <g id="wedge-01">
+            <path d="M 2.53 255.02 L 4.89 120.04 A 280 280 0 0 1 194.50 198.58 L 100.73 295.70 A 145 145 0 0 0 2.53 255.02 Z" fill="#1E3A8A"/>
+            <text x="81" y="218" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="800" fill="#FFFFFF"><tspan>01</tspan></text>
+        </g>
+        <!-- Wedge 2: -44 to -1 deg (upper-mid), mid -22.5 -->
+        <g id="wedge-02">
+            <path d="M 104.30 299.27 L 201.42 205.50 A 280 280 0 0 1 279.96 395.11 L 144.98 397.47 A 145 145 0 0 0 104.30 299.27 Z" fill="#2563EB"/>
+            <text x="196" y="333" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="800" fill="#FFFFFF"><tspan>02</tspan></text>
+        </g>
+        <!-- Wedge 3: 1 to 44 deg (lower-mid), mid 22.5 -->
+        <g id="wedge-03">
+            <path d="M 144.98 402.53 L 279.96 404.89 A 280 280 0 0 1 201.42 594.50 L 104.30 500.73 A 145 145 0 0 0 144.98 402.53 Z" fill="#3B82F6"/>
+            <text x="196" y="496" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="800" fill="#FFFFFF"><tspan>03</tspan></text>
+        </g>
+        <!-- Wedge 4: 46 to 89 deg (bottom), mid 67.5 -->
+        <g id="wedge-04">
+            <path d="M 100.73 504.30 L 194.50 601.42 A 280 280 0 0 1 4.89 679.96 L 2.53 544.98 A 145 145 0 0 0 100.73 504.30 Z" fill="#60A5FA"/>
+            <text x="81" y="611" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="800" fill="#FFFFFF"><tspan>04</tspan></text>
+        </g>
+
+        <!-- Central hub: explicit half-disc (flat edge at x=0, curved edge bulging right with r=115) -->
+        <g id="hub">
+            <path d="M 0 285 A 115 115 0 0 1 0 515 Z" fill="#0F172A"/>
+            <text x="58" y="392" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF"><tspan>Growth</tspan></text>
+            <text x="58" y="420" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF"><tspan>Plan</tspan></text>
+        </g>
+    </g>
+
+    <!-- ==================== Row 1 (paired with Wedge 01, mid-y 204) ==================== -->
+    <g id="row-01">
+        <rect x="320" y="159" width="780" height="90" fill="#F1F5F9"/>
+        <text x="340" y="193" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#1E3A8A"><tspan>Track 01 — Heading Goes Here</tspan></text>
+        <text x="340" y="219" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining the goal and scope of this track.</tspan></text>
+        <text x="340" y="239" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Key actions, expected outcome, and the resources or partners needed.</tspan></text>
+        <rect x="1120" y="159" width="100" height="90" fill="#1E3A8A"/>
+        <circle cx="1170" cy="204" r="18" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+
+    <!-- ==================== Row 2 (paired with Wedge 02, mid-y 319) ==================== -->
+    <g id="row-02">
+        <rect x="320" y="274" width="780" height="90" fill="#F1F5F9"/>
+        <text x="340" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2563EB"><tspan>Track 02 — Heading Goes Here</tspan></text>
+        <text x="340" y="334" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining the goal and scope of this track.</tspan></text>
+        <text x="340" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Key actions, expected outcome, and the resources or partners needed.</tspan></text>
+        <rect x="1120" y="274" width="100" height="90" fill="#2563EB"/>
+        <circle cx="1170" cy="319" r="18" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+
+    <!-- ==================== Row 3 (paired with Wedge 03, mid-y 481) ==================== -->
+    <g id="row-03">
+        <rect x="320" y="436" width="780" height="90" fill="#F1F5F9"/>
+        <text x="340" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#3B82F6"><tspan>Track 03 — Heading Goes Here</tspan></text>
+        <text x="340" y="496" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining the goal and scope of this track.</tspan></text>
+        <text x="340" y="516" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Key actions, expected outcome, and the resources or partners needed.</tspan></text>
+        <rect x="1120" y="436" width="100" height="90" fill="#3B82F6"/>
+        <circle cx="1170" cy="481" r="18" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+
+    <!-- ==================== Row 4 (paired with Wedge 04, mid-y 596) ==================== -->
+    <g id="row-04">
+        <rect x="320" y="551" width="780" height="90" fill="#F1F5F9"/>
+        <text x="340" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#60A5FA"><tspan>Track 04 — Heading Goes Here</tspan></text>
+        <text x="340" y="611" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining the goal and scope of this track.</tspan></text>
+        <text x="340" y="631" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Key actions, expected outcome, and the resources or partners needed.</tspan></text>
+        <rect x="1120" y="551" width="100" height="90" fill="#60A5FA"/>
+        <circle cx="1170" cy="596" r="18" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+</svg>

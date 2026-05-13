@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Segmented Wheel Template
+    Purpose: One central topic divided into N equally-weighted dimensions, each paired with a description card
+    Use cases: 5W1H analysis, 4P marketing mix, 5S management, 6-aspect frameworks, named multi-angle reviews
+    Design Principles:
+      - Central hub + 6 equal annular sectors (not data-proportional like pie/donut)
+      - Wedge = category cell (parallel weight), not a sequential step
+      - Dashed connector from wedge outer edge to its description card (3 left + 3 right)
+      - Single hue progression (top-heavy mirrored), per CHART_STYLE_GUIDE §1.2
+    -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- ==================== Header ==================== -->
+    <text x="640" y="58" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Six-Dimension Wheel Framework</tspan></text>
+    <text x="640" y="86" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>ONE TOPIC · SIX PARALLEL ASPECTS · PAIRED DESCRIPTION CARDS</tspan></text>
+
+    <!-- ==================== Central Wheel ==================== -->
+    <!-- cx=640, cy=400 ; standalone hub at r=70, six floating petal wedges r_in=100..r_out=180 with 3 deg angular gap between adjacent petals -->
+    <g id="wheel">
+        <!-- Wedge A: -88.5 to -31.5 deg (upper-right area, mid -60) -->
+        <g id="wedge-a">
+            <path d="M 642.62 300.03 L 644.71 220.06 A 180 180 0 0 1 793.48 305.95 L 725.26 347.75 A 100 100 0 0 0 642.62 300.03 Z" fill="#1D4ED8"/>
+            <text x="710" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 01</tspan></text>
+            <text x="710" y="296" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#DBEAFE"><tspan>Theme</tspan></text>
+        </g>
+        <!-- Wedge B: -28.5 to 28.5 deg (right, mid 0) -->
+        <g id="wedge-b">
+            <path d="M 727.88 352.28 L 798.19 314.11 A 180 180 0 0 1 798.19 485.89 L 727.88 447.72 A 100 100 0 0 0 727.88 352.28 Z" fill="#3B82F6"/>
+            <text x="780" y="397" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 02</tspan></text>
+            <text x="780" y="415" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#DBEAFE"><tspan>Theme</tspan></text>
+        </g>
+        <!-- Wedge C: 31.5 to 88.5 deg (lower-right, mid 60) -->
+        <g id="wedge-c">
+            <path d="M 725.26 452.25 L 793.48 494.05 A 180 180 0 0 1 644.71 579.94 L 642.62 499.97 A 100 100 0 0 0 725.26 452.25 Z" fill="#60A5FA"/>
+            <text x="710" y="512" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 03</tspan></text>
+            <text x="710" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#EFF6FF"><tspan>Theme</tspan></text>
+        </g>
+        <!-- Wedge D: 91.5 to 148.5 deg (lower-left, mid 120) -->
+        <g id="wedge-d">
+            <path d="M 637.38 499.97 L 635.29 579.94 A 180 180 0 0 1 486.52 494.05 L 554.74 452.25 A 100 100 0 0 0 637.38 499.97 Z" fill="#60A5FA"/>
+            <text x="570" y="512" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 04</tspan></text>
+            <text x="570" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#EFF6FF"><tspan>Theme</tspan></text>
+        </g>
+        <!-- Wedge E: 151.5 to 208.5 deg (left, mid 180) -->
+        <g id="wedge-e">
+            <path d="M 552.12 447.72 L 481.81 485.89 A 180 180 0 0 1 481.81 314.11 L 552.12 352.28 A 100 100 0 0 0 552.12 447.72 Z" fill="#3B82F6"/>
+            <text x="500" y="397" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 05</tspan></text>
+            <text x="500" y="415" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#DBEAFE"><tspan>Theme</tspan></text>
+        </g>
+        <!-- Wedge F: 211.5 to 268.5 deg (upper-left, mid -120) -->
+        <g id="wedge-f">
+            <path d="M 554.74 347.75 L 486.52 305.95 A 180 180 0 0 1 635.29 220.06 L 637.38 300.03 A 100 100 0 0 0 554.74 347.75 Z" fill="#1D4ED8"/>
+            <text x="570" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 06</tspan></text>
+            <text x="570" y="296" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#DBEAFE"><tspan>Theme</tspan></text>
+        </g>
+
+        <!-- Central hub (standalone, 30px white moat separates it from the wedge ring) -->
+        <g id="hub">
+            <circle cx="640" cy="400" r="70" fill="#1E40AF"/>
+            <text x="640" y="394" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF"><tspan>Core</tspan></text>
+            <text x="640" y="418" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF"><tspan>Topic</tspan></text>
+        </g>
+    </g>
+
+    <!-- ==================== Connectors (dashed) ==================== -->
+    <g id="connectors">
+        <!-- F -> top-left card (340, 175) ; outer-edge anchor at angle -120 deg, r=200 -> (540, 226.8) -->
+        <line x1="540" y1="226.8" x2="340" y2="175" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <circle cx="540" cy="226.8" r="6" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2"/>
+        <!-- E -> middle-left card (340, 400) ; anchor at 180 deg -> (440, 400) -->
+        <line x1="440" y1="400" x2="340" y2="400" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <circle cx="440" cy="400" r="6" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
+        <!-- D -> bottom-left card (340, 585) ; anchor at 120 deg -> (540, 573.2) -->
+        <line x1="540" y1="573.2" x2="340" y2="585" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <circle cx="540" cy="573.2" r="6" fill="#FFFFFF" stroke="#60A5FA" stroke-width="2"/>
+        <!-- A -> top-right card (940, 175) ; anchor at -60 deg -> (740, 226.8) -->
+        <line x1="740" y1="226.8" x2="940" y2="175" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <circle cx="740" cy="226.8" r="6" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2"/>
+        <!-- B -> middle-right card (940, 400) ; anchor at 0 deg -> (840, 400) -->
+        <line x1="840" y1="400" x2="940" y2="400" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <circle cx="840" cy="400" r="6" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
+        <!-- C -> bottom-right card (940, 585) ; anchor at 60 deg -> (740, 573.2) -->
+        <line x1="740" y1="573.2" x2="940" y2="585" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <circle cx="740" cy="573.2" r="6" fill="#FFFFFF" stroke="#60A5FA" stroke-width="2"/>
+    </g>
+
+    <!-- ==================== Description Cards ==================== -->
+    <!-- Card 1: top-left (paired with wedge F, Aspect 06) -->
+    <g id="card-01">
+        <rect x="60" y="120" width="280" height="40" fill="#1D4ED8"/>
+        <text x="78" y="146" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 06 · Heading Goes Here</tspan></text>
+        <rect x="60" y="160" width="280" height="80" fill="#F8FAFC"/>
+        <text x="78" y="184" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining</tspan></text>
+        <text x="78" y="204" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>what this dimension covers, with enough</tspan></text>
+        <text x="78" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>detail to anchor the audience's reading.</tspan></text>
+    </g>
+
+    <!-- Card 2: middle-left (paired with wedge E, Aspect 05) -->
+    <g id="card-02">
+        <rect x="60" y="345" width="280" height="40" fill="#3B82F6"/>
+        <text x="78" y="371" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 05 · Heading Goes Here</tspan></text>
+        <rect x="60" y="385" width="280" height="80" fill="#F8FAFC"/>
+        <text x="78" y="409" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining</tspan></text>
+        <text x="78" y="429" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>what this dimension covers, with enough</tspan></text>
+        <text x="78" y="449" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>detail to anchor the audience's reading.</tspan></text>
+    </g>
+
+    <!-- Card 3: bottom-left (paired with wedge D, Aspect 04) -->
+    <g id="card-03">
+        <rect x="60" y="530" width="280" height="40" fill="#60A5FA"/>
+        <text x="78" y="556" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 04 · Heading Goes Here</tspan></text>
+        <rect x="60" y="570" width="280" height="80" fill="#F8FAFC"/>
+        <text x="78" y="594" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining</tspan></text>
+        <text x="78" y="614" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>what this dimension covers, with enough</tspan></text>
+        <text x="78" y="634" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>detail to anchor the audience's reading.</tspan></text>
+    </g>
+
+    <!-- Card 4: top-right (paired with wedge A, Aspect 01) -->
+    <g id="card-04">
+        <rect x="940" y="120" width="280" height="40" fill="#1D4ED8"/>
+        <text x="958" y="146" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 01 · Heading Goes Here</tspan></text>
+        <rect x="940" y="160" width="280" height="80" fill="#F8FAFC"/>
+        <text x="958" y="184" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining</tspan></text>
+        <text x="958" y="204" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>what this dimension covers, with enough</tspan></text>
+        <text x="958" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>detail to anchor the audience's reading.</tspan></text>
+    </g>
+
+    <!-- Card 5: middle-right (paired with wedge B, Aspect 02) -->
+    <g id="card-05">
+        <rect x="940" y="345" width="280" height="40" fill="#3B82F6"/>
+        <text x="958" y="371" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 02 · Heading Goes Here</tspan></text>
+        <rect x="940" y="385" width="280" height="80" fill="#F8FAFC"/>
+        <text x="958" y="409" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining</tspan></text>
+        <text x="958" y="429" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>what this dimension covers, with enough</tspan></text>
+        <text x="958" y="449" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>detail to anchor the audience's reading.</tspan></text>
+    </g>
+
+    <!-- Card 6: bottom-right (paired with wedge C, Aspect 03) -->
+    <g id="card-06">
+        <rect x="940" y="530" width="280" height="40" fill="#60A5FA"/>
+        <text x="958" y="556" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF"><tspan>Aspect 03 · Heading Goes Here</tspan></text>
+        <rect x="940" y="570" width="280" height="80" fill="#F8FAFC"/>
+        <text x="958" y="594" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>Concise description line one explaining</tspan></text>
+        <text x="958" y="614" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>what this dimension covers, with enough</tspan></text>
+        <text x="958" y="634" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#475569"><tspan>detail to anchor the audience's reading.</tspan></text>
+    </g>
+</svg>

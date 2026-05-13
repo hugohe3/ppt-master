@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 72,
+    "total": 74,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
@@ -149,6 +149,12 @@
     },
     "concentric_circles": {
       "summary": "Pick for 3-5 priority rings from core to periphery (bullseye/onion model). Skip for non-prioritized layers (use pyramid_chart)."
+    },
+    "segmented_wheel": {
+      "summary": "Pick for one central topic split into 4-8 equally-weighted parallel dimensions (5W1H, 4P, 5S, 6-aspect review), each wedge paired with a description card. Skip for sequential cycles (use cycle_diagram), proportional shares (use pie_chart), or hub with non-wedge spokes (use hub_spoke)."
+    },
+    "arc_anchored_list": {
+      "summary": "Pick for 3-5 parallel tracks/pillars unified by a left-edge radial fan as visual anchor (each lane = numbered wedge + title + body + right-end color square). Skip for plain numbered enumeration without unifying core (use vertical_list or numbered_steps), or sequential phases (use process_flow)."
     },
     "chevron_process": {
       "summary": "Pick for 3-6 phase methodology with chunky arrow-chain progression and deliverables per phase. Skip for <=2 phases or non-linear flow (use process_flow)."
