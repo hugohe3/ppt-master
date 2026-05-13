@@ -77,7 +77,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
-| `visual-edit` | `workflows/visual-edit.md` | Browser-based re-entry editor for finished/exported decks — reopen after edits are applied, not the main generation viewer |
+| `live-preview` | `workflows/live-preview.md` | Browser-based SVG editor — auto-started during generation and re-enterable any time the user mentions "live preview", "preview", "visual edit", or wants to click/select a slide element |
 
 ---
 
@@ -293,7 +293,7 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
 ```
-- This is the main generation preview, not the finished-deck `visual-edit` workflow.
+- This uses the unified [`live-preview`](workflows/live-preview.md) workflow in `--live` mode.
 - Start it immediately when Executor begins; `svg_output/` may be empty.
 - Run it as a long-running side process/session; do not wait for the server process to exit before generating SVG pages.
 - The editor opens `http://localhost:5050` by default and polls for new SVG pages in live mode.
@@ -311,21 +311,20 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
 
 **Visual Construction Phase**: generate SVG pages sequentially, one at a time, in one continuous pass → `<project_path>/svg_output/`
 
-**Live Annotation Handling (Mandatory)**: after each page generation and before Step 7, check for submitted annotations:
-```bash
-python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>
-```
-- If no annotations are found, continue.
-- If annotations are found, apply them to the targeted SVG elements, remove `data-edit-target` / `data-edit-annotation`, then run `svg_quality_checker.py`.
-- Do not proceed past a touched page with quality-check `error`s.
-
-**Quality Check Gate (Mandatory)** — after all SVGs, BEFORE speaker notes:
+**Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
+
+**Live Annotation Handling (Mandatory)** — after quality check passes, before speaker notes:
+```bash
+python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>
+```
+- If no annotations found: continue to Logic Construction Phase.
+- If annotations found: apply each change to the targeted SVG elements (read `data-edit-annotation`, edit in place, remove `data-edit-target` / `data-edit-annotation`), then re-run `svg_quality_checker.py`. Do not proceed past a touched page with quality-check `error`s.
 
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
 
@@ -334,8 +333,8 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ## ✅ Executor Phase Complete
 - [x] Live preview started and kept available at the reported URL
 - [x] All SVGs generated to svg_output/
-- [x] Submitted live annotations checked/applied or confirmed absent
 - [x] svg_quality_checker.py passed (0 errors)
+- [x] Submitted live annotations checked/applied or confirmed absent
 - [x] Speaker notes generated at notes/total.md
 ```
 
@@ -406,7 +405,7 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). The default auto-split already gives native the high-fidelity source it needs without touching legacy.
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-> Finished-deck re-entry: the main pipeline automatically starts live preview in Step 6. If the deck has been exported and the user later wants another visual edit pass, run [`visual-edit`](workflows/visual-edit.md); that workflow automatically reopens the same editor service in finished-deck mode, applies annotations, re-exports, and reopens again.
+> Finished-deck re-entry: any time the user mentions "live preview", "preview", "visual edit", "看效果", or wants to select/click a slide element, run [`live-preview`](workflows/live-preview.md). It handles both mid-generation preview (`--live`) and post-export re-entry in one unified workflow.
 
 ---
 
