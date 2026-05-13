@@ -121,15 +121,69 @@ def build_fill_xml(
     if fill == 'none':
         return '<a:noFill/>'
 
-    grad_id = resolve_url_id(fill)
-    if grad_id and grad_id in ctx.defs:
-        return build_gradient_fill(ctx.defs[grad_id], opacity)
+    ref_id = resolve_url_id(fill)
+    if ref_id and ref_id in ctx.defs:
+        ref_elem = ctx.defs[ref_id]
+        ref_tag = ref_elem.tag.replace(f'{{{SVG_NS}}}', '')
+        if ref_tag == 'pattern':
+            patt_xml = build_pattern_fill(ref_elem, opacity)
+            if patt_xml:
+                return patt_xml
+            return '<a:noFill/>'
+        return build_gradient_fill(ref_elem, opacity)
 
     color = parse_hex_color(fill)
     if color:
         return build_solid_fill(color, opacity)
 
     return '<a:noFill/>'
+
+
+def build_pattern_fill(
+    pattern_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
+    """Build <a:pattFill> from an SVG <pattern> emitted by pptx_to_svg.
+
+    Reads the round-trip annotations (data-pptx-pattern / data-pptx-fg /
+    data-pptx-bg) when present. Falls back to inspecting the inner stroke /
+    rect colors when annotations are absent (hand-authored SVG).
+    """
+    prst = pattern_elem.get('data-pptx-pattern') or 'ltUpDiag'
+
+    fg_color = pattern_elem.get('data-pptx-fg')
+    bg_color = pattern_elem.get('data-pptx-bg')
+
+    if not fg_color or not bg_color:
+        # Hand-authored fallback: derive from child elements.
+        for child in pattern_elem:
+            tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+            if tag == 'rect' and not bg_color:
+                bg_color = child.get('fill')
+            elif tag == 'path' and not fg_color:
+                fg_color = child.get('stroke')
+
+    fg_hex = parse_hex_color(fg_color) if fg_color else None
+    bg_hex = parse_hex_color(bg_color) if bg_color else None
+    if not fg_hex:
+        return ''
+
+    alpha_xml = ''
+    if opacity is not None and opacity < 1.0:
+        alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
+
+    fg_xml = f'<a:srgbClr val="{fg_hex}">{alpha_xml}</a:srgbClr>'
+    if bg_hex:
+        bg_xml = f'<a:srgbClr val="{bg_hex}"/>'
+    else:
+        bg_xml = '<a:srgbClr val="FFFFFF"/>'
+
+    return (
+        f'<a:pattFill prst="{prst}">'
+        f'<a:fgClr>{fg_xml}</a:fgClr>'
+        f'<a:bgClr>{bg_xml}</a:bgClr>'
+        f'</a:pattFill>'
+    )
 
 
 # ---------------------------------------------------------------------------

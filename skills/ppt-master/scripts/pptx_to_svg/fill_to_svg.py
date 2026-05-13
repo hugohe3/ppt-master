@@ -193,18 +193,15 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
         return FillResult.inherit()
 
     prst = elem.attrib.get("prst", "")
-    if prst in {"ltUpDiag", "ltDnDiag"} and bg_hex is not None:
-        if _hex_distance(fg_hex, bg_hex) < 36:
-            attrs: dict[str, str] = {"fill": bg_hex}
-            if bg_alpha < 1.0:
-                attrs["fill-opacity"] = fmt_num(bg_alpha, 4)
-            return FillResult(attrs=attrs)
-
-    if prst not in {"ltUpDiag", "ltDnDiag"}:
+    geom = _pattern_foreground(prst, fg_hex, fg_alpha)
+    if geom is None:
+        # Unsupported preset → degrade to solid fg color so the shape at
+        # least carries the right tone. Round-trip will lose the texture.
         attrs: dict[str, str] = {"fill": fg_hex}
         if fg_alpha < 1.0:
             attrs["fill-opacity"] = fmt_num(fg_alpha, 4)
         return FillResult(attrs=attrs)
+    tile_w, tile_h, fg_svg = geom
 
     if seq is None:
         seq = [0]
@@ -216,26 +213,148 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
             f' fill-opacity="{fmt_num(bg_alpha, 4)}"'
             if bg_alpha < 1.0 else ""
         )
-        bg_rect = f'<rect width="8" height="8" fill="{bg_hex}"{bg_opacity}/>'
-    fg_opacity = (
-        f' stroke-opacity="{fmt_num(fg_alpha, 4)}"'
-        if fg_alpha < 1.0 else ""
-    )
-    path_d = (
-        "M -2 8 L 8 -2 M 0 10 L 10 0"
-        if prst == "ltUpDiag"
-        else "M -2 0 L 8 10 M 0 -2 L 10 8"
-    )
+        bg_rect = (
+            f'<rect width="{tile_w}" height="{tile_h}" '
+            f'fill="{bg_hex}"{bg_opacity}/>'
+        )
+    # Tag with data attributes so the reverse exporter can rebuild <a:pattFill>
+    # faithfully (preset + fg/bg colors) instead of inferring from path geometry.
+    bg_attr = f' data-pptx-bg="{bg_hex}"' if bg_hex is not None else ""
     pattern_xml = (
         f'<pattern id="{pattern_id}" patternUnits="userSpaceOnUse" '
-        f'width="8" height="8">{bg_rect}'
-        f'<path d="{path_d}" stroke="{fg_hex}"{fg_opacity} '
-        f'stroke-width="1" fill="none"/></pattern>'
+        f'width="{tile_w}" height="{tile_h}" '
+        f'data-pptx-pattern="{prst}" data-pptx-fg="{fg_hex}"{bg_attr}>'
+        f'{bg_rect}{fg_svg}</pattern>'
     )
     return FillResult(
         attrs={"fill": f"url(#{pattern_id})"},
         defs=[pattern_xml],
     )
+
+
+# ---------------------------------------------------------------------------
+# Per-preset SVG geometry for <a:pattFill prst="...">
+#
+# Each handler returns (tile_w, tile_h, foreground_svg). The caller wraps with
+# the background rect + <pattern> element. None means "unsupported preset" and
+# the caller degrades to a solid fg color.
+# ---------------------------------------------------------------------------
+
+def _pattern_foreground(prst: str, fg: str,
+                        fg_alpha: float) -> tuple[int, int, str] | None:
+    stroke_op = (
+        f' stroke-opacity="{fmt_num(fg_alpha, 4)}"'
+        if fg_alpha < 1.0 else ""
+    )
+    fill_op = (
+        f' fill-opacity="{fmt_num(fg_alpha, 4)}"'
+        if fg_alpha < 1.0 else ""
+    )
+
+    # Diagonal stripes — tile size and stroke width pick the visual weight.
+    diag = {
+        "ltUpDiag":   (8,  1.0, "up", False),
+        "dkUpDiag":   (8,  2.0, "up", False),
+        "wdUpDiag":   (16, 1.0, "up", False),
+        "dashUpDiag": (8,  1.0, "up", True),
+        "ltDnDiag":   (8,  1.0, "dn", False),
+        "dkDnDiag":   (8,  2.0, "dn", False),
+        "wdDnDiag":   (16, 1.0, "dn", False),
+        "dashDnDiag": (8,  1.0, "dn", True),
+    }
+    if prst in diag:
+        tile, sw, direction, dashed = diag[prst]
+        dash = ' stroke-dasharray="3 2"' if dashed else ""
+        if direction == "up":
+            d = f"M -2 {tile} L {tile} -2 M 0 {tile + 2} L {tile + 2} 0"
+        else:
+            d = f"M -2 0 L {tile} {tile + 2} M 0 -2 L {tile + 2} {tile}"
+        return tile, tile, (
+            f'<path d="{d}" stroke="{fg}"{stroke_op} '
+            f'stroke-width="{fmt_num(sw)}" fill="none"{dash}/>'
+        )
+
+    # Horizontal / vertical lines.
+    line_specs = {
+        "horz":     ("h", 8, 1.0, False),
+        "ltHorz":   ("h", 8, 0.5, False),
+        "dkHorz":   ("h", 8, 2.0, False),
+        "narHorz":  ("h", 4, 1.0, False),
+        "dashHorz": ("h", 8, 1.0, True),
+        "vert":     ("v", 8, 1.0, False),
+        "ltVert":   ("v", 8, 0.5, False),
+        "dkVert":   ("v", 8, 2.0, False),
+        "narVert":  ("v", 4, 1.0, False),
+        "dashVert": ("v", 8, 1.0, True),
+    }
+    if prst in line_specs:
+        axis, tile, sw, dashed = line_specs[prst]
+        dash = ' stroke-dasharray="3 2"' if dashed else ""
+        mid = tile / 2.0
+        if axis == "h":
+            line = (
+                f'<line x1="0" y1="{fmt_num(mid)}" '
+                f'x2="{tile}" y2="{fmt_num(mid)}"'
+            )
+        else:
+            line = (
+                f'<line x1="{fmt_num(mid)}" y1="0" '
+                f'x2="{fmt_num(mid)}" y2="{tile}"'
+            )
+        return tile, tile, (
+            f'{line} stroke="{fg}"{stroke_op} '
+            f'stroke-width="{fmt_num(sw)}"{dash}/>'
+        )
+
+    # Grids / crosses.
+    if prst == "cross":
+        return 8, 8, (
+            f'<line x1="0" y1="4" x2="8" y2="4" stroke="{fg}"{stroke_op} stroke-width="1"/>'
+            f'<line x1="4" y1="0" x2="4" y2="8" stroke="{fg}"{stroke_op} stroke-width="1"/>'
+        )
+    if prst == "diagCross":
+        d = (
+            "M -2 8 L 8 -2 M 0 10 L 10 0 "
+            "M -2 0 L 8 10 M 0 -2 L 10 8"
+        )
+        return 8, 8, (
+            f'<path d="{d}" stroke="{fg}"{stroke_op} stroke-width="1" fill="none"/>'
+        )
+    if prst in ("smGrid", "lgGrid"):
+        tile = 4 if prst == "smGrid" else 16
+        # Lines along top + left edges; tiles together produce a uniform grid.
+        return tile, tile, (
+            f'<path d="M 0 0 L {tile} 0 M 0 0 L 0 {tile}" '
+            f'stroke="{fg}"{stroke_op} stroke-width="0.5" fill="none"/>'
+        )
+    if prst == "dotGrid":
+        # Dots at corners → tiling yields a uniform dot grid.
+        return 8, 8, (
+            f'<circle cx="0" cy="0" r="1" fill="{fg}"{fill_op}/>'
+        )
+    if prst == "dotDmnd":
+        return 8, 8, (
+            f'<circle cx="0" cy="0" r="1" fill="{fg}"{fill_op}/>'
+            f'<circle cx="4" cy="4" r="1" fill="{fg}"{fill_op}/>'
+        )
+
+    # Percentage shading — single centered dot whose area matches the target
+    # density. Approximates PowerPoint's stipple without per-tile artwork.
+    if prst.startswith("pct"):
+        try:
+            pct = float(prst[3:])
+        except ValueError:
+            return None
+        pct = max(0.0, min(pct, 100.0))
+        tile = 8
+        radius = math.sqrt(pct / 100.0 * tile * tile / math.pi)
+        radius = max(0.3, min(radius, tile / 2.0))
+        return tile, tile, (
+            f'<circle cx="{tile / 2}" cy="{tile / 2}" '
+            f'r="{fmt_num(radius, 3)}" fill="{fg}"{fill_op}/>'
+        )
+
+    return None
 
 
 def _hex_distance(a: str, b: str) -> float:

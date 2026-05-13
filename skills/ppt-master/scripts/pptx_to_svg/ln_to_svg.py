@@ -53,6 +53,7 @@ def resolve_stroke(
     *,
     id_prefix: str = "m",
     id_seq: list[int] | None = None,
+    style_stroke_default: str | None = None,
 ) -> StrokeResult:
     """Resolve <a:ln> child of <p:spPr>.
 
@@ -152,9 +153,10 @@ def resolve_stroke(
         end_elem = ln.find(f"a:{which}", NS)
         if end_elem is None:
             continue
+        marker_color = attrs.get("stroke") or style_stroke_default or "#000000"
         marker_id, marker_def = _build_arrow_marker(
             end_elem,
-            attrs.get("stroke", "#000000"),
+            marker_color,
             id_prefix=id_prefix,
             seq=id_seq,
             reversed_=(which == "headEnd"),
@@ -171,8 +173,10 @@ def resolve_stroke(
 # Arrow marker generation
 # ---------------------------------------------------------------------------
 
-# Bucket -> markerWidth/markerHeight ratio (in stroke widths)
-SIZE_BUCKET = {"sm": 1.5, "med": 2.5, "lg": 3.5}
+# Bucket -> markerWidth/markerHeight ratio (in stroke widths).
+# Tuned to roughly match PowerPoint's rendered arrowhead size; the spec is
+# under-defined but PowerPoint draws noticeably larger heads than 1.5–3.5×.
+SIZE_BUCKET = {"sm": 3.0, "med": 5.0, "lg": 7.0}
 
 
 def _build_arrow_marker(

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import re
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -57,33 +58,43 @@ def _is_chrome_id(elem_id: str | None) -> bool:
 # ---------------------------------------------------------------------------
 
 def parse_transform(transform_str: str) -> tuple[float, float, float, float, float]:
-    """Parse SVG transform string, extract translate, scale, and rotate.
+    """Parse an SVG transform list into (dx, dy, sx, sy, angle_deg).
 
-    Returns:
-        (dx, dy, sx, sy, angle_deg) tuple.
+    Composes every translate/scale/rotate/matrix operation rather than picking
+    the first occurrence — needed for idioms like
+    ``translate(cx cy) scale(-1 -1) translate(-cx -cy)`` which encode a flip
+    around a non-origin pivot.
+
+    When the composed matrix has no shear and no rotation, the decomposition is
+    exact (sx/sy may be negative to represent flips). When rotation is present
+    without shear, sx/sy default to the column magnitudes and angle_deg is the
+    rotation. Shear is not representable in this 5-tuple and silently
+    collapses; callers that need exact fidelity should consume the full matrix
+    via ``parse_transform_matrix``.
     """
     if not transform_str:
         return 0.0, 0.0, 1.0, 1.0, 0.0
 
-    dx, dy = 0.0, 0.0
-    sx, sy = 1.0, 1.0
-    angle_deg = 0.0
+    a, b, c, d, e, f = parse_transform_matrix(transform_str)
 
-    m = re.search(r'translate\(\s*([-\d.]+)[\s,]+([-\d.]+)\s*\)', transform_str)
-    if m:
-        dx = float(m.group(1))
-        dy = float(m.group(2))
+    # No shear / rotation: direct decomposition preserves the original signs of
+    # sx / sy. ctx_x / ctx_y use the simple ``val * sx + tx`` formula, so this
+    # is the only form that survives flip-around-pivot composites without
+    # collapsing them into a rotation that the consumer can't honour.
+    if abs(b) < 1e-9 and abs(c) < 1e-9:
+        sx = a if a != 0 else 1.0
+        sy = d if d != 0 else 1.0
+        return e, f, sx, sy, 0.0
 
-    m = re.search(r'scale\(\s*([-\d.]+)(?:[\s,]+([-\d.]+))?\s*\)', transform_str)
-    if m:
-        sx = float(m.group(1))
-        sy = float(m.group(2)) if m.group(2) else sx
+    sx = math.hypot(a, b)
+    sy = math.hypot(c, d)
+    if sx == 0:
+        sx = 1.0
+    if sy == 0:
+        sy = 1.0
 
-    m = re.search(r'rotate\(\s*([-\d.]+)', transform_str)
-    if m:
-        angle_deg = float(m.group(1))
-
-    return dx, dy, sx, sy, angle_deg
+    angle_deg = math.degrees(math.atan2(b, a))
+    return e, f, sx, sy, angle_deg
 
 
 # ---------------------------------------------------------------------------

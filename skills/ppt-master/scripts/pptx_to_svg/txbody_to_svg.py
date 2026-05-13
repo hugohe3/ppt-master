@@ -853,7 +853,10 @@ def _clip_lines_to_bottom(
     cursor_y = top_y
     for line in lines:
         line_h = _line_height(para, line)
-        if cursor_y + line_h > bottom_y:
+        # PowerPoint lets the first line that starts within the box render even
+        # when it slightly exceeds the bottom — only suppress lines whose top
+        # is already at/below the bottom edge.
+        if cursor_y >= bottom_y:
             break
         visible.append(line)
         cursor_y += line_h

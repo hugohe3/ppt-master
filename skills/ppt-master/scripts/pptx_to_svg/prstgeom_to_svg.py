@@ -102,7 +102,8 @@ def convert_prst_geom(
     Returns None if the preset has no v1 mapping; the caller can then choose
     to render a fallback rect.
     """
-    if prst == "line":
+    # Line-style presets accept zero width OR zero height (axis-aligned lines).
+    if prst in ("line", "straightConnector1"):
         if xfrm.w == 0 and xfrm.h == 0:
             return None
         return _line(xfrm, sp_pr)
@@ -310,14 +311,89 @@ def _parallelogram(xfrm: Xfrm, sp_pr) -> GeomResult:
 
 
 def _trapezoid(xfrm: Xfrm, sp_pr) -> GeomResult:
-    """adj = horizontal inset of top edge (default 25%)."""
-    adj = _adj_value(sp_pr, "adj", default_pct=0.25)
-    inset = adj * xfrm.w
+    """OOXML trapezoid: x1 = ss * adj / 200000 (ss = min(w, h)).
+
+    adj default 25000; maxAdj caps at 50000 * w / ss so the top can't invert.
+    """
+    adj = _adj_int_value(sp_pr, "adj", 25000)
+    ss = min(xfrm.w, xfrm.h)
+    if ss <= 0:
+        return _rect(xfrm, sp_pr)
+    max_adj = 50000.0 * xfrm.w / ss
+    a = max(0.0, min(float(adj), max_adj))
+    inset = ss * a / 200000.0
     return _polygon([
         (xfrm.x + inset, xfrm.y),
         (xfrm.x + xfrm.w - inset, xfrm.y),
         (xfrm.x + xfrm.w, xfrm.y + xfrm.h),
         (xfrm.x, xfrm.y + xfrm.h),
+    ])
+
+
+def _chevron(xfrm: Xfrm, sp_pr) -> GeomResult:
+    """OOXML chevron: dx = ss * adj / 100000 (ss = min(w, h)), default adj=50000.
+
+    Both the right-pointing tip length and the left back-notch depth equal dx,
+    which is what lets a series of chevrons tile flush.
+    """
+    adj = _adj_int_value(sp_pr, "adj", 50000)
+    x, y, w, h = xfrm.x, xfrm.y, xfrm.w, xfrm.h
+    ss = min(w, h)
+    if ss <= 0:
+        return _rect(xfrm, sp_pr)
+    max_adj = 100000.0 * w / ss
+    a = max(0.0, min(float(adj), max_adj))
+    dx = ss * a / 100000.0
+    cy = y + h / 2.0
+    return _polygon([
+        (x, y),
+        (x + w - dx, y),
+        (x + w, cy),
+        (x + w - dx, y + h),
+        (x, y + h),
+        (x + dx, cy),
+    ])
+
+
+def _home_plate(xfrm: Xfrm, sp_pr) -> GeomResult:
+    """OOXML homePlate: tip length = ss * adj / 100000; body fills 0..(w - tip).
+
+    Same dx as chevron so a homePlate→chevron series tiles seamlessly.
+    """
+    adj = _adj_int_value(sp_pr, "adj", 50000)
+    x, y, w, h = xfrm.x, xfrm.y, xfrm.w, xfrm.h
+    ss = min(w, h)
+    if ss <= 0:
+        return _rect(xfrm, sp_pr)
+    max_adj = 100000.0 * w / ss
+    a = max(0.0, min(float(adj), max_adj))
+    dx = ss * a / 100000.0
+    split = w - dx
+    cy = y + h / 2.0
+    return _polygon([
+        (x, y),
+        (x + split, y),
+        (x + w, cy),
+        (x + split, y + h),
+        (x, y + h),
+    ])
+
+
+def _flow_chart_extract(xfrm: Xfrm, _sp_pr) -> GeomResult:
+    """Flowchart "Extract": upward-pointing isoceles triangle."""
+    return _polygon([
+        (xfrm.x + xfrm.w / 2.0, xfrm.y),
+        (xfrm.x + xfrm.w, xfrm.y + xfrm.h),
+        (xfrm.x, xfrm.y + xfrm.h),
+    ])
+
+
+def _flow_chart_merge(xfrm: Xfrm, _sp_pr) -> GeomResult:
+    """Flowchart "Merge": downward-pointing isoceles triangle."""
+    return _polygon([
+        (xfrm.x, xfrm.y),
+        (xfrm.x + xfrm.w, xfrm.y),
+        (xfrm.x + xfrm.w / 2.0, xfrm.y + xfrm.h),
     ])
 
 
@@ -540,6 +616,9 @@ _PRESET_HANDLERS = {
     "round2SameRect": _round_2_same_rect,
     "ellipse": _ellipse,
     "line": _line,
+    # Straight connector: same geometry as a `line` preset; head/tail markers
+    # come from <a:ln>.
+    "straightConnector1": _line,
 
     # Polygons
     "triangle": _triangle,
@@ -547,6 +626,10 @@ _PRESET_HANDLERS = {
     "diamond": _diamond,
     "parallelogram": _parallelogram,
     "trapezoid": _trapezoid,
+    "chevron": _chevron,
+    "homePlate": _home_plate,
+    "flowChartExtract": _flow_chart_extract,
+    "flowChartMerge": _flow_chart_merge,
     "pentagon": _pentagon,
     "hexagon": _hexagon,
     "heptagon": _heptagon,
