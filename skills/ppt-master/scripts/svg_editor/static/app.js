@@ -583,8 +583,8 @@
     // ================================================================
     // 10.  Save all  -- two-step: confirm then save
     // ================================================================
-    var CONFIRM_MSG = "Submit annotations to disk?\n\nThe preview service will stay open. Use Exit preview when you want to stop it.";
-    var SUCCESS_MSG = "Annotations submitted.\n\nReturn to the chat and tell the AI you're ready — it will apply your edits. The preview service is still running.";
+    var CONFIRM_MSG = "Submit annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.";
+    var SUCCESS_MSG = "Annotations saved.\n\nReturn to the chat and tell the AI to apply them (e.g. \"apply my annotations\"). The preview service is still running.";
     var EXIT_CONFIRM_MSG = "Exit preview and stop the local server?\n\nUnsaved annotations will be discarded.";
     var EXIT_SUCCESS_MSG = "Preview stopped.\n\nYou can close this tab and return to the chat.";
 
@@ -706,11 +706,7 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 liveMode = !!data.live;
-                if (liveMode) {
-                    document.title = "PPT Master - Live Preview";
-                } else {
-                    document.title = "PPT Master - Visual Editor";
-                }
+                document.title = "PPT Master - Live Preview";
                 btnSave.textContent = "Submit annotations";
             })
             .catch(function () {

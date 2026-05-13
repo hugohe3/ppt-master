@@ -409,7 +409,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not args.no_browser:
         webbrowser.open(url)
 
-    mode = "live preview" if args.live else "visual edit"
+    mode = "live preview (auto-startup)" if args.live else "live preview"
     print(f"SVG Editor running at {url} ({mode})")
     print(f"Project: {project_path}")
     app.run(host='127.0.0.1', port=args.port, debug=False)

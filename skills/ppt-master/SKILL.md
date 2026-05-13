@@ -77,7 +77,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
-| `live-preview` | `workflows/live-preview.md` | Browser-based SVG editor — auto-started during generation and re-enterable any time the user mentions "live preview", "preview", "visual edit", or wants to click/select a slide element |
+| `live-preview` | `workflows/live-preview.md` | Browser-based live preview — auto-started during generation and re-enterable any time the user mentions "live preview", "preview", "看效果", or wants to click/select a slide element |
 
 ---
 
@@ -289,18 +289,15 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 
-**Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running through Executor + Export:
+**Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running continuously through Executor + Step 7 export:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
 ```
-- This uses the unified [`live-preview`](workflows/live-preview.md) workflow in `--live` mode.
-- Start it immediately when Executor begins; `svg_output/` may be empty.
-- Run it as a long-running side process/session; do not wait for the server process to exit before generating SVG pages.
-- The editor opens `http://localhost:5050` by default and polls for new SVG pages in live mode.
-- **Add annotation** creates a local annotation; **Submit annotations** writes annotations to disk and keeps the service running; **Exit preview** is the only UI action that stops Flask.
-- If the user clicks **Exit preview**, generation should continue without preview unless the user asks to reopen it.
-- If port `5050` is occupied, pass `--port <other>` and report the actual URL.
-- Do not wait for user confirmation after startup; continue the serial Executor pipeline.
+- Start it immediately when Executor begins; `svg_output/` may be empty. Editor opens at `http://localhost:5050`; port conflict → `--port <other>` and report the actual URL.
+- Run it as a long-running side process/session; do not wait for it to exit before generating SVG pages. Do not wait for user confirmation after startup.
+- **Service must keep running** until one of: (a) the user clicks **Exit preview** in the browser, or (b) the user explicitly asks in chat to stop it. Generation continues even if the user closes the editor.
+- **Do NOT read or apply submitted annotations during generation.** Users may annotate at any time, but Executor proceeds without touching them. The window to apply annotations opens only after Step 7 completes — see [`workflows/live-preview.md`](workflows/live-preview.md).
+- UI button semantics and editor details: see [`workflows/live-preview.md`](workflows/live-preview.md) Notes.
 
 **Pre-generation Batch Read (Mandatory)**: before the first SVG, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` and every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts). One read per file, up front — do not re-read these during page generation. See executor-base.md §1.0.
 
@@ -319,13 +316,6 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
-**Live Annotation Handling (Mandatory)** — after quality check passes, before speaker notes:
-```bash
-python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>
-```
-- If no annotations found: continue to Logic Construction Phase.
-- If annotations found: apply each change to the targeted SVG elements (read `data-edit-annotation`, edit in place, remove `data-edit-target` / `data-edit-annotation`), then re-run `svg_quality_checker.py`. Do not proceed past a touched page with quality-check `error`s.
-
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
 
 **✅ Checkpoint — Confirm all SVGs and notes are fully generated and quality-checked. Proceed directly to Step 7 post-processing**:
@@ -334,7 +324,6 @@ python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>
 - [x] Live preview started and kept available at the reported URL
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
-- [x] Submitted live annotations checked/applied or confirmed absent
 - [x] Speaker notes generated at notes/total.md
 ```
 
@@ -405,7 +394,9 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). The default auto-split already gives native the high-fidelity source it needs without touching legacy.
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-> Finished-deck re-entry: any time the user mentions "live preview", "preview", "visual edit", "看效果", or wants to select/click a slide element, run [`live-preview`](workflows/live-preview.md). It handles both mid-generation preview (`--live`) and post-export re-entry in one unified workflow.
+> **Post-export annotation window**: the preview service from Step 6 typically remains running after export. If the user submitted annotations in the browser (during Executor or after export) and now asks to apply them — they may quote the browser prompt (`Annotations saved. ... apply my annotations`), say "apply my annotations" / "应用注解" / equivalent — run [`live-preview`](workflows/live-preview.md) Step 2 to apply and re-export. Annotations submitted during generation are also handled here, not earlier.
+
+> **Preview not running?** Any time the user mentions "live preview", "preview", "看效果", or wants to select/click a slide element and the service is not running, run [`live-preview`](workflows/live-preview.md) Step 1 to start it. If the service is already running, just point them at the URL — do not restart.
 
 ---
 

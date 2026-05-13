@@ -20,7 +20,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 >
 > Object-level animation tuning: when the user asks to change animation order, effect, timing, or a specific object's reveal behavior, run the standalone [`customize-animations`](skills/ppt-master/workflows/customize-animations.md) workflow. Default export already has global animations; do not create `animations.json` unless customization was requested.
 >
-> Live preview / visual edit: any time the user mentions "live preview", "preview", "看效果", "visual edit", or wants to click/select a slide element, run [`live-preview`](skills/ppt-master/workflows/live-preview.md). Works for both mid-generation preview (`--live`) and post-export re-entry — one unified workflow.
+> Live preview: any time the user mentions "live preview", "preview", "看效果", or wants to click/select a slide element, run [`live-preview`](skills/ppt-master/workflows/live-preview.md). Step 6 auto-starts it during generation; the workflow covers post-export re-entry and applying submitted annotations.
 
 ## Execution Requirements
 
