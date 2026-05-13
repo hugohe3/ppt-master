@@ -110,7 +110,7 @@
 ## page_charts
 - P05: bar_chart
 - P09: timeline_horizontal
-- P12: bcg_matrix
+- P12: quadrant_bubble_scatter
 
 > One entry per page **that adapts a `templates/charts/` chart template**. Key: `P<NN>` matching §IX. Value: chart template basename without `.svg` (must match a key in `templates/charts/charts_index.json`).
 >

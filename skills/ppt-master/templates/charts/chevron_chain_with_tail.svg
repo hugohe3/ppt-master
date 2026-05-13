@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Chevron Chain with Tail Template
+    Structure: 4-6 sequential chevron blocks + a final wedge representing the aggregate outcome
+    Use cases: Porter's value chain (primary + support activities mapped to margin), process leading to a summary deliverable, contribution chain ending in a result
+    Design Principles: Interlocking chevron blocks with right-facing outcome wedge in accent color. Differs from chevron_process by the appended summary tail. Single subtle shadow on the whole chain to keep §3 shadow budget under 3.
+    -->
+    <defs>
+        <filter id="chainShadow" x="-3%" y="-8%" width="106%" height="116%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <linearGradient id="marginGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#10B981"/>
+            <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- ==================== Header ==================== -->
+    <g id="header">
+        <rect x="60" y="48" width="4" height="56" rx="2" fill="#6366F1"/>
+        <text x="78" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#0F172A">
+            <tspan>Value Chain Analysis</tspan>
+        </text>
+        <text x="78" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="2">
+            <tspan>INTERNAL OPERATIONS · COMPETITIVE ADVANTAGE EVALUATION</tspan>
+        </text>
+        <!-- Headline metric chip -->
+        <g transform="translate(1010, 56)">
+            <rect x="0" y="0" width="200" height="48" rx="14" fill="#ECFDF5"/>
+            <text x="22" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#10B981">
+                <tspan>+18%</tspan>
+            </text>
+            <text x="92" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#065F46" letter-spacing="1.5">
+                <tspan>MARGIN VS PEERS</tspan>
+            </text>
+            <text x="92" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#10B981">
+                <tspan>FY24 weighted avg</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- ==================== Axis Labels (Support / Primary) ==================== -->
+    <text x="38" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#475569" text-anchor="middle" transform="rotate(-90, 38, 240)" letter-spacing="2">
+        <tspan>SUPPORT ACTIVITIES</tspan>
+    </text>
+    <text x="38" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#475569" text-anchor="middle" transform="rotate(-90, 38, 432)" letter-spacing="2">
+        <tspan>PRIMARY ACTIVITIES</tspan>
+    </text>
+
+    <!-- ==================== Value Chain (shadow on group) ==================== -->
+    <g id="chain" filter="url(#chainShadow)">
+        <!-- ===== Support Activities: 4 horizontal bars, aligned right edge to last chevron point at x=980 ===== -->
+        <g id="support">
+            <rect x="60" y="140" width="920" height="44" rx="6" fill="#DBEAFE"/>
+            <rect x="60" y="190" width="920" height="44" rx="6" fill="#DBEAFE"/>
+            <rect x="60" y="240" width="920" height="44" rx="6" fill="#DBEAFE"/>
+            <rect x="60" y="290" width="920" height="44" rx="6" fill="#DBEAFE"/>
+        </g>
+
+        <!-- ===== Primary Activities: 5 chevrons, stride 180, rect width 175, point overhang 25 ===== -->
+        <g id="primary">
+            <!-- Chev 1: rect 60-235, flat left, point at 260 -->
+            <path d="M 60 380 H 235 L 260 432 L 235 484 H 60 Z" fill="#E0E7FF"/>
+            <!-- Chev 2: rect 240-415, notch 265, point at 440 -->
+            <path d="M 240 380 H 415 L 440 432 L 415 484 H 240 L 265 432 Z" fill="#C7D2FE"/>
+            <!-- Chev 3: rect 420-595, notch 445, point at 620 -->
+            <path d="M 420 380 H 595 L 620 432 L 595 484 H 420 L 445 432 Z" fill="#E0E7FF"/>
+            <!-- Chev 4: rect 600-775, notch 625, point at 800 -->
+            <path d="M 600 380 H 775 L 800 432 L 775 484 H 600 L 625 432 Z" fill="#C7D2FE"/>
+            <!-- Chev 5: rect 780-955, notch 805, point at 980 -->
+            <path d="M 780 380 H 955 L 980 432 L 955 484 H 780 L 805 432 Z" fill="#E0E7FF"/>
+        </g>
+
+        <!-- ===== Margin Tail: full-height wedge merging both halves into one outcome point ===== -->
+        <!-- Left edge at x=975 (slightly overlapping chev5 point at x=980 to convey "feeding into"), right tip at (1200, 312) -->
+        <path id="marginTail" d="M 975 140 L 1200 312 L 975 484 Z" fill="url(#marginGrad)"/>
+    </g>
+
+    <!-- ==================== Support Activity Labels ==================== -->
+    <g id="support-labels">
+        <text x="80" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#1E3A8A">
+            <tspan>Firm Infrastructure</tspan>
+        </text>
+        <text x="300" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="500" fill="#2563EB">
+            <tspan>General mgmt · Planning · Finance · Legal · Quality</tspan>
+        </text>
+
+        <text x="80" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#1E3A8A">
+            <tspan>Human Resources</tspan>
+        </text>
+        <text x="300" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="500" fill="#2563EB">
+            <tspan>Recruitment · Training · Development · Compensation</tspan>
+        </text>
+
+        <text x="80" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#1E3A8A">
+            <tspan>Tech Development</tspan>
+        </text>
+        <text x="300" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="500" fill="#2563EB">
+            <tspan>R&amp;D · Product design · Process automation · IT systems</tspan>
+        </text>
+
+        <text x="80" y="318" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#1E3A8A">
+            <tspan>Procurement</tspan>
+        </text>
+        <text x="300" y="318" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="500" fill="#2563EB">
+            <tspan>Supplier sourcing · Raw materials · Vendor management</tspan>
+        </text>
+    </g>
+
+    <!-- ==================== Primary Activity Labels (centered on each chevron rect) ==================== -->
+    <g id="primary-labels">
+        <!-- Chev 1 rect center: x=(60+235)/2=147 -->
+        <text x="147" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Inbound</tspan>
+        </text>
+        <text x="147" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Logistics</tspan>
+        </text>
+        <text x="147" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+            <tspan>Inventory · Warehousing</tspan>
+        </text>
+        <!-- Chev 2 rect center: x=(240+415)/2=327 -->
+        <text x="327" y="428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Operations</tspan>
+        </text>
+        <text x="327" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+            <tspan>Machining · Assembly</tspan>
+        </text>
+        <!-- Chev 3 rect center: x=(420+595)/2=507 -->
+        <text x="507" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Outbound</tspan>
+        </text>
+        <text x="507" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Logistics</tspan>
+        </text>
+        <text x="507" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+            <tspan>Distribution · Shipping</tspan>
+        </text>
+        <!-- Chev 4 rect center: x=(600+775)/2=687 -->
+        <text x="687" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Marketing</tspan>
+        </text>
+        <text x="687" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>&amp; Sales</tspan>
+        </text>
+        <text x="687" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+            <tspan>Advertising · Promotions</tspan>
+        </text>
+        <!-- Chev 5 rect center: x=(780+955)/2=867 -->
+        <text x="867" y="428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
+            <tspan>Service</tspan>
+        </text>
+        <text x="867" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+            <tspan>Support · Maintenance</tspan>
+        </text>
+    </g>
+
+    <!-- ==================== MARGIN Label (placed at tail's widest point, near right) ==================== -->
+    <!-- Tail point at (1200, 312). Label centered at x ≈ 1070, y ≈ 312 where width ≈ 130 px -->
+    <g id="margin-label">
+        <text x="1050" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="3">
+            <tspan>MARGIN</tspan>
+        </text>
+        <text x="1050" y="328" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="2" opacity="0.85">
+            <tspan>VALUE − COST</tspan>
+        </text>
+    </g>
+
+    <!-- ==================== Activity Counter Captions (bottom row) ==================== -->
+    <g id="caption-9" transform="translate(60, 560)">
+        <rect x="0" y="0" width="200" height="56" rx="10" fill="#F8FAFC"/>
+        <text x="20" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="800" fill="#0F172A">
+            <tspan>9</tspan>
+        </text>
+        <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">
+            <tspan>ACTIVITY AREAS</tspan>
+        </text>
+        <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8">
+            <tspan>4 support · 5 primary</tspan>
+        </text>
+    </g>
+    <g id="caption-coverage" transform="translate(280, 560)">
+        <rect x="0" y="0" width="220" height="56" rx="10" fill="#F8FAFC"/>
+        <text x="20" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="800" fill="#3B82F6">
+            <tspan>100%</tspan>
+        </text>
+        <text x="90" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">
+            <tspan>COVERAGE</tspan>
+        </text>
+        <text x="90" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8">
+            <tspan>All 9 areas reviewed</tspan>
+        </text>
+    </g>
+    <g id="caption-optimized" transform="translate(520, 560)">
+        <rect x="0" y="0" width="240" height="56" rx="10" fill="#F8FAFC"/>
+        <text x="20" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="800" fill="#6366F1">
+            <tspan>6</tspan>
+        </text>
+        <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">
+            <tspan>OPTIMIZATION TARGETS</tspan>
+        </text>
+        <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8">
+            <tspan>Cost-reduction or differentiation</tspan>
+        </text>
+    </g>
+
+    <!-- ==================== Footer ==================== -->
+    <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8" text-anchor="end">
+        <tspan>Source: Internal Operations Review · FY24</tspan>
+    </text>
+</svg>

@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- 
-    Organizational Chart Template
-    Usage: Hierarchical structures, reporting lines
-    Scenarios: Corporate structure, team organization
-    Supports: 3 Levels (CEO -> 5 VPs -> 10 Departments)
+    <!--
+    Top-Down Tree Template
+    Structure: Hierarchical top-down tree with parent→children connector lines, 2-4 levels deep
+    Use cases: Org charts (CEO → VPs → Directors), OKR cascades (Objective → Key Results → Initiatives), WBS decomposition, any strict parent-child hierarchy
+    Supports: 3 Levels (root → 5 mid-nodes → 10 leaves); add/remove leaves and adjust spacing as needed
     -->
     <defs>
         <!-- Standard Card Shadow -->

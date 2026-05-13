@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!--
-    PESTLE Analysis Template
-    Purpose: Macro-environmental strategic analysis
-    Use cases: Market entry strategy, business environment scanning, strategic planning
-    Design Principles: 4 clean vertical pillars with distinctive accent colors and structured text hierarchy
+    Vertical Pillars Template
+    Structure: 1×N vertical column layout (typically 1×3, 1×4, or 1×5) where each pillar = one independent category with title + bullets
+    Use cases: PEST/PESTLE (Political/Economic/Social/Technological), four-pillar strategy overview, side-by-side independent categories without comparison axis
+    Design Principles: Clean vertical pillars with distinctive accent colors and structured text hierarchy
     -->
     <defs>
         <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">

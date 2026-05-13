@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- 
-    Porter's Five Forces Chart Template
-    Purpose: Industry competitive analysis, strategic planning
-    Use cases: Industry reports, market entry evaluation, competitive strategy
-    Supports: Central + 4 peripheral layout (Classic Cross)
+    <!--
+    Hub with Inward Arrows Template
+    Structure: 1 center subject + 4-5 surrounding nodes with arrows pointing inward (forces pressuring the center)
+    Use cases: Porter's Five Forces (central rivalry, threat of new entrants/substitutes, bargaining power of buyers/suppliers), threat-model with central asset, pressure-on-core diagrams
+    Supports: Central + 4 peripheral layout (Classic Cross). Differs from hub_spoke by arrow direction (inward, not outward).
     -->
     <defs>
         <!-- Standard Card Shadow -->

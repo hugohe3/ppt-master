@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!--
-    BCG Matrix Template (Growth-Share Matrix)
-    Purpose: Portfolio management and product lifecycle strategy
-    Use cases: Corporate strategy, product portfolio analysis, resource allocation
-    Design Principles: 4 quadrants (Star, Cash Cow, Question Mark, Dog) with strong visual distinctness
+    Quadrant Bubble Scatter Template
+    Structure: 2×2 quadrant grid with items plotted as bubbles sized by a third metric
+    Use cases: BCG Growth-Share Matrix (Stars / Cash Cows / Question Marks / Dogs), revenue-weighted portfolio matrix, any named two-axis chart where each item carries a magnitude
+    Design Principles: 4 named quadrants with strong visual distinctness; bubble radius encodes the third dimension
     -->
     <rect width="1280" height="720" fill="#F8FAFC"/>
     <!-- ==================== Header ==================== -->

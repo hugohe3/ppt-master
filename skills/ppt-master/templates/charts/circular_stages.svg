@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- 
-    Cycle Diagram Template
-    Usage: Cyclical processes, PDCA, iteration cycles
-    Scenarios: Quality management cycle, agile iteration, business loops
+    <!--
+    Circular Stages Template
+    Structure: Closed-loop ring of 4-6 stages connected by arrows
+    Use cases: PDCA, flywheel compounding loops (Attract → Engage → Delight), agile iteration, lifecycle, continuous improvement, any cyclical or self-reinforcing process
     Supports: 5-stage cycle (4-6 recommended)
     -->
     <defs>

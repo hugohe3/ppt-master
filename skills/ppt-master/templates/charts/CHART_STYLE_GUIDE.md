@@ -391,7 +391,9 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 ❌ 只写"是什么"：`"summary": "Bidirectional comparison chart for two datasets"`
 ✅ 写"何时选"：`"summary": "Pick for two mirrored datasets sharing a common axis (age pyramid, A/B). Skip for >2 sides (use grouped_bar_chart)."`
 
-❌ summary 过长（>200 字符）—— 选型时反而难抓重点，目标在 100-180 字符。
+❌ summary 过长（>400 字符）—— 选型时反而难抓重点，目标在 150-300 字符。
+
+> **Why not stricter**：单一结构模板常需覆盖多个商业框架/场景（如 `quadrant_text_bullets` 覆盖 SWOT + Ansoff，`top_down_tree` 覆盖 org + OKR），summary 需要列出关键词锚点（"principles, key takeaways, action items" 这种）才能让 Strategist 语义命中"非数字结构页"，所以 100-180 字符的旧基线在结构-派命名后已经太紧。
 
 ---
 
@@ -430,7 +432,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 ### 注册（仅新增模板时）
 - [ ] `charts_index.json` 的 `charts.<key>` 已登记 `summary` 字段
 - [ ] `summary` 写成选型句（`Pick for ... Skip if ... (use <other>)`），不是描述句
-- [ ] `summary` 长度控制在 100-180 字符（>200 字符要重写）
+- [ ] `summary` 长度控制在 150-300 字符（>400 字符要重写）；如果模板覆盖多个商业框架/场景，可放宽到 350 字符以塞下关键词锚点
 - [ ] `meta.total` 同步 +1
 
 ### 坐标校准标记（calculator-supported 图表必填）
@@ -630,11 +632,11 @@ echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/
 
 | 图式 | 参考模板 |
 |------|---------|
-| §11.1 半圆角分区头（上圆下方） | `swot_analysis.svg`, `labeled_card.svg`, `pest_analysis.svg`, `comparison_columns.svg` |
+| §11.1 半圆角分区头（上圆下方） | `quadrant_text_bullets.svg`, `labeled_card.svg`, `vertical_pillars.svg`, `comparison_columns.svg` |
 | §11.2 嵌套卡片描边 | `labeled_card.svg` |
-| §11.3 2×2 卡片网格 | `kpi_cards.svg`, `swot_analysis.svg`, `labeled_card.svg` |
+| §11.3 2×2 卡片网格 | `kpi_cards.svg`, `quadrant_text_bullets.svg`, `labeled_card.svg` |
 | §11.3 2×3 卡片网格 | `icon_grid.svg` |
-| §11.3 1×3/1×4 卡片网格 | `comparison_columns.svg`, `pest_analysis.svg` |
+| §11.3 1×3/1×4 卡片网格 | `comparison_columns.svg`, `vertical_pillars.svg` |
 | §11.5 倾斜虚线连接箭头 | `matrix_2x2.svg` |
 | §11.6 接地椭圆 | `team_roster.svg` |
 | §11.7 双向交互箭头 | `client_server_flow.svg` |
