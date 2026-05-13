@@ -37,6 +37,10 @@
         <marker id="arrowY" markerWidth="14" markerHeight="14" refX="7" refY="2" orient="auto">
             <path d="M 2,12 L 7,2 L 12,12 Z" fill="#0F172A"/>
         </marker>
+        <!-- Diagonal priority-migration arrow head (Slate 600, matches advisory tone) -->
+        <marker id="migrationArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+            <path d="M 0,0 L 10,6 L 0,12 Z" fill="#475569"/>
+        </marker>
     </defs>
     <!-- Background -->
     <rect width="1280" height="720" fill="#F8FAFC"/>
@@ -132,6 +136,18 @@
             <text x="695" y="299" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">Score: 82</text>
         </g>
     </g>
+    <!-- ==================== Priority Migration (Diagonal Dashed Arrow) ==================== -->
+    <!-- Demonstrates CHART_STYLE_GUIDE §11.5: diagonal dashed connector to express
+         cross-quadrant trajectory. Migrates work from Thankless → Quick Wins. -->
+    <g id="priority-migration">
+        <line x1="850" y1="605" x2="385" y2="200" stroke="#475569" stroke-width="2"
+              stroke-dasharray="6 5" marker-end="url(#migrationArrow)" stroke-linecap="round"/>
+        <!-- Mid-line label with pill background so the arrow reads under the text -->
+        <rect x="525" y="385" width="190" height="28" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+        <text x="620" y="403" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="12" font-weight="700" fill="#475569" letter-spacing="1">PRIORITY MIGRATION</text>
+    </g>
+
     <!-- Strategic Recommendations Card -->
     <g id="strategicRecommendations" filter="url(#cardShadow)">
         <rect x="1070" y="170" width="165" height="250" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12"/>

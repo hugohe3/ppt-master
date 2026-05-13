@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Pyramid Isometric Chart Template (3D variant)
+    Purpose: Hierarchical capability/achievement model with strong visual drama
+    Use cases: Annual review reports, capability tier presentations, growth-stage decks
+    Design Principles:
+      - 4-tier 3D isometric pyramid: each tier = top diamond (shadow facet) + 2 side faces (lit gradients)
+      - Light source from upper-left → right faces slightly darker than left faces
+      - Tier numbers tilted along the left slope (CHART_STYLE_GUIDE §11 "semantic-polygon" pattern)
+      - Tier labels tilted along the right slope
+      - Twin ground rhombi as 3D shadow base (alternative to ellipse anchor §11.6 for 3D objects)
+    Versus pyramid_chart.svg: choose this for dramatic / presentation tone; choose pyramid_chart for
+    formal documentary / consulting tone (flat side view).
+    Layer count is FIXED at 4 (geometric parameterization for 3/5/6 layers requires recomputed vertices).
+    -->
+    <defs>
+        <!-- Pyramid side-face gradients (lit, brighter at the upper-left edge) -->
+        <!-- Tier 1 apex (lightest) -->
+        <linearGradient id="pyrFaceR1" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#93C5FD" stop-opacity="0.85"/>
+            <stop offset="1" stop-color="#BFDBFE" stop-opacity="0.85"/>
+        </linearGradient>
+        <linearGradient id="pyrFaceL1" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#BFDBFE" stop-opacity="0.85"/>
+            <stop offset="1" stop-color="#93C5FD" stop-opacity="0.85"/>
+        </linearGradient>
+        <!-- Tier 2 -->
+        <linearGradient id="pyrFaceR2" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#60A5FA" stop-opacity="0.85"/>
+            <stop offset="1" stop-color="#93C5FD" stop-opacity="0.85"/>
+        </linearGradient>
+        <linearGradient id="pyrFaceL2" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#93C5FD" stop-opacity="0.85"/>
+            <stop offset="1" stop-color="#60A5FA" stop-opacity="0.85"/>
+        </linearGradient>
+        <!-- Tier 3 -->
+        <linearGradient id="pyrFaceR3" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#3B82F6" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#60A5FA" stop-opacity="0.9"/>
+        </linearGradient>
+        <linearGradient id="pyrFaceL3" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#60A5FA" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#3B82F6" stop-opacity="0.9"/>
+        </linearGradient>
+        <!-- Tier 4 base (darkest) -->
+        <linearGradient id="pyrFaceR4" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#1E40AF" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#2563EB" stop-opacity="0.9"/>
+        </linearGradient>
+        <linearGradient id="pyrFaceL4" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#2563EB" stop-opacity="0.9"/>
+            <stop offset="1" stop-color="#1E40AF" stop-opacity="0.9"/>
+        </linearGradient>
+        <!-- Ground shadow rhombi: outer (wide) light and inner narrow darker -->
+        <linearGradient id="pyrBaseShadowOuter" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#CBD5E1"/>
+            <stop offset="0.5" stop-color="#F1F5F9" stop-opacity="0"/>
+            <stop offset="1" stop-color="#CBD5E1"/>
+        </linearGradient>
+        <linearGradient id="pyrBaseShadowInner" x1="0" y1="0.5" x2="1" y2="0.5">
+            <stop offset="0" stop-color="#94A3B8"/>
+            <stop offset="0.5" stop-color="#F1F5F9" stop-opacity="0"/>
+            <stop offset="1" stop-color="#94A3B8"/>
+        </linearGradient>
+        <!-- Tier-tag pill gradient (used by legend pills on the right) -->
+        <linearGradient id="pyrLegendPill" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0" stop-color="#FFFFFF"/>
+            <stop offset="1" stop-color="#F1F5F9"/>
+        </linearGradient>
+        <!-- Subtle card shadow for legend rows -->
+        <filter id="pyrLegendShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8FAFC"/>
+
+    <!-- ==================== Header ==================== -->
+    <text x="60" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Capability Maturity Pyramid</tspan></text>
+    <text x="60" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5"><tspan>FOUR-TIER GROWTH MODEL · STAGE-BY-STAGE ACHIEVEMENT</tspan></text>
+
+    <!-- ==================== Ground Shadow Base ==================== -->
+    <!-- Twin rhombi simulate the 3D ground-plane shadow on which the pyramid sits. -->
+    <g id="base-shadow">
+        <polygon points="640,474.4 1080.2,571.44 640,668.48 199.8,571.44" fill="url(#pyrBaseShadowOuter)" stroke="#CBD5E1" stroke-width="1"/>
+        <polygon points="641.36,482.28 1015.16,564.68 641.36,647.08 267.55,564.68" fill="url(#pyrBaseShadowInner)" stroke="#94A3B8" stroke-width="1" stroke-opacity="0.4"/>
+    </g>
+
+    <!-- ==================== Pyramid Body ==================== -->
+    <!-- Diamond facets (top surfaces of each tier) — solid dark navy, simulating top-light shadow.
+         Drawn first so side faces overlap them at the silhouette edges. -->
+    <g id="pyramid">
+        <!-- Tier 3 top diamond (largest visible flat) -->
+        <polygon points="640.16,395.12 865.26,453.36 640.16,511.59 415.06,453.36" fill="#172554" stroke="none"/>
+        <!-- Tier 2 top diamond -->
+        <polygon points="640,311.23 798.58,352.01 640,392.79 481.42,352.01" fill="#1E3A8A" stroke="none"/>
+        <!-- Tier 1 top diamond (smallest) -->
+        <polygon points="640.41,227.07 732.56,250.74 640.41,274.41 548.26,250.74" fill="#1E40AF" stroke="none"/>
+
+        <!-- Apex face (right slope of pinnacle) -->
+        <path d="M 640.27 109.6 L 726.47 241.6 L 640.6 263.8 L 639.27 263.46 L 639.27 111.13 L 640.27 109.6 Z" fill="url(#pyrFaceR1)" stroke="none"/>
+        <!-- Apex face (left slope of pinnacle) -->
+        <path d="M 639.27 111.13 L 639.27 263.46 L 554.17 241.45 L 639.27 111.13 Z" fill="url(#pyrFaceL1)" stroke="none"/>
+
+        <!-- Tier 2 right face -->
+        <path d="M 732.49 250.83 L 792.5 342.73 L 639.94 382.18 L 639.27 382 L 639.27 274.24 L 640.6 274.58 L 732.49 250.83 Z" fill="url(#pyrFaceR2)" stroke="none"/>
+        <!-- Tier 2 left face -->
+        <path d="M 548.14 250.68 L 639.27 274.24 L 639.27 382 L 487.94 342.88 L 548.14 250.68 Z" fill="url(#pyrFaceL2)" stroke="none"/>
+
+        <!-- Tier 3 right face -->
+        <path d="M 798.53 351.96 L 858.54 443.86 L 639.27 500.55 L 639.27 392.79 L 639.94 392.96 L 798.53 351.96 Z" fill="url(#pyrFaceR3)" stroke="none"/>
+        <!-- Tier 3 left face -->
+        <path d="M 481.91 352.1 L 639.27 392.79 L 639.27 500.55 L 421.71 444.3 L 481.91 352.1 Z" fill="url(#pyrFaceL3)" stroke="none"/>
+
+        <!-- Tier 4 right face (the wide bottom slab) -->
+        <path d="M 864.57 453.08 L 924.96 545.58 L 641.27 618.93 L 639.27 618.41 L 639.27 511.34 L 864.57 453.08 Z" fill="url(#pyrFaceR4)" stroke="none"/>
+        <!-- Tier 4 left face -->
+        <path d="M 415.68 453.53 L 639.27 511.34 L 639.27 618.41 L 355.86 545.13 L 415.68 453.53 Z" fill="url(#pyrFaceL4)" stroke="none"/>
+    </g>
+
+    <!-- ==================== Tier Number Labels (left slope, tilted ~14.66°) ==================== -->
+    <!-- Numbers sit on the left side-face of each tier, tilted along the slope. -->
+    <g id="tier-numbers" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" fill="#FFFFFF" fill-opacity="0.92">
+        <text transform="rotate(14.66 607.51 210.91)" x="588" y="226" font-size="56"><tspan>1</tspan></text>
+        <text transform="rotate(14.66 577.71 316.99)" x="559" y="333" font-size="56"><tspan>2</tspan></text>
+        <text transform="rotate(14.66 547.9 423.07)" x="529" y="439" font-size="56"><tspan>3</tspan></text>
+        <text transform="rotate(14.66 516.23 534.2)" x="497" y="550" font-size="56"><tspan>4</tspan></text>
+    </g>
+
+    <!-- ==================== Tier Names (right slope, tilted ~-15°) ==================== -->
+    <!-- Short tier labels engraved on the right side-face. -->
+    <g id="tier-names" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-weight="700" fill="#FFFFFF" fill-opacity="0.92">
+        <text transform="rotate(-15.04 669.06 210.44)" x="669.06" y="208" font-size="20" text-anchor="middle"><tspan>Foundation</tspan></text>
+        <text transform="rotate(-15.04 700 320)" x="700" y="320" font-size="20" text-anchor="middle"><tspan>Practice</tspan></text>
+        <text transform="rotate(-15.04 730 425)" x="730" y="425" font-size="20" text-anchor="middle"><tspan>Mastery</tspan></text>
+        <text transform="rotate(-15.04 760 540)" x="760" y="540" font-size="20" text-anchor="middle"><tspan>Leadership</tspan></text>
+    </g>
+
+    <!-- ==================== Legend Cards (right side) ==================== -->
+    <!-- Per-tier one-line description, color-coded swatch matches the pyramid tier face. -->
+    <g id="legend" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+        <!-- Tier 1 -->
+        <g filter="url(#pyrLegendShadow)">
+            <rect x="940" y="140" width="280" height="62" rx="10" fill="url(#pyrLegendPill)"/>
+        </g>
+        <rect x="940" y="140" width="6" height="62" rx="3" fill="#60A5FA"/>
+        <text x="962" y="165" font-size="15" font-weight="800" fill="#0F172A"><tspan>① Foundation</tspan></text>
+        <text x="962" y="187" font-size="12" fill="#475569"><tspan>Onboarding, environment fluency, baseline skills</tspan></text>
+
+        <!-- Tier 2 -->
+        <g filter="url(#pyrLegendShadow)">
+            <rect x="940" y="225" width="280" height="62" rx="10" fill="url(#pyrLegendPill)"/>
+        </g>
+        <rect x="940" y="225" width="6" height="62" rx="3" fill="#3B82F6"/>
+        <text x="962" y="250" font-size="15" font-weight="800" fill="#0F172A"><tspan>② Practice</tspan></text>
+        <text x="962" y="272" font-size="12" fill="#475569"><tspan>Deepens execution, owns small projects end-to-end</tspan></text>
+
+        <!-- Tier 3 -->
+        <g filter="url(#pyrLegendShadow)">
+            <rect x="940" y="310" width="280" height="62" rx="10" fill="url(#pyrLegendPill)"/>
+        </g>
+        <rect x="940" y="310" width="6" height="62" rx="3" fill="#2563EB"/>
+        <text x="962" y="335" font-size="15" font-weight="800" fill="#0F172A"><tspan>③ Mastery</tspan></text>
+        <text x="962" y="357" font-size="12" fill="#475569"><tspan>Optimizes processes, mentors juniors, sets standards</tspan></text>
+
+        <!-- Tier 4 -->
+        <g filter="url(#pyrLegendShadow)">
+            <rect x="940" y="395" width="280" height="62" rx="10" fill="url(#pyrLegendPill)"/>
+        </g>
+        <rect x="940" y="395" width="6" height="62" rx="3" fill="#1E40AF"/>
+        <text x="962" y="420" font-size="15" font-weight="800" fill="#0F172A"><tspan>④ Leadership</tspan></text>
+        <text x="962" y="442" font-size="12" fill="#475569"><tspan>Drives strategy, accountable for org-level outcomes</tspan></text>
+    </g>
+
+    <!-- ==================== Footer ==================== -->
+    <text x="640" y="700" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="500" fill="#94A3B8"><tspan>Source: Annual capability review · Tiers map to broad maturity bands, not job titles</tspan></text>
+</svg>

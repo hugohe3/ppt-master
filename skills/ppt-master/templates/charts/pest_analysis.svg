@@ -24,10 +24,8 @@
         <g transform="translate(0, 0)">
             <!-- Background Card -->
             <rect width="260" height="480" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
-            <!-- Header Block -->
-            <rect width="260" height="120" rx="12" fill="#EFF6FF"/>
-            <!-- To cover bottom rounded corners of the header -->
-            <rect y="100" width="260" height="20" fill="#EFF6FF"/>
+            <!-- Top-rounded Header Block (圆顶角分区头) -->
+            <path d="M 12 0 h 236 a 12 12 0 0 1 12 12 v 108 h -260 v -108 a 12 12 0 0 1 12 -12 Z" fill="#EFF6FF"/>
             <text x="130" y="55" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="48" font-weight="900" fill="#2563EB" text-anchor="middle">P</text>
             <text x="130" y="90" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#1E3A8A" text-anchor="middle">POLITICAL</text>
             <line x1="20" y1="120" x2="240" y2="120" stroke="#BFDBFE" stroke-width="2"/>
@@ -48,8 +46,7 @@
         <!-- 2. Economic (E) -->
         <g transform="translate(286, 0)">
             <rect width="260" height="480" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
-            <rect width="260" height="120" rx="12" fill="#ECFDF5"/>
-            <rect y="100" width="260" height="20" fill="#ECFDF5"/>
+            <path d="M 12 0 h 236 a 12 12 0 0 1 12 12 v 108 h -260 v -108 a 12 12 0 0 1 12 -12 Z" fill="#ECFDF5"/>
             <text x="130" y="55" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="48" font-weight="900" fill="#059669" text-anchor="middle">E</text>
             <text x="130" y="90" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#064E3B" text-anchor="middle">ECONOMIC</text>
             <line x1="20" y1="120" x2="240" y2="120" stroke="#A7F3D0" stroke-width="2"/>
@@ -70,8 +67,7 @@
         <!-- 3. Social (S) -->
         <g transform="translate(572, 0)">
             <rect width="260" height="480" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
-            <rect width="260" height="120" rx="12" fill="#FFFBEB"/>
-            <rect y="100" width="260" height="20" fill="#FFFBEB"/>
+            <path d="M 12 0 h 236 a 12 12 0 0 1 12 12 v 108 h -260 v -108 a 12 12 0 0 1 12 -12 Z" fill="#FFFBEB"/>
             <text x="130" y="55" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="48" font-weight="900" fill="#D97706" text-anchor="middle">S</text>
             <text x="130" y="90" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#78350F" text-anchor="middle">SOCIAL</text>
             <line x1="20" y1="120" x2="240" y2="120" stroke="#FDE68A" stroke-width="2"/>
@@ -92,8 +88,7 @@
         <!-- 4. Technological (T) -->
         <g transform="translate(858, 0)">
             <rect width="260" height="480" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
-            <rect width="260" height="120" rx="12" fill="#F3E8FF"/>
-            <rect y="100" width="260" height="20" fill="#F3E8FF"/>
+            <path d="M 12 0 h 236 a 12 12 0 0 1 12 12 v 108 h -260 v -108 a 12 12 0 0 1 12 -12 Z" fill="#F3E8FF"/>
             <text x="130" y="55" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="48" font-weight="900" fill="#9333EA" text-anchor="middle">T</text>
             <text x="130" y="90" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#4C1D95" text-anchor="middle">TECHNOLOGICAL</text>
             <line x1="20" y1="120" x2="240" y2="120" stroke="#D8B4FE" stroke-width="2"/>

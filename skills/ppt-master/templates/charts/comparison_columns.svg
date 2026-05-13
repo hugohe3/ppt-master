@@ -35,9 +35,8 @@
     <g id="plan-basic">
     <g filter="url(#cardShadow)">
         <rect x="80" y="110" width="340" height="560" rx="16" fill="#FFFFFF"/>
-        <!-- Header -->
-        <rect x="80" y="110" width="340" height="120" rx="16" fill="#3B82F6" fill-opacity="0.06"/>
-        <rect x="80" y="214" width="340" height="16" fill="#FFFFFF"/>
+        <!-- Top-rounded Header (圆顶角分区头) -->
+        <path d="M 96 110 h 308 a 16 16 0 0 1 16 16 v 104 h -340 v -104 a 16 16 0 0 1 16 -16 Z" fill="#3B82F6" fill-opacity="0.06"/>
         <text x="250" y="152" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="24" font-weight="700" fill="#3B82F6"><tspan>Basic</tspan></text>
         <text x="250" y="175" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -68,13 +67,12 @@
     <g id="plan-pro">
     <g filter="url(#highlightShadow)">
         <rect x="470" y="95" width="340" height="590" rx="16" fill="#FFFFFF"/>
-        <!-- Header -->
-        <rect x="470" y="95" width="340" height="130" rx="16" fill="#8B5CF6"/>
+        <!-- Top-rounded Header (圆顶角分区头) -->
+        <path d="M 486 95 h 308 a 16 16 0 0 1 16 16 v 114 h -340 v -114 a 16 16 0 0 1 16 -16 Z" fill="#8B5CF6"/>
         <!-- Recommended Tag -->
         <rect x="600" y="82" width="80" height="26" rx="13" fill="#F59E0B"/>
         <text x="640" y="99" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="12" font-weight="700" fill="#FFFFFF"><tspan>Most Popular</tspan></text>
-        <rect x="470" y="209" width="340" height="16" fill="#FFFFFF"/>
         <text x="640" y="142" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="24" font-weight="700" fill="#FFFFFF"><tspan>Pro</tspan></text>
         <text x="640" y="165" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -103,8 +101,8 @@
     <g id="plan-enterprise">
     <g filter="url(#cardShadow)">
         <rect x="860" y="110" width="340" height="560" rx="16" fill="#FFFFFF"/>
-        <rect x="860" y="110" width="340" height="120" rx="16" fill="#0F172A" fill-opacity="0.04"/>
-        <rect x="860" y="214" width="340" height="16" fill="#FFFFFF"/>
+        <!-- Top-rounded Header (圆顶角分区头) -->
+        <path d="M 876 110 h 308 a 16 16 0 0 1 16 16 v 104 h -340 v -104 a 16 16 0 0 1 16 -16 Z" fill="#0F172A" fill-opacity="0.04"/>
         <text x="1030" y="152" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="24" font-weight="700" fill="#0F172A"><tspan>Enterprise</tspan></text>
         <text x="1030" y="175" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
