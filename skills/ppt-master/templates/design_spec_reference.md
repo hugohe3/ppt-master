@@ -218,7 +218,7 @@ Two views on the same font decisions — fill both, keep them consistent:
 **Read-audit** (mandatory):
 
 ```
-Catalog read: <N> templates / <M> categories
+Catalog read: 72 templates
 Runners-up considered: <key_A> (rejected: <reason>), <key_B> (rejected: <reason>), <key_C> (rejected: <reason>)
 ```
 

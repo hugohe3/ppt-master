@@ -4,9 +4,9 @@ This directory contains the standardized SVG visualization templates used by PPT
 
 ## Source of truth
 
-[`charts_index.json`](./charts_index.json) is the single source of truth for the library: total count, categories, per-template purpose / use cases / size hints, and quick-lookup keywords. Both human readers and AI roles should consume it directly.
+[`charts_index.json`](./charts_index.json) is the single source of truth for the library: total count + one selection-rule `summary` per template (format: `"Pick for X. Skip if Y (use other_key)."`). Both human readers and AI roles read it in full — there is no category/keyword sub-index. Selection is done by semantic match against the summary list in one pass.
 
-To browse the library, open `charts_index.json` — its `categories` block groups every template, and `quickLookup` maps common intents (ranking, comparison, trend, composition, etc.) to recommended templates.
+To browse the library, open `charts_index.json` and scan the `charts` block top-to-bottom; each entry's `summary` answers "when do I pick this, when do I skip" directly.
 
 ## Style rules
 
