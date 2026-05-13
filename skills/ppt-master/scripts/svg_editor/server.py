@@ -94,6 +94,7 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     project_path = Path(project_dir).resolve()
     svg_dir = project_path / 'svg_output'
     images_dir = project_path / 'images'
+    assets_dir = project_path / 'assets'
 
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config['PROJECT_PATH'] = project_path
@@ -153,6 +154,20 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
         if not target.exists() or not target.is_file():
             return jsonify({'error': 'not found'}), 404
         return send_from_directory(str(images_dir), filename)
+
+    @app.route('/assets/<path:filename>')
+    def serve_asset(filename: str):
+        """Serve media extracted by pptx_to_svg.py as `../assets/*`."""
+        if not assets_dir.exists():
+            return jsonify({'error': 'assets directory not found'}), 404
+        target = (assets_dir / filename).resolve()
+        try:
+            target.relative_to(assets_dir.resolve())
+        except ValueError:
+            return jsonify({'error': 'invalid path'}), 400
+        if not target.exists() or not target.is_file():
+            return jsonify({'error': 'not found'}), 404
+        return send_from_directory(str(assets_dir), filename)
 
     @app.route('/api/slides')
     def get_slides():
