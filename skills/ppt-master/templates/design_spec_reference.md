@@ -213,20 +213,21 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 ## VII. Visualization Reference List (if needed)
 
-> When the deck includes data visualization or infographic-style structured information, Strategist selects types from `templates/charts/charts_index.json` and lists them here for Executor reference. Path stays under `templates/charts/` for backward compatibility.
+> When pages map to a chart-library template (data charts OR structural patterns — team rosters, agendas, frameworks, etc.), Strategist lists them here for Executor reference. Single combined table — `summary-quote` column is the anti-fabrication audit, `path` + `usage` columns serve Executor lookup.
 
-**Read-audit** (mandatory):
+Catalog read: 71 templates
 
-```
-Catalog read: 72 templates
-Runners-up considered: <key_A> (rejected: <reason>), <key_B> (rejected: <reason>), <key_C> (rejected: <reason>)
-```
+| Page | Template | Path | Summary-quote (verbatim from `charts_index.json`) | Usage |
+| ---- | -------- | ---- | ------------------------------------------------- | ----- |
+| P05 | grouped_bar_chart | `templates/charts/grouped_bar_chart.svg` | "Pick for 2-4 series side-by-side across the same categories (e.g. YoY/QoQ). Skip if showing composition within each category (use stacked_bar_chart)." | YoY revenue comparison by product line |
 
-Runners-up must be genuine second-best matches for a page in this deck. If fewer than 3 viz pages exist, list what exists and note "fewer than 3 viz pages".
+**Runners-up considered** (3 entries minimum, drawn from real second-best matches in this deck):
 
-| Visualization Type | Reference Template | Used In |
-| ------------------ | ------------------ | ------- |
-| [e.g. grouped_bar_chart] | `templates/charts/grouped_bar_chart.svg` | Slide 05 |
+- `<key_A>` | rejected for P05: `<reason citing this deck's specifics>`
+- `<key_B>` | rejected for P##: `<reason>`
+- `<key_C>` | rejected for P##: `<reason>`
+
+> **Audit rule**: `Summary-quote` must be copy-pasted verbatim — paraphrasing breaks the audit. Every template name listed must `grep` cleanly inside `charts_index.json` (so misspellings/inventions fail). If fewer than 3 viz pages exist, list what exists and note "fewer than 3 viz pages"; runners-up still required for each page that does exist.
 
 ---
 
