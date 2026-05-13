@@ -4,117 +4,113 @@
     Usage: Progressive stages, growth paths, maturity models
     Scenarios: Digital transformation phases, capability maturity, strategic milestones
     Supports: 6 Steps (Recommended 4-7)
+    Design Principles:
+      - Each step = top parallelogram + front face + side face (3 shades from one Tailwind hue, see CHART_STYLE_GUIDE §1.2)
+      - Step palette walks the spectrum Sky -> Blue -> Indigo -> Violet -> Purple -> Rose
+      - Visual weight: thicker top-edge highlight (2.5px), heavier shadow, larger numbers (font 34 weight 900),
+        each description anchored by a tinted background card so it does not float
+      - Ground line beneath bottom stair anchors the staircase to the page
     -->
     <defs>
-        <!-- Standard Drop Shadow -->
         <filter id="stairShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
-            <feOffset dx="2" dy="4" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.12" result="shadowColor"/>
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+            <feOffset dx="2" dy="5" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.18" result="shadowColor"/>
             <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
             <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <!-- Background radial glow -->
-        <radialGradient id="bgGlow" cx="80%" cy="20%" r="70%">
-            <stop offset="0%" stop-color="#F1F5F9" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#F8FAFC" stop-opacity="0"/>
-        </radialGradient>
     </defs>
-    <!-- Background -->
-    <rect width="1280" height="720" fill="#F8FAFC"/>
-    <rect width="1280" height="720" fill="url(#bgGlow)"/>
-    <!-- Title -->
-    <text x="60" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="32" font-weight="700" fill="#0F172A">Digital Transformation Roadmap</text>
-    <text x="60" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="13" font-weight="600" fill="#64748B" letter-spacing="2">STRATEGIC MILESTONES · PROGRESSIVE PATH TO INDUSTRY LEADERSHIP</text>
-    <!-- ===== Stair 1 (Sky) ===== -->
-    <g transform="translate(80, 480)" filter="url(#stairShadow)">
-        <polygon points="0,0 130,-38 260,0 130,38" fill="#38BDF8"/> <!-- Sky-400 -->
-        <polygon points="0,0 0,72 130,110 130,38" fill="#0EA5E9"/> <!-- Sky-500 -->
-        <polygon points="130,38 130,110 260,72 260,0" fill="#0284C7"/> <!-- Sky-600 -->
-        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.4"/>
-        <text x="130" y="12" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="28" font-weight="800" fill="#FFFFFF" fill-opacity="0.95">01</text>
+
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- ==================== Header ==================== -->
+    <text x="60" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#0F172A"><tspan>Digital Transformation Roadmap</tspan></text>
+    <text x="60" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="1.5"><tspan>STRATEGIC MILESTONES · SIX-STAGE PROGRESSIVE PATH</tspan></text>
+
+    <!-- Ground line: dashed faint line at the base where the bottom stair lands; anchors the climb visually -->
+    <line x1="60" y1="600" x2="1220" y2="600" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6,6"/>
+
+    <!-- ==================== Stair 1 (Sky) ==================== -->
+    <g id="stair-01" transform="translate(80, 480)" filter="url(#stairShadow)">
+        <polygon points="0,0 130,-38 260,0 130,38" fill="#38BDF8"/>
+        <polygon points="0,0 0,72 130,110 130,38" fill="#0EA5E9"/>
+        <polygon points="130,38 130,110 260,72 260,0" fill="#0284C7"/>
+        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.7"/>
+        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>01</tspan></text>
     </g>
-    <text x="210" y="628" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="15" font-weight="700" fill="#0F172A">Foundational IT</text>
-    <text x="210" y="650" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="500" fill="#64748B">Infrastructure Setup</text>
-    <!-- ===== Stair 2 (Blue) ===== -->
-    <g transform="translate(230, 410)" filter="url(#stairShadow)">
-        <polygon points="0,0 130,-38 260,0 130,38" fill="#60A5FA"/> <!-- Blue-400 -->
-        <polygon points="0,0 0,72 130,110 130,38" fill="#3B82F6"/> <!-- Blue-500 -->
-        <polygon points="130,38 130,110 260,72 260,0" fill="#2563EB"/> <!-- Blue-600 -->
-        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.4"/>
-        <text x="130" y="12" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="28" font-weight="800" fill="#FFFFFF" fill-opacity="0.95">02</text>
+    <g id="label-01">
+        <rect x="100" y="615" width="220" height="50" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5"/>
+        <text x="210" y="636" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Foundational IT</tspan></text>
+        <text x="210" y="654" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#0369A1"><tspan>Infrastructure setup</tspan></text>
     </g>
-    <text x="360" y="558" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="15" font-weight="700" fill="#0F172A">Process Digitization</text>
-    <text x="360" y="580" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="500" fill="#64748B">Core Business Online</text>
-    <!-- ===== Stair 3 (Indigo) ===== -->
-    <g transform="translate(380, 340)" filter="url(#stairShadow)">
-        <polygon points="0,0 130,-38 260,0 130,38" fill="#818CF8"/> <!-- Indigo-400 -->
-        <polygon points="0,0 0,72 130,110 130,38" fill="#6366F1"/> <!-- Indigo-500 -->
-        <polygon points="130,38 130,110 260,72 260,0" fill="#4F46E5"/> <!-- Indigo-600 -->
-        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.35"/>
-        <text x="130" y="12" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="28" font-weight="800" fill="#FFFFFF" fill-opacity="0.95">03</text>
+
+    <!-- ==================== Stair 2 (Blue) ==================== -->
+    <g id="stair-02" transform="translate(230, 410)" filter="url(#stairShadow)">
+        <polygon points="0,0 130,-38 260,0 130,38" fill="#60A5FA"/>
+        <polygon points="0,0 0,72 130,110 130,38" fill="#3B82F6"/>
+        <polygon points="130,38 130,110 260,72 260,0" fill="#2563EB"/>
+        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.7"/>
+        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>02</tspan></text>
     </g>
-    <text x="510" y="488" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="15" font-weight="700" fill="#0F172A">Data Driven</text>
-    <text x="510" y="510" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="500" fill="#64748B">Analytics &amp; Insights</text>
-    <!-- ===== Stair 4 (Violet) ===== -->
-    <g transform="translate(530, 270)" filter="url(#stairShadow)">
-        <polygon points="0,0 130,-38 260,0 130,38" fill="#A78BFA"/> <!-- Violet-400 -->
-        <polygon points="0,0 0,72 130,110 130,38" fill="#8B5CF6"/> <!-- Violet-500 -->
-        <polygon points="130,38 130,110 260,72 260,0" fill="#7C3AED"/> <!-- Violet-600 -->
-        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.3"/>
-        <text x="130" y="12" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="28" font-weight="800" fill="#FFFFFF" fill-opacity="0.95">04</text>
+    <g id="label-02">
+        <rect x="250" y="545" width="220" height="50" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
+        <text x="360" y="566" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Process Digitization</tspan></text>
+        <text x="360" y="584" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#1D4ED8"><tspan>Core business online</tspan></text>
     </g>
-    <text x="660" y="418" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="15" font-weight="700" fill="#0F172A">Intelligent Ops</text>
-    <text x="660" y="440" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="500" fill="#64748B">AI-Augmented Work</text>
-    <!-- ===== Stair 5 (Purple) ===== -->
-    <g transform="translate(680, 200)" filter="url(#stairShadow)">
-        <polygon points="0,0 130,-38 260,0 130,38" fill="#C084FC"/> <!-- Purple-400 -->
-        <polygon points="0,0 0,72 130,110 130,38" fill="#A855F7"/> <!-- Purple-500 -->
-        <polygon points="130,38 130,110 260,72 260,0" fill="#9333EA"/> <!-- Purple-600 -->
-        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.28"/>
-        <text x="130" y="12" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="28" font-weight="800" fill="#FFFFFF" fill-opacity="0.95">05</text>
+
+    <!-- ==================== Stair 3 (Indigo) ==================== -->
+    <g id="stair-03" transform="translate(380, 340)" filter="url(#stairShadow)">
+        <polygon points="0,0 130,-38 260,0 130,38" fill="#818CF8"/>
+        <polygon points="0,0 0,72 130,110 130,38" fill="#6366F1"/>
+        <polygon points="130,38 130,110 260,72 260,0" fill="#4F46E5"/>
+        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.65"/>
+        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>03</tspan></text>
     </g>
-    <text x="810" y="348" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="15" font-weight="700" fill="#0F172A">Ecosystem Integration</text>
-    <text x="810" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="500" fill="#64748B">Platform Collaboration</text>
-    <!-- ===== Stair 6 (Rose) ===== -->
-    <g transform="translate(830, 130)" filter="url(#stairShadow)">
-        <polygon points="0,0 130,-38 260,0 130,38" fill="#FB7185"/> <!-- Rose-400 -->
-        <polygon points="0,0 0,72 130,110 130,38" fill="#F43F5E"/> <!-- Rose-500 -->
-        <polygon points="130,38 130,110 260,72 260,0" fill="#E11D48"/> <!-- Rose-600 -->
-        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-opacity="0.25"/>
-        <text x="130" y="12" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="28" font-weight="800" fill="#FFFFFF" fill-opacity="0.95">06</text>
+    <g id="label-03">
+        <rect x="400" y="475" width="220" height="50" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+        <text x="510" y="496" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Data Driven</tspan></text>
+        <text x="510" y="514" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#4338CA"><tspan>Analytics &amp; insights</tspan></text>
     </g>
-    <text x="960" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="15" font-weight="700" fill="#0F172A">Industry Leadership</text>
-    <text x="960" y="300" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="500" fill="#64748B">Standard Setting</text>
-    <!-- Maturity Axis on the Right -->
-    <g transform="translate(1175, 130)">
-        <line x1="0" y1="490" x2="0" y2="20" stroke="#CBD5E1" stroke-width="1.5"/>
-        <polyline points="-6,28 0,16 6,28" fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="0" cy="490" r="3" fill="#CBD5E1"/>
-        <text x="20" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="11" font-weight="600" fill="#64748B" letter-spacing="2" transform="rotate(-90 20 270)">MATURITY LEVEL</text>
+
+    <!-- ==================== Stair 4 (Violet) ==================== -->
+    <g id="stair-04" transform="translate(530, 270)" filter="url(#stairShadow)">
+        <polygon points="0,0 130,-38 260,0 130,38" fill="#A78BFA"/>
+        <polygon points="0,0 0,72 130,110 130,38" fill="#8B5CF6"/>
+        <polygon points="130,38 130,110 260,72 260,0" fill="#7C3AED"/>
+        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.6"/>
+        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>04</tspan></text>
     </g>
-    <!-- Footer Summary -->
-    <text x="640" y="695" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#94A3B8">A structured six-stage approach to building core digital competitiveness and industry leadership.</text>
+    <g id="label-04">
+        <rect x="550" y="405" width="220" height="50" rx="8" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1.5"/>
+        <text x="660" y="426" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Intelligent Ops</tspan></text>
+        <text x="660" y="444" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#6D28D9"><tspan>AI-augmented work</tspan></text>
+    </g>
+
+    <!-- ==================== Stair 5 (Purple) ==================== -->
+    <g id="stair-05" transform="translate(680, 200)" filter="url(#stairShadow)">
+        <polygon points="0,0 130,-38 260,0 130,38" fill="#C084FC"/>
+        <polygon points="0,0 0,72 130,110 130,38" fill="#A855F7"/>
+        <polygon points="130,38 130,110 260,72 260,0" fill="#9333EA"/>
+        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.55"/>
+        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>05</tspan></text>
+    </g>
+    <g id="label-05">
+        <rect x="700" y="335" width="220" height="50" rx="8" fill="#FAF5FF" stroke="#E9D5FF" stroke-width="1.5"/>
+        <text x="810" y="356" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Ecosystem Integration</tspan></text>
+        <text x="810" y="374" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#7E22CE"><tspan>Platform collaboration</tspan></text>
+    </g>
+
+    <!-- ==================== Stair 6 (Rose, peak) ==================== -->
+    <g id="stair-06" transform="translate(830, 130)" filter="url(#stairShadow)">
+        <polygon points="0,0 130,-38 260,0 130,38" fill="#FB7185"/>
+        <polygon points="0,0 0,72 130,110 130,38" fill="#F43F5E"/>
+        <polygon points="130,38 130,110 260,72 260,0" fill="#E11D48"/>
+        <polyline points="0,0 130,-38 260,0" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.5"/>
+        <text x="130" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF"><tspan>06</tspan></text>
+    </g>
+    <g id="label-06">
+        <rect x="850" y="265" width="220" height="50" rx="8" fill="#FFF1F2" stroke="#FECDD3" stroke-width="1.5"/>
+        <text x="960" y="286" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="700" fill="#0F172A"><tspan>Industry Leadership</tspan></text>
+        <text x="960" y="304" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="500" fill="#BE123C"><tspan>Standard setting</tspan></text>
+    </g>
 </svg>
