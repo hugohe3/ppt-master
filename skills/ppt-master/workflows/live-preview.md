@@ -71,6 +71,7 @@ Triggered by the user signals listed in "When to Run".
 
 ## Notes (editor invariants — referenced from SKILL.md Step 6)
 
+- **UI**: bilingual (EN/中); auto-detects from `navigator.language`, persists in `localStorage`, toggled via the **中 / EN** button on the right panel. Slide navigation: first/prev/next/last buttons at the top of the center panel, plus `←` / `→` / `Home` / `End` (suppressed while typing in the annotation textarea).
 - **Buttons**: `Add annotation` stages locally; `Submit annotations` writes to disk and keeps the service running; `Exit preview` is the only UI action that stops Flask.
 - **Stop conditions**: once started, the service runs until the user clicks **Exit preview** in the browser, or asks in chat to stop it.
 - **Port**: default `5050`; override with `--port <other>`.
