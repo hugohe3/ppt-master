@@ -23,7 +23,6 @@ Every image becomes one entry under `items[]` in `project/images/image_prompts.j
 | `purpose` | no | Which slide / what function (audit only) |
 | `type` | no | `Background` / `Photography` / `Illustration` / `Diagram` / `Decorative` |
 | `image_size` | no | `512px` / `1K` / `2K` / `4K`; overrides CLI `--image_size` |
-| `negative_prompt` | no | Audit only; not all backends consume it |
 | `alt_text` | no | Caption for accessibility |
 | `model` | no | Per-entry model override |
 
@@ -343,7 +342,6 @@ Write `project/images/image_prompts.json` with this shape. Top-level fields are 
       "aspect_ratio": "16:9",
       "image_size": "2K",
       "prompt": "{deck_style_anchor}, abstract futuristic background with flowing digital waves, deep navy gradient #1A3A5C to midnight, soft particle accents, clean center for text overlay, cinematic, 4K",
-      "negative_prompt": "text, watermark, faces, busy patterns",
       "alt_text": "Modern tech abstract background with deep blue gradient and digital waves",
       "status": "Pending"
     }

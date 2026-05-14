@@ -352,8 +352,8 @@ def load_manifest(path: str) -> dict:
     `deck_style_anchor`, `color_scheme`, `generated_at`.
 
     Each item requires: `filename`, `prompt`, `aspect_ratio`, `status`.
-    Optional: `image_size`, `model`, `negative_prompt`, `alt_text`,
-    `purpose`, `type`, `last_error`.
+    Optional: `image_size`, `model`, `alt_text`, `purpose`, `type`,
+    `last_error`.
     """
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -597,11 +597,6 @@ def render_manifest_md(manifest: dict) -> str:
         lines.append("")
         lines.append(item["prompt"])
         lines.append("")
-        if item.get("negative_prompt"):
-            lines.append("**Negative Prompt**:")
-            lines.append("")
-            lines.append(item["negative_prompt"])
-            lines.append("")
         if item.get("alt_text"):
             lines.append("**Alt Text**:")
             lines.append(f"> {item['alt_text']}")
