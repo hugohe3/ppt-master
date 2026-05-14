@@ -58,6 +58,13 @@
 
 > **Reference**: Industry colors in `references/strategist.md` or `scripts/config.py` under `INDUSTRY_COLORS`
 
+### AI Image Strategy (fill only when §VIII has `ai` rows)
+
+- **Image Rendering**: [one of the 16 names in `references/image-renderings/_index.md`, e.g. `vector-illustration`]
+- **Image Palette**: [one of the 10 names in `references/image-palettes/_index.md`, e.g. `cool-corporate`]
+
+> Strategist: lock these once per deck in h.5; every AI image inherits them. Cross-check the rendering × palette compatibility matrix in `image-palettes/_index.md` — avoid `✗` combinations. Leave the section out entirely if §VIII has no `ai` rows.
+
 ### Gradient Scheme (if needed, using SVG syntax)
 
 ```xml
@@ -233,23 +240,35 @@ Catalog read: 71 templates
 
 ## VIII. Image Resource List (if needed)
 
-| Filename | Dimensions | Ratio | Purpose | Type | Status | Generation Description |
-| -------- | --------- | ----- | ------- | ---- | ------ | --------------------- |
-| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | [Background/Photography/Illustration/Diagram/Decorative] | [Pending/Existing/Placeholder] | [AI generation prompt] |
+| Filename | Dimensions | Ratio | Purpose | Type | Acquire Via | Status | Reference | text_policy | page_role |
+| -------- | --------- | ----- | ------- | ---- | ----------- | ------ | --------- | ----------- | --------- |
+| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | ai | Pending | [subject + intent + composition, no style/HEX] | | |
 
 **Status**:
 
-- **Pending** — needs AI generation, provide description
+- **Pending** — needs AI generation or web sourcing
 - **Existing** — user-supplied, place in `images/`
 - **Placeholder** — not yet processed, use dashed border in SVG
 
-**Type** (used by Image_Generator for prompt strategy):
+**Type** (narrative shorthand — kept for backward compatibility; Image_Generator infers its 9-way internal-composition type from `Purpose`):
 
 - **Background** — full-page (covers / chapters); reserve text area
 - **Photography** — real scenes, people, products, architecture
 - **Illustration** — flat / vector / cartoon / concept diagrams
 - **Diagram** — flowcharts, architecture diagrams, concept maps
 - **Decorative** — partial decorations, textures, borders, dividers
+
+**text_policy** (`ai` rows only; leave blank for default):
+
+- *blank / `none`* — image carries no text; SVG overlays labels (recommended default for most rows)
+- `embedded` — image contains 1-5 short English keywords as part of the artwork (rare; sketch-notes / ink-notes / typography only; CJK characters fail in most models)
+
+**page_role** (`ai` rows only; leave blank for default):
+
+- *blank / `local`* — image is a block embedded in an SVG page (the universal default)
+- `full_page` — escape hatch: image fills the entire slide with no SVG overlay. Only when user explicitly requests this; use sparingly (≤5% of pages) — PNG-pages mixed with SVG-pages cause style drift
+
+**Reference grammar** (`ai` rows): write **subject + intent + composition** only. Do NOT repeat style words ("flat design", "modern") or HEX values — both are already locked deck-wide by `design_spec §III AI Image Strategy` (rendering + palette) and `§III Color Scheme` (HEX triplet). Image_Generator's prompt assembler injects them.
 
 ---
 

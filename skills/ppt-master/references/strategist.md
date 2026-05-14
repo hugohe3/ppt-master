@@ -241,6 +241,74 @@ Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`imag
 
 Selections may be mixed at the row level — e.g. a deck can use C for hero illustrations while sourcing D for supporting team photos.
 
+#### h.5 AI Image Strategy — lock rendering + palette (only when C is selected)
+
+When the deck includes any `ai` rows, Strategist locks a **deck-wide rendering** and **deck-wide palette** here. These two values are written into `design_spec.md §III` and `spec_lock.md colors` / `images` sections, then consumed by Image_Generator. Every AI image in the deck shares them — this is what makes multiple AI images feel like one deck.
+
+🚧 **GATE — before recommending values**: `read_file references/image-renderings/_index.md` and `read_file references/image-palettes/_index.md`. They contain the catalog, auto-selection tables, and a rendering × palette compatibility matrix.
+
+**Rendering recommendation** (soft — user may override with any other rendering from the catalog):
+
+| `d. Style` signal | Recommended rendering | Alternates |
+|---|---|---|
+| Top Consulting / strategic / MBB | `editorial` or `vector-illustration` | `blueprint` |
+| General Consulting / corporate report / 学术答辩 | `vector-illustration` | `flat`, `editorial` |
+| Tech / SaaS / AI / 架构 | `3d-isometric`, `blueprint`, `digital-dashboard` | `flat` |
+| Product launch / brand / marketing | `flat`, `3d-isometric`, `corporate-photo` | `vector-illustration` |
+| Education / training / 教学 / 培训 | `sketch-notes` | `vector-illustration` |
+| Methodology / Before-After / 方法论 / manifesto | `ink-notes` | `editorial` |
+| Government / formal / 政务 | `editorial` or `corporate-photo` | `vector-illustration` |
+| Finance / journalism / 财经 | `editorial`, `digital-dashboard` | `vector-illustration` |
+| Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo` |
+| Cultural / media / opinion / cinematic | `screen-print` | `editorial`, `warm-scene` |
+| Children / storybook / 儿童 / 治愈 | `fantasy-animation` | `watercolor`, `sketch-notes` |
+| Gaming / retro / 复古 / 像素 | `pixel-art` | — |
+| Environment / wellness / 环保 | `nature` | `watercolor` |
+| Classroom / blackboard / 课堂 | `chalkboard` | `sketch-notes` |
+| Team / company / product photo | `corporate-photo` | — |
+
+**Palette recommendation** (soft — user may override):
+
+| Content vibe / industry | Recommended palette | Alternates |
+|---|---|---|
+| Consulting / finance / B2B / corporate / 学术答辩 | `cool-corporate` | `editorial-classic` |
+| Tech / SaaS / AI | `tech-neon` | `cool-corporate`, `dark-cinematic` |
+| Education / training | `macaron` | `warm-earth` |
+| Methodology / Before-After | `mono-ink` | `editorial-classic` |
+| Personal / lifestyle / brand story | `warm-earth` | `nature-organic` |
+| Product launch / marketing | `vivid-launch` | `tech-neon` |
+| Children / storybook | `macaron` | `warm-earth` |
+| Premium / film / entertainment | `dark-cinematic` | `duotone` |
+| Cultural / media / cover-art | `duotone` | `editorial-classic` |
+| Environment / wellness | `nature-organic` | `warm-earth` |
+| Finance / journalism | `editorial-classic` | `cool-corporate` |
+
+After auto-selecting, cross-check `image-palettes/_index.md` compatibility matrix — if rendering × palette is `✗`, swap to the alternate palette.
+
+**d-e-f-g linkage sanity check** (do this after picking rendering + palette):
+
+| Linkage | What to verify |
+|---|---|
+| **d. Style ↔ rendering** | Rendering family should match the Style descriptor's temperament (corporate ≠ sketch-notes; tech ≠ watercolor). Already enforced by the recommendation table above. |
+| **e. Color HEX ↔ palette** | The deck's primary HEX should fit the palette's role expectation. E.g. cool-corporate expects primary to feel deep and restrained; tech-neon expects it saturated. Mismatch → either adjust e. HEX, or pick a different palette. |
+| **f. Icon library ↔ rendering** | `tabler-outline` pairs well with all renderings (most versatile). `chunk-filled` / `tabler-filled` pair better with `vector-illustration` / `flat` / `editorial`. `phosphor-duotone` pairs with `flat` / `digital-dashboard`. Mismatch is not fatal but worth flagging. |
+| **g. Typography ↔ rendering** | Serif title → pairs well with `editorial`, `corporate-photo`, `screen-print`. Hand-lettered direction → already implied by `sketch-notes` / `ink-notes` (the rendering carries the lettering, no separate font requirement). Display font → `vivid-launch` / `screen-print`. Mismatch is rarely fatal; note in conversation if it feels off. |
+
+**Recording the lock** — after picking, write to:
+
+- `design_spec.md §III Visual Theme` — add two lines under the color table:
+  ```
+  - **Image Rendering**: vector-illustration
+  - **Image Palette**: cool-corporate
+  ```
+- `spec_lock.md colors` section — add two extra rows at the bottom:
+  ```
+  - image_rendering: vector-illustration
+  - image_palette: cool-corporate
+  ```
+
+Image_Generator reads these two fields and applies them deck-wide. If both are absent (legacy decks), Image_Generator falls back to inferring them from `d. Style` and `e. Color` — quality is acceptable but not optimal. Always lock both when C is selected.
+
 **When selection includes B**, you must run `python3 scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
 
 **When B / C / D / E is selected**, add an image resource list to the spec:
@@ -252,10 +320,12 @@ Selections may be mixed at the row level — e.g. a deck can use C for hero illu
 | Ratio | e.g., `1.78` |
 | Layout suggestion | e.g., `Wide landscape (suitable for full-screen/illustration)` |
 | Purpose | e.g., `Cover background` |
-| Type | Background / Photography / Illustration / Diagram / Decorative pattern |
+| Type | Narrative shorthand: Background / Photography / Illustration / Diagram / Decorative pattern. (The internal-composition type used by Image_Generator — one of `background / hero / typography / infographic / flowchart / framework / comparison / timeline / scene` — is inferred from `Purpose` per [`image-type-templates/_index.md`](./image-type-templates/_index.md); no need to label every row.) |
 | **Acquire Via** | `ai` / `web` / `user` / `placeholder` — drives Step 5 dispatch |
 | Status | Initial status must be `Pending`, `Existing`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
 | **Reference** | Free-form **intent description** (NOT a search query); feeds Image_Generator (ai) or Image_Searcher (web) |
+| `text_policy` (optional, `ai` rows only) | `none` (default — image carries no text, SVG overlays labels) or `embedded` (rare — image contains 1-5 short English keywords as part of the artwork; sketch-notes / ink-notes / typography type only). Leave blank for default. |
+| `page_role` (optional, `ai` rows only) | `local` (default — image is a block embedded in an SVG page) or `full_page` (escape hatch — image fills the whole slide, no SVG overlay). Only set `full_page` when the user explicitly requests it. Use sparingly (≤5% of pages) — mixing PNG-pages with SVG-pages causes visual drift. |
 
 **No-crop flag (exception only)**: most images are croppable — Executor defaults to `preserveAspectRatio="xMidYMid slice"`. When an image must NOT lose pixels (data screenshots, charts, certificates, contracts, dense diagrams), append `no-crop` to its `spec_lock.md images` entry. Executor will then size the container to the native ratio and use `meet`. Don't tag the rest.
 
@@ -264,14 +334,14 @@ Selections may be mixed at the row level — e.g. a deck can use C for hero illu
 | ✅ Intent description | ❌ Avoid |
 |---|---|
 | "Diverse engineering team collaborating around a laptop, modern office, natural light" | "team laptop office" |
-| "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" | "use openverse, search 'office'" |
+| "Abstract atmospheric backdrop for academic-defense cover, calm center for text overlay, hint of campus skyline" | "use openverse, search 'office'" |
 | "Sunlit forest path in autumn" | "team photo" |
 
 **Per-row Reference grammar**:
 
 | Acquire Via | Reference pattern |
 |---|---|
-| `ai` | Subject + style + colors (HEX) + composition |
+| `ai` | **Subject + intent + composition** only. Do NOT repeat style words ("flat design", "modern", "vector") or HEX values — both are already locked deck-wide by h.5 (rendering + palette) and `design_spec §III` (colors). Image_Generator's prompt assembler injects them automatically. |
 | `web` | Concrete subject/place/object first, then 1-3 quality descriptors |
 
 **Allowed web quality descriptors**:
@@ -288,8 +358,8 @@ Selections may be mixed at the row level — e.g. a deck can use C for hero illu
 | Mode | Good Reference |
 |---|---|
 | `web` | "Diverse team collaborating at a modern office desk, professional editorial photography, natural light, laptop visible" |
-| `ai` | "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" |
-| `ai` | "Clean flowchart showing 4 sequential steps connected by arrows, flat design, light gray background, blue accent nodes" |
+| `ai` | "Atmospheric backdrop suggesting digital innovation; calm central area reserved for slide title overlay; light geometric anchor at one edge" |
+| `ai` | "Four-stage value chain from raw input to R&D output; icons should suggest tax-form → cost-reduction → equipment-upgrade → innovation; no text labels (SVG overlays them)" |
 
 **Image type descriptions**:
 

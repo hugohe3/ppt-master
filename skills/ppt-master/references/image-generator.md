@@ -66,19 +66,30 @@ read_file references/image-palettes/_index.md
 read_file references/image-type-templates/_index.md
 ```
 
-### Step 2 — Lock deck-wide rendering + palette
+### Step 2 — Resolve deck-wide rendering + palette
 
-From `design_spec.md`:
+**Primary path — Strategist already locked these in `spec_lock.md colors`**:
+
+```
+image_rendering: vector-illustration
+image_palette: cool-corporate
+```
+
+If both fields are present, use them directly — Strategist made the decision in h.5 with full d-e-f-g-h linkage context. Do NOT re-decide.
+
+**Fallback path — when `spec_lock.md` lacks both fields** (legacy decks or pipelines that skipped h.5):
 
 | Signal | Maps to |
 |---|---|
-| `d. Style` mode + descriptor (e.g. "Top Consulting + minimal") | Rendering (consult renderings `_index.md` auto-selection table) |
-| `e. Color Scheme` (HEX) + content vibe | Palette (consult palettes `_index.md` auto-selection table) |
-| `f. Icon library` | Sanity check: chosen rendering should be compatible with the icon library's visual weight |
+| `design_spec.md d. Style` mode + descriptor | Rendering (consult renderings `_index.md` auto-selection table) |
+| `design_spec.md e. Color Scheme` (HEX) + content vibe | Palette (consult palettes `_index.md` auto-selection table) |
+| `design_spec.md f. Icon library` | Sanity check: chosen rendering should be compatible with the icon library's visual weight |
 
-If the auto-selection table surfaces multiple candidates, pick the first; do not present a choice to the user (Strategist already locked downstream style).
+If the auto-selection table surfaces multiple candidates, pick the first; do not present a choice to the user.
 
-Then `read_file` the **single chosen** rendering file and the **single chosen** palette file. These two files give you:
+> **Tell the user**: when falling back, print one line "spec_lock.md missing `image_rendering`/`image_palette` — inferring `<X>` / `<Y>` from design_spec. For optimal deck consistency, lock these in Strategist h.5." Then proceed.
+
+Then `read_file` the **single resolved** rendering file and the **single resolved** palette file. These two files give you:
 
 - The 80-120 word style paragraph (rendering)
 - The proportion / role / temperament rules for the deck's three HEX values (palette)
@@ -88,10 +99,11 @@ Then `read_file` the **single chosen** rendering file and the **single chosen** 
 
 For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
-1. **Determine type** by matching the row's `Purpose` against types `_index.md` auto-selection table (cover background → `background`; product launch hero → `hero`; methodology visualization → `framework`; etc.)
-2. **Determine `text_policy`** — `none` if the image is a backdrop under SVG text (the default for `background` type, and the safest choice for most images). `embedded` if the image is meant to carry visible keywords/labels itself (rare; typical for sketch-notes / ink-notes hand-lettered blocks).
-3. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
-4. **Assemble the prompt** by combining:
+1. **Determine type** by matching the row's `Purpose` against types `_index.md` auto-selection table (cover background → `background`; product launch hero → `hero`; methodology visualization → `framework`; etc.) The narrative-shorthand `Type` column in §VIII (Background/Photography/Illustration/Diagram/Decorative) is a hint, not the type's final value — `Purpose` is authoritative for picking among the 9 internal-composition types.
+2. **Determine `text_policy`** — read from the row directly if Strategist filled it; otherwise default by type: `background` → `none`; `typography` → `embedded`; everything else → `none` unless the deck rendering is `sketch-notes` / `ink-notes` and Purpose explicitly calls for hand-lettered keywords. The Strategist-supplied value (when present) always wins.
+3. **Determine `page_role`** — read from the row directly; default `local`. Only `full_page` if explicitly set.
+4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
+5. **Assemble the prompt** by combining:
    - The rendering's style paragraph (from Step 2)
    - The palette's proportion + role rules applied to the deck's HEX values (from Step 2)
    - The type's structural layout (from Step 3)
