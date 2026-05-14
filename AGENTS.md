@@ -57,6 +57,10 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 
 # Image tools and SVG quality check
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
+# In-pipeline AI image generation — manifest mode (required, even for 1 image):
+python3 skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
+python3 skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json
+# Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
 python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
