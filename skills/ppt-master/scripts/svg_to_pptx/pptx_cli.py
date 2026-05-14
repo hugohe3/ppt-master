@@ -200,6 +200,16 @@ Recorded narration:
     parser.add_argument('--narration-padding', type=float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
 
+    parser.add_argument('--cache-dir', type=str, default=None,
+                        help='Cache directory for SVG→PNG renders (default: '
+                             '<project>/.cache/svg_png). Cache key uses SVG content '
+                             'hash + size + renderer; safe across renderer switches.')
+    parser.add_argument('--no-cache', action='store_true',
+                        help='Disable the SVG→PNG cache for this run (still parallel).')
+    parser.add_argument('--workers', type=int, default=None,
+                        help='Parallel workers for SVG→PNG pre-rendering. '
+                             'Default: min(cpu, pages, 8). Set 1 for sequential.')
+
     args = parser.parse_args()
 
     project_path = Path(args.project_path)
@@ -427,6 +437,15 @@ Recorded narration:
                 print(f"  ... and {len(on_click_slides) - 20} more", file=sys.stderr)
             sys.exit(1)
 
+    if args.no_cache:
+        cache_dir: Path | None = None
+    elif args.cache_dir:
+        cache_dir = Path(args.cache_dir)
+        if not cache_dir.is_absolute():
+            cache_dir = project_path / cache_dir
+    else:
+        cache_dir = project_path / '.cache' / 'svg_png'
+
     # svg_files is per-product (native vs legacy may now read different
     # directories); everything else is shared.
     shared_kwargs = dict(
@@ -447,6 +466,8 @@ Recorded narration:
         narration_audio=narration_audio,
         use_narration_timings=use_narration_timings,
         narration_padding=args.narration_padding,
+        cache_dir=cache_dir,
+        workers=args.workers,
     )
 
     success = True

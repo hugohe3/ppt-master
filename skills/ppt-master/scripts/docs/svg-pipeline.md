@@ -75,6 +75,12 @@ Behavior:
 - `--animation-duration` controls per-element entrance length (default `0.4`); `--animation-stagger` adds gap between elements in `after-previous` mode (default `0.5`)
 - Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`
 
+Performance (legacy `_svg.pptx` PNG fallback):
+- SVG→PNG is pre-rendered in a process pool before the main loop. Default workers = `min(cpu, pages, 8)`; override with `--workers N` (set `1` for sequential, `0` is treated as sequential).
+- Results are cached at `<project>/.cache/svg_png/` keyed by SVG content hash + size + active renderer (`cairosvg` vs `svglib`). Switching renderers naturally invalidates the cache; nothing to clean by hand.
+- `--cache-dir <path>` relocates the cache; `--no-cache` forces re-render without writing/reading the cache (handy when debugging rendering).
+- Native mode (`--only native`) is unaffected — that path embeds DrawingML shapes and never touches PNG.
+
 Dependency:
 
 ```bash

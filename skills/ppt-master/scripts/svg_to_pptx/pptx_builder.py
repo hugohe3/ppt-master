@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import hashlib
 import mimetypes
+import os
 import re
 import shutil
 import tempfile
 import zipfile
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +24,7 @@ from .pptx_dimensions import (
 )
 from .pptx_media import (
     PNG_RENDERER,
-    get_png_renderer_info, convert_svg_to_png,
+    get_png_renderer_info, convert_svg_to_png, convert_svg_to_png_cached,
 )
 from .pptx_notes import (
     markdown_to_plain_text,
@@ -226,6 +228,61 @@ def _build_sequence_targets(
     return seq_targets, mixed_count
 
 
+def _prerender_legacy_pngs(
+    svg_files: list[Path],
+    media_dir: Path,
+    pixel_width: int,
+    pixel_height: int,
+    cache_dir: Path | None,
+    workers: int,
+    verbose: bool,
+) -> dict[int, bool]:
+    """Render every SVG→PNG into media_dir in parallel.
+
+    Returns {1-based slide index: success}. Falls back to sequential when
+    workers<=1 or len(svg_files)<=2.
+    """
+    results: dict[int, bool] = {}
+    targets: list[tuple[int, Path, Path]] = [
+        (i, svg, media_dir / f'image{i}.png')
+        for i, svg in enumerate(svg_files, 1)
+    ]
+
+    if workers <= 1 or len(targets) <= 2:
+        for i, svg, png in targets:
+            ok = convert_svg_to_png_cached(svg, png, pixel_width, pixel_height, cache_dir)
+            results[i] = ok
+            if verbose:
+                tag = 'cached/ok' if ok else 'failed'
+                print(f"  [PNG {i}/{len(targets)}] {svg.name} - {tag}")
+        return results
+
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        future_map = {
+            pool.submit(
+                convert_svg_to_png_cached,
+                svg, png, pixel_width, pixel_height, cache_dir,
+            ): (i, svg)
+            for i, svg, png in targets
+        }
+        done = 0
+        for future in as_completed(future_map):
+            i, svg = future_map[future]
+            try:
+                ok = future.result()
+            except Exception as exc:
+                ok = False
+                if verbose:
+                    print(f"  [PNG] {svg.name} - worker error: {exc}")
+            results[i] = ok
+            done += 1
+            if verbose:
+                tag = 'cached/ok' if ok else 'failed'
+                print(f"  [PNG {done}/{len(targets)}] {svg.name} - {tag}")
+
+    return results
+
+
 def create_pptx_with_native_svg(
     svg_files: list[Path],
     output_path: Path,
@@ -247,6 +304,8 @@ def create_pptx_with_native_svg(
     narration_audio: dict[str, Path] | None = None,
     use_narration_timings: bool = False,
     narration_padding: float = 0.5,
+    cache_dir: Path | None = None,
+    workers: int | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -360,6 +419,23 @@ def create_pptx_with_native_svg(
 
         media_dir = extract_dir / 'ppt' / 'media'
         media_dir.mkdir(exist_ok=True)
+
+        prerender_results: dict[int, bool] | None = None
+        if not use_native_shapes and use_compat_mode and PNG_RENDERER is not None:
+            if workers is None:
+                resolved_workers = min(os.cpu_count() or 2, len(svg_files), 8)
+            else:
+                resolved_workers = max(0, workers)
+            if verbose:
+                cache_label = str(cache_dir) if cache_dir else 'disabled'
+                mode = f'parallel x{resolved_workers}' if resolved_workers > 1 else 'sequential'
+                print(f"  Pre-rendering PNGs ({mode}, cache: {cache_label})")
+            prerender_results = _prerender_legacy_pngs(
+                svg_files, media_dir, pixel_width, pixel_height,
+                cache_dir, resolved_workers, verbose,
+            )
+            if verbose:
+                print()
 
         success_count = 0
         has_any_image = False
@@ -520,11 +596,14 @@ def create_pptx_with_native_svg(
 
                     slide_has_png = False
                     if use_compat_mode:
-                        png_path = media_dir / png_filename
-                        png_success = convert_svg_to_png(
-                            svg_path, png_path,
-                            width=pixel_width, height=pixel_height,
-                        )
+                        if prerender_results is not None:
+                            png_success = prerender_results.get(i, False)
+                        else:
+                            png_path = media_dir / png_filename
+                            png_success = convert_svg_to_png(
+                                svg_path, png_path,
+                                width=pixel_width, height=pixel_height,
+                            )
                         if png_success:
                             slide_has_png = True
                             has_any_image = True
