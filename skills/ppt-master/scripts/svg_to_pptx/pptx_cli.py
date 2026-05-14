@@ -203,9 +203,13 @@ Recorded narration:
     parser.add_argument('--cache-dir', type=str, default=None,
                         help='Cache directory for SVG→PNG renders (default: '
                              '<project>/.cache/svg_png). Cache key uses SVG content '
-                             'hash + size + renderer; safe across renderer switches.')
+                             'hash + size + renderer; safe across renderer switches. '
+                             'Removed automatically after a successful export.')
     parser.add_argument('--no-cache', action='store_true',
                         help='Disable the SVG→PNG cache for this run (still parallel).')
+    parser.add_argument('--keep-cache', action='store_true',
+                        help='Keep the SVG→PNG cache directory after export '
+                             '(default: removed on success to keep project clean).')
     parser.add_argument('--workers', type=int, default=None,
                         help='Parallel workers for SVG→PNG pre-rendering. '
                              'Default: min(cpu, pages, 8). Set 1 for sequential.')
@@ -524,5 +528,15 @@ Recorded narration:
                         print(f"  [warn] svg_output backup skipped: {exc}")
             elif verbose:
                 print(f"  [info] svg_output/ not found, backup skipped")
+
+    if success and cache_dir is not None and cache_dir.is_dir() and not args.keep_cache:
+        try:
+            shutil.rmtree(cache_dir)
+            cache_parent = cache_dir.parent
+            if cache_parent.is_dir() and cache_parent.name == '.cache' and not any(cache_parent.iterdir()):
+                cache_parent.rmdir()
+        except Exception as exc:
+            if verbose:
+                print(f"  [warn] cache cleanup skipped: {exc}")
 
     sys.exit(0 if success else 1)
