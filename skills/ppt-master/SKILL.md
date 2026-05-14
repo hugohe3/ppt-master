@@ -337,7 +337,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 
 🚧 **Image readiness GATE** (when Step 5 left ai rows in `Needs-Manual`): every expected file must exist at `project/images/<filename>` before running 7.1.
 
-> If files are missing: PAUSE, list the missing filenames, point the user to `images/image_prompts.json` (the `prompt` field of each `Needs-Manual` item is paste-ready for ChatGPT / Gemini / Midjourney) and the required placement `project/images/<filename>`. Resume Step 7.1 only after all expected files are in place. `finalize_svg.py` and `svg_to_pptx.py` do not detect missing files at this layer — proceeding with gaps produces a deck with broken image references.
+> If files are missing: PAUSE, list the missing filenames, point the user to `images/image_prompts.md` (each `### Image N:` block is paste-ready for ChatGPT / Gemini / Midjourney; auto-generated from `image_prompts.json`) and the required placement `project/images/<filename>`. Resume Step 7.1 only after all expected files are in place. `finalize_svg.py` and `svg_to_pptx.py` do not detect missing files at this layer — proceeding with gaps produces a deck with broken image references.
 
 > ⚠️ Run the three sub-steps **one at a time** — each must complete successfully before the next.
 > ❌ **NEVER** combine them into a single code block or shell invocation.

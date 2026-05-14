@@ -75,7 +75,7 @@ After all rows reach terminal status:
 1. Try once
 2. On recoverable failure (network, no candidates, license rejection, rate limit), retry once with broadened parameters
 3. On second failure, set `Status: Needs-Manual`, log the reason in conversation, continue
-4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.json` `items[].prompt` for ai rows), and where to place generated files (`project/images/<filename>`)
+4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.md` paste-ready blocks for ai rows; refresh via `image_gen.py --render-md` if stale), and where to place generated files (`project/images/<filename>`)
 
 `Needs-Manual` is also the entry status for **Offline Manual Mode** (no `IMAGE_BACKEND` configured, no host-native image tool in use). Affected ai rows are marked `Needs-Manual` from the start without a failed attempt — see [`image-generator.md`](./image-generator.md) §3.2.
 

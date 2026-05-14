@@ -186,8 +186,11 @@ For each image with `Acquire Via: ai` and `Status: Pending`:
 4. **Apply type-specific key points** → Reference §2's table for that type
 5. **Generate optimized prompt** → §1.1 schema; prepend the §1.6 Deck Style Anchor
 6. **Save manifest** → **Must** write to `project/images/image_prompts.json` with `status: "Pending"` for every new entry
+7. **Render Markdown sidecar** → **Must** run `python3 scripts/image_gen.py --render-md project/images/image_prompts.json` to produce the read-only `image_prompts.md` view
 
-> The manifest is machine-consumed by `image_gen.py --manifest`. The `prompt` field of each entry doubles as a paste-ready string for the Offline Manual handoff (§3.2).
+**Hard rule**: `image_prompts.md` is auto-generated. Never hand-edit it — re-run `--render-md` (or `--manifest`, which re-renders on completion) to refresh.
+
+> The JSON manifest is machine-consumed by `image_gen.py --manifest`. The Markdown sidecar is the human-readable / paste-ready fallback used in Offline Manual Mode (§3.2).
 
 ### 3.2 Image Generation Phase
 
@@ -267,6 +270,7 @@ Precedence:
 - Default 3 concurrent requests, halves on the first rate-limit response, minimum 1 (= serial fallback)
 - Rate-limited items requeue automatically; per-item failures are recorded with `last_error` and skipped
 - Interrupting mid-run is safe — completed items keep `status: Generated` and are skipped on re-run
+- On normal completion the Markdown sidecar is re-rendered automatically; if the run is interrupted, run `--render-md` manually to refresh the sidecar
 
 #### Path B — Host-Native Image Tool (On Explicit User Request)
 
@@ -288,7 +292,7 @@ Triggered only when the user explicitly asks the skill to use the host's built-i
 3. Continue to Step 6 — SVG references `images/<filename>` optimistically; Step 7 entry verifies presence
 4. Print one consolidated handoff to the user:
    - Filenames awaiting manual generation
-   - Pointer to `images/image_prompts.json`: each `items[].prompt` is paste-ready for ChatGPT / Gemini / Midjourney
+   - Pointer to `images/image_prompts.md` (paste-ready `### Image N:` block per item) or `image_prompts.json` (`items[].prompt`)
    - Target placement: `project/images/<filename>` matching the resource list exactly
    - Resume command: re-run Step 7 once all expected files exist
 
