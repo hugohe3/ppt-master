@@ -38,12 +38,19 @@ Supported keys:
 
 Usage:
   python3 image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o images/
+  python3 image_gen.py --manifest project/images/image_prompts.json -o project/images/
   python3 image_gen.py --list-backends
 """
 
+import concurrent.futures
+import json
 import os
 import sys
 import argparse
+import tempfile
+import threading
+import time
+from pathlib import Path
 
 from config import load_prefixed_env_file, resolve_env_path
 
@@ -327,6 +334,213 @@ def _resolve_backend() -> tuple[object, str]:
     sys.exit(1)
 
 
+DEFAULT_MANIFEST_CONCURRENCY = 3
+
+STATUS_PENDING = "Pending"
+STATUS_GENERATED = "Generated"
+STATUS_FAILED = "Failed"
+STATUS_NEEDS_MANUAL = "Needs-Manual"
+VALID_STATUSES = {STATUS_PENDING, STATUS_GENERATED, STATUS_FAILED, STATUS_NEEDS_MANUAL}
+RETRYABLE_STATUSES = {STATUS_PENDING, STATUS_FAILED}
+REQUIRED_ITEM_FIELDS = ("filename", "prompt", "aspect_ratio", "status")
+
+
+def load_manifest(path: str) -> dict:
+    """Load and validate an `image_prompts.json` manifest.
+
+    Schema (top level): {"items": [ ... ]}, optionally with
+    `deck_style_anchor`, `color_scheme`, `generated_at`.
+
+    Each item requires: `filename`, `prompt`, `aspect_ratio`, `status`.
+    Optional: `image_size`, `model`, `negative_prompt`, `alt_text`,
+    `purpose`, `type`, `last_error`.
+    """
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Invalid JSON in {path}: {exc.msg} "
+            f"(line {exc.lineno}, col {exc.colno})"
+        ) from exc
+
+    if not isinstance(data, dict):
+        raise ValueError(
+            f"{path}: top level must be a JSON object, "
+            f"got {type(data).__name__}"
+        )
+
+    items = data.get("items")
+    if not isinstance(items, list) or not items:
+        raise ValueError(f"{path}: 'items' must be a non-empty array")
+
+    seen_filenames: set[str] = set()
+    for i, item in enumerate(items):
+        prefix = f"{path}: items[{i}]"
+        if not isinstance(item, dict):
+            raise ValueError(f"{prefix} must be an object")
+        for field in REQUIRED_ITEM_FIELDS:
+            if field not in item:
+                raise ValueError(f"{prefix} missing required field '{field}'")
+            if not isinstance(item[field], str) or not item[field].strip():
+                raise ValueError(
+                    f"{prefix} field '{field}' must be a non-empty string"
+                )
+        if item["status"] not in VALID_STATUSES:
+            raise ValueError(
+                f"{prefix} status '{item['status']}' is invalid. "
+                f"Valid: {sorted(VALID_STATUSES)}"
+            )
+        fname = item["filename"]
+        if fname in seen_filenames:
+            raise ValueError(f"{prefix} duplicate filename '{fname}'")
+        seen_filenames.add(fname)
+
+    return data
+
+
+def save_manifest(path: str, data: dict) -> None:
+    """Atomically write manifest back to disk (tmp file + rename)."""
+    target = Path(path)
+    fd, tmp_path = tempfile.mkstemp(
+        prefix=target.stem + ".",
+        suffix=".tmp",
+        dir=str(target.parent),
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        os.replace(tmp_path, target)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
+def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
+                  initial_concurrency: int,
+                  image_size: str,
+                  output_dir: str,
+                  model: str | None) -> tuple[int, int, int]:
+    """Run Pending/Failed items through the backend with adaptive concurrency.
+
+    Strategy:
+      - Start at `initial_concurrency` workers per batch.
+      - On any rate-limit error in a batch, halve concurrency (min 1) and
+        requeue the rate-limited items.
+      - Per-item failures are recorded as `status: Failed` + `last_error`
+        and not retried within this run.
+      - Status is written back to the manifest file after each completion;
+        a Ctrl-C in the middle still preserves done items.
+      - `Needs-Manual` items are skipped (user processes them externally).
+
+    Returns (ok_count, failed_count, skipped_count).
+    """
+    from image_backends.backend_common import is_rate_limit_error
+
+    items = manifest["items"]
+    pending_idx = [
+        i for i, it in enumerate(items) if it["status"] in RETRYABLE_STATUSES
+    ]
+    total = len(pending_idx)
+    skipped = len(items) - total
+
+    if total == 0:
+        print(
+            f"[Manifest] Nothing to do — all {len(items)} items already in "
+            "a terminal state (Generated / Needs-Manual)."
+        )
+        return 0, 0, skipped
+
+    print(
+        f"\n[Manifest] {total} item(s) to generate, "
+        f"{skipped} already done. concurrency={initial_concurrency}\n"
+    )
+
+    queue: list[int] = list(pending_idx)
+    ok_count = 0
+    fail_count = 0
+    current = max(1, initial_concurrency)
+    state_lock = threading.Lock()
+
+    def _one(idx: int):
+        item = items[idx]
+        try:
+            saved_path = backend_module.generate(
+                prompt=item["prompt"],
+                aspect_ratio=item["aspect_ratio"],
+                image_size=item.get("image_size", image_size),
+                output_dir=output_dir,
+                filename=Path(item["filename"]).stem,
+                model=item.get("model", model),
+            )
+            return idx, saved_path, None
+        except Exception as exc:  # noqa: BLE001 — backend raises arbitrary types
+            return idx, None, exc
+
+    while queue:
+        batch_size = min(current, len(queue))
+        batch_idx = queue[:batch_size]
+        queue = queue[batch_size:]
+
+        print(
+            f"--- Batch of {batch_size} (concurrency={current}, "
+            f"remaining_after={len(queue)}) ---"
+        )
+
+        rate_limited = False
+        with concurrent.futures.ThreadPoolExecutor(max_workers=batch_size) as ex:
+            futures = [ex.submit(_one, i) for i in batch_idx]
+            for fut in concurrent.futures.as_completed(futures):
+                idx, saved_path, exc = fut.result()
+                item = items[idx]
+                with state_lock:
+                    if exc is None:
+                        item["status"] = STATUS_GENERATED
+                        item.pop("last_error", None)
+                        ok_count += 1
+                        print(f"  [OK]   {item['filename']}")
+                    elif is_rate_limit_error(exc):
+                        rate_limited = True
+                        queue.append(idx)
+                        print(f"  [RATE] {item['filename']} — requeued")
+                    else:
+                        item["status"] = STATUS_FAILED
+                        item["last_error"] = str(exc)[:500]
+                        fail_count += 1
+                        print(f"  [FAIL] {item['filename']}: {exc}")
+                    save_manifest(manifest_path, manifest)
+
+        if rate_limited and current > 1:
+            new_current = max(1, current // 2)
+            print(
+                f"\n  ⚠ Rate-limit hit — concurrency {current} → {new_current}, "
+                "pausing 10s before next batch\n"
+            )
+            current = new_current
+            time.sleep(10)
+        elif queue:
+            time.sleep(2)
+
+    print(
+        f"\n[Manifest] Done: {ok_count} ok / {fail_count} failed "
+        f"({skipped} pre-skipped). Manifest written to {manifest_path}"
+    )
+    return ok_count, fail_count, skipped
+
+
+def _resolve_concurrency(cli_value: int | None) -> int:
+    """CLI value wins over IMAGE_CONCURRENCY env; default 3."""
+    if cli_value is not None:
+        return max(1, cli_value)
+    env_val = os.environ.get("IMAGE_CONCURRENCY", "").strip()
+    if env_val.isdigit():
+        return max(1, int(env_val))
+    return DEFAULT_MANIFEST_CONCURRENCY
+
+
 def main() -> None:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -364,6 +578,21 @@ def main() -> None:
         "--list-backends", action="store_true",
         help="List available backends grouped by support tier and exit."
     )
+    parser.add_argument(
+        "--manifest", default=None, metavar="IMAGE_PROMPTS_JSON",
+        help=(
+            "Path to image_prompts.json. Runs every Pending/Failed item in "
+            "parallel; writes status back to the manifest as each completes."
+        ),
+    )
+    parser.add_argument(
+        "--concurrency", type=int, default=None,
+        help=(
+            "Max concurrent requests in --manifest mode. Defaults to "
+            f"IMAGE_CONCURRENCY env or {DEFAULT_MANIFEST_CONCURRENCY}. "
+            "Auto-halves on rate-limit; 1 is the serial fallback."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -384,6 +613,30 @@ def main() -> None:
 
     backend, backend_name = _resolve_backend()
     print(f"Using backend: {backend_name}\n")
+
+    if args.manifest:
+        if not os.path.isfile(args.manifest):
+            print(f"Error: manifest file not found: {args.manifest}")
+            sys.exit(1)
+        try:
+            manifest = load_manifest(args.manifest)
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+
+        concurrency = _resolve_concurrency(args.concurrency)
+        try:
+            _, failed, _ = _run_manifest(
+                manifest, args.manifest, backend,
+                initial_concurrency=concurrency,
+                image_size=args.image_size,
+                output_dir=args.output or str(Path(args.manifest).parent),
+                model=args.model,
+            )
+        except KeyboardInterrupt:
+            print("\n\nInterrupted by user. Partial progress preserved in manifest.")
+            sys.exit(130)
+        sys.exit(1 if failed else 0)
 
     try:
         backend.generate(

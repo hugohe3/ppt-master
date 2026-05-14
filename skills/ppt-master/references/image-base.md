@@ -61,7 +61,7 @@ After all rows reach terminal status:
 
 - Every non-skipped row has a file at `project/images/<filename>`, or is marked `Needs-Manual`
 - No `Pending` rows remain
-- `image_prompts.md` exists when ≥1 ai row processed
+- `image_prompts.json` exists when ≥1 ai row processed; every entry has `status ∈ {Generated, Failed, Needs-Manual}` (no `Pending` remaining)
 - `image_sources.json` exists when ≥1 web row processed; every entry has `license_tier ∈ {no-attribution, attribution-required}`
 
 > `Needs-Manual` is a legitimate terminal state for ai rows — Step 7 entry waits for the user to place the file. See [`image-generator.md`](./image-generator.md) §3.2 Offline Manual Mode.
@@ -75,7 +75,7 @@ After all rows reach terminal status:
 1. Try once
 2. On recoverable failure (network, no candidates, license rejection, rate limit), retry once with broadened parameters
 3. On second failure, set `Status: Needs-Manual`, log the reason in conversation, continue
-4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.md` for ai rows), and where to place generated files (`project/images/<filename>`)
+4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.json` `items[].prompt` for ai rows), and where to place generated files (`project/images/<filename>`)
 
 `Needs-Manual` is also the entry status for **Offline Manual Mode** (no `IMAGE_BACKEND` configured, no host-native image tool in use). Affected ai rows are marked `Needs-Manual` from the start without a failed attempt — see [`image-generator.md`](./image-generator.md) §3.2.
 
@@ -128,6 +128,6 @@ Executor does NOT invoke `image_gen.py` / `image_search.py`.
 ## ✅ Image Acquisition Phase Complete
 - [x] {N} rows processed (`ai`: {a} / `web`: {b})
 - [x] {a} `Generated`, {b} `Sourced`, {c} `Needs-Manual`
-- [x] image_prompts.md / image_sources.json written
+- [x] image_prompts.json / image_sources.json written
 - [ ] **Next**: Auto-proceed to Executor phase
 ```
