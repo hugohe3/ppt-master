@@ -215,7 +215,9 @@ def resolve_color(
         name = color_elem.attrib.get("val", "")
         base_hex = PRST_COLORS.get(name)
     elif tag == "hslClr":
-        h = float(color_elem.attrib.get("hue", "0")) / 60000.0  # 1/60000 deg
+        # DrawingML hue is in 1/60000 deg ([0, 21_600_000) maps to [0°, 360°));
+        # _hsl_to_hex expects a fraction in [0, 1), so divide by 60000 * 360.
+        h = float(color_elem.attrib.get("hue", "0")) / 21_600_000.0
         s = float(color_elem.attrib.get("sat", "0")) / 100000.0
         lum = float(color_elem.attrib.get("lum", "0")) / 100000.0
         base_hex = _hsl_to_hex(h, s, lum)
