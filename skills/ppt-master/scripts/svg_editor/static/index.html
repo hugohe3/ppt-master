@@ -3,41 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPT Master - Live Preview</title>
+    <title data-i18n="page_title">PPT Master - Live Preview</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div id="app">
         <div id="panel-left">
-            <div class="panel-header">Slides</div>
+            <div class="panel-header" data-i18n="panel_slides">Slides</div>
             <div id="slide-list"></div>
         </div>
         <div id="panel-center">
+            <div id="slide-nav">
+                <button id="nav-first" class="nav-btn" type="button" data-i18n-title="nav_first">&laquo;</button>
+                <button id="nav-prev"  class="nav-btn" type="button" data-i18n-title="nav_prev">&lsaquo;</button>
+                <div id="nav-label">
+                    <span id="nav-counter">— / —</span>
+                    <span id="nav-name"></span>
+                </div>
+                <button id="nav-next" class="nav-btn" type="button" data-i18n-title="nav_next">&rsaquo;</button>
+                <button id="nav-last" class="nav-btn" type="button" data-i18n-title="nav_last">&raquo;</button>
+            </div>
             <div id="svg-container">
                 <div id="rubber-band-overlay"></div>
-                <div id="svg-placeholder">Select a slide on the left to begin</div>
+                <div id="svg-placeholder" data-i18n="placeholder_select_slide">Select a slide on the left to begin</div>
                 <div id="svg-content" style="display:none;"></div>
             </div>
         </div>
         <div id="panel-right">
-            <div class="panel-header">Annotations</div>
+            <button id="btn-lang-toggle" class="btn-lang-toggle" title="Switch language">中</button>
+            <div class="panel-header" data-i18n="panel_annotations">Annotations</div>
             <div id="selection-info">
-                <div class="section-label">Selected element</div>
-                <div id="selected-element" class="empty">Click an element on the slide to select it</div>
+                <div class="section-label" data-i18n="label_selected_element">Selected element</div>
+                <div id="selected-element" class="empty" data-i18n="empty_selected_element">Click an element on the slide to select it</div>
                 <div id="element-props" style="display:none;"></div>
             </div>
             <div id="annotation-input" style="display:none;">
-                <div class="section-label">Edit instruction</div>
-                <textarea id="annotation-text" placeholder="Describe how the AI should modify this element..."></textarea>
-                <button id="btn-add-annotation">Add annotation</button>
+                <div class="section-label" data-i18n="label_edit_instruction">Edit instruction</div>
+                <textarea id="annotation-text" data-i18n-placeholder="placeholder_annotation" placeholder="Describe how the AI should modify this element..."></textarea>
+                <button id="btn-add-annotation" data-i18n="btn_add_annotation">Add annotation</button>
             </div>
             <div id="annotation-list">
-                <div class="section-label">Annotations on this slide</div>
+                <div class="section-label" data-i18n="label_annotations_on_slide">Annotations on this slide</div>
                 <div id="annotations"></div>
             </div>
             <div id="preview-actions">
-                <button id="btn-save" class="btn-save">Submit annotations</button>
-                <button id="btn-exit-preview" class="btn-exit-preview">Exit preview</button>
+                <button id="btn-save" class="btn-save" data-i18n="btn_submit_annotations">Submit annotations</button>
+                <button id="btn-exit-preview" class="btn-exit-preview" data-i18n="btn_exit_preview">Exit preview</button>
             </div>
         </div>
     </div>
@@ -45,8 +56,8 @@
         <div id="modal">
             <div id="modal-message"></div>
             <div id="modal-buttons">
-                <button id="modal-confirm">Submit</button>
-                <button id="modal-cancel">Cancel</button>
+                <button id="modal-confirm" data-i18n="modal_submit">Submit</button>
+                <button id="modal-cancel" data-i18n="modal_cancel">Cancel</button>
             </div>
         </div>
     </div>

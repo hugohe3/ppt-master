@@ -5,6 +5,147 @@
 (function () {
     "use strict";
 
+    // ---- i18n -------------------------------------------------------
+    var MESSAGES = {
+        en: {
+            page_title: "PPT Master - Live Preview",
+            panel_slides: "Slides",
+            panel_annotations: "Annotations",
+            placeholder_select_slide: "Select a slide on the left to begin",
+            label_selected_element: "Selected element",
+            empty_selected_element: "Click an element on the slide to select it",
+            label_edit_instruction: "Edit instruction",
+            placeholder_annotation: "Describe how the AI should modify this element...",
+            placeholder_annotation_multi: "Describe how to modify all {count} elements...",
+            btn_add_annotation: "Add annotation",
+            label_annotations_on_slide: "Annotations on this slide",
+            btn_submit_annotations: "Submit annotations",
+            btn_exit_preview: "Exit preview",
+            modal_submit: "Submit",
+            modal_cancel: "Cancel",
+            empty_waiting_slides: "Waiting for generated slides...",
+            empty_no_slides: "No slides found",
+            placeholder_live_ready: "Live preview is ready. Generated slides will appear here.",
+            placeholder_slide_writing: "Slide is still being written. Waiting for the next refresh...",
+            empty_annotations: "No annotations yet",
+            tooltip_remove_annotation: "Remove annotation",
+            multi_selected: "{count} elements selected",
+            multi_mixed: "mixed",
+            err_load_slides: "Failed to load slides: ",
+            err_load_slide: "Failed to load slide: ",
+            err_add_annotation: "Failed to add annotation: ",
+            err_remove_annotation: "Failed to remove annotation: ",
+            err_save: "Save failed: ",
+            modal_confirm_submit: "Submit annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.",
+            modal_success_submit: "Annotations saved.\n\nReturn to the chat and tell the AI to apply them (e.g. \"apply my annotations\"). The preview service is still running.",
+            modal_confirm_exit: "Exit preview and stop the local server?\n\nUnsaved annotations will be discarded.",
+            modal_success_exit: "Preview stopped.\n\nYou can close this tab and return to the chat.",
+            modal_stopping: "Stopping preview server...",
+            lang_toggle_title: "Switch language",
+            nav_first: "First slide (Home)",
+            nav_prev: "Previous slide (←)",
+            nav_next: "Next slide (→)",
+            nav_last: "Last slide (End)",
+            nav_counter: "{current} / {total}",
+            nav_empty: "— / —"
+        },
+        zh: {
+            page_title: "PPT Master - 实时预览",
+            panel_slides: "幻灯片",
+            panel_annotations: "标注",
+            placeholder_select_slide: "在左侧选择一张幻灯片开始",
+            label_selected_element: "已选元素",
+            empty_selected_element: "点击幻灯片中的元素进行选择",
+            label_edit_instruction: "修改说明",
+            placeholder_annotation: "描述希望 AI 如何修改该元素……",
+            placeholder_annotation_multi: "描述希望如何修改所选 {count} 个元素……",
+            btn_add_annotation: "添加标注",
+            label_annotations_on_slide: "本页标注",
+            btn_submit_annotations: "提交标注",
+            btn_exit_preview: "退出预览",
+            modal_submit: "提交",
+            modal_cancel: "取消",
+            empty_waiting_slides: "正在等待生成幻灯片……",
+            empty_no_slides: "未找到幻灯片",
+            placeholder_live_ready: "实时预览已就绪,生成的幻灯片会在这里出现。",
+            placeholder_slide_writing: "幻灯片仍在写入,等待下次刷新……",
+            empty_annotations: "暂无标注",
+            tooltip_remove_annotation: "删除标注",
+            multi_selected: "已选 {count} 个元素",
+            multi_mixed: "混合",
+            err_load_slides: "加载幻灯片失败:",
+            err_load_slide: "加载幻灯片失败:",
+            err_add_annotation: "添加标注失败:",
+            err_remove_annotation: "删除标注失败:",
+            err_save: "保存失败:",
+            modal_confirm_submit: "确认将标注保存到磁盘?\n\n预览服务会继续运行。需要关闭时请点击退出预览。",
+            modal_success_submit: "标注已保存。\n\n请回到对话窗口并告诉 AI 应用这些标注(例如\"应用我的标注\")。预览服务仍在运行。",
+            modal_confirm_exit: "退出预览并停止本地服务?\n\n未保存的标注将被丢弃。",
+            modal_success_exit: "预览已停止。\n\n可以关闭本标签页并回到对话窗口。",
+            modal_stopping: "正在停止预览服务……",
+            lang_toggle_title: "切换语言",
+            nav_first: "第一页 (Home)",
+            nav_prev: "上一页 (←)",
+            nav_next: "下一页 (→)",
+            nav_last: "末页 (End)",
+            nav_counter: "{current} / {total}",
+            nav_empty: "— / —"
+        }
+    };
+
+    var LANG = (function () {
+        try {
+            var stored = window.localStorage.getItem("ppt_lang");
+            if (stored === "zh" || stored === "en") return stored;
+        } catch (e) { /* ignore */ }
+        var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+        return nav.indexOf("zh") === 0 ? "zh" : "en";
+    })();
+
+    function t(key, params) {
+        var dict = MESSAGES[LANG] || MESSAGES.en;
+        var msg = dict[key];
+        if (msg === undefined) msg = MESSAGES.en[key];
+        if (msg === undefined) return key;
+        if (params) {
+            Object.keys(params).forEach(function (p) {
+                msg = msg.replace("{" + p + "}", params[p]);
+            });
+        }
+        return msg;
+    }
+
+    function applyI18n() {
+        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : "en");
+        document.title = t("page_title");
+        document.querySelectorAll("[data-i18n]").forEach(function (el) {
+            el.textContent = t(el.getAttribute("data-i18n"));
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+            el.placeholder = t(el.getAttribute("data-i18n-placeholder"));
+        });
+        document.querySelectorAll("[data-i18n-title]").forEach(function (el) {
+            el.title = t(el.getAttribute("data-i18n-title"));
+        });
+        updateNavLabel();
+    }
+
+    function setLang(lang) {
+        if (lang !== "zh" && lang !== "en") return;
+        LANG = lang;
+        try { window.localStorage.setItem("ppt_lang", lang); } catch (e) { /* ignore */ }
+        applyI18n();
+        var toggleBtn = document.getElementById("btn-lang-toggle");
+        if (toggleBtn) {
+            toggleBtn.textContent = lang === "zh" ? "EN" : "中";
+            toggleBtn.title = t("lang_toggle_title");
+        }
+        // Re-render dynamic regions so they pick up the new language
+        updateSelectionPanel();
+        updateAnnotationList();
+        loadSlides();
+    }
+
     // ---- DOM refs ---------------------------------------------------
     var slideListEl       = document.getElementById("slide-list");
     var svgPlaceholder    = document.getElementById("svg-placeholder");
@@ -22,13 +163,57 @@
     var modalCancel       = document.getElementById("modal-cancel");
     var elementPropsEl    = document.getElementById("element-props");
 
+    var navFirstBtn       = document.getElementById("nav-first");
+    var navPrevBtn        = document.getElementById("nav-prev");
+    var navNextBtn        = document.getElementById("nav-next");
+    var navLastBtn        = document.getElementById("nav-last");
+    var navCounterEl      = document.getElementById("nav-counter");
+    var navNameEl         = document.getElementById("nav-name");
+
     // ---- State ------------------------------------------------------
     var currentSlide      = null;   // filename, e.g. "slide_01.svg"
+    var slideNames        = [];     // ordered slide filenames for navigation
     var selectedElementIds = new Set(); // id attrs of selected SVG elements
     var slideAnnotations  = {};     // {element_id: annotation_text} for current slide
     var liveMode          = false;
     var slidePollTimer    = null;
     var pendingModalAction = "submit";
+
+    function currentSlideIndex() {
+        if (!currentSlide) return -1;
+        return slideNames.indexOf(currentSlide);
+    }
+
+    function gotoSlideIndex(idx) {
+        if (idx < 0 || idx >= slideNames.length) return;
+        var name = slideNames[idx];
+        if (name === currentSlide) return;
+        var item = slideListEl.querySelector('.slide-item[data-name="' + cssAttr(name) + '"]');
+        selectSlide(name, item || undefined);
+    }
+
+    function cssAttr(value) {
+        return String(value).replace(/"/g, '\\"');
+    }
+
+    function updateNavLabel() {
+        if (!navCounterEl) return;
+        var total = slideNames.length;
+        if (total === 0 || !currentSlide) {
+            navCounterEl.textContent = t("nav_empty");
+            if (navNameEl) navNameEl.textContent = "";
+        } else {
+            var idx = currentSlideIndex();
+            navCounterEl.textContent = t("nav_counter", { current: idx + 1, total: total });
+            if (navNameEl) navNameEl.textContent = currentSlide;
+        }
+        var idx2 = currentSlideIndex();
+        var hasCurrent = idx2 >= 0;
+        if (navFirstBtn) navFirstBtn.disabled = !hasCurrent || idx2 === 0;
+        if (navPrevBtn)  navPrevBtn.disabled  = !hasCurrent || idx2 <= 0;
+        if (navNextBtn)  navNextBtn.disabled  = !hasCurrent || idx2 >= total - 1;
+        if (navLastBtn)  navLastBtn.disabled  = !hasCurrent || idx2 >= total - 1;
+    }
 
     // ================================================================
     //  1.  loadSlides  -- GET /api/slides
@@ -39,21 +224,23 @@
             .then(function (data) {
                 slideListEl.innerHTML = "";
                 var slides = data.slides || [];
+                slideNames = slides.map(function (s) { return s.name; });
 
                 if (slides.length === 0) {
                     var empty = document.createElement("div");
                     empty.className = "slide-list-empty";
                     empty.textContent = liveMode
-                        ? "Waiting for generated slides..."
-                        : "No slides found";
+                        ? t("empty_waiting_slides")
+                        : t("empty_no_slides");
                     slideListEl.appendChild(empty);
                     if (!currentSlide) {
                         svgPlaceholder.style.display = "block";
                         svgPlaceholder.textContent = liveMode
-                            ? "Live preview is ready. Generated slides will appear here."
-                            : "No slides found";
+                            ? t("placeholder_live_ready")
+                            : t("empty_no_slides");
                         svgContent.style.display = "none";
                     }
+                    updateNavLabel();
                     return;
                 }
 
@@ -85,10 +272,11 @@
                 if (!currentSlide || !currentExists) {
                     selectSlide(slides[0].name);
                 }
+                updateNavLabel();
             })
             .catch(function (err) {
                 console.error("loadSlides:", err);
-                showError("Failed to load slides: " + err.message);
+                showError(t("err_load_slides") + err.message);
             });
     }
 
@@ -105,6 +293,7 @@
         currentSlide = name;
         selectedElementIds.clear();
         slideAnnotations = {};
+        updateNavLabel();
 
         // Reset right panel and rubber band
         cancelRubberBand();
@@ -118,7 +307,7 @@
                     if (liveMode) {
                         currentSlide = null;
                         svgPlaceholder.style.display = "block";
-                        svgPlaceholder.textContent = "Slide is still being written. Waiting for the next refresh...";
+                        svgPlaceholder.textContent = t("placeholder_slide_writing");
                         svgContent.style.display = "none";
                     }
                     return;
@@ -139,7 +328,7 @@
             })
             .catch(function (err) {
                 console.error("selectSlide:", err);
-                showError("Failed to load slide: " + err.message);
+                showError(t("err_load_slide") + err.message);
             });
     }
 
@@ -226,7 +415,7 @@
 
         if (count === 0) {
             selectedElementEl.classList.add("empty");
-            selectedElementEl.innerHTML = "Click an element on the slide to select it";
+            selectedElementEl.textContent = t("empty_selected_element");
             annotationInput.style.display = "none";
             annotationText.value = "";
             propsEl.style.display = "none";
@@ -249,14 +438,14 @@
             }
         } else {
             selectedElementEl.innerHTML =
-                '<span class="multi-count">' + count + ' elements selected</span>';
+                '<span class="multi-count">' + escapeHtml(t("multi_selected", { count: count })) + '</span>';
             propsEl.innerHTML = renderMultiSelectSummary(Array.from(selectedElementIds));
         }
 
         annotationInput.style.display = "block";
         annotationText.placeholder = count > 1
-            ? "Describe how to modify all " + count + " elements..."
-            : "Describe how the AI should modify this element...";
+            ? t("placeholder_annotation_multi", { count: count })
+            : t("placeholder_annotation");
         annotationText.value = count === 1
             ? (slideAnnotations[selectedElementIds.values().next().value] || "")
             : "";
@@ -448,7 +637,33 @@
                 if (document.activeElement === annotationText) return;
                 clearSelection();
             }
+
+            // Slide navigation: ArrowLeft/Right + Home/End (skip while typing)
+            if (document.activeElement === annotationText) return;
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (slideNames.length === 0) return;
+
+            if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                gotoSlideIndex(currentSlideIndex() - 1);
+            } else if (e.key === "ArrowRight") {
+                e.preventDefault();
+                gotoSlideIndex(currentSlideIndex() + 1);
+            } else if (e.key === "Home") {
+                e.preventDefault();
+                gotoSlideIndex(0);
+            } else if (e.key === "End") {
+                e.preventDefault();
+                gotoSlideIndex(slideNames.length - 1);
+            }
         });
+    }
+
+    function initSlideNav() {
+        if (navFirstBtn) navFirstBtn.addEventListener("click", function () { gotoSlideIndex(0); });
+        if (navPrevBtn)  navPrevBtn.addEventListener("click", function ()  { gotoSlideIndex(currentSlideIndex() - 1); });
+        if (navNextBtn)  navNextBtn.addEventListener("click", function ()  { gotoSlideIndex(currentSlideIndex() + 1); });
+        if (navLastBtn)  navLastBtn.addEventListener("click", function ()  { gotoSlideIndex(slideNames.length - 1); });
     }
 
     // ================================================================
@@ -481,7 +696,7 @@
             })
             .catch(function (err) {
                 console.error("addAnnotation:", err);
-                showError("Failed to add annotation: " + err.message);
+                showError(t("err_add_annotation") + err.message);
             });
     });
 
@@ -503,7 +718,7 @@
             })
             .catch(function (err) {
                 console.error("removeAnnotation:", err);
-                showError("Failed to remove annotation: " + err.message);
+                showError(t("err_remove_annotation") + err.message);
             });
     }
 
@@ -530,7 +745,7 @@
 
         var ids = Object.keys(slideAnnotations);
         if (ids.length === 0) {
-            annotationsEl.innerHTML = '<div class="annotations-empty">No annotations yet</div>';
+            annotationsEl.innerHTML = '<div class="annotations-empty">' + escapeHtml(t("empty_annotations")) + '</div>';
             return;
         }
 
@@ -563,7 +778,7 @@
             var removeBtn = document.createElement("button");
             removeBtn.className = "ann-remove";
             removeBtn.innerHTML = "&times;";
-            removeBtn.title = "Remove annotation";
+            removeBtn.title = t("tooltip_remove_annotation");
             removeBtn.addEventListener("click", function () {
                 removeAnnotation(eid);
             });
@@ -583,15 +798,10 @@
     // ================================================================
     // 10.  Save all  -- two-step: confirm then save
     // ================================================================
-    var CONFIRM_MSG = "Submit annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.";
-    var SUCCESS_MSG = "Annotations saved.\n\nReturn to the chat and tell the AI to apply them (e.g. \"apply my annotations\"). The preview service is still running.";
-    var EXIT_CONFIRM_MSG = "Exit preview and stop the local server?\n\nUnsaved annotations will be discarded.";
-    var EXIT_SUCCESS_MSG = "Preview stopped.\n\nYou can close this tab and return to the chat.";
-
     btnSave.addEventListener("click", function () {
         pendingModalAction = "submit";
-        modalMessage.textContent = CONFIRM_MSG;
-        modalConfirm.textContent = "Submit";
+        modalMessage.textContent = t("modal_confirm_submit");
+        modalConfirm.textContent = t("modal_submit");
         modalConfirm.style.display = "";
         modalCancel.style.display = "";
         modalOverlay.style.display = "flex";
@@ -599,8 +809,8 @@
 
     btnExitPreview.addEventListener("click", function () {
         pendingModalAction = "exit";
-        modalMessage.textContent = EXIT_CONFIRM_MSG;
-        modalConfirm.textContent = "Exit preview";
+        modalMessage.textContent = t("modal_confirm_exit");
+        modalConfirm.textContent = t("btn_exit_preview");
         modalConfirm.style.display = "";
         modalCancel.style.display = "";
         modalOverlay.style.display = "flex";
@@ -610,17 +820,17 @@
         if (pendingModalAction === "exit") {
             modalConfirm.style.display = "none";
             modalCancel.style.display = "none";
-            modalMessage.textContent = "Stopping preview server...";
+            modalMessage.textContent = t("modal_stopping");
             fetch("/api/shutdown", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ reason: "exit-preview" })
             })
                 .then(function () {
-                    modalMessage.textContent = EXIT_SUCCESS_MSG;
+                    modalMessage.textContent = t("modal_success_exit");
                 })
                 .catch(function () {
-                    modalMessage.textContent = EXIT_SUCCESS_MSG;
+                    modalMessage.textContent = t("modal_success_exit");
                 });
             return;
         }
@@ -633,26 +843,26 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data.error) {
-                    modalMessage.textContent = "Save failed: " + data.error;
+                    modalMessage.textContent = t("err_save") + data.error;
                 } else {
-                    modalMessage.textContent = SUCCESS_MSG;
+                    modalMessage.textContent = t("modal_success_submit");
                     loadSlides();
                 }
             })
             .catch(function (err) {
-                modalMessage.textContent = "Save failed: " + err;
+                modalMessage.textContent = t("err_save") + err;
             });
     });
 
     modalCancel.addEventListener("click", function () {
-        modalConfirm.textContent = "Submit";
+        modalConfirm.textContent = t("modal_submit");
         modalOverlay.style.display = "none";
     });
 
     // Close modal on overlay click
     modalOverlay.addEventListener("click", function (e) {
             if (e.target === modalOverlay) {
-                modalConfirm.textContent = "Submit";
+                modalConfirm.textContent = t("modal_submit");
                 modalOverlay.style.display = "none";
             }
         });
@@ -706,8 +916,6 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 liveMode = !!data.live;
-                document.title = "PPT Master - Live Preview";
-                btnSave.textContent = "Submit annotations";
             })
             .catch(function () {
                 liveMode = false;
@@ -824,7 +1032,7 @@
         if (allHaveFontSize && sharedFontSize && sharedFontSize !== "mixed") {
             summary += ' | font-size: ' + escapeHtml(sharedFontSize);
         } else if (allHaveFontSize && sharedFontSize === "mixed") {
-            summary += ' | font-size: mixed';
+            summary += ' | font-size: ' + escapeHtml(t("multi_mixed"));
         }
         summary += '</div>';
 
@@ -845,10 +1053,21 @@
     // ================================================================
     //  Boot
     // ================================================================
+    applyI18n();
+    var langToggleBtn = document.getElementById("btn-lang-toggle");
+    if (langToggleBtn) {
+        langToggleBtn.textContent = LANG === "zh" ? "EN" : "中";
+        langToggleBtn.title = t("lang_toggle_title");
+        langToggleBtn.addEventListener("click", function () {
+            setLang(LANG === "zh" ? "en" : "zh");
+        });
+    }
+
     loadConfig().then(function () {
         loadSlides();
         startSlidePolling();
     });
     initRubberBand();
     initKeyboardShortcuts();
+    initSlideNav();
 })();
