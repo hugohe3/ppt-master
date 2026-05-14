@@ -245,7 +245,43 @@ Selections may be mixed at the row level — e.g. a deck can use C for hero illu
 
 When the deck includes any `ai` rows, Strategist locks a **deck-wide rendering** and **deck-wide palette** here. These two values are written into `design_spec.md §III` and `spec_lock.md colors` / `images` sections, then consumed by Image_Generator. Every AI image in the deck shares them — this is what makes multiple AI images feel like one deck.
 
-🚧 **GATE — before recommending values**: `read_file references/image-renderings/_index.md` and `read_file references/image-palettes/_index.md`. They contain the catalog, auto-selection tables, and a rendering × palette compatibility matrix.
+> **Strategist only picks names here** — full style paragraphs, fewshot prompts, container sizing, compatibility matrix, and "what to avoid" live in `references/image-renderings/<name>.md`, `references/image-palettes/<name>.md`, and `references/image-type-templates/<name>.md`. Image_Generator reads those at Step 2. You do **not** need to read `_index.md` here — the catalogs below are sufficient for picking.
+
+**Rendering catalog** (16 — pick one name; full spec in `references/image-renderings/<name>.md`):
+
+| Rendering | One-liner |
+|---|---|
+| `vector-illustration` | Clean flat vector, bold shapes — default for general professional / consulting decks (scales to 15+ pages well) |
+| `flat` | Modern flat geometric blocks, more design-forward than vector — brand / product showcase |
+| `3d-isometric` | 30°/30°/30° projection, stackable forms — tech architecture, product structure |
+| `digital-dashboard` | Polished UI / chart aesthetic — SaaS demos, data products |
+| `corporate-photo` | Editorial photography — team / lifestyle / product shots (only photorealistic rendering) |
+| `blueprint` | Technical schematic on grid, monospace cues — architecture, engineering, AI systems |
+| `editorial` | Magazine-style infographic — finance, journalism, explainers |
+| `sketch-notes` | Warm cream paper + black hand-drawn lines + pastel fills — education / training / onboarding |
+| `ink-notes` | Pure white + black ink + sparse semantic accent — methodology, Before-After, manifestos |
+| `chalkboard` | Chalk on dark slate — classroom, tutorials |
+| `watercolor` | Painterly soft edges, color bleeding — lifestyle, travel, brand story |
+| `warm-scene` | Golden-hour cinematic warmth — personal growth, origin story |
+| `screen-print` | Halftone poster art, 2-5 flat colors — cultural / media / cinematic covers |
+| `fantasy-animation` | Ghibli/Disney hand-drawn warmth — children, storybook, brand fable |
+| `pixel-art` | 8-bit retro game aesthetic — gaming, retro tech |
+| `nature` | Organic earthy illustration — environment, wellness, sustainability |
+
+**Palette catalog** (10 — pick one name; full spec in `references/image-palettes/<name>.md`):
+
+| Palette | One-liner |
+|---|---|
+| `cool-corporate` | Stable, restrained, professional — consulting / finance / B2B / 学术答辩 |
+| `warm-earth` | Friendly, grounded — brand story / lifestyle / education |
+| `tech-neon` | Energetic, futuristic, high-contrast — AI / SaaS / product launch |
+| `editorial-classic` | Refined, magazine-balanced — journalism / opinion / culture |
+| `macaron` | Soft pastel on cream — education / children / onboarding |
+| `mono-ink` | Black ink on white + sparse semantic color — methodology / Before-After / manifesto |
+| `vivid-launch` | Bold, saturated — product launch / marketing / event |
+| `dark-cinematic` | Premium dark with bright accents — film / entertainment / premium product |
+| `duotone` | Two colors only, poster-like — cultural / cover hero |
+| `nature-organic` | Earthy, wellness — environment / outdoor / wellness |
 
 **Rendering recommendation** (soft — user may override with any other rendering from the catalog):
 
@@ -283,7 +319,15 @@ When the deck includes any `ai` rows, Strategist locks a **deck-wide rendering**
 | Environment / wellness | `nature-organic` | `warm-earth` |
 | Finance / journalism | `editorial-classic` | `cool-corporate` |
 
-After auto-selecting, cross-check `image-palettes/_index.md` compatibility matrix — if rendering × palette is `✗`, swap to the alternate palette.
+**Rendering × palette compatibility — quick veto list** (most pairings work; only avoid these):
+
+- `sketch-notes` / `fantasy-animation` / `chalkboard` × `tech-neon` / `dark-cinematic` / `mono-ink` — warm-handcraft vs cyber-cold temperament clash
+- `tech-neon` / `digital-dashboard` × `warm-earth` / `macaron` / `nature-organic` — cyber vs warm-natural clash
+- `corporate-photo` × `macaron` / `mono-ink` / `duotone` — photography needs natural color, not limited-palette
+- `pixel-art` × `nature-organic` / `warm-earth` (mild) — retro grid vs organic flow
+- `mono-ink` × `tech-neon` / `vivid-launch` / `dark-cinematic` — mono-ink's discipline vs saturation
+
+If your pick hits the veto list, swap to the **Alternates** column above. Full compatibility matrix is in `references/image-palettes/_index.md` — read it only if the veto list isn't enough.
 
 **d-e-f-g linkage sanity check** (do this after picking rendering + palette):
 
