@@ -35,18 +35,18 @@ To reproduce or regenerate:
 
 ```bash
 python3 skills/ppt-master/scripts/image_gen.py \
-    --manifest ai-image-comparison/rendering/_manifest.json \
-    -o ai-image-comparison/rendering/ \
+    --manifest skills/ppt-master/references/ai-image-comparison/rendering/_manifest.json \
+    -o skills/ppt-master/references/ai-image-comparison/rendering/ \
     --backend openai
 
 python3 skills/ppt-master/scripts/image_gen.py \
-    --manifest ai-image-comparison/palette/_manifest.json \
-    -o ai-image-comparison/palette/ \
+    --manifest skills/ppt-master/references/ai-image-comparison/palette/_manifest.json \
+    -o skills/ppt-master/references/ai-image-comparison/palette/ \
     --backend openai
 
 python3 skills/ppt-master/scripts/image_gen.py \
-    --manifest ai-image-comparison/type/_manifest.json \
-    -o ai-image-comparison/type/ \
+    --manifest skills/ppt-master/references/ai-image-comparison/type/_manifest.json \
+    -o skills/ppt-master/references/ai-image-comparison/type/ \
     --backend openai
 ```
 

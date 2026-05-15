@@ -3,7 +3,7 @@
 > Auto-generated from `image_prompts.json` by `image_gen.py --render-md`.
 > Do not hand-edit — re-run the command to refresh.
 
-> Project: ai-image-comparison/rendering
+> Project: skills/ppt-master/references/ai-image-comparison/rendering
 > Generated: 2026-05-15
 > Color scheme: Primary #1E3A5F | Secondary #F8F9FA | Accent #D4AF37
 > Deck Style Anchor: Single subject hero composition, cool-corporate palette: secondary off-white #F8F9FA dominates background (60-70%), primary deep navy #1E3A5F carries main subject, accent gold #D4AF37 in small emphasis points only.

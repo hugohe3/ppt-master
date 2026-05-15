@@ -3,7 +3,7 @@
 > Auto-generated from `image_prompts.json` by `image_gen.py --render-md`.
 > Do not hand-edit — re-run the command to refresh.
 
-> Project: ai-image-comparison/palette
+> Project: skills/ppt-master/references/ai-image-comparison/palette
 > Generated: 2026-05-15
 > Deck Style Anchor: Single subject hero composition, vector-illustration rendering: clean flat vector with bold shapes, sharp edges, no gradients, no shadows.
 
