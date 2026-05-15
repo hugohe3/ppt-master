@@ -4,7 +4,7 @@ Single dominant subject occupying 60-70% of the canvas. The hero image *anchors*
 
 > **What hero means inside a PPT block**: one confident dominant subject with intentional supporting context. Unlike `background` (no subject), hero is **all about the subject**. Unlike `infographic` (multiple labeled zones), hero is **singular focal subject**.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 ```
    ┌────────────────────────────────────┐
@@ -25,7 +25,9 @@ Single dominant subject occupying 60-70% of the canvas. The hero image *anchors*
 | NEGATIVE SPACE | Generous around the subject — at least 15% padding on the subject's "open" side |
 | BALANCE | Subject's visual weight clearly dominant; no second-place subject competing |
 
-## Container sizing for local PPT inserts
+---
+
+## 2. Container sizing for local PPT inserts
 
 | Use | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -34,7 +36,9 @@ Single dominant subject occupying 60-70% of the canvas. The hero image *anchors*
 | Hero band | 1200×500 | 2.4:1 | Generous side padding |
 | Square hero | 700×700 | 1:1 | 15% |
 
-## Text-policy variants
+---
+
+## 3. Text-policy variants
 
 ### `text_policy: none` (most common)
 
@@ -44,7 +48,9 @@ The hero subject is the visual; any title or label comes from SVG overlay.
 
 The hero subject itself includes a short embedded keyword (e.g. a product name on a package, a single hand-lettered word as part of the subject). Use sparingly — usually `typography` type is a better choice for headline-as-image.
 
-## Fewshot prompt snippets
+---
+
+## 4. Fewshot prompt snippets
 
 **Snippet A — 3d-isometric + tech-neon product reveal, text_policy: none, 600×600**
 
@@ -54,7 +60,9 @@ The hero subject itself includes a short embedded keyword (e.g. a product name o
 
 > Editorial photography style hero. A single dominant subject — perhaps a person in a workspace, or a product on a desk — fills 65% of the canvas, positioned slightly left of center to leave room for SVG title overlay on the upper right. Subject is photorealistically rendered with diverse, professionally attired styling, captured in natural window light with shallow depth of field. Color grading is warm-earth — image graded toward warm amber and cream, with primary terracotta `#9A3412` as dominant warm tone, secondary cream `#FEF3C7` as soft background, accent gold `#D4AF37` as a small contextual detail (a warm light source, a sunlit surface). Background is gently blurred contextual environment. Composed as a 1280×720 full-bleed hero with 20% offset on the upper right for SVG title clearance. Diverse, professionally attired subject rendered photorealistically. NO text or labels in the image. Color values are rendering guidance only.
 
-## Common failure modes
+---
+
+## 5. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -63,7 +71,9 @@ The hero subject itself includes a short embedded keyword (e.g. a product name o
 | Subject cropped at edges | Padding rule omitted | Restate "15% padding around the subject on all sides" |
 | Background steals attention | Supporting context exceeded 30% | "Supporting context restrained, under 30% of canvas weight" |
 
-## When to switch away from hero
+---
+
+## 6. When to switch away from hero
 
 - If the image is **pure atmosphere with no subject** → `background`
 - If the subject is **headline text** → `typography`

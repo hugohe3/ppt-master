@@ -4,27 +4,29 @@ A **type** describes what the image's **internal composition** looks like — it
 
 > **Type vs PPT page layout — important**: type describes the composition *inside* the AI image block. The PPT slide's overall layout (where the image sits, how SVG text wraps around it) is a separate decision made by Strategist and Executor. Type only governs what's inside the rectangle the model paints.
 >
-> **All types produce local blocks**: every type's container guidance assumes the image will be embedded inside a slide (left half, right column, hero band, accent corner). Full-page imagery is an escape hatch — see [`image-generator.md`](../image-generator.md) §0.
+> **All types produce local blocks**: every type's container guidance assumes the image will be embedded inside a slide (left half, right column, hero band, accent corner). Full-page imagery is an escape hatch — see [`image-generator.md`](../image-generator.md) §1.
 
-## Catalog (9 types)
+---
+
+## 1. Catalog (9 types)
 
 Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGATIVE SPACE), container sizing options, text-policy variants, fewshot snippets.
 
 | Type | Internal composition | Typical use |
 |---|---|---|
-| [background](background.md) | Atmospheric backdrop, no central subject | Cover bg, chapter divider bg, hero overlay bg |
-| [hero](hero.md) | Single dominant subject (60-70% of canvas) | Product/concept reveal, chapter title bg |
-| [typography](typography.md) | Large headline / number / single word as visual | Big-stat pages, slogan pages, chapter openers |
-| [infographic](infographic.md) | 2-5 ordered zones with icons + minimal labels | Data summary / step list / KPI rundown |
-| [flowchart](flowchart.md) | Sequential blocks connected by arrows | Process / workflow / pipeline |
-| [framework](framework.md) | Central node + radiating satellites (or matrix) | Methodology / model / system architecture |
-| [comparison](comparison.md) | Split composition (left vs right, before vs after) | A/B / pros-cons / Before-After |
-| [timeline](timeline.md) | Linear progression along an axis | History / roadmap / evolution |
-| [scene](scene.md) | Atmospheric environment with narrative | Story / lifestyle / case study |
+| [`background`](./background.md) | Atmospheric backdrop, no central subject | Cover bg, chapter divider bg, hero overlay bg |
+| [`hero`](./hero.md) | Single dominant subject (60-70% of canvas) | Product/concept reveal, chapter title bg |
+| [`typography`](./typography.md) | Large headline / number / single word as visual | Big-stat pages, slogan pages, chapter openers |
+| [`infographic`](./infographic.md) | 2-5 ordered zones with icons + minimal labels | Data summary / step list / KPI rundown |
+| [`flowchart`](./flowchart.md) | Sequential blocks connected by arrows | Process / workflow / pipeline |
+| [`framework`](./framework.md) | Central node + radiating satellites (or matrix) | Methodology / model / system architecture |
+| [`comparison`](./comparison.md) | Split composition (left vs right, before vs after) | A/B / pros-cons / Before-After |
+| [`timeline`](./timeline.md) | Linear progression along an axis | History / roadmap / evolution |
+| [`scene`](./scene.md) | Atmospheric environment with narrative | Story / lifestyle / case study |
 
 ---
 
-## Auto-selection — per-image `Purpose` → type
+## 2. Auto-selection — per-image `Purpose` → type
 
 For each row in `design_spec.md §VIII Image Resource List`, match `Purpose` against this table.
 
@@ -42,7 +44,9 @@ For each row in `design_spec.md §VIII Image Resource List`, match `Purpose` aga
 
 > When `Purpose` mentions text-rich keywords ("with caption", "labeled", "annotated"), bias toward `embedded` text-policy. When unsure, default to `none` — SVG text overlay is more flexible than image-embedded text.
 
-## Default container sizes (when not specified by Image Resource List)
+---
+
+## 3. Default container sizes (when not specified by Image Resource List)
 
 The Resource List's `Dimensions` column is authoritative. If absent, use these defaults for prompt assembly:
 
@@ -60,7 +64,9 @@ The Resource List's `Dimensions` column is authoritative. If absent, use these d
 
 > All sizes include the 12-20% inner padding requirement. The model paints content within the inner safe zone; outer edges should feel airy.
 
-## How to use
+---
+
+## 4. How to use
 
 1. Pick the type per row in the Image Resource List using the table above.
 2. `read_file image-type-templates/<type>.md` — only the types actually used in this deck. Most decks use 2-4 types; load each at most once.

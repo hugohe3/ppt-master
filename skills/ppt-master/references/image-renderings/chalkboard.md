@@ -2,11 +2,13 @@
 
 Chalk on a dark green or black board — classroom aesthetic. Used in teaching-focused decks, tutorials, school / academic content, retro educational atmosphere.
 
-## Style paragraph (paste-ready, 95 words)
+## 1. Style paragraph (paste-ready, 95 words)
 
 > Classroom chalkboard aesthetic. Dark green or near-black slate background with visible subtle chalk-dust texture. All marks appear as soft chalk strokes — slightly diffused edges, off-white or pastel colors that look powdery rather than saturated. Hand-drawn lines are confident but with the characteristic dry-medium quality of real chalk. Composition follows blackboard pedagogy — central or organized layout, clear sections, occasional underlines and emphasis marks. Color is restrained: white chalk dominates, one or two pastel accents (yellow, soft pink, light cyan) appear sparingly. Overall feel is nostalgic, instructional, warm-classroom — common in teaching content and tutorial decks.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Chalk on a dark green or black board — classroom aesthetic. Used in teaching-f
 | Material | Slate board (dark green or near-black) + chalk |
 | Mood | Nostalgic, instructional, classroom-warm |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -24,7 +28,9 @@ Chalk on a dark green or black board — classroom aesthetic. Used in teaching-f
 | Hero teaching banner | 1200×500 | 2.4:1 | 14% |
 | Square lesson visual | 700×700 | 1:1 | 14% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 chalkboard has a strong **fixed-palette tendency**: dark slate background + white chalk + pastel accents.
 
@@ -32,7 +38,9 @@ chalkboard has a strong **fixed-palette tendency**: dark slate background + whit
 - Primary chalk: off-white `#F5F5F0` (the chalk itself); the deck's primary HEX may appear as a tinted pastel accent
 - Accent: the deck's accent HEX rendered as a soft pastel chalk shade
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — half-page lesson visual, text_policy: embedded**
 
@@ -42,14 +50,18 @@ chalkboard has a strong **fixed-palette tendency**: dark slate background + whit
 
 > Classroom chalkboard hero banner. Dark slate near-black background `#1A1A1A` with subtle chalk-dust texture. Five circular chalk-drawn nodes arranged horizontally connected by chalk-drawn arrows. Each node contains a chalk-drawn iconic symbol — a seed, a sprout, a young plant, a tree, a forest — telling a sequence visually. All chalk strokes appear soft and dry, with characteristic diffused edges. A single accent of soft pastel coral chalk highlights the third node's outline. Composed for a 1200×500 hero band with 14% inner padding. NO text, letters, numbers, or labels. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Sharp digital-feeling edges (chalk should feel soft and dry)
 - Saturated colors (chalk accents are pastel, not vivid)
 - Mixed media (chalk + watercolor, chalk + ink) — pure chalkboard only
 - Modern UI elements (no rounded-corner cards; chalkboard is freehand)
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For corporate / consulting decks → `vector-illustration` or `editorial`
 - For warm-cream paper instead of dark board → `sketch-notes`

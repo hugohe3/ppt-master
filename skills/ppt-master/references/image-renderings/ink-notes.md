@@ -2,11 +2,13 @@
 
 Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sketchnote tradition. Sharper, more professional, more "manifesto" than `sketch-notes`. Used for methodology, Before-After essays, mindset-shift narratives, technical manifestos, professional visual-note style.
 
-## Style paragraph (paste-ready, 105 words)
+## 1. Style paragraph (paste-ready, 105 words)
 
 > Professional hand-drawn visual-note style on pure white paper. All line work is black ink with slight wobble — confident, intentional, with the human-hand quality of a thoughtful whiteboard session. Hand-lettered titles appear bold and slightly oversized (when text policy allows). Color is intentionally sparse — black ink dominates ~85% of the visible content, with one or two semantic accent colors (coral red for risk/emphasis, muted teal for positive/solution, dusty lavender for neutral categories) covering less than 10% of canvas combined. Backgrounds and shape fills are mostly empty white. Small doodle decorations — stars, dashes, dots — are minimal. Overall feel is professional, considered, manifesto-quality.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sk
 | Material | Pen-on-paper |
 | Mood | Professional, considered, manifesto |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -25,7 +29,9 @@ Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sk
 | Before/After comparison | 1200×500 | 2.4:1 | 14% |
 | Spot diagram | 500×500 | 1:1 | 12% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 ink-notes has a near-fixed visual language: **black ink + white background + 1-2 semantic accents**. This palette tendency may override `design_spec.colors`:
 
@@ -35,7 +41,9 @@ ink-notes has a near-fixed visual language: **black ink + white background + 1-2
 
 This makes ink-notes **the rendering most likely to deviate from the deck's HEX**. Reaffirm in the prompt that the ink-notes natural palette is intentional and the deck's primary HEX is reserved for the accent role.
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — Before/After methodology (comparison type), text_policy: embedded**
 
@@ -45,7 +53,9 @@ This makes ink-notes **the rendering most likely to deviate from the deck's HEX*
 
 > Professional hand-drawn visual-note framework on pure white background. Central rounded-rectangle "system" frame with four labeled rounded-rectangle sub-components arranged around it — top, right, bottom, left. All forms drawn in confident black ink with slight wobble. Thin hand-drawn arrows connect each sub-component to the central frame. Small dashed-border placeholder box at the bottom right indicates a "future" component. The accent color appears only as a single highlight ring around the central frame (the deck's accent HEX, kept under 8% of canvas area). NO labels, captions, text, letters, or numbers anywhere — pure ink structure only. Composed as a 600×600 half-page block with 14% inner padding. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Saturated color fills (ink-notes is intentionally minimal)
 - Computer fonts (defeats the hand-lettered authenticity)
@@ -53,7 +63,9 @@ This makes ink-notes **the rendering most likely to deviate from the deck's HEX*
 - Cream paper (that's `sketch-notes`; ink-notes is pure white)
 - Decorative excess (ink-notes is restrained, not whimsical)
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For warm educational feel → `sketch-notes`
 - For pure schematic without ink-style → `blueprint`

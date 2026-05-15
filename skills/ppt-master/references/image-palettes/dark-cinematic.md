@@ -4,7 +4,7 @@ Premium, atmospheric, low-light. The "dark mode" palette — used for premium pr
 
 > This file describes **color behavior**, not HEX values.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ Premium, atmospheric, low-light. The "dark mode" palette — used for premium pr
 | Mood | Premium, cinematic, sophisticated, slightly mysterious |
 | Material | Deep matte or subtle metallic, with implied light source |
 
-## Proportion rule (65-25-10, dark-dominant)
+---
+
+## 2. Proportion rule (65-25-10, dark-dominant)
 
 | Role | Share | HEX from `design_spec` | Behavior |
 |---|---|---|---|
@@ -22,23 +24,31 @@ Premium, atmospheric, low-light. The "dark mode" palette — used for premium pr
 | Primary bright element | **20-30%** | `primary` (brightness-boosted if originally muted) | The lit subject — confident vivid against the dark field. |
 | Accent glow / highlight | **5-15%** | `accent` | Small concentrated bright pop — often with implied glow / luminance. |
 
-## Special: dark-cinematic may override deck background
+---
+
+## 3. Special: dark-cinematic may override deck background
 
 dark-cinematic, like mono-ink, may **override `design_spec.colors.secondary`** if the deck's secondary is light. The dark background is essential to the palette identity. Note this in the prompt:
 
 > "dark-cinematic palette uses a deep dark background `#0A0E27` regardless of deck's secondary HEX — the dark cinema field is the identity. The deck's primary `#XXX` is used as the bright lit subject; the deck's accent `#XXX` carries the glow accent."
 
-## Role semantics
+---
+
+## 4. Role semantics
 
 - **Primary** is the lit subject — confident and bright against the dark, often with implied luminance.
 - **Background** is the cinema void — deep dark, atmospheric, sometimes with subtle gradient toward even darker corners.
 - **Accent** is the glow pop — small, bright, luminous.
 
-## How to phrase it in a prompt
+---
+
+## 5. How to phrase it in a prompt
 
 > "Color behavior is dark-cinematic: deep dark background `#0A0E27` covers about 65% of the canvas with subtle gradient toward darker edges. Primary brand teal `#14B8A6` carries the main subject as a bright lit element (about 25%) with implied luminance glow at 8% opacity. Accent vivid gold `#D4AF37` appears as a small concentrated glow point near the focal area (about 10%). The bright primary and accent feel like light sources within the cinematic dark."
 
-## Compatible renderings
+---
+
+## 6. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -52,7 +62,9 @@ dark-cinematic, like mono-ink, may **override `design_spec.colors.secondary`** i
 | ✗ sketch-notes / fantasy-animation / nature / chalkboard | Wrong temperament |
 | ✗ macaron / warm-earth | Wrong brightness identity |
 
-## Fewshot prompt snippets
+---
+
+## 7. Fewshot prompt snippets
 
 **Snippet A — applied to a digital-dashboard premium product**
 
@@ -62,14 +74,18 @@ dark-cinematic, like mono-ink, may **override `design_spec.colors.secondary`** i
 
 > [...rendering paragraph...] Color behavior is dark-cinematic: deep dark `#0A0E27` covers the background plane and shadowed faces (about 65%). Primary bright teal `#14B8A6` on the lit faces of the central product block with implied luminance halo (about 22%). Accent vivid amber `#D97706` on one corner of the product as a focal glow (about 11%). Soft 8% glow halos around each bright element. Dramatic single-source lighting feel. [...container guidance...]
 
-## What to avoid
+---
+
+## 8. Forbidden
 
 - Light backgrounds (defeats the cinematic identity — switch palette)
 - Pastel accents (dark-cinematic wants bright vivid against dark)
 - More than 2 bright accent colors
 - Decorative warmth (mood is sophisticated, not friendly)
 
-## When to switch away
+---
+
+## 9. When to switch away
 
 - For light / corporate mood → `cool-corporate` / `editorial-classic`
 - For vivid promotional → `vivid-launch`

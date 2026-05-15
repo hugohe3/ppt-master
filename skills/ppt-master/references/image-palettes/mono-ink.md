@@ -4,7 +4,7 @@ High-contrast monochrome with sparse semantic accents. The most disciplined pale
 
 > This file describes **color behavior**, not HEX values. mono-ink overrides much of the deck's HEX usage — read carefully.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ High-contrast monochrome with sparse semantic accents. The most disciplined pale
 | Mood | Professional, manifesto, disciplined, considered |
 | Material | Ink on paper |
 
-## Proportion rule (90/10 ink + sparse accent)
+---
+
+## 2. Proportion rule (90/10 ink + sparse accent)
 
 | Role | Share | Source | Behavior |
 |---|---|---|---|
@@ -25,7 +27,9 @@ High-contrast monochrome with sparse semantic accents. The most disciplined pale
 
 > **Total color accent must stay under 10% of canvas** — this is what makes mono-ink "mono".
 
-## Special: deviates from deck HEX
+---
+
+## 3. Special: deviates from deck HEX
 
 mono-ink is the palette **most likely to override `design_spec.colors`**:
 
@@ -35,11 +39,15 @@ mono-ink is the palette **most likely to override `design_spec.colors`**:
 
 When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink palette intentionally uses near-black on white as the structural language; the deck's primary `#XXX` and secondary `#XXX` are not represented as image colors. The deck's accent `#XXX` is reserved for the semantic emphasis role under 10% of canvas."
 
-## How to phrase it in a prompt
+---
+
+## 4. How to phrase it in a prompt
 
 > "Color behavior is mono-ink: pure white background `#FFFFFF` (about 55%). All structural elements — lines, figures, hand-lettered text, arrows — in near-black ink `#1A1A1A` (about 38%). The deck's accent color `#E8655A` is reserved as the semantic emphasis accent, appearing in 1-3 small focal points totaling under 8% of canvas. No other colors. The deck's primary and secondary HEX values are intentionally not represented as image colors in this palette."
 
-## Compatible renderings
+---
+
+## 5. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -52,7 +60,9 @@ When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink 
 | ✗ corporate-photo | Photography can't be mono-ink |
 | ✗ chalkboard | Mono-ink is white-paper-black-ink; chalkboard is opposite |
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — applied to an ink-notes Before/After comparison**
 
@@ -62,7 +72,9 @@ When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink 
 
 > [...rendering paragraph...] Color behavior is mono-ink: pure white background `#FFFFFF` (about 58%); central frame, sub-components, connector arrows, and stick-figure labels in near-black ink `#1A1A1A` (about 38%). The deck's accent `#D4AF37` appears only as a single thin emphasis ring around the central frame — about 4% of canvas. No other color. The deck's primary and secondary are not represented as image colors in this manifesto-style palette. [...container guidance...]
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - Adding the deck's primary or secondary as image colors (defeats mono-ink discipline)
 - Color accent exceeding 10% of canvas
@@ -70,7 +82,9 @@ When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink 
 - Cream or warm paper (that's `sketch-notes` / `warm-earth`, not mono-ink)
 - Saturated digital feeling (mono-ink is paper-and-ink)
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For warm educational feel → `macaron` palette + `sketch-notes` rendering
 - For broader color use → any other palette

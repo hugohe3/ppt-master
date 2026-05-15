@@ -4,7 +4,7 @@ A central concept surrounded by related sub-concepts, or a multi-component syste
 
 > **What framework means inside a PPT block**: the image *itself* is a small relational diagram — central hub + radiating satellites, or a labeled matrix, or a layered stack. The PPT page's slide layout (where this image sits, what text accompanies it) is a separate decision. This file only governs what's *inside* the image rectangle.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 Three valid sub-structures. Pick one per image; do not mix.
 
@@ -53,7 +53,9 @@ Three valid sub-structures. Pick one per image; do not mix.
 | ELEMENTS | Each layer has a consistent visual treatment; one icon or shape per layer |
 | NEGATIVE SPACE | Equal-height bands with consistent gap between them; top and bottom padding to canvas edge |
 
-## Container sizing for local PPT inserts
+---
+
+## 2. Container sizing for local PPT inserts
 
 | Embedded position | Canvas | Aspect | Sub-structure fit |
 |---|---|---|---|
@@ -64,7 +66,9 @@ Three valid sub-structures. Pick one per image; do not mix.
 
 Inner padding: 15-18% on all sides. Framework imagery suffers most when satellites/cells push against the canvas edge.
 
-## Text-policy variants
+---
+
+## 3. Text-policy variants
 
 ### `text_policy: none` (default — recommended for most decks)
 
@@ -87,7 +91,9 @@ Sample fragment:
 
 > Each satellite includes a single short hand-lettered keyword in English (≤2 words) — e.g. "data", "process", "growth". Keywords are part of the artwork, not labels. No long sentences, no numbers, no Chinese characters (most models render CJK characters incorrectly).
 
-## Fewshot prompt snippets
+---
+
+## 4. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, hub-and-spokes, `text_policy: none`, 700×700 half-page**
 
@@ -97,7 +103,9 @@ Sample fragment:
 
 > Warm cream paper background `#F5F0E8` with subtle paper texture. Black hand-drawn lines with slight wobble, à la sketch-notes / hand-lettered educational style. Composition is a 2×2 matrix — four rounded rectangles arranged in a grid, each cell filled with a different pastel block color (light blue, mint, lavender, peach). Each cell contains one simple hand-drawn cartoon icon (a lightbulb, a chart, a person, a target) and one short hand-lettered English keyword (e.g. "ideas", "data", "team", "goal") — 1-2 words per cell maximum. Cells are separated by hand-drawn dividers with slight wobble. Generous white space around the matrix — internal cell content occupies the inner 70% of each cell. Color values are rendering guidance only — do not display HEX codes or color names as text. Hand-lettered keywords only in English; no long sentences, no numbers, no Chinese characters. Composed as a 700×700 half-page block with 18% inner padding on all sides.
 
-## Common failure modes
+---
+
+## 5. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -108,7 +116,9 @@ Sample fragment:
 | Garbled CJK characters in `embedded` | Chinese keywords requested | Switch keywords to English or accept manual regen |
 | Image too dense, no room for SVG overlay | Padding rule omitted | Restate "15-18% inner padding on all sides, central content occupies inner 70%" |
 
-## When to switch away from framework
+---
+
+## 6. When to switch away from framework
 
 - If the structure is **sequential / stepwise**, use `flowchart`
 - If the structure is **two competing options**, use `comparison`

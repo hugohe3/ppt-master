@@ -4,7 +4,7 @@ Split composition showing two opposing sides — left vs right, before vs after,
 
 > **What comparison means inside a PPT block**: the image internally has **two symmetric or near-symmetric halves** with clear divider. Each half represents one option/state. Unlike all other types, comparison's signature is the **explicit duality**.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 Two sub-structures:
 
@@ -37,7 +37,9 @@ Two sub-structures:
 | NEGATIVE SPACE | 12-15% padding on the outer edges; the divider may be a thin line, geometric shape, or simply negative space |
 | DIVIDER | Clean — a hand-drawn line, a vertical rule, a geometric shape, or just empty space. Should feel intentional |
 
-## Container sizing for local PPT inserts
+---
+
+## 2. Container sizing for local PPT inserts
 
 | Use | Canvas | Aspect | Sub-structure fit |
 |---|---|---|---|
@@ -48,7 +50,9 @@ Two sub-structures:
 
 Inner padding: 12-15% per side.
 
-## Text-policy variants
+---
+
+## 3. Text-policy variants
 
 ### `text_policy: none`
 
@@ -60,7 +64,9 @@ Each side may contain short hand-lettered labels: "BEFORE" / "AFTER" at the top,
 
 > ink-notes + comparison + embedded is a classic combination — the "manifesto Before/After" page.
 
-## Fewshot prompt snippets
+---
+
+## 4. Fewshot prompt snippets
 
 **Snippet A — ink-notes + mono-ink, Before/After horizontal split, text_policy: embedded, 1200×500**
 
@@ -70,7 +76,9 @@ Each side may contain short hand-lettered labels: "BEFORE" / "AFTER" at the top,
 
 > Clean flat vector illustration comparison. Composition is a horizontal split with a thin vertical accent gold `#D4AF37` divider line down the center. Both halves use crisp vector geometry on a secondary light gray `#F8F9FA` background. Left half contains a stylized geometric form representing Option A — three stacked rectangles in primary deep navy `#1E3A5F` with crisp 2px outlines, soft 8% drop shadow. Right half contains a contrasting geometric form representing Option B — a single larger rounded square in the same navy with one accent gold corner highlight (about 4% area). Both halves are visually balanced — same total visual weight, different structural treatment. Composed as a 600×500 half-page block with 14% inner padding. NO text or labels — SVG labels added externally. Color values are rendering guidance only.
 
-## Common failure modes
+---
+
+## 5. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -80,7 +88,9 @@ Each side may contain short hand-lettered labels: "BEFORE" / "AFTER" at the top,
 | Mixed text in `none` policy | Text discipline weak | Reaffirm "no labels or text in image — left/right labels added in SVG overlay" |
 | CJK garbled in embedded | Chinese used | Switch to English short labels |
 
-## When to switch away from comparison
+---
+
+## 6. When to switch away from comparison
 
 - If three+ options → `infographic` (parallel zones)
 - If sequential transformation (no fixed before/after) → `flowchart`

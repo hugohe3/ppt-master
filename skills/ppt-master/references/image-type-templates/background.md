@@ -4,7 +4,7 @@ Atmospheric backdrop with **no central subject**. The image's job is to set tone
 
 > **What background means inside a PPT block**: the image is **all atmosphere, no subject**. Unlike `hero`, there is no dominant figure. Unlike `infographic`, there are no labeled zones. Background is pure ambience.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 ```
    ┌────────────────────────────────────┐
@@ -24,7 +24,9 @@ Atmospheric backdrop with **no central subject**. The image's job is to set tone
 | NEGATIVE SPACE | The center 60-70% must be calm — low visual weight, ready to receive SVG title/text overlay |
 | TEMPERAMENT | Sets the deck's overall tone: corporate-restrained, warm-friendly, tech-energetic, etc. |
 
-## Container sizing for local PPT inserts
+---
+
+## 2. Container sizing for local PPT inserts
 
 | Use | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -35,7 +37,9 @@ Atmospheric backdrop with **no central subject**. The image's job is to set tone
 
 > Backgrounds are nearly always used full-bleed within a slide — but `page_role` stays `local` because SVG text overlays the image. Only use `page_role: full_page` when the user explicitly wants no SVG content on top.
 
-## Text-policy variants
+---
+
+## 3. Text-policy variants
 
 ### `text_policy: none` (essentially always)
 
@@ -49,7 +53,9 @@ Sample fragment:
 
 Only when the user explicitly wants a "headline-on-textured-bg" effect — but in PPT Master this is almost always better as `typography` type or as `hero` type. Re-evaluate the type choice before using embedded text policy on background.
 
-## Fewshot prompt snippets
+---
+
+## 4. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate cover background, text_policy: none, 1280×720**
 
@@ -59,7 +65,9 @@ Only when the user explicitly wants a "headline-on-textured-bg" effect — but i
 
 > Watercolor painting style background. Soft warm washes flow across the canvas with no central subject — gentle horizontal bands of color. Upper third: pale cream `#FEF3C7` (mostly untouched paper). Middle band: soft amber `#D97706` with natural color pooling and bleeding edges. Lower third: deeper warm terracotta `#9A3412` with subtle paper grain at 15% opacity. No defined forms — just atmospheric color flow. The central 60% of the canvas is calm enough for slide title overlay. Composed as a 1280×720 full-bleed chapter divider background. NO text anywhere in the image. Color values are rendering guidance only.
 
-## Common failure modes
+---
+
+## 5. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -68,7 +76,9 @@ Only when the user explicitly wants a "headline-on-textured-bg" effect — but i
 | Generic / forgettable image | Atmosphere was vague | Strengthen with specific atmospheric mood (golden-hour, digital-twilight, paper-and-ink) |
 | Text appeared anyway | `text_policy: none` rule too weak | Strengthen with full exclusion list |
 
-## When to switch away from background
+---
+
+## 6. When to switch away from background
 
 - If the image needs a **dominant subject** → `hero`
 - If the image carries **structured information** → `infographic`, `framework`, `flowchart`, `comparison`, `timeline`

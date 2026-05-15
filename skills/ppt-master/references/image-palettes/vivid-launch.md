@@ -4,7 +4,7 @@ Bold, saturated, attention-grabbing. The palette for product launches, marketing
 
 > This file describes **color behavior**, not HEX values.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ Bold, saturated, attention-grabbing. The palette for product launches, marketing
 | Mood | Energetic, confident, promotional, attention-first |
 | Material | Flat saturated fills |
 
-## Proportion rule (40-35-25, vivid-balanced)
+---
+
+## 2. Proportion rule (40-35-25, vivid-balanced)
 
 | Role | Share | HEX from `design_spec` | Behavior |
 |---|---|---|---|
@@ -24,17 +26,23 @@ Bold, saturated, attention-grabbing. The palette for product launches, marketing
 
 > vivid-launch is the **most accent-generous** palette — promotional context tolerates strong color presence.
 
-## Role semantics
+---
+
+## 3. Role semantics
 
 - **Primary** is the brand lead — the vivid signature of the launch.
 - **Secondary** is the bright supporting field — should feel "open" and "celebrate".
 - **Accent** is the co-star — bold, generous, attention-grabbing. Can take much more area than other palettes' accents.
 
-## How to phrase it in a prompt
+---
+
+## 4. How to phrase it in a prompt
 
 > "Color behavior is vivid-launch: secondary near-white `#FAFAFA` (about 40%) carries the bright field; primary saturated brand magenta `#E11D48` carries dominant shapes in confident vivid blocks (about 35%); accent vivid orange `#F97316` is a co-star color appearing in 25% of the canvas as a major secondary subject. All colors are intentionally saturated and bold. Promotional, attention-grabbing temperament."
 
-## Compatible renderings
+---
+
+## 5. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -48,7 +56,9 @@ Bold, saturated, attention-grabbing. The palette for product launches, marketing
 | ✗ sketch-notes / ink-notes / nature | Wrong temperament — those are restrained |
 | ✗ watercolor / warm-scene | Wrong saturation level |
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — applied to a flat marketing hero**
 
@@ -58,13 +68,17 @@ Bold, saturated, attention-grabbing. The palette for product launches, marketing
 
 > [...rendering paragraph...] Color behavior is vivid-launch: secondary bright cream `#FEF3C7` background plane (about 35%); primary vivid teal `#0F766E` on the main product block's lit faces (about 38%, with darker teal shaded faces); accent vivid coral `#F97316` on a secondary product block — a co-star not a small detail (about 25%). Bold, confident, promotional. Soft 8% drop shadows for depth. [...container guidance...]
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - Pastel / muted colors (defeats the vividness)
 - Restrained accent (vivid-launch wants accent as co-star)
 - More than 4 distinct vivid colors (becomes carnival rather than launch)
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For restrained corporate → `cool-corporate`
 - For warm story → `warm-earth`

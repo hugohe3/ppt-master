@@ -4,7 +4,7 @@
 
 > **What infographic means inside a PPT block**: the image internally is a 2-5-zone information panel. Unlike `framework` (hub + radiating satellites) or `flowchart` (sequential with arrows), infographic has **parallel zones** without strict ordering or directional flow.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 Two sub-structures:
 
@@ -34,7 +34,9 @@ Two sub-structures:
 | NEGATIVE SPACE | Generous between zones (10-15% gutters) and inside each zone (60-70% of zone for content, rest as padding) |
 | BALANCE | Zones are visually equal — no zone dominates |
 
-## Container sizing for local PPT inserts
+---
+
+## 2. Container sizing for local PPT inserts
 
 | Use | Canvas | Aspect | Sub-structure fit |
 |---|---|---|---|
@@ -45,7 +47,9 @@ Two sub-structures:
 
 Inner padding: 14-18%.
 
-## Text-policy variants
+---
+
+## 3. Text-policy variants
 
 ### `text_policy: none`
 
@@ -63,7 +67,9 @@ Sample fragment:
 
 > Each zone contains one iconic symbol and one short hand-lettered English keyword (1-2 words, e.g. "Speed", "Reach", "Trust"). Keywords are part of the artwork. No long sentences, no numbers, no Chinese characters.
 
-## Fewshot prompt snippets
+---
+
+## 4. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, 2×2 grid, text_policy: none, 600×600**
 
@@ -73,7 +79,9 @@ Sample fragment:
 
 > Warm hand-drawn sketchnote infographic on warm cream paper background `#F5F0E8`. Three rounded-rectangle zones arranged vertically with hand-drawn black ink wobbly outlines. Each zone has a different soft pastel fill (light blue top, mint middle, peach bottom) with slight hand-painted overshoot beyond outlines. Each zone contains one simple hand-drawn cartoon icon and one short hand-lettered English keyword: top zone with a lightbulb icon and "IDEAS", middle zone with a person icon and "TEAM", bottom zone with an upward arrow and "GROWTH". Hand-drawn wavy connector lines between zones (subtle). Small doodle decorations (a star, a dot) sparingly around the composition. Composed as a 500×700 vertical block with 16% inner padding. Hand-lettered text in English only, no numbers, no Chinese characters. Color values are rendering guidance only.
 
-## Common failure modes
+---
+
+## 5. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -83,7 +91,9 @@ Sample fragment:
 | Connector lines appearing (becomes framework/flowchart) | Composition drift | Reaffirm "zones are parallel and equal — no connector lines, no arrows, no directional flow" |
 | Center is overcrowded in radial | Center anchor too large | "Small center anchor only — satellites carry the content" |
 
-## When to switch away from infographic
+---
+
+## 6. When to switch away from infographic
 
 - If structure is **central hub + radiating elements** → `framework`
 - If structure is **sequential with arrows** → `flowchart`

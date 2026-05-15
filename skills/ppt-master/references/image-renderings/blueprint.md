@@ -2,11 +2,13 @@
 
 Technical schematic aesthetic — clean lines on a grid, monospace cues, restrained color. Conveys engineering precision and analytical depth. Used for architecture diagrams, AI systems, engineering decks, technical deep-dives.
 
-## Style paragraph (paste-ready, 95 words)
+## 1. Style paragraph (paste-ready, 95 words)
 
 > Technical blueprint schematic style. Clean precise lines on an implied or subtle grid, with deliberate geometric rigor — right angles, parallel rules, measured spacing. Elements are simplified to essential schematic forms — boxes, rounded rectangles, connector lines, anchor dots, callout markers. Color is restrained, often near-monochrome with one or two semantic accents (one color for "primary path", one for "alternate" or "warning"). Optional subtle grid background at very low opacity (5-8%) reinforces the schematic feel. No textures, no shading, no painterly artifacts. Overall feel is engineering-precise, analytical, intentional — common in system design and architecture briefings.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Technical schematic aesthetic — clean lines on a grid, monospace cues, restrai
 | Material | None — abstract schematic |
 | Mood | Analytical, engineering-precise, restrained |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -25,14 +29,18 @@ Technical schematic aesthetic — clean lines on a grid, monospace cues, restrai
 | Square component | 700×700 | 1:1 | 15% |
 | Spot schematic | 400×400 | 1:1 | 12% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 - Primary HEX: main schematic lines and primary boxes
 - Secondary HEX: background (often near-white, or very pale blue if a blueprint mood is wanted)
 - Accent HEX: highlighted path / warning / focus element
 - Optional grid: secondary HEX at 5-8% opacity
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — half-page system architecture, text_policy: none**
 
@@ -42,14 +50,18 @@ Technical schematic aesthetic — clean lines on a grid, monospace cues, restrai
 
 > Technical blueprint pipeline schematic, banner format. Five rounded rectangle stages arranged horizontally across the canvas, connected by precise arrow-headed lines. All stages use 1.5px primary teal `#0F766E` stroke on a near-white background `#FAFAFA`. The third stage (center) is rendered with accent gold `#D4AF37` stroke as the focal stage. A subtle 6%-opacity grid background reinforces the schematic feel. Small anchor dots at every line junction. Each stage contains one iconic symbol — input arrow, gear, magnifier, transform symbol, output arrow — in monoline schematic style. Composed for a 1200×500 hero band with 12% inner padding. NO text or labels anywhere. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Realistic textures or materials
 - Decorative flourishes — blueprint is intentionally austere
 - More than 2 accent colors — restraint is the aesthetic
 - Cluttered diagrams (>8 components)
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For 3D depth on technical visuals → `3d-isometric`
 - For product UI / dashboard surfaces → `digital-dashboard`

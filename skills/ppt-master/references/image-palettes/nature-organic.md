@@ -4,7 +4,7 @@ Earthy, natural, wellness. The palette for environment / sustainability / wellne
 
 > This file describes **color behavior**, not HEX values.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ Earthy, natural, wellness. The palette for environment / sustainability / wellne
 | Mood | Grounded, natural, sustainable, contemplative |
 | Material | Soft natural textures permitted |
 
-## Proportion rule (50-35-15, earthy)
+---
+
+## 2. Proportion rule (50-35-15, earthy)
 
 | Role | Share | HEX from `design_spec` | Behavior |
 |---|---|---|---|
@@ -22,17 +24,23 @@ Earthy, natural, wellness. The palette for environment / sustainability / wellne
 | Primary natural color | **30-40%** | `primary` | Deep forest green, deep earth brown, warm terracotta. Dominant natural element. |
 | Accent natural pop | **10-15%** | `accent` | A small natural pop — golden honey, soft coral, deep autumn red. Often used as a fruit, flower, or warm detail. |
 
-## Role semantics
+---
+
+## 3. Role semantics
 
 - **Primary** is the natural anchor — the dominant earth color (greens for forest/wellness, browns/terracottas for earth/agriculture).
 - **Secondary** is the natural breath — soft cream or sage carrying outdoor warmth.
 - **Accent** is a small natural detail — never artificial-bright, always feels found-in-nature.
 
-## How to phrase it in a prompt
+---
+
+## 4. How to phrase it in a prompt
 
 > "Color behavior is nature-organic: secondary soft cream `#FEF3C7` covers the background field as gentle outdoor breath (about 50%). Primary deep forest green `#166534` carries the dominant natural forms — foliage, hills, organic shapes (about 35%). Accent warm honey `#D4AF37` appears in small natural detail pops — a flower, a fruit, a sunlit highlight (about 13%). All tones feel earthy and slightly desaturated, like a sustainable wellness palette."
 
-## Compatible renderings
+---
+
+## 5. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -46,7 +54,9 @@ Earthy, natural, wellness. The palette for environment / sustainability / wellne
 | ✗ tech-neon / dark-cinematic / digital-dashboard / blueprint | Wrong temperament |
 | ✗ pixel-art | Earth feel doesn't fit pixel grid |
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — applied to a nature illustration**
 
@@ -56,14 +66,18 @@ Earthy, natural, wellness. The palette for environment / sustainability / wellne
 
 > [...rendering paragraph...] Color behavior is nature-organic photography: image is graded toward soft outdoor warmth. Cream `#FEF3C7` highlights in the sky/background (about 50%). Primary forest green `#166534` in foliage and natural elements (about 33%). Accent warm honey `#D97706` in golden hour light hitting key surfaces (about 14%). All tones earthy, slightly desaturated, wellness-quality. [...container guidance...]
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - Artificial / neon greens (defeats natural earth feel)
 - Sterile / clinical backgrounds (nature wants warmth)
 - Industrial / tech subjects (wrong palette family)
 - Too-saturated accents
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For corporate / consulting → `cool-corporate`
 - For broader warm storytelling → `warm-earth`

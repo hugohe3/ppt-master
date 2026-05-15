@@ -8,9 +8,9 @@ Role definition for the **AI image generation path**: convert each `Acquire Via:
 
 ---
 
-## 0. Core Principle — All AI Images Are Local Inserts
+## 1. Core Principle — All AI Images Are Local Inserts
 
-**HARD RULE**: AI-generated images in PPT Master are **local visual blocks** embedded inside SVG pages (left-half illustration, hero banner, background under text, accent spot). They are **not** standalone full-page outputs.
+**Hard rule**: AI-generated images in PPT Master are **local visual blocks** embedded inside SVG pages (left-half illustration, hero banner, background under text, accent spot). They are **not** standalone full-page outputs.
 
 | What this means |
 |---|
@@ -23,7 +23,7 @@ Role definition for the **AI image generation path**: convert each `Acquire Via:
 
 ---
 
-## 1. Three Dimensions
+## 2. Three Dimensions
 
 Every AI image is described by three orthogonal dimensions. Lock them in this order: **Rendering** (deck-wide) → **Palette** (deck-wide) → **Type** (per image).
 
@@ -35,7 +35,7 @@ Every AI image is described by three orthogonal dimensions. Lock them in this or
 
 > **What rendering vs palette means**: rendering is *how the image is drawn* (line quality, texture, depth). Palette is *how colors are distributed and behave* (which color dominates, which is accent, what proportion). The HEX values come from Strategist; palette is the **usage contract** for those HEX values.
 
-### 1.1 Where to find each dimension
+### 2.1 Where to find each dimension
 
 | Reference | Loaded |
 |---|---|
@@ -54,7 +54,7 @@ Every AI image is described by three orthogonal dimensions. Lock them in this or
 
 ---
 
-## 2. Workflow
+## 3. Workflow
 
 ### Step 1 — Load the dimension indices
 
@@ -109,17 +109,17 @@ For each `Acquire Via: ai` row in `design_spec.md §VIII`:
    - The type's structural layout (from Step 3)
    - The image's specific `Reference` intent (from `design_spec.md §VIII`)
    - The container sizing guidance from the type file (so the model knows it's painting a local block, not a full canvas)
-   - The hard rules from §3 below (HEX-not-as-text, simplified figures, text policy)
+   - The hard rules from §5 below (HEX-not-as-text, simplified figures, text policy)
 
-The assembled prompt is **one cohesive paragraph**, not a bulleted list of tags. See §1.2 for the assembly template.
+The assembled prompt is **one cohesive paragraph**, not a bulleted list of tags. See §4 for the assembly template.
 
 ### Step 4 — Write the manifest and generate
 
-Write `project/images/image_prompts.json` per §4. Then run `image_gen.py --manifest` (§3.2 Path A). The CLI iterates `items[]`, writes status back, and re-renders the Markdown sidecar.
+Write `project/images/image_prompts.json` per §6. Then run `image_gen.py --manifest` (§7 Path A). The CLI iterates `items[]`, writes status back, and re-renders the Markdown sidecar.
 
 ---
 
-## 1.2 Prompt Assembly Template
+## 4. Prompt Assembly Template
 
 Every assembled prompt follows this paragraph structure. **Write prose, not tag soup**.
 
@@ -129,7 +129,7 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 [Type-specific composition — from the chosen type file, e.g. "central hub node with four radiating satellite nodes connected by clean lines"].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
 [Container reminder — "composed as a local visual block with 15% padding on all sides, designed to be embedded within a slide region of roughly {W}x{H}px, leaves negative space around edges"].
-[Hard rules — see §3].
+[Hard rules — see §5].
 ```
 
 **Word budget**: 150-250 words for `text_policy: none` images, 180-300 words for `text_policy: embedded` images.
@@ -144,11 +144,11 @@ This produces generic, model-average output. The model is not weighting your tag
 
 ---
 
-## 3. Global Hard Rules
+## 5. Global Hard Rules
 
 These rules apply to **every** prompt regardless of dimension choices. Append them as a closing sentence to every assembled prompt.
 
-### 3.1 HEX is rendering guidance, not text
+### 5.1 HEX is rendering guidance, not text
 
 Image generation models occasionally paint color names and HEX values as **visible labels in the image** (a `#1E3A5F` swatch literally drawn as the string "#1E3A5F"). This destroys the image.
 
@@ -156,7 +156,7 @@ Image generation models occasionally paint color names and HEX values as **visib
 
 > Color values (HEX codes like #1E3A5F) and color names are rendering guidance only — do NOT display HEX codes, color names, or palette labels as visible text anywhere in the image.
 
-### 3.2 Simplified human figures, no realistic faces
+### 5.2 Simplified human figures, no realistic faces
 
 When the image contains people:
 
@@ -164,7 +164,7 @@ When the image contains people:
 
 Exception: when the chosen rendering is `corporate-photo`, photorealism is intentional — replace the above with: `Diverse, professionally attired subjects. Editorial photography style, natural composition`.
 
-### 3.3 Text policy — none vs embedded
+### 5.3 Text policy — none vs embedded
 
 | `text_policy` | What the image contains | Append to prompt |
 |---|---|---|
@@ -173,17 +173,17 @@ Exception: when the chosen rendering is `corporate-photo`, photorealism is inten
 
 **CJK warning**: most image models cannot render Chinese characters correctly. For `text_policy: embedded` on a CJK-language deck, either (a) use English keywords, or (b) accept that the model will produce garbled-looking glyphs and the user must regenerate or fix manually.
 
-### 3.4 No brand names or trademarks in the subject
+### 5.4 No brand names or trademarks in the subject
 
 > The image must not depict identifiable brand logos, trademarks, or product likenesses unless the row's Reference explicitly names a real brand asset the user owns.
 
-### 3.5 Deck-wide visual coherence
+### 5.5 Deck-wide visual coherence
 
 Every AI image in one deck shares **one** rendering and **one** palette. Mixing renderings across images in the same deck destroys visual coherence. If a single image truly needs a different rendering (e.g. a corporate-photo team shot alongside otherwise vector-illustration imagery), record this as an exception in the row's `Reference` and isolate it to that one image.
 
 ---
 
-## 4. Manifest Schema
+## 6. Manifest Schema
 
 Write `project/images/image_prompts.json` with this shape:
 
@@ -207,7 +207,7 @@ Write `project/images/image_prompts.json` with this shape:
       "text_policy": "none",
       "aspect_ratio": "16:9",
       "image_size": "2K",
-      "prompt": "{fully assembled paragraph per §1.2}",
+      "prompt": "{fully assembled paragraph per §4}",
       "alt_text": "Modern tech abstract background with deep blue gradient and digital waves",
       "status": "Pending"
     }
@@ -227,7 +227,7 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].page_role` | yes | Step 3 per-image | `local` (default) or `full_page` (escape hatch only) |
 | `items[].text_policy` | yes | Step 3 per-image | `none` (default for most) or `embedded` (rare) |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
-| `items[].prompt` | yes | §1.2 assembly | The full assembled paragraph |
+| `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |
 | `items[].alt_text` | no | Accessibility | Short caption |
 | `items[].status` | yes | CLI manages | `Pending` initially; CLI updates to `Generated` / `Failed` / `Needs-Manual` |
@@ -236,9 +236,9 @@ Write `project/images/image_prompts.json` with this shape:
 
 ---
 
-## 3.2 Generation Execution
+## 7. Generation Execution
 
-> Prerequisite: §2 Steps 1-3 complete; `images/image_prompts.json` exists and validates.
+> Prerequisite: §3 Steps 1-3 complete; `images/image_prompts.json` exists and validates.
 
 ### Path Selection (Deterministic)
 
@@ -365,7 +365,7 @@ If Path A's backend fails twice in a row:
 
 ---
 
-## 5. Common Issues & Variant Workflow
+## 8. Common Issues & Variant Workflow
 
 ### Default Inference When No `Reference` Provided
 
@@ -385,14 +385,14 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 
 | Symptom | Most likely cause | Adjustment |
 |---|---|---|
-| Image looks generic, model-average | Tag-soup prompt | Rewrite as one coherent paragraph per §1.2 |
+| Image looks generic, model-average | Tag-soup prompt | Rewrite as one coherent paragraph per §4 |
 | Wrong style family (looks photorealistic when flat was intended) | Rendering mismatch or rendering paragraph diluted | Reaffirm chosen rendering's style paragraph at the top of the prompt |
 | Colors don't match deck | HEX not echoed in prompt, or palette proportion rule omitted | Repeat HEX values 2-3 times in the prompt; restate palette proportion rule |
-| Hex code or color name visible as text in image | Missing §3.1 closing sentence | Append the §3.1 hard rule verbatim |
+| Hex code or color name visible as text in image | Missing §5.1 closing sentence | Append the §5.1 hard rule verbatim |
 | Garbled letters in supposedly text-free image | `text_policy: none` rule too weak | Strengthen with explicit list: "no letters, no numbers, no words, no signs, no labels, no captions, no watermarks" |
 | Composition too busy, no room for SVG overlay | Missing container reminder | Add explicit "leaves at least 30% negative space in the {center / left third / lower band} for text overlay" |
 | Subject vague | Reference field too abstract | Rewrite reference with concrete nouns (verbs + objects) |
-| Faces too realistic / uncanny | §3.2 rule omitted, or rendering is photo-incompatible | Either append §3.2, or switch rendering to a non-photo family |
+| Faces too realistic / uncanny | §5.2 rule omitted, or rendering is photo-incompatible | Either append §5.2, or switch rendering to a non-photo family |
 
 **Variant workflow**:
 
@@ -402,7 +402,7 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 
 ---
 
-## 6. Forbidden
+## 9. Forbidden
 
 - Generating prompts for `web` rows — those go through [`image-searcher.md`](./image-searcher.md)
 - Brand names or HEX codes inside the subject description (degrades output)

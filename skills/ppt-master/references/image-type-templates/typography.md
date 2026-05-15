@@ -4,7 +4,7 @@ A large headline, number, or single word as the primary visual. The text itself 
 
 > **What typography means inside a PPT block**: the image's primary content is a piece of text rendered as art. Unlike all other types where text is forbidden or minimal, typography **requires** text — and that text is the visual anchor.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 ```
    ┌────────────────────────────────────┐
@@ -25,7 +25,9 @@ A large headline, number, or single word as the primary visual. The text itself 
 | NEGATIVE SPACE | Generous around the text — at least 20% padding |
 | TEXT CHARACTER | Rendered with intention — confident weight, deliberate spacing, may have texture/style matching deck rendering |
 
-## Critical: text accuracy
+---
+
+## 2. Critical: text accuracy
 
 Image models have **variable accuracy on text rendering**:
 
@@ -46,7 +48,9 @@ Image models have **variable accuracy on text rendering**:
 
 When the desired headline is long or CJK: switch to `background` type and overlay the headline as SVG text.
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Use | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -55,7 +59,9 @@ When the desired headline is long or CJK: switch to `background` type and overla
 | Hero slogan banner | 1200×500 | 2.4:1 | 18% |
 | Square emphasis | 700×700 | 1:1 | 20% |
 
-## Text-policy variants
+---
+
+## 4. Text-policy variants
 
 ### `text_policy: embedded` (required)
 
@@ -69,7 +75,9 @@ Sample fragment:
 
 If text_policy is none, this isn't typography — switch to `background` or `hero`.
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — ink-notes + mono-ink big-number stat, text_policy: embedded, 800×500**
 
@@ -79,7 +87,9 @@ If text_policy is none, this isn't typography — switch to `background` or `her
 
 > Clean flat vector illustration banner. The image's central content is the bold word "SCALE" — rendered as a large geometric block-letter headline in primary deep navy `#1E3A5F`, occupying about 45% of the canvas height, centered. Letters have crisp vector edges (sans-serif geometric character). Beneath the word, a thin accent gold `#D4AF37` horizontal rule (about 60% of word width). Background is calm secondary light gray `#F8F9FA`. No supporting visuals beyond the rule. Composed as a 1200×500 hero typography banner with 18% padding. Text is English only (5 characters). Color values are rendering guidance — do not paint HEX codes or color names as additional text.
 
-## Common failure modes
+---
+
+## 6. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -89,7 +99,9 @@ If text_policy is none, this isn't typography — switch to `background` or `her
 | Text too small | Size rule omitted | Restate "headline text occupies 40-60% of canvas height" |
 | Decorative elements distract | Supporting visuals too prominent | Reaffirm "supporting visuals minimal, under 25% of canvas weight" |
 
-## When to switch away from typography
+---
+
+## 7. When to switch away from typography
 
 - If text is long / CJK → use `background` type + SVG text overlay
 - If image is a dominant subject (not text) → `hero`

@@ -2,11 +2,13 @@
 
 Editorial photography style — real subjects, natural composition, professional grading. The only rendering where photorealism is intentional. Used for team photos, lifestyle shots, product photography, real-world scenarios.
 
-## Style paragraph (paste-ready, 100 words)
+## 1. Style paragraph (paste-ready, 100 words)
 
 > Editorial photography style with natural composition and professional color grading. Subjects appear as real people, real products, real environments — captured with depth-of-field and intentional lighting. Composition follows photographic principles: rule of thirds, leading lines, deliberate foreground/background separation. Lighting is natural or studio-soft, never harsh. Color grading matches the deck's palette temperament — corporate decks lean cool and restrained, lifestyle decks lean warm and golden. Subjects in team or workplace contexts appear diverse and professionally attired. Background is contextual and slightly blurred to keep focus on the subject. Overall feel is authentic, premium, magazine-quality.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,15 +18,19 @@ Editorial photography style — real subjects, natural composition, professional
 | Material | Real-world physical materials, professionally lit |
 | Mood | Authentic, premium, magazine-editorial |
 
-## ⚠️ Exception to global hard rule §3.2
+---
 
-corporate-photo **overrides** the global "simplified silhouettes / no realistic faces" rule (image-generator.md §3.2). For this rendering, append instead:
+## 3. Exception to global hard rule §5.2
+
+corporate-photo **overrides** the global "simplified silhouettes / no realistic faces" rule (image-generator.md §5.2). For this rendering, append instead:
 
 > Diverse, professionally attired subjects rendered photorealistically. Editorial photography composition, natural light or soft studio lighting. Subjects appear authentic and contemporary — no posed stock-photo stiffness, no exaggerated expressions, no fashion-shoot artificiality.
 
 All other renderings keep the simplified-figure rule.
 
-## Container sizing for local PPT inserts
+---
+
+## 4. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -33,7 +39,9 @@ All other renderings keep the simplified-figure rule.
 | Spot portrait | 400×500 | 4:5 | 8% |
 | Full-bleed product hero | 1280×720 | 16:9 | 8% |
 
-## Using the deck's HEX values
+---
+
+## 5. Using the deck's HEX values
 
 corporate-photo's relationship to HEX is **color grading**, not color fills:
 
@@ -42,7 +50,9 @@ corporate-photo's relationship to HEX is **color grading**, not color fills:
 - Accent HEX: a subtle environment color (a sweater, a wall accent, a product detail) that picks up the deck's accent
 - HEX values appear as **color cues** in the description, not as literal HEX strings in the image
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — team workplace photo, text_policy: none**
 
@@ -52,7 +62,9 @@ corporate-photo's relationship to HEX is **color grading**, not color fills:
 
 > Editorial product photography of a sleek consumer device on a contemporary desk. Soft natural light from the upper left, gentle shadow cast to the lower right. Wood desk surface in warm beige tones, with a notebook and a cup of coffee in supporting context — slightly out of focus to keep attention on the device. Color grading is warm-editorial — image leans toward soft amber and cream, with the device itself catching a subtle highlight of accent terracotta `#C2410C`. Background wall in calm secondary cream `#FEF3C7`, gently blurred. Shallow depth of field. Composed as a 600×800 half-page block with 8% inner padding. Photorealistic, magazine-editorial quality. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - Stock-photo stiffness (forced smiles, frozen handshakes, fake-laughing meetings)
 - Fashion-shoot artificiality (over-styled, over-lit, model-pose)
@@ -60,7 +72,9 @@ corporate-photo's relationship to HEX is **color grading**, not color fills:
 - Visible brand logos on products unless explicitly intended
 - Overly homogeneous casting (all same age, ethnicity, gender)
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For abstract / concept work → `vector-illustration`, `flat`, or `3d-isometric`
 - For atmospheric narrative scenes (not photography) → `warm-scene` or `watercolor`

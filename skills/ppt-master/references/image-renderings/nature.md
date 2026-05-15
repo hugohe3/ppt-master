@@ -2,11 +2,13 @@
 
 Organic earthy illustration with botanical and natural motifs. Soft curves, organic shapes, earth-toned palette by default. Used for environmental / sustainability / wellness / outdoor / food / agriculture decks.
 
-## Style paragraph (paste-ready, 95 words)
+## 1. Style paragraph (paste-ready, 95 words)
 
 > Organic illustration style with botanical and natural motifs. Forms are softly curved and asymmetric — leaves, branches, organic curves, irregular shapes that feel grown rather than drawn. Color palette leans earthy and slightly muted — forest greens, warm earth browns, terracotta, soft cream, occasional sky blue. Outlines are minimal or absent; forms are defined by color and texture. Subtle organic textures (leaf veins, wood grain, stone speckle) appear sparingly. Composition emphasizes natural balance and breathing room — never grid-aligned. Overall feel is grounded, contemplative, sustainable — well suited to wellness, environmental, and outdoor content.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Organic earthy illustration with botanical and natural motifs. Soft curves, orga
 | Material | Earth-toned illustration |
 | Mood | Grounded, contemplative, sustainable |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -24,7 +28,9 @@ Organic earthy illustration with botanical and natural motifs. Soft curves, orga
 | Hero environmental banner | 1200×600 | 2:1 | 12% |
 | Square botanical | 700×700 | 1:1 | 12% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 nature has a strong tendency toward **earth-toned natural palette**. When the deck's HEX aligns (warm-earth, nature-organic palette), use directly:
 
@@ -34,7 +40,9 @@ nature has a strong tendency toward **earth-toned natural palette**. When the de
 
 If the deck's HEX is cool / corporate, nature may be the wrong rendering — consult the compatibility matrix.
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — half-page sustainability scene, text_policy: none**
 
@@ -44,14 +52,18 @@ If the deck's HEX is cool / corporate, nature may be the wrong rendering — con
 
 > Organic botanical illustration banner. A horizontal composition of natural elements — a wide field of soft cream `#FEF3C7` with three large stylized organic leaf shapes arching across the canvas. Leaves rendered in varied earthy greens — primary forest `#166534`, a softer mid-green, and a pale sage — overlapping with intentional asymmetric balance. Subtle leaf-vein texture visible at 10% opacity on each leaf. A few small accent terracotta `#C2410C` berry-shaped circles scattered sparingly. Background includes soft suggestion of distant warm-cream sky. No hard outlines, all forms curved and organic. Composed for a 1200×600 hero band with 12% inner padding. NO text. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Geometric / grid-aligned composition (nature is asymmetric and organic)
 - Saturated artificial colors (palette should feel earthy and slightly muted)
 - Hard digital edges
 - Tech / industrial subjects (wrong rendering family — use `vector-illustration`)
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For corporate / tech decks → `vector-illustration` or `flat`
 - For pure painterly atmosphere → `watercolor`

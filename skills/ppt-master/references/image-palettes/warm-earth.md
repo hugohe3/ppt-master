@@ -4,7 +4,7 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 
 > This file describes **color behavior**, not HEX values. HEX comes from `design_spec.colors`.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 | Mood | Friendly, grounded, approachable, slightly nostalgic |
 | Material | Soft — leaves room for texture (paper grain, watercolor wash) |
 
-## Proportion rule (50-35-15, applied to the deck's HEX)
+---
+
+## 2. Proportion rule (50-35-15, applied to the deck's HEX)
 
 | Role | Share | HEX from `design_spec` | Behavior |
 |---|---|---|---|
@@ -24,17 +26,23 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 
 > warm-earth is more permissive than cool-corporate about color presence — warm tones layer comfortably without feeling promotional.
 
-## Role semantics
+---
+
+## 3. Role semantics
 
 - **Primary** carries grounding warmth, the human anchor. Use it for: dominant warm forms, foreground subjects, body of illustration, main subject silhouette.
 - **Secondary** is the warm breathing field. Use it for: soft cream background, paper field, atmospheric haze. Should feel cozy, not sterile.
 - **Accent** carries small warm pops of energy. Use it for: the standout flower, the warm sunlight glow, the highlighted detail. Allowed to be slightly more visible than cool-corporate's accent.
 
-## How to phrase it in a prompt
+---
+
+## 4. How to phrase it in a prompt
 
 > "Color behavior is warm-grounded: secondary `#FEF3C7` (warm cream) carries about 55% of the canvas as soft breathing space; primary `#9A3412` (deep terracotta) anchors the main forms in confident warm tones occupying about 32%; accent `#D4AF37` (warm gold) appears in small concentrated pops totaling under 13% — perhaps as a glow, a flower, a sunlight detail. Soft warm temperament throughout, no cool tones."
 
-## Compatible renderings
+---
+
+## 5. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -50,7 +58,9 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 | ✗ tech-neon themes / dark-cinematic | Temperament conflict |
 | ✗ blueprint | Blueprint wants restraint; warm-earth wants warmth |
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — applied to a watercolor narrative scene**
 
@@ -60,14 +70,18 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 
 > [...rendering paragraph...] Color behavior is warm-grounded: cream paper background `#FEF3C7` carries about 55% of the area. Primary deep amber `#B45309` fills the rounded info boxes in a soft pastel tint (about 35% area). Accent warm coral `#F97316` appears on one highlighted arrow and a few small doodle decorations (totaling 10-13%). All hand-drawn ink in near-black. No cool tones. [...container guidance...]
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - Cool color mixing (a stray blue / teal breaks the warm identity)
 - Over-saturated accent (warm-earth's accent is warm-rich, not neon-loud)
 - Sterile / clinical feel (defeats the warmth — switch to cool-corporate)
 - Equal-share triplet (creates a flag-like balance instead of warm-grounded depth)
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For corporate / consulting → `cool-corporate`
 - For premium / cinematic → `dark-cinematic`

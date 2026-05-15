@@ -4,7 +4,7 @@ Energetic, futuristic, high-contrast. The signature look for AI / SaaS / product
 
 > This file describes **color behavior**, not HEX values. HEX comes from `design_spec.colors`.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ Energetic, futuristic, high-contrast. The signature look for AI / SaaS / product
 | Mood | Energetic, futuristic, confident, edge |
 | Material | Smooth digital, often with implied glow or luminance |
 
-## Proportion rule (50-35-15, with intentional luminance)
+---
+
+## 2. Proportion rule (50-35-15, with intentional luminance)
 
 | Role | Share | HEX from `design_spec` | Behavior |
 |---|---|---|---|
@@ -24,17 +26,23 @@ Energetic, futuristic, high-contrast. The signature look for AI / SaaS / product
 
 > tech-neon is the rendering palette most likely to suggest **glow or luminance** in the prompt — primary forms often have a soft outer glow at 8% opacity in the same color.
 
-## Role semantics
+---
+
+## 3. Role semantics
 
 - **Primary** is the brand signature — vivid, confident, the visual lead. Use it for: dominant chart elements, hero shape fills, primary geometric forms.
 - **Secondary** sets the technological tone — clean digital surface or deep digital void. Should feel "screen-like" or "interface-like".
 - **Accent** is the future-pop — small, glowing, attention-grabbing. Often rendered with implied luminance.
 
-## How to phrase it in a prompt
+---
+
+## 4. How to phrase it in a prompt
 
 > "Color behavior is tech-neon: secondary deep digital navy `#0A0E27` covers about 50% of the canvas as the dark field; primary electric blue `#0EA5E9` carries the main subject in confident saturated tones (about 35%) with a soft 8%-opacity glow halo around it; accent vivid cyan `#06B6D4` appears in 10-15% as small bright pops, also with implied glow. High contrast between vivid foreground and dark digital background."
 
-## Compatible renderings
+---
+
+## 5. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -47,7 +55,9 @@ Energetic, futuristic, high-contrast. The signature look for AI / SaaS / product
 | ✗ sketch-notes / watercolor / fantasy-animation / nature | Temperament conflict — warm vs cyber |
 | ✗ corporate-photo | Photography wants natural color, not neon |
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — applied to a 3d-isometric architecture**
 
@@ -57,14 +67,18 @@ Energetic, futuristic, high-contrast. The signature look for AI / SaaS / product
 
 > [...rendering paragraph...] Color behavior is tech-neon dashboard: secondary near-white digital `#F8FAFC` covers the surface field (about 55%); primary electric blue `#0EA5E9` in the dominant chart bars, vivid and saturated, with subtle 8%-opacity glow at the bar tops (about 32%); accent neon coral `#F97316` reserved for one highlighted KPI tile — the focal data point — at about 13%, with luminance halo. The overall feel is energetic, brand-forward, future-product. [...container guidance...]
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - Muted / desaturated colors (defeats tech-neon's vividness)
 - Warm earth tones in the same image (mood conflict)
 - Heavy textures (tech-neon is smooth-digital, not painterly)
 - More than 3 distinct vivid colors (becomes carnival)
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For restrained / professional decks → `cool-corporate`
 - For warm / human decks → `warm-earth`

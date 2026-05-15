@@ -2,11 +2,13 @@
 
 Polished UI / data-visualization aesthetic. The image looks like a screenshot of a product or analytics dashboard — clean cards, soft shadows, restrained type, chart-like visual elements. Used in SaaS demos, data product showcases, B2B analytics decks.
 
-## Style paragraph (paste-ready, 105 words)
+## 1. Style paragraph (paste-ready, 105 words)
 
 > Polished digital UI / dashboard aesthetic. Clean card-based layout with rounded corners (8-12px radius), uniform soft shadows (8% opacity, slight Y-offset), and crisp pixel-aligned edges. Surfaces are flat with restrained color — primarily one neutral background, several brand-color cards or chart elements, and a single accent for the focal data point. Chart-like visual elements (bar graphs, line graphs, sparklines, donut segments, KPI tiles) appear stylized — recognizable as charts but without specific data values. Typography would be small, neutral, almost-text-as-texture if any appeared, but defaults to no-text. Overall feel is product-screenshot — modern, restrained, data-fluent.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Polished UI / data-visualization aesthetic. The image looks like a screenshot of
 | Material | Flat with deliberate elevation hierarchy via shadows |
 | Mood | Polished, restrained, product-fluent |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -25,14 +29,18 @@ Polished UI / data-visualization aesthetic. The image looks like a screenshot of
 | Spot dashboard tile | 400×300 | 4:3 | 8% |
 | Full-bleed product hero | 1280×720 | 16:9 | 10% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 - Primary HEX: dominant chart element / featured card header
 - Secondary HEX: background canvas (usually pale or near-white)
 - Accent HEX: the single highlighted data point or focal metric
 - Optional 4th: a muted neutral for secondary chart elements (gray bars, faded sparklines)
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — half-page product demo, text_policy: none**
 
@@ -42,14 +50,18 @@ Polished UI / data-visualization aesthetic. The image looks like a screenshot of
 
 > Polished SaaS dashboard hero image. A large central rectangular card occupies 75% of the canvas with 12px rounded corners and a soft 8% drop shadow, sitting on a clean secondary background `#F1F5F9`. The card surface shows a stylized analytics screen — a tall vertical bar chart on the left using primary navy `#1E3A8A` with one accent orange `#F97316` bar highlighted, a line chart on the right with two intersecting trend lines, and three small KPI tiles across the top. All chart elements are stylized — recognizable as charts but without specific values, axes, or labels. Background field is calm and uncluttered. Composed for a 1200×600 hero band with 10% inner padding. NO text, no numbers, no axis labels, no captions anywhere. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Real numbers, real labels (model often invents misleading values)
 - Photorealistic device frames (laptop bezel, phone shell) unless explicitly intended
 - Overly busy charts — keep to 3-5 chart elements maximum
 - Skeuomorphic depth (glass, metal, gloss) — keep it flat-modern
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For non-product visuals → `vector-illustration` or `flat`
 - For technical architecture with 3D forms → `3d-isometric`

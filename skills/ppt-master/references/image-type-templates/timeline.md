@@ -4,7 +4,7 @@ Linear progression along a time axis — milestones, evolution, roadmap, history
 
 > **What timeline means inside a PPT block**: the image internally has a clear **axis (horizontal or vertical)** with 3-6 milestone markers along it. Unlike `flowchart` (process with arrows), timeline is **about time positions**. Unlike `framework` (relational), timeline is **sequential and chronological**.
 
-## Composition skeleton
+## 1. Composition skeleton
 
 Two sub-structures:
 
@@ -34,7 +34,9 @@ Two sub-structures:
 | NEGATIVE SPACE | Generous space above/below (or left/right) the axis to give milestones breathing room |
 | TIME DIRECTION | Direction is unambiguous (left-to-right = earlier-to-later) |
 
-## Container sizing for local PPT inserts
+---
+
+## 2. Container sizing for local PPT inserts
 
 | Use | Canvas | Aspect | Sub-structure fit |
 |---|---|---|---|
@@ -45,7 +47,9 @@ Two sub-structures:
 
 Inner padding: 12-15% on the axis's "open" sides.
 
-## Text-policy variants
+---
+
+## 3. Text-policy variants
 
 ### `text_policy: none`
 
@@ -55,7 +59,9 @@ Each milestone has an iconic symbol only. Date labels and milestone descriptions
 
 Each milestone may include a short date (e.g. "2020", "Q1", "v1.0") rendered as part of the artwork. Keep labels minimal — just dates or short anchors, not descriptions.
 
-## Fewshot prompt snippets
+---
+
+## 4. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, horizontal 5-milestone timeline, text_policy: none, 1200×500**
 
@@ -65,7 +71,9 @@ Each milestone may include a short date (e.g. "2020", "Q1", "v1.0") rendered as 
 
 > Magazine-style editorial timeline, vertical orientation. A thin vertical axis rule in primary deep navy `#0F2C4C` runs down the canvas, slightly offset to the left of center. Four small circular milestone markers along the axis at equal intervals. Each milestone has a short hand-lettered English year label (e.g. "1980", "2000", "2010", "2020") rendered to the left of the marker in confident editorial type — short numeric labels only, no descriptions. To the right of each marker, one small iconic symbol — a tower, a globe, a phone, a chip — in primary navy with subtle 8% drop shadow. Background is warm secondary cream `#FAF7F2` with subtle paper grain at 8% opacity. Accent burnt orange `#C2410C` appears only on the third milestone's marker as a small emphasis (under 5%). Composed as a 500×800 vertical block with 14% inner padding. English numeric labels only (no Chinese characters). Color values are rendering guidance only.
 
-## Common failure modes
+---
+
+## 5. Common failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -75,7 +83,9 @@ Each milestone may include a short date (e.g. "2020", "Q1", "v1.0") rendered as 
 | Iconic clutter | Icons too detailed | "Each milestone has one simple iconic symbol — recognizable at small size" |
 | Date labels garbled in embedded | Long or CJK dates | Use short English numeric labels only ("2020", "Q1") |
 
-## When to switch away from timeline
+---
+
+## 6. When to switch away from timeline
 
 - If progression has process steps with arrows → `flowchart`
 - If parallel zones without chronology → `infographic`

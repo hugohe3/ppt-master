@@ -4,7 +4,7 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 
 > This file describes **color behavior**, not HEX values.
 
-## Temperament
+## 1. Temperament
 
 | Trait | Setting |
 |---|---|
@@ -14,7 +14,9 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 | Mood | Poster, cinematic, editorial-bold, chromatically disciplined |
 | Material | Flat or screen-print textured |
 
-## Proportion rule (60-40 or 50-50, two-color)
+---
+
+## 2. Proportion rule (60-40 or 50-50, two-color)
 
 | Role | Share | HEX from `design_spec` | Behavior |
 |---|---|---|---|
@@ -24,17 +26,23 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 
 **Hard rule**: only 2 colors appear; if the deck's HEX is a triplet, drop secondary or use it as the neutral background only.
 
-## Role semantics
+---
+
+## 3. Role semantics
 
 - **Color A** is the figure — the silhouette, the dominant block, the foreground.
 - **Color B** is the ground — the background field, the contrasting zone, where Color A lives.
 - The choice of pairing matters more than role assignment — pick the two HEX values from the deck that have the strongest duotone tension.
 
-## How to phrase it in a prompt
+---
+
+## 4. How to phrase it in a prompt
 
 > "Color behavior is duotone: Color A — deep teal `#0F766E` (the deck's primary) — carries the main subject silhouette and dominant zone (about 50%). Color B — vivid amber `#D97706` (the deck's accent) — carries the background and secondary zone (about 48%). The two colors are the entire palette — no third hue beyond a barely-perceptible neutral 2% in transitional textures."
 
-## Compatible renderings
+---
+
+## 5. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -49,7 +57,9 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 | ✗ sketch-notes / fantasy-animation / nature / watercolor | Wrong temperament |
 | ✗ digital-dashboard / 3d-isometric | Need more chromatic depth |
 
-## Fewshot prompt snippets
+---
+
+## 6. Fewshot prompt snippets
 
 **Snippet A — applied to a screen-print cover poster**
 
@@ -59,14 +69,18 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 
 > [...rendering paragraph...] Color behavior is duotone: deep teal `#0F766E` (the deck's primary) carries the left 50% as a flat block with a stylized geometric form. Warm amber `#D97706` (the deck's accent) carries the right 50% as a complementary flat block with a different stylized form. The two colors meet at a clean vertical edge down the center. No third color, no gradients. Editorial poster balance. [...container guidance...]
 
-## What to avoid
+---
+
+## 7. Forbidden
 
 - A third color creeping in (defeats duotone discipline)
 - Gradients within either color (duotone is flat)
 - Too-similar colors with no chromatic tension
 - Photo-realistic content (duotone is intentionally stylized)
 
-## When to switch away
+---
+
+## 8. When to switch away
 
 - For more color flexibility → any other palette
 - For monochrome (one color) → `mono-ink`

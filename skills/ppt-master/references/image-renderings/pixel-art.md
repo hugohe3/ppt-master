@@ -2,11 +2,13 @@
 
 8-bit / 16-bit retro game aesthetic. Sharp pixel grid, limited palette, no anti-aliasing. Used for gaming decks, retro tech decks, nostalgic content, and game-flavored education/entertainment.
 
-## Style paragraph (paste-ready, 90 words)
+## 1. Style paragraph (paste-ready, 90 words)
 
 > 8-bit pixel art style with strict pixel-grid alignment and no anti-aliasing. All elements are constructed from discrete colored pixels — visible chunky pixel edges, sharp transitions between color blocks, no soft gradients. Color palette is limited and intentionally retro (often 16-32 distinct colors total). Forms are simplified to fit a low-resolution grid — small character sprites, blocky environments, iconic items. Optional 1-pixel-wide outlines in darker shades of the fill color add definition. Composition often references classic NES / SNES / arcade game framing. Overall feel is nostalgic, playful, retro-game — instantly recognizable.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@
 | Material | Pixel grid |
 | Mood | Nostalgic, retro-game, playful |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -25,7 +29,9 @@
 | Square scene | 700×700 | 1:1 | 14% |
 | Spot pixel icon | 320×320 | 1:1 | 14% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 pixel-art uses HEX values as **palette slots**:
 
@@ -34,7 +40,9 @@ pixel-art uses HEX values as **palette slots**:
 - Accent HEX: highlight items, important markers, magical effects
 - Optional 4th: a darker shade of primary used as outline pixels (typically 25% darker)
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — hero retro banner, text_policy: none**
 
@@ -44,7 +52,9 @@ pixel-art uses HEX values as **palette slots**:
 
 > 8-bit pixel art half-page scene. A retro-game-style tech laboratory — pixel computer monitors arranged on pixel desks, with a pixel character sprite working at one of them. All elements built from discrete colored pixels with visible chunky edges. Monitors in primary deep navy `#1E3A5F` with bright accent cyan `#06B6D4` screens. Desks in warm wood-tone secondary pixels `#A16207`. Walls and floor in restrained gray pixels. Small pixel decorations — a coffee cup, a plant — add warmth. 1-pixel outlines in darker shades of each fill color. Limited palette (~16 colors total). Composed as a 600×500 half-page block with 14% inner padding. Pixel character simplified, no realistic face. NO text or labels. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Anti-aliasing or smooth gradients (defeats the pixel identity)
 - Modern photo-realistic detail
@@ -52,7 +62,9 @@ pixel-art uses HEX values as **palette slots**:
 - More than 32 distinct colors in one image
 - Mixing pixel art with other rendering styles
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For modern flat → `flat` or `vector-illustration`
 - For 3D tech aesthetic → `3d-isometric`

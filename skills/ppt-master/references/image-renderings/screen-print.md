@@ -2,11 +2,13 @@
 
 Bold silkscreen poster art — flat color blocks, halftone textures, limited colors, bold silhouettes. Used for cultural / media / opinion / cinematic decks where a poster aesthetic carries the page.
 
-## Style paragraph (paste-ready, 110 words)
+## 1. Style paragraph (paste-ready, 110 words)
 
 > Bold silkscreen poster art with limited flat color palette and characteristic print textures. The composition uses 2-5 flat colors maximum — no gradients within shapes, just confident solid color blocks. Halftone dot patterns add texture in transition zones (dot density varying from dense to sparse). Slight color layer misregistration (one color block offset by 1-2 pixels from where it "should" be) gives an authentic silkscreen feel. Subjects are rendered as bold silhouettes with stencil-cut edges — no fine detail, no realistic anatomy. Subtle paper grain texture at 15% opacity. Composition emphasizes negative space and geometric framing. Overall feel is vintage poster art, cinematic, editorial-bold — suitable for cultural commentary and dramatic cover work.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Bold silkscreen poster art — flat color blocks, halftone textures, limited col
 | Material | Silkscreen + paper |
 | Mood | Vintage poster, cinematic, editorial-bold |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -25,7 +29,9 @@ Bold silkscreen poster art — flat color blocks, halftone textures, limited col
 | Square poster | 700×700 | 1:1 | 8% |
 | Chapter divider | 1200×400 | 3:1 | 10% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 screen-print works best with **2-5 colors maximum**. The deck's HEX triplet maps directly:
 
@@ -35,7 +41,9 @@ screen-print works best with **2-5 colors maximum**. The deck's HEX triplet maps
 
 For two-color (duotone) poster mood, drop secondary and use primary + accent only.
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — hero chapter divider poster, text_policy: none**
 
@@ -45,14 +53,18 @@ For two-color (duotone) poster mood, drop secondary and use primary + accent onl
 
 > Bold silkscreen poster art with limited two-color palette and characteristic print textures. The composition is a stylized human silhouette (simplified, no facial features) standing center-left, rendered as a flat block in primary navy `#1E3A5F`. Behind the figure, a large flat circle in accent burnt orange `#C2410C` fills the upper-right quadrant — a "rising sun" composition. Halftone dot texture transitions between the orange and a soft cream background `#FEF3C7` along the circle's lower edge. Slight color misregistration on the silhouette. Paper grain texture at 15%. Composed as a 600×800 half-page block with 8% inner padding. Simplified silhouette — no facial details. NO text or labels. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Smooth gradients (defeats the silkscreen identity)
 - Fine anatomical detail (poster art uses bold silhouettes)
 - More than 5 colors (silkscreen is limited-color by definition)
 - Realistic photography (this is intentionally stylized)
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For flat illustration without poster textures → `flat` or `vector-illustration`
 - For cinematic mood without poster aesthetic → `warm-scene` or `dark-cinematic` palette + `vector-illustration`

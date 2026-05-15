@@ -2,11 +2,13 @@
 
 Golden-hour cinematic warmth — illustrated scenes with intentional warm lighting, soft shadows, atmospheric mood. Sits between `watercolor` (more painterly) and `corporate-photo` (more realistic). Used for personal growth stories, origin stories, brand narratives, lifestyle decks.
 
-## Style paragraph (paste-ready, 100 words)
+## 1. Style paragraph (paste-ready, 100 words)
 
 > Atmospheric scene illustration with golden-hour cinematic lighting. Forms are softly rendered — recognizable but not photo-realistic, with soft edges and intentional light direction. The scene has a clear primary light source (warm low sun, lamplight, window light) casting long soft shadows. Color palette leans warm and slightly desaturated — ambers, terracottas, cream highlights against deeper warm shadows. A subtle bloom or halo effect around the light source adds cinematic warmth. Composition follows narrative principles — foreground subject, middle ground context, atmospheric background. Overall feel is cinematic, contemplative, emotionally warm — well suited to brand story and personal narrative content.
 
-## Line, texture, depth
+---
+
+## 2. Line, texture, depth
 
 | Aspect | Treatment |
 |---|---|
@@ -16,7 +18,9 @@ Golden-hour cinematic warmth — illustrated scenes with intentional warm lighti
 | Material | Illustrated with golden-hour lighting |
 | Mood | Cinematic, contemplative, warm |
 
-## Container sizing for local PPT inserts
+---
+
+## 3. Container sizing for local PPT inserts
 
 | Position | Canvas | Aspect | Padding |
 |---|---|---|---|
@@ -24,7 +28,9 @@ Golden-hour cinematic warmth — illustrated scenes with intentional warm lighti
 | Hero story banner | 1200×600 | 2:1 | 10% |
 | Wide scenic | 1200×500 | 2.4:1 | 10% |
 
-## Using the deck's HEX values
+---
+
+## 4. Using the deck's HEX values
 
 warm-scene reads HEX values through a **warm-graded filter**:
 
@@ -34,7 +40,9 @@ warm-scene reads HEX values through a **warm-graded filter**:
 
 If the deck's primary is cool (navy, teal), warm-scene will subtly warm-grade it; if the deck's palette is already warm, the rendering reinforces it directly.
 
-## Fewshot prompt snippets
+---
+
+## 5. Fewshot prompt snippets
 
 **Snippet A — half-page personal story, text_policy: none**
 
@@ -44,14 +52,18 @@ If the deck's primary is cool (navy, teal), warm-scene will subtly warm-grade it
 
 > Atmospheric scene hero banner with golden-hour cinematic lighting. A wide warm scene — perhaps an early morning workspace with soft window light streaming in from the left, casting long shadows across a wooden desk in the middleground. Background suggests a window with warm cream `#FEF3C7` and amber `#D97706` light. Foreground objects are simplified — a notebook, a coffee cup, a small plant — defined by light and shadow rather than outlines. Strong directional light creates depth through atmospheric perspective. Cinematic warm grading, slight film grain. Composed for a 1200×600 hero band with 10% inner padding. No people, or simplified silhouettes only. NO text or labels. Color values are rendering guidance only.
 
-## What to avoid
+---
+
+## 6. Forbidden
 
 - Cool / neutral color grading (defeats the warm identity — switch to `watercolor` for cool atmospheric)
 - Photo-realistic faces (use simplified silhouettes; for real people use `corporate-photo`)
 - Sharp digital edges (warm-scene is soft cinematic)
 - Cluttered scenes (atmosphere needs negative space)
 
-## When to switch away
+---
+
+## 7. When to switch away
 
 - For pure watercolor painterly feel → `watercolor`
 - For real photography → `corporate-photo`
