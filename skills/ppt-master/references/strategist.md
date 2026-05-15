@@ -314,19 +314,23 @@ The tables below are source data Strategist reads when constructing the three ca
 
 | `d. Style` signal | Recommended rendering | Alternates |
 |---|---|---|
-| Top Consulting / strategic / MBB | `editorial` or `vector-illustration` | `blueprint` |
+| Top Consulting / strategic / MBB | `editorial` or `vector-illustration` | `blueprint`, `minimalist-swiss` |
 | General Consulting / corporate report / 学术答辩 | `vector-illustration` | `flat`, `editorial` |
+| High-end consulting / luxury / 高端 / design-firm | `minimalist-swiss` | `editorial`, `vector-illustration` |
 | Tech / SaaS / AI / 架构 | `3d-isometric`, `blueprint`, `digital-dashboard` | `flat` |
+| Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `digital-dashboard`, `flat` |
 | Product launch / brand / marketing | `flat`, `3d-isometric`, `corporate-photo` | `vector-illustration` |
-| Education / training / 教学 / 培训 | `sketch-notes` | `vector-illustration` |
+| Education / training / 教学 / 培训 | `sketch-notes` | `vector-illustration`, `paper-cut` |
+| Children / storybook / 儿童 / 治愈 | `fantasy-animation` | `paper-cut`, `watercolor`, `sketch-notes` |
+| Cultural / folk / festival / 文化 / 节日 | `paper-cut` | `vintage-poster`, `screen-print` |
 | Methodology / Before-After / 方法论 / manifesto | `ink-notes` | `editorial` |
 | Government / formal / 政务 | `editorial` or `corporate-photo` | `vector-illustration` |
 | Finance / journalism / 财经 | `editorial`, `digital-dashboard` | `vector-illustration` |
-| Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo` |
-| Cultural / media / opinion / cinematic | `screen-print` | `editorial`, `warm-scene` |
-| Children / storybook / 儿童 / 治愈 | `fantasy-animation` | `watercolor`, `sketch-notes` |
-| Gaming / retro / 复古 / 像素 | `pixel-art` | — |
-| Environment / wellness / 环保 | `nature` | `watercolor` |
+| Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo`, `paper-cut` |
+| Cultural / media / opinion / cinematic | `screen-print`, `vintage-poster` | `editorial`, `warm-scene` |
+| Brand heritage / hospitality / 老字号 / 周年 | `vintage-poster` | `screen-print`, `editorial` |
+| Gaming / retro / 复古 / 像素 | `pixel-art` | `vintage-poster` |
+| Environment / wellness / 环保 | `nature` | `watercolor`, `paper-cut` |
 | Classroom / blackboard / 课堂 | `chalkboard` | `sketch-notes` |
 | Team / company / product photo | `corporate-photo` | — |
 
@@ -334,16 +338,21 @@ The tables below are source data Strategist reads when constructing the three ca
 
 | Content vibe / industry | Recommended palette | Alternates |
 |---|---|---|
-| Consulting / finance / B2B / corporate / 学术答辩 | `cool-corporate` | `editorial-classic` |
+| Consulting / finance / B2B / corporate / 学术答辩 | `cool-corporate` | `editorial-classic`, `frost-ice` |
 | Tech / SaaS / AI | `tech-neon` | `cool-corporate`, `dark-cinematic` |
+| Modern SaaS / fintech / health-tech | `frost-ice` | `cool-corporate`, `tech-neon` |
+| Health / medical / beauty / skincare | `frost-ice` | `nature-organic`, `earthy-dusty` |
 | Education / training | `macaron` | `warm-earth` |
 | Methodology / Before-After | `mono-ink` | `editorial-classic` |
-| Personal / lifestyle / brand story | `warm-earth` | `nature-organic` |
-| Product launch / marketing | `vivid-launch` | `tech-neon` |
+| Personal / lifestyle / brand story | `warm-earth` | `nature-organic`, `earthy-dusty` |
+| Interior / wellness / mindfulness / slow living | `earthy-dusty` | `warm-earth`, `nature-organic` |
+| Product launch / marketing | `vivid-launch` | `tech-neon`, `sunset-gradient` |
+| Creative agency / travel / music / lifestyle | `sunset-gradient` | `vivid-launch`, `warm-earth` |
+| Luxury / fashion / jewelry / premium / heritage | `jewel-tone` | `dark-cinematic`, `editorial-classic` |
 | Children / storybook | `macaron` | `warm-earth` |
-| Premium / film / entertainment | `dark-cinematic` | `duotone` |
+| Premium / film / entertainment | `dark-cinematic` | `jewel-tone`, `duotone` |
 | Cultural / media / cover-art | `duotone` | `editorial-classic` |
-| Environment / wellness | `nature-organic` | `warm-earth` |
+| Environment / wellness | `nature-organic` | `warm-earth`, `earthy-dusty` |
 | Finance / journalism | `editorial-classic` | `cool-corporate` |
 
 After auto-selecting, cross-check `image-palettes/_index.md` compatibility matrix — if rendering × palette is `✗`, swap to the alternate palette.
