@@ -223,7 +223,7 @@ Write `project/images/image_prompts.json` with this shape:
 | `deck_palette` | yes | Step 2 lock | Single palette name shared by all items |
 | `color_scheme` | yes | `design_spec.md §III` | HEX triplet from Strategist |
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
-| `items[].type` | yes | Step 3 per-image | One of: `background`, `hero`, `typography`, `infographic`, `flowchart`, `framework`, `comparison`, `timeline`, `scene` |
+| `items[].type` | yes | Step 3 per-image | One of: `background`, `hero`, `portrait`, `typography`, `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene` |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default) or `full_page` (escape hatch only) |
 | `items[].text_policy` | yes | Step 3 per-image | `none` (default for most) or `embedded` (rare) |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |

@@ -8,7 +8,7 @@ A **type** describes what the image's **internal composition** looks like — it
 
 ---
 
-## 1. Catalog (9 types)
+## 1. Catalog (15 types)
 
 Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGATIVE SPACE), container sizing options, text-policy variants, fewshot snippets.
 
@@ -16,12 +16,18 @@ Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGAT
 |---|---|---|
 | [`background`](./background.md) | Atmospheric backdrop, no central subject | Cover bg, chapter divider bg, hero overlay bg |
 | [`hero`](./hero.md) | Single dominant subject (60-70% of canvas) | Product/concept reveal, chapter title bg |
+| [`portrait`](./portrait.md) | One person headshot / upper body, neutral background | Team page / speaker bio / testimonial / founder profile |
 | [`typography`](./typography.md) | Large headline / number / single word as visual | Big-stat pages, slogan pages, chapter openers |
 | [`infographic`](./infographic.md) | 2-5 ordered zones with icons + minimal labels | Data summary / step list / KPI rundown |
 | [`flowchart`](./flowchart.md) | Sequential blocks connected by arrows | Process / workflow / pipeline |
-| [`framework`](./framework.md) | Central node + radiating satellites (or matrix) | Methodology / model / system architecture |
+| [`framework`](./framework.md) | Central node + radiating satellites | Methodology / model / system architecture |
+| [`matrix`](./matrix.md) | 2×2 quadrant grid with two perpendicular axes | SWOT / BCG / Eisenhower / Ansoff / Porter |
+| [`cycle`](./cycle.md) | Closed loop, 3-6 steps with arrows returning | PDCA / flywheel / design thinking / continuous improvement |
+| [`funnel`](./funnel.md) | Top-wide bottom-narrow conversion stack | Marketing funnel / sales pipeline / hiring funnel |
+| [`pyramid`](./pyramid.md) | Bottom-wide top-narrow hierarchical tiers | Maslow / capability stack / value hierarchy |
 | [`comparison`](./comparison.md) | Split composition (left vs right, before vs after) | A/B / pros-cons / Before-After |
 | [`timeline`](./timeline.md) | Linear progression along an axis | History / roadmap / evolution |
+| [`map`](./map.md) | Stylized geographic outline with annotated markers | Offices / market presence / regional data / supply chain |
 | [`scene`](./scene.md) | Atmospheric environment with narrative | Story / lifestyle / case study |
 
 ---
@@ -34,12 +40,18 @@ For each row in `design_spec.md §VIII Image Resource List`, match `Purpose` aga
 |---|---|---|
 | Cover background / chapter background / divider bg | `background` | `none` |
 | Product reveal / hero / headline visual | `hero` | `none` (or `embedded` for headline-as-image) |
+| Team headshot / speaker bio / founder profile / testimonial | `portrait` | `none` |
 | Big number / KPI single visual / quote | `typography` | `embedded` |
 | Data summary / metrics rundown / step list | `infographic` | `none` (labels in SVG) or `embedded` (keywords in image) |
 | Process / workflow / pipeline / steps with arrows | `flowchart` | `none` |
 | Methodology / model / framework / architecture diagram | `framework` | `none` |
+| 2×2 quadrant / SWOT / BCG / Eisenhower / Ansoff | `matrix` | `none` |
+| Closed-loop process / PDCA / flywheel / continuous improvement | `cycle` | `none` |
+| Conversion funnel / sales pipeline / hiring funnel | `funnel` | `none` |
+| Hierarchy / Maslow / value stack / capability layer | `pyramid` | `none` |
 | Comparison / Before-After / A/B / VS | `comparison` | `none` |
 | History / evolution / roadmap / timeline | `timeline` | `none` |
+| Offices / market presence / regions / supply chain / geography | `map` | `none` |
 | Team / lifestyle / story / scenario / case | `scene` | `none` |
 
 > When `Purpose` mentions text-rich keywords ("with caption", "labeled", "annotated"), bias toward `embedded` text-policy. When unsure, default to `none` — SVG text overlay is more flexible than image-embedded text.
@@ -54,12 +66,18 @@ The Resource List's `Dimensions` column is authoritative. If absent, use these d
 |---|---|---|
 | background | 1280×720 full-bleed (still mark `page_role: local` — SVG text overlays on top) | 16:9 |
 | hero | 800×600 or 1280×720 | 4:3 / 16:9 |
+| portrait | 400×500 or 600×800 | 4:5 / 3:4 |
 | typography | 800×500 | 16:10 |
 | infographic | 600×500 or 700×700 | ~1.2 / 1 |
 | flowchart | 1200×400 (horizontal banner) | 3:1 |
 | framework | 700×700 square | 1:1 |
+| matrix | 800×800 or 1280×720 | 1:1 / 16:9 |
+| cycle | 700×700 or 800×800 square | 1:1 |
+| funnel | 600×800 portrait | 3:4 |
+| pyramid | 600×800 portrait | 3:4 |
 | comparison | 1200×500 split / 600×500 each | 2.4 / 1.2 |
 | timeline | 1200×350 banner | 3.4:1 |
+| map | 1280×720 or 1200×500 | 16:9 / 2.4:1 |
 | scene | 1200×720 wide / 800×600 | 16:10 / 4:3 |
 
 > All sizes include the 12-20% inner padding requirement. The model paints content within the inner safe zone; outer edges should feel airy.

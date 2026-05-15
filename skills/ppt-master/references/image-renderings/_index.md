@@ -6,7 +6,7 @@ A **rendering** is a visual style family: line quality, texture, depth, material
 
 ---
 
-## 1. Catalog (16 renderings)
+## 1. Catalog (20 renderings)
 
 Each rendering has its own file with: style paragraph, container sizing guidance, fewshot prompt snippets, what to avoid. **Read only the file for the rendering you pick** — never glob the directory.
 
@@ -16,6 +16,8 @@ Each rendering has its own file with: style paragraph, container sizing guidance
 |---|---|---|
 | [`vector-illustration`](./vector-illustration.md) | Clean flat vector with bold shapes, no gradients | Consulting / SaaS / general professional decks |
 | [`flat`](./flat.md) | Modern geometric blocks, slightly more design-forward than vector | Brand / product showcase decks |
+| [`minimalist-swiss`](./minimalist-swiss.md) | Swiss-grid Bauhaus austerity, aggressive whitespace | High-end consulting / architecture / luxury / type foundries |
+| [`glassmorphism`](./glassmorphism.md) | Frosted-glass translucent panels, soft shadows | Modern SaaS / fintech / health-tech / premium apps |
 | [`3d-isometric`](./3d-isometric.md) | Isometric 3D forms with subtle shadows | Tech architecture / product structure |
 | [`digital-dashboard`](./digital-dashboard.md) | Polished UI / data-viz aesthetic | SaaS demos / data products |
 | [`corporate-photo`](./corporate-photo.md) | Editorial photography, real subjects | Team / lifestyle / product shots |
@@ -29,6 +31,7 @@ Each rendering has its own file with: style paragraph, container sizing guidance
 | [`sketch-notes`](./sketch-notes.md) | Warm cream paper, black hand-drawn lines, pastel fills | Education / training / onboarding |
 | [`ink-notes`](./ink-notes.md) | Pure white, black ink, sparse semantic color | Methodology / Before-After / manifestos |
 | [`chalkboard`](./chalkboard.md) | Chalk on board, classroom feel | Teaching / tutorials / classroom decks |
+| [`paper-cut`](./paper-cut.md) | Layered paper craft, scissor-cut edges, soft shadows | Education / children / cultural / festival / sustainability |
 
 ### 1.3 Narrative / atmospheric
 
@@ -37,6 +40,7 @@ Each rendering has its own file with: style paragraph, container sizing guidance
 | [`watercolor`](./watercolor.md) | Painterly soft edges, color bleeding | Lifestyle / travel / brand story |
 | [`warm-scene`](./warm-scene.md) | Golden-hour cinematic warmth | Personal growth / origin story |
 | [`screen-print`](./screen-print.md) | Halftone poster art, 2-5 flat colors | Cultural / media / cinematic covers |
+| [`vintage-poster`](./vintage-poster.md) | Mid-century modern poster, halftone + paper grain | Cultural / brand heritage / hospitality / anniversaries |
 
 ### 1.4 Specialty
 
@@ -54,19 +58,23 @@ Match `design_spec.md d. Style` (mode + descriptor) against this table. First ma
 
 | `d. Style` signal | Recommended rendering | Alternates |
 |---|---|---|
-| Top Consulting / strategic / MBB | `editorial` or `vector-illustration` | `blueprint` |
+| Top Consulting / strategic / MBB | `editorial` or `vector-illustration` | `blueprint`, `minimalist-swiss` |
 | General Consulting / corporate report | `vector-illustration` | `flat`, `digital-dashboard` |
+| High-end consulting / luxury / 高端 / design-firm | `minimalist-swiss` | `editorial`, `vector-illustration` |
 | Tech / SaaS / AI / system / architecture | `3d-isometric`, `blueprint`, or `digital-dashboard` | `flat`, `vector-illustration` |
+| Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `digital-dashboard`, `flat` |
 | Product launch / brand / marketing | `flat`, `3d-isometric`, or `corporate-photo` | `vector-illustration` |
-| Education / training / onboarding / 教学 | `sketch-notes` | `vector-illustration` (if school is corporate) |
+| Education / training / onboarding / 教学 | `sketch-notes` | `vector-illustration` (if school is corporate), `paper-cut` |
+| Children / story / storybook / 儿童 | `fantasy-animation` | `paper-cut`, `watercolor`, `sketch-notes` |
+| Cultural / folk / festival / 文化 / 节日 | `paper-cut` | `vintage-poster`, `screen-print` |
 | Methodology / Before-After / manifesto / 方法论 | `ink-notes` | `editorial` |
 | Government / formal / official report | `editorial` or `corporate-photo` | `vector-illustration` |
 | Finance / data journalism / 财经 | `editorial` or `digital-dashboard` | `vector-illustration` |
-| Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo` |
-| Cultural / media / opinion / cinematic | `screen-print` | `editorial`, `warm-scene` |
-| Children / story / storybook / 儿童 | `fantasy-animation` | `watercolor`, `sketch-notes` |
-| Gaming / retro / 8-bit / 复古 | `pixel-art` | — |
-| Environment / wellness / 环保 / 户外 | `nature` | `watercolor` |
+| Personal story / 个人成长 / lifestyle | `watercolor`, `warm-scene` | `corporate-photo`, `paper-cut` |
+| Cultural / media / opinion / cinematic | `screen-print`, `vintage-poster` | `editorial`, `warm-scene` |
+| Brand heritage / hospitality / 老字号 / 周年 | `vintage-poster` | `screen-print`, `editorial` |
+| Gaming / retro / 8-bit / 复古 | `pixel-art` | `vintage-poster` |
+| Environment / wellness / 环保 / 户外 | `nature` | `watercolor`, `paper-cut` |
 | Classroom / blackboard / 课堂 | `chalkboard` | `sketch-notes` |
 | Team / company / product photo | `corporate-photo` | — |
 

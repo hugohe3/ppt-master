@@ -6,7 +6,7 @@ A **palette** is the deck's **color behavior** — proportion, role, temperament
 
 ---
 
-## 1. Catalog (10 palettes)
+## 1. Catalog (14 palettes)
 
 Each palette has its own file with: proportion rules, role assignments, temperament, fewshot snippets, what to avoid.
 
@@ -22,6 +22,10 @@ Each palette has its own file with: proportion rules, role assignments, temperam
 | [`dark-cinematic`](./dark-cinematic.md) | Premium, atmospheric, low-light | Premium product / film / entertainment |
 | [`duotone`](./duotone.md) | Two-color limited, poster-like | Cultural / cover hero / cinematic |
 | [`nature-organic`](./nature-organic.md) | Earthy, natural, wellness | Environment / wellness / outdoor |
+| [`jewel-tone`](./jewel-tone.md) | Deep saturated gemstone — emerald/sapphire/ruby + gold | Luxury / fashion / premium product / heritage |
+| [`frost-ice`](./frost-ice.md) | Near-white field with pale cool accents | Health / medical / beauty / premium SaaS |
+| [`sunset-gradient`](./sunset-gradient.md) | Warm gradient flow (pink → orange → purple) | Lifestyle / creative / travel / event |
+| [`earthy-dusty`](./earthy-dusty.md) | Muted desaturated earth tones, Morandi-adjacent | Interior / wellness / mindfulness / slow living |
 
 ---
 
@@ -31,16 +35,21 @@ Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wi
 
 | Content vibe / industry | Recommended palette | Alternates |
 |---|---|---|
-| Consulting / finance / B2B / corporate | `cool-corporate` | `editorial-classic` |
+| Consulting / finance / B2B / corporate | `cool-corporate` | `editorial-classic`, `frost-ice` |
 | Tech / SaaS / AI | `tech-neon` | `cool-corporate`, `dark-cinematic` |
+| Modern SaaS / fintech / health-tech | `frost-ice` | `cool-corporate`, `tech-neon` |
+| Health / medical / beauty / skincare | `frost-ice` | `nature-organic`, `earthy-dusty` |
 | Education / training / onboarding | `macaron` | `warm-earth` |
 | Methodology / Before-After / mindset shift | `mono-ink` | `editorial-classic` |
-| Personal / lifestyle / brand story | `warm-earth` | `nature-organic` |
-| Product launch / marketing / event | `vivid-launch` | `tech-neon` |
+| Personal / lifestyle / brand story | `warm-earth` | `nature-organic`, `earthy-dusty` |
+| Interior / wellness / mindfulness / slow living | `earthy-dusty` | `warm-earth`, `nature-organic` |
+| Product launch / marketing / event | `vivid-launch` | `tech-neon`, `sunset-gradient` |
+| Creative agency / travel / music / lifestyle | `sunset-gradient` | `vivid-launch`, `warm-earth` |
+| Luxury / fashion / jewelry / premium / heritage | `jewel-tone` | `dark-cinematic`, `editorial-classic` |
 | Children / storybook | `macaron` | `warm-earth` |
-| Premium / entertainment / film | `dark-cinematic` | `duotone` |
+| Premium / entertainment / film | `dark-cinematic` | `jewel-tone`, `duotone` |
 | Cultural / media / cover-art | `duotone` | `editorial-classic` |
-| Environment / wellness / outdoor | `nature-organic` | `warm-earth` |
+| Environment / wellness / outdoor | `nature-organic` | `warm-earth`, `earthy-dusty` |
 | Finance / journalism / explainer | `editorial-classic` | `cool-corporate` |
 | Government / formal | `cool-corporate` | `editorial-classic` |
 
@@ -50,24 +59,28 @@ Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wi
 
 Some combinations clash. Use this matrix as a sanity check after auto-selection.
 
-| | cool-corp | warm-earth | tech-neon | editorial | macaron | mono-ink | vivid-launch | dark-cinem | duotone | nature-org |
-|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| vector-illustration | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ |
-| flat | ✓✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓ |
-| 3d-isometric | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✗ | ✓✓ | ✓✓ | ✗ | ✓ |
-| digital-dashboard | ✓✓ | ✗ | ✓✓ | ✓✓ | ✗ | ✓ | ✓ | ✓✓ | ✗ | ✗ |
-| corporate-photo | ✓✓ | ✓✓ | ✓ | ✓✓ | ✗ | ✗ | ✓ | ✓✓ | ✗ | ✓✓ |
-| blueprint | ✓✓ | ✗ | ✓✓ | ✓ | ✗ | ✓✓ | ✗ | ✓✓ | ✓ | ✗ |
-| editorial | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓ |
-| sketch-notes | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✓ | ✓ | ✗ | ✗ | ✓✓ |
-| ink-notes | ✓ | ✓ | ✗ | ✓✓ | ✗ | ✓✓ | ✗ | ✗ | ✓ | ✗ |
-| chalkboard | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ | ✗ | ✓✓ | ✓ | ✓ |
-| watercolor | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✗ | ✓✓ |
-| warm-scene | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✗ | ✓ | ✓✓ | ✓ | ✓✓ |
-| screen-print | ✓ | ✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓✓ | ✓✓ | ✓ |
-| fantasy-animation | ✗ | ✓✓ | ✗ | ✗ | ✓✓ | ✗ | ✓ | ✗ | ✗ | ✓✓ |
-| pixel-art | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✓✓ | ✓ | ✓ | ✗ |
-| nature | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✓✓ |
+| | cool-corp | warm-earth | tech-neon | editorial | macaron | mono-ink | vivid-launch | dark-cinem | duotone | nature-org | jewel-tone | frost-ice | sunset-grad | earthy-dusty |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| vector-illustration | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ |
+| flat | ✓✓ | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓ | ✓ | ✓✓ | ✓✓ | ✓✓ |
+| minimalist-swiss | ✓✓ | ✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✗ | ✓ |
+| glassmorphism | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✓✓ | ✓ | ✓ |
+| 3d-isometric | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✗ | ✓✓ | ✓✓ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| digital-dashboard | ✓✓ | ✗ | ✓✓ | ✓✓ | ✗ | ✓ | ✓ | ✓✓ | ✗ | ✗ | ✗ | ✓✓ | ✗ | ✗ |
+| corporate-photo | ✓✓ | ✓✓ | ✓ | ✓✓ | ✗ | ✗ | ✓ | ✓✓ | ✗ | ✓✓ | ✓✓ | ✓ | ✗ | ✓✓ |
+| blueprint | ✓✓ | ✗ | ✓✓ | ✓ | ✗ | ✓✓ | ✗ | ✓✓ | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ |
+| editorial | ✓✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ |
+| sketch-notes | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✓ | ✓ | ✗ | ✗ | ✓✓ | ✗ | ✗ | ✗ | ✓ |
+| ink-notes | ✓ | ✓ | ✗ | ✓✓ | ✗ | ✓✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✓ | ✗ | ✓ |
+| chalkboard | ✗ | ✓ | ✗ | ✗ | ✓ | ✓ | ✗ | ✓✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✓ |
+| paper-cut | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✗ | ✓✓ |
+| watercolor | ✓ | ✓✓ | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✗ | ✓✓ | ✓ | ✓✓ | ✓✓ | ✓✓ |
+| warm-scene | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✗ | ✓ | ✓✓ | ✓ | ✓✓ | ✓ | ✗ | ✓✓ | ✓ |
+| screen-print | ✓ | ✓ | ✓ | ✓✓ | ✓ | ✓ | ✓✓ | ✓✓ | ✓✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| vintage-poster | ✓ | ✓✓ | ✗ | ✓✓ | ✓ | ✓ | ✓ | ✓ | ✓✓ | ✓ | ✗ | ✗ | ✓ | ✓✓ |
+| fantasy-animation | ✗ | ✓✓ | ✗ | ✗ | ✓✓ | ✗ | ✓ | ✗ | ✗ | ✓✓ | ✗ | ✗ | ✓ | ✗ |
+| pixel-art | ✗ | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✓✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| nature | ✓ | ✓✓ | ✗ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✓✓ | ✓ | ✓ | ✓ | ✓✓ |
 
 ✓✓ recommended | ✓ acceptable | ✗ avoid
 
