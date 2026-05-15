@@ -395,6 +395,7 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | Dimensions | e.g., `1280x720` |
 | Ratio | e.g., `1.78` |
 | Layout suggestion | e.g., `Wide landscape (suitable for full-screen/illustration)` |
+| **Layout pattern** | **MANDATORY** — `#<id> <name>` from `image-layout-patterns.md` (e.g. `#38 background image + annotation cards`, `#48 side-by-side comparison`). See the GATE earlier in this section. Empty or invented ids are invalid. |
 | Purpose | e.g., `Cover background` |
 | Type | Narrative shorthand: Background / Photography / Illustration / Diagram / Decorative pattern. (The internal-composition type used by Image_Generator — one of `background / hero / typography / infographic / flowchart / framework / comparison / timeline / scene` — is inferred from `Purpose` per [`image-type-templates/_index.md`](./image-type-templates/_index.md); no need to label every row.) |
 | **Acquire Via** | `ai` / `web` / `user` / `placeholder` — drives Step 5 dispatch |
@@ -447,7 +448,13 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | Diagram | Flowcharts, architecture diagrams, concept relationship maps |
 | Decorative pattern | Partial decoration, textures, borders, divider elements |
 
-🚧 **GATE — before assigning narrative intent to pages**: when image approach is B/C/D/E (anything other than A "no images"), `read_file references/image-layout-patterns.md`. This file enumerates the available image placement techniques (full-bleed variants, non-rectangular crops, overlay treatments, image-as-canvas with native overlays, multi-image compositions, special techniques). The four intent values below cover broad categories only — the actual design space is much larger, and the "image-as-canvas + native overlay" family in particular is the most underused and often the right answer for content-rich pages. Skipping this read defaults the deck to conservative left/right or top/bottom splits.
+🚧 **GATE — before writing §VIII Image Resource List**: when image approach is B/C/D/E (anything other than A "no images"), this is a three-layer hard requirement, not a suggestion:
+
+1. **Read** — `read_file references/image-layout-patterns.md`. The file enumerates 72 numbered image placement techniques across 8 groups (A container layouts / B non-rectangular shapes / C overlay treatments / D image-as-canvas + native overlay / E multi-image compositions / F texture-atmosphere / G special techniques / H decision guidance). The four `Image narrative intent` values below cover only broad categories.
+2. **Produce** — every row in §VIII Image Resource List MUST fill the `Layout pattern` column with `#<id> <name>` drawn verbatim from this file (e.g. `#38 background image + annotation cards`, `#48 side-by-side comparison`, `#1 full-bleed background with floating title`). Rows with empty `Layout pattern` or with an id that does not exist in the file are invalid.
+3. **Group D coverage** — for any deck with ≥4 image-bearing pages, at least one page MUST use a Group D pattern (#38–#46, image-as-canvas + native overlay) unless every image is a pure cover / chapter divider / atmosphere backdrop. This family is the most-skipped one and is usually the right answer for content-rich pages with photographs. If the deck legitimately has no Group D opportunity, state the reason in §VIII directly under the table.
+
+**Skip-detection signal for self-audit**: if you notice that every page's `Layout pattern` column resolves to #2/#3 (left-third or right-third), #5/#6 (top-bottom band), or generic side-by-side, you have not actually consulted the file — re-read and reconsider. The default left/right and top/bottom split bias is the failure mode this gate exists to break.
 
 **Image narrative intent** (decide *before* the ratio table — determines whether the image lives in a container at all):
 
