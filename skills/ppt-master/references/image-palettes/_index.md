@@ -8,7 +8,7 @@ A **palette** is the deck's **color behavior** — proportion, role, temperament
 
 ## 1. Catalog (14 palettes)
 
-Each palette has its own file with: proportion rules, role assignments, temperament, fewshot snippets, what to avoid.
+Each palette has its own file with: rendering compatibility matrix and a fewshot prompt snippet.
 
 | Palette | Temperament | Best for |
 |---|---|---|

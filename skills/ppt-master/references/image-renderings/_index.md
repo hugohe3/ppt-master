@@ -8,7 +8,7 @@ A **rendering** is a visual style family: line quality, texture, depth, material
 
 ## 1. Catalog (20 renderings)
 
-Each rendering has its own file with: style paragraph, container sizing guidance, fewshot prompt snippets, what to avoid. **Read only the file for the rendering you pick** — never glob the directory.
+Each rendering has its own file with: style paragraph, line / texture / depth notes, deck HEX usage, and a fewshot prompt snippet. **Read only the file for the rendering you pick** — never glob the directory.
 
 ### 1.1 Modern / commercial (the corporate-PPT main field)
 
@@ -78,8 +78,6 @@ Match `design_spec.md d. Style` (mode + descriptor) against this table. First ma
 | Classroom / blackboard / 课堂 | `chalkboard` | `sketch-notes` |
 | Team / company / product photo | `corporate-photo` | — |
 
-> **Tiebreaker**: when both `vector-illustration` and another rendering apply, prefer `vector-illustration` for slide decks of 15+ pages (it scales visual coherence better than more decorative renderings).
-
 ---
 
 ## 3. How to use
@@ -87,6 +85,6 @@ Match `design_spec.md d. Style` (mode + descriptor) against this table. First ma
 1. From `design_spec.md` extract `d. Style` mode + descriptor.
 2. Find the matching row above; pick the primary recommendation.
 3. `read_file image-renderings/<chosen>.md`.
-4. Apply its style paragraph and container guidance when assembling each prompt per [`image-generator.md`](../image-generator.md) §4.
+4. Apply its style paragraph when assembling each prompt per [`image-generator.md`](../image-generator.md) §4.
 
 **Lock for the whole deck.** Don't change rendering between images in the same deck.

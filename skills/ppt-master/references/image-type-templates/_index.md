@@ -10,7 +10,7 @@ A **type** describes what the image's **internal composition** looks like — it
 
 ## 1. Catalog (15 types)
 
-Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGATIVE SPACE), container sizing options, text-policy variants, fewshot snippets.
+Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGATIVE SPACE), text-policy variants, and a fewshot prompt snippet.
 
 | Type | Internal composition | Typical use |
 |---|---|---|
@@ -79,8 +79,6 @@ The Resource List's `Dimensions` column is authoritative. If absent, use these d
 | timeline | 1200×350 banner | 3.4:1 |
 | map | 1280×720 or 1200×500 | 16:9 / 2.4:1 |
 | scene | 1200×720 wide / 800×600 | 16:10 / 4:3 |
-
-> All sizes include the 12-20% inner padding requirement. The model paints content within the inner safe zone; outer edges should feel airy.
 
 ---
 
