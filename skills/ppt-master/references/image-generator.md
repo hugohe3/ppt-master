@@ -191,7 +191,17 @@ Exception: when the chosen rendering is `corporate-photo`, photorealism is inten
 - Designed title: "main title 'Q3 STRATEGY' typeset in clean geometric sans-serif, centered"
 - Hand-lettered set: "small hand-lettered annotations 'fast', 'cheap', 'good' woven into the sketch"
 
-Font choice and visual treatment are part of the page's design — pick what fits. The deck's `image_rendering` already implies a typographic mood (sketch-notes → hand-drawn lettering; editorial → serif; 3d-isometric → geometric display), but no specific family is required.
+**Echoing the deck's SVG typography** — when the page's SVG already locked a font family in `spec_lock.md typography`, the AI image's lettering should describe a compatible style so cover/chapter titles in the image cohere with body text on adjacent SVG pages.
+
+| `spec_lock typography.font_family` contains | Prompt descriptor for AI image text |
+|---|---|
+| `KaiTi` / `FangSong` / `Georgia` / serif families | "elegant serif lettering, refined letterforms" |
+| `Microsoft YaHei` / `PingFang SC` / `Arial` / sans-serif families | "clean geometric sans-serif, modern letterforms" |
+| `SimHei` / `Impact` / `Arial Black` / display families | "bold display lettering, heavy expressive strokes" |
+| `Consolas` / `Courier New` / monospace families | "monospace technical lettering, fixed-width" |
+| Decorative / handwritten contexts (sketch-notes / ink-notes rendering, or no family specified) | "hand-lettered organic strokes, natural variation" |
+
+Pick the row whose family appears in the SVG stack. For decorative text (background lettering, posters), this constraint relaxes — describe the artistic treatment freely. Designed titles (cover main title, chapter heading) should echo the deck's family.
 
 **CJK note**: most image models render Chinese characters poorly. For embedded text on a CJK deck, prefer English in the image or accept malformed glyphs.
 
