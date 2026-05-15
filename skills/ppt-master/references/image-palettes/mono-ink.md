@@ -4,32 +4,7 @@ High-contrast monochrome with sparse semantic accents. The most disciplined pale
 
 > This file describes **color behavior**, not HEX values. mono-ink overrides much of the deck's HEX usage — read carefully.
 
-## 1. Temperament
-
-| Trait | Setting |
-|---|---|
-| Saturation | Extreme contrast (black + white) + low saturation for accents |
-| Brightness contrast | Maximum — pure black on pure white |
-| Color count visible | Ink (black) + 1-2 semantic accents, total under 10% color area |
-| Mood | Professional, manifesto, disciplined, considered |
-| Material | Ink on paper |
-
----
-
-## 2. Proportion rule (90/10 ink + sparse accent)
-
-| Role | Share | Source | Behavior |
-|---|---|---|---|
-| Background | **~50-60%** | Pure white `#FFFFFF` | Never replace with deck's secondary; the white is essential to mono-ink identity |
-| Ink (lines, fills, text, figures) | **~30-40%** | Near-black `#1A1A1A` | All structural elements; never replaced by deck's primary |
-| Semantic accent #1 (e.g. emphasis / risk) | **3-7%** | Maps from `design_spec.accent` if that HEX is in a warm/red family | Reserved for: risks, emphasis points, "this matters" markers. Often coral red `#E8655A` traditionally. |
-| Semantic accent #2 (e.g. positive / solution) | **2-5%** | Optional second accent, often muted teal `#5FA8A8` | Reserved for: positive states, solution markers, "after" side of Before-After. |
-
-> **Total color accent must stay under 10% of canvas** — this is what makes mono-ink "mono".
-
----
-
-## 3. Special: deviates from deck HEX
+## 1. Special: deviates from deck HEX
 
 mono-ink is the palette **most likely to override `design_spec.colors`**:
 
@@ -39,15 +14,7 @@ mono-ink is the palette **most likely to override `design_spec.colors`**:
 
 When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink palette intentionally uses near-black on white as the structural language; the deck's primary `#XXX` and secondary `#XXX` are not represented as image colors. The deck's accent `#XXX` is reserved for the semantic emphasis role under 10% of canvas."
 
----
-
-## 4. How to phrase it in a prompt
-
-> "Color behavior is mono-ink: pure white background `#FFFFFF` (about 55%). All structural elements — lines, figures, hand-lettered text, arrows — in near-black ink `#1A1A1A` (about 38%). The deck's accent color `#E8655A` is reserved as the semantic emphasis accent, appearing in 1-3 small focal points totaling under 8% of canvas. No other colors. The deck's primary and secondary HEX values are intentionally not represented as image colors in this palette."
-
----
-
-## 5. Compatible renderings
+## 2. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -62,7 +29,7 @@ When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink 
 
 ---
 
-## 6. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — applied to an ink-notes Before/After comparison**
 

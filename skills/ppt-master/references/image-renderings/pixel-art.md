@@ -18,20 +18,7 @@
 | Material | Pixel grid |
 | Mood | Nostalgic, retro-game, playful |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Hero retro banner | 1200×500 | 2.4:1 | 12% |
-| Half-page sprite scene | 600×500 | ~1.2 | 14% |
-| Square scene | 700×700 | 1:1 | 14% |
-| Spot pixel icon | 320×320 | 1:1 | 14% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 pixel-art uses HEX values as **palette slots**:
 
@@ -42,7 +29,7 @@ pixel-art uses HEX values as **palette slots**:
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — hero retro banner, text_policy: none**
 

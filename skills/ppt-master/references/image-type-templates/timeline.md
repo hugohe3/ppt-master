@@ -34,22 +34,7 @@ Two sub-structures:
 | NEGATIVE SPACE | Generous space above/below (or left/right) the axis to give milestones breathing room |
 | TIME DIRECTION | Direction is unambiguous (left-to-right = earlier-to-later) |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Sub-structure fit |
-|---|---|---|---|
-| Hero horizontal timeline | 1200×350 | 3.4:1 | Horizontal timeline ✓✓ |
-| Wide timeline banner | 1200×500 | 2.4:1 | Horizontal with icons ✓✓ |
-| Half-page horizontal (compressed) | 600×400 | 1.5:1 | Horizontal 3-4 stops ✓ |
-| Tall vertical timeline | 500×800 | ~0.6 | Vertical timeline ✓✓ |
-
-Inner padding: 12-15% on the axis's "open" sides.
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -61,7 +46,7 @@ Each milestone may include a short date (e.g. "2020", "Q1", "v1.0") rendered as 
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, horizontal 5-milestone timeline, text_policy: none, 1200×500**
 

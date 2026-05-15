@@ -27,20 +27,7 @@ A **tiered triangular stack** — bottom-wide, top-narrow — where each layer c
 | NEGATIVE SPACE | Side margins grow as tiers narrow — outer field on either side of upper tiers |
 | BALANCE | Vertical center axis is the pyramid's spine — all tiers center-align |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed pyramid page | 1280×720 | 16:9 | 12% sides, 10% top/bottom |
-| Portrait pyramid block | 600×800 | 3:4 | 12% |
-| Half-page pyramid | 600×700 | ~0.85 | 12% |
-| Square reference pyramid | 700×700 | 1:1 | 12% |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### 3.1 `text_policy: none`
 
@@ -56,7 +43,7 @@ Self-contained pyramid with tier names typeset into the artwork. Keep tier names
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate Maslow pyramid, text_policy: none, 600×800**
 

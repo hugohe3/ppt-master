@@ -27,20 +27,7 @@ A **closed-loop process** — 3-6 steps arranged in a circle (or rounded loop), 
 | NEGATIVE SPACE | Center of the circle is calm — either empty or holds a small anchor element only |
 | BALANCE | Step nodes spaced evenly around the perimeter; arrow weights uniform |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed cycle diagram | 1280×720 | 16:9 | 15% (cycle reads best with breathing room) |
-| Half-page cycle block | 700×700 | 1:1 | 15% |
-| Square cycle reference | 800×800 | 1:1 | 12% |
-| Hero cycle band | 1200×600 | 2:1 | 15% |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### 3.1 `text_policy: none`
 
@@ -56,7 +43,7 @@ Self-contained cycle diagram with step names typeset into the artwork. Keep step
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate PDCA cycle, text_policy: none, 700×700**
 

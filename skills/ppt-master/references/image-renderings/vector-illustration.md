@@ -18,21 +18,7 @@ The default safe rendering for general PPT decks. Clean flat vector art with bol
 | Material | None — color is information, not material simulation |
 | Mood | Neutral-positive, professional, designed |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Embedded position | Recommended canvas | Aspect | Inner padding |
-|---|---|---|---|
-| Full-bleed background | 1280×720 | 16:9 | 15% all sides (the central 70% must be calm for SVG overlay) |
-| Half-page illustration | 600×500 | ~1.2 | 12-15% |
-| Quarter-page accent | 400×300 | 4:3 | 10-12% |
-| Hero band (top) | 1200×400 | 3:1 | 15% top/bottom, 10% sides |
-| Spot illustration | 320×320 | 1:1 | 8-10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 vector-illustration treats colors as **flat coded zones**, not as gradients or shadows. Apply HEX values exactly — no tinting, no shading, no blend modes implied.
 
@@ -43,7 +29,7 @@ vector-illustration treats colors as **flat coded zones**, not as gradients or s
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — background block, text_policy: none**
 

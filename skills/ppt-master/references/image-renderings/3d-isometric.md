@@ -18,20 +18,7 @@ Isometric 3D forms with controlled depth — boxes, layers, devices, stacks rend
 | Material | Flat with tonal shading — not glossy, not photorealistic |
 | Mood | Technical, modular, contemporary |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page architecture visual | 600×500 | ~1.2 | 15% |
-| Hero technical diagram | 1200×500 | 2.4:1 | 12% |
-| Square component breakdown | 700×700 | 1:1 | 15% |
-| Spot illustration | 400×400 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 - Primary HEX: main block face fills (the "lit" face)
 - Secondary HEX: background field
@@ -40,7 +27,7 @@ Isometric 3D forms with controlled depth — boxes, layers, devices, stacks rend
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page system architecture, text_policy: none**
 

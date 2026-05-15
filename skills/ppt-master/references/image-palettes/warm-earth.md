@@ -4,45 +4,7 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 
 > This file describes **color behavior**, not HEX values. HEX comes from `design_spec.colors`.
 
-## 1. Temperament
-
-| Trait | Setting |
-|---|---|
-| Saturation | Medium — warm tones feel rich but not vivid |
-| Brightness contrast | Moderate — warm earth tones layer well without harsh contrast |
-| Color count visible | 3-4 (primary + secondary + accent + optional warm neutral) |
-| Mood | Friendly, grounded, approachable, slightly nostalgic |
-| Material | Soft — leaves room for texture (paper grain, watercolor wash) |
-
----
-
-## 2. Proportion rule (50-35-15, applied to the deck's HEX)
-
-| Role | Share | HEX from `design_spec` | Behavior |
-|---|---|---|---|
-| Background / supporting field | **50-60%** | `secondary` | Warm cream, soft beige, gentle off-white. Carries breathing space with warmth. |
-| Main subject / dominant warm element | **30-40%** | `primary` | The earthy warm tone — terracotta, deep amber, warm rust, deep olive. The visual anchor. |
-| Emphasis / warm pop | **10-15%** | `accent` | A small concentrated warm pop (golden yellow, coral, deep red). More generous than cool-corporate's 5-7%, because warm palettes tolerate more saturation visually. |
-
-> warm-earth is more permissive than cool-corporate about color presence — warm tones layer comfortably without feeling promotional.
-
----
-
-## 3. Role semantics
-
-- **Primary** carries grounding warmth, the human anchor. Use it for: dominant warm forms, foreground subjects, body of illustration, main subject silhouette.
-- **Secondary** is the warm breathing field. Use it for: soft cream background, paper field, atmospheric haze. Should feel cozy, not sterile.
-- **Accent** carries small warm pops of energy. Use it for: the standout flower, the warm sunlight glow, the highlighted detail. Allowed to be slightly more visible than cool-corporate's accent.
-
----
-
-## 4. How to phrase it in a prompt
-
-> "Color behavior is warm-grounded: secondary `#FEF3C7` (warm cream) carries about 55% of the canvas as soft breathing space; primary `#9A3412` (deep terracotta) anchors the main forms in confident warm tones occupying about 32%; accent `#D4AF37` (warm gold) appears in small concentrated pops totaling under 13% — perhaps as a glow, a flower, a sunlight detail. Soft warm temperament throughout, no cool tones."
-
----
-
-## 5. Compatible renderings
+## 1. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -60,7 +22,7 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 
 ---
 
-## 6. Fewshot prompt snippets
+## 2. Fewshot prompt snippets
 
 **Snippet A — applied to a watercolor narrative scene**
 

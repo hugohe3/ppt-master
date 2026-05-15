@@ -25,20 +25,7 @@ Single dominant subject occupying 60-70% of the canvas. The hero image *anchors*
 | NEGATIVE SPACE | Generous around the subject — at least 15% padding on the subject's "open" side |
 | BALANCE | Subject's visual weight clearly dominant; no second-place subject competing |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page hero (image left/right of text) | 600×600 | 1:1 | 15% around subject |
-| Full-bleed hero (subject + slide title overlay) | 1280×720 | 16:9 | 20% offset to keep title area clear |
-| Hero band | 1200×500 | 2.4:1 | Generous side padding |
-| Square hero | 700×700 | 1:1 | 15% |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none` (most common)
 
@@ -50,7 +37,7 @@ The hero subject itself includes text — product name on packaging, a hand-lett
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — 3d-isometric + tech-neon product reveal, text_policy: none, 600×600**
 

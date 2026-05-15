@@ -18,19 +18,7 @@ Golden-hour cinematic warmth — illustrated scenes with intentional warm lighti
 | Material | Illustrated with golden-hour lighting |
 | Mood | Cinematic, contemplative, warm |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page narrative | 600×800 | 3:4 | 10% |
-| Hero story banner | 1200×600 | 2:1 | 10% |
-| Wide scenic | 1200×500 | 2.4:1 | 10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 warm-scene reads HEX values through a **warm-graded filter**:
 
@@ -42,7 +30,7 @@ If the deck's primary is cool (navy, teal), warm-scene will subtly warm-grade it
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page personal story, text_policy: none**
 

@@ -28,20 +28,7 @@ A **top-wide, bottom-narrow stack** of horizontal bands representing successive 
 | NEGATIVE SPACE | Side margins grow as bands narrow — outer field on either side of the lower bands provides breathing room |
 | BALANCE | Vertical center axis is the funnel's spine — all bands center-align to this axis |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed funnel page | 1280×720 | 16:9 | 12% sides, 10% top/bottom |
-| Portrait funnel block | 600×800 | 3:4 | 12% (portrait reads funnels naturally) |
-| Half-page funnel | 600×700 | ~0.85 | 12% |
-| Square reference funnel | 700×700 | 1:1 | 12% |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### 3.1 `text_policy: none`
 
@@ -57,7 +44,7 @@ Self-contained funnel diagram where band names are typeset into the artwork. Kee
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate marketing funnel, text_policy: none, 600×800**
 

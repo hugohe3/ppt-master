@@ -48,20 +48,7 @@ Image models have **variable accuracy on text rendering**:
 
 When the desired headline is long or CJK: switch to `background` type and overlay the headline as SVG text.
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed big-stat page | 1280×720 | 16:9 | 20% padding around text |
-| Half-page stat block | 600×600 | 1:1 | 20% |
-| Hero slogan banner | 1200×500 | 2.4:1 | 18% |
-| Square emphasis | 700×700 | 1:1 | 20% |
-
----
-
-## 4. Text-policy variants
+## 3. Text-policy variants
 
 ### `text_policy: embedded`
 
@@ -79,7 +66,7 @@ If the page wants no text inside the image, the type is probably `background` or
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — ink-notes + mono-ink big-number stat, text_policy: embedded, 800×500**
 

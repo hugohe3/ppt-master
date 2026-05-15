@@ -18,20 +18,7 @@ Bold silkscreen poster art — flat color blocks, halftone textures, limited col
 | Material | Silkscreen + paper |
 | Mood | Vintage poster, cinematic, editorial-bold |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Hero cover poster | 1280×720 | 16:9 | 10% |
-| Half-page poster block | 600×800 | 3:4 | 8% (posters fill the frame) |
-| Square poster | 700×700 | 1:1 | 8% |
-| Chapter divider | 1200×400 | 3:1 | 10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 screen-print works best with **2-5 colors maximum**. The deck's HEX triplet maps directly:
 
@@ -43,7 +30,7 @@ For two-color (duotone) poster mood, drop secondary and use primary + accent onl
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — hero chapter divider poster, text_policy: none**
 

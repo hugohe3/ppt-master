@@ -53,22 +53,7 @@ Three valid sub-structures. Pick one per image; do not mix.
 | ELEMENTS | Each layer has a consistent visual treatment; one icon or shape per layer |
 | NEGATIVE SPACE | Equal-height bands with consistent gap between them; top and bottom padding to canvas edge |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Embedded position | Canvas | Aspect | Sub-structure fit |
-|---|---|---|---|
-| Square half-page (most common) | 700×700 | 1:1 | Hub & spokes ✓✓ / Matrix ✓✓ |
-| Portrait half-page | 600×800 | 3:4 | Layered stack ✓✓ |
-| Landscape banner | 1200×500 | 2.4:1 | Hub & spokes (flattened) ✓ / Matrix (1×N) ✓ |
-| Full-bleed (page_role: hero_page only) | 1280×720 | 16:9 | All three work — image becomes the page |
-
-Inner padding: 15-18% on all sides. Framework imagery suffers most when satellites/cells push against the canvas edge.
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -88,7 +73,7 @@ Sample fragment:
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, hub-and-spokes, `text_policy: none`, 700×700 half-page**
 

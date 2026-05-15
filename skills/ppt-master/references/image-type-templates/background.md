@@ -24,22 +24,7 @@ Atmospheric backdrop with **no central subject**. The image's job is to set tone
 | NEGATIVE SPACE | The center 60-70% must be calm — low visual weight, ready to receive SVG title/text overlay |
 | TEMPERAMENT | Sets the deck's overall tone: corporate-restrained, warm-friendly, tech-energetic, etc. |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Cover full-bleed | 1280×720 | 16:9 | The "padding" is the calm center zone, ~30% of total area unbusy |
-| Chapter divider full-bleed | 1280×720 | 16:9 | Same |
-| Half-page background (image left, text right) | 600×720 | ~0.83 | Calm zone on the text-adjacent edge |
-| Hero band background | 1200×400 | 3:1 | Calm zone in the center band |
-
-> `page_role`: default `local` when SVG title overlays the background. Promote to `hero_page` when the background alone is the page (cover with no overlay, mood transition, image-led chapter divider).
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -58,7 +43,7 @@ When the background's mood is enhanced by lettering — large decorative word in
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate cover background, text_policy: none, 1280×720**
 

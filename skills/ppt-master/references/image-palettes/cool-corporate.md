@@ -4,47 +4,7 @@ Stable, professional, restrained. The default palette for consulting / finance /
 
 > This file describes **color behavior**, not HEX values. The deck's HEX triplet comes from `design_spec.colors` (set by Strategist). cool-corporate tells the model **how to use** those HEX values.
 
-## 1. Temperament
-
-| Trait | Setting |
-|---|---|
-| Saturation | Restrained — let the primary blue feel deep but not vivid |
-| Brightness contrast | Strong (deep primary against bright secondary) — supports executive readability |
-| Color count visible | 3 maximum (primary + secondary + accent); no fourth color creeps in |
-| Mood | Confident, calm, deliberate, slightly serious |
-| Material | Flat — no glossy, no metallic, no plastic |
-
----
-
-## 2. Proportion rule (60-30-10, applied to the deck's HEX)
-
-| Role | Share | HEX from `design_spec` | Behavior |
-|---|---|---|---|
-| Background / negative space | **60-70%** | `secondary` | Calm field. Usually pale (gray, off-white, very light blue). Carries the page's breathing room. |
-| Main subject / dominant shape | **25-30%** | `primary` | The deep blue / navy / dark teal that anchors the image. Used in confident solid blocks, not as a tint. |
-| Emphasis / call-attention | **3-7%** | `accent` | One or two elements only — a single highlighted node, a thin key line, an emphasized icon stroke. Never more than 5-7% of the canvas. |
-
-> **Hard rule**: if accent exceeds ~7%, the deck loses its corporate temperament and starts to feel promotional. When in doubt, reduce accent presence.
-
----
-
-## 3. Role semantics
-
-- **Primary** carries trust, structure, the spine of the visual. Use it for: dominant forms, vertical/horizontal anchor lines, key icon fills, foundational geometry.
-- **Secondary** carries breathing space. Use it for: backgrounds, gutters, secondary blocks, subtle dividers. It should feel **almost invisible** in a good cool-corporate image.
-- **Accent** carries direction — it tells the viewer's eye where to land. Use it for: the single most important data point, the chosen "this is the conclusion" element, a thin accent line under a key area.
-
----
-
-## 4. How to phrase it in a prompt
-
-Combine the proportion rule + role semantics + the deck's actual HEX:
-
-> "Color behavior is restrained-corporate: secondary `#F8F9FA` occupies 60-70% of the canvas as calm background; primary `#1E3A5F` carries the main shape and dominant elements; accent `#D4AF37` appears only in one or two emphasis points totaling under 5% of the area. No fourth color. Flat solid fills only — no gradients, no metallic, no glossy reflections."
-
----
-
-## 5. Compatible renderings
+## 1. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -60,7 +20,7 @@ Combine the proportion rule + role semantics + the deck's actual HEX:
 
 ---
 
-## 6. Fewshot prompt snippets
+## 2. Fewshot prompt snippets
 
 **Snippet A — applied to a vector-illustration background**
 

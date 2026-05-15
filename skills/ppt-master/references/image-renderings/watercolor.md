@@ -18,19 +18,7 @@ Painterly soft edges, color bleeding, organic flow. The most "artistic" renderin
 | Material | Watercolor + cold-press paper |
 | Mood | Calm, contemplative, artistic |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page atmospheric visual | 600×800 | 3:4 | 10% (watercolor often fills the frame) |
-| Hero narrative banner | 1200×600 | 2:1 | 10% |
-| Square mood piece | 700×700 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 watercolor uses HEX values as **wash pigments**, not flat fills:
 
@@ -40,7 +28,7 @@ watercolor uses HEX values as **wash pigments**, not flat fills:
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page narrative scene, text_policy: none**
 

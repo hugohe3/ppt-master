@@ -20,20 +20,7 @@ Layered paper-craft aesthetic — crisp scissor-cut edges, subtle paper shadows 
 | Material | Construction paper / cardstock — matte, slightly fibrous |
 | Mood | Warm, tactile, approachable, hand-made |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Embedded position | Recommended canvas | Aspect | Inner padding |
-|---|---|---|---|
-| Full-bleed storybook page | 1280×720 | 16:9 | 12% all sides |
-| Half-page paper scene | 600×600 | 1:1 | 12% |
-| Hero teaching banner | 1200×500 | 2.4:1 | 12% |
-| Spot paper-craft icon | 400×400 | 1:1 | 10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 paper-cut treats each HEX value as **one color of paper**:
 
@@ -44,7 +31,7 @@ paper-cut treats each HEX value as **one color of paper**:
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — educational scene, text_policy: none**
 

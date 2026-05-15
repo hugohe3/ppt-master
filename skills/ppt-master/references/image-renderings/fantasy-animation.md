@@ -18,20 +18,7 @@ Ghibli/Disney-inspired hand-drawn animation warmth. Soft painterly forms, gentle
 | Material | Hand-painted animation cel |
 | Mood | Dreamy, magical, comforting, storybook |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page storybook visual | 600×800 | 3:4 | 10% |
-| Hero story banner | 1200×600 | 2:1 | 10% |
-| Square storybook | 700×700 | 1:1 | 10% |
-| Cover hero | 1280×720 | 16:9 | 10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 fantasy-animation reads HEX values through a **warm storybook filter**:
 
@@ -41,7 +28,7 @@ fantasy-animation reads HEX values through a **warm storybook filter**:
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page storybook scene, text_policy: none**
 

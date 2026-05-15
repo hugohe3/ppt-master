@@ -18,19 +18,7 @@ Organic earthy illustration with botanical and natural motifs. Soft curves, orga
 | Material | Earth-toned illustration |
 | Mood | Grounded, contemplative, sustainable |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page nature visual | 600×800 | 3:4 | 12% |
-| Hero environmental banner | 1200×600 | 2:1 | 12% |
-| Square botanical | 700×700 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 nature has a strong tendency toward **earth-toned natural palette**. When the deck's HEX aligns (warm-earth, nature-organic palette), use directly:
 
@@ -42,7 +30,7 @@ If the deck's HEX is cool / corporate, nature may be the wrong rendering — con
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page sustainability scene, text_policy: none**
 

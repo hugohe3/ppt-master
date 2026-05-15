@@ -49,22 +49,7 @@ Three sub-structures:
 | NEGATIVE SPACE | Generous around the flow — stages don't touch edges, connectors don't crowd |
 | DIRECTIONAL CLARITY | The flow direction is unambiguous |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Sub-structure fit |
-|---|---|---|---|
-| Horizontal banner (3-5 stage flow) | 1200×400 | 3:1 | Horizontal flow ✓✓ |
-| Half-page vertical (3-4 stages) | 500×700 | ~0.7 | Vertical flow ✓✓ |
-| Square cyclical | 700×700 | 1:1 | Looping ✓✓ |
-| Half-page horizontal (3 stages) | 600×400 | 1.5:1 | Horizontal compressed ✓ |
-
-Inner padding: 14-16%.
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -76,7 +61,7 @@ Each stage may contain a short English keyword (≤2 words) inside or beside it.
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, horizontal 4-stage flow, text_policy: none, 1200×400**
 

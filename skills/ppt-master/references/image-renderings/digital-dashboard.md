@@ -18,20 +18,7 @@ Polished UI / data-visualization aesthetic. The image looks like a screenshot of
 | Material | Flat with deliberate elevation hierarchy via shadows |
 | Mood | Polished, restrained, product-fluent |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page product demo | 600×500 | ~1.2 | 10% (dashboards lean toward edge-aligned cards) |
-| Hero product showcase | 1200×600 | 2:1 | 10% |
-| Spot dashboard tile | 400×300 | 4:3 | 8% |
-| Full-bleed product hero | 1280×720 | 16:9 | 10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 - Primary HEX: dominant chart element / featured card header
 - Secondary HEX: background canvas (usually pale or near-white)
@@ -40,7 +27,7 @@ Polished UI / data-visualization aesthetic. The image looks like a screenshot of
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page product demo, text_policy: none**
 

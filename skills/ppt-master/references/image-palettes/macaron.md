@@ -4,43 +4,7 @@ Soft pastel, gentle, approachable. The signature palette for education, onboardi
 
 > This file describes **color behavior**, not HEX values. HEX comes from `design_spec.colors`, but rendered as pastel tints.
 
-## 1. Temperament
-
-| Trait | Setting |
-|---|---|
-| Saturation | Low to moderate — colors are tinted toward pastel |
-| Brightness contrast | Soft — gentle transitions, no harsh contrast |
-| Color count visible | 3-4 pastel tints + black ink for lines (when paired with sketch-notes) |
-| Mood | Gentle, approachable, educational-warm, slightly playful |
-| Material | Soft block fills (often hand-painted overshoot quality) |
-
----
-
-## 2. Proportion rule (50-40-10, pastel-graded)
-
-| Role | Share | HEX from `design_spec` | Behavior |
-|---|---|---|---|
-| Background / paper field | **45-55%** | `secondary` | Warm cream `#F5F0E8` or near-cream — the "paper" the macarons sit on. May override deck's secondary if it doesn't lean cream. |
-| Pastel block fills | **35-45%** | `primary` (pastel-tinted) + 2-3 supporting pastels | The block colors — soft tinted versions of primary, plus complementary pastels (light blue, mint, lavender, peach). Each block fills with its own pastel. |
-| Emphasis pop | **5-10%** | `accent` | A small concentrated pop — often used sparingly as the "this is the answer" coral or warm yellow. |
-
----
-
-## 3. Role semantics
-
-- **Background** carries warmth and friendliness — should feel like a thoughtful teacher's notebook page.
-- **Pastel blocks** carry information zones — each block is a different soft tint, used to differentiate sections without shouting.
-- **Accent** is the one warm pop — used 1-2 times max in an entire image, drawing the eye to the key takeaway.
-
----
-
-## 4. How to phrase it in a prompt
-
-> "Color behavior is macaron pastel: warm cream paper background `#F5F0E8` covers about 50% of the canvas. Pastel block fills in soft tints — light blue, mint green, lavender, peach — fill the rounded info shapes (about 40% total area, divided across 3-4 blocks). Accent warm coral `#F97316` appears in one or two small emphasis points only (under 10%). All pastel fills have slight hand-painted overshoot beyond their outlines. Soft, friendly, educational temperament throughout."
-
----
-
-## 5. Compatible renderings
+## 1. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -57,7 +21,7 @@ Soft pastel, gentle, approachable. The signature palette for education, onboardi
 
 ---
 
-## 6. Fewshot prompt snippets
+## 2. Fewshot prompt snippets
 
 **Snippet A — applied to a sketch-notes infographic**
 

@@ -20,20 +20,7 @@ Frosted-glass / soft-UI aesthetic — translucent layered panels, blurred backgr
 | Material | Translucent polished glass on soft gradient background |
 | Mood | Premium, polished, futuristic-friendly, optimistic |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Embedded position | Recommended canvas | Aspect | Inner padding |
-|---|---|---|---|
-| Full-bleed product hero | 1280×720 | 16:9 | 12% all sides |
-| Half-page UI showcase | 600×500 | ~1.2 | 10-12% |
-| Spot product card | 400×500 | 4:5 | 10% |
-| Hero band | 1200×500 | 2.4:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 glassmorphism treats the deck's HEX as **panel content + background gradient stops**:
 
@@ -44,7 +31,7 @@ glassmorphism treats the deck's HEX as **panel content + background gradient sto
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — fintech product showcase, text_policy: none**
 

@@ -28,20 +28,7 @@ A **stylized geographic outline** (country / region / continent / world) with an
 | NEGATIVE SPACE | Ocean / negative space around the landmass — at least 25% of canvas. Markers should not crowd the landmass edges. |
 | BALANCE | Geographic accuracy is approximate but recognizable — viewer should identify the region within one glance |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed map page | 1280×720 | 16:9 | 12% all sides (world map fits 16:9 well) |
-| Half-page country map | 600×600 | 1:1 | 12% |
-| Wide regional map | 1200×500 | 2.4:1 | 12% |
-| Square continent map | 700×700 | 1:1 | 12% |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### 3.1 `text_policy: none`
 
@@ -57,7 +44,7 @@ Self-contained reference map where place names are typeset into the design. High
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate world office map, text_policy: none, 1280×720**
 

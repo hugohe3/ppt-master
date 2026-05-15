@@ -29,20 +29,7 @@ A **single person headshot or upper-body shot** — frontal or three-quarter tur
 | NEGATIVE SPACE | Generous around the head — at least 15% padding above the crown of the head |
 | BALANCE | The face is the visual anchor; eyes positioned at approximately the upper-third horizontal line (classical portrait rule) |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Team-page headshot | 400×500 | 4:5 | 10% (portrait crops tight to subject) |
-| Square avatar | 600×600 | 1:1 | 10% |
-| Half-page founder bio | 600×800 | 3:4 | 10% |
-| Hero speaker introduction | 1200×720 | ~5:3 | 12% (more breathing on hero) |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### 3.1 `text_policy: none`
 
@@ -58,7 +45,7 @@ If text is part of the page's visual (a name carved as a design element, a quote
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — corporate-photo + cool-corporate executive headshot, text_policy: none, 600×800**
 

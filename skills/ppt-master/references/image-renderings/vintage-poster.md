@@ -20,20 +20,7 @@ Mid-century modern (1950s–1970s) poster aesthetic. Limited color palette, half
 | Material | Printed-paper aesthetic — slight ink misregistration adds authenticity |
 | Mood | Warm, confident, nostalgic, optimistic-retro |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Embedded position | Recommended canvas | Aspect | Inner padding |
-|---|---|---|---|
-| Full-bleed poster page | 1280×720 | 16:9 | 12% all sides |
-| Half-page poster block | 600×800 | 3:4 | 12% |
-| Hero band | 1200×500 | 2.4:1 | 12% |
-| Square album-cover style | 700×700 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 vintage-poster works best when the deck's HEX values lean **earthy or saturated-warm**. Cool-corporate primaries can work but lose some retro character.
 
@@ -44,7 +31,7 @@ vintage-poster works best when the deck's HEX values lean **earthy or saturated-
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — travel-poster hero, text_policy: none**
 

@@ -18,20 +18,7 @@ Modern flat design with bolder geometric blocks than `vector-illustration`. More
 | Material | Flat — color is brand identity, not material |
 | Mood | Designed, intentional, slightly more expressive than vector-illustration |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed background | 1280×720 | 16:9 | 12-15% |
-| Half-page block | 600×500 | ~1.2 | 12% |
-| Hero band | 1200×400 | 3:1 | 12% |
-| Spot accent | 320×320 | 1:1 | 10% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 - Primary HEX: largest filled block, the dominant brand voice
 - Secondary HEX: secondary block or large negative space
@@ -40,7 +27,7 @@ Modern flat design with bolder geometric blocks than `vector-illustration`. More
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page product visual, text_policy: none**
 

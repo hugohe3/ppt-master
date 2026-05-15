@@ -34,22 +34,7 @@ Two sub-structures:
 | NEGATIVE SPACE | Generous between zones (10-15% gutters) and inside each zone (60-70% of zone for content, rest as padding) |
 | BALANCE | Zones are visually equal — no zone dominates |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Sub-structure fit |
-|---|---|---|---|
-| Square half-page (2×2 grid) | 600×600 | 1:1 | Grid 2×2 ✓✓ / Radial 4-zone ✓ |
-| Wide banner (3×1 grid) | 1200×400 | 3:1 | Grid 3×1 ✓✓ |
-| Square radial | 700×700 | 1:1 | Radial 4-5 zones ✓✓ |
-| Portrait list (3-4 zones vertical) | 500×700 | ~0.7 | Grid 1×3 or 1×4 ✓ |
-
-Inner padding: 14-18%.
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -69,7 +54,7 @@ Sample fragment:
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate, 2×2 grid, text_policy: none, 600×600**
 

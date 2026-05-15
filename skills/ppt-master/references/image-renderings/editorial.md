@@ -18,20 +18,7 @@ Magazine-style infographic look — sophisticated layout, refined type-as-shape 
 | Material | None — abstract editorial composition |
 | Mood | Refined, intelligent, premium-restrained |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page editorial visual | 600×500 | ~1.2 | 15% (editorial wants breathing room) |
-| Hero spread | 1200×600 | 2:1 | 14% |
-| Square explainer | 700×700 | 1:1 | 15% |
-| Spot illustration | 400×500 | 4:5 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 - Primary HEX: dominant block or background field if a saturated editorial mood is wanted
 - Secondary HEX: gutters, dividers, background field (usually neutral)
@@ -39,7 +26,7 @@ Magazine-style infographic look — sophisticated layout, refined type-as-shape 
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page financial explainer, text_policy: none**
 

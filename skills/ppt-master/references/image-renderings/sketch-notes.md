@@ -18,20 +18,7 @@ Warm cream paper with black hand-drawn lines and soft pastel color blocks. The m
 | Material | Paper + ink + pastel block (hand-painted overshoot) |
 | Mood | Warm, instructional, friendly |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page educational block | 600×600 | 1:1 | 14% |
-| Hero teaching banner | 1200×500 | 2.4:1 | 14% |
-| Square explainer | 700×700 | 1:1 | 16% |
-| Spot icon-doodle | 400×400 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 sketch-notes has a strong **built-in palette tendency** toward warm cream + black ink + soft pastels. When the deck's `design_spec.colors` align (warm-earth or macaron palette family), use them directly. When they don't align (cool-corporate primary), sketch-notes may be the wrong rendering — consult the compatibility matrix in `image-palettes/_index.md`.
 
@@ -42,7 +29,7 @@ sketch-notes has a strong **built-in palette tendency** toward warm cream + blac
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page educational concept, text_policy: embedded**
 

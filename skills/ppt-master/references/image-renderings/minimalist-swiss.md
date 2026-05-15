@@ -20,20 +20,7 @@ Swiss-grid / Bauhaus-adjacent visual discipline. Grid-locked geometry, generous 
 | Material | None — color is conceptual zone |
 | Mood | Rigorous, considered, austere, academic |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Embedded position | Recommended canvas | Aspect | Inner padding |
-|---|---|---|---|
-| Full-bleed grid page | 1280×720 | 16:9 | 18-20% all sides (Swiss design needs aggressive whitespace) |
-| Half-page composition | 600×600 | 1:1 | 18% |
-| Hero band | 1200×400 | 3:1 | 20% sides |
-| Spot composition | 400×400 | 1:1 | 15% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 minimalist-swiss treats colors as **conceptual zones**, not decoration. Apply HEX exactly — one color dominates a deliberate grid cell, secondary fills the field, accent appears at one rule-of-thirds intersection only.
 
@@ -44,7 +31,7 @@ minimalist-swiss treats colors as **conceptual zones**, not decoration. Apply HE
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page composition, text_policy: none**
 

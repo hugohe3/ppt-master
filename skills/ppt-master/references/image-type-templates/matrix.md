@@ -29,20 +29,7 @@ A **2×2 quadrant grid** (occasionally 3×3) where each cell carries its own lab
 | NEGATIVE SPACE | Generous inside each quadrant — the icon should occupy 40-60% of its quadrant's area |
 | BALANCE | Visual weight equal across all four quadrants — no single quadrant dominates |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Full-bleed strategy matrix | 1280×720 | 16:9 | 12% all sides |
-| Half-page quadrant block | 700×700 | 1:1 | 12% |
-| Square reference matrix | 800×800 | 1:1 | 10% |
-| Wide consulting matrix | 1200×600 | 2:1 | 12% sides, 8% top/bottom |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### 3.1 `text_policy: none`
 
@@ -58,7 +45,7 @@ When the matrix's identity comes from its in-image lettering — a stylized SWOT
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — vector-illustration + cool-corporate SWOT matrix, text_policy: none, 800×800**
 

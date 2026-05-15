@@ -28,20 +28,7 @@ corporate-photo **overrides** the global "simplified silhouettes / no realistic 
 
 All other renderings keep the simplified-figure rule.
 
----
-
-## 4. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page lifestyle shot | 600×800 | 3:4 | 8% (photography fills the frame more) |
-| Hero team photo | 1200×600 | 2:1 | 8% |
-| Spot portrait | 400×500 | 4:5 | 8% |
-| Full-bleed product hero | 1280×720 | 16:9 | 8% |
-
----
-
-## 5. Using the deck's HEX values
+## 4. Using the deck's HEX values
 
 corporate-photo's relationship to HEX is **color grading**, not color fills:
 
@@ -52,7 +39,7 @@ corporate-photo's relationship to HEX is **color grading**, not color fills:
 
 ---
 
-## 6. Fewshot prompt snippets
+## 5. Fewshot prompt snippets
 
 **Snippet A — team workplace photo, text_policy: none**
 

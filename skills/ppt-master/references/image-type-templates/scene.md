@@ -25,20 +25,7 @@ Atmospheric environment with narrative — a moment, a place, a situation render
 | NEGATIVE SPACE | Atmospheric perspective creates breathing room — background paler than foreground |
 | ATMOSPHERE | Lighting direction, color temperature, and mood are deliberate (golden-hour, evening light, morning haze, etc.) |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Hero scene banner | 1200×600 | 2:1 | 10% (scenes fill the frame) |
-| Half-page narrative | 600×800 | 3:4 | 10% |
-| Wide scenic | 1200×500 | 2.4:1 | 10% |
-| Square scene | 700×700 | 1:1 | 10% |
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -52,7 +39,7 @@ Two valid cases:
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — warm-scene + warm-earth personal story, text_policy: none, 1200×600**
 

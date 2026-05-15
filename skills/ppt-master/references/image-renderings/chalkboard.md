@@ -18,19 +18,7 @@ Chalk on a dark green or black board — classroom aesthetic. Used in teaching-f
 | Material | Slate board (dark green or near-black) + chalk |
 | Mood | Nostalgic, instructional, classroom-warm |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page lesson block | 600×500 | ~1.2 | 14% |
-| Hero teaching banner | 1200×500 | 2.4:1 | 14% |
-| Square lesson visual | 700×700 | 1:1 | 14% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 chalkboard has a strong **fixed-palette tendency**: dark slate background + white chalk + pastel accents.
 
@@ -40,7 +28,7 @@ chalkboard has a strong **fixed-palette tendency**: dark slate background + whit
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page lesson visual, text_policy: embedded**
 

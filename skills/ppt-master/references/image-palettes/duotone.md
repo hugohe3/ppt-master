@@ -4,45 +4,7 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 
 > This file describes **color behavior**, not HEX values.
 
-## 1. Temperament
-
-| Trait | Setting |
-|---|---|
-| Saturation | Variable — both colors are deliberate, neither competes |
-| Brightness contrast | Strong between the two colors |
-| Color count visible | 2 (+ optional neutral background) |
-| Mood | Poster, cinematic, editorial-bold, chromatically disciplined |
-| Material | Flat or screen-print textured |
-
----
-
-## 2. Proportion rule (60-40 or 50-50, two-color)
-
-| Role | Share | HEX from `design_spec` | Behavior |
-|---|---|---|---|
-| Color A (figure / dominant) | **40-60%** | Often `primary` | One of the two duotone colors. Carries the main subject or dominant zone. |
-| Color B (ground / secondary) | **40-60%** | Often `accent` (or whatever pairs well with primary) | The complementary color. Carries the rest of the composition. |
-| Optional neutral | **0-20%** | Off-white / cream / near-black | Used as separator or small neutral zone. |
-
-**Hard rule**: only 2 colors appear; if the deck's HEX is a triplet, drop secondary or use it as the neutral background only.
-
----
-
-## 3. Role semantics
-
-- **Color A** is the figure — the silhouette, the dominant block, the foreground.
-- **Color B** is the ground — the background field, the contrasting zone, where Color A lives.
-- The choice of pairing matters more than role assignment — pick the two HEX values from the deck that have the strongest duotone tension.
-
----
-
-## 4. How to phrase it in a prompt
-
-> "Color behavior is duotone: Color A — deep teal `#0F766E` (the deck's primary) — carries the main subject silhouette and dominant zone (about 50%). Color B — vivid amber `#D97706` (the deck's accent) — carries the background and secondary zone (about 48%). The two colors are the entire palette — no third hue beyond a barely-perceptible neutral 2% in transitional textures."
-
----
-
-## 5. Compatible renderings
+## 1. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -59,7 +21,7 @@ Two-color limited, poster-like. The constrained palette — only two colors plus
 
 ---
 
-## 6. Fewshot prompt snippets
+## 2. Fewshot prompt snippets
 
 **Snippet A — applied to a screen-print cover poster**
 

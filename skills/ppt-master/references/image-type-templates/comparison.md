@@ -37,22 +37,7 @@ Two sub-structures:
 | NEGATIVE SPACE | 12-15% padding on the outer edges; the divider may be a thin line, geometric shape, or simply negative space |
 | DIVIDER | Clean — a hand-drawn line, a vertical rule, a geometric shape, or just empty space. Should feel intentional |
 
----
-
-## 2. Container sizing for local PPT inserts
-
-| Use | Canvas | Aspect | Sub-structure fit |
-|---|---|---|---|
-| Hero before/after banner | 1200×500 | 2.4:1 | Horizontal split ✓✓ |
-| Square comparison | 700×700 | 1:1 | Horizontal ✓ or vertical ✓ |
-| Half-page comparison | 600×500 | ~1.2 | Horizontal split (compressed) ✓ |
-| Tall comparison (vertical split) | 500×700 | ~0.7 | Vertical split ✓✓ |
-
-Inner padding: 12-15% per side.
-
----
-
-## 3. Text-policy variants
+## 2. Text-policy variants
 
 ### `text_policy: none`
 
@@ -66,7 +51,7 @@ Each side may contain short hand-lettered labels: "BEFORE" / "AFTER" at the top,
 
 ---
 
-## 4. Fewshot prompt snippets
+## 3. Fewshot prompt snippets
 
 **Snippet A — ink-notes + mono-ink, Before/After horizontal split, text_policy: embedded, 1200×500**
 

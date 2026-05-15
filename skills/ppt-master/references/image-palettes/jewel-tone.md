@@ -4,47 +4,7 @@ Deep saturated gemstone colors — emerald, sapphire, ruby, amethyst, gold. Prem
 
 > This file describes **color behavior**, not HEX values. The deck's HEX triplet comes from `design_spec.colors`. jewel-tone tells the model how to apply those HEX values with **jewel-rich saturation discipline**.
 
----
-
-## 1. Temperament
-
-| Trait | Setting |
-|---|---|
-| Saturation | High — gemstone richness; never washed-out |
-| Brightness contrast | Strong — deep jewels against dark or cream field |
-| Color count visible | 2-3 (one or two jewel colors + neutral field + small gold/silver accent) |
-| Mood | Premium, luxurious, sophisticated, evening-elegant |
-| Material | Velvet / silk / polished gemstone — implied richness, never plastic |
-
----
-
-## 2. Proportion rule (50-35-15, jewel-rich)
-
-| Role | Share | HEX from `design_spec` | Behavior |
-|---|---|---|---|
-| Field / background | **45-55%** | `secondary` (often deep cream, dark navy, or near-black) | Sets the velvet stage for the jewels |
-| Primary jewel | **30-40%** | `primary` (one rich jewel — emerald, sapphire, ruby, amethyst) | The dominant gemstone color |
-| Accent (gold / silver / second jewel) | **10-15%** | `accent` | A metallic gold or a small second-jewel pop |
-
-> **Hard rule**: jewel-tone requires **high saturation** in `primary`. If the deck's primary HEX is muted, push toward its richest neighbor when describing it ("rich deep emerald `#047857`" not "muted teal").
-
----
-
-## 3. Role semantics
-
-- **Primary jewel** carries the luxury statement — used in large confident blocks, never as tints or backgrounds
-- **Secondary field** is the velvet stage — cream, near-black, or deep neutral that lets the jewel sing
-- **Accent** is the metallic highlight — gold leaf, silver thread, polished brass — small but bright
-
----
-
-## 4. How to phrase it in a prompt
-
-> "Color behavior is jewel-tone: rich primary deep emerald `#047857` carries the dominant gemstone block (about 35%); secondary deep cream `#FEF3C7` forms the velvet field (about 50%); accent gold `#D4AF37` appears as a thin polished metallic line or one small jewel-cut shape (about 12%). High saturation, premium feel. No muted tints. No additional colors."
-
----
-
-## 5. Compatible renderings
+## 1. Compatible renderings
 
 | Rendering | Notes |
 |---|---|
@@ -59,7 +19,7 @@ Deep saturated gemstone colors — emerald, sapphire, ruby, amethyst, gold. Prem
 
 ---
 
-## 6. Fewshot prompt snippets
+## 2. Fewshot prompt snippets
 
 **Snippet A — applied to an editorial luxury hero**
 

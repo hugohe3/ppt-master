@@ -18,20 +18,7 @@ Pure white paper, black ink, sparse semantic color accents — the Mike Rohde sk
 | Material | Pen-on-paper |
 | Mood | Professional, considered, manifesto |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page methodology block | 600×600 | 1:1 | 14% |
-| Hero manifesto banner | 1200×500 | 2.4:1 | 14% |
-| Before/After comparison | 1200×500 | 2.4:1 | 14% |
-| Spot diagram | 500×500 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 ink-notes has a near-fixed visual language: **black ink + white background + 1-2 semantic accents**. This palette tendency may override `design_spec.colors`:
 
@@ -43,7 +30,7 @@ This makes ink-notes **the rendering most likely to deviate from the deck's HEX*
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — Before/After methodology (comparison type), text_policy: embedded**
 

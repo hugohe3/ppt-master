@@ -18,20 +18,7 @@ Technical schematic aesthetic — clean lines on a grid, monospace cues, restrai
 | Material | None — abstract schematic |
 | Mood | Analytical, engineering-precise, restrained |
 
----
-
-## 3. Container sizing for local PPT inserts
-
-| Position | Canvas | Aspect | Padding |
-|---|---|---|---|
-| Half-page architecture | 600×500 | ~1.2 | 12-15% |
-| Hero system diagram | 1200×500 | 2.4:1 | 12% |
-| Square component | 700×700 | 1:1 | 15% |
-| Spot schematic | 400×400 | 1:1 | 12% |
-
----
-
-## 4. Using the deck's HEX values
+## 3. Using the deck's HEX values
 
 - Primary HEX: main schematic lines and primary boxes
 - Secondary HEX: background (often near-white, or very pale blue if a blueprint mood is wanted)
@@ -40,7 +27,7 @@ Technical schematic aesthetic — clean lines on a grid, monospace cues, restrai
 
 ---
 
-## 5. Fewshot prompt snippets
+## 4. Fewshot prompt snippets
 
 **Snippet A — half-page system architecture, text_policy: none**
 
