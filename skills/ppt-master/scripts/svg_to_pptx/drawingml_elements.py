@@ -1336,18 +1336,20 @@ def _picture_xfrm_from_rect(
     w: float,
     h: float,
 ) -> tuple[str, int, int, int, int, tuple[int, int, int, int]]:
-    """Build DrawingML xfrm data for a picture rectangle."""
+    """Build DrawingML xfrm data for a picture rectangle.
+
+    Coordinates ``x``, ``y``, ``w``, ``h`` MUST already be in ctx-resolved
+    space (i.e. callers have applied ``ctx_x`` / ``ctx_w`` upstream). When
+    ``ctx.use_transform_matrix`` is set, raw SVG-space coordinates are
+    expected and the matrix path applies the transform itself.
+    """
     if ctx.use_transform_matrix:
         return rect_to_dml_xfrm(x, y, w, h, ctx.transform_matrix)
 
-    x_t = ctx_x(x, ctx)
-    y_t = ctx_y(y, ctx)
-    w_t = ctx_w(w, ctx)
-    h_t = ctx_h(h, ctx)
-    off_x = px_to_emu(x_t)
-    off_y = px_to_emu(y_t)
-    ext_cx = px_to_emu(w_t)
-    ext_cy = px_to_emu(h_t)
+    off_x = px_to_emu(x)
+    off_y = px_to_emu(y)
+    ext_cx = px_to_emu(w)
+    ext_cy = px_to_emu(h)
     return '', off_x, off_y, ext_cx, ext_cy, (off_x, off_y, off_x + ext_cx, off_y + ext_cy)
 
 
