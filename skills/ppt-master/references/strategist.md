@@ -88,7 +88,7 @@ Accept user combinations and one-off coinages ("Scandinavian + slight industrial
 
 ### e. Color Scheme Recommendation
 
-**User / template colors are truth.** If the user has specified colors (HEX, brand colors, "用蓝色/红色为主" 等口头指定), or a template was loaded with its own theme colors, lock those directly and skip the recommendation table — do not "adjust" them to fit any palette or industry default. Only when no color signal exists from user or template do you proactively propose a scheme below.
+**Hard rule**: User / template colors are truth. If the user has specified colors (HEX, brand colors, or natural-language directives like "use blue as primary"), or a template was loaded with its own theme colors, lock those directly and skip the recommendation table. Do not adjust them to fit any palette or industry default. Only when no color signal exists from user or template do you proactively propose a scheme below.
 
 Proactively provide a color scheme (HEX values) based on content characteristics and industry.
 
