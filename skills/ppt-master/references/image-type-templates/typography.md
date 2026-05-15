@@ -69,7 +69,9 @@ typography type is the **one type where embedded text is the entire point**. Alw
 
 Sample fragment:
 
-> The image's central content is the hand-lettered (or appropriately styled) word "GROWTH" — rendered as a large confident headline occupying about 50% of the canvas height. Text is in English only (most models render CJK characters poorly). No other text or labels in the image — just the single headline word.
+> The image's central content is the hand-lettered (or appropriately styled) word "GROWTH" — rendered as a large confident headline occupying about 50% of the canvas height, in {font family echoing deck's body typography}. Text is in English only (most models render CJK characters poorly). No other text or labels in the image — just the single headline word.
+
+**Font family in prompt**: name the family so the lettering coheres with the deck's SVG typography. Read `spec_lock.md deck_typography` if present; otherwise infer from rendering (vector-illustration / flat → clean sans-serif; editorial → serif; sketch-notes / ink-notes → hand-written; 3d-isometric / digital-dashboard → geometric display).
 
 ### `text_policy: none` (essentially never)
 

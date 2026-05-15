@@ -40,13 +40,15 @@ Atmospheric environment with narrative — a moment, a place, a situation render
 
 ## 3. Text-policy variants
 
-### `text_policy: none` (essentially always)
+### `text_policy: none` (default)
 
-Scenes are visual narratives — text would interrupt. Use `text_policy: none`.
+Scenes are visual narratives — most read better with text routed to SVG overlay.
 
-### `text_policy: embedded` (very rare)
+### `text_policy: embedded` (decorative atmosphere or diegetic text)
 
-Only when the scene includes a tiny diegetic text (a sign in the scene, a label on a book) — these often fail to render correctly. Usually better as `text_policy: none`.
+Two valid cases:
+- Decorative atmosphere lettering — a large stylized word in the bleed serving as visual mood ("WANDER", "QUIET"). Describe artistic treatment; spelling is not critical.
+- Diegetic text — a sign in the scene, a label on a book. Often fails to render correctly; only use when essential to the narrative.
 
 ---
 

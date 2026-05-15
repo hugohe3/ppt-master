@@ -51,9 +51,9 @@ Sample fragment:
 
 > NO text, letters, numbers, country names, city names, or marker labels in the image. Markers are dots/pins only; SVG text overlay will add all labels externally.
 
-### 3.2 `text_policy: embedded` (rare)
+### 3.2 `text_policy: embedded` (when place names belong in the artwork)
 
-Use only when the user wants a fully self-contained reference map. High failure risk — image models often misspell place names or place them on wrong coordinates. Recommend `none` and SVG overlay instead.
+Self-contained reference map where place names are typeset into the design. High failure risk — image models often misspell place names or place them at wrong coordinates. Prefer `none` + SVG overlay unless the design language genuinely requires in-image labels (vintage cartography, atlas-style poster).
 
 ---
 

@@ -52,9 +52,9 @@ Sample fragment:
 
 > NO text, letters, numbers, axis labels, or quadrant names in the image. Each quadrant contains a simple iconic symbol only; SVG text overlay will add axis labels and quadrant names externally.
 
-### 3.2 `text_policy: embedded` (rare)
+### 3.2 `text_policy: embedded` (when axis labels are part of the design)
 
-Use only when the user explicitly wants the axis labels baked into the image. Keep labels to single English words ("HIGH", "LOW", "GROW", "HOLD") and accept higher risk of typo/glyph errors.
+When the matrix's identity comes from its in-image lettering — a stylized SWOT poster with the four letters as visuals, a designer-matrix where axis labels are typeset into the artwork. Keep labels to single English words ("HIGH", "LOW", "GROW", "HOLD"). Specify the font family in the prompt to echo the deck's body typography.
 
 ---
 

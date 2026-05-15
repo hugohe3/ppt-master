@@ -51,9 +51,9 @@ Sample fragment:
 
 > NO text, letters, numbers, or stage labels in the image. Each band contains only one simple iconic symbol; SVG text overlay will add stage names externally.
 
-### 3.2 `text_policy: embedded` (occasional)
+### 3.2 `text_policy: embedded` (when stage names are part of the design)
 
-Use when the user wants a fully self-contained funnel diagram. Keep band names to single English words ("AWARE", "LIKE", "BUY", "REFER"). High failure risk on 5+ band funnels.
+Self-contained funnel diagram where band names are typeset into the artwork. Keep band names to single English words ("AWARE", "LIKE", "BUY", "REFER") in a font family echoing the deck's body typography. High failure risk on 5+ band funnels — stay at 3-4 bands when going embedded.
 
 ---
 

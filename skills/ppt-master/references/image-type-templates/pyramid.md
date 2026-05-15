@@ -50,9 +50,9 @@ Sample fragment:
 
 > NO text, letters, numbers, or tier labels in the image. Each tier contains only one simple iconic symbol; SVG text overlay will add tier names externally.
 
-### 3.2 `text_policy: embedded` (occasional)
+### 3.2 `text_policy: embedded` (when tier names are part of the design)
 
-Use when the user wants a fully self-contained pyramid. Keep tier names to single English words. High failure risk on 5+ tier pyramids.
+Self-contained pyramid with tier names typeset into the artwork. Keep tier names to single English words in a font family echoing the deck's body typography. High failure risk on 5+ tier pyramids — stay at 3-4 tiers when going embedded.
 
 ---
 

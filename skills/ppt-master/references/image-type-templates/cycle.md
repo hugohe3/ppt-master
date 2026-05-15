@@ -50,9 +50,9 @@ Sample fragment:
 
 > NO text, letters, numbers, or step labels in the image. Each step node contains only one simple iconic symbol; SVG text overlay will add step names externally.
 
-### 3.2 `text_policy: embedded` (occasional)
+### 3.2 `text_policy: embedded` (when step names are part of the design)
 
-Use when the user wants a fully self-contained cycle diagram. Keep step names to single English words ("PLAN", "DO", "CHECK", "ACT").
+Self-contained cycle diagram with step names typeset into the artwork. Keep step names to single English words ("PLAN", "DO", "CHECK", "ACT") in a font family echoing the deck's body typography.
 
 ---
 

@@ -35,23 +35,26 @@ Atmospheric backdrop with **no central subject**. The image's job is to set tone
 | Half-page background (image left, text right) | 600×720 | ~0.83 | Calm zone on the text-adjacent edge |
 | Hero band background | 1200×400 | 3:1 | Calm zone in the center band |
 
-> Backgrounds are nearly always used full-bleed within a slide — but `page_role` stays `local` because SVG text overlays the image. Only use `page_role: full_page` when the user explicitly wants no SVG content on top.
+> `page_role`: default `local` when SVG title overlays the background. Promote to `hero_page` when the background alone is the page (cover with no overlay, mood transition, image-led chapter divider).
 
 ---
 
 ## 3. Text-policy variants
 
-### `text_policy: none` (essentially always)
+### `text_policy: none` (default)
 
-Backgrounds are atmospheric — adding text to a background defeats its purpose. **Always use `text_policy: none`** for this type unless there is a very specific reason otherwise.
+Backgrounds are atmospheric — for most uses, keep text out and let SVG handle overlay copy.
 
 Sample fragment:
 
 > NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols. The image is pure atmosphere; SVG text overlay will be added externally.
 
-### `text_policy: embedded` (rare)
+### `text_policy: embedded` (decorative or designed lettering)
 
-Only when the user explicitly wants a "headline-on-textured-bg" effect — but in PPT Master this is almost always better as `typography` type or as `hero` type. Re-evaluate the type choice before using embedded text policy on background.
+When the background's mood is enhanced by lettering — large decorative word in the bleed, retro stamp, scattered alphabet texture, or a designed cover title that's part of the artwork. Name the text role explicitly in the prompt:
+
+- Decorative lettering: "large decorative 'GROWTH' lettering in 3D extruded retro style as background element; spelling not critical"
+- Designed cover title: "main title text '{exact words}' rendered in {font family echoing deck's body typography}; content must be accurate"
 
 ---
 

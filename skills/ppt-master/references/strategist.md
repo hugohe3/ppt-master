@@ -381,6 +381,34 @@ After auto-selecting, cross-check `image-palettes/_index.md` compatibility matri
 
 Image_Generator reads these two fields and applies them deck-wide. If both are absent (legacy decks), Image_Generator falls back to inferring them from `d. Style` and `e. Color` — quality is acceptable but not optimal. Always lock both when C is selected.
 
+#### hero_page suggestion (same confirmation turn)
+
+After the user picks a candidate, scan the outline for pages where the image speaks louder than text — covers, chapter dividers, mood transitions, single-number data heroes, closing quotes, brand summaries. Surface a suggestion list:
+
+```
+Suggested hero pages (image as page's main voice; SVG overlay minimal):
+  Slide 1  — Cover (image-led)
+  Slide 8  — Chapter divider: "Market Forces"
+  Slide 17 — Data hero: the 73% number
+  Slide 24 — Closing
+Confirm, edit, or reply "all local" to skip.
+```
+
+User confirmation rules:
+- Accept all / pick subset / add others / reject all
+- Result is recorded as `page_role: hero_page` on the matching `ai` rows in the resource list
+- Density is judgment-based — image-heavy brand decks may use more, data/teaching decks fewer. No fixed quota.
+
+#### Typography hint for in-image text
+
+When any hero_page or other `text_policy: embedded` row exists, also record a font family hint in `spec_lock.md` so Image_Generator's prompts echo the deck's SVG typography:
+
+```
+- deck_typography: clean sans-serif    # or: serif editorial / hand-written / geometric display
+```
+
+Family-name granularity is enough — actual font choice happens in Executor's SVG; the hint exists so the AI image's lettering doesn't clash with the deck.
+
 **When selection includes B**, you must run `python3 scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
 
 **When B / C / D / E is selected**, add an image resource list to the spec:
@@ -396,8 +424,8 @@ Image_Generator reads these two fields and applies them deck-wide. If both are a
 | **Acquire Via** | `ai` / `web` / `user` / `placeholder` — drives Step 5 dispatch |
 | Status | Initial status must be `Pending`, `Existing`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
 | **Reference** | Free-form **intent description** (NOT a search query); feeds Image_Generator (ai) or Image_Searcher (web) |
-| `text_policy` (optional, `ai` rows only) | `none` (default — image carries no text, SVG overlays labels) or `embedded` (rare — image contains 1-5 short English keywords as part of the artwork; sketch-notes / ink-notes / typography type only). Leave blank for default. |
-| `page_role` (optional, `ai` rows only) | `local` (default — image is a block embedded in an SVG page) or `full_page` (escape hatch — image fills the whole slide, no SVG overlay). Only set `full_page` when the user explicitly requests it. Use sparingly (≤5% of pages) — mixing PNG-pages with SVG-pages causes visual drift. |
+| `text_policy` (optional, `ai` rows only) | `none` (default — no text in image, SVG overlays labels) or `embedded` (image contains decorative lettering, a designed title, or hand-lettered keywords as part of the artwork). Leave blank for default. Long body / data / lists never go inside the image. |
+| `page_role` (optional, `ai` rows only) | `local` (default — image is a region block on an SVG page) or `hero_page` (image is the page's main voice; SVG overlay minimal or empty). Set per the hero_page suggestion confirmed in h.5. Same rendering and palette as the rest of the deck regardless. |
 
 **No-crop flag (exception only)**: most images are croppable — Executor defaults to `preserveAspectRatio="xMidYMid slice"`. When an image must NOT lose pixels (data screenshots, charts, certificates, contracts, dense diagrams), append `no-crop` to its `spec_lock.md images` entry. Executor will then size the container to the native ratio and use `meet`. Don't tag the rest.
 

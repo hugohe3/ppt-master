@@ -260,13 +260,13 @@ Catalog read: 71 templates
 
 **text_policy** (`ai` rows only; leave blank for default):
 
-- *blank / `none`* — image carries no text; SVG overlays labels (recommended default for most rows)
-- `embedded` — image contains 1-5 short English keywords as part of the artwork (rare; sketch-notes / ink-notes / typography only; CJK characters fail in most models)
+- *blank / `none`* — image carries no text; SVG overlays labels
+- `embedded` — image contains in-artwork text: decorative lettering, a designed title, or hand-lettered keywords. Body copy / data points / long quotes never go inside the image regardless. English text renders most reliably; CJK characters fail in most models
 
 **page_role** (`ai` rows only; leave blank for default):
 
-- *blank / `local`* — image is a block embedded in an SVG page (the universal default)
-- `full_page` — escape hatch: image fills the entire slide with no SVG overlay. Only when user explicitly requests this; use sparingly (≤5% of pages) — PNG-pages mixed with SVG-pages cause style drift
+- *blank / `local`* — image is a region block on an SVG page
+- `hero_page` — image is the page's main voice; SVG overlay is minimal or empty. Use on covers, chapter dividers, mood transitions, single-number data heroes, closing quotes. Same rendering and palette as the rest of the deck regardless
 
 **Reference grammar** (`ai` rows): write **subject + intent + composition** only. Do NOT repeat style words ("flat design", "modern") or HEX values — both are already locked deck-wide by `design_spec §III AI Image Strategy` (rendering + palette) and `§III Color Scheme` (HEX triplet). Image_Generator's prompt assembler injects them.
 

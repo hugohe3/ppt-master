@@ -4,7 +4,7 @@ A **type** describes what the image's **internal composition** looks like — it
 
 > **Type vs PPT page layout — important**: type describes the composition *inside* the AI image block. The PPT slide's overall layout (where the image sits, how SVG text wraps around it) is a separate decision made by Strategist and Executor. Type only governs what's inside the rectangle the model paints.
 >
-> **All types produce local blocks**: every type's container guidance assumes the image will be embedded inside a slide (left half, right column, hero band, accent corner). Full-page imagery is an escape hatch — see [`image-generator.md`](../image-generator.md) §1.
+> **Type is orthogonal to `page_role`**: every type's container guidance assumes `page_role: local` (region block on an SVG page). When promoted to `page_role: hero_page`, the same type's composition fills the slide with SVG kept minimal above. See [`image-generator.md`](../image-generator.md) §1.
 
 ---
 
@@ -36,25 +36,25 @@ Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGAT
 
 For each row in `design_spec.md §VIII Image Resource List`, match `Purpose` against this table.
 
-| `Purpose` keyword | Type | Default `text_policy` |
+| `Purpose` keyword | Type | Suggested `text_policy` |
 |---|---|---|
-| Cover background / chapter background / divider bg | `background` | `none` |
-| Product reveal / hero / headline visual | `hero` | `none` (or `embedded` for headline-as-image) |
+| Cover background / chapter background / divider bg | `background` | `none`, or `embedded` (decorative lettering / designed title) when cover/divider is image-led |
+| Product reveal / hero / headline visual | `hero` | `none`, or `embedded` when the headline itself is the visual |
 | Team headshot / speaker bio / founder profile / testimonial | `portrait` | `none` |
-| Big number / KPI single visual / quote | `typography` | `embedded` |
-| Data summary / metrics rundown / step list | `infographic` | `none` (labels in SVG) or `embedded` (keywords in image) |
-| Process / workflow / pipeline / steps with arrows | `flowchart` | `none` |
-| Methodology / model / framework / architecture diagram | `framework` | `none` |
-| 2×2 quadrant / SWOT / BCG / Eisenhower / Ansoff | `matrix` | `none` |
+| Big number / KPI single visual / quote | `typography` | `embedded` — the text is the visual |
+| Data summary / metrics rundown / step list | `infographic` | `none` (labels via SVG) or `embedded` (keywords inside the image) |
+| Process / workflow / pipeline / steps with arrows | `flowchart` | `none` (SVG carries step labels) |
+| Methodology / model / framework / architecture diagram | `framework` | `none` (SVG carries node labels) |
+| 2×2 quadrant / SWOT / BCG / Eisenhower / Ansoff | `matrix` | `none`, or `embedded` for axis labels when intentional |
 | Closed-loop process / PDCA / flywheel / continuous improvement | `cycle` | `none` |
 | Conversion funnel / sales pipeline / hiring funnel | `funnel` | `none` |
 | Hierarchy / Maslow / value stack / capability layer | `pyramid` | `none` |
-| Comparison / Before-After / A/B / VS | `comparison` | `none` |
-| History / evolution / roadmap / timeline | `timeline` | `none` |
+| Comparison / Before-After / A/B / VS | `comparison` | `none` or `embedded` |
+| History / evolution / roadmap / timeline | `timeline` | `none` (SVG carries milestone labels) |
 | Offices / market presence / regions / supply chain / geography | `map` | `none` |
-| Team / lifestyle / story / scenario / case | `scene` | `none` |
+| Team / lifestyle / story / scenario / case | `scene` | `none`, or `embedded` for decorative atmosphere lettering |
 
-> When `Purpose` mentions text-rich keywords ("with caption", "labeled", "annotated"), bias toward `embedded` text-policy. When unsure, default to `none` — SVG text overlay is more flexible than image-embedded text.
+> Suggested values; per-image judgment wins. Pick `embedded` when in-image text serves the goal (decorative lettering, designed title, hand-lettered keywords, infographic labels). Pick `none` when SVG text is more flexible or the page just needs imagery. Body copy / data points / long quotes never go inside the image regardless of type.
 
 ---
 
@@ -64,7 +64,7 @@ The Resource List's `Dimensions` column is authoritative. If absent, use these d
 
 | Type | Default container | Aspect ratio |
 |---|---|---|
-| background | 1280×720 full-bleed (still mark `page_role: local` — SVG text overlays on top) | 16:9 |
+| background | 1280×720 full-bleed; `page_role: local` when SVG text overlays on top, `page_role: hero_page` when image alone is the page | 16:9 |
 | hero | 800×600 or 1280×720 | 4:3 / 16:9 |
 | portrait | 400×500 or 600×800 | 4:5 / 3:4 |
 | typography | 800×500 | 16:10 |

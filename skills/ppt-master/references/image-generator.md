@@ -8,18 +8,26 @@ Role definition for the **AI image generation path**: convert each `Acquire Via:
 
 ---
 
-## 1. Core Principle — All AI Images Are Local Inserts
+## 1. Core Principle — Maximize AI Image Capability in Service of the Deck
 
-**Hard rule**: AI-generated images in PPT Master are **local visual blocks** embedded inside SVG pages (left-half illustration, hero banner, background under text, accent spot). They are **not** standalone full-page outputs.
+**Hard rule**: AI images exist to serve the deck's communication goal. Default boundaries (`page_role: local`, `text_policy: none`) are starting points, not ceilings. Promote to `hero_page` or `embedded` when doing so makes the page work better — provided the deck's rendering and palette lock hold.
 
-| What this means |
-|---|
-| Every prompt must produce art that **survives being cropped into a sub-region** of a 16:9 slide |
-| Reserve 12-20% inner padding on all sides so content doesn't slam into the container edge |
-| Don't ask the model to fill 100% of the canvas with content — leave breathing room |
-| The surrounding SVG carries the page's headline / body / labels — your image's job is to **anchor visuals**, not to be the page |
+**Two page roles**:
 
-**Escape hatch — full-page AI image (rare, ≤5% of pages)**: when the user explicitly requests "this page is one large image" (typical: cover, chapter divider), mark the item `"page_role": "full_page"` in `image_prompts.json`. Default is `"page_role": "local"`. Do not promote a page to `full_page` without an explicit user instruction.
+| `page_role` | Image's job | SVG above |
+|---|---|---|
+| `local` (default) | A region block on an SVG page; carries visual, not content. Reserve 12-20% inner padding so content survives container cropping | Carries headline / body / labels |
+| `hero_page` | Image is the page's main voice — cover, chapter divider, mood transition, data hero, closing quote | Minimal overlay only (page number, brand bar, chapter mark); may be empty when the image already carries equivalent design elements |
+
+**Two text roles inside the image** (orthogonal to `page_role`):
+
+| Role | Example | Prompt treatment |
+|---|---|---|
+| Decorative | "GROWTH" as background lettering, retro stamp, scattered alphabet texture | Describe artistic direction; spelling is not critical; let the model improvise |
+| Design-title | Cover main title, chapter heading | Name the font family (must echo deck's SVG typography); content must be accurate |
+| Content (never inside the image) | Body copy, data points, bullet lists, long quotes | Route to SVG |
+
+**Hard rule — deck-wide coherence still holds**: every AI image shares the deck's locked rendering and palette regardless of `page_role` or `text_policy`. `hero_page` is not permission to switch rendering for one slide.
 
 ---
 
@@ -100,8 +108,8 @@ Then `read_file` the **single resolved** rendering file and the **single resolve
 For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
 1. **Determine type** by matching the row's `Purpose` against types `_index.md` auto-selection table (cover background → `background`; product launch hero → `hero`; methodology visualization → `framework`; etc.) The narrative-shorthand `Type` column in §VIII (Background/Photography/Illustration/Diagram/Decorative) is a hint, not the type's final value — `Purpose` is authoritative for picking among the 9 internal-composition types.
-2. **Determine `text_policy`** — read from the row directly if Strategist filled it; otherwise default by type: `background` → `none`; `typography` → `embedded`; everything else → `none` unless the deck rendering is `sketch-notes` / `ink-notes` and Purpose explicitly calls for hand-lettered keywords. The Strategist-supplied value (when present) always wins.
-3. **Determine `page_role`** — read from the row directly; default `local`. Only `full_page` if explicitly set.
+2. **Determine `text_policy`** — Strategist's value (when present) wins. Otherwise judge per-image: default `none` (image carries no text, SVG overlays labels); upgrade to `embedded` when the page would communicate better with in-image text — covers / chapter dividers with a designed title, typography pieces, infographics with internal labels, sketch-notes with hand-lettered words, posters with decorative lettering. Do not put body copy, data points, or long quotes inside the image.
+3. **Determine `page_role`** — Strategist's value (when present) wins. Otherwise default `local`. Upgrade to `hero_page` when the page's job is "image speaks louder than text" — cover, chapter divider, mood transition, data hero, closing quote.
 4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
 5. **Assemble the prompt** by combining:
    - The rendering's style paragraph (from Step 2)
@@ -132,7 +140,7 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 [Hard rules — see §5].
 ```
 
-**Word budget**: 150-250 words for `text_policy: none` images, 180-300 words for `text_policy: embedded` images.
+**Word budget**: 150-250 words for `text_policy: none`; 180-300 words for `text_policy: embedded`. `hero_page` items skew toward the upper end of their bracket — the image carries more design weight.
 
 **Forbidden — tag-soup prompts**:
 
@@ -168,10 +176,20 @@ Exception: when the chosen rendering is `corporate-photo`, photorealism is inten
 
 | `text_policy` | What the image contains | Append to prompt |
 |---|---|---|
-| `none` (default for most images) | **Zero** text, letters, numbers, labels | "NO text of any kind. No letters, numbers, signs, watermarks, labels, or written symbols anywhere in the image. Clean negative space ready for SVG text overlay." |
-| `embedded` (rare — sketch-notes, ink-notes, infographic with hand-lettered keywords) | A small number of short keyword labels rendered as part of the artwork | "Minimal hand-lettered keywords only — 1-5 short words total, each ≤2 words. Use English for keywords (most models render English text reliably; CJK characters are often malformed). No long sentences, no paragraphs, no numbers." |
+| `none` (default) | Zero text, letters, numbers, labels | "NO text of any kind. No letters, numbers, signs, watermarks, labels, or written symbols anywhere in the image. Clean negative space ready for SVG text overlay." |
+| `embedded` | Text is part of the artwork — decorative lettering, designed title, hand-lettered keywords, infographic labels | See "Embedded prompt construction" below |
 
-**CJK warning**: most image models cannot render Chinese characters correctly. For `text_policy: embedded` on a CJK-language deck, either (a) use English keywords, or (b) accept that the model will produce garbled-looking glyphs and the user must regenerate or fix manually.
+**Embedded prompt construction**: name the text role explicitly so the model knows how to treat it.
+
+| Text role | Prompt phrasing |
+|---|---|
+| Decorative | "decorative '{WORD}' lettering as a background element, {style describing artistic treatment — 3D extruded retro, neon glow, hand-painted brush, scattered alphabet texture, etc.}" — let the model improvise; spelling is not critical |
+| Design-title | "main title text '{exact words}', rendered in {font family — clean sans-serif / serif editorial / hand-written / geometric display} echoing the deck's body typography" — content must be accurate |
+| Hand-lettered keyword set | "1-5 short hand-lettered keywords in English: '{w1}', '{w2}', '{w3}' — woven into the composition as sketch-notes annotations" |
+
+**Font family must echo the deck**: when Strategist locked `deck_typography` in `spec_lock.md`, use that family. Otherwise pick a family compatible with the chosen rendering (vector-illustration / flat → clean sans-serif; editorial → serif; sketch-notes / ink-notes → hand-written; 3d-isometric / digital-dashboard → geometric display).
+
+**CJK warning**: most image models cannot render Chinese characters correctly. For embedded text on a CJK-language deck, either (a) use English equivalents in the image and leave Chinese to SVG overlays, or (b) accept malformed glyphs and regenerate manually.
 
 ### 5.4 No brand names or trademarks in the subject
 
@@ -224,15 +242,15 @@ Write `project/images/image_prompts.json` with this shape:
 | `color_scheme` | yes | `design_spec.md §III` | HEX triplet from Strategist |
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
 | `items[].type` | yes | Step 3 per-image | One of: `background`, `hero`, `portrait`, `typography`, `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene` |
-| `items[].page_role` | yes | Step 3 per-image | `local` (default) or `full_page` (escape hatch only) |
-| `items[].text_policy` | yes | Step 3 per-image | `none` (default for most) or `embedded` (rare) |
+| `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
+| `items[].text_policy` | yes | Step 3 per-image | `none` (default — no text in image) or `embedded` (image contains decorative lettering, designed title, or hand-lettered keywords) |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
 | `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |
 | `items[].alt_text` | no | Accessibility | Short caption |
 | `items[].status` | yes | CLI manages | `Pending` initially; CLI updates to `Generated` / `Failed` / `Needs-Manual` |
 
-> Existing manifests without `deck_rendering` / `deck_palette` / `type` / `page_role` / `text_policy` remain valid — older items default to `page_role: local`, `text_policy: embedded` for backward compatibility.
+> Existing manifests without `deck_rendering` / `deck_palette` / `type` / `page_role` / `text_policy` remain valid — older items default to `page_role: local`, `text_policy: none`. Legacy `page_role: full_page` (pre-2026-05-15) is read as `hero_page`.
 
 ---
 
@@ -371,13 +389,14 @@ If Path A's backend fails twice in a row:
 
 | Purpose | Default Inference (assembled from rendering + palette + type) |
 |---------|---------------------------------------------------------------|
-| Cover background | `type: background`, `text_policy: none` — abstract atmospheric block matching deck rendering, generous center negative space |
-| Chapter divider background | `type: background`, `text_policy: none` — slightly more structured than cover (geometric anchor permitted) |
-| Methodology / framework illustration | `type: framework`, `text_policy: none` — central node + radiating satellites, no labels (SVG carries names) |
-| Process / workflow illustration | `type: flowchart`, `text_policy: none` — sequential blocks with arrows |
+| Cover | `type: background` or `hero`; `page_role: hero_page` when the cover is image-led; `text_policy: embedded` when title is part of the design, else `none` |
+| Chapter divider | `type: background`; `page_role: hero_page` typical; `text_policy: embedded` when chapter title is part of the design |
+| Methodology / framework illustration | `type: framework`, `text_policy: none` — SVG carries node labels |
+| Process / workflow illustration | `type: flowchart`, `text_policy: none` — SVG carries step labels |
 | Before/After or two-option page | `type: comparison`, `text_policy: none` or `embedded` |
 | Team / lifestyle photo | `type: scene`, `text_policy: none`, rendering should be `corporate-photo` or `warm-scene` |
-| Big-number / hero quote block | `type: typography` or `hero`, `text_policy: embedded` (the number/keyword is the visual) |
+| Big-number / hero quote block | `type: typography` or `hero`; `page_role: hero_page` typical; `text_policy: embedded` (the number/quote is the visual) |
+| Mood transition / atmosphere | `type: scene` or `background`; `page_role: hero_page`; `text_policy: none` (or decorative lettering if the mood calls for it) |
 
 ### When Images Are Unsatisfactory
 
@@ -410,4 +429,5 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 - Tag-soup prompts (keyword lists separated by commas without a coherent visual scene)
 - Globbing `image-renderings/*.md` or any subdirectory — read only the chosen file
 - Placing an image without updating its `image_prompts.json` `status` and the resource list status
-- Promoting a page to `page_role: full_page` without explicit user instruction
+- Switching rendering or palette for a single image — `hero_page` is not an exception to deck-wide coherence
+- Embedding body copy, data points, bullet lists, or long quotes inside an image — those route to SVG

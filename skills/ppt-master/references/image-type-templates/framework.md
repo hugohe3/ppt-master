@@ -62,7 +62,7 @@ Three valid sub-structures. Pick one per image; do not mix.
 | Square half-page (most common) | 700×700 | 1:1 | Hub & spokes ✓✓ / Matrix ✓✓ |
 | Portrait half-page | 600×800 | 3:4 | Layered stack ✓✓ |
 | Landscape banner | 1200×500 | 2.4:1 | Hub & spokes (flattened) ✓ / Matrix (1×N) ✓ |
-| Full-bleed (page_role: full_page only) | 1280×720 | 16:9 | All three work — but require explicit user request |
+| Full-bleed (page_role: hero_page only) | 1280×720 | 16:9 | All three work — image becomes the page |
 
 Inner padding: 15-18% on all sides. Framework imagery suffers most when satellites/cells push against the canvas edge.
 
