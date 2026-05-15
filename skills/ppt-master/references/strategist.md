@@ -88,6 +88,8 @@ Accept user combinations and one-off coinages ("Scandinavian + slight industrial
 
 ### e. Color Scheme Recommendation
 
+**User / template colors are truth.** If the user has specified colors (HEX, brand colors, "用蓝色/红色为主" 等口头指定), or a template was loaded with its own theme colors, lock those directly and skip the recommendation table — do not "adjust" them to fit any palette or industry default. Only when no color signal exists from user or template do you proactively propose a scheme below.
+
 Proactively provide a color scheme (HEX values) based on content characteristics and industry.
 
 **Industry color quick reference** (full 14-industry list in `scripts/config.py` under `INDUSTRY_COLORS`):
@@ -290,7 +292,7 @@ After auto-selecting, cross-check `image-palettes/_index.md` compatibility matri
 | Linkage | What to verify |
 |---|---|
 | **d. Style ↔ rendering** | Rendering family should match the Style descriptor's temperament (corporate ≠ sketch-notes; tech ≠ watercolor). Already enforced by the recommendation table above. |
-| **e. Color HEX ↔ palette** | The deck's primary HEX should fit the palette's role expectation. E.g. cool-corporate expects primary to feel deep and restrained; tech-neon expects it saturated. Mismatch → either adjust e. HEX, or pick a different palette. |
+| **e. Color HEX ↔ palette** | HEX is truth — palette is just the "how to use these HEX" rulebook for AI images (saturation / contrast / 60-30-10 / material). Mismatch → **always swap palette to fit the HEX, never adjust the HEX to fit a palette**. E.g. user gives a vivid red but you auto-picked cool-corporate — switch to vivid-launch or warm-earth, do not propose dimming the red. |
 | **f. Icon library ↔ rendering** | `tabler-outline` pairs well with all renderings (most versatile). `chunk-filled` / `tabler-filled` pair better with `vector-illustration` / `flat` / `editorial`. `phosphor-duotone` pairs with `flat` / `digital-dashboard`. Mismatch is not fatal but worth flagging. |
 | **g. Typography ↔ rendering** | Serif title → pairs well with `editorial`, `corporate-photo`, `screen-print`. Hand-lettered direction → already implied by `sketch-notes` / `ink-notes` (the rendering carries the lettering, no separate font requirement). Display font → `vivid-launch` / `screen-print`. Mismatch is rarely fatal; note in conversation if it feels off. |
 
