@@ -69,24 +69,3 @@ dark-cinematic, like mono-ink, may **override `design_spec.colors.secondary`** i
 **Snippet A — applied to a digital-dashboard premium product**
 
 > [...rendering paragraph...] Color behavior is dark-cinematic dashboard: deep dark `#0A0E27` covers about 65% of the surface as the cinema background. Primary bright teal `#14B8A6` carries the main chart bars with implied 8%-opacity glow halo (about 25%). Accent gold `#D4AF37` reserved for one highlighted KPI with stronger glow (about 10%). Card backgrounds are slightly lighter dark `#1E293B` separating cards from the deeper void. Premium, cinematic, sophisticated. [...container guidance...]
-
-**Snippet B — applied to a 3d-isometric premium product launch**
-
-> [...rendering paragraph...] Color behavior is dark-cinematic: deep dark `#0A0E27` covers the background plane and shadowed faces (about 65%). Primary bright teal `#14B8A6` on the lit faces of the central product block with implied luminance halo (about 22%). Accent vivid amber `#D97706` on one corner of the product as a focal glow (about 11%). Soft 8% glow halos around each bright element. Dramatic single-source lighting feel. [...container guidance...]
-
----
-
-## 8. Forbidden
-
-- Light backgrounds (defeats the cinematic identity — switch palette)
-- Pastel accents (dark-cinematic wants bright vivid against dark)
-- More than 2 bright accent colors
-- Decorative warmth (mood is sophisticated, not friendly)
-
----
-
-## 9. When to switch away
-
-- For light / corporate mood → `cool-corporate` / `editorial-classic`
-- For vivid promotional → `vivid-launch`
-- For warm story → `warm-earth`

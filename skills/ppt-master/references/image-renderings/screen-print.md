@@ -48,24 +48,3 @@ For two-color (duotone) poster mood, drop secondary and use primary + accent onl
 **Snippet A — hero chapter divider poster, text_policy: none**
 
 > Bold silkscreen poster art in cinematic style. Composition is a strong central silhouette of a single iconic shape — perhaps a stylized mountain or a confident geometric form — rendered as a flat block in primary deep teal `#0F766E` occupying the lower 60% of the canvas. Above the silhouette, a contrasting sky in accent orange `#F97316` fills the upper 40% with a single small circular sun shape near the upper right in cream `#FEF3C7`. The horizon line has slight halftone dot texture transitioning between the two color zones. Slight color misregistration — the orange block offset by about 2px from the teal silhouette. Subtle paper grain at 15% opacity across the canvas. Composed for a 1200×400 chapter divider banner with 10% inner padding. NO text or labels. Color values are rendering guidance only — do not display HEX codes or color names as text.
-
-**Snippet B — half-page editorial poster, text_policy: none**
-
-> Bold silkscreen poster art with limited two-color palette and characteristic print textures. The composition is a stylized human silhouette (simplified, no facial features) standing center-left, rendered as a flat block in primary navy `#1E3A5F`. Behind the figure, a large flat circle in accent burnt orange `#C2410C` fills the upper-right quadrant — a "rising sun" composition. Halftone dot texture transitions between the orange and a soft cream background `#FEF3C7` along the circle's lower edge. Slight color misregistration on the silhouette. Paper grain texture at 15%. Composed as a 600×800 half-page block with 8% inner padding. Simplified silhouette — no facial details. NO text or labels. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Smooth gradients (defeats the silkscreen identity)
-- Fine anatomical detail (poster art uses bold silhouettes)
-- More than 5 colors (silkscreen is limited-color by definition)
-- Realistic photography (this is intentionally stylized)
-
----
-
-## 7. When to switch away
-
-- For flat illustration without poster textures → `flat` or `vector-illustration`
-- For cinematic mood without poster aesthetic → `warm-scene` or `dark-cinematic` palette + `vector-illustration`
-- For magazine restraint → `editorial`

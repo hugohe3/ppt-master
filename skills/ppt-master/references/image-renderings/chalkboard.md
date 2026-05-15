@@ -45,24 +45,3 @@ chalkboard has a strong **fixed-palette tendency**: dark slate background + whit
 **Snippet A — half-page lesson visual, text_policy: embedded**
 
 > Classroom chalkboard aesthetic. Dark slate green background `#1F3A2E` with visible chalk-dust texture at 20% opacity. Three rounded boxes drawn in soft white chalk strokes arranged in a row, each containing a simple chalk-drawn icon (a tree, a lightbulb, a paper plane). Above the boxes, a hand-lettered chalk title in confident white lettering reads "GROWTH" in English block caps. Hand-drawn chalk arrows connect the boxes left-to-right. Small chalk star and dot decorations sprinkled sparingly. One soft pastel-yellow chalk underline below the title, drawn with deliberate dry-medium quality. Composed as a 600×500 half-page block with 14% inner padding. NO Chinese characters — chalk text in short English only. Color values are rendering guidance only.
-
-**Snippet B — hero classroom banner, text_policy: none**
-
-> Classroom chalkboard hero banner. Dark slate near-black background `#1A1A1A` with subtle chalk-dust texture. Five circular chalk-drawn nodes arranged horizontally connected by chalk-drawn arrows. Each node contains a chalk-drawn iconic symbol — a seed, a sprout, a young plant, a tree, a forest — telling a sequence visually. All chalk strokes appear soft and dry, with characteristic diffused edges. A single accent of soft pastel coral chalk highlights the third node's outline. Composed for a 1200×500 hero band with 14% inner padding. NO text, letters, numbers, or labels. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Sharp digital-feeling edges (chalk should feel soft and dry)
-- Saturated colors (chalk accents are pastel, not vivid)
-- Mixed media (chalk + watercolor, chalk + ink) — pure chalkboard only
-- Modern UI elements (no rounded-corner cards; chalkboard is freehand)
-
----
-
-## 7. When to switch away
-
-- For corporate / consulting decks → `vector-illustration` or `editorial`
-- For warm-cream paper instead of dark board → `sketch-notes`
-- For pure white + ink → `ink-notes`

@@ -62,25 +62,3 @@ Soft pastel, gentle, approachable. The signature palette for education, onboardi
 **Snippet A — applied to a sketch-notes infographic**
 
 > [...rendering paragraph...] Color behavior is macaron pastel: warm cream paper background `#F5F0E8` covers about 50%. Four rounded info boxes filled with soft pastels — light blue (pastel tint of primary `#1E3A5F`), mint (pastel tint of secondary `#F8F9FA` shifted greener), lavender, peach. Each fill has slight hand-painted overshoot beyond its black ink outline. Accent warm coral `#F97316` appears only on one highlighted hand-drawn arrow connecting two boxes (about 6%). Friendly educational temperament. [...container guidance...]
-
-**Snippet B — applied to a flat illustration knowledge card**
-
-> [...rendering paragraph...] Color behavior is macaron pastel for a knowledge-card aesthetic. Warm cream background `#F5F0E8` (about 55%). One large rounded rectangle in pastel mint occupying the lower half (about 30%), with a smaller pastel-peach circle overlapping its upper edge (about 10%). One small accent coral `#F97316` dot at the focal point of the composition (about 5%). All shapes have soft hand-painted overshoot edges. Gentle, knowledge-card feel. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Saturated full-strength colors (defeats macaron's pastel identity)
-- Cool / sterile background (cream warmth is essential)
-- Hard digital edges (macaron's softness needs hand-painted feel)
-- Heavy accent presence (one pop is enough)
-
----
-
-## 8. When to switch away
-
-- For corporate / consulting → `cool-corporate`
-- For warm-earth storytelling → `warm-earth`
-- For methodology sharpness → `mono-ink`
-- For premium dark → `dark-cinematic`

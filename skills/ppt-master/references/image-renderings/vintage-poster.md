@@ -49,26 +49,3 @@ vintage-poster works best when the deck's HEX values lean **earthy or saturated-
 **Snippet A — travel-poster hero, text_policy: none**
 
 > Mid-century modern travel-poster composition. A stylized angular mountain silhouette in primary deep teal `#0F766E` rises across the lower 60% of the canvas, slightly off-axis for retro tension. Above it, a perfect-circle sun in accent burnt-orange `#C2410C` sits at the upper-right rule-of-thirds. Background is warm cream `#FEF3C7` (the deck's secondary, slightly toned toward paper). Subtle halftone dot pattern at 12% opacity overlays the mountain and sun. Thin slightly-misregistered ink offset along the mountain edge adds screen-print authenticity. Paper grain at 10% opacity over the whole composition. No additional elements. Composed as a 1200×500 hero poster band with 12% padding. NO text, letters, or numbers in the image. Color values are rendering guidance only.
-
-**Snippet B — album-cover style spot, text_policy: none**
-
-> Mid-century modern album-cover composition. A stylized abstract figure formed from interlocking geometric shapes — a half-circle, a triangle, a thick curved line — arranged in deliberate retro asymmetry. Primary mustard `#D4A017` and secondary deep maroon `#7C2D12` carry the figure. A small accent cream `#FEF3C7` shape acts as the visual rest. Background is muted warm gray with subtle paper grain at 12% opacity. Halftone overlay at 10% opacity over the figure. Slight ink misregistration along edges suggests screen-print. Composed as a 700×700 square poster spot with 12% padding. NO text in the image. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Photorealistic imagery (defeats poster stylization)
-- Modern thin-line vector look (this is hand-aware retro)
-- More than 5 colors total
-- Gradients (vintage-poster uses flat color + halftone, never smooth gradient)
-- Clean digital edges without any misregistration or paper texture
-
----
-
-## 7. When to switch away
-
-- For pure poster without retro reference → `screen-print`
-- For corporate restraint → `vector-illustration` or `flat`
-- For story / narrative atmosphere → `warm-scene` or `watercolor`
-- For magazine editorial → `editorial`

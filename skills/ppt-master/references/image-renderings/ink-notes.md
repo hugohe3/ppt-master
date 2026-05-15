@@ -48,26 +48,3 @@ This makes ink-notes **the rendering most likely to deviate from the deck's HEX*
 **Snippet A — Before/After methodology (comparison type), text_policy: embedded**
 
 > Professional hand-drawn visual-note style on pure white background. Composition is a Before/After split — vertical hand-drawn divider down the center. Both sides use black ink line work with slight wobble. Left side ("Before") shows a simple stick-figure character with a frustrated posture, a speech bubble with hand-lettered "OLD WAY" in English block caps, and a small list of three hand-drawn dashes with brief 1-2 word annotations (e.g. "manual", "slow", "fragile"). Right side ("After") shows a confident stick-figure character with a clean checkmark above, hand-lettered "NEW WAY" in English block caps, and three checkbox-style annotations (e.g. "automated", "fast", "reliable"). A curved hand-drawn "mindset shift" arrow bridges left to right with a small hand-lettered label "the shift". Sparse semantic color: coral red `#E8655A` (the deck's accent) appears only on the left side's pain points; muted teal `#5FA8A8` appears only on the right side's positives. Total color accent area under 10% of canvas. NO Chinese characters — all hand-lettered text is short English keywords. Composed as a 1200×500 hero banner with 14% inner padding.
-
-**Snippet B — framework diagram, text_policy: none**
-
-> Professional hand-drawn visual-note framework on pure white background. Central rounded-rectangle "system" frame with four labeled rounded-rectangle sub-components arranged around it — top, right, bottom, left. All forms drawn in confident black ink with slight wobble. Thin hand-drawn arrows connect each sub-component to the central frame. Small dashed-border placeholder box at the bottom right indicates a "future" component. The accent color appears only as a single highlight ring around the central frame (the deck's accent HEX, kept under 8% of canvas area). NO labels, captions, text, letters, or numbers anywhere — pure ink structure only. Composed as a 600×600 half-page block with 14% inner padding. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Saturated color fills (ink-notes is intentionally minimal)
-- Computer fonts (defeats the hand-lettered authenticity)
-- Chinese characters in embedded text (use English keywords only)
-- Cream paper (that's `sketch-notes`; ink-notes is pure white)
-- Decorative excess (ink-notes is restrained, not whimsical)
-
----
-
-## 7. When to switch away
-
-- For warm educational feel → `sketch-notes`
-- For pure schematic without ink-style → `blueprint`
-- For corporate flat illustration → `vector-illustration`
-- For magazine restraint → `editorial`

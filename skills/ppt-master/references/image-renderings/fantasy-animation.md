@@ -46,25 +46,3 @@ fantasy-animation reads HEX values through a **warm storybook filter**:
 **Snippet A — half-page storybook scene, text_policy: none**
 
 > Hand-drawn animation style inspired by Ghibli storybook aesthetics. A soft warm scene of a small cottage on a hillside with a winding path leading down to the foreground. Sky in warm cream-amber `#FEF3C7` transitions to a soft accent peach `#FED7AA` at the horizon. Hillside in gentle warm green-amber blending the deck's primary tone, with painterly brush texture. A simplified storybook tree in the foreground left, hand-drawn cartoon-warm style. A small warm-glowing window in the cottage adds a magical accent color. Atmospheric perspective — distant hills are paler and softer, foreground has more saturated color. Subtle painterly brush quality throughout. Composed as a 600×800 half-page block with 10% inner padding. Simplified storybook style — any figures are gentle cartoon silhouettes, no realistic faces. NO text or labels. Color values are rendering guidance only.
-
-**Snippet B — children's brand hero, text_policy: none**
-
-> Hand-drawn Ghibli-style hero banner. A whimsical scene of a soft meadow with three large stylized storybook trees, gentle hills, and a clear morning sky. Sky transitions from warm primary blue `#7DD3FC` (pastel-graded from the deck's primary) at the top to soft cream `#FEF3C7` at the horizon. Trees rendered with painterly soft outlines and gentle fills in warm greens and ambers. A small magical-looking accent flower in foreground right, glowing softly in accent coral `#F97316`. Subtle painterly brush texture across the entire image. Dreamy atmospheric lighting. Composed for a 1200×600 hero band with 10% inner padding. No realistic faces. NO text. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Sharp digital edges (defeats the painterly storybook feel)
-- Photo-realistic rendering
-- Dark / heavy moods (fantasy-animation is intentionally warm-light)
-- Adult-themed content
-- Specific Disney/Ghibli character likenesses (style-inspired only, never copying)
-
----
-
-## 7. When to switch away
-
-- For modern flat aesthetic → `flat` or `vector-illustration`
-- For watercolor without character storybook → `watercolor`
-- For realistic photography → `corporate-photo`

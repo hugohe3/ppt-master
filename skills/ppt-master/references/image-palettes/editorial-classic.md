@@ -60,25 +60,3 @@ Refined, magazine-style, balanced. The premium-restrained palette — used in fi
 **Snippet A — applied to an editorial finance explainer**
 
 > [...rendering paragraph...] Color behavior is editorial-classic: secondary warm cream `#FAF7F2` covers about 55% of the canvas with subtle paper-grain at 8% opacity; primary deep navy `#0F2C4C` carries the dominant data block on the left (about 32%); accent burnt orange `#C2410C` appears as one thin horizontal rule and a single small data marker at the highlighted point (about 12% total). Magazine-spread composition with deliberate gutters. [...container guidance...]
-
-**Snippet B — applied to a corporate-photo magazine hero**
-
-> [...rendering paragraph...] Color behavior is editorial-classic: image is graded toward magazine warmth — cream highlights, deep navy shadows. The subject is graded with primary `#0F2C4C` as dominant shadow tone (about 30%), secondary `#FAF7F2` as soft highlight tone (about 55%), and accent `#C2410C` appearing only as a small contextual detail in the environment (about 13%). Editorial restraint throughout. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Vibrant / loud accent (editorial-classic is restrained)
-- Equal-share triplet (creates carnival, not magazine)
-- Too much accent area (defeats editorial restraint)
-- Cold sterile background (paper warmth matters)
-
----
-
-## 8. When to switch away
-
-- For business consulting / B2B → `cool-corporate`
-- For warm storytelling → `warm-earth`
-- For methodology / Before-After → `mono-ink`
-- For premium / cinematic dark → `dark-cinematic`

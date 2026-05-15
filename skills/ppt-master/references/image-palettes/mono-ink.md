@@ -67,25 +67,3 @@ When proposing mono-ink, the assembled prompt should explicitly note: "mono-ink 
 **Snippet A — applied to an ink-notes Before/After comparison**
 
 > [...rendering paragraph...] Color behavior is mono-ink with semantic accents: pure white background `#FFFFFF` (about 55%); all line work, figures, and hand-lettered text in near-black ink `#1A1A1A` (about 38%). Left "Before" side carries coral red accent `#E8655A` on its pain-point markers only (about 4% of total canvas). Right "After" side carries muted teal `#5FA8A8` on solution markers only (about 3%). Total color accent stays under 8%. Deck's primary `#1E3A5F` and secondary `#F8F9FA` are intentionally not used here — mono-ink's discipline is the visual point. [...container guidance...]
-
-**Snippet B — applied to an ink-notes framework diagram**
-
-> [...rendering paragraph...] Color behavior is mono-ink: pure white background `#FFFFFF` (about 58%); central frame, sub-components, connector arrows, and stick-figure labels in near-black ink `#1A1A1A` (about 38%). The deck's accent `#D4AF37` appears only as a single thin emphasis ring around the central frame — about 4% of canvas. No other color. The deck's primary and secondary are not represented as image colors in this manifesto-style palette. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Adding the deck's primary or secondary as image colors (defeats mono-ink discipline)
-- Color accent exceeding 10% of canvas
-- More than 2 semantic accent colors
-- Cream or warm paper (that's `sketch-notes` / `warm-earth`, not mono-ink)
-- Saturated digital feeling (mono-ink is paper-and-ink)
-
----
-
-## 8. When to switch away
-
-- For warm educational feel → `macaron` palette + `sketch-notes` rendering
-- For broader color use → any other palette
-- For digital aesthetic → `cool-corporate` or `tech-neon`

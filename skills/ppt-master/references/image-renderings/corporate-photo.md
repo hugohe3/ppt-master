@@ -57,25 +57,3 @@ corporate-photo's relationship to HEX is **color grading**, not color fills:
 **Snippet A — team workplace photo, text_policy: none**
 
 > Editorial photography of a small modern team collaborating around a laptop in a contemporary office. Three to four diverse, professionally attired adults — varied ethnicities, varied ages — engaged in genuine conversation, no posed stock-photo stiffness. Natural window light from the side, soft shadows. Color grading is cool-corporate — image is subtly graded toward deep blue tones echoing the deck's primary `#1E3A5F`, with the background carrying soft light gray `#F8F9FA` walls and a single accent of warm wood or amber from a desk lamp echoing the accent `#D4AF37`. Shallow depth of field — subjects sharp, background gently blurred. Composed as a 1200×600 hero band with 8% inner padding. Diverse, professionally attired subjects rendered photorealistically. Editorial photography composition. Authentic, not stock-photo artificial. Color values are rendering guidance — HEX codes themselves do not appear in the image as text.
-
-**Snippet B — product lifestyle photo, text_policy: none**
-
-> Editorial product photography of a sleek consumer device on a contemporary desk. Soft natural light from the upper left, gentle shadow cast to the lower right. Wood desk surface in warm beige tones, with a notebook and a cup of coffee in supporting context — slightly out of focus to keep attention on the device. Color grading is warm-editorial — image leans toward soft amber and cream, with the device itself catching a subtle highlight of accent terracotta `#C2410C`. Background wall in calm secondary cream `#FEF3C7`, gently blurred. Shallow depth of field. Composed as a 600×800 half-page block with 8% inner padding. Photorealistic, magazine-editorial quality. Color values are rendering guidance only.
-
----
-
-## 7. Forbidden
-
-- Stock-photo stiffness (forced smiles, frozen handshakes, fake-laughing meetings)
-- Fashion-shoot artificiality (over-styled, over-lit, model-pose)
-- Specific celebrity / public figure likenesses
-- Visible brand logos on products unless explicitly intended
-- Overly homogeneous casting (all same age, ethnicity, gender)
-
----
-
-## 8. When to switch away
-
-- For abstract / concept work → `vector-illustration`, `flat`, or `3d-isometric`
-- For atmospheric narrative scenes (not photography) → `warm-scene` or `watercolor`
-- For technical / system visuals → `blueprint` or `3d-isometric`

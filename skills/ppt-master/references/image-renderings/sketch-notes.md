@@ -47,26 +47,3 @@ sketch-notes has a strong **built-in palette tendency** toward warm cream + blac
 **Snippet A — half-page educational concept, text_policy: embedded**
 
 > Warm hand-drawn sketchnote on warm cream paper background. Black ink lines with slight wobble define three rounded rectangle info boxes arranged in a soft triangle layout. Each box is filled with a soft pastel block color: top box in light blue (a pastel tint of the deck's primary `#1E3A5F`), bottom-left box in mint, bottom-right box in lavender. Color fills don't completely reach the outlines (slight hand-painted overshoot). Hand-drawn wavy arrows connect the boxes — each arrow with a small inline hand-lettered English keyword like "leads to", "becomes", "supports" (no Chinese characters; ≤2 words per arrow). Each box contains one simple hand-drawn cartoon icon — a lightbulb, a plant, a gear — in black ink. Small doodle decorations (a few stars, dots, sparkles) sparingly around the composition. Composed as a 600×600 half-page block with 14% inner padding. Generous white space. Color values are rendering guidance only — do not display HEX codes or color names as text.
-
-**Snippet B — hero teaching banner, text_policy: none**
-
-> Warm hand-drawn sketchnote teaching banner on warm cream paper background with subtle paper grain at 10% opacity. Five rounded info boxes arranged in a horizontal flow across the canvas, connected by hand-drawn wavy black-ink arrows with slight wobble. Each box is filled with a different soft pastel block color cycling through: light blue, mint, lavender, peach, soft coral. Color fills have deliberate hand-painted overshoot beyond their outlines. Each box contains one simple hand-drawn cartoon icon in black ink — a seed, a sprout, a young plant, a tree, a forest — telling a growth story without text. Small doodle decorations (a few stars and dashes) scattered sparingly around the boxes. Composed for a 1200×500 hero band with 14% inner padding. NO text, letters, numbers, or labels anywhere. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Perfect geometric precision (defeats the hand-drawn warmth — switch to `vector-illustration`)
-- Saturated full-strength colors (sketch-notes uses pastels)
-- Heavy black ink fills (sketch-notes uses outlines + pastel blocks, not heavy fills)
-- Computer fonts in `text_policy: embedded` (the appeal is hand-lettering — but use English only)
-- Chinese characters in embedded text (most models render CJK poorly; use English keywords)
-
----
-
-## 7. When to switch away
-
-- For corporate / consulting decks → `vector-illustration` or `editorial`
-- For methodology / Before-After / mindset shift → `ink-notes`
-- For classroom blackboard feel → `chalkboard`
-- For storybook warmth → `fantasy-animation` or `watercolor`

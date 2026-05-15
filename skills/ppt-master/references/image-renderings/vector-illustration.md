@@ -48,26 +48,3 @@ vector-illustration treats colors as **flat coded zones**, not as gradients or s
 **Snippet A — background block, text_policy: none**
 
 > Clean flat vector illustration backdrop. Bold geometric shapes in flat solid fills — primary deep navy (#1E3A5F) forming a confident diagonal across the lower third, secondary light gray (#F8F9FA) occupying the upper two-thirds as calm breathing space, accent gold (#D4AF37) appearing only as one or two thin geometric lines drawing the eye toward the center. Crisp 2px outlines on all shapes. No gradients, no shadows beyond a single 8% soft drop. The central 70% of the canvas is deliberately calm and unbusy, ready to receive a slide title overlaid in SVG. Composed as a local PPT background block with 15% padding on all sides. Color values are rendering guidance only — do not display HEX codes, color names, or any labels as text in the image. NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, or written symbols.
-
-**Snippet B — half-page methodology illustration, text_policy: none**
-
-> Clean flat vector illustration. Five geometric forms arranged in a balanced grid — four rounded-square nodes in flat primary navy (#1E3A5F) at the corners, connected by thin secondary-gray (#F8F9FA) lines that converge on a single accent-gold (#D4AF37) circle at the center. Each node contains a simple iconic symbol — a gear, a chart bar, a chat bubble, an upward arrow — rendered in white on the navy fill. Crisp 1.5px outlines, uniform stroke weight throughout. Soft 8% drop shadow under each node for subtle depth. Composed for a 600×500 half-page slide block with 15% inner padding — central elements should feel calm and balanced, edges leave breathing room. NO text, letters, or numbers anywhere in the image — labels will be added later as SVG overlay. Color values are rendering guidance only. Simplified iconic symbols only — no realistic faces, no detailed anatomy.
-
----
-
-## 6. Forbidden
-
-- **Gradients within shapes** — destroys the flat-vector feel; if depth is needed, use a single soft drop shadow
-- **Mixed stroke weights** — every outline should be the same width
-- **Photographic / hyperreal textures** — wrong rendering family; switch to corporate-photo if photo is needed
-- **More than 3-4 distinct colors** — vector-illustration relies on color restraint; if more shades creep in, reduce
-- **Tag-soup prompts** — write the style paragraph as prose, not as comma-separated keywords
-
----
-
-## 7. When to switch away from vector-illustration
-
-- If the deck is **education / training / 教学**, sketch-notes is warmer
-- If the deck is **tech architecture with depth**, 3d-isometric carries more presence
-- If the deck is **data dashboards**, digital-dashboard is more authentic
-- If the deck is **personal story / lifestyle**, watercolor or warm-scene fits better

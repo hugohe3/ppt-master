@@ -61,24 +61,3 @@ Earthy, natural, wellness. The palette for environment / sustainability / wellne
 **Snippet A — applied to a nature illustration**
 
 > [...rendering paragraph...] Color behavior is nature-organic: soft cream background `#FEF3C7` (about 50%); primary deep forest green `#166534` in stylized leaves and a central tree silhouette (about 35%); accent warm honey-amber `#D4AF37` in small detail pops — a few hand-drawn flowers at the base, sunlit highlights on leaf tips (about 13%). Earth-toned and slightly desaturated. [...container guidance...]
-
-**Snippet B — applied to a corporate-photo wellness scene**
-
-> [...rendering paragraph...] Color behavior is nature-organic photography: image is graded toward soft outdoor warmth. Cream `#FEF3C7` highlights in the sky/background (about 50%). Primary forest green `#166534` in foliage and natural elements (about 33%). Accent warm honey `#D97706` in golden hour light hitting key surfaces (about 14%). All tones earthy, slightly desaturated, wellness-quality. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Artificial / neon greens (defeats natural earth feel)
-- Sterile / clinical backgrounds (nature wants warmth)
-- Industrial / tech subjects (wrong palette family)
-- Too-saturated accents
-
----
-
-## 8. When to switch away
-
-- For corporate / consulting → `cool-corporate`
-- For broader warm storytelling → `warm-earth`
-- For tech / SaaS → `tech-neon`

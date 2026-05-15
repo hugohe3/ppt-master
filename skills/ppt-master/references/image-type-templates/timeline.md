@@ -66,28 +66,3 @@ Each milestone may include a short date (e.g. "2020", "Q1", "v1.0") rendered as 
 **Snippet A — vector-illustration + cool-corporate, horizontal 5-milestone timeline, text_policy: none, 1200×500**
 
 > Clean flat vector illustration timeline banner. A thin horizontal axis line in primary deep navy `#1E3A5F` runs across the canvas at mid-height. Five circular milestone markers are evenly spaced along the axis — each marker filled with the primary navy and a 2px outline. The third milestone (center) is highlighted with an accent gold `#D4AF37` ring around it (under 5% accent area). Above each marker is a small simple iconic symbol — a seed, a sprout, a plant, a tree, a forest — telling a growth sequence. Below each marker, a thin vertical tick mark drops to the axis. Background is calm secondary light gray `#F8F9FA`. Composed for a 1200×500 hero banner with 12% inner padding above and below the axis. NO text, dates, or labels — SVG labels added externally. Color values are rendering guidance only.
-
-**Snippet B — editorial + editorial-classic, vertical 4-milestone history, text_policy: embedded, 500×800**
-
-> Magazine-style editorial timeline, vertical orientation. A thin vertical axis rule in primary deep navy `#0F2C4C` runs down the canvas, slightly offset to the left of center. Four small circular milestone markers along the axis at equal intervals. Each milestone has a short hand-lettered English year label (e.g. "1980", "2000", "2010", "2020") rendered to the left of the marker in confident editorial type — short numeric labels only, no descriptions. To the right of each marker, one small iconic symbol — a tower, a globe, a phone, a chip — in primary navy with subtle 8% drop shadow. Background is warm secondary cream `#FAF7F2` with subtle paper grain at 8% opacity. Accent burnt orange `#C2410C` appears only on the third milestone's marker as a small emphasis (under 5%). Composed as a 500×800 vertical block with 14% inner padding. English numeric labels only (no Chinese characters). Color values are rendering guidance only.
-
----
-
-## 5. Common failure modes
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| Axis line missing or unclear | Axis rule too weak | "Clear continuous axis line connecting all milestones, uniform stroke weight" |
-| Milestones unevenly spaced | Spacing rule omitted | "Milestones evenly spaced along the axis" |
-| Direction ambiguous | Direction not specified | "Time progresses left-to-right (or top-to-bottom)" |
-| Iconic clutter | Icons too detailed | "Each milestone has one simple iconic symbol — recognizable at small size" |
-| Date labels garbled in embedded | Long or CJK dates | Use short English numeric labels only ("2020", "Q1") |
-
----
-
-## 6. When to switch away from timeline
-
-- If progression has process steps with arrows → `flowchart`
-- If parallel zones without chronology → `infographic`
-- If central concept with related ideas → `framework`
-- If atmospheric history scene → `scene`

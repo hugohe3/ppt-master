@@ -66,26 +66,3 @@ Muted desaturated earth tones — dusty pink, sage green, faded terracotta, mute
 **Snippet A — applied to an editorial lifestyle spread**
 
 > [...rendering paragraph...] Color behavior is earthy-dusty Morandi-adjacent: every color appears desaturated 30% from its source HEX. Secondary muted oat `#E8E0D5` carries the upper 60% of the canvas as calm field. Primary muted dusty terracotta `#C9A38C` (desaturated translation of the deck's primary) forms a confident block across the lower 30%. Accent muted sage `#A8B5A0` appears as one thin horizontal line near the meeting point and one small dusty dot in the upper right (totaling about 10%). No vivid color anywhere. Refined, contemplative. [...container guidance...]
-
-**Snippet B — applied to a watercolor wellness page**
-
-> [...rendering paragraph...] Color behavior is earthy-dusty: the watercolor wash flows in three muted bands — upper third muted oat `#E8E0D5` with gentle paper showing through, middle band dusty rose `#D4A5A5` (desaturated translation of the deck's primary), lower third muted sage `#A8B5A0`. Each color appears desaturated 30% from its source HEX, with soft natural color pooling at the boundaries. No vivid pigments. Slow, contemplative, refined-minimal. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Vivid / saturated colors anywhere (defeats Morandi discipline — switch to `warm-earth` for warm saturation, `nature-organic` for natural saturation)
-- Pure white or pure black (earthy-dusty uses dusted neutrals — even "white" should be oat or cream)
-- High-contrast pairings (adjacent muted values only)
-- More than 4 colors in the composition
-- Sharp ink outlines (defeats softness)
-
----
-
-## 8. When to switch away
-
-- For warmer grounded saturation → `warm-earth`
-- For natural / outdoor saturation → `nature-organic`
-- For high-contrast methodology → `mono-ink`
-- For pastel softness with more chroma → `macaron`

@@ -81,28 +81,3 @@ Each stage may contain a short English keyword (≤2 words) inside or beside it.
 **Snippet A — vector-illustration + cool-corporate, horizontal 4-stage flow, text_policy: none, 1200×400**
 
 > Clean flat vector illustration flowchart banner. Four rounded-rectangle stages arranged horizontally across the canvas, separated by uniform gaps. Each stage is filled with primary deep navy `#1E3A5F`, with crisp 2px outlines and 8% soft drop shadow. Between each pair of stages, a thin uniform horizontal arrow with a clean triangular arrowhead in secondary `#F8F9FA` or near-black. The third stage (highlighted as the focal stage) has a thin accent gold `#D4AF37` ring around it — under 5% accent area. Each stage contains one simple iconic symbol in white — an input arrow, a gear, a magnifier, an output arrow respectively. Background field is secondary light gray `#F8F9FA`. Composed for a 1200×400 hero band with 14% inner padding. NO text, letters, numbers, or labels — SVG labels added externally. Color values are rendering guidance only.
-
-**Snippet B — blueprint + tech-neon, vertical 4-stage pipeline, text_policy: none, 500×700**
-
-> Technical blueprint pipeline schematic, vertical orientation. Four rounded rectangle stages stacked vertically on a near-white background `#FAFAFA` with subtle grid pattern at 6% opacity in primary deep blue. Each stage uses 1.5px primary deep blue `#1E40AF` stroke; the second stage from top has its stroke replaced with accent vivid cyan `#06B6D4` as the focal stage. Between each pair of stages, a clean downward-pointing arrow with precise arrowhead in blueprint blue. Small anchor dots at line junctions. Each stage contains one iconic symbol in monoline schematic style — input symbol, transform symbol, validate symbol, output symbol. Composed as a 500×700 vertical pipeline with 14% inner padding. NO text or labels anywhere. Color values are rendering guidance only.
-
----
-
-## 5. Common failure modes
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| Arrows missing or unclear direction | Arrow rule too weak | Reaffirm "clear directional arrows between every consecutive stage, uniform arrowhead style" |
-| Stages unequal size | Equality rule omitted | "All stages visually equal — same shape, similar size, same color treatment" |
-| Stages too dense | Padding omitted | "Generous gaps between stages — stages don't crowd each other" |
-| Flow direction ambiguous | Composition error | Explicit "flow reads left-to-right (or top-to-bottom)" |
-| Cyclical not closing | Looping rule omitted (for cyclical only) | "Cyclical flow closes back to stage 1 via a return arrow" |
-
----
-
-## 6. When to switch away from flowchart
-
-- If parallel zones without sequence → `infographic`
-- If central hub with satellites → `framework`
-- If two opposing options → `comparison`
-- If time-ordered milestones → `timeline`

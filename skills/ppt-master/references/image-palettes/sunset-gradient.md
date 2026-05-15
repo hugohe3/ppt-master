@@ -68,26 +68,3 @@ Warm gradient flow — pink → orange → purple, atmospheric and energetic. Us
 **Snippet A — applied to a flat lifestyle hero**
 
 > [...rendering paragraph...] Color behavior is sunset-gradient: smooth diagonal gradient flowing from primary deep pink `#EC4899` in the lower-left corner, transitioning through secondary warm orange `#F97316` across the middle band, into accent purple `#9333EA` in the upper-right corner. Smooth blending — no hard color edges. Above the gradient field, one stylized flat near-black silhouette of a stylized palm tree sits at the lower right as a focal rest point (about 6% of canvas). Atmospheric, energetic, optimistic. [...container guidance...]
-
-**Snippet B — applied to a warm-scene cinematic chapter divider**
-
-> [...rendering paragraph...] Color grading is sunset-gradient: the cinematic scene is graded as a real golden-hour sunset — sky transitions from primary deep coral `#FB7185` low on the horizon, through secondary warm amber `#F59E0B` in the middle altitudes, into accent deep purple `#7C3AED` in the upper atmosphere. Smooth atmospheric blending throughout. Optional: a small distant silhouette anchors the foreground. Warm, romantic, optimistic. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Discrete blocks of color (defeats gradient identity — switch to `vivid-launch` or `duotone`)
-- More than 3 gradient stops (becomes muddy)
-- Cool / neutral gradient (that's a different palette — sunset-gradient is warm-dominant)
-- Hard banding artifacts (gradient must be visually smooth)
-- More than one focal break (one rest point only)
-
----
-
-## 8. When to switch away
-
-- For bold flat saturation → `vivid-launch`
-- For two-color limited → `duotone`
-- For warm grounded (no gradient) → `warm-earth`
-- For dark atmospheric → `dark-cinematic`

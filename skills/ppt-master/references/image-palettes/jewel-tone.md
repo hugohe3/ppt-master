@@ -64,26 +64,3 @@ Deep saturated gemstone colors — emerald, sapphire, ruby, amethyst, gold. Prem
 **Snippet A — applied to an editorial luxury hero**
 
 > [...rendering paragraph...] Color behavior is jewel-tone: rich primary deep emerald `#047857` forms a confident block across the lower 40% of the canvas with high saturation. Secondary deep cream `#FEF3C7` carries the upper 48% as velvet field. Accent gold `#D4AF37` appears as a single thin metallic horizontal line at the meeting point and one small polished gold dot in the upper right (totaling about 10%). No muted tints. No additional colors. Premium evening feel. [...container guidance...]
-
-**Snippet B — applied to a corporate-photo lifestyle product**
-
-> [...rendering paragraph...] Color grading is jewel-tone: image is graded toward rich primary ruby `#9A1B3A` as the dominant shadow tone, secondary deep cream `#FEF3C7` carries the highlight regions, and accent gold `#D4AF37` appears as warm metallic surfaces (a polished frame, a brass detail). The overall feel is high-saturation premium evening — no faded or washed-out tones. Like a contemporary luxury campaign shot. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Muted / washed-out / pastel tints (defeats jewel saturation — switch to `editorial-classic` or `warm-earth`)
-- Equal-share three-jewel palette (becomes a flag — keep one dominant jewel)
-- More than one metallic accent
-- Plastic or matte material feel (jewel-tone implies polished material)
-- Heavy black outlines (jewel-tone is fill-based, not line-based)
-
----
-
-## 8. When to switch away
-
-- For atmospheric premium without saturation → `dark-cinematic`
-- For restrained corporate luxury → `editorial-classic`
-- For warm friendly brand → `warm-earth`
-- For methodology / mindset → `mono-ink`

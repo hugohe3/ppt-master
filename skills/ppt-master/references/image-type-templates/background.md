@@ -63,27 +63,3 @@ When the background's mood is enhanced by lettering — large decorative word in
 **Snippet A — vector-illustration + cool-corporate cover background, text_policy: none, 1280×720**
 
 > Clean flat vector illustration backdrop. Atmospheric composition with no central subject — bold geometric shapes arranged along the canvas edges to leave the center calm. Primary deep navy `#1E3A5F` forms a confident diagonal block across the lower-left third; secondary light gray `#F8F9FA` occupies the upper two-thirds as breathing space; accent gold `#D4AF37` appears only as one thin geometric line near the lower right corner (under 5% of canvas). Crisp 2px outlines, no gradients, single 8% soft drop shadow under the navy block. The central 60% of the canvas is deliberately calm and unbusy — designed to receive a slide title overlaid in SVG. Composed as a 1280×720 full-bleed PPT background. NO text, letters, numbers, signs, watermarks, or written symbols anywhere in the image. Color values are rendering guidance only — do not display HEX codes or color names as text. Simplified geometric shapes only.
-
-**Snippet B — watercolor + warm-earth chapter divider background, text_policy: none, 1280×720**
-
-> Watercolor painting style background. Soft warm washes flow across the canvas with no central subject — gentle horizontal bands of color. Upper third: pale cream `#FEF3C7` (mostly untouched paper). Middle band: soft amber `#D97706` with natural color pooling and bleeding edges. Lower third: deeper warm terracotta `#9A3412` with subtle paper grain at 15% opacity. No defined forms — just atmospheric color flow. The central 60% of the canvas is calm enough for slide title overlay. Composed as a 1280×720 full-bleed chapter divider background. NO text anywhere in the image. Color values are rendering guidance only.
-
----
-
-## 5. Common failure modes
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| Image has a dominant central subject | Subject crept in despite "no subject" intent | Reaffirm "atmospheric, no central subject, no dominant figure" |
-| Center too busy for text overlay | Visual elements weren't pushed to edges | Add explicit "center 60% must be calm and unbusy, low visual weight" |
-| Generic / forgettable image | Atmosphere was vague | Strengthen with specific atmospheric mood (golden-hour, digital-twilight, paper-and-ink) |
-| Text appeared anyway | `text_policy: none` rule too weak | Strengthen with full exclusion list |
-
----
-
-## 6. When to switch away from background
-
-- If the image needs a **dominant subject** → `hero`
-- If the image carries **structured information** → `infographic`, `framework`, `flowchart`, `comparison`, `timeline`
-- If the image carries **headline text as visual** → `typography`
-- If the image is a **narrative scene with people/place** → `scene`

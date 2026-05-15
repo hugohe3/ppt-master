@@ -62,24 +62,3 @@ Energetic, futuristic, high-contrast. The signature look for AI / SaaS / product
 **Snippet A — applied to a 3d-isometric architecture**
 
 > [...rendering paragraph...] Color behavior is tech-neon: secondary deep navy `#0A0E27` covers the background plane and shadowed faces (about 50% of canvas); primary electric blue `#0EA5E9` carries the lit faces of the stacked blocks in saturated solid fills (about 35%) with a subtle 8%-opacity outer glow around each block's edge; accent vivid cyan `#06B6D4` appears on connecting lines and one highlighted block's lit face (about 12% area total) with stronger implied glow. High contrast throughout. [...container guidance...]
-
-**Snippet B — applied to a digital-dashboard demo**
-
-> [...rendering paragraph...] Color behavior is tech-neon dashboard: secondary near-white digital `#F8FAFC` covers the surface field (about 55%); primary electric blue `#0EA5E9` in the dominant chart bars, vivid and saturated, with subtle 8%-opacity glow at the bar tops (about 32%); accent neon coral `#F97316` reserved for one highlighted KPI tile — the focal data point — at about 13%, with luminance halo. The overall feel is energetic, brand-forward, future-product. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Muted / desaturated colors (defeats tech-neon's vividness)
-- Warm earth tones in the same image (mood conflict)
-- Heavy textures (tech-neon is smooth-digital, not painterly)
-- More than 3 distinct vivid colors (becomes carnival)
-
----
-
-## 8. When to switch away
-
-- For restrained / professional decks → `cool-corporate`
-- For warm / human decks → `warm-earth`
-- For premium / cinematic dark → `dark-cinematic`

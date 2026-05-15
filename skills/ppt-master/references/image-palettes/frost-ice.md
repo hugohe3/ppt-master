@@ -65,26 +65,3 @@ Near-white field with pale cool accents — icy blue, pale silver-gray, hint of 
 **Snippet A — applied to a vector-illustration health/spa hero**
 
 > [...rendering paragraph...] Color behavior is frost-ice: secondary near-white `#F8FBFD` occupies about 80% of the canvas as vast calm field. A single soft pale cool primary `#DBEAFE` rounded shape appears in the lower third (about 12%). Accent steel blue `#3B82F6` appears as one small deliberate dot or thin line at a rule-of-thirds intersection (about 5%). No warm tones, no saturated colors. Maximum breathing room. [...container guidance...]
-
-**Snippet B — applied to a glassmorphism SaaS product showcase**
-
-> [...rendering paragraph...] Color behavior is frost-ice: near-white field `#F8FBFD` dominates (about 78%). The single frosted-glass panel uses a pale cool primary `#DBEAFE` tint at 50% opacity (about 14%). One small accent steel blue `#3B82F6` indicator inside the panel marks the focal data point (about 5%). Soft cool gradient background blurs through. The vast calm field outside the panel is the identity — premium-minimal clinical clean. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Saturated or warm colors anywhere (defeats frost identity)
-- Field below 70% of canvas
-- Multiple accent points (frost-ice allows exactly one focal moment)
-- Heavy outlines or dark text (visible inside the image — SVG text overlay handles labels)
-- Texture or noise (frost-ice is polished and clean, never tactile)
-
----
-
-## 8. When to switch away
-
-- For warmth → `warm-earth` or `macaron`
-- For corporate confidence with deeper primary → `cool-corporate`
-- For atmospheric premium → `dark-cinematic`
-- For methodology / mindset → `mono-ink`

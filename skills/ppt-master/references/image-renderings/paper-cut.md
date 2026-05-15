@@ -49,26 +49,3 @@ paper-cut treats each HEX value as **one color of paper**:
 **Snippet A — educational scene, text_policy: none**
 
 > Layered paper-cut craft scene. Background sheet: secondary warm cream `#FEF3C7` paper with subtle grain at 12% opacity (the "table" the composition sits on). On top: a simplified paper-cut tree made of two layered cut shapes — a primary deep green `#0F766E` rounded foliage shape with slightly irregular scissor-cut edge, casting a soft 10% drop shadow onto the cream background; below it, a darker brown trunk cut shape. To the side of the tree: a small accent ochre `#D4A017` cut sun in a corner, with its own soft shadow. No outlines anywhere — shapes are defined by paper edges only. Every layer has paper grain at 12% opacity. Composed as a 600×600 half-page paper scene with 12% padding. NO text in the image. Color values are rendering guidance only.
-
-**Snippet B — hero teaching banner, text_policy: none**
-
-> Layered paper-cut hero banner. Background sheet: secondary pale blue `#DBEAFE` paper with subtle grain. Three simplified paper-cut figures arranged across the canvas — each a stylized silhouette built from 2-3 layered cut shapes (head, body, simple gesture). Two figures are primary deep navy `#1E3A5F` paper, the middle figure is accent terracotta `#9A3412` paper for emphasis. Each layer casts a soft 10% drop shadow onto the layer beneath. No facial features — figures are silhouette-only paper craft. Paper grain at 12% opacity over every layer. Composed as a 1200×500 hero teaching banner with 12% padding. NO text, letters, or numbers anywhere. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Outlines / line work (defeats the cut-paper identity — shapes are defined by edges, not strokes)
-- Mathematically perfect edges (paper-cut edges must show slight hand-cut irregularity)
-- Photorealistic textures (paper-cut is stylized craft)
-- Gradients within shapes (each shape is one solid paper color)
-- Heavy drop shadows (8-12% opacity max — paper is light, not heavy)
-
----
-
-## 7. When to switch away
-
-- For warm hand-drawn lines (not cut paper) → `sketch-notes`
-- For watercolor flow → `watercolor`
-- For storybook illustration → `fantasy-animation`
-- For corporate restraint → `vector-illustration` or `flat`

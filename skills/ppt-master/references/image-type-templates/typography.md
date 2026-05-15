@@ -84,28 +84,3 @@ If the page wants no text inside the image, the type is probably `background` or
 **Snippet A — ink-notes + mono-ink big-number stat, text_policy: embedded, 800×500**
 
 > Professional hand-drawn visual-note style on pure white background. The image's central content is the hand-lettered number "100x" — rendered in bold confident ink strokes occupying about 50% of the canvas height, centered with deliberate slight wobble characteristic of hand-lettering. Text is in English/Latin characters only. Beneath the number, a thin hand-drawn underline in ink. To the side of the number, one small hand-drawn doodle decoration — a star or upward arrow — adds visual rhythm. Accent coral `#E8655A` (from the deck's accent) appears only as a tiny emphasis dot above the number's exclamation, totaling under 4% of canvas. Background is pure white `#FFFFFF`. Composed as an 800×500 typography block with 20% padding around the number. No other text or labels in the image — just the "100x" headline and the small doodle.
-
-**Snippet B — vector-illustration + cool-corporate slogan banner, text_policy: embedded, 1200×500**
-
-> Clean flat vector illustration banner. The image's central content is the bold word "SCALE" — rendered as a large geometric block-letter headline in primary deep navy `#1E3A5F`, occupying about 45% of the canvas height, centered. Letters have crisp vector edges (sans-serif geometric character). Beneath the word, a thin accent gold `#D4AF37` horizontal rule (about 60% of word width). Background is calm secondary light gray `#F8F9FA`. No supporting visuals beyond the rule. Composed as a 1200×500 hero typography banner with 18% padding. Text is English only (5 characters). Color values are rendering guidance — do not paint HEX codes or color names as additional text.
-
----
-
-## 6. Common failure modes
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| Typo / garbled letters | Word too long, or model unreliable | Shorten to 1-2 short words; verify after generation |
-| Multiple text elements | "Just one headline" not specified | Reaffirm "only the single headline word — no additional text, no labels, no captions" |
-| Chinese characters garbled | CJK requested | Switch to English keyword or use `background` + SVG text overlay |
-| Text too small | Size rule omitted | Restate "headline text occupies 40-60% of canvas height" |
-| Decorative elements distract | Supporting visuals too prominent | Reaffirm "supporting visuals minimal, under 25% of canvas weight" |
-
----
-
-## 7. When to switch away from typography
-
-- If text is long / CJK → use `background` type + SVG text overlay
-- If image is a dominant subject (not text) → `hero`
-- If pure atmosphere → `background`
-- If multiple labeled zones → `infographic`

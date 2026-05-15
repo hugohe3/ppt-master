@@ -45,24 +45,3 @@ Modern flat design with bolder geometric blocks than `vector-illustration`. More
 **Snippet A — half-page product visual, text_policy: none**
 
 > Modern flat design illustration. One large rounded rectangle in primary deep teal `#0F766E` occupying the lower-left two-thirds of the canvas, slightly overlapped by a smaller circle in accent coral `#F97316` positioned upper-right. The remaining area is calm secondary cream `#FAFAF9`. No outlines, no shadows. A simple iconic symbol — a stylized package, rendered as a flat silhouette — sits within the teal block, white on teal. Composed as a 600×500 half-page block with 12% inner padding. NO text, letters, numbers, or labels anywhere. Color values are rendering guidance only — do not display HEX codes or color names as text.
-
-**Snippet B — hero banner, text_policy: none**
-
-> Modern flat design illustration banner. Three confident geometric blocks arranged across a wide canvas — a tall navy `#1E3A8A` rectangle on the left occupying the lower 70%, a circular orange `#F97316` accent center-right at mid-height, and a softer beige `#FEF3C7` rectangle filling the right third. Blocks subtly overlap, creating flat layered depth without shadows. The composition reads left-to-right with the orange circle as the focal anchor. Background is a single off-white `#FAFAFA`. Composed for a 1200×400 hero band with 12% inner padding. NO text, no labels. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Gradients within blocks (use `tech-neon` or `dark-cinematic` if a gradient is needed)
-- Heavy outlines (switch to `vector-illustration`)
-- Drop shadows simulating realism (flat is intentionally non-physical)
-- More than 4 colors in one image
-
----
-
-## 7. When to switch away
-
-- For 15+ page corporate decks needing utility over design flair → `vector-illustration`
-- For tech architecture with depth → `3d-isometric`
-- For educational warmth → `sketch-notes`

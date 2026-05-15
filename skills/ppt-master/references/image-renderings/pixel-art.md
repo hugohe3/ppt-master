@@ -47,25 +47,3 @@ pixel-art uses HEX values as **palette slots**:
 **Snippet A — hero retro banner, text_policy: none**
 
 > 8-bit pixel art hero banner with strict pixel-grid alignment and no anti-aliasing. A retro-game-style scene — small pixel character sprite standing on a tile floor in the foreground center, with a stylized pixel-art mountain in the background and a pixel sun in the upper right. Character outfit in primary deep blue `#1E40AF`, with 1-pixel outlines in a darker shade of the same blue. Background mountain in muted gray pixel blocks. Sky in soft secondary peach `#FED7AA`. Sun in accent gold `#D4AF37` rendered as a chunky pixel circle. All elements visibly pixel-stepped — no smooth curves. Limited color palette (around 12-16 distinct colors total). Composed for a 1200×500 hero band with 12% inner padding. Simplified pixel character — no detailed face. NO text or labels. Color values are rendering guidance only.
-
-**Snippet B — half-page retro tech scene, text_policy: none**
-
-> 8-bit pixel art half-page scene. A retro-game-style tech laboratory — pixel computer monitors arranged on pixel desks, with a pixel character sprite working at one of them. All elements built from discrete colored pixels with visible chunky edges. Monitors in primary deep navy `#1E3A5F` with bright accent cyan `#06B6D4` screens. Desks in warm wood-tone secondary pixels `#A16207`. Walls and floor in restrained gray pixels. Small pixel decorations — a coffee cup, a plant — add warmth. 1-pixel outlines in darker shades of each fill color. Limited palette (~16 colors total). Composed as a 600×500 half-page block with 14% inner padding. Pixel character simplified, no realistic face. NO text or labels. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Anti-aliasing or smooth gradients (defeats the pixel identity)
-- Modern photo-realistic detail
-- Too high resolution per element (pixel art is intentionally low-res)
-- More than 32 distinct colors in one image
-- Mixing pixel art with other rendering styles
-
----
-
-## 7. When to switch away
-
-- For modern flat → `flat` or `vector-illustration`
-- For 3D tech aesthetic → `3d-isometric`
-- For dashboard / UI surfaces → `digital-dashboard`

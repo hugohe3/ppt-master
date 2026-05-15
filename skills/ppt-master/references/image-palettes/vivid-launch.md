@@ -63,24 +63,3 @@ Bold, saturated, attention-grabbing. The palette for product launches, marketing
 **Snippet A — applied to a flat marketing hero**
 
 > [...rendering paragraph...] Color behavior is vivid-launch: secondary near-white `#FAFAFA` background (about 38%); primary saturated brand magenta `#E11D48` carries the dominant central shape — a bold geometric burst (about 35%); accent vivid orange `#F97316` is co-star — a large supporting block or burst in the upper right (about 25%). One small detail in deep neutral `#171717` for definition (about 2%). All colors confident and saturated. Promotional energy. [...container guidance...]
-
-**Snippet B — applied to a 3d-isometric product launch**
-
-> [...rendering paragraph...] Color behavior is vivid-launch: secondary bright cream `#FEF3C7` background plane (about 35%); primary vivid teal `#0F766E` on the main product block's lit faces (about 38%, with darker teal shaded faces); accent vivid coral `#F97316` on a secondary product block — a co-star not a small detail (about 25%). Bold, confident, promotional. Soft 8% drop shadows for depth. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Pastel / muted colors (defeats the vividness)
-- Restrained accent (vivid-launch wants accent as co-star)
-- More than 4 distinct vivid colors (becomes carnival rather than launch)
-
----
-
-## 8. When to switch away
-
-- For restrained corporate → `cool-corporate`
-- For warm story → `warm-earth`
-- For premium dark → `dark-cinematic`
-- For technical brand → `tech-neon`

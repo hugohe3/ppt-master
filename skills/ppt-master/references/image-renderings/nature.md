@@ -47,24 +47,3 @@ If the deck's HEX is cool / corporate, nature may be the wrong rendering — con
 **Snippet A — half-page sustainability scene, text_policy: none**
 
 > Organic illustration style with botanical motifs. A soft natural scene of a single tree on a gentle hill, with curving organic forms and earthy color palette. Tree foliage in primary deep forest green `#166534` with subtle leaf-vein texture at 12% opacity. Tree trunk in warm earth brown using a darker shade. Hill in soft secondary cream `#FEF3C7` with very gentle curve. Sky in pale soft blue suggesting morning. A small accent of warm yellow `#D4AF37` flowers at the base of the tree. No hard outlines — forms defined by color contrast and soft organic edges. Composed as a 600×800 half-page block with 12% inner padding. NO text or labels. Color values are rendering guidance only.
-
-**Snippet B — hero wellness banner, text_policy: none**
-
-> Organic botanical illustration banner. A horizontal composition of natural elements — a wide field of soft cream `#FEF3C7` with three large stylized organic leaf shapes arching across the canvas. Leaves rendered in varied earthy greens — primary forest `#166534`, a softer mid-green, and a pale sage — overlapping with intentional asymmetric balance. Subtle leaf-vein texture visible at 10% opacity on each leaf. A few small accent terracotta `#C2410C` berry-shaped circles scattered sparingly. Background includes soft suggestion of distant warm-cream sky. No hard outlines, all forms curved and organic. Composed for a 1200×600 hero band with 12% inner padding. NO text. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Geometric / grid-aligned composition (nature is asymmetric and organic)
-- Saturated artificial colors (palette should feel earthy and slightly muted)
-- Hard digital edges
-- Tech / industrial subjects (wrong rendering family — use `vector-illustration`)
-
----
-
-## 7. When to switch away
-
-- For corporate / tech decks → `vector-illustration` or `flat`
-- For pure painterly atmosphere → `watercolor`
-- For storybook character work → `fantasy-animation`

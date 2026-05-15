@@ -65,26 +65,3 @@ Combine the proportion rule + role semantics + the deck's actual HEX:
 **Snippet A — applied to a vector-illustration background**
 
 > [...rendering paragraph...] Color behavior is restrained-corporate: secondary light gray `#F8F9FA` carries 65% of the canvas as calm breathing space across the upper two-thirds; primary deep navy `#1E3A5F` forms a confident diagonal block across the lower portion (about 28% area); accent gold `#D4AF37` appears only as one thin horizontal line and a single small geometric dot, together under 5% of the area. No additional colors. [...container guidance...]
-
-**Snippet B — applied to a digital-dashboard product showcase**
-
-> [...rendering paragraph...] Color behavior is restrained-corporate dashboard: secondary `#F8F9FA` dominates the canvas as the UI surface (about 70%); primary `#1E3A5F` carries the main data chart's bars and the dominant card header (25%); accent `#D4AF37` is reserved for one highlighted metric — a single arrow indicator or one emphasized data point — totaling under 5% of the area. Soft 8% drop shadows under cards. No gradients within fills. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- **Vibrant accent**: accent in cool-corporate is structurally a small percentage, not a bright burst. If the HEX `accent` is itself highly saturated (e.g. neon yellow), reduce its area further — never increase it.
-- **Equal-share triplet**: when all three colors appear in roughly equal area, the image looks like a children's flag, not a corporate visual. Force the 60-30-10 split.
-- **Fourth color**: don't let the model introduce a green, a pink, or a darker complement. Reaffirm the three HEX values 2-3 times in the prompt.
-- **Bright background**: secondary should be near-white, not the primary brand color. cool-corporate's breathing room is what makes it corporate.
-- **Metallic / glossy**: cool-corporate is flat. Switch palette to `dark-cinematic` if a premium glossy treatment is wanted.
-
----
-
-## 8. When to switch away from cool-corporate
-
-- If the deck is **warm / personal / brand-storytelling**, switch to `warm-earth` or `editorial-classic`
-- If the deck is **AI / SaaS / energetic tech**, `tech-neon` carries more presence
-- If the deck is **methodology / mindset shift**, `mono-ink` is sharper
-- If the deck is **education / approachable**, `macaron` is softer

@@ -47,24 +47,3 @@ If the deck's primary is cool (navy, teal), warm-scene will subtly warm-grade it
 **Snippet A — half-page personal story, text_policy: none**
 
 > Atmospheric scene illustration with golden-hour cinematic lighting. A softly rendered figure (simplified silhouette, no detailed face) walks along a path in a warm landscape — the figure in the foreground left, the path leading to a small distant cabin in the middleground, soft warm hills in the atmospheric background. Strong golden warm light comes from the upper right (the sun near the horizon), casting long soft shadows toward the left. Sky transitions from amber `#D97706` at the horizon to soft cream `#FEF3C7` at the top. Foreground shadows in deeper warm primary `#7C2D12`. Subtle bloom around the sun. No hard outlines — forms emerge from light and shadow. Subtle film grain at 8% opacity. Composed as a 600×800 half-page block with 10% inner padding. Simplified silhouette figures only — no realistic faces. NO text or labels. Color values are rendering guidance only.
-
-**Snippet B — hero origin-story banner, text_policy: none**
-
-> Atmospheric scene hero banner with golden-hour cinematic lighting. A wide warm scene — perhaps an early morning workspace with soft window light streaming in from the left, casting long shadows across a wooden desk in the middleground. Background suggests a window with warm cream `#FEF3C7` and amber `#D97706` light. Foreground objects are simplified — a notebook, a coffee cup, a small plant — defined by light and shadow rather than outlines. Strong directional light creates depth through atmospheric perspective. Cinematic warm grading, slight film grain. Composed for a 1200×600 hero band with 10% inner padding. No people, or simplified silhouettes only. NO text or labels. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Cool / neutral color grading (defeats the warm identity — switch to `watercolor` for cool atmospheric)
-- Photo-realistic faces (use simplified silhouettes; for real people use `corporate-photo`)
-- Sharp digital edges (warm-scene is soft cinematic)
-- Cluttered scenes (atmosphere needs negative space)
-
----
-
-## 7. When to switch away
-
-- For pure watercolor painterly feel → `watercolor`
-- For real photography → `corporate-photo`
-- For corporate / technical → `vector-illustration` or `flat`

@@ -65,25 +65,3 @@ Friendly, grounded, human. The warm counterpart to cool-corporate — used in br
 **Snippet A — applied to a watercolor narrative scene**
 
 > [...rendering paragraph...] Color behavior is warm-grounded: secondary cream `#FEF3C7` occupies the upper third as soft sky and breathing space (about 50% of canvas); primary deep terracotta `#9A3412` carries the midground hills and foreground earth in confident warm washes (about 35%); accent warm gold `#D4AF37` appears as a small concentrated glow near the horizon and a single golden bird shape in the foreground (totaling under 15%). All tones warm, no cool blues or greens beyond a barely-perceptible suggestion in the sky. [...container guidance...]
-
-**Snippet B — applied to a sketch-notes educational block**
-
-> [...rendering paragraph...] Color behavior is warm-grounded: cream paper background `#FEF3C7` carries about 55% of the area. Primary deep amber `#B45309` fills the rounded info boxes in a soft pastel tint (about 35% area). Accent warm coral `#F97316` appears on one highlighted arrow and a few small doodle decorations (totaling 10-13%). All hand-drawn ink in near-black. No cool tones. [...container guidance...]
-
----
-
-## 7. Forbidden
-
-- Cool color mixing (a stray blue / teal breaks the warm identity)
-- Over-saturated accent (warm-earth's accent is warm-rich, not neon-loud)
-- Sterile / clinical feel (defeats the warmth — switch to cool-corporate)
-- Equal-share triplet (creates a flag-like balance instead of warm-grounded depth)
-
----
-
-## 8. When to switch away
-
-- For corporate / consulting → `cool-corporate`
-- For premium / cinematic → `dark-cinematic`
-- For methodology / sharp manifesto → `mono-ink`
-- For event / launch / saturated bold → `vivid-launch`

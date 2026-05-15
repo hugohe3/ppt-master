@@ -71,28 +71,3 @@ Each side may contain short hand-lettered labels: "BEFORE" / "AFTER" at the top,
 **Snippet A — ink-notes + mono-ink, Before/After horizontal split, text_policy: embedded, 1200×500**
 
 > Professional hand-drawn visual-note style on pure white background `#FFFFFF`. The composition is a Before/After horizontal split with a clean vertical hand-drawn divider down the center. Both sides use confident black ink line work with slight wobble. Left side ("Before"): a simplified stick-figure character with frustrated posture, a speech bubble in hand-lettered English caps reading "OLD WAY", and three small hand-drawn dashes with brief 1-word annotations ("manual", "slow", "fragile"). Right side ("After"): a confident stick-figure character with a checkmark above, hand-lettered "NEW WAY" caps label, and three checkbox-style annotations ("automated", "fast", "reliable"). A curved "shift" arrow bridges left to right at mid-height. Sparse semantic accent: coral red `#E8655A` only on left-side pain markers (about 4% area); muted teal `#5FA8A8` only on right-side positive markers (about 3% area). Total color accent under 8%. Composed as a 1200×500 hero banner with 14% inner padding. English-only hand-lettered text. NO Chinese characters. Color values are rendering guidance only.
-
-**Snippet B — vector-illustration + cool-corporate, two-option horizontal split, text_policy: none, 600×500**
-
-> Clean flat vector illustration comparison. Composition is a horizontal split with a thin vertical accent gold `#D4AF37` divider line down the center. Both halves use crisp vector geometry on a secondary light gray `#F8F9FA` background. Left half contains a stylized geometric form representing Option A — three stacked rectangles in primary deep navy `#1E3A5F` with crisp 2px outlines, soft 8% drop shadow. Right half contains a contrasting geometric form representing Option B — a single larger rounded square in the same navy with one accent gold corner highlight (about 4% area). Both halves are visually balanced — same total visual weight, different structural treatment. Composed as a 600×500 half-page block with 14% inner padding. NO text or labels — SVG labels added externally. Color values are rendering guidance only.
-
----
-
-## 5. Common failure modes
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| Halves unequal weight | Symmetry rule omitted | "Both halves visually balanced — same total visual weight, different content" |
-| No clear divider | Divider rule too weak | Specify "clean visible divider between halves — vertical line, geometric shape, or intentional negative space" |
-| Sides indistinguishable | Content distinctness too weak | "Each side has its own distinct anchor element; sides are visually contrasting" |
-| Mixed text in `none` policy | Text discipline weak | Reaffirm "no labels or text in image — left/right labels added in SVG overlay" |
-| CJK garbled in embedded | Chinese used | Switch to English short labels |
-
----
-
-## 6. When to switch away from comparison
-
-- If three+ options → `infographic` (parallel zones)
-- If sequential transformation (no fixed before/after) → `flowchart`
-- If concept with relations → `framework`
-- If story / narrative scene → `scene`

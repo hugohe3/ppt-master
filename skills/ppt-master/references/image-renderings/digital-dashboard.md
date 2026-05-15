@@ -45,24 +45,3 @@ Polished UI / data-visualization aesthetic. The image looks like a screenshot of
 **Snippet A — half-page product demo, text_policy: none**
 
 > Polished digital dashboard UI aesthetic. Three rounded-corner cards arranged in a clean grid on a soft secondary background `#F8FAFC`. The largest card (top, occupying 60% of the area) shows a stylized line chart trending upward in primary blue `#0EA5E9` — three line segments, smooth curve, anchor dots at peaks. Two smaller cards below show: (left) a stylized donut chart with the primary color filling about 70% of the ring, (right) a simple KPI tile with a large iconic upward arrow in accent green `#10B981`. All cards have 8-12px rounded corners and uniform 8% soft drop shadows. Pixel-aligned edges. Composed as a 600×500 half-page block with 10% inner padding. NO text, no numbers, no chart labels, no axes — pure visual chart elements only. Color values are rendering guidance only.
-
-**Snippet B — hero product showcase, text_policy: none**
-
-> Polished SaaS dashboard hero image. A large central rectangular card occupies 75% of the canvas with 12px rounded corners and a soft 8% drop shadow, sitting on a clean secondary background `#F1F5F9`. The card surface shows a stylized analytics screen — a tall vertical bar chart on the left using primary navy `#1E3A8A` with one accent orange `#F97316` bar highlighted, a line chart on the right with two intersecting trend lines, and three small KPI tiles across the top. All chart elements are stylized — recognizable as charts but without specific values, axes, or labels. Background field is calm and uncluttered. Composed for a 1200×600 hero band with 10% inner padding. NO text, no numbers, no axis labels, no captions anywhere. Color values are rendering guidance only.
-
----
-
-## 6. Forbidden
-
-- Real numbers, real labels (model often invents misleading values)
-- Photorealistic device frames (laptop bezel, phone shell) unless explicitly intended
-- Overly busy charts — keep to 3-5 chart elements maximum
-- Skeuomorphic depth (glass, metal, gloss) — keep it flat-modern
-
----
-
-## 7. When to switch away
-
-- For non-product visuals → `vector-illustration` or `flat`
-- For technical architecture with 3D forms → `3d-isometric`
-- For schematic technical drawings → `blueprint`
