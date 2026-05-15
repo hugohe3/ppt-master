@@ -447,6 +447,8 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | Diagram | Flowcharts, architecture diagrams, concept relationship maps |
 | Decorative pattern | Partial decoration, textures, borders, divider elements |
 
+🚧 **GATE — before assigning narrative intent to pages**: when image approach is B/C/D/E (anything other than A "no images"), `read_file references/image-layout-patterns.md`. This file enumerates the available image placement techniques (full-bleed variants, non-rectangular crops, overlay treatments, image-as-canvas with native overlays, multi-image compositions, special techniques). The four intent values below cover broad categories only — the actual design space is much larger, and the "image-as-canvas + native overlay" family in particular is the most underused and often the right answer for content-rich pages. Skipping this read defaults the deck to conservative left/right or top/bottom splits.
+
 **Image narrative intent** (decide *before* the ratio table — determines whether the image lives in a container at all):
 
 | Intent | Form | When to use |

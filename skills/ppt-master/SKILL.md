@@ -422,7 +422,8 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 |----------|------|
 | Shared technical constraints | `references/shared-standards.md` |
 | Canvas format specification | `references/canvas-formats.md` |
-| Image layout specification | `references/image-layout-spec.md` |
+| Image-text layout patterns (design vocabulary — placement, overlays, image-as-canvas, multi-image, special techniques) | `references/image-layout-patterns.md` |
+| Image layout sizing (math for side-by-side container dimensions) | `references/image-layout-spec.md` |
 | SVG image embedding | `references/svg-image-embedding.md` |
 | Icon library | `templates/icons/README.md` |
 
