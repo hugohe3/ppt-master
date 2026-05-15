@@ -249,6 +249,67 @@ When the deck includes any `ai` rows, Strategist locks a **deck-wide rendering**
 
 🚧 **GATE — before recommending values**: `read_file references/image-renderings/_index.md` and `read_file references/image-palettes/_index.md`. They contain the catalog, auto-selection tables, and a rendering × palette compatibility matrix.
 
+#### Three-candidate presentation (default path)
+
+**Hard rule**: Unless the user has already named a specific rendering or palette (chat or template), present **≥3 distinct rendering × palette combinations** and let the user pick. Never auto-lock a single combination silently.
+
+**Per-candidate schema** (exactly 4 lines, no extras):
+
+```
+[Plan A] <temperament label> — <rendering> × <palette>
+  Visual: <shape / line / material / light, 1-2 phrases>
+  Color: <secondary HEX (ratio) + primary HEX (ratio) + accent HEX (ratio); HEX values from e.>
+  Mood: <2-3 traits>; like <real-world analogy: company / publication / event>
+```
+
+After the candidates, append one line:
+
+```
+> Reference images: see references/ai-image-comparison/ for matching PNGs by name.
+```
+
+**Hard rules for candidate construction**:
+
+| Rule | Behavior |
+|---|---|
+| Filter by e.'s HEX | Only include palettes whose temperament can carry the user's HEX. Vivid red → exclude `cool-corporate` / `mono-ink`; include `vivid-launch` / `warm-earth` / `editorial-classic`. |
+| HEX values in `Color` line MUST be e.'s real values | Palette contributes only the 60-30-10 ratio + role assignment. Never substitute the palette's typical HEX. |
+| Span a personality spectrum | Typically: one conservative-default (industry norm), one shifted-tone (same fit, 1-2 ticks different), one bold-contrast (more expressive, may challenge default). No near-duplicates. |
+| `Mood` line MUST include a real-world analogy | Company / publication / event the user can picture. Adjective stacks alone are forbidden. |
+| Adapt labels to chat language | Schema is English by default. Chinese chat → render as 「方案 A / 视觉 / 色彩 / 情绪」. Structure stays the same; only the labels translate. |
+| Skip presentation when user has specified | User-named rendering or palette (chat / template) bypasses the candidate flow — lock directly per the truth-precedence rule. |
+
+**Forbidden — padding with conflicts**: if e.'s HEX cannot find ≥3 compatible palettes, present the smaller set (2 candidates) and state "your color is unusual — only N palettes can carry it without conflict." Never fill remaining slots with known-conflicting options.
+
+**Worked example** (e. = `#1E3A5F` navy + `#F8F9FA` off-white + `#D4AF37` gold; d. = consulting; chat in English):
+
+```
+[Plan A] Restrained Professional — vector-illustration × cool-corporate
+  Visual: flat vector, solid color blocks, no gradients or shadows
+  Color: off-white #F8F9FA (60-70%) + deep navy #1E3A5F main (25-30%) + gold #D4AF37 accent (<5%)
+  Mood: steady, trustworthy, restrained gravitas; like a McKinsey consulting report
+
+[Plan B] Editorial Depth — editorial × editorial-classic
+  Visual: magazine layout, 8% paper texture, column-based partitioning
+  Color: off-white #F8F9FA paper (55%) + deep navy #1E3A5F column (30%) + gold #D4AF37 rule line (10-14%)
+  Mood: refined, considered, paced; like an Economist feature spread
+
+[Plan C] Future Energy — 3d-isometric × tech-neon
+  Visual: isometric 3D, soft shading, 8% glow halos around bright elements
+  Color: off-white #F8F9FA digital field (50%) + deep navy #1E3A5F main (35%) + gold #D4AF37 emphasis (10-15%)
+  Mood: forward, energetic, futuristic; like an Apple or Stripe product keynote
+
+> Reference images: see references/ai-image-comparison/ for matching PNGs by name.
+```
+
+After the user picks a candidate (or supplies a custom variant), proceed to "Recording the lock" below.
+
+---
+
+#### Catalog reference (for candidate construction)
+
+The tables below are source data Strategist reads when constructing the three candidates above. They are no longer the final output by themselves.
+
 **Rendering recommendation** (soft — user may override with any other rendering from the catalog):
 
 | `d. Style` signal | Recommended rendering | Alternates |
