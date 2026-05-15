@@ -297,3 +297,75 @@ Organic earthy illustration with botanical details, hand-drawn natural forms, le
 > Nature hero rendering: professional in natural setting with organic growth chart in navy and earthy gold on off-white
 
 ---
+
+### Image 17: minimalist-swiss.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Rendering comparison — minimalist-swiss |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Strict Swiss-grid minimalist composition with rigorous modular grid alignment, reduced geometric primitives (clean rectangles, perfect circles, single-weight lines), no decoration, no gradients, no shadows, generous aggressive whitespace. Subject: a stylized confident professional silhouette standing beside an upward growth chart reduced to a single straight diagonal line — both elements snapped to the grid. Single dominant composition occupying 60-70% of the canvas (hero composition), with deliberate negative space carrying as much weight as filled areas. Color behavior is restrained-corporate: secondary off-white #F8F9FA occupies 70% of the canvas as vast calm field; primary deep navy #1E3A5F carries the silhouette and chart line as flat solid block; accent gold #D4AF37 appears only as one thin horizontal rule or single small dot at a rule-of-thirds intersection, under 3%. No fourth color. 18-20% inner padding. No embedded text or labels.
+
+**Alt Text**:
+> Minimalist-swiss hero rendering: gridded silhouette and chart line in deep navy on vast off-white field with single gold accent
+
+---
+
+### Image 18: glassmorphism.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Rendering comparison — glassmorphism |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Modern glassmorphism aesthetic with layered semi-transparent frosted-glass panels, thin 1px highlight strokes on panel top/left edges, large soft drop shadows (20% opacity, generous spread) for real depth, soft gradient background blurring through panels. Subject: a confident professional figure rendered as a clean solid silhouette inside the main frosted-glass panel, standing beside an upward growth chart shown as a polished glass card with crisp data marks. Single dominant composition occupying 60-70% of the canvas (hero composition). Color behavior is restrained-corporate glass: secondary off-white #F8F9FA forms the soft gradient field (about 60%); primary deep navy #1E3A5F carries the figure silhouette and chart data inside the glass panel (about 32%); accent gold #D4AF37 appears as one small focal indicator on the chart, under 5%. Polished, premium, futuristic-friendly. 12% inner safe-zone padding. No embedded text or labels.
+
+**Alt Text**:
+> Glassmorphism hero rendering: frosted-glass panel with professional silhouette and chart in deep navy on soft off-white gradient with gold accent
+
+---
+
+### Image 19: vintage-poster.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Rendering comparison — vintage-poster |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Mid-century modern poster aesthetic with bold geometric shapes with rounded organic edges, slightly off-axis retro composition, halftone dot pattern at 12% opacity overlaying fills, subtle paper grain at 10% opacity, slight ink misregistration along edges suggesting screen-print authenticity, thick hand-aware lines. Subject: a stylized retro confident professional silhouette standing beside an upward growth chart shown as angular geometric bars, both in mid-century poster character. Single dominant composition occupying 60-70% of the canvas (hero composition). Color behavior is restrained-corporate in mid-century register: secondary off-white #F8F9FA (slightly toned toward warm paper) carries about 60% of the canvas; primary deep navy #1E3A5F forms the silhouette and bars as confident flat blocks with halftone overlay (about 32%); accent gold #D4AF37 appears as one small geometric circle or thin horizontal rule, under 8%. Three colors total. 12% inner padding. No embedded text or letters.
+
+**Alt Text**:
+> Vintage-poster hero rendering: mid-century retro silhouette and angular bars in deep navy on warm off-white with gold geometric accent
+
+---
+
+### Image 20: paper-cut.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Rendering comparison — paper-cut |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Layered paper-cut craft aesthetic with crisp scissor-cut edges (slightly irregular, hand-aware, not mathematically perfect), soft 8-12% drop shadows under each cut-paper layer giving real tactile depth, paper grain at 12% opacity over each color sheet, no outlines anywhere (shapes defined by paper edges only). Subject: a confident professional figure built as layered paper cutouts standing beside an upward growth chart constructed as stacked paper rectangles of increasing height. Single dominant composition occupying 60-70% of the canvas (hero composition). Color behavior is restrained-corporate as paper: secondary off-white #F8F9FA forms the background paper sheet (about 60%); primary deep navy #1E3A5F is the dominant paper-layer color for the figure and chart bars (about 32%); accent gold #D4AF37 appears as one small cut paper detail — a bar tip highlight or a small paper-cut sun — under 8%. Each layer casts a soft 10% drop shadow. 12% inner padding. No embedded text or letters.
+
+**Alt Text**:
+> Paper-cut hero rendering: layered paper silhouette and stacked paper bars in deep navy on off-white sheet with gold paper accent
+
+---

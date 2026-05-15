@@ -9,9 +9,9 @@ This directory uses **controlled-variable comparison** — vary one dimension wh
 
 | Subdirectory | Count | Variable | Fixed baseline |
 |---|---|---|---|
-| [`rendering/`](./rendering/) | 16 | rendering (16 styles) | type=hero, palette=cool-corporate |
-| [`palette/`](./palette/) | 10 | palette (10 color behaviors) | type=hero, rendering=vector-illustration |
-| [`type/`](./type/) | 9 | type (9 internal compositions) | rendering=vector-illustration, palette=cool-corporate |
+| [`rendering/`](./rendering/) | 20 | rendering (20 styles) | type=hero, palette=cool-corporate |
+| [`palette/`](./palette/) | 14 | palette (14 color behaviors) | type=hero, rendering=vector-illustration |
+| [`type/`](./type/) | 15 | type (15 internal compositions) | rendering=vector-illustration, palette=cool-corporate |
 
 Each subdirectory contains:
 
@@ -56,7 +56,7 @@ Generated images land in the corresponding subdirectory. Each item's `status` in
 
 | If you are deciding... | Look at |
 |---|---|
-| Which rendering to lock in Strategist h.5 | `rendering/` — scan all 16 side by side; pick the visual temperament that matches the deck |
+| Which rendering to lock in Strategist h.5 | `rendering/` — scan all 20 side by side; pick the visual temperament that matches the deck |
 | Which palette pairs best with your chosen rendering | `palette/` — see how color behavior shifts the same subject |
 | Which type fits a specific image's purpose | `type/` — match the internal composition to the page's content shape |
 

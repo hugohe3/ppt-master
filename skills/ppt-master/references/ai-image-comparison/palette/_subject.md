@@ -4,7 +4,7 @@
 
 | Dimension | Value | Status |
 |---|---|---|
-| Palette | **varies (10 palettes)** | under comparison |
+| Palette | **varies (14 palettes)** | under comparison |
 | Rendering | `vector-illustration` | fixed baseline |
 | Type | `hero` | fixed baseline |
 
@@ -14,7 +14,7 @@
 
 ## On HEX values
 
-**Important**: this set does **not** fix HEX values across all 10 palettes. Each palette uses its own typical HEX triplet.
+**Important**: this set does **not** fix HEX values across all 14 palettes. Each palette uses its own typical HEX triplet.
 
 Reason: a palette is a *color behavior* (saturation, contrast, temperament, proportion), and the HEX it expects is part of that behavior. Forcing cool-corporate's deep navy through a vivid-launch palette would produce a strange "restrained navy mimicking promotional energy" image — losing the semantic representativeness of the palette.
 
@@ -32,6 +32,10 @@ This also matches real production: a user who picks vivid-launch will have vivid
 | dark-cinematic | `#14B8A6` teal | `#0A0E27` deep dark | `#D4AF37` amber |
 | duotone | `#0F766E` deep teal | `#D97706` amber | (only 2 colors) |
 | nature-organic | `#166534` forest green | `#FEF3C7` cream | `#D4AF37` honey |
+| jewel-tone | `#047857` deep emerald | `#FEF3C7` deep cream | `#D4AF37` polished gold |
+| frost-ice | `#DBEAFE` pale cool blue | `#F8FBFD` near-white | `#3B82F6` steel blue |
+| sunset-gradient | `#EC4899` deep pink | `#F97316` warm orange | `#9333EA` purple |
+| earthy-dusty | `#C9A38C` muted dusty terracotta | `#E8E0D5` muted oat | `#A8B5A0` muted sage |
 
 ## Naming convention
 
@@ -39,7 +43,7 @@ Each filename is `<palette>.png`, matching the corresponding file under `referen
 
 ## How to read this set
 
-Scan all 10 images side by side. Focus on:
+Scan all 14 images side by side. Focus on:
 
 - **Color temperature** — cool-professional vs warm-human vs neutral-editorial
 - **Saturation** — restrained vs vivid vs monochrome

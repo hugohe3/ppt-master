@@ -188,3 +188,75 @@ Clean flat vector illustration with bold but slightly organic geometric shapes, 
 > Nature-organic palette: vector hero of professional and organic chart in deep forest green on soft cream with warm honey detail
 
 ---
+
+### Image 11: jewel-tone.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Palette comparison — jewel-tone |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration with bold geometric shapes, sharp edges, no gradients, solid flat fills with rich gemstone saturation. Subject: a confident professional standing beside an upward growth chart, looking forward. Single dominant subject occupying 60-70% of the canvas (hero composition). Color behavior is jewel-tone: rich primary deep emerald #047857 carries the dominant subject silhouette and main chart elements as confident saturated gemstone block (about 36%); secondary deep cream #FEF3C7 forms the velvet field background (about 50%); accent polished gold #D4AF37 appears as one thin metallic horizontal rule and one small jewel-cut dot, totaling about 14%. High saturation, premium evening feel, no muted tints, no plastic look. 12-20% inner padding. No embedded text or labels visible.
+
+**Alt Text**:
+> Jewel-tone palette: vector hero of professional and growth chart in rich deep emerald on velvet cream with polished gold accent
+
+---
+
+### Image 12: frost-ice.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Palette comparison — frost-ice |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration with bold geometric shapes, sharp edges, no gradients, near-white field dominance. Subject: a confident professional standing beside an upward growth chart, looking forward. Single dominant subject occupying 60-70% of the canvas (hero composition). Color behavior is frost-ice: secondary near-white #F8FBFD occupies about 80% of the canvas as vast calm field (the breathing room IS the identity); pale cool primary #DBEAFE renders the subject silhouette and chart as soft restrained structure (about 12%); accent steel blue #3B82F6 appears as one small deliberate focal element — a chart highlight or single dot, about 5%. No warm tones, no saturated colors. Clean clinical premium-minimal feel. 12-20% inner padding. No embedded text or labels visible.
+
+**Alt Text**:
+> Frost-ice palette: vector hero of professional and chart as pale cool silhouette on vast near-white field with steel blue focal accent
+
+---
+
+### Image 13: sunset-gradient.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Palette comparison — sunset-gradient |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Flat vector illustration with bold geometric shapes layered over a smooth atmospheric gradient background (sunset-gradient overrides the rendering's usual no-gradient rule for the BACKGROUND FIELD only — shapes on top remain flat). Subject: a confident professional silhouette standing beside an upward growth chart, looking forward. Single dominant subject occupying 60-70% of the canvas (hero composition). Color behavior is sunset-gradient: the entire background flows as a smooth diagonal gradient — primary deep pink #EC4899 in the lower-left, transitioning through secondary warm orange #F97316 in the middle band, into accent purple #9333EA in the upper-right. Smooth blending, no hard color edges in the gradient. Above the gradient, a near-black silhouette professional and chart shapes sit as flat solid forms (about 30%) as the focal rest point. Atmospheric, energetic, optimistic. 12-20% inner padding. No embedded text or labels.
+
+**Alt Text**:
+> Sunset-gradient palette: vector hero of silhouette and chart on warm pink-orange-purple gradient field
+
+---
+
+### Image 14: earthy-dusty.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Palette comparison — earthy-dusty |
+| Type | hero |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration with bold geometric shapes, sharp edges, no gradients, solid flat fills at uniformly reduced saturation (Morandi-adjacent). Subject: a confident professional standing beside an upward growth chart, looking forward. Single dominant subject occupying 60-70% of the canvas (hero composition). Color behavior is earthy-dusty: every color appears desaturated 30% from a vivid source. Secondary muted oat #E8E0D5 carries about 50% of the canvas as calm dusted field; primary muted dusty terracotta #C9A38C forms the subject silhouette and chart in soft warm earth tone (about 35%); accent muted sage #A8B5A0 appears as one thin horizontal line near the chart and one small dusty dot, totaling about 12%. No vivid colors anywhere. Refined, contemplative, slow. 12-20% inner padding. No embedded text or labels.
+
+**Alt Text**:
+> Earthy-dusty palette: vector hero of silhouette and chart in muted dusty terracotta on muted oat field with sage accent
+
+---

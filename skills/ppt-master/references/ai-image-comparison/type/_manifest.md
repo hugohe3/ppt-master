@@ -171,3 +171,111 @@ Clean flat vector illustration, atmospheric scene composition with environmental
 > Scene type: team collaboration around a table with wall growth chart in modern office, deep navy on off-white with gold light
 
 ---
+
+### Image 10: portrait.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Type comparison — portrait (single person headshot/upper body, neutral background) |
+| Type | portrait |
+| Aspect ratio | 4:3 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration, portrait composition with a single stylized person centered in the frame, head-and-shoulders view, neutral or minimal background. Subject (under the 'team scaling' theme): a single stylized confident business founder portrait — calm thoughtful expression, professional contemporary styling, eyes positioned at the upper-third horizontal line, generous padding around the head. Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the background field around the figure (about 60%); primary deep navy #1E3A5F carries the figure's clothing, hair, and structural silhouette in flat solid fills (about 33%); accent gold #D4AF37 appears only as one small detail — a lapel pin, or a single warm light highlight on the cheek — totaling under 7%. No fourth color. Simplified stylized silhouette, no realistic face details, no embedded text or name labels. No HEX codes visible.
+
+**Alt Text**:
+> Portrait type: single stylized founder headshot centered with eyes at upper-third, deep navy figure on off-white field with gold detail
+
+---
+
+### Image 11: matrix.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Type comparison — matrix (2×2 quadrant grid) |
+| Type | matrix |
+| Aspect ratio | 1:1 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration, 2×2 strategic matrix composition with two perpendicular axis lines crossing at exact canvas center dividing into four equal quadrants. Subject (under the 'team scaling' theme): a stylized growth-strategy quadrant — each quadrant holds one simple iconic symbol representing a scaling lever — upper-left a small team icon, upper-right a product icon, lower-left a customer icon, lower-right an upward growth arrow. Each quadrant has a subtle background tint. Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the four quadrants as base field with slightly varying pale tints (about 65%); primary deep navy #1E3A5F draws the two perpendicular axis lines and all four iconic symbols in solid confident fills (about 30%); accent gold #D4AF37 appears as four small dots at the outer corners or as the highlighted lower-right growth-arrow tip, under 5%. No fourth color. NO axis labels, NO quadrant names, NO text of any kind. No HEX codes visible.
+
+**Alt Text**:
+> Matrix type: 2x2 quadrant grid with four iconic symbols (team, product, customer, growth) in deep navy on pale off-white with gold corner dots
+
+---
+
+### Image 12: cycle.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Type comparison — cycle (closed-loop process) |
+| Type | cycle |
+| Aspect ratio | 1:1 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration, closed-loop cycle composition with 4 step nodes arranged in a perfect circle at 12/3/6/9 o'clock positions on the canvas perimeter. Subject (under the 'team scaling' theme): a 4-step continuous scaling loop — node 1 a small team icon (BUILD), node 2 a product/box icon (SHIP), node 3 a customer icon (LEARN), node 4 a growth-up-arrow icon (SCALE) — curved directional arrows flowing clockwise between each node, the last arrow closing the loop back to node 1. The center holds one small focal dot. Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the canvas as breathing field (about 60%); primary deep navy #1E3A5F draws the four rounded-square node frames and all icons in solid confident fills (about 32%); accent gold #D4AF37 carries the four curved directional arrows and the central focal dot, totaling under 8%. No fourth color. NO text or step labels — SVG will overlay labels externally. No HEX codes visible.
+
+**Alt Text**:
+> Cycle type: 4-step closed loop (build→ship→learn→scale) with curved gold arrows around the circle, deep navy nodes on off-white
+
+---
+
+### Image 13: funnel.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Type comparison — funnel (top-wide bottom-narrow conversion stack) |
+| Type | funnel |
+| Aspect ratio | 3:4 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration, vertical funnel composition with 4 horizontal bands stacked vertically, each band centered on the canvas vertical axis and ~20% narrower than the band above (visibly converging downward). Subject (under the 'team scaling' theme): a 4-stage scaling funnel — band 1 (top, widest) holds a megaphone-and-many-people icon (AWARENESS), band 2 a smaller group with handshake icon (INTEREST), band 3 a single team-around-table icon (ENGAGEMENT), band 4 (bottom, narrowest) a growth-arrow icon (CONVERSION). Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the side margins around the narrowing bands as breathing space (about 60%); primary deep navy #1E3A5F carries the 4 band rectangles and the white iconic symbols inside in solid confident fills (about 33%); accent gold #D4AF37 appears as thin dividers between bands and the bottom-band emphasis (about 7%). No fourth color. NO band labels or text. No HEX codes visible.
+
+**Alt Text**:
+> Funnel type: 4 narrowing bands (awareness→interest→engagement→conversion) in deep navy on off-white with gold dividers
+
+---
+
+### Image 14: pyramid.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Type comparison — pyramid (bottom-wide top-narrow hierarchical tiers) |
+| Type | pyramid |
+| Aspect ratio | 3:4 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration, vertical pyramid composition with 4 horizontal stepped tiers stacked vertically, each tier centered on the canvas vertical axis and ~18% narrower than the tier below (visibly narrowing upward). Subject (under the 'team scaling' theme): a 4-tier capability hierarchy — tier 1 (foundation, widest) holds a foundation/bricks icon (CULTURE), tier 2 a team icon (TEAM), tier 3 a product/box icon (PRODUCT), tier 4 (apex, narrowest) a growth-star icon (GROWTH). Color behavior is restrained-corporate progression: secondary off-white #F8F9FA fills side margins as breathing space (about 60%); primary deep navy #1E3A5F at full strength for the foundation tier 1, lighter tints for tiers 2-3, and tier 4 carries accent gold #D4AF37 as the apex (total navy + tints about 32%, gold about 8%). Each tier holds a single white iconic symbol. NO tier labels or text. No HEX codes visible.
+
+**Alt Text**:
+> Pyramid type: 4 narrowing-upward tiers (culture→team→product→growth) in deep navy progression with gold apex on off-white
+
+---
+
+### Image 15: map.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Type comparison — map (stylized geographic outline with annotated markers) |
+| Type | map |
+| Aspect ratio | 16:9 |
+| Status | Generated |
+
+**Prompt**:
+
+Clean flat vector illustration, stylized geographic map composition. Subject (under the 'team scaling' theme): a stylized world map showing global team expansion — simplified continental landmasses positioned with approximate geographic accuracy in solid silhouette (no country borders, no political subdivisions). Six small circular markers placed at major office locations — two in North America, two in Europe, one in East Asia, one in Australia — each marker with a thin pulsing-glow ring at 30% opacity. Two or three thin slightly-curved connection lines between markers suggesting team collaboration routes. Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the ocean/negative space (about 62%); primary deep navy #1E3A5F is the solid silhouette for all continents (about 30%); accent gold #D4AF37 carries the six markers, their glow rings, and the connection arcs (about 8%). NO country names, city names, or any text. No HEX codes visible.
+
+**Alt Text**:
+> Map type: stylized world with 6 gold office markers and connection arcs over deep navy continents on off-white ocean
+
+---

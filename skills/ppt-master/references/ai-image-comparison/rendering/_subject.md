@@ -4,7 +4,7 @@
 
 | Dimension | Value | Status |
 |---|---|---|
-| Rendering | **varies (16 styles)** | under comparison |
+| Rendering | **varies (20 styles)** | under comparison |
 | Palette | `cool-corporate` | fixed baseline |
 | Type | `hero` | fixed baseline |
 
@@ -30,7 +30,7 @@ Each filename is `<rendering>.png`, matching the corresponding file under `refer
 
 ## How to read this set
 
-Scan all 16 images side by side. Focus on:
+Scan all 20 images side by side. Focus on:
 
 - **Line quality** — hand-drawn vs vector vs photographic
 - **Surface material** — flat vs volumetric vs paper vs screen
