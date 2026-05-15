@@ -41,7 +41,7 @@ Atmospheric backdrop with **no central subject**. The image's job is to set tone
 
 ## 3. Text-policy variants
 
-### `text_policy: none` (default)
+### `text_policy: none`
 
 Backgrounds are atmospheric — for most uses, keep text out and let SVG handle overlay copy.
 

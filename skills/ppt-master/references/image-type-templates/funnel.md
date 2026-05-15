@@ -43,15 +43,15 @@ A **top-wide, bottom-narrow stack** of horizontal bands representing successive 
 
 ## 3. Text-policy variants
 
-### 3.1 `text_policy: none` (default)
+### 3.1 `text_policy: none`
 
-Stage labels are added later as SVG overlay. Each band shows an icon only; the SVG places stage names beside or inside each band. Recommended path.
+Each band shows an icon only; stage labels are handled in SVG.
 
 Sample fragment:
 
 > NO text, letters, numbers, or stage labels in the image. Each band contains only one simple iconic symbol; SVG text overlay will add stage names externally.
 
-### 3.2 `text_policy: embedded` (when stage names are part of the design)
+### 3.2 `text_policy: embedded`
 
 Self-contained funnel diagram where band names are typeset into the artwork. Keep band names to single English words ("AWARE", "LIKE", "BUY", "REFER") in a font family echoing the deck's body typography. High failure risk on 5+ band funnels — stay at 3-4 bands when going embedded.
 

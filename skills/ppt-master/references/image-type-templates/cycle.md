@@ -42,15 +42,15 @@ A **closed-loop process** — 3-6 steps arranged in a circle (or rounded loop), 
 
 ## 3. Text-policy variants
 
-### 3.1 `text_policy: none` (default)
+### 3.1 `text_policy: none`
 
-Step labels are added later as SVG overlay. Each step shows an icon only; the SVG positions the label adjacent to its step. This is the recommended path.
+Each step shows an icon only; step labels are handled in SVG.
 
 Sample fragment:
 
 > NO text, letters, numbers, or step labels in the image. Each step node contains only one simple iconic symbol; SVG text overlay will add step names externally.
 
-### 3.2 `text_policy: embedded` (when step names are part of the design)
+### 3.2 `text_policy: embedded`
 
 Self-contained cycle diagram with step names typeset into the artwork. Keep step names to single English words ("PLAN", "DO", "CHECK", "ACT") in a font family echoing the deck's body typography.
 

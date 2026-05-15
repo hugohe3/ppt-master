@@ -40,7 +40,7 @@ Atmospheric environment with narrative — a moment, a place, a situation render
 
 ## 3. Text-policy variants
 
-### `text_policy: none` (default)
+### `text_policy: none`
 
 Scenes are visual narratives — most read better with text routed to SVG overlay.
 

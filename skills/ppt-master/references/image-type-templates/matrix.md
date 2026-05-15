@@ -44,15 +44,15 @@ A **2×2 quadrant grid** (occasionally 3×3) where each cell carries its own lab
 
 ## 3. Text-policy variants
 
-### 3.1 `text_policy: none` (default)
+### 3.1 `text_policy: none`
 
-Quadrants carry icons only; axis labels and quadrant names are added later as SVG overlay. This is the safer choice — image models often render axis-label text inconsistently across the four positions.
+Quadrants carry icons only; axis labels and quadrant names are handled in SVG. Image models often render axis-label text inconsistently across the four positions, so this is the lower-risk path when label precision matters.
 
 Sample fragment:
 
 > NO text, letters, numbers, axis labels, or quadrant names in the image. Each quadrant contains a simple iconic symbol only; SVG text overlay will add axis labels and quadrant names externally.
 
-### 3.2 `text_policy: embedded` (when axis labels are part of the design)
+### 3.2 `text_policy: embedded`
 
 When the matrix's identity comes from its in-image lettering — a stylized SWOT poster with the four letters as visuals, a designer-matrix where axis labels are typeset into the artwork. Keep labels to single English words ("HIGH", "LOW", "GROW", "HOLD"). Specify the font family in the prompt to echo the deck's body typography.
 

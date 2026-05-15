@@ -36,25 +36,25 @@ Each type has its own file with: composition skeleton (LAYOUT / ELEMENTS / NEGAT
 
 For each row in `design_spec.md §VIII Image Resource List`, match `Purpose` against this table.
 
-| `Purpose` keyword | Type | Suggested `text_policy` |
-|---|---|---|
-| Cover background / chapter background / divider bg | `background` | `none`, or `embedded` (decorative lettering / designed title) when cover/divider is image-led |
-| Product reveal / hero / headline visual | `hero` | `none`, or `embedded` when the headline itself is the visual |
-| Team headshot / speaker bio / founder profile / testimonial | `portrait` | `none` |
-| Big number / KPI single visual / quote | `typography` | `embedded` — the text is the visual |
-| Data summary / metrics rundown / step list | `infographic` | `none` (labels via SVG) or `embedded` (keywords inside the image) |
-| Process / workflow / pipeline / steps with arrows | `flowchart` | `none` (SVG carries step labels) |
-| Methodology / model / framework / architecture diagram | `framework` | `none` (SVG carries node labels) |
-| 2×2 quadrant / SWOT / BCG / Eisenhower / Ansoff | `matrix` | `none`, or `embedded` for axis labels when intentional |
-| Closed-loop process / PDCA / flywheel / continuous improvement | `cycle` | `none` |
-| Conversion funnel / sales pipeline / hiring funnel | `funnel` | `none` |
-| Hierarchy / Maslow / value stack / capability layer | `pyramid` | `none` |
-| Comparison / Before-After / A/B / VS | `comparison` | `none` or `embedded` |
-| History / evolution / roadmap / timeline | `timeline` | `none` (SVG carries milestone labels) |
-| Offices / market presence / regions / supply chain / geography | `map` | `none` |
-| Team / lifestyle / story / scenario / case | `scene` | `none`, or `embedded` for decorative atmosphere lettering |
+| `Purpose` keyword | Type |
+|---|---|
+| Cover background / chapter background / divider bg | `background` |
+| Product reveal / hero / headline visual | `hero` |
+| Team headshot / speaker bio / founder profile / testimonial | `portrait` |
+| Big number / KPI single visual / quote | `typography` |
+| Data summary / metrics rundown / step list | `infographic` |
+| Process / workflow / pipeline / steps with arrows | `flowchart` |
+| Methodology / model / framework / architecture diagram | `framework` |
+| 2×2 quadrant / SWOT / BCG / Eisenhower / Ansoff | `matrix` |
+| Closed-loop process / PDCA / flywheel / continuous improvement | `cycle` |
+| Conversion funnel / sales pipeline / hiring funnel | `funnel` |
+| Hierarchy / Maslow / value stack / capability layer | `pyramid` |
+| Comparison / Before-After / A/B / VS | `comparison` |
+| History / evolution / roadmap / timeline | `timeline` |
+| Offices / market presence / regions / supply chain / geography | `map` |
+| Team / lifestyle / story / scenario / case | `scene` |
 
-> Suggested values; per-image judgment wins. Pick `embedded` when in-image text serves the goal (decorative lettering, designed title, hand-lettered keywords, infographic labels). Pick `none` when SVG text is more flexible or the page just needs imagery. Body copy / data points / long quotes never go inside the image regardless of type.
+`text_policy` and `page_role` are decided per image — see each type file's variants section and the page's communication goal.
 
 ---
 

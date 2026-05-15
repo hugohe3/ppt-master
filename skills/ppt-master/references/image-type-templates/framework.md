@@ -70,20 +70,15 @@ Inner padding: 15-18% on all sides. Framework imagery suffers most when satellit
 
 ## 3. Text-policy variants
 
-### `text_policy: none` (default — recommended for most decks)
+### `text_policy: none`
 
-The image shows **only the geometric structure**. Labels for each satellite / cell / layer are added in SVG overlay around the image.
-
-This is the recommended path because:
-- SVG labels are editable, translatable, accurate
-- The model can fail on text rendering; geometry it can do
-- The page looks more polished with crisp vector text overlaying the AI art
+The image shows the geometric structure with iconic symbols only; labels are handled in SVG.
 
 Sample fragment to add to the prompt:
 
-> Pure geometric structure — no labels, no captions, no text, no letters or numbers anywhere in the image. Each satellite/cell/layer contains a simple iconic symbol only (gear, arrow, chart, etc.). SVG text overlay will be added externally.
+> Pure geometric structure — no labels, no captions, no text, no letters or numbers anywhere in the image. Each satellite/cell/layer contains a simple iconic symbol only (gear, arrow, chart, etc.).
 
-### `text_policy: embedded` (rare — for sketch-notes / ink-notes hand-lettered decks)
+### `text_policy: embedded`
 
 A short keyword (1-2 English words) appears inside or beside each satellite / cell / layer.
 

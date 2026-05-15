@@ -63,9 +63,9 @@ When the desired headline is long or CJK: switch to `background` type and overla
 
 ## 4. Text-policy variants
 
-### `text_policy: embedded` (required)
+### `text_policy: embedded`
 
-typography type is the **one type where embedded text is the entire point**. Always use `text_policy: embedded`.
+typography type is built around in-image text — the headline word, number, or quote is the visual. `text_policy: embedded` is the natural choice.
 
 Sample fragment:
 
@@ -73,9 +73,9 @@ Sample fragment:
 
 **Font family in prompt**: name the family so the lettering coheres with the deck's SVG typography. Read `spec_lock.md deck_typography` if present; otherwise infer from rendering (vector-illustration / flat → clean sans-serif; editorial → serif; sketch-notes / ink-notes → hand-written; 3d-isometric / digital-dashboard → geometric display).
 
-### `text_policy: none` (essentially never)
+### `text_policy: none`
 
-If text_policy is none, this isn't typography — switch to `background` or `hero`.
+If the page wants no text inside the image, the type is probably `background` or `hero`, not `typography`.
 
 ---
 

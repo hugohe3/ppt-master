@@ -10,24 +10,30 @@ Role definition for the **AI image generation path**: convert each `Acquire Via:
 
 ## 1. Core Principle — Maximize AI Image Capability in Service of the Deck
 
-**Hard rule**: AI images exist to serve the deck's communication goal. Default boundaries (`page_role: local`, `text_policy: none`) are starting points, not ceilings. Promote to `hero_page` or `embedded` when doing so makes the page work better — provided the deck's rendering and palette lock hold.
+AI images exist to serve the deck's communication goal. Pick whatever combination of `page_role` and `text_policy` makes the page work best.
 
-**Two page roles**:
+**Two page roles** (orthogonal to type):
 
-| `page_role` | Image's job | SVG above |
-|---|---|---|
-| `local` (default) | A region block on an SVG page; carries visual, not content. Reserve 12-20% inner padding so content survives container cropping | Carries headline / body / labels |
-| `hero_page` | Image is the page's main voice — cover, chapter divider, mood transition, data hero, closing quote | Minimal overlay only (page number, brand bar, chapter mark); may be empty when the image already carries equivalent design elements |
+| `page_role` | Use |
+|---|---|
+| `local` | Image occupies a region of an SVG page (left half, right column, hero band, accent corner). Composition is the AI's call — fill the region as the page design wants |
+| `hero_page` | Image is the page's main voice — cover, chapter divider, mood transition, single-number hero, closing quote. SVG above may be minimal or empty |
 
-**Two text roles inside the image** (orthogonal to `page_role`):
+**Two text policies** (orthogonal to page_role):
 
-| Role | Example | Prompt treatment |
-|---|---|---|
-| Decorative | "GROWTH" as background lettering, retro stamp, scattered alphabet texture | Describe artistic direction; spelling is not critical; let the model improvise |
-| Design-title | Cover main title, chapter heading | Name the font family (must echo deck's SVG typography); content must be accurate |
-| Content (never inside the image) | Body copy, data points, bullet lists, long quotes | Route to SVG |
+| `text_policy` | Use |
+|---|---|
+| `none` | No text inside the image |
+| `embedded` | Image contains text as part of the artwork — decorative lettering, designed title, hand-lettered keywords, infographic labels, anything the page needs |
 
-**Hard rule — deck-wide coherence still holds**: every AI image shares the deck's locked rendering and palette regardless of `page_role` or `text_policy`. `hero_page` is not permission to switch rendering for one slide.
+**Hard rule — only what's actually hard**:
+
+- Same `deck_rendering` + same `deck_palette` for every image in the deck
+- HEX codes and color names are rendering guidance — never visible text in the image
+- Long body copy / data points / bulleted lists / long quotes stay in SVG (improving them later means regenerating the image, which is expensive)
+- Prompts are one coherent prose paragraph, not tag soup (a model-output reality, not an aesthetic choice)
+
+Everything else is the AI's judgment per page. No mandated padding, no type-locked text_policy, no scenario whitelists for hero_page.
 
 ---
 
@@ -108,8 +114,8 @@ Then `read_file` the **single resolved** rendering file and the **single resolve
 For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
 1. **Determine type** by matching the row's `Purpose` against types `_index.md` auto-selection table (cover background → `background`; product launch hero → `hero`; methodology visualization → `framework`; etc.) The narrative-shorthand `Type` column in §VIII (Background/Photography/Illustration/Diagram/Decorative) is a hint, not the type's final value — `Purpose` is authoritative for picking among the 9 internal-composition types.
-2. **Determine `text_policy`** — Strategist's value (when present) wins. Otherwise judge per-image: default `none` (image carries no text, SVG overlays labels); upgrade to `embedded` when the page would communicate better with in-image text — covers / chapter dividers with a designed title, typography pieces, infographics with internal labels, sketch-notes with hand-lettered words, posters with decorative lettering. Do not put body copy, data points, or long quotes inside the image.
-3. **Determine `page_role`** — Strategist's value (when present) wins. Otherwise default `local`. Upgrade to `hero_page` when the page's job is "image speaks louder than text" — cover, chapter divider, mood transition, data hero, closing quote.
+2. **Determine `text_policy`** — Strategist's value wins when set. Otherwise pick `none` or `embedded` based on whether in-image text serves the page. Long body / data / lists stay in SVG.
+3. **Determine `page_role`** — Strategist's value wins when set. Otherwise pick `local` or `hero_page` based on whether the image carries the page or sits inside one.
 4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
 5. **Assemble the prompt** by combining:
    - The rendering's style paragraph (from Step 2)
@@ -136,11 +142,11 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 [Palette behavior — apply the chosen palette's proportion + role rules to the deck's HEX values, e.g. "primary #1E3A5F dominates as the main shape, secondary #F8F9FA provides 60% breathing space, accent #D4AF37 appears in one or two emphasis points only"].
 [Type-specific composition — from the chosen type file, e.g. "central hub node with four radiating satellite nodes connected by clean lines"].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
-[Container reminder — "composed as a local visual block with 15% padding on all sides, designed to be embedded within a slide region of roughly {W}x{H}px, leaves negative space around edges"].
+[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them (e.g. "leave the lower band relatively calm — SVG title overlays it")].
 [Hard rules — see §5].
 ```
 
-**Word budget**: 150-250 words for `text_policy: none`; 180-300 words for `text_policy: embedded`. `hero_page` items skew toward the upper end of their bracket — the image carries more design weight.
+**Word budget**: 150-300 words. Embedded-text prompts skew longer; pure background prompts can be shorter.
 
 **Forbidden — tag-soup prompts**:
 
@@ -174,30 +180,24 @@ Exception: when the chosen rendering is `corporate-photo`, photorealism is inten
 
 ### 5.3 Text policy — none vs embedded
 
-| `text_policy` | What the image contains | Append to prompt |
-|---|---|---|
-| `none` (default) | Zero text, letters, numbers, labels | "NO text of any kind. No letters, numbers, signs, watermarks, labels, or written symbols anywhere in the image. Clean negative space ready for SVG text overlay." |
-| `embedded` | Text is part of the artwork — decorative lettering, designed title, hand-lettered keywords, infographic labels | See "Embedded prompt construction" below |
-
-**Embedded prompt construction**: name the text role explicitly so the model knows how to treat it.
-
-| Text role | Prompt phrasing |
+| `text_policy` | Prompt cue |
 |---|---|
-| Decorative | "decorative '{WORD}' lettering as a background element, {style describing artistic treatment — 3D extruded retro, neon glow, hand-painted brush, scattered alphabet texture, etc.}" — let the model improvise; spelling is not critical |
-| Design-title | "main title text '{exact words}', rendered in {font family — clean sans-serif / serif editorial / hand-written / geometric display} echoing the deck's body typography" — content must be accurate |
-| Hand-lettered keyword set | "1-5 short hand-lettered keywords in English: '{w1}', '{w2}', '{w3}' — woven into the composition as sketch-notes annotations" |
+| `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
+| `embedded` | Describe the text directly inside the visual scene: the word(s), how they're rendered (decorative lettering / designed title / hand-lettered keyword), and the artistic treatment. Examples below. |
 
-**Font family must echo the deck**: when Strategist locked `deck_typography` in `spec_lock.md`, use that family. Otherwise pick a family compatible with the chosen rendering (vector-illustration / flat → clean sans-serif; editorial → serif; sketch-notes / ink-notes → hand-written; 3d-isometric / digital-dashboard → geometric display).
+**Prompt phrasing examples for embedded text** (not an exhaustive list):
 
-**CJK warning**: most image models cannot render Chinese characters correctly. For embedded text on a CJK-language deck, either (a) use English equivalents in the image and leave Chinese to SVG overlays, or (b) accept malformed glyphs and regenerate manually.
+- Decorative: "large 'GROWTH' lettering as a background element, 3D extruded retro chrome style"
+- Designed title: "main title 'Q3 STRATEGY' typeset in clean geometric sans-serif, centered"
+- Hand-lettered set: "small hand-lettered annotations 'fast', 'cheap', 'good' woven into the sketch"
+
+Font choice and visual treatment are part of the page's design — pick what fits. The deck's `image_rendering` already implies a typographic mood (sketch-notes → hand-drawn lettering; editorial → serif; 3d-isometric → geometric display), but no specific family is required.
+
+**CJK note**: most image models render Chinese characters poorly. For embedded text on a CJK deck, prefer English in the image or accept malformed glyphs.
 
 ### 5.4 No brand names or trademarks in the subject
 
 > The image must not depict identifiable brand logos, trademarks, or product likenesses unless the row's Reference explicitly names a real brand asset the user owns.
-
-### 5.5 Deck-wide visual coherence
-
-Every AI image in one deck shares **one** rendering and **one** palette. Mixing renderings across images in the same deck destroys visual coherence. If a single image truly needs a different rendering (e.g. a corporate-photo team shot alongside otherwise vector-illustration imagery), record this as an exception in the row's `Reference` and isolate it to that one image.
 
 ---
 
@@ -385,18 +385,20 @@ If Path A's backend fails twice in a row:
 
 ## 8. Common Issues & Variant Workflow
 
-### Default Inference When No `Reference` Provided
+### Reference field is blank — quick examples
 
-| Purpose | Default Inference (assembled from rendering + palette + type) |
-|---------|---------------------------------------------------------------|
-| Cover | `type: background` or `hero`; `page_role: hero_page` when the cover is image-led; `text_policy: embedded` when title is part of the design, else `none` |
-| Chapter divider | `type: background`; `page_role: hero_page` typical; `text_policy: embedded` when chapter title is part of the design |
-| Methodology / framework illustration | `type: framework`, `text_policy: none` — SVG carries node labels |
-| Process / workflow illustration | `type: flowchart`, `text_policy: none` — SVG carries step labels |
-| Before/After or two-option page | `type: comparison`, `text_policy: none` or `embedded` |
-| Team / lifestyle photo | `type: scene`, `text_policy: none`, rendering should be `corporate-photo` or `warm-scene` |
-| Big-number / hero quote block | `type: typography` or `hero`; `page_role: hero_page` typical; `text_policy: embedded` (the number/quote is the visual) |
-| Mood transition / atmosphere | `type: scene` or `background`; `page_role: hero_page`; `text_policy: none` (or decorative lettering if the mood calls for it) |
+When the Resource List row has no `Reference`, infer a reasonable image from `Purpose`. Examples (not prescriptions):
+
+| Purpose | A reasonable starting point |
+|---------|-----------------------------|
+| Cover | `type: background` or `hero`; choose page_role and text_policy by what the cover should communicate |
+| Chapter divider | `type: background` or `hero`; often `hero_page` with a designed chapter title |
+| Methodology / framework illustration | `type: framework` |
+| Process / workflow illustration | `type: flowchart` |
+| Before/After or two-option page | `type: comparison` |
+| Team / lifestyle photo | `type: scene`; rendering = `corporate-photo` or `warm-scene` |
+| Big-number / hero quote block | `type: typography` or `hero`; often `hero_page` |
+| Mood transition / atmosphere | `type: scene` or `background`; often `hero_page` |
 
 ### When Images Are Unsatisfactory
 
@@ -409,7 +411,7 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 | Colors don't match deck | HEX not echoed in prompt, or palette proportion rule omitted | Repeat HEX values 2-3 times in the prompt; restate palette proportion rule |
 | Hex code or color name visible as text in image | Missing §5.1 closing sentence | Append the §5.1 hard rule verbatim |
 | Garbled letters in supposedly text-free image | `text_policy: none` rule too weak | Strengthen with explicit list: "no letters, no numbers, no words, no signs, no labels, no captions, no watermarks" |
-| Composition too busy, no room for SVG overlay | Missing container reminder | Add explicit "leaves at least 30% negative space in the {center / left third / lower band} for text overlay" |
+| SVG text overlay clashes with busy image area | Page design needs negative space the prompt didn't request | Add a composition cue like "leave the {center / left third / lower band} relatively calm for text overlay" — only when the page actually overlays text on top of the image |
 | Subject vague | Reference field too abstract | Rewrite reference with concrete nouns (verbs + objects) |
 | Faces too realistic / uncanny | §5.2 rule omitted, or rendering is photo-incompatible | Either append §5.2, or switch rendering to a non-photo family |
 

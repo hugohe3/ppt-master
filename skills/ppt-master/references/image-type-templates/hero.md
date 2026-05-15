@@ -44,7 +44,7 @@ Single dominant subject occupying 60-70% of the canvas. The hero image *anchors*
 
 The hero subject is the visual; any title or label comes from SVG overlay.
 
-### `text_policy: embedded` (when the hero needs in-image text)
+### `text_policy: embedded`
 
 The hero subject itself includes text — product name on packaging, a hand-lettered word as part of the subject, a designed title floating beside the figure. Specify font family in the prompt to echo the deck's body typography. If the headline *is* the entire visual, switch to `typography` type.
 

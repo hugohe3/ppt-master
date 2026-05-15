@@ -42,7 +42,7 @@ A **tiered triangular stack** — bottom-wide, top-narrow — where each layer c
 
 ## 3. Text-policy variants
 
-### 3.1 `text_policy: none` (default)
+### 3.1 `text_policy: none`
 
 Tier labels are added later as SVG overlay. Each tier shows an icon only; the SVG places tier names beside or inside.
 
@@ -50,7 +50,7 @@ Sample fragment:
 
 > NO text, letters, numbers, or tier labels in the image. Each tier contains only one simple iconic symbol; SVG text overlay will add tier names externally.
 
-### 3.2 `text_policy: embedded` (when tier names are part of the design)
+### 3.2 `text_policy: embedded`
 
 Self-contained pyramid with tier names typeset into the artwork. Keep tier names to single English words in a font family echoing the deck's body typography. High failure risk on 5+ tier pyramids — stay at 3-4 tiers when going embedded.
 

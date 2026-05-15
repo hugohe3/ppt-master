@@ -44,15 +44,17 @@ A **single person headshot or upper-body shot** — frontal or three-quarter tur
 
 ## 3. Text-policy variants
 
-### 3.1 `text_policy: none` (default)
+### 3.1 `text_policy: none`
 
-Names, titles, and quotes are added later as SVG overlay. The portrait shows the person only.
+The portrait shows the person only; names, titles, and quotes are handled in SVG.
 
 Sample fragment:
 
-> NO text, letters, numbers, name tags, or captions in the image. The portrait is the person only; SVG text overlay will add name, title, and any quote externally.
+> NO text, letters, numbers, name tags, or captions in the image. The portrait is the person only.
 
-### 3.2 `text_policy: embedded` is essentially never used for this type — switch to `hero` or `typography` if text is required as part of the image.
+### 3.2 `text_policy: embedded`
+
+If text is part of the page's visual (a name carved as a design element, a quote alongside the figure), the type is likely `hero` or `typography` rather than `portrait`.
 
 ---
 

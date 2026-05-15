@@ -43,7 +43,7 @@ A **stylized geographic outline** (country / region / continent / world) with an
 
 ## 3. Text-policy variants
 
-### 3.1 `text_policy: none` (default)
+### 3.1 `text_policy: none`
 
 City / country / region names are added later as SVG overlay. The map shows markers only; SVG text labels each marker position.
 
@@ -51,7 +51,7 @@ Sample fragment:
 
 > NO text, letters, numbers, country names, city names, or marker labels in the image. Markers are dots/pins only; SVG text overlay will add all labels externally.
 
-### 3.2 `text_policy: embedded` (when place names belong in the artwork)
+### 3.2 `text_policy: embedded`
 
 Self-contained reference map where place names are typeset into the design. High failure risk — image models often misspell place names or place them at wrong coordinates. Prefer `none` + SVG overlay unless the design language genuinely requires in-image labels (vintage cartography, atlas-style poster).
 
