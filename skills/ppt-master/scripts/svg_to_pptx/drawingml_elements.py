@@ -1591,10 +1591,12 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     # Resolve preserveAspectRatio="<align> meet" by shrinking the picture
     # frame to match the image's aspect ratio. Skipped when a real clip-path
-    # is in effect: clip geometry is computed against the original-box
-    # coordinate space and would no longer line up after a frame shift.
-    has_clip = bool(elem.get('clip-path')) and elem.get('clip-path') != 'none'
-    meet_fit = None if has_clip else _resolve_image_meet_fit(elem, img_data, w, h)
+    # produces non-trivial geometry: such clip rectangles are defined against
+    # the original box and would no longer line up after a frame shift.
+    # A clip-path that resolves back to the default rect geometry (e.g. plain
+    # <rect> without rx/ry) is a no-op and must not block meet adjustment.
+    clip_is_noop = clip_geom == '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+    meet_fit = None if not clip_is_noop else _resolve_image_meet_fit(elem, img_data, w, h)
 
     shape_id = ctx.next_id()
     if meet_fit is not None:
