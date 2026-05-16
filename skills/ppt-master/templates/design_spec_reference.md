@@ -242,9 +242,9 @@ Catalog read: 71 templates
 
 | Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
 | -------- | --------- | ----- | ------- | ---- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
-| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | #1 full-bleed background with floating title | ai | Pending | [subject + intent + composition, no style/HEX] | | |
+| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
 
-> **Layout pattern column is MANDATORY** — value must be `#<id> <name>` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md). Empty cells, paraphrased names, or invented ids invalidate the row. See `strategist.md §h` GATE for the three-layer requirement (read → produce → Group D coverage).
+> **Layout pattern column is MANDATORY** — value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).
 
 **Status**:
 
