@@ -60,11 +60,11 @@
         <!-- Background Arc -->
         <path d="M -150,0 A 150,150 0 0,1 150,0" fill="none" stroke="#E2E8F0" stroke-width="30" stroke-linecap="round"/>
         <!-- Scales (0-60% Red, 60-80% Amber, 80-100% Emerald) -->
-        <path d="M -150,0 A 150,150 0 0,1 -46.35,-142.65" fill="none" stroke="#FECACA" stroke-width="30" stroke-linecap="round"/>
-        <path d="M -46.35,-142.65 A 150,150 0 0,1 58.68,-138.05" fill="none" stroke="#FDE68A" stroke-width="30" stroke-linecap="round"/>
-        <path d="M 58.68,-138.05 A 150,150 0 0,1 150,0" fill="none" stroke="#A7F3D0" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -150,0 A 150,150 0 0,1 46.35,-142.66" fill="none" stroke="#FECACA" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 46.35,-142.66 A 150,150 0 0,1 121.35,-88.17" fill="none" stroke="#FDE68A" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 121.35,-88.17 A 150,150 0 0,1 150,0" fill="none" stroke="#A7F3D0" stroke-width="30" stroke-linecap="round"/>
         <!-- Value Arc 85% -->
-        <path d="M -150,0 A 150,150 0 0,1 103.95,-108.45" fill="none" stroke="url(#excellentGrad)" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -150,0 A 150,150 0 0,1 133.65,-68.10" fill="none" stroke="url(#excellentGrad)" stroke-width="30" stroke-linecap="round"/>
         <!-- Tick Marks -->
         <line x1="-135" y1="0" x2="-120" y2="0" stroke="#64748B" stroke-width="2"/>
         <line x1="-95.5" y1="-95.5" x2="-84.85" y2="-84.85" stroke="#64748B" stroke-width="2"/>
@@ -100,11 +100,11 @@
         <!-- Background Arc -->
         <path d="M -150,0 A 150,150 0 0,1 150,0" fill="none" stroke="#E2E8F0" stroke-width="30" stroke-linecap="round"/>
         <!-- Scales -->
-        <path d="M -150,0 A 150,150 0 0,1 -46.35,-142.65" fill="none" stroke="#FECACA" stroke-width="30" stroke-linecap="round"/>
-        <path d="M -46.35,-142.65 A 150,150 0 0,1 58.68,-138.05" fill="none" stroke="#FDE68A" stroke-width="30" stroke-linecap="round"/>
-        <path d="M 58.68,-138.05 A 150,150 0 0,1 150,0" fill="none" stroke="#A7F3D0" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -150,0 A 150,150 0 0,1 46.35,-142.66" fill="none" stroke="#FECACA" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 46.35,-142.66 A 150,150 0 0,1 121.35,-88.17" fill="none" stroke="#FDE68A" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 121.35,-88.17 A 150,150 0 0,1 150,0" fill="none" stroke="#A7F3D0" stroke-width="30" stroke-linecap="round"/>
         <!-- Value Arc 72% -->
-        <path d="M -150,0 A 150,150 0 0,1 24.93,-147.91" fill="none" stroke="url(#goodGrad)" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -150,0 A 150,150 0 0,1 95.61,-115.58" fill="none" stroke="url(#goodGrad)" stroke-width="30" stroke-linecap="round"/>
         <!-- Tick Marks -->
         <line x1="-135" y1="0" x2="-120" y2="0" stroke="#64748B" stroke-width="2"/>
         <line x1="-95.5" y1="-95.5" x2="-84.85" y2="-84.85" stroke="#64748B" stroke-width="2"/>
@@ -140,11 +140,11 @@
         <!-- Background Arc -->
         <path d="M -150,0 A 150,150 0 0,1 150,0" fill="none" stroke="#E2E8F0" stroke-width="30" stroke-linecap="round"/>
         <!-- Scales -->
-        <path d="M -150,0 A 150,150 0 0,1 -46.35,-142.65" fill="none" stroke="#FECACA" stroke-width="30" stroke-linecap="round"/>
-        <path d="M -46.35,-142.65 A 150,150 0 0,1 58.68,-138.05" fill="none" stroke="#FDE68A" stroke-width="30" stroke-linecap="round"/>
-        <path d="M 58.68,-138.05 A 150,150 0 0,1 150,0" fill="none" stroke="#A7F3D0" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -150,0 A 150,150 0 0,1 46.35,-142.66" fill="none" stroke="#FECACA" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 46.35,-142.66 A 150,150 0 0,1 121.35,-88.17" fill="none" stroke="#FDE68A" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 121.35,-88.17 A 150,150 0 0,1 150,0" fill="none" stroke="#A7F3D0" stroke-width="30" stroke-linecap="round"/>
         <!-- Value Arc 58% -->
-        <path d="M -150,0 A 150,150 0 0,1 -58.36,-138.17" fill="none" stroke="url(#warningGrad)" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -150,0 A 150,150 0 0,1 37.30,-145.29" fill="none" stroke="url(#warningGrad)" stroke-width="30" stroke-linecap="round"/>
         <!-- Tick Marks -->
         <line x1="-135" y1="0" x2="-120" y2="0" stroke="#64748B" stroke-width="2"/>
         <line x1="-95.5" y1="-95.5" x2="-84.85" y2="-84.85" stroke="#64748B" stroke-width="2"/>
