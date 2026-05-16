@@ -112,13 +112,13 @@
         <path d="M 145,424 L 235,413.2 L 325,402.4 L 415,393.4 L 505,382.6 L 595,370 L 685,352 L 775,339.4 L 865,346.6 L 955,355.6 L 1045,334 L 1135,312.4" fill="none" stroke="#0EA5E9" stroke-width="2"/>
         <path d="M 145,469 L 235,463.6 L 325,456.4 L 415,451 L 505,445.6 L 595,438.4 L 685,427.6 L 775,420.4 L 865,424 L 955,427.6 L 1045,415 L 1135,402.4" fill="none" stroke="#6366F1" stroke-width="2"/>
     </g>
-    <!-- ==================== Annotation (August Peak) ==================== -->
+    <!-- ==================== Annotation (December Peak) ==================== -->
     <g id="annotation">
-        <rect x="725" y="180" width="100" height="55" rx="8" fill="#1E293B" filter="url(#cardShadow)"/>
-        <text x="775" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" text-anchor="middle">Peak Month</text>
-        <text x="775" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">162M</text>
-        <path d="M 770,235 L 780,235 L 775,242 Z" fill="#1E293B"/>
-        <line x1="775" y1="242" x2="775" y2="256" stroke="#1E293B" stroke-width="2" stroke-dasharray="2,2"/>
+        <rect x="1030" y="140" width="100" height="55" rx="8" fill="#1E293B" filter="url(#cardShadow)"/>
+        <text x="1080" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#94A3B8" text-anchor="middle">Peak Month</text>
+        <text x="1080" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">185M</text>
+        <path d="M 1075,195 L 1085,195 L 1080,202 Z" fill="#1E293B"/>
+        <line x1="1080" y1="202" x2="1135" y2="215" stroke="#1E293B" stroke-width="2" stroke-dasharray="2,2"/>
     </g>
     <!-- ==================== Statistics Dashboard Cards ==================== -->
     <g id="statsCards">

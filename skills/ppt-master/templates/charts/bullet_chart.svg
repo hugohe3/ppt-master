@@ -77,9 +77,9 @@
               font-size="18" font-weight="600" fill="#0F172A">Sales Revenue</text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B">Target: $100M</text>
-        <rect x="180" y="20" width="900" height="50" fill="url(#bgFair)" rx="4"/>
-        <rect x="180" y="20" width="720" height="50" fill="url(#bgGood)" rx="4"/>
-        <rect x="180" y="20" width="540" height="50" fill="url(#bgExcellent)" rx="4"/>
+        <rect x="180" y="20" width="540" height="50" fill="url(#bgFair)" rx="4"/>
+        <rect x="720" y="20" width="180" height="50" fill="url(#bgGood)" rx="4"/>
+        <rect x="900" y="20" width="180" height="50" fill="url(#bgExcellent)" rx="4"/>
         <rect x="180" y="32" width="828" height="26" fill="url(#actualBarGreen)" rx="3" filter="url(#bulletShadow)"/>
         <line x1="1080" y1="15" x2="1080" y2="75" stroke="#1E293B" stroke-width="4"/>
         <text x="998" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -93,9 +93,9 @@
               font-size="18" font-weight="600" fill="#0F172A">New Customers</text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B">Target: 500</text>
-        <rect x="180" y="20" width="900" height="50" fill="url(#bgFair)" rx="4"/>
-        <rect x="180" y="20" width="720" height="50" fill="url(#bgGood)" rx="4"/>
-        <rect x="180" y="20" width="540" height="50" fill="url(#bgExcellent)" rx="4"/>
+        <rect x="180" y="20" width="540" height="50" fill="url(#bgFair)" rx="4"/>
+        <rect x="720" y="20" width="180" height="50" fill="url(#bgGood)" rx="4"/>
+        <rect x="900" y="20" width="180" height="50" fill="url(#bgExcellent)" rx="4"/>
         <rect x="180" y="32" width="873" height="26" fill="url(#actualBarGreen)" rx="3" filter="url(#bulletShadow)"/>
         <line x1="1080" y1="15" x2="1080" y2="75" stroke="#1E293B" stroke-width="4"/>
         <text x="1043" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -109,14 +109,14 @@
               font-size="18" font-weight="600" fill="#0F172A">Customer Satisfaction</text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B">Target: 90%</text>
-        <rect x="180" y="20" width="900" height="50" fill="url(#bgFair)" rx="4"/>
-        <rect x="180" y="20" width="720" height="50" fill="url(#bgGood)" rx="4"/>
-        <rect x="180" y="20" width="540" height="50" fill="url(#bgExcellent)" rx="4"/>
+        <rect x="180" y="20" width="540" height="50" fill="url(#bgFair)" rx="4"/>
+        <rect x="720" y="20" width="180" height="50" fill="url(#bgGood)" rx="4"/>
+        <rect x="900" y="20" width="180" height="50" fill="url(#bgExcellent)" rx="4"/>
         <rect x="180" y="32" width="880" height="26" fill="url(#actualBarGreen)" rx="3" filter="url(#bulletShadow)"/>
         <line x1="990" y1="15" x2="990" y2="75" stroke="#1E293B" stroke-width="4"/>
-        <text x="1050" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="end">88%</text>
-        <text x="1120" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="1050" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="end">98%</text>
+        <text x="1120" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="20" font-weight="bold" fill="#10B981">98%</text>
     </g>
     <!-- Bullet 4: Market Share 72% -->
@@ -125,9 +125,9 @@
               font-size="18" font-weight="600" fill="#0F172A">Market Share</text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B">Target: 25%</text>
-        <rect x="180" y="20" width="900" height="50" fill="url(#bgFair)" rx="4"/>
-        <rect x="180" y="20" width="720" height="50" fill="url(#bgGood)" rx="4"/>
-        <rect x="180" y="20" width="540" height="50" fill="url(#bgExcellent)" rx="4"/>
+        <rect x="180" y="20" width="540" height="50" fill="url(#bgFair)" rx="4"/>
+        <rect x="720" y="20" width="180" height="50" fill="url(#bgGood)" rx="4"/>
+        <rect x="900" y="20" width="180" height="50" fill="url(#bgExcellent)" rx="4"/>
         <rect x="180" y="32" width="648" height="26" fill="url(#actualBarOrange)" rx="3" filter="url(#bulletShadow)"/>
         <line x1="1080" y1="15" x2="1080" y2="75" stroke="#1E293B" stroke-width="4"/>
         <text x="818" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 

@@ -17,25 +17,25 @@
             </feMerge>
         </filter>
         <!-- Layer 1 to Layer 2 Gradients -->
-        <linearGradient id="gPR" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gPS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gPO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gPA" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gSR" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gSS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gSO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gIS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.45"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gIA" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.45"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gPR" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPS" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPO" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPA" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSR" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSS" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSO" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gIS" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gIA" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.6"/></linearGradient>
         <!-- Layer 2 to Layer 3 Gradients -->
-        <linearGradient id="gRP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gRI" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.45"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gSP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gSM" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.45"/><stop offset="100%" stop-color="#EC4899" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gOP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gOI" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gOO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gAP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#64748B" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
-        <linearGradient id="gAO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#64748B" stop-opacity="0.45"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gRP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gRI" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSM" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.6"/><stop offset="100%" stop-color="#EC4899" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gOP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gOI" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gOO" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gAP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#64748B" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gAO" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#64748B" stop-opacity="0.6"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.6"/></linearGradient>
     </defs>
     <rect width="1280" height="720" fill="#F8FAFC"/>
     <!-- ==================== Header ==================== -->
@@ -70,7 +70,7 @@
         <!-- Operations flows -->
         <path d="M 720 485 C 900 485, 900 323.5, 1080 323.5" fill="none" stroke="url(#gOP)" stroke-width="45"/>
         <path d="M 720 536.75 C 900 536.75, 900 545.75, 1080 545.75" fill="none" stroke="url(#gOI)" stroke-width="58.5"/>
-        <path d="M 720 569.5 C 900 569.5, 900 599.5, 1080 599.5" fill="none" stroke="url(#gOO)" stroke-width="9"/>
+        <path d="M 720 570.5 C 900 570.5, 900 599.5, 1080 599.5" fill="none" stroke="url(#gOO)" stroke-width="9"/>
         <!-- Admin flows -->
         <path d="M 720 599.5 C 900 599.5, 900 350.5, 1080 350.5" fill="none" stroke="url(#gAP)" stroke-width="9"/>
         <path d="M 720 622 C 900 622, 900 622, 1080 622" fill="none" stroke="url(#gAO)" stroke-width="36"/>
