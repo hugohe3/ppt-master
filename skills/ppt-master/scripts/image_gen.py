@@ -92,6 +92,14 @@ ALL_ASPECT_RATIOS = [
 ALL_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
 BACKEND_REGISTRY = {
+    "local_workbench": {
+        "module": "backend_local_workbench",
+        "tier": "core",
+        "label": "Hanako Local GPT Image 2 Workbench",
+        "default_model": "from D:/HanakoField/image2本地使用/.env",
+        "key_hint": "D:/HanakoField/image2本地使用/.env",
+        "aliases": ["hanako-local", "gpt-image-2-local", "local-workbench"],
+    },
     "gemini": {
         "module": "backend_gemini",
         "tier": "core",
