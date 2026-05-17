@@ -35,7 +35,7 @@
 </p>
 
 <p align="center">
-  <sub>更多端到端实例：<a href="https://space.bilibili.com/111258938/lists/8144072">合集·PPT-Master 能力展示</a>（B 站）</sub>
+  更多端到端实例：<a href="https://space.bilibili.com/111258938/lists/8144072"><strong>合集·PPT-Master 能力展示</strong></a>（B 站）
 </p>
 
 ---
