@@ -9,9 +9,18 @@ without first running the on-disk finalize step.
 
 Public API:
     expand_use_data_icons(root, icons_dir) -> int
-        Walk the SVG element tree, replace every ``<use data-icon="...">``
-        with its expanded ``<g>`` group of primitive shapes, and return
-        the number of replacements made.
+        Walk the SVG element tree. For every ``<use data-icon="...">``:
+        * if the icon resolves, replace it in-place with the expanded
+          ``<g>`` group of primitive shapes;
+        * if the icon cannot be resolved (file missing / corrupted /
+          empty), **drop the placeholder entirely** with a stdout warning.
+        Returns the number of successfully expanded placeholders.
+
+The drop-on-unresolvable behaviour is deliberate: leaving the ``<use>``
+in place trips ``drawingml_converter._collect_unsupported_visuals`` and
+aborts the *entire deck export* over one hallucinated icon name. A
+silently dropped icon is a much less disruptive failure mode than a dead
+deck, and the warning still surfaces in the run log for diagnosis.
 
 The heavy lifting (icon resolution, color application, scaling) is
 delegated to ``svg_finalize.embed_icons`` so the two pipelines stay
@@ -45,9 +54,9 @@ def _build_replacement_g(
     """Resolve a single ``<use data-icon="...">`` into an expanded ``<g>``.
 
     Returns None when the icon name is missing, unresolved, or the icon
-    file cannot be parsed. Callers should leave the original ``<use>`` in
-    place in that case (matching the on-disk finalize_svg behaviour, which
-    also leaves unresolvable placeholders untouched).
+    file cannot be parsed. The caller (``expand_use_data_icons``) removes
+    the placeholder in that case — leaving it would otherwise trip the
+    DrawingML converter's unsupported-visual guard and abort the export.
     """
     use_str = ET.tostring(use_elem, encoding='unicode')
     attrs = embed_icons_mod.parse_use_element(use_str)
@@ -91,8 +100,13 @@ def expand_use_data_icons(root: ET.Element, icons_dir: Path) -> int:
     builds a new ``<g>`` subtree from the corresponding icon library, and
     swaps it into the parent element at the same position.
 
-    Returns the number of placeholders successfully expanded. Unresolvable
-    placeholders are left in place so callers can decide whether to warn.
+    Unresolvable placeholders (missing icon file / corrupted / empty) are
+    **removed** from the tree with a ``[WARN]`` line printed to stdout, so
+    they don't reach the DrawingML converter's unsupported-visual guard and
+    kill the whole deck. The warning is captured by callers that pipe stdout
+    (the FastAPI pipeline uses ``_silenced_stdout`` → loguru).
+
+    Returns the number of placeholders **successfully expanded**.
     """
     if not icons_dir.exists():
         return 0
@@ -117,11 +131,16 @@ def expand_use_data_icons(root: ET.Element, icons_dir: Path) -> int:
         if parent is None:
             continue
         replacement = _build_replacement_g(use_elem, icons_dir, embed_icons_mod)
-        if replacement is None:
-            continue
         idx = list(parent).index(use_elem)
         parent.remove(use_elem)
-        parent.insert(idx, replacement)
-        expanded += 1
+        if replacement is not None:
+            parent.insert(idx, replacement)
+            expanded += 1
+        else:
+            icon_name = use_elem.get('data-icon', '<unknown>')
+            print(
+                f'  [WARN] use_expander dropped unresolvable '
+                f'<use data-icon="{icon_name}"/> (icon not found in library)'
+            )
 
     return expanded
