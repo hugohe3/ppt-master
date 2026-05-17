@@ -275,16 +275,16 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | Trigger | Mode | Mechanism |
 |---|---|---|
 | **Default** — `IMAGE_BACKEND` configured | **Path A**: `image_gen.py --manifest` | One command runs the whole manifest with concurrency; status writes back per item |
-| `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
+| **Path A unavailable/fails OR User explicitly names host tool** | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
 | **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
-**Selection logic** — monotonic A → B → C fallback chain (automatic, no user prompting):
+**Selection logic** (automatic, no user prompting):
 
-1. **Try Path A** — if `IMAGE_BACKEND` is configured (env or `.env`), run `image_gen.py --manifest`. If it fails twice in a row, fall to Path B.
-2. **Try Path B** — if `IMAGE_BACKEND` was not configured (A skipped), or A failed, and the host has a native image tool (Codex / Antigravity / Claude Code / similar), the agent invokes the host's image capability directly.
-3. **Fall to C (Offline Manual)** — if B is also unavailable (no host-native tool) or fails, write prompts to `images/image_prompts.json` and hand off to the user.
-
-**User override**: If the user explicitly names Path B ("use Codex's image tool"), skip A and start at B. Explicit naming is the only way to bypass an earlier path in the chain; otherwise the chain is monotonic.
+1. User explicitly named Path B → use Path B
+2. Otherwise check `IMAGE_BACKEND` (env or `.env`)
+   - configured → use Path A. If Path A fails twice in a row, automatically fall back to Path B.
+   - not configured → skip Path A, automatically fall back to Path B.
+3. If Path B also fails or the host lacks native image generation → fall through to Offline Manual Mode.
 
 **Hard rule**: Step 4 is execution, not re-decision. Never present an interactive choice between paths here — image strategy was locked in Strategist Step 4 h item.
 
@@ -344,9 +344,9 @@ Precedence:
 - Interrupting mid-run is safe — completed items keep `status: Generated` and are skipped on re-run
 - On normal completion the Markdown sidecar is re-rendered automatically; if the run is interrupted, run `--render-md` manually to refresh the sidecar
 
-### Path B — Host-Native Image Tool
+### Path B — Host-Native Image Tool (On Explicit User Request)
 
-Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails) **and** the host provides a native image generation tool (Codex, Antigravity, Claude Code's image tool, and similar). No user prompting required — the agent detects the host capability and proceeds. The user may also explicitly name this path ("use Codex's image tool") to force it even when `IMAGE_BACKEND` is configured.
+Triggered only when the user explicitly asks the skill to use the host's built-in image generation (e.g. Codex, Antigravity, or any other host that provides a native image tool).
 
 - Agent invokes the host's native image tool directly; prompts come from `items[].prompt`
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List

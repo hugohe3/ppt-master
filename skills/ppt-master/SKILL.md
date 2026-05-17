@@ -13,6 +13,24 @@ description: >
 
 **Core Pipeline**: `Source Document → Create Project → [Template] → Strategist → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export`
 
+## Local Codex App Installation
+
+This machine has `ppt-master` installed for Codex at:
+
+- Skill directory: `C:\Users\DELL\.codex\skills\ppt-master`
+- Repository/tools directory: `C:\Users\DELL\.codex\tools\ppt-master`
+- Python runtime: `C:\Users\DELL\.codex\tools\ppt-master\.venv\Scripts\python.exe`
+
+When running scripts from PowerShell in Codex App, prefer the explicit Python runtime above instead of bare `python3`. Set UTF-8 output before quality checks:
+
+```powershell
+$env:PYTHONIOENCODING='utf-8'
+C:\Users\DELL\.codex\tools\ppt-master\.venv\Scripts\python.exe C:\Users\DELL\.codex\skills\ppt-master\scripts\svg_quality_checker.py <project_path> --format ppt169
+C:\Users\DELL\.codex\tools\ppt-master\.venv\Scripts\python.exe C:\Users\DELL\.codex\skills\ppt-master\scripts\finalize_svg.py <project_path>
+C:\Users\DELL\.codex\tools\ppt-master\.venv\Scripts\python.exe C:\Users\DELL\.codex\skills\ppt-master\scripts\svg_quality_checker.py <project_path> -s final --format ppt169
+C:\Users\DELL\.codex\tools\ppt-master\.venv\Scripts\python.exe C:\Users\DELL\.codex\skills\ppt-master\scripts\svg_to_pptx.py <project_path> -s final
+```
+
 > [!CAUTION]
 > ## 🚨 Global Execution Discipline (MANDATORY)
 >
@@ -79,6 +97,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
 | `live-preview` | `workflows/live-preview.md` | Browser-based live preview — auto-started during generation and re-enterable any time the user mentions "live preview", "preview", "看效果", or wants to click/select a slide element |
+| `visual-edit` | `workflows/visual-edit.md` | Legacy compatibility entry retained for older local workflows; prefer `live-preview` for new sessions |
 
 ---
 

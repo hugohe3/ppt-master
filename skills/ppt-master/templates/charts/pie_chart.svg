@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- 
+    <!--
     Pie Chart Template
     Purpose: Distribution and proportion analysis
     Use cases: Market share, budget allocation, demographic breakdown
@@ -19,14 +19,14 @@
     <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
     <!-- Title Area -->
-    <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="32" font-weight="800" fill="#0F172A">Market Share Distribution</text>
-    <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5">Q3 2025 · TOTAL INDUSTRY MARKET SIZE: $12B</text>
     <!-- chart-plot-area: pie | center: 420,400 | radius: 200 -->
     <!-- ==================== Pie Chart Graphic ==================== -->
     <g id="pieChart" transform="translate(420, 400)" filter="url(#softShadow)">
-        <!-- 
+        <!--
         Center: (420, 400)
         Radius: 200px
         Start Angle: -90° (12 o'clock)
@@ -34,39 +34,39 @@
         White stroke creates a modern separated-slice look
         -->
         <!-- Segment 1: Competitor A 35% (-90° to 36°) -->
-        <path d="M 0,0 L 0,-200 A 200,200 0 0,1 161.80,117.56 Z"
+        <path d="M 0,0 L 0,-200 A 200,200 0 0,1 173.2,100 Z"
               fill="#3B82F6" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
         <!-- Segment 2: Competitor B 25% (36° to 126°) -->
-        <path d="M 0,0 L 161.80,117.56 A 200,200 0 0,1 -117.56,161.80 Z"
+        <path d="M 0,0 L 173.2,100 A 200,200 0 0,1 -117.56,162.34 Z"
               fill="#10B981" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
         <!-- Segment 3: Competitor C 20% (126° to 198°) -->
-        <path d="M 0,0 L -117.56,161.80 A 200,200 0 0,1 -190.21,-61.80 Z"
+        <path d="M 0,0 L -117.56,162.34 A 200,200 0 0,1 -195.63,-62.93 Z"
               fill="#F59E0B" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
         <!-- Segment 4: Competitor D 12% (198° to 241.2°) -->
-        <path d="M 0,0 L -190.21,-61.80 A 200,200 0 0,1 -96.35,-175.26 Z"
+        <path d="M 0,0 L -195.63,-62.93 A 200,200 0 0,1 -62.93,-189.87 Z"
               fill="#8B5CF6" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
         <!-- Segment 5: Others 8% (241.2° to 270°) -->
-        <path d="M 0,0 L -96.35,-175.26 A 200,200 0 0,1 0,-200 Z"
+        <path d="M 0,0 L -62.93,-189.87 A 200,200 0 0,1 0,-200 Z"
               fill="#94A3B8" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
     </g>
     <!-- ==================== Pie Chart Labels ==================== -->
     <!-- Label 1: Competitor A 35% -->
-    <text x="500" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="500" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="24" font-weight="800" fill="#FFFFFF" text-anchor="middle">35%</text>
     <!-- Label 2: Competitor B 25% -->
-    <text x="450" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="450" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">25%</text>
     <!-- Label 3: Competitor C 20% -->
-    <text x="280" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="280" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="20" font-weight="800" fill="#FFFFFF" text-anchor="middle">20%</text>
     <!-- Label 4: Competitor D 12% -->
-    <text x="280" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="280" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">12%</text>
     <!-- Label 5: Others 8% (Callout Line) -->
     <g>
         <line x1="380" y1="220" x2="330" y2="170" stroke="#94A3B8" stroke-width="2"/>
         <circle cx="380" cy="220" r="5" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
-        <text x="320" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="320" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="16" font-weight="800" fill="#64748B" text-anchor="end">8%</text>
     </g>
     <!-- ==================== Data Table Legend ==================== -->
@@ -107,6 +107,6 @@
         <text x="440" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="800" fill="#0F172A" text-anchor="end">$12.0B <tspan fill="#64748B" font-size="16" font-weight="700">(100%)</tspan></text>
     </g>
     <!-- Data Source -->
-    <text x="60" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    <text x="60" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" font-weight="500" fill="#94A3B8">Source: Industry Research Report</text>
 </svg>
