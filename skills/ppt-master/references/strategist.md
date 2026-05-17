@@ -236,8 +236,8 @@ Baseline choice follows **content density**, not style. Common: `18px` (dense) /
 | Mode | Trigger | Mechanism |
 |---|---|---|
 | **Path A** | `IMAGE_BACKEND` configured (default) | `image_gen.py` runs in Step 5 |
-| **Path B** | User explicitly names host's image tool (Codex / Antigravity) | Host-native generation |
-| **Offline Manual** | Path A unavailable AND Path B not in use | Prompts written to `images/image_prompts.json`; user generates externally and places files in `project/images/` |
+| **Path B** | `IMAGE_BACKEND` not configured AND host has a native image tool (Codex / Antigravity / Claude Code / similar) — auto-selected, no user prompting needed | Host-native generation |
+| **Offline Manual** | `IMAGE_BACKEND` not configured AND host has no native image tool | Prompts written to `images/image_prompts.json`; user generates externally and places files in `project/images/` |
 
 Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`image-generator.md`](./image-generator.md) §3.2.
 
