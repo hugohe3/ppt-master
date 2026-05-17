@@ -319,9 +319,14 @@ def _resolve_backend() -> tuple[object, str]:
 
     supported = ", ".join(SUPPORTED_BACKENDS)
     print(
-        "Error: No image backend configured.\n"
+        "Error: No image backend configured for Path A (image_gen.py).\n"
         "\n"
-        "Set IMAGE_BACKEND explicitly in one of these places:\n"
+        "If your host (Codex / Antigravity / Claude Code / etc.) has a native image\n"
+        "generation tool, do NOT run this script — switch to Path B: invoke the host's\n"
+        "image tool directly with the prompts from images/image_prompts.json and save\n"
+        "the outputs to images/<filename>. See references/image-generator.md §7 Path B.\n"
+        "\n"
+        "To use Path A instead, set IMAGE_BACKEND in one of these places:\n"
         f"  1. Current process environment\n"
         f"  2. {ENV_PATH}\n"
         "\n"
