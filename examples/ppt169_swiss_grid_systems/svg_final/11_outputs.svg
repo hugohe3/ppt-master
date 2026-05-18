@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 11</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">输出到现代世界</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">1960s → · FROM SWITZERLAND TO THE GLOBAL DESIGN SYSTEM</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3" />
+  </g>
+
+  
+
+  <g id="domain-corporate">
+    <text x="64" y="240" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">01</text>
+    <line x1="64" y1="260" x2="280" y2="260" stroke="#1A1A1A" stroke-width="2" />
+    <text x="64" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">企业 VI</text>
+    <text x="64" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">CORPORATE IDENTITY</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="64" y="358">把瑞士理性变成"识别系统"</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="64" y="380">产业的开端</text><line x1="64" y1="430" x2="120" y2="430" stroke="#E8E8E8" stroke-width="1" />
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="460">IBM (Paul Rand)</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="482">Knoll · Lufthansa</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="504">Olivetti · Braun</text><text x="64" y="612" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="1">JMB 任 IBM 顾问 · 1967 起</text>
+  </g>
+
+  <g id="domain-signage">
+    <text x="368" y="240" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">02</text>
+    <line x1="368" y1="260" x2="584" y2="260" stroke="#1A1A1A" stroke-width="2" />
+    <text x="368" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">机场 / 地铁标识</text>
+    <text x="368" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">SIGNAGE SYSTEMS</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="368" y="358">公共空间的可读性</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="368" y="380">是瑞士理性的延伸</text><line x1="368" y1="430" x2="424" y2="430" stroke="#E8E8E8" stroke-width="1" />
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="460">纽约地铁 Unimark</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="482">巴黎机场 Frutiger 字体</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="504">慕尼黑 Otl Aicher</text><text x="368" y="612" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="1">Vignelli 1966 纽约地铁手册</text>
+  </g>
+
+  <g id="domain-publishing">
+    <text x="672" y="240" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">03</text>
+    <line x1="672" y1="260" x2="888" y2="260" stroke="#1A1A1A" stroke-width="2" />
+    <text x="672" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">出版业</text>
+    <text x="672" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">EDITORIAL DESIGN</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="672" y="358">期刊 · 杂志 · 文化出版</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="672" y="380">的版面语法</text><line x1="672" y1="430" x2="728" y2="430" stroke="#E8E8E8" stroke-width="1" />
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="460">Du 杂志(瑞士)</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="482">Eye Magazine</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="504">Domus · Wallpaper*</text><text x="672" y="612" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="1">至今仍是文化出版的范本</text>
+  </g>
+
+  <g id="domain-education">
+    <text x="976" y="240" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">04</text>
+    <line x1="976" y1="260" x2="1192" y2="260" stroke="#1A1A1A" stroke-width="2" />
+    <text x="976" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">设计教育</text>
+    <text x="976" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">DESIGN EDUCATION</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="976" y="358">巴塞尔 + 苏黎世</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="976" y="380">两条教学路径全球化</text><line x1="976" y1="430" x2="1032" y2="430" stroke="#E8E8E8" stroke-width="1" />
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="460">Yale (Hofmann)</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="482">RISD · Cooper Union</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="504">东京 GS 学派</text><text x="976" y="612" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="1">学生输出半世纪不绝</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">11 / 14</text>
+  </g>
+</svg>

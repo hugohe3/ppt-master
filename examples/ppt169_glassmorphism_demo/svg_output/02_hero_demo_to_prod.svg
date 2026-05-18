@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="heroScrim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#0A0E27" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="heroVignette" cx="50%" cy="50%" r="68%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.55"/>
+    </radialGradient>
+    <linearGradient id="pillFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/02_hero_transition.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#heroScrim)"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#heroVignette)"/>
+  </g>
+
+  <g id="hero-tag">
+    <line x1="640" y1="155" x2="608" y2="155" stroke="#3DDDFC" stroke-width="2" stroke-linecap="round"/>
+    <text x="640" y="160" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="5" text-anchor="middle">FROM DEMO TO PRODUCTION</text>
+    <line x1="640" y1="155" x2="672" y2="155" stroke="#3DDDFC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g id="hero-title">
+    <text x="640" y="280" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="68" font-weight="900" fill="#E8ECFF" text-anchor="middle"><tspan fill="url(#titleGradient)">90%</tspan> 的 Agent 项目</text>
+    <text x="640" y="362" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="68" font-weight="900" fill="#E8ECFF" text-anchor="middle">止步于 Demo</text>
+  </g>
+
+  <g id="hero-subtext">
+    <text x="640" y="438" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="24" font-weight="400" fill="#A8B0D0" text-anchor="middle">真正进入生产，需要跨越四道工程化门槛</text>
+  </g>
+
+  <g id="hero-pillars">
+    <g id="pillar-1">
+      <rect x="270" y="510" width="170" height="62" rx="31" fill="url(#pillFill)" stroke="#5B8DEF" stroke-opacity="0.55" stroke-width="1"/>
+      <circle cx="312" cy="541" r="6" fill="#5B8DEF"/>
+      <text x="332" y="547" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">架构</text>
+    </g>
+    <g id="pillar-2">
+      <rect x="460" y="510" width="170" height="62" rx="31" fill="url(#pillFill)" stroke="#A26BFA" stroke-opacity="0.55" stroke-width="1"/>
+      <circle cx="502" cy="541" r="6" fill="#A26BFA"/>
+      <text x="522" y="547" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">上下文</text>
+    </g>
+    <g id="pillar-3">
+      <rect x="650" y="510" width="170" height="62" rx="31" fill="url(#pillFill)" stroke="#3DDDFC" stroke-opacity="0.55" stroke-width="1"/>
+      <circle cx="692" cy="541" r="6" fill="#3DDDFC"/>
+      <text x="712" y="547" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">评估</text>
+    </g>
+    <g id="pillar-4">
+      <rect x="840" y="510" width="170" height="62" rx="31" fill="url(#pillFill)" stroke="#4ADE80" stroke-opacity="0.55" stroke-width="1"/>
+      <circle cx="882" cy="541" r="6" fill="#4ADE80"/>
+      <text x="902" y="547" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">可观测</text>
+    </g>
+  </g>
+
+  <g id="hero-footer">
+    <text x="60" y="688" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0">AI Agent 工程化</text>
+    <text x="1220" y="688" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">02 / 12</text>
+  </g>
+</svg>

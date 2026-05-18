@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Faded backdrop image (#12) -->
+  <image href="../images/yinzi_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Flat semi-transparent overlay (#30) — image becomes texture -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F5F1E8" fill-opacity="0.78"/>
+
+  <!-- Section marker -->
+  <text x="640" y="120" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="18" fill="#8B8680" letter-spacing="12">— 引 子 —</text>
+
+  <!-- Opening quote mark -->
+  <use data-icon="tabler-outline/quote" x="290" y="220" width="56" height="56" fill="#A52A2A" stroke-width="1.5"/>
+
+  <!-- Hero quote — centered, oversized -->
+  <text x="640" y="380" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="64" font-weight="700" fill="#1A1A1A" letter-spacing="8">男人太早亮牌</text>
+  <text x="640" y="470" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="64" font-weight="700" fill="#1A1A1A" letter-spacing="8">就是给别人递刀</text>
+
+  <!-- Closing quote mark (rotated) -->
+  <g transform="translate(990, 530) rotate(180)">
+    <use data-icon="tabler-outline/quote" x="0" y="0" width="56" height="56" fill="#A52A2A" stroke-width="1.5"/>
+  </g>
+
+  <!-- Decorative line below -->
+  <line x1="600" y1="560" x2="680" y2="560" stroke="#A52A2A" stroke-width="2"/>
+
+  <!-- Footnote -->
+  <text x="640" y="640" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">能力不够时出锋芒，叫冒进；筹码不够时争输赢，叫暴露</text>
+
+  <!-- Page number -->
+  <text x="1220" y="690" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">02</text>
+</svg>

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="p13ImgBJ"><rect x="60" y="256" width="580" height="240" rx="6"/></clipPath>
+    <clipPath id="p13ImgZJL"><rect x="660" y="256" width="280" height="170" rx="6"/></clipPath>
+    <clipPath id="p13ImgZJR"><rect x="940" y="256" width="280" height="170" rx="6"/></clipPath>
+    <linearGradient id="p13TopBJ" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B7355" stop-opacity="0.65"/>
+      <stop offset="40%" stop-color="#8B7355" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p13TopZJL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A6B7A" stop-opacity="0.65"/>
+      <stop offset="55%" stop-color="#5A6B7A" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p13TopZJR" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C2410C" stop-opacity="0.65"/>
+      <stop offset="55%" stop-color="#C2410C" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p13BottomFadeBJ" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.92"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#C2410C"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">IV · 困局  ·  PILOT CASES</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A">已有的尝试 · CHINA</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="148" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#2B3A4A">已有的尝试：从<tspan fill="#8B7355">功能再造</tspan>到<tspan fill="#C2410C">原拆原建</tspan></text>
+    <line x1="60" y1="172" x2="160" y2="172" stroke="#C2410C" stroke-width="2"/>
+  </g>
+
+  <g id="case-bj">
+    <rect x="60" y="210" width="580" height="478" rx="6" fill="#FFFFFF" stroke="#D6CFC0" stroke-width="1"/>
+
+    <g id="bj-tag">
+      <rect x="80" y="228" width="3" height="22" fill="#8B7355"/>
+      <text x="92" y="245" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#8B7355" letter-spacing="3">CASE A · 北京天通苑</text>
+      <text x="620" y="245" text-anchor="end" font-family="KaiTi, Georgia, serif" font-size="14" font-style="italic" fill="#8B7355">"办公环橙"</text>
+    </g>
+
+    <image href="../images/640_16.png" x="60" y="256" width="580" height="240" preserveAspectRatio="xMidYMid slice" clip-path="url(#p13ImgBJ)"/>
+    <rect x="60" y="256" width="580" height="100" fill="url(#p13TopBJ)"/>
+    <rect x="60" y="436" width="580" height="60" fill="url(#p13BottomFadeBJ)"/>
+
+    <text x="80" y="540" font-family="KaiTi, Georgia, serif" font-size="22" font-weight="700" fill="#2B3A4A">高层住宅 → 办公楼</text>
+    <text x="80" y="572" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">缓解天通苑地区<tspan fill="#8B7355" font-weight="700">"职住分离"</tspan>问题</text>
+    <text x="80" y="596" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">对原有梁柱进行局部加固</text>
+    <text x="80" y="620" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">将住宅户型拓展为办公户型</text>
+    <text x="80" y="660" font-family="KaiTi, Georgia, serif" font-size="13" font-style="italic" fill="#8B7355">— 满足不同的中小企业需求</text>
+    <text x="620" y="678" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8A8275">摄影：金伟琦 · 图源：众建筑</text>
+  </g>
+
+  <g id="case-zj">
+    <rect x="660" y="210" width="560" height="478" rx="6" fill="#FFFFFF" stroke="#D6CFC0" stroke-width="1"/>
+
+    <g id="zj-tag">
+      <rect x="680" y="228" width="3" height="22" fill="#C2410C"/>
+      <text x="692" y="245" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#C2410C" letter-spacing="3">CASE B · 杭州市中心</text>
+      <text x="1200" y="245" text-anchor="end" font-family="KaiTi, Georgia, serif" font-size="14" font-style="italic" fill="#C2410C">"浙工新村"</text>
+    </g>
+
+    <image href="../images/640_19.png" x="660" y="256" width="280" height="170" preserveAspectRatio="xMidYMid slice" clip-path="url(#p13ImgZJL)"/>
+    <rect x="660" y="256" width="280" height="60" fill="url(#p13TopZJL)"/>
+    <g id="bf-zj">
+      <rect x="676" y="272" width="10" height="10" fill="#F5F2EC"/>
+      <text x="694" y="282" font-family="Georgia, serif" font-size="11" font-weight="700" fill="#F5F2EC" letter-spacing="3">BEFORE · 80s</text>
+    </g>
+
+    <image href="../images/640_20.png" x="940" y="256" width="280" height="170" preserveAspectRatio="xMidYMid slice" clip-path="url(#p13ImgZJR)"/>
+    <rect x="940" y="256" width="280" height="60" fill="url(#p13TopZJR)"/>
+    <g id="af-zj">
+      <rect x="956" y="272" width="10" height="10" fill="#F5F2EC"/>
+      <text x="974" y="282" font-family="Georgia, serif" font-size="11" font-weight="700" fill="#F5F2EC" letter-spacing="3">AFTER · NEW</text>
+    </g>
+
+    <text x="680" y="466" font-family="KaiTi, Georgia, serif" font-size="22" font-weight="700" fill="#2B3A4A">首个"原拆原建"老旧小区</text>
+    <text x="680" y="498" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">拆除 13 幢，新建 <tspan fill="#C2410C" font-weight="700">7 幢 11 层小高层</tspan></text>
+
+    <line x1="680" y1="520" x2="1200" y2="520" stroke="#D6CFC0" stroke-width="1"/>
+
+    <g id="cost-grid" transform="translate(680, 540)">
+      <text x="0" y="20" font-family="Georgia, serif" font-size="32" font-weight="700" fill="#C2410C">5.3<tspan font-size="14" fill="#5A6B7A" dx="4">亿元</tspan></text>
+      <text x="0" y="44" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#5A6B7A">重建总费用</text>
+
+      <text x="180" y="20" font-family="Georgia, serif" font-size="32" font-weight="700" fill="#C2410C">4.7<tspan font-size="14" fill="#5A6B7A" dx="4">亿元</tspan></text>
+      <text x="180" y="44" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#5A6B7A">居民自筹</text>
+
+      <text x="360" y="20" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#2B3A4A">10–100<tspan font-size="14" fill="#5A6B7A" dx="4">万元/户</tspan></text>
+      <text x="360" y="44" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#5A6B7A">每户出资区间</text>
+    </g>
+    <text x="680" y="676" font-family="KaiTi, Georgia, serif" font-size="13" font-style="italic" fill="#5A6B7A">— 国务院 2025.08：稳步推进危旧房改造，支持自主更新和原拆原建</text>
+  </g>
+
+  <g id="footer">
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">13 / 15</text>
+  </g>
+</svg>

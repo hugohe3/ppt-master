@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="bgOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.78"/>
+    </linearGradient>
+    <linearGradient id="moduleGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="badgeBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="badgePurple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="badgeCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3DDDFC" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#3DDDFC" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="badgeGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ADE80" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#4ADE80" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/04_agent_topology.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="50" width="6" height="32" rx="3" fill="url(#titleGradient)"/>
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">Agent 的四层骨架</text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">PERCEPTION · REASONING · ACTION · MEMORY</text>
+  </g>
+
+  <g id="layer-perception">
+    <rect x="60" y="140" width="170" height="120" rx="14" fill="url(#badgeBlue)" stroke="#5B8DEF" stroke-opacity="0.55" stroke-width="1"/>
+    <use data-icon="phosphor-duotone/eye" x="80" y="158" width="40" height="40" fill="#3DDDFC"/>
+    <text x="80" y="220" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="2">L1 · PERCEPTION</text>
+    <text x="80" y="246" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">感知层</text>
+    <g id="mod-p1">
+      <rect x="246" y="140" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="264" y="141" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="266" y="178" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">输入解析</text>
+      <text x="266" y="206" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">用户意图分类、槽位抽取</text>
+      <text x="266" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">语言识别、敏感词过滤</text>
+    </g>
+    <g id="mod-p2">
+      <rect x="578" y="140" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="596" y="141" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="598" y="178" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">多模态融合</text>
+      <text x="598" y="206" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">文本 · 图像 · 表格 · 音频</text>
+      <text x="598" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">统一为可推理的结构化输入</text>
+    </g>
+    <g id="mod-p3">
+      <rect x="910" y="140" width="310" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="928" y="141" width="274" height="1" fill="url(#glassEdge)"/>
+      <text x="930" y="178" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">上下文窗口管理</text>
+      <text x="930" y="206" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">动态截断、关键信息前置</text>
+      <text x="930" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">应对长 prompt 退化</text>
+    </g>
+  </g>
+
+  <g id="layer-reasoning">
+    <rect x="60" y="272" width="170" height="120" rx="14" fill="url(#badgePurple)" stroke="#A26BFA" stroke-opacity="0.55" stroke-width="1"/>
+    <use data-icon="phosphor-duotone/brain" x="80" y="290" width="40" height="40" fill="#A26BFA"/>
+    <text x="80" y="352" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#A26BFA" letter-spacing="2">L2 · REASONING</text>
+    <text x="80" y="378" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">推理层</text>
+    <g id="mod-r1">
+      <rect x="246" y="272" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="264" y="273" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="266" y="310" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">Plan / ReAct</text>
+      <text x="266" y="338" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">先拆解,再推理 → 行动</text>
+      <text x="266" y="360" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">观察结果再决定下一步</text>
+    </g>
+    <g id="mod-r2">
+      <rect x="578" y="272" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="596" y="273" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="598" y="310" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">Tree-of-Thought</text>
+      <text x="598" y="338" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">多路径展开 · 评估剪枝</text>
+      <text x="598" y="360" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">适合搜索 · 规划 · 推理任务</text>
+    </g>
+    <g id="mod-r3">
+      <rect x="910" y="272" width="310" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="928" y="273" width="274" height="1" fill="url(#glassEdge)"/>
+      <text x="930" y="310" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">Reflection</text>
+      <text x="930" y="338" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">自检 · 自纠 · 自我评分</text>
+      <text x="930" y="360" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">配合终止条件防止无限循环</text>
+    </g>
+  </g>
+
+  <g id="layer-action">
+    <rect x="60" y="404" width="170" height="120" rx="14" fill="url(#badgeCyan)" stroke="#3DDDFC" stroke-opacity="0.55" stroke-width="1"/>
+    <use data-icon="phosphor-duotone/lightning" x="80" y="422" width="40" height="40" fill="#3DDDFC"/>
+    <text x="80" y="484" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="2">L3 · ACTION</text>
+    <text x="80" y="510" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">行动层</text>
+    <g id="mod-a1">
+      <rect x="246" y="404" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="264" y="405" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="266" y="442" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">工具调用</text>
+      <text x="266" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">JSON schema 参数生成</text>
+      <text x="266" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">超时 · 重试 · 鉴权治理</text>
+    </g>
+    <g id="mod-a2">
+      <rect x="578" y="404" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="596" y="405" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="598" y="442" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">函数执行</text>
+      <text x="598" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">沙盒 / 子进程 / WASM</text>
+      <text x="598" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">代码生成必走隔离环境</text>
+    </g>
+    <g id="mod-a3">
+      <rect x="910" y="404" width="310" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="928" y="405" width="274" height="1" fill="url(#glassEdge)"/>
+      <text x="930" y="442" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">API 编排</text>
+      <text x="930" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">幂等 · 顺序 · 事务边界</text>
+      <text x="930" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">幂等 key 防重复执行</text>
+    </g>
+  </g>
+
+  <g id="layer-memory">
+    <rect x="60" y="536" width="170" height="120" rx="14" fill="url(#badgeGreen)" stroke="#4ADE80" stroke-opacity="0.5" stroke-width="1"/>
+    <use data-icon="phosphor-duotone/database" x="80" y="554" width="40" height="40" fill="#4ADE80"/>
+    <text x="80" y="616" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#4ADE80" letter-spacing="2">L4 · MEMORY</text>
+    <text x="80" y="642" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">记忆层</text>
+    <g id="mod-m1">
+      <rect x="246" y="536" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="264" y="537" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="266" y="574" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">短期上下文</text>
+      <text x="266" y="602" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">当前对话 / 当前任务窗口</text>
+      <text x="266" y="624" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">滚动摘要防溢出</text>
+    </g>
+    <g id="mod-m2">
+      <rect x="578" y="536" width="320" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="596" y="537" width="284" height="1" fill="url(#glassEdge)"/>
+      <text x="598" y="574" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">长期向量库</text>
+      <text x="598" y="602" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">用户偏好 / 历史知识 / FAQ</text>
+      <text x="598" y="624" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">语义 + 元数据双索引</text>
+    </g>
+    <g id="mod-m3">
+      <rect x="910" y="536" width="310" height="120" rx="14" fill="url(#moduleGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+      <rect x="928" y="537" width="274" height="1" fill="url(#glassEdge)"/>
+      <text x="930" y="574" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="800" fill="#E8ECFF">任务级缓存</text>
+      <text x="930" y="602" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">中间检索 / 工具调用结果</text>
+      <text x="930" y="624" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">避免重复计算 · 降本利器</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">Agent 四层骨架</text>
+    <text x="1220" y="694" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">04 / 12</text>
+  </g>
+</svg>

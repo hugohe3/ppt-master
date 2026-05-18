@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Adapted from pros_cons_chart structure, restyled to ink/scarlet/rice-paper -->
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="640" y="80" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="40" font-weight="700" fill="#1A1A1A" letter-spacing="6">藏 拙 · 不 等 于 · 消 极 避 世</text>
+  <text x="640" y="115" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852" letter-spacing="3">表面相似 · 本质相反 · 四个维度看清楚</text>
+
+  <!-- Column headers -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="560" height="44" fill="#8B8680"/>
+    <text x="280" y="30" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8" letter-spacing="6">消 极 避 世</text>
+  </g>
+  <g transform="translate(660, 150)">
+    <rect x="0" y="0" width="560" height="44" fill="#1A1A1A"/>
+    <text x="280" y="30" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="22" fill="#A52A2A" letter-spacing="6">藏 拙 蓄 力</text>
+  </g>
+
+  <!-- Central VS badge -->
+  <circle cx="640" cy="400" r="32" fill="#F5F1E8" stroke="#A52A2A" stroke-width="2"/>
+  <text x="640" y="409" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="22" font-weight="700" fill="#A52A2A">辨</text>
+
+  <!-- Vertical divider -->
+  <line x1="640" y1="220" x2="640" y2="370" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="6 6"/>
+  <line x1="640" y1="430" x2="640" y2="600" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="6 6"/>
+
+  <!-- Row 1: 动机 -->
+  <g transform="translate(60, 220)">
+    <rect x="0" y="0" width="560" height="80" fill="#EFEAD9"/>
+    <rect x="0" y="0" width="6" height="80" fill="#8B8680"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680" letter-spacing="3">动机</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">怕 输 · 所以躲</text>
+  </g>
+  <g transform="translate(660, 220)">
+    <rect x="0" y="0" width="560" height="80" fill="#1A1A1A"/>
+    <rect x="0" y="0" width="6" height="80" fill="#A52A2A"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#A52A2A" letter-spacing="3">动机</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#F5F1E8" letter-spacing="3">为 赢 · 所以忍</text>
+  </g>
+
+  <!-- Row 2: 状态 -->
+  <g transform="translate(60, 310)">
+    <rect x="0" y="0" width="560" height="80" fill="#EFEAD9"/>
+    <rect x="0" y="0" width="6" height="80" fill="#8B8680"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680" letter-spacing="3">状态</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">越 躲 越 废</text>
+  </g>
+  <g transform="translate(660, 310)">
+    <rect x="0" y="0" width="560" height="80" fill="#1A1A1A"/>
+    <rect x="0" y="0" width="6" height="80" fill="#A52A2A"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#A52A2A" letter-spacing="3">状态</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#F5F1E8" letter-spacing="3">越 藏 越 厚</text>
+  </g>
+
+  <!-- Row 3: 沉默 -->
+  <g transform="translate(60, 440)">
+    <rect x="0" y="0" width="560" height="80" fill="#EFEAD9"/>
+    <rect x="0" y="0" width="6" height="80" fill="#8B8680"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680" letter-spacing="3">沉默</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">沉默是 — 借 口</text>
+  </g>
+  <g transform="translate(660, 440)">
+    <rect x="0" y="0" width="560" height="80" fill="#1A1A1A"/>
+    <rect x="0" y="0" width="6" height="80" fill="#A52A2A"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#A52A2A" letter-spacing="3">沉默</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#F5F1E8" letter-spacing="3">沉默是 — 蓄 力</text>
+  </g>
+
+  <!-- Row 4: 内心 -->
+  <g transform="translate(60, 530)">
+    <rect x="0" y="0" width="560" height="80" fill="#EFEAD9"/>
+    <rect x="0" y="0" width="6" height="80" fill="#8B8680"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680" letter-spacing="3">内心</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">心里只剩 — 委 屈</text>
+  </g>
+  <g transform="translate(660, 530)">
+    <rect x="0" y="0" width="560" height="80" fill="#1A1A1A"/>
+    <rect x="0" y="0" width="6" height="80" fill="#A52A2A"/>
+    <text x="24" y="34" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#A52A2A" letter-spacing="3">内心</text>
+    <text x="24" y="68" font-family="KaiTi, Georgia, serif" font-size="28" fill="#F5F1E8" letter-spacing="3">心里一直在 — 布 局</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="640" y="660" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" fill="#5C5852" letter-spacing="3">表面没动静 · 底下从不停止生长</text>
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 九</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">11</text>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="ctaScrim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#0A0E27" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.78"/>
+    </linearGradient>
+    <radialGradient id="ctaVignette" cx="50%" cy="50%" r="68%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.45"/>
+    </radialGradient>
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="btnSecondary" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/12_cta_horizon.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#ctaScrim)"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#ctaVignette)"/>
+  </g>
+
+  <g id="cta-tag">
+    <line x1="640" y1="165" x2="608" y2="165" stroke="#3DDDFC" stroke-width="2" stroke-linecap="round"/>
+    <text x="640" y="170" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="5" text-anchor="middle">YOUR TURN</text>
+    <line x1="640" y1="165" x2="672" y2="165" stroke="#3DDDFC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g id="cta-title">
+    <text x="640" y="290" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="72" font-weight="900" fill="#E8ECFF" text-anchor="middle">下一个 Agent</text>
+    <text x="640" y="376" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="72" font-weight="900" fill="url(#titleGradient)" text-anchor="middle">从工程化开始</text>
+  </g>
+
+  <g id="cta-subtitle">
+    <text x="640" y="448" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="400" fill="#A8B0D0" text-anchor="middle">不是"加个 LLM",是把 LLM 真正装进系统</text>
+  </g>
+
+  <g id="cta-buttons">
+    <g id="btn-primary">
+      <rect x="380" y="510" width="280" height="68" rx="34" fill="url(#btnGrad)"/>
+      <use data-icon="phosphor-duotone/rocket" x="408" y="528" width="32" height="32" fill="#FFFFFF"/>
+      <text x="528" y="552" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="900" fill="#FFFFFF" text-anchor="middle">开始 Agent 工程化</text>
+    </g>
+    <g id="btn-secondary">
+      <rect x="690" y="510" width="220" height="68" rx="34" fill="url(#btnSecondary)" stroke="#3DDDFC" stroke-opacity="0.5" stroke-width="1.5"/>
+      <use data-icon="phosphor-duotone/handshake" x="716" y="528" width="32" height="32" fill="#3DDDFC"/>
+      <text x="826" y="552" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF" text-anchor="middle">寻求合作</text>
+    </g>
+  </g>
+
+  <g id="cta-footnote">
+    <text x="640" y="620" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="middle" letter-spacing="2">架构 · 上下文 · 评估 · 可观测 — 四件事一起做,才叫工程化</text>
+  </g>
+
+  <g id="cta-footer">
+    <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0">AI Agent 工程化 · 谢谢观看</text>
+    <text x="1220" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">12 / 12</text>
+  </g>
+</svg>

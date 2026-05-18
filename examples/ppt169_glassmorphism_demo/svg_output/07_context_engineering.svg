@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="bgOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.78"/>
+    </linearGradient>
+    <linearGradient id="hubGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="spokeGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/07_context_sphere.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="50" width="6" height="32" rx="3" fill="url(#titleGradient)"/>
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">上下文,才是 Agent 真正的"权重"</text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">CONTEXT ENGINEERING · 1 CORE + 6 CAPABILITIES</text>
+  </g>
+
+  <g id="orbit-rings">
+    <circle cx="640" cy="410" r="160" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"/>
+    <circle cx="640" cy="410" r="240" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="1" stroke-dasharray="4 6"/>
+  </g>
+
+  <g id="spoke-lines">
+    <line x1="640" y1="410" x2="640" y2="180" stroke="#5B8DEF" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="6 6"/>
+    <line x1="640" y1="410" x2="870" y2="270" stroke="#A26BFA" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="6 6"/>
+    <line x1="640" y1="410" x2="870" y2="540" stroke="#3DDDFC" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="6 6"/>
+    <line x1="640" y1="410" x2="640" y2="640" stroke="#4ADE80" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="6 6"/>
+    <line x1="640" y1="410" x2="410" y2="540" stroke="#3DDDFC" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="6 6"/>
+    <line x1="640" y1="410" x2="410" y2="270" stroke="#A26BFA" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="6 6"/>
+  </g>
+
+  <g id="hub">
+    <circle cx="640" cy="410" r="92" fill="#5B8DEF" fill-opacity="0.2"/>
+    <circle cx="640" cy="410" r="78" fill="url(#hubGrad)"/>
+    <circle cx="640" cy="410" r="68" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1"/>
+    <use data-icon="phosphor-duotone/cube" x="616" y="380" width="48" height="48" fill="#FFFFFF"/>
+    <text x="640" y="455" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle">CONTEXT</text>
+    <text x="640" y="474" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#E8ECFF" text-anchor="middle" letter-spacing="3">ENGINEERING</text>
+  </g>
+
+  <g id="spoke-retrieval">
+    <rect x="520" y="140" width="240" height="80" rx="14" fill="url(#spokeGlass)" stroke="#5B8DEF" stroke-opacity="0.55" stroke-width="1"/>
+    <rect x="538" y="141" width="204" height="1" fill="url(#glassEdge)"/>
+    <rect x="520" y="164" width="4" height="32" rx="2" fill="#5B8DEF"/>
+    <rect x="540" y="156" width="44" height="44" rx="10" fill="#5B8DEF" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/magnifying-glass" x="548" y="164" width="28" height="28" fill="#5B8DEF"/>
+    <text x="600" y="174" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="17" font-weight="800" fill="#E8ECFF">检索</text>
+    <text x="600" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="500" fill="#A8B0D0">RAG · 向量召回 · BM25 混排</text>
+  </g>
+
+  <g id="spoke-rerank">
+    <rect x="750" y="230" width="240" height="80" rx="14" fill="url(#spokeGlass)" stroke="#A26BFA" stroke-opacity="0.55" stroke-width="1"/>
+    <rect x="768" y="231" width="204" height="1" fill="url(#glassEdge)"/>
+    <rect x="750" y="254" width="4" height="32" rx="2" fill="#A26BFA"/>
+    <rect x="770" y="246" width="44" height="44" rx="10" fill="#A26BFA" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/funnel" x="778" y="254" width="28" height="28" fill="#A26BFA"/>
+    <text x="830" y="264" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="17" font-weight="800" fill="#E8ECFF">重排</text>
+    <text x="830" y="290" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="500" fill="#A8B0D0">Reranker · Top-K 精筛</text>
+  </g>
+
+  <g id="spoke-truncate">
+    <rect x="750" y="500" width="240" height="80" rx="14" fill="url(#spokeGlass)" stroke="#3DDDFC" stroke-opacity="0.55" stroke-width="1"/>
+    <rect x="768" y="501" width="204" height="1" fill="url(#glassEdge)"/>
+    <rect x="750" y="524" width="4" height="32" rx="2" fill="#3DDDFC"/>
+    <rect x="770" y="516" width="44" height="44" rx="10" fill="#3DDDFC" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/scales" x="778" y="524" width="28" height="28" fill="#3DDDFC"/>
+    <text x="830" y="534" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="17" font-weight="800" fill="#E8ECFF">截断</text>
+    <text x="830" y="560" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="500" fill="#A8B0D0">Token 预算 · 关键信息优先</text>
+  </g>
+
+  <g id="spoke-memory">
+    <rect x="520" y="600" width="240" height="80" rx="14" fill="url(#spokeGlass)" stroke="#4ADE80" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="538" y="601" width="204" height="1" fill="url(#glassEdge)"/>
+    <rect x="520" y="624" width="4" height="32" rx="2" fill="#4ADE80"/>
+    <rect x="540" y="616" width="44" height="44" rx="10" fill="#4ADE80" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/database" x="548" y="624" width="28" height="28" fill="#4ADE80"/>
+    <text x="600" y="634" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="17" font-weight="800" fill="#E8ECFF">记忆</text>
+    <text x="600" y="660" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="500" fill="#A8B0D0">长 / 短期 · 会话状态</text>
+  </g>
+
+  <g id="spoke-tools">
+    <rect x="290" y="500" width="240" height="80" rx="14" fill="url(#spokeGlass)" stroke="#3DDDFC" stroke-opacity="0.55" stroke-width="1"/>
+    <rect x="308" y="501" width="204" height="1" fill="url(#glassEdge)"/>
+    <rect x="290" y="524" width="4" height="32" rx="2" fill="#3DDDFC"/>
+    <rect x="310" y="516" width="44" height="44" rx="10" fill="#3DDDFC" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/gear" x="318" y="524" width="28" height="28" fill="#3DDDFC"/>
+    <text x="370" y="534" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="17" font-weight="800" fill="#E8ECFF">工具说明</text>
+    <text x="370" y="560" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="500" fill="#A8B0D0">Tool schema · 示例描述</text>
+  </g>
+
+  <g id="spoke-system">
+    <rect x="290" y="230" width="240" height="80" rx="14" fill="url(#spokeGlass)" stroke="#A26BFA" stroke-opacity="0.55" stroke-width="1"/>
+    <rect x="308" y="231" width="204" height="1" fill="url(#glassEdge)"/>
+    <rect x="290" y="254" width="4" height="32" rx="2" fill="#A26BFA"/>
+    <rect x="310" y="246" width="44" height="44" rx="10" fill="#A26BFA" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/code-block" x="318" y="254" width="28" height="28" fill="#A26BFA"/>
+    <text x="370" y="264" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="17" font-weight="800" fill="#E8ECFF">系统提示</text>
+    <text x="370" y="290" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="500" fill="#A8B0D0">Persona · 输出格式 · 安全</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">上下文工程 · 让 LLM 知道"该看什么"</text>
+    <text x="1220" y="694" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">07 / 12</text>
+  </g>
+</svg>

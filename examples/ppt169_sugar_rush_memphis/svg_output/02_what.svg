@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P02 Chapter 1 WHAT · breathing · hero_page with ch1_what.png -->
+
+  <defs>
+    <linearGradient id="topScrim02" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF8EE" stop-opacity="0.0"/>
+      <stop offset="100%" stop-color="#FFF8EE" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg-image">
+    <image href="../images/ch1_what.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Black bar with chapter number top-left -->
+  <g id="chapter-tag">
+    <rect x="60" y="50" width="180" height="48" rx="0" fill="#1A1A2E"/>
+    <rect x="60" y="50" width="14" height="48" fill="#FFD93D"/>
+    <text x="92" y="83" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#FFF8EE" letter-spacing="6">CH · 01</text>
+  </g>
+
+  <!-- Hero chapter title centered upper -->
+  <g id="chapter-title">
+    <text x="640" y="290" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="180" font-weight="900" fill="#1A1A2E" letter-spacing="-2">WHAT.</text>
+    <!-- Pink underline accent -->
+    <rect x="425" y="305" width="430" height="14" fill="#FF3DA5"/>
+  </g>
+
+  <!-- Subtitle band -->
+  <g id="subtitle-band">
+    <rect x="160" y="370" width="960" height="80" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="640" y="422" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="28" font-weight="700" fill="#1A1A2E">当全世界都在变热，我们决定，让它<tspan fill="#FF3DA5" font-weight="900">变甜</tspan>。</text>
+  </g>
+
+  <!-- Decoration: zigzag bolt + dots -->
+  <g id="decor-right">
+    <path d="M 1150 200 L 1100 250 L 1140 250 L 1090 310" stroke="#FFD93D" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1180" cy="180" r="14" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="3"/>
+    <circle cx="1200" cy="220" r="8" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+  </g>
+
+  <!-- Decoration: triangle + checker bottom-left -->
+  <g id="decor-bottom-left">
+    <polygon points="80,620 130,560 130,620" fill="#00B8D9" stroke="#1A1A2E" stroke-width="3"/>
+    <g id="checker-bl">
+      <rect x="60" y="650" width="14" height="14" fill="#1A1A2E"/>
+      <rect x="74" y="650" width="14" height="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2"/>
+      <rect x="88" y="650" width="14" height="14" fill="#1A1A2E"/>
+      <rect x="60" y="664" width="14" height="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2"/>
+      <rect x="74" y="664" width="14" height="14" fill="#1A1A2E"/>
+      <rect x="88" y="664" width="14" height="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- Page number footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">02 / 14 · SUGAR RUSH</text>
+  </g>
+</svg>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART III · CHINA CAMP · 10</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">中国 AI 五雄：<tspan fill="#F4A261">DeepSeek</tspan> 领跑，估值阶梯分明</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">China's AI five — privately valued vs. publicly listed</text>
+  </g>
+
+  <g id="chartArea">
+    <g id="axis">
+      <line x1="340" y1="200" x2="340" y2="600" stroke="#5C5852" stroke-width="1" />
+      <line x1="340" y1="600" x2="1180" y2="600" stroke="#5C5852" stroke-width="1" />
+
+      <line x1="508" y1="200" x2="508" y2="600" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+      <line x1="676" y1="200" x2="676" y2="600" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+      <line x1="844" y1="200" x2="844" y2="600" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+      <line x1="1012" y1="200" x2="1012" y2="600" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+      <line x1="1180" y1="200" x2="1180" y2="600" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+
+      <text x="340" y="624" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$0</text>
+      <text x="508" y="624" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$15B</text>
+      <text x="676" y="624" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$30B</text>
+      <text x="844" y="624" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$45B</text>
+      <text x="1012" y="624" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$60B</text>
+      <text x="1180" y="624" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$75B</text>
+    </g>
+    
+
+    <g id="bar-deepseek">
+      <text x="330" y="248" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8E6E1" text-anchor="end">DeepSeek</text>
+      <text x="330" y="266" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">national fund-led</text>
+      <rect x="340" y="232" width="560" height="40" fill="#E63946" />
+      <text x="918" y="259" font-family="Cambria, serif" font-size="20" font-weight="bold" fill="#E63946">$50B</text>
+    </g>
+
+    <g id="bar-zhipu">
+      <text x="330" y="318" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8E6E1" text-anchor="end">Zhipu AI 智谱</text>
+      <text x="330" y="336" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">HK listed · market cap</text>
+      <rect x="340" y="302" width="628" height="40" fill="#F4A261" />
+      <text x="986" y="329" font-family="Cambria, serif" font-size="20" font-weight="bold" fill="#F4A261">$56.1B</text>
+    </g>
+
+    <g id="bar-minimax">
+      <text x="330" y="388" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8E6E1" text-anchor="end">MiniMax</text>
+      <text x="330" y="406" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">HK listed · market cap</text>
+      <rect x="340" y="372" width="417" height="40" fill="#F4A261" />
+      <text x="775" y="399" font-family="Cambria, serif" font-size="20" font-weight="bold" fill="#F4A261">$37.2B</text>
+    </g>
+
+    <g id="bar-moonshot">
+      <text x="330" y="458" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8E6E1" text-anchor="end">Moonshot (Kimi)</text>
+      <text x="330" y="476" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">Series D · 美团领投</text>
+      <rect x="340" y="442" width="224" height="40" fill="#C9C5BE" />
+      <text x="582" y="469" font-family="Cambria, serif" font-size="20" font-weight="bold" fill="#C9C5BE">$20B</text>
+    </g>
+
+    <g id="bar-stepfun">
+      <text x="330" y="528" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8E6E1" text-anchor="end">StepFun 阶跃</text>
+      <text x="330" y="546" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">in talks · ~$2.5B raise</text>
+      <rect x="340" y="512" width="90" height="40" fill="#8A857E" />
+      <text x="448" y="539" font-family="Cambria, serif" font-size="20" font-weight="bold" fill="#8A857E">~$8B</text>
+    </g>
+
+    <g id="legend">
+      <rect x="340" y="660" width="14" height="14" fill="#E63946" />
+      <text x="362" y="672" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" fill="#8A857E">国家大基金领投</text>
+      <rect x="520" y="660" width="14" height="14" fill="#F4A261" />
+      <text x="542" y="672" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" fill="#8A857E">港股上市</text>
+      <rect x="660" y="660" width="14" height="14" fill="#C9C5BE" />
+      <text x="682" y="672" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" fill="#8A857E">私募</text>
+      <rect x="760" y="660" width="14" height="14" fill="#8A857E" />
+      <text x="782" y="672" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" fill="#8A857E">在谈</text>
+    </g>
+  </g>
+
+  <g id="callout-bottom">
+    <line x1="940" y1="660" x2="940" y2="675" stroke="#2A2F36" stroke-width="0" />
+    <text x="960" y="672" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="2">DATA NOTE</text>
+    <text font-size="11" fill="#8A857E" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="960" y="694">港股市值 vs 私募估值</text><text font-size="11" fill="#8A857E" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="960" y="708">不直接可比，仅供量级参考</text></g>
+
+  <g id="page-footer">
+    <text x="60" y="715" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: BigGo Finance · TechCrunch · KuCoin · Reuters · HKEX 上市文件 2026-01</text>
+    <text x="1220" y="715" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">10 / 20</text>
+  </g>
+</svg>

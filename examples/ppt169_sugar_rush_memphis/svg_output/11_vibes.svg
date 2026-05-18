@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P11 Chapter 4 VIBES · breathing · hero_page with ch4_vibes.png -->
+
+  <g id="bg-image">
+    <image href="../images/ch4_vibes.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Chapter tag -->
+  <g id="chapter-tag">
+    <rect x="60" y="50" width="180" height="48" fill="#FFD93D"/>
+    <rect x="60" y="50" width="14" height="48" fill="#FF3DA5"/>
+    <text x="92" y="83" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="6">CH · 04</text>
+  </g>
+
+  <!-- Hero chapter title -->
+  <g id="chapter-title">
+    <text x="305" y="290" text-anchor="start" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="200" font-weight="900" fill="#FFF8EE" letter-spacing="-2">VIBES.</text>
+    <rect x="305" y="305" width="640" height="14" fill="#00B8D9"/>
+  </g>
+
+  <!-- Subtitle pill -->
+  <g id="subtitle-pill">
+    <rect x="305" y="345" width="640" height="60" rx="30" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="625" y="384" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="24" font-weight="700" fill="#1A1A2E">音乐之外，还有 <tspan fill="#FF3DA5" font-weight="900">十种甜</tspan> 的方式</text>
+  </g>
+
+  <!-- Three tag stickers floating -->
+  <g id="tag-market">
+    <rect x="100" y="510" width="280" height="100" rx="14" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="4" transform="rotate(-3, 240, 560)"/>
+    <use data-icon="chunk-filled/shopping-bag" x="124" y="538" width="36" height="36" fill="#1A1A2E" transform="rotate(-3, 240, 560)"/>
+    <text x="172" y="555" font-family="Impact, sans-serif" font-size="20" font-weight="900" fill="#1A1A2E" letter-spacing="2" transform="rotate(-3, 240, 560)">MARKET</text>
+    <text x="172" y="582" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E" transform="rotate(-3, 240, 560)">50+ 摊位 · 限定周边</text>
+  </g>
+
+  <g id="tag-install">
+    <rect x="500" y="500" width="280" height="100" rx="14" fill="#FFD93D" stroke="#1A1A2E" stroke-width="4" transform="rotate(2, 640, 550)"/>
+    <use data-icon="chunk-filled/game-controller" x="524" y="528" width="36" height="36" fill="#1A1A2E" transform="rotate(2, 640, 550)"/>
+    <text x="572" y="545" font-family="Impact, sans-serif" font-size="20" font-weight="900" fill="#1A1A2E" letter-spacing="2" transform="rotate(2, 640, 550)">ART INSTALL</text>
+    <text x="572" y="572" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E" transform="rotate(2, 640, 550)">10 件巨型装置 · AR 互动</text>
+  </g>
+
+  <g id="tag-food">
+    <rect x="900" y="510" width="280" height="100" rx="14" fill="#00C896" stroke="#1A1A2E" stroke-width="4" transform="rotate(-2, 1040, 560)"/>
+    <use data-icon="chunk-filled/heart" x="924" y="538" width="36" height="36" fill="#1A1A2E" transform="rotate(-2, 1040, 560)"/>
+    <text x="972" y="555" font-family="Impact, sans-serif" font-size="20" font-weight="900" fill="#1A1A2E" letter-spacing="2" transform="rotate(-2, 1040, 560)">FOOD &amp; FUN</text>
+    <text x="972" y="582" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E" transform="rotate(-2, 1040, 560)">40+ 餐车 · 篝火 · 工坊</text>
+  </g>
+
+  <!-- Floating decoration -->
+  <g id="decor">
+    <circle cx="150" cy="160" r="10" fill="#FFD93D" stroke="#FFF8EE" stroke-width="2"/>
+    <circle cx="180" cy="180" r="6" fill="#FF3DA5" stroke="#FFF8EE" stroke-width="2"/>
+    <path d="M 1080 150 L 1110 130 L 1110 150 L 1140 130" stroke="#FFD93D" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <polygon points="1190,180 1220,210 1160,210" fill="#FF3DA5" stroke="#FFF8EE" stroke-width="2"/>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="3">11 / 14 · SUGAR RUSH</text>
+  </g>
+</svg>

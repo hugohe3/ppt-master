@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P10 SEVEN DAYS OF SUGAR · dense · chart: timeline (7 milestones) -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE"/>
+  </g>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#FF6B4A"/>
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">SEVEN DAYS OF SUGAR</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">7.18 — 7.24 · 一周完整日程</text>
+    <!-- Progress badge -->
+    <rect x="1010" y="58" width="210" height="48" rx="24" fill="#1A1A2E"/>
+    <use data-icon="chunk-filled/clock" x="1024" y="70" width="24" height="24" fill="#FFD93D"/>
+    <text x="1115" y="88" text-anchor="middle" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">12 HR / DAY · 7 DAYS</text>
+  </g>
+
+  <!-- Main horizontal timeline track -->
+  <g id="timeline-track">
+    <line x1="120" y1="320" x2="1160" y2="320" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round"/>
+    <!-- Pink overlay dashed segment for in-progress vibe -->
+    <line x1="120" y1="320" x2="1160" y2="320" stroke="#FF3DA5" stroke-width="2" stroke-dasharray="8,8" opacity="0.7"/>
+  </g>
+
+  <!-- Day 1 - OPENING (Pink) - Card above -->
+  <g id="day-1">
+    <line x1="180" y1="280" x2="180" y2="320" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="180" cy="320" r="22" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="180" y="328" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE">1</text>
+    <rect x="105" y="170" width="150" height="110" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3"/>
+    <rect x="105" y="170" width="150" height="28" fill="#FF3DA5"/>
+    <text x="180" y="190" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.18</text>
+    <text x="180" y="226" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">OPENING</text>
+    <text x="180" y="248" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FF3DA5">开幕之夜</text>
+    <text x="180" y="268" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#5C5C7A">CHERRY BOMB 开场</text>
+  </g>
+
+  <!-- Day 2 - ROCK (Pink) - Card below -->
+  <g id="day-2">
+    <line x1="320" y1="320" x2="320" y2="360" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="320" cy="320" r="22" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="320" y="328" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE">2</text>
+    <rect x="245" y="360" width="150" height="110" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3"/>
+    <rect x="245" y="442" width="150" height="28" fill="#FF3DA5"/>
+    <text x="320" y="462" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.19</text>
+    <text x="320" y="392" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">ROCK DAY</text>
+    <text x="320" y="414" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FF3DA5">摇滚日</text>
+    <text x="320" y="432" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#5C5C7A">25 组 · CHERRY STAGE</text>
+  </g>
+
+  <!-- Day 3 - ELECTRO (Blue) - Card above -->
+  <g id="day-3">
+    <line x1="460" y1="280" x2="460" y2="320" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="460" cy="320" r="22" fill="#00B8D9" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="460" y="328" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE">3</text>
+    <rect x="385" y="170" width="150" height="110" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3"/>
+    <rect x="385" y="170" width="150" height="28" fill="#00B8D9"/>
+    <text x="460" y="190" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.20</text>
+    <text x="460" y="226" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">ELECTRO</text>
+    <text x="460" y="248" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#00B8D9">电子之夜</text>
+    <text x="460" y="268" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#5C5C7A">通宵 12h · NEON GRID</text>
+  </g>
+
+  <!-- Day 4 - FOLK (Green) - Card below -->
+  <g id="day-4">
+    <line x1="600" y1="320" x2="600" y2="360" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="600" cy="320" r="22" fill="#00C896" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="600" y="328" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE">4</text>
+    <rect x="525" y="360" width="150" height="110" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3"/>
+    <rect x="525" y="442" width="150" height="28" fill="#00C896"/>
+    <text x="600" y="462" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.21</text>
+    <text x="600" y="392" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">FOLK</text>
+    <text x="600" y="414" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#00C896">民谣午后</text>
+    <text x="600" y="432" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#5C5C7A">15 组 · MINT GROVE</text>
+  </g>
+
+  <!-- Day 5 - HIPHOP (Yellow) - Card above -->
+  <g id="day-5">
+    <line x1="740" y1="280" x2="740" y2="320" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="740" cy="320" r="22" fill="#FFD93D" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="740" y="328" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">5</text>
+    <rect x="665" y="170" width="150" height="110" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3"/>
+    <rect x="665" y="170" width="150" height="28" fill="#FFD93D"/>
+    <text x="740" y="190" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.22</text>
+    <text x="740" y="226" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">HIPHOP</text>
+    <text x="740" y="248" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FF6B4A">嘻哈午夜</text>
+    <text x="740" y="268" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#5C5C7A">10 组 · YELLOW BLOCK</text>
+  </g>
+
+  <!-- Day 6 - CROSSOVER (Coral) - Card below -->
+  <g id="day-6">
+    <line x1="880" y1="320" x2="880" y2="360" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="880" cy="320" r="22" fill="#FF6B4A" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="880" y="328" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE">6</text>
+    <rect x="805" y="360" width="150" height="110" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3"/>
+    <rect x="805" y="442" width="150" height="28" fill="#FF6B4A"/>
+    <text x="880" y="462" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#FFF8EE" letter-spacing="2">7.23</text>
+    <text x="880" y="392" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E">CROSSOVER</text>
+    <text x="880" y="414" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FF6B4A">跨界之夜</text>
+    <text x="880" y="432" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#5C5C7A">4 大头牌同台</text>
+  </g>
+
+  <!-- Day 7 - CLOSING (Pink + Star marker) - Card above -->
+  <g id="day-7">
+    <line x1="1020" y1="280" x2="1020" y2="320" stroke="#1A1A2E" stroke-width="2" stroke-dasharray="3,3"/>
+    <circle cx="1020" cy="320" r="30" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="4"/>
+    <use data-icon="chunk-filled/star" x="1004" y="304" width="32" height="32" fill="#FFF8EE"/>
+    <rect x="945" y="170" width="160" height="110" rx="12" fill="#1A1A2E" stroke="#FF3DA5" stroke-width="4"/>
+    <rect x="945" y="170" width="160" height="28" fill="#FFD93D"/>
+    <text x="1025" y="190" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.24 · FINALE</text>
+    <text x="1025" y="226" text-anchor="middle" font-family="Impact, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE">CLOSING</text>
+    <text x="1025" y="248" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FF3DA5">闭幕大狂欢</text>
+    <text x="1025" y="268" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#FFF8EE">SUGAR DOME · 烟花</text>
+  </g>
+
+  <!-- Day-of-week labels under track -->
+  <g id="dow-labels">
+    <text x="180" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">SAT</text>
+    <text x="320" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">SUN</text>
+    <text x="460" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">MON</text>
+    <text x="600" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">TUE</text>
+    <text x="740" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">WED</text>
+    <text x="880" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">THU</text>
+    <text x="1020" y="540" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">FRI</text>
+  </g>
+
+  <!-- Legend / bottom info strip -->
+  <g id="legend">
+    <rect x="60" y="580" width="1160" height="80" rx="12" fill="#1A1A2E"/>
+    <use data-icon="chunk-filled/clock" x="86" y="610" width="32" height="32" fill="#FFD93D"/>
+    <text x="130" y="622" font-family="Impact, sans-serif" font-size="18" font-weight="900" fill="#FFD93D" letter-spacing="2">DAILY SCHEDULE</text>
+    <text x="130" y="648" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="600" fill="#FFF8EE">每天 16:00 入场 · 17:00 开演 · 次日 04:00 结束 · 5 个舞台同时进行</text>
+    <!-- Right pill -->
+    <rect x="940" y="608" width="260" height="44" rx="22" fill="#FF3DA5"/>
+    <text x="1070" y="635" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="16" font-weight="900" fill="#FFF8EE" letter-spacing="3">DOWNLOAD APP →</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">具体演出时间以 APP 内日程为准</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">10 / 14</text>
+  </g>
+</svg>

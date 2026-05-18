@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="p09-header">
+    <text x="60" y="60" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="3">07 · FINAL MAGNUM OPUS</text>
+    <text x="60" y="124" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="46" font-weight="bold" fill="#1C1C1C">沙漠中的解构主义绝唱</text>
+    <line x1="60" y1="156" x2="180" y2="156" stroke="#B8935A" stroke-width="3"/>
+    <text x="60" y="194" font-family="KaiTi, Georgia, serif" font-size="22" fill="#5C5852" font-style="italic">弗兰克·盖里 · 阿布扎比古根海姆博物馆 · 2026 开幕</text>
+    <text x="60" y="222" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#8B8680">1989 年普利兹克奖得主 · 弗兰克·盖里（1929 — 2025）大师遗作</text>
+  </g>
+
+  <g id="frame-1">
+    <rect x="60" y="270" width="540" height="320" fill="none" stroke="#D4CFC4" stroke-width="1"/>
+    <image href="../images/gehry_abu_dhabi_render1.png" x="72" y="282" width="516" height="296" preserveAspectRatio="xMidYMid slice"/>
+    <text x="60" y="612" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">效果图 · 主视角</text>
+    <text x="60" y="630" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">不规则曲面 · 灵动褶皱 · 极具冲击的几何形态</text>
+  </g>
+
+  <g id="frame-2">
+    <rect x="630" y="270" width="280" height="200" fill="none" stroke="#D4CFC4" stroke-width="1"/>
+    <image href="../images/gehry_abu_dhabi_render2.png" x="642" y="282" width="256" height="176" preserveAspectRatio="xMidYMid slice"/>
+    <text x="630" y="492" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">第二角度</text>
+  </g>
+
+  <g id="frame-3">
+    <rect x="940" y="270" width="280" height="200" fill="none" stroke="#D4CFC4" stroke-width="1"/>
+    <image href="../images/gehry_abu_dhabi_render3.png" x="952" y="282" width="256" height="176" preserveAspectRatio="xMidYMid slice"/>
+    <text x="940" y="492" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">鸟瞰角度</text>
+  </g>
+
+  <g id="manifesto">
+    <line x1="630" y1="530" x2="630" y2="630" stroke="#B8935A" stroke-width="2"/>
+    <text x="650" y="558" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="2">FINAL STATEMENT</text>
+    <text x="650" y="592" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">近 20 年心血 · 生命尾声的造型实验</text>
+    <text x="650" y="618" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">金属外立面随日光流转变换肌理 · 沙漠极端气候定制遮阳系统</text>
+    <text x="650" y="640" font-family="KaiTi, serif" font-size="16" fill="#B8935A" font-style="italic">建筑无边界 · 创意无极限</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="688" x2="1220" y2="688" stroke="#D4CFC4" stroke-width="1"/>
+    <text x="60" y="710" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">图源 · Gehry Partners — 解构主义大师的收官终篇</text>
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="11" fill="#8B8680">09 / 11</text>
+  </g>
+</svg>

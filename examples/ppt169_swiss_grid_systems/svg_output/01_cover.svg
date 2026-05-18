@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" />
+  </g>
+
+  <g id="cover-meta-top">
+    <text x="64" y="84" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" letter-spacing="2">A LECTURE · 2026</text>
+    <line x1="64" y1="98" x2="180" y2="98" stroke="#1A1A1A" stroke-width="1" />
+  </g>
+
+  <g id="cover-headline">
+    <text x="64" y="500" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="84" font-weight="900" fill="#1A1A1A">网格系统</text>
+    <text x="64" y="554" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="36" font-weight="900" fill="#1A1A1A">The Grid as a Way of Seeing</text>
+  </g>
+
+  <g id="cover-tagline">
+    <line x1="64" y1="596" x2="64" y2="640" stroke="#D9251D" stroke-width="3" />
+    <text x="84" y="616" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A1A1A">Swiss International Typographic Style</text>
+    <text x="84" y="638" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">Müller-Brockmann · Helvetica · Univers · 1896 — Today</text>
+  </g>
+
+  <g id="cover-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">01 / 14</text>
+  </g>
+</svg>

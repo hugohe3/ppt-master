@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP06" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+    <marker id="arrow06" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotP06)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" letter-spacing="-1">工艺：5 步从数字图像到印张</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">RISOGRAPH WORKFLOW · ONE COLOR AT A TIME · 50–10,000 PRINTS / MIN</text>
+  </g>
+
+  <!-- Mid-section horizontal banner image -->
+  <g id="process-banner">
+    <rect x="58" y="170" width="1164" height="200" fill="#FF5C8A"/>
+    <image href="../images/risograph_process_banner.png" x="60" y="170" width="1160" height="196" preserveAspectRatio="xMidYMid slice"/>
+    <!-- Bottom black accent strip on banner -->
+    <rect x="60" y="362" width="1160" height="4" fill="#1A1A1A"/>
+  </g>
+
+  <!-- 5-step row -->
+  <g id="step-01">
+    <rect x="60" y="400" width="216" height="50" fill="#1E4DBC"/>
+    <text x="92" y="436" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0">01</text>
+    <text x="138" y="436" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0">DIGITAL FILE</text>
+    <rect x="60" y="450" width="216" height="220" fill="#F5EFE0"/>
+    <rect x="60" y="450" width="216" height="220" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="80" y="488" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#1A1A1A">接收数字图像</text>
+    <line x1="80" y1="500" x2="200" y2="500" stroke="#1E4DBC" stroke-width="2"/>
+    <text x="80" y="528" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 一张设计稿</text>
+    <text x="80" y="550" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 拆解 N 个颜色</text>
+    <text x="80" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 每色单独出层</text>
+    <text x="80" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">INPUT</text>
+  </g>
+
+  <!-- arrow -->
+  <line x1="280" y1="560" x2="296" y2="560" stroke="#1A1A1A" stroke-width="3" marker-end="url(#arrow06)"/>
+
+  <g id="step-02">
+    <rect x="300" y="400" width="216" height="50" fill="#FF5C8A"/>
+    <text x="332" y="436" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0">02</text>
+    <text x="378" y="436" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0">BURN MASTER</text>
+    <rect x="300" y="450" width="216" height="220" fill="#F5EFE0"/>
+    <rect x="300" y="450" width="216" height="220" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="320" y="488" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#1A1A1A">烧蚀像素化母版</text>
+    <line x1="320" y1="500" x2="440" y2="500" stroke="#FF5C8A" stroke-width="2"/>
+    <text x="320" y="528" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="500" fill="#5A5A5A">· 热头烧穿纤维基母版</text>
+    <text x="320" y="550" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="500" fill="#5A5A5A">· 小孔形成蜂窝阵列</text>
+    <text x="320" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="500" fill="#5A5A5A">· 母版即"刻版"</text>
+    <text x="320" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">STENCIL</text>
+  </g>
+
+  <line x1="520" y1="560" x2="536" y2="560" stroke="#1A1A1A" stroke-width="3" marker-end="url(#arrow06)"/>
+
+  <g id="step-03">
+    <rect x="540" y="400" width="216" height="50" fill="#E8A02E"/>
+    <text x="572" y="436" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0">03</text>
+    <text x="618" y="436" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">WRAP DRUM</text>
+    <rect x="540" y="450" width="216" height="220" fill="#F5EFE0"/>
+    <rect x="540" y="450" width="216" height="220" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="560" y="488" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#1A1A1A">包裹彩色墨筒</text>
+    <line x1="560" y1="500" x2="680" y2="500" stroke="#E8A02E" stroke-width="2"/>
+    <text x="560" y="528" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 母版裹圆筒</text>
+    <text x="560" y="550" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 筒内填大豆基油墨</text>
+    <text x="560" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 一筒 = 一种颜色</text>
+    <text x="560" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#E8A02E" letter-spacing="2">INK DRUM</text>
+  </g>
+
+  <line x1="760" y1="560" x2="776" y2="560" stroke="#1A1A1A" stroke-width="3" marker-end="url(#arrow06)"/>
+
+  <g id="step-04">
+    <rect x="780" y="400" width="216" height="50" fill="#1E4DBC"/>
+    <text x="812" y="436" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0">04</text>
+    <text x="858" y="436" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0">ROLL PRINT</text>
+    <rect x="780" y="450" width="216" height="220" fill="#F5EFE0"/>
+    <rect x="780" y="450" width="216" height="220" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="800" y="488" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#1A1A1A">滚压油墨到纸</text>
+    <line x1="800" y1="500" x2="920" y2="500" stroke="#1E4DBC" stroke-width="2"/>
+    <text x="800" y="528" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 滚筒高速旋转</text>
+    <text x="800" y="550" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 墨从孔渗出</text>
+    <text x="800" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 纸被压在筒下走</text>
+    <text x="800" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">SINGLE COLOR</text>
+  </g>
+
+  <line x1="1000" y1="560" x2="1016" y2="560" stroke="#1A1A1A" stroke-width="3" marker-end="url(#arrow06)"/>
+
+  <g id="step-05">
+    <rect x="1020" y="400" width="200" height="50" fill="#1A1A1A"/>
+    <text x="1052" y="436" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#FF5C8A">05</text>
+    <text x="1098" y="436" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0">RUN AGAIN</text>
+    <rect x="1020" y="450" width="200" height="220" fill="#F5EFE0"/>
+    <rect x="1020" y="450" width="200" height="220" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="1040" y="488" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#1A1A1A">换墨筒再印一次</text>
+    <line x1="1040" y1="500" x2="1160" y2="500" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="1040" y="528" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 换粉墨筒，再过纸</text>
+    <text x="1040" y="550" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">· 错位 1–3px ＝ 美学</text>
+    <text x="1040" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#FF5C8A">· 套色错位完成</text>
+    <text x="1040" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">OVERPRINT</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="690" x2="1220" y2="690" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P06 · RISO WORKFLOW</text>
+    <text x="1220" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">5 STEPS × N COLORS = ONE PRINT</text>
+  </g>
+</svg>

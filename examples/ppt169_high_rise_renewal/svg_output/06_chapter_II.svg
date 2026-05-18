@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="circleClip">
+      <circle cx="940" cy="360" r="240"/>
+    </clipPath>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2B3A4A"/>
+      <stop offset="100%" stop-color="#1A2530"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+  </g>
+
+  <g id="bg-decor">
+    <line x1="80" y1="180" x2="200" y2="180" stroke="#8B7355" stroke-width="1"/>
+    <line x1="80" y1="540" x2="280" y2="540" stroke="#8B7355" stroke-width="1"/>
+    <circle cx="100" cy="100" r="3" fill="#8B7355"/>
+    <circle cx="100" cy="640" r="3" fill="#8B7355"/>
+  </g>
+
+  <g id="circle-image">
+    <circle cx="940" cy="360" r="240" fill="#8B7355" fill-opacity="0.15"/>
+    <image href="../images/640_24.png" x="700" y="120" width="480" height="480" preserveAspectRatio="xMidYMid slice" clip-path="url(#circleClip)"/>
+    <circle cx="940" cy="360" r="240" fill="none" stroke="#8B7355" stroke-width="2" stroke-opacity="0.6"/>
+    <circle cx="940" cy="360" r="270" fill="none" stroke="#8B7355" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4,8"/>
+  </g>
+
+  <g id="chapter-meta">
+    <text x="80" y="220" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#8B7355" letter-spacing="6">CHAPTER</text>
+    <text x="80" y="370" font-family="Georgia, serif" font-size="240" font-weight="400" fill="#F5F2EC" fill-opacity="0.95">II</text>
+    <line x1="80" y1="420" x2="160" y2="420" stroke="#C2410C" stroke-width="3"/>
+  </g>
+
+  <g id="chapter-title">
+    <text x="80" y="490" font-family="KaiTi, Georgia, serif" font-size="48" font-weight="700" fill="#F5F2EC">悉尼范本</text>
+    <text x="80" y="538" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="400" fill="#D6CFC0">一座摩天楼的"再生"革命</text>
+    <text x="80" y="582" font-family="Georgia, serif" font-size="14" font-style="italic" fill="#8B7355" letter-spacing="2">SYDNEY · QUAY QUARTER TOWER · 2022</text>
+  </g>
+
+  <g id="footer">
+    <line x1="80" y1="660" x2="280" y2="660" stroke="#5A6B7A" stroke-width="1"/>
+    <text x="80" y="694" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B7355">主动再生 · 不再大拆大建</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8B7355">06 / 15</text>
+  </g>
+</svg>

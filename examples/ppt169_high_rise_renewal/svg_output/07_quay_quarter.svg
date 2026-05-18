@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="p07ImgL"><rect x="60" y="210" width="320" height="430" rx="6"/></clipPath>
+    <clipPath id="p07ImgR"><rect x="480" y="210" width="240" height="430" rx="6"/></clipPath>
+    <linearGradient id="p07TopL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A6B7A" stop-opacity="0.55"/>
+      <stop offset="40%" stop-color="#5A6B7A" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p07TopR" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B7355" stop-opacity="0.55"/>
+      <stop offset="40%" stop-color="#8B7355" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p07BottomFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F2EC" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#F5F2EC" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#8B7355"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">II · 范本  ·  REGENERATION</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A">QUAY QUARTER TOWER · SYDNEY</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="150" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#2B3A4A">世界第一座<tspan fill="#8B7355">"全面升级改造"</tspan>的摩天大楼</text>
+    <line x1="60" y1="174" x2="160" y2="174" stroke="#8B7355" stroke-width="2"/>
+  </g>
+
+  <g id="img-before">
+    <image href="../images/640_4.png" x="60" y="210" width="320" height="430" preserveAspectRatio="xMidYMid slice" clip-path="url(#p07ImgL)"/>
+    <rect x="60" y="210" width="320" height="120" fill="url(#p07TopL)"/>
+    <rect x="60" y="560" width="320" height="80" fill="url(#p07BottomFade)"/>
+    <g id="badge-before">
+      <rect x="80" y="230" width="12" height="12" fill="#F5F2EC"/>
+      <text x="100" y="241" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">BEFORE</text>
+    </g>
+    <text x="60" y="668" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">原 AMP 中心 · 1976 年 · 206 米 · 49 层</text>
+  </g>
+
+  <g id="arrow-mid">
+    <text x="430" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#8B7355" letter-spacing="2">RE</text>
+    <line x1="410" y1="445" x2="450" y2="445" stroke="#8B7355" stroke-width="2"/>
+    <text x="430" y="468" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#8B7355" letter-spacing="2">USE</text>
+    <polygon points="430,495 420,510 440,510" fill="#8B7355"/>
+  </g>
+
+  <g id="img-after">
+    <image href="../images/640_5.png" x="480" y="210" width="240" height="430" preserveAspectRatio="xMidYMid slice" clip-path="url(#p07ImgR)"/>
+    <rect x="480" y="210" width="240" height="120" fill="url(#p07TopR)"/>
+    <rect x="480" y="560" width="240" height="80" fill="url(#p07BottomFade)"/>
+    <g id="badge-after">
+      <rect x="500" y="230" width="12" height="12" fill="#8B7355"/>
+      <text x="520" y="241" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">AFTER</text>
+    </g>
+    <text x="480" y="668" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">Quay Quarter Tower · 多功能综合体</text>
+  </g>
+
+  <g id="key-data">
+    <rect x="760" y="210" width="460" height="200" rx="6" fill="#EBE6DC"/>
+    <text x="784" y="248" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#8B7355" letter-spacing="2">改造核心原则</text>
+    <text x="784" y="288" font-family="KaiTi, Georgia, serif" font-size="26" font-weight="700" fill="#2B3A4A">"最大化保留 · 高质量升级"</text>
+    <line x1="784" y1="308" x2="850" y2="308" stroke="#C2410C" stroke-width="2"/>
+    <text x="784" y="350" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#8B7355">65<tspan font-size="22" fill="#5A6B7A" dx="4">%</tspan></text>
+    <text x="784" y="380" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">主体结构保留</text>
+    <text x="900" y="392" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">（梁、柱和楼板）</text>
+    <text x="1020" y="350" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#8B7355">95<tspan font-size="22" fill="#5A6B7A" dx="4">%</tspan></text>
+    <text x="1020" y="380" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">原有核心筒保留</text>
+  </g>
+
+  <g id="design-firm">
+    <rect x="760" y="430" width="460" height="210" rx="6" fill="#FFFFFF" stroke="#D6CFC0" stroke-width="1"/>
+    <text x="784" y="468" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#8B7355" letter-spacing="2">设计 · 3XN 建筑事务所</text>
+    <text x="784" y="510" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#2B3A4A">"20 世纪中后期建造的摩天大楼"</text>
+    <text x="784" y="534" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#2B3A4A">"正逐渐达到其设计寿命的终点。"</text>
+    <text x="784" y="572" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">"我们必须延长已有建筑的寿命，"</text>
+    <text x="784" y="596" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">"释放其潜在价值。"</text>
+    <text x="784" y="624" font-family="KaiTi, Georgia, serif" font-size="13" font-style="italic" fill="#C2410C">— 这是建筑可持续性最根本的定义</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="710" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8A8275">图源：Archdaily</text>
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">07 / 15</text>
+  </g>
+</svg>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART II · THE BIG THREE · 08</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">OpenAI <tspan fill="#E63946">$122B</tspan> 这笔钱，从哪来</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Composition of OpenAI's March 2026 mega-round (post-money $852B)</text>
+  </g>
+
+  <!-- chart-plot-area: donut | center: 400,420 | outer-radius: 170 | inner-radius: 100 -->
+  <g id="donutChart" transform="translate(400, 420)">
+    <!-- Amazon 41% (50/122) calibrated by svg_position_calculator -->
+    <path d="M 0,-170 A 170,170 0 0,1 91.24,143.44 L 53.67,84.38 A 100,100 0 0,0 0,-100 Z" fill="#E63946"/>
+    <!-- Nvidia 24.6% (30/122) -->
+    <path d="M 91.24,143.44 A 170,170 0 0,1 -141.05,94.90 L -82.97,55.82 A 100,100 0 0,0 53.67,84.38 Z" fill="#F4A261"/>
+    <!-- SoftBank 24.6% (30/122) -->
+    <path d="M -141.05,94.90 A 170,170 0 0,1 -98.50,-138.55 L -57.94,-81.50 A 100,100 0 0,0 -82.97,55.82 Z" fill="#C9C5BE"/>
+    <!-- MSFT + Others 9.8% (12/122) -->
+    <path d="M -98.50,-138.55 A 170,170 0 0,1 0,-170 L 0,-100 A 100,100 0 0,0 -57.94,-81.50 Z" fill="#8A857E"/>
+
+    <circle cx="0" cy="0" r="100" fill="#0E1116"/>
+    <text x="0" y="-12" font-family="Cambria, serif" font-size="36" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$122B</text>
+    <text x="0" y="14" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle" letter-spacing="2">TOTAL ROUND</text>
+    <text x="0" y="40" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">@ $852B post-money</text>
+  </g>
+
+  <g id="investor-list">
+    <line x1="660" y1="200" x2="660" y2="640" stroke="#2A2F36" stroke-width="1"/>
+
+    <text x="700" y="220" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">INVESTOR BREAKDOWN</text>
+
+    <g id="row-amazon">
+      <rect x="700" y="250" width="6" height="40" fill="#E63946"/>
+      <!-- icon: simple-icons/amazon -->
+  <g transform="translate(720.0, 259.0) scale(0.9166666666666666)" fill="#E8E6E1">
+    <path d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726a17.617 17.617 0 01-10.951-.577 17.88 17.88 0 01-5.43-3.35c-.1-.074-.151-.15-.151-.22 0-.047.021-.09.051-.13zm6.565-6.218c0-1.005.247-1.863.743-2.577.495-.71 1.17-1.25 2.04-1.615.796-.335 1.756-.575 2.912-.72.39-.046 1.033-.103 1.92-.174v-.37c0-.93-.105-1.558-.3-1.875-.302-.43-.78-.65-1.44-.65h-.182c-.48.046-.896.196-1.246.46-.35.27-.575.63-.675 1.096-.06.3-.206.465-.435.51l-2.52-.315c-.248-.06-.372-.18-.372-.39 0-.046.007-.09.022-.15.247-1.29.855-2.25 1.82-2.88.976-.616 2.1-.975 3.39-1.05h.54c1.65 0 2.957.434 3.888 1.29.135.15.27.3.405.48.12.165.224.314.283.45.075.134.15.33.195.57.06.254.105.42.135.51.03.104.062.3.076.615.01.313.02.493.02.553v5.28c0 .376.06.72.165 1.036.105.313.21.54.315.674l.51.674c.09.136.136.256.136.36 0 .12-.06.226-.18.314-1.2 1.05-1.86 1.62-1.963 1.71-.165.135-.375.15-.63.045a6.062 6.062 0 01-.526-.496l-.31-.347a9.391 9.391 0 01-.317-.42l-.3-.435c-.81.886-1.603 1.44-2.4 1.665-.494.15-1.093.227-1.83.227-1.11 0-2.04-.343-2.76-1.034-.72-.69-1.08-1.665-1.08-2.94l-.05-.076zm3.753-.438c0 .566.14 1.02.425 1.364.285.34.675.512 1.155.512.045 0 .106-.007.195-.02.09-.016.134-.023.166-.023.614-.16 1.08-.553 1.424-1.178.165-.28.285-.58.36-.91.09-.32.12-.59.135-.8.015-.195.015-.54.015-1.005v-.54c-.84 0-1.484.06-1.92.18-1.275.36-1.92 1.17-1.92 2.43l-.035-.02zm9.162 7.027c.03-.06.075-.11.132-.17.362-.243.714-.41 1.05-.5a8.094 8.094 0 011.612-.24c.14-.012.28 0 .41.03.65.06 1.05.168 1.172.33.063.09.099.228.099.39v.15c0 .51-.149 1.11-.424 1.8-.278.69-.664 1.248-1.156 1.68-.073.06-.14.09-.197.09-.03 0-.06 0-.09-.012-.09-.044-.107-.12-.064-.24.54-1.26.806-2.143.806-2.64 0-.15-.03-.27-.087-.344-.145-.166-.55-.257-1.224-.257-.243 0-.533.016-.87.046-.363.045-.7.09-1 .135-.09 0-.148-.014-.18-.044-.03-.03-.036-.047-.02-.077 0-.017.006-.03.02-.063v-.06z"/>
+  </g>
+      <text x="772" y="276" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E6E1">Amazon</text>
+      <text x="1180" y="276" text-anchor="end" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#E63946">$50B</text>
+      <text x="1180" y="296" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#8A857E">41% · AWS 算力承诺</text>
+      <line x1="700" y1="318" x2="1180" y2="318" stroke="#2A2F36" stroke-width="1"/>
+    </g>
+
+    <g id="row-nvidia">
+      <rect x="700" y="330" width="6" height="40" fill="#F4A261"/>
+      <!-- icon: simple-icons/nvidia -->
+  <g transform="translate(720.0, 339.0) scale(0.9166666666666666)" fill="#E8E6E1">
+    <path d="M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.398 0-.787-.062-1.158-.185v-4.346c1.528.185 1.837.857 2.747 2.385l2.04-1.714s-1.492-1.952-4-1.952a6.016 6.016 0 0 0-.796.035m0-4.735v2.138l.424-.027c5.45-.185 9.01 4.47 9.01 4.47s-4.08 4.964-8.33 4.964c-.37 0-.733-.035-1.095-.097v1.325c.3.035.61.062.91.062 3.957 0 6.82-2.023 9.593-4.408.459.371 2.34 1.263 2.73 1.652-2.633 2.208-8.772 3.984-12.253 3.984-.335 0-.653-.018-.971-.053v1.864H24V4.063zm0 10.326v1.131c-3.657-.654-4.673-4.46-4.673-4.46s1.758-1.944 4.673-2.262v1.237H8.94c-1.528-.186-2.73 1.245-2.73 1.245s.68 2.412 2.739 3.11M2.456 10.9s2.164-3.197 6.5-3.533V6.201C4.153 6.59 0 10.653 0 10.653s2.35 6.802 8.948 7.42v-1.237c-4.84-.6-6.492-5.936-6.492-5.936z"/>
+  </g>
+      <text x="772" y="356" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E6E1">Nvidia</text>
+      <text x="1180" y="356" text-anchor="end" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#F4A261">$30B</text>
+      <text x="1180" y="376" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#8A857E">25% · 10GW 系统部署</text>
+      <line x1="700" y1="398" x2="1180" y2="398" stroke="#2A2F36" stroke-width="1"/>
+    </g>
+
+    <g id="row-softbank">
+      <rect x="700" y="410" width="6" height="40" fill="#C9C5BE"/>
+      <text x="720" y="436" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="bold" fill="#E8E6E1">SoftBank</text>
+      <text x="1180" y="436" text-anchor="end" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#C9C5BE">$30B</text>
+      <text x="1180" y="456" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#8A857E">25% · Stargate 联合主体</text>
+      <line x1="700" y1="478" x2="1180" y2="478" stroke="#2A2F36" stroke-width="1"/>
+    </g>
+
+    <g id="row-others">
+      <rect x="700" y="490" width="6" height="40" fill="#8A857E"/>
+      <!-- icon: simple-icons/microsoft -->
+  <g transform="translate(720.0, 499.0) scale(0.9166666666666666)" fill="#E8E6E1">
+    <path d="M0 0v11.408h11.408V0zm12.594 0v11.408H24V0zM0 12.594V24h11.408V12.594zm12.594 0V24H24V12.594z"/>
+  </g>
+      <text x="772" y="516" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E6E1">MSFT + a16z + 其他</text>
+      <text x="1180" y="516" text-anchor="end" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#8A857E">$12B</text>
+      <text x="1180" y="536" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#8A857E">9% · 包含 T. Rowe Price 等</text>
+      <line x1="700" y1="558" x2="1180" y2="558" stroke="#2A2F36" stroke-width="1"/>
+    </g>
+
+    <g id="callout">
+      <text x="700" y="600" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">OBSERVATION</text>
+      <text x="700" y="628" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="15" fill="#E8E6E1">三大投资人合计 <tspan font-weight="bold" fill="#E63946">91%</tspan>——同时是 OpenAI 的 <tspan font-weight="bold" fill="#E63946">最大客户</tspan></text>
+    </g>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: OpenAI press 2026-03-31 · Bloomberg · TechCrunch · CNBC</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">08 / 20</text>
+  </g>
+</svg>

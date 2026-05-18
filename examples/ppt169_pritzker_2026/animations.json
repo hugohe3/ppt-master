@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.5 },
+    "animation": { "effect": "fade", "duration": 0.6, "stagger": 0.2, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.8 },
+      "groups": {
+        "bg-image":      { "effect": "none" },
+        "cover-eyebrow": { "effect": "fade",  "order": 1, "duration": 0.5, "delay": 0.3 },
+        "cover-title":   { "effect": "fade",  "order": 2, "duration": 0.9, "delay": 0.4 },
+        "cover-subtitle":{ "effect": "wipe",  "order": 3, "duration": 0.7, "delay": 0.3 },
+        "cover-footer":  { "effect": "none" }
+      }
+    },
+
+    "02_overview": {
+      "transition": { "effect": "push", "duration": 0.5 },
+      "animation":  { "effect": "fade", "duration": 0.4, "stagger": 0.12 },
+      "groups": {
+        "bg":     { "effect": "none" },
+        "header": { "effect": "none" },
+        "card-01":{ "effect": "fade", "order": 1, "duration": 0.45 },
+        "card-02":{ "effect": "fade", "order": 2, "duration": 0.45 },
+        "card-03":{ "effect": "fade", "order": 3, "duration": 0.45 },
+        "card-04":{ "effect": "fade", "order": 4, "duration": 0.45 },
+        "card-05":{ "effect": "fade", "order": 5, "duration": 0.45 },
+        "card-06":{ "effect": "fade", "order": 6, "duration": 0.45 },
+        "card-07":{ "effect": "fade", "order": 7, "duration": 0.45 },
+        "card-08":{ "effect": "fade", "order": 8, "duration": 0.45 },
+        "footer": { "effect": "none" }
+      }
+    },
+
+    "03_ando": {
+      "transition": { "effect": "push", "duration": 0.5 },
+      "groups": {
+        "bg-image":        { "effect": "none" },
+        "p03-header":      { "effect": "none" },
+        "p03-title":       { "effect": "fade", "order": 1, "duration": 0.7, "delay": 0.2 },
+        "card-concept":    { "effect": "fade", "order": 2, "duration": 0.6, "delay": 0.25 },
+        "card-philosophy": { "effect": "fade", "order": 3, "duration": 0.6, "delay": 0.25 },
+        "thumb-interior":  { "effect": "fade", "order": 4, "duration": 0.5, "delay": 0.2 },
+        "footer":          { "effect": "none" }
+      }
+    },
+
+    "04_chipperfield": {
+      "transition": { "effect": "fade", "duration": 0.5 },
+      "groups": {
+        "bg":               { "effect": "none" },
+        "p04-header":       { "effect": "none" },
+        "img-amphitheater": { "effect": "fade", "order": 1, "duration": 0.6, "delay": 0.2 },
+        "connector":        { "effect": "fade", "order": 2, "duration": 0.5, "delay": 0.3 },
+        "img-milan":        { "effect": "fade", "order": 3, "duration": 0.6, "delay": 0.15 },
+        "card-spec":        { "effect": "fade", "order": 4, "duration": 0.45, "delay": 0.25 },
+        "card-facade":      { "effect": "fade", "order": 5, "duration": 0.45, "delay": 0.12 },
+        "card-quote":       { "effect": "wipe", "order": 6, "duration": 0.6,  "delay": 0.2 },
+        "footer":           { "effect": "none" }
+      }
+    },
+
+    "05_zaha": {
+      "transition": { "effect": "push", "duration": 0.6 },
+      "groups": {
+        "bg":            { "effect": "none" },
+        "img-bridge":    { "effect": "fade", "order": 1, "duration": 0.8, "delay": 0.2 },
+        "img-structure": { "effect": "fade", "order": 2, "duration": 0.7, "delay": 0.4 },
+        "img-fullview":  { "effect": "fade", "order": 3, "duration": 0.7, "delay": 0.4 },
+        "text-band":     { "effect": "fade", "order": 4, "duration": 0.7, "delay": 0.45 },
+        "stat-block":    { "effect": "wipe", "order": 5, "duration": 0.7, "delay": 0.3 },
+        "footer":        { "effect": "none" }
+      }
+    },
+
+    "06_foster": {
+      "transition": { "effect": "fade", "duration": 0.6 },
+      "groups": {
+        "bg":           { "effect": "none" },
+        "bg-faded":     { "effect": "none" },
+        "p06-number":   { "effect": "fade", "order": 1, "duration": 1.0, "delay": 0.3 },
+        "p06-title":    { "effect": "fade", "order": 2, "duration": 0.7, "delay": 0.3 },
+        "thumb-petal":  { "effect": "fade", "order": 3, "duration": 0.6, "delay": 0.25 },
+        "manifesto":    { "effect": "wipe", "order": 4, "duration": 0.7, "delay": 0.3 },
+        "footer":       { "effect": "none" }
+      }
+    },
+
+    "07_oma_sanaa": {
+      "transition": { "effect": "fade", "duration": 0.5 },
+      "groups": {
+        "bg":             { "effect": "none" },
+        "p07-header":     { "effect": "none" },
+        "img-before":     { "effect": "fade", "order": 1, "duration": 0.55, "delay": 0.2 },
+        "img-after":      { "effect": "fade", "order": 2, "duration": 0.55, "delay": 0.25 },
+        "kpi-stack":      { "effect": "fade", "order": 3, "duration": 0.6,  "delay": 0.3 },
+        "img-massing":    { "effect": "wipe", "order": 4, "duration": 0.7,  "delay": 0.25 },
+        "manifesto-tail": { "effect": "fade", "order": 5, "duration": 0.5,  "delay": 0.2 },
+        "footer":         { "effect": "none" }
+      }
+    },
+
+    "08_zumthor": {
+      "transition": { "effect": "push", "duration": 0.6 },
+      "groups": {
+        "bg":           { "effect": "none" },
+        "p08-top":      { "effect": "fade", "order": 1, "duration": 0.7, "delay": 0.2 },
+        "banner":       { "effect": "wipe", "order": 2, "duration": 0.9, "delay": 0.3 },
+        "bottom-stats": { "effect": "fade", "order": 3, "duration": 0.6, "delay": 0.3 },
+        "quote-block":  { "effect": "fade", "order": 4, "duration": 0.7, "delay": 0.3 },
+        "footer":       { "effect": "none" }
+      }
+    },
+
+    "09_gehry": {
+      "transition": { "effect": "fade", "duration": 0.6 },
+      "groups": {
+        "bg":         { "effect": "none" },
+        "p09-header": { "effect": "none" },
+        "frame-1":    { "effect": "fade", "order": 1, "duration": 0.7, "delay": 0.2 },
+        "frame-2":    { "effect": "fade", "order": 2, "duration": 0.55, "delay": 0.2 },
+        "frame-3":    { "effect": "fade", "order": 3, "duration": 0.55, "delay": 0.15 },
+        "manifesto":  { "effect": "wipe", "order": 4, "duration": 0.7,  "delay": 0.3 },
+        "footer":     { "effect": "none" }
+      }
+    },
+
+    "10_kere": {
+      "transition": { "effect": "push", "duration": 0.5 },
+      "groups": {
+        "bg-image":        { "effect": "none" },
+        "p10-header":      { "effect": "none" },
+        "card-philosophy": { "effect": "fade", "order": 1, "duration": 0.6, "delay": 0.25 },
+        "card-courtyard":  { "effect": "fade", "order": 2, "duration": 0.55, "delay": 0.2 },
+        "card-interior":   { "effect": "fade", "order": 3, "duration": 0.55, "delay": 0.2 },
+        "footer":          { "effect": "none" }
+      }
+    },
+
+    "11_epilogue": {
+      "transition": { "effect": "fade", "duration": 0.8 },
+      "groups": {
+        "bg":           { "effect": "none" },
+        "decor-corner": { "effect": "none" },
+        "eyebrow":      { "effect": "fade", "order": 1, "duration": 0.6,  "delay": 0.3 },
+        "hero-quote":   { "effect": "fade", "order": 2, "duration": 1.0,  "delay": 0.4 },
+        "three-paths":  { "effect": "fade", "order": 3, "duration": 0.8,  "delay": 0.45 },
+        "closing":      { "effect": "fade", "order": 4, "duration": 0.7,  "delay": 0.4 },
+        "footer":       { "effect": "none" }
+      }
+    }
+  }
+}

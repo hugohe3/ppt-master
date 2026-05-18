@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE" />
+  </g>
+
+  
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#00B8D9" />
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">WHAT WE STAND FOR</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">三大理念 · THREE PRINCIPLES</text>
+    
+    <circle cx="1150" cy="80" r="14" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="3" />
+    <circle cx="1185" cy="100" r="8" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <circle cx="1215" cy="75" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+  </g>
+
+  
+  <g id="pillar-free">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M94,180 H436 A14,14 0 0 1 450,194 V636 A14,14 0 0 1 436,650 H94 A14,14 0 0 1 80,636 V194 A14,14 0 0 1 94,180 Z" />
+    
+    <path d="M 84 180 h 362 a 10 10 0 0 1 4 4 v 130 h -370 v -130 a 10 10 0 0 1 4 -4 Z" fill="#FF3DA5" />
+    
+    <text x="265" y="270" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-2">01</text>
+    <text x="265" y="300" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A2E" letter-spacing="6">FREE</text>
+    
+    
+  <g transform="translate(237.0, 360.0) scale(3.5)" fill="#FF3DA5">
+    <path d="M9 7L10 0H8L2 7V9H7L6 16H8L14 9L14 7H9Z" />
+  </g>
+    
+    <text x="265" y="450" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">不设鄙视链</text>
+    
+    <line x1="120" y1="475" x2="410" y2="475" stroke="#1A1A2E" stroke-width="2" />
+    <circle cx="120" cy="510" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="138" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">所有风格都是好风格</text>
+    <circle cx="120" cy="550" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="138" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">摇滚乐迷可以爱嘻哈</text>
+    <circle cx="120" cy="590" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="138" y="595" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">阵营自由切换，从不审判</text>
+    <circle cx="120" cy="630" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="138" y="635" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">音乐之外的事情，先放下</text>
+  </g>
+
+  
+  <g id="pillar-fun">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M489,180 H831 A14,14 0 0 1 845,194 V636 A14,14 0 0 1 831,650 H489 A14,14 0 0 1 475,636 V194 A14,14 0 0 1 489,180 Z" />
+    <path d="M 479 180 h 362 a 10 10 0 0 1 4 4 v 130 h -370 v -130 a 10 10 0 0 1 4 -4 Z" fill="#FFD93D" />
+    <text x="660" y="270" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-2">02</text>
+    <text x="660" y="300" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A2E" letter-spacing="6">FUN</text>
+    
+  <g transform="translate(632.0, 360.0) scale(3.5)" fill="#FFD93D">
+    <path d="M8 3L10.5 2.5L11 0H12L12.5 2.5L15 3V4L12.5 4.5L12 7H11L10.5 4.5L8 4V3Z" />
+    <path d="M0 11V10L4 9L5 5H6L7 9L11 10V11L7 12L6 16H5L4 12L0 11Z" />
+    <path d="M1 2L2.5 0.5L4 2L2.5 3.5L1 2Z" />
+    <path d="M15 14L13 12L11 14L13 16L15 14Z" />
+    <path d="M15 10C15.5523 10 16 9.55229 16 9C16 8.44771 15.5523 8 15 8C14.4477 8 14 8.44771 14 9C14 9.55229 14.4477 10 15 10Z" />
+  </g>
+    <text x="660" y="450" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">玩到极致</text>
+    <line x1="515" y1="475" x2="805" y2="475" stroke="#1A1A2E" stroke-width="2" />
+    <circle cx="515" cy="510" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="533" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">留下最甜的回忆</text>
+    <circle cx="515" cy="550" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="533" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">10 件巨型互动艺术装置</text>
+    <circle cx="515" cy="590" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="533" y="595" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">50+ 摊位市集与限定周边</text>
+    <circle cx="515" cy="630" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="533" y="635" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">把孩子内心还给你 7 天</text>
+  </g>
+
+  
+  <g id="pillar-forever-young">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M884,180 H1226 A14,14 0 0 1 1240,194 V636 A14,14 0 0 1 1226,650 H884 A14,14 0 0 1 870,636 V194 A14,14 0 0 1 884,180 Z" />
+    <path d="M 874 180 h 362 a 10 10 0 0 1 4 4 v 130 h -370 v -130 a 10 10 0 0 1 4 -4 Z" fill="#00C896" />
+    <text x="1055" y="270" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-2">03</text>
+    <text x="1055" y="300" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A2E" letter-spacing="3">FOREVER YOUNG</text>
+    
+  <g transform="translate(1027.0, 360.0) scale(3.5)" fill="#00C896">
+    <path d="M1.24264 8.24264L8 15L14.7574 8.24264C15.553 7.44699 16 6.36786 16 5.24264V5.05234C16 2.8143 14.1857 1 11.9477 1C10.7166 1 9.55233 1.55959 8.78331 2.52086L8 3.5L7.21669 2.52086C6.44767 1.55959 5.28338 1 4.05234 1C1.8143 1 0 2.8143 0 5.05234V5.24264C0 6.36786 0.44699 7.44699 1.24264 8.24264Z" />
+  </g>
+    <text x="1055" y="450" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">舞池里没有年纪</text>
+    <line x1="910" y1="475" x2="1200" y2="475" stroke="#1A1A2E" stroke-width="2" />
+    <circle cx="910" cy="510" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="928" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">18 岁也好，80 岁也罢</text>
+    <circle cx="910" cy="550" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="928" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">银发族专属休息岛</text>
+    <circle cx="910" cy="590" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="928" y="595" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">12 岁以下家庭票同价</text>
+    <circle cx="910" cy="630" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="928" y="635" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">心跳的频率才是入场券</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">SUGAR RUSH 价值观 · 自 2018 年沿用至今</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">04 / 14</text>
+  </g>
+</svg>

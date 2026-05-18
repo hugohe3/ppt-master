@@ -40,9 +40,11 @@ User Input (PDF/DOCX/XLSX/URL/Markdown)
     ↓
 Output:
     exports/
-    └── presentation_<timestamp>.pptx          ← Native shapes (DrawingML) — recommended for editing & delivery
+    └── presentation_<timestamp>.pptx          ← Native shapes (DrawingML) — canonical output, edit & deliver from here
+
+    # Opt-in via --svg-snapshot (e.g. for distribution / frozen-state archive)
     backup/<timestamp>/
-    ├── presentation_svg.pptx                  ← SVG snapshot — pixel-perfect visual reference backup
+    ├── presentation_svg.pptx                  ← SVG snapshot pptx — pixel-perfect visual reference
     └── svg_output/                            ← Archived Executor SVG source (rerun finalize_svg → svg_to_pptx to rebuild)
 ```
 
@@ -238,7 +240,7 @@ The post-processing stage produces four artifacts. Each one serves a workflow th
 | `svg_output/` | source of truth, manual editing, `update_spec.py`, `svg_quality_checker.py` | only directory whose contents are authored, not derived |
 | `svg_final/` | IDE inline preview (VSCode/Cursor open `.svg` directly), browser open of a single page | `.pptx` is not openable in IDEs; `svg_output/` won't render fully because of external icon / image refs |
 | `exports/<name>_<ts>.pptx` (native) | primary deliverable — editable in PowerPoint with DrawingML shapes | only artifact whose shapes the user can resize / recolor / restyle natively in PowerPoint |
-| `backup/<ts>/<name>_svg.pptx` (preview) | cross-platform single-file distribution, multi-page browse, email attachment | self-contained, multi-page, opens in PowerPoint / Keynote / WPS / LibreOffice; an `svg_final/` folder is harder to distribute |
+| `backup/<ts>/<name>_svg.pptx` (preview, opt-in via `--svg-snapshot`) | cross-platform single-file distribution, multi-page browse, email attachment | self-contained, multi-page, opens in PowerPoint / Keynote / WPS / LibreOffice; an `svg_final/` folder is harder to distribute. Off by default — live preview already provides the SVG visual reference for dev/diagnostic work |
 
 ### The `svg_finalize/` package has TWO consumers
 

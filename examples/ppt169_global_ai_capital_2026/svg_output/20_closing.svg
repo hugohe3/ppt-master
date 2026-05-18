@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">CLOSING · 20</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="44" font-weight="bold" fill="#E8E6E1">六大判断 / <tspan fill="#E63946">Six Takeaways</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Closing notes on 2026's global AI capital landscape</text>
+  </g>
+
+  <g id="take-1">
+    <text x="60" y="220" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#E63946">①</text>
+    <text x="120" y="216" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">资本集中度是 2026 主旋律</text>
+    <text x="120" y="240" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">单季 65% 的全球 VC 进入 4 家公司——"钱没变多，是更集中"</text>
+    <line x1="60" y1="262" x2="620" y2="262" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="take-2">
+    <text x="60" y="312" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#E63946">②</text>
+    <text x="120" y="308" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">算力是 2026 的硬通货</text>
+    <text x="120" y="332" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">Nvidia 既是基建供应商又是大股东，形成全行业闭环结构</text>
+    <line x1="60" y1="354" x2="620" y2="354" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="take-3">
+    <text x="60" y="404" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#E63946">③</text>
+    <text x="120" y="400" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">下一道护城河是电力，不是芯片</text>
+    <text x="120" y="424" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">$725B Capex 中 60%+ 流向电力 / 冷却 / 土建——资源约束已转移</text>
+    <line x1="60" y1="446" x2="620" y2="446" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="take-4">
+    <text x="660" y="220" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#F4A261">④</text>
+    <text x="720" y="216" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">中美双轨结构已成型</text>
+    <text x="720" y="240" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">美国推迟 IPO 喂超大私募，中国二级市场全面打开，路径差异不再可逆</text>
+    <line x1="660" y1="262" x2="1220" y2="262" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="take-5">
+    <text x="660" y="312" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#F4A261">⑤</text>
+    <text x="720" y="308" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">真实 ROI 滞后但巨头未止血</text>
+    <text x="720" y="332" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">95% 试点失败 vs $725B capex 继续上调——这是赌"未来兑现"</text>
+    <line x1="660" y1="354" x2="1220" y2="354" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="take-6">
+    <text x="660" y="404" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#F4A261">⑥</text>
+    <text x="720" y="400" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">Anthropic 反超 OpenAI</text>
+    <text x="720" y="424" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">在谈估值 $900B vs $852B；ARR 增速 Anthropic 已超越 OpenAI</text>
+    <line x1="660" y1="446" x2="1220" y2="446" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="bottom-callout">
+    <rect x="60" y="490" width="1160" height="110" fill="#1A1F26"/>
+    <rect x="60" y="490" width="6" height="110" fill="#E63946"/>
+    <text x="100" y="525" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">EDITORIAL CLOSE</text>
+    <text x="100" y="565" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-style="italic" fill="#E8E6E1">"This is not yet the bubble bursting.</text>
+    <text x="100" y="590" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-style="italic" fill="#E63946">It is the bubble compounding."</text>
+  </g>
+
+  <g id="sources-strip">
+    <line x1="60" y1="630" x2="1220" y2="630" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="654" font-family="Cambria, serif" font-size="11" fill="#5C5852" letter-spacing="2">PRIMARY SOURCES</text>
+    <text x="60" y="678" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A857E">Crunchbase · PitchBook · CNBC · Bloomberg · TechCrunch · OpenAI / Anthropic / xAI press · Tom's Hardware</text>
+    <text x="60" y="696" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A857E">Goldman Sachs · Allianz · Statista · MIT GenAI Pilot Study · BigGo Finance · TechFundingNews · DataCenterDynamics</text>
+    <text x="1220" y="696" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">20 / 20 · End of briefing</text>
+  </g>
+</svg>

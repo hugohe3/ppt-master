@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF" />
+      <stop offset="50%" stop-color="#A26BFA" />
+      <stop offset="100%" stop-color="#3DDDFC" />
+    </linearGradient>
+    <radialGradient id="bgGlowL" cx="10%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="bgGlowC" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="bgGlowR" cx="90%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#3DDDFC" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#3DDDFC" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="cardGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.78" />
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="cardGlassHi" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.32" />
+      <stop offset="50%" stop-color="#5B8DEF" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.32" />
+    </linearGradient>
+    <linearGradient id="headBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.82" />
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0.32" />
+    </linearGradient>
+    <linearGradient id="headPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0.7" />
+    </linearGradient>
+    <linearGradient id="headCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3DDDFC" stop-opacity="0.78" />
+      <stop offset="100%" stop-color="#3DDDFC" stop-opacity="0.3" />
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27" />
+    <rect width="1280" height="720" fill="url(#bgGlowL)" />
+    <rect width="1280" height="720" fill="url(#bgGlowC)" />
+    <rect width="1280" height="720" fill="url(#bgGlowR)" />
+  </g>
+
+  <g id="header">
+    <text x="640" y="68" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="4" text-anchor="middle">CHOOSING THE RIGHT PATTERN</text>
+    <text x="640" y="112" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF" text-anchor="middle">Workflow · Agent · Multi-Agent — 选哪种?</text>
+    <text x="640" y="142" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0" text-anchor="middle">三种主流模式按"路径确定性"递增 — 灵活性越高,工程化代价越大</text>
+  </g>
+
+  <g id="card-workflow">
+    <path fill="url(#cardGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M100,180 H430 A20,20 0 0 1 450,200 V650 A20,20 0 0 1 430,670 H100 A20,20 0 0 1 80,650 V200 A20,20 0 0 1 100,180 Z" />
+    <rect x="98" y="181" width="334" height="1" fill="url(#glassEdge)" />
+    <path d="M 100 180 h 330 a 20 20 0 0 1 20 20 v 100 h -370 v -100 a 20 20 0 0 1 20 -20 Z" fill="url(#headBlue)" />
+    
+  <g transform="translate(116.0, 208.0) scale(0.15625)" fill="#E8ECFF">
+    <path d="M80,176a32,32,0,1,1-32-32A32,32,0,0,1,80,176Z" opacity="0.2" />
+    <path d="M245.66,74.34l-32-32a8,8,0,0,0-11.32,11.32L220.69,72H192a74.49,74.49,0,0,0-28.35,6.73c-13.62,6.29-30.83,19.71-35.54,48-5.32,31.93-29.1,39.22-41,40.86a40,40,0,1,0,.18,16.06A71.65,71.65,0,0,0,108.13,178C121.75,172,139,158.6,143.89,129.31,150.65,88.77,190.34,88,192,88h28.69l-18.35,18.34a8,8,0,0,0,11.32,11.32l32-32A8,8,0,0,0,245.66,74.34ZM48,200a24,24,0,1,1,24-24A24,24,0,0,1,48,200Z" />
+  </g>
+    <text x="266" y="226" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#E8ECFF" letter-spacing="3" text-anchor="middle">PATTERN A</text>
+    <text x="266" y="266" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" text-anchor="middle">Workflow</text>
+    <text x="266" y="328" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="600" fill="#3DDDFC" letter-spacing="2" text-anchor="middle">DETERMINISTIC</text>
+    <line x1="120" y1="356" x2="412" y2="356" stroke="#FFFFFF" stroke-opacity="0.14" />
+    <g id="wf-feat">
+      <circle cx="116" cy="395" r="4" fill="#5B8DEF" />
+      <text x="132" y="400" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">路径固定</text>
+      <text x="132" y="422" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">DAG 编排,LLM 只填空</text>
+      <circle cx="116" cy="465" r="4" fill="#5B8DEF" />
+      <text x="132" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">可预测</text>
+      <text x="132" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">每一步成本、延迟可量化</text>
+      <circle cx="116" cy="535" r="4" fill="#5B8DEF" />
+      <text x="132" y="540" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">易调试</text>
+      <text x="132" y="562" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">问题定位精确到节点</text>
+    </g>
+    <path fill="#5B8DEF" fill-opacity="0.15" stroke="#5B8DEF" stroke-opacity="0.5" stroke-width="1" d="M130,600 H402 A10,10 0 0 1 412,610 V636 A10,10 0 0 1 402,646 H130 A10,10 0 0 1 120,636 V610 A10,10 0 0 1 130,600 Z" />
+    <text x="266" y="630" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">适合确定性任务</text>
+  </g>
+
+  <g id="card-agent">
+    <path fill="url(#cardGlassHi)" stroke="#A26BFA" stroke-opacity="0.75" stroke-width="1.5" d="M490,170 H820 A20,20 0 0 1 840,190 V660 A20,20 0 0 1 820,680 H490 A20,20 0 0 1 470,660 V190 A20,20 0 0 1 490,170 Z" />
+    <rect x="488" y="171" width="334" height="1" fill="url(#glassEdge)" />
+    <path d="M 490 170 h 330 a 20 20 0 0 1 20 20 v 110 h -370 v -110 a 20 20 0 0 1 20 -20 Z" fill="url(#headPurple)" />
+    <path fill="#3DDDFC" d="M602,148 H708 A14,14 0 0 1 722,162 V162 A14,14 0 0 1 708,176 H602 A14,14 0 0 1 588,162 V162 A14,14 0 0 1 602,148 Z" />
+    <text x="655" y="167" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="900" fill="#0A0E27" letter-spacing="2" text-anchor="middle">MOST COMMON</text>
+    
+  <g transform="translate(506.0, 208.0) scale(0.1875)" fill="#E8ECFF">
+    <path d="M200,56H56A24,24,0,0,0,32,80V192a24,24,0,0,0,24,24H200a24,24,0,0,0,24-24V80A24,24,0,0,0,200,56ZM164,184H92a20,20,0,0,1,0-40h72a20,20,0,0,1,0,40Z" opacity="0.2" />
+    <path d="M200,48H136V16a8,8,0,0,0-16,0V48H56A32,32,0,0,0,24,80V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32V80A32,32,0,0,0,200,48Zm16,144a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V80A16,16,0,0,1,56,64H200a16,16,0,0,1,16,16Zm-52-56H92a28,28,0,0,0,0,56h72a28,28,0,0,0,0-56Zm-28,16v24H120V152ZM80,164a12,12,0,0,1,12-12h12v24H92A12,12,0,0,1,80,164Zm84,12H152V152h12a12,12,0,0,1,0,24ZM72,108a12,12,0,1,1,12,12A12,12,0,0,1,72,108Zm88,0a12,12,0,1,1,12,12A12,12,0,0,1,160,108Z" />
+  </g>
+    <text x="656" y="226" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#E8ECFF" letter-spacing="3" text-anchor="middle">PATTERN B</text>
+    <text x="656" y="266" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" text-anchor="middle">Agent</text>
+    <text x="656" y="338" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="600" fill="#3DDDFC" letter-spacing="2" text-anchor="middle">EXPLORATORY</text>
+    <line x1="510" y1="366" x2="802" y2="366" stroke="#FFFFFF" stroke-opacity="0.18" />
+    <g id="ag-feat">
+      <circle cx="506" cy="405" r="4" fill="#A26BFA" />
+      <text x="522" y="410" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">路径动态</text>
+      <text x="522" y="432" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">运行时按情境自选下一步</text>
+      <circle cx="506" cy="475" r="4" fill="#A26BFA" />
+      <text x="522" y="480" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">LLM 决策</text>
+      <text x="522" y="502" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">用模型判断 → 工具/继续/终止</text>
+      <circle cx="506" cy="545" r="4" fill="#A26BFA" />
+      <text x="522" y="550" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">工具调用</text>
+      <text x="522" y="572" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">检索 · 计算 · 业务 API</text>
+    </g>
+    <path fill="#A26BFA" fill-opacity="0.25" stroke="#A26BFA" stroke-opacity="0.7" stroke-width="1" d="M520,610 H792 A10,10 0 0 1 802,620 V646 A10,10 0 0 1 792,656 H520 A10,10 0 0 1 510,646 V620 A10,10 0 0 1 520,610 Z" />
+    <text x="656" y="640" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#E8ECFF" text-anchor="middle">适合半结构化探索</text>
+  </g>
+
+  <g id="card-multi">
+    <path fill="url(#cardGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M880,180 H1210 A20,20 0 0 1 1230,200 V650 A20,20 0 0 1 1210,670 H880 A20,20 0 0 1 860,650 V200 A20,20 0 0 1 880,180 Z" />
+    <rect x="878" y="181" width="334" height="1" fill="url(#glassEdge)" />
+    <path d="M 880 180 h 330 a 20 20 0 0 1 20 20 v 100 h -370 v -100 a 20 20 0 0 1 20 -20 Z" fill="url(#headCyan)" />
+    
+  <g transform="translate(896.0, 208.0) scale(0.15625)" fill="#E8ECFF">
+    <path d="M168,144a40,40,0,1,1-40-40A40,40,0,0,1,168,144ZM64,56A32,32,0,1,0,96,88,32,32,0,0,0,64,56Zm128,0a32,32,0,1,0,32,32A32,32,0,0,0,192,56Z" opacity="0.2" />
+    <path d="M244.8,150.4a8,8,0,0,1-11.2-1.6A51.6,51.6,0,0,0,192,128a8,8,0,0,1,0-16,24,24,0,1,0-23.24-30,8,8,0,1,1-15.5-4A40,40,0,1,1,219,117.51a67.94,67.94,0,0,1,27.43,21.68A8,8,0,0,1,244.8,150.4ZM190.92,212a8,8,0,1,1-13.85,8,57,57,0,0,0-98.15,0,8,8,0,1,1-13.84-8,72.06,72.06,0,0,1,33.74-29.92,48,48,0,1,1,58.36,0A72.06,72.06,0,0,1,190.92,212ZM128,176a32,32,0,1,0-32-32A32,32,0,0,0,128,176ZM72,120a8,8,0,0,0-8-8A24,24,0,1,1,87.24,82a8,8,0,1,0,15.5-4A40,40,0,1,0,37,117.51,67.94,67.94,0,0,0,9.6,139.19a8,8,0,1,0,12.8,9.61A51.6,51.6,0,0,1,64,128,8,8,0,0,0,72,120Z" />
+  </g>
+    <text x="1046" y="226" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#E8ECFF" letter-spacing="3" text-anchor="middle">PATTERN C</text>
+    <text x="1046" y="266" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF" text-anchor="middle">Multi-Agent</text>
+    <text x="1046" y="328" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="600" fill="#3DDDFC" letter-spacing="2" text-anchor="middle">COLLABORATIVE</text>
+    <line x1="900" y1="356" x2="1192" y2="356" stroke="#FFFFFF" stroke-opacity="0.14" />
+    <g id="ma-feat">
+      <circle cx="896" cy="395" r="4" fill="#3DDDFC" />
+      <text x="912" y="400" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">多角色协作</text>
+      <text x="912" y="422" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">Planner · Critic · Worker</text>
+      <circle cx="896" cy="465" r="4" fill="#3DDDFC" />
+      <text x="912" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">任务分发</text>
+      <text x="912" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">并发 / 串联 / 投票仲裁</text>
+      <circle cx="896" cy="535" r="4" fill="#3DDDFC" />
+      <text x="912" y="540" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="16" font-weight="700" fill="#E8ECFF">上下文共享</text>
+      <text x="912" y="562" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">共享黑板 / 消息总线</text>
+    </g>
+    <path fill="#3DDDFC" fill-opacity="0.18" stroke="#3DDDFC" stroke-opacity="0.55" stroke-width="1" d="M910,600 H1182 A10,10 0 0 1 1192,610 V636 A10,10 0 0 1 1182,646 H910 A10,10 0 0 1 900,636 V610 A10,10 0 0 1 910,600 Z" />
+    <text x="1046" y="630" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">适合复杂长程任务</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">三种模式 · 路径确定性递减</text>
+    <text x="1220" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">05 / 12</text>
+  </g>
+</svg>

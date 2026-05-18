@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART V · INFRASTRUCTURE · 16</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">Stargate：<tspan fill="#E63946">$500B</tspan> · <tspan fill="#E63946">10GW</tspan> · 7 站点</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">OpenAI + Oracle + SoftBank · the largest private AI infrastructure program ever announced</text>
+  </g>
+
+  <g id="stargate-network">
+  <g id="hub">
+    <circle cx="500" cy="430" r="14" fill="none" stroke="#E63946" stroke-width="1" opacity="0.25" />
+    <circle cx="500" cy="430" r="60" fill="none" stroke="#E63946" stroke-width="1" opacity="0.2" />
+    <circle cx="500" cy="430" r="100" fill="none" stroke="#E63946" stroke-width="1" opacity="0.15" />
+    <circle cx="500" cy="430" r="140" fill="none" stroke="#E63946" stroke-width="1" opacity="0.1" />
+
+    <circle cx="500" cy="430" r="80" fill="#1A1F26" stroke="#E63946" stroke-width="2" />
+    <text x="500" y="412" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">STARGATE</text>
+    <text x="500" y="438" text-anchor="middle" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#E8E6E1">$500B</text>
+    <text x="500" y="458" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="1">10 GW · 4 YEARS</text>
+  </g>
+
+  <g id="spokes">
+    <line x1="500" y1="350" x2="500" y2="268" stroke="#E63946" stroke-width="2" />
+    <line x1="500" y1="350" x2="335" y2="290" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="4,3" />
+    <line x1="500" y1="350" x2="665" y2="290" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="4,3" />
+
+    <line x1="420" y1="430" x2="310" y2="430" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="4,3" />
+    <line x1="580" y1="430" x2="690" y2="430" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="4,3" />
+
+    <line x1="500" y1="510" x2="380" y2="590" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="4,3" />
+    <line x1="500" y1="510" x2="620" y2="590" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="4,3" />
+  </g>
+
+  <g id="spoke-abilene">
+    <rect x="430" y="200" width="140" height="68" fill="#1A1F26" stroke="#E63946" stroke-width="1.5" />
+    <text x="500" y="222" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" font-weight="bold" fill="#E8E6E1">Abilene, TX</text>
+    <text x="500" y="240" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="1">FLAGSHIP · ONLINE</text>
+    <text x="500" y="259" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">~1 GW by mid-2026</text>
+  </g>
+
+  <g id="spoke-shackelford">
+    <rect x="265" y="260" width="140" height="60" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <text x="335" y="282" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="13" font-weight="bold" fill="#C9C5BE">Shackelford TX</text>
+    <text x="335" y="302" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">Planned · Oracle</text>
+  </g>
+
+  <g id="spoke-dona-ana">
+    <rect x="595" y="260" width="140" height="60" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <text x="665" y="282" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="13" font-weight="bold" fill="#C9C5BE">Doña Ana NM</text>
+    <text x="665" y="302" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">Planned · Oracle</text>
+  </g>
+
+  <g id="spoke-michigan">
+    <rect x="170" y="400" width="140" height="60" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <text x="240" y="422" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="13" font-weight="bold" fill="#C9C5BE">Saline MI</text>
+    <text x="240" y="442" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">1 GW · $7B · 2026 build</text>
+  </g>
+
+  <g id="spoke-midwest">
+    <rect x="690" y="400" width="140" height="60" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <text x="760" y="422" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="13" font-weight="bold" fill="#C9C5BE">Midwest (TBD)</text>
+    <text x="760" y="442" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">Site undisclosed</text>
+  </g>
+
+  <g id="spoke-lordstown">
+    <rect x="290" y="560" width="140" height="60" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <text x="360" y="582" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="13" font-weight="bold" fill="#C9C5BE">Lordstown OH</text>
+    <text x="360" y="602" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">SoftBank · ~0.75 GW</text>
+  </g>
+
+  <g id="spoke-milam">
+    <rect x="570" y="560" width="140" height="60" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <text x="640" y="582" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="13" font-weight="bold" fill="#C9C5BE">Milam TX</text>
+    <text x="640" y="602" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">SoftBank · ~0.75 GW</text>
+  </g>
+  </g>
+
+  <g id="sidebar-right">
+    <line x1="900" y1="180" x2="900" y2="640" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="920" y="210" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">CURRENT PROGRESS</text>
+
+    <g id="progress-1">
+      <text x="920" y="262" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#E63946">7 GW</text>
+      <text x="920" y="290" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">已规划容量 · planned capacity</text>
+      <line x1="920" y1="310" x2="1200" y2="310" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <g id="progress-2">
+      <text x="920" y="350" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#F4A261">$400B</text>
+      <text x="920" y="378" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">未来 3 年投入 · 3-yr commit</text>
+      <line x1="920" y1="398" x2="1200" y2="398" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <g id="progress-3">
+      <text x="920" y="438" font-family="Cambria, serif" font-size="40" font-weight="bold" fill="#C9C5BE">GB200</text>
+      <text x="920" y="466" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">Abilene 机架已交付</text>
+      <line x1="920" y1="486" x2="1200" y2="486" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <text x="920" y="528" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">PARTNERS</text>
+    
+  <g transform="translate(920.0, 544.0) scale(1.0833333333333333)" fill="#E8E6E1">
+    <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+  </g>
+    
+  <g transform="translate(1000.0, 544.0) scale(1.0833333333333333)" fill="#E8E6E1">
+    <path d="M16.412 4.412h-8.82a7.588 7.588 0 0 0-.008 15.176h8.828a7.588 7.588 0 0 0 0-15.176zm-.193 12.502H7.786a4.915 4.915 0 0 1 0-9.828h8.433a4.914 4.914 0 1 1 0 9.828z" />
+  </g>
+    <text x="1080" y="565" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E8E6E1">SoftBank</text>
+
+    <text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="920" y="610">"Up and running"</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="920" y="626">— Sam Altman on Abilene</text></g>
+
+  <g id="page-footer">
+    <line x1="60" y1="660" x2="1220" y2="660" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: OpenAI press 2026-09/2026-02 · DataCenterDynamics · IntuitionLabs · NVIDIA newsroom</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">16 / 20</text>
+  </g>
+</svg>

@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P05 Figures · dense · 4×2 text-only roster -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 05</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">八位塑造者</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">EIGHT DESIGNERS WHO MADE THE SWISS STYLE</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3"/>
+  </g>
+
+  <!-- 4 cols x 2 rows; col x: 64 / 368 / 672 / 976; row y top 220 / row y bottom 460 -->
+
+  <g id="figure-keller">
+    <text x="64" y="236" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">01</text>
+    <text x="64" y="270" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Ernst Keller</text>
+    <text x="64" y="290" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1891 — 1968</text>
+    <line x1="64" y1="306" x2="120" y2="306" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="64" y="336" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="64" dy="0">苏黎世应用艺术学院</tspan>
+      <tspan x="64" dy="20">1918 起任教</tspan>
+      <tspan x="64" dy="20">奠定瑞士学派</tspan>
+      <tspan x="64" dy="20">"形式跟随内容"原则</tspan>
+    </text>
+  </g>
+
+  <g id="figure-ballmer">
+    <text x="368" y="236" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">02</text>
+    <text x="368" y="270" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Théo Ballmer</text>
+    <text x="368" y="290" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1902 — 1965</text>
+    <line x1="368" y1="306" x2="424" y2="306" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="368" y="336" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="368" dy="0">网格早期实验者</tspan>
+      <tspan x="368" dy="20">把 De Stijl 几何</tspan>
+      <tspan x="368" dy="20">引入海报排版</tspan>
+      <tspan x="368" dy="20">桥梁式人物</tspan>
+    </text>
+  </g>
+
+  <g id="figure-bill">
+    <text x="672" y="236" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">03</text>
+    <text x="672" y="270" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Max Bill</text>
+    <text x="672" y="290" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1908 — 1994</text>
+    <line x1="672" y1="306" x2="728" y2="306" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="672" y="336" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="672" dy="0">包豪斯学生</tspan>
+      <tspan x="672" dy="20">乌尔姆设计学院</tspan>
+      <tspan x="672" dy="20">创校校长</tspan>
+      <tspan x="672" dy="20">理性延伸至产品</tspan>
+    </text>
+  </g>
+
+  <g id="figure-ruder">
+    <text x="976" y="236" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">04</text>
+    <text x="976" y="270" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Emil Ruder</text>
+    <text x="976" y="290" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1914 — 1970</text>
+    <line x1="976" y1="306" x2="1032" y2="306" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="976" y="336" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="976" dy="0">巴塞尔学派核心</tspan>
+      <tspan x="976" dy="20">著《Typographie》</tspan>
+      <tspan x="976" dy="20">1967 至今为</tspan>
+      <tspan x="976" dy="20">字体设计圣经</tspan>
+    </text>
+  </g>
+
+  <g id="figure-hofmann">
+    <text x="64" y="476" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">05</text>
+    <text x="64" y="510" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Armin Hofmann</text>
+    <text x="64" y="530" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1920 — 2020</text>
+    <line x1="64" y1="546" x2="120" y2="546" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="64" y="576" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="64" dy="0">巴塞尔学派核心</tspan>
+      <tspan x="64" dy="20">海报与教学</tspan>
+      <tspan x="64" dy="20">的标志性人物</tspan>
+      <tspan x="64" dy="20">影响延续至耶鲁</tspan>
+    </text>
+  </g>
+
+  <g id="figure-brockmann">
+    <text x="368" y="476" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">06</text>
+    <text x="368" y="510" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#D9251D">Müller-Brockmann</text>
+    <text x="368" y="530" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1914 — 1996</text>
+    <line x1="368" y1="546" x2="424" y2="546" stroke="#D9251D" stroke-width="2"/>
+    <text x="368" y="576" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="368" dy="0">苏黎世学派核心</tspan>
+      <tspan x="368" dy="20">《Grid Systems in</tspan>
+      <tspan x="368" dy="20">Graphic Design》作者</tspan>
+      <tspan x="368" dy="20">本讲下页详述</tspan>
+    </text>
+  </g>
+
+  <g id="figure-miedinger">
+    <text x="672" y="476" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">07</text>
+    <text x="672" y="510" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Max Miedinger</text>
+    <text x="672" y="530" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1910 — 1980</text>
+    <line x1="672" y1="546" x2="728" y2="546" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="672" y="576" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="672" dy="0">1957 年</tspan>
+      <tspan x="672" dy="20">与 Hoffmann 合作</tspan>
+      <tspan x="672" dy="20">设计 Helvetica</tspan>
+      <tspan x="672" dy="20">命名取自瑞士</tspan>
+    </text>
+  </g>
+
+  <g id="figure-frutiger">
+    <text x="976" y="476" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">08</text>
+    <text x="976" y="510" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Adrian Frutiger</text>
+    <text x="976" y="530" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">1928 — 2015</text>
+    <line x1="976" y1="546" x2="1032" y2="546" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="976" y="576" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A">
+      <tspan x="976" dy="0">同年 1957</tspan>
+      <tspan x="976" dy="20">设计 Univers</tspan>
+      <tspan x="976" dy="20">21 字重</tspan>
+      <tspan x="976" dy="20">首次坐标系统化</tspan>
+    </text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">05 / 14</text>
+  </g>
+</svg>

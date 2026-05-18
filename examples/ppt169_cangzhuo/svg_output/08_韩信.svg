@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Right image bleeding off canvas edge (#4) -->
+  <image href="../images/hanxin_bridge.png" x="560" y="0" width="720" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Two-stop scrim (#29) — left opaque, right transparent for image -->
+  <defs>
+    <linearGradient id="hanxin_scrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F5F1E8" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#F5F1E8" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="#F5F1E8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#F5F1E8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="900" height="720" fill="url(#hanxin_scrim)"/>
+
+  <!-- Section marker -->
+  <text x="60" y="90" font-family="KaiTi, Georgia, serif" font-size="18" fill="#8B8680" letter-spacing="12">— 史 鉴 —</text>
+
+  <!-- Main name -->
+  <text x="60" y="180" font-family="KaiTi, Georgia, serif" font-size="44" fill="#5C5852" letter-spacing="3">汉 · 淮阴侯</text>
+  <text x="60" y="280" font-family="KaiTi, Georgia, serif" font-size="120" font-weight="700" fill="#1A1A1A" letter-spacing="20">韩 信</text>
+
+  <!-- Vermilion seal -->
+  <rect x="320" y="200" width="60" height="60" fill="#A52A2A"/>
+  <text x="350" y="246" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#F5F1E8">忍</text>
+
+  <!-- Subtitle -->
+  <text x="60" y="340" font-family="KaiTi, Georgia, serif" font-size="26" fill="#1A1A1A" letter-spacing="3">胯下之辱</text>
+  <line x1="60" y1="358" x2="160" y2="358" stroke="#A52A2A" stroke-width="2"/>
+
+  <!-- Three-point analysis -->
+  <g transform="translate(60, 400)">
+    <use data-icon="tabler-outline/point" x="0" y="0" width="20" height="20" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="32" y="16" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#1A1A1A">不是为了歌颂屈辱</text>
+
+    <use data-icon="tabler-outline/point" x="0" y="50" width="20" height="20" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="32" y="66" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#1A1A1A">而是没有把人生押在街头冲突里</text>
+
+    <use data-icon="tabler-outline/point" x="0" y="100" width="20" height="20" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="32" y="116" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#1A1A1A">小局赢了，只是出口气</text>
+  </g>
+
+  <!-- Bottom callout — big lesson -->
+  <g transform="translate(60, 580)">
+    <rect x="0" y="0" width="540" height="70" fill="#1A1A1A"/>
+    <rect x="0" y="0" width="6" height="70" fill="#A52A2A"/>
+    <text x="28" y="32" font-family="KaiTi, Georgia, serif" font-size="18" fill="#C8C0AE" letter-spacing="3">真 正 的 赢</text>
+    <text x="28" y="58" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8" letter-spacing="2">大局赢了 · 才有翻身的资格</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 六</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">08</text>
+</svg>

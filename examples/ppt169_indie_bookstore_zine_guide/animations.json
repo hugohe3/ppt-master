@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.30 },
+    "animation": { "effect": "fade", "duration": 0.35, "stagger": 0.15, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": { "effect": "none", "duration": 0 },
+      "animation": { "effect": "appear", "duration": 0.30, "stagger": 0.18, "trigger": "after-previous" },
+      "groups": {
+        "hero-image": { "effect": "fade", "order": 1, "duration": 0.45 },
+        "accent-stripe": { "effect": "appear", "order": 2, "delay": 0.10 },
+        "title-block": { "effect": "appear", "order": 3, "delay": 0.20, "duration": 0.30 },
+        "subtitle-cn": { "effect": "wipe", "order": 4, "delay": 0.20, "duration": 0.40 }
+      }
+    },
+    "02_toc": {
+      "transition": { "effect": "fade", "duration": 0.35 },
+      "animation": { "effect": "fade", "duration": 0.30, "stagger": 0.12, "trigger": "after-previous" },
+      "groups": {
+        "item-01": { "order": 1 },
+        "item-02": { "order": 2 },
+        "item-03": { "order": 3 },
+        "item-04": { "order": 4 },
+        "item-05": { "order": 5 }
+      }
+    },
+    "03_zine_what": {
+      "transition": { "effect": "wipe", "duration": 0.40 },
+      "animation": { "effect": "fade", "duration": 0.40, "stagger": 0.18, "trigger": "after-previous" },
+      "groups": {
+        "left-image-strip": { "effect": "wipe", "order": 1, "duration": 0.50 },
+        "big-formula": { "effect": "appear", "order": 2, "delay": 0.15, "duration": 0.30 },
+        "feature-01": { "effect": "fade", "order": 3 },
+        "feature-02": { "effect": "fade", "order": 4 },
+        "feature-03": { "effect": "fade", "order": 5 },
+        "callout-box": { "effect": "wipe", "order": 6, "delay": 0.20, "duration": 0.45 }
+      }
+    },
+    "04_zine_history": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.30, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "timeline-track": { "effect": "wipe", "order": 1, "duration": 0.55 },
+        "year-ticks": { "effect": "appear", "order": 2, "delay": 0.10 },
+        "wave-01": { "order": 3 },
+        "wave-02": { "order": 4 },
+        "wave-03": { "order": 5 },
+        "wave-04": { "order": 6 },
+        "wave-05": { "order": 7 }
+      }
+    },
+    "05_risograph_origin": {
+      "transition": { "effect": "wipe", "duration": 0.40 },
+      "animation": { "effect": "fade", "duration": 0.32, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "left-sidebar": { "effect": "wipe", "order": 1, "duration": 0.50 },
+        "origin-box": { "effect": "wipe", "order": 2, "delay": 0.10, "duration": 0.40 },
+        "trait-01": { "order": 3 },
+        "trait-02": { "order": 4 },
+        "trait-03": { "order": 5 },
+        "trait-04": { "order": 6 }
+      }
+    },
+    "06_risograph_process": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.28, "stagger": 0.12, "trigger": "after-previous" },
+      "groups": {
+        "process-banner": { "effect": "wipe", "order": 1, "duration": 0.55 },
+        "step-01": { "order": 2 },
+        "step-02": { "order": 3 },
+        "step-03": { "order": 4 },
+        "step-04": { "order": 5 },
+        "step-05": { "order": 6, "duration": 0.40 }
+      }
+    },
+    "07_zine_folding": {
+      "transition": { "effect": "wipe", "duration": 0.40 },
+      "animation": { "effect": "box", "duration": 0.40, "stagger": 0.18, "trigger": "after-previous" },
+      "groups": {
+        "hero-image": { "effect": "fade", "order": 1, "duration": 0.50 },
+        "anno-01": { "effect": "box", "order": 2 },
+        "anno-02": { "effect": "box", "order": 3 },
+        "anno-03": { "effect": "box", "order": 4 },
+        "anno-04": { "effect": "box", "order": 5 },
+        "rule-banner": { "effect": "wipe", "order": 6, "delay": 0.20, "duration": 0.45 }
+      }
+    },
+    "08_zine_content_types": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "appear", "duration": 0.28, "stagger": 0.10, "trigger": "after-previous" },
+      "groups": {
+        "card-01": { "order": 1 },
+        "card-02": { "order": 2 },
+        "card-03": { "order": 3 },
+        "card-04": { "order": 4 },
+        "card-05": { "order": 5 },
+        "card-06": { "order": 6 }
+      }
+    },
+    "09_jimbocho": {
+      "transition": { "effect": "push", "duration": 0.45 },
+      "animation": { "effect": "fade", "duration": 0.45, "stagger": 0.20, "trigger": "after-previous" },
+      "groups": {
+        "hero": { "effect": "fade", "order": 1, "duration": 0.55 },
+        "big-title": { "effect": "appear", "order": 2, "delay": 0.15, "duration": 0.30 },
+        "award": { "effect": "box", "order": 3, "duration": 0.40 },
+        "info-bar": { "effect": "wipe", "order": 4, "delay": 0.20, "duration": 0.55 }
+      }
+    },
+    "10_three_cities": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.32, "stagger": 0.16, "trigger": "after-previous" },
+      "groups": {
+        "triptych": { "effect": "wipe", "order": 1, "duration": 0.55 },
+        "pillar-paris": { "order": 2 },
+        "pillar-london": { "order": 3 },
+        "pillar-nyc": { "order": 4 }
+      }
+    },
+    "11_berlin": {
+      "transition": { "effect": "push", "duration": 0.50 },
+      "animation": { "effect": "fade", "duration": 0.50, "stagger": 0.25, "trigger": "after-previous" },
+      "groups": {
+        "hero": { "effect": "fade", "order": 1, "duration": 0.60 },
+        "big-title": { "effect": "box", "order": 2, "delay": 0.20, "duration": 0.55 },
+        "bottom-info": { "effect": "wipe", "order": 3, "delay": 0.25, "duration": 0.55 }
+      }
+    },
+    "12_china_bookstore_map": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.45, "stagger": 0.10, "trigger": "after-previous" },
+      "groups": {
+        "table": { "effect": "fade", "order": 1, "duration": 0.55 },
+        "legend": { "effect": "appear", "order": 2, "delay": 0.20 }
+      }
+    },
+    "13_china_art_book_fair": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.40, "stagger": 0.20, "trigger": "after-previous" },
+      "groups": {
+        "left-hero": { "effect": "wipe", "order": 1, "duration": 0.50 },
+        "card-abc": { "effect": "fade", "order": 2 },
+        "card-unfold": { "effect": "fade", "order": 3 }
+      }
+    },
+    "14_how_to_browse": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.30, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "item-01": { "order": 1 },
+        "item-02": { "order": 2 },
+        "item-03": { "order": 3 },
+        "item-04": { "order": 4 },
+        "callout": { "effect": "wipe", "order": 5, "delay": 0.18, "duration": 0.40 }
+      }
+    },
+    "15_how_to_collect": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.30, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "item-01": { "order": 1 },
+        "item-02": { "order": 2 },
+        "item-03": { "order": 3 },
+        "item-04": { "order": 4 },
+        "callout": { "effect": "wipe", "order": 5, "delay": 0.18, "duration": 0.40 }
+      }
+    },
+    "16_action_checklist": {
+      "transition": { "effect": "wipe", "duration": 0.45 },
+      "animation": { "effect": "box", "duration": 0.45, "stagger": 0.22, "trigger": "after-previous" },
+      "groups": {
+        "step-01": { "effect": "box", "order": 1 },
+        "step-02": { "effect": "box", "order": 2 },
+        "step-03": { "effect": "box", "order": 3 },
+        "step-04": { "effect": "box", "order": 4 },
+        "outcome": { "effect": "appear", "order": 5, "delay": 0.25, "duration": 0.40 },
+        "rule": { "effect": "wipe", "order": 6, "delay": 0.20, "duration": 0.50 }
+      }
+    },
+    "17_sources": {
+      "transition": { "effect": "fade", "duration": 0.30 },
+      "animation": { "effect": "fade", "duration": 0.35, "stagger": 0.18, "trigger": "after-previous" },
+      "groups": {
+        "col-01": { "order": 1 },
+        "col-02": { "order": 2 },
+        "col-03": { "order": 3 },
+        "credits": { "effect": "wipe", "order": 4, "delay": 0.20, "duration": 0.45 }
+      }
+    },
+    "18_outro": {
+      "transition": { "effect": "push", "duration": 0.55 },
+      "animation": { "effect": "appear", "duration": 0.40, "stagger": 0.30, "trigger": "after-previous" },
+      "groups": {
+        "hero": { "effect": "fade", "order": 1, "duration": 0.55 },
+        "top-mark": { "effect": "appear", "order": 2, "delay": 0.10 },
+        "big-outro-cn": { "effect": "appear", "order": 3, "delay": 0.20, "duration": 0.40 },
+        "en-outro": { "effect": "wipe", "order": 4, "delay": 0.35, "duration": 0.55 },
+        "corner-tag": { "effect": "appear", "order": 5, "delay": 0.20 },
+        "colophon": { "effect": "box", "order": 6, "delay": 0.15, "duration": 0.40 }
+      }
+    }
+  }
+}

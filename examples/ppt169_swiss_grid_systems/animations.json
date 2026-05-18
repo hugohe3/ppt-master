@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.35 },
+    "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.2, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.45 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "cover-meta-top": { "effect": "fade", "order": 1, "duration": 0.45 },
+        "cover-headline": { "effect": "wipe", "order": 2, "duration": 0.7, "delay": 0.25 },
+        "cover-tagline": { "effect": "fade", "order": 3, "duration": 0.5, "delay": 0.25 },
+        "cover-footer": { "effect": "none" }
+      }
+    },
+
+    "02_quote": {
+      "transition": { "effect": "fade", "duration": 0.4 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "quote-mark": { "effect": "fade", "order": 1, "duration": 0.55 },
+        "quote-body": { "effect": "fade", "order": 2, "duration": 0.6, "delay": 0.35 },
+        "quote-attribution": { "effect": "fade", "order": 3, "duration": 0.5, "delay": 0.3 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "03_origin": {
+      "transition": { "effect": "wipe", "duration": 0.4 },
+      "animation": { "stagger": 0.18 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "timeline-track": { "effect": "wipe", "order": 1, "duration": 0.7 },
+        "node-1896": { "effect": "fade", "order": 2, "duration": 0.3 },
+        "node-1908": { "effect": "fade", "order": 3, "duration": 0.3 },
+        "node-1918": { "effect": "fade", "order": 4, "duration": 0.3 },
+        "node-1936": { "effect": "fade", "order": 5, "duration": 0.3 },
+        "node-1957": { "effect": "fade", "order": 6, "duration": 0.45 },
+        "conclusion": { "effect": "fade", "order": 7, "duration": 0.5, "delay": 0.3 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "04_principles": {
+      "animation": { "effect": "fade", "duration": 0.3, "stagger": 0.12 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "principle-1": { "order": 1 },
+        "principle-2": { "order": 2 },
+        "principle-3": { "order": 3 },
+        "principle-4": { "order": 4 },
+        "principle-5": { "order": 5 },
+        "principle-6": { "order": 6 },
+        "principle-7": { "order": 7, "duration": 0.5, "delay": 0.15 },
+        "principle-8": { "order": 8 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "05_figures": {
+      "animation": { "effect": "fade", "duration": 0.3, "stagger": 0.1 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "figure-keller": { "order": 1 },
+        "figure-ballmer": { "order": 2 },
+        "figure-bill": { "order": 3 },
+        "figure-ruder": { "order": 4 },
+        "figure-hofmann": { "order": 5 },
+        "figure-brockmann": { "order": 6, "duration": 0.5, "delay": 0.2 },
+        "figure-miedinger": { "order": 7 },
+        "figure-frutiger": { "order": 8 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "06_brockmann": {
+      "animation": { "stagger": 0.18 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "big-name": { "effect": "fade", "order": 1, "duration": 0.6 },
+        "timeline-track": { "effect": "wipe", "order": 2, "duration": 0.55 },
+        "event-1914": { "effect": "fade", "order": 3, "duration": 0.3 },
+        "event-1936": { "effect": "fade", "order": 4, "duration": 0.3 },
+        "event-1950": { "effect": "fade", "order": 5, "duration": 0.45 },
+        "event-1957": { "effect": "fade", "order": 6, "duration": 0.3 },
+        "event-1958": { "effect": "fade", "order": 7, "duration": 0.3 },
+        "event-1981": { "effect": "fade", "order": 8, "duration": 0.45 },
+        "event-1996": { "effect": "fade", "order": 9, "duration": 0.3 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "07_typefaces": {
+      "animation": { "effect": "fade", "stagger": 0.25 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "type-akzidenz": { "order": 1, "duration": 0.5 },
+        "type-helvetica": { "order": 2, "duration": 0.55, "delay": 0.1 },
+        "type-univers": { "order": 3, "duration": 0.5 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "08_grid_types": {
+      "animation": { "stagger": 0.18 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "axis-cross": { "effect": "split", "order": 1, "duration": 0.55 },
+        "q-manuscript": { "effect": "fade", "order": 2, "duration": 0.4 },
+        "q-column": { "effect": "fade", "order": 3, "duration": 0.4 },
+        "q-modular": { "effect": "fade", "order": 4, "duration": 0.55, "delay": 0.15 },
+        "q-hierarchical": { "effect": "fade", "order": 5, "duration": 0.4 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "09_modular": {
+      "transition": { "effect": "fade", "duration": 0.5 },
+      "animation": { "stagger": 0.3 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "spec-list": { "effect": "fade", "order": 1, "duration": 0.6 },
+        "modular-grid": { "effect": "wipe", "order": 2, "duration": 0.85, "delay": 0.25 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "10_negative_space": {
+      "transition": { "effect": "fade", "duration": 0.5 },
+      "animation": { "stagger": 0.5 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "floating-headline": { "effect": "fade", "order": 1, "duration": 0.75 },
+        "floating-aphorism": { "effect": "fade", "order": 2, "duration": 0.65, "delay": 0.5 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "11_outputs": {
+      "transition": { "effect": "wipe", "duration": 0.4 },
+      "animation": { "effect": "fade", "duration": 0.35, "stagger": 0.2 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "domain-corporate": { "order": 1 },
+        "domain-signage": { "order": 2 },
+        "domain-publishing": { "order": 3 },
+        "domain-education": { "order": 4 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "12_digital_era": {
+      "animation": { "stagger": 0.18 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "track": { "effect": "wipe", "order": 1, "duration": 0.6 },
+        "stage-1": { "effect": "fade", "order": 2, "duration": 0.35 },
+        "stage-2": { "effect": "fade", "order": 3, "duration": 0.35 },
+        "stage-3": { "effect": "fade", "order": 4, "duration": 0.35 },
+        "stage-4": { "effect": "fade", "order": 5, "duration": 0.5, "delay": 0.15 },
+        "conclusion": { "effect": "fade", "order": 6, "duration": 0.55, "delay": 0.3 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "13_brands": {
+      "animation": { "effect": "fade", "duration": 0.3, "stagger": 0.13 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "brand-apple": { "order": 1 },
+        "brand-google": { "order": 2 },
+        "brand-spotify": { "order": 3 },
+        "brand-airbnb": { "order": 4 },
+        "brand-ibm": { "order": 5, "duration": 0.5, "delay": 0.15 },
+        "brand-lufthansa": { "order": 6 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+
+    "14_closing": {
+      "transition": { "effect": "wipe", "duration": 0.5 },
+      "animation": { "stagger": 0.35 },
+      "groups": {
+        "bg": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "closing-headline": { "effect": "fade", "order": 1, "duration": 0.8 },
+        "closing-english": { "effect": "fade", "order": 2, "duration": 0.6, "delay": 0.35 },
+        "closing-meta": { "effect": "fade", "order": 3, "duration": 0.5, "delay": 0.3 },
+        "page-footer": { "effect": "none" }
+      }
+    }
+  }
+}

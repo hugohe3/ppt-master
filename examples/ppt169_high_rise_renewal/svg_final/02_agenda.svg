@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="rail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C2410C" />
+      <stop offset="50%" stop-color="#8B7355" />
+      <stop offset="100%" stop-color="#6B7A4F" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC" />
+  </g>
+
+  <g id="header">
+    <rect x="80" y="68" width="4" height="64" fill="#C2410C" />
+    <text x="104" y="100" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#2B3A4A">本次议程</text>
+    <text x="104" y="124" font-family="Georgia, serif" font-size="13" font-weight="600" fill="#5A6B7A" letter-spacing="3">FOUR PARTS · FROM A FIRE TO A FRAMEWORK</text>
+    <text x="1200" y="100" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A" letter-spacing="2">CONTENTS</text>
+  </g>
+
+  <line x1="80" y1="158" x2="1200" y2="158" stroke="#D6CFC0" stroke-width="1.5" />
+
+  <line x1="160" y1="220" x2="160" y2="640" stroke="url(#rail)" stroke-width="3" stroke-linecap="round" />
+
+  <g id="item-01" transform="translate(0, 200)">
+    <circle cx="160" cy="36" r="26" fill="#F5F2EC" stroke="#C2410C" stroke-width="3" />
+    <text x="160" y="44" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#C2410C">I</text>
+    <text x="220" y="32" font-family="KaiTi, Georgia, serif" font-size="26" font-weight="700" fill="#2B3A4A">警钟</text>
+    <text x="290" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" font-weight="500" fill="#2B3A4A">高层老龄化与消防困局</text>
+    <text x="220" y="62" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5A6B7A">从香港宏福苑火灾切入，看高层建筑老化背后的系统性风险</text>
+    <path fill="#FFFFFF" stroke="#C2410C" stroke-width="1" d="M1054,14 H1176 A4,4 0 0 1 1180,18 V46 A4,4 0 0 1 1176,50 H1054 A4,4 0 0 1 1050,46 V18 A4,4 0 0 1 1054,14 Z" />
+    <text x="1115" y="38" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#C2410C" letter-spacing="2">P03 — P05</text>
+  </g>
+
+  <g id="item-02" transform="translate(0, 300)">
+    <circle cx="160" cy="36" r="26" fill="#F5F2EC" stroke="#8B7355" stroke-width="3" />
+    <text x="160" y="44" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#8B7355">II</text>
+    <text x="220" y="32" font-family="KaiTi, Georgia, serif" font-size="26" font-weight="700" fill="#2B3A4A">范本</text>
+    <text x="290" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" font-weight="500" fill="#2B3A4A">悉尼摩天楼的"再生革命"</text>
+    <text x="220" y="62" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5A6B7A">Quay Quarter Tower：世界第一座全面升级改造的摩天大楼</text>
+    <path fill="#FFFFFF" stroke="#8B7355" stroke-width="1" d="M1054,14 H1176 A4,4 0 0 1 1180,18 V46 A4,4 0 0 1 1176,50 H1054 A4,4 0 0 1 1050,46 V18 A4,4 0 0 1 1054,14 Z" />
+    <text x="1115" y="38" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#8B7355" letter-spacing="2">P06 — P08</text>
+  </g>
+
+  <g id="item-03" transform="translate(0, 400)">
+    <circle cx="160" cy="36" r="26" fill="#F5F2EC" stroke="#6B7A4F" stroke-width="3" />
+    <text x="160" y="44" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#6B7A4F">III</text>
+    <text x="220" y="32" font-family="KaiTi, Georgia, serif" font-size="26" font-weight="700" fill="#2B3A4A">巡览</text>
+    <text x="290" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" font-weight="500" fill="#2B3A4A">全球功能再造案例</text>
+    <text x="220" y="62" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5A6B7A">深圳妇儿大厦 · 上海艾迪逊酒店 · 纽约 One Wall Street</text>
+    <path fill="#FFFFFF" stroke="#6B7A4F" stroke-width="1" d="M1054,14 H1176 A4,4 0 0 1 1180,18 V46 A4,4 0 0 1 1176,50 H1054 A4,4 0 0 1 1050,46 V18 A4,4 0 0 1 1054,14 Z" />
+    <text x="1115" y="38" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#6B7A4F" letter-spacing="2">P09 — P11</text>
+  </g>
+
+  <g id="item-04" transform="translate(0, 500)">
+    <circle cx="160" cy="36" r="28" fill="#2B3A4A" />
+    <text x="160" y="44" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#F5F2EC">IV</text>
+    <text x="220" y="32" font-family="KaiTi, Georgia, serif" font-size="26" font-weight="700" fill="#2B3A4A">困局</text>
+    <text x="290" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" font-weight="500" fill="#2B3A4A">中国老旧高层住宅的硬骨头</text>
+    <text x="220" y="62" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5A6B7A">浙工新村 · 北京"办公环橙" · 治理机制创新与"先体检后更新"</text>
+    <path fill="#2B3A4A" d="M1054,14 H1176 A4,4 0 0 1 1180,18 V46 A4,4 0 0 1 1176,50 H1054 A4,4 0 0 1 1050,46 V18 A4,4 0 0 1 1054,14 Z" />
+    <text x="1115" y="38" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="2">P12 — P15</text>
+  </g>
+
+  <g id="footer">
+    <line x1="80" y1="660" x2="1200" y2="660" stroke="#D6CFC0" stroke-width="1" />
+    <text x="80" y="695" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8A8275">主动再生 · ACTIVE REGENERATION</text>
+    <text x="1200" y="695" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">02 / 15</text>
+  </g>
+</svg>

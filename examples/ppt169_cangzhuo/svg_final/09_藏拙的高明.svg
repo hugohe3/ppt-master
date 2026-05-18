@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">把"拙"变成盾</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+  <text x="60" y="135" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">表现得太"满"，反而被四面消耗</text>
+
+  <!-- Shield icon decorative -->
+  <!-- icon: tabler-outline/shield -->
+  <g transform="translate(1080.0, 60.0) scale(5.0)" fill="none" stroke="#A52A2A" stroke-width="1.5">
+    <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+  </g>
+
+  <!-- Table header -->
+  <g transform="translate(60, 200)">
+    <line x1="0" y1="0" x2="1160" y2="0" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="20" y="40" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A" letter-spacing="3">你的表现</text>
+    <text x="540" y="40" font-family="KaiTi, Georgia, serif" font-size="22" fill="#A52A2A" letter-spacing="6">→</text>
+    <text x="640" y="40" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A" letter-spacing="3">旁人反应</text>
+    <text x="990" y="40" font-family="KaiTi, Georgia, serif" font-size="18" fill="#8B8680" letter-spacing="3">实际代价</text>
+    <line x1="0" y1="60" x2="1160" y2="60" stroke="#C8C0AE" stroke-width="1"/>
+  </g>
+
+  <!-- Row 1 -->
+  <g transform="translate(60, 280)">
+    <text x="20" y="32" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">太 聪 明</text>
+    <text x="540" y="32" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#A52A2A">⟶</text>
+    <text x="640" y="32" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">防 他</text>
+    <text x="990" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">关键信息绕着走</text>
+    <line x1="0" y1="56" x2="1160" y2="56" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="3 3"/>
+  </g>
+
+  <!-- Row 2 -->
+  <g transform="translate(60, 360)">
+    <text x="20" y="32" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">太 强 势</text>
+    <text x="540" y="32" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#A52A2A">⟶</text>
+    <text x="640" y="32" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">躲 他</text>
+    <text x="990" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">没人愿意主动靠近</text>
+    <line x1="0" y1="56" x2="1160" y2="56" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="3 3"/>
+  </g>
+
+  <!-- Row 3 -->
+  <g transform="translate(60, 440)">
+    <text x="20" y="32" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">太 急 切</text>
+    <text x="540" y="32" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#A52A2A">⟶</text>
+    <text x="640" y="32" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">压 价</text>
+    <text x="990" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">资源方知道你必须接</text>
+    <line x1="0" y1="56" x2="1160" y2="56" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="3 3"/>
+  </g>
+
+  <!-- Row 4 -->
+  <g transform="translate(60, 520)">
+    <text x="20" y="32" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">太 想 赢</text>
+    <text x="540" y="32" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="22" fill="#A52A2A">⟶</text>
+    <text x="640" y="32" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="3">拖 入 局</text>
+    <text x="990" y="32" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">对手用你的胜负心牵你</text>
+    <line x1="0" y1="56" x2="1160" y2="56" stroke="#1A1A1A" stroke-width="2"/>
+  </g>
+
+  <!-- Bottom takeaway -->
+  <text x="640" y="660" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="22" fill="#5C5852" letter-spacing="4">慢一点 · 钝一点 · 淡一点 — 反而减少无谓的消耗</text>
+
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 七</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">09</text>
+</svg>

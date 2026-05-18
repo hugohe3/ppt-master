@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART I · LANDSCAPE · 04</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">2026 Q1 全球风投：<tspan fill="#E63946">$297B</tspan> 创纪录，AI 拿走 <tspan fill="#E63946">81%</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Global VC Q1 2026 — four mega-deals carry the quarter</text>
+  </g>
+
+  <g id="card-1">
+    <path fill="#1A1F26" stroke="#2A2F36" stroke-width="1" d="M66,190 H334 A6,6 0 0 1 340,196 V404 A6,6 0 0 1 334,410 H66 A6,6 0 0 1 60,404 V196 A6,6 0 0 1 66,190 Z" />
+    <line x1="60" y1="190" x2="60" y2="290" stroke="#E63946" stroke-width="3" />
+    
+  <g transform="translate(80.0, 210.0) scale(0.9166666666666666)" fill="none" stroke="#8A857E" stroke-width="1.5">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M3.6 9h16.8" />
+    <path d="M3.6 15h16.8" />
+    <path d="M11.5 3a17 17 0 0 0 0 18" />
+    <path d="M12.5 3a17 17 0 0 1 0 18" />
+  </g>
+    <text x="112" y="227" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">单季 VC 总额 / Q1 VC</text>
+    <text x="80" y="320" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">$297<tspan font-size="32" fill="#C9C5BE">B</tspan></text>
+    <text x="80" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">单季历史最高 · Single-quarter record</text>
+    <text x="80" y="385" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">来源: Crunchbase</text>
+  </g>
+
+  <g id="card-2">
+    <path fill="#1A1F26" stroke="#2A2F36" stroke-width="1" d="M366,190 H634 A6,6 0 0 1 640,196 V404 A6,6 0 0 1 634,410 H366 A6,6 0 0 1 360,404 V196 A6,6 0 0 1 366,190 Z" />
+    <line x1="360" y1="190" x2="360" y2="290" stroke="#E63946" stroke-width="3" />
+    
+  <g transform="translate(380.0, 210.0) scale(0.9166666666666666)" fill="none" stroke="#8A857E" stroke-width="1.5">
+    <path d="M16 17a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M6 7a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M6 18l12 -12" />
+  </g>
+    <text x="412" y="227" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">AI 占全季 VC / AI share</text>
+    <text x="380" y="320" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">81<tspan font-size="32" fill="#C9C5BE">%</tspan></text>
+    <text x="380" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">约 <tspan fill="#E63946" font-weight="bold">$242B</tspan> 流入 AI 行业</text>
+    <text x="380" y="385" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">来源: Crunchbase / PitchBook</text>
+  </g>
+
+  <g id="card-3">
+    <path fill="#1A1F26" stroke="#2A2F36" stroke-width="1" d="M66,430 H334 A6,6 0 0 1 340,436 V644 A6,6 0 0 1 334,650 H66 A6,6 0 0 1 60,644 V436 A6,6 0 0 1 66,430 Z" />
+    <line x1="60" y1="430" x2="60" y2="530" stroke="#F4A261" stroke-width="3" />
+    
+  <g transform="translate(80.0, 450.0) scale(0.9166666666666666)" fill="none" stroke="#8A857E" stroke-width="1.5">
+    <path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" />
+    <path d="M12 3v3m0 12v3" />
+  </g>
+    <text x="112" y="467" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">Top 4 笔大单 / Top 4 deals</text>
+    <text x="80" y="560" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">$188<tspan font-size="32" fill="#C9C5BE">B</tspan></text>
+    <text x="80" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">OpenAI · Anthropic · xAI · Waymo</text>
+    <text x="80" y="625" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">来源: PitchBook Q1 2026 Report</text>
+  </g>
+
+  <g id="card-4">
+    <path fill="#1A1F26" stroke="#2A2F36" stroke-width="1" d="M366,430 H634 A6,6 0 0 1 640,436 V644 A6,6 0 0 1 634,650 H366 A6,6 0 0 1 360,644 V436 A6,6 0 0 1 366,430 Z" />
+    <line x1="360" y1="430" x2="360" y2="530" stroke="#F4A261" stroke-width="3" />
+    
+  <g transform="translate(380.0, 450.0) scale(0.9166666666666666)" fill="none" stroke="#8A857E" stroke-width="1.5">
+    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+  </g>
+    <text x="412" y="467" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">集中度 / Concentration</text>
+    <text x="380" y="560" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">65<tspan font-size="32" fill="#C9C5BE">%</tspan></text>
+    <text x="380" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Top 4 占全季全球 VC 比例</text>
+    <text x="380" y="625" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">钱不是更多，是更集中</text>
+  </g>
+
+  <g id="callout-right">
+    <line x1="680" y1="190" x2="680" y2="650" stroke="#2A2F36" stroke-width="1" />
+    <text x="700" y="220" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">EDITORIAL NOTE</text>
+    <line x1="700" y1="232" x2="820" y2="232" stroke="#E63946" stroke-width="1" />
+
+    <text font-weight="bold" font-size="22" fill="#E8E6E1" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" x="700" y="280">钱没变多，</text><text font-weight="bold" font-size="22" fill="#E8E6E1" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" x="700" y="312">是更集中。</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="700" y="380">"While more money than ever is being</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="700" y="402">invested in the private markets, that's</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="700" y="424"><tspan>thanks to <tspan fill="#E63946" font-weight="bold">larger checks, not more</tspan></tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="700" y="446"><tspan><tspan fill="#E63946" font-weight="bold">of them</tspan> — capital concentrated into a</tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="700" y="468">select few companies and a single</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="700" y="490">industry."</text><text x="700" y="555" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">— Crunchbase, Q1 2026 venture report</text>
+
+    <g id="key-stat-inline">
+      <line x1="700" y1="600" x2="1160" y2="600" stroke="#2A2F36" stroke-width="1" />
+      <text x="700" y="630" font-family="Cambria, serif" font-size="13" fill="#8A857E">三大模型公司单季合计</text>
+      <text x="1160" y="630" text-anchor="end" font-family="Cambria, serif" font-size="32" font-weight="bold" fill="#E63946">$172B</text>
+    </g>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Crunchbase · PitchBook Q1 2026 Venture Reports</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">04 / 20</text>
+  </g>
+</svg>

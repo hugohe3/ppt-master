@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bubble_scrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0E1116" stop-opacity="0.92"/>
+      <stop offset="55%" stop-color="#0E1116" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#0E1116" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+    <image href="../images/bubble_tension.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bubble_scrim)"/>
+  </g>
+
+  <g id="chapter-chrome">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART VI · THE BUBBLE · 17</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+  </g>
+
+  <g id="chapter-mark">
+    <text x="60" y="280" font-family="Cambria, serif" font-size="180" font-weight="bold" fill="#E63946" opacity="0.85">VI.</text>
+  </g>
+
+  <g id="chapter-title">
+    <text x="60" y="420" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="bold" fill="#E8E6E1">泡沫</text>
+    <text x="200" y="420" font-family="Cambria, serif" font-size="32" font-style="italic" fill="#C9C5BE">/ The Bubble Question</text>
+    <text x="60" y="468" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" fill="#C9C5BE">资本与商业现实的剪刀差</text>
+    <line x1="60" y1="500" x2="280" y2="500" stroke="#E63946" stroke-width="1"/>
+  </g>
+
+  <g id="lede-points">
+    <text x="60" y="550" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">
+      <tspan x="60" dy="0">Hyperscaler capex <tspan fill="#E63946" font-weight="bold">$400B</tspan> · 企业 AI 收入仅 <tspan fill="#E63946" font-weight="bold">$100B</tspan></tspan>
+      <tspan x="60" dy="24">增速差距 <tspan fill="#E63946" font-weight="bold">46 个百分点</tspan> · 2001 电信泡沫期为 32%</tspan>
+      <tspan x="60" dy="24">MIT 研究：<tspan fill="#E63946" font-weight="bold">95%</tspan> 生成式 AI 试点未产生商业价值</tspan>
+    </text>
+  </g>
+
+  <g id="chapter-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Capital, Compute, and the Closed Loop · Part VI opens at P17</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">17 / 20</text>
+  </g>
+</svg>

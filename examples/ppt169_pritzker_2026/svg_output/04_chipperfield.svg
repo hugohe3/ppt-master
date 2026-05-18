@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="p04-header">
+    <text x="60" y="58" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="3">02 · MASTERWORK</text>
+    <text x="60" y="120" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="38" font-weight="bold" fill="#1C1C1C">奇普菲尔德 · 米兰圣朱利亚冰球馆</text>
+    <text x="60" y="156" font-family="KaiTi, &quot;Microsoft YaHei&quot;, serif" font-size="24" fill="#B8935A" font-style="italic">千年罗马竞技场的现代回响</text>
+    <text x="60" y="186" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">戴卫·奇普菲尔德 · 2023 年普利兹克奖 · 2026 米兰冬奥会唯一新建永久场馆</text>
+  </g>
+
+  <g id="img-amphitheater">
+    <image href="../images/chipperfield_roman_amphitheater.png" x="60" y="220" width="540" height="340" preserveAspectRatio="xMidYMid slice"/>
+    <line x1="60" y1="220" x2="60" y2="280" stroke="#8B8680" stroke-width="3"/>
+    <text x="76" y="246" font-family="Georgia, serif" font-size="14" fill="#8B8680" letter-spacing="2">PRECEDENT · 约 70 AD</text>
+    <text x="76" y="270" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#F5F2EC">古罗马圆形剧场</text>
+    <text x="60" y="580" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#8B8680">图源 · Unsplash</text>
+  </g>
+
+  <g id="connector">
+    <text x="640" y="380" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="#B8935A" font-style="italic">→</text>
+    <text x="640" y="416" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852" letter-spacing="3">两千年回响</text>
+  </g>
+
+  <g id="img-milan">
+    <image href="../images/chipperfield_milan_exterior.png" x="680" y="220" width="540" height="340" preserveAspectRatio="xMidYMid slice"/>
+    <line x1="680" y1="220" x2="680" y2="280" stroke="#B8935A" stroke-width="3"/>
+    <text x="696" y="246" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="2">CONTEMPORARY · 2026</text>
+    <text x="696" y="270" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#F5F2EC">米兰圣朱利亚冰球馆</text>
+    <text x="680" y="580" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#8B8680">图源 · David Chipperfield Architects</text>
+  </g>
+
+  <g id="card-spec">
+    <rect x="60" y="600" width="385" height="80" fill="#EDE8DE"/>
+    <line x1="60" y1="600" x2="60" y2="680" stroke="#B8935A" stroke-width="2"/>
+    <text x="80" y="628" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#1C1C1C">16,000</text>
+    <text x="80" y="664" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">观众容量 · 椭圆形态呼应古罗马</text>
+    <text x="280" y="628" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#8B8680">座</text>
+  </g>
+
+  <g id="card-facade">
+    <rect x="465" y="600" width="385" height="80" fill="#EDE8DE"/>
+    <line x1="465" y1="600" x2="465" y2="680" stroke="#B8935A" stroke-width="2"/>
+    <text x="485" y="628" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#1C1C1C">三道金属环带 + 玻璃腰线</text>
+    <text x="485" y="664" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">LED 灯带 — 城市尺度的动态屏幕</text>
+  </g>
+
+  <g id="card-quote">
+    <rect x="870" y="600" width="350" height="80" fill="#1C1C1C"/>
+    <text x="890" y="628" font-family="KaiTi, Georgia, serif" font-size="17" font-style="italic" fill="#E8C788">以极致的克制与精确</text>
+    <text x="890" y="660" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">讲述建筑与历史、与城市公共生活的关系</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="700" x2="1220" y2="700" stroke="#D4CFC4" stroke-width="1"/>
+    <text x="60" y="715" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">02 米兰圣朱利亚冰球馆</text>
+    <text x="1220" y="715" text-anchor="end" font-family="Georgia, serif" font-size="11" fill="#8B8680">04 / 11</text>
+  </g>
+</svg>

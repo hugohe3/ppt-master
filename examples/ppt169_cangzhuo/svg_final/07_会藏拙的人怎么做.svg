@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">不在小场面里浪费锋芒</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+  <text x="60" y="135" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">会藏拙的人 · 在三个场景里都守得住</text>
+
+  <!-- Three vertical columns -->
+  <g transform="translate(60, 200)">
+    <!-- Number -->
+    <text x="0" y="40" font-family="KaiTi, Georgia, serif" font-size="48" font-weight="700" fill="#A52A2A">壹</text>
+    <line x1="0" y1="60" x2="60" y2="60" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="0" y="105" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">饭 局 上</text>
+    <text x="0" y="160" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#5C5852">不抢话</text>
+    <text x="0" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680">别人争"我说得对"</text>
+    <text x="0" y="226" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680">他听"谁手里有什么"</text>
+    <!-- Bottom strap -->
+    <rect x="0" y="280" width="360" height="2" fill="#A52A2A"/>
+    <text x="0" y="320" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A" letter-spacing="2">看筹码 · 不看面子</text>
+  </g>
+
+  <g transform="translate(460, 200)">
+    <text x="0" y="40" font-family="KaiTi, Georgia, serif" font-size="48" font-weight="700" fill="#A52A2A">贰</text>
+    <line x1="0" y1="60" x2="60" y2="60" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="0" y="105" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">会 议 里</text>
+    <text x="0" y="160" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#5C5852">不乱表态</text>
+    <text x="0" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680">别人争"谁先开口"</text>
+    <text x="0" y="226" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680">他看"谁先暴露"</text>
+    <rect x="0" y="280" width="360" height="2" fill="#A52A2A"/>
+    <text x="0" y="320" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A" letter-spacing="2">看代价 · 不看输赢</text>
+  </g>
+
+  <g transform="translate(860, 200)">
+    <text x="0" y="40" font-family="KaiTi, Georgia, serif" font-size="48" font-weight="700" fill="#A52A2A">叁</text>
+    <line x1="0" y1="60" x2="60" y2="60" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="0" y="105" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="3">人 群 中</text>
+    <text x="0" y="160" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#5C5852">不显摆关系</text>
+    <text x="0" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680">别人争"我认识谁"</text>
+    <text x="0" y="226" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680">他想"后面的路怎么走"</text>
+    <rect x="0" y="280" width="360" height="2" fill="#A52A2A"/>
+    <text x="0" y="320" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A" letter-spacing="2">看路 · 不看一口气</text>
+  </g>
+
+  <!-- Bottom long quote -->
+  <g transform="translate(60, 590)">
+    <rect x="0" y="0" width="1160" height="80" fill="#1A1A1A"/>
+    <!-- icon: tabler-outline/quote -->
+  <g transform="translate(20.0, 14.0) scale(1.3333333333333333)" fill="none" stroke="#A52A2A" stroke-width="1.5">
+    <path d="M10 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5" />
+    <path d="M19 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5" />
+  </g>
+    <text x="68" y="38" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8" letter-spacing="2">沉默不是空白，是在收集信息；</text>
+    <text x="68" y="68" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8" letter-spacing="2">退让不是无能，是不把弹药浪费在无价值的目标上。</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="710" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 五</text>
+  <text x="1220" y="710" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">07</text>
+</svg>

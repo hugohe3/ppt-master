@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP05" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotP05)"/>
+
+  <!-- Left full-height image sidebar -->
+  <g id="left-sidebar">
+    <rect x="62" y="62" width="380" height="596" fill="#FF5C8A"/>
+    <image href="../images/risograph_machine.png" x="60" y="60" width="380" height="596" preserveAspectRatio="xMidYMid slice"/>
+    <!-- Sidebar caption stack -->
+    <rect x="60" y="660" width="380" height="40" fill="#1E4DBC"/>
+    <text x="80" y="685" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="22" fill="#F5EFE0">RISO EZ200</text>
+    <text x="420" y="685" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F5EFE0" text-anchor="end" letter-spacing="2">EST. 1986</text>
+  </g>
+
+  <!-- Right header -->
+  <g id="header">
+    <text x="480" y="100" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="4">PART 02 · RISOGRAPH ORIGIN + VISUAL TRAITS</text>
+    <line x1="480" y1="116" x2="640" y2="116" stroke="#1E4DBC" stroke-width="3"/>
+    <text x="480" y="170" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="56" fill="#FF5C8A" letter-spacing="-1">RISOGRAPH</text>
+    <text x="478" y="168" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="56" fill="#1A1A1A" letter-spacing="-1">RISOGRAPH</text>
+    <text x="480" y="210" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">ZINE 工艺的灵魂载体</text>
+  </g>
+
+  <!-- Origin one-liner box -->
+  <g id="origin-box">
+    <rect x="480" y="232" width="740" height="60" fill="#1A1A1A"/>
+    <rect x="483" y="235" width="740" height="60" fill="#1E4DBC" opacity="0.4"/>
+    <rect x="480" y="232" width="740" height="60" fill="#1A1A1A"/>
+    <text x="500" y="270" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5EFE0">RISO KAGAKU 1946 创办 · "RISO" 意为</text>
+    <text x="844" y="270" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" font-weight="900" fill="#FF5C8A">理想</text>
+    <text x="900" y="270" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5EFE0">· RISOGRAPH 007 印刷机 1986 在日本首发</text>
+  </g>
+
+  <!-- 4 visual traits -->
+  <g id="trait-01">
+    <rect x="480" y="312" width="50" height="50" fill="#1E4DBC"/>
+    <text x="505" y="348" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="28" fill="#F5EFE0" text-anchor="middle">01</text>
+    <rect x="540" y="312" width="680" height="74" fill="#F5EFE0"/>
+    <rect x="540" y="312" width="6" height="74" fill="#1E4DBC"/>
+    <text x="560" y="338" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">限定调色板（LIMITED PALETTE）</text>
+    <text x="560" y="370" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">一墨筒一色 —— 多色印刷需多次过纸；颜色总数有限反成美学语言</text>
+  </g>
+
+  <g id="trait-02">
+    <rect x="480" y="396" width="50" height="50" fill="#FF5C8A"/>
+    <text x="505" y="432" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="28" fill="#F5EFE0" text-anchor="middle">02</text>
+    <rect x="540" y="396" width="680" height="74" fill="#F5EFE0"/>
+    <rect x="540" y="396" width="6" height="74" fill="#FF5C8A"/>
+    <text x="560" y="422" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">套色错位（MISREGISTRATION）</text>
+    <text x="560" y="454" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">每次过纸轻微偏移 1–3px，叠印边缘的"错版"成为美学</text>
+  </g>
+
+  <g id="trait-03">
+    <rect x="480" y="480" width="50" height="50" fill="#E8A02E"/>
+    <text x="505" y="516" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="28" fill="#F5EFE0" text-anchor="middle">03</text>
+    <rect x="540" y="480" width="680" height="74" fill="#F5EFE0"/>
+    <rect x="540" y="480" width="6" height="74" fill="#E8A02E"/>
+    <text x="560" y="506" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">半色调网点（HALFTONE）</text>
+    <text x="560" y="538" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">色块以网点呈现，介于工业印刷品与丝网作品之间，本页背景就是网点</text>
+  </g>
+
+  <g id="trait-04">
+    <rect x="480" y="564" width="50" height="50" fill="#1A1A1A"/>
+    <text x="505" y="600" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="28" fill="#F5EFE0" text-anchor="middle">04</text>
+    <rect x="540" y="564" width="680" height="74" fill="#F5EFE0"/>
+    <rect x="540" y="564" width="6" height="74" fill="#1A1A1A"/>
+    <text x="560" y="590" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">色块叠印（OVERPRINT）</text>
+    <text x="560" y="622" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">相同色块叠加产生第三色错觉 —— 蓝 ＋ 粉 ＝ 紫色错觉，技术不是缺陷而是工具</text>
+  </g>
+
+  <g id="footer">
+    <line x1="480" y1="668" x2="1220" y2="668" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="480" y="688" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P05 · RISOGRAPH ORIGIN + TRAITS</text>
+    <text x="1220" y="688" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">RISO = 理想 = IDEAL</text>
+    <text x="480" y="710" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#8C8275" letter-spacing="1">SOY-BASED INK · POST-WAR JAPAN · 50–10,000 PRINTS / RUN</text>
+  </g>
+</svg>

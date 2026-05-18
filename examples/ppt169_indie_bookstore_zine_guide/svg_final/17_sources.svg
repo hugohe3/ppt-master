@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP17" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP17)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" letter-spacing="-1">SOURCES &amp; CREDITS</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">PRIMARY REFERENCES · 20 SOURCES · WIKIPEDIA + INDIE PRESS + 中文社区</text>
+  </g>
+
+  <line x1="60" y1="152" x2="1220" y2="152" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Column 1 — Zine 文化 + 简史 -->
+  <g id="col-01">
+    <rect x="60" y="180" width="380" height="36" fill="#1E4DBC"/>
+    <text x="80" y="205" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="20" fill="#F5EFE0">ZINE · 简史 · 制作</text>
+
+    <text x="62" y="246" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">01</text>
+    <text x="92" y="246" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Wikipedia · Zine</text>
+    <text x="62" y="266" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     en.wikipedia.org/wiki/Zine</text>
+
+    <text x="62" y="296" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">02</text>
+    <text x="92" y="296" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Wikipedia · Riot grrrl</text>
+    <text x="62" y="316" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     en.wikipedia.org/wiki/Riot_grrrl</text>
+
+    <text x="62" y="346" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">03</text>
+    <text x="92" y="346" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">JSTOR Daily — Start a Riot</text>
+    <text x="62" y="366" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     daily.jstor.org/start-a-riot-and-a-zine-grrrl</text>
+
+    <text x="62" y="396" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">04</text>
+    <text x="92" y="396" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">UNC Chapel Hill · Brief History</text>
+    <text x="62" y="416" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     blogs.lib.unc.edu/rbc/2017/10/25</text>
+
+    <text x="62" y="446" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">05</text>
+    <text x="92" y="446" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">The Creative Independent · How to make</text>
+    <text x="62" y="466" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     thecreativeindependent.com/guides/how-to-make-a-zine</text>
+
+    <text x="62" y="496" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">06</text>
+    <text x="92" y="496" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Book Riot · Beginner's Guide</text>
+    <text x="62" y="516" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     bookriot.com/how-to-make-a-zine</text>
+  </g>
+
+  <!-- Column 2 — Risograph + 全球书店 -->
+  <g id="col-02">
+    <rect x="450" y="180" width="380" height="36" fill="#FF5C8A"/>
+    <text x="470" y="205" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="20" fill="#F5EFE0">RISO · 全球书店</text>
+
+    <text x="452" y="246" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">07</text>
+    <text x="482" y="246" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">My Modern Met · Risograph Renaissance</text>
+    <text x="452" y="266" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     mymodernmet.com/risograph-printer</text>
+
+    <text x="452" y="296" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">08</text>
+    <text x="482" y="296" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">KPBS · Risograph revival podcast</text>
+    <text x="452" y="316" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     kpbs.org/podcasts/the-finest/risograph-revival</text>
+
+    <text x="452" y="346" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">09</text>
+    <text x="482" y="346" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">It's Nice That · Tokyo Risograph</text>
+    <text x="452" y="366" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     itsnicethat.com/articles/the-view-from-tokyo-risograph</text>
+
+    <text x="452" y="396" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">10</text>
+    <text x="482" y="396" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">AFAR · 17 Independent Bookstores</text>
+    <text x="452" y="416" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     afar.com/magazine/the-best-independent-bookstores</text>
+
+    <text x="452" y="446" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">11</text>
+    <text x="482" y="446" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Wikipedia · Jimbōchō Book Town</text>
+    <text x="452" y="466" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     en.wikipedia.org/wiki/Jimbōchō_Book_Town</text>
+
+    <text x="452" y="496" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">12</text>
+    <text x="482" y="496" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Wikipedia · Shakespeare and Company</text>
+    <text x="452" y="516" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     en.wikipedia.org/wiki/Shakespeare_and_Company</text>
+
+    <text x="452" y="546" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">13</text>
+    <text x="482" y="546" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Time Out Tokyo · Best bookstores</text>
+    <text x="452" y="566" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     timeout.com/tokyo/shopping/the-best-bookstores</text>
+  </g>
+
+  <!-- Column 3 — 中文 + 书展 -->
+  <g id="col-03">
+    <rect x="840" y="180" width="380" height="36" fill="#E8A02E"/>
+    <text x="860" y="205" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="20" fill="#1A1A1A">中文 · 书店 · 书展</text>
+
+    <text x="842" y="246" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">14</text>
+    <text x="872" y="246" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">数英 · 国内 13 家独立书店漫游指南</text>
+    <text x="842" y="266" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     digitaling.com/articles/701483</text>
+
+    <text x="842" y="296" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">15</text>
+    <text x="872" y="296" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">搜狐 · 北京最棒独立书店</text>
+    <text x="842" y="316" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     sohu.com/a/234189890_554564</text>
+
+    <text x="842" y="346" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">16</text>
+    <text x="872" y="346" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">UNFOLD Shanghai · Official</text>
+    <text x="842" y="366" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     shanghaiartbookfair.com</text>
+
+    <text x="842" y="396" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">17</text>
+    <text x="872" y="396" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">abC Art Book Fair · Official EN</text>
+    <text x="842" y="416" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     artbookinchina.com/en</text>
+
+    <text x="842" y="446" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">18</text>
+    <text x="872" y="446" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Sixth Tone · Art Book Fair Bubble</text>
+    <text x="842" y="466" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     sixthtone.com/news/1008799</text>
+
+    <text x="842" y="496" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">19</text>
+    <text x="872" y="496" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Nippon.com · 神保町 Jinbōchō</text>
+    <text x="842" y="516" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     nippon.com/en/japan-topics/b11003</text>
+
+    <text x="842" y="546" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">20</text>
+    <text x="872" y="546" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">Wikimedia Commons · 图片素材</text>
+    <text x="842" y="566" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A">     commons.wikimedia.org · CC BY 2.0</text>
+  </g>
+
+  <!-- Credit row -->
+  <g id="credits">
+    <rect x="60" y="600" width="1160" height="70" fill="#1A1A1A"/>
+    <rect x="63" y="603" width="1160" height="70" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="600" width="1160" height="70" fill="#1A1A1A"/>
+    <text x="80" y="630" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#FF5C8A">致谢 ＞</text>
+    <text x="150" y="630" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">研究 / 排版 / 视觉 由 PPT Master + Gemini 3.1 Flash Image + screen-print × duotone 风格生成</text>
+    <text x="80" y="655" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">参考图像取自 Wikimedia Commons (CC BY 2.0)；AI 图像为本 deck 专属合成，不构成任何品牌 / 商标关联</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P17 · SOURCES &amp; CREDITS</text>
+    <text x="1220" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">RESEARCHED 2026-05-17 · CHECKED LIVE</text>
+  </g>
+</svg>

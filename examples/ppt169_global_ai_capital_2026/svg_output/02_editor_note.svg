@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PROLOGUE · 02</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">编辑导语 / Editor's Note</text>
+  </g>
+
+  <g id="big-quote">
+    <text x="60" y="220" font-family="Cambria, serif" font-size="120" fill="#E63946" opacity="0.45">"</text>
+  </g>
+
+  <g id="lede">
+    <text x="160" y="240" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="30" font-weight="bold" fill="#E8E6E1">三组数字，足以定义 2026 年的 AI 资本格局。</text>
+  </g>
+
+  <g id="point-1">
+    <text x="60" y="340" font-family="Cambria, serif" font-size="64" font-weight="bold" fill="#E63946">$297B</text>
+    <text x="60" y="380" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">单季全球 VC 总额 · AI 占 <tspan fill="#E8E6E1" font-weight="bold">81%</tspan></text>
+    <line x1="60" y1="405" x2="380" y2="405" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="point-2">
+    <text x="450" y="340" font-family="Cambria, serif" font-size="64" font-weight="bold" fill="#E63946">$188B</text>
+    <text x="450" y="380" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">四笔交易合计 · 占全季 VC <tspan fill="#E8E6E1" font-weight="bold">65%</tspan></text>
+    <line x1="450" y1="405" x2="770" y2="405" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="point-3">
+    <text x="840" y="340" font-family="Cambria, serif" font-size="64" font-weight="bold" fill="#E63946">+46pt</text>
+    <text x="840" y="380" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">Capex 与 AI 收入增速差距 · 已超 <tspan fill="#E8E6E1" font-weight="bold">2001 电信泡沫</tspan></text>
+    <line x1="840" y1="405" x2="1160" y2="405" stroke="#2A2F36" stroke-width="1"/>
+  </g>
+
+  <g id="body-text">
+    <text x="60" y="470" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#C9C5BE">
+      <tspan x="60" dy="0">这一期，我们用 18 张数据图，回答一个问题：</tspan>
+      <tspan x="60" dy="28">当全球风险资本以前所未有的集中度涌入 AI，<tspan fill="#E8E6E1" font-weight="bold">这究竟是基建周期的开端，还是泡沫膨胀的中段？</tspan></tspan>
+      <tspan x="60" dy="28">不要急着下结论。我们先把六个维度的数字铺开。</tspan>
+    </text>
+  </g>
+
+  <g id="signature">
+    <line x1="60" y1="618" x2="200" y2="618" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="644" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">— Editorial Desk, 2026-05-16</text>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Capital, Compute, and the Closed Loop · 2026 Industry Briefing</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">02 / 20</text>
+  </g>
+</svg>

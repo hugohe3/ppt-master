@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP08" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotP08)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" letter-spacing="-1">你能填的东西 ＞ 6 种内容</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">SIX CONTENT TYPES · THERE ARE NO MISTAKES · JUST WHIMS</text>
+  </g>
+
+  <line x1="60" y1="152" x2="1220" y2="152" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Card 01 — 草图 / 漫画 -->
+  <g id="card-01">
+    <rect x="60" y="180" width="380" height="240" fill="#1E4DBC"/>
+    <rect x="63" y="183" width="380" height="240" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="180" width="380" height="240" fill="#1E4DBC"/>
+    <text x="408" y="226" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#FF5C8A" text-anchor="end">01</text>
+    <use data-icon="chunk-filled/pencil" x="86" y="200" width="56" height="56" fill="#F5EFE0"/>
+    <text x="86" y="294" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#F5EFE0">草图 / 漫画</text>
+    <text x="86" y="320" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">SKETCHES &amp; MINI-COMICS</text>
+    <line x1="86" y1="332" x2="200" y2="332" stroke="#F5EFE0" stroke-width="2"/>
+    <text x="86" y="360" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">涂鸦、4 格漫画、手绘日记</text>
+    <text x="86" y="382" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">字丑也行，构图弱也行</text>
+    <text x="86" y="404" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#FF5C8A">画得不像 = 风格</text>
+  </g>
+
+  <!-- Card 02 — 诗 / 宣言 -->
+  <g id="card-02">
+    <rect x="450" y="180" width="380" height="240" fill="#FF5C8A"/>
+    <rect x="453" y="183" width="380" height="240" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="450" y="180" width="380" height="240" fill="#FF5C8A"/>
+    <text x="798" y="226" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#F5EFE0" text-anchor="end">02</text>
+    <use data-icon="chunk-filled/pen-nib" x="476" y="200" width="56" height="56" fill="#1A1A1A"/>
+    <text x="476" y="294" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">诗 / 宣言 / 短文</text>
+    <text x="476" y="320" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">POETRY &amp; MANIFESTOS</text>
+    <line x1="476" y1="332" x2="590" y2="332" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="476" y="360" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#1A1A1A">100 字宣言、一句口号、一首诗</text>
+    <text x="476" y="382" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#1A1A1A">Riot Grrrl Manifesto 就是范式</text>
+    <text x="476" y="404" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1E4DBC">短而准 ＞ 长而虚</text>
+  </g>
+
+  <!-- Card 03 — 便签 / 食谱 -->
+  <g id="card-03">
+    <rect x="840" y="180" width="380" height="240" fill="#E8A02E"/>
+    <rect x="843" y="183" width="380" height="240" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="840" y="180" width="380" height="240" fill="#E8A02E"/>
+    <text x="1188" y="226" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#1A1A1A" text-anchor="end">03</text>
+    <use data-icon="chunk-filled/sticky-note" x="866" y="200" width="56" height="56" fill="#1A1A1A"/>
+    <text x="866" y="294" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">食谱 + 插图</text>
+    <text x="866" y="320" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" letter-spacing="2">RECIPES &amp; HOW-TOS</text>
+    <line x1="866" y1="332" x2="980" y2="332" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="866" y="360" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#1A1A1A">外婆的腌菜配方 + 手绘工具</text>
+    <text x="866" y="382" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#1A1A1A">"如何修自行车"教学</text>
+    <text x="866" y="404" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1E4DBC">日常实用＝最普及的形式</text>
+  </g>
+
+  <!-- Card 04 — 私人写作 -->
+  <g id="card-04">
+    <rect x="60" y="440" width="380" height="240" fill="#1A1A1A"/>
+    <rect x="63" y="443" width="380" height="240" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="440" width="380" height="240" fill="#1A1A1A"/>
+    <text x="408" y="486" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#FF5C8A" text-anchor="end">04</text>
+    <use data-icon="chunk-filled/book" x="86" y="460" width="56" height="56" fill="#F5EFE0"/>
+    <text x="86" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#F5EFE0">家庭照片 + 私人写作</text>
+    <text x="86" y="580" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">PHOTOS &amp; PERSONAL WRITING</text>
+    <line x1="86" y1="592" x2="200" y2="592" stroke="#F5EFE0" stroke-width="2"/>
+    <text x="86" y="620" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">老照片复印件 + 旁注</text>
+    <text x="86" y="642" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">家族故事 / 旅行札记</text>
+    <text x="86" y="664" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#FF5C8A">主权 ＞ 隐私</text>
+  </g>
+
+  <!-- Card 05 — 拼贴 -->
+  <g id="card-05">
+    <rect x="450" y="440" width="380" height="240" fill="#1E4DBC"/>
+    <rect x="453" y="443" width="380" height="240" fill="#E8A02E" opacity="0.55"/>
+    <rect x="450" y="440" width="380" height="240" fill="#1E4DBC"/>
+    <text x="798" y="486" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#E8A02E" text-anchor="end">05</text>
+    <use data-icon="chunk-filled/scissors" x="476" y="460" width="56" height="56" fill="#F5EFE0"/>
+    <text x="476" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#F5EFE0">拼贴 + 混合媒材</text>
+    <text x="476" y="580" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#E8A02E" letter-spacing="2">COLLAGE &amp; MIXED MEDIA</text>
+    <line x1="476" y1="592" x2="590" y2="592" stroke="#F5EFE0" stroke-width="2"/>
+    <text x="476" y="620" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">杂志撕页 + 胶带 + 印章</text>
+    <text x="476" y="642" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0">字典页 + 票据 + 蕾丝</text>
+    <text x="476" y="664" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#E8A02E">物质感 = 复印机救不了</text>
+  </g>
+
+  <!-- Card 06 — 实验视觉 -->
+  <g id="card-06">
+    <rect x="840" y="440" width="380" height="240" fill="#FF5C8A"/>
+    <rect x="843" y="443" width="380" height="240" fill="#1A1A1A" opacity="0.55"/>
+    <rect x="840" y="440" width="380" height="240" fill="#FF5C8A"/>
+    <text x="1188" y="486" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#1A1A1A" text-anchor="end">06</text>
+    <use data-icon="chunk-filled/brush" x="866" y="460" width="56" height="56" fill="#1A1A1A"/>
+    <text x="866" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">实验性视觉</text>
+    <text x="866" y="580" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" letter-spacing="2">EXPERIMENTAL VISUALS</text>
+    <line x1="866" y1="592" x2="980" y2="592" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="866" y="620" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#1A1A1A">纯色块、纯纹理、纯字</text>
+    <text x="866" y="642" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#1A1A1A">空白页 = 阅读节奏</text>
+    <text x="866" y="664" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1E4DBC">没有信息 = 一种信息</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="694" x2="1220" y2="694" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="60" y="710" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P08 · 6 CONTENT TYPES</text>
+    <text x="1220" y="710" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">PICK ONE · PICK ALL · MAKE IT YOURS</text>
+  </g>
+</svg>

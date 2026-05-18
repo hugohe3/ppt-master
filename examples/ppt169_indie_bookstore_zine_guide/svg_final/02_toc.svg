@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotPattern02" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="0.7" fill="#1A1A1A" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotPattern02)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="52" fill="#1A1A1A" letter-spacing="-1">CONTENTS / 目录</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#5A5A5A" letter-spacing="3">FIVE PARTS · 18 PAGES · READ IN ANY ORDER</text>
+  </g>
+
+  <line x1="60" y1="152" x2="1220" y2="152" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Item 01 — zine 是什么 + 简史 -->
+  <g id="item-01">
+    <rect x="60" y="180" width="76" height="76" fill="#FF5C8A"/>
+    <rect x="63" y="183" width="76" height="76" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="60" y="180" width="76" height="76" fill="#FF5C8A"/>
+    <text x="98" y="234" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#F5EFE0" text-anchor="middle">01</text>
+    <text x="160" y="210" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="26" font-weight="900" fill="#1A1A1A">ZINE 是什么 + 简史四浪潮</text>
+    <text x="160" y="240" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">从科幻同人志到 Riot Grrrl，一百年里 zine 的四次浪潮</text>
+    <rect x="1060" y="194" width="160" height="48" fill="#1E4DBC"/>
+    <text x="1140" y="226" font-family="Consolas, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">P03 — P04</text>
+  </g>
+
+  <!-- Item 02 — Risograph -->
+  <g id="item-02">
+    <rect x="60" y="280" width="76" height="76" fill="#1E4DBC"/>
+    <rect x="63" y="283" width="76" height="76" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="280" width="76" height="76" fill="#1E4DBC"/>
+    <text x="98" y="334" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#F5EFE0" text-anchor="middle">02</text>
+    <text x="160" y="310" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="26" font-weight="900" fill="#1A1A1A">RISOGRAPH：zine 工艺的灵魂载体</text>
+    <text x="160" y="340" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">套色错位、半色调、限定色 —— 让一台日本复印机变成艺术工具</text>
+    <rect x="1060" y="294" width="160" height="48" fill="#1E4DBC"/>
+    <text x="1140" y="326" font-family="Consolas, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">P05 — P06</text>
+  </g>
+
+  <!-- Item 03 — 怎么做 -->
+  <g id="item-03">
+    <rect x="60" y="380" width="76" height="76" fill="#E8A02E"/>
+    <rect x="63" y="383" width="76" height="76" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="60" y="380" width="76" height="76" fill="#E8A02E"/>
+    <text x="98" y="434" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#F5EFE0" text-anchor="middle">03</text>
+    <text x="160" y="410" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="26" font-weight="900" fill="#1A1A1A">怎么自己做一本 ZINE</text>
+    <text x="160" y="440" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">八页折叠法 + 内容类型清单 —— 一张 A4 就够</text>
+    <rect x="1060" y="394" width="160" height="48" fill="#1E4DBC"/>
+    <text x="1140" y="426" font-family="Consolas, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">P07 — P08</text>
+  </g>
+
+  <!-- Item 04 — 全球 + 中国书店 -->
+  <g id="item-04">
+    <rect x="60" y="480" width="76" height="76" fill="#1E4DBC"/>
+    <rect x="63" y="483" width="76" height="76" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="480" width="76" height="76" fill="#1E4DBC"/>
+    <text x="98" y="534" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#F5EFE0" text-anchor="middle">04</text>
+    <text x="160" y="510" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="26" font-weight="900" fill="#1A1A1A">全球 + 中国独立书店地图</text>
+    <text x="160" y="540" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">神保町 / Shakespeare &amp; Co / 香蕉鱼 / 假杂志 + abC × UNFOLD 双书展</text>
+    <rect x="1060" y="494" width="160" height="48" fill="#1E4DBC"/>
+    <text x="1140" y="526" font-family="Consolas, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">P09 — P13</text>
+  </g>
+
+  <!-- Item 05 — 行动 -->
+  <g id="item-05">
+    <rect x="60" y="580" width="76" height="76" fill="#FF5C8A"/>
+    <rect x="63" y="583" width="76" height="76" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="60" y="580" width="76" height="76" fill="#FF5C8A"/>
+    <text x="98" y="634" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="44" fill="#F5EFE0" text-anchor="middle">05</text>
+    <text x="160" y="610" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="26" font-weight="900" fill="#1A1A1A">怎么逛 / 怎么收藏 / 行动清单</text>
+    <text x="160" y="640" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">从读者到作者，你的第一本 zine 在 4 步之外</text>
+    <rect x="1060" y="594" width="160" height="48" fill="#1E4DBC"/>
+    <text x="1140" y="626" font-family="Consolas, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">P14 — P18</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="690" x2="1220" y2="690" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">CONTENTS — P02</text>
+    <text x="1220" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">RISO NAVY × FLUO PINK ON CREAM</text>
+  </g>
+</svg>
