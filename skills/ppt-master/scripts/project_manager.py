@@ -10,6 +10,7 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -56,6 +57,10 @@ DOC_SUFFIXES = {
     ".ipynb", ".typ",                           # Notebooks / Typst
 }
 WECHAT_HOST_KEYWORDS = ("mp.weixin.qq.com", "weixin.qq.com")
+IMAGE_ASSET_SUFFIXES = {
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".tif",
+    ".emf", ".wmf", ".svg",
+}
 
 
 def _curl_cffi_available() -> bool:
@@ -359,6 +364,118 @@ class ProjectManager:
         if updated != content:
             markdown_path.write_text(updated, encoding="utf-8")
 
+    def _merge_image_manifest(self, source_items: list[dict], destination_manifest: Path) -> None:
+        """Merge per-source manifest items into the project-level manifest, keyed by filename."""
+        existing_data: list[object] = []
+        if destination_manifest.is_file():
+            try:
+                loaded = json.loads(destination_manifest.read_text(encoding="utf-8"))
+                if isinstance(loaded, list):
+                    existing_data = loaded
+                else:
+                    print(f"[WARN] Replacing non-list image manifest: {destination_manifest}")
+            except (OSError, json.JSONDecodeError) as exc:
+                print(f"[WARN] Replacing unreadable image manifest {destination_manifest}: {exc}")
+
+        new_by_filename: dict[str, dict] = {}
+        new_order: list[str] = []
+        for item in source_items:
+            filename = item.get("filename")
+            if not isinstance(filename, str):
+                continue
+            if filename not in new_by_filename:
+                new_order.append(filename)
+            new_by_filename[filename] = item
+
+        merged: list[dict] = []
+        seen: set[str] = set()
+        for item in existing_data:
+            if not isinstance(item, dict):
+                continue
+            filename = item.get("filename")
+            if not isinstance(filename, str):
+                continue
+            if filename in new_by_filename:
+                merged.append(new_by_filename[filename])
+            else:
+                merged.append(item)
+            seen.add(filename)
+
+        for filename in new_order:
+            if filename not in seen:
+                merged.append(new_by_filename[filename])
+
+        destination_manifest.write_text(
+            json.dumps(merged, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    @staticmethod
+    def _namespace_from_asset_dir(asset_dir: Path) -> str:
+        """Derive a per-source namespace from a `<stem>_files` companion directory name."""
+        name = asset_dir.name
+        suffix = "_files"
+        return name[:-len(suffix)] if name.endswith(suffix) else name
+
+    def _propagate_image_assets(self, asset_dir: Path, project_dir: Path) -> None:
+        """Copy converter-generated image assets and manifest into project images/.
+
+        Files are namespaced by source stem to avoid collisions when multiple
+        DOCX/PPTX sources contain identically-named internal media (image1.png, ...).
+        """
+        manifest_path = asset_dir / "image_manifest.json"
+        if not manifest_path.is_file():
+            return
+
+        try:
+            source_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"[WARN] Cannot read image manifest {manifest_path}: {exc}")
+            return
+        if not isinstance(source_data, list):
+            print(f"[WARN] Ignoring non-list image manifest: {manifest_path}")
+            return
+
+        images_dir = project_dir / "images"
+        images_dir.mkdir(parents=True, exist_ok=True)
+
+        namespace = self._namespace_from_asset_dir(asset_dir)
+        rename_map: dict[str, str] = {}
+
+        copied_count = 0
+        for source_file in sorted(asset_dir.iterdir()):
+            if not source_file.is_file():
+                continue
+            if source_file.suffix.lower() not in IMAGE_ASSET_SUFFIXES:
+                continue
+            new_name = f"{namespace}__{source_file.name}"
+            shutil.copy2(source_file, images_dir / new_name)
+            rename_map[source_file.name] = new_name
+            copied_count += 1
+
+        rebased_items: list[dict] = []
+        for item in source_data:
+            if not isinstance(item, dict):
+                continue
+            original = item.get("filename")
+            if not isinstance(original, str):
+                continue
+            new_item = dict(item)
+            new_item["filename"] = rename_map.get(original, f"{namespace}__{original}")
+            new_item["source_namespace"] = namespace
+            rebased_items.append(new_item)
+
+        self._merge_image_manifest(rebased_items, images_dir / "image_manifest.json")
+        print(
+            f"Propagated {copied_count} image asset(s) + manifest "
+            f"from {asset_dir} → images/ (namespace: {namespace})"
+        )
+
+    def _propagate_companion_image_assets(self, markdown_path: Path, project_dir: Path) -> None:
+        asset_dir = markdown_path.with_name(f"{markdown_path.stem}_files")
+        if asset_dir.is_dir():
+            self._propagate_image_assets(asset_dir, project_dir)
+
     def _import_markdown_with_assets(
         self,
         source_path: Path,
@@ -440,6 +557,7 @@ class ProjectManager:
 
                 summary["archived"].append(str(archived))
                 summary["markdown"].append(str(markdown_path))
+                self._propagate_companion_image_assets(markdown_path, project_dir)
                 continue
 
             source_path = Path(item)
@@ -469,6 +587,7 @@ class ProjectManager:
                 duplicate_markdown = self._find_equivalent_markdown(source_path, sources_dir)
                 if duplicate_markdown is not None:
                     summary["markdown"].append(str(duplicate_markdown))
+                    self._propagate_companion_image_assets(duplicate_markdown, project_dir)
                     summary["notes"].append(
                         f"{item}: skipped duplicate markdown import because equivalent content already exists as {duplicate_markdown.name}"
                     )
@@ -483,6 +602,7 @@ class ProjectManager:
                 summary["markdown"].append(str(archived_markdown))
                 if asset_dir is not None:
                     summary["assets"].append(str(asset_dir))
+                    self._propagate_image_assets(asset_dir, project_dir)
                 if note:
                     summary["notes"].append(note)
                 continue
@@ -503,6 +623,7 @@ class ProjectManager:
                     continue
                 if canonical_markdown_path.exists():
                     summary["markdown"].append(str(canonical_markdown_path))
+                    self._propagate_companion_image_assets(canonical_markdown_path, project_dir)
                     summary["notes"].append(
                         f"{item}: skipped PDF auto-conversion because {canonical_markdown_path.name} already exists"
                     )
@@ -511,6 +632,7 @@ class ProjectManager:
                 try:
                     self._import_pdf(archived_path, markdown_path)
                     summary["markdown"].append(str(markdown_path))
+                    self._propagate_companion_image_assets(markdown_path, project_dir)
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
             elif suffix in PRESENTATION_SUFFIXES:
@@ -522,6 +644,7 @@ class ProjectManager:
                     continue
                 if canonical_markdown_path.exists():
                     summary["markdown"].append(str(canonical_markdown_path))
+                    self._propagate_companion_image_assets(canonical_markdown_path, project_dir)
                     summary["notes"].append(
                         f"{item}: skipped presentation auto-conversion because {canonical_markdown_path.name} already exists"
                     )
@@ -530,6 +653,7 @@ class ProjectManager:
                 try:
                     self._import_presentation(archived_path, markdown_path)
                     summary["markdown"].append(str(markdown_path))
+                    self._propagate_companion_image_assets(markdown_path, project_dir)
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: presentation conversion failed ({exc})")
             elif suffix in EXCEL_SUFFIXES:
@@ -541,6 +665,7 @@ class ProjectManager:
                     continue
                 if canonical_markdown_path.exists():
                     summary["markdown"].append(str(canonical_markdown_path))
+                    self._propagate_companion_image_assets(canonical_markdown_path, project_dir)
                     summary["notes"].append(
                         f"{item}: skipped Excel auto-conversion because {canonical_markdown_path.name} already exists"
                     )
@@ -549,6 +674,7 @@ class ProjectManager:
                 try:
                     self._import_excel(archived_path, markdown_path)
                     summary["markdown"].append(str(markdown_path))
+                    self._propagate_companion_image_assets(markdown_path, project_dir)
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: Excel conversion failed ({exc})")
             elif suffix in LEGACY_EXCEL_SUFFIXES:
@@ -569,6 +695,7 @@ class ProjectManager:
                     continue
                 if canonical_markdown_path.exists():
                     summary["markdown"].append(str(canonical_markdown_path))
+                    self._propagate_companion_image_assets(canonical_markdown_path, project_dir)
                     summary["notes"].append(
                         f"{item}: skipped document auto-conversion because {canonical_markdown_path.name} already exists"
                     )
@@ -577,6 +704,7 @@ class ProjectManager:
                 try:
                     self._import_doc(archived_path, markdown_path)
                     summary["markdown"].append(str(markdown_path))
+                    self._propagate_companion_image_assets(markdown_path, project_dir)
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: document conversion failed ({exc})")
             elif suffix == ".txt":

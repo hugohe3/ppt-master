@@ -104,6 +104,20 @@ When the user provides non-Markdown content, convert immediately:
 | WeChat / high-security site | `uv run ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` (requires `curl_cffi`, included in `requirements.txt`) |
 | Markdown | Read directly |
 
+> **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
+> `doc_to_md.py` / `ppt_to_md.py` extract embedded Office vector images (.emf/.wmf)
+> alongside bitmap images. After `import-sources`, these land in `images/`
+> together with `image_manifest.json` and are first-class assets in §VIII Image Resource List.
+>
+> **Do NOT convert EMF/WMF to PNG.** The PPT Master pipeline preserves them as external
+> references (`finalize_svg.py` skips them) and `svg_to_pptx.py` embeds them as
+> PPTX-native media via `image/x-emf` / `image/x-wmf` MIME — PowerPoint renders them at full vector fidelity.
+> Converting via LibreOffice/Inkscape introduces CJK font substitution drift and
+> rasterization loss; the original EMF/WMF is always higher fidelity than the converted PNG.
+>
+> Browser-based live preview cannot render EMF (will show blank) — this is expected;
+> the PPTX output is the source of truth.
+
 **✅ Checkpoint — Confirm source content is ready, proceed to Step 2.**
 
 ---
