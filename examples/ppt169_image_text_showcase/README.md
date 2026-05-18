@@ -12,4 +12,4 @@
 - `templates/`: project templates
 - `sources/`: source materials and normalized markdown
 - `exports/`: main native pptx (timestamped)
-- `backup/<timestamp>/`: SVG snapshot pptx + svg_output/ archive (auto-created on export; safe to delete old timestamps)
+- `backup/<timestamp>/`: SVG snapshot pptx + svg_output/ archive (created only when exported with `--svg-snapshot`; safe to delete old timestamps)

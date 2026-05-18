@@ -72,10 +72,10 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo -s final    # Default: main pptx -> exports/, SVG snapshot + svg_output -> backup/<ts>/
-    %(prog)s examples/ppt169_demo --only native   # Only native shapes version
-    %(prog)s examples/ppt169_demo --only legacy   # Only SVG image version
-    %(prog)s examples/ppt169_demo -o out.pptx     # Explicit path (SVG ref -> out_svg.pptx)
+    %(prog)s examples/ppt169_demo -s final               # Default: native pptx -> exports/ only
+    %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG snapshot + svg_output -> backup/<ts>/
+    %(prog)s examples/ppt169_demo --only legacy          # Only SVG image version (skips native)
+    %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
 
     # Disable transition / change transition effect
     %(prog)s examples/ppt169_demo -t none
@@ -151,6 +151,10 @@ Recorded narration:
                             help='Only generate one version: native (editable shapes) or legacy (SVG image)')
     mode_group.add_argument('--native', action='store_true', default=False,
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
+    parser.add_argument('--svg-snapshot', action='store_true', default=False,
+                        help='Also emit SVG snapshot pptx + svg_output/ copy under backup/<ts>/. '
+                             'Off by default — the native pptx in exports/ is the canonical output; '
+                             'live preview already provides the SVG visual reference.')
 
     def non_negative_float(value: str) -> float:
         try:
@@ -233,14 +237,17 @@ Recorded narration:
     if canvas_format is None and detected_format and detected_format != 'unknown':
         canvas_format = detected_format
 
-    # Determine which versions to generate
+    # Determine which versions to generate.
+    # Default is native-only; SVG snapshot is opt-in via --svg-snapshot.
+    # --only native / --only legacy still force a single version explicitly.
     only_mode = args.only
-    gen_native = only_mode in (None, 'native')
-    gen_legacy = only_mode in (None, 'legacy')
-
-    # --native flag (deprecated) maps to --only native
-    if args.native and only_mode is None:
-        gen_legacy = False
+    if only_mode == 'native':
+        gen_native, gen_legacy = True, False
+    elif only_mode == 'legacy':
+        gen_native, gen_legacy = False, True
+    else:
+        gen_native = True
+        gen_legacy = args.svg_snapshot
 
     # Pipeline split: native pptx gets the high-fidelity svg_output/ source
     # (icons, preserveAspectRatio, rounded-rect rx/ry are all preserved by the
@@ -273,22 +280,25 @@ Recorded narration:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     backup_dir: Path | None = None
+    legacy_path: Path | None = None
     if args.output:
         output_base = Path(args.output)
         native_path = output_base
-        stem = output_base.stem
-        legacy_path = output_base.parent / f"{stem}_svg{output_base.suffix}"
+        if gen_legacy:
+            stem = output_base.stem
+            legacy_path = output_base.parent / f"{stem}_svg{output_base.suffix}"
     else:
         exports_dir = project_path / "exports"
         exports_dir.mkdir(parents=True, exist_ok=True)
         native_path = exports_dir / f"{project_name}_{timestamp}.pptx"
-
-        backup_dir = project_path / "backup" / timestamp
-        backup_dir.mkdir(parents=True, exist_ok=True)
-        legacy_path = backup_dir / f"{project_name}_svg.pptx"
+        if gen_legacy:
+            backup_dir = project_path / "backup" / timestamp
+            backup_dir.mkdir(parents=True, exist_ok=True)
+            legacy_path = backup_dir / f"{project_name}_svg.pptx"
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
-    legacy_path.parent.mkdir(parents=True, exist_ok=True)
+    if legacy_path is not None:
+        legacy_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
 
