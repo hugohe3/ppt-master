@@ -56,7 +56,7 @@ git add <冲突文件>
 | `SKILL.md` | 保留上游内容，把 `python3` 换成 `uv run` |
 | `CLAUDE.md` | 同上 |
 | `update_repo.py` | 人工审查：保留 `ensure_uv_available`、`uv sync`、`--skip-deps`、双文件哈希校验；合入上游其他新功能 |
-| `pyproject.toml` | 如果上游在 `requirements.txt` 新增/删除依赖，手动同步到 `[project] dependencies`，然后 `uv lock` |
+| `pyproject.toml` | 如果上游在 `requirements.txt` 新增/删除依赖，手动同步到根目录和 `skills/ppt-master/` 下的**两个** `pyproject.toml` 的 `[project] dependencies`，然后分别在两个目录运行 `uv lock`。完成后运行 `uv run skills/ppt-master/scripts/check_deps_sync.py` 校验一致性 |
 | `.python-version` | 永不冲突（上游无此文件） |
 | `generate_examples_index.py` | 该脚本会重新生成 `examples/README.md`，必须确保其内部字符串也已替换为 `uv run`，否则下次运行会覆盖迁移结果 |
 | `docs/windows-installation.md` | 人工审查：保留 uv 安装流程，合入上游其他文档改进 |
@@ -93,12 +93,45 @@ Get-ChildItem -Recurse -Filter "*.py" | ForEach-Object {
 
 如果上游在 `requirements.txt` 新增了包：
 
-1. 手动将新依赖添加到 `pyproject.toml` 的 `[project] dependencies`
-2. 运行 `uv lock` 更新锁文件
+1. 手动将新依赖添加到两个 `pyproject.toml` 的 `[project] dependencies`（根目录 + `skills/ppt-master/`）
+2. 在两个目录分别运行 `uv lock`：
+   ```bash
+   uv lock && cd skills/ppt-master && uv lock
+   ```
 3. 运行 `uv sync` 安装
+4. 运行一致性校验确保三个清单同步：
+   ```bash
+   uv run skills/ppt-master/scripts/check_deps_sync.py
+   ```
+
+## 依赖一致性校验
+
+项目有三份依赖清单需要保持同步：
+
+| # | 文件 | 用途 |
+|---|------|------|
+| 1 | `pyproject.toml` | 仓库根目录，开发时 `uv run` 使用 |
+| 2 | `skills/ppt-master/pyproject.toml` | skill 目录自包含，AI Agent 安装 skill 后 `uv run` 使用 |
+| 3 | `skills/ppt-master/requirements.txt` | 上游兼容，pip 用户使用 |
+
+校验脚本检查四个维度：
+
+```bash
+uv run skills/ppt-master/scripts/check_deps_sync.py
+```
+
+| 检查项 | 内容 |
+|--------|------|
+| 1 | 根 `pyproject.toml` ↔ skill `pyproject.toml` 依赖一致 |
+| 2 | 根 `pyproject.toml` ↔ `requirements.txt` 依赖一致 |
+| 3 | skill `pyproject.toml` ↔ `requirements.txt` 依赖一致 |
+| 4 | 两处 `uv.lock` 逐字节相同 |
+
+建议在每次 `uv lock` 后运行此脚本，以及在合并上游更新后运行。
 
 ## 注意事项
 
 - Sync fork 和 CLI 合并**不要混着用在同一批更新上**，选一种方式即可
 - 合并后先跑 `uv run python -c "import pptx; print('OK')"` 验证依赖正常
-- `uv lock` 生成的 `uv.lock` 文件不需要提交（已在 `.gitignore` 中）
+- 合并后建议运行 `uv run skills/ppt-master/scripts/check_deps_sync.py` 校验三份依赖清单一致性
+- 两处 `uv.lock` 文件需要提交（`.gitignore` 中 `!uv.lock` 例外规则确保其不被忽略），以实现可重复构建

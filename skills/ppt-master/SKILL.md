@@ -431,5 +431,6 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 
 ## Notes
 
+- **First run / dependency errors**: `uv sync` installs all dependencies into the skill's venv. From inside `${SKILL_DIR}`, run it once when the skill is first installed, or whenever a script fails with `ModuleNotFoundError`. `uv run` auto-installs on first use, so this is rarely needed — it's a fallback troubleshooting step.
 - Local preview: `uv run python -m http.server -d <project_path>/svg_final 8000`
 - **Troubleshooting**: on generation issues (layout overflow, export errors, blank images, etc.), check `docs/faq.md` for known solutions

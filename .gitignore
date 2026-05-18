@@ -159,6 +159,7 @@ yarn.lock
 # Cache and locks
 .cache/
 *.lock
+!uv.lock
 .lock
 
 # Personal notes

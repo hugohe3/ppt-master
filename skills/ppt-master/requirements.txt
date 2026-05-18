@@ -9,8 +9,10 @@
 #   uv pip install -r requirements.txt  # alternative
 #   pip install -r requirements.txt     # legacy / 传统 pip
 #
-# Note: when adding/updating dependencies, also update pyproject.toml and run `uv lock`.
-# 注意：添加/更新依赖时，请同时更新 pyproject.toml 并运行 `uv lock`。
+# Note: when adding/updating dependencies, also update both pyproject.toml files
+# (repo root + skills/ppt-master/) and run `uv lock` in both directories.
+# 注意：添加/更新依赖时，请同时更新两个 pyproject.toml 文件
+# （仓库根目录 + skills/ppt-master/），并在两个目录中分别运行 `uv lock`。
 
 # ─────────────────────────────────────────────────────────────
 # SVG to PPTX tool / SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)

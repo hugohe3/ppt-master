@@ -36,9 +36,5 @@ dependencies = [
 
 [tool.uv]
 package = false
-# Keep all three dependency manifests in sync:
-#   1. pyproject.toml (this file)
-#   2. skills/ppt-master/pyproject.toml
-#   3. skills/ppt-master/requirements.txt
-# When any one changes, mirror to the other two and run `uv lock` in both directories:
-#   uv lock && cd skills/ppt-master && uv lock
+# package=false: this is a script-runner context, not a distributable library.
+# AI Agents only need `uv run` dependency resolution here; `pip install` is not a goal.
