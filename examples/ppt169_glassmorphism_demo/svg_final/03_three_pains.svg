@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF" />
+      <stop offset="50%" stop-color="#A26BFA" />
+      <stop offset="100%" stop-color="#3DDDFC" />
+    </linearGradient>
+    <radialGradient id="bgGlowA" cx="20%" cy="15%" r="55%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="bgGlowB" cx="85%" cy="80%" r="55%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pillarGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.35" />
+    </linearGradient>
+    <linearGradient id="headBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="headPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="headPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FB7185" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#FB7185" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27" />
+    <rect width="1280" height="720" fill="url(#bgGlowA)" />
+    <rect width="1280" height="720" fill="url(#bgGlowB)" />
+  </g>
+
+  <g id="header">
+    <path fill="url(#titleGradient)" d="M63,58 H63 A3,3 0 0 1 66,61 V87 A3,3 0 0 1 63,90 H63 A3,3 0 0 1 60,87 V61 A3,3 0 0 1 63,58 Z" />
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">三道阻碍 Agent 落地的现实门槛</text>
+    <text x="80" y="116" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">PERFORMANCE · COST · QUALITY — THREE BARRIERS BETWEEN DEMO AND PRODUCTION</text>
+  </g>
+
+  <g id="pillar-perf">
+    <path fill="url(#pillarGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M98,160 H432 A18,18 0 0 1 450,178 V632 A18,18 0 0 1 432,650 H98 A18,18 0 0 1 80,632 V178 A18,18 0 0 1 98,160 Z" />
+    <rect x="98" y="161" width="334" height="1" fill="url(#glassEdge)" />
+    <path d="M 98 160 h 334 a 18 18 0 0 1 18 18 v 110 h -370 v -110 a 18 18 0 0 1 18 -18 Z" fill="url(#headBlue)" />
+    <circle cx="160" cy="220" r="32" fill="#0A0E27" fill-opacity="0.55" />
+    
+  <g transform="translate(136.0, 196.0) scale(0.1875)" fill="#3DDDFC">
+    <path d="M232,160v24a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V161.13C24,103.65,70.15,56.2,127.63,56A104,104,0,0,1,232,160Z" opacity="0.2" />
+    <path d="M207.06,80.67A111.24,111.24,0,0,0,128,48h-.4C66.07,48.21,16,99,16,161.13V184a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V160A111.25,111.25,0,0,0,207.06,80.67ZM224,184H119.71l54.76-75.3a8,8,0,0,0-12.94-9.42L99.92,184H32V161.13c0-3.08.15-6.12.43-9.13H56a8,8,0,0,0,0-16H35.27c10.32-38.86,44-68.24,84.73-71.66V88a8,8,0,0,0,16,0V64.33A96.14,96.14,0,0,1,221,136H200a8,8,0,0,0,0,16h23.67c.21,2.65.33,5.31.33,8Z" />
+  </g>
+    <text x="208" y="208" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#E8ECFF" letter-spacing="3">PERFORMANCE</text>
+    <text x="208" y="240" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="26" font-weight="900" fill="#FFFFFF">性能不稳定</text>
+    <line x1="100" y1="320" x2="430" y2="320" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" />
+    <text x="100" y="362" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">多步推理累积误差</text>
+    <text x="100" y="394" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">每一步 LLM 调用都有 5-10% 抖动，</text>
+    <text x="100" y="416" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">叠加后总成功率断崖式下滑。</text>
+    <text x="100" y="464" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">P95 延迟失控</text>
+    <text x="100" y="496" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">链式调用让 P50 看似可控,</text>
+    <text x="100" y="518" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">P95 / P99 翻 5-10 倍。</text>
+    <path fill="#5B8DEF" fill-opacity="0.18" stroke="#5B8DEF" stroke-opacity="0.5" stroke-width="1" d="M112,568 H418 A12,12 0 0 1 430,580 V618 A12,12 0 0 1 418,630 H112 A12,12 0 0 1 100,618 V580 A12,12 0 0 1 112,568 Z" />
+    <text x="116" y="595" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0" letter-spacing="2">P95 / P50 RATIO</text>
+    <text x="416" y="610" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="900" fill="#3DDDFC" text-anchor="end">5-10×</text>
+  </g>
+
+  <g id="pillar-cost">
+    <path fill="url(#pillarGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M480,160 H814 A18,18 0 0 1 832,178 V632 A18,18 0 0 1 814,650 H480 A18,18 0 0 1 462,632 V178 A18,18 0 0 1 480,160 Z" />
+    <rect x="480" y="161" width="334" height="1" fill="url(#glassEdge)" />
+    <path d="M 480 160 h 334 a 18 18 0 0 1 18 18 v 110 h -370 v -110 a 18 18 0 0 1 18 -18 Z" fill="url(#headPurple)" />
+    <circle cx="542" cy="220" r="32" fill="#0A0E27" fill-opacity="0.55" />
+    
+  <g transform="translate(518.0, 196.0) scale(0.1875)" fill="#3DDDFC">
+    <path d="M232,104c0,24-40,48-104,48S24,128,24,104,64,56,128,56,232,80,232,104Z" opacity="0.2" />
+    <path d="M207.58,63.84C186.85,53.48,159.33,48,128,48S69.15,53.48,48.42,63.84,16,88.78,16,104v48c0,15.22,11.82,29.85,32.42,40.16S96.67,208,128,208s58.85-5.48,79.58-15.84S240,167.22,240,152V104C240,88.78,228.18,74.15,207.58,63.84ZM128,64c62.64,0,96,23.23,96,40s-33.36,40-96,40-96-23.23-96-40S65.36,64,128,64Zm-8,95.86v32c-19-.62-35-3.42-48-7.49V153.05A203.43,203.43,0,0,0,120,159.86Zm16,0a203.43,203.43,0,0,0,48-6.81v31.31c-13,4.07-29,6.87-48,7.49ZM32,152V133.53a82.88,82.88,0,0,0,16.42,10.63c2.43,1.21,5,2.35,7.58,3.43V178C40.17,170.16,32,160.29,32,152Zm168,26V147.59c2.61-1.08,5.15-2.22,7.58-3.43A82.88,82.88,0,0,0,224,133.53V152C224,160.29,215.83,170.16,200,178Z" />
+  </g>
+    <text x="590" y="208" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#E8ECFF" letter-spacing="3">COST</text>
+    <text x="590" y="240" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="26" font-weight="900" fill="#FFFFFF">成本不可预测</text>
+    <line x1="482" y1="320" x2="812" y2="320" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" />
+    <text x="482" y="362" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">Token 漂移 5-50 倍</text>
+    <text x="482" y="394" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">同一任务,不同上下文长度、</text>
+    <text x="482" y="416" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">检索条数、循环深度,价格分布极宽。</text>
+    <text x="482" y="464" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">长尾任务吞掉预算</text>
+    <text x="482" y="496" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">5% 的疑难任务,</text>
+    <text x="482" y="518" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">常常消耗 50% 以上的 token。</text>
+    <path fill="#A26BFA" fill-opacity="0.18" stroke="#A26BFA" stroke-opacity="0.5" stroke-width="1" d="M494,568 H800 A12,12 0 0 1 812,580 V618 A12,12 0 0 1 800,630 H494 A12,12 0 0 1 482,618 V580 A12,12 0 0 1 494,568 Z" />
+    <text x="498" y="595" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0" letter-spacing="2">COST DRIFT RANGE</text>
+    <text x="798" y="610" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="900" fill="#A26BFA" text-anchor="end">5-50×</text>
+  </g>
+
+  <g id="pillar-quality">
+    <path fill="url(#pillarGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M862,160 H1196 A18,18 0 0 1 1214,178 V632 A18,18 0 0 1 1196,650 H862 A18,18 0 0 1 844,632 V178 A18,18 0 0 1 862,160 Z" />
+    <rect x="862" y="161" width="334" height="1" fill="url(#glassEdge)" />
+    <path d="M 862 160 h 334 a 18 18 0 0 1 18 18 v 110 h -370 v -110 a 18 18 0 0 1 18 -18 Z" fill="url(#headPink)" />
+    <circle cx="924" cy="220" r="32" fill="#0A0E27" fill-opacity="0.55" />
+    
+  <g transform="translate(900.0, 196.0) scale(0.1875)" fill="#3DDDFC">
+    <path d="M208,128v16a80,80,0,0,1-160,0V128Z" opacity="0.2" />
+    <path d="M144,92a12,12,0,1,1,12,12A12,12,0,0,1,144,92ZM100,80a12,12,0,1,0,12,12A12,12,0,0,0,100,80Zm116,64A87.76,87.76,0,0,1,213,167l22.24,9.72A8,8,0,0,1,232,192a7.89,7.89,0,0,1-3.2-.67L207.38,182a88,88,0,0,1-158.76,0L27.2,191.33A7.89,7.89,0,0,1,24,192a8,8,0,0,1-3.2-15.33L43,167A87.76,87.76,0,0,1,40,144v-8H16a8,8,0,0,1,0-16H40v-8a87.76,87.76,0,0,1,3-23L20.8,79.33a8,8,0,1,1,6.4-14.66L48.62,74a88,88,0,0,1,158.76,0l21.42-9.36a8,8,0,0,1,6.4,14.66L213,89.05a87.76,87.76,0,0,1,3,23v8h24a8,8,0,0,1,0,16H216ZM56,120H200v-8a72,72,0,0,0-144,0Zm64,95.54V136H56v8A72.08,72.08,0,0,0,120,215.54ZM200,144v-8H136v79.54A72.08,72.08,0,0,0,200,144Z" />
+  </g>
+    <text x="972" y="208" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#E8ECFF" letter-spacing="3">QUALITY</text>
+    <text x="972" y="240" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="26" font-weight="900" fill="#FFFFFF">质量难闭环</text>
+    <line x1="864" y1="320" x2="1194" y2="320" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" />
+    <text x="864" y="362" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">失败原因模糊</text>
+    <text x="864" y="394" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">是模型、提示词、工具,还是数据问题?</text>
+    <text x="864" y="416" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">没有可观测层很难定位。</text>
+    <text x="864" y="464" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="700" fill="#E8ECFF">回归测试缺失</text>
+    <text x="864" y="496" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">改一个 prompt,就要担心</text>
+    <text x="864" y="518" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="400" fill="#A8B0D0">十个老 case 是否回退。</text>
+    <path fill="#FB7185" fill-opacity="0.18" stroke="#FB7185" stroke-opacity="0.5" stroke-width="1" d="M876,568 H1182 A12,12 0 0 1 1194,580 V618 A12,12 0 0 1 1182,630 H876 A12,12 0 0 1 864,618 V580 A12,12 0 0 1 876,568 Z" />
+    <text x="880" y="595" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0" letter-spacing="2">DEBUG CYCLE COST</text>
+    <text x="1180" y="610" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="900" fill="#FB7185" text-anchor="end">3-7 天</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">现状 · 三大门槛</text>
+    <text x="1220" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">03 / 12</text>
+  </g>
+</svg>

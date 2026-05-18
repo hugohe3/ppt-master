@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP04" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotP04)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" letter-spacing="-1">一百年里 ZINE 的四次浪潮</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">FOUR WAVES OF SELF-PUBLISHING · 1920s — 2026</text>
+  </g>
+
+  <line x1="60" y1="152" x2="1220" y2="152" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Timeline horizontal track -->
+  <g id="timeline-track">
+    <!-- main blue track -->
+    <rect x="100" y="404" width="1080" height="14" fill="#1E4DBC"/>
+    <!-- pink misregistration offset -->
+    <rect x="103" y="407" width="1080" height="14" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="100" y="404" width="1080" height="14" fill="#1E4DBC"/>
+    <!-- end caps -->
+    <polygon points="1180,396 1210,411 1180,426" fill="#1E4DBC"/>
+  </g>
+
+  <!-- Year tick markers on track -->
+  <g id="year-ticks">
+    <line x1="156" y1="384" x2="156" y2="438" stroke="#1A1A1A" stroke-width="3"/>
+    <line x1="384" y1="384" x2="384" y2="438" stroke="#1A1A1A" stroke-width="3"/>
+    <line x1="612" y1="384" x2="612" y2="438" stroke="#1A1A1A" stroke-width="3"/>
+    <line x1="840" y1="384" x2="840" y2="438" stroke="#1A1A1A" stroke-width="3"/>
+    <line x1="1068" y1="384" x2="1068" y2="438" stroke="#1A1A1A" stroke-width="3"/>
+  </g>
+
+  <!-- Wave 01: 1920s 业余出版 (above) -->
+  <g id="wave-01">
+    <text x="156" y="200" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#FF5C8A" text-anchor="middle">1920s</text>
+    <text x="154" y="198" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#1A1A1A" text-anchor="middle">1920s</text>
+    <rect x="68" y="220" width="180" height="156" fill="#1A1A1A"/>
+    <rect x="71" y="223" width="180" height="156" fill="#1E4DBC" opacity="0.5"/>
+    <rect x="68" y="220" width="180" height="156" fill="#1A1A1A"/>
+    <rect x="68" y="220" width="180" height="34" fill="#FF5C8A"/>
+    <text x="158" y="244" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0" text-anchor="middle">业余出版火种</text>
+    <text x="158" y="282" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">哈莱姆文艺复兴</text>
+    <text x="158" y="302" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">黑人创作 *FIRE!!*</text>
+    <text x="158" y="324" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#F5EFE0" text-anchor="middle" opacity="0.85">自由独立地表达</text>
+    <text x="158" y="358" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" text-anchor="middle" letter-spacing="2">EMBER</text>
+    <line x1="156" y1="378" x2="156" y2="404" stroke="#FF5C8A" stroke-width="3" stroke-dasharray="3,3"/>
+  </g>
+
+  <!-- Wave 02: 1930s 科幻同人志 (below) -->
+  <g id="wave-02">
+    <line x1="384" y1="418" x2="384" y2="446" stroke="#FF5C8A" stroke-width="3" stroke-dasharray="3,3"/>
+    <text x="384" y="476" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#FF5C8A" text-anchor="middle">1930s</text>
+    <text x="382" y="474" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#1A1A1A" text-anchor="middle">1930s</text>
+    <rect x="296" y="494" width="180" height="156" fill="#1A1A1A"/>
+    <rect x="299" y="497" width="180" height="156" fill="#FF5C8A" opacity="0.5"/>
+    <rect x="296" y="494" width="180" height="156" fill="#1A1A1A"/>
+    <rect x="296" y="494" width="180" height="34" fill="#1E4DBC"/>
+    <text x="386" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0" text-anchor="middle">科幻同人志</text>
+    <text x="386" y="556" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">*THE COMET*（1930）</text>
+    <text x="386" y="576" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">第一本科幻同人志</text>
+    <text x="386" y="598" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#F5EFE0" text-anchor="middle" opacity="0.85">1940 RUSS CHAUVENET</text>
+    <text x="386" y="616" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#F5EFE0" text-anchor="middle" opacity="0.85">创造"FANZINE"一词</text>
+    <text x="386" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1E4DBC" text-anchor="middle" letter-spacing="2">CRYSTALLIZE</text>
+  </g>
+
+  <!-- Wave 03: 1976 朋克 (above) -->
+  <g id="wave-03">
+    <text x="612" y="200" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#FF5C8A" text-anchor="middle">1976</text>
+    <text x="610" y="198" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#1A1A1A" text-anchor="middle">1976</text>
+    <rect x="524" y="220" width="180" height="156" fill="#1A1A1A"/>
+    <rect x="527" y="223" width="180" height="156" fill="#1E4DBC" opacity="0.5"/>
+    <rect x="524" y="220" width="180" height="156" fill="#1A1A1A"/>
+    <rect x="524" y="220" width="180" height="34" fill="#E8A02E"/>
+    <text x="614" y="244" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">朋克 ZINE 浪潮</text>
+    <text x="614" y="282" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">*SNIFFIN' GLUE*</text>
+    <text x="614" y="302" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">MARK PERRY 创办</text>
+    <text x="614" y="324" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#F5EFE0" text-anchor="middle" opacity="0.85">复印机普及 + 工薪阶层</text>
+    <text x="614" y="358" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#E8A02E" text-anchor="middle" letter-spacing="2">DIY EXPLOSION</text>
+    <line x1="612" y1="378" x2="612" y2="404" stroke="#E8A02E" stroke-width="3" stroke-dasharray="3,3"/>
+  </g>
+
+  <!-- Wave 04: 1991 Riot Grrrl (below) -->
+  <g id="wave-04">
+    <line x1="840" y1="418" x2="840" y2="446" stroke="#FF5C8A" stroke-width="3" stroke-dasharray="3,3"/>
+    <text x="840" y="476" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#FF5C8A" text-anchor="middle">1991</text>
+    <text x="838" y="474" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#1A1A1A" text-anchor="middle">1991</text>
+    <rect x="752" y="494" width="180" height="156" fill="#FF5C8A"/>
+    <rect x="755" y="497" width="180" height="156" fill="#1E4DBC" opacity="0.5"/>
+    <rect x="752" y="494" width="180" height="156" fill="#FF5C8A"/>
+    <rect x="752" y="494" width="180" height="34" fill="#1A1A1A"/>
+    <text x="842" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0" text-anchor="middle">RIOT GRRRL</text>
+    <text x="842" y="556" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">*BIKINI KILL* 同名 zine</text>
+    <text x="842" y="576" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">KATHLEEN HANNA 主编</text>
+    <text x="842" y="598" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle" opacity="0.85">第三波女性主义 + DIY 朋克</text>
+    <text x="842" y="616" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle" opacity="0.85">RIOT GRRRL PRESS 分发网络</text>
+    <text x="842" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#1A1A1A" text-anchor="middle" letter-spacing="2">FEMINIST WAVE</text>
+  </g>
+
+  <!-- Wave 05: 2010s 当代复兴 (above) -->
+  <g id="wave-05">
+    <text x="1068" y="200" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="38" fill="#FF5C8A" text-anchor="middle">2010s+</text>
+    <text x="1066" y="198" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="38" fill="#1A1A1A" text-anchor="middle">2010s+</text>
+    <rect x="980" y="220" width="180" height="156" fill="#1E4DBC"/>
+    <rect x="983" y="223" width="180" height="156" fill="#FF5C8A" opacity="0.5"/>
+    <rect x="980" y="220" width="180" height="156" fill="#1E4DBC"/>
+    <rect x="980" y="220" width="180" height="34" fill="#F5EFE0"/>
+    <text x="1070" y="244" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">当代复兴 + 书展爆发</text>
+    <text x="1070" y="282" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">SF Zine Fest (2001)</text>
+    <text x="1070" y="302" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0" text-anchor="middle">LA Zine Fest (2012)</text>
+    <text x="1070" y="324" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#F5EFE0" text-anchor="middle" opacity="0.85">大英图书馆 / TATE 收藏</text>
+    <text x="1070" y="358" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">RENAISSANCE</text>
+    <line x1="1068" y1="378" x2="1068" y2="404" stroke="#F5EFE0" stroke-width="3" stroke-dasharray="3,3"/>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="690" x2="1220" y2="690" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P04 · FOUR WAVES OF ZINE</text>
+    <text x="1220" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">EMBER → CRYSTALLIZE → EXPLOSION → FEMINIST → RENAISSANCE</text>
+  </g>
+</svg>

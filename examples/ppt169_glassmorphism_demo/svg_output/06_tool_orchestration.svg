@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="bgOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.78"/>
+    </linearGradient>
+    <linearGradient id="stepGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="stepHi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="flowLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0"/>
+      <stop offset="10%" stop-color="#5B8DEF" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#A26BFA" stop-opacity="0.7"/>
+      <stop offset="90%" stop-color="#3DDDFC" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#3DDDFC" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <marker id="flowArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 Z" fill="#3DDDFC"/>
+    </marker>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/06_pipeline_flow.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="50" width="6" height="32" rx="3" fill="url(#titleGradient)"/>
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">让工具调用从"能跑"到"稳跑"</text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">TOOL ORCHESTRATION · A SIX-STEP DISCIPLINE</text>
+  </g>
+
+  <g id="flow-axis">
+    <line x1="60" y1="200" x2="1220" y2="200" stroke="url(#flowLine)" stroke-width="2" stroke-dasharray="6 6"/>
+  </g>
+
+  <g id="step-1">
+    <circle cx="145" cy="200" r="22" fill="#0A0E27" stroke="#5B8DEF" stroke-width="2"/>
+    <text x="145" y="207" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="900" fill="#5B8DEF" text-anchor="middle">01</text>
+    <rect x="60" y="244" width="170" height="356" rx="16" fill="url(#stepGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+    <rect x="78" y="245" width="134" height="1" fill="url(#glassEdge)"/>
+    <use data-icon="phosphor-duotone/magnifying-glass" x="125" y="270" width="40" height="40" fill="#5B8DEF"/>
+    <text x="145" y="346" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="900" fill="#E8ECFF" text-anchor="middle">解析任务</text>
+    <line x1="92" y1="368" x2="198" y2="368" stroke="#FFFFFF" stroke-opacity="0.16"/>
+    <text x="145" y="404" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">拆解用户意图</text>
+    <text x="145" y="425" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">明确目标和约束</text>
+    <text x="145" y="475" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">输出:</text>
+    <text x="145" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">subtasks[]</text>
+    <rect x="80" y="560" width="130" height="24" rx="12" fill="#5B8DEF" fill-opacity="0.2" stroke="#5B8DEF" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="145" y="577" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="700" fill="#5B8DEF" text-anchor="middle" letter-spacing="2">PLAN</text>
+  </g>
+
+  <g id="step-2">
+    <circle cx="343" cy="200" r="22" fill="#0A0E27" stroke="#5B8DEF" stroke-width="2"/>
+    <text x="343" y="207" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="900" fill="#5B8DEF" text-anchor="middle">02</text>
+    <rect x="258" y="244" width="170" height="356" rx="16" fill="url(#stepGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+    <rect x="276" y="245" width="134" height="1" fill="url(#glassEdge)"/>
+    <use data-icon="phosphor-duotone/target" x="323" y="270" width="40" height="40" fill="#5B8DEF"/>
+    <text x="343" y="346" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="900" fill="#E8ECFF" text-anchor="middle">选择工具</text>
+    <line x1="290" y1="368" x2="396" y2="368" stroke="#FFFFFF" stroke-opacity="0.16"/>
+    <text x="343" y="404" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">schema 匹配</text>
+    <text x="343" y="425" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">描述向量检索</text>
+    <text x="343" y="475" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">输出:</text>
+    <text x="343" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">tool + args</text>
+    <rect x="278" y="560" width="130" height="24" rx="12" fill="#5B8DEF" fill-opacity="0.2" stroke="#5B8DEF" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="343" y="577" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="700" fill="#5B8DEF" text-anchor="middle" letter-spacing="2">SELECT</text>
+  </g>
+
+  <g id="step-3">
+    <circle cx="541" cy="200" r="22" fill="#0A0E27" stroke="#A26BFA" stroke-width="2"/>
+    <text x="541" y="207" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="900" fill="#A26BFA" text-anchor="middle">03</text>
+    <rect x="456" y="244" width="170" height="356" rx="16" fill="url(#stepGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+    <rect x="474" y="245" width="134" height="1" fill="url(#glassEdge)"/>
+    <use data-icon="phosphor-duotone/plug" x="521" y="270" width="40" height="40" fill="#A26BFA"/>
+    <text x="541" y="346" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="900" fill="#E8ECFF" text-anchor="middle">调用执行</text>
+    <line x1="488" y1="368" x2="594" y2="368" stroke="#FFFFFF" stroke-opacity="0.16"/>
+    <text x="541" y="404" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">超时控制</text>
+    <text x="541" y="425" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">幂等 key</text>
+    <text x="541" y="475" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">输出:</text>
+    <text x="541" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">raw_result</text>
+    <rect x="476" y="560" width="130" height="24" rx="12" fill="#A26BFA" fill-opacity="0.2" stroke="#A26BFA" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="541" y="577" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="700" fill="#A26BFA" text-anchor="middle" letter-spacing="2">EXECUTE</text>
+  </g>
+
+  <g id="step-4">
+    <circle cx="739" cy="200" r="22" fill="#0A0E27" stroke="#A26BFA" stroke-width="2"/>
+    <text x="739" y="207" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="900" fill="#A26BFA" text-anchor="middle">04</text>
+    <rect x="654" y="244" width="170" height="356" rx="16" fill="url(#stepGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+    <rect x="672" y="245" width="134" height="1" fill="url(#glassEdge)"/>
+    <use data-icon="phosphor-duotone/check-circle" x="719" y="270" width="40" height="40" fill="#A26BFA"/>
+    <text x="739" y="346" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="900" fill="#E8ECFF" text-anchor="middle">验证返回</text>
+    <line x1="686" y1="368" x2="792" y2="368" stroke="#FFFFFF" stroke-opacity="0.16"/>
+    <text x="739" y="404" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">JSON schema</text>
+    <text x="739" y="425" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">业务规则</text>
+    <text x="739" y="475" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">输出:</text>
+    <text x="739" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">valid / fail</text>
+    <rect x="674" y="560" width="130" height="24" rx="12" fill="#A26BFA" fill-opacity="0.2" stroke="#A26BFA" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="739" y="577" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="700" fill="#A26BFA" text-anchor="middle" letter-spacing="2">VALIDATE</text>
+  </g>
+
+  <g id="step-5">
+    <circle cx="937" cy="200" r="22" fill="#0A0E27" stroke="#3DDDFC" stroke-width="2"/>
+    <text x="937" y="207" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="900" fill="#3DDDFC" text-anchor="middle">05</text>
+    <rect x="852" y="244" width="170" height="356" rx="16" fill="url(#stepGlass)" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1"/>
+    <rect x="870" y="245" width="134" height="1" fill="url(#glassEdge)"/>
+    <use data-icon="phosphor-duotone/arrows-clockwise" x="917" y="270" width="40" height="40" fill="#3DDDFC"/>
+    <text x="937" y="346" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="900" fill="#E8ECFF" text-anchor="middle">重试回退</text>
+    <line x1="884" y1="368" x2="990" y2="368" stroke="#FFFFFF" stroke-opacity="0.16"/>
+    <text x="937" y="404" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">指数退避</text>
+    <text x="937" y="425" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">降级路径</text>
+    <text x="937" y="475" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0" text-anchor="middle">输出:</text>
+    <text x="937" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#3DDDFC" text-anchor="middle">retry / fallback</text>
+    <rect x="872" y="560" width="130" height="24" rx="12" fill="#3DDDFC" fill-opacity="0.2" stroke="#3DDDFC" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="937" y="577" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="700" fill="#3DDDFC" text-anchor="middle" letter-spacing="2">RECOVER</text>
+  </g>
+
+  <g id="step-6">
+    <circle cx="1135" cy="200" r="22" fill="#0A0E27" stroke="#4ADE80" stroke-width="2"/>
+    <text x="1135" y="207" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="900" fill="#4ADE80" text-anchor="middle">06</text>
+    <rect x="1050" y="244" width="170" height="356" rx="16" fill="url(#stepHi)" stroke="#4ADE80" stroke-opacity="0.55" stroke-width="1"/>
+    <rect x="1068" y="245" width="134" height="1" fill="url(#glassEdge)"/>
+    <use data-icon="phosphor-duotone/stack" x="1115" y="270" width="40" height="40" fill="#4ADE80"/>
+    <text x="1135" y="346" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="18" font-weight="900" fill="#FFFFFF" text-anchor="middle">结果汇总</text>
+    <line x1="1082" y1="368" x2="1188" y2="368" stroke="#FFFFFF" stroke-opacity="0.18"/>
+    <text x="1135" y="404" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#E8ECFF" text-anchor="middle">多轮聚合</text>
+    <text x="1135" y="425" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#E8ECFF" text-anchor="middle">引用与可解释化</text>
+    <text x="1135" y="475" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#E8ECFF" text-anchor="middle">输出:</text>
+    <text x="1135" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#4ADE80" text-anchor="middle">final answer</text>
+    <rect x="1070" y="560" width="130" height="24" rx="12" fill="#4ADE80" fill-opacity="0.25" stroke="#4ADE80" stroke-opacity="0.7" stroke-width="1"/>
+    <text x="1135" y="577" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="700" fill="#4ADE80" text-anchor="middle" letter-spacing="2">DELIVER</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">每步都可观测 · 每步都有回退</text>
+    <text x="1220" y="694" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">06 / 12</text>
+  </g>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="p07-header">
+    <text x="60" y="58" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="3">05 · COLLABORATION</text>
+    <text x="60" y="110" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="36" font-weight="bold" fill="#1C1C1C">OMA × SANAA · 纽约新美术馆扩建</text>
+    <text x="60" y="146" font-family="KaiTi, &quot;Microsoft YaHei&quot;, serif" font-size="22" fill="#B8935A" font-style="italic">双强联动 · 新旧艺术共生</text>
+    <text x="60" y="174" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">库哈斯（OMA / 2000）× 妹岛和世 + 西泽立卫（SANAA / 2010）· 2026.3.21 开放</text>
+  </g>
+
+  <g id="img-before">
+    <image href="../images/oma_new_museum_before.png" x="60" y="210" width="385" height="290" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="60" y="210" width="120" height="32" fill="#1C1C1C"/>
+    <text x="76" y="232" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#E8C788" letter-spacing="2">BEFORE</text>
+    <text x="60" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="bold" fill="#1C1C1C">扩建前 · 标志性主楼</text>
+    <text x="60" y="546" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">SANAA 2010 · 轻盈通透美学</text>
+  </g>
+
+  <g id="img-after">
+    <image href="../images/oma_new_museum_after.png" x="465" y="210" width="385" height="290" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="465" y="210" width="120" height="32" fill="#B8935A"/>
+    <text x="481" y="232" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#1C1C1C" letter-spacing="2">AFTER</text>
+    <text x="465" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="bold" fill="#1C1C1C">扩建后 · 新翼无缝衔接</text>
+    <text x="465" y="546" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">OMA 2026 · 先锋解构思维</text>
+  </g>
+
+  <g id="kpi-stack">
+    <rect x="870" y="210" width="350" height="93" fill="#1C1C1C"/>
+    <text x="890" y="244" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="#E8C788">$82M</text>
+    <text x="890" y="278" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">总投资 8200 万美元</text>
+    <text x="890" y="298" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">U.S. Dollar · 2026 开放</text>
+
+    <rect x="870" y="308" width="350" height="93" fill="#EDE8DE"/>
+    <text x="890" y="342" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="#1C1C1C">5,574 ㎡</text>
+    <text x="890" y="376" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">新增建筑面积</text>
+    <text x="890" y="396" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">60,000 sq ft 全新展示空间</text>
+
+    <rect x="870" y="406" width="350" height="94" fill="#B8935A"/>
+    <text x="890" y="442" font-family="KaiTi, Georgia, serif" font-size="18" font-style="italic" fill="#1C1C1C">迭代更新 · 兼容并蓄</text>
+    <text x="890" y="468" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#1C1C1C">OMA 先锋解构 × SANAA 轻盈通透</text>
+    <text x="890" y="486" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#1C1C1C">百年美术馆获新活力</text>
+  </g>
+
+  <g id="img-massing">
+    <image href="../images/oma_new_museum_massing.png" x="60" y="580" width="790" height="110" preserveAspectRatio="xMidYMid slice"/>
+    <line x1="60" y1="580" x2="60" y2="620" stroke="#B8935A" stroke-width="3"/>
+    <text x="76" y="606" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="bold" fill="#F5F2EC">OMA 体块模型 · 通透立面 + 错落空间 + 开放布局</text>
+  </g>
+
+  <g id="manifesto-tail">
+    <text x="870" y="600" font-family="KaiTi, serif" font-size="15" fill="#1C1C1C" font-style="italic">
+      <tspan x="870" dy="0">让城市街景</tspan>
+      <tspan x="870" dy="22">与艺术空间</tspan>
+      <tspan x="870" dy="22">相互渗透</tspan>
+    </text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="700" x2="1220" y2="700" stroke="#D4CFC4" stroke-width="1"/>
+    <text x="60" y="715" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">图源 · OMA / 摄影 Dean Kaufman · Jason O'Rear</text>
+    <text x="1220" y="715" text-anchor="end" font-family="Georgia, serif" font-size="11" fill="#8B8680">07 / 11</text>
+  </g>
+</svg>

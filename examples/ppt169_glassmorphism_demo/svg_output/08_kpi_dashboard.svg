@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="bgOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.74"/>
+    </linearGradient>
+    <linearGradient id="kpiGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.42"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/08_dashboard_bokeh.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="50" width="6" height="32" rx="3" fill="url(#titleGradient)"/>
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">上生产前,先把四张表盘装上</text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">KPI DASHBOARD · WEEKLY ROLLUP</text>
+    <rect x="1100" y="55" width="120" height="34" rx="17" fill="#1A2150" fill-opacity="0.6" stroke="#3DDDFC" stroke-opacity="0.5" stroke-width="1"/>
+    <circle cx="1118" cy="72" r="4" fill="#4ADE80"/>
+    <text x="1132" y="78" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#E8ECFF" letter-spacing="2">LIVE · W12</text>
+  </g>
+
+  <g id="kpi-accuracy">
+    <rect x="80" y="160" width="560" height="240" rx="20" fill="url(#kpiGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"/>
+    <rect x="98" y="161" width="524" height="1" fill="url(#glassEdge)"/>
+    <rect x="98" y="184" width="6" height="60" rx="3" fill="#4ADE80"/>
+    <rect x="120" y="180" width="50" height="50" rx="12" fill="#4ADE80" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/check-circle" x="127" y="187" width="36" height="36" fill="#4ADE80"/>
+    <text x="186" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#4ADE80" letter-spacing="3">ACCURACY</text>
+    <text x="186" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#E8ECFF">任务成功率</text>
+    <text x="100" y="334" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="88" font-weight="900" fill="#FFFFFF" letter-spacing="-2">92.4</text>
+    <text x="358" y="334" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="38" font-weight="700" fill="#A8B0D0">%</text>
+    <polygon points="430,290 446,308 414,308" fill="#4ADE80"/>
+    <text x="456" y="306" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#4ADE80">+3.2 pp</text>
+    <text x="456" y="328" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">vs. 上周</text>
+    <line x1="100" y1="360" x2="620" y2="360" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="100" y="384" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">12 周累计提升 21.4 pp · 接近内部 SLO 95% 阈值</text>
+  </g>
+
+  <g id="kpi-latency">
+    <rect x="660" y="160" width="540" height="240" rx="20" fill="url(#kpiGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"/>
+    <rect x="678" y="161" width="504" height="1" fill="url(#glassEdge)"/>
+    <rect x="678" y="184" width="6" height="60" rx="3" fill="#5B8DEF"/>
+    <rect x="700" y="180" width="50" height="50" rx="12" fill="#5B8DEF" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/gauge" x="707" y="187" width="36" height="36" fill="#5B8DEF"/>
+    <text x="766" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#5B8DEF" letter-spacing="3">LATENCY</text>
+    <text x="766" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#E8ECFF">P95 端到端延迟</text>
+    <text x="680" y="334" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="88" font-weight="900" fill="#FFFFFF" letter-spacing="-2">4.8</text>
+    <text x="836" y="334" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="38" font-weight="700" fill="#A8B0D0">s</text>
+    <polygon points="920,308 936,290 904,290" fill="#4ADE80"/>
+    <text x="946" y="306" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#4ADE80">−18%</text>
+    <text x="946" y="328" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">vs. 上周</text>
+    <line x1="680" y1="360" x2="1180" y2="360" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="680" y="384" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">引入并发工具调用 + 结果缓存后,P95 从 11.2s 收敛至 4.8s</text>
+  </g>
+
+  <g id="kpi-cost">
+    <rect x="80" y="430" width="560" height="240" rx="20" fill="url(#kpiGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"/>
+    <rect x="98" y="431" width="524" height="1" fill="url(#glassEdge)"/>
+    <rect x="98" y="454" width="6" height="60" rx="3" fill="#A26BFA"/>
+    <rect x="120" y="450" width="50" height="50" rx="12" fill="#A26BFA" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/coin" x="127" y="457" width="36" height="36" fill="#A26BFA"/>
+    <text x="186" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#A26BFA" letter-spacing="3">COST</text>
+    <text x="186" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#E8ECFF">单次任务成本</text>
+    <text x="100" y="604" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="56" font-weight="700" fill="#A8B0D0">¥</text>
+    <text x="140" y="604" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="88" font-weight="900" fill="#FFFFFF" letter-spacing="-2">0.42</text>
+    <polygon points="430,578 446,560 414,560" fill="#4ADE80"/>
+    <text x="456" y="576" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#4ADE80">−22%</text>
+    <text x="456" y="598" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">vs. 上周</text>
+    <line x1="100" y1="630" x2="620" y2="630" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="100" y="654" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">关键来源:模型分级路由 + 检索结果缓存复用</text>
+  </g>
+
+  <g id="kpi-reliability">
+    <rect x="660" y="430" width="540" height="240" rx="20" fill="url(#kpiGlass)" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"/>
+    <rect x="678" y="431" width="504" height="1" fill="url(#glassEdge)"/>
+    <rect x="678" y="454" width="6" height="60" rx="3" fill="#3DDDFC"/>
+    <rect x="700" y="450" width="50" height="50" rx="12" fill="#3DDDFC" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/shield-check" x="707" y="457" width="36" height="36" fill="#3DDDFC"/>
+    <text x="766" y="470" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="3">RELIABILITY</text>
+    <text x="766" y="498" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#E8ECFF">30 天 SLO 达成率</text>
+    <text x="680" y="604" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="88" font-weight="900" fill="#FFFFFF" letter-spacing="-2">99.7</text>
+    <text x="900" y="604" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="38" font-weight="700" fill="#A8B0D0">%</text>
+    <polygon points="970,578 986,560 954,560" fill="#4ADE80"/>
+    <text x="996" y="576" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="20" font-weight="800" fill="#4ADE80">+0.4 pp</text>
+    <text x="996" y="598" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">vs. 30 日前</text>
+    <line x1="680" y1="630" x2="1180" y2="630" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="680" y="654" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">熔断 + 降级链路 + 多模型 fallback 兜住了三次上游事故</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">KPI 仪表板 · 上线前必装的四块表</text>
+    <text x="1220" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">08 / 12</text>
+  </g>
+</svg>

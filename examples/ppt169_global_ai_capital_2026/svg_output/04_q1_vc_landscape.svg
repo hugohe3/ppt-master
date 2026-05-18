@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART I · LANDSCAPE · 04</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">2026 Q1 全球风投：<tspan fill="#E63946">$297B</tspan> 创纪录，AI 拿走 <tspan fill="#E63946">81%</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Global VC Q1 2026 — four mega-deals carry the quarter</text>
+  </g>
+
+  <g id="card-1">
+    <rect x="60" y="190" width="280" height="220" rx="6" fill="#1A1F26" stroke="#2A2F36" stroke-width="1"/>
+    <line x1="60" y1="190" x2="60" y2="290" stroke="#E63946" stroke-width="3"/>
+    <use data-icon="tabler-outline/world" x="80" y="210" width="22" height="22" fill="#8A857E" stroke-width="1.5"/>
+    <text x="112" y="227" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">单季 VC 总额 / Q1 VC</text>
+    <text x="80" y="320" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">$297<tspan font-size="32" fill="#C9C5BE">B</tspan></text>
+    <text x="80" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">单季历史最高 · Single-quarter record</text>
+    <text x="80" y="385" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">来源: Crunchbase</text>
+  </g>
+
+  <g id="card-2">
+    <rect x="360" y="190" width="280" height="220" rx="6" fill="#1A1F26" stroke="#2A2F36" stroke-width="1"/>
+    <line x1="360" y1="190" x2="360" y2="290" stroke="#E63946" stroke-width="3"/>
+    <use data-icon="tabler-outline/percentage" x="380" y="210" width="22" height="22" fill="#8A857E" stroke-width="1.5"/>
+    <text x="412" y="227" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">AI 占全季 VC / AI share</text>
+    <text x="380" y="320" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">81<tspan font-size="32" fill="#C9C5BE">%</tspan></text>
+    <text x="380" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">约 <tspan fill="#E63946" font-weight="bold">$242B</tspan> 流入 AI 行业</text>
+    <text x="380" y="385" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">来源: Crunchbase / PitchBook</text>
+  </g>
+
+  <g id="card-3">
+    <rect x="60" y="430" width="280" height="220" rx="6" fill="#1A1F26" stroke="#2A2F36" stroke-width="1"/>
+    <line x1="60" y1="430" x2="60" y2="530" stroke="#F4A261" stroke-width="3"/>
+    <use data-icon="tabler-outline/currency-dollar" x="80" y="450" width="22" height="22" fill="#8A857E" stroke-width="1.5"/>
+    <text x="112" y="467" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">Top 4 笔大单 / Top 4 deals</text>
+    <text x="80" y="560" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">$188<tspan font-size="32" fill="#C9C5BE">B</tspan></text>
+    <text x="80" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">OpenAI · Anthropic · xAI · Waymo</text>
+    <text x="80" y="625" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">来源: PitchBook Q1 2026 Report</text>
+  </g>
+
+  <g id="card-4">
+    <rect x="360" y="430" width="280" height="220" rx="6" fill="#1A1F26" stroke="#2A2F36" stroke-width="1"/>
+    <line x1="360" y1="430" x2="360" y2="530" stroke="#F4A261" stroke-width="3"/>
+    <use data-icon="tabler-outline/target" x="380" y="450" width="22" height="22" fill="#8A857E" stroke-width="1.5"/>
+    <text x="412" y="467" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" letter-spacing="0.5">集中度 / Concentration</text>
+    <text x="380" y="560" font-family="Cambria, serif" font-size="72" font-weight="bold" fill="#E8E6E1">65<tspan font-size="32" fill="#C9C5BE">%</tspan></text>
+    <text x="380" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Top 4 占全季全球 VC 比例</text>
+    <text x="380" y="625" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#5C5852">钱不是更多，是更集中</text>
+  </g>
+
+  <g id="callout-right">
+    <line x1="680" y1="190" x2="680" y2="650" stroke="#2A2F36" stroke-width="1"/>
+    <text x="700" y="220" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">EDITORIAL NOTE</text>
+    <line x1="700" y1="232" x2="820" y2="232" stroke="#E63946" stroke-width="1"/>
+
+    <text x="700" y="280" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">
+      <tspan x="700" dy="0">钱没变多，</tspan>
+      <tspan x="700" dy="32">是更集中。</tspan>
+    </text>
+
+    <text x="700" y="380" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#C9C5BE">
+      <tspan x="700" dy="0">"While more money than ever is being</tspan>
+      <tspan x="700" dy="22">invested in the private markets, that's</tspan>
+      <tspan x="700" dy="22">thanks to <tspan fill="#E63946" font-weight="bold">larger checks, not more</tspan></tspan>
+      <tspan x="700" dy="22"><tspan fill="#E63946" font-weight="bold">of them</tspan> — capital concentrated into a</tspan>
+      <tspan x="700" dy="22">select few companies and a single</tspan>
+      <tspan x="700" dy="22">industry."</tspan>
+    </text>
+
+    <text x="700" y="555" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">— Crunchbase, Q1 2026 venture report</text>
+
+    <g id="key-stat-inline">
+      <line x1="700" y1="600" x2="1160" y2="600" stroke="#2A2F36" stroke-width="1"/>
+      <text x="700" y="630" font-family="Cambria, serif" font-size="13" fill="#8A857E">三大模型公司单季合计</text>
+      <text x="1160" y="630" text-anchor="end" font-family="Cambria, serif" font-size="32" font-weight="bold" fill="#E63946">$172B</text>
+    </g>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Crunchbase · PitchBook Q1 2026 Venture Reports</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">04 / 20</text>
+  </g>
+</svg>

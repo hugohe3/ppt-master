@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="leftScrim03" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0.78"/>
+      <stop offset="48%" stop-color="#0A0A0A" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="ando-thumb-clip">
+      <rect x="940" y="430" width="280" height="240" rx="4"/>
+    </clipPath>
+  </defs>
+
+  <g id="bg-image">
+    <image href="../images/ando_h_exterior.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#leftScrim03)"/>
+  </g>
+
+  <g id="p03-header">
+    <text x="60" y="80" font-family="Georgia, serif" font-size="14" fill="#E8C788" letter-spacing="3">01 · MASTERWORK</text>
+    <text x="60" y="180" font-family="Georgia, serif" font-size="88" fill="#B8935A" font-style="italic" fill-opacity="0.85">01</text>
+  </g>
+
+  <g id="p03-title">
+    <text x="60" y="240" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="40" font-weight="bold" fill="#F5F2EC">安藤忠雄 · 苏州 H+ 美术馆</text>
+    <text x="60" y="282" font-family="KaiTi, &quot;Microsoft YaHei&quot;, serif" font-size="26" fill="#E8C788" font-style="italic">在江南园林里写一首混凝土诗</text>
+    <line x1="60" y1="306" x2="180" y2="306" stroke="#B8935A" stroke-width="2"/>
+    <text x="60" y="334" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#D4CFC4">1995 年普利兹克奖得主 · 2026.1 开馆 · 苏州姑苏区上塘河畔</text>
+  </g>
+
+  <g id="card-concept">
+    <rect x="60" y="370" width="395" height="270" fill="#F5F2EC" fill-opacity="0.95"/>
+    <line x1="60" y1="370" x2="60" y2="640" stroke="#B8935A" stroke-width="3"/>
+    <text x="80" y="406" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#1C1C1C">立体园林 · 回游性</text>
+    <text x="80" y="430" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#B8935A" letter-spacing="2">CORE CONCEPT</text>
+    <text x="80" y="468" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1C1C1C">
+      <tspan x="80" dy="0">从苏州土地的记忆中汲取园林精髓</tspan>
+      <tspan x="80" dy="26">·  在有限空间创造深度</tspan>
+      <tspan x="80" dy="26">·  设计视线与步行体验</tspan>
+      <tspan x="80" dy="26">·  通过水与光传递时间</tspan>
+      <tspan x="80" dy="40" font-style="italic" fill="#5C5852">不流于形式 · 而是作为设计的构建方式</tspan>
+    </text>
+  </g>
+
+  <g id="card-philosophy">
+    <rect x="480" y="370" width="395" height="270" fill="#1C1C1C" fill-opacity="0.82"/>
+    <text x="500" y="406" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8C788">空间叙事 · 三种对话</text>
+    <text x="500" y="430" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#B8935A" letter-spacing="2">SPATIAL NARRATIVE</text>
+    <text x="500" y="468" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#F5F2EC">
+      <tspan x="500" dy="0">混凝土的冷峻 ↔ 光线的温柔</tspan>
+      <tspan x="500" dy="32">几何的秩序 ↔ 园林的自由</tspan>
+      <tspan x="500" dy="32">东方美学 ↔ 西方现代主义</tspan>
+    </text>
+    <line x1="500" y1="586" x2="540" y2="586" stroke="#B8935A" stroke-width="2"/>
+    <text x="500" y="618" font-family="KaiTi, serif" font-size="16" fill="#E8C788" font-style="italic">让建筑归于自然 · 让艺术治愈人心</text>
+  </g>
+
+  <g id="thumb-interior">
+    <rect x="936" y="426" width="288" height="248" fill="#F5F2EC" fill-opacity="0.95"/>
+    <image href="../images/ando_h_interior.png" x="940" y="430" width="280" height="240" preserveAspectRatio="xMidYMid slice" clip-path="url(#ando-thumb-clip)"/>
+    <text x="940" y="395" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">美术馆内部空间</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D4CFC4">图源 · H+ 美术馆</text>
+    <text x="1220" y="690" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#D4CFC4">03 / 11</text>
+  </g>
+</svg>

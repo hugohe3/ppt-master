@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP15" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP15)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#FF5C8A"/>
+    <rect x="63" y="59" width="14" height="68" fill="#1E4DBC" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#FF5C8A"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" letter-spacing="-1">收藏 ZINE 的 4 条</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">HOW TO COLLECT ZINES · NO ARCHIVAL PHD REQUIRED</text>
+  </g>
+
+  <line x1="60" y1="152" x2="1220" y2="152" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Vertical track (pink-led this time) -->
+  <rect x="120" y="200" width="6" height="430" fill="#FF5C8A"/>
+  <rect x="123" y="203" width="6" height="430" fill="#1E4DBC" opacity="0.6"/>
+  <rect x="120" y="200" width="6" height="430" fill="#FF5C8A"/>
+  <polygon points="123,640 110,624 136,624" fill="#FF5C8A"/>
+
+  <!-- Item 01 -->
+  <g id="item-01">
+    <rect x="80" y="200" width="86" height="86" fill="#FF5C8A"/>
+    <rect x="83" y="203" width="86" height="86" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="80" y="200" width="86" height="86" fill="#FF5C8A"/>
+    <text x="123" y="262" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#F5EFE0" text-anchor="middle">01</text>
+    <line x1="166" y1="243" x2="200" y2="243" stroke="#FF5C8A" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="200" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="200" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="200" width="8" height="86" fill="#FF5C8A"/>
+    <use data-icon="chunk-filled/heart" x="224" y="218" width="48" height="48" fill="#FF5C8A"/>
+    <text x="288" y="240" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">从一本起步</text>
+    <text x="288" y="266" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">不要一开始就 100 本目标 · 找你最关心的一个主题 · 滚雪球收藏</text>
+  </g>
+
+  <!-- Item 02 -->
+  <g id="item-02">
+    <rect x="80" y="312" width="86" height="86" fill="#1E4DBC"/>
+    <rect x="83" y="315" width="86" height="86" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="80" y="312" width="86" height="86" fill="#1E4DBC"/>
+    <text x="123" y="374" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#F5EFE0" text-anchor="middle">02</text>
+    <line x1="166" y1="355" x2="200" y2="355" stroke="#1E4DBC" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="312" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="312" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="312" width="8" height="86" fill="#1E4DBC"/>
+    <use data-icon="chunk-filled/folders" x="224" y="330" width="48" height="48" fill="#1E4DBC"/>
+    <text x="288" y="352" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">用塑料封套保护</text>
+    <text x="288" y="378" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">zine 是一次性印刷 · 二次印刷罕见 · 一本破损 = 一本绝版</text>
+  </g>
+
+  <!-- Item 03 -->
+  <g id="item-03">
+    <rect x="80" y="424" width="86" height="86" fill="#1A1A1A"/>
+    <rect x="83" y="427" width="86" height="86" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="80" y="424" width="86" height="86" fill="#1A1A1A"/>
+    <text x="123" y="486" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#FF5C8A" text-anchor="middle">03</text>
+    <line x1="166" y1="467" x2="200" y2="467" stroke="#1A1A1A" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="424" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="424" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="424" width="8" height="86" fill="#1A1A1A"/>
+    <use data-icon="chunk-filled/users" x="224" y="442" width="48" height="48" fill="#1A1A1A"/>
+    <text x="288" y="464" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">跟踪作者 / 出版方 Instagram</text>
+    <text x="288" y="490" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">新刊首发是赶圈机会 · 100 份卖完就没了 · 第二天朋友圈截图也没用</text>
+  </g>
+
+  <!-- Item 04 -->
+  <g id="item-04">
+    <rect x="80" y="536" width="86" height="86" fill="#E8A02E"/>
+    <rect x="83" y="539" width="86" height="86" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="80" y="536" width="86" height="86" fill="#E8A02E"/>
+    <text x="123" y="598" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#F5EFE0" text-anchor="middle">04</text>
+    <line x1="166" y1="579" x2="200" y2="579" stroke="#E8A02E" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="536" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="536" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="536" width="8" height="86" fill="#E8A02E"/>
+    <use data-icon="chunk-filled/calendar" x="224" y="554" width="48" height="48" fill="#E8A02E"/>
+    <text x="288" y="576" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">参加 abC / UNFOLD</text>
+    <text x="288" y="602" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">书展现场 = 新刊首发 + 作者签售 ·  一年一次的物理朝圣</text>
+  </g>
+
+  <!-- Bottom callout -->
+  <g id="callout">
+    <rect x="60" y="654" width="1160" height="34" fill="#FF5C8A"/>
+    <rect x="63" y="657" width="1160" height="34" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="60" y="654" width="1160" height="34" fill="#FF5C8A"/>
+    <text x="80" y="677" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5EFE0">长期玩家秘诀 ＞ 给自己定一个"我只收集 X 主题的 zine" 的窄锚点 · 5 年后你会拥有这个主题的小型博物馆</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="710" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P15 · 4 RULES FOR COLLECTING ZINES</text>
+    <text x="1220" y="710" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">START NARROW · GO DEEP · GO LONG</text>
+  </g>
+</svg>

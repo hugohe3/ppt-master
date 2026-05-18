@@ -1,0 +1,67 @@
+# Image Generation Prompts
+
+> Auto-generated from `image_prompts.json` by `image_gen.py --render-md`.
+> Do not hand-edit — re-run the command to refresh.
+
+> Project: global_ai_capital_2026
+> Generated: 2026-05-16
+> Color scheme: Bg #0E1116 | Primary #E8E6E1 | Accent #E63946 | Secondary_accent #F4A261
+
+---
+
+### Image 1: cover_atmosphere.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Cover background — 2026 全球 AI 资本格局封面氛围底图 |
+| Type | background |
+| Aspect ratio | 16:9 |
+| Image size | 2K |
+| Status | Generated |
+
+**Prompt**:
+
+Magazine-style editorial illustration backdrop with sophisticated visual hierarchy and confident negative space. The canvas reads as a dark cinema field — deep graphite black #0E1116 covers about 70% as the dominant atmospheric ground, suggesting an aerial night-view of a vast data-center campus seen from very high altitude. Faint warm-white #E8E6E1 pinpricks of server-rack lights scatter across the lower two-thirds in a constellation-like pattern, reading as both stars and infrastructure simultaneously; the lights are intentionally sparse, asymmetric, drifting toward the lower right, never centered. Thin refined dividing rules in muted graphite suggest invisible columns of a magazine spread. A single accent rule in restrained red #E63946 runs as a thin precise line near the right edge, no more than 4% of the canvas — the only saturated mark on the surface. Subtle paper grain at 6% opacity across the entire canvas. Upper third is deliberately calm and dark for SVG title overlay. Composed as a 1280×720 hero-page PPT background image. NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols. Color values (HEX codes like #0E1116, #E8E6E1, #E63946) and color names are rendering guidance only — do NOT display HEX codes, color names, or palette labels as visible text anywhere in the image. Simplified abstract composition only; no recognizable brand logos or trademarks.
+
+**Alt Text**:
+> Aerial night composition suggesting a vast data-center campus with sparse warm light pinpricks on deep graphite black, faint red accent rule at the right edge
+
+---
+
+### Image 2: nvidia_circular.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Part V Nvidia 闭环章节锚点 — 圆形资本流转氛围 |
+| Type | background |
+| Aspect ratio | 16:9 |
+| Image size | 2K |
+| Status | Generated |
+
+**Prompt**:
+
+Magazine-style editorial illustration backdrop with restrained sophistication and editorial pacing. The composition centers on a single abstract macro form — a circular wafer-like geometry rendered as a refined editorial illustration, not a photograph — placed in the right half of the canvas leaving the left third intentionally calm for chapter-title SVG overlay. Deep graphite black #0E1116 covers about 65% of the surface as the dark cinema field surrounding the circle. The circular form's body is a slightly lighter graphite #1A1F26 with thin precise concentric ring divisions in warm-white #E8E6E1 at 35% opacity, suggesting silicon etching without depicting any actual chip detail. A subtle saturated red #E63946 glow halo at the rim — about 8% of canvas — implies circulation, capital flowing in a closed loop. The circle's interior center is a quiet dark void, no subject inside. No gradients elsewhere; flat editorial layering with intentional negative space throughout the left side. Subtle paper grain at 6% opacity. Composed as a 1280×720 hero-page chapter divider background. NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, written symbols, or brand marks. Color values (HEX codes like #0E1116, #E8E6E1, #E63946) and color names are rendering guidance only — do NOT display HEX codes, color names, or palette labels as visible text anywhere in the image. Abstract editorial composition only; no recognizable Nvidia or other brand logos, no real chip likenesses.
+
+**Alt Text**:
+> Abstract circular wafer-like geometry in restrained graphite tones with a subtle red rim glow suggesting circulation, placed against a dark editorial field with reserved left negative space
+
+---
+
+### Image 3: bubble_tension.png
+
+| Attribute | Value |
+|---|---|
+| Purpose | Part VI 泡沫论章节锚点 — 单一气泡张力氛围 |
+| Type | background |
+| Aspect ratio | 16:9 |
+| Image size | 2K |
+| Status | Generated |
+
+**Prompt**:
+
+Magazine-style editorial illustration backdrop with quiet tension and editorial restraint. The composition shows a single translucent iridescent soap-bubble suspended slightly off-center toward the upper-right third of a deep dark void. Deep graphite black #0E1116 covers about 75% of the surface as the cinema field — a quiet, almost airless space surrounding the bubble. The bubble itself is rendered as refined editorial illustration, not photography — a thin elliptical outline in warm-white #E8E6E1 at 40% opacity with subtle iridescent surface tension implied through faint amber-gold #F4A261 reflections (no more than 6% of canvas) traveling along its upper curve. A single sharper highlight in saturated red #E63946 catches one point of the bubble's surface — under 3% of canvas — reading as a warning glint rather than decoration. The bubble's interior is the same dark void as the surrounding field, suggesting fragile inflation around emptiness. The lower-left half of the canvas is deliberately calm for SVG chapter-title overlay. Subtle paper grain at 6% opacity. Composed as a 1280×720 hero-page chapter divider background. NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols. Color values (HEX codes like #0E1116, #E8E6E1, #F4A261, #E63946) and color names are rendering guidance only — do NOT display HEX codes, color names, or palette labels as visible text anywhere in the image. Abstract editorial composition only; no recognizable brand logos or trademarks.
+
+**Alt Text**:
+> Single translucent soap-bubble suspended in deep dark space, subtle amber and red highlights catching its surface tension, calm lower-left negative space for title overlay
+
+---

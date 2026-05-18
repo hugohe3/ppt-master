@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="zahaBand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#0A0A0A" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#0A0A0A"/>
+  </g>
+
+  <g id="img-bridge">
+    <image href="../images/zaha_tamkang_bridge.png" x="0" y="0" width="640" height="500" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+  <g id="img-structure">
+    <image href="../images/zaha_tamkang_structure.png" x="644" y="0" width="320" height="500" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+  <g id="img-fullview">
+    <image href="../images/zaha_tamkang_full.png" x="968" y="0" width="312" height="500" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="text-band">
+    <rect x="0" y="380" width="1280" height="340" fill="url(#zahaBand)"/>
+    <text x="60" y="450" font-family="Georgia, serif" font-size="14" fill="#E8C788" letter-spacing="3">03 · POSTHUMOUS WORK</text>
+    <line x1="60" y1="466" x2="160" y2="466" stroke="#B8935A" stroke-width="2"/>
+    <text x="60" y="534" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="60" font-weight="bold" fill="#F5F2EC">跨越江河的流动态势</text>
+    <text x="60" y="578" font-family="KaiTi, Georgia, serif" font-size="26" fill="#E8C788" font-style="italic">扎哈·哈迪德 · 1950 — 2016 · 1985 至今唯一首位获普利兹克奖女性建筑师</text>
+  </g>
+
+  <g id="stat-block">
+    <line x1="60" y1="608" x2="60" y2="668" stroke="#B8935A" stroke-width="2"/>
+    <text x="80" y="634" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#F5F2EC">920 米</text>
+    <text x="80" y="660" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">全球同类型最长跨度 · 单塔不对称斜拉桥</text>
+
+    <line x1="430" y1="608" x2="430" y2="668" stroke="#B8935A" stroke-width="2"/>
+    <text x="450" y="634" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#F5F2EC">100%</text>
+    <text x="450" y="660" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">还原扎哈生前理想化设计 · 历经多次方案攻坚</text>
+
+    <line x1="800" y1="608" x2="800" y2="668" stroke="#B8935A" stroke-width="2"/>
+    <text x="820" y="634" font-family="KaiTi, serif" font-size="22" font-style="italic" fill="#E8C788">永不设限 · 突破边界</text>
+    <text x="820" y="660" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">2026.5.12 通车 · 大师已逝 · 思想延续</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="708" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">图源 · Zaha Hadid Architects / 摄影 Paddy Chao</text>
+    <text x="1220" y="708" text-anchor="end" font-family="Georgia, serif" font-size="11" fill="#8B8680">05 / 11</text>
+  </g>
+</svg>

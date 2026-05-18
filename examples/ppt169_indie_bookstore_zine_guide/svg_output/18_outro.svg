@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="leftScrim18" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F5EFE0" stop-opacity="0.94"/>
+      <stop offset="55%" stop-color="#F5EFE0" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#F5EFE0" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="dotP18" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+
+  <!-- Full-bleed hero -->
+  <g id="hero">
+    <image href="../images/zine_action_outro.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Left scrim so text reads on the calm field -->
+  <rect id="left-scrim" x="0" y="0" width="900" height="720" fill="url(#leftScrim18)"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP18)"/>
+
+  <!-- Top issue mark -->
+  <g id="top-mark">
+    <rect x="60" y="50" width="220" height="36" fill="#1E4DBC"/>
+    <rect x="63" y="53" width="220" height="36" fill="#FF5C8A" opacity="0.85"/>
+    <rect x="60" y="50" width="220" height="36" fill="#1E4DBC"/>
+    <text x="170" y="75" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="20" fill="#F5EFE0" text-anchor="middle" letter-spacing="3">END OF ISSUE №01</text>
+  </g>
+
+  <!-- The big outro line — Chinese -->
+  <g id="big-outro-cn">
+    <text x="60" y="290" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#FF5C8A" letter-spacing="-2">印一份。</text>
+    <text x="58" y="288" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1A1A1A" letter-spacing="-2">印一份。</text>
+
+    <text x="60" y="400" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#FF5C8A" letter-spacing="-2">送一份。</text>
+    <text x="58" y="398" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1E4DBC" letter-spacing="-2">送一份。</text>
+
+    <text x="60" y="510" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1E4DBC" letter-spacing="-2">换一份。</text>
+    <text x="58" y="508" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1A1A1A" letter-spacing="-2">换一份。</text>
+  </g>
+
+  <!-- English outro line in box -->
+  <g id="en-outro">
+    <rect x="60" y="558" width="660" height="84" fill="#1A1A1A"/>
+    <rect x="63" y="561" width="660" height="84" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="558" width="660" height="84" fill="#1A1A1A"/>
+    <text x="80" y="592" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="28" fill="#FF5C8A" letter-spacing="-0.5">A ZINE IS THE WORLD'S</text>
+    <text x="80" y="624" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="28" fill="#F5EFE0" letter-spacing="-0.5">SMALLEST PUBLISHING HOUSE.</text>
+    <rect x="60" y="558" width="6" height="84" fill="#FF5C8A"/>
+  </g>
+
+  <!-- Bottom corner: "it can also be yours" -->
+  <g id="corner-tag">
+    <rect x="60" y="660" width="660" height="32" fill="#FF5C8A"/>
+    <text x="80" y="683" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#1A1A1A" letter-spacing="3">IT CAN ALSO BE YOURS.</text>
+  </g>
+
+  <!-- Right corner colophon -->
+  <g id="colophon">
+    <rect x="980" y="600" width="240" height="92" fill="#1A1A1A"/>
+    <rect x="983" y="603" width="240" height="92" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="980" y="600" width="240" height="92" fill="#1A1A1A"/>
+    <text x="1100" y="628" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" text-anchor="middle" letter-spacing="2">COLOPHON</text>
+    <text x="1100" y="652" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" font-weight="900" fill="#F5EFE0" text-anchor="middle">PPT Master · 风格演示</text>
+    <text x="1100" y="672" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">RISO ZINE · 2026-05</text>
+    <text x="1100" y="688" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FF5C8A" text-anchor="middle" letter-spacing="2">SCREEN-PRINT × DUOTONE</text>
+  </g>
+</svg>

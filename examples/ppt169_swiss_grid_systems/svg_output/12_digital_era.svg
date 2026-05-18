@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P12 Digital Era · dense · 4-stage horizontal sequence -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 12</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">数字时代的延续</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">THE GRID ON SCREEN · 2008 — TODAY</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3"/>
+  </g>
+
+  <!-- Horizontal track connecting 4 stages -->
+  <g id="track">
+    <!-- chart-plot-area: 130,340,1216,340 -->
+    <line x1="130" y1="340" x2="1216" y2="340" stroke="#1A1A1A" stroke-width="2"/>
+  </g>
+
+  <!-- 4 stages; centers at x: 200 / 480 / 760 / 1040 (extended right to 1140) -->
+
+  <g id="stage-1">
+    <text x="172" y="232" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="64" font-weight="900" fill="#E8E8E8">01</text>
+    <text x="200" y="276" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" text-anchor="middle" letter-spacing="2">2008</text>
+    <text x="200" y="312" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A" text-anchor="middle">960 Grid System</text>
+    <circle cx="200" cy="340" r="8" fill="#1A1A1A"/>
+    <text x="200" y="394" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="200" dy="0">12 栏 · 960px 宽</tspan>
+      <tspan x="200" dy="20">第一次把网格语法</tspan>
+      <tspan x="200" dy="20">系统搬上 Web</tspan>
+      <tspan x="200" dy="20">Nathan Smith 出品</tspan>
+    </text>
+  </g>
+
+  <g id="stage-2">
+    <text x="452" y="232" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="64" font-weight="900" fill="#E8E8E8">02</text>
+    <text x="480" y="276" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" text-anchor="middle" letter-spacing="2">2011</text>
+    <text x="480" y="312" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A" text-anchor="middle">Bootstrap 12 栏</text>
+    <circle cx="480" cy="340" r="8" fill="#1A1A1A"/>
+    <text x="480" y="394" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="480" dy="0">Twitter 开源</tspan>
+      <tspan x="480" dy="20">把模数网格</tspan>
+      <tspan x="480" dy="20">民主化到全球</tspan>
+      <tspan x="480" dy="20">前端开发标配</tspan>
+    </text>
+  </g>
+
+  <g id="stage-3">
+    <text x="732" y="232" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="64" font-weight="900" fill="#E8E8E8">03</text>
+    <text x="760" y="276" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" text-anchor="middle" letter-spacing="2">2017</text>
+    <text x="760" y="312" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A" text-anchor="middle">CSS Grid</text>
+    <circle cx="760" cy="340" r="8" fill="#1A1A1A"/>
+    <text x="760" y="394" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="760" dy="0">浏览器原生网格</tspan>
+      <tspan x="760" dy="20">所有主流浏览器支持</tspan>
+      <tspan x="760" dy="20">模数网格首次成为</tspan>
+      <tspan x="760" dy="20">Web 平台基础设施</tspan>
+    </text>
+  </g>
+
+  <g id="stage-4">
+    <text x="1012" y="232" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="64" font-weight="900" fill="#D9251D">04</text>
+    <text x="1040" y="276" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" text-anchor="middle" letter-spacing="2">2020s</text>
+    <text x="1040" y="312" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#D9251D" text-anchor="middle">Design Systems</text>
+    <circle cx="1040" cy="340" r="14" fill="#D9251D"/>
+    <text x="1040" y="394" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="1040" dy="0">Material · HIG · FAST</tspan>
+      <tspan x="1040" dy="20">大企业 VI</tspan>
+      <tspan x="1040" dy="20">在屏幕上的延续</tspan>
+      <tspan x="1040" dy="20">从规则到组件库</tspan>
+    </text>
+  </g>
+
+  <g id="conclusion">
+    <line x1="64" y1="580" x2="64" y2="640" stroke="#D9251D" stroke-width="3"/>
+    <text x="92" y="606" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">同一套语法 · 1981 → 2026</text>
+    <text x="92" y="636" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">从印刷海报到 CSS Grid · 介质变换但<tspan font-weight="700" fill="#1A1A1A">模数 · 列 · 留白 · 数学比例</tspan>四件套从未改变。</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">12 / 14</text>
+  </g>
+</svg>

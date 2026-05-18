@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="ecoOverlay" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1F2A1F" stop-opacity="0.85"/>
+      <stop offset="60%" stop-color="#1F2A1F" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#1F2A1F" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg-image">
+    <rect width="1280" height="720" fill="#1F2A1F"/>
+    <image href="../images/640_8.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#ecoOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#6B7A4F"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#F5F2EC" letter-spacing="3">II · 范本  ·  EARTHSHOT FINALIST 2025</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="170" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">入围"为地球奋斗奖"</text>
+    <text x="60" y="216" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">决赛的<tspan fill="#A8C575">真正分量</tspan></text>
+    <line x1="60" y1="240" x2="160" y2="240" stroke="#A8C575" stroke-width="2"/>
+    <text x="60" y="278" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#D6CFC0" font-style="italic">有史以来第一座获得该奖项提名的建筑</text>
+  </g>
+
+  <g id="kpi-1">
+    <text x="60" y="430" font-family="Georgia, serif" font-size="120" font-weight="700" fill="#A8C575">−80<tspan font-size="56" fill="#F5F2EC" dx="4">%</tspan></text>
+    <line x1="60" y1="460" x2="120" y2="460" stroke="#F5F2EC" stroke-width="1"/>
+    <text x="60" y="492" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="17" font-weight="700" fill="#F5F2EC">建筑垃圾</text>
+    <text x="60" y="516" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">通过结构复用，避免推倒重建产生的</text>
+    <text x="60" y="536" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">废弃物大幅减少</text>
+  </g>
+
+  <g id="kpi-2">
+    <text x="460" y="430" font-family="Georgia, serif" font-size="120" font-weight="700" fill="#A8C575">−40<tspan font-size="56" fill="#F5F2EC" dx="4">%</tspan></text>
+    <line x1="460" y1="460" x2="520" y2="460" stroke="#F5F2EC" stroke-width="1"/>
+    <text x="460" y="492" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="17" font-weight="700" fill="#F5F2EC">碳排放</text>
+    <text x="460" y="516" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">相较于推倒重建模式</text>
+    <text x="460" y="536" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">显著降低全生命周期碳足迹</text>
+  </g>
+
+  <g id="kpi-3">
+    <text x="860" y="430" font-family="Georgia, serif" font-size="120" font-weight="700" fill="#A8C575">−30<tspan font-size="56" fill="#F5F2EC" dx="4">%</tspan></text>
+    <line x1="860" y1="460" x2="920" y2="460" stroke="#F5F2EC" stroke-width="1"/>
+    <text x="860" y="492" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="17" font-weight="700" fill="#F5F2EC">能源消耗</text>
+    <text x="860" y="516" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">智能通风系统 · 光伏幕墙</text>
+    <text x="860" y="536" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">雨水回收装置共同作用</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="650" x2="1220" y2="650" stroke="#F5F2EC" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="60" y="694" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#A8B0B8">老旧的超高层并非"包袱" — 通过科学改造，完全可以重获新生，甚至成为新的城市地标。</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#A8B0B8">08 / 15</text>
+  </g>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="decor-corner">
+    <line x1="60" y1="60" x2="60" y2="160" stroke="#B8935A" stroke-width="2"/>
+    <line x1="60" y1="60" x2="160" y2="60" stroke="#B8935A" stroke-width="2"/>
+    <line x1="1120" y1="660" x2="1220" y2="660" stroke="#B8935A" stroke-width="2"/>
+    <line x1="1220" y1="560" x2="1220" y2="660" stroke="#B8935A" stroke-width="2"/>
+  </g>
+
+  <g id="eyebrow">
+    <text x="640" y="166" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="6">EPILOGUE · 结 · 语</text>
+  </g>
+
+  <g id="hero-quote">
+    <text x="640" y="280" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="48" font-weight="bold" fill="#1C1C1C">所有传世的经典</text>
+    <text x="640" y="350" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="44" fill="#B8935A" font-style="italic">皆源于日复一日的坚守</text>
+    <line x1="540" y1="394" x2="740" y2="394" stroke="#B8935A" stroke-width="2"/>
+  </g>
+
+  <g id="three-paths">
+    <text x="175" y="476" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#B8935A" font-style="italic">耐心</text>
+    <text x="175" y="510" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1C1C1C">耗时二十年打磨一座场馆</text>
+    <text x="175" y="534" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">— 卒姆托 · 盖里</text>
+
+    <line x1="330" y1="466" x2="330" y2="544" stroke="#D4CFC4" stroke-width="1"/>
+
+    <text x="485" y="476" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#B8935A" font-style="italic">扎根</text>
+    <text x="485" y="510" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1C1C1C">坚守本土人文 · 温暖人心</text>
+    <text x="485" y="534" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">— 凯雷 · 安藤 · 奇普菲尔德</text>
+
+    <line x1="640" y1="466" x2="640" y2="544" stroke="#D4CFC4" stroke-width="1"/>
+
+    <text x="795" y="476" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#B8935A" font-style="italic">破界</text>
+    <text x="795" y="510" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1C1C1C">突破边界 · 颠覆常规</text>
+    <text x="795" y="534" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">— 扎哈 · 福斯特 · OMA</text>
+
+    <line x1="950" y1="466" x2="950" y2="544" stroke="#D4CFC4" stroke-width="1"/>
+
+    <text x="1105" y="476" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#B8935A" font-style="italic">敬畏</text>
+    <text x="1105" y="510" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1C1C1C">对空间 · 自然 · 人文的</text>
+    <text x="1105" y="534" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">极致敬畏与深度思考</text>
+  </g>
+
+  <g id="closing">
+    <text x="640" y="620" text-anchor="middle" font-family="KaiTi, &quot;Microsoft YaHei&quot;, serif" font-size="20" fill="#5C5852" font-style="italic">2026 这场大师新作季 · 不仅是全球美学盛宴 · 更让我们明白</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">资料来源 · 公众号 孙琬童 · 致敬八位普利兹克大师</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8B8680">11 / 11 · END</text>
+  </g>
+</svg>

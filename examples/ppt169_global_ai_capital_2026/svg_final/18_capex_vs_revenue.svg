@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gap_fill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E63946" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#E63946" stop-opacity="0.04" />
+    </linearGradient>
+  </defs>
+
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART VI · THE BUBBLE · 18</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">资本与营收的鸿沟：<tspan fill="#E63946">$725B</tspan> 投入 vs <tspan fill="#E63946">$100B</tspan> 营收</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Hyperscaler capex (LHS, $B) vs Global Enterprise AI revenue (RHS, $B), 2020–2026</text>
+  </g>
+
+  <g id="chartArea">
+    <line x1="140" y1="220" x2="140" y2="560" stroke="#5C5852" stroke-width="1.5" />
+    <line x1="140" y1="560" x2="1140" y2="560" stroke="#5C5852" stroke-width="1.5" />
+    <line x1="1140" y1="220" x2="1140" y2="560" stroke="#5C5852" stroke-width="1.5" />
+
+    <line x1="140" y1="220" x2="1140" y2="220" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="140" y1="305" x2="1140" y2="305" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="140" y1="390" x2="1140" y2="390" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="140" y1="475" x2="1140" y2="475" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+
+    <text x="130" y="225" font-family="Cambria, serif" font-size="11" fill="#E63946" text-anchor="end">$800B</text>
+    <text x="130" y="310" font-family="Cambria, serif" font-size="11" fill="#E63946" text-anchor="end">$600B</text>
+    <text x="130" y="395" font-family="Cambria, serif" font-size="11" fill="#E63946" text-anchor="end">$400B</text>
+    <text x="130" y="480" font-family="Cambria, serif" font-size="11" fill="#E63946" text-anchor="end">$200B</text>
+    <text x="130" y="565" font-family="Cambria, serif" font-size="11" fill="#E63946" text-anchor="end">$0</text>
+
+    <text x="1150" y="225" font-family="Cambria, serif" font-size="11" fill="#52B788">$160B</text>
+    <text x="1150" y="305" font-family="Cambria, serif" font-size="11" fill="#52B788">$120B</text>
+    <text x="1150" y="385" font-family="Cambria, serif" font-size="11" fill="#52B788">$80B</text>
+    <text x="1150" y="465" font-family="Cambria, serif" font-size="11" fill="#52B788">$40B</text>
+    <text x="1150" y="565" font-family="Cambria, serif" font-size="11" fill="#52B788">$0</text>
+
+    <text x="180" y="590" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">2020</text>
+    <text x="338" y="590" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">2021</text>
+    <text x="496" y="590" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">2022</text>
+    <text x="654" y="590" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">2023</text>
+    <text x="812" y="590" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">2024</text>
+    <text x="970" y="590" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">2025</text>
+    <text x="1128" y="590" font-family="Cambria, serif" font-size="12" fill="#E63946" font-weight="bold" text-anchor="middle">2026</text>
+
+    
+
+    <path d="M 180,538.8 L 338,526 L 496,492 L 654,432.5 L 812,379.4 L 970,319.9 L 1128,251.9 L 1128,330.5 L 970,390 L 812,443.1 L 654,492 L 496,521.8 L 338,538.8 L 180,549.4 Z" fill="url(#gap_fill)" />
+
+    <polyline points="180,538.8 338,526 496,492 654,432.5 812,379.4 970,319.9 1128,251.9" fill="none" stroke="#E63946" stroke-width="3" />
+    <circle cx="180" cy="538.8" r="4" fill="#E63946" />
+    <circle cx="338" cy="526" r="4" fill="#E63946" />
+    <circle cx="496" cy="492" r="4" fill="#E63946" />
+    <circle cx="654" cy="432.5" r="4" fill="#E63946" />
+    <circle cx="812" cy="379.4" r="4" fill="#E63946" />
+    <circle cx="970" cy="319.9" r="4" fill="#E63946" />
+    <circle cx="1128" cy="251.9" r="6" fill="#E63946" stroke="#E8E6E1" stroke-width="2" />
+
+    <polyline points="180,549.4 338,538.8 496,521.8 654,492 812,443.1 970,390 1128,330.5" fill="none" stroke="#52B788" stroke-width="2.5" stroke-dasharray="6,3" />
+    <circle cx="180" cy="549.4" r="3.5" fill="#52B788" />
+    <circle cx="338" cy="538.8" r="3.5" fill="#52B788" />
+    <circle cx="496" cy="521.8" r="3.5" fill="#52B788" />
+    <circle cx="654" cy="492" r="3.5" fill="#52B788" />
+    <circle cx="812" cy="443.1" r="3.5" fill="#52B788" />
+    <circle cx="970" cy="390" r="3.5" fill="#52B788" />
+    <circle cx="1128" cy="330.5" r="5" fill="#52B788" stroke="#E8E6E1" stroke-width="1.5" />
+
+    <text x="1108" y="240" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E63946" text-anchor="end">$725B</text>
+    <text x="1108" y="318" font-family="Cambria, serif" font-size="13" font-weight="bold" fill="#52B788" text-anchor="end">~$100B</text>
+
+    <g id="gap-label">
+      <line x1="1200" y1="251.9" x2="1200" y2="330.5" stroke="#E63946" stroke-width="2" stroke-dasharray="2,3"/>
+      <line x1="1190" y1="251.9" x2="1210" y2="251.9" stroke="#E63946" stroke-width="2" />
+      <line x1="1190" y1="330.5" x2="1210" y2="330.5" stroke="#E63946" stroke-width="2" />
+      <text x="1218" y="287" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#E63946">ROI</text>
+      <text x="1218" y="310" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#E63946">GAP</text>
+    </g>
+  </g>
+
+  <g id="legend">
+    <line x1="140" y1="630" x2="170" y2="630" stroke="#E63946" stroke-width="3" />
+    <circle cx="155" cy="630" r="4" fill="#E63946" />
+    <text x="182" y="635" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Hyperscaler Capex (左轴 LHS, $B)</text>
+
+    <line x1="500" y1="630" x2="530" y2="630" stroke="#52B788" stroke-width="2.5" stroke-dasharray="6,3" />
+    <circle cx="515" cy="630" r="4" fill="#52B788" />
+    <text x="542" y="635" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Enterprise AI Revenue (右轴 RHS, $B)</text>
+
+    <text x="900" y="635" font-family="Cambria, serif" font-size="13" fill="#E63946" font-weight="bold">差距 +46pt</text>
+    <text x="1010" y="635" font-family="Cambria, serif" font-size="13" fill="#8A857E">vs 2001 电信泡沫期 +32pt</text>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="660" x2="1220" y2="660" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Goldman Sachs · Allianz Economic Research · KuCoin · Tom's Hardware · revenue 估算口径以行业披露为准</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">18 / 20</text>
+  </g>
+</svg>

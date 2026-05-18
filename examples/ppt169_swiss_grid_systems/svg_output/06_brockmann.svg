@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P06 Müller-Brockmann · dense · 7 nodes biography timeline, vertical -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 06</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">Josef Müller-Brockmann</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">A LIFE IN GRID · 1914 — 1996 · SEVEN MOMENTS</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3"/>
+  </g>
+
+  <g id="big-name">
+    <text x="64" y="280" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="92" font-weight="900" fill="#1A1A1A" letter-spacing="-2">JMB</text>
+    <text x="64" y="324" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">JOSEF MÜLLER-BROCKMANN</text>
+    <line x1="64" y1="346" x2="220" y2="346" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="64" y="378" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">
+      <tspan x="64" dy="0">瑞士平面设计师 · 教育家</tspan>
+      <tspan x="64" dy="22">国际主义风格</tspan>
+      <tspan x="64" dy="22">最有代表性的实践者与理论家</tspan>
+    </text>
+    <text x="64" y="500" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="64" dy="0">生于 Rapperswil</tspan>
+      <tspan x="64" dy="20">逝于 Unterengstringen</tspan>
+      <tspan x="64" dy="20">享年 82 岁</tspan>
+    </text>
+  </g>
+
+  <!-- Vertical timeline on right -->
+  <g id="timeline-track">
+    <!-- chart-plot-area: 480,200,480,640 -->
+    <line x1="480" y1="200" x2="480" y2="640" stroke="#1A1A1A" stroke-width="2"/>
+  </g>
+
+  <g id="event-1914">
+    <circle cx="480" cy="216" r="6" fill="#1A1A1A"/>
+    <text x="430" y="222" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A" text-anchor="end">1914</text>
+    <text x="510" y="218" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A">生于瑞士拉珀斯维尔</text>
+    <text x="510" y="240" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">距苏黎世 40 公里的小镇 · St. Gallen 州</text>
+  </g>
+
+  <g id="event-1936">
+    <circle cx="480" cy="286" r="6" fill="#1A1A1A"/>
+    <text x="430" y="292" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A" text-anchor="end">1936</text>
+    <text x="510" y="288" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A">在苏黎世开设独立工作室</text>
+    <text x="510" y="310" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">22 岁起步 · 涉足平面、展览、摄影三个方向</text>
+  </g>
+
+  <g id="event-1950">
+    <circle cx="480" cy="356" r="10" fill="#D9251D"/>
+    <text x="430" y="362" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#D9251D" text-anchor="end">1950</text>
+    <text x="510" y="358" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#D9251D">Tonhalle 音乐会海报系列开启</text>
+    <text x="510" y="380" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">"Musica Viva" · 用圆 · 弧 · 线 · 矩形抽象表达音乐结构</text>
+  </g>
+
+  <g id="event-1957">
+    <circle cx="480" cy="426" r="6" fill="#1A1A1A"/>
+    <text x="430" y="432" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A" text-anchor="end">1957</text>
+    <text x="510" y="428" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A">任苏黎世应用艺术学院教授</text>
+    <text x="510" y="450" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">把瑞士理性带入下一代设计师的教学体系</text>
+  </g>
+
+  <g id="event-1958">
+    <circle cx="480" cy="496" r="6" fill="#1A1A1A"/>
+    <text x="430" y="502" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A" text-anchor="end">1958</text>
+    <text x="510" y="498" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A">创办《Neue Grafik》期刊</text>
+    <text x="510" y="520" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">三语并行 · 把瑞士理念输出到国际平面设计共同体</text>
+  </g>
+
+  <g id="event-1981">
+    <circle cx="480" cy="566" r="10" fill="#D9251D"/>
+    <text x="430" y="572" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#D9251D" text-anchor="end">1981</text>
+    <text x="510" y="568" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#D9251D">出版《Grid Systems in Graphic Design》</text>
+    <text x="510" y="590" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">至今仍是设计教育最权威的网格手册 · 是本讲的底本</text>
+  </g>
+
+  <g id="event-1996">
+    <circle cx="480" cy="636" r="6" fill="#1A1A1A"/>
+    <text x="430" y="642" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A" text-anchor="end">1996</text>
+    <text x="510" y="638" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A1A">在 Unterengstringen 逝世</text>
+    <text x="510" y="660" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">8 月 30 日 · 享年 82 岁 · 影响持续至今</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">06 / 14</text>
+  </g>
+</svg>

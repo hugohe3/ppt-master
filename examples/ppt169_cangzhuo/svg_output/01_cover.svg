@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Background image (hero_page) -->
+  <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Two-stop scrim (#29): left side opaque for title legibility, right transparent -->
+  <defs>
+    <linearGradient id="cover_scrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F5F1E8" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#F5F1E8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#F5F1E8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#cover_scrim)"/>
+
+  <!-- Top right chapter mark -->
+  <text x="1200" y="80" text-anchor="end" font-family="KaiTi, Georgia, serif" font-size="20" fill="#5C5852" letter-spacing="6">谋 事 论</text>
+  <line x1="1100" y1="100" x2="1220" y2="100" stroke="#C8C0AE" stroke-width="1"/>
+
+  <!-- Main title — vertical KaiTi block, left -->
+  <text x="120" y="240" font-family="KaiTi, Georgia, serif" font-size="32" fill="#5C5852" letter-spacing="10">男人最顶级的城府</text>
+
+  <text x="120" y="360" font-family="KaiTi, Georgia, serif" font-size="180" font-weight="700" fill="#1A1A1A" letter-spacing="20">藏  拙</text>
+
+  <!-- Accent seal (cinnabar) under title -->
+  <rect x="120" y="395" width="78" height="78" fill="none" stroke="#A52A2A" stroke-width="3"/>
+  <text x="159" y="448" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="42" font-weight="700" fill="#A52A2A">藏</text>
+
+  <!-- Subtitle line -->
+  <line x1="220" y1="430" x2="320" y2="430" stroke="#A52A2A" stroke-width="2"/>
+  <text x="340" y="437" font-family="KaiTi, Georgia, serif" font-size="28" fill="#1A1A1A" letter-spacing="4">沉得住 · 藏得住 · 等得起</text>
+
+  <!-- Bottom strip -->
+  <line x1="120" y1="640" x2="220" y2="640" stroke="#1A1A1A" stroke-width="1.5"/>
+  <text x="120" y="675" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">谋事论 · 论尽成事逻辑</text>
+  <text x="1200" y="675" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">2026</text>
+</svg>

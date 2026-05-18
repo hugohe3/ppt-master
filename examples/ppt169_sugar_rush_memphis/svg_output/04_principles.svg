@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P04 WHAT WE STAND FOR · dense · chart: vertical_pillars (3 columns) -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE"/>
+  </g>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#00B8D9"/>
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">WHAT WE STAND FOR</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">三大理念 · THREE PRINCIPLES</text>
+    <!-- Header decor -->
+    <circle cx="1150" cy="80" r="14" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="3"/>
+    <circle cx="1185" cy="100" r="8" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <circle cx="1215" cy="75" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+  </g>
+
+  <!-- ====== Pillar 1: FREE (Pink) ====== -->
+  <g id="pillar-free">
+    <rect x="80" y="180" width="370" height="470" rx="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <!-- Top color header (rounded only at top) -->
+    <path d="M 84 180 h 362 a 10 10 0 0 1 4 4 v 130 h -370 v -130 a 10 10 0 0 1 4 -4 Z" fill="#FF3DA5"/>
+    <!-- Big letter -->
+    <text x="265" y="270" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-2">01</text>
+    <text x="265" y="300" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A2E" letter-spacing="6">FREE</text>
+    <!-- Icon -->
+    <use data-icon="chunk-filled/bolt" x="237" y="360" width="56" height="56" fill="#FF3DA5"/>
+    <!-- Subtitle -->
+    <text x="265" y="450" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">不设鄙视链</text>
+    <!-- Body bullets -->
+    <line x1="120" y1="475" x2="410" y2="475" stroke="#1A1A2E" stroke-width="2"/>
+    <circle cx="120" cy="510" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="138" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">所有风格都是好风格</text>
+    <circle cx="120" cy="550" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="138" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">摇滚乐迷可以爱嘻哈</text>
+    <circle cx="120" cy="590" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="138" y="595" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">阵营自由切换，从不审判</text>
+    <circle cx="120" cy="630" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="138" y="635" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">音乐之外的事情，先放下</text>
+  </g>
+
+  <!-- ====== Pillar 2: FUN (Yellow) ====== -->
+  <g id="pillar-fun">
+    <rect x="475" y="180" width="370" height="470" rx="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <path d="M 479 180 h 362 a 10 10 0 0 1 4 4 v 130 h -370 v -130 a 10 10 0 0 1 4 -4 Z" fill="#FFD93D"/>
+    <text x="660" y="270" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-2">02</text>
+    <text x="660" y="300" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A2E" letter-spacing="6">FUN</text>
+    <use data-icon="chunk-filled/sparkles" x="632" y="360" width="56" height="56" fill="#FFD93D"/>
+    <text x="660" y="450" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">玩到极致</text>
+    <line x1="515" y1="475" x2="805" y2="475" stroke="#1A1A2E" stroke-width="2"/>
+    <circle cx="515" cy="510" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="533" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">留下最甜的回忆</text>
+    <circle cx="515" cy="550" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="533" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">10 件巨型互动艺术装置</text>
+    <circle cx="515" cy="590" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="533" y="595" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">50+ 摊位市集与限定周边</text>
+    <circle cx="515" cy="630" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="533" y="635" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">把孩子内心还给你 7 天</text>
+  </g>
+
+  <!-- ====== Pillar 3: FOREVER YOUNG (Green) ====== -->
+  <g id="pillar-forever-young">
+    <rect x="870" y="180" width="370" height="470" rx="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <path d="M 874 180 h 362 a 10 10 0 0 1 4 4 v 130 h -370 v -130 a 10 10 0 0 1 4 -4 Z" fill="#00C896"/>
+    <text x="1055" y="270" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-2">03</text>
+    <text x="1055" y="300" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A2E" letter-spacing="3">FOREVER YOUNG</text>
+    <use data-icon="chunk-filled/heart" x="1027" y="360" width="56" height="56" fill="#00C896"/>
+    <text x="1055" y="450" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">舞池里没有年纪</text>
+    <line x1="910" y1="475" x2="1200" y2="475" stroke="#1A1A2E" stroke-width="2"/>
+    <circle cx="910" cy="510" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="928" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">18 岁也好，80 岁也罢</text>
+    <circle cx="910" cy="550" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="928" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">银发族专属休息岛</text>
+    <circle cx="910" cy="590" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="928" y="595" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">12 岁以下家庭票同价</text>
+    <circle cx="910" cy="630" r="5" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="928" y="635" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">心跳的频率才是入场券</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">SUGAR RUSH 价值观 · 自 2018 年沿用至今</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">04 / 14</text>
+  </g>
+</svg>

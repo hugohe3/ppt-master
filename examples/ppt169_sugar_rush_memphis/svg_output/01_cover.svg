@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P01 Cover · anchor · hero_page with cover_bg.png -->
+
+  <g id="bg-image">
+    <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Memphis decoration cluster top-right (extra punch on top of image) -->
+  <g id="decor-top-right">
+    <circle cx="1180" cy="60" r="14" fill="#FFD93D" stroke="#1A1A2E" stroke-width="3"/>
+    <circle cx="1220" cy="85" r="8" fill="#FF6B4A" stroke="#1A1A2E" stroke-width="3"/>
+    <circle cx="1145" cy="100" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2"/>
+    <path d="M 1090 50 L 1110 30 L 1110 50 L 1130 30" stroke="#1A1A2E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Subtitle scrim — lower-left calm area (image was generated with this region reserved) -->
+  <g id="subtitle-block">
+    <!-- Cream tag block with bold black border -->
+    <rect x="60" y="510" width="640" height="160" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <!-- Pink left accent bar -->
+    <rect x="60" y="510" width="14" height="160" fill="#FF3DA5"/>
+
+    <text x="96" y="555" font-family="Impact, &quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="28" font-weight="900" fill="#1A1A2E" letter-spacing="2">2026 夏日音乐节 · 年度手册</text>
+    <text x="96" y="600" font-family="Impact, &quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="42" font-weight="900" fill="#FF3DA5" letter-spacing="1">让甜炸的夏天到来。</text>
+
+    <!-- Date / venue strip -->
+    <rect x="96" y="620" width="180" height="34" rx="17" fill="#FFD93D" stroke="#1A1A2E" stroke-width="3"/>
+    <text x="186" y="643" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="17" font-weight="900" fill="#1A1A2E" letter-spacing="2">7.18 — 7.24</text>
+
+    <text x="294" y="643" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#1A1A2E">椰岛大草原 · CocoBay</text>
+  </g>
+
+  <!-- Bottom-right tag: BOOK NOW -->
+  <g id="cta-tag">
+    <rect x="1010" y="618" width="220" height="56" rx="28" fill="#00B8D9" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="1120" y="654" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="3">BOOK NOW →</text>
+  </g>
+
+  <!-- Bottom-left wavy line accent -->
+  <g id="decor-bottom-wave">
+    <path d="M 60 696 Q 90 686 120 696 T 180 696 T 240 696 T 300 696" stroke="#FF6B4A" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

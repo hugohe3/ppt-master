@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="fireOverlay" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1A1A1A" stop-opacity="0.92"/>
+      <stop offset="55%" stop-color="#1A1A1A" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0.20"/>
+    </linearGradient>
+    <filter id="cardLift" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg-image">
+    <rect width="1280" height="720" fill="#1A1A1A"/>
+    <image href="../images/640_1.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#fireOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#C2410C"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#F5F2EC" letter-spacing="3">I · 警钟  ·  WARNING</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="180" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">一场火灾</text>
+    <text x="60" y="232" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">暴露的不只是<tspan fill="#C2410C">消防隐患</tspan></text>
+    <line x1="60" y1="260" x2="160" y2="260" stroke="#C2410C" stroke-width="2"/>
+    <text x="60" y="294" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#D6CFC0" font-style="italic">2025.11.26 · 香港大埔宏福苑</text>
+  </g>
+
+  <g id="card-1" filter="url(#cardLift)">
+    <rect x="640" y="340" width="280" height="156" rx="6" fill="#F5F2EC"/>
+    <use data-icon="tabler-outline/flame" x="664" y="362" width="32" height="32" fill="#C2410C"/>
+    <text x="704" y="386" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="2">事故现场</text>
+    <text x="664" y="430" font-family="Georgia, KaiTi, serif" font-size="44" font-weight="700" fill="#2B3A4A">7<tspan font-size="20" font-weight="500" fill="#5A6B7A" dx="6">栋</tspan></text>
+    <text x="664" y="468" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">30 层以上 · 近 100 米高</text>
+    <text x="664" y="488" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">楼龄已达 <tspan fill="#C2410C" font-weight="700">42 年</tspan></text>
+  </g>
+
+  <g id="card-2" filter="url(#cardLift)">
+    <rect x="940" y="340" width="280" height="156" rx="6" fill="#F5F2EC"/>
+    <use data-icon="tabler-outline/chart-bar" x="964" y="362" width="32" height="32" fill="#C2410C"/>
+    <text x="1004" y="386" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="2">全国数据</text>
+    <text x="964" y="430" font-family="Georgia, KaiTi, serif" font-size="44" font-weight="700" fill="#C2410C">3.6<tspan font-size="20" font-weight="500" fill="#5A6B7A" dx="6">万起</tspan></text>
+    <text x="964" y="468" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">2025 年前 8 个月</text>
+    <text x="964" y="488" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">超过 <tspan fill="#2B3A4A" font-weight="700">2023 年全年总量</tspan></text>
+  </g>
+
+  <g id="card-3" filter="url(#cardLift)">
+    <rect x="640" y="516" width="580" height="120" rx="6" fill="#F5F2EC"/>
+    <use data-icon="tabler-outline/building-skyscraper" x="664" y="538" width="32" height="32" fill="#2B3A4A"/>
+    <text x="704" y="562" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="2">救援困局</text>
+    <text x="664" y="600" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="17" fill="#2B3A4A">地面消防救援高度通常 <tspan font-weight="700" fill="#C2410C">50–80 米</tspan></text>
+    <text x="664" y="624" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">超过 100 米的建筑，救援工作主要靠建筑内部消防设施自救</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="695" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#A8B0B8">数据来源：央广网</text>
+    <text x="1220" y="695" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#A8B0B8">03 / 15</text>
+  </g>
+</svg>

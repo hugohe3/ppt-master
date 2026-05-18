@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP16" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.08"/>
+    </pattern>
+    <marker id="arrow16" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#1A1A1A"/>
+    </marker>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP16)"/>
+
+  <g id="header">
+    <text x="640" y="100" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="64" fill="#FF5C8A" text-anchor="middle" letter-spacing="-1">你的第一本 ZINE</text>
+    <text x="638" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="64" fill="#1A1A1A" text-anchor="middle" letter-spacing="-1">你的第一本 ZINE</text>
+    <text x="640" y="138" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#1E4DBC" text-anchor="middle" letter-spacing="5">YOUR FIRST ZINE · 4 STEPS · ONE WEEKEND</text>
+  </g>
+
+  <line x1="220" y1="170" x2="1060" y2="170" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Step 01 -->
+  <g id="step-01">
+    <circle cx="200" cy="320" r="64" fill="#1E4DBC"/>
+    <circle cx="203" cy="323" r="64" fill="#FF5C8A" opacity="0.55"/>
+    <circle cx="200" cy="320" r="64" fill="#1E4DBC"/>
+    <text x="200" y="338" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="58" fill="#F5EFE0" text-anchor="middle">01</text>
+    <rect x="120" y="406" width="160" height="36" fill="#1A1A1A"/>
+    <text x="200" y="430" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FF5C8A" text-anchor="middle" letter-spacing="2">CHOOSE</text>
+    <text x="200" y="470" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A" text-anchor="middle">选一个主题</text>
+    <text x="200" y="498" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">真心关心的</text>
+    <text x="200" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">不必宏大</text>
+    <text x="200" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#1E4DBC" text-anchor="middle" font-weight="900">小猫 / 早餐 / 通勤路</text>
+  </g>
+
+  <line x1="276" y1="320" x2="364" y2="320" stroke="#1A1A1A" stroke-width="4" marker-end="url(#arrow16)"/>
+
+  <!-- Step 02 -->
+  <g id="step-02">
+    <circle cx="440" cy="320" r="64" fill="#FF5C8A"/>
+    <circle cx="443" cy="323" r="64" fill="#1E4DBC" opacity="0.55"/>
+    <circle cx="440" cy="320" r="64" fill="#FF5C8A"/>
+    <text x="440" y="338" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="58" fill="#F5EFE0" text-anchor="middle">02</text>
+    <rect x="360" y="406" width="160" height="36" fill="#1A1A1A"/>
+    <text x="440" y="430" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FF5C8A" text-anchor="middle" letter-spacing="2">FOLD</text>
+    <text x="440" y="470" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A" text-anchor="middle">折一张 A4</text>
+    <text x="440" y="498" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">用 P07 方法</text>
+    <text x="440" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">8 页 + 1 个剪口</text>
+    <text x="440" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#FF5C8A" text-anchor="middle" font-weight="900">≈ 30 秒完成</text>
+  </g>
+
+  <line x1="516" y1="320" x2="604" y2="320" stroke="#1A1A1A" stroke-width="4" marker-end="url(#arrow16)"/>
+
+  <!-- Step 03 -->
+  <g id="step-03">
+    <circle cx="680" cy="320" r="64" fill="#E8A02E"/>
+    <circle cx="683" cy="323" r="64" fill="#1E4DBC" opacity="0.55"/>
+    <circle cx="680" cy="320" r="64" fill="#E8A02E"/>
+    <text x="680" y="338" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="58" fill="#F5EFE0" text-anchor="middle">03</text>
+    <rect x="600" y="406" width="160" height="36" fill="#1A1A1A"/>
+    <text x="680" y="430" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#E8A02E" text-anchor="middle" letter-spacing="2">FILL</text>
+    <text x="680" y="470" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A" text-anchor="middle">填 8 页</text>
+    <text x="680" y="498" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">手写 / 拼贴</text>
+    <text x="680" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">/ 复印旧照片</text>
+    <text x="680" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#E8A02E" text-anchor="middle" font-weight="900">第一本 ＝ 粗糙就对了</text>
+  </g>
+
+  <line x1="756" y1="320" x2="844" y2="320" stroke="#1A1A1A" stroke-width="4" marker-end="url(#arrow16)"/>
+
+  <!-- Step 04 -->
+  <g id="step-04">
+    <circle cx="920" cy="320" r="64" fill="#1A1A1A"/>
+    <circle cx="923" cy="323" r="64" fill="#FF5C8A" opacity="0.55"/>
+    <circle cx="920" cy="320" r="64" fill="#1A1A1A"/>
+    <text x="920" y="338" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="58" fill="#FF5C8A" text-anchor="middle">04</text>
+    <rect x="840" y="406" width="160" height="36" fill="#FF5C8A"/>
+    <text x="920" y="430" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#1A1A1A" text-anchor="middle" letter-spacing="2">SHARE</text>
+    <text x="920" y="470" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A" text-anchor="middle">印 10 份送出去</text>
+    <text x="920" y="498" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">5 份给朋友</text>
+    <text x="920" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">5 份寄独立书店</text>
+    <text x="920" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#FF5C8A" text-anchor="middle" font-weight="900">这一刻你就成 zine 出版者了</text>
+  </g>
+
+  <!-- Right-side BIG outcome -->
+  <g id="outcome">
+    <text x="1140" y="304" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A" text-anchor="middle">结果</text>
+    <text x="1140" y="358" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#FF5C8A" text-anchor="middle">YOU</text>
+    <text x="1140" y="402" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#FF5C8A" text-anchor="middle">ARE A</text>
+    <text x="1140" y="446" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1E4DBC" text-anchor="middle">PUBLISHER</text>
+    <text x="1138" y="444" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" text-anchor="middle">PUBLISHER</text>
+  </g>
+
+  <!-- Bottom big-rule banner -->
+  <g id="rule">
+    <rect x="60" y="610" width="1160" height="60" fill="#1A1A1A"/>
+    <rect x="63" y="613" width="1160" height="60" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="610" width="1160" height="60" fill="#1A1A1A"/>
+    <text x="640" y="650" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#F5EFE0" text-anchor="middle">"zine 出版者"的门槛 ＝ 寄出第一本的那一秒 · 不是商业注册 · 不是 ISBN · 不是销量</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="704" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P16 · YOUR FIRST ZINE IN 4 STEPS</text>
+    <text x="1220" y="704" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">CHOOSE → FOLD → FILL → SHARE</text>
+  </g>
+</svg>

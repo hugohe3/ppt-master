@@ -1,0 +1,1 @@
+五个舞台各有性格。中央 SUGAR DOME 是主舞台，容量三万，承担开闭幕和跨界之夜。粉色 CHERRY STAGE 给摇滚，蓝色 NEON GRID 留给电子，绿色 MINT GROVE 是民谣的低语，黄色 YELLOW BLOCK 是嘻哈的街区。每两个舞台之间步行不超过六百米，三十秒的接驳车随叫随到。

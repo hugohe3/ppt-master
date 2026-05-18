@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP07" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+
+  <!-- Central hero image (zine folding hands) -->
+  <g id="hero-image">
+    <rect x="282" y="142" width="720" height="480" fill="#FF5C8A"/>
+    <image href="../images/zine_folding_hands.png" x="280" y="140" width="720" height="480" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotP07)"/>
+
+  <!-- Header (top overlapping) -->
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#1A1A1A" letter-spacing="-1">一张纸 → 一本 ZINE</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">EIGHT-PAGE FOLD METHOD · ONE A4 + ONE CUT</text>
+  </g>
+
+  <!-- Annotation card 1 (top-left, with leader to image upper edge) -->
+  <g id="anno-01">
+    <path d="M 232,260 Q 282,220 380,170" stroke="#1A1A1A" stroke-width="2.5" fill="none" stroke-dasharray="4,3"/>
+    <circle cx="380" cy="170" r="6" fill="#1E4DBC"/>
+    <rect x="60" y="170" width="200" height="100" fill="#1E4DBC"/>
+    <rect x="63" y="173" width="200" height="100" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="60" y="170" width="200" height="100" fill="#1E4DBC"/>
+    <text x="76" y="206" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="34" fill="#F5EFE0">01</text>
+    <text x="124" y="206" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="900" fill="#F5EFE0">折叠</text>
+    <text x="76" y="234" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">长边对折</text>
+    <text x="76" y="252" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">+ 短边对折</text>
+    <text x="76" y="266" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FF5C8A" letter-spacing="1">→ 8 EQUAL RECTANGLES</text>
+  </g>
+
+  <!-- Annotation card 2 (top-right, leader to image top) -->
+  <g id="anno-02">
+    <path d="M 1048,260 Q 998,220 900,170" stroke="#1A1A1A" stroke-width="2.5" fill="none" stroke-dasharray="4,3"/>
+    <circle cx="900" cy="170" r="6" fill="#FF5C8A"/>
+    <rect x="1020" y="170" width="200" height="100" fill="#FF5C8A"/>
+    <rect x="1023" y="173" width="200" height="100" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="1020" y="170" width="200" height="100" fill="#FF5C8A"/>
+    <text x="1036" y="206" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="34" fill="#F5EFE0">02</text>
+    <text x="1086" y="206" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="900" fill="#F5EFE0">关键剪口</text>
+    <text x="1036" y="234" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">从对折边沿</text>
+    <text x="1036" y="252" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">剪到中心点</text>
+    <text x="1036" y="266" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#1A1A1A" letter-spacing="1">→ ONE CUT, NO MORE</text>
+  </g>
+
+  <!-- Annotation card 3 (bottom-left, leader to image lower) -->
+  <g id="anno-03">
+    <path d="M 232,500 Q 282,540 380,580" stroke="#1A1A1A" stroke-width="2.5" fill="none" stroke-dasharray="4,3"/>
+    <circle cx="380" cy="580" r="6" fill="#E8A02E"/>
+    <rect x="60" y="490" width="200" height="100" fill="#E8A02E"/>
+    <rect x="63" y="493" width="200" height="100" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="60" y="490" width="200" height="100" fill="#E8A02E"/>
+    <text x="76" y="526" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="34" fill="#F5EFE0">03</text>
+    <text x="124" y="526" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="900" fill="#F5EFE0">组装</text>
+    <text x="76" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">双手两端</text>
+    <text x="76" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">往中心推</text>
+    <text x="76" y="586" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#1A1A1A" letter-spacing="1">→ POPS INTO BOOKLET</text>
+  </g>
+
+  <!-- Annotation card 4 (bottom-right, leader to image lower) -->
+  <g id="anno-04">
+    <path d="M 1048,500 Q 998,540 900,580" stroke="#1A1A1A" stroke-width="2.5" fill="none" stroke-dasharray="4,3"/>
+    <circle cx="900" cy="580" r="6" fill="#1A1A1A"/>
+    <rect x="1020" y="490" width="200" height="100" fill="#1A1A1A"/>
+    <rect x="1023" y="493" width="200" height="100" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="1020" y="490" width="200" height="100" fill="#1A1A1A"/>
+    <text x="1036" y="526" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="34" fill="#FF5C8A">04</text>
+    <text x="1086" y="526" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="900" fill="#F5EFE0">填内容</text>
+    <text x="1036" y="554" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">手写 / 打字</text>
+    <text x="1036" y="572" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">拼贴 / 漫画</text>
+    <text x="1036" y="586" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FF5C8A" letter-spacing="1">→ NO RULES</text>
+  </g>
+
+  <!-- Bottom callout: rule -->
+  <g id="rule-banner">
+    <rect x="60" y="624" width="1160" height="44" fill="#FF5C8A"/>
+    <rect x="63" y="627" width="1160" height="44" fill="#1E4DBC" opacity="0.55"/>
+    <rect x="60" y="624" width="1160" height="44" fill="#FF5C8A"/>
+    <text x="80" y="654" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#F5EFE0">硬约束 ＞ 折叠 zine 的总页数必须是 4 的倍数（8 / 12 / 16 / 20 ...）</text>
+    <text x="1200" y="654" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#F5EFE0" text-anchor="end" letter-spacing="2">PAGES ÷ 4 = INTEGER</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P07 · FOLD AN A4 INTO 8 PAGES</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">ONE PAGE = ONE WHIM</text>
+  </g>
+</svg>

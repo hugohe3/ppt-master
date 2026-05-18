@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Subtle ink wash decorative — a single tall tree silhouette on right -->
+  <g transform="translate(960, 80)" fill="#1A1A1A" fill-opacity="0.07">
+    <!-- Trunk -->
+    <rect x="80" y="60" width="14" height="520"/>
+    <!-- Foliage strokes — sparse ink-wash dabs -->
+    <ellipse cx="87" cy="80" rx="60" ry="22"/>
+    <ellipse cx="60" cy="140" rx="80" ry="26"/>
+    <ellipse cx="110" cy="200" rx="76" ry="22"/>
+    <ellipse cx="55" cy="260" rx="90" ry="28"/>
+    <ellipse cx="120" cy="320" rx="70" ry="24"/>
+    <ellipse cx="65" cy="380" rx="85" ry="26"/>
+    <ellipse cx="115" cy="440" rx="65" ry="22"/>
+  </g>
+
+  <!-- Wind lines bending leftward -->
+  <g stroke="#8B8680" stroke-width="1" fill="none" stroke-opacity="0.4">
+    <path d="M 920 200 Q 850 210 780 230"/>
+    <path d="M 920 280 Q 840 290 760 320"/>
+    <path d="M 920 360 Q 830 370 740 400"/>
+    <path d="M 920 440 Q 850 450 770 470"/>
+  </g>
+
+  <!-- Section marker -->
+  <text x="120" y="100" font-family="KaiTi, Georgia, serif" font-size="18" fill="#8B8680" letter-spacing="12">— 古 训 —</text>
+
+  <!-- Source -->
+  <text x="120" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="3">《增广贤文》</text>
+
+  <!-- Huge quote — vertical KaiTi, primary impact element -->
+  <text x="120" y="330" font-family="KaiTi, Georgia, serif" font-size="96" font-weight="700" fill="#1A1A1A" letter-spacing="12">木秀于林</text>
+  <text x="120" y="460" font-family="KaiTi, Georgia, serif" font-size="96" font-weight="700" fill="#1A1A1A" letter-spacing="12">风必摧之</text>
+
+  <!-- Seal mark — vermilion -->
+  <g transform="translate(780, 330)">
+    <rect x="0" y="0" width="60" height="60" fill="#A52A2A"/>
+    <text x="30" y="46" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#F5F1E8">摧</text>
+  </g>
+
+  <!-- Interpretation -->
+  <line x1="120" y1="540" x2="180" y2="540" stroke="#A52A2A" stroke-width="2"/>
+  <text x="120" y="580" font-family="KaiTi, Georgia, serif" font-size="26" fill="#1A1A1A" letter-spacing="3">实力没强到能自保时</text>
+  <text x="120" y="618" font-family="KaiTi, Georgia, serif" font-size="26" fill="#1A1A1A" letter-spacing="3">锋芒就是风险</text>
+
+  <!-- Footer -->
+  <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 三</text>
+  <text x="1220" y="690" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">05</text>
+</svg>

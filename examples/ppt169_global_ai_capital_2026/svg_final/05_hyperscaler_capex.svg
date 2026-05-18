@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART I · LANDSCAPE · 05</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">四家 Hyperscaler 2026 Capex：<tspan fill="#E63946">$725B</tspan>，同比 <tspan fill="#E63946">+77%</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Microsoft · Alphabet · Amazon · Meta — combined AI infrastructure capex</text>
+  </g>
+
+  <g id="chartArea">
+    <line x1="180" y1="200" x2="850" y2="200" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="180" y1="290" x2="850" y2="290" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="180" y1="380" x2="850" y2="380" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="180" y1="470" x2="850" y2="470" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="180" y1="560" x2="850" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+
+    <text x="170" y="205" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$200B</text>
+    <text x="170" y="295" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$150B</text>
+    <text x="170" y="385" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$100B</text>
+    <text x="170" y="475" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$50B</text>
+    <text x="170" y="565" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$0</text>
+
+    <line x1="180" y1="200" x2="180" y2="560" stroke="#5C5852" stroke-width="1" />
+    <line x1="180" y1="560" x2="850" y2="560" stroke="#5C5852" stroke-width="1" />
+    
+
+    <g id="bar-amazon">
+      <rect x="240" y="200" width="100" height="360" fill="#E63946" />
+      <text x="290" y="185" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$200B</text>
+      
+  <g transform="translate(278.0, 572.0)" fill="#C9C5BE">
+    <path d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726a17.617 17.617 0 01-10.951-.577 17.88 17.88 0 01-5.43-3.35c-.1-.074-.151-.15-.151-.22 0-.047.021-.09.051-.13zm6.565-6.218c0-1.005.247-1.863.743-2.577.495-.71 1.17-1.25 2.04-1.615.796-.335 1.756-.575 2.912-.72.39-.046 1.033-.103 1.92-.174v-.37c0-.93-.105-1.558-.3-1.875-.302-.43-.78-.65-1.44-.65h-.182c-.48.046-.896.196-1.246.46-.35.27-.575.63-.675 1.096-.06.3-.206.465-.435.51l-2.52-.315c-.248-.06-.372-.18-.372-.39 0-.046.007-.09.022-.15.247-1.29.855-2.25 1.82-2.88.976-.616 2.1-.975 3.39-1.05h.54c1.65 0 2.957.434 3.888 1.29.135.15.27.3.405.48.12.165.224.314.283.45.075.134.15.33.195.57.06.254.105.42.135.51.03.104.062.3.076.615.01.313.02.493.02.553v5.28c0 .376.06.72.165 1.036.105.313.21.54.315.674l.51.674c.09.136.136.256.136.36 0 .12-.06.226-.18.314-1.2 1.05-1.86 1.62-1.963 1.71-.165.135-.375.15-.63.045a6.062 6.062 0 01-.526-.496l-.31-.347a9.391 9.391 0 01-.317-.42l-.3-.435c-.81.886-1.603 1.44-2.4 1.665-.494.15-1.093.227-1.83.227-1.11 0-2.04-.343-2.76-1.034-.72-.69-1.08-1.665-1.08-2.94l-.05-.076zm3.753-.438c0 .566.14 1.02.425 1.364.285.34.675.512 1.155.512.045 0 .106-.007.195-.02.09-.016.134-.023.166-.023.614-.16 1.08-.553 1.424-1.178.165-.28.285-.58.36-.91.09-.32.12-.59.135-.8.015-.195.015-.54.015-1.005v-.54c-.84 0-1.484.06-1.92.18-1.275.36-1.92 1.17-1.92 2.43l-.035-.02zm9.162 7.027c.03-.06.075-.11.132-.17.362-.243.714-.41 1.05-.5a8.094 8.094 0 011.612-.24c.14-.012.28 0 .41.03.65.06 1.05.168 1.172.33.063.09.099.228.099.39v.15c0 .51-.149 1.11-.424 1.8-.278.69-.664 1.248-1.156 1.68-.073.06-.14.09-.197.09-.03 0-.06 0-.09-.012-.09-.044-.107-.12-.064-.24.54-1.26.806-2.143.806-2.64 0-.15-.03-.27-.087-.344-.145-.166-.55-.257-1.224-.257-.243 0-.533.016-.87.046-.363.045-.7.09-1 .135-.09 0-.148-.014-.18-.044-.03-.03-.036-.047-.02-.077 0-.017.006-.03.02-.063v-.06z" />
+  </g>
+      <text x="290" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">行业最高</text>
+    </g>
+
+    <g id="bar-msft">
+      <rect x="395" y="218" width="100" height="342" fill="#C9C5BE" />
+      <text x="445" y="203" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$190B</text>
+      
+  <g transform="translate(433.0, 572.0)" fill="#C9C5BE">
+    <path d="M0 0v11.408h11.408V0zm12.594 0v11.408H24V0zM0 12.594V24h11.408V12.594zm12.594 0V24H24V12.594z" />
+  </g>
+      <text x="445" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">含 $25B 存储芯片</text>
+    </g>
+
+    <g id="bar-google">
+      <rect x="550" y="218" width="100" height="342" fill="#C9C5BE" />
+      <text x="600" y="203" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$190B</text>
+      
+  <g transform="translate(588.0, 572.0)" fill="#C9C5BE">
+    <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
+  </g>
+      <text x="600" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">指引上调 $5B</text>
+    </g>
+
+    <g id="bar-meta">
+      <rect x="705" y="299" width="100" height="261" fill="#8A857E" />
+      <text x="755" y="284" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$145B+</text>
+      
+  <g transform="translate(743.0, 572.0)" fill="#C9C5BE">
+    <path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z" />
+  </g>
+      <text x="755" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">电力土地紧张</text>
+    </g>
+  </g>
+
+  <g id="callout-right">
+    <line x1="900" y1="190" x2="900" y2="600" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="920" y="220" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">KEY OBSERVATION</text>
+
+    <text x="920" y="280" font-family="Cambria, serif" font-size="64" font-weight="bold" fill="#E63946">$725B</text>
+    <text x="920" y="306" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">2026 合计 Capex · 同比 <tspan fill="#E8E6E1" font-weight="bold">+77%</tspan></text>
+
+    <line x1="920" y1="340" x2="1160" y2="340" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="920" y="378" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">资源约束已转向电力</text>
+
+    <text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="920" y="420"><tspan><tspan fill="#E63946" font-weight="bold">60%+</tspan> 资本流向电力基础设</tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="920" y="442">施、冷却、土建——而不是</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="920" y="464">芯片本身。</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="920" y="510">下一道护城河不是算力，</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="920" y="532"><tspan>是 <tspan fill="#E63946" font-weight="bold">GW 级供电</tspan>。</tspan>
+    </text><text x="920" y="595" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">— Tom's Hardware / Statista, 2026 outlook</text>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Tom's Hardware · Statista · NextWaves · Company guidance Q1 2026</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">05 / 20</text>
+  </g>
+</svg>

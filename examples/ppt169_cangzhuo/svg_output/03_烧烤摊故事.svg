@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">烧烤摊上的两种人</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+  <text x="60" y="135" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">同一张桌、同一杯酒，散场时已分高下</text>
+
+  <!-- Central divider with seal -->
+  <line x1="640" y1="180" x2="640" y2="560" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="6 6"/>
+  <circle cx="640" cy="370" r="28" fill="#F5F1E8" stroke="#A52A2A" stroke-width="2"/>
+  <text x="640" y="378" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" font-weight="700" fill="#A52A2A">观</text>
+
+  <!-- LEFT — 急于亮牌的人 -->
+  <g transform="translate(80, 180)">
+    <!-- Tag -->
+    <rect x="0" y="0" width="120" height="34" fill="none" stroke="#1A1A1A" stroke-width="1.5"/>
+    <text x="60" y="23" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="18" fill="#1A1A1A" letter-spacing="3">其 一</text>
+
+    <text x="0" y="80" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A">急于亮牌的人</text>
+    <line x1="0" y1="100" x2="80" y2="100" stroke="#1A1A1A" stroke-width="1.5"/>
+
+    <!-- Bullets -->
+    <use data-icon="tabler-outline/point" x="0" y="138" width="20" height="20" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="32" y="154" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#1A1A1A">开口讲认识谁、手里什么项目</text>
+
+    <use data-icon="tabler-outline/point" x="0" y="188" width="20" height="20" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="32" y="204" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#1A1A1A">未来能调动多少资源</text>
+
+    <use data-icon="tabler-outline/point" x="0" y="238" width="20" height="20" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="32" y="254" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#1A1A1A">借酒兴起，恨不得全场看见</text>
+
+    <!-- Reaction -->
+    <rect x="0" y="290" width="500" height="76" fill="#EFEAD9"/>
+    <text x="20" y="320" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852" letter-spacing="2">旁人反应</text>
+    <text x="20" y="350" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A">嘴上恭维，眼神在盘算 — 谁能借、谁能压</text>
+  </g>
+
+  <!-- RIGHT — 不动声色的人 -->
+  <g transform="translate(680, 180)">
+    <rect x="0" y="0" width="120" height="34" fill="#1A1A1A"/>
+    <text x="60" y="23" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="18" fill="#F5F1E8" letter-spacing="3">其 二</text>
+
+    <text x="0" y="80" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A">不动声色的人</text>
+    <line x1="0" y1="100" x2="80" y2="100" stroke="#A52A2A" stroke-width="2"/>
+
+    <use data-icon="tabler-outline/point" x="0" y="138" width="20" height="20" fill="#1A1A1A" stroke-width="1.5"/>
+    <text x="32" y="154" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#1A1A1A">话不多，只问几句关键问题</text>
+
+    <use data-icon="tabler-outline/point" x="0" y="188" width="20" height="20" fill="#1A1A1A" stroke-width="1.5"/>
+    <text x="32" y="204" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#1A1A1A">听完就笑笑，端杯不语</text>
+
+    <use data-icon="tabler-outline/point" x="0" y="238" width="20" height="20" fill="#1A1A1A" stroke-width="1.5"/>
+    <text x="32" y="254" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#1A1A1A">把别人的底牌看了七八分</text>
+
+    <rect x="0" y="290" width="500" height="76" fill="#1A1A1A"/>
+    <text x="20" y="320" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#C8C0AE" letter-spacing="2">真相</text>
+    <text x="20" y="350" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8">散场时，沉默的那个才是赢家</text>
+  </g>
+
+  <!-- Bottom takeaway -->
+  <line x1="60" y1="610" x2="1220" y2="610" stroke="#C8C0AE" stroke-width="1"/>
+  <text x="640" y="655" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="22" fill="#1A1A1A" letter-spacing="3">世上的局 · 不是输在没本事 · 而是输在太早让别人知道你有什么本事</text>
+
+  <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 一</text>
+  <text x="1220" y="690" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">03</text>
+</svg>

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="imgFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2B3A4A" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#2B3A4A" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="left-image">
+    <image href="../images/640_18.png" x="0" y="0" width="440" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="440" height="720" fill="url(#imgFade)"/>
+    <text x="32" y="690" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#F5F2EC" fill-opacity="0.7">图源：unsplash</text>
+  </g>
+
+  <g id="header">
+    <rect x="500" y="60" width="3" height="32" fill="#C2410C"/>
+    <text x="516" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">I · 警钟  ·  AGING</text>
+  </g>
+
+  <g id="page-title">
+    <text x="500" y="170" font-family="KaiTi, Georgia, serif" font-size="40" font-weight="700" fill="#2B3A4A">当年的繁荣象征</text>
+    <text x="500" y="218" font-family="KaiTi, Georgia, serif" font-size="40" font-weight="700" fill="#2B3A4A">正在变成沉重的<tspan fill="#C2410C">维修负担</tspan></text>
+    <line x1="500" y1="248" x2="600" y2="248" stroke="#C2410C" stroke-width="2"/>
+  </g>
+
+  <g id="point-1">
+    <use data-icon="tabler-outline/clock" x="500" y="296" width="28" height="28" fill="#8B7355"/>
+    <text x="540" y="318" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="700" fill="#2B3A4A">建成 10 余年后</text>
+    <text x="540" y="350" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5A6B7A">结构、消防、电梯、外墙、给排水……</text>
+    <text x="540" y="376" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5A6B7A">各类风险开始<tspan fill="#C2410C" font-weight="700">密集显现</tspan></text>
+  </g>
+
+  <g id="point-2">
+    <use data-icon="tabler-outline/tool" x="500" y="416" width="28" height="28" fill="#8B7355"/>
+    <text x="540" y="438" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="700" fill="#2B3A4A">维护成本随楼龄陡增</text>
+    <text x="540" y="470" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5A6B7A">维修基金加速消耗，业主分摊持续上升</text>
+    <text x="540" y="496" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5A6B7A">愿意住高层的人，<tspan fill="#C2410C" font-weight="700">正在变少</tspan></text>
+  </g>
+
+  <g id="quote">
+    <rect x="500" y="540" width="700" height="100" rx="4" fill="#EBE6DC"/>
+    <rect x="500" y="540" width="4" height="100" fill="#C2410C"/>
+    <use data-icon="tabler-outline/quote" x="520" y="556" width="22" height="22" fill="#C2410C"/>
+    <text x="552" y="582" font-family="KaiTi, Georgia, serif" font-size="20" font-style="italic" fill="#2B3A4A">"高层住宅是未来的贫民窟"</text>
+    <text x="552" y="612" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">— 在部分西方发达国家已有相应的经验教训</text>
+  </g>
+
+  <g id="footer">
+    <text x="500" y="694" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8A8275">建成十余年的高层 · 风险密集显现期</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">04 / 15</text>
+  </g>
+</svg>

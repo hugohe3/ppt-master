@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP14" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP14)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="48" fill="#1A1A1A" letter-spacing="-1">进店前的 4 条</text>
+    <text x="92" y="128" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="3">HOW TO BROWSE INDIE BOOKSTORES · UNWRITTEN ETIQUETTE</text>
+  </g>
+
+  <line x1="60" y1="152" x2="1220" y2="152" stroke="#1A1A1A" stroke-width="3"/>
+
+  <!-- Vertical track -->
+  <rect x="120" y="200" width="6" height="430" fill="#1E4DBC"/>
+  <rect x="123" y="203" width="6" height="430" fill="#FF5C8A" opacity="0.6"/>
+  <rect x="120" y="200" width="6" height="430" fill="#1E4DBC"/>
+  <polygon points="123,640 110,624 136,624" fill="#1E4DBC"/>
+
+  <!-- Item 01 -->
+  <g id="item-01">
+    <rect x="80" y="200" width="86" height="86" fill="#1E4DBC"/>
+    <rect x="83" y="203" width="86" height="86" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="80" y="200" width="86" height="86" fill="#1E4DBC"/>
+    <text x="123" y="262" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#F5EFE0" text-anchor="middle">01</text>
+    <line x1="166" y1="243" x2="200" y2="243" stroke="#1E4DBC" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="200" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="200" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="200" width="8" height="86" fill="#1E4DBC"/>
+    <!-- icon: chunk-filled/star -->
+  <g transform="translate(224.0, 218.0) scale(3.0)" fill="#1E4DBC">
+    <path d="M9.00001 0H7.00001L5.51292 4.57681L0.700554 4.57682L0.0825195 6.47893L3.97581 9.30756L2.48873 13.8843L4.10677 15.0599L8.00002 12.2313L11.8933 15.0599L13.5113 13.8843L12.0242 9.30754L15.9175 6.47892L15.2994 4.57681L10.4871 4.57681L9.00001 0Z"/>
+  </g>
+    <text x="288" y="240" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">看选品 ＝ 看店主</text>
+    <text x="288" y="266" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">独立书店的本质是"一个人 / 一群人的精神书架"·  选品就是店主在跟你对话</text>
+  </g>
+
+  <!-- Item 02 -->
+  <g id="item-02">
+    <rect x="80" y="312" width="86" height="86" fill="#FF5C8A"/>
+    <rect x="83" y="315" width="86" height="86" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="80" y="312" width="86" height="86" fill="#FF5C8A"/>
+    <text x="123" y="374" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#F5EFE0" text-anchor="middle">02</text>
+    <line x1="166" y1="355" x2="200" y2="355" stroke="#FF5C8A" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="312" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="312" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="312" width="8" height="86" fill="#FF5C8A"/>
+    <!-- icon: chunk-filled/clock -->
+  <g transform="translate(224.0, 330.0) scale(3.0)" fill="#FF5C8A">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM7 3V8.41421L10.2929 11.7071L11.7071 10.2929L9 7.58579V3H7Z"/>
+  </g>
+    <text x="288" y="352" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">至少留 1 小时</text>
+    <text x="288" y="378" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">独立书店不是便利店 ·  浏览本身就是产品 · 在书架前发呆是一种合法消费</text>
+  </g>
+
+  <!-- Item 03 -->
+  <g id="item-03">
+    <rect x="80" y="424" width="86" height="86" fill="#E8A02E"/>
+    <rect x="83" y="427" width="86" height="86" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="80" y="424" width="86" height="86" fill="#E8A02E"/>
+    <text x="123" y="486" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#F5EFE0" text-anchor="middle">03</text>
+    <line x1="166" y1="467" x2="200" y2="467" stroke="#E8A02E" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="424" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="424" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="424" width="8" height="86" fill="#E8A02E"/>
+    <!-- icon: chunk-filled/shopping-bag -->
+  <g transform="translate(224.0, 442.0) scale(3.0)" fill="#E8A02E">
+    <path d="M8 2C7.31377 2 6.72293 2.48437 6.58835 3.15728L6.2198 5H4.1802L4.62719 2.76505C4.94874 1.15729 6.3604 0 8 0C9.6396 0 11.0513 1.15729 11.3728 2.76505L11.8198 5H9.7802L9.41165 3.15728C9.27707 2.48437 8.68623 2 8 2Z"/>
+    <path d="M15 15H1V13L2 7H14L15 13V15Z"/>
+  </g>
+    <text x="288" y="464" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">带现金</text>
+    <text x="288" y="490" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">一些小店不接受电子支付 ·  现金还能减少手续费 · 给店主多留一杯咖啡的利润</text>
+  </g>
+
+  <!-- Item 04 -->
+  <g id="item-04">
+    <rect x="80" y="536" width="86" height="86" fill="#1A1A1A"/>
+    <rect x="83" y="539" width="86" height="86" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="80" y="536" width="86" height="86" fill="#1A1A1A"/>
+    <text x="123" y="598" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="46" fill="#FF5C8A" text-anchor="middle">04</text>
+    <line x1="166" y1="579" x2="200" y2="579" stroke="#1A1A1A" stroke-width="2.5" stroke-dasharray="4,3"/>
+    <rect x="200" y="536" width="1020" height="86" fill="#F5EFE0"/>
+    <rect x="200" y="536" width="1020" height="86" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+    <rect x="200" y="536" width="8" height="86" fill="#1A1A1A"/>
+    <!-- icon: chunk-filled/hand -->
+  <g transform="translate(224.0, 554.0) scale(3.0)" fill="#1A1A1A">
+    <path d="M0.0393066 10.1607L3.98955 14.1109C5.19911 15.3205 6.83963 16 8.55021 16C12.1123 16 15 13.1124 15 9.55026L15 2H13V6H11V0L9 2.38497e-08V6H7V1L5 1L4.99995 10.8787L2.16063 8.03934L0.0393066 10.1607Z"/>
+  </g>
+    <text x="288" y="576" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">拍照前先问</text>
+    <text x="288" y="602" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#5A5A5A">多数独立书店对拍照敏感 · 选品是店主智识 ·  尊重 + 一句招呼 = 通行证</text>
+  </g>
+
+  <!-- Bottom callout -->
+  <g id="callout">
+    <rect x="60" y="654" width="1160" height="34" fill="#1E4DBC"/>
+    <rect x="63" y="657" width="1160" height="34" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="60" y="654" width="1160" height="34" fill="#1E4DBC"/>
+    <text x="80" y="677" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5EFE0">额外提醒 ＞ 主流出版社的书随便哪里买都行 · 在独立书店买独立出版物 / 艺术家自费书 ·  那才是核心目标</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="710" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P14 · 4 RULES BEFORE YOU ENTER</text>
+    <text x="1220" y="710" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">店主 / 时间 / 现金 / 招呼</text>
+  </g>
+</svg>

@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="bgOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.78"/>
+    </linearGradient>
+    <linearGradient id="cardGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="headRose" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FB7185" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#FB7185" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="headAmber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="headPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="headCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3DDDFC" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#3DDDFC" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/10_failure_glow.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="50" width="6" height="32" rx="3" fill="url(#titleGradient)"/>
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">这四类失败,你最先会遇到哪个</text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">FAILURE MODES · FREQUENCY × DETECTION DIFFICULTY</text>
+  </g>
+
+  <g id="axis-frame">
+    <rect x="80" y="125" width="540" height="22" rx="11" fill="#FB7185" fill-opacity="0.18"/>
+    <text x="350" y="141" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#FB7185" text-anchor="middle" letter-spacing="3">SHALLOW · 表面易识</text>
+    <rect x="660" y="125" width="540" height="22" rx="11" fill="#A26BFA" fill-opacity="0.2"/>
+    <text x="930" y="141" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#A26BFA" text-anchor="middle" letter-spacing="3">DEEP · 隐蔽难定位</text>
+    <rect x="38" y="158" width="22" height="220" rx="11" fill="#FFFFFF" fill-opacity="0.06"/>
+    <text x="49" y="268" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#A8B0D0" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 49, 268)">HIGH · 高频</text>
+    <rect x="38" y="402" width="22" height="220" rx="11" fill="#FFFFFF" fill-opacity="0.06"/>
+    <text x="49" y="512" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#A8B0D0" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 49, 512)">LOW · 低频</text>
+  </g>
+
+  <g id="q-tool-errors">
+    <rect x="80" y="158" width="540" height="232" rx="16" fill="url(#cardGlass)" stroke="#FB7185" stroke-opacity="0.35" stroke-width="1"/>
+    <rect x="98" y="159" width="504" height="1" fill="url(#glassEdge)"/>
+    <path d="M 94 158 h 512 a 14 14 0 0 1 14 14 v 46 h -540 v -46 a 14 14 0 0 1 14 -14 Z" fill="url(#headRose)"/>
+    <circle cx="116" cy="188" r="18" fill="#0A0E27" fill-opacity="0.5"/>
+    <use data-icon="phosphor-duotone/bug" x="100" y="172" width="32" height="32" fill="#FB7185"/>
+    <text x="144" y="194" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="19" font-weight="900" fill="#FFFFFF">工具错误</text>
+    <rect x="490" y="172" width="120" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
+    <text x="550" y="191" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">VALIDATE EARLY</text>
+    <g id="q1-items">
+      <circle cx="106" cy="248" r="6" fill="#FB7185"/>
+      <text x="122" y="253" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">JSON schema 不匹配</text>
+      <text x="122" y="274" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">字段缺失 / 类型错位 / enum 写飞</text>
+      <circle cx="106" cy="304" r="6" fill="#FB7185"/>
+      <text x="122" y="309" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">参数幻觉</text>
+      <text x="122" y="330" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">不存在的参数 / 值越界 / 单位混用</text>
+      <circle cx="106" cy="360" r="6" fill="#FB7185"/>
+      <text x="122" y="365" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">超时无回退</text>
+    </g>
+  </g>
+
+  <g id="q-cost-overrun">
+    <rect x="660" y="158" width="540" height="232" rx="16" fill="url(#cardGlass)" stroke="#A26BFA" stroke-opacity="0.4" stroke-width="1"/>
+    <rect x="678" y="159" width="504" height="1" fill="url(#glassEdge)"/>
+    <path d="M 674 158 h 512 a 14 14 0 0 1 14 14 v 46 h -540 v -46 a 14 14 0 0 1 14 -14 Z" fill="url(#headPurple)"/>
+    <circle cx="696" cy="188" r="18" fill="#0A0E27" fill-opacity="0.5"/>
+    <use data-icon="phosphor-duotone/coin" x="680" y="172" width="32" height="32" fill="#A26BFA"/>
+    <text x="724" y="194" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="19" font-weight="900" fill="#FFFFFF">成本失控</text>
+    <rect x="1070" y="172" width="120" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
+    <text x="1130" y="191" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">METER · CAP</text>
+    <g id="q2-items">
+      <circle cx="686" cy="248" r="6" fill="#A26BFA"/>
+      <text x="702" y="253" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">Token 漂移</text>
+      <text x="702" y="274" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">长尾 prompt 把单次成本拉爆</text>
+      <circle cx="686" cy="304" r="6" fill="#A26BFA"/>
+      <text x="702" y="309" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">重复检索</text>
+      <text x="702" y="330" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">相同问句反复打向量库 · 无缓存</text>
+      <circle cx="686" cy="360" r="6" fill="#A26BFA"/>
+      <text x="702" y="365" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">链路过长 · 套娃调用</text>
+    </g>
+  </g>
+
+  <g id="q-loops">
+    <rect x="80" y="412" width="540" height="232" rx="16" fill="url(#cardGlass)" stroke="#F59E0B" stroke-opacity="0.4" stroke-width="1"/>
+    <rect x="98" y="413" width="504" height="1" fill="url(#glassEdge)"/>
+    <path d="M 94 412 h 512 a 14 14 0 0 1 14 14 v 46 h -540 v -46 a 14 14 0 0 1 14 -14 Z" fill="url(#headAmber)"/>
+    <circle cx="116" cy="442" r="18" fill="#0A0E27" fill-opacity="0.5"/>
+    <use data-icon="phosphor-duotone/arrows-clockwise" x="100" y="426" width="32" height="32" fill="#F59E0B"/>
+    <text x="144" y="448" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="19" font-weight="900" fill="#FFFFFF">死循环</text>
+    <rect x="490" y="426" width="120" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
+    <text x="550" y="445" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">HARD STOP</text>
+    <g id="q3-items">
+      <circle cx="106" cy="502" r="6" fill="#F59E0B"/>
+      <text x="122" y="507" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">反思链路无终止</text>
+      <text x="122" y="528" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">"我再想想" 无限循环 · 缺停机条件</text>
+      <circle cx="106" cy="558" r="6" fill="#F59E0B"/>
+      <text x="122" y="563" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">Plan 反复修改</text>
+      <text x="122" y="584" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">每步都重新拆解 · 上下文越塞越多</text>
+      <circle cx="106" cy="614" r="6" fill="#F59E0B"/>
+      <text x="122" y="619" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">工具调用环 · A 调 B 调 A</text>
+    </g>
+  </g>
+
+  <g id="q-hallucination">
+    <rect x="660" y="412" width="540" height="232" rx="16" fill="url(#cardGlass)" stroke="#3DDDFC" stroke-opacity="0.4" stroke-width="1"/>
+    <rect x="678" y="413" width="504" height="1" fill="url(#glassEdge)"/>
+    <path d="M 674 412 h 512 a 14 14 0 0 1 14 14 v 46 h -540 v -46 a 14 14 0 0 1 14 -14 Z" fill="url(#headCyan)"/>
+    <circle cx="696" cy="442" r="18" fill="#0A0E27" fill-opacity="0.5"/>
+    <use data-icon="phosphor-duotone/sparkle" x="680" y="426" width="32" height="32" fill="#3DDDFC"/>
+    <text x="724" y="448" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="19" font-weight="900" fill="#FFFFFF">幻觉</text>
+    <rect x="1070" y="426" width="120" height="28" rx="14" fill="#FFFFFF" fill-opacity="0.22"/>
+    <text x="1130" y="445" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">GROUND IT</text>
+    <g id="q4-items">
+      <circle cx="686" cy="502" r="6" fill="#3DDDFC"/>
+      <text x="702" y="507" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">编造工具</text>
+      <text x="702" y="528" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">调用不存在的工具名 / API endpoint</text>
+      <circle cx="686" cy="558" r="6" fill="#3DDDFC"/>
+      <text x="702" y="563" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">编造结果</text>
+      <text x="702" y="584" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="400" fill="#A8B0D0">未调真实接口就给出"数据"</text>
+      <circle cx="686" cy="614" r="6" fill="#3DDDFC"/>
+      <text x="702" y="619" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">假装成功 · "已为您发送"</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="696" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">失败模式四象限 · 分类决定预案</text>
+    <text x="1220" y="696" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">10 / 12</text>
+  </g>
+</svg>

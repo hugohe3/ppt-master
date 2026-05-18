@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART IV · THE SECOND TIER · 12</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">二线梯队：<tspan fill="#E63946">$10B–$50B</tspan> 的精英层</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Four companies in the next league — each chasing a different niche</text>
+  </g>
+
+  <g id="card-ssi">
+    <rect x="60" y="200" width="280" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="60" y="200" width="280" height="6" fill="#E63946" />
+    <text x="80" y="244" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">SAFE SUPERINTELLIGENCE</text>
+    <text x="80" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#E8E6E1">SSI</text>
+    <line x1="80" y1="298" x2="320" y2="298" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="80" y="358" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#E63946">$32B</text>
+    <text x="80" y="382" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">最新估值 / Latest valuation</text>
+
+    <line x1="80" y1="410" x2="320" y2="410" stroke="#2A2F36" stroke-width="1" />
+
+    <text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="80" y="442">Ilya Sutskever 创立</text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="80" y="464"><tspan><tspan fill="#E63946" font-weight="bold">$5B → $32B</tspan></tspan>
+      </text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="80" y="486">半年 6 倍跳涨</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="80" y="560">"Single product:</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="80" y="578">a safe superintelligence."</text><g transform="translate(292.0, 338.0) scale(1.1666666666666667)" fill="none" stroke="#E63946" stroke-width="1.5">
+    <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+  </g>
+
+    <line x1="80" y1="606" x2="320" y2="606" stroke="#E63946" stroke-width="1" />
+    <text x="80" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">$2B raised · Alphabet/Nvidia in</text>
+  </g>
+
+  <g id="card-perplexity">
+    <rect x="360" y="200" width="280" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="360" y="200" width="280" height="6" fill="#F4A261" />
+    <text x="380" y="244" font-family="Cambria, serif" font-size="11" fill="#F4A261" letter-spacing="3">SEARCH CHALLENGER</text>
+    <text x="380" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#E8E6E1">Perplexity</text>
+    <line x1="380" y1="298" x2="620" y2="298" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="380" y="358" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#F4A261">$21B</text>
+    <text x="380" y="382" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">最新估值 / Latest valuation</text>
+
+    <line x1="380" y1="410" x2="620" y2="410" stroke="#2A2F36" stroke-width="1" />
+
+    <text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="380" y="442"><tspan>月活 <tspan fill="#F4A261" font-weight="bold">4500 万</tspan></tspan>
+      </text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="380" y="464">Series E-6 完成</text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="380" y="486">直挑 Google 搜索</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="380" y="560">"Answer engine,</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="380" y="578">not search engine."</text><g transform="translate(592.0, 338.0) scale(1.1666666666666667)" fill="none" stroke="#F4A261" stroke-width="1.5">
+    <path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+    <path d="M21 21l-6 -6" />
+  </g>
+
+    <line x1="380" y1="606" x2="620" y2="606" stroke="#F4A261" stroke-width="1" />
+    <text x="380" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">$200M @ $21B · 18 months to here</text>
+  </g>
+
+  <g id="card-mistral">
+    <rect x="660" y="200" width="280" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="660" y="200" width="280" height="6" fill="#C9C5BE" />
+    <text x="680" y="244" font-family="Cambria, serif" font-size="11" fill="#C9C5BE" letter-spacing="3">SOVEREIGN EU AI</text>
+    <text x="680" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#E8E6E1">Mistral AI</text>
+    <line x1="680" y1="298" x2="920" y2="298" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="680" y="358" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#C9C5BE">$13.7B</text>
+    <text x="680" y="382" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">最新估值 / Latest valuation</text>
+
+    <line x1="680" y1="410" x2="920" y2="410" stroke="#2A2F36" stroke-width="1" />
+
+    <text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="680" y="442"><tspan>$830M <tspan fill="#C9C5BE" font-weight="bold">债务融资</tspan></tspan>
+      </text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="680" y="464">巴黎数据中心</text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="680" y="486"><tspan><tspan fill="#E63946" font-weight="bold">13,800 张</tspan> Nvidia GPU</tspan>
+    </text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="680" y="560">"Europe's open-source</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="680" y="578">sovereign answer."</text><g transform="translate(892.0, 338.0) scale(1.1666666666666667)" fill="none" stroke="#C9C5BE" stroke-width="1.5">
+    <path d="M3 7a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3" />
+    <path d="M3 15a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3l0 -2" />
+    <path d="M7 8l0 .01" />
+    <path d="M7 16l0 .01" />
+  </g>
+
+    <line x1="680" y1="606" x2="920" y2="606" stroke="#C9C5BE" stroke-width="1" />
+    <text x="680" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">Debt-funded · own data-center bet</text>
+  </g>
+
+  <g id="card-cohere">
+    <rect x="960" y="200" width="260" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="960" y="200" width="260" height="6" fill="#8A857E" />
+    <text x="980" y="244" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">TRANSATLANTIC MERGER</text>
+    <text x="980" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">Cohere +</text>
+    <text x="980" y="312" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">Aleph Alpha</text>
+    <line x1="980" y1="326" x2="1200" y2="326" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="980" y="386" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#8A857E">$20B</text>
+    <text x="980" y="410" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">合并实体估值</text>
+
+    <line x1="980" y1="438" x2="1200" y2="438" stroke="#2A2F36" stroke-width="1" />
+
+    <text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="980" y="470">$7B + $3B (Aleph)</text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="980" y="492"><tspan>→ <tspan fill="#E8E6E1" font-weight="bold">$20B 合并溢价</tspan></tspan>
+      </text><text font-size="13" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="980" y="514">ARR $240M</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="980" y="588">"Cross-Atlantic sovereign</text><text font-style="italic" font-size="12" fill="#8A857E" font-family="Cambria, serif" x="980" y="606">enterprise stack."</text><g transform="translate(1172.0, 370.0) scale(1.1666666666666667)" fill="none" stroke="#8A857E" stroke-width="1.5">
+    <path d="M9 15l6 -6" />
+    <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+    <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" />
+  </g>
+
+    <line x1="980" y1="606" x2="1200" y2="606" stroke="#8A857E" stroke-width="1" />
+    <text x="980" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">Schwarz Group leads · 2026 deal</text>
+  </g>
+
+  <g id="bottom-strip">
+    <line x1="60" y1="660" x2="1220" y2="660" stroke="#2A2F36" stroke-width="1" />
+    <text x="640" y="690" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" font-style="italic" fill="#E8E6E1">四家公司合计估值 <tspan fill="#E63946" font-weight="bold">$86.7B</tspan>——仅占同期 OpenAI 估值的 <tspan font-weight="bold">10%</tspan>。</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="60" y="715" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: TechCrunch · CNBC · Tracxn · TechFundingNews 2026 Q1-Q2</text>
+    <text x="1220" y="715" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">12 / 20</text>
+  </g>
+</svg>

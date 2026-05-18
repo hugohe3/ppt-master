@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Full-bleed closing image -->
+  <image href="../images/closing_mountain.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Two-stop scrim -->
+  <defs>
+    <linearGradient id="closing_scrim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F1E8" stop-opacity="0.75"/>
+      <stop offset="45%" stop-color="#F5F1E8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#F5F1E8" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#closing_scrim)"/>
+
+  <!-- Section marker -->
+  <text x="640" y="90" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="18" fill="#5C5852" letter-spacing="14">— 结  语 —</text>
+
+  <!-- Big title -->
+  <text x="640" y="200" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="52" font-weight="700" fill="#1A1A1A" letter-spacing="8">顶级城府 = 压表现欲 × 稳胜负心 × 延迟满足</text>
+
+  <line x1="540" y1="240" x2="740" y2="240" stroke="#A52A2A" stroke-width="2"/>
+
+  <!-- Vermilion seal centered -->
+  <g transform="translate(600, 270)">
+    <rect x="0" y="0" width="80" height="80" fill="#A52A2A"/>
+    <text x="40" y="60" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F1E8">藏</text>
+  </g>
+
+  <!-- Three closing lines -->
+  <g transform="translate(0, 410)">
+    <text x="640" y="0" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="34" fill="#1A1A1A" letter-spacing="4">沉得住 — 才不怕暂时被低估</text>
+    <text x="640" y="60" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="34" fill="#1A1A1A" letter-spacing="4">藏得住 — 才不怕一时没掌声</text>
+    <text x="640" y="120" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="34" fill="#1A1A1A" letter-spacing="4">等得起 — 才能让结果替自己说话</text>
+  </g>
+
+  <!-- Closing line -->
+  <line x1="580" y1="620" x2="700" y2="620" stroke="#A52A2A" stroke-width="2"/>
+  <text x="640" y="660" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852" letter-spacing="6">谋 事 论 · 论 尽 成 事 逻 辑</text>
+
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5C5852">藏拙 · 终</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5C5852">14</text>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="chapter_scrim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0E1116" stop-opacity="0.92"/>
+      <stop offset="55%" stop-color="#0E1116" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0E1116" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+    <image href="../images/nvidia_circular.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#chapter_scrim)"/>
+  </g>
+
+  <g id="chapter-chrome">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART V · INFRASTRUCTURE · 13</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+  </g>
+
+  <g id="chapter-mark">
+    <text x="60" y="280" font-family="Cambria, serif" font-size="180" font-weight="bold" fill="#E63946" opacity="0.85">V.</text>
+  </g>
+
+  <g id="chapter-title">
+    <text x="60" y="420" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="bold" fill="#E8E6E1">闭环</text>
+    <text x="200" y="420" font-family="Cambria, serif" font-size="32" font-style="italic" fill="#C9C5BE">/ The Closed Loop</text>
+    <text x="60" y="468" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" fill="#C9C5BE">当芯片商同时是大股东</text>
+    <line x1="60" y1="500" x2="280" y2="500" stroke="#E63946" stroke-width="1"/>
+  </g>
+
+  <g id="lede-points">
+    <text x="60" y="550" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">
+      <tspan x="60" dy="0">Nvidia 2026 至今股权投资 <tspan fill="#E63946" font-weight="bold">$40B+</tspan></tspan>
+      <tspan x="60" dy="24">OpenAI $30B · xAI · Anthropic · Mistral · CoreWeave 全到位</tspan>
+      <tspan x="60" dy="24">同时它的 <tspan fill="#E63946" font-weight="bold">85% 收入</tspan> 来自 <tspan fill="#E63946" font-weight="bold">6 个客户</tspan></tspan>
+    </text>
+  </g>
+
+  <g id="chapter-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Capital, Compute, and the Closed Loop · Part V opens at P13</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">13 / 20</text>
+  </g>
+</svg>

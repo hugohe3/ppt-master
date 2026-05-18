@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <radialGradient id="bgGlowA" cx="15%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlowB" cx="85%" cy="75%" r="55%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.42"/>
+    </linearGradient>
+    <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="35%" stop-color="#A26BFA"/>
+      <stop offset="70%" stop-color="#3DDDFC"/>
+      <stop offset="100%" stop-color="#4ADE80"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <rect width="1280" height="720" fill="url(#bgGlowA)"/>
+    <rect width="1280" height="720" fill="url(#bgGlowB)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="50" width="6" height="32" rx="3" fill="url(#titleGradient)"/>
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">从原型到生产 — 12 周分四阶段</text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">ROADMAP · PROTOTYPE → ENGINEERING → SCALE → PRODUCTION</text>
+  </g>
+
+  <g id="timeline-axis">
+    <line x1="200" y1="155" x2="200" y2="660" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="6" stroke-linecap="round"/>
+    <line x1="200" y1="155" x2="200" y2="660" stroke="url(#timelineGrad)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g id="ms-1">
+    <text x="172" y="200" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="800" fill="#5B8DEF" text-anchor="end" letter-spacing="1">W1 — W3</text>
+    <circle cx="200" cy="195" r="18" fill="#0A0E27" stroke="#5B8DEF" stroke-width="3"/>
+    <circle cx="200" cy="195" r="6" fill="#5B8DEF"/>
+    <rect x="240" y="150" width="500" height="100" rx="14" fill="url(#cardGlass)" stroke="#5B8DEF" stroke-opacity="0.45" stroke-width="1"/>
+    <rect x="258" y="151" width="464" height="1" fill="url(#glassEdge)"/>
+    <rect x="240" y="174" width="6" height="52" rx="3" fill="#5B8DEF"/>
+    <rect x="260" y="166" width="50" height="50" rx="12" fill="#5B8DEF" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/crosshair" x="268" y="174" width="34" height="34" fill="#5B8DEF"/>
+    <text x="326" y="183" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#5B8DEF" letter-spacing="2">STAGE 01 · PROTOTYPE</text>
+    <text x="326" y="212" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">原型 — 单一任务跑通</text>
+    <text x="326" y="238" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">最小工具集 · prompt 初稿 · 5-10 个金标准 case 验证</text>
+  </g>
+
+  <g id="ms-2">
+    <text x="172" y="325" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="800" fill="#A26BFA" text-anchor="end" letter-spacing="1">W4 — W7</text>
+    <circle cx="200" cy="320" r="18" fill="#0A0E27" stroke="#A26BFA" stroke-width="3"/>
+    <circle cx="200" cy="320" r="6" fill="#A26BFA"/>
+    <rect x="240" y="275" width="500" height="100" rx="14" fill="url(#cardGlass)" stroke="#A26BFA" stroke-opacity="0.45" stroke-width="1"/>
+    <rect x="258" y="276" width="464" height="1" fill="url(#glassEdge)"/>
+    <rect x="240" y="299" width="6" height="52" rx="3" fill="#A26BFA"/>
+    <rect x="260" y="291" width="50" height="50" rx="12" fill="#A26BFA" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/gear-six" x="268" y="299" width="34" height="34" fill="#A26BFA"/>
+    <text x="326" y="308" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#A26BFA" letter-spacing="2">STAGE 02 · ENGINEERING</text>
+    <text x="326" y="337" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">工程化 — 评估闭环</text>
+    <text x="326" y="363" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">评估集 100+ · 自动回归 · 重试与降级机制全覆盖</text>
+  </g>
+
+  <g id="ms-3">
+    <text x="172" y="450" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="800" fill="#3DDDFC" text-anchor="end" letter-spacing="1">W8 — W10</text>
+    <circle cx="200" cy="445" r="18" fill="#0A0E27" stroke="#3DDDFC" stroke-width="3"/>
+    <circle cx="200" cy="445" r="6" fill="#3DDDFC"/>
+    <rect x="240" y="400" width="500" height="100" rx="14" fill="url(#cardGlass)" stroke="#3DDDFC" stroke-opacity="0.45" stroke-width="1"/>
+    <rect x="258" y="401" width="464" height="1" fill="url(#glassEdge)"/>
+    <rect x="240" y="424" width="6" height="52" rx="3" fill="#3DDDFC"/>
+    <rect x="260" y="416" width="50" height="50" rx="12" fill="#3DDDFC" fill-opacity="0.2"/>
+    <use data-icon="phosphor-duotone/chart-line-up" x="268" y="424" width="34" height="34" fill="#3DDDFC"/>
+    <text x="326" y="433" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="2">STAGE 03 · SCALE</text>
+    <text x="326" y="462" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">规模化 — 性能与成本</text>
+    <text x="326" y="488" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">结果缓存 · 限流熔断 · 多租户隔离 · 模型分级路由</text>
+  </g>
+
+  <g id="ms-4">
+    <text x="172" y="595" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="800" fill="#4ADE80" text-anchor="end" letter-spacing="1">W11 — W12</text>
+    <circle cx="200" cy="590" r="20" fill="#0A0E27" stroke="#4ADE80" stroke-width="3"/>
+    <path d="M 192 590 L 198 596 L 210 584" stroke="#4ADE80" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="240" y="545" width="500" height="100" rx="14" fill="url(#cardGlass)" stroke="#4ADE80" stroke-opacity="0.55" stroke-width="1.5"/>
+    <rect x="258" y="546" width="464" height="1" fill="url(#glassEdge)"/>
+    <rect x="240" y="569" width="6" height="52" rx="3" fill="#4ADE80"/>
+    <rect x="260" y="561" width="50" height="50" rx="12" fill="#4ADE80" fill-opacity="0.22"/>
+    <use data-icon="phosphor-duotone/rocket" x="268" y="569" width="34" height="34" fill="#4ADE80"/>
+    <text x="326" y="578" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#4ADE80" letter-spacing="2">STAGE 04 · PRODUCTION</text>
+    <text x="326" y="607" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF">生产 — 灰度与 SLO</text>
+    <text x="326" y="633" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="400" fill="#A8B0D0">1% → 10% → 全量灰度 · SLO 监控 · 持续优化飞轮</text>
+  </g>
+
+  <g id="success-panel">
+    <rect x="770" y="150" width="450" height="495" rx="20" fill="url(#cardGlass)" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1"/>
+    <rect x="788" y="151" width="414" height="1" fill="url(#glassEdge)"/>
+    <text x="995" y="186" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" text-anchor="middle" letter-spacing="3">SUCCESS CRITERIA</text>
+    <text x="995" y="220" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" font-weight="900" fill="#E8ECFF" text-anchor="middle">每阶段过线标准</text>
+    <line x1="800" y1="245" x2="1190" y2="245" stroke="#FFFFFF" stroke-opacity="0.14"/>
+    <g id="sc-1">
+      <circle cx="816" cy="282" r="14" fill="#5B8DEF" fill-opacity="0.3"/>
+      <text x="816" y="287" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="900" fill="#5B8DEF" text-anchor="middle">01</text>
+      <text x="844" y="276" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">原型 → 工程化</text>
+      <text x="844" y="298" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">金标准 case 通过率 ≥ 80%</text>
+    </g>
+    <g id="sc-2">
+      <circle cx="816" cy="354" r="14" fill="#A26BFA" fill-opacity="0.3"/>
+      <text x="816" y="359" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="900" fill="#A26BFA" text-anchor="middle">02</text>
+      <text x="844" y="348" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">工程化 → 规模化</text>
+      <text x="844" y="370" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">评估集 ≥ 100 · 自动回归绿灯</text>
+    </g>
+    <g id="sc-3">
+      <circle cx="816" cy="426" r="14" fill="#3DDDFC" fill-opacity="0.3"/>
+      <text x="816" y="431" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="900" fill="#3DDDFC" text-anchor="middle">03</text>
+      <text x="844" y="420" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">规模化 → 生产</text>
+      <text x="844" y="442" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">P95 &lt; 5s · 单次成本 &lt; ¥0.5</text>
+    </g>
+    <g id="sc-4">
+      <circle cx="816" cy="498" r="14" fill="#4ADE80" fill-opacity="0.3"/>
+      <text x="816" y="503" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="900" fill="#4ADE80" text-anchor="middle">04</text>
+      <text x="844" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" font-weight="700" fill="#E8ECFF">生产持续运营</text>
+      <text x="844" y="514" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#A8B0D0">30 天 SLO ≥ 99.5% · 成本月度下降</text>
+    </g>
+    <line x1="800" y1="545" x2="1190" y2="545" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="816" y="580" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#A8B0D0">⚡ 不达标不晋级 — 每个阶段</text>
+    <text x="816" y="604" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#A8B0D0">必须有"通关"硬指标</text>
+    <text x="816" y="628" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="500" fill="#6B7299">否则只是"进度"假象</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">路线图 · 12 周可执行计划</text>
+    <text x="1220" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">11 / 12</text>
+  </g>
+</svg>

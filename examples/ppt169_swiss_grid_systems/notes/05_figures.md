@@ -1,0 +1,1 @@
+这套体系不是一个人做出来的，它是一群人共同建造的。Ernst Keller 在苏黎世奠基；Théo Ballmer 把 De Stijl 的几何引入海报，是桥梁式人物；Max Bill 是包豪斯学生，后来去乌尔姆设计学院当首任校长，把瑞士理性延伸到产品设计；Emil Ruder 是巴塞尔学派核心，他写的 Typographie 至今是字体设计的圣经；Armin Hofmann 是巴塞尔另一根支柱，他的影响一直延续到耶鲁。Müller-Brockmann 是苏黎世学派的核心，我们下一页详细讲他。最后两位是字体设计师：Max Miedinger 在 1957 年和 Hoffmann 一起做出了 Helvetica；同一年，Adrian Frutiger 做出了 Univers。

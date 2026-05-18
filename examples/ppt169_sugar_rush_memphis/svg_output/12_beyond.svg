@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P12 BEYOND THE MUSIC · dense · chart: comparison_columns -->
+
+  <defs>
+    <clipPath id="marketClip">
+      <rect x="100" y="220" width="540" height="200" rx="12"/>
+    </clipPath>
+    <clipPath id="installClip">
+      <rect x="660" y="220" width="540" height="200" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE"/>
+  </g>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#FF3DA5"/>
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">BEYOND THE MUSIC</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">音乐之外的两大主线 · TWO TRACKS</text>
+  </g>
+
+  <!-- ====== Left column: MARKET (Pink) ====== -->
+  <g id="col-market">
+    <rect x="80" y="170" width="580" height="500" rx="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <!-- Top header band -->
+    <path d="M 84 170 h 572 a 10 10 0 0 1 4 4 v 36 h -580 v -36 a 10 10 0 0 1 4 -4 Z" fill="#FF3DA5"/>
+    <use data-icon="chunk-filled/shopping-bag" x="100" y="178" width="22" height="22" fill="#1A1A2E"/>
+    <text x="132" y="196" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A2E" letter-spacing="3">MARKET · 周边市集</text>
+    <!-- Image -->
+    <image href="../images/market.png" x="100" y="220" width="540" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#marketClip)"/>
+    <rect x="100" y="220" width="540" height="200" rx="12" fill="none" stroke="#1A1A2E" stroke-width="3"/>
+    <!-- KPI under image -->
+    <text x="120" y="465" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="60" font-weight="900" fill="#FF3DA5" letter-spacing="-1">50+</text>
+    <text x="240" y="462" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">独立摊位</text>
+    <text x="240" y="480" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">来自 12 个城市的设计师</text>
+    <!-- Bullet list -->
+    <line x1="100" y1="500" x2="640" y2="500" stroke="#1A1A2E" stroke-width="1.5"/>
+    <circle cx="115" cy="530" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="135" y="535" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">SUGAR RUSH 官方限定周边</text>
+    <circle cx="115" cy="565" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="135" y="570" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">独立设计师手作集市</text>
+    <circle cx="115" cy="600" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="135" y="605" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">本地小吃 40+ 餐车</text>
+    <circle cx="115" cy="635" r="5" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="135" y="640" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">营业时间 16:00 — 02:00</text>
+  </g>
+
+  <!-- ====== Right column: ART INSTALL (Yellow) ====== -->
+  <g id="col-install">
+    <rect x="660" y="170" width="540" height="500" rx="14" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <path d="M 664 170 h 532 a 10 10 0 0 1 4 4 v 36 h -540 v -36 a 10 10 0 0 1 4 -4 Z" fill="#FFD93D"/>
+    <use data-icon="chunk-filled/game-controller" x="680" y="178" width="22" height="22" fill="#1A1A2E"/>
+    <text x="712" y="196" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A2E" letter-spacing="3">ART INSTALL · 互动装置</text>
+    <!-- "Most Popular" tag -->
+    <rect x="1070" y="180" width="110" height="22" rx="11" fill="#1A1A2E"/>
+    <text x="1125" y="195" text-anchor="middle" font-family="Impact, sans-serif" font-size="11" font-weight="900" fill="#FFD93D" letter-spacing="2">MOST POPULAR</text>
+    <image href="../images/installation.png" x="660" y="220" width="540" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#installClip)"/>
+    <rect x="660" y="220" width="540" height="200" rx="12" fill="none" stroke="#1A1A2E" stroke-width="3"/>
+    <text x="680" y="465" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="60" font-weight="900" fill="#FF6B4A" letter-spacing="-1">10</text>
+    <text x="760" y="462" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">巨型装置</text>
+    <text x="760" y="480" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">每件都能拍照打卡</text>
+    <line x1="680" y1="500" x2="1180" y2="500" stroke="#1A1A2E" stroke-width="1.5"/>
+    <circle cx="695" cy="530" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="715" y="535" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">10 件巨型几何充气雕塑</text>
+    <circle cx="695" cy="565" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="715" y="570" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">AR 互动 · 扫码触发动画</text>
+    <circle cx="695" cy="600" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="715" y="605" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">彩绘工坊 · 夜光涂鸦墙</text>
+    <circle cx="695" cy="635" r="5" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2"/>
+    <text x="715" y="640" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E">入夜后变身霓虹艺术园</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">市集与装置均含在通票内 · 无需额外票</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">12 / 14</text>
+  </g>
+</svg>

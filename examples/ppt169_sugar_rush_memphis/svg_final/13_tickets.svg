@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE" />
+  </g>
+
+  
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#00B8D9" />
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">GET YOUR TICKET</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">三档票务 · 立即开售</text>
+    
+  <g transform="translate(1170.0, 60.0) scale(3.125)" fill="#FF3DA5">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 2H0V6C1.10457 6 2 6.89543 2 8C2 9.10457 1.10457 10 0 10V14H16V10C14.8954 10 14 9.10457 14 8C14 6.89543 14.8954 6 16 6V2ZM8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z" />
+  </g>
+  </g>
+
+  
+  <g id="tier-early">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M94,170 H406 A14,14 0 0 1 420,184 V536 A14,14 0 0 1 406,550 H94 A14,14 0 0 1 80,536 V184 A14,14 0 0 1 94,170 Z" />
+    <path d="M 84 170 h 332 a 10 10 0 0 1 4 4 v 96 h -340 v -96 a 10 10 0 0 1 4 -4 Z" fill="#5C5C7A" />
+    <text x="250" y="215" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="32" font-weight="900" fill="#FFF8EE" letter-spacing="2">EARLY BIRD</text>
+    <text x="250" y="245" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFF8EE">限量 5000 张</text>
+    
+    <text x="250" y="320" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="64" font-weight="900" fill="#5C5C7A" letter-spacing="-2" text-decoration="line-through">¥499</text>
+    
+    <path fill="#FF6B4A" stroke="#1A1A2E" stroke-width="3" transform="rotate(-8, 250, 355)" d="M180,335 H320 A20,20 0 0 1 340,355 V355 A20,20 0 0 1 320,375 H180 A20,20 0 0 1 160,355 V355 A20,20 0 0 1 180,335 Z" />
+    <text x="250" y="364" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#FFF8EE" letter-spacing="4" transform="rotate(-8, 250, 355)">SOLD OUT</text>
+    
+    <line x1="110" y1="400" x2="390" y2="400" stroke="#1A1A2E" stroke-width="1.5" />
+    <text x="115" y="430" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#5C5C7A">✓ 7 天通票</text>
+    <text x="115" y="460" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#5C5C7A">✓ 入场不限场</text>
+    <text x="115" y="490" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#5C5C7A">— VIP 专区</text>
+    <text x="115" y="520" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#5C5C7A">— 艺人会面</text>
+  </g>
+
+  
+  <g id="tier-regular">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="5" d="M454,150 H826 A14,14 0 0 1 840,164 V556 A14,14 0 0 1 826,570 H454 A14,14 0 0 1 440,556 V164 A14,14 0 0 1 454,150 Z" />
+    <path d="M 444 150 h 392 a 10 10 0 0 1 4 4 v 116 h -400 v -116 a 10 10 0 0 1 4 -4 Z" fill="#00B8D9" />
+    
+    <path fill="#FFD93D" stroke="#1A1A2E" stroke-width="3" d="M596,135 H684 A16,16 0 0 1 700,151 V151 A16,16 0 0 1 684,167 H596 A16,16 0 0 1 580,151 V151 A16,16 0 0 1 596,135 Z" />
+    <text x="640" y="156" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="13" font-weight="900" fill="#1A1A2E" letter-spacing="2">RECOMMENDED</text>
+    <text x="640" y="206" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="36" font-weight="900" fill="#FFF8EE" letter-spacing="3">REGULAR</text>
+    <text x="640" y="232" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFF8EE">日常档 · 主力推荐</text>
+    <text x="640" y="260" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FFF8EE" fill-opacity="0.9">限量 30000 张</text>
+    
+    <text x="640" y="350" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="84" font-weight="900" fill="#1A1A2E" letter-spacing="-2">¥799</text>
+    <line x1="470" y1="395" x2="810" y2="395" stroke="#1A1A2E" stroke-width="1.5" />
+    <text x="475" y="425" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#00B8D9" font-weight="900">✓</tspan> 7 天通票 · 全部 5 个舞台</text>
+    <text x="475" y="455" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#00B8D9" font-weight="900">✓</tspan> 含 1 杯指定饮品</text>
+    <text x="475" y="485" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#00B8D9" font-weight="900">✓</tspan> 免费寄存 + 接驳车</text>
+    <text x="475" y="515" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#5C5C7A">— VIP 专区</text>
+    
+    <path fill="#FF3DA5" stroke="#1A1A2E" stroke-width="4" d="M515,540 H765 A25,25 0 0 1 790,565 V565 A25,25 0 0 1 765,590 H515 A25,25 0 0 1 490,565 V565 A25,25 0 0 1 515,540 Z" />
+    <text x="640" y="572" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="20" font-weight="900" fill="#FFF8EE" letter-spacing="3">BUY NOW →</text>
+  </g>
+
+  
+  <g id="tier-vip">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M874,170 H1186 A14,14 0 0 1 1200,184 V536 A14,14 0 0 1 1186,550 H874 A14,14 0 0 1 860,536 V184 A14,14 0 0 1 874,170 Z" />
+    <path d="M 864 170 h 332 a 10 10 0 0 1 4 4 v 96 h -340 v -96 a 10 10 0 0 1 4 -4 Z" fill="#FFD93D" />
+    <text x="1030" y="215" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A2E" letter-spacing="2">VIP PASS</text>
+    <text x="1030" y="245" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">限量 500 张</text>
+    <text x="1030" y="320" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="64" font-weight="900" fill="#1A1A2E" letter-spacing="-2">¥1999</text>
+    
+  <g transform="translate(1014.0, 335.0) scale(2.0)" fill="#FF3DA5">
+    <path d="M9.00001 0H7.00001L5.51292 4.57681L0.700554 4.57682L0.0825195 6.47893L3.97581 9.30756L2.48873 13.8843L4.10677 15.0599L8.00002 12.2313L11.8933 15.0599L13.5113 13.8843L12.0242 9.30754L15.9175 6.47892L15.2994 4.57681L10.4871 4.57681L9.00001 0Z" />
+  </g>
+    <line x1="890" y1="380" x2="1170" y2="380" stroke="#1A1A2E" stroke-width="1.5" />
+    <text x="895" y="410" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#FF3DA5" font-weight="900">✓</tspan> 7 天全程通票</text>
+    <text x="895" y="440" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#FF3DA5" font-weight="900">✓</tspan> VIP 专区 + 包厢</text>
+    <text x="895" y="470" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#FF3DA5" font-weight="900">✓</tspan> 头牌艺人会面</text>
+    <text x="895" y="500" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#1A1A2E"><tspan fill="#FF3DA5" font-weight="900">✓</tspan> 周边礼包 + 限定徽章</text>
+    <path fill="#1A1A2E" d="M920,520 H1140 A20,20 0 0 1 1160,540 V540 A20,20 0 0 1 1140,560 H920 A20,20 0 0 1 900,540 V540 A20,20 0 0 1 920,520 Z" />
+    <text x="1030" y="546" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="16" font-weight="900" fill="#FFD93D" letter-spacing="3">CONTACT US →</text>
+  </g>
+
+  
+  <g id="sponsor-strip">
+    <path fill="#1A1A2E" d="M72,595 H1208 A12,12 0 0 1 1220,607 V653 A12,12 0 0 1 1208,665 H72 A12,12 0 0 1 60,653 V607 A12,12 0 0 1 72,595 Z" />
+    <text x="84" y="618" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#FFD93D" letter-spacing="3">SPONSORED BY · 鸣谢</text>
+    
+  <g transform="translate(290.0, 608.0) scale(1.25)" fill="#FFF8EE">
+    <path d="M3 3V0H5C6.65685 0 8 1.34315 8 3C8 1.34315 9.34315 0 11 0H13V3H16V6H0V3H3Z" />
+    <path d="M1 8H7V15H1V8Z" />
+    <path d="M15 8H9V15H15V8Z" />
+  </g>
+    <text x="316" y="623" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">COCOFRESH</text>
+    
+  <g transform="translate(450.0, 608.0) scale(1.25)" fill="#FFF8EE">
+    <path d="M9 7L10 0H8L2 7V9H7L6 16H8L14 9L14 7H9Z" />
+  </g>
+    <text x="476" y="623" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">NEONIX</text>
+    
+  <g transform="translate(600.0, 608.0) scale(1.25)" fill="#FFF8EE">
+    <path d="M8 3L10.5 2.5L11 0H12L12.5 2.5L15 3V4L12.5 4.5L12 7H11L10.5 4.5L8 4V3Z" />
+    <path d="M0 11V10L4 9L5 5H6L7 9L11 10V11L7 12L6 16H5L4 12L0 11Z" />
+    <path d="M1 2L2.5 0.5L4 2L2.5 3.5L1 2Z" />
+    <path d="M15 14L13 12L11 14L13 16L15 14Z" />
+    <path d="M15 10C15.5523 10 16 9.55229 16 9C16 8.44771 15.5523 8 15 8C14.4477 8 14 8.44771 14 9C14 9.55229 14.4477 10 15 10Z" />
+  </g>
+    <text x="626" y="623" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">SUGAR LAB</text>
+    
+  <g transform="translate(780.0, 608.0) scale(1.25)" fill="#FFF8EE">
+    <path d="M15 1H4V9H3C1.34315 9 0 10.3431 0 12C0 13.6569 1.34315 15 3 15C4.65685 15 6 13.6569 6 12V5H13V9H12C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12V1Z" />
+  </g>
+    <text x="806" y="623" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">RIPPLE TV</text>
+    
+  <g transform="translate(940.0, 608.0) scale(1.25)" fill="#FFF8EE">
+    <path d="M1.24264 8.24264L8 15L14.7574 8.24264C15.553 7.44699 16 6.36786 16 5.24264V5.05234C16 2.8143 14.1857 1 11.9477 1C10.7166 1 9.55233 1.55959 8.78331 2.52086L8 3.5L7.21669 2.52086C6.44767 1.55959 5.28338 1 4.05234 1C1.8143 1 0 2.8143 0 5.05234V5.24264C0 6.36786 0.44699 7.44699 1.24264 8.24264Z" />
+  </g>
+    <text x="966" y="623" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">PINK MOON</text>
+    
+  <g transform="translate(1100.0, 608.0) scale(1.25)" fill="#FFF8EE">
+    <path d="M7 3V0H9V3H7Z" />
+    <path d="M9 13V16H7V13H9Z" />
+    <path d="M11 8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8C5 6.34315 6.34315 5 8 5C9.65685 5 11 6.34315 11 8Z" />
+    <path d="M0 9H3V7H0V9Z" />
+    <path d="M16 7H13V9H16V7Z" />
+    <path d="M3.75735 5.17157L1.63603 3.05025L3.05025 1.63603L5.17157 3.75735L3.75735 5.17157Z" />
+    <path d="M12.2426 10.8284L14.364 12.9497L12.9497 14.364L10.8284 12.2426L12.2426 10.8284Z" />
+    <path d="M3.05025 14.364L5.17157 12.2426L3.75735 10.8284L1.63603 12.9498L3.05025 14.364Z" />
+    <path d="M12.9497 1.63604L10.8284 3.75736L12.2426 5.17158L14.364 3.05026L12.9497 1.63604Z" />
+  </g>
+    <text x="1126" y="623" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#FFF8EE" letter-spacing="2">DAYBREAK</text>
+    <text x="84" y="650" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-weight="600" fill="#FFF8EE" fill-opacity="0.7">官方饮品 · 灯光 · 周边制造 · 媒体 · 美妆 · 接驳出行</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">购票通道 · sugarrush.fest · 限购 4 张 / 实名</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">13 / 14</text>
+  </g>
+</svg>

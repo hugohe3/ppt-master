@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="coverOverlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2530" stop-opacity="0.20"/>
+      <stop offset="55%" stop-color="#1A2530" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#1A2530" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="leftBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1A2530" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#1A2530" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg-image">
+    <rect width="1280" height="720" fill="#1A2530"/>
+    <image href="../images/640.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="640" height="720" fill="url(#leftBar)"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#coverOverlay)"/>
+  </g>
+
+  <g id="cover-meta">
+    <rect x="80" y="80" width="48" height="3" fill="#C2410C"/>
+    <text x="140" y="92" font-family="Georgia, KaiTi, serif" font-size="14" font-weight="700" fill="#F5F2EC" letter-spacing="4">URBAN · RENEWAL · 2026</text>
+  </g>
+
+  <g id="cover-title">
+    <text x="80" y="430" font-family="KaiTi, Georgia, serif" font-size="84" font-weight="700" fill="#F5F2EC">主动再生</text>
+    <text x="80" y="495" font-family="Georgia, KaiTi, serif" font-size="22" font-weight="400" fill="#D6CFC0" letter-spacing="6">ACTIVE  REGENERATION</text>
+  </g>
+
+  <g id="cover-subtitle">
+    <line x1="80" y1="540" x2="180" y2="540" stroke="#C2410C" stroke-width="2"/>
+    <text x="80" y="585" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="400" fill="#F5F2EC">香港火灾之后，老旧高层何去何从</text>
+    <text x="80" y="618" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" font-weight="400" fill="#A8B0B8">从悉尼范本到中国困局 — 一份关于"超高层第二人生"的观察</text>
+  </g>
+
+  <g id="cover-footer">
+    <line x1="80" y1="670" x2="1200" y2="670" stroke="#5A6B7A" stroke-width="1" stroke-opacity="0.5"/>
+    <text x="80" y="695" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="13" fill="#A8B0B8">基于公众号《孙琬童》原文整编 · 2026.05</text>
+    <text x="1200" y="695" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#A8B0B8">01 / 15</text>
+  </g>
+</svg>

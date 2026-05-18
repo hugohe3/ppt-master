@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="p10ImgL"><rect x="60" y="260" width="280" height="380" rx="6"/></clipPath>
+    <clipPath id="p10ImgR"><rect x="360" y="260" width="280" height="380" rx="6"/></clipPath>
+    <linearGradient id="p10TopL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A6B7A" stop-opacity="0.55"/>
+      <stop offset="35%" stop-color="#5A6B7A" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p10TopR" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B7A4F" stop-opacity="0.55"/>
+      <stop offset="35%" stop-color="#6B7A4F" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p10BottomFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F2EC" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#F5F2EC" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#6B7A4F"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">III · 巡览  ·  CASE 02</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A">SHANGHAI · 1988 → 2018 → 2023</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="148" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#2B3A4A">全国首家城市更新领域</text>
+    <text x="60" y="194" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#6B7A4F">碳中和酒店</text>
+    <line x1="60" y1="220" x2="160" y2="220" stroke="#6B7A4F" stroke-width="2"/>
+  </g>
+
+  <g id="img-before">
+    <image href="../images/640_11.png" x="60" y="260" width="280" height="380" preserveAspectRatio="xMidYMid slice" clip-path="url(#p10ImgL)"/>
+    <rect x="60" y="260" width="280" height="120" fill="url(#p10TopL)"/>
+    <rect x="60" y="560" width="280" height="80" fill="url(#p10BottomFade)"/>
+    <g id="badge-bf-10">
+      <rect x="80" y="280" width="12" height="12" fill="#F5F2EC"/>
+      <text x="100" y="291" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">BEFORE · 1988</text>
+    </g>
+    <text x="60" y="666" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">原华东电力大楼 · 126 米</text>
+    <text x="60" y="688" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8A8275">南京路上第一栋高层 · 图源：百度百科</text>
+  </g>
+
+  <g id="img-after">
+    <image href="../images/640_12.png" x="360" y="260" width="280" height="380" preserveAspectRatio="xMidYMid slice" clip-path="url(#p10ImgR)"/>
+    <rect x="360" y="260" width="280" height="120" fill="url(#p10TopR)"/>
+    <rect x="360" y="560" width="280" height="80" fill="url(#p10BottomFade)"/>
+    <g id="badge-af-10">
+      <rect x="380" y="280" width="12" height="12" fill="#6B7A4F"/>
+      <text x="400" y="291" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">AFTER · 2023</text>
+    </g>
+    <text x="360" y="666" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">艾迪逊酒店 · 节能改造完成</text>
+    <text x="360" y="688" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8A8275">图源：Archdaily</text>
+  </g>
+
+  <g id="timeline">
+    <rect x="680" y="260" width="540" height="380" rx="6" fill="#EBE6DC"/>
+    <text x="704" y="298" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#6B7A4F" letter-spacing="2">35 年 · 三段历史</text>
+
+    <line x1="724" y1="340" x2="724" y2="600" stroke="#6B7A4F" stroke-width="2" stroke-opacity="0.5"/>
+
+    <circle cx="724" cy="350" r="8" fill="#5A6B7A"/>
+    <text x="752" y="346" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#2B3A4A">1988</text>
+    <text x="752" y="372" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">华东电力大楼建成</text>
+    <text x="752" y="392" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#8A8275">南京东路 201 号 · 高 126 米</text>
+
+    <circle cx="724" cy="450" r="8" fill="#8B7355"/>
+    <text x="752" y="446" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#2B3A4A">2018</text>
+    <text x="752" y="472" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5A6B7A">改扩建为艾迪逊酒店</text>
+    <text x="752" y="492" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#8A8275">与 181 号大楼合并改造</text>
+
+    <circle cx="724" cy="550" r="10" fill="#6B7A4F"/>
+    <text x="752" y="548" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#6B7A4F">2023</text>
+    <text x="752" y="574" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#2B3A4A">完成节能改造，实现碳中和</text>
+    <text x="752" y="596" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">高性能外窗 · 空气源热泵</text>
+    <text x="752" y="616" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">节能电梯 · 节水器具</text>
+  </g>
+
+  <g id="footer">
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">10 / 15</text>
+  </g>
+</svg>

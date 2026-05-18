@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="p09ImgT"><rect x="60" y="240" width="540" height="280" rx="6"/></clipPath>
+    <clipPath id="p09ImgB"><rect x="60" y="540" width="540" height="148" rx="6"/></clipPath>
+    <linearGradient id="p09TopT" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A6B7A" stop-opacity="0.55"/>
+      <stop offset="40%" stop-color="#5A6B7A" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p09TopB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B7A4F" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#6B7A4F" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p09BottomFadeT" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F2EC" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#F5F2EC" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#6B7A4F"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">III · 巡览  ·  CASE 01</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A">SHENZHEN · MVRDV · 1994 → NOW</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="148" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#2B3A4A">给老建筑穿一件<tspan fill="#6B7A4F">"彩色网格外衣"</tspan></text>
+    <line x1="60" y1="172" x2="160" y2="172" stroke="#6B7A4F" stroke-width="2"/>
+    <text x="60" y="200" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5A6B7A">深圳妇儿大厦 · "适应性再利用"模式在城市更新领域的典范之作</text>
+  </g>
+
+  <g id="img-before">
+    <image href="../images/640_9.png" x="60" y="240" width="540" height="280" preserveAspectRatio="xMidYMid slice" clip-path="url(#p09ImgT)"/>
+    <rect x="60" y="240" width="540" height="100" fill="url(#p09TopT)"/>
+    <rect x="60" y="450" width="540" height="70" fill="url(#p09BottomFadeT)"/>
+    <g id="badge-bf-09">
+      <rect x="80" y="260" width="12" height="12" fill="#F5F2EC"/>
+      <text x="100" y="271" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">BEFORE · 1994</text>
+    </g>
+  </g>
+
+  <g id="img-after">
+    <image href="../images/640_10.png" x="60" y="540" width="540" height="148" preserveAspectRatio="xMidYMid slice" clip-path="url(#p09ImgB)"/>
+    <rect x="60" y="540" width="540" height="60" fill="url(#p09TopB)"/>
+    <g id="badge-af-09">
+      <rect x="80" y="558" width="12" height="12" fill="#6B7A4F"/>
+      <text x="100" y="569" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">AFTER</text>
+    </g>
+    <text x="600" y="710" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8A8275">改造后立面 · 摄影：夏至</text>
+  </g>
+
+  <g id="features">
+    <rect x="660" y="240" width="560" height="190" rx="6" fill="#EBE6DC"/>
+    <use data-icon="tabler-outline/grid-dots" x="684" y="262" width="28" height="28" fill="#6B7A4F"/>
+    <text x="724" y="284" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#2B3A4A">彩色网格框架</text>
+    <text x="684" y="324" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">立面增加 <tspan fill="#6B7A4F" font-weight="700">近 1 米</tspan> 进深，起到遮阳作用</text>
+    <text x="684" y="350" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">内侧设可打开面板，<tspan fill="#6B7A4F" font-weight="700">促进自然通风</tspan></text>
+    <text x="684" y="376" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">显著降低对空调的依赖</text>
+    <line x1="684" y1="394" x2="744" y2="394" stroke="#6B7A4F" stroke-width="2"/>
+    <text x="684" y="416" font-family="KaiTi, Georgia, serif" font-size="13" font-style="italic" fill="#8B7355">— "适应性再利用"模式典范</text>
+  </g>
+
+  <g id="programs">
+    <rect x="660" y="450" width="560" height="240" rx="6" fill="#FFFFFF" stroke="#D6CFC0" stroke-width="1"/>
+    <text x="684" y="488" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#6B7A4F" letter-spacing="2">业态再造 · 五大功能</text>
+    <g id="prog-grid" transform="translate(684, 510)">
+      <rect x="0" y="0" width="160" height="38" rx="6" fill="#F5F2EC"/>
+      <text x="80" y="24" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#2B3A4A">酒店 · 餐饮</text>
+      <rect x="180" y="0" width="160" height="38" rx="6" fill="#F5F2EC"/>
+      <text x="260" y="24" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#2B3A4A">儿童探索馆</text>
+      <rect x="360" y="0" width="160" height="38" rx="6" fill="#F5F2EC"/>
+      <text x="440" y="24" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#2B3A4A">图画书博物馆</text>
+      <rect x="0" y="56" width="240" height="38" rx="6" fill="#F5F2EC"/>
+      <text x="120" y="80" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#2B3A4A">婴幼儿托育馆</text>
+      <rect x="260" y="56" width="260" height="38" rx="6" fill="#F5F2EC"/>
+      <text x="390" y="80" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#2B3A4A">妇儿剧场 · 公共活动</text>
+    </g>
+    <text x="684" y="666" font-family="KaiTi, Georgia, serif" font-size="14" font-style="italic" fill="#5A6B7A">从单一办公塔楼，转型为充满活力的"垂直社区"</text>
+  </g>
+</svg>

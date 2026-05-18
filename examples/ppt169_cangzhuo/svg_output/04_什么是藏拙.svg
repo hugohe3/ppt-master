@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">什么是藏拙</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+  <text x="60" y="135" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">先撇清三件它"不是"的事</text>
+
+  <!-- Top inequality row — what cangzhuo is NOT -->
+  <g transform="translate(60, 180)">
+    <text x="0" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#5C5852" letter-spacing="2">藏拙</text>
+    <text x="80" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#A52A2A" letter-spacing="2">≠</text>
+    <text x="115" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#5C5852" letter-spacing="2">装傻</text>
+    <text x="220" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#A52A2A" letter-spacing="2">≠</text>
+    <text x="255" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#5C5852" letter-spacing="2">认怂</text>
+    <text x="360" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#A52A2A" letter-spacing="2">≠</text>
+    <text x="395" y="30" font-family="KaiTi, Georgia, serif" font-size="22" fill="#5C5852" letter-spacing="2">消极</text>
+  </g>
+
+  <!-- It IS three concrete actions -->
+  <text x="60" y="265" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#1A1A1A" letter-spacing="2">而是三个核心动作</text>
+
+  <!-- Three columns -->
+  <!-- Card 1 -->
+  <g transform="translate(60, 310)">
+    <rect x="0" y="0" width="370" height="320" fill="#EFEAD9"/>
+    <rect x="0" y="0" width="370" height="6" fill="#1A1A1A"/>
+    <text x="30" y="60" font-family="KaiTi, Georgia, serif" font-size="64" font-weight="700" fill="#A52A2A" fill-opacity="0.45">一</text>
+    <use data-icon="tabler-outline/sword" x="270" y="30" width="60" height="60" fill="#1A1A1A" stroke-width="1.5"/>
+    <text x="30" y="160" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#1A1A1A" letter-spacing="4">收 锋 芒</text>
+    <line x1="30" y1="180" x2="100" y2="180" stroke="#A52A2A" stroke-width="2"/>
+    <text x="30" y="225" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">实力不足以自保时</text>
+    <text x="30" y="255" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">锋芒就是递出去的刀</text>
+    <text x="30" y="295" font-family="KaiTi, Georgia, serif" font-size="20" fill="#1A1A1A" letter-spacing="2">能藏，才不被人盯上</text>
+  </g>
+
+  <!-- Card 2 -->
+  <g transform="translate(455, 310)">
+    <rect x="0" y="0" width="370" height="320" fill="#EFEAD9"/>
+    <rect x="0" y="0" width="370" height="6" fill="#1A1A1A"/>
+    <text x="30" y="60" font-family="KaiTi, Georgia, serif" font-size="64" font-weight="700" fill="#A52A2A" fill-opacity="0.45">二</text>
+    <use data-icon="tabler-outline/eye-off" x="270" y="30" width="60" height="60" fill="#1A1A1A" stroke-width="1.5"/>
+    <text x="30" y="160" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#1A1A1A" letter-spacing="4">压 欲 望</text>
+    <line x1="30" y1="180" x2="100" y2="180" stroke="#A52A2A" stroke-width="2"/>
+    <text x="30" y="225" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">急着被认可、急着证明</text>
+    <text x="30" y="255" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">是把自己交给了别人评判</text>
+    <text x="30" y="295" font-family="KaiTi, Georgia, serif" font-size="20" fill="#1A1A1A" letter-spacing="2">能压，才有余地转身</text>
+  </g>
+
+  <!-- Card 3 -->
+  <g transform="translate(850, 310)">
+    <rect x="0" y="0" width="370" height="320" fill="#1A1A1A"/>
+    <rect x="0" y="0" width="370" height="6" fill="#A52A2A"/>
+    <text x="30" y="60" font-family="KaiTi, Georgia, serif" font-size="64" font-weight="700" fill="#A52A2A" fill-opacity="0.55">三</text>
+    <use data-icon="tabler-outline/shield" x="270" y="30" width="60" height="60" fill="#F5F1E8" stroke-width="1.5"/>
+    <text x="30" y="160" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#F5F1E8" letter-spacing="4">挪 视 线</text>
+    <line x1="30" y1="180" x2="100" y2="180" stroke="#A52A2A" stroke-width="2"/>
+    <text x="30" y="225" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#C8C0AE">从舞台中心退一步</text>
+    <text x="30" y="255" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#C8C0AE">把自己挪出别人的视野</text>
+    <text x="30" y="295" font-family="KaiTi, Georgia, serif" font-size="20" fill="#F5F1E8" letter-spacing="2">能挪，才不被提前设局</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 二</text>
+  <text x="1220" y="690" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">04</text>
+</svg>
