@@ -8,6 +8,201 @@
   },
   "projects": [
     {
+      "id": "ppt169_pritzker_2026",
+      "title": "Pritzker 2026",
+      "description": "2026 普利兹克建筑奖深度阅读 — 建筑摄影主导 + 编辑设计",
+      "icon": "🏛️",
+      "color": "#594A3C",
+      "style": "editorial",
+      "styleName": "Architecture Editorial",
+      "desc": "Long-read on the 2026 Pritzker laureate. Photography-forward editorial layout designed for reading clubs, architecture courses, and long-form social posts.",
+      "tags": [
+        "Architecture",
+        "Editorial",
+        "Reading Club"
+      ],
+      "isNew": true,
+      "folder": "ppt169_pritzker_2026/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "cover"
+        },
+        {
+          "file": "02_overview.svg",
+          "title": "overview",
+          "desc": "overview"
+        },
+        {
+          "file": "03_ando.svg",
+          "title": "ando",
+          "desc": "ando"
+        },
+        {
+          "file": "04_chipperfield.svg",
+          "title": "chipperfield",
+          "desc": "chipperfield"
+        },
+        {
+          "file": "05_zaha.svg",
+          "title": "zaha",
+          "desc": "zaha"
+        },
+        {
+          "file": "06_foster.svg",
+          "title": "foster",
+          "desc": "foster"
+        },
+        {
+          "file": "07_oma_sanaa.svg",
+          "title": "oma sanaa",
+          "desc": "oma sanaa"
+        },
+        {
+          "file": "08_zumthor.svg",
+          "title": "zumthor",
+          "desc": "zumthor"
+        },
+        {
+          "file": "09_gehry.svg",
+          "title": "gehry",
+          "desc": "gehry"
+        },
+        {
+          "file": "10_kere.svg",
+          "title": "kere",
+          "desc": "kere"
+        },
+        {
+          "file": "11_epilogue.svg",
+          "title": "epilogue",
+          "desc": "epilogue"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_global_ai_capital_2026",
+      "title": "Global AI Capital 2026",
+      "description": "全球 AI 资本流向年度观察 — Bloomberg / Economist 信息图风",
+      "icon": "💰",
+      "color": "#1F3A5F",
+      "style": "consulting",
+      "styleName": "Bloomberg Editorial",
+      "desc": "Year-in-review on global AI capital flows in the dense data-journalism style of Bloomberg and The Economist — multi-column layouts, micro-charts, editorial sidebars.",
+      "tags": [
+        "Data Journalism",
+        "Finance",
+        "Annual Review"
+      ],
+      "isNew": true,
+      "folder": "ppt169_global_ai_capital_2026/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "cover"
+        },
+        {
+          "file": "02_editor_note.svg",
+          "title": "editor note",
+          "desc": "editor note"
+        },
+        {
+          "file": "03_contents.svg",
+          "title": "contents",
+          "desc": "contents"
+        },
+        {
+          "file": "04_q1_vc_landscape.svg",
+          "title": "q1 vc landscape",
+          "desc": "q1 vc landscape"
+        },
+        {
+          "file": "05_hyperscaler_capex.svg",
+          "title": "hyperscaler capex",
+          "desc": "hyperscaler capex"
+        },
+        {
+          "file": "06_big_three_valuation_leap.svg",
+          "title": "big three valuation leap",
+          "desc": "big three valuation leap"
+        },
+        {
+          "file": "07_valuation_vs_revenue_bubble.svg",
+          "title": "valuation vs revenue bubble",
+          "desc": "valuation vs revenue bubble"
+        },
+        {
+          "file": "08_openai_investor_donut.svg",
+          "title": "openai investor donut",
+          "desc": "openai investor donut"
+        },
+        {
+          "file": "09_big_three_comparison.svg",
+          "title": "big three comparison",
+          "desc": "big three comparison"
+        },
+        {
+          "file": "10_china_five_ranking.svg",
+          "title": "china five ranking",
+          "desc": "china five ranking"
+        },
+        {
+          "file": "11_us_china_dual_track.svg",
+          "title": "us china dual track",
+          "desc": "us china dual track"
+        },
+        {
+          "file": "12_second_tier.svg",
+          "title": "second tier",
+          "desc": "second tier"
+        },
+        {
+          "file": "13_chapter_nvidia.svg",
+          "title": "chapter nvidia",
+          "desc": "chapter nvidia"
+        },
+        {
+          "file": "14_nvidia_sankey.svg",
+          "title": "nvidia sankey",
+          "desc": "nvidia sankey"
+        },
+        {
+          "file": "15_nvidia_pareto.svg",
+          "title": "nvidia pareto",
+          "desc": "nvidia pareto"
+        },
+        {
+          "file": "16_stargate_hub.svg",
+          "title": "stargate hub",
+          "desc": "stargate hub"
+        },
+        {
+          "file": "17_chapter_bubble.svg",
+          "title": "chapter bubble",
+          "desc": "chapter bubble"
+        },
+        {
+          "file": "18_capex_vs_revenue.svg",
+          "title": "capex vs revenue",
+          "desc": "capex vs revenue"
+        },
+        {
+          "file": "19_four_risks_quadrant.svg",
+          "title": "four risks quadrant",
+          "desc": "four risks quadrant"
+        },
+        {
+          "file": "20_closing.svg",
+          "title": "closing",
+          "desc": "closing"
+        }
+      ]
+    },
+    {
       "id": "ppt169_swiss_grid_systems",
       "title": "Swiss Grid Systems",
       "description": "瑞士国际主义设计史 lecture — Müller-Brockmann 致敬",
@@ -98,6 +293,86 @@
       ]
     },
     {
+      "id": "ppt169_glassmorphism_demo",
+      "title": "Glassmorphism Demo",
+      "description": "AI 产品发布 — 毛玻璃质感的现代 SaaS 视觉语言",
+      "icon": "💎",
+      "color": "#6366F1",
+      "style": "general",
+      "styleName": "Glassmorphism SaaS",
+      "desc": "AI product launch deck with frosted-glass surfaces, soft gradients, and depth layering — modern SaaS visual language.",
+      "tags": [
+        "SaaS",
+        "Modern",
+        "Product Launch"
+      ],
+      "isNew": true,
+      "folder": "ppt169_glassmorphism_demo/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "cover"
+        },
+        {
+          "file": "02_hero_demo_to_prod.svg",
+          "title": "hero demo to prod",
+          "desc": "hero demo to prod"
+        },
+        {
+          "file": "03_three_pains.svg",
+          "title": "three pains",
+          "desc": "three pains"
+        },
+        {
+          "file": "04_agent_architecture.svg",
+          "title": "agent architecture",
+          "desc": "agent architecture"
+        },
+        {
+          "file": "05_three_modes.svg",
+          "title": "three modes",
+          "desc": "three modes"
+        },
+        {
+          "file": "06_tool_orchestration.svg",
+          "title": "tool orchestration",
+          "desc": "tool orchestration"
+        },
+        {
+          "file": "07_context_engineering.svg",
+          "title": "context engineering",
+          "desc": "context engineering"
+        },
+        {
+          "file": "08_kpi_dashboard.svg",
+          "title": "kpi dashboard",
+          "desc": "kpi dashboard"
+        },
+        {
+          "file": "09_metrics_trend.svg",
+          "title": "metrics trend",
+          "desc": "metrics trend"
+        },
+        {
+          "file": "10_failure_modes.svg",
+          "title": "failure modes",
+          "desc": "failure modes"
+        },
+        {
+          "file": "11_roadmap.svg",
+          "title": "roadmap",
+          "desc": "roadmap"
+        },
+        {
+          "file": "12_cta_closing.svg",
+          "title": "cta closing",
+          "desc": "cta closing"
+        }
+      ]
+    },
+    {
       "id": "ppt169_sugar_rush_memphis",
       "title": "Sugar Rush Memphis",
       "description": "虚构音乐节年度手册 — Memphis 设计运动 + 流行流派 mash-up",
@@ -184,81 +459,6 @@
           "file": "14_closing.svg",
           "title": "closing",
           "desc": "closing"
-        }
-      ]
-    },
-    {
-      "id": "ppt169_pritzker_2026",
-      "title": "Pritzker 2026",
-      "description": "2026 普利兹克建筑奖深度阅读 — 建筑摄影主导 + 编辑设计",
-      "icon": "🏛️",
-      "color": "#594A3C",
-      "style": "editorial",
-      "styleName": "Architecture Editorial",
-      "desc": "Long-read on the 2026 Pritzker laureate. Photography-forward editorial layout designed for reading clubs, architecture courses, and long-form social posts.",
-      "tags": [
-        "Architecture",
-        "Editorial",
-        "Reading Club"
-      ],
-      "isNew": true,
-      "folder": "ppt169_pritzker_2026/svg_final",
-      "cover": "01_cover.svg",
-      "slides": [
-        {
-          "file": "01_cover.svg",
-          "title": "cover",
-          "desc": "cover"
-        },
-        {
-          "file": "02_overview.svg",
-          "title": "overview",
-          "desc": "overview"
-        },
-        {
-          "file": "03_ando.svg",
-          "title": "ando",
-          "desc": "ando"
-        },
-        {
-          "file": "04_chipperfield.svg",
-          "title": "chipperfield",
-          "desc": "chipperfield"
-        },
-        {
-          "file": "05_zaha.svg",
-          "title": "zaha",
-          "desc": "zaha"
-        },
-        {
-          "file": "06_foster.svg",
-          "title": "foster",
-          "desc": "foster"
-        },
-        {
-          "file": "07_oma_sanaa.svg",
-          "title": "oma sanaa",
-          "desc": "oma sanaa"
-        },
-        {
-          "file": "08_zumthor.svg",
-          "title": "zumthor",
-          "desc": "zumthor"
-        },
-        {
-          "file": "09_gehry.svg",
-          "title": "gehry",
-          "desc": "gehry"
-        },
-        {
-          "file": "10_kere.svg",
-          "title": "kere",
-          "desc": "kere"
-        },
-        {
-          "file": "11_epilogue.svg",
-          "title": "epilogue",
-          "desc": "epilogue"
         }
       ]
     },
@@ -464,206 +664,6 @@
           "file": "15_ending.svg",
           "title": "ending",
           "desc": "ending"
-        }
-      ]
-    },
-    {
-      "id": "ppt169_global_ai_capital_2026",
-      "title": "Global AI Capital 2026",
-      "description": "全球 AI 资本流向年度观察 — Bloomberg / Economist 信息图风",
-      "icon": "💰",
-      "color": "#1F3A5F",
-      "style": "consulting",
-      "styleName": "Bloomberg Editorial",
-      "desc": "Year-in-review on global AI capital flows in the dense data-journalism style of Bloomberg and The Economist — multi-column layouts, micro-charts, editorial sidebars.",
-      "tags": [
-        "Data Journalism",
-        "Finance",
-        "Annual Review"
-      ],
-      "isNew": true,
-      "folder": "ppt169_global_ai_capital_2026/svg_final",
-      "cover": "01_cover.svg",
-      "slides": [
-        {
-          "file": "01_cover.svg",
-          "title": "cover",
-          "desc": "cover"
-        },
-        {
-          "file": "02_editor_note.svg",
-          "title": "editor note",
-          "desc": "editor note"
-        },
-        {
-          "file": "03_contents.svg",
-          "title": "contents",
-          "desc": "contents"
-        },
-        {
-          "file": "04_q1_vc_landscape.svg",
-          "title": "q1 vc landscape",
-          "desc": "q1 vc landscape"
-        },
-        {
-          "file": "05_hyperscaler_capex.svg",
-          "title": "hyperscaler capex",
-          "desc": "hyperscaler capex"
-        },
-        {
-          "file": "06_big_three_valuation_leap.svg",
-          "title": "big three valuation leap",
-          "desc": "big three valuation leap"
-        },
-        {
-          "file": "07_valuation_vs_revenue_bubble.svg",
-          "title": "valuation vs revenue bubble",
-          "desc": "valuation vs revenue bubble"
-        },
-        {
-          "file": "08_openai_investor_donut.svg",
-          "title": "openai investor donut",
-          "desc": "openai investor donut"
-        },
-        {
-          "file": "09_big_three_comparison.svg",
-          "title": "big three comparison",
-          "desc": "big three comparison"
-        },
-        {
-          "file": "10_china_five_ranking.svg",
-          "title": "china five ranking",
-          "desc": "china five ranking"
-        },
-        {
-          "file": "11_us_china_dual_track.svg",
-          "title": "us china dual track",
-          "desc": "us china dual track"
-        },
-        {
-          "file": "12_second_tier.svg",
-          "title": "second tier",
-          "desc": "second tier"
-        },
-        {
-          "file": "13_chapter_nvidia.svg",
-          "title": "chapter nvidia",
-          "desc": "chapter nvidia"
-        },
-        {
-          "file": "14_nvidia_sankey.svg",
-          "title": "nvidia sankey",
-          "desc": "nvidia sankey"
-        },
-        {
-          "file": "15_nvidia_pareto.svg",
-          "title": "nvidia pareto",
-          "desc": "nvidia pareto"
-        },
-        {
-          "file": "16_stargate_hub.svg",
-          "title": "stargate hub",
-          "desc": "stargate hub"
-        },
-        {
-          "file": "17_chapter_bubble.svg",
-          "title": "chapter bubble",
-          "desc": "chapter bubble"
-        },
-        {
-          "file": "18_capex_vs_revenue.svg",
-          "title": "capex vs revenue",
-          "desc": "capex vs revenue"
-        },
-        {
-          "file": "19_four_risks_quadrant.svg",
-          "title": "four risks quadrant",
-          "desc": "four risks quadrant"
-        },
-        {
-          "file": "20_closing.svg",
-          "title": "closing",
-          "desc": "closing"
-        }
-      ]
-    },
-    {
-      "id": "ppt169_glassmorphism_demo",
-      "title": "Glassmorphism Demo",
-      "description": "AI 产品发布 — 毛玻璃质感的现代 SaaS 视觉语言",
-      "icon": "💎",
-      "color": "#6366F1",
-      "style": "general",
-      "styleName": "Glassmorphism SaaS",
-      "desc": "AI product launch deck with frosted-glass surfaces, soft gradients, and depth layering — modern SaaS visual language.",
-      "tags": [
-        "SaaS",
-        "Modern",
-        "Product Launch"
-      ],
-      "isNew": true,
-      "folder": "ppt169_glassmorphism_demo/svg_final",
-      "cover": "01_cover.svg",
-      "slides": [
-        {
-          "file": "01_cover.svg",
-          "title": "cover",
-          "desc": "cover"
-        },
-        {
-          "file": "02_hero_demo_to_prod.svg",
-          "title": "hero demo to prod",
-          "desc": "hero demo to prod"
-        },
-        {
-          "file": "03_three_pains.svg",
-          "title": "three pains",
-          "desc": "three pains"
-        },
-        {
-          "file": "04_agent_architecture.svg",
-          "title": "agent architecture",
-          "desc": "agent architecture"
-        },
-        {
-          "file": "05_three_modes.svg",
-          "title": "three modes",
-          "desc": "three modes"
-        },
-        {
-          "file": "06_tool_orchestration.svg",
-          "title": "tool orchestration",
-          "desc": "tool orchestration"
-        },
-        {
-          "file": "07_context_engineering.svg",
-          "title": "context engineering",
-          "desc": "context engineering"
-        },
-        {
-          "file": "08_kpi_dashboard.svg",
-          "title": "kpi dashboard",
-          "desc": "kpi dashboard"
-        },
-        {
-          "file": "09_metrics_trend.svg",
-          "title": "metrics trend",
-          "desc": "metrics trend"
-        },
-        {
-          "file": "10_failure_modes.svg",
-          "title": "failure modes",
-          "desc": "failure modes"
-        },
-        {
-          "file": "11_roadmap.svg",
-          "title": "roadmap",
-          "desc": "roadmap"
-        },
-        {
-          "file": "12_cta_closing.svg",
-          "title": "cta closing",
-          "desc": "cta closing"
         }
       ]
     },
