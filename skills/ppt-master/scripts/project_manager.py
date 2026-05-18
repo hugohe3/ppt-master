@@ -164,7 +164,7 @@ class ProjectManager:
                 "- `templates/`: project templates\n"
                 "- `sources/`: source materials and normalized markdown\n"
                 "- `exports/`: main native pptx (timestamped)\n"
-                "- `backup/<timestamp>/`: SVG snapshot pptx + svg_output/ archive (auto-created on export; safe to delete old timestamps)\n"
+                "- `backup/<timestamp>/`: SVG snapshot pptx + svg_output/ archive (created only when exported with `--svg-snapshot`; safe to delete old timestamps)\n"
             ),
             encoding="utf-8",
         )

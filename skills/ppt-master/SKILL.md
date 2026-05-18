@@ -376,18 +376,20 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 # Output:
-#   exports/<project_name>_<timestamp>.pptx           ← main native pptx (reads svg_output/, high fidelity)
+#   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
+#
+# Add --svg-snapshot to also emit the SVG-image preview pptx + svg_output/ backup:
 #   backup/<timestamp>/<project_name>_svg.pptx        ← SVG preview pptx (reads svg_final/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
 ```
 
-> The two products now read from different sources by design: native pptx
-> consumes `svg_output/` so the converter can preserve high-fidelity primitives
-> (icon `<use>` placeholders, image `preserveAspectRatio` → `srcRect`, rounded
-> rect `rx/ry` → `prstGeom roundRect`). The legacy/preview pptx still consumes
-> `svg_final/` because PowerPoint's internal SVG parser cannot handle those
-> primitives. Pass `-s output` or `-s final` to force a single source on both
-> products if you need the older single-source behaviour.
+> The native pptx consumes `svg_output/` directly so the converter can preserve
+> high-fidelity primitives (icon `<use>` placeholders, image `preserveAspectRatio`
+> → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`). The SVG snapshot is
+> opt-in via `--svg-snapshot` — live preview already provides the SVG visual
+> reference, so the snapshot pptx is only needed when you want a self-contained
+> file to share or to rebuild without re-running the LLM. Pass `-s output` or
+> `-s final` to force a single source if you need it.
 
 **Optional animation flags** (the defaults already enable rich entrance animations — adjust only when the user asks for something different):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
