@@ -43,7 +43,7 @@ Branch by the type of reference source the user supplied. This step produces ana
 Run the unified preparation helper:
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
+uv run skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
 ```
 
 This produces, in one workspace:
@@ -259,7 +259,7 @@ ls -la "skills/ppt-master/templates/layouts/<template_id>"
 Run SVG validation on the template directory:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/templates/layouts/<template_id>" --template-mode --format <canvas_format>
+uv run skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/templates/layouts/<template_id>" --template-mode --format <canvas_format>
 ```
 
 `--template-mode` makes the checker:
@@ -290,7 +290,7 @@ This step is a **hard gate**. Do not register the template into the library inde
 Run the unified registrar; it derives the `layouts_index.json` entry and refreshes the `README.md` Quick Index from `design_spec.md` (frontmatter when present, prose fallback otherwise) plus the actual SVG file list:
 
 ```bash
-python3 skills/ppt-master/scripts/register_template.py <template_id>
+uv run skills/ppt-master/scripts/register_template.py <template_id>
 ```
 
 Outputs:
@@ -330,7 +330,7 @@ The completion card's file roster is collected by globbing `*.svg` in the templa
 > To rebuild every entry at once (e.g. after editing many specs), run:
 >
 > ```bash
-> python3 skills/ppt-master/scripts/register_template.py --rebuild-all
+> uv run skills/ppt-master/scripts/register_template.py --rebuild-all
 > ```
 
 If you need to update the categorized sections lower in `README.md` (Brand Style Templates / General Style Templates / etc.), edit those by hand — the registrar deliberately leaves them alone so curated descriptions are preserved.

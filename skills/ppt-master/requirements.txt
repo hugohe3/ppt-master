@@ -5,7 +5,12 @@
 # 大部分工具仅使用 Python 标准库，以下为可选依赖。
 #
 # Install / 安装方式：
-#   pip install -r requirements.txt
+#   uv sync                # recommended / 推荐
+#   uv pip install -r requirements.txt  # alternative
+#   pip install -r requirements.txt     # legacy / 传统 pip
+#
+# Note: when adding/updating dependencies, also update pyproject.toml and run `uv lock`.
+# 注意：添加/更新依赖时，请同时更新 pyproject.toml 并运行 `uv lock`。
 
 # ─────────────────────────────────────────────────────────────
 # SVG to PPTX tool / SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)
@@ -27,7 +32,7 @@ edge-tts>=7.2.8
 # 用于将 SVG 转换为 PNG 后备图片，确保 Office LTSC 2021 等版本正常显示
 #
 # Option A / 方案 A: CairoSVG (recommended / 推荐, ~25MB, full gradient/filter support)
-#   pip install cairosvg
+#   uv add cairosvg
 #   macOS: brew install cairo
 #
 # Option B / 方案 B: svglib (lightweight / 轻量, ~5MB, some gradients may be lost)

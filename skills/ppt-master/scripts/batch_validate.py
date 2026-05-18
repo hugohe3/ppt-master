@@ -5,10 +5,10 @@ PPT Master - Batch Project Validation Tool
 Checks the structural integrity and compliance of multiple projects at once.
 
 Usage:
-    python3 scripts/batch_validate.py examples
-    python3 scripts/batch_validate.py projects
-    python3 scripts/batch_validate.py --all
-    python3 scripts/batch_validate.py examples projects
+    uv run scripts/batch_validate.py examples
+    uv run scripts/batch_validate.py projects
+    uv run scripts/batch_validate.py --all
+    uv run scripts/batch_validate.py examples projects
 """
 
 import sys
@@ -258,14 +258,14 @@ def print_usage() -> None:
     """Print CLI usage information."""
     print("PPT Master - Batch Project Validation Tool\n")
     print("Usage:")
-    print("  python3 scripts/batch_validate.py <directory>")
-    print("  python3 scripts/batch_validate.py <dir1> <dir2> ...")
-    print("  python3 scripts/batch_validate.py --all")
+    print("  uv run scripts/batch_validate.py <directory>")
+    print("  uv run scripts/batch_validate.py <dir1> <dir2> ...")
+    print("  uv run scripts/batch_validate.py --all")
     print("\nExamples:")
-    print("  python3 scripts/batch_validate.py examples")
-    print("  python3 scripts/batch_validate.py projects")
-    print("  python3 scripts/batch_validate.py examples projects")
-    print("  python3 scripts/batch_validate.py --all")
+    print("  uv run scripts/batch_validate.py examples")
+    print("  uv run scripts/batch_validate.py projects")
+    print("  uv run scripts/batch_validate.py examples projects")
+    print("  uv run scripts/batch_validate.py --all")
 
 
 def main() -> None:

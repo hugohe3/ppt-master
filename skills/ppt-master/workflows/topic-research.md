@@ -48,7 +48,7 @@ This workflow is **independent**: it owns the source-acquisition step when no fi
 **Fallback when no IDE web tools** — pause, ask the user for 2–4 authoritative URLs (Wikipedia / official site / institutional release), then fetch each:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>
+uv run ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>
 ```
 
 **Search strategy**:

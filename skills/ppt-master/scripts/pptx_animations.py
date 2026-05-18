@@ -26,8 +26,8 @@ Animation modes used by the builder:
 Dependencies: None (pure XML generation)
 
 Usage:
-    python3 scripts/pptx_animations.py --demo
-    python3 scripts/pptx_animations.py --list
+    uv run scripts/pptx_animations.py --demo
+    uv run scripts/pptx_animations.py --list
 """
 
 import argparse

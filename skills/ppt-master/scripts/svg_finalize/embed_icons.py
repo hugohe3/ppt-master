@@ -31,8 +31,8 @@ Icon libraries (subdirectories of templates/icons/):
     simple-icons/      - 3400+ brand logos, 24x24 viewBox (brand-inset library — used alongside the chosen primary library, NOT as a standalone library for generic icons)
 
 Usage:
-    python3 scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
-    python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
+    uv run scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
+    uv run scripts/svg_finalize/embed_icons.py svg_output/*.svg
 
 Options:
     --icons-dir <path>    Icon directory path (default: templates/icons/)
@@ -311,10 +311,10 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 Examples:
-  python3 scripts/svg_finalize/embed_icons.py svg_output/01_cover.svg
-  python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
-  python3 scripts/svg_finalize/embed_icons.py --dry-run svg_output/*.svg
-  python3 scripts/svg_finalize/embed_icons.py --icons-dir my_icons/ output.svg
+  uv run scripts/svg_finalize/embed_icons.py svg_output/01_cover.svg
+  uv run scripts/svg_finalize/embed_icons.py svg_output/*.svg
+  uv run scripts/svg_finalize/embed_icons.py --dry-run svg_output/*.svg
+  uv run scripts/svg_finalize/embed_icons.py --icons-dir my_icons/ output.svg
         '''
     )
     

@@ -41,7 +41,7 @@ The AI handles the rest.
 Anything `edge-tts` supports — roughly 90 locales including all major Chinese variants (`zh-CN` / `zh-TW` / `zh-HK` Cantonese), English (US/UK/AU/IN), Japanese, Korean, French, German, Spanish, Portuguese, Russian, Arabic, etc. List voices for any locale yourself with:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale ja-JP
+uv run skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale ja-JP
 ```
 
 ## Manual usage (advanced)
@@ -50,15 +50,15 @@ If you want to skip the AI flow and call the script directly:
 
 ```bash
 # 1. Make sure speaker notes are split (post-processing Step 7.1):
-python3 skills/ppt-master/scripts/total_md_split.py <project_path>
+uv run skills/ppt-master/scripts/total_md_split.py <project_path>
 
 # 2A. Generate MP3s with edge-tts (default, no API key)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
 
 # 2B. Or generate MP3s with ElevenLabs (requires ELEVENLABS_API_KEY)
 export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider elevenlabs \
   --voice-id <elevenlabs-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
@@ -66,14 +66,14 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 # 2C. Or generate MP3s with MiniMax (supports system and cloned voice_id)
 export MINIMAX_API_KEY="your-minimax-api-key"
 # Defaults to the China endpoint. For overseas access, set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2.
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider minimax \
   --voice-id <minimax-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 2D. Or generate audio with Qwen TTS (system voice or cloned voice)
 export DASHSCOPE_API_KEY="your-dashscope-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider qwen \
   --voice-id <qwen-voice> \
   --qwen-model qwen3-tts-flash \
@@ -81,13 +81,13 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 
 # 2E. Or generate MP3s with CosyVoice (system voice or cloned/designed voice_id)
 export COSYVOICE_API_KEY="your-dashscope-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice \
   --voice-id <cosyvoice-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
 # 3. (Optional) Re-export PPTX with audio embedded
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --recorded-narration audio
 ```
 
@@ -97,7 +97,7 @@ For ElevenLabs, `--voice-id` is required. List voices from your ElevenLabs accou
 
 ```bash
 export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+uv run skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
 ```
 
 For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
@@ -125,7 +125,7 @@ You: Generate the narration with my cloned ElevenLabs voice id abc123
 Or call the script directly:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider minimax --voice-id <your-cloned-voice-id> \
   --minimax-model speech-2.8-hd
 ```
@@ -141,7 +141,7 @@ Replace `--provider minimax` with `elevenlabs` / `qwen` / `cosyvoice` as needed;
 ## Dependency
 
 ```bash
-python3 -m pip install edge-tts
+uv pip install edge-tts
 ```
 
 Already listed in `skills/ppt-master/requirements.txt`. `edge-tts` calls Microsoft's online TTS service — an internet connection is required at generation time. The MP3s themselves are local files; nothing about playback or PowerPoint export depends on the network afterwards.

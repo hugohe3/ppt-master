@@ -218,9 +218,9 @@ Crop-to-fill (backgrounds and hero images only):
 ## Automation Tool
 
 ```bash
-python3 scripts/analyze_images.py <project_path>/images                    # Default: PPT 16:9
-python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT 4:3
-python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
+uv run scripts/analyze_images.py <project_path>/images                    # Default: PPT 16:9
+uv run scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT 4:3
+uv run scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 ```
 
 `--canvas` selects target format (default `ppt169`). The tool computes layout type (top-bottom / left-right), image display area, and text area per the formulas above. Output is a Markdown table — paste directly into the image resource list.

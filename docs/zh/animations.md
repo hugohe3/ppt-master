@@ -19,13 +19,13 @@ PPT Master 导出的 PPTX 同时支持**页间转场**（page transition）与**
 
 ```bash
 # 从真实顶层 <g id> 锚点生成可编辑模板
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
+uv run skills/ppt-master/scripts/animation_config.py scaffold <project>
 
 # 导出前校验引用是否存在
-python3 skills/ppt-master/scripts/animation_config.py validate <project>
+uv run skills/ppt-master/scripts/animation_config.py validate <project>
 
 # 导出时会自动读取 <project>/animations.json
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```
 
 最小 sidecar：
@@ -60,13 +60,13 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 
 ```bash
 # 换效果
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
 
 # 关闭转场
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
 
 # 每 5 秒自动翻页（展厅 / 自动循环）
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 ```
 
 可选效果：`fade`、`push`、`wipe`、`split`、`strips`、`cover`、`random`。
@@ -87,23 +87,23 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 
 ```bash
 # 默认即开启：mixed 效果 + after-previous 触发，无需任何参数
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project>
 
 # 关闭页内动画
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a none
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -a none
 
 # 改用单一效果（仍走默认的 after-previous 自动级联）
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
 # 改为单击触发（演讲者控制节奏）
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click
 
 # 自定义节奏
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
         --animation-stagger 0.6 --animation-duration 0.5
 
 # 所有组进入页面时同时入场
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
 ```
 
 22 种单一效果：`appear`、`fade`、`fly`、`cut`、`zoom`、`wipe`、`split`、`blinds`、`checkerboard`、`dissolve`、`random_bars`、`peek`、`wheel`、`box`、`circle`、`diamond`、`plus`、`strips`、`wedge`、`stretch`、`expand`、`swivel`。再加两种自动轮换模式：

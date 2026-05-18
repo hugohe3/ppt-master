@@ -7,7 +7,7 @@ Propagate a `spec_lock.md` value change to both the lock file and every `svg_out
 ## Usage
 
 ```bash
-python3 skills/ppt-master/scripts/update_spec.py <project_path> <section>.<key>=<value>
+uv run skills/ppt-master/scripts/update_spec.py <project_path> <section>.<key>=<value>
 ```
 
 Bare `<key>=<value>` (no dot) is treated as `colors.<key>=<value>` for backward compat.
@@ -23,13 +23,13 @@ One invocation = one change. The tool:
 
 ```bash
 # swap the primary color deck-wide (bare key → colors.primary)
-python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 primary=#0066AA
+uv run skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 primary=#0066AA
 
 # explicit section.key form
-python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 colors.accent=#FF6B35
+uv run skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 colors.accent=#FF6B35
 
 # change the deck-wide font family
-python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 \
+uv run skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 \
   'typography.font_family="Inter", Arial, sans-serif'
 ```
 

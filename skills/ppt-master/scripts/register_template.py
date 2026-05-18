@@ -13,9 +13,9 @@ spec and the indexes. Run it after creating a new template (or after editing a
 spec) and the indexes update automatically — no manual JSON / Markdown surgery.
 
 Usage:
-    python3 scripts/register_template.py <template_id>
-    python3 scripts/register_template.py <template_id> --dry-run
-    python3 scripts/register_template.py --rebuild-all
+    uv run scripts/register_template.py <template_id>
+    uv run scripts/register_template.py <template_id> --dry-run
+    uv run scripts/register_template.py --rebuild-all
 
 The last form rebuilds every entry from scratch, which is the recommended way
 to repair index drift across many templates at once.

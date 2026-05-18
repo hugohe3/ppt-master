@@ -1,0 +1,40 @@
+[project]
+name = "ppt-master"
+version = "0.1.0"
+description = "AI-driven multi-format SVG content generation system"
+requires-python = ">=3.10"
+dependencies = [
+    # SVG to PPTX export
+    "python-pptx>=0.6.21",
+    # Recorded narration
+    "edge-tts>=7.2.8",
+    # Office compatibility (SVG to PNG fallback)
+    "svglib>=1.5.0",
+    "reportlab>=4.0.0",
+    # PDF to Markdown
+    "PyMuPDF>=1.23.0",
+    # Document to Markdown (native paths)
+    "mammoth>=1.6.0",
+    "markdownify>=0.11.6",
+    "ebooklib>=0.18",
+    "nbconvert>=7.0.0",
+    # Excel to Markdown
+    "openpyxl>=3.1.0",
+    # Image processing
+    "Pillow>=9.0.0",
+    "numpy>=1.20.0",
+    # Web to Markdown
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0",
+    "curl_cffi>=0.7.0",
+    # AI image generation
+    "google-genai>=1.0.0",
+    "openai>=1.0.0",
+    # SVG editor server
+    "flask>=3.0.0",
+]
+
+[tool.uv]
+package = false
+# Keep dependencies in sync with skills/ppt-master/requirements.txt
+# When upstream updates requirements.txt, mirror changes here and run `uv lock`

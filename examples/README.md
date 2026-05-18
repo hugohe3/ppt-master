@@ -479,7 +479,7 @@ We welcome your project contributions! Please ensure:
 
 1. Follow the standard project structure
 2. Include a complete design specification document
-3. SVG files comply with technical specifications (check with `python3 skills/ppt-master/scripts/svg_quality_checker.py`)
+3. SVG files comply with technical specifications (check with `uv run skills/ppt-master/scripts/svg_quality_checker.py`)
 4. No sensitive information is included
 
 ### How to Contribute

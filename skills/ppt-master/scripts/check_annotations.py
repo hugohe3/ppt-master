@@ -6,12 +6,12 @@ Scans SVG files for edit annotations (data-edit-target / data-edit-annotation at
 and prints a human-readable summary. Used by AI agents to discover pending annotations.
 
 Usage:
-    python3 scripts/check_annotations.py <project_dir>
-    python3 scripts/check_annotations.py <svg_file>
+    uv run scripts/check_annotations.py <project_dir>
+    uv run scripts/check_annotations.py <svg_file>
 
 Examples:
-    python3 scripts/check_annotations.py projects/my-project
-    python3 scripts/check_annotations.py projects/my-project/svg_output/slide_01.svg
+    uv run scripts/check_annotations.py projects/my-project
+    uv run scripts/check_annotations.py projects/my-project/svg_output/slide_01.svg
 
 Dependencies:
     None (only uses standard library)

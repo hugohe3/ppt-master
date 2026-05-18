@@ -14,14 +14,14 @@ See docs/technical-design.md "Post-Processing Pipeline" before modifying.
 
 Usage:
     # Execute all processing steps (recommended)
-    python3 scripts/finalize_svg.py <project_directory>
+    uv run scripts/finalize_svg.py <project_directory>
 
     # Execute only specific steps
-    python3 scripts/finalize_svg.py <project_directory> --only embed-icons fix-rounded
+    uv run scripts/finalize_svg.py <project_directory> --only embed-icons fix-rounded
 
 Examples:
-    python3 scripts/finalize_svg.py projects/my_project
-    python3 scripts/finalize_svg.py examples/ppt169_demo --only embed-icons
+    uv run scripts/finalize_svg.py projects/my_project
+    uv run scripts/finalize_svg.py examples/ppt169_demo --only embed-icons
 
 Processing options:
     embed-icons   - Replace <use data-icon="..."/> with actual icon SVG

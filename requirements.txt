@@ -5,7 +5,8 @@
 # 完整依赖列表已内置于 skill 内部，单独安装 skill 即可获得完整能力。
 #
 # Install / 安装方式：
-#   pip install -r requirements.txt                     # from repo root / 仓库根目录
-#   pip install -r skills/ppt-master/requirements.txt   # from anywhere / 任意位置
+#   uv sync                                           # recommended / 推荐 (uv)
+#   uv pip install -r requirements.txt                 # alternative / 备选
+#   pip install -r requirements.txt                    # legacy / 传统 pip
 #
 -r skills/ppt-master/requirements.txt

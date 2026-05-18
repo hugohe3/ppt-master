@@ -443,7 +443,7 @@ if __name__ == '__main__':
     import sys
 
     def print_usage() -> None:
-        print("Usage: python3 project_utils.py <project_path>")
+        print("Usage: uv run scripts/project_utils.py <project_path>")
 
     if len(sys.argv) > 1:
         if sys.argv[1] in {'-h', '--help', 'help'}:

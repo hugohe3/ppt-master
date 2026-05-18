@@ -460,7 +460,7 @@ def main() -> None:
     if args.interactive or not args.input:
         inp, out_base = _interactive_get_paths()
         if not inp:
-            print("Cancelled. Usage: python3 scripts/svg_finalize/flatten_tspan.py <input_dir_or_svg> [output_dir]")
+            print("Cancelled. Usage: uv run scripts/svg_finalize/flatten_tspan.py <input_dir_or_svg> [output_dir]")
             sys.exit(0)
     else:
         inp = args.input

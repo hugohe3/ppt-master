@@ -295,13 +295,13 @@ Must be executed in order — skipping or adding extra flags is FORBIDDEN:
 
 ```bash
 # 1. Split speaker notes into per-page note files
-python3 scripts/total_md_split.py <project_path>
+uv run scripts/total_md_split.py <project_path>
 
 # 2. SVG post-processing (icon embedding, image crop/embed, text flattening, rounded rect to path)
-python3 scripts/finalize_svg.py <project_path>
+uv run scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX (from svg_final/, embeds speaker notes by default)
-python3 scripts/svg_to_pptx.py <project_path>
+uv run scripts/svg_to_pptx.py <project_path>
 # Output:
 #   exports/<project_name>_<timestamp>.pptx           ← main native pptx
 #   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot
@@ -318,8 +318,8 @@ python3 scripts/svg_to_pptx.py <project_path>
 **Optional recorded narration** (only when the user asks for narrated/video export):
 
 ```bash
-python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
+uv run scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
+uv run scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
 
 - `notes_to_audio.py` reads split `notes/*.md` files and writes one audio file per slide to `audio/`. Default `edge` output is MP3; configured cloud providers may output MP3 or WAV depending on provider settings.

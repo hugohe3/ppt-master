@@ -43,34 +43,37 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
 
 ```bash
+# Dependency management
+uv sync
+
 # Source content conversion
-python3 skills/ppt-master/scripts/source_to_md/pdf_to_md.py <PDF_file>
-python3 skills/ppt-master/scripts/source_to_md/doc_to_md.py <DOCX_or_other_file>
-python3 skills/ppt-master/scripts/source_to_md/excel_to_md.py <XLSX_or_XLSM_file>
-python3 skills/ppt-master/scripts/source_to_md/ppt_to_md.py <PPTX_file>
-python3 skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>
+uv run skills/ppt-master/scripts/source_to_md/pdf_to_md.py <PDF_file>
+uv run skills/ppt-master/scripts/source_to_md/doc_to_md.py <DOCX_or_other_file>
+uv run skills/ppt-master/scripts/source_to_md/excel_to_md.py <XLSX_or_XLSM_file>
+uv run skills/ppt-master/scripts/source_to_md/ppt_to_md.py <PPTX_file>
+uv run skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>
 
 # Project management
-python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
-python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_URLs...> --move
-python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
+uv run skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
+uv run skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_URLs...> --move
+uv run skills/ppt-master/scripts/project_manager.py validate <project_path>
 
 # Image tools and SVG quality check
-python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
+uv run skills/ppt-master/scripts/analyze_images.py <project_path>/images
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
-python3 skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
-python3 skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json
+uv run skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
+uv run skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
-python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
-python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live
-python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
-python3 skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
+uv run skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+uv run skills/ppt-master/scripts/svg_editor/server.py <project_path> --live
+uv run skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+uv run skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
+uv run skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
 
 # Post-processing pipeline: run sequentially, one command at a time
-python3 skills/ppt-master/scripts/total_md_split.py <project_path>
-python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+uv run skills/ppt-master/scripts/total_md_split.py <project_path>
+uv run skills/ppt-master/scripts/finalize_svg.py <project_path>
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 ```
 
 ## Core Directories

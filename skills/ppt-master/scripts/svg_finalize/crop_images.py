@@ -12,7 +12,7 @@ Supports 9 alignment modes:
 - xMinYMax / xMidYMax / xMaxYMax (bottom alignment)
 
 Usage:
-    python3 scripts/svg_finalize/crop_images.py <SVG file or directory> [--dry-run]
+    uv run scripts/svg_finalize/crop_images.py <SVG file or directory> [--dry-run]
 """
 
 import os

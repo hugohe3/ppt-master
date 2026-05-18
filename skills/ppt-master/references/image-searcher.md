@@ -99,7 +99,7 @@ Then `build_query_progression` tries: original → simplified (4 words) → simp
 ## 5. Running `image_search.py`
 
 ```bash
-python3 scripts/image_search.py "<query>" \
+uv run scripts/image_search.py "<query>" \
   --filename <name>.jpg \
   --slide <slide_id> \
   --orientation landscape \

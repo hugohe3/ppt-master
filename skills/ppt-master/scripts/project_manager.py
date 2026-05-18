@@ -2,10 +2,10 @@
 """PPT Master project management helpers.
 
 Usage:
-    python3 scripts/project_manager.py init <project_name> [--format ppt169] [--dir projects]
-    python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
-    python3 scripts/project_manager.py validate <project_path>
-    python3 scripts/project_manager.py info <project_path>
+    uv run scripts/project_manager.py init <project_name> [--format ppt169] [--dir projects]
+    uv run scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
+    uv run scripts/project_manager.py validate <project_path>
+    uv run scripts/project_manager.py info <project_path>
 """
 
 from __future__ import annotations

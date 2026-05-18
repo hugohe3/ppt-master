@@ -11,7 +11,7 @@ This workflow is **independent**: it reads `notes/*.md` and queries the selected
 ## When to Run
 
 - `notes/total.md` exists and has been split into per-page files at `notes/*.md` (post-processing Step 7.1 done).
-- Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
+- Default mode: `edge-tts` is installed (`uv pip install edge-tts`).
 - The workflow is page-level only: one notes file becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
 - PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
 - PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.
@@ -44,21 +44,21 @@ Default to **edge** unless the user explicitly asks for a cloud provider / highe
 **edge backend**:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+uv run skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
 ```
 
 **ElevenLabs backend**:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+uv run skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
 ```
 
 **Cloud providers using explicit voice IDs/names**:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider minimax --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider qwen --list-voices
-python3 skills/ppt-master/scripts/notes_to_audio.py --provider cosyvoice --list-voices
+uv run skills/ppt-master/scripts/notes_to_audio.py --provider minimax --list-voices
+uv run skills/ppt-master/scripts/notes_to_audio.py --provider qwen --list-voices
+uv run skills/ppt-master/scripts/notes_to_audio.py --provider cosyvoice --list-voices
 ```
 
 The output is a flat list of all available voices for the selected provider. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
@@ -118,32 +118,32 @@ Run sequentially — do NOT bundle:
 
 ```bash
 # 1A. Generate audio with edge (default)
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice <chosen-ShortName> --rate <chosen-rate>
 
 # 1B. Or generate audio with ElevenLabs
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider elevenlabs --voice-id <chosen-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
 
 # 1C. Or generate audio with MiniMax
 # Defaults to the China endpoint; set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2 for overseas access.
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider minimax --voice-id <chosen-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 1D. Or generate audio with Qwen TTS
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider qwen --voice-id <chosen-voice> \
   --qwen-model qwen3-tts-flash --qwen-language-type Chinese
 
 # 1E. Or generate audio with CosyVoice
-python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
 # 2. (If user kept embedding) Re-export PPTX with audio embedded
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --recorded-narration audio
 ```
 
@@ -160,4 +160,4 @@ Output one summary block listing:
 - Number of audio files generated and their location (`<project_path>/audio/*`).
 - The provider, voice, and rate/settings actually used.
 - (If embedded) the new narrated PPTX path under `<project_path>/exports/`.
-- (If skipped embedding) one-line hint on how to embed later: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+- (If skipped embedding) one-line hint on how to embed later: `uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.

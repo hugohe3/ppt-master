@@ -6,12 +6,12 @@ Splits the total.md speaker notes file into multiple individual notes files,
 each corresponding to one SVG page.
 
 Usage:
-    python3 scripts/total_md_split.py <project_path>
-    python3 scripts/total_md_split.py <project_path> -o output_dir
+    uv run scripts/total_md_split.py <project_path>
+    uv run scripts/total_md_split.py <project_path> -o output_dir
 
 Examples:
-    python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD
-    python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD -o notes
+    uv run scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD
+    uv run scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD -o notes
 
 Dependencies:
     None (only uses standard library)

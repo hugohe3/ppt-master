@@ -21,17 +21,17 @@ Workflow:
 
 Examples:
     # Default: zero-config, quality-first across allowed licenses
-    python3 scripts/image_search.py "offshore wind farm" \
+    uv run scripts/image_search.py "offshore wind farm" \
         --filename cover_bg.jpg --slide 01_cover \
         --orientation landscape -o projects/demo/images
 
     # Strict mode: refuse anything that would require attribution
-    python3 scripts/image_search.py "abstract gradient" \
+    uv run scripts/image_search.py "abstract gradient" \
         --filename hero.jpg --strict-no-attribution \
         -o projects/demo/images
 
     # Pin a specific provider (useful when an API key is set)
-    python3 scripts/image_search.py "executive meeting" \
+    uv run scripts/image_search.py "executive meeting" \
         --filename team.jpg --provider pexels \
         --orientation landscape -o projects/demo/images
 """

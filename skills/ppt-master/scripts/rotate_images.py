@@ -6,9 +6,9 @@ Provides visual image orientation filtering, fix code generation,
 and batch image rotation functionality.
 
 Usage:
-    python3 scripts/rotate_images.py gen <images_directory>
-    python3 scripts/rotate_images.py fix <fixes.json>
-    python3 scripts/rotate_images.py auto <images_directory>
+    uv run scripts/rotate_images.py gen <images_directory>
+    uv run scripts/rotate_images.py fix <fixes.json>
+    uv run scripts/rotate_images.py auto <images_directory>
 """
 
 
@@ -537,7 +537,7 @@ def main() -> None:
     if command == 'gen':
         if len(sys.argv) < 3:
             print("[ERROR] Error: images directory path is required")
-            print("Usage: python3 scripts/rotate_images.py gen <images_directory>")
+            print("Usage: uv run scripts/rotate_images.py gen <images_directory>")
             sys.exit(1)
 
         target_dir = sys.argv[2]
@@ -552,7 +552,7 @@ def main() -> None:
     elif command == 'fix':
         if len(sys.argv) < 3:
             print("[ERROR] Error: fixes.json path is required")
-            print("Usage: python3 scripts/rotate_images.py fix <fixes.json>")
+            print("Usage: uv run scripts/rotate_images.py fix <fixes.json>")
             sys.exit(1)
 
         json_file = sys.argv[2]
@@ -566,7 +566,7 @@ def main() -> None:
     elif command == 'auto':
         if len(sys.argv) < 3:
             print("[ERROR] Error: images directory path is required")
-            print("Usage: python3 scripts/rotate_images.py auto <images_directory>")
+            print("Usage: uv run scripts/rotate_images.py auto <images_directory>")
             sys.exit(1)
 
         target_dir = sys.argv[2]

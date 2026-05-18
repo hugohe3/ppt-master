@@ -293,7 +293,7 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 ### Path A — `image_gen.py --manifest` (Default)
 
 ```bash
-python3 scripts/image_gen.py \
+uv run scripts/image_gen.py \
   --manifest project/images/image_prompts.json \
   --output project/images
 ```

@@ -6,12 +6,12 @@ Flask backend for the SVG annotation editor.
 Serves the web UI and provides API endpoints for reading/writing SVG annotations.
 
 Usage:
-    python3 scripts/svg_editor/server.py <project_dir>
+    uv run scripts/svg_editor/server.py <project_dir>
 
 Examples:
-    python3 scripts/svg_editor/server.py projects/my-project
-    python3 scripts/svg_editor/server.py projects/my-project --port 8080
-    python3 scripts/svg_editor/server.py projects/my-project --live
+    uv run scripts/svg_editor/server.py projects/my-project
+    uv run scripts/svg_editor/server.py projects/my-project --port 8080
+    uv run scripts/svg_editor/server.py projects/my-project --live
 
 Dependencies:
     flask>=3.0.0

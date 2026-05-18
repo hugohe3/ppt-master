@@ -385,7 +385,7 @@ Image_Generator reads these two fields and applies them deck-wide. If both are a
 
 After the user picks a candidate, scan the outline and surface any pages where the image makes more sense as the page's main voice than as a local block. Present them as a short list and let the user confirm, edit, or skip. Result is recorded as `page_role: hero_page` on the matching `ai` rows. Density is judgment-based — no fixed quota.
 
-**When selection includes B**, you must run `python3 scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
+**When selection includes B**, you must run `uv run scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
 
 **When B / C / D / E is selected**, add an image resource list to the spec:
 
@@ -674,7 +674,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 Project folder must exist before Strategist runs. If not, execute:
 
 ```bash
-python3 scripts/project_manager.py init <project_name> --format <canvas_format>
+uv run scripts/project_manager.py init <project_name> --format <canvas_format>
 ```
 
 Save outputs to `projects/<project_name>_<format>_<YYYYMMDD>/design_spec.md`.

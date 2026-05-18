@@ -46,23 +46,33 @@ cd ppt-master
 
 ---
 
-## Step 3 — 安装依赖
+## Step 3 — 安装 uv 和依赖
+
+**3.1 — 安装 uv（Python 包管理器）**
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+> 这会在系统层面安装 `uv`。安装完成后**重启 PowerShell**，验证：`uv --version`
+
+**3.2 — 安装项目依赖**
 
 ```powershell
 cd C:\Users\你的用户名\ppt-master   # ← 替换为你的实际路径
-pip install -r requirements.txt
+uv sync
 ```
 
-> 如果 `pip` 无法识别，用 `python -m pip install -r requirements.txt`。
+> `uv sync` 会创建隔离的虚拟环境（`.venv/`）并将所有依赖安装到其中 — 不污染全局环境，无需 `pip`。
 
-等待安装完成，最后看到 `Successfully installed ...` 就行。
+等待安装完成，最后看到 `Resolved 18 packages` 之类的输出就行。
 
 ---
 
 ## Step 4 — 验证安装
 
 ```powershell
-python -c "import pptx; import fitz; print('All core dependencies OK')"
+uv run python -c "import pptx; import fitz; print('All core dependencies OK')"
 ```
 
 ✅ 输出 `All core dependencies OK` → 核心环境没问题。
@@ -89,7 +99,7 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 | 增强项 | 只在以下情况才装 | 安装方式 | 验证 |
 |--------|-----------------|---------|------|
-| **CairoSVG** — 更高质量 PNG 后备图 | 你希望在不原生支持 SVG 的 Office 版本下获得更清晰的 PNG 后备图。`svglib`（已默认安装）足够大多数场景。 | 安装 [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases) 后 `pip install cairosvg` | `python -c "import cairosvg"` |
+| **CairoSVG** — 更高质量 PNG 后备图 | 你希望在不原生支持 SVG 的 Office 版本下获得更清晰的 PNG 后备图。`svglib`（已默认安装）足够大多数场景。 | 安装 [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases) 后 `uv add cairosvg` | `uv run python -c "import cairosvg"` |
 | **Pandoc** — 旧格式文档 | 你需要转 `.doc`、`.odt`、`.rtf`、`.tex`、`.rst`、`.org`、`.typ`。`.docx`/`.html`/`.epub`/`.ipynb` 已由 Python 原生处理。 | [pandoc.org](https://pandoc.org/installing.html) 下载 `.msi` 安装 | `pandoc --version` |
 
 ---
@@ -114,32 +124,34 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 **方法 3** — 试试 `python3` 或 `py` 命令。
 
-### `pip install` 报权限错误
+### `uv sync` 报权限错误
 
 ```powershell
-pip install --user -r requirements.txt
+$env:UV_PYTHON = (Get-Command python).Source
+uv sync
 ```
 
 或以管理员身份运行 PowerShell。
 
-### `pip install` 网络问题
+### `uv sync` 网络问题
 
 ```powershell
 # 清华镜像（国内推荐）
-pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-
+$env:UV_INDEX_URL = "https://pypi.tuna.tsinghua.edu.cn/simple"
+uv sync
 # 代理
-pip install -r requirements.txt --proxy http://your-proxy:port
+$env:HTTPS_PROXY = "http://your-proxy:port"
+uv sync
 ```
 
 ### `ModuleNotFoundError`
 
-`pip` 装到了另一个 Python 环境。用 `python -m pip install -r requirements.txt` 确保对应同一个。
+直接用了 `python` 而非 `uv run python`。用 `uv run python` 确保在虚拟环境中运行。
 
 ### `import fitz` 失败
 
-1. 升级 pip：`python -m pip install --upgrade pip`
-2. 预编译包：`pip install PyMuPDF --only-binary :all:`
+1. 升级 uv：`uv self update`
+2. 预编译包：`uv pip install PyMuPDF --only-binary :all:`
 3. 仍失败 → 安装 [Visual C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ### PowerShell「脚本运行被禁用」

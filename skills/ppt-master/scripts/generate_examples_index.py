@@ -5,8 +5,8 @@ PPT Master - Examples Index Generator
 Automatically scans the examples directory and generates a README.md index file.
 
 Usage:
-    python3 scripts/generate_examples_index.py
-    python3 scripts/generate_examples_index.py examples
+    uv run scripts/generate_examples_index.py
+    uv run scripts/generate_examples_index.py examples
 """
 
 import sys
@@ -150,7 +150,7 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     content.append("**Method 1: Using an HTTP server (recommended)**\n")
     content.append("```bash")
     content.append(
-        "python3 -m http.server --directory examples/<project_name>/svg_output 8000")
+        "uv run python -m http.server --directory examples/<project_name>/svg_output 8000")
     content.append("# Visit http://localhost:8000")
     content.append("```\n")
 
@@ -165,7 +165,7 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     content.append("Refer to existing project structures, or use the project management tool:\n")
     content.append("```bash")
     content.append(
-        "python3 scripts/project_manager.py init my_project --format ppt169")
+        "uv run scripts/project_manager.py init my_project --format ppt169")
     content.append("```\n")
 
     # Contribution guidelines
@@ -180,8 +180,8 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     content.append("### Submission Process\n")
     content.append("1. Create a project under the `examples/` directory")
     content.append(
-        "2. Validate the project: `python3 scripts/project_manager.py validate examples/<project>`")
-    content.append("3. Update the index: `python3 scripts/generate_examples_index.py`")
+        "2. Validate the project: `uv run scripts/project_manager.py validate examples/<project>`")
+    content.append("3. Update the index: `uv run scripts/generate_examples_index.py`")
     content.append("4. Submit a Pull Request\n")
 
     # Related resources

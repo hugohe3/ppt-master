@@ -2,7 +2,7 @@
 """CLI entry: convert a .pptx file to one SVG per slide.
 
 Usage:
-    python3 pptx_to_svg.py <pptx_file> [-o <output_dir>] [--embed-images]
+    uv run scripts/pptx_to_svg.py <pptx_file> [-o <output_dir>] [--embed-images]
                                        [--media-subdir <name>] [--keep-hidden]
                                        [--inheritance-mode {both,layered,flat}]
 

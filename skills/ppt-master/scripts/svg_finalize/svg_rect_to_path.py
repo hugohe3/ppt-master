@@ -6,13 +6,13 @@ Solves the issue of rounded corners being lost when using "Convert to Shape" in 
 Converts <rect> elements with rx/ry to equivalent <path> elements.
 
 Usage:
-    python3 scripts/svg_finalize/svg_rect_to_path.py <SVG file or directory>
-    python3 scripts/svg_finalize/svg_rect_to_path.py <project_path> -s output
-    python3 scripts/svg_finalize/svg_rect_to_path.py <project_path> -s final -o svg_rounded
+    uv run scripts/svg_finalize/svg_rect_to_path.py <SVG file or directory>
+    uv run scripts/svg_finalize/svg_rect_to_path.py <project_path> -s output
+    uv run scripts/svg_finalize/svg_rect_to_path.py <project_path> -s final -o svg_rounded
 
 Examples:
-    python3 scripts/svg_finalize/svg_rect_to_path.py examples/ppt169_demo
-    python3 scripts/svg_finalize/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
+    uv run scripts/svg_finalize/svg_rect_to_path.py examples/ppt169_demo
+    uv run scripts/svg_finalize/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
 
 Output:
     - Directory mode: outputs to svg_rounded/ subdirectory

@@ -107,13 +107,14 @@ PPT Master 不一样：
 
 ### 1. 前置条件
 
-**只需装 Python 即可。** 其余依赖通过 `pip install -r requirements.txt` 一次装齐。
+**只需装 Python 和 uv 即可。** uv 是 Python 包管理器，依赖通过 `uv sync` 一次装齐到隔离的虚拟环境中，不污染全局。
 
 | 依赖 | 是否必须 | 用途 |
 |------|:--------:|------|
-| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时——唯一真正需要安装的东西 |
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时 |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | ✅ **必需** | Python 包管理器——装在隔离环境，告别全局污染 |
 
-> **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT 了。
+> **一句话总结** — 装好 Python 和 uv，跑一行 `uv sync`，就可以开始生成 PPT 了。
 
 <details open>
 <summary><strong>Windows</strong> — 请看专门的手把手安装指南 ⚠️</summary>
@@ -122,7 +123,7 @@ Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 
 
 **📖 [Windows 安装指南](./docs/zh/windows-installation.md)** — 从零到跑通第一份 PPT，10 分钟搞定。
 
-简要流程：从 [python.org](https://www.python.org/downloads/) 下载 Python → **安装时勾选 "Add to PATH"** → `pip install -r requirements.txt` → 完成。
+简要流程：从 [python.org](https://www.python.org/downloads/) 下载 Python → **安装时勾选 "Add to PATH"** → 安装 [uv](https://docs.astral.sh/uv/getting-started/installation/) → `uv sync` → 完成。
 </details>
 
 <details>
@@ -130,12 +131,13 @@ Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 
 
 ```bash
 # macOS
-brew install python
-pip install -r requirements.txt
+brew install python uv
+uv sync
 
 # Ubuntu / Debian
-sudo apt install python3 python3-pip
-pip install -r requirements.txt
+sudo apt install python3
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
 ```
 </details>
 
@@ -185,10 +187,10 @@ cd ppt-master
 然后安装依赖：
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-日常更新（方式 A / B）：`python3 skills/ppt-master/scripts/update_repo.py`
+日常更新（方式 A / B）：`uv run skills/ppt-master/scripts/update_repo.py`
 
 > **方式 C — Skill marketplace**：仓库已添加 `.claude-plugin/marketplace.json` 元数据，可通过 [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) 生态一行安装：
 >
@@ -201,7 +203,7 @@ pip install -r requirements.txt
 > /plugin install ppt-master@ppt-master
 > ```
 >
-> 上述两种安装方式都只会拉取 skill 文件本身（不含完整仓库），后处理脚本仍需在安装目录跑 `pip install -r requirements.txt`。
+> 上述两种安装方式都只会拉取 skill 文件本身（不含完整仓库），后处理脚本仍需在安装目录跑 `uv sync`。
 
 ### 4. 开始创作
 
@@ -248,7 +250,7 @@ cp /path/to/installed/ppt-master/.env.example ~/.ppt-master/.env
 
 PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一个存在的 `.env`：当前工作目录、clone 仓库根目录、`~/.ppt-master/.env`。
 
-**A) AI 生图** — `image_gen.py`。设置 `IMAGE_BACKEND` 和对应 `*_API_KEY`（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等），流程会自动调用。`python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整后端清单。`gpt-image-2` 目前综合质量最佳。
+**A) AI 生图** — `image_gen.py`。设置 `IMAGE_BACKEND` 和对应 `*_API_KEY`（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等），流程会自动调用。`uv run skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整后端清单。`gpt-image-2` 目前综合质量最佳。
 
 **B) 网络图片搜索** — `image_search.py`。**零配置**可用，但高质量使用建议配置 `PEXELS_API_KEY` / `PIXABAY_API_KEY`（都免费申请）。不配置时只使用 Openverse / Wikimedia Commons，适合作为兜底，但容易出现普通用户上传、构图随意、清晰度不稳定的图片；配置后默认搜索链会追加 Pexels / Pixabay，现代商业摄影、人物、办公、生活方式和插画类图片质量会明显更稳定。默认以图片质量和匹配度优先，直接把 CC0、公有领域、Pexels / Pixabay 免署名许可、CC BY、CC BY-SA 一起纳入候选；如果选中的图片需要署名，Executor 会在该幻灯片自动添加小字署名。只有明确不能出现署名时，才使用 `--strict-no-attribution` 限制为免署名图片。对视觉要求高的封面、产品图、人物图和品牌场景，优先级建议是：用户自带高清素材 / AI 生图 > 配置 Pexels / Pixabay 的网络搜索 > 零配置网络搜索。
 

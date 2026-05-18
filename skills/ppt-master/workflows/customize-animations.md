@@ -24,13 +24,13 @@ description: Customize default PPTX animations with per-slide and per-object tim
 If `animations.json` does not exist:
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>
+uv run skills/ppt-master/scripts/animation_config.py scaffold <project_path>
 ```
 
 If it already exists:
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
+uv run skills/ppt-master/scripts/animation_config.py validate <project_path>
 ```
 
 ---
@@ -189,11 +189,11 @@ Example:
 Run sequentially:
 
 ```bash
-python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
+uv run skills/ppt-master/scripts/animation_config.py validate <project_path>
 ```
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 ```
 
 **Validation**: the exported native PPTX should reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`.

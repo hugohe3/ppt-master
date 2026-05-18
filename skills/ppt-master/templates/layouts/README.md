@@ -203,8 +203,8 @@ After the copy:
 3. Ensure `design_spec.md` follows the standard chapter structure
 4. All SVGs use `viewBox="0 0 1280 720"`
 5. Follow SVG technical constraints (see below)
-6. Validate the template directory with `python3 scripts/svg_quality_checker.py templates/layouts/<template_name> --format ppt169`
-7. Register the new template by running `python3 scripts/register_template.py <template_id>` — it derives the `summary` and `keywords` index entry from `design_spec.md` and refreshes the Quick Index above
+6. Validate the template directory with `uv run scripts/svg_quality_checker.py templates/layouts/<template_name> --format ppt169`
+7. Register the new template by running `uv run scripts/register_template.py <template_id>` — it derives the `summary` and `keywords` index entry from `design_spec.md` and refreshes the Quick Index above
 
 `layouts_index.json` is the lightweight lookup used to **discover** library templates (e.g. answering "what templates exist?"). It is not consulted when triggering Step 3 — Step 3 triggers on an explicit directory path the user supplied, regardless of whether that path is in the index. A template folder without an index entry still works fine if the user names its path; it just won't show up in discovery listings.
 

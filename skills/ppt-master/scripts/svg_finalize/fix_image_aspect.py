@@ -13,14 +13,14 @@ Principle:
     <image> elements so that images are centered and maintain their original aspect ratio.
 
 Usage:
-    python3 scripts/svg_finalize/fix_image_aspect.py <svg_file> [svg_file2] ...
-    python3 scripts/svg_finalize/fix_image_aspect.py projects/xxx/svg_output/*.svg
+    uv run scripts/svg_finalize/fix_image_aspect.py <svg_file> [svg_file2] ...
+    uv run scripts/svg_finalize/fix_image_aspect.py projects/xxx/svg_output/*.svg
 
     # Preview mode
-    python3 scripts/svg_finalize/fix_image_aspect.py --dry-run projects/xxx/svg_output/*.svg
+    uv run scripts/svg_finalize/fix_image_aspect.py --dry-run projects/xxx/svg_output/*.svg
 
 Examples:
-    python3 scripts/svg_finalize/fix_image_aspect.py projects/demo/svg_output/slide_06_current_overview.svg
+    uv run scripts/svg_finalize/fix_image_aspect.py projects/demo/svg_output/slide_06_current_overview.svg
 """
 
 import os

@@ -18,10 +18,10 @@ PPT Master - Short Tool Name
 One-paragraph description of what this script does.
 
 Usage:
-    python3 scripts/<name>.py <required_arg> [options]
+    uv run scripts/<name>.py <required_arg> [options]
 
 Examples:
-    python3 scripts/<name>.py projects/<project_name> -o output_dir
+    uv run scripts/<name>.py projects/<project_name> -o output_dir
 
 Dependencies:
     None (only uses standard library)        <-- or list third-party deps
@@ -257,7 +257,7 @@ def classify_license(
 
 **Use instead**:
 
-- Inline smoke commands via `python3 -c "..."` against real project samples; show the output in the conversation / PR description
+- Inline smoke commands via `uv run python -c "..."` against real project samples; show the output in the conversation / PR description
 - Manual verification steps in the runbook
 - Live-API smoke runs against `projects/_smoke_*` directories (gitignored)
 

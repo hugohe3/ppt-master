@@ -2,7 +2,7 @@
 """PPT Master - SVG to PPTX Tool (thin wrapper).
 
 Delegates to the svg_to_pptx package. Kept for CLI backward compatibility:
-    python3 scripts/svg_to_pptx.py <project_path> -s final
+    uv run scripts/svg_to_pptx.py <project_path> -s final
 """
 
 import sys

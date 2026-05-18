@@ -695,11 +695,11 @@ def print_usage() -> None:
     """Print CLI usage information."""
     print("PPT Master - Configuration Management Tool\n")
     print("Usage:")
-    print("  python3 scripts/config.py list-formats     # List all canvas formats")
-    print("  python3 scripts/config.py list-colors      # List all color schemes")
-    print("  python3 scripts/config.py list-industries  # List all industry colors")
-    print("  python3 scripts/config.py export           # Export configuration to JSON")
-    print("  python3 scripts/config.py format <key>     # View a specific canvas format")
+    print("  uv run scripts/config.py list-formats     # List all canvas formats")
+    print("  uv run scripts/config.py list-colors      # List all color schemes")
+    print("  uv run scripts/config.py list-industries  # List all industry colors")
+    print("  uv run scripts/config.py export           # Export configuration to JSON")
+    print("  uv run scripts/config.py format <key>     # View a specific canvas format")
 
 
 def main() -> None:

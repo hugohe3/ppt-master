@@ -103,13 +103,14 @@ I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who 
 
 ### 1. Prerequisites
 
-**You only need Python.** Everything else is installed via `pip install -r requirements.txt`.
+**You only need Python and uv.** uv is a Python package manager. `uv sync` installs all dependencies into an isolated virtual environment — no global pollution.
 
 | Dependency | Required? | What it does |
 |------------|:---------:|--------------|
-| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — the only thing you actually need to install |
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | ✅ **Yes** | Python package manager — isolated environments, no global pollution |
 
-> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations.
+> **TL;DR** — Install Python and uv, run `uv sync`, and you're ready to generate presentations.
 
 <details open>
 <summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
@@ -118,7 +119,7 @@ Windows requires a few extra steps (PATH setup, execution policy, etc.). We wrot
 
 **📖 [Windows Installation Guide](./docs/windows-installation.md)** — from zero to a working presentation in 10 minutes.
 
-Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → `pip install -r requirements.txt` → done.
+Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → install [uv](https://docs.astral.sh/uv/getting-started/installation/) → `uv sync` → done.
 </details>
 
 <details>
@@ -126,12 +127,13 @@ Quick version: download Python from [python.org](https://www.python.org/download
 
 ```bash
 # macOS
-brew install python
-pip install -r requirements.txt
+brew install python uv
+uv sync
 
 # Ubuntu / Debian
-sudo apt install python3 python3-pip
-pip install -r requirements.txt
+sudo apt install python3
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
 ```
 </details>
 
@@ -177,10 +179,10 @@ cd ppt-master
 Then install dependencies:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.py`
+To update later (Option A / B): `uv run skills/ppt-master/scripts/update_repo.py`
 
 > **Option C — Skill marketplace**: the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
 >
@@ -193,7 +195,7 @@ To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.p
 > /plugin install ppt-master@ppt-master
 > ```
 >
-> Both install paths above only fetch the skill files (not the full repo); you still need to `pip install -r requirements.txt` from the installed location for the post-processing scripts to run.
+> Both install paths above only fetch the skill files (not the full repo); you still need to `uv sync` from the installed location for the post-processing scripts to run.
 
 ### 4. Create
 
@@ -240,7 +242,7 @@ cp /path/to/installed/ppt-master/.env.example ~/.ppt-master/.env
 
 PPT Master reads the current process environment first, then the first `.env` found in this order: current working directory, clone repo root, `~/.ppt-master/.env`.
 
-**A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
+**A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `uv run skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
 
 **B) Web image search** — `image_search.py`. **Zero-config works**, but configure `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) for higher-quality results. Without keys, search uses Openverse / Wikimedia Commons only; this is useful as a fallback, but image quality can be uneven because many results are ordinary user uploads. With keys, the default provider chain also appends Pexels / Pixabay, which materially improves modern stock photography, people, workplace, lifestyle, and illustration coverage. The default is quality-first: CC0, Public Domain, Pexels / Pixabay no-attribution licenses, CC BY, and CC BY-SA are considered together, and Executor adds a small inline credit whenever the selected image requires attribution. Use `--strict-no-attribution` only when a slide cannot tolerate any credit line. For high-impact covers, product shots, portraits, and branded scenes, prefer this order: user-provided high-resolution assets / AI generation > web search with Pexels / Pixabay keys > zero-config web search.
 

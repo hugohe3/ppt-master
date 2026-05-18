@@ -71,11 +71,11 @@ If your workflow specifically requires Excel-driven data editing, manually creat
 Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animations (`mixed` effect with `after-previous` cascade by default) are both controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Common one-liners:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a none       # disable per-element animation
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # use a single effect instead of mixed
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click   # presenter-paced reveals
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -a none       # disable per-element animation
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # use a single effect instead of mixed
+uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click   # presenter-paced reveals
 ```
 
 `on-click` is for live presentations. Narrated/video export via `--recorded-narration` rejects it because PPT Master writes page timings, not object-level click timings; use `after-previous` or `with-previous` for narrated decks.
