@@ -31,34 +31,34 @@
     <td align="center" width="33%">
       <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_pritzker_2026"><img src="docs/assets/screenshots/preview_pritzker_2026.png" alt="杂志风 — 普利兹克奖 2026" /></a><br/>
       <sub><b>杂志风</b> — 建筑摄影 + 排版网格，冷静克制的编辑感<br/>
-      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_pritzker_2026">在线翻页</a> · <a href="./examples/ppt169_pritzker_2026/exports/pritzker_2026.pptx">下载 .pptx</a></sub>
+      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_pritzker_2026">在线翻页</a> · <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_pritzker_2026/exports/pritzker_2026.pptx">下载 .pptx</a></sub>
     </td>
     <td align="center" width="33%">
       <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_global_ai_capital_2026"><img src="docs/assets/screenshots/preview_global_ai_capital.png" alt="新闻风 — 2026 全球 AI 资本格局" /></a><br/>
       <sub><b>新闻 / 财经数据风</b> — 深色仪表盘，图表驱动，彭博风<br/>
-      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_global_ai_capital_2026">在线翻页</a> · <a href="./examples/ppt169_global_ai_capital_2026/exports/global_ai_capital_2026.pptx">下载 .pptx</a></sub>
+      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_global_ai_capital_2026">在线翻页</a> · <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_global_ai_capital_2026/exports/global_ai_capital_2026.pptx">下载 .pptx</a></sub>
     </td>
     <td align="center" width="33%">
       <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_swiss_grid_systems"><img src="docs/assets/screenshots/preview_swiss_grid.png" alt="瑞士风 — 网格系统入门" /></a><br/>
       <sub><b>瑞士风</b> — 严格栅格，克制字体，红色点缀<br/>
-      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_swiss_grid_systems">在线翻页</a> · <a href="./examples/ppt169_swiss_grid_systems/exports/swiss_grid_systems.pptx">下载 .pptx</a></sub>
+      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_swiss_grid_systems">在线翻页</a> · <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_swiss_grid_systems/exports/swiss_grid_systems.pptx">下载 .pptx</a></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
       <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_glassmorphism_demo"><img src="docs/assets/screenshots/preview_glassmorphism_demo.png" alt="毛玻璃风 — AI Agent 工程化 Demo" /></a><br/>
       <sub><b>毛玻璃 SaaS</b> — 半透明叠层，渐变景深，产品 UI 感<br/>
-      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_glassmorphism_demo">在线翻页</a> · <a href="./examples/ppt169_glassmorphism_demo/exports/glassmorphism_demo.pptx">下载 .pptx</a></sub>
+      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_glassmorphism_demo">在线翻页</a> · <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_glassmorphism_demo/exports/glassmorphism_demo.pptx">下载 .pptx</a></sub>
     </td>
     <td align="center" width="33%">
       <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_sugar_rush_memphis"><img src="docs/assets/screenshots/preview_sugar_rush_memphis.png" alt="孟菲斯风 — Sugar Rush 音乐节" /></a><br/>
       <sub><b>孟菲斯波普</b> — 高饱和原色，几何图形，俏皮活力<br/>
-      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_sugar_rush_memphis">在线翻页</a> · <a href="./examples/ppt169_sugar_rush_memphis/exports/sugar_rush_memphis.pptx">下载 .pptx</a></sub>
+      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_sugar_rush_memphis">在线翻页</a> · <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_sugar_rush_memphis/exports/sugar_rush_memphis.pptx">下载 .pptx</a></sub>
     </td>
     <td align="center" width="33%">
       <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_indie_bookstore_zine_guide"><img src="docs/assets/screenshots/preview_indie_bookstore_zine.png" alt="Zine 风 — 独立书店指南" /></a><br/>
       <sub><b>Risograph Zine</b> — 双色印刷质感，手作书店文化<br/>
-      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_indie_bookstore_zine_guide">在线翻页</a> · <a href="./examples/ppt169_indie_bookstore_zine_guide/exports/indie_bookstore_zine_guide.pptx">下载 .pptx</a></sub>
+      <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_indie_bookstore_zine_guide">在线翻页</a> · <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_indie_bookstore_zine_guide/exports/indie_bookstore_zine_guide.pptx">下载 .pptx</a></sub>
     </td>
   </tr>
 </table>
