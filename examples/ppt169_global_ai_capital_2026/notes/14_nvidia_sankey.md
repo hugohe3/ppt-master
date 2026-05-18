@@ -1,0 +1,1 @@
+把 Nvidia 的圆形投资画成资金流图。左边 Nvidia 投出四百亿股权。中间分给 OpenAI 三百亿、xAI 约三十亿、Anthropic 约二十亿、Mistral 约十亿、CoreWeave 和其他四十亿。右边这些 AI 公司又把绝大部分资金作为多年算力承诺投回给 Nvidia 买芯片——预计回流一千亿以上。Wedbush 的分析师评论极其精准：这正好是市场最担心的圆形投资主题。

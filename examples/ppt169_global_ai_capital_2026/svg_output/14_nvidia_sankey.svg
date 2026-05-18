@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E63946" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#F4A261" stop-opacity="0.45" />
+    </linearGradient>
+  </defs>
+
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART V · INFRASTRUCTURE · 14</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">钱怎么转：Nvidia 的<tspan fill="#E63946">圆形投资</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">$40B equity out → AI labs → multi-year compute commitments back to Nvidia</text>
+  </g>
+
+  <g id="column-labels">
+    <text x="140" y="195" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#5C5852" letter-spacing="2">SOURCE</text>
+    <text x="640" y="195" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#5C5852" letter-spacing="2">RECIPIENT</text>
+    <text x="1140" y="195" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#5C5852" letter-spacing="2">RETURN FLOW</text>
+    <line x1="60" y1="210" x2="1220" y2="210" stroke="#2A2F36" stroke-width="1" />
+  </g>
+
+  <g id="source-node">
+    <rect x="60" y="280" width="160" height="220" fill="#E63946" />
+    <use data-icon="simple-icons/nvidia" x="120" y="295" width="40" height="40" fill="#E8E6E1"/>
+    <text x="140" y="380" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">Nvidia</text>
+    <text x="140" y="420" text-anchor="middle" font-family="Cambria, serif" font-size="44" font-weight="bold" fill="#E8E6E1">$40B+</text>
+    <text x="140" y="450" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" fill="#E8E6E1" opacity="0.85">equity invested</text>
+    <text x="140" y="475" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#E8E6E1" opacity="0.7">YTD 2026</text>
+  </g>
+
+  <g id="flows-left">
+    <path d="M 220,320 C 350,320 410,256 540,256" fill="none" stroke="#E63946" stroke-opacity="0.50" stroke-width="40"/>
+    <path d="M 220,360 C 350,360 410,326 540,326" fill="none" stroke="#E63946" stroke-opacity="0.42" stroke-width="13"/>
+    <path d="M 220,378 C 350,378 410,396 540,396" fill="none" stroke="#E63946" stroke-opacity="0.42" stroke-width="10"/>
+    <path d="M 220,392 C 350,392 410,466 540,466" fill="none" stroke="#E63946" stroke-opacity="0.36" stroke-width="7"/>
+    <path d="M 220,430 C 350,430 410,536 540,536" fill="none" stroke="#E63946" stroke-opacity="0.40" stroke-width="15"/>
+  </g>
+
+  <g id="flows-right">
+    <path d="M 740,256 C 870,256 950,320 1080,320" fill="none" stroke="#F4A261" stroke-opacity="0.50" stroke-width="40"/>
+    <path d="M 740,326 C 870,326 950,360 1080,360" fill="none" stroke="#F4A261" stroke-opacity="0.42" stroke-width="13"/>
+    <path d="M 740,396 C 870,396 950,378 1080,378" fill="none" stroke="#F4A261" stroke-opacity="0.42" stroke-width="10"/>
+    <path d="M 740,466 C 870,466 950,392 1080,392" fill="none" stroke="#F4A261" stroke-opacity="0.36" stroke-width="7"/>
+    <path d="M 740,536 C 870,536 950,430 1080,430" fill="none" stroke="#F4A261" stroke-opacity="0.40" stroke-width="15"/>
+  </g>
+
+  <g id="recipient-nodes">
+    <rect x="540" y="232" width="200" height="48" fill="#F4A261" />
+    <use data-icon="simple-icons/openai" x="560" y="240" width="24" height="24" fill="#0E1116"/>
+    <text x="600" y="262" font-family="Cambria, serif" font-size="16" font-weight="bold" fill="#0E1116">OpenAI</text>
+    <text x="730" y="262" text-anchor="end" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#0E1116">$30B</text>
+
+    <rect x="540" y="302" width="200" height="48" fill="#F4A261" fill-opacity="0.78" />
+    <text x="560" y="332" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="bold" fill="#0E1116">xAI</text>
+    <text x="730" y="332" text-anchor="end" font-family="Cambria, serif" font-size="16" font-weight="bold" fill="#0E1116">~$3B</text>
+
+    <rect x="540" y="372" width="200" height="48" fill="#F4A261" fill-opacity="0.62" />
+    <text x="560" y="402" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="bold" fill="#0E1116">Anthropic</text>
+    <text x="730" y="402" text-anchor="end" font-family="Cambria, serif" font-size="16" font-weight="bold" fill="#0E1116">~$2B</text>
+
+    <rect x="540" y="442" width="200" height="48" fill="#F4A261" fill-opacity="0.48" />
+    <text x="560" y="472" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="bold" fill="#0E1116">Mistral</text>
+    <text x="730" y="472" text-anchor="end" font-family="Cambria, serif" font-size="16" font-weight="bold" fill="#0E1116">~$1B</text>
+
+    <rect x="540" y="512" width="200" height="48" fill="#F4A261" fill-opacity="0.40" />
+    <text x="560" y="542" font-family="Cambria, serif" font-size="15" font-weight="bold" fill="#0E1116">CoreWeave + 其他</text>
+    <text x="730" y="542" text-anchor="end" font-family="Cambria, serif" font-size="16" font-weight="bold" fill="#0E1116">~$4B</text>
+  </g>
+
+  <g id="sink-node">
+    <rect x="1080" y="220" width="160" height="340" fill="#E63946" fill-opacity="0.78" />
+    <text x="1160" y="270" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="bold" fill="#E8E6E1">芯片采购</text>
+    <text x="1160" y="294" text-anchor="middle" font-family="Cambria, serif" font-size="12" fill="#E8E6E1" opacity="0.85">multi-year compute</text>
+    <text x="1160" y="312" text-anchor="middle" font-family="Cambria, serif" font-size="12" fill="#E8E6E1" opacity="0.85">commitments</text>
+
+    <text x="1160" y="380" text-anchor="middle" font-family="Cambria, serif" font-size="36" font-weight="bold" fill="#E8E6E1">$100B+</text>
+    <text x="1160" y="410" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" fill="#E8E6E1" opacity="0.85">implied return</text>
+
+    <line x1="1100" y1="450" x2="1220" y2="450" stroke="#E8E6E1" stroke-width="1" opacity="0.4" />
+
+    <text x="1160" y="490" text-anchor="middle" font-family="Cambria, serif" font-size="13" fill="#E8E6E1" opacity="0.85">10GW (OpenAI)</text>
+    <text x="1160" y="512" text-anchor="middle" font-family="Cambria, serif" font-size="13" fill="#E8E6E1" opacity="0.85">+ multi-cluster GPU</text>
+    <text x="1160" y="534" text-anchor="middle" font-family="Cambria, serif" font-size="13" fill="#E8E6E1" opacity="0.85">deployment</text>
+  </g>
+
+  <g id="callout-bottom">
+    <line x1="60" y1="610" x2="1220" y2="610" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="636" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">WEDBUSH</text>
+    <text x="60" y="664" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-style="italic" fill="#E8E6E1">"It fits <tspan fill="#E63946" font-weight="bold">squarely into the circular investment theme</tspan> that's been driving fears around the market's durability."</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: CNBC · The Decoder · NVIDIA newsroom · Bloomberg AI Circular Deals visualization</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">14 / 20</text>
+  </g>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Adapted from vertical_list — restyled to ink palette -->
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">藏住四件事 · 养出四种力</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+  <text x="60" y="135" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">核心输出 · 把"藏"翻译成可执行的四条原则</text>
+
+  <!-- Main vertical track -->
+  <line x1="120" y1="180" x2="120" y2="640" stroke="#1A1A1A" stroke-width="2"/>
+
+  <!-- Item 01 — 藏住情绪 -->
+  <g transform="translate(0, 180)">
+    <circle cx="120" cy="30" r="28" fill="#1A1A1A"/>
+    <text x="120" y="38" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" font-weight="700" fill="#F5F1E8">壹</text>
+    <line x1="148" y1="30" x2="200" y2="30" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <use data-icon="tabler-outline/heart" x="210" y="8" width="44" height="44" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="270" y="22" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#1A1A1A" letter-spacing="3">藏住情绪</text>
+    <text x="270" y="50" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">脸上不写出来，对方就没有抓手</text>
+    <!-- Arrow -->
+    <text x="700" y="36" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="28" fill="#A52A2A" letter-spacing="3">⟶</text>
+    <text x="770" y="42" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="4">不被几句话激怒</text>
+  </g>
+
+  <!-- Item 02 — 藏住野心 -->
+  <g transform="translate(0, 290)">
+    <circle cx="120" cy="30" r="28" fill="#1A1A1A"/>
+    <text x="120" y="38" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" font-weight="700" fill="#F5F1E8">贰</text>
+    <line x1="148" y1="30" x2="200" y2="30" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <use data-icon="tabler-outline/sword" x="210" y="8" width="44" height="44" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="270" y="22" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#1A1A1A" letter-spacing="3">藏住野心</text>
+    <text x="270" y="50" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">不让人看见你想要什么，就拿你没办法</text>
+    <text x="700" y="36" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="28" fill="#A52A2A" letter-spacing="3">⟶</text>
+    <text x="770" y="42" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="4">不被人提前设防</text>
+  </g>
+
+  <!-- Item 03 — 藏住实力 -->
+  <g transform="translate(0, 400)">
+    <circle cx="120" cy="30" r="28" fill="#1A1A1A"/>
+    <text x="120" y="38" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" font-weight="700" fill="#F5F1E8">叁</text>
+    <line x1="148" y1="30" x2="200" y2="30" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <use data-icon="tabler-outline/shield" x="210" y="8" width="44" height="44" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="270" y="22" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#1A1A1A" letter-spacing="3">藏住实力</text>
+    <text x="270" y="50" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">底牌一旦亮出，价格立刻被压</text>
+    <text x="700" y="36" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="28" fill="#A52A2A" letter-spacing="3">⟶</text>
+    <text x="770" y="42" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="4">不被人过早消耗</text>
+  </g>
+
+  <!-- Item 04 — 藏住判断 -->
+  <g transform="translate(0, 510)">
+    <circle cx="120" cy="30" r="28" fill="#A52A2A"/>
+    <text x="120" y="38" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" font-weight="700" fill="#F5F1E8">肆</text>
+    <line x1="148" y1="30" x2="200" y2="30" stroke="#A52A2A" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <use data-icon="tabler-outline/eye-off" x="210" y="8" width="44" height="44" fill="#A52A2A" stroke-width="1.5"/>
+    <text x="270" y="22" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#1A1A1A" letter-spacing="3">藏住判断</text>
+    <text x="270" y="50" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852">不在局势未明时表态，就不被绑架</text>
+    <text x="700" y="36" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="28" fill="#A52A2A" letter-spacing="3">⟶</text>
+    <text x="770" y="42" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="4">不被迫站队</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 十一</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">13</text>
+</svg>

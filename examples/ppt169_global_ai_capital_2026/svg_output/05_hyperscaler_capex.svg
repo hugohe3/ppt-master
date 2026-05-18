@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART I · LANDSCAPE · 05</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">四家 Hyperscaler 2026 Capex：<tspan fill="#E63946">$725B</tspan>，同比 <tspan fill="#E63946">+77%</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Microsoft · Alphabet · Amazon · Meta — combined AI infrastructure capex</text>
+  </g>
+
+  <g id="chartArea">
+    <line x1="180" y1="200" x2="850" y2="200" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+    <line x1="180" y1="290" x2="850" y2="290" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+    <line x1="180" y1="380" x2="850" y2="380" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+    <line x1="180" y1="470" x2="850" y2="470" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+    <line x1="180" y1="560" x2="850" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+
+    <text x="170" y="205" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$200B</text>
+    <text x="170" y="295" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$150B</text>
+    <text x="170" y="385" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$100B</text>
+    <text x="170" y="475" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$50B</text>
+    <text x="170" y="565" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$0</text>
+
+    <line x1="180" y1="200" x2="180" y2="560" stroke="#5C5852" stroke-width="1"/>
+    <line x1="180" y1="560" x2="850" y2="560" stroke="#5C5852" stroke-width="1"/>
+    <!-- chart-plot-area: 180,200,850,560 -->
+
+    <g id="bar-amazon">
+      <rect x="240" y="200" width="100" height="360" fill="#E63946"/>
+      <text x="290" y="185" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$200B</text>
+      <use data-icon="simple-icons/amazon" x="278" y="572" width="24" height="24" fill="#C9C5BE"/>
+      <text x="290" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">行业最高</text>
+    </g>
+
+    <g id="bar-msft">
+      <rect x="395" y="218" width="100" height="342" fill="#C9C5BE"/>
+      <text x="445" y="203" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$190B</text>
+      <use data-icon="simple-icons/microsoft" x="433" y="572" width="24" height="24" fill="#C9C5BE"/>
+      <text x="445" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">含 $25B 存储芯片</text>
+    </g>
+
+    <g id="bar-google">
+      <rect x="550" y="218" width="100" height="342" fill="#C9C5BE"/>
+      <text x="600" y="203" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$190B</text>
+      <use data-icon="simple-icons/google" x="588" y="572" width="24" height="24" fill="#C9C5BE"/>
+      <text x="600" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">指引上调 $5B</text>
+    </g>
+
+    <g id="bar-meta">
+      <rect x="705" y="299" width="100" height="261" fill="#8A857E"/>
+      <text x="755" y="284" font-family="Cambria, serif" font-size="26" font-weight="bold" fill="#E8E6E1" text-anchor="middle">$145B+</text>
+      <use data-icon="simple-icons/meta" x="743" y="572" width="24" height="24" fill="#C9C5BE"/>
+      <text x="755" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E" text-anchor="middle">电力土地紧张</text>
+    </g>
+  </g>
+
+  <g id="callout-right">
+    <line x1="900" y1="190" x2="900" y2="600" stroke="#2A2F36" stroke-width="1"/>
+
+    <text x="920" y="220" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">KEY OBSERVATION</text>
+
+    <text x="920" y="280" font-family="Cambria, serif" font-size="64" font-weight="bold" fill="#E63946">$725B</text>
+    <text x="920" y="306" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">2026 合计 Capex · 同比 <tspan fill="#E8E6E1" font-weight="bold">+77%</tspan></text>
+
+    <line x1="920" y1="340" x2="1160" y2="340" stroke="#2A2F36" stroke-width="1"/>
+
+    <text x="920" y="378" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="bold" fill="#E8E6E1">资源约束已转向电力</text>
+
+    <text x="920" y="420" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#C9C5BE">
+      <tspan x="920" dy="0"><tspan fill="#E63946" font-weight="bold">60%+</tspan> 资本流向电力基础设</tspan>
+      <tspan x="920" dy="22">施、冷却、土建——而不是</tspan>
+      <tspan x="920" dy="22">芯片本身。</tspan>
+    </text>
+
+    <text x="920" y="510" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#C9C5BE">
+      <tspan x="920" dy="0">下一道护城河不是算力，</tspan>
+      <tspan x="920" dy="22">是 <tspan fill="#E63946" font-weight="bold">GW 级供电</tspan>。</tspan>
+    </text>
+
+    <text x="920" y="595" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">— Tom's Hardware / Statista, 2026 outlook</text>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Tom's Hardware · Statista · NextWaves · Company guidance Q1 2026</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">05 / 20</text>
+  </g>
+</svg>

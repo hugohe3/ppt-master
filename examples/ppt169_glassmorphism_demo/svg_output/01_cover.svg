@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF"/>
+      <stop offset="50%" stop-color="#A26BFA"/>
+      <stop offset="100%" stop-color="#3DDDFC"/>
+    </linearGradient>
+    <linearGradient id="glassPanel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="glassEdgeTop" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="coverScrim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A0E27" stop-opacity="0.0"/>
+      <stop offset="50%" stop-color="#0A0E27" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0A0E27" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27"/>
+    <image href="../images/01_cover_aurora.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#coverScrim)"/>
+  </g>
+
+  <g id="cover-top-mark">
+    <circle cx="64" cy="60" r="4" fill="#3DDDFC"/>
+    <circle cx="76" cy="60" r="4" fill="#5B8DEF" fill-opacity="0.7"/>
+    <circle cx="88" cy="60" r="4" fill="#A26BFA" fill-opacity="0.55"/>
+    <text x="106" y="65" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0" letter-spacing="3">TECH TALK · 2026</text>
+  </g>
+
+  <g id="glass-panel">
+    <rect x="160" y="240" width="960" height="280" rx="22" fill="url(#glassPanel)" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+    <rect x="178" y="241" width="924" height="1" fill="url(#glassEdgeTop)"/>
+    <rect x="160" y="260" width="6" height="240" rx="3" fill="url(#titleGradient)"/>
+  </g>
+
+  <g id="title-block">
+    <text x="200" y="310" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="700" fill="#3DDDFC" letter-spacing="4">AI AGENT · ENGINEERING IN PRODUCTION</text>
+    <text x="200" y="400" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="80" font-weight="900" fill="url(#titleGradient)" letter-spacing="-1">AI Agent 工程化</text>
+    <text x="200" y="468" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="28" font-weight="400" fill="#E8ECFF">从 Demo 到生产 — 需要的不只是大模型</text>
+    <line x1="200" y1="494" x2="320" y2="494" stroke="#3DDDFC" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g id="cover-footer">
+    <text x="60" y="688" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#A8B0D0">2026 · 技术分享系列</text>
+    <text x="1220" y="688" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">01 / 12</text>
+  </g>
+</svg>

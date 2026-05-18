@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Left image with rounded crop (#2 + #21) -->
+  <defs>
+    <clipPath id="zeng_round">
+      <rect x="60" y="160" width="500" height="500" rx="12" ry="12"/>
+    </clipPath>
+  </defs>
+  <image href="../images/zengguofan_lamp.png" x="60" y="160" width="500" height="500" preserveAspectRatio="xMidYMid slice" clip-path="url(#zeng_round)"/>
+  <rect x="60" y="160" width="500" height="500" rx="12" ry="12" fill="none" stroke="#C8C0AE" stroke-width="1"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">曾国藩 · 笨功夫</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+  <text x="60" y="135" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852" letter-spacing="2">不靠聪明 · 靠"拙到深处" 把局势拉到自己这边</text>
+
+  <!-- Right text area -->
+  <g transform="translate(620, 200)">
+    <!-- Pull quote -->
+    <text x="0" y="0" font-family="KaiTi, Georgia, serif" font-size="22" fill="#8B8680" letter-spacing="3">早年并不以聪明见长</text>
+    <text x="0" y="36" font-family="KaiTi, Georgia, serif" font-size="22" fill="#8B8680" letter-spacing="3">甚至常被认为迟钝</text>
+
+    <line x1="0" y1="70" x2="80" y2="70" stroke="#A52A2A" stroke-width="2"/>
+
+    <!-- Three "gongfu" -->
+    <text x="0" y="125" font-family="KaiTi, Georgia, serif" font-size="40" font-weight="700" fill="#1A1A1A" letter-spacing="6">笨 功 夫</text>
+    <text x="0" y="160" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">读书一字一字读，不跳行</text>
+
+    <text x="0" y="220" font-family="KaiTi, Georgia, serif" font-size="40" font-weight="700" fill="#1A1A1A" letter-spacing="6">慢 功 夫</text>
+    <text x="0" y="255" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">每天写日记，三十年不断</text>
+
+    <text x="0" y="315" font-family="KaiTi, Georgia, serif" font-size="40" font-weight="700" fill="#1A1A1A" letter-spacing="6">深 功 夫</text>
+    <text x="0" y="350" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#5C5852">不争一时快，不贪一寸巧</text>
+
+    <!-- Final callout -->
+    <rect x="0" y="390" width="600" height="80" fill="#1A1A1A"/>
+    <rect x="0" y="390" width="6" height="80" fill="#A52A2A"/>
+    <text x="24" y="424" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8" letter-spacing="3">拙到深处 · 是 定 力</text>
+    <text x="24" y="456" font-family="KaiTi, Georgia, serif" font-size="22" fill="#C8C0AE" letter-spacing="2">定力够了，局势才会慢慢站到他这边</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 十</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">12</text>
+</svg>

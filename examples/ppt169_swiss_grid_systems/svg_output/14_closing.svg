@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <image href="../images/closing_grid.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" />
+  </g>
+
+  <g id="page-header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 14 · CLOSING</text>
+    <line x1="64" y1="74" x2="180" y2="74" stroke="#1A1A1A" stroke-width="1" />
+  </g>
+
+  <g id="closing-headline">
+    <text x="64" y="370" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="84" font-weight="900" fill="#1A1A1A" letter-spacing="4">网格不是限制</text>
+    <text x="64" y="482" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="84" font-weight="900" fill="#D9251D" letter-spacing="4">是自由的语法</text>
+  </g>
+
+  <g id="closing-english">
+    <text x="64" y="540" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">The grid is not a constraint. It is a grammar of freedom.</text>
+  </g>
+
+  <g id="closing-meta">
+    <line x1="64" y1="604" x2="64" y2="656" stroke="#1A1A1A" stroke-width="3" />
+    <text x="84" y="626" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#1A1A1A" letter-spacing="1">SWISS GRID SYSTEMS · A LECTURE</text>
+    <text x="84" y="650" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">END · 14 / 14 · 2026</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="700" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#1A1A1A" text-anchor="end" letter-spacing="1">— THANK YOU —</text>
+  </g>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="cover_scrim" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#0E1116" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#0E1116" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#0E1116" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+    <image href="../images/cover_atmosphere.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#cover_scrim)"/>
+  </g>
+
+  <g id="cover-chrome">
+    <text x="60" y="56" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="11" fill="#8A857E" letter-spacing="3">INDUSTRY BRIEFING · 2026.05</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+  </g>
+
+  <g id="cover-title">
+    <text x="60" y="440" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="72" font-weight="bold" fill="#E8E6E1" letter-spacing="-1">2026 全球 AI 资本格局</text>
+    <text x="60" y="490" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-style="italic" fill="#C9C5BE" letter-spacing="0.5">Capital, Compute, and the Closed Loop</text>
+  </g>
+
+  <g id="cover-meta">
+    <line x1="60" y1="540" x2="1220" y2="540" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="580" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">作者 · PPT Master 行业洞察 / Author · PPT Master Industry Insight</text>
+    <text x="60" y="608" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">数据截至 / Data as of <tspan fill="#E8E6E1" font-weight="bold">2026-05-15</tspan></text>
+
+    <text x="1220" y="580" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#5C5852" letter-spacing="2">VOL. 01 · NO. 05</text>
+    <text x="1220" y="608" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#E63946" font-weight="bold">$297B · 81% · 4 deals</text>
+  </g>
+
+  <g id="cover-footer">
+    <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Crunchbase · Bloomberg · CNBC · TechCrunch · Anthropic · OpenAI</text>
+    <text x="1220" y="690" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">01 / 20</text>
+  </g>
+</svg>

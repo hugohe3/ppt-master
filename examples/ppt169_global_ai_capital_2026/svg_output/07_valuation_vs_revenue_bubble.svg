@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART II · THE BIG THREE · 07</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">估值兑现度：<tspan fill="#E63946">气泡大小 = 投资人数</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Valuation × ARR × investor count — who is most over-extended?</text>
+  </g>
+
+  <g id="chartArea">
+    <g id="axes">
+      <line x1="160" y1="200" x2="160" y2="560" stroke="#5C5852" stroke-width="1.5"/>
+      <line x1="160" y1="560" x2="1200" y2="560" stroke="#5C5852" stroke-width="1.5"/>
+
+      <line x1="160" y1="280" x2="1200" y2="280" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="160" y1="360" x2="1200" y2="360" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="160" y1="440" x2="1200" y2="440" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="160" y1="520" x2="1200" y2="520" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+
+      <line x1="380" y1="200" x2="380" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="600" y1="200" x2="600" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="820" y1="200" x2="820" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="1040" y1="200" x2="1040" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+
+      <text x="148" y="285" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$1000B</text>
+      <text x="148" y="365" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$750B</text>
+      <text x="148" y="445" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$500B</text>
+      <text x="148" y="525" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$250B</text>
+      <text x="148" y="565" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">$0</text>
+
+      <text x="160" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$0</text>
+      <text x="380" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$10B</text>
+      <text x="600" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$20B</text>
+      <text x="820" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$30B</text>
+      <text x="1040" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$40B</text>
+
+      <text x="60" y="380" font-family="Cambria, serif" font-size="12" fill="#8A857E" transform="rotate(-90, 60, 380)" text-anchor="middle">VALUATION ($B) →</text>
+      <text x="680" y="615" font-family="Cambria, serif" font-size="12" fill="#8A857E" text-anchor="middle">ANNUALIZED REVENUE (ARR, $B) →</text>
+    </g>
+    <!-- chart-plot-area: 160,200,1200,560 -->
+
+    <g id="bubble-xai">
+      <circle cx="290" cy="477" r="38" fill="#F4A261" fill-opacity="0.18" stroke="#F4A261" stroke-width="2"/>
+      <circle cx="290" cy="477" r="3" fill="#F4A261"/>
+      <text x="290" y="533" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" font-weight="bold" fill="#E8E6E1">xAI</text>
+      <text x="290" y="551" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">$5B / $230B · 8+ investors</text>
+    </g>
+
+    <g id="bubble-anthropic">
+      <circle cx="940" cy="423" r="30" fill="#E63946" fill-opacity="0.22" stroke="#E63946" stroke-width="2"/>
+      <circle cx="940" cy="423" r="3" fill="#E63946"/>
+      <text x="940" y="381" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" font-weight="bold" fill="#E8E6E1">Anthropic</text>
+      <text x="940" y="363" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">$30B / $380B · 5 investors</text>
+
+      <line x1="940" y1="393" x2="1100" y2="310" stroke="#F4A261" stroke-width="1" stroke-dasharray="3,3"/>
+      <circle cx="1100" cy="310" r="10" fill="none" stroke="#F4A261" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="1090" y="298" text-anchor="end" font-family="Cambria, serif" font-size="11" fill="#F4A261">→ $900B (in talks)</text>
+    </g>
+
+    <g id="bubble-openai">
+      <circle cx="784" cy="253" r="48" fill="#E63946" fill-opacity="0.18" stroke="#E63946" stroke-width="2"/>
+      <circle cx="784" cy="253" r="3" fill="#E63946"/>
+      <text x="784" y="320" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" font-weight="bold" fill="#E8E6E1">OpenAI</text>
+      <text x="784" y="338" text-anchor="middle" font-family="Cambria, serif" font-size="10" fill="#8A857E">$24B / $852B · 7+ investors</text>
+    </g>
+
+    <g id="ref-line">
+      <line x1="160" y1="560" x2="1200" y2="200" stroke="#8A857E" stroke-width="1" stroke-dasharray="6,4" opacity="0.4"/>
+      <text x="1140" y="192" font-family="Cambria, serif" font-size="10" fill="#8A857E" text-anchor="end" opacity="0.7">implied "fair valuation" trend</text>
+    </g>
+  </g>
+
+  <g id="insight-right">
+    <rect x="80" y="640" width="1120" height="50" fill="#1A1F26"/>
+    <line x1="80" y1="640" x2="80" y2="690" stroke="#E63946" stroke-width="3"/>
+    <text x="100" y="671" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" fill="#E8E6E1">所有气泡都站在"公允线"上方——估值跑得比收入快；其中 <tspan fill="#E63946" font-weight="bold">xAI 偏离最远</tspan>（ARR 估算最低却估值 $230B），<tspan fill="#F4A261" font-weight="bold">Anthropic 兑现度最高</tspan>（ARR $30B）。</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="60" y="715" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Bloomberg · TechCrunch · Anthropic press 2026-02 / 2026-04 · OpenAI funding 2026-03</text>
+    <text x="1220" y="715" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">07 / 20</text>
+  </g>
+</svg>

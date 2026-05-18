@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART V · INFRASTRUCTURE · 15</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">单点风险：Nvidia 收入 <tspan fill="#E63946">85%</tspan> 来自 <tspan fill="#E63946">6 个客户</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Pareto view — when six customers carry the entire upstream supply chain</text>
+  </g>
+
+  <g id="chartArea">
+    <line x1="120" y1="200" x2="120" y2="560" stroke="#5C5852" stroke-width="1.5" />
+    <line x1="120" y1="560" x2="900" y2="560" stroke="#5C5852" stroke-width="1.5" />
+
+    <line x1="120" y1="200" x2="900" y2="200" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="120" y1="290" x2="900" y2="290" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="120" y1="380" x2="900" y2="380" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+    <line x1="120" y1="470" x2="900" y2="470" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4" />
+
+    <text x="110" y="205" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">100%</text>
+    <text x="110" y="295" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">75%</text>
+    <text x="110" y="385" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">50%</text>
+    <text x="110" y="475" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">25%</text>
+    <text x="110" y="565" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="end">0</text>
+
+    
+
+    <g id="bar-1">
+      <rect x="160" y="495.2" width="80" height="64.8" fill="#E63946" />
+      <text x="200" y="483" text-anchor="middle" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#E63946">18%</text>
+      <use data-icon="simple-icons/microsoft" x="189" y="575" width="22" height="22" fill="#E8E6E1" />
+      <text x="200" y="616" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E">MSFT</text>
+    </g>
+
+    <g id="bar-2">
+      <rect x="280" y="502.4" width="80" height="57.6" fill="#E63946" />
+      <text x="320" y="490" text-anchor="middle" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#E63946">16%</text>
+      <use data-icon="simple-icons/meta" x="309" y="575" width="22" height="22" fill="#E8E6E1" />
+      <text x="320" y="616" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E">Meta</text>
+    </g>
+
+    <g id="bar-3">
+      <rect x="400" y="506" width="80" height="54" fill="#E63946" />
+      <text x="440" y="494" text-anchor="middle" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#E63946">15%</text>
+      <use data-icon="simple-icons/google" x="429" y="575" width="22" height="22" fill="#E8E6E1" />
+      <text x="440" y="616" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E">Google</text>
+    </g>
+
+    <g id="bar-4">
+      <rect x="520" y="520.4" width="80" height="39.6" fill="#F4A261" />
+      <text x="560" y="508" text-anchor="middle" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#F4A261">11%</text>
+      <use data-icon="simple-icons/amazon" x="549" y="575" width="22" height="22" fill="#E8E6E1" />
+      <text x="560" y="616" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E">Amazon</text>
+    </g>
+
+    <g id="bar-5">
+      <rect x="640" y="513.2" width="80" height="46.8" fill="#F4A261" />
+      <text x="680" y="501" text-anchor="middle" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#F4A261">13%</text>
+      <use data-icon="simple-icons/openai" x="669" y="575" width="22" height="22" fill="#E8E6E1" />
+      <text x="680" y="616" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E">OpenAI</text>
+    </g>
+
+    <g id="bar-6">
+      <rect x="760" y="516.8" width="80" height="43.2" fill="#F4A261" />
+      <text x="800" y="504" text-anchor="middle" font-family="Cambria, serif" font-size="18" font-weight="bold" fill="#F4A261">12%</text>
+      <text x="800" y="595" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#E8E6E1">CoreWeave</text>
+      <text x="800" y="616" text-anchor="middle" font-family="Cambria, serif" font-size="11" fill="#8A857E">+ Oracle</text>
+    </g>
+
+    <g id="cumulative-line">
+      <polyline points="200,496 320,438 440,384 560,344 680,297 800,254" fill="none" stroke="#E8E6E1" stroke-width="2.5" />
+      <circle cx="200" cy="496" r="5" fill="#E8E6E1" />
+      <circle cx="320" cy="438" r="5" fill="#E8E6E1" />
+      <circle cx="440" cy="384" r="5" fill="#E8E6E1" />
+      <circle cx="560" cy="344" r="5" fill="#E8E6E1" />
+      <circle cx="680" cy="297" r="5" fill="#E8E6E1" />
+      <circle cx="800" cy="254" r="6" fill="#E63946" stroke="#E8E6E1" stroke-width="2" />
+
+      <text x="213" y="500" font-family="Cambria, serif" font-size="10" fill="#8A857E">18%</text>
+      <text x="333" y="442" font-family="Cambria, serif" font-size="10" fill="#8A857E">34%</text>
+      <text x="453" y="388" font-family="Cambria, serif" font-size="10" fill="#8A857E">49%</text>
+      <text x="573" y="348" font-family="Cambria, serif" font-size="10" fill="#8A857E">60%</text>
+      <text x="693" y="301" font-family="Cambria, serif" font-size="10" fill="#8A857E">73%</text>
+      <text x="815" y="252" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E63946">85%</text>
+    </g>
+  </g>
+
+  <g id="callout-right">
+    <line x1="950" y1="180" x2="950" y2="620" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="970" y="210" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">CONCENTRATION RISK</text>
+
+    <text x="970" y="270" font-family="Cambria, serif" font-size="64" font-weight="bold" fill="#E63946">85%</text>
+    <text x="970" y="298" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">Nvidia 收入来自 6 个客户</text>
+
+    <line x1="970" y1="330" x2="1200" y2="330" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="970" y="370" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">前 4 名 = 60%</text>
+    <text x="970" y="395" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">MSFT + Meta + Google + Amazon</text>
+
+    <line x1="970" y1="420" x2="1200" y2="420" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="970" y="466" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#C9C5BE">
+      <tspan x="970" dy="0">任一家 hyperscaler 砍 capex</tspan>
+      <tspan x="970" dy="24">→ 级联打击 Nvidia 财报</tspan>
+      <tspan x="970" dy="24">→ 全 AI 供应链承压</tspan>
+    </text>
+
+    <line x1="970" y1="570" x2="1200" y2="570" stroke="#E63946" stroke-width="1" />
+    <text x="970" y="598" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">"Binary risk — by design."</text>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="650" x2="1220" y2="650" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Nvidia 10-Q · Seeking Alpha · KuCoin · 估算口径以官方披露为准</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">15 / 20</text>
+  </g>
+</svg>

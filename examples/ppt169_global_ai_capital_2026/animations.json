@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.35 },
+    "animation": { "effect": "fade", "duration": 0.40, "stagger": 0.18, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.55 },
+      "animation": { "duration": 0.65, "stagger": 0.30 },
+      "groups": {
+        "background": { "effect": "none" },
+        "cover-chrome": { "effect": "none" },
+        "cover-title": { "effect": "fade", "order": 1, "duration": 0.75 },
+        "cover-meta": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.55 },
+        "cover-footer": { "effect": "none" }
+      }
+    },
+    "02_editor_note": {
+      "animation": { "duration": 0.50, "stagger": 0.24 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "big-quote": { "effect": "fade", "order": 1, "duration": 0.45 },
+        "lede": { "effect": "fade", "order": 2, "duration": 0.60 },
+        "point-1": { "effect": "fade", "order": 3, "delay": 0.10 },
+        "point-2": { "effect": "fade", "order": 4 },
+        "point-3": { "effect": "fade", "order": 5 },
+        "body-text": { "effect": "fade", "order": 6, "delay": 0.15, "duration": 0.55 },
+        "signature": { "effect": "fade", "order": 7, "delay": 0.10 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "03_contents": {
+      "animation": { "duration": 0.35, "stagger": 0.12 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "toc-left": { "effect": "fade", "order": 1, "duration": 0.50 },
+        "toc-right": { "effect": "fade", "order": 2, "duration": 0.50 },
+        "bottom-meta": { "effect": "fade", "order": 3, "delay": 0.15 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "04_q1_vc_landscape": {
+      "animation": { "duration": 0.35, "stagger": 0.14 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "card-1": { "effect": "fade", "order": 1 },
+        "card-2": { "effect": "fade", "order": 2 },
+        "card-3": { "effect": "fade", "order": 3 },
+        "card-4": { "effect": "fade", "order": 4 },
+        "callout-right": { "effect": "fade", "order": 5, "delay": 0.20, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "05_hyperscaler_capex": {
+      "animation": { "duration": 0.35, "stagger": 0.16 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "chartArea": { "effect": "wipe", "order": 1, "duration": 0.60 },
+        "callout-right": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "06_big_three_valuation_leap": {
+      "animation": { "duration": 0.40, "stagger": 0.18 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "chartArea": { "effect": "wipe", "order": 1, "duration": 0.70 },
+        "insight-strip": { "effect": "fade", "order": 2, "delay": 0.25, "duration": 0.55 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "07_valuation_vs_revenue_bubble": {
+      "animation": { "duration": 0.40, "stagger": 0.16 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "chartArea": { "effect": "zoom", "order": 1, "duration": 0.65 },
+        "insight-right": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "08_openai_investor_donut": {
+      "animation": { "duration": 0.45, "stagger": 0.20 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "donutChart": { "effect": "wheel", "order": 1, "duration": 0.75 },
+        "investor-list": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.55 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "09_big_three_comparison": {
+      "animation": { "duration": 0.40, "stagger": 0.18 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "col-openai": { "effect": "fade", "order": 1, "duration": 0.50 },
+        "col-anthropic": { "effect": "fade", "order": 2, "duration": 0.50 },
+        "col-xai": { "effect": "fade", "order": 3, "duration": 0.50 },
+        "bottom-summary": { "effect": "fade", "order": 4, "delay": 0.20, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "10_china_five_ranking": {
+      "animation": { "duration": 0.35, "stagger": 0.14 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "chartArea": { "effect": "wipe", "order": 1, "duration": 0.65 },
+        "callout-bottom": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.45 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "11_us_china_dual_track": {
+      "animation": { "duration": 0.40, "stagger": 0.18 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "table": { "effect": "fade", "order": 1, "duration": 0.65 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "12_second_tier": {
+      "animation": { "duration": 0.35, "stagger": 0.14 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "card-ssi": { "effect": "fade", "order": 1 },
+        "card-perplexity": { "effect": "fade", "order": 2 },
+        "card-mistral": { "effect": "fade", "order": 3 },
+        "card-cohere": { "effect": "fade", "order": 4 },
+        "bottom-strip": { "effect": "fade", "order": 5, "delay": 0.20, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "13_chapter_nvidia": {
+      "transition": { "effect": "fade", "duration": 0.55 },
+      "animation": { "duration": 0.65, "stagger": 0.30 },
+      "groups": {
+        "background": { "effect": "none" },
+        "chapter-chrome": { "effect": "none" },
+        "chapter-mark": { "effect": "fade", "order": 1, "duration": 0.75 },
+        "chapter-title": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.65 },
+        "lede-points": { "effect": "fade", "order": 3, "delay": 0.25, "duration": 0.55 },
+        "chapter-footer": { "effect": "none" }
+      }
+    },
+    "14_nvidia_sankey": {
+      "animation": { "duration": 0.40, "stagger": 0.16 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "column-labels": { "effect": "fade", "order": 1, "duration": 0.35 },
+        "source-node": { "effect": "fade", "order": 2, "duration": 0.45 },
+        "flows-left": { "effect": "wipe", "order": 3, "duration": 0.60 },
+        "recipient-nodes": { "effect": "fade", "order": 4, "duration": 0.45 },
+        "flows-right": { "effect": "wipe", "order": 5, "duration": 0.60 },
+        "sink-node": { "effect": "fade", "order": 6, "duration": 0.50 },
+        "callout-bottom": { "effect": "fade", "order": 7, "delay": 0.20, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "15_nvidia_pareto": {
+      "animation": { "duration": 0.40, "stagger": 0.16 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "chartArea": { "effect": "wipe", "order": 1, "duration": 0.75 },
+        "callout-right": { "effect": "fade", "order": 2, "delay": 0.25, "duration": 0.55 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "16_stargate_hub": {
+      "animation": { "duration": 0.40, "stagger": 0.16 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "stargate-network": { "effect": "fade", "order": 1, "duration": 0.70 },
+        "sidebar-right": { "effect": "fade", "order": 2, "delay": 0.25, "duration": 0.55 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "17_chapter_bubble": {
+      "transition": { "effect": "fade", "duration": 0.55 },
+      "animation": { "duration": 0.65, "stagger": 0.30 },
+      "groups": {
+        "background": { "effect": "none" },
+        "chapter-chrome": { "effect": "none" },
+        "chapter-mark": { "effect": "fade", "order": 1, "duration": 0.75 },
+        "chapter-title": { "effect": "fade", "order": 2, "delay": 0.20, "duration": 0.65 },
+        "lede-points": { "effect": "fade", "order": 3, "delay": 0.25, "duration": 0.55 },
+        "chapter-footer": { "effect": "none" }
+      }
+    },
+    "18_capex_vs_revenue": {
+      "animation": { "duration": 0.45, "stagger": 0.20 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "chartArea": { "effect": "wipe", "order": 1, "duration": 0.85 },
+        "legend": { "effect": "fade", "order": 2, "delay": 0.25, "duration": 0.50 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "19_four_risks_quadrant": {
+      "animation": { "duration": 0.40, "stagger": 0.18 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "quadrant-axes": { "effect": "fade", "order": 1, "duration": 0.35 },
+        "q1-capex-gap": { "effect": "fade", "order": 2 },
+        "q2-roi": { "effect": "fade", "order": 3 },
+        "q3-concentration": { "effect": "fade", "order": 4 },
+        "q4-financing": { "effect": "fade", "order": 5 },
+        "center-mark": { "effect": "fade", "order": 6, "delay": 0.15, "duration": 0.40 },
+        "page-footer": { "effect": "none" }
+      }
+    },
+    "20_closing": {
+      "transition": { "effect": "fade", "duration": 0.55 },
+      "animation": { "duration": 0.45, "stagger": 0.18 },
+      "groups": {
+        "background": { "effect": "none" },
+        "page-header": { "effect": "none" },
+        "take-1": { "effect": "fade", "order": 1 },
+        "take-2": { "effect": "fade", "order": 2 },
+        "take-3": { "effect": "fade", "order": 3 },
+        "take-4": { "effect": "fade", "order": 4 },
+        "take-5": { "effect": "fade", "order": 5 },
+        "take-6": { "effect": "fade", "order": 6 },
+        "bottom-callout": { "effect": "fade", "order": 7, "delay": 0.30, "duration": 0.65 },
+        "sources-strip": { "effect": "fade", "order": 8, "delay": 0.15, "duration": 0.45 }
+      }
+    }
+  }
+}

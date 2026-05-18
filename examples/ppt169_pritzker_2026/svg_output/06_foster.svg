@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="bg-faded">
+    <image href="../images/foster_shanghai_exterior.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC" fill-opacity="0.72"/>
+  </g>
+
+  <g id="p06-number">
+    <text x="60" y="320" font-family="Georgia, serif" font-size="280" fill="#B8935A" font-style="italic" fill-opacity="0.85">04</text>
+  </g>
+
+  <g id="p06-title">
+    <text x="60" y="400" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="56" font-weight="bold" fill="#1C1C1C">苏州河畔绽放的</text>
+    <text x="60" y="460" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="56" font-weight="bold" fill="#1C1C1C">钢铁花瓣</text>
+    <line x1="60" y1="490" x2="200" y2="490" stroke="#B8935A" stroke-width="3"/>
+    <text x="60" y="528" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="20" fill="#5C5852">诺曼·福斯特 · 上海嘉艺术 · 普陀新地标</text>
+    <text x="60" y="556" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#8B8680">1999 年普利兹克奖 · 2026.4 开放 · 大师亲临揭幕</text>
+  </g>
+
+  <g id="thumb-petal">
+    <rect x="900" y="180" width="280" height="420" fill="#F5F2EC"/>
+    <image href="../images/foster_shanghai_petal.png" x="906" y="186" width="268" height="408" preserveAspectRatio="xMidYMid slice"/>
+    <line x1="900" y1="180" x2="900" y2="240" stroke="#B8935A" stroke-width="3"/>
+    <text x="916" y="210" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#F5F2EC">花瓣立面细节</text>
+  </g>
+
+  <g id="manifesto">
+    <text x="60" y="608" font-family="KaiTi, &quot;Microsoft YaHei&quot;, serif" font-size="20" fill="#B8935A" font-style="italic">
+      <tspan x="60" dy="0">不是白盒子 · 是城市中缓慢生长的生命体</tspan>
+      <tspan x="60" dy="34">观展 · 观景 · 观城 — 古典人文精神通过现代材料重获新生</tspan>
+    </text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="685" x2="1220" y2="685" stroke="#D4CFC4" stroke-width="1"/>
+    <text x="60" y="708" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">图源 · Foster + Partners</text>
+    <text x="1220" y="708" text-anchor="end" font-family="Georgia, serif" font-size="11" fill="#8B8680">06 / 11</text>
+  </g>
+</svg>

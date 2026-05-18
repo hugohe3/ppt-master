@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART III · CHINA CAMP · 11</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">中美 AI 资本：<tspan fill="#E63946">两条路径</tspan>，两种节奏</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Two markets, two playbooks — the structural divergence in 2026</text>
+  </g>
+
+  <g id="table">
+    <line x1="60" y1="200" x2="1220" y2="200" stroke="#5C5852" stroke-width="1.5" />
+    <text x="80" y="226" font-family="Cambria, serif" font-size="12" fill="#8A857E" letter-spacing="2">DIMENSION</text>
+    <text x="380" y="226" font-family="Cambria, serif" font-size="12" fill="#E63946" letter-spacing="2">UNITED STATES</text>
+    <text x="960" y="226" font-family="Cambria, serif" font-size="12" fill="#F4A261" letter-spacing="2">CHINA</text>
+    <line x1="60" y1="246" x2="1220" y2="246" stroke="#5C5852" stroke-width="1.5" />
+
+    <g id="row-1">
+      <text x="80" y="290" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">单轮规模</text>
+      <text x="80" y="312" font-family="Cambria, serif" font-size="11" fill="#5C5852">Single-round scale</text>
+      <text x="380" y="295" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#E8E6E1">$30B – $122B</text>
+      <text x="380" y="318" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">OpenAI $122B 史上最大</text>
+      <text x="960" y="295" font-family="Cambria, serif" font-size="22" font-weight="bold" fill="#E8E6E1">$2B – $4B</text>
+      <text x="960" y="318" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Moonshot $2B 单轮最大</text>
+      <line x1="60" y1="340" x2="1220" y2="340" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <g id="row-2">
+      <text x="80" y="370" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">IPO 节奏</text>
+      <text x="80" y="392" font-family="Cambria, serif" font-size="11" fill="#5C5852">IPO timing</text>
+      <text x="380" y="375" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">推迟 · 私募延后</text>
+      <text x="380" y="398" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Q4 2026 目标 $1T</text>
+      <text x="960" y="375" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">Q1 已落港</text>
+      <text x="960" y="398" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Zhipu / MiniMax 2026-01</text>
+      <line x1="60" y1="420" x2="1220" y2="420" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <g id="row-3">
+      <text x="80" y="450" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">政府角色</text>
+      <text x="80" y="472" font-family="Cambria, serif" font-size="11" fill="#5C5852">Government role</text>
+      <text x="380" y="455" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">市场驱动</text>
+      <text x="380" y="478" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">私营 capex · 监管框架</text>
+      <text x="960" y="455" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">大基金领投</text>
+      <text x="960" y="478" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">DeepSeek 首次国家大基金</text>
+      <line x1="60" y1="500" x2="1220" y2="500" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <g id="row-4">
+      <text x="80" y="530" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">估值峰值</text>
+      <text x="80" y="552" font-family="Cambria, serif" font-size="11" fill="#5C5852">Peak valuation</text>
+      <text x="380" y="540" font-family="Cambria, serif" font-size="28" font-weight="bold" fill="#E63946">$852B</text>
+      <text x="380" y="562" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">OpenAI · 私募</text>
+      <text x="960" y="540" font-family="Cambria, serif" font-size="28" font-weight="bold" fill="#F4A261">$56B</text>
+      <text x="960" y="562" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Zhipu · 港股市值</text>
+      <line x1="60" y1="580" x2="1220" y2="580" stroke="#2A2F36" stroke-width="1" />
+    </g>
+
+    <g id="row-5">
+      <text x="80" y="610" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A857E">退出路径</text>
+      <text x="80" y="632" font-family="Cambria, serif" font-size="11" fill="#5C5852">Exit path</text>
+      <text x="380" y="620" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">超大私募 → 推迟 IPO</text>
+      <text x="380" y="642" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">Anthropic Series G $30B</text>
+      <text x="960" y="620" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="bold" fill="#E8E6E1">二级市场优先</text>
+      <text x="960" y="642" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">港交所是出口</text>
+      <line x1="60" y1="660" x2="1220" y2="660" stroke="#5C5852" stroke-width="1.5" />
+    </g>
+  </g>
+
+  <g id="page-footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: Crunchbase · HKEX 招股书 · BigGo Finance · 综合公开披露</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">11 / 20</text>
+  </g>
+</svg>

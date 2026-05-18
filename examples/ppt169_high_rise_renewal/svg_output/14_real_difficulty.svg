@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="paperFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F2EC" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#F5F2EC" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg-image">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+    <image href="../images/640_21.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC" fill-opacity="0.65"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#paperFade)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#C2410C"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">IV · 困局  ·  THE REAL HARDNESS</text>
+  </g>
+
+  <g id="quote-mark">
+    <text x="100" y="280" font-family="Georgia, serif" font-size="200" font-weight="700" fill="#C2410C" fill-opacity="0.18">"</text>
+  </g>
+
+  <g id="big-quote">
+    <text x="180" y="270" font-family="KaiTi, Georgia, serif" font-size="48" font-weight="700" fill="#2B3A4A">"原拆原建"在高层项目中</text>
+    <text x="180" y="328" font-family="KaiTi, Georgia, serif" font-size="48" font-weight="700" fill="#2B3A4A">注定<tspan fill="#C2410C">极其复杂</tspan></text>
+    <line x1="180" y1="360" x2="280" y2="360" stroke="#C2410C" stroke-width="2"/>
+    <text x="180" y="396" font-family="KaiTi, Georgia, serif" font-size="20" font-style="italic" fill="#5A6B7A">户数更多 · 全体业主达成共识的难度大</text>
+  </g>
+
+  <g id="problem">
+    <rect x="180" y="440" width="500" height="180" rx="4" fill="#FFFFFF" stroke="#D6CFC0" stroke-width="1"/>
+    <rect x="180" y="440" width="4" height="180" fill="#C2410C"/>
+    <text x="208" y="478" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#C2410C" letter-spacing="2">现实难题</text>
+    <text x="208" y="518" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#2B3A4A">"让每家掏钱"</text>
+    <text x="208" y="556" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">维护资金从哪出、由谁出 — 仍在探索阶段</text>
+    <text x="208" y="582" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">让许多改造项目<tspan fill="#C2410C" font-weight="700">陷入停滞</tspan></text>
+    <text x="208" y="608" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#8A8275">业主、开发商、政府之间的成本分摊机制尚未成熟</text>
+  </g>
+
+  <g id="solution">
+    <rect x="700" y="440" width="500" height="180" rx="4" fill="#2B3A4A"/>
+    <rect x="700" y="440" width="4" height="180" fill="#6B7A4F"/>
+    <text x="728" y="478" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#A8C575" letter-spacing="2">可能的出路</text>
+    <text x="728" y="518" font-family="KaiTi, Georgia, serif" font-size="28" font-weight="700" fill="#F5F2EC">"共建共治共享"</text>
+    <text x="728" y="556" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#D6CFC0">解锁困局的密码可能在于<tspan fill="#A8C575" font-weight="700">治理模式创新</tspan></text>
+    <text x="728" y="582" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#D6CFC0">设立高层"养老金" · 借鉴"居委会"自管</text>
+    <text x="728" y="608" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#A8B0B8">让居民对高层住宅进行自我管理 — 从"微更新"做起</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="KaiTi, Georgia, serif" font-size="13" font-style="italic" fill="#5A6B7A">技术方案重要，但解锁困局的密码，可能藏在治理之中</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#5A6B7A">14 / 15</text>
+  </g>
+</svg>

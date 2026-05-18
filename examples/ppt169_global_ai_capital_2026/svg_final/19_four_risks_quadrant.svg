@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART VI · THE BUBBLE · 19</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">四大风险，<tspan fill="#E63946">互相放大</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">The four risk vectors that compound each other in 2026 AI capital</text>
+  </g>
+
+  <g id="quadrant-axes">
+    <line x1="640" y1="200" x2="640" y2="640" stroke="#5C5852" stroke-width="1.5" />
+    <line x1="80" y1="420" x2="1200" y2="420" stroke="#5C5852" stroke-width="1.5" />
+  </g>
+
+  <g id="q1-capex-gap">
+    <rect x="80" y="200" width="560" height="220" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="80" y="200" width="560" height="4" fill="#E63946" />
+
+    <text x="100" y="234" font-family="Cambria, serif" font-size="10" fill="#E63946" letter-spacing="3">RISK 01</text>
+    
+  <g transform="translate(540.0, 216.0) scale(1.5)" fill="none" stroke="#E63946" stroke-width="1.5">
+    <path d="M7 20l10 0" />
+    <path d="M6 6l6 -1l6 1" />
+    <path d="M12 3l0 17" />
+    <path d="M9 12l-3 -6l-3 6a3 3 0 0 0 6 0" />
+    <path d="M21 12l-3 -6l-3 6a3 3 0 0 0 6 0" />
+  </g>
+
+    <text x="100" y="278" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">Capex / Revenue 鸿沟</text>
+    <text x="100" y="302" font-family="Cambria, serif" font-size="11" fill="#8A857E" font-style="italic">Capex outruns commercial revenue</text>
+
+    <text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="100" y="344"><tspan>• 增速差 <tspan fill="#E63946" font-weight="bold">+46pt</tspan></tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="100" y="366">• 2001 电信泡沫期为 32pt</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="100" y="388"><tspan>• <tspan fill="#E63946" font-weight="bold">差距已超 2001 泡沫</tspan></tspan>
+    </text></g>
+
+  <g id="q2-roi">
+    <rect x="640" y="200" width="560" height="220" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="640" y="200" width="560" height="4" fill="#E63946" />
+
+    <text x="660" y="234" font-family="Cambria, serif" font-size="10" fill="#E63946" letter-spacing="3">RISK 02</text>
+    
+  <g transform="translate(1100.0, 216.0) scale(1.5)" fill="none" stroke="#E63946" stroke-width="1.5">
+    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+  </g>
+
+    <text x="660" y="278" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">企业 ROI 难落地</text>
+    <text x="660" y="302" font-family="Cambria, serif" font-size="11" fill="#8A857E" font-style="italic">Enterprise ROI lags badly behind capex</text>
+
+    <text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="660" y="344"><tspan>• MIT: <tspan fill="#E63946" font-weight="bold">95%</tspan> AI 试点未产生商业价值</tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="660" y="366"><tspan>• 仅 <tspan fill="#E63946" font-weight="bold">5%</tspan> 企业 EBIT 受 AI 显著影响</tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="660" y="388">• 投资在赌"未来兑现"</text></g>
+
+  <g id="q3-concentration">
+    <rect x="80" y="420" width="560" height="220" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="80" y="420" width="560" height="4" fill="#F4A261" />
+
+    <text x="100" y="454" font-family="Cambria, serif" font-size="10" fill="#F4A261" letter-spacing="3">RISK 03</text>
+    
+  <g transform="translate(540.0, 436.0) scale(1.5)" fill="none" stroke="#F4A261" stroke-width="1.5">
+    <path d="M12 9v4" />
+    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+    <path d="M12 16h.01" />
+  </g>
+
+    <text x="100" y="498" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">客户集中度风险</text>
+    <text x="100" y="522" font-family="Cambria, serif" font-size="11" fill="#8A857E" font-style="italic">Six customers carry the whole supply chain</text>
+
+    <text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="100" y="564"><tspan>• Nvidia 收入 <tspan fill="#F4A261" font-weight="bold">85% 来自 6 家</tspan></tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="100" y="586">• 前 4 名占近 60%</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="100" y="608">• 任一砍 capex → 级联冲击</text></g>
+
+  <g id="q4-financing">
+    <rect x="640" y="420" width="560" height="220" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="640" y="420" width="560" height="4" fill="#F4A261" />
+
+    <text x="660" y="454" font-family="Cambria, serif" font-size="10" fill="#F4A261" letter-spacing="3">RISK 04</text>
+    
+  <g transform="translate(1100.0, 436.0) scale(1.5)" fill="none" stroke="#F4A261" stroke-width="1.5">
+    <path d="M3 9a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -9" />
+    <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+    <path d="M12 12l0 .01" />
+    <path d="M3 13a20 20 0 0 0 18 0" />
+  </g>
+
+    <text x="660" y="498" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">融资结构转向负债</text>
+    <text x="660" y="522" font-family="Cambria, serif" font-size="11" fill="#8A857E" font-style="italic">From operating cash flow to debt</text>
+
+    <text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="660" y="564"><tspan>• 现金流融资 → <tspan fill="#F4A261" font-weight="bold">举债融资</tspan></tspan>
+      </text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="660" y="586">• 自由现金流开始转负</text><text font-size="14" fill="#C9C5BE" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" x="660" y="608">• 兑现时间表的耐心被压缩</text></g>
+
+  <g id="center-mark">
+    <circle cx="640" cy="420" r="22" fill="#0E1116" stroke="#E63946" stroke-width="2" />
+    <text x="640" y="427" text-anchor="middle" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E63946">×</text>
+  </g>
+
+  <g id="page-footer">
+    <line x1="60" y1="670" x2="1220" y2="670" stroke="#2A2F36" stroke-width="1" />
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: MIT GenAI Pilot Study · Allianz · Seeking Alpha · Goldman Sachs 2026 outlook</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">19 / 20</text>
+  </g>
+</svg>

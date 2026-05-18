@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="p05ImgL"><rect x="60" y="240" width="540" height="340" rx="6"/></clipPath>
+    <clipPath id="p05ImgR"><rect x="680" y="240" width="540" height="340" rx="6"/></clipPath>
+    <linearGradient id="p05TopL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2530" stop-opacity="0.55"/>
+      <stop offset="35%" stop-color="#1A2530" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p05TopR" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C2410C" stop-opacity="0.55"/>
+      <stop offset="35%" stop-color="#C2410C" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p05BottomFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F2EC" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#F5F2EC" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#C2410C"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">I · 警钟  ·  HISTORY</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A">前车之鉴 · USA 1972</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="148" font-family="KaiTi, Georgia, serif" font-size="38" font-weight="700" fill="#2B3A4A">老旧高层只有"<tspan fill="#C2410C">被爆破</tspan>"一条路吗？</text>
+    <line x1="60" y1="172" x2="160" y2="172" stroke="#C2410C" stroke-width="2"/>
+    <text x="60" y="200" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5A6B7A">美国普鲁特·艾格住宅区 — 33 栋高层，从样板社区到全部拆除，仅 18 年</text>
+  </g>
+
+  <g id="img-before">
+    <image href="../images/640_2.png" x="60" y="240" width="540" height="340" preserveAspectRatio="xMidYMid slice" clip-path="url(#p05ImgL)"/>
+    <rect x="60" y="240" width="540" height="120" fill="url(#p05TopL)"/>
+    <rect x="60" y="500" width="540" height="80" fill="url(#p05BottomFade)"/>
+    <g id="badge-before">
+      <rect x="80" y="260" width="14" height="14" fill="#F5F2EC"/>
+      <text x="104" y="272" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">BEFORE · 1954</text>
+    </g>
+    <text x="60" y="608" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">建成时获得建筑奖项 · 33 栋高层公寓楼</text>
+  </g>
+
+  <g id="img-after">
+    <image href="../images/640_3.png" x="680" y="240" width="540" height="340" preserveAspectRatio="xMidYMid slice" clip-path="url(#p05ImgR)"/>
+    <rect x="680" y="240" width="540" height="120" fill="url(#p05TopR)"/>
+    <rect x="680" y="500" width="540" height="80" fill="url(#p05BottomFade)"/>
+    <g id="badge-after">
+      <rect x="700" y="260" width="14" height="14" fill="#C2410C"/>
+      <text x="724" y="272" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#F5F2EC" letter-spacing="3">AFTER · 1972</text>
+    </g>
+    <text x="680" y="608" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">全部 33 栋被爆破拆除 · 现代主义住宅模式标志性失败</text>
+  </g>
+
+  <g id="cause-arrow">
+    <rect x="60" y="630" width="1160" height="58" rx="6" fill="#EBE6DC"/>
+    <text x="80" y="668" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#2B3A4A">
+      <tspan fill="#5A6B7A">沦陷链条：</tspan>
+      <tspan font-weight="700"> 富裕居民迁出 </tspan>
+      <tspan fill="#C2410C">→</tspan>
+      <tspan font-weight="700"> 中低收入聚居 </tspan>
+      <tspan fill="#C2410C">→</tspan>
+      <tspan font-weight="700"> 设施年久失修 </tspan>
+      <tspan fill="#C2410C">→</tspan>
+      <tspan font-weight="700"> 公共空间失养 </tspan>
+      <tspan fill="#C2410C">→</tspan>
+      <tspan font-weight="700"> 高犯罪率 </tspan>
+      <tspan fill="#C2410C">→</tspan>
+      <tspan font-weight="700" fill="#C2410C"> 整体爆破</tspan>
+    </text>
+  </g>
+
+  <g id="footer">
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">05 / 15</text>
+  </g>
+</svg>

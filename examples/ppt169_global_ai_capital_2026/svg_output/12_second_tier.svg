@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116" />
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART IV · THE SECOND TIER · 12</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1" />
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">二线梯队：<tspan fill="#E63946">$10B–$50B</tspan> 的精英层</text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">Four companies in the next league — each chasing a different niche</text>
+  </g>
+
+  <g id="card-ssi">
+    <rect x="60" y="200" width="280" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="60" y="200" width="280" height="6" fill="#E63946" />
+    <text x="80" y="244" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">SAFE SUPERINTELLIGENCE</text>
+    <text x="80" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#E8E6E1">SSI</text>
+    <line x1="80" y1="298" x2="320" y2="298" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="80" y="358" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#E63946">$32B</text>
+    <text x="80" y="382" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">最新估值 / Latest valuation</text>
+
+    <line x1="80" y1="410" x2="320" y2="410" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="80" y="442" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">
+      <tspan x="80" dy="0">Ilya Sutskever 创立</tspan>
+      <tspan x="80" dy="22"><tspan fill="#E63946" font-weight="bold">$5B → $32B</tspan></tspan>
+      <tspan x="80" dy="22">半年 6 倍跳涨</tspan>
+    </text>
+
+    <text x="80" y="560" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">
+      <tspan x="80" dy="0">"Single product:</tspan>
+      <tspan x="80" dy="18">a safe superintelligence."</tspan>
+    </text>
+
+    <use data-icon="tabler-outline/shield" x="292" y="338" width="28" height="28" fill="#E63946" stroke-width="1.5" />
+
+    <line x1="80" y1="606" x2="320" y2="606" stroke="#E63946" stroke-width="1" />
+    <text x="80" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">$2B raised · Alphabet/Nvidia in</text>
+  </g>
+
+  <g id="card-perplexity">
+    <rect x="360" y="200" width="280" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="360" y="200" width="280" height="6" fill="#F4A261" />
+    <text x="380" y="244" font-family="Cambria, serif" font-size="11" fill="#F4A261" letter-spacing="3">SEARCH CHALLENGER</text>
+    <text x="380" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#E8E6E1">Perplexity</text>
+    <line x1="380" y1="298" x2="620" y2="298" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="380" y="358" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#F4A261">$21B</text>
+    <text x="380" y="382" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">最新估值 / Latest valuation</text>
+
+    <line x1="380" y1="410" x2="620" y2="410" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="380" y="442" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">
+      <tspan x="380" dy="0">月活 <tspan fill="#F4A261" font-weight="bold">4500 万</tspan></tspan>
+      <tspan x="380" dy="22">Series E-6 完成</tspan>
+      <tspan x="380" dy="22">直挑 Google 搜索</tspan>
+    </text>
+
+    <text x="380" y="560" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">
+      <tspan x="380" dy="0">"Answer engine,</tspan>
+      <tspan x="380" dy="18">not search engine."</tspan>
+    </text>
+
+    <use data-icon="tabler-outline/search" x="592" y="338" width="28" height="28" fill="#F4A261" stroke-width="1.5" />
+
+    <line x1="380" y1="606" x2="620" y2="606" stroke="#F4A261" stroke-width="1" />
+    <text x="380" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">$200M @ $21B · 18 months to here</text>
+  </g>
+
+  <g id="card-mistral">
+    <rect x="660" y="200" width="280" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="660" y="200" width="280" height="6" fill="#C9C5BE" />
+    <text x="680" y="244" font-family="Cambria, serif" font-size="11" fill="#C9C5BE" letter-spacing="3">SOVEREIGN EU AI</text>
+    <text x="680" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#E8E6E1">Mistral AI</text>
+    <line x1="680" y1="298" x2="920" y2="298" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="680" y="358" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#C9C5BE">$13.7B</text>
+    <text x="680" y="382" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">最新估值 / Latest valuation</text>
+
+    <line x1="680" y1="410" x2="920" y2="410" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="680" y="442" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">
+      <tspan x="680" dy="0">$830M <tspan fill="#C9C5BE" font-weight="bold">债务融资</tspan></tspan>
+      <tspan x="680" dy="22">巴黎数据中心</tspan>
+      <tspan x="680" dy="22"><tspan fill="#E63946" font-weight="bold">13,800 张</tspan> Nvidia GPU</tspan>
+    </text>
+
+    <text x="680" y="560" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">
+      <tspan x="680" dy="0">"Europe's open-source</tspan>
+      <tspan x="680" dy="18">sovereign answer."</tspan>
+    </text>
+
+    <use data-icon="tabler-outline/server" x="892" y="338" width="28" height="28" fill="#C9C5BE" stroke-width="1.5" />
+
+    <line x1="680" y1="606" x2="920" y2="606" stroke="#C9C5BE" stroke-width="1" />
+    <text x="680" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">Debt-funded · own data-center bet</text>
+  </g>
+
+  <g id="card-cohere">
+    <rect x="960" y="200" width="260" height="430" fill="#1A1F26" stroke="#2A2F36" stroke-width="1" />
+    <rect x="960" y="200" width="260" height="6" fill="#8A857E" />
+    <text x="980" y="244" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">TRANSATLANTIC MERGER</text>
+    <text x="980" y="284" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">Cohere +</text>
+    <text x="980" y="312" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#E8E6E1">Aleph Alpha</text>
+    <line x1="980" y1="326" x2="1200" y2="326" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="980" y="386" font-family="Cambria, serif" font-size="56" font-weight="bold" fill="#8A857E">$20B</text>
+    <text x="980" y="410" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A857E">合并实体估值</text>
+
+    <line x1="980" y1="438" x2="1200" y2="438" stroke="#2A2F36" stroke-width="1" />
+
+    <text x="980" y="470" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#C9C5BE">
+      <tspan x="980" dy="0">$7B + $3B (Aleph)</tspan>
+      <tspan x="980" dy="22">→ <tspan fill="#E8E6E1" font-weight="bold">$20B 合并溢价</tspan></tspan>
+      <tspan x="980" dy="22">ARR $240M</tspan>
+    </text>
+
+    <text x="980" y="588" font-family="Cambria, serif" font-size="12" font-style="italic" fill="#8A857E">
+      <tspan x="980" dy="0">"Cross-Atlantic sovereign</tspan>
+      <tspan x="980" dy="18">enterprise stack."</tspan>
+    </text>
+
+    <use data-icon="tabler-outline/link" x="1172" y="370" width="28" height="28" fill="#8A857E" stroke-width="1.5" />
+
+    <line x1="980" y1="606" x2="1200" y2="606" stroke="#8A857E" stroke-width="1" />
+    <text x="980" y="624" font-family="Cambria, serif" font-size="11" fill="#8A857E">Schwarz Group leads · 2026 deal</text>
+  </g>
+
+  <g id="bottom-strip">
+    <line x1="60" y1="660" x2="1220" y2="660" stroke="#2A2F36" stroke-width="1" />
+    <text x="640" y="690" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="14" font-style="italic" fill="#E8E6E1">四家公司合计估值 <tspan fill="#E63946" font-weight="bold">$86.7B</tspan>——仅占同期 OpenAI 估值的 <tspan font-weight="bold">10%</tspan>。</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="60" y="715" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: TechCrunch · CNBC · Tracxn · TechFundingNews 2026 Q1-Q2</text>
+    <text x="1220" y="715" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">12 / 20</text>
+  </g>
+</svg>

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE" />
+  </g>
+
+  
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#FF3DA5" />
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">BY THE NUMBERS</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">SUGAR RUSH 2026 · KEY FACTS</text>
+  </g>
+
+  
+  <g id="kpi-days">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M74,175 H336 A14,14 0 0 1 350,189 V401 A14,14 0 0 1 336,415 H74 A14,14 0 0 1 60,401 V189 A14,14 0 0 1 74,175 Z" />
+    
+    <path d="M 64 175 h 282 a 10 10 0 0 1 4 4 v 56 h -290 v -56 a 10 10 0 0 1 4 -4 Z" fill="#FF3DA5" />
+    
+  <g transform="translate(76.0, 186.0) scale(2.5)" fill="#1A1A2E">
+    <path d="M6 0H3V2H1V5H15V2H13V0H10V2H6V0Z" />
+    <path d="M15 7H1V15H15V7Z" />
+  </g>
+    <text x="128" y="215" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">DAYS</text>
+    
+    <text x="205" y="340" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="140" font-weight="900" fill="#1A1A2E" letter-spacing="-2">7</text>
+    <text x="205" y="385" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#5C5C7A">连续狂欢 / NON-STOP</text>
+    
+    <circle cx="280" cy="280" r="6" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <circle cx="305" cy="260" r="4" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+  </g>
+
+  
+  <g id="kpi-stages">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M379,175 H641 A14,14 0 0 1 655,189 V401 A14,14 0 0 1 641,415 H379 A14,14 0 0 1 365,401 V189 A14,14 0 0 1 379,175 Z" />
+    <path d="M 369 175 h 282 a 10 10 0 0 1 4 4 v 56 h -290 v -56 a 10 10 0 0 1 4 -4 Z" fill="#00B8D9" />
+    
+  <g transform="translate(381.0, 186.0) scale(2.5)" fill="#1A1A2E">
+    <path d="M15 1H4V9H3C1.34315 9 0 10.3431 0 12C0 13.6569 1.34315 15 3 15C4.65685 15 6 13.6569 6 12V5H13V9H12C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12V1Z" />
+  </g>
+    <text x="433" y="215" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">STAGES</text>
+    <text x="510" y="340" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="140" font-weight="900" fill="#1A1A2E" letter-spacing="-2">5</text>
+    <text x="510" y="385" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#5C5C7A">主题舞台 / THEMED</text>
+    
+    <path d="M 580 270 Q 595 260 610 270 T 640 270" stroke="#FF3DA5" stroke-width="3" fill="none" stroke-linecap="round" />
+  </g>
+
+  
+  <g id="kpi-artists">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M684,175 H946 A14,14 0 0 1 960,189 V401 A14,14 0 0 1 946,415 H684 A14,14 0 0 1 670,401 V189 A14,14 0 0 1 684,175 Z" />
+    <path d="M 674 175 h 282 a 10 10 0 0 1 4 4 v 56 h -290 v -56 a 10 10 0 0 1 4 -4 Z" fill="#FFD93D" />
+    
+  <g transform="translate(686.0, 186.0) scale(2.5)" fill="#1A1A2E">
+    <path d="M5 3C5 1.34315 6.34315 0 8 0C9.65685 0 11 1.34315 11 3V7C11 8.65685 9.65685 10 8 10C6.34315 10 5 8.65685 5 7V3Z" />
+    <path d="M9 13.9291V16H7V13.9291C3.60771 13.4439 1 10.5265 1 7V6H3V7C3 9.76142 5.23858 12 8 12C10.7614 12 13 9.76142 13 7V6H15V7C15 10.5265 12.3923 13.4439 9 13.9291Z" />
+  </g>
+    <text x="738" y="215" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">ARTISTS</text>
+    <text x="815" y="340" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="140" font-weight="900" fill="#1A1A2E" letter-spacing="-4">80</text>
+    <text x="815" y="385" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#5C5C7A">组艺人 / ACTS</text>
+    
+    <polygon points="920,260 940,290 900,290" fill="#FF6B4A" stroke="#1A1A2E" stroke-width="2" />
+  </g>
+
+  
+  <g id="kpi-fans">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M989,175 H1206 A14,14 0 0 1 1220,189 V401 A14,14 0 0 1 1206,415 H989 A14,14 0 0 1 975,401 V189 A14,14 0 0 1 989,175 Z" />
+    <path d="M 979 175 h 237 a 10 10 0 0 1 4 4 v 56 h -245 v -56 a 10 10 0 0 1 4 -4 Z" fill="#00C896" />
+    
+  <g transform="translate(991.0, 186.0) scale(2.5)" fill="#1A1A2E">
+    <path d="M8 3.5C8 4.88071 6.88071 6 5.5 6C4.11929 6 3 4.88071 3 3.5C3 2.11929 4.11929 1 5.5 1C6.88071 1 8 2.11929 8 3.5Z" />
+    <path d="M3 8C1.34315 8 0 9.34315 0 11V15H8V8H3Z" />
+    <path d="M13 8H10V15H16V11C16 9.34315 14.6569 8 13 8Z" />
+    <path d="M12 6C13.1046 6 14 5.10457 14 4C14 2.89543 13.1046 2 12 2C10.8954 2 10 2.89543 10 4C10 5.10457 10.8954 6 12 6Z" />
+  </g>
+    <text x="1043" y="215" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A2E" letter-spacing="2">FANS</text>
+    <text x="1097" y="340" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="100" font-weight="900" fill="#1A1A2E" letter-spacing="-3">50K</text>
+    <text x="1097" y="385" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#5C5C7A">预期观众 / EXPECTED</text>
+    <circle cx="1180" cy="270" r="6" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+  </g>
+
+  
+  <g id="fun-band">
+    <path fill="#1A1A2E" d="M74,455 H1206 A14,14 0 0 1 1220,469 V621 A14,14 0 0 1 1206,635 H74 A14,14 0 0 1 60,621 V469 A14,14 0 0 1 74,455 Z" />
+    <text x="100" y="510" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="32" font-weight="900" fill="#FFD93D" letter-spacing="2">≈ 12 HOURS OF MUSIC EVERY DAY</text>
+    <text x="100" y="555" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="700" fill="#FFF8EE">从下午 4 点到次日凌晨 4 点，连续 12 个小时不间断</text>
+    <text x="100" y="600" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="600" fill="#FFF8EE" fill-opacity="0.85">5 个舞台轮番接力 · 同时段最多 3 个演出 · 跨场地步行最远 600 米</text>
+    
+    <circle cx="1080" cy="540" r="50" fill="#FF3DA5" stroke="#FFF8EE" stroke-width="4" />
+    <text x="1080" y="551" text-anchor="middle" font-family="Impact, sans-serif" font-size="34" font-weight="900" fill="#FFF8EE" letter-spacing="0">12</text>
+    <text x="1080" y="573" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#FFF8EE" letter-spacing="2">HOURS</text>
+    
+    <path d="M 1150 510 L 1170 490 L 1170 510 L 1190 490" stroke="#00C896" stroke-width="4" fill="none" stroke-linecap="round" />
+  </g>
+
+  
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">数据基于 2026 排期预测 · Source: SUGAR RUSH 组委会</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">03 / 14</text>
+  </g>
+</svg>

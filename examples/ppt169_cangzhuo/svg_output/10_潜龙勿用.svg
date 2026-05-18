@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Full-bleed image (#1) -->
+  <image href="../images/qianlong_pool.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Radial vignette (#28) — periphery slightly darker -->
+  <defs>
+    <radialGradient id="qianlong_vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#F5F1E8" stop-opacity="0.1"/>
+      <stop offset="55%" stop-color="#F5F1E8" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0.25"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#qianlong_vignette)"/>
+
+  <!-- Top section marker -->
+  <text x="640" y="100" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="18" fill="#5C5852" letter-spacing="12">— 易 经 · 乾 卦 —</text>
+
+  <!-- Big quote -->
+  <text x="640" y="290" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="140" font-weight="700" fill="#1A1A1A" letter-spacing="40">潜龙勿用</text>
+
+  <!-- Decoration -->
+  <line x1="580" y1="350" x2="700" y2="350" stroke="#A52A2A" stroke-width="2"/>
+
+  <!-- Centered seal -->
+  <g transform="translate(605, 380)">
+    <rect x="0" y="0" width="70" height="70" fill="#A52A2A"/>
+    <text x="35" y="52" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#F5F1E8">潜</text>
+  </g>
+
+  <!-- Two-line interpretation, large -->
+  <text x="640" y="540" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="32" fill="#1A1A1A" letter-spacing="4">龙在深渊 · 不是没有力量</text>
+  <text x="640" y="590" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="32" fill="#1A1A1A" letter-spacing="4">而是时机未到</text>
+
+  <!-- Footnote -->
+  <text x="640" y="650" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#5C5852" letter-spacing="2">天还没亮，硬要腾空，只会撞上看不见的网</text>
+
+  <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5C5852">藏拙 · 八</text>
+  <text x="1220" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#5C5852">10</text>
+</svg>

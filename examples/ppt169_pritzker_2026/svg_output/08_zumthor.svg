@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="p08-top">
+    <text x="60" y="60" font-family="Georgia, serif" font-size="14" fill="#B8935A" letter-spacing="3">06 · TWENTY YEARS</text>
+    <text x="60" y="118" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="44" font-weight="bold" fill="#1C1C1C">20 年打磨的诗意艺术方舟</text>
+    <line x1="60" y1="148" x2="180" y2="148" stroke="#B8935A" stroke-width="3"/>
+    <text x="60" y="184" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="18" fill="#5C5852">彼得·卒姆托 · LACMA 大卫·格芬画廊 · 2026.5.4 开放</text>
+    <text x="60" y="208" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#8B8680">2009 年普利兹克奖 · 横跨洛杉矶威尔希尔大道之上</text>
+  </g>
+
+  <g id="banner">
+    <image href="../images/zumthor_lacma_exterior.png" x="0" y="240" width="1280" height="260" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="60" y="464" width="160" height="32" fill="#1C1C1C"/>
+    <text x="76" y="486" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#E8C788" letter-spacing="2">SUSPENDED ARK</text>
+  </g>
+
+  <g id="bottom-stats">
+    <line x1="60" y1="540" x2="60" y2="640" stroke="#B8935A" stroke-width="2"/>
+    <text x="80" y="568" font-family="Georgia, serif" font-size="13" fill="#B8935A" letter-spacing="2">SCALE</text>
+    <text x="80" y="608" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#1C1C1C">$724M</text>
+    <text x="80" y="636" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">7.24 亿美元投资 · 32,293 ㎡</text>
+
+    <line x1="360" y1="540" x2="360" y2="640" stroke="#B8935A" stroke-width="2"/>
+    <text x="380" y="568" font-family="Georgia, serif" font-size="13" fill="#B8935A" letter-spacing="2">STRUCTURE</text>
+    <text x="380" y="608" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="26" font-weight="bold" fill="#1C1C1C">七座极简混凝土亭</text>
+    <text x="380" y="636" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">错落排布 · 横跨繁忙大道之上</text>
+
+    <line x1="700" y1="540" x2="700" y2="640" stroke="#B8935A" stroke-width="2"/>
+    <text x="720" y="568" font-family="Georgia, serif" font-size="13" fill="#B8935A" letter-spacing="2">CRAFT TIME</text>
+    <text x="720" y="608" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#1C1C1C">20 年</text>
+    <text x="720" y="636" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5C5852">反复打磨 · 以极致耐心对抗时代浮躁</text>
+  </g>
+
+  <g id="quote-block">
+    <rect x="960" y="540" width="260" height="120" fill="#1C1C1C"/>
+    <line x1="960" y1="540" x2="960" y2="600" stroke="#B8935A" stroke-width="3"/>
+    <text x="980" y="572" font-family="KaiTi, Georgia, serif" font-size="18" fill="#E8C788" font-style="italic">建筑是场所的</text>
+    <text x="980" y="600" font-family="KaiTi, Georgia, serif" font-size="18" fill="#E8C788" font-style="italic">诗意容器</text>
+    <text x="980" y="640" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D4CFC4">— 彼得·卒姆托</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="708" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#8B8680">摒弃艺术品等级化 · 古典与当代平等共生 · 图源 Archdaily / 摄影 Iwan Baan</text>
+    <text x="1220" y="708" text-anchor="end" font-family="Georgia, serif" font-size="11" fill="#8B8680">08 / 11</text>
+  </g>
+</svg>

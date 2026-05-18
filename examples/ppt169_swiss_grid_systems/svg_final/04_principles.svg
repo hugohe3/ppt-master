@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 04</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">八条核心原则</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">EIGHT PRINCIPLES OF SWISS DESIGN</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3" />
+  </g>
+
+  
+  
+
+  <g id="principle-1">
+    <text x="64" y="244" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">01</text>
+    <line x1="64" y1="276" x2="280" y2="276" stroke="#1A1A1A" stroke-width="1" />
+    <text x="64" y="302" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">客观先于表达</text>
+    <text x="64" y="324" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">OBJECTIVITY OVER EXPRESSION</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="354">信息传达高于</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="372">设计师个人情绪。</text></g>
+
+  <g id="principle-2">
+    <text x="368" y="244" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">02</text>
+    <line x1="368" y1="276" x2="584" y2="276" stroke="#1A1A1A" stroke-width="1" />
+    <text x="368" y="302" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">数学网格为骨架</text>
+    <text x="368" y="324" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">MATHEMATICAL GRID</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="354">列、行、间距、模数</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="372">皆从基本单位派生。</text></g>
+
+  <g id="principle-3">
+    <text x="672" y="244" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">03</text>
+    <line x1="672" y1="276" x2="888" y2="276" stroke="#1A1A1A" stroke-width="1" />
+    <text x="672" y="302" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">非对称构图</text>
+    <text x="672" y="324" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">ASYMMETRIC LAYOUT</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="354">拒绝古典对称</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="372">带来的中心权威。</text></g>
+
+  <g id="principle-4">
+    <text x="976" y="244" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">04</text>
+    <line x1="976" y1="276" x2="1192" y2="276" stroke="#1A1A1A" stroke-width="1" />
+    <text x="976" y="302" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">无衬线字体</text>
+    <text x="976" y="324" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">SANS-SERIF TYPOGRAPHY</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="354">Akzidenz · Helvetica</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="372">Univers 三足鼎立。</text></g>
+
+  <g id="principle-5">
+    <text x="64" y="484" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">05</text>
+    <line x1="64" y1="516" x2="280" y2="516" stroke="#1A1A1A" stroke-width="1" />
+    <text x="64" y="542" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">齐左不齐右</text>
+    <text x="64" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">FLUSH-LEFT RAGGED-RIGHT</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="594">字距均匀</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="612">阅读节奏稳定。</text></g>
+
+  <g id="principle-6">
+    <text x="368" y="484" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">06</text>
+    <line x1="368" y1="516" x2="584" y2="516" stroke="#1A1A1A" stroke-width="1" />
+    <text x="368" y="542" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">客观摄影</text>
+    <text x="368" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">OBJECTIVE PHOTOGRAPHY</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="594">取代装饰性插画</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="368" y="612">现代摄影登场。</text></g>
+
+  <g id="principle-7">
+    <text x="672" y="484" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">07</text>
+    <line x1="672" y1="516" x2="888" y2="516" stroke="#D9251D" stroke-width="2" />
+    <text x="672" y="542" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#D9251D">留白是结构</text>
+    <text x="672" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">NEGATIVE SPACE AS STRUCTURE</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="594">空白是信息的载体</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="672" y="612">而非剩余。</text></g>
+
+  <g id="principle-8">
+    <text x="976" y="484" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="48" font-weight="900" fill="#E8E8E8">08</text>
+    <line x1="976" y1="516" x2="1192" y2="516" stroke="#1A1A1A" stroke-width="1" />
+    <text x="976" y="542" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">可重复可规模化</text>
+    <text x="976" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="1">REPRODUCIBLE AT SCALE</text>
+    <text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="594">跨语言、跨媒介</text><text font-size="13" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="976" y="612">跨规模复用。</text></g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">04 / 14</text>
+  </g>
+</svg>

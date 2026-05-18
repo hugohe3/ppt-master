@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="endingOverlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2530" stop-opacity="0.30"/>
+      <stop offset="55%" stop-color="#1A2530" stop-opacity="0.70"/>
+      <stop offset="100%" stop-color="#1A2530" stop-opacity="0.92"/>
+    </linearGradient>
+    <marker id="stepArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,1 L8,5 L0,9 Z" fill="#A8C575"/>
+    </marker>
+  </defs>
+
+  <g id="bg-image">
+    <rect width="1280" height="720" fill="#1A2530"/>
+    <image href="../images/640_23.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#endingOverlay)"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#A8C575"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#F5F2EC" letter-spacing="3">CONCLUSION  ·  ENDING</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#D6CFC0">CHINA · 297 CITIES · 150+ COUNTIES</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="170" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">从追求<tspan fill="#D6CFC0">高度</tspan>，到沉淀<tspan fill="#A8C575">厚度</tspan></text>
+    <line x1="60" y1="200" x2="160" y2="200" stroke="#A8C575" stroke-width="2"/>
+    <text x="60" y="234" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#D6CFC0" font-style="italic">国家正在大力推行"先体检、后更新"的城市更新理念</text>
+  </g>
+
+  <g id="step-flow">
+    <line x1="220" y1="430" x2="320" y2="430" stroke="#A8C575" stroke-width="2" marker-end="url(#stepArrow)" stroke-opacity="0.7"/>
+    <line x1="490" y1="430" x2="590" y2="430" stroke="#A8C575" stroke-width="2" marker-end="url(#stepArrow)" stroke-opacity="0.7"/>
+    <line x1="760" y1="430" x2="860" y2="430" stroke="#A8C575" stroke-width="2" marker-end="url(#stepArrow)" stroke-opacity="0.7"/>
+
+    <g id="step-1">
+      <circle cx="160" cy="430" r="44" fill="#F5F2EC"/>
+      <use data-icon="tabler-outline/clipboard-check" x="138" y="408" width="44" height="44" fill="#C2410C"/>
+      <text x="160" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#A8C575" letter-spacing="3">01 · 体检</text>
+      <text x="160" y="540" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#F5F2EC">城市体检</text>
+      <text x="160" y="566" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">截至 2025.11</text>
+      <text x="160" y="586" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">297 个地级 + 150+ 县级市</text>
+    </g>
+
+    <g id="step-2">
+      <circle cx="430" cy="430" r="44" fill="#F5F2EC"/>
+      <use data-icon="tabler-outline/tool" x="408" y="408" width="44" height="44" fill="#8B7355"/>
+      <text x="430" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#A8C575" letter-spacing="3">02 · 设计</text>
+      <text x="430" y="540" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#F5F2EC">专业方案</text>
+      <text x="430" y="566" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">专业机构提供</text>
+      <text x="430" y="586" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">安全可靠的设计与技术</text>
+    </g>
+
+    <g id="step-3">
+      <circle cx="700" cy="430" r="44" fill="#F5F2EC"/>
+      <use data-icon="tabler-outline/users" x="678" y="408" width="44" height="44" fill="#6B7A4F"/>
+      <text x="700" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#A8C575" letter-spacing="3">03 · 协调</text>
+      <text x="700" y="540" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#F5F2EC">共建共治</text>
+      <text x="700" y="566" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">政府搭建平台</text>
+      <text x="700" y="586" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">社区基层组织协调引领</text>
+    </g>
+
+    <g id="step-4">
+      <circle cx="970" cy="430" r="48" fill="#A8C575"/>
+      <use data-icon="tabler-outline/refresh" x="946" y="406" width="48" height="48" fill="#2B3A4A"/>
+      <text x="970" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#A8C575" letter-spacing="3">04 · 再生</text>
+      <text x="970" y="540" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="700" fill="#F5F2EC">焕发新机</text>
+      <text x="970" y="566" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">多方合力 · 安全与环保前提</text>
+      <text x="970" y="586" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#D6CFC0">为城市发展贡献独特价值</text>
+    </g>
+  </g>
+
+  <g id="closing">
+    <line x1="60" y1="640" x2="200" y2="640" stroke="#A8C575" stroke-width="1"/>
+    <text x="60" y="675" font-family="KaiTi, Georgia, serif" font-size="20" font-style="italic" fill="#F5F2EC">超高层建筑的未来，在于"<tspan fill="#A8C575" font-weight="700">精耕细作</tspan>"式的改造</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#A8B0B8">— 谢谢观看 · 15 / 15</text>
+  </g>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <text x="60" y="78" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="14" fill="#B8935A" letter-spacing="3">EIGHT MASTERS · EIGHT WORKS</text>
+    <text x="60" y="128" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="44" font-weight="bold" fill="#1C1C1C">八位大师 · 八种坚守</text>
+    <line x1="60" y1="158" x2="200" y2="158" stroke="#B8935A" stroke-width="2"/>
+    <text x="60" y="190" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#5C5852">2026 年集中亮相 · 横跨亚欧美非四大洲</text>
+  </g>
+
+  <g id="card-01">
+    <line x1="60" y1="240" x2="60" y2="380" stroke="#B8935A" stroke-width="2"/>
+    <text x="78" y="270" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">01</text>
+    <text x="78" y="312" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">安藤忠雄</text>
+    <text x="78" y="340" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">苏州 H+ 美术馆</text>
+    <text x="78" y="362" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">中国 · 苏州 · 2026.1</text>
+  </g>
+
+  <g id="card-02">
+    <line x1="365" y1="240" x2="365" y2="380" stroke="#B8935A" stroke-width="2"/>
+    <text x="383" y="270" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">02</text>
+    <text x="383" y="312" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">奇普菲尔德</text>
+    <text x="383" y="340" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">米兰圣朱利亚冰球馆</text>
+    <text x="383" y="362" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">意大利 · 米兰 · 2026 冬奥</text>
+  </g>
+
+  <g id="card-03">
+    <line x1="670" y1="240" x2="670" y2="380" stroke="#B8935A" stroke-width="2"/>
+    <text x="688" y="270" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">03</text>
+    <text x="688" y="312" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">扎哈·哈迪德</text>
+    <text x="688" y="340" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">淡江大桥（遗作）</text>
+    <text x="688" y="362" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">中国 · 台北 · 2026.5.12</text>
+  </g>
+
+  <g id="card-04">
+    <line x1="975" y1="240" x2="975" y2="380" stroke="#B8935A" stroke-width="2"/>
+    <text x="993" y="270" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">04</text>
+    <text x="993" y="312" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">诺曼·福斯特</text>
+    <text x="993" y="340" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">上海嘉艺术</text>
+    <text x="993" y="362" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">中国 · 上海 · 2026.4</text>
+  </g>
+
+  <g id="card-05">
+    <line x1="60" y1="450" x2="60" y2="590" stroke="#B8935A" stroke-width="2"/>
+    <text x="78" y="480" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">05</text>
+    <text x="78" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">OMA × SANAA</text>
+    <text x="78" y="550" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">纽约新美术馆扩建</text>
+    <text x="78" y="572" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">美国 · 纽约 · 2026.3.21</text>
+  </g>
+
+  <g id="card-06">
+    <line x1="365" y1="450" x2="365" y2="590" stroke="#B8935A" stroke-width="2"/>
+    <text x="383" y="480" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">06</text>
+    <text x="383" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">彼得·卒姆托</text>
+    <text x="383" y="550" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">LACMA 大卫·格芬画廊</text>
+    <text x="383" y="572" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">美国 · 洛杉矶 · 2026.5.4</text>
+  </g>
+
+  <g id="card-07">
+    <line x1="670" y1="450" x2="670" y2="590" stroke="#B8935A" stroke-width="2"/>
+    <text x="688" y="480" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">07</text>
+    <text x="688" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">弗兰克·盖里</text>
+    <text x="688" y="550" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">阿布扎比古根海姆（遗作）</text>
+    <text x="688" y="572" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">阿联酋 · 阿布扎比 · 2026</text>
+  </g>
+
+  <g id="card-08">
+    <line x1="975" y1="450" x2="975" y2="590" stroke="#B8935A" stroke-width="2"/>
+    <text x="993" y="480" font-family="Georgia, serif" font-size="56" fill="#B8935A" font-style="italic">08</text>
+    <text x="993" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="bold" fill="#1C1C1C">凯雷</text>
+    <text x="993" y="550" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#5C5852">塞内加尔歌德学院</text>
+    <text x="993" y="572" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">塞内加尔 · 达喀尔 · 2026.4</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="668" x2="1220" y2="668" stroke="#D4CFC4" stroke-width="1"/>
+    <text x="60" y="695" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#8B8680">2026 — 普利兹克大师新作季</text>
+    <text x="1220" y="695" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8B8680">02 / 11</text>
+  </g>
+</svg>

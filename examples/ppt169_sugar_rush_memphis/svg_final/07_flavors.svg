@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE" />
+  </g>
+
+  
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#00C896" />
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">FOUR FLAVORS, ONE FESTIVAL</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">四大风格阵营 · TASTE YOUR OWN</text>
+    
+    <g transform="translate(1140, 60)">
+      <rect x="0" y="0" width="26" height="26" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+      <rect x="28" y="0" width="26" height="26" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+      <rect x="0" y="28" width="26" height="26" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+      <rect x="28" y="28" width="26" height="26" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    </g>
+  </g>
+
+  
+  <g id="q-rock">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M74,170 H631 A14,14 0 0 1 645,184 V396 A14,14 0 0 1 631,410 H74 A14,14 0 0 1 60,396 V184 A14,14 0 0 1 74,170 Z" />
+    
+    <path d="M 64 170 h 577 a 10 10 0 0 1 4 4 v 56 h -585 v -56 a 10 10 0 0 1 4 -4 Z" fill="#FF3DA5" />
+    
+  <g transform="translate(76.0, 180.0) scale(2.25)" fill="#1A1A2E">
+    <path d="M9 7L10 0H8L2 7V9H7L6 16H8L14 9L14 7H9Z" />
+  </g>
+    <text x="122" y="208" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="28" font-weight="900" fill="#1A1A2E" letter-spacing="2">ROCK · 摇滚</text>
+    
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2" d="M504,184 H616 A14,14 0 0 1 630,198 V198 A14,14 0 0 1 616,212 H504 A14,14 0 0 1 490,198 V198 A14,14 0 0 1 504,184 Z" />
+    <text x="560" y="203" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#FF3DA5" letter-spacing="2">25 组艺人</text>
+    
+    <circle cx="86" cy="270" r="6" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="276" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">关键词: <tspan fill="#FF3DA5" font-weight="900">噪音 · 燃 · 释放</tspan></text>
+    <circle cx="86" cy="306" r="6" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="312" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">舞台: CHERRY STAGE · 容量 5000</text>
+    <circle cx="86" cy="342" r="6" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="348" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">主场日: <tspan fill="#FF3DA5" font-weight="900">Day 2 · 7.19</tspan> 整夜不停</text>
+    <circle cx="86" cy="378" r="6" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">头牌: CHERRY BOMB + 24 组独立乐队</text>
+  </g>
+
+  
+  <g id="q-electro">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M674,170 H1206 A14,14 0 0 1 1220,184 V396 A14,14 0 0 1 1206,410 H674 A14,14 0 0 1 660,396 V184 A14,14 0 0 1 674,170 Z" />
+    <path d="M 664 170 h 552 a 10 10 0 0 1 4 4 v 56 h -560 v -56 a 10 10 0 0 1 4 -4 Z" fill="#00B8D9" />
+    
+  <g transform="translate(676.0, 180.0) scale(2.25)" fill="#1A1A2E">
+    <path d="M3 7C3 4.23858 5.23858 2 8 2C10.7614 2 13 4.23858 13 7V8H10V15H12C13.6569 15 15 13.6569 15 12V7C15 3.13401 11.866 0 8 0C4.13401 0 1 3.13401 1 7V12C1 13.6569 2.34315 15 4 15H6V8H3V7Z" />
+  </g>
+    <text x="722" y="208" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="28" font-weight="900" fill="#1A1A2E" letter-spacing="2">ELECTRO · 电子</text>
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2" d="M1079,184 H1191 A14,14 0 0 1 1205,198 V198 A14,14 0 0 1 1191,212 H1079 A14,14 0 0 1 1065,198 V198 A14,14 0 0 1 1079,184 Z" />
+    <text x="1135" y="203" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#00B8D9" letter-spacing="2">30 组艺人</text>
+    <circle cx="686" cy="270" r="6" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="276" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">关键词: <tspan fill="#00B8D9" font-weight="900">律动 · 深夜 · 迷幻</tspan></text>
+    <circle cx="686" cy="306" r="6" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="312" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">舞台: NEON GRID · 容量 5000</text>
+    <circle cx="686" cy="342" r="6" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="348" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">主场日: <tspan fill="#00B8D9" font-weight="900">Day 3 · 7.20</tspan> 通宵 12h</text>
+    <circle cx="686" cy="378" r="6" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">头牌: NEON CLOUD + 29 组国际 DJ</text>
+  </g>
+
+  
+  <g id="q-folk">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M74,430 H631 A14,14 0 0 1 645,444 V656 A14,14 0 0 1 631,670 H74 A14,14 0 0 1 60,656 V444 A14,14 0 0 1 74,430 Z" />
+    <path d="M 64 430 h 577 a 10 10 0 0 1 4 4 v 56 h -585 v -56 a 10 10 0 0 1 4 -4 Z" fill="#00C896" />
+    
+  <g transform="translate(76.0, 440.0) scale(2.25)" fill="#1A1A2E">
+    <path d="M1.24264 8.24264L8 15L14.7574 8.24264C15.553 7.44699 16 6.36786 16 5.24264V5.05234C16 2.8143 14.1857 1 11.9477 1C10.7166 1 9.55233 1.55959 8.78331 2.52086L8 3.5L7.21669 2.52086C6.44767 1.55959 5.28338 1 4.05234 1C1.8143 1 0 2.8143 0 5.05234V5.24264C0 6.36786 0.44699 7.44699 1.24264 8.24264Z" />
+  </g>
+    <text x="122" y="468" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="28" font-weight="900" fill="#1A1A2E" letter-spacing="2">FOLK · 民谣</text>
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2" d="M504,444 H616 A14,14 0 0 1 630,458 V458 A14,14 0 0 1 616,472 H504 A14,14 0 0 1 490,458 V458 A14,14 0 0 1 504,444 Z" />
+    <text x="560" y="463" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#00C896" letter-spacing="2">15 组艺人</text>
+    <circle cx="86" cy="530" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="536" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">关键词: <tspan fill="#00C896" font-weight="900">故事 · 慢 · 温度</tspan></text>
+    <circle cx="86" cy="566" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="572" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">舞台: MINT GROVE · 容量 3000</text>
+    <circle cx="86" cy="602" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="608" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">主场日: <tspan fill="#00C896" font-weight="900">Day 4 · 7.21</tspan> 黄昏专场</text>
+    <circle cx="86" cy="638" r="6" fill="#00C896" stroke="#1A1A2E" stroke-width="2" />
+    <text x="106" y="644" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">头牌: MINT FOLK + 14 组创作人</text>
+  </g>
+
+  
+  <g id="q-hiphop">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M674,430 H1206 A14,14 0 0 1 1220,444 V656 A14,14 0 0 1 1206,670 H674 A14,14 0 0 1 660,656 V444 A14,14 0 0 1 674,430 Z" />
+    <path d="M 664 430 h 552 a 10 10 0 0 1 4 4 v 56 h -560 v -56 a 10 10 0 0 1 4 -4 Z" fill="#FFD93D" />
+    
+  <g transform="translate(676.0, 440.0) scale(2.25)" fill="#1A1A2E">
+    <path d="M15 1H4V9H3C1.34315 9 0 10.3431 0 12C0 13.6569 1.34315 15 3 15C4.65685 15 6 13.6569 6 12V5H13V9H12C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12V1Z" />
+  </g>
+    <text x="722" y="468" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="28" font-weight="900" fill="#1A1A2E" letter-spacing="2">HIPHOP · 嘻哈</text>
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="2" d="M1079,444 H1191 A14,14 0 0 1 1205,458 V458 A14,14 0 0 1 1191,472 H1079 A14,14 0 0 1 1065,458 V458 A14,14 0 0 1 1079,444 Z" />
+    <text x="1135" y="463" text-anchor="middle" font-family="Impact, sans-serif" font-size="13" font-weight="900" fill="#FF6B4A" letter-spacing="2">10 组艺人</text>
+    <circle cx="686" cy="530" r="6" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="536" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">关键词: <tspan fill="#FF6B4A" font-weight="900">街头 · 节拍 · 态度</tspan></text>
+    <circle cx="686" cy="566" r="6" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="572" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">舞台: YELLOW BLOCK · 容量 7000</text>
+    <circle cx="686" cy="602" r="6" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="608" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">主场日: <tspan fill="#FF6B4A" font-weight="900">Day 5 · 7.22</tspan> 午夜炸场</text>
+    <circle cx="686" cy="638" r="6" fill="#FFD93D" stroke="#1A1A2E" stroke-width="2" />
+    <text x="706" y="644" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#1A1A2E">头牌: YELLOW HUSTLE + 9 组 rapper</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">第五阵营 CROSSOVER · 见 Day 6 · 7.23 跨界之夜</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">07 / 14</text>
+  </g>
+</svg>

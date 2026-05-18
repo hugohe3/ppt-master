@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="scrimP09" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5EFE0" stop-opacity="0.92"/>
+      <stop offset="40%" stop-color="#F5EFE0" stop-opacity="0.0"/>
+    </linearGradient>
+    <pattern id="dotP09" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+
+  <!-- Full-bleed hero image -->
+  <g id="hero">
+    <image href="../images/jimbocho_hero.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Top scrim for header readability -->
+  <rect id="top-scrim" x="0" y="0" width="1280" height="280" fill="url(#scrimP09)"/>
+
+  <rect id="grain" width="1280" height="720" fill="url(#dotP09)"/>
+
+  <!-- Header -->
+  <g id="header">
+    <text x="60" y="80" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#1A1A1A" letter-spacing="4">PART 04 · 全球独立书店 NO.1 — 东京</text>
+    <line x1="60" y1="96" x2="320" y2="96" stroke="#FF5C8A" stroke-width="3"/>
+  </g>
+
+  <!-- BIG TITLE: 神保町 + JIMBŌCHŌ misregistered -->
+  <g id="big-title">
+    <text x="60" y="180" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#FF5C8A" letter-spacing="-1">神保町</text>
+    <text x="58" y="178" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1A1A1A" letter-spacing="-1">神保町</text>
+
+    <text x="60" y="246" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="58" fill="#FF5C8A" letter-spacing="2">JIMBŌCHŌ</text>
+    <text x="58" y="244" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="58" fill="#1E4DBC" letter-spacing="2">JIMBŌCHŌ</text>
+  </g>
+
+  <!-- Right-side "TIME OUT 2025" rosette -->
+  <g id="award">
+    <rect x="980" y="68" width="240" height="120" fill="#1A1A1A"/>
+    <rect x="983" y="71" width="240" height="120" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="980" y="68" width="240" height="120" fill="#1A1A1A"/>
+    <text x="1100" y="110" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FF5C8A" text-anchor="middle" letter-spacing="3">TIME OUT 2025</text>
+    <text x="1100" y="142" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="900" fill="#F5EFE0" text-anchor="middle">全球最酷街区</text>
+    <text x="1100" y="172" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">COOLEST NEIGHBORHOOD</text>
+  </g>
+
+  <!-- Bottom info bar (left-aligned, against scrim) -->
+  <g id="info-bar">
+    <rect x="0" y="540" width="1280" height="180" fill="#1A1A1A" fill-opacity="0.86"/>
+    <rect x="0" y="540" width="1280" height="6" fill="#FF5C8A"/>
+
+    <!-- Stat 1 — 130-180 stores -->
+    <g id="stat-01">
+      <text x="80" y="600" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="68" fill="#FF5C8A">130-180</text>
+      <text x="80" y="632" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="900" fill="#F5EFE0">家书店密集分布</text>
+      <text x="80" y="658" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F5EFE0" opacity="0.7" letter-spacing="2">BOOKSTORES IN ONE DISTRICT</text>
+      <text x="80" y="686" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">靖国通 × 白山通交叉</text>
+    </g>
+
+    <line x1="448" y1="568" x2="448" y2="700" stroke="#F5EFE0" stroke-opacity="0.3" stroke-width="1"/>
+
+    <!-- Stat 2 — heritage -->
+    <g id="stat-02">
+      <text x="488" y="586" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#FF5C8A">1875 · 1902 · 2015</text>
+      <text x="488" y="612" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" font-weight="900" fill="#F5EFE0">三家代表性老店 / 奇店</text>
+      <text x="488" y="640" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">·  Takayama Honten (1875)</text>
+      <text x="488" y="660" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">·  Kitazawa English Books (1902)</text>
+      <text x="488" y="680" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#F5EFE0">·  Morioka Shoten (2015) — 一周一本</text>
+    </g>
+
+    <line x1="960" y1="568" x2="960" y2="700" stroke="#F5EFE0" stroke-opacity="0.3" stroke-width="1"/>
+
+    <!-- Stat 3 — Utrecht zine -->
+    <g id="stat-03">
+      <text x="1000" y="586" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#FF5C8A">UTRECHT × 原宿</text>
+      <text x="1000" y="612" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#F5EFE0">日本最大独立 zine 收藏之一</text>
+      <text x="1000" y="640" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#F5EFE0" opacity="0.85">私宅式木质货架</text>
+      <text x="1000" y="660" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#F5EFE0" opacity="0.85">温暖灯光 · 安静浏览</text>
+      <text x="1000" y="688" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" letter-spacing="2">→ ZINE PILGRIMAGE</text>
+    </g>
+  </g>
+
+  <g id="page-num">
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F5EFE0" letter-spacing="2">P09 · TOKYO JIMBŌCHŌ</text>
+  </g>
+</svg>

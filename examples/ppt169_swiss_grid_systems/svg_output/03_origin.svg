@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P03 Origin · dense · timeline 1896 → 1957 -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 03</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">双源头 · 1896 → 1957</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">THE SIXTY YEARS THAT MADE SWISS DESIGN POSSIBLE</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3"/>
+  </g>
+
+  <g id="timeline-track">
+    <!-- chart-plot-area: 130,300,1200,300 -->
+    <line x1="130" y1="300" x2="1200" y2="300" stroke="#1A1A1A" stroke-width="2"/>
+    <line x1="1200" y1="300" x2="1228" y2="300" stroke="#1A1A1A" stroke-width="2"/>
+    <polygon points="1228,300 1216,294 1216,306" fill="#1A1A1A"/>
+  </g>
+
+  <g id="node-1896">
+    <line x1="156" y1="240" x2="156" y2="300" stroke="#E8E8E8" stroke-width="1"/>
+    <circle cx="156" cy="300" r="8" fill="#1A1A1A"/>
+    <text x="156" y="226" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A" text-anchor="middle">1896</text>
+    <text x="156" y="354" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">Akzidenz-Grotesk</text>
+    <text x="156" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="156" dy="0">柏林 Berthold</tspan>
+      <tspan x="156" dy="18">铸字行发行</tspan>
+      <tspan x="156" dy="18">现代意义的</tspan>
+      <tspan x="156" dy="18">第一款无衬线</tspan>
+    </text>
+  </g>
+
+  <g id="node-1908">
+    <line x1="386" y1="240" x2="386" y2="300" stroke="#E8E8E8" stroke-width="1"/>
+    <circle cx="386" cy="300" r="8" fill="#1A1A1A"/>
+    <text x="386" y="226" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A" text-anchor="middle">1908</text>
+    <text x="386" y="354" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">Basel School</text>
+    <text x="386" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="386" dy="0">巴塞尔设计学院</tspan>
+      <tspan x="386" dy="18">完成改革</tspan>
+      <tspan x="386" dy="18">奠定教学体系</tspan>
+      <tspan x="386" dy="18">理性传统建立</tspan>
+    </text>
+  </g>
+
+  <g id="node-1918">
+    <line x1="616" y1="240" x2="616" y2="300" stroke="#E8E8E8" stroke-width="1"/>
+    <circle cx="616" cy="300" r="8" fill="#1A1A1A"/>
+    <text x="616" y="226" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A" text-anchor="middle">1918</text>
+    <text x="616" y="354" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">Ernst Keller</text>
+    <text x="616" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="616" dy="0">入苏黎世</tspan>
+      <tspan x="616" dy="18">应用艺术学院</tspan>
+      <tspan x="616" dy="18">"形式跟随内容"</tspan>
+      <tspan x="616" dy="18">教学原则成型</tspan>
+    </text>
+  </g>
+
+  <g id="node-1936">
+    <line x1="846" y1="240" x2="846" y2="300" stroke="#E8E8E8" stroke-width="1"/>
+    <circle cx="846" cy="300" r="8" fill="#1A1A1A"/>
+    <text x="846" y="226" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A" text-anchor="middle">1936</text>
+    <text x="846" y="354" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">Müller-Brockmann</text>
+    <text x="846" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="846" dy="0">22 岁</tspan>
+      <tspan x="846" dy="18">在苏黎世</tspan>
+      <tspan x="846" dy="18">开设独立工作室</tspan>
+      <tspan x="846" dy="18">新生代登场</tspan>
+    </text>
+  </g>
+
+  <g id="node-1957">
+    <line x1="1076" y1="240" x2="1076" y2="300" stroke="#E8E8E8" stroke-width="1"/>
+    <circle cx="1076" cy="300" r="14" fill="#D9251D"/>
+    <text x="1076" y="226" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="24" font-weight="900" fill="#D9251D" text-anchor="middle">1957</text>
+    <text x="1076" y="354" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A" text-anchor="middle">Helvetica + Univers</text>
+    <text x="1076" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666" text-anchor="middle">
+      <tspan x="1076" dy="0">同年问世</tspan>
+      <tspan x="1076" dy="18">瑞士理性</tspan>
+      <tspan x="1076" dy="18">凝结为字体</tspan>
+      <tspan x="1076" dy="18">输出全球</tspan>
+    </text>
+  </g>
+
+  <g id="conclusion">
+    <line x1="64" y1="540" x2="64" y2="600" stroke="#D9251D" stroke-width="3"/>
+    <text x="92" y="568" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">理性主义不是凭空而至</text>
+    <text x="92" y="596" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">而是来自<tspan font-weight="700" fill="#1A1A1A">字体 · 学校 · 教学</tspan>三条线索半个世纪的累积。</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">03 / 14</text>
+  </g>
+</svg>

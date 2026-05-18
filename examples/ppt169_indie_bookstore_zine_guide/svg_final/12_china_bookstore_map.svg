@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP12" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP12)"/>
+
+  <g id="header">
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <rect x="63" y="59" width="14" height="68" fill="#FF5C8A" opacity="0.7"/>
+    <rect x="60" y="56" width="14" height="68" fill="#1E4DBC"/>
+    <text x="92" y="98" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="42" fill="#1A1A1A" letter-spacing="-1">中国大陆独立书店地图（ZINE 倾向）</text>
+    <text x="92" y="124" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#5A5A5A" letter-spacing="3">15 STORES · ★ ZINE INTENSITY · MAINLAND CHINA · CURATED 2026</text>
+  </g>
+
+  <!-- Table outer frame -->
+  <rect x="60" y="148" width="1160" height="496" fill="none" stroke="#1A1A1A" stroke-width="3"/>
+
+  <g id="table">
+    <!-- Header row -->
+    <rect x="60" y="148" width="1160" height="40" fill="#1A1A1A"/>
+    <rect x="63" y="151" width="1160" height="40" fill="#FF5C8A" opacity="0.55"/>
+    <rect x="60" y="148" width="1160" height="40" fill="#1A1A1A"/>
+    <text x="80" y="174" font-family="Consolas, 'Courier New', monospace" font-size="13" font-weight="bold" fill="#F5EFE0" letter-spacing="2">书店 · STORE</text>
+    <text x="380" y="174" font-family="Consolas, 'Courier New', monospace" font-size="13" font-weight="bold" fill="#F5EFE0" letter-spacing="2">城市 · CITY</text>
+    <text x="560" y="174" font-family="Consolas, 'Courier New', monospace" font-size="13" font-weight="bold" fill="#F5EFE0" letter-spacing="2">特色 · CHARACTER</text>
+    <text x="1100" y="174" font-family="Consolas, 'Courier New', monospace" font-size="13" font-weight="bold" fill="#F5EFE0" letter-spacing="2" text-anchor="middle">ZINE 倾向</text>
+
+    <!-- Column dividers -->
+    <line x1="360" y1="188" x2="360" y2="624" stroke="#1A1A1A" stroke-width="1.5"/>
+    <line x1="540" y1="188" x2="540" y2="624" stroke="#1A1A1A" stroke-width="1.5"/>
+    <line x1="1020" y1="188" x2="1020" y2="624" stroke="#1A1A1A" stroke-width="1.5"/>
+
+    <!-- Row 1 -->
+    <line x1="60" y1="218" x2="1220" y2="218" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="208" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">香蕉鱼书店</text>
+    <text x="380" y="208" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">上海</text>
+    <text x="560" y="208" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">首家专注独立出版 · 推广 zine · 自营 Riso 工作室</text>
+    <text x="1100" y="208" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FF5C8A" text-anchor="middle">★★★</text>
+
+    <!-- Row 2 -->
+    <line x1="60" y1="248" x2="1220" y2="248" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="238" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">假杂志</text>
+    <text x="380" y="238" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">宁波</text>
+    <text x="560" y="238" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">国内最早独立摄影出版机构 · 摄影 zine 圣地</text>
+    <text x="1100" y="238" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FF5C8A" text-anchor="middle">★★★</text>
+
+    <!-- Row 3 -->
+    <line x1="60" y1="278" x2="1220" y2="278" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="268" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">野狗</text>
+    <text x="380" y="268" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">郑州</text>
+    <text x="560" y="268" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">精选 200+ 国内外独立杂志 / 艺术出版物</text>
+    <text x="1100" y="268" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FF5C8A" text-anchor="middle">★★★</text>
+
+    <!-- Row 4 -->
+    <line x1="60" y1="308" x2="1220" y2="308" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="298" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">一爿旧店 / BOOKMART</text>
+    <text x="380" y="298" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">舟山</text>
+    <text x="560" y="298" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">艺术书 / 摄影集 / zine / 独立出版物全方位</text>
+    <text x="1100" y="298" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FF5C8A" text-anchor="middle">★★★</text>
+
+    <!-- Row 5 -->
+    <line x1="60" y1="338" x2="1220" y2="338" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="328" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">Combo</text>
+    <text x="380" y="328" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">武汉</text>
+    <text x="560" y="328" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">设计师 / 插画师 / 艺术家作品展示空间</text>
+    <text x="1100" y="328" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FF5C8A" text-anchor="middle">★★</text>
+
+    <!-- Row 6 -->
+    <line x1="60" y1="368" x2="1220" y2="368" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="358" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">Protopaper</text>
+    <text x="380" y="358" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">西安</text>
+    <text x="560" y="358" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">设计工作室转书店 · 社区艺术连接</text>
+    <text x="1100" y="358" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FF5C8A" text-anchor="middle">★★</text>
+
+    <!-- Row 7 -->
+    <line x1="60" y1="398" x2="1220" y2="398" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="388" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">Jetlag Books</text>
+    <text x="380" y="388" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">北京 · 三里屯</text>
+    <text x="560" y="388" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">国际期刊 + 创意品牌时尚原文书 · 红点品牌奖</text>
+    <text x="1100" y="388" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#1E4DBC" text-anchor="middle">★</text>
+
+    <!-- Row 8 -->
+    <line x1="60" y1="428" x2="1220" y2="428" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="418" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">言 YAN-BOOKS</text>
+    <text x="380" y="418" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">北京</text>
+    <text x="560" y="418" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">设计 / 生活方式 / 国际杂志</text>
+    <text x="1100" y="418" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#1E4DBC" text-anchor="middle">★</text>
+
+    <!-- Row 9 -->
+    <line x1="60" y1="458" x2="1220" y2="458" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="448" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">群岛 BOOKS</text>
+    <text x="380" y="448" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">上海</text>
+    <text x="560" y="448" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">建筑 / 城市 / 泛设计为主 · 书桌式陈列</text>
+    <text x="1100" y="448" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#1E4DBC" text-anchor="middle">★</text>
+
+    <!-- Row 10 -->
+    <line x1="60" y1="488" x2="1220" y2="488" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="478" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">单向空间</text>
+    <text x="380" y="478" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">北京</text>
+    <text x="560" y="478" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">2006 创办 · 名取自本雅明《单向街》</text>
+    <text x="1100" y="478" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#5A5A5A" text-anchor="middle">—</text>
+
+    <!-- Row 11 -->
+    <line x1="60" y1="518" x2="1220" y2="518" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="508" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">三味书屋</text>
+    <text x="380" y="508" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">北京 · 长安街</text>
+    <text x="560" y="508" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">北京第一家民营书店 · 每一本书都是挑过的</text>
+    <text x="1100" y="508" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#5A5A5A" text-anchor="middle">—</text>
+
+    <!-- Row 12 -->
+    <line x1="60" y1="548" x2="1220" y2="548" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="538" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">博尔赫斯</text>
+    <text x="380" y="538" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">广州</text>
+    <text x="560" y="538" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">文学为主 · 兼及历史 / 哲学 / 艺术</text>
+    <text x="1100" y="538" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#5A5A5A" text-anchor="middle">—</text>
+
+    <!-- Row 13 -->
+    <line x1="60" y1="578" x2="1220" y2="578" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="568" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">目田书店</text>
+    <text x="380" y="568" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">长沙</text>
+    <text x="560" y="568" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">社区文化空间 · 好书精选</text>
+    <text x="1100" y="568" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#5A5A5A" text-anchor="middle">—</text>
+
+    <!-- Row 14 -->
+    <line x1="60" y1="608" x2="1220" y2="608" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="80" y="598" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">牡蛎</text>
+    <text x="380" y="598" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">杭州</text>
+    <text x="560" y="598" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">社区书店 · 文学 / 哲学 / 诗 · 兼二手</text>
+    <text x="1100" y="598" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#5A5A5A" text-anchor="middle">—</text>
+
+    <!-- Row 15 -->
+    <text x="80" y="628" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">麦田书店</text>
+    <text x="380" y="628" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#5A5A5A">昆明</text>
+    <text x="560" y="628" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#1A1A1A">艺术文学 · 云南地方主题 · 黑胶唱片</text>
+    <text x="1100" y="628" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="16" fill="#5A5A5A" text-anchor="middle">—</text>
+  </g>
+
+  <!-- Legend below table -->
+  <g id="legend">
+    <text x="60" y="668" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#5A5A5A" letter-spacing="2">LEGEND:</text>
+    <text x="140" y="668" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FF5C8A">★★★</text>
+    <text x="180" y="668" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#5A5A5A">核心 zine 圣地</text>
+    <text x="300" y="668" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FF5C8A">★★</text>
+    <text x="332" y="668" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#5A5A5A">独立出版兼营</text>
+    <text x="450" y="668" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1E4DBC">★</text>
+    <text x="464" y="668" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#5A5A5A">国际杂志为主</text>
+    <text x="582" y="668" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="14" fill="#5A5A5A">—</text>
+    <text x="596" y="668" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#5A5A5A">文学 / 综合书店</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="690" x2="1220" y2="690" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P12 · MAINLAND CHINA INDIE BOOKSTORE MAP</text>
+    <text x="1220" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">CURATED 2026 · SOURCED FROM 数英 / 搜狐 / 知乎</text>
+  </g>
+</svg>

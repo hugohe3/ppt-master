@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topScrim11" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5EFE0" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#F5EFE0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="botScrim11" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0.78"/>
+    </linearGradient>
+    <pattern id="dotP11" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.7" fill="#1A1A1A" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+
+  <!-- Full-bleed hero -->
+  <g id="hero">
+    <image href="../images/berlin_bucherbogen.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Light wash to push image toward background -->
+  <rect id="wash" width="1280" height="720" fill="#F5EFE0" fill-opacity="0.55"/>
+  <rect id="grain" width="1280" height="720" fill="url(#dotP11)"/>
+
+  <!-- Top scrim and header -->
+  <rect id="top-scrim" x="0" y="0" width="1280" height="200" fill="url(#topScrim11)"/>
+  <g id="header">
+    <text x="60" y="80" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#1A1A1A" letter-spacing="4">PART 04 · 全球独立书店 NO.4 — 柏林</text>
+    <line x1="60" y1="96" x2="320" y2="96" stroke="#FF5C8A" stroke-width="3"/>
+  </g>
+
+  <!-- Centered oversized title -->
+  <g id="big-title">
+    <text x="640" y="380" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#FF5C8A" text-anchor="middle" letter-spacing="-2">BÜCHERBOGEN</text>
+    <text x="638" y="378" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1A1A1A" text-anchor="middle" letter-spacing="-2">BÜCHERBOGEN</text>
+    <text x="640" y="430" font-family="Consolas, 'Courier New', monospace" font-size="16" fill="#1E4DBC" text-anchor="middle" letter-spacing="6">柏林 · BERLIN · S-BAHN ARCHES</text>
+  </g>
+
+  <!-- Bottom scrim + info -->
+  <rect id="bot-scrim" x="0" y="500" width="1280" height="220" fill="url(#botScrim11)"/>
+
+  <g id="bottom-info">
+    <!-- Pink accent bar -->
+    <rect x="60" y="540" width="14" height="120" fill="#FF5C8A"/>
+    <rect x="63" y="543" width="14" height="120" fill="#1E4DBC" opacity="0.6"/>
+    <rect x="60" y="540" width="14" height="120" fill="#FF5C8A"/>
+
+    <text x="92" y="568" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="24" font-weight="900" fill="#F5EFE0">藏在 S-BAHN 高架桥下的拱顶</text>
+    <text x="92" y="600" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5EFE0">砖砌拱顶 + 火车隆隆 + 头顶尘埃 —— 专攻艺术 / 设计 / 摄影 / 电影 / 建筑书</text>
+    <text x="92" y="624" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5EFE0">柏林"特定主题书店"的范式：不要全面，要绝对</text>
+    <text x="92" y="654" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="900" fill="#FF5C8A">→ 书店 = 一个主题的世界</text>
+
+    <!-- Right-side stat block -->
+    <rect x="900" y="540" width="320" height="120" fill="#1E4DBC"/>
+    <rect x="903" y="543" width="320" height="120" fill="#FF5C8A" opacity="0.6"/>
+    <rect x="900" y="540" width="320" height="120" fill="#1E4DBC"/>
+    <text x="1060" y="586" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0" text-anchor="middle">5 SUBJECTS</text>
+    <text x="1060" y="616" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#F5EFE0" text-anchor="middle">艺术 / 设计 / 摄影 / 电影 / 建筑</text>
+    <text x="1060" y="640" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FF5C8A" text-anchor="middle" letter-spacing="2">UNDER ONE ARCHED VAULT</text>
+  </g>
+
+  <g id="page-num">
+    <text x="60" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F5EFE0" letter-spacing="2">P11 · BERLIN BÜCHERBOGEN</text>
+    <text x="1220" y="708" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F5EFE0" text-anchor="end" letter-spacing="2">EUROPEAN INDIE BOOKSTORE FINALE</text>
+  </g>
+</svg>

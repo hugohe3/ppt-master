@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="halftoneDot" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="0.8" fill="#1A1A1A" fill-opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <!-- Background paper -->
+  <rect id="bg-paper" width="1280" height="720" fill="#F5EFE0"/>
+
+  <!-- Hero AI image -->
+  <g id="hero-image">
+    <image href="../images/cover_hero.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Paper grain texture overlay -->
+  <rect id="paper-grain" width="1280" height="720" fill="url(#halftoneDot)" opacity="0.4"/>
+
+  <!-- Top decorative band - issue mark + serial code -->
+  <g id="header-band">
+    <rect x="60" y="50" width="220" height="36" fill="#1E4DBC"/>
+    <rect x="63" y="53" width="220" height="36" fill="#FF5C8A" opacity="0.85"/>
+    <rect x="60" y="50" width="220" height="36" fill="#1E4DBC"/>
+    <text x="170" y="75" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="20" fill="#F5EFE0" text-anchor="middle" letter-spacing="3">ISSUE №01 · 2026</text>
+    <text x="1220" y="78" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#1A1A1A" text-anchor="end" letter-spacing="2">PPT MASTER · RISO ZINE DEMO</text>
+  </g>
+
+  <!-- Diagonal pink stripe accent -->
+  <g id="accent-stripe">
+    <polygon points="1280,140 1280,180 1140,180 1180,140" fill="#FF5C8A"/>
+    <polygon points="1283,143 1283,183 1143,183 1183,143" fill="#1E4DBC" opacity="0.55"/>
+  </g>
+
+  <!-- Title block (Impact 大字, misregistration effect) -->
+  <g id="title-block">
+    <!-- Pink shadow layer offset -->
+    <text x="60" y="440" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#FF5C8A" letter-spacing="-2">ZINE</text>
+    <!-- Blue main layer slightly offset -->
+    <text x="58" y="438" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="100" fill="#1E4DBC" letter-spacing="-2">ZINE</text>
+
+    <text x="60" y="540" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="88" fill="#FF5C8A" letter-spacing="-1">CULTURE</text>
+    <text x="58" y="538" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="88" fill="#1A1A1A" letter-spacing="-1">CULTURE</text>
+
+    <text x="60" y="620" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="64" fill="#FF5C8A" letter-spacing="-1">GUIDE</text>
+    <text x="58" y="618" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="64" fill="#1E4DBC" letter-spacing="-1">GUIDE</text>
+  </g>
+
+  <!-- Subtitle Chinese (放在右侧竖向，海报感) -->
+  <g id="subtitle-cn">
+    <rect x="900" y="220" width="320" height="200" fill="#F5EFE0" fill-opacity="0.92"/>
+    <rect x="903" y="223" width="320" height="200" fill="#1E4DBC" fill-opacity="0.18"/>
+    <rect x="900" y="220" width="320" height="200" fill="#F5EFE0" fill-opacity="0.94"/>
+    <line x1="920" y1="248" x2="1200" y2="248" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="920" y="284" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">一份从一张纸</text>
+    <text x="920" y="316" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">到一家书店</text>
+    <text x="920" y="348" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="22" font-weight="900" fill="#1E4DBC">的独立出版地图</text>
+    <line x1="920" y1="378" x2="1200" y2="378" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="920" y="404" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="2">INDIE BOOKSTORE × ZINE</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="cover-footer">
+    <line x1="60" y1="665" x2="1220" y2="665" stroke="#1A1A1A" stroke-width="2"/>
+    <text x="60" y="692" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#1A1A1A" letter-spacing="2">PRINTED IN RISOGRAPH NAVY + FLUO PINK · ON CREAM PAPER</text>
+    <text x="1220" y="692" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#1A1A1A" text-anchor="end" letter-spacing="2">EDITION 2026 · 18 PAGES</text>
+  </g>
+</svg>

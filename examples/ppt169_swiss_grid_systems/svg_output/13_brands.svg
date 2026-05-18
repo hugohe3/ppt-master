@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P13 Contemporary Brands · dense · 3x2 brand logo grid -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 13</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">当代品牌的瑞士血脉</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">SIX BRANDS WHERE THE SWISS GRID STILL LIVES</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3"/>
+  </g>
+
+  <!-- 3 cols x 2 rows; col x: 96 / 528 / 960; row y top 220 / bottom 460 -->
+  <!-- Each cell width 320; logo at 96+24=120, name at 96+108 right of logo -->
+
+  <g id="brand-apple">
+    <line x1="96" y1="240" x2="384" y2="240" stroke="#1A1A1A" stroke-width="1"/>
+    <use data-icon="simple-icons/apple" x="96" y="266" width="56" height="56" fill="#1A1A1A"/>
+    <text x="168" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">Apple</text>
+    <text x="168" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">CUPERTINO · 1976</text>
+    <text x="96" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="96" dy="0">极简理性的产品语言</tspan>
+      <tspan x="96" dy="20">从早期 Keynote 到 HIG</tspan>
+      <tspan x="96" dy="20">瑞士血脉最显眼的继承者</tspan>
+    </text>
+  </g>
+
+  <g id="brand-google">
+    <line x1="528" y1="240" x2="816" y2="240" stroke="#1A1A1A" stroke-width="1"/>
+    <use data-icon="simple-icons/google" x="528" y="266" width="56" height="56" fill="#1A1A1A"/>
+    <text x="600" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">Google</text>
+    <text x="600" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">MOUNTAIN VIEW · 1998</text>
+    <text x="528" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="528" dy="0">Material 设计系统</tspan>
+      <tspan x="528" dy="20">8dp 网格 + 几何字体</tspan>
+      <tspan x="528" dy="20">把瑞士工程化到移动端</tspan>
+    </text>
+  </g>
+
+  <g id="brand-spotify">
+    <line x1="960" y1="240" x2="1216" y2="240" stroke="#1A1A1A" stroke-width="1"/>
+    <use data-icon="simple-icons/spotify" x="960" y="266" width="56" height="56" fill="#1A1A1A"/>
+    <text x="1032" y="296" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">Spotify</text>
+    <text x="1032" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">STOCKHOLM · 2006</text>
+    <text x="960" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="960" dy="0">杂志感的版面语法</tspan>
+      <tspan x="960" dy="20">大字号 · 网格分块</tspan>
+      <tspan x="960" dy="20">把音乐变成视觉故事</tspan>
+    </text>
+  </g>
+
+  <g id="brand-airbnb">
+    <line x1="96" y1="480" x2="384" y2="480" stroke="#1A1A1A" stroke-width="1"/>
+    <use data-icon="simple-icons/airbnb" x="96" y="506" width="56" height="56" fill="#1A1A1A"/>
+    <text x="168" y="536" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">Airbnb</text>
+    <text x="168" y="558" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">SAN FRANCISCO · 2008</text>
+    <text x="96" y="610" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="96" dy="0">DLS 设计语言系统</tspan>
+      <tspan x="96" dy="20">模数 grid + 极简识别</tspan>
+      <tspan x="96" dy="20">摄影也走客观纪实路线</tspan>
+    </text>
+  </g>
+
+  <g id="brand-ibm">
+    <line x1="528" y1="480" x2="816" y2="480" stroke="#D9251D" stroke-width="2"/>
+    <use data-icon="simple-icons/ibm" x="528" y="506" width="56" height="56" fill="#D9251D"/>
+    <text x="600" y="536" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#D9251D">IBM</text>
+    <text x="600" y="558" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">ARMONK · 1911</text>
+    <text x="528" y="610" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="528" dy="0">JMB 1967 起任 IBM 顾问</tspan>
+      <tspan x="528" dy="20">Paul Rand 同期接手识别</tspan>
+      <tspan x="528" dy="20">直系瑞士血统案例</tspan>
+    </text>
+  </g>
+
+  <g id="brand-lufthansa">
+    <line x1="960" y1="480" x2="1216" y2="480" stroke="#1A1A1A" stroke-width="1"/>
+    <use data-icon="simple-icons/lufthansa" x="960" y="506" width="56" height="56" fill="#1A1A1A"/>
+    <text x="1032" y="536" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="900" fill="#1A1A1A">Lufthansa</text>
+    <text x="1032" y="558" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">COLOGNE · 1955</text>
+    <text x="960" y="610" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">
+      <tspan x="960" dy="0">Otl Aicher 1962 VI</tspan>
+      <tspan x="960" dy="20">乌尔姆系统化设计标杆</tspan>
+      <tspan x="960" dy="20">基本沿用至今 60 余年</tspan>
+    </text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">13 / 14</text>
+  </g>
+</svg>

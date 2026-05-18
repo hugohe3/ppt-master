@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="coverScrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#0A0A0A" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.75"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg-image">
+    <image href="../images/ando_h_rooftop.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#coverScrim)"/>
+  </g>
+
+  <g id="cover-eyebrow">
+    <line x1="60" y1="100" x2="160" y2="100" stroke="#B8935A" stroke-width="2"/>
+    <text x="180" y="106" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" fill="#B8935A" letter-spacing="3">PRITZKER PRIZE · 2026</text>
+  </g>
+
+  <g id="cover-title">
+    <text x="60" y="340" font-family="Georgia, &quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, serif" font-size="72" font-weight="bold" fill="#F5F2EC">2026 普利兹克奖大师季</text>
+    <text x="60" y="420" font-family="KaiTi, Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="44" fill="#E8C788" font-style="italic">8 座新作 · 8 种深耕</text>
+  </g>
+
+  <g id="cover-subtitle">
+    <line x1="60" y1="490" x2="60" y2="600" stroke="#B8935A" stroke-width="2"/>
+    <text x="80" y="510" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" fill="#F5F2EC">从苏州河畔到沙漠腹地</text>
+    <text x="80" y="546" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="22" fill="#F5F2EC">读懂顶级建筑师的思考与坚守</text>
+    <text x="80" y="592" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="15" fill="#D4CFC4">不同于网红建筑的转瞬即逝 · 是岁月沉淀的匠心深耕</text>
+  </g>
+
+  <g id="cover-footer">
+    <line x1="60" y1="670" x2="1220" y2="670" stroke="#B8935A" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="60" y="695" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D4CFC4">资料来源 · 公众号 孙琬童</text>
+    <text x="1220" y="695" text-anchor="end" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="13" fill="#D4CFC4">PPT MASTER · 2026.05</text>
+  </g>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="dotP03" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="3.5" cy="3.5" r="0.8" fill="#1A1A1A" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#F5EFE0"/>
+  <rect id="bg-grain" width="1280" height="720" fill="url(#dotP03)"/>
+
+  <!-- Left narrow image strip with pink misregistration frame -->
+  <g id="left-image-strip">
+    <rect x="62" y="62" width="280" height="596" fill="#FF5C8A"/>
+    <image href="../images/zine_history_collage.png" x="60" y="60" width="280" height="596" preserveAspectRatio="xMidYMid slice"/>
+    <!-- Thin caption tag -->
+    <rect x="60" y="660" width="280" height="32" fill="#1E4DBC"/>
+    <text x="200" y="681" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F5EFE0" text-anchor="middle" letter-spacing="2">A CENTURY OF SELF-PUBLISHING</text>
+  </g>
+
+  <!-- Right content: page header + big definition -->
+  <g id="header">
+    <text x="380" y="100" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5A5A5A" letter-spacing="4">PART 01 · WHAT IS A ZINE</text>
+    <line x1="380" y1="116" x2="540" y2="116" stroke="#1E4DBC" stroke-width="3"/>
+  </g>
+
+  <!-- Big formula -->
+  <g id="big-formula">
+    <text x="380" y="200" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="84" fill="#FF5C8A" letter-spacing="-1">ZINE</text>
+    <text x="378" y="198" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="84" fill="#1A1A1A" letter-spacing="-1">ZINE</text>
+
+    <text x="612" y="200" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="84" fill="#1A1A1A">=</text>
+
+    <text x="680" y="200" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="84" fill="#1E4DBC" letter-spacing="-1">MAGAZINE</text>
+
+    <text x="380" y="280" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="64" fill="#FF5C8A">−</text>
+    <text x="440" y="280" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="44" font-weight="900" fill="#1A1A1A">商业逻辑</text>
+    <text x="668" y="280" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="44" font-weight="900" fill="#1A1A1A">−</text>
+    <text x="724" y="280" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="44" font-weight="900" fill="#1A1A1A">编辑把关</text>
+    <text x="952" y="280" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="44" font-weight="900" fill="#1A1A1A">−</text>
+    <text x="1008" y="280" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="44" font-weight="900" fill="#1A1A1A">规模</text>
+  </g>
+
+  <!-- Separator -->
+  <line x1="380" y1="328" x2="1220" y2="328" stroke="#1A1A1A" stroke-width="2"/>
+
+  <!-- Three feature stripes -->
+  <g id="feature-01">
+    <rect x="380" y="360" width="60" height="60" fill="#1E4DBC"/>
+    <text x="410" y="402" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0" text-anchor="middle">·1</text>
+    <text x="460" y="390" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A">自制、非商业</text>
+    <text x="460" y="416" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">印量极小，多在 1000 份以内，常少于 100 份</text>
+  </g>
+
+  <g id="feature-02">
+    <rect x="380" y="440" width="60" height="60" fill="#FF5C8A"/>
+    <text x="410" y="482" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0" text-anchor="middle">·2</text>
+    <text x="460" y="470" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A">装订简单、内容混合</text>
+    <text x="460" y="496" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">订书钉/折页/手工缝；手写/打字/拼贴/漫画/摄影/宣言全部上场</text>
+  </g>
+
+  <g id="feature-03">
+    <rect x="380" y="520" width="60" height="60" fill="#E8A02E"/>
+    <text x="410" y="562" font-family="Impact, 'Arial Black', 'Microsoft YaHei', sans-serif" font-size="32" fill="#F5EFE0" text-anchor="middle">·3</text>
+    <text x="460" y="550" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="24" font-weight="900" fill="#1A1A1A">完全作者主权</text>
+    <text x="460" y="576" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#5A5A5A">没有编辑、没有把关、没有商业审查 —— 这就是 zine 的精神底色</text>
+  </g>
+
+  <!-- Bottom callout box -->
+  <g id="callout-box">
+    <rect x="380" y="610" width="840" height="64" fill="#1A1A1A"/>
+    <rect x="383" y="613" width="840" height="64" fill="#FF5C8A" opacity="0.85"/>
+    <rect x="380" y="610" width="840" height="64" fill="#1A1A1A"/>
+    <text x="404" y="650" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="900" fill="#F5EFE0">关键边界 ＞</text>
+    <text x="520" y="650" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" fill="#F5EFE0">一本 zine 一旦进入大规模发行 + 编辑流程 + 利润逻辑，它就不再是 zine</text>
+  </g>
+
+  <g id="footer">
+    <text x="380" y="704" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" letter-spacing="2">P03 · WHAT IS A ZINE</text>
+    <text x="1220" y="704" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5A5A5A" text-anchor="end" letter-spacing="2">ZINE = MAG − COMMERCE − EDITOR − SCALE</text>
+  </g>
+</svg>

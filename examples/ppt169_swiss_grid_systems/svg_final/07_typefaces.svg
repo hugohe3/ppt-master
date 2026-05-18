@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 07</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">三款决定性字体</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">THREE TYPEFACES THAT WROTE THE SWISS STYLE</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3" />
+  </g>
+
+  <g id="type-akzidenz">
+    <line x1="64" y1="220" x2="404" y2="220" stroke="#1A1A1A" stroke-width="3" />
+    <text x="64" y="252" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">CARD · 01</text>
+    <text x="64" y="280" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Akzidenz-Grotesk</text>
+    <text x="64" y="304" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">1896 · Berthold Type Foundry</text>
+    <text x="64" y="480" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="168" font-weight="900" fill="#1A1A1A" letter-spacing="-2">Aa</text>
+    <text x="64" y="500" font-family="Arial, sans-serif" font-size="10" fill="#999999" letter-spacing="2">EXTRA BOLD · 900</text>
+    <line x1="64" y1="528" x2="120" y2="528" stroke="#1A1A1A" stroke-width="1" />
+    <text x="64" y="556" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">第一款现代意义的</text>
+    <text x="64" y="578" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">商业无衬线字体</text>
+    <text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="608">瑞士学派早期首选</text><text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="626">比 Helvetica 早 61 年问世</text><text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="64" y="644">奠定无衬线美学全部基调</text></g>
+
+  <g id="type-helvetica">
+    <line x1="470" y1="220" x2="810" y2="220" stroke="#D9251D" stroke-width="3" />
+    <text x="470" y="252" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" letter-spacing="2">CARD · 02</text>
+    <text x="470" y="280" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Helvetica</text>
+    <text x="470" y="304" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">1957 · Miedinger + Hoffmann</text>
+    <text x="470" y="480" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="168" font-weight="700" fill="#D9251D" letter-spacing="-1">Aa</text>
+    <text x="470" y="500" font-family="Arial, sans-serif" font-size="10" fill="#999999" letter-spacing="2">BOLD · 700 · NEUTRAL</text>
+    <line x1="470" y1="528" x2="526" y2="528" stroke="#D9251D" stroke-width="2" />
+    <text x="470" y="556" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#D9251D">字面意思就是"瑞士"</text>
+    <text x="470" y="578" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">中性 · 客观 · 可读至极</text>
+    <text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="470" y="608">原名 Neue Haas Grotesk</text><text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="470" y="626">取自拉丁文 Helvetia(瑞士)</text><text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="470" y="644">20 世纪传播范围最广的字体</text></g>
+
+  <g id="type-univers">
+    <line x1="876" y1="220" x2="1216" y2="220" stroke="#1A1A1A" stroke-width="3" />
+    <text x="876" y="252" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">CARD · 03</text>
+    <text x="876" y="280" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="20" font-weight="900" fill="#1A1A1A">Univers</text>
+    <text x="876" y="304" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">1957 · Adrian Frutiger</text>
+    <text x="876" y="480" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="168" font-weight="400" fill="#1A1A1A" letter-spacing="1">Aa</text>
+    <text x="876" y="500" font-family="Arial, sans-serif" font-size="10" fill="#999999" letter-spacing="2">REGULAR · 400 · LIGHT</text>
+    <line x1="876" y1="528" x2="932" y2="528" stroke="#1A1A1A" stroke-width="1" />
+    <text x="876" y="556" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">21 字重的二维坐标</text>
+    <text x="876" y="578" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">字体工程的开端</text>
+    <text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="876" y="608">Univers 39 — 83 二维编号</text><text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="876" y="626">把"家族+字重+宽度"工程化</text><text font-size="12" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="876" y="644">现代字体家族结构的祖先</text></g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">07 / 14</text>
+  </g>
+</svg>

@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFF8EE" />
+  </g>
+
+  
+  <g id="header">
+    <rect x="60" y="55" width="14" height="60" fill="#FFD93D" />
+    <text x="90" y="95" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="48" font-weight="900" fill="#1A1A2E" letter-spacing="1">5 STAGES, ONE WORLD</text>
+    <text x="90" y="125" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="700" fill="#5C5C7A" letter-spacing="3">中央 SUGAR DOME · 四个分舞台辐射</text>
+  </g>
+
+  
+  <g id="bg-rings">
+    <circle cx="640" cy="420" r="280" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-dasharray="3,8" opacity="0.25" />
+    <circle cx="640" cy="420" r="180" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-dasharray="3,8" opacity="0.35" />
+  </g>
+
+  
+  <g id="spokes">
+    <line x1="640" y1="420" x2="280" y2="280" stroke="#FF3DA5" stroke-width="3" stroke-dasharray="6,6" />
+    <line x1="640" y1="420" x2="1000" y2="280" stroke="#00B8D9" stroke-width="3" stroke-dasharray="6,6" />
+    <line x1="640" y1="420" x2="280" y2="560" stroke="#00C896" stroke-width="3" stroke-dasharray="6,6" />
+    <line x1="640" y1="420" x2="1000" y2="560" stroke="#FFD93D" stroke-width="3" stroke-dasharray="6,6" />
+  </g>
+
+  
+  <g id="hub-center">
+    
+    <circle cx="640" cy="420" r="110" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="5" />
+    
+    <circle cx="640" cy="420" r="90" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="3" />
+    
+  <g transform="translate(616.0, 358.0) scale(3.0)" fill="#FF3DA5">
+    <path d="M15 1H4V9H3C1.34315 9 0 10.3431 0 12C0 13.6569 1.34315 15 3 15C4.65685 15 6 13.6569 6 12V5H13V9H12C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12V1Z" />
+  </g>
+    <text x="640" y="430" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="26" font-weight="900" fill="#1A1A2E" letter-spacing="1">SUGAR</text>
+    <text x="640" y="460" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="26" font-weight="900" fill="#1A1A2E" letter-spacing="1">DOME</text>
+    <text x="640" y="488" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="800" fill="#FF3DA5" letter-spacing="2">主舞台 · 30000</text>
+  </g>
+
+  
+  <g id="spoke-cherry">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M114,200 H366 A14,14 0 0 1 380,214 V306 A14,14 0 0 1 366,320 H114 A14,14 0 0 1 100,306 V214 A14,14 0 0 1 114,200 Z" />
+    <rect x="100" y="200" width="280" height="34" fill="#FF3DA5" />
+    <text x="240" y="223" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E" letter-spacing="3">CHERRY STAGE · 摇滚</text>
+    
+  <g transform="translate(120.0, 248.0) scale(2.0)" fill="#FF3DA5">
+    <path d="M9 7L10 0H8L2 7V9H7L6 16H8L14 9L14 7H9Z" />
+  </g>
+    <text x="160" y="270" font-family="Impact, sans-serif" font-size="32" font-weight="900" fill="#1A1A2E" letter-spacing="-1">5,000</text>
+    <text x="160" y="290" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5C5C7A">观众容量 · 西北区</text>
+    <text x="160" y="308" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">Day 2 主场 · 全程户外</text>
+  </g>
+
+  
+  <g id="spoke-neon">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M914,200 H1166 A14,14 0 0 1 1180,214 V306 A14,14 0 0 1 1166,320 H914 A14,14 0 0 1 900,306 V214 A14,14 0 0 1 914,200 Z" />
+    <rect x="900" y="200" width="280" height="34" fill="#00B8D9" />
+    <text x="1040" y="223" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E" letter-spacing="3">NEON GRID · 电子</text>
+    
+  <g transform="translate(920.0, 248.0) scale(2.0)" fill="#00B8D9">
+    <path d="M3 7C3 4.23858 5.23858 2 8 2C10.7614 2 13 4.23858 13 7V8H10V15H12C13.6569 15 15 13.6569 15 12V7C15 3.13401 11.866 0 8 0C4.13401 0 1 3.13401 1 7V12C1 13.6569 2.34315 15 4 15H6V8H3V7Z" />
+  </g>
+    <text x="960" y="270" font-family="Impact, sans-serif" font-size="32" font-weight="900" fill="#1A1A2E" letter-spacing="-1">5,000</text>
+    <text x="960" y="290" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5C5C7A">观众容量 · 东北区</text>
+    <text x="960" y="308" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">Day 3 主场 · 半室内棚</text>
+  </g>
+
+  
+  <g id="spoke-mint">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M114,540 H366 A14,14 0 0 1 380,554 V646 A14,14 0 0 1 366,660 H114 A14,14 0 0 1 100,646 V554 A14,14 0 0 1 114,540 Z" />
+    <rect x="100" y="540" width="280" height="34" fill="#00C896" />
+    <text x="240" y="563" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E" letter-spacing="3">MINT GROVE · 民谣</text>
+    
+  <g transform="translate(120.0, 588.0) scale(2.0)" fill="#00C896">
+    <path d="M1.24264 8.24264L8 15L14.7574 8.24264C15.553 7.44699 16 6.36786 16 5.24264V5.05234C16 2.8143 14.1857 1 11.9477 1C10.7166 1 9.55233 1.55959 8.78331 2.52086L8 3.5L7.21669 2.52086C6.44767 1.55959 5.28338 1 4.05234 1C1.8143 1 0 2.8143 0 5.05234V5.24264C0 6.36786 0.44699 7.44699 1.24264 8.24264Z" />
+  </g>
+    <text x="160" y="610" font-family="Impact, sans-serif" font-size="32" font-weight="900" fill="#1A1A2E" letter-spacing="-1">3,000</text>
+    <text x="160" y="630" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5C5C7A">观众容量 · 西南区</text>
+    <text x="160" y="648" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">Day 4 主场 · 椰林环抱</text>
+  </g>
+
+  
+  <g id="spoke-yellow">
+    <path fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4" d="M914,540 H1166 A14,14 0 0 1 1180,554 V646 A14,14 0 0 1 1166,660 H914 A14,14 0 0 1 900,646 V554 A14,14 0 0 1 914,540 Z" />
+    <rect x="900" y="540" width="280" height="34" fill="#FFD93D" />
+    <text x="1040" y="563" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="16" font-weight="900" fill="#1A1A2E" letter-spacing="3">YELLOW BLOCK · 嘻哈</text>
+    
+  <g transform="translate(920.0, 588.0) scale(2.0)" fill="#FFD93D">
+    <path d="M15 1H4V9H3C1.34315 9 0 10.3431 0 12C0 13.6569 1.34315 15 3 15C4.65685 15 6 13.6569 6 12V5H13V9H12C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12V1Z" />
+  </g>
+    <text x="960" y="610" font-family="Impact, sans-serif" font-size="32" font-weight="900" fill="#1A1A2E" letter-spacing="-1">7,000</text>
+    <text x="960" y="630" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#5C5C7A">观众容量 · 东南区</text>
+    <text x="960" y="648" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">Day 5 主场 · 街区氛围</text>
+  </g>
+
+  
+  <g id="decor">
+    <circle cx="640" cy="200" r="14" fill="#FFD93D" stroke="#1A1A2E" stroke-width="3" />
+    <circle cx="610" cy="220" r="6" fill="#FF3DA5" stroke="#1A1A2E" stroke-width="2" />
+    <circle cx="670" cy="220" r="6" fill="#00B8D9" stroke="#1A1A2E" stroke-width="2" />
+    <polygon points="640,610 660,640 620,640" fill="#00C896" stroke="#1A1A2E" stroke-width="3" />
+  </g>
+
+  
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#5C5C7A">5 个舞台跨场地步行最远 600m · 30s shuttle 接驳</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">09 / 14</text>
+  </g>
+</svg>

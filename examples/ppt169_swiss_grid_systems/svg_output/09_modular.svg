@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P09 Modular Grid Schematic · anchor · 4×6 modular grid demonstration -->
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 09</text>
+    <text x="64" y="120" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="32" font-weight="900" fill="#1A1A1A">一切都是可计算的</text>
+    <text x="64" y="148" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666" letter-spacing="2">EVERYTHING DERIVES FROM THE BASE UNIT</text>
+    <line x1="64" y1="172" x2="120" y2="172" stroke="#D9251D" stroke-width="3"/>
+  </g>
+
+  <!-- Left: numerical specs -->
+  <g id="spec-list">
+    <text x="64" y="232" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">BASE UNIT</text>
+    <text x="64" y="280" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="56" font-weight="900" fill="#D9251D">16px</text>
+    <text x="64" y="306" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">所有距离的最小公因子</text>
+
+    <line x1="64" y1="340" x2="380" y2="340" stroke="#1A1A1A" stroke-width="1"/>
+
+    <text x="64" y="376" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#666666" letter-spacing="2">DERIVED FROM 16</text>
+
+    <text x="64" y="412" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="15" fill="#1A1A1A">
+      <tspan x="64" dy="0">safe margin       <tspan font-weight="700" fill="#1A1A1A">64 px</tspan>   =  4 × 16</tspan>
+      <tspan x="64" dy="28">column width      <tspan font-weight="700" fill="#1A1A1A">264 px</tspan>  = 16 × 16 + 8</tspan>
+      <tspan x="64" dy="28">column gap        <tspan font-weight="700" fill="#1A1A1A">32 px</tspan>   =  2 × 16</tspan>
+      <tspan x="64" dy="28">row height        <tspan font-weight="700" fill="#1A1A1A">96 px</tspan>   =  6 × 16</tspan>
+      <tspan x="64" dy="28">body line-height  <tspan font-weight="700" fill="#1A1A1A">27 px</tspan>   = 1.5 × 18</tspan>
+      <tspan x="64" dy="28">title size        <tspan font-weight="700" fill="#1A1A1A">32 px</tspan>   =  2 × 16</tspan>
+    </text>
+
+    <line x1="64" y1="604" x2="380" y2="604" stroke="#D9251D" stroke-width="2"/>
+    <text x="64" y="636" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="900" fill="#1A1A1A">设计师不再"画"版面</text>
+    <text x="64" y="658" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#666666">而是"建立系统并按系统落子"</text>
+  </g>
+
+  <!-- Right: 4×6 modular grid schematic -->
+  <!-- chart-plot-area: 480,210,1216,650 -->
+  <g id="modular-grid">
+    <!-- 4 columns × 6 rows; columns each 168px wide, gap 16px; rows each 64px tall, gap 8px -->
+    <!-- column 1 x=480; 2 x=664; 3 x=848; 4 x=1032; (each 184 stride; col 168) -->
+
+    <!-- Row backgrounds and outlines -->
+    <g id="cells">
+      <!-- Row 1: y=210, h=64 -->
+      <rect x="480" y="210" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="664" y="210" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="848" y="210" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="1032" y="210" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <!-- Row 2: y=282 -->
+      <rect x="480" y="282" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="664" y="282" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="848" y="282" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="1032" y="282" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <!-- Row 3: y=354 -->
+      <rect x="480" y="354" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="664" y="354" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="848" y="354" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="1032" y="354" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <!-- Row 4: y=426 -->
+      <rect x="480" y="426" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="664" y="426" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="848" y="426" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="1032" y="426" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <!-- Row 5: y=498 -->
+      <rect x="480" y="498" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="664" y="498" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="848" y="498" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="1032" y="498" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <!-- Row 6: y=570 -->
+      <rect x="480" y="570" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="664" y="570" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="848" y="570" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+      <rect x="1032" y="570" width="168" height="64" fill="none" stroke="#1A1A1A" stroke-width="0.75"/>
+    </g>
+
+    <!-- Highlight: image region (cols 2-3 × rows 2-3) -->
+    <g id="highlight-region">
+      <rect x="664" y="282" width="352" height="136" fill="#D9251D" fill-opacity="0.10" stroke="#D9251D" stroke-width="2"/>
+      <text x="840" y="357" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#D9251D" text-anchor="middle" letter-spacing="2">IMAGE 2×2</text>
+    </g>
+
+    <!-- Highlight: text region (col 1 × rows 4-5) -->
+    <g id="highlight-text-region">
+      <rect x="480" y="426" width="168" height="136" fill="#1A1A1A" fill-opacity="0.05" stroke="#1A1A1A" stroke-width="1"/>
+      <text x="564" y="501" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle" letter-spacing="2">TEXT 1×2</text>
+    </g>
+
+    <!-- Highlight: header band row 1 cols 1-4 -->
+    <g id="highlight-header-band">
+      <rect x="480" y="210" width="720" height="64" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+      <text x="840" y="247" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#1A1A1A" text-anchor="middle" letter-spacing="2">HEADLINE 4×1</text>
+    </g>
+
+    <!-- Column rulers (top) -->
+    <line x1="480" y1="188" x2="648" y2="188" stroke="#666666" stroke-width="0.5"/>
+    <line x1="664" y1="188" x2="832" y2="188" stroke="#666666" stroke-width="0.5"/>
+    <line x1="848" y1="188" x2="1016" y2="188" stroke="#666666" stroke-width="0.5"/>
+    <line x1="1032" y1="188" x2="1200" y2="188" stroke="#666666" stroke-width="0.5"/>
+    <text x="564" y="184" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="10" fill="#666666" text-anchor="middle">264</text>
+    <text x="748" y="184" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="10" fill="#666666" text-anchor="middle">264</text>
+    <text x="932" y="184" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="10" fill="#666666" text-anchor="middle">264</text>
+    <text x="1116" y="184" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="10" fill="#666666" text-anchor="middle">264</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">09 / 14</text>
+  </g>
+</svg>

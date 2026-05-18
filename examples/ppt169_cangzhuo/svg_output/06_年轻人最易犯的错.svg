@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#F5F1E8"/>
+
+  <!-- Header -->
+  <text x="60" y="80" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#1A1A1A" letter-spacing="3">年轻人最容易犯的错</text>
+  <line x1="60" y1="100" x2="160" y2="100" stroke="#A52A2A" stroke-width="3"/>
+
+  <!-- Subtitle as bold callout -->
+  <text x="60" y="150" font-family="KaiTi, Georgia, serif" font-size="26" fill="#A52A2A" letter-spacing="2">把"被看见" 误以为 "被尊重"</text>
+
+  <!-- 2x2 grid of mistakes -->
+  <!-- Top-left -->
+  <g transform="translate(60, 200)">
+    <line x1="0" y1="0" x2="0" y2="160" stroke="#A52A2A" stroke-width="3"/>
+    <text x="22" y="32" font-family="KaiTi, Georgia, serif" font-size="22" fill="#8B8680" letter-spacing="2">其一</text>
+    <text x="22" y="78" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="2">刚有点成绩</text>
+    <text x="22" y="120" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#5C5852" letter-spacing="1">就想让所有人都知道</text>
+    <text x="22" y="150" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680" letter-spacing="1">朋友圈、聚会、酒桌，一遍遍说</text>
+  </g>
+
+  <!-- Top-right -->
+  <g transform="translate(680, 200)">
+    <line x1="0" y1="0" x2="0" y2="160" stroke="#A52A2A" stroke-width="3"/>
+    <text x="22" y="32" font-family="KaiTi, Georgia, serif" font-size="22" fill="#8B8680" letter-spacing="2">其二</text>
+    <text x="22" y="78" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="2">刚有点资源</text>
+    <text x="22" y="120" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#5C5852" letter-spacing="1">就忍不住摆出来给人看</text>
+    <text x="22" y="150" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680" letter-spacing="1">名片、人脉、合作方，挂在嘴边</text>
+  </g>
+
+  <!-- Divider mid -->
+  <line x1="60" y1="395" x2="1220" y2="395" stroke="#C8C0AE" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Bottom-left -->
+  <g transform="translate(60, 420)">
+    <line x1="0" y1="0" x2="0" y2="160" stroke="#A52A2A" stroke-width="3"/>
+    <text x="22" y="32" font-family="KaiTi, Georgia, serif" font-size="22" fill="#8B8680" letter-spacing="2">其三</text>
+    <text x="22" y="78" font-family="KaiTi, Georgia, serif" font-size="32" font-weight="700" fill="#1A1A1A" letter-spacing="2">刚看透一点人性</text>
+    <text x="22" y="120" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="20" fill="#5C5852" letter-spacing="1">就急着戳破，急着教育别人</text>
+    <text x="22" y="150" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="16" fill="#8B8680" letter-spacing="1">把见识当弹药，逢人就发射</text>
+  </g>
+
+  <!-- Bottom-right — the consequence -->
+  <g transform="translate(680, 420)">
+    <rect x="0" y="0" width="540" height="160" fill="#1A1A1A"/>
+    <text x="22" y="32" font-family="KaiTi, Georgia, serif" font-size="22" fill="#A52A2A" letter-spacing="2">代 价</text>
+    <line x1="22" y1="48" x2="92" y2="48" stroke="#A52A2A" stroke-width="2"/>
+    <text x="22" y="88" font-family="KaiTi, Georgia, serif" font-size="22" fill="#F5F1E8" letter-spacing="2">明处的人没有遮挡</text>
+    <text x="22" y="122" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#C8C0AE">所有试探、嫉妒、借力、拆台</text>
+    <text x="22" y="148" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="18" fill="#C8C0AE">都会先冲他来</text>
+  </g>
+
+  <!-- Bottom takeaway -->
+  <text x="640" y="640" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="20" fill="#5C5852" letter-spacing="4">以为自己很清醒 · 其实只是把自己站到了明处</text>
+
+  <!-- Footer -->
+  <text x="60" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">藏拙 · 四</text>
+  <text x="1220" y="690" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, Arial, sans-serif" font-size="14" fill="#8B8680">06</text>
+</svg>

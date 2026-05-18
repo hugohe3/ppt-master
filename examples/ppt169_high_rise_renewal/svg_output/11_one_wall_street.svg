@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="p11Hero"><rect x="60" y="290" width="540" height="370" rx="6"/></clipPath>
+    <clipPath id="p11Inset"><rect x="650" y="290" width="290" height="200" rx="6"/></clipPath>
+    <linearGradient id="p11HeroBottom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2530" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#1A2530" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="p11InsetTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A6B7A" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#5A6B7A" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="p11Lift" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3" result="o"/>
+      <feFlood flood-color="#000000" flood-opacity="0.10"/>
+      <feComposite in2="o" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#F5F2EC"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="60" width="3" height="32" fill="#6B7A4F"/>
+    <text x="76" y="84" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#5A6B7A" letter-spacing="3">III · 巡览  ·  CASE 03</text>
+    <text x="1220" y="84" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#5A6B7A">NEW YORK · 1931 → NOW</text>
+  </g>
+
+  <g id="page-title">
+    <text x="60" y="148" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#2B3A4A">1931 年的装饰艺术摩天楼</text>
+    <text x="60" y="194" font-family="KaiTi, Georgia, serif" font-size="36" font-weight="700" fill="#6B7A4F">变成 566 套公寓</text>
+    <line x1="60" y1="220" x2="160" y2="220" stroke="#6B7A4F" stroke-width="2"/>
+    <text x="60" y="252" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#5A6B7A">One Wall Street · 曼哈顿金融区 · 设计：Ralph Walker</text>
+  </g>
+
+  <g id="hero-image">
+    <image href="../images/640_13.png" x="60" y="290" width="540" height="370" preserveAspectRatio="xMidYMid slice" clip-path="url(#p11Hero)"/>
+    <rect x="60" y="500" width="540" height="160" fill="url(#p11HeroBottom)"/>
+    <text x="80" y="640" font-family="Georgia, serif" font-size="13" fill="#F5F2EC" letter-spacing="3">DECO LANDMARK · 50 FLOORS</text>
+    <text x="60" y="688" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">改造后的 One Wall Street · 装饰艺术摩天楼</text>
+  </g>
+
+  <g id="inset-image" filter="url(#p11Lift)">
+    <image href="../images/640_14.png" x="650" y="290" width="290" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#p11Inset)"/>
+    <rect x="650" y="290" width="290" height="80" fill="url(#p11InsetTop)"/>
+    <g id="inset-tag">
+      <rect x="666" y="306" width="12" height="12" fill="#F5F2EC"/>
+      <text x="686" y="317" font-family="Georgia, serif" font-size="11" font-weight="700" fill="#F5F2EC" letter-spacing="3">INTERIOR · APARTMENT</text>
+    </g>
+    <text x="650" y="514" font-family="KaiTi, Georgia, serif" font-size="14" fill="#5A6B7A">公寓内景 · 单间到四居室</text>
+  </g>
+
+  <g id="key-stats">
+    <rect x="960" y="290" width="260" height="270" rx="6" fill="#EBE6DC"/>
+    <text x="984" y="328" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#6B7A4F" letter-spacing="2">改造数据</text>
+
+    <text x="984" y="386" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#2B3A4A">50<tspan font-size="18" fill="#5A6B7A" dx="4">层</tspan></text>
+    <text x="984" y="412" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">原办公建筑总层数</text>
+
+    <line x1="984" y1="430" x2="1196" y2="430" stroke="#D6CFC0" stroke-width="1"/>
+
+    <text x="984" y="478" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#6B7A4F">566<tspan font-size="18" fill="#5A6B7A" dx="4">套</tspan></text>
+    <text x="984" y="504" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">改造后公寓数量</text>
+
+    <line x1="984" y1="522" x2="1196" y2="522" stroke="#D6CFC0" stroke-width="1"/>
+
+    <text x="984" y="552" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#5A6B7A">户型涵盖单间至四居室全谱系</text>
+  </g>
+
+  <g id="insight">
+    <rect x="650" y="580" width="570" height="80" rx="6" fill="#2B3A4A"/>
+    <use data-icon="tabler-outline/bulb" x="672" y="600" width="28" height="28" fill="#A8C575"/>
+    <text x="710" y="614" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#A8C575" letter-spacing="2">观察</text>
+    <text x="710" y="640" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#F5F2EC">已成功的改造案例中，<tspan font-weight="700" fill="#A8C575">办公/商业建筑改其他用途</tspan> 占主流</text>
+    <text x="710" y="658" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#D6CFC0">— 这类建筑的结构和强度都优于住宅，灵活性更高，便于引进新业态</text>
+  </g>
+
+  <g id="footer">
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#8A8275">11 / 15</text>
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P08 Chapter 3 WHERE & WHEN · breathing · hero_page with ch3_where.png -->
+
+  <g id="bg-image">
+    <image href="../images/ch3_where.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- Chapter tag -->
+  <g id="chapter-tag">
+    <rect x="60" y="50" width="180" height="48" fill="#1A1A2E"/>
+    <rect x="60" y="50" width="14" height="48" fill="#00C896"/>
+    <text x="92" y="83" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="22" font-weight="900" fill="#FFF8EE" letter-spacing="6">CH · 03</text>
+  </g>
+
+  <!-- Hero chapter title -->
+  <g id="chapter-title">
+    <text x="640" y="220" text-anchor="middle" font-family="Impact, &quot;Arial Black&quot;, sans-serif" font-size="160" font-weight="900" fill="#1A1A2E" letter-spacing="-2">WHERE.</text>
+    <rect x="400" y="240" width="480" height="14" fill="#00C896"/>
+  </g>
+
+  <!-- Subtitle band -->
+  <g id="subtitle-band">
+    <rect x="160" y="290" width="960" height="80" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <text x="640" y="342" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="26" font-weight="700" fill="#1A1A2E">椰岛大草原 · <tspan fill="#00C896" font-weight="900">一座为夏天造的城市</tspan></text>
+  </g>
+
+  <!-- Module tags (#41 measurement lines + module tags style) -->
+  <g id="tag-venue">
+    <rect x="60" y="430" width="240" height="78" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <rect x="60" y="430" width="14" height="78" fill="#FF3DA5"/>
+    <use data-icon="chunk-filled/map-pin" x="86" y="446" width="28" height="28" fill="#FF3DA5"/>
+    <text x="122" y="467" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="2">VENUE · 场地</text>
+    <text x="86" y="494" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">椰岛大草原 · CocoBay</text>
+  </g>
+  <g id="tag-area">
+    <rect x="315" y="430" width="240" height="78" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <rect x="315" y="430" width="14" height="78" fill="#00B8D9"/>
+    <use data-icon="chunk-filled/sparkles" x="341" y="446" width="28" height="28" fill="#00B8D9"/>
+    <text x="377" y="467" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="2">AREA · 占地</text>
+    <text x="341" y="494" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">120 公顷 · 5 大舞台环抱</text>
+  </g>
+  <g id="tag-when">
+    <rect x="570" y="430" width="240" height="78" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <rect x="570" y="430" width="14" height="78" fill="#FFD93D"/>
+    <use data-icon="chunk-filled/calendar" x="596" y="446" width="28" height="28" fill="#FFD93D"/>
+    <text x="632" y="467" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="2">WHEN · 日期</text>
+    <text x="596" y="494" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">2026.7.18 — 7.24 · 7 天</text>
+  </g>
+  <g id="tag-transit">
+    <rect x="825" y="430" width="240" height="78" rx="12" fill="#FFF8EE" stroke="#1A1A2E" stroke-width="4"/>
+    <rect x="825" y="430" width="14" height="78" fill="#00C896"/>
+    <use data-icon="chunk-filled/arrow-right" x="851" y="446" width="28" height="28" fill="#00C896"/>
+    <text x="887" y="467" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="2">ACCESS · 交通</text>
+    <text x="851" y="494" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A1A2E">机场 30 km · 高铁 15 min</text>
+  </g>
+
+  <!-- Right side WHEN big dates -->
+  <g id="when-block">
+    <rect x="1085" y="540" width="135" height="120" rx="12" fill="#1A1A2E"/>
+    <text x="1152" y="582" text-anchor="middle" font-family="Impact, sans-serif" font-size="42" font-weight="900" fill="#FFD93D" letter-spacing="-1">7.18</text>
+    <line x1="1100" y1="595" x2="1205" y2="595" stroke="#FFF8EE" stroke-width="2"/>
+    <text x="1152" y="630" text-anchor="middle" font-family="Impact, sans-serif" font-size="42" font-weight="900" fill="#FF3DA5" letter-spacing="-1">7.24</text>
+  </g>
+
+  <!-- Decoration: zigzag in upper-right -->
+  <g id="decor-upper-right">
+    <path d="M 1080 80 L 1110 60 L 1110 80 L 1140 60 L 1140 80 L 1170 60" stroke="#FF3DA5" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="1200" cy="100" r="10" fill="#FFD93D" stroke="#1A1A2E" stroke-width="3"/>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Impact, sans-serif" font-size="14" font-weight="900" fill="#1A1A2E" letter-spacing="3">08 / 14 · SUGAR RUSH</text>
+  </g>
+</svg>

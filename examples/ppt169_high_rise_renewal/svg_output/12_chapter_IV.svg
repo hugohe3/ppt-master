@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="vignette" cx="50%" cy="55%" r="80%">
+      <stop offset="0%" stop-color="#1A2530" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#1A2530" stop-opacity="0.85"/>
+    </radialGradient>
+  </defs>
+
+  <g id="bg-image">
+    <rect width="1280" height="720" fill="#1A2530"/>
+    <image href="../images/640_15.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#vignette)"/>
+  </g>
+
+  <g id="bg-decor">
+    <line x1="100" y1="100" x2="200" y2="100" stroke="#C2410C" stroke-width="2"/>
+    <line x1="1080" y1="620" x2="1180" y2="620" stroke="#C2410C" stroke-width="2"/>
+  </g>
+
+  <g id="chapter-meta">
+    <text x="640" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#C2410C" letter-spacing="8">CHAPTER</text>
+    <text x="640" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="280" font-weight="400" fill="#F5F2EC" fill-opacity="0.95">IV</text>
+  </g>
+
+  <g id="chapter-title">
+    <text x="640" y="510" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">高层住宅老了、坏了</text>
+    <text x="640" y="558" text-anchor="middle" font-family="KaiTi, Georgia, serif" font-size="44" font-weight="700" fill="#F5F2EC">该<tspan fill="#C2410C">怎么办？</tspan></text>
+    <line x1="600" y1="588" x2="680" y2="588" stroke="#C2410C" stroke-width="2"/>
+    <text x="640" y="624" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-style="italic" fill="#D6CFC0" letter-spacing="3">CHINA · THE HARD BONE</text>
+  </g>
+
+  <g id="footer">
+    <text x="640" y="690" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#A8B0B8" font-style="italic">资金雄厚、产权清晰的商业项目易办；老旧高层住宅的改造，才是真正的"硬骨头"</text>
+    <text x="1220" y="710" text-anchor="end" font-family="Georgia, serif" font-size="12" fill="#A8B0B8">12 / 15</text>
+  </g>
+</svg>

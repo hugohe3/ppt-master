@@ -45,10 +45,12 @@ uv run scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 
 Behavior:
 - Default output:
-  - `exports/<project_name>_<timestamp>.pptx` — main native editable pptx
-  - `backup/<timestamp>/<project_name>_svg.pptx` — SVG snapshot for visual reference
+  - `exports/<project_name>_<timestamp>.pptx` — native editable pptx (canonical output)
+- `--svg-snapshot` (opt-in) adds:
+  - `backup/<timestamp>/<project_name>_svg.pptx` — SVG snapshot pptx for visual reference
   - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, so the pptx can be rebuilt via `finalize_svg → svg_to_pptx` without re-running the LLM
-- Explicit `-o/--output` keeps the legacy side-by-side `_svg.pptx` next to the chosen path and skips `backup/`
+  - Live preview already serves as the SVG visual reference for day-to-day use; the snapshot pptx is for distribution or frozen-state archival
+- Explicit `-o/--output` skips `backup/`; pair with `--svg-snapshot` to also emit the side-by-side `_svg.pptx` next to the chosen path
 - Recommended source directory: `svg_final/`
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.
 - Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
@@ -75,7 +77,7 @@ Behavior:
 - `--animation-duration` controls per-element entrance length (default `0.4`); `--animation-stagger` adds gap between elements in `after-previous` mode (default `0.5`)
 - Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`
 
-Performance (legacy `_svg.pptx` PNG fallback):
+Performance (legacy `_svg.pptx` PNG fallback, only when `--svg-snapshot` or `--only legacy`):
 - SVG→PNG is pre-rendered in a process pool before the main loop. Default workers = `min(cpu, pages, 8)`; override with `--workers N` (set `1` for sequential, `0` is treated as sequential).
 - Results are cached at `<project>/.cache/svg_png/` keyed by SVG content hash + size + active renderer (`cairosvg` vs `svglib`). Switching renderers naturally invalidates the cache; nothing to clean by hand.
 - `--cache-dir <path>` relocates the cache; `--no-cache` forces re-render without writing/reading the cache (handy when debugging rendering).

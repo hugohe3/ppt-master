@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B8DEF" />
+      <stop offset="50%" stop-color="#A26BFA" />
+      <stop offset="100%" stop-color="#3DDDFC" />
+    </linearGradient>
+    <radialGradient id="bgGlowA" cx="20%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="bgGlowB" cx="80%" cy="70%" r="55%">
+      <stop offset="0%" stop-color="#A26BFA" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#A26BFA" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="areaAcc" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ADE80" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#4ADE80" stop-opacity="0.0" />
+    </linearGradient>
+    <linearGradient id="areaCost" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FB7185" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FB7185" stop-opacity="0.0" />
+    </linearGradient>
+    <linearGradient id="chartPanel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2150" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#1A2150" stop-opacity="0.18" />
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0A0E27" />
+    <rect width="1280" height="720" fill="url(#bgGlowA)" />
+    <rect width="1280" height="720" fill="url(#bgGlowB)" />
+  </g>
+
+  <g id="header">
+    <path fill="url(#titleGradient)" d="M63,50 H63 A3,3 0 0 1 66,53 V79 A3,3 0 0 1 63,82 H63 A3,3 0 0 1 60,79 V53 A3,3 0 0 1 63,50 Z" />
+    <text x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="34" font-weight="900" fill="#E8ECFF">持续优化的真实曲线 — <tspan fill="#4ADE80">准确率 ↑</tspan> <tspan fill="#FB7185">成本 ↓</tspan></text>
+    <text x="80" y="108" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0" letter-spacing="3">UPLINE TO PRODUCTION · 12-WEEK TREND</text>
+  </g>
+
+  <g id="chart-panel-bg">
+    <path fill="url(#chartPanel)" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1" d="M120,135 H1180 A20,20 0 0 1 1200,155 V590 A20,20 0 0 1 1180,610 H120 A20,20 0 0 1 100,590 V155 A20,20 0 0 1 120,135 Z" />
+    <rect x="118" y="136" width="1064" height="1" fill="url(#glassEdge)" />
+  </g>
+
+  <g id="chartArea">
+    <line x1="140" y1="560" x2="1180" y2="560" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" />
+    <line x1="140" y1="462" x2="1180" y2="462" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1" stroke-dasharray="3 5" />
+    <line x1="140" y1="365" x2="1180" y2="365" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1" stroke-dasharray="3 5" />
+    <line x1="140" y1="267" x2="1180" y2="267" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1" stroke-dasharray="3 5" />
+    <line x1="140" y1="170" x2="1180" y2="170" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1" stroke-dasharray="3 5" />
+    <line x1="140" y1="170" x2="140" y2="560" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" />
+    <line x1="1180" y1="170" x2="1180" y2="560" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" />
+
+    <text x="128" y="565" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="end">60%</text>
+    <text x="128" y="467" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="end">70%</text>
+    <text x="128" y="370" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="end">80%</text>
+    <text x="128" y="272" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="end">90%</text>
+    <text x="128" y="175" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="end">100%</text>
+
+    <text x="1192" y="565" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0">¥0</text>
+    <text x="1192" y="467" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0">¥0.35</text>
+    <text x="1192" y="370" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0">¥0.70</text>
+    <text x="1192" y="272" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0">¥1.05</text>
+    <text x="1192" y="175" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0">¥1.40</text>
+
+    <text x="140" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W1</text>
+    <text x="234" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W2</text>
+    <text x="329" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W3</text>
+    <text x="423" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#3DDDFC" text-anchor="middle">W4</text>
+    <text x="518" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W5</text>
+    <text x="612" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W6</text>
+    <text x="707" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W7</text>
+    <text x="801" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#3DDDFC" text-anchor="middle">W8</text>
+    <text x="896" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W9</text>
+    <text x="990" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W10</text>
+    <text x="1085" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#3DDDFC" text-anchor="middle">W11</text>
+    <text x="1180" y="588" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="600" fill="#A8B0D0" text-anchor="middle">W12</text>
+
+    <line x1="423" y1="170" x2="423" y2="560" stroke="#3DDDFC" stroke-opacity="0.32" stroke-width="1" stroke-dasharray="4 6" />
+    <line x1="801" y1="170" x2="801" y2="560" stroke="#3DDDFC" stroke-opacity="0.32" stroke-width="1" stroke-dasharray="4 6" />
+    <line x1="1085" y1="170" x2="1085" y2="560" stroke="#3DDDFC" stroke-opacity="0.32" stroke-width="1" stroke-dasharray="4 6" />
+
+    
+
+    <path d="M 140,453 L 234,433 L 329,414 L 423,365 L 518,345 L 612,316 L 707,306 L 801,277 L 896,267 L 990,258 L 1085,248 L 1180,244 L 1180,560 L 140,560 Z" fill="url(#areaAcc)" />
+    <polyline points="140,453 234,433 329,414 423,365 518,345 612,316 707,306 801,277 896,267 990,258 1085,248 1180,244" fill="none" stroke="#4ADE80" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    <g id="acc-dots">
+      <circle cx="140" cy="453" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="234" cy="433" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="329" cy="414" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="423" cy="365" r="6" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="518" cy="345" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="612" cy="316" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="707" cy="306" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="801" cy="277" r="6" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="896" cy="267" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="990" cy="258" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="1085" cy="248" r="6" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="1180" cy="244" r="7" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+    </g>
+
+    <path d="M 140,226 L 234,240 L 329,254 L 423,295 L 518,309 L 612,323 L 707,343 L 801,379 L 896,393 L 990,407 L 1085,426 L 1180,443 L 1180,560 L 140,560 Z" fill="url(#areaCost)" fill-opacity="0.0" />
+    <polyline points="140,226 234,240 329,254 423,295 518,309 612,323 707,343 801,379 896,393 990,407 1085,426 1180,443" fill="none" stroke="#FB7185" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    <g id="cost-dots">
+      <circle cx="140" cy="226" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="234" cy="240" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="329" cy="254" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="423" cy="295" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="518" cy="309" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="612" cy="323" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="707" cy="343" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="801" cy="379" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="896" cy="393" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="990" cy="407" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="1085" cy="426" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+      <circle cx="1180" cy="443" r="7" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+    </g>
+
+    <g id="annot-w4">
+      <path fill="#1A2150" fill-opacity="0.85" stroke="#3DDDFC" stroke-opacity="0.5" stroke-width="1" d="M361,148 H485 A11,11 0 0 1 496,159 V159 A11,11 0 0 1 485,170 H361 A11,11 0 0 1 350,159 V159 A11,11 0 0 1 361,148 Z" />
+      <text x="423" y="164" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#3DDDFC" text-anchor="middle">W4 · 引入 reranker</text>
+    </g>
+    <g id="annot-w8">
+      <path fill="#1A2150" fill-opacity="0.85" stroke="#3DDDFC" stroke-opacity="0.5" stroke-width="1" d="M739,148 H863 A11,11 0 0 1 874,159 V159 A11,11 0 0 1 863,170 H739 A11,11 0 0 1 728,159 V159 A11,11 0 0 1 739,148 Z" />
+      <text x="801" y="164" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#3DDDFC" text-anchor="middle">W8 · 引入 fallback</text>
+    </g>
+    <g id="annot-w11">
+      <path fill="#1A2150" fill-opacity="0.85" stroke="#3DDDFC" stroke-opacity="0.5" stroke-width="1" d="M1023,148 H1147 A11,11 0 0 1 1158,159 V159 A11,11 0 0 1 1147,170 H1023 A11,11 0 0 1 1012,159 V159 A11,11 0 0 1 1023,148 Z" />
+      <text x="1085" y="164" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="12" font-weight="700" fill="#3DDDFC" text-anchor="middle">W11 · 引入缓存</text>
+    </g>
+  </g>
+
+  <g id="legend">
+    <path fill="#1A2150" fill-opacity="0.65" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M110,630 H370 A10,10 0 0 1 380,640 V664 A10,10 0 0 1 370,674 H110 A10,10 0 0 1 100,664 V640 A10,10 0 0 1 110,630 Z" />
+    <line x1="120" y1="652" x2="148" y2="652" stroke="#4ADE80" stroke-width="3.5" stroke-linecap="round" />
+    <circle cx="134" cy="652" r="5" fill="#4ADE80" stroke="#0A0E27" stroke-width="2" />
+    <text x="162" y="657" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#E8ECFF">任务成功率(左轴)</text>
+    <path fill="#1A2150" fill-opacity="0.65" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1" d="M405,630 H665 A10,10 0 0 1 675,640 V664 A10,10 0 0 1 665,674 H405 A10,10 0 0 1 395,664 V640 A10,10 0 0 1 405,630 Z" />
+    <line x1="415" y1="652" x2="443" y2="652" stroke="#FB7185" stroke-width="3.5" stroke-linecap="round" />
+    <circle cx="429" cy="652" r="5" fill="#FB7185" stroke="#0A0E27" stroke-width="2" />
+    <text x="457" y="657" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="700" fill="#E8ECFF">单次成本(右轴)</text>
+    <path fill="#1A2150" fill-opacity="0.65" stroke="#3DDDFC" stroke-opacity="0.4" stroke-width="1" d="M700,630 H1190 A10,10 0 0 1 1200,640 V664 A10,10 0 0 1 1190,674 H700 A10,10 0 0 1 690,664 V640 A10,10 0 0 1 700,630 Z" />
+    <text x="710" y="657" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="14" font-weight="600" fill="#A8B0D0"><tspan fill="#3DDDFC" font-weight="800">▲</tspan> 准确率 71% → 92.4%  ·  成本 ¥1.20 → ¥0.42</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299">12 周指标趋势 · 来源:内部 Agent 平台监控</text>
+    <text x="1220" y="700" font-family="&quot;Microsoft YaHei&quot;, &quot;PingFang SC&quot;, sans-serif" font-size="13" font-weight="600" fill="#6B7299" text-anchor="end">09 / 12</text>
+  </g>
+</svg>

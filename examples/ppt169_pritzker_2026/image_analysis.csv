@@ -1,0 +1,29 @@
+No,Filename,Width,Height,AspectRatio,PixelAspectRatio,RatioSource,UsageCount,DisplayRatioVariants,AssetKind,SvgRenderable,PptxNativeSupported,SizeKB,Category,ImageArea_SxS,TextArea_SxS
+1,640.png,1080,810,1.33,1.33,pixel,1,,bitmap,True,True,965.9,Standard landscape,800x600,340x600
+2,640_1.png,667,937,0.71,0.71,pixel,1,,bitmap,True,True,642.3,Portrait,427x600,713x600
+3,640_10.png,1080,652,1.66,1.66,pixel,1,,bitmap,True,True,1013.9,Wide landscape,812x490,328x600
+4,640_11.png,1080,1368,0.79,0.79,pixel,1,,bitmap,True,True,1646.3,Portrait,474x600,666x600
+5,640_12.png,1080,809,1.33,1.33,pixel,1,,bitmap,True,True,818.0,Standard landscape,801x600,339x600
+6,640_13.png,1080,921,1.17,1.17,pixel,1,,bitmap,True,True,1111.7,Near square,704x600,436x600
+7,640_14.png,1080,608,1.78,1.78,pixel,1,,bitmap,True,True,470.7,Wide landscape,812x457,328x600
+8,640_15.png,1080,896,1.21,1.21,pixel,1,,bitmap,True,True,928.2,Standard landscape,723x600,417x600
+9,640_16.png,1080,720,1.50,1.50,pixel,1,,bitmap,True,True,1057.1,Standard landscape,812x541,328x600
+10,640_17.png,1080,608,1.78,1.78,pixel,1,,bitmap,True,True,539.1,Wide landscape,812x457,328x600
+11,640_18.png,1080,720,1.50,1.50,pixel,1,,bitmap,True,True,562.1,Standard landscape,812x541,328x600
+12,640_19.png,1080,608,1.78,1.78,pixel,1,,bitmap,True,True,640.7,Wide landscape,812x457,328x600
+13,640_2.png,685,514,1.33,1.33,pixel,1,,bitmap,True,True,170.2,Standard landscape,800x600,340x600
+14,640_20.png,1080,607,1.78,1.78,pixel,1,,bitmap,True,True,520.7,Wide landscape,812x456,328x600
+15,640_21.png,1000,1000,1.00,1.00,pixel,1,,bitmap,True,True,749.8,Near square,600x600,540x600
+16,640_22.png,818,546,1.50,1.50,pixel,1,,bitmap,True,True,869.2,Standard landscape,812x542,328x600
+17,640_23.png,630,944,0.67,0.67,pixel,1,,bitmap,True,True,907.5,Portrait,400x600,740x600
+18,640_24.png,980,654,1.50,1.50,pixel,1,,bitmap,True,True,752.6,Standard landscape,812x542,328x600
+19,640_25.png,800,800,1.00,1.00,pixel,1,,bitmap,True,True,617.8,Near square,600x600,540x600
+20,640_26.png,800,800,1.00,1.00,pixel,1,,bitmap,True,True,341.2,Near square,600x600,540x600
+21,640_27.png,640,640,1.00,1.00,pixel,1,,bitmap,True,True,128.8,Near square,600x600,540x600
+22,640_3.png,1080,810,1.33,1.33,pixel,1,,bitmap,True,True,585.6,Standard landscape,800x600,340x600
+23,640_4.png,640,400,1.60,1.60,pixel,1,,bitmap,True,True,307.8,Wide landscape,812x508,328x600
+24,640_5.png,800,533,1.50,1.50,pixel,1,,bitmap,True,True,721.1,Wide landscape,812x541,328x600
+25,640_6.png,1024,1365,0.75,0.75,pixel,1,,bitmap,True,True,935.8,Portrait,450x600,690x600
+26,640_7.png,960,640,1.50,1.50,pixel,1,,bitmap,True,True,657.2,Standard landscape,812x541,328x600
+27,640_8.png,960,640,1.50,1.50,pixel,1,,bitmap,True,True,626.8,Standard landscape,812x541,328x600
+28,640_9.png,831,554,1.50,1.50,pixel,1,,bitmap,True,True,598.1,Standard landscape,812x541,328x600

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="background">
+    <rect width="1280" height="720" fill="#0E1116"/>
+  </g>
+
+  <g id="page-header">
+    <text x="60" y="56" font-family="Cambria, serif" font-size="11" fill="#8A857E" letter-spacing="3">PART II · THE BIG THREE · 06</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#E63946" stroke-width="1"/>
+    <text x="60" y="120" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="bold" fill="#E8E6E1">三巨头估值跃迁：从年初到 Q2 的 <tspan fill="#E63946">双倍线</tspan></text>
+    <text x="60" y="152" font-family="Cambria, serif" font-size="14" font-style="italic" fill="#8A857E">OpenAI · Anthropic · xAI — six-month valuation deltas</text>
+  </g>
+
+  <g id="chartArea">
+    <g id="axis">
+      <line x1="220" y1="220" x2="220" y2="560" stroke="#2A2F36" stroke-width="1"/>
+      <line x1="220" y1="560" x2="1180" y2="560" stroke="#5C5852" stroke-width="1"/>
+      <line x1="380" y1="220" x2="380" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="540" y1="220" x2="540" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="700" y1="220" x2="700" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="860" y1="220" x2="860" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="1020" y1="220" x2="1020" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+      <line x1="1180" y1="220" x2="1180" y2="560" stroke="#2A2F36" stroke-width="1" stroke-dasharray="2,4"/>
+
+      <text x="220" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$0</text>
+      <text x="380" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$200B</text>
+      <text x="540" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$400B</text>
+      <text x="700" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$600B</text>
+      <text x="860" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$800B</text>
+      <text x="1020" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$1.0T</text>
+      <text x="1180" y="585" font-family="Cambria, serif" font-size="11" fill="#5C5852" text-anchor="middle">$1.2T</text>
+    </g>
+    <!-- chart-plot-area: 220,220,1180,560 -->
+
+    <g id="legend">
+      <circle cx="220" cy="195" r="5" fill="#8A857E"/>
+      <text x="232" y="200" font-family="Cambria, serif" font-size="12" fill="#C9C5BE">Year-Start 2026</text>
+      <circle cx="380" cy="195" r="5" fill="#E63946"/>
+      <text x="392" y="200" font-family="Cambria, serif" font-size="12" fill="#C9C5BE">Latest (May 2026)</text>
+    </g>
+
+    <g id="row-openai">
+      <text x="210" y="265" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E6E1" text-anchor="end">OpenAI</text>
+      <text x="210" y="284" font-family="Cambria, serif" font-size="10" fill="#5C5852" text-anchor="end">consumer + IPO</text>
+      <line x1="460" y1="270" x2="900" y2="270" stroke="#C9C5BE" stroke-width="2"/>
+      <circle cx="460" cy="270" r="9" fill="#8A857E"/>
+      <circle cx="900" cy="270" r="9" fill="#E63946"/>
+      <text x="448" y="252" font-family="Cambria, serif" font-size="13" font-weight="bold" fill="#8A857E" text-anchor="end">$300B</text>
+      <text x="912" y="252" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E63946">$852B</text>
+      <text x="912" y="290" font-family="Cambria, serif" font-size="11" fill="#5C5852">+184%</text>
+    </g>
+
+    <g id="row-anthropic">
+      <text x="210" y="375" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E6E1" text-anchor="end">Anthropic</text>
+      <text x="210" y="394" font-family="Cambria, serif" font-size="10" fill="#5C5852" text-anchor="end">enterprise</text>
+      <line x1="269" y1="380" x2="524" y2="380" stroke="#C9C5BE" stroke-width="2"/>
+      <line x1="524" y1="380" x2="940" y2="380" stroke="#F4A261" stroke-width="2" stroke-dasharray="4,3"/>
+      <circle cx="269" cy="380" r="9" fill="#8A857E"/>
+      <circle cx="524" cy="380" r="9" fill="#E63946"/>
+      <circle cx="940" cy="380" r="7" fill="none" stroke="#F4A261" stroke-width="2"/>
+      <text x="257" y="362" font-family="Cambria, serif" font-size="13" font-weight="bold" fill="#8A857E" text-anchor="end">$61.5B</text>
+      <text x="536" y="362" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E63946">$380B (G)</text>
+      <text x="958" y="362" font-family="Cambria, serif" font-size="12" fill="#F4A261" text-anchor="end">→ $900B (在谈)</text>
+      <text x="269" y="400" font-family="Cambria, serif" font-size="11" fill="#5C5852">+518% (locked) / +1364% (in-talks)</text>
+    </g>
+
+    <g id="row-xai">
+      <text x="210" y="485" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E6E1" text-anchor="end">xAI</text>
+      <text x="210" y="504" font-family="Cambria, serif" font-size="10" fill="#5C5852" text-anchor="end">SpaceX merger</text>
+      <line x1="260" y1="490" x2="404" y2="490" stroke="#C9C5BE" stroke-width="2"/>
+      <line x1="404" y1="490" x2="1220" y2="490" stroke="#F4A261" stroke-width="2" stroke-dasharray="4,3"/>
+      <circle cx="260" cy="490" r="9" fill="#8A857E"/>
+      <circle cx="404" cy="490" r="9" fill="#E63946"/>
+      <circle cx="1220" cy="490" r="9" fill="none" stroke="#F4A261" stroke-width="2"/>
+      <text x="248" y="472" font-family="Cambria, serif" font-size="13" font-weight="bold" fill="#8A857E" text-anchor="end">$50B</text>
+      <text x="416" y="472" font-family="Cambria, serif" font-size="14" font-weight="bold" fill="#E63946">$230B</text>
+      <text x="1208" y="472" font-family="Cambria, serif" font-size="12" fill="#F4A261" text-anchor="end">→ $1.25T (合并)</text>
+      <text x="260" y="510" font-family="Cambria, serif" font-size="11" fill="#5C5852">+360% (Jan E) / +2400% (post-merger)</text>
+    </g>
+  </g>
+
+  <g id="insight-strip">
+    <line x1="60" y1="630" x2="1220" y2="630" stroke="#2A2F36" stroke-width="1"/>
+    <text x="60" y="660" font-family="Cambria, serif" font-size="11" fill="#E63946" letter-spacing="3">EDITORIAL TAKE</text>
+    <text x="640" y="660" text-anchor="middle" font-family="Cambria, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-style="italic" fill="#E8E6E1">六个月里，三家公司的合计估值从 <tspan font-weight="bold">$411B</tspan> 跃至 <tspan fill="#E63946" font-weight="bold">$1.46T</tspan>——3.6 倍。</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="60" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="10" fill="#5C5852">Sources: CNBC · Bloomberg · TechCrunch · Anthropic / OpenAI press · Fortune Feb 2026</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Cambria, serif" font-size="10" fill="#5C5852">06 / 20</text>
+  </g>
+</svg>

@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "push", "duration": 0.35 },
+    "animation": { "effect": "mixed", "duration": 0.4, "stagger": 0.18, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.45 },
+      "groups": {
+        "bg-image": { "effect": "none" },
+        "decor-top-right": { "effect": "none" },
+        "subtitle-block": { "effect": "split", "order": 1, "duration": 0.55 },
+        "cta-tag": { "effect": "zoom", "order": 2, "duration": 0.5, "delay": 0.15 },
+        "decor-bottom-wave": { "effect": "none" }
+      }
+    },
+    "02_what": {
+      "transition": { "effect": "strips", "duration": 0.4 },
+      "groups": {
+        "bg-image": { "effect": "none" },
+        "chapter-tag": { "effect": "wipe", "order": 1, "duration": 0.4 },
+        "chapter-title": { "effect": "zoom", "order": 2, "duration": 0.7, "delay": 0.1 },
+        "subtitle-band": { "effect": "split", "order": 3, "duration": 0.45 },
+        "decor-right": { "effect": "none" },
+        "decor-bottom-left": { "effect": "none" },
+        "footer": { "effect": "none" }
+      }
+    },
+    "03_numbers": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "kpi-days": { "effect": "blinds", "order": 1, "duration": 0.4 },
+        "kpi-stages": { "effect": "blinds", "order": 2, "duration": 0.4 },
+        "kpi-artists": { "effect": "blinds", "order": 3, "duration": 0.4 },
+        "kpi-fans": { "effect": "blinds", "order": 4, "duration": 0.4 },
+        "fun-band": { "effect": "fly", "order": 5, "duration": 0.55, "delay": 0.15 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "04_principles": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "pillar-free": { "effect": "split", "order": 1, "duration": 0.5 },
+        "pillar-fun": { "effect": "split", "order": 2, "duration": 0.5 },
+        "pillar-forever-young": { "effect": "split", "order": 3, "duration": 0.5 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "05_who": {
+      "transition": { "effect": "strips", "duration": 0.4 },
+      "groups": {
+        "bg-image": { "effect": "none" },
+        "chapter-tag": { "effect": "wipe", "order": 1, "duration": 0.4 },
+        "chapter-title": { "effect": "zoom", "order": 2, "duration": 0.7, "delay": 0.1 },
+        "subtitle-band": { "effect": "split", "order": 3, "duration": 0.45 },
+        "annotation-rock": { "effect": "blinds", "order": 4, "duration": 0.3 },
+        "annotation-electronic": { "effect": "blinds", "order": 5, "duration": 0.3 },
+        "annotation-folk": { "effect": "blinds", "order": 6, "duration": 0.3 },
+        "annotation-hiphop": { "effect": "blinds", "order": 7, "duration": 0.3 },
+        "tag-cta": { "effect": "zoom", "order": 8, "duration": 0.5, "delay": 0.2 },
+        "decor-bottom": { "effect": "none" },
+        "footer": { "effect": "none" }
+      }
+    },
+    "06_headliners": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "headliners-image": { "effect": "wipe", "order": 1, "duration": 0.6 },
+        "card-cherry-bomb": { "effect": "blinds", "order": 2, "duration": 0.35 },
+        "card-neon-cloud": { "effect": "blinds", "order": 3, "duration": 0.35 },
+        "card-mint-folk": { "effect": "blinds", "order": 4, "duration": 0.35 },
+        "card-yellow-hustle": { "effect": "blinds", "order": 5, "duration": 0.35 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "07_flavors": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "q-rock": { "effect": "split", "order": 1, "duration": 0.45 },
+        "q-electro": { "effect": "split", "order": 2, "duration": 0.45 },
+        "q-folk": { "effect": "split", "order": 3, "duration": 0.45 },
+        "q-hiphop": { "effect": "split", "order": 4, "duration": 0.45 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "08_where": {
+      "transition": { "effect": "strips", "duration": 0.4 },
+      "groups": {
+        "bg-image": { "effect": "none" },
+        "chapter-tag": { "effect": "wipe", "order": 1, "duration": 0.4 },
+        "chapter-title": { "effect": "zoom", "order": 2, "duration": 0.65, "delay": 0.1 },
+        "subtitle-band": { "effect": "split", "order": 3, "duration": 0.45 },
+        "tag-venue": { "effect": "blinds", "order": 4, "duration": 0.3 },
+        "tag-area": { "effect": "blinds", "order": 5, "duration": 0.3 },
+        "tag-when": { "effect": "blinds", "order": 6, "duration": 0.3 },
+        "tag-transit": { "effect": "blinds", "order": 7, "duration": 0.3 },
+        "when-block": { "effect": "fly", "order": 8, "duration": 0.5, "delay": 0.15 },
+        "decor-upper-right": { "effect": "none" },
+        "footer": { "effect": "none" }
+      }
+    },
+    "09_stages": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "bg-rings": { "effect": "none" },
+        "hub-center": { "effect": "zoom", "order": 1, "duration": 0.6 },
+        "spokes": { "effect": "wipe", "order": 2, "duration": 0.45 },
+        "spoke-cherry": { "effect": "blinds", "order": 3, "duration": 0.35 },
+        "spoke-neon": { "effect": "blinds", "order": 4, "duration": 0.35 },
+        "spoke-mint": { "effect": "blinds", "order": 5, "duration": 0.35 },
+        "spoke-yellow": { "effect": "blinds", "order": 6, "duration": 0.35 },
+        "decor": { "effect": "none" },
+        "footer": { "effect": "none" }
+      }
+    },
+    "10_schedule": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "timeline-track": { "effect": "wipe", "order": 1, "duration": 0.6 },
+        "day-1": { "effect": "blinds", "order": 2, "duration": 0.3 },
+        "day-2": { "effect": "blinds", "order": 3, "duration": 0.3 },
+        "day-3": { "effect": "blinds", "order": 4, "duration": 0.3 },
+        "day-4": { "effect": "blinds", "order": 5, "duration": 0.3 },
+        "day-5": { "effect": "blinds", "order": 6, "duration": 0.3 },
+        "day-6": { "effect": "blinds", "order": 7, "duration": 0.3 },
+        "day-7": { "effect": "zoom", "order": 8, "duration": 0.5, "delay": 0.1 },
+        "dow-labels": { "effect": "appear", "order": 9 },
+        "legend": { "effect": "fly", "order": 10, "duration": 0.4, "delay": 0.1 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "11_vibes": {
+      "transition": { "effect": "strips", "duration": 0.4 },
+      "groups": {
+        "bg-image": { "effect": "none" },
+        "chapter-tag": { "effect": "wipe", "order": 1, "duration": 0.4 },
+        "chapter-title": { "effect": "zoom", "order": 2, "duration": 0.7, "delay": 0.1 },
+        "subtitle-pill": { "effect": "split", "order": 3, "duration": 0.45 },
+        "tag-market": { "effect": "zoom", "order": 4, "duration": 0.45 },
+        "tag-install": { "effect": "zoom", "order": 5, "duration": 0.45 },
+        "tag-food": { "effect": "zoom", "order": 6, "duration": 0.45 },
+        "decor": { "effect": "none" },
+        "footer": { "effect": "none" }
+      }
+    },
+    "12_beyond": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "col-market": { "effect": "blinds", "order": 1, "duration": 0.5 },
+        "col-install": { "effect": "blinds", "order": 2, "duration": 0.5 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "13_tickets": {
+      "groups": {
+        "bg": { "effect": "none" },
+        "header": { "effect": "none" },
+        "tier-early": { "effect": "blinds", "order": 1, "duration": 0.4 },
+        "tier-regular": { "effect": "zoom", "order": 2, "duration": 0.55, "delay": 0.1 },
+        "tier-vip": { "effect": "blinds", "order": 3, "duration": 0.4 },
+        "sponsor-strip": { "effect": "fly", "order": 4, "duration": 0.5, "delay": 0.15 },
+        "footer": { "effect": "none" }
+      }
+    },
+    "14_closing": {
+      "transition": { "effect": "cover", "duration": 0.5 },
+      "groups": {
+        "bg-image": { "effect": "none" },
+        "date-pill": { "effect": "fade", "order": 1, "duration": 0.5 },
+        "link-pill": { "effect": "zoom", "order": 2, "duration": 0.55, "delay": 0.15 },
+        "subtitle": { "effect": "split", "order": 3, "duration": 0.5 },
+        "decor-top": { "effect": "none" },
+        "footer": { "effect": "none" }
+      }
+    }
+  }
+}

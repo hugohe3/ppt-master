@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="page-header">
+    <text x="64" y="60" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" letter-spacing="2">P · 02</text>
+  </g>
+
+  <g id="quote-mark">
+    <text x="120" y="280" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="240" font-weight="900" fill="#D9251D" opacity="0.92">«</text>
+  </g>
+
+  <g id="quote-body">
+    <text font-size="32" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="320" y="240">The grid system is an aid,</text><text font-size="32" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#1A1A1A" x="320" y="286">not a guarantee.</text><text font-size="22" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="320" y="370">It permits a number of possible uses, and each</text><text font-size="22" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="320" y="400">designer can look for a solution appropriate to</text><text font-size="22" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="320" y="430">his personal style. But one must learn how to</text><text font-size="22" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" fill="#666666" x="320" y="460">use the grid — it is an art that requires practice.</text></g>
+
+  <g id="quote-attribution">
+    <line x1="320" y1="540" x2="380" y2="540" stroke="#1A1A1A" stroke-width="2" />
+    <text x="320" y="572" font-family="&quot;Arial Black&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="18" font-weight="900" fill="#1A1A1A">JOSEF MÜLLER-BROCKMANN</text>
+    <text x="320" y="596" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#666666">Grid Systems in Graphic Design · 1981</text>
+  </g>
+
+  <g id="page-footer">
+    <text x="1216" y="688" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#999999" text-anchor="end" letter-spacing="1">02 / 14</text>
+  </g>
+</svg>
