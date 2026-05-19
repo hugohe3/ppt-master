@@ -44,7 +44,7 @@ For better contemporary stock photography, set `PEXELS_API_KEY` and/or `PIXABAY_
 
 ## Q: Can I edit the generated presentations?
 
-Yes. The main `.pptx` (native PowerPoint shapes — all text, graphics, and colors directly editable without any conversion) is saved to `exports/` with a timestamp. Pass `--svg-snapshot` to also emit a SVG-image preview pptx plus a copy of `svg_output/` (the Executor's raw SVG source) into `backup/<timestamp>/` — handy for cross-platform distribution as a single file or rebuilding via `finalize_svg → svg_to_pptx` without re-running the LLM. The snapshot is off by default because live preview already serves as the SVG visual reference for day-to-day work. Requires **Office 2016** or later.
+Yes. The main `.pptx` (native PowerPoint shapes — all text, graphics, and colors directly editable without any conversion) is saved to `exports/` with a timestamp. A copy of `svg_output/` (the Executor's raw SVG source) is always written to `backup/<timestamp>/svg_output/` so you can rebuild via `finalize_svg → svg_to_pptx` without re-running the LLM. Pass `--svg-snapshot` to additionally emit an SVG-image preview pptx alongside the native pptx in `exports/` — handy for cross-platform distribution as a single file; off by default because live preview already serves as the SVG visual reference for day-to-day work. Requires **Office 2016** or later.
 
 ## Q: What's the difference between the three Executors?
 

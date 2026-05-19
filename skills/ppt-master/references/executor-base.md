@@ -404,10 +404,10 @@ python3 scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX
 python3 scripts/svg_to_pptx.py <project_path>
-# Output:
+# Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output)
+#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
 #
-# Add --svg-snapshot to also emit:
-#   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot pptx
-#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
+# Add --svg-snapshot to additionally emit:
+#   exports/<project_name>_<timestamp>_svg.pptx      ← SVG snapshot pptx (sibling of native pptx)
 ```

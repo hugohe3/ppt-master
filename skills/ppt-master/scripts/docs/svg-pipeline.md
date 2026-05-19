@@ -44,11 +44,11 @@ python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
 
 Behavior:
-- Default output:
+- Default output (default-flow mode, no `-o`):
   - `exports/<project_name>_<timestamp>.pptx` — native editable pptx (canonical output)
-- `--svg-snapshot` (opt-in) adds:
-  - `backup/<timestamp>/<project_name>_svg.pptx` — SVG snapshot pptx for visual reference
-  - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, so the pptx can be rebuilt via `finalize_svg → svg_to_pptx` without re-running the LLM
+  - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, always written so the pptx can be rebuilt via `finalize_svg → svg_to_pptx` without re-running the LLM
+- `--svg-snapshot` (opt-in) additionally emits:
+  - `exports/<project_name>_<timestamp>_svg.pptx` — SVG snapshot pptx for visual reference, sibling of the native pptx
   - Live preview already serves as the SVG visual reference for day-to-day use; the snapshot pptx is for distribution or frozen-state archival
 - Explicit `-o/--output` skips `backup/`; pair with `--svg-snapshot` to also emit the side-by-side `_svg.pptx` next to the chosen path
 - Recommended source directory: `svg_final/`

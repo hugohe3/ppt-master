@@ -163,8 +163,8 @@ class ProjectManager:
                 "- `notes/`: speaker notes\n"
                 "- `templates/`: project templates\n"
                 "- `sources/`: source materials and normalized markdown\n"
-                "- `exports/`: main native pptx (timestamped)\n"
-                "- `backup/<timestamp>/`: SVG snapshot pptx + svg_output/ archive (created only when exported with `--svg-snapshot`; safe to delete old timestamps)\n"
+                "- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added when exported with `--svg-snapshot`\n"
+                "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
             ),
             encoding="utf-8",
         )
