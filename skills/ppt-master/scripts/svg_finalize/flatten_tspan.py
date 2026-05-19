@@ -173,8 +173,182 @@ def copy_text_attrs(
         dst_el.set("{http://www.w3.org/XML/1998/namespace}space", xml_space)
 
 
-def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
-    """Flatten multi-line tspan text into independent text nodes when needed."""
+PARAGRAPH_MARK_ATTR = "data-paragraph-line-height"
+PARAGRAPH_SPACE_BEFORE_ATTR = "data-paragraph-space-before"
+# Marks a line-break tspan as a SOFT break inside the current paragraph
+# (SVG used dy to simulate text wrapping; the downstream converter should
+# merge its runs into the previous <a:p> rather than start a new one).
+PARAGRAPH_SOFT_BREAK_ATTR = "data-paragraph-soft-break"
+
+# Tolerance for detecting "base line-height" vs "paragraph gap": dy values
+# within ±DY_TOLERANCE_PX of each other are considered the same line-height.
+DY_TOLERANCE_PX = 0.5
+# Cap on dy / base ratio. Anything beyond this (e.g. a 5x gap) is rejected
+# as a real section break that shouldn't merge into one text frame.
+MAX_DY_MULTIPLIER = 3.0
+
+
+def _tspan_has_positional_descendant(tspan: ET.Element) -> bool:
+    """Return True if any nested tspan inside this one carries x/y/dy."""
+    for child in list(tspan):
+        if child.tag != f"{{{SVG_NS}}}tspan":
+            continue
+        for k in ("x", "y", "dy"):
+            if child.get(k) is not None:
+                return True
+        if _tspan_has_positional_descendant(child):
+            return True
+    return False
+
+
+def _classify_paragraph_block(
+    text_el: ET.Element,
+    is_svg_tag,
+    is_new_line_tspan,
+) -> tuple[float, list[float], list[bool]] | None:
+    """Detect a mergeable paragraph block.
+
+    Returns ``(base_line_height_px, extra_space_before_px_per_line,
+    is_soft_break_per_line)`` if the children form a mergeable paragraph.
+    Each list has one entry per direct-child tspan (line):
+
+      - extra_space_before_px_per_line[i]: extra px above base line-height,
+        used as <a:spcBef> on the downstream <a:p>. First entry is 0.
+      - is_soft_break_per_line[i]: True if this line should merge into the
+        previous <a:p> (SVG dy was simulating word-wrap); False if it starts
+        a fresh <a:p>. First entry is always False (paragraph head).
+
+    Conditions (all must hold):
+      - No leading text directly under <text>.
+      - Every direct child is a <tspan>.
+      - Every direct-child tspan is a new-line tspan.
+      - First line-break tspan has dy == 0 (or no dy).
+      - All subsequent line-break tspans use positive dy (no <y>).
+      - dy values cluster around a single minimum "base line-height";
+        any larger dy must be ≤ MAX_DY_MULTIPLIER × base. Anything larger
+        is treated as a section break and rejected.
+      - Every line-break tspan that sets x repeats the parent <text>'s x.
+      - No nested tspan inside any line carries x/y/dy.
+    """
+    base_x = parse_first_number(get_attr(text_el, "x"))
+    if (text_el.text or "").strip():
+        return None
+
+    direct_tspans = [c for c in list(text_el) if is_svg_tag(c, "tspan")]
+    direct_children_all = [c for c in list(text_el)]
+    if len(direct_tspans) < 2:
+        return None
+    if len(direct_tspans) != len(direct_children_all):
+        return None
+
+    # First pass: validate per-line structural rules and collect dy values.
+    dy_values: list[float] = []  # one per line (0 for first)
+    for idx, tspan in enumerate(direct_tspans):
+        if not is_new_line_tspan(tspan):
+            return None
+
+        t_y = get_attr(tspan, "y")
+        if t_y is not None:
+            return None
+
+        t_x_raw = get_attr(tspan, "x")
+        if t_x_raw is not None:
+            t_x = parse_first_number(t_x_raw)
+            if base_x is None or t_x is None or abs(t_x - base_x) > 1e-6:
+                return None
+
+        t_dy_raw = get_attr(tspan, "dy")
+        t_dy = parse_first_number(t_dy_raw) if t_dy_raw is not None else None
+
+        if idx == 0:
+            if t_dy is not None and abs(t_dy) > 1e-6:
+                return None
+            dy_values.append(0.0)
+        else:
+            if t_dy is None or t_dy <= 0:
+                return None
+            dy_values.append(t_dy)
+
+        if _tspan_has_positional_descendant(tspan):
+            return None
+
+    # Second pass: pick the base line-height as the minimum positive dy and
+    # express each line's dy as base + extra space-before.
+    positive_dys = [d for d in dy_values[1:] if d > 0]
+    if not positive_dys:
+        return None
+    base = min(positive_dys)
+
+    extras: list[float] = [0.0]  # first line never has space-before
+    soft_breaks: list[bool] = [False]  # first line starts a paragraph
+    for d in dy_values[1:]:
+        if d + DY_TOLERANCE_PX < base:
+            return None  # below base — line overlap, not a paragraph
+        if d > base * MAX_DY_MULTIPLIER + DY_TOLERANCE_PX:
+            return None  # gap too large — treat as section break
+        extra = d - base
+        if extra < 0:
+            extra = 0.0
+        # dy at the base line-height = soft break (SVG was simulating wrap);
+        # dy strictly greater than base = hard paragraph break.
+        is_soft = abs(extra) <= DY_TOLERANCE_PX
+        extras.append(0.0 if is_soft else extra)
+        soft_breaks.append(is_soft)
+
+    return base, extras, soft_breaks
+
+
+def _emit_mergeable_paragraph(
+    text_el: ET.Element,
+    base_dy: float,
+    extras: list[float],
+    soft_breaks: list[bool],
+) -> None:
+    """Rewrite text_el in place so it stays a single <text> with paragraph rows.
+
+    The base line-height goes on the parent <text> via PARAGRAPH_MARK_ATTR.
+    Each direct-child tspan is normalized: x/y/dy stripped; inline-run
+    styling and nested tspans are preserved. Per-tspan attrs:
+      - PARAGRAPH_SOFT_BREAK_ATTR="1" on tspans that should be appended to
+        the previous <a:p> downstream (SVG used dy to simulate wrap)
+      - PARAGRAPH_SPACE_BEFORE_ATTR on tspans that open a new paragraph
+        with an extra gap (omitted when 0)
+    """
+    text_el.set(PARAGRAPH_MARK_ATTR, format_number(base_dy))
+
+    extras_iter = iter(extras)
+    soft_iter = iter(soft_breaks)
+    for tspan in list(text_el):
+        if tspan.tag != f"{{{SVG_NS}}}tspan":
+            continue
+        for k in ("x", "y", "dy"):
+            if k in tspan.attrib:
+                del tspan.attrib[k]
+        try:
+            extra = next(extras_iter)
+            soft = next(soft_iter)
+        except StopIteration:
+            extra = 0.0
+            soft = False
+        if soft:
+            tspan.set(PARAGRAPH_SOFT_BREAK_ATTR, "1")
+        elif extra > 1e-6:
+            tspan.set(PARAGRAPH_SPACE_BEFORE_ATTR, format_number(extra))
+
+
+def flatten_text_with_tspans(
+    tree: ET.ElementTree,
+    merge_paragraphs: bool = False,
+) -> bool:
+    """Flatten multi-line tspan text into independent text nodes when needed.
+
+    When ``merge_paragraphs`` is True, mergeable paragraph blocks (same x,
+    dy clustered around one base line-height) are kept as a single <text>
+    so downstream conversion emits one editable PowerPoint text frame
+    with multiple <a:p>. Default False preserves the original behavior:
+    every line-break tspan becomes its own <text>, matching the SVG's
+    pixel-fidelity contract.
+    """
     root = tree.getroot()
     parent_map = {c: p for p in root.iter() for c in p}
     changed = False
@@ -223,6 +397,21 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         # If no tspan needs a line break, skip the entire text element
         if not needs_flatten:
             continue
+
+        # Paragraph fast-path (opt-in via merge_paragraphs=True): if the
+        # children form a mergeable paragraph (same x, dy clustered around
+        # one base line-height with optional paragraph gaps, no nested
+        # positional tspans), keep as one <text> and let the downstream
+        # converter emit multiple <a:p> runs. When disabled, every tspan
+        # gets its own independent <text> so the SVG's exact line layout
+        # is preserved in PowerPoint.
+        if merge_paragraphs:
+            paragraph = _classify_paragraph_block(text_el, is_svg_tag, is_new_line_tspan)
+            if paragraph is not None:
+                base_dy, extras, soft_breaks = paragraph
+                _emit_mergeable_paragraph(text_el, base_dy, extras, soft_breaks)
+                changed = True
+                continue
 
         base_x = parse_first_number(get_attr(text_el, "x")) or 0.0
         base_y = parse_first_number(get_attr(text_el, "y")) or 0.0
@@ -377,7 +566,11 @@ def _create_text_element_from_line(
     return ne
 
 
-def process_svg_file(src_path: str, dst_path: str) -> bool:
+def process_svg_file(
+    src_path: str,
+    dst_path: str,
+    merge_paragraphs: bool = False,
+) -> bool:
     """Flatten eligible tspan lines in one SVG file."""
     try:
         tree = ET.parse(src_path)
@@ -385,7 +578,7 @@ def process_svg_file(src_path: str, dst_path: str) -> bool:
         print(f"[WARN] Failed to parse {src_path}: {e}")
         return False
 
-    changed = flatten_text_with_tspans(tree)
+    changed = flatten_text_with_tspans(tree, merge_paragraphs=merge_paragraphs)
 
     # Ensure destination directory exists
     os.makedirs(os.path.dirname(dst_path), exist_ok=True)
@@ -454,6 +647,17 @@ def main() -> None:
         action="store_true",
         help="Run in interactive prompt mode to input paths",
     )
+    parser.add_argument(
+        "--merge-paragraphs",
+        action="store_true",
+        default=False,
+        help=(
+            "Opt-in: merge mergeable paragraph blocks (same x, dy clustered "
+            "around one base line-height) into a single <text> annotated for "
+            "downstream multi-<a:p> conversion. Default off — every line-break "
+            "tspan becomes its own <text>, preserving SVG pixel fidelity."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -484,7 +688,7 @@ def main() -> None:
                 src = os.path.join(root, f)
                 dst = os.path.join(out_base, rel_root, f) if rel_root != "." else os.path.join(out_base, f)
                 total += 1
-                changed = process_svg_file(src, dst)
+                changed = process_svg_file(src, dst, merge_paragraphs=args.merge_paragraphs)
                 if changed:
                     changed_count += 1
         print(f"Processed {total} SVG(s). With <tspan> flattened: {changed_count}.")
@@ -493,7 +697,7 @@ def main() -> None:
         src = inp
         if out_base is None:
             out_base = _compute_default_out_base(src)
-        changed = process_svg_file(src, out_base)
+        changed = process_svg_file(src, out_base, merge_paragraphs=args.merge_paragraphs)
         print(f"Written: {out_base} (flattened: {changed})")
 
 

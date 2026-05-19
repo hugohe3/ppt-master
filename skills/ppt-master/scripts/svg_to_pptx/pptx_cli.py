@@ -151,6 +151,13 @@ Recorded narration:
                             help='Only generate one version: native (editable shapes) or legacy (SVG image)')
     mode_group.add_argument('--native', action='store_true', default=False,
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
+    parser.add_argument('--merge-paragraphs', action='store_true', default=False,
+                        help='Opt-in: merge mergeable paragraph blocks (same x, dy clustered '
+                             'around one base line-height) into a single editable text frame '
+                             'with multiple <a:p>. Improves editability of paragraph text in '
+                             'PowerPoint (one textbox per paragraph instead of per line) at '
+                             'the cost of strict SVG line layout fidelity — PowerPoint re-wraps '
+                             'merged paragraphs to fit the box width. Off by default.')
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
                         help='Also emit the SVG-rendered snapshot pptx alongside the native pptx in exports/ '
                              '(named <project>_<ts>_svg.pptx). Off by default — the native pptx is the '
@@ -487,6 +494,7 @@ Recorded narration:
         narration_padding=args.narration_padding,
         cache_dir=cache_dir,
         workers=args.workers,
+        merge_paragraphs=args.merge_paragraphs,
     )
 
     success = True
