@@ -55,6 +55,32 @@ RAMP_MIN_RATIO = 0.5
 RAMP_MAX_RATIO = 5.0
 
 
+def _design_spec_is_brand(spec_path: Path) -> bool:
+    """Return True when a design_spec.md frontmatter declares ``kind: brand``.
+
+    Lightweight detector that does not require PyYAML — scans only the
+    frontmatter block (``---`` delimited) for a ``kind:`` line whose value
+    contains ``brand``. Used by ``check_directory`` to skip SVG validation
+    on brand-only template directories.
+    """
+    try:
+        text = spec_path.read_text(encoding='utf-8')
+    except OSError:
+        return False
+    if not text.startswith('---\n'):
+        return False
+    end = text.find('\n---\n', 4)
+    if end == -1:
+        return False
+    fm_block = text[4:end]
+    for line in fm_block.splitlines():
+        stripped = line.strip()
+        if stripped.startswith('kind:'):
+            value = stripped.split(':', 1)[1].strip().strip('"\'')
+            return value == 'brand'
+    return False
+
+
 def _parse_placeholders_fallback(block: str) -> Dict[str, Tuple[str, ...]]:
     """Tiny YAML-free reader for the documented ``placeholders:`` shape.
 
@@ -822,6 +848,23 @@ class SVGQualityChecker:
         if not dir_path.exists():
             print(f"[ERROR] Directory does not exist: {directory}")
             return []
+
+        # Brand-only template directories (templates/brands/<id>/) have no SVG
+        # roster — design_spec.md frontmatter declares `kind: brand`. Skip SVG
+        # checks entirely; brand validation lives in register_template.py.
+        if self.template_mode and dir_path.is_dir():
+            spec = dir_path / 'design_spec.md'
+            if spec.exists() and _design_spec_is_brand(spec):
+                print(
+                    f"[INFO] Brand directory detected (kind: brand) — "
+                    f"SVG checks skipped."
+                )
+                print(
+                    f"[INFO] Validate brand specs via: "
+                    f"python3 scripts/register_template.py "
+                    f"--kind brand <brand_id> --dry-run"
+                )
+                return self.results
 
         # Find all SVG files
         if dir_path.is_file():

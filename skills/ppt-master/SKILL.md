@@ -66,6 +66,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Index | Path | Purpose |
 |-------|------|---------|
 | Layout templates | `${SKILL_DIR}/templates/layouts/layouts_index.json` | Query available page layout templates |
+| Brand presets | `${SKILL_DIR}/templates/brands/brands_index.json` | Query available brand identity presets (color / typography / logo / voice) |
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 
@@ -74,7 +75,8 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Workflow | Path | Purpose |
 |----------|------|---------|
 | `topic-research` | `workflows/topic-research.md` | Pre-pipeline — gather web sources when the user supplies only a topic with no source files |
-| `create-template` | `workflows/create-template.md` | Standalone template creation workflow |
+| `create-template` | `workflows/create-template.md` | Standalone layout template creation workflow |
+| `create-brand` | `workflows/create-brand.md` | Standalone brand-only template creation (identity preset; no SVG page roster) |
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
@@ -178,7 +180,30 @@ cp ${TEMPLATE_DIR}/*.jpg <project_path>/images/ 2>/dev/null || true
 
 > To create a new template, read `workflows/create-template.md`.
 
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path, that directory is copied before advancing.**
+**Brand triggering follows the same explicit-path rule as layout templates.** A brand is structurally a layout template minus its SVG page roster — its `design_spec.md` declares `kind: brand` in YAML frontmatter and lives under `templates/brands/<id>/`. `brands_index.json` is discovery-only, same as `layouts_index.json` — listing brands never triggers Step 3.
+
+| User input contains | Step 3 brand action |
+|---|---|
+| An explicit path to a brand directory (e.g. `skills/ppt-master/templates/brands/acme/`, or any path that resolves to a directory whose `design_spec.md` declares `kind: brand`) | Copy `design_spec.md` + `logo.<ext>` + any present asset subdirectories into `<project_path>/brand/` |
+| Bare brand names ("use acme brand", "用 acme 品牌"), brand mentions without a path, or silence | Skip — same mechanical rule as layout templates: bare names never trigger |
+
+A brand path and a layout template path may both be supplied in the same message. When both are present, **brand identity tokens (color / typography / logo / voice) override the layout template's defaults**, while the layout template's page roster and structural design stay intact.
+
+```bash
+BRAND_DIR=<user-supplied brand path>
+mkdir -p <project_path>/brand
+cp ${BRAND_DIR}/design_spec.md <project_path>/brand/
+cp ${BRAND_DIR}/logo.* <project_path>/brand/ 2>/dev/null || true
+[ -d ${BRAND_DIR}/images ] && cp -r ${BRAND_DIR}/images <project_path>/brand/
+[ -d ${BRAND_DIR}/illustrations ] && cp -r ${BRAND_DIR}/illustrations <project_path>/brand/
+[ -d ${BRAND_DIR}/icons ] && cp -r ${BRAND_DIR}/icons <project_path>/brand/
+```
+
+> "What brands exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` together with their paths. Listing alone does not advance the pipeline; the user still has to send a path to trigger the Step 3 copy.
+
+> To create a new brand, read `workflows/create-brand.md`.
+
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path and/or an explicit brand directory path, those directories are copied before advancing.**
 
 ---
 
