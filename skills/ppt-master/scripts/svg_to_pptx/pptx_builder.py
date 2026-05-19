@@ -306,6 +306,7 @@ def create_pptx_with_native_svg(
     narration_padding: float = 0.5,
     cache_dir: Path | None = None,
     workers: int | None = None,
+    merge_paragraphs: bool = False,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -456,6 +457,7 @@ def create_pptx_with_native_svg(
                     slide_xml, media_files_dict, rel_entries, anim_targets = (
                         convert_svg_to_slide_shapes(
                             svg_path, slide_num=slide_num, verbose=verbose,
+                            merge_paragraphs=merge_paragraphs,
                         )
                     )
                     slide_transition, slide_transition_duration, slide_auto_advance = (

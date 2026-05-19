@@ -1043,7 +1043,66 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'stroke_width': stroke_width,
         'stroke_opacity': stroke_opacity,
     }
-    runs = _build_text_runs(elem, parent_attrs)
+
+    # Paragraph mode: flatten_tspan marks <text> with data-paragraph-line-height
+    # when its direct-child tspans form a mergeable paragraph (same x, dy
+    # clustered around one base line-height). Each direct tspan becomes one
+    # <a:p> so the paragraph survives as a single editable text frame.
+    # Per-line data-paragraph-space-before encodes paragraph gaps (extra dy
+    # above the base line-height) for the corresponding <a:p>.
+    # Paragraph mode is opt-in via ctx.merge_paragraphs. When off, ignore
+    # any data-paragraph-* markers and fall through to the original
+    # one-text-per-tspan path so the SVG's pixel layout is preserved.
+    line_height_attr = elem.get('data-paragraph-line-height') if ctx.merge_paragraphs else None
+    line_height_px = _f(line_height_attr) if line_height_attr is not None else None
+    paragraph_runs: list[list[dict[str, Any]]] | None = None
+    paragraph_space_before: list[float] = []
+    # Per-tspan widths (visual lines as the deck author drew them) regardless
+    # of how many merge into one <a:p>; used to size the textbox so PowerPoint
+    # has room to wrap text to the SVG's original line widths.
+    visual_line_widths: list[float] = []
+    if line_height_px is not None and line_height_px > 0:
+        preserve_space = _preserves_space(elem)
+        paragraph_runs = []
+        for child in elem:
+            if child.tag != f'{{{SVG_NS}}}tspan':
+                continue
+            line_runs = _collect_tspan_runs(child, parent_attrs, preserve_space)
+            if line_runs and not preserve_space:
+                line_runs[0]['text'] = line_runs[0]['text'].lstrip(' ')
+                line_runs[-1]['text'] = line_runs[-1]['text'].rstrip(' ')
+                line_runs = [r for r in line_runs if r['text']]
+            if not line_runs:
+                continue
+            visual_line_widths.append(
+                estimate_text_width(
+                    ''.join(r['text'] for r in line_runs),
+                    font_size,
+                    font_weight,
+                )
+            )
+            soft_break = child.get('data-paragraph-soft-break') == '1'
+            if soft_break and paragraph_runs:
+                # Append to the previous paragraph. Ensure a space joins the
+                # two segments (SVG used a dy line-break, not punctuation).
+                prev = paragraph_runs[-1]
+                if prev and not prev[-1]['text'].endswith(' ') \
+                        and not line_runs[0]['text'].startswith(' '):
+                    prev[-1] = {**prev[-1], 'text': prev[-1]['text'] + ' '}
+                prev.extend(line_runs)
+            else:
+                paragraph_runs.append(line_runs)
+                sb_attr = child.get('data-paragraph-space-before')
+                paragraph_space_before.append(_f(sb_attr) if sb_attr else 0.0)
+        if not paragraph_runs:
+            paragraph_runs = None
+            paragraph_space_before = []
+            visual_line_widths = []
+
+    if paragraph_runs is not None:
+        runs = [r for line in paragraph_runs for r in line]
+    else:
+        runs = _build_text_runs(elem, parent_attrs)
 
     if not runs:
         return None
@@ -1053,8 +1112,24 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         return None
 
     # Estimate text dimensions
-    text_width = estimate_text_width(full_text, font_size, font_weight) * 1.15
-    text_height = font_size * 1.5
+    if paragraph_runs is not None:
+        # Use the WIDEST visual line (per-tspan as the deck author drew it),
+        # not the joined-up paragraph: soft-broken paragraphs concatenate
+        # many lines into one <a:p>, and measuring the joined string would
+        # blow the textbox past the canvas. The 1.05 safety factor covers
+        # PowerPoint's slightly different font metrics.
+        text_width = max(visual_line_widths) * 1.05 if visual_line_widths else 0.0
+        # Total height assumes the visual line count from the SVG source;
+        # if PowerPoint wraps to more or fewer lines after the user resizes,
+        # the user resizes the height accordingly.
+        text_height = (
+            line_height_px * (len(visual_line_widths) - 1)
+            + sum(paragraph_space_before)
+            + font_size * 1.5
+        )
+    else:
+        text_width = estimate_text_width(full_text, font_size, font_weight) * 1.15
+        text_height = font_size * 1.5
     padding = font_size * 0.1
 
     # Adjust position based on text-anchor
@@ -1126,11 +1201,47 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
 
-    runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
+    if paragraph_runs is not None:
+        # SVG dy(px) -> hundredths-of-a-point: dy_pt = dy_px * 0.75, then x100.
+        line_spc_val = round(line_height_px * FONT_PX_TO_HUNDREDTHS_PT)
+        ln_spc_xml = f'<a:lnSpc><a:spcPts val="{line_spc_val}"/></a:lnSpc>'
+        paragraph_xml_chunks = []
+        for line, extra_px in zip(paragraph_runs, paragraph_space_before):
+            spc_bef_xml = ''
+            if extra_px > 0:
+                spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
+                spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
+            runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in line)
+            paragraph_xml_chunks.append(
+                f'<a:p>\n<a:pPr algn="{algn}">{ln_spc_xml}{spc_bef_xml}</a:pPr>\n'
+                f'{runs_inner}\n</a:p>'
+            )
+        paragraphs_xml = '\n'.join(paragraph_xml_chunks)
+    else:
+        runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
+        paragraphs_xml = f'<a:p>\n<a:pPr algn="{algn}"/>\n{runs_xml}\n</a:p>'
+
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
     ext_cx = px_to_emu(box_w)
     ext_cy = px_to_emu(box_h)
+
+    # Paragraph mode: wrap="square" so text reflows when the user resizes,
+    # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
+    # long joined-up <a:p> on one line, blowing past the canvas. The cx we
+    # write below (longest SVG line × 1.05) is the design target width;
+    # PowerPoint wraps long paragraphs inside this width.
+    # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
+    if paragraph_runs is not None:
+        body_pr_xml = (
+            '<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" '
+            'anchor="t" anchorCtr="0"/>'
+        )
+    else:
+        body_pr_xml = (
+            '<a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" '
+            'anchor="t" anchorCtr="0">\n<a:spAutoFit/>\n</a:bodyPr>'
+        )
 
     return ShapeResult(xml=f'''<p:sp>
 <p:nvSpPr>
@@ -1146,14 +1257,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 {shape_effect_xml}
 </p:spPr>
 <p:txBody>
-<a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0">
-<a:spAutoFit/>
-</a:bodyPr>
+{body_pr_xml}
 <a:lstStyle/>
-<a:p>
-<a:pPr algn="{algn}"/>
-{runs_xml}
-</a:p>
+{paragraphs_xml}
 </p:txBody>
 </p:sp>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
 

@@ -46,6 +46,10 @@ class ConvertContext:
     # Top-level <g id="..."> groups, recorded as (shape_id, svg_id) in z-order.
     # Used by the PPTX builder to emit per-element entrance timing.
     anim_targets: list = field(default_factory=list)
+    # Opt-in flag (default off): merge mergeable paragraph blocks into one
+    # editable text frame with multiple <a:p>. Off preserves the original
+    # one-line-per-textbox behavior and the SVG's exact pixel layout.
+    merge_paragraphs: bool = False
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -145,6 +149,7 @@ class ConvertContext:
             depth=self.depth + 1,
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
+            merge_paragraphs=self.merge_paragraphs,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:
