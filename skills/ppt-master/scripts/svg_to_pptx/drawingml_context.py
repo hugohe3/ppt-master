@@ -82,7 +82,20 @@ class ConvertContext:
             style_overrides: Style attribute overrides from child element.
         """
         local_matrix = transform_matrix or IDENTITY_MATRIX
-        a1, b1, c1, d1, e1, f1 = self.transform_matrix
+        # When first crossing from scalar to matrix mode, fold accumulated
+        # translate_x/y and scale_x/y into the matrix base. Otherwise the
+        # ancestor's scalar transform — which matrix-path readers (e.g.
+        # <image>) never look at — is silently lost, and the descendant
+        # lands at raw SVG coordinates (typically near (0,0)).
+        if transform_matrix is not None and not self.use_transform_matrix:
+            base_matrix: AffineMatrix = (
+                self.scale_x, 0.0,
+                0.0, self.scale_y,
+                self.translate_x, self.translate_y,
+            )
+        else:
+            base_matrix = self.transform_matrix
+        a1, b1, c1, d1, e1, f1 = base_matrix
         a2, b2, c2, d2, e2, f2 = local_matrix
         combined_matrix: AffineMatrix = (
             a1 * a2 + c1 * b2,
