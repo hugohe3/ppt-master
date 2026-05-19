@@ -444,6 +444,14 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > SVG visual reference, so it's only needed when you want a self-contained file
 > to share. Pass `-s output` or `-s final` to force a single source if you need it.
 
+> **Paragraph editability vs line fidelity** — by default every dy-stacked line is
+> its own PowerPoint text frame, preserving exact SVG layout. Add `--merge-paragraphs`
+> only when the user explicitly asks for an editable / wrap-friendly export (e.g.
+> "I want to edit the abstract as one block", "make text boxes resizable / reflow"):
+> mergeable paragraph blocks collapse into one editable text frame with multiple
+> `<a:p>`, at the cost of PowerPoint re-wrapping inside each box. Default off keeps
+> pixel-fidelity; turn it on per the user's request, not on your own judgement.
+
 **Optional animation flags** (the defaults already enable rich entrance animations — adjust only when the user asks for something different):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
 - `-a <effect>` — per-element entrance animation. Default `mixed` (auto-vary across the deck). Pass `none` to disable, or pick a specific effect like `fade`. Requires top-level `<g id="...">` groups (already required by Executor).
