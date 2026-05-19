@@ -184,26 +184,53 @@ cp ${TEMPLATE_DIR}/*.jpg <project_path>/images/ 2>/dev/null || true
 
 | User input contains | Step 3 brand action |
 |---|---|
-| An explicit path to a brand directory (e.g. `skills/ppt-master/templates/brands/acme/`, or any path that resolves to a directory whose `design_spec.md` declares `kind: brand`) | Copy `design_spec.md` + `logo.<ext>` + any present asset subdirectories into `<project_path>/brand/` |
+| An explicit path to a brand directory (e.g. `skills/ppt-master/templates/brands/acme/`, or any path that resolves to a directory whose `design_spec.md` declares `kind: brand`) | Copy `design_spec.md` + logo files + any present asset subdirectories into `<project_path>/templates/` |
 | Bare brand names ("use acme brand", "用 acme 品牌"), brand mentions without a path, or silence | Skip — same mechanical rule as layout templates: bare names never trigger |
-
-A brand path and a layout template path may both be supplied in the same message. When both are present, **brand identity tokens (color / typography / logo / voice) override the layout template's defaults**, while the layout template's page roster and structural design stay intact.
 
 ```bash
 BRAND_DIR=<user-supplied brand path>
-mkdir -p <project_path>/brand
-cp ${BRAND_DIR}/design_spec.md <project_path>/brand/
-cp ${BRAND_DIR}/logo.* <project_path>/brand/ 2>/dev/null || true
-[ -d ${BRAND_DIR}/images ] && cp -r ${BRAND_DIR}/images <project_path>/brand/
-[ -d ${BRAND_DIR}/illustrations ] && cp -r ${BRAND_DIR}/illustrations <project_path>/brand/
-[ -d ${BRAND_DIR}/icons ] && cp -r ${BRAND_DIR}/icons <project_path>/brand/
+cp ${BRAND_DIR}/design_spec.md <project_path>/templates/
+cp ${BRAND_DIR}/*.svg <project_path>/templates/ 2>/dev/null || true     # brand logo SVG files
+cp ${BRAND_DIR}/*.png <project_path>/templates/ 2>/dev/null || true     # brand logo raster files
+[ -d ${BRAND_DIR}/images ] && cp -r ${BRAND_DIR}/images <project_path>/templates/
+[ -d ${BRAND_DIR}/illustrations ] && cp -r ${BRAND_DIR}/illustrations <project_path>/templates/
+[ -d ${BRAND_DIR}/icons ] && cp -r ${BRAND_DIR}/icons <project_path>/templates/
 ```
+
+> Brand and layout outputs share `<project_path>/templates/` because they are the same kind of artifact — a reference bundle that Strategist treats as truth. Downstream code never needs to distinguish them.
 
 > "What brands exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` together with their paths. Listing alone does not advance the pipeline; the user still has to send a path to trigger the Step 3 copy.
 
 > To create a new brand, read `workflows/create-brand.md`.
 
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path and/or an explicit brand directory path, those directories are copied before advancing.**
+#### Brand + layout combined input
+
+A brand path and a layout template path may both be supplied in the same message. When both are present, Step 3 **fuses them into a single `design_spec.md`** inside `<project_path>/templates/` instead of leaving two specs side by side. Field-level precedence is fixed (no per-deck prompting):
+
+| Field group | Source |
+|---|---|
+| Color (primary / secondary / accents / text / bg) | **brand** |
+| Typography (font family) | **brand** |
+| Logo | **brand** (if absent, fall back to layout's logo) |
+| Voice & tone | **brand** |
+| Icon style preference | **brand** |
+| Canvas (size / viewBox / margins) | **layout** |
+| Page roster + signature visual elements (top bar / underline / decorative motifs) | **layout** |
+| Font-size hierarchy (H1 / H2 / body / data / label) | **layout** |
+| Spacing, grid, layout patterns | **layout** |
+| SVG technical constraints | **layout** |
+| Placeholder set | **layout** |
+
+Action: AI reads `${LAYOUT_DIR}/design_spec.md` and `${BRAND_DIR}/design_spec.md`, composes one fused `design_spec.md` using the table above, writes it to `<project_path>/templates/design_spec.md`. SVG page files come from `${LAYOUT_DIR}`; brand logos and asset subdirectories from `${BRAND_DIR}`. The fused spec carries a one-line `> Fused from: layout=<layout_id>, brand=<brand_id>` provenance note under its H1.
+
+**Conflict gates** — clarify with the user only in these two cases:
+
+1. **Brand has no logo, layout has one.** Ask: "your brand has no bundled logo; use the layout's logo, or leave the deck logo-less?"
+2. **Layout is itself a branded template (e.g. `招商银行`, `重庆大学`, `中汽研_*`, `中国电建_*`) and the supplied brand is different.** Ask: "this layout carries `<layout's own brand>` identity, which conflicts with the `<supplied brand>` you provided — confirm you want brand identity from `<supplied brand>` and only the page structure from `<layout>`?"
+
+If neither gate trips, fusion proceeds silently and Step 3 advances.
+
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path and/or an explicit brand directory path, those directories are copied (or fused) into `<project_path>/templates/` before advancing.**
 
 ---
 

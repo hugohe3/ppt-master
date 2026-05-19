@@ -88,9 +88,9 @@ Accept user combinations and one-off coinages ("Scandinavian + slight industrial
 
 ### e. Color Scheme Recommendation
 
-**Hard rule**: User / brand / template colors are truth. If the user has specified colors (HEX, brand colors, or natural-language directives like "use blue as primary"), a brand was loaded at Step 3 via an explicit path (`<project_path>/brand/design_spec.md`), or a layout template was loaded with its own theme colors, lock those directly and skip the recommendation table. Do not adjust them to fit any palette or industry default. Only when no color signal exists from user, brand, or template do you proactively propose a scheme below.
+**Hard rule**: User / template colors are truth. If the user has specified colors (HEX, brand colors, or natural-language directives like "use blue as primary"), or a template was loaded at Step 3 via an explicit path (`<project_path>/templates/design_spec.md`), lock those directly and skip the recommendation table. Do not adjust them to fit any palette or industry default. Only when no color signal exists from user or template do you proactively propose a scheme below.
 
-> **Precedence when multiple sources are present**: explicit user override > brand > layout template defaults. Brand identity tokens (primary / secondary / accent / text / bg) override layout template defaults; the layout template's page structure stays intact.
+> Step 3 already collapses brand and layout inputs into one fused `design_spec.md`; this layer reads from that single source and does not need to re-resolve brand vs layout precedence.
 
 Proactively provide a color scheme (HEX values) based on content characteristics and industry.
 
@@ -165,7 +165,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 **Mandatory**: propose **two** combinations to the user — one concord (safe), one contrast (with tension). Do not default to "title = body, same font" without explicit user request.
 
-> **Brand precedence**: when a brand was loaded at Step 3 via an explicit path and declares `title` / `body` font stacks in `<project_path>/brand/design_spec.md §III Typography`, lock those directly and skip the two-combination presentation. Same precedence as e. — user override > brand > layout template defaults.
+> **Template precedence**: when a template was loaded at Step 3 via an explicit path and declares `title` / `body` font stacks in `<project_path>/templates/design_spec.md §III Typography` / §IV (or whichever heading the fused spec uses), lock those directly and skip the two-combination presentation. Same precedence as e. — user override > template values.
 
 **Cross-platform pre-installed reference**:
 

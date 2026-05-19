@@ -4,13 +4,13 @@ This directory holds **brand-only templates**: identity bundles (colors / typogr
 
 ## How brands are consumed
 
-Brand application follows the **same explicit-path rule as layout templates** at SKILL.md Step 3:
+Brand application follows the **same explicit-path rule as layout templates** at SKILL.md Step 3, and lands in the **same project directory** (`<project_path>/templates/`) — brands and layouts are the same kind of artifact from the downstream's point of view:
 
 | User input at SKILL.md Step 3 | Behavior |
 |---|---|
-| An explicit brand directory path (e.g. `templates/brands/acme/`) | Copy `design_spec.md` + `logo.<ext>` + any present asset subdirectories into `<project_path>/brand/`; Strategist locks color / typography / logo / voice as truth |
+| An explicit brand directory path (e.g. `templates/brands/acme/`) | Copy `design_spec.md` + logo files + any present asset subdirectories into `<project_path>/templates/`; Strategist reads it as a normal `design_spec.md` |
 | Bare brand name only ("use acme brand"), brand mention without path, or silence | Skip — same mechanical rule as layout templates: bare names never trigger |
-| Both a brand path and a layout template path supplied | Both apply; brand identity overrides layout-template defaults, layout template's page roster stays intact |
+| Both a brand path and a layout template path supplied | Step 3 fuses the two into one `design_spec.md` (brand wins on color / typography / logo / voice; layout wins on canvas / page roster / spacing / font-size hierarchy) and writes it to `<project_path>/templates/`. See `SKILL.md` Step 3 for the field-precedence table and the two conflict gates that may surface a clarifying question |
 
 `brands_index.json` is discovery-only; listing brands never advances the pipeline.
 
