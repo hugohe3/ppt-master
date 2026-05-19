@@ -46,6 +46,22 @@ For better contemporary stock photography, set `PEXELS_API_KEY` and/or `PIXABAY_
 
 Yes. The main `.pptx` (native PowerPoint shapes — all text, graphics, and colors directly editable without any conversion) is saved to `exports/` with a timestamp. A copy of `svg_output/` (the Executor's raw SVG source) is always written to `backup/<timestamp>/svg_output/` so you can rebuild via `finalize_svg → svg_to_pptx` without re-running the LLM. Pass `--svg-snapshot` to additionally emit an SVG-image preview pptx alongside the native pptx in `exports/` — handy for cross-platform distribution as a single file; off by default because live preview already serves as the SVG visual reference for day-to-day work. Requires **Office 2016** or later.
 
+## Q: Why is one paragraph split into multiple text boxes? Can I get one text box per paragraph instead?
+
+By default yes — every visual line of body text becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.
+
+If you'd rather edit body text as whole paragraphs, re-export with `--merge-paragraphs`:
+
+```bash
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --merge-paragraphs
+```
+
+Mergeable paragraph blocks (same x, dy clustered around one line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise line-spacing. Resizing the box reflows text inside it.
+
+**Trade-off**: PowerPoint may wrap the merged paragraphs to a different line count than the SVG source — so the page won't match the original layout exactly. Best for long-form body text (abstracts, multi-paragraph sections, reference lists); keep the default for layout-tight pages. The detection is conservative — mixed-layout `<text>` falls through to the default per-line path automatically.
+
+When you're chatting with the AI, you can also just ask: "I want to edit the abstract as one block" / "make text boxes resizable" — the AI will turn this on for you. Defaults stay off so existing decks aren't affected.
+
 ## Q: What's the difference between the three Executors?
 
 - **Executor_General**: General scenarios, flexible layout
