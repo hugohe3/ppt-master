@@ -158,6 +158,10 @@ Recorded narration:
                              'PowerPoint (one textbox per paragraph instead of per line) at '
                              'the cost of strict SVG line layout fidelity — PowerPoint re-wraps '
                              'merged paragraphs to fit the box width. Off by default.')
+    parser.add_argument('--conversion-trace', action='store_true', default=False,
+                        help='Write a JSON diagnostics report next to the native PPTX '
+                             '(<output>.trace.json). Records per-slide SVG element '
+                             'conversion decisions for debugging.')
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
                         help='Also emit the SVG-rendered snapshot pptx alongside the native pptx in exports/ '
                              '(named <project>_<ts>_svg.pptx). Off by default — the native pptx is the '
@@ -513,6 +517,10 @@ Recorded narration:
             output_path=native_path,
             use_native_shapes=True,
             svg_files=native_files,
+            conversion_trace_path=(
+                native_path.with_name(native_path.name + '.trace.json')
+                if args.conversion_trace else None
+            ),
             **shared_kwargs,
         )
         success = success and ok

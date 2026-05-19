@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import mimetypes
 import os
 import re
@@ -307,6 +308,7 @@ def create_pptx_with_native_svg(
     cache_dir: Path | None = None,
     workers: int | None = None,
     merge_paragraphs: bool = False,
+    conversion_trace_path: Path | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -334,6 +336,7 @@ def create_pptx_with_native_svg(
         narration_audio: Optional dict mapping SVG stem to narration audio file.
         use_narration_timings: Whether to set slide auto-advance from audio duration.
         narration_padding: Extra seconds added after each narration before advancing.
+        conversion_trace_path: Optional JSON path for native conversion diagnostics.
 
     Returns:
         Whether all slides were successfully created.
@@ -446,6 +449,7 @@ def create_pptx_with_native_svg(
         narration_slides_created: set[int] = set()
         audio_exts_used: set[str] = set()
         mixed_animation_offset = 0
+        conversion_trace: list[dict[str, Any]] | None = [] if conversion_trace_path else None
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
@@ -458,6 +462,7 @@ def create_pptx_with_native_svg(
                         convert_svg_to_slide_shapes(
                             svg_path, slide_num=slide_num, verbose=verbose,
                             merge_paragraphs=merge_paragraphs,
+                            trace_out=conversion_trace,
                         )
                     )
                     slide_transition, slide_transition_duration, slide_auto_advance = (
@@ -803,9 +808,23 @@ def create_pptx_with_native_svg(
                     zf.write(file_path, arcname)
         shutil.move(str(temp_output_path), str(output_path))
 
+        if conversion_trace_path and conversion_trace is not None:
+            conversion_trace_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = {
+                'output': str(output_path),
+                'slide_count': len(svg_files),
+                'slides': conversion_trace,
+            }
+            conversion_trace_path.write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding='utf-8',
+            )
+
         if verbose:
             print()
             print(f"[Done] Saved: {output_path}")
+            if conversion_trace_path and conversion_trace is not None:
+                print(f"  Trace: {conversion_trace_path}")
             print(f"  Succeeded: {success_count}, Failed: {len(svg_files) - success_count}")
             if use_compat_mode and has_any_image:
                 print(f"  Mode: Office compatibility mode (supports all Office versions)")
