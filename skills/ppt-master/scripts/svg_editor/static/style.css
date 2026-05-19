@@ -90,6 +90,19 @@ html, body {
     border-left-color: #4a9eff;
 }
 
+.slide-item.slide-error {
+    border-left-color: #ef4444;
+}
+
+.slide-item.slide-error .slide-name {
+    color: #fca5a5;
+}
+
+.slide-item.slide-error .slide-name::before {
+    content: "⚠ ";
+    color: #ef4444;
+}
+
 .slide-item .slide-name {
     flex: 1;
     white-space: nowrap;
