@@ -1,0 +1,6 @@
+version: "1"
+rules:
+  - base: main
+    upstream: hugohe3:ppt-master
+    mergeMethod: merge
+    mergeUnstable: true
