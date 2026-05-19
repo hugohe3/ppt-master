@@ -88,7 +88,9 @@ Accept user combinations and one-off coinages ("Scandinavian + slight industrial
 
 ### e. Color Scheme Recommendation
 
-**Hard rule**: User / template colors are truth. If the user has specified colors (HEX, brand colors, or natural-language directives like "use blue as primary"), or a template was loaded with its own theme colors, lock those directly and skip the recommendation table. Do not adjust them to fit any palette or industry default. Only when no color signal exists from user or template do you proactively propose a scheme below.
+**Hard rule**: User / brand / template colors are truth. If the user has specified colors (HEX, brand colors, or natural-language directives like "use blue as primary"), a brand was loaded at Step 3 via an explicit path (`<project_path>/brand/design_spec.md`), or a layout template was loaded with its own theme colors, lock those directly and skip the recommendation table. Do not adjust them to fit any palette or industry default. Only when no color signal exists from user, brand, or template do you proactively propose a scheme below.
+
+> **Precedence when multiple sources are present**: explicit user override > brand > layout template defaults. Brand identity tokens (primary / secondary / accent / text / bg) override layout template defaults; the layout template's page structure stays intact.
 
 Proactively provide a color scheme (HEX values) based on content characteristics and industry.
 
@@ -162,6 +164,8 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 - `Georgia` ↔ `Cambria`
 
 **Mandatory**: propose **two** combinations to the user — one concord (safe), one contrast (with tension). Do not default to "title = body, same font" without explicit user request.
+
+> **Brand precedence**: when a brand was loaded at Step 3 via an explicit path and declares `title` / `body` font stacks in `<project_path>/brand/design_spec.md §III Typography`, lock those directly and skip the two-combination presentation. Same precedence as e. — user override > brand > layout template defaults.
 
 **Cross-platform pre-installed reference**:
 
@@ -277,7 +281,7 @@ After the candidates, append one line:
 | Span a personality spectrum | Typically: one conservative-default (industry norm), one shifted-tone (same fit, 1-2 ticks different), one bold-contrast (more expressive, may challenge default). No near-duplicates. |
 | `Mood` line MUST include a real-world analogy | Company / publication / event the user can picture. Adjective stacks alone are forbidden. |
 | Adapt labels to chat language | Schema is English by default. Chinese chat → render as 「方案 A / 视觉 / 色彩 / 情绪」. Structure stays the same; only the labels translate. |
-| Skip presentation when user has specified | User-named rendering or palette (chat / template) bypasses the candidate flow — lock directly per the truth-precedence rule. |
+| Skip presentation when user has specified | User-named rendering or palette (chat / brand / template) bypasses the candidate flow — lock directly per the truth-precedence rule. |
 
 **Forbidden — padding with conflicts**: if e.'s HEX cannot find ≥3 compatible palettes, present the smaller set (2 candidates) and state "your color is unusual — only N palettes can carry it without conflict." Never fill remaining slots with known-conflicting options.
 

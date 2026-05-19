@@ -10,6 +10,8 @@ Generate a complete set of reusable PPT layout templates for the **global templa
 
 > This workflow is for **library asset creation**, not project-level one-off customization. The output must be reusable by future PPT projects and discoverable from `templates/layouts/layouts_index.json`.
 
+> **Companion workflow**: identity-only locking (colors / typography / logo / voice without SVG pages) is handled by [`create-brand.md`](./create-brand.md). Use that when the user wants brand identity but free page layout; use this when fixed page structures are also required.
+
 ## Process Overview
 
 ```

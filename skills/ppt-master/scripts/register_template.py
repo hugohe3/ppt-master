@@ -1,24 +1,31 @@
 #!/usr/bin/env python3
-"""Register a layout template into the global template index.
+"""Register a layout template or brand preset into the global template index.
 
-Reads ``templates/layouts/<template_id>/design_spec.md`` (preferring its YAML
-frontmatter when present, falling back to prose section values) and
-synchronizes two derived indexes:
+For layout templates (``--kind layout``, default), reads
+``templates/layouts/<template_id>/design_spec.md`` and synchronizes:
 
 - ``templates/layouts/layouts_index.json`` — slim machine-readable map
 - ``templates/layouts/README.md`` — human-facing "Quick Template Index" table
 
-This script is the single source-of-truth bridge between a template's design
-spec and the indexes. Run it after creating a new template (or after editing a
-spec) and the indexes update automatically — no manual JSON / Markdown surgery.
+For brand presets (``--kind brand``), reads
+``templates/brands/<brand_id>/design_spec.md`` and synchronizes:
+
+- ``templates/brands/brands_index.json`` — slim machine-readable map
+  (brand README under ``templates/brands/`` is hand-maintained)
+
+This script is the single source-of-truth bridge between a design spec and
+the indexes. Run it after creating a new template / brand (or after editing
+a spec) and the index updates automatically — no manual JSON surgery.
 
 Usage:
     python3 scripts/register_template.py <template_id>
     python3 scripts/register_template.py <template_id> --dry-run
     python3 scripts/register_template.py --rebuild-all
+    python3 scripts/register_template.py <brand_id> --kind brand
+    python3 scripts/register_template.py --kind brand --rebuild-all
 
-The last form rebuilds every entry from scratch, which is the recommended way
-to repair index drift across many templates at once.
+``--rebuild-all`` rebuilds every entry from scratch within the chosen kind;
+recommended for repairing index drift across many templates / brands at once.
 """
 
 from __future__ import annotations
@@ -42,6 +49,9 @@ SKILL_DIR = SCRIPT_DIR.parent
 LAYOUTS_DIR = SKILL_DIR / "templates" / "layouts"
 INDEX_PATH = LAYOUTS_DIR / "layouts_index.json"
 README_PATH = LAYOUTS_DIR / "README.md"
+
+BRANDS_DIR = SKILL_DIR / "templates" / "brands"
+BRANDS_INDEX_PATH = BRANDS_DIR / "brands_index.json"
 
 QUICK_INDEX_BEGIN = "<!-- quick-index:begin -->"
 QUICK_INDEX_END = "<!-- quick-index:end -->"
@@ -328,6 +338,148 @@ def _patch_readme(
 
 
 # ---------------------------------------------------------------------------
+# Brand-mode helpers
+# ---------------------------------------------------------------------------
+
+def _extract_brand_entry(brand_id: str, brand_dir: Path) -> dict:
+    """Extract a brand-index entry from ``templates/brands/<brand_id>/design_spec.md``.
+
+    Brand specs are simpler than layout specs: no SVG roster, no §V signature
+    elements. Frontmatter is the primary source; section fallbacks cover the
+    bare minimum (summary + primary color) for hand-written specs.
+    """
+    spec_path = brand_dir / "design_spec.md"
+    if not spec_path.exists():
+        raise SpecParseError(f"missing design_spec.md in {brand_dir}")
+
+    frontmatter, body = _read_spec(spec_path)
+    fm = frontmatter or {}
+
+    declared_kind = fm.get("kind")
+    if declared_kind not in (None, "brand"):
+        raise SpecParseError(
+            f"design_spec.md frontmatter declares kind={declared_kind!r}; "
+            f"use --kind layout to register a layout template instead"
+        )
+
+    summary = (fm.get("summary") or "").strip()
+    if not summary:
+        summary = _summary_from_use_cases(
+            _extract_section_field(
+                body, "I. Brand Overview", ["Use Cases", "Use cases"]
+            )
+        ) or ""
+        summary = summary.strip()
+
+    keywords = _split_keywords(fm.get("keywords"))
+
+    primary_color = fm.get("primary_color") or _extract_primary_color(body)
+
+    entry = OrderedDict(
+        summary=summary,
+        keywords=keywords,
+        primary_color=str(primary_color or ""),
+    )
+    return {"entry": entry}
+
+
+def _enumerate_brands() -> list[str]:
+    if not BRANDS_DIR.exists():
+        return []
+    return sorted(
+        p.name for p in BRANDS_DIR.iterdir()
+        if p.is_dir() and (p / "design_spec.md").exists()
+    )
+
+
+def _load_brand_index() -> "OrderedDict[str, dict]":
+    if not BRANDS_INDEX_PATH.exists():
+        return OrderedDict()
+    raw_text = BRANDS_INDEX_PATH.read_text(encoding="utf-8").strip() or "{}"
+    raw = json.loads(raw_text)
+    return OrderedDict(sorted(raw.items()))
+
+
+def _write_brand_index(
+    data: "OrderedDict[str, dict]", *, dry_run: bool
+) -> None:
+    payload = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+    if dry_run:
+        print(f"--- {BRANDS_INDEX_PATH.name} (dry-run) ---")
+        print(payload)
+        return
+    BRANDS_INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
+    BRANDS_INDEX_PATH.write_text(payload, encoding="utf-8")
+
+
+def _print_brand_completion_card(brand_id: str, entry: dict) -> None:
+    print()
+    print("## Brand Registration Complete")
+    print()
+    print(f"**Brand ID**: {brand_id}")
+    print(f"**Brand Path**: `templates/brands/{brand_id}/`")
+    primary = entry.get("primary_color") or "—"
+    print(f"**Primary Color**: {primary}")
+    print(f"**Summary**: {entry.get('summary') or '—'}")
+    keywords = entry.get("keywords") or []
+    if keywords:
+        print(f"**Keywords**: {', '.join(keywords)}")
+    print("**Index Registration**: Done")
+    print()
+
+
+def _register_brand_main(args: argparse.Namespace) -> int:
+    if args.rebuild_all:
+        ids = _enumerate_brands()
+        if not ids:
+            print("[OK] No brand directories under templates/brands/; index left empty.")
+            _write_brand_index(OrderedDict(), dry_run=args.dry_run)
+            return 0
+    else:
+        ids = [args.template_id]
+        brand_dir = BRANDS_DIR / args.template_id
+        if not brand_dir.is_dir():
+            print(
+                f"Error: brand directory not found: {brand_dir}",
+                file=sys.stderr,
+            )
+            return 1
+
+    extracted: dict[str, dict] = {}
+    for bid in ids:
+        try:
+            extracted[bid] = _extract_brand_entry(bid, BRANDS_DIR / bid)
+        except SpecParseError as exc:
+            print(f"Error: {bid}: {exc}", file=sys.stderr)
+            return 1
+
+    if args.rebuild_all:
+        index = OrderedDict(
+            (bid, extracted[bid]["entry"]) for bid in sorted(extracted)
+        )
+    else:
+        index = _load_brand_index()
+        for bid, payload in extracted.items():
+            index[bid] = payload["entry"]
+        index = OrderedDict(sorted(index.items()))
+
+    _write_brand_index(index, dry_run=args.dry_run)
+
+    if not args.dry_run and not args.rebuild_all:
+        bid = args.template_id
+        _print_brand_completion_card(bid, extracted[bid]["entry"])
+        return 0
+
+    print()
+    print(
+        f"[OK] {'Dry-run preview' if args.dry_run else 'Updated'}: "
+        f"{len(extracted)} brand(s) processed; "
+        f"index now lists {len(index)} entries."
+    )
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -361,17 +513,34 @@ def _print_completion_card(template_id: str, entry: dict, extras: dict) -> None:
 def main() -> int:
     """CLI entry: register one template (or rebuild all) into the index."""
     parser = argparse.ArgumentParser(
-        description="Register / refresh layout templates in the global index."
+        description=(
+            "Register / refresh layout templates or brand presets "
+            "in the global index."
+        )
     )
     parser.add_argument(
         "template_id",
         nargs="?",
-        help="Template directory under templates/layouts/. Omit with --rebuild-all.",
+        help=(
+            "Template directory under templates/layouts/ "
+            "(or templates/brands/ when --kind brand). "
+            "Omit with --rebuild-all."
+        ),
+    )
+    parser.add_argument(
+        "--kind",
+        choices=["layout", "brand"],
+        default="layout",
+        help=(
+            "What kind of preset to register. 'layout' (default) writes to "
+            "layouts_index.json + README quick index; 'brand' writes to "
+            "brands_index.json and skips SVG-roster checks."
+        ),
     )
     parser.add_argument(
         "--rebuild-all",
         action="store_true",
-        help="Rebuild every index entry from each template's design_spec.md.",
+        help="Rebuild every index entry from each spec.",
     )
     parser.add_argument(
         "--dry-run",
@@ -382,6 +551,9 @@ def main() -> int:
 
     if not args.template_id and not args.rebuild_all:
         parser.error("provide a template_id or use --rebuild-all")
+
+    if args.kind == "brand":
+        return _register_brand_main(args)
 
     if args.rebuild_all:
         ids = _enumerate_templates()
