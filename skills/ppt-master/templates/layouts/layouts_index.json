@@ -18,15 +18,6 @@
       "enterprise style"
     ]
   },
-  "anthropic": {
-    "summary": "AI tech talks, developer conferences, technical training, product launches.",
-    "keywords": [
-      "Tech-forward",
-      "professional",
-      "modern",
-      "conclusion-first"
-    ]
-  },
   "china_telecom_template": {
     "summary": "China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.",
     "keywords": [
@@ -34,16 +25,6 @@
       "structured",
       "restrained",
       "enterprise-government hybrid"
-    ]
-  },
-  "google_style": {
-    "summary": "Annual work reports, technical sharing, project showcases, data-driven presentations.",
-    "keywords": [
-      "Professional",
-      "modern",
-      "clean and restrained",
-      "data-driven",
-      "generous whitespace"
     ]
   },
   "government_blue": {

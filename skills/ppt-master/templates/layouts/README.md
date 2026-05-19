@@ -1,4 +1,4 @@
-# Page Layout Template Library (17 Templates)
+# Page Layout Template Library (15 Templates)
 
 Pre-built PPT page layout templates supporting multiple styles and use cases.
 
@@ -16,9 +16,7 @@ Pre-built PPT page layout templates supporting multiple styles and use cases.
 |---------------|----------|-----------|---------------|-------------|
 | `academic_defense` | General | Thesis defense, academic presentations, research progress reports, grant applications | `#003366` | Professional, rigorous, research-oriented, clear hierarchy |
 | `ai_ops` | General | Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports | `#C00000` | Information-dense, structured, modular zoning, telecom/enterprise style |
-| `anthropic` | General | AI tech talks, developer conferences, technical training, product launches | `#D97757` | Tech-forward, professional, modern, conclusion-first |
 | `china_telecom_template` | General | China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报 | `#C00000` | Authoritative, structured, restrained, enterprise-government hybrid |
-| `google_style` | General | Annual work reports, technical sharing, project showcases, data-driven presentations | `#4285F4` | Professional, modern, clean and restrained, data-driven, generous whitespace |
 | `government_blue` | General | Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation | `#0050B3` | Grand, tech-forward, modern, professional government style |
 | `government_red` | General | Government briefings, policy interpretation, work summaries, project introductions, investment promotion | `#8B0000` | Authoritative, dignified, professional, modern government style |
 | `medical_university` | General | Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training | `#0066B3` | Professional, rigorous, life-affirming, tech-forward, trustworthy |
@@ -38,12 +36,12 @@ Pre-built PPT page layout templates supporting multiple styles and use cases.
 ### 1. Brand Style Templates
 
 Templates mimicking **specific well-known brands/institutions** with their exclusive design style.
-> **Characteristics**: Distinctive brand identity (specific logos, color schemes, VI standards), suitable for internal or external presentations of that organization. Examples: Google, McKinsey, PowerChina.
+> **Characteristics**: Distinctive brand identity (specific logos, color schemes, VI standards), suitable for internal or external presentations of that organization. Examples: China Merchants Bank, PowerChina, CATARC.
+>
+> **Brand-only presets** (color + typography + logo + voice, no fixed page roster) live in [`templates/brands/`](../brands/) — they let AI design pages freely under brand constraints. Use a brand preset when you want the identity without locked layouts; use a layout template here when you want both identity and a pre-designed page roster.
 
 | Template | Description |
 |----------|-------------|
-| `google_style` | Google Material Design style, four-color brand identity |
-| `anthropic` | Anthropic AI style, dark tech-forward aesthetic |
 | `china_telecom_template` | China Telecom brand style, red-gray structural header + ribbon footer |
 | `中汽研_常规` | CATARC standard style (v1), suitable for certification and evaluation |
 | `中汽研_商务` | CATARC business style (v2), modern tech business, composed and sophisticated |
