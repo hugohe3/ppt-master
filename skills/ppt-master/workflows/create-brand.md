@@ -196,7 +196,7 @@ Emit the confirmation card:
 How to use in a project:
 - Include the brand directory path in your initial Step 3 input — e.g. "做一个 Q4 总结 PPT, 用 skills/ppt-master/templates/brands/<brand_id>/ 这个品牌"
 - Same explicit-path rule as layout templates: bare brand names never trigger
-- May be supplied together with a layout template path; brand identity overrides layout-template defaults
+- May be supplied together with a layout template path; Step 3 fuses both into a single `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3
 - To list available brands: open `templates/brands/brands_index.json`
 - To edit: modify `templates/brands/<brand_id>/design_spec.md` directly, then re-run `python3 skills/ppt-master/scripts/register_template.py --kind brand <brand_id>`
 ```
@@ -209,9 +209,9 @@ Brand application happens in [`SKILL.md` Step 3](../SKILL.md) under the **same e
 
 | User input at SKILL.md Step 3 | Behavior |
 |---|---|
-| Explicit brand directory path supplied | Step 3 copies the brand into `<project_path>/brand/`; Strategist locks color / typography / logo / voice as truth at Step 4 |
+| Explicit brand directory path supplied | Step 3 copies the brand into `<project_path>/templates/` (same target as a layout template); Strategist locks color / typography / logo / voice as truth at Step 4 |
 | Bare brand name, brand mention without path, or silence | Skip — no auto-application based on directory count or any other implicit signal |
-| Both a brand path and a layout template path supplied in the same message | Both apply; brand identity overrides layout-template defaults, layout template's page roster and structural design stay intact |
+| Both a brand path and a layout template path supplied in the same message | Step 3 fuses both into a single `design_spec.md` inside `<project_path>/templates/` (brand wins on identity tokens, layout wins on page structure). See `SKILL.md` Step 3 for the field-precedence table and the two conflict gates that may surface a clarifying question |
 
 `brands_index.json` is discovery-only (mirrors `layouts_index.json` semantics); listing brands never advances the pipeline.
 
@@ -223,4 +223,4 @@ Brand application happens in [`SKILL.md` Step 3](../SKILL.md) under the **same e
 2. **Self-contained package** — all brand assets (logo, images, illustrations, icons) live inside `templates/brands/<brand_id>/`. Nothing leaks to workspace root or `projects/`.
 3. **No script dependency** — Step 2A reuses existing converters plus AI inline reading. A dedicated `brand_extract.py` is not introduced unless future user feedback demands batch processing or precise color picking from raster logos.
 4. **Multi-brand support** — `templates/brands/` accepts any number of brands; agency / freelancer / multi-client workflows are natural.
-5. **Precedence rule** — when a brand and a layout template both apply, brand identity tokens (color / typography / logo / voice) override the layout template's defaults while the layout's page structure is preserved.
+5. **Precedence rule** — when a brand and a layout template both apply, Step 3 fuses them into one `design_spec.md`: brand wins on color / typography / logo / voice / icon style; layout wins on canvas / page roster / spacing / font-size hierarchy / signature visual elements. See `SKILL.md` Step 3 for the full precedence table.

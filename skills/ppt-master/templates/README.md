@@ -23,7 +23,7 @@ The `layouts/` directory contains pre-built page layout templates organized by d
 
 ## Brand Identity Presets
 
-The `brands/` directory holds brand-only templates: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Brands follow the **same explicit-path trigger rule as layout templates** — at SKILL.md Step 3 the user supplies the brand directory path to apply it; bare brand names never trigger. Brands and layout templates may be applied together; brand identity overrides layout-template defaults while the template's page roster stays intact.
+The `brands/` directory holds brand-only templates: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Brands follow the **same explicit-path trigger rule as layout templates** — at SKILL.md Step 3 the user supplies the brand directory path to apply it; bare brand names never trigger. Both layout and brand inputs land in the same project directory (`<project_path>/templates/`). When supplied together, Step 3 fuses them into a single `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3 for the precedence table.
 
 A brand is structurally a layout template minus its page roster. Use a brand when the user wants identity locking with free page layout; use a layout template when fixed page structures are also required.
 
