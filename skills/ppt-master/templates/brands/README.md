@@ -31,11 +31,16 @@ Every brand directory is self-contained:
 ```
 templates/brands/<brand_id>/
 ├── design_spec.md            # required — brand identity spec (7 sections)
-├── logo.<ext>                # optional — primary brand logo
+├── logo.<ext>                # optional — primary brand logo (single-lockup brands)
+│   …or…
+├── <brand>_wordmark.<ext>    # optional — wordmark variant (dual-lockup brands)
+├── <brand>_mark.<ext>        # optional — symbol / icon variant (dual-lockup brands)
 ├── images/                   # optional — branded photos
 ├── illustrations/            # optional — branded illustrations
 └── icons/                    # optional — branded icon overrides
 ```
+
+Logo filenames are descriptive, not contractual — `design_spec.md` §IV lists the exact files and the contexts in which each is used. Single-lockup brands typically ship one `logo.<ext>`; dual-lockup brands (e.g. Google's wordmark + G mark) ship separately named files.
 
 `design_spec.md` carries a YAML frontmatter block with `kind: brand` and is the single source of truth for the brand identity. The seven sections are: I Brand Overview / II Color Scheme / III Typography / IV Logo / V Voice & Tone / VI Icon Style / VII Visual Assets (optional).
 

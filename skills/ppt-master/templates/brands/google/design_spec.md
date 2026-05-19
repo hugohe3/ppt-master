@@ -22,7 +22,7 @@ primary_color: "#4285F4"
 
 | Role | HEX | Provenance | Notes |
 |---|---|---|---|
-| primary | `#4285F4` | fact | Google Blue — extracted from `logo.svg` |
+| primary | `#4285F4` | fact | Google Blue — extracted from `google_g_logo.svg` |
 | secondary | `#34A853` | fact | Google Green |
 | accent (warm) | `#FBBC05` | fact | Google Yellow |
 | accent (alert) | `#EA4335` | fact | Google Red |
@@ -42,8 +42,16 @@ The four primary brand colors (Blue / Green / Yellow / Red) carry equal weight i
 
 ## IV. Logo
 
-- File: `./logo.svg`
-- Usage: cover-only
+Google uses a dual-lockup brand system — pick by context, never combine on the same page.
+
+| File | Form | Usage |
+|---|---|---|
+| `./google_wordmark.svg` | Full "Google" wordmark (272×92) | Cover hero, ending sign-off, any moment the full brand reads at a glance |
+| `./google_g_logo.svg` | Square multi-color "G" mark (24×24) | Header / footer corners, page-number neighbors, tight badges, any small-size moment where the wordmark would become illegible |
+
+- Cover: prefer wordmark
+- Per-page: optional — only when wordmark or G mark genuinely fits the layout; do not stamp every page
+- Clearspace: leave at least 0.5× logo height of empty space on all sides; never overlap text or photographic backgrounds
 
 ## V. Voice & Tone
 
