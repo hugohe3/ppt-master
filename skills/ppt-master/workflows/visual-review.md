@@ -12,19 +12,16 @@ description: Per-page rubric-based visual self-review via parallel subagents. Ru
 
 ## Positioning
 
-This is an **optional auxiliary loop**, not a default step in the main pipeline. The Executor (SKILL.md Step 6) is already single-AI / single-session / continuous-generation — visual consistency across pages is built into that path. This workflow exists to give models with weaker visual reasoning an explicit "render → re-look → optimize" loop they wouldn't otherwise have.
+This is an **optional auxiliary loop**, opt-in only. The main pipeline (SKILL.md Step 1–7) does not invoke it; trigger only when the user explicitly asks for a visual re-pass on the generated SVGs before export.
 
-Trade-off to set expectations on:
-
-- **Token cost is significant.** Each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
-- **Marginal value scales inversely with the executing model's visual ability.** Strong-visual models (e.g., Claude 4.x) rarely produce the kind of letter-spacing / vertical-rhythm / collision drift this rubric targets; running visual-review on top of them mostly catches nothing. Weaker models benefit more — the rubric becomes a structured second pass that catches what they missed.
+**Token cost**: each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
 
 ## When to Run
 
 - Executor (SKILL.md Step 6) has finished all pages
 - `svg_quality_checker.py` has passed
 - Post-processing (`finalize_svg.py`, `svg_to_pptx.py`) has **not** yet run
-- The executing model has known visual-quality gaps that a structured re-pass is likely to catch, **or** the deck is high-stakes enough that the extra token cost is worth a safety net
+- The user has explicitly requested visual review
 
 For decks containing data charts, run [`verify-charts`](./verify-charts.md) first — visual-review focuses on visual rhythm / collision / alignment, not chart coordinate math.
 
@@ -33,8 +30,7 @@ For decks containing data charts, run [`verify-charts`](./verify-charts.md) firs
 - The project has no `svg_output/<page>.svg` files yet — finish Executor first
 - `svg_quality_checker.py` has not been run or has failed — fix static violations first
 - User has already applied annotations via `live-preview` workflow and is in a fixed-edit loop — describe changes directly, do not re-trigger rubric
-- The deck is < 3 pages and the user is reviewing manually anyway — manual review is faster
-- The executing model already has strong visual reasoning — the token cost is unlikely to be recouped in fixes; skip unless there's a specific reason to double-check
+- The user has not asked for it — do not auto-invoke based on inferred model capability or deck size
 
 ---
 
