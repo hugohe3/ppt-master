@@ -18,8 +18,12 @@ Dependencies:
 """
 
 import argparse
+import atexit
+import json
+import logging
 import os
 import re
+import signal
 import sys
 import threading
 import time
@@ -29,6 +33,12 @@ from pathlib import Path
 from typing import Optional
 
 from flask import Flask, jsonify, request, send_from_directory
+
+logger = logging.getLogger('svg_editor')
+
+# Per-project lock file. Lives at <project_path>/.live_preview.lock and
+# matches the *.lock entry already in the repo .gitignore.
+LOCK_FILE_NAME = '.live_preview.lock'
 
 # Local — sys.path injection for sibling module (code-style.md §3)
 _SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -55,30 +65,115 @@ from embed_icons import (  # noqa: E402
 _ICONS_DIR = _SCRIPTS_DIR.parent.parent / 'templates' / 'icons'
 _USE_ICON_PATTERN = re.compile(r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>')
 
+# Per-path mtime caches: key = absolute path str, value = (mtime, payload).
+# Entry is evicted/replaced when the file's mtime changes, so stale data
+# cannot leak. Locks guard concurrent access under Flask's threaded server.
+_SLIDE_CACHE_LOCK = threading.Lock()
+_SLIDE_CACHE: dict = {}  # path -> (mtime, (content, warnings))
 
-def _inline_icons(content: str) -> str:
+_LIST_CACHE_LOCK = threading.Lock()
+_LIST_CACHE: dict = {}  # path -> (mtime, annotation_count_on_disk)
+
+
+def _cache_get(cache: dict, lock: threading.Lock, path: str, mtime: float):
+    with lock:
+        entry = cache.get(path)
+        if entry is None or entry[0] != mtime:
+            return None
+        return entry[1]
+
+
+def _cache_put(cache: dict, lock: threading.Lock, path: str, mtime: float, value) -> None:
+    with lock:
+        cache[path] = (mtime, value)
+
+
+def _process_alive(pid: int) -> bool:
+    """Return True if a process with this pid is reachable.
+
+    ``os.kill(pid, 0)`` succeeds when the process exists even without
+    permission to signal it; ``PermissionError`` therefore still counts
+    as alive (a real lock holder owned by another user). ``ESRCH`` /
+    other ``OSError`` means the pid is gone.
+    """
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+
+def _read_lock(lock_file: Path) -> Optional[dict]:
+    try:
+        data = json.loads(lock_file.read_text(encoding='utf-8'))
+        return data if isinstance(data, dict) else None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def _claim_lock(lock_file: Path, port: int) -> Optional[dict]:
+    """Try to claim the per-project preview slot.
+
+    Returns ``None`` on success. If another live process already holds the
+    slot, returns the existing lock dict (caller surfaces it as an error).
+    A stale lock (pointing at a dead pid) is silently overwritten.
+    """
+    existing = _read_lock(lock_file)
+    if existing and _process_alive(int(existing.get('pid', 0))):
+        return existing
+    lock_file.write_text(
+        json.dumps({'pid': os.getpid(), 'port': port}),
+        encoding='utf-8',
+    )
+    return None
+
+
+def _release_lock(lock_file: Path) -> None:
+    """Best-effort cleanup: only delete the lock if it still names *us*."""
+    try:
+        current = _read_lock(lock_file)
+        if current and int(current.get('pid', 0)) == os.getpid():
+            lock_file.unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
+def _inline_icons(content: str) -> tuple[str, list[dict]]:
     """Replace <use data-icon="..."/> with rendered <g> for browser preview.
 
-    Preserves the original <use>'s id on the produced <g> so editor element
-    targeting (and AI-side annotation lookups against svg_output) stays consistent.
+    Returns (rewritten_content, warnings). Each warning is
+    ``{"icon": <name>, "reason": <str>}`` so the frontend can surface
+    "icon X not found" to the user instead of silently dropping it.
     """
+    warnings: list[dict] = []
     matches = list(_USE_ICON_PATTERN.finditer(content))
     if not matches:
-        return content
+        return content, warnings
     new_content = content
     for match in reversed(matches):
         use_str = match.group(0)
+        icon_name: str = ''
         try:
             attrs = parse_use_element(use_str)
-            icon_name = attrs.get('icon')
+            icon_name = str(attrs.get('icon') or '')
             if not icon_name:
+                warnings.append({'icon': '', 'reason': 'missing data-icon attribute'})
                 continue
-            icon_path, _ = resolve_icon_path(str(icon_name), _ICONS_DIR)
+            icon_path, _ = resolve_icon_path(icon_name, _ICONS_DIR)
             color = str(attrs.get('fill', '#000000'))
             elements, style, base_size = extract_paths_from_icon(icon_path, color)
-        except Exception:
+        except Exception as exc:
+            warnings.append({'icon': icon_name, 'reason': f'{type(exc).__name__}: {exc}'})
+            logger.warning('icon inline failed: name=%r reason=%s', icon_name, exc)
             continue
         if not elements:
+            warnings.append({'icon': icon_name, 'reason': 'no renderable paths in icon'})
             continue
         replacement = generate_icon_group(attrs, elements, style, base_size)
         id_match = re.search(r'\bid="([^"]+)"', use_str)
@@ -87,10 +182,15 @@ def _inline_icons(content: str) -> str:
                 '<g ', f'<g id="{id_match.group(1)}" data-icon="{icon_name}" ', 1,
             )
         new_content = new_content[:match.start()] + replacement + new_content[match.end():]
-    return new_content
+    return new_content, warnings
 
 
-def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) -> Flask:
+def create_app(
+    project_dir: str,
+    idle_timeout: int = 900,
+    live: bool = False,
+    lock_file: Optional[Path] = None,
+) -> Flask:
     """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
     svg_dir = project_path / 'svg_output'
@@ -101,6 +201,7 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
     app.config['PROJECT_PATH'] = project_path
     app.config['SVG_DIR'] = svg_dir
     app.config['LIVE_MODE'] = live
+    app.config['LOCK_FILE'] = lock_file
 
     # In-memory annotation store: {filename: {element_id: annotation_text}}
     app.config['ANNOTATIONS'] = {}
@@ -112,6 +213,14 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
     def _update_activity():
         app.config['LAST_REQUEST_TIME'] = time.time()
 
+    def _exit_with_lock_release(code: int = 0) -> None:
+        lf = app.config.get('LOCK_FILE')
+        if lf is not None:
+            _release_lock(lf)
+        # os._exit: atexit handlers do not run; we just released the lock
+        # manually above so a clean restart still finds the slot free.
+        os._exit(code)
+
     def _idle_watchdog():
         if idle_timeout <= 0:
             return
@@ -119,10 +228,10 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
             time.sleep(10)
             elapsed = time.time() - app.config['LAST_REQUEST_TIME']
             if elapsed > idle_timeout:
-                print(f"SVG Editor idle for {idle_timeout}s, shutting down.")
-                # os._exit: Flask dev server has no clean shutdown mechanism;
-                # data is safe because idle timeout only fires when no requests are in flight.
-                os._exit(0)
+                logger.info('idle for %ds, shutting down', idle_timeout)
+                # Flask dev server has no clean shutdown; data is safe
+                # because idle timeout only fires when no requests are in flight.
+                _exit_with_lock_release(0)
 
     watchdog = threading.Thread(target=_idle_watchdog, daemon=True)
     watchdog.start()
@@ -134,9 +243,9 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
 
         def _stop():
             time.sleep(0.5)  # Let HTTP response flush before killing the process
-            print(f"SVG Editor shutting down ({reason}).")
+            logger.info('shutting down (%s)', reason)
             # os._exit: save-all already wrote to disk; 0.5s delay ensures response is sent.
-            os._exit(0)
+            _exit_with_lock_release(0)
         threading.Thread(target=_stop, daemon=True).start()
         return jsonify({'status': 'ok'})
 
@@ -191,20 +300,37 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
         annotations = app.config['ANNOTATIONS']
         slides = []
         for svg_file in sorted(svg_dir.glob('*.svg')):
-            disk_annotations = []
+            path_str = str(svg_file)
             try:
-                tree = ET.parse(str(svg_file))
-                disk_annotations = parse_annotations(tree.getroot())
-            except ET.ParseError:
-                pass
+                mtime = svg_file.stat().st_mtime
+            except OSError as exc:
+                logger.warning('stat failed: %s: %s', path_str, exc)
+                continue
+
+            ok = True
+            error_msg: Optional[str] = None
+            disk_count = _cache_get(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime)
+            if disk_count is None:
+                try:
+                    tree = ET.parse(path_str)
+                    disk_count = len(parse_annotations(tree.getroot()))
+                except ET.ParseError as exc:
+                    ok = False
+                    error_msg = f'XML parse error: {exc}'
+                    disk_count = 0
+                    logger.warning('slide parse failed: %s: %s', svg_file.name, exc)
+                _cache_put(_LIST_CACHE, _LIST_CACHE_LOCK, path_str, mtime, disk_count)
 
             mem_count = len(annotations.get(svg_file.name, {}))
-            annotation_count = max(len(disk_annotations), mem_count)
+            annotation_count = max(disk_count, mem_count)
 
             slides.append({
                 'name': svg_file.name,
                 'annotated': annotation_count > 0,
                 'annotation_count': annotation_count,
+                'ok': ok,
+                'error': error_msg,
+                'mtime': mtime,
             })
 
         return jsonify({'slides': slides})
@@ -230,43 +356,62 @@ def create_app(project_dir: str, idle_timeout: int = 900, live: bool = False) ->
         if not svg_file.exists():
             return jsonify({'error': 'Slide not found'}), 404
 
+        path_str = str(svg_file)
         try:
-            tree = ET.parse(str(svg_file))
-            root = tree.getroot()
-        except ET.ParseError as e:
-            return jsonify({'error': f'Failed to parse SVG: {e}'}), 500
+            mtime = svg_file.stat().st_mtime
+        except OSError as exc:
+            logger.warning('stat failed: %s: %s', path_str, exc)
+            return jsonify({'error': f'Failed to stat SVG: {exc}'}), 500
 
-        assign_temp_ids(root)
+        cached = _cache_get(_SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime)
+        if cached is not None:
+            content, warnings, disk_annotations, id_to_tag = cached
+        else:
+            try:
+                tree = ET.parse(path_str)
+                root = tree.getroot()
+            except ET.ParseError as exc:
+                logger.warning('slide parse failed: %s: %s', name, exc)
+                return jsonify({'error': f'Failed to parse SVG: {exc}'}), 500
 
-        disk_annotations = parse_annotations(root)
+            assign_temp_ids(root)
+            disk_annotations = parse_annotations(root)
+            id_to_tag: dict[str, str] = {}
+            for elem in root.iter():
+                eid = elem.get('id')
+                if eid:
+                    tag = elem.tag
+                    if '}' in tag:
+                        tag = tag.split('}', 1)[1]
+                    id_to_tag[eid] = tag
+            content = ET.tostring(root, encoding='unicode', xml_declaration=False)
+            content, warnings = _inline_icons(content)
+            _cache_put(
+                _SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime,
+                (content, warnings, disk_annotations, id_to_tag),
+            )
 
         mem_annotations = app.config['ANNOTATIONS'].get(name, {})
-        merged = {}
+        merged: dict[str, str] = {}
         for ann in disk_annotations:
             merged[ann['element_id']] = ann['annotation']
         merged.update(mem_annotations)
 
-        annotations_list = []
-        for elem in root.iter():
-            eid = elem.get('id')
-            if eid and eid in merged:
-                tag = elem.tag
-                if '}' in tag:
-                    tag = tag.split('}', 1)[1]
-                annotations_list.append({
-                    'element_id': eid,
-                    'tag': tag,
-                    'annotation': merged[eid],
-                })
-
-        content = ET.tostring(root, encoding='unicode', xml_declaration=False)
-        # Inline <use data-icon> placeholders so the browser can render icons.
-        content = _inline_icons(content)
+        annotations_list = [
+            {
+                'element_id': eid,
+                'tag': id_to_tag.get(eid, ''),
+                'annotation': ann_text,
+            }
+            for eid, ann_text in merged.items()
+        ]
 
         return jsonify({
             'name': name,
             'content': content,
             'annotations': annotations_list,
+            'warnings': warnings,
+            'mtime': mtime,
         })
 
     @app.route('/api/slide/<name>/annotate', methods=['POST'])
@@ -378,7 +523,7 @@ def build_parser() -> argparse.ArgumentParser:
         '--timeout',
         type=int,
         default=None,
-        help='Idle timeout in seconds (default: 900; live mode default: 0 = disabled)',
+        help='Idle timeout in seconds (default: 900; live mode default: 7200; 0 = disabled)',
     )
     return parser
 
@@ -387,31 +532,81 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(asctime)s] [%(levelname)s] svg_editor: %(message)s',
+        datefmt='%H:%M:%S',
+    )
+
     project_path = Path(args.project_dir).resolve()
     svg_output = project_path / 'svg_output'
     if not svg_output.exists():
         if args.live:
             svg_output.mkdir(parents=True, exist_ok=True)
         else:
-            print(f"Error: {svg_output} does not exist", file=sys.stderr)
+            logger.error('%s does not exist', svg_output)
             return 1
     elif not svg_output.is_dir():
-        print(f"Error: {svg_output} is not a directory", file=sys.stderr)
+        logger.error('%s is not a directory', svg_output)
         return 1
+
+    # Per-project mutual exclusion. The major driver of orphaned servers is
+    # --live mode (which used to disable idle timeout entirely) combined with
+    # silent restarts; refusing duplicate launches catches the accumulation
+    # at its source. Stale locks (dead pid) are overwritten by _claim_lock.
+    lock_file = project_path / LOCK_FILE_NAME
+    existing = _claim_lock(lock_file, args.port)
+    if existing:
+        existing_pid = existing.get('pid', '?')
+        existing_port = existing.get('port', '?')
+        logger.error(
+            'live preview is already running for this project '
+            '(pid=%s, port=%s). Open http://localhost:%s, click '
+            'Exit preview in the browser, or run: kill %s',
+            existing_pid, existing_port, existing_port, existing_pid,
+        )
+        return 1
+    # atexit covers normal interpreter shutdown (Ctrl+C / SystemExit);
+    # /api/shutdown and idle timeout call _release_lock directly before
+    # os._exit since atexit handlers do not run on os._exit.
+    atexit.register(_release_lock, lock_file)
+
+    # SIGTERM would otherwise terminate without running atexit, leaving a
+    # stale lock that future launches have to recover from. Translate it
+    # into SystemExit so the atexit handler above runs. SIGINT (Ctrl+C) is
+    # already handled by werkzeug's reloader-free shutdown path.
+    def _on_sigterm(signum: int, _frame) -> None:
+        logger.info('received signal %s, exiting', signum)
+        sys.exit(0)
+    try:
+        signal.signal(signal.SIGTERM, _on_sigterm)
+    except (ValueError, OSError):
+        # ValueError: not in main thread; OSError: unsupported on platform.
+        pass
 
     idle_timeout = args.timeout
     if idle_timeout is None:
-        idle_timeout = 0 if args.live else 900
+        # Long but finite default for --live so a forgotten preview eventually
+        # dies. Set --timeout 0 to keep the historical never-expire behavior.
+        idle_timeout = 7200 if args.live else 900
 
-    app = create_app(str(project_path), idle_timeout=idle_timeout, live=args.live)
+    app = create_app(
+        str(project_path),
+        idle_timeout=idle_timeout,
+        live=args.live,
+        lock_file=lock_file,
+    )
 
     url = f'http://localhost:{args.port}'
     if not args.no_browser:
         webbrowser.open(url)
 
     mode = "live preview (auto-startup)" if args.live else "live preview"
-    print(f"SVG Editor running at {url} ({mode})")
-    print(f"Project: {project_path}")
+    svg_count = len(list(svg_output.glob('*.svg')))
+    logger.info('running at %s (%s)', url, mode)
+    logger.info('project: %s', project_path)
+    logger.info('svg_output: %s (%d slides)', svg_output, svg_count)
+    logger.info('idle timeout: %ds (0 = disabled)', idle_timeout)
     app.run(host='127.0.0.1', port=args.port, debug=False)
     return 0
 

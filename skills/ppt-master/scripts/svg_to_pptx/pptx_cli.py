@@ -72,8 +72,8 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo -s final               # Default: native pptx -> exports/ only
-    %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG snapshot + svg_output -> backup/<ts>/
+    %(prog)s examples/ppt169_demo -s final               # Default: native pptx -> exports/, svg_output -> backup/<ts>/
+    %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG-rendered snapshot pptx alongside native in exports/
     %(prog)s examples/ppt169_demo --only legacy          # Only SVG image version (skips native)
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
 
@@ -151,10 +151,23 @@ Recorded narration:
                             help='Only generate one version: native (editable shapes) or legacy (SVG image)')
     mode_group.add_argument('--native', action='store_true', default=False,
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
+    parser.add_argument('--merge-paragraphs', action='store_true', default=False,
+                        help='Opt-in: merge mergeable paragraph blocks (same x, dy clustered '
+                             'around one base line-height) into a single editable text frame '
+                             'with multiple <a:p>. Improves editability of paragraph text in '
+                             'PowerPoint (one textbox per paragraph instead of per line) at '
+                             'the cost of strict SVG line layout fidelity — PowerPoint re-wraps '
+                             'merged paragraphs to fit the box width. Off by default.')
+    parser.add_argument('--conversion-trace', action='store_true', default=False,
+                        help='Write a JSON diagnostics report next to the native PPTX '
+                             '(<output>.trace.json). Records per-slide SVG element '
+                             'conversion decisions for debugging.')
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
-                        help='Also emit SVG snapshot pptx + svg_output/ copy under backup/<ts>/. '
-                             'Off by default — the native pptx in exports/ is the canonical output; '
-                             'live preview already provides the SVG visual reference.')
+                        help='Also emit the SVG-rendered snapshot pptx alongside the native pptx in exports/ '
+                             '(named <project>_<ts>_svg.pptx). Off by default — the native pptx is the '
+                             'canonical output; live preview already provides the SVG visual reference. '
+                             'Note: the svg_output/ source snapshot is always written to backup/<ts>/ '
+                             'regardless of this flag.')
 
     def non_negative_float(value: str) -> float:
         try:
@@ -291,10 +304,13 @@ Recorded narration:
         exports_dir = project_path / "exports"
         exports_dir.mkdir(parents=True, exist_ok=True)
         native_path = exports_dir / f"{project_name}_{timestamp}.pptx"
+        # svg_output/ snapshot always goes under backup/<ts>/ in default-flow
+        # mode (no -o). --svg-snapshot only controls the optional legacy
+        # SVG-rendered pptx, which now sits alongside the native pptx in
+        # exports/ rather than nested inside backup/.
+        backup_dir = project_path / "backup" / timestamp
         if gen_legacy:
-            backup_dir = project_path / "backup" / timestamp
-            backup_dir.mkdir(parents=True, exist_ok=True)
-            legacy_path = backup_dir / f"{project_name}_svg.pptx"
+            legacy_path = exports_dir / f"{project_name}_{timestamp}_svg.pptx"
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
     if legacy_path is not None:
@@ -482,6 +498,7 @@ Recorded narration:
         narration_padding=args.narration_padding,
         cache_dir=cache_dir,
         workers=args.workers,
+        merge_paragraphs=args.merge_paragraphs,
     )
 
     success = True
@@ -500,6 +517,10 @@ Recorded narration:
             output_path=native_path,
             use_native_shapes=True,
             svg_files=native_files,
+            conversion_trace_path=(
+                native_path.with_name(native_path.name + '.trace.json')
+                if args.conversion_trace else None
+            ),
             **shared_kwargs,
         )
         success = success and ok
@@ -525,19 +546,23 @@ Recorded narration:
         )
         success = success and ok
 
-        if ok and backup_dir is not None:
-            svg_output_src = project_path / "svg_output"
-            if svg_output_src.is_dir():
-                svg_output_dst = backup_dir / "svg_output"
-                try:
-                    shutil.copytree(svg_output_src, svg_output_dst)
-                    if verbose:
-                        print(f"  svg_output backup: {svg_output_dst}")
-                except Exception as exc:
-                    if verbose:
-                        print(f"  [warn] svg_output backup skipped: {exc}")
-            elif verbose:
-                print(f"  [info] svg_output/ not found, backup skipped")
+    # svg_output/ snapshot — runs once per export in default-flow mode,
+    # decoupled from --svg-snapshot. Preserves the AI-generated SVG sources
+    # under backup/<ts>/svg_output/ for later inspection / re-export.
+    if success and backup_dir is not None:
+        svg_output_src = project_path / "svg_output"
+        if svg_output_src.is_dir():
+            backup_dir.mkdir(parents=True, exist_ok=True)
+            svg_output_dst = backup_dir / "svg_output"
+            try:
+                shutil.copytree(svg_output_src, svg_output_dst)
+                if verbose:
+                    print(f"  svg_output backup: {svg_output_dst}")
+            except Exception as exc:
+                if verbose:
+                    print(f"  [warn] svg_output backup skipped: {exc}")
+        elif verbose:
+            print(f"  [info] svg_output/ not found, backup skipped")
 
     if success and cache_dir is not None and cache_dir.is_dir() and not args.keep_cache:
         try:

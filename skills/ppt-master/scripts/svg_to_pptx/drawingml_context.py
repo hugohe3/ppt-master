@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 from xml.etree import ElementTree as ET
 from dataclasses import dataclass, field
 
@@ -46,6 +47,13 @@ class ConvertContext:
     # Top-level <g id="..."> groups, recorded as (shape_id, svg_id) in z-order.
     # Used by the PPTX builder to emit per-element entrance timing.
     anim_targets: list = field(default_factory=list)
+    # Opt-in flag (default off): merge mergeable paragraph blocks into one
+    # editable text frame with multiple <a:p>. Off preserves the original
+    # one-line-per-textbox behavior and the SVG's exact pixel layout.
+    merge_paragraphs: bool = False
+    # Optional per-element conversion diagnostics. Shared by child contexts so
+    # callers can inspect native / skipped / unsupported decisions per slide.
+    trace_events: list[dict[str, Any]] | None = None
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -82,7 +90,20 @@ class ConvertContext:
             style_overrides: Style attribute overrides from child element.
         """
         local_matrix = transform_matrix or IDENTITY_MATRIX
-        a1, b1, c1, d1, e1, f1 = self.transform_matrix
+        # When first crossing from scalar to matrix mode, fold accumulated
+        # translate_x/y and scale_x/y into the matrix base. Otherwise the
+        # ancestor's scalar transform — which matrix-path readers (e.g.
+        # <image>) never look at — is silently lost, and the descendant
+        # lands at raw SVG coordinates (typically near (0,0)).
+        if transform_matrix is not None and not self.use_transform_matrix:
+            base_matrix: AffineMatrix = (
+                self.scale_x, 0.0,
+                0.0, self.scale_y,
+                self.translate_x, self.translate_y,
+            )
+        else:
+            base_matrix = self.transform_matrix
+        a1, b1, c1, d1, e1, f1 = base_matrix
         a2, b2, c2, d2, e2, f2 = local_matrix
         combined_matrix: AffineMatrix = (
             a1 * a2 + c1 * b2,
@@ -132,6 +153,8 @@ class ConvertContext:
             depth=self.depth + 1,
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
+            merge_paragraphs=self.merge_paragraphs,
+            trace_events=self.trace_events,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:

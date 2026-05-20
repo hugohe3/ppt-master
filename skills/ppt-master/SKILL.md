@@ -66,6 +66,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Index | Path | Purpose |
 |-------|------|---------|
 | Layout templates | `${SKILL_DIR}/templates/layouts/layouts_index.json` | Query available page layout templates |
+| Brand presets | `${SKILL_DIR}/templates/brands/brands_index.json` | Query available brand identity presets (color / typography / logo / voice) |
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 
@@ -74,7 +75,8 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Workflow | Path | Purpose |
 |----------|------|---------|
 | `topic-research` | `workflows/topic-research.md` | Pre-pipeline — gather web sources when the user supplies only a topic with no source files |
-| `create-template` | `workflows/create-template.md` | Standalone template creation workflow |
+| `create-template` | `workflows/create-template.md` | Standalone layout template creation workflow |
+| `create-brand` | `workflows/create-brand.md` | Standalone brand-only template creation (identity preset; no SVG page roster) |
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
@@ -178,7 +180,57 @@ cp ${TEMPLATE_DIR}/*.jpg <project_path>/images/ 2>/dev/null || true
 
 > To create a new template, read `workflows/create-template.md`.
 
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path, that directory is copied before advancing.**
+**Brand triggering follows the same explicit-path rule as layout templates.** A brand is structurally a layout template minus its SVG page roster — its `design_spec.md` declares `kind: brand` in YAML frontmatter and lives under `templates/brands/<id>/`. `brands_index.json` is discovery-only, same as `layouts_index.json` — listing brands never triggers Step 3.
+
+| User input contains | Step 3 brand action |
+|---|---|
+| An explicit path to a brand directory (e.g. `skills/ppt-master/templates/brands/acme/`, or any path that resolves to a directory whose `design_spec.md` declares `kind: brand`) | Copy `design_spec.md` + logo files + any present asset subdirectories into `<project_path>/templates/` |
+| Bare brand names ("use acme brand", "用 acme 品牌"), brand mentions without a path, or silence | Skip — same mechanical rule as layout templates: bare names never trigger |
+
+```bash
+BRAND_DIR=<user-supplied brand path>
+cp ${BRAND_DIR}/design_spec.md <project_path>/templates/
+cp ${BRAND_DIR}/*.svg <project_path>/templates/ 2>/dev/null || true     # brand logo SVG files
+cp ${BRAND_DIR}/*.png <project_path>/templates/ 2>/dev/null || true     # brand logo raster files
+[ -d ${BRAND_DIR}/images ] && cp -r ${BRAND_DIR}/images <project_path>/templates/
+[ -d ${BRAND_DIR}/illustrations ] && cp -r ${BRAND_DIR}/illustrations <project_path>/templates/
+[ -d ${BRAND_DIR}/icons ] && cp -r ${BRAND_DIR}/icons <project_path>/templates/
+```
+
+> Brand and layout outputs share `<project_path>/templates/` because they are the same kind of artifact — a reference bundle that Strategist treats as truth. Downstream code never needs to distinguish them.
+
+> "What brands exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` together with their paths. Listing alone does not advance the pipeline; the user still has to send a path to trigger the Step 3 copy.
+
+> To create a new brand, read `workflows/create-brand.md`.
+
+#### Brand + layout combined input
+
+A brand path and a layout template path may both be supplied in the same message. When both are present, Step 3 **fuses them into a single `design_spec.md`** inside `<project_path>/templates/` instead of leaving two specs side by side. Field-level precedence is fixed (no per-deck prompting):
+
+| Field group | Source |
+|---|---|
+| Color (primary / secondary / accents / text / bg) | **brand** |
+| Typography (font family) | **brand** |
+| Logo | **brand** (if absent, fall back to layout's logo) |
+| Voice & tone | **brand** |
+| Icon style preference | **brand** |
+| Canvas (size / viewBox / margins) | **layout** |
+| Page roster + signature visual elements (top bar / underline / decorative motifs) | **layout** |
+| Font-size hierarchy (H1 / H2 / body / data / label) | **layout** |
+| Spacing, grid, layout patterns | **layout** |
+| SVG technical constraints | **layout** |
+| Placeholder set | **layout** |
+
+Action: AI reads `${LAYOUT_DIR}/design_spec.md` and `${BRAND_DIR}/design_spec.md`, composes one fused `design_spec.md` using the table above, writes it to `<project_path>/templates/design_spec.md`. SVG page files come from `${LAYOUT_DIR}`; brand logos and asset subdirectories from `${BRAND_DIR}`. The fused spec carries a one-line `> Fused from: layout=<layout_id>, brand=<brand_id>` provenance note under its H1.
+
+**Conflict gates** — clarify with the user only in these two cases:
+
+1. **Brand has no logo, layout has one.** Ask: "your brand has no bundled logo; use the layout's logo, or leave the deck logo-less?"
+2. **Layout is itself a branded template (e.g. `招商银行`, `重庆大学`, `中汽研_*`, `中国电建_*`) and the supplied brand is different.** Ask: "this layout carries `<layout's own brand>` identity, which conflicts with the `<supplied brand>` you provided — confirm you want brand identity from `<supplied brand>` and only the page structure from `<layout>`?"
+
+If neither gate trips, fusion proceeds silently and Step 3 advances.
+
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path and/or an explicit brand directory path, those directories are copied (or fused) into `<project_path>/templates/` before advancing.**
 
 ---
 
@@ -375,21 +427,30 @@ uv run ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
 uv run ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
-# Output:
+# Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
+#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
 #
-# Add --svg-snapshot to also emit the SVG-image preview pptx + svg_output/ backup:
-#   backup/<timestamp>/<project_name>_svg.pptx        ← SVG preview pptx (reads svg_final/)
-#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
+# Add --svg-snapshot to additionally emit the SVG-image preview pptx alongside the native pptx:
+#   exports/<project_name>_<timestamp>_svg.pptx      ← SVG preview pptx (reads svg_final/)
 ```
 
 > The native pptx consumes `svg_output/` directly so the converter can preserve
 > high-fidelity primitives (icon `<use>` placeholders, image `preserveAspectRatio`
-> → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`). The SVG snapshot is
-> opt-in via `--svg-snapshot` — live preview already provides the SVG visual
-> reference, so the snapshot pptx is only needed when you want a self-contained
-> file to share or to rebuild without re-running the LLM. Pass `-s output` or
-> `-s final` to force a single source if you need it.
+> → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`). The `svg_output/`
+> snapshot in `backup/<timestamp>/` is always written so the project can be
+> re-exported from frozen SVG sources without re-running the LLM. The SVG-rendered
+> preview pptx is opt-in via `--svg-snapshot` — live preview already provides the
+> SVG visual reference, so it's only needed when you want a self-contained file
+> to share. Pass `-s output` or `-s final` to force a single source if you need it.
+
+> **Paragraph editability vs line fidelity** — by default every dy-stacked line is
+> its own PowerPoint text frame, preserving exact SVG layout. Add `--merge-paragraphs`
+> only when the user explicitly asks for an editable / wrap-friendly export (e.g.
+> "I want to edit the abstract as one block", "make text boxes resizable / reflow"):
+> mergeable paragraph blocks collapse into one editable text frame with multiple
+> `<a:p>`, at the cost of PowerPoint re-wrapping inside each box. Default off keeps
+> pixel-fidelity; turn it on per the user's request, not on your own judgement.
 
 **Optional animation flags** (the defaults already enable rich entrance animations — adjust only when the user asks for something different):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.

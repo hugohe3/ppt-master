@@ -28,11 +28,16 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 
-def flatten_positional_tspans(tree: ET.ElementTree) -> bool:
+def flatten_positional_tspans(
+    tree: ET.ElementTree,
+    merge_paragraphs: bool = False,
+) -> bool:
     """Flatten positional ``<tspan>`` elements into independent ``<text>``.
 
     Delegates to ``svg_finalize.flatten_tspan.flatten_text_with_tspans`` so
-    the in-memory transform exactly matches the on-disk one.
+    the in-memory transform exactly matches the on-disk one. When
+    ``merge_paragraphs`` is True, mergeable paragraph blocks are preserved
+    as a single <text> for downstream multi-<a:p> conversion.
 
     Returns True if any tspan was rewritten.
     """
@@ -40,4 +45,4 @@ def flatten_positional_tspans(tree: ET.ElementTree) -> bool:
     if str(scripts_dir) not in sys.path:
         sys.path.insert(0, str(scripts_dir))
     from svg_finalize.flatten_tspan import flatten_text_with_tspans  # type: ignore
-    return flatten_text_with_tspans(tree)
+    return flatten_text_with_tspans(tree, merge_paragraphs=merge_paragraphs)

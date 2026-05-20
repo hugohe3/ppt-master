@@ -11,5 +11,5 @@
 - `notes/`: speaker notes
 - `templates/`: project templates
 - `sources/`: source materials and normalized markdown
-- `exports/`: main native pptx (timestamped)
-- `backup/<timestamp>/`: SVG snapshot pptx + svg_output/ archive (auto-created on export; safe to delete old timestamps)
+- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added when exported with `--svg-snapshot`
+- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)
