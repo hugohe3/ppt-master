@@ -19,15 +19,15 @@ If the static checker has not been run or has failed, the subagent must abort wi
 
 ## §0.1 Subagent inputs
 
-Every per-page review subagent must receive:
+Each review subagent processes a **batch** of pages (see §6.1 for batch sizing). The inputs are:
 
-1. **SVG path** — the assigned page under `<project>/svg_output/<page>.svg`
-2. **PNG path** — pre-rendered 1280×720 screenshot at `<project>/.preview/<page>.png`
-3. **`page_role`** — one of `cover` / `chapter` / `tldr` / `content` / `data` / `closing` / `breathing`. Parsed from `design_spec.md §IX` by the orchestrator. Subagents do **not** guess.
-4. **Path to this rubric file**
-5. **`<project>/design_spec.md`** (read-only) — §IX outline is the source of truth for "what should this page deliver"
-6. **`<project>/spec_lock.md`** (read-only) — brand-locked values
-7. **`<project>/.review/`** (writable) — where backups and findings JSON go
+1. **Page batch** — a list of `(svg_path, png_path, page_role)` tuples, one per assigned page. `svg_path` resolves under `<project>/svg_output/<page>.svg`, `png_path` under `<project>/.preview/<page>.png`. `page_role` is one of `cover` / `chapter` / `tldr` / `content` / `data` / `closing` / `breathing`, parsed from `design_spec.md §IX` by the orchestrator — subagents do **not** guess.
+2. **Path to this rubric file**
+3. **`<project>/design_spec.md`** (read-only) — §IX outline is the source of truth for "what should this page deliver"
+4. **`<project>/spec_lock.md`** (read-only) — brand-locked values
+5. **`<project>/.review/`** (writable) — where backups and findings JSON go
+
+The subagent reads inputs 2–4 **once** at the start of its turn, then iterates over the page batch sequentially (one page at a time): apply the rubric → write `<project>/.review/<page>.json` → move on. This is the core token-saving move — three fixed documents are read N/K times instead of N times.
 
 ## §1 Hard rules (fix every hit)
 
@@ -36,13 +36,12 @@ Every per-page review subagent must receive:
 | H1 | Out-of-bounds | element bbox falls outside `0,0,1280,720` | shrink or reposition into canvas |
 | H2 | Text overflow | text bbox extends past its visual container | reduce font-size or line-break |
 | H3 | Text overlap | two `<text>` elements' bboxes intersect (tspans within one text excluded) | reposition or resize |
-| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px); OR text directly atop a complex image with no scrim | **(v2)** position-only escape: add a `<rect>` scrim under the text, or raise the offending text's font-size to ≥ 24px so the 3.0 threshold applies. Full color change is brand-locked → goto §1.1 escalation. |
+| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px); OR text directly atop a complex image with no scrim | position-only escape: add a `<rect>` scrim under the text, or raise the offending text's font-size to ≥ 24px so the 3.0 threshold applies. Full color change is brand-locked → goto §1.1 escalation. |
+| ~~H5~~ | Font-ramp drift | *covered by `svg_quality_checker.py` — see §0 prerequisites* | n/a (do not re-check) |
 | H6 | Element collision | rect/circle/path bboxes overlap with z-order violating semantics | open spacing |
 | H7 | Anchored element displaced | page number / header / footer covered, missing, or out of canvas | restore to anchor position |
 | H8 | Image rendering broken | `<image>` empty / broken-image / severe distortion | fix `href`, adjust `preserveAspectRatio`, add `no-crop` if face/data is cropped |
 | H9 | Missing key element | element required by `design_spec §IX` outline is absent from rendered slide | recreate from spec |
-
-*H5 (font-ramp drift) is covered by `svg_quality_checker.py` and intentionally omitted.*
 
 Detection order (run sequentially, do not parallelize within a single subagent):
 
@@ -53,7 +52,7 @@ H4           (readability)
 H8 → H9      (content)
 ```
 
-### §1.1 Brand-token contrast escalation *(new in v2)*
+### §1.1 Brand-token contrast escalation
 
 If H4 fires and the underlying color is a **brand token** (defined in `spec_lock.md`) — i.e., the violation will repeat on every page using that token — do **not** mark the page `needs_human`. Instead:
 
@@ -94,7 +93,7 @@ If a "violation" requires reinterpreting `design_spec.md` to fix → mark `needs
 
 ## §4 Iteration protocol
 
-### §4.0 Iteration 0 — PNG sanity check *(v2 — relaxed)*
+### §4.0 Iteration 0 — PNG sanity check
 
 Run before applying any rule:
 
@@ -102,14 +101,16 @@ Run before applying any rule:
 - PNG dimensions = 1280 × 720
 - PNG is **not** all-background (a histogram check: count of background-color pixels < 99% of total) — guards against blank/white-out renders only, **does not** filter sparse dark layouts
 
-Any check fails → status = `render_failed`, abort without scanning rules. The earlier "non-bg pixel ratio ≥ 5%" rule is **deprecated** — it false-fires on legitimate minimalist dark decks (verified empirically in v1 plumbing test).
+Any check fails → status = `render_failed`, abort without scanning rules.
 
 ### §4.1 Iteration loop
 
+The full loop is defined here but the **default budget is 1 iteration**. Multi-iteration runs require an explicit opt-in in the orchestrator prompt and roughly double render cost per added iteration.
+
 ```
-iteration 1: scan all Hard + Soft → fix → re-render → re-screenshot
-iteration 2: re-verify changed elements + scan for new Hard hits → fix → re-render
-iteration 3: report only, no further fix
+iteration 1: scan all Hard + Soft → fix → (re-render only if budget ≥ 2)
+iteration 2 (opt-in): re-verify changed elements + scan for new Hard hits → fix → re-render
+iteration 3 (opt-in): report only, no further fix
 ```
 
 Per-iteration fix caps:
@@ -120,8 +121,8 @@ Per-iteration fix caps:
 ### §4.2 Termination conditions
 
 - **Rollback trigger**: any iteration's fix introduces a **new Hard hit** that did not exist before → immediately `cp` the backup back over the SVG, status = `needs_human`, finding records "rolled back fix X — created Hard Y"
-- **Soft thrash trigger**: iteration 2's fix introduces a **new Soft hit** that did not exist before → stop, status = `needs_human` with note "fixes are competing"
-- **Clean exit**: iteration 1 ends with zero Hard hits and ≤ 1 Soft hit remaining → status = `ok` if no fixes were applied, `fixed` if any were applied
+- **Soft thrash trigger** (iteration budget ≥ 2 only): iteration 2's fix introduces a **new Soft hit** that did not exist before → stop, status = `needs_human` with note "fixes are competing"
+- **Clean exit**: iteration ends with zero Hard hits and ≤ 1 Soft hit remaining → status = `ok` if no fixes were applied, `fixed` if any were applied
 
 ### §4.3 Backup discipline
 
@@ -185,20 +186,32 @@ Each subagent writes exactly one file to `<project>/.review/<page>.json`:
 
 `needs_human_items` must include a `suggested_fix_summary` for every entry — never bare problem descriptions.
 
-## §6 Dispatch & messaging contract *(new in v2)*
+## §6 Dispatch & messaging contract
 
 This rubric is consumed by subagents spawned via the `visual-review` workflow. Mandatory dispatch invariants:
 
-### §6.1 Orchestrator → subagent
+### §6.1 Orchestrator → subagent (batched dispatch)
 
-- Spawn all per-page subagents in **one assistant message** (parallel `Agent` calls). Sequential dispatch breaks pipelining.
-- Each subagent prompt is **self-contained** — no prior conversation context. Inline the absolute paths for §0.1 inputs 1–7 explicitly. Do not assume the subagent knows the project root.
+The orchestrator partitions the N pages into `ceil(N/K)` batches of ≤ K pages each (default **K = 5**; configurable per run via the orchestrator prompt) and spawns one subagent per batch.
+
+- Spawn all batch subagents in **one assistant message** (parallel `Agent` calls). Sequential dispatch breaks pipelining.
+- Each subagent prompt is **self-contained** — no prior conversation context. Inline the absolute paths for §0.1 inputs 1–5 explicitly, plus the full `(svg_path, png_path, page_role)` list for that batch. Do not assume the subagent knows the project root.
 - `subagent_type: general-purpose`. Tool restrictions: Read, Edit, Bash (for `cp` backups), Write (for JSON output). MCP playwright is **not** required by subagents — orchestrator pre-renders PNGs.
 - `name` / `team_name` parameters may be unavailable from nested teammate context. Dispatch must remain functional with anonymous subagents — do not require named addressing.
 
+**Why batched, not per-page**: the rubric (~2.5K tokens), `design_spec.md` (~4–5K), and `spec_lock.md` (~1K) are identical inputs across all pages and do **not** share a prompt cache between sibling subagents. A 20-page deck with per-page dispatch re-reads ~150K tokens of fixed documents; batched dispatch with K=5 cuts that by ~75% while staying inside default parallel-subagent limits (~10). Batches also bound failure blast radius — one crashed subagent loses K pages, not the entire run.
+
+**Batch size guidance**:
+- `K = 5` (default) — balanced; safe for decks up to ~50 pages
+- `K = 3` — high-fidelity / small decks (≤ 12 pages); slightly higher parallelism
+- `K = 10` — token-sensitive / large decks (50+ pages); fewer subagents, larger blast radius per failure
+
+Larger K is **not** always better: subagent context fills with prior pages' SVG / PNG / findings as the batch progresses, and beyond ~10 pages context auto-compression starts dropping early findings. Keep K such that `K × (avg_svg_size + image_token_cost + report_size)` stays well under the subagent context budget.
+
 ### §6.2 Subagent → orchestrator
 
-- Subagent's **final action before going idle** must be `SendMessage(to=<lead>)` with the page's JSON path and a ≤150-word text summary of findings + actions. Going idle without messaging is a protocol violation.
+- Subagent's **final action before going idle** must be `SendMessage(to=<lead>)` listing one JSON path per processed page (e.g., `<project>/.review/<page>.json`) and a ≤150-word text summary covering all pages in the batch. Going idle without messaging — or messaging with a partial batch — is a protocol violation.
+- If the subagent aborts mid-batch (rule §4.2 rollback, tool error, etc.), it must still send the batch report covering both completed and aborted pages, with the aborted pages marked `needs_human` or `render_failed` as appropriate.
 
 ### §6.3 Orchestrator → main agent
 
