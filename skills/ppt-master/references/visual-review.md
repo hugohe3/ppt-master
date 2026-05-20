@@ -36,7 +36,7 @@ The subagent reads inputs 2–4 **once** at the start of its turn, then iterates
 | H1 | Out-of-bounds | element bbox falls outside `0,0,1280,720` | shrink or reposition into canvas |
 | H2 | Text overflow | text bbox extends past its visual container | reduce font-size or line-break |
 | H3 | Text overlap | two `<text>` elements' bboxes intersect (tspans within one text excluded) | reposition or resize |
-| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px); OR text directly atop a complex image with no scrim | position-only escape: add a `<rect>` scrim under the text, or raise the offending text's font-size to ≥ 24px so the 3.0 threshold applies. Full color change is brand-locked → goto §1.1 escalation. |
+| H4 | Readability | contrast < 4.5 (small text) / < 3.0 (font-size ≥ 24px); OR text directly atop a complex image with no scrim | if **neither** the foreground nor the background color is a brand token: position-only escape — add a `<rect>` scrim under the text, or raise the offending text's font-size to ≥ 24px so the 3.0 threshold applies. If **either** color is a brand token: do not edit the SVG → goto §1.1 escalation. |
 | ~~H5~~ | Font-ramp drift | *covered by `svg_quality_checker.py` — see §0 prerequisites* | n/a (do not re-check) |
 | H6 | Element collision | rect/circle/path bboxes overlap with z-order violating semantics | open spacing |
 | H7 | Anchored element displaced | page number / header / footer covered, missing, or out of canvas | restore to anchor position |
@@ -54,11 +54,11 @@ H8 → H9      (content)
 
 ### §1.1 Brand-token contrast escalation
 
-If H4 fires and the underlying color is a **brand token** (defined in `spec_lock.md`) — i.e., the violation will repeat on every page using that token — do **not** mark the page `needs_human`. Instead:
+If H4 fires and the foreground or background color is a **brand token** (defined in `spec_lock.md`) — i.e., the violation will repeat on every page using that token — do **not** touch the SVG. Brand decisions are §3 Don't-Touch; even position-only escapes (scrim insertion, font-size escalation) shift the page's visual weight in ways that should be a brand-level decision, not a per-page subagent decision. Instead:
 
-1. Apply the position-only escape if one is genuinely viable on this page (scrim or size escalation).
-2. Append the finding to `<project>/.review/brand_review.json` (append-only log; one entry per distinct token+context pair).
-3. In the page JSON, record the finding under `untouched_concerns` with `reason: "brand_token_aggregated"` so the page does **not** block on it.
+1. Record the finding in the page JSON under `needs_human_items` with `rule: "H4"`, the offending element selector, and `suggested_fix_summary` describing the brand-level options (e.g., "raise body-text token from `#6E7681` to `#8B949E` deck-wide" or "introduce a scrim style in the brand").
+2. Append the finding to `<project>/.review/brand_review.json` (append-only log; one entry per distinct token+context pair). The orchestrator aggregates and surfaces this to the main agent at the end of the run so the user can make one cross-deck decision instead of N per-page ones.
+3. The page's `status` is `needs_human` if H4 is the only Hard hit on the page; if other (non-brand) Hard hits were fixed, the page still finishes as `fixed` and the brand-token H4 entry sits in `needs_human_items` alongside.
 
 The aggregated brand review is the responsibility of the orchestrator at the end of the run, not the per-page subagent.
 
@@ -167,7 +167,7 @@ Each subagent writes exactly one file to `<project>/.review/<page>.json`:
     {
       "rule": "S1",
       "evidence": "...",
-      "reason": "soft-cap reached" | "brand_token_aggregated" | "ambiguous_design_intent"
+      "reason": "soft-cap reached" | "ambiguous_design_intent"
     }
   ],
   "needs_human_items": [
