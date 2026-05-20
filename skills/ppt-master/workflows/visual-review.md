@@ -10,14 +10,23 @@ description: Per-page rubric-based visual self-review via parallel subagents. Ru
 >
 > This workflow is **independent** — invokable in a fresh chat session with only `<project_path>` as input. No upstream conversation context required.
 
+## Positioning
+
+This is an **optional auxiliary loop**, not a default step in the main pipeline. The Executor (SKILL.md Step 6) is already single-AI / single-session / continuous-generation — visual consistency across pages is built into that path. This workflow exists to give models with weaker visual reasoning an explicit "render → re-look → optimize" loop they wouldn't otherwise have.
+
+Trade-off to set expectations on:
+
+- **Token cost is significant.** Each batch subagent re-reads the rubric + `design_spec.md` + `spec_lock.md` and processes K SVG+PNG pairs. For a 20-page deck with K=5, expect on the order of 100–150K additional input tokens on top of the main generation run.
+- **Marginal value scales inversely with the executing model's visual ability.** Strong-visual models (e.g., Claude 4.x) rarely produce the kind of letter-spacing / vertical-rhythm / collision drift this rubric targets; running visual-review on top of them mostly catches nothing. Weaker models benefit more — the rubric becomes a structured second pass that catches what they missed.
+
 ## When to Run
 
 - Executor (SKILL.md Step 6) has finished all pages
 - `svg_quality_checker.py` has passed
 - Post-processing (`finalize_svg.py`, `svg_to_pptx.py`) has **not** yet run
-- User wants to reduce manual review iterations before export
+- The executing model has known visual-quality gaps that a structured re-pass is likely to catch, **or** the deck is high-stakes enough that the extra token cost is worth a safety net
 
-Optional but recommended for any deck where layout precision matters. For decks containing data charts, run [`verify-charts`](./verify-charts.md) first — visual-review focuses on visual rhythm / collision / alignment, not chart coordinate math.
+For decks containing data charts, run [`verify-charts`](./verify-charts.md) first — visual-review focuses on visual rhythm / collision / alignment, not chart coordinate math.
 
 ## When NOT to Run
 
@@ -25,6 +34,7 @@ Optional but recommended for any deck where layout precision matters. For decks 
 - `svg_quality_checker.py` has not been run or has failed — fix static violations first
 - User has already applied annotations via `live-preview` workflow and is in a fixed-edit loop — describe changes directly, do not re-trigger rubric
 - The deck is < 3 pages and the user is reviewing manually anyway — manual review is faster
+- The executing model already has strong visual reasoning — the token cost is unlikely to be recouped in fixes; skip unless there's a specific reason to double-check
 
 ---
 
@@ -67,7 +77,7 @@ If any page comes back with `"all_background": true` in the JSON summary, that p
 
 ## Step 2 — Spawn the review team
 
-Create a team and dispatch one orchestrator agent. The orchestrator spawns one per-page review subagent **in parallel** (single message, N parallel `Agent` calls), aggregates their JSON outputs, and reports back.
+Create a team and dispatch one orchestrator agent. The orchestrator partitions the N pages into batches of ≤ K pages (default **K = 5**) and spawns one subagent per batch **in parallel** (single message, `ceil(N/K)` parallel `Agent` calls). Each batch subagent reads the fixed inputs (rubric + `design_spec.md` + `spec_lock.md`) **once**, then iterates over its assigned pages sequentially.
 
 ```text
 TeamCreate(team_name="visual-review-<project>", agent_type="orchestrator")
@@ -75,34 +85,21 @@ Agent(
   team_name="visual-review-<project>",
   subagent_type="general-purpose",
   name="orchestrator",
-  prompt=<orchestrator-prompt>,   # see template below
+  prompt=<orchestrator-prompt>,
 )
 ```
 
-### Orchestrator prompt template
-
-The orchestrator prompt must be self-contained. Required fields (all absolute paths):
+The orchestrator prompt must be self-contained and is the **single** place where dispatch shape, batch size, and forbid lists are stated — the rubric (`references/visual-review.md`) defines the contract those prompts must satisfy. Required fields (all absolute paths):
 
 - `<project_path>` — project root
-- Page list with role for each page (parse `<project>/design_spec.md` §IX outline; if §IX is absent, default every page to `content` and flag this in the final report)
+- Full page list with `page_role` per page (parse `<project>/design_spec.md` §IX outline; if §IX is absent, default every page to `content` and flag this in the final report)
+- Batch size `K` (default 5; raise to 10 for token-sensitive runs on large decks, lower to 3 for high-fidelity short decks — see rubric §6.1)
+- Iteration budget per page (default 1; 2 only for high-stakes / final-cut runs — see [Appendix: Iteration loop](#appendix-iteration-loop-opt-in))
 - Path to the rubric: `skills/ppt-master/references/visual-review.md`
-- Instruction: **dispatch all per-page subagents in a single message**
-- Instruction: after aggregation, `SendMessage(to="team-lead")` with results before going idle — orchestrator must **not** end its turn without sending the aggregate
+- Dispatch contract reference: rubric [§6](../references/visual-review.md#6-dispatch--messaging-contract) (batched parallel spawn, self-contained prompts, mandatory `SendMessage` on idle, anonymous-name tolerance)
+- Subagent forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, `animations.json`, `image_prompts.json`, or `images/`
 
-### Per-page subagent prompt template
-
-Composed by the orchestrator, one per page, also self-contained:
-
-- SVG path, PNG path, `page_role`
-- Path to rubric
-- Path to `design_spec.md` and `spec_lock.md` (read-only)
-- Output JSON path: `<project>/.review/<page>.json`
-- Backup directory: `<project>/.review/backup/`
-- Iteration budget: 1 by default (2 for high-stakes decks — opt in explicitly)
-- Explicit forbid list: do not edit any other page, `design_spec.md`, `spec_lock.md`, `animations.json`, `image_prompts.json`, or `images/`
-- Mandatory final action: `SendMessage(to=<orchestrator-name>)` with the JSON path + a ≤150-word summary before going idle
-
-See [`references/visual-review.md`](../references/visual-review.md) §6 for the full dispatch contract.
+**Host compatibility**: `TeamCreate` and `SendMessage` are Claude-Code-specific multi-agent primitives. On hosts without those primitives (Cursor, VS Code + Copilot, Codebuddy, etc.) the main agent processes batches sequentially — same partitioning, same per-batch prompts, no parallel dispatch. Token savings from shared fixed inputs still apply; wall-clock time grows roughly N/K-fold.
 
 ---
 
@@ -165,13 +162,13 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 
 ---
 
-## Appendix: Iteration loop (v2 behavior)
+## Appendix: Iteration loop (opt-in)
 
-This v1 workflow uses single-iteration review (one scan, fix, done). The full iteration loop per [`references/visual-review.md`](../references/visual-review.md) §4.1 supports:
+Default behavior is single-iteration review: one scan, fix in place, write the report. The full iteration loop in [`references/visual-review.md`](../references/visual-review.md) §4.1 supports:
 
 1. Iteration 1: scan + fix
 2. Re-render via `visual_review.py --pages <token>`
 3. Iteration 2: re-verify changed elements + scan for new Hard hits
 4. Rollback on any new Hard hit introduced by a fix
 
-To enable, pass `--iteration-budget 2` in the orchestrator prompt (currently advisory; the script itself does not enforce — subagent prompt must mention it explicitly). Reserve for final-cut runs.
+To enable, set iteration budget = 2 in the orchestrator prompt (this is a prompt-level instruction to subagents; neither `visual_review.py` nor the harness enforces it). Each added iteration roughly doubles render cost and triples token cost on the affected pages — reserve for final-cut runs only.
