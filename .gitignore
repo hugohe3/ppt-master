@@ -89,6 +89,18 @@ tramp
 test_output/
 temp_files/
 
+# Playwright (both MCP-side and visual-review script outputs)
+# MCP server auto-creates .playwright-mcp/ at CWD for snapshot/console logs
+.playwright-mcp/
+# Visual-review renderer writes per-project preview PNGs and the render lock
+projects/*/.preview/
+projects/*/.review/
+# Stray top-level screenshots created when MCP filename was a bare relative path
+# (the agreed convention is to always pass an absolute /tmp/... path)
+/probe-*.png
+/screenshot-*.png
+/page-*.png
+
 # Large media files (if any)
 *.psd
 *.ai
