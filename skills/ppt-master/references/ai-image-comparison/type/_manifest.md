@@ -10,61 +10,7 @@
 
 ---
 
-### Image 1: background.png
-
-| Attribute | Value |
-|---|---|
-| Purpose | Type comparison — background (atmospheric backdrop, no central subject) |
-| Type | background |
-| Aspect ratio | 16:9 |
-| Status | Generated |
-
-**Prompt**:
-
-Clean flat vector illustration, atmospheric backdrop composition, NO central subject — the entire canvas is uniform background-grade content suitable for SVG text overlay on top. Subject theme: abstract business growth atmosphere — soft geometric shapes suggesting upward motion (gentle ascending lines, scattered abstract office building silhouettes, faint upward arrows), evenly distributed across the canvas with no focal point. Color behavior is restrained-corporate: secondary off-white #F8F9FA dominates the entire field (about 75%) as a calm overlay-ready surface; primary deep navy #1E3A5F appears only as faint subtle silhouettes and abstract suggestions (about 22%, low contrast); accent gold #D4AF37 appears only as 2-3 tiny scattered highlight dots (under 3%). Designed to be a backdrop — center area must be visually empty for text. No embedded text, no HEX codes visible.
-
-**Alt Text**:
-> Background type: abstract business growth atmosphere with subtle navy silhouettes on off-white, designed for text overlay
-
----
-
-### Image 2: hero.png
-
-| Attribute | Value |
-|---|---|
-| Purpose | Type comparison — hero (single dominant subject 60-70% of canvas) |
-| Type | hero |
-| Aspect ratio | 16:9 |
-| Status | Generated |
-
-**Prompt**:
-
-Clean flat vector illustration, hero composition with a single dominant subject occupying 60-70% of the canvas. Subject: a confident team leader figure standing in a confident pose, representing team scaling — positioned slightly off-center, looking forward. Surrounding negative space is calm and uncluttered. Color behavior is restrained-corporate: secondary off-white #F8F9FA occupies 60-70% of the canvas as calm breathing space; primary deep navy #1E3A5F carries the main figure in confident solid blocks (clothing, structural shapes); accent gold #D4AF37 appears only in one or two small emphasis points totaling under 5%. No fourth color. 12-20% inner safe-zone padding. No embedded text, no HEX codes visible.
-
-**Alt Text**:
-> Hero type: single dominant team leader figure in deep navy on off-white with gold accent
-
----
-
-### Image 3: typography.png
-
-| Attribute | Value |
-|---|---|
-| Purpose | Type comparison — typography (large headline / number / single word as visual) |
-| Type | typography |
-| Aspect ratio | 4:3 |
-| Status | Generated |
-
-**Prompt**:
-
-Clean flat vector illustration, typography-as-visual composition where large stylized type IS the central subject. Subject: a large stylized '3X' growth metric occupying about 60% of the canvas as the dominant visual element, with a small abstract upward arrow integrated into the typography. Type is rendered as bold geometric shapes — not a font specimen but typography styled as illustration. Color behavior is restrained-corporate: secondary off-white #F8F9FA dominates the canvas as breathing space (about 60%); primary deep navy #1E3A5F carries the large '3X' typography in confident solid form (about 32%); accent gold #D4AF37 appears only on the integrated arrow or a single underline detail totaling under 8%. No fourth color. The '3X' is the only legible text — no other words or labels visible.
-
-**Alt Text**:
-> Typography type: large stylized 3X metric as central visual in deep navy on off-white with gold arrow accent
-
----
-
-### Image 4: infographic.png
+### Image 1: infographic.png
 
 | Attribute | Value |
 |---|---|
@@ -82,7 +28,7 @@ Clean flat vector illustration, infographic composition with 4 evenly distribute
 
 ---
 
-### Image 5: flowchart.png
+### Image 2: flowchart.png
 
 | Attribute | Value |
 |---|---|
@@ -100,7 +46,7 @@ Clean flat vector illustration, horizontal flowchart composition with 5 sequenti
 
 ---
 
-### Image 6: framework.png
+### Image 3: framework.png
 
 | Attribute | Value |
 |---|---|
@@ -118,7 +64,7 @@ Clean flat vector illustration, framework composition with one central node and 
 
 ---
 
-### Image 7: comparison.png
+### Image 4: comparison.png
 
 | Attribute | Value |
 |---|---|
@@ -136,7 +82,7 @@ Clean flat vector illustration, split-screen comparison composition with a clear
 
 ---
 
-### Image 8: timeline.png
+### Image 5: timeline.png
 
 | Attribute | Value |
 |---|---|
@@ -154,7 +100,7 @@ Clean flat vector illustration, horizontal timeline composition with a clear hor
 
 ---
 
-### Image 9: scene.png
+### Image 6: scene.png
 
 | Attribute | Value |
 |---|---|
@@ -172,25 +118,7 @@ Clean flat vector illustration, atmospheric scene composition with environmental
 
 ---
 
-### Image 10: portrait.png
-
-| Attribute | Value |
-|---|---|
-| Purpose | Type comparison — portrait (single person headshot/upper body, neutral background) |
-| Type | portrait |
-| Aspect ratio | 4:3 |
-| Status | Generated |
-
-**Prompt**:
-
-Clean flat vector illustration, portrait composition with a single stylized person centered in the frame, head-and-shoulders view, neutral or minimal background. Subject (under the 'team scaling' theme): a single stylized confident business founder portrait — calm thoughtful expression, professional contemporary styling, eyes positioned at the upper-third horizontal line, generous padding around the head. Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the background field around the figure (about 60%); primary deep navy #1E3A5F carries the figure's clothing, hair, and structural silhouette in flat solid fills (about 33%); accent gold #D4AF37 appears only as one small detail — a lapel pin, or a single warm light highlight on the cheek — totaling under 7%. No fourth color. Simplified stylized silhouette, no realistic face details, no embedded text or name labels. No HEX codes visible.
-
-**Alt Text**:
-> Portrait type: single stylized founder headshot centered with eyes at upper-third, deep navy figure on off-white field with gold detail
-
----
-
-### Image 11: matrix.png
+### Image 7: matrix.png
 
 | Attribute | Value |
 |---|---|
@@ -208,7 +136,7 @@ Clean flat vector illustration, 2×2 strategic matrix composition with two perpe
 
 ---
 
-### Image 12: cycle.png
+### Image 8: cycle.png
 
 | Attribute | Value |
 |---|---|
@@ -226,7 +154,7 @@ Clean flat vector illustration, closed-loop cycle composition with 4 step nodes 
 
 ---
 
-### Image 13: funnel.png
+### Image 9: funnel.png
 
 | Attribute | Value |
 |---|---|
@@ -244,7 +172,7 @@ Clean flat vector illustration, vertical funnel composition with 4 horizontal ba
 
 ---
 
-### Image 14: pyramid.png
+### Image 10: pyramid.png
 
 | Attribute | Value |
 |---|---|
@@ -262,7 +190,7 @@ Clean flat vector illustration, vertical pyramid composition with 4 horizontal s
 
 ---
 
-### Image 15: map.png
+### Image 11: map.png
 
 | Attribute | Value |
 |---|---|
