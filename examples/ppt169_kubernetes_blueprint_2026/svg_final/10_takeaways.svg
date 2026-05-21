@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47" />
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6" />
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47" />
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3" />
+    </pattern>
+    <radialGradient id="endVignette" cx="50%" cy="50%" r="75%">
+      <stop offset="50%" stop-color="#0E2A47" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5" />
+    </radialGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47" />
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.3" />
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.45" />
+    <rect width="1280" height="720" fill="url(#endVignette)" />
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">Three Things to Remember</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P10 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5" />
+  </g>
+
+  <g id="takeaway-1">
+    <text x="120" y="200" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FFB627" letter-spacing="3">01 / ONE SPINE</text>
+    <line x1="120" y1="215" x2="160" y2="215" stroke="#FFB627" stroke-width="2" />
+    <text x="120" y="270" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#F0F4F8"><tspan font-family="Consolas, 'Courier New', monospace" fill="#FFB627">kube-apiserver</tspan> mediates</text>
+    <text x="120" y="312" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#F0F4F8">every state change.</text>
+    <text font-family="Arial, 'Microsoft YaHei', sans-serif" fill="#A0B8D0" font-size="16" x="120" y="345">No component talks to another directly.</text><text font-family="Arial, 'Microsoft YaHei', sans-serif" fill="#A0B8D0" font-size="16" x="120" y="367">That constraint is what makes the system pluggable.</text></g>
+
+  <g id="takeaway-2">
+    <text x="120" y="408" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5BA3E0" letter-spacing="3">02 / ONE TRUTH</text>
+    <line x1="120" y1="423" x2="160" y2="423" stroke="#5BA3E0" stroke-width="2" />
+    <text x="120" y="478" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#F0F4F8"><tspan font-family="Consolas, 'Courier New', monospace" fill="#5BA3E0">etcd</tspan> is the only</text>
+    <text x="120" y="520" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#F0F4F8">persistent store.</text>
+    <text font-family="Arial, 'Microsoft YaHei', sans-serif" fill="#A0B8D0" font-size="16" x="120" y="553">Lose etcd, lose the cluster. Back it up.</text><text font-family="Arial, 'Microsoft YaHei', sans-serif" fill="#A0B8D0" font-size="16" x="120" y="575">Run an odd number. Raft does the rest.</text></g>
+
+  <g id="takeaway-3">
+    <text x="700" y="200" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#7FD99F" letter-spacing="3">03 / ONE LOOP</text>
+    <line x1="700" y1="215" x2="740" y2="215" stroke="#7FD99F" stroke-width="2" />
+    <text x="700" y="270" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#F0F4F8">Every controller is the</text>
+    <text x="700" y="312" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#F0F4F8">same loop, different scope.</text>
+    <text font-family="Arial, 'Microsoft YaHei', sans-serif" fill="#A0B8D0" font-size="16" x="700" y="345"><tspan><tspan font-family="Consolas, 'Courier New', monospace" fill="#7FD99F">watch → diff → act</tspan>.</tspan></text><text font-family="Arial, 'Microsoft YaHei', sans-serif" fill="#A0B8D0" font-size="16" x="700" y="367">Once you see that, you can read the source of any controller.</text></g>
+
+  <g id="reconcile-diagram">
+    <text x="700" y="408" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" letter-spacing="2">THE LOOP, DRAWN</text>
+    <line x1="700" y1="420" x2="1180" y2="420" stroke="#2D4A6B" stroke-width="0.5" />
+
+    <g id="loop-watch">
+      <circle cx="780" cy="500" r="40" fill="none" stroke="#5BA3E0" stroke-width="1.5" />
+      <text x="780" y="495" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5BA3E0" text-anchor="middle" font-weight="bold">watch</text>
+      <text x="780" y="510" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">desired</text>
+    </g>
+    <g id="loop-diff">
+      <circle cx="940" cy="500" r="40" fill="none" stroke="#FFB627" stroke-width="1.5" />
+      <text x="940" y="495" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" text-anchor="middle" font-weight="bold">diff</text>
+      <text x="940" y="510" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">vs actual</text>
+    </g>
+    <g id="loop-act">
+      <circle cx="1100" cy="500" r="40" fill="none" stroke="#7FD99F" stroke-width="1.5" />
+      <text x="1100" y="495" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#7FD99F" text-anchor="middle" font-weight="bold">act</text>
+      <text x="1100" y="510" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">converge</text>
+    </g>
+
+    <line x1="820" y1="500" x2="900" y2="500" stroke="#5BA3E0" stroke-width="1" />
+    <polygon points="900,500 893,496 893,504" fill="#5BA3E0" />
+    <line x1="980" y1="500" x2="1060" y2="500" stroke="#FFB627" stroke-width="1" />
+    <polygon points="1060,500 1053,496 1053,504" fill="#FFB627" />
+
+    <path d="M 1100,540 Q 1100,610 940,610 Q 780,610 780,540" fill="none" stroke="#7FD99F" stroke-width="1" stroke-dasharray="3 4" />
+    <polygon points="780,540 776,548 784,548" fill="#7FD99F" />
+    <text x="940" y="630" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#7FD99F" text-anchor="middle">repeat forever</text>
+  </g>
+
+  <g id="divider">
+    <line x1="660" y1="160" x2="660" y2="595" stroke="#2D4A6B" stroke-width="0.5" />
+  </g>
+
+  <g id="closing-mark">
+    <line x1="120" y1="620" x2="180" y2="620" stroke="#FFB627" stroke-width="1.5" />
+    <text x="120" y="643" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" letter-spacing="2">— END OF DRAWING SET —</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5" />
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 10 OF 10 · TAKEAWAYS</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">REV 1.0 · 2026-05-21</text>
+  </g>
+</svg>

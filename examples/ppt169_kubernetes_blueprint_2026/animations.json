@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.3 },
+    "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.18, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "animation": { "duration": 0.55, "stagger": 0.22 },
+      "groups": {
+        "title-block":    { "effect": "fade", "order": 1, "duration": 0.6 },
+        "metadata-block": { "effect": "fade", "order": 2, "duration": 0.45 },
+        "cp-node":        { "effect": "zoom", "order": 3, "duration": 0.7, "delay": 0.15 },
+        "worker-1":       { "effect": "wipe", "order": 4 },
+        "worker-2":       { "effect": "wipe", "order": 5 },
+        "worker-3":       { "effect": "wipe", "order": 6 }
+      }
+    },
+    "02_two_planes": {
+      "animation": { "duration": 0.4, "stagger": 0.14 },
+      "groups": {
+        "cp-apiserver": { "effect": "zoom", "order": 1, "duration": 0.55 },
+        "cp-etcd":      { "effect": "fade", "order": 2 },
+        "cp-sched":     { "effect": "fade", "order": 3 },
+        "cp-ctrl":      { "effect": "fade", "order": 4 },
+        "cp-cloud":     { "effect": "fade", "order": 5 },
+        "spine":        { "effect": "wipe", "order": 6, "duration": 0.55, "delay": 0.1 },
+        "dp-node-1":    { "effect": "wipe", "order": 7 },
+        "dp-node-2":    { "effect": "wipe", "order": 8 },
+        "dp-node-3":    { "effect": "wipe", "order": 9 }
+      }
+    },
+    "03_control_plane": {
+      "animation": { "duration": 0.4, "stagger": 0.15 },
+      "groups": {
+        "orbit-rings":      { "effect": "fade", "order": 1, "duration": 0.5 },
+        "hub-apiserver":    { "effect": "zoom", "order": 2, "duration": 0.6, "delay": 0.1 },
+        "spokes":           { "effect": "wipe", "order": 3, "duration": 0.6 },
+        "spoke-etcd":       { "effect": "fade", "order": 4 },
+        "spoke-scheduler":  { "effect": "fade", "order": 5 },
+        "spoke-controller": { "effect": "fade", "order": 6 },
+        "spoke-cloud":      { "effect": "fade", "order": 7 },
+        "spoke-kubectl":    { "effect": "fade", "order": 8 },
+        "annotations":      { "effect": "fade", "order": 9 },
+        "key-fact":         { "effect": "fade", "order": 10, "delay": 0.15 }
+      }
+    },
+    "04_worker_node": {
+      "animation": { "duration": 0.45, "stagger": 0.2 },
+      "groups": {
+        "isometric-node":  { "effect": "wipe", "order": 1, "duration": 0.65 },
+        "leader-kubelet":  { "effect": "fade", "order": 2 },
+        "leader-proxy":    { "effect": "fade", "order": 3 },
+        "leader-runtime":  { "effect": "fade", "order": 4 }
+      }
+    },
+    "05_pod_lifecycle": {
+      "transition": { "effect": "wipe", "duration": 0.4 },
+      "animation": { "duration": 0.5, "stagger": 0.22 },
+      "groups": {
+        "phase-track":      { "effect": "wipe", "order": 1, "duration": 0.7 },
+        "container-states": { "effect": "wipe", "order": 2, "duration": 0.6 },
+        "probes-strip":     { "effect": "fade", "order": 3 }
+      }
+    },
+    "06_service_types": {
+      "animation": { "duration": 0.4, "stagger": 0.16 },
+      "groups": {
+        "ruler-axis":          { "effect": "wipe", "order": 1, "duration": 0.5 },
+        "pillar-clusterip":    { "effect": "wipe", "order": 2 },
+        "pillar-nodeport":     { "effect": "wipe", "order": 3 },
+        "pillar-loadbalancer": { "effect": "zoom", "order": 4, "duration": 0.55, "delay": 0.1 },
+        "pillar-externalname": { "effect": "wipe", "order": 5 }
+      }
+    },
+    "07_storage": {
+      "animation": { "duration": 0.4, "stagger": 0.15 },
+      "groups": {
+        "stack-diagram":     { "effect": "wipe", "order": 1, "duration": 0.6 },
+        "provisioner-spine": { "effect": "fade", "order": 2 },
+        "provisioning-mode": { "effect": "fade", "order": 3 }
+      }
+    },
+    "08_ha_topology": {
+      "transition": { "effect": "wipe", "duration": 0.4 },
+      "animation": { "duration": 0.5, "stagger": 0.22 },
+      "groups": {
+        "stacked-topology":  { "effect": "wipe", "order": 1, "duration": 0.7 },
+        "external-topology": { "effect": "wipe", "order": 2, "duration": 0.7, "delay": 0.15 },
+        "ha-rules":          { "effect": "fade", "order": 3 }
+      }
+    },
+    "09_api_spine": {
+      "transition": { "effect": "wipe", "duration": 0.4 },
+      "animation": { "duration": 0.35, "stagger": 0.12 },
+      "groups": {
+        "lane-labels":        { "effect": "fade", "order": 1 },
+        "cli-kubectl":        { "effect": "fade", "order": 2 },
+        "cli-sched":          { "effect": "fade", "order": 3 },
+        "cli-ctrl":           { "effect": "fade", "order": 4 },
+        "cli-kubelet":        { "effect": "fade", "order": 5 },
+        "cli-proxy":          { "effect": "fade", "order": 6 },
+        "cli-cloud":          { "effect": "fade", "order": 7 },
+        "api-spine":          { "effect": "zoom", "order": 8, "duration": 0.6, "delay": 0.15 },
+        "persistence-column": { "effect": "fade", "order": 9 },
+        "watch-arrows":       { "effect": "wipe", "order": 10, "duration": 0.6 },
+        "bottom-takeaway":    { "effect": "fade", "order": 11, "delay": 0.15 }
+      }
+    },
+    "10_takeaways": {
+      "animation": { "duration": 0.5, "stagger": 0.28 },
+      "groups": {
+        "takeaway-1":         { "effect": "fade", "order": 1, "duration": 0.6 },
+        "takeaway-2":         { "effect": "fade", "order": 2, "duration": 0.6 },
+        "takeaway-3":         { "effect": "fade", "order": 3, "duration": 0.6 },
+        "reconcile-diagram":  { "effect": "wipe", "order": 4, "duration": 0.7, "delay": 0.15 },
+        "closing-mark":       { "effect": "fade", "order": 5, "delay": 0.2 }
+      }
+    }
+  }
+}

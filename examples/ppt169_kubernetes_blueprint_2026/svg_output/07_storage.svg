@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6"/>
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47"/>
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3"/>
+    </pattern>
+    <marker id="arrowCyan2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 Z" fill="#5BA3E0"/>
+    </marker>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47"/>
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.4"/>
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.6"/>
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">Storage: PV / PVC / StorageClass</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P07 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="78" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#6B85A3">PERSISTENT STORAGE IS A THREE-RESOURCE CONTRACT · POD CLAIM + ADMIN PROVISIONER</text>
+  </g>
+
+  <g id="stack-diagram">
+    <text x="80" y="120" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">CONSUMER STACK · TOP → BOTTOM</text>
+
+    <g id="layer-pod">
+      <rect x="80" y="140" width="500" height="60" fill="#0E2A47" stroke="#7FD99F" stroke-width="1.5"/>
+      <rect x="80" y="140" width="6" height="60" fill="#7FD99F"/>
+      <use data-icon="tabler-outline/cube" x="100" y="153" width="32" height="32" fill="#7FD99F" stroke-width="1.5"/>
+      <text x="145" y="167" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#7FD99F" font-weight="bold">Pod</text>
+      <text x="180" y="167" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— consumes storage via</text>
+      <text x="145" y="187" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8">volumes[].persistentVolumeClaim.claimName</text>
+    </g>
+
+    <line x1="180" y1="200" x2="180" y2="225" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrowCyan2)"/>
+    <text x="195" y="218" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#A0B8D0">claims</text>
+
+    <g id="layer-pvc">
+      <rect x="80" y="232" width="500" height="80" fill="#0E2A47" stroke="#FFB627" stroke-width="1.8"/>
+      <rect x="80" y="232" width="6" height="80" fill="#FFB627"/>
+      <use data-icon="tabler-outline/contract" x="100" y="248" width="30" height="30" fill="#FFB627" stroke-width="1.5"/>
+      <text x="145" y="263" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#FFB627" font-weight="bold">PersistentVolumeClaim</text>
+      <text x="362" y="263" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— pvc — namespaced</text>
+      <text x="145" y="284" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">request: size + accessModes + storageClassName</text>
+      <text x="145" y="301" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">like a Pod requesting CPU/RAM — but for disk</text>
+    </g>
+
+    <line x1="180" y1="312" x2="180" y2="337" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrowCyan2)"/>
+    <text x="195" y="330" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#A0B8D0">binds 1:1</text>
+
+    <g id="layer-pv">
+      <rect x="80" y="344" width="500" height="80" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5"/>
+      <rect x="80" y="344" width="6" height="80" fill="#5BA3E0"/>
+      <use data-icon="tabler-outline/device-floppy" x="100" y="360" width="30" height="30" fill="#5BA3E0" stroke-width="1.5"/>
+      <text x="145" y="375" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#5BA3E0" font-weight="bold">PersistentVolume</text>
+      <text x="316" y="375" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— pv — cluster-scoped</text>
+      <text x="145" y="396" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">a concrete storage resource (NFS / iSCSI / cloud disk)</text>
+      <text x="145" y="413" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">lifecycle independent of any Pod</text>
+    </g>
+
+    <line x1="180" y1="424" x2="180" y2="449" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arrowCyan2)"/>
+    <text x="195" y="442" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#A0B8D0">backing media</text>
+
+    <g id="layer-backend">
+      <rect x="80" y="456" width="500" height="60" fill="#0E2A47" stroke="#3E7AB8" stroke-width="1.2" stroke-dasharray="5 3"/>
+      <rect x="80" y="456" width="6" height="60" fill="#3E7AB8"/>
+      <use data-icon="tabler-outline/server" x="100" y="468" width="30" height="30" fill="#3E7AB8" stroke-width="1.5"/>
+      <text x="145" y="483" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#3E7AB8" font-weight="bold">Storage backend</text>
+      <text x="145" y="504" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">EBS · Persistent Disk · Ceph RBD · NFS · iSCSI · LonghornFS</text>
+    </g>
+  </g>
+
+  <g id="provisioner-spine">
+    <text x="640" y="120" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">PROVISIONER SPINE · ADMIN SIDE</text>
+    <rect x="640" y="140" width="540" height="376" fill="#1A3A5C" fill-opacity="0.3" stroke="#3E7AB8" stroke-width="0.6" stroke-dasharray="4 4"/>
+
+    <g id="storage-class">
+      <rect x="660" y="160" width="500" height="100" fill="#0E2A47" stroke="#FFB627" stroke-width="1.5"/>
+      <rect x="660" y="160" width="6" height="100" fill="#FFB627"/>
+      <use data-icon="tabler-outline/template" x="680" y="178" width="30" height="30" fill="#FFB627" stroke-width="1.5"/>
+      <text x="722" y="193" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#FFB627" font-weight="bold">StorageClass</text>
+      <text x="862" y="193" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— admin recipe</text>
+      <text x="722" y="214" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">defines: provisioner + parameters + reclaimPolicy</text>
+      <text x="722" y="231" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">PVC requests by name → PV is created on demand</text>
+      <text x="722" y="251" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">enables <tspan fill="#FFB627" font-weight="bold">dynamic provisioning</tspan> — no static PV setup</text>
+    </g>
+
+    <g id="csi-driver">
+      <rect x="660" y="280" width="500" height="80" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.3"/>
+      <rect x="660" y="280" width="6" height="80" fill="#5BA3E0"/>
+      <use data-icon="tabler-outline/plug-connected" x="680" y="296" width="30" height="30" fill="#5BA3E0" stroke-width="1.5"/>
+      <text x="722" y="311" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#5BA3E0" font-weight="bold">CSI Driver</text>
+      <text x="832" y="311" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— Container Storage Interface</text>
+      <text x="722" y="333" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">vendor plugin that creates / attaches / mounts volumes</text>
+      <text x="722" y="349" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">replaces deprecated in-tree storage plugins</text>
+    </g>
+
+    <g id="access-modes">
+      <text x="660" y="392" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627">▼ ACCESS MODES</text>
+      <rect x="660" y="402" width="120" height="40" fill="none" stroke="#5BA3E0" stroke-width="1"/>
+      <text x="720" y="423" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8" text-anchor="middle" font-weight="bold">RWO</text>
+      <text x="720" y="436" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">1 node, R/W</text>
+      <rect x="785" y="402" width="120" height="40" fill="none" stroke="#5BA3E0" stroke-width="1"/>
+      <text x="845" y="423" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8" text-anchor="middle" font-weight="bold">ROX</text>
+      <text x="845" y="436" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">many nodes, RO</text>
+      <rect x="910" y="402" width="120" height="40" fill="none" stroke="#5BA3E0" stroke-width="1"/>
+      <text x="970" y="423" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8" text-anchor="middle" font-weight="bold">RWX</text>
+      <text x="970" y="436" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">many nodes, R/W</text>
+      <rect x="1035" y="402" width="120" height="40" fill="none" stroke="#FFB627" stroke-width="1"/>
+      <text x="1095" y="423" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" text-anchor="middle" font-weight="bold">RWOP</text>
+      <text x="1095" y="436" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="9" fill="#A0B8D0" text-anchor="middle">1 pod, R/W</text>
+    </g>
+
+    <g id="reclaim">
+      <text x="660" y="476" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627">▼ RECLAIM POLICY</text>
+      <rect x="660" y="486" width="160" height="22" fill="none" stroke="#5BA3E0" stroke-width="1"/>
+      <text x="740" y="501" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8" text-anchor="middle">Retain</text>
+      <rect x="830" y="486" width="160" height="22" fill="none" stroke="#5BA3E0" stroke-width="1"/>
+      <text x="910" y="501" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8" text-anchor="middle">Delete (default)</text>
+      <rect x="1000" y="486" width="160" height="22" fill="none" stroke="#3E7AB8" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="1080" y="501" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="middle">Recycle ✗ deprecated</text>
+    </g>
+  </g>
+
+  <g id="provisioning-mode">
+    <rect x="80" y="540" width="1100" height="100" fill="#1A3A5C" fill-opacity="0.4" stroke="#5BA3E0" stroke-width="1"/>
+    <text x="100" y="565" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5BA3E0" font-weight="bold">PROVISIONING MODES</text>
+
+    <rect x="100" y="580" width="500" height="50" fill="none" stroke="#5BA3E0" stroke-width="0.8"/>
+    <text x="116" y="600" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#5BA3E0" font-weight="bold">STATIC</text>
+    <text x="180" y="600" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— admin creates PVs in advance</text>
+    <text x="116" y="618" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">PVC matches → controller binds 1:1 via ClaimRef</text>
+
+    <rect x="620" y="580" width="540" height="50" fill="none" stroke="#FFB627" stroke-width="1"/>
+    <text x="636" y="600" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#FFB627" font-weight="bold">DYNAMIC</text>
+    <text x="708" y="600" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— StorageClass provisions on demand</text>
+    <text x="636" y="618" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">requires <tspan font-family="Consolas, 'Courier New', monospace" fill="#FFB627">DefaultStorageClass</tspan> admission controller</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 07 OF 10 · STORAGE</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">SHEET 07 OF 10</text>
+  </g>
+</svg>

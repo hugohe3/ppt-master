@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6"/>
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47"/>
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3"/>
+    </pattern>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47"/>
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.4"/>
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.6"/>
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">Services: Four Ways to Be Reachable</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P06 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="78" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#6B85A3">A SERVICE EXPOSES A STABLE VIRTUAL ENDPOINT IN FRONT OF AN EVER-CHANGING SET OF PODS</text>
+  </g>
+
+  <g id="ruler-axis">
+    <line x1="80" y1="120" x2="1200" y2="120" stroke="#3E7AB8" stroke-width="0.5"/>
+    <text x="100" y="113" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#6B85A3">REACH AXIS  →</text>
+    <text x="1180" y="113" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627" text-anchor="end">PUBLIC ▶</text>
+  </g>
+
+  <g id="pillar-clusterip">
+    <line x1="180" y1="125" x2="180" y2="650" stroke="#5BA3E0" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.5"/>
+    <polygon points="180,125 175,135 185,135" fill="#5BA3E0"/>
+    <rect x="100" y="150" width="160" height="500" fill="#1A3A5C" fill-opacity="0.35" stroke="#5BA3E0" stroke-width="1.5"/>
+    <rect x="100" y="150" width="160" height="32" fill="#5BA3E0"/>
+    <text x="180" y="171" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#0E2A47" text-anchor="middle" font-weight="bold">TYPE 01 · DEFAULT</text>
+    <text x="180" y="208" font-family="Consolas, 'Courier New', monospace" font-size="17" fill="#F0F4F8" text-anchor="middle" font-weight="bold">ClusterIP</text>
+    <line x1="120" y1="222" x2="240" y2="222" stroke="#5BA3E0" stroke-width="0.6"/>
+    <text x="180" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">cluster-internal</text>
+    <text x="180" y="258" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">virtual IP only</text>
+    <line x1="120" y1="280" x2="240" y2="280" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="120" y="302" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Where</text>
+    <text x="120" y="320" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">Inside cluster</text>
+    <text x="120" y="336" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">Pod-to-Pod only</text>
+    <text x="120" y="372" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Mechanism</text>
+    <text x="120" y="390" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">kube-proxy rules</text>
+    <text x="120" y="406" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#A0B8D0">in Service CIDR</text>
+    <text x="120" y="442" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ DNS</text>
+    <text x="120" y="460" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#F0F4F8">&lt;svc&gt;.&lt;ns&gt;.svc</text>
+    <text x="120" y="475" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#A0B8D0">.cluster.local</text>
+    <text x="120" y="512" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Use when</text>
+    <text x="120" y="530" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">Backend services</text>
+    <text x="120" y="546" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">internal APIs</text>
+    <line x1="120" y1="580" x2="240" y2="580" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="180" y="610" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#5BA3E0" text-anchor="middle">DEFAULT</text>
+    <text x="180" y="624" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0" text-anchor="middle">90% of services</text>
+  </g>
+
+  <g id="pillar-nodeport">
+    <line x1="465" y1="125" x2="465" y2="650" stroke="#5BA3E0" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.5"/>
+    <polygon points="465,125 460,135 470,135" fill="#5BA3E0"/>
+    <rect x="385" y="150" width="160" height="500" fill="#1A3A5C" fill-opacity="0.35" stroke="#5BA3E0" stroke-width="1.5"/>
+    <rect x="385" y="150" width="160" height="32" fill="#5BA3E0"/>
+    <text x="465" y="171" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#0E2A47" text-anchor="middle" font-weight="bold">TYPE 02</text>
+    <text x="465" y="208" font-family="Consolas, 'Courier New', monospace" font-size="17" fill="#F0F4F8" text-anchor="middle" font-weight="bold">NodePort</text>
+    <line x1="405" y1="222" x2="525" y2="222" stroke="#5BA3E0" stroke-width="0.6"/>
+    <text x="465" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">static port on</text>
+    <text x="465" y="258" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">every node IP</text>
+    <line x1="405" y1="280" x2="525" y2="280" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="405" y="302" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Where</text>
+    <text x="405" y="320" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">External via</text>
+    <text x="405" y="336" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">NodeIP : NodePort</text>
+    <text x="405" y="372" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Port range</text>
+    <text x="405" y="390" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#FFB627" font-weight="bold">30000-32767</text>
+    <text x="405" y="406" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">default range</text>
+    <text x="405" y="442" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Stack</text>
+    <text x="405" y="460" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">opens on all nodes</text>
+    <text x="405" y="476" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">→ ClusterIP → Pod</text>
+    <text x="405" y="512" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Use when</text>
+    <text x="405" y="530" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">No cloud LB</text>
+    <text x="405" y="546" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">dev / on-prem</text>
+    <line x1="405" y1="580" x2="525" y2="580" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="465" y="610" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#5BA3E0" text-anchor="middle">L4 EXPOSURE</text>
+    <text x="465" y="624" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0" text-anchor="middle">no LB needed</text>
+  </g>
+
+  <g id="pillar-loadbalancer">
+    <line x1="750" y1="125" x2="750" y2="650" stroke="#FFB627" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.6"/>
+    <polygon points="750,125 745,135 755,135" fill="#FFB627"/>
+    <rect x="670" y="150" width="160" height="500" fill="#1A3A5C" fill-opacity="0.35" stroke="#FFB627" stroke-width="2"/>
+    <rect x="670" y="150" width="160" height="32" fill="#FFB627"/>
+    <text x="750" y="171" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#0E2A47" text-anchor="middle" font-weight="bold">TYPE 03 · CLOUD</text>
+    <text x="750" y="208" font-family="Consolas, 'Courier New', monospace" font-size="15" fill="#FFB627" text-anchor="middle" font-weight="bold">LoadBalancer</text>
+    <line x1="690" y1="222" x2="810" y2="222" stroke="#FFB627" stroke-width="0.6"/>
+    <text x="750" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">cloud LB with</text>
+    <text x="750" y="258" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">external IP</text>
+    <line x1="690" y1="280" x2="810" y2="280" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="690" y="302" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Where</text>
+    <text x="690" y="320" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">Public Internet</text>
+    <text x="690" y="336" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">cloud LB DNS</text>
+    <text x="690" y="372" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Provisioned by</text>
+    <text x="690" y="390" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8">cloud-ctrl-mgr</text>
+    <text x="690" y="406" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">AWS ELB · GCP LB</text>
+    <text x="690" y="442" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Stack</text>
+    <text x="690" y="460" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">LB → NodePort</text>
+    <text x="690" y="476" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">→ ClusterIP → Pod</text>
+    <text x="690" y="512" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Use when</text>
+    <text x="690" y="530" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">Public-facing app</text>
+    <text x="690" y="546" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">requires cloud</text>
+    <line x1="690" y1="580" x2="810" y2="580" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="750" y="610" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#FFB627" text-anchor="middle">▲ PRODUCTION</text>
+    <text x="750" y="624" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#F0F4F8" text-anchor="middle">canonical pattern</text>
+  </g>
+
+  <g id="pillar-externalname">
+    <line x1="1035" y1="125" x2="1035" y2="650" stroke="#3E7AB8" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.5"/>
+    <polygon points="1035,125 1030,135 1040,135" fill="#3E7AB8"/>
+    <rect x="955" y="150" width="160" height="500" fill="#1A3A5C" fill-opacity="0.35" stroke="#3E7AB8" stroke-width="1.3" stroke-dasharray="5 3"/>
+    <rect x="955" y="150" width="160" height="32" fill="#3E7AB8"/>
+    <text x="1035" y="171" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#0E2A47" text-anchor="middle" font-weight="bold">TYPE 04 · DNS ONLY</text>
+    <text x="1035" y="208" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#F0F4F8" text-anchor="middle" font-weight="bold">ExternalName</text>
+    <line x1="975" y1="222" x2="1095" y2="222" stroke="#3E7AB8" stroke-width="0.6"/>
+    <text x="1035" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">CNAME alias to</text>
+    <text x="1035" y="258" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">external DNS</text>
+    <line x1="975" y1="280" x2="1095" y2="280" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="975" y="302" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Where</text>
+    <text x="975" y="320" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">Outside cluster</text>
+    <text x="975" y="336" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">via DNS resolution</text>
+    <text x="975" y="372" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Mechanism</text>
+    <text x="975" y="390" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">DNS CNAME record</text>
+    <text x="975" y="406" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">no kube-proxy</text>
+    <text x="975" y="442" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Selector</text>
+    <text x="975" y="460" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">none required</text>
+    <text x="975" y="476" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">no backing Pods</text>
+    <text x="975" y="512" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">▼ Use when</text>
+    <text x="975" y="530" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8">External DB / API</text>
+    <text x="975" y="546" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">migration shim</text>
+    <line x1="975" y1="580" x2="1095" y2="580" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="1035" y="610" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#3E7AB8" text-anchor="middle">NO PROXYING</text>
+    <text x="1035" y="624" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0" text-anchor="middle">edge case only</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 06 OF 10 · SERVICE TYPES</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">SHEET 06 OF 10</text>
+  </g>
+</svg>

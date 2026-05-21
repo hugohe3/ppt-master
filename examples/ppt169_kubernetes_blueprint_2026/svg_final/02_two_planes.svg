@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47" />
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6" />
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47" />
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3" />
+    </pattern>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47" />
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.4" />
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.6" />
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">Two Planes, One Spine</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P02 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5" />
+    <text x="60" y="78" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#6B85A3">EVERY DECISION GOES THROUGH <tspan fill="#FFB627" font-family="Consolas, 'Courier New', monospace">kube-apiserver</tspan></text>
+  </g>
+
+  <g id="cp-zone-decor">
+    <rect x="80" y="105" width="1120" height="240" fill="#1A3A5C" fill-opacity="0.35" stroke="#3E7AB8" stroke-width="0.6" stroke-dasharray="4 4" />
+    <text x="100" y="130" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#FFB627" letter-spacing="2">[ CONTROL PLANE ]</text>
+    <text x="100" y="148" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#A0B8D0">Global decision-making · desired-state holder</text>
+  </g>
+
+  <g id="cp-apiserver">
+      <rect x="540" y="180" width="200" height="120" fill="#0E2A47" stroke="#FFB627" stroke-width="2" />
+      <rect x="540" y="180" width="200" height="22" fill="#FFB627" />
+      <text x="640" y="196" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#0E2A47" text-anchor="middle" font-weight="bold">▲ HUB</text>
+      <text x="640" y="234" font-family="Consolas, 'Courier New', monospace" font-size="15" fill="#FFB627" text-anchor="middle" font-weight="bold">kube-apiserver</text>
+      <text x="640" y="258" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">REST + admission</text>
+      <text x="640" y="276" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">+ validation gateway</text>
+      <text x="640" y="294" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0" text-anchor="middle">↕ talks to etcd only</text>
+    </g>
+
+    <g id="cp-etcd">
+      <rect x="120" y="195" width="160" height="90" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+      <text x="200" y="220" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5BA3E0" text-anchor="middle" font-weight="bold">etcd</text>
+      <text x="200" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">key-value store</text>
+      <text x="200" y="260" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">Raft · quorum</text>
+      <text x="200" y="276" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#6B85A3" text-anchor="middle">3 or 5 members</text>
+    </g>
+
+    <g id="cp-sched">
+      <rect x="320" y="195" width="180" height="90" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+      <text x="410" y="220" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5BA3E0" text-anchor="middle" font-weight="bold">kube-scheduler</text>
+      <text x="410" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">filter → score → bind</text>
+      <text x="410" y="260" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">picks node per Pod</text>
+    </g>
+
+    <g id="cp-ctrl">
+      <rect x="780" y="195" width="200" height="90" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+      <text x="880" y="220" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#5BA3E0" text-anchor="middle" font-weight="bold">controller-manager</text>
+      <text x="880" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">watch · diff · act</text>
+      <text x="880" y="260" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">N reconcile loops</text>
+    </g>
+
+    <g id="cp-cloud">
+      <rect x="1020" y="195" width="160" height="90" fill="#0E2A47" stroke="#3E7AB8" stroke-width="1.5" stroke-dasharray="4 3" />
+      <text x="1100" y="220" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#3E7AB8" text-anchor="middle" font-weight="bold">cloud-ctrl-mgr</text>
+      <text x="1100" y="244" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">cloud only</text>
+      <text x="1100" y="260" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">LB · routes · nodes</text>
+      <text x="1100" y="277" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#6B85A3" text-anchor="middle">optional</text>
+    </g>
+
+  <g id="cp-zone-decor-arrows">
+    <path d="M 260,285 Q 260,318 420,318 Q 580,318 580,290" fill="none" stroke="#FFB627" stroke-width="1.2"/>
+    <polygon points="580,290 575,300 585,300" fill="#FFB627"/>
+    <line x1="740" y1="240" x2="780" y2="240" stroke="#FFB627" stroke-width="1.2" />
+    <line x1="980" y1="240" x2="1020" y2="240" stroke="#3E7AB8" stroke-width="1" stroke-dasharray="3 3" />
+  </g>
+
+  <g id="spine">
+    <line x1="640" y1="345" x2="640" y2="415" stroke="#FFB627" stroke-width="2" />
+    <polygon points="640,415 634,405 646,405" fill="#FFB627" />
+    <polygon points="640,345 634,355 646,355" fill="#FFB627" />
+    <rect x="555" y="368" width="170" height="22" fill="#0E2A47" />
+    <text x="640" y="384" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#FFB627" text-anchor="middle">API-MEDIATED</text>
+  </g>
+
+  <g id="dp-zone-decor">
+    <rect x="80" y="415" width="1120" height="220" fill="#1A3A5C" fill-opacity="0.35" stroke="#3E7AB8" stroke-width="0.6" stroke-dasharray="4 4" />
+    <text x="100" y="440" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#5BA3E0" letter-spacing="2">[ DATA PLANE ]</text>
+    <text x="100" y="458" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#A0B8D0">Pod execution · workload runtime</text>
+    <line x1="640" y1="415" x2="640" y2="445" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" opacity="0.5" />
+    <line x1="270" y1="445" x2="640" y2="445" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" opacity="0.5" />
+    <line x1="640" y1="445" x2="1010" y2="445" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" opacity="0.5" />
+    <line x1="270" y1="445" x2="270" y2="490" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" opacity="0.5" />
+    <line x1="640" y1="445" x2="640" y2="490" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" opacity="0.5" />
+    <line x1="1010" y1="445" x2="1010" y2="490" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 3" opacity="0.5" />
+  </g>
+
+  <g id="dp-node-1">
+      <polygon points="270,490 360,535 360,605 270,650 180,605 180,535" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+      <line x1="270" y1="490" x2="270" y2="570" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="270" y1="570" x2="180" y2="535" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="270" y1="570" x2="360" y2="535" stroke="#5BA3E0" stroke-width="1" />
+      <rect x="230" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <rect x="259" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <rect x="288" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <text x="270" y="675" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#A0B8D0" text-anchor="middle">worker-node-01</text>
+    </g>
+
+    <g id="dp-node-2">
+      <polygon points="640,490 730,535 730,605 640,650 550,605 550,535" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+      <line x1="640" y1="490" x2="640" y2="570" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="640" y1="570" x2="550" y2="535" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="640" y1="570" x2="730" y2="535" stroke="#5BA3E0" stroke-width="1" />
+      <rect x="600" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <rect x="629" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <rect x="658" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <text x="640" y="675" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#A0B8D0" text-anchor="middle">worker-node-02</text>
+    </g>
+
+    <g id="dp-node-3">
+      <polygon points="1010,490 1100,535 1100,605 1010,650 920,605 920,535" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+      <line x1="1010" y1="490" x2="1010" y2="570" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="1010" y1="570" x2="920" y2="535" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="1010" y1="570" x2="1100" y2="535" stroke="#5BA3E0" stroke-width="1" />
+      <rect x="970" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <rect x="999" y="595" width="22" height="14" fill="none" stroke="#7FD99F" stroke-width="1" />
+      <text x="1010" y="675" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#A0B8D0" text-anchor="middle">worker-node-03</text>
+    </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5" />
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 02 OF 10 · TOPOLOGY OVERVIEW</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">SHEET 02 OF 10</text>
+  </g>
+</svg>
