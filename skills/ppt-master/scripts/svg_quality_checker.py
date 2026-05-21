@@ -271,6 +271,9 @@ class SVGQualityChecker:
                 # 7. Check object-level animation anchor quality.
                 self._check_animation_group_ids(content, result)
 
+                # 7b. Check <pattern> elements declare a PPTX preset.
+                self._check_pattern_fills(content, result)
+
                 # 8. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
                 #    mode to avoid noise.
@@ -614,6 +617,68 @@ class SVGQualityChecker:
                 result['warnings'].append(
                     f"Top-level visible <g> #{index} has no id; "
                     "object-level animation config cannot reference it"
+                )
+
+    # OOXML ST_PresetPatternVal enum — anything outside this set produces a
+    # PPTX schema violation ("PowerPoint found a problem with the content").
+    _OOXML_PATTERN_PRESETS = frozenset({
+        'pct5', 'pct10', 'pct20', 'pct25', 'pct30', 'pct40', 'pct50', 'pct60',
+        'pct70', 'pct75', 'pct80', 'pct90',
+        'horz', 'vert', 'ltHorz', 'ltVert', 'dkHorz', 'dkVert',
+        'narHorz', 'narVert', 'dashHorz', 'dashVert',
+        'cross', 'dnDiag', 'upDiag', 'ltDnDiag', 'ltUpDiag', 'dkDnDiag',
+        'dkUpDiag', 'wdDnDiag', 'wdUpDiag',
+        'dashDnDiag', 'dashUpDiag', 'diagCross',
+        'smCheck', 'lgCheck', 'smGrid', 'lgGrid', 'dotGrid', 'smConfetti',
+        'lgConfetti', 'horzBrick', 'diagBrick', 'solidDmnd', 'openDmnd',
+        'dotDmnd', 'plaid', 'sphere', 'weave', 'wave', 'trellis', 'zigZag',
+        'divot', 'shingle',
+    })
+
+    def _check_pattern_fills(self, content: str, result: Dict):
+        """Audit <pattern> defs that drive PPTX <a:pattFill> output.
+
+        svg_to_pptx maps <pattern fill> to native <a:pattFill prst="...">. The
+        preset name comes from `data-pptx-pattern` (e.g. `lgGrid` / `smGrid` /
+        `dkUpDiag`). Two failure modes worth catching pre-export:
+
+        1. Missing annotation → converter silently falls back to `ltUpDiag`
+           (diagonal stripes) and picks `bg = #FFFFFF` when the pattern has
+           no child <rect>, turning a hand-authored grid into white-on-stripes
+           in PPTX.
+        2. Invalid preset name → PPTX schema rejects the file; PowerPoint
+           opens it with "needs to be repaired". OOXML
+           `ST_PresetPatternVal` is a closed enum — only the names in
+           `_OOXML_PATTERN_PRESETS` are legal. Inventing `ltGrid` (no such
+           value) is the canonical mistake; the only grids are `smGrid` /
+           `lgGrid` / `dotGrid`.
+        """
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        for pattern in root.iter(f'{{{SVG_NS}}}pattern'):
+            pat_id = pattern.get('id', '<unnamed>')
+            prst = pattern.get('data-pptx-pattern')
+            if not prst:
+                result['warnings'].append(
+                    f"<pattern id=\"{pat_id}\"> has no data-pptx-pattern attribute — "
+                    "PPTX export will fall back to `ltUpDiag` (diagonal stripes), "
+                    "not your custom geometry. Add data-pptx-pattern=\"lgGrid\" / "
+                    "\"smGrid\" / etc. plus a <rect fill=\"<bg>\"/> child so the "
+                    "preset and bg color match your design."
+                )
+                continue
+            if prst not in self._OOXML_PATTERN_PRESETS:
+                result['errors'].append(
+                    f"<pattern id=\"{pat_id}\"> uses data-pptx-pattern=\"{prst}\" "
+                    "which is not in OOXML ST_PresetPatternVal — exported PPTX "
+                    "will fail schema validation ('needs to be repaired'). "
+                    "Use one of: smGrid / lgGrid / dotGrid (grids), "
+                    "ltUpDiag / dkUpDiag / cross / diagCross / weave / plaid / "
+                    "horzBrick (others); full enum in svg_quality_checker.py "
+                    "_OOXML_PATTERN_PRESETS."
                 )
 
     def _get_spec_lock(self, svg_path: Path):
