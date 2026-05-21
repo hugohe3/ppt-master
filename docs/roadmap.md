@@ -35,6 +35,7 @@ The past two months' structural capability growth. Single flags / incremental po
 - **AI image `hero_page` dual-track** — local insert + full-canvas hero image coexist
 - **Brand identity preset subsystem** ([`workflows/create-brand.md`](../skills/ppt-master/workflows/create-brand.md)) — extract and reuse brand palette / typography / logo / voice
 - **Visual self-review workflow** ([`workflows/visual-review.md`](../skills/ppt-master/workflows/visual-review.md)) — rubric-based per-page check of AI-generated SVGs
+- **AI image: Type concept boundary clarification** — Type is now narrowed to "the internal geometric skeleton of a local infographic block" (11 real skeletons); the four pseudo-types (hero / background / portrait / typography) fold back into `page_role: hero_page` plus four composition primitives (single-subject / portrait / typographic / atmospheric); hero_page text layering rule (visual keywords embedded, editable text via SVG overlay)
 
 ---
 
@@ -42,15 +43,7 @@ The past two months' structural capability growth. Single flags / incremental po
 
 Strong rationale, work in progress.
 
-### 1. AI image: Type de-bloat
-
-There are currently 15 types (hero / background / portrait / typography / matrix / cycle / funnel / pyramid / map / scene / infographic / metaphor / flowchart / comparison / framework, etc.) mixing "internal composition" and "PPT role" — hard for the AI to pick correctly.
-
-Plan: collapse to ~6 core types (infographic / scene / flowchart / comparison / framework / timeline); hero / background / portrait / typography move into the `page_role` dimension; matrix / cycle / funnel / pyramid become framework sub-types; map becomes a scene sub-type.
-
-Large blast radius (13 type files + manifest schema), will land in stages.
-
-### 2. Capability-backing example decks (Style demo P0)
+### 1. Capability-backing example decks (Style demo P0)
 
 As the community enters its growth phase, example decks shift from "show visual contrast" to "prove the capability bar" — making it obvious why Gamma / Manus-style tools can't replace PPT Master.
 
