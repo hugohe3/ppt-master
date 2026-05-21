@@ -36,6 +36,7 @@ The past two months' structural capability growth. Single flags / incremental po
 - **Brand identity preset subsystem** ([`workflows/create-brand.md`](../skills/ppt-master/workflows/create-brand.md)) — extract and reuse brand palette / typography / logo / voice
 - **Visual self-review workflow** ([`workflows/visual-review.md`](../skills/ppt-master/workflows/visual-review.md)) — rubric-based per-page check of AI-generated SVGs
 - **AI image: Type concept boundary clarification** — Type is now narrowed to "the internal geometric skeleton of a local infographic block" (11 real skeletons); the four pseudo-types (hero / background / portrait / typography) fold back into `page_role: hero_page` plus four composition primitives (single-subject / portrait / typographic / atmospheric); hero_page text layering rule (visual keywords embedded, editable text via SVG overlay)
+- **Brutalist AI newspaper example deck shipped** ([`examples/ppt169_brutalist_ai_newspaper_2026/`](../examples/ppt169_brutalist_ai_newspaper_2026/)) — first of the three P0 capability-backing demos: wall-to-wall small type + irregular columns + halftone monochrome + single-spot red + real native shapes; 10-page editorial annual report stressing text-position precision and cross-page consistency
 
 ---
 
@@ -50,7 +51,7 @@ As the community enters its growth phase, example decks shift from "show visual 
 P0 three picks each stress-test a core capability:
 
 - **Dashboard / data-dense report** — stress-tests real native shapes + complex chart structure. A page with 6-10 charts is where shape-vs-Excel-native paths diverge the most
-- **Brutalist newsprint / extreme information density** — stress-tests text position precision + cross-page consistency. Wall-to-wall small type with irregular columns only survives later editing because shapes are real
+- **Brutalist newsprint / extreme information density** — stress-tests text position precision + cross-page consistency. Wall-to-wall small type with irregular columns only survives later editing because shapes are real (shipped → [`examples/ppt169_brutalist_ai_newspaper_2026/`](../examples/ppt169_brutalist_ai_newspaper_2026/))
 - **Blueprint / isometric technical drawing** — stress-tests geometric shape generalization + chart structure extensibility. Whitepaper / product architecture / industrial design scenarios
 
 ---
