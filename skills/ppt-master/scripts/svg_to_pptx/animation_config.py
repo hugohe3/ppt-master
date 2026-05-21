@@ -126,7 +126,7 @@ def load_animation_config(project_path: Path, config_path: str | None = None) ->
 
 
 def _valid_animation_effect(effect: str) -> bool:
-    return effect == 'none' or effect in ANIMATIONS or effect in ('mixed', 'random')
+    return effect == 'none' or effect in ANIMATIONS or effect in ('auto', 'mixed', 'random')
 
 
 def _valid_transition_effect(effect: str) -> bool:

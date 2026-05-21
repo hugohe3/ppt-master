@@ -251,7 +251,7 @@ Wrap logically related elements in top-level `<g id="...">` groups. Produces Pow
 
 **Animation-ready rule**: direct children of `<svg>` should be semantic groups, not raw drawing atoms. Aim for **3–8 top-level content `<g id>` groups per slide** (the 3–8 budget excludes page chrome — see below); each content group becomes one entrance step under the chosen `--animation-trigger` mode (one click in `on-click`, one cascade slot in `after-previous`, parallel in `with-previous`).
 
-**Chrome groups are excluded automatically.** The exporter treats top-level groups whose id contains chrome tokens as page chrome and skips them in the animation sequence — they appear together with the slide. Tokens (matched against id after splitting on `-` / `_`): `background`, `bg`, `decoration` / `decorations` / `decor`, `header`, `footer`, `chrome`, `watermark`, `pagenumber` / `pagenum` / `page-number`. So `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">` all skip animation while keeping their `<g>` wrapper for editing/grouping. Use these naming conventions for chrome — do **not** strip the `<g>` wrapper.
+**Chrome groups are excluded automatically.** The exporter treats top-level groups whose id contains chrome tokens as page chrome and skips them in the animation sequence — they appear together with the slide. Tokens (matched against id after splitting on `-` / `_`): `background`, `bg`, `decoration` / `decorations` / `decor`, `header`, `footer`, `chrome`, `watermark`, `pagenumber` / `pagenum` / `page-number`, `nav`, `logo`, `rule`. So `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">` all skip animation while keeping their `<g>` wrapper for editing/grouping. Use these naming conventions for chrome — do **not** strip the `<g>` wrapper.
 
 **What to group**:
 
@@ -312,7 +312,7 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 **Optional animation flags** (only when the user asks):
 - `-t <effect>` — page transition (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`; default `fade`)
-- `-a <effect>` — per-element entrance animation (`fade` / `mixed` / `random` / one of 22 named effects / `none`; default `mixed`). Anchors on top-level `<g id="...">` groups.
+- `-a <effect>` — per-element entrance animation (`fade` / `auto` / `mixed` / `random` / one of 22 named effects / `none`; default `auto`, maps effect from group id — image-like ids cycle zoom/dissolve/circle/box/diamond/wheel, other matches map to a single effect, unmatched ids cycle fade/wipe/fly/zoom). Anchors on top-level `<g id="...">` groups.
 - `--animation-trigger {on-click,with-previous,after-previous}` — Start mode matching PowerPoint's animation-pane Start dropdown. Default `after-previous` (cascade on slide entry; pace via `--animation-stagger <seconds>`); `on-click` advances per click; `with-previous` plays all groups together.
 - `--animation-config <path>` — optional object-level animation sidecar. Default: `<project>/animations.json` when present.
 - `--auto-advance <seconds>` — kiosk-style auto-play

@@ -127,8 +127,9 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `stretch` | Stretch entrance |
 | `expand` | Expand entrance |
 | `swivel` | Swivel entrance |
-| `mixed` | Deterministic varied effects across animated groups |
-| `random` | Random effect per animated group |
+| `auto` | Map effect from group id (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (hero/figure-/image/img-/kpi) cycle zoom/dissolve/circle/box/diamond/wheel for visual variation; unmatched ids cycle fade/wipe/fly/zoom |
+| `mixed` | Legacy 16-effect cycle by group order (first group fades, rest cycle the larger pool) |
+| `random` | Random effect per animated group, sampled from the legacy pool |
 
 **Start modes**:
 
@@ -152,7 +153,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `animation.duration` | Slide-specific default object entrance duration |
 | `animation.stagger` | Slide-specific delay between object entrances |
 | `animation.trigger` | Slide-specific start mode |
-| `groups.<id>.effect` | Object-specific entrance effect, `mixed`, `random`, or `none` |
+| `groups.<id>.effect` | Object-specific entrance effect, `auto`, `mixed`, `random`, or `none` |
 | `order` | Animation order only; does not change SVG layer order |
 | `delay` | Extra seconds before this group starts in `after-previous` mode |
 | `duration` | Per-group entrance duration in seconds; vary when semantic weight or pacing calls for it |

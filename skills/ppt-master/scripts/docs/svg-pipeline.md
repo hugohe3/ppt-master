@@ -79,7 +79,8 @@ Behavior:
 - Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
 - `on-click` is for live presentations only; recorded narration rejects it because the tool does not generate object-level click timings
 - Flat SVG roots without top-level groups fall back to at most 8 visible primitives; beyond that, animation is skipped on the slide
-- `mixed` is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a curated visible-effect pool across the whole deck; `random` samples from that same pool
+- `auto` (default) maps effect from the group's SVG id: information-dense elements get a single stable effect (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (hero/figure-/image/img-/kpi) cycle through a richer visual pool (zoom/dissolve/circle/box/diamond/wheel) so multiple images vary across the deck; unmatched ids cycle through a fade/wipe/fly/zoom fallback pool
+- `mixed` (legacy) is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a larger 16-effect pool across the whole deck; `random` samples from that same legacy pool
 - `--animation-duration` controls per-element entrance length (default `0.4`); `--animation-stagger` adds gap between elements in `after-previous` mode (default `0.5`)
 - Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`
 

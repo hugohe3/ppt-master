@@ -20,8 +20,17 @@ Supported entrance animations (per-element):
 
 Animation modes used by the builder:
     - single effect name (one of the above) — apply to every element
-    - 'mixed'  — first element fades, the rest cycle through a curated visible pool
-    - 'random' — pick a random effect from the same visible pool per element
+    - 'auto'   — pick effect from the group's SVG id. Image-like ids
+                 (hero / figure- / image / img- / kpi) cycle through a
+                 visual pool (zoom / dissolve / circle / box / diamond /
+                 wheel) so multiple images vary across the deck. Other
+                 semantic matches map to a single stable effect
+                 (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade).
+                 Unmatched ids cycle through a small modern pool
+                 (fade / wipe / fly / zoom).
+    - 'mixed'  — legacy mode: first element fades, the rest cycle through a
+                 larger curated visible pool (kept for backward compatibility).
+    - 'random' — pick a random effect from the legacy pool per element
 
 Dependencies: None (pure XML generation)
 
@@ -161,6 +170,55 @@ _MIXED_POOL = [
     'random_bars', 'box', 'split', 'strips', 'wedge', 'wheel',
     'wipe', 'expand', 'fade', 'swivel', 'zoom',
 ]
+
+# Small modern pool used by 'auto' mode when the group id matches no semantic
+# pattern. Restricted to four widely supported, restrained effects so the
+# fallback cycle never produces PowerPoint-era visuals.
+_AUTO_POOL = ['fade', 'wipe', 'fly', 'zoom']
+
+# Image-only diversity pool. Image-like groups (`hero`, `figure-`, `image`,
+# `img-`, `kpi`) deliberately cycle through a richer set of visual effects
+# rather than mapping to a single effect: images are visual focal points, so
+# variation is desirable on them even when surrounding information-dense
+# elements (titles, charts, lists) stay reserved. Pool members are chosen for
+# image-friendly motion — no PowerPoint-era patterns (blinds / checkerboard /
+# random_bars / wedge) that would dominate raster content.
+_IMAGE_POOL = ['zoom', 'dissolve', 'circle', 'box', 'diamond', 'wheel']
+_IMAGE_KEYWORDS: tuple[str, ...] = ('hero', 'figure-', 'image', 'img-', 'kpi')
+
+# Ordered (substring, effect) patterns consumed by 'auto' mode for non-image
+# groups. The first matching substring in the lowercased group id wins;
+# ordering matters where substrings could overlap (e.g. 'title' before 'item'
+# prevents 'item-title' from being misread as a list item). All substrings are
+# lowercase. Image-like ids are handled separately via ``_IMAGE_POOL`` because
+# they cycle rather than map to a single effect.
+_SEMANTIC_PATTERNS: list[tuple[tuple[str, ...], str]] = [
+    (('title', 'chapter-', 'section-', 'cover-', 'tagline', 'subtitle'), 'fade'),
+    (('chart', 'table', 'legend', 'timeline', 'track'),                   'wipe'),
+    (('card-', 'pillar-', 'item-', 'step-', 'stage-', 'tier-',
+      'principle-', 'q-', 'schema-'),                                     'fly'),
+    (('takeaway', 'callout', 'quote', 'source', 'conclusion', 'note',
+      'try-at-home'),                                                     'fade'),
+]
+
+
+def _semantic_effect(group_id: str | None, idx: int = 0, offset: int = 0) -> str | None:
+    """Return the effect mapped from a group id, or None if no pattern matches.
+
+    Image-like ids cycle through ``_IMAGE_POOL`` using ``idx + offset`` so the
+    same deck shows different effects across multiple images. Other semantic
+    matches return a single stable effect because information-dense elements
+    benefit from consistency, not variation.
+    """
+    if not group_id:
+        return None
+    lower = group_id.lower()
+    if any(k in lower for k in _IMAGE_KEYWORDS):
+        return _IMAGE_POOL[(idx + offset) % len(_IMAGE_POOL)]
+    for substrings, effect in _SEMANTIC_PATTERNS:
+        if any(s in lower for s in substrings):
+            return effect
+    return None
 
 
 def create_timing_xml(
@@ -504,17 +562,36 @@ def create_sequence_timing_xml(
   </p:timing>'''
 
 
-def pick_animation_effect(mode: str, idx: int, offset: int = 0) -> str:
+def pick_animation_effect(
+    mode: str,
+    idx: int,
+    offset: int = 0,
+    group_id: str | None = None,
+) -> str:
     """Resolve a per-element effect name from a mode string.
 
     - A specific animation name returns itself (no variation).
-    - 'mixed': first element fixed to 'fade', rest cycle through ``_MIXED_POOL``
-      plus ``offset`` (so titles stay calm while content varies across slides).
-    - 'random': uniform random choice from ``_MIXED_POOL``.
+    - 'auto': map ``group_id`` to an effect. Image-like ids
+      (hero / figure- / image / img- / kpi) cycle through ``_IMAGE_POOL``
+      (zoom / dissolve / circle / box / diamond / wheel) by ``idx + offset``
+      so multiple images vary across the deck. Other semantic matches in
+      ``_SEMANTIC_PATTERNS`` return a single stable effect (chart→wipe,
+      card-/step-/pillar-→fly, title/takeaway→fade). When the id matches no
+      pattern, cycle through ``_AUTO_POOL`` (fade / wipe / fly / zoom).
+    - 'mixed' (legacy): first element fixed to 'fade', rest cycle through
+      ``_MIXED_POOL`` plus ``offset`` (so titles stay calm while content varies
+      across slides). Kept for backward compatibility with existing CLI flags
+      and animations.json sidecars.
+    - 'random' (legacy): uniform random choice from ``_MIXED_POOL``.
     - Unknown mode falls back to 'fade'.
     """
     if mode in ANIMATIONS:
         return mode
+    if mode == 'auto':
+        semantic = _semantic_effect(group_id, idx, offset)
+        if semantic is not None:
+            return semantic
+        return _AUTO_POOL[(idx + offset) % len(_AUTO_POOL)]
     if mode == 'mixed':
         if idx == 0:
             return 'fade'
