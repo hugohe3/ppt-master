@@ -1,4 +1,4 @@
-# Page Layout Template Library (15 Templates)
+# Page Layout Template Library (17 Templates)
 
 Pre-built PPT page layout templates supporting multiple styles and use cases.
 
@@ -19,9 +19,11 @@ Pre-built PPT page layout templates supporting multiple styles and use cases.
 | `china_telecom_template` | General | China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报 | `#C00000` | Authoritative, structured, restrained, enterprise-government hybrid |
 | `government_blue` | General | Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation | `#0050B3` | Grand, tech-forward, modern, professional government style |
 | `government_red` | General | Government briefings, policy interpretation, work summaries, project introductions, investment promotion | `#8B0000` | Authoritative, dignified, professional, modern government style |
+| `ljy_academic_tech` | Scenario | — | `#5EB6BA` | — |
 | `medical_university` | General | Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training | `#0066B3` | Professional, rigorous, life-affirming, tech-forward, trustworthy |
 | `pixel_retro` | General | Tech talks, programming tutorials, game introductions, geek-style showcases | `#0D1117` | Retro gaming, neon cyberpunk, geek tech, 8-bit style |
 | `psychology_attachment` | General | Psychotherapy training, academic lectures, counseling case analysis, professional sharing | `#2E5C8E` | Professional, warm, healing, trustworthy |
+| `research_institute_tech` | Special | — | `#1E386B` | — |
 | `中国电建_常规` | General | Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries | `#00418D` | Professional, composed, international, state-owned enterprise style |
 | `中国电建_现代` | General | Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations | `#00418D` | Grand narrative, modern precision, digital tech, international vision |
 | `中汽研_商务` | General | Product certification display, evaluation presentations, technology promotion, high-end business reporting | `#003366` | Modern tech, authoritative & professional, composed & grand |

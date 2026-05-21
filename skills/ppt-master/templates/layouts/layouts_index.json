@@ -45,6 +45,16 @@
       "modern government style"
     ]
   },
+  "ljy_academic_tech": {
+    "summary": "学术答辩与科技汇报，青蓝主色，清爽简洁，适合博士/硕士答辩、课题汇报",
+    "keywords": [
+      "学术答辩",
+      "青蓝",
+      "科技",
+      "答辩汇报",
+      "课题报告"
+    ]
+  },
   "medical_university": {
     "summary": "Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.",
     "keywords": [
@@ -71,6 +81,16 @@
       "warm",
       "healing",
       "trustworthy"
+    ]
+  },
+  "research_institute_tech": {
+    "summary": "深蓝学术科研风，适合研究院课题汇报、科研项目答辩、技术方案展示",
+    "keywords": [
+      "研究院",
+      "学术汇报",
+      "科研",
+      "课题答辩",
+      "深蓝"
     ]
   },
   "中国电建_常规": {
