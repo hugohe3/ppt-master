@@ -210,11 +210,13 @@ def _build_sequence_targets(
     for seq_idx, (_has_order, _order, _original_idx, _svg_id, group_cfg) in enumerate(ordered):
         shape_id = int(group_cfg['_shape_id'])
         raw_effect = group_cfg.get('effect')
-        if raw_effect in ('mixed', 'random'):
-            effect = pick_animation_effect(str(raw_effect), seq_idx, mixed_animation_offset)
+        if raw_effect in ('auto', 'mixed', 'random'):
+            effect = pick_animation_effect(
+                str(raw_effect), seq_idx, mixed_animation_offset, group_id=_svg_id,
+            )
         else:
             effect = str(raw_effect or pick_animation_effect(
-                animation, seq_idx, mixed_animation_offset,
+                animation, seq_idx, mixed_animation_offset, group_id=_svg_id,
             ))
         item_duration = _to_float(group_cfg.get('duration'), duration)
         delay_seconds = _to_float(
@@ -226,6 +228,12 @@ def _build_sequence_targets(
     mixed_count = 0
     if animation == 'mixed':
         mixed_count = sum(1 for _target in seq_targets[1:])
+    elif animation == 'auto':
+        # 'auto' accumulates a cross-slide offset so the image pool and the
+        # unmatched-id fallback rotate as the deck advances. Single-effect
+        # semantic matches (title→fade, chart→wipe etc.) are unaffected
+        # because they ignore the offset.
+        mixed_count = len(seq_targets)
     return seq_targets, mixed_count
 
 
@@ -515,7 +523,7 @@ def create_pptx_with_native_svg(
                             slide_animation_stagger,
                             mixed_animation_offset,
                         )
-                        if slide_animation == 'mixed':
+                        if slide_animation in ('mixed', 'auto'):
                             mixed_animation_offset += mixed_count
                         timing_xml = '\n' + create_sequence_timing_xml(
                             seq_targets, duration=slide_animation_duration,

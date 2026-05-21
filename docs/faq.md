@@ -84,7 +84,7 @@ If your workflow specifically requires Excel-driven data editing, manually creat
 
 ## Q: Can I change page transitions and element animations?
 
-Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animations (`mixed` effect with `after-previous` cascade by default) are both controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Common one-liners:
+Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animations (`auto` effect with `after-previous` cascade by default — effect mapped from each group's SVG id, with image-like ids cycling a visual pool for variation) are both controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Common one-liners:
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
