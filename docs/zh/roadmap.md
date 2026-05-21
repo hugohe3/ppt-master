@@ -36,6 +36,7 @@
 - **品牌身份预设子系统**（[`workflows/create-brand.md`](../../skills/ppt-master/workflows/create-brand.md)） — 提取并复用品牌色板 / 字体 / Logo / 语调
 - **视觉自检工作流**（[`workflows/visual-review.md`](../../skills/ppt-master/workflows/visual-review.md)） — 按 rubric 逐页自查 AI 生成的 SVG
 - **AI 图 Type 概念边界澄清** — Type 收窄回「local 信息图的内部几何骨架」(11 个真骨架);原 4 个伪 type (hero/background/portrait/typography) 折回 `page_role: hero_page` + 4 条构图通则(single-subject / portrait / typographic / atmospheric);hero_page 文字分层规则(关键视觉词 embedded、可改文字走 SVG)
+- **Brutalist AI 报章示例 deck 交付**（[`examples/ppt169_brutalist_ai_newspaper_2026/`](../../examples/ppt169_brutalist_ai_newspaper_2026/)） — P0 三档第一档落地：满版小字 + 不规则栏宽 + halftone 黑白图 + 单点红 + 真原生 shape，10 页编辑部年报实压「文字位置精度 + 跨页一致性」
 
 ---
 
@@ -50,7 +51,7 @@
 P0 三档选择都对应一项核心能力压测：
 
 - **Dashboard 仪表盘 / 数据密集报告** — 压测真原生形状 + 复杂图表结构。一页 6-10 个图表是 shape-vs-Excel-native 路径差异最大的地方
-- **Brutalist 报章 / 信息超密** — 压测文字位置精度 + 跨页一致性。满版小字 + 不规则栏宽，只有真原生形状才扛得住后期编辑
+- **Brutalist 报章 / 信息超密** — 压测文字位置精度 + 跨页一致性。满版小字 + 不规则栏宽，只有真原生形状才扛得住后期编辑（已交付 → [`examples/ppt169_brutalist_ai_newspaper_2026/`](../../examples/ppt169_brutalist_ai_newspaper_2026/)）
 - **Blueprint 工程图纸 / Isometric 等距** — 压测几何形状泛化 + chart 结构扩展。技术白皮书 / 产品架构 / 工业设计场景
 
 ---

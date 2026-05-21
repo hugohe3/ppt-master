@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P08 Three Rulebooks — top banner (#5) + comparison_table, dense rhythm -->
+
+  <defs>
+    <clipPath id="bannerClip">
+      <rect x="48" y="170" width="1184" height="160"/>
+    </clipPath>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ============ HEADER ============ -->
+  <g id="bg-masthead-rule">
+    <rect x="0" y="0" width="1280" height="4" fill="#C8102E"/>
+  </g>
+
+  <g id="header-folio">
+    <line x1="48" y1="34" x2="1232" y2="34" stroke="#111111" stroke-width="1"/>
+    <text x="48" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" letter-spacing="2">THE AI INDUSTRY 2026 · ANNUAL REPORT</text>
+    <text x="640" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="middle" letter-spacing="2">STORY V · REGULATION</text>
+    <text x="1232" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">VOL. 1 · NO. 1 · MAY 2026</text>
+  </g>
+
+  <g id="header">
+    <text x="48" y="58" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#C8102E" letter-spacing="3.5">SECTION VI · STORY V</text>
+    <text x="48" y="110" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="44" font-weight="900" fill="#111111" letter-spacing="-1">THREE RULEBOOKS, ONE RACE</text>
+    <text x="48" y="138" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="16" font-style="italic" fill="#111111"><tspan fill="#C8102E" font-weight="700">72+ countries</tspan>, <tspan fill="#C8102E" font-weight="700">1,000+ policies</tspan> — three regimes do the load-bearing work.</text>
+    <line x1="48" y1="156" x2="1232" y2="156" stroke="#111111" stroke-width="2"/>
+  </g>
+
+  <!-- ============ BANNER IMAGE (top-band, #5) ============ -->
+  <g id="banner-image">
+    <image href="../images/p08_regulation_table.png" x="48" y="170" width="1184" height="160" clip-path="url(#bannerClip)" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="48" y="170" width="1184" height="160" fill="none" stroke="#111111" stroke-width="1"/>
+  </g>
+
+  <g id="banner-caption">
+    <text x="48" y="350" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="2">FIG. 05 · THREE FOLDERS, THREE TRADITIONS</text>
+    <text x="1232" y="350" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A" text-anchor="end">— Brussels stamps the model class; Washington devolves; Beijing watermarks the output.</text>
+    <line x1="48" y1="358" x2="1232" y2="358" stroke="#111111" stroke-width="0.5"/>
+  </g>
+
+  <!-- ============ COMPARISON TABLE ============ -->
+  <g id="table-header">
+    <!-- Label column (5 rows below; no header text here) -->
+    <rect x="48" y="370" width="200" height="48" fill="#F4F1EA"/>
+    <text x="60" y="400" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" letter-spacing="1.2">DIMENSION</text>
+
+    <!-- EU column header -->
+    <rect x="256" y="370" width="320" height="48" fill="#111111"/>
+    <text x="416" y="394" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">EU</text>
+    <text x="416" y="412" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#FFFFFF">class-of-model regulation</text>
+
+    <!-- US column header -->
+    <rect x="584" y="370" width="320" height="48" fill="#111111"/>
+    <text x="744" y="394" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">UNITED STATES</text>
+    <text x="744" y="412" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#FFFFFF">sector + state regulation</text>
+
+    <!-- China column header -->
+    <rect x="912" y="370" width="320" height="48" fill="#C8102E"/>
+    <text x="1072" y="394" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">CHINA</text>
+    <text x="1072" y="412" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#FFFFFF">output-tagging regulation</text>
+  </g>
+
+  <!-- Row 1: Core instrument -->
+  <g id="row-1">
+    <rect x="48" y="418" width="200" height="48" fill="#F4F1EA"/>
+    <text x="60" y="444" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">CORE INSTRUMENT</text>
+    <rect x="256" y="418" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="266" y="441" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" font-weight="700" fill="#111111">AI Act</text>
+    <text x="266" y="459" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">general-purpose &amp; systemic risk</text>
+    <rect x="584" y="418" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="594" y="441" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" font-weight="700" fill="#111111">EO 14179 + state laws</text>
+    <text x="594" y="459" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">CA · CO · TX leading</text>
+    <rect x="912" y="418" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="922" y="441" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" font-weight="700" fill="#111111">Gen-AI Services Mgmt Measures</text>
+    <text x="922" y="459" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">+ synthetic-content rules</text>
+  </g>
+
+  <!-- Row 2: Full force / status -->
+  <g id="row-2">
+    <rect x="48" y="466" width="200" height="48" fill="#F4F1EA"/>
+    <text x="60" y="492" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">FULL FORCE SINCE</text>
+    <rect x="256" y="466" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="266" y="489" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">August 2025</text>
+    <text x="266" y="507" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">first binding horizontal AI statute</text>
+    <rect x="584" y="466" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="594" y="489" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">No federal statute (Apr 2026)</text>
+    <text x="594" y="507" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">state laws fill the gap</text>
+    <rect x="912" y="466" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="922" y="489" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">Watermark rules · 2025-09-01</text>
+    <text x="922" y="507" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">first state-mandated watermark regime</text>
+  </g>
+
+  <!-- Row 3: Max penalty -->
+  <g id="row-3">
+    <rect x="48" y="514" width="200" height="48" fill="#F4F1EA"/>
+    <text x="60" y="540" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">MAX PENALTY</text>
+    <rect x="256" y="514" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="266" y="537" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#C8102E">€35 M  or  7 % turnover</text>
+    <text x="266" y="555" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">whichever is higher</text>
+    <rect x="584" y="514" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="594" y="537" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">Varies by state</text>
+    <text x="594" y="555" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">civil + injunction track</text>
+    <rect x="912" y="514" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="922" y="537" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">Admin + licence revocation</text>
+    <text x="922" y="555" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">CAC + sector regulators</text>
+  </g>
+
+  <!-- Row 4: Frontier focus -->
+  <g id="row-4">
+    <rect x="48" y="562" width="200" height="48" fill="#F4F1EA"/>
+    <text x="60" y="588" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">FRONTIER FOCUS</text>
+    <rect x="256" y="562" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="266" y="585" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">General-purpose AI</text>
+    <text x="266" y="603" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">w/ systemic-risk thresholds</text>
+    <rect x="584" y="562" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="594" y="585" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">Innovation-first reframing</text>
+    <text x="594" y="603" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">post EO 14179 (Jan 2025)</text>
+    <rect x="912" y="562" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="922" y="585" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">Domestic data + party-aligned</text>
+    <text x="922" y="603" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">ethical standards mandated</text>
+  </g>
+
+  <!-- Row 5: Posture summary (also closing line) -->
+  <g id="row-5">
+    <rect x="48" y="610" width="200" height="48" fill="#F4F1EA"/>
+    <text x="60" y="636" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">POSTURE SUMMARY</text>
+    <rect x="256" y="610" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="266" y="633" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" font-style="italic" fill="#111111">regulate by class</text>
+    <text x="266" y="651" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">model-side compliance bundle</text>
+    <rect x="584" y="610" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="594" y="633" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" font-style="italic" fill="#111111">regulate by sector + state</text>
+    <text x="594" y="651" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">federalism in action</text>
+    <rect x="912" y="610" width="320" height="48" fill="#FFFFFF" stroke="#111111" stroke-width="0.5"/>
+    <text x="922" y="633" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" font-style="italic" fill="#111111">regulate by output</text>
+    <text x="922" y="651" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">tag, register, watermark</text>
+  </g>
+
+  <!-- Closing line -->
+  <g id="closing">
+    <text x="640" y="678" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#C8102E" text-anchor="middle" letter-spacing="2">CONVERGENCE ON PRINCIPLE  ·  DIVERGENCE ON IMPLEMENTATION</text>
+  </g>
+
+  <!-- ============ FOOTER ============ -->
+  <g id="footer-imprint">
+    <rect x="48" y="688" width="1184" height="2" fill="#C8102E"/>
+    <text x="48" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" letter-spacing="2">SOURCE  ONETRUST APR 2026 · BRICS J.ECON · CMUACM REVIEW · INSIGHTS.UTU · POLICY SCANS OF 72+ JURISDICTIONS</text>
+    <text x="1232" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">PAGE 08 / 10</text>
+  </g>
+</svg>

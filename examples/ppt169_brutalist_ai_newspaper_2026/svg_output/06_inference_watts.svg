@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P06 Inference Watts — image-as-canvas (#40) + floating KPI cards + bar chart, dense rhythm -->
+
+  <rect id="bg" width="1280" height="720" fill="#FFFFFF"/>
+
+  <g id="bg-hero">
+    <image href="../images/p06_inference_thermal.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="bg-scrim-top">
+    <rect x="0" y="0" width="1280" height="160" fill="#FFFFFF" fill-opacity="0.92"/>
+  </g>
+
+  <g id="bg-masthead-rule">
+    <rect x="0" y="0" width="1280" height="4" fill="#C8102E"/>
+  </g>
+
+  <g id="header-folio">
+    <line x1="48" y1="34" x2="1232" y2="34" stroke="#111111" stroke-width="1"/>
+    <text x="48" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" letter-spacing="2">THE AI INDUSTRY 2026 · ANNUAL REPORT</text>
+    <text x="640" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="middle" letter-spacing="2">STORY III · INFERENCE</text>
+    <text x="1232" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">VOL. 1 · NO. 1 · MAY 2026</text>
+  </g>
+
+  <g id="header">
+    <text x="48" y="58" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#C8102E" letter-spacing="3.5">SECTION IV · STORY III</text>
+    <text x="48" y="110" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="44" font-weight="900" fill="#111111" letter-spacing="-1">INFERENCE — A 4.6× SPREAD</text>
+    <text x="48" y="138" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="16" font-style="italic" fill="#111111">Same medium-length prompt; <tspan fill="#C8102E" font-weight="700">5 W</tspan> at one end of the frontier class, <tspan fill="#C8102E" font-weight="700">23 W</tspan> at the other.</text>
+    <line x1="48" y1="156" x2="1232" y2="156" stroke="#111111" stroke-width="2"/>
+  </g>
+
+  <!-- ============ FLOATING KPI CARDS ============ -->
+  <g id="kpi-claude">
+    <rect x="48" y="184" width="220" height="124" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+    <rect x="48" y="184" width="220" height="6" fill="#111111"/>
+    <text x="60" y="212" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#3A3A3A" letter-spacing="1.5">PER MEDIUM PROMPT</text>
+    <text x="60" y="270" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="64" font-weight="900" fill="#111111" letter-spacing="-2">5 W</text>
+    <line x1="60" y1="282" x2="256" y2="282" stroke="#111111" stroke-width="0.5"/>
+    <text x="60" y="297" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">CLAUDE 4 OPUS</text>
+  </g>
+
+  <g id="kpi-deepseek">
+    <rect x="1012" y="184" width="220" height="124" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+    <rect x="1012" y="184" width="220" height="6" fill="#C8102E"/>
+    <text x="1024" y="212" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#3A3A3A" letter-spacing="1.5">PER MEDIUM PROMPT</text>
+    <text x="1024" y="270" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="64" font-weight="900" fill="#C8102E" letter-spacing="-2">23 W</text>
+    <line x1="1024" y1="282" x2="1220" y2="282" stroke="#111111" stroke-width="0.5"/>
+    <text x="1024" y="297" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="1.2">DEEPSEEK V3</text>
+  </g>
+
+  <g id="kpi-carbon">
+    <rect x="1012" y="324" width="220" height="104" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+    <text x="1024" y="346" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#3A3A3A" letter-spacing="1.5">CARBON EMISSIONS RATIO</text>
+    <text x="1024" y="394" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="48" font-weight="900" fill="#111111" letter-spacing="-1">10×</text>
+    <text x="1024" y="416" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#111111">least-vs-most efficient inference</text>
+  </g>
+
+  <g id="kpi-decline">
+    <rect x="1012" y="444" width="220" height="104" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+    <text x="1024" y="466" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#3A3A3A" letter-spacing="1.5">COST AT CONSTANT CAPABILITY</text>
+    <text x="1024" y="514" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="44" font-weight="900" fill="#C8102E" letter-spacing="-1">10× / yr</text>
+    <text x="1024" y="536" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#111111">falls faster than capability climbs</text>
+  </g>
+
+  <!-- ============ BOTTOM SCRIM + BAR CHART ============ -->
+  <g id="bg-scrim-bottom">
+    <rect x="0" y="568" width="1280" height="120" fill="#FFFFFF" fill-opacity="0.92"/>
+  </g>
+
+  <g id="chart-title">
+    <text x="48" y="588" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" letter-spacing="1.5">FIG. 04 · WATTAGE SPECTRUM ACROSS THE FRONTIER CLASS · WATTS PER MEDIUM PROMPT</text>
+  </g>
+
+  <g id="chartArea">
+    <!-- Axis baseline at y=660; tick marks 0, 5, 10, 15, 20, 25 W; scale 36 px per W; x_min=80, x_max=980 -->
+    <line x1="80" y1="660" x2="980" y2="660" stroke="#111111" stroke-width="1.5"/>
+    <line x1="80" y1="660" x2="80" y2="666" stroke="#111111" stroke-width="1"/>
+    <line x1="260" y1="660" x2="260" y2="666" stroke="#111111" stroke-width="1"/>
+    <line x1="440" y1="660" x2="440" y2="666" stroke="#111111" stroke-width="1"/>
+    <line x1="620" y1="660" x2="620" y2="666" stroke="#111111" stroke-width="1"/>
+    <line x1="800" y1="660" x2="800" y2="666" stroke="#111111" stroke-width="1"/>
+    <line x1="980" y1="660" x2="980" y2="666" stroke="#111111" stroke-width="1"/>
+    <text x="80" y="678" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">0 W</text>
+    <text x="260" y="678" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">5</text>
+    <text x="440" y="678" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">10</text>
+    <text x="620" y="678" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">15</text>
+    <text x="800" y="678" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">20</text>
+    <text x="980" y="678" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">25</text>
+
+    <!-- chart-plot-area: 80,608,980,660 -->
+
+    <!-- Row 1 — Claude 4 Opus 5W (bar end at x=80+5*36=260) -->
+    <rect x="80" y="612" width="180" height="14" fill="#111111"/>
+    <text x="270" y="624" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111">5 W · CLAUDE 4 OPUS</text>
+
+    <!-- Row 2 — Illustrative frontier band 8W-18W (bar at x=80+8*36=368 to x=80+18*36=728) -->
+    <rect x="368" y="632" width="360" height="10" fill="#3A3A3A" fill-opacity="0.32"/>
+    <line x1="368" y1="630" x2="368" y2="644" stroke="#3A3A3A" stroke-width="1.5"/>
+    <line x1="728" y1="630" x2="728" y2="644" stroke="#3A3A3A" stroke-width="1.5"/>
+    <text x="738" y="641" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="10" font-style="italic" fill="#3A3A3A">illustrative band — rest of frontier class</text>
+
+    <!-- Row 3 — DeepSeek V3 23W (red, bar end at x=80+23*36=908) -->
+    <rect x="80" y="650" width="828" height="0" fill="none"/>
+  </g>
+
+  <!-- Re-draw row 3 outside the row 2 to avoid baseline collision -->
+  <g id="bar-deepseek-bottom">
+    <!-- Place DeepSeek bar above the axis baseline (in chart-area before axis) at y=648, height 8 -->
+    <rect x="80" y="646" width="828" height="10" fill="#C8102E"/>
+    <text x="918" y="655" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#C8102E">23 W · DEEPSEEK V3</text>
+  </g>
+
+  <!-- ============ FOOTER ============ -->
+  <g id="footer-imprint">
+    <rect x="48" y="688" width="1184" height="2" fill="#C8102E"/>
+    <text x="48" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" letter-spacing="2">SOURCE  STANFORD HAI AI INDEX 2026 · TWO ANCHORS MEASURED; MIDDLE BAND ILLUSTRATIVE OF REPORTED FRONTIER RANGE</text>
+    <text x="1232" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">PAGE 06 / 10</text>
+  </g>
+</svg>

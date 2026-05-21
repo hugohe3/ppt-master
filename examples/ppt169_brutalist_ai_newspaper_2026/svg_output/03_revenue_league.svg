@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P03 Story I — Revenue League Q1 2026, dense rhythm -->
+  <!-- Layout: left sidebar image (#18) + right horizontal_bar_chart adapted Brutalist -->
+
+  <defs>
+    <clipPath id="sidebarClip">
+      <rect x="48" y="170" width="360" height="475"/>
+    </clipPath>
+  </defs>
+
+  <rect id="bg" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ============ HEADER ============ -->
+  <g id="bg-masthead-rule">
+    <rect x="0" y="0" width="1280" height="4" fill="#C8102E"/>
+  </g>
+
+  <g id="header-folio">
+    <line x1="48" y1="34" x2="1232" y2="34" stroke="#111111" stroke-width="1"/>
+    <text x="48" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" letter-spacing="2">THE AI INDUSTRY 2026 · ANNUAL REPORT</text>
+    <text x="640" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="middle" letter-spacing="2">STORY I · LEAD STORY</text>
+    <text x="1232" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">VOL. 1 · NO. 1 · MAY 2026</text>
+  </g>
+
+  <g id="header">
+    <text x="48" y="58" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#C8102E" letter-spacing="3.5">SECTION II · STORY I</text>
+    <text x="48" y="110" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="44" font-weight="900" fill="#111111" letter-spacing="-1">THE REVENUE LEAGUE TABLE</text>
+    <text x="48" y="138" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="16" font-style="italic" fill="#111111">Anthropic <tspan fill="#C8102E" font-weight="700">31.4 %</tspan> — first non-OpenAI lab in #1 since the modern LLM era began.</text>
+    <line x1="48" y1="156" x2="1232" y2="156" stroke="#111111" stroke-width="2"/>
+  </g>
+
+  <!-- ============ LEFT SIDEBAR — Image #18 + thin colored matte frame #70 ============ -->
+  <g id="sidebar-image">
+    <image href="../images/p03_revenue_leader.png" x="48" y="170" width="360" height="475" clip-path="url(#sidebarClip)" preserveAspectRatio="xMidYMid slice"/>
+    <!-- Thin black matte frame -->
+    <rect x="48" y="170" width="360" height="475" fill="none" stroke="#111111" stroke-width="1"/>
+  </g>
+
+  <g id="sidebar-caption">
+    <text x="48" y="664" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="2">FIG. 01 · CHANGING OF THE GUARD</text>
+    <text x="48" y="680" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">— a vacated lead; a smaller successor steps forward.</text>
+  </g>
+
+  <!-- ============ DIVIDER ============ -->
+  <line x1="420" y1="170" x2="420" y2="645" stroke="#111111" stroke-width="1"/>
+
+  <!-- ============ RIGHT — HORIZONTAL BAR CHART ============ -->
+  <g id="chart-title">
+    <text x="438" y="190" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">SHARE OF GLOBAL LLM REVENUE · Q1 2026</text>
+    <text x="438" y="208" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" font-style="italic" fill="#3A3A3A">Twelve labs · share of a $20.7 B quarter · source: Counterpoint Research.</text>
+  </g>
+
+  <g id="chartArea">
+    <!-- X-axis grid lines (0, 10, 20, 30, 35 %) -->
+    <line x1="560" y1="220" x2="560" y2="608" stroke="#111111" stroke-width="1"/>
+    <line x1="749" y1="220" x2="749" y2="608" stroke="#3A3A3A" stroke-width="0.5" stroke-dasharray="2,3"/>
+    <line x1="937" y1="220" x2="937" y2="608" stroke="#3A3A3A" stroke-width="0.5" stroke-dasharray="2,3"/>
+    <line x1="1126" y1="220" x2="1126" y2="608" stroke="#3A3A3A" stroke-width="0.5" stroke-dasharray="2,3"/>
+    <line x1="1220" y1="220" x2="1220" y2="608" stroke="#3A3A3A" stroke-width="0.5" stroke-dasharray="2,3"/>
+
+    <!-- chart-plot-area: 560,220,1220,600 -->
+
+    <!-- X-axis tick labels (above plot, since labels below would clash with footer source) -->
+    <text x="560" y="234" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">0 %</text>
+    <text x="749" y="234" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">10 %</text>
+    <text x="937" y="234" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">20 %</text>
+    <text x="1126" y="234" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">30 %</text>
+    <text x="1220" y="234" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" text-anchor="middle">35 %</text>
+
+    <!-- X-axis baseline -->
+    <line x1="560" y1="608" x2="1220" y2="608" stroke="#111111" stroke-width="1.5"/>
+
+    <!-- Row data: x_min=560, scale 660/35 = 18.857 px per % -->
+
+    <!-- 1. Anthropic 31.4% — emphasized red bar -->
+    <g id="bar-anthropic">
+      <text x="550" y="263" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">ANTHROPIC</text>
+      <rect x="560" y="252" width="592" height="22" fill="#C8102E"/>
+      <text x="1160" y="268" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">31.4 %</text>
+    </g>
+
+    <!-- 2. OpenAI 29.0% -->
+    <g id="bar-openai">
+      <text x="550" y="295" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">OPENAI</text>
+      <rect x="560" y="284" width="547" height="22" fill="#111111"/>
+      <text x="1115" y="300" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">29.0 %</text>
+    </g>
+
+    <!-- 3. Google 12.1% -->
+    <g id="bar-google">
+      <text x="550" y="327" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">GOOGLE</text>
+      <rect x="560" y="316" width="228" height="22" fill="#111111"/>
+      <text x="796" y="332" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">12.1 %</text>
+    </g>
+
+    <!-- 4. Microsoft 7.2% -->
+    <g id="bar-microsoft">
+      <text x="550" y="359" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">MICROSOFT</text>
+      <rect x="560" y="348" width="136" height="22" fill="#111111"/>
+      <text x="704" y="364" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">7.2 %</text>
+    </g>
+
+    <!-- 5. Tencent 4.8% -->
+    <g id="bar-tencent">
+      <text x="550" y="391" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">TENCENT</text>
+      <rect x="560" y="380" width="91" height="22" fill="#111111"/>
+      <text x="659" y="396" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">4.8 %</text>
+    </g>
+
+    <!-- 6. Baidu 3.6% -->
+    <g id="bar-baidu">
+      <text x="550" y="423" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">BAIDU</text>
+      <rect x="560" y="412" width="68" height="22" fill="#111111"/>
+      <text x="636" y="428" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">3.6 %</text>
+    </g>
+
+    <!-- 7. Alibaba 2.9% -->
+    <g id="bar-alibaba">
+      <text x="550" y="455" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">ALIBABA</text>
+      <rect x="560" y="444" width="55" height="22" fill="#111111"/>
+      <text x="623" y="460" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">2.9 %</text>
+    </g>
+
+    <!-- 8. Meta 1.4% -->
+    <g id="bar-meta">
+      <text x="550" y="487" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">META</text>
+      <rect x="560" y="476" width="26" height="22" fill="#111111"/>
+      <text x="594" y="492" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">1.4 %</text>
+    </g>
+
+    <!-- 9. Grok / xAI 1.4% -->
+    <g id="bar-grok">
+      <text x="550" y="519" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">GROK / xAI</text>
+      <rect x="560" y="508" width="26" height="22" fill="#111111"/>
+      <text x="594" y="524" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">1.4 %</text>
+    </g>
+
+    <!-- 10. Perplexity 1.0% -->
+    <g id="bar-perplexity">
+      <text x="550" y="551" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">PERPLEXITY</text>
+      <rect x="560" y="540" width="19" height="22" fill="#111111"/>
+      <text x="587" y="556" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">1.0 %</text>
+    </g>
+
+    <!-- 11. DeepSeek 0.2% -->
+    <g id="bar-deepseek">
+      <text x="550" y="583" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="12" font-weight="900" fill="#111111" text-anchor="end">DEEPSEEK</text>
+      <rect x="560" y="572" width="4" height="22" fill="#111111"/>
+      <text x="572" y="588" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="13" font-weight="900" fill="#111111">0.2 %</text>
+    </g>
+  </g>
+
+  <!-- ============ PULL QUOTE (red, bottom of left column) ============ -->
+  <g id="pull-quote">
+    <rect x="438" y="624" width="794" height="2" fill="#C8102E"/>
+    <text x="438" y="650" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="22" font-weight="900" fill="#C8102E" letter-spacing="-0.5">&quot;FIRST NON-OPENAI LAB IN #1 SINCE</text>
+    <text x="438" y="676" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="22" font-weight="900" fill="#C8102E" letter-spacing="-0.5">THE MODERN LLM ERA BEGAN.&quot;</text>
+  </g>
+
+  <!-- ============ FOOTER ============ -->
+  <g id="footer-imprint">
+    <rect x="48" y="688" width="1184" height="2" fill="#C8102E"/>
+    <text x="48" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" letter-spacing="2">SOURCE  COUNTERPOINT RESEARCH · GLOBAL LLM ADOPTION AND REVENUE SNAPSHOT · Q1 2026 · N=12 TIER-1/2 LABS</text>
+    <text x="1232" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">PAGE 03 / 10</text>
+  </g>
+</svg>
