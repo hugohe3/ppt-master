@@ -240,9 +240,9 @@ Catalog read: 71 templates
 
 ## VIII. Image Resource List (if needed)
 
-| Filename | Dimensions | Ratio | Purpose | Genre | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
-| -------- | --------- | ----- | ------- | ----- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
-| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
+| Filename | Dimensions | Ratio | Purpose | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
+| -------- | --------- | ----- | ------- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
+| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
 
 > **Layout pattern column is MANDATORY** — value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).
 
@@ -251,14 +251,6 @@ Catalog read: 71 templates
 - **Pending** — needs AI generation or web sourcing
 - **Existing** — user-supplied, place in `images/`
 - **Placeholder** — not yet processed, use dashed border in SVG
-
-**Genre** (narrative shorthand for the row — describes what kind of asset this is, not the geometric composition. Image_Generator infers its 11-way internal-composition `image_type` from `Purpose` independently; for `page_role: hero_page` rows, no type is needed at all — see [`references/image-generator.md`](../references/image-generator.md) §4.1 primitives):
-
-- **Background** — full-page (covers / chapters); reserve text area
-- **Photography** — real scenes, people, products, architecture
-- **Illustration** — flat / vector / cartoon / concept diagrams
-- **Diagram** — flowcharts, architecture diagrams, concept maps
-- **Decorative** — partial decorations, textures, borders, dividers
 
 **text_policy** (`ai` rows only; leave blank for default):
 
