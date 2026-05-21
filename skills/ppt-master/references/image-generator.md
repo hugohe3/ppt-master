@@ -31,6 +31,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 - Same `deck_rendering` + same `deck_palette` for every image in the deck
 - HEX codes and color names are rendering guidance — never visible text in the image
 - Long body copy / data points / bulleted lists / long quotes stay in SVG (improving them later means regenerating the image, which is expensive)
+- **In-image text is only for words that will not need editing later** — visual keywords, decorative lettering, mood words. Editable text (titles that may be reworded, subtitles, dates, authors, captions, body) belongs in SVG. Changing one in-image word costs an image regeneration; one SVG word costs a keystroke.
 - Prompts are one coherent prose paragraph, not tag soup (a model-output reality, not an aesthetic choice)
 
 Everything else is the AI's judgment per page. No mandated padding, no type-locked text_policy, no scenario whitelists for hero_page.
@@ -185,23 +186,47 @@ Exception: when the chosen rendering is `corporate-photo`, photorealism is inten
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
 | `embedded` | Describe the text directly inside the visual scene: the word(s), how they're rendered (decorative lettering / designed title / hand-lettered keyword), and the artistic treatment. Examples below. |
 
+**When to pick `embedded` — the edit-stability test**
+
+Before adding any word to the image, ask: *will this word ever need to be changed?* If yes, it belongs in SVG, not the image. The bar is high — in-image text is for words that are part of the visual itself.
+
+| Page situation | Recommended approach |
+|---|---|
+| **hero_page** — cover, chapter divider, section opener | **Two-layer**: 1-3 high-impact visual keywords go *in* the image (`embedded`); subtitle, date, author, organization, edition, body intro stay on the SVG overlay. **Do not** put the full title block (main + subtitle + author + date) into the image — any later wording change forces an image regen. |
+| **local image — infographic / framework / flowchart / matrix / cycle / comparison** | `none` — labels live as SVG text so they stay editable. The image carries the structure; SVG carries the words. |
+| **local image — decorative background / scene / portrait** | `none` by default. Use `embedded` only if a decorative word *is* the visual (e.g. a giant "GROWTH" lettering as wall art). |
+| **Poster / standalone marketing-style page** | `embedded` allowed for the visual core word; auxiliary copy still SVG. |
+
+The principle in one line: **the image gets the unchanging visual keywords; SVG gets everything readable that might be reworded**.
+
 **Prompt phrasing examples for embedded text** (not an exhaustive list):
 
 - Decorative: "large 'GROWTH' lettering as a background element, 3D extruded retro chrome style"
 - Designed title: "main title 'Q3 STRATEGY' typeset in clean geometric sans-serif, centered"
 - Hand-lettered set: "small hand-lettered annotations 'fast', 'cheap', 'good' woven into the sketch"
 
-**Echoing the deck's SVG typography** — when the page's SVG already locked a font family in `spec_lock.md typography`, the AI image's lettering should describe a compatible style so cover/chapter titles in the image cohere with body text on adjacent SVG pages.
+**Font choice for in-image text — free description, with the deck typography as one optional reference**
 
-| `spec_lock typography.font_family` contains | Prompt descriptor for AI image text |
+The font for in-image text is a free natural-language description, not an enum. Pick whatever serves the image: blackletter for a heritage cover, hand-brushed for a manifesto poster, retro chrome 3D for Y2K, art-deco display for a luxury hero, ribbon script for a bookstore zine — any artistic treatment the image earns.
+
+The table below is **a reference for the one case where you want the in-image lettering to read as the same typographic family as the SVG body** (e.g. a clean editorial deck where the cover title in the image should feel like the body Helvetica, not a surprise blackletter). Use it as a starting point, not a constraint.
+
+| `spec_lock typography.font_family` contains | Optional descriptor if you want to echo the SVG body |
 |---|---|
 | `KaiTi` / `FangSong` / `Georgia` / serif families | "elegant serif lettering, refined letterforms" |
 | `Microsoft YaHei` / `PingFang SC` / `Arial` / sans-serif families | "clean geometric sans-serif, modern letterforms" |
 | `SimHei` / `Impact` / `Arial Black` / display families | "bold display lettering, heavy expressive strokes" |
 | `Consolas` / `Courier New` / monospace families | "monospace technical lettering, fixed-width" |
-| Decorative / handwritten contexts (sketch-notes / ink-notes rendering, or no family specified) | "hand-lettered organic strokes, natural variation" |
+| sketch-notes / ink-notes rendering, or no family specified | "hand-lettered organic strokes, natural variation" |
 
-Pick the row whose family appears in the SVG stack. For decorative text (background lettering, posters), this constraint relaxes — describe the artistic treatment freely. Designed titles (cover main title, chapter heading) should echo the deck's family.
+**When to ignore the table**:
+
+- Decorative / background lettering, posters, large mood words → describe the artistic treatment freely
+- Cover hero title that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
+- Sketch-notes / ink-notes / hand-drawn renderings where the lettering is part of the rendering itself → describe freely
+- Any case where rendering + palette already imply a font character (e.g. `vintage-poster` rendering implies period display lettering) → trust the rendering, no need to echo SVG body
+
+**When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
 
 **CJK note**: most image models render Chinese characters poorly. For embedded text on a CJK deck, prefer English in the image or accept malformed glyphs.
 

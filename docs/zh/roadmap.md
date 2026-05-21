@@ -42,13 +42,7 @@
 
 立项依据强、近期会动手的方向。
 
-### 1. AI 图能力扩展：Font 独立维度
-
-现在的 AI 图三维系统是 rendering × palette × type。**字体（Font）目前没有独立维度**，导致 AI 在图里写文字时只能用模型默认字体，缺少与 deck 整体字体语言的呼应。
-
-计划：新增 4 档 Font（clean / handwritten / serif / display），Strategist 在 h.5 一并锁定 `deck_font`，Image_Generator 在图内嵌入文字时引用对应字体描述。
-
-### 2. AI 图 Type 反膨胀
+### 1. AI 图 Type 反膨胀
 
 现有 15 个 type（hero / background / portrait / typography / matrix / cycle / funnel / pyramid / map / scene / infographic / metaphor / flowchart / comparison / framework 等），其中一部分是「内部构图」描述，一部分是「PPT 用途」描述，两类混在一起 AI 不好选。
 
@@ -56,7 +50,7 @@
 
 影响面较大（13 个 type 文件 + manifest schema），会分阶段做。
 
-### 3. 能力背书型示例 deck（Style demo P0 三档）
+### 2. 能力背书型示例 deck（Style demo P0 三档）
 
 社区进入增长期后，示例 deck 的作用从「展示视觉反差」切换到「证明能力门槛」—— 让用户一眼看懂为什么 Gamma / 美图 / Manus 这条线替代不了 PPT Master。
 

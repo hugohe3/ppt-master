@@ -42,13 +42,7 @@ The past two months' structural capability growth. Single flags / incremental po
 
 Strong rationale, work in progress.
 
-### 1. AI image: Font as an independent dimension
-
-The current three-dimension system is rendering × palette × type. **Font has no independent dimension**, so AI-generated images use model-default typefaces, missing the typographic conversation with the deck.
-
-Plan: add 4 Font tiers (clean / handwritten / serif / display), Strategist locks `deck_font` alongside other lock-ins at h.5, Image_Generator references the matching font description when embedding text.
-
-### 2. AI image: Type de-bloat
+### 1. AI image: Type de-bloat
 
 There are currently 15 types (hero / background / portrait / typography / matrix / cycle / funnel / pyramid / map / scene / infographic / metaphor / flowchart / comparison / framework, etc.) mixing "internal composition" and "PPT role" — hard for the AI to pick correctly.
 
@@ -56,7 +50,7 @@ Plan: collapse to ~6 core types (infographic / scene / flowchart / comparison / 
 
 Large blast radius (13 type files + manifest schema), will land in stages.
 
-### 3. Capability-backing example decks (Style demo P0)
+### 2. Capability-backing example decks (Style demo P0)
 
 As the community enters its growth phase, example decks shift from "show visual contrast" to "prove the capability bar" — making it obvious why Gamma / Manus-style tools can't replace PPT Master.
 
