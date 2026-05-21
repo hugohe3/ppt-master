@@ -15,7 +15,6 @@
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — vector-illustration |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -33,7 +32,6 @@ Clean flat vector illustration with bold geometric shapes, sharp edges, no gradi
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — flat |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -51,7 +49,6 @@ Modern flat design with crisp geometric blocks, slightly more decorative than pu
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — 3d-isometric |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -69,7 +66,6 @@ Isometric 3D rendering with axonometric perspective, subtle ambient shadows at 8
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — digital-dashboard |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -87,7 +83,6 @@ Polished UI dashboard aesthetic, screen-like surface with cards and chart elemen
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — corporate-photo |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -105,7 +100,6 @@ Editorial corporate photography, real human subject in modern office environment
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — blueprint |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -123,7 +117,6 @@ Technical schematic blueprint style, fine grid background, monospace cues, draft
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — editorial |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -141,7 +134,6 @@ Magazine-style editorial infographic, refined typography hierarchy, balanced gut
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — sketch-notes |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -159,7 +151,6 @@ Hand-drawn sketch-notes style on warm cream paper background, black ink outlines
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — ink-notes |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -177,7 +168,6 @@ Pure white background with sparse black ink drawing, hand-drawn linework, delibe
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — chalkboard |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -195,7 +185,6 @@ Chalk drawing on a dark green chalkboard surface, white and pale chalk strokes w
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — watercolor |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -213,7 +202,6 @@ Painterly watercolor style with soft bleeding edges, organic color washes, sligh
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — warm-scene |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -231,7 +219,6 @@ Golden-hour cinematic warmth, soft directional sunlight from low angle, warm col
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — screen-print |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -249,7 +236,6 @@ Halftone screen-print poster art, limited flat colors, visible halftone dot patt
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — fantasy-animation |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -267,7 +253,6 @@ Hand-drawn animation style reminiscent of Studio Ghibli — soft warm linework, 
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — pixel-art |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -285,7 +270,6 @@ Hand-drawn animation style reminiscent of Studio Ghibli — soft warm linework, 
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — nature |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -303,7 +287,6 @@ Organic earthy illustration with botanical details, hand-drawn natural forms, le
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — minimalist-swiss |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -321,7 +304,6 @@ Strict Swiss-grid minimalist composition with rigorous modular grid alignment, r
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — glassmorphism |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -339,7 +321,6 @@ Modern glassmorphism aesthetic with layered semi-transparent frosted-glass panel
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — vintage-poster |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 
@@ -357,7 +338,6 @@ Mid-century modern poster aesthetic with bold geometric shapes with rounded orga
 | Attribute | Value |
 |---|---|
 | Purpose | Rendering comparison — paper-cut |
-| Type | hero |
 | Aspect ratio | 16:9 |
 | Status | Generated |
 

@@ -6,11 +6,11 @@
 |---|---|---|
 | Palette | **varies (14 palettes)** | under comparison |
 | Rendering | `vector-illustration` | fixed baseline |
-| Type | `hero` | fixed baseline |
+| Composition | single-subject hero — see [`image-generator.md`](../../image-generator.md) §4.1 Primitive A | fixed baseline |
 
 ## Subject
 
-> A confident professional standing beside an upward growth chart, looking forward — single dominant subject occupying 60-70% of the canvas (hero composition).
+> A confident professional standing beside an upward growth chart, looking forward — single dominant subject occupying 60-70% of the canvas. This is the "single-subject hero" composition described as [`image-generator.md`](../../image-generator.md) §4.1 Primitive A, used here as a stable baseline because a single dominant subject makes palette color behavior read most clearly.
 
 ## On HEX values
 

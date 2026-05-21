@@ -4,9 +4,11 @@
 
 | Dimension | Value | Status |
 |---|---|---|
-| Type | **varies (15 types)** | under comparison |
+| Type | **varies (11 types)** | under comparison |
 | Rendering | `vector-illustration` | fixed baseline |
 | Palette | `cool-corporate` | fixed baseline |
+
+> The 11 types here are the **internal geometric skeletons** for `page_role: local` infographic blocks. `page_role: hero_page` images don't pick a type — they use the four composition primitives in [`image-generator.md`](../../image-generator.md) §4.1 instead (single-subject / portrait / typographic / atmospheric), so they don't appear in this comparison set.
 
 ## Subject theme
 
@@ -16,10 +18,6 @@ This abstract theme is chosen deliberately. Each type interprets it through a **
 
 | Type | How the same theme renders under this type |
 |---|---|
-| background | Abstract business growth atmosphere (no central subject) |
-| hero | Single team-leader / representative figure in a confident pose |
-| portrait | Single stylized founder headshot centered, eyes at upper-third |
-| typography | Large numeric "3X" or single-word "SCALE" as the central visual |
 | infographic | Four KPI zones: team / product / customer / revenue |
 | flowchart | Sequential arrows: idea → team → product → customer → growth |
 | framework | Central business node + 4 radiating satellites (team / product / customer / growth) |
@@ -44,10 +42,6 @@ Each type uses its own "natural container shape" (see the default container tabl
 
 | Type | Aspect ratio | Container character |
 |---|---|---|
-| background | 16:9 | Full-bleed backdrop |
-| hero | 16:9 | Wide hero band |
-| portrait | 4:3 | Centered headshot frame |
-| typography | 4:3 | Wide-format display |
 | infographic | 4:3 | Square-ish info block |
 | flowchart | 21:9 | Horizontal banner |
 | framework | 1:1 | Square radial |
@@ -66,7 +60,7 @@ Each filename is `<type>.png`, matching the corresponding file under `references
 
 ## How to read this set
 
-Scan all 15 images side by side. Focus on:
+Scan all 11 images side by side. Focus on:
 
 - **Internal composition skeleton** — central / sequential / radiating / symmetrical / tiled / axis-aligned
 - **Subject density and distribution**

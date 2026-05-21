@@ -15,33 +15,6 @@
   "deck_style_anchor": "Vector-illustration rendering: clean flat vector with bold shapes, sharp edges, no gradients, no shadows. Cool-corporate palette: secondary off-white #F8F9FA dominates background (60-70%), primary deep navy #1E3A5F carries main forms, accent gold #D4AF37 in small emphasis points only.",
   "items": [
     {
-      "filename": "background.png",
-      "purpose": "Type comparison — background (atmospheric backdrop, no central subject)",
-      "type": "background",
-      "aspect_ratio": "16:9",
-      "prompt": "Clean flat vector illustration, atmospheric backdrop composition, NO central subject — the entire canvas is uniform background-grade content suitable for SVG text overlay on top. Subject theme: abstract business growth atmosphere — soft geometric shapes suggesting upward motion (gentle ascending lines, scattered abstract office building silhouettes, faint upward arrows), evenly distributed across the canvas with no focal point. Color behavior is restrained-corporate: secondary off-white #F8F9FA dominates the entire field (about 75%) as a calm overlay-ready surface; primary deep navy #1E3A5F appears only as faint subtle silhouettes and abstract suggestions (about 22%, low contrast); accent gold #D4AF37 appears only as 2-3 tiny scattered highlight dots (under 3%). Designed to be a backdrop — center area must be visually empty for text. No embedded text, no HEX codes visible.",
-      "alt_text": "Background type: abstract business growth atmosphere with subtle navy silhouettes on off-white, designed for text overlay",
-      "status": "Generated"
-    },
-    {
-      "filename": "hero.png",
-      "purpose": "Type comparison — hero (single dominant subject 60-70% of canvas)",
-      "type": "hero",
-      "aspect_ratio": "16:9",
-      "prompt": "Clean flat vector illustration, hero composition with a single dominant subject occupying 60-70% of the canvas. Subject: a confident team leader figure standing in a confident pose, representing team scaling — positioned slightly off-center, looking forward. Surrounding negative space is calm and uncluttered. Color behavior is restrained-corporate: secondary off-white #F8F9FA occupies 60-70% of the canvas as calm breathing space; primary deep navy #1E3A5F carries the main figure in confident solid blocks (clothing, structural shapes); accent gold #D4AF37 appears only in one or two small emphasis points totaling under 5%. No fourth color. 12-20% inner safe-zone padding. No embedded text, no HEX codes visible.",
-      "alt_text": "Hero type: single dominant team leader figure in deep navy on off-white with gold accent",
-      "status": "Generated"
-    },
-    {
-      "filename": "typography.png",
-      "purpose": "Type comparison — typography (large headline / number / single word as visual)",
-      "type": "typography",
-      "aspect_ratio": "4:3",
-      "prompt": "Clean flat vector illustration, typography-as-visual composition where large stylized type IS the central subject. Subject: a large stylized '3X' growth metric occupying about 60% of the canvas as the dominant visual element, with a small abstract upward arrow integrated into the typography. Type is rendered as bold geometric shapes — not a font specimen but typography styled as illustration. Color behavior is restrained-corporate: secondary off-white #F8F9FA dominates the canvas as breathing space (about 60%); primary deep navy #1E3A5F carries the large '3X' typography in confident solid form (about 32%); accent gold #D4AF37 appears only on the integrated arrow or a single underline detail totaling under 8%. No fourth color. The '3X' is the only legible text — no other words or labels visible.",
-      "alt_text": "Typography type: large stylized 3X metric as central visual in deep navy on off-white with gold arrow accent",
-      "status": "Generated"
-    },
-    {
       "filename": "infographic.png",
       "purpose": "Type comparison — infographic (2-5 ordered zones with icons + minimal labels)",
       "type": "infographic",
@@ -93,15 +66,6 @@
       "aspect_ratio": "4:3",
       "prompt": "Clean flat vector illustration, atmospheric scene composition with environmental context and a narrative moment captured. Subject: a team scaling moment — 4-5 people figures collaborating around a table in a stylized modern office environment, one figure pointing at a wall-mounted growth chart, soft window light suggested through stylized window shapes on one wall. Scene-level depth with foreground subjects and background environment. Color behavior is restrained-corporate: secondary off-white #F8F9FA dominates the environment — walls, window light, table surface (about 60%); primary deep navy #1E3A5F carries the figures, structural environment shapes, and the growth chart on the wall in confident solid fills (about 32%); accent gold #D4AF37 appears only as warm window light highlights and one or two small environment details totaling under 8%. No fourth color. No readable text on the wall chart or in the environment. No HEX codes visible.",
       "alt_text": "Scene type: team collaboration around a table with wall growth chart in modern office, deep navy on off-white with gold light",
-      "status": "Generated"
-    },
-    {
-      "filename": "portrait.png",
-      "purpose": "Type comparison — portrait (single person headshot/upper body, neutral background)",
-      "type": "portrait",
-      "aspect_ratio": "4:3",
-      "prompt": "Clean flat vector illustration, portrait composition with a single stylized person centered in the frame, head-and-shoulders view, neutral or minimal background. Subject (under the 'team scaling' theme): a single stylized confident business founder portrait — calm thoughtful expression, professional contemporary styling, eyes positioned at the upper-third horizontal line, generous padding around the head. Color behavior is restrained-corporate: secondary off-white #F8F9FA fills the background field around the figure (about 60%); primary deep navy #1E3A5F carries the figure's clothing, hair, and structural silhouette in flat solid fills (about 33%); accent gold #D4AF37 appears only as one small detail — a lapel pin, or a single warm light highlight on the cheek — totaling under 7%. No fourth color. Simplified stylized silhouette, no realistic face details, no embedded text or name labels. No HEX codes visible.",
-      "alt_text": "Portrait type: single stylized founder headshot centered with eyes at upper-third, deep navy figure on off-white field with gold detail",
       "status": "Generated"
     },
     {

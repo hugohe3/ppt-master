@@ -9,9 +9,9 @@ This directory uses **controlled-variable comparison** — vary one dimension wh
 
 | Subdirectory | Count | Variable | Fixed baseline |
 |---|---|---|---|
-| [`rendering/`](./rendering/) | 20 | rendering (20 styles) | type=hero, palette=cool-corporate |
-| [`palette/`](./palette/) | 14 | palette (14 color behaviors) | type=hero, rendering=vector-illustration |
-| [`type/`](./type/) | 15 | type (15 internal compositions) | rendering=vector-illustration, palette=cool-corporate |
+| [`rendering/`](./rendering/) | 20 | rendering (20 styles) | single-subject hero composition (§4.1 Primitive A), palette=cool-corporate |
+| [`palette/`](./palette/) | 14 | palette (14 color behaviors) | single-subject hero composition (§4.1 Primitive A), rendering=vector-illustration |
+| [`type/`](./type/) | 11 | type (11 internal compositions for `page_role: local`) | rendering=vector-illustration, palette=cool-corporate |
 
 Each subdirectory contains:
 
@@ -19,13 +19,15 @@ Each subdirectory contains:
 - `_manifest.json` — generation manifest (status=Pending), runnable via `image_gen.py --manifest`
 - `<dimension>.png` — the generated image for each rendering / palette / type
 
+> `page_role: hero_page` images don't pick an `image_type` — they use the four composition primitives in [`image-generator.md`](../image-generator.md) §4.1 directly (single-subject / portrait / typographic / atmospheric). The 11 types in `type/` are for local infographic blocks only.
+
 ## Why these baselines
 
 | Choice | Reason |
 |---|---|
-| rendering=`vector-illustration` | Most versatile in the catalog; ✓✓ compatible with all 10 palettes; minimal interference when used as the "origin" for palette / type comparisons |
+| rendering=`vector-illustration` | Most versatile in the catalog; ✓✓ compatible with all 14 palettes; minimal interference when used as the "origin" for palette / type comparisons |
 | palette=`cool-corporate` | Most neutral and most common; simple color behavior (HEX 60-30-10 applied directly) so it doesn't overpower the dimension under comparison |
-| type=`hero` | Single dominant subject (60-70% of canvas); most visually representative composition; differences in rendering / palette show up most clearly |
+| composition=single-subject hero (§4.1 Primitive A) | One dominant subject (60-70% of canvas) — the most visually representative shape, so rendering / palette differences show up most clearly |
 
 ## How the images were generated
 
