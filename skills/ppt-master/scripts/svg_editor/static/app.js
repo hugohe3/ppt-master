@@ -38,6 +38,7 @@
             err_save: "Save failed: ",
             err_empty_svg: "Slide loaded but the canvas is empty. The SVG may be malformed or missing a root <svg> element.",
             warn_icon_inline: "{count} icon(s) failed to render: {names}",
+            warn_svg_no_dims: "SVG is missing width/height attributes. Please ask the AI to strictly follow shared-standards.md §4 and include width & height in the SVG root element.",
             slide_error_tooltip: "Failed to parse this slide: ",
             reload_banner: "This slide was updated on disk. Click to reload.",
             modal_confirm_submit: "Submit annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.",
@@ -84,6 +85,7 @@
             err_save: "保存失败:",
             err_empty_svg: "幻灯片已加载但画布为空。SVG 可能损坏或缺少根 <svg> 元素。",
             warn_icon_inline: "{count} 个图标渲染失败:{names}",
+            warn_svg_no_dims: "SVG 缺少 width/height 属性，预览可能异常。请让 AI 严格遵守 shared-standards.md §4 规范，在 SVG 根元素中补全 width 和 height。",
             slide_error_tooltip: "该幻灯片解析失败:",
             reload_banner: "当前页已在磁盘上更新,点此重新加载。",
             modal_confirm_submit: "确认将标注保存到磁盘?\n\n预览服务会继续运行。需要关闭时请点击退出预览。",
@@ -332,6 +334,10 @@
         // Selecting a slide implicitly dismisses any stale "page updated" banner.
         hideReloadBanner();
 
+        // Remove any stale spec-violation banner from a previous load.
+        var oldSpecBanner = document.getElementById("spec-banner");
+        if (oldSpecBanner) oldSpecBanner.remove();
+
         fetch("/api/slide/" + encodeURIComponent(name))
             .then(function (res) { return res.json(); })
             .then(function (data) {
@@ -354,6 +360,17 @@
                 // Empty-canvas guard: surface a clear error if the SVG parsed
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
+                // Spec observability: missing width/height → red banner only
+                if (rootSvg && !rootSvg.hasAttribute("width")) {
+                    var specBanner = document.createElement("div");
+                    specBanner.id = "spec-banner";
+                    specBanner.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);"
+                        + "background:#fee2e2;color:#b91c1c;border:2px solid #f87171;border-radius:8px;"
+                        + "padding:24px 36px;font-size:16px;font-weight:bold;text-align:center;z-index:9999;"
+                        + "width:420px;line-height:1.6;box-shadow:0 4px 12px rgba(0,0,0,0.15);";
+                    specBanner.textContent = t("warn_svg_no_dims");
+                    document.body.appendChild(specBanner);
+                }
                 var hasContent = false;
                 if (rootSvg) {
                     var children = rootSvg.querySelectorAll("*");
