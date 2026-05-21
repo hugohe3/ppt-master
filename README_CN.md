@@ -23,6 +23,7 @@
   <a href="https://www.hehugo.com/"><strong>关于何雨果</strong></a> ·
   <a href="./examples/"><strong>示例下载</strong></a> ·
   <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·
+  <a href="./docs/zh/roadmap.md"><strong>路线图</strong></a> ·
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
 </p>
 
