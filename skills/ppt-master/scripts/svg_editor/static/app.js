@@ -354,6 +354,18 @@
                 // Empty-canvas guard: surface a clear error if the SVG parsed
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
+                // DOMParser → XMLSerializer round-trip strips implicit dimensions,
+                // collapsing the SVG to 0×0 in the browser. Backfill from viewBox.
+                if (rootSvg && !rootSvg.hasAttribute("width")) {
+                    var vb = rootSvg.getAttribute("viewBox");
+                    if (vb) {
+                        var parts = vb.trim().split(/[\s,]+/);
+                        if (parts.length === 4) {
+                            rootSvg.setAttribute("width", parts[2]);
+                            rootSvg.setAttribute("height", parts[3]);
+                        }
+                    }
+                }
                 var hasContent = false;
                 if (rootSvg) {
                     var children = rootSvg.querySelectorAll("*");
