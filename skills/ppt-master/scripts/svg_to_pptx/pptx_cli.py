@@ -64,7 +64,7 @@ def main() -> None:
     animation_choices = (
         ['none'] + (list(_ANIMATIONS.keys()) if _ANIMATIONS
                     else ['fade', 'fly', 'zoom', 'appear'])
-        + ['mixed', 'random']
+        + ['auto', 'mixed', 'random']
     )
 
     parser = argparse.ArgumentParser(
@@ -92,14 +92,17 @@ Transition effects (-t/--transition):
 Per-element entrance animation (-a/--animation, native shapes mode):
     {', '.join(animation_choices)}
     Notes: applied to top-level <g id="..."> SVG groups in z-order. Default is
-           "mixed" (auto-vary effects per group). Start mode set by
+           "auto" (map effect from group id: chart→wipe, card-/step-/pillar-→fly,
+           title/takeaway→fade; image-like ids hero/figure-/image/img-/kpi cycle
+           zoom/dissolve/circle/box/diamond/wheel so multiple images vary across
+           the deck; unmatched ids cycle fade/wipe/fly/zoom). Start mode set by
            --animation-trigger, matching PowerPoint's Start dropdown:
              on-click              one presenter click per group
              with-previous         all groups start together on slide entry
              after-previous (default)  cascade on slide entry;
                                        gap = --animation-stagger seconds
-           mixed uses a curated visible-effect sequence across the deck; random samples
-           from the same visible-effect pool. Use "-a none" to disable.
+           mixed (legacy) cycles a larger 16-effect pool by group order;
+           random samples from the same legacy pool. Use "-a none" to disable.
 
 Compatibility mode (enabled by default):
     - Automatically generates PNG fallback images, SVG embedded as extension
@@ -188,8 +191,11 @@ Recorded narration:
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
                         default=None,
                         help='Per-element entrance animation (native shapes mode '
-                             'only). Pick a single effect, "mixed" (auto-vary per '
-                             'element, default), "random", or "none" to disable.')
+                             'only). Pick a single effect, "auto" (default; map '
+                             'effect from group id — image-like ids cycle a richer '
+                             'pool for visual variation, fallback cycles fade/wipe/'
+                             'fly/zoom), "mixed" (legacy 16-effect pool), "random", '
+                             'or "none" to disable.')
     parser.add_argument('--animation-duration', type=non_negative_float, default=None,
                         help='Per-element entrance duration in seconds (default: 0.4)')
     parser.add_argument('--animation-trigger', type=str,
@@ -418,7 +424,7 @@ Recorded narration:
     animation_effect = (
         animation_arg
         if animation_arg is not None
-        else animation_defaults.get('effect', 'mixed')
+        else animation_defaults.get('effect', 'auto')
     )
     animation = None if animation_effect == 'none' else animation_effect
     animation_duration = (

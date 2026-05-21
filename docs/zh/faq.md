@@ -84,7 +84,7 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 ## Q: 页面切换和元素动画可以调吗？
 
-可以。页间转场（默认 `fade` 0.4s）和页内元素入场动画（默认 `mixed` 效果 + `after-previous` 自动级联）都通过 `svg_to_pptx.py` 的参数控制——`-t/--transition` 控制页级，`-a/--animation` 控制元素级。常用一行命令：
+可以。页间转场（默认 `fade` 0.4s）和页内元素入场动画（默认 `auto` 效果 + `after-previous` 自动级联，根据每个 group 的 SVG id 自动映射效果——图片类 id 在视觉池中循环以产生 deck 内变化）都通过 `svg_to_pptx.py` 的参数控制——`-t/--transition` 控制页级，`-a/--animation` 控制元素级。常用一行命令：
 
 ```bash
 uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # 换转场效果
