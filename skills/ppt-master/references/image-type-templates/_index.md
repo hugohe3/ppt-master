@@ -10,7 +10,7 @@ A **type** describes the **internal geometric composition skeleton** of a local 
 
 - *not* "what this image is for in the PPT page" — that's `page_role` (`local` vs `hero_page`, see [`image-generator.md`](../image-generator.md) §1)
 - *not* "what subject occupies the image" — single subject, single person, big number, no subject: these are all expressible through §4.1 hero-page primitives or natural-language prompt description, not through types
-- *not* "what genre the image is" — Background / Photography / Illustration / Diagram / Decorative is a narrative shorthand in `design_spec.md §VIII Genre`, not the same vocabulary as `image_type`
+- *not* a high-level asset category — the row's `Purpose` + `Reference` columns in `design_spec.md §VIII` already carry that, no separate vocabulary needed
 
 **When to skip type entirely** — when `page_role: hero_page` (the image is the page's main voice: cover, chapter divider, mood transition, signature stat, closing quote), do **not** pick a type. Instead describe the composition directly using the four primitives in [`image-generator.md`](../image-generator.md) §4.1 (single-subject / portrait / typographic / atmospheric). The 11 types below are for local infographic blocks only.
 
