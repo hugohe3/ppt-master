@@ -31,6 +31,7 @@ AI images exist to serve the deck's communication goal. Pick whatever combinatio
 - Same `deck_rendering` + same `deck_palette` for every image in the deck
 - HEX codes and color names are rendering guidance — never visible text in the image
 - Long body copy / data points / bulleted lists / long quotes stay in SVG (improving them later means regenerating the image, which is expensive)
+- **In-image text is only for words that will not need editing later** — visual keywords, decorative lettering, mood words. Editable text (titles that may be reworded, subtitles, dates, authors, captions, body) belongs in SVG. Changing one in-image word costs an image regeneration; one SVG word costs a keystroke.
 - Prompts are one coherent prose paragraph, not tag soup (a model-output reality, not an aesthetic choice)
 
 Everything else is the AI's judgment per page. No mandated padding, no type-locked text_policy, no scenario whitelists for hero_page.
@@ -45,7 +46,7 @@ Every AI image is described by three orthogonal dimensions. Lock them in this or
 |---|---|---|
 | **Rendering** | Visual style family (vector / sketch-notes / 3d-isometric / corporate-photo / …) | Once per deck — every AI image in the deck shares one rendering |
 | **Palette** | How the deck's HEX colors are *used* (proportion + role + temperament). HEX values come from `design_spec.colors`, not from the palette | Once per deck |
-| **Type** | What the image's internal composition looks like (background / hero / infographic / framework / comparison / timeline / scene / flowchart / typography) | Per image |
+| **Type** | What the image's internal composition skeleton looks like — geometric layout of a local infographic block (infographic / flowchart / framework / matrix / cycle / funnel / pyramid / comparison / timeline / map / scene). Only applies to `page_role: local`; for `page_role: hero_page`, describe composition with §4.1 primitives instead of picking a type. | Per image |
 
 > **What rendering vs palette means**: rendering is *how the image is drawn* (line quality, texture, depth). Palette is *how colors are distributed and behave* (which color dominates, which is accent, what proportion). The HEX values come from Strategist; palette is the **usage contract** for those HEX values.
 
@@ -113,7 +114,7 @@ Then `read_file` the **single resolved** rendering file and the **single resolve
 
 For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
-1. **Determine type** by matching the row's `Purpose` against types `_index.md` auto-selection table (cover background → `background`; product launch hero → `hero`; methodology visualization → `framework`; etc.) The narrative-shorthand `Type` column in §VIII (Background/Photography/Illustration/Diagram/Decorative) is a hint, not the type's final value — `Purpose` is authoritative for picking among the 9 internal-composition types.
+1. **Determine type** — only when `page_role: local` (the image sits as a region block on an SVG page). Match the row's `Purpose` against the `_index.md` auto-selection table (methodology visualization → `framework`; process steps → `flowchart`; SWOT/Eisenhower → `matrix`; PDCA / flywheel → `cycle`; etc.). `Purpose` is authoritative for picking among the 11 internal-composition types. **When `page_role: hero_page`, skip type selection** and describe composition directly using §4.1 primitives (single-subject / portrait / typographic / atmospheric).
 2. **Determine `text_policy`** — Strategist's value wins when set. Otherwise pick `none` or `embedded` based on whether in-image text serves the page. Long body / data / lists stay in SVG.
 3. **Determine `page_role`** — Strategist's value wins when set. Otherwise pick `local` or `hero_page` based on whether the image carries the page or sits inside one.
 4. `read_file references/image-type-templates/<type>.md` (only if not already read — types are commonly reused across images in one deck)
@@ -156,6 +157,52 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 
 This produces generic, model-average output. The model is not weighting your tags — write **one coherent visual scene** instead.
 
+### 4.1 Hero-page composition primitives
+
+When `page_role: hero_page` (the image is the page's main voice — cover, chapter divider, mood transition, signature stat, closing quote), the image's internal composition does not need its own structural `type` (matrix / cycle / framework etc. are for *local* infographic blocks). Instead, describe the composition directly in the prompt using one of the four primitives below.
+
+**Primitive A — single dominant subject (product / object / concept hero)**
+
+> One dominant subject occupying 60-70% of the canvas, positioned with intent (centered, rule-of-thirds offset, or slight left/right). Supporting context <30% of canvas weight. Generous negative space — at least 15% padding on the subject's "open" side. No second-place subject competing.
+
+Use for: product reveal, concept introduction, chapter title visual, brand statement.
+
+**Primitive B — single human subject (portrait)**
+
+> One person, frontal or three-quarter turn, head + upper body. Subject occupies 50-65% of canvas height, centered or rule-of-thirds offset. Eyes at the upper-third horizontal line. Background neutral, minimal, or softly blurred. No competing foreground objects. At least 15% padding above the crown.
+
+Use for: founder profile, speaker bio, testimonial page, executive intro. Pair with `rendering: corporate-photo` for photographic realism; otherwise the §5.2 simplified-figures rule applies.
+
+**Primitive C — typographic hero (the text *is* the image)**
+
+> The image's central content is one large text element — a short headline, big number, or single word — rendered as art, occupying 40-60% of canvas height. Minimal supporting visual (small icon, geometric anchor, accent line) at <25% weight. At least 20% padding around the text.
+
+Use with `text_policy: embedded`. Must obey the §5.3 text-accuracy rules (English short-text and simple numbers reliable; CJK and long sentences fail — for those, switch to Primitive D + SVG overlay).
+
+**Primitive D — atmospheric backdrop (no subject)**
+
+> Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. Small geometric anchor optional, placed in a corner or along an edge, never centered. The center 60-70% of the canvas must stay calm to receive SVG title/text overlay.
+
+Use for: cover background, chapter divider background, breathing-page background, any page where the SVG layer carries the words and the image only sets tone.
+
+**Fewshot examples per primitive** (one each, deck-context placeholders intact):
+
+> **A — 3d-isometric + tech-neon product reveal, text_policy: none, 600×600**
+>
+> 3D isometric illustration in true 30°/30°/30° projection. One dominant product-form subject — a stylized device or sleek tech object — occupies the center of the canvas at roughly 65% of the area. The subject is rendered in primary electric blue `#0EA5E9` on its lit faces, with 15% darker tonal shift on shadowed faces. A subtle 8%-opacity outer glow halo surrounds the subject. Small supporting context: three thin connecting lines in accent vivid cyan `#06B6D4` arcing from the subject toward the canvas edges (suggesting connectivity), and a soft 8% drop shadow grounding the subject. Background is deep secondary navy `#0A0E27` (about 30% of canvas, including shadowed plane). The subject is clearly the singular focal element. Composed as a 600×600 hero block with 15% padding around the subject. NO text, letters, numbers, or labels anywhere. Color values are rendering guidance only.
+
+> **B — corporate-photo + cool-corporate executive headshot, text_policy: none, 600×800**
+>
+> Editorial corporate portrait photograph of one professional executive. The person is centered slightly left of canvas center, photographed from chest-up at eye level, looking confidently toward the camera with a relaxed natural expression — not posed-stiff, not over-smiling. Professionally attired in a contemporary business setting (a tailored blazer, neutral palette clothing). Soft natural light from the upper left, gentle shadow on the right side of the face. Diverse, professionally attired subject, photorealistically rendered, contemporary styling. Background is a softly out-of-focus office context — secondary light gray `#F8F9FA` wall with a subtle hint of primary deep navy `#1E3A5F` in a blurred architectural element. Color grading is cool-corporate — restrained, professional. Shallow depth of field — subject sharp, background gently blurred. Subject's eyes positioned at the upper-third horizontal line. Composed as a 600×800 bio portrait with 10% padding. NO text, name tags, or captions in the image. Color values are rendering guidance only.
+
+> **C — ink-notes + mono-ink big-number stat, text_policy: embedded, 800×500**
+>
+> Professional hand-drawn visual-note style on pure white background. The image's central content is the hand-lettered number "100x" — rendered in bold confident ink strokes occupying about 50% of the canvas height, centered with deliberate slight wobble characteristic of hand-lettering. Text is in English/Latin characters only. Beneath the number, a thin hand-drawn underline in ink. To the side of the number, one small hand-drawn doodle decoration — a star or upward arrow — adds visual rhythm. Accent coral `#E8655A` (from the deck's accent) appears only as a tiny emphasis dot, totaling under 4% of canvas. Background is pure white `#FFFFFF`. Composed as an 800×500 typographic hero block with 20% padding around the number. No other text or labels in the image — just the "100x" headline and the small doodle.
+
+> **D — vector-illustration + cool-corporate cover background, text_policy: none, 1280×720**
+>
+> Clean flat vector illustration backdrop. Atmospheric composition with no central subject — bold geometric shapes arranged along the canvas edges to leave the center calm. Primary deep navy `#1E3A5F` forms a confident diagonal block across the lower-left third; secondary light gray `#F8F9FA` occupies the upper two-thirds as breathing space; accent gold `#D4AF37` appears only as one thin geometric line near the lower right corner (under 5% of canvas). Crisp 2px outlines, no gradients, single 8% soft drop shadow under the navy block. The central 60% of the canvas is deliberately calm and unbusy — designed to receive a slide title overlaid in SVG. Composed as a 1280×720 full-bleed PPT background. NO text, letters, numbers, signs, watermarks, or written symbols anywhere in the image. Color values are rendering guidance only — do not display HEX codes or color names as text. Simplified geometric shapes only.
+
 ---
 
 ## 5. Global Hard Rules
@@ -185,25 +232,62 @@ Exception: when the chosen rendering is `corporate-photo`, photorealism is inten
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
 | `embedded` | Describe the text directly inside the visual scene: the word(s), how they're rendered (decorative lettering / designed title / hand-lettered keyword), and the artistic treatment. Examples below. |
 
+**When to pick `embedded` — the edit-stability test**
+
+Before adding any word to the image, ask: *will this word ever need to be changed?* If yes, it belongs in SVG, not the image. The bar is high — in-image text is for words that are part of the visual itself.
+
+| Page situation | Recommended approach |
+|---|---|
+| **hero_page** — cover, chapter divider, section opener | **Two-layer**: 1-3 high-impact visual keywords go *in* the image (`embedded`); subtitle, date, author, organization, edition, body intro stay on the SVG overlay. **Do not** put the full title block (main + subtitle + author + date) into the image — any later wording change forces an image regen. |
+| **local image — infographic / framework / flowchart / matrix / cycle / comparison** | `none` — labels live as SVG text so they stay editable. The image carries the structure; SVG carries the words. |
+| **local image — decorative background / scene / portrait** | `none` by default. Use `embedded` only if a decorative word *is* the visual (e.g. a giant "GROWTH" lettering as wall art). |
+| **Poster / standalone marketing-style page** | `embedded` allowed for the visual core word; auxiliary copy still SVG. |
+
+The principle in one line: **the image gets the unchanging visual keywords; SVG gets everything readable that might be reworded**.
+
 **Prompt phrasing examples for embedded text** (not an exhaustive list):
 
 - Decorative: "large 'GROWTH' lettering as a background element, 3D extruded retro chrome style"
 - Designed title: "main title 'Q3 STRATEGY' typeset in clean geometric sans-serif, centered"
 - Hand-lettered set: "small hand-lettered annotations 'fast', 'cheap', 'good' woven into the sketch"
 
-**Echoing the deck's SVG typography** — when the page's SVG already locked a font family in `spec_lock.md typography`, the AI image's lettering should describe a compatible style so cover/chapter titles in the image cohere with body text on adjacent SVG pages.
+**Font choice for in-image text — free description, with the deck typography as one optional reference**
 
-| `spec_lock typography.font_family` contains | Prompt descriptor for AI image text |
+The font for in-image text is a free natural-language description, not an enum. Pick whatever serves the image: blackletter for a heritage cover, hand-brushed for a manifesto poster, retro chrome 3D for Y2K, art-deco display for a luxury hero, ribbon script for a bookstore zine — any artistic treatment the image earns.
+
+The table below is **a reference for the one case where you want the in-image lettering to read as the same typographic family as the SVG body** (e.g. a clean editorial deck where the cover title in the image should feel like the body Helvetica, not a surprise blackletter). Use it as a starting point, not a constraint.
+
+| `spec_lock typography.font_family` contains | Optional descriptor if you want to echo the SVG body |
 |---|---|
 | `KaiTi` / `FangSong` / `Georgia` / serif families | "elegant serif lettering, refined letterforms" |
 | `Microsoft YaHei` / `PingFang SC` / `Arial` / sans-serif families | "clean geometric sans-serif, modern letterforms" |
 | `SimHei` / `Impact` / `Arial Black` / display families | "bold display lettering, heavy expressive strokes" |
 | `Consolas` / `Courier New` / monospace families | "monospace technical lettering, fixed-width" |
-| Decorative / handwritten contexts (sketch-notes / ink-notes rendering, or no family specified) | "hand-lettered organic strokes, natural variation" |
+| sketch-notes / ink-notes rendering, or no family specified | "hand-lettered organic strokes, natural variation" |
 
-Pick the row whose family appears in the SVG stack. For decorative text (background lettering, posters), this constraint relaxes — describe the artistic treatment freely. Designed titles (cover main title, chapter heading) should echo the deck's family.
+**When to ignore the table**:
 
-**CJK note**: most image models render Chinese characters poorly. For embedded text on a CJK deck, prefer English in the image or accept malformed glyphs.
+- Decorative / background lettering, posters, large mood words → describe the artistic treatment freely
+- Cover hero title that wants its own visual identity (blackletter, retro chrome, art-deco display, brushed script) → describe freely
+- Sketch-notes / ink-notes / hand-drawn renderings where the lettering is part of the rendering itself → describe freely
+- Any case where rendering + palette already imply a font character (e.g. `vintage-poster` rendering implies period display lettering) → trust the rendering, no need to echo SVG body
+
+**When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
+
+**In-image text accuracy — what image models can and cannot render reliably**
+
+Image models have **variable accuracy on text rendering**. Pick the in-image text content with this in mind, especially for §4.1 Primitive C (typographic hero) where the word *is* the image:
+
+| Content | Reliability |
+|---|---|
+| English short text (1-5 characters, one short word) | High — most modern models render correctly most of the time |
+| English longer text (full sentences) | Low — typos, glyph errors, dropped letters |
+| Simple numbers / symbols (`100`, `5x`, `$50M`, `∞`, `?`) | Variable — verify after generation, often fail at large display scale |
+| Chinese / Japanese / Korean characters | Very low — most models fail consistently |
+
+**Prefer in-image**: a short English word (1-2 words max), a simple number, a single symbol or letter.
+
+**Push to SVG overlay instead**: long quotes / sentences, CJK headlines, complex composite text. When the desired headline is long or CJK, switch to **Primitive D (atmospheric backdrop)** and overlay the headline as SVG text.
 
 ### 5.4 No brand names or trademarks in the subject
 
@@ -230,13 +314,23 @@ Write `project/images/image_prompts.json` with this shape:
     {
       "filename": "cover_bg.png",
       "purpose": "Cover background (Slide 01)",
-      "type": "background",
-      "page_role": "local",
+      "page_role": "hero_page",
       "text_policy": "none",
       "aspect_ratio": "16:9",
       "image_size": "2K",
-      "prompt": "{fully assembled paragraph per §4}",
+      "prompt": "{fully assembled paragraph per §4 — use §4.1 Primitive D for atmospheric cover}",
       "alt_text": "Modern tech abstract background with deep blue gradient and digital waves",
+      "status": "Pending"
+    },
+    {
+      "filename": "framework_p05.png",
+      "purpose": "Methodology framework (Slide 05)",
+      "type": "framework",
+      "page_role": "local",
+      "text_policy": "none",
+      "aspect_ratio": "4:3",
+      "image_size": "1K",
+      "prompt": "{fully assembled paragraph per §4}",
       "status": "Pending"
     }
   ]
@@ -251,7 +345,7 @@ Write `project/images/image_prompts.json` with this shape:
 | `deck_palette` | yes | Step 2 lock | Single palette name shared by all items |
 | `color_scheme` | yes | `design_spec.md §III` | HEX triplet from Strategist |
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
-| `items[].type` | yes | Step 3 per-image | One of: `background`, `hero`, `portrait`, `typography`, `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene` |
+| `items[].type` | conditional | Step 3 per-image (only when `page_role: local`) | One of 11 internal-composition types: `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene`. **Omit `type` entirely when `page_role: hero_page`** — the composition comes from §4.1 primitives written directly into the prompt, not from a type file. |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
 | `items[].text_policy` | yes | Step 3 per-image | `none` (default — no text in image) or `embedded` (image contains decorative lettering, designed title, or hand-lettered keywords) |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
@@ -260,6 +354,8 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].alt_text` | no | Accessibility | Short caption |
 | `items[].status` | yes | CLI manages | `Pending` initially; CLI updates to `Generated` / `Failed` / `Needs-Manual` |
 
+> **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests should follow the rule above (omit `type` when `page_role: hero_page`).
+>
 > Existing manifests without `deck_rendering` / `deck_palette` / `type` / `page_role` / `text_policy` remain valid — older items default to `page_role: local`, `text_policy: none`. Legacy `page_role: full_page` (pre-2026-05-15) is read as `hero_page`.
 
 ---
@@ -401,14 +497,15 @@ When the Resource List row has no `Reference`, infer a reasonable image from `Pu
 
 | Purpose | A reasonable starting point |
 |---------|-----------------------------|
-| Cover | `type: background` or `hero`; choose page_role and text_policy by what the cover should communicate |
-| Chapter divider | `type: background` or `hero`; often `hero_page` with a designed chapter title |
-| Methodology / framework illustration | `type: framework` |
-| Process / workflow illustration | `type: flowchart` |
-| Before/After or two-option page | `type: comparison` |
-| Team / lifestyle photo | `type: scene`; rendering = `corporate-photo` or `warm-scene` |
-| Big-number / hero quote block | `type: typography` or `hero`; often `hero_page` |
-| Mood transition / atmosphere | `type: scene` or `background`; often `hero_page` |
+| Cover | `page_role: hero_page` + §4.1 Primitive A (single-subject) or D (atmospheric); choose `text_policy` by what the cover should communicate |
+| Chapter divider | `page_role: hero_page` + Primitive D (atmospheric) or A (single-subject); often `text_policy: embedded` with a designed chapter title |
+| Methodology / framework illustration | `type: framework`, `page_role: local` |
+| Process / workflow illustration | `type: flowchart`, `page_role: local` |
+| Before/After or two-option page | `type: comparison`, `page_role: local` |
+| Team / lifestyle photo (group) | `type: scene`, `page_role: local`; rendering = `corporate-photo` or `warm-scene` |
+| Single-person headshot / bio | `page_role: local` + §4.1 Primitive B (portrait); rendering = `corporate-photo` for photo realism |
+| Big-number / hero quote block | `page_role: hero_page` + §4.1 Primitive C (typographic); `text_policy: embedded` |
+| Mood transition / atmosphere | `page_role: hero_page` + Primitive D (atmospheric), or `type: scene` if narrative |
 
 ### When Images Are Unsatisfactory
 

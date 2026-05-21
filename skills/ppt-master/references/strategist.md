@@ -401,7 +401,6 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | Layout suggestion | e.g., `Wide landscape (suitable for full-screen/illustration)` |
 | **Layout pattern** | **MANDATORY** — one or more `#<id> <name>` joined by ` + ` from `image-layout-patterns.md`. Combine a Primary id with optional Modifier ids when the page needs it (e.g. `#48 side-by-side comparison + #21 rounded rectangle crop + #29 two-stop scrim`). A single Primary is fine when the page calls for it. See the GATE earlier in this section. Empty cells or invented ids are invalid. |
 | Purpose | e.g., `Cover background` |
-| Type | Narrative shorthand: Background / Photography / Illustration / Diagram / Decorative pattern. (The internal-composition type used by Image_Generator — one of `background / hero / typography / infographic / flowchart / framework / comparison / timeline / scene` — is inferred from `Purpose` per [`image-type-templates/_index.md`](./image-type-templates/_index.md); no need to label every row.) |
 | **Acquire Via** | `ai` / `web` / `user` / `placeholder` — drives Step 5 dispatch |
 | Status | Initial status must be `Pending`, `Existing`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
 | **Reference** | Free-form **intent description** (NOT a search query); feeds Image_Generator (ai) or Image_Searcher (web) |
@@ -441,16 +440,6 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | `web` | "Diverse team collaborating at a modern office desk, professional editorial photography, natural light, laptop visible" |
 | `ai` | "Atmospheric backdrop suggesting digital innovation; calm central area reserved for slide title overlay; light geometric anchor at one edge" |
 | `ai` | "Four-stage value chain from raw input to R&D output; icons should suggest tax-form → cost-reduction → equipment-upgrade → innovation; no text labels (SVG overlays them)" |
-
-**Image type descriptions**:
-
-| Type | Suitable Scenarios |
-|------|-------------------|
-| Background | Full-page backgrounds for covers/chapter pages; reserve text area |
-| Photography | Real scenes, people, products, architecture |
-| Illustration | Flat design, vector style, concept diagrams |
-| Diagram | Flowcharts, architecture diagrams, concept relationship maps |
-| Decorative pattern | Partial decoration, textures, borders, divider elements |
 
 🚧 **GATE — before writing §VIII Image Resource List**: when image approach is B/C/D/E (anything other than A "no images"), this is a three-layer hard requirement, not a suggestion:
 
