@@ -240,8 +240,8 @@ Catalog read: 71 templates
 
 ## VIII. Image Resource List (if needed)
 
-| Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
-| -------- | --------- | ----- | ------- | ---- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
+| Filename | Dimensions | Ratio | Purpose | Genre | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
+| -------- | --------- | ----- | ------- | ----- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
 | cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
 
 > **Layout pattern column is MANDATORY** — value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).
@@ -252,7 +252,7 @@ Catalog read: 71 templates
 - **Existing** — user-supplied, place in `images/`
 - **Placeholder** — not yet processed, use dashed border in SVG
 
-**Type** (narrative shorthand — kept for backward compatibility; Image_Generator infers its 9-way internal-composition type from `Purpose`):
+**Genre** (narrative shorthand for the row — describes what kind of asset this is, not the geometric composition. Image_Generator infers its 11-way internal-composition `image_type` from `Purpose` independently; for `page_role: hero_page` rows, no type is needed at all — see [`references/image-generator.md`](../references/image-generator.md) §4.1 primitives):
 
 - **Background** — full-page (covers / chapters); reserve text area
 - **Photography** — real scenes, people, products, architecture
