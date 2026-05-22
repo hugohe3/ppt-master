@@ -1,3 +1,12 @@
+---
+layout_id: academic_defense
+kind: layout
+summary: Thesis defense, academic presentations, research progress reports, grant applications.
+canvas_format: ppt169
+page_count: 5
+page_types: [cover, toc, chapter, content, ending]
+---
+
 # Academic Defense Template - Design Specification
 
 > Suitable for academic thesis defense, research presentations, graduation project showcases, and similar scenarios.
@@ -27,66 +36,7 @@
 
 ---
 
-## III. Color Scheme
-
-### Primary Colors
-
-| Role           | Value       | Notes                            |
-| -------------- | ----------- | -------------------------------- |
-| **Primary Dark Blue** | `#003366` | Header background, section titles, main headings |
-| **Accent Blue** | `#0066CC` | Card borders, icons, secondary decorations |
-| **Accent Red** | `#CC0000`  | Key highlights, keyword emphasis, left decorative bar |
-| **Light Blue-Gray** | `#E8F4FC` | Key message bar background, card inner sections |
-| **Background White** | `#FFFFFF` | Page main background           |
-
-### Text Colors
-
-| Role           | Value       | Usage                  |
-| -------------- | ----------- | ---------------------- |
-| **White Text** | `#FFFFFF`   | Text on dark backgrounds |
-| **Primary Text** | `#333333` | Body content           |
-| **Secondary Text** | `#666666` | Descriptions, annotations |
-| **Muted Gray** | `#999999`  | Footer, auxiliary info |
-
-### Neutral Colors
-
-| Role           | Value       | Usage                  |
-| -------------- | ----------- | ---------------------- |
-| **Card Gray**  | `#F5F7FA`   | Card inner background, info blocks |
-| **Border Gray** | `#D0D7E0`  | Card borders, dividers |
-
-### Functional Colors
-
-| Usage      | Value       | Description    |
-| ---------- | ----------- | -------------- |
-| **Success** | `#28A745`  | Positive indicators |
-| **Warning** | `#FFA500`  | Alerts         |
-| **Info**   | `#17A2B8`   | Information tips |
-
----
-
-## IV. Typography System
-
-### Font Stack
-
-**Font Stack**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
-
-### Font Size Hierarchy
-
-| Level | Usage            | Size | Weight  |
-| ----- | ---------------- | ---- | ------- |
-| H1    | Cover main title | 56px | Bold    |
-| H2    | Page title       | 28px | Bold    |
-| H3    | Section title    | 56px | Bold    |
-| H4    | Card title       | 24px | Bold    |
-| P     | Body content     | 18px | Regular |
-| High  | Highlighted data | 36px | Bold    |
-| Sub   | Notes/sources    | 14px | Regular |
-| XS    | Page number/copyright | 12px | Regular |
-
----
-
-## V. Page Structure
+## III. Page Structure
 
 ### General Layout
 
@@ -105,7 +55,7 @@
 
 ---
 
-## VI. Page Types
+## IV. Page Types
 
 ### 1. Cover Page (01_cover.svg)
 
@@ -155,7 +105,17 @@
 
 ---
 
-## VII. Layout Patterns
+## V. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; project name, presenter, date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VI. Layout Patterns
 
 | Pattern            | Use Cases                      |
 | ------------------ | ------------------------------ |
@@ -169,7 +129,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## VII. Spacing Guidelines
 
 | Element            | Value  |
 | ------------------ | ------ |
@@ -181,7 +141,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## VIII. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -201,7 +161,7 @@
 
 ---
 
-## X. Placeholder Specification
+## IX. Placeholder Specification
 
 Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
@@ -233,7 +193,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XI. Component Specifications
+## X. Component Specifications
 
 ### 1. Tag
 
@@ -266,7 +226,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XII. Usage Instructions
+## XI. Usage Instructions
 
 1. Copy the template to the project directory
 2. Select the appropriate page template based on defense content needs

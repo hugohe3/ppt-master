@@ -1,3 +1,12 @@
+---
+deck_id: 中汽研_商务
+kind: deck
+summary: Product certification display, evaluation presentations, technology promotion, high-end business reporting.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#003366"
+---
+
 # CATARC (中汽研) Business Template - Design Specification (v2.0 Enhanced)
 
 > Suitable for CATARC product certification, evaluation & certification, technology showcases, business visits, and similar scenarios.
@@ -105,7 +114,17 @@
 
 ---
 
-## VII. Layout Patterns (Recommended)
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Layout Patterns (Recommended)
 
 ### 1. Card List
 - Wide cards arranged vertically, suitable for table of contents or key points.
@@ -119,7 +138,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## IX. Spacing Guidelines
 
 | Property       | Value | Description              |
 | -------------- | ----- | ------------------------ |
@@ -129,7 +148,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -140,7 +159,7 @@
 
 ---
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 | Placeholder        | Description           |
 | ------------------ | --------------------- |
@@ -159,7 +178,7 @@
 
 ---
 
-## XI. Usage Notes (Recommended)
+## XII. Usage Notes (Recommended)
 
 1. **Shadow Handling**: Keep shadows subtle and sparse. Use shared-standards §6 as the authority; vector-rectangle shadows are the compatibility fallback.
 2. **Gradients**: To modify gradient colors, adjust `stop-color` values in the `<defs>` section.

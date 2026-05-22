@@ -1,3 +1,12 @@
+---
+deck_id: 重庆大学
+kind: deck
+summary: Academic defense, research reports, teaching presentations, scholarly exchange.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#006BB7"
+---
+
 # Chongqing University (重庆大学) Template - Design Specification
 
 > A distinctive design blending the layered imagery of the Mountain City with modern academic elegance.
@@ -164,7 +173,17 @@ Small circle elements representing the nighttime lights of the Mountain City:
 
 ---
 
-## VII. Logo Usage Guidelines
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Logo Usage Guidelines
 
 | File | Applicable Context | Notes |
 |------|-------------------|-------|
@@ -178,7 +197,7 @@ Small circle elements representing the nighttime lights of the Mountain City:
 
 ---
 
-## VIII. Spacing Specification
+## IX. Spacing Specification
 
 | Element              | Value      |
 | -------------------- | ---------- |
@@ -190,7 +209,7 @@ Small circle elements representing the nighttime lights of the Mountain City:
 
 ---
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -209,7 +228,7 @@ Small circle elements representing the nighttime lights of the Mountain City:
 
 ---
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 | Placeholder          | Description            |
 | -------------------- | ---------------------- |

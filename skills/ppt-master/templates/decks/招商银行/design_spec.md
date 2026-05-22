@@ -1,3 +1,12 @@
+---
+deck_id: 招商银行
+kind: deck
+summary: 交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#C8152D"
+---
+
 # China Merchants Bank Transaction Banking - Design Specification
 
 ## I. Template Overview
@@ -101,7 +110,17 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 - Centered closing message and compact contact card
 - Suitable for formal client-facing endings
 
-## VII. Layout Modes
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Layout Modes
 
 | Mode | Recommendation |
 | --- | --- |
@@ -110,7 +129,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 | **Product Feature** | Use a short key message on top and modular cards below |
 | **Agenda / Sectioning** | Use TOC or chapter page instead of improvising layout headers |
 
-## VIII. Spacing Specification
+## IX. Spacing Specification
 
 | Property | Value |
 | --- | --- |
@@ -120,7 +139,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 | **Title to Body** | 44px |
 | **Footer Offset** | 32px from bottom |
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 1. `viewBox` must stay `0 0 1280 720`
 2. No `mask`, `<style>`, `class`, `foreignObject`, `textPath`, or animation tags. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
@@ -128,7 +147,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 4. Keep image assets semantic and minimal
 5. Prefer vector reconstruction over embedding PPT-export fragments
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 | Placeholder | Description |
 | --- | --- |
@@ -164,7 +183,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 | `{{CONTACT_EMAIL}}` | Ending email address |
 | `{{CONTACT_PHONE}}` | Ending phone number |
 
-## XI. Asset Specification
+## XII. Asset Specification
 
 ### Core Assets
 
@@ -186,7 +205,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 
 Core assets are wired into SVG templates. `logo_dark.png` is used on light pages (TOC, content); `logo_white.png` and `cover_bg.png` on dark pages (cover, chapter, ending). Optional assets are available for project-specific customization.
 
-## XII. Chart Specifications
+## XIII. Chart Specifications
 
 ### Recommended Chart Dimensions
 
@@ -208,7 +227,7 @@ Core assets are wired into SVG templates. `logo_dark.png` is used on light pages
 | Negative indicator | `#E74C3C` |
 | Neutral | `#666666` |
 
-## XIII. Usage Instructions
+## XIV. Usage Instructions
 
 1. Copy the template directory to the project `templates/` folder
 2. Read this design specification to understand the visual system

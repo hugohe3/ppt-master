@@ -1,16 +1,27 @@
 ---
-description: Generate a new PPT layout template based on existing project files or reference templates
+description: Generate a new layout or deck template based on existing project files or reference templates
 ---
 
 # Create New Template Workflow
 
 > **Role invoked**: [Template_Designer](../references/template-designer.md)
 
-Generate a complete set of reusable PPT layout templates for the **global template library**.
+Generate a complete set of reusable PPT templates for the **global template library**.
 
-> This workflow is for **library asset creation**, not project-level one-off customization. The output must be reusable by future PPT projects and discoverable from `templates/layouts/layouts_index.json`.
+> This workflow is for **library asset creation**, not project-level one-off customization. The output must be reusable by future PPT projects and discoverable from the appropriate index file.
 
-> **Companion workflow**: identity-only locking (colors / typography / logo / voice without SVG pages) is handled by [`create-brand.md`](./create-brand.md). Use that when the user wants brand identity but free page layout; use this when fixed page structures are also required.
+> **Companion workflow**: identity-only locking (colors / typography / logo / voice without SVG pages) is handled by [`create-brand.md`](./create-brand.md). Use that when the user wants brand identity but free page layout; use this when fixed page structures are required.
+
+## Kind decision — deck (default) vs layout
+
+This workflow produces one of two kinds of templates depending on whether the source PPT carries a specific brand identity:
+
+| Kind | When | Output dir | What `design_spec.md` writes |
+|---|---|---|---|
+| **deck** (default) | Source is a specific organization's branded PPT (e.g. company report, university defense template); the visual identity is part of the replica | `templates/decks/<id>/` | Full segments: identity + structure + middle |
+| **layout** | Source is a generic stylistic template (no specific brand); only the structural skeleton should be reusable; color / typography decided per-deck downstream | `templates/layouts/<id>/` | Structure segments only (canvas / page structure / page types / SVG roster); identity segment omitted |
+
+Default to **deck** unless the user explicitly says "structure only" / "layout only" / "no brand identity". When in doubt, lean deck — losing identity later is easy; reconstructing it from a layout-mode strip is not. See [`docs/zh/templates-architecture.md`](../../../docs/zh/templates-architecture.md) for the full kind / schema / fusion model.
 
 ## Process Overview
 
@@ -255,13 +266,14 @@ Mirror mode does **not** invoke the "reconstruct into clean SVG" pathway. The sp
 ## Step 5: Validate Template Assets
 
 ```bash
-ls -la "skills/ppt-master/templates/layouts/<template_id>"
+# Replace <kind_dir> with "decks" or "layouts" depending on the kind decided above
+ls -la "skills/ppt-master/templates/<kind_dir>/<template_id>"
 ```
 
 Run SVG validation on the template directory:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/templates/layouts/<template_id>" --template-mode --format <canvas_format>
+python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/templates/<kind_dir>/<template_id>" --template-mode --format <canvas_format>
 ```
 
 `--template-mode` makes the checker:
@@ -289,53 +301,60 @@ This step is a **hard gate**. Do not register the template into the library inde
 
 ## Step 6: Register Template in Library Index
 
-Run the unified registrar; it derives the `layouts_index.json` entry and refreshes the `README.md` Quick Index from `design_spec.md` (frontmatter when present, prose fallback otherwise) plus the actual SVG file list:
+Run the unified registrar with the kind flag; it derives the corresponding index entry from `design_spec.md` (frontmatter when present, prose fallback otherwise) plus the actual SVG file list:
 
 ```bash
-python3 skills/ppt-master/scripts/register_template.py <template_id>
+# For deck (default)
+python3 skills/ppt-master/scripts/register_template.py <template_id> --kind deck
+
+# For layout
+python3 skills/ppt-master/scripts/register_template.py <template_id> --kind layout
 ```
 
-Outputs:
+Outputs by kind (the JSON index is the single source of truth — READMEs describe the kind in prose but do not enumerate templates):
 
-- updates `skills/ppt-master/templates/layouts/layouts_index.json` — the flat `template_id → { summary, keywords }` map
-- refreshes the auto-managed Quick Index inside `skills/ppt-master/templates/layouts/README.md` (the surrounding category sections stay hand-edited)
-- prints a "Template Creation Complete" card you can use directly for Step 7
+| `--kind` | Index updated |
+|---|---|
+| `deck` | `templates/decks/decks_index.json` |
+| `layout` | `templates/layouts/layouts_index.json` |
+| `brand` | `templates/brands/brands_index.json` |
 
-The completion card's file roster is collected by globbing `*.svg` in the template directory, so `fidelity`-mode templates that include variant pages such as `03a_content_two_col` are listed automatically.
+The completion card's file roster is collected by globbing `*.svg` in the template directory.
 
-`layouts_index.json` is a **discovery index** — it lets the AI answer "what templates are available?" by listing names and paths. It is **not** consulted to trigger Step 4. Step 4 triggers on an explicit directory path supplied by the user, regardless of whether that path is registered. A template directory that has not been run through `register_template.py` still works fine when the user gives its path; it just won't appear in discovery listings.
+The index file is a **discovery index** — it lets the AI answer "what templates are available?" by listing names and paths. It is **not** consulted to trigger Step 3 (SKILL.md). Step 3 triggers on an explicit directory path supplied by the user, regardless of whether that path is registered. A template directory that has not been run through `register_template.py` still works fine when the user gives its path; it just won't appear in discovery listings.
 
-> **Recommended for new templates**: declare a YAML frontmatter block at the top of `design_spec.md`. The registrar prefers it over the §I table and lets you set `category`, `keywords`, `summary`, etc. without relying on prose extraction:
+> **Recommended for new templates**: declare a YAML frontmatter block at the top of `design_spec.md`. The registrar prefers it over prose extraction:
 >
 > ```yaml
+> # deck example
 > ---
-> template_id: my_template
-> category: brand            # brand | general | scenario | government | special
-> summary: Strategic consulting, executive briefings, ...
-> keywords: [tag1, tag2, tag3]
-> primary_color: "#005587"
+> deck_id: my_deck
+> kind: deck
+> summary: ...
 > canvas_format: ppt169
-> replication_mode: standard  # standard | fidelity | mirror
-> # Optional: per-page placeholder overrides. Templates that legitimately
-> # use a different vocabulary (e.g. consulting decks with {{KEY_MESSAGE}}
-> # in place of {{PAGE_TITLE}}, or content variants with bespoke slots)
-> # should declare them here so svg_quality_checker --template-mode does
-> # not flag them as conventional-placeholder gaps.
-> # Mirror-mode templates do not need this field — they have no placeholders.
-> placeholders:
->   01_cover: ["{{TITLE}}", "{{SUBTITLE}}", "{{BRAND_LOGO}}"]
->   03_content: ["{{KEY_MESSAGE}}", "{{CONTENT_AREA}}"]
->   03a_content_dual_col: []   # silences hints for this variant entirely
+> page_count: 5
+> primary_color: "#005587"
+> ---
+>
+> # layout example
+> ---
+> layout_id: my_layout
+> kind: layout
+> summary: ...
+> canvas_format: ppt169
+> page_count: 5
+> page_types: [cover, toc, chapter, content, ending]
 > ---
 > ```
 
 > To rebuild every entry at once (e.g. after editing many specs), run:
 >
 > ```bash
-> python3 skills/ppt-master/scripts/register_template.py --rebuild-all
+> python3 skills/ppt-master/scripts/register_template.py --kind deck --rebuild-all
+> python3 skills/ppt-master/scripts/register_template.py --kind layout --rebuild-all
 > ```
 
-If you need to update the categorized sections lower in `README.md` (Brand Style Templates / General Style Templates / etc.), edit those by hand — the registrar deliberately leaves them alone so curated descriptions are preserved.
+README files describe each kind in prose only — they do not list templates. Discovery happens against the JSON index file; the registrar does not touch READMEs.
 
 ---
 
@@ -349,9 +368,9 @@ For a standard-mode template the card looks like:
 ## Template Creation Complete
 
 **Template Name**: <template_id> (<display_name>)
-**Template Path**: `templates/layouts/<template_id>/`
-**Category**: <category>
-**Primary Color**: <hex>
+**Kind**: deck | layout
+**Template Path**: `templates/<kind_dir>/<template_id>/`
+**Primary Color**: <hex>  ← deck only; omit for layout
 **Index Registration**: Done
 
 ### Files Included

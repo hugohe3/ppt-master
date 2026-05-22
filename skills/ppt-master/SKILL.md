@@ -152,86 +152,112 @@ Import source content (choose based on the situation):
 
 🚧 **GATE**: Step 2 complete; project directory structure is ready.
 
-**Default — free design.** Proceed directly to Step 4. Do NOT query `layouts_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
+**Default — free design.** Proceed directly to Step 4. Do NOT query any `*_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
 
-**Template flow triggers ONLY on an explicit template directory path** supplied by the user in their initial message. The trigger rule is mechanical, not interpretive:
+**Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message. The trigger rule is mechanical, not interpretive:
 
 | User input contains | Step 3 action |
 |---|---|
-| An explicit path to a template directory (e.g. `skills/ppt-master/templates/layouts/academic_defense/`, `projects/foo/template/`, or any other absolute / relative path that resolves to a directory containing `design_spec.md` and one or more page SVGs) | Copy that directory's SVGs + `design_spec.md` + assets into the project, advance |
-| Anything else — including bare template names ("用 academic_defense 模板"), style descriptions ("麦肯锡风格" / "Google style"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
+| One or more explicit template directory paths (each resolves to a directory containing `design_spec.md` with `kind: brand` / `kind: layout` / `kind: deck` in its YAML frontmatter) | Read each spec's `kind`, dispatch per the kind matrix below, fuse if multiple |
+| Anything else — bare template names ("用 academic_defense"), style descriptions ("麦肯锡风格"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
-There is no slug matching, no name lookup, no fuzzy resolution. A template name without a path does not trigger — the user must give a path the AI can `cd` into.
+There is no slug matching, no name lookup, no fuzzy resolution. A name without a path does not trigger — the user must give a path the AI can `cd` into.
 
-The path may live anywhere — `skills/ppt-master/templates/layouts/<name>/` (the built-in library), `projects/<other_project>/template/` (reusing a previous project's templates), or any other location. Location is irrelevant; what matters is that the user named the path.
+> Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) never trigger Step 3. They flow into Strategist's Eight Confirmations as a style brief (color / typography / tone in confirmations e–g).
+
+> Bare names ("academic_defense", "招商银行", "anthropic") do NOT trigger Step 3 even if a matching directory exists in the library. The user must give a path. AI must not "helpfully" resolve a name to a path.
+
+> "What templates exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` / `layouts_index.json` / `decks_index.json` together with their paths. Listing alone does not advance the pipeline; the user must send a path back to trigger Step 3.
+
+> To create a new layout or deck, read [`workflows/create-template.md`](workflows/create-template.md). To create a new brand, read [`workflows/create-brand.md`](workflows/create-brand.md).
+
+#### Three template kinds
+
+The architecture has three independent reference bundles. Full schema in [`docs/zh/templates-architecture.md`](../../docs/zh/templates-architecture.md). Summary:
+
+| Kind | Physical dir | Contains | Frontmatter |
+|---|---|---|---|
+| **brand** | `templates/brands/<id>/` | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
+| **layout** | `templates/layouts/<id>/` | structure-only segment: canvas / page structure / page types / SVG roster | `kind: layout` |
+| **deck** | `templates/decks/<id>/` | full replica: identity + structure + middle (template overview) segments | `kind: deck` |
+
+**Segment ownership** (governs fusion override priority):
+
+| Segment | Sections | Owner kind on fusion |
+|---|---|---|
+| Identity | Color Scheme / Typography / Logo / Voice & Tone / Icon Style | brand |
+| Structure | Canvas / Page Structure / Page Types / SVG Roster | layout |
+| Middle | Template Overview (use cases / design intent) | deck (no other kind writes this) |
+
+#### Single-path dispatch
+
+| User path's `kind` | Step 3 action |
+|---|---|
+| `kind: brand` | Copy `design_spec.md` + logo files + asset subdirs (`images/` / `illustrations/` / `icons/`) into `<project>/templates/`. Strategist locks identity segment as truth; structure stays free. |
+| `kind: layout` | Copy `design_spec.md` + SVG roster + asset files into `<project>/templates/`. Strategist locks structure; identity decided in Eight Confirmations e–g. |
+| `kind: deck` | Copy everything (`design_spec.md` + SVGs + logos + assets) into `<project>/templates/`. Strategist locks all segments; Eight Confirmations narrows to deck-content fields (audience / page count / outline / tone tweaks). |
 
 ```bash
 TEMPLATE_DIR=<user-supplied path>
-cp ${TEMPLATE_DIR}/*.svg <project_path>/templates/
-cp ${TEMPLATE_DIR}/design_spec.md <project_path>/templates/
-cp ${TEMPLATE_DIR}/*.png <project_path>/images/ 2>/dev/null || true
-cp ${TEMPLATE_DIR}/*.jpg <project_path>/images/ 2>/dev/null || true
+cp -r ${TEMPLATE_DIR}/* <project_path>/templates/
 ```
 
-> Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) never trigger Step 3. They flow naturally into Strategist's Eight Confirmations as part of the user's input — Strategist uses them as a style brief when proposing color / typography / tone in confirmations e and g.
+The single-line copy suffices for all three kinds — the spec's `kind` field tells Strategist how to read it; downstream code doesn't distinguish.
 
-> Bare template names ("academic_defense", "招商银行") do NOT trigger Step 3 even if a folder by that name exists in the library. The user must give a path. AI must not "helpfully" resolve a name to a path.
+#### Multi-path fusion
 
-> "What templates exist?" is out-of-band Q&A — answer by listing entries from `layouts_index.json` together with their paths. Listing alone does not advance the pipeline; the user still has to send a path to trigger the Step 3 copy.
+When the user gives two or more paths of **different kinds**, Step 3 fuses them into a single `<project>/templates/design_spec.md`. **Default granularity is segment-level integer replacement** — entire identity / structure / middle segments are taken from the highest-priority source for that segment, no implicit field-level mixing.
 
-> To create a new template, read `workflows/create-template.md`.
+Override priority by segment:
 
-**Brand triggering follows the same explicit-path rule as layout templates.** A brand is structurally a layout template minus its SVG page roster — its `design_spec.md` declares `kind: brand` in YAML frontmatter and lives under `templates/brands/<id>/`. `brands_index.json` is discovery-only, same as `layouts_index.json` — listing brands never triggers Step 3.
+| Combination | Identity from | Structure from | Middle from |
+|---|---|---|---|
+| brand only | brand | (free design) | (none) |
+| layout only | (free design) | layout | (none) |
+| deck only | deck | deck | deck |
+| brand + layout | brand | layout | (none) |
+| brand + deck | brand (overrides deck) | deck | deck |
+| layout + deck | deck | layout (overrides deck) | deck |
+| brand + layout + deck | brand | layout | deck |
 
-| User input contains | Step 3 brand action |
-|---|---|
-| An explicit path to a brand directory (e.g. `skills/ppt-master/templates/brands/acme/`, or any path that resolves to a directory whose `design_spec.md` declares `kind: brand`) | Copy `design_spec.md` + logo files + any present asset subdirectories into `<project_path>/templates/` |
-| Bare brand names ("use acme brand", "用 acme 品牌"), brand mentions without a path, or silence | Skip — same mechanical rule as layout templates: bare names never trigger |
+Field-level micro-adjustment (e.g. "use anthropic brand but primary changed to #FF0000") is **not** part of Step 3 fusion — it flows into Strategist Eight Confirmations e–g as a normal user request.
 
-```bash
-BRAND_DIR=<user-supplied brand path>
-cp ${BRAND_DIR}/design_spec.md <project_path>/templates/
-cp ${BRAND_DIR}/*.svg <project_path>/templates/ 2>/dev/null || true     # brand logo SVG files
-cp ${BRAND_DIR}/*.png <project_path>/templates/ 2>/dev/null || true     # brand logo raster files
-[ -d ${BRAND_DIR}/images ] && cp -r ${BRAND_DIR}/images <project_path>/templates/
-[ -d ${BRAND_DIR}/illustrations ] && cp -r ${BRAND_DIR}/illustrations <project_path>/templates/
-[ -d ${BRAND_DIR}/icons ] && cp -r ${BRAND_DIR}/icons <project_path>/templates/
+#### Same-kind multiple paths — conflict resolution
+
+When the user gives two paths of the **same kind** (e.g. `brands/anthropic` + `brands/google`), Step 3 surfaces a conflict prompt before fusing — like resolving a git merge conflict:
+
+```
+AI: 你给了两个 brand，检测到段级冲突：
+    - Color Scheme（Anthropic 橙红 vs Google 多色）
+    - Typography（Styrene/AnthropicSans vs GoogleSans/Roboto）
+    - Logo（Anthropic 标 vs Google 标）
+    - Voice & Tone（restrained vs friendly）
+    - Icon Style（stroke vs filled）
+
+    要 (a) 全部按 Anthropic / (b) 全部按 Google / (c) 逐段挑？
 ```
 
-> Brand and layout outputs share `<project_path>/templates/` because they are the same kind of artifact — a reference bundle that Strategist treats as truth. Downstream code never needs to distinguish them.
+Rules:
+- Default: no implicit ordering — every cross-source segment difference is reported as a conflict
+- Only when the user picks `(c)` does AI walk through each segment one by one
+- Field-level conflicts are out of scope — segment-level only
+- Three or more same-kind paths are not supported — ask the user to converge to at most two
 
-> "What brands exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` together with their paths. Listing alone does not advance the pipeline; the user still has to send a path to trigger the Step 3 copy.
+#### Fused spec provenance
 
-> To create a new brand, read `workflows/create-brand.md`.
+When fusion happens (any multi-path case), the resulting `<project>/templates/design_spec.md` carries a provenance block immediately under its H1:
 
-#### Brand + layout combined input
+```markdown
+> **Fused from:**
+> - deck: `templates/decks/招商银行/` （base）
+> - brand: `templates/brands/anthropic/` （identity override）
+> - layout: `templates/layouts/academic_defense/` （structure override）
+> - conflicts resolved: Color Scheme from anthropic（user picked a）
+```
 
-A brand path and a layout template path may both be supplied in the same message. When both are present, Step 3 **fuses them into a single `design_spec.md`** inside `<project_path>/templates/` instead of leaving two specs side by side. Field-level precedence is fixed (no per-deck prompting):
+Single-path Step 3 does **not** add provenance (the source is self-evident from the copied files).
 
-| Field group | Source |
-|---|---|
-| Color (primary / secondary / accents / text / bg) | **brand** |
-| Typography (font family) | **brand** |
-| Logo | **brand** (if absent, fall back to layout's logo) |
-| Voice & tone | **brand** |
-| Icon style preference | **brand** |
-| Canvas (size / viewBox / margins) | **layout** |
-| Page roster + signature visual elements (top bar / underline / decorative motifs) | **layout** |
-| Font-size hierarchy (H1 / H2 / body / data / label) | **layout** |
-| Spacing, grid, layout patterns | **layout** |
-| SVG technical constraints | **layout** |
-| Placeholder set | **layout** |
-
-Action: AI reads `${LAYOUT_DIR}/design_spec.md` and `${BRAND_DIR}/design_spec.md`, composes one fused `design_spec.md` using the table above, writes it to `<project_path>/templates/design_spec.md`. SVG page files come from `${LAYOUT_DIR}`; brand logos and asset subdirectories from `${BRAND_DIR}`. The fused spec carries a one-line `> Fused from: layout=<layout_id>, brand=<brand_id>` provenance note under its H1.
-
-**Conflict gates** — clarify with the user only in these two cases:
-
-1. **Brand has no logo, layout has one.** Ask: "your brand has no bundled logo; use the layout's logo, or leave the deck logo-less?"
-2. **Layout is itself a branded template (e.g. `招商银行`, `重庆大学`, `中汽研_*`, `中国电建_*`) and the supplied brand is different.** Ask: "this layout carries `<layout's own brand>` identity, which conflicts with the `<supplied brand>` you provided — confirm you want brand identity from `<supplied brand>` and only the page structure from `<layout>`?"
-
-If neither gate trips, fusion proceeds silently and Step 3 advances.
-
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path and/or an explicit brand directory path, those directories are copied (or fused) into `<project_path>/templates/` before advancing.**
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user supplied one or more explicit template paths, those have been dispatched (or fused) into `<project_path>/templates/` before advancing.**
 
 ---
 

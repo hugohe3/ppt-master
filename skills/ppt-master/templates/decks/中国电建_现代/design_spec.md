@@ -1,3 +1,12 @@
+---
+deck_id: 中国电建_现代
+kind: deck
+summary: Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#00418D"
+---
+
 # POWERCHINA (中国电建) Modern Template v2 - Design Specification
 
 > Suitable for POWERCHINA major project reports, international business showcases, high-end summit roadshows, technology innovation releases, and similar scenarios.
@@ -102,7 +111,17 @@
 
 ---
 
-## VII. Layout Patterns (Recommended)
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Layout Patterns (Recommended)
 
 ### 1. Tech Cards
 - Cards with subtle borders and a glowing effect.
@@ -117,7 +136,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## IX. Spacing Guidelines
 
 | Property       | Value | Description              |
 | -------------- | ----- | ------------------------ |
@@ -128,7 +147,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -150,7 +169,7 @@
 
 ---
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 | Placeholder        | Description           |
 | ------------------ | --------------------- |
@@ -170,7 +189,7 @@
 
 ---
 
-## XI. Usage Notes (Recommended)
+## XII. Usage Notes (Recommended)
 
 1. **Logo**: Recommend using white PNG Logo to suit dark backgrounds.
 2. **Background Images**: Cover background grid is embedded in SVG; no external images needed.

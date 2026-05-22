@@ -2,7 +2,6 @@
 brand_id: anthropic
 kind: brand
 summary: Anthropic brand identity — AI/LLM tech talks, developer conferences, technical training, product launches
-keywords: [tech, modern, dark, conclusion-first, ai]
 primary_color: "#D97757"
 ---
 

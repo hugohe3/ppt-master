@@ -1,3 +1,12 @@
+---
+deck_id: 中国电信
+kind: deck
+summary: China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#C00000"
+---
+
 # China Telecom Template - Design Specification
 
 > Suitable for telecom solution proposals, digital transformation briefings, government-enterprise reports, and executive review materials.
@@ -8,7 +17,7 @@
 
 | Property | Description |
 | --- | --- |
-| **Template Name** | `china_telecom_template` (`中国电信模板`) |
+| **Template Name** | `中国电信` |
 | **Use Cases** | China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报 |
 | **Design Tone** | Authoritative, structured, restrained, enterprise-government hybrid |
 | **Theme Mode** | Light theme (white background + telecom red title bar + silver-gray structural lane + restrained brand imagery) |
@@ -134,7 +143,17 @@
 
 ---
 
-## VII. Layout Modes
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Layout Modes
 
 | Mode | Use Cases |
 | --- | --- |
@@ -146,7 +165,7 @@
 
 ---
 
-## VIII. Spacing Specification
+## IX. Spacing Specification
 
 | Element | Value |
 | --- | --- |
@@ -160,7 +179,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 1. `viewBox` must remain `0 0 1280 720`
 2. Do not use `mask`, `<style>`, `class`, `foreignObject`, or `rgba()`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
@@ -171,7 +190,7 @@
 
 ---
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 | Placeholder | Purpose | Applicable Page |
 | --- | --- | --- |
@@ -194,7 +213,7 @@
 
 ---
 
-## XI. Usage Guide
+## XII. Usage Guide
 
 1. Reuse `logo.png` and `footer_ribbon.png` as fixed brand assets; `slogan_red.png` and `skyline_bg.png` should be used selectively and only on the cover / ending pages.
 2. Keep generated text inside the documented safe areas; only chapter pages use a strong left/right split.

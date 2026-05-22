@@ -1,3 +1,12 @@
+---
+layout_id: psychology_attachment
+kind: layout
+summary: Psychotherapy training, academic lectures, counseling case analysis, professional sharing.
+canvas_format: ppt169
+page_count: 5
+page_types: [cover, toc, chapter, content, ending]
+---
+
 # Psychology Healing Template (Psychology Attachment Style) - Design Specification
 
 > Suitable for psychology, psychotherapy, counseling training, and academic sharing in professional settings.
@@ -43,82 +52,7 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ---
 
-## III. Color Scheme
-
-### Primary Colors
-
-| Semantic Role     | Color Name    | HEX       | RGB         | Usage                              |
-| ----------------- | ------------- | --------- | ----------- | ---------------------------------- |
-| **Dominant**      | Secure Blue   | `#2E5C8E` | 46,92,142   | Titles, key frameworks, secure attachment |
-| **Background**    | Cloud White   | `#F8FAFC` | 248,250,252 | Page background                    |
-| **Accent A**      | Warm Orange   | `#E07843` | 224,120,67  | Activation, emotion, anxious type  |
-| **Accent B**      | Healing Green | `#3D8B7A` | 61,139,122  | Growth, integration, secure type   |
-| **Accent C**      | Cool Gray-Blue| `#64748B` | 100,116,139 | Avoidant type, dismissive type     |
-| **Warning**       | Trauma Red    | `#B54545` | 181,69,69   | Disorganized type, unresolved trauma |
-
-### Attachment Type Color Assignments
-
-| Attachment Type              | Primary   | Secondary | Symbolism              |
-| ---------------------------- | --------- | --------- | ---------------------- |
-| Secure / Autonomous          | `#3D8B7A` | `#D4EDDA` | Growth, coherence      |
-| Avoidant / Dismissive        | `#64748B` | `#E2E8F0` | Detachment, suppression |
-| Anxious-Ambivalent / Preoccupied | `#E07843` | `#FED7AA` | Anxiety, amplification |
-| Disorganized / Unresolved    | `#B54545` | `#FECACA` | Trauma, fragmentation  |
-
-### Text Colors
-
-| Role              | Value     | Usage                              |
-| ----------------- | --------- | ---------------------------------- |
-| **Main Title**    | `#1E293B` | Dark ink blue, cover/page titles   |
-| **Subtitle**      | `#2E5C8E` | Secure blue, emphasized subtitles  |
-| **Body Text**     | `#374151` | Dark gray, body content            |
-| **Helper Text**   | `#6B7280` | Medium gray, annotations           |
-| **Secondary Text**| `#64748B` | Gray-blue, page numbers etc.       |
-| **White Text**    | `#FFFFFF` | Text on dark backgrounds           |
-| **Light Text**    | `#E5E7EB` | Secondary text on dark backgrounds |
-| **English Gray**  | `#94A3B8` | English subtitles                  |
-
-### Gradients
-
-| Name             | Start     | Middle    | End       | Usage                  |
-| ---------------- | --------- | --------- | --------- | ---------------------- |
-| Cover Gradient   | `#1E3A5F` | `#2E5C8E` | `#3D8B7A` | Cover/chapter page BG  |
-| Ending Gradient  | `#1E3A5F` | `#2E5C8E` | `#3D8B7A` | Ending page background |
-
----
-
-## IV. Typography System
-
-### Font Stack
-
-**Chinese Font Stack**: `"Microsoft YaHei", "PingFang SC", sans-serif`
-
-**English Font Stack**: `Arial, sans-serif`
-
-### Font Size Hierarchy
-
-| Level | Usage            | Size | Weight   | Line Height |
-| ----- | ---------------- | ---- | -------- | ----------- |
-| H1    | Cover main title | 52px | Bold     | 1.2         |
-| H2    | Page main title  | 32px | Bold     | 1.3         |
-| H3    | Section subtitle | 24px | SemiBold | 1.3         |
-| H4    | Card title       | 20px | SemiBold | 1.4         |
-| Body  | Body content     | 18px | Regular  | 1.5         |
-| Small | Annotations      | 14px | Regular  | 1.4         |
-
-### Spacing System
-
-| Usage              | Value                     |
-| ------------------ | ------------------------- |
-| Base unit          | 8px                       |
-| Element spacing    | 16px / 24px / 32px / 48px |
-| Paragraph spacing  | 24px                      |
-| List item spacing  | 12px                      |
-| Card inner padding | 24px                      |
-
----
-
-## V. Page Structure
+## III. Page Structure
 
 ### General Layout
 
@@ -138,7 +72,7 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ---
 
-## VI. Page Types
+## IV. Page Types
 
 ### 1. Cover Page (01_cover.svg)
 
@@ -204,7 +138,17 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ---
 
-## VII. Layout Patterns
+## V. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; project name, presenter, date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VI. Layout Patterns
 
 ### 7.1 Three-Column Side-by-Side (Comparison/Findings)
 
@@ -250,7 +194,7 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ---
 
-## VIII. Visual Element Specifications
+## VII. Visual Element Specifications
 
 ### 8.1 Card Styles
 
@@ -299,7 +243,7 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ---
 
-## IX. Icon Usage
+## VIII. Icon Usage
 
 Use `tabler-outline` as the stylistic icon library for this template. It matches the professional, warm, low-noise psychology tone and avoids heavy filled symbols.
 
@@ -324,7 +268,7 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ---
 
-## X. SVG Technical Constraints
+## IX. SVG Technical Constraints
 
 ### viewBox Specification
 
@@ -354,7 +298,7 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ---
 
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 | Placeholder          | Usage                |
 | -------------------- | -------------------- |
@@ -377,7 +321,7 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ---
 
-## XII. Usage Notes
+## XI. Usage Notes
 
 ### Template Usage Steps
 
