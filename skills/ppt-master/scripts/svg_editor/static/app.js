@@ -361,7 +361,7 @@
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
                 // Spec observability: missing width/height → red banner only
-                if (rootSvg && !rootSvg.hasAttribute("width")) {
+                if (rootSvg && (!rootSvg.hasAttribute("width") || !rootSvg.hasAttribute("height"))) {
                     var specBanner = document.createElement("div");
                     specBanner.id = "spec-banner";
                     specBanner.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);"
