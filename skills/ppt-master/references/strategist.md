@@ -26,6 +26,8 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 > **Execution discipline**: This is the last BLOCKING checkpoint in the pipeline. After confirmation, complete the Design Spec and proceed to image generation / SVG / post-processing without further pauses.
 
+> **LaTeX formula handling**: When the source content contains mathematical formulas or equations, write them in `spec_lock.md` using standard LaTeX syntax: `$...$` for inline formulas and `$$...$$` for display (block) formulas. Even if the source text does not use LaTeX notation, identify mathematical expressions and convert them to proper LaTeX. When no formulas are present, this rule does not apply.
+
 ### a. Canvas Format Confirmation
 
 Recommend format based on scenario (see [`canvas-formats.md`](canvas-formats.md)).
