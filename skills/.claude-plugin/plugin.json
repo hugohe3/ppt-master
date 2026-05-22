@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "ppt-master",
+  "description": "Generate natively editable PPTX from PDF / DOCX / URL / Markdown.",
+  "author": {
+    "name": "Hugo He",
+    "email": "heyug3@gmail.com",
+    "url": "https://www.hehugo.com/"
+  },
+  "homepage": "https://github.com/hugohe3/ppt-master",
+  "repository": "https://github.com/hugohe3/ppt-master",
+  "license": "MIT",
+  "keywords": [
+    "pptx",
+    "presentation",
+    "powerpoint",
+    "svg",
+    "drawingml",
+    "ai",
+    "skill",
+    "office",
+    "document-conversion"
+  ],
+  "skills": "./"
+}
