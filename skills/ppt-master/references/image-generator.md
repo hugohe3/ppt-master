@@ -92,6 +92,8 @@ image_palette: cool-corporate
 
 If both fields are present, use them directly — Strategist made the decision in h.5 with full d-e-f-g-h linkage context. Do NOT re-decide.
 
+**Hard rule — `custom` escape hatch**: when either value is the literal string `custom`, do NOT `read_file` the preset library for that dimension. Read the sibling `*_behavior` line from `spec_lock.md colors` and splice that prose into the prompt in place of the preset's fewshot snippet. The behavior prose owns the style paragraph (for `custom` rendering) or the proportion/role rules (for `custom` palette). See [`image-renderings/_index.md`](./image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](./image-palettes/_index.md) §2 for the invocation rules.
+
 **Fallback path — when `spec_lock.md` lacks both fields** (legacy decks or pipelines that skipped h.5):
 
 | Signal | Maps to |
@@ -184,6 +186,22 @@ Use with `text_policy: embedded`. Must obey the §5.3 text-accuracy rules (Engli
 > Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. Small geometric anchor optional, placed in a corner or along an edge, never centered. The center 60-70% of the canvas must stay calm to receive SVG title/text overlay.
 
 Use for: cover background, chapter divider background, breathing-page background, any page where the SVG layer carries the words and the image only sets tone.
+
+**Primitive E — custom (escape hatch)**
+
+When none of A/B/C/D describe the page's intended layout (triptych, asymmetric multi-focal, narrative diorama, etc.), write the composition description directly into the prompt's composition sentence — same paragraph slot A/B/C/D occupy, but in your own words. No new field; the freedom is in the prose.
+
+**Hard rule — custom composition prose**:
+
+| Rule | Value |
+|---|---|
+| Length | One paragraph, 2-5 sentences, replacing A/B/C/D's opening paragraph |
+| Required content | subject count, layout structure, where breathing room sits, where SVG overlay can claim canvas |
+| Forbidden | Naming a competing primitive ("like A but two subjects") |
+
+Example opening for a triptych hero:
+
+> Triptych — three equal vertical bands of canvas, each holding one symbolic object centered in its band; objects share a low horizon line; bands separated by 2px hairline rules; collectively reads as a single composed page. [...rest of prompt continues with rendering paragraph + color behavior + container note...]
 
 **Fewshot examples per primitive** (one each, deck-context placeholders intact):
 

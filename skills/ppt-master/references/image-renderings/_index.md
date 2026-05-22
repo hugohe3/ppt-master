@@ -50,11 +50,38 @@ Each rendering has its own file with: style paragraph, line / texture / depth no
 | [`pixel-art`](./pixel-art.md) | 8-bit retro game aesthetic | Gaming / retro tech / nostalgic |
 | [`nature`](./nature.md) | Organic earthy illustration | Environment / wellness / sustainability |
 
+### 1.5 Escape hatch — `custom`
+
+When no preset carries the deck's temperament, set `image_rendering: custom` and supply a one-paragraph `image_rendering_behavior`.
+
+**Trigger** — all of:
+
+| Condition | Check against |
+|---|---|
+| No preset style fits | `design_spec.d Style` |
+| Brand / template / chat names no preset | truth-precedence inputs |
+| Not expressible as "preset X + small adjustment" | Strategist confirmation chat |
+
+**Hard rule — `rendering_behavior` prose**:
+
+| Rule | Value |
+|---|---|
+| Length | One paragraph, 2-5 sentences |
+| Axes covered | line / texture / depth / material / mood (same as preset files) |
+| Forbidden | Naming a competing preset ("like blueprint but warmer") |
+
+```yaml
+- image_rendering: custom
+- image_rendering_behavior: "Hand-screened poster aesthetic — slightly misregistered halftone overlays, 3 flat ink colors with visible dot pattern at 12% opacity, no gradients, no anti-aliased edges; reads as silkscreen print."
+```
+
+**Hard rule**: `custom` is a tail-case, not a default. See [`strategist.md`](../strategist.md) h.5 for the one-`custom`-per-dimension limit.
+
 ---
 
 ## 2. Auto-selection table — `design_spec` → rendering
 
-Match `design_spec.md d. Style` (mode + descriptor) against this table. First match wins. If no row matches, default to `vector-illustration`.
+Match `design_spec.md d. Style` (mode + descriptor) against this table. First match wins. **No row matches** → use `custom` per §1.5 rather than force-fitting `vector-illustration`.
 
 | `d. Style` signal | Recommended rendering | Alternates |
 |---|---|---|
@@ -84,7 +111,6 @@ Match `design_spec.md d. Style` (mode + descriptor) against this table. First ma
 
 1. From `design_spec.md` extract `d. Style` mode + descriptor.
 2. Find the matching row above; pick the primary recommendation.
-3. `read_file image-renderings/<chosen>.md`.
-4. Apply its style paragraph when assembling each prompt per [`image-generator.md`](../image-generator.md) §4.
+3. `read_file image-renderings/<chosen>.md` and apply its style paragraph when assembling each prompt per [`image-generator.md`](../image-generator.md) §4. (For `custom`, this step is replaced by the consumption branch in [`image-generator.md`](../image-generator.md) Step 2 — no preset file to read.)
 
 **Lock for the whole deck.** Don't change rendering between images in the same deck.
