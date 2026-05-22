@@ -27,6 +27,11 @@
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
 </p>
 
+<h3 align="center">下面这六份 PPT，仅仅是 PPT Master 能力的冰山一角</h3>
+<p align="center">
+  <sub>建议直接下载原始 .pptx 文件，在 PowerPoint 里好好看一下这个项目的能力边界。</sub>
+</p>
+
 <table>
   <tr>
     <td align="center" width="33%">
@@ -65,8 +70,7 @@
 </table>
 
 <p align="center">
-  <sub>↑ 上述示例均为 PPT Master 端到端生成的原生可编辑 PPT，点"下载 .pptx"拿原始文件直接看效果。生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>。<br/>
-  <a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
+  <sub>生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>。<a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
 </p>
 
 <p align="center">
