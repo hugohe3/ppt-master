@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6"/>
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47"/>
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3"/>
+    </pattern>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47"/>
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.4"/>
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.6"/>
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">Worker Node: Three Layers</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P04 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="78" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#6B85A3">EXPLODED ISOMETRIC VIEW · KUBELET / KUBE-PROXY / CONTAINER RUNTIME</text>
+  </g>
+
+  <g id="isometric-node">
+    <polygon points="400,200 700,355 700,505 400,650 100,505 100,355" fill="#1A3A5C" fill-opacity="0.4" stroke="#5BA3E0" stroke-width="1.8"/>
+    <line x1="400" y1="200" x2="400" y2="350" stroke="#5BA3E0" stroke-width="1"/>
+    <line x1="400" y1="350" x2="100" y2="355" stroke="#5BA3E0" stroke-width="1"/>
+    <line x1="400" y1="350" x2="700" y2="355" stroke="#5BA3E0" stroke-width="1"/>
+
+    <g id="kubelet-layer">
+      <polygon points="400,275 580,368 580,398 400,305" fill="#FFB627" fill-opacity="0.15" stroke="#FFB627" stroke-width="1.5"/>
+      <polygon points="400,275 220,368 220,398 400,305" fill="#FFB627" fill-opacity="0.15" stroke="#FFB627" stroke-width="1.5"/>
+      <polygon points="220,368 400,275 580,368 400,460" fill="none" stroke="#FFB627" stroke-width="0.5" stroke-dasharray="2 3"/>
+      <text x="400" y="370" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#FFB627" text-anchor="middle" font-weight="bold">kubelet</text>
+      <text x="400" y="390" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">node agent</text>
+    </g>
+
+    <g id="kubeproxy-layer">
+      <polygon points="400,455 580,548 580,578 400,485" fill="#5BA3E0" fill-opacity="0.12" stroke="#5BA3E0" stroke-width="1.3"/>
+      <polygon points="400,455 220,548 220,578 400,485" fill="#5BA3E0" fill-opacity="0.12" stroke="#5BA3E0" stroke-width="1.3"/>
+      <text x="400" y="540" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5BA3E0" text-anchor="middle" font-weight="bold">kube-proxy</text>
+      <text x="400" y="560" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">service rules</text>
+    </g>
+
+    <g id="runtime-layer">
+      <polygon points="400,580 580,673 580,505 400,505" fill="#3E7AB8" fill-opacity="0.12" stroke="#3E7AB8" stroke-width="1.3"/>
+      <polygon points="400,580 220,673 220,505 400,505" fill="#3E7AB8" fill-opacity="0.12" stroke="#3E7AB8" stroke-width="1.3"/>
+      <text x="400" y="620" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#A0B8D0" text-anchor="middle" font-weight="bold">container runtime</text>
+      <text x="400" y="640" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0" text-anchor="middle">CRI · containerd / CRI-O</text>
+    </g>
+
+    <g id="pods-inside">
+      <polygon points="335,572 365,587 365,597 335,582" fill="#7FD99F" fill-opacity="0.2" stroke="#7FD99F" stroke-width="0.8"/>
+      <polygon points="380,594 410,609 410,619 380,604" fill="#7FD99F" fill-opacity="0.2" stroke="#7FD99F" stroke-width="0.8"/>
+      <polygon points="425,616 455,631 455,641 425,626" fill="#7FD99F" fill-opacity="0.2" stroke="#7FD99F" stroke-width="0.8"/>
+    </g>
+
+    <g id="dimension-lines">
+      <line x1="660" y1="200" x2="720" y2="200" stroke="#5BA3E0" stroke-width="0.6"/>
+      <line x1="660" y1="650" x2="720" y2="650" stroke="#5BA3E0" stroke-width="0.6"/>
+      <line x1="710" y1="200" x2="710" y2="650" stroke="#5BA3E0" stroke-width="0.6"/>
+      <polygon points="710,200 706,210 714,210" fill="#5BA3E0"/>
+      <polygon points="710,650 706,640 714,640" fill="#5BA3E0"/>
+      <rect x="685" y="415" width="50" height="20" fill="#0E2A47"/>
+      <text x="710" y="430" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#5BA3E0" text-anchor="middle">NODE</text>
+    </g>
+  </g>
+
+  <g id="leader-kubelet">
+    <line x1="580" y1="383" x2="780" y2="383" stroke="#FFB627" stroke-width="0.8"/>
+    <line x1="780" y1="383" x2="800" y2="383" stroke="#FFB627" stroke-width="0.8"/>
+    <circle cx="580" cy="383" r="2.5" fill="#FFB627"/>
+    <rect x="800" y="335" width="380" height="90" fill="#1A3A5C" fill-opacity="0.4" stroke="#FFB627" stroke-width="1.2"/>
+    <text x="816" y="358" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FFB627" font-weight="bold">kubelet</text>
+    <text x="892" y="358" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— node agent</text>
+    <text x="816" y="380" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F0F4F8">• Watches apiserver for Pods scheduled here</text>
+    <text x="816" y="397" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F0F4F8">• Reconciles PodSpecs → instructs runtime</text>
+    <text x="816" y="414" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F0F4F8">• Liveness / readiness / startup probes</text>
+  </g>
+
+  <g id="leader-proxy">
+    <line x1="580" y1="555" x2="780" y2="540" stroke="#5BA3E0" stroke-width="0.8"/>
+    <line x1="780" y1="540" x2="800" y2="540" stroke="#5BA3E0" stroke-width="0.8"/>
+    <circle cx="580" cy="555" r="2.5" fill="#5BA3E0"/>
+    <rect x="800" y="450" width="380" height="80" fill="#1A3A5C" fill-opacity="0.4" stroke="#5BA3E0" stroke-width="1.2"/>
+    <text x="816" y="473" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#5BA3E0" font-weight="bold">kube-proxy</text>
+    <text x="897" y="473" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— Service rules</text>
+    <text x="816" y="495" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F0F4F8">• Translates virtual IP → backing Pod IPs</text>
+    <text x="816" y="512" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0"><tspan font-family="Consolas, 'Courier New', monospace">iptables</tspan> · <tspan font-family="Consolas, 'Courier New', monospace">IPVS</tspan> · <tspan font-family="Consolas, 'Courier New', monospace">nftables</tspan>  ·  optional with eBPF CNI</text>
+  </g>
+
+  <g id="leader-runtime">
+    <line x1="580" y1="625" x2="780" y2="620" stroke="#3E7AB8" stroke-width="0.8"/>
+    <line x1="780" y1="620" x2="800" y2="620" stroke="#3E7AB8" stroke-width="0.8"/>
+    <circle cx="580" cy="625" r="2.5" fill="#3E7AB8"/>
+    <rect x="800" y="555" width="380" height="80" fill="#1A3A5C" fill-opacity="0.4" stroke="#3E7AB8" stroke-width="1.2"/>
+    <text x="816" y="578" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#3E7AB8" font-weight="bold">container runtime</text>
+    <text x="942" y="578" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">— CRI implementer</text>
+    <text x="816" y="600" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F0F4F8">• Pulls images, starts containers, manages lifecycle</text>
+    <text x="816" y="617" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0"><tspan font-family="Consolas, 'Courier New', monospace">containerd</tspan> · <tspan font-family="Consolas, 'Courier New', monospace">CRI-O</tspan>  ·  Docker removed since v1.24</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 04 OF 10 · WORKER NODE</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">SHEET 04 OF 10</text>
+  </g>
+</svg>

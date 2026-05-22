@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- P02 Issue at a Glance — front-page KPI strip + three observations, dense rhythm -->
+
+  <!-- Background paper -->
+  <rect id="bg" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ============ HEADER ============ -->
+  <g id="bg-masthead-rule">
+    <rect x="0" y="0" width="1280" height="4" fill="#C8102E"/>
+  </g>
+
+  <g id="header-folio">
+    <line x1="48" y1="34" x2="1232" y2="34" stroke="#111111" stroke-width="1"/>
+    <text x="48" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" letter-spacing="2">THE AI INDUSTRY 2026 · ANNUAL REPORT</text>
+    <text x="640" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="middle" letter-spacing="2">FRONT PAGE</text>
+    <text x="1232" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">VOL. 1 · NO. 1 · MAY 2026</text>
+  </g>
+
+  <g id="header">
+    <text x="48" y="58" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#C8102E" letter-spacing="3.5">SECTION I · OVERVIEW</text>
+    <text x="48" y="110" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="56" font-weight="900" fill="#111111" letter-spacing="-1">ISSUE AT A GLANCE</text>
+    <text x="48" y="138" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="15" font-style="italic" fill="#3A3A3A">Four numbers that frame the year, then three observations the rest of this issue unpacks.</text>
+    <line x1="48" y1="156" x2="1232" y2="156" stroke="#111111" stroke-width="2"/>
+  </g>
+
+  <!-- ============ KPI STRIP (4 columns, separated by hairlines, no rounded card) ============ -->
+  <g id="kpi-strip-divider-top">
+    <line x1="48" y1="176" x2="1232" y2="176" stroke="#111111" stroke-width="1"/>
+  </g>
+
+  <!-- Column 1 -->
+  <g id="kpi-1">
+    <text x="60" y="200" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="10" font-weight="900" fill="#3A3A3A" letter-spacing="2.5">WORLDWIDE AI SPENDING · 2026E</text>
+    <text x="60" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="84" font-weight="900" fill="#111111" letter-spacing="-2">$2.02</text>
+    <text x="240" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="40" font-weight="900" fill="#111111">T</text>
+    <text x="60" y="316" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">total worldwide spend, all categories,</text>
+    <text x="60" y="332" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">36 % above the prior year.</text>
+    <text x="60" y="358" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#6B6B6B" letter-spacing="1">SOURCE  GARTNER</text>
+  </g>
+  <line x1="305" y1="190" x2="305" y2="376" stroke="#111111" stroke-width="1"/>
+
+  <!-- Column 2 -->
+  <g id="kpi-2">
+    <text x="320" y="200" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="10" font-weight="900" fill="#3A3A3A" letter-spacing="2.5">MONTHLY LLM USERS WORLDWIDE</text>
+    <text x="320" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="84" font-weight="900" fill="#111111" letter-spacing="-2">3.8</text>
+    <text x="430" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="40" font-weight="900" fill="#111111">B</text>
+    <text x="320" y="316" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">people now use a large-language-</text>
+    <text x="320" y="332" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">model product each month.</text>
+    <text x="320" y="358" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#6B6B6B" letter-spacing="1">SOURCE  COUNTERPOINT Q1 2026</text>
+  </g>
+  <line x1="615" y1="190" x2="615" y2="376" stroke="#111111" stroke-width="1"/>
+
+  <!-- Column 3 -->
+  <g id="kpi-3">
+    <text x="630" y="200" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="10" font-weight="900" fill="#3A3A3A" letter-spacing="2.5">QUARTERLY LLM REVENUE · Q1 2026</text>
+    <text x="630" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="84" font-weight="900" fill="#C8102E" letter-spacing="-2">$20.7</text>
+    <text x="800" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="40" font-weight="900" fill="#C8102E">B</text>
+    <text x="630" y="316" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">aggregate quarterly revenue across</text>
+    <text x="630" y="332" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">all tracked frontier and Tier-2 labs.</text>
+    <text x="630" y="358" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#6B6B6B" letter-spacing="1">SOURCE  COUNTERPOINT Q1 2026</text>
+  </g>
+  <line x1="922" y1="190" x2="922" y2="376" stroke="#111111" stroke-width="1"/>
+
+  <!-- Column 4 -->
+  <g id="kpi-4">
+    <text x="937" y="200" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="10" font-weight="900" fill="#3A3A3A" letter-spacing="2.5">ACTIVE AI POLICY INITIATIVES</text>
+    <text x="937" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="84" font-weight="900" fill="#111111" letter-spacing="-2">1,000</text>
+    <text x="1130" y="284" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="40" font-weight="900" fill="#111111">+</text>
+    <text x="937" y="316" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">distinct AI policy efforts logged</text>
+    <text x="937" y="332" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111">across 72 countries by Q1 2026.</text>
+    <text x="937" y="358" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#6B6B6B" letter-spacing="1">SOURCE  ONETRUST · APR 2026</text>
+  </g>
+
+  <!-- chart-plot-area: 48,176,1232,376 -->
+  <g id="kpi-strip-divider-bottom">
+    <line x1="48" y1="386" x2="1232" y2="386" stroke="#111111" stroke-width="1"/>
+  </g>
+
+  <!-- ============ THREE OBSERVATIONS ============ -->
+  <g id="observations-header">
+    <text x="48" y="424" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="28" font-weight="900" fill="#111111" letter-spacing="-0.5">THREE OBSERVATIONS</text>
+    <text x="48" y="446" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="12" font-style="italic" fill="#3A3A3A">— each picked up by a story later in this issue —</text>
+    <line x1="48" y1="464" x2="1232" y2="464" stroke="#111111" stroke-width="2"/>
+  </g>
+
+  <!-- 3 columns of short body, separated by thin hairlines -->
+  <g id="obs-1">
+    <text x="60" y="494" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#C8102E" letter-spacing="1.5">I.</text>
+    <text x="86" y="494" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">REVENUE LEADS FROM A 7×</text>
+    <text x="60" y="514" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">SMALLER USER BASE.</text>
+    <text x="60" y="544" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">Anthropic captures 31.4 % of LLM</text>
+    <text x="60" y="562" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">revenue from 134 M monthly users,</text>
+    <text x="60" y="580" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">narrowly ahead of OpenAI's 29.0 %</text>
+    <text x="60" y="598" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">from 900 M. The first non-OpenAI</text>
+    <text x="60" y="616" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">lab in #1 since the modern era began.</text>
+    <text x="60" y="640" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" letter-spacing="1.5">CONTINUED ON PAGE 03 →</text>
+  </g>
+  <line x1="445" y1="478" x2="445" y2="650" stroke="#111111" stroke-width="1"/>
+
+  <g id="obs-2">
+    <text x="460" y="494" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#C8102E" letter-spacing="1.5">II.</text>
+    <text x="490" y="494" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">TRAINING COSTS BROKE</text>
+    <text x="460" y="514" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">THE HALF-BILLION CEILING.</text>
+    <text x="460" y="544" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">Frontier 2026 runs sit at one to ten</text>
+    <text x="460" y="562" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">times the compute of the GPT-4 era,</text>
+    <text x="460" y="580" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">costing $200 M to $500 M per run.</text>
+    <text x="460" y="598" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">Power and grid interconnect, not</text>
+    <text x="460" y="616" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">chips, are the binding constraint.</text>
+    <text x="460" y="640" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" letter-spacing="1.5">CONTINUED ON PAGE 05 →</text>
+  </g>
+  <line x1="845" y1="478" x2="845" y2="650" stroke="#111111" stroke-width="1"/>
+
+  <g id="obs-3">
+    <text x="860" y="494" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#C8102E" letter-spacing="1.5">III.</text>
+    <text x="893" y="494" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">INFERENCE FALLS</text>
+    <text x="860" y="514" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="14" font-weight="900" fill="#111111" letter-spacing="1.5">10× PER YEAR.</text>
+    <text x="860" y="544" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">Inference cost for the same capability</text>
+    <text x="860" y="562" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">drops by an order of magnitude every</text>
+    <text x="860" y="580" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">twelve months — the only frontier</text>
+    <text x="860" y="598" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">metric falling faster than capability</text>
+    <text x="860" y="616" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="13" fill="#111111" letter-spacing="0.1">itself is climbing.</text>
+    <text x="860" y="640" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" fill="#3A3A3A" letter-spacing="1.5">CONTINUED ON PAGE 06 →</text>
+  </g>
+
+  <!-- ============ FOOTER ============ -->
+  <g id="footer-imprint">
+    <rect x="48" y="688" width="1184" height="2" fill="#C8102E"/>
+    <text x="48" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" letter-spacing="2">SOURCE  COUNTERPOINT RESEARCH GLOBAL LLM SNAPSHOT Q1 2026 · GARTNER 2026E FORECAST · ONETRUST APR 2026 SCAN</text>
+    <text x="1232" y="708" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">PAGE 02 / 10</text>
+  </g>
+</svg>

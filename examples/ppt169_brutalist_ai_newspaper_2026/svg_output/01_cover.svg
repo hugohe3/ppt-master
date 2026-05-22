@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+
+  
+  <rect id="bg" width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <g id="bg-hero">
+    <image href="../images/p01_cover_hero.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" />
+  </g>
+
+  
+  <g id="bg-masthead-rule">
+    <rect x="0" y="0" width="1280" height="4" fill="#C8102E" />
+  </g>
+
+  
+  <g id="header-folio">
+    <line x1="48" y1="34" x2="1232" y2="34" stroke="#111111" stroke-width="1" />
+    <text x="48" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" letter-spacing="2">VOL. 1 · NO. 1</text>
+    <text x="640" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="middle" letter-spacing="2">MAY 2026 · COMPILED IN ONE WEEK</text>
+    <text x="1232" y="26" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="10" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">PPT MASTER ANNUAL · NEWSPAPER DEMO</text>
+  </g>
+
+  
+  <g id="masthead">
+    
+    <text x="640" y="118" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="22" font-weight="900" fill="#111111" text-anchor="middle" letter-spacing="14">THE</text>
+    
+    <text x="640" y="220" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="120" font-weight="900" fill="#111111" text-anchor="middle" letter-spacing="-2">AI INDUSTRY</text>
+    
+    <line x1="380" y1="270" x2="540" y2="270" stroke="#111111" stroke-width="1" />
+    <text x="640" y="278" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="48" font-weight="900" fill="#C8102E" text-anchor="middle" letter-spacing="20">2026</text>
+    <line x1="740" y1="270" x2="900" y2="270" stroke="#111111" stroke-width="1" />
+  </g>
+
+  
+  <g id="subtitle-block">
+    <text x="640" y="332" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="22" font-style="italic" fill="#111111" text-anchor="middle">an annual report on the year the league table changed</text>
+    <line x1="490" y1="358" x2="790" y2="358" stroke="#111111" stroke-width="2" />
+  </g>
+
+  
+  <g id="tagline">
+    <text x="640" y="412" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="32" font-weight="900" fill="#111111" text-anchor="middle" letter-spacing="4">REVENUE LEADER CHANGED.</text>
+    <text x="640" y="454" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="32" font-weight="900" fill="#111111" text-anchor="middle" letter-spacing="4">TRAINING COST CROSSED $0.5 B.</text>
+    <text x="640" y="496" font-family="Impact, &quot;Arial Black&quot;, SimHei, sans-serif" font-size="32" font-weight="900" fill="#C8102E" text-anchor="middle" letter-spacing="4">BENCHMARKS SATURATED.</text>
+  </g>
+
+  
+  <g id="meta-edition">
+    <rect x="980" y="556" width="252" height="2" fill="#111111" />
+    <text x="980" y="582" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="2.5">COMPILED MAY 2026</text>
+    <text x="980" y="602" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="12" font-style="italic" fill="#3A3A3A">Sources, in order of citation:</text>
+    <text x="980" y="620" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" fill="#111111">Stanford HAI · Counterpoint Research ·</text>
+    <text x="980" y="636" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" fill="#111111">OneTrust · Deluair · IEEE Spectrum ·</text>
+    <text x="980" y="652" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" fill="#111111">Fortune BI · The Register.</text>
+  </g>
+
+  
+  <g id="meta-left">
+    <rect x="48" y="556" width="252" height="2" fill="#111111" />
+    <text x="48" y="582" font-family="&quot;Arial Black&quot;, SimHei, sans-serif" font-size="11" font-weight="900" fill="#111111" letter-spacing="2.5">PPT MASTER · VOL. 1</text>
+    <text x="48" y="602" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="12" font-style="italic" fill="#3A3A3A">Capability-showcase deck</text>
+    <text x="48" y="620" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" fill="#111111">Stress-tests text-position fidelity,</text>
+    <text x="48" y="636" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" fill="#111111">cross-page consistency, real native</text>
+    <text x="48" y="652" font-family="&quot;Times New Roman&quot;, SimSun, serif" font-size="11" fill="#111111">DrawingML shape preservation.</text>
+  </g>
+
+  
+  <g id="footer-imprint">
+    <line x1="48" y1="678" x2="1232" y2="678" stroke="#111111" stroke-width="0.5"/>
+    <text x="48" y="696" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" letter-spacing="2">EDITION 1 · 10 PAGES · BRUTALIST NEWSPAPER DEMO · PPT MASTER ROADMAP §P0-2</text>
+    <text x="1232" y="696" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="9" font-weight="700" fill="#111111" text-anchor="end" letter-spacing="2">PAGE 01 / 10</text>
+  </g>
+</svg>

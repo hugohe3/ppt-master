@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47" />
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6" />
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47" />
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3" />
+    </pattern>
+    <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB627" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#FFB627" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47" />
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.4" />
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.6" />
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">The Control Plane: Five Components</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P03 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5" />
+    <text x="60" y="78" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#6B85A3">ONE HUB · ONE PERSISTENT STORE · THREE SATELLITE LOOPS · ONE OPTIONAL CLOUD ADAPTER</text>
+  </g>
+
+  <g id="orbit-rings">
+    <circle cx="640" cy="410" r="220" fill="none" stroke="#3E7AB8" stroke-width="0.5" stroke-dasharray="2 6" opacity="0.4" />
+    <circle cx="640" cy="410" r="160" fill="none" stroke="#3E7AB8" stroke-width="0.6" stroke-dasharray="4 4" opacity="0.5" />
+    <circle cx="640" cy="410" r="270" fill="none" stroke="#3E7AB8" stroke-width="0.4" stroke-dasharray="1 5" opacity="0.3" />
+  </g>
+
+  <g id="spokes">
+    <line x1="640" y1="410" x2="640" y2="200" stroke="#FFB627" stroke-width="1.5" />
+    <line x1="640" y1="410" x2="855" y2="290" stroke="#5BA3E0" stroke-width="1.2" />
+    <line x1="640" y1="410" x2="855" y2="530" stroke="#5BA3E0" stroke-width="1.2" />
+    <line x1="640" y1="410" x2="425" y2="530" stroke="#5BA3E0" stroke-width="1.2" />
+    <line x1="640" y1="410" x2="425" y2="290" stroke="#3E7AB8" stroke-width="1.2" stroke-dasharray="4 3" />
+  </g>
+
+  <g id="hub-apiserver">
+    <circle cx="640" cy="410" r="110" fill="url(#hubGlow)" />
+    <polygon points="640,330 700,365 700,455 640,490 580,455 580,365" fill="#0E2A47" stroke="#FFB627" stroke-width="2" />
+    <line x1="640" y1="330" x2="640" y2="410" stroke="#FFB627" stroke-width="1.2" />
+    <line x1="640" y1="410" x2="580" y2="365" stroke="#FFB627" stroke-width="1.2" />
+    <line x1="640" y1="410" x2="700" y2="365" stroke="#FFB627" stroke-width="1.2" />
+    <text x="640" y="430" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#FFB627" text-anchor="middle" font-weight="bold">kube-apiserver</text>
+    <text x="640" y="450" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">REST + admission</text>
+    <text x="640" y="466" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">+ validation</text>
+    <text x="640" y="484" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0" text-anchor="middle">HUB · scales horizontally</text>
+  </g>
+
+  <g id="spoke-etcd">
+    <rect x="540" y="148" width="200" height="84" fill="#0E2A47" stroke="#FFB627" stroke-width="1.8" />
+    <rect x="540" y="148" width="6" height="84" fill="#FFB627" />
+    <use data-icon="tabler-outline/database" x="556" y="166" width="22" height="22" fill="#FFB627" stroke-width="1.5" />
+    <text x="588" y="184" font-family="Consolas, 'Courier New', monospace" font-size="14" fill="#F0F4F8" font-weight="bold">etcd</text>
+    <text x="556" y="206" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">Distributed K/V store</text>
+    <text x="556" y="222" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">Raft · all cluster state</text>
+    <line x1="640" y1="232" x2="640" y2="280" stroke="#FFB627" stroke-width="1" stroke-dasharray="2 3" />
+    <text x="660" y="260" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#FFB627">↕ only direct talker</text>
+  </g>
+
+  <g id="spoke-scheduler">
+    <rect x="800" y="248" width="220" height="84" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+    <rect x="800" y="248" width="6" height="84" fill="#5BA3E0" />
+    <use data-icon="tabler-outline/settings" x="816" y="266" width="22" height="22" fill="#5BA3E0" stroke-width="1.5" />
+    <text x="848" y="284" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#F0F4F8" font-weight="bold">kube-scheduler</text>
+    <text x="816" y="306" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">filter → score → bind</text>
+    <text x="816" y="322" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">picks node per Pod</text>
+  </g>
+
+  <g id="spoke-controller">
+    <rect x="800" y="488" width="220" height="84" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+    <rect x="800" y="488" width="6" height="84" fill="#5BA3E0" />
+    <use data-icon="tabler-outline/refresh" x="816" y="506" width="22" height="22" fill="#5BA3E0" stroke-width="1.5" />
+    <text x="848" y="524" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8" font-weight="bold">controller-manager</text>
+    <text x="816" y="546" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">N reconcile loops</text>
+    <text x="816" y="562" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">watch · diff · act</text>
+  </g>
+
+  <g id="spoke-cloud">
+    <rect x="260" y="248" width="200" height="84" fill="#0E2A47" stroke="#3E7AB8" stroke-width="1.5" stroke-dasharray="5 3" />
+    <rect x="260" y="248" width="6" height="84" fill="#3E7AB8" />
+    <use data-icon="tabler-outline/cloud" x="276" y="266" width="22" height="22" fill="#3E7AB8" stroke-width="1.5" />
+    <text x="308" y="284" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8" font-weight="bold">cloud-ctrl-mgr</text>
+    <text x="276" y="306" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">LB · routes · nodes</text>
+    <text x="276" y="322" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#6B85A3">optional · cloud only</text>
+  </g>
+
+  <g id="spoke-kubectl">
+    <rect x="260" y="488" width="200" height="84" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.5" />
+    <rect x="260" y="488" width="6" height="84" fill="#5BA3E0" />
+    <use data-icon="tabler-outline/terminal" x="276" y="506" width="22" height="22" fill="#5BA3E0" stroke-width="1.5" />
+    <text x="308" y="524" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#F0F4F8" font-weight="bold">kubectl / clients</text>
+    <text x="276" y="546" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">CLI · operators · CI</text>
+    <text x="276" y="562" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0">HTTPS REST</text>
+  </g>
+
+  <g id="annotations">
+    <line x1="75" y1="148" x2="120" y2="148" stroke="#FFB627" stroke-width="0.8" />
+    <line x1="75" y1="148" x2="75" y2="232" stroke="#FFB627" stroke-width="0.8" />
+    <text x="75" y="143" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#FFB627">PERSISTENCE</text>
+
+    <line x1="1080" y1="290" x2="1140" y2="290" stroke="#5BA3E0" stroke-width="0.8" />
+    <line x1="1140" y1="290" x2="1140" y2="530" stroke="#5BA3E0" stroke-width="0.8" />
+    <line x1="1080" y1="530" x2="1140" y2="530" stroke="#5BA3E0" stroke-width="0.8" />
+    <text x="1148" y="394" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#5BA3E0">RECONCILE</text>
+    <text x="1148" y="410" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#5BA3E0">LOOPS</text>
+
+    <line x1="140" y1="290" x2="200" y2="290" stroke="#3E7AB8" stroke-width="0.8" />
+    <line x1="140" y1="290" x2="140" y2="332" stroke="#3E7AB8" stroke-width="0.8" />
+    <text x="80" y="316" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#3E7AB8">CLOUD GLUE</text>
+  </g>
+
+  <g id="key-fact">
+    <rect x="60" y="615" width="1160" height="40" fill="#1A3A5C" fill-opacity="0.6" stroke="#FFB627" stroke-width="0.8" />
+    <use data-icon="tabler-outline/info-circle" x="76" y="624" width="22" height="22" fill="#FFB627" stroke-width="1.5" />
+    <text x="108" y="640" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#F0F4F8">Every state transition flows through <tspan font-family="Consolas, 'Courier New', monospace" fill="#FFB627" font-weight="bold">kube-apiserver</tspan>; only the apiserver talks to <tspan font-family="Consolas, 'Courier New', monospace" fill="#FFB627" font-weight="bold">etcd</tspan>. Every other component is a watcher of the API surface.</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5" />
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 03 OF 10 · CONTROL PLANE</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">SHEET 03 OF 10</text>
+  </g>
+</svg>

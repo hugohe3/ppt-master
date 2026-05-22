@@ -1,12 +1,82 @@
 {
   "version": 1,
-  "updated": "2026-05-18",
+  "updated": "2026-05-21",
   "stats": {
-    "examples": 17,
-    "pages": 229,
+    "examples": 18,
+    "pages": 239,
     "templates": 20
   },
   "projects": [
+    {
+      "id": "ppt169_brutalist_ai_newspaper_2026",
+      "title": "Brutalist AI Newspaper 2026",
+      "description": "AI 行业 2026 年报 — Brutalist 报章风格，满版小字 + 数据网格 + halftone 黑白图 + 单点红",
+      "icon": "📰",
+      "color": "#C8102E",
+      "style": "editorial",
+      "styleName": "Brutalist Newspaper",
+      "desc": "Year-end report on the AI industry in Brutalist newspaper style — dense small type, irregular column grids, halftone monochrome photos with single-spot red emphasis. Built as the roadmap §P0-2 capability-showcase deck stressing text-position fidelity and cross-page consistency.",
+      "tags": [
+        "Brutalist",
+        "Newspaper",
+        "Annual Report"
+      ],
+      "isNew": true,
+      "folder": "ppt169_brutalist_ai_newspaper_2026/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "cover"
+        },
+        {
+          "file": "02_issue_at_a_glance.svg",
+          "title": "issue at a glance",
+          "desc": "issue at a glance"
+        },
+        {
+          "file": "03_revenue_league.svg",
+          "title": "revenue league",
+          "desc": "revenue league"
+        },
+        {
+          "file": "04_arpu_divide.svg",
+          "title": "arpu divide",
+          "desc": "arpu divide"
+        },
+        {
+          "file": "05_training_cost.svg",
+          "title": "training cost",
+          "desc": "training cost"
+        },
+        {
+          "file": "06_inference_watts.svg",
+          "title": "inference watts",
+          "desc": "inference watts"
+        },
+        {
+          "file": "07_benchmarks_saturated.svg",
+          "title": "benchmarks saturated",
+          "desc": "benchmarks saturated"
+        },
+        {
+          "file": "08_three_rulebooks.svg",
+          "title": "three rulebooks",
+          "desc": "three rulebooks"
+        },
+        {
+          "file": "09_timeline.svg",
+          "title": "timeline",
+          "desc": "timeline"
+        },
+        {
+          "file": "10_closing_read.svg",
+          "title": "closing read",
+          "desc": "closing read"
+        }
+      ]
+    },
     {
       "id": "ppt169_pritzker_2026",
       "title": "Pritzker 2026",

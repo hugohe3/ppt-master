@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6"/>
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47"/>
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3"/>
+    </pattern>
+    <marker id="arrow09Cyan" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 Z" fill="#5BA3E0"/>
+    </marker>
+    <marker id="arrow09Amber" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 Z" fill="#FFB627"/>
+    </marker>
+    <radialGradient id="apiGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB627" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FFB627" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47"/>
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.4"/>
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.6"/>
+  </g>
+
+  <g id="header">
+    <text x="60" y="42" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#F0F4F8">Every Line Crosses the API Server</text>
+    <text x="1220" y="42" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="end">P09 / 10</text>
+    <line x1="60" y1="58" x2="1220" y2="58" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="78" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#6B85A3">NO COMPONENT TALKS DIRECTLY TO ANOTHER — ALL FLOWS GO THROUGH kube-apiserver</text>
+  </g>
+
+  <g id="lane-labels">
+    <text x="180" y="115" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5BA3E0" text-anchor="middle">CLIENTS / WATCHERS</text>
+    <text x="640" y="115" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" text-anchor="middle">SPINE</text>
+    <text x="1100" y="115" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#5BA3E0" text-anchor="middle">PERSISTENCE</text>
+    <line x1="60" y1="125" x2="1220" y2="125" stroke="#2D4A6B" stroke-width="0.5"/>
+  </g>
+
+    <g id="cli-kubectl">
+      <rect x="80" y="155" width="200" height="56" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.3"/>
+      <rect x="80" y="155" width="4" height="56" fill="#5BA3E0"/>
+      <!-- icon: tabler-outline/terminal -->
+  <g transform="translate(96.0, 170.0)" fill="none" stroke="#5BA3E0" stroke-width="1.5">
+    <path d="M5 7l5 5l-5 5" />
+    <path d="M12 19l7 0" />
+  </g>
+      <text x="130" y="180" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8" font-weight="bold">kubectl</text>
+      <text x="130" y="198" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">CLI · scripts · CI/CD</text>
+    </g>
+    <g id="cli-sched">
+      <rect x="80" y="225" width="200" height="56" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.3"/>
+      <rect x="80" y="225" width="4" height="56" fill="#5BA3E0"/>
+      <!-- icon: tabler-outline/settings -->
+  <g transform="translate(96.0, 240.0)" fill="none" stroke="#5BA3E0" stroke-width="1.5">
+    <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065" />
+    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+  </g>
+      <text x="130" y="250" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8" font-weight="bold">kube-scheduler</text>
+      <text x="130" y="268" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">picks node for Pod</text>
+    </g>
+    <g id="cli-ctrl">
+      <rect x="80" y="295" width="200" height="56" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.3"/>
+      <rect x="80" y="295" width="4" height="56" fill="#5BA3E0"/>
+      <!-- icon: tabler-outline/refresh -->
+  <g transform="translate(96.0, 310.0)" fill="none" stroke="#5BA3E0" stroke-width="1.5">
+    <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+    <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+  </g>
+      <text x="130" y="320" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#F0F4F8" font-weight="bold">controller-mgr</text>
+      <text x="130" y="338" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">reconcile loops</text>
+    </g>
+    <g id="cli-kubelet">
+      <rect x="80" y="365" width="200" height="56" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.3"/>
+      <rect x="80" y="365" width="4" height="56" fill="#5BA3E0"/>
+      <!-- icon: tabler-outline/cube -->
+  <g transform="translate(96.0, 380.0)" fill="none" stroke="#5BA3E0" stroke-width="1.5">
+    <path d="M21 16.008v-8.018a1.98 1.98 0 0 0 -1 -1.717l-7 -4.008a2.016 2.016 0 0 0 -2 0l-7 4.008c-.619 .355 -1 1.01 -1 1.718v8.018c0 .709 .381 1.363 1 1.717l7 4.008a2.016 2.016 0 0 0 2 0l7 -4.008c.619 -.355 1 -1.01 1 -1.718" />
+    <path d="M12 22v-10" />
+    <path d="M12 12l8.73 -5.04" />
+    <path d="M3.27 6.96l8.73 5.04" />
+  </g>
+      <text x="130" y="390" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8" font-weight="bold">kubelet (node)</text>
+      <text x="130" y="408" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">node-side agent · ≥1 per node</text>
+    </g>
+    <g id="cli-proxy">
+      <rect x="80" y="435" width="200" height="56" fill="#0E2A47" stroke="#5BA3E0" stroke-width="1.3"/>
+      <rect x="80" y="435" width="4" height="56" fill="#5BA3E0"/>
+      <!-- icon: tabler-outline/route -->
+  <g transform="translate(96.0, 450.0)" fill="none" stroke="#5BA3E0" stroke-width="1.5">
+    <path d="M3 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M19 7a2 2 0 1 0 0 -4a2 2 0 0 0 0 4" />
+    <path d="M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5" />
+  </g>
+      <text x="130" y="460" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#F0F4F8" font-weight="bold">kube-proxy</text>
+      <text x="130" y="478" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#A0B8D0">Service rule programmer</text>
+    </g>
+    <g id="cli-cloud">
+      <rect x="80" y="505" width="200" height="56" fill="#0E2A47" stroke="#3E7AB8" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <rect x="80" y="505" width="4" height="56" fill="#3E7AB8"/>
+      <!-- icon: tabler-outline/cloud -->
+  <g transform="translate(96.0, 520.0)" fill="none" stroke="#3E7AB8" stroke-width="1.5">
+    <path d="M6.657 18c-2.572 0 -4.657 -2.007 -4.657 -4.483c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-11.878" />
+  </g>
+      <text x="130" y="530" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" font-weight="bold">cloud-ctrl-mgr</text>
+      <text x="130" y="548" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#6B85A3">optional · cloud only</text>
+    </g>
+
+  <g id="api-spine">
+    <circle cx="640" cy="360" r="180" fill="url(#apiGlow)"/>
+    <rect x="540" y="180" width="200" height="360" fill="#0E2A47" stroke="#FFB627" stroke-width="2"/>
+    <rect x="540" y="180" width="200" height="36" fill="#FFB627"/>
+    <text x="640" y="204" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#0E2A47" text-anchor="middle" font-weight="bold">★ SPINE</text>
+    <text x="640" y="245" font-family="Consolas, 'Courier New', monospace" font-size="16" fill="#FFB627" text-anchor="middle" font-weight="bold">kube-apiserver</text>
+    <line x1="560" y1="263" x2="720" y2="263" stroke="#FFB627" stroke-width="0.5"/>
+    <text x="640" y="290" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F0F4F8" text-anchor="middle">REST API surface</text>
+    <text x="640" y="310" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">• authn / authz</text>
+    <text x="640" y="328" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">• admission webhooks</text>
+    <text x="640" y="346" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">• validation</text>
+    <text x="640" y="364" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">• mutation</text>
+    <line x1="560" y1="380" x2="720" y2="380" stroke="#FFB627" stroke-width="0.5"/>
+    <text x="640" y="406" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" text-anchor="middle">scales horizontally</text>
+    <text x="640" y="424" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">N replicas behind LB</text>
+    <line x1="560" y1="445" x2="720" y2="445" stroke="#FFB627" stroke-width="0.5"/>
+    <text x="640" y="471" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#7FD99F" text-anchor="middle">watch · long-poll</text>
+    <text x="640" y="489" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#7FD99F" text-anchor="middle">+ list streams</text>
+    <text x="640" y="513" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#6B85A3" text-anchor="middle">every component watches</text>
+    <text x="640" y="528" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="10" fill="#6B85A3" text-anchor="middle">to drive its reconcile loop</text>
+  </g>
+
+  <g id="persistence-column">
+    <rect x="1000" y="290" width="200" height="140" fill="#0E2A47" stroke="#FFB627" stroke-width="2"/>
+    <rect x="1000" y="290" width="200" height="30" fill="#FFB627"/>
+    <text x="1100" y="310" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#0E2A47" text-anchor="middle" font-weight="bold">SOLE STORAGE</text>
+    <!-- icon: tabler-outline/database -->
+  <g transform="translate(1018.0, 335.0) scale(1.4166666666666667)" fill="none" stroke="#FFB627" stroke-width="1.5">
+    <path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+    <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+    <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+  </g>
+    <text x="1100" y="358" font-family="Consolas, 'Courier New', monospace" font-size="16" fill="#FFB627" text-anchor="middle" font-weight="bold">etcd</text>
+    <text x="1100" y="380" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#F0F4F8" text-anchor="middle">Raft K/V cluster</text>
+    <text x="1100" y="398" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="11" fill="#A0B8D0" text-anchor="middle">all cluster state</text>
+    <line x1="1018" y1="410" x2="1182" y2="410" stroke="#FFB627" stroke-width="0.4"/>
+    <text x="1100" y="424" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0" text-anchor="middle">3 or 5 members · odd</text>
+  </g>
+
+  <g id="watch-arrows">
+    <line x1="280" y1="183" x2="540" y2="218" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrow09Cyan)"/>
+    <text x="295" y="173" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0">POST · PUT</text>
+    <line x1="280" y1="253" x2="540" y2="263" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrow09Cyan)"/>
+    <text x="305" y="244" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0">watch unscheduled</text>
+    <line x1="540" y1="290" x2="280" y2="270" stroke="#7FD99F" stroke-width="1.2" marker-end="url(#arrow09Cyan)"/>
+    <text x="338" y="285" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#7FD99F">bind decision</text>
+
+    <line x1="280" y1="323" x2="540" y2="333" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrow09Cyan)"/>
+    <text x="320" y="316" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0">watch + patch</text>
+
+    <line x1="280" y1="393" x2="540" y2="403" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrow09Cyan)"/>
+    <text x="320" y="386" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0">watch pods/node</text>
+    <line x1="540" y1="425" x2="280" y2="420" stroke="#7FD99F" stroke-width="1.2" marker-end="url(#arrow09Cyan)"/>
+    <text x="380" y="418" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#7FD99F">report status</text>
+
+    <line x1="280" y1="463" x2="540" y2="475" stroke="#5BA3E0" stroke-width="1.5" marker-end="url(#arrow09Cyan)"/>
+    <text x="318" y="456" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#A0B8D0">watch services</text>
+
+    <line x1="280" y1="533" x2="540" y2="510" stroke="#3E7AB8" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow09Cyan)"/>
+    <text x="320" y="523" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#3E7AB8">cloud sync (optional)</text>
+
+    <line x1="740" y1="345" x2="1000" y2="345" stroke="#FFB627" stroke-width="2" marker-end="url(#arrow09Amber)"/>
+    <line x1="1000" y1="375" x2="740" y2="375" stroke="#FFB627" stroke-width="2" marker-end="url(#arrow09Amber)"/>
+    <text x="870" y="335" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627" text-anchor="middle" font-weight="bold">gRPC · write</text>
+    <text x="870" y="395" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627" text-anchor="middle" font-weight="bold">gRPC · read</text>
+  </g>
+
+  <g id="bottom-takeaway">
+    <rect x="60" y="588" width="1160" height="74" fill="#1A3A5C" fill-opacity="0.6" stroke="#FFB627" stroke-width="1"/>
+    <!-- icon: tabler-outline/route -->
+  <g transform="translate(76.0, 608.0) scale(1.3333333333333333)" fill="none" stroke="#FFB627" stroke-width="1.5">
+    <path d="M3 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M19 7a2 2 0 1 0 0 -4a2 2 0 0 0 0 4" />
+    <path d="M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5" />
+  </g>
+    <text x="120" y="615" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FFB627" font-weight="bold">WHY THIS MATTERS</text>
+    <text x="120" y="638" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="13" fill="#F0F4F8">API-mediation makes Kubernetes <tspan fill="#FFB627" font-weight="bold">pluggable</tspan> (any controller can join the loop by watching the API), <tspan fill="#FFB627" font-weight="bold">observable</tspan> (every state change is an API event), and <tspan fill="#FFB627" font-weight="bold">auditable</tspan>.</text>
+    <text x="120" y="656" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="12" fill="#A0B8D0">The constraint <tspan font-family="Consolas, 'Courier New', monospace" fill="#FFB627">"all roads through apiserver"</tspan> is the architecture, not an inconvenience.</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5"/>
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 09 OF 10 · API SPINE</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">SHEET 09 OF 10</text>
+  </g>
+</svg>

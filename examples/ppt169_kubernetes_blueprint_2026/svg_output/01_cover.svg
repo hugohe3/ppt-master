@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="bpGridMajor" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" data-pptx-pattern="lgGrid">
+      <rect width="40" height="40" fill="#0E2A47" />
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2D4A6B" stroke-width="0.6" />
+    </pattern>
+    <pattern id="bpGridMinor" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" data-pptx-pattern="smGrid">
+      <rect width="8" height="8" fill="#0E2A47" />
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1A3A5C" stroke-width="0.3" />
+    </pattern>
+    <radialGradient id="bgVignette" cx="50%" cy="50%" r="75%">
+      <stop offset="60%" stop-color="#0E2A47" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+    </radialGradient>
+    <radialGradient id="amberGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB627" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FFB627" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0E2A47" />
+    <rect width="1280" height="720" fill="url(#bpGridMinor)" opacity="0.5" />
+    <rect width="1280" height="720" fill="url(#bpGridMajor)" opacity="0.7" />
+    <rect width="1280" height="720" fill="url(#bgVignette)" />
+  </g>
+
+  <g id="title-block">
+    <line x1="60" y1="100" x2="220" y2="100" stroke="#FFB627" stroke-width="2" />
+    <text x="60" y="130" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#FFB627" letter-spacing="3">DRAWING NO. K8S-ARCH-2026 / 01</text>
+    <text x="60" y="220" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="64" font-weight="bold" fill="#F0F4F8" letter-spacing="-1">Kubernetes</text>
+    <text x="60" y="278" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="45" font-weight="bold" fill="#5BA3E0">Cluster Architecture</text>
+    <text x="60" y="318" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="20" fill="#A0B8D0">A Blueprint of the Modern Container Orchestrator</text>
+  </g>
+
+  <g id="metadata-block">
+    <line x1="60" y1="610" x2="60" y2="660" stroke="#5BA3E0" stroke-width="1" />
+    <text x="78" y="624" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">SCALE</text>
+    <text x="78" y="640" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#F0F4F8">1 : ∞</text>
+    <text x="78" y="657" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#6B85A3">CLUSTER-LEVEL VIEW</text>
+
+    <line x1="220" y1="610" x2="220" y2="660" stroke="#5BA3E0" stroke-width="1" />
+    <text x="238" y="624" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">PROJECTION</text>
+    <text x="238" y="640" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#F0F4F8">ISOMETRIC</text>
+    <text x="238" y="657" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#6B85A3">30° / 30° / 90°</text>
+
+    <line x1="380" y1="610" x2="380" y2="660" stroke="#5BA3E0" stroke-width="1" />
+    <text x="398" y="624" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0">SHEETS</text>
+    <text x="398" y="640" font-family="Consolas, 'Courier New', monospace" font-size="13" fill="#F0F4F8">10 / 10</text>
+    <text x="398" y="657" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#6B85A3">ENGINEERING REFERENCE</text>
+  </g>
+
+  <g id="cluster-decor">
+    <ellipse cx="900" cy="395" rx="280" ry="40" fill="#5BA3E0" fill-opacity="0.04" stroke="#3E7AB8" stroke-width="0.5" stroke-dasharray="3 5" />
+    <line x1="900" y1="320" x2="730" y2="395" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 4" opacity="0.6" />
+    <line x1="900" y1="320" x2="900" y2="395" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 4" opacity="0.6" />
+    <line x1="900" y1="320" x2="1070" y2="395" stroke="#5BA3E0" stroke-width="1" stroke-dasharray="3 4" opacity="0.6" />
+    <line x1="600" y1="250" x2="640" y2="250" stroke="#FFB627" stroke-width="0.8" />
+    <line x1="600" y1="250" x2="600" y2="220" stroke="#FFB627" stroke-width="0.8" />
+    <text x="610" y="215" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#FFB627">CONTROL PLANE</text>
+    <line x1="600" y1="465" x2="640" y2="465" stroke="#5BA3E0" stroke-width="0.8" />
+    <line x1="600" y1="465" x2="600" y2="555" stroke="#5BA3E0" stroke-width="0.8" />
+    <text x="555" y="570" font-family="Consolas, 'Courier New', monospace" font-size="10" fill="#5BA3E0">DATA PLANE</text>
+  </g>
+
+  <g id="cp-node">
+      <circle cx="900" cy="250" r="120" fill="url(#amberGlow)" />
+      <polygon points="900,180 970,220 970,310 900,350 830,310 830,220" fill="#1A3A5C" stroke="#FFB627" stroke-width="2" />
+      <line x1="900" y1="180" x2="900" y2="260" stroke="#FFB627" stroke-width="1.5" />
+      <line x1="900" y1="260" x2="830" y2="220" stroke="#FFB627" stroke-width="1.5" />
+      <line x1="900" y1="260" x2="970" y2="220" stroke="#FFB627" stroke-width="1.5" />
+      <text x="900" y="276" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" text-anchor="middle">CONTROL</text>
+      <text x="900" y="290" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#FFB627" text-anchor="middle">PLANE</text>
+      <text x="900" y="313" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#F0F4F8" text-anchor="middle" opacity="0.8">apiserver · etcd</text>
+      <text x="900" y="326" font-family="Consolas, 'Courier New', monospace" font-size="9" fill="#F0F4F8" text-anchor="middle" opacity="0.8">scheduler · ctrl-mgr</text>
+    </g>
+
+    <g id="worker-1">
+      <polygon points="730,395 782,425 782,475 730,505 678,475 678,425" fill="#1A3A5C" stroke="#5BA3E0" stroke-width="1.5" />
+      <line x1="730" y1="395" x2="730" y2="445" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="730" y1="445" x2="678" y2="425" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="730" y1="445" x2="782" y2="425" stroke="#5BA3E0" stroke-width="1" />
+      <text x="730" y="540" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="middle">node-01</text>
+    </g>
+    <g id="worker-2">
+      <polygon points="900,395 952,425 952,475 900,505 848,475 848,425" fill="#1A3A5C" stroke="#5BA3E0" stroke-width="1.5" />
+      <line x1="900" y1="395" x2="900" y2="445" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="900" y1="445" x2="848" y2="425" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="900" y1="445" x2="952" y2="425" stroke="#5BA3E0" stroke-width="1" />
+      <text x="900" y="540" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="middle">node-02</text>
+    </g>
+    <g id="worker-3">
+      <polygon points="1070,395 1122,425 1122,475 1070,505 1018,475 1018,425" fill="#1A3A5C" stroke="#5BA3E0" stroke-width="1.5" />
+      <line x1="1070" y1="395" x2="1070" y2="445" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="1070" y1="445" x2="1018" y2="425" stroke="#5BA3E0" stroke-width="1" />
+      <line x1="1070" y1="445" x2="1122" y2="425" stroke="#5BA3E0" stroke-width="1" />
+      <text x="1070" y="540" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#A0B8D0" text-anchor="middle">node-03</text>
+    </g>
+
+  <g id="footer">
+    <line x1="60" y1="680" x2="1220" y2="680" stroke="#2D4A6B" stroke-width="0.5" />
+    <text x="60" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3">K8S-ARCH-2026 · DRAWING 01 OF 10 · COVER</text>
+    <text x="1220" y="700" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#6B85A3" text-anchor="end">REV 1.0 · 2026-05</text>
+  </g>
+</svg>

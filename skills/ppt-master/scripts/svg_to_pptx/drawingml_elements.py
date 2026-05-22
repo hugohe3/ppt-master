@@ -1116,9 +1116,8 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         # Use the WIDEST visual line (per-tspan as the deck author drew it),
         # not the joined-up paragraph: soft-broken paragraphs concatenate
         # many lines into one <a:p>, and measuring the joined string would
-        # blow the textbox past the canvas. The 1.05 safety factor covers
-        # PowerPoint's slightly different font metrics.
-        text_width = max(visual_line_widths) * 1.05 if visual_line_widths else 0.0
+        # blow the textbox past the canvas.
+        text_width = max(visual_line_widths) if visual_line_widths else 0.0
         # Total height assumes the visual line count from the SVG source;
         # if PowerPoint wraps to more or fewer lines after the user resizes,
         # the user resizes the height accordingly.
@@ -1128,7 +1127,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             + font_size * 1.5
         )
     else:
-        text_width = estimate_text_width(full_text, font_size, font_weight) * 1.15
+        text_width = estimate_text_width(full_text, font_size, font_weight) * 1.05
         text_height = font_size * 1.5
     padding = font_size * 0.1
 
@@ -1229,7 +1228,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
     # long joined-up <a:p> on one line, blowing past the canvas. The cx we
-    # write below (longest SVG line × 1.05) is the design target width;
+    # write below (longest SVG line) is the design target width;
     # PowerPoint wraps long paragraphs inside this width.
     # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
     if paragraph_runs is not None:
