@@ -17,15 +17,30 @@ description: Customize default PPTX animations with per-slide and per-object tim
 
 ---
 
-## 1. Build or Validate the Scaffold
+## 1. Get Real Group IDs (do NOT dump the full scaffold)
 
 **Mandatory**: use real SVG group ids. Do not invent slide or group keys.
 
-If `animations.json` does not exist:
+**Default path — `list-groups`** (cheap, ~1KB of output even on a long deck):
+
+```bash
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project_path>
+```
+
+Output is one line per slide: `<slide_basename>: id1, id2, id3` — chrome
+groups (`bg` / `*-header` / `*-footer` / `*-decor` / `nav` / `watermark` /
+`logo` / `pagenumber`) are excluded because the exporter already pins them
+to `none`. Use this as the source of truth when planning §3 and editing §4
+— **do not read the full scaffold file unless you need it as an editing
+starting point**.
+
+If `animations.json` does not exist and you want a starting file to edit:
 
 ```bash
 python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>
 ```
+
+Scaffold output also excludes chrome and includes a `defaults` stub.
 
 If it already exists:
 
@@ -143,7 +158,17 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 ## 4. Edit `animations.json`
 
-**Hard rule**: write only overrides that differ from the default global animation. Unmentioned groups keep the normal export behavior.
+**Hard rule — only write differences from `defaults`**. Unmentioned slides
+and unmentioned groups inherit the deck-wide `defaults` block. Enumerating
+every page and every group is the most common bloat — a typical custom
+animation pass touches 3-6 slides, not all of them. If your edits look like
+a copy of `list-groups`, you are writing too much.
+
+**Forbidden — full enumeration**:
+
+- Listing every slide just to write `{}` for it
+- Listing every content group in a slide just to assign the default effect
+- Re-stating `"effect": "fade"` on every group when `defaults.animation.effect: "fade"` would carry it
 
 | Field | Behavior |
 |---|---|
@@ -158,7 +183,34 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `delay` | Extra seconds before this group starts in `after-previous` mode |
 | `duration` | Per-group entrance duration in seconds; vary when semantic weight or pacing calls for it |
 
-Example:
+**Minimal example — the right size for most decks** (one global default + 2-3
+slides that genuinely diverge):
+
+```json
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.4 },
+    "animation": { "effect": "fade", "duration": 0.5, "stagger": 0.25, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "animation": { "stagger": 0.4 }
+    },
+    "07_hero_quote": {
+      "transition": { "effect": "fade", "duration": 0.7 },
+      "groups": { "quote": { "duration": 0.9, "delay": 0.3 } }
+    }
+  }
+}
+```
+
+Everything else inherits `defaults`; chrome is `none` automatically; no need
+to mention `02_*`, `03_*`, … at all.
+
+**Full per-object example — only when an individual slide genuinely needs
+per-group choreography** (e.g., a chapter divider where the chapter number
+should fade in dramatically before the title):
 
 ```json
 {
@@ -173,13 +225,15 @@ Example:
       "groups": {
         "title": { "effect": "fade", "order": 1 },
         "chart": { "effect": "wipe", "order": 2, "duration": 0.6 },
-        "insight": { "effect": "fly", "order": 3, "delay": 0.2 },
-        "footer": { "effect": "none" }
+        "insight": { "effect": "fly", "order": 3, "delay": 0.2 }
       }
     }
   }
 }
 ```
+
+Note even this example does NOT list `footer` / `bg` / `header` — chrome
+auto-skips and inheriting the default needs no entry.
 
 **Forbidden — SVG pollution**: do not add `data-*` animation attributes to SVG files. Animation customization belongs in `animations.json`.
 
