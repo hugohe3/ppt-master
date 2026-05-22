@@ -224,8 +224,8 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
             'transition': {'effect': 'fade', 'duration': 0.4},
             'animation': {
                 'effect': 'auto',
-                'duration': 0.5,
-                'stagger': 0.2,
+                'duration': 0.4,
+                'stagger': 0.5,
                 'trigger': 'after-previous',
             },
         },

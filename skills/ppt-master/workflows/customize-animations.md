@@ -191,7 +191,7 @@ slides that genuinely diverge):
   "version": 1,
   "defaults": {
     "transition": { "effect": "fade", "duration": 0.4 },
-    "animation": { "effect": "fade", "duration": 0.5, "stagger": 0.25, "trigger": "after-previous" }
+    "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
   },
   "slides": {
     "01_cover": {
