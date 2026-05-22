@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "updated": "2026-05-21",
+  "updated": "2026-05-22",
   "stats": {
-    "examples": 18,
-    "pages": 239,
+    "examples": 19,
+    "pages": 249,
     "templates": 20
   },
   "projects": [
@@ -639,6 +639,76 @@
           "file": "18_outro.svg",
           "title": "outro",
           "desc": "outro"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_kubernetes_blueprint_2026",
+      "title": "Kubernetes Blueprint 2026",
+      "description": "Kubernetes 集群架构 10 页讲解 — 工程蓝图等距技术图风",
+      "icon": "📐",
+      "color": "#3FB4D9",
+      "style": "general",
+      "styleName": "Engineering Blueprint",
+      "desc": "Ten-page walkthrough of Kubernetes cluster architecture in an isometric engineering-drawing style — blueprint cyan / amber on deep navy paper, hand-authored SVG geometry only. The second of three P0 capability-showcase decks, stressing geometric shape generalization and chart-structure extensibility.",
+      "tags": [
+        "Blueprint",
+        "Kubernetes",
+        "Technical Drawing"
+      ],
+      "isNew": true,
+      "folder": "ppt169_kubernetes_blueprint_2026/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "cover"
+        },
+        {
+          "file": "02_two_planes.svg",
+          "title": "two planes",
+          "desc": "two planes"
+        },
+        {
+          "file": "03_control_plane.svg",
+          "title": "control plane",
+          "desc": "control plane"
+        },
+        {
+          "file": "04_worker_node.svg",
+          "title": "worker node",
+          "desc": "worker node"
+        },
+        {
+          "file": "05_pod_lifecycle.svg",
+          "title": "pod lifecycle",
+          "desc": "pod lifecycle"
+        },
+        {
+          "file": "06_service_types.svg",
+          "title": "service types",
+          "desc": "service types"
+        },
+        {
+          "file": "07_storage.svg",
+          "title": "storage",
+          "desc": "storage"
+        },
+        {
+          "file": "08_ha_topology.svg",
+          "title": "ha topology",
+          "desc": "ha topology"
+        },
+        {
+          "file": "09_api_spine.svg",
+          "title": "api spine",
+          "desc": "api spine"
+        },
+        {
+          "file": "10_takeaways.svg",
+          "title": "takeaways",
+          "desc": "takeaways"
         }
       ]
     },
