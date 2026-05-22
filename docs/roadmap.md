@@ -38,16 +38,9 @@ The past two months' structural capability growth. Single flags / incremental po
 - **AI image: Type concept boundary clarification** — Type is now narrowed to "the internal geometric skeleton of a local infographic block" (11 real skeletons); the four pseudo-types (hero / background / portrait / typography) fold back into `page_role: hero_page` plus four composition primitives (single-subject / portrait / typographic / atmospheric); hero_page text layering rule (visual keywords embedded, editable text via SVG overlay)
 - **Brutalist AI newspaper example deck shipped** ([`examples/ppt169_brutalist_ai_newspaper_2026/`](../examples/ppt169_brutalist_ai_newspaper_2026/)) — first of the three P0 capability-backing demos: wall-to-wall small type + irregular columns + halftone monochrome + single-spot red + real native shapes; 10-page editorial annual report stressing text-position precision and cross-page consistency
 - **Kubernetes Blueprint example deck shipped** ([`examples/ppt169_kubernetes_blueprint_2026/`](../examples/ppt169_kubernetes_blueprint_2026/)) — second of the three P0 capability-backing demos: isometric technical-drawing aesthetic + blueprint cyan/amber palette + hand-authored SVG geometry (no raster images) + custom drawing-in animation; 10-page Kubernetes architecture walkthrough stressing geometric shape generalization and chart-structure extensibility
+- **AI image `custom` escape hatch** — `rendering` / `palette` / hero composition each accept `custom` + a one-paragraph `*_behavior` prose, replacing the false "default to vector-illustration / cool-corporate" fallback; end-to-end contract spans [`image-renderings/_index.md`](../skills/ppt-master/references/image-renderings/_index.md) §1.5, [`image-palettes/_index.md`](../skills/ppt-master/references/image-palettes/_index.md) §2, Strategist h.5 hard-rule (≤1 custom per dimension; one candidate may carry both), spec_lock fields, and Image_Generator Step 2 consumption branch
 - **Template architecture: three-kind consolidation** ([`docs/templates-architecture.md`](./templates-architecture.md)) — brand / layout / deck split into three independent dirs with per-kind schemas + segment-level fusion + git-style conflict resolution; SKILL.md Step 3 dispatches per `kind`, trigger rule remains "explicit path only"
 - **Pattern fill PPTX safety net** — `svg_quality_checker.py` now warns on `<pattern>` without `data-pptx-pattern` (silent fallback to `ltUpDiag`) and errors on values outside OOXML `ST_PresetPatternVal` (schema-failed PPTX that won't open); `shared-standards.md §7` documents the closed preset enum and the required `<rect fill="<bg>"/>` child convention
-
----
-
-## P1 — Planned, not scheduled
-
-### 1. AI image: Mood as an independent dimension
-
-Palette files currently carry "hue", "saturation" and "contrast/temperament" all together, making them long. Plan: extract an independent Mood dimension (subtle / balanced / bold), slim down palette files.
 
 ---
 
