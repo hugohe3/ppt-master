@@ -66,7 +66,7 @@
 
 <p align="center">
   <sub>↑ 上述示例均为 PPT Master 端到端生成的原生可编辑 PPT，点"下载 .pptx"拿原始文件直接看效果。生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>。<br/>
-  <a href="https://hugohe3.github.io/ppt-master/">在线翻看全部 17 个示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a>（17 个项目，229 页） · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
+  <a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
 </p>
 
 <p align="center">
@@ -284,7 +284,7 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 | 🎬 | [转场与动画](./docs/zh/animations.md) | 页间转场和页内元素入场动画 |
 | 🎙️ | [音频旁白与视频导出](./docs/zh/audio-narration.md) | 90+ 语种 TTS 旁白、音频嵌入 PPTX、导出为 MP4 |
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
-| 💼 | [示例](./examples/README.md) | 17 个项目，229 页 |
+| 💼 | [示例](./examples/README.md) | 所有示例项目 |
 | 🏗️ | [技术路线](./docs/zh/technical-design.md) | 架构、设计哲学、为什么选 SVG |
 | ❓ | [常见问题](./docs/zh/faq.md) | 模型选择、费用、排版问题排查、自定义模板 |
 

@@ -38,7 +38,7 @@ To browse what's available in the built-in library, ask "what templates are avai
 
 ### Template catalog
 
-Full index in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md), grouped by Brand / Scenario / Government / Special, with primary color and use cases per entry. 17 templates currently shipped, covering Google, Anthropic, China Merchants Bank, PowerChina, CATARC, government blue/red, medical, psychology, pixel-retro and more.
+Full index in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md), grouped by Brand / Scenario / Government / Special, with primary color and use cases per entry. The built-in template library covers Google, Anthropic, China Merchants Bank, PowerChina, CATARC, government blue/red, medical, psychology, pixel-retro and more.
 
 ### Free design vs template
 

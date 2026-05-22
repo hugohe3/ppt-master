@@ -60,7 +60,7 @@ The choice is yours. PPT Master doesn't make that decision for you.
 
 Three built-in styles: General (training, tech talks), Consultant (business reports, data visualization), and Consultant Top (MBB level — investment memos, strategic plans, government briefings).
 
-The [examples/](../examples/) directory contains 22 projects and 309 pages spanning government fiscal analysis, AI architecture design, Zen philosophy, pixel-art gaming, editorial reports, and more.
+The [examples/](../examples/) directory contains all example projects, spanning government fiscal analysis, AI architecture design, Zen philosophy, pixel-art gaming, editorial reports, and more.
 
 ### Full Source-Document Input
 
