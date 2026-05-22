@@ -38,7 +38,13 @@ To browse what's available in the built-in library, ask "what templates are avai
 
 ### Template catalog
 
-Full index in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md), grouped by Brand / Scenario / Government / Special, with primary color and use cases per entry. The built-in template library covers Google, Anthropic, China Merchants Bank, PowerChina, CATARC, government blue/red, medical, psychology, pixel-retro and more.
+Templates are organized into three kinds, each in its own directory:
+
+- [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
+- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; academic_defense, government_blue/red, ai_ops, medical_university, pixel_retro, psychology_attachment
+- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full-PPT replicas (identity + structure + middle segments); 招商银行, 中国电建_*, 中汽研_*, 重庆大学, 中国电信
+
+Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
 
 ### Free design vs template
 

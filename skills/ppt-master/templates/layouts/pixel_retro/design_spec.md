@@ -1,3 +1,12 @@
+---
+layout_id: pixel_retro
+kind: layout
+summary: Tech talks, programming tutorials, game introductions, geek-style showcases.
+canvas_format: ppt169
+page_count: 5
+page_types: [cover, toc, chapter, content, ending]
+---
+
 # Pixel Retro Style Template - Design Specification
 
 > Suitable for tech talks, programming tutorials, game-related presentations, geek-style content showcases, and similar scenarios.
@@ -27,68 +36,7 @@
 
 ---
 
-## III. Color Scheme
-
-### Background Colors
-
-| Role           | Value       | Notes                            |
-| -------------- | ----------- | -------------------------------- |
-| **Deep Space Black** | `#0D1117` | Main background color          |
-| **Starry Night Blue** | `#161B22` | Card/block background         |
-| **Dark Border** | `#30363D`  | Borders/dividers                 |
-
-### Accent Colors (Neon Series)
-
-| Role           | Value       | Usage                            |
-| -------------- | ----------- | -------------------------------- |
-| **Neon Green** | `#39FF14`   | Primary accent, success, save points, Git |
-| **Cyber Pink** | `#FF2E97`   | Secondary accent, warnings, contrast, GitHub |
-| **Electric Blue** | `#00D4FF` | Tertiary accent, links, info, flows |
-| **Gold Yellow** | `#FFD700`  | Quaternary accent, history, timelines, highlights |
-
-### Auxiliary Colors
-
-| Role           | Value       | Usage                            |
-| -------------- | ----------- | -------------------------------- |
-| **Dark Green** | `#238636`   | Muted version of success state   |
-| **Dark Pink**  | `#8B2252`   | Muted pink                       |
-| **Dark Blue**  | `#1F6FEB`   | Muted blue                       |
-
-### Text Colors
-
-| Role           | Value       | Usage                  |
-| -------------- | ----------- | ---------------------- |
-| **Moonlight White** | `#E6EDF3` | Primary text         |
-| **Mist Gray**  | `#8B949E`   | Secondary descriptive text |
-| **Pure White** | `#FFFFFF`   | Emphasized titles      |
-
----
-
-## IV. Typography System
-
-### Font Stack
-
-**Title Font**: `"Consolas", "Monaco", "Courier New", monospace` - Pixel/code aesthetic
-
-**Body Font**: `-apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif`
-
-**Code Font**: `"Cascadia Code", "Fira Code", "Consolas", monospace`
-
-### Font Size Hierarchy
-
-| Level | Usage              | Size | Weight  |
-| ----- | ------------------ | ---- | ------- |
-| H1    | Cover main title   | 52px | Bold    |
-| H2    | Page heading       | 36px | Bold    |
-| H3    | Section title/Subtitle | 22px | 600  |
-| P     | Body content       | 18px | Regular |
-| High  | Highlighted data   | 48px | Bold    |
-| Sub   | Supplementary text | 14px | Regular |
-| Code  | Code text          | 16px | Regular |
-
----
-
-## V. Page Structure
+## III. Page Structure
 
 ### General Layout
 
@@ -108,7 +56,7 @@
 
 ---
 
-## VI. Page Types
+## IV. Page Types
 
 ### 1. Cover Page (01_cover.svg)
 
@@ -159,7 +107,17 @@
 
 ---
 
-## VII. Layout Modes
+## V. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; project name, presenter, date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VI. Layout Modes
 
 | Mode               | Use Cases                      |
 | ------------------ | ------------------------------ |
@@ -172,7 +130,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## VII. Spacing Guidelines
 
 | Element          | Value  |
 | ---------------- | ------ |
@@ -185,7 +143,7 @@
 
 ---
 
-## IX. Visual Effects
+## VIII. Visual Effects
 
 ### Pixel Style Characteristics
 
@@ -233,7 +191,7 @@ Apply glow filters to key text/elements:
 
 ---
 
-## X. SVG Technical Constraints
+## IX. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -254,7 +212,7 @@ Apply glow filters to key text/elements:
 
 ---
 
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
@@ -276,7 +234,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XII. Usage Instructions
+## XI. Usage Instructions
 
 1. Copy the template to the project `templates/` directory
 2. Select the appropriate page template based on content requirements
@@ -287,7 +245,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XIII. Color Quick Reference
+## XII. Color Quick Reference
 
 ```
 Background Layer:

@@ -1,3 +1,12 @@
+---
+deck_id: 中汽研_现代
+kind: deck
+summary: Forward-looking technology showcases, strategic releases, high-end business reporting.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#001529"
+---
+
 # CATARC (中汽研) Modern Template - Design Specification (v3.0 Future Tech)
 
 > Suitable for CATARC high-end launches, forward-looking technology presentations, international exchanges, and similar scenarios.
@@ -110,7 +119,17 @@
 
 ---
 
-## VII. Layout Patterns (Recommended)
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Layout Patterns (Recommended)
 
 ### 1. Floating Timeline
 - Uses right-side space for time or process display.
@@ -124,7 +143,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## IX. Spacing Guidelines
 
 | Property       | Value | Description              |
 | -------------- | ----- | ------------------------ |
@@ -134,7 +153,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -144,7 +163,7 @@
 
 ---
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 | Placeholder        | Description           |
 | ------------------ | --------------------- |
@@ -163,7 +182,7 @@
 
 ---
 
-## XI. Usage Notes (Recommended)
+## XII. Usage Notes (Recommended)
 
 1. **Light & Shadow Effects**: All light and shadow effects are achieved via SVG gradients, with no dependency on external images.
 2. **Fonts**: Use Arial for numbers by default. Roboto or DIN may be used only with an explicit font-install or font-embedding requirement.

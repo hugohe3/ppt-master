@@ -1,3 +1,12 @@
+---
+layout_id: government_blue
+kind: layout
+summary: Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation.
+canvas_format: ppt169
+page_count: 5
+page_types: [cover, toc, chapter, content, ending]
+---
+
 # Government Blue Style Template - Design Specification
 
 > Suitable for government agency briefings, key project presentations, planning proposals, investment promotion, and similar scenarios across all levels of government.
@@ -27,57 +36,7 @@
 
 ---
 
-## III. Color Scheme
-
-### Primary Colors
-
-| Role           | Value       | Notes                              |
-| -------------- | ----------- | ---------------------------------- |
-| **Primary Deep Blue** | `#0050B3` | Titles, key borders, section number blocks |
-| **Tech Bright Blue** | `#00B4D8` | Decorative elements, accent color, gradient highlights |
-| **Ocean Blue**  | `#003366`  | Chapter page backgrounds, gradient dark end |
-| **Auxiliary Light Blue** | `#E6F4FF` | Background base, subdued blocks |
-| **Sky Blue**    | `#90E0EF`  | Decorative accents, secondary emphasis |
-
-### Text Colors
-
-| Role           | Value       | Usage                  |
-| -------------- | ----------- | ---------------------- |
-| **Primary Text** | `#1A1A1A` | Body text, titles      |
-| **White Text** | `#FFFFFF`   | Text on dark backgrounds |
-| **Secondary Text** | `#4A5568` | Dimmed sections, supplementary notes |
-| **Light Auxiliary** | `#718096` | Annotations, page numbers, hints |
-
-### Functional Colors
-
-| Usage    | Value       | Description    |
-| -------- | ----------- | -------------- |
-| **Success** | `#38A169` | Completed/On target |
-| **Warning** | `#E53E3E` | Attention/Alert |
-| **Info**    | `#3182CE` | General information |
-
----
-
-## IV. Typography System
-
-### Font Stack
-
-**Font Stack**: `"Microsoft YaHei", "微软雅黑", "SimHei", "Source Han Sans SC", Arial, sans-serif`
-
-### Font Size Hierarchy
-
-| Level | Usage              | Size | Weight  |
-| ----- | ------------------ | ---- | ------- |
-| H1    | Cover main title   | 52px | Bold    |
-| H2    | Page heading       | 28px | Bold    |
-| H3    | Section title/Subtitle | 24px | Bold |
-| P     | Body content       | 18px | Regular |
-| High  | Highlighted data   | 36px | Bold    |
-| Sub   | Supplementary text | 14px | Regular |
-
----
-
-## V. Page Structure
+## III. Page Structure
 
 ### General Layout
 
@@ -99,7 +58,7 @@
 
 ---
 
-## VI. Page Types
+## IV. Page Types
 
 ### 1. Cover Page (01_cover.svg)
 
@@ -144,7 +103,17 @@
 
 ---
 
-## VII. Layout Modes
+## V. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; project name, presenter, date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VI. Layout Modes
 
 | Mode               | Use Cases                      |
 | ------------------ | ------------------------------ |
@@ -158,7 +127,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## VII. Spacing Guidelines
 
 | Element          | Value  |
 | ---------------- | ------ |
@@ -170,7 +139,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## VIII. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -190,7 +159,7 @@
 
 ---
 
-## X. Placeholder Specification
+## IX. Placeholder Specification
 
 Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
@@ -214,7 +183,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XI. Usage Instructions
+## X. Usage Instructions
 
 1. Copy the template to the project directory
 2. Replace logo files in the images directory (if applicable)
@@ -224,7 +193,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XII. Design Highlights
+## XI. Design Highlights
 
 - **Tech Gradient**: Bright-to-deep blue gradient reflects a modern tech aesthetic
 - **Geometric Decorative Elements**: Circles and grids add a tech atmosphere

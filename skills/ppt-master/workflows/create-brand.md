@@ -151,7 +151,7 @@ primary_color: "#XXXXXX"
 ```
 
 **Section scope rules**:
-- Layout / canvas / spacing / radius / shadow / page roster / signature design elements are OUT of brand scope. Those live in layout templates (`templates/layouts/<id>/design_spec.md`) or `shared-standards.md`. Do NOT add those sections here.
+- Layout / canvas / spacing / radius / shadow / page roster / signature design elements are OUT of brand scope. Those live in layout / deck templates (`templates/layouts/<id>/design_spec.md` or `templates/decks/<id>/design_spec.md`) or `shared-standards.md`. Do NOT add those sections here.
 - HEX must be `#RRGGBB`
 - Font names are free strings; not validated against locally installed fonts
 - §VII is fully optional — list only directories that actually exist

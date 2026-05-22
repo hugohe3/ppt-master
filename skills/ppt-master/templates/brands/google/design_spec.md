@@ -2,7 +2,6 @@
 brand_id: google
 kind: brand
 summary: Google brand identity — multi-product corporate decks, developer events (Google I/O style), education and training in the Google ecosystem
-keywords: [tech, modern, friendly, multi-color, optimistic]
 primary_color: "#4285F4"
 ---
 
