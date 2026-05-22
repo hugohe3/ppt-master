@@ -202,18 +202,53 @@ def _validate_scope_effects(scope: dict[str, Any], label: str, warnings: list[st
 
 
 def build_scaffold(project_path: Path) -> dict[str, Any]:
-    """Build an editable animation override scaffold from current SVGs."""
+    """Build an editable animation override scaffold from current SVGs.
+
+    Chrome groups are omitted — exporter auto-detects them as ``none`` via
+    ``is_chrome_id`` at render time, so listing them in the scaffold is pure
+    noise. A ``defaults`` stub is emitted up front to remind the editor that
+    deck-wide overrides exist and most pages should inherit them.
+    """
     targets_by_slide, _anonymous = scan_project_targets(project_path)
     slides: dict[str, Any] = {}
     for slide_name, targets in targets_by_slide.items():
         groups: dict[str, Any] = {}
         for target in targets:
             if target.chrome:
-                groups[target.group_id] = {'effect': 'none'}
-            else:
-                groups[target.group_id] = {}
+                continue
+            groups[target.group_id] = {}
         slides[slide_name] = {'groups': groups}
-    return {'version': 1, 'slides': slides}
+    return {
+        'version': 1,
+        'defaults': {
+            'transition': {'effect': 'fade', 'duration': 0.4},
+            'animation': {
+                'effect': 'auto',
+                'duration': 0.5,
+                'stagger': 0.2,
+                'trigger': 'after-previous',
+            },
+        },
+        'slides': slides,
+    }
+
+
+def build_group_listing(project_path: Path) -> tuple[list[str], list[str]]:
+    """Return one compact line per slide: ``<slide>: id1, id2, id3``.
+
+    Chrome groups are excluded — matches ``build_scaffold``'s policy so the
+    listing reflects exactly what an editor can override. Returns
+    ``(lines, anonymous_warnings)``.
+    """
+    targets_by_slide, anonymous = scan_project_targets(project_path)
+    lines: list[str] = []
+    for slide_name, targets in targets_by_slide.items():
+        ids = [t.group_id for t in targets if not t.chrome]
+        if not ids:
+            lines.append(f'{slide_name}: (no animatable groups)')
+        else:
+            lines.append(f'{slide_name}: {", ".join(ids)}')
+    return lines, anonymous
 
 
 def write_scaffold(

@@ -6,10 +6,12 @@ Create and validate optional per-object PPTX animation sidecar files.
 
 Usage:
     python3 scripts/animation_config.py scaffold <project_path>
+    python3 scripts/animation_config.py list-groups <project_path>
     python3 scripts/animation_config.py validate <project_path>
 
 Examples:
     python3 scripts/animation_config.py scaffold projects/demo --force
+    python3 scripts/animation_config.py list-groups projects/demo
     python3 scripts/animation_config.py validate projects/demo
 
 Dependencies:
@@ -27,6 +29,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from svg_to_pptx.animation_config import (  # noqa: E402
+    build_group_listing,
     load_animation_config,
     validate_animation_config,
     write_scaffold,
@@ -47,6 +50,14 @@ def build_parser() -> argparse.ArgumentParser:
     scaffold.add_argument('project_path', help='Project directory')
     scaffold.add_argument('-o', '--output', default=None, help='Output path; default: <project>/animations.json')
     scaffold.add_argument('--force', action='store_true', help='Overwrite an existing output file')
+
+    list_groups = subparsers.add_parser(
+        'list-groups',
+        help='print one compact line per slide listing animatable group ids '
+             '(chrome groups excluded); use during planning to avoid reading '
+             'the full scaffold file',
+    )
+    list_groups.add_argument('project_path', help='Project directory')
 
     validate = subparsers.add_parser(
         'validate',
@@ -78,6 +89,14 @@ def main(argv: list[str] | None = None) -> int:
             print('Use --force to overwrite.', file=sys.stderr)
             return 1
         print(f'Animation config scaffold written: {output_path}')
+        return 0
+
+    if args.command == 'list-groups':
+        lines, anonymous = build_group_listing(project_path)
+        for line in lines:
+            print(line)
+        for warning in anonymous:
+            print(f'Warning: {warning}', file=sys.stderr)
         return 0
 
     if args.command == 'validate':
