@@ -29,9 +29,41 @@ Each palette has its own file with: rendering compatibility matrix and a fewshot
 
 ---
 
-## 2. Auto-selection table — `design_spec` → palette
+## 2. Escape hatch — `custom`
 
-Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wins. If no row matches, default to `cool-corporate`.
+When no preset temperament matches (brand HEX outside preset ranges, ceremonial / cultural / niche aesthetic), set `image_palette: custom` and supply a one-paragraph `image_palette_behavior`.
+
+**Trigger** — all of:
+
+| Condition | Check against |
+|---|---|
+| No preset temperament fits | `design_spec.e Color Scheme` |
+| Brand / template / chat names no preset | truth-precedence inputs |
+| Not expressible as "preset X + small HEX swap" | Strategist confirmation chat |
+
+**Hard rule — `palette_behavior` prose**:
+
+| Rule | Value |
+|---|---|
+| Length | One paragraph, 2-5 sentences |
+| Per-HEX content | role + approximate area share (proportion follows information weight; no fixed % menu) |
+| HEX source | Quote `design_spec.colors` values verbatim with backticks; never invent HEX |
+| Forbidden | Naming a competing preset ("like macaron but darker") |
+
+```yaml
+- image_palette: custom
+- image_palette_behavior: "Primary deep aubergine `#4C1D95` anchors the dominant ~35% of canvas; secondary warm cream `#FEF3C7` carries ~55% as breathing field; accent burnished gold `#D4AF37` appears only in 5-10% as small ceremonial accents. Restrained, ceremonial gravitas — no fourth color."
+```
+
+> Note: §4's rendering × palette matrix only covers the 14 presets. When `palette: custom`, Strategist owns the compatibility judgment in h.5.
+
+**Hard rule**: `custom` is a tail-case, not a default. See [`strategist.md`](../strategist.md) h.5 for the one-`custom`-per-dimension limit.
+
+---
+
+## 3. Auto-selection table — `design_spec` → palette
+
+Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wins. **No row matches** → use `custom` per §2 rather than force-fitting `cool-corporate`.
 
 | Content vibe / industry | Recommended palette | Alternates |
 |---|---|---|
@@ -55,7 +87,7 @@ Match `design_spec.md d. Style` + `e. Color Scheme` content vibe. First match wi
 
 ---
 
-## 3. Rendering × Palette compatibility
+## 4. Rendering × Palette compatibility
 
 Some combinations clash. Use this matrix as a sanity check after auto-selection.
 
@@ -86,11 +118,10 @@ Some combinations clash. Use this matrix as a sanity check after auto-selection.
 
 ---
 
-## 4. How to use
+## 5. How to use
 
 1. After picking rendering, look up your candidate palette in the auto-selection table.
 2. Cross-check the compatibility matrix — if `✗`, pick the alternate.
-3. `read_file image-palettes/<chosen>.md`.
-4. Apply its proportion + role rules to the deck's HEX values when assembling prompts.
+3. `read_file image-palettes/<chosen>.md` and apply its proportion + role rules to the deck's HEX values when assembling prompts. (For `custom`, this step is replaced by the consumption branch in [`image-generator.md`](../image-generator.md) Step 2 — no preset file to read.)
 
 **Lock for the whole deck.**
