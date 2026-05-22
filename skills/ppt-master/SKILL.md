@@ -291,6 +291,24 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 ---
 
+### Step 4.5: Formula Rendering (Conditional)
+
+🚧 **GATE**: Step 4 complete; `spec_lock.md` generated.
+
+> **Trigger**: `spec_lock.md` contains `$...$` or `$$...$$` LaTeX formulas. If no formulas are detected, skip to Step 5.
+
+```bash
+python3 ${SKILL_DIR}/scripts/latex_render.py <project_path>
+```
+
+This scans `spec_lock.md`, renders each LaTeX formula to a transparent PNG image in `images/latex/`, and replaces the formula text with `![](images/latex/F01.png)` references. Executor treats these as normal images — no Executor changes needed.
+
+**Dry-run available**: `python3 ${SKILL_DIR}/scripts/latex_render.py <project_path> --dry-run` shows what would be rendered without modifying files.
+
+**✅ Checkpoint — Formulas rendered (or no formulas found). Auto-proceed to Step 5.**
+
+---
+
 ### Step 5: Image Acquisition Phase (Conditional)
 
 🚧 **GATE**: Step 4 complete; Design Specification & Content Outline generated and user confirmed.

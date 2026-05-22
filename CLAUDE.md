@@ -78,6 +78,10 @@ python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 # Add --merge-paragraphs when the user wants paragraph-level editable text frames instead of one-per-line (default off, see SKILL.md Step 7.3).
+
+# Formula rendering (only when spec_lock.md contains LaTeX)
+python3 skills/ppt-master/scripts/latex_render.py <project_path>
+python3 skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
 ```
 
 ## Core Directories
