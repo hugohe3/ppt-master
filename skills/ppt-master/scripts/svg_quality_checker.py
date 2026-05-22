@@ -43,6 +43,7 @@ except ImportError:
 
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
+SVG_NS = "http://www.w3.org/2000/svg"
 
 # Ramp envelope for font-size drift detection.
 # From design_spec_reference.md §IV — Font Size Hierarchy: the ramp spans
