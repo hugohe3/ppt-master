@@ -42,20 +42,6 @@ The past two months' structural capability growth. Single flags / incremental po
 
 ---
 
-## P0 — Active focus
-
-Strong rationale, work in progress.
-
-### 1. Capability-backing example decks (Style demo P0)
-
-As the community enters its growth phase, example decks shift from "show visual contrast" to "prove the capability bar" — making it obvious why Gamma / Manus-style tools can't replace PPT Master.
-
-Remaining P0 stress-test direction:
-
-- **Dashboard / data-dense report** — stress-tests real native shapes + complex chart structure. A page with 6-10 charts is where shape-vs-Excel-native paths diverge the most
-
----
-
 ## P1 — Planned, not scheduled
 
 ### 1. Template architecture consolidation
