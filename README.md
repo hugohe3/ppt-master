@@ -28,9 +28,7 @@ English | [中文](./README_CN.md)
 </p>
 
 <h3 align="center">The six decks below are only the tip of what PPT Master can do</h3>
-<p align="center">
-  <sub>Download the raw .pptx files and open them in PowerPoint — that's the fastest way to see where this project's capability ceiling actually is.</sub>
-</p>
+<h3 align="center">Download the raw .pptx files and open them in PowerPoint — that's the fastest way to see where this project's capability ceiling actually is.</h3>
 
 <table>
   <tr>

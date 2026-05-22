@@ -28,9 +28,7 @@
 </p>
 
 <h3 align="center">下面这六份 PPT，仅仅是 PPT Master 能力的冰山一角</h3>
-<p align="center">
-  <sub>建议直接下载原始 .pptx 文件，在 PowerPoint 里好好看一下这个项目的能力边界。</sub>
-</p>
+<h3 align="center">建议直接下载原始 .pptx 文件，在 PowerPoint 里好好看一下这个项目的能力边界。</h3>
 
 <table>
   <tr>
