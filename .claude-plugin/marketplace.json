@@ -14,10 +14,11 @@
     {
       "name": "ppt-master",
       "source": {
-        "source": "github",
-        "repo": "hugohe3/ppt-master"
+        "source": "git-subdir",
+        "url": "https://github.com/hugohe3/ppt-master.git",
+        "path": "skills/ppt-master"
       },
-      "description": "Generate natively editable PPTX from PDF / DOCX / URL / Markdown — real DrawingML shapes, text boxes, charts, and animations. Note: this plugin ships only the skill files; you must also `pip install -r requirements.txt` from the project root for the Python post-processing scripts to run.",
+      "description": "Generate natively editable PPTX from PDF / DOCX / URL / Markdown — real DrawingML shapes, text boxes, charts, and animations. Note: run `pip install -r requirements.txt` inside the installed plugin directory for the Python post-processing scripts to work.",
       "author": {
         "name": "Hugo He",
         "email": "heyug3@gmail.com",
@@ -40,7 +41,7 @@
       ],
       "strict": false,
       "skills": [
-        "./skills/ppt-master"
+        "./"
       ]
     }
   ]
