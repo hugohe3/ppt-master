@@ -169,7 +169,7 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ## 4. Basic SVG Rules
 
-- **viewBox** must match the canvas dimensions (`width`/`height` must match `viewBox`)
+- **SVG root element MUST include `width`, `height`, and `viewBox`** — all three attributes are required on every `<svg>` tag. Values must be identical: `width="1280" height="720" viewBox="0 0 1280 720"`. Omitting `width`/`height` causes browser preview and some SVG renderers to display the slide at incorrect size.
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
 - **Fonts**: every `font-family` stack MUST end with a pre-installed family (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas …); `@font-face` is FORBIDDEN. Full rule: [`strategist.md §g`](strategist.md).

@@ -19,6 +19,8 @@ from typing import List, Dict, Tuple
 from collections import defaultdict
 from xml.etree import ElementTree as ET
 
+SVG_NS = "http://www.w3.org/2000/svg"
+
 try:
     from project_utils import CANVAS_FORMATS
     from error_helper import ErrorHelper
