@@ -26,7 +26,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 > **Execution discipline**: This is the last BLOCKING checkpoint in the pipeline. After confirmation, complete the Design Spec and proceed to image generation / SVG / post-processing without further pauses.
 
-> **LaTeX formula handling**: When the source content contains mathematical formulas or equations, write them in `spec_lock.md` using standard LaTeX syntax: `$...$` for inline formulas and `$$...$$` for display (block) formulas. Even if the source text does not use LaTeX notation, identify mathematical expressions and convert them to proper LaTeX. When no formulas are present, this rule does not apply.
+> **LaTeX formula handling**: When the source content contains mathematical formulas or equations, write them in `spec_lock.md` using standard LaTeX syntax: `$...$` for inline formulas and `$$...$$` for display (block) formulas. Even if the source text does not use LaTeX notation, identify mathematical expressions and convert them to proper LaTeX. When no formulas are present, this rule does not apply. Formulas are NOT rendered by the Executor using `code_family` — they are pre-rendered to transparent PNG images by `scripts/latex_render.py` (Step 4.5) via the CodeCogs online LaTeX API, then placed in SVG as normal `<image>` elements.
 
 ### a. Canvas Format Confirmation
 
@@ -642,7 +642,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 | I. Project Information | Project name, canvas format, page count, style, audience, scenario, date |
 | II. Canvas Specification | Format, dimensions, viewBox, margins, content area |
 | III. Visual Theme | Style description, light/dark theme, tone, color scheme (with HEX table), gradient scheme |
-| IV. Typography System | Font plan (per-role families — title / body / emphasis / code), font size hierarchy |
+| IV. Typography System | Font plan (per-role families — title / body / emphasis / code), font size hierarchy. **Note**: LaTeX formulas are NOT a typography role — they are pre-rendered to PNG images via CodeCogs API (Step 4.5) and placed as `<image>` elements, bypassing font stacks entirely. |
 | V. Layout Principles | Page structure (header/content/footer zones), layout pattern library (combine/break as content demands), spacing spec |
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
 | VII. Visualization Reference List | Visualization type, reference template path, used-in pages, purpose |

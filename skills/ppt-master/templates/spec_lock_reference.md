@@ -41,6 +41,7 @@
 > **All five family lines are listed explicitly** so Strategist considers every role — `code_family` and `emphasis_family` are easily forgotten. In a real `spec_lock.md`:
 > - Keep any `*_family` whose role genuinely differs from `font_family`.
 > - **Omit** any `*_family` equal to `font_family` — Executor falls back to `font_family` for missing roles, so writing it twice is noise. (Exception: keep `code_family` even when equal — monospace is conceptually distinct.)
+> - **`code_family` applies to code snippets only**. LaTeX formulas are NOT rendered with this font — they are pre-rendered to transparent PNG images by `latex_render.py` (Step 4.5) and placed as `<image>` elements.
 >
 > `font_family` is the default fallback. Every declared family is a CSS font-stack string.
 >
