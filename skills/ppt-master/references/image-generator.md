@@ -221,6 +221,23 @@ Example opening for a triptych hero:
 >
 > Clean flat vector illustration backdrop. Atmospheric composition with no central subject — bold geometric shapes arranged along the canvas edges to leave the center calm. Primary deep navy `#1E3A5F` forms a confident diagonal block across the lower-left third; secondary light gray `#F8F9FA` occupies the upper two-thirds as breathing space; accent gold `#D4AF37` appears only as one thin geometric line near the lower right corner (under 5% of canvas). Crisp 2px outlines, no gradients, single 8% soft drop shadow under the navy block. The central 60% of the canvas is deliberately calm and unbusy — designed to receive a slide title overlaid in SVG. Composed as a 1280×720 full-bleed PPT background. NO text, letters, numbers, signs, watermarks, or written symbols anywhere in the image. Color values are rendering guidance only — do not display HEX codes or color names as text. Simplified geometric shapes only.
 
+### 4.2 Prompt depth — expand for subject-domain accuracy
+
+**Hard rule**: For images whose deck purpose calls for subject-domain accuracy (scientific figures, academic paper figures, engineering schematics, medical / legal / regulated content), expand the prompt without budget ceiling — 500-1000+ words is normal. The §4 word budget (150-300) is the routine-illustration default, not a cap.
+
+**Forbidden — pre-emptive shortening**: never trim a subject-domain prompt to fit §4's budget. Name the field's visual conventions explicitly in the prompt.
+
+**Detail to name in the prompt** (illustrative, not an enumeration to match):
+
+| Domain | Conventions to spell out |
+|---|---|
+| chemistry / materials | IUPAC atom colors, bond conventions, lattice type, Å / ps units, subplot labeling (A / B / C circles), view angle |
+| biology | cell compartment colors, scale bars, organelle conventions, staining palette |
+| physics | axis labels with proper symbols, signature curve shapes, unit annotations, peak labeling format |
+| engineering | schematic notation, dimension callouts, section-cut conventions |
+
+**When uncertain about field conventions**: read `sources/` before drafting the prompt.
+
 ---
 
 ## 5. Global Hard Rules
@@ -243,31 +260,25 @@ When the image contains people:
 
 Exception: when the chosen rendering is `corporate-photo`, photorealism is intentional — replace the above with: `Diverse, professionally attired subjects. Editorial photography style, natural composition`.
 
-### 5.3 Text policy — none vs embedded
+### 5.3 Text policy — two-layer ownership
+
+Every AI-image page carries text in two layers:
+
+| Layer | Owned by | Examples |
+|---|---|---|
+| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); hero typographic or decorative lettering that *is* the visual |
+| Layer 2 (SVG-owned) | `<text>` overlay — fully editable | page-level chrome (title, navigation, footer, body bullets, conclusion callout); readable copy, captions |
+
+`text_policy` controls only Layer 1. AI judges per image; no global default bias.
 
 | `text_policy` | Prompt cue |
 |---|---|
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
-| `embedded` | Describe the text directly inside the visual scene: the word(s), how they're rendered (decorative lettering / designed title / hand-lettered keyword), and the artistic treatment. Examples below. |
+| `embedded` | Describe the Layer 1 text directly inside the visual scene: the word(s), how they're rendered, and the artistic treatment. |
 
-**When to pick `embedded` — the edit-stability test**
+**Hard rule — cross-cutting**: Layer 2 chrome stays SVG regardless of `text_policy`. Never bake the deck title, navigation, footer, body bullets, or conclusion callout into the image, even when `embedded`.
 
-Before adding any word to the image, ask: *will this word ever need to be changed?* If yes, it belongs in SVG, not the image. The bar is high — in-image text is for words that are part of the visual itself.
-
-| Page situation | Recommended approach |
-|---|---|
-| **hero_page** — cover, chapter divider, section opener | **Two-layer**: 1-3 high-impact visual keywords go *in* the image (`embedded`); subtitle, date, author, organization, edition, body intro stay on the SVG overlay. **Do not** put the full title block (main + subtitle + author + date) into the image — any later wording change forces an image regen. |
-| **local image — infographic / framework / flowchart / matrix / cycle / comparison** | `none` — labels live as SVG text so they stay editable. The image carries the structure; SVG carries the words. |
-| **local image — decorative background / scene / portrait** | `none` by default. Use `embedded` only if a decorative word *is* the visual (e.g. a giant "GROWTH" lettering as wall art). |
-| **Poster / standalone marketing-style page** | `embedded` allowed for the visual core word; auxiliary copy still SVG. |
-
-The principle in one line: **the image gets the unchanging visual keywords; SVG gets everything readable that might be reworded**.
-
-**Prompt phrasing examples for embedded text** (not an exhaustive list):
-
-- Decorative: "large 'GROWTH' lettering as a background element, 3D extruded retro chrome style"
-- Designed title: "main title 'Q3 STRATEGY' typeset in clean geometric sans-serif, centered"
-- Hand-lettered set: "small hand-lettered annotations 'fast', 'cheap', 'good' woven into the sketch"
+**Forbidden — text that may be reworded**: any word that may later change belongs in Layer 2, not Layer 1. Layer 1 is for stable visual identifiers and designed lettering that is part of the image itself.
 
 **Font choice for in-image text — free description, with the deck typography as one optional reference**
 
@@ -365,7 +376,7 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
 | `items[].type` | conditional | Step 3 per-image (only when `page_role: local`) | One of 11 internal-composition types: `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene`. **Omit `type` entirely when `page_role: hero_page`** — the composition comes from §4.1 primitives written directly into the prompt, not from a type file. |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
-| `items[].text_policy` | yes | Step 3 per-image | `none` (default — no text in image) or `embedded` (image contains decorative lettering, designed title, or hand-lettered keywords) |
+| `items[].text_policy` | yes | Step 3 per-image | `none` (image carries no text — explicit visual rule) or `embedded` (image contains decorative lettering, designed title, hand-lettered keywords, or stable visual identifiers like axis labels / subplot letters / unit symbols). AI judges per image; no global default bias — see §5.3. |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
 | `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |
