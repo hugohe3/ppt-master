@@ -82,6 +82,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 # Formula rendering (only when spec_lock.md contains LaTeX)
 python3 skills/ppt-master/scripts/latex_render.py <project_path>
 python3 skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
+python3 skills/ppt-master/scripts/latex_render.py <project_path> --dpi 400
 ```
 
 ## Core Directories

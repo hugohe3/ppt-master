@@ -301,9 +301,11 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 python3 ${SKILL_DIR}/scripts/latex_render.py <project_path>
 ```
 
-This scans `spec_lock.md`, renders each LaTeX formula to a transparent PNG image in `images/latex/`, and replaces the formula text with `![](images/latex/F01.png)` references. Executor treats these as normal images — no Executor changes needed.
+This scans `spec_lock.md`, renders each LaTeX formula to a transparent PNG image in `images/latex/` via the CodeCogs online LaTeX API, and replaces the formula text with `![](images/latex/F01.png)` references. A sidecar `images/latex/manifest.json` records each formula's pixel dimensions, type (inline/block), and a **uniform scale factor**. When placing formula images in SVG, the executor must apply `manifest.uniform_scale` to ALL formula images so that letter sizes remain consistent across formulas — do NOT normalize heights individually.
 
 **Dry-run available**: `python3 ${SKILL_DIR}/scripts/latex_render.py <project_path> --dry-run` shows what would be rendered without modifying files.
+
+**DPI control**: `python3 ${SKILL_DIR}/scripts/latex_render.py <project_path> --dpi 400` — higher DPI produces larger source images (default 300).
 
 **✅ Checkpoint — Formulas rendered (or no formulas found). Auto-proceed to Step 5.**
 
