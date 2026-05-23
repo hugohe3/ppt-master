@@ -16,6 +16,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 | cover_bg.png | 1280x720 | Cover background | Background | ai | Pending | Modern tech abstract, deep blue gradient |
 | team.jpg | 800x600 | Team photo | Photography | web | Pending | Diverse engineering team in modern office |
 | product.png | 600x400 | Page 3 product photo | Photography | user | Existing | - |
+| formula_001.png | 736x168 | Page 3 block equation | Latex Formula | formula | Rendered | `E = mc^2` |
 | chart.png | 600x400 | Page 5 placeholder | Illustration | placeholder | Placeholder | Team collaboration scene to be added later |
 ```
 
@@ -26,6 +27,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 | **Pending** | Acquisition needed (`Acquire Via: ai` or `web`); not yet attempted | Image Acquisition Phase (Step 5) consumes this; must not remain after Step 5 |
 | **Generated** | AI-generated file exists at expected path | Reference from `../images/`; no on-slide credit needed |
 | **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [executor-base.md §6](./executor-base.md) and [image-searcher.md §7](./image-searcher.md) for the visual spec) |
+| **Rendered** | Deterministic formula PNG exists at expected path (`Acquire Via: formula`) | Reference from `../images/`; use `preserveAspectRatio="xMidYMid meet"` and do not crop |
 | **Needs-Manual** | Acquisition attempted once + one retry, failed | Dashed placeholder unless user has manually supplied the file |
 | **Existing** | User already has image (`Acquire Via: user`) | Place in `images/`, reference with `<image>` |
 | **Placeholder** | Intentionally not prepared yet (`Acquire Via: placeholder`) | Dashed border placeholder; replace later |
@@ -39,11 +41,12 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 2. Image Acquisition (Step 5):
    - Pending + ai  → Image_Generator runs image_gen.py     → Generated
    - Pending + web → Image_Searcher runs image_search.py   → Sourced
-   - user / placeholder rows are skipped
+   - formula / user / placeholder rows are skipped
 3. Executor generates SVGs (svg_output/)
    ├── Existing / Generated → <image href="../images/xxx.png" .../>
    ├── Sourced + license_tier=no-attribution → <image href=...> only
    ├── Sourced + license_tier=attribution-required → <image href=...> + small <text> credit element on the slide
+   ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
 5. Post-processing & Export → follow shared-standards.md §5

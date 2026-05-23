@@ -50,6 +50,7 @@
 > **All five family lines are listed explicitly** so Strategist considers every role — `code_family` and `emphasis_family` are easily forgotten. In a real `spec_lock.md`:
 > - Keep any `*_family` whose role genuinely differs from `font_family`.
 > - **Omit** any `*_family` equal to `font_family` — Executor falls back to `font_family` for missing roles, so writing it twice is noise. (Exception: keep `code_family` even when equal — monospace is conceptually distinct.)
+> - `code_family` applies to code snippets only. LaTeX formulas rendered by `latex_render.py` are PNG image assets and must be listed under `images`.
 >
 > `font_family` is the default fallback. Every declared family is a CSS font-stack string.
 >
@@ -82,8 +83,9 @@
 ## images
 - cover_bg: images/cover_bg.jpg
 - q3_revenue_chart: images/q3_revenue.png | no-crop
+- formula_001: images/formula_001.png | no-crop
 
-> One entry per image file used. Append ` | no-crop` only for images that must not lose pixels (data screenshots, charts, certificates) — Executor will size the container to native ratio and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries default to croppable (`slice`). Remove the section entirely if no images.
+> One entry per image file used. Append ` | no-crop` only for images that must not lose pixels (data screenshots, charts, certificates, rendered LaTeX formulas) — Executor will size the container to native ratio and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries default to croppable (`slice`). Remove the section entirely if no images.
 
 ## page_rhythm
 - P01: anchor

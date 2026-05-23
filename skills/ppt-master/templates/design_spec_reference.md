@@ -242,17 +242,36 @@ Catalog read: 71 templates
 
 ## VIII. Image Resource List (if needed)
 
-| Filename | Dimensions | Ratio | Purpose | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
-| -------- | --------- | ----- | ------- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
-| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
+| Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
+| -------- | --------- | ----- | ------- | ---- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
+| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
+| formula_001.png | [actual dimensions from formula manifest / image_analysis] | [ratio] | Block equation on P03 | Latex Formula | formula-block | formula | Rendered | `E = mc^2` — energy-mass equation | | |
 
-> **Layout pattern column is MANDATORY** — value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).
+> **Layout pattern column is MANDATORY** — for non-formula rows, value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. Formula rows are the only exception; use `formula-inline` or `formula-block`. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).
+
+**Type** (free-form category tag; common values):
+
+- `Background` — cover / chapter / full-bleed atmosphere
+- `Photography` — real-world photo
+- `Illustration` — vector / flat / painterly art
+- `Diagram` — schematic / architecture / flowchart
+- `Portrait` — single-subject person
+- `Latex Formula` — formula PNG rendered by `latex_render.py`
 
 **Status**:
 
 - **Pending** — needs AI generation or web sourcing
+- **Rendered** — deterministic formula asset already exists under `images/`
 - **Existing** — user-supplied, place in `images/`
 - **Placeholder** — not yet processed, use dashed border in SVG
+
+**Acquire Via**:
+
+- `ai` — Step 5 Image_Generator
+- `web` — Step 5 Image_Searcher
+- `formula` — already rendered by `latex_render.py` before this spec was written
+- `user` — user-supplied
+- `placeholder` — intentionally deferred
 
 **text_policy** (`ai` rows only; AI judges per row, no global default bias):
 
