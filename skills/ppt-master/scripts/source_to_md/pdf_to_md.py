@@ -25,6 +25,7 @@ FONT_H2_SIZE = 18
 FONT_H3_SIZE = 14
 HEADER_FOOTER_SAMPLE_LIMIT = 40
 HEADER_FOOTER_EDGE_SAMPLE_SIZE = 20
+CONTROL_CHARS_RE = re.compile(r'[\x00-\x08\x0b\x0c\x0e-\x1f]')
 
 
 def analyze_font_sizes(doc: fitz.Document) -> dict[str, float]:
@@ -147,6 +148,7 @@ def is_monospace_font(font_name: str) -> bool:
 
 def format_span_text(text: str, flags: int) -> str:
     """Format text based on font flags (bold, italic)."""
+    text = CONTROL_CHARS_RE.sub('', text)
     text = text.strip()
     if not text:
         return ""
@@ -329,6 +331,16 @@ MIN_PAGE_RATIO = 0.05        # Minimum render size relative to page (5%)
 MAX_ASPECT_RATIO = 12        # Maximum aspect ratio (filters decorative bars)
 MAX_LOW_INFO_BPP = 0.08      # Bytes-per-pixel threshold for low-info images
 MAX_LOW_INFO_AREA = 500000   # Area threshold: only apply bpp filter below this
+MIN_VECTOR_FIGURE_WIDTH = 100
+MIN_VECTOR_FIGURE_HEIGHT = 80
+MIN_VECTOR_FIGURE_AREA = 30000
+MAX_VECTOR_FIGURE_ASPECT_RATIO = 8
+VECTOR_FIGURE_PADDING = 4
+VECTOR_FIGURE_DPI = 180
+VECTOR_CAPTION_SEARCH_HEIGHT = 380
+VECTOR_CAPTION_HORIZONTAL_GAP = 90
+MAX_VECTOR_BACKGROUND_AREA_RATIO = 1.9
+FIGURE_CAPTION_RE = re.compile(r'^(?:Figure|Fig\.)\s*\d+\s*[:.]', re.IGNORECASE)
 
 
 def should_keep_image(
@@ -393,6 +405,190 @@ def should_keep_image(
     return True
 
 
+def _clip_rect_to_page(rect: fitz.Rect, page_rect: fitz.Rect) -> fitz.Rect:
+    """Clamp a rectangle to the current PDF page."""
+    return fitz.Rect(
+        max(page_rect.x0, rect.x0),
+        max(page_rect.y0, rect.y0),
+        min(page_rect.x1, rect.x1),
+        min(page_rect.y1, rect.y1),
+    )
+
+
+def _is_rect_contained(inner: fitz.Rect, outer: fitz.Rect, threshold: float = 0.9) -> bool:
+    """Return whether ``inner`` is mostly covered by ``outer``."""
+    inner_area = inner.get_area()
+    if inner_area <= 0:
+        return False
+    return ((inner & outer).get_area() / inner_area) >= threshold
+
+
+def _overlaps_table(rect: fitz.Rect, tab_rects: list[fitz.Rect]) -> bool:
+    """Skip vector regions that are already handled as extracted tables."""
+    rect_area = rect.get_area()
+    if rect_area <= 0:
+        return False
+    for tab_rect in tab_rects:
+        intersection = rect & tab_rect
+        if intersection.get_area() > 0.5 * min(rect_area, tab_rect.get_area()):
+            return True
+    return False
+
+
+def _is_white(color: tuple[float, ...] | None) -> bool:
+    """Return whether a PDF drawing color is visually white."""
+    if color is None:
+        return False
+    return all(channel >= 0.98 for channel in color[:3])
+
+
+def _is_background_drawing(drawing: dict[str, object]) -> bool:
+    """Identify white background rectangles that should not drive crops."""
+    return _is_white(drawing.get("fill")) and drawing.get("color") is None
+
+
+def find_figure_caption_rects(page: fitz.Page) -> list[fitz.Rect]:
+    """Return text-line rectangles that look like figure captions."""
+    caption_rects = []
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type") != 0:
+            continue
+        for line in block["lines"]:
+            text = "".join(span["text"] for span in line["spans"]).strip()
+            if FIGURE_CAPTION_RE.match(text):
+                caption_rects.append(fitz.Rect(line["bbox"]))
+    return caption_rects
+
+
+def _expand_rect(rect: fitz.Rect, padding: float, page_rect: fitz.Rect) -> fitz.Rect:
+    """Pad a rectangle and clamp it to the current PDF page."""
+    return _clip_rect_to_page(
+        fitz.Rect(
+            rect.x0 - padding,
+            rect.y0 - padding,
+            rect.x1 + padding,
+            rect.y1 + padding,
+        ),
+        page_rect,
+    )
+
+
+def _union_rects(rects: list[fitz.Rect]) -> fitz.Rect:
+    """Return the bounding union for one or more rectangles."""
+    result = fitz.Rect(rects[0])
+    for rect in rects[1:]:
+        result |= rect
+    return result
+
+
+def _find_captioned_vector_figures(
+    page: fitz.Page,
+    drawing_rects: list[fitz.Rect],
+    background_rects: list[fitz.Rect],
+    caption_rects: list[fitz.Rect],
+) -> list[fitz.Rect]:
+    """Build tight figure crops from non-background drawings above captions."""
+    figure_rects = []
+    page_rect = page.rect
+
+    for caption_rect in caption_rects:
+        related = []
+        for rect in drawing_rects:
+            horizontal_gap = max(caption_rect.x0 - rect.x1, rect.x0 - caption_rect.x1, 0)
+            if horizontal_gap > VECTOR_CAPTION_HORIZONTAL_GAP:
+                continue
+            if rect.y0 > caption_rect.y0:
+                continue
+            if caption_rect.y0 - rect.y1 > VECTOR_CAPTION_SEARCH_HEIGHT:
+                continue
+            related.append(rect)
+
+        if not related:
+            continue
+
+        content_rect = _union_rects(related)
+        rect = content_rect
+        for background_rect in background_rects:
+            background_rect = _clip_rect_to_page(background_rect, page_rect)
+            if not _is_rect_contained(content_rect, background_rect, threshold=0.95):
+                continue
+            if background_rect.get_area() > content_rect.get_area() * MAX_VECTOR_BACKGROUND_AREA_RATIO:
+                continue
+            rect = background_rect
+            break
+
+        rect = _expand_rect(rect, 10, page_rect)
+        rect.y1 = min(rect.y1, caption_rect.y0 - 2)
+        if rect.width >= MIN_VECTOR_FIGURE_WIDTH and rect.height >= MIN_VECTOR_FIGURE_HEIGHT:
+            figure_rects.append(rect)
+
+    return figure_rects
+
+
+def detect_vector_figure_rects(page: fitz.Page, tab_rects: list[fitz.Rect]) -> list[fitz.Rect]:
+    """Detect large vector drawing regions that should be rasterized as figures.
+
+    Some academic PDFs store charts and diagrams as vector drawing commands,
+    not image XObjects. ``page.get_text("dict")`` exposes only raster image
+    blocks, so those figures need a separate drawing-region fallback.
+    """
+    candidates = []
+    page_rect = page.rect
+    caption_rects = find_figure_caption_rects(page)
+    drawing_rects = []
+    background_rects = []
+
+    for drawing in page.get_drawings():
+        rect = drawing.get("rect")
+        if not rect:
+            continue
+
+        rect = fitz.Rect(rect)
+        if rect.is_empty:
+            continue
+
+        if _is_background_drawing(drawing):
+            background_rects.append(rect)
+            continue
+
+        drawing_rects.append(rect)
+
+    if caption_rects:
+        return _find_captioned_vector_figures(page, drawing_rects, background_rects, caption_rects)
+
+    for rect in drawing_rects:
+        rect = _expand_rect(rect, VECTOR_FIGURE_PADDING, page_rect)
+        rect = _clip_rect_to_page(rect, page_rect)
+
+        width = rect.width
+        height = rect.height
+        if width < MIN_VECTOR_FIGURE_WIDTH or height < MIN_VECTOR_FIGURE_HEIGHT:
+            continue
+
+        area = rect.get_area()
+        if area < MIN_VECTOR_FIGURE_AREA:
+            continue
+
+        aspect = max(width, height) / max(min(width, height), 1)
+        if aspect > MAX_VECTOR_FIGURE_ASPECT_RATIO:
+            continue
+
+        if _overlaps_table(rect, tab_rects):
+            continue
+
+        candidates.append(rect)
+
+    candidates.sort(key=lambda r: r.get_area(), reverse=True)
+
+    kept = []
+    for rect in candidates:
+        if any(_is_rect_contained(rect, existing) for existing in kept):
+            continue
+        kept.append(rect)
+
+    return sorted(kept, key=lambda r: (r.y0, r.x0))
+
+
 def clean_text(text: str) -> str:
     """Clean extracted text."""
     lines = text.split('\n')
@@ -455,7 +651,13 @@ def should_merge_lines(current: dict, next_line: dict) -> bool:
     return True
 
 
-def extract_pdf_to_markdown(pdf_path: str, output_path: str = None, images: str = "filtered") -> str:
+def extract_pdf_to_markdown(
+    pdf_path: str,
+    output_path: str = None,
+    images: str = "filtered",
+    render_vector_figures: bool = False,
+    vector_figure_dpi: int = VECTOR_FIGURE_DPI,
+) -> str:
     """Extract text, images, and tables from a PDF and convert to Markdown.
 
     Args:
@@ -465,6 +667,8 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None, images: str 
             "filtered" = apply size/quality filters (default),
             "all"      = extract all images without filtering,
             "none"     = skip all images.
+        render_vector_figures: Rasterize large vector drawing regions as PNGs.
+        vector_figure_dpi: DPI used for rendered vector figure PNGs.
     """
     try:
         doc = fitz.open(pdf_path)
@@ -526,6 +730,15 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None, images: str 
             })
             print(f"  [OK] Found table: P{page_num}")
 
+        if render_vector_figures:
+            for figure_rect in detect_vector_figure_rects(page, tab_rects):
+                page_elements.append({
+                    "y0": figure_rect.y0,
+                    "type": 3,
+                    "content": figure_rect,
+                })
+                print(f"  [OK] Found vector figure region: P{page_num} {tuple(round(v, 1) for v in figure_rect)}")
+
         blocks = page.get_text("dict")["blocks"]
 
         for block in blocks:
@@ -557,7 +770,7 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None, images: str 
 
                     formatted_spans = []
                     for span in line["spans"]:
-                        span_text = span["text"]
+                        span_text = CONTROL_CHARS_RE.sub('', span["text"])
                         if not span_text.strip():
                             if span_text:
                                 formatted_spans.append(span_text)
@@ -739,12 +952,42 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None, images: str 
                     except Exception as e:
                         print(f"  [WARN] Failed to save image: {e}")
 
+            elif el["type"] == 3:
+                if prev_was_code:
+                    flush_code_block()
+                    prev_was_code = False
+                if img_dir:
+                    figure_rect = el["content"]
+                    safe_filename = filename.replace(" ", "_")
+                    image_name = f"{safe_filename}_p{page_num}_figure_{img_count}.png"
+                    image_path = img_dir / image_name
+
+                    try:
+                        img_dir.mkdir(parents=True, exist_ok=True)
+                        scale = vector_figure_dpi / 72
+                        pix = page.get_pixmap(
+                            matrix=fitz.Matrix(scale, scale),
+                            clip=figure_rect,
+                            alpha=False,
+                        )
+                        pix.save(str(image_path))
+
+                        if prev_was_list:
+                            markdown_content += "\n"
+                        markdown_content += f"![{image_name}]({rel_img_dir}/{image_name})\n\n"
+                        img_count += 1
+                        prev_was_list = False
+                        print(f"  [OK] Rendered vector figure: {image_name}")
+                    except Exception as e:
+                        print(f"  [WARN] Failed to render vector figure: {e}")
+
         # Flush code block at end of page
         if prev_was_code:
             flush_code_block()
 
     doc.close()
 
+    markdown_content = CONTROL_CHARS_RE.sub('', markdown_content)
     markdown_content = re.sub(r'\n{3,}', '\n\n', markdown_content)
     markdown_content = markdown_content.strip() + "\n"
 
@@ -757,13 +1000,21 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None, images: str 
     return markdown_content
 
 
-def process_directory(input_dir: str, output_dir: str | None = None, images: str = "filtered") -> None:
+def process_directory(
+    input_dir: str,
+    output_dir: str | None = None,
+    images: str = "filtered",
+    render_vector_figures: bool = False,
+    vector_figure_dpi: int = VECTOR_FIGURE_DPI,
+) -> None:
     """Convert all PDFs in a directory to Markdown.
 
     Args:
         input_dir: Directory containing PDF files.
         output_dir: Optional output directory for Markdown files.
         images: Image extraction mode passed through to each file conversion.
+        render_vector_figures: Rasterize large vector drawing regions as PNGs.
+        vector_figure_dpi: DPI used for rendered vector figure PNGs.
     """
     input_path = Path(input_dir)
 
@@ -779,7 +1030,13 @@ def process_directory(input_dir: str, output_dir: str | None = None, images: str
     for pdf_file in pdf_files:
         output_file = output_path / (pdf_file.stem + '.md')
         print(f"Processing: {pdf_file.name}")
-        extract_pdf_to_markdown(str(pdf_file), str(output_file), images=images)
+        extract_pdf_to_markdown(
+            str(pdf_file),
+            str(output_file),
+            images=images,
+            render_vector_figures=render_vector_figures,
+            vector_figure_dpi=vector_figure_dpi,
+        )
 
 
 def main() -> int:
@@ -791,6 +1048,7 @@ def main() -> int:
 Examples:
   python pdf_to_md.py book.pdf                    # Convert a single file
   python pdf_to_md.py book.pdf -o output.md      # Specify output file
+  python pdf_to_md.py book.pdf --render-vector-figures
   python pdf_to_md.py ./pdfs                      # Convert all PDFs in directory
   python pdf_to_md.py ./pdfs -o ./markdown       # Specify output directory
 
@@ -812,6 +1070,17 @@ Structure detection features:
         default='filtered',
         help='Image extraction mode: filtered=apply size/quality filters (default), all=no filtering, none=skip images',
     )
+    parser.add_argument(
+        '--render-vector-figures',
+        action='store_true',
+        help='Render large vector drawing regions as PNG figure assets',
+    )
+    parser.add_argument(
+        '--vector-figure-dpi',
+        type=int,
+        default=VECTOR_FIGURE_DPI,
+        help=f'DPI for --render-vector-figures output (default: {VECTOR_FIGURE_DPI})',
+    )
 
     args = parser.parse_args()
 
@@ -819,9 +1088,21 @@ Structure detection features:
 
     if input_path.is_file():
         output = args.output or str(input_path.with_suffix('.md'))
-        extract_pdf_to_markdown(str(input_path), output, images=args.images)
+        extract_pdf_to_markdown(
+            str(input_path),
+            output,
+            images=args.images,
+            render_vector_figures=args.render_vector_figures,
+            vector_figure_dpi=args.vector_figure_dpi,
+        )
     elif input_path.is_dir():
-        process_directory(str(input_path), args.output, images=args.images)
+        process_directory(
+            str(input_path),
+            args.output,
+            images=args.images,
+            render_vector_figures=args.render_vector_figures,
+            vector_figure_dpi=args.vector_figure_dpi,
+        )
     else:
         print(f"Error: File or directory not found: {args.input}")
         return 1
