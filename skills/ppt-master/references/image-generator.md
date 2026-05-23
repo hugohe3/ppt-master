@@ -266,7 +266,7 @@ Every AI-image page carries text in two layers:
 
 | Layer | Owned by | Examples |
 |---|---|---|
-| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); hero typographic or decorative lettering that *is* the visual |
+| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); architecture / schematic module names, node labels, signal-path identifiers; hero typographic or decorative lettering that *is* the visual |
 | Layer 2 (SVG-owned) | `<text>` overlay — fully editable | page-level chrome (title, navigation, footer, body bullets, conclusion callout); readable copy, captions |
 
 `text_policy` controls only Layer 1. AI judges per image; no global default bias.
