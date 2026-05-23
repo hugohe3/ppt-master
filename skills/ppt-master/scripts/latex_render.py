@@ -3,11 +3,14 @@
 
 Render LaTeX formulas in spec_lock.md to transparent PNG images.
 
-Dependencies: matplotlib (pip install matplotlib)
+Backends (tried in order unless --backend is specified):
+  1. codecogs  – CodeCogs online LaTeX API (pdflatex quality, needs internet)
+  2. matplotlib – matplotlib.mathtext (offline, lower quality)
 
 Usage:
-    python3 scripts/latex_render.py <project_path>
-    python3 scripts/latex_render.py <project_path> --dry-run
+    python scripts/latex_render.py <project_path>
+    python scripts/latex_render.py <project_path> --dry-run
+    python scripts/latex_render.py <project_path> --backend matplotlib
 """
 
 from __future__ import annotations
@@ -15,6 +18,8 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -22,6 +27,8 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 _RE_BLOCK = re.compile(r"\$\$([^$]+?)\$\$", re.DOTALL)
 _RE_INLINE = re.compile(r"\$([^$\n]+?)\$")
+
+_BACKEND_ORDER = ("codecogs", "matplotlib")
 
 
 def extract_formulas(text: str) -> list[tuple[str, str, bool]]:
@@ -31,7 +38,6 @@ def extract_formulas(text: str) -> list[tuple[str, str, bool]]:
     Block formulas ($$...$$) are extracted first, then inline ($...$).
     """
     results: list[tuple[str, str, bool]] = []
-    # Track spans already claimed by block matches
     claimed: list[tuple[int, int]] = []
 
     for m in _RE_BLOCK.finditer(text):
@@ -39,7 +45,6 @@ def extract_formulas(text: str) -> list[tuple[str, str, bool]]:
         claimed.append((m.start(), m.end()))
 
     for m in _RE_INLINE.finditer(text):
-        # Skip if this position overlaps a claimed block span
         if any(s <= m.start() < e for s, e in claimed):
             continue
         results.append((m.group(0), m.group(1).strip(), False))
@@ -47,11 +52,24 @@ def extract_formulas(text: str) -> list[tuple[str, str, bool]]:
     return results
 
 
-def render_formula(latex: str, output_path: Path, dpi: int = 300) -> bool:
-    """Render a single LaTeX formula to a transparent PNG.
+def _render_codecogs(latex: str, output_path: Path, dpi: int = 300) -> bool:
+    """Render via CodeCogs online API. Returns True on success."""
+    payload = rf"\dpi{{{dpi}}} {latex}"
+    url = "https://latex.codecogs.com/png.latex?" + urllib.parse.quote(payload)
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "PPT-Master/1.0"})
+        data = urllib.request.urlopen(req, timeout=15).read()
+        if len(data) < 100:
+            return False
+        output_path.write_bytes(data)
+        return True
+    except Exception as exc:
+        print(f"  [WARN] CodeCogs failed for '{latex}': {exc}", file=sys.stderr)
+        return False
 
-    Returns True on success, False on failure (prints warning).
-    """
+
+def _render_matplotlib(latex: str, output_path: Path, dpi: int = 300) -> bool:
+    """Render via matplotlib.mathtext. Returns True on success."""
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -71,11 +89,21 @@ def render_formula(latex: str, output_path: Path, dpi: int = 300) -> bool:
         plt.close(fig)
         return True
     except Exception as exc:
-        print(f"  [WARN] Failed to render '{latex}': {exc}", file=sys.stderr)
+        print(f"  [WARN] matplotlib failed for '{latex}': {exc}", file=sys.stderr)
         return False
 
 
-def process_spec_lock(project_path: Path, dry_run: bool = False) -> int:
+_RENDERERS = {
+    "codecogs": _render_codecogs,
+    "matplotlib": _render_matplotlib,
+}
+
+
+def process_spec_lock(
+    project_path: Path,
+    dry_run: bool = False,
+    backend: str = "auto",
+) -> int:
     """Main entry: scan spec_lock.md, render, replace.
 
     Returns number of formulas rendered.
@@ -93,9 +121,9 @@ def process_spec_lock(project_path: Path, dry_run: bool = False) -> int:
         return 0
 
     # Deduplicate: same latex → same file
-    seen: dict[str, str] = {}  # latex → file reference like "images/latex/F01.png"
+    seen: dict[str, str] = {}
     counter = 1
-    replacements: list[tuple[str, str, str]] = []  # (full_match, file_ref, latex)
+    replacements: list[tuple[str, str, str]] = []
 
     for full_match, latex, is_block in formulas:
         if latex in seen:
@@ -113,6 +141,12 @@ def process_spec_lock(project_path: Path, dry_run: bool = False) -> int:
             print(f"  {file_ref}: {latex}")
         return 0
 
+    # Determine backend order
+    if backend == "auto":
+        backends = _BACKEND_ORDER
+    else:
+        backends = (backend,)
+
     # Ensure output directory exists
     latex_dir = project_path / "images" / "latex"
     latex_dir.mkdir(parents=True, exist_ok=True)
@@ -124,11 +158,19 @@ def process_spec_lock(project_path: Path, dry_run: bool = False) -> int:
         if out_path.exists():
             print(f"  [SKIP] {file_ref} (already exists)")
             continue
-        if render_formula(latex, out_path):
-            print(f"  [OK]   {file_ref}: {latex}")
-            rendered += 1
+        ok = False
+        for be in backends:
+            renderer = _RENDERERS.get(be)
+            if renderer and renderer(latex, out_path):
+                print(f"  [OK]   {file_ref} ({be}): {latex}")
+                rendered += 1
+                ok = True
+                break
+        if not ok:
+            print(f"  [FAIL] {file_ref}: all backends failed for '{latex}'",
+                  file=sys.stderr)
 
-    # Build set of formulas with valid PNGs (rendered or pre-existing)
+    # Build set of formulas with valid PNGs
     rendered_ok: set[str] = set()
     for latex, file_ref in seen.items():
         if (project_path / file_ref).exists():
@@ -142,7 +184,8 @@ def process_spec_lock(project_path: Path, dry_run: bool = False) -> int:
             new_text = new_text.replace(full_match, f"![]({file_ref})", 1)
             replaced += 1
         else:
-            print(f"  [SKIP] {file_ref}: render failed, keeping original text", file=sys.stderr)
+            print(f"  [KEEP] {file_ref}: render failed, keeping original LaTeX",
+                  file=sys.stderr)
 
     if replaced > 0:
         spec_lock.write_text(new_text, encoding="utf-8")
@@ -162,7 +205,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Show what would be rendered without actually rendering or modifying files.",
+        help="Show what would be rendered without modifying files.",
+    )
+    parser.add_argument(
+        "--backend",
+        choices=("auto", "codecogs", "matplotlib"),
+        default="auto",
+        help="Rendering backend. 'auto' tries codecogs then matplotlib (default).",
     )
     args = parser.parse_args(argv)
 
@@ -171,7 +220,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Error: {project} is not a directory.", file=sys.stderr)
         return 1
 
-    return 0 if process_spec_lock(project, dry_run=args.dry_run) >= 0 else 1
+    return 0 if process_spec_lock(project, dry_run=args.dry_run, backend=args.backend) >= 0 else 1
 
 
 if __name__ == "__main__":
