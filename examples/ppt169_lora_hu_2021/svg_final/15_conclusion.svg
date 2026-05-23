@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="concRail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1B3A5C" />
+      <stop offset="100%" stop-color="#E8743B" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,58 H67 A3,3 0 0 1 70,61 V111 A3,3 0 0 1 67,114 H67 A3,3 0 0 1 64,111 V61 A3,3 0 0 1 67,58 Z" />
+    <text x="86" y="92" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">结论与影响</text>
+    <text x="88" y="122" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">CONCLUSION &amp; IMPACT</text>
+  </g>
+
+  <g id="rail-decor">
+    <line x1="120" y1="200" x2="120" y2="520" stroke="url(#concRail)" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <g id="take-01">
+    <circle cx="120" cy="210" r="24" fill="#1B3A5C" />
+    <text x="120" y="217" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">01</text>
+    <path fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1" d="M202,170 H1204 A12,12 0 0 1 1216,182 V254 A12,12 0 0 1 1204,266 H202 A12,12 0 0 1 190,254 V182 A12,12 0 0 1 202,170 Z" />
+    <path fill="#1B3A5C" d="M193,170 H193 A3,3 0 0 1 196,173 V263 A3,3 0 0 1 193,266 H193 A3,3 0 0 1 190,263 V173 A3,3 0 0 1 193,170 Z" />
+    <text x="224" y="208" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">方法本身</text>
+    <text x="224" y="240" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">低秩适配 = <tspan font-weight="800" fill="#1B3A5C">参数高效</tspan> + <tspan font-weight="800" fill="#2E7D32">零额外推理延迟</tspan> + 质量持平 / 更优</text>
+  </g>
+
+  <g id="take-02">
+    <circle cx="120" cy="360" r="24" fill="#3E7CB1" />
+    <text x="120" y="367" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">02</text>
+    <path fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1" d="M202,320 H1204 A12,12 0 0 1 1216,332 V404 A12,12 0 0 1 1204,416 H202 A12,12 0 0 1 190,404 V332 A12,12 0 0 1 202,320 Z" />
+    <path fill="#3E7CB1" d="M193,320 H193 A3,3 0 0 1 196,323 V413 A3,3 0 0 1 193,416 H193 A3,3 0 0 1 190,413 V323 A3,3 0 0 1 193,320 Z" />
+    <text x="224" y="358" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">工程意义</text>
+    <text x="224" y="390" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">一个预训练底座<tspan font-weight="800" fill="#1B3A5C">托管多任务</tspan>,按需热插拔 LoRA 模块,部署成本骤降</text>
+  </g>
+
+  <g id="take-03">
+    <circle cx="120" cy="510" r="24" fill="#E8743B" />
+    <text x="120" y="517" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">03</text>
+    <path fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1" d="M202,470 H1204 A12,12 0 0 1 1216,482 V554 A12,12 0 0 1 1204,566 H202 A12,12 0 0 1 190,554 V482 A12,12 0 0 1 202,470 Z" />
+    <path fill="#E8743B" d="M193,470 H193 A3,3 0 0 1 196,473 V563 A3,3 0 0 1 193,566 H193 A3,3 0 0 1 190,563 V473 A3,3 0 0 1 193,470 Z" />
+    <text x="224" y="508" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">行业影响</text>
+    <text x="224" y="540" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">已开源,成为大模型微调的<tspan font-weight="800" fill="#E8743B">事实标准之一</tspan>(PEFT 生态基石)</text>
+  </g>
+
+  <g id="repo">
+    
+  <g transform="translate(64.0, 602.0) scale(1.25)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+  </g>
+    <text x="106" y="624" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">让人不必在<tspan font-weight="800" fill="#1B3A5C">效率</tspan>与<tspan font-weight="800" fill="#1B3A5C">质量</tspan>之间二选一</text>
+    <text x="1216" y="624" text-anchor="end" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="16" font-weight="700" fill="#3E7CB1">github.com/microsoft/LoRA</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §8 Conclusion · Hu et al. 2021 · arXiv:2106.09685</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">15 / 15</text>
+  </g>
+</svg>

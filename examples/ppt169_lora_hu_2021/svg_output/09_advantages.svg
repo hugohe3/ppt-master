@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF"/></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B"/>
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">LoRA 的四个关键优势</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">FOUR KEY ADVANTAGES</text>
+  </g>
+
+  <g id="adv-01">
+    <rect x="64" y="158" width="560" height="226" rx="16" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <text x="600" y="218" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#1B3A5C" fill-opacity="0.07">01</text>
+    <rect x="96" y="186" width="56" height="56" rx="14" fill="#EAF0F6"/>
+    <use data-icon="tabler-outline/share-2" x="110" y="200" width="28" height="28" fill="#1B3A5C" stroke-width="2"/>
+    <text x="96" y="284" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">可共享</text>
+    <text x="96" y="306" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#1B3A5C" letter-spacing="1.5">ONE BASE · MANY MODULES</text>
+    <text x="96" y="338" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">一个预训练底座 + 多个小 LoRA 模块;</text>
+    <text x="96" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">换任务只需替换 <tspan font-weight="800" fill="#1B3A5C">A、B</tspan>,显著降低存储。</text>
+  </g>
+
+  <g id="adv-02">
+    <rect x="656" y="158" width="560" height="226" rx="16" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <text x="1192" y="218" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#3E7CB1" fill-opacity="0.08">02</text>
+    <rect x="688" y="186" width="56" height="56" rx="14" fill="#EAF0F6"/>
+    <use data-icon="tabler-outline/bolt" x="702" y="200" width="28" height="28" fill="#3E7CB1" stroke-width="2"/>
+    <text x="688" y="284" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">高效训练</text>
+    <text x="688" y="306" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#3E7CB1" letter-spacing="1.5">LOWER HARDWARE BARRIER</text>
+    <text x="688" y="338" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">无需为冻结参数存梯度与优化器状态;</text>
+    <text x="688" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">硬件门槛最高降低 <tspan font-weight="800" fill="#1B3A5C">3×</tspan>。</text>
+  </g>
+
+  <g id="adv-03">
+    <rect x="64" y="408" width="560" height="226" rx="16" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <text x="600" y="468" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#E8743B" fill-opacity="0.10">03</text>
+    <rect x="96" y="436" width="56" height="56" rx="14" fill="#FBF0E9"/>
+    <use data-icon="tabler-outline/gauge" x="110" y="450" width="28" height="28" fill="#E8743B" stroke-width="2"/>
+    <text x="96" y="534" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">零推理延迟</text>
+    <text x="96" y="556" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#E8743B" letter-spacing="1.5">NO ADDED INFERENCE LATENCY</text>
+    <text x="96" y="588" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">部署时合并 W = W₀+BA;</text>
+    <text x="96" y="610" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">与全量微调模型<tspan font-weight="800" fill="#2E7D32">同构、不增延迟</tspan>。</text>
+  </g>
+
+  <g id="adv-04">
+    <rect x="656" y="408" width="560" height="226" rx="16" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <text x="1192" y="468" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#1B3A5C" fill-opacity="0.07">04</text>
+    <rect x="688" y="436" width="56" height="56" rx="14" fill="#EAF0F6"/>
+    <use data-icon="tabler-outline/puzzle" x="702" y="450" width="28" height="28" fill="#1B3A5C" stroke-width="2"/>
+    <text x="688" y="534" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">正交可叠加</text>
+    <text x="688" y="556" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#1B3A5C" letter-spacing="1.5">ORTHOGONAL · COMPOSABLE</text>
+    <text x="688" y="588" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">与许多既有方法正交,</text>
+    <text x="688" y="610" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">可与 <tspan font-weight="800" fill="#1B3A5C">prefix-tuning</tspan> 等组合使用。</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §1, §4.1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">09 / 15</text>
+  </g>
+</svg>

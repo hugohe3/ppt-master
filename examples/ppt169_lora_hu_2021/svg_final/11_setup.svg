@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">覆盖 NLU 到 NLG 的四类模型</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">EVALUATION SETUP · ROBERTA / DEBERTA / GPT-2 / GPT-3</text>
+  </g>
+
+  <g id="table">
+    <rect x="64" y="158" width="1152" height="392" fill="none" stroke="#D8DEE6" stroke-width="2" />
+    <g transform="translate(64, 158)">
+      <rect x="0" y="0" width="1152" height="56" fill="#F4F7FA" />
+      <line x1="0" y1="56" x2="1152" y2="56" stroke="#D8DEE6" stroke-width="2" />
+      <text x="24" y="35" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#1B3A5C" letter-spacing="1">模型 MODEL</text>
+      <text x="470" y="35" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#1B3A5C" letter-spacing="1">参数量</text>
+      <text x="600" y="35" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#1B3A5C" letter-spacing="1">基准 BENCHMARK</text>
+      <text x="930" y="35" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#1B3A5C" letter-spacing="1">任务</text>
+      <text x="1128" y="35" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#1B3A5C" letter-spacing="1">LoRA 可训练参数</text>
+      <line x1="420" y1="0" x2="420" y2="392" stroke="#D8DEE6" stroke-width="1.5" />
+      <line x1="560" y1="0" x2="560" y2="392" stroke="#D8DEE6" stroke-width="1.5" />
+      <line x1="850" y1="0" x2="850" y2="392" stroke="#D8DEE6" stroke-width="1.5" />
+      <line x1="1010" y1="0" x2="1010" y2="392" stroke="#D8DEE6" stroke-width="1.5" />
+
+      <line x1="0" y1="123" x2="1152" y2="123" stroke="#D8DEE6" stroke-width="1" />
+      <text x="24" y="98" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa base</text>
+      <text x="470" y="98" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">125M</text>
+      <text x="584" y="98" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">GLUE</text>
+      <text x="930" y="98" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">NLU</text>
+      <text x="1128" y="98" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="700" fill="#1B3A5C">0.3M</text>
+
+      <line x1="0" y1="190" x2="1152" y2="190" stroke="#D8DEE6" stroke-width="1" />
+      <text x="24" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa large</text>
+      <text x="470" y="165" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">355M</text>
+      <text x="584" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">GLUE</text>
+      <text x="930" y="165" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">NLU</text>
+      <text x="1128" y="165" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="700" fill="#1B3A5C">0.8M</text>
+
+      <line x1="0" y1="257" x2="1152" y2="257" stroke="#D8DEE6" stroke-width="1" />
+      <text x="24" y="232" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">DeBERTa XXL</text>
+      <text x="470" y="232" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">1.5B</text>
+      <text x="584" y="232" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">GLUE</text>
+      <text x="930" y="232" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">NLU</text>
+      <text x="1128" y="232" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="700" fill="#1B3A5C">4.7M</text>
+
+      <line x1="0" y1="324" x2="1152" y2="324" stroke="#D8DEE6" stroke-width="1" />
+      <text x="24" y="299" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">GPT-2 medium</text>
+      <text x="470" y="299" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">354M</text>
+      <text x="584" y="299" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">E2E NLG</text>
+      <text x="930" y="299" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">NLG</text>
+      <text x="1128" y="299" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="700" fill="#1B3A5C">0.35M</text>
+
+      <rect x="0" y="324" width="1152" height="68" fill="#FBF0E9" />
+      <text x="24" y="366" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#1D2733">GPT-3</text>
+      <text x="470" y="366" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="800" fill="#E8743B">175B</text>
+      <text x="584" y="366" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">WikiSQL · MNLI · SAMSum</text>
+      <text x="930" y="366" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">NLU+NLG</text>
+      <text x="1128" y="366" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="800" fill="#E8743B">4.7–37.7M</text>
+    </g>
+  </g>
+
+  <g id="baselines">
+    
+  <g transform="translate(64.0, 582.0) scale(1.1666666666666667)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M9 3l6 0" />
+    <path d="M10 9l4 0" />
+    <path d="M10 3v6l-4 11a.7 .7 0 0 0 .5 1h11a.7 .7 0 0 0 .5 -1l-4 -11v-6" />
+  </g>
+    <text x="102" y="604" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#1D2733">对比基线:Fine-Tuning(FT)、BitFit、PreEmbed / PreLayer、Adapter H / L / P / D —— 尽可能复用前作报告数值</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §5–5.1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">11 / 15</text>
+  </g>
+</svg>

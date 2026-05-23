@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="barAdptL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5C97C7" /><stop offset="100%" stop-color="#3E7CB1" />
+    </linearGradient>
+    <linearGradient id="barAdptH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EE9461" /><stop offset="100%" stop-color="#E8743B" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">Adapter 增延迟,LoRA 不增</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">GPT-2 MEDIUM 单次前向延迟增幅(100 次平均, RTX8000)</text>
+  </g>
+
+  <g id="legend">
+    <rect x="820" y="150" width="18" height="18" rx="3" fill="url(#barAdptL)" />
+    <text x="846" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">Adapter L</text>
+    <rect x="960" y="150" width="18" height="18" rx="3" fill="url(#barAdptH)" />
+    <text x="986" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">Adapter H</text>
+    <rect x="1100" y="150" width="18" height="6" rx="3" fill="#2E7D32" />
+    <text x="1126" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">LoRA / FT</text>
+  </g>
+
+  <g id="chartArea">
+    <line x1="160" y1="234" x2="1180" y2="234" stroke="#D8DEE6" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="160" y1="343" x2="1180" y2="343" stroke="#D8DEE6" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="160" y1="451" x2="1180" y2="451" stroke="#D8DEE6" stroke-width="1" stroke-dasharray="4,4" />
+    <text x="145" y="239" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">+30%</text>
+    <text x="145" y="348" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">+20%</text>
+    <text x="145" y="456" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">+10%</text>
+    <text x="145" y="565" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">0</text>
+    <line x1="160" y1="180" x2="160" y2="560" stroke="#8A94A1" stroke-width="2" />
+    <line x1="160" y1="560" x2="1180" y2="560" stroke="#2E7D32" stroke-width="4" />
+    
+
+    
+    <rect x="280" y="536" width="76" height="24" rx="4" fill="url(#barAdptL)" />
+    <text x="318" y="528" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#3E7CB1">+2.2%</text>
+    <rect x="366" y="527" width="76" height="33" rx="4" fill="url(#barAdptH)" />
+    <text x="404" y="519" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#E8743B">+3.0%</text>
+    <text x="361" y="590" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">配置 A · 长序列</text>
+
+    
+    <rect x="600" y="506" width="76" height="54" rx="4" fill="url(#barAdptL)" />
+    <text x="638" y="498" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#3E7CB1">+5.0%</text>
+    <rect x="686" y="469" width="76" height="91" rx="4" fill="url(#barAdptH)" />
+    <text x="724" y="461" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#E8743B">+8.4%</text>
+    <text x="681" y="590" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">配置 B · 中等</text>
+
+    
+    <rect x="920" y="335" width="76" height="225" rx="4" fill="url(#barAdptL)" />
+    <text x="958" y="327" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#3E7CB1">+20.7%</text>
+    <rect x="1006" y="231" width="76" height="329" rx="4" fill="url(#barAdptH)" />
+    <text x="1044" y="223" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#E8743B">+30.3%</text>
+    <text x="1001" y="590" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">配置 C · 短序列·在线</text>
+  </g>
+
+  <g id="takeaway">
+    <text x="170" y="615" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="800" fill="#2E7D32" id="_edit_39">LoRA / FT 基线 = 0% 额外延迟(合并权重后)</text>
+    <text x="1180" y="620" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#1D2733">序列越短、batch 越小,Adapter 的延迟代价越突出</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA Table 1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">10 / 15</text>
+  </g>
+</svg>

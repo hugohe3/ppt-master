@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="barAdptL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5C97C7" /><stop offset="100%" stop-color="#3E7CB1" />
+    </linearGradient>
+    <linearGradient id="barAdptH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EE9461" /><stop offset="100%" stop-color="#E8743B" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">Adapter 增延迟,LoRA 不增</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">GPT-2 MEDIUM 单次前向延迟增幅(100 次平均, RTX8000)</text>
+  </g>
+
+  <g id="legend">
+    <path fill="url(#barAdptL)" d="M823,150 H835 A3,3 0 0 1 838,153 V165 A3,3 0 0 1 835,168 H823 A3,3 0 0 1 820,165 V153 A3,3 0 0 1 823,150 Z" />
+    <text x="846" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">Adapter L</text>
+    <path fill="url(#barAdptH)" d="M963,150 H975 A3,3 0 0 1 978,153 V165 A3,3 0 0 1 975,168 H963 A3,3 0 0 1 960,165 V153 A3,3 0 0 1 963,150 Z" />
+    <text x="986" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">Adapter H</text>
+    <path fill="#2E7D32" d="M1103,150 H1115 A3,3 0 0 1 1118,153 V153 A3,3 0 0 1 1115,156 H1103 A3,3 0 0 1 1100,153 V153 A3,3 0 0 1 1103,150 Z" />
+    <text x="1126" y="165" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">LoRA / FT</text>
+  </g>
+
+  <g id="chartArea">
+    <line x1="160" y1="234" x2="1180" y2="234" stroke="#D8DEE6" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="160" y1="343" x2="1180" y2="343" stroke="#D8DEE6" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="160" y1="451" x2="1180" y2="451" stroke="#D8DEE6" stroke-width="1" stroke-dasharray="4,4" />
+    <text x="145" y="239" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">+30%</text>
+    <text x="145" y="348" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">+20%</text>
+    <text x="145" y="456" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">+10%</text>
+    <text x="145" y="565" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">0</text>
+    <line x1="160" y1="180" x2="160" y2="560" stroke="#8A94A1" stroke-width="2" />
+    <line x1="160" y1="560" x2="1180" y2="560" stroke="#2E7D32" stroke-width="4" />
+    
+
+    
+    <path fill="url(#barAdptL)" d="M284,536 H352 A4,4 0 0 1 356,540 V556 A4,4 0 0 1 352,560 H284 A4,4 0 0 1 280,556 V540 A4,4 0 0 1 284,536 Z" />
+    <text x="318" y="528" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#3E7CB1">+2.2%</text>
+    <path fill="url(#barAdptH)" d="M370,527 H438 A4,4 0 0 1 442,531 V556 A4,4 0 0 1 438,560 H370 A4,4 0 0 1 366,556 V531 A4,4 0 0 1 370,527 Z" />
+    <text x="404" y="519" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#E8743B">+3.0%</text>
+    <text x="361" y="590" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">配置 A · 长序列</text>
+
+    
+    <path fill="url(#barAdptL)" d="M604,506 H672 A4,4 0 0 1 676,510 V556 A4,4 0 0 1 672,560 H604 A4,4 0 0 1 600,556 V510 A4,4 0 0 1 604,506 Z" />
+    <text x="638" y="498" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#3E7CB1">+5.0%</text>
+    <path fill="url(#barAdptH)" d="M690,469 H758 A4,4 0 0 1 762,473 V556 A4,4 0 0 1 758,560 H690 A4,4 0 0 1 686,556 V473 A4,4 0 0 1 690,469 Z" />
+    <text x="724" y="461" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#E8743B">+8.4%</text>
+    <text x="681" y="590" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">配置 B · 中等</text>
+
+    
+    <path fill="url(#barAdptL)" d="M924,335 H992 A4,4 0 0 1 996,339 V556 A4,4 0 0 1 992,560 H924 A4,4 0 0 1 920,556 V339 A4,4 0 0 1 924,335 Z" />
+    <text x="958" y="327" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#3E7CB1">+20.7%</text>
+    <path fill="url(#barAdptH)" d="M1010,231 H1078 A4,4 0 0 1 1082,235 V556 A4,4 0 0 1 1078,560 H1010 A4,4 0 0 1 1006,556 V235 A4,4 0 0 1 1010,231 Z" />
+    <text x="1044" y="223" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#E8743B">+30.3%</text>
+    <text x="1001" y="590" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">配置 C · 短序列·在线</text>
+  </g>
+
+  <g id="takeaway">
+    <text x="170" y="615" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="800" fill="#2E7D32" id="_edit_39">LoRA / FT 基线 = 0% 额外延迟(合并权重后)</text>
+    <text x="1180" y="620" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#1D2733">序列越短、batch 越小,Adapter 的延迟代价越突出</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA Table 1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">10 / 15</text>
+  </g>
+</svg>

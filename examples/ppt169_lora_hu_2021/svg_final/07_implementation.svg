@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">一个常数 α、一次部署合并</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">INITIALIZATION, SCALING &amp; DEPLOYMENT</text>
+  </g>
+
+  <g id="card-scaling">
+    <path fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1" d="M80,160 H608 A16,16 0 0 1 624,176 V624 A16,16 0 0 1 608,640 H80 A16,16 0 0 1 64,624 V176 A16,16 0 0 1 80,160 Z" />
+    <path fill="#E8743B" d="M67,160 H67 A3,3 0 0 1 70,163 V637 A3,3 0 0 1 67,640 H67 A3,3 0 0 1 64,637 V163 A3,3 0 0 1 67,160 Z" />
+    
+  <g transform="translate(100.0, 196.0) scale(1.5)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M3 19a2 2 0 0 0 2 2c2 0 2 -4 3 -9s1 -9 3 -9a2 2 0 0 1 2 2" />
+    <path d="M5 12h6" />
+    <path d="M15 12l6 6" />
+    <path d="M15 18l6 -6" />
+  </g>
+    <text x="150" y="222" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#1D2733">缩放:一个常数 α</text>
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M182,286 H506 A12,12 0 0 1 518,298 V424 A12,12 0 0 1 506,436 H182 A12,12 0 0 1 170,424 V298 A12,12 0 0 1 182,286 Z" />
+    <image href="data:image/png;base64,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" x="270" y="330.39" width="148" height="61.22" />
+    <text x="104" y="494" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">ΔWx 按 <tspan font-style="italic" font-weight="800" fill="#E8743B">α/r</tspan> 缩放</text>
+    <text x="104" y="528" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">α 设为首个尝试的 r,<tspan font-weight="800" fill="#1B3A5C">不再单独调参</tspan></text>
+    <text x="104" y="562" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">变更 r 时减少超参重调的需要</text>
+    <text x="104" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">用 Adam 时,调 α 约等于调学习率</text>
+  </g>
+
+  <g id="card-merge">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M672,160 H1200 A16,16 0 0 1 1216,176 V372 A16,16 0 0 1 1200,388 H672 A16,16 0 0 1 656,372 V176 A16,16 0 0 1 672,160 Z" />
+    <path fill="#1B3A5C" d="M659,160 H659 A3,3 0 0 1 662,163 V385 A3,3 0 0 1 659,388 H659 A3,3 0 0 1 656,385 V163 A3,3 0 0 1 659,160 Z" />
+    
+  <g transform="translate(692.0, 196.0) scale(1.5)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M3 6a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+    <path d="M21 11v-3a2 2 0 0 0 -2 -2h-6l3 3m0 -6l-3 3" />
+    <path d="M3 13v3a2 2 0 0 0 2 2h6l-3 -3m0 6l3 -3" />
+    <path d="M15 18a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+  </g>
+    <text x="742" y="222" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#1D2733">部署:合并权重,零额外结构</text>
+    <text x="696" y="278" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">显式计算并存储 <tspan font-weight="800" fill="#1B3A5C">W = W₀ + BA</tspan></text>
+    <text x="696" y="312" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">推理时与原模型完全同构</text>
+    <text x="696" y="346" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">→ <tspan font-weight="800" fill="#2E7D32">不引入任何额外推理延迟</tspan></text>
+  </g>
+
+  <g id="card-switch">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M672,412 H1200 A16,16 0 0 1 1216,428 V624 A16,16 0 0 1 1200,640 H672 A16,16 0 0 1 656,624 V428 A16,16 0 0 1 672,412 Z" />
+    <path fill="#3E7CB1" d="M659,412 H659 A3,3 0 0 1 662,415 V637 A3,3 0 0 1 659,640 H659 A3,3 0 0 1 656,637 V415 A3,3 0 0 1 659,412 Z" />
+    
+  <g transform="translate(692.0, 448.0) scale(1.5)" fill="none" stroke="#3E7CB1" stroke-width="2">
+    <path d="M5 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M5 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M15 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M7 8l0 8" />
+    <path d="M9 18h6a2 2 0 0 0 2 -2v-5" />
+    <path d="M14 14l3 -3l3 3" />
+  </g>
+    <text x="742" y="474" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#1D2733">换任务:快速热插拔</text>
+    <text x="696" y="530" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">恢复 W₀ 只需<tspan font-weight="800" fill="#1B3A5C">减去 BA</tspan></text>
+    <text x="696" y="564" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">再加上另一任务的 <tspan font-weight="800" fill="#E8743B">B′A′</tspan> 即可</text>
+    <text x="696" y="598" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">内存开销极小,适合多任务在线切换</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §4.1–4.2 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">07 / 15</text>
+  </g>
+</svg>

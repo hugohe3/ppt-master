@@ -1,12 +1,107 @@
 {
   "version": 1,
-  "updated": "2026-05-22",
+  "updated": "2026-05-23",
   "stats": {
-    "examples": 19,
-    "pages": 249,
+    "examples": 20,
+    "pages": 264,
     "templates": 20
   },
   "projects": [
+    {
+      "id": "ppt169_lora_hu_2021",
+      "title": "LoRA Hu 2021",
+      "description": "LoRA 论文解读 — 冷静技术蓝图风，结构图 + 表格 + KPI 卡片 + 自定义动画旁白版导出",
+      "icon": "🧠",
+      "color": "#1B3A5C",
+      "style": "technical",
+      "styleName": "Blueprint Technical",
+      "desc": "Technical reading deck for Hu et al. 2021, LoRA: Low-Rank Adaptation of Large Language Models. The example combines blueprint-style AI diagrams, native editable charts and tables, per-slide speaker notes, object-level animation configuration, and a narrated PPTX export.",
+      "tags": [
+        "Paper Reading",
+        "LLM",
+        "Technical Blueprint"
+      ],
+      "isNew": true,
+      "folder": "ppt169_lora_hu_2021/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "LoRA: 大模型的低秩适配"
+        },
+        {
+          "file": "02_agenda.svg",
+          "title": "agenda",
+          "desc": "本次讲什么"
+        },
+        {
+          "file": "03_problem.svg",
+          "title": "problem",
+          "desc": "模型越大, 全量微调越不可行"
+        },
+        {
+          "file": "04_limitations.svg",
+          "title": "limitations",
+          "desc": "为什么现有高效适配方法不够好"
+        },
+        {
+          "file": "05_insight.svg",
+          "title": "low-rank insight",
+          "desc": "权重更新其实低秩"
+        },
+        {
+          "file": "06_method.svg",
+          "title": "method",
+          "desc": "冻结 W0, 注入低秩 BA"
+        },
+        {
+          "file": "07_implementation.svg",
+          "title": "implementation",
+          "desc": "一个常数 alpha, 一次部署合并"
+        },
+        {
+          "file": "08_transformer.svg",
+          "title": "transformer",
+          "desc": "只适配注意力权重"
+        },
+        {
+          "file": "09_advantages.svg",
+          "title": "advantages",
+          "desc": "LoRA 的四个关键优势"
+        },
+        {
+          "file": "10_latency.svg",
+          "title": "latency",
+          "desc": "Adapter 增延迟, LoRA 不增"
+        },
+        {
+          "file": "11_setup.svg",
+          "title": "setup",
+          "desc": "覆盖 NLU 到 NLG 的四类模型"
+        },
+        {
+          "file": "12_glue.svg",
+          "title": "glue",
+          "desc": "更少参数, 持平或更优"
+        },
+        {
+          "file": "13_gpt3.svg",
+          "title": "gpt-3",
+          "desc": "在 175B 尺度上仍然成立"
+        },
+        {
+          "file": "14_understanding.svg",
+          "title": "understanding",
+          "desc": "该适配谁? 秩要多大?"
+        },
+        {
+          "file": "15_conclusion.svg",
+          "title": "conclusion",
+          "desc": "结论与影响"
+        }
+      ]
+    },
     {
       "id": "ppt169_brutalist_ai_newspaper_2026",
       "title": "Brutalist AI Newspaper 2026",

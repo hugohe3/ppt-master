@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="insightClip"><rect x="656" y="194" width="560" height="315" rx="16" /></clipPath>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <rect x="64" y="60" width="6" height="56" rx="3" fill="#E8743B" />
+    <text x="86" y="92" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">权重更新其实"低秩"</text>
+    <text x="88" y="122" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">THE LOW INTRINSIC-RANK HYPOTHESIS</text>
+  </g>
+
+  <g id="figure">
+    <rect x="656" y="194" width="560" height="315" rx="16" fill="#F4F7FA" />
+    <image href="../images/lowrank_insight.png" x="656" y="194" width="560" height="315" preserveAspectRatio="xMidYMid meet" clip-path="url(#insightClip)" id="_edit_7" />
+    <rect x="656" y="194" width="560" height="315" rx="16" fill="none" stroke="#D8DEE6" stroke-width="1.5" />
+    <text x="656" y="535" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">高维权重更新坍缩到低维子空间(示意)</text>
+  </g>
+
+  <g id="statements">
+    <text x="64" y="248" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1B3A5C">① 已有证据</text>
+    <text x="64" y="284" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1D2733">过参数化模型实际位于<tspan font-weight="800" fill="#1B3A5C">低内在维度</tspan>上</text>
+    <text x="64" y="310" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">Li et al. 2018;Aghajanyan et al. 2020</text>
+
+    <text x="64" y="372" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1B3A5C">② 本文假设</text>
+    <text x="64" y="408" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1D2733">适配时的权重变化 <tspan font-style="italic">ΔW</tspan> 也具有低<tspan font-weight="800" fill="#1B3A5C">"内在秩"</tspan></text>
+
+    <text x="64" y="470" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1B3A5C">③ 推论</text>
+    <text x="64" y="506" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1D2733">即使 <tspan font-style="italic">d</tspan> 高达 <tspan font-weight="800">12,288</tspan>,极低的秩 <tspan font-style="italic" font-weight="800" fill="#E8743B">r(1~2)</tspan>也够用</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §1, §4.1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">05 / 15</text>
+  </g>
+</svg>

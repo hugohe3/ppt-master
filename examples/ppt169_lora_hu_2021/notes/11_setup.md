@@ -1,0 +1,1 @@
+实验覆盖了从理解到生成的四类模型。自然语言理解这边,用 RoBERTa 的 base 和 large,还有十五亿参数的 DeBERTa XXL,都在 GLUE 上评测;生成这边,用 GPT-2 medium 跑 E2E 数据集;最后放大到 GPT-3 一千七百五十亿参数,在 WikiSQL、MNLI 和 SAMSum 上做压力测试。对比的基线也很全,包括全量微调、BitFit、前缀类方法,以及 Adapter 的四个变体,而且尽量复用了前人论文里报告的数值,保证公平。

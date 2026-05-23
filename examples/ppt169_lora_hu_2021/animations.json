@@ -1,0 +1,355 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": {
+      "effect": "fade",
+      "duration": 0.35
+    },
+    "animation": {
+      "effect": "fade",
+      "duration": 0.35,
+      "stagger": 0.18,
+      "trigger": "after-previous"
+    }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.55
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.65,
+        "stagger": 0.28,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "cover-title": {
+          "order": 1,
+          "duration": 0.75
+        },
+        "cover-meta": {
+          "order": 2,
+          "duration": 0.45,
+          "delay": 0.12
+        }
+      }
+    },
+    "02_agenda": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.45
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.35,
+        "stagger": 0.12,
+        "trigger": "after-previous"
+      }
+    },
+    "03_problem": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.4
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.45,
+        "stagger": 0.22,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "hero-number": {
+          "effect": "zoom",
+          "order": 1,
+          "duration": 0.55
+        },
+        "points": {
+          "effect": "fade",
+          "order": 2,
+          "duration": 0.45,
+          "delay": 0.12
+        }
+      }
+    },
+    "04_limitations": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.3
+      },
+      "animation": {
+        "effect": "fly",
+        "duration": 0.32,
+        "stagger": 0.14,
+        "trigger": "after-previous"
+      }
+    },
+    "05_insight": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.4
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.45,
+        "stagger": 0.2,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "figure": {
+          "effect": "zoom",
+          "order": 1,
+          "duration": 0.55
+        },
+        "statements": {
+          "effect": "fade",
+          "order": 2,
+          "duration": 0.42,
+          "delay": 0.12
+        }
+      }
+    },
+    "06_method": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.42
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.42,
+        "stagger": 0.18,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "diagram": {
+          "effect": "zoom",
+          "order": 1,
+          "duration": 0.55
+        },
+        "annot": {
+          "effect": "appear",
+          "order": 2,
+          "duration": 0.25,
+          "delay": 0.08
+        },
+        "formula-band": {
+          "effect": "wipe",
+          "order": 3,
+          "duration": 0.48,
+          "delay": 0.12
+        }
+      }
+    },
+    "07_implementation": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.3
+      },
+      "animation": {
+        "effect": "fly",
+        "duration": 0.34,
+        "stagger": 0.14,
+        "trigger": "after-previous"
+      }
+    },
+    "08_transformer": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.3
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.34,
+        "stagger": 0.13,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "figure": {
+          "effect": "zoom",
+          "order": 1,
+          "duration": 0.45
+        },
+        "point-scope": {
+          "effect": "fade",
+          "order": 2,
+          "duration": 0.32
+        },
+        "card-param": {
+          "effect": "wipe",
+          "order": 3,
+          "duration": 0.36
+        },
+        "kpi-reduction": {
+          "effect": "fly",
+          "order": 4,
+          "duration": 0.36
+        }
+      }
+    },
+    "09_advantages": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.28
+      },
+      "animation": {
+        "effect": "fly",
+        "duration": 0.3,
+        "stagger": 0.12,
+        "trigger": "after-previous"
+      }
+    },
+    "10_latency": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.3
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.32,
+        "stagger": 0.14,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "legend": {
+          "effect": "appear",
+          "order": 1,
+          "duration": 0.2
+        },
+        "chartArea": {
+          "effect": "wipe",
+          "order": 2,
+          "duration": 0.55
+        },
+        "takeaway": {
+          "effect": "fade",
+          "order": 3,
+          "duration": 0.42,
+          "delay": 0.15
+        }
+      }
+    },
+    "11_setup": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.28
+      },
+      "animation": {
+        "effect": "wipe",
+        "duration": 0.32,
+        "stagger": 0.16,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "table": {
+          "order": 1,
+          "duration": 0.4
+        },
+        "baselines": {
+          "effect": "fade",
+          "order": 2,
+          "duration": 0.34,
+          "delay": 0.08
+        }
+      }
+    },
+    "12_glue": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.28
+      },
+      "animation": {
+        "effect": "wipe",
+        "duration": 0.34,
+        "stagger": 0.16,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "table": {
+          "order": 1,
+          "duration": 0.45
+        },
+        "takeaway": {
+          "effect": "fade",
+          "order": 2,
+          "duration": 0.42,
+          "delay": 0.12
+        }
+      }
+    },
+    "13_gpt3": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.32
+      },
+      "animation": {
+        "effect": "zoom",
+        "duration": 0.34,
+        "stagger": 0.12,
+        "trigger": "after-previous"
+      }
+    },
+    "14_understanding": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.3
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.34,
+        "stagger": 0.14,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "card-weights": {
+          "effect": "wipe",
+          "order": 1,
+          "duration": 0.36
+        },
+        "card-rank": {
+          "effect": "wipe",
+          "order": 2,
+          "duration": 0.36
+        },
+        "heatmap": {
+          "effect": "zoom",
+          "order": 3,
+          "duration": 0.48,
+          "delay": 0.12
+        }
+      }
+    },
+    "15_conclusion": {
+      "transition": {
+        "effect": "fade",
+        "duration": 0.5
+      },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.42,
+        "stagger": 0.18,
+        "trigger": "after-previous"
+      },
+      "groups": {
+        "take-01": {
+          "order": 1,
+          "duration": 0.48
+        },
+        "take-02": {
+          "order": 2,
+          "duration": 0.48
+        },
+        "take-03": {
+          "order": 3,
+          "duration": 0.48
+        },
+        "repo": {
+          "effect": "appear",
+          "order": 4,
+          "duration": 0.25,
+          "delay": 0.12
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF"/></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B"/>
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">一个常数 α、一次部署合并</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">INITIALIZATION, SCALING &amp; DEPLOYMENT</text>
+  </g>
+
+  <g id="card-scaling">
+    <rect x="64" y="160" width="560" height="480" rx="16" fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1"/>
+    <rect x="64" y="160" width="6" height="480" rx="3" fill="#E8743B"/>
+    <use data-icon="tabler-outline/math-function" x="100" y="196" width="36" height="36" fill="#1B3A5C" stroke-width="2"/>
+    <text x="150" y="222" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#1D2733">缩放:一个常数 α</text>
+    <rect x="170" y="286" width="348" height="150" rx="12" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <image href="../images/formula_003.png" x="270" y="306" width="148" height="110" preserveAspectRatio="xMidYMid meet"/>
+    <text x="104" y="494" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">ΔWx 按 <tspan font-style="italic" font-weight="800" fill="#E8743B">α/r</tspan> 缩放</text>
+    <text x="104" y="528" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">α 设为首个尝试的 r,<tspan font-weight="800" fill="#1B3A5C">不再单独调参</tspan></text>
+    <text x="104" y="562" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">变更 r 时减少超参重调的需要</text>
+    <text x="104" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">用 Adam 时,调 α 约等于调学习率</text>
+  </g>
+
+  <g id="card-merge">
+    <rect x="656" y="160" width="560" height="228" rx="16" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <rect x="656" y="160" width="6" height="228" rx="3" fill="#1B3A5C"/>
+    <use data-icon="tabler-outline/transform" x="692" y="196" width="36" height="36" fill="#1B3A5C" stroke-width="2"/>
+    <text x="742" y="222" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#1D2733">部署:合并权重,零额外结构</text>
+    <text x="696" y="278" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">显式计算并存储 <tspan font-weight="800" fill="#1B3A5C">W = W₀ + BA</tspan></text>
+    <text x="696" y="312" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">推理时与原模型完全同构</text>
+    <text x="696" y="346" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">→ <tspan font-weight="800" fill="#2E7D32">不引入任何额外推理延迟</tspan></text>
+  </g>
+
+  <g id="card-switch">
+    <rect x="656" y="412" width="560" height="228" rx="16" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+    <rect x="656" y="412" width="6" height="228" rx="3" fill="#3E7CB1"/>
+    <use data-icon="tabler-outline/git-branch" x="692" y="448" width="36" height="36" fill="#3E7CB1" stroke-width="2"/>
+    <text x="742" y="474" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#1D2733">换任务:快速热插拔</text>
+    <text x="696" y="530" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">恢复 W₀ 只需<tspan font-weight="800" fill="#1B3A5C">减去 BA</tspan></text>
+    <text x="696" y="564" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">再加上另一任务的 <tspan font-weight="800" fill="#E8743B">B′A′</tspan> 即可</text>
+    <text x="696" y="598" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">内存开销极小,适合多任务在线切换</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §4.1–4.2 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">07 / 15</text>
+  </g>
+</svg>

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="costFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <image href="../images/cost_explosion.png" x="640" y="0" width="640" height="720" preserveAspectRatio="xMidYMid slice" id="_edit_4" />
+    <rect x="620" y="0" width="220" height="720" fill="url(#costFade)" />
+  </g>
+
+  <g id="header">
+    <rect x="64" y="60" width="6" height="56" rx="3" fill="#E8743B" />
+    <text x="86" y="92" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">模型越大,全量微调越不可行</text>
+    <text x="88" y="122" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">THE COST OF FULL FINE-TUNING</text>
+  </g>
+
+  <g id="hero-number">
+    <text x="64" y="320" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="88" font-weight="800" fill="#E8743B">175B</text>
+    <text x="68" y="362" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="700" fill="#1B3A5C">每个下游任务都要存一份满参数副本</text>
+  </g>
+
+  <g id="points">
+    <rect x="64" y="408" width="36" height="3" fill="#D8DEE6" />
+    <text x="64" y="452" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1D2733">全量 fine-tuning 会更新<tspan font-weight="800" fill="#1B3A5C">全部参数</tspan>,新模型与原模型一样大</text>
+    <text x="64" y="492" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1D2733">部署 N 个任务 = <tspan font-weight="800" fill="#C62828">N × 175B</tspan>,存储与切换成本极高</text>
+    <text x="64" y="532" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1D2733">以 GPT-3 175B 为例,已从"不便"升级为<tspan font-weight="800" fill="#1B3A5C">部署难题</tspan></text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §1 Introduction · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">03 / 15</text>
+  </g>
+</svg>

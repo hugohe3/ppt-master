@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="diagClip"><rect x="140" y="122" width="1000" height="415" rx="14" /></clipPath>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">冻结 W₀,注入低秩 BA</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">THE LoRA REPARAMETRIZATION</text>
+  </g>
+
+  <g id="diagram">
+    <rect x="140" y="122" width="1000" height="415" rx="14" fill="#F4F7FA" />
+    <image href="../images/reparam_diagram_cropped.png" x="140" y="122" width="1000" height="415" preserveAspectRatio="xMidYMid meet" clip-path="url(#diagClip)" id="_edit_7" />
+    <rect x="140" y="122" width="1000" height="415" rx="14" fill="none" stroke="#D8DEE6" stroke-width="1.5" />
+  </g>
+
+  <g id="annot">
+    <rect x="196" y="162" width="232" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.92" stroke="#D8DEE6" stroke-width="1" />
+    <text x="212" y="182" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#1B3A5C">训练时 W₀ 冻结,只更新 <tspan font-style="italic" font-weight="800">A、B</tspan></text>
+    <rect x="852" y="162" width="232" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.92" stroke="#D8DEE6" stroke-width="1" />
+    <text x="868" y="182" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#1B3A5C"><tspan font-style="italic">A</tspan> 高斯初始化、<tspan font-style="italic">B</tspan>=0 → 起始 ΔW=0</text>
+  </g>
+
+  <g id="formula-band">
+    <rect x="64" y="540" width="1152" height="132" rx="12" fill="#F4F7FA" />
+    <rect x="64" y="540" width="6" height="132" rx="3" fill="#E8743B" />
+    <text x="100" y="582" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="800" fill="#1B3A5C">低秩分解</text>
+    <image href="../images/formula_002.png" x="220" y="558" width="760" height="33" preserveAspectRatio="xMidYMid meet" />
+    <text x="100" y="642" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="800" fill="#1B3A5C">前向传播</text>
+    <image href="../images/formula_001.png" x="220" y="620" width="470" height="30" preserveAspectRatio="xMidYMid meet" />
+    <text x="1180" y="642" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">两路输出逐坐标相加</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §4.1, Eq.(3), Figure 1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">06 / 15</text>
+  </g>
+</svg>

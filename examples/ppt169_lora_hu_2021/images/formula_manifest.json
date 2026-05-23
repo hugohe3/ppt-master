@@ -1,0 +1,112 @@
+{
+  "providers": [
+    "codecogs",
+    "quicklatex",
+    "mathpad",
+    "wikimedia"
+  ],
+  "items": [
+    {
+      "id": "formula_001",
+      "latex": "h = W_0 x + \\Delta W x = W_0 x + B A x",
+      "display": "block",
+      "color": "#1B3A5C",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_001.png",
+      "file": "images/formula_001.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 688,
+      "pixel_height": 44,
+      "ratio": 15.6364,
+      "status": "Rendered"
+    },
+    {
+      "id": "formula_002",
+      "latex": "W_0 + \\Delta W = W_0 + BA,\\quad B \\in \\mathbb{R}^{d \\times r},\\; A \\in \\mathbb{R}^{r \\times k},\\; r \\ll \\min(d,k)",
+      "display": "block",
+      "color": "#1B3A5C",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_002.png",
+      "file": "images/formula_002.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 1280,
+      "pixel_height": 55,
+      "ratio": 23.2727,
+      "status": "Rendered"
+    },
+    {
+      "id": "formula_003",
+      "latex": "\\Delta W x \\;\\cdot\\; \\frac{\\alpha}{r}",
+      "display": "block",
+      "color": "#1B3A5C",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_003.png",
+      "file": "images/formula_003.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 220,
+      "pixel_height": 91,
+      "ratio": 2.4176,
+      "status": "Rendered"
+    },
+    {
+      "id": "formula_004",
+      "latex": "|\\Theta| = 2 \\times \\hat{L}_{\\mathrm{LoRA}} \\times d_{model} \\times r",
+      "display": "block",
+      "color": "#1B3A5C",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_004.png",
+      "file": "images/formula_004.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 604,
+      "pixel_height": 60,
+      "ratio": 10.0667,
+      "status": "Rendered"
+    }
+  ],
+  "renderer": {
+    "providers": [
+      "codecogs",
+      "quicklatex",
+      "mathpad",
+      "wikimedia"
+    ],
+    "default_dpi": 300,
+    "output_dir": "images"
+  }
+}

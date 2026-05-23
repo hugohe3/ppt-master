@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="avgBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3E7CB1" /><stop offset="100%" stop-color="#1B3A5C" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">更少参数,持平或更优</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">GLUE BENCHMARK · OVERALL AVG SCORE(越高越好)</text>
+  </g>
+
+  <g id="table">
+    <g transform="translate(64, 156)">
+      <line x1="0" y1="40" x2="1152" y2="40" stroke="#D8DEE6" stroke-width="2" />
+      <text x="20" y="26" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">模型</text>
+      <text x="430" y="26" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">方法</text>
+      <text x="700" y="26" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1"># 可训练参数</text>
+      <text x="850" y="26" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">GLUE AVG</text>
+      <text x="900" y="26" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">得分(视觉)</text>
+
+      
+      <text x="20" y="86" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa base</text>
+      <path fill="#F4F7FA" d="M393,68 H467 A13,13 0 0 1 480,81 V81 A13,13 0 0 1 467,94 H393 A13,13 0 0 1 380,81 V81 A13,13 0 0 1 393,68 Z" />
+      <text x="430" y="86" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6776">FT</text>
+      <text x="700" y="86" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">125M</text>
+      <text x="850" y="86" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">86.4</text>
+      <path fill="#F4F7FA" d="M907,74 H1133 A7,7 0 0 1 1140,81 V81 A7,7 0 0 1 1133,88 H907 A7,7 0 0 1 900,81 V81 A7,7 0 0 1 907,74 Z" />
+      <path fill="#8A94A1" d="M907,74 H965 A7,7 0 0 1 972,81 V81 A7,7 0 0 1 965,88 H907 A7,7 0 0 1 900,81 V81 A7,7 0 0 1 907,74 Z" />
+
+      
+      <path fill="#FBF0E9" d="M6,104 H1146 A6,6 0 0 1 1152,110 V150 A6,6 0 0 1 1146,156 H6 A6,6 0 0 1 0,150 V110 A6,6 0 0 1 6,104 Z" />
+      <text x="20" y="138" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa base</text>
+      <path fill="#1B3A5C" d="M393,120 H467 A13,13 0 0 1 480,133 V133 A13,13 0 0 1 467,146 H393 A13,13 0 0 1 380,133 V133 A13,13 0 0 1 393,120 Z" />
+      <text x="430" y="138" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">LoRA</text>
+      <text x="700" y="138" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#E8743B">0.3M</text>
+      <text x="850" y="138" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#2E7D32">87.2</text>
+      <path fill="#F4F7FA" d="M907,126 H1133 A7,7 0 0 1 1140,133 V133 A7,7 0 0 1 1133,140 H907 A7,7 0 0 1 900,133 V133 A7,7 0 0 1 907,126 Z" />
+      <path fill="url(#avgBar)" d="M907,126 H989 A7,7 0 0 1 996,133 V133 A7,7 0 0 1 989,140 H907 A7,7 0 0 1 900,133 V133 A7,7 0 0 1 907,126 Z" />
+
+      
+      <text x="20" y="200" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa large</text>
+      <path fill="#F4F7FA" d="M393,182 H467 A13,13 0 0 1 480,195 V195 A13,13 0 0 1 467,208 H393 A13,13 0 0 1 380,195 V195 A13,13 0 0 1 393,182 Z" />
+      <text x="430" y="200" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6776">FT</text>
+      <text x="700" y="200" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">355M</text>
+      <text x="850" y="200" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">88.9</text>
+      <path fill="#F4F7FA" d="M907,188 H1133 A7,7 0 0 1 1140,195 V195 A7,7 0 0 1 1133,202 H907 A7,7 0 0 1 900,195 V195 A7,7 0 0 1 907,188 Z" />
+      <path fill="#8A94A1" d="M907,188 H1040 A7,7 0 0 1 1047,195 V195 A7,7 0 0 1 1040,202 H907 A7,7 0 0 1 900,195 V195 A7,7 0 0 1 907,188 Z" />
+
+      
+      <path fill="#FBF0E9" d="M6,218 H1146 A6,6 0 0 1 1152,224 V264 A6,6 0 0 1 1146,270 H6 A6,6 0 0 1 0,264 V224 A6,6 0 0 1 6,218 Z" />
+      <text x="20" y="252" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa large</text>
+      <path fill="#1B3A5C" d="M393,234 H467 A13,13 0 0 1 480,247 V247 A13,13 0 0 1 467,260 H393 A13,13 0 0 1 380,247 V247 A13,13 0 0 1 393,234 Z" />
+      <text x="430" y="252" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">LoRA</text>
+      <text x="700" y="252" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#E8743B">0.8M</text>
+      <text x="850" y="252" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#2E7D32">89.0</text>
+      <path fill="#F4F7FA" d="M907,240 H1133 A7,7 0 0 1 1140,247 V247 A7,7 0 0 1 1133,254 H907 A7,7 0 0 1 900,247 V247 A7,7 0 0 1 907,240 Z" />
+      <path fill="url(#avgBar)" d="M907,240 H1043 A7,7 0 0 1 1050,247 V247 A7,7 0 0 1 1043,254 H907 A7,7 0 0 1 900,247 V247 A7,7 0 0 1 907,240 Z" />
+
+      
+      <text x="20" y="314" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">DeBERTa XXL</text>
+      <path fill="#F4F7FA" d="M393,296 H467 A13,13 0 0 1 480,309 V309 A13,13 0 0 1 467,322 H393 A13,13 0 0 1 380,309 V309 A13,13 0 0 1 393,296 Z" />
+      <text x="430" y="314" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6776">FT</text>
+      <text x="700" y="314" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">1500M</text>
+      <text x="850" y="314" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">91.1</text>
+      <path fill="#F4F7FA" d="M907,302 H1133 A7,7 0 0 1 1140,309 V309 A7,7 0 0 1 1133,316 H907 A7,7 0 0 1 900,309 V309 A7,7 0 0 1 907,302 Z" />
+      <path fill="#8A94A1" d="M907,302 H1106 A7,7 0 0 1 1113,309 V309 A7,7 0 0 1 1106,316 H907 A7,7 0 0 1 900,309 V309 A7,7 0 0 1 907,302 Z" />
+
+      
+      <path fill="#FBF0E9" d="M6,332 H1146 A6,6 0 0 1 1152,338 V378 A6,6 0 0 1 1146,384 H6 A6,6 0 0 1 0,378 V338 A6,6 0 0 1 6,332 Z" />
+      <text x="20" y="366" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">DeBERTa XXL</text>
+      <path fill="#1B3A5C" d="M393,348 H467 A13,13 0 0 1 480,361 V361 A13,13 0 0 1 467,374 H393 A13,13 0 0 1 380,361 V361 A13,13 0 0 1 393,348 Z" />
+      <text x="430" y="366" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">LoRA</text>
+      <text x="700" y="366" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#E8743B">4.7M</text>
+      <text x="850" y="366" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#2E7D32">91.3</text>
+      <path fill="#F4F7FA" d="M907,354 H1133 A7,7 0 0 1 1140,361 V361 A7,7 0 0 1 1133,368 H907 A7,7 0 0 1 900,361 V361 A7,7 0 0 1 907,354 Z" />
+      <path fill="url(#avgBar)" d="M907,354 H1112 A7,7 0 0 1 1119,361 V361 A7,7 0 0 1 1112,368 H907 A7,7 0 0 1 900,361 V361 A7,7 0 0 1 907,354 Z" />
+    </g>
+  </g>
+
+  <g id="takeaway">
+    <path fill="#F4F7FA" d="M74,566 H1206 A10,10 0 0 1 1216,576 V612 A10,10 0 0 1 1206,622 H74 A10,10 0 0 1 64,612 V576 A10,10 0 0 1 74,566 Z" />
+    
+  <g transform="translate(84.0, 578.0) scale(1.3333333333333333)" fill="none" stroke="#2E7D32" stroke-width="2">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+    <path d="M9 12l2 2l4 -4" />
+  </g>
+    <text x="128" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">三类模型上,LoRA 用<tspan font-weight="800" fill="#E8743B"> 1/300 ~ 1/400 </tspan>的可训练参数,GLUE 平均分<tspan font-weight="800" fill="#2E7D32">持平甚至略优于</tspan>全量微调</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA Table 2 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">12 / 15</text>
+  </g>
+</svg>

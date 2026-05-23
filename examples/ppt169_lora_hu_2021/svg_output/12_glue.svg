@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="avgBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3E7CB1"/><stop offset="100%" stop-color="#1B3A5C"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF"/></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B"/>
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">更少参数,持平或更优</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">GLUE BENCHMARK · OVERALL AVG SCORE(越高越好)</text>
+  </g>
+
+  <g id="table">
+    <g transform="translate(64, 156)">
+      <line x1="0" y1="40" x2="1152" y2="40" stroke="#D8DEE6" stroke-width="2"/>
+      <text x="20" y="26" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">模型</text>
+      <text x="430" y="26" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">方法</text>
+      <text x="700" y="26" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1"># 可训练参数</text>
+      <text x="850" y="26" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">GLUE AVG</text>
+      <text x="900" y="26" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="800" fill="#8A94A1" letter-spacing="1">得分(视觉)</text>
+
+      <!-- RoBERTa base FT -->
+      <text x="20" y="86" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa base</text>
+      <rect x="380" y="68" width="100" height="26" rx="13" fill="#F4F7FA"/>
+      <text x="430" y="86" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6776">FT</text>
+      <text x="700" y="86" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">125M</text>
+      <text x="850" y="86" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">86.4</text>
+      <rect x="900" y="74" width="240" height="14" rx="7" fill="#F4F7FA"/>
+      <rect x="900" y="74" width="72" height="14" rx="7" fill="#8A94A1"/>
+
+      <!-- RoBERTa base LoRA -->
+      <rect x="0" y="104" width="1152" height="52" rx="6" fill="#FBF0E9"/>
+      <text x="20" y="138" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa base</text>
+      <rect x="380" y="120" width="100" height="26" rx="13" fill="#1B3A5C"/>
+      <text x="430" y="138" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">LoRA</text>
+      <text x="700" y="138" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#E8743B">0.3M</text>
+      <text x="850" y="138" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#2E7D32">87.2</text>
+      <rect x="900" y="126" width="240" height="14" rx="7" fill="#F4F7FA"/>
+      <rect x="900" y="126" width="96" height="14" rx="7" fill="url(#avgBar)"/>
+
+      <!-- RoBERTa large FT -->
+      <text x="20" y="200" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa large</text>
+      <rect x="380" y="182" width="100" height="26" rx="13" fill="#F4F7FA"/>
+      <text x="430" y="200" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6776">FT</text>
+      <text x="700" y="200" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">355M</text>
+      <text x="850" y="200" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">88.9</text>
+      <rect x="900" y="188" width="240" height="14" rx="7" fill="#F4F7FA"/>
+      <rect x="900" y="188" width="147" height="14" rx="7" fill="#8A94A1"/>
+
+      <!-- RoBERTa large LoRA -->
+      <rect x="0" y="218" width="1152" height="52" rx="6" fill="#FBF0E9"/>
+      <text x="20" y="252" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">RoBERTa large</text>
+      <rect x="380" y="234" width="100" height="26" rx="13" fill="#1B3A5C"/>
+      <text x="430" y="252" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">LoRA</text>
+      <text x="700" y="252" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#E8743B">0.8M</text>
+      <text x="850" y="252" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#2E7D32">89.0</text>
+      <rect x="900" y="240" width="240" height="14" rx="7" fill="#F4F7FA"/>
+      <rect x="900" y="240" width="150" height="14" rx="7" fill="url(#avgBar)"/>
+
+      <!-- DeBERTa XXL FT -->
+      <text x="20" y="314" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">DeBERTa XXL</text>
+      <rect x="380" y="296" width="100" height="26" rx="13" fill="#F4F7FA"/>
+      <text x="430" y="314" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#5B6776">FT</text>
+      <text x="700" y="314" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">1500M</text>
+      <text x="850" y="314" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">91.1</text>
+      <rect x="900" y="302" width="240" height="14" rx="7" fill="#F4F7FA"/>
+      <rect x="900" y="302" width="213" height="14" rx="7" fill="#8A94A1"/>
+
+      <!-- DeBERTa XXL LoRA -->
+      <rect x="0" y="332" width="1152" height="52" rx="6" fill="#FBF0E9"/>
+      <text x="20" y="366" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#1D2733">DeBERTa XXL</text>
+      <rect x="380" y="348" width="100" height="26" rx="13" fill="#1B3A5C"/>
+      <text x="430" y="366" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">LoRA</text>
+      <text x="700" y="366" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#E8743B">4.7M</text>
+      <text x="850" y="366" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#2E7D32">91.3</text>
+      <rect x="900" y="354" width="240" height="14" rx="7" fill="#F4F7FA"/>
+      <rect x="900" y="354" width="219" height="14" rx="7" fill="url(#avgBar)"/>
+    </g>
+  </g>
+
+  <g id="takeaway">
+    <rect x="64" y="566" width="1152" height="56" rx="10" fill="#F4F7FA"/>
+    <use data-icon="tabler-outline/circle-check" x="84" y="578" width="32" height="32" fill="#2E7D32" stroke-width="2"/>
+    <text x="128" y="600" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">三类模型上,LoRA 用<tspan font-weight="800" fill="#E8743B"> 1/300 ~ 1/400 </tspan>的可训练参数,GLUE 平均分<tspan font-weight="800" fill="#2E7D32">持平甚至略优于</tspan>全量微调</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA Table 2 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">12 / 15</text>
+  </g>
+</svg>
