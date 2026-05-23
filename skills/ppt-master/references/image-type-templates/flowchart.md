@@ -57,7 +57,7 @@ Each stage contains an iconic symbol only. Stage labels added in SVG overlay bel
 
 ### `text_policy: embedded`
 
-Each stage may contain a short English keyword (≤2 words) inside or beside it.
+Each stage may contain a short keyword (≤2 words) inside or beside it.
 
 ---
 

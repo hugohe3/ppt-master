@@ -46,11 +46,11 @@ Sample fragment:
 
 ### `text_policy: embedded`
 
-Each zone contains an icon + one short English keyword (≤2 words).
+Each zone contains an icon + one short keyword (≤2 words).
 
 Sample fragment:
 
-> Each zone contains one iconic symbol and one short hand-lettered English keyword (1-2 words, e.g. "Speed", "Reach", "Trust"). Keywords are part of the artwork. No long sentences, no numbers, no Chinese characters.
+> Each zone contains one iconic symbol and one short hand-lettered keyword (1-2 words, e.g. "Speed", "Reach", "Trust"). Keywords are part of the artwork. No long sentences, no numbers; keep each keyword short.
 
 ---
 

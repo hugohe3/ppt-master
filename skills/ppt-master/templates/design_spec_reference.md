@@ -276,7 +276,7 @@ Catalog read: 71 templates
 **text_policy** (`ai` rows only; AI judges per row, no global default bias):
 
 - `none` — image carries no text; SVG overlays all labels
-- `embedded` — image contains in-artwork text: decorative lettering, a designed title, hand-lettered keywords, or stable visual identifiers (axis labels, subplot letters, unit symbols). Body copy / data points / long quotes never go inside the image regardless. English text renders most reliably; CJK characters fail in most models
+- `embedded` — image contains in-artwork text: decorative lettering, a designed title, hand-lettered keywords, or stable visual identifiers (axis labels, subplot letters, unit symbols). Body copy / data points / long quotes never go inside the image regardless — they must stay editable. Embedded text is frozen into the raster; verify the rendered text in the output
 
 **page_role** (`ai` rows only; leave blank for default):
 
