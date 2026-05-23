@@ -642,7 +642,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 | I. Project Information | Project name, canvas format, page count, style, audience, scenario, date |
 | II. Canvas Specification | Format, dimensions, viewBox, margins, content area |
 | III. Visual Theme | Style description, light/dark theme, tone, color scheme (with HEX table), gradient scheme |
-| IV. Typography System | Font plan (per-role families — title / body / emphasis / code), font size hierarchy. **Note**: LaTeX formulas are NOT a typography role — they are pre-rendered to PNG images via CodeCogs API (Step 4.5) and placed as `<image>` elements, bypassing font stacks entirely. |
+| IV. Typography System | Font plan (per-role families — title / body / emphasis / code), font size hierarchy. **Note**: LaTeX formulas are pre-rendered to PNG images via CodeCogs API (Step 4.5) and placed as `<image>` elements — they are not rendered with any font stack, but their display size must align with surrounding typography via `manifest.json` `uniform_scale`. |
 | V. Layout Principles | Page structure (header/content/footer zones), layout pattern library (combine/break as content demands), spacing spec |
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
 | VII. Visualization Reference List | Visualization type, reference template path, used-in pages, purpose |

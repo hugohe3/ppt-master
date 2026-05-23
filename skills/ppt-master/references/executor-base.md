@@ -98,7 +98,7 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 - Font family from `typography`: use role override (`title_family` / `body_family` / `emphasis_family` / `code_family`) if declared, else fall back to `font_family`
 - Font sizes follow a **ramp anchored on `typography.body`**, not a closed menu. Use the declared slots when they fit. Intermediate sizes (e.g., 40px hero number, 13px annotation) are allowed if the ratio to `body` falls within the role's band (see `design_spec.md §IV ramp table`). Sizes outside every band require extending the lock first.
 - Images MUST reference files listed under `images`; no invented filenames
-- **Formula images** (`images/latex/F*.png`) are pre-rendered by `latex_render.py` (Step 4.5) via the CodeCogs API. Place them as `<image>` elements using the `uniform_scale` from `images/latex/manifest.json` — do NOT render formula text with `code_family` or any font stack
+- **Formula images** (`images/latex/F*.png`) are pre-rendered by `latex_render.py` (Step 4.5) via the CodeCogs API. Place them as `<image>` elements using the `uniform_scale` from `images/latex/manifest.json` — do NOT render formula text with `code_family` or any font stack. Inline formulas align with surrounding text baseline; block formulas center in the content area.
 
 If a page needs a value not in `spec_lock.md`, surface it — do not silently invent one.
 
@@ -337,7 +337,7 @@ Use `attribution_text` from the manifest entry as the **starting point**, then c
 
 ## 7. Font Usage
 
-Source of truth: `spec_lock.md typography`. Use `font_family` as default; override per role with `title_family` / `body_family` / `emphasis_family` / `code_family` if declared. **LaTeX formulas bypass typography entirely** — they are pre-rendered PNG images placed as `<image>` elements (see Step 4.5).
+Source of truth: `spec_lock.md typography`. Use `font_family` as default; override per role with `title_family` / `body_family` / `emphasis_family` / `code_family` if declared. **LaTeX formulas are not a font-stack role** — they are pre-rendered PNG images (Step 4.5); size them via `manifest.json` `uniform_scale` and align with surrounding text.
 
 If `spec_lock.md` is absent, consult [`strategist.md`](strategist.md) §g — do not invent a stack.
 
