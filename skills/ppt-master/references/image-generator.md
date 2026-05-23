@@ -179,7 +179,7 @@ Use for: founder profile, speaker bio, testimonial page, executive intro. Pair w
 
 > The image's central content is one large text element — a short headline, big number, or single word — rendered as art, occupying 40-60% of canvas height. Minimal supporting visual (small icon, geometric anchor, accent line) at <25% weight. At least 20% padding around the text.
 
-Use with `text_policy: embedded`. Must obey the §5.3 text-accuracy rules (English short-text and simple numbers reliable; CJK and long sentences fail — for those, switch to Primitive D + SVG overlay).
+Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D). Verify the rendered text in the output.
 
 **Primitive D — atmospheric backdrop (no subject)**
 
@@ -303,20 +303,20 @@ The table below is **a reference for the one case where you want the in-image le
 
 **When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
 
-**In-image text accuracy — what image models can and cannot render reliably**
+**In-image text vs SVG text — decide by editability, not by model capability**
 
-Image models have **variable accuracy on text rendering**. Pick the in-image text content with this in mind, especially for §4.1 Primitive C (typographic hero) where the word *is* the image:
+Layer 1 text is rasterized into the artwork — once generated it cannot be edited, corrected, searched, restyled, or reflowed. That is the durable reason to choose where text lives, independent of any backend's rendering ability or the script / length involved:
 
-| Content | Reliability |
+| Text | Layer |
 |---|---|
-| English short text (1-5 characters, one short word) | High — most modern models render correctly most of the time |
-| English longer text (full sentences) | Low — typos, glyph errors, dropped letters |
-| Simple numbers / symbols (`100`, `5x`, `$50M`, `∞`, `?`) | Variable — verify after generation, often fail at large display scale |
-| Chinese / Japanese / Korean characters | Very low — most models fail consistently |
+| Part of the artwork and stable — decorative lettering, designed title, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
+| Page chrome, body copy, captions, data values — anything that must stay exact, searchable, or may be reworded | Layer 2 (SVG) |
 
-**Prefer in-image**: a short English word (1-2 words max), a simple number, a single symbol or letter.
+Generation is non-deterministic on every backend — **always verify the rendered text in the output** and regenerate if a glyph came out wrong. Do not assume a script or a length will fail; check the actual result. For §4.1 Primitive C (typographic hero) the word *is* the image, so verifying the output matters most there.
 
-**Push to SVG overlay instead**: long quotes / sentences, CJK headlines, complex composite text. When the desired headline is long or CJK, switch to **Primitive D (atmospheric backdrop)** and overlay the headline as SVG text.
+**Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word, a stat lettering, a figure-internal label.
+
+**Push to SVG overlay instead**: page chrome, captions, data values, or any copy that must stay exact or editable. When the headline must remain editable, switch to **Primitive D (atmospheric backdrop)** and overlay it as SVG text.
 
 ### 5.4 No brand names or trademarks in the subject
 
