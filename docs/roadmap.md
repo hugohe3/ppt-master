@@ -44,6 +44,16 @@ The past two months' structural capability growth. Single flags / incremental po
 
 ---
 
+## Under consideration
+
+Directions identified but not yet prioritized or scheduled — on the radar, not on a timeline.
+
+### LaTeX math formula rendering
+
+LaTeX source files are already accepted on the input side ([SKILL.md](../skills/ppt-master/SKILL.md) Step 1, [faq.md](./faq.md)), but the output side has no dedicated rendering path — math symbols on generated SVG currently fall back to bare Unicode. Formula-heavy decks (academic / engineering / educational) have no native rendering route today.
+
+---
+
 ## Non-goals
 
 The directions below come up repeatedly and have been evaluated as **not on the path**. Listing them is not a value judgment on the underlying need — they simply don't fit this project's main route. If you specifically need these capabilities, consider other tools or forking.
