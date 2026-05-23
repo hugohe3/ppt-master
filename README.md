@@ -8,13 +8,17 @@
 English | [中文](./README_CN.md)
 
 <p align="center">
-  <sub>This project is kept free and open source with the support of <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a> and other sponsors.</sub>
+  <sub>This project is kept free and open source with the support of <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a> and other sponsors.</sub>
 </p>
 
 <table>
   <tr>
     <td width="180"><a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a></td>
     <td>Thanks to PackyCode for sponsoring this project! PackyCode is a reliable and efficient API relay service provider, offering relay services for Claude Code, Codex, Gemini, and more. PackyCode provides special discounts for our project users: register using <a href="https://www.packyapi.com/register?aff=ppt-master">this link</a> and enter the promo code <strong>ppt-master</strong> during recharge to get 10% off.</td>
+  </tr>
+  <tr>
+    <td width="180"><a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" width="150"></a></td>
+    <td>Thanks to APIKEY.FUN for sponsoring this project! APIKEY.FUN is a professional enterprise-grade AI relay service committed to stable, efficient, and low-cost AI access for businesses and developers. The platform supports mainstream models including Claude, OpenAI, and Gemini, with prices as low as <strong>7% of official rates</strong>. Register through <a href="https://apikey.fun/register?aff=PPT-MASTER">our dedicated link</a> for an exclusive perk: <strong>up to 5% off on top-ups, permanently</strong>.</td>
   </tr>
 </table>
 
@@ -179,7 +183,7 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 
 > **Model recommendation**: prefer **Claude Opus / Sonnet** with a large context window and `gpt-image-2` for images — see the note above for why.
 
-**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsor **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** can help — whether you lack an API key, can't connect directly, have no way to subscribe, or just don't want to pay a full monthly fee for occasional use, PackyCode lets you call Claude, GPT, Gemini and more on a pay-as-you-go basis, no subscription required. **PackyCode gives you direct access to Claude models** — the recommended engine for PPT Master. Enter promo code **`ppt-master`** when topping up for 10% off.
+**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** and **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** can help — both offer pay-as-you-go access to Claude, GPT, Gemini and more, no subscription required. **PackyCode**: 10% off with promo code **`ppt-master`** at top-up. **APIKEY.FUN**: prices as low as **7% of official rates**; register via our link for an exclusive permanent discount of up to 5% on top-ups.
 
 ### 3. Set Up
 
@@ -325,6 +329,8 @@ PPT Master is currently built and maintained primarily by me. Every new template
 **Corporate sponsors**
 
 <a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
+&nbsp;
+<a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" height="40" /></a>
 &nbsp;
 <a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40" /></a>
 
