@@ -254,10 +254,10 @@ Catalog read: 71 templates
 - **Existing** — user-supplied, place in `images/`
 - **Placeholder** — not yet processed, use dashed border in SVG
 
-**text_policy** (`ai` rows only; leave blank for default):
+**text_policy** (`ai` rows only; AI judges per row, no global default bias):
 
-- *blank / `none`* — image carries no text; SVG overlays labels
-- `embedded` — image contains in-artwork text: decorative lettering, a designed title, or hand-lettered keywords. Body copy / data points / long quotes never go inside the image regardless. English text renders most reliably; CJK characters fail in most models
+- `none` — image carries no text; SVG overlays all labels
+- `embedded` — image contains in-artwork text: decorative lettering, a designed title, hand-lettered keywords, or stable visual identifiers (axis labels, subplot letters, unit symbols). Body copy / data points / long quotes never go inside the image regardless. English text renders most reliably; CJK characters fail in most models
 
 **page_role** (`ai` rows only; leave blank for default):
 

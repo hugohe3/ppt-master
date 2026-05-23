@@ -174,7 +174,7 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 64. **Image with embedded text rendered by the AI** — text becomes part of the artwork: decorative lettering, designed title, hand-lettered keyword. Prompt with explicit text content. Reliable only for **short English**. Chinese characters, long phrases, and digits regularly come back malformed and cannot be edited. Anything that must be correct or editable goes in the SVG `<text>` layer.
 
-65. **Image with NO text — labels added as native SVG** — generate the image with explicit "no text, no letters, no numbers, no signs" instruction (`text_policy: none`), then place all labels as `<text>` overlays. Default safe path for any deck with Chinese, data, or editable copy.
+65. **Image with NO text — labels added as native SVG** — generate the image with explicit "no text, no letters, no numbers, no signs" instruction (`text_policy: none`), then place all labels as `<text>` overlays. The right call when labels are CJK, will be reworded, or carry data that must stay editable — pair with `#64` when stable visual identifiers (axis labels, subplot letters, unit symbols) belong inside the image instead.
 
 66. **Image fading into the solid background** — soften the image's edge into the deck's background color via a `<linearGradient>` overlay whose end-stop matches the background hex exactly. The image's rectangular boundary disappears, producing seamless integration.
 

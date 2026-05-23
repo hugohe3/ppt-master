@@ -320,6 +320,12 @@ After the candidates, append one line:
 
 After the user picks a candidate (or supplies a custom variant), proceed to "Recording the lock" below.
 
+#### Prompt depth for §VIII rows
+
+**Hard rule**: When §VIII contains paper-figure or subject-domain rows (scientific subjects, specialized fields, regulated content), each row's `generation description` follows [`image-generator.md`](./image-generator.md) §4.2 Prompt depth — expand to the depth the subject demands; 500-1000+ words is normal.
+
+**Forbidden — generic shortening**: never drop a paper-figure row's prompt to a 50-word generic illustration brief.
+
 ---
 
 #### Catalog reference (for candidate construction)
