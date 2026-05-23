@@ -66,6 +66,10 @@ uv run skills/ppt-master/scripts/project_manager.py validate <project_path>
 
 # Image tools and SVG quality check
 uv run skills/ppt-master/scripts/analyze_images.py <project_path>/images
+# Formula rendering — manifest written by Strategist after typography confirmation:
+uv run skills/ppt-master/scripts/latex_render.py <project_path>
+uv run skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
+uv run skills/ppt-master/scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
 uv run skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
 uv run skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json

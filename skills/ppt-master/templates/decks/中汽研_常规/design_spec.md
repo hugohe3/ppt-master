@@ -1,3 +1,12 @@
+---
+deck_id: 中汽研_常规
+kind: deck
+summary: Product certification display, evaluation presentations, technology promotion, business visits.
+canvas_format: ppt169
+page_count: 5
+primary_color: "#004098"
+---
+
 # CATARC (中汽研) Standard Template - Design Specification
 
 > Suitable for CATARC product certification, evaluation & certification, technology showcases, business visits, and similar scenarios.
@@ -137,7 +146,17 @@
 
 ---
 
-## VII. Layout Patterns (Recommended)
+## VII. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+
+## VIII. Layout Patterns (Recommended)
 
 | Pattern              | Use Cases                      |
 | -------------------- | ------------------------------ |
@@ -151,7 +170,7 @@
 
 ---
 
-## VIII. Spacing Guidelines
+## IX. Spacing Guidelines
 
 | Element        | Value  |
 | -------------- | ------ |
@@ -163,7 +182,7 @@
 
 ---
 
-## IX. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -183,7 +202,7 @@
 
 ---
 
-## X. Placeholder Specification
+## XI. Placeholder Specification
 
 Templates use `{{PLACEHOLDER}}` format. Common placeholders:
 
@@ -206,7 +225,7 @@ Templates use `{{PLACEHOLDER}}` format. Common placeholders:
 
 ---
 
-## XI. Usage Notes (Recommended)
+## XII. Usage Notes (Recommended)
 
 1. **Template Deployment**: Copy the template to your project directory.
 2. **Asset Replacement**: Replace `大型 logo.png` (592×238) and `右上角 logo.png` (113×50) in the `images` directory.

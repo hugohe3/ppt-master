@@ -1,3 +1,12 @@
+---
+layout_id: ai_ops
+kind: layout
+summary: Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports.
+canvas_format: ppt169
+page_count: 6
+page_types: [cover, toc, chapter, content, ending, reference_style]
+---
+
 # ai_ops - Enterprise Digital Intelligence Design Specification
 
 > Suitable for telecom operator AI operations architecture, digital transformation proposals, smart infrastructure reports, IT system overview diagrams, and other high-information-density scenarios.
@@ -34,60 +43,7 @@
 
 ---
 
-## III. Color Scheme
-
-### Primary Colors
-
-| Role               | Value       | Notes                                        |
-| ------------------ | ----------- | -------------------------------------------- |
-| **Primary Red**    | `#C00000`   | Brand identity, title vertical bar, number badges, target bars |
-| **Accent Blue**    | `#2E75B6`   | Scenario labels, category headers, bottom accent bars |
-| **Light Blue**     | `#5B9BD5`   | Feature module cards, sub-item labels        |
-
-### Functional Colors
-
-| Role               | Value       | Usage                              |
-| ------------------ | ----------- | ---------------------------------- |
-| **Warm Gray BG**   | `#FDF3EB`   | Overview panel, open platform panel background |
-| **Warm Orange Border** | `#F8CBAD` | Panel borders, decorative dividers |
-| **Light Gray BG**  | `#F2F2F2`   | Subtitle bar, metric card background |
-| **Card Gray BG**   | `#E7E6E6`   | Sub-module cards, capability base cards |
-| **Card Border**    | `#D9D9D9`   | Card strokes                       |
-
-### Text Colors
-
-| Role               | Value       | Usage                          |
-| ------------------ | ----------- | ------------------------------ |
-| **Body Black**     | `#000000`   | Titles, standard body text     |
-| **White Text**     | `#FFFFFF`   | Text on dark color blocks      |
-| **Secondary Text** | `#666666`   | Subtitles, annotations         |
-| **Light Secondary**| `#999999`   | Page numbers, source citations |
-| **Data Emphasis**  | `#C00000`   | KPI values, key metrics        |
-
----
-
-## IV. Typography System
-
-### Font Stack
-
-**Font Stack**: `"Microsoft YaHei", "微软雅黑", "SimHei", Arial, sans-serif`
-
-### Font Size Hierarchy
-
-| Level    | Usage                  | Size    | Weight  |
-| -------- | ---------------------- | ------- | ------- |
-| H1       | Cover main title       | 36-48px | Bold    |
-| H2       | Page title             | 32-36px | Bold    |
-| H3       | Module title/subtitle  | 18-20px | Bold    |
-| P        | Body content           | 14-16px | Regular |
-| Caption  | Supplementary/footnotes | 12-14px | Regular |
-| Data     | KPI values/metric emphasis | 24-36px | Bold |
-
-> **Note**: Body font size is smaller than usual (14-16px vs standard 18-20px) to accommodate high information density per page.
-
----
-
-## V. Core Design Principles
+## III. Core Design Principles
 
 ### Telecom High-Density Information Style
 
@@ -111,7 +67,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## VI. Page Structure
+## IV. Page Structure
 
 ### General Layout
 
@@ -138,7 +94,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## VII. Page Types
+## V. Page Types
 
 ### 1. Cover Page (01_cover.svg)
 
@@ -177,7 +133,18 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## VIII. Layout Patterns
+## VI. SVG Page Roster
+
+| File | Role | Description |
+|------|------|-------------|
+| `01_cover.svg` | cover | Title slide; project name, presenter, date |
+| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
+| `02_toc.svg` | toc | Table of contents listing major sections |
+| `03_content.svg` | content | Main content page; body of the deck |
+| `04_ending.svg` | ending | Closing/thank-you page |
+| `reference_style.svg` | reference_style | Style reference card (developer aid; not used in normal decks) |
+
+## VII. Layout Patterns
 
 | Pattern                        | Applicable Scenarios                              |
 | ------------------------------ | ------------------------------------------------- |
@@ -194,7 +161,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## IX. Common Components
+## VIII. Common Components
 
 ### Title Vertical Bar Decoration
 
@@ -268,7 +235,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## X. Spacing Specification
+## IX. Spacing Specification
 
 | Element                        | Value     |
 | ------------------------------ | --------- |
@@ -288,7 +255,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## XI. SVG Technical Constraints
+## X. SVG Technical Constraints
 
 ### Mandatory Rules
 
@@ -311,7 +278,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## XII. Placeholder Specification
+## XI. Placeholder Specification
 
 The template uses `{{PLACEHOLDER}}` format placeholders:
 
@@ -336,7 +303,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 
 ---
 
-## XIII. Usage Notes
+## XII. Usage Notes
 
 1. Copy this template directory to the project `templates/` directory
 2. Review `reference_style.svg` to understand the core visual style
@@ -347,7 +314,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 
 ---
 
-## XIV. Design Highlights
+## XIII. Design Highlights
 
 - **Telecom DNA**: Derived from real telecom AI operations architecture reports, naturally suited for telecom/enterprise presentation styles
 - **High Information Density**: A single page can accommodate a complete architecture view (objectives → results → scenarios → orchestration → foundational capabilities)

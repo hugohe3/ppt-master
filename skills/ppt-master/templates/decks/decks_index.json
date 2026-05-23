@@ -1,0 +1,50 @@
+{
+  "中国电信": {
+    "summary": "China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#C00000"
+  },
+  "中国电建_常规": {
+    "summary": "Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#00418D"
+  },
+  "中国电建_现代": {
+    "summary": "Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#00418D"
+  },
+  "中汽研_商务": {
+    "summary": "Product certification display, evaluation presentations, technology promotion, high-end business reporting.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#003366"
+  },
+  "中汽研_常规": {
+    "summary": "Product certification display, evaluation presentations, technology promotion, business visits.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#004098"
+  },
+  "中汽研_现代": {
+    "summary": "Forward-looking technology showcases, strategic releases, high-end business reporting.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#001529"
+  },
+  "招商银行": {
+    "summary": "交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#C8152D"
+  },
+  "重庆大学": {
+    "summary": "Academic defense, research reports, teaching presentations, scholarly exchange.",
+    "canvas_format": "ppt169",
+    "page_count": 5,
+    "primary_color": "#006BB7"
+  }
+}

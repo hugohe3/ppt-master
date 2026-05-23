@@ -1,6 +1,6 @@
 # PPT Master — AI 生成原生可编辑 PPTX，支持任意文档输入
 
-[![Version](https://img.shields.io/badge/version-v2.7.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
+[![Version](https://img.shields.io/badge/version-v2.8.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 [![AtomGit stars](https://atomgit.com/hugohe3/ppt-master/star/badge.svg)](https://atomgit.com/hugohe3/ppt-master)
@@ -8,13 +8,17 @@
 [English](./README.md) | 中文
 
 <p align="center">
-  <sub>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a> 等赞助方支持，得以持续免费开源。</sub>
+  <sub>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a> 等赞助方支持，得以持续免费开源。</sub>
 </p>
 
 <table>
   <tr>
     <td width="180"><a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a></td>
     <td>感谢 PackyCode 赞助了本项目！PackyCode 是一家稳定、高效的 API 中转服务商，提供 Claude Code、Codex、Gemini 等多种中转服务。PackyCode 为本项目的用户提供了特别优惠，使用<a href="https://www.packyapi.com/register?aff=ppt-master">此链接</a>注册并在充值时填写"ppt-master"优惠码，可以享受 9 折优惠。</td>
+  </tr>
+  <tr>
+    <td width="180"><a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" width="150"></a></td>
+    <td>感谢 APIKEY.FUN 赞助了本项目！APIKEY.FUN 是一家专业的企业级 AI 中转站，致力于为企业和开发者提供稳定、高效、低成本的 AI 中转服务。平台支持 Claude、OpenAI、Gemini 等主流热门模型，价格低至官方原价的 <strong>7%</strong>。通过<a href="https://apikey.fun/register?aff=PPT-MASTER">本项目专属链接</a>注册，还可享受最高 <strong>永久充值 95 折</strong> 专属优惠。</td>
   </tr>
 </table>
 
@@ -26,6 +30,9 @@
   <a href="./docs/zh/roadmap.md"><strong>路线图</strong></a> ·
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
 </p>
+
+<h3 align="center">下面这六份 PPT，仅仅是 PPT Master 能力的冰山一角</h3>
+<h3 align="center">建议直接下载原始 .pptx 文件，在 PowerPoint 里好好看一下这个项目的能力边界。</h3>
 
 <table>
   <tr>
@@ -65,8 +72,7 @@
 </table>
 
 <p align="center">
-  <sub>↑ 上述示例均为 PPT Master 端到端生成的原生可编辑 PPT，点"下载 .pptx"拿原始文件直接看效果。生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>。<br/>
-  <a href="https://hugohe3.github.io/ppt-master/">在线翻看全部 17 个示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a>（17 个项目，229 页） · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
+  <sub>生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>。<a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
 </p>
 
 <p align="center">
@@ -183,7 +189,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 > **模型推荐**：优先选 **Claude Opus / Sonnet**，搭配大上下文窗口和 `gpt-image-2` 生图——原因见上方说明。
 
-**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** 可以解决大多数卡点——没有 API Key、无法直连、没有境外信用卡无法订阅、或者只是不想为偶尔使用付整月费，PackyCode 都能让你按量调用 Claude、GPT、Gemini 等主流模型，**直接用上推荐的 Claude 模型**，支持国内支付，开箱即用。充值时填写优惠码 **`ppt-master`** 享 9 折。
+**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** 与 **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 都能解决卡点——两家都支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅，支持国内支付。**PackyCode**：充值时填写优惠码 **`ppt-master`** 享 9 折。**APIKEY.FUN**：价格低至官方原价的 **7%**，通过专属链接注册可享受最高永久充值 95 折专属优惠。
 
 ### 3. 配置项目
 
@@ -283,7 +289,7 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 | 🎬 | [转场与动画](./docs/zh/animations.md) | 页间转场和页内元素入场动画 |
 | 🎙️ | [音频旁白与视频导出](./docs/zh/audio-narration.md) | 90+ 语种 TTS 旁白、音频嵌入 PPTX、导出为 MP4 |
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
-| 💼 | [示例](./examples/README.md) | 17 个项目，229 页 |
+| 💼 | [示例](./examples/README.md) | 所有示例项目 |
 | 🏗️ | [技术路线](./docs/zh/technical-design.md) | 架构、设计哲学、为什么选 SVG |
 | ❓ | [常见问题](./docs/zh/faq.md) | 模型选择、费用、排版问题排查、自定义模板 |
 
@@ -330,6 +336,8 @@ PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文�
 **企业赞助方**
 
 <a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
+&nbsp;
+<a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" height="40" /></a>
 &nbsp;
 <a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40" /></a>
 

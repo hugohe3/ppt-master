@@ -69,7 +69,7 @@ A short keyword (1-2 English words) appears inside or beside each satellite / ce
 
 Sample fragment:
 
-> Each satellite includes a single short hand-lettered keyword in English (≤2 words) — e.g. "data", "process", "growth". Keywords are part of the artwork, not labels. No long sentences, no numbers, no Chinese characters (most models render CJK characters incorrectly).
+> Each satellite includes a single short hand-lettered keyword (≤2 words) — e.g. "data", "process", "growth". Keywords are part of the artwork, not labels. No long sentences, no numbers; keep each keyword short.
 
 ---
 

@@ -92,6 +92,8 @@ image_palette: cool-corporate
 
 If both fields are present, use them directly — Strategist made the decision in h.5 with full d-e-f-g-h linkage context. Do NOT re-decide.
 
+**Hard rule — `custom` escape hatch**: when either value is the literal string `custom`, do NOT `read_file` the preset library for that dimension. Read the sibling `*_behavior` line from `spec_lock.md colors` and splice that prose into the prompt in place of the preset's fewshot snippet. The behavior prose owns the style paragraph (for `custom` rendering) or the proportion/role rules (for `custom` palette). See [`image-renderings/_index.md`](./image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](./image-palettes/_index.md) §2 for the invocation rules.
+
 **Fallback path — when `spec_lock.md` lacks both fields** (legacy decks or pipelines that skipped h.5):
 
 | Signal | Maps to |
@@ -177,13 +179,29 @@ Use for: founder profile, speaker bio, testimonial page, executive intro. Pair w
 
 > The image's central content is one large text element — a short headline, big number, or single word — rendered as art, occupying 40-60% of canvas height. Minimal supporting visual (small icon, geometric anchor, accent line) at <25% weight. At least 20% padding around the text.
 
-Use with `text_policy: embedded`. Must obey the §5.3 text-accuracy rules (English short-text and simple numbers reliable; CJK and long sentences fail — for those, switch to Primitive D + SVG overlay).
+Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D). Verify the rendered text in the output.
 
 **Primitive D — atmospheric backdrop (no subject)**
 
 > Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. Small geometric anchor optional, placed in a corner or along an edge, never centered. The center 60-70% of the canvas must stay calm to receive SVG title/text overlay.
 
 Use for: cover background, chapter divider background, breathing-page background, any page where the SVG layer carries the words and the image only sets tone.
+
+**Primitive E — custom (escape hatch)**
+
+When none of A/B/C/D describe the page's intended layout (triptych, asymmetric multi-focal, narrative diorama, etc.), write the composition description directly into the prompt's composition sentence — same paragraph slot A/B/C/D occupy, but in your own words. No new field; the freedom is in the prose.
+
+**Hard rule — custom composition prose**:
+
+| Rule | Value |
+|---|---|
+| Length | One paragraph, 2-5 sentences, replacing A/B/C/D's opening paragraph |
+| Required content | subject count, layout structure, where breathing room sits, where SVG overlay can claim canvas |
+| Forbidden | Naming a competing primitive ("like A but two subjects") |
+
+Example opening for a triptych hero:
+
+> Triptych — three equal vertical bands of canvas, each holding one symbolic object centered in its band; objects share a low horizon line; bands separated by 2px hairline rules; collectively reads as a single composed page. [...rest of prompt continues with rendering paragraph + color behavior + container note...]
 
 **Fewshot examples per primitive** (one each, deck-context placeholders intact):
 
@@ -202,6 +220,23 @@ Use for: cover background, chapter divider background, breathing-page background
 > **D — vector-illustration + cool-corporate cover background, text_policy: none, 1280×720**
 >
 > Clean flat vector illustration backdrop. Atmospheric composition with no central subject — bold geometric shapes arranged along the canvas edges to leave the center calm. Primary deep navy `#1E3A5F` forms a confident diagonal block across the lower-left third; secondary light gray `#F8F9FA` occupies the upper two-thirds as breathing space; accent gold `#D4AF37` appears only as one thin geometric line near the lower right corner (under 5% of canvas). Crisp 2px outlines, no gradients, single 8% soft drop shadow under the navy block. The central 60% of the canvas is deliberately calm and unbusy — designed to receive a slide title overlaid in SVG. Composed as a 1280×720 full-bleed PPT background. NO text, letters, numbers, signs, watermarks, or written symbols anywhere in the image. Color values are rendering guidance only — do not display HEX codes or color names as text. Simplified geometric shapes only.
+
+### 4.2 Prompt depth — expand for subject-domain accuracy
+
+**Hard rule**: For images whose deck purpose calls for subject-domain accuracy (scientific figures, academic paper figures, engineering schematics, medical / legal / regulated content), expand the prompt without budget ceiling — 500-1000+ words is normal. The §4 word budget (150-300) is the routine-illustration default, not a cap.
+
+**Forbidden — pre-emptive shortening**: never trim a subject-domain prompt to fit §4's budget. Name the field's visual conventions explicitly in the prompt.
+
+**Detail to name in the prompt** (illustrative, not an enumeration to match):
+
+| Domain | Conventions to spell out |
+|---|---|
+| chemistry / materials | IUPAC atom colors, bond conventions, lattice type, Å / ps units, subplot labeling (A / B / C circles), view angle |
+| biology | cell compartment colors, scale bars, organelle conventions, staining palette |
+| physics | axis labels with proper symbols, signature curve shapes, unit annotations, peak labeling format |
+| engineering | schematic notation, dimension callouts, section-cut conventions |
+
+**When uncertain about field conventions**: read `sources/` before drafting the prompt.
 
 ---
 
@@ -225,31 +260,25 @@ When the image contains people:
 
 Exception: when the chosen rendering is `corporate-photo`, photorealism is intentional — replace the above with: `Diverse, professionally attired subjects. Editorial photography style, natural composition`.
 
-### 5.3 Text policy — none vs embedded
+### 5.3 Text policy — two-layer ownership
+
+Every AI-image page carries text in two layers:
+
+| Layer | Owned by | Examples |
+|---|---|---|
+| Layer 1 (image-owned) | the prompt — baked into the raster | figure-internal annotations (axis labels, A / B / C markers, units, scale bars, panel labels); architecture / schematic module names, node labels, signal-path identifiers; hero typographic or decorative lettering that *is* the visual |
+| Layer 2 (SVG-owned) | `<text>` overlay — fully editable | page-level chrome (title, navigation, footer, body bullets, conclusion callout); readable copy, captions |
+
+`text_policy` controls only Layer 1. AI judges per image; no global default bias.
 
 | `text_policy` | Prompt cue |
 |---|---|
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |
-| `embedded` | Describe the text directly inside the visual scene: the word(s), how they're rendered (decorative lettering / designed title / hand-lettered keyword), and the artistic treatment. Examples below. |
+| `embedded` | Describe the Layer 1 text directly inside the visual scene: the word(s), how they're rendered, and the artistic treatment. |
 
-**When to pick `embedded` — the edit-stability test**
+**Hard rule — cross-cutting**: Layer 2 chrome stays SVG regardless of `text_policy`. Never bake the deck title, navigation, footer, body bullets, or conclusion callout into the image, even when `embedded`.
 
-Before adding any word to the image, ask: *will this word ever need to be changed?* If yes, it belongs in SVG, not the image. The bar is high — in-image text is for words that are part of the visual itself.
-
-| Page situation | Recommended approach |
-|---|---|
-| **hero_page** — cover, chapter divider, section opener | **Two-layer**: 1-3 high-impact visual keywords go *in* the image (`embedded`); subtitle, date, author, organization, edition, body intro stay on the SVG overlay. **Do not** put the full title block (main + subtitle + author + date) into the image — any later wording change forces an image regen. |
-| **local image — infographic / framework / flowchart / matrix / cycle / comparison** | `none` — labels live as SVG text so they stay editable. The image carries the structure; SVG carries the words. |
-| **local image — decorative background / scene / portrait** | `none` by default. Use `embedded` only if a decorative word *is* the visual (e.g. a giant "GROWTH" lettering as wall art). |
-| **Poster / standalone marketing-style page** | `embedded` allowed for the visual core word; auxiliary copy still SVG. |
-
-The principle in one line: **the image gets the unchanging visual keywords; SVG gets everything readable that might be reworded**.
-
-**Prompt phrasing examples for embedded text** (not an exhaustive list):
-
-- Decorative: "large 'GROWTH' lettering as a background element, 3D extruded retro chrome style"
-- Designed title: "main title 'Q3 STRATEGY' typeset in clean geometric sans-serif, centered"
-- Hand-lettered set: "small hand-lettered annotations 'fast', 'cheap', 'good' woven into the sketch"
+**Forbidden — text that may be reworded**: any word that may later change belongs in Layer 2, not Layer 1. Layer 1 is for stable visual identifiers and designed lettering that is part of the image itself.
 
 **Font choice for in-image text — free description, with the deck typography as one optional reference**
 
@@ -274,20 +303,20 @@ The table below is **a reference for the one case where you want the in-image le
 
 **When to use the table**: a designed title (cover main title, chapter heading) on a deck whose visual identity is grounded in the SVG body typography, and where a surprise font choice would feel out of place.
 
-**In-image text accuracy — what image models can and cannot render reliably**
+**In-image text vs SVG text — decide by editability, not by model capability**
 
-Image models have **variable accuracy on text rendering**. Pick the in-image text content with this in mind, especially for §4.1 Primitive C (typographic hero) where the word *is* the image:
+Layer 1 text is rasterized into the artwork — once generated it cannot be edited, corrected, searched, restyled, or reflowed. That is the durable reason to choose where text lives, independent of any backend's rendering ability or the script / length involved:
 
-| Content | Reliability |
+| Text | Layer |
 |---|---|
-| English short text (1-5 characters, one short word) | High — most modern models render correctly most of the time |
-| English longer text (full sentences) | Low — typos, glyph errors, dropped letters |
-| Simple numbers / symbols (`100`, `5x`, `$50M`, `∞`, `?`) | Variable — verify after generation, often fail at large display scale |
-| Chinese / Japanese / Korean characters | Very low — most models fail consistently |
+| Part of the artwork and stable — decorative lettering, designed title, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
+| Page chrome, body copy, captions, data values — anything that must stay exact, searchable, or may be reworded | Layer 2 (SVG) |
 
-**Prefer in-image**: a short English word (1-2 words max), a simple number, a single symbol or letter.
+Generation is non-deterministic on every backend — **always verify the rendered text in the output** and regenerate if a glyph came out wrong. Do not assume a script or a length will fail; check the actual result. For §4.1 Primitive C (typographic hero) the word *is* the image, so verifying the output matters most there.
 
-**Push to SVG overlay instead**: long quotes / sentences, CJK headlines, complex composite text. When the desired headline is long or CJK, switch to **Primitive D (atmospheric backdrop)** and overlay the headline as SVG text.
+**Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word, a stat lettering, a figure-internal label.
+
+**Push to SVG overlay instead**: page chrome, captions, data values, or any copy that must stay exact or editable. When the headline must remain editable, switch to **Primitive D (atmospheric backdrop)** and overlay it as SVG text.
 
 ### 5.4 No brand names or trademarks in the subject
 
@@ -347,7 +376,7 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].filename` | yes | `§VIII` resource list | Output filename with extension |
 | `items[].type` | conditional | Step 3 per-image (only when `page_role: local`) | One of 11 internal-composition types: `infographic`, `flowchart`, `framework`, `matrix`, `cycle`, `funnel`, `pyramid`, `comparison`, `timeline`, `map`, `scene`. **Omit `type` entirely when `page_role: hero_page`** — the composition comes from §4.1 primitives written directly into the prompt, not from a type file. |
 | `items[].page_role` | yes | Step 3 per-image | `local` (default — region block on SVG page) or `hero_page` (image is page's main voice; SVG overlay minimal or empty) |
-| `items[].text_policy` | yes | Step 3 per-image | `none` (default — no text in image) or `embedded` (image contains decorative lettering, designed title, or hand-lettered keywords) |
+| `items[].text_policy` | yes | Step 3 per-image | `none` (image carries no text — explicit visual rule) or `embedded` (image contains decorative lettering, designed title, hand-lettered keywords, or stable visual identifiers like axis labels / subplot letters / unit symbols). AI judges per image; no global default bias — see §5.3. |
 | `items[].aspect_ratio` | yes | Container sizing | Passed to `image_gen.py --aspect_ratio` |
 | `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |

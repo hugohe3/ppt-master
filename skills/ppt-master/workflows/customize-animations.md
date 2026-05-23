@@ -17,15 +17,30 @@ description: Customize default PPTX animations with per-slide and per-object tim
 
 ---
 
-## 1. Build or Validate the Scaffold
+## 1. Get Real Group IDs (do NOT dump the full scaffold)
 
 **Mandatory**: use real SVG group ids. Do not invent slide or group keys.
 
-If `animations.json` does not exist:
+**Default path — `list-groups`** (cheap, ~1KB of output even on a long deck):
+
+```bash
+python3 skills/ppt-master/scripts/animation_config.py list-groups <project_path>
+```
+
+Output is one line per slide: `<slide_basename>: id1, id2, id3` — chrome
+groups (`bg` / `*-header` / `*-footer` / `*-decor` / `nav` / `watermark` /
+`logo` / `pagenumber`) are excluded because the exporter already pins them
+to `none`. Use this as the source of truth when planning §3 and editing §4
+— **do not read the full scaffold file unless you need it as an editing
+starting point**.
+
+If `animations.json` does not exist and you want a starting file to edit:
 
 ```bash
 uv run skills/ppt-master/scripts/animation_config.py scaffold <project_path>
 ```
+
+Scaffold output also excludes chrome and includes a `defaults` stub.
 
 If it already exists:
 
@@ -143,7 +158,25 @@ uv run skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 ## 4. Edit `animations.json`
 
-**Hard rule**: write only overrides that differ from the default global animation. Unmentioned groups keep the normal export behavior.
+**Hard rule — write every slide explicitly; let groups inherit**. Each
+slide under `slides.<slide>` MUST carry its own complete `transition` and
+`animation` block (effect + duration + stagger + trigger where applicable),
+even when the values match `defaults`. This makes per-page rhythm visible
+at a glance without mentally merging the inheritance chain. Group-level
+overrides remain opt-in — list only the groups that genuinely diverge from
+the slide's `animation` block. Chrome groups stay out (the exporter pins
+them to `none`).
+
+`defaults` is still required: it supplies values for any slide not yet
+present in `slides` (rare, e.g. mid-edit drafts) and acts as the single
+source for the deck-wide baseline you copy into each slide block.
+
+**Forbidden**:
+
+- Omitting a slide that exists in `svg_output/` — every produced slide must appear under `slides`
+- Writing a slide block with only `groups` and no `transition`/`animation`
+- Enumerating every content group in a slide just to restate the slide-level default effect
+- Listing chrome groups (`bg`, `*-header`, `*-footer`, `*-decor`, `nav`, `watermark`, `logo`, `pagenumber`)
 
 | Field | Behavior |
 |---|---|
@@ -158,28 +191,48 @@ uv run skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `delay` | Extra seconds before this group starts in `after-previous` mode |
 | `duration` | Per-group entrance duration in seconds; vary when semantic weight or pacing calls for it |
 
-Example:
+**Canonical example — every slide carries explicit transition + animation;
+groups appear only when they diverge**:
 
 ```json
 {
   "version": 1,
   "defaults": {
-    "transition": { "effect": "fade", "duration": 0.25 },
-    "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.2, "trigger": "after-previous" }
+    "transition": { "effect": "fade", "duration": 0.4 },
+    "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
   },
   "slides": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.5 },
+      "animation": { "effect": "fade", "duration": 0.5, "stagger": 0.4, "trigger": "after-previous" }
+    },
+    "02_agenda": {
+      "transition": { "effect": "fade", "duration": 0.4 },
+      "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
+    },
     "03_market": {
       "transition": { "effect": "wipe", "duration": 0.35 },
+      "animation": { "effect": "fade", "duration": 0.4, "stagger": 0.25, "trigger": "after-previous" },
       "groups": {
-        "title": { "effect": "fade", "order": 1 },
         "chart": { "effect": "wipe", "order": 2, "duration": 0.6 },
-        "insight": { "effect": "fly", "order": 3, "delay": 0.2 },
-        "footer": { "effect": "none" }
+        "insight": { "effect": "fly", "order": 3, "delay": 0.2 }
+      }
+    },
+    "07_hero_quote": {
+      "transition": { "effect": "fade", "duration": 0.7 },
+      "animation": { "effect": "fade", "duration": 0.7, "stagger": 0.3, "trigger": "after-previous" },
+      "groups": {
+        "quote": { "duration": 0.9, "delay": 0.3 }
       }
     }
   }
 }
 ```
+
+Notes:
+- `02_agenda` repeats `defaults` verbatim — this is intentional under the new rule so per-page rhythm is auditable in one read.
+- `03_market` and `07_hero_quote` only list the groups that diverge; `title`, `footer`, `bg`, `header` etc. are not enumerated.
+- Chrome groups are never listed; the exporter pins them to `none`.
 
 **Forbidden — SVG pollution**: do not add `data-*` animation attributes to SVG files. Animation customization belongs in `animations.json`.
 
@@ -205,6 +258,8 @@ uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 
 - [x] `animations.json` exists only because object-level customization was requested
 - [x] `design_spec.md`, `spec_lock.md`, and available speaker notes were checked before editing animation overrides
+- [x] Every slide in `svg_output/` appears under `slides` with explicit `transition` + `animation` blocks
+- [x] Group-level entries were added only for groups that diverge from the slide's `animation` block
 - [x] Page transitions and in-slide object animations were planned together
 - [x] Transition and object durations were chosen intentionally for the deck's pacing
 - [x] `animation_config.py validate` passed

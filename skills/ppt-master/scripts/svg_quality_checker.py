@@ -43,6 +43,7 @@ except ImportError:
 
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
+SVG_NS = "http://www.w3.org/2000/svg"
 
 # Ramp envelope for font-size drift detection.
 # From design_spec_reference.md §IV — Font Size Hierarchy: the ramp spans
@@ -936,7 +937,7 @@ class SVGQualityChecker:
             svg_files = [dir_path]
         else:
             if self.template_mode:
-                # Template directories live at templates/layouts/<id>/.
+                # Template directories live at templates/{layouts,decks}/<id>/.
                 svg_files = sorted(dir_path.glob('*.svg'))
             else:
                 svg_output = dir_path / \
@@ -1415,9 +1416,10 @@ def print_usage() -> None:
     print("  uv run scripts/svg_quality_checker.py examples/project/svg_output")
     print("  uv run scripts/svg_quality_checker.py examples/project")
     print("  uv run scripts/svg_quality_checker.py templates/layouts/academic_defense --template-mode")
+    print("  uv run scripts/svg_quality_checker.py templates/decks/招商银行 --template-mode")
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
-    print("  --template-mode               Validate a templates/layouts/<id> directory:")
+    print("  --template-mode               Validate a templates/{layouts,decks}/<id> directory:")
     print("                                  glob *.svg directly, skip spec_lock checks,")
     print("                                  enforce roster ↔ design_spec.md Page Roster consistency,")
     print("                                  and emit advisory placeholder-convention warnings.")

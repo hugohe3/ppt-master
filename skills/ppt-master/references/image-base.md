@@ -8,7 +8,7 @@ Shared baseline for both acquisition paths. Path-specific behavior lives in the 
 
 ## 1. Trigger Condition
 
-Active when at least one resource list row has `Acquire Via: ai` or `Acquire Via: web`. Rows with `user` / `placeholder` are skipped.
+Active when at least one resource list row has `Acquire Via: ai` or `Acquire Via: web`. Rows with `user` / `formula` / `placeholder` are skipped.
 
 | Mode | Trigger |
 |---|---|
@@ -25,6 +25,7 @@ Defined in `design_spec.md §VIII`. Status enum: see [`svg-image-embedding.md`](
 |---|---|---|---|---|---|---|
 | cover.png | 1280x720 | Cover background | Background | `ai` | Pending | Modern tech abstract, deep blue gradient #0A2540 |
 | team.jpg | 800x600 | Team photo | Photography | `web` | Pending | Diverse engineering team in modern office |
+| formula_001.png | 736x168 | Block equation on P03 | Latex Formula | `formula` | Rendered | `E = mc^2` |
 
 **Required per non-skipped row**: `Acquire Via`, `Status`, `Reference`.
 
@@ -39,6 +40,7 @@ For each row with `Status: Pending`:
 | `ai` | [`image-generator.md`](./image-generator.md) | `image_gen.py` | `Generated` |
 | `web` | [`image-searcher.md`](./image-searcher.md) | `image_search.py` | `Sourced` |
 | `user` | — | — | (already `Existing`) |
+| `formula` | — | — | (already `Rendered`) |
 | `placeholder` | — | — | (already `Placeholder`) |
 
 > Lazy load: an all-`web` deck never reads `image-generator.md`, and vice versa.

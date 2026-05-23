@@ -38,7 +38,13 @@ AI 会把这个目录里的 SVG、`design_spec.md` 和素材复制到项目目�
 
 ### 现有模板一览
 
-完整索引见 [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md)，按"品牌 / 场景 / 政企 / 特殊"分类，每条都标注了主色和适用场景。当前共 17 套，覆盖 Google、Anthropic、招商银行、中国电建、中汽研、政府蓝/红、医学院、心理学、像素复古等。
+模板按三种身份分目录：
+
+- [`templates/brands/README.md`](../../skills/ppt-master/templates/brands/README.md) — 仅身份预设（color / typography / logo / voice / icon style），无 SVG 页面；Anthropic、Google
+- [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md) — 仅结构样板（canvas / page structure / page types / SVG roster），无身份；academic_defense、government_blue/red、ai_ops、medical_university、pixel_retro、psychology_attachment
+- [`templates/decks/README.md`](../../skills/ppt-master/templates/decks/README.md) — 完整 PPT 复刻（身份 + 结构 + 中间段）；招商银行、中国电建_*、中汽研_*、重庆大学、中国电信
+
+完整数据模型与三类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
 ### 自由设计 vs 模板
 
