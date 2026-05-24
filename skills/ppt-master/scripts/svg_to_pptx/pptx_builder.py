@@ -7,6 +7,7 @@ import json
 import mimetypes
 import os
 import re
+import posixpath
 import shutil
 import tempfile
 import zipfile
@@ -290,6 +291,40 @@ def _prerender_legacy_pngs(
                 print(f"  [PNG {done}/{len(targets)}] {svg.name} - {tag}")
 
     return results
+
+
+_REL_TARGET_RE = re.compile(r'<Relationship\b[^/]*?/>', re.DOTALL)
+_TARGET_ATTR_RE = re.compile(r'Target="([^"]+)"')
+_TARGET_MODE_EXT_RE = re.compile(r'TargetMode="External"')
+
+
+def _verify_internal_rels_targets(extract_dir: Path) -> list[str]:
+    """Return a list of dangling internal Targets across every .rels in the package.
+
+    Each entry is formatted as "<rels-path> -> <missing-target>". An empty list
+    means every internal Target resolves to a real file in the package.
+    """
+    problems: list[str] = []
+    for rels_path in extract_dir.rglob('*.rels'):
+        rels_rel = rels_path.relative_to(extract_dir).as_posix()
+        # `_rels/foo.xml.rels` lives one level below its referent's directory;
+        # Targets resolve relative to the parent of that `_rels` folder.
+        base_dir = posixpath.dirname(posixpath.dirname(rels_rel))
+        content = rels_path.read_text(encoding='utf-8')
+        for match in _REL_TARGET_RE.finditer(content):
+            element = match.group(0)
+            if _TARGET_MODE_EXT_RE.search(element):
+                continue
+            target_match = _TARGET_ATTR_RE.search(element)
+            if not target_match:
+                continue
+            target = target_match.group(1)
+            if target.startswith(('http://', 'https://', 'mailto:')):
+                continue
+            resolved = posixpath.normpath(posixpath.join(base_dir, target)) if base_dir else posixpath.normpath(target)
+            if not (extract_dir / resolved).exists():
+                problems.append(f'{rels_rel} -> {resolved}')
+    return problems
 
 
 def create_pptx_with_native_svg(
@@ -805,6 +840,14 @@ def create_pptx_with_native_svg(
                     content_types = content_types.replace('</Types>', override + '\n</Types>')
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
+
+        rels_problems = _verify_internal_rels_targets(extract_dir)
+        if rels_problems:
+            details = '\n'.join(f'  - {p}' for p in rels_problems)
+            raise RuntimeError(
+                'PPTX package contains dangling internal relationship targets; '
+                'PowerPoint will report the file as corrupt:\n' + details
+            )
 
         # Repackage PPTX to a temporary file first. The public output path is
         # replaced only after every slide and relationship has succeeded.
