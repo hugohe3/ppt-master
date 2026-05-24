@@ -31,8 +31,8 @@ English | [中文](./README_CN.md)
   <a href="mailto:heyug3@gmail.com"><strong>Contact</strong></a>
 </p>
 
-<h3 align="center">The six decks below are only the tip of what PPT Master can do</h3>
-<h3 align="center">Download the raw .pptx files and open them in PowerPoint — that's the fastest way to see where this project's capability ceiling actually is.</h3>
+<h3 align="center">Download the new <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">narrated <em>Attention Is All You Need</em> deck</a> — play it in PowerPoint and every slide reads itself out loud. That's just the tip of what PPT Master can do.</h3>
+<h3 align="center">Of course, you can also download any of the six example decks below — opening the raw .pptx in PowerPoint is the fastest way to see this project's real capability ceiling.</h3>
 
 <table>
   <tr>
