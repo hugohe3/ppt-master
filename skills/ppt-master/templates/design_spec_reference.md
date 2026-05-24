@@ -244,7 +244,8 @@ Catalog read: 71 templates
 
 | Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
 | -------- | --------- | ----- | ------- | ---- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
-| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | | |
+| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Atmospheric cover backdrop — SVG title overlays the calm region | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | none | hero_page |
+| comparison_p07.png | {canvas_info['dimensions']} | [ratio] | Three-panel approach comparison — panel labels stay inside the image | Diagram | #44 background image + native network/architecture diagram | ai | Pending | Three side-by-side schematic motifs comparing approach A / B / C, panel labels rendered inside each motif | embedded | local |
 | formula_001.png | [actual dimensions from formula manifest / image_analysis] | [ratio] | Block equation on P03 | Latex Formula | formula-block | formula | Rendered | `E = mc^2` — energy-mass equation | | |
 
 > **Layout pattern column is MANDATORY** — for non-formula rows, value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. Formula rows are the only exception; use `formula-inline` or `formula-block`. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).
