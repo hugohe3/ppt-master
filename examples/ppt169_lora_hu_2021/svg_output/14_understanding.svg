@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="heatClip"><rect x="760" y="168" width="410" height="410" rx="14"/></clipPath>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF"/></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B"/>
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">该适配谁?秩要多大?</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">UNDERSTANDING THE LOW-RANK UPDATES(GPT-3 175B, WikiSQL)</text>
+  </g>
+
+  <g id="card-weights">
+    <rect x="64" y="160" width="624" height="186" rx="14" fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1"/>
+    <text x="88" y="196" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="800" fill="#1D2733">① 该适配哪些权重?<tspan font-size="13" font-weight="600" fill="#8A94A1">（同等参数预算 18M）</tspan></text>
+    <text x="104" y="240" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">仅 Wq</text>
+    <text x="320" y="240" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="700" fill="#5B6776">70.4</text>
+    <text x="104" y="278" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#1B3A5C">Wq + Wv</text>
+    <rect x="220" y="260" width="120" height="26" rx="13" fill="#FBF0E9"/>
+    <text x="320" y="278" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="800" fill="#E8743B">73.7 ★</text>
+    <text x="104" y="316" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">全部四个</text>
+    <text x="320" y="316" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="700" fill="#5B6776">73.7</text>
+    <text x="388" y="278" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#1D2733">适配 <tspan font-weight="800" fill="#1B3A5C">{Wq, Wv}</tspan> 最佳 ——</text>
+    <text x="388" y="304" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#1D2733">分散到多类权重优于堆在单一类型</text>
+  </g>
+
+  <g id="card-rank">
+    <rect x="64" y="368" width="624" height="210" rx="14" fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1"/>
+    <text x="88" y="404" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="800" fill="#1D2733">② 秩 r 要多大?<tspan font-size="13" font-weight="600" fill="#8A94A1">（Wq+Wv 的验证准确率）</tspan></text>
+    <g id="rank-chips">
+      <rect x="92" y="430" width="104" height="64" rx="10" fill="#FFFFFF" stroke="#E8743B" stroke-width="2"/>
+      <text x="144" y="458" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#8A94A1">r = 1</text>
+      <text x="144" y="482" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#E8743B">73.4</text>
+      <rect x="208" y="430" width="104" height="64" rx="10" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+      <text x="260" y="458" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#8A94A1">r = 2</text>
+      <text x="260" y="482" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="700" fill="#1B3A5C">73.3</text>
+      <rect x="324" y="430" width="104" height="64" rx="10" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+      <text x="376" y="458" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#8A94A1">r = 4</text>
+      <text x="376" y="482" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="700" fill="#1B3A5C">73.7</text>
+      <rect x="440" y="430" width="104" height="64" rx="10" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+      <text x="492" y="458" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#8A94A1">r = 8</text>
+      <text x="492" y="482" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="700" fill="#1B3A5C">73.8</text>
+      <rect x="556" y="430" width="104" height="64" rx="10" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1"/>
+      <text x="608" y="458" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#8A94A1">r = 64</text>
+      <text x="608" y="482" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="700" fill="#1B3A5C">73.5</text>
+    </g>
+    <text x="92" y="538" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#1D2733"><tspan font-weight="800" fill="#E8743B">r = 1</tspan> 已足够;增大 r 几乎无增益 → ΔW 的&quot;内在秩&quot;极低</text>
+  </g>
+
+  <g id="heatmap">
+    <rect x="760" y="168" width="410" height="410" rx="14" fill="#F4F7FA"/>
+    <image href="../images/subspace_heatmap.png" x="760" y="168" width="410" height="410" preserveAspectRatio="xMidYMid slice" clip-path="url(#heatClip)"/>
+    <rect x="760" y="168" width="410" height="410" rx="14" fill="none" stroke="#D8DEE6" stroke-width="1.5"/>
+    <text x="760" y="606" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#1B3A5C">子空间相似度(Ar=8 vs Ar=64)</text>
+    <text x="760" y="630" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#5B6776">top 奇异方向高度重叠,其余迅速衰减</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §7.1–7.2, Table 5/6, Figure 3 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">14 / 15</text>
+  </g>
+</svg>

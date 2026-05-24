@@ -1,0 +1,11 @@
+No,Filename,Width,Height,AspectRatio,PixelAspectRatio,RatioSource,UsageCount,DisplayRatioVariants,AssetKind,SvgRenderable,PptxNativeSupported,SizeKB,Category,ImageArea_SxS,TextArea_SxS
+1,attention_apply.png,530,580,0.91,0.91,pixel,1,,bitmap,True,True,271.1,Near square,548x600,592x600
+2,cost_explosion.png,860,720,1.19,1.19,pixel,1,,bitmap,True,True,751.1,Near square,717x600,423x600
+3,cover_hero.png,1280,720,1.78,1.78,pixel,1,,bitmap,True,True,772.8,Wide landscape,812x457,328x600
+4,formula_001.png,688,44,15.64,15.64,pixel,1,,bitmap,True,True,4.4,Ultra-wide,1160x74,1160x506
+5,formula_002.png,1280,55,23.27,23.27,pixel,1,,bitmap,True,True,22.6,Ultra-wide,1160x50,1160x530
+6,formula_003.png,220,91,2.42,2.42,pixel,1,,bitmap,True,True,2.8,Ultra-wide,812x336,328x600
+7,formula_004.png,604,60,10.07,10.07,pixel,1,,bitmap,True,True,5.4,Ultra-wide,1160x115,1160x465
+8,lowrank_insight.png,1280,720,1.78,1.78,pixel,1,,bitmap,True,True,1054.1,Wide landscape,812x457,328x600
+9,reparam_diagram_cropped.png,1280,531,2.41,2.41,pixel,1,,bitmap,True,True,490.0,Ultra-wide,812x337,328x600
+10,subspace_heatmap.png,1024,1024,1.00,1.00,pixel,1,,bitmap,True,True,874.7,Near square,600x600,540x600

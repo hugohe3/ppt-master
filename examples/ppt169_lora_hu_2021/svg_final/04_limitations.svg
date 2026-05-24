@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="limRail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1B3A5C" />
+      <stop offset="100%" stop-color="#3E7CB1" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">为什么现有高效适配方法不够好</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">LIMITS OF EXISTING EFFICIENT-ADAPTATION METHODS</text>
+  </g>
+
+  <g id="rail-decor">
+    <line x1="120" y1="222" x2="120" y2="610" stroke="url(#limRail)" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <g id="lim-01">
+    <circle cx="120" cy="232" r="24" fill="#1B3A5C" />
+    <text x="120" y="239" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">01</text>
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M202,170 H1204 A12,12 0 0 1 1216,182 V286 A12,12 0 0 1 1204,298 H202 A12,12 0 0 1 190,286 V182 A12,12 0 0 1 202,170 Z" />
+    <path fill="#1B3A5C" d="M193,170 H193 A3,3 0 0 1 196,173 V295 A3,3 0 0 1 193,298 H193 A3,3 0 0 1 190,295 V173 A3,3 0 0 1 193,170 Z" />
+    <path fill="#F4F7FA" d="M234,198 H262 A12,12 0 0 1 274,210 V238 A12,12 0 0 1 262,250 H234 A12,12 0 0 1 222,238 V210 A12,12 0 0 1 234,198 Z" />
+    
+  <g transform="translate(234.0, 210.0) scale(1.1666666666666667)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M12 9v4" />
+    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+    <path d="M12 16h.01" />
+  </g>
+    <text x="300" y="216" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">Adapter 层 → 引入<tspan fill="#C62828">推理延迟</tspan></text>
+    <text x="300" y="248" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">在自注意力/MLP 后插入额外层,加深模型;在线、短序列、小 batch 场景下</text>
+    <text x="300" y="274" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">延迟增加尤为明显(后续 Table 1 量化)。</text>
+  </g>
+
+  <g id="lim-02">
+    <circle cx="120" cy="392" r="24" fill="#1B3A5C" />
+    <text x="120" y="399" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">02</text>
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M202,330 H1204 A12,12 0 0 1 1216,342 V446 A12,12 0 0 1 1204,458 H202 A12,12 0 0 1 190,446 V342 A12,12 0 0 1 202,330 Z" />
+    <path fill="#3E7CB1" d="M193,330 H193 A3,3 0 0 1 196,333 V455 A3,3 0 0 1 193,458 H193 A3,3 0 0 1 190,455 V333 A3,3 0 0 1 193,330 Z" />
+    <path fill="#F4F7FA" d="M234,358 H262 A12,12 0 0 1 274,370 V398 A12,12 0 0 1 262,410 H234 A12,12 0 0 1 222,398 V370 A12,12 0 0 1 234,358 Z" />
+    
+  <g transform="translate(234.0, 370.0) scale(1.1666666666666667)" fill="none" stroke="#3E7CB1" stroke-width="2">
+    <path d="M12 9v4" />
+    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+    <path d="M12 16h.01" />
+  </g>
+    <text x="300" y="376" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">Prefix / Prompt tuning → <tspan fill="#C62828">占用输入长度</tspan></text>
+    <text x="300" y="408" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">用可训练的前缀 token 适配任务,会挤占可用序列长度;且前缀位置/数量</text>
+    <text x="300" y="434" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">敏感,优化较难。</text>
+  </g>
+
+  <g id="lim-03">
+    <circle cx="120" cy="552" r="24" fill="#1B3A5C" />
+    <text x="120" y="559" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">03</text>
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M202,490 H1204 A12,12 0 0 1 1216,502 V606 A12,12 0 0 1 1204,618 H202 A12,12 0 0 1 190,606 V502 A12,12 0 0 1 202,490 Z" />
+    <path fill="#E8743B" d="M193,490 H193 A3,3 0 0 1 196,493 V615 A3,3 0 0 1 193,618 H193 A3,3 0 0 1 190,615 V493 A3,3 0 0 1 193,490 Z" />
+    <path fill="#FBF0E9" d="M234,518 H262 A12,12 0 0 1 274,530 V558 A12,12 0 0 1 262,570 H234 A12,12 0 0 1 222,558 V530 A12,12 0 0 1 234,518 Z" />
+    
+  <g transform="translate(234.0, 530.0) scale(1.1666666666666667)" fill="none" stroke="#E8743B" stroke-width="2">
+    <path d="M12 9v4" />
+    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+    <path d="M12 16h.01" />
+  </g>
+    <text x="300" y="536" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">普遍 → <tspan fill="#C62828">达不到全量微调基线</tspan></text>
+    <text x="300" y="568" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">多数高效方法在质量上落后于 full fine-tuning,迫使人在"效率"与"质量"</text>
+    <text x="300" y="594" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">之间二选一 —— 这正是 LoRA 想打破的权衡。</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §1–3 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">04 / 15</text>
+  </g>
+</svg>

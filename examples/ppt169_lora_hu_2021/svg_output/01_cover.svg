@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="coverScrim" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#0F2238" stop-opacity="0.92"/>
+      <stop offset="45%" stop-color="#0F2238" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#0F2238" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#0F2238"/>
+    <image href="../images/cover_hero.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="300" width="1280" height="420" fill="url(#coverScrim)"/>
+  </g>
+
+  <g id="cover-title">
+    <rect x="64" y="446" width="64" height="6" rx="3" fill="#E8743B"/>
+    <text x="64" y="524" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="58" font-weight="800" fill="#FFFFFF">LoRA:大模型的低秩适配</text>
+    <text x="64" y="566" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="24" font-weight="600" fill="#CBD8E6">Low-Rank Adaptation of Large Language Models</text>
+  </g>
+
+  <g id="cover-meta">
+    <text x="64" y="636" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="600" fill="#9FB2C6">Hu, Shen, Wallis, Allen-Zhu, Li, Wang, Wang, Chen · Microsoft · 2021</text>
+    <text x="64" y="664" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="15" fill="#E8743B">arXiv:2106.09685v2</text>
+    <text x="1216" y="664" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#9FB2C6">论文解读 · Paper Walkthrough</text>
+  </g>
+</svg>

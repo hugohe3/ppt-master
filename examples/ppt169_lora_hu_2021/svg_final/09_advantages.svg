@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">LoRA 的四个关键优势</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">FOUR KEY ADVANTAGES</text>
+  </g>
+
+  <g id="adv-01">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M80,158 H608 A16,16 0 0 1 624,174 V368 A16,16 0 0 1 608,384 H80 A16,16 0 0 1 64,368 V174 A16,16 0 0 1 80,158 Z" />
+    <text x="600" y="218" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#1B3A5C" fill-opacity="0.07">01</text>
+    <path fill="#EAF0F6" d="M110,186 H138 A14,14 0 0 1 152,200 V228 A14,14 0 0 1 138,242 H110 A14,14 0 0 1 96,228 V200 A14,14 0 0 1 110,186 Z" />
+    
+  <g transform="translate(110.0, 200.0) scale(1.1666666666666667)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1" />
+    <path d="M12 14v-11" />
+    <path d="M9 6l3 -3l3 3" />
+  </g>
+    <text x="96" y="284" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">可共享</text>
+    <text x="96" y="306" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#1B3A5C" letter-spacing="1.5">ONE BASE · MANY MODULES</text>
+    <text x="96" y="338" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">一个预训练底座 + 多个小 LoRA 模块;</text>
+    <text x="96" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">换任务只需替换 <tspan font-weight="800" fill="#1B3A5C">A、B</tspan>,显著降低存储。</text>
+  </g>
+
+  <g id="adv-02">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M672,158 H1200 A16,16 0 0 1 1216,174 V368 A16,16 0 0 1 1200,384 H672 A16,16 0 0 1 656,368 V174 A16,16 0 0 1 672,158 Z" />
+    <text x="1192" y="218" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#3E7CB1" fill-opacity="0.08">02</text>
+    <path fill="#EAF0F6" d="M702,186 H730 A14,14 0 0 1 744,200 V228 A14,14 0 0 1 730,242 H702 A14,14 0 0 1 688,228 V200 A14,14 0 0 1 702,186 Z" />
+    
+  <g transform="translate(702.0, 200.0) scale(1.1666666666666667)" fill="none" stroke="#3E7CB1" stroke-width="2">
+    <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+  </g>
+    <text x="688" y="284" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">高效训练</text>
+    <text x="688" y="306" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#3E7CB1" letter-spacing="1.5">LOWER HARDWARE BARRIER</text>
+    <text x="688" y="338" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">无需为冻结参数存梯度与优化器状态;</text>
+    <text x="688" y="360" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">硬件门槛最高降低 <tspan font-weight="800" fill="#1B3A5C">3×</tspan>。</text>
+  </g>
+
+  <g id="adv-03">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M80,408 H608 A16,16 0 0 1 624,424 V618 A16,16 0 0 1 608,634 H80 A16,16 0 0 1 64,618 V424 A16,16 0 0 1 80,408 Z" />
+    <text x="600" y="468" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#E8743B" fill-opacity="0.10">03</text>
+    <path fill="#FBF0E9" d="M110,436 H138 A14,14 0 0 1 152,450 V478 A14,14 0 0 1 138,492 H110 A14,14 0 0 1 96,478 V450 A14,14 0 0 1 110,436 Z" />
+    
+  <g transform="translate(110.0, 450.0) scale(1.1666666666666667)" fill="none" stroke="#E8743B" stroke-width="2">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M13.41 10.59l2.59 -2.59" />
+    <path d="M7 12a5 5 0 0 1 5 -5" />
+  </g>
+    <text x="96" y="534" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">零推理延迟</text>
+    <text x="96" y="556" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#E8743B" letter-spacing="1.5">NO ADDED INFERENCE LATENCY</text>
+    <text x="96" y="588" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">部署时合并 W = W₀+BA;</text>
+    <text x="96" y="610" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">与全量微调模型<tspan font-weight="800" fill="#2E7D32">同构、不增延迟</tspan>。</text>
+  </g>
+
+  <g id="adv-04">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M672,408 H1200 A16,16 0 0 1 1216,424 V618 A16,16 0 0 1 1200,634 H672 A16,16 0 0 1 656,618 V424 A16,16 0 0 1 672,408 Z" />
+    <text x="1192" y="468" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="52" font-weight="800" fill="#1B3A5C" fill-opacity="0.07">04</text>
+    <path fill="#EAF0F6" d="M702,436 H730 A14,14 0 0 1 744,450 V478 A14,14 0 0 1 730,492 H702 A14,14 0 0 1 688,478 V450 A14,14 0 0 1 702,436 Z" />
+    
+  <g transform="translate(702.0, 450.0) scale(1.1666666666666667)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+  </g>
+    <text x="688" y="534" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">正交可叠加</text>
+    <text x="688" y="556" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" font-weight="700" fill="#1B3A5C" letter-spacing="1.5">ORTHOGONAL · COMPOSABLE</text>
+    <text x="688" y="588" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">与许多既有方法正交,</text>
+    <text x="688" y="610" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">可与 <tspan font-weight="800" fill="#1B3A5C">prefix-tuning</tspan> 等组合使用。</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §1, §4.1 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">09 / 15</text>
+  </g>
+</svg>

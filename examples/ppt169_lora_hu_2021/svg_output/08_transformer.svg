@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <clipPath id="attnClip"><rect x="64" y="150" width="430" height="470" rx="14" /></clipPath>
+  </defs>
+
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <rect x="64" y="56" width="6" height="56" rx="3" fill="#E8743B" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">只适配注意力权重</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">APPLYING LoRA TO THE TRANSFORMER</text>
+  </g>
+
+  <g id="figure">
+    <rect x="64" y="150" width="430" height="470" rx="14" fill="#F4F7FA" />
+    <image href="../images/attention_apply.png" x="64" y="150" width="430" height="470" preserveAspectRatio="xMidYMid meet" clip-path="url(#attnClip)" id="_edit_7" />
+    <rect x="64" y="150" width="430" height="470" rx="14" fill="none" stroke="#D8DEE6" stroke-width="1.5" />
+    <text x="64" y="644" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#8A94A1">自注意力的 Wq、Wv 各挂一条 LoRA 旁路,MLP 冻结</text>
+  </g>
+
+  <g id="point-scope">
+    <use data-icon="tabler-outline/sitemap" x="540" y="166" width="34" height="34" fill="#1B3A5C" stroke-width="2" />
+    <text x="586" y="192" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="20" font-weight="800" fill="#1D2733">范围:四个投影,只动两个</text>
+    <text x="540" y="232" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">自注意力含 <tspan font-weight="800" fill="#1B3A5C">Wq / Wk / Wv / Wo</tspan></text>
+    <text x="540" y="262" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#1D2733">实验中只适配 <tspan font-weight="800" fill="#E8743B">Wq、Wv</tspan>,冻结 MLP(为简洁与参数效率)</text>
+  </g>
+
+  <g id="card-param">
+    <rect x="540" y="300" width="676" height="150" rx="14" fill="#F4F7FA" stroke="#D8DEE6" stroke-width="1" />
+    <text x="566" y="338" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="800" fill="#1B3A5C">可训练参数量</text>
+    <image href="../images/formula_004.png" x="566" y="356" width="520" height="52" preserveAspectRatio="xMidYMid meet" />
+    <text x="566" y="432" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">L_LoRA = 应用 LoRA 的权重矩阵数;只随 r 线性增长</text>
+  </g>
+
+  <g id="kpi-reduction">
+    <rect x="540" y="478" width="330" height="142" rx="14" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" />
+    <text x="566" y="514" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="700" fill="#5B6776">训练显存 VRAM(GPT-3 175B)</text>
+    <text x="566" y="566" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="30" font-weight="800" fill="#1B3A5C">1.2TB <tspan font-size="22" fill="#8A94A1">→</tspan> <tspan fill="#2E7D32">350GB</tspan></text>
+    <text x="566" y="598" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">约降至原来的 1/3</text>
+
+    <rect x="886" y="478" width="330" height="142" rx="14" fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" />
+    <text x="912" y="514" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="700" fill="#5B6776">Checkpoint(r=4, 仅 Wq/Wv)</text>
+    <text x="912" y="566" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="30" font-weight="800" fill="#1B3A5C">350GB <tspan font-size="22" fill="#8A94A1">→</tspan> <tspan fill="#E8743B">35MB</tspan></text>
+    <text x="912" y="598" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">约 10,000× 缩减</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §4.2 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">08 / 15</text>
+  </g>
+</svg>

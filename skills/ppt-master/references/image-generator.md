@@ -145,7 +145,7 @@ Every assembled prompt follows this paragraph structure. **Write prose, not tag 
 [Palette behavior — apply the chosen palette's proportion + role rules to the deck's HEX values, e.g. "primary #1E3A5F dominates as the main shape, secondary #F8F9FA provides 60% breathing space, accent #D4AF37 appears in one or two emphasis points only"].
 [Type-specific composition — from the chosen type file, e.g. "central hub node with four radiating satellite nodes connected by clean lines"].
 [Image-specific subject — translated from the row's Reference intent into concrete visual nouns].
-[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them (e.g. "leave the lower band relatively calm — SVG title overlays it")].
+[Container note — "composed as a {W}x{H}px image for {page_role} use"; add composition cues only when the page actually needs them. SVG-overlay-reservation cues ("leave the lower band calm — SVG title overlays it", "keep the right third calmer for SVG text") are valid **only** when `page_role: hero_page` (SVG sits on top of the image). For `page_role: local`, the image sits inside a region block and the SVG layer never overlays its interior — never reserve overlay space in a local prompt].
 [Hard rules — see §5].
 ```
 
@@ -184,6 +184,8 @@ Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part
 **Primitive D — atmospheric backdrop (no subject)**
 
 > Atmospheric field with no dominant subject — gradients, subtle patterns, or restrained color blocks. Small geometric anchor optional, placed in a corner or along an edge, never centered. The center 60-70% of the canvas must stay calm to receive SVG title/text overlay.
+
+**Applies to `page_role: hero_page` only.** The "calm center for SVG overlay" contract is the defining feature of this primitive — and it only holds when SVG actually sits on top of the image. `page_role: local` images live inside a region block; the SVG layer never overlays their interior, so Primitive D is not a valid choice for local. Local schematic / scene / chart images use the §3 type templates instead.
 
 Use for: cover background, chapter divider background, breathing-page background, any page where the SVG layer carries the words and the image only sets tone.
 

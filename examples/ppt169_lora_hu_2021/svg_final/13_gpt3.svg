@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg"><rect width="1280" height="720" fill="#FFFFFF" /></g>
+
+  <g id="header">
+    <path fill="#E8743B" d="M67,56 H67 A3,3 0 0 1 70,59 V109 A3,3 0 0 1 67,112 H67 A3,3 0 0 1 64,109 V59 A3,3 0 0 1 67,56 Z" />
+    <text x="86" y="90" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="32" font-weight="800" fill="#1B3A5C">在 175B 尺度上仍然成立</text>
+    <text x="88" y="120" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#8A94A1" letter-spacing="1">GPT-3 175B · 关键指标(对比全量微调)</text>
+  </g>
+
+  <g id="kpi-01">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M80,158 H608 A16,16 0 0 1 624,174 V368 A16,16 0 0 1 608,384 H80 A16,16 0 0 1 64,368 V174 A16,16 0 0 1 80,158 Z" />
+    <path fill="#E8743B" d="M67,158 H67 A3,3 0 0 1 70,161 V381 A3,3 0 0 1 67,384 H67 A3,3 0 0 1 64,381 V161 A3,3 0 0 1 67,158 Z" />
+    <path fill="#FBF0E9" d="M113,186 H139 A13,13 0 0 1 152,199 V225 A13,13 0 0 1 139,238 H113 A13,13 0 0 1 100,225 V199 A13,13 0 0 1 113,186 Z" />
+    
+  <g transform="translate(113.0, 199.0) scale(1.0833333333333333)" fill="none" stroke="#E8743B" stroke-width="2">
+    <path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+    <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+    <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+  </g>
+    <text x="170" y="212" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#5B6776">可训练参数缩减</text>
+    <text x="100" y="312" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="64" font-weight="800" fill="#E8743B">10,000×</text>
+    <text x="100" y="354" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">checkpoint 350GB → <tspan font-weight="800" fill="#1B3A5C">35MB</tspan></text>
+  </g>
+
+  <g id="kpi-02">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M672,158 H1200 A16,16 0 0 1 1216,174 V368 A16,16 0 0 1 1200,384 H672 A16,16 0 0 1 656,368 V174 A16,16 0 0 1 672,158 Z" />
+    <path fill="#1B3A5C" d="M659,158 H659 A3,3 0 0 1 662,161 V381 A3,3 0 0 1 659,384 H659 A3,3 0 0 1 656,381 V161 A3,3 0 0 1 659,158 Z" />
+    <path fill="#EAF0F6" d="M705,186 H731 A13,13 0 0 1 744,199 V225 A13,13 0 0 1 731,238 H705 A13,13 0 0 1 692,225 V199 A13,13 0 0 1 705,186 Z" />
+    
+  <g transform="translate(705.0, 199.0) scale(1.0833333333333333)" fill="none" stroke="#1B3A5C" stroke-width="2">
+    <path d="M3 7a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-2" />
+    <path d="M3 15a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3l0 -2" />
+    <path d="M7 8l0 .01" />
+    <path d="M7 16l0 .01" />
+    <path d="M11 8h6" />
+    <path d="M11 16h6" />
+  </g>
+    <text x="762" y="212" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#5B6776">训练显存 VRAM(原 1.2TB)</text>
+    <text x="692" y="312" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="64" font-weight="800" fill="#1B3A5C">350GB</text>
+    <circle cx="708" cy="350" r="14" fill="#EAF6EE" />
+    <polygon points="708,357 714,345 702,345" fill="#2E7D32" />
+    <text x="732" y="356" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#2E7D32">约降至 1/3</text>
+  </g>
+
+  <g id="kpi-03">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M80,408 H608 A16,16 0 0 1 624,424 V618 A16,16 0 0 1 608,634 H80 A16,16 0 0 1 64,618 V424 A16,16 0 0 1 80,408 Z" />
+    <path fill="#2E7D32" d="M67,408 H67 A3,3 0 0 1 70,411 V631 A3,3 0 0 1 67,634 H67 A3,3 0 0 1 64,631 V411 A3,3 0 0 1 67,408 Z" />
+    <path fill="#EAF6EE" d="M113,436 H139 A13,13 0 0 1 152,449 V475 A13,13 0 0 1 139,488 H113 A13,13 0 0 1 100,475 V449 A13,13 0 0 1 113,436 Z" />
+    
+  <g transform="translate(113.0, 449.0) scale(1.0833333333333333)" fill="none" stroke="#2E7D32" stroke-width="2">
+    <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+  </g>
+    <text x="170" y="462" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#5B6776">训练吞吐提升</text>
+    <text x="100" y="562" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="64" font-weight="800" fill="#2E7D32">+25%</text>
+    <text x="100" y="604" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#5B6776">无需为绝大多数参数计算梯度</text>
+  </g>
+
+  <g id="kpi-04">
+    <path fill="#FFFFFF" stroke="#D8DEE6" stroke-width="1" d="M672,408 H1200 A16,16 0 0 1 1216,424 V618 A16,16 0 0 1 1200,634 H672 A16,16 0 0 1 656,618 V424 A16,16 0 0 1 672,408 Z" />
+    <path fill="#3E7CB1" d="M659,408 H659 A3,3 0 0 1 662,411 V631 A3,3 0 0 1 659,634 H659 A3,3 0 0 1 656,631 V411 A3,3 0 0 1 659,408 Z" />
+    <path fill="#EAF0F6" d="M705,436 H731 A13,13 0 0 1 744,449 V475 A13,13 0 0 1 731,488 H705 A13,13 0 0 1 692,475 V449 A13,13 0 0 1 705,436 Z" />
+    
+  <g transform="translate(705.0, 449.0) scale(1.0833333333333333)" fill="none" stroke="#3E7CB1" stroke-width="2">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+    <path d="M9 12l2 2l4 -4" />
+  </g>
+    <text x="762" y="462" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#5B6776">任务准确率:持平 / 更优</text>
+    <text x="692" y="540" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" fill="#1B3A5C">≥ 全量微调</text>
+    <text x="692" y="582" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#5B6776">WikiSQL <tspan font-weight="800" fill="#2E7D32">74.0</tspan> · MNLI-m <tspan font-weight="800" fill="#2E7D32">91.7</tspan> · SAMSum <tspan font-weight="800" fill="#2E7D32">53.8</tspan></text>
+    <text x="692" y="606" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#8A94A1">三项均达到或超过 FT 基线</text>
+  </g>
+
+  <g id="footer">
+    <text x="64" y="700" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">来源:LoRA §4.2, Table 4, §6 · Hu et al. 2021</text>
+    <text x="1216" y="700" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#8A94A1">13 / 15</text>
+  </g>
+</svg>
