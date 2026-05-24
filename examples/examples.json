@@ -1,12 +1,112 @@
 {
   "version": 1,
-  "updated": "2026-05-23",
+  "updated": "2026-05-24",
   "stats": {
-    "examples": 20,
-    "pages": 264,
-    "templates": 20
+    "examples": 21,
+    "pages": 280,
+    "templates": 21
   },
   "projects": [
+    {
+      "id": "ppt169_attention_is_all_you_need",
+      "title": "Attention Is All You Need",
+      "description": "Transformer 原论文深读 — 学术技术蓝图风，结构图 + 表格 + 公式 + 自定义动画旁白版导出",
+      "icon": "🧠",
+      "color": "#1A365D",
+      "style": "technical",
+      "styleName": "Academic Blueprint",
+      "desc": "Paper-reading deck for Vaswani et al. 2017, Attention Is All You Need. The example combines blueprint-style Transformer diagrams, native editable tables and formula slides, per-slide speaker notes, object-level animation configuration, and narrated PPTX export.",
+      "tags": [
+        "Paper Reading",
+        "Transformer",
+        "Technical Blueprint"
+      ],
+      "isNew": true,
+      "folder": "ppt169_attention_is_all_you_need/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "cover",
+          "desc": "Attention Is All You Need"
+        },
+        {
+          "file": "02_why_it_matters.svg",
+          "title": "why it matters",
+          "desc": "A simpler model, better results, less training"
+        },
+        {
+          "file": "03_sequence_evolution.svg",
+          "title": "sequence evolution",
+          "desc": "From recurrent chains to attention mesh"
+        },
+        {
+          "file": "04_rnn_cnn_limits.svg",
+          "title": "rnn cnn limits",
+          "desc": "Sequential bottleneck, path length, memory ceiling"
+        },
+        {
+          "file": "05_architecture_overview.svg",
+          "title": "architecture overview",
+          "desc": "Figure 1 Transformer architecture"
+        },
+        {
+          "file": "06_encoder_decoder.svg",
+          "title": "encoder decoder",
+          "desc": "Encoder stack vs decoder stack"
+        },
+        {
+          "file": "07_scaled_dot_product.svg",
+          "title": "scaled dot-product",
+          "desc": "The attention equation"
+        },
+        {
+          "file": "08_multi_head_attention.svg",
+          "title": "multi-head attention",
+          "desc": "Eight parallel attention heads"
+        },
+        {
+          "file": "09_three_uses.svg",
+          "title": "three uses",
+          "desc": "Encoder self, decoder masked, cross attention"
+        },
+        {
+          "file": "10_ffn_residual_layernorm.svg",
+          "title": "ffn residual layernorm",
+          "desc": "The supporting layer components"
+        },
+        {
+          "file": "11_positional_encoding.svg",
+          "title": "positional encoding",
+          "desc": "Sinusoidal order injection"
+        },
+        {
+          "file": "12_complexity_table.svg",
+          "title": "complexity table",
+          "desc": "Why constant path length matters"
+        },
+        {
+          "file": "13_training_setup.svg",
+          "title": "training setup",
+          "desc": "Hardware, schedule, optimizer, regularization"
+        },
+        {
+          "file": "14_results.svg",
+          "title": "results",
+          "desc": "WMT14 BLEU and training cost"
+        },
+        {
+          "file": "15_ablations.svg",
+          "title": "ablations",
+          "desc": "Five takeaways from the variation study"
+        },
+        {
+          "file": "16_conclusion.svg",
+          "title": "conclusion",
+          "desc": "One paper, a generation of models"
+        }
+      ]
+    },
     {
       "id": "ppt169_lora_hu_2021",
       "title": "LoRA Hu 2021",

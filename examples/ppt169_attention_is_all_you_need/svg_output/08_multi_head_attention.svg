@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="figFrame" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+      <feOffset dx="0" dy="3" />
+      <feFlood flood-color="#1A365D" flood-opacity="0.08" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">h parallel projections, then concatenate</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">MULTI-HEAD ATTENTION · §3.2.2 · h = 8 · d_k = d_v = 64</text>
+  </g>
+
+  <g id="formula-band">
+    <rect x="60" y="160" width="1160" height="124" rx="12" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="1.5" />
+    <rect x="60" y="160" width="6" height="124" rx="3" fill="#3182CE" />
+    <text x="100" y="186" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">EQUATION</text>
+    <image href="../images/formula_002.png" x="200" y="192" width="780" height="92" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <g id="paper-figure">
+    <rect x="80" y="316" width="380" height="350" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#figFrame)" />
+    <image href="../images/attention_p4_1.png" x="92" y="328" width="356" height="326" preserveAspectRatio="xMidYMid meet" />
+    <text x="270" y="662" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-style="italic" fill="#4A5568">Figure 2 (right) · Multi-Head Attention</text>
+  </g>
+
+  <g id="explanation">
+    <text x="500" y="350" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1.5">WHY MULTI-HEAD INSTEAD OF SINGLE</text>
+
+    <g id="point-1">
+      <rect x="500" y="370" width="6" height="64" fill="#1A365D" />
+      <text x="522" y="392" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Project Q, K, V into h subspaces</text>
+      <text x="522" y="416" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Independent learned linear projections W_iᴽ, W_iᴷ, W_iⱽ — one</text>
+      <text x="522" y="436" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">set per head; each head sees a different view of the inputs.</text>
+    </g>
+
+    <g id="point-2">
+      <rect x="500" y="450" width="6" height="64" fill="#1A365D" />
+      <text x="522" y="472" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Run scaled DPA in each head in parallel</text>
+      <text x="522" y="496" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">d_k = d_v = d_model / h = 64. Total compute stays comparable</text>
+      <text x="522" y="516" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">to a single full-dimensional head.</text>
+    </g>
+
+    <g id="point-3">
+      <rect x="500" y="530" width="6" height="64" fill="#1A365D" />
+      <text x="522" y="552" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Concat heads, project with Wᴼ</text>
+      <text x="522" y="576" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Concatenated head outputs go through a final linear map back</text>
+      <text x="522" y="596" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">to d_model.</text>
+    </g>
+
+    <rect x="500" y="612" width="710" height="56" rx="8" fill="#EBF4FB" />
+    <rect x="500" y="612" width="4" height="56" fill="#3182CE" />
+    <text x="516" y="636" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1">THE PAYOFF</text>
+    <text x="516" y="656" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" fill="#1A202C" font-style="italic">Each head can attend to different representation subspaces at different positions.</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, §3.2.2 Multi-Head Attention</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">08</text>
+  </g>
+</svg>

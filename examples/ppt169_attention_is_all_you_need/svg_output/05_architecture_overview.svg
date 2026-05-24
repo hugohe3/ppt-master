@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="figFrame" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3"/>
+      <feFlood flood-color="#1A365D" flood-opacity="0.08"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE"/>
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="34" font-weight="700" fill="#1A365D">Encoder–Decoder, stacked self-attention, point-wise FFN</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">MODEL ARCHITECTURE · FIGURE 1 FROM THE PAPER</text>
+  </g>
+
+  <g id="paper-figure">
+    <rect x="80" y="150" width="382" height="540" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#figFrame)"/>
+    <image href="../images/attention_p3_0.png" x="92" y="162" width="358" height="516" preserveAspectRatio="xMidYMid meet"/>
+    <text x="271" y="710" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" font-style="italic" fill="#4A5568">Figure 1 · The Transformer — model architecture</text>
+  </g>
+
+  <g id="legend-1">
+    <circle cx="510" cy="170" r="16" fill="#1A365D"/>
+    <text x="510" y="176" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">1</text>
+    <text x="544" y="166" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="700" fill="#1A365D">Inputs + Positional Encoding</text>
+    <text x="544" y="194" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Token embeddings get a deterministic sinusoidal position vector</text>
+    <text x="544" y="216" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">added — order is injected, not learned (see P11).</text>
+  </g>
+
+  <g id="legend-2">
+    <circle cx="510" cy="262" r="16" fill="#1A365D"/>
+    <text x="510" y="268" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">2</text>
+    <text x="544" y="258" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="700" fill="#1A365D">Nx Encoder block</text>
+    <text x="544" y="286" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Multi-Head Self-Attention → Position-wise Feed Forward, both</text>
+    <text x="544" y="308" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">wrapped by Add &amp; Norm. N = 6 in the base configuration.</text>
+  </g>
+
+  <g id="legend-3">
+    <circle cx="510" cy="354" r="16" fill="#3182CE"/>
+    <text x="510" y="360" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">3</text>
+    <text x="544" y="350" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="700" fill="#1A365D">Nx Decoder block</text>
+    <text x="544" y="378" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Masked Self-Attn → Encoder-Decoder Attn → FFN, each with</text>
+    <text x="544" y="400" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Add &amp; Norm. The mask enforces auto-regression.</text>
+  </g>
+
+  <g id="legend-4">
+    <circle cx="510" cy="446" r="16" fill="#1A365D"/>
+    <text x="510" y="452" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">4</text>
+    <text x="544" y="442" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="700" fill="#1A365D">Add &amp; Norm — residual + LayerNorm</text>
+    <text x="544" y="470" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Every sub-layer output is LayerNorm(x + Sublayer(x)). Enables</text>
+    <text x="544" y="492" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">deep stacks; d_model = 512 throughout (see P10).</text>
+  </g>
+
+  <g id="legend-5">
+    <circle cx="510" cy="538" r="16" fill="#3182CE"/>
+    <text x="510" y="544" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">5</text>
+    <text x="544" y="534" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="20" font-weight="700" fill="#1A365D">Linear + Softmax — output probabilities</text>
+    <text x="544" y="562" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Decoder output is projected back to vocabulary size and</text>
+    <text x="544" y="584" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">softmaxed to next-token probabilities.</text>
+  </g>
+
+  <g id="takeaway">
+    <rect x="494" y="618" width="700" height="60" rx="8" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="494" y="618" width="4" height="60" fill="#3182CE"/>
+    <text x="514" y="644" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1">SAME SKELETON AS PRIOR SEQ2SEQ</text>
+    <text x="514" y="666" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">What is new is what fills the boxes: only self-attention + FFN.</text>
+  </g>
+</svg>

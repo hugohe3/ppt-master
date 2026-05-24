@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="trackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A365D" />
+      <stop offset="100%" stop-color="#3182CE" />
+    </linearGradient>
+    <filter id="cardShadow" x="-5%" y="-15%" width="110%" height="135%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" />
+      <feFlood flood-color="#1A365D" flood-opacity="0.06" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">Five takeaways from the variation study</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">TABLE 3 ABLATIONS · WHAT THE ARCHITECTURE NEEDS TO STAY GOOD</text>
+  </g>
+
+  <g id="track">
+    <line x1="160" y1="172" x2="160" y2="660" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round" />
+  </g>
+
+  <g id="item-1">
+    <circle cx="160" cy="200" r="28" fill="#1A365D" fill-opacity="0.12" />
+    <circle cx="160" cy="200" r="20" fill="#1A365D" />
+    <text x="160" y="206" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="700" fill="#FFFFFF">01</text>
+    <line x1="188" y1="200" x2="220" y2="200" stroke="#1A365D" stroke-width="2" stroke-dasharray="4,3" />
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M230,170 H1210 A10,10 0 0 1 1220,180 V224 A10,10 0 0 1 1210,234 H230 A10,10 0 0 1 220,224 V180 A10,10 0 0 1 230,170 Z" />
+    <path fill="#1A365D" d="M223,170 H223 A3,3 0 0 1 226,173 V231 A3,3 0 0 1 223,234 H223 A3,3 0 0 1 220,231 V173 A3,3 0 0 1 223,170 Z" />
+    <text x="246" y="196" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Head count has a sweet spot</text>
+    <text x="246" y="222" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">Single head loses <tspan font-family="Consolas, monospace" font-weight="700" fill="#C53030">−0.9 BLEU</tspan> vs h = 8; too many heads (h = 32) also degrade. Eight is empirically right.</text>
+  </g>
+
+  <g id="item-2">
+    <circle cx="160" cy="296" r="28" fill="#1A365D" fill-opacity="0.12" />
+    <circle cx="160" cy="296" r="20" fill="#1A365D" />
+    <text x="160" y="302" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="700" fill="#FFFFFF">02</text>
+    <line x1="188" y1="296" x2="220" y2="296" stroke="#1A365D" stroke-width="2" stroke-dasharray="4,3" />
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M230,266 H1210 A10,10 0 0 1 1220,276 V320 A10,10 0 0 1 1210,330 H230 A10,10 0 0 1 220,320 V276 A10,10 0 0 1 230,266 Z" />
+    <path fill="#1A365D" d="M223,266 H223 A3,3 0 0 1 226,269 V327 A3,3 0 0 1 223,330 H223 A3,3 0 0 1 220,327 V269 A3,3 0 0 1 223,266 Z" />
+    <text x="246" y="292" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Key dim matters more than value dim</text>
+    <text x="246" y="318" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">Reducing <tspan font-family="Consolas, monospace" font-weight="700" fill="#3182CE">d_k</tspan> hurts quality more than reducing <tspan font-family="Consolas, monospace" font-weight="700" fill="#3182CE">d_v</tspan> — determining compatibility is the harder learning problem.</text>
+  </g>
+
+  <g id="item-3">
+    <circle cx="160" cy="392" r="28" fill="#3182CE" fill-opacity="0.12" />
+    <circle cx="160" cy="392" r="20" fill="#3182CE" />
+    <text x="160" y="398" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="700" fill="#FFFFFF">03</text>
+    <line x1="188" y1="392" x2="220" y2="392" stroke="#3182CE" stroke-width="2" stroke-dasharray="4,3" />
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M230,362 H1210 A10,10 0 0 1 1220,372 V416 A10,10 0 0 1 1210,426 H230 A10,10 0 0 1 220,416 V372 A10,10 0 0 1 230,362 Z" />
+    <path fill="#3182CE" d="M223,362 H223 A3,3 0 0 1 226,365 V423 A3,3 0 0 1 223,426 H223 A3,3 0 0 1 220,423 V365 A3,3 0 0 1 223,362 Z" />
+    <text x="246" y="388" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Bigger is better</text>
+    <text x="246" y="414" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">Larger <tspan font-family="Consolas, monospace" font-weight="700" fill="#3182CE">d_model</tspan> and deeper stacks consistently improve BLEU — the architecture scales monotonically with capacity.</text>
+  </g>
+
+  <g id="item-4">
+    <circle cx="160" cy="488" r="28" fill="#3182CE" fill-opacity="0.12" />
+    <circle cx="160" cy="488" r="20" fill="#3182CE" />
+    <text x="160" y="494" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="700" fill="#FFFFFF">04</text>
+    <line x1="188" y1="488" x2="220" y2="488" stroke="#3182CE" stroke-width="2" stroke-dasharray="4,3" />
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M230,458 H1210 A10,10 0 0 1 1220,468 V512 A10,10 0 0 1 1210,522 H230 A10,10 0 0 1 220,512 V468 A10,10 0 0 1 230,458 Z" />
+    <path fill="#3182CE" d="M223,458 H223 A3,3 0 0 1 226,461 V519 A3,3 0 0 1 223,522 H223 A3,3 0 0 1 220,519 V461 A3,3 0 0 1 223,458 Z" />
+    <text x="246" y="484" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Dropout is essential</text>
+    <text x="246" y="510" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">Removing dropout loses <tspan font-family="Consolas, monospace" font-weight="700" fill="#C53030">~0.5–1.0 BLEU</tspan>. Even p = 0.1 measurably regularizes — it isn't decorative.</text>
+  </g>
+
+  <g id="item-5">
+    <circle cx="160" cy="584" r="28" fill="#63B3ED" fill-opacity="0.18" />
+    <circle cx="160" cy="584" r="20" fill="#3182CE" />
+    <text x="160" y="590" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-weight="700" fill="#FFFFFF">05</text>
+    <line x1="188" y1="584" x2="220" y2="584" stroke="#3182CE" stroke-width="2" stroke-dasharray="4,3" />
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M230,554 H1210 A10,10 0 0 1 1220,564 V608 A10,10 0 0 1 1210,618 H230 A10,10 0 0 1 220,608 V564 A10,10 0 0 1 230,554 Z" />
+    <path fill="#63B3ED" d="M223,554 H223 A3,3 0 0 1 226,557 V615 A3,3 0 0 1 223,618 H223 A3,3 0 0 1 220,615 V557 A3,3 0 0 1 223,554 Z" />
+    <text x="246" y="580" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Label smoothing helps BLEU (and hurts perplexity)</text>
+    <text x="246" y="606" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">Slightly worse perplexity, better BLEU. <tspan font-style="italic" fill="#4A5568">Optimize for the metric you ship on.</tspan></text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, Table 3 (§6.2 Model Variations)</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">15</text>
+  </g>
+</svg>

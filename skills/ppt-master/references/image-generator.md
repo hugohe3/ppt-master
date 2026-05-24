@@ -273,6 +273,18 @@ Every AI-image page carries text in two layers:
 
 `text_policy` controls only Layer 1. AI judges per image; no global default bias.
 
+**When `embedded` is the right call — positive triggers** (any one match flips the row from a `none` starting point to `embedded`; the editability rule at the tail of §5.3 still has final say):
+
+| Trigger | Typical Layer 1 text |
+|---|---|
+| Paper-figure panel comparison (A/B/C, before/after) | Panel labels — `A` / `B` / `C`, or short panel descriptors |
+| Textbook math / signal figure | Curve names (`sin` / `cos`), axis labels, unit symbols |
+| Architecture / schematic following discipline conventions | Module names (`Self-Attention`, `FFN`, `Add & Norm`), node ids, signal-path tags |
+| Data figure with stable axes | Axis labels, units, scale bars |
+| Typographic hero (§4.1 Primitive C) | The designed word / number that *is* the image |
+
+Defaulting an entire `ai` resource list to `none` because "SVG can always overlay" is the failure mode this table exists to break. When any row matches a trigger, start at `embedded` and verify the editability filter below still holds.
+
 | `text_policy` | Prompt cue |
 |---|---|
 | `none` | "NO text of any kind anywhere in the image — no letters, numbers, signs, watermarks, labels, or written symbols." |

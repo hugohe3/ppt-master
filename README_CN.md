@@ -31,8 +31,8 @@
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
 </p>
 
-<h3 align="center">下面这六份 PPT，仅仅是 PPT Master 能力的冰山一角</h3>
-<h3 align="center">建议直接下载原始 .pptx 文件，在 PowerPoint 里好好看一下这个项目的能力边界。</h3>
+<h3 align="center">下载这份<a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">带音频旁白的 <em>Attention Is All You Need</em> 论文精读 deck</a>，在 PowerPoint 里直接放映，每一页都会自己"读"给你听 —— 这只是 PPT Master 能力的冰山一角。</h3>
+<h3 align="center">当然，你也可以下载下面六份示例 .pptx 中的任意一份，在 PowerPoint 里打开是最快感受这个项目能力边界的方式。</h3>
 
 <table>
   <tr>

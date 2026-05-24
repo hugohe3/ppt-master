@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.35 },
+    "animation": { "effect": "auto", "duration": 0.38, "stagger": 0.16, "trigger": "after-previous" }
+  },
+  "slides": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.55 },
+      "animation": { "effect": "fade", "duration": 0.6, "stagger": 0.26, "trigger": "after-previous" },
+      "groups": {
+        "cover-marks": { "effect": "appear", "order": 1, "duration": 0.2 },
+        "cover-title": { "order": 2, "duration": 0.7 },
+        "cover-subtitle": { "order": 3, "duration": 0.5 },
+        "cover-takeaway": { "order": 4, "delay": 0.35, "duration": 0.55 }
+      }
+    },
+    "02_why_it_matters": {
+      "transition": { "effect": "fade", "duration": 0.3 },
+      "animation": { "effect": "auto", "duration": 0.34, "stagger": 0.12, "trigger": "after-previous" },
+      "groups": {
+        "kpi-bleu-ende": { "effect": "zoom", "order": 1, "duration": 0.42 },
+        "kpi-bleu-enfr": { "effect": "zoom", "order": 2, "duration": 0.42 },
+        "kpi-training": { "effect": "zoom", "order": 3, "duration": 0.38 },
+        "kpi-no-rnn-cnn": { "effect": "zoom", "order": 4, "duration": 0.38 },
+        "takeaway-band": { "effect": "fade", "order": 5, "delay": 0.22, "duration": 0.5 }
+      }
+    },
+    "03_sequence_evolution": {
+      "transition": { "effect": "push", "duration": 0.42 },
+      "animation": { "effect": "fade", "duration": 0.48, "stagger": 0.22, "trigger": "after-previous" },
+      "groups": {
+        "bottom-takeaway": { "effect": "fly", "order": 1, "delay": 0.25, "duration": 0.55 }
+      }
+    },
+    "04_rnn_cnn_limits": {
+      "transition": { "effect": "fade", "duration": 0.28 },
+      "animation": { "effect": "auto", "duration": 0.34, "stagger": 0.13, "trigger": "after-previous" },
+      "groups": {
+        "pillar-sequential": { "effect": "fly", "order": 1 },
+        "pillar-pathlen": { "effect": "fly", "order": 2 },
+        "pillar-memory": { "effect": "fly", "order": 3 },
+        "rnn-visual": { "effect": "wipe", "order": 4, "delay": 0.2, "duration": 0.5 }
+      }
+    },
+    "05_architecture_overview": {
+      "transition": { "effect": "wipe", "duration": 0.35 },
+      "animation": { "effect": "auto", "duration": 0.38, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "paper-figure": { "effect": "zoom", "order": 1, "duration": 0.55 },
+        "legend-1": { "effect": "fade", "order": 2 },
+        "legend-2": { "effect": "fade", "order": 3 },
+        "legend-3": { "effect": "fade", "order": 4 },
+        "legend-4": { "effect": "fade", "order": 5 },
+        "legend-5": { "effect": "fade", "order": 6 },
+        "takeaway": { "effect": "fade", "order": 7, "delay": 0.22, "duration": 0.48 }
+      }
+    },
+    "06_encoder_decoder": {
+      "transition": { "effect": "fade", "duration": 0.28 },
+      "animation": { "effect": "auto", "duration": 0.36, "stagger": 0.16, "trigger": "after-previous" },
+      "groups": {
+        "card-encoder": { "effect": "fly", "order": 1, "duration": 0.42 },
+        "card-decoder": { "effect": "fly", "order": 2, "duration": 0.42 }
+      }
+    },
+    "07_scaled_dot_product": {
+      "transition": { "effect": "wipe", "duration": 0.32 },
+      "animation": { "effect": "fade", "duration": 0.38, "stagger": 0.16, "trigger": "after-previous" },
+      "groups": {
+        "formula-band": { "effect": "zoom", "order": 1, "duration": 0.5 },
+        "flow-diagram": { "effect": "wipe", "order": 2, "duration": 0.5 },
+        "explanation": { "effect": "fade", "order": 3, "delay": 0.2, "duration": 0.42 }
+      }
+    },
+    "08_multi_head_attention": {
+      "transition": { "effect": "wipe", "duration": 0.32 },
+      "animation": { "effect": "fade", "duration": 0.38, "stagger": 0.15, "trigger": "after-previous" },
+      "groups": {
+        "formula-band": { "effect": "zoom", "order": 1, "duration": 0.48 },
+        "paper-figure": { "effect": "wipe", "order": 2, "duration": 0.52 },
+        "explanation": { "effect": "fade", "order": 3, "delay": 0.18, "duration": 0.42 }
+      }
+    },
+    "09_three_uses": {
+      "transition": { "effect": "fade", "duration": 0.28 },
+      "animation": { "effect": "auto", "duration": 0.34, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "pillar-enc-self": { "effect": "fly", "order": 1 },
+        "pillar-dec-masked": { "effect": "fly", "order": 2 },
+        "pillar-cross": { "effect": "fly", "order": 3 }
+      }
+    },
+    "10_ffn_residual_layernorm": {
+      "transition": { "effect": "fade", "duration": 0.28 },
+      "animation": { "effect": "auto", "duration": 0.34, "stagger": 0.12, "trigger": "after-previous" },
+      "groups": {
+        "sublayer-visual": { "effect": "zoom", "order": 1, "duration": 0.48 },
+        "parent-frame": { "effect": "fade", "order": 2, "duration": 0.32 },
+        "card-ffn": { "effect": "fly", "order": 3 },
+        "card-residual": { "effect": "fly", "order": 4 },
+        "card-layernorm": { "effect": "fly", "order": 5 },
+        "combined-flow": { "effect": "wipe", "order": 6, "delay": 0.18, "duration": 0.5 }
+      }
+    },
+    "11_positional_encoding": {
+      "transition": { "effect": "fade", "duration": 0.42 },
+      "animation": { "effect": "fade", "duration": 0.48, "stagger": 0.2, "trigger": "after-previous" },
+      "groups": {
+        "title": { "order": 1, "duration": 0.55 },
+        "formula-band": { "effect": "zoom", "order": 2, "duration": 0.55 },
+        "explanation": { "order": 3, "delay": 0.22, "duration": 0.5 }
+      }
+    },
+    "12_complexity_table": {
+      "transition": { "effect": "fade", "duration": 0.25 },
+      "animation": { "effect": "auto", "duration": 0.32, "stagger": 0.12, "trigger": "after-previous" },
+      "groups": {
+        "table": { "effect": "wipe", "order": 1, "duration": 0.45 },
+        "takeaway": { "effect": "fade", "order": 2, "delay": 0.18, "duration": 0.42 }
+      }
+    },
+    "13_training_setup": {
+      "transition": { "effect": "fade", "duration": 0.25 },
+      "animation": { "effect": "auto", "duration": 0.32, "stagger": 0.11, "trigger": "after-previous" },
+      "groups": {
+        "card-hardware": { "effect": "fly", "order": 1 },
+        "card-time": { "effect": "fly", "order": 2 },
+        "card-optimizer": { "effect": "fly", "order": 3 },
+        "card-regularization": { "effect": "fly", "order": 4 }
+      }
+    },
+    "14_results": {
+      "transition": { "effect": "fade", "duration": 0.28 },
+      "animation": { "effect": "auto", "duration": 0.34, "stagger": 0.14, "trigger": "after-previous" },
+      "groups": {
+        "table": { "effect": "wipe", "order": 1, "duration": 0.46 },
+        "takeaway": { "effect": "fade", "order": 2, "delay": 0.2, "duration": 0.46 }
+      }
+    },
+    "15_ablations": {
+      "transition": { "effect": "fade", "duration": 0.28 },
+      "animation": { "effect": "auto", "duration": 0.3, "stagger": 0.1, "trigger": "after-previous" },
+      "groups": {
+        "track": { "effect": "wipe", "order": 1, "duration": 0.4 },
+        "item-1": { "effect": "fade", "order": 2 },
+        "item-2": { "effect": "fade", "order": 3 },
+        "item-3": { "effect": "fade", "order": 4 },
+        "item-4": { "effect": "fade", "order": 5 },
+        "item-5": { "effect": "fade", "order": 6 }
+      }
+    },
+    "16_conclusion": {
+      "transition": { "effect": "fade", "duration": 0.55 },
+      "animation": { "effect": "fade", "duration": 0.58, "stagger": 0.24, "trigger": "after-previous" },
+      "groups": {
+        "closing-marks": { "effect": "appear", "order": 1, "duration": 0.2 },
+        "lineage": { "effect": "zoom", "order": 2, "duration": 0.62 },
+        "closing-title": { "order": 3, "delay": 0.25, "duration": 0.7 },
+        "closing-caption": { "order": 4, "delay": 0.28, "duration": 0.55 }
+      }
+    }
+  }
+}

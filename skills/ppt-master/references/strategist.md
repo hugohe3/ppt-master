@@ -529,6 +529,8 @@ After the user picks a candidate, scan the outline and surface any pages where t
 
 **Skip-detection signal for self-audit**: if you notice that every page's `Layout pattern` column resolves to #2/#3 (left-third or right-third), #5/#6 (top-bottom band), or generic side-by-side, you have not actually consulted the file — re-read and reconsider. The default left/right and top/bottom split bias is the failure mode this gate exists to break.
 
+**Skip-detection signal — `text_policy` column**: if every `ai` row resolves to `none` and the deck contains any paper-figure / academic schematic / panel-comparison / data-axis page, you defaulted instead of judging per row. Consult [`image-generator.md`](image-generator.md) §5.3 positive-trigger table and re-decide each row. `none` for every row is correct only when no row matches a trigger; otherwise this is the same class of failure as the layout-pattern signal above.
+
 **Image narrative intent** (decide *before* the ratio table — determines whether the image lives in a container at all):
 
 | Intent | Form | When to use |

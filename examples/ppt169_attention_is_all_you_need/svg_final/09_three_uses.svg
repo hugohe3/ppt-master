@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+      <feOffset dx="0" dy="3" />
+      <feFlood flood-color="#1A365D" flood-opacity="0.07" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">One mechanism, three roles in the Transformer</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">WHERE ATTENTION SHOWS UP IN THE ARCHITECTURE · §3.2.3</text>
+  </g>
+
+  <g id="pillar-enc-self">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M74,160 H426 A14,14 0 0 1 440,174 V646 A14,14 0 0 1 426,660 H74 A14,14 0 0 1 60,646 V174 A14,14 0 0 1 74,160 Z" />
+    <path d="M 74 160 h 352 a 14 14 0 0 1 14 14 v 100 h -380 v -100 a 14 14 0 0 1 14 -14 Z" fill="#1A365D" />
+    
+  <g transform="translate(80.0, 180.0) scale(1.3333333333333333)" fill="none" stroke="#FFFFFF" stroke-width="2">
+    <path d="M9 11l-4 4l4 4m-4 -4h11a4 4 0 0 0 0 -8h-1" />
+  </g>
+    <text x="250" y="208" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="0.85" letter-spacing="2">ENCODER</text>
+    <text x="250" y="240" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#FFFFFF">Self-Attention</text>
+
+    <text x="80" y="312" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">Q · K · V SOURCE</text>
+    <path fill="#F5F7FA" d="M86,324 H414 A6,6 0 0 1 420,330 V366 A6,6 0 0 1 414,372 H86 A6,6 0 0 1 80,366 V330 A6,6 0 0 1 86,324 Z" />
+    <text x="98" y="354" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#1A202C">Q, K, V ← previous encoder layer</text>
+
+    <text x="80" y="406" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Every position attends to all</text>
+    <text x="80" y="442" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Every token in the source sequence can</text>
+    <text x="80" y="464" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">attend to every other token — including</text>
+    <text x="80" y="486" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">itself.</text>
+
+    <text x="80" y="534" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">WHAT IT'S FOR</text>
+    <text x="80" y="560" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Build rich contextualized</text>
+    <text x="80" y="582" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">representations of each source</text>
+    <text x="80" y="604" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">token from its surroundings.</text>
+
+    <path fill="#1A365D" fill-opacity="0.08" d="M84,624 H416 A4,4 0 0 1 420,628 V640 A4,4 0 0 1 416,644 H84 A4,4 0 0 1 80,640 V628 A4,4 0 0 1 84,624 Z" />
+    <text x="92" y="640" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="12" fill="#1A365D">attention_mask = none</text>
+  </g>
+
+  <g id="pillar-dec-masked">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M464,160 H816 A14,14 0 0 1 830,174 V646 A14,14 0 0 1 816,660 H464 A14,14 0 0 1 450,646 V174 A14,14 0 0 1 464,160 Z" />
+    <path d="M 464 160 h 352 a 14 14 0 0 1 14 14 v 100 h -380 v -100 a 14 14 0 0 1 14 -14 Z" fill="#3182CE" />
+    
+  <g transform="translate(470.0, 180.0) scale(1.3333333333333333)" fill="none" stroke="#FFFFFF" stroke-width="2">
+    <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6" />
+    <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+    <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+  </g>
+    <text x="640" y="208" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="0.9" letter-spacing="2">DECODER</text>
+    <text x="640" y="240" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#FFFFFF">Masked Self-Attention</text>
+
+    <text x="470" y="312" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">Q · K · V SOURCE</text>
+    <path fill="#F5F7FA" d="M476,324 H804 A6,6 0 0 1 810,330 V366 A6,6 0 0 1 804,372 H476 A6,6 0 0 1 470,366 V330 A6,6 0 0 1 476,324 Z" />
+    <text x="488" y="354" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#1A202C">Q, K, V ← previous decoder layer</text>
+
+    <text x="470" y="406" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Only past, never future</text>
+    <text x="470" y="442" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Position i attends only to positions ≤ i.</text>
+    <text x="470" y="464" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Achieved by setting illegal positions to</text>
+    <text x="470" y="486" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#1A202C">−∞ before the softmax.</text>
+
+    <text x="470" y="534" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">WHAT IT'S FOR</text>
+    <text x="470" y="560" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Preserve auto-regression — the</text>
+    <text x="470" y="582" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">model cannot peek at tokens it</text>
+    <text x="470" y="604" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">hasn't produced yet.</text>
+
+    <path fill="#3182CE" fill-opacity="0.1" d="M474,624 H806 A4,4 0 0 1 810,628 V640 A4,4 0 0 1 806,644 H474 A4,4 0 0 1 470,640 V628 A4,4 0 0 1 474,624 Z" />
+    <text x="482" y="640" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="12" fill="#3182CE">attention_mask = causal triangular</text>
+  </g>
+
+  <g id="pillar-cross">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M854,160 H1206 A14,14 0 0 1 1220,174 V646 A14,14 0 0 1 1206,660 H854 A14,14 0 0 1 840,646 V174 A14,14 0 0 1 854,160 Z" />
+    <path d="M 854 160 h 352 a 14 14 0 0 1 14 14 v 100 h -380 v -100 a 14 14 0 0 1 14 -14 Z" fill="#1A365D" />
+    
+  <g transform="translate(860.0, 180.0) scale(1.3333333333333333)" fill="none" stroke="#FFFFFF" stroke-width="2">
+    <path d="M21 17l-18 0" />
+    <path d="M6 10l-3 -3l3 -3" />
+    <path d="M3 7l18 0" />
+    <path d="M18 20l3 -3l-3 -3" />
+  </g>
+    <text x="1030" y="208" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="0.85" letter-spacing="2">ENCODER ↔ DECODER</text>
+    <text x="1030" y="240" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#FFFFFF">Cross-Attention</text>
+
+    <text x="860" y="312" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">Q · K · V SOURCE</text>
+    <path fill="#F5F7FA" d="M866,324 H1194 A6,6 0 0 1 1200,330 V366 A6,6 0 0 1 1194,372 H866 A6,6 0 0 1 860,366 V330 A6,6 0 0 1 866,324 Z" />
+    <text x="878" y="346" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="13" fill="#1A202C">Q ← previous decoder layer</text>
+    <text x="878" y="364" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="13" fill="#3182CE">K, V ← encoder output</text>
+
+    <text x="860" y="406" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Look back at the input</text>
+    <text x="860" y="442" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Every decoder position can attend over</text>
+    <text x="860" y="464" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">all positions of the input sequence —</text>
+    <text x="860" y="486" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">the classic seq2seq attention role.</text>
+
+    <text x="860" y="534" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">WHAT IT'S FOR</text>
+    <text x="860" y="560" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Let each output token retrieve</text>
+    <text x="860" y="582" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">the relevant source information,</text>
+    <text x="860" y="604" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">no matter where it sits.</text>
+
+    <path fill="#1A365D" fill-opacity="0.08" d="M864,624 H1196 A4,4 0 0 1 1200,628 V640 A4,4 0 0 1 1196,644 H864 A4,4 0 0 1 860,640 V628 A4,4 0 0 1 864,624 Z" />
+    <text x="872" y="640" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="12" fill="#1A365D">attention_mask = none</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, §3.2.3 Applications of Attention</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">09</text>
+  </g>
+</svg>

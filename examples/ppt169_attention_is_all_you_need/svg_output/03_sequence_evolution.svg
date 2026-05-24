@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topScrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <image href="../images/sequence_evolution.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" />
+    <rect x="0" y="0" width="1280" height="240" fill="url(#topScrim)" />
+  </g>
+
+  <g id="header">
+    <rect x="80" y="68" width="60" height="3" fill="#3182CE" />
+    <text x="80" y="96" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="2.5">PART 2 · MOTIVATION &amp; BACKGROUND</text>
+    <text x="80" y="146" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="40" font-weight="700" fill="#1A365D">From recurrent chains to a fully-connected</text>
+    <text x="80" y="190" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="40" font-weight="700" fill="#1A365D">attention <tspan fill="#3182CE">mesh</tspan></text>
+  </g>
+
+  <g id="bottom-takeaway">
+    <rect x="80" y="628" width="1120" height="58" rx="8" fill="#1A365D" fill-opacity="0.92" />
+    <text x="100" y="652" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-style="italic" fill="#FFFFFF">
+      RNN — sequential step by step. CNN — local receptive field grows with distance.
+    </text>
+    <text x="100" y="674" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="15" font-style="italic" fill="#FFFFFF">
+      Self-attention — every position relates to every other in <tspan fill="#63B3ED">one constant-time hop</tspan>.
+    </text>
+  </g>
+
+  <g id="footer">
+    <text x="1220" y="708" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#4A5568">03</text>
+  </g>
+</svg>

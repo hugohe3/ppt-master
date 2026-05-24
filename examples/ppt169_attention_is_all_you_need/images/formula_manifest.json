@@ -1,0 +1,89 @@
+{
+  "providers": [
+    "codecogs",
+    "quicklatex",
+    "mathpad",
+    "wikimedia"
+  ],
+  "items": [
+    {
+      "id": "formula_001",
+      "latex": "\\text{Attention}(Q, K, V) = \\text{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right) V",
+      "display": "block",
+      "color": "#1A365D",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_001.png",
+      "file": "images/formula_001.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 880,
+      "pixel_height": 122,
+      "ratio": 7.2131,
+      "status": "Rendered"
+    },
+    {
+      "id": "formula_002",
+      "latex": "\\begin{aligned}\\text{MultiHead}(Q, K, V) &= \\text{Concat}(\\text{head}_1, \\ldots, \\text{head}_h)\\,W^{O} \\\\ \\text{where}\\ \\text{head}_i &= \\text{Attention}(Q W_i^{Q},\\, K W_i^{K},\\, V W_i^{V})\\end{aligned}",
+      "display": "block",
+      "color": "#1A365D",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_002.png",
+      "file": "images/formula_002.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 1168,
+      "pixel_height": 137,
+      "ratio": 8.5255,
+      "status": "Rendered"
+    },
+    {
+      "id": "formula_003",
+      "latex": "\\begin{aligned}PE_{(pos,\\, 2i)} &= \\sin\\!\\left(\\frac{pos}{10000^{2i/d_{\\text{model}}}}\\right) \\\\ PE_{(pos,\\, 2i+1)} &= \\cos\\!\\left(\\frac{pos}{10000^{2i/d_{\\text{model}}}}\\right)\\end{aligned}",
+      "display": "block",
+      "color": "#1A365D",
+      "background": "#FFFFFF",
+      "transparent": true,
+      "dpi": 400,
+      "filename": "formula_003.png",
+      "file": "images/formula_003.png",
+      "providers": [
+        "codecogs",
+        "quicklatex",
+        "mathpad",
+        "wikimedia"
+      ],
+      "transparent_tolerance": 12,
+      "provider": "codecogs",
+      "pixel_width": 706,
+      "pixel_height": 201,
+      "ratio": 3.5124,
+      "status": "Rendered"
+    }
+  ],
+  "renderer": {
+    "providers": [
+      "codecogs",
+      "quicklatex",
+      "mathpad",
+      "wikimedia"
+    ],
+    "default_dpi": 300,
+    "output_dir": "images"
+  }
+}
