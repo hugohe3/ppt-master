@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="3"/>
+      <feFlood flood-color="#1A365D" flood-opacity="0.06"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="rnnImgClip">
+      <rect x="900" y="170" width="320" height="500" rx="14"/>
+    </clipPath>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE"/>
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">What hurts in RNN/CNN sequence models</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">THREE FUNDAMENTAL CONSTRAINTS THE TRANSFORMER LIFTS</text>
+  </g>
+
+  <g id="pillar-sequential">
+    <rect x="60" y="170" width="265" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <path d="M 72 170 h 241 a 12 12 0 0 1 12 12 v 96 h -265 v -96 a 12 12 0 0 1 12 -12 Z" fill="#1A365D" fill-opacity="0.06"/>
+    <text x="192" y="218" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="44" font-weight="700" fill="#1A365D">01</text>
+    <text x="192" y="252" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="800" fill="#1A365D" letter-spacing="1.5">SEQUENTIAL BOTTLENECK</text>
+    <line x1="80" y1="296" x2="305" y2="296" stroke="#E2E8F0" stroke-width="1.5"/>
+    <use data-icon="tabler-outline/hourglass" x="80" y="316" width="36" height="36" fill="#3182CE"/>
+    <text x="80" y="384" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">hₜ depends on hₜ₋₁</text>
+    <text x="80" y="424" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Each hidden state must wait for</text>
+    <text x="80" y="446" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">the previous one — no within-</text>
+    <text x="80" y="468" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">example parallelism.</text>
+    <text x="80" y="514" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#3182CE" letter-spacing="1">CONSEQUENCE</text>
+    <text x="80" y="542" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Training step time scales</text>
+    <text x="80" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">linearly with sequence</text>
+    <text x="80" y="586" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">length n.</text>
+  </g>
+
+  <g id="pillar-pathlen">
+    <rect x="345" y="170" width="265" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <path d="M 357 170 h 241 a 12 12 0 0 1 12 12 v 96 h -265 v -96 a 12 12 0 0 1 12 -12 Z" fill="#3182CE" fill-opacity="0.08"/>
+    <text x="477" y="218" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="44" font-weight="700" fill="#3182CE">02</text>
+    <text x="477" y="252" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="800" fill="#1A365D" letter-spacing="1.5">LONG-RANGE PATH</text>
+    <line x1="365" y1="296" x2="590" y2="296" stroke="#E2E8F0" stroke-width="1.5"/>
+    <use data-icon="tabler-outline/arrows-horizontal" x="365" y="316" width="36" height="36" fill="#3182CE"/>
+    <text x="365" y="384" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Distant tokens, far apart</text>
+    <text x="365" y="424" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">ConvS2S path grows linearly,</text>
+    <text x="365" y="446" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">ByteNet logarithmically.</text>
+    <text x="365" y="468" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">RNNs are even worse.</text>
+    <text x="365" y="514" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#3182CE" letter-spacing="1">CONSEQUENCE</text>
+    <text x="365" y="542" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Hard to learn dependencies</text>
+    <text x="365" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">between positions that sit</text>
+    <text x="365" y="586" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">far apart in the input.</text>
+  </g>
+
+  <g id="pillar-memory">
+    <rect x="630" y="170" width="255" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <path d="M 642 170 h 231 a 12 12 0 0 1 12 12 v 96 h -255 v -96 a 12 12 0 0 1 12 -12 Z" fill="#1A365D" fill-opacity="0.06"/>
+    <text x="757" y="218" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="44" font-weight="700" fill="#1A365D">03</text>
+    <text x="757" y="252" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" font-weight="800" fill="#1A365D" letter-spacing="1.5">MEMORY CEILING</text>
+    <line x1="650" y1="296" x2="865" y2="296" stroke="#E2E8F0" stroke-width="1.5"/>
+    <use data-icon="tabler-outline/lock" x="650" y="316" width="36" height="36" fill="#3182CE"/>
+    <text x="650" y="384" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Batch size vs length</text>
+    <text x="650" y="424" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Long sequences exhaust</text>
+    <text x="650" y="446" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">GPU memory, capping</text>
+    <text x="650" y="468" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">batch size across examples.</text>
+    <text x="650" y="514" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#3182CE" letter-spacing="1">CONSEQUENCE</text>
+    <text x="650" y="542" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Throughput drops fast as</text>
+    <text x="650" y="564" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">context grows — a hard wall</text>
+    <text x="650" y="586" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">at long sequence lengths.</text>
+  </g>
+
+  <g id="rnn-visual">
+    <image href="../images/rnn_bottleneck.png" x="900" y="170" width="320" height="500" preserveAspectRatio="xMidYMid slice" clip-path="url(#rnnImgClip)"/>
+    <text x="1060" y="624" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-style="italic" fill="#4A5568">Sequential hidden-state chain</text>
+    <text x="1060" y="644" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-style="italic" fill="#4A5568">— the constraint visualized</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, §1 Introduction &amp; §2 Background</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">04</text>
+  </g>
+</svg>

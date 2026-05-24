@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="3" />
+      <feFlood flood-color="#1A365D" flood-opacity="0.07" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">A simpler model, better results, less training</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">WHY THIS PAPER MATTERS · 2017 SOTA ON WMT'14 TRANSLATION</text>
+  </g>
+
+  <g id="kpi-bleu-ende">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M72,160 H333 A12,12 0 0 1 345,172 V388 A12,12 0 0 1 333,400 H72 A12,12 0 0 1 60,388 V172 A12,12 0 0 1 72,160 Z" />
+    <path fill="#1A365D" d="M63,160 H63 A3,3 0 0 1 66,163 V397 A3,3 0 0 1 63,400 H63 A3,3 0 0 1 60,397 V163 A3,3 0 0 1 63,160 Z" />
+    
+  <g transform="translate(80.0, 184.0) scale(1.3333333333333333)" fill="none" stroke="#1A365D" stroke-width="2">
+    <path d="M8 21l8 0" />
+    <path d="M12 17l0 4" />
+    <path d="M7 4l10 0" />
+    <path d="M17 4v8a5 5 0 0 1 -10 0v-8" />
+    <path d="M3 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M17 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  </g>
+    <text x="80" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">EN → DE</text>
+    <text x="80" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">BLEU on WMT'14</text>
+    <text x="80" y="336" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#1A365D">28.4</text>
+    
+  <g transform="translate(80.0, 354.0) scale(0.8333333333333334)" fill="none" stroke="#2F855A" stroke-width="2">
+    <path d="M17 7l-10 10" />
+    <path d="M8 7l9 0l0 9" />
+  </g>
+    <text x="106" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#2F855A">+2.0</text>
+    <text x="150" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">over prior ensembles</text>
+  </g>
+
+  <g id="kpi-bleu-enfr">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M377,160 H638 A12,12 0 0 1 650,172 V388 A12,12 0 0 1 638,400 H377 A12,12 0 0 1 365,388 V172 A12,12 0 0 1 377,160 Z" />
+    <path fill="#3182CE" d="M368,160 H368 A3,3 0 0 1 371,163 V397 A3,3 0 0 1 368,400 H368 A3,3 0 0 1 365,397 V163 A3,3 0 0 1 368,160 Z" />
+    
+  <g transform="translate(385.0, 184.0) scale(1.3333333333333333)" fill="none" stroke="#3182CE" stroke-width="2">
+    <path d="M8 21l8 0" />
+    <path d="M12 17l0 4" />
+    <path d="M7 4l10 0" />
+    <path d="M17 4v8a5 5 0 0 1 -10 0v-8" />
+    <path d="M3 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+    <path d="M17 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  </g>
+    <text x="385" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">EN → FR</text>
+    <text x="385" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">BLEU on WMT'14</text>
+    <text x="385" y="336" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#3182CE">41.8</text>
+    
+  <g transform="translate(385.0, 354.0) scale(0.8333333333333334)" fill="none" stroke="#2F855A" stroke-width="2">
+    <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245" />
+  </g>
+    <text x="411" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#2F855A">new single-model SOTA</text>
+  </g>
+
+  <g id="kpi-training">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M682,160 H943 A12,12 0 0 1 955,172 V388 A12,12 0 0 1 943,400 H682 A12,12 0 0 1 670,388 V172 A12,12 0 0 1 682,160 Z" />
+    <path fill="#1A365D" d="M673,160 H673 A3,3 0 0 1 676,163 V397 A3,3 0 0 1 673,400 H673 A3,3 0 0 1 670,397 V163 A3,3 0 0 1 673,160 Z" />
+    
+  <g transform="translate(690.0, 184.0) scale(1.3333333333333333)" fill="none" stroke="#1A365D" stroke-width="2">
+    <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+  </g>
+    <text x="690" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">TRAINING TIME</text>
+    <text x="690" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">Transformer (big)</text>
+    <text x="690" y="336" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="48" font-weight="700" fill="#1A365D">3.5 days</text>
+    
+  <g transform="translate(690.0, 354.0) scale(0.8333333333333334)" fill="none" stroke="#4A5568" stroke-width="2">
+    <path d="M5 6a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1l0 -12" />
+    <path d="M9 9h6v6h-6l0 -6" />
+    <path d="M3 10h2" />
+    <path d="M3 14h2" />
+    <path d="M10 3v2" />
+    <path d="M14 3v2" />
+    <path d="M21 10h-2" />
+    <path d="M21 14h-2" />
+    <path d="M14 21v-2" />
+    <path d="M10 21v-2" />
+  </g>
+    <text x="716" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">on 8× P100 GPUs</text>
+  </g>
+
+  <g id="kpi-no-rnn-cnn">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M987,160 H1208 A12,12 0 0 1 1220,172 V388 A12,12 0 0 1 1208,400 H987 A12,12 0 0 1 975,388 V172 A12,12 0 0 1 987,160 Z" />
+    <path fill="#3182CE" d="M978,160 H978 A3,3 0 0 1 981,163 V397 A3,3 0 0 1 978,400 H978 A3,3 0 0 1 975,397 V163 A3,3 0 0 1 978,160 Z" />
+    
+  <g transform="translate(995.0, 184.0) scale(1.3333333333333333)" fill="none" stroke="#3182CE" stroke-width="2">
+    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+  </g>
+    <text x="995" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">ARCHITECTURE</text>
+    <text x="995" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">building blocks</text>
+    <text x="995" y="316" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="40" font-weight="700" fill="#1A365D">Attention</text>
+    <text x="995" y="346" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-style="italic" fill="#4A5568">only</text>
+    <text x="995" y="376" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">no recurrence · no convolution</text>
+  </g>
+
+  <g id="takeaway-band">
+    <path fill="#F5F7FA" stroke="#E2E8F0" stroke-width="1" d="M72,450 H1208 A12,12 0 0 1 1220,462 V598 A12,12 0 0 1 1208,610 H72 A12,12 0 0 1 60,598 V462 A12,12 0 0 1 72,450 Z" />
+    <path fill="#1A365D" d="M63,450 H63 A3,3 0 0 1 66,453 V607 A3,3 0 0 1 63,610 H63 A3,3 0 0 1 60,607 V453 A3,3 0 0 1 63,450 Z" />
+    <text x="100" y="490" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1.5">THE HEADLINE</text>
+    <text x="100" y="520" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#1A365D">
+      The Transformer reaches <tspan fill="#3182CE">new translation SOTA</tspan> while training
+    </text>
+    <text x="100" y="548" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#1A365D">
+      in <tspan fill="#3182CE">a fraction of the time</tspan> of strong baselines.
+    </text>
+    <text x="100" y="580" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#4A5568">
+      Quality up · cost down · parallelization unlocked. The whole rest of the paper explains
+    </text>
+    <text x="100" y="602" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#4A5568">
+      how attention alone makes this possible — and why nothing else is needed.
+    </text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, Table 2 (BLEU) and §5.2 (training cost)</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">02</text>
+  </g>
+</svg>

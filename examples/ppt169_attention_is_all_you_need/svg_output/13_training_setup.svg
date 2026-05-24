@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="3"/>
+      <feFlood flood-color="#1A365D" flood-opacity="0.07"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE"/>
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">How they trained it</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">TRAINING SETUP · §5 WMT'14 ENGLISH-GERMAN &amp; ENGLISH-FRENCH</text>
+  </g>
+
+  <g id="card-hardware">
+    <rect x="60" y="160" width="580" height="240" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="60" y="160" width="6" height="240" rx="3" fill="#1A365D"/>
+    <use data-icon="tabler-outline/cpu" x="84" y="180" width="32" height="32" fill="#1A365D"/>
+    <text x="84" y="240" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">HARDWARE &amp; SCALE</text>
+    <text x="84" y="296" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="40" font-weight="700" fill="#1A365D">8 × NVIDIA P100</text>
+    <text x="84" y="332" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">One machine, eight GPUs — a single-node setup.</text>
+    <text x="84" y="354" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">Batches of ~25,000 source + 25,000 target tokens,</text>
+    <text x="84" y="376" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">grouped by similar sequence length for efficiency.</text>
+  </g>
+
+  <g id="card-time">
+    <rect x="660" y="160" width="560" height="240" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="660" y="160" width="6" height="240" rx="3" fill="#3182CE"/>
+    <use data-icon="tabler-outline/bolt" x="684" y="180" width="32" height="32" fill="#3182CE"/>
+    <text x="684" y="240" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">TRAINING TIME</text>
+    <g id="time-base">
+      <text x="684" y="296" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="32" font-weight="700" fill="#1A365D">base</text>
+      <text x="820" y="296" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="32" font-weight="700" fill="#3182CE">12 h</text>
+      <text x="940" y="296" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">· 100k steps</text>
+    </g>
+    <g id="time-big">
+      <text x="684" y="346" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="32" font-weight="700" fill="#1A365D">big</text>
+      <text x="820" y="346" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="32" font-weight="700" fill="#3182CE">3.5 d</text>
+      <text x="940" y="346" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#4A5568">· 300k steps</text>
+    </g>
+    <text x="684" y="386" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-style="italic" fill="#4A5568">A small fraction of the training cost of prior best models.</text>
+  </g>
+
+  <g id="card-optimizer">
+    <rect x="60" y="420" width="580" height="240" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="60" y="420" width="6" height="240" rx="3" fill="#1A365D"/>
+    <use data-icon="tabler-outline/settings" x="84" y="440" width="32" height="32" fill="#1A365D"/>
+    <text x="84" y="500" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">OPTIMIZER</text>
+    <text x="84" y="546" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="32" font-weight="700" fill="#1A365D">Adam</text>
+    <text x="84" y="578" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="15" fill="#1A202C">β₁ = 0.9 · β₂ = 0.98 · ε = 1e-9</text>
+    <text x="84" y="610" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">Custom learning-rate schedule:</text>
+    <text x="84" y="632" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="14" fill="#3182CE">lr ∝ min(step⁻⁰·⁵, step · warmup⁻¹·⁵)</text>
+    <text x="84" y="652" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-style="italic" fill="#4A5568">warm up for 4,000 steps, then decay as 1/√step.</text>
+  </g>
+
+  <g id="card-regularization">
+    <rect x="660" y="420" width="560" height="240" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="660" y="420" width="6" height="240" rx="3" fill="#3182CE"/>
+    <use data-icon="tabler-outline/shield" x="684" y="440" width="32" height="32" fill="#3182CE"/>
+    <text x="684" y="500" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">REGULARIZATION</text>
+    <g id="reg-dropout">
+      <text x="684" y="544" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#1A365D">Dropout</text>
+      <text x="850" y="544" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="700" fill="#3182CE">p = 0.1</text>
+      <text x="684" y="566" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">on every sub-layer output and on the sum of embedding + PE.</text>
+    </g>
+    <g id="reg-label-smoothing">
+      <text x="684" y="610" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#1A365D">Label smoothing</text>
+      <text x="950" y="610" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="700" fill="#3182CE">ε_ls = 0.1</text>
+      <text x="684" y="632" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">Slightly hurts perplexity, but improves BLEU and accuracy.</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, §5.1 Training Data and Batching · §5.2 Hardware and Schedule · §5.3 Optimizer · §5.4 Regularization</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">13</text>
+  </g>
+</svg>

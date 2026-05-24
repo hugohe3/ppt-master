@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="coverScrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96" />
+      <stop offset="42%" stop-color="#FFFFFF" stop-opacity="0.85" />
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+    <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" />
+    <rect x="0" y="0" width="1280" height="720" fill="url(#coverScrim)" />
+  </g>
+
+  <g id="cover-marks">
+    <rect x="80" y="120" width="80" height="4" fill="#3182CE" />
+    <text x="80" y="160" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="2.5">PAPER · DEEP READ</text>
+    <text x="80" y="184" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="500" fill="#4A5568" letter-spacing="1.5">NeurIPS 2017 · arXiv:1706.03762</text>
+  </g>
+
+  <g id="cover-title">
+    <text x="80" y="320" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#1A365D">Attention</text>
+    <text x="80" y="394" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#1A365D">Is All</text>
+    <text x="80" y="468" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#1A365D">You Need</text>
+  </g>
+
+  <g id="cover-subtitle">
+    <line x1="80" y1="510" x2="180" y2="510" stroke="#1A365D" stroke-width="1.5" />
+    <text x="80" y="540" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-style="italic" fill="#4A5568">Vaswani · Shazeer · Parmar · Uszkoreit</text>
+    <text x="80" y="564" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-style="italic" fill="#4A5568">Jones · Gomez · Kaiser · Polosukhin</text>
+    <text x="80" y="592" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">Google Brain · Google Research · University of Toronto</text>
+  </g>
+
+  <g id="cover-takeaway">
+    <rect x="80" y="608" width="6" height="56" fill="#3182CE" />
+    <text x="100" y="630" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A365D" letter-spacing="1">THE 2017 IDEA</text>
+    <text x="100" y="656" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-style="italic" fill="#1A202C">Drop recurrence and convolution. Use only attention.</text>
+  </g>
+
+  <g id="footer">
+    <text x="1200" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">01</text>
+    <line x1="80" y1="694" x2="120" y2="694" stroke="#A0AEC0" stroke-width="0.5" />
+  </g>
+</svg>

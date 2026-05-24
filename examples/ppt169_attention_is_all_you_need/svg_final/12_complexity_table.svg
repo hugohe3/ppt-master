@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">Complexity per layer, sequential ops, max path length</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">TABLE 1 · WHY SELF-ATTENTION · n = sequence length, d = representation dim</text>
+  </g>
+
+  <g id="table">
+    <rect x="60" y="160" width="1160" height="370" fill="none" stroke="#1A365D" stroke-width="2" />
+    <g id="table-area" transform="translate(60, 160)">
+      <rect x="0" y="0" width="1160" height="60" fill="#1A365D" />
+      <line x1="0" y1="60" x2="1160" y2="60" stroke="#1A365D" stroke-width="2" />
+      <text x="24" y="37" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" letter-spacing="1.5">LAYER TYPE</text>
+      <text x="480" y="37" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" letter-spacing="1.5">COMPLEXITY PER LAYER</text>
+      <text x="760" y="37" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" letter-spacing="1.5">SEQUENTIAL OPS</text>
+      <text x="980" y="37" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" letter-spacing="1.5">MAX PATH LENGTH</text>
+
+      <line x1="300" y1="0" x2="300" y2="370" stroke="#E2E8F0" stroke-width="1.5" />
+      <line x1="660" y1="0" x2="660" y2="370" stroke="#E2E8F0" stroke-width="1.5" />
+      <line x1="860" y1="0" x2="860" y2="370" stroke="#E2E8F0" stroke-width="1.5" />
+
+      <g id="row-self-attn">
+        <rect x="0" y="60" width="1160" height="68" fill="#EBF4FB" />
+        <text x="24" y="92" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Self-Attention</text>
+        <text x="24" y="116" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-style="italic" fill="#3182CE">the Transformer</text>
+        <text x="480" y="102" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="700" fill="#1A365D">O(n² · d)</text>
+        <text x="760" y="102" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="22" font-weight="700" fill="#2F855A">O(1)</text>
+        <text x="980" y="102" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="22" font-weight="700" fill="#2F855A">O(1)</text>
+      </g>
+
+      <g id="row-recurrent">
+        <line x1="0" y1="128" x2="1160" y2="128" stroke="#E2E8F0" stroke-width="1" />
+        <text x="24" y="160" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Recurrent</text>
+        <text x="24" y="184" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-style="italic" fill="#4A5568">RNN / LSTM / GRU</text>
+        <text x="480" y="170" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="600" fill="#1A202C">O(n · d²)</text>
+        <text x="760" y="170" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="22" font-weight="600" fill="#C53030">O(n)</text>
+        <text x="980" y="170" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="22" font-weight="600" fill="#C53030">O(n)</text>
+      </g>
+
+      <g id="row-conv">
+        <line x1="0" y1="196" x2="1160" y2="196" stroke="#E2E8F0" stroke-width="1" />
+        <text x="24" y="228" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Convolutional</text>
+        <text x="24" y="252" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-style="italic" fill="#4A5568">kernel width k</text>
+        <text x="480" y="238" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="600" fill="#1A202C">O(k · n · d²)</text>
+        <text x="760" y="238" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="22" font-weight="600" fill="#2F855A">O(1)</text>
+        <text x="980" y="238" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="600" fill="#4A5568">O(log_k n)</text>
+      </g>
+
+      <g id="row-self-attn-restricted">
+        <line x1="0" y1="264" x2="1160" y2="264" stroke="#E2E8F0" stroke-width="1" />
+        <text x="24" y="296" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Self-Attention <tspan font-style="italic" fill="#4A5568" font-weight="500">(restricted)</tspan></text>
+        <text x="24" y="320" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-style="italic" fill="#4A5568">window r around each position</text>
+        <text x="480" y="306" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="600" fill="#1A202C">O(r · n · d)</text>
+        <text x="760" y="306" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="22" font-weight="600" fill="#2F855A">O(1)</text>
+        <text x="980" y="306" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="600" fill="#4A5568">O(n / r)</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="takeaway">
+    <path fill="#F5F7FA" stroke="#E2E8F0" stroke-width="1" d="M70,552 H1210 A10,10 0 0 1 1220,562 V662 A10,10 0 0 1 1210,672 H70 A10,10 0 0 1 60,662 V562 A10,10 0 0 1 70,552 Z" />
+    <path fill="#3182CE" d="M63,552 H63 A3,3 0 0 1 66,555 V669 A3,3 0 0 1 63,672 H63 A3,3 0 0 1 60,669 V555 A3,3 0 0 1 63,552 Z" />
+    <text x="100" y="580" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1.5">READ THE TABLE LIKE THIS</text>
+    <text x="100" y="610" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="17" font-weight="600" fill="#1A365D">Self-attention pays <tspan font-family="Consolas, monospace" fill="#1A365D">O(n²·d)</tspan> compute, but in return any two positions are <tspan font-family="Consolas, monospace" fill="#2F855A">one hop apart</tspan>.</text>
+    <text x="100" y="638" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">For typical NLP where <tspan font-family="Consolas, monospace" fill="#1A365D" font-weight="700">n &lt; d</tspan> (sequence shorter than representation), self-attention is faster than recurrent layers</text>
+    <text x="100" y="658" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">— and it learns long-range dependencies more easily.</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="700" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, Table 1 (§4 Why Self-Attention)</text>
+    <text x="1220" y="700" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">12</text>
+  </g>
+</svg>

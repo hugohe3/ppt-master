@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <marker id="dpaArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#1A365D"/>
+    </marker>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="3"/>
+      <feFlood flood-color="#1A365D" flood-opacity="0.06"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE"/>
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="34" font-weight="700" fill="#1A365D">Attention as a weighted average — keys, values, queries</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">SCALED DOT-PRODUCT ATTENTION · §3.2.1</text>
+  </g>
+
+  <g id="formula-band">
+    <rect x="60" y="160" width="1160" height="120" rx="12" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="1.5"/>
+    <rect x="60" y="160" width="6" height="120" rx="3" fill="#3182CE"/>
+    <text x="100" y="186" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">EQUATION (1)</text>
+    <image href="../images/formula_001.png" x="270" y="194" width="640" height="89" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <g id="explanation">
+    <text x="84" y="328" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1.5">HOW IT READS</text>
+
+    <g id="step-1">
+      <circle cx="100" cy="370" r="18" fill="#1A365D"/>
+      <text x="100" y="376" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">1</text>
+      <text x="132" y="364" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Dot-product all queries with all keys</text>
+      <text x="132" y="388" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">QKᵀ gives a similarity score between every query–key pair.</text>
+    </g>
+
+    <g id="step-2">
+      <circle cx="100" cy="438" r="18" fill="#1A365D"/>
+      <text x="100" y="444" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">2</text>
+      <text x="132" y="432" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Scale by <tspan font-family="Consolas, monospace" fill="#3182CE">√d_k</tspan></text>
+      <text x="132" y="456" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">For large d_k the dot products grow large, pushing softmax</text>
+      <text x="132" y="476" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">into low-gradient regions. Scaling counteracts that.</text>
+    </g>
+
+    <g id="step-3">
+      <circle cx="100" cy="528" r="18" fill="#1A365D"/>
+      <text x="100" y="534" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">3</text>
+      <text x="132" y="522" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Softmax → attention weights</text>
+      <text x="132" y="546" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Normalize each row so the weights over keys sum to 1.</text>
+    </g>
+
+    <g id="step-4">
+      <circle cx="100" cy="598" r="18" fill="#3182CE"/>
+      <text x="100" y="604" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="16" font-weight="700" fill="#FFFFFF">4</text>
+      <text x="132" y="592" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="18" font-weight="700" fill="#1A365D">Weighted sum of values</text>
+      <text x="132" y="616" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Multiply weights by V to get each output position's vector.</text>
+    </g>
+  </g>
+
+  <g id="flow-diagram">
+    <rect x="700" y="316" width="520" height="324" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <text x="720" y="342" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">DATAFLOW</text>
+
+    <g id="op-q">
+      <text x="740" y="386" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="700" fill="#1A365D">Q</text>
+      <text x="740" y="406" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#4A5568">queries</text>
+    </g>
+    <g id="op-k">
+      <text x="740" y="448" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="700" fill="#1A365D">K</text>
+      <text x="740" y="468" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#4A5568">keys</text>
+    </g>
+    <g id="op-v">
+      <text x="740" y="610" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="20" font-weight="700" fill="#1A365D">V</text>
+      <text x="740" y="628" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#4A5568">values</text>
+    </g>
+
+    <g id="step-matmul1">
+      <rect x="780" y="370" width="120" height="60" rx="8" fill="#EBF4FB" stroke="#3182CE" stroke-width="1.5"/>
+      <text x="840" y="396" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A365D">MatMul</text>
+      <text x="840" y="418" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="12" fill="#4A5568">QKᵀ</text>
+    </g>
+    <line x1="755" y1="380" x2="780" y2="396" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+    <line x1="755" y1="442" x2="780" y2="408" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+
+    <g id="step-scale">
+      <rect x="920" y="370" width="100" height="60" rx="8" fill="#EBF4FB" stroke="#3182CE" stroke-width="1.5"/>
+      <text x="970" y="394" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#1A365D">Scale</text>
+      <text x="970" y="416" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="12" fill="#4A5568">÷ √d_k</text>
+    </g>
+    <line x1="900" y1="400" x2="920" y2="400" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+
+    <g id="step-mask">
+      <rect x="1040" y="370" width="160" height="60" rx="8" fill="#FFFFFF" stroke="#A0AEC0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="1120" y="394" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#4A5568">Mask (opt.)</text>
+      <text x="1120" y="416" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">decoder only</text>
+    </g>
+    <line x1="1020" y1="400" x2="1040" y2="400" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+
+    <g id="step-softmax">
+      <rect x="900" y="464" width="200" height="60" rx="8" fill="#3182CE"/>
+      <text x="1000" y="488" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">SoftMax</text>
+      <text x="1000" y="510" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.9">row-wise normalize</text>
+    </g>
+    <line x1="1120" y1="430" x2="1040" y2="464" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+
+    <g id="step-matmul2">
+      <rect x="900" y="560" width="200" height="60" rx="8" fill="#1A365D"/>
+      <text x="1000" y="584" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">MatMul</text>
+      <text x="1000" y="606" text-anchor="middle" font-family="Consolas, &quot;Courier New&quot;, monospace" font-size="11" fill="#FFFFFF" fill-opacity="0.9">× V → output</text>
+    </g>
+    <line x1="1000" y1="524" x2="1000" y2="560" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+    <line x1="755" y1="608" x2="900" y2="590" stroke="#1A365D" stroke-width="1.5" marker-end="url(#dpaArrow)"/>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, §3.2.1 Scaled Dot-Product Attention</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">07</text>
+  </g>
+</svg>

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+      <feOffset dx="0" dy="3" />
+      <feFlood flood-color="#1A365D" flood-opacity="0.07" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">Same skeleton, three asymmetries</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">ENCODER STACK · DECODER STACK · N = 6 · d_model = 512</text>
+  </g>
+
+  <g id="card-encoder">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M94,160 H621 A14,14 0 0 1 635,174 V646 A14,14 0 0 1 621,660 H94 A14,14 0 0 1 80,646 V174 A14,14 0 0 1 94,160 Z" />
+    <path d="M 94 160 h 527 a 14 14 0 0 1 14 14 v 90 h -555 v -90 a 14 14 0 0 1 14 -14 Z" fill="#1A365D" />
+    <text x="357" y="212" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="700" fill="#FFFFFF">Encoder</text>
+    <text x="357" y="240" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" fill-opacity="0.85" letter-spacing="1">N = 6 IDENTICAL LAYERS</text>
+
+    <g id="enc-sublayer-1">
+      <path fill="#F5F7FA" stroke="#1A365D" stroke-width="1.5" d="M118,300 H597 A8,8 0 0 1 605,308 V348 A8,8 0 0 1 597,356 H118 A8,8 0 0 1 110,348 V308 A8,8 0 0 1 118,300 Z" />
+      <circle cx="138" cy="328" r="14" fill="#1A365D" />
+      <text x="138" y="334" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">1</text>
+      <text x="166" y="324" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="17" font-weight="700" fill="#1A365D">Multi-Head Self-Attention</text>
+      <text x="166" y="346" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">Every position attends to every position</text>
+    </g>
+
+    <g id="enc-sublayer-2">
+      <path fill="#F5F7FA" stroke="#1A365D" stroke-width="1.5" d="M118,372 H597 A8,8 0 0 1 605,380 V420 A8,8 0 0 1 597,428 H118 A8,8 0 0 1 110,420 V380 A8,8 0 0 1 118,372 Z" />
+      <circle cx="138" cy="400" r="14" fill="#1A365D" />
+      <text x="138" y="406" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">2</text>
+      <text x="166" y="396" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="17" font-weight="700" fill="#1A365D">Position-wise Feed Forward</text>
+      <text x="166" y="418" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">Two linear layers, ReLU between</text>
+    </g>
+
+    <text x="110" y="466" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">WRAPPER AROUND EACH SUB-LAYER</text>
+    <text x="110" y="492" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="15" fill="#1A202C">Output = LayerNorm( x + Sublayer(x) )</text>
+    <text x="110" y="514" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">— residual connection then layer normalization.</text>
+
+    <path fill="#F5F7FA" d="M118,544 H597 A8,8 0 0 1 605,552 V616 A8,8 0 0 1 597,624 H118 A8,8 0 0 1 110,616 V552 A8,8 0 0 1 118,544 Z" />
+    <text x="124" y="568" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#1A365D" letter-spacing="1.5">SHAPE CONTRACT</text>
+    <text x="124" y="592" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">All sub-layers and embeddings emit dimension <tspan font-family="Consolas, monospace" fill="#3182CE" font-weight="700">d_model = 512</tspan></text>
+    <text x="124" y="612" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">so residual addition is well-defined.</text>
+  </g>
+
+  <g id="card-decoder">
+    <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" d="M669,160 H1196 A14,14 0 0 1 1210,174 V646 A14,14 0 0 1 1196,660 H669 A14,14 0 0 1 655,646 V174 A14,14 0 0 1 669,160 Z" />
+    <path d="M 669 160 h 527 a 14 14 0 0 1 14 14 v 90 h -555 v -90 a 14 14 0 0 1 14 -14 Z" fill="#3182CE" />
+    <text x="932" y="212" text-anchor="middle" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="28" font-weight="700" fill="#FFFFFF">Decoder</text>
+    <text x="932" y="240" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" fill-opacity="0.9" letter-spacing="1">N = 6 IDENTICAL LAYERS · INSERTS A THIRD SUB-LAYER</text>
+
+    <g id="dec-sublayer-1">
+      <path fill="#FFFFFF" stroke="#3182CE" stroke-width="1.5" d="M693,300 H1172 A8,8 0 0 1 1180,308 V348 A8,8 0 0 1 1172,356 H693 A8,8 0 0 1 685,348 V308 A8,8 0 0 1 693,300 Z" />
+      <circle cx="713" cy="328" r="14" fill="#3182CE" />
+      <text x="713" y="334" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">1</text>
+      <text x="741" y="324" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="17" font-weight="700" fill="#1A365D"><tspan fill="#3182CE">Masked</tspan> Multi-Head Self-Attention</text>
+      <text x="741" y="346" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">Position i attends only to positions ≤ i</text>
+    </g>
+
+    <g id="dec-sublayer-2">
+      <path fill="#FFFFFF" stroke="#3182CE" stroke-width="2.5" d="M693,372 H1172 A8,8 0 0 1 1180,380 V420 A8,8 0 0 1 1172,428 H693 A8,8 0 0 1 685,420 V380 A8,8 0 0 1 693,372 Z" />
+      <circle cx="713" cy="400" r="14" fill="#3182CE" />
+      <text x="713" y="406" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">2</text>
+      <text x="741" y="396" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="17" font-weight="700" fill="#1A365D"><tspan fill="#3182CE">Encoder-Decoder</tspan> Attention</text>
+      <text x="741" y="418" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">Q from decoder · K, V from encoder output</text>
+    </g>
+
+    <g id="dec-sublayer-3">
+      <path fill="#F5F7FA" stroke="#3182CE" stroke-width="1.5" d="M693,444 H1172 A8,8 0 0 1 1180,452 V492 A8,8 0 0 1 1172,500 H693 A8,8 0 0 1 685,492 V452 A8,8 0 0 1 693,444 Z" />
+      <circle cx="713" cy="472" r="14" fill="#3182CE" />
+      <text x="713" y="478" text-anchor="middle" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">3</text>
+      <text x="741" y="468" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="17" font-weight="700" fill="#1A365D">Position-wise Feed Forward</text>
+      <text x="741" y="490" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">Same shape as encoder FFN</text>
+    </g>
+
+    <path fill="#EBF4FB" d="M693,528 H1172 A8,8 0 0 1 1180,536 V616 A8,8 0 0 1 1172,624 H693 A8,8 0 0 1 685,616 V536 A8,8 0 0 1 693,528 Z" />
+    <text x="699" y="552" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" font-weight="700" fill="#3182CE" letter-spacing="1.5">THREE ASYMMETRIES VS ENCODER</text>
+    <text x="699" y="578" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">· third sub-layer attends to encoder output</text>
+    <text x="699" y="598" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">· self-attention is masked (no peeking at future)</text>
+    <text x="699" y="618" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#1A202C">· output embeddings are offset by one position</text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, §3.1 Encoder and Decoder Stacks</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">06</text>
+  </g>
+</svg>

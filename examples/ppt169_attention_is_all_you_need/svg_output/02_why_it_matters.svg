@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="3" />
+      <feFlood flood-color="#1A365D" flood-opacity="0.07" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+  </g>
+
+  <g id="header">
+    <rect x="60" y="56" width="6" height="40" fill="#3182CE" />
+    <text x="84" y="88" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="36" font-weight="700" fill="#1A365D">A simpler model, better results, less training</text>
+    <text x="84" y="118" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1.5">WHY THIS PAPER MATTERS · 2017 SOTA ON WMT'14 TRANSLATION</text>
+  </g>
+
+  <g id="kpi-bleu-ende">
+    <rect x="60" y="160" width="285" height="240" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" />
+    <rect x="60" y="160" width="6" height="240" rx="3" fill="#1A365D" />
+    <use data-icon="tabler-outline/trophy" x="80" y="184" width="32" height="32" fill="#1A365D" />
+    <text x="80" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">EN → DE</text>
+    <text x="80" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">BLEU on WMT'14</text>
+    <text x="80" y="336" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#1A365D">28.4</text>
+    <use data-icon="tabler-outline/arrow-up-right" x="80" y="354" width="20" height="20" fill="#2F855A" />
+    <text x="106" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="700" fill="#2F855A">+2.0</text>
+    <text x="150" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">over prior ensembles</text>
+  </g>
+
+  <g id="kpi-bleu-enfr">
+    <rect x="365" y="160" width="285" height="240" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" />
+    <rect x="365" y="160" width="6" height="240" rx="3" fill="#3182CE" />
+    <use data-icon="tabler-outline/trophy" x="385" y="184" width="32" height="32" fill="#3182CE" />
+    <text x="385" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">EN → FR</text>
+    <text x="385" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">BLEU on WMT'14</text>
+    <text x="385" y="336" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="64" font-weight="700" fill="#3182CE">41.8</text>
+    <use data-icon="tabler-outline/star" x="385" y="354" width="20" height="20" fill="#2F855A" />
+    <text x="411" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#2F855A">new single-model SOTA</text>
+  </g>
+
+  <g id="kpi-training">
+    <rect x="670" y="160" width="285" height="240" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" />
+    <rect x="670" y="160" width="6" height="240" rx="3" fill="#1A365D" />
+    <use data-icon="tabler-outline/bolt" x="690" y="184" width="32" height="32" fill="#1A365D" />
+    <text x="690" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">TRAINING TIME</text>
+    <text x="690" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">Transformer (big)</text>
+    <text x="690" y="336" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="48" font-weight="700" fill="#1A365D">3.5 days</text>
+    <use data-icon="tabler-outline/cpu" x="690" y="354" width="20" height="20" fill="#4A5568" />
+    <text x="716" y="370" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">on 8× P100 GPUs</text>
+  </g>
+
+  <g id="kpi-no-rnn-cnn">
+    <rect x="975" y="160" width="245" height="240" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)" />
+    <rect x="975" y="160" width="6" height="240" rx="3" fill="#3182CE" />
+    <use data-icon="tabler-outline/eye" x="995" y="184" width="32" height="32" fill="#3182CE" />
+    <text x="995" y="246" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#4A5568" letter-spacing="1">ARCHITECTURE</text>
+    <text x="995" y="270" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="14" fill="#4A5568">building blocks</text>
+    <text x="995" y="316" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="40" font-weight="700" fill="#1A365D">Attention</text>
+    <text x="995" y="346" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-style="italic" fill="#4A5568">only</text>
+    <text x="995" y="376" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" fill="#4A5568">no recurrence · no convolution</text>
+  </g>
+
+  <g id="takeaway-band">
+    <rect x="60" y="450" width="1160" height="160" rx="12" fill="#F5F7FA" stroke="#E2E8F0" stroke-width="1" />
+    <rect x="60" y="450" width="6" height="160" rx="3" fill="#1A365D" />
+    <text x="100" y="490" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="13" font-weight="700" fill="#3182CE" letter-spacing="1.5">THE HEADLINE</text>
+    <text x="100" y="520" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#1A365D">
+      The Transformer reaches <tspan fill="#3182CE">new translation SOTA</tspan> while training
+    </text>
+    <text x="100" y="548" font-family="Georgia, &quot;Microsoft YaHei&quot;, serif" font-size="22" font-weight="700" fill="#1A365D">
+      in <tspan fill="#3182CE">a fraction of the time</tspan> of strong baselines.
+    </text>
+    <text x="100" y="580" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#4A5568">
+      Quality up · cost down · parallelization unlocked. The whole rest of the paper explains
+    </text>
+    <text x="100" y="602" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" fill="#4A5568">
+      how attention alone makes this possible — and why nothing else is needed.
+    </text>
+  </g>
+
+  <g id="footer">
+    <text x="60" y="694" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">Source: Vaswani et al. 2017, Table 2 (BLEU) and §5.2 (training cost)</text>
+    <text x="1220" y="694" text-anchor="end" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="11" fill="#A0AEC0">02</text>
+  </g>
+</svg>
