@@ -100,8 +100,8 @@ curl_cffi>=0.7.0
 # ─────────────────────────────────────────────────────────────
 # Gemini backend / Gemini 后端 (IMAGE_BACKEND=gemini)
 google-genai>=1.0.0
-# OpenAI-compatible backend / OpenAI 兼容后端 (IMAGE_BACKEND=openai)
-openai>=1.0.0
+# OpenAI-compatible backend uses requests from the web tooling section above.
+# OpenAI 兼容后端复用上方网页工具所需的 requests。
 
 # ─────────────────────────────────────────────────────────────
 # SVG Editor / SVG 编辑器 (skills/ppt-master/scripts/svg_editor/server.py)
