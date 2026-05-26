@@ -15,7 +15,7 @@ Configuration keys:
   OPENAI_MODERATION          (optional) auto or low for GPT image models
 
 Dependencies:
-  pip install openai Pillow
+  pip install requests Pillow
 """
 
 import sys
@@ -31,10 +31,11 @@ import time
 import threading
 from collections.abc import Mapping
 
-from openai import OpenAI
+import requests
 from image_backends.backend_common import (
     MAX_RETRIES,
     download_image,
+    http_error,
     is_rate_limit_error,
     normalize_image_size,
     resolve_output_path,
@@ -137,6 +138,7 @@ GPT_IMAGE_OUTPUT_EXTENSIONS = {
 }
 GPT_IMAGE_BACKGROUNDS = {"auto", "opaque", "transparent"}
 GPT_IMAGE_MODERATION_VALUES = {"auto", "low"}
+DEFAULT_BASE_URL = "https://api.openai.com/v1"
 
 
 def _field(value, name: str):
@@ -264,6 +266,29 @@ def _gpt_image_options(model: str) -> tuple[dict, str]:
     return options, output_ext
 
 
+def _image_generations_url(base_url: str | None) -> str:
+    return f"{(base_url or DEFAULT_BASE_URL).rstrip('/')}/images/generations"
+
+
+def _post_image_generation(api_key: str, base_url: str | None, request: dict) -> dict:
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    response = requests.post(
+        _image_generations_url(base_url),
+        headers=headers,
+        json=request,
+        timeout=300,
+    )
+    if not response.ok:
+        raise http_error(response, "OpenAI image generation")
+    try:
+        return response.json()
+    except ValueError as exc:
+        raise RuntimeError("OpenAI image generation returned invalid JSON.") from exc
+
+
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  Image Generation                                               ║
 # ╚══════════════════════════════════════════════════════════════════╝
@@ -283,8 +308,6 @@ def _generate_image(api_key: str, prompt: str,
     Raises:
         RuntimeError: When generation fails
     """
-    client = OpenAI(api_key=api_key, base_url=base_url)
-
     # Map parameters
     size = _select_size(model, aspect_ratio, image_size)
     quality = IMAGE_SIZE_TO_QUALITY.get(image_size, "auto")
@@ -335,7 +358,7 @@ def _generate_image(api_key: str, prompt: str,
     hb_thread.start()
 
     try:
-        resp = client.images.generate(**request)
+        resp = _post_image_generation(api_key, base_url, request)
     finally:
         heartbeat_stop.set()
         hb_thread.join(timeout=1)

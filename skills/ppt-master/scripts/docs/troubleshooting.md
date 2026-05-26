@@ -77,4 +77,4 @@ Important optional packages:
 - `Pillow` for image utilities
 - `numpy` for watermark removal
 - `PyMuPDF` for PDF conversion
-- `google-genai` / `openai` for image generation backends
+- `google-genai` for Gemini image generation
