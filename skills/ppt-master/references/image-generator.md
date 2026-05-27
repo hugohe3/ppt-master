@@ -455,7 +455,7 @@ The CLI iterates `items[]` with adaptive concurrency, writes `status` back per i
 
 **Configuration sources**:
 - Current process environment variables
-- First `.env` found in this order: current working directory, clone repo root, `~/.ppt-master/.env`
+- First `.env` found in this order: current working directory, skill directory (e.g. `~/.agents/skills/ppt-master/.env`), clone repo root, `~/.ppt-master/.env`
 
 Precedence:
 - Current process environment wins

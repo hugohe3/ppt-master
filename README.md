@@ -260,7 +260,7 @@ mkdir -p ~/.ppt-master
 cp /path/to/installed/ppt-master/.env.example ~/.ppt-master/.env
 ```
 
-PPT Master reads the current process environment first, then the first `.env` found in this order: current working directory, clone repo root, `~/.ppt-master/.env`.
+PPT Master reads the current process environment first, then the first `.env` found in this order: current working directory, skill directory (e.g. `~/.agents/skills/ppt-master/.env`), clone repo root, `~/.ppt-master/.env`.
 
 **A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
 
