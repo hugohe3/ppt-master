@@ -54,6 +54,7 @@ def get_env_candidates() -> list[Path]:
     """Return the supported .env lookup order."""
     return [
         Path.cwd() / '.env',
+        PROJECT_ROOT / '.env',
         REPO_ROOT / '.env',
         USER_ENV_FILE,
     ]
