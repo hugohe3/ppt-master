@@ -65,6 +65,7 @@ Configuration sources:
 1. Current process environment variables
 2. First `.env` found in this order:
    - Current working directory
+   - Skill directory (e.g. `~/.agents/skills/ppt-master/.env`)
    - Clone repo root
    - `~/.ppt-master/.env`
 
