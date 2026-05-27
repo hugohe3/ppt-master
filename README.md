@@ -95,6 +95,8 @@ Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPo
 >
 > **What you'll do**: install Python, install an AI IDE, drop in your material.
 
+> **Why it's shaped this way** — knowing how to use Python and AI agents will matter more and more. This project is meant to show how far you can go with just those two things. There's a learning curve if you're starting cold, but it's the curve worth climbing. Making a deck is just the excuse — what I'm really pushing is Python and agents.
+
 PPT Master is different:
 
 - **Real PowerPoint** — if a file can't be opened and edited in PowerPoint, it shouldn't be called a PPT. Every element PPT Master outputs is directly clickable and editable
