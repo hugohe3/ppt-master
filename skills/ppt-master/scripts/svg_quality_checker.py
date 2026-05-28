@@ -14,8 +14,9 @@ import sys
 import re
 import json
 import html
+from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from collections import defaultdict
 from xml.etree import ElementTree as ET
 
@@ -44,6 +45,91 @@ except ImportError:
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 SVG_NS = "http://www.w3.org/2000/svg"
+SVG_NUMBER_RE = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
+
+
+@dataclass(frozen=True)
+class _BBox:
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+
+    @property
+    def width(self) -> float:
+        return self.x2 - self.x1
+
+    @property
+    def height(self) -> float:
+        return self.y2 - self.y1
+
+    @property
+    def center_x(self) -> float:
+        return (self.x1 + self.x2) / 2
+
+    @property
+    def center_y(self) -> float:
+        return (self.y1 + self.y2) / 2
+
+    @property
+    def area(self) -> float:
+        return max(0.0, self.width) * max(0.0, self.height)
+
+    def union(self, other: "_BBox") -> "_BBox":
+        return _BBox(
+            min(self.x1, other.x1),
+            min(self.y1, other.y1),
+            max(self.x2, other.x2),
+            max(self.y2, other.y2),
+        )
+
+    def transformed(self, matrix: Tuple[float, float, float, float, float, float]) -> "_BBox":
+        points = (
+            _transform_point(matrix, self.x1, self.y1),
+            _transform_point(matrix, self.x2, self.y1),
+            _transform_point(matrix, self.x2, self.y2),
+            _transform_point(matrix, self.x1, self.y2),
+        )
+        xs = [point[0] for point in points]
+        ys = [point[1] for point in points]
+        return _BBox(min(xs), min(ys), max(xs), max(ys))
+
+
+@dataclass(frozen=True)
+class _LayoutItem:
+    label: str
+    tag: str
+    bbox: _BBox
+
+
+_IDENTITY_MATRIX: Tuple[float, float, float, float, float, float] = (
+    1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+)
+
+
+def _multiply_matrix(
+    left: Tuple[float, float, float, float, float, float],
+    right: Tuple[float, float, float, float, float, float],
+) -> Tuple[float, float, float, float, float, float]:
+    la, lb, lc, ld, le, lf = left
+    ra, rb, rc, rd, re, rf = right
+    return (
+        la * ra + lc * rb,
+        lb * ra + ld * rb,
+        la * rc + lc * rd,
+        lb * rc + ld * rd,
+        la * re + lc * rf + le,
+        lb * re + ld * rf + lf,
+    )
+
+
+def _transform_point(
+    matrix: Tuple[float, float, float, float, float, float],
+    x: float,
+    y: float,
+) -> Tuple[float, float]:
+    a, b, c, d, e, f = matrix
+    return a * x + c * y + e, b * x + d * y + f
 
 # Ramp envelope for font-size drift detection.
 # From design_spec_reference.md §IV — Font Size Hierarchy: the ramp spans
@@ -184,6 +270,16 @@ class SVGQualityChecker:
         "03_content": ("{{PAGE_TITLE}}",),
         "04_ending": (),  # ending pages legitimately use varied vocabularies
     }
+    LAYOUT_NON_VISUAL_TAGS = {
+        'defs', 'title', 'desc', 'metadata', 'style',
+        'clipPath', 'linearGradient', 'radialGradient',
+        'pattern', 'marker',
+    }
+    LAYOUT_CONTAINER_TAGS = {'g', 'svg', 'a'}
+    LAYOUT_WARNING_PREFIX = "Layout geometry:"
+    LAYOUT_OUTSIDE_TOLERANCE_PX = 4.0
+    LAYOUT_ALIGNMENT_TOLERANCE_PX = 8.0
+    LAYOUT_MAX_WARNINGS = 8
 
     def __init__(self, *, template_mode: bool = False):
         self.template_mode = template_mode
@@ -272,7 +368,10 @@ class SVGQualityChecker:
                 # 7. Check object-level animation anchor quality.
                 self._check_animation_group_ids(content, result)
 
-                # 7b. Check <pattern> elements declare a PPTX preset.
+                # 7b. Check deterministic layout geometry signals.
+                self._check_layout_geometry(content, result)
+
+                # 7c. Check <pattern> elements declare a PPTX preset.
                 self._check_pattern_fills(content, result)
 
                 # 8. Check spec_lock drift (colors / font-family / font-size).
@@ -619,6 +718,436 @@ class SVGQualityChecker:
                     f"Top-level visible <g> #{index} has no id; "
                     "object-level animation config cannot reference it"
                 )
+
+    def _check_layout_geometry(self, content: str, result: Dict):
+        """Warn on deterministic layout geometry signals.
+
+        This is intentionally conservative and warning-only: it catches
+        mechanical layout problems that are cheap to prove from SVG geometry,
+        while leaving subjective design judgment to visual-review / humans.
+        """
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        canvas = self._canvas_bbox(root, result)
+        if canvas is None:
+            return
+
+        seen: set[str] = set()
+        self._walk_layout_geometry(
+            root,
+            _IDENTITY_MATRIX,
+            "root",
+            canvas,
+            result,
+            seen,
+            check_bounds=True,
+        )
+
+    def _walk_layout_geometry(
+        self,
+        parent,
+        parent_matrix: Tuple[float, float, float, float, float, float],
+        parent_label: str,
+        canvas: _BBox,
+        result: Dict,
+        seen: set[str],
+        *,
+        check_bounds: bool = False,
+    ) -> None:
+        child_items = self._visible_child_items(parent, parent_matrix)
+        result['info']['layout_items'] = result['info'].get('layout_items', 0) + len(child_items)
+
+        if check_bounds:
+            for item in child_items:
+                self._check_canvas_bounds(item, canvas, result, seen)
+
+        self._check_sibling_alignment(parent_label, child_items, result, seen)
+
+        for index, child in enumerate(list(parent), start=1):
+            tag = self._local_tag(child)
+            if tag not in self.LAYOUT_CONTAINER_TAGS:
+                continue
+            child_matrix = _multiply_matrix(parent_matrix, self._parse_transform(child.get('transform')))
+            child_label = self._layout_label(child, index)
+            self._walk_layout_geometry(
+                child,
+                child_matrix,
+                child_label,
+                canvas,
+                result,
+                seen,
+            )
+
+    def _canvas_bbox(self, root, result: Dict) -> Optional[_BBox]:
+        viewbox = root.get('viewBox') or result.get('info', {}).get('viewbox')
+        if not viewbox:
+            return None
+        parts = [float(match) for match in SVG_NUMBER_RE.findall(viewbox)]
+        if len(parts) != 4:
+            return None
+        x, y, width, height = parts
+        if width <= 0 or height <= 0:
+            return None
+        return _BBox(x, y, x + width, y + height)
+
+    def _visible_child_items(
+        self,
+        parent,
+        parent_matrix: Tuple[float, float, float, float, float, float],
+    ) -> List[_LayoutItem]:
+        items: List[_LayoutItem] = []
+        for index, child in enumerate(list(parent), start=1):
+            tag = self._local_tag(child)
+            if tag in self.LAYOUT_NON_VISUAL_TAGS:
+                continue
+            bbox = self._element_bbox(child, parent_matrix)
+            if bbox is None or not self._is_layout_candidate(bbox):
+                continue
+            items.append(_LayoutItem(self._layout_label(child, index), tag, bbox))
+        return items
+
+    def _element_bbox(
+        self,
+        element,
+        parent_matrix: Tuple[float, float, float, float, float, float],
+    ) -> Optional[_BBox]:
+        tag = self._local_tag(element)
+        if tag in self.LAYOUT_NON_VISUAL_TAGS:
+            return None
+
+        matrix = _multiply_matrix(parent_matrix, self._parse_transform(element.get('transform')))
+        boxes: List[_BBox] = []
+
+        own = self._shape_bbox(element, tag)
+        if own is not None:
+            boxes.append(own.transformed(matrix))
+
+        for child in list(element):
+            child_bbox = self._element_bbox(child, matrix)
+            if child_bbox is not None:
+                boxes.append(child_bbox)
+
+        if not boxes:
+            return None
+        bbox = boxes[0]
+        for other in boxes[1:]:
+            bbox = bbox.union(other)
+        return bbox
+
+    def _shape_bbox(self, element, tag: str) -> Optional[_BBox]:
+        if tag in {'rect', 'image', 'use', 'svg'}:
+            x = self._svg_number(element.get('x'), default=0.0)
+            y = self._svg_number(element.get('y'), default=0.0)
+            width = self._svg_number(element.get('width'))
+            height = self._svg_number(element.get('height'))
+            if x is None or y is None or width is None or height is None:
+                return None
+            if width <= 0 or height <= 0:
+                return None
+            return _BBox(x, y, x + width, y + height)
+
+        if tag == 'circle':
+            cx = self._svg_number(element.get('cx'), default=0.0)
+            cy = self._svg_number(element.get('cy'), default=0.0)
+            r = self._svg_number(element.get('r'))
+            if cx is None or cy is None or r is None or r <= 0:
+                return None
+            return _BBox(cx - r, cy - r, cx + r, cy + r)
+
+        if tag == 'ellipse':
+            cx = self._svg_number(element.get('cx'), default=0.0)
+            cy = self._svg_number(element.get('cy'), default=0.0)
+            rx = self._svg_number(element.get('rx'))
+            ry = self._svg_number(element.get('ry'))
+            if cx is None or cy is None or rx is None or ry is None or rx <= 0 or ry <= 0:
+                return None
+            return _BBox(cx - rx, cy - ry, cx + rx, cy + ry)
+
+        if tag == 'line':
+            values = [
+                self._svg_number(element.get(name), default=0.0)
+                for name in ('x1', 'y1', 'x2', 'y2')
+            ]
+            if any(value is None for value in values):
+                return None
+            x1, y1, x2, y2 = values
+            return _BBox(min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2))
+
+        if tag in {'polygon', 'polyline'}:
+            numbers = [float(match) for match in SVG_NUMBER_RE.findall(element.get('points') or '')]
+            if len(numbers) < 4:
+                return None
+            xs = numbers[0::2]
+            ys = numbers[1::2]
+            return _BBox(min(xs), min(ys), max(xs), max(ys))
+
+        if tag == 'text':
+            x = self._svg_number(element.get('x'), default=0.0)
+            y = self._svg_number(element.get('y'), default=0.0)
+            if x is None or y is None:
+                return None
+            text = ''.join(element.itertext()).strip()
+            if not text:
+                return None
+            font_size = self._font_size(element)
+            width = max(font_size, len(text) * font_size * 0.55)
+            anchor = self._text_anchor(element)
+            if anchor == 'end':
+                x1, x2 = x - width, x
+            elif anchor == 'middle':
+                x1, x2 = x - width / 2, x + width / 2
+            else:
+                x1, x2 = x, x + width
+            return _BBox(x1, y - font_size, x2, y + font_size * 0.25)
+
+        return None
+
+    def _check_canvas_bounds(
+        self,
+        item: _LayoutItem,
+        canvas: _BBox,
+        result: Dict,
+        seen: set[str],
+    ) -> None:
+        bbox = item.bbox
+        if self._looks_like_decorative_bleed(item, canvas):
+            return
+        overflow = max(
+            canvas.x1 - bbox.x1,
+            canvas.y1 - bbox.y1,
+            bbox.x2 - canvas.x2,
+            bbox.y2 - canvas.y2,
+            0.0,
+        )
+        if overflow <= self.LAYOUT_OUTSIDE_TOLERANCE_PX:
+            return
+        self._append_layout_warning(
+            result,
+            seen,
+            f"bounds:{item.label}",
+            f"{item.label} bbox extends outside canvas by {overflow:.1f}px "
+            f"(bbox x={bbox.x1:.1f}, y={bbox.y1:.1f}, "
+            f"w={bbox.width:.1f}, h={bbox.height:.1f}; "
+            f"canvas {canvas.width:.0f}x{canvas.height:.0f})",
+        )
+
+    def _looks_like_decorative_bleed(self, item: _LayoutItem, canvas: _BBox) -> bool:
+        label = item.label.lower()
+        if any(token in label for token in ('background', 'decor', 'decoration', 'watermark')):
+            return True
+        if item.tag not in {'circle', 'ellipse', 'path', 'polygon', 'polyline'}:
+            return False
+        return item.bbox.area >= canvas.area * 0.12
+
+    def _check_sibling_alignment(
+        self,
+        parent_label: str,
+        items: List[_LayoutItem],
+        result: Dict,
+        seen: set[str],
+    ) -> None:
+        candidates = [item for item in items if item.bbox.width >= 24 and item.bbox.height >= 16]
+        if len(candidates) < 3:
+            return
+
+        for row in self._cluster_layout_items(candidates, axis='y'):
+            if len(row) < 3 or not self._similar_sizes(row):
+                continue
+            top_drift = max(item.bbox.y1 for item in row) - min(item.bbox.y1 for item in row)
+            if top_drift > self.LAYOUT_ALIGNMENT_TOLERANCE_PX:
+                self._append_layout_warning(
+                    result,
+                    seen,
+                    f"row-align:{parent_label}",
+                    f"{parent_label} row alignment drift is {top_drift:.1f}px "
+                    f"across {len(row)} similar siblings; align their top edges",
+                )
+                break
+            gaps = self._ordered_gaps(row, horizontal=True)
+            self._check_gap_variance(parent_label, gaps, "horizontal", result, seen)
+
+        for column in self._cluster_layout_items(candidates, axis='x'):
+            if len(column) < 3 or not self._similar_sizes(column):
+                continue
+            left_drift = max(item.bbox.x1 for item in column) - min(item.bbox.x1 for item in column)
+            if left_drift > self.LAYOUT_ALIGNMENT_TOLERANCE_PX:
+                self._append_layout_warning(
+                    result,
+                    seen,
+                    f"column-align:{parent_label}",
+                    f"{parent_label} column alignment drift is {left_drift:.1f}px "
+                    f"across {len(column)} similar siblings; align their left edges",
+                )
+                break
+            gaps = self._ordered_gaps(column, horizontal=False)
+            self._check_gap_variance(parent_label, gaps, "vertical", result, seen)
+
+    def _check_gap_variance(
+        self,
+        parent_label: str,
+        gaps: List[float],
+        axis_label: str,
+        result: Dict,
+        seen: set[str],
+    ) -> None:
+        if len(gaps) < 2:
+            return
+        gap_min = min(gaps)
+        gap_max = max(gaps)
+        gap_avg = sum(gaps) / len(gaps)
+        if gap_min < 0:
+            return
+        if gap_max - gap_min <= max(10.0, gap_avg * 0.35):
+            return
+        formatted_gaps = ", ".join(f"{gap:.1f}" for gap in gaps)
+        self._append_layout_warning(
+            result,
+            seen,
+            f"{axis_label}-spacing:{parent_label}",
+            f"{parent_label} {axis_label} spacing variance is "
+            f"{gap_max - gap_min:.1f}px across sibling gaps ({formatted_gaps})",
+        )
+
+    def _cluster_layout_items(self, items: List[_LayoutItem], *, axis: str) -> List[List[_LayoutItem]]:
+        if axis == 'y':
+            key = lambda item: item.bbox.center_y
+            span = lambda item: item.bbox.height
+        else:
+            key = lambda item: item.bbox.center_x
+            span = lambda item: item.bbox.width
+
+        clusters: List[List[_LayoutItem]] = []
+        for item in sorted(items, key=key):
+            if not clusters:
+                clusters.append([item])
+                continue
+            cluster = clusters[-1]
+            center_avg = sum(key(member) for member in cluster) / len(cluster)
+            span_avg = sum(span(member) for member in cluster) / len(cluster)
+            if abs(key(item) - center_avg) <= max(14.0, span_avg * 0.35):
+                cluster.append(item)
+            else:
+                clusters.append([item])
+        return clusters
+
+    def _ordered_gaps(self, items: List[_LayoutItem], *, horizontal: bool) -> List[float]:
+        if horizontal:
+            ordered = sorted(items, key=lambda item: item.bbox.x1)
+            return [
+                ordered[index + 1].bbox.x1 - ordered[index].bbox.x2
+                for index in range(len(ordered) - 1)
+            ]
+        ordered = sorted(items, key=lambda item: item.bbox.y1)
+        return [
+            ordered[index + 1].bbox.y1 - ordered[index].bbox.y2
+            for index in range(len(ordered) - 1)
+        ]
+
+    def _similar_sizes(self, items: List[_LayoutItem]) -> bool:
+        widths = [item.bbox.width for item in items]
+        heights = [item.bbox.height for item in items]
+        return (
+            self._within_ratio(widths, 0.30)
+            and self._within_ratio(heights, 0.30)
+        )
+
+    def _within_ratio(self, values: List[float], ratio: float) -> bool:
+        avg = sum(values) / len(values)
+        if avg <= 0:
+            return False
+        return max(values) - min(values) <= max(10.0, avg * ratio)
+
+    def _append_layout_warning(
+        self,
+        result: Dict,
+        seen: set[str],
+        key: str,
+        message: str,
+    ) -> None:
+        if key in seen:
+            return
+        current = sum(
+            1 for warning in result['warnings']
+            if warning.startswith(self.LAYOUT_WARNING_PREFIX)
+        )
+        if current >= self.LAYOUT_MAX_WARNINGS:
+            return
+        seen.add(key)
+        result['warnings'].append(f"{self.LAYOUT_WARNING_PREFIX} {message}")
+
+    def _is_layout_candidate(self, bbox: _BBox) -> bool:
+        return bbox.width >= 1.0 and bbox.height >= 1.0 and bbox.area >= 4.0
+
+    def _font_size(self, element) -> float:
+        direct = self._svg_number(element.get('font-size'))
+        if direct is not None:
+            return direct
+        style = element.get('style') or ''
+        match = re.search(r'font-size\s*:\s*([^;]+)', style)
+        if match:
+            styled = self._svg_number(match.group(1))
+            if styled is not None:
+                return styled
+        return 16.0
+
+    def _text_anchor(self, element) -> str:
+        direct = (element.get('text-anchor') or '').strip().lower()
+        if direct in {'start', 'middle', 'end'}:
+            return direct
+        style = element.get('style') or ''
+        match = re.search(r'text-anchor\s*:\s*([^;]+)', style)
+        if match:
+            styled = match.group(1).strip().lower()
+            if styled in {'start', 'middle', 'end'}:
+                return styled
+        return 'start'
+
+    def _parse_transform(
+        self,
+        transform: Optional[str],
+    ) -> Tuple[float, float, float, float, float, float]:
+        if not transform:
+            return _IDENTITY_MATRIX
+        matrix = _IDENTITY_MATRIX
+        for name, raw_args in re.findall(r'([a-zA-Z]+)\(([^)]*)\)', transform):
+            args = [float(match) for match in SVG_NUMBER_RE.findall(raw_args)]
+            name = name.lower()
+            local = _IDENTITY_MATRIX
+            if name == 'translate' and args:
+                tx = args[0]
+                ty = args[1] if len(args) > 1 else 0.0
+                local = (1.0, 0.0, 0.0, 1.0, tx, ty)
+            elif name == 'scale' and args:
+                sx = args[0]
+                sy = args[1] if len(args) > 1 else sx
+                local = (sx, 0.0, 0.0, sy, 0.0, 0.0)
+            elif name == 'matrix' and len(args) == 6:
+                local = tuple(args)  # type: ignore[assignment]
+            matrix = _multiply_matrix(matrix, local)
+        return matrix
+
+    def _svg_number(self, value: Optional[str], *, default: Optional[float] = None) -> Optional[float]:
+        if value is None:
+            return default
+        match = SVG_NUMBER_RE.match(str(value).strip())
+        if not match:
+            return default
+        try:
+            return float(match.group(0))
+        except ValueError:
+            return default
+
+    def _layout_label(self, element, index: int) -> str:
+        elem_id = element.get('id')
+        if elem_id:
+            return elem_id
+        return f"<{self._local_tag(element)}> #{index}"
+
+    def _local_tag(self, element) -> str:
+        return element.tag.split('}', 1)[-1]
 
     # OOXML ST_PresetPatternVal enum — anything outside this set produces a
     # PPTX schema violation ("PowerPoint found a problem with the content").
