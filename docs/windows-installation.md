@@ -111,6 +111,10 @@ With Python and `requirements.txt` installed, you already have everything needed
 
 **Fix 3** — Try `python3` or `py` instead.
 
+### A `python3` command fails (exit 49 / opens Microsoft Store)
+
+The python.org installer ships `python.exe` but not `python3.exe`. **Just replace `python3` with `python` in the command** (the AI agent usually switches to `python` and continues on its own too).
+
 ### `pip install` fails with permission errors
 
 ```powershell

@@ -114,6 +114,10 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 
 **方法 3** — 试试 `python3` 或 `py` 命令。
 
+### 命令里的 `python3` 报错（exit 49 / 弹 Microsoft Store）
+
+python.org 安装包只装了 `python.exe`，没有 `python3.exe`。**把命令里的 `python3` 换成 `python` 即可**（AI 通常也会自动改用 `python` 继续）。
+
 ### `pip install` 报权限错误
 
 ```powershell
