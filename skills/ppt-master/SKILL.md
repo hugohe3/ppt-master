@@ -62,6 +62,8 @@ description: >
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
+> **Windows note**: if a `python3 ...` command fails (common on python.org installs, which provide `python.exe` but not `python3.exe`), rerun the same command with `python` instead.
+
 ## Template Index
 
 | Index | Path | Purpose |
