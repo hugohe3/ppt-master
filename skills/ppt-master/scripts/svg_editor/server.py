@@ -19,6 +19,7 @@ Dependencies:
 
 import argparse
 import atexit
+import html
 import json
 import logging
 import os
@@ -53,6 +54,7 @@ from annotations import (  # noqa: E402
     assign_temp_ids,
     is_editable_attr,
     parse_annotations,
+    promote_tspan_to_text,
     set_annotation,
     set_attributes,
     set_text,
@@ -76,6 +78,11 @@ _SLIDE_CACHE: dict = {}  # path -> (mtime, (content, warnings))
 
 _LIST_CACHE_LOCK = threading.Lock()
 _LIST_CACHE: dict = {}  # path -> (mtime, annotation_count_on_disk)
+
+
+def _xml_attr(value: object) -> str:
+    """Escape a value for safe insertion into generated preview SVG markup."""
+    return html.escape(str(value), quote=True)
 
 
 def _cache_get(cache: dict, lock: threading.Lock, path: str, mtime: float):
@@ -181,8 +188,17 @@ def _inline_icons(content: str) -> tuple[str, list[dict]]:
         replacement = generate_icon_group(attrs, elements, style, base_size)
         id_match = re.search(r'\bid="([^"]+)"', use_str)
         if id_match:
+            preview_attrs = [
+                f'id="{_xml_attr(id_match.group(1))}"',
+                f'data-icon="{_xml_attr(icon_name)}"',
+            ]
+            for key in ('x', 'y', 'width', 'height'):
+                if key in attrs:
+                    preview_attrs.append(f'data-use-{key}="{_xml_attr(attrs[key])}"')
+            if 'transform' in attrs:
+                preview_attrs.append('data-use-has-transform="1"')
             replacement = replacement.replace(
-                '<g ', f'<g id="{id_match.group(1)}" data-icon="{icon_name}" ', 1,
+                '<g ', f'<g {" ".join(preview_attrs)} ', 1,
             )
         new_content = new_content[:match.start()] + replacement + new_content[match.end():]
     return new_content, warnings
@@ -219,6 +235,10 @@ def _validate_edit_attrs(attrs: dict, existing_attrs: set[str]) -> Optional[str]
             return f'attribute not editable: {key}'
         if key not in existing_attrs and key != 'transform' and key not in _ADDABLE_BATCH_ATTRS:
             return f'attribute does not exist on element: {key}'
+        if value is None:
+            if key not in existing_attrs:
+                return f'attribute does not exist on element: {key}'
+            continue
         if not isinstance(value, str):
             return f'value must be a string: {key}'
         if len(value) > _MAX_ATTR_VALUE_LEN:
@@ -262,6 +282,18 @@ def _apply_edit_record(root: ET.Element, record: dict) -> tuple[bool, Optional[s
     element_id = record.get('element_id')
     if not isinstance(element_id, str):
         return False, 'invalid-record'
+    promote = record.get('promote_tspan')
+    if promote:
+        if not isinstance(promote, dict):
+            return False, 'invalid-promote'
+        ok, reason = promote_tspan_to_text(
+            root,
+            element_id,
+            str(promote.get('x') or ''),
+            str(promote.get('y') or ''),
+        )
+        if not ok:
+            return ok, reason
     if 'text' in record:
         ok, reason = set_text(root, element_id, str(record.get('text') or ''))
         if not ok:
@@ -290,7 +322,8 @@ def _edit_signature(record: dict) -> tuple:
     collapses to one undo step; 'change fill then font-size' stays two.
     """
     attr_keys = tuple(sorted((record.get('attrs') or {}).keys()))
-    return (record.get('element_id'), 'text' in record, attr_keys)
+    promote_keys = tuple(sorted((record.get('promote_tspan') or {}).keys()))
+    return (record.get('element_id'), 'text' in record, attr_keys, promote_keys)
 
 
 def _coalesce_into(prev: dict, cur: dict) -> None:
@@ -307,6 +340,8 @@ def _coalesce_into(prev: dict, cur: dict) -> None:
         merged = dict(prev.get('attrs') or {})
         merged.update(cur['attrs'])
         prev['attrs'] = merged
+    if cur.get('promote_tspan'):
+        prev['promote_tspan'] = cur['promote_tspan']
     old_by_field = {(c['kind'], c['key']): c['old'] for c in prev['changes']}
     prev['changes'] = [
         {
@@ -624,7 +659,8 @@ def create_app(
 
         new_text = data.get('text')
         attrs = data.get('attrs')
-        if new_text is None and not attrs:
+        promote = data.get('promote_tspan')
+        if new_text is None and not attrs and not promote:
             return jsonify({'error': 'Nothing to edit (no text or attrs)'}), 400
 
         if new_text is not None:
@@ -633,6 +669,13 @@ def create_app(
         if attrs is not None:
             if not isinstance(attrs, dict):
                 return jsonify({'error': 'attrs must be an object'}), 400
+        if promote is not None:
+            if not isinstance(promote, dict):
+                return jsonify({'error': 'promote_tspan must be an object'}), 400
+            for key in ('x', 'y'):
+                value = promote.get(key)
+                if not isinstance(value, str) or not re.fullmatch(r'-?\d+(?:\.\d+)?', value):
+                    return jsonify({'error': f'invalid promote_tspan.{key}'}), 400
 
         try:
             tree = ET.parse(str(svg_file))
@@ -677,6 +720,27 @@ def create_app(
             for k, v in attrs.items():
                 changes.append({'kind': 'attr', 'key': k, 'old': old_attrs[k], 'new': v})
             staged['attrs'] = attrs
+        if promote:
+            tag = target.tag.split('}', 1)[1] if '}' in target.tag else target.tag
+            old_state = {
+                'tag': tag,
+                'x': target.get('x'),
+                'y': target.get('y'),
+                'dy': target.get('dy'),
+                'transform': target.get('transform'),
+            }
+            ok, reason = promote_tspan_to_text(root, element_id, promote['x'], promote['y'])
+            if not ok:
+                return jsonify({'error': f'Tspan promotion failed: {reason}'}), (
+                    404 if reason == 'not-found' else 400
+                )
+            changes.append({
+                'kind': 'structure',
+                'key': 'promote-tspan',
+                'old': old_state,
+                'new': {'tag': 'text', 'x': promote['x'], 'y': promote['y']},
+            })
+            staged['promote_tspan'] = promote
 
         staged['changes'] = changes
         pending = app.config['PENDING_EDITS'].setdefault(name, [])
