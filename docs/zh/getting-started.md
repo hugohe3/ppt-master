@@ -62,8 +62,8 @@
 生成过程中会自动打开浏览器预览 `http://localhost:5050`。
 
 - **实时看着每页渲染**出来。
-- **点选任意元素**,写一句要改成什么,点 **Submit annotations**。
-- **回到对话说一句"应用注解"(或 "apply my annotations")** —— AI 会改写那页 SVG 并重新导出 PPTX。
+- **直接改,无需 AI** —— 选中元素后在右栏改文字、颜色、字体、字号;拖拽即可移动,或用方向键微调(`Shift` = 10px),`Ctrl+Z` 撤销。改动即时预览,点 **Apply changes** 写回 `svg_output/`。
+- **或写注解交给 AI** —— 点选元素写一句要改成什么,点 **Submit annotations**,再回对话说"应用注解"(或 "apply my annotations"),AI 会改写那块区域并重新导出 PPTX。
 
 PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后融入的(建立在 [@WodenJay](https://github.com/WodenJay) 的 [PR #85](https://github.com/hugohe3/ppt-master/pull/85) 之上)。
 
