@@ -17,7 +17,7 @@ from .drawingml_utils import (
     rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
     parse_font_family, is_cjk_char, estimate_text_width,
-    _xml_escape,
+    parse_transform_matrix, _xml_escape,
 )
 from .drawingml_styles import (
     build_solid_fill, build_gradient_fill,
@@ -1143,6 +1143,28 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     box_w = text_width + padding * 2
     box_h = text_height + padding
 
+    text_transform = elem.get('transform', '')
+    if text_transform and 'rotate' not in text_transform and not ctx.use_transform_matrix:
+        try:
+            a, b, c, d, e, f = parse_transform_matrix(text_transform)
+        except Exception:
+            a, b, c, d, e, f = 1.0, 0.0, 0.0, 1.0, 0.0, 0.0
+        # A pure-translate transform on a text element (hand-authored, or written
+        # by a live-preview move) was otherwise ignored here, drifting the text.
+        # Absorb the translation into the frame position; a scaling transform
+        # would also need to scale font size / line metrics, so leave
+        # non-translate transforms alone.
+        if (
+            abs(a - 1.0) < 1e-9 and abs(b) < 1e-9
+            and abs(c) < 1e-9 and abs(d - 1.0) < 1e-9
+        ):
+            sx = ctx.scale_x or 1.0
+            sy = ctx.scale_y or 1.0
+            raw_box_x = (box_x - ctx.translate_x) / sx
+            raw_box_y = (box_y - ctx.translate_y) / sy
+            box_x = ctx.translate_x + sx * (a * raw_box_x + e)
+            box_y = ctx.translate_y + sy * (d * raw_box_y + f)
+
     # Letter spacing
     spc_attr = ''
     letter_spacing = _get_attr(elem, 'letter-spacing', ctx)
@@ -1159,7 +1181,6 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # box so its center lands where SVG would place the rotated visual center —
     # otherwise rotated y-axis labels etc. drift to the wrong location.
     text_rot = 0
-    text_transform = elem.get('transform', '')
     if text_transform:
         rot_match = re.search(
             r'rotate\(\s*([-\d.]+)(?:[\s,]+([-\d.]+)[\s,]+([-\d.]+))?',

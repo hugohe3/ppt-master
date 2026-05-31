@@ -248,6 +248,14 @@ html, body {
 .svg-selected {
     outline: 2px solid #4a9eff !important;
     outline-offset: 2px;
+    cursor: move;
+}
+
+/* While a drag is in progress, keep the move cursor everywhere so it does not
+   flicker to the hovered element's cursor as the pointer crosses other shapes. */
+body.svg-dragging,
+body.svg-dragging * {
+    cursor: move !important;
 }
 
 .svg-annotated {
@@ -849,6 +857,56 @@ input.prop-edit-multi-geo {
     background: rgba(74, 158, 255, 0.15);
     pointer-events: none;
     z-index: 11;
+}
+
+/* --- Overlap picker (right-click list of stacked elements) --- */
+#overlap-picker {
+    position: fixed;
+    z-index: 1100;
+    min-width: 180px;
+    max-width: 340px;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: #1f2430;
+    border: 1px solid #3a4252;
+    border-radius: 6px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    font-size: 12px;
+}
+
+.overlap-caption {
+    padding: 4px 8px 6px;
+    color: #8b94a7;
+    font-size: 11px;
+}
+
+.overlap-item {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.overlap-item:hover {
+    background: #2d3545;
+}
+
+.overlap-tag { color: #4a9eff; }
+.overlap-id { color: #e6e9ef; }
+.overlap-txt {
+    color: #8b94a7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Element highlighted while hovering its row in the overlap picker. */
+.overlap-hover {
+    outline: 2px solid #f59e0b !important;
+    outline-offset: 2px;
 }
 
 /* ======================== UTILITY ======================== */
