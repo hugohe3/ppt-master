@@ -172,6 +172,9 @@ yarn.lock
 *.lock
 .lock
 
+# Live preview direct-edit history (per-project, regenerated on edit)
+.live_edits.jsonl
+
 # Personal notes
 TODO.md
 PERSONAL_NOTES.md

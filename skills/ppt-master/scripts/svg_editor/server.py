@@ -51,9 +51,12 @@ if str(_FINALIZE_DIR) not in sys.path:
 
 from annotations import (  # noqa: E402
     assign_temp_ids,
+    is_editable_attr,
     parse_annotations,
     set_annotation,
-    remove_annotation,
+    set_attributes,
+    set_text,
+    strip_unused_temp_ids,
 )
 from embed_icons import (  # noqa: E402
     parse_use_element,
@@ -185,6 +188,100 @@ def _inline_icons(content: str) -> tuple[str, list[dict]]:
     return new_content, warnings
 
 
+# ---------------------------------------------------------------------------
+# Staged-edit value validation (POST /api/slide/<name>/edit).
+# The browser may expose raw element attributes, so validation protects only
+# invariants and dangerous value forms rather than a tiny style whitelist.
+# ---------------------------------------------------------------------------
+
+# Reject CSS-injection vectors in color-like values; mirrors frontend checks.
+_UNSAFE_COLOR_RE = re.compile(r'[;:@\\]|url\s*\(', re.IGNORECASE)
+# Generic SVG attribute names: namespaces, hyphenated attrs, and data-* attrs.
+_SAFE_ATTR_NAME_RE = re.compile(r'^[A-Za-z_][A-Za-z0-9_.:-]*$')
+_MAX_ATTR_VALUE_LEN = 256
+_MAX_EDIT_TEXT_LEN = 5000
+_ADDABLE_BATCH_ATTRS = frozenset({
+    'fill', 'stroke', 'opacity',
+    'font-size', 'font-family', 'font-weight', 'text-anchor',
+})
+
+
+def _is_safe_color(value: str) -> bool:
+    return len(value) < _MAX_ATTR_VALUE_LEN and not _UNSAFE_COLOR_RE.search(value)
+
+
+def _validate_edit_attrs(attrs: dict, existing_attrs: set[str]) -> Optional[str]:
+    """Return an error string if any attr/value is disallowed, else None."""
+    for key, value in attrs.items():
+        if not isinstance(key, str) or not _SAFE_ATTR_NAME_RE.match(key):
+            return f'invalid attribute name: {key}'
+        if not is_editable_attr(key):
+            return f'attribute not editable: {key}'
+        if key not in existing_attrs and key != 'transform' and key not in _ADDABLE_BATCH_ATTRS:
+            return f'attribute does not exist on element: {key}'
+        if not isinstance(value, str):
+            return f'value must be a string: {key}'
+        if len(value) > _MAX_ATTR_VALUE_LEN:
+            return f'value too long: {key}'
+        if key in ('fill', 'stroke', 'color', 'stop-color', 'flood-color', 'lighting-color'):
+            if not _is_safe_color(value):
+                return f'unsafe color value: {key}'
+        if key == 'transform' and re.search(r'nan|inf', value, re.IGNORECASE):
+            return f'invalid transform value: {key}'
+        if any(c in value for c in '<>"'):
+            return f'invalid value: {key}'
+        if re.search(r'javascript\s*:|data\s*:|url\s*\(', value, re.IGNORECASE):
+            return f'unsafe value: {key}'
+    return None
+
+
+_EDIT_LOG_NAME = '.live_edits.jsonl'
+
+
+def _append_edit_log(project_path: Path, record: dict) -> None:
+    """Append one applied edit record (old→new) to the project's history.
+
+    The on-disk JSONL is the durable trail the user can review to see exactly
+    what changed. Un-applied staged edits stay in memory only.
+    """
+    try:
+        with open(project_path / _EDIT_LOG_NAME, 'a', encoding='utf-8') as fh:
+            fh.write(json.dumps(record, ensure_ascii=False) + '\n')
+    except OSError as exc:
+        logger.warning('edit log append failed: %s', exc)
+
+
+def _find_by_id(root: ET.Element, element_id: str) -> Optional[ET.Element]:
+    for elem in root.iter():
+        if elem.get('id') == element_id:
+            return elem
+    return None
+
+
+def _apply_edit_record(root: ET.Element, record: dict) -> tuple[bool, Optional[str]]:
+    element_id = record.get('element_id')
+    if not isinstance(element_id, str):
+        return False, 'invalid-record'
+    if 'text' in record:
+        ok, reason = set_text(root, element_id, str(record.get('text') or ''))
+        if not ok:
+            return ok, reason
+    attrs = record.get('attrs')
+    if attrs:
+        ok, reason = set_attributes(root, element_id, attrs)
+        if not ok:
+            return ok, reason
+    return True, None
+
+
+def _apply_edit_records(root: ET.Element, records: list[dict]) -> tuple[bool, Optional[str]]:
+    for record in records:
+        ok, reason = _apply_edit_record(root, record)
+        if not ok:
+            return ok, reason
+    return True, None
+
+
 def create_app(
     project_dir: str,
     idle_timeout: int = 900,
@@ -205,6 +302,10 @@ def create_app(
 
     # In-memory annotation store: {filename: {element_id: annotation_text}}
     app.config['ANNOTATIONS'] = {}
+
+    # Per-file staged direct edits. They affect the browser preview immediately,
+    # but are written to svg_output/ only by /api/save-all.
+    app.config['PENDING_EDITS'] = {}
 
     # Idle timeout: auto-shutdown if no one connects within idle_timeout seconds
     app.config['LAST_REQUEST_TIME'] = time.time()
@@ -363,7 +464,10 @@ def create_app(
             logger.warning('stat failed: %s: %s', path_str, exc)
             return jsonify({'error': f'Failed to stat SVG: {exc}'}), 500
 
-        cached = _cache_get(_SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime)
+        pending_edits = app.config['PENDING_EDITS'].get(name) or []
+        cached = None if pending_edits else _cache_get(
+            _SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime,
+        )
         if cached is not None:
             content, warnings, disk_annotations, id_to_tag = cached
         else:
@@ -375,6 +479,10 @@ def create_app(
                 return jsonify({'error': f'Failed to parse SVG: {exc}'}), 500
 
             assign_temp_ids(root)
+            if pending_edits:
+                ok, reason = _apply_edit_records(root, pending_edits)
+                if not ok:
+                    return jsonify({'error': f'Failed to apply pending edits: {reason}'}), 500
             disk_annotations = parse_annotations(root)
             id_to_tag: dict[str, str] = {}
             for elem in root.iter():
@@ -386,10 +494,11 @@ def create_app(
                     id_to_tag[eid] = tag
             content = ET.tostring(root, encoding='unicode', xml_declaration=False)
             content, warnings = _inline_icons(content)
-            _cache_put(
-                _SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime,
-                (content, warnings, disk_annotations, id_to_tag),
-            )
+            if not pending_edits:
+                _cache_put(
+                    _SLIDE_CACHE, _SLIDE_CACHE_LOCK, path_str, mtime,
+                    (content, warnings, disk_annotations, id_to_tag),
+                )
 
         mem_annotations = app.config['ANNOTATIONS'].get(name, {})
         merged: dict[str, str] = {}
@@ -412,6 +521,7 @@ def create_app(
             'annotations': annotations_list,
             'warnings': warnings,
             'mtime': mtime,
+            'undo_depth': len(pending_edits),
         })
 
     @app.route('/api/slide/<name>/annotate', methods=['POST'])
@@ -457,13 +567,111 @@ def create_app(
             'annotations_count': len(annotations.get(name, {})),
         })
 
+    @app.route('/api/slide/<name>/edit', methods=['POST'])
+    def post_edit(name: str):
+        """Stage a direct (AI-free) edit to one element.
+
+        Body: ``{element_id, text?: str, attrs?: {fill, font-size, ...}}``.
+        The edit is visible in preview, but disk writes happen only in
+        /api/save-all alongside annotation persistence.
+        """
+        svg_file = _safe_svg_path(name)
+        if svg_file is None:
+            return jsonify({'error': 'Invalid slide name'}), 400
+        if not svg_file.exists():
+            return jsonify({'error': 'Slide not found'}), 404
+
+        data = request.get_json(silent=True) or {}
+        element_id = data.get('element_id')
+        if not isinstance(element_id, str) or not element_id or len(element_id) > 200:
+            return jsonify({'error': 'Missing or invalid element_id'}), 400
+
+        new_text = data.get('text')
+        attrs = data.get('attrs')
+        if new_text is None and not attrs:
+            return jsonify({'error': 'Nothing to edit (no text or attrs)'}), 400
+
+        if new_text is not None:
+            if not isinstance(new_text, str) or len(new_text) > _MAX_EDIT_TEXT_LEN:
+                return jsonify({'error': 'Invalid or too-long text'}), 400
+        if attrs is not None:
+            if not isinstance(attrs, dict):
+                return jsonify({'error': 'attrs must be an object'}), 400
+
+        try:
+            tree = ET.parse(str(svg_file))
+            root = tree.getroot()
+        except ET.ParseError as exc:
+            return jsonify({'error': f'Failed to parse SVG: {exc}'}), 500
+
+        assign_temp_ids(root)
+        pending = app.config['PENDING_EDITS'].get(name) or []
+        ok, reason = _apply_edit_records(root, pending)
+        if not ok:
+            return jsonify({'error': f'Failed to replay pending edits: {reason}'}), 500
+
+        # Locate the target up front to capture old values before mutating —
+        # these feed the staged record and eventual edit log.
+        target = _find_by_id(root, element_id)
+        if target is None:
+            return jsonify({'error': 'Element not found'}), 404
+        if attrs is not None:
+            attr_err = _validate_edit_attrs(attrs, set(target.attrib.keys()))
+            if attr_err:
+                return jsonify({'error': attr_err}), 400
+
+        changes = []
+        staged: dict = {'element_id': element_id}
+        if new_text is not None:
+            old_text = target.text or ''
+            ok, reason = set_text(root, element_id, new_text)
+            if not ok:
+                return jsonify({'error': f'Text edit failed: {reason}'}), (
+                    404 if reason == 'not-found' else 400
+                )
+            changes.append({'kind': 'text', 'key': None, 'old': old_text, 'new': new_text})
+            staged['text'] = new_text
+        if attrs:
+            old_attrs = {k: target.get(k) for k in attrs}
+            ok, reason = set_attributes(root, element_id, attrs)
+            if not ok:
+                return jsonify({'error': f'Attribute edit failed: {reason}'}), (
+                    404 if reason == 'not-found' else 400
+                )
+            for k, v in attrs.items():
+                changes.append({'kind': 'attr', 'key': k, 'old': old_attrs[k], 'new': v})
+            staged['attrs'] = attrs
+
+        staged['changes'] = changes
+        pending = app.config['PENDING_EDITS'].setdefault(name, [])
+        pending.append(staged)
+        return jsonify({'status': 'ok', 'undo_depth': len(pending)})
+
+    @app.route('/api/slide/<name>/undo', methods=['POST'])
+    def post_undo(name: str):
+        """Drop the most recent staged direct edit on this slide (LIFO)."""
+        svg_file = _safe_svg_path(name)
+        if svg_file is None:
+            return jsonify({'error': 'Invalid slide name'}), 400
+        if not svg_file.exists():
+            return jsonify({'error': 'Slide not found'}), 404
+
+        stack = app.config['PENDING_EDITS'].get(name) or []
+        if not stack:
+            return jsonify({'status': 'empty', 'undo_depth': 0})
+        stack.pop()
+        return jsonify({'status': 'ok', 'undo_depth': len(stack)})
+
     @app.route('/api/save-all', methods=['POST'])
     def save_all():
         annotations = app.config['ANNOTATIONS']
-        svg_dir = app.config['SVG_DIR']
+        pending_edits = app.config['PENDING_EDITS']
         modified = []
 
-        for filename, anns in annotations.items():
+        filenames = sorted(set(annotations.keys()) | set(pending_edits.keys()))
+        for filename in filenames:
+            anns = annotations.get(filename, {})
+            edits = pending_edits.get(filename, [])
             # anns may be empty when the user deleted all annotations — still
             # need to write so the on-disk data-edit-* attributes are cleared.
 
@@ -479,6 +687,10 @@ def create_app(
 
             assign_temp_ids(root)
 
+            ok, reason = _apply_edit_records(root, edits)
+            if not ok:
+                return jsonify({'error': f'Failed to apply edits in {filename}: {reason}'}), 400
+
             # Clear all existing annotations from the file before writing current state
             for elem in root.iter():
                 elem.attrib.pop('data-edit-target', None)
@@ -491,15 +703,21 @@ def create_app(
             # Only annotated elements need to keep their id so the AI can locate them
             # via check_annotations.py; the rest are pollution.
             annotated_ids = set(anns.keys())
-            for elem in root.iter():
-                eid = elem.get('id', '')
-                if eid.startswith('_edit_') and eid not in annotated_ids:
-                    elem.attrib.pop('id', None)
+            strip_unused_temp_ids(root, annotated_ids)
 
             tree.write(str(svg_file), encoding='UTF-8', xml_declaration=True)
+            ts = time.time()
+            for edit in edits:
+                for chg in edit.get('changes', []):
+                    _append_edit_log(project_path, {
+                        'ts': ts, 'file': filename, 'element_id': edit.get('element_id'),
+                        'action': 'edit', 'kind': chg.get('kind'), 'key': chg.get('key'),
+                        'old': chg.get('old'), 'new': chg.get('new'),
+                    })
             modified.append(filename)
 
         app.config['ANNOTATIONS'] = {}
+        app.config['PENDING_EDITS'] = {}
 
         return jsonify({'status': 'ok', 'files_modified': modified})
 
