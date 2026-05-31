@@ -2,7 +2,7 @@
 """PPT Master project management helpers.
 
 Usage:
-    python3 scripts/project_manager.py init <project_name> [--format ppt169] [--dir projects]
+    python3 scripts/project_manager.py init <project_name> [--format ppt169] [--dir <path>]
     python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
     python3 scripts/project_manager.py validate <project_path>
     python3 scripts/project_manager.py info <project_path>
@@ -112,8 +112,8 @@ class ProjectManager:
 
     CANVAS_FORMATS = CANVAS_FORMATS
 
-    def __init__(self, base_dir: str = "projects") -> None:
-        self.base_dir = Path(base_dir)
+    def __init__(self, base_dir: str | Path | None = None) -> None:
+        self.base_dir = Path(base_dir) if base_dir is not None else Path.cwd() / "projects"
 
     def init_project(
         self,
@@ -750,14 +750,14 @@ def print_usage() -> None:
     print(__doc__)
 
 
-def parse_init_args(argv: list[str]) -> tuple[str, str, str]:
+def parse_init_args(argv: list[str]) -> tuple[str, str, str | None]:
     """Parse arguments for the `init` subcommand."""
     if len(argv) < 3:
         raise ValueError("Project name is required")
 
     project_name = argv[2]
     canvas_format = "ppt169"
-    base_dir = "projects"
+    base_dir = None
 
     i = 3
     while i < len(argv):
