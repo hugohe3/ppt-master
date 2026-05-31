@@ -146,7 +146,10 @@ def convert_tbl(
             cell_xfrm = Xfrm(x=cell_x, y=cell_y, w=cell_w, h=cell_h)
             text_result = _convert_cell_text(
                 tx_body, tcPr, cell_xfrm, palette, theme_fonts,
+                id_prefix=f"{id_prefix}txt",
+                id_seq=grad_seq,
             )
+            defs.extend(text_result.defs)
             if text_result.svg:
                 body_parts.append(text_result.svg)
 
@@ -301,6 +304,9 @@ def _convert_cell_text(
     cell_xfrm: Xfrm,
     palette: ColorPalette | None,
     theme_fonts: dict[str, str] | None,
+    *,
+    id_prefix: str,
+    id_seq: list[int] | None,
 ):
     """Render cell text. PowerPoint's <a:tcPr> can override txBody insets via
     its own marL/marR/marT/marB attrs; convert_txbody reads from <a:bodyPr>,
@@ -317,6 +323,8 @@ def _convert_cell_text(
     try:
         return convert_txbody(
             tx_body, cell_xfrm, palette, theme_fonts=theme_fonts,
+            id_prefix=id_prefix,
+            id_seq=id_seq,
         )
     finally:
         if overrides and body_pr is not None:
