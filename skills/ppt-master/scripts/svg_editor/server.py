@@ -282,6 +282,42 @@ def _apply_edit_records(root: ET.Element, records: list[dict]) -> tuple[bool, Op
     return True, None
 
 
+def _edit_signature(record: dict) -> tuple:
+    """Identity used to coalesce consecutive staged edits.
+
+    Two edits fold together only when they touch the exact same element and the
+    exact same field set (text flag + sorted attr keys). 'Nudge fill 5×'
+    collapses to one undo step; 'change fill then font-size' stays two.
+    """
+    attr_keys = tuple(sorted((record.get('attrs') or {}).keys()))
+    return (record.get('element_id'), 'text' in record, attr_keys)
+
+
+def _coalesce_into(prev: dict, cur: dict) -> None:
+    """Fold cur's new values into prev, keeping prev's original old values.
+
+    Callers guarantee matching signatures, so prev and cur carry the same
+    (kind, key) change set; only the 'new' side advances. prev's 'old' is the
+    value from before the first edit in the run, which is what undo and the
+    edit log should report.
+    """
+    if 'text' in cur:
+        prev['text'] = cur['text']
+    if cur.get('attrs'):
+        merged = dict(prev.get('attrs') or {})
+        merged.update(cur['attrs'])
+        prev['attrs'] = merged
+    old_by_field = {(c['kind'], c['key']): c['old'] for c in prev['changes']}
+    prev['changes'] = [
+        {
+            'kind': c['kind'], 'key': c['key'],
+            'old': old_by_field.get((c['kind'], c['key']), c['old']),
+            'new': c['new'],
+        }
+        for c in cur['changes']
+    ]
+
+
 def create_app(
     project_dir: str,
     idle_timeout: int = 900,
@@ -644,7 +680,12 @@ def create_app(
 
         staged['changes'] = changes
         pending = app.config['PENDING_EDITS'].setdefault(name, [])
-        pending.append(staged)
+        # Coalesce a run of edits to the same element+fields into one undo step
+        # so repeated nudges/color tries don't pile up replay work or log noise.
+        if pending and _edit_signature(pending[-1]) == _edit_signature(staged):
+            _coalesce_into(pending[-1], staged)
+        else:
+            pending.append(staged)
         return jsonify({'status': 'ok', 'undo_depth': len(pending)})
 
     @app.route('/api/slide/<name>/undo', methods=['POST'])
