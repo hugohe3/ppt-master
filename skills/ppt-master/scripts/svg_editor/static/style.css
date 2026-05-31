@@ -530,6 +530,29 @@ html, body {
     background: #1e1e36;
 }
 
+.btn-undo {
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c0c0d8;
+    background: transparent;
+    border: 1px solid #3a3a5a;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-undo:hover:not(:disabled) {
+    color: #ffffff;
+    background: #2a2a4a;
+    border-color: #5a5a7a;
+}
+
+.btn-undo:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 /* ======================== MODAL ======================== */
 #modal-overlay {
     position: fixed;
@@ -648,6 +671,133 @@ html, body {
     vertical-align: middle;
     margin-right: 4px;
     border: 1px solid #3a3a5a;
+}
+
+/* --- Direct-edit controls --- */
+.prop-caption {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #6a8ec0;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.prop-section {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-size: 10px;
+    color: #8a8aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+}
+
+.prop-section:first-of-type {
+    margin-top: 0;
+}
+
+.prop-table .prop-ro {
+    color: #8a8aaa;
+}
+
+.prop-table .prop-note {
+    color: #8a8aaa;
+    font-family: inherit;
+    font-style: italic;
+}
+
+.prop-edit {
+    font-family: inherit;
+    color: #e0e0e0;
+    background: #1e1e36;
+    border: 1px solid #3a3a5a;
+    border-radius: 4px;
+    outline: none;
+    font-size: 12px;
+    transition: border-color 0.15s;
+}
+
+.prop-edit:focus {
+    border-color: #4a9eff;
+}
+
+textarea.prop-edit-content,
+textarea.prop-edit-attr-area {
+    width: 100%;
+    resize: vertical;
+    padding: 6px 8px;
+    line-height: 1.4;
+}
+
+input.prop-edit-attr {
+    width: 100%;
+    padding: 4px 6px;
+}
+
+input.prop-edit-number {
+    width: 72px;
+    padding: 4px 6px;
+}
+
+select.prop-edit-select {
+    width: 100%;
+    padding: 4px 6px;
+}
+
+input.prop-edit-color {
+    width: 30px;
+    height: 24px;
+    padding: 0;
+    vertical-align: middle;
+    cursor: pointer;
+    background: #1e1e36;
+}
+
+input.prop-edit-color-text {
+    width: calc(100% - 40px);
+    margin-left: 6px;
+    padding: 4px 6px;
+    vertical-align: middle;
+}
+
+input.prop-edit-batch,
+select.prop-edit-batch {
+    width: 100%;
+    padding: 4px 6px;
+}
+
+input.prop-edit-batch-color + input.prop-edit-batch {
+    width: calc(100% - 40px);
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+input.prop-edit-geo {
+    width: 56px;
+    padding: 4px 6px;
+    margin-right: 4px;
+}
+
+input.prop-edit-multi-geo {
+    width: 56px;
+    padding: 4px 6px;
+    margin-right: 4px;
+}
+
+.btn-select-group {
+    width: 100%;
+    padding: 5px 7px;
+    color: #d8e6ff;
+    background: #24365a;
+    border: 1px solid #3e5f98;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.btn-select-group:hover {
+    background: #2d4370;
 }
 
 .multi-el-list {
