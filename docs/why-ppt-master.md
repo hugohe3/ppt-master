@@ -81,7 +81,7 @@ Being honest about limitations:
 | **Setup required** | Install Python, clone repo, configure AI editor. Not a "open browser and go" experience. |
 | **Slower generation** | 10–20 min for a 10-page deck (serial page-by-page for cross-slide consistency). SaaS tools take seconds. |
 | **No collaboration** | Local files, no real-time co-editing, no share links. |
-| **No free-form canvas editor** | A browser preview with click-to-annotate (Flask live preview) is provided, but edits are still applied by the AI to the source SVG — no Gamma/Canva-style drag-and-drop canvas. |
+| **No full freeform canvas** | The browser live preview supports direct edits — select to change text/color/font/size, drag or arrow-key to reposition, with undo — plus click-to-annotate for AI rewrites. What it isn't is a full Gamma/Canva-style freeform canvas: no on-canvas resize handles, and re-exporting to PPTX stays a chat step. |
 
 **If you want zero-setup, instant slides in a browser** — Gamma and Canva are excellent choices.
 

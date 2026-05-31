@@ -62,8 +62,8 @@ Before it starts, the AI confirms a short design spec (template, format, page co
 A browser preview opens at `http://localhost:5050` while the deck is being generated.
 
 - **Watch pages render live** as the AI produces them.
-- **Click any element**, type what you want changed, and hit **Submit annotations**.
-- **Back in chat, say "apply my annotations"** — the AI rewrites that SVG and re-exports the PPTX.
+- **Edit directly, no AI** — select an element to change its text, color, font, or size in the side panel; drag it to reposition, or nudge with the arrow keys (`Shift` = 10px). `Ctrl+Z` undoes. Edits preview instantly and write to `svg_output/` when you click **Apply changes**.
+- **Or annotate for the AI** — click an element, type what you want changed, hit **Submit annotations**, then say "apply my annotations" in chat and the AI rewrites that region and re-exports the PPTX.
 
 PPT Master was chat-only by design; visual editing was folded in after enough users asked for it (built on [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85)).
 
