@@ -222,6 +222,23 @@
     var reloadBannerEl    = null;   // singleton banner element shown when currentSlide mtime drifts
     var editStackCount    = {};     // {name: staged edit count} — mirrors backend PENDING_EDITS
     var savedHintShown    = false;  // show the "staged edit" hint once per session
+    var annotationsDirty  = false;  // unsaved annotations added/removed this session
+
+    // Staged edits live in server memory until "Apply changes"; the server can
+    // still idle-timeout or be killed and drop them. Warn before the tab leaves
+    // so the user remembers to apply (browsers show their own generic prompt).
+    function hasUnsavedWork() {
+        if (annotationsDirty) return true;
+        return Object.keys(editStackCount).some(function (k) {
+            return editStackCount[k] > 0;
+        });
+    }
+    window.addEventListener("beforeunload", function (e) {
+        if (!hasUnsavedWork()) return undefined;
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+    });
 
     function currentSlideIndex() {
         if (!currentSlide) return -1;
@@ -848,6 +865,7 @@
                 ids.forEach(function (eid) {
                     slideAnnotations[eid] = text;
                 });
+                annotationsDirty = true;
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 annotationText.value = "";
@@ -871,6 +889,7 @@
             .then(function (res) { return res.json(); })
             .then(function () {
                 delete slideAnnotations[elementId];
+                annotationsDirty = true;
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 loadSlides();
@@ -1007,6 +1026,7 @@
                     modalMessage.textContent = t("modal_success_submit");
                     editStackCount = {};
                     savedHintShown = false;
+                    annotationsDirty = false;
                     updateUndoButton();
                     var activeSlide = currentSlide;
                     loadSlides().then(function () {
