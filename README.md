@@ -105,6 +105,16 @@ AI presentation tools roughly fall into four categories. PPT Master only does th
 
 ---
 
+## It's a tool
+
+PPT Master is a tool, the same way PowerPoint is a tool. With the same PowerPoint, a designer can produce something stunning while most people only ever touch a few basic features — the difference isn't the tool, it's the person using it.
+
+The examples above are all ones I made with it. If you can't get there yet, it's most likely that you haven't learned the workflow — start with [Getting Started](./docs/getting-started.md) and the example projects. For any tool, the person who knows how to use it usually matters more than the tool itself.
+
+The best results do need Claude. Before you call it expensive, think about what it would cost to hire someone to produce a deck at the same level. The project also supports GPT, Gemini, Kimi, and other models — the results simply differ. Expecting top-tier output while paying the lowest possible cost was never reasonable to begin with.
+
+---
+
 ## Built by Hugo He
 
 I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who regularly reviews and edits presentation decks. I wanted AI-generated slides to remain editable in PowerPoint, not flattened into images — so I built this.

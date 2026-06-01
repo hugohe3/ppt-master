@@ -121,6 +121,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger o
 
 > **没有 Claude 渠道？** 本项目赞助商 [PackyCode](https://www.packyapi.com/register?aff=ppt-master) 提供 Claude 及其他主流模型的按量付费接入——无需订阅，无需境外信用卡，支持国内支付，开箱即用。充值时填写优惠码 **`ppt-master`** 享 9 折。
 
+最后再说一句：这是一个免费、个人维护的开源项目。合用就用，能帮到你我很高兴；不合用，换个工具就好。真诚的反馈与建议始终欢迎——这也是项目一点点变好的方式。
+
 ## Q: 文字超出边框 / 元素错位怎么办？
 
 这几乎都是模型能力问题，不是 PPT Master 的 bug。SVG 排版是纯手动绝对定位——模型必须准确计算坐标、字体度量和容器尺寸。

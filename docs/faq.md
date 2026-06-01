@@ -119,6 +119,8 @@ If the results you've seen look mediocre, check your setup before concluding any
 
 > **No Claude access?** Project sponsor [PackyCode](https://www.packyapi.com/register?aff=ppt-master) provides pay-as-you-go access to Claude and other models — no subscription, no overseas card required. Use promo code **`ppt-master`** for 10% off.
 
+One last thing: this is a free, solo-maintained open-source project. If it fits your needs, use it — I'm glad it helps; if it doesn't, pick another tool. Sincere feedback and suggestions are always welcome, because that's how the project gets a little better over time.
+
 ## Q: Text overflows or elements are misaligned — what can I do?
 
 This is almost always a model capability issue, not a bug in PPT Master. SVG layout is essentially manual absolute positioning — the model must calculate coordinates, font metrics, and container sizes correctly.
