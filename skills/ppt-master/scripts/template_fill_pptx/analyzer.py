@@ -7,15 +7,21 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from .chart_read import empty_chart_data, read_chart_data
 from .ooxml import (
+    CHART_REL_TYPE,
     NS,
+    SlideRef,
     _chart_containers,
     _container_geometry,
     _emu_to_px,
+    _normalize_part,
     _paragraph_texts,
     _parse_slide_refs,
     _read_xml,
+    _qn,
     _shape_identity,
+    _slide_relationships,
     _table_containers,
     _text_containers,
 )
@@ -54,11 +60,23 @@ def _analyze_tables(slide_root: ET.Element, source_slide: int) -> list[dict[str,
     return tables
 
 
-def _analyze_charts(slide_root: ET.Element, source_slide: int) -> list[dict[str, Any]]:
+def _analyze_charts(zf: zipfile.ZipFile, slide_root: ET.Element, slide_ref: SlideRef) -> list[dict[str, Any]]:
     charts: list[dict[str, Any]] = []
+    relationships = _slide_relationships(zf, slide_ref.rels_name)
     for order, container in enumerate(_chart_containers(slide_root), start=1):
         shape_id, _shape_name = _shape_identity(container, order)
-        charts.append({"chart_id": f"s{source_slide:02d}_ch{shape_id}"})
+        chart = container.find(".//c:chart", NS)
+        rel_id = chart.attrib.get(_qn(NS["r"], "id")) if chart is not None else ""
+        payload: dict[str, Any] = {"chart_id": f"s{slide_ref.index:02d}_ch{shape_id}"}
+        payload.update(empty_chart_data())
+        rel = relationships.get(rel_id)
+        if rel and rel.get("type") == CHART_REL_TYPE:
+            chart_part = _normalize_part(rel["target"], slide_ref.part_name)
+            try:
+                payload.update(read_chart_data(_read_xml(zf, chart_part)))
+            except RuntimeError:
+                payload.update(empty_chart_data())
+        charts.append(payload)
     return charts
 
 
@@ -135,7 +153,7 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
                 )
 
             tables = _analyze_tables(slide_root, slide_ref.index)
-            charts = _analyze_charts(slide_root, slide_ref.index)
+            charts = _analyze_charts(zf, slide_root, slide_ref)
             slide_text = "\n".join(slot["text"] for slot in slots if slot["text"])
             slides.append(
                 {

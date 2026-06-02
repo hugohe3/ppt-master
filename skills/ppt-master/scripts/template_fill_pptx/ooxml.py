@@ -25,6 +25,10 @@ NS = {
 REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 CT_NS = "http://schemas.openxmlformats.org/package/2006/content-types"
 P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+C14_NS = "http://schemas.microsoft.com/office/drawing/2007/8/2/chart"
+C16_NS = "http://schemas.microsoft.com/office/drawing/2014/chart"
+C16R2_NS = "http://schemas.microsoft.com/office/drawing/2015/06/chart"
 
 SLIDE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
 NOTES_SLIDE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
@@ -41,6 +45,10 @@ PX_PER_INCH = 96
 for prefix, uri in NS.items():
     ET.register_namespace(prefix, uri)
 ET.register_namespace("", REL_NS)
+ET.register_namespace("mc", MC_NS)
+ET.register_namespace("c14", C14_NS)
+ET.register_namespace("c16", C16_NS)
+ET.register_namespace("c16r2", C16R2_NS)
 ET.register_namespace("p14", P14_NS)
 
 
