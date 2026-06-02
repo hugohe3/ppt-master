@@ -1,6 +1,6 @@
 # PPT Master — AI generates natively editable PPTX from any document
 
-[![Version](https://img.shields.io/badge/version-v2.8.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
+[![Version](https://img.shields.io/badge/version-v2.9.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 [![AtomGit stars](https://atomgit.com/hugohe3/ppt-master/star/badge.svg)](https://atomgit.com/hugohe3/ppt-master)
@@ -77,19 +77,9 @@ English | [中文](./README_CN.md)
 
 ---
 
-Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
+Drop in your source material and get back a **real PowerPoint**: directly editable, with native slide transitions and entrance animations, speaker notes you can turn into audio narration, and the option to follow your own PPT template — a complete deck you can present as-is and keep editing. How to use each capability → [Getting Started](./docs/getting-started.md).
 
 > **⚠️ PPT Master is a harness, not a complete agent.** `harness + model = agent` — the tool owns the workflow; the model sets the ceiling. To form a genuinely high-quality agent, use **Claude with a large context window (~1M tokens) + AI image generation (`gpt-image-2`)**. Other models can run the pipeline but cannot reach the same quality ceiling. If results disappoint, upgrade the model — don't blame the harness.
-
-> **Live Preview & Visual Edits** — during generation, a browser preview at `http://localhost:5050` opens automatically. Click any element, write what to change, hit **Submit annotations**, then return to the chat and say "apply my annotations" — the AI rewrites the SVG and re-exports the PPTX. Originally PPT Master was chat-only by design, but enough users asked for visual editing that we folded it in. Built on top of [@WodenJay](https://github.com/WodenJay)'s [PR #85](https://github.com/hugohe3/ppt-master/pull/85) — thank you. See [Live Preview Workflow →](./skills/ppt-master/workflows/live-preview.md).
-
-> **Template Replication** — hand the AI any `.pptx` you like and say "replicate it as a template via `/create-template`" — you get a layout set PPT Master can invoke directly. Theme colors, fonts, master/layout structure, reusable images, even sprite-sheet crop relationships are extracted straight from OOXML, so covers, chapter dividers and decoration-heavy pages all reproduce reliably. You're no longer limited to the built-in templates: a company brand deck, a client's winning template, or any high-quality reference can become a private template in your own library. See [Templates Guide →](./docs/templates-guide.md).
-
-> **Animations** — exported decks support **page transitions** and **per-element entrance animations** as real OOXML, not embedded video. By default, elements cascade in automatically on slide entry — no clicking needed. Plays natively in PowerPoint and Keynote, no extra tooling. See [Animations & Transitions →](./skills/ppt-master/references/animations.md).
-
-> **Narration & Video** — generate per-slide voice narration from the speaker notes (`edge-tts` by default, optional cloud TTS providers for high-quality narration), embed the audio back into the PPTX, and let PowerPoint export the deck as an MP4 video — synced narration + transitions, no third-party tools. See [Audio Narration & Video Export →](./docs/audio-narration.md).
->
-> **Voice Cloning** — bring your own cloned voice from ElevenLabs / MiniMax / Qwen / CosyVoice and have the entire deck narrated in *your* voice (or a presenter's, with permission). Clone once in the provider's console, then pass the `voice_id` — PPT Master reads every slide's notes in that voice and embeds the result back into the PPTX. See [Use a cloned voice →](./docs/audio-narration.md#use-a-cloned-voice).
 
 > **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
 >
@@ -112,6 +102,16 @@ AI presentation tools roughly fall into four categories. PPT Master only does th
 | Image-based | One large image per slide, packed into PPTX | ❌ each slide is a picture |
 | HTML presentation | Web-based deck | ❌ not a PPTX |
 | **Native editable (PPT Master)** | **Real DrawingML shapes, text boxes, charts** | ✅ click any element to edit |
+
+---
+
+## It's a tool
+
+PPT Master is a tool, the same way PowerPoint is a tool. With the same PowerPoint, a designer can produce something stunning while most people only ever touch a few basic features — the difference isn't the tool, it's the person using it.
+
+The examples above are all ones I made with it. If you can't get there yet, it's most likely that you haven't learned the workflow — start with [Getting Started](./docs/getting-started.md) and the example projects. For any tool, the person who knows how to use it usually matters more than the tool itself.
+
+The best results do need Claude. Before you call it expensive, think about what it would cost to hire someone to produce a deck at the same level. The project also supports GPT, Gemini, Kimi, and other models — the results simply differ. Expecting top-tier output while paying the lowest possible cost was never reasonable to begin with.
 
 ---
 
@@ -249,6 +249,8 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **Output:** Native-shapes `.pptx` (directly editable) saved to `exports/<name>_<timestamp>.pptx`. A copy of `svg_output/` is always snapshotted to `backup/<timestamp>/svg_output/` for re-export / archival. Pass `--svg-snapshot` to additionally emit an SVG-image preview pptx alongside the native pptx in `exports/` (see [FAQ](./docs/faq.md)). Requires Office 2016+.
 
+> **Already have a `.pptx` you want to reuse?** Hand the AI that deck plus your material and say "套模板" — it fills new content (text, table, and chart data) into your existing design and exports only the pages you pick, staying natively editable. See the [FAQ](./docs/faq.md) and [template-fill workflow](./skills/ppt-master/workflows/template-fill-pptx.md).
+
 > **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
 
 > **Something went wrong?** Check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
@@ -278,13 +280,11 @@ PPT Master reads the current process environment first, then the first `.env` fo
 
 | | Document | Description |
 |---|----------|-------------|
+| 📘 | [Getting Started](./docs/getting-started.md) | First deck in 3 steps, plus how to use templates, live preview, animations, narration, voice cloning (**new users start here**) |
 | 🆚 | [Why PPT Master](./docs/why-ppt-master.md) | How it compares to Gamma, Copilot, and other AI tools |
 | 🪟 | [Windows Installation](./docs/windows-installation.md) | Step-by-step setup guide for Windows users |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | Core workflow and rules |
-| 🎨 | [Templates Guide](./docs/templates-guide.md) | Use, derive (the focus), and template boundaries; covers `standard` vs `fidelity` modes |
 | 📐 | [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9, Xiaohongshu, WeChat, and 10+ formats |
-| 🎬 | [Animations & Transitions](./skills/ppt-master/references/animations.md) | Page transitions and per-element entrance animations |
-| 🎙️ | [Audio Narration & Video Export](./docs/audio-narration.md) | TTS narration in 90+ locales, embed audio, export as MP4 |
 | 🛠️ | [Scripts & Tools](./skills/ppt-master/scripts/README.md) | All scripts and commands |
 | 💼 | [Examples](./examples/README.md) | All example projects |
 | 🏗️ | [Technical Design](./docs/technical-design.md) | Architecture, design philosophy, why SVG |

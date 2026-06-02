@@ -121,6 +121,8 @@ uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on
 
 > **没有 Claude 渠道？** 本项目赞助商 [PackyCode](https://www.packyapi.com/register?aff=ppt-master) 提供 Claude 及其他主流模型的按量付费接入——无需订阅，无需境外信用卡，支持国内支付，开箱即用。充值时填写优惠码 **`ppt-master`** 享 9 折。
 
+最后再说一句：这是一个免费、个人维护的开源项目。合用就用，能帮到你我很高兴；不合用，换个工具就好。真诚的反馈与建议始终欢迎——这也是项目一点点变好的方式。
+
 ## Q: 文字超出边框 / 元素错位怎么办？
 
 这几乎都是模型能力问题，不是 PPT Master 的 bug。SVG 排版是纯手动绝对定位——模型必须准确计算坐标、字体度量和容器尺寸。
@@ -150,6 +152,14 @@ uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on
 可以。你可以**随时中断工作流**——前几页生成后就可以查看并反馈意见。AI 可以根据你的意见重新生成特定页面，不需要等到全部完成再修改。
 
 生成后的修正也一样简单，直接告诉 AI："第 3 页布局有问题——标题和图表重叠了"，它会修正那个特定的 SVG。
+
+## Q: 我已经有一份做好的 `.pptx`，能不能复用它的设计、只填新内容？
+
+可以——这就是 **套模板（template fill）** 路径，独立于 SVG 生成管线。把你现成的 `.pptx` 连同素材（或一个主题）给 AI，说「套模板 / 把这些填回去」。它会把你的 deck 当作原生页面库，只挑适合新内容的页面（可乱序、可重复），把新文字——以及原生表格单元格、图表数据——直接写回原始 OOXML。
+
+输出仍是 100% 原生可编辑的 PowerPoint：原设计、母版、图片、动画都保留，且只导出选中的页面。它刻意**不**改版式、不加页、不换图——一份 deck 的页面结构本身承载着逻辑（总分、对比、递进），所以应挑选结构本就契合内容的页面，而不是硬塞进去。若需要全新结构或不同页数，请改用 create-template（见下一问）。完整步骤：[套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。
+
+---
 
 ## Q: 如何制作自定义模板？
 

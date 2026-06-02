@@ -182,6 +182,13 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
     if fill_match:
         attrs['fill'] = fill_match.group(1)
 
+    # Live preview direct edits may write an absolute transform matrix back to
+    # the placeholder. Preserve it so the expanded icon matches the edited
+    # browser geometry instead of falling back to the original x/y placement.
+    transform_match = re.search(r'transform="([^"]+)"', use_match)
+    if transform_match:
+        attrs['transform'] = transform_match.group(1)
+
     # Extract optional stroke-width override (stroke-style icons only).
     # Tabler-outline ships at stroke-width=2; passing 1.5 reads thin, 3 reads bold.
     stroke_width_match = re.search(r'stroke-width="([^"]+)"', use_match)
@@ -214,7 +221,11 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
     scale_x = width / base_size
     scale_y = height / base_size
 
-    if abs(scale_x - 1) < 1e-6 and abs(scale_y - 1) < 1e-6:
+    if attrs.get('transform'):
+        # This transform is authoritative: the editor computes it from the
+        # expanded <g>, so composing it with x/y would apply placement twice.
+        transform = str(attrs['transform'])
+    elif abs(scale_x - 1) < 1e-6 and abs(scale_y - 1) < 1e-6:
         transform = f'translate({x}, {y})'
     elif abs(scale_x - scale_y) < 1e-6:
         transform = f'translate({x}, {y}) scale({scale_x})'

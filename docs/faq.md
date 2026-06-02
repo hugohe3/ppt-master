@@ -119,6 +119,8 @@ If the results you've seen look mediocre, check your setup before concluding any
 
 > **No Claude access?** Project sponsor [PackyCode](https://www.packyapi.com/register?aff=ppt-master) provides pay-as-you-go access to Claude and other models — no subscription, no overseas card required. Use promo code **`ppt-master`** for 10% off.
 
+One last thing: this is a free, solo-maintained open-source project. If it fits your needs, use it — I'm glad it helps; if it doesn't, pick another tool. Sincere feedback and suggestions are always welcome, because that's how the project gets a little better over time.
+
 ## Q: Text overflows or elements are misaligned — what can I do?
 
 This is almost always a model capability issue, not a bug in PPT Master. SVG layout is essentially manual absolute positioning — the model must calculate coordinates, font metrics, and container sizes correctly.
@@ -148,6 +150,14 @@ Split mode is a **compromise** — it pays ~6K tokens (re-reading SKILL.md) to d
 Yes. You can **interrupt the workflow at any time** — after the first few pages are generated, review them and give feedback. The AI can regenerate specific pages based on your comments. You don't need to wait until the end to make corrections.
 
 For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — the title overlaps the chart" and it will fix that specific SVG.
+
+## Q: I already have a finished `.pptx` — can I reuse its design and just fill in new content?
+
+Yes — this is the **template fill** route, separate from the SVG generation pipeline. Give the AI your existing `.pptx` plus your material (or a topic) and say "套模板" / "fill this back into the template". It treats your deck as a native slide library, lets you pick only the pages that fit the new story (reorder freely, and reuse one page for several output slides), and writes the new text — plus native table cells and chart data — straight into the original OOXML.
+
+The output stays 100% native-editable PowerPoint: the original design, layouts, images, and animations are preserved, and only the selected pages are exported. It deliberately does **not** change layouts, add pages, or swap images — a deck's page structure encodes its logic (lead-then-detail, comparison, progression), so pick pages whose structure already fits your content rather than forcing it in. For a fresh structure or a different page count, use create-template (next question) instead. Full steps: [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md).
+
+---
 
 ## Q: How do I create a custom template?
 

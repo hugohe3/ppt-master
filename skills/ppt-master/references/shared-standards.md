@@ -302,7 +302,7 @@ uv run scripts/total_md_split.py <project_path>
 # 2. SVG post-processing (icon embedding, image crop/embed, text flattening, rounded rect to path)
 uv run scripts/finalize_svg.py <project_path>
 
-# 3. Export PPTX (from svg_final/, embeds speaker notes by default)
+# 3. Export PPTX (embeds speaker notes by default)
 uv run scripts/svg_to_pptx.py <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output)

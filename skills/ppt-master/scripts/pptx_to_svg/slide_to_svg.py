@@ -321,13 +321,19 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
             default_fill=text_default_fill,
+            id_prefix=f"{ctx.group_id_prefix}txt",
+            id_seq=ctx.grad_seq,
         )
     else:
         text_result = convert_txbody(
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
             default_fill=text_default_fill,
+            id_prefix=f"{ctx.group_id_prefix}txt",
+            id_seq=ctx.grad_seq,
         ) if tx_body is not None else TextResult()
+    if text_result.defs:
+        ctx.defs.extend(text_result.defs)
 
     if is_vertical:
         # Vertical text: geometry + image in one group, text in separate group

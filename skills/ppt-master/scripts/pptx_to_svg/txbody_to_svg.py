@@ -29,6 +29,7 @@ from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
     NS, Xfrm, fmt_num, emu_to_px, hundredths_pt_to_px,
 )
+from .fill_to_svg import resolve_fill
 
 
 # ---------------------------------------------------------------------------
@@ -53,6 +54,7 @@ class TextRun:
     font_family: str  # full font-family stack (latin, ea fallback joined)
     fill: str
     fill_opacity: float = 1.0
+    defs: list[str] = field(default_factory=list)
     bold: bool = False
     italic: bool = False
     underline: bool = False
@@ -81,7 +83,7 @@ class TextResult:
     """Resolved text body ready for SVG emission.
 
     `svg` is one or more <text> elements, already absolutely positioned
-    inside the slide coordinate system. `defs` is empty for now.
+    inside the slide coordinate system. `defs` holds text gradient fills.
     """
 
     svg: str = ""
@@ -102,6 +104,8 @@ def convert_txbody(
     *,
     theme_fonts: dict[str, str] | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
+    id_prefix: str = "txt",
+    id_seq: list[int] | None = None,
 ) -> TextResult:
     """Convert <p:txBody> under the given shape geometry to SVG <text>(s)."""
     if tx_body is None:
@@ -110,6 +114,7 @@ def convert_txbody(
     body_pr = tx_body.find("a:bodyPr", NS)
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
+        id_prefix=id_prefix, id_seq=id_seq,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
         return TextResult()
@@ -159,7 +164,7 @@ def convert_txbody(
         if cursor_y >= bottom_y:
             break
 
-    return TextResult(svg="\n".join(text_blocks))
+    return TextResult(svg="\n".join(text_blocks), defs=_collect_text_defs(paragraphs))
 
 
 def is_vertical_txbody(tx_body: ET.Element | None, xfrm: Xfrm | None = None) -> bool:
@@ -180,6 +185,8 @@ def convert_vertical_txbody(
     *,
     theme_fonts: dict[str, str] | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
+    id_prefix: str = "txt",
+    id_seq: list[int] | None = None,
 ) -> TextResult:
     """Render East Asian vertical text as upright stacked glyphs.
 
@@ -193,6 +200,7 @@ def convert_vertical_txbody(
 
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
+        id_prefix=id_prefix, id_seq=id_seq,
     )
     runs = [
         run
@@ -250,7 +258,10 @@ def convert_vertical_txbody(
         return TextResult()
 
     attrs = _text_base_attrs(first_run, center_x, first_baseline, "middle")
-    return TextResult(svg=f"<text{attrs}>{''.join(spans)}</text>")
+    return TextResult(
+        svg=f"<text{attrs}>{''.join(spans)}</text>",
+        defs=_collect_text_defs(paragraphs),
+    )
 
 
 def _rotated_bbox(xfrm: Xfrm) -> tuple[float, float, float, float]:
@@ -321,6 +332,8 @@ def _parse_paragraphs(
     theme_fonts: dict[str, str],
     *,
     default_fill: str = DEFAULT_FILL_HEX,
+    id_prefix: str = "txt",
+    id_seq: list[int] | None = None,
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
     paragraphs: list[TextParagraph] = []
@@ -330,6 +343,7 @@ def _parse_paragraphs(
         para = _parse_paragraph(
             p_elem, palette, theme_fonts, autonum_state,
             default_fill=default_fill,
+            id_prefix=id_prefix, id_seq=id_seq,
         )
         paragraphs.append(para)
 
@@ -343,6 +357,8 @@ def _parse_paragraph(
     autonum_state: dict[int, int],
     *,
     default_fill: str = DEFAULT_FILL_HEX,
+    id_prefix: str = "txt",
+    id_seq: list[int] | None = None,
 ) -> TextParagraph:
     para = TextParagraph()
 
@@ -399,6 +415,7 @@ def _parse_paragraph(
             run = _build_run(
                 text, rpr, end_rpr, palette, theme_fonts,
                 default_fill=default_fill,
+                id_prefix=id_prefix, id_seq=id_seq,
             )
             para.runs.append(run)
         elif local == "br":
@@ -416,6 +433,7 @@ def _parse_paragraph(
                 run = _build_run(
                     text, rpr, end_rpr, palette, theme_fonts,
                     default_fill=default_fill,
+                    id_prefix=id_prefix, id_seq=id_seq,
                 )
                 para.runs.append(run)
 
@@ -430,6 +448,8 @@ def _build_run(
     theme_fonts: dict[str, str],
     *,
     default_fill: str = DEFAULT_FILL_HEX,
+    id_prefix: str = "txt",
+    id_seq: list[int] | None = None,
 ) -> TextRun:
     """Resolve a single <a:r> run from its rPr (with endParaRPr as default)."""
     # font-size: rPr@sz; default 1800 (18pt = 24px)
@@ -458,10 +478,24 @@ def _build_run(
     # Color
     fill = default_fill
     fill_opacity = 1.0
+    defs: list[str] = []
     color_source = None
     for src in (rpr, end_rpr):
         if src is None:
             continue
+        grad = src.find("a:gradFill", NS)
+        if grad is not None:
+            grad_fill = resolve_fill(
+                grad, palette,
+                id_prefix=id_prefix,
+                id_seq=id_seq,
+            )
+            if grad_fill.attrs.get("fill"):
+                fill = grad_fill.attrs["fill"]
+                fill_opacity = 1.0
+                defs.extend(grad_fill.defs)
+                color_source = None
+                break
         solid = src.find("a:solidFill", NS)
         if solid is not None:
             color_source = solid
@@ -491,6 +525,7 @@ def _build_run(
         font_family=font_family,
         fill=fill,
         fill_opacity=fill_opacity,
+        defs=defs,
         bold=bold,
         italic=italic,
         underline=underline,
@@ -649,6 +684,19 @@ def _has_visible_text(paragraphs: list[TextParagraph]) -> bool:
             if r.text.strip():
                 return True
     return False
+
+
+def _collect_text_defs(paragraphs: list[TextParagraph]) -> list[str]:
+    """Return unique text fill defs referenced by parsed runs."""
+    defs: list[str] = []
+    seen: set[str] = set()
+    for para in paragraphs:
+        for run in para.runs:
+            for item in run.defs:
+                if item not in seen:
+                    defs.append(item)
+                    seen.add(item)
+    return defs
 
 
 # ---------------------------------------------------------------------------
@@ -818,6 +866,7 @@ def _copy_run(run: TextRun, *, text: str) -> TextRun:
         font_family=run.font_family,
         fill=run.fill,
         fill_opacity=run.fill_opacity,
+        defs=list(run.defs),
         bold=run.bold,
         italic=run.italic,
         underline=run.underline,
