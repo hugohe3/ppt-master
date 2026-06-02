@@ -16,7 +16,16 @@ The short path to your first deck, how to use everything around it — templates
 
 **Optional.** By default PPT Master uses **free design** — you don't need a template, and you can skip to the next section. Reach for one only when a deck must reuse a fixed layout set or brand identity.
 
-**To reuse an existing PowerPoint, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a PPT Master template via create-template:
+**Two ways to reuse an existing `.pptx`, depending on what you want back:**
+
+| You want… | Route | What happens |
+|---|---|---|
+| **This exact deck, with new content** | Template fill | Picks the pages that fit (a page can be reused for several output slides), swaps text / table / chart data straight in the original file. Design, layouts, images, animations preserved; output is the same deck, natively editable. Fastest; bound to the existing layouts. |
+| **A new deck in this deck's style** | create-template | Parses the `.pptx` into a reusable style bundle, then generates a fresh deck through the SVG pipeline — new structure, any page count. More flexible; full regeneration. |
+
+For the first, give the AI your `.pptx` plus your material (or a topic) and say "套模板" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
+
+**To generate a new deck in an existing PowerPoint's style, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a PPT Master template via create-template:
 
 ```
 You: Replicate this as a template via /create-template: projects/brand/our_deck.pptx

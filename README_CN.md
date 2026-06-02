@@ -255,6 +255,8 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 > **输出说明：** 原生形状版 `.pptx`（可直接编辑）保存至 `exports/<name>_<timestamp>.pptx`；`svg_output/` 始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或后续重跑。加 `--svg-snapshot` 时，额外在 `exports/` 内并排生成 SVG 快照版 pptx（详见[常见问题](./docs/zh/faq.md)）。需要 Office 2016+。
 
+> **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
+
 > **AI 迷失上下文？** 让它先读 `skills/ppt-master/SKILL.md`。
 
 > **遇到问题？** 查看 **[常见问题](./docs/zh/faq.md)** — 涵盖模型选择、排版问题、导出异常等，基于真实用户反馈持续更新。
