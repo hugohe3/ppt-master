@@ -22,6 +22,10 @@ English | [中文](./README_CN.md)
   </tr>
 </table>
 
+> [!IMPORTANT]
+> ### This is a tool, not a wishing well
+> Don't expect it to hand you a finished, perfect deck in one shot. Its real value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. The cheaper the model, the more there is to do. How good the result turns out comes down to your skill with this project and with PowerPoint.
+
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
   <a href="https://www.hehugo.com/"><strong>About Hugo He</strong></a> ·
