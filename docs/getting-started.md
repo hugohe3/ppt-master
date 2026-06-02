@@ -23,7 +23,7 @@ The short path to your first deck, how to use everything around it — templates
 | **This exact deck, with new content** | Template fill | Picks the pages that fit (a page can be reused for several output slides), swaps text / table / chart data straight in the original file. Design, layouts, images, animations preserved; output is the same deck, natively editable. Fastest; bound to the existing layouts. |
 | **A new deck in this deck's style** | create-template | Parses the `.pptx` into a reusable style bundle, then generates a fresh deck through the SVG pipeline — new structure, any page count. More flexible; full regeneration. |
 
-For the first, give the AI your `.pptx` plus your material (or a topic) and say "套模板" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
+For the first, give the AI your `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" — see the [template-fill workflow](../skills/ppt-master/workflows/template-fill-pptx.md). The rest of this section covers create-template.
 
 **To generate a new deck in an existing PowerPoint's style, you must explicitly run the create-template flow — don't just hand over a `.pptx` and expect the AI to handle it.** The AI defaults to free design and won't switch into the template flow on its own; without an explicit trigger, generation easily goes off the rails. First turn that `.pptx` into a PPT Master template via create-template:
 

@@ -4,7 +4,7 @@ description: PPTX template fill workflow — use a native PowerPoint template de
 
 # Template Fill (PPTX) Workflow
 
-> Run when the user wants to fill new content into an existing deck — trigger phrases the user types include **"套模板"** / **"套一下"** / **"填回去"**. They provide an existing `.pptx` as a native template deck plus topic / text materials and want the content filled back into that deck's design while selecting only the pages that fit the new story (a source page may be reused for several output slides).
+> Run when the user wants to fill new content into an existing deck. Typical requests include "fill this deck with the new content", "fill this back into the template", or "reuse this deck's design". They provide an existing `.pptx` as a native template deck plus topic / text materials and want the content filled back into that deck's design while selecting only the pages that fit the new story (a source page may be reused for several output slides).
 
 This workflow is **independent** from the SVG generation pipeline. It treats the source PPTX as a native template / slide library, keeps the original PowerPoint design intact, and writes a new `.pptx` by cloning selected source slides and replacing text directly in OOXML.
 
@@ -14,12 +14,12 @@ Recognize any request that combines an existing PowerPoint with new content or a
 
 | Pattern | Example |
 |---|---|
-| Existing `.pptx` + "fill back" intent | "给你一份 PPT 和资料，帮我填回去" |
-| Existing `.pptx` + topic reuse | "根据这个主题重组这份 PPTX" |
-| Existing `.pptx` + selective reuse | "不要还原全部页面，只挑适合的页来套内容" |
-| Existing `.pptx` + copywriting replacement | "沿用原设计，把这些文字塞进去" |
-| Native PPT template fill | "用这份PPT模板套一下这篇内容" |
-| Direct wording | "套模板" / "帮我用这个PPT套一下" |
+| Existing `.pptx` + "fill back" intent | "Use this deck and fill in the attached material" |
+| Existing `.pptx` + topic reuse | "Rework this PPTX around the new topic" |
+| Existing `.pptx` + selective reuse | "Do not keep every page; only use the slides that fit" |
+| Existing `.pptx` + copywriting replacement | "Keep the original design and replace the copy with this text" |
+| Native PPT template fill | "Use this PowerPoint template for this content" |
+| Direct wording | "Fill this deck with the new content" |
 
 **Hard rule**: Do not run `pptx_to_svg.py`, `pptx_template_import.py`, `finalize_svg.py`, or `svg_to_pptx.py` for this workflow. SVG conversion is for presentation generation / template creation; this workflow is direct PowerPoint editing.
 
