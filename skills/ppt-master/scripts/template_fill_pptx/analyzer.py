@@ -94,6 +94,30 @@ def _slot_role(slot: dict[str, Any], order: int) -> str:
     return "label_candidate"
 
 
+def _font_size_px(container: ET.Element) -> float | None:
+    sizes: list[float] = []
+    for node in container.findall(".//a:rPr", NS) + container.findall(".//a:defRPr", NS):
+        raw_size = node.attrib.get("sz")
+        if not raw_size:
+            continue
+        try:
+            sizes.append(int(raw_size) / 100 * 96 / 72)
+        except ValueError:
+            continue
+    if not sizes:
+        return None
+    # Use the largest explicit run size as the conservative capacity baseline.
+    return round(max(sizes), 2)
+
+
+def _text_metrics(container: ET.Element, paragraph_count: int) -> dict[str, Any]:
+    font_size_px = _font_size_px(container)
+    return {
+        "font_size_px": font_size_px,
+        "paragraph_count": paragraph_count,
+    }
+
+
 def _classify_page_type(index: int, total: int, text: str, slots: list[dict[str, Any]]) -> str:
     normalized = text.lower()
     if index == 1:
@@ -149,6 +173,7 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
                         "text": text,
                         "paragraph_count": len(paragraphs),
                         "geometry": geometry,
+                        "text_metrics": _text_metrics(container, len(paragraphs)),
                     }
                 )
 
