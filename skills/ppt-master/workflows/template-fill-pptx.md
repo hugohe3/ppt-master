@@ -83,6 +83,20 @@ Read `<project_dir>/analysis/slide_library.json` and identify:
 
 A page's layout already encodes a rhetorical shape — a single hero statement, a lead-then-detail split, a 2×2 comparison, a stepwise progression, a metric row. Match the source material's own logic to a page whose structure expresses that same logic; do not pour unrelated content into a slot just because it is empty. When no selected page fits a piece of content well, drop that page or that content rather than forcing it — a forced fill reads as stiff. It is fine to use fewer pages than the source deck has.
 
+**Layout-first planning**: Treat `slide_library.json` as a layout inventory, not as an ordered deck outline. Before writing `fill_plan.json`, infer each reusable source page's affordance from JSON fields:
+
+| JSON signal | Layout planning use |
+|---|---|
+| `slides[].page_type` | Identify cover / TOC / chapter / ending candidates, but do not preserve their original order by default |
+| `slots[].role` counts | Infer whether the page is a hero statement, comparison, multi-card list, timeline, metric row, or dense explanation |
+| `slots[].geometry` | Estimate whether each text slot is a short label, medium title, body block, caption, or decorative number |
+| `slots[].text_metrics.font_size_px` | Estimate text capacity together with geometry; larger type means fewer safe characters |
+| `slots[].text_summary` | Read the source page's original rhetorical pattern, not its literal placeholder wording |
+
+**Hard rule**: The target story controls output order. Source slides may move forward, move backward, be omitted, or be reused several times when their layout matches multiple target messages. Never treat source slide order as a default outline unless the user explicitly asks to preserve it.
+
+**Required mapping pass**: Create a concise page-to-layout rationale in `<project_dir>/analysis/` before finalizing the plan. It can be JSON or Markdown, but it must record the intended target slide, chosen `source_slide`, and the layout reason (for example: `three-column strategy`, `two-problem contrast`, `timeline`, `metric focus`, `chapter divider`). This is evidence that selection came from template structure rather than sequential replacement.
+
 ---
 
 ## Step 4: Build the Fill Plan
@@ -95,7 +109,11 @@ python3 skills/ppt-master/scripts/template_fill_pptx.py scaffold "<project_dir>/
 
 Then edit `<project_dir>/analysis/fill_plan.json` by hand from the source material. The plan is the single execution contract.
 
-**Pages are reusable**: the output is the ordered `slides` list, not a one-to-one copy of the source deck. A source page is not single-use — list the same `source_slide` as many times as you need, each entry with its own `replacements`, to drive several output slides from one good layout (e.g., reuse a single content layout for five content pages). Likewise you may omit source pages entirely and put the selected ones in any order. The plan structure:
+**Pages are reusable**: the output is the ordered `slides` list, not a one-to-one copy of the source deck. A source page is not single-use — list the same `source_slide` as many times as you need, each entry with its own `replacements`, to drive several output slides from one good layout (e.g., reuse a single content layout for five content pages). Likewise you may omit source pages entirely and put the selected ones in any order.
+
+**Scaffold boundary**: `scaffold --slides` is only a convenience starter. If the final plan needs repeated source pages or a story order that differs from the template order, duplicate / reorder entries in `fill_plan.json` manually or generate the plan from `slide_library.json`; do not let scaffold output constrain the deck structure.
+
+The plan structure:
 
 ```json
 {
@@ -140,14 +158,14 @@ Then edit `<project_dir>/analysis/fill_plan.json` by hand from the source materi
 
 | Decision | Rule |
 |---|---|
-| `source_slide` | Repeat the same value across multiple entries to reuse one source layout for several output slides; order is free |
+| `source_slide` | Repeat the same value across multiple entries to reuse one source layout for several output slides; order is free and must follow the target story rather than source deck order |
 | `notes` | Optional spoken speaker notes for the filled slide — see **Speaker notes** below; write prose, not a copy of the on-slide text |
 | `transition` | Optional per-slide page transition; overrides the `apply --transition` default. Accepts an effect name (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`), `none` to strip it, or `{ "effect": "push", "duration": 0.6 }` |
 | `replacements` | Target by `slot_id` whenever possible; `shape_id` and `shape_name` are fallback selectors |
 | `table_edits` | Optional native table cell edits; target by `table_id` whenever possible and use zero-based `row` / `col` |
 | `chart_edits` | Optional native chart data edits; target by `chart_id`, set `categories`, and provide one or more `series` |
-| Short text | For labels / chapter names / directory items, new text should be no longer than the original slot text |
-| Body text | May be moderately freer than the original, but keep paragraph count and information density near the original slot |
+| Short text | For labels / chapter names / directory items, fit the slot's visual capacity from geometry and font size; do not rely on old placeholder length alone |
+| Body text | May be moderately freer than the original, but keep paragraph count, visual width, and information density near the slot's geometry capacity |
 | Empty slots | Use `scaffold --include-empty` only when a real placeholder is empty in the source deck |
 | Native tables | Keep the original table row and column count; this workflow edits existing cells, not table structure |
 | Native charts | Each series `values` list must match the category count; this workflow edits chart data, not chart styling |
@@ -159,6 +177,8 @@ Then edit `<project_dir>/analysis/fill_plan.json` by hand from the source materi
 - Chapter pages: use short section labels.
 - Dense content pages: compress material to bullets matching the existing slot capacity.
 - Decorative or image-heavy pages: avoid forcing long prose into label-sized slots.
+- Repeated source pages: every repeated entry must carry a distinct purpose and replacement set; avoid visual repetition unless the repeated layout expresses the same rhetorical pattern.
+- Reordered source pages: verify the new sequence reads as a coherent story; template page numbers, decorative section markers, and notes must be updated to match the output order.
 
 **Speaker notes (the `notes` field)** — distilled from the main pipeline's Logic Construction Phase, scaled to one note per planned slide:
 
@@ -193,12 +213,12 @@ Interpret the report:
 
 | Warning type | Action |
 |---|---|
-| Short label exceeds original length | Rewrite shorter; do not shrink font by default |
+| Short label exceeds visual width | Rewrite shorter or choose a layout with a larger label slot; do not shrink font by default |
 | Title too long | Rewrite first; only use font-size changes as a last resort |
 | Body much longer than source slot | Compress, split across another selected page, or choose a larger source page |
 | Missing target | Fix `slot_id` / `shape_id`; do not apply the plan |
 
-**Default fitting policy**: short text can be shorter but should not be longer; body text may be somewhat freer. Do not use per-item font shrinking as a default strategy because it breaks template consistency.
+**Default fitting policy**: Check fit against visual capacity, not raw character count. CJK characters, Latin letters, numbers, and punctuation occupy different visual widths; old placeholder text is only a weak signal. Use `capacity_visual_width` when present, together with `slots[].geometry` and `slots[].text_metrics.font_size_px`, to decide whether to rewrite, split, or choose a different source layout. Do not use per-item font shrinking as a default strategy because it breaks template consistency.
 
 ---
 

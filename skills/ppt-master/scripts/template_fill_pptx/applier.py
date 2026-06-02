@@ -16,6 +16,7 @@ from .chart_fill import (
     _max_chart_part_number,
     _max_embedding_part_number,
 )
+from .clone import _make_part_allocator, deep_clone_slide_private_parts
 from .notes import _find_notes_master_target, _slide_rels_with_notes
 from .ooxml import NS, REL_NS, SLIDE_REL_TYPE, _parse_slide_refs, _qn, _xml_bytes
 from .package import (
@@ -74,6 +75,7 @@ def apply_plan(
     next_rel_number = _max_numeric_rid(pres_rels_root) + 1
     next_chart_number = _max_chart_part_number(entries)
     next_embedding_number = _max_embedding_part_number(entries)
+    allocate_part = _make_part_allocator(entries)
 
     for offset, item in enumerate(plan_slides):
         source_slide = int(item.get("source_slide", 0))
@@ -116,6 +118,13 @@ def apply_plan(
 
         source_rels = entries.get(source_ref.rels_name)
         slide_rels_root = ET.fromstring(source_rels) if source_rels else _empty_relationships_root()
+        deep_clone_slide_private_parts(
+            slide_rels_root,
+            new_slide_part=new_part,
+            entries=entries,
+            content_root=content_root,
+            allocate=allocate_part,
+        )
         chart_edits = item.get("chart_edits", [])
         if not isinstance(chart_edits, list):
             raise RuntimeError(f"Slide {source_slide} chart_edits must be a list")

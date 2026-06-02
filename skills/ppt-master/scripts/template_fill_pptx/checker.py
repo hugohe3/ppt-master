@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import unicodedata
 from typing import Any
 
 from .selectors import (
     _chart_selectors,
-    _plain_len,
     _replacement_selectors,
     _replacement_text,
     _table_selectors,
@@ -55,27 +55,111 @@ def _chart_lookup(library: dict[str, Any]) -> dict[tuple[int, str], dict[str, An
     return lookup
 
 
-def _fit_status(
+def _visual_width(text: str) -> float:
+    """Estimate rendered text width in Latin-character units.
+
+    ``len(text)`` is too crude for mixed CJK / Latin decks: Chinese characters
+    generally consume about twice the horizontal space of ASCII letters, while
+    punctuation and digits are narrower. The checker only needs a conservative
+    fit signal, so use Unicode East Asian Width instead of a font-specific
+    renderer.
+    """
+    width = 0.0
+    for char in "".join(text.split()):
+        east_asian_width = unicodedata.east_asian_width(char)
+        if east_asian_width in {"F", "W"}:
+            width += 2.0
+        elif east_asian_width == "A":
+            width += 1.5
+        else:
+            width += 1.0
+    return width
+
+
+def _display_width(value: float) -> int | float:
+    return int(value) if value.is_integer() else round(value, 1)
+
+
+def _fallback_font_size_px(role: str, geometry: dict[str, Any], old_paragraphs: int) -> float:
+    height = geometry.get("height")
+    if isinstance(height, int) and old_paragraphs > 0:
+        inferred = height / max(old_paragraphs, 1) / 1.25
+        if 8 <= inferred <= 56:
+            return inferred
+    if role == "title_candidate":
+        return 28.0
+    if role == "body_candidate":
+        return 16.0
+    return 14.0
+
+
+def _geometry_capacity_width(
     *,
     role: str,
-    old_len: int,
-    new_len: int,
     old_paragraphs: int,
     new_paragraphs: int,
     geometry: dict[str, Any],
-) -> tuple[str, str]:
-    old_len = max(old_len, 1)
-    ratio = new_len / old_len
+    text_metrics: dict[str, Any],
+) -> float | None:
     width = geometry.get("width")
     height = geometry.get("height")
+    if not isinstance(width, int) or not isinstance(height, int) or width <= 0 or height <= 0:
+        return None
 
-    if role == "label_candidate" or (old_len <= 6 and old_paragraphs <= 1):
-        if new_len > old_len:
-            return "WARN", "short label exceeds original length; rewrite shorter"
-        return "OK", "short label fits original length"
+    font_size_px = text_metrics.get("font_size_px")
+    if not isinstance(font_size_px, (int, float)) or font_size_px <= 0:
+        font_size_px = _fallback_font_size_px(role, geometry, old_paragraphs)
+
+    line_height = max(font_size_px * 1.25, 1.0)
+    max_lines = max(int(height / line_height), old_paragraphs, new_paragraphs, 1)
+    horizontal_padding = 24 if width >= 180 else 12
+    usable_width = max(width - horizontal_padding, width * 0.72, 1)
+    latin_units_per_line = usable_width / max(font_size_px * 0.52, 1)
+    capacity = latin_units_per_line * max_lines
+
+    if role == "label_candidate":
+        return capacity * 0.7
+    if role == "title_candidate":
+        return capacity * 0.85
+    return capacity
+
+
+def _fit_status(
+    *,
+    role: str,
+    old_width: float,
+    new_width: float,
+    old_paragraphs: int,
+    new_paragraphs: int,
+    geometry: dict[str, Any],
+    text_metrics: dict[str, Any],
+) -> tuple[str, str]:
+    old_width = max(old_width, 1.0)
+    ratio = new_width / old_width
+    width = geometry.get("width")
+    height = geometry.get("height")
+    capacity_width = _geometry_capacity_width(
+        role=role,
+        old_paragraphs=old_paragraphs,
+        new_paragraphs=new_paragraphs,
+        geometry=geometry,
+        text_metrics=text_metrics,
+    )
+
+    if role == "label_candidate" or (old_width <= 8 and old_paragraphs <= 1):
+        if capacity_width is not None and new_width <= capacity_width and not (old_width <= 8):
+            return "OK", "short label fits estimated text-box capacity"
+        label_limit = old_width
+        if isinstance(width, int) and width >= 220:
+            label_limit = max(label_limit, old_width * 1.25)
+        if new_width > label_limit:
+            return "WARN", "short label exceeds original visual width; rewrite shorter"
+        return "OK", "short label fits original visual width"
 
     if role == "title_candidate" and old_paragraphs <= 1:
-        limit = 1.15 if old_len <= 8 else 1.35
+        if capacity_width is not None and new_width <= capacity_width:
+            return "OK", "title fits estimated text-box capacity"
+        limit = 1.15 if old_width <= 12 else 1.35
         if ratio > limit:
             return "WARN", "title is too long for the original slot; rewrite first"
         return "OK", "title stays near original capacity"
@@ -87,12 +171,36 @@ def _fit_status(
     if isinstance(width, int) and isinstance(height, int) and width * height < 30000 and ratio > 2.0:
         return "WARN", "small text box with much longer text; rewrite shorter"
 
+    if capacity_width is not None and new_width > capacity_width:
+        return "WARN", "text exceeds estimated text-box capacity; rewrite or split"
+
     # Body text reflows, so a moderate amount of extra length is fine; only flag
     # gross overflow. Labels / titles keep their tighter guards above.
     body_limit = 3.0 if role == "body_candidate" else 2.2
     if ratio > body_limit:
         return "WARN", "text is much longer than source slot; rewrite or choose another page"
     return "OK", "within estimated slot capacity"
+
+
+def _capacity_for_report(
+    *,
+    role: str,
+    old_width: float,
+    old_paragraphs: int,
+    new_paragraphs: int,
+    geometry: dict[str, Any],
+    text_metrics: dict[str, Any],
+) -> float | None:
+    capacity = _geometry_capacity_width(
+        role=role,
+        old_paragraphs=old_paragraphs,
+        new_paragraphs=new_paragraphs,
+        geometry=geometry,
+        text_metrics=text_metrics,
+    )
+    if capacity is None:
+        return None
+    return _display_width(max(capacity, old_width))
 
 
 def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
@@ -136,17 +244,26 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 continue
 
             old_text = str(slot.get("text") or "")
-            old_len = _plain_len(old_text)
-            new_len = _plain_len(text)
+            old_width = _visual_width(old_text)
+            new_width = _visual_width(text)
             old_paragraphs = int(slot.get("paragraph_count") or 1)
             new_paragraphs = max(len([line for line in text.splitlines() if line.strip()]), 1)
             status, message = _fit_status(
                 role=str(slot.get("role") or ""),
-                old_len=old_len,
-                new_len=new_len,
+                old_width=old_width,
+                new_width=new_width,
                 old_paragraphs=old_paragraphs,
                 new_paragraphs=new_paragraphs,
                 geometry=slot.get("geometry") or {},
+                text_metrics=slot.get("text_metrics") or {},
+            )
+            capacity_width = _capacity_for_report(
+                role=str(slot.get("role") or ""),
+                old_width=old_width,
+                old_paragraphs=old_paragraphs,
+                new_paragraphs=new_paragraphs,
+                geometry=slot.get("geometry") or {},
+                text_metrics=slot.get("text_metrics") or {},
             )
             summary["warn" if status == "WARN" else "ok"] += 1
             results.append(
@@ -156,9 +273,12 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                     "source_slide": source_slide,
                     "slot_id": slot.get("slot_id"),
                     "role": slot.get("role"),
-                    "old_len": old_len,
-                    "new_len": new_len,
-                    "ratio": round(new_len / max(old_len, 1), 2),
+                    "old_len": _display_width(old_width),
+                    "new_len": _display_width(new_width),
+                    "old_visual_width": _display_width(old_width),
+                    "new_visual_width": _display_width(new_width),
+                    "capacity_visual_width": capacity_width,
+                    "ratio": round(new_width / max(old_width, 1.0), 2),
                     "old_paragraphs": old_paragraphs,
                     "new_paragraphs": new_paragraphs,
                     "message": message,
