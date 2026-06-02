@@ -16,7 +16,16 @@
 
 **可选。** 默认走**自由设计**——不需要模板,可以直接跳到下一节。只有当 deck 必须复用一套固定版式或品牌时,才需要模板。
 
-**想让 deck 复用某份现成 PPT,必须显式走 create-template 流程——别直接丢个 `.pptx` 指望 AI 自动处理。** AI 默认走自由设计,不会主动切进创建模板的流程;不显式启动它,生成过程就容易错乱。先用 create-template 把那份 `.pptx` 复刻成 PPT Master 模板:
+**复用现成 `.pptx` 有两条路,取决于你想要什么结果:**
+
+| 你想要… | 路径 | 会发生什么 |
+|---|---|---|
+| **就要这份 deck,换成新内容** | 套模板(template fill) | 挑出合适的页面,把文字 / 表格 / 图表数据直接写回原文件。设计、版式、图片、动画都保留;输出就是同一份 deck,原生可编辑。最快;但受限于现有页面。 |
+| **基于这份 deck 的风格生成新 deck** | create-template | 把 `.pptx` 解析成可复用的风格资产包,再走 SVG 管线**重新生成**——结构自由、页数任意。更灵活;完整重建。 |
+
+前者:把 `.pptx` 连同素材(或一个主题)给 AI,说「套模板」——见 [套模板工作流](../../skills/ppt-master/workflows/template-fill-pptx.md)。本节其余部分讲 create-template。
+
+**想基于某份现成 PPT 的风格重新生成 deck,必须显式走 create-template 流程——别直接丢个 `.pptx` 指望 AI 自动处理。** AI 默认走自由设计,不会主动切进创建模板的流程;不显式启动它,生成过程就容易错乱。先用 create-template 把那份 `.pptx` 复刻成 PPT Master 模板:
 
 ```
 你：用 /create-template 把这个复刻成模板：projects/brand/our_deck.pptx
