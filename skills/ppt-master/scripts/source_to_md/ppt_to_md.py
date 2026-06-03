@@ -103,6 +103,20 @@ def escape_table_cell(value: str) -> str:
     return normalize_text(value).replace("|", r"\|") or " "
 
 
+def _safe_position(shape: object, attr: str) -> int:
+    """Read a shape's ``top`` / ``left`` EMU, tolerating broken inheritance.
+
+    A placeholder with no explicit position resolves it by walking up to its
+    master. A deck that ships notesSlides without a notesMaster (or any other
+    partial inheritance chain) makes python-pptx raise on that lookup, so treat
+    an unresolvable position as 0 rather than aborting the whole conversion.
+    """
+    try:
+        return int(getattr(shape, attr, 0) or 0)
+    except Exception:
+        return 0
+
+
 def iter_leaf_shapes(shapes: object) -> list[LeafShape]:
     """Return a flattened, reading-order list of shapes."""
     items: list[LeafShape] = []
@@ -113,8 +127,8 @@ def iter_leaf_shapes(shapes: object) -> list[LeafShape]:
         items.append(
             LeafShape(
                 shape=shape,
-                top=int(getattr(shape, "top", 0) or 0),
-                left=int(getattr(shape, "left", 0) or 0),
+                top=_safe_position(shape, "top"),
+                left=_safe_position(shape, "left"),
             )
         )
     items.sort(key=lambda item: (item.top, item.left))
