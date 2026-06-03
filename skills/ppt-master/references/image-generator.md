@@ -179,7 +179,7 @@ Use for: founder profile, speaker bio, testimonial page, executive intro. Pair w
 
 > The image's central content is one large text element — a short headline, big number, or single word — rendered as art, occupying 40-60% of canvas height. Minimal supporting visual (small icon, geometric anchor, accent line) at <25% weight. At least 20% padding around the text.
 
-Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D). Verify the rendered text in the output.
+Use with `text_policy: embedded`. Must obey the §5.3 rule — text that is part of the artwork and stable can be embedded; copy that must stay exact or editable goes to SVG overlay (switch to Primitive D).
 
 **Primitive D — atmospheric backdrop (no subject)**
 
@@ -326,7 +326,7 @@ Layer 1 text is rasterized into the artwork — once generated it cannot be edit
 | Part of the artwork and stable — decorative lettering, designed title, hand-lettered keyword, figure-internal identifiers (axis labels, panel letters, units) | Layer 1 (image) OK |
 | Page chrome, body copy, captions, data values — anything that must stay exact, searchable, or may be reworded | Layer 2 (SVG) |
 
-Generation is non-deterministic on every backend — **always verify the rendered text in the output** and regenerate if a glyph came out wrong. Do not assume a script or a length will fail; check the actual result. For §4.1 Primitive C (typographic hero) the word *is* the image, so verifying the output matters most there.
+Generation is non-deterministic on every backend, but **do not pre-judge by script or length** — never push text to SVG, shorten a headline, or downgrade `embedded` to `none` on the assumption that a particular script or a long string "won't render". Decide where text lives by the editability rule above, not by guessed rendering ability. Name the exact characters to bake literally in the prompt; do not re-read the generated image to verify them.
 
 **Prefer in-image**: text that is genuinely part of the artwork and will not be edited — a designed word, a stat lettering, a figure-internal label.
 
