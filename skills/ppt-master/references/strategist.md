@@ -465,6 +465,8 @@ Image_Generator reads these fields and applies them deck-wide. If both are absen
 
 After the user picks a candidate, scan the outline and surface any pages where the image makes more sense as the page's main voice than as a local block. Present them as a short list and let the user confirm, edit, or skip. Result is recorded as `page_role: hero_page` on the matching `ai` rows. Density is judgment-based — no fixed quota.
 
+**Per hero_page title**: lock where it lives — `embedded` (fused into the image: neon, carved, smoke, 3D-lit lettering) or `none` (editable SVG title over an atmospheric backdrop, Primitive D). Default `none`; flip to `embedded` only when the words must be *part of the visual*, not merely a display font. Per page — may bake only the keyword while subtitle / date / chrome stay SVG. Surface it with the hero_page list for the same confirm / edit / skip.
+
 **When selection includes B**, you must run `python3 scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
 
 **When B / C / D / E is selected**, add an image resource list to the spec:
