@@ -104,6 +104,7 @@ def convert_txbody(
     *,
     theme_fonts: dict[str, str] | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
+    default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextResult:
@@ -114,6 +115,7 @@ def convert_txbody(
     body_pr = tx_body.find("a:bodyPr", NS)
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
+        default_font_size_px=default_font_size_px,
         id_prefix=id_prefix, id_seq=id_seq,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
@@ -185,6 +187,7 @@ def convert_vertical_txbody(
     *,
     theme_fonts: dict[str, str] | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
+    default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextResult:
@@ -200,6 +203,7 @@ def convert_vertical_txbody(
 
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
+        default_font_size_px=default_font_size_px,
         id_prefix=id_prefix, id_seq=id_seq,
     )
     runs = [
@@ -332,6 +336,7 @@ def _parse_paragraphs(
     theme_fonts: dict[str, str],
     *,
     default_fill: str = DEFAULT_FILL_HEX,
+    default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> list[TextParagraph]:
@@ -343,6 +348,7 @@ def _parse_paragraphs(
         para = _parse_paragraph(
             p_elem, palette, theme_fonts, autonum_state,
             default_fill=default_fill,
+            default_font_size_px=default_font_size_px,
             id_prefix=id_prefix, id_seq=id_seq,
         )
         paragraphs.append(para)
@@ -357,6 +363,7 @@ def _parse_paragraph(
     autonum_state: dict[int, int],
     *,
     default_fill: str = DEFAULT_FILL_HEX,
+    default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextParagraph:
@@ -398,11 +405,12 @@ def _parse_paragraph(
             except ValueError:
                 pass
 
-        # Bullet / basic auto-numbering
         para.bullet_prefix = _resolve_bullet_prefix(p_pr, para.level, autonum_state)
 
     # Default endParaRPr style (applies if a run has no rPr)
     end_rpr = p_elem.find("a:endParaRPr", NS)
+    # defRPr from pPr (paragraph-level default; None when no pPr)
+    def_rpr = p_pr.find("a:defRPr", NS) if p_pr is not None else None
 
     for child in list(p_elem):
         if not isinstance(child.tag, str):
@@ -414,13 +422,16 @@ def _parse_paragraph(
             text = text_elem.text or "" if text_elem is not None else ""
             run = _build_run(
                 text, rpr, end_rpr, palette, theme_fonts,
+                def_rpr=def_rpr,
                 default_fill=default_fill,
+                default_font_size_px=default_font_size_px,
                 id_prefix=id_prefix, id_seq=id_seq,
             )
             para.runs.append(run)
         elif local == "br":
             para.runs.append(TextRun(
-                text="", font_size_px=DEFAULT_FONT_SIZE_PX,
+                text="",
+                font_size_px=default_font_size_px,
                 font_family="sans-serif", fill=default_fill,
                 is_break=True,
             ))
@@ -432,7 +443,9 @@ def _parse_paragraph(
             if text:
                 run = _build_run(
                     text, rpr, end_rpr, palette, theme_fonts,
+                    def_rpr=def_rpr,
                     default_fill=default_fill,
+                    default_font_size_px=default_font_size_px,
                     id_prefix=id_prefix, id_seq=id_seq,
                 )
                 para.runs.append(run)
@@ -447,27 +460,27 @@ def _build_run(
     palette: ColorPalette | None,
     theme_fonts: dict[str, str],
     *,
+    def_rpr: ET.Element | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
+    default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextRun:
-    """Resolve a single <a:r> run from its rPr (with endParaRPr as default)."""
-    # font-size: rPr@sz; default 1800 (18pt = 24px)
-    sz = _attr_chain((rpr, end_rpr), "sz")
-    font_size_px = hundredths_pt_to_px(sz, DEFAULT_FONT_SIZE_PX)
-
+    """Resolve a single <a:r> run from its rPr (with endParaRPr and defRPr as fallback)."""
+    # font-size: rPr@sz > pPr/defRPr@sz > endParaRPr@sz > default_font_size_px
+    sz = _attr_chain((rpr, def_rpr, end_rpr), "sz")
+    font_size_px = hundredths_pt_to_px(sz, default_font_size_px)
     # Bold / italic
-    bold = _attr_chain((rpr, end_rpr), "b") == "1"
-    italic = _attr_chain((rpr, end_rpr), "i") == "1"
-
+    bold = _attr_chain((rpr, def_rpr, end_rpr), "b") == "1"
+    italic = _attr_chain((rpr, def_rpr, end_rpr), "i") == "1"
     # Underline / strike
-    u_val = _attr_chain((rpr, end_rpr), "u")
+    u_val = _attr_chain((rpr, def_rpr, end_rpr), "u")
     underline = u_val not in (None, "", "none")
-    strike_val = _attr_chain((rpr, end_rpr), "strike")
+    strike_val = _attr_chain((rpr, def_rpr, end_rpr), "strike")
     strikethrough = strike_val in ("sngStrike", "dblStrike")
 
     # Letter spacing (rPr@spc, in 1/100 pt)
-    spc = _attr_chain((rpr, end_rpr), "spc")
+    spc = _attr_chain((rpr, def_rpr, end_rpr), "spc")
     letter_spacing_px = 0.0
     if spc is not None:
         try:
@@ -480,7 +493,7 @@ def _build_run(
     fill_opacity = 1.0
     defs: list[str] = []
     color_source = None
-    for src in (rpr, end_rpr):
+    for src in (rpr, def_rpr, end_rpr):
         if src is None:
             continue
         grad = src.find("a:gradFill", NS)
@@ -508,9 +521,9 @@ def _build_run(
             fill_opacity = alpha
 
     # Font typeface
-    latin_face = _typeface(rpr, "latin") or _typeface(end_rpr, "latin")
-    ea_face = _typeface(rpr, "ea") or _typeface(end_rpr, "ea")
-    cs_face = _typeface(rpr, "cs") or _typeface(end_rpr, "cs")
+    latin_face = _typeface(rpr, "latin") or _typeface(def_rpr, "latin") or _typeface(end_rpr, "latin")
+    ea_face = _typeface(rpr, "ea") or _typeface(def_rpr, "ea") or _typeface(end_rpr, "ea")
+    cs_face = _typeface(rpr, "cs") or _typeface(def_rpr, "cs") or _typeface(end_rpr, "cs")
 
     # Resolve theme refs (e.g. typeface="+mn-lt" / "+mj-ea")
     latin_face = _resolve_theme_typeface(latin_face, theme_fonts)
