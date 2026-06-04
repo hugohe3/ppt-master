@@ -163,7 +163,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 - `"Times New Roman"` ↔ `Times`
 - `Georgia` ↔ `Cambria`
 
-**Mandatory**: propose **two** combinations to the user — one concord (safe), one contrast (with tension). Do not default to "title = body, same font" without explicit user request.
+**Mandatory**: propose **two** combinations to the user — one concord (safe), one contrast (with tension). Do not default to "title = body, same font" without explicit user request. Pick each family by subject fit; `Microsoft YaHei` / `KaiTi` are safe choices, not the default look.
 
 > **Template precedence**: when a template was loaded at Step 3 via an explicit path and declares `title` / `body` font stacks in `<project_path>/templates/design_spec.md §III Typography` / §IV (or whichever heading the fused spec uses), lock those directly and skip the two-combination presentation. Same precedence as e. — user override > template values.
 
@@ -178,7 +178,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 | Mono | Consolas, Courier New |
 | Display | Impact, Arial Black |
 
-**Seed combinations** (all PPT-safe; first column names the contrast axis, not a scenario):
+**Seed combinations** (all PPT-safe; first column is the contrast axis, not a scenario) — starting points, not the allowed set. Any client-preinstalled family is fair game; non-pre-installed expressive faces go title-only (see note below).
 
 | Contrast axis | Title stack | Body stack | Code stack |
 |---|---|---|---|
@@ -191,7 +191,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 | Cool serif (academic) | `Cambria, SimSun, serif` | `"Times New Roman", SimSun, serif` | — |
 | Hei × song (政务) | `SimHei, "Microsoft YaHei", sans-serif` | `SimSun, serif` | — |
 | Tech / developer | `Arial, "Microsoft YaHei", sans-serif` | same | `Consolas, "Courier New", monospace` |
-| Concord (default fallback) | `"Microsoft YaHei", "PingFang SC", sans-serif` | same | — |
+| Concord (single family — pick the family by subject) | `"Microsoft YaHei", "PingFang SC", sans-serif` | same | — |
 
 > **Stack length discipline (soft rule).** ≤4 fonts per stack. Lead with Windows-preinstalled fonts (Microsoft YaHei / SimSun / Arial / Georgia / Consolas); keep at most **one** macOS-exclusive family (typically `"PingFang SC"`). Converter only picks the first Latin and first CJK font ([`drawingml_utils.py parse_font_family`](../scripts/svg_to_pptx/drawingml_utils.py)); macOS→Windows fallback is auto-mapped via `FONT_FALLBACK_WIN`.
 
@@ -199,6 +199,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 > - **Retro / pixel** — Press Start 2P / VT323 / Silkscreen
 > - **Rounded friendly** — Nunito / Quicksand / M PLUS Rounded / OPPO Sans (closest safe substitute: `Trebuchet MS` / `Verdana`)
 > - **Modern web sans** — Inter / HarmonyOS Sans / Source Han Sans / Noto Sans
+> - **Calligraphic display** — 隶书 LiSu / 华文行楷 STXingkai / 华文新魏 STXinwei (closest safe substitute: `KaiTi` / `FangSong`); cover / section / hero titles only, never body
 > - **Brand-specific** — McKinsey Bower, corporate VI typefaces
 
 #### Font Size Ramp (all sizes in px)

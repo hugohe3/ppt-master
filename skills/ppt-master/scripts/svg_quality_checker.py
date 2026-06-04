@@ -473,6 +473,7 @@ class SVGQualityChecker:
         # this set survives the PPTX round-trip on any viewer machine.
         ppt_safe_tail = {
             'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
+            'dengxian', 'microsoft jhenghei',
             'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
             'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
             'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
