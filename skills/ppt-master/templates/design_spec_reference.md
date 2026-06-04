@@ -277,7 +277,7 @@ Catalog read: 71 templates
 **text_policy** (`ai` rows only; AI judges per row, no global default bias):
 
 - `none` — image carries no text; SVG overlays all labels
-- `embedded` — image contains in-artwork text: decorative lettering, a designed title, hand-lettered keywords, or stable visual identifiers (axis labels, subplot letters, unit symbols). Body copy / data points / long quotes never go inside the image regardless — they must stay editable. Embedded text is frozen into the raster; verify the rendered text in the output
+- `embedded` — image contains in-artwork text: decorative lettering, a designed title, hand-lettered keywords, or stable visual identifiers (axis labels, subplot letters, unit symbols). Body copy / data points / long quotes never go inside the image regardless — they must stay editable. Embedded text is frozen into the raster, so the exact characters are named literally in the prompt
 
 **page_role** (`ai` rows only; leave blank for default):
 
@@ -303,11 +303,12 @@ Catalog read: 71 templates
 
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
 - **Title**: [Page title]
+- **Core message**: [the one thing this page exists to land — its spine. One per page; can't name it → merge or cut the page.]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
-- **Content**:
-  - [Point 1]
-  - [Point 2]
-  - [Point 3]
+- **Content** (instantiates the core message — items may stay parallel as evidence, but they sit under the one assertion above, never replace it):
+  - [Point]
+  - [Point]
+  - [Point]
 
 > **Visualization field**: add only when the page has data visualization or structured infographic elements. Type must be listed in §VII.
 

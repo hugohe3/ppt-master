@@ -22,6 +22,10 @@ English | [中文](./README_CN.md)
   </tr>
 </table>
 
+> [!IMPORTANT]
+> ### This is a tool, not a wishing well
+> Don't expect it to hand you a finished, perfect deck in one shot. Its real value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. The cheaper the model, the more there is to do. How good the result turns out comes down to your skill with this project and with PowerPoint.
+
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
   <a href="https://www.hehugo.com/"><strong>About Hugo He</strong></a> ·
@@ -105,11 +109,9 @@ AI presentation tools roughly fall into four categories. PPT Master only does th
 
 ---
 
-## It's a tool
+## The person using it matters more
 
-PPT Master is a tool, the same way PowerPoint is a tool. With the same PowerPoint, a designer can produce something stunning while most people only ever touch a few basic features — the difference isn't the tool, it's the person using it.
-
-The examples above are all ones I made with it. If you can't get there yet, it's most likely that you haven't learned the workflow — start with [Getting Started](./docs/getting-started.md) and the example projects. For any tool, the person who knows how to use it usually matters more than the tool itself.
+The examples above were all made in a single pass — I didn't even refine them; spend some time polishing and it's a different story entirely. With the same PowerPoint, a designer can produce something stunning while most people only ever touch a few basic features — the difference isn't the tool, it's the person using it. If you can't get there yet, it's most likely that you haven't learned the workflow — start with [Getting Started](./docs/getting-started.md) and the example projects.
 
 The best results do need Claude. Before you call it expensive, think about what it would cost to hire someone to produce a deck at the same level. The project also supports GPT, Gemini, Kimi, and other models — the results simply differ. Expecting top-tier output while paying the lowest possible cost was never reasonable to begin with.
 
@@ -249,7 +251,7 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **Output:** Native-shapes `.pptx` (directly editable) saved to `exports/<name>_<timestamp>.pptx`. A copy of `svg_output/` is always snapshotted to `backup/<timestamp>/svg_output/` for re-export / archival. Pass `--svg-snapshot` to additionally emit an SVG-image preview pptx alongside the native pptx in `exports/` (see [FAQ](./docs/faq.md)). Requires Office 2016+.
 
-> **Already have a `.pptx` you want to reuse?** Hand the AI that deck plus your material and say "套模板" — it fills new content (text, table, and chart data) into your existing design and exports only the pages you pick, staying natively editable. See the [FAQ](./docs/faq.md) and [template-fill workflow](./skills/ppt-master/workflows/template-fill-pptx.md).
+> **Already have a `.pptx` you want to reuse?** Hand the AI that deck plus your material and ask it to "fill this deck with the new content" — it fills text, table, and chart data into your existing design and exports only the pages you pick, staying natively editable. See the [FAQ](./docs/faq.md) and [template-fill workflow](./skills/ppt-master/workflows/template-fill-pptx.md).
 
 > **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
 
