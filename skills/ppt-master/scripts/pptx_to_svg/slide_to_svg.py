@@ -44,6 +44,7 @@ from .txbody_to_svg import (
     convert_txbody,
     convert_vertical_txbody,
     is_vertical_txbody,
+    DEFAULT_FONT_SIZE_PX,
 )
 
 
@@ -321,6 +322,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
             default_fill=text_default_fill,
+            default_font_size_px=DEFAULT_FONT_SIZE_PX,
             id_prefix=f"{ctx.group_id_prefix}txt",
             id_seq=ctx.grad_seq,
         )
@@ -329,6 +331,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
             default_fill=text_default_fill,
+            default_font_size_px=DEFAULT_FONT_SIZE_PX,
             id_prefix=f"{ctx.group_id_prefix}txt",
             id_seq=ctx.grad_seq,
         ) if tx_body is not None else TextResult()
