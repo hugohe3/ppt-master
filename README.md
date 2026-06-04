@@ -185,7 +185,7 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 | **IDE plugin / extension** | [GitHub Copilot](https://github.com/features/copilot), [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [Cline](https://cline.bot/), [Continue](https://continue.dev/), Roo Code, etc. | Installed inside hosts like VS Code or JetBrains |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), [Aider](https://aider.chat/), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
 
-> **Model recommendation**: prefer **Claude Opus / Sonnet** with a large context window and `gpt-image-2` for images — see the note above for why.
+> **Model recommendation**: for the best results, use **Claude Opus** with `gpt-image-2`; **Gemini 3.5 Flash** currently offers great overall value for money — notably fast and well worth a try.
 
 **🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** and **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** can help — both offer pay-as-you-go access to Claude, GPT, Gemini and more, no subscription required. **PackyCode**: 10% off with promo code **`ppt-master`** at top-up. **APIKEY.FUN**: prices as low as **7% of official rates**; register via our link for an exclusive permanent discount of up to 5% on top-ups.
 
