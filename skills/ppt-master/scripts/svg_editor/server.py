@@ -219,6 +219,7 @@ _MAX_EDIT_TEXT_LEN = 5000
 _ADDABLE_BATCH_ATTRS = frozenset({
     'fill', 'stroke', 'opacity',
     'font-size', 'font-family', 'font-weight', 'text-anchor',
+    'x', 'y',
 })
 
 
