@@ -44,6 +44,14 @@ EA_FONTS = {
     'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei',
     'YouYuan', 'LiSu', 'HuaWenKaiTi',
     'Songti SC', 'Songti TC',
+    # Windows 10/11 + Office default / common Simplified Chinese
+    'DengXian', 'DengXian Light', 'DengXian Bold', 'Microsoft YaHei UI',
+    # Office display Chinese (华文 / 方正) — usually title-only, not on every client
+    'STXingkai', 'STLiti', 'STXinwei', 'STHupo', 'STCaiyun',
+    'FZShuTi', 'FZYaoti',
+    # Common Traditional Chinese (Office)
+    'DFKai-SB', 'MingLiU', 'PMingLiU', 'MingLiU-ExtB', 'PMingLiU-ExtB',
+    'Microsoft JhengHei UI',
     # Japanese fonts (Windows-available)
     'Yu Gothic', 'Yu Gothic UI', 'Yu Mincho',
     'Meiryo', 'Meiryo UI', 'メイリオ',
