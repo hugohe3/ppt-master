@@ -17,7 +17,7 @@ Strategy (v1):
   so the visual lands without relying on PowerPoint list semantics.
 
 Color / font / size attributes propagate from a:rPr; missing attributes fall
-back to the paragraph's endParaRPr or to spec-default values.
+back to paragraph/list defaults, endParaRPr, or spec-default values.
 """
 
 from __future__ import annotations
@@ -105,6 +105,7 @@ def convert_txbody(
     theme_fonts: dict[str, str] | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
+    fallback_lst_styles: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextResult:
@@ -116,6 +117,7 @@ def convert_txbody(
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
         default_font_size_px=default_font_size_px,
+        fallback_lst_styles=fallback_lst_styles,
         id_prefix=id_prefix, id_seq=id_seq,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
@@ -188,6 +190,7 @@ def convert_vertical_txbody(
     theme_fonts: dict[str, str] | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
+    fallback_lst_styles: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextResult:
@@ -204,6 +207,7 @@ def convert_vertical_txbody(
     paragraphs = _parse_paragraphs(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
         default_font_size_px=default_font_size_px,
+        fallback_lst_styles=fallback_lst_styles,
         id_prefix=id_prefix, id_seq=id_seq,
     )
     runs = [
@@ -337,16 +341,23 @@ def _parse_paragraphs(
     *,
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
+    fallback_lst_styles: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
     paragraphs: list[TextParagraph] = []
     autonum_state: dict[int, int] = {}
+    lst_style = tx_body.find("a:lstStyle", NS)
+    lst_styles = (
+        (lst_style,) + fallback_lst_styles
+        if lst_style is not None else fallback_lst_styles
+    )
 
     for p_elem in tx_body.findall("a:p", NS):
         para = _parse_paragraph(
             p_elem, palette, theme_fonts, autonum_state,
+            lst_styles=lst_styles,
             default_fill=default_fill,
             default_font_size_px=default_font_size_px,
             id_prefix=id_prefix, id_seq=id_seq,
@@ -362,6 +373,7 @@ def _parse_paragraph(
     theme_fonts: dict[str, str],
     autonum_state: dict[int, int],
     *,
+    lst_styles: tuple[ET.Element, ...] = (),
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
@@ -371,46 +383,27 @@ def _parse_paragraph(
 
     p_pr = p_elem.find("a:pPr", NS)
     if p_pr is not None:
-        para.align = p_pr.attrib.get("algn", "l")
         try:
             para.level = int(p_pr.attrib.get("lvl", "0"))
         except ValueError:
             para.level = 0
-        try:
-            para.margin_left_px = emu_to_px(int(p_pr.attrib.get("marL", "0")))
-        except ValueError:
-            para.margin_left_px = 0.0
-        try:
-            para.indent_px = emu_to_px(int(p_pr.attrib.get("indent", "0")))
-        except ValueError:
-            para.indent_px = 0.0
-        ln_spc = p_pr.find("a:lnSpc", NS)
-        if ln_spc is not None:
-            spc_pct = ln_spc.find("a:spcPct", NS)
-            if spc_pct is not None:
-                try:
-                    para.line_height_ratio = float(spc_pct.attrib.get("val", "100000")) / 100000.0
-                except ValueError:
-                    pass
-        spc_bef = p_pr.find("a:spcBef/a:spcPts", NS)
-        if spc_bef is not None:
-            try:
-                para.space_before_px = hundredths_pt_to_px(int(spc_bef.attrib.get("val", "0")))
-            except ValueError:
-                pass
-        spc_aft = p_pr.find("a:spcAft/a:spcPts", NS)
-        if spc_aft is not None:
-            try:
-                para.space_after_px = hundredths_pt_to_px(int(spc_aft.attrib.get("val", "0")))
-            except ValueError:
-                pass
 
-        para.bullet_prefix = _resolve_bullet_prefix(p_pr, para.level, autonum_state)
+    para_style_chain = (p_pr,) + _lst_style_level_prs(lst_styles, para.level)
+    para.align = _attr_chain(para_style_chain, "algn") or "l"
+    para.margin_left_px = _emu_px_attr_chain(para_style_chain, "marL", 0.0)
+    para.indent_px = _emu_px_attr_chain(para_style_chain, "indent", 0.0)
+    para.line_height_ratio = _line_height_ratio(para_style_chain)
+    para.space_before_px = _spacing_points_px(para_style_chain, "a:spcBef/a:spcPts")
+    para.space_after_px = _spacing_points_px(para_style_chain, "a:spcAft/a:spcPts")
+    para.bullet_prefix = _resolve_bullet_prefix(
+        para_style_chain, para.level, autonum_state,
+    )
 
     # Default endParaRPr style (applies if a run has no rPr)
     end_rpr = p_elem.find("a:endParaRPr", NS)
-    # defRPr from pPr (paragraph-level default; None when no pPr)
+    # defRPr from pPr and txBody/lstStyle, both optional.
     def_rpr = p_pr.find("a:defRPr", NS) if p_pr is not None else None
+    list_def_rpr = _child_chain(para_style_chain[1:], "a:defRPr")
 
     for child in list(p_elem):
         if not isinstance(child.tag, str):
@@ -423,6 +416,7 @@ def _parse_paragraph(
             run = _build_run(
                 text, rpr, end_rpr, palette, theme_fonts,
                 def_rpr=def_rpr,
+                list_def_rpr=list_def_rpr,
                 default_fill=default_fill,
                 default_font_size_px=default_font_size_px,
                 id_prefix=id_prefix, id_seq=id_seq,
@@ -444,6 +438,7 @@ def _parse_paragraph(
                 run = _build_run(
                     text, rpr, end_rpr, palette, theme_fonts,
                     def_rpr=def_rpr,
+                    list_def_rpr=list_def_rpr,
                     default_fill=default_fill,
                     default_font_size_px=default_font_size_px,
                     id_prefix=id_prefix, id_seq=id_seq,
@@ -461,26 +456,28 @@ def _build_run(
     theme_fonts: dict[str, str],
     *,
     def_rpr: ET.Element | None = None,
+    list_def_rpr: ET.Element | None = None,
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextRun:
-    """Resolve a single <a:r> run from its rPr (with endParaRPr and defRPr as fallback)."""
-    # font-size: rPr@sz > pPr/defRPr@sz > endParaRPr@sz > default_font_size_px
-    sz = _attr_chain((rpr, def_rpr, end_rpr), "sz")
+    """Resolve a single <a:r> run from its rPr and fallback run properties."""
+    style_chain = (rpr, def_rpr, list_def_rpr, end_rpr)
+    # font-size: rPr > pPr/defRPr > lstStyle/lvlNpPr/defRPr > endParaRPr > default
+    sz = _attr_chain(style_chain, "sz")
     font_size_px = hundredths_pt_to_px(sz, default_font_size_px)
     # Bold / italic
-    bold = _attr_chain((rpr, def_rpr, end_rpr), "b") == "1"
-    italic = _attr_chain((rpr, def_rpr, end_rpr), "i") == "1"
+    bold = _attr_chain(style_chain, "b") == "1"
+    italic = _attr_chain(style_chain, "i") == "1"
     # Underline / strike
-    u_val = _attr_chain((rpr, def_rpr, end_rpr), "u")
+    u_val = _attr_chain(style_chain, "u")
     underline = u_val not in (None, "", "none")
-    strike_val = _attr_chain((rpr, def_rpr, end_rpr), "strike")
+    strike_val = _attr_chain(style_chain, "strike")
     strikethrough = strike_val in ("sngStrike", "dblStrike")
 
     # Letter spacing (rPr@spc, in 1/100 pt)
-    spc = _attr_chain((rpr, def_rpr, end_rpr), "spc")
+    spc = _attr_chain(style_chain, "spc")
     letter_spacing_px = 0.0
     if spc is not None:
         try:
@@ -493,7 +490,7 @@ def _build_run(
     fill_opacity = 1.0
     defs: list[str] = []
     color_source = None
-    for src in (rpr, def_rpr, end_rpr):
+    for src in style_chain:
         if src is None:
             continue
         grad = src.find("a:gradFill", NS)
@@ -521,9 +518,9 @@ def _build_run(
             fill_opacity = alpha
 
     # Font typeface
-    latin_face = _typeface(rpr, "latin") or _typeface(def_rpr, "latin") or _typeface(end_rpr, "latin")
-    ea_face = _typeface(rpr, "ea") or _typeface(def_rpr, "ea") or _typeface(end_rpr, "ea")
-    cs_face = _typeface(rpr, "cs") or _typeface(def_rpr, "cs") or _typeface(end_rpr, "cs")
+    latin_face = _typeface_chain(style_chain, "latin")
+    ea_face = _typeface_chain(style_chain, "ea")
+    cs_face = _typeface_chain(style_chain, "cs")
 
     # Resolve theme refs (e.g. typeface="+mn-lt" / "+mj-ea")
     latin_face = _resolve_theme_typeface(latin_face, theme_fonts)
@@ -547,6 +544,73 @@ def _build_run(
     )
 
 
+def _lst_style_level_prs(
+    lst_styles: tuple[ET.Element, ...],
+    level: int,
+) -> tuple[ET.Element, ...]:
+    """Return txBody/lstStyle paragraph properties for a paragraph level."""
+    level_idx = min(max(level, 0), 8) + 1
+    level_prs: list[ET.Element] = []
+    for lst_style in lst_styles:
+        lvl_pr = lst_style.find(f"a:lvl{level_idx}pPr", NS)
+        if lvl_pr is not None:
+            level_prs.append(lvl_pr)
+    return tuple(level_prs)
+
+
+def _child_chain(
+    sources: tuple[ET.Element | None, ...],
+    path: str,
+) -> ET.Element | None:
+    for src in sources:
+        if src is None:
+            continue
+        child = src.find(path, NS)
+        if child is not None:
+            return child
+    return None
+
+
+def _emu_px_attr_chain(
+    sources: tuple[ET.Element | None, ...],
+    attr: str,
+    default: float,
+) -> float:
+    value = _attr_chain(sources, attr)
+    if value is None:
+        return default
+    try:
+        return emu_to_px(int(value))
+    except ValueError:
+        return default
+
+
+def _line_height_ratio(sources: tuple[ET.Element | None, ...]) -> float:
+    ln_spc = _child_chain(sources, "a:lnSpc")
+    if ln_spc is None:
+        return DEFAULT_LINE_HEIGHT_RATIO
+    spc_pct = ln_spc.find("a:spcPct", NS)
+    if spc_pct is None:
+        return DEFAULT_LINE_HEIGHT_RATIO
+    try:
+        return float(spc_pct.attrib.get("val", "100000")) / 100000.0
+    except ValueError:
+        return DEFAULT_LINE_HEIGHT_RATIO
+
+
+def _spacing_points_px(
+    sources: tuple[ET.Element | None, ...],
+    path: str,
+) -> float:
+    spacing = _child_chain(sources, path)
+    if spacing is None:
+        return 0.0
+    try:
+        return hundredths_pt_to_px(int(spacing.attrib.get("val", "0")))
+    except ValueError:
+        return 0.0
+
+
 def _attr_chain(sources: tuple[ET.Element | None, ...], attr: str) -> str | None:
     """Return the first non-empty value of `attr` from any source element."""
     for src in sources:
@@ -566,6 +630,17 @@ def _typeface(rpr: ET.Element | None, child_tag: str) -> str | None:
         return None
     val = elem.attrib.get("typeface")
     return val or None
+
+
+def _typeface_chain(
+    sources: tuple[ET.Element | None, ...],
+    child_tag: str,
+) -> str | None:
+    for src in sources:
+        face = _typeface(src, child_tag)
+        if face:
+            return face
+    return None
 
 
 def _resolve_theme_typeface(face: str | None, theme_fonts: dict[str, str]) -> str | None:
@@ -610,20 +685,20 @@ def _quote_font(name: str) -> str:
 
 
 def _resolve_bullet_prefix(
-    p_pr: ET.Element,
+    sources: tuple[ET.Element | None, ...],
     level: int,
     autonum_state: dict[int, int],
 ) -> str:
     """Render bullet glyphs / numbering as a literal text prefix."""
-    bu_none = p_pr.find("a:buNone", NS)
+    bu_none = _child_chain(sources, "a:buNone")
     if bu_none is not None:
         autonum_state.pop(level, None)
         return ""
-    bu_char = p_pr.find("a:buChar", NS)
+    bu_char = _child_chain(sources, "a:buChar")
     if bu_char is not None:
         ch = bu_char.attrib.get("char", "•")
         return f"{ch} "
-    bu_auto = p_pr.find("a:buAutoNum", NS)
+    bu_auto = _child_chain(sources, "a:buAutoNum")
     if bu_auto is not None:
         start_at = bu_auto.attrib.get("startAt")
         if start_at is not None:
