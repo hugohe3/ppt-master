@@ -12,3 +12,7 @@
 # intentional diagram content, so re-include it explicitly.
 !*/shapes.xml.gz
 
+# Local curation aids (regenerate with make_gallery.py): browsable preview gallery.
+_previews/
+gallery.html
+
