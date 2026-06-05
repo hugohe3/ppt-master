@@ -14,12 +14,14 @@ Handles:
 
 from __future__ import annotations
 
+
+import sys
+
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
+from ._constants import KNOWN_SLIDE_ACTIONS, KNOWN_EXTERNAL_ACTIONS
 from .emu_units import NS, Xfrm, parse_xfrm
-
-
 # ---------------------------------------------------------------------------
 # ShapeNode
 # ---------------------------------------------------------------------------
@@ -58,6 +60,8 @@ class ShapeNode:
     spid: str = ""
     hidden: bool = False
     placeholder: PlaceholderInfo | None = None
+    hlink_href: str = ""
+    hlink_slide: str = ""
     inherited_lst_styles: tuple[ET.Element, ...] = ()
     # GROUP only: children, in z-order
     children: list["ShapeNode"] = field(default_factory=list)
@@ -67,7 +71,7 @@ class ShapeNode:
 # Walker
 # ---------------------------------------------------------------------------
 
-def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, PlaceholderInfo | None]:
+def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, PlaceholderInfo | None, str, str]:
     """Extract name/id/hidden/placeholder from an nvXXXPr container.
 
     nv_tag is one of nvSpPr / nvPicPr / nvCxnSpPr / nvGrpSpPr / nvGraphicFramePr.
@@ -77,8 +81,10 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
     spid = ""
     hidden = False
     ph: PlaceholderInfo | None = None
+    hlink_href = ""
+    hlink_slide = ""
     if container is None:
-        return name, spid, hidden, ph
+        return name, spid, hidden, ph, hlink_href, hlink_slide
 
     cnv = container.find("p:cNvPr", NS)
     if cnv is not None:
@@ -86,6 +92,20 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
         spid = cnv.attrib.get("id", "")
         if cnv.attrib.get("hidden") == "1":
             hidden = True
+        hlink = cnv.find("a:hlinkClick", NS)
+        if hlink is not None:
+            action = hlink.get("action", "")
+            rid = hlink.get(f"{{{NS['r']}}}id", "")
+            if action in KNOWN_SLIDE_ACTIONS:
+                if action == 'ppaction://hlinkshowjump':
+                    print(f"[WARN] shape_walker: hlinkshowjump (custom show) hyperlink not supported, skipped", file=sys.stderr)
+                else:
+                    hlink_slide = rid
+            elif rid and (action in KNOWN_EXTERNAL_ACTIONS or not action.startswith("ppaction://")):
+                hlink_href = rid
+            elif rid:
+                # Unknown ppaction type — log and skip
+                print(f"[WARN] shape_walker: unknown ppaction '{action}' on shape, hyperlink skipped", file=sys.stderr)
 
     nv_pr = container.find("p:nvPr", NS)
     if nv_pr is not None:
@@ -98,7 +118,7 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
                 orient=ph_elem.attrib.get("orient"),
             )
 
-    return name, spid, hidden, ph
+    return name, spid, hidden, ph, hlink_href, hlink_slide
 
 
 def _resolve_xfrm(shape: ET.Element, kind: str) -> ET.Element | None:
@@ -181,7 +201,7 @@ def _walk_container(
             continue
         kind, nv_tag = kind_info
 
-        name, spid, hidden, ph = _read_nv_sp_pr(child, nv_tag)
+        name, spid, hidden, ph, hlink_href, hlink_slide = _read_nv_sp_pr(child, nv_tag)
         xfrm = parse_xfrm(_resolve_xfrm(child, kind))
 
         # Placeholders without their own xfrm inherit geometry from a matching
@@ -214,6 +234,7 @@ def _walk_container(
         node = ShapeNode(
             kind=kind, xml=child, xfrm=xfrm,
             name=name, spid=spid, hidden=hidden, placeholder=ph,
+            hlink_href=hlink_href, hlink_slide=hlink_slide,
             inherited_lst_styles=inherited_lst_styles,
         )
 

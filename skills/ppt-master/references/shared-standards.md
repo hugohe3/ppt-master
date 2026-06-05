@@ -773,3 +773,112 @@ project/
 ├── templates/     # Project templates (if any)
 └── *.pptx         # Exported PPT file
 ```
+
+
+---
+
+## 9. Hyperlinks
+
+### SVG Hyperlink Syntax
+
+SVG `<a>` elements are converted to native PPTX hyperlinks during export. Two navigation modes are supported:
+
+| Attribute | Behavior | Example |
+|-----------|----------|---------|
+| `href` | External URL hyperlink | `href="https://example.com"` |
+| `data-pptx-slide` | Internal slide jump (1-based) | `data-pptx-slide="3"` |
+
+When both `href` and `data-pptx-slide` are present on the same `<a>` element, `href` takes priority and the external link is used.
+
+### Requirements
+
+- Every functional `<a>` must have either `href` or `data-pptx-slide` (or both).
+- External URLs in `href` must be fully qualified absolute URLs (e.g., `https://example.com/page`).
+- Slide numbers in `data-pptx-slide` are 1-based: `data-pptx-slide="1"` refers to the first slide.
+- The `<a>` element must wrap at least one visible child (`<rect>`, `<text>`, `<image>`, `<g>`, etc.).
+
+### Constraints
+
+| Constraint | Behavior |
+|------------|----------|
+| Nested `<a>` | SVG forbids nesting. Inner `<a>` overrides the outer (defensive fallback). |
+| Empty `<a>` (no `href`, no `data-pptx-slide`) | No-op; all children render as normal, unstyled shapes. |
+| Unsupported URL schemes (`javascript:`, `data:`, `vbscript:`, `file:`) | Hyperlink is silently dropped. |
+| Supported URL schemes (besides `http(s)://`) | `mailto:`, `tel:` are accepted and converted to native PPTX hyperlinks. |
+| Relative paths (e.g., `href="page2"`) | Not supported; use only absolute URLs. |
+| `hlinkHover` / tooltip | Out of scope; not mapped to any PPTX property. |
+
+### Examples
+
+#### Shape Hyperlink
+
+A clickable button that opens an external URL:
+
+```xml
+<a href="https://example.com">
+  <rect x="100" y="100" width="240" height="60" rx="8" fill="#1A73E8"/>
+  <text x="220" y="136" font-size="18" fill="#FFFFFF" text-anchor="middle">Learn More</text>
+</a>
+```
+
+#### Image Hyperlink
+
+A clickable image (logo, thumbnail, etc.):
+
+```xml
+<a href="https://example.com">
+  <image href="images/screenshot.png" x="80" y="80" width="400" height="240"/>
+</a>
+```
+
+#### Text Hyperlink
+
+A standalone text link:
+
+```xml
+<a href="https://example.com/report.pdf">
+  <text x="100" y="300" font-size="16" fill="#1A73E8" text-decoration="underline">
+    Download the full report
+  </text>
+</a>
+```
+
+#### Partial tspan Hyperlink
+
+Only a portion of a text block is clickable:
+
+```xml
+<text x="100" y="360" font-size="16" fill="#333333">
+  For more details, visit
+  <a href="https://example.com">
+    <tspan fill="#1A73E8" text-decoration="underline">our documentation</tspan>
+  </a>
+  .
+</text>
+```
+
+#### Slide Navigation
+
+A button that jumps to another slide:
+
+```xml
+<a data-pptx-slide="3">
+  <rect x="100" y="620" width="220" height="44" rx="6" fill="#333333"/>
+  <text x="210" y="647" font-size="14" fill="#FFFFFF" text-anchor="middle">Back to Agenda</text>
+</a>
+```
+
+### SVG-to-PPTX Mapping
+
+| SVG Value | PPTX Equivalent | Best For |
+|-----------|-----------------|----------|
+| `href="https://..."` | `<a:hlinkClick r:id="rIdN"/>` with External relationship | External web links, downloads |
+| `data-pptx-slide="N"` | `<a:hlinkClick action="ppaction://hlinksldjump" r:id="rIdN"/>` | Internal slide navigation, agenda buttons |
+
+### OOXML Target Mapping
+
+| Hyperlink Target | OOXML Location | Relationship Type |
+|------------------|----------------|-------------------|
+| Shape or image (external URL) | `<a:hlinkClick r:id="rIdN"/>` inside `<p:cNvPr>` | `http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink` with `TargetMode="External"` |
+| Text run (external URL) | `<a:hlinkClick r:id="rIdN"/>` inside `<a:rPr>` | Same as above |
+| Slide jump (internal) | `<a:hlinkClick action="ppaction://hlinksldjump" r:id="rIdN"/>` inside `<p:cNvPr>` | Slide-level relationship (internal, no `TargetMode`) |

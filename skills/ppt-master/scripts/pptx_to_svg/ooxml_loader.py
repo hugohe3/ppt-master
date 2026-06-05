@@ -67,6 +67,8 @@ def _parse_rels(zf: zipfile.ZipFile, rels_path: str) -> dict[str, dict[str, str]
         rid = child.attrib.get("Id", "")
         rtype = child.attrib.get("Type", "")
         target = child.attrib.get("Target", "")
+        if not rid or not target:
+            continue
         target_mode = child.attrib.get("TargetMode", "")
         # External relationships (e.g. hyperlinks) keep the raw target.
         if target_mode == "External":
@@ -106,6 +108,21 @@ class PartRef:
         if info.get("external"):
             return None
         return info.get("target")
+
+    def resolve_hyperlink_target(self, rid: str) -> tuple[str | None, str | None]:
+        """Resolve an rId to a hyperlink target.
+
+        Returns (href, slide_target) where:
+          - href is set for external hyperlinks (URLs), slide_target is None.
+          - slide_target is set for internal slide jumps (e.g. "ppt/slides/slide3.xml"), href is None.
+          - Both are None when the rId is missing or the rel is neither.
+        """
+        info = self.rels.get(rid)
+        if info is None:
+            return (None, None)
+        if info.get("external"):
+            return (info.get("target"), None)
+        return (None, info.get("target"))
 
 
 @dataclass

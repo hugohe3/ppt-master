@@ -2,25 +2,29 @@
 
 from __future__ import annotations
 
+import base64
 import io
+import logging
 import math
 import re
-import base64
+
 from typing import Any
 from xml.etree import ElementTree as ET
 
 from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
+    HYPERLINK_REL_TYPE, SLIDE_REL_TYPE, UNSUPPORTED_URL_SCHEMES,
     px_to_emu, _f, _get_attr,
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
     parse_font_family, is_cjk_char, estimate_text_width,
     parse_transform_matrix, _xml_escape,
-)
+    _build_cnvpr_xml,
+    )
 from .drawingml_styles import (
-    build_solid_fill, build_gradient_fill,
+    build_solid_fill, build_gradient_fill, build_hlink_xml,
     build_fill_xml, build_stroke_xml, build_effect_xml, classify_filter_effect,
     get_fill_opacity, get_stroke_opacity,
 )
@@ -29,6 +33,7 @@ from .drawingml_paths import (
     normalize_path_commands, path_commands_to_drawingml,
 )
 
+_logger = logging.getLogger(__name__)
 
 def _wrap_shape(
     shape_id: int, name: str,
@@ -36,13 +41,20 @@ def _wrap_shape(
     ext_cx: int, ext_cy: int,
     geom_xml: str, fill_xml: str, stroke_xml: str,
     effect_xml: str = '', extra_xml: str = '',
-    rot: int = 0,
+    hlink_xml: str = '', rot: int = 0,
 ) -> str:
-    """Wrap DrawingML content into a <p:sp> shape element."""
+    """Wrap DrawingML content into a <p:sp> shape element.
+
+    Parameter ordering note: *hlink_xml* was inserted between *extra_xml*
+    and *rot* to group cNvPr-child params together; *rot* is last because it
+    controls an outer <a:xfrm> attribute. All callers pass these as keyword
+    args, so positional order is informational only.
+    """
     rot_attr = f' rot="{rot}"' if rot else ''
+    cNvPr_xml = _build_cnvpr_xml(shape_id, name, hlink_xml)
     return f'''<p:sp>
 <p:nvSpPr>
-<p:cNvPr id="{shape_id}" name="{_xml_escape(name)}"/>
+{cNvPr_xml}
 <p:cNvSpPr/><p:nvPr/>
 </p:nvSpPr>
 <p:spPr>
@@ -55,6 +67,19 @@ def _wrap_shape(
 {extra_xml}
 </p:sp>'''
 
+
+def _get_hlink_xml(ctx: ConvertContext) -> str:
+    """Build hlinkClick XML from context hyperlink state."""
+    href = ctx.hlink_href
+    slide_num = ctx.hlink_slide
+    if not href and not slide_num:
+        return ''
+    r_id = ctx.next_rel_id()
+    if href:
+        ctx.rel_entries.append({'id': r_id, 'type': HYPERLINK_REL_TYPE, 'target': href, 'target_mode': 'External'})
+    elif slide_num:
+        ctx.rel_entries.append({'id': r_id, 'type': SLIDE_REL_TYPE, 'target': f'slide{slide_num}.xml'})
+    return build_hlink_xml(href, slide_num, r_id)
 
 # ---------------------------------------------------------------------------
 # rect
@@ -265,7 +290,7 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         xml=_wrap_shape(
             shape_id, f'Rectangle {shape_id}',
             off_x, off_y, ext_cx, ext_cy,
-            geom, fill, stroke, effect, rot=rot,
+            geom, fill, stroke, effect, rot=rot, hlink_xml=_get_hlink_xml(ctx),
         ),
         bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),
     )
@@ -433,7 +458,7 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             xml=_wrap_shape(
                 shape_id, f'Arc {shape_id}',
                 min_x, min_y, w_emu, h_emu,
-                geom, fill, stroke_xml, effect,
+                geom, fill, stroke_xml, effect, hlink_xml=_get_hlink_xml(ctx),
             ),
             bounds_emu=(min_x, min_y, min_x + w_emu, min_y + h_emu),
         )
@@ -470,7 +495,7 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         xml=_wrap_shape(
             shape_id, f'Ellipse {shape_id}',
             off_x, off_y, ext_cx, ext_cy,
-            geom, fill, stroke, effect,
+            geom, fill, stroke, effect, hlink_xml=_get_hlink_xml(ctx),
         ),
         bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),
     )
@@ -551,10 +576,11 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             flip_attr = ' flipV="1"'
 
         rot_attr = f' rot="{rot}"' if rot else ''
+        cNvPr_xml = _build_cnvpr_xml(shape_id, f'Line {shape_id}', _get_hlink_xml(ctx))
         xml = (
             f'<p:sp>'
             f'<p:nvSpPr>'
-            f'<p:cNvPr id="{shape_id}" name="{_xml_escape(f"Line {shape_id}")}"/>'
+            f'{cNvPr_xml}'
             f'<p:cNvSpPr/><p:nvPr/>'
             f'</p:nvSpPr>'
             f'<p:spPr>'
@@ -595,7 +621,7 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         xml = _wrap_shape(
             shape_id, f'Line {shape_id}',
             off_x, off_y, w_emu, h_emu,
-            geom, '<a:noFill/>', stroke, rot=rot,
+            geom, '<a:noFill/>', stroke, rot=rot, hlink_xml=_get_hlink_xml(ctx),
         )
 
     return ShapeResult(
@@ -668,7 +694,7 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         xml=_wrap_shape(
             shape_id, f'Freeform {shape_id}',
             off_x, off_y, w_emu, h_emu,
-            geom, fill, stroke, effect, rot=rot,
+            geom, fill, stroke, effect, rot=rot, hlink_xml=_get_hlink_xml(ctx),
         ),
         bounds_emu=(off_x, off_y, off_x + w_emu, off_y + h_emu),
     )
@@ -735,7 +761,7 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         xml=_wrap_shape(
             shape_id, f'Polygon {shape_id}',
             off_x, off_y, w_emu, h_emu,
-            geom, fill, stroke, rot=rot,
+            geom, fill, stroke, rot=rot, hlink_xml=_get_hlink_xml(ctx),
         ),
         bounds_emu=(off_x, off_y, off_x + w_emu, off_y + h_emu),
     )
@@ -789,7 +815,7 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | Non
         xml=_wrap_shape(
             shape_id, f'Polyline {shape_id}',
             off_x, off_y, w_emu, h_emu,
-            geom, '<a:noFill/>', stroke, rot=rot,
+            geom, '<a:noFill/>', stroke, rot=rot, hlink_xml=_get_hlink_xml(ctx),
         ),
         bounds_emu=(off_x, off_y, off_x + w_emu, off_y + h_emu),
     )
@@ -856,6 +882,50 @@ def _override_run_attrs(
         run_attrs['text_decoration'] = tspan.get('text-decoration')
     return run_attrs
 
+def _process_a_children(
+    a_elem: ET.Element,
+    inherited_attrs: dict[str, Any],
+    preserve_space: bool,
+    runs: list[dict[str, Any]],
+) -> None:
+    """Process children of an <a> element inside text, adding hyperlink data to runs."""
+    # The <a> element itself may carry xml:space="preserve"
+    own_preserve = preserve_space or _preserves_space(a_elem)
+    # Collect any direct text inside the <a> element (e.g. <a href="...">click here</a>)
+    if a_elem.text:
+        t = _normalize_text(a_elem.text, preserve_space=own_preserve)
+        if t:
+            runs.append({**inherited_attrs, 'text': t})
+    for child in a_elem:
+        child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if child_tag == 'tspan':
+            runs.extend(_collect_tspan_runs(child, inherited_attrs, preserve_space))
+            if child.tail:
+                t = _normalize_text(child.tail, preserve_space=own_preserve)
+                if t:
+                    runs.append({**inherited_attrs, 'text': t})
+        elif child_tag == 'a':
+            # Nested <a> — inner overrides outer
+            href = child.get('href') or child.get(f'{{{XLINK_NS}}}href')
+            slide_num = child.get('data-pptx-slide')
+            nested_attrs = dict(inherited_attrs)
+            nested_attrs.pop('hlink_href', None)
+            nested_attrs.pop('hlink_slide', None)
+            if href and not any(href.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                nested_attrs['hlink_href'] = href
+            if slide_num:
+                nested_attrs['hlink_slide'] = slide_num
+            _process_a_children(child, nested_attrs, own_preserve, runs)
+            if child.tail:
+                t = _normalize_text(child.tail, preserve_space=own_preserve)
+                if t:
+                    runs.append({**inherited_attrs, 'text': t})
+        elif child.text or list(child):
+            # Non-visual child with text content
+            tag = child.tag.split('}')[-1] if '}' in child.tag else child.tag
+            preview = (child.text or '')[:80]
+            _logger.debug('Unhandled child <%s> in <a>: %s', tag, preview)
+
 
 def _collect_tspan_runs(
     tspan: ET.Element,
@@ -883,7 +953,20 @@ def _collect_tspan_runs(
                 t = _normalize_text(child.tail, preserve_space=child_preserve_space)
                 if t:
                     runs.append({**own_attrs, 'text': t})
-
+        elif child_tag == 'a':
+            # Hyperlink inside a tspan — extract href/slide and propagate to contained runs
+            href = child.get('href') or child.get(f'{{{XLINK_NS}}}href')
+            slide_num = child.get('data-pptx-slide')
+            hlink_attrs = dict(own_attrs)
+            if href and not any(href.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                hlink_attrs['hlink_href'] = href
+            if slide_num:
+                hlink_attrs['hlink_slide'] = slide_num
+            _process_a_children(child, hlink_attrs, child_preserve_space, runs)
+            if child.tail:
+                t = _normalize_text(child.tail, preserve_space=child_preserve_space)
+                if t:
+                    runs.append({**own_attrs, 'text': t})
     return runs
 
 
@@ -891,11 +974,13 @@ def _build_text_runs(
     elem: ET.Element,
     parent_attrs: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    """Build a list of text runs from a <text> element, handling <tspan> children.
+    """Build a list of text runs from a <text> element, handling <tspan> and <a> children.
 
     Each run is a dict with keys: text, fill, fill_raw, font_weight,
-    font_style, font_family, font_size. Nested tspans are walked recursively so
-    inline format changes inside a tspan still produce distinct runs.
+    font_style, font_family, font_size. <a> children add hlink_href /
+    hlink_slide keys to their contained runs for per-run hyperlink injection.
+    Nested tspans are walked recursively so inline format changes inside a
+    tspan still produce distinct runs.
     """
     runs: list[dict[str, Any]] = []
     preserve_space = _preserves_space(elem)
@@ -913,13 +998,31 @@ def _build_text_runs(
                 t = _normalize_text(child.tail, preserve_space=preserve_space)
                 if t:
                     runs.append({**parent_attrs, 'text': t})
+        elif child_tag == 'a':
+            # Hyperlink inside <text> — extract href/slide and propagate to contained runs
+            href = child.get('href') or child.get(f'{{{XLINK_NS}}}href')
+            slide_num = child.get('data-pptx-slide')
+            hlink_attrs = dict(parent_attrs)
+            hlink_attrs.pop('hlink_href', None)
+            hlink_attrs.pop('hlink_slide', None)
+            if href and not any(href.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                hlink_attrs['hlink_href'] = href
+            if slide_num:
+                hlink_attrs['hlink_slide'] = slide_num
+            _process_a_children(child, hlink_attrs, preserve_space, runs)
+            if child.tail:
+                t = _normalize_text(child.tail, preserve_space=preserve_space)
+                if t:
+                    runs.append({**parent_attrs, 'text': t})
 
     # Strip the paragraph's overall leading / trailing whitespace once unless
     # xml:space="preserve" asks us to keep source indentation.
+    # Also strip every run and drop empty ones — middle-of-paragraph whitespace-only
+    # runs (e.g. from XML indentation between <tspan> / <a> tags) are always noise.
     if runs and not preserve_space:
         runs[0]['text'] = runs[0]['text'].lstrip(' ')
         runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
-        runs = [r for r in runs if r['text']]
+        runs = [r for r in runs if r['text'].strip()]
 
     return runs
 
@@ -972,6 +1075,7 @@ def _build_run_xml(
     default_fonts: dict[str, str],
     ctx: ConvertContext | None = None,
     effect_xml: str = '',
+    hlink_xml: str = '',
 ) -> str:
     """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
     text = run['text']
@@ -997,6 +1101,7 @@ def _build_run_xml(
     outline_xml = _build_text_outline_xml(run)
 
     space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
+    hlink_section = f'\n{hlink_xml}' if hlink_xml else ''
 
     return f'''<a:r>
 <a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
@@ -1005,7 +1110,7 @@ def _build_run_xml(
 {effect_xml}
 <a:latin typeface="{_xml_escape(fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(fonts['latin'])}"/>
+<a:cs typeface="{_xml_escape(fonts['latin'])}"/>{hlink_section}
 </a:rPr>
 <a:t{space_attr}>{_xml_escape(text)}</a:t>
 </a:r>'''
@@ -1071,7 +1176,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             if line_runs and not preserve_space:
                 line_runs[0]['text'] = line_runs[0]['text'].lstrip(' ')
                 line_runs[-1]['text'] = line_runs[-1]['text'].rstrip(' ')
-                line_runs = [r for r in line_runs if r['text']]
+                line_runs = [r for r in line_runs if r['text'].strip()]
             if not line_runs:
                 continue
             visual_line_widths.append(
@@ -1229,6 +1334,32 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
+    hlink_xml = _get_hlink_xml(ctx)
+    cNvPr_xml = _build_cnvpr_xml(shape_id, f'TextBox {shape_id}', hlink_xml)
+
+
+    def _run_hlink_xml(run: dict[str, Any]) -> str:
+        """Build hlink_xml for a run, preferring per-run overrides from <a> inside <text>."""
+        run_href = run.get('hlink_href')
+        run_slide = run.get('hlink_slide')
+        if run_href or run_slide:
+            r_id = ctx.next_rel_id()
+            if run_href:
+                ctx.rel_entries.append({
+                    'id': r_id,
+                    'type': HYPERLINK_REL_TYPE,
+                    'target': run_href,
+                    'target_mode': 'External',
+                })
+            elif run_slide:
+                ctx.rel_entries.append({
+                    'id': r_id,
+                    'type': SLIDE_REL_TYPE,
+                    'target': f'slide{run_slide}.xml',
+                })
+            return build_hlink_xml(run_href, run_slide, r_id)
+        return hlink_xml
+
 
     if paragraph_runs is not None:
         # SVG dy(px) -> hundredths-of-a-point: dy_pt = dy_px * 0.75, then x100.
@@ -1240,14 +1371,14 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             if extra_px > 0:
                 spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
                 spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
-            runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in line)
+            runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml, hlink_xml=_run_hlink_xml(r)) for r in line)
             paragraph_xml_chunks.append(
                 f'<a:p>\n<a:pPr algn="{algn}">{ln_spc_xml}{spc_bef_xml}</a:pPr>\n'
                 f'{runs_inner}\n</a:p>'
             )
         paragraphs_xml = '\n'.join(paragraph_xml_chunks)
     else:
-        runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
+        runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml, hlink_xml=_run_hlink_xml(r)) for r in runs)
         paragraphs_xml = f'<a:p>\n<a:pPr algn="{algn}"/>\n{runs_xml}\n</a:p>'
 
     off_x = px_to_emu(box_x)
@@ -1274,7 +1405,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     return ShapeResult(xml=f'''<p:sp>
 <p:nvSpPr>
-<p:cNvPr id="{shape_id}" name="TextBox {shape_id}"/>
+{cNvPr_xml}
 <p:cNvSpPr txBox="1"/><p:nvPr/>
 </p:nvSpPr>
 <p:spPr>
@@ -1745,10 +1876,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         )
     if rot_attr:
         xfrm_attr += rot_attr
-
+    cNvPr_xml = _build_cnvpr_xml(shape_id, f'Image {shape_id}', _get_hlink_xml(ctx))
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
-<p:cNvPr id="{shape_id}" name="Image {shape_id}"/>
+{cNvPr_xml}
 <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>
 <p:nvPr/>
 </p:nvPicPr>
@@ -1806,7 +1937,7 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         xml=_wrap_shape(
             shape_id, f'Ellipse {shape_id}',
             off_x, off_y, ext_cx, ext_cy,
-            geom, fill, stroke, rot=rot,
+            geom, fill, stroke, rot=rot, hlink_xml=_get_hlink_xml(ctx),
         ),
         bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),
     )
@@ -1923,10 +2054,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     if rot_attr:
         xfrm_attr += rot_attr
     clip_geom = _resolve_clip_geometry(elem, ctx, svg_x, svg_y, svg_w, svg_h)
-
+    cNvPr_xml = _build_cnvpr_xml(shape_id, f'Image {shape_id}', _get_hlink_xml(ctx))
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
-<p:cNvPr id="{shape_id}" name="Image {shape_id}"/>
+{cNvPr_xml}
 <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>
 <p:nvPr/>
 </p:nvPicPr>

@@ -9,6 +9,12 @@ Primary use case: PPTX source decks -> Markdown for PPT generation input.
 
 Dependency:
     pip install python-pptx
+
+API Stability Note:
+    This module accesses run._r (CT_TextRun lxml element) to detect
+    slide-internal jumps (ppaction://hlinksldjump). python-pptx has no
+    public API for this discrimination. The _r access pattern is stable
+    across python-pptx 0.6.x; pin python-pptx<0.7 to prevent breakage.
 """
 
 from __future__ import annotations
@@ -19,12 +25,21 @@ import json
 import re
 import shutil
 import sys
+from urllib.parse import quote
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 
+# Ensure parent scripts/ directory is on sys.path for sibling package imports
+_scripts_dir = str(Path(__file__).resolve().parent.parent)
+if _scripts_dir not in sys.path:
+    sys.path.insert(0, _scripts_dir)
+
+from _shared import UNSUPPORTED_URL_SCHEMES
+
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
+from pptx.enum.action import PP_ACTION
 from pptx.oxml.ns import qn
 
 
@@ -135,12 +150,39 @@ def iter_leaf_shapes(shapes: object) -> list[LeafShape]:
     return items
 
 
-def text_frame_to_markdown(text_frame: object) -> str:
-    """Convert a PowerPoint text frame into Markdown."""
+def text_frame_to_markdown(text_frame: object, shape=None) -> str:
+    """Convert a PowerPoint text frame into Markdown, preserving hyperlinks.
+
+    Run-level hyperlinks (external URLs via ``run.hyperlink.address`` and internal
+    slide jumps via ``a:hlinkClick`` with ``ppaction://hlinksldjump``) are extracted
+    per-run. Consecutive runs sharing the same URL are merged into a single markdown
+    link. If no run has a hyperlink, the shape-level ``click_action`` is checked as a
+    fallback, wrapping the entire paragraph text.
+
+    URLs containing ``(`` or ``)`` are percent-encoded to ``%28`` / ``%29``.
+    """
     paragraphs = []
+
+    def _has_hyperlink_run(p):
+        """Check if any run in a paragraph has a hyperlink (external or internal)."""
+        for r in p.runs:
+            try:
+                if r.hyperlink.address:
+                    return True
+            except AttributeError:
+                pass  # fall through to a:hlinkClick check below
+            # Also check for internal slide jumps (a:hlinkClick in rPr)
+            try:
+                rpr = r._r.find(qn('a:rPr'))
+                if rpr is not None and rpr.find(qn('a:hlinkClick')) is not None:
+                    return True
+            except AttributeError:
+                continue
+        return False
+
     visible_paragraphs = [
         paragraph for paragraph in text_frame.paragraphs
-        if normalize_text(paragraph.text)
+        if normalize_text(paragraph.text) or _has_hyperlink_run(paragraph)
     ]
     if not visible_paragraphs:
         return ""
@@ -150,14 +192,104 @@ def text_frame_to_markdown(text_frame: object) -> str:
         list_like = len(visible_paragraphs) > 1
 
     for paragraph in visible_paragraphs:
-        text = normalize_text(paragraph.text)
-        if not text:
+        segments = []
+        current_url = None
+        current_text = ""
+        has_any_run_hyperlink = False
+
+        for run in paragraph.runs:
+            run_text = run.text or ""
+            url = None
+
+            # 1. Run-level internal slide jump (check OOXML first —
+            #    run.hyperlink.address cannot distinguish internal jumps
+            #    from external URLs and would return the raw target path
+            #    like 'slide3.xml' instead of '#slide-3').
+            if shape is not None:
+                r_id = ''
+                try:
+                    rpr_elem = run._r.find(qn('a:rPr'))
+                    if rpr_elem is not None:
+                        hlink_elem = rpr_elem.find(qn('a:hlinkClick'))
+                        if hlink_elem is not None:
+                            action = hlink_elem.get('action', '') or ''
+                            if 'hlinksldjump' in action:
+                                r_id = hlink_elem.get(qn('r:id'), '')
+                                if r_id:
+                                    target_part = shape.part.related_part(r_id)
+                                    target_slide = target_part.slide
+                                    slide = shape.part.slide
+                                    prs = slide.part.package.presentation_part.presentation
+                                    idx = list(prs.slides).index(target_slide) + 1
+                                    url = f"#slide-{idx}"
+                except (KeyError, ValueError, AttributeError):
+                    print(f"[WARN] ppt_to_md: failed to resolve internal slide jump rId={r_id}", file=sys.stderr)
+
+            # 2. Run-level external URL via python-pptx API (fallback
+            #    when no internal jump was found)
+            if url is None:
+                try:
+                    addr = run.hyperlink.address
+                    if addr and not any(addr.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                        url = addr
+                except AttributeError:
+                    pass
+
+            if url:
+                has_any_run_hyperlink = True
+                url = quote(url, safe='/:?=&%#@!$\'*+,;')
+
+            # Merge logic: same URL → accumulate text
+            if url == current_url:
+                if run_text.strip():
+                    current_text += run_text
+            else:
+                # Flush previous segment
+                if current_url is not None:
+                    display = normalize_text(current_text) if current_text.strip() else current_url
+                    segments.append(f"[{display}]({current_url})")
+                elif current_text.strip():
+                    segments.append(normalize_text(current_text))
+
+                # Start new segment
+                current_text = run_text if run_text.strip() else (url if url else "")
+                current_url = url
+
+        # Flush last segment
+        if current_url is not None:
+            display = normalize_text(current_text) if current_text.strip() else current_url
+            segments.append(f"[{display}]({current_url})")
+        elif current_text.strip():
+            segments.append(normalize_text(current_text))
+
+        paragraph_text = "".join(segments)
+
+        # 3. Shape-level click_action fallback (only when no run has a hyperlink)
+        if not has_any_run_hyperlink and shape is not None:
+            try:
+                ca = shape.click_action
+                if ca.action == PP_ACTION.HYPERLINK:
+                    url = ca.hyperlink.address
+                    if url and not any(url.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                        paragraph_text = f"[{paragraph_text}]({quote(url, safe='/:?=&%#@!$\'*+,;')})"
+                elif ca.action == PP_ACTION.NAMED_SLIDE:
+                    target = ca.target_slide
+                    if target is not None:
+                        slide = shape.part.slide
+                        prs = slide.part.package.presentation_part.presentation
+                        idx = list(prs.slides).index(target) + 1
+                        paragraph_text = f"[{paragraph_text}](#slide-{idx})"
+            except (AttributeError, ValueError):
+                print(f"[WARN] ppt_to_md: failed to process shape-level click_action", file=sys.stderr)
+
+        if not paragraph_text:
             continue
+
         if list_like:
             indent = "  " * max(paragraph.level, 0)
-            paragraphs.append(f"{indent}- {text}")
+            paragraphs.append(f"{indent}- {paragraph_text}")
         else:
-            paragraphs.append(text)
+            paragraphs.append(paragraph_text)
 
     if list_like:
         return "\n".join(paragraphs)
@@ -434,7 +566,7 @@ def extract_notes(slide: object) -> str:
         shape = item.shape
         if not getattr(shape, "has_text_frame", False):
             continue
-        text = text_frame_to_markdown(shape.text_frame)
+        text = text_frame_to_markdown(shape.text_frame, shape)
         if text:
             blocks.append(text)
 
@@ -534,7 +666,7 @@ def convert_presentation_to_markdown(
                         continue
 
             if getattr(shape, "has_text_frame", False):
-                text_md = text_frame_to_markdown(shape.text_frame)
+                text_md = text_frame_to_markdown(shape.text_frame, shape)
                 if text_md:
                     blocks.append(text_md)
                     continue
