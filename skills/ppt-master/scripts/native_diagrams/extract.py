@@ -17,6 +17,7 @@ chart/embedding parts are out of scope for v1.
 from __future__ import annotations
 
 import copy
+import gzip
 import json
 import posixpath
 import zipfile
@@ -29,6 +30,28 @@ from .component import (
     local, read_rels, resolve_target, resolve_master_and_theme,
     load_theme_maps, flatten_theme, strip_foreign_rels,
 )
+
+
+def _representative_title(sp_tree) -> str:
+    """A short title hint for the index: the largest-font text run, else the first.
+
+    These vendor diagrams rarely use real title placeholders, so size is a better
+    signal than document order. Used only as a human-readable summary seed — the
+    curator can overwrite it.
+    """
+    best_sz, best_text, first_text = -1, "", ""
+    for run in sp_tree.iter("{%s}r" % A):
+        t = run.find("{%s}t" % A)
+        if t is None or not (t.text and t.text.strip()):
+            continue
+        txt = " ".join(t.text.split())
+        if not first_text:
+            first_text = txt
+        rpr = run.find("{%s}rPr" % A)
+        sz = int(rpr.get("sz")) if (rpr is not None and (rpr.get("sz") or "").isdigit()) else 0
+        if sz > best_sz:
+            best_sz, best_text = sz, txt
+    return (best_text or first_text)[:40]
 
 
 def extract_diagram(
@@ -56,6 +79,7 @@ def extract_diagram(
         canvas = [int(sz.get("cx")), int(sz.get("cy"))]
 
         sp_tree = slide.find(".//p:cSld/p:spTree", NS)
+        title = _representative_title(sp_tree)
         counts = flatten_theme(sp_tree, maps)
 
         shapes = [c for c in sp_tree if local(c) in SHAPE_TAGS]
@@ -91,16 +115,18 @@ def extract_diagram(
                 (out_dir / "media" / fname).write_bytes(z.read(abs_path))
                 media_meta[rid] = f"media/{fname}"
 
-        # shapes.xml — a stable <a:diagram> wrapper holding the lifted shapes.
+        # shapes.xml.gz — a stable <a:diagram> wrapper holding the lifted shapes.
+        # DrawingML is verbose (~1 MB/slide raw) but compresses ~18x, so the
+        # library stays git-friendly. inject reads .gz, falling back to plain .xml.
         root = etree.Element("{%s}diagram" % A, nsmap={"a": A, "p": P, "r": R})
         for s in shapes:
             root.append(copy.deepcopy(s))
-        (out_dir / "shapes.xml").write_bytes(
-            etree.tostring(root, xml_declaration=True, encoding="UTF-8")
-        )
+        data = etree.tostring(root, xml_declaration=True, encoding="UTF-8")
+        (out_dir / "shapes.xml.gz").write_bytes(gzip.compress(data, mtime=0))
 
     meta = {
         "key": key or out_dir.name,
+        "title": title,
         "source": src_pptx.name,
         "slide_num": slide_num,
         "canvas_emu": canvas,

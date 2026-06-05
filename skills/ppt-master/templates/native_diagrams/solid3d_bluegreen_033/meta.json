@@ -1,0 +1,20 @@
+{
+  "key": "solid3d_bluegreen_033",
+  "title": "智慧停车数据接入预览",
+  "source": "010 立体图示模板（蓝绿配色版）.pptx",
+  "slide_num": 33,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 53,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 347,
+    "colors_unresolved": 0,
+    "fonts": 4
+  },
+  "foreign_rels_stripped": 0,
+  "summary": ""
+}

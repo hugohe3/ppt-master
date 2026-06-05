@@ -1,0 +1,14 @@
+# Media binaries are kept on disk (so injection works locally) but NOT committed.
+# They are large and heavily duplicated (~22 MB, dominated by full-bleed photos on
+# a couple of collage slides), and most media-bearing slides are curation-delete
+# candidates rather than reusable logic diagrams. The shapes.xml.gz vectors ARE
+# committed — 204 of 223 diagrams are pure-vector and fully self-contained.
+#
+# After curating, force-add the media for any media-bearing diagram you keep:
+#     git add -f <key>/media/
+*/media/
+
+# The repo root .gitignore excludes *.gz (build artifacts). Our shapes.xml.gz is
+# intentional diagram content, so re-include it explicitly.
+!*/shapes.xml.gz
+

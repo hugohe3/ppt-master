@@ -1,0 +1,20 @@
+{
+  "key": "solid3d_bluegreen_055",
+  "title": "工业物联能力图谱",
+  "source": "010 立体图示模板（蓝绿配色版）.pptx",
+  "slide_num": 55,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 65,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 823,
+    "colors_unresolved": 0,
+    "fonts": 62
+  },
+  "foreign_rels_stripped": 0,
+  "summary": ""
+}

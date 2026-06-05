@@ -17,6 +17,7 @@ slide coordinates.
 from __future__ import annotations
 
 import copy
+import gzip
 import itertools
 import json
 from pathlib import Path
@@ -70,7 +71,11 @@ def inject_diagram(
 
     comp_dir = Path(component_dir)
     meta = json.loads((comp_dir / "meta.json").read_text(encoding="utf-8"))
-    root = etree.fromstring((comp_dir / "shapes.xml").read_bytes())
+    gz = comp_dir / "shapes.xml.gz"
+    if gz.exists():
+        root = etree.fromstring(gzip.decompress(gz.read_bytes()))
+    else:  # plain .xml fallback (hand-authored components)
+        root = etree.fromstring((comp_dir / "shapes.xml").read_bytes())
 
     if target_pptx:
         prs = Presentation(str(target_pptx))

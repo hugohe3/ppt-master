@@ -1,1 +1,1786 @@
-{}
+{
+  "solid3d_bluegreen_001": {
+    "summary": "立体逻辑图示",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 1,
+    "shapes": 3,
+    "media": 2,
+    "charts": 0
+  },
+  "solid3d_bluegreen_002": {
+    "summary": "(slide 2)",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 2,
+    "shapes": 1,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_003": {
+    "summary": "数据保障模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 3,
+    "shapes": 51,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_004": {
+    "summary": "品牌推广模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 4,
+    "shapes": 51,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_005": {
+    "summary": "城市大数据模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 5,
+    "shapes": 50,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_006": {
+    "summary": "新平台新增长",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 6,
+    "shapes": 30,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_007": {
+    "summary": "公司架构模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 7,
+    "shapes": 28,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_008": {
+    "summary": "营销数字化新形态",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 8,
+    "shapes": 27,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_009": {
+    "summary": "产品数据模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 9,
+    "shapes": 38,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_010": {
+    "summary": "数据获取模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 10,
+    "shapes": 33,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_011": {
+    "summary": "运营矩阵传播注入新动力",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 11,
+    "shapes": 33,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_012": {
+    "summary": "产品矩阵",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 12,
+    "shapes": 35,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_013": {
+    "summary": "智能云平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 13,
+    "shapes": 29,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_014": {
+    "summary": "数字产品支撑模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 14,
+    "shapes": 71,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_015": {
+    "summary": "网络服务模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 15,
+    "shapes": 41,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_016": {
+    "summary": "增值服务模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 16,
+    "shapes": 36,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_017": {
+    "summary": "项目管理运营",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 17,
+    "shapes": 46,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_018": {
+    "summary": "数字化矩阵",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 18,
+    "shapes": 39,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_019": {
+    "summary": "公共卫生大数据平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 19,
+    "shapes": 44,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_020": {
+    "summary": "企业用户关系模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 20,
+    "shapes": 50,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_021": {
+    "summary": "5G",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 21,
+    "shapes": 46,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_022": {
+    "summary": "数字产品模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 22,
+    "shapes": 58,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_023": {
+    "summary": "城市运行综合管理服务中心",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 23,
+    "shapes": 56,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_024": {
+    "summary": "产品营销模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 24,
+    "shapes": 27,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_025": {
+    "summary": "安全防泄漏模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 25,
+    "shapes": 48,
+    "media": 2,
+    "charts": 0
+  },
+  "solid3d_bluegreen_026": {
+    "summary": "数据防控模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 26,
+    "shapes": 55,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_027": {
+    "summary": "安全防泄漏模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 27,
+    "shapes": 73,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_028": {
+    "summary": "新品线上营销结构",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 28,
+    "shapes": 25,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_029": {
+    "summary": "数字城市业务特点",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 29,
+    "shapes": 53,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_030": {
+    "summary": "短视频运营策略模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 30,
+    "shapes": 28,
+    "media": 2,
+    "charts": 0
+  },
+  "solid3d_bluegreen_031": {
+    "summary": "数据展示模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 31,
+    "shapes": 51,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_032": {
+    "summary": "人才管理平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 32,
+    "shapes": 53,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_033": {
+    "summary": "智慧停车数据接入预览",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 33,
+    "shapes": 53,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_034": {
+    "summary": "新品推广模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 34,
+    "shapes": 43,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_035": {
+    "summary": "网络监控模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 35,
+    "shapes": 59,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_036": {
+    "summary": "原生可观测套件模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 36,
+    "shapes": 65,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_037": {
+    "summary": "工业物联能力图谱",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 37,
+    "shapes": 5,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_038": {
+    "summary": "数据展示模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 38,
+    "shapes": 69,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_039": {
+    "summary": "云财务管理平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 39,
+    "shapes": 67,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_040": {
+    "summary": "智能制造产业链",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 40,
+    "shapes": 50,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_041": {
+    "summary": "农业大数据综合平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 41,
+    "shapes": 68,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_042": {
+    "summary": "数据安全能力模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 42,
+    "shapes": 64,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_043": {
+    "summary": "智能制造产业链",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 43,
+    "shapes": 112,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_044": {
+    "summary": "安全分析与管理平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 44,
+    "shapes": 71,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_045": {
+    "summary": "场景全面开放，互惠共赢",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 45,
+    "shapes": 40,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_046": {
+    "summary": "软件产品与服务体系能力全景图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 46,
+    "shapes": 103,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_047": {
+    "summary": "软件服务能力全景图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 47,
+    "shapes": 21,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_048": {
+    "summary": "服务体系能力全景图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 48,
+    "shapes": 58,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_049": {
+    "summary": "构建规模企业的软件平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 49,
+    "shapes": 59,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_050": {
+    "summary": "超级工作台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 50,
+    "shapes": 79,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_051": {
+    "summary": "技术驱动品牌变革",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 51,
+    "shapes": 38,
+    "media": 6,
+    "charts": 0
+  },
+  "solid3d_bluegreen_052": {
+    "summary": "共融共生，共创优质新商业场景实践",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 52,
+    "shapes": 46,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_053": {
+    "summary": "企业数智化管理专家",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 53,
+    "shapes": 54,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_054": {
+    "summary": "工业物联能力图谱",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 54,
+    "shapes": 87,
+    "media": 3,
+    "charts": 0
+  },
+  "solid3d_bluegreen_055": {
+    "summary": "工业物联能力图谱",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 55,
+    "shapes": 65,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_056": {
+    "summary": "数智驱动的营销服一体化产品体系",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 56,
+    "shapes": 116,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_057": {
+    "summary": "安全治理云图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 57,
+    "shapes": 79,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_058": {
+    "summary": "安全治理云图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 58,
+    "shapes": 58,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_059": {
+    "summary": "汽车安全生命周期防护",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 59,
+    "shapes": 83,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_060": {
+    "summary": "自动驾驶部署与规划",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 60,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_061": {
+    "summary": "构建规模企业的软件平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 61,
+    "shapes": 40,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_062": {
+    "summary": "2022",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 62,
+    "shapes": 34,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_063": {
+    "summary": "游戏竞技 从此迈入",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 63,
+    "shapes": 14,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_064": {
+    "summary": "前所未有的",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 64,
+    "shapes": 17,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_065": {
+    "summary": "前所未有的游戏体验赋能",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 65,
+    "shapes": 34,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_066": {
+    "summary": "数据中心模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 66,
+    "shapes": 47,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_067": {
+    "summary": "数据中心模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 67,
+    "shapes": 52,
+    "media": 2,
+    "charts": 0
+  },
+  "solid3d_bluegreen_068": {
+    "summary": "数字会展一站式服务解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 68,
+    "shapes": 62,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_069": {
+    "summary": "准搜索：占领不同类型的关键词",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 69,
+    "shapes": 10,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_070": {
+    "summary": "数据中心模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 70,
+    "shapes": 52,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_071": {
+    "summary": "项目管理精益化",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 71,
+    "shapes": 47,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_072": {
+    "summary": "全阶段",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 72,
+    "shapes": 39,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_073": {
+    "summary": "大模型整体架构",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 73,
+    "shapes": 76,
+    "media": 5,
+    "charts": 0
+  },
+  "solid3d_bluegreen_074": {
+    "summary": "满足用户需求的内容",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 74,
+    "shapes": 62,
+    "media": 2,
+    "charts": 0
+  },
+  "solid3d_bluegreen_075": {
+    "summary": "数据中心自动驾驶",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 75,
+    "shapes": 76,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_076": {
+    "summary": "可控大模型架构",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 76,
+    "shapes": 17,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_077": {
+    "summary": "数据中心自动驾驶",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 77,
+    "shapes": 83,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_078": {
+    "summary": "安全大数据平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 78,
+    "shapes": 55,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_079": {
+    "summary": "高价值工具包",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 79,
+    "shapes": 50,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_080": {
+    "summary": "大模型私有化部署",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 80,
+    "shapes": 23,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_081": {
+    "summary": "智慧图书馆大模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 81,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_082": {
+    "summary": "存量营销下半场，进入心智营销场域",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 82,
+    "shapes": 5,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_083": {
+    "summary": "助力企业数字化转型和低碳绿色发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 83,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_084": {
+    "summary": "助力企业数字化转型和低碳绿色发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 84,
+    "shapes": 42,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_085": {
+    "summary": "助力企业数字化转型和低碳绿色发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 85,
+    "shapes": 67,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_086": {
+    "summary": "品牌再升级",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 86,
+    "shapes": 31,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_087": {
+    "summary": "全阶段培育激励，助力伙伴快速成长",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 87,
+    "shapes": 71,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_088": {
+    "summary": "服务体系能力全景图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 88,
+    "shapes": 50,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_089": {
+    "summary": "大模型私有化部署",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 89,
+    "shapes": 20,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_090": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 90,
+    "shapes": 30,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_091": {
+    "summary": "96%",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 91,
+    "shapes": 6,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_092": {
+    "summary": "数字化操作系统",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 92,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_093": {
+    "summary": "原生安全大模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 93,
+    "shapes": 57,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_094": {
+    "summary": "使用最多的专业视频会议应用",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 94,
+    "shapes": 28,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_095": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 95,
+    "shapes": 71,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_096": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 96,
+    "shapes": 36,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_097": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 97,
+    "shapes": 40,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_098": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 98,
+    "shapes": 10,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_099": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 99,
+    "shapes": 22,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_100": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 100,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_101": {
+    "summary": "结构图示",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 101,
+    "shapes": 34,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_102": {
+    "summary": "创造品牌价值",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 102,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_103": {
+    "summary": "年轻化感知",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 103,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_104": {
+    "summary": "核心原则",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 104,
+    "shapes": 41,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_105": {
+    "summary": "数据源头",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 105,
+    "shapes": 76,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_106": {
+    "summary": "审核产品",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 106,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_107": {
+    "summary": "工业物联能力图谱",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 107,
+    "shapes": 63,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_108": {
+    "summary": "国内首个全栈自研的",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 108,
+    "shapes": 2,
+    "media": 5,
+    "charts": 0
+  },
+  "solid3d_bluegreen_109": {
+    "summary": "敏捷组织人事管理",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 109,
+    "shapes": 61,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_110": {
+    "summary": "巨量引擎全量增长方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 110,
+    "shapes": 44,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_111": {
+    "summary": "全景资产方法论",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 111,
+    "shapes": 31,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_112": {
+    "summary": "业务过程智能化",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 112,
+    "shapes": 21,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_113": {
+    "summary": "预训练数据处理流程",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 113,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_114": {
+    "summary": "API",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 114,
+    "shapes": 11,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_115": {
+    "summary": "品牌体验",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 115,
+    "shapes": 55,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_116": {
+    "summary": "将无人驾驶带进现实",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 116,
+    "shapes": 19,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_117": {
+    "summary": "品牌与传播一体化设计服务体系",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 117,
+    "shapes": 11,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_118": {
+    "summary": "大规模生态",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 118,
+    "shapes": 50,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_119": {
+    "summary": "产品",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 119,
+    "shapes": 38,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_120": {
+    "summary": "全链路产品矩阵，助力大模型全场景落地",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 120,
+    "shapes": 34,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_121": {
+    "summary": "构建营销组件化解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 121,
+    "shapes": 19,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_122": {
+    "summary": "电力营销服务数字化转型的方法",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 122,
+    "shapes": 8,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_123": {
+    "summary": "应收管理",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 123,
+    "shapes": 26,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_124": {
+    "summary": "私域安全",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 124,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_125": {
+    "summary": "数字化平台助力制造业高质量发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 125,
+    "shapes": 6,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_126": {
+    "summary": "打架检测",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 126,
+    "shapes": 31,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_127": {
+    "summary": "数据要素供给平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 127,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_128": {
+    "summary": "SaaS",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 128,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_129": {
+    "summary": "腾讯云基础产品",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 129,
+    "shapes": 1,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_130": {
+    "summary": "运营计划",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 130,
+    "shapes": 11,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_131": {
+    "summary": "推荐场景",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 131,
+    "shapes": 40,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_132": {
+    "summary": "数据决策",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 132,
+    "shapes": 55,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_133": {
+    "summary": "全栈数据产品与解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 133,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_134": {
+    "summary": "全栈数据产品与解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 134,
+    "shapes": 44,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_135": {
+    "summary": "全栈数据产品与解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 135,
+    "shapes": 79,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_136": {
+    "summary": "系统性拆解架构制定策略",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 136,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_137": {
+    "summary": "用户品牌心智链路",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 137,
+    "shapes": 57,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_138": {
+    "summary": "企业数字化转型和低碳绿色发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 138,
+    "shapes": 67,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_139": {
+    "summary": "企业数字化转型和低碳绿色发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 139,
+    "shapes": 11,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_140": {
+    "summary": "行业知识图谱",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 140,
+    "shapes": 23,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_141": {
+    "summary": "业务安全全景图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 141,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_142": {
+    "summary": "多账号资源管理的能力大图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 142,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_143": {
+    "summary": "企业数字化转型和低碳绿色发展",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 143,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_144": {
+    "summary": "商业操作系统",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 144,
+    "shapes": 71,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_145": {
+    "summary": "产品架构",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 145,
+    "shapes": 93,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_146": {
+    "summary": "OT/IDC",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 146,
+    "shapes": 88,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_147": {
+    "summary": "云海平台介绍",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 147,
+    "shapes": 135,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_148": {
+    "summary": "工程运营指挥中心",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 148,
+    "shapes": 70,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_149": {
+    "summary": "腾讯云介绍",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 149,
+    "shapes": 83,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_150": {
+    "summary": "腾讯云介绍",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 150,
+    "shapes": 65,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_151": {
+    "summary": "智慧供应链数字化解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 151,
+    "shapes": 80,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_152": {
+    "summary": "防晒霜营销矩阵",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 152,
+    "shapes": 34,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_153": {
+    "summary": "数字孪生城市模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 153,
+    "shapes": 17,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_154": {
+    "summary": "数据价值体系",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 154,
+    "shapes": 39,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_155": {
+    "summary": "网络监控模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 155,
+    "shapes": 11,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_156": {
+    "summary": "投放策略",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 156,
+    "shapes": 23,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_157": {
+    "summary": "全阶段培育激励，助力伙伴快速成长",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 157,
+    "shapes": 51,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_158": {
+    "summary": "线上线下全渠道融通汇合",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 158,
+    "shapes": 30,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_159": {
+    "summary": "保障网络稳健，创造商业价值",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 159,
+    "shapes": 82,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_160": {
+    "summary": "建立分析挖掘体系",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 160,
+    "shapes": 70,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_161": {
+    "summary": "数字化转型投入产出研究",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 161,
+    "shapes": 98,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_162": {
+    "summary": "安全分析与管理平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 162,
+    "shapes": 86,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_163": {
+    "summary": "RFM",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 163,
+    "shapes": 37,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_164": {
+    "summary": "RFM",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 164,
+    "shapes": 41,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_165": {
+    "summary": "数据看板",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 165,
+    "shapes": 46,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_166": {
+    "summary": "网络服务模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 166,
+    "shapes": 56,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_167": {
+    "summary": "数字科技零售创新",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 167,
+    "shapes": 98,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_168": {
+    "summary": "智能时代：数据",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 168,
+    "shapes": 64,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_169": {
+    "summary": "用户画像模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 169,
+    "shapes": 57,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_170": {
+    "summary": "B",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 170,
+    "shapes": 94,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_171": {
+    "summary": "AI",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 171,
+    "shapes": 23,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_172": {
+    "summary": "构建以知识为中心的数据底座",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 172,
+    "shapes": 91,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_173": {
+    "summary": "践行",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 173,
+    "shapes": 70,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_174": {
+    "summary": "爆款产品的底层逻辑",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 174,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_175": {
+    "summary": "复购品私域运营体系",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 175,
+    "shapes": 79,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_176": {
+    "summary": "企业的 “护城河”",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 176,
+    "shapes": 83,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_177": {
+    "summary": "会员体系设计的逻辑",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 177,
+    "shapes": 59,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_178": {
+    "summary": "AI",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 178,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_179": {
+    "summary": "AI",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 179,
+    "shapes": 44,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_180": {
+    "summary": "文档大模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 180,
+    "shapes": 19,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_181": {
+    "summary": "智能云平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 181,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_182": {
+    "summary": "数字产品模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 182,
+    "shapes": 53,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_183": {
+    "summary": "产品数据模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 183,
+    "shapes": 79,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_184": {
+    "summary": "数智化社会化，端至端敏捷供应链服务",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 184,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_185": {
+    "summary": "智能体应用评测",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 185,
+    "shapes": 49,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_186": {
+    "summary": "智慧小区平台架构",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 186,
+    "shapes": 97,
+    "media": 2,
+    "charts": 0
+  },
+  "solid3d_bluegreen_187": {
+    "summary": "大数据平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 187,
+    "shapes": 47,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_188": {
+    "summary": "数据获取模型",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 188,
+    "shapes": 46,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_189": {
+    "summary": "社交媒体运营场景",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 189,
+    "shapes": 22,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_190": {
+    "summary": "产品功能",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 190,
+    "shapes": 39,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_191": {
+    "summary": "基于大模型的新一代知识管理解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 191,
+    "shapes": 2,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_192": {
+    "summary": "基于大模型的新一代知识管理解决方案",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 192,
+    "shapes": 91,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_193": {
+    "summary": "协同应用",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 193,
+    "shapes": 20,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_194": {
+    "summary": "大模型全景图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 194,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_195": {
+    "summary": "协同运营平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 195,
+    "shapes": 97,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_196": {
+    "summary": "离散工业大模型架构",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 196,
+    "shapes": 36,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_197": {
+    "summary": "大模型系列发布",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 197,
+    "shapes": 32,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_198": {
+    "summary": "用户生态",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 198,
+    "shapes": 25,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_199": {
+    "summary": "数字智慧金融",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 199,
+    "shapes": 42,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_200": {
+    "summary": "企业工作台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 200,
+    "shapes": 64,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_201": {
+    "summary": "情感营销趋势洞察",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 201,
+    "shapes": 36,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_202": {
+    "summary": "数据化平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 202,
+    "shapes": 33,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_203": {
+    "summary": "AI",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 203,
+    "shapes": 77,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_204": {
+    "summary": "最全面、最专业出海能力",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 204,
+    "shapes": 75,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_205": {
+    "summary": "AI",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 205,
+    "shapes": 43,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_206": {
+    "summary": "数算未来",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 206,
+    "shapes": 65,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_207": {
+    "summary": "系统集成",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 207,
+    "shapes": 24,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_208": {
+    "summary": "零售全域运营框架",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 208,
+    "shapes": 34,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_209": {
+    "summary": "会员体系设计的逻辑",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 209,
+    "shapes": 42,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_210": {
+    "summary": "商服务营销一体化平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 210,
+    "shapes": 39,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_211": {
+    "summary": "可视化用户",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 211,
+    "shapes": 43,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_212": {
+    "summary": "协同管理",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 212,
+    "shapes": 60,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_213": {
+    "summary": "营销服一体本化应用",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 213,
+    "shapes": 35,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_214": {
+    "summary": "创新的六大发展阶段",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 214,
+    "shapes": 93,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_215": {
+    "summary": "资治一政务大数据平台",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 215,
+    "shapes": 93,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_216": {
+    "summary": "引擎式技术底座提高组织业务管理敏捷度",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 216,
+    "shapes": 77,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_217": {
+    "summary": "AI",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 217,
+    "shapes": 15,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_218": {
+    "summary": "引擎式技术底座提高组织业务管理敏捷度",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 218,
+    "shapes": 112,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_219": {
+    "summary": "品牌屋搭建逻辑",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 219,
+    "shapes": 69,
+    "media": 0,
+    "charts": 0
+  },
+  "solid3d_bluegreen_220": {
+    "summary": "数字生态，赋能机构，助力机构成长",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 220,
+    "shapes": 83,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_221": {
+    "summary": "产品生态全栈版图",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 221,
+    "shapes": 46,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_222": {
+    "summary": "提高全局搜索能力，降低检索门槛",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 222,
+    "shapes": 35,
+    "media": 1,
+    "charts": 0
+  },
+  "solid3d_bluegreen_223": {
+    "summary": "(slide 223)",
+    "source": "010 立体图示模板（蓝绿配色版）.pptx",
+    "slide": 223,
+    "shapes": 1,
+    "media": 1,
+    "charts": 0
+  }
+}

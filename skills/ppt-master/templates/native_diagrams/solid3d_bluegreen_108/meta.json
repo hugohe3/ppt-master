@@ -1,0 +1,26 @@
+{
+  "key": "solid3d_bluegreen_108",
+  "title": "国内首个全栈自研的",
+  "source": "010 立体图示模板（蓝绿配色版）.pptx",
+  "slide_num": 108,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 2,
+  "media": {
+    "rId3": "media/image25.jpeg",
+    "rId4": "media/image19.jpeg",
+    "rId5": "media/image20.jpeg",
+    "rId6": "media/image21.jpg",
+    "rId7": "media/image26.jpeg"
+  },
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 212,
+    "colors_unresolved": 0,
+    "fonts": 64
+  },
+  "foreign_rels_stripped": 0,
+  "summary": ""
+}

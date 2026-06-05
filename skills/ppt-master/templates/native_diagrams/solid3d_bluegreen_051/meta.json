@@ -1,0 +1,27 @@
+{
+  "key": "solid3d_bluegreen_051",
+  "title": "技术驱动品牌变革",
+  "source": "010 立体图示模板（蓝绿配色版）.pptx",
+  "slide_num": 51,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 38,
+  "media": {
+    "rId3": "media/image7.png",
+    "rId4": "media/image8.png",
+    "rId5": "media/image9.png",
+    "rId6": "media/image10.png",
+    "rId7": "media/image11.png",
+    "rId8": "media/image12.png"
+  },
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 345,
+    "colors_unresolved": 0,
+    "fonts": 73
+  },
+  "foreign_rels_stripped": 0,
+  "summary": ""
+}

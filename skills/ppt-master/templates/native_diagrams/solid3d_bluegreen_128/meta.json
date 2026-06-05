@@ -1,0 +1,20 @@
+{
+  "key": "solid3d_bluegreen_128",
+  "title": "SaaS",
+  "source": "010 立体图示模板（蓝绿配色版）.pptx",
+  "slide_num": 128,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 1,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 141,
+    "colors_unresolved": 0,
+    "fonts": 68
+  },
+  "foreign_rels_stripped": 0,
+  "summary": ""
+}

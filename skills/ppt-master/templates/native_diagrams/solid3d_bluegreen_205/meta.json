@@ -1,0 +1,22 @@
+{
+  "key": "solid3d_bluegreen_205",
+  "title": "AI",
+  "source": "010 立体图示模板（蓝绿配色版）.pptx",
+  "slide_num": 205,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 43,
+  "media": {
+    "rId3": "media/image31.png"
+  },
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 256,
+    "colors_unresolved": 0,
+    "fonts": 91
+  },
+  "foreign_rels_stripped": 0,
+  "summary": ""
+}
