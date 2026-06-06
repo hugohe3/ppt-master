@@ -27,12 +27,35 @@ from pathlib import Path
 
 LIB = Path("skills/ppt-master/templates/native_diagrams")
 
-STYLE = {
-    "style": "3d-dimensional",
-    "idiom": "strong",
-    "fit_renderings": ["3d-isometric", "digital-dashboard", "glassmorphism", "flat"],
+# Pack-level constants (the depth is a content-presentation choice, NOT a deck
+# style gate — these drop into any deck as an element once recolored).
+META = {
+    "pack": "solid3d_bluegreen",
+    "look": ("Dimensional 3D — glossy nodes, layered platforms, gradient depth. "
+             "The depth conveys the content relationship (layers / hierarchy / "
+             "convergence); it is NOT a deck-wide style lock. Recolor the base "
+             "hexes to the deck palette so it blends into any deck."),
+    "usage": ("Use full-slide OR scale into an in-page region via "
+              "data-native-diagram (x/y/w/h). `density` says how small it can "
+              "shrink and stay legible: low = fine as a small element, "
+              "high = needs most of the slide."),
     "recolor_base": {"primary": "558C5A", "accent": "122B87"},
+    "select_by": ("content relationship (type/use) x item count (slots) x "
+                  "content-per-slot (holds); place full-slide or as a region "
+                  "within the density limit."),
+    "conf_note": ("type = visual pass (reliable); slots = coarse range; refine "
+                  "during curation. conf: high = studied/unambiguous, "
+                  "approx = contact-sheet read."),
 }
+
+
+def _density(shape_count: int) -> str:
+    """How small the diagram can shrink and stay legible (from real shape count)."""
+    if shape_count <= 15:
+        return "low"      # simple — works as a small in-page element
+    if shape_count <= 50:
+        return "medium"   # half-slide / large region
+    return "high"         # detailed — needs most of the slide
 
 # type -> (use, slots, slot_of, holds, svg_alt, blurb)
 TYPE_DEF = {
@@ -90,59 +113,68 @@ HIGH = {3,6,9,12,13,14,20,24,31,36,40,66,160,216, 1,2,223,145,169,
         62,97,152,153,155,156,161,168,172,195, 64,91,140,185,206, 166}
 
 
-def entry(key: str, t_full: str, slide: int) -> dict:
+def entry(t_full: str, slide: int, shape_count: int) -> dict:
     if t_full in NON_DIAGRAM:
         return {"selectable": False, "kind": t_full, "slide": slide}
-    use, slots, slot_of, holds, svg_alt, blurb = TYPE_DEF[t_full]
-    pick = (f"Pick for {blurb} (~{slots} {slot_of}, each holds {holds}); full-slide, "
-            f"in a dimensional/3D-styled deck; recolor the base hexes to the deck palette. "
-            f"Skip if a flat/minimalist deck (use the SVG {svg_alt} template) or the "
-            f"content is not a {use} structure.")
-    e = {"type": t_full, "use": use, "slots": slots, "slot_of": slot_of,
-         "holds": holds, "footprint": "full-slide", "aspect": "16:9"}
-    e.update(STYLE)
-    e["pick"] = pick
-    return e
+    use, slots, slot_of, holds, _svg_alt, blurb = TYPE_DEF[t_full]
+    pick = (f"Pick for {blurb}: ~{slots} {slot_of}, each holds {holds}. "
+            f"Skip if the content is not a {use} structure, or the item count is "
+            f"far from {slots}.")
+    return {
+        "type": t_full, "use": use, "slots": slots, "slot_of": slot_of,
+        "holds": holds, "density": _density(shape_count), "aspect": "16:9",
+        "pick": pick,
+    }
+
+
+def _shape_count(key: str) -> int:
+    mp = LIB / key / "meta.json"
+    if mp.exists():
+        try:
+            return int(json.loads(mp.read_text(encoding="utf-8")).get("shape_count", 30))
+        except Exception:
+            pass
+    return 30
 
 
 def main() -> int:
     idx_path = LIB / "diagrams_index.json"
-    old = json.loads(idx_path.read_text(encoding="utf-8")) if idx_path.exists() else {}
+    old_raw = json.loads(idx_path.read_text(encoding="utf-8")) if idx_path.exists() else {}
+    old = old_raw.get("diagrams", old_raw)  # tolerate both old flat and new wrapped form
 
-    new: dict[str, dict] = {}
+    diagrams: dict[str, dict] = {}
     for n in range(1, 224):
         key = f"solid3d_bluegreen_{n:03d}"
-        code = T.get(n, "lp")
-        t_full = CODE[code]
-        e = entry(key, t_full, n)
+        t_full = CODE[T.get(n, "lp")]
+        e = entry(t_full, n, _shape_count(key))
         if "selectable" not in e:
             e["conf"] = "high" if n in HIGH else "approx"
-        new[key] = e
+        diagrams[key] = e
 
-    # preserve / upgrade the composed asset entry
+    # composed asset — same lean schema (no style gate)
     combo = old.get("combo_product_system", {})
-    new["combo_product_system"] = {
+    diagrams["combo_product_system"] = {
         "type": "composite", "use": "comparison",
         "slots": "2", "slot_of": "models", "holds": "diagram-each",
-        "footprint": "full-slide", "aspect": "16:9",
-        **STYLE,
+        "density": "high", "aspect": "16:9",
         "composed_from": combo.get("composed_from", ["solid3d_bluegreen_013", "solid3d_bluegreen_024"]),
-        "pick": ("Pick to show two whole models side by side under one title. "
-                 "Composed asset (013+024), recolored teal/coral."),
+        "pick": "Pick to show two whole models side by side under one title (composed 013+024).",
         "conf": "high",
     }
 
-    new = {k: new[k] for k in sorted(new)}
-    idx_path.write_text(json.dumps(new, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    diagrams = {k: diagrams[k] for k in sorted(diagrams)}
+    out = {"meta": META, "diagrams": diagrams}
+    idx_path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     # report
     from collections import Counter
-    c = Counter(v.get("type", v.get("kind", "?")) for v in new.values())
-    hi = sum(1 for v in new.values() if v.get("conf") == "high")
-    ap = sum(1 for v in new.values() if v.get("conf") == "approx")
-    ns = sum(1 for v in new.values() if v.get("selectable") is False)
-    print(f"entries: {len(new)} | type dist: {dict(c)}")
-    print(f"conf high: {hi} | approx: {ap} | non-selectable: {ns}")
+    c = Counter(v.get("type", v.get("kind", "?")) for v in diagrams.values())
+    hi = sum(1 for v in diagrams.values() if v.get("conf") == "high")
+    ap = sum(1 for v in diagrams.values() if v.get("conf") == "approx")
+    ns = sum(1 for v in diagrams.values() if v.get("selectable") is False)
+    dens = Counter(v.get("density") for v in diagrams.values() if v.get("density"))
+    print(f"diagrams: {len(diagrams)} | type dist: {dict(c)}")
+    print(f"density: {dict(dens)} | conf high: {hi} | approx: {ap} | non-selectable: {ns}")
     return 0
 
 

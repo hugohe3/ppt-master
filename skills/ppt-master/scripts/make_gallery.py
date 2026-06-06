@@ -29,32 +29,38 @@ def main() -> int:
     args = ap.parse_args()
 
     lib = Path(args.library)
-    index = json.loads((lib / "diagrams_index.json").read_text(encoding="utf-8"))
+    raw = json.loads((lib / "diagrams_index.json").read_text(encoding="utf-8"))
+    index = raw.get("diagrams", raw)  # tolerate {meta, diagrams} or flat
     out = Path(args.output) if args.output else lib / "gallery.html"
     prev = args.previews
 
     cards = []
     for key, e in sorted(index.items()):
         thumb = f"{prev}/{key}.png"
-        summary = html.escape(str(e.get("summary", "")))
-        media = e.get("media", 0)
-        badges = ""
-        if media:
-            badges += f'<span class="b media">img {media}</span>'
-        if e.get("charts"):
-            badges += '<span class="b chart">chart</span>'
         img = (
             f'<img loading="lazy" src="{thumb}">'
             if (lib / thumb).exists()
             else '<div class="noimg">no preview</div>'
         )
+        if e.get("selectable") is False:
+            desc = f'(non-diagram: {e.get("kind","")})'
+            badges = '<span class="b skip">skip</span>'
+            search = e.get("kind", "")
+        else:
+            desc = html.escape(str(e.get("pick", "")))
+            search = f'{e.get("type","")} {e.get("use","")} {e.get("holds","")}'
+            badges = f'<span class="b type">{html.escape(str(e.get("type","")))}</span>'
+            if e.get("density"):
+                badges += f'<span class="b dens">{e["density"]}</span>'
+            if e.get("conf"):
+                badges += f'<span class="b {"hi" if e["conf"]=="high" else "ap"}">{e["conf"]}</span>'
+            if e.get("composed_from"):
+                badges += '<span class="b combo">combo</span>'
         loc = f'slide {e["slide"]}' if e.get("slide") else "composed"
-        if e.get("composed_from"):
-            badges += '<span class="b combo">combo</span>'
         cards.append(
-            f'<div class="card" data-k="{html.escape(key)}" data-t="{summary}">{img}'
-            f'<div class="m"><b>{html.escape(key)}</b> · {loc}<br>'
-            f'{summary}<div class="s">shapes {e.get("shapes")} {badges}</div></div></div>'
+            f'<div class="card" data-k="{html.escape(key)}" data-t="{html.escape(search)}">{img}'
+            f'<div class="m"><b>{html.escape(key)}</b> · {loc} {badges}<br>'
+            f'<span class="s">{desc}</span></div></div>'
         )
 
     doc = f"""<!doctype html><html><head><meta charset="utf-8">
@@ -69,7 +75,9 @@ input{{padding:8px;width:300px;border:1px solid #ccc;border-radius:6px;font-size
 .m{{padding:8px 10px;font-size:13px;line-height:1.45}}
 .s{{margin-top:4px;color:#666;font-size:12px}}
 .b{{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:5px;color:#5a3d00}}
-.media{{background:#ffe0b2}}.chart{{background:#ffcdd2;color:#7a0000}}.combo{{background:#b2dfdb;color:#004d40}}
+.combo{{background:#b2dfdb;color:#004d40}}
+.type{{background:#e3f2fd;color:#0d47a1}}.dens{{background:#f0f0f0;color:#555}}
+.hi{{background:#c8e6c9;color:#1b5e20}}.ap{{background:#fff3cd;color:#7a5b00}}.skip{{background:#eee;color:#999}}
 </style></head><body>
 <header><b>Native Diagram Library</b><span id="c">{len(index)}</span> shown
 <input id="q" placeholder="filter by key / title…" oninput="f()"></header>

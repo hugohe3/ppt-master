@@ -19,27 +19,36 @@ different theme.
 
 ## Source of truth & selection schema
 
-[`diagrams_index.json`](./diagrams_index.json) carries one structured entry per
-component, for AI selection in a single pass (regenerate with
-`scripts/build_diagram_index.py`). Fields follow the PPT-expert selection model,
-aligned to the `image-type-templates` taxonomy + `charts_index` `pick`-rule style:
+[`diagrams_index.json`](./diagrams_index.json) is `{ meta, diagrams }` (like
+`charts_index.json`), for AI selection in a single pass (regenerate with
+`scripts/build_diagram_index.py`).
 
-| Field | Meaning (the question it answers) |
+**`meta`** holds pack-level facts, the most important being: the diagrams' **3D
+depth is a content-presentation choice (it conveys layers / hierarchy /
+convergence), NOT a deck-wide style requirement** — recolored, a diagram drops
+into any deck as one element. It also states they work **full-slide OR as an
+in-page region** (via `data-native-diagram` x/y/w/h), and the two `recolor_base`
+hexes to remap onto the deck palette.
+
+**`diagrams`** — one entry per component:
+
+| Field | The question it answers |
 |---|---|
-| `type` | relationship/form — the primary selector (`framework`/`funnel`/`pyramid`/`layered-platform`/`isometric-stack`/`matrix`/`cycle`/`list-row`/`timeline`) |
+| `type` | relationship/form — primary selector (`framework`/`funnel`/`pyramid`/`layered-platform`/`isometric-stack`/`matrix`/`cycle`/`list-row`/`timeline`) |
 | `use` | content relationship (hierarchy / convergence / comparison / composition / relationship / cycle / process) |
-| `slots` / `slot_of` | capacity — how many items it holds (coarse range, by design) |
+| `slots` / `slot_of` | capacity — how many items (coarse range, by design) |
 | `holds` | content form per slot: `short-label` / `label+short-desc` / `label+desc` / `label+items` |
-| `footprint` / `aspect` | layout fit |
-| `style` / `idiom` / `fit_renderings` | **style gate** — this pack is strong 3D-skeuomorphic, so it is selectable **only for dimensional/3D-styled decks**; flat/minimalist decks should use the SVG `charts/` templates instead |
-| `recolor_base` | the two base hexes to remap onto the deck palette (`data-recolor`) |
+| `density` | how small it can shrink and stay legible (from real shape count): `low` = fine as a small in-page element · `medium` = half-slide/region · `high` = needs most of the slide |
+| `aspect` | source aspect (16:9) for placement |
 | `pick` | one-line selection rule (`"Pick for X … Skip if Y …"`) |
-| `conf` | `high` (studied / unambiguous form) vs `approx` (contact-sheet read — refine on curation) |
+| `conf` | `high` (studied / unambiguous) vs `approx` (contact-sheet read — refine on curation) |
 
-Non-diagram slides (cover / notice / pure table) are marked `selectable: false`.
-`type` is a visual-pass classification and `slots` is intentionally coarse; both
-are refined during curation. Roles scan the `pick` lines top-to-bottom and match
-by content relationship × deck style; there is no category sub-index.
+There is **no style gate** — fit is a soft aesthetic call, not a hard deck
+requirement. Selection = content relationship (`type`/`use`) × item count
+(`slots`) × content-per-slot (`holds`), placed full-slide or as a region within
+the `density` limit. Non-diagram slides (cover / notice / pure table) are
+`selectable: false`. `type` is a visual-pass classification and `slots` is
+coarse; both are refined during curation.
 
 ## Component format
 
