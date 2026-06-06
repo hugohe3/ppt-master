@@ -329,8 +329,56 @@ REVIEW = {
     141: dict(type="layered-platform", slots=5, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="fan/arc panorama"),
     142: dict(type="framework",        slots=8, footprint="full-bleed",       text_load="heavy",  motif="sphere", subform="dense radial hub"),
     143: dict(type="layered-platform", slots=6, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="architecture panorama"),
-    144: dict(type="matrix",           slots=8, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="architecture grid"),
+    144: dict(type="matrix",           slots=8, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="architecture grid", scenario="business operating system / system map"),
+    # ---- batch 7: the kept exemplars from keys 145-223 (rest are dropped) ----
+    153: dict(type="pyramid",          slots=5, footprint="tall-center",      text_load="light",  motif="pyramid", subform="clean 5-tier 3D pyramid", scenario="maturity model / value hierarchy"),
+    154: dict(type="funnel",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed",  subform="clean inverted funnel", scenario="data-value refinement / conversion"),
+    155: dict(type="isometric-stack",  slots=3, footprint="tall-center",      text_load="light",  motif="cube",   subform="stacked numbered cubes (01/02/03)", scenario="layered foundation / numbered levels"),
+    156: dict(type="funnel",           slots=4, footprint="tall-center",      text_load="medium", motif="mixed",  subform="inverted funnel with metric bars", scenario="conversion funnel with a KPI per stage"),
+    158: dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed",  subform="clean omnichannel bowtie", scenario="omnichannel convergence / two-sided"),
+    163: dict(type="matrix",           slots=3, footprint="centered-compact", text_load="light",  motif="cube",   subform="3D RFM cube (3-axis)", scenario="3-axis segmentation (RFM)"),
+    172: dict(type="framework",        slots=5, footprint="centered-compact", text_load="medium", motif="mixed",  subform="cloud-shaped container with nodes", scenario="cloud-native / security system"),
+    176: dict(type="framework",        slots=5, footprint="centered-compact", text_load="medium", motif="tower",  subform="cityscape of towers (moat)", scenario="enterprise moat / pillars-as-buildings"),
+    184: dict(type="cycle",            slots=5, footprint="centered-compact", text_load="medium", motif="ring",   subform="clean segmented donut", scenario="closed-loop / supply-chain platform"),
+    185: dict(type="list-row",         slots=7, slot_of="steps", footprint="wide-band", text_load="light", motif="sphere", subform="numbered 1-7 sequence on a curve", scenario="multi-step process / evaluation sequence"),
+    201: dict(type="cycle",            slots=6, footprint="centered-compact", text_load="medium", motif="ring",   subform="double concentric segmented rings", scenario="two-layer cyclical model"),
+    208: dict(type="cycle",            slots=2, footprint="centered-compact", text_load="light",  motif="mixed",  subform="infinity loop (figure-8)", scenario="continuous loop / two interlinked domains"),
+    214: dict(type="list-row",         slots=6, slot_of="columns", footprint="wide-band", text_load="heavy", motif="card", subform="6-column stage cards", scenario="N-stage roadmap / development phases"),
+    217: dict(type="framework",        slots=6, footprint="centered-compact", text_load="medium", motif="sphere", subform="organic bubble cluster (brain)", scenario="capability cloud / AI brain"),
+    219: dict(type="framework",        slots=4, footprint="tall-center",      text_load="medium", motif="mixed",  subform="house/temple (roof-pillars-base)", scenario="brand house / framework with foundation"),
 }
+
+# ===========================================================================
+# Curated keep-set — the "精品" library. A professional-PPT-expert selection of
+# distinct, reusable exemplars (one best per archetype x capacity x form), with
+# near-duplicates and un-reusable text-wall panoramas dropped. Only these enter
+# the index. Everything else stays on disk (git history) but is invisible to
+# selection. ~47 diagrams + the composed asset.
+# ===========================================================================
+KEEP = frozenset({
+    # framework / hub (relationship)
+    3, 21, 24, 31, 44, 66, 115, 140,
+    # pyramid (hierarchy)
+    4, 12, 153,
+    # funnel (conversion)
+    5, 154, 156,
+    # bowtie (converge-diverge / two-sided)
+    7, 110, 114, 158,
+    # cycle (loop)
+    64, 184, 201,
+    # matrix / grid
+    36, 112, 144,
+    # layered-platform / concentric
+    13, 16, 82, 94, 128,
+    # isometric-stack
+    59, 155, 160, 216,
+    # list-row / pillars / columns
+    18, 40, 43, 214,
+    # flowchart
+    79, 113,
+    # special distinct forms
+    62, 163, 172, 176, 185, 208, 217, 219,
+})
 
 
 def entry(t_full: str, slide: int, shape_count: int) -> dict:
@@ -365,6 +413,8 @@ def main() -> int:
 
     diagrams: dict[str, dict] = {}
     for n in range(1, 224):
+        if n not in KEEP:        # curated-out: stays on disk, excluded from the index
+            continue
         key = f"solid3d_bluegreen_{n:03d}"
         rv = REVIEW.get(n)
         # A reviewed entry's corrected type drives the base build (incl. pick).
