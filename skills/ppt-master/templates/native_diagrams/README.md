@@ -17,11 +17,29 @@ native PowerPoint shapes you can click, recolor, and restyle. The only transform
 is **theme flattening** (see below) so it survives moving to a deck with a
 different theme.
 
-## Source of truth
+## Source of truth & selection schema
 
-[`diagrams_index.json`](./diagrams_index.json) lists every component with a
-one-line selection `summary` (format: `"Pick for X. Skip if Y."`). Roles and
-humans scan it top-to-bottom; there is no category sub-index.
+[`diagrams_index.json`](./diagrams_index.json) carries one structured entry per
+component, for AI selection in a single pass (regenerate with
+`scripts/build_diagram_index.py`). Fields follow the PPT-expert selection model,
+aligned to the `image-type-templates` taxonomy + `charts_index` `pick`-rule style:
+
+| Field | Meaning (the question it answers) |
+|---|---|
+| `type` | relationship/form — the primary selector (`framework`/`funnel`/`pyramid`/`layered-platform`/`isometric-stack`/`matrix`/`cycle`/`list-row`/`timeline`) |
+| `use` | content relationship (hierarchy / convergence / comparison / composition / relationship / cycle / process) |
+| `slots` / `slot_of` | capacity — how many items it holds (coarse range, by design) |
+| `holds` | content form per slot: `short-label` / `label+short-desc` / `label+desc` / `label+items` |
+| `footprint` / `aspect` | layout fit |
+| `style` / `idiom` / `fit_renderings` | **style gate** — this pack is strong 3D-skeuomorphic, so it is selectable **only for dimensional/3D-styled decks**; flat/minimalist decks should use the SVG `charts/` templates instead |
+| `recolor_base` | the two base hexes to remap onto the deck palette (`data-recolor`) |
+| `pick` | one-line selection rule (`"Pick for X … Skip if Y …"`) |
+| `conf` | `high` (studied / unambiguous form) vs `approx` (contact-sheet read — refine on curation) |
+
+Non-diagram slides (cover / notice / pure table) are marked `selectable: false`.
+`type` is a visual-pass classification and `slots` is intentionally coarse; both
+are refined during curation. Roles scan the `pick` lines top-to-bottom and match
+by content relationship × deck style; there is no category sub-index.
 
 ## Component format
 
