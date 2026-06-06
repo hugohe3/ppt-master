@@ -63,6 +63,30 @@ python3 scripts/inject_diagram.py templates/native_diagrams/<key> -o out.pptx \
     --target deck.pptx --slide 2 --into-existing --pos 914400,914400,10363200,5029200
 ```
 
+## Using a diagram inside a generated deck (SVG placeholder)
+
+Native diagrams are a first-class peer of `<use data-icon>` and `<image>` in the
+SVG → DrawingML pipeline. The Executor draws a placeholder in the page SVG and
+`svg_to_pptx` splices the named component in at conversion time — scaled to the
+placeholder rect and optionally recolored to the deck palette:
+
+```xml
+<!-- the component is scaled into x/y/width/height; resolved to native shapes -->
+<rect data-native-diagram="combo_product_system"
+      data-recolor="558C5A=1E3A5F,122B87=D4AF37"
+      x="140" y="120" width="1000" height="480" fill="none"/>
+```
+
+- `data-native-diagram` — the library `<key>`.
+- `data-recolor` (optional) — `OLD=NEW,…` base-hex map (see "color" below); maps
+  the diagram's accents onto the deck's `spec_lock` palette, 3D shading re-derived.
+- The rect itself never renders — it is replaced by the spliced DrawingML. Give it
+  `fill="none"` (optionally a dashed stroke) so the SVG preview shows the reserved
+  region; the real diagram only materializes in the PPTX.
+
+> Resolved by `svg_to_pptx/native_diagram_resolver.py`; string-spliced so the
+> component's namespaces (`a`/`p`/`r`/`a14`/`a16`) stay byte-exact.
+
 ## Limits (v1)
 
 - **Charts** (`graphicFrame` → chart part) are recorded in `meta['charts_unsupported']`
