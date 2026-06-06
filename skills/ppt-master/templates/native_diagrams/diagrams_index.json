@@ -47,6 +47,9 @@
       "pick": "Pick for several inputs/categories feeding one concept from above (top-down). Skip if radial hub (031) or convergence-to-platform (066).",
       "conf": "refined",
       "subform": "top-row cards + central node",
+      "footprint": "centered-compact",
+      "text_load": "light",
+      "motif": "mixed",
       "distinct": "A row of labeled cards across the top feeds a central node — top-down intake, not a radial ring."
     },
     "solid3d_bluegreen_004": {
@@ -148,6 +151,9 @@
       "pick": "Pick for a 3-level hierarchy / precedence / maturity. Skip if >4 levels or nested layers (013).",
       "conf": "refined",
       "subform": "solid 3-tier pyramid on platform",
+      "footprint": "tall-center",
+      "text_load": "light",
+      "motif": "pyramid",
       "distinct": "A solid upward 3-tier pyramid seated on a platform."
     },
     "solid3d_bluegreen_013": {
@@ -161,6 +167,9 @@
       "pick": "Pick for a platform where each layer envelops the inner (core -> capabilities -> ecosystem). Skip if flat stacked tiers (pyramid).",
       "conf": "refined",
       "subform": "concentric nested rings",
+      "footprint": "centered-compact",
+      "text_load": "medium",
+      "motif": "ring",
       "distinct": "Concentric nested ellipse rings; each ring is a layer that wraps the inner one (core -> ecosystem)."
     },
     "solid3d_bluegreen_014": {
@@ -284,6 +293,9 @@
       "pick": "Pick for several factors revolving around one central value/goal. Skip if many-to-one convergence (066).",
       "conf": "refined",
       "subform": "orbital ring around a central value",
+      "footprint": "centered-compact",
+      "text_load": "medium",
+      "motif": "sphere",
       "distinct": "Labeled nodes orbit a central value pair on a 3D platform, with side annotation columns."
     },
     "solid3d_bluegreen_025": {
@@ -363,6 +375,9 @@
       "pick": "Pick for one core concept with ~5-6 surrounding aspects (even radial hub). Skip if many-to-one convergence (066) or top-down feed (003).",
       "conf": "refined",
       "subform": "central sphere + orbiting satellites",
+      "footprint": "centered-compact",
+      "text_load": "light",
+      "motif": "sphere",
       "distinct": "One large central sphere ringed by small satellite nodes — the classic even hub-spoke."
     },
     "solid3d_bluegreen_032": {
@@ -420,6 +435,9 @@
       "pick": "Pick for 6-8 parallel modules/capabilities of equal weight. Skip if 2-axis quadrants or a hierarchy.",
       "conf": "refined",
       "subform": "module-card grid on platform",
+      "footprint": "wide-band",
+      "text_load": "medium",
+      "motif": "card",
       "distinct": "6 module cards laid out in a grid on a platform — parallel capabilities, not quadrants."
     },
     "solid3d_bluegreen_037": {
@@ -752,6 +770,9 @@
       "pick": "Pick for 6-8 sources/channels converging into one core platform (capability hub, data hub). Skip if a plain radial hub (031).",
       "conf": "refined",
       "subform": "convergence vortex hub",
+      "footprint": "full-bleed",
+      "text_load": "medium",
+      "motif": "sphere",
       "distinct": "7 labeled spheres arc into a central vortex that fans down to base labels — many sources converging into one platform."
     },
     "solid3d_bluegreen_067": {
@@ -1782,6 +1803,9 @@
       "pick": "Pick for a 4-layer technical architecture shown with isometric depth. Skip if a flat hierarchy (pyramid).",
       "conf": "refined",
       "subform": "isometric descending layers",
+      "footprint": "full-bleed",
+      "text_load": "heavy",
+      "motif": "card",
       "distinct": "4 isometric platform layers descending (application/presentation/analysis/data), each holding tiles."
     },
     "solid3d_bluegreen_161": {
@@ -2394,6 +2418,9 @@
       "pick": "Pick for a 3-layer platform stack (PaaS-style) with many sub-items per layer. Skip if few items per layer (pyramid).",
       "conf": "refined",
       "subform": "stacked platforms with icon-card rows",
+      "footprint": "full-bleed",
+      "text_load": "heavy",
+      "motif": "card",
       "distinct": "3 stacked platforms (PaaS application/capability/base), each holding a row of icon cards."
     },
     "solid3d_bluegreen_217": {

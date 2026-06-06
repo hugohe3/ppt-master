@@ -35,13 +35,22 @@ hexes to remap onto the deck palette.
 | Field | The question it answers |
 |---|---|
 | `type` | relationship/form — primary selector (`framework`/`funnel`/`pyramid`/`layered-platform`/`isometric-stack`/`matrix`/`cycle`/`list-row`/`timeline`) |
+| `subform` | the specific variant within a type (e.g. `convergence vortex hub` vs `central sphere + orbiting satellites`) — what discriminates same-type entries |
 | `use` | content relationship (hierarchy / convergence / comparison / composition / relationship / cycle / process) |
-| `slots` / `slot_of` | capacity — how many items (coarse range, by design) |
+| `slots` / `slot_of` | capacity — how many items |
 | `holds` | content form per slot: `short-label` / `label+short-desc` / `label+desc` / `label+items` |
-| `density` | how small it can shrink and stay legible (from real shape count): `low` = fine as a small in-page element · `medium` = half-slide/region · `high` = needs most of the slide |
-| `aspect` | source aspect (16:9) for placement |
-| `pick` | one-line selection rule (`"Pick for X … Skip if Y …"`) |
-| `conf` | `high` (studied / unambiguous) vs `approx` (contact-sheet read — refine on curation) |
+| `footprint` | region shape it needs (visual pass): `wide-band` / `tall-center` / `centered-compact` / `full-bleed` — answers *where on the slide* it can go |
+| `density` | how small it can shrink and stay legible (from real shape count): `low` = small in-page element · `medium` = half-slide · `high` = needs most of the slide |
+| `text_load` | overall copy it carries: `light` / `medium` / `heavy` — page-rhythm fit (breathing vs dense) |
+| `motif` | node vocabulary: `sphere` / `card` / `cube` / `ring` / `tower` / `pyramid` / `mixed` — for element cohesion with the deck |
+| `aspect` | source aspect (16:9) |
+| `distinct` / `pick` | `distinct` = one-line visual description; `pick` = selection rule that **differentiates within the type** and cross-references siblings |
+| `conf` | `refined` (hand-verified, trust) · `high` (studied) · `approx` (contact-sheet read — refine on curation) |
+
+> `footprint` / `text_load` / `motif` and the precise `slots` / `subform` / `distinct`
+> are **visual properties** — populated only on entries that have been looked at
+> (`conf: refined`). The bulk `approx` entries carry type-level defaults until
+> curated. See `references/native-diagrams.md` §2 for how they drive selection.
 
 There is **no style gate** — fit is a soft aesthetic call, not a hard deck
 requirement. Selection = content relationship (`type`/`use`) × item count

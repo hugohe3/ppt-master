@@ -51,10 +51,27 @@ the chart catalog) and match each candidate page by:
    coarse by design; a 4-item page fits a `~4-8 satellites` framework, not a 3-tier pyramid).
 3. **`holds`** — does the content per item fit? `short-label` figures break if you
    have a sentence per node; use a `label+desc` figure for richer items.
-4. **`density`** — how small it can shrink and stay legible: `low` works as an
+4. **`footprint`** — the figure's natural region shape, for *where* it goes:
+   `wide-band` (a horizontal strip — needs full width, not a narrow column) /
+   `tall-center` (pyramid/funnel/tower — fits a half-width column) /
+   `centered-compact` (a hub concentrated mid-slide — flexible region) /
+   `full-bleed` (panorama/architecture — full-slide only). Match it to the slide
+   region you've reserved.
+5. **`density`** — how small it can shrink and stay legible: `low` works as an
    in-page element; `high` needs most of the slide (see §3).
-5. **`conf`** — `high` is verified; `approx` is a contact-sheet read — sanity-check
-   the thumbnail in `gallery.html` before relying on an `approx` pick.
+6. **`text_load`** — overall copy the figure carries: `light` (labels only) /
+   `medium` / `heavy` (text in every cell). Match to page rhythm — a `breathing`
+   page wants `light`; a `dense` page can take `heavy`.
+7. **`motif`** — node vocabulary (`sphere` / `card` / `cube` / `ring` / `tower` /
+   `pyramid` / `mixed`). Prefer one that echoes the deck's other elements (a
+   card-based deck pairs with a `card`/`cube` motif, not glossy spheres).
+8. **`conf`** — `refined` = hand-verified distinguishing entry (trust it);
+   `high` = studied; `approx` = contact-sheet read — sanity-check the thumbnail in
+   `gallery.html` before relying on an `approx` pick.
+
+> **Distinguishing within a type** (e.g. choosing among many `framework`s): rely on
+> `subform` + `distinct` + the differentiated `pick` (refined entries cross-reference
+> siblings — "Skip if radial hub (031)"). `type` alone does not discriminate.
 
 Skip `selectable: false` entries (cover / notice / table). One native diagram per
 page (it is the page's primary figure).
