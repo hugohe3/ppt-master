@@ -606,6 +606,25 @@ The most common Strategist failure mode is missing the structural half — treat
 > 2. If still no fit: data-driven content → table layout; conceptual/illustrative → "AI-generated image" (Image_Generator handles); structural → "custom layout".
 > 3. Mark the page `no-template-match` in section VII with the fallback chosen and why. Do NOT silently substitute a close-but-wrong chart.
 
+> **Native diagrams — a second vehicle for structural pages (deck-style gated).**
+> `templates/native_diagrams/` holds pre-designed, editable **dimensional** figures
+> (hub-spoke / pyramid / funnel / layered-platform / matrix / cycle / …) that are
+> spliced in as-is and recolored, instead of redrawn. They are a candidate vehicle
+> for the same structural pages the chart catalog serves — but only when the deck's
+> **§d Style Objective welcomes a 3D / dimensional look**. Make this call **once per
+> deck**:
+> - Deck embraces visual richness/dimension → scan `templates/native_diagrams/diagrams_index.json`
+>   (read [`references/native-diagrams.md`](native-diagrams.md) first) alongside the chart catalog;
+>   for a structural page, pick a native diagram when its `type`/`slots`/`holds` fit better
+>   than a flat chart template. Use them **consistently** across the deck's structural pages.
+> - Austere / flat / minimalist deck → do **not** use native diagrams (their glossy idiom
+>   would clash); stay with `charts/` templates. Recolor adapts color, not the 3D treatment.
+>
+> Record native-diagram picks in §VII (reference path = the `templates/native_diagrams/<key>`)
+> and in `spec_lock.md page_diagrams` (one `P<NN>: <key>` per page; a page is in
+> `page_charts` **or** `page_diagrams`, never both). Omit `page_diagrams` entirely when none
+> are used — the common case.
+
 ### Speaker Notes Requirements (Default — no discussion needed)
 
 - File naming: Recommended to match SVG names (`01_cover.svg` → `notes/01_cover.md`), also compatible with `notes/slide01.md`

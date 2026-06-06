@@ -135,6 +135,17 @@
 >
 > **Strategist source**: copy from `design_spec.md §VII Visualization Reference List` — only the rows whose `reference template path` points to a `templates/charts/` file. Pages marked `no-template-match` in §VII MUST NOT appear here.
 
+## page_diagrams
+- P06: solid3d_bluegreen_066
+
+> One entry per page that uses a **native diagram** (a pre-designed editable figure spliced from `templates/native_diagrams/`, NOT redrawn). Key: `P<NN>` matching §IX. Value: a diagram `<key>` (must match a key in `templates/native_diagrams/diagrams_index.json`), optionally ` | region x,y,w,h` (px; default = full canvas minus margins).
+>
+> Native diagrams differ from `page_charts`: Executor does **not** redraw them — it writes a `<rect data-native-diagram="<key>" data-recolor="...">` placeholder and the converter splices the figure in at export, recolored to this deck's palette. See [`references/native-diagrams.md`](../references/native-diagrams.md) §3.
+>
+> **No entry for a page** → no native diagram on that page. **Whole section omitted** → the deck uses none (the common case — native diagrams are a deliberate dimensional-style choice, see `native-diagrams.md` §1).
+>
+> **Strategist source**: copy from `design_spec.md §VII` rows whose reference points to a `templates/native_diagrams/` key. A page is in `page_charts` **or** `page_diagrams`, never both.
+
 ## forbidden
 - Mixing icon libraries
 - rgba()

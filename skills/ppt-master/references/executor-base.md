@@ -136,6 +136,19 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 - No entry for this page → either no chart on this page, or a chart that didn't match any catalog template (Strategist's `no-template-match` fallback). Design the visualization from scratch using `design_spec.md §VII` for guidance.
 - Whole section absent → no chart pages in this deck.
 
+**Per-page native diagram — `page_diagrams` section**:
+
+Unlike `page_charts` (which you redraw), a native diagram is **spliced in as-is** at export — you only write a placeholder; the converter resolves it. Before drawing each page, look up its `page_diagrams` entry:
+
+- Entry present (e.g., `P06: solid3d_bluegreen_066`) → place a placeholder rect, do **not** hand-draw the figure:
+  ```xml
+  <rect data-native-diagram="<key>" data-recolor="558C5A=<primary>,122B87=<accent>"
+        x=".." y=".." width=".." height=".." fill="none"/>
+  ```
+  where `<primary>`/`<accent>` are this deck's `spec_lock.colors`. Size the rect per the diagram's `density` (high → near-full-slide; low → may be smaller); the whole figure incl. text scales to the rect, so don't starve a text-bearing figure. First time you load `references/native-diagrams.md` §3 for the exact rules. You still author the rest of the page (title, surrounding text/elements) as normal SVG around the reserved region.
+- No entry for this page → no native diagram here.
+- Whole section absent → the deck uses none.
+
 ---
 
 ## 3. Execution Guidelines

@@ -71,6 +71,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Layout templates | `${SKILL_DIR}/templates/layouts/layouts_index.json` | Query available page layout templates |
 | Brand presets | `${SKILL_DIR}/templates/brands/brands_index.json` | Query available brand identity presets (color / typography / logo / voice) |
 | Visualization templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available visualization SVG templates (charts, infographics, diagrams, frameworks) |
+| Native diagrams | `${SKILL_DIR}/templates/native_diagrams/diagrams_index.json` | Query pre-designed editable dimensional figures (spliced as-is + recolored, not redrawn). Selection/placement: `references/native-diagrams.md`. Deck-style gated — see that file §1 |
 | Icon library | `${SKILL_DIR}/templates/icons/` | See `${SKILL_DIR}/templates/icons/README.md`; search icons on demand with `ls templates/icons/<library>/ \| grep <keyword>` |
 
 ## Standalone Workflows
@@ -557,6 +558,7 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 | Image-text layout patterns (Primary structures + Modifier layers — combine freely) | `references/image-layout-patterns.md` |
 | Image layout sizing (math for side-by-side container dimensions) | `references/image-layout-spec.md` |
 | SVG image embedding | `references/svg-image-embedding.md` |
+| Native diagram selection & placement | `references/native-diagrams.md` (load only when `spec_lock.md page_diagrams` is non-empty) |
 | Icon library | `templates/icons/README.md` |
 
 ---

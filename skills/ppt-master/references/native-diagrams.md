@@ -1,0 +1,99 @@
+# Native Diagrams — Selection & Placement Reference
+
+> Lazy-loaded reference. Load **only** when `spec_lock.md page_diagrams` has at
+> least one entry (Strategist matched a page to a native diagram). If that section
+> is empty/absent, this file is never read. Peer to [`image-generator.md`](./image-generator.md)
+> and the chart catalog — same "scan an index, match by content shape" pattern.
+
+A **native diagram** is a pre-designed, fully-editable DrawingML figure lifted
+verbatim from a real deck and stored in `templates/native_diagrams/`. Unlike a
+`templates/charts/` SVG (which Executor *redraws* from scratch using the template
+as reference), a native diagram is **spliced in as-is** via a placeholder and only
+recolored — so an elaborate, polished figure arrives pixel-faithful and still
+native-editable, at near-zero authoring cost.
+
+---
+
+## 1. When a native diagram is the right vehicle (vs the alternatives)
+
+For any page whose content is a *structural relationship* (hierarchy / flow /
+convergence / comparison / composition / cycle), there are four vehicles. Pick by
+content-shape **and** the deck's visual ambition (set once in §d Style Objective):
+
+| Vehicle | Use when |
+|---|---|
+| Native diagram | The relationship maps to a polished, dimensional figure AND the deck welcomes visual richness (not austere-flat). Reused as-is + recolored. |
+| `charts/` SVG template | The deck is flat / minimalist, OR the figure needs structural surgery (different slot count, custom axes) the native diagram can't flex to. |
+| Hand-drawn SVG | No catalog entry fits; the page wants a bespoke layout. |
+| AI image (`image-generator`) | The page wants atmosphere / a scene / a hero, not an editable structural figure. |
+
+> **Visual-cohesion guardrail (🎨).** Native diagrams carry a deliberate **3D /
+> dimensional idiom** — recolor adapts their *color* to the deck palette, but the
+> glossy/volumetric *treatment* stays. So treat them as a **deck-level stylistic
+> commitment**, not a per-page impulse: either the deck embraces dimensional
+> figures (then use them consistently across its structural pages) **or** it
+> stays flat (then prefer `charts/` templates). Do **not** scatter one glossy 3D
+> figure into an otherwise-flat deck — that breaks visual rhythm. Strategist makes
+> this call once, from §d Style Objective, before matching pages.
+
+---
+
+## 2. Selecting a specific diagram
+
+Source of truth: [`templates/native_diagrams/diagrams_index.json`](../templates/native_diagrams/diagrams_index.json),
+shape `{ meta, diagrams }`. Scan the `diagrams.*.pick` lines in one pass (same as
+the chart catalog) and match each candidate page by:
+
+1. **`type` / `use`** (primary) — the content relationship: `framework` (hub-spoke)
+   / `funnel` / `pyramid` / `layered-platform` / `isometric-stack` / `matrix` /
+   `cycle` / `list-row` / `timeline`. Translate the page's intent, then match.
+2. **`slots`** — does the page's item count fall in the diagram's range? (ranges are
+   coarse by design; a 4-item page fits a `~4-8 satellites` framework, not a 3-tier pyramid).
+3. **`holds`** — does the content per item fit? `short-label` figures break if you
+   have a sentence per node; use a `label+desc` figure for richer items.
+4. **`density`** — how small it can shrink and stay legible: `low` works as an
+   in-page element; `high` needs most of the slide (see §3).
+5. **`conf`** — `high` is verified; `approx` is a contact-sheet read — sanity-check
+   the thumbnail in `gallery.html` before relying on an `approx` pick.
+
+Skip `selectable: false` entries (cover / notice / table). One native diagram per
+page (it is the page's primary figure).
+
+---
+
+## 3. Placing it (Executor) — the `data-native-diagram` placeholder
+
+Native diagrams are resolved at SVG→PPTX conversion time (peer to `<use data-icon>`
+and `<image>`). Executor writes a placeholder rect; the converter splices the
+component in, scaled to the rect and recolored:
+
+```xml
+<rect data-native-diagram="<key>"
+      data-recolor="558C5A=<spec_lock primary>,122B87=<spec_lock accent>"
+      x=".." y=".." width=".." height=".." fill="none"/>
+```
+
+- **`data-native-diagram`** = the chosen `<key>` from `page_diagrams`.
+- **`data-recolor`** = remap the diagram's two base hexes (`meta.recolor_base`:
+  `558C5A` primary, `122B87` accent) onto **this deck's** `spec_lock.colors`
+  primary/accent. The 3D shading re-derives from the new base. If the deck has only
+  one accent, map both bases to tints of it.
+- **Region sizing by `density`**: `high` → near-full-slide (respect canvas margins);
+  `medium` → ≥ half-slide; `low` → may be a smaller region. The whole figure
+  (including its text) scales to the rect — so do **not** shrink a text-bearing
+  diagram into a tiny region or its labels become illegible. When in doubt, give it
+  the page.
+- The rect itself does not render (it's replaced); keep `fill="none"` (a dashed
+  light stroke is fine as a preview marker). The figure only appears in the PPTX,
+  not in the SVG preview.
+
+---
+
+## 4. Limits
+
+- **Charts not lifted** — entries are diagram/figure structures only; data charts
+  (`graphicFrame`) stay with `templates/charts/`.
+- **No structural surgery** — you cannot add a tier or remove a spoke; the figure is
+  frozen. If the content needs a different slot count, pick a different `key` or use
+  a `charts/` template.
+- **Composed assets** (`type: composite`) are pre-combined figures — use as-is.
