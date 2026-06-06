@@ -36,8 +36,9 @@ hexes to remap onto the deck palette.
 |---|---|
 | `type` | relationship/form — primary selector (`framework`/`funnel`/`pyramid`/`layered-platform`/`isometric-stack`/`matrix`/`cycle`/`list-row`/`timeline`) |
 | `subform` | the specific variant within a type (e.g. `convergence vortex hub` vs `central sphere + orbiting satellites`) — what discriminates same-type entries |
-| `use` | content relationship (hierarchy / convergence / comparison / composition / relationship / cycle / process) |
-| `slots` / `slot_of` | capacity — how many items |
+| `scenario` | **content-first** — the business content it serves (capability map / maturity model / platform stack / roadmap / two-sided platform …); the entry point a PPT expert selects by |
+| `use` | the underlying relationship (hierarchy / convergence / comparison / composition / relationship / cycle / process) |
+| `slots` / `slot_of` | capacity + the parallel grain: `slot_of` = `columns` (N-栏) / `tiers` / `layers` / `spokes` / `cells` — i.e. "几栏/几层/几辐" is read off `slot_of` |
 | `holds` | content form per slot: `short-label` / `label+short-desc` / `label+desc` / `label+items` |
 | `footprint` | region shape it needs (visual pass): `wide-band` / `tall-center` / `centered-compact` / `full-bleed` — answers *where on the slide* it can go |
 | `density` | how small it can shrink and stay legible (from real shape count): `low` = small in-page element · `medium` = half-slide · `high` = needs most of the slide |

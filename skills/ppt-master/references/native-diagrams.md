@@ -44,28 +44,33 @@ Source of truth: [`templates/native_diagrams/diagrams_index.json`](../templates/
 shape `{ meta, diagrams }`. Scan the `diagrams.*.pick` lines in one pass (same as
 the chart catalog) and match each candidate page by:
 
-1. **`type` / `use`** (primary) — the content relationship: `framework` (hub-spoke)
-   / `funnel` / `pyramid` / `layered-platform` / `isometric-stack` / `matrix` /
-   `cycle` / `list-row` / `timeline`. Translate the page's intent, then match.
-2. **`slots`** — does the page's item count fall in the diagram's range? (ranges are
-   coarse by design; a 4-item page fits a `~4-8 satellites` framework, not a 3-tier pyramid).
-3. **`holds`** — does the content per item fit? `short-label` figures break if you
+1. **`scenario`** (content-first — start here) — the business content the figure
+   serves: *capability map / maturity model / platform or tech stack / roadmap /
+   two-sided platform / module portfolio …*. A PPT expert thinks in scenarios first
+   ("I'm making a capability-hub page"), then narrows by structure.
+2. **`type` / `use`** — the underlying relationship: `framework` (hub-spoke) /
+   `funnel` / `pyramid` / `layered-platform` / `isometric-stack` / `matrix` /
+   `cycle` / `list-row` / `timeline` / `bowtie` (hourglass converge-diverge).
+3. **`slots` / `slot_of`** — item count **and what the count means**: `slot_of`
+   encodes the parallel grain — `columns` (N-栏 comparison) / `tiers` / `layers` /
+   `spokes` / `cells`. Match the page's item count to the range.
+4. **`holds`** — does the content per item fit? `short-label` figures break if you
    have a sentence per node; use a `label+desc` figure for richer items.
-4. **`footprint`** — the figure's natural region shape, for *where* it goes:
+5. **`footprint`** — the figure's natural region shape, for *where* it goes:
    `wide-band` (a horizontal strip — needs full width, not a narrow column) /
    `tall-center` (pyramid/funnel/tower — fits a half-width column) /
    `centered-compact` (a hub concentrated mid-slide — flexible region) /
    `full-bleed` (panorama/architecture — full-slide only). Match it to the slide
    region you've reserved.
-5. **`density`** — how small it can shrink and stay legible: `low` works as an
+6. **`density`** — how small it can shrink and stay legible: `low` works as an
    in-page element; `high` needs most of the slide (see §3).
-6. **`text_load`** — overall copy the figure carries: `light` (labels only) /
+7. **`text_load`** — overall copy the figure carries: `light` (labels only) /
    `medium` / `heavy` (text in every cell). Match to page rhythm — a `breathing`
    page wants `light`; a `dense` page can take `heavy`.
-7. **`motif`** — node vocabulary (`sphere` / `card` / `cube` / `ring` / `tower` /
+8. **`motif`** — node vocabulary (`sphere` / `card` / `cube` / `ring` / `tower` /
    `pyramid` / `mixed`). Prefer one that echoes the deck's other elements (a
    card-based deck pairs with a `card`/`cube` motif, not glossy spheres).
-8. **`conf`** — `refined` = hand-verified distinguishing entry (trust it);
+9. **`conf`** — `refined` = hand-verified distinguishing entry (trust it);
    `high` = studied; `approx` = contact-sheet read — sanity-check the thumbnail in
    `gallery.html` before relying on an `approx` pick.
 

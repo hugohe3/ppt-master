@@ -72,6 +72,22 @@ TYPE_DEF = {
 }
 NON_DIAGRAM = {"cover", "notice", "table"}
 
+# Content scenarios per type — the "what business content is this for" bridge a
+# PPT expert selects by (mirrors image-type-templates "Typical use"). Type-level
+# default; refined/reviewed entries may give a more specific list.
+SCENARIO = {
+    "framework":        "capability map / system architecture / methodology / org or relationship model",
+    "funnel":           "conversion / sales pipeline / screening / data refinement",
+    "pyramid":          "maturity model / value hierarchy / capability tiers / priority levels",
+    "layered-platform": "platform or tech stack / layered architecture / service tiers",
+    "isometric-stack":  "technical architecture (layers) / platform stack",
+    "matrix":           "capability matrix / module-or-product portfolio / 2-axis classification (SWOT/BCG)",
+    "cycle":            "PDCA / closed-loop process / continuous improvement / flywheel",
+    "list-row":         "parallel options / N-column comparison / step list / pillars",
+    "timeline":         "roadmap / history / evolution / milestones",
+    "bowtie":           "two-sided platform (supply<->demand) / intermediary / converge-then-distribute",
+}
+
 # --- per-key visual-pass type classification (1..223), row-major over the sheets ---
 # Codes: fw framework/hub · fn funnel · py pyramid · lp layered-platform ·
 #        iso isometric-stack · mx matrix · cy cycle · lr list-row · tl timeline ·
@@ -120,38 +136,47 @@ HIGH = {3,6,9,12,13,14,20,24,31,36,40,66,160,216, 1,2,223,145,169,
 OVERRIDES = {
     "solid3d_bluegreen_003": dict(type="framework", subform="top-row cards + central node",
         slots=6, footprint="centered-compact", text_load="light", motif="mixed",
+        scenario="data-governance / security model / inputs feeding a central platform (top-down)",
         distinct="A row of labeled cards across the top feeds a central node — top-down intake, not a radial ring.",
         pick="Pick for several inputs/categories feeding one concept from above (top-down). Skip if radial hub (031) or convergence-to-platform (066)."),
     "solid3d_bluegreen_031": dict(type="framework", subform="central sphere + orbiting satellites",
         slots=6, footprint="centered-compact", text_load="light", motif="sphere",
+        scenario="one-core-many-aspects model / capability hub / concept breakdown",
         distinct="One large central sphere ringed by small satellite nodes — the classic even hub-spoke.",
         pick="Pick for one core concept with ~5-6 surrounding aspects (even radial hub). Skip if many-to-one convergence (066) or top-down feed (003)."),
     "solid3d_bluegreen_066": dict(type="framework", subform="convergence vortex hub",
         slots=7, footprint="full-bleed", text_load="medium", motif="sphere",
+        scenario="capability hub / data or middle platform / ecosystem convergence / resource integration",
         distinct="7 labeled spheres arc into a central vortex that fans down to base labels — many sources converging into one platform.",
         pick="Pick for 6-8 sources/channels converging into one core platform (capability hub, data hub). Skip if a plain radial hub (031)."),
     "solid3d_bluegreen_012": dict(type="pyramid", subform="solid 3-tier pyramid on platform",
         slots=3, footprint="tall-center", text_load="light", motif="pyramid",
+        scenario="maturity model / value hierarchy / 3-tier capability or priority",
         distinct="A solid upward 3-tier pyramid seated on a platform.",
         pick="Pick for a 3-level hierarchy / precedence / maturity. Skip if >4 levels or nested layers (013)."),
     "solid3d_bluegreen_013": dict(type="layered-platform", subform="concentric nested rings",
         slots=4, slot_of="rings", holds="label+items", footprint="centered-compact", text_load="medium", motif="ring",
+        scenario="platform / tech stack (core -> ecosystem) / layered architecture",
         distinct="Concentric nested ellipse rings; each ring is a layer that wraps the inner one (core -> ecosystem).",
         pick="Pick for a platform where each layer envelops the inner (core -> capabilities -> ecosystem). Skip if flat stacked tiers (pyramid)."),
     "solid3d_bluegreen_024": dict(type="framework", subform="orbital ring around a central value",
         slots=5, footprint="centered-compact", text_load="medium", motif="sphere",
+        scenario="value-centric model / factors revolving around one goal / marketing model",
         distinct="Labeled nodes orbit a central value pair on a 3D platform, with side annotation columns.",
         pick="Pick for several factors revolving around one central value/goal. Skip if many-to-one convergence (066)."),
     "solid3d_bluegreen_036": dict(type="matrix", subform="module-card grid on platform",
-        slots=6, holds="label+desc", footprint="wide-band", text_load="medium", motif="card",
+        slots=6, slot_of="cells", holds="label+desc", footprint="wide-band", text_load="medium", motif="card",
+        scenario="capability matrix / module or product portfolio / parallel feature set",
         distinct="6 module cards laid out in a grid on a platform — parallel capabilities, not quadrants.",
         pick="Pick for 6-8 parallel modules/capabilities of equal weight. Skip if 2-axis quadrants or a hierarchy."),
     "solid3d_bluegreen_160": dict(type="isometric-stack", subform="isometric descending layers",
         slots=4, holds="label+items", footprint="full-bleed", text_load="heavy", motif="card",
+        scenario="technical architecture (layers) / data platform stack",
         distinct="4 isometric platform layers descending (application/presentation/analysis/data), each holding tiles.",
         pick="Pick for a 4-layer technical architecture shown with isometric depth. Skip if a flat hierarchy (pyramid)."),
     "solid3d_bluegreen_216": dict(type="isometric-stack", subform="stacked platforms with icon-card rows",
         slots=3, holds="label+items", footprint="full-bleed", text_load="heavy", motif="card",
+        scenario="PaaS platform stack / multi-layer service architecture",
         distinct="3 stacked platforms (PaaS application/capability/base), each holding a row of icon cards.",
         pick="Pick for a 3-layer platform stack (PaaS-style) with many sub-items per layer. Skip if few items per layer (pyramid)."),
 }
@@ -175,7 +200,7 @@ REVIEW = {
     15: dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="sphere"),
     16: dict(type="layered-platform", slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
     17: dict(type="framework",        slots=5, footprint="wide-band",        text_load="light",  motif="sphere", subform="central sphere on a platform with a top node arc"),
-    18: dict(type="list-row",         slots=3, footprint="wide-band",        text_load="medium", motif="card"),
+    18: dict(type="list-row",         slots=3, slot_of="columns", footprint="wide-band", text_load="medium", motif="card", scenario="3-column parallel comparison / digital-ops matrix"),
     19: dict(type="layered-platform", slots=4, footprint="wide-band",        text_load="medium", motif="card"),
     20: dict(type="framework",        slots=4, footprint="wide-band",        text_load="light",  motif="mixed", subform="two-entity relationship on an angled platform"),
     21: dict(type="framework",        slots=4, footprint="centered-compact", text_load="medium", motif="tower", subform="central 3D object (5G) with side callouts"),
@@ -188,12 +213,13 @@ def entry(t_full: str, slide: int, shape_count: int) -> dict:
     if t_full in NON_DIAGRAM:
         return {"selectable": False, "kind": t_full, "slide": slide}
     use, slots, slot_of, holds, _svg_alt, blurb = TYPE_DEF[t_full]
-    pick = (f"Pick for {blurb}: ~{slots} {slot_of}, each holds {holds}. "
-            f"Skip if the content is not a {use} structure, or the item count is "
-            f"far from {slots}.")
+    scenario = SCENARIO.get(t_full, "")
+    pick = (f"Pick for {scenario} — {blurb}: ~{slots} {slot_of}, each holds {holds}. "
+            f"Skip if not a {use} structure, or item count far from {slots}.")
     return {
-        "type": t_full, "use": use, "slots": slots, "slot_of": slot_of,
-        "holds": holds, "density": _density(shape_count), "aspect": "16:9",
+        "type": t_full, "use": use, "scenario": scenario,
+        "slots": slots, "slot_of": slot_of, "holds": holds,
+        "density": _density(shape_count), "aspect": "16:9",
         "pick": pick,
     }
 
@@ -223,7 +249,8 @@ def main() -> int:
         if "selectable" not in e:
             e["conf"] = "high" if n in HIGH else "approx"
         if rv:                               # P3 grind: fill verified visual attrs
-            for f in ("slots", "footprint", "text_load", "motif", "subform", "holds"):
+            for f in ("slots", "slot_of", "footprint", "text_load", "motif",
+                      "subform", "holds", "scenario"):
                 if f in rv:
                     e[f] = rv[f]
             e["conf"] = "reviewed"
