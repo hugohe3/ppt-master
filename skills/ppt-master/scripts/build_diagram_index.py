@@ -68,6 +68,7 @@ TYPE_DEF = {
     "cycle":            ("cycle",        "3-6", "steps",      "short-label",      "cycle",      "a closed loop returning to start"),
     "list-row":         ("comparison",   "3-6", "items",      "label+short-desc", "infographic","parallel items on a row of platforms/pillars"),
     "timeline":         ("process",      "3-6", "milestones", "label+date",       "timeline",   "events along a linear axis"),
+    "bowtie":           ("convergence",  "3-5", "stages",     "label+short-desc", "funnel",     "an hourglass/bowtie — converges to a center then diverges (many-in, many-out)"),
 }
 NON_DIAGRAM = {"cover", "notice", "table"}
 
@@ -156,6 +157,33 @@ OVERRIDES = {
 }
 
 
+# P3 curation grind — per-diagram visual review at full size (6/sheet, 900px),
+# correcting the coarse contact-sheet types and filling footprint/text_load/motif
+# + precise slots. conf:"reviewed". Grows one batch at a time. OVERRIDES (the
+# fully hand-written `distinct`+`pick` entries) still win where both exist.
+REVIEW = {
+    # ---- batch 1: keys 4-23 (1,2 non-diagram; 3,12,13,24 already in OVERRIDES) ----
+    4:  dict(type="pyramid",          slots=4, footprint="tall-center",      text_load="light",  motif="mixed"),
+    5:  dict(type="funnel",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    6:  dict(type="pyramid",          slots=3, footprint="tall-center",      text_load="light",  motif="mixed"),
+    7:  dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    8:  dict(type="pyramid",          slots=4, footprint="tall-center",      text_load="medium", motif="mixed"),
+    9:  dict(type="layered-platform", slots=3, footprint="centered-compact", text_load="medium", motif="ring",  subform="concentric nested rings"),
+    10: dict(type="layered-platform", slots=3, footprint="centered-compact", text_load="medium", motif="mixed"),
+    11: dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    14: dict(type="layered-platform", slots=8, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="wide platform holding many item tiles"),
+    15: dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="sphere"),
+    16: dict(type="layered-platform", slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    17: dict(type="framework",        slots=5, footprint="wide-band",        text_load="light",  motif="sphere", subform="central sphere on a platform with a top node arc"),
+    18: dict(type="list-row",         slots=3, footprint="wide-band",        text_load="medium", motif="card"),
+    19: dict(type="layered-platform", slots=4, footprint="wide-band",        text_load="medium", motif="card"),
+    20: dict(type="framework",        slots=4, footprint="wide-band",        text_load="light",  motif="mixed", subform="two-entity relationship on an angled platform"),
+    21: dict(type="framework",        slots=4, footprint="centered-compact", text_load="medium", motif="tower", subform="central 3D object (5G) with side callouts"),
+    22: dict(type="pyramid",          slots=4, footprint="tall-center",      text_load="medium", motif="mixed"),
+    23: dict(type="framework",        slots=5, footprint="wide-band",        text_load="medium", motif="sphere", subform="central command hub + surrounding nodes on a platform"),
+}
+
+
 def entry(t_full: str, slide: int, shape_count: int) -> dict:
     if t_full in NON_DIAGRAM:
         return {"selectable": False, "kind": t_full, "slide": slide}
@@ -188,11 +216,18 @@ def main() -> int:
     diagrams: dict[str, dict] = {}
     for n in range(1, 224):
         key = f"solid3d_bluegreen_{n:03d}"
-        t_full = CODE[T.get(n, "lp")]
+        rv = REVIEW.get(n)
+        # A reviewed entry's corrected type drives the base build (incl. pick).
+        t_full = rv["type"] if rv else CODE[T.get(n, "lp")]
         e = entry(t_full, n, _shape_count(key))
         if "selectable" not in e:
             e["conf"] = "high" if n in HIGH else "approx"
-        if key in OVERRIDES:                 # P3: hand-written distinguishing entry
+        if rv:                               # P3 grind: fill verified visual attrs
+            for f in ("slots", "footprint", "text_load", "motif", "subform", "holds"):
+                if f in rv:
+                    e[f] = rv[f]
+            e["conf"] = "reviewed"
+        if key in OVERRIDES:                 # fully hand-written entry wins
             e.update(OVERRIDES[key])
             e["conf"] = "refined"
         diagrams[key] = e
