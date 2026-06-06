@@ -113,6 +113,44 @@ HIGH = {3,6,9,12,13,14,20,24,31,36,40,66,160,216, 1,2,223,145,169,
         62,97,152,153,155,156,161,168,172,195, 64,91,140,185,206, 166}
 
 
+# P3 — hand-written distinguishing descriptors for studied diagrams. These show
+# the target quality: precise node count + subform + a pick that differentiates
+# WITHIN a type (the gap P4 exposed). Survivors of curation get the same treatment.
+OVERRIDES = {
+    "solid3d_bluegreen_003": dict(type="framework", subform="top-row cards + central node",
+        slots=6, distinct="A row of labeled cards across the top feeds a central node — top-down intake, not a radial ring.",
+        pick="Pick for several inputs/categories feeding one concept from above (top-down). Skip if radial hub (031) or convergence-to-platform (066)."),
+    "solid3d_bluegreen_031": dict(type="framework", subform="central sphere + orbiting satellites",
+        slots=6, distinct="One large central sphere ringed by small satellite nodes — the classic even hub-spoke.",
+        pick="Pick for one core concept with ~5-6 surrounding aspects (even radial hub). Skip if many-to-one convergence (066) or top-down feed (003)."),
+    "solid3d_bluegreen_066": dict(type="framework", subform="convergence vortex hub",
+        slots=7, distinct="7 labeled spheres arc into a central vortex that fans down to base labels — many sources converging into one platform.",
+        pick="Pick for 6-8 sources/channels converging into one core platform (capability hub, data hub). Skip if a plain radial hub (031)."),
+    "solid3d_bluegreen_012": dict(type="pyramid", subform="solid 3-tier pyramid on platform",
+        slots=3, distinct="A solid upward 3-tier pyramid seated on a platform.",
+        pick="Pick for a 3-level hierarchy / precedence / maturity. Skip if >4 levels or nested layers (013)."),
+    "solid3d_bluegreen_013": dict(type="layered-platform", subform="concentric nested rings",
+        slots=4, slot_of="rings", holds="label+items",
+        distinct="Concentric nested ellipse rings; each ring is a layer that wraps the inner one (core -> ecosystem).",
+        pick="Pick for a platform where each layer envelops the inner (core -> capabilities -> ecosystem). Skip if flat stacked tiers (pyramid)."),
+    "solid3d_bluegreen_024": dict(type="framework", subform="orbital ring around a central value",
+        slots=5, distinct="Labeled nodes orbit a central value pair on a 3D platform, with side annotation columns.",
+        pick="Pick for several factors revolving around one central value/goal. Skip if many-to-one convergence (066)."),
+    "solid3d_bluegreen_036": dict(type="matrix", subform="module-card grid on platform",
+        slots=6, holds="label+desc",
+        distinct="6 module cards laid out in a grid on a platform — parallel capabilities, not quadrants.",
+        pick="Pick for 6-8 parallel modules/capabilities of equal weight. Skip if 2-axis quadrants or a hierarchy."),
+    "solid3d_bluegreen_160": dict(type="isometric-stack", subform="isometric descending layers",
+        slots=4, holds="label+items",
+        distinct="4 isometric platform layers descending (application/presentation/analysis/data), each holding tiles.",
+        pick="Pick for a 4-layer technical architecture shown with isometric depth. Skip if a flat hierarchy (pyramid)."),
+    "solid3d_bluegreen_216": dict(type="isometric-stack", subform="stacked platforms with icon-card rows",
+        slots=3, holds="label+items",
+        distinct="3 stacked platforms (PaaS application/capability/base), each holding a row of icon cards.",
+        pick="Pick for a 3-layer platform stack (PaaS-style) with many sub-items per layer. Skip if few items per layer (pyramid)."),
+}
+
+
 def entry(t_full: str, slide: int, shape_count: int) -> dict:
     if t_full in NON_DIAGRAM:
         return {"selectable": False, "kind": t_full, "slide": slide}
@@ -149,6 +187,9 @@ def main() -> int:
         e = entry(t_full, n, _shape_count(key))
         if "selectable" not in e:
             e["conf"] = "high" if n in HIGH else "approx"
+        if key in OVERRIDES:                 # P3: hand-written distinguishing entry
+            e.update(OVERRIDES[key])
+            e["conf"] = "refined"
         diagrams[key] = e
 
     # composed asset — same lean schema (no style gate)
