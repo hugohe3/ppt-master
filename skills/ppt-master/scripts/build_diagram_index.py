@@ -69,6 +69,7 @@ TYPE_DEF = {
     "list-row":         ("comparison",   "3-6", "items",      "label+short-desc", "infographic","parallel items on a row of platforms/pillars"),
     "timeline":         ("process",      "3-6", "milestones", "label+date",       "timeline",   "events along a linear axis"),
     "bowtie":           ("convergence",  "3-5", "stages",     "label+short-desc", "funnel",     "an hourglass/bowtie — converges to a center then diverges (many-in, many-out)"),
+    "flowchart":        ("process",      "3-6", "steps",      "label+short-desc", "flowchart",  "sequential blocks connected left-to-right (input -> process -> output)"),
 }
 NON_DIAGRAM = {"cover", "notice", "table"}
 
@@ -86,6 +87,7 @@ SCENARIO = {
     "list-row":         "parallel options / N-column comparison / step list / pillars",
     "timeline":         "roadmap / history / evolution / milestones",
     "bowtie":           "two-sided platform (supply<->demand) / intermediary / converge-then-distribute",
+    "flowchart":        "process / workflow / pipeline / input-process-output",
 }
 
 # --- per-key visual-pass type classification (1..223), row-major over the sheets ---
@@ -206,6 +208,53 @@ REVIEW = {
     21: dict(type="framework",        slots=4, footprint="centered-compact", text_load="medium", motif="tower", subform="central 3D object (5G) with side callouts"),
     22: dict(type="pyramid",          slots=4, footprint="tall-center",      text_load="medium", motif="mixed"),
     23: dict(type="framework",        slots=5, footprint="wide-band",        text_load="medium", motif="sphere", subform="central command hub + surrounding nodes on a platform"),
+    # ---- batch 2: keys 25-48 (31,36 in OVERRIDES) ----
+    25: dict(type="framework",        slots=5, footprint="centered-compact", text_load="medium", motif="mixed"),
+    26: dict(type="layered-platform", slots=3, footprint="centered-compact", text_load="medium", motif="mixed", subform="top nodes feeding a layered base"),
+    27: dict(type="framework",        slots=6, footprint="centered-compact", text_load="medium", motif="sphere", subform="radial ring of nodes with arrows"),
+    28: dict(type="layered-platform", slots=4, footprint="wide-band",        text_load="medium", motif="card"),
+    29: dict(type="funnel",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    30: dict(type="list-row",         slots=3, slot_of="columns", footprint="wide-band", text_load="medium", motif="card", scenario="short-video / content operations strategy"),
+    32: dict(type="framework",        slots=5, footprint="wide-band",        text_load="medium", motif="mixed", scenario="talent / HR management platform"),
+    33: dict(type="isometric-stack",  slots=4, footprint="wide-band",        text_load="medium", motif="mixed", subform="input -> central isometric stack -> output"),
+    34: dict(type="framework",        slots=4, footprint="wide-band",        text_load="medium", motif="mixed"),
+    35: dict(type="framework",        slots=5, footprint="wide-band",        text_load="medium", motif="mixed"),
+    37: dict(type="layered-platform", slots=4, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="fan/arc panorama"),
+    38: dict(type="framework",        slots=4, footprint="centered-compact", text_load="medium", motif="sphere", subform="radial hub with stat callouts"),
+    39: dict(type="layered-platform", slots=5, footprint="wide-band",        text_load="heavy",  motif="card"),
+    40: dict(type="list-row",         slots=6, footprint="wide-band",        text_load="medium", motif="sphere", subform="value-chain row", scenario="industry / value chain"),
+    41: dict(type="layered-platform", slots=8, footprint="full-bleed",       text_load="heavy",  motif="card"),
+    42: dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="sphere"),
+    43: dict(type="list-row",         slots=5, footprint="wide-band",        text_load="medium", motif="cube", subform="row of 3D cube nodes (SaaS/PaaS tiers on the side)"),
+    44: dict(type="framework",        slots=4, footprint="centered-compact", text_load="medium", motif="tower", subform="central tower/building + side callouts"),
+    45: dict(type="layered-platform", slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    46: dict(type="framework",        slots=8, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="full-slide capability panorama"),
+    47: dict(type="cycle",            slots=8, footprint="full-bleed",       text_load="heavy",  motif="sphere", subform="concentric radial panorama"),
+    48: dict(type="layered-platform", slots=5, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="service-system panorama"),
+    # ---- batch 3: keys 49-72 (66 in OVERRIDES) ----
+    49: dict(type="framework",        slots=8, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="full-slide software-platform panorama"),
+    50: dict(type="layered-platform", slots=6, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="super-workbench panorama"),
+    51: dict(type="framework",        slots=5, footprint="full-bleed",       text_load="heavy",  motif="cube",  subform="central data-store stack + side modules"),
+    52: dict(type="layered-platform", slots=4, footprint="centered-compact", text_load="medium", motif="ring",  subform="fan/arc layered rings"),
+    53: dict(type="matrix",           slots=8, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="architecture grid (management platform)"),
+    54: dict(type="layered-platform", slots=4, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="fan/arc panorama"),
+    55: dict(type="layered-platform", slots=4, footprint="full-bleed",       text_load="heavy",  motif="mixed", subform="fan/arc panorama"),
+    56: dict(type="layered-platform", slots=5, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="layered product-system architecture"),
+    57: dict(type="matrix",           slots=8, footprint="full-bleed",       text_load="heavy",  motif="card",  subform="security-governance architecture grid"),
+    58: dict(type="isometric-stack",  slots=4, footprint="wide-band",        text_load="heavy",  motif="card",  subform="top cards + central isometric stack"),
+    59: dict(type="isometric-stack",  slots=5, footprint="centered-compact", text_load="medium", motif="card",  subform="stacked transparent layers"),
+    60: dict(type="isometric-stack",  slots=5, footprint="wide-band",        text_load="medium", motif="card",  subform="dual isometric stacks"),
+    61: dict(type="framework",        slots=2, footprint="wide-band",        text_load="medium", motif="sphere", subform="two overlapping circles (venn/relationship)", scenario="two-entity relationship / overlap"),
+    62: dict(type="framework",        slots=3, footprint="centered-compact", text_load="light",  motif="sphere", subform="big stat circle + metric callouts", scenario="metric / KPI highlight"),
+    63: dict(type="bowtie",           slots=3, footprint="centered-compact", text_load="medium", motif="sphere"),
+    64: dict(type="cycle",            slots=5, footprint="centered-compact", text_load="medium", motif="card"),
+    65: dict(type="layered-platform", slots=4, footprint="centered-compact", text_load="medium", motif="mixed", subform="fan/arc banner over layers"),
+    67: dict(type="pyramid",          slots=4, footprint="tall-center",      text_load="medium", motif="mixed"),
+    68: dict(type="layered-platform", slots=4, footprint="wide-band",        text_load="medium", motif="mixed", subform="side timeline + layered platform"),
+    69: dict(type="layered-platform", slots=4, footprint="centered-compact", text_load="medium", motif="ring",  subform="concentric rings"),
+    70: dict(type="framework",        slots=5, footprint="wide-band",        text_load="medium", motif="sphere", subform="central hub + top node row"),
+    71: dict(type="bowtie",           slots=4, footprint="centered-compact", text_load="medium", motif="mixed"),
+    72: dict(type="layered-platform", slots=4, footprint="wide-band",        text_load="medium", motif="mixed"),
 }
 
 
