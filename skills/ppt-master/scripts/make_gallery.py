@@ -48,9 +48,12 @@ def main() -> int:
             if (lib / thumb).exists()
             else '<div class="noimg">no preview</div>'
         )
+        loc = f'slide {e["slide"]}' if e.get("slide") else "composed"
+        if e.get("composed_from"):
+            badges += '<span class="b combo">combo</span>'
         cards.append(
             f'<div class="card" data-k="{html.escape(key)}" data-t="{summary}">{img}'
-            f'<div class="m"><b>{html.escape(key)}</b> · slide {e.get("slide")}<br>'
+            f'<div class="m"><b>{html.escape(key)}</b> · {loc}<br>'
             f'{summary}<div class="s">shapes {e.get("shapes")} {badges}</div></div></div>'
         )
 
@@ -66,7 +69,7 @@ input{{padding:8px;width:300px;border:1px solid #ccc;border-radius:6px;font-size
 .m{{padding:8px 10px;font-size:13px;line-height:1.45}}
 .s{{margin-top:4px;color:#666;font-size:12px}}
 .b{{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:5px;color:#5a3d00}}
-.media{{background:#ffe0b2}}.chart{{background:#ffcdd2;color:#7a0000}}
+.media{{background:#ffe0b2}}.chart{{background:#ffcdd2;color:#7a0000}}.combo{{background:#b2dfdb;color:#004d40}}
 </style></head><body>
 <header><b>Native Diagram Library</b><span id="c">{len(index)}</span> shown
 <input id="q" placeholder="filter by key / title…" oninput="f()"></header>

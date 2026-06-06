@@ -189,6 +189,27 @@ def strip_foreign_rels(sp_tree, keep_rids: set) -> int:
     return removed
 
 
+def recolor_shapes(root, color_map: dict) -> int:
+    """Remap explicit ``srgbClr`` hex values in-place (case-insensitive).
+
+    Because the library flattens theme colors to a tiny set of base hexes (the
+    source accents) plus shading modifiers (``lumMod`` / ``shade`` …) that are
+    *kept*, a whole-diagram palette swap is just a base-hex remap: replacing
+    ``558C5A`` -> a new green re-derives every gradient/3D tint from the new base.
+
+    *color_map*: ``{"558C5A": "0E7C7B", ...}`` (``#`` optional, case-insensitive).
+    Returns the number of fills changed.
+    """
+    cmap = {k.upper().lstrip("#"): v.upper().lstrip("#") for k, v in color_map.items()}
+    n = 0
+    for el in root.iter("{%s}srgbClr" % A):
+        v = (el.get("val") or "").upper()
+        if v in cmap:
+            el.set("val", cmap[v])
+            n += 1
+    return n
+
+
 def flatten_theme(sp_tree, maps: ThemeMaps) -> dict:
     """In-place: ``schemeClr`` -> ``srgbClr`` and theme-font tokens -> typeface.
 

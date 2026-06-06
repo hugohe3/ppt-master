@@ -1,0 +1,15 @@
+{
+  "key": "combo_product_system",
+  "title": "两大核心能力模型",
+  "composed_from": [
+    "solid3d_bluegreen_013",
+    "solid3d_bluegreen_024"
+  ],
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 3,
+  "media": {},
+  "charts_unsupported": []
+}

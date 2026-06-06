@@ -1,4 +1,14 @@
 {
+  "combo_product_system": {
+    "summary": "两大核心能力模型（组合 013+024 + 改色 青/珊瑚）",
+    "composed_from": [
+      "solid3d_bluegreen_013",
+      "solid3d_bluegreen_024"
+    ],
+    "shapes": 3,
+    "media": 0,
+    "charts": 0
+  },
   "solid3d_bluegreen_001": {
     "summary": "立体逻辑图示",
     "source": "010 立体图示模板（蓝绿配色版）.pptx",
