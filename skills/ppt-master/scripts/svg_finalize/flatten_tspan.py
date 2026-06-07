@@ -205,11 +205,11 @@ def _classify_paragraph_block(
     text_el: ET.Element,
     is_svg_tag,
     is_new_line_tspan,
-) -> tuple[float, list[float], list[bool]] | None:
+) -> tuple[float, list[float], list[bool], list[list[ET.Element]]] | None:
     """Detect a mergeable paragraph block.
 
     Returns ``(base_line_height_px, extra_space_before_px_per_line,
-    is_soft_break_per_line)`` if the children form a mergeable paragraph.
+    is_soft_break_per_line, line_groups)`` if the children form a mergeable paragraph.
     Each list has one entry per direct-child tspan (line):
 
       - extra_space_before_px_per_line[i]: extra px above base line-height,
@@ -221,7 +221,9 @@ def _classify_paragraph_block(
     Conditions (all must hold):
       - No leading text directly under <text>.
       - Every direct child is a <tspan>.
-      - Every direct-child tspan is a new-line tspan.
+      - Every logical line starts with a new-line tspan.
+      - Direct-child inline formatting tspans without x/y/dy are allowed only
+        after a line starts; they are normalized into the previous line.
       - First line-break tspan has dy == 0 (or no dy).
       - All subsequent line-break tspans use positive dy (no <y>).
       - dy values cluster around a single minimum "base line-height";
@@ -241,11 +243,24 @@ def _classify_paragraph_block(
     if len(direct_tspans) != len(direct_children_all):
         return None
 
+    line_groups: list[list[ET.Element]] = []
+    for tspan in direct_tspans:
+        if is_new_line_tspan(tspan):
+            line_groups.append([tspan])
+        else:
+            if not line_groups:
+                return None
+            if _tspan_has_positional_descendant(tspan):
+                return None
+            line_groups[-1].append(tspan)
+
+    if len(line_groups) < 2:
+        return None
+
     # First pass: validate per-line structural rules and collect dy values.
     dy_values: list[float] = []  # one per line (0 for first)
-    for idx, tspan in enumerate(direct_tspans):
-        if not is_new_line_tspan(tspan):
-            return None
+    for idx, group in enumerate(line_groups):
+        tspan = group[0]
 
         t_y = get_attr(tspan, "y")
         if t_y is not None:
@@ -295,7 +310,7 @@ def _classify_paragraph_block(
         extras.append(0.0 if is_soft else extra)
         soft_breaks.append(is_soft)
 
-    return base, extras, soft_breaks
+    return base, extras, soft_breaks, line_groups
 
 
 def _emit_mergeable_paragraph(
@@ -303,6 +318,7 @@ def _emit_mergeable_paragraph(
     base_dy: float,
     extras: list[float],
     soft_breaks: list[bool],
+    line_groups: list[list[ET.Element]],
 ) -> None:
     """Rewrite text_el in place so it stays a single <text> with paragraph rows.
 
@@ -316,11 +332,30 @@ def _emit_mergeable_paragraph(
     """
     text_el.set(PARAGRAPH_MARK_ATTR, format_number(base_dy))
 
+    # Normalize authoring variants before the downstream converter reads the
+    # paragraph: a line-break tspan may be followed by direct-child inline
+    # formatting tspans. Move those inline runs under the line-break tspan so
+    # every direct child of <text> is one logical visual line.
+    normalized_lines: list[ET.Element] = []
+    for group in line_groups:
+        line = group[0]
+        for inline_tspan in group[1:]:
+            try:
+                text_el.remove(inline_tspan)
+            except ValueError:
+                pass
+            if inline_tspan.tail and not inline_tspan.tail.strip():
+                inline_tspan.tail = None
+            line.append(inline_tspan)
+        normalized_lines.append(line)
+
+    for child in list(text_el):
+        if child not in normalized_lines:
+            text_el.remove(child)
+
     extras_iter = iter(extras)
     soft_iter = iter(soft_breaks)
-    for tspan in list(text_el):
-        if tspan.tag != f"{{{SVG_NS}}}tspan":
-            continue
+    for tspan in normalized_lines:
         for k in ("x", "y", "dy"):
             if k in tspan.attrib:
                 del tspan.attrib[k]
@@ -408,8 +443,8 @@ def flatten_text_with_tspans(
         if merge_paragraphs:
             paragraph = _classify_paragraph_block(text_el, is_svg_tag, is_new_line_tspan)
             if paragraph is not None:
-                base_dy, extras, soft_breaks = paragraph
-                _emit_mergeable_paragraph(text_el, base_dy, extras, soft_breaks)
+                base_dy, extras, soft_breaks, line_groups = paragraph
+                _emit_mergeable_paragraph(text_el, base_dy, extras, soft_breaks, line_groups)
                 changed = True
                 continue
 
