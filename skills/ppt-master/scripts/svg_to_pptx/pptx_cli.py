@@ -154,13 +154,14 @@ Recorded narration:
                             help='Only generate one version: native (editable shapes) or legacy (SVG image)')
     mode_group.add_argument('--native', action='store_true', default=False,
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
-    parser.add_argument('--merge-paragraphs', action='store_true', default=False,
-                        help='Opt-in: merge mergeable paragraph blocks (same x, dy clustered '
-                             'around one base line-height) into a single editable text frame '
-                             'with multiple <a:p>. Improves editability of paragraph text in '
-                             'PowerPoint (one textbox per paragraph instead of per line) at '
-                             'the cost of strict SVG line layout fidelity — PowerPoint re-wraps '
-                             'merged paragraphs to fit the box width. Off by default.')
+    merge_group = parser.add_mutually_exclusive_group()
+    merge_group.add_argument('--merge-paragraphs', action='store_true', dest='merge_paragraphs',
+                             help='Compatibility no-op: mergeable paragraph blocks are merged '
+                                  'by default.')
+    merge_group.add_argument('--no-merge', action='store_false', dest='merge_paragraphs',
+                             help='Disable paragraph merging. Every dy-stacked line becomes '
+                                  'its own text frame for strict SVG line-layout fidelity.')
+    parser.set_defaults(merge_paragraphs=True)
     parser.add_argument('--conversion-trace', action='store_true', default=False,
                         help='Write a JSON diagnostics report next to the native PPTX '
                              '(<output>.trace.json). Records per-slide SVG element '

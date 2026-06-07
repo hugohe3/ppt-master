@@ -420,7 +420,7 @@ def convert_svg_to_slide_shapes(
     svg_path: Path,
     slide_num: int = 1,
     verbose: bool = False,
-    merge_paragraphs: bool = False,
+    merge_paragraphs: bool = True,
     trace_out: list[dict[str, Any]] | None = None,
 ) -> tuple[str, dict[str, bytes], list[dict[str, str]], list]:
     """Convert an SVG file to a complete DrawingML slide XML.
@@ -429,10 +429,10 @@ def convert_svg_to_slide_shapes(
         svg_path: Path to the SVG file.
         slide_num: Slide number (for naming).
         verbose: Print progress info.
-        merge_paragraphs: Opt-in. When True, mergeable paragraph blocks
-            (same x, dy clustered around one base line-height) become a
-            single editable text frame with multiple <a:p>. Default False
-            preserves the SVG's exact line layout (one textbox per line).
+        merge_paragraphs: When True, mergeable paragraph blocks (same x,
+            dy clustered around one base line-height) become a single
+            editable text frame with multiple <a:p>. Disable it to preserve
+            the SVG's exact line layout (one textbox per line).
         trace_out: Optional list populated with one per-slide trace dictionary.
 
     Returns:
@@ -469,8 +469,8 @@ def convert_svg_to_slide_shapes(
     # and an x-anchored tspan would render in the wrong column. finalize_svg
     # does the same flattening on disk; doing it here keeps native pptx output
     # correct when reading raw svg_output/.
-    # merge_paragraphs (opt-in) additionally folds mergeable paragraph blocks
-    # into a single annotated <text> for downstream multi-<a:p> conversion.
+    # merge_paragraphs additionally folds mergeable paragraph blocks into a
+    # single annotated <text> for downstream multi-<a:p> conversion.
     from .tspan_flattener import flatten_positional_tspans
     flattened = flatten_positional_tspans(tree, merge_paragraphs=merge_paragraphs)
     if flattened:

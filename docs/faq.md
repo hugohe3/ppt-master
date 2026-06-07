@@ -48,19 +48,19 @@ Yes. The main `.pptx` (native PowerPoint shapes — all text, graphics, and colo
 
 ## Q: Why is one paragraph split into multiple text boxes? Can I get one text box per paragraph instead?
 
-By default yes — every visual line of body text becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.
+By default, mergeable body-text paragraphs export as one editable PowerPoint text frame with multiple paragraphs. Resizing the box reflows text inside it.
 
-If you'd rather edit body text as whole paragraphs, re-export with `--merge-paragraphs`:
+If you need strict line-layout fidelity, re-export with `--no-merge`:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --merge-paragraphs
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
 ```
 
-Mergeable paragraph blocks (same x, dy clustered around one line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise line-spacing. Resizing the box reflows text inside it.
+With `--no-merge`, every visual line becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.
 
-**Trade-off**: PowerPoint may wrap the merged paragraphs to a different line count than the SVG source — so the page won't match the original layout exactly. Best for long-form body text (abstracts, multi-paragraph sections, reference lists); keep the default for layout-tight pages. The detection is conservative — mixed-layout `<text>` falls through to the default per-line path automatically.
+**Trade-off**: default paragraph merging lets PowerPoint wrap merged paragraphs to a different line count than the SVG source. Best for long-form body text (abstracts, multi-paragraph sections, reference lists); use `--no-merge` for layout-tight pages. The detection is conservative — mixed-layout `<text>` falls through to the per-line path automatically.
 
-When you're chatting with the AI, you can also just ask: "I want to edit the abstract as one block" / "make text boxes resizable" — the AI will turn this on for you. Defaults stay off so existing decks aren't affected.
+When you're chatting with the AI, you can also just ask for strict line fidelity on layout-sensitive pages — the AI will add `--no-merge` when re-exporting.
 
 ## Q: What's the difference between the three Executors?
 
