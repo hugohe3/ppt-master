@@ -39,7 +39,7 @@ python3 scripts/svg_to_pptx.py <project_path> --no-notes
 python3 scripts/svg_to_pptx.py <project_path> -t none
 python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
 python3 scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
-python3 scripts/svg_to_pptx.py <project_path> --merge-paragraphs   # editability-first mode (see below)
+python3 scripts/svg_to_pptx.py <project_path> --no-merge   # strict line-fidelity mode (see below)
 python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
 python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
@@ -52,10 +52,10 @@ Behavior:
   - `exports/<project_name>_<timestamp>_svg.pptx` — SVG snapshot pptx for visual reference, sibling of the native pptx
   - Live preview already serves as the SVG visual reference for day-to-day use; the snapshot pptx is for distribution or frozen-state archival
 - Explicit `-o/--output` skips `backup/`; pair with `--svg-snapshot` to also emit the side-by-side `_svg.pptx` next to the chosen path
-- `--merge-paragraphs` (opt-in) trades SVG line-layout fidelity for PowerPoint editability:
-  - Default: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
-  - With the flag: mergeable paragraph blocks (same x, dy clustered around one base line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it.
-  - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Pages with tight typographic alignment (covers, charts, tables) usually want the default; long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the flag
+- Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:
+  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it.
+  - With `--no-merge`: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
+  - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the default; pages with tight typographic alignment (covers, charts, tables) usually want `--no-merge`
   - Mergeable detection is conservative: only fires when the children form a clean paragraph block; mixed-layout `<text>` falls through to the default per-line path
 - Recommended source directory: `svg_final/`
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.

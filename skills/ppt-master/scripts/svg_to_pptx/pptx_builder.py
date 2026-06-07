@@ -350,7 +350,7 @@ def create_pptx_with_native_svg(
     narration_padding: float = 0.5,
     cache_dir: Path | None = None,
     workers: int | None = None,
-    merge_paragraphs: bool = False,
+    merge_paragraphs: bool = True,
     conversion_trace_path: Path | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.

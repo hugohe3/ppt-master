@@ -1050,7 +1050,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # <a:p> so the paragraph survives as a single editable text frame.
     # Per-line data-paragraph-space-before encodes paragraph gaps (extra dy
     # above the base line-height) for the corresponding <a:p>.
-    # Paragraph mode is opt-in via ctx.merge_paragraphs. When off, ignore
+    # Paragraph mode is controlled by ctx.merge_paragraphs. When off, ignore
     # any data-paragraph-* markers and fall through to the original
     # one-text-per-tspan path so the SVG's pixel layout is preserved.
     line_height_attr = elem.get('data-paragraph-line-height') if ctx.merge_paragraphs else None
