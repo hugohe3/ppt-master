@@ -718,7 +718,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 | B) General Consulting | Structured sections, data-driven insights | Professional terms, conclusion-first |
 | C) Top Consulting | SCQA + pyramid principle | Highly condensed, conclusion-driven |
 
-**Per-block expression**: phrase each §IX content block in the mode that fits it — prose, bullet, keyword, or any phrasing the content calls for — not a default bullet. Take the cue from the source's texture: a spoken script leans prose; a data sheet leans bullet/keyword. Write the real sentence into §IX itself, not a skeleton point to expand later. One page mixes modes; let layout pull each (narrative → prose, structural/chart → bullets/keywords).
+**Per-block expression**: phrase each §IX content block in the mode that fits it — prose, bullet, keyword, or any phrasing the content calls for — not a default bullet. Take the cue from the source's texture: a narrative source (article / transcript / talk) leans prose — resist compressing its argument pages into fragments; a data sheet leans bullet/keyword. Write the real sentence into §IX itself, not a skeleton point to expand later. One page mixes modes; let layout pull each (narrative → prose, structural/chart → bullets/keywords).
 
 > Note: §IX is the only content copy the Executor re-reads after context compression — what you write there is what survives.
 
