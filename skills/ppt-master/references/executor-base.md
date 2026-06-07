@@ -89,6 +89,10 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 
 **Hard rule**: Before generating **each** SVG page, `read_file <project_path>/spec_lock.md`. Use only values from this file, not from memory. If context was auto-compacted, also `read_file <project_path>/design_spec.md` for the current page's §IX brief.
 
+**Per-block expression**: mirror each `design_spec.md §IX Content` block's written texture. Render a full-sentence block as flowing prose (body ramp + paragraph layout — line length, leading, spacing; not a new font size); render a fragment/label block as bullets/keywords. Never default a full-sentence block to bullets. If a block carries no clear texture, infer the mode from its wording and the page layout.
+
+> Note: this is block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
+
 **If `spec_lock.md` is missing**: emit `warning: spec_lock.md missing — generating without execution lock` once, then proceed using `design_spec.md` values. Expected only for legacy projects; new projects MUST have it (see [strategist.md](strategist.md) §6 step 4).
 
 **Forbidden — values outside the lock**:
