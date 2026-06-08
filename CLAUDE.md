@@ -76,9 +76,9 @@ uvx ppt-master project validate <project_path>
 # Image tools and SVG quality check
 uvx ppt-master analyze-images <project_path>/images
 # Formula rendering — manifest written by Strategist after typography confirmation:
-uv run skills/ppt-master/scripts/latex_render.py <project_path>
-uv run skills/ppt-master/scripts/latex_render.py <project_path> --dry-run
-uv run skills/ppt-master/scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
+uvx ppt-master latex-render <project_path>
+uvx ppt-master latex-render <project_path> --dry-run
+uvx ppt-master latex-render <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
 uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json
 uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json
