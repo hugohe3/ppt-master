@@ -2,7 +2,20 @@
 name = "ppt-master"
 version = "0.1.0"
 description = "AI-driven multi-format SVG content generation system"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "elvisw" }]
 requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/elvisw/ppt-master"
+
 dependencies = [
     # SVG to PPTX export
     "python-pptx>=0.6.21",
