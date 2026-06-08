@@ -30,15 +30,33 @@
 
 ### 2.1 入口点
 
+**方式一：运行时指定来源（无需安装）**
+
+在项目根目录下，通过 `--from .` 告诉 uvx 从当前目录解析依赖并运行：
+
 ```
-uvx --from . ppt-master <子命令> [参数...]
+uvx --from . ppt-master project init myproj
 ```
 
-安装后：
+适合临时使用或不想全局安装的场景。
+
+**方式二：安装到全局（推荐，一次安装，任意目录可用）**
+
+先执行一次安装命令，将 `ppt-master` 注册为系统级的可执行命令：
+
 ```
-uv tool install --from . ppt-master
+uv tool install --from /path/to/ppt-master ppt-master
+```
+
+之后在**任意目录**下直接调用，不再需要 `--from`：
+
+```
 ppt-master project init myproj
+ppt-master pdf-to-md paper.pdf
+ppt-master svg-editor myproj --live
 ```
+
+适合日常高频使用或分享给同事——对方只需执行一次 `uv tool install`，后续就像原生命令一样使用。
 
 ### 2.2 分派机制
 
