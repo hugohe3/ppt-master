@@ -351,9 +351,11 @@ REVIEW = {
 # ===========================================================================
 # Curated keep-set — the "精品" library. A professional-PPT-expert selection of
 # distinct, reusable exemplars (one best per archetype x capacity x form), with
-# near-duplicates and un-reusable text-wall panoramas dropped. Only these enter
-# the index. Everything else stays on disk (git history) but is invisible to
-# selection. ~47 diagrams + the composed asset.
+# near-duplicates and un-reusable text-wall panoramas dropped. ~47 diagrams + the
+# composed asset. The dropped components were physically removed from the repo;
+# they remain recoverable from git history (restore the dir + add its key here).
+# The REVIEW entries below are kept as the full-review record and to make re-adding
+# a dropped diagram trivial.
 # ===========================================================================
 KEEP = frozenset({
     # framework / hub (relationship)
