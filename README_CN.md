@@ -217,7 +217,7 @@ uv sync
 >
 > ```bash
 > uv build --wheel                                    # 预构建（首次 ~4min）
-> uv tool install dist/ppt_master-0.1.0-py3-none-any.whl  # 安装瞬时完成
+> uv tool install ppt-master-latest-py3-none-any.whl  # 安装瞬时完成
 > ```
 >
 > 安装完成后，`ppt-master` 命令在任意目录下均可直接使用。后续更新图标只需重新 `uv build` + `uv tool install --reinstall`。

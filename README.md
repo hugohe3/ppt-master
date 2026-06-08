@@ -208,14 +208,20 @@ Then install dependencies:
 uv sync
 ```
 
-> ⚠️ **First build is slow (~3-5 min)**: the tool bundles 11,000+ icon assets. Pre-build the wheel in advance to avoid timeouts when the agent first invokes it:
+> ⚠️ **Two install options**:
 >
+> **Local build** (from repo root):
 > ```bash
 > uv build --wheel                                    # Pre-build (~4min, one-time)
-> uv tool install dist/ppt_master-0.1.0-py3-none-any.whl  # Installs instantly
+> mv dist/ppt_master-*.whl dist/ppt-master-latest-py3-none-any.whl
+> uv tool install ppt-master-latest-py3-none-any.whl  # Installs instantly
 > ```
 >
-> Once installed, `ppt-master` is available from any directory. To update icons later, re-run `uv build` + `uv tool install --reinstall`.
+> **Direct download** (no repo needed):
+> ```bash
+> curl -LO https://github.com/elvisw/ppt-master/releases/latest/download/ppt-master-latest-py3-none-any.whl
+> uv tool install ppt-master-latest-py3-none-any.whl
+> ```
 
 To update later (Option A / B): `uvx ppt-master update-repo`
 

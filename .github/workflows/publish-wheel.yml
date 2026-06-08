@@ -2,14 +2,9 @@ name: Build and Publish Wheel
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "skills/ppt-master/templates/**"
-      - "skills/ppt-master/scripts/**"
-      - "skills/ppt-master/pyproject.toml"
-      - "cli.py"
-      - "pyproject.toml"
-      - "MANIFEST.in"
+    tags:
+      - "v*"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,15 +18,14 @@ jobs:
         uses: astral-sh/setup-uv@v3
 
       - name: Build wheel
-        run: uv build --wheel
+        run: |
+          uv build --wheel
+          mv dist/ppt_master-*.whl dist/ppt-master-latest-py3-none-any.whl
 
-      - name: Publish to GitHub Releases
-        uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2
         with:
-          files: dist/ppt_master-*.whl
-          tag_name: v${{ github.run_number }}
-          name: v${{ github.run_number }}
-          prerelease: true
+          files: dist/ppt-master-latest-py3-none-any.whl
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
