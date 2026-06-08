@@ -9,15 +9,15 @@ Source conversion tools turn PDFs, documents, slide decks, and web pages into Ma
 Recommended first choice for native PDFs.
 
 ```bash
-uv run scripts/source_to_md/pdf_to_md.py book.pdf
-uv run scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
-uv run scripts/source_to_md/pdf_to_md.py ./pdfs
-uv run scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown
+uvx ppt-master pdf-to-md book.pdf
+uvx ppt-master pdf-to-md book.pdf -o output.md
+uvx ppt-master pdf-to-md ./pdfs
+uvx ppt-master pdf-to-md ./pdfs -o ./markdown
 
 # Image extraction control (default: filtered)
-uv run scripts/source_to_md/pdf_to_md.py book.pdf --images filtered  # size/quality filters applied
-uv run scripts/source_to_md/pdf_to_md.py book.pdf --images all       # extract all images, no filtering
-uv run scripts/source_to_md/pdf_to_md.py book.pdf --images none      # skip all images (text only)
+uvx ppt-master pdf-to-md book.pdf --images filtered  # size/quality filters applied
+uvx ppt-master pdf-to-md book.pdf --images all       # extract all images, no filtering
+uvx ppt-master pdf-to-md book.pdf --images none      # skip all images (text only)
 ```
 
 Use cases:
@@ -50,10 +50,10 @@ Pandoc fallback (only if you need these):
 - `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
 
 ```bash
-uv run scripts/source_to_md/doc_to_md.py lecture.docx
-uv run scripts/source_to_md/doc_to_md.py lecture.docx -o output.md
-uv run scripts/source_to_md/doc_to_md.py notes.epub
-uv run scripts/source_to_md/doc_to_md.py paper.tex -o paper.md  # uses pandoc
+uvx ppt-master doc-to-md lecture.docx
+uvx ppt-master doc-to-md lecture.docx -o output.md
+uvx ppt-master doc-to-md notes.epub
+uvx ppt-master doc-to-md paper.tex -o paper.md  # uses pandoc
 ```
 
 Dependencies:
@@ -82,9 +82,9 @@ Unsupported by default:
 - `.xls` — resave as `.xlsx` first
 
 ```bash
-uv run scripts/source_to_md/excel_to_md.py report.xlsx
-uv run scripts/source_to_md/excel_to_md.py report.xlsx -o output.md
-uv run scripts/source_to_md/excel_to_md.py report.xlsm --max-rows 200 --max-cols 40
+uvx ppt-master excel-to-md report.xlsx
+uvx ppt-master excel-to-md report.xlsx -o output.md
+uvx ppt-master excel-to-md report.xlsm --max-rows 200 --max-cols 40
 ```
 
 Behavior:
@@ -112,11 +112,11 @@ Supported formats include:
 - `.potx`, `.potm`
 
 ```bash
-uv run scripts/source_to_md/ppt_to_md.py sales_deck.pptx
-uv run scripts/source_to_md/ppt_to_md.py sales_deck.pptx -o output.md
-uv run scripts/source_to_md/ppt_to_md.py ./decks
-uv run scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown
-uv run scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
+uvx ppt-master ppt-to-md sales_deck.pptx
+uvx ppt-master ppt-to-md sales_deck.pptx -o output.md
+uvx ppt-master ppt-to-md ./decks
+uvx ppt-master ppt-to-md ./decks -o ./markdown
+uvx ppt-master ppt-to-md template.ppsx -o notes/template.md
 ```
 
 Behavior:
@@ -138,10 +138,10 @@ Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF f
 Convert web pages to Markdown and download images locally.
 
 ```bash
-uv run scripts/source_to_md/web_to_md.py https://example.com/article
-uv run scripts/source_to_md/web_to_md.py https://url1.com https://url2.com
-uv run scripts/source_to_md/web_to_md.py -f urls.txt
-uv run scripts/source_to_md/web_to_md.py https://example.com -o output.md
+uvx ppt-master web-to-md https://example.com/article
+uvx ppt-master web-to-md https://url1.com https://url2.com
+uvx ppt-master web-to-md -f urls.txt
+uvx ppt-master web-to-md https://example.com -o output.md
 ```
 
 When `curl_cffi` is installed (included in `requirements.txt`), this script
@@ -156,9 +156,9 @@ block Python's default TLS fingerprint. No extra flags needed. If
 Fix image EXIF orientation in downloaded or imported assets.
 
 ```bash
-uv run scripts/rotate_images.py auto projects/xxx_files
-uv run scripts/rotate_images.py gen projects/xxx_files
-uv run scripts/rotate_images.py fix fixes.json
+uvx ppt-master rotate-images auto projects/xxx_files
+uvx ppt-master rotate-images gen projects/xxx_files
+uvx ppt-master rotate-images fix fixes.json
 ```
 
 Use this when extracted photos appear sideways after conversion or import.

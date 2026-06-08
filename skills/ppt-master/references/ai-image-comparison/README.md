@@ -36,17 +36,17 @@ Each subdirectory contains:
 To reproduce or regenerate:
 
 ```bash
-uv run skills/ppt-master/scripts/image_gen.py \
+uvx ppt-master image-gen \
     --manifest skills/ppt-master/references/ai-image-comparison/rendering/_manifest.json \
     -o skills/ppt-master/references/ai-image-comparison/rendering/ \
     --backend openai
 
-uv run skills/ppt-master/scripts/image_gen.py \
+uvx ppt-master image-gen \
     --manifest skills/ppt-master/references/ai-image-comparison/palette/_manifest.json \
     -o skills/ppt-master/references/ai-image-comparison/palette/ \
     --backend openai
 
-uv run skills/ppt-master/scripts/image_gen.py \
+uvx ppt-master image-gen \
     --manifest skills/ppt-master/references/ai-image-comparison/type/_manifest.json \
     -o skills/ppt-master/references/ai-image-comparison/type/ \
     --backend openai

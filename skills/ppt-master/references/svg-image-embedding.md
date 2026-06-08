@@ -127,8 +127,8 @@ uv run python -m http.server -d <project_path> 8000
 Use the unified pipeline in [shared-standards.md §5](shared-standards.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
 
 ```bash
-uv run scripts/finalize_svg.py <project_path>
-uv run scripts/svg_to_pptx.py <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 ### Standalone: embed_images.py (advanced)

@@ -5,7 +5,7 @@
 1. Run:
 
 ```bash
-uv run scripts/project_manager.py validate <project_path>
+uvx ppt-master project validate <project_path>
 ```
 
 2. Fix missing files or invalid directories reported by the validator.
@@ -31,7 +31,7 @@ Check `total.md`:
 Then rerun:
 
 ```bash
-uv run scripts/total_md_split.py <project_path>
+uvx ppt-master total-md-split <project_path>
 ```
 
 ## PPT Export Quality Issues
@@ -39,9 +39,9 @@ uv run scripts/total_md_split.py <project_path>
 Preferred sequence:
 
 ```bash
-uv run scripts/total_md_split.py <project_path>
-uv run scripts/finalize_svg.py <project_path>
-uv run scripts/svg_to_pptx.py <project_path>
+uvx ppt-master total-md-split <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 Do not export directly from `svg_output/` when `svg_final/` exists.
@@ -52,8 +52,8 @@ Do not export directly from `svg_output/` when `svg_final/` exists.
 2. Export with the project-relative audio directory:
 
 ```bash
-uv run scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-uv run scripts/svg_to_pptx.py <project_path> --recorded-narration audio
+uvx ppt-master notes-to-audio <project_path> --voice zh-CN-XiaoxiaoNeural
+uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio
 ```
 
 `--recorded-narration` prepares PowerPoint recorded timings and narrations. If it fails, check:

@@ -9,9 +9,9 @@ These tools cover post-processing, SVG validation, speaker notes, recorded narra
 Run these steps in order:
 
 ```bash
-uv run scripts/total_md_split.py <project_path>
-uv run scripts/finalize_svg.py <project_path>
-uv run scripts/svg_to_pptx.py <project_path>
+uvx ppt-master total-md-split <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 ## `finalize_svg.py`
@@ -31,17 +31,17 @@ It aggregates:
 Convert project SVGs into PPTX.
 
 ```bash
-uv run scripts/svg_to_pptx.py <project_path>
-uv run scripts/svg_to_pptx.py <project_path> --only native
-uv run scripts/svg_to_pptx.py <project_path> --only legacy
-uv run scripts/svg_to_pptx.py <template_import_output> --only native -s svg-flat
-uv run scripts/svg_to_pptx.py <project_path> --no-notes
-uv run scripts/svg_to_pptx.py <project_path> -t none
-uv run scripts/svg_to_pptx.py <project_path> --auto-advance 3
-uv run scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
-uv run scripts/svg_to_pptx.py <project_path> --no-merge   # strict line-fidelity mode (see below)
-uv run scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-uv run scripts/svg_to_pptx.py <project_path> --recorded-narration audio
+uvx ppt-master svg-to-pptx <project_path>
+uvx ppt-master svg-to-pptx <project_path> --only native
+uvx ppt-master svg-to-pptx <project_path> --only legacy
+uvx ppt-master svg-to-pptx <template_import_output> --only native -s svg-flat
+uvx ppt-master svg-to-pptx <project_path> --no-notes
+uvx ppt-master svg-to-pptx <project_path> -t none
+uvx ppt-master svg-to-pptx <project_path> --auto-advance 3
+uvx ppt-master svg-to-pptx <project_path> --animation mixed --animation-duration 0.8
+uvx ppt-master svg-to-pptx <project_path> --no-merge   # strict line-fidelity mode (see below)
+uvx ppt-master notes-to-audio <project_path> --voice zh-CN-XiaoxiaoNeural
+uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio
 ```
 
 Behavior:
@@ -73,7 +73,7 @@ Behavior:
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
   - This is intended for direct PowerPoint video export with "Use recorded timings and narrations"
   - Long-audio import and automatic long-audio splitting are not supported; keep narration assets page-level
-  - Voice choices can be listed with `uv run scripts/notes_to_audio.py --list-common-voices`, `uv run scripts/notes_to_audio.py --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
+  - Voice choices can be listed with `uvx ppt-master notes-to-audio --list-common-voices`, `uvx ppt-master notes-to-audio --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
 - Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
 - Per-element animation applies to top-level SVG `<g id="...">` groups in z-order; aim for 3–8 content groups per slide. Page chrome (background / header / footer / decorations / watermark / page number, by id token) is skipped automatically
 - Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
@@ -101,9 +101,9 @@ pip install python-pptx
 Split `total.md` into per-slide note files.
 
 ```bash
-uv run scripts/total_md_split.py <project_path>
-uv run scripts/total_md_split.py <project_path> -o <output_directory>
-uv run scripts/total_md_split.py <project_path> -q
+uvx ppt-master total-md-split <project_path>
+uvx ppt-master total-md-split <project_path> -o <output_directory>
+uvx ppt-master total-md-split <project_path> -q
 ```
 
 Requirements:
@@ -116,12 +116,12 @@ Requirements:
 Validate SVG technical compliance.
 
 ```bash
-uv run scripts/svg_quality_checker.py examples/project/svg_output/01_cover.svg
-uv run scripts/svg_quality_checker.py examples/project/svg_output
-uv run scripts/svg_quality_checker.py examples/project
-uv run scripts/svg_quality_checker.py examples/project --format ppt169
-uv run scripts/svg_quality_checker.py --all examples
-uv run scripts/svg_quality_checker.py examples/project --export
+uvx ppt-master svg-quality-check examples/project/svg_output/01_cover.svg
+uvx ppt-master svg-quality-check examples/project/svg_output
+uvx ppt-master svg-quality-check examples/project
+uvx ppt-master svg-quality-check examples/project --format ppt169
+uvx ppt-master svg-quality-check --all examples
+uvx ppt-master svg-quality-check examples/project --export
 ```
 
 Checks include:
@@ -139,10 +139,10 @@ Use this after `svg_quality_checker.py` passes, and only for chart types support
 ### Calculate expected coordinates
 
 ```bash
-uv run scripts/svg_position_calculator.py calc bar --data "A:185,B:142" --area "130,155,1200,480" --bar-width 120
-uv run scripts/svg_position_calculator.py calc line --data "0:50,10:80,20:120" --area "120,120,1200,600" --y-range "0,150"
-uv run scripts/svg_position_calculator.py calc pie --data "A:35,B:25,C:20" --center "420,400" --radius 200
-uv run scripts/svg_position_calculator.py calc grid --rows 2 --cols 3 --area "50,150,1230,670"
+uvx ppt-master svg-position-calc calc bar --data "A:185,B:142" --area "130,155,1200,480" --bar-width 120
+uvx ppt-master svg-position-calc calc line --data "0:50,10:80,20:120" --area "120,120,1200,600" --y-range "0,150"
+uvx ppt-master svg-position-calc calc pie --data "A:35,B:25,C:20" --center "420,400" --radius 200
+uvx ppt-master svg-position-calc calc grid --rows 2 --cols 3 --area "50,150,1230,670"
 ```
 
 For an area chart, use the line output as the top boundary:
@@ -156,7 +156,7 @@ Manually compare the calculator output with the coordinates already present in t
 ### Analyze (inspect existing SVG)
 
 ```bash
-uv run scripts/svg_position_calculator.py analyze <svg_file>
+uvx ppt-master svg-position-calc analyze <svg_file>
 ```
 
 Use this after SVG generation to inspect existing SVG geometry when manual comparison needs more context.

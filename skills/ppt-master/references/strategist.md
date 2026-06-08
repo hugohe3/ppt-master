@@ -250,7 +250,7 @@ Formula rendering is part of Typography confirmation. Recommend one policy and l
 
 ```bash
 mkdir -p <project_path>/images
-python3 skills/ppt-master/scripts/latex_render.py <project_path>
+uvx ppt-master latex-render <project_path>
 ```
 
 Write the manifest first at `<project_path>/images/formula_manifest.json`. Use this shape:
@@ -468,7 +468,7 @@ After the user picks a candidate, scan the outline and surface any pages where t
 
 **Per hero_page title**: lock where it lives — `embedded` (fused into the image: neon, carved, smoke, 3D-lit lettering) or `none` (editable SVG title over an atmospheric backdrop, Primitive D). Default `none`; flip to `embedded` only when the words must be *part of the visual*, not merely a display font. Per page — may bake only the keyword while subtitle / date / chrome stay SVG. Surface it with the hero_page list for the same confirm / edit / skip.
 
-**When selection includes B**, you must run `uv run scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
+**When selection includes B**, you must run `uvx ppt-master analyze-images <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
 
 **When B / C / D / E is selected**, add an image resource list to the spec:
 
@@ -756,7 +756,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 Project folder must exist before Strategist runs. If not, execute:
 
 ```bash
-uv run scripts/project_manager.py init <project_name> --format <canvas_format>
+uvx ppt-master project init <project_name> --format <canvas_format>
 ```
 
 Save outputs to `projects/<project_name>_<format>_<YYYYMMDD>/design_spec.md`.

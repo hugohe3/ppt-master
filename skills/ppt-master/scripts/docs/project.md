@@ -9,10 +9,10 @@ Project tools create, validate, and inspect the standard PPT Master workspace.
 Main entry point for project setup and validation.
 
 ```bash
-uv run scripts/project_manager.py init <project_name> --format ppt169
-uv run scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...]
-uv run scripts/project_manager.py validate <project_path>
-uv run scripts/project_manager.py info <project_path>
+uvx ppt-master project init <project_name> --format ppt169
+uvx ppt-master project import-sources <project_path> <source1> [<source2> ...]
+uvx ppt-master project validate <project_path>
+uvx ppt-master project info <project_path>
 ```
 
 Notes:
@@ -35,9 +35,9 @@ Common formats:
 Examples:
 
 ```bash
-uv run scripts/project_manager.py init my_presentation --format ppt169
-uv run scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
-uv run scripts/project_manager.py info projects/my_presentation_ppt169_20251116
+uvx ppt-master project init my_presentation --format ppt169
+uvx ppt-master project validate projects/my_presentation_ppt169_20251116
+uvx ppt-master project info projects/my_presentation_ppt169_20251116
 ```
 
 ## `project_utils.py`
@@ -83,14 +83,14 @@ uv run scripts/generate_examples_index.py examples
 Unified PPTX preparation entry point for `/create-template`.
 
 ```bash
-uv run scripts/pptx_template_import.py <template.pptx>
-uv run scripts/pptx_template_import.py <template.pptx> -o <output_dir>
-uv run scripts/pptx_template_import.py <template.pptx> --manifest-only
-uv run scripts/pptx_template_import.py <template.pptx> --skip-manifest
-uv run scripts/pptx_template_import.py <template.pptx> --embed-images
-uv run scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
-uv run scripts/pptx_template_import.py <template.pptx> --inheritance-mode flat
-uv run scripts/pptx_template_import.py <template.pptx> --inheritance-mode layered
+uvx ppt-master pptx-template-import <template.pptx>
+uvx ppt-master pptx-template-import <template.pptx> -o <output_dir>
+uvx ppt-master pptx-template-import <template.pptx> --manifest-only
+uvx ppt-master pptx-template-import <template.pptx> --skip-manifest
+uvx ppt-master pptx-template-import <template.pptx> --embed-images
+uvx ppt-master pptx-template-import <template.pptx> --inheritance-mode both
+uvx ppt-master pptx-template-import <template.pptx> --inheritance-mode flat
+uvx ppt-master pptx-template-import <template.pptx> --inheritance-mode layered
 ```
 
 Notes:

@@ -19,13 +19,13 @@ Run the standalone [`customize-animations`](../workflows/customize-animations.md
 
 ```bash
 # Build an editable scaffold from real top-level <g id> anchors
-uv run skills/ppt-master/scripts/animation_config.py scaffold <project>
+uvx ppt-master animation-config scaffold <project>
 
 # Validate references before export
-uv run skills/ppt-master/scripts/animation_config.py validate <project>
+uvx ppt-master animation-config validate <project>
 
 # Export reads <project>/animations.json automatically when present
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project>
+uvx ppt-master svg-to-pptx <project>
 ```
 
 Minimal sidecar:
@@ -60,13 +60,13 @@ Rules:
 
 ```bash
 # Pick a different effect
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
+uvx ppt-master svg-to-pptx <project> -t push --transition-duration 0.6
 
 # Disable
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
+uvx ppt-master svg-to-pptx <project> -t none
 
 # Auto-advance every 5 seconds (kiosk-style playback)
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
+uvx ppt-master svg-to-pptx <project> --auto-advance 5
 ```
 
 Available effects: `fade`, `push`, `wipe`, `split`, `strips`, `cover`, `random`.
@@ -87,23 +87,23 @@ Enabled by default (`auto` effect + `after-previous` trigger). Three Start modes
 
 ```bash
 # Default behavior (no flags needed): auto effect + after-previous cascade
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project>
+uvx ppt-master svg-to-pptx <project>
 
 # Disable per-element animation entirely
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -a none
+uvx ppt-master svg-to-pptx <project> -a none
 
 # Use a single effect (still cascades via the default after-previous trigger)
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
+uvx ppt-master svg-to-pptx <project> --animation fade
 
 # Switch to on-click for live presentations (presenter controls pacing)
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click
+uvx ppt-master svg-to-pptx <project> --animation-trigger on-click
 
 # Custom pacing
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
+uvx ppt-master svg-to-pptx <project> --animation mixed \
         --animation-stagger 0.7 --animation-duration 0.5
 
 # All groups animate in unison on slide entry
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
+uvx ppt-master svg-to-pptx <project> --animation-trigger with-previous
 ```
 
 22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
