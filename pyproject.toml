@@ -34,8 +34,10 @@ dependencies = [
     "flask>=3.0.0",
 ]
 
+[project.scripts]
+ppt-master = "cli:main"
+
 [tool.uv]
-package = false
 # Keep all three dependency manifests in sync:
 #   1. pyproject.toml (this file)
 #   2. skills/ppt-master/pyproject.toml
