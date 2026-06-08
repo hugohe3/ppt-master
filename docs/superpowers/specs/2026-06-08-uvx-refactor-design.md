@@ -125,7 +125,8 @@ cli.py (新增)
 
 | 文件 | 说明 |
 |------|------|
-| `cli.py` | 统一 CLI 入口，约 80 行 |
+| `cli.py` | 统一 CLI 入口，约 130 行 |
+| `.github/workflows/check-cli-sync.yml` | CI：合并上游时自动检查 cli.py 是否遗漏新脚本映射 |
 
 ### 3.2 修改文件
 
@@ -337,7 +338,9 @@ uvx ppt-master project init myproj --format ppt169
 | `AGENTS.md / SKILL.md / workflows/*.md` | 已有 | `python3` → `uv run` 时已产生差异，`uvx` 不会增加新的冲突面 |
 | `requirements.txt` | 无 | 不依赖它 |
 
-上游合入更新的关键点：`.md` 文件中的命令调用差异需要手动合并，但这是 fork 的固有代价。scripts 目录完全不动，上游的任何脚本更新（新增/修改）都能直接合入，只需在 `cli.py` 的 `COMMANDS` 字典中添加一行新命令映射（如果有新脚本的话）。
+上游合入更新的关键点：`.md` 文件中的命令调用差异需要手动合并，但这是 fork 的固有代价。scripts 目录完全不动，上游的任何脚本更新（新增/修改）都能直接合入。
+
+为防止合入上游后遗漏新脚本的映射，新增 GitHub Actions 自动检查工作流（`check-cli-sync`）：合入上游后自动扫描 `skills/ppt-master/scripts/` 目录，对比 `cli.py` 的 `COMMANDS` 字典，若有未映射的脚本则 CI 报错，提醒补充对应命令。
 
 ## 8. 验证计划
 
@@ -347,3 +350,4 @@ uvx ppt-master project init myproj --format ppt169
 4. `uvx --from . ppt-master svg-editor testproj --live` —— 应启动编辑器
 5. `uvx --from . ppt-master check-deps-sync` —— 应验证依赖同步
 6. 在**非项目目录**下执行以上命令 —— 应全部正常
+7. `.github/workflows/check-cli-sync.yml` —— 故意删除一个 COMMANDS 条目，CI 应报错
