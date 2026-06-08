@@ -34,7 +34,16 @@ dependencies = [
     "flask>=3.0.0",
 ]
 
+[project.scripts]
+ppt-master = "cli:main"
+
 [tool.uv]
-package = false
-# package=false: this is a script-runner context, not a distributable library.
-# AI Agents only need `uv run` dependency resolution here; `pip install` is not a goal.
+# Keep dependency manifests in sync with root pyproject.toml.
+# When dependencies change, mirror and run `uv lock` in both directories:
+#   uv lock && cd skills/ppt-master && uv lock
+
+[tool.setuptools]
+py-modules = ["cli"]
+
+[tool.setuptools.packages.find]
+include = ["scripts", "scripts.*"]
