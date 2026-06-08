@@ -44,3 +44,12 @@ ppt-master = "cli:main"
 #   3. skills/ppt-master/requirements.txt
 # When any one changes, mirror to the other two and run `uv lock` in both directories:
 #   uv lock && cd skills/ppt-master && uv lock
+
+[tool.setuptools]
+py-modules = ["cli"]
+
+[tool.setuptools.packages.find]
+include = ["skills", "skills.*"]
+
+[tool.setuptools.package-data]
+"skills.ppt_master.scripts" = ["**/*.py", "**/*.json"]
