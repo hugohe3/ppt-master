@@ -50,8 +50,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 ```bash
 # Download pre-built wheel from GitHub Releases and install (instant)
-curl -LO https://github.com/elvisw/ppt-master/releases/latest/download/ppt-master-latest-py3-none-any.whl
-uv tool install ppt-master-latest-py3-none-any.whl
+curl -LO https://github.com/elvisw/ppt-master/releases/latest/download/ppt_master-0.1.0-py3-none-any.whl && uv tool install ppt_master-0.1.0-py3-none-any.whl
 ```
 
 ## Command Quick Reference

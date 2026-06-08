@@ -18,13 +18,11 @@ jobs:
         uses: astral-sh/setup-uv@v3
 
       - name: Build wheel
-        run: |
-          uv build --wheel
-          mv dist/ppt_master-*.whl dist/ppt-master-latest-py3-none-any.whl
+        run: uv build --wheel
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: dist/ppt-master-latest-py3-none-any.whl
+          files: dist/ppt_master-*.whl
           prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
           make_latest: true
         env:

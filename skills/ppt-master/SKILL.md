@@ -11,8 +11,7 @@ description: >
 
 > **Setup:** Run this once before using any command below:
 > ```bash
-> curl -LO https://github.com/elvisw/ppt-master/releases/latest/download/ppt-master-latest-py3-none-any.whl
-> uv tool install ppt-master-latest-py3-none-any.whl
+> curl -LO https://github.com/elvisw/ppt-master/releases/latest/download/ppt_master-0.1.0-py3-none-any.whl && uv tool install ppt_master-0.1.0-py3-none-any.whl
 > ```
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
