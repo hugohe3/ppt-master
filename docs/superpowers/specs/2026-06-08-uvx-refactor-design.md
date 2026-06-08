@@ -360,3 +360,18 @@ uv tool install --from . ppt-master
 5. `uvx --from . ppt-master check-deps-sync` —— 应验证依赖同步
 6. 在**非项目目录**下执行以上命令 —— 应全部正常
 7. 在 `scripts/` 下放置一个含 `main()` 的测试脚本，运行 `check_cli_sync.py`，应检测到未映射并输出建议命令
+
+## 9. 延期需求
+
+以下需求在评审后决定**延期**，待后续独立 spec 评估。
+
+### AI 自动补充 COMMANDS 条目
+
+原先设计 CI 调用 AI API 自动生成命令映射并提 PR。评审认为：
+
+- 上游新增脚本频率极低（35 条目已稳定），AI API 集成对低频任务开销过大
+- 生成质量不可控，仍需人工审核，并未真正省力
+- 属于独立子系统，应从 uvx 改造 spec 中分离
+
+当前方案：`check-cli-sync.yml` 仅做 lint 检测 + CI 报错，手动添加一行字典。
+后续若自动化需求明确，另开 spec 评估 AI + 自动 PR 方案。
