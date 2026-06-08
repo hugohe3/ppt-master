@@ -68,7 +68,7 @@ Each component is a directory `native_diagrams/<key>/`:
 |------|---------|
 | `shapes.xml` | flattened top-level shapes wrapped in `<a:diagram>` — theme-independent, editable |
 | `media/` | bitmaps the diagram references (only when present) |
-| `meta.json` | provenance, canvas size, media rId map, flatten counts, summary |
+| `meta.json` | provenance, canvas size, media rId map, flatten counts, and **`text_slots`** — every `<a:t>` run as `{id, text}` (document order; original text = the fill-in hint) for the `data-text` content-replacement mechanism |
 
 **Theme flattening** resolves every `<a:schemeClr>` → `<a:srgbClr>` (through the
 source master's `clrMap` + theme color scheme) and every `+mj-ea` / `+mn-lt` font

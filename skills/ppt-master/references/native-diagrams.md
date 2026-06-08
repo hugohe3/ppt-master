@@ -92,6 +92,7 @@ component in, scaled to the rect and recolored:
 ```xml
 <rect data-native-diagram="<key>"
       data-recolor="558C5A=<spec_lock primary>,122B87=<spec_lock accent>"
+      data-text='{"0":"<your title>","1":"<your label>", "2":"..."}'
       x=".." y=".." width=".." height=".." fill="none"/>
 ```
 
@@ -100,6 +101,15 @@ component in, scaled to the rect and recolored:
   `558C5A` primary, `122B87` accent) onto **this deck's** `spec_lock.colors`
   primary/accent. The 3D shading re-derives from the new base. If the deck has only
   one accent, map both bases to tints of it.
+- **`data-text`** (put YOUR content in the figure) = a JSON object
+  `{"<slot_id>": "<text>"}`. **First `read_file templates/native_diagrams/<key>/meta.json`**
+  and look at `text_slots` — each slot is `{id, text}` where `text` is the
+  source's original label (your *hint* for what that slot holds). Slot id is the
+  run's **document order, NOT visual reading order** — so map your content to slot
+  ids by matching the original `text` (e.g. the slot whose original text is the
+  centre label gets your centre label). Provide only the slots you want to change;
+  unprovided slots keep the source text. If a diagram's labels don't all map
+  cleanly, fill what you can and relabel the rest in PowerPoint after export.
 - **Region sizing by `density`**: `high` → near-full-slide (respect canvas margins);
   `medium` → ≥ half-slide; `low` → may be a smaller region. The whole figure
   (including its text) scales to the rect — so do **not** shrink a text-bearing

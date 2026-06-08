@@ -19,6 +19,7 @@ rewritten into a ``<p:grpSp ...>`` wrapper, keeping those declarations intact.
 from __future__ import annotations
 
 import gzip
+import html
 import json
 import re
 from pathlib import Path
@@ -55,6 +56,36 @@ def _apply_recolor(xml: str, cmap: dict) -> str:
             xml, flags=re.IGNORECASE,
         )
     return xml
+
+
+_AT_RE = re.compile(r"<a:t>(.*?)</a:t>", re.DOTALL)
+
+
+def _apply_text_fills(xml: str, data_text: str | None) -> str:
+    """Replace the diagram's text runs with deck content.
+
+    ``data-text`` is a JSON object ``{"<slot_id>": "<new text>"}`` where slot id
+    is the run's index in document order — the same indexing ``extract`` records
+    in ``meta.text_slots``. Slots not provided keep their original (source) text.
+    """
+    if not data_text:
+        return xml
+    try:
+        fills = json.loads(data_text)
+    except (ValueError, TypeError):
+        return xml
+    if not fills:
+        return xml
+    counter = [-1]
+
+    def repl(m):
+        counter[0] += 1
+        new = fills.get(str(counter[0]))
+        if new is None:
+            return m.group(0)
+        return "<a:t>%s</a:t>" % html.escape(str(new), quote=False)
+
+    return _AT_RE.sub(repl, xml)
 
 
 def _renumber_cnvpr(xml: str, ctx: ConvertContext) -> str:
@@ -114,6 +145,7 @@ def resolve_native_diagram(elem, ctx: ConvertContext) -> ShapeResult | None:
 
     xml = re.sub(r"^\s*<\?xml[^>]*\?>\s*", "", xml, count=1)
     xml = _apply_recolor(xml, _parse_recolor(elem.get("data-recolor")))
+    xml = _apply_text_fills(xml, elem.get("data-text"))
     if meta.get("media"):
         xml = _remap_media(xml, comp_dir, meta["media"], ctx)
     xml = _renumber_cnvpr(xml, ctx)

@@ -143,9 +143,10 @@ Unlike `page_charts` (which you redraw), a native diagram is **spliced in as-is*
 - Entry present (e.g., `P06: solid3d_bluegreen_066`) → place a placeholder rect, do **not** hand-draw the figure:
   ```xml
   <rect data-native-diagram="<key>" data-recolor="558C5A=<primary>,122B87=<accent>"
+        data-text='{"0":"<your title>","1":"<your label>"}'
         x=".." y=".." width=".." height=".." fill="none"/>
   ```
-  where `<primary>`/`<accent>` are this deck's `spec_lock.colors`. Size the rect per the diagram's `density` (high → near-full-slide; low → may be smaller); the whole figure incl. text scales to the rect, so don't starve a text-bearing figure. First time you load `references/native-diagrams.md` §3 for the exact rules. You still author the rest of the page (title, surrounding text/elements) as normal SVG around the reserved region.
+  where `<primary>`/`<accent>` are this deck's `spec_lock.colors`. Size the rect per the diagram's `density` (high → near-full-slide; low → may be smaller); the whole figure incl. text scales to the rect, so don't starve a text-bearing figure. **To put this page's content into the figure**, first `read_file templates/native_diagrams/<key>/meta.json` → `text_slots`, then map your content onto slot ids via `data-text` (slot id = document order; use each slot's original `text` as the hint). Load `references/native-diagrams.md` §3 for the exact rules. You still author the rest of the page (title, surrounding text) as normal SVG around the reserved region.
 - No entry for this page → no native diagram here.
 - Whole section absent → the deck uses none.
 

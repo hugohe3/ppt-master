@@ -16,5 +16,95 @@
     "fonts": 20
   },
   "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "高价值工具包"
+    },
+    {
+      "id": 1,
+      "text": "构建高度精确人工智能、高效训练模型和跨平台部署"
+    },
+    {
+      "id": 2,
+      "text": "Training Platforms"
+    },
+    {
+      "id": 3,
+      "text": "Training Platforms"
+    },
+    {
+      "id": 4,
+      "text": "GPU"
+    },
+    {
+      "id": 5,
+      "text": "Training Platforms"
+    },
+    {
+      "id": 6,
+      "text": "Cloud"
+    },
+    {
+      "id": 7,
+      "text": "Workototions"
+    },
+    {
+      "id": 8,
+      "text": "Scrvcro"
+    },
+    {
+      "id": 9,
+      "text": "AuTOML"
+    },
+    {
+      "id": 10,
+      "text": "Training&"
+    },
+    {
+      "id": 11,
+      "text": "Optimization"
+    },
+    {
+      "id": 12,
+      "text": "AI-"
+    },
+    {
+      "id": 13,
+      "text": "Assistted"
+    },
+    {
+      "id": 14,
+      "text": "Annotation"
+    },
+    {
+      "id": 15,
+      "text": "Aufmentation"
+    },
+    {
+      "id": 16,
+      "text": "API-Gateway"
+    },
+    {
+      "id": 17,
+      "text": "PyTorch"
+    },
+    {
+      "id": 18,
+      "text": "TensorFlow"
+    },
+    {
+      "id": 19,
+      "text": "ONNX"
+    },
+    {
+      "id": 20,
+      "text": "……?"
+    },
+    {
+      "id": 21,
+      "text": "GPU"
+    }
+  ],
   "summary": ""
 }

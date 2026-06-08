@@ -18,12 +18,27 @@ from __future__ import annotations
 
 import copy
 import gzip
+import html
 import json
 import posixpath
+import re
 import zipfile
 from pathlib import Path
 
 from lxml import etree
+
+# Editable text runs, in document order over the serialized shapes. The resolver
+# walks the SAME regex over the SAME stored string, so slot ids align exactly.
+_AT_RE = re.compile(r"<a:t>(.*?)</a:t>", re.DOTALL)
+
+
+def _text_slots(shapes_xml: str) -> list[dict]:
+    """Index every <a:t> run as a fillable text slot, keeping its original text
+    as an authoring hint (what kind of content the slot held in the source)."""
+    return [
+        {"id": i, "text": html.unescape(m.group(1))}
+        for i, m in enumerate(_AT_RE.finditer(shapes_xml))
+    ]
 
 from .component import (
     A, P, R, NS, SHAPE_TAGS, IMAGE_REL, CHART_REL,
@@ -122,6 +137,7 @@ def extract_diagram(
         for s in shapes:
             root.append(copy.deepcopy(s))
         data = etree.tostring(root, xml_declaration=True, encoding="UTF-8")
+        text_slots = _text_slots(data.decode("utf-8"))
         (out_dir / "shapes.xml.gz").write_bytes(gzip.compress(data, mtime=0))
 
     meta = {
@@ -135,6 +151,7 @@ def extract_diagram(
         "charts_unsupported": charts,
         "flatten": counts,
         "foreign_rels_stripped": stripped,
+        "text_slots": text_slots,
         "summary": summary,
     }
     (out_dir / "meta.json").write_text(
