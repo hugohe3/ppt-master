@@ -9,6 +9,12 @@ description: >
 
 # PPT Master Skill
 
+> **Setup:** Run this once before using any command below:
+> ```bash
+> uv tool install --from . ppt-master
+> ```
+> If `uv tool install` is not available, use `uvx --from . ppt-master <command>` instead.
+
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
 **Core Pipeline**: `Source Document → Create Project → [Template] → Strategist → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export`
@@ -62,8 +68,6 @@ description: >
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
-> **Windows note**: if a `python3 ...` command fails (common on python.org installs, which provide `python.exe` but not `python3.exe`), rerun the same command with `python` instead.
-
 ## Template Index
 
 | Index | Path | Purpose |
@@ -101,14 +105,14 @@ When the user provides non-Markdown content, convert immediately:
 
 | User Provides | Command |
 |---------------|---------|
-| PDF file | `uv run ${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py <file>` |
-| DOCX / Word / Office document | `uv run ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
-| XLSX / XLSM / Excel workbook | `uv run ${SKILL_DIR}/scripts/source_to_md/excel_to_md.py <file>` |
+| PDF file | `uvx ppt-master pdf-to-md <file>` |
+| DOCX / Word / Office document | `uvx ppt-master doc-to-md <file>` |
+| XLSX / XLSM / Excel workbook | `uvx ppt-master excel-to-md <file>` |
 | CSV / TSV | Read directly as plain-text table source |
-| PPTX / PowerPoint deck | `uv run ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <file>` |
-| EPUB / HTML / LaTeX / RST / other | `uv run ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
-| Web link | `uv run ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` |
-| WeChat / high-security site | `uv run ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` (requires `curl_cffi`, included in `requirements.txt`) |
+| PPTX / PowerPoint deck | `uvx ppt-master ppt-to-md <file>` |
+| EPUB / HTML / LaTeX / RST / other | `uvx ppt-master doc-to-md <file>` |
+| Web link | `uvx ppt-master web-to-md <URL>` |
+| WeChat / high-security site | `uvx ppt-master web-to-md <URL>` (requires `curl_cffi`, included in `requirements.txt`) |
 | Markdown | Read directly |
 
 > **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
@@ -134,7 +138,7 @@ When the user provides non-Markdown content, convert immediately:
 🚧 **GATE**: Step 1 complete; source content is ready (Markdown file, user-provided text, or requirements described in conversation are all valid).
 
 ```bash
-uv run ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+uvx ppt-master project init <project_name> --format <format>
 ```
 
 Format options: `ppt169` (default), `ppt43`, `xhs`, `story`, etc. For the full format list, see `references/canvas-formats.md`.
@@ -143,7 +147,7 @@ Import source content (choose based on the situation):
 
 | Situation | Action |
 |-----------|--------|
-| Has source files (PDF/MD/etc.) | `uv run ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files...> --move` |
+| Has source files (PDF/MD/etc.) | `uvx ppt-master project import-sources <project_path> <source_files...> --move` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
 > ⚠️ **MUST use `--move`** (not copy): all source files — Step 1's generated Markdown, original PDFs / MDs / images — go into `sources/` via `import-sources --move`. After execution they no longer exist at the original location. Intermediate artifacts (e.g., `_files/`) are handled automatically.
@@ -312,7 +316,7 @@ After the Eight Confirmations are approved and **before outputting `design_spec.
 2. Write `<project_path>/images/formula_manifest.json` with only the formulas selected for rendering.
 3. Run:
    ```bash
-   python3 ${SKILL_DIR}/scripts/latex_render.py <project_path>
+   uvx ppt-master latex-render <project_path>
    ```
 4. Include the rendered formula PNGs as `Acquire Via: formula`, `Status: Rendered`, `Type: Latex Formula` rows in `design_spec.md §VIII Image Resource List`; also list them in `spec_lock.md images` with `| no-crop`.
 
@@ -320,7 +324,7 @@ The formula renderer uses a provider fallback chain by default: `codecogs,quickl
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**:
 ```bash
-uv run ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
+uvx ppt-master analyze-images <project_path>/images
 ```
 
 > ⚠️ **Image handling**: NEVER directly read / open / view image files (`.jpg`, `.png`, etc.). All image info comes from `analyze_images.py` output or the Design Spec's Image Resource List.
@@ -357,8 +361,8 @@ Then **lazy-load the path-specific reference** for each row that actually needs 
 
 | Acquire Via | Load reference (only if any such row exists) | Run |
 |---|---|---|
-| `ai` | `references/image-generator.md` | `uv run ${SKILL_DIR}/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json` |
-| `web` | `references/image-searcher.md` | `uv run ${SKILL_DIR}/scripts/image_search.py ...` |
+| `ai` | `references/image-generator.md` | `uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json` |
+| `web` | `references/image-searcher.md` | `uvx ppt-master image-search ...` |
 | `user` / `placeholder` | (skip) | (skip) |
 
 A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.json` and `image_sources.json`.
@@ -412,7 +416,7 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 
 **Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running continuously through Executor + Step 7 export:
 ```bash
-uv run ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
+uvx ppt-master svg-editor <project_path> --live
 ```
 - Start it immediately when Executor begins; `svg_output/` may be empty. Editor opens at `http://localhost:5050`; port conflict → `--port <other>` and report the actual URL.
 - Run it as a long-running side process/session; do not wait for it to exit before generating SVG pages. Do not wait for user confirmation after startup.
@@ -431,7 +435,7 @@ uv run ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
 
 **Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
 ```bash
-uv run ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
+uvx ppt-master svg-quality-check <project_path>
 ```
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
@@ -469,17 +473,17 @@ Canonical three-command pipeline (mirrors `references/shared-standards.md` §5):
 
 **Step 7.1** — Split speaker notes:
 ```bash
-uv run ${SKILL_DIR}/scripts/total_md_split.py <project_path>
+uvx ppt-master total-md-split <project_path>
 ```
 
 **Step 7.2** — SVG post-processing (icon embedding / image crop & embed / text flattening / rounded rect to path):
 ```bash
-uv run ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
+uvx ppt-master finalize-svg <project_path>
 ```
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
-uv run ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
