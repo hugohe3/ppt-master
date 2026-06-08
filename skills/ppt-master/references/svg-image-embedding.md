@@ -48,7 +48,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
    ├── Sourced + license_tier=attribution-required → <image href=...> + small <text> credit element on the slide
    ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
-4. Preview: uv run python -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
+4. Preview: python -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
 5. Post-processing & Export → follow shared-standards.md §5
 ```
 
@@ -96,7 +96,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 Browser security blocks external images on directly opened SVGs. Serve via HTTP from the project root:
 
 ```bash
-uv run python -m http.server -d <project_path> 8000
+python -m http.server -d <project_path> 8000
 # Visit http://localhost:8000/svg_output/your_file.svg
 ```
 

@@ -18,7 +18,7 @@ uvx ppt-master project validate <project_path>
 3. Preview via a local server if browser file loading is inconsistent:
 
 ```bash
-uv run python -m http.server --directory <svg_output_path> 8000
+python -m http.server --directory <svg_output_path> 8000
 ```
 
 ## Speaker Notes Do Not Split
