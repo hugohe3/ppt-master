@@ -361,6 +361,8 @@ uv tool install --from . ppt-master
 6. 在**非项目目录**下执行以上命令 —— 应全部正常
 7. 在 `scripts/` 下放置一个含 `main()` 的测试脚本，运行 `check_cli_sync.py`，应检测到未映射并输出建议命令
 
+> **实现早期验证**：在改 `.md` 文件之前，先确认 `uv tool install --from . ppt-master` 成功，且 `ppt-master --help` 正常列出命令。uv 对扁平布局（`cli.py` 在根目录，无 `[build-system]`）通常自动处理，但应尽早验证以避免返工。
+
 ## 9. 延期需求
 
 以下需求在评审后决定**延期**，待后续独立 spec 评估。
