@@ -11,9 +11,9 @@ description: >
 
 > **Setup:** Run this once before using any command below:
 > ```bash
-> uv tool install --from . ppt-master
+> uv build --wheel
+> uv tool install dist/ppt_master-0.1.0-py3-none-any.whl
 > ```
-> If `uv tool install` is not available, use `uvx --from . ppt-master <command>` instead.
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
