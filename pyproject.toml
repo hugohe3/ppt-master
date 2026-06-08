@@ -13,9 +13,6 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[project.urls]
-Repository = "https://github.com/elvisw/ppt-master"
-
 dependencies = [
     # SVG to PPTX export
     "python-pptx>=0.6.21",
@@ -46,6 +43,9 @@ dependencies = [
     # SVG editor server
     "flask>=3.0.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/elvisw/ppt-master"
 
 [project.scripts]
 ppt-master = "cli:main"
