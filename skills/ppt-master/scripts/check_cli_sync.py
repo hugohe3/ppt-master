@@ -6,7 +6,9 @@ import sys
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(SCRIPTS_DIR)))
+SKILL_DIR = os.path.join(ROOT_DIR, "skills", "ppt-master")
 CLI_FILE = os.path.join(ROOT_DIR, "cli.py")
+SKILL_CLI_FILE = os.path.join(SKILL_DIR, "cli.py")
 
 
 def find_scripts_with_main(scripts_dir: str) -> set[str]:
@@ -31,20 +33,22 @@ def find_scripts_with_main(scripts_dir: str) -> set[str]:
     return scripts
 
 
-def parse_commands_from_cli(cli_path: str) -> set[str]:
-    """Parse the COMMANDS dict from cli.py to extract script paths."""
+def parse_commands_from_cli(cli_path: str) -> tuple[set[str], set[str]]:
+    """Parse the COMMANDS dict from cli.py to extract (command_names, script_paths)."""
     with open(cli_path, encoding="utf-8") as f:
         tree = ast.parse(f.read())
     scripts: set[str] = set()
+    names: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign) and len(node.targets) == 1:
             target = node.targets[0]
             if isinstance(target, ast.Name) and target.id == "COMMANDS":
                 if isinstance(node.value, ast.Dict):
-                    for v in node.value.values:
-                        if isinstance(v, ast.Constant):
+                    for k, v in zip(node.value.keys, node.value.values):
+                        if isinstance(k, ast.Constant) and isinstance(v, ast.Constant):
+                            names.add(k.value)
                             scripts.add(v.value)
-    return scripts
+    return names, scripts
 
 
 def derive_command_name(script_path: str) -> str:
@@ -79,19 +83,40 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ERROR: cli.py not found at {CLI_FILE}", file=sys.stderr)
         return 1
 
-    mapped = parse_commands_from_cli(CLI_FILE)
+    root_names, mapped = parse_commands_from_cli(CLI_FILE)
 
     missing = scripts - mapped
-    if not missing:
-        print("OK: All scripts have CLI mappings.")
-        return 0
+    if missing:
+        print("ERROR: The following scripts are missing from cli.py COMMANDS dict:\n", file=sys.stderr)
+        for script in sorted(missing):
+            cmd = derive_command_name(script)
+            print(f'    "{cmd}": "{script}",  # {cmd.replace("-", " ")}', file=sys.stderr)
+        print(f"\nAdd the above entries to the COMMANDS dict in cli.py.", file=sys.stderr)
+        return 1
 
-    print("ERROR: The following scripts are missing from cli.py COMMANDS dict:\n", file=sys.stderr)
-    for script in sorted(missing):
-        cmd = derive_command_name(script)
-        print(f'    "{cmd}": "{script}",  # {cmd.replace("-", " ")}', file=sys.stderr)
-    print(f"\nAdd the above entries to the COMMANDS dict in cli.py.", file=sys.stderr)
-    return 1
+    print("OK: All scripts have CLI mappings in root cli.py.")
+
+    # Check skill cli.py is in sync with root cli.py
+    if os.path.exists(SKILL_CLI_FILE):
+        skill_names, _ = parse_commands_from_cli(SKILL_CLI_FILE)
+        if skill_names != root_names:
+            missing_in_skill = root_names - skill_names
+            missing_in_root = skill_names - root_names
+            if missing_in_skill:
+                print("ERROR: Commands in root cli.py missing from skills/ppt-master/cli.py:\n", file=sys.stderr)
+                for name in sorted(missing_in_skill):
+                    print(f"    {name}", file=sys.stderr)
+            if missing_in_root:
+                print("ERROR: Commands in skills/ppt-master/cli.py missing from root cli.py:\n", file=sys.stderr)
+                for name in sorted(missing_in_root):
+                    print(f"    {name}", file=sys.stderr)
+            return 1
+        print("OK: Both cli.py files are in sync.")
+    else:
+        print(f"WARNING: skills/ppt-master/cli.py not found at {SKILL_CLI_FILE}", file=sys.stderr)
+        return 1
+
+    return 0
 
 
 if __name__ == "__main__":

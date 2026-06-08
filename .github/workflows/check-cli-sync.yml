@@ -5,6 +5,8 @@ on:
     paths:
       - "skills/ppt-master/scripts/**"
       - "cli.py"
+      - "skills/ppt-master/cli.py"
+      - "skills/ppt-master/pyproject.toml"
 
 jobs:
   check:
