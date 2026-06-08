@@ -1,4 +1,15 @@
-"""ppt-master CLI — unified entry point for all scripts."""
+#!/usr/bin/env python3
+"""ppt-master CLI — unified entry point for all scripts.
+
+Usage:
+    ppt-master <command> [args...]
+    ppt-master --help
+
+Examples:
+    ppt-master project init my-project --format ppt169
+    ppt-master pdf-to-md report.pdf
+    ppt-master svg-to-pptx projects/my-project
+"""
 
 import os
 import subprocess
@@ -85,33 +96,39 @@ COMMAND_DESCRIPTIONS = {
     "register-template":      "Register layout template",
 }
 
-def main() -> None:
-    if len(sys.argv) < 2:
+def main(argv: list[str] | None = None) -> int:
+    if argv is None:
+        argv = sys.argv
+
+    if len(argv) < 2 or any(a in ("-h", "--help") for a in argv[1:]):
         print("Usage: ppt-master <command> [args...]")
         print("\nCommands:")
         width = max(len(k) for k in COMMANDS) + 2
         for name in sorted(COMMANDS):
             desc = COMMAND_DESCRIPTIONS.get(name, "")
             print(f"  {name:<{width}}{desc}")
-        sys.exit(1)
+        return 0
 
-    cmd = sys.argv[1]
-    args = sys.argv[2:]
+    cmd = argv[1]
+    args = argv[2:]
 
     script_rel = COMMANDS.get(cmd)
     if script_rel is None:
-        print(f"Unknown command: {cmd}")
-        print(f"Run 'ppt-master' without arguments to list commands.")
-        sys.exit(1)
+        print(f"Unknown command: {cmd}", file=sys.stderr)
+        print("Run 'ppt-master' without arguments to list commands.", file=sys.stderr)
+        return 1
 
     script_path = os.path.join(SCRIPTS_DIR, script_rel)
     if not os.path.isfile(script_path):
-        print(f"Script not found: {script_path}")
-        sys.exit(1)
+        print(f"Script not found: {script_path}", file=sys.stderr)
+        return 1
 
-    result = subprocess.run([sys.executable, script_path, *args])
-    sys.exit(result.returncode)
+    try:
+        result = subprocess.run([sys.executable, script_path, *args])
+    except KeyboardInterrupt:
+        return 130
+    return result.returncode
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
