@@ -213,6 +213,12 @@ cd ppt-master
 uv sync
 ```
 
+将 CLI 工具安装到全局（一次性，之后任意目录可用）：
+
+```bash
+uv tool install --from . ppt-master
+```
+
 日常更新（方式 A / B）：`uvx ppt-master update-repo`
 
 > **方式 C — Skill marketplace**：仓库已添加 `.claude-plugin/marketplace.json` 元数据，可通过 [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) 生态一行安装：

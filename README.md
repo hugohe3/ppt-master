@@ -208,6 +208,12 @@ Then install dependencies:
 uv sync
 ```
 
+Install the CLI tool globally (one-time setup, then available from any directory):
+
+```bash
+uv tool install --from . ppt-master
+```
+
 To update later (Option A / B): `uvx ppt-master update-repo`
 
 > **Option C — Skill marketplace**: the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
