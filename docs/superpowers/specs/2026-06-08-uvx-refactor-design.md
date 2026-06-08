@@ -114,7 +114,7 @@ cli.py (新增)
 | 文件 | 改动 |
 |------|------|
 | `pyproject.toml` | ① `package = false` → `true`（或删除该行，默认 true）② 新增 `[project.scripts]` |
-| `skills/ppt-master/pyproject.toml` | 只改 `package = true`，**不加** `[project.scripts]`（cli.py 在根目录，子目录下找不到） |
+| `skills/ppt-master/pyproject.toml` | **不改动**（仅根目录需要 `package = true` 和 `[project.scripts]`）|
 | `skills/ppt-master/SKILL.md` | `uv run skills/ppt-master/scripts/xxx.py` → `uvx ppt-master xxx` |
 | `AGENTS.md` | 同上替换 |
 | `CLAUDE.md` | 同上替换 |
@@ -147,11 +147,9 @@ ppt-master = "cli:main"
 
 ### 4.2 `skills/ppt-master/pyproject.toml`
 
-只改 `package = false` → 删除（默认 `true`），**不添加** `[project.scripts]`。
+**不改动。** `package = false` 保持不变，不添加 `[project.scripts]`。
 
-原因：`cli.py` 在仓库根目录，入口点 `cli:main` 只在根 `pyproject.toml` 中有效。子目录的 `pyproject.toml` 仅用于依赖声明和 `uv run` 解析，不需要入口点。
-
-这与当前镜像约定不冲突——`[project.scripts]` 是包元数据，不属于依赖声明范畴，两个 pyproject.toml 的依赖列表保持同步即可。
+原因：入口点 `cli:main` 仅在根目录有效。子目录的 `pyproject.toml` 仅用于依赖声明和 `uv run` 解析（内部使用），无需 `[project.scripts]` 或 `package = true`。
 
 ## 5. cli.py 核心逻辑
 
