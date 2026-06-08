@@ -126,8 +126,8 @@ cli.py (新增)
 | 文件 | 说明 |
 |------|------|
 | `cli.py` | 统一 CLI 入口，约 130 行 |
-| `.github/workflows/check-cli-sync.yml` | CI：检测未映射脚本，调用 AI 自动生成命令并提 PR |
-| `skills/ppt-master/scripts/check_cli_sync.py` | CI 调用的检测+修复脚本（扫描 → AI 生成 → 输出 diff） |
+| `.github/workflows/check-cli-sync.yml` | CI：检测未映射脚本，CI 失败并列出建议命令名和描述 |
+| `skills/ppt-master/scripts/check_cli_sync.py` | lint 检查脚本（扫描 → 对比 → 输出未映射清单） |
 
 ### 3.2 修改文件
 
@@ -297,13 +297,15 @@ if __name__ == "__main__":
 
 ### 6.1 替换规则
 
-| 原模式 | 新模式 |
-|--------|--------|
-| `uv run skills/ppt-master/scripts/project_manager.py` | `uvx ppt-master project` |
-| `uv run skills/ppt-master/scripts/source_to_md/pdf_to_md.py` | `uvx ppt-master pdf-to-md` |
-| `uv run skills/ppt-master/scripts/image_gen.py` | `uvx ppt-master image-gen` |
-| `python3 skills/ppt-master/scripts/xxx.py` | `uvx ppt-master <command>` |
-| `${SKILL_DIR}/scripts/xxx.py` | 删除变量，替换为 `uvx ppt-master <command>` |
+只替换**脚本调用**——`${SKILL_DIR}/scripts/xxx.py` 和 `uv run skills/ppt-master/scripts/xxx.py` 形式的命令行调用。`${SKILL_DIR}` 用于模板、图标、引用等**非脚本路径**的地方（如 `${SKILL_DIR}/templates/`、`${SKILL_DIR}/references/`）**保持不变**。
+
+| 原模式 | 新模式 | 说明 |
+|--------|--------|------|
+| `uv run skills/ppt-master/scripts/project_manager.py` | `uvx ppt-master project` | 脚本调用 |
+| `uv run ${SKILL_DIR}/scripts/image_gen.py` | `uvx ppt-master image-gen` | 脚本调用 |
+| `python3 skills/ppt-master/scripts/xxx.py` | `uvx ppt-master <command>` | 脚本调用 |
+| `${SKILL_DIR}/templates/icons/README.md` | **不改** | 非脚本路径 |
+| `${SKILL_DIR}/references/shared-standards.md` | **不改** | 非脚本路径 |
 
 ### 6.2 涉及文件
 
@@ -318,15 +320,17 @@ if __name__ == "__main__":
 
 - **项目开发时**（在 repo 目录下）：`uvx --from . ppt-master <command>`
 - **安装到全局后**（任意目录）：直接 `ppt-master <command>`
-- **AGENTS.md 中的命令**：统一写 `uvx ppt-master`，前置步骤确保已执行 `uv tool install --from . ppt-master`
 
-AGENTS.md 中的 Command Quick Reference 示例：
+### 6.4 安装前置步骤（文档中的位置）
+
+在 `AGENTS.md` 的 Command Quick Reference 之前、`skills/ppt-master/SKILL.md` 的 Step 0 位置，增加一键安装指令：
+
 ```bash
-# 改前
-uv run skills/ppt-master/scripts/project_manager.py init myproj --format ppt169
-# 改后
-uvx ppt-master project init myproj --format ppt169
+# 首次使用前执行一次，之后任意目录可用
+uv tool install --from . ppt-master
 ```
+
+此后所有 `.md` 文件中的命令统一写 `uvx ppt-master <command>`，AI 代理执行时自动可用。
 
 ## 7. 上游兼容性分析
 
@@ -341,16 +345,11 @@ uvx ppt-master project init myproj --format ppt169
 
 上游合入更新的关键点：`.md` 文件中的命令调用差异需要手动合并，但这是 fork 的固有代价。scripts 目录完全不动，上游的任何脚本更新（新增/修改）都能直接合入。
 
-为防止合入上游后遗漏新脚本的映射，新增 GitHub Actions 自动工作流（`check-cli-sync`）：
+为防止合入上游后遗漏新脚本的映射，新增 GitHub Actions 检查工作流（`check-cli-sync`）：
 
-1. **触发时机**：合并上游 main 分支后，或 PR 中检测到 `skills/ppt-master/scripts/` 目录变更时
+1. **触发时机**：PR 中检测到 `skills/ppt-master/scripts/` 目录变更时
 2. **检测逻辑**：扫描 `scripts/` 下所有含 `main()` 的 `.py` 文件，对比 `cli.py` 的 `COMMANDS` 字典，找出未映射的脚本
-3. **AI 自动补充**：对每个未映射脚本，调用 AI API（OpenAI 兼容接口）生成：
-   - 命令名：从文件名推导 kebab-case
-   - 描述：从脚本 docstring 或 argparse 摘要中提取
-4. **自动提 PR**：生成建议的代码 diff，自动创建分支并发起 PR，人工审核后合入
-
-需要用户提供 AI API 配置（通过 GitHub Secrets）：`AI_API_KEY`、`AI_API_BASE`（可选）、`AI_MODEL`（可选）。
+3. **CI 报错**：若有未映射脚本，列出文件名和建议的命令名（从文件名推导 kebab-case），CI 失败，提示手动添加
 
 ## 8. 验证计划
 
@@ -360,5 +359,4 @@ uvx ppt-master project init myproj --format ppt169
 4. `uvx --from . ppt-master svg-editor testproj --live` —— 应启动编辑器
 5. `uvx --from . ppt-master check-deps-sync` —— 应验证依赖同步
 6. 在**非项目目录**下执行以上命令 —— 应全部正常
-7. 在 `scripts/` 下放置一个含 `main()` 的测试脚本，运行 `check_cli_sync.py`，应检测到并输出 AI 建议的命令条目
-8. GitHub Actions 中模拟上游合入，验证自动 PR 流程
+7. 在 `scripts/` 下放置一个含 `main()` 的测试脚本，运行 `check_cli_sync.py`，应检测到未映射并输出建议命令
