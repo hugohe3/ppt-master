@@ -4,7 +4,7 @@
 
 ---
 
-> PPT Master 是单人维护的开源项目，按**优先级**而非时间表推进。这份 roadmap 用来统一对外预期：正在做什么、想做什么、暂时不打算做什么。优先级会随用户反馈和实际使用信号调整，不承诺时间窗口。
+> PPT Master 是单人维护的开源项目，按**优先级**而非时间表推进。这份 roadmap 用来统一对外预期：已经做了什么、在持续维护演进什么、暂时不打算做什么。优先级会随用户反馈和实际使用信号调整，不承诺时间窗口。
 >
 > 项目当前定位：**AI 从零生成 SVG → DrawingML 原生可编辑 PPTX**。这条路线的核心是「跨四渲染器的位置保真 + 真原生形状」，所有方向都围绕这条主轴展开。
 
@@ -43,6 +43,14 @@
 - **Pattern 填充 PPTX 安全网** — `svg_quality_checker.py` 现在对未标 `data-pptx-pattern` 的 `<pattern>` 元素发 warning（会静默回退 `ltUpDiag` 斜纹）、对超出 OOXML `ST_PresetPatternVal` 枚举的值发 error（schema 校验失败 PPT 无法打开）；`shared-standards.md §7` 落地了完整 preset 清单和 `<rect fill="<bg>"/>` 子元素约定
 - **LaTeX 数学公式渲染上线**（[`scripts/latex_render.py`](../../skills/ppt-master/scripts/latex_render.py)） — Strategist 在 Typography 确认中锁定 `mixed` / `render-all` / `text-only` 三档策略，显式写 `images/formula_manifest.json`；脚本走 codecogs → quicklatex → mathpad → wikimedia 四源 fallback chain，输出透明 PNG 进 §VIII 表的 `Acquire Via: formula` / `Status: Rendered` 行；公式密集型 deck（学术 / 工程 / 教学）首次拥有原生渲染路径，规则面禁止扫源文件 `$...$` 自动渲染（公式选取是 Strategist 决策）
 - **实时预览直接编辑 — L1 / L2 / L3**（[`workflows/live-preview.md`](../../skills/ppt-master/workflows/live-preview.md)） — 浏览器编辑器新增无需 AI 往返的确定性就地编辑：文字内容（L1）、fill / stroke / font-size 等样式属性（L2）、以及画布上的几何操作（L3）——在选中元素上拖拽即移动、方向键微调（`Shift` = 10px）、多选、加右键重叠选择器选取堆叠元素。编辑支持 `Ctrl+Z` 撤销 + 合并，点 **Apply changes** 写回 `svg_output/`；移动经 finalize / 导出保位（移动的 text、提升的多行 tspan、重定位的 icon 都在 PPTX 中如实再现）。重新导出仍由对话触发；画布上的缩放手柄尚未实现（缩放走几何输入框）
+
+---
+
+## 持续维护方向
+
+不承诺时间窗口的长期改进项。只列真方向，具体修复 / 单 flag 看 commit log。
+
+- **Prompt 精简** — 在不降质量的前提下压缩各角色 prompt 的 token 占用、提升缓存命中率，带来间接的成本 / 速度改善。与下面「纯速度优化」一节互补：做间接优化，不做牺牲质量的提速。
 
 ---
 
