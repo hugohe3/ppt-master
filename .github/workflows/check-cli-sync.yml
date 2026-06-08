@@ -1,0 +1,15 @@
+name: Check CLI Sync
+
+on:
+  pull_request:
+    paths:
+      - "skills/ppt-master/scripts/**"
+      - "cli.py"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run cli sync check
+        run: python skills/ppt-master/scripts/check_cli_sync.py
