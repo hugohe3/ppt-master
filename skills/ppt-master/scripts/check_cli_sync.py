@@ -67,6 +67,13 @@ def main(argv: list[str] | None = None) -> int:
     # Exclude this script itself and Flask helper modules (not CLI tools)
     scripts.discard("check_cli_sync.py")
     scripts.discard(os.path.join("svg_editor", "app.py"))
+    # Exclude internal sub-scripts wrapped by parent commands
+    #   svg_finalize/ — called by finalize-svg
+    #   svg_to_pptx/pptx_cli.py — called by svg-to-pptx
+    #   template_fill_pptx/cli.py — called by template-fill-pptx
+    scripts = {s for s in scripts if not s.startswith("svg_finalize/")}
+    scripts.discard("svg_to_pptx/pptx_cli.py")
+    scripts.discard("template_fill_pptx/cli.py")
 
     if not os.path.exists(CLI_FILE):
         print(f"ERROR: cli.py not found at {CLI_FILE}", file=sys.stderr)
