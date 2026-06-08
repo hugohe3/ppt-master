@@ -47,3 +47,6 @@ py-modules = ["cli"]
 
 [tool.setuptools.packages.find]
 include = ["scripts", "scripts.*"]
+
+[tool.setuptools.package-data]
+"scripts" = ["**/*"]

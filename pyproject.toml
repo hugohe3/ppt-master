@@ -52,4 +52,4 @@ py-modules = ["cli"]
 include = ["skills", "skills.*"]
 
 [tool.setuptools.package-data]
-"skills.ppt_master.scripts" = ["**/*.py", "**/*.json"]
+"skills.ppt_master.scripts" = ["**/*"]
