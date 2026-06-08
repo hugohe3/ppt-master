@@ -46,7 +46,8 @@ ppt-master = "cli:main"
 py-modules = ["cli"]
 
 [tool.setuptools.packages.find]
-include = ["scripts", "scripts.*"]
+include = ["scripts", "scripts.*", "scripts.*.*", "templates", "templates.*", "templates.*.*", "templates.*.*.*"]
 
 [tool.setuptools.package-data]
 "scripts" = ["**/*"]
+"templates" = ["**/*"]

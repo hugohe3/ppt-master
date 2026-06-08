@@ -223,7 +223,7 @@ class ProjectManager:
         try:
             result = subprocess.run(
                 args,
-                cwd=REPO_ROOT,
+                cwd=REPO_ROOT if REPO_ROOT.is_dir() else None,
                 check=True,
                 capture_output=True,
                 text=True,

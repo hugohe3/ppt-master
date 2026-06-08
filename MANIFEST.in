@@ -1,0 +1,2 @@
+recursive-include skills/ppt-master/scripts *
+recursive-include skills/ppt-master/templates *
