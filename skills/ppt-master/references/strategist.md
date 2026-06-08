@@ -563,6 +563,24 @@ Side-by-side only: container ratio must match image ratio. Hero / atmosphere / a
 
 > **Pipeline handoff**: When C) AI generation is selected, Image_Generator consumes `Pending` rows and updates them to `Generated` or `Needs-Manual` before Executor proceeds. Status names are defined in [`svg-image-embedding.md`](svg-image-embedding.md).
 
+### Per-page Vehicle Decision (the spine — decide each page holistically, then fill §VII / §VIII)
+
+A real PPT expert decides **slide by slide**: "given this page's core message, what visual vehicle carries it?" Make that decision **per page first**. §VII (Visualization List) and §VIII (Image Resource List) are then just the **cross-page collection** of these per-page decisions — not two independent passes. This is what keeps composition (image + figure + text on one slide) coherent instead of fragmented.
+
+Every page is an SVG canvas. Decide its **vehicle stack** = one primary body + optional image backdrop + SVG overlay (always present):
+
+1. **Is the message a structural relationship?** (hierarchy / flow / convergence / comparison / composition / cycle …) → pick the structural body:
+   - **native diagram** — the relationship maps to a `templates/native_diagrams/` 精品 figure **and** the deck welcomes dimensional figures (confirmation d). Read [`native-diagrams.md`](native-diagrams.md); record `native:<key>` → feeds §VII + spec_lock `page_diagrams`. (Read its `meta.text_slots` to fill the figure with this page's content via `data-text`.)
+   - **chart template** — flat/minimalist deck, a data chart, or the figure needs structural surgery a frozen native diagram can't flex to. Match `charts_index` → `chart:<key>` → §VII + `page_charts`.
+   - **free-svg** — no template fits; bespoke hand-drawn layout.
+2. **Does it need atmosphere / scene / hero / portrait?** (something vector can't draw) → add an **image**: `image:<file>` as `hero_page` (image is the page) or as a backdrop (`local`). → §VIII row.
+3. **Pure concept / text / list?** → **free-svg** layout (§V patterns + `page_rhythm`).
+4. **Compose** — vehicles stack: e.g. image backdrop + native-diagram/chart over it + SVG title/cards. Decide the whole stack per page; this is the common, encouraged case (see [`image-layout-patterns.md`](image-layout-patterns.md) image-as-canvas family).
+
+Record each page's decision in **§IX `Treatment`** (one vehicle stack per page). Then **collect**: §VII ← every page whose primary is `chart:` / `native:`; §VIII ← every page with an `image:`. The Eight Confirmations remain the only blocking gate — this per-page decision happens while authoring the design spec, after confirmation.
+
+The two subsections below are the **how-to-fill** for the structural-body branch (§VII) — apply them only to pages the decision above routed to `chart:` / `native:`.
+
 ### Template Match — Visualization + Structural Patterns (Non-blocking — Strategist recommends, no user confirmation needed)
 
 The catalog covers **both data charts and structural information designs**. A "match" is not limited to numeric pages — any page whose content shape matches a `Pick for ...` clause is a candidate:
