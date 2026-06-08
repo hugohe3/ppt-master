@@ -65,7 +65,7 @@ Use this fixed layout:
 Run:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py analyze "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis/slide_library.json"
+uvx ppt-master template-fill-pptx analyze "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis/slide_library.json"
 ```
 
 Read `<project_dir>/analysis/slide_library.json` and identify:
@@ -104,7 +104,7 @@ A page's layout already encodes a rhetorical shape — a single hero statement, 
 Create a scaffold:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py scaffold "<project_dir>/analysis/slide_library.json" -o "<project_dir>/analysis/fill_plan.json" --slides "1,3,4"
+uvx ppt-master template-fill-pptx scaffold "<project_dir>/analysis/slide_library.json" -o "<project_dir>/analysis/fill_plan.json" --slides "1,3,4"
 ```
 
 Then edit `<project_dir>/analysis/fill_plan.json` by hand from the source material. The plan is the single execution contract.
@@ -206,7 +206,7 @@ Example `notes` value for a Chinese content slide:
 Run the data-based capacity check before applying the plan:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py check-plan "<project_dir>/analysis/slide_library.json" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/analysis/check_report.json"
+uvx ppt-master template-fill-pptx check-plan "<project_dir>/analysis/slide_library.json" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/analysis/check_report.json"
 ```
 
 Interpret the report:
@@ -227,7 +227,7 @@ Interpret the report:
 Run:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py apply "<project_dir>/sources/<source.pptx>" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/exports/<output.pptx>"
+uvx ppt-master template-fill-pptx apply "<project_dir>/sources/<source.pptx>" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/exports/<output.pptx>"
 ```
 
 By default `apply` gives every cloned slide a `fade` transition (`0.5s`), because most native templates ship an empty `<p:transition/>` that renders as *no* motion. Override the default with `--transition <effect>` (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`) and `--transition-duration <seconds>`; pass `--transition none` for no motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field in the plan overrides whatever the CLI selects for that slide.
@@ -255,7 +255,7 @@ The script:
 Run a lightweight readability check:
 
 ```bash
-python3 skills/ppt-master/scripts/source_to_md/ppt_to_md.py "<project_dir>/exports/<output.pptx>"
+uvx ppt-master ppt-to-md "<project_dir>/exports/<output.pptx>"
 ```
 
 Move or copy the read-back Markdown and extracted files into `<project_dir>/validation/` so `exports/` contains only final deliverables.

@@ -41,9 +41,9 @@ Read assets directly using existing converters — no dedicated extraction scrip
 |---|---|---|
 | SVG logo | `Read` the SVG; grep `fill=` / `stroke=` for HEX | colors (literal), logo file |
 | PNG/JPG logo | `Read` (multimodal); AI vision identifies dominant colors | colors (approximate HEX, label `[approx]`), logo file |
-| Brand site URL | `python3 skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>`, then `Read` the result | color references, font references, voice/tone |
-| Branded PPTX | `python3 skills/ppt-master/scripts/source_to_md/ppt_to_md.py <file>`, then read theme XML | colors, typography (literal) |
-| Brand PDF | `python3 skills/ppt-master/scripts/source_to_md/pdf_to_md.py <file>` | voice/tone; sometimes color/font references |
+| Brand site URL | `uvx ppt-master web-to-md <URL>`, then `Read` the result | color references, font references, voice/tone |
+| Branded PPTX | `uvx ppt-master ppt-to-md <file>`, then read theme XML | colors, typography (literal) |
+| Brand PDF | `uvx ppt-master pdf-to-md <file>` | voice/tone; sometimes color/font references |
 
 Identify which of (colors / typography / logo / voice / icon style) the asset did NOT cover, then proceed to Step 3 for the rest. Most single assets cover 1–2 categories well.
 
@@ -198,7 +198,7 @@ How to use in a project:
 - Same explicit-path rule as layout templates: bare brand names never trigger
 - May be supplied together with a layout template path; Step 3 fuses both into a single `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3
 - To list available brands: open `templates/brands/brands_index.json`
-- To edit: modify `templates/brands/<brand_id>/design_spec.md` directly, then re-run `python3 skills/ppt-master/scripts/register_template.py --kind brand <brand_id>`
+- To edit: modify `templates/brands/<brand_id>/design_spec.md` directly, then re-run `uvx ppt-master register-template --kind brand <brand_id>`
 ```
 
 ---

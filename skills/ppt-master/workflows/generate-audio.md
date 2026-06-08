@@ -44,21 +44,21 @@ Default to **edge** unless the user explicitly asks for a cloud provider / highe
 **edge backend**:
 
 ```bash
-uv run skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+uvx ppt-master notes-to-audio --list-voices --locale <locale>
 ```
 
 **ElevenLabs backend**:
 
 ```bash
-uv run skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+uvx ppt-master notes-to-audio --provider elevenlabs --list-voices
 ```
 
 **Cloud providers using explicit voice IDs/names**:
 
 ```bash
-uv run skills/ppt-master/scripts/notes_to_audio.py --provider minimax --list-voices
-uv run skills/ppt-master/scripts/notes_to_audio.py --provider qwen --list-voices
-uv run skills/ppt-master/scripts/notes_to_audio.py --provider cosyvoice --list-voices
+uvx ppt-master notes-to-audio --provider minimax --list-voices
+uvx ppt-master notes-to-audio --provider qwen --list-voices
+uvx ppt-master notes-to-audio --provider cosyvoice --list-voices
 ```
 
 The output is a flat list of all available voices for the selected provider. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
@@ -118,32 +118,32 @@ Run sequentially — do NOT bundle:
 
 ```bash
 # 1A. Generate audio with edge (default)
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --voice <chosen-ShortName> --rate <chosen-rate>
 
 # 1B. Or generate audio with ElevenLabs
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider elevenlabs --voice-id <chosen-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
 
 # 1C. Or generate audio with MiniMax
 # Defaults to the China endpoint; set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2 for overseas access.
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider minimax --voice-id <chosen-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 1D. Or generate audio with Qwen TTS
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider qwen --voice-id <chosen-voice> \
   --qwen-model qwen3-tts-flash --qwen-language-type Chinese
 
 # 1E. Or generate audio with CosyVoice
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
 # 2. (If user kept embedding) Re-export PPTX with audio embedded
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio
 ```
 
@@ -160,4 +160,4 @@ Output one summary block listing:
 - Number of audio files generated and their location (`<project_path>/audio/*`).
 - The provider, voice, and rate/settings actually used.
 - (If embedded) the new narrated PPTX path under `<project_path>/exports/`.
-- (If skipped embedding) one-line hint on how to embed later: `uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+- (If skipped embedding) one-line hint on how to embed later: `uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio`.

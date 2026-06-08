@@ -56,7 +56,7 @@ Branch by the type of reference source the user supplied. This step produces ana
 Run the unified preparation helper:
 
 ```bash
-uv run skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
+uvx ppt-master pptx-template-import "<reference_template.pptx>"
 ```
 
 This produces, in one workspace:
@@ -273,7 +273,7 @@ ls -la "skills/ppt-master/templates/<kind_dir>/<template_id>"
 Run SVG validation on the template directory:
 
 ```bash
-uv run skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/templates/<kind_dir>/<template_id>" --template-mode --format <canvas_format>
+uvx ppt-master svg-quality-check "skills/ppt-master/templates/<kind_dir>/<template_id>" --template-mode --format <canvas_format>
 ```
 
 `--template-mode` makes the checker:
@@ -304,10 +304,10 @@ This step is a **hard gate**. Do not register the template into the library inde
 Run the unified registrar with the kind flag; it derives the corresponding index entry from `design_spec.md` (frontmatter when present, prose fallback otherwise) plus the actual SVG file list:
 
 ```bash
-uv run skills/ppt-master/scripts/register_template.py <template_id> --kind deck
+uvx ppt-master register-template <template_id> --kind deck
 
 # For layout
-uv run skills/ppt-master/scripts/register_template.py <template_id> --kind layout
+uvx ppt-master register-template <template_id> --kind layout
 ```
 
 Outputs by kind (the JSON index is the single source of truth — READMEs describe the kind in prose but do not enumerate templates):
@@ -349,8 +349,8 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > To rebuild every entry at once (e.g. after editing many specs), run:
 >
 > ```bash
-> uv run skills/ppt-master/scripts/register_template.py --kind deck --rebuild-all
-> uv run skills/ppt-master/scripts/register_template.py --kind layout --rebuild-all
+> uvx ppt-master register-template --kind deck --rebuild-all
+> uvx ppt-master register-template --kind layout --rebuild-all
 > ```
 
 README files describe each kind in prose only — they do not list templates. Discovery happens against the JSON index file; the registrar does not touch READMEs.
