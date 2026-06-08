@@ -1,5 +1,7 @@
 # uvx 工具化改造 实现计划
 
+> **状态**: 已完成 — 最终笔记见 [`2026-06-08-uvx-refactor-final.md`](../2026-06-08-uvx-refactor-final.md)
+>
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 将 ppt-master 所有脚本从 `uv run` 方式改为 `uvx` 统一入口调用，tools 在任意目录可用。
