@@ -208,11 +208,13 @@ Then install dependencies:
 uv sync
 ```
 
-Install the CLI tool globally (one-time setup, then available from any directory):
-
-```bash
-uv tool install --from . ppt-master
-```
+> ⚠️ **First install is slow (~3-5 min)**: the tool bundles 11,000+ icon assets. Run the following command **in advance** to avoid timeouts when the agent first invokes it:
+>
+> ```bash
+> uv tool install --from . ppt-master
+> ```
+>
+> Once installed, `ppt-master` is available from any directory.
 
 To update later (Option A / B): `uvx ppt-master update-repo`
 

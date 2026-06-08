@@ -213,11 +213,13 @@ cd ppt-master
 uv sync
 ```
 
-将 CLI 工具安装到全局（一次性，之后任意目录可用）：
-
-```bash
-uv tool install --from . ppt-master
-```
+> ⚠️ **首次安装耗时较长（约 3-5 分钟）**：工具内置 11000+ 图标资源，首次 `uv tool install` 需打包全部资源。建议提前手动执行以下命令，避免智能体首次调 用时超时：
+>
+> ```bash
+> uv tool install --from . ppt-master
+> ```
+>
+> 安装完成后，`ppt-master` 命令在任意目录下均可直接使用。
 
 日常更新（方式 A / B）：`uvx ppt-master update-repo`
 
