@@ -114,7 +114,7 @@ cli.py (新增)
 | 文件 | 改动 |
 |------|------|
 | `pyproject.toml` | ① `package = false` → `true`（或删除该行，默认 true）② 新增 `[project.scripts]` |
-| `skills/ppt-master/pyproject.toml` | 同上，保持与根 pyproject.toml 镜像同步 |
+| `skills/ppt-master/pyproject.toml` | 只改 `package = true`，**不加** `[project.scripts]`（cli.py 在根目录，子目录下找不到） |
 | `skills/ppt-master/SKILL.md` | `uv run skills/ppt-master/scripts/xxx.py` → `uvx ppt-master xxx` |
 | `AGENTS.md` | 同上替换 |
 | `CLAUDE.md` | 同上替换 |
@@ -132,6 +132,8 @@ cli.py (新增)
 
 ## 4. pyproject.toml 改动细节
 
+### 4.1 根 `pyproject.toml`
+
 ```toml
 # 改：删除 package = false（默认 true）
 [tool.uv]
@@ -143,7 +145,13 @@ cli.py (新增)
 ppt-master = "cli:main"
 ```
 
-`skills/ppt-master/pyproject.toml` 做完全相同的修改。
+### 4.2 `skills/ppt-master/pyproject.toml`
+
+只改 `package = false` → 删除（默认 `true`），**不添加** `[project.scripts]`。
+
+原因：`cli.py` 在仓库根目录，入口点 `cli:main` 只在根 `pyproject.toml` 中有效。子目录的 `pyproject.toml` 仅用于依赖声明和 `uv run` 解析，不需要入口点。
+
+这与当前镜像约定不冲突——`[project.scripts]` 是包元数据，不属于依赖声明范畴，两个 pyproject.toml 的依赖列表保持同步即可。
 
 ## 5. cli.py 核心逻辑
 
@@ -197,12 +205,52 @@ COMMANDS = {
     "register-template":      "register_template.py",
 }
 
+COMMAND_DESCRIPTIONS = {
+    "project":                "Create/validate/manage PPT projects",
+    "pdf-to-md":              "Convert PDF to Markdown",
+    "doc-to-md":              "Convert DOCX/HTML/EPUB to Markdown",
+    "excel-to-md":            "Convert Excel to Markdown",
+    "ppt-to-md":              "Convert PPTX to Markdown",
+    "web-to-md":              "Convert URL/webpage to Markdown",
+    "analyze-images":         "Analyze images and compute layout sizes",
+    "image-gen":              "AI image generation (multi-backend)",
+    "image-search":           "Search and download web images",
+    "latex-render":           "Render LaTeX formulas to PNG",
+    "svg-quality-check":      "Validate SVG against PPT constraints",
+    "total-md-split":         "Split total.md into per-page files",
+    "finalize-svg":           "Post-process SVGs (icons, images, text)",
+    "svg-to-pptx":            "Export SVGs to PPTX",
+    "check-annotations":      "Scan SVGs for edit annotations",
+    "animation-config":       "Create/validate animation configuration",
+    "notes-to-audio":         "Generate per-slide narration audio (TTS)",
+    "pptx-template-import":   "Extract SVG references from PPTX template",
+    "template-fill-pptx":     "Fill content into PPTX template",
+    "svg-editor":             "Launch web-based SVG editor (live preview)",
+    "update-spec":            "Propagate color/font changes to all SVGs",
+    "visual-review":          "Visual review via Playwright (PNG renderer)",
+    "svg-position-calc":      "Chart coordinate calculator",
+    "rotate-images":          "Rotate images (EXIF + manual)",
+    "update-repo":            "Git pull + uv sync repository updater",
+    "generate-examples-index": "Generate examples README index",
+    "batch-validate":         "Batch project validator",
+    "gemini-watermark-remove": "Remove watermarks from Gemini images",
+    "pptx-animations":        "Animation demo and list utilities",
+    "check-deps-sync":        "Verify dependency manifest sync",
+    "pptx-to-svg":            "Convert PPTX to SVG",
+    "error-helper":           "Error explanation lookup",
+    "project-utils":          "Project utility helpers",
+    "config":                 "List canvas formats and color presets",
+    "register-template":      "Register layout template",
+}
+
 def main() -> None:
     if len(sys.argv) < 2:
         print("Usage: ppt-master <command> [args...]")
         print("\nCommands:")
+        width = max(len(k) for k in COMMANDS) + 2
         for name in sorted(COMMANDS):
-            print(f"  {name}")
+            desc = COMMAND_DESCRIPTIONS.get(name, "")
+            print(f"  {name:<{width}}{desc}")
         sys.exit(1)
 
     cmd = sys.argv[1]
@@ -252,7 +300,7 @@ if __name__ == "__main__":
 
 - **项目开发时**（在 repo 目录下）：`uvx --from . ppt-master <command>`
 - **安装到全局后**（任意目录）：直接 `ppt-master <command>`
-- **AGENTS.md 中的命令**：统一写 `uvx ppt-master`，首次运行前需 `uv tool install --from . ppt-master`
+- **AGENTS.md 中的命令**：统一写 `uvx ppt-master`，前置步骤确保已执行 `uv tool install --from . ppt-master`
 
 AGENTS.md 中的 Command Quick Reference 示例：
 ```bash
