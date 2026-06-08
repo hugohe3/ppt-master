@@ -18,7 +18,10 @@ jobs:
         uses: astral-sh/setup-uv@v3
 
       - name: Build wheel
-        run: uv build --wheel
+        run: |
+          uv build --wheel
+          # Create a stable-link copy with a dummy version for permanent download URL
+          cp dist/ppt_master-*.whl dist/ppt_master-0.0.0-py3-none-any.whl
 
       - uses: softprops/action-gh-release@v2
         with:
