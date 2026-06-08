@@ -126,7 +126,8 @@ cli.py (新增)
 | 文件 | 说明 |
 |------|------|
 | `cli.py` | 统一 CLI 入口，约 130 行 |
-| `.github/workflows/check-cli-sync.yml` | CI：合并上游时自动检查 cli.py 是否遗漏新脚本映射 |
+| `.github/workflows/check-cli-sync.yml` | CI：检测未映射脚本，调用 AI 自动生成命令并提 PR |
+| `skills/ppt-master/scripts/check_cli_sync.py` | CI 调用的检测+修复脚本（扫描 → AI 生成 → 输出 diff） |
 
 ### 3.2 修改文件
 
@@ -340,7 +341,16 @@ uvx ppt-master project init myproj --format ppt169
 
 上游合入更新的关键点：`.md` 文件中的命令调用差异需要手动合并，但这是 fork 的固有代价。scripts 目录完全不动，上游的任何脚本更新（新增/修改）都能直接合入。
 
-为防止合入上游后遗漏新脚本的映射，新增 GitHub Actions 自动检查工作流（`check-cli-sync`）：合入上游后自动扫描 `skills/ppt-master/scripts/` 目录，对比 `cli.py` 的 `COMMANDS` 字典，若有未映射的脚本则 CI 报错，提醒补充对应命令。
+为防止合入上游后遗漏新脚本的映射，新增 GitHub Actions 自动工作流（`check-cli-sync`）：
+
+1. **触发时机**：合并上游 main 分支后，或 PR 中检测到 `skills/ppt-master/scripts/` 目录变更时
+2. **检测逻辑**：扫描 `scripts/` 下所有含 `main()` 的 `.py` 文件，对比 `cli.py` 的 `COMMANDS` 字典，找出未映射的脚本
+3. **AI 自动补充**：对每个未映射脚本，调用 AI API（OpenAI 兼容接口）生成：
+   - 命令名：从文件名推导 kebab-case
+   - 描述：从脚本 docstring 或 argparse 摘要中提取
+4. **自动提 PR**：生成建议的代码 diff，自动创建分支并发起 PR，人工审核后合入
+
+需要用户提供 AI API 配置（通过 GitHub Secrets）：`AI_API_KEY`、`AI_API_BASE`（可选）、`AI_MODEL`（可选）。
 
 ## 8. 验证计划
 
@@ -350,4 +360,5 @@ uvx ppt-master project init myproj --format ppt169
 4. `uvx --from . ppt-master svg-editor testproj --live` —— 应启动编辑器
 5. `uvx --from . ppt-master check-deps-sync` —— 应验证依赖同步
 6. 在**非项目目录**下执行以上命令 —— 应全部正常
-7. `.github/workflows/check-cli-sync.yml` —— 故意删除一个 COMMANDS 条目，CI 应报错
+7. 在 `scripts/` 下放置一个含 `main()` 的测试脚本，运行 `check_cli_sync.py`，应检测到并输出 AI 建议的命令条目
+8. GitHub Actions 中模拟上游合入，验证自动 PR 流程
