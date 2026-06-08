@@ -208,20 +208,7 @@ Then install dependencies:
 uv sync
 ```
 
-> ⚠️ **Two install options**:
->
-> **Local build** (from repo root):
-> ```bash
-> uv build --wheel                                    # Pre-build (~4min, one-time)
-> mv dist/ppt_master-*.whl dist/ppt-master-latest-py3-none-any.whl
-> uv tool install ppt-master-latest-py3-none-any.whl  # Installs instantly
-> ```
->
-> **Direct download** (no repo needed):
-> ```bash
-> curl -LO https://github.com/elvisw/ppt-master/releases/latest/download/ppt-master-latest-py3-none-any.whl
-> uv tool install ppt-master-latest-py3-none-any.whl
-> ```
+The CLI tool is published on PyPI — `uvx ppt-master <command>` downloads and runs it automatically. No manual install needed.
 
 To update later (Option A / B): `uvx ppt-master update-repo`
 

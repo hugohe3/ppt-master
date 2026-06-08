@@ -207,20 +207,13 @@ git clone https://github.com/elvisw/ppt-master.git
 cd ppt-master
 ```
 
-然后安装依赖并构建：
+然后安装依赖：
 
 ```bash
 uv sync
 ```
 
-> ⚠️ **首次构建耗时较长（约 3-5 分钟）**：工具内置 11000+ 图标资源，建议提前手动构建 wheel 包，避免智能体首次调用时超时：
->
-> ```bash
-> uv build --wheel                                    # 预构建（首次 ~4min）
-> uv tool install ppt-master-latest-py3-none-any.whl  # 安装瞬时完成
-> ```
->
-> 安装完成后，`ppt-master` 命令在任意目录下均可直接使用。后续更新图标只需重新 `uv build` + `uv tool install --reinstall`。
+CLI 工具已发布到 PyPI，`uvx ppt-master <command>` 自动下载运行，无需手动安装。
 
 日常更新（方式 A / B）：`uvx ppt-master update-repo`
 
