@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+  <text x="80" y="84" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#1E3A5F">能力成熟度三级模型</text>
+  <rect x="80" y="98" width="64" height="5" fill="#D4AF37"/>
+  <rect data-native-diagram="solid3d_bluegreen_012"
+        data-recolor="558C5A=1E3A5F,122B87=D4AF37"
+        data-text='{"0":"数字化能力","1":"成熟度模型","2":"评估","3":"规划","4":"落地","5":"数据基建","6":"流程上线","7":"系统打通","8":"数据治理","9":"智能应用","10":"生态协同","11":"模式创新","12":"持续进化","13":"L1 基础数字化","14":"L3 智能化跃迁","15":"L2 平台化整合"}'
+        x="120" y="125" width="1040" height="575" fill="none"/>
+</svg>
