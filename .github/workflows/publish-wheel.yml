@@ -1,0 +1,37 @@
+name: Build and Publish Wheel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/ppt-master/templates/**"
+      - "skills/ppt-master/scripts/**"
+      - "skills/ppt-master/pyproject.toml"
+      - "cli.py"
+      - "pyproject.toml"
+      - "MANIFEST.in"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/ppt_master-*.whl
+          tag_name: v${{ github.run_number }}
+          name: v${{ github.run_number }}
+          prerelease: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

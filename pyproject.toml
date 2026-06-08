@@ -51,7 +51,3 @@ py-modules = ["cli"]
 [tool.setuptools.packages.find]
 include = ["skills", "skills.*", "skills.*.*", "skills.*.*.*"]
 exclude = ["projects", "projects.*"]
-
-[tool.setuptools.package-data]
-"skills.ppt_master.scripts" = ["**/*"]
-"skills.ppt_master.templates" = ["**/*.svg", "**/*.json", "**/*.yaml", "**/*.yml", "**/*.md", "**/*.toml", "**/*.html", "**/*.css", "**/*.js", "**/*.png"]
