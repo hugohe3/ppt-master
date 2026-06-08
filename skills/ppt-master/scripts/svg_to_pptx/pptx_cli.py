@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import json
 import shutil
 import argparse
 from datetime import datetime
@@ -485,8 +486,26 @@ Recorded narration:
 
     # svg_files is per-product (native vs legacy may now read different
     # directories); everything else is shared.
+    # Optional per-project document properties. Absent file → factual fields
+    # are still stamped at export; only the authored fields stay blank.
+    doc_metadata = None
+    metadata_path = project_path / 'metadata.json'
+    if metadata_path.is_file():
+        try:
+            loaded = json.loads(metadata_path.read_text(encoding='utf-8'))
+        except (json.JSONDecodeError, OSError) as exc:
+            print(f"  [warn] metadata.json ignored ({exc})", file=sys.stderr)
+        else:
+            if isinstance(loaded, dict):
+                doc_metadata = loaded
+                if verbose:
+                    print(f"  Document properties: metadata.json ({len(loaded)} field(s))")
+            else:
+                print("  [warn] metadata.json ignored (top level is not an object)", file=sys.stderr)
+
     shared_kwargs = dict(
         canvas_format=canvas_format,
+        doc_metadata=doc_metadata,
         verbose=verbose,
         transition=transition,
         transition_duration=transition_duration,

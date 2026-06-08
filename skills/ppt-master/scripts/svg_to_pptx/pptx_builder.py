@@ -12,8 +12,10 @@ import shutil
 import tempfile
 import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from xml.sax.saxutils import escape
 
 from pptx import Presentation
 from pptx.util import Emu
@@ -327,6 +329,102 @@ def _verify_internal_rels_targets(extract_dir: Path) -> list[str]:
     return problems
 
 
+def _presentation_format(width: float, height: float) -> str:
+    """Map the slide aspect ratio to PowerPoint's PresentationFormat label.
+    Non-standard ratios (square, portrait, banner crops) report 'Custom'.
+    """
+    if width <= 0 or height <= 0:
+        return 'Custom'
+    ratio = width / height
+    for target, label in (
+        (4 / 3, 'On-screen Show (4:3)'),
+        (16 / 9, 'On-screen Show (16:9)'),
+        (16 / 10, 'On-screen Show (16:10)'),
+    ):
+        if abs(ratio - target) < 0.02:
+            return label
+    return 'Custom'
+
+
+def _stamp_docprops(
+    extract_dir: Path,
+    slide_count: int,
+    pres_format: str,
+    meta: dict[str, Any] | None = None,
+) -> None:
+    """Overwrite the misleading python-pptx default metadata with accurate
+    values. Factual fields (slide count, export timestamp, presentation format,
+    application) are always machine-derived. Authored fields — including the
+    title — come solely from an optional per-project ``metadata.json``
+    (``meta``); whatever it omits stays blank. ``lastModifiedBy`` follows
+    ``creator`` rather than ever carrying the base template's author or a tool
+    name. No field is guessed from slide content: a blank title is preferable
+    to an unreliable heuristic pick.
+    """
+    meta = meta or {}
+
+    def field(key: str, default: str = '') -> str:
+        value = meta.get(key)
+        return value.strip() if isinstance(value, str) and value.strip() else default
+
+    title = field('title')
+    creator = field('creator')
+
+    now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    core_path = extract_dir / 'docProps' / 'core.xml'
+    if core_path.exists():
+        core_path.write_text(
+            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+            '<cp:coreProperties '
+            'xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            'xmlns:dc="http://purl.org/dc/elements/1.1/" '
+            'xmlns:dcterms="http://purl.org/dc/terms/" '
+            'xmlns:dcmitype="http://purl.org/dc/dcmitype/" '
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+            f'<dc:title>{escape(title)}</dc:title>'
+            f'<dc:subject>{escape(field("subject"))}</dc:subject>'
+            f'<dc:creator>{escape(creator)}</dc:creator>'
+            f'<cp:keywords>{escape(field("keywords"))}</cp:keywords>'
+            f'<dc:description>{escape(field("description"))}</dc:description>'
+            f'<dc:language>{escape(field("language"))}</dc:language>'
+            f'<cp:lastModifiedBy>{escape(creator)}</cp:lastModifiedBy>'
+            '<cp:revision>1</cp:revision>'
+            f'<dcterms:created xsi:type="dcterms:W3CDTF">{now}</dcterms:created>'
+            f'<dcterms:modified xsi:type="dcterms:W3CDTF">{now}</dcterms:modified>'
+            f'<cp:category>{escape(field("category"))}</cp:category>'
+            f'<cp:contentStatus>{escape(field("contentStatus"))}</cp:contentStatus>'
+            '</cp:coreProperties>',
+            encoding='utf-8',
+        )
+
+    app_path = extract_dir / 'docProps' / 'app.xml'
+    if app_path.exists():
+        app = app_path.read_text(encoding='utf-8')
+        app = re.sub(r'<Slides>.*?</Slides>', f'<Slides>{slide_count}</Slides>', app)
+        app = re.sub(
+            r'<Company>.*?</Company>',
+            f'<Company>{escape(field("company"))}</Company>',
+            app,
+        )
+        app = re.sub(
+            r'<Manager>.*?</Manager>',
+            f'<Manager>{escape(field("manager"))}</Manager>',
+            app,
+        )
+        app = re.sub(
+            r'<Application>.*?</Application>',
+            '<Application>Microsoft Office PowerPoint</Application>',
+            app,
+        )
+        app = re.sub(
+            r'<PresentationFormat>.*?</PresentationFormat>',
+            f'<PresentationFormat>{escape(pres_format)}</PresentationFormat>',
+            app,
+        )
+        app_path.write_text(app, encoding='utf-8')
+
+
 def create_pptx_with_native_svg(
     svg_files: list[Path],
     output_path: Path,
@@ -352,6 +450,7 @@ def create_pptx_with_native_svg(
     workers: int | None = None,
     merge_paragraphs: bool = True,
     conversion_trace_path: Path | None = None,
+    doc_metadata: dict[str, Any] | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -848,6 +947,12 @@ def create_pptx_with_native_svg(
                 'PPTX package contains dangling internal relationship targets; '
                 'PowerPoint will report the file as corrupt:\n' + details
             )
+
+        # Replace the python-pptx base-template metadata (stale "Steve Canny"
+        # author, 2013 dates, "generated using python-pptx", Slides=0) with
+        # accurate, tool-neutral document properties.
+        pres_format = _presentation_format(width_emu, height_emu)
+        _stamp_docprops(extract_dir, len(svg_files), pres_format, doc_metadata)
 
         # Repackage PPTX to a temporary file first. The public output path is
         # replaced only after every slide and relationship has succeeded.
