@@ -191,7 +191,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 | **IDE 插件 / 扩展** | [GitHub Copilot](https://github.com/features/copilot)、[Claude Code](https://claude.ai/code)（VS Code / JetBrains 扩展）、[Cline](https://cline.bot/)、[Continue](https://continue.dev/)、Roo Code、通义灵码、CodeGeeX 等 | 装在 VS Code / JetBrains 等宿主里使用 |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI、[Codex CLI](https://github.com/openai/codex)、[Aider](https://aider.chat/)、Gemini CLI 等 | 终端里运行，适合脚本化 / 远程 / 服务器场景 |
 
-> **模型推荐**：优先选 **Claude Opus / Sonnet**，搭配大上下文窗口和 `gpt-image-2` 生图——原因见上方说明。
+> **模型推荐**：追求最佳效果选 **Claude Opus**，搭配 `gpt-image-2` 生图；**Gemini 3.5 Flash** 目前综合性价比很高，尤其速度很快，值得一试。
 
 **🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** 与 **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 都能解决卡点——两家都支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅，支持国内支付。**PackyCode**：充值时填写优惠码 **`ppt-master`** 享 9 折。**APIKEY.FUN**：价格低至官方原价的 **7%**，通过专属链接注册可享受最高永久充值 95 折专属优惠。
 

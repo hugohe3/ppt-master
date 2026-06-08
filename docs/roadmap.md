@@ -4,7 +4,7 @@
 
 ---
 
-> PPT Master is a solo-maintained open source project, driven by **priority rather than fixed timelines**. This roadmap is here to align expectations: what's being worked on, what's planned, and what's intentionally out of scope. Priorities shift with user feedback and real usage signals — no committed delivery windows.
+> PPT Master is a solo-maintained open source project, driven by **priority rather than fixed timelines**. This roadmap is here to align expectations: what's already shipped, what's under ongoing maintenance and evolution, and what's intentionally out of scope. Priorities shift with user feedback and real usage signals — no committed delivery windows.
 >
 > **Where we are**: AI generates SVG from scratch → converts to DrawingML for natively editable PPTX. The core axis is **pixel-fidelity across four renderers** (PowerPoint / Keynote / LibreOffice / WPS) **+ real native shapes**. Every direction below serves that axis.
 
@@ -43,6 +43,14 @@ The past two months' structural capability growth. Single flags / incremental po
 - **Pattern fill PPTX safety net** — `svg_quality_checker.py` now warns on `<pattern>` without `data-pptx-pattern` (silent fallback to `ltUpDiag`) and errors on values outside OOXML `ST_PresetPatternVal` (schema-failed PPTX that won't open); `shared-standards.md §7` documents the closed preset enum and the required `<rect fill="<bg>"/>` child convention
 - **LaTeX math formula rendering shipped** ([`scripts/latex_render.py`](../skills/ppt-master/scripts/latex_render.py)) — Strategist locks one of three policies (`mixed` / `render-all` / `text-only`) inside the Typography confirmation and writes an explicit `images/formula_manifest.json`; the renderer walks a codecogs → quicklatex → mathpad → wikimedia fallback chain and emits transparent PNGs that land in §VIII as `Acquire Via: formula` / `Status: Rendered` rows; formula-heavy decks (academic / engineering / educational) finally have a native rendering route. Formula selection is a Strategist decision — the renderer never scans source files for `$...$` markers
 - **Live preview direct editing — L1 / L2 / L3** ([`workflows/live-preview.md`](../skills/ppt-master/workflows/live-preview.md)) — the browser editor gains deterministic in-place edits with no AI round-trip: text content (L1), presentation attributes like fill / stroke / font-size (L2), and on-canvas geometry (L3) — drag a selected element to move it, arrow-key nudge (`Shift` = 10px), multi-select, plus a right-click overlap picker for stacked shapes. Edits stage with `Ctrl+Z` undo + coalescing and write to `svg_output/` on **Apply changes**; moves persist through finalize / export (moved text frames, promoted multi-line tspans, repositioned icons all reproduce in the PPTX). Re-export stays chat-driven; on-canvas resize handles are not yet implemented (resize via the geometry inputs)
+
+---
+
+## Ongoing maintenance directions
+
+Long-running improvements with no committed timeline. Only real directions are listed; specific fixes / single flags go to the commit log.
+
+- **Prompt slimming** — compress per-role prompt token footprint and improve cache hit rate without sacrificing quality, for indirect cost / speed gains. Complements "Pure speed optimization" below: indirect optimization yes, quality-sacrificing speedups no.
 
 ---
 
