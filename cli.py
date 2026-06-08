@@ -1,0 +1,117 @@
+"""ppt-master CLI — unified entry point for all scripts."""
+
+import os
+import subprocess
+import sys
+
+SCRIPTS_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "skills", "ppt-master", "scripts"
+)
+
+COMMANDS = {
+    "project":                "project_manager.py",
+    "pdf-to-md":              "source_to_md/pdf_to_md.py",
+    "doc-to-md":              "source_to_md/doc_to_md.py",
+    "excel-to-md":            "source_to_md/excel_to_md.py",
+    "ppt-to-md":              "source_to_md/ppt_to_md.py",
+    "web-to-md":              "source_to_md/web_to_md.py",
+    "analyze-images":         "analyze_images.py",
+    "image-gen":              "image_gen.py",
+    "image-search":           "image_search.py",
+    "latex-render":           "latex_render.py",
+    "svg-quality-check":      "svg_quality_checker.py",
+    "total-md-split":         "total_md_split.py",
+    "finalize-svg":           "finalize_svg.py",
+    "svg-to-pptx":            "svg_to_pptx.py",
+    "check-annotations":      "check_annotations.py",
+    "animation-config":       "animation_config.py",
+    "notes-to-audio":         "notes_to_audio.py",
+    "pptx-template-import":   "pptx_template_import.py",
+    "template-fill-pptx":     "template_fill_pptx.py",
+    "svg-editor":             "svg_editor/server.py",
+    "update-spec":            "update_spec.py",
+    "visual-review":          "visual_review.py",
+    "svg-position-calc":      "svg_position_calculator.py",
+    "rotate-images":          "rotate_images.py",
+    "update-repo":            "update_repo.py",
+    "generate-examples-index": "generate_examples_index.py",
+    "batch-validate":         "batch_validate.py",
+    "gemini-watermark-remove": "gemini_watermark_remover.py",
+    "pptx-animations":        "pptx_animations.py",
+    "check-deps-sync":        "check_deps_sync.py",
+    "pptx-to-svg":            "pptx_to_svg.py",
+    "error-helper":           "error_helper.py",
+    "project-utils":          "project_utils.py",
+    "config":                 "config.py",
+    "register-template":      "register_template.py",
+}
+
+COMMAND_DESCRIPTIONS = {
+    "project":                "Create/validate/manage PPT projects",
+    "pdf-to-md":              "Convert PDF to Markdown",
+    "doc-to-md":              "Convert DOCX/HTML/EPUB to Markdown",
+    "excel-to-md":            "Convert Excel to Markdown",
+    "ppt-to-md":              "Convert PPTX to Markdown",
+    "web-to-md":              "Convert URL/webpage to Markdown",
+    "analyze-images":         "Analyze images and compute layout sizes",
+    "image-gen":              "AI image generation (multi-backend)",
+    "image-search":           "Search and download web images",
+    "latex-render":           "Render LaTeX formulas to PNG",
+    "svg-quality-check":      "Validate SVG against PPT constraints",
+    "total-md-split":         "Split total.md into per-page files",
+    "finalize-svg":           "Post-process SVGs (icons, images, text)",
+    "svg-to-pptx":            "Export SVGs to PPTX",
+    "check-annotations":      "Scan SVGs for edit annotations",
+    "animation-config":       "Create/validate animation configuration",
+    "notes-to-audio":         "Generate per-slide narration audio (TTS)",
+    "pptx-template-import":   "Extract SVG references from PPTX template",
+    "template-fill-pptx":     "Fill content into PPTX template",
+    "svg-editor":             "Launch web-based SVG editor (live preview)",
+    "update-spec":            "Propagate color/font changes to all SVGs",
+    "visual-review":          "Visual review via Playwright (PNG renderer)",
+    "svg-position-calc":      "Chart coordinate calculator",
+    "rotate-images":          "Rotate images (EXIF + manual)",
+    "update-repo":            "Git pull + uv sync repository updater",
+    "generate-examples-index": "Generate examples README index",
+    "batch-validate":         "Batch project validator",
+    "gemini-watermark-remove": "Remove watermarks from Gemini images",
+    "pptx-animations":        "Animation demo and list utilities",
+    "check-deps-sync":        "Verify dependency manifest sync",
+    "pptx-to-svg":            "Convert PPTX to SVG",
+    "error-helper":           "Error explanation lookup",
+    "project-utils":          "Project utility helpers",
+    "config":                 "List canvas formats and color presets",
+    "register-template":      "Register layout template",
+}
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("Usage: ppt-master <command> [args...]")
+        print("\nCommands:")
+        width = max(len(k) for k in COMMANDS) + 2
+        for name in sorted(COMMANDS):
+            desc = COMMAND_DESCRIPTIONS.get(name, "")
+            print(f"  {name:<{width}}{desc}")
+        sys.exit(1)
+
+    cmd = sys.argv[1]
+    args = sys.argv[2:]
+
+    script_rel = COMMANDS.get(cmd)
+    if script_rel is None:
+        print(f"Unknown command: {cmd}")
+        print(f"Run 'ppt-master' without arguments to list commands.")
+        sys.exit(1)
+
+    script_path = os.path.join(SCRIPTS_DIR, script_rel)
+    if not os.path.isfile(script_path):
+        print(f"Script not found: {script_path}")
+        sys.exit(1)
+
+    result = subprocess.run([sys.executable, script_path, *args])
+    sys.exit(result.returncode)
+
+
+if __name__ == "__main__":
+    main()
