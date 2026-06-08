@@ -165,12 +165,6 @@ git commit -m "feat: add unified CLI entry point (cli.py)"
 ```toml
 [tool.uv]
 package = false
-# Keep all three dependency manifests in sync:
-#   1. pyproject.toml (this file)
-#   2. skills/ppt-master/pyproject.toml
-#   3. skills/ppt-master/requirements.txt
-# When any one changes, mirror to the other two and run `uv lock` in both directories:
-#   uv lock && cd skills/ppt-master && uv lock
 ```
 
 替换为：
@@ -180,12 +174,12 @@ package = false
 ppt-master = "cli:main"
 
 [tool.uv]
-# Keep all three dependency manifests in sync:
-#   1. pyproject.toml (this file)
-#   2. skills/ppt-master/pyproject.toml
-#   3. skills/ppt-master/requirements.txt
-# When any one changes, mirror to the other two and run `uv lock` in both directories:
-#   uv lock && cd skills/ppt-master && uv lock
+```
+
+变更完成后运行 `uv lock` 更新锁文件：
+
+```bash
+uv lock
 ```
 
 ## Task 2a: 验证 uvx 构建（早期关卡）
@@ -419,11 +413,18 @@ git commit -m "docs: migrate workflow files from uv run/python3 to uvx"
 - Modify: `skills/ppt-master/scripts/docs/troubleshooting.md`
 - Modify: `skills/ppt-master/scripts/docs/update_spec.md`
 
-- [ ] **Step 1: 批量替换**
+- [ ] **Step 1: 编译前扫描未覆盖文件**
+
+```bash
+rg "uv run.*scripts/" skills/ppt-master/ --files-with-matches
+```
+确认输出列表与下方文件列表一致，如有遗漏补充进去。
+
+- [ ] **Step 2: 批量替换**
 
 对上述文件中所有 `uv run skills/ppt-master/scripts/` 替换为 `uvx ppt-master `。
 
-- [ ] **Step 2: 确认无误并提交**
+- [ ] **Step 3: 确认无误并提交**
 
 ```bash
 git add skills/ppt-master/references/ skills/ppt-master/scripts/docs/
@@ -506,7 +507,7 @@ def derive_command_name(script_path: str) -> str:
 
 def main() -> int:
     scripts = find_scripts_with_main(SCRIPTS_DIR)
-    # Exclude this script itself and utility-only scripts
+    # Exclude this script itself and Flask helper modules (not CLI tools)
     scripts.discard("check_cli_sync.py")
     scripts.discard(os.path.join("svg_editor", "app.py"))
 
