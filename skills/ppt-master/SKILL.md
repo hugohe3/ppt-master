@@ -9,11 +9,7 @@ description: >
 
 # PPT Master Skill
 
-> **Setup:** Run this once before using any command below:
-> ```bash
-> uv sync
-> ```
-> `uvx ppt-master <command>` downloads the tool from PyPI automatically — no manual install needed.
+> **Note:** No setup required — `uvx ppt-master <command>` downloads the tool from PyPI automatically.
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 

@@ -49,8 +49,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 ## Setup
 
 ```bash
-# Install dependencies only (the CLI tool is fetched automatically from PyPI)
-uv sync
+# No setup needed — uvx downloads ppt-master from PyPI automatically
 ```
 
 ## Command Quick Reference
@@ -58,9 +57,6 @@ uv sync
 Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
 
 ```bash
-# Dependency management
-uv sync
-
 # Source content conversion
 uvx ppt-master pdf-to-md <PDF_file>
 uvx ppt-master doc-to-md <DOCX_or_other_file>
