@@ -46,6 +46,13 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 - Do NOT assume generic-project conventions like `.worktrees/`, `tests/`, or mandatory branch setup unless the user explicitly requests them.
 - On conflict with a generic coding skill, prioritize [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) inside this repository.
 
+## Setup
+
+```bash
+# First-time setup: install the CLI tool globally (run once, then available anywhere)
+uv tool install --from . ppt-master
+```
+
 ## Command Quick Reference
 
 Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
@@ -55,33 +62,33 @@ Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](ski
 uv sync
 
 # Source content conversion
-uv run skills/ppt-master/scripts/source_to_md/pdf_to_md.py <PDF_file>
-uv run skills/ppt-master/scripts/source_to_md/doc_to_md.py <DOCX_or_other_file>
-uv run skills/ppt-master/scripts/source_to_md/excel_to_md.py <XLSX_or_XLSM_file>
-uv run skills/ppt-master/scripts/source_to_md/ppt_to_md.py <PPTX_file>
-uv run skills/ppt-master/scripts/source_to_md/web_to_md.py <URL>
+uvx ppt-master pdf-to-md <PDF_file>
+uvx ppt-master doc-to-md <DOCX_or_other_file>
+uvx ppt-master excel-to-md <XLSX_or_XLSM_file>
+uvx ppt-master ppt-to-md <PPTX_file>
+uvx ppt-master web-to-md <URL>
 
 # Project management
-uv run skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
-uv run skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_URLs...> --move
-uv run skills/ppt-master/scripts/project_manager.py validate <project_path>
+uvx ppt-master project init <project_name> --format ppt169
+uvx ppt-master project import-sources <project_path> <source_files_or_URLs...> --move
+uvx ppt-master project validate <project_path>
 
 # Image tools and SVG quality check
-uv run skills/ppt-master/scripts/analyze_images.py <project_path>/images
+uvx ppt-master analyze-images <project_path>/images
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
-uv run skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/image_prompts.json
-uv run skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json
+uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json
+uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
-uv run skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
-uv run skills/ppt-master/scripts/svg_editor/server.py <project_path> --live
-uv run skills/ppt-master/scripts/svg_quality_checker.py <project_path>
-uv run skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
-uv run skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
+uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+uvx ppt-master svg-editor <project_path> --live
+uvx ppt-master svg-quality-check <project_path>
+uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation
+uvx ppt-master animation-config validate <project_path>  # optional, before re-export
 
 # Post-processing pipeline: run sequentially, one command at a time
-uv run skills/ppt-master/scripts/total_md_split.py <project_path>
-uv run skills/ppt-master/scripts/finalize_svg.py <project_path>
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path>
+uvx ppt-master total-md-split <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 # Mergeable dy-stacked paragraph blocks collapse into one editable text frame by default; add --no-merge to keep every line as its own frame (strict line fidelity). See SKILL.md Step 7.3.
 ```
 
