@@ -2,7 +2,7 @@
 name = "ppt-master"
 version = "0.1.0"
 description = "AI-driven multi-format SVG content generation system"
-readme = "README.md"
+readme = "PYPI_README.md"
 license = { text = "MIT" }
 authors = [{ name = "elvisw" }]
 requires-python = ">=3.12"
