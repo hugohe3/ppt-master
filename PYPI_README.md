@@ -1,5 +1,7 @@
 # ppt-master
 
+> Originated by [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
+
 AI-driven PPT generation CLI — convert documents to editable PowerPoint via SVG pipeline.
 
 ## Install
@@ -83,4 +85,4 @@ See `.env.example` in the source repository for all options.
 
 ## License
 
-MIT
+MIT — see [LICENSE](https://github.com/hugohe3/ppt-master/blob/main/LICENSE) in the original repository.
