@@ -79,6 +79,10 @@ OPENAI_API_KEY=sk-xxx
 OPENAI_MODEL=gpt-image-2
 # Optional proxy
 # OPENAI_BASE_URL=http://127.0.0.1:3000/v1
+# OpenAI-compatible provider knobs:
+# OPENAI_SIZE_PRESET=auto
+# OPENAI_RESPONSE_FORMAT=auto
+# OPENAI_QUALITY=auto
 # Allowed values: png / jpeg / webp
 # OPENAI_OUTPUT_FORMAT=png
 # jpeg/webp only, 0-100
@@ -107,6 +111,19 @@ OpenAI backend notes:
 - For `gpt-image-2`, `image_size=512px` means a low-quality draft preset, not a literal 512px edge. The model requires both edges to be multiples of 16px, a long:short ratio no greater than 3:1, and total pixels between 655,360 and 8,294,400.
 - `OPENAI_BACKGROUND=transparent` is not supported by `gpt-image-2`; use `auto` or `opaque`.
 - If `OPENAI_OUTPUT_FORMAT=jpeg` or `webp`, generated files use `.jpg` or `.webp` extensions instead of `.png`.
+- OpenAI-compatible providers that reject OpenAI-specific fields can use `OPENAI_RESPONSE_FORMAT=omit`, `OPENAI_QUALITY=omit`, and `OPENAI_SIZE_PRESET=<preset>`. Valid response formats are `auto`, `b64_json`, `url`, and `omit`; valid size presets are `auto`, `legacy`, `gpt-image`, `gpt-image-2`, and `dall-e-2`.
+
+Example `.env` for Agnes AI through the OpenAI-compatible backend:
+
+```env
+IMAGE_BACKEND=openai
+OPENAI_API_KEY=your-agnes-key
+OPENAI_MODEL=agnes-image-2.1-flash
+OPENAI_BASE_URL=https://apihub.agnes-ai.com/v1
+OPENAI_SIZE_PRESET=gpt-image-2
+OPENAI_RESPONSE_FORMAT=omit
+OPENAI_QUALITY=omit
+```
 
 Use provider-specific keys only (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`). See `.env.example` in clone mode or `${SKILL_DIR}/.env.example` in skill-install mode for the full list per backend.
 

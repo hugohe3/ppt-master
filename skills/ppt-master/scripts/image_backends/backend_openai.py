@@ -9,6 +9,9 @@ Configuration keys:
   OPENAI_API_KEY   (required) API key
   OPENAI_BASE_URL  (optional) Custom API endpoint (e.g. http://127.0.0.1:3000/v1)
   OPENAI_MODEL     (optional) Model name (default: gpt-image-2)
+  OPENAI_SIZE_PRESET         (optional) auto, legacy, gpt-image, gpt-image-2, or dall-e-2
+  OPENAI_RESPONSE_FORMAT     (optional) auto, b64_json, url, or omit
+  OPENAI_QUALITY             (optional) auto, omit, low, medium, high, standard, or hd
   OPENAI_OUTPUT_FORMAT       (optional) png, jpeg, or webp for GPT image models
   OPENAI_OUTPUT_COMPRESSION  (optional) 0-100, only for jpeg/webp GPT image output
   OPENAI_BACKGROUND          (optional) auto or opaque for gpt-image-2
@@ -136,6 +139,25 @@ GPT_IMAGE_OUTPUT_EXTENSIONS = {
     "jpeg": ".jpg",
     "webp": ".webp",
 }
+OPENAI_SIZE_PRESETS = {
+    "auto",
+    "legacy",
+    "gpt-image",
+    "gpt-image-legacy",
+    "gpt-image-2",
+    "dall-e-2",
+    "dalle-2",
+}
+OPENAI_RESPONSE_FORMATS = {"auto", "b64_json", "url", "omit"}
+OPENAI_QUALITY_VALUES = {
+    "auto",
+    "omit",
+    "low",
+    "medium",
+    "high",
+    "standard",
+    "hd",
+}
 GPT_IMAGE_BACKGROUNDS = {"auto", "opaque", "transparent"}
 GPT_IMAGE_MODERATION_VALUES = {"auto", "low"}
 DEFAULT_BASE_URL = "https://api.openai.com/v1"
@@ -194,15 +216,23 @@ def _validate_gpt_image_2_size(size: str) -> None:
         raise ValueError(f"Invalid gpt-image-2 size '{size}': {', '.join(errors)}")
 
 
-def _select_size(model: str, aspect_ratio: str, image_size: str) -> str:
+def _select_size(
+    model: str,
+    aspect_ratio: str,
+    image_size: str,
+    size_preset: str | None = None,
+) -> str:
     """Select a model-compatible size while preserving legacy fallbacks."""
-    if _is_gpt_image_2(model):
+    preset = size_preset or "auto"
+    if preset in {"gpt-image-2"} or (preset == "auto" and _is_gpt_image_2(model)):
         size = GPT_IMAGE_2_SIZES[image_size][aspect_ratio]
         _validate_gpt_image_2_size(size)
         return size
-    if _is_gpt_image_model(model):
+    if preset in {"gpt-image", "gpt-image-legacy"} or (
+        preset == "auto" and _is_gpt_image_model(model)
+    ):
         return GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE[aspect_ratio]
-    if _is_dall_e_2(model):
+    if preset in {"dall-e-2", "dalle-2"} or (preset == "auto" and _is_dall_e_2(model)):
         return DALL_E_2_SIZE_BY_IMAGE_SIZE[image_size]
     return LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE[aspect_ratio]
 
@@ -267,7 +297,42 @@ def _gpt_image_options(model: str) -> tuple[dict, str]:
 
 
 def _image_generations_url(base_url: str | None) -> str:
-    return f"{(base_url or DEFAULT_BASE_URL).rstrip('/')}/images/generations"
+    base = (base_url or DEFAULT_BASE_URL).rstrip("/")
+    if base.endswith("/images/generations"):
+        return base
+    return f"{base}/images/generations"
+
+
+def _read_size_preset() -> str | None:
+    """Read the optional size mapping preset for OpenAI-compatible providers."""
+    return _read_env_choice("OPENAI_SIZE_PRESET", OPENAI_SIZE_PRESETS)
+
+
+def _read_response_format() -> str | None:
+    """Read the optional response_format override."""
+    return _read_env_choice("OPENAI_RESPONSE_FORMAT", OPENAI_RESPONSE_FORMATS)
+
+
+def _read_quality(image_size: str) -> str | None:
+    """Resolve the quality field for OpenAI-compatible requests."""
+    quality = _read_env_choice("OPENAI_QUALITY", OPENAI_QUALITY_VALUES)
+    if quality == "omit":
+        return None
+    if quality and quality != "auto":
+        return quality
+    return IMAGE_SIZE_TO_QUALITY.get(image_size, "auto")
+
+
+def _apply_response_format(request: dict, model: str) -> None:
+    """Apply response_format while preserving the existing default behavior."""
+    response_format = _read_response_format()
+    if response_format == "omit":
+        return
+    if response_format in {"b64_json", "url"}:
+        request["response_format"] = response_format
+        return
+    if _supports_response_format(model):
+        request["response_format"] = "b64_json"
 
 
 def _post_image_generation(api_key: str, base_url: str | None, request: dict) -> dict:
@@ -309,28 +374,38 @@ def _generate_image(api_key: str, prompt: str,
         RuntimeError: When generation fails
     """
     # Map parameters
-    size = _select_size(model, aspect_ratio, image_size)
-    quality = IMAGE_SIZE_TO_QUALITY.get(image_size, "auto")
+    size_preset = _read_size_preset()
+    size = _select_size(model, aspect_ratio, image_size, size_preset)
+    quality = _read_quality(image_size)
     output_ext = ".png"
     request = {
         "prompt": prompt,
         "model": model,
         "size": size,
-        "quality": quality,
         "n": 1,
     }
+    if quality is not None:
+        request["quality"] = quality
     if _is_gpt_image_model(model):
         gpt_options, output_ext = _gpt_image_options(model)
         request.update(gpt_options)
-    elif _supports_response_format(model):
-        request["response_format"] = "b64_json"
+    _apply_response_format(request, model)
 
     mode_label = f"Proxy: {base_url}" if base_url else "OpenAI API"
     print(f"[OpenAI - {mode_label}]")
     print(f"  Model:        {model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Size:         {size} (from aspect_ratio={aspect_ratio})")
-    print(f"  Quality:      {quality} (from image_size={image_size})")
+    if size_preset and size_preset != "auto":
+        print(f"  Size Preset:  {size_preset}")
+    if quality is not None:
+        print(f"  Quality:      {quality} (from image_size={image_size})")
+    else:
+        print("  Quality:      omitted")
+    if request.get("response_format"):
+        print(f"  Response:     {request['response_format']}")
+    elif _read_response_format() == "omit":
+        print("  Response:     omitted")
     if request.get("output_format"):
         print(f"  Format:       {request['output_format']}")
     if request.get("output_compression") is not None:
