@@ -86,16 +86,39 @@ page (it is the page's primary figure).
 
 Native diagrams are resolved at SVG→PPTX conversion time (peer to `<use data-icon>`
 and `<image>`). Executor writes a placeholder rect; the converter splices the
-component in, scaled to the rect.
+component in, scaled to the rect, recolored, and re-fonted to the deck.
 
 > Resolver: [`native_diagram_resolver.py`](../scripts/svg_to_pptx/native_diagram_resolver.py).
 
 ```xml
 <rect data-native-diagram="<key>"
+      data-recolor="558C5A=<spec_lock primary>,122B87=<spec_lock accent>"
+      data-font="<spec_lock typography.font_family — FIRST family only>"
+      data-text='{"0":"<your title>","1":"<your label>", "2":"..."}'
       x=".." y=".." width=".." height=".." fill="none"/>
 ```
 
 - **`data-native-diagram`** = the chosen `<key>` from `page_diagrams`.
+- **`data-font`** (always set it) = the **first family name** from `spec_lock`
+  `typography.font_family` (e.g. `Microsoft YaHei`) — a single typeface, **not** the
+  full CSS stack (`"Microsoft YaHei", Arial, sans-serif`). DrawingML's `typeface`
+  takes one font name; the converter also reduces a stack to its first family as a
+  safety net. Components carry the **source deck's** fonts, and most runs name no
+  typeface and inherit the slide theme — so without this the figure's text renders
+  in a different font than the surrounding SVG text.
+- **`data-recolor`** = remap the diagram's two base hexes (`meta.recolor_base`:
+  `558C5A` primary, `122B87` accent) onto **this deck's** `spec_lock.colors`
+  primary/accent. The 3D shading re-derives from the new base. If the deck has only
+  one accent, map both bases to tints of it. Each side is one 6-digit hex.
+- **`data-text`** (put YOUR content in the figure) = a JSON object
+  `{"<slot_id>": "<text>"}`. **First `read_file templates/native_diagrams/<key>/meta.json`**
+  and look at `text_slots` — each slot is `{id, text}` where `text` is the
+  source's original label (your *hint* for what that slot holds). Slot id is the
+  run's **document order, NOT visual reading order** — so map your content to slot
+  ids by matching the original `text` (e.g. the slot whose original text is the
+  centre label gets your centre label). Provide only the slots you want to change;
+  unprovided slots keep the source text. If a diagram's labels don't all map
+  cleanly, fill what you can and relabel the rest in PowerPoint after export.
 - **Region sizing by `density`**: `high` → near-full-slide (respect canvas margins);
   `medium` → ≥ half-slide; `low` → may be a smaller region. The whole figure
   (including its text) scales to the rect — so do **not** shrink a text-bearing
