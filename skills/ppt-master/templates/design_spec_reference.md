@@ -222,7 +222,11 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 ## VII. Visualization Reference List (if needed)
 
-> When pages map to a chart-library template (data charts OR structural patterns — team rosters, agendas, frameworks, etc.), Strategist lists them here for Executor reference. Single combined table — `summary-quote` column is the anti-fabrication audit, `path` + `usage` columns serve Executor lookup.
+> **Derived from §IX `Treatment`** — collect every page whose Treatment primary is `chart:<key>` or `native:<key>`. This is a record of the per-page Vehicle Decision, not an independent pass.
+>
+> Single combined table — `summary-quote` is the anti-fabrication audit, `path` + `usage` serve Executor lookup. Two row kinds:
+> - **chart** rows — `path` = `templates/charts/<key>.svg`; `summary-quote` verbatim from `charts_index.json`.
+> - **native-diagram** rows — `path` = `templates/native_diagrams/<key>`; `summary-quote` verbatim from `diagrams_index.json` `diagrams.<key>.pick`. (Native picks are a soft cohesion call, not a hard style gate — see `strategist.md` Per-page Vehicle Decision.)
 
 Catalog read: 71 templates
 
@@ -241,6 +245,8 @@ Catalog read: 71 templates
 ---
 
 ## VIII. Image Resource List (if needed)
+
+> **Derived from §IX `Treatment`** — collect every page that has an `image:<file>` in its Treatment (hero backdrop or local region). A record of the per-page Vehicle Decision, not an independent pass.
 
 | Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
 | -------- | --------- | ----- | ------- | ---- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
@@ -304,13 +310,16 @@ Catalog read: 71 templates
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
 - **Title**: [Page title]
 - **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
-- **Visualization**: [visualization_type] (see VII. Visualization Reference List)
-- **Content**: write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes; blocks still sit under the core message, never replace it:
+- **Treatment**: [the page's vehicle stack — the per-page decision from `strategist.md` "Per-page Vehicle Decision". Primary body = `free-svg` | `chart:<key>` | `native:<key>` | `image:<file>(hero_page)`; optional backdrop `image:<file>(local)`; overlay is always SVG (title / text / cards / icons). One stack per page.]
+- **Visualization**: [visualization_type] (see VII; present only when Treatment primary is `chart:` / `native:`)
+- **Content** (instantiates the core message — blocks sit under the one assertion above, never replace it): write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes:
   - [a connected sentence or two that argues the point]
   - [parallel fragment] · [parallel fragment] · [parallel fragment]
   - [label] / [label] / [label]
 
-> **Visualization field**: add only when the page has data visualization or structured infographic elements. Type must be listed in §VII.
+> **Treatment is the decision; §VII and §VIII are its collected records.** Every page has a Treatment. §VII Visualization List = all pages whose Treatment primary is `chart:` / `native:`; §VIII Image List = all pages with an `image:` in their Treatment. Fill Treatment per page first, then collect §VII / §VIII from them — do not fill §VII / §VIII as independent passes.
+>
+> **Visualization field**: add only when Treatment routes the page to `chart:` / `native:`. Type must be listed in §VII.
 
 ---
 
