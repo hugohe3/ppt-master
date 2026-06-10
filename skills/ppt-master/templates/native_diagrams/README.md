@@ -139,15 +139,10 @@ placeholder rect and optionally recolored to the deck palette:
 
 ## 扁平政企/商务版式素材（flat collection · style=flat）
 
-> 从临港参考件与通用模板提取，补 `solid3d_*`（3D）之外的**扁平商务版式**，适用更多 PPT 场景。均原生可编辑：`data-recolor` 把 `meta.recolor_base` 主色映射到本 deck 主/辅色（紫=5D3AAE、蓝=0268FE、临港=蓝系 → 换成 #005792/#2F9A47），`data-text` 按 `meta.text_slots` 换内容。
+> 补 `solid3d_*`（3D）之外的**扁平商务版式**，适用更多 PPT 场景。均原生可编辑：`data-recolor` 把 `meta.recolor_base` 主色映射到本 deck 主/辅色，`data-text` 按 `meta.text_slots` 换内容。
 
 | key | 类型 | 来源 | 用途 |
 |-----|------|------|------|
-| `linggang_lowcost_cards` | 渐变标题卡网格 | 母版 s17 | 序号+渐变标题栏+chip 的多卡（能力/模式/价值卡页）|
-| `linggang_layered_stack` | 分层架构栈 | 全业务 s33 | 左轴层级 + 横向能力层 + chip（N 层体系）|
-| `linggang_ring_platform` | 环形平台架构 | 母版 s13 | 中心环 + 环绕卡 + 底座条（平台/架构总览）|
-| `linggang_dualpole_compare` | 双极对比 | 解决方案 s9 | 双圆 + 双向箭头 + 子 chip（两侧能力对比）|
-| `linggang_step_process` | 横向多步流程 | 模型应用 s21 | Step1-N 流程卡（交付/方法论）|
 | `tpl_model_spheres` | 多节点模型 | 紫模板 s96 | N 大渐变球 + 标签 + 要点列（阶段/能力模型）|
 | `tpl_concentric_nodes` | 同心环节点 | 紫模板 s89 | N 个同心环圆 + 图标 + 描述（并列引擎/支柱）|
 | `tpl_radial_ecosystem` | 中心辐射生态 | 紫模板 s62 | 中心主体 + N 放射节点 + 同心底盘（生态/覆盖）|

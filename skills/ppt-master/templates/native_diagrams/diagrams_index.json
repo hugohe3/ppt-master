@@ -9,7 +9,7 @@
     },
     "select_by": "content relationship (type/use) x item count (slots) x content-per-slot (holds); place full-slide or as a region within the density limit.",
     "conf_note": "type = visual pass (reliable); slots = coarse range; refine during curation. conf: high = studied/unambiguous, approx = contact-sheet read.",
-    "flat_collection_note": "`linggang_*` 与 `tpl_*` 为扁平政企/商务版式素材（从临港参考件与通用模板提取），与 solid3d_* 的 3D 图示互补；style=flat。recolor_base 为该素材主色，占位符里映射到 deck 主/辅色。"
+    "flat_collection_note": "`tpl_*` 为扁平政企/商务版式素材，与 solid3d_* 的 3D 图示互补；style=flat。recolor_base 为该素材主色，占位符里映射到 deck 主/辅色。"
   },
   "diagrams": {
     "combo_product_system": {
@@ -781,62 +781,6 @@
       "motif": "mixed",
       "subform": "house/temple (roof-pillars-base)"
     },
-    "linggang_layered_stack": {
-      "summary": "左轴层级标签 + 横向能力层条 + chip 的扁平分层架构；任意「N 层能力 / 产品 / 价值体系」。",
-      "type": "layered-architecture",
-      "style": "flat",
-      "source": "临港算力全业务服务能力介绍20260325（基因红）",
-      "recolor_base": [
-        "4874CB",
-        "C00000"
-      ],
-      "slots": 103,
-      "shape_count": 64,
-      "media": false,
-      "selectable": true
-    },
-    "linggang_ring_platform": {
-      "summary": "中心环（标准化产品 / API）+ 环绕能力卡 + 底座平台条；平台 / 架构总览页。",
-      "type": "hub-ring",
-      "style": "flat",
-      "source": "临港算力-智算运营服务平台介绍20260601",
-      "recolor_base": [
-        "3045A6",
-        "0069B0"
-      ],
-      "slots": 107,
-      "shape_count": 116,
-      "media": false,
-      "selectable": true
-    },
-    "linggang_dualpole_compare": {
-      "summary": "双圆能力极 + 双向箭头（分层调用 / 能力同步）+ 子能力 chip；两侧能力对比。",
-      "type": "bowtie-dual",
-      "style": "flat",
-      "source": "临港算力介绍-算力产品解决方案(1)",
-      "recolor_base": [
-        "4472C4",
-        "1C4798"
-      ],
-      "slots": 55,
-      "shape_count": 63,
-      "media": true,
-      "selectable": true
-    },
-    "linggang_step_process": {
-      "summary": "横向多步（Step1-N）流程卡；交付流程 / 方法论阶段。",
-      "type": "process-flow",
-      "style": "flat",
-      "source": "临港算力介绍-智算业务-模型应用服务",
-      "recolor_base": [
-        "4472C4",
-        "1D499D"
-      ],
-      "slots": 75,
-      "shape_count": 74,
-      "media": true,
-      "selectable": true
-    },
     "tpl_model_spheres": {
       "summary": "N 个大渐变球 + 胶囊标签 + 要点列 + 底部小结；阶段 / 能力模型（如 AIAS）。",
       "type": "framework-model",
@@ -1020,20 +964,6 @@
       "slots": 38,
       "shape_count": 41,
       "media": true,
-      "selectable": true
-    },
-    "linggang_lowcost_cards": {
-      "summary": "临港母版·低成本算力 5-card row — gradient-header cards (deep-blue→blue band, white title) + serial + sub-title + desc + gradient chips. Premium business card material, recolor+text-slot reusable.",
-      "type": "card-grid",
-      "style": "flat",
-      "source": "临港算力-智算运营服务平台介绍20260601.pptx",
-      "recolor_base": [
-        "94A3B8",
-        "265DCC"
-      ],
-      "slots": 92,
-      "shape_count": 56,
-      "media": false,
       "selectable": true
     }
   }

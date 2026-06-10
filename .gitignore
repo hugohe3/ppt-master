@@ -179,6 +179,9 @@ yarn.lock
 TODO.md
 PERSONAL_NOTES.md
 
+# Private / client-derived native-diagram components — keep on disk, out of git
+skills/ppt-master/templates/native_diagrams/linggang_*/
+
 # Projects directory - Work-in-progress projects (not version controlled)
 # Completed projects should be moved to examples/
 # Use cloud sync (iCloud/Dropbox) for backup and multi-device access

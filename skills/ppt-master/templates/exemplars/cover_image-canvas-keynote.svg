@@ -23,23 +23,23 @@
   <g id="eyebrow-chip">
     <rect x="64" y="56" width="248" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.82" stroke="#C5DCEE" stroke-width="1" filter="url(#chipShadow)"/>
     <circle cx="86" cy="73" r="4" fill="#2F9A47"/>
-    <text x="100" y="78" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.5" fill="#003D66">中国电信 · 临港算力</text>
+    <text x="100" y="78" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.5" fill="#003D66">品牌 · 子品牌</text>
   </g>
 
   <g id="cover-title">
-    <text x="64" y="368" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#005792">智算运营 · INTELLIGENT COMPUTE OPERATIONS</text>
-    <text x="61" y="438" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="58" font-weight="700" letter-spacing="-1.4" fill="#003D66">智算运营服务平台</text>
+    <text x="64" y="368" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#005792">产品系列 · PRODUCT CATEGORY</text>
+    <text x="61" y="438" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="58" font-weight="700" letter-spacing="-1.4" fill="#003D66">主标题 · 产品名称</text>
     <rect x="64" y="458" width="96" height="6" rx="3" fill="url(#gradBrand)"/>
-    <text x="64" y="510" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="24" font-weight="400" letter-spacing="-0.4" fill="#3A7FAF">让算力的<tspan fill="#2F9A47" font-weight="700">利用率、效率、性价比</tspan>，都做到最优</text>
-    <text x="64" y="544" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="400" fill="#5A6B7B">以行业场景化的业务模式 —— 把别家的「三低」，翻成临港的「三优」</text>
+    <text x="64" y="510" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="24" font-weight="400" letter-spacing="-0.4" fill="#3A7FAF">一句话价值主张，<tspan fill="#2F9A47" font-weight="700">三个核心收益</tspan>写在这里</text>
+    <text x="64" y="544" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="400" fill="#5A6B7B">支撑这句主张的方法或差异点 —— 一行说清</text>
   </g>
 
   <g id="feature-chips">
     <rect x="64" y="636" width="186" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.82" stroke="#C5DCEE" stroke-width="1" filter="url(#chipShadow)"/>
-    <circle cx="88" cy="656" r="4" fill="#005792"/><text x="102" y="661" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#003D66">场景化业务模式</text>
+    <circle cx="88" cy="656" r="4" fill="#005792"/><text x="102" y="661" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#003D66">核心卖点一</text>
     <rect x="262" y="636" width="160" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.82" stroke="#C5DCEE" stroke-width="1" filter="url(#chipShadow)"/>
-    <circle cx="286" cy="656" r="4" fill="#2F9A47"/><text x="300" y="661" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#003D66">三优 + 合规</text>
+    <circle cx="286" cy="656" r="4" fill="#2F9A47"/><text x="300" y="661" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#003D66">核心卖点二</text>
     <rect x="434" y="636" width="232" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.82" stroke="#C5DCEE" stroke-width="1" filter="url(#chipShadow)"/>
-    <circle cx="458" cy="656" r="4" fill="#005792"/><text x="472" y="661" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#003D66">一账户 · 1/8 卡 → 万卡</text>
+    <circle cx="458" cy="656" r="4" fill="#005792"/><text x="472" y="661" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#003D66">关键指标 · 区间</text>
   </g>
 </svg>
