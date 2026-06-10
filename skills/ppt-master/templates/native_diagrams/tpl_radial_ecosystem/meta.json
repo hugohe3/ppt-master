@@ -1,0 +1,75 @@
+{
+  "key": "tpl_radial_ecosystem",
+  "title": "智慧云",
+  "source": "紫色主题ppt.pptx",
+  "slide_num": 62,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 40,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 251,
+    "colors_unresolved": 0,
+    "fonts": 224
+  },
+  "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "医疗健康"
+    },
+    {
+      "id": 1,
+      "text": "智慧云"
+    },
+    {
+      "id": 2,
+      "text": "数字政府"
+    },
+    {
+      "id": 3,
+      "text": "文旅"
+    },
+    {
+      "id": 4,
+      "text": "金融"
+    },
+    {
+      "id": 5,
+      "text": "能源"
+    },
+    {
+      "id": 6,
+      "text": "新零售"
+    },
+    {
+      "id": 7,
+      "text": "交通物流"
+    },
+    {
+      "id": 8,
+      "text": "教育"
+    },
+    {
+      "id": 9,
+      "text": "智慧云"
+    },
+    {
+      "id": 10,
+      "text": "100+"
+    },
+    {
+      "id": 11,
+      "text": "解决方案，打造重点行业标杆"
+    }
+  ],
+  "summary": "中心主体 + N 个放射行业 / 能力节点（连线 + 图标圆）+ 同心底盘；生态 / 覆盖图。",
+  "type": "hub-spoke",
+  "style": "flat",
+  "recolor_base": [
+    "5D3AAE"
+  ]
+}

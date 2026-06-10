@@ -1,0 +1,184 @@
+{
+  "key": "tpl_venn_3circle",
+  "title": "顾客",
+  "source": "【蓝色版】年终日常汇报PPT模板-狗哥PPT出品.pptx",
+  "slide_num": 125,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 41,
+  "media": {
+    "rId5": "media/image1.jpg",
+    "rId6": "media/image35.png",
+    "rId7": "media/image37.png"
+  },
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 242,
+    "colors_unresolved": 0,
+    "fonts": 20
+  },
+  "foreign_rels_stripped": 2,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "3C"
+    },
+    {
+      "id": 1,
+      "text": "思维分析公司战略可行性"
+    },
+    {
+      "id": 2,
+      "text": "3C"
+    },
+    {
+      "id": 3,
+      "text": "战略思维"
+    },
+    {
+      "id": 4,
+      "text": "C32"
+    },
+    {
+      "id": 5,
+      "text": "狗哥在做"
+    },
+    {
+      "id": 6,
+      "text": "PPT"
+    },
+    {
+      "id": 7,
+      "text": "出品"
+    },
+    {
+      "id": 8,
+      "text": "CUSTOMER"
+    },
+    {
+      "id": 9,
+      "text": "顾客"
+    },
+    {
+      "id": 10,
+      "text": "COMPANY"
+    },
+    {
+      "id": 11,
+      "text": "公司"
+    },
+    {
+      "id": 12,
+      "text": "COMPETITOR"
+    },
+    {
+      "id": 13,
+      "text": "竞争对手"
+    },
+    {
+      "id": 14,
+      "text": "3C"
+    },
+    {
+      "id": 15,
+      "text": "分析"
+    },
+    {
+      "id": 16,
+      "text": "顾客"
+    },
+    {
+      "id": 17,
+      "text": "男性"
+    },
+    {
+      "id": 18,
+      "text": "22"
+    },
+    {
+      "id": 19,
+      "text": "岁"
+    },
+    {
+      "id": 20,
+      "text": "大学生"
+    },
+    {
+      "id": 21,
+      "text": "女性"
+    },
+    {
+      "id": 22,
+      "text": "28"
+    },
+    {
+      "id": 23,
+      "text": "岁"
+    },
+    {
+      "id": 24,
+      "text": "城市中心工作"
+    },
+    {
+      "id": 25,
+      "text": "CUSTOMER"
+    },
+    {
+      "id": 26,
+      "text": "关注时尚"
+    },
+    {
+      "id": 27,
+      "text": "追求个性"
+    },
+    {
+      "id": 28,
+      "text": "品牌与品质"
+    },
+    {
+      "id": 29,
+      "text": "时尚潮流"
+    },
+    {
+      "id": 30,
+      "text": "公司"
+    },
+    {
+      "id": 31,
+      "text": "COMPANY"
+    },
+    {
+      "id": 32,
+      "text": "专注于生产环保友好的高品质衣服。在市场上树立独特的形象。"
+    },
+    {
+      "id": 33,
+      "text": "高品质"
+    },
+    {
+      "id": 34,
+      "text": "环保友好"
+    },
+    {
+      "id": 35,
+      "text": "竞争对手"
+    },
+    {
+      "id": 36,
+      "text": "COMPETITOR"
+    },
+    {
+      "id": 37,
+      "text": "传统的时尚品牌、快时尚品牌以及其他专注于环保的品牌。这些竞争者可能采取不同的推广策略和定价策略来吸引顾客。"
+    }
+  ],
+  "summary": "3 圆交叠框架（3C 顾客/公司/竞争 等）+ 侧解读卡；三要素分析。",
+  "type": "venn-3",
+  "style": "flat",
+  "recolor_base": [
+    "0268FE",
+    "014EBF"
+  ]
+}

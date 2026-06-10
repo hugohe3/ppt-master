@@ -1,0 +1,159 @@
+{
+  "key": "tpl_model_spheres",
+  "title": "A",
+  "source": "紫色主题ppt.pptx",
+  "slide_num": 96,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 38,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 106,
+    "colors_unresolved": 0,
+    "fonts": 34
+  },
+  "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "品牌营销"
+    },
+    {
+      "id": 1,
+      "text": "AIAS"
+    },
+    {
+      "id": 2,
+      "text": "模型"
+    },
+    {
+      "id": 3,
+      "text": "A"
+    },
+    {
+      "id": 4,
+      "text": "认知"
+    },
+    {
+      "id": 5,
+      "text": "I"
+    },
+    {
+      "id": 6,
+      "text": "体验"
+    },
+    {
+      "id": 7,
+      "text": "A"
+    },
+    {
+      "id": 8,
+      "text": "行动"
+    },
+    {
+      "id": 9,
+      "text": "S"
+    },
+    {
+      "id": 10,
+      "text": "口碑"
+    },
+    {
+      "id": 11,
+      "text": "真实覆盖"
+    },
+    {
+      "id": 12,
+      "text": "社交裂变"
+    },
+    {
+      "id": 13,
+      "text": "即时转化"
+    },
+    {
+      "id": 14,
+      "text": "KOC"
+    },
+    {
+      "id": 15,
+      "text": "品牌号"
+    },
+    {
+      "id": 16,
+      "text": "挑战赛"
+    },
+    {
+      "id": 17,
+      "text": "快接单"
+    },
+    {
+      "id": 18,
+      "text": "魔法表情"
+    },
+    {
+      "id": 19,
+      "text": "品牌开屏"
+    },
+    {
+      "id": 20,
+      "text": "视频播放页广告"
+    },
+    {
+      "id": 21,
+      "text": "信息流"
+    },
+    {
+      "id": 22,
+      "text": "快捷单"
+    },
+    {
+      "id": 23,
+      "text": "去看看"
+    },
+    {
+      "id": 24,
+      "text": "即视频"
+    },
+    {
+      "id": 25,
+      "text": "小黄车"
+    },
+    {
+      "id": 26,
+      "text": "评论区"
+    },
+    {
+      "id": 27,
+      "text": "持续"
+    },
+    {
+      "id": 28,
+      "text": "搜索矩阵"
+    },
+    {
+      "id": 29,
+      "text": "触达、高频、真实"
+    },
+    {
+      "id": 30,
+      "text": "有感、有趣、有用"
+    },
+    {
+      "id": 31,
+      "text": "所见即所得、沉浸触点"
+    },
+    {
+      "id": 32,
+      "text": "持续、人格化"
+    }
+  ],
+  "summary": "N 个大渐变球 + 胶囊标签 + 要点列 + 底部小结；阶段 / 能力模型（如 AIAS）。",
+  "type": "framework-model",
+  "style": "flat",
+  "recolor_base": [
+    "5D3AAE"
+  ]
+}

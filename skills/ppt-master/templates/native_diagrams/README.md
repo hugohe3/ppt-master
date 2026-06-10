@@ -134,3 +134,40 @@ placeholder rect and optionally recolored to the deck palette:
   pipeline; this library is for reusing exact pre-designed diagrams.
 - SVG-blip images (`<asvg:svgBlip>`) are uncommon in diagram packs; PNG/JPEG media
   are fully supported.
+
+---
+
+## 扁平政企/商务版式素材（flat collection · style=flat）
+
+> 从临港参考件与通用模板提取，补 `solid3d_*`（3D）之外的**扁平商务版式**，适用更多 PPT 场景。均原生可编辑：`data-recolor` 把 `meta.recolor_base` 主色映射到本 deck 主/辅色（紫=5D3AAE、蓝=0268FE、临港=蓝系 → 换成 #005792/#2F9A47），`data-text` 按 `meta.text_slots` 换内容。
+
+| key | 类型 | 来源 | 用途 |
+|-----|------|------|------|
+| `linggang_lowcost_cards` | 渐变标题卡网格 | 母版 s17 | 序号+渐变标题栏+chip 的多卡（能力/模式/价值卡页）|
+| `linggang_layered_stack` | 分层架构栈 | 全业务 s33 | 左轴层级 + 横向能力层 + chip（N 层体系）|
+| `linggang_ring_platform` | 环形平台架构 | 母版 s13 | 中心环 + 环绕卡 + 底座条（平台/架构总览）|
+| `linggang_dualpole_compare` | 双极对比 | 解决方案 s9 | 双圆 + 双向箭头 + 子 chip（两侧能力对比）|
+| `linggang_step_process` | 横向多步流程 | 模型应用 s21 | Step1-N 流程卡（交付/方法论）|
+| `tpl_model_spheres` | 多节点模型 | 紫模板 s96 | N 大渐变球 + 标签 + 要点列（阶段/能力模型）|
+| `tpl_concentric_nodes` | 同心环节点 | 紫模板 s89 | N 个同心环圆 + 图标 + 描述（并列引擎/支柱）|
+| `tpl_radial_ecosystem` | 中心辐射生态 | 紫模板 s62 | 中心主体 + N 放射节点 + 同心底盘（生态/覆盖）|
+| `tpl_timeline_arrow` | 箭头时间轴 | 紫模板 s120 | 横向箭头 + 上下年节点（历程/路线图）|
+| `tpl_snake_flow` | 蜿蜒长流程 | 紫模板 s73 | 6-10 步节点气泡连线 + 注释 |
+| `tpl_dual_circle_radiate` | 双圆放射对比 | 蓝模板 s148 | 双大圆 + 01-N 放射要点 + 中心位（双主体目标/对比）|
+| `tpl_beforeafter_flow` | 前后/问题-改进流 | 蓝模板 s21 | 横向大箭头 现状→改进 + 双侧 pill 要点 |
+| `tpl_plan_circles` | 计划列表 + 支持圆 | 蓝模板 s24 | 编号计划列表 + 右侧 chip + 4 圆要素（工作计划页）|
+
+> 含 `media:true` 的素材（dualpole / step / 双圆 / 前后流 / plan）带少量位图图标，已随组件复制到各自 `media/`。
+
+### 第二批补充（矩阵 / 漏斗 / 进度 / 数据墙）
+
+| key | 类型 | 来源 | 用途 |
+|-----|------|------|------|
+| `tpl_swot_quadrant` | SWOT 四象限 | 蓝模板 s111 | 优势/劣势/机会/威胁 + 中心 SWOT 圆（命名四象限）|
+| `tpl_matrix_2x2` | 2×2 坐标矩阵 | 蓝模板 s118 | 双轴象限（重要/紧急等）+ 每格要点（优先级/定位）|
+| `tpl_funnel_bowtie` | 蝴蝶结漏斗 | 蓝模板 s107 | 多段全流程漏斗（获客→转化→复利）+ chip |
+| `tpl_gantt_schedule` | 甘特进度表 | 紫模板 s71 | 任务 × 月份 渐变进度条（项目排期）|
+| `tpl_kpi_podium` | 大数字数据墙 | 紫模板 s110 | N 个 图标+大数字+标签 立体卡（数据概览）|
+| `tpl_venn_3circle` | 3 圆交叠框架 | 蓝模板 s125 | 3C/三要素交叠 + 侧解读卡 |
+
+> 未收（两份模板无干净版式，且易手画/图表模板已覆盖）：定价对比列（用 charts `comparison_columns`）、扁平金字塔（用 charts `pyramid_chart` 或 3D 库）、纯目录/章节封面（deck 专属，手画）。

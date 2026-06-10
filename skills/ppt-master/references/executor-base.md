@@ -83,6 +83,8 @@ Before generating each page, output which template is used:
 
 Before the first SVG page, output a confirmation listing: canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan. Prevents spec/execution drift.
 
+> **Mandatory visual standard** — also internalize [`docs/zh/visual-design-paradigm.md`](../../../docs/zh/visual-design-paradigm.md): §1 scoring rubric, §2–§10 type/color/grid/depth/data-viz systems, **§11 component anatomy** (card visual-weight-single rule, no decorative serial numbers, no empty meta-labels, icon-text optical alignment, takeaway-must-be-anchored, image-canvas keynote rules), and **§12 the pre-export visual-QA checklist**. Run the §12 checklist as the *visual* gate immediately before the technical `svg_quality_checker.py` gate. This is what separates "information-correct but bland" from premium.
+
 ### 2.1 Per-page spec_lock re-read (Mandatory)
 
 > Long decks drift off the declared palette/icons mid-deck due to context compression. `spec_lock.md` is the canonical execution reference — re-read it per page to bypass model memory.

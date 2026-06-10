@@ -1,0 +1,107 @@
+{
+  "key": "tpl_snake_flow",
+  "title": "检验检疫证单签发流程及注意事项",
+  "source": "紫色主题ppt.pptx",
+  "slide_num": 73,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 21,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 264,
+    "colors_unresolved": 0,
+    "fonts": 18
+  },
+  "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "检验检疫证单签发流程及注意事项"
+    },
+    {
+      "id": 1,
+      "text": "B5-1"
+    },
+    {
+      "id": 2,
+      "text": "入境货物检验检疫证明"
+    },
+    {
+      "id": 3,
+      "text": "植物检疫证书"
+    },
+    {
+      "id": 4,
+      "text": "出口证书发货人出具中间商"
+    },
+    {
+      "id": 5,
+      "text": "出口证书收货人出具第三方"
+    },
+    {
+      "id": 6,
+      "text": "丢失检验检疫证单声明作废问题"
+    },
+    {
+      "id": 7,
+      "text": "B4-2"
+    },
+    {
+      "id": 8,
+      "text": "检验检疫处理通知书"
+    },
+    {
+      "id": 9,
+      "text": "通用模板的问题"
+    },
+    {
+      "id": 10,
+      "text": "台湾称谓"
+    },
+    {
+      "id": 11,
+      "text": "入境食品收货人填制实际进口商"
+    },
+    {
+      "id": 12,
+      "text": "拟制证稿"
+    },
+    {
+      "id": 13,
+      "text": "发证"
+    },
+    {
+      "id": 14,
+      "text": "签署"
+    },
+    {
+      "id": 15,
+      "text": "复审证稿"
+    },
+    {
+      "id": 16,
+      "text": "缮制证单"
+    },
+    {
+      "id": 17,
+      "text": "审校"
+    },
+    {
+      "id": 18,
+      "text": "审签证稿"
+    },
+    {
+      "id": 19,
+      "text": "盖章"
+    }
+  ],
+  "summary": "蜿蜒多步流程（节点气泡 + 连线）+ 底部注释；6-10 步长流程。",
+  "type": "snake-flow",
+  "style": "flat",
+  "recolor_base": [
+    "5D3AAE"
+  ]
+}

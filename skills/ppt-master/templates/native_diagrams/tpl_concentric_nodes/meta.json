@@ -1,0 +1,79 @@
+{
+  "key": "tpl_concentric_nodes",
+  "title": "推荐",
+  "source": "紫色主题ppt.pptx",
+  "slide_num": 89,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 13,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 222,
+    "colors_unresolved": 0,
+    "fonts": 738
+  },
+  "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "推荐"
+    },
+    {
+      "id": 1,
+      "text": "+"
+    },
+    {
+      "id": 2,
+      "text": "社交"
+    },
+    {
+      "id": 3,
+      "text": "+"
+    },
+    {
+      "id": 4,
+      "text": "搜索，三⼤引擎强驱动"
+    },
+    {
+      "id": 5,
+      "text": "基于全网最大的用户画像数据，通过天量引擎进行用户画像融合、多端消费联动、内容智能匹配，发挥关键词定向能力，精准定投相关页面中的广告位。"
+    },
+    {
+      "id": 6,
+      "text": "推荐"
+    },
+    {
+      "id": 7,
+      "text": "帮助信息流走出信息茧房。每次搜索行为，都能帮助信息流了解用户的最新兴趣，以及其他感兴趣的内容。"
+    },
+    {
+      "id": 8,
+      "text": "搜索"
+    },
+    {
+      "id": 9,
+      "text": "依托"
+    },
+    {
+      "id": 10,
+      "text": "QQ"
+    },
+    {
+      "id": 11,
+      "text": "、微信的强社交属性，可分享传播，挖掘用户的潜在需求，带来额外的传播效果，并形成品牌与消费者沟通的渠道。"
+    },
+    {
+      "id": 12,
+      "text": "社交"
+    }
+  ],
+  "summary": "N 个同心环圆 + 图标 + 描述；并列引擎 / 支柱 / 能力。",
+  "type": "framework",
+  "style": "flat",
+  "recolor_base": [
+    "5D3AAE"
+  ]
+}

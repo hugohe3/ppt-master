@@ -553,6 +553,7 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 
 | Resource | Path |
 |----------|------|
+| **Visual design & layout spec** (high-end rubric + type/color/grid/depth/data-viz systems + component anatomy + pre-export visual-QA checklist) | `docs/zh/visual-design-paradigm.md` — Executor internalizes before authoring; run its §12 checklist before the quality gate |
 | Shared technical constraints | `references/shared-standards.md` |
 | Canvas format specification | `references/canvas-formats.md` |
 | Image-text layout patterns (Primary structures + Modifier layers — combine freely) | `references/image-layout-patterns.md` |

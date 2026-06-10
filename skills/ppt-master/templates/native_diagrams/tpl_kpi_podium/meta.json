@@ -1,0 +1,127 @@
+{
+  "key": "tpl_kpi_podium",
+  "title": "35",
+  "source": "紫色主题ppt.pptx",
+  "slide_num": 110,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 26,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 199,
+    "colors_unresolved": 0,
+    "fonts": 56
+  },
+  "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "百度贴吧平台分析"
+    },
+    {
+      "id": 1,
+      "text": "35"
+    },
+    {
+      "id": 2,
+      "text": "每日浏览量"
+    },
+    {
+      "id": 3,
+      "text": "亿"
+    },
+    {
+      "id": 4,
+      "text": "800"
+    },
+    {
+      "id": 5,
+      "text": "帖子"
+    },
+    {
+      "id": 6,
+      "text": "亿"
+    },
+    {
+      "id": 7,
+      "text": "70"
+    },
+    {
+      "id": 8,
+      "text": "90"
+    },
+    {
+      "id": 9,
+      "text": "后用户"
+    },
+    {
+      "id": 10,
+      "text": "%"
+    },
+    {
+      "id": 11,
+      "text": "2200"
+    },
+    {
+      "id": 12,
+      "text": "兴趣吧"
+    },
+    {
+      "id": 13,
+      "text": "万"
+    },
+    {
+      "id": 14,
+      "text": "15"
+    },
+    {
+      "id": 15,
+      "text": "注册用户"
+    },
+    {
+      "id": 16,
+      "text": "亿"
+    },
+    {
+      "id": 17,
+      "text": "庞大的"
+    },
+    {
+      "id": 18,
+      "text": "ACGN"
+    },
+    {
+      "id": 19,
+      "text": "用户基数"
+    },
+    {
+      "id": 20,
+      "text": "全球最大的中文社区"
+    },
+    {
+      "id": 21,
+      "text": "数据来源："
+    },
+    {
+      "id": 22,
+      "text": "Tech星球"
+    },
+    {
+      "id": 23,
+      "text": "2019"
+    },
+    {
+      "id": 24,
+      "text": "数据"
+    }
+  ],
+  "summary": "N 个大数字 KPI 卡（图标+数字+标签）立于等距底座 + 底部 pill；数据概览/平台数据墙。",
+  "type": "kpi-wall",
+  "style": "flat",
+  "recolor_base": [
+    "5D3AAE"
+  ]
+}
