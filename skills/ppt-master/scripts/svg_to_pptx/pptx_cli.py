@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import json
 import shutil
 import argparse
 from datetime import datetime
@@ -154,13 +155,14 @@ Recorded narration:
                             help='Only generate one version: native (editable shapes) or legacy (SVG image)')
     mode_group.add_argument('--native', action='store_true', default=False,
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
-    parser.add_argument('--merge-paragraphs', action='store_true', default=False,
-                        help='Opt-in: merge mergeable paragraph blocks (same x, dy clustered '
-                             'around one base line-height) into a single editable text frame '
-                             'with multiple <a:p>. Improves editability of paragraph text in '
-                             'PowerPoint (one textbox per paragraph instead of per line) at '
-                             'the cost of strict SVG line layout fidelity — PowerPoint re-wraps '
-                             'merged paragraphs to fit the box width. Off by default.')
+    merge_group = parser.add_mutually_exclusive_group()
+    merge_group.add_argument('--merge-paragraphs', action='store_true', dest='merge_paragraphs',
+                             help='Compatibility no-op: mergeable paragraph blocks are merged '
+                                  'by default.')
+    merge_group.add_argument('--no-merge', action='store_false', dest='merge_paragraphs',
+                             help='Disable paragraph merging. Every dy-stacked line becomes '
+                                  'its own text frame for strict SVG line-layout fidelity.')
+    parser.set_defaults(merge_paragraphs=True)
     parser.add_argument('--conversion-trace', action='store_true', default=False,
                         help='Write a JSON diagnostics report next to the native PPTX '
                              '(<output>.trace.json). Records per-slide SVG element '
@@ -484,8 +486,26 @@ Recorded narration:
 
     # svg_files is per-product (native vs legacy may now read different
     # directories); everything else is shared.
+    # Optional per-project document properties. Absent file → factual fields
+    # are still stamped at export; only the authored fields stay blank.
+    doc_metadata = None
+    metadata_path = project_path / 'metadata.json'
+    if metadata_path.is_file():
+        try:
+            loaded = json.loads(metadata_path.read_text(encoding='utf-8'))
+        except (json.JSONDecodeError, OSError) as exc:
+            print(f"  [warn] metadata.json ignored ({exc})", file=sys.stderr)
+        else:
+            if isinstance(loaded, dict):
+                doc_metadata = loaded
+                if verbose:
+                    print(f"  Document properties: metadata.json ({len(loaded)} field(s))")
+            else:
+                print("  [warn] metadata.json ignored (top level is not an object)", file=sys.stderr)
+
     shared_kwargs = dict(
         canvas_format=canvas_format,
+        doc_metadata=doc_metadata,
         verbose=verbose,
         transition=transition,
         transition_duration=transition_duration,

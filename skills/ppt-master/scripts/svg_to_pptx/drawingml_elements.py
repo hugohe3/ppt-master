@@ -1050,7 +1050,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # <a:p> so the paragraph survives as a single editable text frame.
     # Per-line data-paragraph-space-before encodes paragraph gaps (extra dy
     # above the base line-height) for the corresponding <a:p>.
-    # Paragraph mode is opt-in via ctx.merge_paragraphs. When off, ignore
+    # Paragraph mode is controlled by ctx.merge_paragraphs. When off, ignore
     # any data-paragraph-* markers and fall through to the original
     # one-text-per-tspan path so the SVG's pixel layout is preserved.
     line_height_attr = elem.get('data-paragraph-line-height') if ctx.merge_paragraphs else None
@@ -1083,12 +1083,21 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             )
             soft_break = child.get('data-paragraph-soft-break') == '1'
             if soft_break and paragraph_runs:
-                # Append to the previous paragraph. Ensure a space joins the
-                # two segments (SVG used a dy line-break, not punctuation).
+                # Append to the previous paragraph. A Latin line-wrap needs a
+                # space to keep two words apart (SVG used a dy break, not
+                # punctuation); CJK wraps mid-sentence with no inter-character
+                # space, so a joining space there is a spurious artifact.
                 prev = paragraph_runs[-1]
-                if prev and not prev[-1]['text'].endswith(' ') \
-                        and not line_runs[0]['text'].startswith(' '):
-                    prev[-1] = {**prev[-1], 'text': prev[-1]['text'] + ' '}
+                prev_text = prev[-1]['text'] if prev else ''
+                next_text = line_runs[0]['text']
+                boundary_is_cjk = (
+                    (prev_text and is_cjk_char(prev_text[-1]))
+                    or (next_text and is_cjk_char(next_text[0]))
+                )
+                if prev and not prev_text.endswith(' ') \
+                        and not next_text.startswith(' ') \
+                        and not boundary_is_cjk:
+                    prev[-1] = {**prev[-1], 'text': prev_text + ' '}
                 prev.extend(line_runs)
             else:
                 paragraph_runs.append(line_runs)

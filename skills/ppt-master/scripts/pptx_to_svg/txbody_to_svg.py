@@ -810,10 +810,15 @@ def _char_width(ch: str, font_size: float, bold: bool) -> float:
         w = font_size  # CJK is approximately 1em per glyph
     elif ch == ' ':
         w = font_size * 0.3
-    elif ch in 'mMwWOQ':
+    elif ch in 'mMwWOQ%':
         w = font_size * 0.75
-    elif ch in 'iIlj1!|':
+    elif ch in 'iIlj!|':
         w = font_size * 0.3
+    elif ch.isdigit():
+        # digits are tabular (uniform ~0.55em) in most UI fonts, including
+        # '1' — classing it with 'il|' under-sizes the width and makes
+        # renderers that ignore wrap="none" (LibreOffice) wrap the line
+        w = font_size * 0.55
     else:
         w = font_size * 0.55
     # Bold Latin generally expands a little. CJK glyphs keep their em advance

@@ -449,10 +449,15 @@ def estimate_text_width(text: str, font_size: float, font_weight: str = '400') -
             width += font_size
         elif ch == ' ':
             width += font_size * 0.3
-        elif ch in 'mMwWOQ':
+        elif ch in 'mMwWOQ%':
             width += font_size * 0.75
-        elif ch in 'iIlj1!|':
+        elif ch in 'iIlj!|':
             width += font_size * 0.3
+        elif ch.isdigit():
+            # digits are tabular (uniform ~0.55em) in most UI fonts, including
+            # '1' — classing it with 'il|' under-sizes the box and makes
+            # renderers that ignore wrap="none" (LibreOffice) wrap the line
+            width += font_size * 0.55
         else:
             width += font_size * 0.55
 

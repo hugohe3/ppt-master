@@ -309,13 +309,13 @@ Catalog read: 71 templates
 
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
 - **Title**: [Page title]
-- **Core message**: [the one thing this page exists to land — its spine. One per page; can't name it → merge or cut the page.]
+- **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
 - **Treatment**: [the page's vehicle stack — the per-page decision from `strategist.md` "Per-page Vehicle Decision". Primary body = `free-svg` | `chart:<key>` | `native:<key>` | `image:<file>(hero_page)`; optional backdrop `image:<file>(local)`; overlay is always SVG (title / text / cards / icons). One stack per page.]
 - **Visualization**: [visualization_type] (see VII; present only when Treatment primary is `chart:` / `native:`)
-- **Content** (instantiates the core message — items may stay parallel as evidence, but they sit under the one assertion above, never replace it):
-  - [Point]
-  - [Point]
-  - [Point]
+- **Content** (instantiates the core message — blocks sit under the one assertion above, never replace it): write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes:
+  - [a connected sentence or two that argues the point]
+  - [parallel fragment] · [parallel fragment] · [parallel fragment]
+  - [label] / [label] / [label]
 
 > **Treatment is the decision; §VII and §VIII are its collected records.** Every page has a Treatment. §VII Visualization List = all pages whose Treatment primary is `chart:` / `native:`; §VIII Image List = all pages with an `image:` in their Treatment. Fill Treatment per page first, then collect §VII / §VIII from them — do not fill §VII / §VIII as independent passes.
 >

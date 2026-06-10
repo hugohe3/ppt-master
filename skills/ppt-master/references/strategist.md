@@ -755,6 +755,10 @@ Templates are starting points. The Strategist may adjust based on content and au
 | B) General Consulting | Structured sections, data-driven insights | Professional terms, conclusion-first |
 | C) Top Consulting | SCQA + pyramid principle | Highly condensed, conclusion-driven |
 
+**Per-block expression**: phrase each §IX content block in the mode that fits it — prose, bullet, keyword, or any phrasing the content calls for — not a default bullet. Take the cue from the source's texture: a narrative source (article / transcript / talk) leans prose — resist compressing its argument pages into fragments; a data sheet leans bullet/keyword. Write the real sentence into §IX itself, not a skeleton point to expand later. One page mixes modes; let layout pull each (narrative → prose, structural/chart → bullets/keywords).
+
+> Note: §IX is the only content copy the Executor re-reads after context compression — what you write there is what survives.
+
 ### 6.2 Outline Output Specification (Must include 11 chapters)
 
 | Chapter | Content Requirements |
@@ -767,7 +771,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
 | VII. Visualization Reference List | Visualization type, reference template path, used-in pages, purpose |
 | VIII. Image Resource List | Filename, dimensions, ratio, purpose, status, generation description |
-| IX. Content Outline | Grouped by chapter; each page includes layout, title, core message (the page's one idea), content points, visualization type (if applicable) |
+| IX. Content Outline | Grouped by chapter; each page includes layout, title, core message (the page's one idea), content blocks (in the selected phrasing mode), visualization type (if applicable) |
 | X. Speaker Notes Requirements | File naming rules, content structure description |
 | XI. Technical Constraints Reminder | SVG generation rules, PPT compatibility rules |
 
