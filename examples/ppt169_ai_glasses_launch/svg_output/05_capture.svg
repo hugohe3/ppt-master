@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L9,4.5 L0,9 Z" fill="#9AA8BD"/></marker>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">能力一 · 看见</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">第一视角，解放双手的记录</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">最好的相机，是你不用掏出来的那一台</text>
+  </g>
+
+  <g id="compare" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <!-- 手机 (before) -->
+    <rect x="80" y="214" width="540" height="396" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <rect x="80" y="214" width="540" height="64" rx="18" fill="#EEF1F5"/>
+    <rect x="80" y="246" width="540" height="32" fill="#EEF1F5"/>
+    <text x="112" y="254" font-size="18" font-weight="700" fill="#5A6678">用手机</text>
+    <text x="588" y="254" text-anchor="end" font-size="13" fill="#9AA8BD">平均 8–12 秒</text>
+    <g font-size="16" fill="#5A6678">
+      <text x="112" y="328">① 听到 / 看到值得拍的瞬间</text>
+      <line x1="120" y1="346" x2="120" y2="372" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arw)"/>
+      <text x="112" y="394">② 掏手机 · 解锁 · 打开相机</text>
+      <line x1="120" y1="412" x2="120" y2="438" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arw)"/>
+      <text x="112" y="460">③ 对准 · 构图 · 按下快门</text>
+      <line x1="120" y1="478" x2="120" y2="504" stroke="#CBD5E1" stroke-width="1.5" marker-end="url(#arw)"/>
+      <text x="112" y="526" fill="#C0392B" font-weight="700">④ 瞬间常常已经溜走</text>
+    </g>
+    <text x="112" y="576" font-size="13" fill="#9AA8BD">手忙脚乱，还打断当下的体验</text>
+
+    <!-- VEO (after) -->
+    <rect x="660" y="214" width="540" height="396" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <rect x="660" y="214" width="540" height="64" rx="18" fill="url(#gradAccent)"/>
+    <rect x="660" y="246" width="540" height="32" fill="#1B47B0"/>
+    <use data-icon="phosphor-duotone/camera" x="690" y="232" width="28" height="28" fill="#FFFFFF"/>
+    <text x="728" y="254" font-size="18" font-weight="700" fill="#FFFFFF">用 VEO One</text>
+    <text x="1168" y="254" text-anchor="end" font-size="13" fill="#CFE0FF">1 秒</text>
+    <text x="692" y="372" font-family="Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-1" fill="#2E6BE6">“拍一下”</text>
+    <text x="692" y="416" font-size="17" fill="#13315C">一句话或轻点镜腿，第一视角即刻定格</text>
+    <line x1="692" y1="446" x2="1168" y2="446" stroke="#EDF2F8" stroke-width="1"/>
+    <g font-size="16" fill="#13315C">
+      <text x="692" y="486">· 双手解放，不打断当下</text>
+      <text x="692" y="520">· 看到即所得的真实视角</text>
+      <text x="692" y="554">· 自动成片，回看一键分享</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">05</text>
+  </g>
+</svg>

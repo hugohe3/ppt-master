@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <linearGradient id="leftScrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="44%" stop-color="#FFFFFF" stop-opacity="0.62"/>
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <image href="images/hero_design.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#leftScrim)"/>
+  </g>
+
+  <g id="copy">
+    <text x="80" y="150" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">工业设计</text>
+    <text x="78" y="214" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">像普通眼镜一样轻，</text>
+    <text x="78" y="266" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">却<tspan fill="#2E6BE6">全天可戴</tspan></text>
+    <rect x="82" y="288" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="82" y="336" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="400" fill="#4A5568">摄像、麦克风、扬声器、电池全部隐入镜腿，</text>
+    <text x="82" y="364" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="400" fill="#4A5568">外观与日常眼镜无异，戴上就忘记它的存在。</text>
+
+    <g font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+      <rect x="82" y="420" width="150" height="116" rx="14" fill="#FFFFFF" fill-opacity="0.9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="100" y="470" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#2E6BE6">38<tspan font-size="16" fill="#5A6678">g</tspan></text>
+      <text x="100" y="500" font-size="14" fill="#5A6678">整机重量</text>
+      <text x="100" y="520" font-size="12" fill="#9AA8BD">钛合金镜架</text>
+
+      <rect x="248" y="420" width="150" height="116" rx="14" fill="#FFFFFF" fill-opacity="0.9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="266" y="470" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#2E6BE6">IP54</text>
+      <text x="266" y="500" font-size="14" fill="#5A6678">防尘防水</text>
+      <text x="266" y="520" font-size="12" fill="#9AA8BD">日常无惧雨汗</text>
+
+      <rect x="414" y="420" width="172" height="116" rx="14" fill="#FFFFFF" fill-opacity="0.9" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="432" y="470" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#2E6BE6">3<tspan font-size="16" fill="#5A6678"> 色 / 2 尺寸</tspan></text>
+      <text x="432" y="500" font-size="14" fill="#5A6678">可换镜框</text>
+      <text x="432" y="520" font-size="12" fill="#9AA8BD">支持配镜片</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">03</text>
+  </g>
+</svg>

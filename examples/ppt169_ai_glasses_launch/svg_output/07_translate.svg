@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="aR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#2E6BE6"/></marker>
+    <marker id="aL" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#2E6BE6"/></marker>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">能力二 · 听懂</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">实时翻译，跨语言无障碍</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">面对面，像母语一样自然交谈</text>
+  </g>
+
+  <g id="flow" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <!-- speaker A -->
+    <rect x="80" y="232" width="320" height="220" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="120" cy="276" r="20" fill="#E8F0FE"/><use data-icon="phosphor-duotone/user" x="104" y="260" width="32" height="32" fill="#2E6BE6"/>
+    <text x="152" y="282" font-size="16" font-weight="700" fill="#0C1B33">你 · 中文</text>
+    <text x="104" y="340" font-size="20" font-weight="700" fill="#13315C">“这道菜不要辣，</text>
+    <text x="104" y="372" font-size="20" font-weight="700" fill="#13315C">　可以打包吗？”</text>
+    <text x="104" y="418" font-size="13" fill="#9AA8BD">开口即说，无需操作</text>
+
+    <!-- center VEO -->
+    <circle cx="640" cy="342" r="58" fill="url(#gradAccent)"/>
+    <use data-icon="phosphor-duotone/translate" x="612" y="314" width="56" height="56" fill="#FFFFFF"/>
+    <text x="640" y="442" text-anchor="middle" font-size="15" font-weight="700" fill="#1B47B0">VEO 实时互译</text>
+    <text x="640" y="466" text-anchor="middle" font-size="13" fill="#9AA8BD">端侧低延迟 · 双向同传</text>
+    <line x1="404" y1="312" x2="578" y2="332" stroke="#2E6BE6" stroke-width="2.5" marker-end="url(#aR)"/>
+    <line x1="876" y1="372" x2="702" y2="352" stroke="#2E6BE6" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#aL)"/>
+
+    <!-- speaker B -->
+    <rect x="880" y="232" width="320" height="220" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="920" cy="276" r="20" fill="#E8F0FE"/><use data-icon="phosphor-duotone/user" x="904" y="260" width="32" height="32" fill="#2E6BE6"/>
+    <text x="952" y="282" font-size="16" font-weight="700" fill="#0C1B33">对方 · English</text>
+    <text x="904" y="340" font-size="19" font-weight="700" fill="#13315C">“No chili, and</text>
+    <text x="904" y="372" font-size="19" font-weight="700" fill="#13315C">　can we pack it?”</text>
+    <text x="904" y="418" font-size="13" fill="#9AA8BD">耳边即时听到译文</text>
+  </g>
+
+  <g id="features" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <rect x="80" y="500" width="1120" height="116" rx="16" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <line x1="453" y1="528" x2="453" y2="588" stroke="#EDF2F8" stroke-width="1"/>
+    <line x1="826" y1="528" x2="826" y2="588" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="120" y="552" font-family="Arial, sans-serif" font-size="30" font-weight="800" fill="#2E6BE6">40<tspan font-size="16" fill="#5A6678"> + 语种</tspan></text>
+    <text x="120" y="586" font-size="14" fill="#5A6678">主流语种与方言覆盖</text>
+    <text x="493" y="552" font-family="Arial, sans-serif" font-size="30" font-weight="800" fill="#2E6BE6">&lt; 1<tspan font-size="16" fill="#5A6678"> 秒</tspan></text>
+    <text x="493" y="586" font-size="14" fill="#5A6678">端侧低延迟，近乎同传</text>
+    <text x="866" y="552" font-family="Arial, sans-serif" font-size="30" font-weight="800" fill="#2E6BE6">离线<tspan font-size="16" fill="#5A6678"> 可用</tspan></text>
+    <text x="866" y="586" font-size="14" fill="#5A6678">常用语种无网也能译</text>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">07</text>
+  </g>
+</svg>

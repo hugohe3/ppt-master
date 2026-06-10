@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">技术架构 · 能力分层</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">三层能力，越用越懂你</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">感知在硬件，理解在端侧，进化在云端</text>
+  </g>
+
+  <rect data-native-diagram="solid3d_bluegreen_012"
+        data-recolor="558C5A=2E6BE6,122B87=13315C"
+        data-font="Microsoft YaHei"
+        data-text='{"0":"VEO One","1":"能力分层","2":"采集","3":"理解","4":"进化","5":"摄像头","6":"五麦阵列","7":"IMU 传感","8":"端侧 AI 模型","9":"情境理解","10":"个性化记忆","11":"云端大模型","12":"OTA 持续进化","13":"L1 硬件感知","14":"L3 云端进化","15":"L2 端侧理解"}'
+        x="120" y="158" width="1040" height="500" fill="none"/>
+
+  <g id="footer">
+    <text x="80" y="690" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="690" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">11</text>
+  </g>
+</svg>

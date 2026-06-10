@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/><feOffset dx="0" dy="4" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.12" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="640" y="0" width="640" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="80" y="150" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">开放生态</text>
+    <text x="78" y="214" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">一个入口，</text>
+    <text x="78" y="266" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">连接你<tspan fill="#2E6BE6">常用的一切</tspan></text>
+    <rect x="82" y="288" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="82" y="340" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#4A5568">开放 SDK，第三方应用持续接入。</text>
+    <text x="82" y="368" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#4A5568">不是又一块屏幕，而是各类服务</text>
+    <text x="82" y="396" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#4A5568">最自然的随身触点。</text>
+    <g font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" fill="#13315C">
+      <circle cx="90" cy="456" r="4" fill="#2E6BE6"/><text x="106" y="461">语音 / 手势 / 触控多种交互</text>
+      <circle cx="90" cy="492" r="4" fill="#2E6BE6"/><text x="106" y="497">与手机 App 账号无缝同步</text>
+      <circle cx="90" cy="528" r="4" fill="#2E6BE6"/><text x="106" y="533">开发者平台开放，能力可扩展</text>
+    </g>
+  </g>
+
+  <g id="radial" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#13315C" text-anchor="middle">
+    <line x1="940" y1="360" x2="940" y2="250" stroke="#CBD9EE" stroke-width="2"/>
+    <line x1="940" y1="360" x2="1064" y2="296" stroke="#CBD9EE" stroke-width="2"/>
+    <line x1="940" y1="360" x2="1064" y2="424" stroke="#CBD9EE" stroke-width="2"/>
+    <line x1="940" y1="360" x2="940" y2="470" stroke="#CBD9EE" stroke-width="2"/>
+    <line x1="940" y1="360" x2="816" y2="424" stroke="#CBD9EE" stroke-width="2"/>
+    <line x1="940" y1="360" x2="816" y2="296" stroke="#CBD9EE" stroke-width="2"/>
+
+    <circle cx="940" cy="360" r="60" fill="url(#gradAccent)" filter="url(#cardFloat)"/>
+    <use data-icon="phosphor-duotone/eyeglasses" x="908" y="332" width="56" height="56" fill="#FFFFFF"/>
+    <text x="940" y="450" font-size="15" font-weight="700" fill="#1B47B0">VEO 平台</text>
+
+    <g>
+      <circle cx="940" cy="226" r="38" fill="#FFFFFF" filter="url(#cardFloat)"/><use data-icon="phosphor-duotone/map-pin" x="922" y="208" width="36" height="36" fill="#2E6BE6"/><text x="940" y="288">地图导航</text>
+      <circle cx="1064" cy="296" r="38" fill="#FFFFFF" filter="url(#cardFloat)"/><use data-icon="phosphor-duotone/music-notes" x="1046" y="278" width="36" height="36" fill="#2E6BE6"/><text x="1064" y="358">音乐播客</text>
+      <circle cx="1064" cy="424" r="38" fill="#FFFFFF" filter="url(#cardFloat)"/><use data-icon="phosphor-duotone/chat-circle" x="1046" y="406" width="36" height="36" fill="#2E6BE6"/><text x="1064" y="486">即时通讯</text>
+      <circle cx="940" cy="494" r="38" fill="#FFFFFF" filter="url(#cardFloat)"/><use data-icon="phosphor-duotone/heartbeat" x="922" y="476" width="36" height="36" fill="#2E6BE6"/><text x="940" y="556">健康运动</text>
+      <circle cx="816" cy="424" r="38" fill="#FFFFFF" filter="url(#cardFloat)"/><use data-icon="phosphor-duotone/briefcase" x="798" y="406" width="36" height="36" fill="#2E6BE6"/><text x="816" y="486">办公协同</text>
+      <circle cx="816" cy="296" r="38" fill="#FFFFFF" filter="url(#cardFloat)"/><use data-icon="phosphor-duotone/wallet" x="798" y="278" width="36" height="36" fill="#2E6BE6"/><text x="816" y="358">出行支付</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">13</text>
+  </g>
+</svg>

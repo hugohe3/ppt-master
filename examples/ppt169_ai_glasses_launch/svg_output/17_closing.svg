@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <linearGradient id="leftScrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="48%" stop-color="#FFFFFF" stop-opacity="0.68"/>
+      <stop offset="74%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <image href="images/hero_lifestyle.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#leftScrim)"/>
+  </g>
+
+  <g id="copy">
+    <text x="80" y="296" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#2E6BE6">VEO · AI 智能眼镜</text>
+    <text x="76" y="384" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="74" font-weight="800" letter-spacing="-2" fill="#0C1B33">VEO One</text>
+    <rect x="80" y="404" width="104" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="80" y="466" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.5" fill="#13315C">看得见的智能</text>
+    <text x="80" y="506" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="400" fill="#5A6678">把 AI 戴在眼前 —— 看见、听懂、答得出，自然到忘记它的存在。</text>
+    <text x="80" y="566" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" font-weight="700" fill="#2E6BE6">2026 春季发售 · 即刻预约</text>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="660" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" font-weight="800" fill="#0C1B33">感谢观看</text>
+    <text x="80" y="688" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">VEO ONE · 本演示为虚构产品，仅用于版式与风格示例</text>
+  </g>
+</svg>

@@ -92,11 +92,16 @@ component in, scaled to the rect and recolored:
 ```xml
 <rect data-native-diagram="<key>"
       data-recolor="558C5A=<spec_lock primary>,122B87=<spec_lock accent>"
+      data-font="<spec_lock fonts.font_family>"
       data-text='{"0":"<your title>","1":"<your label>", "2":"..."}'
       x=".." y=".." width=".." height=".." fill="none"/>
 ```
 
 - **`data-native-diagram`** = the chosen `<key>` from `page_diagrams`.
+- **`data-font`** (always set it) = the deck's font from `spec_lock` (e.g. `Microsoft YaHei`).
+  Components carry the **source deck's** fonts, and most of their runs name no typeface
+  and inherit the slide theme — so without this the figure's text renders in a different
+  font than the surrounding SVG text. `data-font` forces every run to the deck typeface.
 - **`data-recolor`** = remap the diagram's two base hexes (`meta.recolor_base`:
   `558C5A` primary, `122B87` accent) onto **this deck's** `spec_lock.colors`
   primary/accent. The 3D shading re-derives from the new base. If the deck has only

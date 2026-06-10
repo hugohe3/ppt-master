@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+  <rect x="-100" y="-120" width="900" height="560" rx="120" fill="#2E6BE6" fill-opacity="0.04"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">核心能力 · 一句话</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">看见 · 听懂 · 提示</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">三种感官能力，覆盖随身场景</text>
+  </g>
+
+  <g id="cards" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <!-- card 1 看见 -->
+    <rect x="80" y="210" width="352" height="404" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="140" cy="276" r="34" fill="#E8F0FE"/>
+    <use data-icon="phosphor-duotone/eye" x="118" y="254" width="44" height="44" fill="#2E6BE6"/>
+    <text x="106" y="356" font-size="28" font-weight="800" fill="#0C1B33">看见</text>
+    <text x="106" y="386" font-size="15" fill="#5A6678">一颗前置摄像头 + 视觉模型</text>
+    <line x1="106" y1="414" x2="406" y2="414" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="106" y="450" font-size="15" fill="#13315C">· 第一视角拍照 / 录像</text>
+    <text x="106" y="484" font-size="15" fill="#13315C">· 看菜单、看路牌即时识别</text>
+    <text x="106" y="518" font-size="15" fill="#13315C">· 扫物识图，问"这是什么"</text>
+    <text x="106" y="562" font-size="13" fill="#9AA8BD">解放双手的记录与理解</text>
+
+    <!-- card 2 听懂 -->
+    <rect x="464" y="210" width="352" height="404" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="524" cy="276" r="34" fill="#E8F0FE"/>
+    <use data-icon="phosphor-duotone/microphone" x="502" y="254" width="44" height="44" fill="#2E6BE6"/>
+    <text x="490" y="356" font-size="28" font-weight="800" fill="#0C1B33">听懂</text>
+    <text x="490" y="386" font-size="15" fill="#5A6678">五麦阵列 + 语音大模型</text>
+    <line x1="490" y1="414" x2="790" y2="414" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="490" y="450" font-size="15" fill="#13315C">· 开口即答的 AI 助手</text>
+    <text x="490" y="484" font-size="15" fill="#13315C">· 40+ 语种实时翻译</text>
+    <text x="490" y="518" font-size="15" fill="#13315C">· 会议 / 通话实时纪要</text>
+    <text x="490" y="562" font-size="13" fill="#9AA8BD">无需掏手机，张口就来</text>
+
+    <!-- card 3 提示 -->
+    <rect x="848" y="210" width="352" height="404" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="908" cy="276" r="34" fill="#E8F0FE"/>
+    <use data-icon="phosphor-duotone/sparkle" x="886" y="254" width="44" height="44" fill="#2E6BE6"/>
+    <text x="874" y="356" font-size="28" font-weight="800" fill="#0C1B33">提示</text>
+    <text x="874" y="386" font-size="15" fill="#5A6678">光波导显示 + 情境引擎</text>
+    <line x1="874" y1="414" x2="1174" y2="414" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="874" y="450" font-size="15" fill="#13315C">· 信息浮现眼前，不遮视线</text>
+    <text x="874" y="484" font-size="15" fill="#13315C">· 步行 / 骑行导航箭头</text>
+    <text x="874" y="518" font-size="15" fill="#13315C">· 提词、提醒、待办提示</text>
+    <text x="874" y="562" font-size="13" fill="#9AA8BD">需要时才出现，安静不打扰</text>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">04</text>
+  </g>
+</svg>

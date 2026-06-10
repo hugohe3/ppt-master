@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <linearGradient id="leftScrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.94"/>
+      <stop offset="40%" stop-color="#FFFFFF" stop-opacity="0.62"/>
+      <stop offset="68%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="chipShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/><feOffset dx="0" dy="3" result="o"/>
+      <feFlood flood-color="#0C1B33" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <image href="images/hero_cover.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#leftScrim)"/>
+  </g>
+
+  <g id="eyebrow-chip">
+    <rect x="80" y="64" width="196" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.86" stroke="#D6E2F5" stroke-width="1" filter="url(#chipShadow)"/>
+    <circle cx="102" cy="81" r="4" fill="#2E6BE6"/>
+    <text x="116" y="86" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="0.5" fill="#0C1B33">VEO · AI 智能眼镜</text>
+  </g>
+
+  <g id="title">
+    <text x="80" y="316" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="2" fill="#2E6BE6">NEW PRODUCT LAUNCH · 2026</text>
+    <text x="76" y="408" font-family="Arial, &quot;Microsoft YaHei&quot;, sans-serif" font-size="92" font-weight="800" letter-spacing="-3" fill="#0C1B33">VEO One</text>
+    <rect x="80" y="430" width="104" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="80" y="486" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.5" fill="#13315C">把 AI 戴在眼前</text>
+    <text x="80" y="524" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="400" fill="#5A6678">看得见、听得懂、答得出 —— 一副像普通眼镜一样轻的随身智能</text>
+  </g>
+
+  <g id="feature-chips" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="600" fill="#0C1B33">
+    <rect x="80" y="612" width="150" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.86" stroke="#D6E2F5" stroke-width="1" filter="url(#chipShadow)"/>
+    <circle cx="104" cy="632" r="4" fill="#2E6BE6"/><text x="118" y="637">仅 38 克轻量</text>
+    <rect x="242" y="612" width="138" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.86" stroke="#D6E2F5" stroke-width="1" filter="url(#chipShadow)"/>
+    <circle cx="266" cy="632" r="4" fill="#2E6BE6"/><text x="280" y="637">全天候续航</text>
+    <rect x="392" y="612" width="176" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.86" stroke="#D6E2F5" stroke-width="1" filter="url(#chipShadow)"/>
+    <circle cx="416" cy="632" r="4" fill="#2E6BE6"/><text x="430" y="637">看 · 听 · 说 一体</text>
+  </g>
+</svg>

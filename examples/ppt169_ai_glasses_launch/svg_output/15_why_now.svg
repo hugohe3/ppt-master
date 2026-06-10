@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">为什么是现在</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">三条技术曲线，正好交汇</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">不是更早，也不是更晚 —— 就是现在</text>
+  </g>
+
+  <g id="cards" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <rect x="80" y="208" width="352" height="320" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <text x="106" y="262" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#2E6BE6">01</text>
+    <circle cx="380" cy="252" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/brain" x="364" y="236" width="32" height="32" fill="#2E6BE6"/>
+    <text x="106" y="318" font-size="24" font-weight="800" fill="#0C1B33">大模型成熟</text>
+    <line x1="106" y1="344" x2="406" y2="344" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="106" y="384" font-size="15" fill="#13315C">多模态理解到位，</text>
+    <text x="106" y="412" font-size="15" fill="#13315C">能看懂画面、听懂自然语言，</text>
+    <text x="106" y="440" font-size="15" fill="#13315C">真正"看一眼就明白"。</text>
+    <text x="106" y="492" font-size="13" fill="#9AA8BD">从能用 → 好用</text>
+
+    <rect x="464" y="208" width="352" height="320" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <text x="490" y="262" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#2E6BE6">02</text>
+    <circle cx="764" cy="252" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/cpu" x="748" y="236" width="32" height="32" fill="#2E6BE6"/>
+    <text x="490" y="318" font-size="24" font-weight="800" fill="#0C1B33">端侧算力成熟</text>
+    <line x1="490" y1="344" x2="790" y2="344" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="490" y="384" font-size="15" fill="#13315C">低功耗 NPU 上眼镜，</text>
+    <text x="490" y="412" font-size="15" fill="#13315C">常用模型本地实时跑，</text>
+    <text x="490" y="440" font-size="15" fill="#13315C">低延迟、更省电、更隐私。</text>
+    <text x="490" y="492" font-size="13" fill="#9AA8BD">从云端 → 随身</text>
+
+    <rect x="848" y="208" width="352" height="320" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <text x="874" y="262" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#2E6BE6">03</text>
+    <circle cx="1148" cy="252" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/eyeglasses" x="1132" y="236" width="32" height="32" fill="#2E6BE6"/>
+    <text x="874" y="318" font-size="24" font-weight="800" fill="#0C1B33">光学显示成熟</text>
+    <line x1="874" y1="344" x2="1174" y2="344" stroke="#EDF2F8" stroke-width="1"/>
+    <text x="874" y="384" font-size="15" fill="#13315C">光波导轻薄全彩，</text>
+    <text x="874" y="412" font-size="15" fill="#13315C">重量降到日常眼镜级别，</text>
+    <text x="874" y="440" font-size="15" fill="#13315C">终于"能戴着出门"。</text>
+    <text x="874" y="492" font-size="13" fill="#9AA8BD">从笨重 → 无感</text>
+  </g>
+
+  <g id="takeaway">
+    <rect x="80" y="556" width="1120" height="64" rx="14" fill="url(#gradAccent)"/>
+    <text x="112" y="595" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="19" font-weight="400" fill="#FFFFFF">三者同时成熟 —— <tspan font-weight="800">眼镜，成为 AI 最自然的随身载体</tspan></text>
+  </g>
+
+  <g id="footer">
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">15</text>
+  </g>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <linearGradient id="leftScrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96"/>
+      <stop offset="46%" stop-color="#FFFFFF" stop-opacity="0.70"/>
+      <stop offset="72%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g id="bg">
+    <image href="images/hero_case.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#leftScrim)"/>
+  </g>
+
+  <g id="copy">
+    <text x="80" y="158" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">续航与充电盒</text>
+    <text x="78" y="222" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">整天都不用想充电</text>
+    <rect x="82" y="240" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="82" y="288" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#4A5568">眼镜本体撑过一整天，</text>
+    <text x="82" y="316" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#4A5568">收进充电盒随放随充，出门更久。</text>
+
+    <g font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+      <rect x="82" y="372" width="168" height="150" rx="16" fill="#FFFFFF" fill-opacity="0.92" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="104" y="430" font-family="Arial, sans-serif" font-size="40" font-weight="800" fill="#2E6BE6">18<tspan font-size="18" fill="#5A6678">h</tspan></text>
+      <text x="104" y="466" font-size="15" font-weight="700" fill="#13315C">眼镜续航</text>
+      <text x="104" y="494" font-size="13" fill="#9AA8BD">混合使用一整天</text>
+
+      <rect x="266" y="372" width="168" height="150" rx="16" fill="#FFFFFF" fill-opacity="0.92" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="288" y="430" font-family="Arial, sans-serif" font-size="40" font-weight="800" fill="#2E6BE6">3<tspan font-size="18" fill="#5A6678"> 天</tspan></text>
+      <text x="288" y="466" font-size="15" font-weight="700" fill="#13315C">含充电盒</text>
+      <text x="288" y="494" font-size="13" fill="#9AA8BD">额外补 2 次满电</text>
+
+      <rect x="450" y="372" width="190" height="150" rx="16" fill="#FFFFFF" fill-opacity="0.92" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="472" y="430" font-family="Arial, sans-serif" font-size="40" font-weight="800" fill="#2E6BE6">10<tspan font-size="18" fill="#5A6678">min</tspan></text>
+      <text x="472" y="466" font-size="15" font-weight="700" fill="#13315C">快充 ≈ 4 小时</text>
+      <text x="472" y="494" font-size="13" fill="#9AA8BD">出门前充一下即可</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">14</text>
+  </g>
+</svg>

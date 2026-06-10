@@ -6,10 +6,15 @@ in the SVG::
 
     <rect data-native-diagram="combo_product_system"
           data-recolor="558C5A=0E7C7B,122B87=E8743B"
+          data-font="Microsoft YaHei"
           x="140" y="120" width="1000" height="480" fill="none"/>
 
 and at conversion time the named component's shapes (already DrawingML) are
-spliced in, scaled to the placeholder rect and optionally recolored.
+spliced in, scaled to the placeholder rect, optionally recolored, and (with
+``data-font``) re-fonted to the deck typeface. Always set ``data-font`` to the
+deck's font: components keep the source deck's fonts, and most runs inherit the
+slide theme rather than naming a typeface — so without it the figure's text
+renders in a different font than the surrounding SVG-authored text.
 
 Splicing is string-based (not ElementTree) so the component's namespace prefixes
 (``a`` / ``p`` / ``r`` / ``a14`` / ``a16`` / …) stay byte-exact: the stored
@@ -88,6 +93,42 @@ def _apply_text_fills(xml: str, data_text: str | None) -> str:
     return _AT_RE.sub(repl, xml)
 
 
+_RPR_RE = re.compile(
+    r'<a:(rPr|defRPr|endParaRPr)\b((?:[^>"]|"[^"]*")*?)(?:/>|>(.*?)</a:\1>)',
+    re.DOTALL,
+)
+_FONT_CHILD_RE = re.compile(r"<a:(?:latin|ea|cs)\b[^>]*/>")
+
+
+def _apply_font(xml: str, font: str | None) -> str:
+    """Force the deck font onto every run in the spliced component.
+
+    Native-diagram components carry the source deck's fonts: a few runs name a
+    typeface explicitly, but most carry none and inherit the slide theme's font
+    — which is not the deck font, so the figure's text looks different from the
+    surrounding SVG-authored text. ``data-font`` normalises all of them: existing
+    ``latin``/``ea``/``cs`` are replaced and missing ones are injected so every run
+    (and ``endParaRPr``/``defRPr``) renders in the deck's typeface.
+    """
+    if not font:
+        return xml
+    fonts = (
+        f'<a:latin typeface="{font}"/>'
+        f'<a:ea typeface="{font}"/>'
+        f'<a:cs typeface="{font}"/>'
+    )
+
+    def repl(m):
+        tag, attrs, inner = m.group(1), m.group(2), m.group(3)
+        inner = "" if inner is None else _FONT_CHILD_RE.sub("", inner)
+        return f"<a:{tag}{attrs}>{inner}{fonts}</a:{tag}>"
+
+    xml = _RPR_RE.sub(repl, xml)
+    # Runs that carry text but no run-properties at all get a fresh rPr.
+    xml = re.sub(r"<a:r>(\s*)<a:t>", rf"<a:r><a:rPr>{fonts}</a:rPr>\1<a:t>", xml)
+    return xml
+
+
 def _renumber_cnvpr(xml: str, ctx: ConvertContext) -> str:
     """Reassign every ``<p:cNvPr id>`` from the slide's id allocator (unique)."""
     return re.sub(
@@ -146,6 +187,7 @@ def resolve_native_diagram(elem, ctx: ConvertContext) -> ShapeResult | None:
     xml = re.sub(r"^\s*<\?xml[^>]*\?>\s*", "", xml, count=1)
     xml = _apply_recolor(xml, _parse_recolor(elem.get("data-recolor")))
     xml = _apply_text_fills(xml, elem.get("data-text"))
+    xml = _apply_font(xml, elem.get("data-font"))
     if meta.get("media"):
         xml = _remap_media(xml, comp_dir, meta["media"], ctx)
     xml = _renumber_cnvpr(xml, ctx)

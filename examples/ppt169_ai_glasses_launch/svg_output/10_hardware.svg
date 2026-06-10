@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">硬件规格</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">轻，是因为里面更强</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">把一台 AI 计算机，藏进一副眼镜</text>
+  </g>
+
+  <g id="grid" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <!-- row 1 -->
+    <rect x="80" y="208" width="352" height="186" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="128" cy="256" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/cpu" x="112" y="240" width="32" height="32" fill="#2E6BE6"/>
+    <text x="180" y="252" font-size="15" fill="#5A6678">主芯片</text>
+    <text x="180" y="292" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#0C1B33">自研 V1</text>
+    <text x="104" y="350" font-size="14" fill="#5A6678">端侧 AI 算力，常用模型本地跑</text>
+
+    <rect x="464" y="208" width="352" height="186" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="512" cy="256" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/monitor" x="496" y="240" width="32" height="32" fill="#2E6BE6"/>
+    <text x="564" y="252" font-size="15" fill="#5A6678">显示</text>
+    <text x="564" y="292" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#0C1B33">单目全彩</text>
+    <text x="488" y="350" font-size="14" fill="#5A6678">光波导，户外可见，护眼低功耗</text>
+
+    <rect x="848" y="208" width="352" height="186" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="896" cy="256" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/camera" x="880" y="240" width="32" height="32" fill="#2E6BE6"/>
+    <text x="948" y="252" font-size="15" fill="#5A6678">摄像</text>
+    <text x="948" y="292" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#0C1B33">1200<tspan font-size="16">万像素</tspan></text>
+    <text x="872" y="350" font-size="14" fill="#5A6678">超广角，防抖，第一视角影像</text>
+
+    <!-- row 2 -->
+    <rect x="80" y="418" width="352" height="186" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="128" cy="466" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/battery-charging" x="112" y="450" width="32" height="32" fill="#2E6BE6"/>
+    <text x="180" y="462" font-size="15" fill="#5A6678">续航</text>
+    <text x="180" y="502" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#0C1B33">全天 18h</text>
+    <text x="104" y="560" font-size="14" fill="#5A6678">配充电盒可达 3 天，10 分钟快充</text>
+
+    <rect x="464" y="418" width="352" height="186" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="512" cy="466" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/feather" x="496" y="450" width="32" height="32" fill="#2E6BE6"/>
+    <text x="564" y="462" font-size="15" fill="#5A6678">重量</text>
+    <text x="564" y="502" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#0C1B33">38<tspan font-size="16">克</tspan></text>
+    <text x="488" y="560" font-size="14" fill="#5A6678">钛合金镜架，长时间佩戴无负担</text>
+
+    <rect x="848" y="418" width="352" height="186" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <circle cx="896" cy="466" r="26" fill="#E8F0FE"/><use data-icon="phosphor-duotone/wifi-high" x="880" y="450" width="32" height="32" fill="#2E6BE6"/>
+    <text x="948" y="462" font-size="15" fill="#5A6678">连接</text>
+    <text x="948" y="502" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#0C1B33">蓝牙 5.4</text>
+    <text x="872" y="560" font-size="14" fill="#5A6678">Wi-Fi 6 + 双频，手机无缝协同</text>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">10</text>
+  </g>
+</svg>

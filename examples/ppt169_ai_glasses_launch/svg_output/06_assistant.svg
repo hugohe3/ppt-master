@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="640" y="0" width="640" height="720" fill="#F6F9FD"/>
+
+  <g id="left">
+    <text x="80" y="150" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">能力二 · 听懂</text>
+    <text x="78" y="214" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">开口即答的</text>
+    <text x="78" y="266" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0C1B33">随身 <tspan fill="#2E6BE6">AI 助手</tspan></text>
+    <rect x="82" y="288" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="82" y="340" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#4A5568">不用掏手机、不用唤醒词，</text>
+    <text x="82" y="368" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#4A5568">抬头一句话，答案就在耳边。</text>
+    <g font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#13315C">
+      <circle cx="90" cy="436" r="4" fill="#2E6BE6"/><text x="106" y="441">听得到上下文，记得住你刚说过的</text>
+      <circle cx="90" cy="476" r="4" fill="#2E6BE6"/><text x="106" y="481">会议 / 通话自动转纪要、抽待办</text>
+      <circle cx="90" cy="516" r="4" fill="#2E6BE6"/><text x="106" y="521">接入日程、提醒、备忘，说完即办</text>
+    </g>
+  </g>
+
+  <g id="chat" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15">
+    <!-- user -->
+    <rect x="800" y="120" width="396" height="48" rx="14" fill="#E7ECF2"/>
+    <text x="820" y="150" fill="#3A4658">刚才会上说的下一步是什么？</text>
+    <!-- veo -->
+    <rect x="704" y="186" width="430" height="118" rx="14" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <rect x="704" y="186" width="5" height="118" rx="2" fill="#2E6BE6"/>
+    <text x="726" y="216" font-size="12" font-weight="700" letter-spacing="1" fill="#2E6BE6">VEO</text>
+    <text x="726" y="244" fill="#13315C">三件事：① 周五前给报价</text>
+    <text x="726" y="270" fill="#13315C">② 补合规材料　③ 周一复盘</text>
+    <text x="726" y="294" fill="#9AA8BD" font-size="13">已自动记入今日待办</text>
+    <!-- user -->
+    <rect x="828" y="324" width="368" height="48" rx="14" fill="#E7ECF2"/>
+    <text x="848" y="354" fill="#3A4658">第①项明天上午提醒我</text>
+    <!-- veo -->
+    <rect x="704" y="390" width="360" height="78" rx="14" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <rect x="704" y="390" width="5" height="78" rx="2" fill="#2E6BE6"/>
+    <text x="726" y="420" font-size="12" font-weight="700" letter-spacing="1" fill="#2E6BE6">VEO</text>
+    <text x="726" y="448" fill="#13315C">好，已设明天 9:00 提醒 ✓</text>
+    <!-- mic indicator -->
+    <circle cx="760" cy="556" r="30" fill="url(#gradAccent)"/>
+    <use data-icon="phosphor-duotone/microphone" x="744" y="540" width="32" height="32" fill="#FFFFFF"/>
+    <text x="806" y="552" fill="#5A6678" font-size="15">“VEO，……”</text>
+    <text x="806" y="576" fill="#9AA8BD" font-size="13">轻点镜腿或直接开口</text>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">06</text>
+  </g>
+</svg>

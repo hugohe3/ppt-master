@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="botScrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#091428" stop-opacity="0"/>
+      <stop offset="55%" stop-color="#091428" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#091428" stop-opacity="0.86"/>
+    </linearGradient>
+    <filter id="chipShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/><feOffset dx="0" dy="3" result="o"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g id="bg">
+    <image href="images/hero_ar.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#botScrim)"/>
+  </g>
+
+  <g id="eyebrow-chip">
+    <rect x="80" y="64" width="170" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.88" stroke="#D6E2F5" stroke-width="1" filter="url(#chipShadow)"/>
+    <circle cx="102" cy="81" r="4" fill="#2E6BE6"/>
+    <text x="116" y="86" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" font-weight="600" fill="#0C1B33">能力三 · 提示</text>
+  </g>
+
+  <g id="copy">
+    <text x="80" y="556" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="44" font-weight="800" letter-spacing="-1" fill="#FFFFFF">信息浮现眼前，却不遮挡世界</text>
+    <text x="82" y="596" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" font-weight="400" fill="#C9D6EA">光波导显示只在需要时点亮 —— 导航、提醒、提词，安静地出现在视野角落</text>
+
+    <g font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF">
+      <rect x="80" y="624" width="180" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.28"/>
+      <use data-icon="phosphor-duotone/navigation-arrow" x="98" y="634" width="20" height="20" fill="#7FB0FF"/><text x="126" y="649">步行 / 骑行导航</text>
+      <rect x="272" y="624" width="160" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.28"/>
+      <use data-icon="phosphor-duotone/bell" x="290" y="634" width="20" height="20" fill="#7FB0FF"/><text x="318" y="649">日程 / 提醒</text>
+      <rect x="444" y="624" width="176" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.28"/>
+      <use data-icon="phosphor-duotone/note" x="462" y="634" width="20" height="20" fill="#7FB0FF"/><text x="490" y="649">提词 / 现场字幕</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#C9D6EA">08</text>
+  </g>
+</svg>

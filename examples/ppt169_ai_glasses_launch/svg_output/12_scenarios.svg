@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">使用场景</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">一天里，它一直在帮你</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">通勤 · 差旅 · 会议 · 运动</text>
+  </g>
+
+  <g id="cards" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <g>
+      <rect x="80" y="214" width="262" height="400" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+      <rect x="80" y="214" width="262" height="92" rx="18" fill="#E8F0FE"/><rect x="80" y="270" width="262" height="36" fill="#E8F0FE"/>
+      <circle cx="130" cy="262" r="26" fill="#FFFFFF"/><use data-icon="phosphor-duotone/navigation-arrow" x="114" y="246" width="32" height="32" fill="#2E6BE6"/>
+      <text x="170" y="270" font-size="22" font-weight="800" fill="#0C1B33">通勤</text>
+      <text x="104" y="356" font-size="16" font-weight="700" fill="#13315C">导航抬头即见</text>
+      <text x="104" y="392" font-size="14" fill="#5A6678">转向箭头投在路面方向，</text>
+      <text x="104" y="416" font-size="14" fill="#5A6678">不用低头看手机；</text>
+      <text x="104" y="448" font-size="14" fill="#5A6678">边走边听播客、回消息。</text>
+      <text x="104" y="586" font-size="13" fill="#9AA8BD">双手解放，更安全</text>
+    </g>
+    <g>
+      <rect x="366" y="214" width="262" height="400" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+      <rect x="366" y="214" width="262" height="92" rx="18" fill="#E8F0FE"/><rect x="366" y="270" width="262" height="36" fill="#E8F0FE"/>
+      <circle cx="416" cy="262" r="26" fill="#FFFFFF"/><use data-icon="phosphor-duotone/airplane-tilt" x="400" y="246" width="32" height="32" fill="#2E6BE6"/>
+      <text x="456" y="270" font-size="22" font-weight="800" fill="#0C1B33">差旅</text>
+      <text x="390" y="356" font-size="16" font-weight="700" fill="#13315C">跨语言无障碍</text>
+      <text x="390" y="392" font-size="14" fill="#5A6678">点餐、问路、办理入住，</text>
+      <text x="390" y="416" font-size="14" fill="#5A6678">实时互译面对面沟通；</text>
+      <text x="390" y="448" font-size="14" fill="#5A6678">看路牌菜单即时翻译。</text>
+      <text x="390" y="586" font-size="13" fill="#9AA8BD">出国像在本地</text>
+    </g>
+    <g>
+      <rect x="652" y="214" width="262" height="400" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+      <rect x="652" y="214" width="262" height="92" rx="18" fill="#E8F0FE"/><rect x="652" y="270" width="262" height="36" fill="#E8F0FE"/>
+      <circle cx="702" cy="262" r="26" fill="#FFFFFF"/><use data-icon="phosphor-duotone/microphone" x="686" y="246" width="32" height="32" fill="#2E6BE6"/>
+      <text x="742" y="270" font-size="22" font-weight="800" fill="#0C1B33">会议</text>
+      <text x="676" y="356" font-size="16" font-weight="700" fill="#13315C">自动纪要待办</text>
+      <text x="676" y="392" font-size="14" fill="#5A6678">边开会边转写，</text>
+      <text x="676" y="416" font-size="14" fill="#5A6678">自动抽取结论与待办；</text>
+      <text x="676" y="448" font-size="14" fill="#5A6678">现场字幕辅助听清。</text>
+      <text x="676" y="586" font-size="13" fill="#9AA8BD">散会即得纪要</text>
+    </g>
+    <g>
+      <rect x="938" y="214" width="262" height="400" rx="18" fill="#FFFFFF" filter="url(#cardFloat)"/>
+      <rect x="938" y="214" width="262" height="92" rx="18" fill="#E8F0FE"/><rect x="938" y="270" width="262" height="36" fill="#E8F0FE"/>
+      <circle cx="988" cy="262" r="26" fill="#FFFFFF"/><use data-icon="phosphor-duotone/bicycle" x="972" y="246" width="32" height="32" fill="#2E6BE6"/>
+      <text x="1028" y="270" font-size="22" font-weight="800" fill="#0C1B33">运动</text>
+      <text x="962" y="356" font-size="16" font-weight="700" fill="#13315C">第一视角记录</text>
+      <text x="962" y="392" font-size="14" fill="#5A6678">骑行跑步第一视角成片，</text>
+      <text x="962" y="416" font-size="14" fill="#5A6678">配速、心率眼前可见；</text>
+      <text x="962" y="448" font-size="14" fill="#5A6678">不必手持运动相机。</text>
+      <text x="962" y="586" font-size="13" fill="#9AA8BD">记录每一程</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">12</text>
+  </g>
+</svg>

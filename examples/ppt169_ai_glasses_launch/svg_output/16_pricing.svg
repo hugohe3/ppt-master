@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="0" dy="6" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.12" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F6F9FD"/>
+
+  <g id="header">
+    <text x="640" y="92" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">价格与版本</text>
+    <text x="640" y="138" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">两个版本，按需选择</text>
+    <rect x="592" y="154" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+  </g>
+
+  <g id="standard" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <rect x="220" y="200" width="380" height="412" rx="20" fill="#FFFFFF" filter="url(#cardFloat)"/>
+    <text x="252" y="258" font-size="22" font-weight="800" fill="#0C1B33">VEO One</text>
+    <text x="252" y="286" font-size="14" fill="#5A6678">标准版 · 日常够用</text>
+    <text x="252" y="350" font-family="Arial, sans-serif" font-size="48" font-weight="800" fill="#0C1B33">¥2,999</text>
+    <line x1="252" y1="376" x2="568" y2="376" stroke="#EDF2F8" stroke-width="1"/>
+    <g font-size="15" fill="#13315C">
+      <use data-icon="phosphor-duotone/check-circle" x="252" y="400" width="22" height="22" fill="#2E6BE6"/><text x="284" y="416">看 · 听 · 说一体 AI 助手</text>
+      <use data-icon="phosphor-duotone/check-circle" x="252" y="436" width="22" height="22" fill="#2E6BE6"/><text x="284" y="452">单目显示 · 40 语种翻译</text>
+      <use data-icon="phosphor-duotone/check-circle" x="252" y="472" width="22" height="22" fill="#2E6BE6"/><text x="284" y="488">1200 万摄像 · 18h 续航</text>
+      <use data-icon="phosphor-duotone/check-circle" x="252" y="508" width="22" height="22" fill="#2E6BE6"/><text x="284" y="524">38g 轻量 · 充电盒</text>
+    </g>
+    <rect x="252" y="554" width="316" height="40" rx="20" fill="#FFFFFF" stroke="#2E6BE6" stroke-width="1.5"/>
+    <text x="410" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#2E6BE6">立即预约</text>
+  </g>
+
+  <g id="pro" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <rect x="660" y="200" width="380" height="412" rx="20" fill="url(#gradAccent)" filter="url(#cardFloat)"/>
+    <rect x="936" y="218" width="86" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.22"/>
+    <text x="979" y="238" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">推荐</text>
+    <text x="692" y="258" font-size="22" font-weight="800" fill="#FFFFFF">VEO One Pro</text>
+    <text x="692" y="286" font-size="14" fill="#CFE0FF">旗舰版 · 全能体验</text>
+    <text x="692" y="350" font-family="Arial, sans-serif" font-size="48" font-weight="800" fill="#FFFFFF">¥3,999</text>
+    <line x1="692" y1="376" x2="1008" y2="376" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1"/>
+    <g font-size="15" fill="#FFFFFF">
+      <use data-icon="phosphor-duotone/check-circle" x="692" y="400" width="22" height="22" fill="#9FC0FF"/><text x="724" y="416">标准版全部能力</text>
+      <use data-icon="phosphor-duotone/check-circle" x="692" y="436" width="22" height="22" fill="#9FC0FF"/><text x="724" y="452">全彩高亮显示 · 户外更清晰</text>
+      <use data-icon="phosphor-duotone/check-circle" x="692" y="472" width="22" height="22" fill="#9FC0FF"/><text x="724" y="488">端侧大模型 · 离线更强</text>
+      <use data-icon="phosphor-duotone/check-circle" x="692" y="508" width="22" height="22" fill="#9FC0FF"/><text x="724" y="524">钛合金机身 · 可换镜框</text>
+    </g>
+    <rect x="692" y="554" width="316" height="40" rx="20" fill="#FFFFFF"/>
+    <text x="850" y="579" text-anchor="middle" font-size="15" font-weight="700" fill="#1B47B0">立即预约</text>
+  </g>
+
+  <g id="footer">
+    <text x="640" y="652" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="13" fill="#9AA8BD">* 价格与配置为演示示例，非真实发售信息</text>
+    <text x="1200" y="690" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">16</text>
+  </g>
+</svg>

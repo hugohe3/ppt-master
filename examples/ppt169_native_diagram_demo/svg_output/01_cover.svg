@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <image href="images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
-  <rect x="0" y="0" width="760" height="720" fill="#1E3A5F" fill-opacity="0.35"/>
-  <text x="90" y="320" font-family="Microsoft YaHei" font-size="64" font-weight="bold" fill="#FFFFFF">数字化能力成熟度</text>
-  <text x="92" y="384" font-family="Microsoft YaHei" font-size="26" fill="#D4AF37">从基础数字化到智能化跃迁的三级演进</text>
+  <rect x="0" y="0" width="720" height="720" fill="#0E1124" fill-opacity="0.42"/>
+  <text x="90" y="320" font-family="Microsoft YaHei" font-size="64" font-weight="bold" fill="#FFFFFF">AI 智能眼镜</text>
+  <text x="92" y="384" font-family="Microsoft YaHei" font-size="26" fill="#18C8D6">看见 · 听懂 · 执行 —— 第一视角的智能助手</text>
   <text x="92" y="662" font-family="Microsoft YaHei" font-size="18" fill="#D8DEE8">端到端测试 · Claude 驱动 + Codex 配图 + 原生图示</text>
 </svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2E6BE6"/><stop offset="100%" stop-color="#1B47B0"/>
+    </linearGradient>
+    <filter id="cardFloat" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/><feOffset dx="0" dy="5" result="o"/>
+      <feFlood flood-color="#1B47B0" flood-opacity="0.10" result="c"/><feComposite in="c" in2="o" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <g id="header">
+    <text x="80" y="84" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="1.6" fill="#2E6BE6">硬件体验 · 声音</text>
+    <text x="78" y="132" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-1" fill="#0C1B33">开放式音频，私密又不入耳</text>
+    <rect x="82" y="148" width="96" height="6" rx="3" fill="url(#gradAccent)"/>
+    <text x="1200" y="132" text-anchor="end" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="17" fill="#5A6678">声音只给你听，耳朵始终开放</text>
+  </g>
+
+  <g id="wave">
+    <circle cx="200" cy="380" r="22" fill="url(#gradAccent)"/>
+    <use data-icon="phosphor-duotone/speaker-high" x="182" y="362" width="36" height="36" fill="#FFFFFF"/>
+    <path d="M 240 380 A 60 60 0 0 1 240 380" fill="none"/>
+    <path d="M 234 350 A 44 44 0 0 1 234 410" fill="none" stroke="#2E6BE6" stroke-width="3" stroke-opacity="0.7"/>
+    <path d="M 258 336 A 70 70 0 0 1 258 424" fill="none" stroke="#2E6BE6" stroke-width="3" stroke-opacity="0.45"/>
+    <path d="M 282 322 A 96 96 0 0 1 282 438" fill="none" stroke="#2E6BE6" stroke-width="3" stroke-opacity="0.25"/>
+    <text x="200" y="452" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" font-weight="700" fill="#13315C">定向声场</text>
+  </g>
+
+  <g id="cards" font-family="&quot;Microsoft YaHei&quot;, Arial, sans-serif">
+    <rect x="420" y="230" width="248" height="300" rx="18" fill="#F6F9FD" filter="url(#cardFloat)"/>
+    <circle cx="464" cy="284" r="28" fill="#E8F0FE"/><use data-icon="phosphor-duotone/lock" x="448" y="268" width="32" height="32" fill="#2E6BE6"/>
+    <text x="444" y="356" font-size="22" font-weight="800" fill="#0C1B33">私密定向</text>
+    <text x="444" y="392" font-size="15" fill="#5A6678">声音聚向耳道，</text>
+    <text x="444" y="416" font-size="15" fill="#5A6678">旁人几乎听不到，</text>
+    <text x="444" y="440" font-size="15" fill="#5A6678">公共场合也放心。</text>
+
+    <rect x="690" y="230" width="248" height="300" rx="18" fill="#F6F9FD" filter="url(#cardFloat)"/>
+    <circle cx="734" cy="284" r="28" fill="#E8F0FE"/><use data-icon="phosphor-duotone/wind" x="718" y="268" width="32" height="32" fill="#2E6BE6"/>
+    <text x="714" y="356" font-size="22" font-weight="800" fill="#0C1B33">通透不堵</text>
+    <text x="714" y="392" font-size="15" fill="#5A6678">不入耳设计，</text>
+    <text x="714" y="416" font-size="15" fill="#5A6678">环境声照常听见，</text>
+    <text x="714" y="440" font-size="15" fill="#5A6678">走路骑行更安全。</text>
+
+    <rect x="960" y="230" width="240" height="300" rx="18" fill="#F6F9FD" filter="url(#cardFloat)"/>
+    <circle cx="1004" cy="284" r="28" fill="#E8F0FE"/><use data-icon="phosphor-duotone/phone-call" x="988" y="268" width="32" height="32" fill="#2E6BE6"/>
+    <text x="984" y="356" font-size="22" font-weight="800" fill="#0C1B33">通话清晰</text>
+    <text x="984" y="392" font-size="15" fill="#5A6678">波束成形拾音 +</text>
+    <text x="984" y="416" font-size="15" fill="#5A6678">环境降噪，</text>
+    <text x="984" y="440" font-size="15" fill="#5A6678">嘈杂中也听得清。</text>
+  </g>
+
+  <g id="footer">
+    <text x="80" y="676" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#9AA8BD">VEO ONE</text>
+    <text x="1200" y="676" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#9AA8BD">09</text>
+  </g>
+</svg>

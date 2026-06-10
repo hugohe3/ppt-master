@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+  <text x="80" y="84" font-family="Microsoft YaHei" font-size="34" font-weight="bold" fill="#1B1F3B">AI 眼镜能力分层三级模型</text>
+  <rect x="80" y="98" width="64" height="5" fill="#18C8D6"/>
+  <rect data-native-diagram="solid3d_bluegreen_012"
+        data-recolor="558C5A=18C8D6,122B87=1B1F3B"
+        data-font="Microsoft YaHei"
+        data-text='{"0":"AI 智能眼镜","1":"能力分层模型","2":"看见","3":"听懂","4":"执行","5":"第一视角拍摄","6":"环境识别","7":"语音唤醒","8":"实时翻译","9":"即时导航","10":"信息提醒","11":"多模态助手","12":"应用生态","13":"L1 感知硬件","14":"L3 智能生态","15":"L2 实时交互"}'
+        x="120" y="125" width="1040" height="575" fill="none"/>
+</svg>

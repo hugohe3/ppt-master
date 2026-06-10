@@ -6,7 +6,7 @@
 
 ## III. Visual Theme
 - **Style**: modern, dimensional (welcomes 3D figures → native diagrams are in play)
-- **Color Scheme**: primary `#1E3A5F` (navy) · accent `#D4AF37` (gold) · bg `#FFFFFF` · text `#1A1A1A`
+- **Color Scheme**: primary `#1B1F3B` (deep indigo) · accent `#18C8D6` (cyan) · bg `#FFFFFF` · text `#1A1A1A`
 
 ## IV. Typography
 - font_family: "Microsoft YaHei", Arial, sans-serif
@@ -14,15 +14,15 @@
 ## IX. Content Outline (per-page Treatment = the vehicle decision)
 
 ### Slide 01 — Cover
-- **Core message**: the deck's subject and the 3-level arc.
+- **Core message**: an AI smart-glasses product, framed by its 看见 / 听懂 / 执行 arc.
 - **Treatment**: `image:cover_bg.png (hero_page)` + SVG overlay (title / subtitle).
   - The image is the page's body; SVG carries the editable title.
 
-### Slide 02 — Capability maturity model
-- **Core message**: digital capability matures across three levels (foundation → platform → intelligence).
+### Slide 02 — Capability tier model
+- **Core message**: the glasses' capability builds across three tiers (perception hardware → real-time interaction → intelligent ecosystem).
 - **Treatment**: `native:solid3d_bluegreen_012` (a 3-tier pyramid) + SVG overlay (page title).
   - Primary body is a **native diagram**, recolored to the deck palette
-    (`data-recolor="558C5A=1E3A5F,122B87=D4AF37"`) and filled with this deck's
+    (`data-recolor="558C5A=18C8D6,122B87=1B1F3B"`) and filled with this deck's
     content via text slots (`data-text`). No hand-drawn figure, no chart template.
 
 ## VII. Visualization Reference List (derived from §IX Treatment)
@@ -33,4 +33,4 @@
 ## VIII. Image Resource List (derived from §IX Treatment)
 | Filename | Purpose | Acquire Via | page_role |
 |----------|---------|-------------|-----------|
-| cover_bg.png | Cover backdrop (navy/gold tech, calm center for title) | ai (Codex) | hero_page |
+| cover_bg.png | Cover backdrop (AI glasses, dark indigo/cyan, calm left for title) | ai (Codex) | hero_page |
