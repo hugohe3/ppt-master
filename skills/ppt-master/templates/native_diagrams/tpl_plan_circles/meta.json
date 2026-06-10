@@ -8,13 +8,7 @@
     6858000
   ],
   "shape_count": 78,
-  "media": {
-    "rId3": "media/image1.jpg",
-    "rId4": "media/image18.png",
-    "rId5": "media/image19.svg",
-    "rId6": "media/image20.png",
-    "rId7": "media/image21.svg"
-  },
+  "media": {},
   "charts_unsupported": [],
   "flatten": {
     "colors": 537,
