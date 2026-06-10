@@ -60,6 +60,7 @@ IMAGE_ENV_PREFIXES = (
     "IMAGE_",
     "GEMINI_",
     "OPENAI_",
+    "AGNES_",
     "MINIMAX_",
     "STABILITY_",
     "BFL_",
@@ -108,6 +109,14 @@ BACKEND_REGISTRY = {
         "default_model": "gpt-image-2",
         "key_hint": "OPENAI_API_KEY",
         "aliases": ["openai-compatible", "openai_compatible"],
+    },
+    "agnes": {
+        "module": "backend_agnes",
+        "tier": "extended",
+        "label": "Agnes AI (agnes-image)",
+        "default_model": "agnes-image-2.1-flash",
+        "key_hint": "AGNES_API_KEY",
+        "aliases": ["agnes-ai", "agnesai"],
     },
     "minimax": {
         "module": "backend_minimax",
