@@ -468,8 +468,13 @@ Precedence:
 | `{PROVIDER}_API_KEY` | Required | Provider-specific API key, e.g. `GEMINI_API_KEY`, `ZHIPU_API_KEY` |
 | `{PROVIDER}_BASE_URL` | Optional | Provider-specific custom endpoint |
 | `{PROVIDER}_MODEL` | Optional | Provider-specific model override |
+| `OPENAI_SIZE_PRESET` | Optional | OpenAI-compatible size mapping: `auto`, `legacy`, `gpt-image`, `gpt-image-2`, `dall-e-2` |
+| `OPENAI_RESPONSE_FORMAT` | Optional | OpenAI-compatible response field: `auto`, `b64_json`, `url`, `omit` |
+| `OPENAI_QUALITY` | Optional | OpenAI-compatible quality field: `auto`, `omit`, `low`, `medium`, `high`, `standard`, `hd` |
 
 > Use provider-specific names only (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`). See `.env.example` in clone mode or `${SKILL_DIR}/.env.example` in skill-install mode for the full set per backend.
+
+> Note: OpenAI-compatible platforms that reject OpenAI-specific fields stay under `IMAGE_BACKEND=openai`; configure the `OPENAI_*` compatibility knobs instead of adding a provider-specific backend.
 
 > `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally unsupported.
 
