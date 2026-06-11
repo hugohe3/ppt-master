@@ -1,0 +1,268 @@
+{
+  "key": "demo_synthetic_platform",
+  "title": "统一数字化平台架构示意",
+  "source": "synth_platform.pptx",
+  "slide_num": 1,
+  "canvas_emu": [
+    12192000,
+    6858000
+  ],
+  "shape_count": 22,
+  "media": {},
+  "charts_unsupported": [],
+  "flatten": {
+    "colors": 0,
+    "colors_unresolved": 0,
+    "fonts": 0
+  },
+  "foreign_rels_stripped": 0,
+  "text_slots": [
+    {
+      "id": 0,
+      "text": "统一数字化平台架构示意"
+    },
+    {
+      "id": 1,
+      "text": "应用层"
+    },
+    {
+      "id": 2,
+      "text": "APPLICATION"
+    },
+    {
+      "id": 3,
+      "text": "门户"
+    },
+    {
+      "id": 4,
+      "text": "协同"
+    },
+    {
+      "id": 5,
+      "text": "报表"
+    },
+    {
+      "id": 6,
+      "text": "审批"
+    },
+    {
+      "id": 7,
+      "text": "集成"
+    },
+    {
+      "id": 8,
+      "text": "能力层"
+    },
+    {
+      "id": 9,
+      "text": "CAPABILITY"
+    },
+    {
+      "id": 10,
+      "text": "流程引擎"
+    },
+    {
+      "id": 11,
+      "text": "数据引擎"
+    },
+    {
+      "id": 12,
+      "text": "规则引擎"
+    },
+    {
+      "id": 13,
+      "text": "智能引擎"
+    },
+    {
+      "id": 14,
+      "text": "表单引擎"
+    },
+    {
+      "id": 15,
+      "text": "基础层"
+    },
+    {
+      "id": 16,
+      "text": "FOUNDATION"
+    },
+    {
+      "id": 17,
+      "text": "计算"
+    },
+    {
+      "id": 18,
+      "text": "存储"
+    },
+    {
+      "id": 19,
+      "text": "网络"
+    },
+    {
+      "id": 20,
+      "text": "安全"
+    },
+    {
+      "id": 21,
+      "text": "运维"
+    }
+  ],
+  "slot_spec": [
+    {
+      "id": 0,
+      "orig": "统一数字化平台架构示意",
+      "width": 22,
+      "budget": 22,
+      "style": "sentence"
+    },
+    {
+      "id": 1,
+      "orig": "应用层",
+      "width": 6,
+      "budget": 6,
+      "style": "short-label"
+    },
+    {
+      "id": 2,
+      "orig": "APPLICATION",
+      "width": 11,
+      "budget": 11,
+      "style": "phrase"
+    },
+    {
+      "id": 3,
+      "orig": "门户",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 4,
+      "orig": "协同",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 5,
+      "orig": "报表",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 6,
+      "orig": "审批",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 7,
+      "orig": "集成",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 8,
+      "orig": "能力层",
+      "width": 6,
+      "budget": 6,
+      "style": "short-label"
+    },
+    {
+      "id": 9,
+      "orig": "CAPABILITY",
+      "width": 10,
+      "budget": 10,
+      "style": "phrase"
+    },
+    {
+      "id": 10,
+      "orig": "流程引擎",
+      "width": 8,
+      "budget": 8,
+      "style": "short-label"
+    },
+    {
+      "id": 11,
+      "orig": "数据引擎",
+      "width": 8,
+      "budget": 8,
+      "style": "short-label"
+    },
+    {
+      "id": 12,
+      "orig": "规则引擎",
+      "width": 8,
+      "budget": 8,
+      "style": "short-label"
+    },
+    {
+      "id": 13,
+      "orig": "智能引擎",
+      "width": 8,
+      "budget": 8,
+      "style": "short-label"
+    },
+    {
+      "id": 14,
+      "orig": "表单引擎",
+      "width": 8,
+      "budget": 8,
+      "style": "short-label"
+    },
+    {
+      "id": 15,
+      "orig": "基础层",
+      "width": 6,
+      "budget": 6,
+      "style": "short-label"
+    },
+    {
+      "id": 16,
+      "orig": "FOUNDATION",
+      "width": 10,
+      "budget": 10,
+      "style": "phrase"
+    },
+    {
+      "id": 17,
+      "orig": "计算",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 18,
+      "orig": "存储",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 19,
+      "orig": "网络",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 20,
+      "orig": "安全",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    },
+    {
+      "id": 21,
+      "orig": "运维",
+      "width": 4,
+      "budget": 4,
+      "style": "short-label"
+    }
+  ],
+  "structure": "3 stacked platform bands (application / capability / foundation), each = 1 layer label + 1 EN sublabel + a row of 5 short capability cards. Best for a 3-tier platform/stack architecture with ~5 short labels per tier.",
+  "fit_guidance": "Map content onto ALL slots (id 0..N-1). Keep each replacement within its `budget` — budget is VISUAL WIDTH, not character count: a CJK glyph counts as 2, a Latin letter / digit / ASCII punct as 1 (so a budget of 6 fits ~3 Chinese characters OR ~6 Latin ones). Longer text truncates or overflows the slot. Match a slot's `style`: tiny=number/badge, short-label=node/layer name, phrase=sub-label, sentence=one short line. Adapt/condense the page content to the component's structure; do NOT leave any slot at its original text.",
+  "summary": "Original CC0 3-layer capability platform (application / capability / foundation), 5 cards per layer. Synthetic demo asset — free to ship."
+}

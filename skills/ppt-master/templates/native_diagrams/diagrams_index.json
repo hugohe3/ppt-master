@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "look": "Dimensional depth — gradient-shaded platforms / cards convey the content relationship (layers / hierarchy / composition); it is NOT a deck-wide style lock. Recolor the two base hexes to the deck palette so the figure blends into any deck.",
+    "usage": "Use full-slide OR scale into an in-page region via the data-native-diagram placeholder (x/y/w/h). `density` says how small it can shrink and stay legible.",
+    "recolor_base": {
+      "primary": "558C5A",
+      "accent": "122B87"
+    },
+    "select_by": "content relationship (type/use) x item count (slots) x content-per-slot (holds); place full-slide or as a region within the density limit.",
+    "license_note": "Components shipped here are original CC0 assets, free to ship and reuse."
+  },
+  "diagrams": {
+    "demo_synthetic_platform": {
+      "type": "layered-platform",
+      "use": "composition",
+      "scenario": "platform / tech stack / capability map",
+      "slots": "3",
+      "slot_of": "layers",
+      "holds": "short-label",
+      "density": "high",
+      "footprint": "wide-band",
+      "text_load": "medium",
+      "motif": "card",
+      "aspect": "16:9",
+      "license": "CC0 (original asset)",
+      "pick": "Pick for a 3-tier platform / tech-stack architecture: 3 stacked bands (application / capability / foundation), ~5 short capability cards per tier. Original CC0 demo asset — free to ship/reuse.",
+      "conf": "refined"
+    }
+  }
+}
