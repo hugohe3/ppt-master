@@ -363,6 +363,27 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         event.update(metadata)
         ctx.trace_events.append(event)
 
+    # Native-diagram placeholder: an element (typically <rect>) carrying
+    # data-native-diagram is resolved by splicing the named component's
+    # DrawingML in, scaled to the placeholder rect — peer to <use data-icon>
+    # and <image>. Intercept before the normal tag dispatch so the placeholder
+    # rect never reaches convert_rect.
+    if elem.get('data-native-diagram'):
+        from .native_diagram_resolver import resolve_native_diagram
+        try:
+            result = resolve_native_diagram(elem, ctx)
+        except SvgNativeConversionError:
+            trace('error', error='native-diagram resolve failed')
+            raise  # already a precise native-diagram error; don't double-wrap
+        except Exception as e:
+            trace('error', error=str(e))
+            raise SvgNativeConversionError(
+                f"Failed to resolve data-native-diagram="
+                f"{elem.get('data-native-diagram')!r}: {e}"
+            ) from e
+        trace('native-diagram', key=elem.get('data-native-diagram'))
+        return result
+
     converter = _CONVERTERS.get(tag)
     if converter:
         try:
