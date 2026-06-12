@@ -133,14 +133,14 @@ PPT Master 不一样：
 
 ### 1. 前置条件
 
-**只需装 Python 和 uv 即可。** uv 是 Python 包管理器，依赖通过 `uv sync` 一次装齐到隔离的虚拟环境中，不污染全局。
+**只需装 Python 和 uv 即可。** uv 是 Python 包管理器，`uvx` 会自动下载并运行 ppt-master，无需手动安装依赖。
 
 | 依赖 | 是否必须 | 用途 |
 |------|:--------:|------|
 | [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时 |
-| [uv](https://docs.astral.sh/uv/getting-started/installation/) | ✅ **必需** | Python 包管理器——装在隔离环境，告别全局污染 |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | ✅ **必需** | Python 包管理器——`uvx` 自动下载运行 ppt-master |
 
-> **一句话总结** — 装好 Python 和 uv，跑一行 `uv sync`，就可以开始生成 PPT 了。
+> **一句话总结** — 装好 Python 和 uv，就可以开始生成 PPT 了。
 
 <details open>
 <summary><strong>Windows</strong> — 请看专门的手把手安装指南 ⚠️</summary>
@@ -149,7 +149,7 @@ Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 
 
 **📖 [Windows 安装指南](./docs/zh/windows-installation.md)** — 从零到跑通第一份 PPT，10 分钟搞定。
 
-简要流程：从 [python.org](https://www.python.org/downloads/) 下载 Python → **安装时勾选 "Add to PATH"** → 安装 [uv](https://docs.astral.sh/uv/getting-started/installation/) → `uv sync` → 完成。
+简要流程：从 [python.org](https://www.python.org/downloads/) 下载 Python → **安装时勾选 "Add to PATH"** → 安装 [uv](https://docs.astral.sh/uv/getting-started/installation/) → 完成。
 </details>
 
 <details>
@@ -158,12 +158,10 @@ Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 
 ```bash
 # macOS
 brew install python uv
-uv sync
 
 # Ubuntu / Debian
 sudo apt install python3
 curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync
 ```
 </details>
 
@@ -207,12 +205,6 @@ git clone https://github.com/elvisw/ppt-master.git
 cd ppt-master
 ```
 
-然后安装依赖：
-
-```bash
-uv sync
-```
-
 CLI 工具已发布到 PyPI，`uvx ppt-master <command>` 自动下载运行，无需手动安装。
 
 日常更新（方式 A / B）：`uvx ppt-master update-repo`
@@ -228,7 +220,7 @@ CLI 工具已发布到 PyPI，`uvx ppt-master <command>` 自动下载运行，�
 > /plugin install ppt-master@ppt-master
 > ```
 >
-> 上述两种安装方式都只会拉取 skill 文件本身（不含完整仓库），后处理脚本仍需在安装目录跑 `uv sync`。
+> 上述两种安装方式都只会拉取 skill 文件本身（不含完整仓库），CLI 工具通过 `uvx` 自动下载运行。
 
 ### 4. 开始创作
 

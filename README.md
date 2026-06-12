@@ -129,14 +129,14 @@ I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who 
 
 ### 1. Prerequisites
 
-**You only need Python and uv.** uv is a Python package manager. `uv sync` installs all dependencies into an isolated virtual environment — no global pollution.
+**You only need Python and uv.** uv is a Python package manager; `uvx` downloads and runs ppt-master automatically — no manual dependency install needed.
 
 | Dependency | Required? | What it does |
 |------------|:---------:|--------------|
 | [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime |
-| [uv](https://docs.astral.sh/uv/getting-started/installation/) | ✅ **Yes** | Python package manager — isolated environments, no global pollution |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | ✅ **Yes** | Python package manager — `uvx` auto-downloads and runs ppt-master |
 
-> **TL;DR** — Install Python and uv, run `uv sync`, and you're ready to generate presentations.
+> **TL;DR** — Install Python and uv, and you're ready to generate presentations.
 
 <details open>
 <summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
@@ -145,7 +145,7 @@ Windows requires a few extra steps (PATH setup, execution policy, etc.). We wrot
 
 **📖 [Windows Installation Guide](./docs/windows-installation.md)** — from zero to a working presentation in 10 minutes.
 
-Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → install [uv](https://docs.astral.sh/uv/getting-started/installation/) → `uv sync` → done.
+Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → install [uv](https://docs.astral.sh/uv/getting-started/installation/) → done.
 </details>
 
 <details>
@@ -154,12 +154,10 @@ Quick version: download Python from [python.org](https://www.python.org/download
 ```bash
 # macOS
 brew install python uv
-uv sync
 
 # Ubuntu / Debian
 sudo apt install python3
 curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync
 ```
 </details>
 
@@ -193,19 +191,13 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 
 ### 3. Set Up
 
-**Option A — Download ZIP** (no Git required): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip.
+**Option A — Download ZIP** (no Git required): click **Code → Download ZIP** on the [GitHub page](https://github.com/elvisw/ppt-master), then unzip.
 
 **Option B — Git clone** (requires [Git](https://git-scm.com/downloads) installed):
 
 ```bash
-git clone https://github.com/hugohe3/ppt-master.git
+git clone https://github.com/elvisw/ppt-master.git
 cd ppt-master
-```
-
-Then install dependencies:
-
-```bash
-uv sync
 ```
 
 The CLI tool is published on PyPI — `uvx ppt-master <command>` downloads and runs it automatically. No manual install needed.
@@ -216,14 +208,14 @@ To update later (Option A / B): `uvx ppt-master update-repo`
 >
 > ```bash
 > # Cross-agent CLI (Claude Code, Cursor, Codex, etc.)
-> npx skills add hugohe3/ppt-master
+> npx skills add elvisw/ppt-master
 >
 > # Or inside Claude Code
-> /plugin marketplace add hugohe3/ppt-master
+> /plugin marketplace add elvisw/ppt-master
 > /plugin install ppt-master@ppt-master
 > ```
 >
-> Both install paths above only fetch the skill files (not the full repo); you still need to `uv sync` from the installed location for the post-processing scripts to run.
+> Both install paths above only fetch the skill files (not the full repo); the CLI tools are auto-downloaded via `uvx`.
 
 ### 4. Create
 
