@@ -380,7 +380,7 @@ All `feOffset` on a page must share the same `dx`/`dy` direction. Default: `dx="
 #### Restraint over visibility
 
 Standard: "the shadow is felt, not seen." If noticed, it's too strong.
-- Resting cards: `flood-opacity` 0.06-0.12
+- Resting cards: `flood-opacity` 0.06-0.10
 - Raised elements (CTA, overlay): max `flood-opacity` 0.20
 - Above 0.20 = Office 2007 hard-shadow look
 - Color: near-black at low opacity, or a darker tint of background. Brand-color shadow only on accent elements sharing that hue.
@@ -424,7 +424,7 @@ Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter
 Recommended parameters (see "Two-tier elevation maximum" above for tier guidance):
 ```
 stdDeviation:   4–16       (resting cards: 4–8;  raised elements: 10–16)
-flood-opacity:  0.06–0.12  (resting cards — default)
+flood-opacity:  0.06–0.10  (resting cards — default)
                 0.12–0.20  (raised elements only — primary CTA, overlay)
                 NEVER     > 0.20  (Office 2007 hard-shadow look)
 dy:             2–10       (resting: 2–4;  raised: 6–10)
