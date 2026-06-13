@@ -405,7 +405,7 @@ Read references/modes/<locked-mode>.md            # narrative skeleton (spec_loc
 Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
 ```
 
-> Read executor-base + shared-standards + the one locked mode file + the one locked visual-style file. For `visual_style: custom`, skip the style file and use `visual_style_behavior` from `spec_lock.md`. Never glob `modes/` or `visual-styles/`.
+> Read executor-base + shared-standards + the one locked mode file + the one locked visual-style file. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 
