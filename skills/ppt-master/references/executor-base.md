@@ -1,6 +1,6 @@
 # Executor Common Guidelines
 
-> Style-specific content is in the corresponding `executor-{style}.md`. Technical constraints are in shared-standards.md.
+> Narrative skeleton and visual aesthetic come from this deck's locked files under [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md). Technical constraints are in shared-standards.md.
 
 ---
 

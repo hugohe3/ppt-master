@@ -62,11 +62,14 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
 
 跟 AI 对话时也可以直接说："这个页面要严格保持逐行版式" —— AI 重新导出时会加上 `--no-merge`。
 
-## Q: 三种执行师有什么区别？
+## Q: PPT Master 怎么确定演示的风格？
 
-- **Executor_General**: 通用场景，灵活布局
-- **Executor_Consultant**: 一般咨询，数据可视化
-- **Executor_Consultant_Top**: 顶级咨询（MBB 级），5 大核心技巧
+在第 d 项确认时锁定两个独立维度：
+
+- **Mode（怎么讲）**：`pyramid` / `narrative` / `instructional` / `showcase` —— 见 `references/modes/`
+- **Visual style（长什么样）**：`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech` … + `custom` —— 见 `references/visual-styles/`
+
+任意 mode 可与任意 visual style 自由组合。
 
 ## Q: 用 PPT Master 做 PPT 贵吗？
 

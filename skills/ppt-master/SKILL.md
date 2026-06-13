@@ -397,16 +397,15 @@ Workflow:
 
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete; all prerequisite deliverables are ready.
 
-Read the role definition based on the selected style:
+Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
 ```
-Read references/executor-base.md          # REQUIRED: common guidelines
-Read references/shared-standards.md       # REQUIRED: SVG/PPT technical constraints
-Read references/executor-general.md       # General flexible style
-Read references/executor-consultant.md    # Consulting style
-Read references/executor-consultant-top.md # Top consulting style (MBB level)
+Read references/executor-base.md                  # REQUIRED: common guidelines
+Read references/shared-standards.md               # REQUIRED: SVG/PPT technical constraints
+Read references/modes/<locked-mode>.md            # narrative skeleton (spec_lock.md `mode`)
+Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
 ```
 
-> Only read executor-base + shared-standards + one style file.
+> Read executor-base + shared-standards + the one locked mode file + the one locked visual-style file. For `visual_style: custom`, skip the style file and use `visual_style_behavior` from `spec_lock.md`. Never glob `modes/` or `visual-styles/`.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 

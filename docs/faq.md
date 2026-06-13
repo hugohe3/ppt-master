@@ -62,11 +62,14 @@ With `--no-merge`, every visual line becomes its own PowerPoint text frame. This
 
 When you're chatting with the AI, you can also just ask for strict line fidelity on layout-sensitive pages — the AI will add `--no-merge` when re-exporting.
 
-## Q: What's the difference between the three Executors?
+## Q: How does PPT Master decide a deck's style?
 
-- **Executor_General**: General scenarios, flexible layout
-- **Executor_Consultant**: General consulting, data visualization
-- **Executor_Consultant_Top**: Top consulting (MBB level), 5 core techniques
+Two independent choices, locked at confirmation `d`:
+
+- **Mode** (how the deck argues): `pyramid` / `narrative` / `instructional` / `showcase` — see `references/modes/`
+- **Visual style** (how it looks): `swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech` … + `custom` — see `references/visual-styles/`
+
+Any mode pairs with any visual style.
 
 ## Q: Is PPT Master expensive to use?
 
