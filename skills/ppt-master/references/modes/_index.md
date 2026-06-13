@@ -26,9 +26,11 @@ Each mode has its own file with: narrative skeleton, page-structure tendencies, 
 | Strategic decision / analysis / board / investor | `pyramid` | `narrative` |
 | Pitch / case study / origin story / campaign arc | `narrative` | `showcase` |
 | Course / onboarding / how-to / science explainer | `instructional` | `pyramid` |
-| Product launch / brand reveal / event opener | `showcase` | `narrative` |
+| Product launch / brand reveal / event opener / keynote / 发布会 / TED | `showcase` | `narrative` |
 
 > No single signal dominates — read the deck's actual purpose from `c. Key Information`. When two modes fit, follow the **primary** intent of the body pages, not the cover. A data briefing legitimately runs almost entirely `pyramid`; do not force variety.
+>
+> "Keynote-style" is a *mode* request, not a visual style — it means showcase pacing (one big idea per page, full-bleed hero, reveal rhythm), skinned by whatever visual style fits the brand (`swiss-minimal` clean, `dark-tech` dramatic, `glassmorphism` premium). Don't reach for a "keynote" visual style — there isn't one, by design.
 
 ---
 
