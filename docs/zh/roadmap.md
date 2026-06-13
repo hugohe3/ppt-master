@@ -57,7 +57,8 @@
 
 明确在做或下一步要做的方向，不承诺时间窗口。
 
-- **用真实 deck 验证并校准 mode / visual-style 新体系** — 5 个 mode + 18 个 visual-style + `custom` 逃生舱目前都还是设计态，没在真实 deck 上按这个规模跑过验证。下一步不是再加预设，而是跑几份覆盖新 mode / visual-style / custom 的真实 deck，从真实信号反过来收紧：Strategist 在哪选错了 mode 或 style、Executor 有没有落实某个 style 的纪律、custom 锁定在确认环节读起来清不清楚；据此调整 auto-selection 表与各 mode / style 文件的措辞。mode 边界灰区的打磨并入此项——靠真实用例校准，而非空想扩档，不再新增预设
+- **用真实 deck 验证并校准 mode / visual-style 新体系** — 5 个 mode + 18 个 visual-style + `custom` 逃生舱目前都还是设计态，没在真实 deck 上按这个规模跑过验证。下一步不是再加预设，而是跑几份覆盖新 mode / visual-style / custom 的真实 deck，从真实信号反过来收紧：Strategist 在哪选错了 mode 或 style、Executor 有没有落实某个 style 的纪律、custom 锁定在确认环节读起来清不清楚；据此调整 auto-selection 表与各文件措辞
+- **mode catalog 已收口** — 结构（5 个 + custom）定型，近邻消歧判据补齐成一张 Close-calls 表（`pyramid↔briefing`、`narrative↔pyramid`、`narrative↔showcase`、`instructional↔briefing` 四对真正会混的对，其余 far-apart 不需要）。residual 只剩各 mode 文件随真实 deck 落实情况的措辞精修，并入上面的验证 pass，不再单独占工
 
 ---
 
