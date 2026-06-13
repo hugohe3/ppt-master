@@ -44,6 +44,20 @@ The past two months' structural capability growth. Single flags / incremental po
 - **LaTeX math formula rendering shipped** ([`scripts/latex_render.py`](../skills/ppt-master/scripts/latex_render.py)) — Strategist locks one of three policies (`mixed` / `render-all` / `text-only`) inside the Typography confirmation and writes an explicit `images/formula_manifest.json`; the renderer walks a codecogs → quicklatex → mathpad → wikimedia fallback chain and emits transparent PNGs that land in §VIII as `Acquire Via: formula` / `Status: Rendered` rows; formula-heavy decks (academic / engineering / educational) finally have a native rendering route. Formula selection is a Strategist decision — the renderer never scans source files for `$...$` markers
 - **Live preview direct editing — L1 / L2 / L3** ([`workflows/live-preview.md`](../skills/ppt-master/workflows/live-preview.md)) — the browser editor gains deterministic in-place edits with no AI round-trip: text content (L1), presentation attributes like fill / stroke / font-size (L2), and on-canvas geometry (L3) — drag a selected element to move it, arrow-key nudge (`Shift` = 10px), multi-select, plus a right-click overlap picker for stacked shapes. Edits stage with `Ctrl+Z` undo + coalescing and write to `svg_output/` on **Apply changes**; moves persist through finalize / export (moved text frames, promoted multi-line tspans, repositioned icons all reproduce in the PPTX). Re-export stays chat-driven; on-canvas resize handles are not yet implemented (resize via the geometry inputs)
 
+### 2026-06 — Mode & visual-style dual catalogs
+
+- **Three executors retired → mode + visual-style dual catalogs** ([`references/modes/`](../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../skills/ppt-master/references/visual-styles/)) — the old three `executor-*.md` (general / consultant / consultant-top) entangled domain · audience · persuasion · narrative on one axis; split into two orthogonal catalogs (following the `image-renderings` pattern: flat dir + `_index` + on-demand read + Strategist locks one). **mode** = narrative skeleton (`pyramid` / `narrative` / `instructional` / `showcase`; consultant + top merge into pyramid since their narrative core is identical); **visual-style** = SVG layout aesthetic (`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`, each paired with an image-rendering, **zero HEX** — color truth stays in confirmation e + image-palettes). Strategist `§d` locks `mode` + `visual_style` independently into `spec_lock`; Executor loads the two locked files; any mode × any style. Render coordinates stay in `templates/charts/`
+- **Prompt constraint-strength decoupling** ([`docs/rules/prompt-style.md`](rules/prompt-style.md) §4) — three explicit strength tiers — rule (`Hard rule` / `Forbidden`) / default (`Default — … may override`) / reference (`Reference — not a constraint`) — plus an "objective failure vs taste" test and a checker boundary, so the model can tell "must keep vs may deviate" at a glance; the visual-style catalog is Reference-strength throughout
+
+---
+
+## In progress / Next
+
+Directions actively underway or up next, with no committed timeline.
+
+- **visual-style catalog growth** — keep building on the 4 seed styles (swiss-minimal / editorial / soft-rounded / dark-tech) from two parallel sources: align with [`image-renderings`](../skills/ppt-master/references/image-renderings/) so layout pairs with illustration, and distill the visual styles already realized in the [examples library](../examples/) (brutalist / blueprint / memphis / zine, etc.) into reusable style entries
+- **mode catalog refinement** — how the four narrative skeletons (pyramid / narrative / instructional / showcase) draw their boundaries, and whether to add more, are still under consideration; recorded here as a preliminary direction only
+
 ---
 
 ## Ongoing maintenance directions
