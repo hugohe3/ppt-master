@@ -123,7 +123,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 **Missing `page_rhythm` section** → emit `warning: spec_lock.md missing page_rhythm — defaulting all pages to dense` once, fall back to `dense` for all pages.
 
-**Tag not found for current page** → fall back to `dense` silently. Do not invent a tag.
+**Tag not found for current page** → emit `warning: spec_lock.md page_rhythm tag not found for P<NN> — falling back to dense` once per deck (aggregate; do not repeat per page), fall back to `dense`. Do not invent a tag.
 
 **Per-page template lookup — `page_layouts` section**:
 
