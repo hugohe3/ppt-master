@@ -48,7 +48,7 @@
 
 - **三个 executor 退役 → mode + visual-style 双 catalog**（[`references/modes/`](../../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../../skills/ppt-master/references/visual-styles/)） — 原三个 `executor-*.md`（general / consultant / consultant-top）把「领域 · 受众 · 说服 · 叙事」捆在一条线；拆成两个正交 catalog（照 `image-renderings` 范式：扁平目录 + `_index` + 按需读 + Strategist 锁一个）。**mode** = 讲解骨架（`pyramid` / `narrative` / `instructional` / `showcase`，consultant + top 因叙事内核相同合并为 pyramid）；**visual-style** = SVG 排版美学（`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`，各 paired 一个 image-rendering，**零 HEX**——颜色真值守在 confirmation e + image-palettes）。Strategist `§d` 双层独立锁定 `mode` + `visual_style` 进 `spec_lock`，Executor 加载两个 locked 文件；任意 mode × 任意 style 自由组合，渲染坐标仍留 `templates/charts/`
 - **提示词约束强度三档解耦**（[`docs/rules/prompt-style.md`](../rules/prompt-style.md) §4） — 规则（`Hard rule` / `Forbidden`）/ 默认（`Default — … may override`）/ 参考（`Reference — not a constraint`）三档显式化 + 「客观失败 vs 品味」判据 + checker 边界，让模型对「该守 vs 可破」一目了然；visual-style catalog 全程用 Reference 强度
-- **visual-style catalog 扩充至 8 个** — 从[示例库](../../examples/)已成型的视觉风格提炼出 4 个新条目：`brutalist`（报章满版密度 / 框线 / 全平）· `blueprint`（深底蓝图线稿 / 等距投影 / 标注语汇）· `memphis`（撞色块 / 几何碎片 / 粗描边）· `zine`（riso 套色错位 / 半色调 / 限定调色）。同样零 HEX、Reference 强度、各 paired 一个 image-rendering，`_index` catalog 表 + auto-selection 同步登记
+- **visual-style catalog 扩充至 14 个，与 image-renderings 对齐** — 先从[示例库](../../examples/)提炼 4 个（`brutalist` / `blueprint` / `memphis` / `zine`），再补齐 [`image-renderings`](../../skills/ppt-master/references/image-renderings/) 里有排版对应物的手绘 / 纹理风格 6 个：`sketch-notes`（暖纸涂鸦 + 柔彩块）· `ink-notes`（白底黑墨 + 稀疏语义色）· `chalkboard`（深石板 + 粉笔）· `paper-cut`（分层剪纸 + 层间软阴影）· `vintage-poster`（中世纪平涂块 + 半色调）· `pixel-art`（像素网格）。每个 style 与同名 / 同气质 rendering 配对，catalog 按 结构图形 / 表现印刷 / 手绘教育 / 特殊 四组归类。摄影 / 绘画类 rendering（corporate-photo / nature / warm-scene / fantasy-animation / watercolor）刻意不建 layout 孪生——它们描述「图」的样子而非版面，配对某个 layout style 即可。全程零 HEX、Reference 强度
 
 ---
 
@@ -56,7 +56,6 @@
 
 明确在做或下一步要做的方向，不承诺时间窗口。
 
-- **visual-style catalog 继续对齐 image-renderings** — 示例库提炼一轮已落地（→ 8 个 style）；剩下的方向是把 catalog 与 [`image-renderings`](../../skills/ppt-master/references/image-renderings/) 全集进一步对齐，让每个排版风格都有自然配对的插图风格
 - **mode catalog 完善** — 4 个讲解骨架（pyramid / narrative / instructional / showcase）的边界划分、以及是否扩档仍在斟酌，此处仅记初步方向
 
 ---
