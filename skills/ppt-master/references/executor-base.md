@@ -17,7 +17,7 @@
 | Every distinct chart name in `spec_lock.md page_charts` | `templates/charts/<chart_name>.svg` |
 | Chart types in `design_spec.md §VII` not covered above | `templates/charts/<chart_name>.svg` |
 
-**Forbidden — re-reading during generation**:
+**Default — read each template once; re-read only on the mid-deck exception below**:
 - Layout SVG already loaded in this batch
 - Chart SVG already loaded in this batch
 
@@ -89,9 +89,9 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 
 **Hard rule**: Before generating **each** SVG page, `read_file <project_path>/spec_lock.md`. Use only values from this file, not from memory. If context was auto-compacted, also `read_file <project_path>/design_spec.md` for the current page's §IX brief.
 
-**Per-block expression**: render each `design_spec.md §IX Content` block in its written texture — a full-sentence block as wrapped prose, a fragment/label block as bullets/keywords. **Never split a full-sentence block into a bullet list** — not because a bullet lays out easier, and not because an inherited template slot is shaped as a list. If a block carries no clear texture, infer the mode from its wording and the page layout.
+**Per-block expression**: render each `design_spec.md §IX Content` block in its written texture — a full-sentence block as wrapped prose, a fragment/label block as bullets/keywords. **Never split a full-sentence block into a bullet list** — splitting loses the information that the block was continuous reasoning, not a set of parallel points; not because a bullet lays out easier, and not because an inherited template slot is shaped as a list. If a block carries no clear texture, infer the mode from its wording and the page layout.
 
-- **Prose render recipe**: one `<text>` per paragraph; wrap lines with sibling `<tspan>` that reset `x` to the block's left edge and advance `dy` by the font size × a line-height factor: ~1.4–1.5× for dense/small-body blocks (per CLReq comfortable minimum); 1.6–2.0× for large-type, sparse, or `breathing` page blocks. Fit about width ÷ font-size CJK glyphs per line (Latin fits roughly twice that); the last line runs short. Use the body ramp size, not a new one.
+- **Prose render recipe**: one `<text>` per paragraph; wrap lines with sibling `<tspan>` that reset `x` to the block's left edge and advance `dy` by the font size × a line-height factor. **Default — line-height by density (may override per content fit)**: ~1.4–1.5× for dense / small-body blocks (CLReq comfortable minimum), 1.6–2.0× for large-type, sparse, or `breathing` blocks. Fit about width ÷ font-size CJK glyphs per line (Latin fits roughly twice that); the last line runs short. Use the body ramp size, not a new one.
 - **Template precedence**: when an inherited template slot is a bullet list but the §IX block is prose, the prose wins — widen or reflow the container to hold the paragraph, or drop that card; do not pour the sentence back into the list slot.
 
 > Note: block-level phrasing, applied *within* the page's `page_rhythm` density (below), not against it.
@@ -161,7 +161,7 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 
 > The [`verify-charts`](../workflows/verify-charts.md) workflow enumerates chart pages from `design_spec.md §VII`, then reads each page's plot-area marker to feed `svg_position_calculator.py`. Missing marker → verify-charts has to re-derive the plot area from axis lines, paying the cost on every run.
 
-Every SVG page that contains a data visualization chart MUST include a plot-area marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
+**Hard rule**: every SVG page that contains a data visualization chart includes a plot-area marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
 
 **Rectangular plot area** (bar / horizontal_bar / grouped_bar / stacked_bar / line / area / stacked_area / scatter / waterfall / pareto / butterfly):
 
@@ -197,8 +197,8 @@ grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 > All chart templates in `templates/charts/` include this marker as a reference. If you are drawing a chart and the marker is absent, you have a bug.
 - **Technical specs**: see [shared-standards.md](shared-standards.md) for SVG/PPT constraints
 - **Card containers — use the documented patterns**: when a content page needs section cards (4 quadrants, parallel aspects, capability blocks, info cards), use the patterns codified in [`templates/charts/CHART_STYLE_GUIDE.md`](../templates/charts/CHART_STYLE_GUIDE.md) §11 — half-rounded section tab (§11.1), nested card border without stroke (§11.2), card-grid skeletons (§11.3), diagonal dashed connector for cross-quadrant relationships (§11.5), ground-anchor ellipse as a non-filter depth marker (§11.6), bidirectional interaction arrows for paired protocols (§11.7). Do not reinvent the "tinted full-rounded rect + white cover-rect to hide the bottom corners" hack; it survives in older templates but breaks SVG→PPTX color editing. Reference templates: [`labeled_card.svg`](../templates/charts/labeled_card.svg), [`quadrant_text_bullets.svg`](../templates/charts/quadrant_text_bullets.svg), [`kpi_cards.svg`](../templates/charts/kpi_cards.svg), [`matrix_2x2.svg`](../templates/charts/matrix_2x2.svg), [`team_roster.svg`](../templates/charts/team_roster.svg), [`client_server_flow.svg`](../templates/charts/client_server_flow.svg).
-- **Semantic shapes over preset stacks**: when a slide needs to express "ascending / converging / breaking through / stacking" — i.e., a relationship that goes beyond a generic arrow — prefer a single custom `<polygon>` or `<path>` that encodes the semantics geometrically, rather than stacking multiple preset arrows. A converging-tip path or a podium polygon reads faster than three arrows pointing at a label. Examples of this technique appear in many imported corporate decks; see `projects/01_template_import/svg_output/slide_01.svg` shape-158 for a reference (gradient-filled inward-pointing arrow). Do not codify these as templates — they are page-specific; the rule is just "consider polygon before stacking presets."
-- **Visual depth — through restraint**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Apply shadow to at most 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow. Full rules in shared-standards.md §6.
+- **Reference — prefer semantic shapes over preset stacks (not a constraint)**: when a slide needs to express "ascending / converging / breaking through / stacking" — i.e., a relationship that goes beyond a generic arrow — prefer a single custom `<polygon>` or `<path>` that encodes the semantics geometrically, rather than stacking multiple preset arrows. A converging-tip path or a podium polygon reads faster than three arrows pointing at a label. Examples of this technique appear in many imported corporate decks; see `projects/01_template_import/svg_output/slide_01.svg` shape-158 for a reference (gradient-filled inward-pointing arrow). Do not codify these as templates — they are page-specific; the rule is just "consider polygon before stacking presets."
+- **Reference — visual depth through restraint (not a constraint)**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Shadow typically suits 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow. Full rules in shared-standards.md §6.
 
 ### SVG File Naming Convention
 
