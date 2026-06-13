@@ -18,7 +18,8 @@ Each style has its own file with: shape & decoration, typography character, colo
 |---|---|---|---|
 | [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, no decoration | High-end consulting, architecture, type-led | `minimalist-swiss` |
 | [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | Finance, journalism, analysis, explainers | `editorial` |
-| [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` / `glassmorphism` |
+| [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` |
+| [`glassmorphism`](./glassmorphism.md) | Translucent glass panels, gradient light, floating depth | Modern SaaS, fintech, product launches, AI demos | `glassmorphism` |
 | [`dark-tech`](./dark-tech.md) | Dark canvas, glow accents, geometric precision | Tech, AI, data products, launches | `digital-dashboard` |
 | [`blueprint`](./blueprint.md) | Schematic line work on dark paper, isometric, annotated | Technical briefings, architecture, engineering | `blueprint` |
 | [`brutalist`](./brutalist.md) | Newsprint density, ruled boxes, raw structure, flat | Annual reviews, research digests, manifestos | `screen-print` / `editorial` |
@@ -32,13 +33,14 @@ Each style has its own file with: shape & decoration, typography character, colo
 | [`vintage-poster`](./vintage-poster.md) | Mid-century flat blocks, halftone, retro-geometric warmth | Heritage, hospitality, cultural, anniversaries | `vintage-poster` |
 | [`paper-cut`](./paper-cut.md) | Layered cut-paper sheets, soft inter-layer shadow, tactile | Cultural / folk, children, festival, sustainability | `paper-cut` |
 
-### 1.3 Hand-drawn / educational
+### 1.3 Hand-drawn / brush
 
 | Visual style | Character | Best for | Paired rendering |
 |---|---|---|---|
 | [`sketch-notes`](./sketch-notes.md) | Warm paper, doodle line work, soft pastel blocks | Education, training, onboarding, knowledge | `sketch-notes` |
 | [`ink-notes`](./ink-notes.md) | Pale field, black hand-ink, sparse semantic accent | Methodology, before/after, manifestos | `ink-notes` |
 | [`chalkboard`](./chalkboard.md) | Dark slate, chalk strokes, powdery pastel accents | Teaching, tutorials, classroom, academic | `chalkboard` |
+| [`ink-wash`](./ink-wash.md) | Rice-paper whitespace, brush marks, seal accent, still | Cultural, philosophy, heritage, 新中式 | `ink-notes` / `watercolor` |
 
 ### 1.4 Specialty
 
@@ -55,7 +57,9 @@ Each style has its own file with: shape & decoration, typography character, colo
 | High-end consulting / architecture / luxury / minimal | `swiss-minimal` | `editorial` |
 | Finance / journalism / research / long-form analysis | `editorial` | `swiss-minimal` |
 | Product / SaaS / training / consumer / friendly | `soft-rounded` | `editorial` |
-| Tech / AI / dev tools / data / futuristic | `dark-tech` | `soft-rounded` |
+| Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `dark-tech` |
+| Tech / AI / dev tools / data / futuristic | `dark-tech` | `glassmorphism` |
+| Cultural / philosophy / heritage / 新中式 / 东方 | `ink-wash` | `editorial` |
 | Engineering / systems / architecture walkthrough | `blueprint` | `dark-tech` |
 | Annual review / manifesto / max-density editorial | `brutalist` | `editorial` |
 | Festival / consumer brand / youth / loud launch | `memphis` | `soft-rounded` |
