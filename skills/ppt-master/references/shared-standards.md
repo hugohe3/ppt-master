@@ -371,7 +371,7 @@ Only when the element genuinely floats above another layer:
 - Pages with only one content container — no second layer to lift above
 - Dark backgrounds — black shadows vanish; use 1px low-opacity white stroke or outer glow
 
-**Per-page budget**: ≤2-3 shadowed elements. If you reach for a 4th, drop one first.
+**Reference — not a constraint**: 2-3 shadowed elements per page usually reads cleanest; before adding a 4th, check the extra layering earns its weight — a genuinely complex dashboard may justify more.
 
 #### Single light source per page
 
