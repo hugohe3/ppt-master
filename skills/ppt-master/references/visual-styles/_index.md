@@ -12,19 +12,26 @@ A **visual style** is how the deck **looks** — shape language, decoration dens
 
 Each style has its own file with: shape & decoration, typography character, color-usage discipline (no HEX), texture / elevation, and the paired image-rendering. **Read only the file for the style you lock** — never glob the directory. The catalog mirrors [`image-renderings`](../image-renderings/_index.md): each style's "Paired rendering" names the illustration family that shares its aesthetic.
 
-### 1.1 Structured / graphic
+### 1.1 Corporate / product
 
 | Visual style | Character | Best for | Paired rendering |
 |---|---|---|---|
 | [`swiss-minimal`](./swiss-minimal.md) | Grid-locked, sharp, aggressive whitespace, no decoration | High-end consulting, architecture, type-led | `minimalist-swiss` |
-| [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | Finance, journalism, analysis, explainers | `editorial` |
 | [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` |
 | [`glassmorphism`](./glassmorphism.md) | Translucent glass panels, gradient light, floating depth | Modern SaaS, fintech, product launches, AI demos | `glassmorphism` |
 | [`dark-tech`](./dark-tech.md) | Dark canvas, glow accents, geometric precision | Tech, AI, data products, launches | `digital-dashboard` |
 | [`blueprint`](./blueprint.md) | Schematic line work on dark paper, isometric, annotated | Technical briefings, architecture, engineering | `blueprint` |
+
+### 1.2 Editorial / publication
+
+| Visual style | Character | Best for | Paired rendering |
+|---|---|---|---|
+| [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | Finance, journalism, analysis, explainers | `editorial` |
+| [`photo-editorial`](./photo-editorial.md) | Full-bleed photography dominates, text points & captions | Architecture, design, fashion, culture, photo-led | `corporate-photo` |
+| [`data-journalism`](./data-journalism.md) | Multi-column micro-charts, sidebars, source lines, dense | Finance, market reviews, research, data reports | `editorial` |
 | [`brutalist`](./brutalist.md) | Newsprint density, ruled boxes, raw structure, flat | Annual reviews, research digests, manifestos | `screen-print` / `editorial` |
 
-### 1.2 Expressive / print
+### 1.3 Expressive / print
 
 | Visual style | Character | Best for | Paired rendering |
 |---|---|---|---|
@@ -33,7 +40,7 @@ Each style has its own file with: shape & decoration, typography character, colo
 | [`vintage-poster`](./vintage-poster.md) | Mid-century flat blocks, halftone, retro-geometric warmth | Heritage, hospitality, cultural, anniversaries | `vintage-poster` |
 | [`paper-cut`](./paper-cut.md) | Layered cut-paper sheets, soft inter-layer shadow, tactile | Cultural / folk, children, festival, sustainability | `paper-cut` |
 
-### 1.3 Hand-drawn / brush
+### 1.4 Hand-drawn / brush
 
 | Visual style | Character | Best for | Paired rendering |
 |---|---|---|---|
@@ -42,7 +49,7 @@ Each style has its own file with: shape & decoration, typography character, colo
 | [`chalkboard`](./chalkboard.md) | Dark slate, chalk strokes, powdery pastel accents | Teaching, tutorials, classroom, academic | `chalkboard` |
 | [`ink-wash`](./ink-wash.md) | Rice-paper whitespace, brush marks, seal accent, still | Cultural, philosophy, heritage, 新中式 | `ink-notes` / `watercolor` |
 
-### 1.4 Specialty
+### 1.5 Specialty
 
 | Visual style | Character | Best for | Paired rendering |
 |---|---|---|---|
@@ -55,7 +62,9 @@ Each style has its own file with: shape & decoration, typography character, colo
 | Signal | Recommended style | Alternates |
 |---|---|---|
 | High-end consulting / architecture / luxury / minimal | `swiss-minimal` | `editorial` |
-| Finance / journalism / research / long-form analysis | `editorial` | `swiss-minimal` |
+| Finance / journalism / research / long-form analysis | `editorial` | `data-journalism` |
+| Photography-led / architecture / design / fashion / 大图 | `photo-editorial` | `editorial` |
+| Data report / market review / 财经 / Bloomberg / Economist | `data-journalism` | `editorial` |
 | Product / SaaS / training / consumer / friendly | `soft-rounded` | `editorial` |
 | Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `dark-tech` |
 | Tech / AI / dev tools / data / futuristic | `dark-tech` | `glassmorphism` |
@@ -73,7 +82,7 @@ Each style has its own file with: shape & decoration, typography character, colo
 
 > When the deck has AI images, align style with rendering: a `swiss-minimal` layout reads best with a `minimalist-swiss` rendering, so page and illustrations share one aesthetic. The "Paired rendering" column is the default pairing; override when content demands.
 >
-> Not every image-rendering has a layout twin: photographic / painterly renderings (`corporate-photo`, `nature`, `warm-scene`, `fantasy-animation`, `watercolor`) describe how an *image* looks, not how a deck is laid out — they pair with one of the layout styles above rather than being one.
+> Not every image-rendering becomes its own visual style. A rendering earns a layout twin only when it defines a whole-page layout language (shape, whitespace, composition, texture) — not merely how an inserted image looks. Purely atmospheric renderings (`nature`, `warm-scene`, `fantasy-animation`) stay imagery-only: they pair with whichever layout style fits rather than being one. (Note the distinction `photo-editorial` draws: photography as a *rendering* is image-look, but photo-*led composition* is a real layout language — so the style exists, paired with `corporate-photo`.)
 
 ---
 
