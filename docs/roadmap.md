@@ -48,6 +48,7 @@ The past two months' structural capability growth. Single flags / incremental po
 
 - **Three executors retired → mode + visual-style dual catalogs** ([`references/modes/`](../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../skills/ppt-master/references/visual-styles/)) — the old three `executor-*.md` (general / consultant / consultant-top) entangled domain · audience · persuasion · narrative on one axis; split into two orthogonal catalogs (following the `image-renderings` pattern: flat dir + `_index` + on-demand read + Strategist locks one). **mode** = narrative skeleton (`pyramid` / `narrative` / `instructional` / `showcase`; consultant + top merge into pyramid since their narrative core is identical); **visual-style** = SVG layout aesthetic (`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`, each paired with an image-rendering, **zero HEX** — color truth stays in confirmation e + image-palettes). Strategist `§d` locks `mode` + `visual_style` independently into `spec_lock`; Executor loads the two locked files; any mode × any style. Render coordinates stay in `templates/charts/`
 - **Prompt constraint-strength decoupling** ([`docs/rules/prompt-style.md`](rules/prompt-style.md) §4) — three explicit strength tiers — rule (`Hard rule` / `Forbidden`) / default (`Default — … may override`) / reference (`Reference — not a constraint`) — plus an "objective failure vs taste" test and a checker boundary, so the model can tell "must keep vs may deviate" at a glance; the visual-style catalog is Reference-strength throughout
+- **visual-style catalog grows to 8** — four new entries distilled from the [examples library](../examples/)'s already-realized aesthetics: `brutalist` (newsprint density / ruled boxes / flat) · `blueprint` (dark schematic line work / isometric / annotation language) · `memphis` (clashing color blocks / geometric confetti / bold outlines) · `zine` (riso misregistration / halftone / limited palette). Same discipline — zero HEX, Reference strength, each paired with an image-rendering — with `_index` catalog table + auto-selection updated
 
 ---
 
@@ -55,7 +56,7 @@ The past two months' structural capability growth. Single flags / incremental po
 
 Directions actively underway or up next, with no committed timeline.
 
-- **visual-style catalog growth** — keep building on the 4 seed styles (swiss-minimal / editorial / soft-rounded / dark-tech) from two parallel sources: align with [`image-renderings`](../skills/ppt-master/references/image-renderings/) so layout pairs with illustration, and distill the visual styles already realized in the [examples library](../examples/) (brutalist / blueprint / memphis / zine, etc.) into reusable style entries
+- **visual-style catalog — continued alignment with image-renderings** — the examples-library distillation pass has landed (→ 8 styles); the remaining direction is to align the catalog further with the full [`image-renderings`](../skills/ppt-master/references/image-renderings/) set so every layout style has a naturally paired illustration style
 - **mode catalog refinement** — how the four narrative skeletons (pyramid / narrative / instructional / showcase) draw their boundaries, and whether to add more, are still under consideration; recorded here as a preliminary direction only
 
 ---

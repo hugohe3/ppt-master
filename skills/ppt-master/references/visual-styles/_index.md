@@ -18,6 +18,10 @@ Each style has its own file with: shape & decoration, typography character, colo
 | [`editorial`](./editorial.md) | Magazine hierarchy, rules & columns, serif/sans interplay | Finance, journalism, analysis, explainers | `editorial` |
 | [`soft-rounded`](./soft-rounded.md) | Rounded cards, gentle elevation, approachable | Product, SaaS, training, consumer | `flat` / `glassmorphism` |
 | [`dark-tech`](./dark-tech.md) | Dark canvas, glow accents, geometric precision | Tech, AI, data products, launches | `digital-dashboard` / `blueprint` |
+| [`brutalist`](./brutalist.md) | Newsprint density, ruled boxes, raw structure, flat | Annual reviews, research digests, manifestos | `screen-print` / `editorial` |
+| [`blueprint`](./blueprint.md) | Schematic line work on dark paper, isometric, annotated | Technical briefings, architecture, engineering | `blueprint` |
+| [`memphis`](./memphis.md) | Clashing color blocks, geometric confetti, bold outlines | Festivals, consumer, youth, launch hype | `flat` |
+| [`zine`](./zine.md) | Riso misregistration, halftone, limited palette, print grit | Culture, design talks, indie brands | `screen-print` |
 
 ---
 
@@ -29,6 +33,10 @@ Each style has its own file with: shape & decoration, typography character, colo
 | Finance / journalism / research / long-form analysis | `editorial` | `swiss-minimal` |
 | Product / SaaS / training / consumer / friendly | `soft-rounded` | `editorial` |
 | Tech / AI / dev tools / data / futuristic | `dark-tech` | `soft-rounded` |
+| Annual review / manifesto / max-density editorial | `brutalist` | `editorial` |
+| Engineering / systems / architecture walkthrough | `blueprint` | `dark-tech` |
+| Festival / consumer brand / youth / loud launch | `memphis` | `soft-rounded` |
+| Indie publishing / design / culture / printed feel | `zine` | `editorial` |
 
 > When the deck has AI images, align style with rendering: a `swiss-minimal` layout reads best with a `minimalist-swiss` rendering, so page and illustrations share one aesthetic. The "Paired rendering" column is the default pairing; override when content demands.
 
