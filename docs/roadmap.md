@@ -57,7 +57,8 @@ The past two months' structural capability growth. Single flags / incremental po
 
 Directions actively underway or up next, with no committed timeline.
 
-- **Validate and calibrate the new mode / visual-style system on real decks** — the 5 modes + 18 visual-styles + the `custom` escape hatch are all still design-stage, unproven at this scale on real decks. The next step is not more presets but running real decks across the new modes / styles / custom and tightening from real signal: where the Strategist mis-selects a mode or style, where the Executor doesn't honor a style's discipline, whether a `custom` lock reads clearly at confirmation. Then adjust the auto-selection tables and the per-mode / per-style wording accordingly. Mode boundary-gray-zone polish folds into this — calibrate from real use, not speculation; no further presets planned
+- **Validate and calibrate the new mode / visual-style system on real decks** — the 5 modes + 18 visual-styles + the `custom` escape hatch are all still design-stage, unproven at this scale on real decks. The next step is not more presets but running real decks across the new modes / styles / custom and tightening from real signal: where the Strategist mis-selects a mode or style, where the Executor doesn't honor a style's discipline, whether a `custom` lock reads clearly at confirmation. Then adjust the auto-selection tables and the per-file wording accordingly
+- **mode catalog — settled** — the structure (5 + custom) is locked and the close-call tie-breakers are consolidated into one table covering the four genuinely-adjacent pairs (`pyramid↔briefing`, `narrative↔pyramid`, `narrative↔showcase`, `instructional↔briefing`); the rest are far enough apart to need none. All that remains is wording refinement to the mode files as real decks exercise them — which rides on the validation pass above, not a separate workstream
 
 ---
 
