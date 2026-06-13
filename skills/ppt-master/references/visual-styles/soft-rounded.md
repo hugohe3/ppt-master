@@ -28,4 +28,4 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 
 ## 5. Paired image-rendering
 
-`flat` or `glassmorphism` — clean modern blocks / frosted panels for AI images.
+`flat` — clean modern blocks for AI images. (For frosted-glass depth, see the dedicated [`glassmorphism`](./glassmorphism.md) style.)
