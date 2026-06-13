@@ -44,6 +44,20 @@
 - **LaTeX 数学公式渲染上线**（[`scripts/latex_render.py`](../../skills/ppt-master/scripts/latex_render.py)） — Strategist 在 Typography 确认中锁定 `mixed` / `render-all` / `text-only` 三档策略，显式写 `images/formula_manifest.json`；脚本走 codecogs → quicklatex → mathpad → wikimedia 四源 fallback chain，输出透明 PNG 进 §VIII 表的 `Acquire Via: formula` / `Status: Rendered` 行；公式密集型 deck（学术 / 工程 / 教学）首次拥有原生渲染路径，规则面禁止扫源文件 `$...$` 自动渲染（公式选取是 Strategist 决策）
 - **实时预览直接编辑 — L1 / L2 / L3**（[`workflows/live-preview.md`](../../skills/ppt-master/workflows/live-preview.md)） — 浏览器编辑器新增无需 AI 往返的确定性就地编辑：文字内容（L1）、fill / stroke / font-size 等样式属性（L2）、以及画布上的几何操作（L3）——在选中元素上拖拽即移动、方向键微调（`Shift` = 10px）、多选、加右键重叠选择器选取堆叠元素。编辑支持 `Ctrl+Z` 撤销 + 合并，点 **Apply changes** 写回 `svg_output/`；移动经 finalize / 导出保位（移动的 text、提升的多行 tspan、重定位的 icon 都在 PPTX 中如实再现）。重新导出仍由对话触发；画布上的缩放手柄尚未实现（缩放走几何输入框）
 
+### 2026-06（讲解 mode 与视觉风格双 catalog 化）
+
+- **三个 executor 退役 → mode + visual-style 双 catalog**（[`references/modes/`](../../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../../skills/ppt-master/references/visual-styles/)） — 原三个 `executor-*.md`（general / consultant / consultant-top）把「领域 · 受众 · 说服 · 叙事」捆在一条线；拆成两个正交 catalog（照 `image-renderings` 范式：扁平目录 + `_index` + 按需读 + Strategist 锁一个）。**mode** = 讲解骨架（`pyramid` / `narrative` / `instructional` / `showcase`，consultant + top 因叙事内核相同合并为 pyramid）；**visual-style** = SVG 排版美学（`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`，各 paired 一个 image-rendering，**零 HEX**——颜色真值守在 confirmation e + image-palettes）。Strategist `§d` 双层独立锁定 `mode` + `visual_style` 进 `spec_lock`，Executor 加载两个 locked 文件；任意 mode × 任意 style 自由组合，渲染坐标仍留 `templates/charts/`
+- **提示词约束强度三档解耦**（[`docs/rules/prompt-style.md`](../rules/prompt-style.md) §4） — 规则（`Hard rule` / `Forbidden`）/ 默认（`Default — … may override`）/ 参考（`Reference — not a constraint`）三档显式化 + 「客观失败 vs 品味」判据 + checker 边界，让模型对「该守 vs 可破」一目了然；visual-style catalog 全程用 Reference 强度
+
+---
+
+## 进行中 / 下一步
+
+明确在做或下一步要做的方向，不承诺时间窗口。
+
+- **visual-style catalog 扩充** — 在现 4 个种子（swiss-minimal / editorial / soft-rounded / dark-tech）基础上继续沉淀，两条来源并行：一是对齐 [`image-renderings`](../../skills/ppt-master/references/image-renderings/) 让排版风格与插图风格配对，二是把[示例库](../../examples/)里已成型的视觉风格（brutalist / blueprint / memphis / zine 等）提炼为可复用的 style 条目
+- **mode catalog 完善** — 4 个讲解骨架（pyramid / narrative / instructional / showcase）的边界划分、以及是否扩档仍在斟酌，此处仅记初步方向
+
 ---
 
 ## 持续维护方向
