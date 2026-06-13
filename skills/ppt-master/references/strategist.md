@@ -42,13 +42,20 @@ Confirm target audience, usage occasion, and core message; provide initial asses
 
 Two independent layers, each locks one catalog item. Output: `d. Mode: <mode> + Visual style: <visual_style>`.
 
+> **Presenting a `custom` lock — spell it out.** Whenever either layer resolves to `custom`, the confirmation must state the bespoke choice in **plain language** — what the cadence / fusion / posture actually is (Layer 1), or what the aesthetic actually is (Layer 2) — so the user confirms a legible direction, never the bare word `custom`. Show this prose in the confirmation first; it is the same content you then crystallize into the `mode_behavior` / `visual_style_behavior` line. e.g. `d. Mode: custom — open with a narrative hook, then a pyramid analysis core, then a showcase close (no single dominant spine)` — not just `Mode: custom`.
+
 #### Layer 1 — Communication mode
 
 🚧 **GATE**: read [`modes/_index.md`](./modes/_index.md) before recommending.
 
-The deck's **narrative + persuasion skeleton** — how the argument is organized and advanced. Lock **one** of `pyramid` / `narrative` / `instructional` / `showcase` (closed set; full catalog in the index). Use the index's auto-selection table (content / audience signal → mode) plus the deck's stated purpose; present as a recommendation, the user may override.
+The deck's **narrative + persuasion skeleton** — how the argument is organized and advanced. Lock **one** of `pyramid` / `narrative` / `instructional` / `showcase` / `briefing` (closed set; full catalog in the index).
 
-Write the locked value to `spec_lock.md` `- mode:` and record the rationale in `design_spec.md`. Executor loads only that one mode file.
+**Source**:
+- User supplied their own outline / structure → it is authoritative. Transcribe it into `§IX` as given (page order + titles preserved); still lock a mode, but for register / voice and page-internal treatment, **not** to reshape — never reorder the user's pages or rewrite their given titles. Note in `design_spec.md` that the structure is user-authored. `briefing` imposes the least if no particular "讲法" is intended.
+- A bespoke direction the five don't give — a nameable cadence (dialectic 正反合, myth-vs-reality, countdown, Socratic), a multi-act fusion of modes, or the user's own feel (confrontational here, detached there). Either the user asks, **or you recommend it** when a fusion / bespoke direction genuinely serves the deck better than a single preset (a recommendation the user confirms, like every lock). The *kind* doesn't matter → `mode: custom` + a `mode_behavior:` paragraph that **crystallizes the intent** (act sequence or posture shifts, title voice, page rhythm, register) concretely enough for the Executor to follow per page; it reads only `spec_lock.md`, never the chat. One deck locks **one** value — a fusion is one `custom` describing the acts, never several modes. Avoid only the *dodge*: don't default to `custom` when a preset genuinely fits, and prefer a dominant mode + page-level variation when one mode leads.
+- No user structure or cadence → recommend by the index's auto-selection table (content / audience signal → mode) plus the deck's stated purpose; the mode does the structural lifting. Present as a recommendation; the user may override.
+
+Write the locked value to `spec_lock.md` `- mode:` and record the rationale in `design_spec.md` (for `custom`, also write the sibling `- mode_behavior:` paragraph). Executor loads only that one mode file, or follows `mode_behavior` when the value is `custom`.
 
 #### Layer 2 — Visual style
 
@@ -602,7 +609,7 @@ The most common Strategist failure mode is missing the structural half — treat
 
 Confirmation `d` locks two independent catalog items:
 
-- **Mode** — narrative skeleton: [`modes/_index.md`](./modes/_index.md) → `pyramid` / `narrative` / `instructional` / `showcase`.
+- **Mode** — narrative skeleton: [`modes/_index.md`](./modes/_index.md) → `pyramid` / `narrative` / `instructional` / `showcase` / `briefing`.
 - **Visual style** — aesthetic: [`visual-styles/_index.md`](./visual-styles/_index.md) → presets + `custom`.
 
 Read the relevant `_index.md` at confirmation `d` (Layer 1 / Layer 2) for its catalog table and auto-selection. Executor loads the locked mode + visual-style files at generation (see SKILL Step 6).

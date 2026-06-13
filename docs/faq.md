@@ -66,7 +66,7 @@ When you're chatting with the AI, you can also just ask for strict line fidelity
 
 Two independent choices, locked at confirmation `d`:
 
-- **Mode** (how the deck argues): `pyramid` / `narrative` / `instructional` / `showcase` — see `references/modes/`
+- **Mode** (how the deck argues): `pyramid` / `narrative` / `instructional` / `showcase` / `briefing` — see `references/modes/`
 - **Visual style** (how it looks): `swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech` … + `custom` — see `references/visual-styles/`
 
 Any mode pairs with any visual style.

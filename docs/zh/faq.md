@@ -66,7 +66,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
 
 在第 d 项确认时锁定两个独立维度：
 
-- **Mode（怎么讲）**：`pyramid` / `narrative` / `instructional` / `showcase` —— 见 `references/modes/`
+- **Mode（怎么讲）**：`pyramid` / `narrative` / `instructional` / `showcase` / `briefing` —— 见 `references/modes/`
 - **Visual style（长什么样）**：`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech` … + `custom` —— 见 `references/visual-styles/`
 
 任意 mode 可与任意 visual style 自由组合。

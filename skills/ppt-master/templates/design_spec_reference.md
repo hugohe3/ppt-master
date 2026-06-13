@@ -34,7 +34,7 @@
 
 ### Theme Style
 
-- **Mode**: [pyramid / narrative / instructional / showcase — narrative skeleton, locked at d Layer 1]
+- **Mode**: [pyramid / narrative / instructional / showcase / briefing — narrative skeleton, locked at d Layer 1]
 - **Visual style**: [preset name or custom — aesthetic, locked at d Layer 2; carries no HEX]
 - **Theme**: [Light theme / Dark theme]
 - **Tone**: [Filled by Strategist, e.g., tech, professional, modern, innovative]
