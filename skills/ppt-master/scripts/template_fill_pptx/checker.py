@@ -464,9 +464,10 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 "plan_slide": plan_slide_index,
                 "source_slide": source_slide,
                 "message": (
-                    f"源页 {source_slide} 含 {kind_str} 等非文字内容,"
-                    "plan 未提供对应 edits,text-fill 不会替换,"
-                    "可能漏出模板原文(加 table_edits/chart_edits,或换一个源页)"
+                    f"source slide {source_slide} has non-text content ({kind_str}) "
+                    "with no matching edits in the plan; text-fill leaves it untouched "
+                    "and original template content may show through "
+                    "(add table_edits/chart_edits, or pick another source slide)"
                 ),
             }
         )
@@ -502,10 +503,10 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                         "reuse_count": count,
                         "unused_source_slides": unused_lib_indices,
                         "message": (
-                            f"源页 {src} 被复用 {count} 次,"
-                            f"而库里还有 {len(unused_lib_indices)} 个源版式没用到"
-                            f"(索引:{unused_list});"
-                            "考虑用上其它版式以增加变化"
+                            f"source slide {src} is reused {count} times while "
+                            f"{len(unused_lib_indices)} source layout(s) are never used "
+                            f"(indices: {unused_list}); "
+                            "consider using other layouts for more variety"
                         ),
                     }
                 )
