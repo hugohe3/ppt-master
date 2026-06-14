@@ -184,3 +184,6 @@ PERSONAL_NOTES.md
 # Use cloud sync (iCloud/Dropbox) for backup and multi-device access
 projects/*
 !projects/README.md
+
+# native-diagram demo repro output (disposable)
+native_diagram_demo_out/
