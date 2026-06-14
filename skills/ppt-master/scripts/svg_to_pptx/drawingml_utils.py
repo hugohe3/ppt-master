@@ -14,6 +14,9 @@ from .drawingml_context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
 SVG_NS = 'http://www.w3.org/2000/svg'
 XLINK_NS = 'http://www.w3.org/1999/xlink'
+HYPERLINK_REL_TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink'
+SLIDE_REL_TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide'
+from _shared import UNSUPPORTED_URL_SCHEMES
 
 EMU_PER_PX = 9525  # 1 SVG px = 9525 EMU (96 DPI)
 FONT_PX_TO_HUNDREDTHS_PT = 75  # 1px = 0.75pt -> 75 hundredths-of-a-point
@@ -473,3 +476,42 @@ def _xml_escape(text: str) -> str:
                 .replace('<', '&lt;')
                 .replace('>', '&gt;')
                 .replace('"', '&quot;'))
+
+
+def _build_cnvpr_xml(shape_id: int, name: str, hlink_xml: str = '') -> str:
+    """Build a <p:cNvPr> XML element, optionally wrapping a hyperlink click handler.
+
+    When *hlink_xml* is non-empty the result is
+    ``<p:cNvPr id="N" name="…">hlink_xml</p:cNvPr>``;
+    otherwise it is self-closing: ``<p:cNvPr id="N" name="…"/>``.
+    """
+    escaped = _xml_escape(name)
+    if hlink_xml:
+        return f'<p:cNvPr id="{shape_id}" name="{escaped}">{hlink_xml}</p:cNvPr>'
+    return f'<p:cNvPr id="{shape_id}" name="{escaped}"/>'
+
+
+def _compute_group_bounds(
+    child_results: list,
+) -> tuple[int, int, int, int] | None:
+    """Compute the bounding rectangle of a group of child shapes.
+
+    Returns ``(x, y, w, h)`` in EMU or *None* if no child has bounds.
+    """
+    min_x = min_y = float('inf')
+    max_x = max_y = float('-inf')
+    for child_result in child_results:
+        bounds = child_result.bounds_emu
+        if bounds is None:
+            continue
+        min_x = min(min_x, bounds[0])
+        min_y = min(min_y, bounds[1])
+        max_x = max(max_x, bounds[2])
+        max_y = max(max_y, bounds[3])
+    if min_x == float('inf'):
+        return None
+    group_x = int(min_x)
+    group_y = int(min_y)
+    group_w = max(int(max_x - min_x), 1)
+    group_h = max(int(max_y - min_y), 1)
+    return group_x, group_y, group_w, group_h

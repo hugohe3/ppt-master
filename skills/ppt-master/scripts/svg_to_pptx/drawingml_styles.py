@@ -654,3 +654,23 @@ def get_stroke_opacity(
             pass
 
     return base if base < 1.0 else None
+
+
+def build_hlink_xml(href: str | None, slide_num: str | None, r_id: str | None) -> str:
+    """Build <a:hlinkClick> XML for hyperlinks.
+
+    Generates the Click handler XML fragment for shape hyperlinks.
+    - When href is provided (external URL): returns <a:hlinkClick r:id="..."/>
+    - When slide_num is provided (internal slide navigation): returns
+      <a:hlinkClick action="ppaction://hlinksldjump" r:id="..."/>
+    - When both are None or r_id is None: returns empty string.
+
+    The caller is responsible for registering the rId relationship.
+    """
+    if r_id is None:
+        return ''
+    if href:
+        return f'<a:hlinkClick r:id="{r_id}"/>'
+    if slide_num:
+        return f'<a:hlinkClick action="ppaction://hlinksldjump" r:id="{r_id}"/>'
+    return ''

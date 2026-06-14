@@ -7,9 +7,11 @@ from xml.etree import ElementTree as ET
 
 SVG_NS = "http://www.w3.org/2000/svg"
 NSMAP = {"svg": SVG_NS}
+XLINK_NS = "http://www.w3.org/1999/xlink"
 
 # Ensure pretty element names without ns0 prefix on write
 ET.register_namespace("", SVG_NS)
+ET.register_namespace("xlink", XLINK_NS)
 
 
 TEXT_STYLE_ATTRS = {
@@ -189,15 +191,18 @@ MAX_DY_MULTIPLIER = 3.0
 
 
 def _tspan_has_positional_descendant(tspan: ET.Element) -> bool:
-    """Return True if any nested tspan inside this one carries x/y/dy."""
+    """Return True if any nested tspan or <a>-wrapped tspan carries x/y/dy."""
     for child in list(tspan):
-        if child.tag != f"{{{SVG_NS}}}tspan":
-            continue
-        for k in ("x", "y", "dy"):
-            if child.get(k) is not None:
+        tag = child.tag
+        if tag == f"{{{SVG_NS}}}tspan":
+            for k in ("x", "y", "dy"):
+                if child.get(k) is not None:
+                    return True
+            if _tspan_has_positional_descendant(child):
                 return True
-        if _tspan_has_positional_descendant(child):
-            return True
+        elif tag == f"{{{SVG_NS}}}a":
+            if _tspan_has_positional_descendant(child):
+                return True
     return False
 
 
@@ -406,6 +411,30 @@ def flatten_text_with_tspans(
         if t_x_attr is not None:
             return True
         return False
+    def _split_a_children(a_el):
+        for i, ch in enumerate(list(a_el)):
+            if is_svg_tag(ch, 'tspan') and is_new_line_tspan(ch):
+                return list(a_el)[:i], list(a_el)[i:]
+            if ch.tag == '{http://www.w3.org/2000/svg}a' and _tspan_has_positional_descendant(ch):
+                return list(a_el)[:i], list(a_el)[i:]
+        return [], list(a_el)
+
+    def _make_a(src, children, copy_lead_text=True):
+        if not children:
+            return None
+        new = ET.Element('{http://www.w3.org/2000/svg}a')
+        for k, v in src.attrib.items():
+            new.set(k, v)
+        if copy_lead_text and src.text and src.text.strip():
+            new.text = src.text
+        for c in children:
+            cc = ET.Element(c.tag, c.attrib)
+            cc.text = c.text
+            cc.tail = c.tail
+            for gc in list(c):
+                cc.append(gc)
+            new.append(cc)
+        return new
 
     # Collect candidates first to avoid modifying while iterating
     candidates = []
@@ -420,10 +449,15 @@ def flatten_text_with_tspans(
         if parent is None:
             continue
 
-        # First check whether any tspan needs flattening (dy != 0 or has its own y attribute)
+        # First check whether any tspan needs flattening
         needs_flatten = False
         for child in list(text_el):
-            if not is_svg_tag(child, "tspan"):
+            tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+            if tag == 'a':
+                if _tspan_has_positional_descendant(child):
+                    needs_flatten = True
+                continue
+            elif not is_svg_tag(child, "tspan"):
                 continue
             if is_new_line_tspan(child):
                 needs_flatten = True
@@ -464,6 +498,44 @@ def flatten_text_with_tspans(
             current_line_lead_text = lead_text
 
         for idx, child in enumerate(list(text_el)):
+            tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+            
+            # Preserve <a> hyperlink elements inline; split when a line break
+            # falls inside an <a> (e.g. <a><tspan x dy>link text</tspan></a>)
+            if tag == 'a':
+                if _tspan_has_positional_descendant(child):
+                    before_ch, after_ch = _split_a_children(child)
+                    a_before = _make_a(child, before_ch)
+                    if a_before is not None:
+                        current_line_tspans.append(a_before)
+                    # Save the current line BEFORE updating position (same pattern as
+                    # the regular tspan new-line path above)
+                    if current_line_tspans or current_line_lead_text:
+                        ne = _create_text_element_from_line(
+                            text_el, current_line_lead_text, current_line_tspans, cur_x, cur_y
+                        )
+                        new_texts.append(ne)
+                        current_line_tspans = []
+                        current_line_lead_text = None
+                    # Update position from the first positional child of <a>
+                    for a_ch in after_ch:
+                        if is_svg_tag(a_ch, 'tspan') and is_new_line_tspan(a_ch):
+                            nx, ny = compute_line_positions(text_el, a_ch, cur_x, cur_y)
+                            cur_x, cur_y = nx, ny
+                            break
+                    # Strip positional x/y/dy from the break-point tspan since the
+                    # new parent <text> already handles its X/Y positioning
+                    if after_ch and is_svg_tag(after_ch[0], 'tspan'):
+                        for k in ('x', 'y', 'dy'):
+                            after_ch[0].attrib.pop(k, None)
+                    a_after = _make_a(child, after_ch, copy_lead_text=False)
+                    # Start the next line with the post-break portion of the link
+                    if a_after is not None:
+                        current_line_tspans.append(a_after)
+                else:
+                    current_line_tspans.append(child)
+                continue
+            
             if not is_svg_tag(child, "tspan"):
                 continue
 
@@ -517,8 +589,8 @@ def flatten_text_with_tspans(
 
 
 def _has_tspan_children(elem: ET.Element) -> bool:
-    """Return True if elem contains any nested <tspan> children (inline runs)."""
-    return any(c.tag == f"{{{SVG_NS}}}tspan" for c in list(elem))
+    """Return True if elem contains any nested <tspan> or <a> children (inline runs/hyperlinks)."""
+    return any(c.tag in (f"{{{SVG_NS}}}tspan", f"{{{SVG_NS}}}a") for c in list(elem))
 
 
 def _copy_inline_tspan(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
@@ -537,6 +609,23 @@ def _copy_inline_tspan(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
     for child in list(src):
         if child.tag == f"{{{SVG_NS}}}tspan":
             new.append(_copy_inline_tspan(child, strip_line_attrs=False))
+        elif child.tag == f"{{{SVG_NS}}}a":
+            new.append(_copy_inline_a(child))
+    new.tail = src.tail
+    return new
+
+def _copy_inline_a(src: ET.Element) -> ET.Element:
+    """Deep-copy an <a> hyperlink element, preserving all attributes and children."""
+    new = ET.Element(f"{{{SVG_NS}}}a")
+    for k, v in src.attrib.items():
+        new.set(k, v)
+    new.text = src.text
+    for child in list(src):
+        tag = child.tag
+        if tag == f"{{{SVG_NS}}}tspan":
+            new.append(_copy_inline_tspan(child, strip_line_attrs=False))
+        elif tag == f"{{{SVG_NS}}}a":
+            new.append(_copy_inline_a(child))
     new.tail = src.tail
     return new
 
@@ -567,7 +656,7 @@ def _create_text_element_from_line(
         ne.set("transform", p_tf)
 
     # Compact path: a single tspan with no nested inline runs collapses to <text>text</text>
-    if not lead_text and len(tspans) == 1 and not _has_tspan_children(tspans[0]):
+    if not lead_text and len(tspans) == 1 and tspans[0].tag == f"{{{SVG_NS}}}tspan" and not _has_tspan_children(tspans[0]):
         tspan = tspans[0]
         content = collect_text_content(tspan)
 
@@ -595,8 +684,11 @@ def _create_text_element_from_line(
         if lead_text:
             ne.text = lead_text
 
-        for tspan in tspans:
-            ne.append(_copy_inline_tspan(tspan, strip_line_attrs=True))
+        for child in tspans:
+            if child.tag == f"{{{SVG_NS}}}a":
+                ne.append(_copy_inline_a(child))
+            else:
+                ne.append(_copy_inline_tspan(child, strip_line_attrs=True))
 
     return ne
 

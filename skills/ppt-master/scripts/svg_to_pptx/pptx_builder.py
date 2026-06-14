@@ -10,6 +10,7 @@ import re
 import posixpath
 import shutil
 import tempfile
+import sys
 import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime, timezone
@@ -21,6 +22,7 @@ from pptx import Presentation
 from pptx.util import Emu
 
 from .drawingml_converter import convert_svg_to_slide_shapes
+from .drawingml_utils import _xml_escape, SLIDE_REL_TYPE
 from .pptx_dimensions import (
     CANVAS_FORMATS,
     get_slide_dimensions, get_pixel_dimensions,
@@ -67,16 +69,18 @@ def _append_relationship(
     rels_path: Path,
     rel_type: str,
     target: str,
-) -> str:
+    target_mode: str | None = None,  # External hyperlink rels use TargetMode="External" when set
+    ) -> str:
     """Append a relationship entry with the next available rId."""
     with open(rels_path, 'r', encoding='utf-8') as f:
         rels_content = f.read()
 
     rid_numbers = [int(match) for match in re.findall(r'Id="rId(\d+)"', rels_content)]
     next_rid = f'rId{max(rid_numbers, default=0) + 1}'
+    target_mode_attr = f' TargetMode="{target_mode}"' if target_mode else ''
     rel_xml = (
-        f'  <Relationship Id="{next_rid}" '
-        f'Type="{rel_type}" Target="{target}"/>'
+        f'  <Relationship Id="{_xml_escape(next_rid)}" '
+        f'Type="{_xml_escape(rel_type)}" Target="{_xml_escape(target)}"{target_mode_attr}/>'
     )
     rels_content = rels_content.replace(
         '</Relationships>', rel_xml + '\n</Relationships>',
@@ -705,10 +709,25 @@ def create_pptx_with_native_svg(
 
                     extra_rels = ''
                     for rel in rel_entries:
-                        extra_rels += (
-                            f'\n  <Relationship Id="{rel["id"]}" '
-                            f'Type="{rel["type"]}" Target="{rel["target"]}"/>'
-                        )
+                        attrs = f'Id="{_xml_escape(rel["id"])}" Type="{_xml_escape(rel["type"])}" Target="{_xml_escape(rel["target"])}"'
+                        if rel.get('target_mode') == 'External':
+                            attrs += ' TargetMode="External"'
+                        extra_rels += f'\n  <Relationship {attrs}/>'
+
+                    # Warn when any slide jump target exceeds slide count.
+                    # We warn (not skip) because a user may export SVG first,
+                    # then append the target slides later.
+                    total_slides = len(prs.slides)
+                    for _rel in rel_entries:
+                        if _rel.get('type') == SLIDE_REL_TYPE:
+                            _m = re.match(r'slide(\d+)\.xml', _rel.get('target', ''))
+                            if _m and int(_m.group(1)) > total_slides:
+                                print(
+                                    f"[WARN] svg_to_pptx: slide jump target {_rel['target']} "
+                                    f"exceeds slide count {total_slides}; PowerPoint may "
+                                    f"reject the .rels entry.",
+                                    file=sys.stderr,
+                                )
 
                     rels_xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">

@@ -46,6 +46,10 @@ from .txbody_to_svg import (
     is_vertical_txbody,
     DEFAULT_FONT_SIZE_PX,
 )
+import re
+import sys
+
+from ._constants import UNSUPPORTED_URL_SCHEMES
 
 
 # ---------------------------------------------------------------------------
@@ -326,6 +330,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             fallback_lst_styles=node.inherited_lst_styles,
             id_prefix=f"{ctx.group_id_prefix}txt",
             id_seq=ctx.grad_seq,
+            rels=ctx.slide_part.rels,
         )
     else:
         text_result = convert_txbody(
@@ -336,6 +341,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             fallback_lst_styles=node.inherited_lst_styles,
             id_prefix=f"{ctx.group_id_prefix}txt",
             id_seq=ctx.grad_seq,
+            rels=ctx.slide_part.rels,
         ) if tx_body is not None else TextResult()
     if text_result.defs:
         ctx.defs.extend(text_result.defs)
@@ -909,7 +915,21 @@ def _wrap_shape_group(inner: str, node: ShapeNode, ctx: AssemblyContext,
         attrs.append(f'data-ph-type="{_xml_escape(node.placeholder.type)}"')
     if transform:
         attrs.append(f'transform="{transform}"')
-    return f"<g {' '.join(attrs)}>\n{inner}\n</g>"
+    g_xml = f"<g {' '.join(attrs)}>\n{inner}\n</g>"
+    if node.hlink_href:
+        href_target, _ = ctx.slide_part.resolve_hyperlink_target(node.hlink_href)
+        if href_target:
+            if not any(href_target.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                return f'<a href="{_xml_escape(href_target)}">{g_xml}</a>'
+    elif node.hlink_slide:
+        _, slide_target = ctx.slide_part.resolve_hyperlink_target(node.hlink_slide)
+        if slide_target:
+            m = re.search(r'slide(\d+)\.xml', slide_target)
+            if m:
+                return f'<a data-pptx-slide="{m.group(1)}">{g_xml}</a>'
+            else:
+                print(f"[WARN] slide_to_svg: cannot extract slide number from target '{slide_target}', internal link skipped", file=sys.stderr)
+    return g_xml
 
 
 def _attrs_to_xml(attrs: dict[str, str]) -> str:

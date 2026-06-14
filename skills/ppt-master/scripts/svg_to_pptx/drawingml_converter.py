@@ -12,6 +12,8 @@ from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
     SVG_NS, EMU_PER_PX,
     _extract_inheritable_styles, parse_transform_matrix, resolve_url_id,
+    XLINK_NS, UNSUPPORTED_URL_SCHEMES,
+    _build_cnvpr_xml, _compute_group_bounds,
 )
 from .drawingml_styles import build_effect_xml
 from .drawingml_elements import (
@@ -19,6 +21,7 @@ from .drawingml_elements import (
     convert_line, convert_path,
     convert_polygon, convert_polyline,
     convert_text, convert_image, convert_nested_svg,
+    _get_hlink_xml,
 )
 
 
@@ -180,6 +183,12 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         )
     else:
         child_ctx = ctx.child(dx, dy, sx, sy, filter_id=filter_id, style_overrides=style_overrides)
+    # Clear hlink fields on child_ctx so leaf converters inside the group
+    # do not re-inject the same hyperlink (which would produce duplicate
+    # relationship entries for the same URL). The group wrapper itself carries
+    # the hyperlink via _get_hlink_xml(ctx) below.
+    child_ctx.hlink_href = None
+    child_ctx.hlink_slide = None
 
     child_results: list[ShapeResult] = []
     for child in elem:
@@ -200,25 +209,10 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     # Multiple children, or a top-level semantic one-child group: wrap in
     # <p:grpSp> so PowerPoint can animate the group as one unit.
-    min_x = min_y = float('inf')
-    max_x = max_y = float('-inf')
-
-    for child_result in child_results:
-        bounds = child_result.bounds_emu
-        if bounds is None:
-            continue
-        min_x = min(min_x, bounds[0])
-        min_y = min(min_y, bounds[1])
-        max_x = max(max_x, bounds[2])
-        max_y = max(max_y, bounds[3])
-
-    if min_x == float('inf'):
+    group_bounds = _compute_group_bounds(child_results)
+    if group_bounds is None:
         return ShapeResult(xml='\n'.join(result.xml for result in child_results))
-
-    group_x = int(min_x)
-    group_y = int(min_y)
-    group_w = max(int(max_x - min_x), 1)
-    group_h = max(int(max_y - min_y), 1)
+    group_x, group_y, group_w, group_h = group_bounds
 
     # ``rotate(angle, cx, cy)`` rotates around the SVG pivot, but DrawingML
     # grpSp ``rot`` always rotates around the group's own bbox centre. When
@@ -262,10 +256,11 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     rot_emu = 0 if matrix_supported else int(angle_deg * 60000)
     rot_attr = f' rot="{rot_emu}"' if rot_emu else ''
-
+    hlink_xml = _get_hlink_xml(ctx)
+    cNvPr_xml = _build_cnvpr_xml(group_id, f'Group {group_id}', hlink_xml)
     return ShapeResult(xml=f'''<p:grpSp>
 <p:nvGrpSpPr>
-<p:cNvPr id="{group_id}" name="Group {group_id}"/>
+{cNvPr_xml}
 <p:cNvGrpSpPr/>
 <p:nvPr/>
 </p:nvGrpSpPr>
@@ -312,6 +307,146 @@ def _supports_matrix_transform(elem: ET.Element) -> bool:
         )
     return False
 
+
+# ---------------------------------------------------------------------------
+# Hyperlink handling
+# ---------------------------------------------------------------------------
+
+def convert_a(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
+    """Convert SVG <a> (hyperlink) to DrawingML.
+
+    Sets hlink_href or hlink_slide on a child ConvertContext before
+    recursively processing children. Leaf converters read these context
+    fields to inject <a:hlinkClick> into their output XML.
+
+    Empty <a> elements (no href, no data-pptx-slide) still process children
+    and render them as normal, unstyled shapes per the shared-standards spec.
+    Nested <a> tags: inner overrides outer entirely by clearing the sibling
+    field on the child context.
+    """
+    # Read href (plain SVG href and xlink:href namespace variant)
+    href = elem.get('href') or elem.get(f'{{{XLINK_NS}}}href')
+    slide_num = elem.get('data-pptx-slide')
+
+    # Reject unsupported URL schemes per shared-standards.md
+    if href:
+        if any(href.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+            if ctx.trace_events is not None:
+                ctx.trace_events.append({'event': 'skipped_unstable_url', 'href': href})
+            href = None
+
+    # Empty <a>: no hyperlink info → render children as normal, unstyled shapes
+    if not href and not slide_num:
+        if ctx.trace_events is not None:
+            ctx.trace_events.append({'event': 'hlink_blocked_by_empty_a'})
+        child_ctx = ctx.child()
+        child_ctx.hlink_href = None
+        child_ctx.hlink_slide = None
+        results: list[ShapeResult] = []
+        for child in elem:
+            result = convert_element(child, child_ctx)
+            if result:
+                results.append(result)
+        ctx.sync_from_child(child_ctx)
+        if len(results) == 1:
+            return results[0]
+        if not results:
+            return None
+        # Multiple children: return concatenated XML
+        return ShapeResult(xml='\n'.join(r.xml for r in results))
+
+    # Determine how many visual children the <a> has up-front so we can
+    # choose the appropriate strategy before processing any of them.
+    child_list = list(elem)
+    if not child_list:
+        return None
+
+    # --- Single-child path ---
+    # Pass hlink through context; the leaf converter handles injection
+    # directly via _get_hlink_xml / _wrap_shape, no regex needed.
+    if len(child_list) == 1:
+        child_ctx = ctx.child()
+        if href:
+            child_ctx.hlink_href = href
+            child_ctx.hlink_slide = None
+            if ctx.trace_events is not None:
+                ctx.trace_events.append({'event': 'hlink_applied', 'type': 'href', 'target': href})
+        elif slide_num:
+            child_ctx.hlink_href = None
+            child_ctx.hlink_slide = slide_num
+            if ctx.trace_events is not None:
+                ctx.trace_events.append({'event': 'hlink_applied', 'type': 'slide', 'target': slide_num})
+        result = convert_element(child_list[0], child_ctx)
+        ctx.sync_from_child(child_ctx)
+        return result
+
+    # --- Multiple-children path ---
+    # Save / clear hlink so individual children DON'T carry it — only the
+    # group wrapper should. Same pattern as convert_g.
+    child_ctx = ctx.child()
+    if href:
+        child_ctx.hlink_href = href
+        child_ctx.hlink_slide = None
+        if ctx.trace_events is not None:
+            ctx.trace_events.append({'event': 'hlink_applied', 'type': 'href', 'target': href, 'multi_child': True})
+    elif slide_num:
+        child_ctx.hlink_href = None
+        child_ctx.hlink_slide = slide_num
+        if ctx.trace_events is not None:
+            ctx.trace_events.append({'event': 'hlink_applied', 'type': 'slide', 'target': slide_num, 'multi_child': True})
+
+    saved_href = child_ctx.hlink_href
+    saved_slide = child_ctx.hlink_slide
+    child_ctx.hlink_href = None
+    child_ctx.hlink_slide = None
+
+    child_results: list[ShapeResult] = []
+    for child in child_list:
+        result = convert_element(child, child_ctx)
+        if result:
+            child_results.append(result)
+
+    ctx.sync_from_child(child_ctx)
+
+    if not child_results:
+        return None
+
+    # Restore hlink so the group wrapper carries it.
+    child_ctx.hlink_href = saved_href
+    child_ctx.hlink_slide = saved_slide
+
+    group_bounds = _compute_group_bounds(child_results)
+    if group_bounds is None:
+        return ShapeResult(xml='\n'.join(result.xml for result in child_results))
+
+    group_x, group_y, group_w, group_h = group_bounds
+    shapes_xml = '\n'.join(result.xml for result in child_results)
+
+    hlink_xml = _get_hlink_xml(child_ctx)
+    # Second sync: _get_hlink_xml may have allocated a new rel_id on child_ctx,
+    # so sync again to propagate it back to the root context.
+    ctx.sync_from_child(child_ctx)
+
+    group_id = ctx.next_id()
+    cNvPr_xml = _build_cnvpr_xml(group_id, f'Group {group_id}', hlink_xml)
+    return ShapeResult(xml=f'''<p:grpSp>
+<p:nvGrpSpPr>
+{cNvPr_xml}
+<p:cNvGrpSpPr/>
+<p:nvPr/>
+</p:nvGrpSpPr>
+<p:grpSpPr>
+<a:xfrm>
+<a:off x="{group_x}" y="{group_y}"/>
+<a:ext cx="{group_w}" cy="{group_h}"/>
+<a:chOff x="{group_x}" y="{group_y}"/>
+<a:chExt cx="{group_w}" cy="{group_h}"/>
+</a:xfrm>
+</p:grpSpPr>
+{shapes_xml}
+</p:grpSp>''', bounds_emu=(group_x, group_y, group_x + group_w, group_y + group_h))
+
+
 _CONVERTERS = {
     'rect': convert_rect,
     'circle': convert_circle,
@@ -323,6 +458,7 @@ _CONVERTERS = {
     'text': convert_text,
     'image': convert_image,
     'g': convert_g,
+    'a': convert_a,
     'svg': convert_nested_svg,
 }
 

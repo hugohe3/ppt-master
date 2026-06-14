@@ -53,6 +53,10 @@ class ConvertContext:
     # Optional per-element conversion diagnostics. Shared by child contexts so
     # callers can inspect native / skipped / unsupported decisions per slide.
     trace_events: list[dict[str, Any]] | None = None
+    # Current <a> hyperlink href value (set by convert_a before processing children)
+    hlink_href: str | None = None
+    # Current <a> data-pptx-slide value (internal slide link target)
+    hlink_slide: str | None = None
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -154,6 +158,8 @@ class ConvertContext:
             # only the root-level context's list is read by the builder.
             merge_paragraphs=self.merge_paragraphs,
             trace_events=self.trace_events,
+            hlink_href=self.hlink_href,
+            hlink_slide=self.hlink_slide,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:

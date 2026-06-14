@@ -20,17 +20,21 @@ Color / font / size attributes propagate from a:rPr; missing attributes fall
 back to paragraph/list defaults, endParaRPr, or spec-default values.
 """
 
+
 from __future__ import annotations
+
+import re
+import sys
 
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
+from ._constants import UNSUPPORTED_URL_SCHEMES, KNOWN_SLIDE_ACTIONS
 from .emu_units import (
     NS, Xfrm, fmt_num, emu_to_px, hundredths_pt_to_px,
 )
 from .fill_to_svg import resolve_fill
-
 
 # ---------------------------------------------------------------------------
 # Defaults (matches DrawingML spec)
@@ -61,6 +65,8 @@ class TextRun:
     strikethrough: bool = False
     letter_spacing_px: float = 0.0
     is_break: bool = False  # marks an a:br within a paragraph
+    hlink_href: str = ""
+    hlink_slide: str = ""
 
 
 @dataclass
@@ -107,6 +113,7 @@ def convert_txbody(
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     fallback_lst_styles: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
+    rels: dict | None = None,
     id_seq: list[int] | None = None,
 ) -> TextResult:
     """Convert <p:txBody> under the given shape geometry to SVG <text>(s)."""
@@ -119,6 +126,7 @@ def convert_txbody(
         default_font_size_px=default_font_size_px,
         fallback_lst_styles=fallback_lst_styles,
         id_prefix=id_prefix, id_seq=id_seq,
+        rels=rels,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
         return TextResult()
@@ -192,6 +200,7 @@ def convert_vertical_txbody(
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     fallback_lst_styles: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
+    rels: dict | None = None,
     id_seq: list[int] | None = None,
 ) -> TextResult:
     """Render East Asian vertical text as upright stacked glyphs.
@@ -209,6 +218,7 @@ def convert_vertical_txbody(
         default_font_size_px=default_font_size_px,
         fallback_lst_styles=fallback_lst_styles,
         id_prefix=id_prefix, id_seq=id_seq,
+        rels=rels,
     )
     runs = [
         run
@@ -343,6 +353,7 @@ def _parse_paragraphs(
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     fallback_lst_styles: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
+    rels: dict | None = None,
     id_seq: list[int] | None = None,
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
@@ -361,6 +372,7 @@ def _parse_paragraphs(
             default_fill=default_fill,
             default_font_size_px=default_font_size_px,
             id_prefix=id_prefix, id_seq=id_seq,
+            rels=rels,
         )
         paragraphs.append(para)
 
@@ -377,6 +389,7 @@ def _parse_paragraph(
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
+    rels: dict | None = None,
     id_seq: list[int] | None = None,
 ) -> TextParagraph:
     para = TextParagraph()
@@ -420,6 +433,7 @@ def _parse_paragraph(
                 default_fill=default_fill,
                 default_font_size_px=default_font_size_px,
                 id_prefix=id_prefix, id_seq=id_seq,
+                rels=rels,
             )
             para.runs.append(run)
         elif local == "br":
@@ -442,6 +456,7 @@ def _parse_paragraph(
                     default_fill=default_fill,
                     default_font_size_px=default_font_size_px,
                     id_prefix=id_prefix, id_seq=id_seq,
+                    rels=rels,
                 )
                 para.runs.append(run)
 
@@ -461,6 +476,7 @@ def _build_run(
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
+    rels: dict | None = None,
 ) -> TextRun:
     """Resolve a single <a:r> run from its rPr and fallback run properties."""
     style_chain = (rpr, def_rpr, list_def_rpr, end_rpr)
@@ -517,6 +533,19 @@ def _build_run(
             fill = hex_
             fill_opacity = alpha
 
+    # Hyperlink: single hlinkClick lookup reused by theme-color and
+    # rId-resolution logic below.
+    hlink_elem = rpr.find('a:hlinkClick', NS) if rpr is not None else None
+
+    # Hyperlink runs: apply theme hlink color only when the run does
+    # NOT carry its own explicit fill (solidFill / gradFill).  If the
+    # user manually set a colour on the hyperlink text, respect it.
+    if rpr is not None and hlink_elem is not None and palette is not None:
+        if rpr.find('a:solidFill', NS) is None and rpr.find('a:gradFill', NS) is None:
+            hlink_hex = palette.scheme.get('hlink')
+            if hlink_hex:
+                fill = '#' + hlink_hex
+
     # Font typeface
     latin_face = _typeface_chain(style_chain, "latin")
     ea_face = _typeface_chain(style_chain, "ea")
@@ -528,6 +557,29 @@ def _build_run(
     cs_face = _resolve_theme_typeface(cs_face, theme_fonts)
 
     font_family = _build_font_stack(latin_face, ea_face, cs_face)
+
+    # Hyperlink: resolve rId via rels dict if available
+    hlink_href = ""
+    hlink_slide = ""
+    if hlink_elem is not None:
+        r_id = hlink_elem.get(f'{{{NS["r"]}}}id', '')
+        action = hlink_elem.get('action', '')
+        if rels and r_id:
+            info = rels.get(r_id)
+            if info:
+                if info.get('external'):
+                    target = info['target']
+                    # Filter out unsupported URL schemes
+                    if not any(target.lower().startswith(s) for s in UNSUPPORTED_URL_SCHEMES):
+                        hlink_href = target
+                elif action in KNOWN_SLIDE_ACTIONS:
+                    hlink_slide = info.get('target', '')
+                elif not action.startswith('ppaction://'):
+                    hlink_href = info.get('target', '')
+        elif not rels and r_id:
+            # rels not available — cannot resolve rId; skip hyperlink
+            print(f"[WARN] txbody_to_svg: rels not available, skipping run hyperlink rId={r_id}", file=sys.stderr)
+
 
     return TextRun(
         text=text,
@@ -541,6 +593,8 @@ def _build_run(
         underline=underline,
         strikethrough=strikethrough,
         letter_spacing_px=letter_spacing_px,
+        hlink_href=hlink_href,
+        hlink_slide=hlink_slide,
     )
 
 
@@ -897,6 +951,7 @@ def _wrap_paragraph_into_lines(
             continue
         text = run.text
         i = 0
+        is_hyperlink = bool(run.hlink_href or run.hlink_slide)
         while i < len(text):
             remaining = text[i:]
             avail = max_width - cur_w
@@ -905,6 +960,14 @@ def _wrap_paragraph_into_lines(
                 lines.append([])
                 cur_w = 0.0
                 avail = max_width
+
+            # Hyperlink runs: move to next line instead of splitting mid-link.
+            if is_hyperlink and i == 0 and lines[-1]:
+                est = _estimate_run_width(text, run)
+                if avail < est:
+                    lines.append([])
+                    cur_w = 0.0
+                    avail = max_width
 
             end, used = _find_break_point(remaining, 0, avail, run)
             if end == 0:
@@ -965,6 +1028,8 @@ def _copy_run(run: TextRun, *, text: str) -> TextRun:
         underline=run.underline,
         strikethrough=run.strikethrough,
         letter_spacing_px=run.letter_spacing_px,
+        hlink_href=run.hlink_href,
+        hlink_slide=run.hlink_slide,
     )
 
 
@@ -1019,6 +1084,25 @@ def _paragraph_height(p: TextParagraph) -> float:
     return lines * max_font * p.line_height_ratio
 
 
+def _wrap_tspan_hyperlink(tspan: str, run: TextRun) -> str:
+    """Wrap a tspan XML string in an <a> element when the run carries a hyperlink.
+
+    External URLs become <a href="...">; internal slide jumps become
+    <a data-pptx-slide="N">. The slide number is extracted from the
+    slideN.xml target form stored on the run.
+    """
+    if run.hlink_href:
+        return f'<a href="{_xml_escape(run.hlink_href)}">{tspan}</a>'
+    if run.hlink_slide:
+        m = re.search(r'slide(\d+)\.xml', run.hlink_slide)
+        if m:
+            return f'<a data-pptx-slide="{_xml_escape(m.group(1))}">{tspan}</a>'
+        else:
+            print(f"[WARN] txbody_to_svg: cannot extract slide number from target '{run.hlink_slide}', internal link skipped", file=sys.stderr)
+            return tspan
+    return tspan
+
+
 def _emit_paragraph(
     para: TextParagraph,
     lines: list[list[TextRun]],
@@ -1066,15 +1150,19 @@ def _emit_paragraph(
             attrs = _run_tspan_attrs(run)
             if run_idx == 0 and line_idx > 0:
                 # Start-of-line tspan: position via x + dy
-                spans.append(
+                tspan = _wrap_tspan_hyperlink(
                     f'<tspan x="{fmt_num(anchor_x)}" '
                     f'dy="{fmt_num(line_font * para.line_height_ratio)}"'
-                    f'{attrs}>{_xml_escape(run.text)}</tspan>'
+                    f'{attrs}>{_xml_escape(run.text)}</tspan>',
+                    run,
                 )
+                spans.append(tspan)
             else:
-                spans.append(
-                    f"<tspan{attrs}>{_xml_escape(run.text)}</tspan>"
+                tspan = _wrap_tspan_hyperlink(
+                    f"<tspan{attrs}>{_xml_escape(run.text)}</tspan>",
+                    run,
                 )
+                spans.append(tspan)
 
     base_attrs = _text_base_attrs(first_run, anchor_x, first_baseline, text_anchor)
     return f"<text{base_attrs}>{''.join(spans)}</text>"
