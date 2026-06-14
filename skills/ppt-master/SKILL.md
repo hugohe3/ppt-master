@@ -41,6 +41,32 @@ description: >
 > - Do NOT create `.worktrees/`, `tests/`, branch workflows, or generic engineering structure by default
 > - On conflict with a generic coding skill, follow this skill unless the user explicitly says otherwise
 
+> [!IMPORTANT]
+> ## User-Specific Medical PPT Intake (MANDATORY)
+>
+> Before starting any PPT-making workflow for this user, MUST read
+> `references/user-medical-ppt-preferences.md` and follow it.
+>
+> - Ask the token-efficient Core Intake Questions before Step 1, then ask only
+>   the relevant Conditional Supplement for the deck type. Do not ask the old
+>   long questionnaire every time.
+> - For medical, clinical, case-report, literature-review, guideline, drug,
+>   diagnosis, treatment, or teaching content, do not fabricate facts. External
+>   medical claims require sources; uncertain or missing information must be
+>   labeled as such.
+> - Default image policy: user-provided de-identified clinical images first,
+>   self-drawn diagrams/tables second, cited public-source images only when
+>   justified, and AI images only for clearly labeled schematic illustrations.
+> - Use a concise clinical tone. Avoid generic AI-sounding filler, marketing
+>   language, and exaggerated certainty.
+> - Final PPT pages and speaker notes must not mention the production process,
+>   source-deck status, user instructions, AI generation, or update wording such
+>   as "原PPT", "我的新要求", "根据你的要求", "本次更新", or similar meta phrases.
+> - After final export and once no further edits are needed, clean generated
+>   production artifacts according to the Post-Production Cleanup Rules in
+>   `references/user-medical-ppt-preferences.md`; preserve final deliverables and
+>   do not delete user-provided source materials without explicit confirmation.
+
 ## Main Pipeline Scripts
 
 | Script | Purpose |
@@ -92,6 +118,12 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 ## Workflow
 
 ### Step 1: Source Content Processing
+
+🚧 **USER INTAKE GATE**: Before processing sources, read
+`references/user-medical-ppt-preferences.md` and ask the Core Intake Questions
+plus only the relevant Conditional Supplement. Do not proceed until the user
+answers or explicitly allows unanswered items to be treated as "资料未提供" /
+"默认处理".
 
 🚧 **GATE**: User has provided source material (PDF / DOCX / EPUB / URL / Markdown file / text description / conversation content — any form is acceptable).
 
@@ -269,6 +301,15 @@ Single-path Step 3 does **not** add provenance (the source is self-evident from 
 
 🚧 **GATE**: Step 3 complete; default free-design path taken, or (if triggered) template files copied into the project.
 
+🚧 **USER PREFERENCE GATE**: Re-read
+`references/user-medical-ppt-preferences.md` before forming the Eight
+Confirmations. Carry the user's answers into audience, page count, style,
+citation format, evidence policy, image acquisition method, and speaker-note
+decisions. Combine medical choices and ppt-master's Eight Confirmations into one
+confirmation table. Do not repeat questions already answered in the intake. For
+medical decks, keep "case facts", "literature evidence", and "inference"
+distinct in both `design_spec.md` and slide content.
+
 First, read the role definition:
 ```
 Read references/strategist.md
@@ -278,7 +319,7 @@ Read references/strategist.md
 
 **Eight Confirmations** (full template: `templates/design_spec_reference.md`):
 
-⛔ **BLOCKING**: present the Eight Confirmations as a single bundled recommendation set and **wait for explicit user confirmation or modification** before outputting Design Specification & Content Outline. This is the single core confirmation point — once confirmed, all subsequent steps proceed automatically.
+⛔ **BLOCKING**: present the Eight Confirmations as a single bundled recommendation set and **wait for explicit user confirmation or modification** before outputting Design Specification & Content Outline. For this user, merge the intake-derived medical/citation/image decisions into this same confirmation instead of asking a second confirmation. This is the single core confirmation point — once confirmed, all subsequent steps proceed automatically.
 
 1. Canvas format
 2. Page count range
@@ -347,6 +388,11 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ### Step 5: Image Acquisition Phase (Conditional)
 
 🚧 **GATE**: Step 4 complete; Design Specification & Content Outline generated and user confirmed. Any formula rows already have `Acquire Via: formula` and `Status: Rendered`.
+
+For medical decks, follow `references/user-medical-ppt-preferences.md` Image
+Source Policy. The Design Spec image list must use `user`, `self-drawn`,
+`web-cited`, `ai-schematic`, `formula`, or `placeholder`. Do not use AI images
+to simulate real clinical findings.
 
 > **Trigger**: At least one row in the resource list has `Acquire Via: ai` and/or `Acquire Via: web`. If every row is `user`, `formula`, or `placeholder`, skip to Step 6.
 
@@ -535,6 +581,12 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 
 > **Preview not running?** Any time the user mentions "live preview", "preview", "看效果", or wants to select/click a slide element and the service is not running, run [`live-preview`](workflows/live-preview.md) Step 1 to start it. If the service is already running, just point them at the URL — do not restart.
 
+**Post-production cleanup**: after final export and any requested annotation or
+revision pass, apply `references/user-medical-ppt-preferences.md`
+Post-Production Cleanup Rules. Remove generated working artifacts when no
+further edits are needed, but keep final deliverables and do not delete
+user-provided source materials without explicit confirmation.
+
 ---
 
 ## Role Switching Protocol
@@ -559,6 +611,7 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 | Image layout sizing (math for side-by-side container dimensions) | `references/image-layout-spec.md` |
 | SVG image embedding | `references/svg-image-embedding.md` |
 | Icon library | `templates/icons/README.md` |
+| User medical PPT preferences | `references/user-medical-ppt-preferences.md` |
 
 ---
 
