@@ -94,6 +94,14 @@ Proactively provide a color scheme (HEX values) based on content characteristics
 
 **Color rules**: 60-30-10 rule (primary 60%, secondary 30%, accent 10%); text contrast ratio >= 4.5:1; no more than 4 colors per page.
 
+**Lock the full neutral set the visual style implies** — not just primary / secondary / accent / border. Predict the extra neutral tiers the locked `visual_style` (§d Layer 2) needs and lock them now; `spec_lock.colors` must be complete before generation, and the Executor draws only from it (never invents a tone mid-deck).
+
+| Style trait | Extra neutral tiers to lock |
+|---|---|
+| Layers panels / charts (e.g. `data-journalism`, `swiss-minimal`) | `surface` (panel lift), `grid` (hairline, lighter than dividers) |
+| Text over imagery / dark field (e.g. `photo-editorial`, `glassmorphism`, `dark-tech`) | `scrim` / `overlay` for legibility |
+| Print / hand-drawn fills (e.g. `chalkboard`, `zine`) | `block-shade`, one step off the field |
+
 ### f. Icon Usage Confirmation
 
 | Option | Approach | Suitable Scenarios |

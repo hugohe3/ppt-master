@@ -10,6 +10,8 @@ Neutral information delivery. Lay the facts out plainly and completely, organize
 
 **Topic titles, not assertions**: the page title names its subject plainly ("Q3 headcount by team", "Supported file formats") — clarity for lookup beats a persuasive finding. This is the deliberate inverse of `pyramid`'s assertion titles.
 
+**`core_message` states coverage, not a claim**: when filling `design_spec.md §IX`, write each page's `core_message` as what the page lays out ("Q3 headcount across teams"), not what it proves ("headcount is concentrating in engineering"). The §IX field reads as an assertion under the other modes; under `briefing` it names scope.
+
 **Complete over selective**: include the full reference set the audience needs to scan, not only the points that support a case. Coverage is the value here.
 
 **Parallel, even treatment**: sibling items get the same shape and weight so they can be compared and located quickly; nothing is dramatized over its peers unless it genuinely differs.
