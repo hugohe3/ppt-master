@@ -39,6 +39,8 @@ Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative
 
 > Note: `page_layouts` disambiguates the multiple content variants modern templates ship (e.g., `graduation_defense` has 8); the legacy table cannot.
 
+**Templates supply structure, not skin (non-mirror)**: a chart or layout template's gradients, drop-shadows, and palette are placeholder. Inherit its geometry, label / legend placement, and series-encoding logic; re-skin every fill / stroke to the deck's `visual_style` + `spec_lock.colors` — flat styles strip the gradients and shadows, gradient / glass styles repaint their own. Forbidden — shipping a template's default `<linearGradient>` / `cardShadow` / Tailwind fills unchanged. Mirror templates are the exception: §1.1 preserves their visuals verbatim.
+
 ### 1.1 Mirror-mode templates — reference-style consumption
 
 When the project's chosen template is a `mirror` template (`design_spec.md` frontmatter declares `replication_mode: mirror`), Executor switches to a **reference-style** consumption path that bypasses placeholder substitution:
