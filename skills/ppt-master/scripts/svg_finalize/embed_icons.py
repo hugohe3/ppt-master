@@ -182,6 +182,13 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
     if fill_match:
         attrs['fill'] = fill_match.group(1)
 
+    # Stroke-style icons may be authored with natural SVG semantics:
+    # fill="none" stroke="#HEX". Keep accepting fill as the canonical color
+    # carrier, but preserve stroke so outline icons do not collapse to none.
+    stroke_match = re.search(r'stroke="([^"]+)"', use_match)
+    if stroke_match:
+        attrs['stroke'] = stroke_match.group(1)
+
     # Live preview direct edits may write an absolute transform matrix back to
     # the placeholder. Preserve it so the expanded icon matches the edited
     # browser geometry instead of falling back to the original x/y placement.
@@ -196,6 +203,25 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
         attrs['stroke-width'] = stroke_width_match.group(1)
 
     return attrs
+
+
+def resolve_icon_color(attrs: dict[str, str | float], style: str) -> str:
+    """Resolve the caller-provided color for fill or stroke icon libraries."""
+    fill = str(attrs.get('fill', '')).strip()
+    stroke = str(attrs.get('stroke', '')).strip()
+
+    if style == 'stroke':
+        if fill and fill != 'none':
+            return fill
+        if stroke and stroke != 'none':
+            return stroke
+        return '#000000'
+
+    if fill:
+        return fill
+    if stroke and stroke != 'none':
+        return stroke
+    return '#000000'
 
 
 def generate_icon_group(attrs: dict[str, str | float], elements: list[str], style: str, base_size: float) -> str:
@@ -215,7 +241,7 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
     y = attrs.get('y', 0)
     width = attrs.get('width', base_size)
     height = attrs.get('height', base_size)
-    color = attrs.get('fill', '#000000')
+    color = resolve_icon_color(attrs, style)
     icon_name = attrs.get('icon', 'unknown')
 
     scale_x = width / base_size
@@ -290,8 +316,8 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
             continue
 
         icon_path, _ = resolve_icon_path(str(icon_name), icons_dir)
-        color = str(attrs.get('fill', '#000000'))
-        elements, style, base_size = extract_paths_from_icon(icon_path, color)
+        elements, style, base_size = extract_paths_from_icon(icon_path)
+        color = resolve_icon_color(attrs, style)
         
         if not elements:
             print(f"[WARN] Icon not found: {icon_name} (in {svg_path.name})")
