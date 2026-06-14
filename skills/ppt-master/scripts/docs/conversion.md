@@ -41,7 +41,7 @@ pip install PyMuPDF
 Hybrid converter: pure-Python for the common formats, pandoc fallback for the rest.
 
 Native path (no external binary required):
-- `.docx` — via `mammoth`
+- `.docx` — via `mammoth`; OMML / Office Math equations (Word-native or MathType "Convert to Office Math") are rewritten to inline LaTeX. Classic MathType OLE objects carry no OMML and are kept only as their preview image.
 - `.html` / `.htm` — via `markdownify` + `beautifulsoup4`
 - `.epub` — via `ebooklib` + `markdownify`
 - `.ipynb` — via `nbconvert`
