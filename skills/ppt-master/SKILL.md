@@ -298,6 +298,8 @@ Read references/strategist.md
 
 This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call.
 
+**Mandatory — spec-refinement note** (not a ninth confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](workflows/refine-spec.md) workflow. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks (e.g. "refine the spec first") does the [refine-spec](workflows/refine-spec.md) workflow take over after the Eight Confirmations. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs.
+
 **Formula rendering policy lives inside item 7 (Typography plan)**:
 
 | Policy | Behavior |
@@ -334,6 +336,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ## ✅ Strategist Phase Complete
 - [x] Eight Confirmations completed (user confirmed)
 - [x] Split-mode note appended below the eight items (heavy or normal variant)
+- [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec workflow)
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
