@@ -160,8 +160,8 @@ def _fill_risk(tables: list[dict[str, Any]], charts: list[dict[str, Any]]) -> di
     return {
         "has_non_text_content": True,
         "reason": (
-            f"含 {kind_str} 等非文字内容,text-fill 不替换,"
-            "需 table_edits/chart_edits 或换页"
+            f"has non-text content ({kind_str}) that text-fill cannot replace; "
+            "provide table_edits/chart_edits or pick another source slide"
         ),
     }
 
