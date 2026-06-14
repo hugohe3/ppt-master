@@ -46,10 +46,12 @@
 
 ### 2026-06（讲解 mode 与视觉风格双 catalog 化）
 
+- **任意 PPTX 复刻设计 → 内容回填路线**（[`workflows/template-fill-pptx.md`](../../skills/ppt-master/workflows/template-fill-pptx.md)） — 用户给一份现成 `.pptx` 加新材料 / 主题、要求「复用这套 deck 的设计 / 把内容填回去」时，走这条独立工作流直接编辑 PPTX，不进 SVG 生成管线。输出仍是原生可编辑 PPTX（复用原 slide 的形状 / 版式而非截图回填），过程做私有部件隔离、暴露图表数据、容量校验；触发同模板规则——显式要求复用既有 deck 才进，刻意不做改版式 / 加页 / 换图（那是从零生成主路线的活）。与下文 Non-goals 的 #53 区分见该节
 - **三个 executor 退役 → mode + visual-style 双 catalog**（[`references/modes/`](../../skills/ppt-master/references/modes/) + [`references/visual-styles/`](../../skills/ppt-master/references/visual-styles/)） — 原三个 `executor-*.md`（general / consultant / consultant-top）把「领域 · 受众 · 说服 · 叙事」捆在一条线；拆成两个正交 catalog（照 `image-renderings` 范式：扁平目录 + `_index` + 按需读 + Strategist 锁一个）。**mode** = 讲解骨架（`pyramid` / `narrative` / `instructional` / `showcase`，consultant + top 因叙事内核相同合并为 pyramid）；**visual-style** = SVG 排版美学（`swiss-minimal` / `editorial` / `soft-rounded` / `dark-tech`，各 paired 一个 image-rendering，**零 HEX**——颜色真值守在 confirmation e + image-palettes）。Strategist `§d` 双层独立锁定 `mode` + `visual_style` 进 `spec_lock`，Executor 加载两个 locked 文件；任意 mode × 任意 style 自由组合，渲染坐标仍留 `templates/charts/`
 - **提示词约束强度三档解耦**（[`docs/rules/prompt-style.md`](../rules/prompt-style.md) §4） — 规则（`Hard rule` / `Forbidden`）/ 默认（`Default — … may override`）/ 参考（`Reference — not a constraint`）三档显式化 + 「客观失败 vs 品味」判据 + checker 边界，让模型对「该守 vs 可破」一目了然；visual-style catalog 全程用 Reference 强度
 - **visual-style catalog 扩充至 18 个，与 image-renderings 对齐 + 示例库回收** — 先从[示例库](../../examples/)提炼 4 个（`brutalist` / `blueprint` / `memphis` / `zine`），再补齐 [`image-renderings`](../../skills/ppt-master/references/image-renderings/) 里有排版对应物的手绘 / 纹理风格 6 个（`sketch-notes` / `ink-notes` / `chalkboard` / `paper-cut` / `vintage-poster` / `pixel-art`），再回收示例库里仍未覆盖的独立气质：`ink-wash`（新中式水墨留白，源 藏拙 / 李子柒）· `glassmorphism`（深底磨砂玻璃 + 流光，源 glassmorphism_demo，从 soft-rounded 独立）· `photo-editorial`（满版摄影主导、文字点题，源 Pritzker / fashion_weekly）· `data-journalism`（Bloomberg/Economist 新闻信息图，多栏微图表 + 数据侧栏，源 global_ai_capital）。catalog 重组为 5 组（企业产品 / 编辑出版 / 表现印刷 / 手绘笔触 / 特殊）。**关键判据**：一个 rendering 升 visual-style 的前提是它定义「整页版面语言」而非「插入图的样子」——故 corporate-photo「摄影主导版面」该建（photo-editorial），而 nature / warm-scene / fantasy-animation 等纯氛围 rendering 仍只配对、不单建。全程零 HEX、Reference 强度
 - **mode catalog 扩档至 5 个：加 `briefing`** — 补上「中性信息平铺」这一格：无论点 / 无故事 / 不教学 / 不冲击，topic 标题、等权铺事实、完整可扫读，服务周报 / 参考册 / 目录 / 会议材料 / FAQ 这类「只告知不论证」的 deck。五个 mode 自此更接近 MECE 地切分**表达意图**：说服（pyramid）· 讲故事（narrative）· 教会（instructional）· 震住（showcase）· 只告知（briefing）。`_index` 加了 `briefing` vs `pyramid` 的灰区判据（「要不要造个 thesis 才塞得进 pyramid → 那就是 briefing」）。五个预设之外加一个 `custom` 兜底，承接预设盖不住的 bespoke 方向（特殊节奏 / 多 mode 融合 / 特定姿态）——用户点名**或策略师推荐**皆可，与所有锁一样由用户确认；一份 deck 永远只锁一个值，融合=一个 custom 描述多幕。唯一要避免的是「预设明明贴合却图省事甩 custom」。这与「用户自带大纲 / 方向覆盖 mode」是同一条真值优先原则
+- **mode / visual-style 体系真实 deck 验证完成 + 四项校准收紧落地** — 5 mode + 18 visual-style + `custom` 逃生舱在 5 份覆盖性 deck 上跑过验证（briefing×data-journalism / narrative×photo-editorial / instructional×chalkboard / showcase×glassmorphism / custom×zine，其中 narrative 一份走 AI 图生成分支）：**选型零误判**（四对 Close-calls 灰区引力全被触发且全抗住）、**纪律全落实**（零 HEX / Reference 强度 / 整页版面语言）、**custom 机制可用**（`mode_behavior` 散文段落撑过 10 页生成、能讲成大白话让用户确认）、**mode ⟂ visual_style 正交成立**（任意组合无串味，含「keynote/发布会=mode 不是 style」路由正面验证）、导出 5/5 deck × 全页 0 失败。据真实信号收紧四处：`strategist §e` 按 visual_style 预判中性档位一次锁全（消除连续三份的 Executor 中途补色）、`executor-base §1` 套模板页重皮到当前 visual_style（模板供结构不供皮，镜像模板仍按 §1.1 逐字保留）、`briefing §1` 的 `core_message` = 本页覆盖什么而非证明什么（briefing 专属例外，全局 §IX 论断语义保留给 narrative/instructional/pyramid）、`svg_quality_checker` 修字体 drift 误报（按定界符匹配 + font-stack 归一化）+ 放宽 showcase mode 与 poster 类 visual-style 的字号上限
 
 ---
 
@@ -57,8 +59,7 @@
 
 明确在做或下一步要做的方向，不承诺时间窗口。
 
-- **用真实 deck 验证并校准 mode / visual-style 新体系** — 5 个 mode + 18 个 visual-style + `custom` 逃生舱目前都还是设计态，没在真实 deck 上按这个规模跑过验证。下一步不是再加预设，而是跑几份覆盖新 mode / visual-style / custom 的真实 deck，从真实信号反过来收紧：Strategist 在哪选错了 mode 或 style、Executor 有没有落实某个 style 的纪律、custom 锁定在确认环节读起来清不清楚；据此调整 auto-selection 表与各文件措辞
-- **mode catalog 已收口** — 结构（5 个 + custom）定型，近邻消歧判据补齐成一张 Close-calls 表（`pyramid↔briefing`、`narrative↔pyramid`、`narrative↔showcase`、`instructional↔briefing` 四对真正会混的对，其余 far-apart 不需要）。residual 只剩各 mode 文件随真实 deck 落实情况的措辞精修，并入上面的验证 pass，不再单独占工
+- 暂无已承诺的下一步能力方向。mode / visual-style 体系的验证与校准已收口（见上「2026-06」），结构（5 mode + 18 visual-style + custom）定型、四对近邻消歧并成一张 Close-calls 表、四项校准收紧已落地。后续方向由真实使用信号与反馈驱动；长期改进见下「持续维护方向」，已评估不做的见「明确不做」
 
 ---
 
@@ -81,6 +82,8 @@
 PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。「解析既有 PPTX 占位符 + 仅回填文字」是另一种产品形态，需要处理任意来源的母版 / 主题 / 占位符体系，与现有架构发力点正交。
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
+
+> **与 `template-fill-pptx` 路线的区别**：「复用某份 deck **自己的**设计、把新内容回填进去」是已支持的能力（见上「2026-06」），输出仍原生可编辑。这里拒的是另一种形态——解析**任意第三方**模板的母版 / 主题 / 占位符体系并仅做文字替换；两者发力点不同，别混为一谈。
 
 ### 改用原生 PowerPoint 图表（Excel-native chart）
 
