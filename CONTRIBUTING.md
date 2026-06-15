@@ -8,7 +8,7 @@ Thank you for your interest in contributing! This guide will help you get starte
 - **Charts** — Additional chart types or SVG chart templates
 - **Icons** — Vector icons for the icon library
 - **Scripts** — Improvements to conversion or post-processing scripts
-- **Docs** — Clarifications, translations, or new guides
+- **Docs** — Substantive guides or corrections that materially improve project usage
 - **Bug reports** — Reproducible issues with clear descriptions
 - **Ideas** — Feature requests and design suggestions
 
@@ -32,6 +32,7 @@ pip install -r requirements.txt
 PPT Master is solo-maintained with limited review bandwidth. To keep things healthy for everyone:
 
 - **Tiny fixes** (typos, one-line usage/doc corrections, obvious small inconsistencies) — please open an issue instead of a PR. A clear report is usually faster for the maintainer to apply directly
+- **Translations & wording-only edits** — please open an issue rather than a PR. Like other tiny fixes, these are faster for the maintainer to apply directly, and unrequested translation files add ongoing sync burden without a clear owner. Translated governance docs (CONTRIBUTING, Code of Conduct) are intentionally not maintained as separate `_CN` files
 - **Focused bug fixes** — PRs are welcome when the fix is self-contained, has clear reproduction steps, and includes local verification
 - **Substantial features, new backends, or new abstractions** — please open an issue first to discuss fit and direction. PRs submitted without prior discussion may be closed without detailed review
 - **Refactors, structural changes, broad cleanup, or workflow changes** — open an issue first. The project deliberately stays close to its current shape
@@ -43,7 +44,7 @@ This isn't gatekeeping — it protects your time. A PR should be a meaningful, i
 **Welcome:**
 - Bug fixes with clear reproduction
 - New layout templates, chart templates, icons
-- Documentation clarifications and translations
+- Documentation updates that materially improve an existing workflow, installation path, or troubleshooting path
 - Additional image backends that follow the existing `image_backends/` pattern
 - SVG quality improvements that stay within the declared constraints
 
@@ -53,6 +54,7 @@ This isn't gatekeeping — it protects your time. A PR should be a meaningful, i
 - Repackaging the skill as a CLI, SaaS, desktop app, or installer — PPT Master is a chat-driven skill for AI IDEs by design
 - Architectural refactors or large-scale renames — incremental cleanup only
 - "Drive-by" cosmetic reformatting unrelated to a real fix
+- Pure translations or wording-only edits that were not requested or discussed first
 
 If you're unsure, open an issue to ask — that's always welcome.
 
