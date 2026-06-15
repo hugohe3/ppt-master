@@ -143,6 +143,29 @@ def _canvas_px(pres_root: ET.Element) -> dict[str, int | None]:
     }
 
 
+def _fill_risk(tables: list[dict[str, Any]], charts: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Return a fill_risk descriptor when the slide has non-text content that text-fill cannot replace.
+
+    Only tables and charts are checked; no new dependencies are introduced.
+    Returns None when the slide has no such content.
+    """
+    kinds: list[str] = []
+    if tables:
+        kinds.append("table")
+    if charts:
+        kinds.append("chart")
+    if not kinds:
+        return None
+    kind_str = "/".join(kinds)
+    return {
+        "has_non_text_content": True,
+        "reason": (
+            f"has non-text content ({kind_str}) that text-fill cannot replace; "
+            "provide table_edits/chart_edits or pick another source slide"
+        ),
+    }
+
+
 def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
     """Extract a slide library with text replacement slots."""
     with zipfile.ZipFile(pptx_path) as zf:
@@ -180,16 +203,18 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
             tables = _analyze_tables(slide_root, slide_ref.index)
             charts = _analyze_charts(zf, slide_root, slide_ref)
             slide_text = "\n".join(slot["text"] for slot in slots if slot["text"])
-            slides.append(
-                {
-                    "slide_index": slide_ref.index,
-                    "page_type": _classify_page_type(slide_ref.index, len(slide_refs), slide_text, slots),
-                    "text_summary": slide_text[:500],
-                    "slots": slots,
-                    "tables": tables,
-                    "charts": charts,
-                }
-            )
+            slide: dict[str, Any] = {
+                "slide_index": slide_ref.index,
+                "page_type": _classify_page_type(slide_ref.index, len(slide_refs), slide_text, slots),
+                "text_summary": slide_text[:500],
+                "slots": slots,
+                "tables": tables,
+                "charts": charts,
+            }
+            risk = _fill_risk(tables, charts)
+            if risk is not None:
+                slide["fill_risk"] = risk
+            slides.append(slide)
 
     return {
         "schema": "template_fill_pptx_library.v1",

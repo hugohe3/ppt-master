@@ -64,6 +64,8 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 | `**Hard rule**:` | Non-negotiable behavior |
 | `**Forbidden — xxx**:` | Disallowed values / actions, followed by a list |
 | `**Mandatory**:` | Required step within an optional phase |
+| `**Default — X (may override when …)**:` | A sensible default that saves re-deciding; deviating is allowed with a stated reason |
+| `**Reference — not a constraint**:` | Vocabulary or options with no single right answer — a recall aid, not an instruction (replaces scattered "for recall, not constraint" / "illustrative only") |
 | `**When to run**:` / `**Trigger**:` | Activation condition |
 | `**Validation**:` | Post-step assertion |
 | `**Per-page xxx**:` / `**Per-row xxx**:` | Loop body description |
@@ -78,6 +80,18 @@ Begin substantive paragraphs with a bolded short label. Reuse this fixed vocabul
 - Colors (fill / stroke / stop-color) MUST come from `colors`
 - Icons MUST come from `icons.inventory`
 ```
+
+**Choosing the strength** — before labeling a constraint, ask: *if a page violates it, does it objectively fail (text overlaps, overflows, misaligns, becomes unreadable, loses information, breaks across renderers), or could it merely look worse?*
+
+| Answer | Label |
+|---|---|
+| Objective failure, checkable by a concrete trigger | `**Hard rule**:` / `**Forbidden**:` |
+| Has a sensible default, deviation can be justified | `**Default — … (may override)**:` |
+| No right answer — taste, style, or scenario fit | `**Reference — not a constraint**:` |
+
+Boundary cases go by this test, not by how strong the verb feels: "never split a full sentence into bullets" stays near-MUST because splitting *loses the information that the block was continuous reasoning*, not because "never" sounds strict.
+
+> Note: only a MUST with a concrete objective trigger may become a `svg_quality_checker.py` rule. SHOULD is at most a `warning`; MAY is never checked — encoding taste as a check turns the checker into a de-facto spec.
 
 ---
 
@@ -175,7 +189,7 @@ Items are evidence-driven (`file exists at path X`, `status N is Generated`), no
 - Smiley face / sparkle / fire emoji
 - Footnotes (`[^1]`)
 - HTML in markdown body (`<details>`, `<br>`, etc.) — only the SVG embedding examples use real `<svg>`/`<image>` in code blocks, never as live markdown
-- "**Best practice**: ..." labels — use `**Hard rule**:` if it's required, or omit if it's not
+- "**Best practice**: ..." labels — pick the right strength label instead (§4): `**Hard rule**:` if violating it fails, `**Default — … (may override)**:` if it's a sensible default, `**Reference — not a constraint**:` if it's taste. Never leave a soft suggestion unlabeled — an unlabeled line reads as a hard rule to the model
 
 ---
 

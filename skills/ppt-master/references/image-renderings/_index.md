@@ -81,12 +81,12 @@ When no preset carries the deck's temperament, set `image_rendering: custom` and
 
 ## 2. Auto-selection table — `design_spec` → rendering
 
-Match `design_spec.md d. Style` (mode + descriptor) against this table. First match wins. **No row matches** → use `custom` per §1.5 rather than force-fitting `vector-illustration`.
+Match `design_spec.md d` (mode + `visual_style`) against this table. First match wins. **No row matches** → use `custom` per §1.5 rather than force-fitting `vector-illustration`. (When the locked `visual_style` names a paired rendering, prefer that for aesthetic alignment.)
 
 | `d. Style` signal | Recommended rendering | Alternates |
 |---|---|---|
-| Top Consulting / strategic / MBB | `editorial` or `vector-illustration` | `blueprint`, `minimalist-swiss` |
-| General Consulting / corporate report | `vector-illustration` | `flat`, `digital-dashboard` |
+| Strategic / MBB / board | `editorial` or `vector-illustration` | `blueprint`, `minimalist-swiss` |
+| Corporate report / analysis | `vector-illustration` | `flat`, `digital-dashboard` |
 | High-end consulting / luxury / 高端 / design-firm | `minimalist-swiss` | `editorial`, `vector-illustration` |
 | Tech / SaaS / AI / system / architecture | `3d-isometric`, `blueprint`, or `digital-dashboard` | `flat`, `vector-illustration` |
 | Modern SaaS / fintech / health-tech / premium app | `glassmorphism` | `digital-dashboard`, `flat` |

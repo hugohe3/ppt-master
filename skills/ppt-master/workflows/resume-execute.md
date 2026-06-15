@@ -45,7 +45,7 @@ Read skills/ppt-master/SKILL.md
 
 Then jump to `### Step 6: Executor Phase` and run the documented pipeline:
 
-- Read references (executor-base + shared-standards + chosen style file + image-layout-spec + svg-image-embedding)
+- Read references (executor-base + shared-standards + the locked `mode` file under `modes/` + the locked `visual_style` file under `visual-styles/` + image-layout-spec + svg-image-embedding)
 - Design Parameter Confirmation
 - Pre-generation Batch Read (every layout / chart SVG referenced in `spec_lock`)
 - Per-page `spec_lock` re-read + sequential page generation

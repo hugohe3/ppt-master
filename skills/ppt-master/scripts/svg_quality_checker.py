@@ -55,6 +55,13 @@ SVG_NS = "http://www.w3.org/2000/svg"
 RAMP_MIN_RATIO = 0.5
 RAMP_MAX_RATIO = 5.0
 
+# Modes / visual styles that legitimately use unbounded hero / poster type
+# (huge cover numerals, act dividers, single-number reveals). For these the
+# size-drift upper bound is dropped — the oversize is the design, not Executor
+# drift. The lower bound still applies.
+POSTER_SIZE_MODES = {'showcase'}
+POSTER_SIZE_STYLES = {'zine'}
+
 
 def _design_spec_is_brand(spec_path: Path) -> bool:
     """Return True when a design_spec.md frontmatter declares ``kind: brand``.
@@ -735,7 +742,7 @@ class SVGQualityChecker:
         if typo:
             default_font = typo.get('font_family', '').strip()
             if default_font:
-                allowed_fonts.add(default_font)
+                allowed_fonts.add(self._normalize_font_stack(default_font))
             for k, v in typo.items():
                 if k == 'font_family' or not k.endswith('_family'):
                     continue
@@ -743,7 +750,7 @@ class SVGQualityChecker:
                 # Skip placeholder text like "same as body (omit if identical)"
                 if not v_clean or v_clean.lower().startswith('same as'):
                     continue
-                allowed_fonts.add(v_clean)
+                allowed_fonts.add(self._normalize_font_stack(v_clean))
 
         # Sizes: declared slots are anchors; body is the ramp baseline.
         allowed_sizes = set()
@@ -768,10 +775,18 @@ class SVGQualityChecker:
                     color_drifts.add(val)
 
         font_drifts = set()
-        for m in re.finditer(r'font-family\s*=\s*["\']([^"\']+)["\']', content):
-            val = m.group(1).strip()
-            if allowed_fonts and val not in allowed_fonts:
+        # Capture to the matching delimiter (group 1) so a double-quoted stack
+        # containing single-quoted family names is not truncated at the inner quote.
+        for m in re.finditer(r'font-family\s*=\s*(["\'])(.*?)\1', content):
+            val = m.group(2).strip()
+            if allowed_fonts and self._normalize_font_stack(val) not in allowed_fonts:
                 font_drifts.add(val)
+
+        # Poster / showcase contexts use unbounded hero type — drop the ceiling.
+        mode = (lock.get('mode', {}).get('mode') or '').strip().lower()
+        vstyle = (lock.get('visual_style', {}).get('visual_style') or '').strip().lower()
+        max_ratio = (float('inf') if mode in POSTER_SIZE_MODES or vstyle in POSTER_SIZE_STYLES
+                     else RAMP_MAX_RATIO)
 
         size_drifts = set()
         for m in re.finditer(r'font-size\s*=\s*["\']([^"\']+)["\']', content):
@@ -779,11 +794,11 @@ class SVGQualityChecker:
             if not allowed_sizes or val in allowed_sizes:
                 continue
             # Intermediate values are allowed when they sit inside the ramp
-            # envelope (ratio to body within [RAMP_MIN_RATIO, RAMP_MAX_RATIO]).
+            # envelope (ratio to body within [RAMP_MIN_RATIO, max_ratio]).
             if body_px and body_px > 0:
                 try:
                     ratio = float(val) / body_px
-                    if RAMP_MIN_RATIO <= ratio <= RAMP_MAX_RATIO:
+                    if RAMP_MIN_RATIO <= ratio <= max_ratio:
                         continue
                 except ValueError:
                     pass
@@ -885,6 +900,15 @@ class SVGQualityChecker:
         if v.endswith('px'):
             v = v[:-2].strip()
         return v
+
+    @staticmethod
+    def _normalize_font_stack(stack: str) -> str:
+        """Normalize a font-family stack for comparison: split on commas, strip
+        quotes / whitespace, lowercase, rejoin. Collapses cosmetic differences
+        (comma spacing, single vs double quotes, case) so that
+        `Consolas,'Courier New',monospace` matches `Consolas, "Courier New", monospace`."""
+        parts = [p.strip().strip('"\'').lower() for p in stack.split(',')]
+        return ','.join(p for p in parts if p)
 
     def _categorize_issue(self, error_msg: str) -> str:
         """Categorize issue type"""

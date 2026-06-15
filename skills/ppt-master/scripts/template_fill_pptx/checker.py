@@ -203,6 +203,11 @@ def _capacity_for_report(
     return _display_width(max(capacity, old_width))
 
 
+def _library_slide_index(library: dict[str, Any]) -> dict[int, dict[str, Any]]:
+    """Build a mapping from slide_index to slide dict for O(1) lookup."""
+    return {int(s.get("slide_index", 0)): s for s in library.get("slides", [])}
+
+
 def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
     """Compare fill replacements against source slot capacity."""
     lookup = _slot_lookup(library)
@@ -427,6 +432,85 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                     "message": "chart edit target and data shape are valid",
                 }
             )
+    # --- Guardrail 2: source slides with non-text content not covered by edits ---
+    # For each plan slide, if the source slide has tables/charts in the library
+    # but the plan slide provides no matching table_edits/chart_edits, warn that
+    # text-fill will silently leave the original template content in place.
+    lib_slides = _library_slide_index(library)
+    for plan_slide_index, slide in enumerate(plan.get("slides", []), start=1):
+        source_slide = int(slide.get("source_slide", 0))
+        lib_slide = lib_slides.get(source_slide)
+        if lib_slide is None:
+            continue
+        lib_tables = lib_slide.get("tables", [])
+        lib_charts = lib_slide.get("charts", [])
+        if not lib_tables and not lib_charts:
+            continue
+        # Check whether the plan slide provides edits covering the non-text content.
+        has_table_edits = bool(slide.get("table_edits"))
+        has_chart_edits = bool(slide.get("chart_edits"))
+        uncovered_kinds: list[str] = []
+        if lib_tables and not has_table_edits:
+            uncovered_kinds.append("table")
+        if lib_charts and not has_chart_edits:
+            uncovered_kinds.append("chart")
+        if not uncovered_kinds:
+            continue
+        kind_str = "/".join(uncovered_kinds)
+        summary["warn"] += 1
+        results.append(
+            {
+                "status": "WARN",
+                "plan_slide": plan_slide_index,
+                "source_slide": source_slide,
+                "message": (
+                    f"source slide {source_slide} has non-text content ({kind_str}) "
+                    "with no matching edits in the plan; text-fill leaves it untouched "
+                    "and original template content may show through "
+                    "(add table_edits/chart_edits, or pick another source slide)"
+                ),
+            }
+        )
+
+    # --- Guardrail 1: same source slide reused too many times while unused layouts exist ---
+    # Use a relative condition rather than an absolute threshold: only warn when
+    # (a) a source slide is reused >= REUSE_WARN_THRESHOLD times, AND
+    # (b) there are library slides that the plan never uses at all.
+    # Rationale: a small template where every layout is referenced is fine even at
+    # high per-slide reuse; "15-page template where only 1 page is ever cloned and
+    # the rest sit idle" is the real smell we want to surface.
+    # Threshold of 3: any source appearing 3+ times in a plan is meaningful reuse
+    # (cover / TOC / ending typically appear at most twice), so >= 3 is a practical
+    # signal without being overly sensitive.
+    REUSE_WARN_THRESHOLD = 3
+    source_use_counts: dict[int, int] = {}
+    for slide in plan.get("slides", []):
+        src = int(slide.get("source_slide", 0))
+        if src:
+            source_use_counts[src] = source_use_counts.get(src, 0) + 1
+    all_lib_indices = {int(s.get("slide_index", 0)) for s in library.get("slides", []) if s.get("slide_index")}
+    used_lib_indices = set(source_use_counts.keys())
+    unused_lib_indices = sorted(all_lib_indices - used_lib_indices)
+    if unused_lib_indices:
+        for src, count in sorted(source_use_counts.items()):
+            if count >= REUSE_WARN_THRESHOLD:
+                unused_list = ", ".join(str(i) for i in unused_lib_indices)
+                summary["warn"] += 1
+                results.append(
+                    {
+                        "status": "WARN",
+                        "source_slide": src,
+                        "reuse_count": count,
+                        "unused_source_slides": unused_lib_indices,
+                        "message": (
+                            f"source slide {src} is reused {count} times while "
+                            f"{len(unused_lib_indices)} source layout(s) are never used "
+                            f"(indices: {unused_list}); "
+                            "consider using other layouts for more variety"
+                        ),
+                    }
+                )
+
     return {"schema": "template_fill_pptx_check.v1", "summary": summary, "results": results}
 
 
@@ -441,10 +525,13 @@ def print_check_report(report: dict[str, Any]) -> None:
                 "{status} P{plan_slide:02d} source={source_slide} {slot_id} "
                 "{role} old={old_len} new={new_len} ratio={ratio}: {message}".format(**item)
             )
-        else:
+        elif "plan_slide" in item:
             target = item.get("slot_id") or item.get("selector") or ""
             line = (
                 f"{item['status']} P{item['plan_slide']:02d} "
                 f"source={item['source_slide']} {target}: {item['message']}".strip()
             )
+        else:
+            # Guardrail 1 WARNs are source-level (no plan_slide); print source + message.
+            line = f"{item['status']} source={item.get('source_slide', '?')}: {item['message']}"
         print(line)

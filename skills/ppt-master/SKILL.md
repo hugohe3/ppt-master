@@ -298,6 +298,8 @@ Read references/strategist.md
 
 This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call.
 
+**Mandatory — spec-refinement note** (not a ninth confirmation): after the split-mode line, you MUST append one short opt-in line (rendered in the user's language, prefixed with 💡) telling the user they may **refine the spec first** — Strategist will produce the full design spec, then stop for review/revision of any part of it before any generation, via the [refine-spec](workflows/refine-spec.md) workflow. Default is OFF: no request → the spec is written in one go and the pipeline auto-proceeds as usual. Only when the user explicitly asks (e.g. "refine the spec first") does the [refine-spec](workflows/refine-spec.md) workflow take over after the Eight Confirmations. This line, like the split-mode line, is required output every run — the user must see the choice exists; whether to act on it is theirs.
+
 **Formula rendering policy lives inside item 7 (Typography plan)**:
 
 | Policy | Behavior |
@@ -334,6 +336,7 @@ uvx ppt-master analyze-images <project_path>/images
 ## ✅ Strategist Phase Complete
 - [x] Eight Confirmations completed (user confirmed)
 - [x] Split-mode note appended below the eight items (heavy or normal variant)
+- [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec workflow)
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
@@ -397,16 +400,15 @@ Workflow:
 
 🚧 **GATE**: Step 4 (and Step 5 if triggered) complete; all prerequisite deliverables are ready.
 
-Read the role definition based on the selected style:
+Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
 ```
-Read references/executor-base.md          # REQUIRED: common guidelines
-Read references/shared-standards.md       # REQUIRED: SVG/PPT technical constraints
-Read references/executor-general.md       # General flexible style
-Read references/executor-consultant.md    # Consulting style
-Read references/executor-consultant-top.md # Top consulting style (MBB level)
+Read references/executor-base.md                  # REQUIRED: common guidelines
+Read references/shared-standards.md               # REQUIRED: SVG/PPT technical constraints
+Read references/modes/<locked-mode>.md            # narrative skeleton (spec_lock.md `mode`)
+Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
 ```
 
-> Only read executor-base + shared-standards + one style file.
+> Read executor-base + shared-standards + the one locked mode file + the one locked visual-style file. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
 

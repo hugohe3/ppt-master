@@ -8,7 +8,7 @@
 [English](./README.md) | 中文
 
 <p align="center">
-  <sub>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a> 等赞助方支持，得以持续免费开源。</sub>
+  <sub>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> 等赞助方支持，得以持续免费开源。</sub>
 </p>
 
 <table>
@@ -19,6 +19,10 @@
   <tr>
     <td width="180"><a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" width="150"></a></td>
     <td>感谢 APIKEY.FUN 赞助了本项目！APIKEY.FUN 是一家专业的企业级 AI 中转站，致力于为企业和开发者提供稳定、高效、低成本的 AI 中转服务。平台支持 Claude、OpenAI、Gemini 等主流热门模型，价格低至官方原价的 <strong>7%</strong>。通过<a href="https://apikey.fun/register?aff=PPT-MASTER">本项目专属链接</a>注册，还可享受最高 <strong>永久充值 95 折</strong> 专属优惠。</td>
+  </tr>
+  <tr>
+    <td width="180"><a href="https://runapi.co/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" width="150"></a></td>
+    <td>感谢 RunAPI 赞助了本项目！RunAPI 是一个高效稳定的 API 平台，一个 API Key 即可访问 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型，价格低至官方原价的 <strong>1 折</strong>，极其稳定，可无缝兼容 Claude Code 等工具。RunAPI 为 PPT Master 用户提供专属福利：通过<a href="https://runapi.co/register?aff=WMLJ">本项目专属链接</a>注册并联系管理员，即可领取 <strong>￥7 的免费额度</strong>。</td>
   </tr>
 </table>
 
@@ -191,7 +195,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 > **模型推荐**：追求最佳效果选 **Claude Opus**，搭配 `gpt-image-2` 生图；**Gemini 3.5 Flash** 目前综合性价比很高，尤其速度很快，值得一试。
 
-**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** 与 **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 都能解决卡点——两家都支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅，支持国内支付。**PackyCode**：充值时填写优惠码 **`ppt-master`** 享 9 折。**APIKEY.FUN**：价格低至官方原价的 **7%**，通过专属链接注册可享受最高永久充值 95 折专属优惠。
+**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.co/register?aff=WMLJ)** 都能解决卡点——均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅，支持国内支付。**PackyCode**：充值时填写优惠码 **`ppt-master`** 享 9 折。**APIKEY.FUN**：价格低至官方原价的 **7%**，通过专属链接注册可享受最高永久充值 95 折专属优惠。**RunAPI**：一个 API Key 即可访问 150+ 主流模型，价格低至官方原价的 **1 折**，注册并联系管理员可领取 **￥7 免费额度**。
 
 ### 3. 配置项目
 
@@ -336,6 +340,8 @@ PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文�
 <a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
 &nbsp;
 <a href="https://apikey.fun/register?aff=PPT-MASTER"><img src="docs/assets/sponsors/apikey-fun.png" alt="APIKEY.FUN" height="40" /></a>
+&nbsp;
+<a href="https://runapi.co/register?aff=WMLJ"><img src="docs/assets/sponsors/runapi.png" alt="RunAPI" height="40" /></a>
 &nbsp;
 <a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40" /></a>
 
