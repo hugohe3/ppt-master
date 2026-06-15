@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.07" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ========== HEADER BAR ========== -->
+  <rect x="0" y="0" width="1280" height="78" fill="#AE232F"/>
+  <rect x="28" y="18" width="32" height="32" rx="6" fill="#8A1B25"/>
+  <text x="44" y="39" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">07</text>
+  <text x="78" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">Who I Call On — Target Physician Specialties</text>
+  <text x="78" y="64" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Five key stakeholder groups · Tier A priority calls · Clinical partnership approach</text>
+
+  <!-- ========== LEFT COLUMN — 3 CARDS ========== -->
+
+  <!-- CARD 1: Orthopedic Surgeon [Tier A] -->
+  <g id="card-ortho" filter="url(#sm-shadow)">
+    <rect x="36" y="92" width="598" height="168" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <!-- Left red accent -->
+    <rect x="36" y="92" width="5" height="168" rx="3" fill="#AE232F"/>
+    <!-- Tier A badge -->
+    <rect x="574" y="100" width="48" height="22" rx="4" fill="#AE232F"/>
+    <text x="598" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Tier A</text>
+    <!-- Icon circle -->
+    <circle cx="72" cy="126" r="22" fill="#F9E5E7"/>
+    <use data-icon="tabler-filled/hospital-circle" x="60" y="114" width="24" height="24" fill="#AE232F"/>
+    <!-- Specialty title -->
+    <text x="106" y="120" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Orthopedic Surgeon</text>
+    <text x="106" y="138" font-family="Arial, sans-serif" font-size="11" fill="#AE232F" font-weight="bold">Clexane role: DVT prophylaxis post Hip &amp; Knee Replacement surgery</text>
+    <!-- Divider -->
+    <line x1="50" y1="151" x2="622" y2="151" stroke="#F5F5F5" stroke-width="1"/>
+    <!-- Key message -->
+    <text x="50" y="168" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Key message:</text>
+    <text x="50" y="186" font-family="Arial, sans-serif" font-size="12" fill="#555555">Predictable dosing, no aPTT monitoring — patient can self-inject at home after discharge.</text>
+    <text x="50" y="202" font-family="Arial, sans-serif" font-size="12" fill="#555555">Reduces nursing burden and enables same-day or next-day discharge planning.</text>
+    <text x="50" y="220" font-family="Arial, sans-serif" font-size="12" fill="#555555">Clinical guideline: ACCP 2022 — LMWH preferred over UFH for hip/knee prophylaxis.</text>
+    <text x="50" y="238" font-family="Arial, sans-serif" font-size="12" fill="#555555">Duration: 10–14 days (knee) or up to 35 days (hip) — extended outpatient use fits Clexane perfectly.</text>
+  </g>
+
+  <!-- CARD 2: Cardiologist [Tier A] -->
+  <g id="card-cardio" filter="url(#sm-shadow)">
+    <rect x="36" y="272" width="598" height="168" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <rect x="36" y="272" width="5" height="168" rx="3" fill="#AE232F"/>
+    <rect x="574" y="280" width="48" height="22" rx="4" fill="#AE232F"/>
+    <text x="598" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Tier A</text>
+    <circle cx="72" cy="306" r="22" fill="#F9E5E7"/>
+    <use data-icon="tabler-filled/heart" x="60" y="294" width="24" height="24" fill="#AE232F"/>
+    <text x="106" y="300" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Cardiologist</text>
+    <text x="106" y="318" font-family="Arial, sans-serif" font-size="11" fill="#AE232F" font-weight="bold">Clexane role: ACS management (UA / NSTEMI) + post-PCI bridging anticoagulation</text>
+    <line x1="50" y1="331" x2="622" y2="331" stroke="#F5F5F5" stroke-width="1"/>
+    <text x="50" y="348" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Key message:</text>
+    <text x="50" y="366" font-family="Arial, sans-serif" font-size="12" fill="#555555">ESSENCE &amp; TIMI 11B trial evidence — Clexane superior to UFH in ACS outcomes.</text>
+    <text x="50" y="384" font-family="Arial, sans-serif" font-size="12" fill="#555555">Reduces recurrent ischemia by ~20%. No drip, no aPTT — simplified CCU workflow.</text>
+    <text x="50" y="402" font-family="Arial, sans-serif" font-size="12" fill="#555555">Post-PCI: overlap bridging until oral anticoagulants reach therapeutic range.</text>
+    <text x="50" y="420" font-family="Arial, sans-serif" font-size="12" fill="#555555">ACC/AHA Class I recommendation for enoxaparin in UA/NSTEMI management.</text>
+  </g>
+
+  <!-- CARD 3: Ward Pharmacist [Tier A] -->
+  <g id="card-pharm" filter="url(#sm-shadow)">
+    <rect x="36" y="452" width="598" height="168" rx="8" fill="#FFFFFF" stroke="#AE232F" stroke-width="1.5"/>
+    <rect x="36" y="452" width="5" height="168" rx="3" fill="#AE232F"/>
+    <rect x="574" y="460" width="48" height="22" rx="4" fill="#AE232F"/>
+    <text x="598" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Tier A</text>
+    <!-- Special highlight for pharmacist — same profession as Jan -->
+    <rect x="36" y="452" width="598" height="168" rx="8" fill="#F9E5E7" fill-opacity="0.15"/>
+    <circle cx="72" cy="486" r="22" fill="#F9E5E7"/>
+    <use data-icon="tabler-filled/clipboard-check" x="60" y="474" width="24" height="24" fill="#AE232F"/>
+    <text x="106" y="480" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Ward Pharmacist</text>
+    <text x="106" y="498" font-family="Arial, sans-serif" font-size="11" fill="#AE232F" font-weight="bold">Clexane role: Formulary inclusion &amp; protocol design for anticoagulation pathways</text>
+    <line x1="50" y1="511" x2="622" y2="511" stroke="#E0E0E0" stroke-width="1"/>
+    <text x="50" y="528" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Key message:</text>
+    <text x="50" y="546" font-family="Arial, sans-serif" font-size="12" fill="#555555">Clinical evidence + cost-effectiveness data — PharmD partner, not just a call point.</text>
+    <text x="50" y="564" font-family="Arial, sans-serif" font-size="12" fill="#555555">As a Pharm.D. myself, I speak their language: PK, dosing adjustment, interaction review.</text>
+    <text x="50" y="582" font-family="Arial, sans-serif" font-size="12" fill="#555555">Pharmacists drive formulary decisions — engaging them is multiplying my reach to all MDs.</text>
+    <text x="50" y="600" font-family="Arial, sans-serif" font-size="12" fill="#AE232F" font-weight="bold">Unique edge: Pharm.D. credential = peer-level credibility with hospital pharmacists.</text>
+  </g>
+
+  <!-- ========== RIGHT COLUMN — 2 CARDS ========== -->
+
+  <!-- CARD 4: Internal Medicine [Tier B] -->
+  <g id="card-im" filter="url(#sm-shadow)">
+    <rect x="646" y="92" width="598" height="268" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <rect x="646" y="92" width="5" height="268" rx="3" fill="#E0E0E0"/>
+    <!-- Tier B badge -->
+    <rect x="1184" y="100" width="48" height="22" rx="4" fill="#F9E5E7" stroke="#AE232F" stroke-width="1"/>
+    <text x="1208" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#AE232F">Tier B</text>
+    <circle cx="682" cy="136" r="22" fill="#F5F5F5"/>
+    <use data-icon="tabler-filled/medical-cross" x="670" y="124" width="24" height="24" fill="#888888"/>
+    <text x="716" y="130" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Internal Medicine / General Physician</text>
+    <text x="716" y="148" font-family="Arial, sans-serif" font-size="11" fill="#555555" font-weight="bold">Clexane role: DVT prophylaxis for immobile medical ward patients</text>
+    <line x1="660" y1="161" x2="1232" y2="161" stroke="#F5F5F5" stroke-width="1"/>
+    <text x="660" y="182" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Key message:</text>
+    <text x="660" y="200" font-family="Arial, sans-serif" font-size="12" fill="#555555">Simple once-daily dosing (40 mg SC q24h prophylaxis) — suitable for</text>
+    <text x="660" y="218" font-family="Arial, sans-serif" font-size="12" fill="#555555">high-risk medical inpatients: heart failure, stroke, severe infection.</text>
+    <text x="660" y="242" font-family="Arial, sans-serif" font-size="12" fill="#555555">MEDENOX trial: Clexane 40 mg q24h reduced VTE by 63% vs. placebo</text>
+    <text x="660" y="260" font-family="Arial, sans-serif" font-size="12" fill="#555555">in acutely ill medical patients. Well-established safety profile.</text>
+    <!-- Risk score reference -->
+    <rect x="660" y="278" width="568" height="64" rx="6" fill="#F5F5F5"/>
+    <text x="944" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Padua Prediction Score ≥ 4 → prophylaxis indicated</text>
+    <text x="944" y="316" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#888888">I will help MDs identify eligible patients using the Padua score tool</text>
+    <text x="944" y="332" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#888888">and link it directly to the Clexane 40 mg protocol.</text>
+  </g>
+
+  <!-- CARD 5: Nephrologist [Tier B] -->
+  <g id="card-nephro" filter="url(#sm-shadow)">
+    <rect x="646" y="372" width="598" height="248" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <rect x="646" y="372" width="5" height="248" rx="3" fill="#E0E0E0"/>
+    <rect x="1184" y="380" width="48" height="22" rx="4" fill="#F9E5E7" stroke="#AE232F" stroke-width="1"/>
+    <text x="1208" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#AE232F">Tier B</text>
+    <circle cx="682" cy="416" r="22" fill="#F5F5F5"/>
+    <use data-icon="tabler-filled/shield-check" x="670" y="404" width="24" height="24" fill="#888888"/>
+    <text x="716" y="410" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Nephrologist</text>
+    <text x="716" y="428" font-family="Arial, sans-serif" font-size="11" fill="#555555" font-weight="bold">Clexane role: Hemodialysis circuit anticoagulation + VTE management in CKD</text>
+    <line x1="660" y1="441" x2="1232" y2="441" stroke="#F5F5F5" stroke-width="1"/>
+    <text x="660" y="462" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Key message:</text>
+    <text x="660" y="480" font-family="Arial, sans-serif" font-size="12" fill="#555555">Dose-adjustable in CKD (CrCl ≥ 15 mL/min with monitoring) — established</text>
+    <text x="660" y="498" font-family="Arial, sans-serif" font-size="12" fill="#555555">safety profile in renal patients where DOACs are often contraindicated.</text>
+    <text x="660" y="522" font-family="Arial, sans-serif" font-size="12" fill="#555555">Hemodialysis use: 1 mg/kg IV bolus at circuit start prevents clotting without</text>
+    <text x="660" y="540" font-family="Arial, sans-serif" font-size="12" fill="#555555">need for continuous heparin infusion — simpler workflow for dialysis nurses.</text>
+    <!-- Caution note -->
+    <rect x="660" y="558" width="568" height="50" rx="6" fill="#F5F5F5"/>
+    <text x="944" y="577" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Handling the renal objection proactively:</text>
+    <text x="944" y="595" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#888888">"Dose-adjust at CrCl 15–30; avoid or use anti-Xa monitoring below 15."</text>
+  </g>
+
+  <!-- ========== BOTTOM INSIGHT BAR ========== -->
+  <rect x="36" y="632" width="1208" height="42" rx="6" fill="#AE232F" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/star" x="54" y="643" width="20" height="20" fill="#FFFFFF"/>
+  <text x="84" y="650" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Tier A = </text>
+  <text x="136" y="650" font-family="Arial, sans-serif" font-size="12" fill="#F9E5E7">High prescribing volume + strong Clexane fit → priority call frequency (2× per week).   </text>
+  <text x="760" y="650" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Ward Pharmacist </text>
+  <text x="870" y="650" font-family="Arial, sans-serif" font-size="12" fill="#F9E5E7">is a clinical partner, not just a gatekeeper — always engage both MD and PharmD.</text>
+  <text x="84" y="666" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Tier B = Build relationship in first 60 days, convert to active accounts by Q2.   My Pharm.D. background gives me a peer advantage with pharmacist stakeholders.</text>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

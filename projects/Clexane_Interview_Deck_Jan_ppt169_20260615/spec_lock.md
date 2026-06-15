@@ -38,6 +38,7 @@
 - P04: dense
 - P05: dense
 - P06: breathing
+- P07: dense
 
 ## page_charts
 - P01: labeled_card
