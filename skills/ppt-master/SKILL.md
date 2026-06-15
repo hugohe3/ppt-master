@@ -300,6 +300,18 @@ Read references/strategist.md
 3. **Always also print the eight recommendations as a short summary in chat, with the URL.** This keeps the chat fallback valid whether or not the browser opened. If the page never appears, the user simply confirms or edits in chat as before.
 4. This is the ⛔ BLOCKING wait. Preferred page path: the `--wait` command returns after the page writes a fresh `<project_path>/confirm_ui/result.json`; immediately read that file and use its values. On a non-zero exit, re-check `result.json` once (per step 2) — a fresh `status: confirmed` still wins. Chat fallback path: only if no fresh result exists (page didn't open, wait timed out with no confirmation, or the user replies in chat with edits) take the chat values directly. Either path converges. A confirmed `result.json` is an explicit user choice: `generation_mode: "split"` means split mode was chosen; `refine_spec: true` means the refine-spec workflow was chosen.
 
+**Honoring the confirmation (result.json is authoritative — Mandatory)**: the confirmed values **override your own recommendations** when you write `design_spec.md` / `spec_lock.md`. A user who changed any field changed it on purpose. In particular, map `image_usage` to §VIII `Acquire Via` (its value names differ from §h options — translate):
+
+| `result.json.image_usage` | §VIII `Acquire Via` | h.5 + Step 5 generation |
+|---|---|---|
+| `ai` (or a custom plan that includes AI) | `ai` rows | Run h.5 (lock rendering + palette); Step 5 generates |
+| `web` | `web` rows | None |
+| `provided` | **`user`** rows | None — never generate |
+| `placeholder` | `placeholder` rows | None |
+| `none` | no image rows (§h option A) | None |
+
+When the confirmed `image_usage` is not `ai` (and the plan has no AI part), do **NOT** run h.5, do **NOT** write `ai` rows, and do **NOT** generate images in Step 5 — regardless of what you recommended. The same "confirmed value wins" rule applies to every field (color → §III, typography → §IV, etc.).
+
 **Opt-out**: if the user has said they don't want the page (e.g. "不要网页" / "just confirm in chat" / "纯聊天确认"), skip the launch entirely (step 2) and present the Eight Confirmations in chat as before — steps 1, 3, 4 still apply (recommendations summary in chat; wait; take chat values).
 
 The page is a **confirmation surface only** — Strategist still authors every recommendation; the page never generates content.
