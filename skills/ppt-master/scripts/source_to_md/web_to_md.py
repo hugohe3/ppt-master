@@ -4,10 +4,10 @@
 web_to_md.py - Web Page to Markdown Converter (Python Version)
 
 Usage:
-    python scripts/source_to_md/web_to_md.py <url>
-    python scripts/source_to_md/web_to_md.py <url1> <url2> ...
-    python scripts/source_to_md/web_to_md.py -f urls.txt
-    python scripts/source_to_md/web_to_md.py <url> -o output.md
+    uvx ppt-master web-to-md <url>
+    uvx ppt-master web-to-md <url1> <url2> ...
+    uvx ppt-master web-to-md -f urls.txt
+    uvx ppt-master web-to-md <url> -o output.md
 
 Dependencies:
     pip install requests beautifulsoup4

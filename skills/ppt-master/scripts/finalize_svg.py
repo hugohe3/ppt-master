@@ -250,7 +250,7 @@ def finalize_project(
         safe_print("[OK] Done!")
         print()
         print("Next steps:")
-        print(f"  python scripts/svg_to_pptx.py \"{project_dir}\"")
+        print(f"  uvx ppt-master svg-to-pptx \"{project_dir}\"")
 
     return True
 

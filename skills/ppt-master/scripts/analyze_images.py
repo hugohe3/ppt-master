@@ -12,9 +12,9 @@ that would apply *if* an image is placed side-by-side with body text. Those
 numbers are conditional on the Strategist picking the side-by-side intent.
 
 Usage:
-    python scripts/analyze_images.py <images_folder_path>
-    python scripts/analyze_images.py projects/xxx/images
-    python scripts/analyze_images.py projects/xxx/images --canvas ppt43
+    uvx ppt-master analyze-images <images_folder_path>
+    uvx ppt-master analyze-images projects/xxx/images
+    uvx ppt-master analyze-images projects/xxx/images --canvas ppt43
 
 Output:
     - Analysis report displayed in console

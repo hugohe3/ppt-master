@@ -58,8 +58,8 @@ When the user gives a deck path **with** a brand path or layout path, identity /
 
 1. Run [`workflows/create-template.md`](../../workflows/create-template.md) (default kind is `deck`)
 2. Resulting directory lands under `templates/decks/<id>/`
-3. Validate: `python3 skills/ppt-master/scripts/svg_quality_checker.py templates/decks/<id> --template-mode --format ppt169`
-4. Register: `python3 skills/ppt-master/scripts/register_template.py <id> --kind deck`
+3. Validate: `uvx ppt-master svg-quality-check templates/decks/<id> --template-mode --format ppt169`
+4. Register: `uvx ppt-master register-template <id> --kind deck`
 
 The register step updates [`decks_index.json`](./decks_index.json) — the single source of truth for deck discovery.
 

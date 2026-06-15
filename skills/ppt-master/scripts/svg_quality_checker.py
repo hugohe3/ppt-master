@@ -952,7 +952,7 @@ class SVGQualityChecker:
                 )
                 print(
                     f"[INFO] Validate brand specs via: "
-                    f"python3 scripts/register_template.py "
+                    f"uvx ppt-master register-template "
                     f"--kind brand <brand_id> --dry-run"
                 )
                 return self.results

@@ -4,10 +4,10 @@
 Delegates to the template_fill_pptx package. Kept as the CLI entry point so the
 documented command paths keep working:
 
-    python3 scripts/template_fill_pptx.py analyze <deck.pptx> -o slide_library.json
-    python3 scripts/template_fill_pptx.py scaffold slide_library.json -o fill_plan.json
-    python3 scripts/template_fill_pptx.py check-plan slide_library.json fill_plan.json
-    python3 scripts/template_fill_pptx.py apply <deck.pptx> fill_plan.json -o output.pptx
+    uvx ppt-master template-fill-pptx analyze <deck.pptx> -o slide_library.json
+    uvx ppt-master template-fill-pptx scaffold slide_library.json -o fill_plan.json
+    uvx ppt-master template-fill-pptx check-plan slide_library.json fill_plan.json
+    uvx ppt-master template-fill-pptx apply <deck.pptx> fill_plan.json -o output.pptx
 
 Implementation lives in the template_fill_pptx/ package (ooxml, analyzer,
 scaffolder, checker, text_fill, table_fill, chart_fill, transitions, notes,

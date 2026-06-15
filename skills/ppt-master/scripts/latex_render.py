@@ -7,13 +7,13 @@ The script reads an explicit manifest; it never scans spec_lock.md or source
 content for dollar-delimited math.
 
 Usage:
-    python3 scripts/latex_render.py <project_path>
-    python3 scripts/latex_render.py <project_path> --manifest images/formula_manifest.json
-    python3 scripts/latex_render.py <project_path> --dry-run
+    uvx ppt-master latex-render <project_path>
+    uvx ppt-master latex-render <project_path> --manifest images/formula_manifest.json
+    uvx ppt-master latex-render <project_path> --dry-run
 
 Examples:
-    python3 scripts/latex_render.py projects/demo_ppt169_20260523
-    python3 scripts/latex_render.py projects/demo_ppt169_20260523 --providers codecogs,quicklatex,mathpad,wikimedia
+    uvx ppt-master latex-render projects/demo_ppt169_20260523
+    uvx ppt-master latex-render projects/demo_ppt169_20260523 --providers codecogs,quicklatex,mathpad,wikimedia
 
 Dependencies:
     Pillow (for measuring generated PNG dimensions)

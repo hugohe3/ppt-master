@@ -68,8 +68,8 @@ Templates use `{{PLACEHOLDER}}` to mark replaceable content. New layouts should 
 
 1. Run [`workflows/create-template.md`](../../workflows/create-template.md) (default produces a deck; explicit "structure only / no identity" option produces a layout)
 2. Resulting directory lands under `templates/layouts/<id>/`
-3. Validate: `python3 skills/ppt-master/scripts/svg_quality_checker.py templates/layouts/<id> --template-mode --format ppt169`
-4. Register: `python3 skills/ppt-master/scripts/register_template.py <id> --kind layout`
+3. Validate: `uvx ppt-master svg-quality-check templates/layouts/<id> --template-mode --format ppt169`
+4. Register: `uvx ppt-master register-template <id> --kind layout`
 
 The register step updates [`layouts_index.json`](./layouts_index.json) — the single source of truth for layout discovery.
 

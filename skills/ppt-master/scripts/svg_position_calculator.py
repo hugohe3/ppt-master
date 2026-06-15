@@ -10,19 +10,19 @@ Common Commands (can be copied and used directly)
 ======================================================================
 
 1. Analyze all coordinates in an SVG file:
-   python scripts/svg_position_calculator.py analyze <svg_file>
+   uvx ppt-master svg-position-calc analyze <svg_file>
 
 2. Interactive calculation mode:
-   python scripts/svg_position_calculator.py interactive
+   uvx ppt-master svg-position-calc interactive
 
 3. Calculate from JSON config file:
-   python scripts/svg_position_calculator.py from-json <config.json>
+   uvx ppt-master svg-position-calc from-json <config.json>
 
 4. Quick calculation:
-   python scripts/svg_position_calculator.py calc bar --data "East:185,South:142"
-   python scripts/svg_position_calculator.py calc pie --data "A:35,B:25,C:20"
-   python scripts/svg_position_calculator.py calc line --data "0:50,10:80,20:120"
-   python scripts/svg_position_calculator.py calc grid --rows 2 --cols 3
+   uvx ppt-master svg-position-calc calc bar --data "East:185,South:142"
+   uvx ppt-master svg-position-calc calc pie --data "A:35,B:25,C:20"
+   uvx ppt-master svg-position-calc calc line --data "0:50,10:80,20:120"
+   uvx ppt-master svg-position-calc calc grid --rows 2 --cols 3
 
 ======================================================================
 """

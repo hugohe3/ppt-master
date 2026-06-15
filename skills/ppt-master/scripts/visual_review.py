@@ -12,9 +12,9 @@ because cairo's text API has no font-fallback chain — CJK characters render as
 tofu boxes for any deck whose font-family list relies on system fallback.
 
 Usage:
-    python3 scripts/visual_review.py <project_path>
-    python3 scripts/visual_review.py <project_path> --pages 02 03
-    python3 scripts/visual_review.py <project_path> --server-url http://localhost:5050
+    uvx ppt-master visual-review <project_path>
+    uvx ppt-master visual-review <project_path> --pages 02 03
+    uvx ppt-master visual-review <project_path> --server-url http://localhost:5050
 
 Exit codes (per references/visual-review.md §7):
     0 — all requested pages rendered
@@ -257,7 +257,7 @@ def main() -> int:
         _safe_print(str(e))
         _safe_print(
             'start it with:\n'
-            f'    python3 skills/ppt-master/scripts/svg_editor/server.py {project_path}'
+            f'    uvx ppt-master svg-editor {project_path}'
         )
         return 2
 
