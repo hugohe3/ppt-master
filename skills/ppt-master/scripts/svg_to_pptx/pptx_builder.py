@@ -10,6 +10,7 @@ import re
 import posixpath
 import shutil
 import tempfile
+import uuid
 import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime, timezone
@@ -122,6 +123,48 @@ def _content_type_for_extension(ext: str) -> str:
 
 def _as_dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
+
+
+def _create_writable_work_dir(output_path: Path) -> Path:
+    """Create a real writable work directory for PPTX assembly."""
+    parents = [output_path.parent, Path.cwd(), Path(tempfile.gettempdir())]
+    seen: set[str] = set()
+    errors: list[str] = []
+
+    for parent in parents:
+        parent = parent if str(parent) else Path(".")
+        try:
+            key = str(parent.resolve())
+        except OSError:
+            key = str(parent.absolute())
+        if key in seen:
+            continue
+        seen.add(key)
+
+        try:
+            parent.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            errors.append(f"{parent}: cannot create parent ({exc})")
+            continue
+
+        for _ in range(3):
+            work_dir = parent / f".pptx-build-{os.getpid()}-{uuid.uuid4().hex}"
+            try:
+                work_dir.mkdir(mode=0o700)
+                probe_path = work_dir / ".write-probe"
+                probe_path.write_text("ok", encoding="utf-8")
+                probe_path.unlink()
+                return work_dir
+            except OSError as exc:
+                errors.append(f"{work_dir}: {exc}")
+                shutil.rmtree(work_dir, ignore_errors=True)
+
+    details = "\n  - ".join(errors) if errors else "no candidate directories available"
+    raise PermissionError(
+        "Unable to create a writable PPTX work directory. "
+        "Set the output path to a writable project directory or adjust sandbox permissions. "
+        f"Tried:\n  - {details}"
+    )
 
 
 def _to_float(value: Any, default: float) -> float:
@@ -543,7 +586,7 @@ def create_pptx_with_native_svg(
 
     animation_cli_overrides = animation_cli_overrides or {}
 
-    temp_dir = Path(tempfile.mkdtemp())
+    temp_dir = _create_writable_work_dir(output_path)
 
     try:
         # Create base PPTX with python-pptx
