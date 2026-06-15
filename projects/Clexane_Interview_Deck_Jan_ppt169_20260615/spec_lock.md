@@ -37,15 +37,17 @@
 - P03: dense
 - P04: dense
 - P05: dense
-- P06: breathing
+- P06: dense
 - P07: dense
+- P08: breathing
 
 ## page_charts
 - P01: labeled_card
 - P02: vertical_pillars
-- P03: basic_table
-- P04: chevron_process
-- P05: pros_cons_chart
+- P03: labeled_card
+- P05: basic_table
+- P06: chevron_process
+- P07: pros_cons_chart
 
 ## forbidden
 - Mixing icon libraries

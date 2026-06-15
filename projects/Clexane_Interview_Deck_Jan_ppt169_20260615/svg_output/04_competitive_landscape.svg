@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.07" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ========== HEADER BAR ========== -->
+  <rect x="0" y="0" width="1280" height="78" fill="#AE232F"/>
+  <rect x="28" y="18" width="32" height="32" rx="6" fill="#8A1B25"/>
+  <text x="44" y="39" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">04</text>
+  <text x="78" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">Where Clexane Stands — Competitive Landscape</text>
+  <text x="78" y="64" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Clexane vs. UFH · vs. Fragmin · vs. DOACs — knowing the field before the call</text>
+
+  <!-- ========== COMPETITOR TABLE ========== -->
+
+  <!-- Table card background -->
+  <rect x="36" y="92" width="742" height="512" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+
+  <!-- === TABLE HEADER ROW === -->
+  <rect x="36" y="92" width="742" height="38" rx="8" fill="#1A1A1A"/>
+  <rect x="36" y="110" width="742" height="20" fill="#1A1A1A"/>
+
+  <!-- Header cell dividers -->
+  <line x1="176" y1="92" x2="176" y2="604" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="256" y1="92" x2="256" y2="604" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="416" y1="92" x2="416" y2="604" stroke="#E0E0E0" stroke-width="1"/>
+  <line x1="526" y1="92" x2="526" y2="604" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Header labels -->
+  <text x="106" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Product</text>
+  <text x="216" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Class</text>
+  <text x="336" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Key Indication</text>
+  <text x="471" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Key Trial</text>
+  <text x="634" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Weakness vs. Clexane</text>
+
+  <!-- === ROW 1: UFH === -->
+  <rect x="37" y="130" width="740" height="112" fill="#F5F5F5"/>
+  <line x1="37" y1="242" x2="777" y2="242" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Product -->
+  <text x="50" y="152" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">UFH</text>
+  <text x="50" y="168" font-family="Arial, sans-serif" font-size="11" fill="#555555">(Unfractionated</text>
+  <text x="50" y="182" font-family="Arial, sans-serif" font-size="11" fill="#555555">Heparin)</text>
+  <!-- Class -->
+  <rect x="184" y="142" width="56" height="20" rx="4" fill="#888888"/>
+  <text x="212" y="156" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF">UFH</text>
+  <!-- Key Indication -->
+  <text x="266" y="152" font-family="Arial, sans-serif" font-size="11" fill="#555555">Broad anticoagulation:</text>
+  <text x="266" y="168" font-family="Arial, sans-serif" font-size="11" fill="#555555">DVT, PE, ACS, surgery,</text>
+  <text x="266" y="184" font-family="Arial, sans-serif" font-size="11" fill="#555555">hemodialysis</text>
+  <!-- Key Trial -->
+  <text x="471" y="159" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888888">—</text>
+  <!-- Weakness -->
+  <text x="536" y="150" font-family="Arial, sans-serif" font-size="11" fill="#AE232F">&#x26A0;  Unpredictable PK —</text>
+  <text x="536" y="166" font-family="Arial, sans-serif" font-size="11" fill="#555555">requires continuous aPTT monitoring</text>
+  <text x="536" y="182" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  High HIT (thrombocytopenia) risk</text>
+  <text x="536" y="198" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  IV drip — limits outpatient use</text>
+  <text x="536" y="214" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Narrow therapeutic window</text>
+
+  <!-- === ROW 2: Fragmin === -->
+  <rect x="37" y="242" width="740" height="112" fill="#FFFFFF"/>
+  <line x1="37" y1="354" x2="777" y2="354" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Product -->
+  <text x="50" y="264" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Fragmin®</text>
+  <text x="50" y="280" font-family="Arial, sans-serif" font-size="11" fill="#555555">(Dalteparin)</text>
+  <!-- Class -->
+  <rect x="180" y="254" width="64" height="20" rx="4" fill="#555555"/>
+  <text x="212" y="268" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF">LMWH</text>
+  <!-- Key Indication -->
+  <text x="266" y="264" font-family="Arial, sans-serif" font-size="11" fill="#555555">VTE prophylaxis</text>
+  <text x="266" y="280" font-family="Arial, sans-serif" font-size="11" fill="#555555">and treatment,</text>
+  <text x="266" y="296" font-family="Arial, sans-serif" font-size="11" fill="#555555">cancer-associated VTE</text>
+  <!-- Key Trial -->
+  <text x="471" y="271" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888888">—</text>
+  <!-- Weakness -->
+  <text x="536" y="264" font-family="Arial, sans-serif" font-size="11" fill="#AE232F">&#x26A0;  Narrower ACS evidence —</text>
+  <text x="536" y="280" font-family="Arial, sans-serif" font-size="11" fill="#555555">no landmark NSTEMI trial vs. UFH</text>
+  <text x="536" y="296" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Less formulary penetration in TH</text>
+  <text x="536" y="312" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Clexane: ESSENCE + TIMI 11B</text>
+  <text x="536" y="328" font-family="Arial, sans-serif" font-size="11" fill="#555555">    give it stronger cardiology positioning</text>
+
+  <!-- === ROW 3: Xarelto === -->
+  <rect x="37" y="354" width="740" height="112" fill="#F5F5F5"/>
+  <line x1="37" y1="466" x2="777" y2="466" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Product -->
+  <text x="50" y="376" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Xarelto®</text>
+  <text x="50" y="392" font-family="Arial, sans-serif" font-size="11" fill="#555555">(Rivaroxaban)</text>
+  <!-- Class -->
+  <rect x="180" y="366" width="64" height="20" rx="4" fill="#AE232F" fill-opacity="0.70"/>
+  <text x="212" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF">DOAC</text>
+  <!-- Key Indication -->
+  <text x="266" y="376" font-family="Arial, sans-serif" font-size="11" fill="#555555">VTE, AF, ACS</text>
+  <text x="266" y="392" font-family="Arial, sans-serif" font-size="11" fill="#555555">(oral, once daily)</text>
+  <!-- Key Trial -->
+  <text x="471" y="376" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#555555">ROCKET-AF</text>
+  <text x="471" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888888">EINSTEIN-DVT</text>
+  <!-- Weakness -->
+  <text x="536" y="376" font-family="Arial, sans-serif" font-size="11" fill="#AE232F">&#x26A0;  Avoid in severe CKD</text>
+  <text x="536" y="392" font-family="Arial, sans-serif" font-size="11" fill="#555555">    (CrCl &lt; 15 contraindicated)</text>
+  <text x="536" y="408" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  No reliable reversal agent (Andexanet</text>
+  <text x="536" y="424" font-family="Arial, sans-serif" font-size="11" fill="#555555">    Alfa limited availability in Thailand)</text>
+  <text x="536" y="440" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Not ideal peri-operatively — must stop</text>
+  <text x="536" y="456" font-family="Arial, sans-serif" font-size="11" fill="#555555">    24–48 h pre-op (Clexane used to bridge)</text>
+
+  <!-- === ROW 4: Eliquis === -->
+  <rect x="37" y="466" width="740" height="112" fill="#FFFFFF"/>
+  <line x1="37" y1="578" x2="777" y2="578" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Product -->
+  <text x="50" y="488" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Eliquis®</text>
+  <text x="50" y="504" font-family="Arial, sans-serif" font-size="11" fill="#555555">(Apixaban)</text>
+  <!-- Class -->
+  <rect x="180" y="478" width="64" height="20" rx="4" fill="#AE232F" fill-opacity="0.70"/>
+  <text x="212" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF">DOAC</text>
+  <!-- Key Indication -->
+  <text x="266" y="488" font-family="Arial, sans-serif" font-size="11" fill="#555555">VTE, AF</text>
+  <text x="266" y="504" font-family="Arial, sans-serif" font-size="11" fill="#555555">(oral, twice daily)</text>
+  <!-- Key Trial -->
+  <text x="471" y="488" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#555555">ARISTOTLE</text>
+  <text x="471" y="504" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888888">AMPLIFY</text>
+  <!-- Weakness -->
+  <text x="536" y="488" font-family="Arial, sans-serif" font-size="11" fill="#AE232F">&#x26A0;  Same DOAC class limitations</text>
+  <text x="536" y="504" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Avoid in CKD (CrCl &lt; 25 use caution)</text>
+  <text x="536" y="520" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Not approved in pregnancy</text>
+  <text x="536" y="536" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Peri-op bridging: Clexane fills the gap</text>
+  <text x="536" y="552" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x26A0;  Higher cost vs. Clexane SC prophylaxis</text>
+
+  <!-- Bottom of table border fill -->
+  <rect x="37" y="578" width="740" height="26" fill="#F5F5F5" rx="0"/>
+  <text x="400" y="596" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888888">Source: ACC/AHA 2022, ACCP 2022 Antithrombotic Guidelines, Thai National Formulary</text>
+
+  <!-- ========== CLEXANE POSITIONING BOX ========== -->
+  <rect x="790" y="92" width="454" height="512" rx="10" fill="#AE232F" filter="url(#sm-shadow)"/>
+
+  <!-- Inner white trim -->
+  <rect x="798" y="100" width="438" height="496" rx="7" fill="#AE232F" fill-opacity="0.0"/>
+
+  <!-- Title -->
+  <use data-icon="tabler-filled/shield-check" x="806" y="106" width="28" height="28" fill="#FFFFFF"/>
+  <text x="844" y="124" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF">Clexane® Wins When:</text>
+  <line x1="806" y1="138" x2="1228" y2="138" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.30"/>
+
+  <!-- Item 1 -->
+  <rect x="806" y="150" width="428" height="60" rx="6" fill="#8A1B25"/>
+  <text x="822" y="170" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">&#x2705;  Post-op VTE Prophylaxis</text>
+  <text x="822" y="188" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Orthopedic &amp; general surgery — ACCP first-line LMWH choice</text>
+  <text x="822" y="203" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">No monitoring. SC. Patient self-injects post-discharge.</text>
+
+  <!-- Item 2 -->
+  <rect x="806" y="218" width="428" height="60" rx="6" fill="#8A1B25"/>
+  <text x="822" y="238" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">&#x2705;  ACS Acute Phase</text>
+  <text x="822" y="256" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">ESSENCE &amp; TIMI 11B: superior to UFH in UA/NSTEMI outcomes</text>
+  <text x="822" y="271" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Replaces IV heparin drip — simplifies CCU anticoagulation</text>
+
+  <!-- Item 3 -->
+  <rect x="806" y="286" width="428" height="60" rx="6" fill="#8A1B25"/>
+  <text x="822" y="306" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">&#x2705;  Patients with Severe CKD</text>
+  <text x="822" y="324" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Dose-adjustable to CrCl ≥ 15 — DOACs contraindicated here</text>
+  <text x="822" y="339" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Safety data in renal impairment well-established</text>
+
+  <!-- Item 4 -->
+  <rect x="806" y="354" width="428" height="60" rx="6" fill="#8A1B25"/>
+  <text x="822" y="374" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">&#x2705;  Peri-operative Bridging</text>
+  <text x="822" y="392" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">DOACs must be stopped before surgery — Clexane bridges</text>
+  <text x="822" y="407" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Short half-life (4.5 h) — precise stop/restart timing</text>
+
+  <!-- Item 5 -->
+  <rect x="806" y="422" width="428" height="60" rx="6" fill="#8A1B25"/>
+  <text x="822" y="442" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">&#x2705;  Hospital Formulary Cost Case</text>
+  <text x="822" y="460" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">On Thai National Drug List — lower acquisition cost vs. DOACs</text>
+  <text x="822" y="475" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">No monitoring cost overhead (unlike UFH aPTT)</text>
+
+  <!-- Item 6 -->
+  <rect x="806" y="490" width="428" height="60" rx="6" fill="#8A1B25"/>
+  <text x="822" y="510" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">&#x2705;  Home SC Self-Injection</text>
+  <text x="822" y="528" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Pre-filled syringe — enables early discharge, DVT outpatient Rx</text>
+  <text x="822" y="543" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Pregnancy VTE: safe (does not cross placenta), DOACs are not</text>
+
+  <!-- ========== BOTTOM TAGLINE BAR ========== -->
+  <rect x="36" y="618" width="1208" height="48" rx="6" fill="#AE232F" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/star" x="56" y="630" width="24" height="24" fill="#FFFFFF"/>
+  <text x="92" y="639" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Key Positioning:</text>
+  <text x="200" y="639" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Clexane is not competing with everything —</text>
+  <text x="92" y="657" font-family="Arial, sans-serif" font-size="13" fill="#FFFFFF">it owns the acute, peri-operative, renal, and pregnancy-safe anticoagulation space.</text>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

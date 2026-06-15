@@ -26,7 +26,41 @@ When I'm talking to a physician about why Clexane versus UFH, the key messages a
 
 ---
 
-## Slide 03 — Territory Plan
+## Slide 03 — Target Physician Specialties
+
+This slide shows you exactly who I plan to call on and why. I've segmented my target physicians into five groups across two tiers.
+
+Tier A — my highest-priority call targets — are orthopedic surgeons, cardiologists, and ward pharmacists. Orthopedic surgeons at PMK are a natural fit because hip and knee replacement surgery requires post-op VTE prophylaxis, and Clexane is the ACCP-recommended LMWH of choice. My key message to them is simple: predictable dosing, no lab monitoring, and the patient can self-inject at home — which means cleaner discharge planning and less nursing burden.
+
+Cardiologists are priority A because of the ACS indication. The ESSENCE and TIMI 11B trial data are compelling — Clexane reduced recurrent ischemia versus UFH. I would lead with those trial names and outcomes rather than a generic product pitch.
+
+Ward pharmacists are a unique call point I want to highlight. As a Pharm.D. myself, I speak their language — PK, dosing adjustment, drug interaction review. Pharmacists often control formulary inclusion and protocol design. Engaging them as clinical partners, not just gatekeepers, multiplies my reach to every physician on the ward.
+
+Tier B are internal medicine physicians and nephrologists. For internists, my message centers on the MEDENOX trial showing 63% VTE reduction with prophylaxis in acutely ill medical patients. I'll use the Padua Prediction Score as a tool to help them identify eligible patients and link it directly to the Clexane 40 mg protocol.
+
+For nephrologists, the key is the renal dose-adjustment story — Clexane is usable in CKD down to CrCl 15 with monitoring, which is where DOACs are often contraindicated. I'll address the renal concern proactively rather than waiting for an objection.
+
+The bottom line on this slide: I know not just who to call, but what clinical problem each specialty is trying to solve, and how Clexane solves it. That's how I turn product knowledge into prescribing behavior.
+
+---
+
+## Slide 04 — Competitive Landscape
+
+Before I go into the field, I need to know the competitive environment — because a physician may be using UFH, or a DOAC, or even Fragmin, and I need to be ready to position Clexane intelligently in every one of those conversations.
+
+Let me walk through the four key comparators.
+
+Unfractionated heparin — UFH — is still common in acute care because it's cheap and familiar. But it has real drawbacks: unpredictable pharmacokinetics that require continuous aPTT monitoring, a higher risk of heparin-induced thrombocytopenia, and an IV drip that ties the patient to the ward. Clexane removes all three of those burdens.
+
+Fragmin — dalteparin — is our most direct LMWH competitor. I give it credit: it has a good VTE prophylaxis and cancer-VTE track record. But Clexane has stronger cardiology positioning through the ESSENCE and TIMI 11B trials. In the ACS call, Clexane has data that Fragmin simply doesn't match.
+
+For the DOACs — Xarelto and Eliquis — these are increasingly prescribed and I won't dismiss them. They're convenient oral agents with strong AF and VTE trial data. But they have three structural limitations I can lean on confidently: they're contraindicated or require caution in severe CKD, they have no reliable reversal agent available in Thailand, and they must be stopped before surgery — which is exactly where Clexane steps in as the peri-operative bridge.
+
+The positioning I take into every call: Clexane is not trying to fight the DOAC revolution for long-term outpatient AF. Clexane owns the acute hospital setting, the operating room corridor, the dialysis ward, and the pregnancy ward. Those are the spaces I will defend and grow.
+
+---
+
+## Slide 05 — Territory Plan
 
 My target territory centers on PMK — Phramongkutklao Hospital — which I see as the anchor account for the Clexane role. It has high volume across cardiology, orthopedics, and general surgery, which are all major Clexane-using specialties.
 
@@ -38,7 +72,7 @@ My Roche experience matters here specifically because I know how to navigate a b
 
 ---
 
-## Slide 04 — ADAPT Framework
+## Slide 06 — ADAPT Framework
 
 The ADAPT framework is how I approach every physician call. It's not a script — it's a mindset that keeps the physician's clinical reality at the center.
 
@@ -56,7 +90,7 @@ I used this approach at Roche — I described a real example of getting a cardio
 
 ---
 
-## Slide 05 — Strengths and Development Areas
+## Slide 07 — Strengths and Development Areas
 
 I want to be honest in this section because I believe self-awareness is as important in an MR as it is in a pharmacist.
 
@@ -68,7 +102,7 @@ I want DKSH to see me as a head start, not a blank slate. The learning curve on 
 
 ---
 
-## Slide 06 — Closing
+## Slide 08 — Closing
 
 Thank you sincerely for the time and for the opportunity to present today.
 
@@ -77,21 +111,3 @@ I came in prepared because Clexane matters. This product has strong evidence, a 
 If there's one thing I want you to take from this deck, it's that I can be trusted to represent Clexane® credibly on day one — and to grow into a top MR within the first year.
 
 I welcome any questions. And I'm ready.
-
----
-
-## Slide 07 — Target Physician Specialties
-
-This slide shows you exactly who I plan to call on and why. I've segmented my target physicians into five groups across two tiers.
-
-Tier A — my highest-priority call targets — are orthopedic surgeons, cardiologists, and ward pharmacists. Orthopedic surgeons at PMK are a natural fit because hip and knee replacement surgery requires post-op VTE prophylaxis, and Clexane is the ACCP-recommended LMWH of choice. My key message to them is simple: predictable dosing, no lab monitoring, and the patient can self-inject at home — which means cleaner discharge planning and less nursing burden.
-
-Cardiologists are priority A because of the ACS indication. The ESSENCE and TIMI 11B trial data are compelling — Clexane reduced recurrent ischemia versus UFH. I would lead with those trial names and outcomes rather than a generic product pitch.
-
-Ward pharmacists are a unique call point I want to highlight. As a Pharm.D. myself, I speak their language — PK, dosing adjustment, drug interaction review. Pharmacists often control formulary inclusion and protocol design. Engaging them as clinical partners, not just gatekeepers, multiplies my reach to every physician on the ward.
-
-Tier B are internal medicine physicians and nephrologists. For internists, my message centers on the MEDENOX trial showing 63% VTE reduction with prophylaxis in acutely ill medical patients. I'll use the Padua Prediction Score as a tool to help them identify eligible patients and link it directly to the Clexane 40 mg protocol.
-
-For nephrologists, the key is the renal dose-adjustment story — Clexane is usable in CKD down to CrCl 15 with monitoring, which is where DOACs are often contraindicated. I'll address the renal concern proactively rather than waiting for an objection.
-
-The bottom line on this slide: I know not just who to call, but what clinical problem each specialty is trying to solve, and how Clexane solves it. That's how I turn product knowledge into prescribing behavior.

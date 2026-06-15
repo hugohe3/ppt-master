@@ -1,0 +1,7 @@
+I want to be honest in this section because I believe self-awareness is as important in an MR as it is in a pharmacist.
+
+My three strengths: First, my pharmaceutical science foundation. I can explain Clexane's mechanism to a hematologist with genuine depth — that builds physician trust faster than a product brochure. Second, real MR field experience. I didn't just observe visits during my Roche internship; I conducted them independently. I know how to manage a call, handle an objection, and leave with a next step. Third, communication and empathy — I'm comfortable talking science with a senior physician and also adapting my language for a ward pharmacist. That range matters in real territory work.
+
+On development areas: I'm honest that I don't have specific Clexane MR history — but I've addressed that through self-study on the prescribing information and the ESSENCE and SYNERGY trial data. My second area is formal CRM systems — my internship used manual tracking. I'm confident I'll pick up DKSH's system quickly because I'm detail-oriented and organized.
+
+I want DKSH to see me as a head start, not a blank slate. The learning curve on product specifics is short. What takes years to build — clinical credibility with physicians and the discipline to work a territory independently — I already have.
