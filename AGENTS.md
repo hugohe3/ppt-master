@@ -41,6 +41,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 - **Repo-wide style rules** — when editing prompt files under [`skills/ppt-master/references/`](skills/ppt-master/references/), Python under [`skills/ppt-master/scripts/`](skills/ppt-master/scripts/), or any other code/prose in the repo, follow the matching style rule in [`docs/rules/`](docs/rules/).
 - **Markdown language consistency** — Markdown files under `skills/ppt-master/workflows/`, `skills/ppt-master/references/`, and `docs/` are currently single-language per directory. New files mirror the language of their siblings; do not mix English scaffolding with Chinese paragraphs (or vice versa) inside one file. Chat replies are unaffected.
+- **Tag-version sync** — before creating or pushing a `v*` tag, you MUST update `version` in both `pyproject.toml` and `skills/ppt-master/pyproject.toml` to match the tag (e.g., tag `v0.1.6` → `version = "0.1.6"` in both files). Pushing a tag without syncing the version will cause the PyPI publish workflow to fail with "File already exists". Commit the version bump before the tag.
 
 ## Compatibility Boundary
 
