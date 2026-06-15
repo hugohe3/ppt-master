@@ -653,7 +653,9 @@ Gradients defined in `<defs>` and referenced via `fill="url(#id)"` convert to na
 
 `<pattern>` fills convert to native PPTX `<a:pattFill prst="...">` — but only PPTX's built-in preset patterns are reachable. The converter does **not** render hand-drawn `<path>` geometry inside the pattern; instead it reads two annotations off the `<pattern>` element and emits the matching DrawingML preset.
 
-**Required annotations**:
+**Prefer explicit geometry when spacing matters.** A `<pattern>` renders at PowerPoint's **fixed preset density** — you cannot reproduce a specific tile size (e.g. a 40px grid). For grids / textures whose spacing or line weight is part of the design, draw the lines as **one `<path>` with all lines as subpaths** (`M40 0V720 M80 0V720 … M0 40H1280 …`, `fill="none" stroke=…`) — the converter supports `M/L/H/V` and multi-subpath, so it becomes **one editable vector shape that reproduces the exact spacing** across all four renderers. Reserve `<pattern>` + `data-pptx-pattern` for **round-tripping an existing PPTX** (decks imported via `pptx_to_svg`), where the source genuinely used a native preset fill. For pure display where no PPT-side editing is needed, `--svg-snapshot` is the other faithful option.
+
+**Required annotations** (only when you intentionally use a `<pattern>` preset):
 
 | Attribute | Purpose | Without it |
 |---|---|---|
