@@ -1,0 +1,452 @@
+{
+  "_comment": "Enumerable (finite) option universe for the confirm page. Served by Flask static at /static/catalogs.json; the front-end prefers /api/catalogs when the server provides it. These fields list ALL options and the AI marks one as recommended via recommendations.json `recommend`. Open/generative fields (color, typography, generated-image style) are NOT here — the AI authors a few candidates for those. 'canvas' mirrors scripts/config.py CANVAS_FORMATS — keep in sync. User-facing catalog text supports label_zh/label_en, desc_zh/desc_en, group_zh/group_en.",
+  "canvas": [
+    {
+      "id": "ppt169",
+      "label": "PPT 16:9",
+      "label_zh": "宽屏演示 16:9",
+      "label_en": "PPT 16:9",
+      "dim": "1280×720",
+      "use_zh": "现代投影 / 在线演示",
+      "use_en": "Modern projectors / online"
+    },
+    {
+      "id": "ppt43",
+      "label": "PPT 4:3",
+      "label_zh": "传统演示 4:3",
+      "label_en": "PPT 4:3",
+      "dim": "1024×768",
+      "use_zh": "传统投影",
+      "use_en": "Traditional projectors"
+    },
+    {
+      "id": "wechat",
+      "label": "WeChat Article Header",
+      "label_zh": "微信公众号头图",
+      "label_en": "WeChat Article Header",
+      "dim": "900×383",
+      "use_zh": "微信公众号文章封面",
+      "use_en": "WeChat article cover"
+    },
+    {
+      "id": "xiaohongshu",
+      "label": "Xiaohongshu (RED)",
+      "label_zh": "小红书图文",
+      "label_en": "Xiaohongshu (RED)",
+      "dim": "1242×1660",
+      "use_zh": "知识分享 / 种草封面",
+      "use_en": "Knowledge sharing"
+    },
+    {
+      "id": "moments",
+      "label": "WeChat Moments / IG",
+      "label_zh": "社交方图",
+      "label_en": "WeChat Moments / IG",
+      "dim": "1080×1080",
+      "use_zh": "社交媒体方图",
+      "use_en": "Social square"
+    },
+    {
+      "id": "story",
+      "label": "Story / TikTok",
+      "label_zh": "竖屏短视频",
+      "label_en": "Story / TikTok",
+      "dim": "1080×1920",
+      "use_zh": "短视频 / 竖屏封面",
+      "use_en": "Short-video / story cover"
+    },
+    {
+      "id": "banner",
+      "label": "Landscape Banner",
+      "label_zh": "横幅",
+      "label_en": "Landscape Banner",
+      "dim": "1920×1080",
+      "use_zh": "网页横幅 / 大屏",
+      "use_en": "Web banner / big screen"
+    },
+    {
+      "id": "a4",
+      "label": "A4 Print",
+      "label_zh": "A4 打印",
+      "label_en": "A4 Print",
+      "dim": "1240×1754",
+      "use_zh": "打印 / 文档导出",
+      "use_en": "Print / PDF export"
+    }
+  ],
+  "modes": [
+    {
+      "id": "pyramid",
+      "label": "pyramid",
+      "label_zh": "金字塔",
+      "label_en": "pyramid",
+      "desc_zh": "结论先行、相互独立且完全穷尽的论证、每个数据都带比较。适合决策、分析、战略、汇报。",
+      "desc_en": "Lead with the answer, use MECE reasoning, and compare every key data point. Best for decisions, analysis, strategy, and reporting."
+    },
+    {
+      "id": "narrative",
+      "label": "narrative",
+      "label_zh": "叙事",
+      "label_en": "narrative",
+      "desc_zh": "情境、张力、解决方案形成故事弧线，保留悬念与转折。适合路演、案例、品牌、融资。",
+      "desc_en": "Build a story arc from context to tension to resolution, with suspense and turns. Best for roadshows, cases, brand stories, and fundraising."
+    },
+    {
+      "id": "instructional",
+      "label": "instructional",
+      "label_zh": "教学",
+      "label_en": "instructional",
+      "desc_zh": "概念拆解、分步推进、并列讲解。适合培训、教程、科普、知识分享。",
+      "desc_en": "Break concepts down, advance step by step, and explain parallel ideas clearly. Best for training, tutorials, popular science, and knowledge sharing."
+    },
+    {
+      "id": "showcase",
+      "label": "showcase",
+      "label_zh": "展演",
+      "label_en": "showcase",
+      "desc_zh": "视觉主导，大图、大数和情绪节奏优先。适合发布、品牌秀、活动。",
+      "desc_en": "Use visual rhythm, large images, and strong numbers as the lead. Best for launches, brand showcases, and events."
+    },
+    {
+      "id": "briefing",
+      "label": "briefing",
+      "label_zh": "简报",
+      "label_en": "briefing",
+      "desc_zh": "中性完整、便于速览，采用主题式标题和均匀权重。适合周报、参考材料、常见问题、会议包。",
+      "desc_en": "Stay neutral, complete, and scannable with topical headings and balanced weight. Best for weekly reports, reference packs, FAQs, and meeting decks."
+    }
+  ],
+  "visual_styles": [
+    {
+      "group": "Corporate / product",
+      "group_zh": "企业 / 产品",
+      "group_en": "Corporate / product",
+      "items": [
+        {
+          "id": "swiss-minimal",
+          "label": "swiss-minimal",
+          "label_zh": "瑞士极简",
+          "label_en": "swiss-minimal",
+          "desc_zh": "网格锁定、锐利层级、大留白、少装饰。",
+          "desc_en": "Grid-locked layout, sharp hierarchy, generous whitespace, and minimal decoration."
+        },
+        {
+          "id": "soft-rounded",
+          "label": "soft-rounded",
+          "label_zh": "柔和圆角",
+          "label_en": "soft-rounded",
+          "desc_zh": "圆角卡片、柔和投影、亲和现代。",
+          "desc_en": "Rounded cards, soft shadows, and a friendly modern tone."
+        },
+        {
+          "id": "glassmorphism",
+          "label": "glassmorphism",
+          "label_zh": "玻璃拟态",
+          "label_en": "glassmorphism",
+          "desc_zh": "半透明玻璃面板、渐变光感、漂浮层次。",
+          "desc_en": "Translucent glass panels, gradient light, and floating depth."
+        },
+        {
+          "id": "dark-tech",
+          "label": "dark-tech",
+          "label_zh": "深色科技",
+          "label_en": "dark-tech",
+          "desc_zh": "深色画布、发光强调、几何精确。",
+          "desc_en": "Dark canvas, glowing accents, and precise geometry."
+        },
+        {
+          "id": "blueprint",
+          "label": "blueprint",
+          "label_zh": "蓝图",
+          "label_en": "blueprint",
+          "desc_zh": "深底蓝图线稿、等距结构、工程标注。",
+          "desc_en": "Dark blueprint linework, isometric structure, and engineering annotations."
+        }
+      ]
+    },
+    {
+      "group": "Editorial / publication",
+      "group_zh": "编辑 / 出版",
+      "group_en": "Editorial / publication",
+      "items": [
+        {
+          "id": "editorial",
+          "label": "editorial",
+          "label_zh": "编辑出版",
+          "label_en": "editorial",
+          "desc_zh": "杂志式层级、栏线、衬线与无衬线交织。",
+          "desc_en": "Magazine hierarchy, column rules, and a serif/sans-serif mix."
+        },
+        {
+          "id": "photo-editorial",
+          "label": "photo-editorial",
+          "label_zh": "摄影编辑",
+          "label_en": "photo-editorial",
+          "desc_zh": "满版摄影主导，文字点缀与图注配合。",
+          "desc_en": "Full-bleed photography leads, supported by light text and captions."
+        },
+        {
+          "id": "data-journalism",
+          "label": "data-journalism",
+          "label_zh": "数据新闻",
+          "label_en": "data-journalism",
+          "desc_zh": "多栏微图表、侧栏、来源线、信息密度高。",
+          "desc_en": "Multi-column microcharts, sidebars, source lines, and dense information."
+        },
+        {
+          "id": "brutalist",
+          "label": "brutalist",
+          "label_zh": "粗野主义",
+          "label_en": "brutalist",
+          "desc_zh": "报纸密度、粗线框、原始结构、扁平表达。",
+          "desc_en": "Newspaper-like density, heavy rules, raw structure, and flat treatment."
+        }
+      ]
+    },
+    {
+      "group": "Expressive / print",
+      "group_zh": "表现 / 印刷",
+      "group_en": "Expressive / print",
+      "items": [
+        {
+          "id": "memphis",
+          "label": "memphis",
+          "label_zh": "孟菲斯",
+          "label_en": "memphis",
+          "desc_zh": "撞色块、几何碎片、粗描边。",
+          "desc_en": "Contrasting color blocks, geometric scraps, and heavy outlines."
+        },
+        {
+          "id": "zine",
+          "label": "zine",
+          "label_zh": "小刊",
+          "label_en": "zine",
+          "desc_zh": "孔版印刷错位、半调、有限色、印刷颗粒。",
+          "desc_en": "Riso offsets, halftones, limited colors, and print grain."
+        },
+        {
+          "id": "vintage-poster",
+          "label": "vintage-poster",
+          "label_zh": "复古海报",
+          "label_en": "vintage-poster",
+          "desc_zh": "中世纪扁平色块、半调、复古几何暖意。",
+          "desc_en": "Mid-century flat color blocks, halftones, and warm vintage geometry."
+        },
+        {
+          "id": "paper-cut",
+          "label": "paper-cut",
+          "label_zh": "剪纸",
+          "label_en": "paper-cut",
+          "desc_zh": "层叠剪纸、层间柔影、手作质感。",
+          "desc_en": "Layered cut paper, soft inter-layer shadows, and a handmade feel."
+        }
+      ]
+    },
+    {
+      "group": "Hand-drawn / brush",
+      "group_zh": "手绘 / 笔触",
+      "group_en": "Hand-drawn / brush",
+      "items": [
+        {
+          "id": "sketch-notes",
+          "label": "sketch-notes",
+          "label_zh": "手绘笔记",
+          "label_en": "sketch-notes",
+          "desc_zh": "暖纸底、涂鸦线条、柔和彩块。",
+          "desc_en": "Warm paper, doodle lines, and soft color blocks."
+        },
+        {
+          "id": "ink-notes",
+          "label": "ink-notes",
+          "label_zh": "墨迹笔记",
+          "label_en": "ink-notes",
+          "desc_zh": "浅底、黑色手写墨迹、稀疏语义强调。",
+          "desc_en": "Light background, black handwritten ink, and sparse semantic emphasis."
+        },
+        {
+          "id": "chalkboard",
+          "label": "chalkboard",
+          "label_zh": "黑板",
+          "label_en": "chalkboard",
+          "desc_zh": "深板岩底、粉笔笔触、粉彩强调。",
+          "desc_en": "Dark slate surface, chalk strokes, and pastel emphasis."
+        },
+        {
+          "id": "ink-wash",
+          "label": "ink-wash",
+          "label_zh": "水墨",
+          "label_en": "ink-wash",
+          "desc_zh": "宣纸留白、笔触、印章、静气，新中式表达。",
+          "desc_en": "Rice-paper whitespace, brushwork, seals, and a quiet contemporary Chinese tone."
+        }
+      ]
+    },
+    {
+      "group": "Specialty",
+      "group_zh": "特殊风格",
+      "group_en": "Specialty",
+      "items": [
+        {
+          "id": "pixel-art",
+          "label": "pixel-art",
+          "label_zh": "像素风",
+          "label_en": "pixel-art",
+          "desc_zh": "严格像素网格、块状形体、有限色、扁平表达。",
+          "desc_en": "Strict pixel grid, blocky shapes, limited colors, and flat treatment."
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "id": "chunk-filled",
+      "label": "chunk-filled",
+      "label_zh": "几何实心图标",
+      "label_en": "chunk-filled",
+      "desc_zh": "实心、直线几何、锐利厚重，适合科技、工程、企业结构图。",
+      "desc_en": "Solid, straight, geometric, sharp, and heavy. Good for tech, engineering, and corporate structure diagrams."
+    },
+    {
+      "id": "tabler-filled",
+      "label": "tabler-filled",
+      "label_zh": "圆润实心图标",
+      "label_en": "tabler-filled",
+      "desc_zh": "实心、圆润曲线、中等视觉重量，适合亲和现代风格。",
+      "desc_en": "Solid, rounded, and medium-weight. Good for friendly modern styles."
+    },
+    {
+      "id": "tabler-outline",
+      "label": "tabler-outline",
+      "label_zh": "线性描边图标",
+      "label_en": "tabler-outline",
+      "desc_zh": "线性描边，轻盈精致，适合屏幕阅读和编辑型图标。",
+      "desc_en": "Linear stroke, light and refined. Good for screen reading and editable icons."
+    },
+    {
+      "id": "phosphor-duotone",
+      "label": "phosphor-duotone",
+      "label_zh": "双色层次图标",
+      "label_en": "phosphor-duotone",
+      "desc_zh": "双色层次、中等重量，适合现代产品和平台类表达。",
+      "desc_en": "Two-tone layering with medium weight. Good for modern product and platform narratives."
+    },
+    {
+      "id": "emoji",
+      "label": "Emoji",
+      "label_zh": "表情符号",
+      "label_en": "Emoji",
+      "desc_zh": "系统表情符号，适合轻量、社交、教学或快速识别场景；正式企业 / 咨询风谨慎使用。",
+      "desc_en": "System emoji for lightweight, social, instructional, or quick-recognition contexts; use carefully in formal corporate or consulting decks."
+    },
+    {
+      "id": "none",
+      "label": "不用图标",
+      "label_zh": "不用图标",
+      "label_en": "No icons"
+    }
+  ],
+  "image_usage": [
+    {
+      "id": "ai",
+      "label": "AI 生成",
+      "label_zh": "生成配图",
+      "label_en": "AI-generated"
+    },
+    {
+      "id": "web",
+      "label": "Web 来源",
+      "label_zh": "网络来源",
+      "label_en": "Web-sourced"
+    },
+    {
+      "id": "provided",
+      "label": "用户提供",
+      "label_zh": "用户提供",
+      "label_en": "User-provided"
+    },
+    {
+      "id": "placeholder",
+      "label": "占位符",
+      "label_zh": "占位符",
+      "label_en": "Placeholder"
+    },
+    {
+      "id": "none",
+      "label": "不使用图片",
+      "label_zh": "不使用图片",
+      "label_en": "No images"
+    }
+  ],
+  "image_ai_path": [
+    {
+      "id": "auto",
+      "label": "Automatic Path A → Path B → Offline Manual",
+      "label_zh": "自动选择",
+      "label_en": "Automatic Path A → Path B → Offline Manual"
+    },
+    {
+      "id": "api",
+      "label": "Path A",
+      "label_zh": "接口后端",
+      "label_en": "Path A",
+      "desc_zh": "触发条件：已配置图像后端；机制：第 5 步运行图像生成脚本。",
+      "desc_en": "IMAGE_BACKEND configured; image_gen.py runs in Step 5."
+    },
+    {
+      "id": "host-native",
+      "label": "Path B",
+      "label_zh": "宿主原生工具",
+      "label_en": "Path B",
+      "desc_zh": "触发条件：未配置图像后端，且当前环境提供原生图像工具；机制：直接调用宿主工具生成。",
+      "desc_en": "IMAGE_BACKEND not configured and host has a native image tool; host-native generation."
+    },
+    {
+      "id": "manual",
+      "label": "Offline Manual",
+      "label_zh": "离线手动",
+      "label_en": "Offline Manual",
+      "desc_zh": "机制：写入图片提示词文件；用户在外部生成后放入项目图片目录。",
+      "desc_en": "Prompts written to images/image_prompts.json; user generates externally and places files in project/images/."
+    }
+  ],
+  "formula_policy": [
+    {
+      "id": "mixed",
+      "label": "mixed",
+      "label_zh": "混合",
+      "label_en": "mixed",
+      "desc_zh": "复杂公式渲染为图片；简单行内公式保持为可编辑文本或字符。",
+      "desc_en": "Render complex formula-worthy expressions to PNG; keep simple inline math as editable text / Unicode."
+    },
+    {
+      "id": "render-all",
+      "label": "render-all",
+      "label_zh": "全部渲染",
+      "label_en": "render-all",
+      "desc_zh": "所有需要按公式处理的表达式都渲染为图片。",
+      "desc_en": "Render every formula-worthy expression to PNG."
+    },
+    {
+      "id": "text-only",
+      "label": "text-only",
+      "label_zh": "仅文本",
+      "label_en": "text-only",
+      "desc_zh": "不渲染公式；表达式保持为可编辑文本或字符。",
+      "desc_en": "Do not render formulas; keep expressions as editable text / Unicode."
+    }
+  ],
+  "generation_mode": [
+    {
+      "id": "continuous",
+      "label": "continuous",
+      "label_zh": "连续模式",
+      "label_en": "continuous"
+    },
+    {
+      "id": "split",
+      "label": "split",
+      "label_zh": "分段模式",
+      "label_en": "split"
+    }
+  ]
+}

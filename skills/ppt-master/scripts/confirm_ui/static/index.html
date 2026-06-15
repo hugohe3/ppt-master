@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page_title">PPT Master - Confirm Design</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header id="topbar">
+        <div id="topbar-inner">
+            <div class="topbar-titles">
+                <h1 data-i18n="page_title">PPT Master - Confirm Design</h1>
+                <p id="topbar-hint" data-i18n="topbar_hint">After confirming, return to the chat and say “done”.</p>
+            </div>
+            <button id="btn-lang-toggle" class="btn-lang-toggle" title="Switch language">中</button>
+        </div>
+    </header>
+
+    <main id="form">
+        <div id="loading" data-i18n="loading">Loading recommendations…</div>
+        <div id="error" style="display:none;"></div>
+        <div id="sections" style="display:none;"></div>
+    </main>
+
+    <footer id="actionbar" style="display:none;">
+        <span id="confirm-status"></span>
+        <button id="btn-confirm" data-i18n="btn_confirm">Confirm</button>
+    </footer>
+
+    <div id="confirmed-overlay" style="display:none;">
+        <div class="cf-card">
+            <div class="cf-title">✓ Confirmed</div>
+            <div class="cf-hint">Your choices are saved. You can close this page.</div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
