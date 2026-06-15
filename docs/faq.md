@@ -53,7 +53,7 @@ By default, mergeable body-text paragraphs export as one editable PowerPoint tex
 If you need strict line-layout fidelity, re-export with `--no-merge`:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
+uvx ppt-master svg-to-pptx <project_path> --no-merge
 ```
 
 With `--no-merge`, every visual line becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.

@@ -53,7 +53,7 @@ PPT Master 可以在任何能读取文件和执行命令的 AI 编程代理中�
 如果你需要严格保持逐行版式，重新导出时加上 `--no-merge`：
 
 ```bash
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
+uvx ppt-master svg-to-pptx <project_path> --no-merge
 ```
 
 使用 `--no-merge` 时，SVG 里的每一视觉行都会变成一个独立的 PowerPoint 文本框。这样能**逐像素保留 SVG 的版式**，适合封面、图表、表格、以及任何对版式精度敏感的页面。
