@@ -65,6 +65,9 @@ python3 skills/ppt-master/scripts/project_manager.py init <project_name> --forma
 python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_URLs...> --move
 python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 
+# Step 4 Eight Confirmations — interactive visual page (default auto-launch; chat fallback)
+python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
+
 # Image tools and SVG quality check
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
 # Formula rendering — manifest written by Strategist after typography confirmation:
