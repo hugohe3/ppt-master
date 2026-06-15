@@ -1,0 +1,7 @@
+Good morning / good afternoon. My name is Rattanakorn Rattanaroj — most people call me Jan. I'm a Pharm.D. graduate from Srinakarinwirot University with a GPA of 3.50, and I'm genuinely excited to be here today as a candidate for the Medical Representative role on the Clexane portfolio.
+
+Let me give you a quick picture of who I am. I have a strong pharmaceutical science background — I understand how drugs work at a molecular level, how they move through the body, and how to interpret the clinical trial data that physicians rely on. That foundation lets me walk into a cardiologist's office and have a real conversation about anti-Xa activity, not just read from a detail aid.
+
+More importantly, I've already done this job. During my internship at Roche Thailand, I conducted solo physician visits across Ramathibodi, Bhumibol Adulyadej, and EENT Hospital. I planned my own call cycles, managed follow-up schedules, and handled objections in real clinical settings — not in a classroom.
+
+Finally, I want to work on Clexane specifically because the evidence base is exceptional and the unmet need in Thailand's acute care settings is real. I want to be the MR who bridges that gap for physicians at PMK and beyond.

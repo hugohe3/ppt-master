@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.07" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ========== HEADER BAR ========== -->
+  <rect x="0" y="0" width="1280" height="78" fill="#AE232F"/>
+  <rect x="28" y="18" width="32" height="32" rx="6" fill="#8A1B25"/>
+  <text x="44" y="39" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">05</text>
+  <text x="78" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">Strengths &amp; Development Areas</text>
+  <text x="78" y="64" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Self-aware. Growth-oriented. Ready for Clexane®.</text>
+
+  <!-- ========== LEFT PANEL — STRENGTHS ========== -->
+  <rect x="36" y="96" width="588" height="490" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+
+  <!-- Panel header -->
+  <rect x="36" y="96" width="588" height="52" rx="10" fill="#AE232F"/>
+  <rect x="36" y="128" width="588" height="20" fill="#AE232F"/>
+  <use data-icon="tabler-filled/award" x="56" y="108" width="28" height="28" fill="#FFFFFF"/>
+  <text x="340" y="128" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF">Strengths</text>
+
+  <!-- Strength 1 -->
+  <rect x="56" y="168" width="548" height="96" rx="8" fill="#F9E5E7"/>
+  <rect x="56" y="168" width="4" height="96" rx="2" fill="#AE232F"/>
+  <circle cx="84" cy="194" r="18" fill="#AE232F"/>
+  <text x="84" y="199" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1</text>
+  <text x="110" y="194" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#AE232F">Pharma Science Foundation</text>
+  <text x="110" y="212" font-family="Arial, sans-serif" font-size="12" fill="#555555">Pharm.D. GPA 3.50 — deep grasp of drug mechanisms, PK,</text>
+  <text x="110" y="228" font-family="Arial, sans-serif" font-size="12" fill="#555555">and clinical evidence. I can discuss Clexane's anti-Xa data</text>
+  <text x="110" y="244" font-family="Arial, sans-serif" font-size="12" fill="#555555">credibly with cardiologists and hematologists.</text>
+
+  <!-- Strength 2 -->
+  <rect x="56" y="280" width="548" height="96" rx="8" fill="#F9E5E7"/>
+  <rect x="56" y="280" width="4" height="96" rx="2" fill="#AE232F"/>
+  <circle cx="84" cy="306" r="18" fill="#AE232F"/>
+  <text x="84" y="311" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">2</text>
+  <text x="110" y="306" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#AE232F">Real Field MR Experience</text>
+  <text x="110" y="324" font-family="Arial, sans-serif" font-size="12" fill="#555555">Solo physician visits at Ramathibodi, Bhumibol, and EENT</text>
+  <text x="110" y="340" font-family="Arial, sans-serif" font-size="12" fill="#555555">Hospital during Roche internship — independently managed call</text>
+  <text x="110" y="356" font-family="Arial, sans-serif" font-size="12" fill="#555555">cycles and handled physician objections in real clinical settings.</text>
+
+  <!-- Strength 3 -->
+  <rect x="56" y="392" width="548" height="96" rx="8" fill="#F9E5E7"/>
+  <rect x="56" y="392" width="4" height="96" rx="2" fill="#AE232F"/>
+  <circle cx="84" cy="418" r="18" fill="#AE232F"/>
+  <text x="84" y="423" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">3</text>
+  <text x="110" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#AE232F">Communication &amp; Empathy</text>
+  <text x="110" y="436" font-family="Arial, sans-serif" font-size="12" fill="#555555">Natural rapport-builder — comfortable in medical &amp; scientific</text>
+  <text x="110" y="452" font-family="Arial, sans-serif" font-size="12" fill="#555555">discussions with both senior physicians and ward pharmacists.</text>
+  <text x="110" y="468" font-family="Arial, sans-serif" font-size="12" fill="#555555">English and Thai medical vocabulary fluent.</text>
+
+  <!-- Strength icon strip -->
+  <rect x="56" y="502" width="548" height="68" rx="6" fill="#F5F5F5"/>
+  <use data-icon="tabler-filled/book" x="96" y="520" width="22" height="22" fill="#AE232F"/>
+  <text x="130" y="535" font-family="Arial, sans-serif" font-size="11" fill="#555555">Science Literacy</text>
+  <use data-icon="tabler-filled/briefcase" x="268" y="520" width="22" height="22" fill="#AE232F"/>
+  <text x="302" y="535" font-family="Arial, sans-serif" font-size="11" fill="#555555">Field Ready</text>
+  <use data-icon="tabler-filled/message" x="440" y="520" width="22" height="22" fill="#AE232F"/>
+  <text x="474" y="535" font-family="Arial, sans-serif" font-size="11" fill="#555555">Strong Communicator</text>
+  <text x="96" y="558" font-family="Arial, sans-serif" font-size="10" fill="#888888">Clinical credibility from day one</text>
+  <text x="268" y="558" font-family="Arial, sans-serif" font-size="10" fill="#888888">Proven, not just trained</text>
+  <text x="440" y="558" font-family="Arial, sans-serif" font-size="10" fill="#888888">Physicians trust me</text>
+
+  <!-- ========== RIGHT PANEL — DEVELOPMENT AREAS ========== -->
+  <rect x="656" y="96" width="588" height="490" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+
+  <!-- Panel header -->
+  <rect x="656" y="96" width="588" height="52" rx="10" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="656" y="128" width="588" height="20" fill="#F5F5F5"/>
+  <use data-icon="tabler-filled/trophy" x="676" y="108" width="28" height="28" fill="#AE232F"/>
+  <text x="960" y="128" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#AE232F">Development Areas</text>
+
+  <!-- Development 1 -->
+  <rect x="676" y="168" width="548" height="130" rx="8" fill="#F5F5F5"/>
+  <rect x="676" y="168" width="4" height="130" rx="2" fill="#E0E0E0"/>
+  <circle cx="704" cy="200" r="18" fill="#888888"/>
+  <text x="704" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1</text>
+  <text x="730" y="196" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#555555">Product Portfolio Breadth</text>
+  <text x="730" y="214" font-family="Arial, sans-serif" font-size="12" fill="#555555">No prior Clexane-specific MR experience.</text>
+  <text x="730" y="230" font-family="Arial, sans-serif" font-size="12" fill="#555555">Know the mechanism well — need market exposure.</text>
+  <!-- Action plan -->
+  <rect x="676" y="254" width="548" height="38" rx="4" fill="#FFFFFF"/>
+  <text x="688" y="270" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#AE232F">Action Plan: </text>
+  <text x="780" y="270" font-family="Arial, sans-serif" font-size="11" fill="#555555">Completed full Clexane® self-study (PI + ESSENCE trial).</text>
+  <text x="688" y="286" font-family="Arial, sans-serif" font-size="11" fill="#555555">Will shadow senior MR in first 2 weeks and build product call flow.</text>
+
+  <!-- Development 2 -->
+  <rect x="676" y="318" width="548" height="130" rx="8" fill="#F5F5F5"/>
+  <rect x="676" y="318" width="4" height="130" rx="2" fill="#E0E0E0"/>
+  <circle cx="704" cy="350" r="18" fill="#888888"/>
+  <text x="704" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">2</text>
+  <text x="730" y="346" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#555555">Territory &amp; CRM Systems</text>
+  <text x="730" y="364" font-family="Arial, sans-serif" font-size="12" fill="#555555">Limited exposure to formal CRM call-reporting tools.</text>
+  <text x="730" y="380" font-family="Arial, sans-serif" font-size="12" fill="#555555">Used manual tracking during internship.</text>
+  <!-- Action plan -->
+  <rect x="676" y="404" width="548" height="38" rx="4" fill="#FFFFFF"/>
+  <text x="688" y="420" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#AE232F">Action Plan: </text>
+  <text x="780" y="420" font-family="Arial, sans-serif" font-size="11" fill="#555555">Eager to learn DKSH's CRM quickly — I adapt fast to tools.</text>
+  <text x="688" y="436" font-family="Arial, sans-serif" font-size="11" fill="#555555">My attention to detail translates directly to accurate call reporting.</text>
+
+  <!-- Growth mindset note -->
+  <rect x="676" y="466" width="548" height="88" rx="8" fill="#F9E5E7"/>
+  <rect x="676" y="466" width="4" height="88" rx="2" fill="#AE232F"/>
+  <use data-icon="tabler-filled/heart" x="696" y="484" width="20" height="20" fill="#AE232F"/>
+  <text x="724" y="490" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Growth Mindset</text>
+  <text x="696" y="510" font-family="Arial, sans-serif" font-size="12" fill="#555555">I chose to present development areas honestly because</text>
+  <text x="696" y="528" font-family="Arial, sans-serif" font-size="12" fill="#555555">self-awareness is a clinical skill, too. My learning curve</text>
+  <text x="696" y="546" font-family="Arial, sans-serif" font-size="12" fill="#555555">on Clexane is short — my science base makes it fast.</text>
+
+  <!-- ========== WHY ME BAR ========== -->
+  <rect x="36" y="600" width="1208" height="64" rx="8" fill="#AE232F" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/user" x="58" y="616" width="30" height="30" fill="#FFFFFF"/>
+  <text x="100" y="625" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Why Me for Clexane® MR at DKSH?</text>
+  <text x="100" y="647" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Pharm.D. science + real MR field experience + honest self-awareness = a rep physicians trust and DKSH can develop. I'm not a blank slate — I'm a head start.</text>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

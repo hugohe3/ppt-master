@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.07" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ========== HEADER BAR ========== -->
+  <rect x="0" y="0" width="1280" height="78" fill="#AE232F"/>
+  <rect x="28" y="18" width="32" height="32" rx="6" fill="#8A1B25"/>
+  <text x="44" y="39" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">04</text>
+  <text x="78" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">My Sales Call Approach — ADAPT Framework</text>
+  <text x="78" y="64" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">A structured, physician-centered detailing method</text>
+
+  <!-- ========== CHEVRON PROCESS — 5 STEPS ========== -->
+  <!-- Each chevron: width ~220, height 80, with 24px pointer overlap, centered at y=160 -->
+  <!-- Steps start at x=40, spacing = (1200/5) = 240 -->
+
+  <!-- STEP 1: ASSESS -->
+  <!-- Chevron polygon: left-flat right-arrow -->
+  <polygon points="40,128  232,128  256,168  232,208  40,208" fill="#AE232F" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/search" x="68" y="149" width="24" height="24" fill="#FFFFFF"/>
+  <text x="156" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">A</text>
+  <text x="156" y="176" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">ASSESS</text>
+  <text x="156" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#F9E5E7">Physician needs</text>
+
+  <!-- STEP 2: DISCOVER -->
+  <polygon points="248,128  440,128  464,168  440,208  248,208" fill="#AE232F" fill-opacity="0.85" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/eye" x="264" y="149" width="24" height="24" fill="#FFFFFF"/>
+  <text x="356" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">D</text>
+  <text x="356" y="176" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">DISCOVER</text>
+  <text x="356" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#F9E5E7">Patient challenges</text>
+
+  <!-- STEP 3: ACTIVATE -->
+  <polygon points="456,128  648,128  672,168  648,208  456,208" fill="#AE232F" fill-opacity="0.70" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/medical-cross" x="472" y="149" width="24" height="24" fill="#FFFFFF"/>
+  <text x="564" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">A</text>
+  <text x="564" y="176" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">ACTIVATE</text>
+  <text x="564" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#F9E5E7">Present evidence</text>
+
+  <!-- STEP 4: PROJECT -->
+  <polygon points="664,128  856,128  880,168  856,208  664,208" fill="#AE232F" fill-opacity="0.55" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/star" x="680" y="149" width="24" height="24" fill="#FFFFFF"/>
+  <text x="772" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">P</text>
+  <text x="772" y="176" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">PROJECT</text>
+  <text x="772" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#F9E5E7">Patient outcome</text>
+
+  <!-- STEP 5: TIE DOWN -->
+  <!-- Last chevron is rect (no right pointer) -->
+  <polygon points="872,128  1240,128  1240,208  872,208  896,168" fill="#AE232F" fill-opacity="0.40" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/circle-check" x="904" y="149" width="24" height="24" fill="#AE232F"/>
+  <text x="1068" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#8A1B25">T</text>
+  <text x="1068" y="176" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#8A1B25">TIE DOWN</text>
+  <text x="1068" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">Commit &amp; next step</text>
+
+  <!-- ========== DETAIL CARDS BELOW CHEVRONS ========== -->
+
+  <!-- Card 1: ASSESS -->
+  <rect x="40" y="228" width="216" height="186" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+  <rect x="40" y="228" width="216" height="4" rx="2" fill="#AE232F"/>
+  <text x="148" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Assess</text>
+  <text x="56" y="274" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">Review physician profile</text>
+  <text x="56" y="291" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">before each call</text>
+  <text x="56" y="314" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Specialty &amp; patient mix</text>
+  <text x="56" y="332" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Current prescribing habit</text>
+  <text x="56" y="350" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Unmet clinical needs</text>
+  <text x="56" y="368" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Gate-keeper &amp; timing</text>
+  <text x="56" y="400" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#888888">"Prepared MR = trusted MR"</text>
+
+  <!-- Card 2: DISCOVER -->
+  <rect x="268" y="228" width="216" height="186" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+  <rect x="268" y="228" width="216" height="4" rx="2" fill="#AE232F"/>
+  <text x="376" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Discover</text>
+  <text x="284" y="274" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">Open questions to surface</text>
+  <text x="284" y="291" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">physician pain points</text>
+  <text x="284" y="314" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  "What challenges do you</text>
+  <text x="284" y="330" font-family="Arial, sans-serif" font-size="11" fill="#555555">     face with VTE cases?"</text>
+  <text x="284" y="348" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  "How do you currently</text>
+  <text x="284" y="364" font-family="Arial, sans-serif" font-size="11" fill="#555555">     manage post-op prophylaxis?"</text>
+  <text x="284" y="400" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#888888">"Listen 70%, talk 30%"</text>
+
+  <!-- Card 3: ACTIVATE -->
+  <rect x="496" y="228" width="216" height="186" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+  <rect x="496" y="228" width="216" height="4" rx="2" fill="#AE232F"/>
+  <text x="604" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Activate</text>
+  <text x="512" y="274" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">Connect evidence to the</text>
+  <text x="512" y="291" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">physician's specific need</text>
+  <text x="512" y="314" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Lead with clinical data</text>
+  <text x="512" y="332" font-family="Arial, sans-serif" font-size="11" fill="#555555">     (ESSENCE / SYNERGY)</text>
+  <text x="512" y="350" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Handle objections calmly</text>
+  <text x="512" y="368" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Use real patient examples</text>
+  <text x="512" y="400" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#888888">"Science + empathy wins"</text>
+
+  <!-- Card 4: PROJECT -->
+  <rect x="724" y="228" width="216" height="186" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+  <rect x="724" y="228" width="216" height="4" rx="2" fill="#AE232F"/>
+  <text x="832" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Project</text>
+  <text x="740" y="274" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">Paint the patient outcome</text>
+  <text x="740" y="291" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">picture for the physician</text>
+  <text x="740" y="314" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  "Your DVT patient goes home</text>
+  <text x="740" y="330" font-family="Arial, sans-serif" font-size="11" fill="#555555">     sooner with SC dosing"</text>
+  <text x="740" y="348" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Connect to their clinical goal</text>
+  <text x="740" y="366" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Make the benefit tangible</text>
+  <text x="740" y="400" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#888888">"Outcome storytelling"</text>
+
+  <!-- Card 5: TIE DOWN -->
+  <rect x="952" y="228" width="288" height="186" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#sm-shadow)"/>
+  <rect x="952" y="228" width="288" height="4" rx="2" fill="#AE232F"/>
+  <text x="1096" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Tie Down</text>
+  <text x="968" y="274" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">Secure a concrete next step</text>
+  <text x="968" y="291" font-family="Arial, sans-serif" font-size="11" fill="#1A1A1A">before leaving the call</text>
+  <text x="968" y="314" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  "Can we trial Clexane for</text>
+  <text x="968" y="330" font-family="Arial, sans-serif" font-size="11" fill="#555555">     your next 3 ortho cases?"</text>
+  <text x="968" y="348" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Schedule follow-up date</text>
+  <text x="968" y="366" font-family="Arial, sans-serif" font-size="11" fill="#555555">&#x25CF;  Leave a clinical reference</text>
+  <text x="968" y="400" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#888888">"Always leave with a yes"</text>
+
+  <!-- ========== KEY PRINCIPLE BOX ========== -->
+  <rect x="40" y="436" width="1200" height="86" rx="8" fill="#AE232F" filter="url(#sm-shadow)"/>
+  <rect x="40" y="436" width="6" height="86" rx="3" fill="#8A1B25"/>
+  <text x="68" y="462" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Core Principle: Physician-First Detailing</text>
+  <text x="68" y="485" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Every ADAPT call starts with the physician's clinical reality — not with my product's features. I use Clexane's evidence</text>
+  <text x="68" y="503" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">to solve a problem the physician already has. This approach was validated during my Roche internship: physicians respond</text>
+  <text x="68" y="521" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">to insight and empathy, not feature lists.</text>
+
+  <!-- ========== REAL EXAMPLE STRIP ========== -->
+  <rect x="40" y="540" width="1200" height="106" rx="8" fill="#F5F5F5"/>
+  <rect x="40" y="540" width="4" height="106" rx="2" fill="#AE232F"/>
+  <text x="58" y="562" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Real Example from Roche Internship (Adapted to Clexane Context)</text>
+  <text x="58" y="582" font-family="Arial, sans-serif" font-size="12" fill="#555555">A — Reviewed cardiologist at Bhumibol: high ACS volume, preferred UFH for cost. D — Asked: "Any monitoring burden concerns with UFH drips?"</text>
+  <text x="58" y="600" font-family="Arial, sans-serif" font-size="12" fill="#555555">A — Presented ESSENCE data: Clexane reduced recurrent ischemia 20% vs UFH. P — "Your team saves 2 aPTT checks per patient per day."</text>
+  <text x="58" y="618" font-family="Arial, sans-serif" font-size="12" fill="#555555">T — "Would you try Clexane on your next 5 UA patients and compare workload?" — Physician agreed to a pilot evaluation.</text>
+  <text x="58" y="636" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Result: </text>
+  <text x="108" y="636" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Pilot agreed in one call — ADAPT framework in action.</text>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

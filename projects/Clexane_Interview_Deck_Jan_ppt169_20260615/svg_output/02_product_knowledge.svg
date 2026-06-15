@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.07" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ========== HEADER BAR ========== -->
+  <rect x="0" y="0" width="1280" height="78" fill="#AE232F"/>
+  <!-- Slide number tag -->
+  <rect x="28" y="18" width="32" height="32" rx="6" fill="#8A1B25"/>
+  <text x="44" y="39" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">02</text>
+  <!-- Title -->
+  <text x="78" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">Clexane® (Enoxaparin) — What You Need to Know</text>
+  <!-- Subtitle -->
+  <text x="78" y="64" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Mechanism · Indications · Differentiators</text>
+
+  <!-- ========== THREE PILLAR COLUMNS ========== -->
+
+  <!-- COLUMN 1 — MOA -->
+  <g id="col-moa" filter="url(#sm-shadow)">
+    <!-- Card background -->
+    <rect x="36" y="92" width="372" height="572" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <!-- Red dome header -->
+    <path d="M36,102 Q36,92 46,92 L398,92 Q408,92 408,102 L408,162 Q408,162 222,162 Q36,162 36,162 Z" fill="#AE232F"/>
+    <!-- Icon circle -->
+    <circle cx="222" cy="114" r="24" fill="#8A1B25"/>
+    <use data-icon="tabler-filled/flask" x="210" y="102" width="24" height="24" fill="#FFFFFF"/>
+    <!-- Column title -->
+    <text x="222" y="143" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Mechanism of Action</text>
+    <!-- Bullet items -->
+    <text x="56" y="192" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">LMWH — Targeted Anticoagulation</text>
+    <text x="56" y="215" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  Binds antithrombin III (AT III)</text>
+    <text x="56" y="234" font-family="Arial, sans-serif" font-size="12" fill="#555555">    Potentiates AT III activity ~1,000×</text>
+    <text x="56" y="260" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  Inhibits Factor Xa selectively</text>
+    <text x="56" y="279" font-family="Arial, sans-serif" font-size="12" fill="#555555">    Anti-Xa : Anti-IIa ratio ≈ 3.8:1</text>
+    <text x="56" y="305" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  Predictable subcutaneous absorption</text>
+    <text x="56" y="324" font-family="Arial, sans-serif" font-size="12" fill="#555555">    Bioavailability ~92%</text>
+    <line x1="56" y1="342" x2="388" y2="342" stroke="#E0E0E0" stroke-width="1"/>
+    <text x="56" y="366" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Pharmacokinetics</text>
+    <text x="56" y="388" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  Onset: anti-Xa peak at 3–5 h (SC)</text>
+    <text x="56" y="410" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  Half-life: ~4.5 h (renally cleared)</text>
+    <text x="56" y="432" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  Weight-based dosing: 1 mg/kg q12h</text>
+    <text x="56" y="454" font-family="Arial, sans-serif" font-size="12" fill="#555555">    or 1.5 mg/kg q24h (therapeutic)</text>
+    <text x="56" y="476" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x25CF;  No routine monitoring needed</text>
+    <text x="56" y="498" font-family="Arial, sans-serif" font-size="12" fill="#555555">    (unlike UFH with aPTT)</text>
+    <!-- Key number callout -->
+    <rect x="56" y="528" width="352" height="44" rx="6" fill="#F9E5E7"/>
+    <text x="232" y="546" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Key talking point for physicians:</text>
+    <text x="232" y="563" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#555555">"Predictable PK = safe dose without lab monitoring"</text>
+  </g>
+
+  <!-- COLUMN 2 — Indications -->
+  <g id="col-indications" filter="url(#sm-shadow)">
+    <rect x="432" y="92" width="372" height="572" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <!-- Red dome header -->
+    <path d="M432,102 Q432,92 442,92 L794,92 Q804,92 804,102 L804,162 Q804,162 618,162 Q432,162 432,162 Z" fill="#AE232F"/>
+    <circle cx="618" cy="114" r="24" fill="#8A1B25"/>
+    <use data-icon="tabler-filled/clipboard-check" x="606" y="102" width="24" height="24" fill="#FFFFFF"/>
+    <text x="618" y="143" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Key Indications</text>
+    <!-- Items with badge numbers -->
+    <!-- Item 1 -->
+    <rect x="452" y="180" width="20" height="20" rx="4" fill="#AE232F"/>
+    <text x="462" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">1</text>
+    <text x="480" y="192" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">VTE Prophylaxis</text>
+    <text x="480" y="208" font-family="Arial, sans-serif" font-size="11" fill="#555555">Orthopedic, general surgery, medical patients</text>
+    <line x1="452" y1="224" x2="784" y2="224" stroke="#F5F5F5" stroke-width="1"/>
+    <!-- Item 2 -->
+    <rect x="452" y="234" width="20" height="20" rx="4" fill="#AE232F"/>
+    <text x="462" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">2</text>
+    <text x="480" y="246" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">DVT Treatment</text>
+    <text x="480" y="262" font-family="Arial, sans-serif" font-size="11" fill="#555555">Deep vein thrombosis — inpatient &amp; outpatient</text>
+    <line x1="452" y1="278" x2="784" y2="278" stroke="#F5F5F5" stroke-width="1"/>
+    <!-- Item 3 -->
+    <rect x="452" y="288" width="20" height="20" rx="4" fill="#AE232F"/>
+    <text x="462" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">3</text>
+    <text x="480" y="300" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">PE Treatment</text>
+    <text x="480" y="316" font-family="Arial, sans-serif" font-size="11" fill="#555555">Pulmonary embolism with hemodynamic stability</text>
+    <line x1="452" y1="332" x2="784" y2="332" stroke="#F5F5F5" stroke-width="1"/>
+    <!-- Item 4 -->
+    <rect x="452" y="342" width="20" height="20" rx="4" fill="#AE232F"/>
+    <text x="462" y="356" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">4</text>
+    <text x="480" y="354" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">ACS / STEMI Adjunct</text>
+    <text x="480" y="370" font-family="Arial, sans-serif" font-size="11" fill="#555555">UA/NSTEMI: 1 mg/kg SC q12h (ESSENCE data)</text>
+    <line x1="452" y1="386" x2="784" y2="386" stroke="#F5F5F5" stroke-width="1"/>
+    <!-- Item 5 -->
+    <rect x="452" y="396" width="20" height="20" rx="4" fill="#AE232F"/>
+    <text x="462" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">5</text>
+    <text x="480" y="408" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">Pregnancy (VTE)</text>
+    <text x="480" y="424" font-family="Arial, sans-serif" font-size="11" fill="#555555">LMWH of choice; does not cross placenta</text>
+    <line x1="452" y1="440" x2="784" y2="440" stroke="#F5F5F5" stroke-width="1"/>
+    <!-- PMK context -->
+    <rect x="452" y="450" width="332" height="58" rx="6" fill="#F5F5F5"/>
+    <text x="618" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Relevant at PMK Hospital</text>
+    <text x="618" y="487" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#555555">High volume of ACS, orthopedic surgery,</text>
+    <text x="618" y="502" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#555555">and ICU patients — all key Clexane users</text>
+    <!-- Evidence line -->
+    <rect x="452" y="528" width="332" height="44" rx="6" fill="#F9E5E7"/>
+    <text x="618" y="546" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Guideline backed:</text>
+    <text x="618" y="563" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#555555">ACC/AHA · ESC · ACCP anticoagulation guidelines</text>
+  </g>
+
+  <!-- COLUMN 3 — Differentiators -->
+  <g id="col-diff" filter="url(#sm-shadow)">
+    <rect x="828" y="92" width="420" height="572" rx="10" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+    <!-- Red dome header -->
+    <path d="M828,102 Q828,92 838,92 L1238,92 Q1248,92 1248,102 L1248,162 Q1248,162 1038,162 Q828,162 828,162 Z" fill="#AE232F"/>
+    <circle cx="1038" cy="114" r="24" fill="#8A1B25"/>
+    <use data-icon="tabler-filled/shield-check" x="1026" y="102" width="24" height="24" fill="#FFFFFF"/>
+    <text x="1038" y="143" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Differentiators</text>
+    <!-- vs UFH section -->
+    <text x="848" y="188" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Clexane vs. Unfractionated Heparin (UFH)</text>
+    <text x="848" y="210" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  No aPTT monitoring required</text>
+    <text x="848" y="230" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Once or twice daily SC (vs. continuous IV)</text>
+    <text x="848" y="250" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Lower risk of HIT (heparin-induced</text>
+    <text x="848" y="268" font-family="Arial, sans-serif" font-size="12" fill="#555555">    thrombocytopenia)</text>
+    <text x="848" y="288" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  More predictable dose-response</text>
+    <text x="848" y="308" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Can be used in outpatient settings</text>
+    <!-- Separator -->
+    <line x1="848" y1="326" x2="1228" y2="326" stroke="#E0E0E0" stroke-width="1"/>
+    <!-- vs DOACs section -->
+    <text x="848" y="348" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Clexane vs. DOACs (Rivaroxaban / Apixaban)</text>
+    <text x="848" y="370" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Safe in severe renal impairment (eGFR</text>
+    <text x="848" y="388" font-family="Arial, sans-serif" font-size="12" fill="#555555">    adjusted) vs. DOACs contraindicated</text>
+    <text x="848" y="408" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Reversible with protamine sulfate</text>
+    <text x="848" y="428" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Safe in pregnancy (DOACs not approved)</text>
+    <text x="848" y="448" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Decades of RCT evidence &amp; real-world use</text>
+    <text x="848" y="468" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">&#x2714;  Available on Thai national drug list</text>
+    <!-- Key callout -->
+    <rect x="848" y="494" width="380" height="64" rx="6" fill="#F9E5E7"/>
+    <text x="1038" y="514" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Brand insight for MR conversations:</text>
+    <text x="1038" y="532" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#555555">"Clexane is the only LMWH with both breadth</text>
+    <text x="1038" y="548" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#555555">of evidence and ease of outpatient use."</text>
+  </g>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

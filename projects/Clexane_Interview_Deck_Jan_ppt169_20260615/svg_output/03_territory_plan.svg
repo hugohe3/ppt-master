@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.07" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ========== HEADER BAR ========== -->
+  <rect x="0" y="0" width="1280" height="78" fill="#AE232F"/>
+  <rect x="28" y="18" width="32" height="32" rx="6" fill="#8A1B25"/>
+  <text x="44" y="39" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">03</text>
+  <text x="78" y="44" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">Territory Plan — PMK &amp; Bangkok Network</text>
+  <text x="78" y="64" font-family="Arial, sans-serif" font-size="13" fill="#F9E5E7">Hospital Network · Physician Priorities · Call Cycle Strategy</text>
+
+  <!-- ========== TOP HALF: HOSPITAL NETWORK DIAGRAM ========== -->
+
+  <!-- Section label -->
+  <text x="40" y="108" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Hospital Network</text>
+  <line x1="40" y1="113" x2="200" y2="113" stroke="#AE232F" stroke-width="2"/>
+
+  <!-- Hub: PMK (Phramongkutklao) — center -->
+  <rect x="490" y="124" width="300" height="64" rx="10" fill="#AE232F" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/hospital-circle" x="504" y="138" width="24" height="24" fill="#FFFFFF"/>
+  <text x="640" y="148" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Phramongkutklao (PMK)</text>
+  <text x="640" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#F9E5E7">Primary target — Military hospital, high ACS + surgery volume</text>
+
+  <!-- Connector lines from PMK hub -->
+  <!-- to Ramathibodi -->
+  <line x1="490" y1="156" x2="316" y2="220" stroke="#AE232F" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- to Bhumibol -->
+  <line x1="640" y1="188" x2="520" y2="252" stroke="#AE232F" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- to Phyathai -->
+  <line x1="790" y1="156" x2="900" y2="220" stroke="#AE232F" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- to Chulalongkorn -->
+  <line x1="640" y1="188" x2="760" y2="252" stroke="#AE232F" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Secondary hospital 1: Ramathibodi -->
+  <rect x="140" y="218" width="268" height="56" rx="8" fill="#F9E5E7" stroke="#AE232F" stroke-width="1.5" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/hospital-circle" x="152" y="232" width="20" height="20" fill="#AE232F"/>
+  <text x="280" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Ramathibodi Hospital</text>
+  <text x="280" y="257" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">Roche internship experience — existing relationships</text>
+  <text x="280" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">Cardiology + Hematology dept key users</text>
+
+  <!-- Secondary hospital 2: Bhumibol -->
+  <rect x="376" y="250" width="268" height="56" rx="8" fill="#F9E5E7" stroke="#AE232F" stroke-width="1.5" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/hospital-circle" x="388" y="264" width="20" height="20" fill="#AE232F"/>
+  <text x="510" y="273" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Bhumibol Adulyadej Hospital</text>
+  <text x="510" y="289" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">High trauma volume — DVT prophylaxis priority</text>
+  <text x="510" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">Air Force affiliate, strong surgical caseload</text>
+
+  <!-- Secondary hospital 3: Chulalongkorn -->
+  <rect x="662" y="250" width="268" height="56" rx="8" fill="#F9E5E7" stroke="#AE232F" stroke-width="1.5" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/hospital-circle" x="674" y="264" width="20" height="20" fill="#AE232F"/>
+  <text x="796" y="273" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">Chulalongkorn Hospital</text>
+  <text x="796" y="289" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">Academic center — KOL influence opportunity</text>
+  <text x="796" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#555555">Cardiology, internal medicine prescribers</text>
+
+  <!-- Secondary hospital 4: Phyathai -->
+  <rect x="900" y="218" width="238" height="56" rx="8" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1.5" filter="url(#sm-shadow)"/>
+  <use data-icon="tabler-filled/hospital-circle" x="912" y="232" width="20" height="20" fill="#888888"/>
+  <text x="1019" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#555555">Phyathai / Paolo Group</text>
+  <text x="1019" y="257" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888888">Tier 2 — build pipeline Q2</text>
+  <text x="1019" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888888">Private sector expansion</text>
+
+  <!-- Section divider -->
+  <line x1="40" y1="326" x2="1240" y2="326" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- ========== BOTTOM HALF: PHYSICIAN PRIORITY TABLE ========== -->
+
+  <!-- Section label -->
+  <text x="40" y="347" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#AE232F">Physician Priority Matrix</text>
+  <line x1="40" y1="352" x2="270" y2="352" stroke="#AE232F" stroke-width="2"/>
+
+  <!-- Table header -->
+  <rect x="40" y="360" width="1200" height="32" rx="4" fill="#AE232F"/>
+  <text x="130" y="381" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Physician / Dept</text>
+  <line x1="220" y1="360" x2="220" y2="660" stroke="#8A1B25" stroke-width="1"/>
+  <text x="370" y="381" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Hospital</text>
+  <line x1="520" y1="360" x2="520" y2="660" stroke="#8A1B25" stroke-width="1"/>
+  <text x="620" y="381" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Specialty</text>
+  <line x1="720" y1="360" x2="720" y2="660" stroke="#8A1B25" stroke-width="1"/>
+  <text x="840" y="381" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Clexane Use Case</text>
+  <line x1="960" y1="360" x2="960" y2="660" stroke="#8A1B25" stroke-width="1"/>
+  <text x="1080" y="381" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Priority</text>
+  <line x1="1200" y1="360" x2="1200" y2="660" stroke="#8A1B25" stroke-width="1"/>
+  <text x="1220" y="381" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Freq.</text>
+
+  <!-- Row 1 -->
+  <rect x="40" y="392" width="1200" height="40" rx="0" fill="#FFFFFF"/>
+  <line x1="40" y1="432" x2="1240" y2="432" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="130" y="417" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Cardiologist</text>
+  <text x="370" y="417" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">PMK Hospital</text>
+  <text x="620" y="417" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Cardiology</text>
+  <text x="840" y="417" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">ACS adjunct, STEMI management</text>
+  <rect x="990" y="402" width="60" height="20" rx="4" fill="#AE232F"/>
+  <text x="1020" y="416" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">A</text>
+  <text x="1220" y="417" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">2×/wk</text>
+
+  <!-- Row 2 -->
+  <rect x="40" y="432" width="1200" height="40" rx="0" fill="#F5F5F5"/>
+  <line x1="40" y1="472" x2="1240" y2="472" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="130" y="457" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Orthopedic Surgeon</text>
+  <text x="370" y="457" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">PMK Hospital</text>
+  <text x="620" y="457" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Orthopedics</text>
+  <text x="840" y="457" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">Post-op VTE prophylaxis (hip/knee)</text>
+  <rect x="990" y="442" width="60" height="20" rx="4" fill="#AE232F"/>
+  <text x="1020" y="456" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">A</text>
+  <text x="1220" y="457" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">2×/wk</text>
+
+  <!-- Row 3 -->
+  <rect x="40" y="472" width="1200" height="40" rx="0" fill="#FFFFFF"/>
+  <line x1="40" y1="512" x2="1240" y2="512" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="130" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Internist (Gen. Med.)</text>
+  <text x="370" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Ramathibodi</text>
+  <text x="620" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Internal Medicine</text>
+  <text x="840" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">Medical VTE prophylaxis (immobile pts)</text>
+  <rect x="990" y="482" width="60" height="20" rx="4" fill="#F9E5E7" stroke="#AE232F" stroke-width="1"/>
+  <text x="1020" y="496" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#AE232F">B</text>
+  <text x="1220" y="497" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">1×/wk</text>
+
+  <!-- Row 4 -->
+  <rect x="40" y="512" width="1200" height="40" rx="0" fill="#F5F5F5"/>
+  <line x1="40" y1="552" x2="1240" y2="552" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="130" y="537" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Hematologist</text>
+  <text x="370" y="537" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Chulalongkorn</text>
+  <text x="620" y="537" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Hematology</text>
+  <text x="840" y="537" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">DVT/PE treatment, cancer-associated VTE</text>
+  <rect x="990" y="522" width="60" height="20" rx="4" fill="#F9E5E7" stroke="#AE232F" stroke-width="1"/>
+  <text x="1020" y="536" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#AE232F">B</text>
+  <text x="1220" y="537" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">1×/wk</text>
+
+  <!-- Row 5 -->
+  <rect x="40" y="552" width="1200" height="40" rx="0" fill="#FFFFFF"/>
+  <line x1="40" y1="592" x2="1240" y2="592" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="130" y="577" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">OB/GYN Specialist</text>
+  <text x="370" y="577" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Bhumibol</text>
+  <text x="620" y="577" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">OB/GYN</text>
+  <text x="840" y="577" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">Pregnancy VTE prevention (bridging)</text>
+  <rect x="990" y="562" width="60" height="20" rx="4" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="1020" y="576" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#888888">C</text>
+  <text x="1220" y="577" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888888">Bi-wkly</text>
+
+  <!-- Table bottom border -->
+  <rect x="40" y="592" width="1200" height="2" fill="#E0E0E0"/>
+
+  <!-- Red insight box -->
+  <rect x="40" y="604" width="1200" height="48" rx="6" fill="#AE232F" fill-opacity="0.08"/>
+  <rect x="40" y="604" width="4" height="48" rx="2" fill="#AE232F"/>
+  <text x="58" y="624" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#AE232F">MR Strategy: </text>
+  <text x="148" y="624" font-family="Arial, sans-serif" font-size="12" fill="#1A1A1A">Lead with PMK Cardiology + Orthopedics (Priority A). Build trust with internists &amp; hematologists (B) within 60 days.</text>
+  <text x="58" y="644" font-family="Arial, sans-serif" font-size="12" fill="#555555">Use Ramathibodi internship relationships as warm entry points — I already know the call culture and gatekeeper rhythm.</text>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

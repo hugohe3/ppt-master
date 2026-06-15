@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- Left column background -->
+  <rect x="0" y="0" width="400" height="682" fill="#F5F5F5"/>
+  <!-- Left column top red accent -->
+  <rect x="0" y="0" width="400" height="5" fill="#AE232F"/>
+  <!-- Red vertical separator -->
+  <rect x="400" y="0" width="8" height="682" fill="#AE232F"/>
+  <!-- Right column top red accent -->
+  <rect x="408" y="0" width="872" height="5" fill="#8A1B25"/>
+
+  <!-- ========== LEFT COLUMN — Profile ========== -->
+  <g id="profile-photo">
+    <!-- Photo placeholder rounded rect -->
+    <rect x="70" y="42" width="260" height="293" rx="12" fill="#F9E5E7" stroke="#AE232F" stroke-width="2"/>
+    <!-- Silhouette suggestion (person shape in light red) -->
+    <circle cx="200" cy="135" r="52" fill="#AE232F" fill-opacity="0.12"/>
+    <ellipse cx="200" cy="272" rx="72" ry="52" fill="#AE232F" fill-opacity="0.08"/>
+    <!-- Photo label -->
+    <text x="200" y="316" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#888888" font-style="italic">[Photo: Jan]</text>
+  </g>
+
+  <g id="profile-name">
+    <text x="200" y="368" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Rattanakorn Rattanaroj</text>
+    <text x="200" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#AE232F">(Jan)</text>
+    <text x="200" y="412" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#555555">Pharm.D.  |  MR Candidate</text>
+  </g>
+
+  <g id="profile-contact">
+    <line x1="70" y1="430" x2="330" y2="430" stroke="#E0E0E0" stroke-width="1"/>
+    <text x="200" y="453" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">Rattanaroj.jan@gmail.com</text>
+    <text x="200" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#555555">080-045-0821</text>
+    <!-- Decorative DKSH red line at bottom of left col -->
+    <rect x="140" y="620" width="120" height="3" rx="1" fill="#AE232F" fill-opacity="0.4"/>
+  </g>
+
+  <!-- ========== RIGHT COLUMN ========== -->
+  <g id="slide-header">
+    <!-- Main title -->
+    <text x="434" y="56" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#AE232F">Hello, I'm Jan</text>
+    <!-- Subtitle badge -->
+    <rect x="434" y="68" width="590" height="27" rx="13" fill="#AE232F" fill-opacity="0.08"/>
+    <text x="729" y="86" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#AE232F">MR Candidate  ·  DKSH Thailand  ·  Clexane®</text>
+    <!-- Divider line -->
+    <line x1="434" y1="108" x2="1232" y2="108" stroke="#E0E0E0" stroke-width="1"/>
+  </g>
+
+  <!-- Block 1: Pharma Background -->
+  <g id="block-pharma">
+    <rect x="434" y="122" width="4" height="145" rx="2" fill="#AE232F"/>
+    <circle cx="464" cy="153" r="22" fill="#F9E5E7"/>
+    <use data-icon="tabler-filled/school" x="452" y="141" width="24" height="24" fill="#AE232F"/>
+    <text x="500" y="157" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#AE232F">Pharma Background</text>
+    <text x="500" y="179" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Pharm.D. (GPA 3.50) — Srinakarinwirot University</text>
+    <text x="500" y="199" font-family="Arial, sans-serif" font-size="14" fill="#555555">Deep knowledge of drug mechanisms, pharmacokinetics,</text>
+    <text x="500" y="218" font-family="Arial, sans-serif" font-size="14" fill="#555555">and clinical data — ready to communicate science to physicians.</text>
+  </g>
+
+  <!-- Block 2: Real Field Experience -->
+  <g id="block-experience">
+    <rect x="434" y="288" width="4" height="145" rx="2" fill="#AE232F"/>
+    <circle cx="464" cy="319" r="22" fill="#F9E5E7"/>
+    <use data-icon="tabler-filled/briefcase" x="452" y="307" width="24" height="24" fill="#AE232F"/>
+    <text x="500" y="323" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#AE232F">Real Field Experience</text>
+    <text x="500" y="345" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">MR Intern at Roche Thailand — solo physician visits</text>
+    <text x="500" y="365" font-family="Arial, sans-serif" font-size="14" fill="#555555">across Ramathibodi, Bhumibol Adulyadej &amp; EENT Hospital</text>
+    <text x="500" y="384" font-family="Arial, sans-serif" font-size="14" fill="#555555">Planned call cycles and managed physician follow-ups independently.</text>
+  </g>
+
+  <!-- Block 3: Why DKSH / Clexane? -->
+  <g id="block-why">
+    <rect x="434" y="456" width="4" height="145" rx="2" fill="#AE232F"/>
+    <circle cx="464" cy="487" r="22" fill="#F9E5E7"/>
+    <use data-icon="tabler-filled/heart" x="452" y="475" width="24" height="24" fill="#AE232F"/>
+    <text x="500" y="491" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#AE232F">Why DKSH / Clexane?</text>
+    <text x="500" y="513" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Clexane has strong clinical evidence in acute care settings.</text>
+    <text x="500" y="533" font-family="Arial, sans-serif" font-size="14" fill="#555555">I want to be the MR who translates that evidence</text>
+    <text x="500" y="552" font-family="Arial, sans-serif" font-size="14" fill="#555555">into real prescribing change at PMK and beyond.</text>
+  </g>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#AE232F"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>

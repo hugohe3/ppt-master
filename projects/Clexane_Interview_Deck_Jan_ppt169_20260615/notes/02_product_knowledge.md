@@ -1,0 +1,7 @@
+I've done my homework on Clexane, so let me walk you through what I believe a great MR needs to know about this product.
+
+On the mechanism side: Clexane is a low-molecular-weight heparin that works by binding antithrombin III and amplifying its inhibition of Factor Xa. The key ratio is about 3.8 to 1 — anti-Xa over anti-IIa activity. That selectivity is what gives Clexane its predictable dose-response and makes routine monitoring unnecessary in most patients. From a pharmacokinetics standpoint, subcutaneous bioavailability is around 92%, anti-Xa peaks at 3 to 5 hours, and the half-life is about 4.5 hours. Weight-based dosing — 1 mg/kg twice daily for therapeutic use — is straightforward.
+
+In terms of indications, Clexane covers VTE prophylaxis in surgical and medical patients, DVT and PE treatment, ACS adjunct therapy based on ESSENCE and SYNERGY trial data, and is the anticoagulant of choice in pregnancy because it does not cross the placenta.
+
+When I'm talking to a physician about why Clexane versus UFH, the key messages are: no aPTT monitoring, once or twice daily injection instead of a continuous IV drip, lower HIT risk, and outpatient use. Versus DOACs, I emphasize renal safety, pregnancy use, reversibility with protamine, decades of RCT evidence, and national drug list availability in Thailand.

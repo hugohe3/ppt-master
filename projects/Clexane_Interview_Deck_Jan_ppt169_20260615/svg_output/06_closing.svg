@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="sm-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ========== BACKGROUND ========== -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- Decorative diagonal accent blocks (top-left) -->
+  <polygon points="0,0 320,0 0,220" fill="#F9E5E7"/>
+  <polygon points="0,0 200,0 0,130" fill="#AE232F" fill-opacity="0.12"/>
+
+  <!-- Decorative diagonal accent blocks (bottom-right) -->
+  <polygon points="1280,720 960,720 1280,500" fill="#F9E5E7"/>
+  <polygon points="1280,720 1080,720 1280,590" fill="#AE232F" fill-opacity="0.12"/>
+
+  <!-- Slide number (subtle, top left) -->
+  <text x="36" y="42" font-family="Arial, sans-serif" font-size="13" fill="#AE232F" fill-opacity="0.6">06 / 06</text>
+
+  <!-- ========== MAIN CONTENT — CENTERED ========== -->
+
+  <!-- Red decorative line above main heading -->
+  <rect x="480" y="118" width="320" height="4" rx="2" fill="#AE232F"/>
+
+  <!-- Main heading -->
+  <text x="640" y="178" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#1A1A1A">Thank You for This Opportunity</text>
+
+  <!-- Subtitle -->
+  <text x="640" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#AE232F">I am ready to represent Clexane® with science and purpose.</text>
+
+  <!-- Divider -->
+  <line x1="480" y1="254" x2="800" y2="254" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Commitment statement -->
+  <text x="640" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#555555">My commitment: Every physician I visit will leave knowing one</text>
+  <text x="640" y="318" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#555555">new reason to trust Clexane® — backed by evidence, delivered with care.</text>
+
+  <!-- ========== CONTACT BLOCK ========== -->
+  <rect x="390" y="352" width="500" height="140" rx="12" fill="#F5F5F5" filter="url(#sm-shadow)"/>
+  <rect x="390" y="352" width="500" height="4" rx="2" fill="#AE232F"/>
+
+  <!-- Name -->
+  <text x="640" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A1A">Rattanakorn Rattanaroj (Jan)</text>
+  <text x="640" y="416" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#AE232F">Pharm.D. · MR Candidate · Clexane® / DKSH Thailand</text>
+
+  <!-- Divider inside card -->
+  <line x1="430" y1="432" x2="850" y2="432" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Contact details -->
+  <text x="500" y="456" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#555555">Rattanaroj.jan@gmail.com</text>
+  <text x="640" y="456" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#E0E0E0">|</text>
+  <text x="780" y="456" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#555555">080-045-0821</text>
+
+  <!-- Three micro-achievements -->
+  <text x="430" y="482" font-family="Arial, sans-serif" font-size="11" fill="#888888">&#x2714;  Pharm.D. GPA 3.50</text>
+  <text x="590" y="482" font-family="Arial, sans-serif" font-size="11" fill="#888888">&#x2714;  Roche MR Intern</text>
+  <text x="730" y="482" font-family="Arial, sans-serif" font-size="11" fill="#888888">&#x2714;  3 Major Hospitals</text>
+
+  <!-- ========== BOTTOM TAGLINE ========== -->
+  <rect x="0" y="610" width="1280" height="72" fill="#AE232F"/>
+  <!-- Decorative dots -->
+  <circle cx="60" cy="646" r="4" fill="#FFFFFF" fill-opacity="0.30"/>
+  <circle cx="80" cy="646" r="4" fill="#FFFFFF" fill-opacity="0.20"/>
+  <circle cx="100" cy="646" r="4" fill="#FFFFFF" fill-opacity="0.10"/>
+  <circle cx="1180" cy="646" r="4" fill="#FFFFFF" fill-opacity="0.10"/>
+  <circle cx="1200" cy="646" r="4" fill="#FFFFFF" fill-opacity="0.20"/>
+  <circle cx="1220" cy="646" r="4" fill="#FFFFFF" fill-opacity="0.30"/>
+
+  <text x="640" y="635" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">"Science in my hands. Patients in my mind. Growth in my goals."</text>
+  <text x="640" y="662" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#F9E5E7">— Rattanakorn Rattanaroj (Jan), MR Candidate</text>
+
+  <!-- ========== FOOTER ========== -->
+  <g id="footer">
+    <rect x="0" y="682" width="1280" height="38" fill="#8A1B25"/>
+    <text x="640" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF">Rattanakorn Rattanaroj  |  Rattanaroj.jan@gmail.com  |  080-045-0821</text>
+  </g>
+</svg>
