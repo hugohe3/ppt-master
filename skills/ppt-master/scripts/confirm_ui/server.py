@@ -179,7 +179,7 @@ def _build_catalogs() -> dict:
     try:
         import config  # scripts/ is on sys.path (injected at import time)
         formats = config.CANVAS_FORMATS
-    except Exception:  # any import/attr failure → serve the static canvas list
+    except (ImportError, AttributeError):  # missing module/attr → static canvas
         return data
     existing = {
         c.get('id'): c
