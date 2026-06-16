@@ -803,10 +803,13 @@ def main() -> None:
         print_usage()
         sys.exit(1)
 
-    command = sys.argv[1]
-    if command in {"-h", "--help", "help"}:
+    # Help anywhere — top-level or after a subcommand (e.g. `init --help`) —
+    # prints usage and exits; never treat a help flag as a positional argument.
+    if any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]):
         print_usage()
         sys.exit(0)
+
+    command = sys.argv[1]
 
     manager = ProjectManager()
 
