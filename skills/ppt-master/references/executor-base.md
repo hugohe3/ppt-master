@@ -323,6 +323,8 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Reference syntax**: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
+**Template-bundled images**: when a template (deck / layout / brand) is applied, its bitmaps are copied into the project's `images/` alongside every other runtime image (SKILL.md Step 3). Reference them the same way — `../images/<name>` — and do **not** reproduce a template SVG's bare sibling href (e.g. `href="cover_bg.png"`): the template SVG is reference material, the rendered page lives in `svg_output/` and must point at `../images/`. Mirror templates (§1.1) are the one exception — they copy hrefs verbatim, and the exporter resolves those bare hrefs against `images/`.
+
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
 **`no-crop` images**: when a `spec_lock.md images` entry ends with ` | no-crop`, size the container to the image's native ratio (from `analyze_images.py` or file dims) and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries are croppable — default to `slice`.

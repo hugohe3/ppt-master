@@ -424,6 +424,28 @@ def create_app(
             return jsonify({'error': 'not found'}), 404
         return send_from_directory(str(assets_dir), filename)
 
+    @app.route('/<path:filename>')
+    def serve_bare_asset(filename: str):
+        """Resolve a template SVG's bare image href (e.g. `href="cover_bg.png"`).
+
+        Mirror templates copy hrefs verbatim, so a bare filename reaches the
+        browser as `/<filename>` (no `../images/` prefix). Resolve it against the
+        project's images/ then assets/. Every real route (`/api/*`, `/images/*`,
+        `/assets/*`, `/static/*`, `/`) is more specific and matches first; this
+        only catches the leftover bare references and 404s otherwise.
+        """
+        for base in (images_dir, assets_dir):
+            if not base.exists():
+                continue
+            target = (base / filename).resolve()
+            try:
+                target.relative_to(base.resolve())
+            except ValueError:
+                continue
+            if target.exists() and target.is_file():
+                return send_from_directory(str(base), filename)
+        return jsonify({'error': 'not found'}), 404
+
     @app.route('/api/slides')
     def get_slides():
         svg_dir = app.config['SVG_DIR']

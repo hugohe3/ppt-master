@@ -354,7 +354,7 @@ If the template is based on PPTX import output, briefly note:
 
 If suitable template resources already exist, use them directly instead of generating new ones:
 
-1. **Copy template**: Copy template files to the project's `templates/` directory
+1. **Copy template**: copy the spec + template SVGs into the project's `templates/`, and any bundled bitmaps into the project's `images/` (the runtime image pool, referenced as `../images/`)
 2. **Adjust colors**: Modify colors per the project design spec
 3. **Customize**: Make project-specific adjustments
 

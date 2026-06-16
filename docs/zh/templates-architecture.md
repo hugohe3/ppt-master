@@ -262,10 +262,12 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 | 用户路径指向 | Step 3 行为（按 kind 分支）|
 |---|---|
-| `kind: brand` | 复制 design_spec + logos + asset 子目录到 `<project>/templates/` |
-| `kind: layout` | 复制 design_spec + SVG roster + assets 到 `<project>/templates/` |
-| `kind: deck` | 复制 design_spec + SVG roster + logos + 全部 assets 到 `<project>/templates/` |
-| 多路径 | 按上表合成单份 `design_spec.md` + 各源的 SVG/logo 合并复制 |
+| `kind: brand` | design_spec + 非图片资产 → `<project>/templates/`；logo / 插画 / 图标**位图** → `<project>/images/` |
+| `kind: layout` | design_spec + SVG roster → `<project>/templates/`；**位图**资产 → `<project>/images/` |
+| `kind: deck` | design_spec + 模板 SVG → `<project>/templates/`；logo / 背景 / 其它**位图** → `<project>/images/` |
+| 多路径 | 按上表合成单份 `design_spec.md`；SVG 进 `templates/`、位图进 `images/` 合并复制 |
+
+> 位图统一进项目 `images/`（和 AI / 网络 / 用户图片同一个运行期图片池，SVG 里走 `../images/`）；`templates/` 只放 spec 和模板 SVG 等供 Strategist/Executor 阅读、不被直接渲染的参考材料。
 | 同类多份 | 按上节"git 冲突解决"问答，得到合成结果 |
 
 ### Strategist 八项确认在不同 kind 下的收窄
