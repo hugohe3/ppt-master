@@ -1690,6 +1690,8 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         if not img_path.exists():
             img_path = ctx.svg_dir.parent / href
         if not img_path.exists():
+            img_path = ctx.svg_dir.parent / 'templates' / href
+        if not img_path.exists():
             raise FileNotFoundError(f'External image not found: {href}')
         img_format = img_path.suffix.lstrip('.').lower()
         if img_format == 'jpeg':
@@ -1890,6 +1892,8 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
         img_path = ctx.svg_dir / href
         if not img_path.exists():
             img_path = ctx.svg_dir.parent / href
+        if not img_path.exists():
+            img_path = ctx.svg_dir.parent / 'templates' / href
         if not img_path.exists():
             raise FileNotFoundError(f'External image not found: {href}')
         img_format = img_path.suffix.lstrip('.').lower()
