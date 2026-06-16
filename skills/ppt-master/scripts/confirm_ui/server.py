@@ -69,6 +69,9 @@ CONFIRM_DIR_NAME = 'confirm_ui'
 RECOMMENDATIONS_NAME = 'recommendations.json'
 RESULT_NAME = 'result.json'
 
+# Static option universe served at /api/catalogs (canvas synced live from config).
+_CATALOGS_PATH = Path(__file__).resolve().parent / 'static' / 'catalogs.json'
+
 # Shares port 5050 with the live preview server (svg_editor/server.py). The two
 # never run at once: confirm is Step 4 and shuts down on confirm (or idle),
 # freeing the port before live preview starts at Step 6. One port = one forward
@@ -165,6 +168,41 @@ def _shutdown_existing(lock_file: Path) -> int:
     return 0
 
 
+def _build_catalogs() -> dict:
+    """Return the static catalog set with the canvas list synced live from
+    ``config.CANVAS_FORMATS`` — the single source of truth for canvas formats —
+    so the confirm page can never drift from the pipeline's real formats. The
+    set of formats and their dimensions come from config; bilingual labels and
+    use text are kept from catalogs.json (with a plain fallback for any new id).
+    """
+    data = json.loads(_CATALOGS_PATH.read_text(encoding='utf-8'))
+    try:
+        import config  # scripts/ is on sys.path (injected at import time)
+        formats = config.CANVAS_FORMATS
+    except Exception:  # any import/attr failure → serve the static canvas list
+        return data
+    existing = {
+        c.get('id'): c
+        for c in data.get('canvas', [])
+        if isinstance(c, dict) and c.get('id')
+    }
+    canvas = []
+    for cid, fmt in formats.items():
+        entry = dict(existing.get(cid, {}))
+        entry['id'] = cid
+        entry['dim'] = fmt.get('dimensions', entry.get('dim', ''))
+        if not entry.get('label'):
+            name = fmt.get('name', cid)
+            entry['label'] = name
+            entry.setdefault('label_zh', name)
+            entry.setdefault('label_en', name)
+        if not entry.get('use_en') and fmt.get('use_case'):
+            entry['use_en'] = fmt['use_case']
+        canvas.append(entry)
+    data['canvas'] = canvas
+    return data
+
+
 # --- app --------------------------------------------------------------------
 
 def create_app(
@@ -220,6 +258,15 @@ def create_app(
     @app.route('/')
     def index():
         return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/api/catalogs')
+    def get_catalogs():
+        """Serve the option universe; canvas is synced live from config.py so
+        the static catalogs.json copy can never drift from the real formats."""
+        try:
+            return jsonify(_build_catalogs())
+        except (OSError, json.JSONDecodeError) as exc:
+            return jsonify({'error': f'invalid catalogs.json: {exc}'}), 500
 
     @app.route('/api/recommendations')
     def get_recommendations():
