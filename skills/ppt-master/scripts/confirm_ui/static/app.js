@@ -500,12 +500,29 @@
         var sec = section(5, "sec_color");
         var grid = el("div", "color-grid");
         var hexInputs = {};
+        var hexSwatches = {};
+        var cardSwatchRefs = [];   // idx -> {role: swatchEl}, for live override feedback
+        var selectedIdx = -1;
 
+        function normHex(val) {
+            var v = (val || "").trim();
+            if (!/^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(v)) return null;
+            return v.charAt(0) === "#" ? v : "#" + v;
+        }
+        function paintSwatch(elem, val) {
+            var n = normHex(val);
+            elem.style.background = n || "transparent";
+            elem.classList.toggle("hex-swatch-empty", !n);
+        }
         function applyHexInputs(pal) {
-            PALETTE_ROLES.forEach(function (role) { if (hexInputs[role]) hexInputs[role].value = pal[role] || ""; });
+            PALETTE_ROLES.forEach(function (role) {
+                if (hexInputs[role]) hexInputs[role].value = pal[role] || "";
+                if (hexSwatches[role]) paintSwatch(hexSwatches[role], pal[role]);
+            });
         }
         function selectCard(idx) {
             var c = cands[idx] || {};
+            selectedIdx = idx;
             STATE.color = { name: c.name || "", palette: Object.assign({}, normPalette(c)) };
             grid.querySelectorAll(".color-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
             applyHexInputs(STATE.color.palette);
@@ -513,15 +530,18 @@
 
         cands.forEach(function (c, idx) {
             var pal = normPalette(c);
+            var refs = {};
             var card = el("div", "color-card");
             var sw = el("div", "swatches");
             PALETTE_ROLES.forEach(function (role) {
                 if (!pal[role]) return;
                 var col = el("div", "swatch-col");
                 var s = el("div", "swatch"); s.style.background = pal[role];
+                refs[role] = s;
                 col.appendChild(s); col.appendChild(el("div", "swatch-role", t("role_" + role)));
                 sw.appendChild(col);
             });
+            cardSwatchRefs[idx] = refs;
             card.appendChild(sw);
             card.appendChild(el("div", "color-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
             if (localized(c, "note")) card.appendChild(el("div", "color-note", localized(c, "note")));
@@ -536,14 +556,25 @@
         PALETTE_ROLES.forEach(function (role) {
             var wrap = el("div", "hex-cell");
             wrap.appendChild(el("div", "hex-cell-label", t("role_" + role)));
+            var line = el("div", "hex-input-line");
+            var sw = el("div", "hex-swatch hex-swatch-empty");
             var inp = document.createElement("input");
             inp.type = "text"; inp.placeholder = "#";
             inp.addEventListener("input", function () {
                 if (!STATE.color) STATE.color = { name: "custom", palette: {} };
                 if (!STATE.color.palette) STATE.color.palette = {};
                 STATE.color.palette[role] = inp.value;
+                paintSwatch(sw, inp.value);
+                // Reflect a valid override straight onto the selected card so the
+                // user sees the change in context, not just in the input row.
+                var n = normHex(inp.value);
+                if (n && selectedIdx >= 0 && cardSwatchRefs[selectedIdx] && cardSwatchRefs[selectedIdx][role]) {
+                    cardSwatchRefs[selectedIdx][role].style.background = n;
+                }
             });
-            hexInputs[role] = inp; wrap.appendChild(inp); row.appendChild(wrap);
+            hexInputs[role] = inp; hexSwatches[role] = sw;
+            line.appendChild(sw); line.appendChild(inp);
+            wrap.appendChild(line); row.appendChild(wrap);
         });
         override.appendChild(row);
         sec.appendChild(override);
