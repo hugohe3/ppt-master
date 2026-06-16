@@ -404,6 +404,8 @@ A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `we
 
 > ⚠️ **In-pipeline ai path MUST use manifest mode** — even when only 1 ai row exists. Write `images/image_prompts.json` first, then run `image_gen.py --manifest`, then `image_gen.py --render-md` to produce the `image_prompts.md` sidecar. The positional form (`image_gen.py "prompt" ...`) is reserved for **out-of-pipeline one-off testing / single-image fixups** — it skips manifest + sidecar, leaving no audit trail.
 
+> ⚠️ **Honor the confirmed image source**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — a confirmed `result.json.image_ai_path` other than `auto` wins. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. The `--manifest` command above is Path A. Full selection rule: [image-generator.md](references/image-generator.md) §7 Path Selection.
+
 Workflow:
 
 1. Extract all rows with `Status: Pending` and `Acquire Via ∈ {ai, web}` from the design spec
