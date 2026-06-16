@@ -51,7 +51,7 @@ pip install -r requirements.txt
 ```
 
 > If `pip` is not recognized, try `python -m pip install -r requirements.txt`.
-
+> or try  `pip install -r skills/ppt-master/requirements.txt`.   
 Wait for it to finish. You should see `Successfully installed ...` at the end.
 
 ---
