@@ -7,17 +7,19 @@
 ```bash
 python3 scripts/confirm_ui/server.py <project_path> --daemon --wait
 python3 scripts/confirm_ui/server.py <project_path> --daemon
-python3 scripts/confirm_ui/server.py <project_path> --daemon --port 4041
+python3 scripts/confirm_ui/server.py <project_path> --daemon --port 5051
 python3 scripts/confirm_ui/server.py <project_path> --no-browser
 python3 scripts/confirm_ui/server.py <project_path> --timeout 0   # disable idle auto-shutdown
+python3 scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 cleanup (idempotent)
 ```
 
-- Binds `127.0.0.1:4040` by default and auto-opens the browser (suppress with `--no-browser`).
+- Binds `127.0.0.1:5050` by default and auto-opens the browser (suppress with `--no-browser`).
+- **Shares port 5050 with the live preview server** (`svg_editor/server.py`). The two never run at once: confirm is Step 4, live preview is Step 6, and Step 4 always shuts this server down on exit (see `--shutdown`) so the port is free. One port = one forward rule for the whole pipeline. They still keep **separate processes and locks** (`.confirm_ui.lock` vs `.live_preview.lock`).
 - `--daemon` starts the Flask process in the background; add `--wait` in the main pipeline so the parent command returns only after the page writes a fresh `result.json`. The `--wait` budget defaults to **590 s** (`--wait-timeout`), kept under the typical 600 s tool ceiling — run the launch with a long tool timeout (≈600000 ms). On timeout the parent returns non-zero but the detached server keeps running, so the caller must re-check `result.json` once before the chat fallback (a slow user may confirm just after the wait returns).
-- Refuses to start unless `<project_path>/confirm_ui/recommendations.json` exists.
+- `--shutdown` stops a confirm server left running for this project and exits — **idempotent** (a no-op when nothing is running). Tries a graceful `/api/shutdown`, falls back to killing the recorded pid, then clears the lock. SKILL.md Step 4 runs this on every path (page-confirm or chat-fallback) so the page never lingers on the shared port before live preview starts.
+- Refuses to start unless `<project_path>/confirm_ui/recommendations.json` exists (except `--shutdown`, which needs no recommendations).
 - Per-project lock at `<project_path>/.confirm_ui.lock` — duplicate launches are refused; stale locks (dead pid) are overwritten.
 - Idle auto-shutdown after 900 s by default; `/api/shutdown` exits gracefully and releases the lock.
-- Independent of the live preview server (`svg_editor/server.py`, port 5050) in process, lock, and content model.
 
 Dependency:
 
@@ -132,7 +134,7 @@ Both files live under `<project_path>/confirm_ui/`.
 
 - Any option field may instead hold a **free-text custom string** (the user picked **Custom**); `color` / `typography` custom entries set `name: "custom"`. Image usage custom values must be concrete prose plans, not the literal string `"custom"`. The AI interprets custom text against the canonical references.
 - `image_ai_path` and `image_strategy` are omitted from `result.json` unless `image_usage` is `ai` or a custom image plan that may include generated images.
-- After the user clicks **Confirm**, the page saves `result.json` and shuts the server down (auto-close). In the default `--daemon --wait` flow, the waiting command returns and the AI reads `result.json` immediately; no second chat confirmation is required. Chat confirmation remains the fallback when the page cannot be used.
+- After the user clicks **Confirm**, the page saves `result.json` and shuts the server down (auto-close). In the default `--daemon --wait` flow, the waiting command returns and the AI reads `result.json` immediately; no second chat confirmation is required. Chat confirmation remains the fallback when the page cannot be used. Either way, Step 4 ends with a `--shutdown` cleanup so a never-confirmed page cannot keep holding port 5050 ahead of the Step 6 live preview.
 
 ## Scope
 
