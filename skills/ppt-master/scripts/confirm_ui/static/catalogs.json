@@ -389,16 +389,16 @@
       "label": "Path A",
       "label_zh": "接口后端",
       "label_en": "Path A",
-      "desc_zh": "触发条件：已配置图像后端；机制：第 5 步运行图像生成脚本。",
-      "desc_en": "IMAGE_BACKEND configured; image_gen.py runs in Step 5."
+      "desc_zh": "强制走接口后端，第 5 步运行 image_gen.py（需已配置 IMAGE_BACKEND）。",
+      "desc_en": "Force the API backend — image_gen.py runs in Step 5 (requires IMAGE_BACKEND)."
     },
     {
       "id": "host-native",
       "label": "Path B",
       "label_zh": "宿主原生工具",
       "label_en": "Path B",
-      "desc_zh": "触发条件：未配置图像后端，且当前环境提供原生图像工具；机制：直接调用宿主工具生成。",
-      "desc_en": "IMAGE_BACKEND not configured and host has a native image tool; host-native generation."
+      "desc_zh": "强制使用当前环境的原生图像工具生成（即使配置了 IMAGE_BACKEND 也跳过接口）；需宿主提供原生图像工具（Codex / Claude Code 等）。",
+      "desc_en": "Force the host's native image tool (skips the API even if IMAGE_BACKEND is set); requires a host with a native image tool (Codex / Claude Code / similar)."
     },
     {
       "id": "manual",
