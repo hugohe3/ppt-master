@@ -12,8 +12,8 @@
 
 | Source list | Read path |
 |---|---|
-| Chosen template's `design_spec.md` (read frontmatter to detect `replication_mode`) | `templates/<chosen_template>/design_spec.md` |
-| Every distinct `<basename>` in `spec_lock.md page_layouts` | `templates/<chosen_template>/<basename>.svg` |
+| Chosen template's `design_spec.md` (read frontmatter to detect `replication_mode`) | `templates/design_spec.md` |
+| Every distinct `<basename>` in `spec_lock.md page_layouts` | `templates/<basename>.svg` |
 | Every distinct chart name in `spec_lock.md page_charts` | `templates/charts/<chart_name>.svg` |
 | Chart types in `design_spec.md §VII` not covered above | `templates/charts/<chart_name>.svg` |
 
@@ -32,7 +32,7 @@ Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative
 **Resolution order (per page):**
 
 1. **Mirror-mode template** (template's `design_spec.md` frontmatter has `replication_mode: mirror`) → see §1.1 below. The page is consumed as a **visual reference**, not as a placeholder shell.
-2. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → inherit the structure of `templates/<chosen_template>/<basename>.svg` (already in context from §1.0).
+2. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → inherit the structure of `templates/<basename>.svg` (already in context from §1.0).
 3. `page_layouts` exists but **no entry** for this page → **free design**, no template inheritance.
 4. `page_layouts` section absent (legacy deck) **and** `templates/` directory exists → fall back to the page-type table below, matching by SVG filename keyword (cover/chapter/content/ending/toc). Read the matched file at first use if §1.0 batch did not cover it.
 5. No template at all → free design.
@@ -72,7 +72,7 @@ When the project's chosen template is a `mirror` template (`design_spec.md` fron
 Before generating each page, output which template is used:
 
 ```
-📝 **Template mapping**: `templates/<chosen_template>/03a_content_image_text.svg` (or "None (free design)")
+📝 **Template mapping**: `templates/03a_content_image_text.svg` (or "None (free design)")
 🎯 **Adherence rules / layout strategy**: [specific description]
 ```
 
