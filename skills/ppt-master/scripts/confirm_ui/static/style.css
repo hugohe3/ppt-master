@@ -245,6 +245,7 @@ body {
 .hex-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .hex-cell { display: flex; flex-direction: column; gap: 4px; }
 .hex-cell-label { font-size: 11px; color: var(--muted); }
+.hex-input-line { display: flex; align-items: center; gap: 6px; }
 .hex-cell input {
     width: 92px;
     border: 1px solid var(--line);
@@ -252,6 +253,19 @@ body {
     padding: 5px 8px;
     font-family: ui-monospace, monospace;
     font-size: 12.5px;
+}
+/* Live preview of the value typed into the HEX box. */
+.hex-swatch {
+    flex: none;
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 1px solid var(--line);
+}
+.hex-swatch.hex-swatch-empty {
+    /* Subtle checker so an empty / invalid value reads as "no color" */
+    background:
+        linear-gradient(45deg, var(--line) 25%, transparent 25%, transparent 75%, var(--line) 75%) 0 0 / 10px 10px,
+        var(--card);
 }
 
 /* ---- typography CJK / Latin previews ---- */
