@@ -12,6 +12,8 @@ A **visual style** is how the deck **looks** — shape language, decoration dens
 
 Each style has its own file with: shape & decoration, typography character, color-usage discipline (no HEX), texture / elevation, and the paired image-rendering. **Read only the file for the style you lock** — never glob the directory. The catalog mirrors [`image-renderings`](../image-renderings/_index.md): each style's "Paired rendering" names the illustration family that shares its aesthetic.
 
+> The **`visual_style` value is only ever a first-column `id`** (`swiss-minimal`, `editorial`, …). The "Paired rendering" column lists **§h image-rendering** names (`flat`, `minimalist-swiss`, `digital-dashboard`, …) — never lock one of those as the `visual_style`; they belong to confirmation h.
+
 ### 1.1 Corporate / product
 
 | Visual style | Character | Best for | Paired rendering |
