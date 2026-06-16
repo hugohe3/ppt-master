@@ -6,6 +6,7 @@ import io
 import math
 import re
 import base64
+from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -28,6 +29,26 @@ from .drawingml_paths import (
     PathCommand, parse_svg_path, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
 )
+
+
+def _resolve_external_image(svg_dir: Path, href: str) -> Path:
+    """Resolve a non-data-URI image href to a file on disk.
+
+    Search order: next to the SVG (``svg_output/``), the project root, the
+    project's ``images/`` (the single runtime image pool — template-bundled
+    bitmaps plus AI / web / user images all live here), then ``templates/``
+    (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
+    of these exist.
+    """
+    for candidate in (
+        svg_dir / href,
+        svg_dir.parent / href,
+        svg_dir.parent / 'images' / href,
+        svg_dir.parent / 'templates' / href,
+    ):
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f'External image not found: {href}')
 
 
 def _wrap_shape(
@@ -1686,13 +1707,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     else:
         if ctx.svg_dir is None:
             return None
-        img_path = ctx.svg_dir / href
-        if not img_path.exists():
-            img_path = ctx.svg_dir.parent / href
-        if not img_path.exists():
-            img_path = ctx.svg_dir.parent / 'templates' / href
-        if not img_path.exists():
-            raise FileNotFoundError(f'External image not found: {href}')
+        img_path = _resolve_external_image(ctx.svg_dir, href)
         img_format = img_path.suffix.lstrip('.').lower()
         if img_format == 'jpeg':
             img_format = 'jpg'
@@ -1889,13 +1904,7 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     else:
         if ctx.svg_dir is None:
             return None
-        img_path = ctx.svg_dir / href
-        if not img_path.exists():
-            img_path = ctx.svg_dir.parent / href
-        if not img_path.exists():
-            img_path = ctx.svg_dir.parent / 'templates' / href
-        if not img_path.exists():
-            raise FileNotFoundError(f'External image not found: {href}')
+        img_path = _resolve_external_image(ctx.svg_dir, href)
         img_format = img_path.suffix.lstrip('.').lower()
         if img_format == 'jpeg':
             img_format = 'jpg'
