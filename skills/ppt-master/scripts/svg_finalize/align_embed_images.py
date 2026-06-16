@@ -54,6 +54,14 @@ from typing import TYPE_CHECKING
 from urllib.parse import unquote
 from xml.etree import ElementTree as ET
 
+if __package__ in {None, ''}:
+    import types
+
+    package = types.ModuleType('svg_finalize')
+    package.__path__ = [str(Path(__file__).resolve().parent)]  # type: ignore[attr-defined]
+    sys.modules.setdefault('svg_finalize', package)
+    __package__ = 'svg_finalize'
+
 # Reuse helpers from the previous standalone modules.
 from .crop_images import crop_image_to_size, get_crop_anchor, parse_preserve_aspect_ratio
 from .embed_images import _optimize_image_bytes, get_mime_type
@@ -415,7 +423,8 @@ def align_and_embed_images_in_svg(
 # Standalone CLI (rare; the main entry point is finalize_svg.py)
 # ---------------------------------------------------------------------------
 
-def _cli() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Build the standalone diagnostic parser."""
     import argparse
     parser = argparse.ArgumentParser(
         description='Align (slice/meet) and Base64-embed all <image> refs in an SVG.',
@@ -427,11 +436,17 @@ def _cli() -> None:
                         help='Compress images before embedding')
     parser.add_argument('--max-dimension', type=int, default=None,
                         help='Downscale images larger than this on either axis')
-    args = parser.parse_args()
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the standalone diagnostic CLI."""
+    parser = build_parser()
+    args = parser.parse_args(argv)
 
     if not args.svg.exists():
         print(f'Error: file not found: {args.svg}', file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     proc, err = align_and_embed_images_in_svg(
         args.svg,
@@ -441,7 +456,8 @@ def _cli() -> None:
         max_dimension=args.max_dimension,
     )
     print(f'Processed {proc} image(s), {err} error(s)')
+    return 1 if err else 0
 
 
 if __name__ == '__main__':
-    _cli()
+    raise SystemExit(main())

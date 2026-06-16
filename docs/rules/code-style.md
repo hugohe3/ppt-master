@@ -121,6 +121,14 @@ if __name__ == "__main__":
 | Internal helpers `--help` | Module-level: `if __name__ == "__main__" and any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]): print(__doc__); raise SystemExit(0)` |
 | Output | Progress / status to **stderr**; the script's primary output (if any) to stdout |
 
+**Help and argument validation requirements**:
+
+- `-h` / `--help` must be handled by `argparse` (preferred) or an explicit early helper guard before any side effect: no directory creation, file writes, network calls, package installs, or long-running servers.
+- Help flags must never be accepted as positional values. Examples: `init --help` must not create a project named `--help`; `export --help` must not write a file named `--help`.
+- Scripts with subcommands use `argparse` subparsers. Each subcommand must provide its own help (`<script> <subcmd> --help`) and validate its own required arguments before doing work.
+- Missing required arguments and unknown flags must print a usage/error message and exit non-zero. Do not silently ignore unknown flags or continue with partial defaults.
+- For internal helper modules that are directly executable only for diagnostics, non-help invocation should either run a documented diagnostic command or print a short "use via ..." message and exit non-zero; it must not fail with an import traceback.
+
 ---
 
 ## 5. Type Hints

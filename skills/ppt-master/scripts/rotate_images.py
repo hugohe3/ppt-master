@@ -12,9 +12,9 @@ Usage:
 """
 
 
-import os
-import sys
+import argparse
 import json
+import os
 import re
 from pathlib import Path
 from typing import List, Dict, Union, Any, Optional
@@ -521,55 +521,59 @@ class ImageRotator:
 </html>
 """
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Build the command-line parser."""
+    parser = argparse.ArgumentParser(
+        description="Manage image orientation and manual rotation fixes.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Examples:
+  python3 scripts/rotate_images.py gen projects/demo/images
+  python3 scripts/rotate_images.py fix fixes.json
+  python3 scripts/rotate_images.py auto projects/demo/images
+""",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    gen = subparsers.add_parser("gen", help="Generate the visual rotation HTML tool")
+    gen.add_argument("images_directory", help="Images directory")
+
+    fix = subparsers.add_parser("fix", help="Apply rotations from a fixes JSON file")
+    fix.add_argument("fixes_json", help="Path to fixes.json")
+
+    auto = subparsers.add_parser("auto", help="Automatically fix EXIF orientation")
+    auto.add_argument("images_directory", help="Images directory")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
-    if len(sys.argv) < 2:
-        print(__doc__)
-        sys.exit(1)
-
-    command = sys.argv[1]
-    if command in {"-h", "--help", "help"}:
-        print(__doc__)
-        sys.exit(0)
-
+    parser = build_parser()
+    args = parser.parse_args(argv)
     rotator = ImageRotator()
 
-    if command == 'gen':
-        if len(sys.argv) < 3:
-            print("[ERROR] Error: images directory path is required")
-            print("Usage: python3 scripts/rotate_images.py gen <images_directory>")
-            sys.exit(1)
-
-        target_dir = sys.argv[2]
+    if args.command == 'gen':
+        target_dir = args.images_directory
         try:
             output_path = rotator.generate_html_tool(target_dir)
             print(f"[OK] HTML tool created: {output_path}")
             print(f"[LINK] Open in browser: file:///{Path(output_path).as_posix()}")
         except Exception as e:
             print(f"[ERROR] Generation failed: {e}")
-            sys.exit(1)
+            return 1
+        return 0
 
-    elif command == 'fix':
-        if len(sys.argv) < 3:
-            print("[ERROR] Error: fixes.json path is required")
-            print("Usage: python3 scripts/rotate_images.py fix <fixes.json>")
-            sys.exit(1)
-
-        json_file = sys.argv[2]
+    if args.command == 'fix':
+        json_file = args.fixes_json
         try:
             stats = rotator.apply_fixes(json_file)
             print(f"\n[DONE] Processing complete: {stats['success']} succeeded / {stats['total']} total")
         except Exception as e:
             print(f"[ERROR] Execution failed: {e}")
-            sys.exit(1)
+            return 1
+        return 0
 
-    elif command == 'auto':
-        if len(sys.argv) < 3:
-            print("[ERROR] Error: images directory path is required")
-            print("Usage: python3 scripts/rotate_images.py auto <images_directory>")
-            sys.exit(1)
-
-        target_dir = sys.argv[2]
+    if args.command == 'auto':
+        target_dir = args.images_directory
         try:
             # Only perform automatic EXIF fix
             count = rotator.auto_fix_exif(Path(target_dir))
@@ -577,12 +581,10 @@ def main() -> None:
                 print("[INFO] No images requiring automatic fix found")
         except Exception as e:
             print(f"[ERROR] Automatic fix failed: {e}")
-            sys.exit(1)
+            return 1
+        return 0
 
-    else:
-        print(f"[ERROR] Error: unknown command '{command}'")
-        print(__doc__)
-        sys.exit(1)
+    parser.error(f"Unknown command: {args.command}")
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

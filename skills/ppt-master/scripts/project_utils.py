@@ -6,6 +6,7 @@ Provides common functions for project information parsing and validation,
 reusable by other tools.
 """
 
+import argparse
 import re
 from pathlib import Path
 from datetime import datetime
@@ -438,45 +439,47 @@ def get_project_stats(project_path: str) -> Dict:
     return stats
 
 
+def build_parser() -> argparse.ArgumentParser:
+    """Build the command-line parser for the diagnostic entry point."""
+    parser = argparse.ArgumentParser(description="Inspect and validate a PPT Master project.")
+    parser.add_argument("project_path", help="Project directory")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the diagnostic CLI entry point."""
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    project_path = args.project_path
+    info = get_project_info(project_path)
+
+    print(f"\nProject Info: {info['dir_name']}")
+    print("=" * 60)
+    print(f"Project Name: {info['name']}")
+    print(f"Canvas Format: {info['format_name']} ({info['format']})")
+    print(f"Created: {info['date_formatted']}")
+    print(f"SVG Files: {info['svg_count']}")
+    print(f"README: {'Yes' if info['has_readme'] else 'No'}")
+    print(f"Design Spec: {'Yes' if info['has_spec'] else 'No'}")
+
+    print("\nValidation Results:")
+    print("-" * 60)
+    is_valid, errors, warnings = validate_project_structure(project_path)
+
+    if errors:
+        print("[ERROR]")
+        for error in errors:
+            print(f"  - {error}")
+
+    if warnings:
+        print("[WARN]")
+        for warning in warnings:
+            print(f"  - {warning}")
+
+    if is_valid and not warnings:
+        print("[OK] Project structure is complete, no issues found")
+    return 0 if is_valid else 1
+
+
 if __name__ == '__main__':
-    # Test code
-    import sys
-
-    def print_usage() -> None:
-        print("Usage: python3 project_utils.py <project_path>")
-
-    if len(sys.argv) > 1:
-        if sys.argv[1] in {'-h', '--help', 'help'}:
-            print_usage()
-            sys.exit(0)
-
-        project_path = sys.argv[1]
-        info = get_project_info(project_path)
-
-        print(f"\nProject Info: {info['dir_name']}")
-        print("=" * 60)
-        print(f"Project Name: {info['name']}")
-        print(f"Canvas Format: {info['format_name']} ({info['format']})")
-        print(f"Created: {info['date_formatted']}")
-        print(f"SVG Files: {info['svg_count']}")
-        print(f"README: {'Yes' if info['has_readme'] else 'No'}")
-        print(f"Design Spec: {'Yes' if info['has_spec'] else 'No'}")
-
-        print("\nValidation Results:")
-        print("-" * 60)
-        is_valid, errors, warnings = validate_project_structure(project_path)
-
-        if errors:
-            print("[ERROR]")
-            for error in errors:
-                print(f"  - {error}")
-
-        if warnings:
-            print("[WARN]")
-            for warning in warnings:
-                print(f"  - {warning}")
-
-        if is_valid and not warnings:
-            print("[OK] Project structure is complete, no issues found")
-    else:
-        print_usage()
+    raise SystemExit(main())
