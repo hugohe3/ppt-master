@@ -57,6 +57,7 @@ if str(_ROOT_SCRIPTS_DIR) not in sys.path:
 
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
+    find_free_port as _find_free_port,
     process_alive as _process_alive,
     read_lock as _read_lock,
     release_lock as _release_lock,
@@ -856,12 +857,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         logger.error('%s is not a directory', svg_output)
         return 1
 
+    # Pick a free port: another project's preview/confirm server may already
+    # hold the default, so bind the next free one instead of crashing — each
+    # project then serves its own data on its own port (no cross-project mix-up).
+    port = _find_free_port(args.port)
+
     # Per-project mutual exclusion. The major driver of orphaned servers is
     # --live mode (which used to disable idle timeout entirely) combined with
     # silent restarts; refusing duplicate launches catches the accumulation
     # at its source. Stale locks (dead pid) are overwritten by _claim_lock.
     lock_file = project_path / LOCK_FILE_NAME
-    existing = _claim_lock(lock_file, args.port)
+    existing = _claim_lock(lock_file, port)
     if existing:
         existing_pid = existing.get('pid', '?')
         existing_port = existing.get('port', '?')
@@ -903,7 +909,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         lock_file=lock_file,
     )
 
-    url = f'http://localhost:{args.port}'
+    url = f'http://localhost:{port}'
     if not args.no_browser:
         webbrowser.open(url)
 
@@ -913,7 +919,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     logger.info('project: %s', project_path)
     logger.info('svg_output: %s (%d slides)', svg_output, svg_count)
     logger.info('idle timeout: %ds (0 = disabled)', idle_timeout)
-    app.run(host='127.0.0.1', port=args.port, debug=False)
+    app.run(host='127.0.0.1', port=port, debug=False)
     return 0
 
 

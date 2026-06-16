@@ -52,6 +52,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
+    find_free_port as _find_free_port,
     process_alive as _process_alive,
     read_lock as _read_lock,
     release_lock as _release_lock,
@@ -387,12 +388,15 @@ def main(argv: Optional[list[str]] = None) -> int:
         log_path = confirm_dir / 'server.log'
         result_file = confirm_dir / RESULT_NAME
         started_at = time.time()
+        # Pick a free port up front (another project may hold the default) and
+        # pass the concrete port to the child so the reported URL is accurate.
+        port = _find_free_port(args.port)
         cmd = [
             sys.executable,
             str(Path(__file__).resolve()),
             str(project_path),
             '--port',
-            str(args.port),
+            str(port),
             '--timeout',
             str(args.timeout),
         ]
@@ -413,7 +417,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 creationflags=creationflags,
                 **popen_kwargs,
             )
-        url = f'http://localhost:{args.port}'
+        url = f'http://localhost:{port}'
         logger.info('started confirm UI in background: %s (pid=%s)', url, proc.pid)
         logger.info('log: %s', log_path)
         if args.wait:
