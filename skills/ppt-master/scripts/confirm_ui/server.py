@@ -20,7 +20,7 @@ Usage:
 
 Examples:
     python3 scripts/confirm_ui/server.py projects/my-project
-    python3 scripts/confirm_ui/server.py projects/my-project --port 4041
+    python3 scripts/confirm_ui/server.py projects/my-project --port 5051
     python3 scripts/confirm_ui/server.py projects/my-project --no-browser
     python3 scripts/confirm_ui/server.py projects/my-project --daemon --wait
 
@@ -38,6 +38,7 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.request
 import webbrowser
 from pathlib import Path
 from typing import Optional
@@ -68,7 +69,11 @@ CONFIRM_DIR_NAME = 'confirm_ui'
 RECOMMENDATIONS_NAME = 'recommendations.json'
 RESULT_NAME = 'result.json'
 
-DEFAULT_PORT = 4040
+# Shares port 5050 with the live preview server (svg_editor/server.py). The two
+# never run at once: confirm is Step 4 and shuts down on confirm (or idle),
+# freeing the port before live preview starts at Step 6. One port = one forward
+# rule for the whole pipeline. They still keep separate processes and locks.
+DEFAULT_PORT = 5050
 
 # Default --wait budget, kept just under the 600s Bash-tool ceiling so the
 # parent (waiting) command returns before the calling harness kills it. The
@@ -113,6 +118,51 @@ def _wait_for_result(
             return 124
 
         time.sleep(0.5)
+
+
+def _shutdown_existing(lock_file: Path) -> int:
+    """Stop a confirm server left running for this project (idempotent).
+
+    Step 4 always calls this on exit so the page never lingers on the shared
+    port 5050 — whether the user clicked **Confirm** (the page already shut the
+    server down) or replied in chat instead (the server is still up). Tries a
+    graceful ``/api/shutdown`` first, falls back to killing the recorded pid,
+    then clears the lock. A no-op when nothing is running.
+    """
+    existing = _read_lock(lock_file)
+    if not existing:
+        logger.info('no confirm server running — nothing to stop')
+        return 0
+    pid = int(existing.get('pid', 0) or 0)
+    port = existing.get('port')
+    if not _process_alive(pid):
+        _release_lock(lock_file)
+        logger.info('confirm server already stopped; cleared stale lock')
+        return 0
+    # Graceful first: the server flushes and releases its own lock.
+    if port:
+        try:
+            req = urllib.request.Request(
+                f'http://127.0.0.1:{port}/api/shutdown',
+                data=b'{"reason": "step4-cleanup"}',
+                headers={'Content-Type': 'application/json'},
+                method='POST',
+            )
+            urllib.request.urlopen(req, timeout=3)
+        except OSError:
+            pass  # server may already be exiting; fall through to the kill path
+    for _ in range(20):  # up to ~2s for the graceful exit to land
+        if not _process_alive(pid):
+            break
+        time.sleep(0.1)
+    if _process_alive(pid):
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except OSError:
+            pass
+    _release_lock(lock_file)
+    logger.info('confirm server stopped (pid=%s)', pid)
+    return 0
 
 
 # --- app --------------------------------------------------------------------
@@ -235,6 +285,12 @@ def build_parser() -> argparse.ArgumentParser:
         '--timeout', type=int, default=900,
         help='Server idle timeout in seconds (default: 900; 0 = disabled)',
     )
+    parser.add_argument(
+        '--shutdown', action='store_true',
+        help='Stop a confirm server left running for this project, then exit '
+             '(idempotent). Run at the end of Step 4 so the page never lingers '
+             'on the shared port before live preview starts.',
+    )
     return parser
 
 
@@ -252,6 +308,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not project_path.is_dir():
         logger.error('%s is not a directory', project_path)
         return 1
+
+    # Step 4 cleanup: stop any lingering confirm server and exit. Independent of
+    # recommendations.json (the page may never have been confirmed).
+    if args.shutdown:
+        return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
     rec_file = project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME
     if not rec_file.exists():
