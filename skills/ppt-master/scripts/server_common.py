@@ -9,7 +9,7 @@ cross-platform process-liveness check and the claim/read/release lock logic so
 the two servers cannot drift apart.
 
 Usage:
-    from server_common import process_alive, read_lock, claim_lock, release_lock
+    from server_common import process_alive, read_lock, claim_lock, release_lock, find_free_port
 
 Dependencies:
     None (only uses standard library)
@@ -17,8 +17,27 @@ Dependencies:
 
 import json
 import os
+import socket
 from pathlib import Path
 from typing import Optional
+
+
+def find_free_port(preferred: int, host: str = '127.0.0.1', span: int = 50) -> int:
+    """Return ``preferred`` if it is bindable, else the next free port within
+    ``span``. Lets a new project's UI server coexist with another project's
+    server already holding the default port, instead of crashing on bind — each
+    project ends up on its own port serving its own data. Falls back to
+    ``preferred`` if the whole span is taken (let the caller's bind surface it).
+    """
+    for port in range(preferred, preferred + span):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                probe.bind((host, port))
+                return port
+            except OSError:
+                continue
+    return preferred
 
 
 def process_alive(pid: int) -> bool:
