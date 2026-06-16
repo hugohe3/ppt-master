@@ -5,6 +5,7 @@ PPT Master - Error Message Helper
 Provides user-friendly error messages and specific fix suggestions.
 """
 
+import argparse
 from typing import Dict, List, Optional
 
 
@@ -419,28 +420,45 @@ class ErrorHelper:
             print("-" * 80)
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Build the command-line parser."""
+    parser = argparse.ArgumentParser(
+        description="Look up PPT Master error messages and suggested fixes.",
+    )
+    parser.add_argument(
+        "error_type",
+        nargs="?",
+        choices=sorted(ErrorHelper.ERROR_SOLUTIONS),
+        help="Error type to explain",
+    )
+    parser.add_argument(
+        "context",
+        nargs="*",
+        metavar="key=value",
+        help="Optional context values used by templates",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point for error lookup."""
-    import sys
+    parser = build_parser()
+    args = parser.parse_args(argv)
 
-    if len(sys.argv) > 1:
-        error_type = sys.argv[1]
-        if error_type in {'-h', '--help', 'help'}:
-            ErrorHelper.print_help()
-            return
-
-        context = {}
-
-        # Parse context parameters
-        for arg in sys.argv[2:]:
-            if '=' in arg:
-                key, value = arg.split('=', 1)
-                context[key] = value
-
-        print(ErrorHelper.format_error_message(error_type, context))
-    else:
+    if not args.error_type:
         ErrorHelper.print_help()
+        return 0
+
+    context = {}
+    for item in args.context:
+        if '=' not in item:
+            parser.error(f"context values must use key=value syntax: {item}")
+        key, value = item.split('=', 1)
+        context[key] = value
+
+    print(ErrorHelper.format_error_message(args.error_type, context))
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

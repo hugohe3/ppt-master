@@ -11,6 +11,7 @@ Usage:
     python3 scripts/batch_validate.py examples projects
 """
 
+import argparse
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -254,37 +255,44 @@ class BatchValidator:
         print(f"\n[REPORT] Validation report exported: {output_file}")
 
 
-def print_usage() -> None:
-    """Print CLI usage information."""
-    print("PPT Master - Batch Project Validation Tool\n")
-    print("Usage:")
-    print("  python3 scripts/batch_validate.py <directory>")
-    print("  python3 scripts/batch_validate.py <dir1> <dir2> ...")
-    print("  python3 scripts/batch_validate.py --all")
-    print("\nExamples:")
-    print("  python3 scripts/batch_validate.py examples")
-    print("  python3 scripts/batch_validate.py projects")
-    print("  python3 scripts/batch_validate.py examples projects")
-    print("  python3 scripts/batch_validate.py --all")
+def build_parser() -> argparse.ArgumentParser:
+    """Build the command-line parser."""
+    parser = argparse.ArgumentParser(
+        description="Validate one or more PPT Master project directories.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Examples:
+  python3 scripts/batch_validate.py examples
+  python3 scripts/batch_validate.py projects
+  python3 scripts/batch_validate.py examples projects
+  python3 scripts/batch_validate.py --all
+""",
+    )
+    parser.add_argument("directories", nargs="*", help="Directories to scan")
+    parser.add_argument("--all", action="store_true", help="Validate examples and projects")
+    parser.add_argument("--export", action="store_true", help="Write a validation report")
+    parser.add_argument(
+        "--output",
+        default="validation_report.txt",
+        help="Report path when --export is used",
+    )
+    return parser
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
-    if len(sys.argv) < 2:
-        print_usage()
-        sys.exit(0)
-
-    if sys.argv[1] in {"-h", "--help", "help"}:
-        print_usage()
-        sys.exit(0)
+    parser = build_parser()
+    args = parser.parse_args(argv)
 
     validator = BatchValidator()
 
-    # Process arguments
-    if '--all' in sys.argv:
+    if args.all:
         directories = ['examples', 'projects']
     else:
-        directories = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
+        directories = args.directories
+
+    if not directories:
+        parser.print_help()
+        return 0
 
     # Validate each directory
     for directory in directories:
@@ -297,22 +305,16 @@ def main() -> None:
     validator.print_summary()
 
     # Export report (if specified)
-    if '--export' in sys.argv:
-        output_file = 'validation_report.txt'
-        if '--output' in sys.argv:
-            idx = sys.argv.index('--output')
-            if idx + 1 < len(sys.argv):
-                output_file = sys.argv[idx + 1]
-        validator.export_report(output_file)
+    if args.export:
+        validator.export_report(args.output)
 
     # Return exit code
     if validator.summary['has_errors'] > 0:
-        sys.exit(1)
+        return 1
     elif validator.summary['has_warnings'] > 0:
-        sys.exit(2)
-    else:
-        sys.exit(0)
+        return 2
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

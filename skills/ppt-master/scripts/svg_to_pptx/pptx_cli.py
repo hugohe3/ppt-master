@@ -9,6 +9,14 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
+if __package__ in {None, ''}:
+    import types
+
+    package = types.ModuleType('svg_to_pptx')
+    package.__path__ = [str(Path(__file__).resolve().parent)]  # type: ignore[attr-defined]
+    sys.modules.setdefault('svg_to_pptx', package)
+    __package__ = 'svg_to_pptx'
+
 from .pptx_dimensions import CANVAS_FORMATS, get_project_info
 from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
@@ -55,7 +63,7 @@ def _recorded_narration_on_click_slides(
     return blocked
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the SVG to PPTX conversion tool."""
     transition_choices = (
         ['none'] + (list(TRANSITIONS.keys()) if TRANSITIONS
@@ -239,12 +247,12 @@ Recorded narration:
                         help='Parallel workers for SVG→PNG pre-rendering. '
                              'Default: min(cpu, pages, 8). Set 1 for sequential.')
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     project_path = Path(args.project_path)
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
-        sys.exit(1)
+        return 1
 
     try:
         project_info = get_project_info(str(project_path))
@@ -296,7 +304,7 @@ Recorded narration:
     ref_files = native_files or legacy_files
     if not ref_files:
         print("Error: No SVG files found")
-        sys.exit(1)
+        return 1
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -343,7 +351,7 @@ Recorded narration:
                 f"Error: Recorded narration directory does not exist: {narration_audio_dir}",
                 file=sys.stderr,
             )
-            sys.exit(1)
+            return 1
         narration_audio = find_narration_files(narration_audio_dir, ref_files)
         if verbose:
             print(f"  Narration audio directory: {narration_audio_dir}")
@@ -361,7 +369,7 @@ Recorded narration:
                     print(f"  Missing audio for: {stem}", file=sys.stderr)
                 if len(missing) > 20:
                     print(f"  ... and {len(missing) - 20} more", file=sys.stderr)
-                sys.exit(1)
+                return 1
             unreadable = [
                 f"{stem}: {audio_path}"
                 for stem, audio_path in sorted(narration_audio.items())
@@ -377,7 +385,7 @@ Recorded narration:
                     print(f"  {item}", file=sys.stderr)
                 if len(unreadable) > 20:
                     print(f"  ... and {len(unreadable) - 20} more", file=sys.stderr)
-                sys.exit(1)
+                return 1
         elif narration_audio_dir_arg and verbose:
             missing = [path.stem for path in ref_files if path.stem not in narration_audio]
             if missing:
@@ -392,13 +400,13 @@ Recorded narration:
             config_path = project_path / config_path
         if not config_path.exists():
             print(f"Error: Animation config does not exist: {config_path}")
-            sys.exit(1)
+            return 1
 
     try:
         animation_config = load_animation_config(project_path, args.animation_config)
     except Exception as exc:
         print(f"Error: Failed to load animation config: {exc}")
-        sys.exit(1)
+        return 1
     if animation_config and verbose:
         config_label = args.animation_config or str(project_path / 'animations.json')
         print(f"  Animation config: {config_label}")
@@ -473,7 +481,7 @@ Recorded narration:
                 print(f"  on-click trigger: {slide}", file=sys.stderr)
             if len(on_click_slides) > 20:
                 print(f"  ... and {len(on_click_slides) - 20} more", file=sys.stderr)
-            sys.exit(1)
+            return 1
 
     if args.no_cache:
         cache_dir: Path | None = None
@@ -600,4 +608,8 @@ Recorded narration:
             if verbose:
                 print(f"  [warn] cache cleanup skipped: {exc}")
 
-    sys.exit(0 if success else 1)
+    return 0 if success else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -10,6 +10,7 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import shutil
@@ -745,89 +746,71 @@ class ProjectManager:
         }
 
 
-def print_usage() -> None:
-    """Print CLI usage information from the module docstring."""
-    print(__doc__)
+def build_parser() -> argparse.ArgumentParser:
+    """Build the command-line parser."""
+    parser = argparse.ArgumentParser(
+        description="PPT Master project management helpers.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Examples:
+  python3 scripts/project_manager.py init demo --format ppt169
+  python3 scripts/project_manager.py import-sources projects/demo file.md --move
+  python3 scripts/project_manager.py validate projects/demo
+  python3 scripts/project_manager.py info projects/demo
+""",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    init = subparsers.add_parser("init", help="Create a project directory")
+    init.add_argument("project_name", help="Project name")
+    init.add_argument("--format", default="ppt169", help="Canvas format (default: ppt169)")
+    init.add_argument("--dir", default=None, help="Base directory for the project")
+
+    import_sources = subparsers.add_parser(
+        "import-sources",
+        help="Import source files or URLs into a project",
+    )
+    import_sources.add_argument("project_path", help="Project directory")
+    import_sources.add_argument("sources", nargs="+", help="Source files or URLs")
+    mode = import_sources.add_mutually_exclusive_group()
+    mode.add_argument("--move", action="store_true", help="Move local source files")
+    mode.add_argument("--copy", action="store_true", help="Copy local source files")
+
+    validate = subparsers.add_parser("validate", help="Validate a project directory")
+    validate.add_argument("project_path", help="Project directory")
+
+    info = subparsers.add_parser("info", help="Print project metadata")
+    info.add_argument("project_path", help="Project directory")
+    return parser
 
 
-def parse_init_args(argv: list[str]) -> tuple[str, str, str | None]:
-    """Parse arguments for the `init` subcommand."""
-    if len(argv) < 3:
-        raise ValueError("Project name is required")
-
-    project_name = argv[2]
-    canvas_format = "ppt169"
-    base_dir = None
-
-    i = 3
-    while i < len(argv):
-        if argv[i] == "--format" and i + 1 < len(argv):
-            canvas_format = argv[i + 1]
-            i += 2
-        elif argv[i] == "--dir" and i + 1 < len(argv):
-            base_dir = argv[i + 1]
-            i += 2
-        else:
-            i += 1
-
-    return project_name, canvas_format, base_dir
-
-
-def parse_import_args(argv: list[str]) -> tuple[str, list[str], bool, bool]:
-    """Parse arguments for the `import-sources` subcommand."""
-    if len(argv) < 4:
-        raise ValueError("Project path and at least one source are required")
-
-    project_path = argv[2]
-    move = False
-    copy = False
-    sources: list[str] = []
-
-    for arg in argv[3:]:
-        if arg == "--move":
-            move = True
-        elif arg == "--copy":
-            copy = True
-        else:
-            sources.append(arg)
-
-    if move and copy:
-        raise ValueError("--move and --copy are mutually exclusive")
-
-    return project_path, sources, move, copy
-
-
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI entry point."""
-    if len(sys.argv) < 2:
-        print_usage()
-        sys.exit(1)
-
-    # Help anywhere — top-level or after a subcommand (e.g. `init --help`) —
-    # prints usage and exits; never treat a help flag as a positional argument.
-    if any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]):
-        print_usage()
-        sys.exit(0)
-
-    command = sys.argv[1]
-
+    parser = build_parser()
+    args = parser.parse_args(argv)
     manager = ProjectManager()
 
     try:
-        if command == "init":
-            project_name, canvas_format, base_dir = parse_init_args(sys.argv)
-            project_path = manager.init_project(project_name, canvas_format, base_dir=base_dir)
+        if args.command == "init":
+            project_path = manager.init_project(
+                args.project_name,
+                args.format,
+                base_dir=args.dir,
+            )
             print(f"[OK] Project initialized: {project_path}")
             print("Next:")
             print("1. Put source files into sources/ (or use import-sources)")
             print("2. Save your design spec to the project root")
             print("3. Generate SVG files into svg_output/")
-            return
+            return 0
 
-        if command == "import-sources":
-            project_path, sources, move, copy = parse_import_args(sys.argv)
-            summary = manager.import_sources(project_path, sources, move=move, copy=copy)
-            print(f"[OK] Imported sources into: {project_path}")
+        if args.command == "import-sources":
+            summary = manager.import_sources(
+                args.project_path,
+                args.sources,
+                move=args.move,
+                copy=args.copy,
+            )
+            print(f"[OK] Imported sources into: {args.project_path}")
             if summary["archived"]:
                 print("\nArchived originals / URL records:")
                 for item in summary["archived"]:
@@ -848,13 +831,10 @@ def main() -> None:
                 print("\nSkipped:")
                 for item in summary["skipped"]:
                     print(f"  - {item}")
-            return
+            return 0
 
-        if command == "validate":
-            if len(sys.argv) < 3:
-                raise ValueError("Project path is required")
-
-            project_path = sys.argv[2]
+        if args.command == "validate":
+            project_path = args.project_path
             is_valid, errors, warnings = manager.validate_project(project_path)
 
             print(f"\nProject validation: {project_path}")
@@ -876,14 +856,11 @@ def main() -> None:
                 print("\n[OK] Project structure is valid, with warnings.")
             else:
                 print("\n[ERROR] Project structure is invalid.")
-                sys.exit(1)
-            return
+                return 1
+            return 0
 
-        if command == "info":
-            if len(sys.argv) < 3:
-                raise ValueError("Project path is required")
-
-            project_path = sys.argv[2]
+        if args.command == "info":
+            project_path = args.project_path
             info = manager.get_project_info(project_path)
 
             print(f"\nProject info: {info['name']}")
@@ -896,14 +873,13 @@ def main() -> None:
             print(f"Source count: {info['source_count']}")
             print(f"Canvas format: {info['canvas_format']}")
             print(f"Created: {info['create_date']}")
-            return
+            return 0
 
-        raise ValueError(f"Unknown command: {command}")
+        parser.error(f"Unknown command: {args.command}")
     except Exception as exc:
         print(f"[ERROR] {exc}")
-        print_usage()
-        sys.exit(1)
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

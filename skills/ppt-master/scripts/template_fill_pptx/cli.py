@@ -8,6 +8,20 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+if __package__ in {None, ''}:
+    import types
+
+    package_dir = Path(__file__).resolve().parent
+    while str(package_dir) in sys.path:
+        sys.path.remove(str(package_dir))
+    scripts_dir = Path(__file__).resolve().parents[1]
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    package = types.ModuleType("template_fill_pptx")
+    package.__path__ = [str(package_dir)]  # type: ignore[attr-defined]
+    sys.modules.setdefault("template_fill_pptx", package)
+    __package__ = "template_fill_pptx"
+
 from .analyzer import analyze_pptx
 from .applier import apply_plan
 from .checker import check_plan, print_check_report
@@ -162,3 +176,7 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.print_help()
     return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

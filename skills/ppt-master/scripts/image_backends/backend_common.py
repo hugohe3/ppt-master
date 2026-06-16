@@ -5,10 +5,10 @@ Shared helpers for image generation backends.
 
 import sys
 
-if __name__ == "__main__" and any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]):
+if __name__ == "__main__":
     print(__doc__)
     print("This is an internal helper module used by image_gen.py backends.")
-    raise SystemExit(0)
+    raise SystemExit(0 if any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]) else 1)
 
 import io
 import os
