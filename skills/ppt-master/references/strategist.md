@@ -211,7 +211,17 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 > **Ramp, not a fixed menu.** All sizes derive from the `body` baseline as a ratio. `spec_lock.md typography` declares `body` plus the slots this deck uses (`title` / `subtitle` / `annotation` by default; add `cover_title` / `hero_number` / `chart_annotation` as needed). Executor may pick any intermediate px within a role's ratio band.
 
-Baseline choice follows **content density**, not style. Common: `18px` (dense) / `24px` (relaxed). Other integers are fine — `16px` for chart-heavy, `20-22px` for medium, `28-32px` for poster/cover.
+Baseline scales with **canvas height first, then content density** — the `18`/`24px` figures below anchor to a 720-tall 16:9 canvas (≈2.5–3.3% of height); hold that proportion on taller canvases, never carrying a 16:9 number onto a larger one. Within a canvas, density picks the point in its band (chart-heavy low · medium mid · relaxed / poster / cover high), relative to that canvas's anchor, not a fixed 16:9 px.
+
+| Canvas | Height | Body baseline (dense–relaxed) |
+|---|---|---|
+| PPT 16:9 / 4:3 | 720 / 768 | 18–24 |
+| Xiaohongshu | 1242×1660 | 40–55 |
+| WeChat / IG 1:1 | 1080×1080 | 27–36 |
+| Story / Portrait | 1080×1920 | 48–64 |
+| A4 | 1240×1754 | 44–58 |
+
+> **Canvas drives the baseline — re-derive on change, never carry.** The body baseline is a function of the *confirmed* canvas (item a), not the recommended one. If the user overrides the recommended canvas in confirmation, recompute the baseline (and therefore the whole ramp) for the new canvas before writing `spec_lock.md`: the `body_size` in `recommendations.json` was sized for the recommended canvas and is stale the moment the canvas changes.
 
 | Common recommendation | Points per Page | Body Baseline | Suitable Scenarios |
 |----------------|----------------|---------------|-------------------|
