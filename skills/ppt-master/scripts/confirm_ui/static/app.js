@@ -445,6 +445,19 @@
         return spec.candidates || spec.options || [];
     }
 
+    function usesCustomImagePlanValue(value) {
+        var ids = (CAT.image_usage || []).map(function (item) { return item.id; });
+        return value && ids.indexOf(value) === -1;
+    }
+
+    function customImagePlanHasAiSignal() {
+        return imageStrategyCandidates().length > 0 || !!recId("image_ai_path");
+    }
+
+    function needsGeneratedImagesForUsage(value) {
+        return value === "ai" || (usesCustomImagePlanValue(value) && customImagePlanHasAiSignal());
+    }
+
     function imageStrategySelectedIndex() {
         var spec = imageStrategySpec();
         var idx = spec.selected || 0;
@@ -711,11 +724,10 @@
         var strategyGrid = el("div", "font-grid");
         var strategyCands = imageStrategyCandidates();
         function usesCustomImagePlan() {
-            var ids = (CAT.image_usage || []).map(function (item) { return item.id; });
-            return STATE.image_usage && ids.indexOf(STATE.image_usage) === -1;
+            return usesCustomImagePlanValue(STATE.image_usage);
         }
         function needsGeneratedImages() {
-            return STATE.image_usage === "ai" || usesCustomImagePlan();
+            return needsGeneratedImagesForUsage(STATE.image_usage);
         }
         function refreshAiControls() {
             var needsAiPath = needsGeneratedImages();
@@ -871,8 +883,7 @@
     function confirm() {
         var btn = document.getElementById("btn-confirm");
         var payload = Object.assign({}, STATE);
-        var imageUsageIds = (CAT.image_usage || []).map(function (item) { return item.id; });
-        var customImagePlan = payload.image_usage && imageUsageIds.indexOf(payload.image_usage) === -1;
+        var customImagePlan = usesCustomImagePlanValue(payload.image_usage);
         if (payload.image_usage === "custom" || (customImagePlan && !String(payload.image_usage).trim())) {
             document.getElementById("confirm-status").textContent = t("image_usage_custom_required");
             var customImageInput = document.querySelector(".image-usage-custom-input");
@@ -880,7 +891,7 @@
             return;
         }
         if (customImagePlan) payload.image_usage = String(payload.image_usage).trim();
-        if (payload.image_usage !== "ai" && !customImagePlan) {
+        if (!needsGeneratedImagesForUsage(payload.image_usage)) {
             delete payload.image_ai_path;
             delete payload.image_strategy;
         }
