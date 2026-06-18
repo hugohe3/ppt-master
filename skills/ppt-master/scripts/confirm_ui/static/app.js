@@ -65,7 +65,7 @@
             sample_cjk: "数字化转型战略",
             sample_latin: "Digital Transformation",
             style_preview_label: "Overall impression (color + typography)",
-            style_preview_body: "Background, primary and body-text colors shown together with the chosen heading and body fonts — a rough feel, not a slide layout.",
+            style_preview_body: "· rough feel only, not the actual slide layout",
             mode_continuous_desc: "Generate the whole deck in one pass.",
             mode_split_desc: "Stop after the spec; resume SVG generation in a fresh window.",
             refine_off_desc: "Spec is written in one go; the pipeline auto-proceeds.",
@@ -130,7 +130,7 @@
             sample_cjk: "数字化转型战略",
             sample_latin: "Digital Transformation",
             style_preview_label: "整体形象（配色 + 字体）",
-            style_preview_body: "背景色、主色与正文色，搭配所选标题与正文字体的整体感觉——只是大致形象，不代表实际版式。",
+            style_preview_body: "· 仅大致形象，非实际版式",
             mode_continuous_desc: "一次性连续生成整份演示文稿。",
             mode_split_desc: "写完设计规范后停止，另开窗口继续生成页面。",
             refine_off_desc: "设计规范一次写完，流程自动继续。",
@@ -749,8 +749,15 @@
     // preview is the live-preview server's job (Step 6).
     function renderStylePreview(host) {
         var wrap = el("div", "style-preview");
-        wrap.appendChild(el("div", "style-preview-label", t("style_preview_label")));
+        var label = el("div", "style-preview-label");
+        label.appendChild(el("span", "spl-title", t("style_preview_label")));
+        // The "rough feel, not a slide layout" caveat sits in the label in the
+        // UI font — never rendered in the candidate's body font, so it cannot
+        // pose as sample content.
+        label.appendChild(el("span", "spl-note", t("style_preview_body")));
+        wrap.appendChild(label);
         var card = el("div", "style-preview-card");
+        var textcol = el("div", "sp-textcol");
         var title = el("div", "sp-title");
         var titleCjk = el("span", "sp-title-cjk");
         var titleLat = el("span", "sp-title-lat");
@@ -762,17 +769,18 @@
         var bodyLat = el("span", "sp-body-lat");
         bodyWrap.appendChild(bodyCjk); bodyWrap.appendChild(bodyLat);
         bodyRow.appendChild(accentBar); bodyRow.appendChild(bodyWrap);
+        textcol.appendChild(title); textcol.appendChild(bodyRow);
         var chip = el("div", "sp-chip");
         var chipDot = el("span", "sp-chip-dot");
         var chipLabel = el("span", "sp-chip-label");
         chip.appendChild(chipDot); chip.appendChild(chipLabel);
-        card.appendChild(title); card.appendChild(bodyRow); card.appendChild(chip);
+        card.appendChild(textcol); card.appendChild(chip);
         wrap.appendChild(card);
-        // The "rough feel, not a slide layout" caveat is a caption in the UI
-        // font — not rendered in the candidate's body font, so it never poses
-        // as sample content.
-        wrap.appendChild(el("div", "sp-caption", t("style_preview_body")));
         host.appendChild(wrap);
+        // Pin the strip just under the sticky topbar so it stays visible while
+        // the user scrolls through the color / icon / typography sections.
+        var topbar = document.getElementById("topbar");
+        if (topbar) wrap.style.top = topbar.offsetHeight + "px";
 
         function paint() {
             var pal = (STATE.color && STATE.color.palette) || {};
@@ -926,10 +934,15 @@
         renderPages(host);
         renderAudience(host);
         renderStyle(host);
-        renderColor(host);
-        renderIcons(host);
-        renderTypography(host);
-        renderStylePreview(host);
+        // Group the preview with the three sections it reflects so its sticky
+        // scope ends when typography scrolls past — it does not linger over the
+        // image / mode / refine sections below.
+        var styleGroup = el("div", "style-group");
+        renderStylePreview(styleGroup);
+        renderColor(styleGroup);
+        renderIcons(styleGroup);
+        renderTypography(styleGroup);
+        host.appendChild(styleGroup);
         renderImages(host);
         renderMode(host);
         renderRefine(host);
