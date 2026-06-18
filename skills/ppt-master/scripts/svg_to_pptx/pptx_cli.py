@@ -17,7 +17,7 @@ if __package__ in {None, ''}:
     sys.modules.setdefault('svg_to_pptx', package)
     __package__ = 'svg_to_pptx'
 
-from .pptx_dimensions import CANVAS_FORMATS, get_project_info
+from .pptx_dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
 from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
 from .pptx_narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
@@ -333,6 +333,28 @@ Recorded narration:
         legacy_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
+
+    # Honor the actual SVG pixels over a stale project-recorded format. The
+    # canvas_format read from project init can disagree with what the Executor
+    # actually drew — e.g. a mirror template imported at 2560×1440 while the
+    # project was initialized as ppt169 (1280×720). When the first SVG's real
+    # viewBox doesn't match the recorded format's dimensions, drop the format
+    # so the builder sizes the slide by pixels (custom_pixels path). Standard
+    # decks match exactly, so this only changes behavior on the conflict case.
+    # An explicit --format always wins and is never second-guessed.
+    if args.format is None and canvas_format:
+        fmt_info = CANVAS_FORMATS.get(canvas_format)
+        actual_dims = get_viewbox_dimensions(ref_files[0])
+        if fmt_info and actual_dims:
+            fmt_dims = (fmt_info.get('width'), fmt_info.get('height'))
+            if fmt_dims != actual_dims:
+                if verbose:
+                    print(
+                        f"  Recorded format '{canvas_format}' "
+                        f"({fmt_dims[0]}×{fmt_dims[1]}) differs from SVG viewBox "
+                        f"({actual_dims[0]}×{actual_dims[1]}); exporting by SVG pixels"
+                    )
+                canvas_format = None
 
     enable_notes = not args.no_notes
     notes: dict[str, str] = {}
