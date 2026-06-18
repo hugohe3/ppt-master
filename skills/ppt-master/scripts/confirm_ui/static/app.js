@@ -52,6 +52,7 @@
             font_body: "Body",
             font_body_size: "Body baseline size",
             font_body_size_hint: "All type sizes derive from this body baseline.",
+            body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
             custom_typography: "Custom typography",
             custom_typography_placeholder: "Type your font plan, e.g. Heading: Georgia + KaiTi; Body: Microsoft YaHei + Arial…",
             role_background: "bg",
@@ -117,6 +118,7 @@
             font_body: "正文",
             font_body_size: "正文基准字号",
             font_body_size_hint: "所有字号按这个正文基准推导。",
+            body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
             custom_typography: "自定义字体方案",
             custom_typography_placeholder: "输入字体方案，如：标题用楷体；正文用微软雅黑…",
             role_background: "背景",
@@ -472,7 +474,8 @@
     function renderCanvas(host) {
         var sec = section(1, "sec_canvas");
         enumField(sec, CAT.canvas, recOrFirst("canvas", CAT.canvas),
-            function () { return STATE.canvas; }, function (v) { STATE.canvas = v; }, { allowCustom: true });
+            function () { return STATE.canvas; },
+            function (v) { STATE.canvas = v; refreshBodySizeHint(); }, { allowCustom: true });
         host.appendChild(sec);
     }
 
@@ -523,6 +526,18 @@
     // Replaced when the combined color+typography preview mounts; the color and
     // typography sections call it after every change so the preview stays live.
     var refreshStylePreview = function () {};
+    // Replaced when the typography section mounts; the canvas section calls it so
+    // the body-size hint tracks the chosen canvas height.
+    var refreshBodySizeHint = function () {};
+
+    // Canvas height (viewBox user units) parsed from a catalog `dim` like
+    // "1242×1660" or from a custom canvas string containing WxH; null if unknown.
+    function canvasHeight(canvasVal) {
+        var dim = null;
+        (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
+        var m = String(dim || canvasVal || "").match(/(\d{2,5})\s*[×xX*]\s*(\d{2,5})/);
+        return m ? parseInt(m[2], 10) : null;
+    }
 
     function renderColor(host) {
         var cands = (REC.color && REC.color.candidates) || [];
@@ -722,7 +737,22 @@
             refreshStylePreview();
         });
         sizeRow.appendChild(sizeInput);
-        sizeRow.appendChild(el("div", "toggle-desc", t("font_body_size_hint")));
+        var sizeHint = el("div", "toggle-desc");
+        sizeRow.appendChild(sizeHint);
+        // Suggest a canvas-appropriate baseline (≈2.5–3.3% of canvas height) so
+        // a 16:9 default is not silently kept on a tall canvas. Hint only — the
+        // user's value is never overwritten; downstream §g re-derives if ignored.
+        refreshBodySizeHint = function () {
+            var h = canvasHeight(STATE.canvas);
+            var txt = t("font_body_size_hint");
+            if (h) {
+                txt += " " + t("body_size_hint_canvas")
+                    .replace("{lo}", Math.round(h * 0.025))
+                    .replace("{hi}", Math.round(h * 0.033));
+            }
+            sizeHint.textContent = txt;
+        };
+        refreshBodySizeHint();
         sizeField.appendChild(sizeRow);
         sec.appendChild(sizeField);
 
@@ -930,6 +960,7 @@
         // re-render: color/typography auto-select would otherwise call it and
         // write to now-detached nodes until renderStylePreview remounts it.
         refreshStylePreview = function () {};
+        refreshBodySizeHint = function () {};
         renderCanvas(host);
         renderPages(host);
         renderAudience(host);
