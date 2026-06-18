@@ -340,7 +340,12 @@ VECTOR_FIGURE_DPI = 180
 VECTOR_CAPTION_SEARCH_HEIGHT = 380
 VECTOR_CAPTION_HORIZONTAL_GAP = 90
 MAX_VECTOR_BACKGROUND_AREA_RATIO = 1.9
-FIGURE_CAPTION_RE = re.compile(r'^(?:Figure|Fig\.)\s*\d+\s*[:.]', re.IGNORECASE)
+# Caption delimiters: ``Figure 1:`` / ``Figure 1.`` (classic) and ``Figure 1 |``
+# (the DeepMind / Distill / Nature house style used by many ML papers, incl.
+# full-width ``｜``). Without the pipe variants, captioned vector figures route
+# to the generic per-drawing fallback, which discards fine-grained line plots
+# (each plot is hundreds of tiny primitives, none large enough on its own).
+FIGURE_CAPTION_RE = re.compile(r'^(?:Figure|Fig\.?)\s*\d+\s*[:.|｜]', re.IGNORECASE)
 
 
 def should_keep_image(
