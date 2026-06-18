@@ -229,9 +229,14 @@ html, body {
 
 #svg-content svg {
     display: block;
+    /* Both dimensions auto so the box hugs the slide at any aspect ratio: with
+       only height:auto, portrait formats (e.g. 1242x1660) keep their attribute
+       width while max-height shrinks the height, leaving large white bands
+       inside the white card. width:auto lets the element scale proportionally. */
+    width: auto;
+    height: auto;
     max-width: 100%;
     max-height: calc(100vh - 72px);
-    height: auto;
 }
 
 /* ---------- SVG element interaction states ---------- */
