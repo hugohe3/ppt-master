@@ -298,3 +298,37 @@ body {
 }
 .cf-title { font-size: 22px; font-weight: 700; color: #067647; }
 .cf-hint { font-size: 14px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+
+/* Combined color + typography "overall impression" preview */
+.style-preview { margin: 4px 0 18px; }
+.style-preview-label { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+.style-preview-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+    overflow: hidden;
+}
+.sp-title {
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    word-break: break-word;
+}
+.sp-title-lat { margin-left: 10px; opacity: 0.92; }
+.sp-body { display: flex; align-items: stretch; gap: 12px; }
+.sp-accent-bar { flex: 0 0 4px; border-radius: 2px; }
+.sp-body-wrap { line-height: 1.6; word-break: break-word; }
+.sp-body-lat { margin-left: 10px; opacity: 0.92; }
+.sp-caption { font-size: 11.5px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.sp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.sp-chip-dot { width: 12px; height: 12px; border-radius: 50%; }
+.sp-chip-label { font-size: 12.5px; }

@@ -64,6 +64,8 @@
             latin: "Latin",
             sample_cjk: "数字化转型战略",
             sample_latin: "Digital Transformation",
+            style_preview_label: "Overall impression (color + typography)",
+            style_preview_body: "Background, primary and body-text colors shown together with the chosen heading and body fonts — a rough feel, not a slide layout.",
             mode_continuous_desc: "Generate the whole deck in one pass.",
             mode_split_desc: "Stop after the spec; resume SVG generation in a fresh window.",
             refine_off_desc: "Spec is written in one go; the pipeline auto-proceeds.",
@@ -127,6 +129,8 @@
             latin: "西文",
             sample_cjk: "数字化转型战略",
             sample_latin: "Digital Transformation",
+            style_preview_label: "整体形象（配色 + 字体）",
+            style_preview_body: "背景色、主色与正文色，搭配所选标题与正文字体的整体感觉——只是大致形象，不代表实际版式。",
             mode_continuous_desc: "一次性连续生成整份演示文稿。",
             mode_split_desc: "写完设计规范后停止，另开窗口继续生成页面。",
             refine_off_desc: "设计规范一次写完，流程自动继续。",
@@ -508,6 +512,18 @@
         "body_text"
     ];
 
+    function normHex(val) {
+        var v = (val || "").trim();
+        if (!/^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(v)) return null;
+        return v.charAt(0) === "#" ? v : "#" + v;
+    }
+    function hexOr(val, fallback) {
+        return normHex(val) || fallback;
+    }
+    // Replaced when the combined color+typography preview mounts; the color and
+    // typography sections call it after every change so the preview stays live.
+    var refreshStylePreview = function () {};
+
     function renderColor(host) {
         var cands = (REC.color && REC.color.candidates) || [];
         var sec = section(5, "sec_color");
@@ -517,11 +533,6 @@
         var cardSwatchRefs = [];   // idx -> {role: swatchEl}, for live override feedback
         var selectedIdx = -1;
 
-        function normHex(val) {
-            var v = (val || "").trim();
-            if (!/^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(v)) return null;
-            return v.charAt(0) === "#" ? v : "#" + v;
-        }
         function paintSwatch(elem, val) {
             var n = normHex(val);
             elem.style.background = n || "transparent";
@@ -539,6 +550,7 @@
             STATE.color = { name: c.name || "", palette: Object.assign({}, normPalette(c)) };
             grid.querySelectorAll(".color-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
             applyHexInputs(STATE.color.palette);
+            refreshStylePreview();
         }
 
         cands.forEach(function (c, idx) {
@@ -584,6 +596,7 @@
                 if (n && selectedIdx >= 0 && cardSwatchRefs[selectedIdx] && cardSwatchRefs[selectedIdx][role]) {
                     cardSwatchRefs[selectedIdx][role].style.background = n;
                 }
+                refreshStylePreview();
             });
             hexInputs[role] = inp; hexSwatches[role] = sw;
             line.appendChild(sw); line.appendChild(inp);
@@ -646,6 +659,7 @@
             if (sizeInput) sizeInput.value = STATE.typography.body_size || "";
             customInput.style.display = "none";
             grid.querySelectorAll(".font-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
+            refreshStylePreview();
         }
 
         function selectCustomTypography() {
@@ -660,6 +674,7 @@
             customCard.classList.add("selected");
             customInput.style.display = "block";
             customInput.focus();
+            refreshStylePreview();
         }
 
         cands.forEach(function (c, idx) {
@@ -687,6 +702,7 @@
         customInput.addEventListener("input", function () {
             if (!STATE.typography || STATE.typography.name !== "custom") selectCustomTypography();
             STATE.typography.custom = customInput.value;
+            refreshStylePreview();
         });
         sec.appendChild(customInput);
 
@@ -703,6 +719,7 @@
         sizeInput.addEventListener("input", function () {
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
             STATE.typography.body_size = sizeInput.value;
+            refreshStylePreview();
         });
         sizeRow.appendChild(sizeInput);
         sizeRow.appendChild(el("div", "toggle-desc", t("font_body_size_hint")));
@@ -724,6 +741,78 @@
             customCard.classList.add("selected");
             customInput.style.display = "block";
         }
+    }
+
+    // Combined color + typography preview — not a ninth confirmation, just a
+    // live "overall impression" of the two style choices made above. Kept
+    // deliberately abstract (a style chip, not a slide layout); page layout
+    // preview is the live-preview server's job (Step 6).
+    function renderStylePreview(host) {
+        var wrap = el("div", "style-preview");
+        wrap.appendChild(el("div", "style-preview-label", t("style_preview_label")));
+        var card = el("div", "style-preview-card");
+        var title = el("div", "sp-title");
+        var titleCjk = el("span", "sp-title-cjk");
+        var titleLat = el("span", "sp-title-lat");
+        title.appendChild(titleCjk); title.appendChild(titleLat);
+        var bodyRow = el("div", "sp-body");
+        var accentBar = el("span", "sp-accent-bar");
+        var bodyWrap = el("div", "sp-body-wrap");
+        var bodyCjk = el("span", "sp-body-cjk");
+        var bodyLat = el("span", "sp-body-lat");
+        bodyWrap.appendChild(bodyCjk); bodyWrap.appendChild(bodyLat);
+        bodyRow.appendChild(accentBar); bodyRow.appendChild(bodyWrap);
+        var chip = el("div", "sp-chip");
+        var chipDot = el("span", "sp-chip-dot");
+        var chipLabel = el("span", "sp-chip-label");
+        chip.appendChild(chipDot); chip.appendChild(chipLabel);
+        card.appendChild(title); card.appendChild(bodyRow); card.appendChild(chip);
+        wrap.appendChild(card);
+        // The "rough feel, not a slide layout" caveat is a caption in the UI
+        // font — not rendered in the candidate's body font, so it never poses
+        // as sample content.
+        wrap.appendChild(el("div", "sp-caption", t("style_preview_body")));
+        host.appendChild(wrap);
+
+        function paint() {
+            var pal = (STATE.color && STATE.color.palette) || {};
+            var typ = STATE.typography || {};
+            var head = typ.heading || {}, body = typ.body || {};
+            var bg = hexOr(pal.background, "#ffffff");
+            var sbg = hexOr(pal.secondary_bg, bg);
+            var pri = hexOr(pal.primary, "#1a3a6b");
+            var acc = hexOr(pal.accent, pri);
+            var sacc = hexOr(pal.secondary_accent, acc);
+            var txt = hexOr(pal.body_text, "#1d2430");
+            var bodyPx = Math.max(12, Math.min(26, parseInt(typ.body_size, 10) || 18));
+            var headStack = previewFontStack(head.cjk, head.css);
+            var headLatStack = previewFontStack(head.latin, head.css);
+            var bodyStack = previewFontStack(body.cjk, body.css);
+            var bodyLatStack = previewFontStack(body.latin, body.css);
+
+            card.style.background = bg;
+            titleCjk.textContent = head.sample_cjk || t("sample_cjk");
+            titleLat.textContent = head.sample_latin || t("sample_latin");
+            title.style.color = pri;
+            title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
+            titleCjk.style.fontFamily = headStack || "";
+            titleLat.style.fontFamily = headLatStack || "";
+            // CJK and Latin previewed with their own stacks (mirrors the title
+            // and the per-card font samples) so each script's font is visible.
+            bodyCjk.textContent = body.sample_cjk || t("sample_cjk");
+            bodyLat.textContent = body.sample_latin || t("sample_latin");
+            bodyWrap.style.color = txt;
+            bodyWrap.style.fontSize = bodyPx + "px";
+            bodyCjk.style.fontFamily = bodyStack || "";
+            bodyLat.style.fontFamily = bodyLatStack || "";
+            accentBar.style.background = acc;
+            chip.style.background = sbg;
+            chipDot.style.background = sacc;
+            chipLabel.textContent = t("role_secondary_bg");
+            chipLabel.style.color = txt;
+        }
+        refreshStylePreview = paint;
+        paint();
     }
 
     function renderImages(host) {
@@ -829,6 +918,10 @@
     function renderAll() {
         var host = document.getElementById("sections");
         host.innerHTML = "";
+        // Detach the previous preview's repaint closure before the sections
+        // re-render: color/typography auto-select would otherwise call it and
+        // write to now-detached nodes until renderStylePreview remounts it.
+        refreshStylePreview = function () {};
         renderCanvas(host);
         renderPages(host);
         renderAudience(host);
@@ -836,6 +929,7 @@
         renderColor(host);
         renderIcons(host);
         renderTypography(host);
+        renderStylePreview(host);
         renderImages(host);
         renderMode(host);
         renderRefine(host);
