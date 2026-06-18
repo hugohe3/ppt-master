@@ -606,11 +606,22 @@
         host.appendChild(sec);
     }
 
+    function previewFontStack(primary, fallback) {
+        if (!primary) return fallback || "";
+        if (!fallback) return primary;
+        return primary + ", " + fallback;
+    }
+
     function fontSample(box, slot, css) {
         var line = el("div", "font-sample-line");
         var cjk = el("span", "fs-cjk", slot.sample_cjk || t("sample_cjk"));
         var lat = el("span", "fs-latin", slot.sample_latin || t("sample_latin"));
-        if (css) { cjk.style.fontFamily = css; lat.style.fontFamily = css; }
+        var cjkStack = previewFontStack(slot.cjk, css);
+        var latinStack = previewFontStack(slot.latin, css);
+        if (cjkStack) cjk.style.fontFamily = cjkStack;
+        if (latinStack) lat.style.fontFamily = latinStack;
+        if (cjkStack) cjk.title = cjkStack;
+        if (latinStack) lat.title = latinStack;
         line.appendChild(cjk); line.appendChild(lat); box.appendChild(line);
     }
 
