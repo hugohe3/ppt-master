@@ -387,6 +387,22 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 )
                 summary["error"] += 1
                 continue
+            if len(chart.get("plot_types") or []) > 1:
+                results.append(
+                    {
+                        "status": "ERROR",
+                        "plan_slide": slide_index,
+                        "source_slide": source_slide,
+                        "selector": selectors[0] if selectors else "",
+                        "chart_id": chart.get("chart_id"),
+                        "message": (
+                            "template-fill chart edits do not support multi-plot / combination charts; "
+                            "use beautify/main pipeline to redraw the chart, or leave the native chart untouched"
+                        ),
+                    }
+                )
+                summary["error"] += 1
+                continue
             categories = chart_edit.get("categories", [])
             series = chart_edit.get("series", [])
             if not isinstance(categories, list) or not isinstance(series, list) or not series:

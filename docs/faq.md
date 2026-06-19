@@ -158,12 +158,20 @@ For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — th
 
 Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to four routes:
 
-- **Keep content + redo layout** → **beautify (re-layout)**: text stays verbatim, page count and order are preserved 1:1, only the layout is redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../skills/ppt-master/workflows/beautify-pptx.md).
-- **Replace content + keep design** → **template-fill**: keep the original design, pour new content back into the native slides (next question).
-- **Keep only content, redo design and pagination** → **main pipeline (free re-architecture)**: treat the PPT as an ordinary source document — extract it to Markdown with `ppt_to_md`, then run the standard generation flow, where the Strategist re-architects the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content".
-- **Keep content + keep design** → no generation needed; just use the original file.
+| Intent | Route | What stays fixed |
+|---|---|---|
+| Keep content + redo layout | **beautify (re-layout)** | Page count, page order, per-slide wording, chart/table data |
+| Replace content + keep design | **template-fill** | Native source slide design; selected pages may be reused/reordered |
+| Keep only content, redo design and pagination | **main pipeline** | Source facts; story structure and page count may change |
+| Keep content + keep design | No generation needed | Use the original file |
+
+Use **beautify** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../skills/ppt-master/workflows/beautify-pptx.md).
+
+Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
 The one-line test between beautify and the main pipeline: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → main pipeline.
+
+If your request is ambiguous, for example "make this PPT more professional" or "optimize this deck", the AI should ask one clarification before routing: **keep the original page count/order and each slide's wording, or treat the PPT as source material and restructure it into a new story?**
 
 There is also one orthogonal route: if you don't want to produce a deck right now but want to **harvest the design into a reusable template** for future use, use **create-template** (see "How do I create a custom template?" below).
 

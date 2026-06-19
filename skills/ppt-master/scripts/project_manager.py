@@ -147,6 +147,7 @@ class ProjectManager:
             "notes",
             "templates",
             SOURCE_DIRNAME,
+            "analysis",
             "exports",
         ):
             (project_path / rel_path).mkdir(parents=True, exist_ok=True)
@@ -166,6 +167,7 @@ class ProjectManager:
                 "- `notes/`: speaker notes\n"
                 "- `templates/`: project templates\n"
                 "- `sources/`: source materials and normalized markdown\n"
+                "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
                 "- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added when exported with `--svg-snapshot`\n"
                 "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
             ),
@@ -180,6 +182,11 @@ class ProjectManager:
         sources_dir = project_path / SOURCE_DIRNAME
         sources_dir.mkdir(parents=True, exist_ok=True)
         return sources_dir
+
+    def _analysis_dir(self, project_path: Path) -> Path:
+        analysis_dir = project_path / "analysis"
+        analysis_dir.mkdir(parents=True, exist_ok=True)
+        return analysis_dir
 
     def _ensure_unique_path(self, path: Path) -> Path:
         if not path.exists():
@@ -274,6 +281,22 @@ class ProjectManager:
                 str(markdown_path),
             ]
         )
+
+    def _import_pptx_intake(self, presentation_path: Path, project_dir: Path) -> Path | None:
+        analysis_dir = self._analysis_dir(project_dir)
+        profile_path = analysis_dir / "source_profile.json"
+        if profile_path.exists():
+            return None
+        self._run_tool(
+            [
+                sys.executable,
+                str(TOOLS_DIR / "pptx_intake.py"),
+                str(presentation_path),
+                "-o",
+                str(analysis_dir),
+            ]
+        )
+        return analysis_dir
 
     def _import_excel(self, excel_path: Path, markdown_path: Path) -> None:
         self._run_tool(
@@ -534,6 +557,7 @@ class ProjectManager:
             "archived": [],
             "markdown": [],
             "assets": [],
+            "analysis": [],
             "notes": [],
             "skipped": [],
         }
@@ -640,6 +664,17 @@ class ProjectManager:
                     summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
             elif suffix in PRESENTATION_SUFFIXES:
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
+                try:
+                    intake_dir = self._import_pptx_intake(archived_path, project_dir)
+                    if intake_dir is None:
+                        summary["notes"].append(
+                            f"{item}: skipped PPTX intake because analysis/source_profile.json already exists; "
+                            "current intake is single-deck and keeps the first PPTX analysis"
+                        )
+                    else:
+                        summary["analysis"].append(str(intake_dir))
+                except Exception as exc:  # pragma: no cover - summary path
+                    summary["notes"].append(f"{item}: PPTX intake analysis failed ({exc})")
                 if archived_path.stem in explicit_markdown_stems:
                     summary["notes"].append(
                         f"{item}: skipped presentation auto-conversion because a same-stem Markdown source was provided"
@@ -824,6 +859,10 @@ def main(argv: list[str] | None = None) -> int:
             if summary["assets"]:
                 print("\nImported asset directories:")
                 for item in summary["assets"]:
+                    print(f"  - {item}")
+            if summary["analysis"]:
+                print("\nAnalysis artifacts:")
+                for item in summary["analysis"]:
                     print(f"  - {item}")
             if summary["notes"]:
                 print("\nNotes:")
