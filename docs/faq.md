@@ -154,6 +154,21 @@ Yes. You can **interrupt the workflow at any time** — after the first few page
 
 For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — the title overlaps the chart" and it will fix that specific SVG.
 
+## Q: I have an existing PPT and want to build on it — which route should I use?
+
+Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to four routes:
+
+- **Keep content + redo layout** → **beautify (re-layout)**: text stays verbatim, page count and order are preserved 1:1, only the layout is redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../skills/ppt-master/workflows/beautify-pptx.md).
+- **Replace content + keep design** → **template-fill**: keep the original design, pour new content back into the native slides (next question).
+- **Keep only content, redo design and pagination** → **main pipeline (free re-architecture)**: treat the PPT as an ordinary source document — extract it to Markdown with `ppt_to_md`, then run the standard generation flow, where the Strategist re-architects the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content".
+- **Keep content + keep design** → no generation needed; just use the original file.
+
+The one-line test between beautify and the main pipeline: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → main pipeline.
+
+There is also one orthogonal route: if you don't want to produce a deck right now but want to **harvest the design into a reusable template** for future use, use **create-template** (see "How do I create a custom template?" below).
+
+---
+
 ## Q: I already have a finished `.pptx` — can I reuse its design and just fill in new content?
 
 Yes — this is the **template fill** route, separate from the SVG generation pipeline. Give the AI your existing `.pptx` plus your material (or a topic) and ask it to "fill this deck with the new content" or "fill this back into the template". It treats your deck as a native slide library, lets you pick only the pages that fit the new story (reorder freely, and reuse one page for several output slides), and writes the new text — plus native table cells and chart data — straight into the original OOXML.
