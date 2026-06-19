@@ -7,13 +7,13 @@ PPT Master's exported PPTX supports **page transitions** (slide-to-slide) and **
 | Layer | Default | Why |
 |---|---|---|
 | Page transition | `fade`, 0.4s | Calm baseline that suits most decks |
-| Per-element animation | `auto` effect + `after-previous` trigger, 0.4s duration + 0.5s stagger | Effects are mapped from group id (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (`hero` / `figure-` / `image` / `img-` / `kpi`) cycle a richer visual pool (zoom / dissolve / circle / box / diamond / wheel) so multiple images vary across the deck; unmatched ids cycle a small fade/wipe/fly/zoom pool. Cascades automatically on slide entry — zero interaction |
+| Per-element animation | **`none` (off)** | A page appears as a whole. Auto-firing element builds are an unsolicited "AI deck" tell, so element entrance is opt-in. Turn it on with `-a auto` (or another effect): effects map from group id (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (`hero` / `figure-` / `image` / `img-` / `kpi`) cycle a richer visual pool (zoom / dissolve / circle / box / diamond / wheel) so multiple images vary across the deck; unmatched ids cycle a small fade/wipe/fly/zoom pool |
 
-To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM. To turn per-element animation off entirely, pass `-a none`.
+To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM. To turn per-element animation on for the whole deck, pass `-a auto`.
 
 ## Custom Object-Level Animation
 
-Default animation is global. When a deck needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains static visual source; the sidecar only controls PPTX export behavior.
+Per-element animation is off by default. To enable it deck-wide, pass `-a auto` at export (no config needed). When a deck instead needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains static visual source; the sidecar only controls PPTX export behavior.
 
 Run the standalone [`customize-animations`](../workflows/customize-animations.md) workflow when the user asks to tune animation order, effects, timing, or object-level reveals.
 
@@ -79,24 +79,24 @@ Flags:
 
 ## Per-Element Animations
 
-Enabled by default (`auto` effect + `after-previous` trigger). Three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
+Off by default — enable deck-wide with `-a auto` (or another effect). Once enabled, three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
 
 - **`on-click`** — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals. Forbidden with `--recorded-narration` because video-ready exports need click-free playback.
 - **`with-previous`** — all groups start together on slide entry, playing their entrance animation in parallel. Stagger ignored.
 - **`after-previous`** (default) — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
 
 ```bash
-# Default behavior (no flags needed): auto effect + after-previous cascade
+# Default behavior (no flags): page transitions only, no per-element builds
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 
-# Disable per-element animation entirely
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a none
+# Enable per-element animation deck-wide (auto effect + after-previous cascade)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto
 
-# Use a single effect (still cascades via the default after-previous trigger)
+# Enable with a single effect (cascades via the after-previous trigger)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
-# Switch to on-click for live presentations (presenter controls pacing)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click
+# Enable and switch to on-click for live presentations (presenter controls pacing)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click
 
 # Custom pacing
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
@@ -108,7 +108,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 
 22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
 
-- `auto` (default) — map effect from the group's SVG id. Information-dense elements get a single stable effect: `chart` / `table` / `legend` / `timeline` / `track` → `wipe`; `card-*` / `pillar-*` / `item-*` / `step-*` / `stage-*` / `tier-*` / `principle-*` → `fly`; `title` / `chapter-*` / `section-*` / `cover-*` / `tagline` / `subtitle` → `fade`; `takeaway` / `callout` / `quote` / `source` / `conclusion` / `note` → `fade`. Image-like ids `hero` / `figure-*` / `image` / `img-*` / `kpi` instead cycle a richer visual pool (`zoom` / `dissolve` / `circle` / `box` / `diamond` / `wheel`) so multiple images vary across the deck. Unmatched ids cycle through `fade` / `wipe` / `fly` / `zoom`.
+- `auto` (recommended when enabling) — map effect from the group's SVG id. Information-dense elements get a single stable effect: `chart` / `table` / `legend` / `timeline` / `track` → `wipe`; `card-*` / `pillar-*` / `item-*` / `step-*` / `stage-*` / `tier-*` / `principle-*` → `fly`; `title` / `chapter-*` / `section-*` / `cover-*` / `tagline` / `subtitle` → `fade`; `takeaway` / `callout` / `quote` / `source` / `conclusion` / `note` → `fade`. Image-like ids `hero` / `figure-*` / `image` / `img-*` / `kpi` instead cycle a richer visual pool (`zoom` / `dissolve` / `circle` / `box` / `diamond` / `wheel`) so multiple images vary across the deck. Unmatched ids cycle through `fade` / `wipe` / `fly` / `zoom`.
 - `mixed` (legacy) — deterministic. The first animated group on each slide uses `fade`; later groups cycle through a 16-effect pool (`blinds` / `checkerboard` / `dissolve` / `fly` / `cut` / `random_bars` / `box` / `split` / `strips` / `wedge` / `wheel` / `wipe` / `expand` / `fade` / `swivel` / `zoom`) across the deck. Kept for backward compatibility.
 - `random` — samples from the legacy 16-effect pool.
 
@@ -116,7 +116,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 
 Flags:
 
-- `-a/--animation` — effect name, `auto`, `mixed`, `random`, or `none`. Default: `auto`.
+- `-a/--animation` — effect name, `auto`, `mixed`, `random`, or `none`. Default: `none` (per-element animation off; pass `auto` to enable).
 - `--animation-trigger` — Start mode (matches PowerPoint): `on-click`, `with-previous`, or `after-previous` (default).
 - `--animation-duration` — per-element entrance seconds, default `0.4`.
 - `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.5`). Ignored otherwise.

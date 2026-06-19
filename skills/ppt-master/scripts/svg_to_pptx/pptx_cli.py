@@ -201,11 +201,12 @@ Recorded narration:
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
                         default=None,
                         help='Per-element entrance animation (native shapes mode '
-                             'only). Pick a single effect, "auto" (default; map '
-                             'effect from group id — image-like ids cycle a richer '
-                             'pool for visual variation, fallback cycles fade/wipe/'
-                             'fly/zoom), "mixed" (legacy 16-effect pool), "random", '
-                             'or "none" to disable.')
+                             'only). Default "none" (no auto element builds; page '
+                             'transitions still apply). Pick a single effect, "auto" '
+                             '(map effect from group id — image-like ids cycle a '
+                             'richer pool for visual variation, fallback cycles fade/'
+                             'wipe/fly/zoom), "mixed" (legacy 16-effect pool), or '
+                             '"random".')
     parser.add_argument('--animation-duration', type=non_negative_float, default=None,
                         help='Per-element entrance duration in seconds (default: 0.4)')
     parser.add_argument('--animation-trigger', type=str,
@@ -456,7 +457,10 @@ Recorded narration:
     animation_effect = (
         animation_arg
         if animation_arg is not None
-        else animation_defaults.get('effect', 'auto')
+        # Per-element entrance is opt-in by default: auto-firing element builds
+        # read as the "AI deck" tell and were unsolicited. Page transitions stay
+        # on (see transition default above). Re-enable with -a auto / animations.json.
+        else animation_defaults.get('effect', 'none')
     )
     animation = None if animation_effect == 'none' else animation_effect
     animation_duration = (
