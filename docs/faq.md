@@ -87,14 +87,14 @@ If your workflow specifically requires Excel-driven data editing, manually creat
 
 ## Q: Can I change page transitions and element animations?
 
-Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animations (`auto` effect with `after-previous` cascade by default — effect mapped from each group's SVG id, with image-like ids cycling a visual pool for variation) are both controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Common one-liners:
+Yes. Page transitions are on by default (`fade` 0.4s); per-element entrance animation is **off by default** — a page appears as a whole instead of having elements auto-cascade in one by one (that unsolicited cascade is the strongest "AI deck" tell). Both are controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Turn element animation on explicitly when you want it:
 
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a none       # disable per-element animation
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # use a single effect instead of mixed
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click   # presenter-paced reveals
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto       # enable per-element entrance (effect mapped from group id)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # enable with a single effect
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger on-click   # presenter-paced reveals
 ```
 
 `on-click` is for live presentations. Narrated/video export via `--recorded-narration` rejects it because PPT Master writes page timings, not object-level click timings; use `after-previous` or `with-previous` for narrated decks.

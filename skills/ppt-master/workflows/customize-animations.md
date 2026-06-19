@@ -4,14 +4,15 @@ description: Customize default PPTX animations with per-slide and per-object tim
 
 # Customize Animations Workflow
 
-> Standalone post-generation step. Run when the user asks to tune animation order, effects, timing, or object-level reveals. Default PPTX export already has global animations; this workflow only creates `animations.json` overrides when the user wants finer control.
+> Standalone post-generation step. Run when the user asks to tune animation order, effects, timing, or object-level reveals — including simply turning per-element entrance animation on (it is off by default; page transitions still apply). This workflow creates `animations.json` overrides when the user wants element animation or finer control.
 
 ## When to Run
 
 | Condition | Action |
 |---|---|
 | User asks for object-level animation, reveal order, timing, or effect changes | Run this workflow |
-| User only wants the default animated deck | Do not run; normal `svg_to_pptx.py` export is enough |
+| User only wants the default deck (page transitions, no element builds) | Do not run; normal `svg_to_pptx.py` export is enough |
+| User just wants per-element entrance animation back on, deck-wide | No config needed — export with `svg_to_pptx.py -a auto`; run this workflow only for per-slide/per-object control |
 | `svg_output/*.svg` is missing | Complete the main Executor phase first |
 | Existing `animations.json` is present | Validate and edit it; do not overwrite unless the user asks |
 
