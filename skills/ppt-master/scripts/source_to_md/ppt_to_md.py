@@ -359,6 +359,76 @@ def table_to_markdown(table: object) -> str:
     return "\n".join(lines)
 
 
+def _format_chart_value(value: object) -> str:
+    """Render a chart data point, trimming whole-number floats."""
+    if value is None:
+        return ""
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def chart_to_markdown(chart: object, name: str) -> str:
+    """Render a chart's data as a Markdown table so the numbers survive conversion.
+
+    A native PowerPoint chart stores its data in embedded XML, not in any text
+    frame — emitting only a `[Chart]` placeholder drops every value. The markdown
+    is the content contract for downstream generation, so transcribe categories ×
+    series here. `scripts/pptx_intake.py` writes the same data in structured JSON
+    form for tooling; this is the human- and content-readable mirror.
+    """
+    try:
+        chart_type = str(chart.chart_type)
+    except (ValueError, AttributeError):
+        chart_type = ""
+
+    categories: list[str] = []
+    try:
+        plots = list(chart.plots)
+        if plots:
+            categories = [
+                escape_table_cell(str(cat)) if cat is not None else ""
+                for cat in plots[0].categories
+            ]
+    except (ValueError, IndexError, AttributeError):
+        categories = []
+
+    series_data: list[tuple[str, list[object]]] = []
+    try:
+        for index, series in enumerate(chart.series, start=1):
+            try:
+                values = list(series.values)
+            except (ValueError, TypeError, AttributeError):
+                values = []
+            label = str(series.name) if getattr(series, "name", None) else f"Series {index}"
+            series_data.append((escape_table_cell(label), values))
+    except (ValueError, AttributeError):
+        series_data = []
+
+    header = f"> [Chart] {name}" + (f" — {chart_type}" if chart_type else "")
+    row_count = len(categories) if categories else max((len(v) for _, v in series_data), default=0)
+    if not series_data or row_count == 0:
+        return header
+
+    table_header = (["Category"] if categories else ["#"]) + [sname for sname, _ in series_data]
+    lines = [
+        header,
+        "",
+        "| " + " | ".join(table_header) + " |",
+        "| " + " | ".join(["---"] * len(table_header)) + " |",
+    ]
+    for row_index in range(row_count):
+        if categories:
+            label = categories[row_index] if row_index < len(categories) else ""
+        else:
+            label = str(row_index + 1)
+        cells = [label]
+        for _, values in series_data:
+            cells.append(_format_chart_value(values[row_index]) if row_index < len(values) else "")
+        lines.append("| " + " | ".join(cells) + " |")
+    return "\n".join(lines)
+
+
 def _image_part_for_shape(shape: object) -> object | None:
     """Return the first embedded image part referenced by a shape."""
     element = getattr(shape, "element", None)
@@ -710,7 +780,10 @@ def convert_presentation_to_markdown(
                     continue
 
             if getattr(shape, "has_chart", False):
-                blocks.append(f"> [Chart] {getattr(shape, 'name', 'Chart')}")
+                try:
+                    blocks.append(chart_to_markdown(shape.chart, getattr(shape, "name", "Chart")))
+                except (ValueError, AttributeError, KeyError):
+                    blocks.append(f"> [Chart] {getattr(shape, 'name', 'Chart')}")
 
         if blocks:
             lines.append("\n\n".join(blocks))
