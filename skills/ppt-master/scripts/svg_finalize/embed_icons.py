@@ -9,6 +9,7 @@ Placeholder syntax (new SVGs must include a library prefix):
     <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8" stroke-width="3"/>
+    <use data-icon="layered_slide_06_ill01"/>
 
 Legacy compatibility accepted by the resolver:
     <use data-icon="rocket" .../> -> chunk-filled/rocket
@@ -29,6 +30,7 @@ Icon libraries (subdirectories of templates/icons/):
     tabler-outline/    - 5000+ stroke icons, 24x24 viewBox (use prefix: tabler-outline/name)
     phosphor-duotone/  - 1200+ duotone icons, 256x256 viewBox (single color + 0.2-opacity backplate)
     simple-icons/      - 3400+ brand logos, 24x24 viewBox (brand-inset library — used alongside the chosen primary library, NOT as a standalone library for generic icons)
+    <asset_id>.svg     - project-local extracted vector illustrations with data-icon-style="preserve-color"; preserve source colors and natural viewBox aspect ratio
 
 Usage:
     python3 scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
@@ -39,6 +41,8 @@ Options:
     --dry-run             Only show what would be replaced, without modifying files
     --verbose             Show detailed information
 """
+
+from __future__ import annotations
 
 import os
 import re
@@ -61,6 +65,7 @@ ICON_BASE_SIZES = {
     'simple-icons': 24,
 }
 DEFAULT_ICON_BASE_SIZE = 24
+BaseGeometry = float | tuple[float, float, float, float]
 
 
 def _get_viewbox_size(content: str) -> float:
@@ -71,12 +76,62 @@ def _get_viewbox_size(content: str) -> float:
     return 0
 
 
+def _get_viewbox_geometry(content: str) -> tuple[float, float, float, float] | None:
+    """Extract full viewBox geometry as (min_x, min_y, width, height)."""
+    match = re.search(r'viewBox=["\']([^"\']+)["\']', content)
+    if not match:
+        return None
+    parts = re.split(r'[\s,]+', match.group(1).strip())
+    if len(parts) < 4:
+        return None
+    try:
+        min_x, min_y, width, height = [float(part) for part in parts[:4]]
+    except ValueError:
+        return None
+    if width <= 0 or height <= 0:
+        return None
+    return min_x, min_y, width, height
+
+
+def _format_number(value: object) -> str:
+    """Format SVG numeric values compactly without losing meaningful precision."""
+    if isinstance(value, float):
+        return f'{value:g}'
+    return str(value)
+
+
+def _base_geometry(base_size: BaseGeometry) -> tuple[float, float, float, float]:
+    """Normalize legacy square icon size and full viewBox geometry."""
+    if isinstance(base_size, tuple):
+        return base_size
+    return 0.0, 0.0, float(base_size), float(base_size)
+
+
+def _is_preserve_color_asset(content: str) -> bool:
+    """Project illustrations are vector assets, not recolorable monochrome icons.
+
+    The `data-icon-style="preserve-color"` marker is stamped by
+    extract_svg_assets.py and is the single source of truth — hand-authored
+    multi-color assets must carry it to keep their colors and aspect ratio.
+    """
+    return 'data-icon-style="preserve-color"' in content
+
+
 def _detect_icon_style(content: str) -> str:
     """Detect whether an icon is fill-based or stroke-based."""
     # stroke="currentColor" with fill="none" → stroke style
     if 'stroke="currentColor"' in content and 'fill="none"' in content:
         return 'stroke'
     return 'fill'
+
+
+def _extract_svg_body(content: str) -> list[str]:
+    """Return the root SVG body for preserve-color assets without editing attrs."""
+    match = re.search(r'<svg\b[^>]*>(.*)</svg>\s*$', content, re.DOTALL)
+    if not match:
+        return []
+    body = match.group(1).strip()
+    return [body] if body else []
 
 
 def _extract_shape_elements(content: str, color: str) -> list[str]:
@@ -143,19 +198,24 @@ def resolve_icon_path(icon_name: str, icons_dir: Path, fallback_dir: Path | None
     return icon_path, base_size
 
 
-def extract_paths_from_icon(icon_path: Path, target_color: str = '#000000') -> tuple[list[str], str, float]:
+def extract_paths_from_icon(icon_path: Path, target_color: str = '#000000') -> tuple[list[str], str, BaseGeometry]:
     """
     Extract drawable elements from an icon SVG file.
 
     Returns:
         (elements, style, base_size)
-        style: 'fill' or 'stroke'
-        base_size: detected from viewBox
+        style: 'fill', 'stroke', or 'preserve'
+        base_size: square icon size, or full viewBox geometry for preserve assets
     """
     if not icon_path.exists():
         return [], 'fill', 16
 
     content = icon_path.read_text(encoding='utf-8')
+    if _is_preserve_color_asset(content):
+        geometry = _get_viewbox_geometry(content) or (0.0, 0.0, DEFAULT_ICON_BASE_SIZE, DEFAULT_ICON_BASE_SIZE)
+        elements = _extract_svg_body(content)
+        return elements, 'preserve', geometry
+
     style = _detect_icon_style(content)
     base_size = _get_viewbox_size(content) or 16
     elements = _extract_shape_elements(content, target_color)
@@ -215,6 +275,9 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
 
 def resolve_icon_color(attrs: dict[str, str | float], style: str) -> str:
     """Resolve the caller-provided color for fill or stroke icon libraries."""
+    if style == 'preserve':
+        return 'preserve'
+
     fill = str(attrs.get('fill', '')).strip()
     stroke = str(attrs.get('stroke', '')).strip()
 
@@ -232,41 +295,54 @@ def resolve_icon_color(attrs: dict[str, str | float], style: str) -> str:
     return '#000000'
 
 
-def generate_icon_group(attrs: dict[str, str | float], elements: list[str], style: str, base_size: float) -> str:
+def generate_icon_group(attrs: dict[str, str | float], elements: list[str], style: str, base_size: BaseGeometry) -> str:
     """
     Generate the icon's <g> element.
 
     Args:
         attrs:     Attributes of the use element
         elements:  List of drawable SVG elements
-        style:     'fill' or 'stroke'
-        base_size: Icon's natural size (viewBox width)
+        style:     'fill', 'stroke', or 'preserve'
+        base_size: Icon's natural size, or full viewBox geometry for preserve assets
 
     Returns:
         Complete <g> element string
     """
+    min_x, min_y, base_width, base_height = _base_geometry(base_size)
     x = attrs.get('x', 0)
     y = attrs.get('y', 0)
-    width = attrs.get('width', base_size)
-    height = attrs.get('height', base_size)
+    width = attrs.get('width', base_width)
+    height = attrs.get('height', base_height)
     color = resolve_icon_color(attrs, style)
     icon_name = attrs.get('icon', 'unknown')
 
-    scale_x = width / base_size
-    scale_y = height / base_size
+    scale_x = float(width) / base_width
+    scale_y = float(height) / base_height
 
     if attrs.get('transform'):
         # This transform is authoritative: the editor computes it from the
         # expanded <g>, so composing it with x/y would apply placement twice.
         transform = str(attrs['transform'])
     elif abs(scale_x - 1) < 1e-6 and abs(scale_y - 1) < 1e-6:
-        transform = f'translate({x}, {y})'
+        transform = f'translate({_format_number(x)}, {_format_number(y)})'
     elif abs(scale_x - scale_y) < 1e-6:
-        transform = f'translate({x}, {y}) scale({scale_x})'
+        transform = f'translate({_format_number(x)}, {_format_number(y)}) scale({_format_number(scale_x)})'
     else:
-        transform = f'translate({x}, {y}) scale({scale_x}, {scale_y})'
+        transform = (
+            f'translate({_format_number(x)}, {_format_number(y)}) '
+            f'scale({_format_number(scale_x)}, {_format_number(scale_y)})'
+        )
 
     elements_str = '\n    '.join(elements)
+
+    if style == 'preserve':
+        if min_x or min_y:
+            inner_transform = f'translate({_format_number(-min_x)}, {_format_number(-min_y)})'
+            elements_str = f'<g transform="{inner_transform}">\n    {elements_str}\n    </g>'
+        return f'''<!-- icon: {icon_name} -->
+  <g transform="{transform}">
+    {elements_str}
+  </g>'''
 
     if style == 'stroke':
         # Default to 2 — matches the source stroke-width baked into tabler-outline
