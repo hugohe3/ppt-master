@@ -101,6 +101,8 @@ When the user provides an existing `.pptx`, route by the role of the source deck
 | Reuse the deck's native design with new material | `template-fill` | Clone selected source slides and replace text / table / chart data directly in OOXML; no SVG generation |
 | Harvest the deck as a reusable future template | `create-template` | Build a template package, not a one-off generated deck |
 
+**Deciding axis (beautify vs main pipeline) — one question, one discriminator**: is the source's page split a finished artifact to preserve, or a draft structure to overturn? The concrete discriminator is **page count / order**: if it changes at all — any split, merge, drop, or reorder — it is the **main pipeline**, never beautify. Beautify is **strictly 1:1**: same page count, same order, text verbatim, only layout / hierarchy / whitespace redone. Edge case made explicit: "keep all the content but split a crowded page so it reads better" still changes page count, so it is the **main pipeline** (re-pagination is re-architecture), not beautify.
+
 Ambiguous requests such as "make this PPT more professional" or "optimize this deck" MUST be clarified with one question before routing: "Should the original page count/order and each slide's wording be preserved, or should the deck be treated as source material and restructured into a new story?" Preserve → `beautify`; restructure → main pipeline.
 
 ---

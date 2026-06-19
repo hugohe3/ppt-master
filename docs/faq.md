@@ -169,7 +169,7 @@ Use **beautify** when the source deck's page split is part of the requested outp
 
 Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
 
-The one-line test between beautify and the main pipeline: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → main pipeline.
+The one-line test between beautify and the main pipeline: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → main pipeline. The concrete discriminator is **page count / order**: if it changes at all — split, merge, drop, reorder, or even keeping every word but splitting one crowded page so it reads better — that is re-pagination, which is the main pipeline. Beautify is strictly 1:1.
 
 If your request is ambiguous, for example "make this PPT more professional" or "optimize this deck", the AI should ask one clarification before routing: **keep the original page count/order and each slide's wording, or treat the PPT as source material and restructure it into a new story?**
 
