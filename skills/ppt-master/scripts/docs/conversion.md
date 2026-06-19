@@ -122,6 +122,7 @@ python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 Behavior:
 - extracts slide text in reading order
 - converts PowerPoint tables to Markdown tables
+- transcribes native chart data (type + categories × series values) into a Markdown table, so chart numbers are not lost in conversion
 - exports embedded pictures to a sibling `_files/` directory
 - appends speaker notes when present
 
