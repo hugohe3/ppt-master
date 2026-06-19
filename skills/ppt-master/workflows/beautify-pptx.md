@@ -119,7 +119,7 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 | Field | Fill with |
 |---|---|
 | `ignored` | hidden slides / shapes, master-only text, image crop / opacity / rotation / mask (not captured upstream) |
-| `needs_confirmation` | combo / dual-axis / waterfall charts (only the first plot type is captured), merged-cell or multi-header tables, overcrowded pages |
+| `needs_confirmation` | combo / dual-axis / waterfall charts (only the first plot type is captured), merged-cell or multi-header tables, density-outlier pages — **either** overcrowded **or** near-empty / title-only (e.g. a divider page with a heading and no body) |
 
 ```markdown
 ## ✅ Extraction Complete
@@ -135,11 +135,15 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 
 ## 5. Beautify Plan — Recommend & Confirm
 
-⛔ **BLOCKING**: the scope is not hard-coded — same spirit as the Eight Confirmations. Recommend each item below from what the deck actually contains (the Step 4 inventory), present the plan, and **wait for the user to confirm or adjust** before writing any spec. Chat is the canonical channel.
+⛔ **BLOCKING**: the scope is not hard-coded — same spirit as the Eight Confirmations. Recommend each item below from what the deck actually contains (the Step 4 inventory), present the plan, and **wait for the user to confirm or adjust** before writing any spec. Chat is the canonical channel; the confirm UI below is the visual convenience surface over it for the palette + typography review (its result is honored identically to a chat reply).
+
+This step has two halves:
+- **Visual re-confirm via the confirm UI** — the **full** Step 4 confirm page (below), seeded from the source so every targeted-confirmation field (canvas, mode, visual style, palette, icons, typography incl. body baseline, image strategy, generation mode) is **pre-filled with the inherited / source-derived default and left editable**. Beautify *recommends* keeping the source's identity, but never removes the user's place to override any field — you may choose not to change a value, but you must not deny the place to change it. This is also where the deck's text size is set: `identity.json` carries fonts and palette but **no body font size** (source decks inherit sizes from master placeholders), so the body baseline is undetermined and must be chosen here, not silently defaulted to a small dense value.
+- **Structural scope** — the inventory-driven list decisions below (ignored, reuse, needs-confirmation, verification level) stay in **chat**; they have no confirm-UI widget.
 
 | Plan item | Recommend from | Default lean |
 |---|---|---|
-| Identity source | `identity.json` `theme` vs `observed` | theme when the deck is theme-driven; `observed` (or a merge) when slides override heavily (`observed` colors / fonts dominate). State which and why |
+| Identity source | `identity.json` `theme` vs `observed` | present **both as color / typography candidates in the confirm UI** so the user picks the one that looks right (theme first when the deck is theme-driven; observed first when slides override heavily) — recommend a default ordering and say why |
 | Preserve scope | inventory `text_blocks` / `images` / `charts` / `tables` | all text verbatim; data values frozen; pictures reused |
 | Ignored | inventory `ignored` | name them so the user sees what drops (hidden / master-only text / image crop / rotation) |
 | Needs confirmation | inventory `needs_confirmation` | flag complex charts + overcrowded pages explicitly; ask how to handle |
@@ -155,7 +159,45 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 | Paste-back into the original | regenerated elements share the inherited palette + fonts, so they **blend visually** when pasted. v1 does **not** guarantee a seamless coordinate-level drop-in (slide coordinates, master placeholders, font availability are the original deck's, not ours) |
 | Complex charts / merged-cell tables | best-effort from the captured data; combo / dual-axis / waterfall lose the un-captured plots — flagged for the user |
 
-On confirmation, enter SKILL.md Step 4 as Strategist with the plan pre-resolved: lock `mode: briefing` + the content-faithful clause ([`strategist.md`](../references/strategist.md) §d Layer 1), canvas = Step 3 format, page count = source slide count (strict 1:1), color (e) + typography (g) = the confirmed identity (skip both recommendation flows), §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
+**Visual re-confirm — full confirm UI seeded from the source**:
+
+Write `<project_path>/confirm_ui/recommendations.json` and launch the same confirm server SKILL.md Step 4 uses. Do **not** hide fields: seed **every** targeted-confirmation field with the inherited / source-derived default so the user sees the recommendation and keeps the place to change it. Schema → [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
+
+```json
+{
+  "recommend": {
+    "canvas": "<step3-canvas-id>",
+    "mode": "briefing",
+    "visual_style": "<closest visual-style id to the source look>",
+    "icons": "<sensible default icon library>",
+    "image_usage": "provided"
+  },
+  "page_count": <source-slide-count>,
+  "audience": "<carry over from the deck's apparent audience, or leave blank>",
+  "color": { "selected": 0, "candidates": [
+    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
+    { "name_zh": "实际用色（observed）", "name_en": "Observed palette", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
+    { "name_zh": "备选配色 A", "name_en": "Alternative palette A", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } }
+  ] },
+  "typography": { "selected": 0, "candidates": [
+    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <canvas-appropriate baseline> },
+    { "name_zh": "实际字体（observed）", "name_en": "Observed fonts", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <canvas-appropriate baseline> },
+    { "name_zh": "备选字体 A", "name_en": "Alternative pairing A", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <canvas-appropriate baseline> }
+  ] }
+}
+```
+
+- **Recommend keep, allow override**: pre-fill canvas / mode / visual style / icons / image strategy with the source-faithful default (canvas = Step 3 format, mode = `briefing`, image_usage = `provided` since pictures are reused). Enumerable fields already list every catalog option with the source-faithful one badged, so the user can switch. Beautify's only true non-choices are the frozen text and the strict 1:1 page count (changing those means routing to the main pipeline instead — see CLAUDE.md).
+- **Always offer real choices, default to the source replica**: for color and typography, author **several candidates** like the from-scratch flow — but the pre-selected default (`selected: 0`, the first card) is the one that **best replicates the source deck's style** (the truest reading of `theme` / `observed`). Include the other source reading as a second candidate when `theme` and `observed` differ, plus **1–2 fresh alternatives** so a user who does *not* want to keep the old look can switch in one click. Replicate-by-default, depart-by-choice.
+- **`body_size` is the load-bearing field**: seed it from a canvas-appropriate baseline (the page hints ≈2.5–3.3% of canvas height) — for a presentation / projection deck lean toward the relaxed end (e.g. `24` → 18pt), for a dense document deck the compact end (e.g. `18` → 13.5pt). The user sets the final value here; this is what prevents the deck from exporting at an unintentionally small size.
+
+```bash
+python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
+```
+
+Read the confirmed canvas + palette + typography (incl. `body_size`) and any other overrides from `<project_path>/confirm_ui/result.json`. Chat is the canonical fallback when the page cannot open (remote / headless) — present the same fields in chat and honor the reply identically. Always run `--shutdown` on exit (page-confirm or chat-fallback) so port 5050 is free for Step 6 live preview.
+
+On confirmation, enter SKILL.md Step 4 as Strategist with the plan pre-resolved. The two beautify invariants always hold: the content-faithful clause ([`strategist.md`](../references/strategist.md) §d Layer 1) and page count = source slide count (strict 1:1). Everything else comes from the **confirmed** `result.json` — `mode` (recommended `briefing`), canvas, `visual_style`, color (e) + typography (g) incl. `body_size` (the reviewed values; skip both recommendation flows) — honoring whatever the user kept or overrode. §VII = chart/table data → `templates/charts/`, §VIII = source pictures for re-layout.
 
 **Hard rule — §IX is verbatim and 1:1**: each source slide becomes exactly one page, in source order, its text transcribed word-for-word from `sources/<stem>.md`. Do not merge, split, drop, or rewrite. Write `design_spec.md` + `spec_lock.md` per `strategist.md` §6, then hand off to the Executor.
 
