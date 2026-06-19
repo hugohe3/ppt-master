@@ -14,6 +14,18 @@ This directory provides **11,600+ high-quality SVG icons** across five libraries
 
 ---
 
+## Per-project icons folder
+
+This directory is the **global library**. At selection time the Strategist copies the chosen icons into the deck's own `<project>/icons/<lib>/` with `icon_sync.py`:
+
+```bash
+python3 skills/ppt-master/scripts/icon_sync.py <project_path> chunk-filled/home tabler-outline/bulb
+```
+
+A name the library does not have is reported and the command exits non-zero — re-pick a real one then, not at export. `finalize_svg.py embed-icons` embeds **project-first** (from `<project>/icons/`), falling back to this global library per-icon.
+
+**Custom icons**: drop your own `.svg` into `<project>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any library icon.
+
 ## Usage
 
 Use placeholder syntax **during SVG generation**:
