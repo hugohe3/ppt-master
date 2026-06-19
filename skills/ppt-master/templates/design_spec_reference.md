@@ -42,7 +42,7 @@
 ### Color Scheme
 
 > Strategist: determine values from project content, industry, brand colors.
-> Step 4 Confirm UI: present a few color candidates, each with a user-facing core `palette` (background / secondary_bg / primary / accent / secondary_accent / body_text), in `confirm_ui/recommendations.json`; the confirmed candidate from `result.json` seeds this table. Strategist derives the remaining text, border, state, and style-neutral colors when writing this full scheme. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
+> Step 4 Confirm UI: present **≥3** color candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each with a user-facing core `palette` (background / secondary_bg / primary / accent / secondary_accent / body_text), in `confirm_ui/recommendations.json`; the confirmed candidate from `result.json` seeds this table. Strategist derives the remaining text, border, state, and style-neutral colors when writing this full scheme. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
 
 | Role | HEX | Purpose |
 | ---- | --- | ------- |
@@ -97,7 +97,7 @@
 
 **Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
 
-> Step 4 Confirm UI: present a few typography candidates, each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks) and declaring `body_size` as the body baseline px, in `confirm_ui/recommendations.json`; the confirmed candidate from `result.json` seeds the plan below. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
+> Step 4 Confirm UI: present **≥3** typography candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks) and declaring `body_size` as the body baseline px, in `confirm_ui/recommendations.json`; the confirmed candidate from `result.json` seeds the plan below. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
 
 Two views on the same font decisions — fill both, keep them consistent:
 

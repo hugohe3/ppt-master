@@ -2,7 +2,7 @@
  * Finite/enumerable fields (canvas, mode, visual style, icons, image usage,
  * AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
- * fields (color, typography, generated-image style) show a few AI candidates. Open fields also expose
+ * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
  * Custom controls. On confirm the page saves result.json and closes.
  */
 (function () {
