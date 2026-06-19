@@ -103,19 +103,8 @@ def _extract_shape_elements(content: str, color: str) -> list[str]:
     return elements
 
 
-def resolve_icon_path(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
-    """
-    Resolve icon name to file path and base size.
-
-    Supports:
-      - "chunk-filled/home"     → icons_dir/chunk-filled/home.svg
-      - "chunk/home"            → icons_dir/chunk-filled/home.svg (backward compat alias)
-      - "tabler-filled/home"    → icons_dir/tabler-filled/home.svg
-      - "tabler-outline/home"   → icons_dir/tabler-outline/home.svg
-      - "home" (no prefix)      → falls back to icons_dir/chunk-filled/home.svg (legacy compat only)
-
-    Returns (path, base_size). base_size=0 means not found.
-    """
+def _resolve_in_dir(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
+    """Resolve `icon_name` against a single icons dir (no fallback)."""
     # Backward compat: 'chunk/name' → 'chunk-filled/name'
     _LIB_ALIASES = {'chunk': 'chunk-filled'}
 
@@ -132,6 +121,25 @@ def resolve_icon_path(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
             icon_path = icons_dir / f'{icon_name}.svg'  # legacy flat layout
             base_size = 16
 
+    return icon_path, base_size
+
+
+def resolve_icon_path(icon_name: str, icons_dir: Path, fallback_dir: Path | None = None) -> tuple[Path, float]:
+    """
+    Resolve icon name to file path and base size, e.g. "chunk-filled/home" →
+    icons_dir/chunk-filled/home.svg. "chunk/" is a backward-compat alias; an
+    un-prefixed name falls back to chunk-filled/ then a legacy flat layout.
+
+    Resolution is project-first: if the icon is absent under ``icons_dir`` and a
+    ``fallback_dir`` (the global library) is given, the fallback's path is
+    returned instead. Returns (path, base_size); the path may not exist when
+    neither dir has the icon.
+    """
+    icon_path, base_size = _resolve_in_dir(icon_name, icons_dir)
+    if fallback_dir is not None and not icon_path.exists():
+        fb_path, fb_size = _resolve_in_dir(icon_name, fallback_dir)
+        if fb_path.exists():
+            return fb_path, fb_size
     return icon_path, base_size
 
 
@@ -275,7 +283,7 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
   </g>'''
 
 
-def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, verbose: bool = False) -> int:
+def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, verbose: bool = False, fallback_dir: Path | None = None) -> int:
     """
     Process a single SVG file, replacing all icon placeholders.
 
@@ -315,7 +323,7 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         if not icon_name:
             continue
 
-        icon_path, _ = resolve_icon_path(str(icon_name), icons_dir)
+        icon_path, _ = resolve_icon_path(str(icon_name), icons_dir, fallback_dir)
         elements, style, base_size = extract_paths_from_icon(icon_path)
         color = resolve_icon_color(attrs, style)
         

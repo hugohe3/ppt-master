@@ -67,6 +67,9 @@ python3 skills/ppt-master/scripts/project_manager.py init <project_name> --forma
 python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_URLs...> --move
 python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 
+# Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
+python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name>...]
+
 # Step 4 Eight Confirmations — interactive visual page (default auto-launch; chat fallback)
 python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
 

@@ -143,6 +143,7 @@ class ProjectManager:
             "svg_output",
             "svg_final",
             "images",
+            "icons",
             "notes",
             "templates",
             SOURCE_DIRNAME,
@@ -161,6 +162,7 @@ class ProjectManager:
                 "- `svg_output/`: raw SVG output\n"
                 "- `svg_final/`: finalized SVG output\n"
                 "- `images/`: presentation assets\n"
+                "- `icons/`: project icon set — selected library icons copied in (via icon_sync.py) plus any custom icons you add; embedded from here at export\n"
                 "- `notes/`: speaker notes\n"
                 "- `templates/`: project templates\n"
                 "- `sources/`: source materials and normalized markdown\n"
