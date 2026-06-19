@@ -55,6 +55,8 @@
             body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
             custom_typography: "Custom typography",
             custom_typography_placeholder: "Type your font plan, e.g. Heading: Georgia + KaiTi; Body: Microsoft YaHei + Arial…",
+            custom_color: "Custom color",
+            custom_color_placeholder: "Describe your colors in words, e.g. deep navy primary, warm orange accent, white background — or paste HEX values…",
             role_background: "bg",
             role_secondary_bg: "2nd bg",
             role_primary: "primary",
@@ -121,6 +123,8 @@
             body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
             custom_typography: "自定义字体方案",
             custom_typography_placeholder: "输入字体方案，如：标题用楷体；正文用微软雅黑…",
+            custom_color: "自定义配色",
+            custom_color_placeholder: "用文字描述配色，如：深蓝主色、暖橙强调、白色背景——或直接粘贴 HEX 值…",
             role_background: "背景",
             role_secondary_bg: "次级背景",
             role_primary: "主色",
@@ -559,12 +563,28 @@
                 if (hexSwatches[role]) paintSwatch(hexSwatches[role], pal[role]);
             });
         }
+        var customInput = el("textarea", "text-input custom-color-input");
+        customInput.rows = 2;
+        customInput.placeholder = t("custom_color_placeholder");
+        customInput.style.display = "none";
+
         function selectCard(idx) {
             var c = cands[idx] || {};
             selectedIdx = idx;
             STATE.color = { name: c.name || "", palette: Object.assign({}, normPalette(c)) };
             grid.querySelectorAll(".color-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
+            customInput.style.display = "none";
             applyHexInputs(STATE.color.palette);
+            refreshStylePreview();
+        }
+
+        function selectCustomColor() {
+            selectedIdx = -1;
+            STATE.color = { name: "custom", custom: customInput.value || "", palette: {} };
+            grid.querySelectorAll(".color-card").forEach(function (card) { card.classList.remove("selected"); });
+            customCard.classList.add("selected");
+            customInput.style.display = "block";
+            customInput.focus();
             refreshStylePreview();
         }
 
@@ -588,7 +608,17 @@
             card.addEventListener("click", function () { selectCard(idx); });
             grid.appendChild(card);
         });
+        var customCard = el("div", "color-card color-card-custom");
+        customCard.appendChild(el("div", "color-name", t("custom_color")));
+        customCard.addEventListener("click", selectCustomColor);
+        grid.appendChild(customCard);
         sec.appendChild(grid);
+        customInput.addEventListener("input", function () {
+            if (!STATE.color || STATE.color.name !== "custom") selectCustomColor();
+            STATE.color.custom = customInput.value;
+            refreshStylePreview();
+        });
+        sec.appendChild(customInput);
 
         var override = el("div", "hex-override");
         override.appendChild(el("div", "subfield-label", t("hex_override")));
@@ -622,9 +652,17 @@
         host.appendChild(sec);
 
         var selIdx = -1;
-        if (STATE.color && STATE.color.name) cands.forEach(function (c, i) { if (c.name === STATE.color.name) selIdx = i; });
-        if (selIdx >= 0) selectCard(selIdx);
-        else applyHexInputs((STATE.color && STATE.color.palette) || {});
+        if (STATE.color && STATE.color.name && STATE.color.name !== "custom") {
+            cands.forEach(function (c, i) { if (c.name === STATE.color.name) selIdx = i; });
+        }
+        if (STATE.color && STATE.color.name === "custom") {
+            customInput.value = STATE.color.custom || "";
+            selectCustomColor();
+        } else if (selIdx >= 0) {
+            selectCard(selIdx);
+        } else {
+            applyHexInputs((STATE.color && STATE.color.palette) || {});
+        }
     }
 
     function renderIcons(host) {
