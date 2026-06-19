@@ -133,6 +133,28 @@ pip install python-pptx
 
 Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF first.
 
+## `pptx_intake.py`
+
+Standard enrichment layer for PPTX sources. It complements `ppt_to_md.py` rather
+than replacing it: Markdown remains the normalized content source, while intake
+artifacts provide source facts for Strategist and standalone PPTX workflows.
+
+```bash
+python3 scripts/pptx_intake.py deck.pptx -o projects/demo/analysis
+```
+
+Outputs:
+- `identity.json` — canvas size/aspect, theme palette/fonts, observed colors/fonts
+- `slide_library.json` — text slots, geometry, native tables, native chart display caches
+- `source_profile.json` — compact Strategist-facing digest over identity, tables, charts, and page types
+
+`project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. The bundle is single-deck per project: importing a second PPTX keeps its Markdown source but skips intake rather than overwriting `analysis/source_profile.json`.
+
+Usage boundary:
+- Standard generation uses these fields as facts and recommendation candidates; it does not inherit source slide coordinates or page order by default.
+- Beautify promotes selected identity/content fields into locked constraints after confirmation.
+- Template-fill uses the slide library as the native PPTX fill contract.
+
 ## `source_to_md/web_to_md.py`
 
 Convert web pages to Markdown and download images locally.

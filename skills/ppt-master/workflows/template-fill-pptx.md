@@ -60,12 +60,12 @@ Use this fixed layout:
 
 ---
 
-## Step 3: Extract the Slide Library
+## Step 3: Extract the PPTX Intake Bundle
 
 Run:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py analyze "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis/slide_library.json"
+python3 skills/ppt-master/scripts/pptx_intake.py "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis"
 ```
 
 Read `<project_dir>/analysis/slide_library.json` and identify:
@@ -169,6 +169,7 @@ The plan structure:
 | Empty slots | Use `scaffold --include-empty` only when a real placeholder is empty in the source deck |
 | Native tables | Keep the original table row and column count; this workflow edits existing cells, not table structure |
 | Native charts | Each series `values` list must match the category count; this workflow edits chart data, not chart styling |
+| Multi-plot / combo charts | Not supported for direct `chart_edits`; `check-plan` reports an error rather than silently writing the wrong plot. Use beautify / main pipeline to redraw them, or leave the native chart untouched. |
 | Facts | Every substantive claim must come from the user material |
 
 **Fit check before apply**:
@@ -278,7 +279,7 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 ```markdown
 ## ✅ Template Fill Complete
 
-- [x] `slide_library.json` extracted from the source PPTX
+- [x] Standard PPTX intake extracted from the source deck, including `slide_library.json`
 - [x] `fill_plan.json` selects only pages that fit the target story
 - [x] `check-plan` run and capacity warnings resolved or explicitly accepted
 - [x] Output PPTX generated through direct OOXML text replacement

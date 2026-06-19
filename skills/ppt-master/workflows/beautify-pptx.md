@@ -43,7 +43,7 @@ Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source 
 
 ## 3. Create the Project Workspace
 
-Match the canvas to the source so 1:1 pages and paste-back align. Determine the source aspect first — before the project exists, run `beautify_identity.py <source.pptx>` to **stdout** and read `canvas.aspect` (the formal `analysis/identity.json` is written in Step 4, after `init`) — then `init` with the matching format:
+Match the canvas to the source so 1:1 pages and paste-back align. Determine the source aspect first — before the project exists, run `beautify_identity.py <source.pptx>` to **stdout** and read `canvas.aspect` (the formal standard intake bundle is written in Step 4, after `init`) — then `init` with the matching format:
 
 | Source aspect | Format |
 |---|---|
@@ -60,15 +60,15 @@ python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <s
 
 ## 4. Extract Identity and Data; Assemble Inventory
 
-Two reads off the source PPTX (text + images already exist from Step 3). Neither rewrites the deck.
+Use the standard PPTX intake bundle from Step 3. `project_manager.py import-sources` already writes it under `analysis/` for PPTX-family inputs. If the bundle is missing because the project predates this workflow, generate it once:
+
+```bash
+python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx> -o <project_path>/analysis
+```
 
 **Content + images — already produced by Step 3.** `import-sources` ran `ppt_to_md` on the deck, so the **frozen content contract** is `sources/<stem>.md` (one source slide per block, in order). If the source deck contains pictures, they are already propagated to `images/` with per-slide binding in `images/image_manifest.json` (`occurrences[].slide_index`). Do **not** re-run `ppt_to_md` — it would duplicate the conversion and write images to `analysis/<stem>_files/` instead of `images/`.
 
-**Visual identity (theme + observed sample + canvas)**:
-
-```bash
-python3 ${SKILL_DIR}/scripts/beautify_identity.py <project_path>/sources/<source.pptx> -o <project_path>/analysis/identity.json
-```
+**Visual identity (theme + observed sample + canvas)**: read `<project_path>/analysis/identity.json`.
 
 | Field | Use |
 |---|---|
@@ -79,11 +79,7 @@ python3 ${SKILL_DIR}/scripts/beautify_identity.py <project_path>/sources/<source
 
 > Note: `theme` is what the deck declares; `observed` is a frequency sample of run-level overrides (not a complete style resolution — it misses `schemeClr` and master/layout inheritance, and counts chart/gradient fills). A hand-edited deck can diverge from `theme` — Step 5 recommends which to inherit and the user confirms.
 
-**Chart + table data (for regeneration)**: read the source's chart and table *data* so they can be redrawn natively in the inherited style:
-
-```bash
-python3 ${SKILL_DIR}/scripts/template_fill_pptx.py analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/slide_library.json
-```
+**Chart + table data (for regeneration)**: read `<project_path>/analysis/slide_library.json`. It contains the source chart and table *data* so they can be redrawn natively in the inherited style:
 
 | `slide_library.json` field | Use |
 |---|---|
@@ -127,6 +123,7 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 - [x] `sources/<stem>.md` (from Step 3) holds every source slide's text, in order; extracted pictures, if any, are in `images/` + `images/image_manifest.json`
 - [x] `analysis/identity.json` has theme + observed identity + canvas aspect
 - [x] `analysis/slide_library.json` holds chart + table data for regeneration
+- [x] `analysis/source_profile.json` summarizes the source facts
 - [x] `analysis/beautify_inventory.json` ledgers per-slide text / images / data + ignored + needs-confirmation
 - [ ] **Next**: Step 5 — Beautify Plan (recommend & confirm)
 ```

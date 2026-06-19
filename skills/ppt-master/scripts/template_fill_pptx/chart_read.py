@@ -27,14 +27,15 @@ def _local_name(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
 
-def _chart_type_with_series(chart_root: ET.Element) -> ET.Element | None:
+def _chart_types_with_series(chart_root: ET.Element) -> list[ET.Element]:
     plot_area = chart_root.find(".//c:plotArea", NS)
     if plot_area is None:
-        return None
+        return []
+    chart_types: list[ET.Element] = []
     for child in list(plot_area):
         if _local_name(child.tag).endswith("Chart") and child.findall("c:ser", NS):
-            return child
-    return None
+            chart_types.append(child)
+    return chart_types
 
 
 def _coerce_number(value: str) -> int | float | str:
@@ -75,23 +76,33 @@ def _series_name(series: ET.Element, fallback: str) -> str:
 
 def read_chart_data(chart_root: ET.Element) -> dict[str, Any]:
     """Return a compact summary of chart type, categories, series, and values."""
-    chart_type = _chart_type_with_series(chart_root)
-    if chart_type is None:
+    chart_types = _chart_types_with_series(chart_root)
+    if not chart_types:
         return empty_chart_data()
 
-    series_nodes = chart_type.findall("c:ser", NS)
-    categories = _cache_values(series_nodes[0].find("c:cat", NS)) if series_nodes else []
+    first_series = chart_types[0].find("c:ser", NS)
+    categories = _cache_values(first_series.find("c:cat", NS)) if first_series is not None else []
     series_payload: list[dict[str, Any]] = []
-    for index, series in enumerate(series_nodes, start=1):
-        series_payload.append(
-            {
-                "name": _series_name(series, f"系列{index}"),
-                "values": _cache_values(series.find("c:val", NS), numeric=True),
-            }
-        )
+    plot_types: list[str] = []
+    for chart_type in chart_types:
+        plot_name = _local_name(chart_type.tag)
+        plot_types.append(plot_name)
+        for series in chart_type.findall("c:ser", NS):
+            index = len(series_payload) + 1
+            series_categories = _cache_values(series.find("c:cat", NS))
+            if not categories and series_categories:
+                categories = series_categories
+            series_payload.append(
+                {
+                    "name": _series_name(series, f"系列{index}"),
+                    "values": _cache_values(series.find("c:val", NS), numeric=True),
+                    "chart_type": plot_name,
+                }
+            )
 
     return {
-        "chart_type": _local_name(chart_type.tag),
+        "chart_type": plot_types[0] if len(set(plot_types)) == 1 else "comboChart",
+        "plot_types": plot_types,
         "category_count": len(categories),
         "series_count": len(series_payload),
         "categories": categories,
