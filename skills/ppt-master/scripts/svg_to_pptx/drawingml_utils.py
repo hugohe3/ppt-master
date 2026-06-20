@@ -441,6 +441,21 @@ def is_cjk_char(ch: str) -> bool:
             0x20000 <= cp <= 0x2A6DF)
 
 
+def detect_text_lang(text: str) -> str:
+    """Return a DrawingML language tag for a text run."""
+    return 'zh-CN' if any(is_cjk_char(ch) for ch in text) else 'en-US'
+
+
+def resolve_text_run_fonts(text: str, fonts: dict[str, str]) -> dict[str, str]:
+    """Return DrawingML latin/ea/cs typefaces for one text run."""
+    latin = fonts['latin']
+    if detect_text_lang(text) == 'zh-CN':
+        ea = fonts['ea']
+    else:
+        ea = latin
+    return {'latin': latin, 'ea': ea, 'cs': latin}
+
+
 def estimate_text_width(text: str, font_size: float, font_weight: str = '400') -> float:
     """Estimate text width in SVG pixels."""
     width = 0.0
