@@ -119,7 +119,37 @@ python3 scripts/image_search.py "<query>" \
 | `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
 | `--manifest` | no | (default) | Override manifest path |
 
-**Pacing (mandatory)**: one search at a time. Wikimedia/Openverse expect identifying User-Agent and reasonable rate (~1 req/sec). Default pacing is fine.
+### Batch mode (≥ 2 web rows) — preferred
+
+When more than one row is `Acquire Via: web`, do **not** call the CLI once per row. Write all rows into one `image_queries.json` and run a single concurrent batch — the web sister of `image_gen.py --manifest`:
+
+```bash
+python3 scripts/image_search.py --batch <project_path>/images/image_queries.json \
+  -o <project_path>/images
+```
+
+`image_queries.json` schema (one item per web row):
+
+```json
+{
+  "items": [
+    {
+      "filename": "team.jpg",
+      "query": "executive boardroom meeting",
+      "slide": "03_team",
+      "purpose": "background",
+      "orientation": "landscape",
+      "status": "Pending"
+    }
+  ]
+}
+```
+
+Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`.
+
+The runner searches all `Pending` / `Failed` rows concurrently, appends each success to `image_sources.json` (the credit source of truth, idempotent on `filename`), and writes status back into `image_queries.json` — `Sourced` on success, `Needs-Manual` when the full provider/stage chain is exhausted. Status is saved after each completion, so an interrupted run preserves finished rows; re-running skips terminal rows. A single `web` row may still use single-query mode above.
+
+**Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
 
 ---
 
