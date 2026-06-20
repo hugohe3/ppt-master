@@ -314,6 +314,14 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 | **D** | Web-sourced | Real-world reference imagery, editorial support, stock-style needs (no API key required for default providers) |
 | **E** | Placeholders | Images to be added later |
 
+> 🚧 **GATE — know your resources before recommending.** `images/` is a live working folder (source-extracted pictures, user drops, later replacements), so its facts are **re-derived on use, never trusted from a stale store**. Before recommending image usage, if `images/` is non-empty, regenerate the inventory from whatever is currently in it, then read it back:
+>
+> ```bash
+> python3 scripts/analyze_images.py <project_path>/images
+> ```
+>
+> Read `<project_path>/analysis/image_analysis.csv` (size / ratio / category of every in-hand picture). The A–E choice is still your judgment, but it MUST be made with the current inventory in full view — never in ignorance of what is already on hand. `image_analysis.csv` is a regenerated view of the live folder, not a durable fact: re-run this whenever `images/` changes.
+
 > **Confirmed value wins.** The `image_usage` in `result.json` (or the chat reply) **overrides the recommendation here** — map it to §VIII `Acquire Via` (`ai`→`ai`, `web`→`web`, `provided`→**`user`**, `placeholder`→`placeholder`, `none`→option A, no image rows). When it is not `ai` (and the plan has no AI part), skip h.5 entirely and write no `ai` rows. See SKILL.md Step 4 for the full mapping.
 
 **When recommending C** — surface its three implementation modes so the user knows "no API key" is a supported state:
