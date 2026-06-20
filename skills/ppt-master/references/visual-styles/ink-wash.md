@@ -6,7 +6,7 @@ New-Chinese ink-wash — a rice-paper field, vast literati whitespace, restraine
 
 ## 1. Shape & decoration
 
-- Shape language: minimal brush-stroke marks and hairline dividers; the occasional ink-dark block; a single seal-stamp (印章) square as a focal accent. No cards, no boxes — emptiness is the structure.
+- Shape language: minimal brush-stroke marks and hairline dividers; the occasional ink-dark block; a single seal-stamp (印章) square as a focal accent. No cards, no boxes — emptiness is the structure. The brush-stroke and ink-bleed marks are irregular `<path>` shapes with uneven control points — never an `<ellipse>` / `<circle>` standing in for a wash, which reads as fake ink. (The seal-stamp square is the one deliberate hard edge.)
 - Decoration: almost none; what little appears reads as brush and seal. Asymmetric, scroll-like composition with deliberate off-balance.
 - Whitespace: vast and intentional — the rice-paper field carries most of the page; a few elements float in great calm.
 
