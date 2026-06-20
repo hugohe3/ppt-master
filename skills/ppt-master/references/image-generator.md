@@ -496,8 +496,9 @@ Precedence:
 Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails) **and** the host provides a native image generation tool (Codex, Antigravity, Claude Code's image tool, and similar). No user prompting required — the agent detects the host capability and proceeds. The user may also explicitly name this path ("use Codex's image tool") to force it even when `IMAGE_BACKEND` is configured.
 
 - Agent invokes the host's native image tool directly; prompts come from `items[].prompt`
+- **Batch for speed, mind the rate**: when the host can run independent tool calls in parallel (e.g. Claude Code issues independent calls concurrently), fire several generations together in modest groups — a few rows at a time (~3–4), not the whole manifest at once — so their latency overlaps without flooding the host's image quota. When the host only runs tools serially, generate one row at a time. This mirrors Path A's default concurrency of 3.
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
-- After each placement, set the corresponding item's `status` to `Generated` in the manifest
+- Mark each item's `status` `Generated` in the manifest the moment its file lands — as each completes, not in one pass at the end (so an interrupted batch leaves accurate state)
 - Executor downstream is path-agnostic — no spec change required between Path A and Path B
 
 ### Offline Manual Mode (C's third implementation mode)
