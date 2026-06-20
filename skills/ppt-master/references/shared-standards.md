@@ -555,7 +555,7 @@ Best for: slides needing strong visual brand identity.
 
 | Scenario | Recommended Technique | Avoid |
 |----------|-----------------------|-------|
-| Card / panel shadow (only when floating over photo/colored panel) | Filter soft shadow (`flood-opacity` 0.06–0.12, single light source) | Hard black shadow, full-page abundance |
+| Card / panel shadow (only when floating over photo/colored panel) | Filter soft shadow (`flood-opacity` 0.06–0.10, single light source) | Hard black shadow, full-page abundance |
 | Equal peer cards in a grid | All flat (no shadow) | Lifting every card uniformly |
 | Page-section background panel | Flat fill, no shadow | Treating panels as floating cards |
 | Accent / CTA button (one per page) | Colored shadow (same hue family, `flood-opacity` 0.12–0.20) | Generic gray shadow, applying to every button |
