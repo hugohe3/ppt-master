@@ -39,10 +39,13 @@ Examples:
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import importlib
 import json
 import os
 import sys
+import tempfile
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -84,6 +87,29 @@ KEYED_PROVIDERS: tuple[str, ...] = ("pexels", "pixabay")
 ALL_PROVIDERS: tuple[str, ...] = ZERO_CONFIG_PROVIDERS + KEYED_PROVIDERS
 
 ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
+
+# --- Batch mode (`--batch image_queries.json`) -----------------------------
+# Web providers are politeness-sensitive (Wikimedia/Openverse expect a modest
+# rate), so the default concurrency is deliberately low. Sister-tool
+# `image_gen.py` hits a paid API and defaults higher; here 3 keeps several
+# rows in flight without hammering any single free provider. Set to 1 to
+# restore strict one-at-a-time pacing.
+DEFAULT_SEARCH_CONCURRENCY = 3
+
+SEARCH_STATUS_PENDING = "Pending"
+SEARCH_STATUS_SOURCED = "Sourced"
+SEARCH_STATUS_FAILED = "Failed"
+SEARCH_STATUS_NEEDS_MANUAL = "Needs-Manual"
+SEARCH_VALID_STATUSES = {
+    SEARCH_STATUS_PENDING,
+    SEARCH_STATUS_SOURCED,
+    SEARCH_STATUS_FAILED,
+    SEARCH_STATUS_NEEDS_MANUAL,
+}
+# A row reaching `Needs-Manual` after the full provider/stage chain is terminal
+# (see image-searcher.md §8); only Pending/Failed rows are retried on re-run.
+SEARCH_RETRYABLE_STATUSES = {SEARCH_STATUS_PENDING, SEARCH_STATUS_FAILED}
+SEARCH_REQUIRED_ITEM_FIELDS = ("filename", "query", "status")
 
 
 # ---------------------------------------------------------------------------
@@ -532,6 +558,241 @@ def promote_candidate(
 
 
 # ---------------------------------------------------------------------------
+# Batch mode (`--batch image_queries.json`)
+# ---------------------------------------------------------------------------
+
+
+def load_search_manifest(path: str) -> dict:
+    """Load and validate an ``image_queries.json`` batch manifest.
+
+    Schema (top level): ``{"items": [ ... ]}``. Each item requires
+    ``filename``, ``query``, ``status``. Optional per-item overrides:
+    ``slide``, ``purpose``, ``orientation``, ``provider``,
+    ``strict_no_attribution``, ``min_width``, ``min_height``, ``last_error``.
+    """
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Invalid JSON in {path}: {exc.msg} "
+            f"(line {exc.lineno}, col {exc.colno})"
+        ) from exc
+
+    if not isinstance(data, dict):
+        raise ValueError(
+            f"{path}: top level must be a JSON object, got {type(data).__name__}"
+        )
+
+    items = data.get("items")
+    if not isinstance(items, list) or not items:
+        raise ValueError(f"{path}: 'items' must be a non-empty array")
+
+    seen_filenames: set[str] = set()
+    for i, item in enumerate(items):
+        prefix = f"{path}: items[{i}]"
+        if not isinstance(item, dict):
+            raise ValueError(f"{prefix} must be an object")
+        for field in SEARCH_REQUIRED_ITEM_FIELDS:
+            if field not in item:
+                raise ValueError(f"{prefix} missing required field '{field}'")
+            if not isinstance(item[field], str) or not item[field].strip():
+                raise ValueError(
+                    f"{prefix} field '{field}' must be a non-empty string"
+                )
+        if item["status"] not in SEARCH_VALID_STATUSES:
+            raise ValueError(
+                f"{prefix} status '{item['status']}' is invalid. "
+                f"Valid: {sorted(SEARCH_VALID_STATUSES)}"
+            )
+        fname = item["filename"]
+        if fname in seen_filenames:
+            raise ValueError(f"{prefix} duplicate filename '{fname}'")
+        seen_filenames.add(fname)
+
+    return data
+
+
+def save_search_manifest(path: str, data: dict) -> None:
+    """Atomically write the batch manifest back (tmp file + rename)."""
+    target = Path(path)
+    fd, tmp_path = tempfile.mkstemp(
+        prefix=target.stem + ".", suffix=".tmp", dir=str(target.parent)
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        os.replace(tmp_path, target)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
+def _resolve_search_concurrency(cli_value: Optional[int]) -> int:
+    """CLI value wins over IMAGE_SEARCH_CONCURRENCY env; default 3."""
+    if cli_value is not None:
+        return max(1, cli_value)
+    env_val = os.environ.get("IMAGE_SEARCH_CONCURRENCY", "").strip()
+    if env_val.isdigit():
+        return max(1, int(env_val))
+    return DEFAULT_SEARCH_CONCURRENCY
+
+
+def _search_one_item(
+    item: dict,
+    *,
+    output_dir: Path,
+    save_candidates: bool,
+    max_candidates: int,
+    default_provider: Optional[str],
+    default_strict: bool,
+    default_min_width: int,
+    default_min_height: int,
+) -> tuple[Optional[dict], Optional[str]]:
+    """Run the full search + download for one batch item (thread worker).
+
+    Returns ``(manifest_item, error)``. Only the network/disk work happens
+    here; all manifest writes are serialized by the caller.
+    """
+    orientation = item.get("orientation", "any") or "any"
+    strict = bool(item.get("strict_no_attribution", default_strict))
+    request = ImageSearchRequest(
+        query=item["query"],
+        purpose=item.get("purpose", ""),
+        orientation="" if orientation == "any" else orientation,
+        filename=item["filename"],
+        slide=item.get("slide", ""),
+        min_width=int(item.get("min_width", default_min_width)),
+        min_height=int(item.get("min_height", default_min_height)),
+    )
+
+    pinned = item.get("provider") or default_provider
+    providers = [pinned] if pinned else _default_provider_chain()
+    output_path = output_dir / item["filename"]
+
+    candidate, provider_name, stage = search_and_download(
+        providers,
+        request,
+        output_path=output_path,
+        strict_no_attribution=strict,
+        save_candidates=save_candidates,
+        max_candidates=max_candidates,
+    )
+    if candidate is None:
+        return None, "no acceptable candidate across all providers/stages"
+
+    actual_dimensions = _measure_actual_image(output_path)
+    item_args = argparse.Namespace(
+        filename=item["filename"],
+        slide=item.get("slide", ""),
+        purpose=item.get("purpose", ""),
+        query=item["query"],
+        orientation=orientation,
+    )
+    manifest_item = _candidate_to_manifest_item(
+        candidate,
+        item_args,
+        provider_name=provider_name,
+        stage=stage,
+        actual_dimensions=actual_dimensions,
+    )
+    return manifest_item, None
+
+
+def run_search_manifest(
+    manifest: dict,
+    manifest_path: str,
+    *,
+    output_dir: Path,
+    sources_manifest_path: Path,
+    concurrency: int,
+    save_candidates: bool,
+    max_candidates: int,
+    default_provider: Optional[str],
+    default_strict: bool,
+    default_min_width: int,
+    default_min_height: int,
+) -> tuple[int, int, int]:
+    """Process all Pending/Failed rows concurrently with a bounded pool.
+
+    On success the rich provenance entry is appended to ``image_sources.json``
+    (the credit source of truth) and the row's status flips to ``Sourced``.
+    A row that exhausts the provider/stage chain becomes ``Needs-Manual``
+    (terminal). Status is written back after each completion, so an interrupt
+    preserves finished rows. Returns ``(sourced, needs_manual, skipped)``.
+    """
+    items = manifest["items"]
+    pending_idx = [
+        i for i, it in enumerate(items)
+        if it["status"] in SEARCH_RETRYABLE_STATUSES
+    ]
+    total = len(pending_idx)
+    skipped = len(items) - total
+
+    if total == 0:
+        print(
+            f"[Batch] Nothing to do — all {len(items)} row(s) already in a "
+            "terminal state (Sourced / Needs-Manual)."
+        )
+        return 0, 0, skipped
+
+    print(
+        f"\n[Batch] {total} row(s) to search, {skipped} already done. "
+        f"concurrency={concurrency}\n"
+    )
+
+    sourced_count = 0
+    needs_manual_count = 0
+    write_lock = threading.Lock()
+
+    def _one(idx: int):
+        try:
+            manifest_item, error = _search_one_item(
+                items[idx],
+                output_dir=output_dir,
+                save_candidates=save_candidates,
+                max_candidates=max_candidates,
+                default_provider=default_provider,
+                default_strict=default_strict,
+                default_min_width=default_min_width,
+                default_min_height=default_min_height,
+            )
+            return idx, manifest_item, error
+        except Exception as exc:  # noqa: BLE001 — provider code raises freely
+            return idx, None, str(exc)[:500]
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as ex:
+        futures = [ex.submit(_one, i) for i in pending_idx]
+        for fut in concurrent.futures.as_completed(futures):
+            idx, manifest_item, error = fut.result()
+            item = items[idx]
+            with write_lock:
+                if manifest_item is not None:
+                    write_sources_manifest(sources_manifest_path, manifest_item)
+                    item["status"] = SEARCH_STATUS_SOURCED
+                    item["provider"] = manifest_item.get("provider", "")
+                    item["license_tier"] = manifest_item.get("license_tier", "")
+                    item.pop("last_error", None)
+                    sourced_count += 1
+                    print(f"  [OK]   {item['filename']} ({item['provider']})")
+                else:
+                    item["status"] = SEARCH_STATUS_NEEDS_MANUAL
+                    item["last_error"] = error or "search failed"
+                    needs_manual_count += 1
+                    print(f"  [MANUAL] {item['filename']} — {item['last_error']}")
+                save_search_manifest(manifest_path, manifest)
+
+    print(
+        f"\n[Batch] Done: {sourced_count} sourced / {needs_manual_count} "
+        f"needs-manual ({skipped} pre-skipped). Manifest: {manifest_path}"
+    )
+    return sourced_count, needs_manual_count, skipped
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -544,11 +805,19 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("query", help="Search query (2-5 keywords work best).")
+    parser.add_argument(
+        "query",
+        nargs="?",
+        default=None,
+        help="Search query (2-5 keywords work best). Omit in --batch mode.",
+    )
     parser.add_argument(
         "--filename",
-        required=True,
-        help="Local filename for the chosen image (e.g. cover_bg.jpg).",
+        default=None,
+        help=(
+            "Local filename for the chosen image (e.g. cover_bg.jpg). "
+            "Required for single-query and --promote modes; ignored in --batch."
+        ),
     )
     parser.add_argument(
         "-o",
@@ -607,6 +876,27 @@ def build_parser() -> argparse.ArgumentParser:
         help="Override manifest path. Defaults to <output>/image_sources.json.",
     )
     parser.add_argument(
+        "--batch",
+        default=None,
+        metavar="QUERIES_JSON",
+        help=(
+            "Process a batch of search requests from an image_queries.json "
+            "manifest concurrently, writing provenance into image_sources.json "
+            "and status back into the queries manifest."
+        ),
+    )
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=None,
+        help=(
+            "Max concurrent searches in --batch mode. Defaults to "
+            f"IMAGE_SEARCH_CONCURRENCY env or {DEFAULT_SEARCH_CONCURRENCY}. "
+            "Keep modest — free providers are rate-sensitive; use 1 for "
+            "strict one-at-a-time pacing."
+        ),
+    )
+    parser.add_argument(
         "--no-candidates",
         action="store_true",
         help="Disable candidate pool saving (only download the best match).",
@@ -651,6 +941,8 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     # --- Promote mode ---
     if args.promote:
+        if not args.filename:
+            parser.error("--filename is required in --promote mode")
         return promote_candidate(
             output_dir,
             args.filename,
@@ -658,7 +950,52 @@ def main(argv: Optional[list[str]] = None) -> int:
             manifest_path=Path(args.manifest) if args.manifest else None,
         )
 
-    # --- Search mode ---
+    # --- Batch mode ---
+    if args.batch:
+        if not os.path.isfile(args.batch):
+            print(f"Error: queries manifest not found: {args.batch}", file=sys.stderr)
+            return 1
+        try:
+            manifest = load_search_manifest(args.batch)
+        except ValueError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        batch_output_dir = (
+            output_dir if args.output != "." else Path(args.batch).parent
+        )
+        batch_output_dir.mkdir(parents=True, exist_ok=True)
+        sources_manifest_path = (
+            Path(args.manifest) if args.manifest
+            else default_manifest_path(str(batch_output_dir))
+        )
+        try:
+            _, needs_manual, _ = run_search_manifest(
+                manifest,
+                args.batch,
+                output_dir=batch_output_dir,
+                sources_manifest_path=sources_manifest_path,
+                concurrency=_resolve_search_concurrency(args.concurrency),
+                save_candidates=not args.no_candidates,
+                max_candidates=args.max_candidates,
+                default_provider=args.provider,
+                default_strict=args.strict_no_attribution,
+                default_min_width=args.min_width,
+                default_min_height=args.min_height,
+            )
+        except KeyboardInterrupt:
+            print("\n\nInterrupted by user. Partial progress preserved in manifest.")
+            return 130
+        # Mirror image_gen.py: a non-zero code flags rows that need manual
+        # attention. It is a signal, not a halt — the workflow (image-base.md
+        # §6) surfaces Needs-Manual rows and continues regardless.
+        return 1 if needs_manual else 0
+
+    # --- Single-query search mode ---
+    if not args.query:
+        parser.error("query is required unless --batch or --promote is used")
+    if not args.filename:
+        parser.error("--filename is required in single-query mode")
+
     request = ImageSearchRequest(
         query=args.query,
         purpose=args.purpose,

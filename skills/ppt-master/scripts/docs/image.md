@@ -167,6 +167,8 @@ python3 scripts/image_search.py "offshore wind farm" \
   --orientation landscape -o projects/demo/images
 ```
 
+For multiple web rows, `--batch images/image_queries.json` searches them concurrently (modest default, `--concurrency N` / `IMAGE_SEARCH_CONCURRENCY` to tune) instead of one call per row — the web sister of `image_gen.py --manifest`. Schema and status semantics: [`image-searcher.md`](../../references/image-searcher.md) §5.
+
 Providers (Openverse and Wikimedia work with no key; configure Pexels / Pixabay for better stock-photo quality):
 
 | Provider | Config | Strength |
