@@ -31,7 +31,7 @@ pip install flask
 
 - **Enumerable + custom** — canvas / mode / visual_style / icons / image usage. The page lists common options from `static/catalogs.json`, badges the AI's recommendation, and still offers a Custom box for edge cases (custom canvas size, bespoke narrative mode, mixed image plan, self-provided icon system, etc.).
 - **Closed enumerable** — formula policy / generation mode / refine spec, plus AI source only when image usage may include `ai`. These have no Custom box; out-of-catalog values snap back to the recommended option. Use pipeline vocabulary: icon ids are actual library ids such as `tabler-outline`, or `emoji` for system emoji; image usage labels mirror Strategist terminology: `ai` = AI-generated, `web` = Web-sourced, `provided` = User-provided, `placeholder` = Placeholder, `none` = No images. Use custom prose only when several sources are mixed.
-- **Generative (open)** — color, typography, generated-image style. No finite catalog; the AI authors **≥3 candidates** the page renders as cards (never a single option — creative fields must offer real choice; fewer than 3 only on the honest-shortfall exception). `page_count` and `audience` are free inputs.
+- **Generative (open)** — color, typography, generated-image style. No finite catalog; the AI authors **≥3 candidates** the page renders as cards (never a single option — creative fields must offer real choice; fewer than 3 only on the honest-shortfall exception). `page_count`, `audience`, and `content_divergence` are free inputs (`content_divergence` is a free-text intent shown under audience in §c, not a fixed-option field).
 
 **Custom box** appears only on fields whose universe is genuinely open — `canvas`, `mode`, `visual_style`, `icons`, and `image_usage`. Fully closed sets — `image_ai_path`, `formula_policy`, `generation_mode`, `refine_spec` — have **no** Custom box; an out-of-catalog value there is snapped back to the recommended option.
 
@@ -59,8 +59,9 @@ Both files live under `<project_path>/confirm_ui/`.
     "formula_policy": "mixed",
     "generation_mode": "continuous"
   },
-  "page_count": { "value": "12-15" },
-  "audience":   { "value": "..." },
+  "page_count":         { "value": "12-15" },
+  "audience":           { "value": "..." },
+  "content_divergence": { "value": "" },
   "color": {
     "selected": 0,
     "candidates": [
@@ -112,6 +113,7 @@ Both files live under `<project_path>/confirm_ui/`.
 - **Combined style preview** — a compact live "overall impression" strip sits just above the color section and is **sticky**: it pins under the topbar so it stays visible while the user scrolls through the color / icon / typography sections, keeping the picking controls and their combined effect on screen together. It applies the currently selected color palette **and** typography (heading sample in `primary` over `background`, body sample in `body_text`, an `accent` bar, a `secondary_bg` chip) and repaints on every color / HEX-override / font / `body_size` change. It does not replace the per-candidate swatches or font samples (those stay for picking); it is deliberately an abstract style chip, **not** a slide-layout preview — page layout preview remains the live-preview server's job (Step 6). No schema field; it derives entirely from the existing color + typography selections.
 - **Generated image style candidates** live in `image_strategy.candidates` and are shown only when `image_usage` is `ai` or a custom image plan may include generated images. Each candidate records `rendering`, `palette`, and short `visual` / `color` / `mood` lines from Strategist h.5. The chosen value is written to `result.json.image_strategy`; it is omitted when generated images are not part of the plan.
 - `recommend.generation_mode` and `refine_spec` mirror the two mandatory notes in SKILL.md Step 4. Confirmed `generation_mode: "split"` / `refine_spec: true` are explicit user choices, equivalent to opting in through chat.
+- `content_divergence` is a **free-text** field shown right under the audience box in §c — the user states in their own words how closely to follow the source vs how freely to reshape it (e.g. "stick closely to the document" / "freely restructure and expand within the source"). It is **not** a fixed-option field; blank means a balanced default. Whatever the level, facts stay sourced — reshaping develops what is in the source, never imports facts from outside it. The Strategist consumes the prose when authoring the §IX outline and records it in `design_spec.md §I`; it is **not** written to `spec_lock.md` (the Executor never reads it). It carries no page-count coupling and no source-signal recommendation — it is purely the user's stated intent. Beautify / template-fill keep content verbatim and do not surface this field.
 - `lang` is a soft default; an explicit user language choice in the page (persisted to `localStorage`) wins.
 
 ### Output — `result.json` (written on submit, read by the AI)
@@ -121,6 +123,7 @@ Both files live under `<project_path>/confirm_ui/`.
   "canvas": "ppt169",
   "page_count": "12-15",
   "audience": "...",
+  "content_divergence": "freely restructure and expand within the source",
   "mode": "pyramid",
   "visual_style": "swiss-minimal",
   "color": { "name": "...", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },

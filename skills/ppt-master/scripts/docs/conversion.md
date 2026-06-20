@@ -144,12 +144,12 @@ artifacts provide source facts for Strategist and standalone PPTX workflows.
 python3 scripts/pptx_intake.py deck.pptx -o projects/demo/analysis
 ```
 
-Outputs:
-- `identity.json` — canvas size/aspect, theme palette/fonts, observed colors/fonts
-- `slide_library.json` — text slots, geometry, native tables, native chart display caches
-- `source_profile.json` — compact Strategist-facing digest over identity, tables, charts, and page types
+Outputs (per source deck, prefixed by file stem):
+- `<stem>.identity.json` — canvas size/aspect, theme palette/fonts, observed colors/fonts
+- `<stem>.slide_library.json` — text slots, geometry, native tables, native chart display caches
+- `source_profile.json` — the single multi-deck index: a compact Strategist-facing digest per deck (over identity, tables, charts, and page types) under `decks[]`, with prefixed artifact pointers
 
-`project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. The bundle is single-deck per project: importing a second PPTX keeps its Markdown source but skips intake rather than overwriting `analysis/source_profile.json`.
+`project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. Multi-deck per project: importing several PPTX files gives each its own `<stem>.*` artifacts and a `decks[]` entry in the shared `source_profile.json` index (re-importing the same stem replaces its entry). The beautify / template-fill workflows stay single-deck and read one chosen deck's `<stem>.*` artifacts.
 
 Usage boundary:
 - Standard generation uses these fields as facts and recommendation candidates; it does not inherit source slide coordinates or page order by default.

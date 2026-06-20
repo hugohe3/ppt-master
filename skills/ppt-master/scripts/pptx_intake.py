@@ -91,10 +91,17 @@ def build_source_profile(
     pptx_path: Path,
     identity: dict[str, Any],
     slide_library: dict[str, Any],
+    stem: str | None = None,
 ) -> dict[str, Any]:
-    """Build the Strategist-facing digest over the raw intake artifacts."""
+    """Build the Strategist-facing per-deck digest over the raw intake artifacts.
+
+    `stem` is the source-file stem used to prefix the per-deck artifact files so
+    several decks can coexist in one `analysis/` folder. Defaults to the pptx stem.
+    """
+    stem = stem or pptx_path.stem
     return {
         "schema": "pptx_intake_profile.v1",
+        "stem": stem,
         "source_pptx": str(pptx_path),
         "slide_count": slide_library.get("slide_count", identity.get("slide_count", 0)),
         "usage_contract": {
@@ -112,8 +119,8 @@ def build_source_profile(
             ),
         },
         "artifacts": {
-            "identity": "identity.json",
-            "slide_library": "slide_library.json",
+            "identity": f"{stem}.identity.json",
+            "slide_library": f"{stem}.slide_library.json",
         },
         "canvas": identity.get("canvas", {}),
         "identity": {
@@ -138,19 +145,53 @@ def build_source_profile(
     }
 
 
+SOURCE_INDEX_NAME = "source_profile.json"
+
+
+def upsert_source_index(output_dir: Path, digest: dict[str, Any]) -> Path:
+    """Merge one deck's digest into the single multi-deck index `source_profile.json`.
+
+    The index stays the single must-read entry for the Strategist: it inlines every
+    deck's digest under `decks[]`, so a one-deck project is a one-entry index and a
+    multi-deck project lists each source deck self-containedly. Re-importing a deck
+    with the same stem replaces its entry in place.
+    """
+    index_path = output_dir / SOURCE_INDEX_NAME
+    index: dict[str, Any] = {}
+    if index_path.is_file():
+        try:
+            loaded = json.loads(index_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict) and isinstance(loaded.get("decks"), list):
+                index = loaded
+        except (json.JSONDecodeError, OSError):
+            index = {}
+    stem = digest.get("stem")
+    decks = [d for d in index.get("decks", []) if d.get("stem") != stem]
+    decks.append(digest)
+    decks.sort(key=lambda d: str(d.get("stem", "")))
+    index = {
+        "schema": "pptx_intake_index.v1",
+        "deck_count": len(decks),
+        "decks": decks,
+    }
+    _write_json(index_path, index)
+    return index_path
+
+
 def run_intake(pptx_path: Path, output_dir: Path) -> dict[str, Path]:
-    """Write `identity.json`, `slide_library.json`, and `source_profile.json`."""
+    """Write `<stem>.identity.json`, `<stem>.slide_library.json`, and merge the
+    deck's digest into the single multi-deck index `source_profile.json`."""
     output_dir.mkdir(parents=True, exist_ok=True)
+    stem = pptx_path.stem
     identity = extract_identity(pptx_path)
     slide_library = analyze_pptx(pptx_path)
-    profile = build_source_profile(pptx_path, identity, slide_library)
+    digest = build_source_profile(pptx_path, identity, slide_library, stem)
 
-    identity_path = output_dir / "identity.json"
-    slide_library_path = output_dir / "slide_library.json"
-    profile_path = output_dir / "source_profile.json"
+    identity_path = output_dir / f"{stem}.identity.json"
+    slide_library_path = output_dir / f"{stem}.slide_library.json"
     _write_json(identity_path, identity)
     _write_json(slide_library_path, slide_library)
-    _write_json(profile_path, profile)
+    profile_path = upsert_source_index(output_dir, digest)
     return {
         "identity": identity_path,
         "slide_library": slide_library_path,

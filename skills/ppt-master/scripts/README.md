@@ -80,9 +80,9 @@ Template fill (direct PPTX, no SVG conversion):
 
 ```bash
 mkdir -p <project_path>/sources <project_path>/analysis <project_path>/exports <project_path>/validation
-python3 scripts/template_fill_pptx.py analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/slide_library.json
-python3 scripts/template_fill_pptx.py scaffold <project_path>/analysis/slide_library.json -o <project_path>/analysis/fill_plan.json --slides "1,3,4"
-python3 scripts/template_fill_pptx.py check-plan <project_path>/analysis/slide_library.json <project_path>/analysis/fill_plan.json -o <project_path>/analysis/check_report.json
+python3 scripts/template_fill_pptx.py analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/<stem>.slide_library.json
+python3 scripts/template_fill_pptx.py scaffold <project_path>/analysis/<stem>.slide_library.json -o <project_path>/analysis/fill_plan.json --slides "1,3,4"
+python3 scripts/template_fill_pptx.py check-plan <project_path>/analysis/<stem>.slide_library.json <project_path>/analysis/fill_plan.json -o <project_path>/analysis/check_report.json
 python3 scripts/template_fill_pptx.py apply <project_path>/sources/<source.pptx> <project_path>/analysis/fill_plan.json -o <project_path>/exports/filled.pptx
 ```
 

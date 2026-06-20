@@ -68,7 +68,7 @@ Run:
 python3 skills/ppt-master/scripts/pptx_intake.py "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis"
 ```
 
-Read `<project_dir>/analysis/slide_library.json` and identify:
+Read `<project_dir>/analysis/<stem>.slide_library.json` (intake prefixes per-deck artifacts by the template deck's file stem) and identify:
 
 | Field | Use |
 |---|---|
@@ -83,7 +83,7 @@ Read `<project_dir>/analysis/slide_library.json` and identify:
 
 A page's layout already encodes a rhetorical shape — a single hero statement, a lead-then-detail split, a 2×2 comparison, a stepwise progression, a metric row. Match the source material's own logic to a page whose structure expresses that same logic; do not pour unrelated content into a slot just because it is empty. When no selected page fits a piece of content well, drop that page or that content rather than forcing it — a forced fill reads as stiff. It is fine to use fewer pages than the source deck has.
 
-**Layout-first planning**: Treat `slide_library.json` as a layout inventory, not as an ordered deck outline. Before writing `fill_plan.json`, infer each reusable source page's affordance from JSON fields:
+**Layout-first planning**: Treat `<stem>.slide_library.json` as a layout inventory, not as an ordered deck outline. Before writing `fill_plan.json`, infer each reusable source page's affordance from JSON fields:
 
 | JSON signal | Layout planning use |
 |---|---|
@@ -104,14 +104,14 @@ A page's layout already encodes a rhetorical shape — a single hero statement, 
 Create a scaffold:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py scaffold "<project_dir>/analysis/slide_library.json" -o "<project_dir>/analysis/fill_plan.json" --slides "1,3,4"
+python3 skills/ppt-master/scripts/template_fill_pptx.py scaffold "<project_dir>/analysis/<stem>.slide_library.json" -o "<project_dir>/analysis/fill_plan.json" --slides "1,3,4"
 ```
 
 Then edit `<project_dir>/analysis/fill_plan.json` by hand from the source material. The plan is the single execution contract.
 
 **Pages are reusable**: the output is the ordered `slides` list, not a one-to-one copy of the source deck. A source page is not single-use — list the same `source_slide` as many times as you need, each entry with its own `replacements`, to drive several output slides from one good layout (e.g., reuse a single content layout for five content pages). Likewise you may omit source pages entirely and put the selected ones in any order.
 
-**Scaffold boundary**: `scaffold --slides` is only a convenience starter. If the final plan needs repeated source pages or a story order that differs from the template order, duplicate / reorder entries in `fill_plan.json` manually or generate the plan from `slide_library.json`; do not let scaffold output constrain the deck structure.
+**Scaffold boundary**: `scaffold --slides` is only a convenience starter. If the final plan needs repeated source pages or a story order that differs from the template order, duplicate / reorder entries in `fill_plan.json` manually or generate the plan from `<stem>.slide_library.json`; do not let scaffold output constrain the deck structure.
 
 The plan structure:
 
@@ -207,7 +207,7 @@ Example `notes` value for a Chinese content slide:
 Run the data-based capacity check before applying the plan:
 
 ```bash
-python3 skills/ppt-master/scripts/template_fill_pptx.py check-plan "<project_dir>/analysis/slide_library.json" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/analysis/check_report.json"
+python3 skills/ppt-master/scripts/template_fill_pptx.py check-plan "<project_dir>/analysis/<stem>.slide_library.json" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/analysis/check_report.json"
 ```
 
 Interpret the report:
@@ -279,7 +279,7 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 ```markdown
 ## ✅ Template Fill Complete
 
-- [x] Standard PPTX intake extracted from the source deck, including `slide_library.json`
+- [x] Standard PPTX intake extracted from the source deck, including `<stem>.slide_library.json`
 - [x] `fill_plan.json` selects only pages that fit the target story
 - [x] `check-plan` run and capacity warnings resolved or explicitly accepted
 - [x] Output PPTX generated through direct OOXML text replacement
@@ -304,3 +304,4 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 | Edit chart formatting / axes / legend layout | Not in v1 |
 | Edit SmartArt deeply | Not in v1 |
 | Automatic visual overflow detection | Not in v1; use text-capacity judgment from the library slots |
+| Material-divergence reshaping (§c content strategy) | Not applicable — this workflow fills text into existing slots, it does not author an outline from a source, so the main pipeline's `content_divergence` free-text field has no role here |

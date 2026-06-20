@@ -42,6 +42,14 @@ Provide specific page count recommendation based on source document content volu
 
 Confirm target audience, usage occasion, and core message; provide initial assessment based on document nature.
 
+**Material divergence** — a **free-text** intent the user states beside audience (same content-strategy cluster): in their own words, how closely the deck should follow the source vs how freely it may reshape it. This is the user's own call — a free prose field (`content_divergence`), **not** a fixed set of options and **not** something you recommend from analyzing the source. Surface the question (in the confirm UI it is a text box under audience; in chat, ask it plainly); leave it for the user to fill. Blank = a balanced default.
+
+Read the user's prose as a point on a spectrum and apply judgment — from *stay close* (track the source's structure and wording, tune only for clarity, no substantive add / drop) through the default *balanced* (re-architect and distill into a narrative under the locked `mode`, keeping all substance) to *free* (regroup, reframe, expand terse points, draw out connections latent in the source, invent section structure and transitions).
+
+**Hard rule — facts stay sourced however free the user asks.** Divergence is freedom to *develop* what is in the source (reorganize / reframe / expand / connect), never licence to invent. Even the freest request must not introduce facts, figures, or claims from outside the source material — that is the `topic-research` job, not divergence. `mode` and divergence are orthogonal (e.g. a pyramid that hews to the source's own points vs. a pyramid built from freely synthesized themes).
+
+**Consumption — outline-authoring only.** Apply the user's stated intent when authoring the `§IX` outline. Record the prose (or "balanced default") in `design_spec.md §I` (Content Strategy). Do **NOT** write it to `spec_lock.md` — it is baked into `§IX` at authoring time and the Executor never reads it. It carries no page-count coupling — the §b page count stays the user's separate call. The beautify / template-fill workflows keep content verbatim, so they do not surface this field.
+
 ### d. Style Objective Confirmation
 
 Two independent layers, each locks one catalog item. Output: `d. Mode: <mode> + Visual style: <visual_style>`.
