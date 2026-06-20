@@ -23,6 +23,8 @@ Magazine-grade hierarchy. Columns, hairline rules, a serif / sans interplay, str
 - Mostly monochrome text on a light field; one accent for emphasis (a rule, a highlighted figure, a kicker).
 - Restraint — color marks structure and emphasis, not decoration.
 
+> HEX values come from confirmation `e`; this style only governs the monochrome-with-structural-accent discipline — it names no colors.
+
 ## 4. Texture / elevation
 
 - Flat to barely-raised. Rules and whitespace separate content, not shadows. Shadow only on a genuine floating element.
