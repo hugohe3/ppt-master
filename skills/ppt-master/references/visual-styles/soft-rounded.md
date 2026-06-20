@@ -22,6 +22,8 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 - Theme color used confidently on covers / chapter backgrounds; same-hue tints for card backings; accent for key figures.
 - Warmer, more generous color use than swiss / editorial — still disciplined (60-30-10), never rainbow.
 
+> HEX values come from confirmation `e`; this style only governs the confident-but-disciplined (60-30-10) color use — it names no colors.
+
 ## 4. Texture / elevation
 
 - Gentle elevation: soft shadows on floating cards (resting tier), subtle tints, optional same-hue gradients. Two-tier elevation max; keep peer-grid cards flat. (Full shadow rules: [`shared-standards.md §6`](../shared-standards.md).)

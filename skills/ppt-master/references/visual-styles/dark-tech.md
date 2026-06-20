@@ -22,6 +22,8 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 - Dark background; one or two luminous accents carry focus (glowing figures, active nodes); everything else low-key.
 - The accent does the work of attention — few points, high contrast.
 
+> HEX values come from confirmation `e`; this style only governs the dark-field, luminous-accent discipline — it names no colors.
+
 ## 4. Texture / elevation
 
 - Depth via glow and layering on dark, not drop shadows. Outer glow / light strokes mark elevation; gradients stay same-hue and subtle. (Dark-theme legibility — prefer light stroke / outer glow over black shadow: [`shared-standards.md §6`](../shared-standards.md).)
