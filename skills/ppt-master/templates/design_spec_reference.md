@@ -326,6 +326,14 @@ Catalog read: 71 templates
 
 ---
 
+#### Slide NN - Closing  *(only if the deck genuinely lands on a conclusion / CTA / final-takeaway page — do NOT invent one to fill this slot; see strategist.md §6.2)*
+
+- **Closing impact**: [MANDATORY for the closing page — name the one thing the audience leaves with (distilled takeaway / forward call / memorable restatement of the core claim) + one composition that lands it. Do NOT write a generic "Thank you" / contact-only / centered-title reprise of the cover.]
+- **Layout**: [realize the Closing impact above — the deck's final impression, not a default sign-off]
+- **Content**: [the takeaway / call-to-action itself, phrased to land]
+
+---
+
 ## X. Speaker Notes Requirements
 
 One speaker note file per page, saved to `notes/`:
