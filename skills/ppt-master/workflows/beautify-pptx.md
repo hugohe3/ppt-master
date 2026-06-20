@@ -68,7 +68,7 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 
 **Content + images — already produced by Step 3.** `import-sources` ran `ppt_to_md` on the deck, so the **frozen content contract** is `sources/<stem>.md` (one source slide per block, in order). If the source deck contains pictures, they are already propagated to `images/` with per-slide binding in `images/image_manifest.json` (`occurrences[].slide_index`). Do **not** re-run `ppt_to_md` — it would duplicate the conversion and write images to `analysis/<stem>_files/` instead of `images/`.
 
-**Visual identity (theme + observed sample + canvas)**: read `<project_path>/analysis/identity.json`.
+**Visual identity (theme + observed sample + canvas)**: read `<project_path>/analysis/<stem>.identity.json` (intake prefixes per-deck artifacts by source-file stem).
 
 | Field | Use |
 |---|---|
@@ -79,16 +79,16 @@ python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx>
 
 > Note: `theme` is what the deck declares; `observed` is a frequency sample of run-level overrides (not a complete style resolution — it misses `schemeClr` and master/layout inheritance, and counts chart/gradient fills). A hand-edited deck can diverge from `theme` — Step 5 recommends which to inherit and the user confirms.
 
-**Chart + table data (for regeneration)**: read `<project_path>/analysis/slide_library.json`. It contains the source chart and table *data* so they can be redrawn natively in the inherited style:
+**Chart + table data (for regeneration)**: read `<project_path>/analysis/<stem>.slide_library.json`. It contains the source chart and table *data* so they can be redrawn natively in the inherited style:
 
-| `slide_library.json` field | Use |
+| `<stem>.slide_library.json` field | Use |
 |---|---|
 | `slides[].charts[]` (`chart_type` / `categories` / `series[].values`) | regenerate as a native SVG chart via the `§VII` `templates/charts/` path |
 | `slides[].tables[]` (`row_count` / `column_count` / cell text) | regenerate as a native SVG table |
 
 **Hard rule — regenerate visuals, do not carry them over**: charts / tables / images are rebuilt from their data in the inherited style, never spliced in byte-for-byte. This keeps the deck style-consistent and natively editable. **Data values are frozen** (categories / series / cell text / numbers unchanged); only their rendering is the deck's own. Pictures (`ppt_to_md`-extracted files) are reused but re-laid-out — position / crop / size follow the new layout, not the source slot. A user who wants an original element verbatim copies it across themselves.
 
-**Optional source-SVG visual reference**: when the source deck has complex vector decoration, distinctive page chrome, or a visual language that cannot be captured by `identity.json` colors/fonts alone, create a read-only SVG reference package under `analysis/`. This is for understanding style only; it is not a carry-over asset path.
+**Optional source-SVG visual reference**: when the source deck has complex vector decoration, distinctive page chrome, or a visual language that cannot be captured by `<stem>.identity.json` colors/fonts alone, create a read-only SVG reference package under `analysis/`. This is for understanding style only; it is not a carry-over asset path.
 
 ```bash
 python3 ${SKILL_DIR}/scripts/pptx_to_svg.py <project_path>/sources/<source.pptx> -o <project_path>/analysis/source_svg_import
@@ -106,7 +106,7 @@ Optional reuse gate: if a candidate is a non-text brand/logo/motif/decorative as
 **Assemble the inventory** — the deterministic join into one per-slide ledger, `analysis/beautify_inventory.json`, the contract Step 5 confirms and Step 7 verifies against:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/beautify_inventory.py <project_path>/analysis/slide_library.json \
+python3 ${SKILL_DIR}/scripts/beautify_inventory.py <project_path>/analysis/<stem>.slide_library.json \
     --images <project_path>/images/image_manifest.json -o <project_path>/analysis/beautify_inventory.json
 ```
 
@@ -121,9 +121,9 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 ## ✅ Extraction Complete
 
 - [x] `sources/<stem>.md` (from Step 3) holds every source slide's text, in order; extracted pictures, if any, are in `images/` + `images/image_manifest.json`
-- [x] `analysis/identity.json` has theme + observed identity + canvas aspect
-- [x] `analysis/slide_library.json` holds chart + table data for regeneration
-- [x] `analysis/source_profile.json` summarizes the source facts
+- [x] `analysis/<stem>.identity.json` has theme + observed identity + canvas aspect
+- [x] `analysis/<stem>.slide_library.json` holds chart + table data for regeneration
+- [x] `analysis/source_profile.json` (multi-deck index) summarizes the source facts in its `decks[]` entry
 - [x] `analysis/beautify_inventory.json` ledgers per-slide text / images / data + ignored + needs-confirmation
 - [ ] **Next**: Step 5 — Beautify Plan (recommend & confirm)
 ```
@@ -135,12 +135,12 @@ If `images/image_manifest.json` does not exist because the source deck has no ex
 ⛔ **BLOCKING**: the scope is not hard-coded — same spirit as the Eight Confirmations. Recommend each item below from what the deck actually contains (the Step 4 inventory), present the plan, and **wait for the user to confirm or adjust** before writing any spec. Chat is the canonical channel; the confirm UI below is the visual convenience surface over it for the palette + typography review (its result is honored identically to a chat reply).
 
 This step has two halves:
-- **Visual re-confirm via the confirm UI** — the **full** Step 4 confirm page (below), seeded from the source so every targeted-confirmation field (canvas, mode, visual style, palette, icons, typography incl. body baseline, image strategy, generation mode) is **pre-filled with the inherited / source-derived default and left editable**. Beautify *recommends* keeping the source's identity, but never removes the user's place to override any field — you may choose not to change a value, but you must not deny the place to change it. This is also where the deck's text size is set: `identity.json` carries fonts and palette but **no body font size** (source decks inherit sizes from master placeholders), so the body baseline is undetermined and must be chosen here, not silently defaulted to a small dense value.
+- **Visual re-confirm via the confirm UI** — the **full** Step 4 confirm page (below), seeded from the source so every targeted-confirmation field (canvas, mode, visual style, palette, icons, typography incl. body baseline, image strategy, generation mode) is **pre-filled with the inherited / source-derived default and left editable**. Beautify *recommends* keeping the source's identity, but never removes the user's place to override any field — you may choose not to change a value, but you must not deny the place to change it. This is also where the deck's text size is set: `<stem>.identity.json` carries fonts and palette but **no body font size** (source decks inherit sizes from master placeholders), so the body baseline is undetermined and must be chosen here, not silently defaulted to a small dense value.
 - **Structural scope** — the inventory-driven list decisions below (ignored, reuse, needs-confirmation, verification level) stay in **chat**; they have no confirm-UI widget.
 
 | Plan item | Recommend from | Default lean |
 |---|---|---|
-| Identity source | `identity.json` `theme` vs `observed` | present **both as color / typography candidates in the confirm UI** so the user picks the one that looks right (theme first when the deck is theme-driven; observed first when slides override heavily) — recommend a default ordering and say why |
+| Identity source | `<stem>.identity.json` `theme` vs `observed` | present **both as color / typography candidates in the confirm UI** so the user picks the one that looks right (theme first when the deck is theme-driven; observed first when slides override heavily) — recommend a default ordering and say why |
 | Preserve scope | inventory `text_blocks` / `images` / `charts` / `tables` | all text verbatim; data values frozen; pictures reused |
 | Ignored | inventory `ignored` | name them so the user sees what drops (hidden / master-only text / image crop / rotation) |
 | Needs confirmation | inventory `needs_confirmation` | flag complex charts + overcrowded pages explicitly; ask how to handle |
@@ -184,7 +184,7 @@ Write `<project_path>/confirm_ui/recommendations.json` and launch the same confi
 }
 ```
 
-- **Recommend keep, allow override**: pre-fill canvas / mode / visual style / icons / image strategy with the source-faithful default (canvas = Step 3 format, mode = `briefing`, image_usage = `provided` since pictures are reused). Enumerable fields already list every catalog option with the source-faithful one badged, so the user can switch. Beautify's only true non-choices are the frozen text and the strict 1:1 page count (changing those means routing to the main pipeline instead — see CLAUDE.md).
+- **Recommend keep, allow override**: pre-fill canvas / mode / visual style / icons / image strategy with the source-faithful default (canvas = Step 3 format, mode = `briefing`, image_usage = `provided` since pictures are reused). Enumerable fields already list every catalog option with the source-faithful one badged, so the user can switch. Beautify's only true non-choices are the frozen text and the strict 1:1 page count (changing those means routing to the main pipeline instead — see CLAUDE.md). The §c material-divergence field is therefore not surfaced here — beautify never reshapes content (text is verbatim).
 - **Our recommendation is the pre-selected default = the source replica**: for color and typography, author **several candidates** like the from-scratch flow. The pre-selected default (`selected: 0`, the first card) is what beautify recommends — the candidate that **best replicates the source deck's style** (the truest reading of `theme` / `observed`). Replicate-by-default.
 - **Judge the other alternatives exactly as the from-scratch flow does — fonts as much as colors**: don't invent a beautify-specific rule. Author each non-replica candidate with the **same content-driven judgment the Strategist uses when generating from scratch** (color §e, typography §g), applied to the material this project provides — the source document's content and subject, the company's own theme colors, and any brand signal. Pick the palette **and** the font pairing by what fits *this* deck's content; fonts are chosen by content fit, not just defaulted to a safe face. Reach **≥3 candidates total** (PPT-safe stacks; the same creative-choice rule used elsewhere) so a user who departs from the replica still lands on a considered, content-fitting direction — depart-by-choice.
 - **`body_size` is the load-bearing field**: seed it from a canvas-appropriate baseline (the page hints ≈2.5–3.3% of canvas height) — for a presentation / projection deck lean toward the relaxed end (e.g. `24` → 18pt), for a dense document deck the compact end (e.g. `18` → 13.5pt). The user sets the final value here; this is what prevents the deck from exporting at an unintentionally small size.
@@ -224,7 +224,7 @@ python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<o
 | Data fidelity | chart categories / series / table cells match the source exactly |
 | Page count | output slide count equals the source slide count |
 | Regenerated visuals | charts / tables are native SVG re-themed to the inherited palette |
-| Identity | generated text / shapes use only `identity.json` colors + fonts |
+| Identity | generated text / shapes use only `<stem>.identity.json` colors + fonts |
 | Paste-back | copying a beautified element into the original deck looks native |
 
 ```markdown

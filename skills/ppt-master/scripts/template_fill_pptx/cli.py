@@ -69,10 +69,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     analyze = subparsers.add_parser("analyze", help="Extract slide library JSON from a PPTX")
     analyze.add_argument("pptx_file", help="Source PPTX file")
-    analyze.add_argument("-o", "--output", required=True, help="Output slide_library.json path")
+    analyze.add_argument("-o", "--output", required=True, help="Output <stem>.slide_library.json path")
 
     scaffold = subparsers.add_parser("scaffold", help="Create an editable fill plan skeleton")
-    scaffold.add_argument("library_json", help="slide_library.json from analyze")
+    scaffold.add_argument("library_json", help="<stem>.slide_library.json from analyze")
     scaffold.add_argument("-o", "--output", required=True, help="Output fill_plan.json path")
     scaffold.add_argument(
         "--slides",
@@ -85,7 +85,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     check = subparsers.add_parser("check-plan", help="Check a fill plan against source slot capacity")
-    check.add_argument("library_json", help="slide_library.json from analyze")
+    check.add_argument("library_json", help="<stem>.slide_library.json from analyze")
     check.add_argument("plan_json", help="Fill plan JSON")
     check.add_argument("-o", "--output", help="Optional JSON report output path")
 

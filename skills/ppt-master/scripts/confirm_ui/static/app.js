@@ -32,6 +32,8 @@
             sec_refine: "Refine spec first",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
+            sub_divergence: "Material divergence (how freely to reshape vs. stay close to the source)",
+            placeholder_divergence: "In your words — e.g. \"stick closely to the document\" / \"freely restructure and expand within the source\". Leave blank for a balanced default.",
             custom: "Custom",
             custom_placeholder: "Type your own…",
             recommended: "Recommended",
@@ -100,6 +102,8 @@
             sec_refine: "先精修设计规范",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
+            sub_divergence: "材料发散度（多大程度重塑，还是贴近源材料）",
+            placeholder_divergence: "用你自己的话写，例如「严格贴着文档来」/「在源材料范围内自由重组并展开」。留空则按平衡处理。",
             custom: "自定义",
             custom_placeholder: "输入自定义内容…",
             recommended: "推荐",
@@ -494,6 +498,15 @@
         var sec = section(3, "sec_audience");
         textField(sec, function () { return STATE.audience; },
             function (v) { STATE.audience = v; }, "placeholder_audience", false);
+        // Material divergence — a distinct, free-text sub-question inside §c, shown
+        // right under the audience box: the user states in their own words how
+        // closely to follow the source vs. how freely to reshape it. Free prose, not
+        // fixed options; no page-count coupling, no source-signal recommendation.
+        var subDiv = el("div", "subfield");
+        subDiv.appendChild(el("div", "subfield-label", t("sub_divergence")));
+        textField(subDiv, function () { return STATE.content_divergence; },
+            function (v) { STATE.content_divergence = v; }, "placeholder_divergence", false);
+        sec.appendChild(subDiv);
         host.appendChild(sec);
     }
 
@@ -1031,6 +1044,7 @@
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : "";
         STATE.audience = (REC.audience && REC.audience.value) || "";
+        STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
 

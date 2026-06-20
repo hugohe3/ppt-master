@@ -282,11 +282,11 @@ class ProjectManager:
             ]
         )
 
-    def _import_pptx_intake(self, presentation_path: Path, project_dir: Path) -> Path | None:
+    def _import_pptx_intake(self, presentation_path: Path, project_dir: Path) -> Path:
+        # Multi-deck intake: each PPTX writes its own `<stem>.identity.json` /
+        # `<stem>.slide_library.json` and is merged into the single multi-deck
+        # index `analysis/source_profile.json` (one entry per source deck).
         analysis_dir = self._analysis_dir(project_dir)
-        profile_path = analysis_dir / "source_profile.json"
-        if profile_path.exists():
-            return None
         self._run_tool(
             [
                 sys.executable,
@@ -666,13 +666,9 @@ class ProjectManager:
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 try:
                     intake_dir = self._import_pptx_intake(archived_path, project_dir)
-                    if intake_dir is None:
-                        summary["notes"].append(
-                            f"{item}: skipped PPTX intake because analysis/source_profile.json already exists; "
-                            "current intake is single-deck and keeps the first PPTX analysis"
-                        )
-                    else:
-                        summary["analysis"].append(str(intake_dir))
+                    intake_str = str(intake_dir)
+                    if intake_str not in summary["analysis"]:
+                        summary["analysis"].append(intake_str)
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["notes"].append(f"{item}: PPTX intake analysis failed ({exc})")
                 if archived_path.stem in explicit_markdown_stems:
