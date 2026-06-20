@@ -7,6 +7,7 @@ Supports heading levels, bold, italic, and list detection.
 
 import argparse
 import hashlib
+import json
 import os
 import re
 import sys
@@ -712,6 +713,7 @@ def extract_pdf_to_markdown(
         img_dir = output_path.parent / rel_img_dir
 
     img_count = 0
+    image_manifest: list[dict[str, object]] = []
 
     for page_num, page in enumerate(doc, 1):
         if page_num > 1:
@@ -951,6 +953,27 @@ def extract_pdf_to_markdown(
                         if prev_was_list:
                             markdown_content += "\n"
                         markdown_content += f"![{image_name}]({rel_img_dir}/{image_name})\n\n"
+                        width = int(block.get("width", 0) or 0)
+                        height = int(block.get("height", 0) or 0)
+                        ratio = width / height if width > 0 and height > 0 else None
+                        image_manifest.append({
+                            "index": len(image_manifest) + 1,
+                            "filename": image_name,
+                            "original_filename": image_name,
+                            "asset_kind": "bitmap",
+                            "svg_renderable": True,
+                            "pptx_native_supported": True,
+                            "source_kind": "pdf_image",
+                            "source_ext": f".{ext}",
+                            "page_index": page_num,
+                            "occurrence_index": img_count + 1,
+                            "pixel_width": width or None,
+                            "pixel_height": height or None,
+                            "pixel_ratio": round(ratio, 6) if ratio else None,
+                            "display_ratio": round(ratio, 6) if ratio else None,
+                            "source_sha256": hashlib.sha256(image_data).hexdigest(),
+                            "bbox": list(block.get("bbox", [])),
+                        })
                         img_count += 1
                         prev_was_list = False
                         print(f"  [OK] Extracted image: {image_name}")
@@ -980,6 +1003,29 @@ def extract_pdf_to_markdown(
                         if prev_was_list:
                             markdown_content += "\n"
                         markdown_content += f"![{image_name}]({rel_img_dir}/{image_name})\n\n"
+                        ratio = pix.width / pix.height if pix.width > 0 and pix.height > 0 else None
+                        image_manifest.append({
+                            "index": len(image_manifest) + 1,
+                            "filename": image_name,
+                            "original_filename": image_name,
+                            "asset_kind": "bitmap",
+                            "svg_renderable": True,
+                            "pptx_native_supported": True,
+                            "source_kind": "pdf_vector_figure",
+                            "source_ext": ".png",
+                            "page_index": page_num,
+                            "occurrence_index": img_count + 1,
+                            "pixel_width": pix.width,
+                            "pixel_height": pix.height,
+                            "pixel_ratio": round(ratio, 6) if ratio else None,
+                            "display_ratio": round(ratio, 6) if ratio else None,
+                            "bbox": [
+                                figure_rect.x0,
+                                figure_rect.y0,
+                                figure_rect.x1,
+                                figure_rect.y1,
+                            ],
+                        })
                         img_count += 1
                         prev_was_list = False
                         print(f"  [OK] Rendered vector figure: {image_name}")
@@ -1000,6 +1046,11 @@ def extract_pdf_to_markdown(
         os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(markdown_content)
+        if img_dir and image_manifest:
+            (img_dir / "image_manifest.json").write_text(
+                json.dumps(image_manifest, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
         print(f"[OK] Saved Markdown to: {output_path}")
 
     return markdown_content
