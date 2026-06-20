@@ -29,6 +29,7 @@ TLS fingerprint handling:
 import argparse
 import datetime
 import io
+import json
 import os
 import re
 import sys
@@ -219,6 +220,7 @@ def download_and_rewrite_images(
 
     os.makedirs(image_dir, exist_ok=True)
     downloaded = {}
+    manifest_by_filename: dict[str, dict[str, object]] = {}
     saved = 0
 
     for idx, img in enumerate(images):
@@ -243,6 +245,8 @@ def download_and_rewrite_images(
         img["src"] = src
 
         abs_url = urljoin(page_url, src)
+        content_type = ""
+        converted_from = ""
         if abs_url in downloaded:
             saved_name = downloaded[abs_url]
         else:
@@ -269,6 +273,7 @@ def download_and_rewrite_images(
                         pil_image = Image.open(img_data)
 
                         # Update filename to .png
+                        converted_from = filename
                         filename = f"{stem}.png"
                         local_path = os.path.join(image_dir, filename)
 
@@ -313,6 +318,19 @@ def download_and_rewrite_images(
                         f.write(resp.content)
                 downloaded[abs_url] = filename
                 saved_name = filename
+                manifest_by_filename[saved_name] = {
+                    "index": len(manifest_by_filename) + 1,
+                    "filename": saved_name,
+                    "original_filename": converted_from or saved_name,
+                    "asset_kind": "bitmap",
+                    "svg_renderable": True,
+                    "pptx_native_supported": True,
+                    "source_kind": "web_image",
+                    "source_url": abs_url,
+                    "source_page_url": page_url,
+                    "content_type": content_type.split(";")[0] if content_type else "",
+                    "occurrences": [],
+                }
                 saved += 1
             except Exception as e:
                 print(f"   [WARN] Skip image {abs_url}: {e}")
@@ -321,6 +339,27 @@ def download_and_rewrite_images(
         rel_path = os.path.join(
             rel_prefix, saved_name) if rel_prefix else saved_name
         img["src"] = rel_path
+        manifest_item = manifest_by_filename.get(saved_name)
+        if manifest_item is not None:
+            occurrences = manifest_item.setdefault("occurrences", [])
+            if isinstance(occurrences, list):
+                occurrences.append({
+                    "occurrence_index": idx + 1,
+                    "source_url": abs_url,
+                    "alt_text": img.get("alt", ""),
+                })
+                manifest_item["usage_count"] = len(occurrences)
+
+    if manifest_by_filename:
+        manifest_path = os.path.join(image_dir, "image_manifest.json")
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(
+                list(manifest_by_filename.values()),
+                f,
+                ensure_ascii=False,
+                indent=2,
+            )
+            f.write("\n")
 
     return saved
 
