@@ -301,7 +301,8 @@ Catalog read: 71 templates
 
 #### Slide 01 - Cover
 
-- **Layout**: Full-screen background image + centered title
+- **Cover impact**: [MANDATORY — see strategist.md §6.2. Name one concrete hook (provocative core claim / hero number / object-scene metaphor / founder-product-audience moment / distilled conflict) + one composition strategy (full-bleed image + floating title / typographic poster / hero object / data hook / editorial scene / high-contrast abstract geometry / or a fresh one the subject suggests). This is the cover's spine — do NOT fall back to "title + subtitle + decorative background".]
+- **Layout**: [realize the Cover impact above; choose the composition that delivers it — not a default centered title block]
 - **Title**: [Main title]
 - **Subtitle**: [Subtitle]
 - **Info**: [Author / Date / Organization]
