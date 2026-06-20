@@ -291,6 +291,14 @@
         var grouped = list.length && list[0] && list[0].items;
         var flat = grouped ? list.reduce(function (a, g) { return a.concat(g.items || []); }, []) : list;
         var ids = flat.map(function (o) { return o.id; });
+        // Optional personality spectrum: instead of a single ★ recommendation,
+        // the AI marks a few catalog ids (safe / shifted / bold) each with a
+        // temperament tag + a real-world analogy note. Replaces the single badge.
+        var spectrum = (opts2.spectrum && opts2.spectrum.length) ? opts2.spectrum : null;
+        var specById = {};
+        if (spectrum) spectrum.forEach(function (s) {
+            if (s && s.id) specById[s.id] = { tag: localized(s, "tag"), note: localized(s, "note") };
+        });
         var allowCustom = opts2.allowCustom === true;  // only for fields not fully enumerable
         var customSentinel = opts2.customSentinel || "";
         var customInvalidValues = opts2.customInvalidValues || [];
@@ -316,9 +324,15 @@
             if (o.dim) label += " · " + o.dim;
             var desc = optionDesc(o);
             if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+            var spec = specById[o.id];
+            if (spec && spec.note) label += " · " + spec.note;
             var chip = el("div", "chip");
             chip.appendChild(el("span", "chip-text", label));
-            if (o.id === recommendedId) {
+            if (spec) {
+                // spectrum pick: badge shows its temperament tag, not the generic ★
+                chip.classList.add("recommended");
+                chip.appendChild(el("span", "rec-badge", "★ " + (spec.tag || t("recommended"))));
+            } else if (!spectrum && o.id === recommendedId) {
                 chip.classList.add("recommended");
                 chip.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
             }
@@ -518,7 +532,8 @@
         var sub2 = el("div", "subfield");
         sub2.appendChild(el("div", "subfield-label", t("sub_visual")));
         enumField(sub2, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
-            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; }, { allowCustom: true });
+            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
+            { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
         sec.appendChild(sub2);
         host.appendChild(sec);
     }
