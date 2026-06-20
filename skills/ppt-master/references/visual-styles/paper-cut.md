@@ -6,7 +6,7 @@ Layered paper-craft — scissor-cut shapes stacked in tactile layers, soft shado
 
 ## 1. Shape & decoration
 
-- Shape language: forms defined by crisp, slightly-irregular cut edges (no outlines); simplified, stylized shapes that read as cut paper rather than illustration.
+- Shape language: forms defined by crisp, slightly-irregular cut edges (no outlines); simplified, stylized shapes that read as cut paper rather than illustration. Those cut edges are irregular `<polygon>` / `<path>` outlines, not a clean `<rect>` / `<circle>`, which reads as a digital box rather than torn paper.
 - Decoration: layering itself is the device — each element is a "sheet" stacked over the one beneath; small cut-out accents on the top layer.
 - Whitespace: cozy, composed — the backing sheet shows through as breathing room.
 
