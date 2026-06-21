@@ -111,8 +111,8 @@ def build_source_profile(
                 "unless the user selected a beautify/template-fill workflow."
             ),
             "beautify": (
-                "Promote source text, page order, page count, colors, and fonts into locked "
-                "constraints after user confirmation."
+                "Promote source text, page order, page count, colors, fonts, and font sizes "
+                "into locked constraints after user confirmation."
             ),
             "template_fill": (
                 "Use slide slots, tables, charts, and geometry as the native PPTX fill contract."
@@ -126,8 +126,11 @@ def build_source_profile(
         "identity": {
             "theme_palette": (identity.get("theme") or {}).get("palette", {}),
             "theme_fonts": (identity.get("theme") or {}).get("fonts", {}),
+            "theme_sizes": (identity.get("theme") or {}).get("sizes", {}),
             "observed_colors": (identity.get("observed") or {}).get("colors", []),
             "observed_fonts": (identity.get("observed") or {}).get("fonts", {}),
+            "observed_sizes_pt": (identity.get("observed") or {}).get("sizes_pt", []),
+            "layout_sizes_pt": identity.get("layout_sizes_pt", []),
         },
         "structure": {
             "canvas_px": slide_library.get("canvas_px", {}),
