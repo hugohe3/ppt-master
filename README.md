@@ -193,6 +193,8 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 
 **🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsors **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)**, **[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** and **[RunAPI](https://runapi.co/register?aff=WMLJ)** can help — all offer pay-as-you-go access to Claude, GPT, Gemini and more, no subscription required. **PackyCode**: 10% off with promo code **`ppt-master`** at top-up. **APIKEY.FUN**: prices as low as **7% of official rates**; register via our link for an exclusive permanent discount of up to 5% on top-ups. **RunAPI**: 150+ models via one API Key at prices as low as **10% of official rates**; register and contact an administrator to claim **¥7 in free credit**.
 
+**🔀 Juggling several providers?** Once you hold keys from more than one of them, [cc-switch](https://github.com/farion1231/cc-switch) — a cross-platform desktop app — lets you one-click switch API providers for Claude Code, Codex, Gemini CLI and more, no manual config editing.
+
 ### 3. Set Up
 
 **Option A — Download ZIP** (no Git required): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip.
@@ -307,6 +309,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to get involved.
 ## Acknowledgments
 
 [SVG Repo](https://www.svgrepo.com/) · [Tabler Icons](https://github.com/tabler/tabler-icons) · [Simple Icons](https://github.com/simple-icons/simple-icons) · [Phosphor Icons](https://github.com/phosphor-icons/core) · [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author)) (CRAP principles)
+
+## Related Tools
+
+[cc-switch](https://github.com/farion1231/cc-switch) — a cross-platform desktop app to manage and one-click switch API providers across Claude Code, Codex, Gemini CLI and more. Handy when running PPT Master inside any of these agents.
 
 ## Contact & Collaboration
 
