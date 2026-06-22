@@ -107,6 +107,7 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 - Icons MUST come from `icons.inventory`; library MUST equal `icons.library`
 - Font family from `typography`: use role override (`title_family` / `body_family` / `emphasis_family` / `code_family`) if declared, else fall back to `font_family`
 - Font sizes follow a **ramp anchored on `typography.body`**, not a closed menu. Use the declared slots when they fit. Intermediate sizes (e.g., 40px hero number, 13px annotation) are allowed if the ratio to `body` falls within the role's band (see `design_spec.md §IV ramp table`). Sizes outside every band require extending the lock first.
+- **Write `font-size` to at most 2 decimals** — prefer a whole number; keep the 2-decimal form only for a slot that carries it from `spec_lock` (e.g. `body: 26.67`). Never emit long tails like `20.8026`: the exporter snaps the final size to the nearest 0.5pt, so extra px precision is wasted noise.
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula` / `Status: Rendered`; place them only from the listed file path and never recreate the formula as text.
 

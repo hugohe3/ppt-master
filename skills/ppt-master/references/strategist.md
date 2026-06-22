@@ -36,7 +36,7 @@ Recommend format based on scenario (see [`canvas-formats.md`](canvas-formats.md)
 
 ### b. Page Count Confirmation
 
-Provide specific page count recommendation based on source document content volume.
+Provide specific page count recommendation based on source document content volume **and the deck's delivery purpose** (文字型 packs denser → the same source fits in fewer pages; 展示型 is one-idea-per-page → the same source may need more) — see §6.1 Content Planning Strategy. The user's confirmed count still wins; delivery purpose governs density and per-page treatment within it.
 
 ### c. Key Information Confirmation
 
@@ -219,39 +219,56 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 > - **Calligraphic display** — 隶书 LiSu / 华文行楷 STXingkai / 华文新魏 STXinwei (closest safe substitute: `KaiTi` / `FangSong`); cover / section / hero titles only, never body
 > - **Brand-specific** — McKinsey Bower, corporate VI typefaces
 
-#### Font Size Ramp (all sizes in px)
+#### Font Size Ramp (confirmation layer in pt → spec layer in px)
 
-> **Ramp, not a fixed menu.** All sizes derive from the `body` baseline as a ratio. `spec_lock.md typography` declares `body` plus the slots this deck uses (`title` / `subtitle` / `annotation` by default; add `cover_title` / `hero_number` / `chart_annotation` as needed). Executor may pick any intermediate px within a role's ratio band.
+> **Ramp, not a fixed menu.** All sizes derive from the `body` baseline as a ratio. `spec_lock.md typography` declares `body` plus the slots this deck uses (`title` / `subtitle` / `annotation` by default; add `cover_title` / `hero_number` / `chart_annotation` as needed). Executor may pick any intermediate size within a role's ratio band.
 
-Baseline scales with **canvas height first, then content density** — the `18`/`24px` figures below anchor to a 720-tall 16:9 canvas (≈2.5–3.3% of height); hold that proportion on taller canvases, never carrying a 16:9 number onto a larger one. Within a canvas, density picks the point in its band (chart-heavy low · medium mid · relaxed / poster / cover high), relative to that canvas's anchor, not a fixed 16:9 px.
+> **Unit boundary (HARD rule).** PPT canvases may use **pt only in the confirmation layer** (`recommendations.json`, the Confirm UI, or chat fallback). Before writing `design_spec.md`, normalize the confirmed font sizes to **unitless px** (`px = pt × 4/3`) and keep px as the only design/execution value in `design_spec.md`, `spec_lock.md`, and SVG. Keep original pt only as provenance (`body_size_pt` / `sizes_pt`) when useful. Non-PPT canvases use px everywhere. Never write `pt` / `px` / `em` units into `spec_lock.md` or SVG; those layers carry unitless px numbers only. Geometry — margins, gaps, card sizes — is px everywhere.
 
-| Canvas | Height | Body baseline (dense–relaxed) |
-|---|---|---|
-| PPT 16:9 / 4:3 | 720 / 768 | 18–24 |
-| Xiaohongshu | 1242×1660 | 40–55 |
-| WeChat / IG 1:1 | 1080×1080 | 27–36 |
-| Story / Portrait | 1080×1920 | 48–64 |
-| A4 | 1240×1754 | 44–58 |
+**Baseline — pick by delivery purpose first, then density.** Delivery purpose is one of the Eight Confirmations (item 7 typography); it is the primary driver because the same canvas reads very differently when read close vs. projected. It is a **deck-wide** axis — beyond the body baseline it also drives page density / count / rhythm; see §6.1 for that side. Here it sets the body baseline:
 
-> **Canvas drives the baseline — re-derive on change, never carry.** The body baseline is a function of the *confirmed* canvas (item a), not the recommended one. If the user overrides the recommended canvas in confirmation, recompute the baseline (and therefore the whole ramp) for the new canvas before writing `spec_lock.md`: the `body_size` in `recommendations.json` was sized for the recommended canvas and is stale the moment the canvas changes.
+| Delivery purpose (PPT 16:9) | Body (pt) | Default | Reads as |
+|---|---|---:|---|
+| 文字型 · read-close (report, data-dense brief, leave-behind file) | 14–18 | 16pt | screen / handout reading at arm's length |
+| 均衡 · business (presented **and** read; roadshow, review) — **default** | 18–22 | 20pt | mixed projection + reading |
+| 展示型 · presentation (projected, sparse; keynote, launch, classroom) | 22–28 | 24pt | room projection, glance from the back |
 
-| Common recommendation | Points per Page | Body Baseline | Suitable Scenarios |
-|----------------|----------------|---------------|-------------------|
-| Relaxed | 3-5 items | 24px | Keynote-style, training materials |
-| Dense | 6+ items | 18px | Data reports, consulting analysis |
+Within the chosen purpose band, **density** picks the point (chart-heavy / 6+ items → low end · medium → mid · sparse / poster / cover → high end), and **visual style** nudges it (technical / data toward low, corporate / instructional toward mid, editorial / narrative / showcase toward high).
 
-| Level | Ratio to body | 24px baseline | 18px baseline |
+| Canvas | Height | Body baseline | Unit |
+|---|---|---|---|
+| PPT 16:9 / 4:3 | 720 / 768 | 14–28 (by delivery purpose above) | **pt** |
+| Xiaohongshu | 1242×1660 | 40–55 | px |
+| WeChat / IG 1:1 | 1080×1080 | 27–36 | px |
+| Story / Portrait | 1080×1920 | 48–64 | px |
+| A4 | 1240×1754 | 44–58 | px |
+
+> **PPT confirms in pt, specs carry px.** Only the PPT canvases (16:9 / 4:3) expose pt in the confirmation layer because they export to a real PowerPoint slide where pt is meaningful. Social / print canvases (Xiaohongshu / Story / A4, viewed close on phone or in print) have no PPT pt semantics, so author their body baseline directly in px and skip the conversion step.
+
+> **Confirmed values win — never recompute over them.** The user's confirmed sizes are authoritative. **Confirm UI path**: take `result.json` `typography.body_size` / `sizes` (already px) **verbatim** — do **not** re-derive from the canvas even if the user changed it. The page deliberately does not auto-rescale font sizes when the canvas changes (it only updates the suggested-range hint), so `result.json` already reflects the user's intent; recomputing here would silently override their choice. **Chat-fallback path** (no `result.json`): size from the confirmed canvas + delivery purpose (convert via `pt_to_px.py` for PPT). The `body_size` in `recommendations.json` is only a stale hint once the canvas changes — use the confirmed value, not the recommendation.
+
+| Level | Ratio to body | 32px baseline (24pt UI) | 24px baseline (18pt UI) |
 |-------|---------------|---------------|---------------|
-| Cover title (hero headline) | 2.5-5x | 60-120px | 45-90px |
-| Chapter / section opener | 2-2.5x | 48-60px | 36-45px |
-| Page title | 1.5-2x | 36-48px | 27-36px |
-| Hero number (consulting KPIs) | 1.5-2x | 36-48px | 27-36px |
-| Subtitle | 1.2-1.5x | 29-36px | 22-27px |
-| **Body** | **1x** | **24px** | **18px** |
-| Annotation / caption | 0.7-0.85x | 17-20px | 13-15px |
-| Page number / footnote | 0.5-0.65x | 12-16px | 9-12px |
+| Cover title (hero headline) | 2.5-5x | 80-160px | 60-120px |
+| Chapter / section opener | 2-2.5x | 64-80px | 48-60px |
+| Page title | 1.5-2x | 48-64px | 36-48px |
+| Hero number (consulting KPIs) | 1.5-2x | 48-64px | 36-48px |
+| Subtitle | 1.2-1.5x | 38-48px | 29-36px |
+| **Body** | **1x** | **32px** | **24px** |
+| Annotation / caption | 0.7-0.85x | 22-27px | 17-20px |
+| Page number / footnote | 0.5-0.65x | 16-21px | 12-16px |
 
-> Two baseline columns are illustrative only — for any other baseline (16/20/22/28/32…), multiply the row's ratio. Checker reads live `body` from `spec_lock.md`. Executor may pick any px within a role's band without pre-declaring; values outside **every** band require lock extension first.
+> Two baseline columns are illustrative only — for any other normalized `body` px value (21.33 / 26.67 / 29.33 / 32 / ...), multiply the row's ratio. Executor may pick any size within a role's band without pre-declaring; values outside **every** band require lock extension first.
+
+> **pt → px: where it happens (Mandatory).** PPT canvases confirm in pt; `design_spec.md` / `spec_lock.md` / SVG carry **unitless px only**. The conversion `px = pt × 4 ⁄ 3` happens **once**, by path. (At export the px is converted back with `× 0.75` and **snapped to the nearest 0.5pt** so PowerPoint always shows a clean integer-or-half-point size; a confirmed integer pt round-trips exactly — e.g. 20pt → 26.67px → 20.0pt.)
+> - **Confirm UI path** — already done at submit. `result.json` `typography.body_size` / `sizes` are **already px** (`body_size_pt` / `sizes_pt` are kept only as provenance). Use the px directly; do **not** re-convert.
+> - **Chat-fallback path** — no `result.json` exists, so you convert, via the deterministic helper (never mental math):
+>   ```bash
+>   python3 skills/ppt-master/scripts/pt_to_px.py <body_pt> [<title_pt> <subtitle_pt> <annotation_pt>]   # e.g. 20 → 26.67
+>   ```
+>   Write its printed px into `design_spec.md §IV` + `spec_lock.md typography`. Honor any per-role size the user pinned as that slot's locked value; derive the rest from the ramp.
+>
+> **Validation** — before leaving the Strategist: every font-size in `design_spec.md` / `spec_lock.md` is the **px** value (e.g. `26.67`), never the confirmed pt number (`20`) written raw. Copying a pt number in unconverted is the one silent error the unit guard cannot catch — `20` is a valid bare number that renders at 15pt. Convert (via the page or `pt_to_px.py`), don't copy.
 
 > **Hero in single-focus / breathing pages**: when one element *is* the entire page — a large number, a headline, a key phrase — it is the visual subject, not body content. Such heroes may borrow the cover-title band (2.5–5×); for greater emphasis, declare a hero slot in `spec_lock.md` (e.g., `hero_number` / `hero_headline`) — checker exempts declared slots with no fixed upper limit. The row above "Hero number (consulting KPIs) 1.5–2×" applies only to numeric KPIs in dashboard/data layouts, not to full-page focal elements.
 
@@ -734,6 +751,16 @@ Templates are starting points. The Strategist may adjust based on content and au
 
 Content-outline and speaker-notes strategy follow the deck's locked **mode** — see [`modes/_index.md`](./modes/_index.md) and the locked mode's file. The guidance below applies within any mode:
 
+**Delivery purpose drives the whole plan, not just type size.** `result.json delivery_purpose` — 文字型 (read-close) / 均衡 (business, default) / 展示型 (presentation), confirmed in item 7 — is a **deck-wide consumption mode**. It seeds the normalized body baseline (§g) **and** governs how content is distributed:
+
+| Delivery purpose | Per-page density & treatment | §IX content per page | page_rhythm lean |
+|---|---|---|---|
+| 文字型 · read-close | dense — pack more per page, fuller layouts | prose paragraphs, more blocks, tables / fine detail; complete sentences | leans `dense` |
+| 均衡 · business (default) | balanced | one primary + supporting points; moderate text | mixed |
+| 展示型 · presentation | sparse — one idea per page, generous whitespace | keywords / short phrases, a single core message, large visual; never paragraph dumps | leans `anchor` / `breathing` |
+
+This is what makes the axis meaningful: a 展示型 deck and a 文字型 deck built from the **same source** must differ in per-page text volume, layout density, and rhythm — **not only in font size**. Page count (item b) stays the user's call; delivery purpose governs the **density and treatment within it**, and informs the page-count recommendation when the user has not fixed one. Record the chosen purpose in `design_spec.md §I`. The `page_rhythm` leans are a bias, not a quota — the filler-page ban and "rhythm follows narrative" rule still hold. (Preservation paths — beautify / template-fill — keep source structure verbatim: honor purpose only in styling, never to re-paginate.)
+
 **Per-block expression**: phrase each §IX content block in the mode that fits it — prose, bullet, keyword, or any phrasing the content calls for — not a default bullet. Take the cue from the source's texture: a narrative source (article / transcript / talk) leans prose — resist compressing its argument pages into fragments; a data sheet leans bullet/keyword. Write the real sentence into §IX itself, not a skeleton point to expand later. One page mixes modes; let layout pull each (narrative → prose, structural/chart → bullets/keywords).
 
 > Note: §IX is the only content copy the Executor re-reads after context compression — what you write there is what survives.
@@ -742,7 +769,7 @@ Content-outline and speaker-notes strategy follow the deck's locked **mode** —
 
 | Chapter | Content Requirements |
 |---------|---------------------|
-| I. Project Information | Project name, canvas format, page count, style, audience, scenario, date |
+| I. Project Information | Project name, canvas format, page count, style, audience, scenario, delivery purpose, date |
 | II. Canvas Specification | Format, dimensions, viewBox, margins, content area |
 | III. Visual Theme | Style description, light/dark theme, tone, color scheme (with HEX table), gradient scheme |
 | IV. Typography System | Font plan (per-role families — title / body / emphasis / code), font size hierarchy |
@@ -760,7 +787,7 @@ Content-outline and speaker-notes strategy follow the deck's locked **mode** —
 3. Save to: `projects/<project_name>.../design_spec.md`
 4. **Generate execution lock**: read `templates/spec_lock_reference.md` and produce `projects/<project_name>.../spec_lock.md` — a distilled, machine-readable short form of the color / typography / icon / image / **page_rhythm** / **page_layouts** / **page_charts** decisions above. This file is what the Executor re-reads before every page (see [executor-base.md](executor-base.md) §2.1). The values in `spec_lock.md` MUST exactly match the decisions recorded in `design_spec.md`; if they ever diverge, `spec_lock.md` wins and `design_spec.md` should be treated as historical narrative.
    - **page_rhythm is mandatory**: Based on the page list in §IX Content Outline, assign each page one of `anchor` / `dense` / `breathing` (see `spec_lock_reference.md` for the full vocabulary). This is what breaks the uniform "every page is a card grid" feel — without it the Executor defaults all pages to `dense`.
-   - **Rhythm follows narrative, not quota**: `breathing` pages mark natural pauses — chapter transitions, standalone emphasis (hero quote / big number), SCQA bridges. Dense decks may legitimately be all `dense`. **Do NOT invent filler pages** ("Thank you", empty dividers) to pad rhythm — every `breathing` page must say something independent.
+   - **Rhythm follows narrative, not quota**: `breathing` pages mark natural pauses — chapter transitions, standalone emphasis (hero quote / big number), SCQA bridges. Dense decks may legitimately be all `dense`. **Do NOT invent filler pages** ("Thank you", empty dividers) to pad rhythm — every `breathing` page must say something independent. Delivery purpose biases the overall lean (展示型 toward more `anchor` / `breathing`, 文字型 toward `dense`; see §6.1) — a bias, never a quota.
    - **Cover impact is mandatory**: Page `P01` is the deck's first visual contract, not a generic title slide. In `design_spec.md §IX`, add a `Cover impact` line for `P01` that names one concrete hook and one concrete composition strategy. Use the source's strongest available signal: a provocative core claim, object / scene metaphor, hero number, founder / product / audience moment, or a distilled conflict. Pair it with one concrete composition strategy — such as `full-bleed image + floating title`, `typographic poster`, `hero object`, `data hook`, `editorial scene`, `high-contrast abstract geometry`, or a fresh composition the deck's subject suggests (these are starting points, not the allowed set). If no external or AI image is available, still specify a native-SVG visual hook; do not fall back to "title + subtitle + decorative background". (Beautify / template-fill keep the source cover verbatim — this rule does not apply on those preservation paths.)
    - **Cover rhythm lock**: `P01` remains `anchor` in `spec_lock.md page_rhythm`, but its §IX `Cover impact` must prevent content-page patterns. Do not plan multi-card grids, agenda-like bullets, or equal-weight columns on the cover unless a template explicitly requires that structure, or a preservation path (beautify / template-fill) is transcribing the source cover verbatim.
    - **Closing impact (only when the deck closes)**: the deck's last page is its final visual contract — the strongest impression after the cover. When the deck genuinely lands on a conclusion / call-to-action / final-takeaway page, give it a `Closing impact` line in §IX: name the one thing the audience should leave with (a distilled takeaway, a forward call, a memorable restatement of the core claim) + one composition that delivers it — never a generic "Thank you" / contact-only slide or a centered-title reprise of the cover. **Do NOT invent a closing page to satisfy this** — the filler-page ban above still holds; apply it only to the page where the deck actually resolves. Same exemptions as the cover: skip on template / beautify / template-fill preservation paths.
