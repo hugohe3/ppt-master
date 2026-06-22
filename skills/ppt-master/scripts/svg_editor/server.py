@@ -50,6 +50,19 @@ _FINALIZE_DIR = _SCRIPTS_DIR.parent / 'svg_finalize'
 if str(_FINALIZE_DIR) not in sys.path:
     sys.path.insert(0, str(_FINALIZE_DIR))
 
+# scripts/ root for cross-server shared helpers
+_ROOT_SCRIPTS_DIR = _SCRIPTS_DIR.parent
+if str(_ROOT_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_ROOT_SCRIPTS_DIR))
+
+from server_common import (  # noqa: E402
+    claim_lock as _claim_lock,
+    find_free_port as _find_free_port,
+    process_alive as _process_alive,
+    read_lock as _read_lock,
+    release_lock as _release_lock,
+)
+
 from annotations import (  # noqa: E402
     assign_temp_ids,
     is_editable_attr,
@@ -98,60 +111,8 @@ def _cache_put(cache: dict, lock: threading.Lock, path: str, mtime: float, value
         cache[path] = (mtime, value)
 
 
-def _process_alive(pid: int) -> bool:
-    """Return True if a process with this pid is reachable.
-
-    ``os.kill(pid, 0)`` succeeds when the process exists even without
-    permission to signal it; ``PermissionError`` therefore still counts
-    as alive (a real lock holder owned by another user). ``ESRCH`` /
-    other ``OSError`` means the pid is gone.
-    """
-    if pid <= 0:
-        return False
-    try:
-        os.kill(pid, 0)
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True
-    except OSError:
-        return False
-    return True
-
-
-def _read_lock(lock_file: Path) -> Optional[dict]:
-    try:
-        data = json.loads(lock_file.read_text(encoding='utf-8'))
-        return data if isinstance(data, dict) else None
-    except (OSError, json.JSONDecodeError):
-        return None
-
-
-def _claim_lock(lock_file: Path, port: int) -> Optional[dict]:
-    """Try to claim the per-project preview slot.
-
-    Returns ``None`` on success. If another live process already holds the
-    slot, returns the existing lock dict (caller surfaces it as an error).
-    A stale lock (pointing at a dead pid) is silently overwritten.
-    """
-    existing = _read_lock(lock_file)
-    if existing and _process_alive(int(existing.get('pid', 0))):
-        return existing
-    lock_file.write_text(
-        json.dumps({'pid': os.getpid(), 'port': port}),
-        encoding='utf-8',
-    )
-    return None
-
-
-def _release_lock(lock_file: Path) -> None:
-    """Best-effort cleanup: only delete the lock if it still names *us*."""
-    try:
-        current = _read_lock(lock_file)
-        if current and int(current.get('pid', 0)) == os.getpid():
-            lock_file.unlink(missing_ok=True)
-    except OSError:
-        pass
+# Lock / liveness helpers are shared with confirm_ui via server_common
+# (imported above as _process_alive / _read_lock / _claim_lock / _release_lock).
 
 
 def _inline_icons(content: str) -> tuple[str, list[dict]]:
@@ -463,6 +424,28 @@ def create_app(
         if not target.exists() or not target.is_file():
             return jsonify({'error': 'not found'}), 404
         return send_from_directory(str(assets_dir), filename)
+
+    @app.route('/<path:filename>')
+    def serve_bare_asset(filename: str):
+        """Resolve a template SVG's bare image href (e.g. `href="cover_bg.png"`).
+
+        Mirror templates copy hrefs verbatim, so a bare filename reaches the
+        browser as `/<filename>` (no `../images/` prefix). Resolve it against the
+        project's images/ then assets/. Every real route (`/api/*`, `/images/*`,
+        `/assets/*`, `/static/*`, `/`) is more specific and matches first; this
+        only catches the leftover bare references and 404s otherwise.
+        """
+        for base in (images_dir, assets_dir):
+            if not base.exists():
+                continue
+            target = (base / filename).resolve()
+            try:
+                target.relative_to(base.resolve())
+            except ValueError:
+                continue
+            if target.exists() and target.is_file():
+                return send_from_directory(str(base), filename)
+        return jsonify({'error': 'not found'}), 404
 
     @app.route('/api/slides')
     def get_slides():
@@ -874,12 +857,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         logger.error('%s is not a directory', svg_output)
         return 1
 
+    # Pick a free port: another project's preview/confirm server may already
+    # hold the default, so bind the next free one instead of crashing — each
+    # project then serves its own data on its own port (no cross-project mix-up).
+    port = _find_free_port(args.port)
+
     # Per-project mutual exclusion. The major driver of orphaned servers is
     # --live mode (which used to disable idle timeout entirely) combined with
     # silent restarts; refusing duplicate launches catches the accumulation
     # at its source. Stale locks (dead pid) are overwritten by _claim_lock.
     lock_file = project_path / LOCK_FILE_NAME
-    existing = _claim_lock(lock_file, args.port)
+    existing = _claim_lock(lock_file, port)
     if existing:
         existing_pid = existing.get('pid', '?')
         existing_port = existing.get('port', '?')
@@ -921,7 +909,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         lock_file=lock_file,
     )
 
-    url = f'http://localhost:{args.port}'
+    url = f'http://localhost:{port}'
     if not args.no_browser:
         webbrowser.open(url)
 
@@ -931,7 +919,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     logger.info('project: %s', project_path)
     logger.info('svg_output: %s (%d slides)', svg_output, svg_count)
     logger.info('idle timeout: %ds (0 = disabled)', idle_timeout)
-    app.run(host='127.0.0.1', port=args.port, debug=False)
+    app.run(host='127.0.0.1', port=port, debug=False)
     return 0
 
 

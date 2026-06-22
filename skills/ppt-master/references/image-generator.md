@@ -417,13 +417,16 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | `IMAGE_BACKEND` not configured (or Path A fails) AND host has a native image tool | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
 | **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Manifest stays on disk; user generates externally from `items[].prompt` and places files at `project/images/<filename>` |
 
-**Selection logic** — monotonic A → B → C fallback chain (automatic, no user prompting):
+**Selection logic** — the confirmed user choice wins; absent one, fall back to the automatic A → B → C chain:
 
+0. **Confirmed override (wins)** — honor the confirmed image source. The **chat choice is canonical**; the Confirm UI is only a convenience surface that, when used, records the same choice to `<project>/confirm_ui/result.json` as `image_ai_path` (so there is no `result.json` on the chat path — read the choice from the conversation). From either channel, if the choice is set and not `auto`, honor it directly, **even when it contradicts `IMAGE_BACKEND`**:
+   - `api` → **Path A** (`image_gen.py --manifest`).
+   - `host-native` → **Path B** (host's native image tool) — skip A *even if `IMAGE_BACKEND` is configured*.
+   - `manual` → **Offline Manual** (write prompts, hand off).
+   ("use Codex's image tool" / "走接口生成" in chat = `host-native` / `api`.) If the chosen path turns out unavailable (e.g. `host-native` but the host has no image tool), fall through along the chain below from that point. Only when no source named a path (chat silent, and `image_ai_path` `auto` / absent) does the automatic chain decide.
 1. **Try Path A** — if `IMAGE_BACKEND` is configured (env or `.env`), run `image_gen.py --manifest`. If it fails twice in a row, fall to Path B.
 2. **Try Path B** — if `IMAGE_BACKEND` was not configured (A skipped), or A failed, and the host has a native image tool (Codex / Antigravity / Claude Code / similar), the agent invokes the host's image capability directly.
 3. **Fall to C (Offline Manual)** — if B is also unavailable (no host-native tool) or fails, write prompts to `images/image_prompts.json` and hand off to the user.
-
-**User override**: If the user explicitly names Path B ("use Codex's image tool"), skip A and start at B. Explicit naming is the only way to bypass an earlier path in the chain; otherwise the chain is monotonic.
 
 **Hard rule**: Step 4 is execution, not re-decision. Never present an interactive choice between paths here — image strategy was locked in Strategist Step 4 h item.
 
@@ -493,8 +496,9 @@ Precedence:
 Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails) **and** the host provides a native image generation tool (Codex, Antigravity, Claude Code's image tool, and similar). No user prompting required — the agent detects the host capability and proceeds. The user may also explicitly name this path ("use Codex's image tool") to force it even when `IMAGE_BACKEND` is configured.
 
 - Agent invokes the host's native image tool directly; prompts come from `items[].prompt`
+- **Batch for speed, mind the rate**: when the host can run independent tool calls in parallel (e.g. Claude Code issues independent calls concurrently), fire several generations together in modest groups — a few rows at a time (~3–4), not the whole manifest at once — so their latency overlaps without flooding the host's image quota. When the host only runs tools serially, generate one row at a time. This mirrors Path A's default concurrency of 3.
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
-- After each placement, set the corresponding item's `status` to `Generated` in the manifest
+- Mark each item's `status` `Generated` in the manifest the moment its file lands — as each completes, not in one pass at the end (so an interrupted batch leaves accurate state)
 - Executor downstream is path-agnostic — no spec change required between Path A and Path B
 
 ### Offline Manual Mode (C's third implementation mode)

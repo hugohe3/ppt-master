@@ -40,9 +40,9 @@ uv run scripts/update_repo.py
 
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
-| Conversion | `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py` | [docs/conversion.md](./docs/conversion.md) |
+| Conversion | `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py` | [docs/project.md](./docs/project.md) |
-| SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
+| SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
 | Image tools | `image_gen.py`, `latex_render.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
 | Repo maintenance | `update_repo.py` | README install/update section |
@@ -80,9 +80,9 @@ Template fill (direct PPTX, no SVG conversion):
 
 ```bash
 mkdir -p <project_path>/sources <project_path>/analysis <project_path>/exports <project_path>/validation
-uvx ppt-master template-fill-pptx analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/slide_library.json
-uvx ppt-master template-fill-pptx scaffold <project_path>/analysis/slide_library.json -o <project_path>/analysis/fill_plan.json --slides "1,3,4"
-uvx ppt-master template-fill-pptx check-plan <project_path>/analysis/slide_library.json <project_path>/analysis/fill_plan.json -o <project_path>/analysis/check_report.json
+uvx ppt-master template-fill-pptx analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/<stem>.slide_library.json
+uvx ppt-master template-fill-pptx scaffold <project_path>/analysis/<stem>.slide_library.json -o <project_path>/analysis/fill_plan.json --slides "1,3,4"
+uvx ppt-master template-fill-pptx check-plan <project_path>/analysis/<stem>.slide_library.json <project_path>/analysis/fill_plan.json -o <project_path>/analysis/check_report.json
 uvx ppt-master template-fill-pptx apply <project_path>/sources/<source.pptx> <project_path>/analysis/fill_plan.json -o <project_path>/exports/filled.pptx
 ```
 
@@ -91,16 +91,17 @@ uvx ppt-master template-fill-pptx apply <project_path>/sources/<source.pptx> <pr
 Post-processing and export:
 
 ```bash
-uv run scripts/total_md_split.py <project_path>
-uv run scripts/finalize_svg.py <project_path>
-uv run scripts/svg_to_pptx.py <project_path>
+uvx ppt-master extract-svg-assets <svg_dir> --icons-dir <icons_dir> --inplace --id-prefix <prefix>  # optional: shrink imported/reference SVGs before AI review
+uvx ppt-master total-md-split <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 Image generation:
 
 ```bash
-uv run scripts/image_gen.py "A modern futuristic workspace"
-uv run scripts/image_gen.py --list-backends
+uvx ppt-master image-gen "A modern futuristic workspace"
+uvx ppt-master image-gen --list-backends
 uv run scripts/analyze_images.py <project_path>/images
 uv run scripts/latex_render.py <project_path>
 uv run scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia

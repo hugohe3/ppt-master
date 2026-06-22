@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from .drawingml_utils import detect_text_lang
+
 
 def markdown_to_plain_text(md_content: str) -> str:
     """Convert Markdown notes to plain text for PPTX notes.
@@ -70,19 +72,20 @@ def create_notes_slide_xml(slide_num: int, notes_text: str) -> str:
     paragraphs: list[str] = []
     for para in notes_text.split('\n'):
         if para.strip():
+            lang = detect_text_lang(para)
             paragraphs.append(f'''<a:p>
               <a:r>
-                <a:rPr lang="zh-CN" dirty="0"/>
+                <a:rPr lang="{lang}" dirty="0"/>
                 <a:t>{para}</a:t>
               </a:r>
             </a:p>''')
         else:
-            paragraphs.append('<a:p><a:endParaRPr lang="zh-CN" dirty="0"/></a:p>')
+            paragraphs.append('<a:p><a:endParaRPr lang="en-US" dirty="0"/></a:p>')
 
     paragraphs_xml = (
         '\n            '.join(paragraphs)
         if paragraphs
-        else '<a:p><a:endParaRPr lang="zh-CN" dirty="0"/></a:p>'
+        else '<a:p><a:endParaRPr lang="en-US" dirty="0"/></a:p>'
     )
 
     return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

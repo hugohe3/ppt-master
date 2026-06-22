@@ -39,7 +39,7 @@ For decks containing data charts, run [`verify-charts`](./verify-charts.md) firs
 ```bash
 # 1. playwright + chromium installed (the PNG renderer)
 pip install playwright
-python3 -m playwright install chromium
+uv run playwright install chromium
 
 # 2. live-preview server running for this project (provides inlined SVG fetch)
 uvx ppt-master svg-editor <project_path> --no-browser

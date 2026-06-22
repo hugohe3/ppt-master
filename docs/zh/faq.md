@@ -87,14 +87,14 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 ## Q: 页面切换和元素动画可以调吗？
 
-可以。页间转场（默认 `fade` 0.4s）和页内元素入场动画（默认 `auto` 效果 + `after-previous` 自动级联，根据每个 group 的 SVG id 自动映射效果——图片类 id 在视觉池中循环以产生 deck 内变化）都通过 `svg_to_pptx.py` 的参数控制——`-t/--transition` 控制页级，`-a/--animation` 控制元素级。常用一行命令：
+可以。页间转场默认开（`fade` 0.4s），页内元素入场动画**默认关**——翻到一页时整页一次性呈现，不会有元素一个个自动级联出来（那种没人要的自动连播正是「AI 味」最重的地方）。两者都通过 `svg_to_pptx.py` 的参数控制——`-t/--transition` 控制页级，`-a/--animation` 控制元素级。想要页内动画时显式开启即可：
 
 ```bash
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # 换转场效果
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # 关闭转场
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -a none       # 关闭页内动画
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # 改用单一效果（仍是默认级联）
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click   # 改为单击触发，演讲者控制节奏
+uvx ppt-master svg-to-pptx <project> -t push       # 换转场效果
+uvx ppt-master svg-to-pptx <project> -t none       # 关闭转场
+uvx ppt-master svg-to-pptx <project> -a auto       # 开启页内元素入场（按 group id 自动映射效果）
+uvx ppt-master svg-to-pptx <project> --animation fade        # 开启并改用单一效果
+uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # 单击触发，演讲者控制节奏
 ```
 
 `on-click` 适合现场演示。通过 `--recorded-narration` 做旁白/视频导出时会拒绝它，因为 PPT Master 只写页面级计时，不生成对象级点击计时；带旁白的 deck 请使用 `after-previous` 或 `with-previous`。
@@ -155,6 +155,29 @@ uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on
 可以。你可以**随时中断工作流**——前几页生成后就可以查看并反馈意见。AI 可以根据你的意见重新生成特定页面，不需要等到全部完成再修改。
 
 生成后的修正也一样简单，直接告诉 AI："第 3 页布局有问题——标题和图表重叠了"，它会修正那个特定的 SVG。
+
+## Q: 我手上有一份现成的 PPT，想基于它做东西，该走哪条路？
+
+把「用一份已有 PPT」拆成两个问题：**留不留它的内容**、**留不留它的设计（版式 + 视觉）**。四种组合对应四条路：
+
+| 意图 | 路线 | 固定不变的东西 |
+|---|---|---|
+| 留内容 + 重做版式 | **beautify（美化 / 重排）** | 页数、页序、每页文字、图表/表格数据 |
+| 换内容 + 留设计 | **template-fill（套模板）** | 原生页面设计；可选择、乱序、复用源页 |
+| 只留内容，设计与分页都重来 | **主管线** | 源事实；故事结构和页数都可重构 |
+| 留内容 + 留设计 | 不必生成 | 直接用原文件 |
+
+用 **beautify** 的前提是：原 PPT 的分页本身就是输出要求的一部分。文字逐字不动、页数页序 1:1 保留，只重排版式、层级和留白，并继承原配色字体。典型说法是「把这份 PPT 美化一下 / 重新排版，内容别动」。见 [beautify 工作流](../../skills/ppt-master/workflows/beautify-pptx.md)。
+
+用 **主管线** 的前提是：原 PPT 只是内容材料。流程会用 `ppt_to_md` 抽成 Markdown，并读取 `analysis/` 里的 PPTX intake 事实，再由 Strategist 自由重构大纲（合页 / 拆页 / 换序）。典型说法是「用这份 PPT 的内容重做一份更好的」或「提炼成 10 页高管汇报」。
+
+beautify 和主管线的一句话判别：**原来的分页是要保留的信息，还是只是前一作者的结构、可以推翻？** 保留 → beautify；推翻 → 主管线。落到硬判据就是**页数 / 页序**：只要它有任何变化——拆页、合页、删页、换序，乃至「一字不改、只把某张太挤的页拆开排得更好看」——都属于重分页，走主管线。beautify 严格 1:1。
+
+如果用户说法含糊，比如「把这份 PPT 做得更专业一点」「优化一下这个 deck」，AI 应先问一句：**要保留原页数、页序和每页文字，只做美化；还是把 PPT 当素材，重新梳理成一份新故事？**
+
+还有一条正交的路：如果你不是要现在产出一份 deck，而是想把这套设计**收成可复用模板**供以后反复用，走 **create-template**（见下面「如何制作自定义模板」）。
+
+---
 
 ## Q: 我已经有一份做好的 `.pptx`，能不能复用它的设计、只填新内容？
 

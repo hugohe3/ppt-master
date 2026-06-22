@@ -18,7 +18,8 @@ Usage:
 
 Output:
     - Analysis report displayed in console
-    - Generates image_analysis.csv in the parent directory of the images folder
+    - Generates image_analysis.csv under the project's analysis/ directory
+      (sibling of the images folder), alongside the PPTX intake bundle
 """
 
 import argparse
@@ -572,9 +573,12 @@ def main() -> None:
         print_results(results)
         generate_markdown(results, canvas_key)
 
-        # Save to CSV file (saved in the parent directory of the images folder)
+        # Save to CSV file (saved under the project's analysis/ directory,
+        # alongside the PPTX intake bundle)
         parent_dir = os.path.dirname(images_dir)
-        csv_path = os.path.join(parent_dir, "image_analysis.csv")
+        analysis_dir = os.path.join(parent_dir, "analysis")
+        os.makedirs(analysis_dir, exist_ok=True)
+        csv_path = os.path.join(analysis_dir, "image_analysis.csv")
         save_csv(results, csv_path)
     else:
         print("No image files found in the directory.")

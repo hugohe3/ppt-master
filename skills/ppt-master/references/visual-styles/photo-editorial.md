@@ -10,6 +10,8 @@ Photo-led editorial — large full-bleed photography dominates the page, text po
 - Decoration: thin rules, section numbering, small figure notes; nothing competes with the image.
 - Whitespace: generous around text; the photo fills, the type breathes beside it. Asymmetric magazine composition.
 
+> **No usable image → fall back to `editorial`.** This style's spine is the photograph; when a page has no suitable image available, render it in the `editorial` text-led layout (magazine columns) rather than a full-bleed placeholder — an empty / dashed image frame contradicts the style's whole premise. A deterministic, observable condition, not a judgment call.
+
 ## 2. Typography character
 
 - Editorial serif / CJK title × clean sans body; magazine-column cadence; small precise captions and figure notes. Words are concise — they point, they don't fill.

@@ -1,15 +1,14 @@
 # PPT Master — AI 生成原生可编辑 PPTX，支持任意文档输入
 
-[![Version](https://img.shields.io/badge/version-v2.9.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
+[![Version](https://img.shields.io/badge/version-v2.11.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 [![AtomGit stars](https://atomgit.com/hugohe3/ppt-master/star/badge.svg)](https://atomgit.com/hugohe3/ppt-master)
 
 [English](./README.md) | 中文
 
-<p align="center">
-  <sub>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> 等赞助方支持，得以持续免费开源。</sub>
-</p>
+<details open>
+<summary>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> 等赞助方支持，得以持续免费开源。</summary>
 
 <table>
   <tr>
@@ -25,6 +24,8 @@
     <td>感谢 RunAPI 赞助了本项目！RunAPI 是一个高效稳定的 API 平台，一个 API Key 即可访问 OpenAI、Claude、Gemini、DeepSeek、Grok 等 150+ 主流模型，价格低至官方原价的 <strong>1 折</strong>，极其稳定，可无缝兼容 Claude Code 等工具。RunAPI 为 PPT Master 用户提供专属福利：通过<a href="https://runapi.co/register?aff=WMLJ">本项目专属链接</a>注册并联系管理员，即可领取 <strong>￥7 的免费额度</strong>。</td>
   </tr>
 </table>
+
+</details>
 
 > [!IMPORTANT]
 > ### 这是一个工具，不是一个许愿池
@@ -197,6 +198,8 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 **🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.co/register?aff=WMLJ)** 都能解决卡点——均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅，支持国内支付。**PackyCode**：充值时填写优惠码 **`ppt-master`** 享 9 折。**APIKEY.FUN**：价格低至官方原价的 **7%**，通过专属链接注册可享受最高永久充值 95 折专属优惠。**RunAPI**：一个 API Key 即可访问 150+ 主流模型，价格低至官方原价的 **1 折**，注册并联系管理员可领取 **￥7 免费额度**。
 
+**🔀 手上有多个渠道？** 拿到多家的 API Key 后，[cc-switch](https://github.com/farion1231/cc-switch)（跨平台桌面应用）可以一键切换 Claude Code、Codex、Gemini CLI 等工具的 API 供应商，免去手动改配置。
+
 ### 3. 配置项目
 
 **方式 A — 下载 ZIP**（无需安装 Git）：
@@ -308,6 +311,10 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 ## 致谢
 
 [SVG Repo](https://www.svgrepo.com/) · [Tabler Icons](https://github.com/tabler/tabler-icons) · [Simple Icons](https://github.com/simple-icons/simple-icons) · [Phosphor Icons](https://github.com/phosphor-icons/core) · [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author))（CRAP 设计原则）
+
+## 相关工具
+
+[cc-switch](https://github.com/farion1231/cc-switch) —— 跨平台桌面应用，统一管理并一键切换 Claude Code、Codex、Gemini CLI 等工具的 API 供应商。在这些 agent 里跑 PPT Master 时很顺手。
 
 ## 联系与合作
 

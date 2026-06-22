@@ -20,6 +20,7 @@ project_name_format_YYYYMMDD/
 │   ├── Raw files / URL archives / Converted Markdown
 │   └── *_files/                  # Markdown companion resource directory (e.g., images)
 ├── images/                       # Image assets used by the project
+├── analysis/                     # Extracted source facts (PPTX intake bundle, image_analysis.csv)
 ├── notes/
 │   ├── 01_xxx.md
 │   ├── 02_xxx.md
@@ -31,8 +32,7 @@ project_name_format_YYYYMMDD/
 │   ├── 01_xxx.svg
 │   └── ...
 ├── templates/                    # Project-level templates (if any)
-├── *.pptx
-└── image_analysis.csv            # Optional, image scan analysis results
+└── *.pptx
 ```
 
 Projects can remain at different stages and do not necessarily have all artifacts at once. For example:

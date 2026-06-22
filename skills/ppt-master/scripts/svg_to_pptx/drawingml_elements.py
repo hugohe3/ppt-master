@@ -6,6 +6,7 @@ import io
 import math
 import re
 import base64
+from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -17,6 +18,7 @@ from .drawingml_utils import (
     rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
     parse_font_family, is_cjk_char, estimate_text_width,
+    detect_text_lang, resolve_text_run_fonts,
     parse_transform_matrix, _xml_escape,
 )
 from .drawingml_styles import (
@@ -28,6 +30,26 @@ from .drawingml_paths import (
     PathCommand, parse_svg_path, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
 )
+
+
+def _resolve_external_image(svg_dir: Path, href: str) -> Path:
+    """Resolve a non-data-URI image href to a file on disk.
+
+    Search order: next to the SVG (``svg_output/``), the project root, the
+    project's ``images/`` (the single runtime image pool — template-bundled
+    bitmaps plus AI / web / user images all live here), then ``templates/``
+    (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
+    of these exist.
+    """
+    for candidate in (
+        svg_dir / href,
+        svg_dir.parent / href,
+        svg_dir.parent / 'images' / href,
+        svg_dir.parent / 'templates' / href,
+    ):
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f'External image not found: {href}')
 
 
 def _wrap_shape(
@@ -992,6 +1014,8 @@ def _build_run_xml(
     strike_attr = ' strike="sngStrike"' if 'line-through' in text_dec else ''
 
     fonts = parse_font_family(ff) if ff else default_fonts
+    run_fonts = resolve_text_run_fonts(text, fonts)
+    lang = detect_text_lang(text)
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run)
@@ -999,13 +1023,13 @@ def _build_run_xml(
     space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
 
     return f'''<a:r>
-<a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
+<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
 {outline_xml}
 {fill_xml}
 {effect_xml}
-<a:latin typeface="{_xml_escape(fonts['latin'])}"/>
-<a:ea typeface="{_xml_escape(fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(fonts['latin'])}"/>
+<a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
+<a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
+<a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
 </a:rPr>
 <a:t{space_attr}>{_xml_escape(text)}</a:t>
 </a:r>'''
@@ -1686,11 +1710,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     else:
         if ctx.svg_dir is None:
             return None
-        img_path = ctx.svg_dir / href
-        if not img_path.exists():
-            img_path = ctx.svg_dir.parent / href
-        if not img_path.exists():
-            raise FileNotFoundError(f'External image not found: {href}')
+        img_path = _resolve_external_image(ctx.svg_dir, href)
         img_format = img_path.suffix.lstrip('.').lower()
         if img_format == 'jpeg':
             img_format = 'jpg'
@@ -1887,11 +1907,7 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     else:
         if ctx.svg_dir is None:
             return None
-        img_path = ctx.svg_dir / href
-        if not img_path.exists():
-            img_path = ctx.svg_dir.parent / href
-        if not img_path.exists():
-            raise FileNotFoundError(f'External image not found: {href}')
+        img_path = _resolve_external_image(ctx.svg_dir, href)
         img_format = img_path.suffix.lstrip('.').lower()
         if img_format == 'jpeg':
             img_format = 'jpg'

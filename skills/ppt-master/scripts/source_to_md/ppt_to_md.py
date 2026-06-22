@@ -7,8 +7,18 @@ Open XML PowerPoint files into Markdown.
 
 Primary use case: PPTX source decks -> Markdown for PPT generation input.
 
+Hyperlinks present in the source deck are preserved: run-level external URLs
+and slide-internal jumps are emitted as ``[text](url)`` / ``[text](#slide-N)``,
+with a shape-level ``click_action`` fallback.
+
 Dependency:
     pip install python-pptx
+
+API stability note:
+    Detecting slide-internal jumps (``ppaction://hlinksldjump``) reads
+    ``run._r`` (the CT_TextRun lxml element) because python-pptx exposes no
+    public API to distinguish an internal jump from an external URL. This
+    access pattern is stable across python-pptx 0.6.x; pin python-pptx<0.7.
 """
 
 from __future__ import annotations
@@ -22,8 +32,10 @@ import sys
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
+from urllib.parse import quote
 
 from pptx import Presentation
+from pptx.enum.action import PP_ACTION
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.oxml.ns import qn
 
@@ -42,6 +54,11 @@ IMAGE_EXT_BY_CONTENT_TYPE = {
     "image/x-wmf": "wmf",
 }
 LEGACY_GENERATED_IMAGE_RE = re.compile(r"^slide_\d{2}_image_\d{2}\.[A-Za-z0-9]+$")
+
+# Hyperlink schemes dropped during extraction (a blacklist of known-dangerous
+# schemes). PowerPoint also rejects unrecognized schemes at open time, so the
+# residual risk from schemes not listed here is low.
+UNSUPPORTED_URL_SCHEMES = ("javascript:", "data:", "vbscript:", "file:")
 
 
 SUPPORTED_FORMATS = {
@@ -135,12 +152,164 @@ def iter_leaf_shapes(shapes: object) -> list[LeafShape]:
     return items
 
 
-def text_frame_to_markdown(text_frame: object) -> str:
-    """Convert a PowerPoint text frame into Markdown."""
-    paragraphs = []
+def _is_supported_url(url: str) -> bool:
+    """Reject empty URLs and the known-dangerous schemes."""
+    return bool(url) and not any(
+        url.lower().startswith(scheme) for scheme in UNSUPPORTED_URL_SCHEMES
+    )
+
+
+def _escape_md_link_text(text: str) -> str:
+    """Backslash-escape characters that would break a Markdown link label.
+
+    A stray ``]`` in anchor text would otherwise close the ``[...]`` early.
+    """
+    return text.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+
+
+def _encode_md_url(url: str) -> str:
+    """Percent-encode a URL so Markdown link syntax stays unambiguous.
+
+    Notably encodes ``(`` / ``)`` to ``%28`` / ``%29`` so a parenthesised URL
+    does not terminate the ``[text](url)`` form early.
+    """
+    return quote(url, safe="/:?=&%#@!$'*+,;")
+
+
+def _resolve_internal_jump(run: object, shape: object) -> str | None:
+    """Return ``#slide-N`` for a run carrying a slide-internal jump, else None.
+
+    Reads ``run._r`` (private python-pptx API) because the public
+    ``run.hyperlink.address`` cannot tell an internal jump apart from an
+    external URL — see the module docstring's API stability note.
+    """
+    r_id = ""
+    try:
+        rpr = run._r.find(qn("a:rPr"))
+        if rpr is None:
+            return None
+        hlink = rpr.find(qn("a:hlinkClick"))
+        if hlink is None or "hlinksldjump" not in (hlink.get("action", "") or ""):
+            return None
+        r_id = hlink.get(qn("r:id"), "")
+        if not r_id:
+            return None
+        target_slide = shape.part.related_part(r_id).slide
+        prs = shape.part.slide.part.package.presentation_part.presentation
+        return f"#slide-{list(prs.slides).index(target_slide) + 1}"
+    except (KeyError, ValueError, AttributeError):
+        print(f"[WARN] ppt_to_md: could not resolve slide jump rId={r_id}", file=sys.stderr)
+        return None
+
+
+def _run_url(run: object, shape: object) -> str | None:
+    """Resolve a run's hyperlink target to a markdown-ready URL, or None."""
+    if shape is not None:
+        internal = _resolve_internal_jump(run, shape)
+        if internal:
+            return internal
+    try:
+        addr = run.hyperlink.address
+    except AttributeError:
+        return None
+    if _is_supported_url(addr or ""):
+        return _encode_md_url(addr)
+    return None
+
+
+def _paragraph_to_markdown(paragraph: object, shape: object) -> str:
+    """Render one paragraph, merging consecutive runs that share a URL.
+
+    Run text is concatenated verbatim — including the spaces between runs — and
+    normalized only once over the assembled paragraph, so a link in the middle
+    of a sentence does not swallow its surrounding spaces. A link group's own
+    leading / trailing whitespace is kept outside the ``[...]`` so it separates
+    words rather than padding the anchor text.
+    """
+    parts = []
+    current_url = None
+    current_text = ""
+
+    def flush():
+        if not current_text:
+            return
+        if current_url is None:
+            parts.append(current_text)
+            return
+        lead = current_text[: len(current_text) - len(current_text.lstrip())]
+        trail = current_text[len(current_text.rstrip()):]
+        core = current_text.strip()
+        display = _escape_md_link_text(core) if core else current_url
+        parts.append(f"{lead}[{display}]({current_url}){trail}")
+
+    has_run_hyperlink = False
+    for run in paragraph.runs:
+        url = _run_url(run, shape)
+        if url:
+            has_run_hyperlink = True
+        if url != current_url:
+            flush()
+            current_text = ""
+            current_url = url
+        current_text += run.text or ""
+    flush()
+
+    text = normalize_text("".join(parts))
+
+    # Shape-level click_action only matters when no run carried its own link.
+    if not has_run_hyperlink and shape is not None:
+        text = _apply_shape_click_action(text, shape)
+    return text
+
+
+def _apply_shape_click_action(text: str, shape: object) -> str:
+    """Wrap paragraph text in a link from the shape's click_action, if any."""
+    try:
+        action = shape.click_action
+        if action.action == PP_ACTION.HYPERLINK:
+            url = action.hyperlink.address or ""
+            if _is_supported_url(url):
+                return f"[{_escape_md_link_text(text)}]({_encode_md_url(url)})"
+        elif action.action == PP_ACTION.NAMED_SLIDE:
+            target = action.target_slide
+            if target is not None:
+                prs = shape.part.slide.part.package.presentation_part.presentation
+                idx = list(prs.slides).index(target) + 1
+                return f"[{_escape_md_link_text(text)}](#slide-{idx})"
+    except (AttributeError, ValueError):
+        print("[WARN] ppt_to_md: could not process shape click_action", file=sys.stderr)
+    return text
+
+
+def _paragraph_has_hyperlink(paragraph: object) -> bool:
+    """True if any run carries an external URL or an internal slide jump."""
+    for run in paragraph.runs:
+        try:
+            if run.hyperlink.address:
+                return True
+        except AttributeError:
+            pass
+        try:
+            rpr = run._r.find(qn("a:rPr"))
+            if rpr is not None and rpr.find(qn("a:hlinkClick")) is not None:
+                return True
+        except AttributeError:
+            continue
+    return False
+
+
+def text_frame_to_markdown(text_frame: object, shape: object = None) -> str:
+    """Convert a PowerPoint text frame into Markdown, preserving hyperlinks.
+
+    Run-level external URLs and slide-internal jumps are emitted as
+    ``[text](url)`` / ``[text](#slide-N)``; consecutive runs sharing a URL are
+    merged. When no run carries a link, the shape's ``click_action`` is used as
+    a paragraph-level fallback. Pass ``shape`` to enable hyperlink extraction;
+    without it the frame degrades to plain text.
+    """
     visible_paragraphs = [
         paragraph for paragraph in text_frame.paragraphs
-        if normalize_text(paragraph.text)
+        if normalize_text(paragraph.text) or _paragraph_has_hyperlink(paragraph)
     ]
     if not visible_paragraphs:
         return ""
@@ -149,8 +318,9 @@ def text_frame_to_markdown(text_frame: object) -> str:
     if not list_like:
         list_like = len(visible_paragraphs) > 1
 
+    paragraphs = []
     for paragraph in visible_paragraphs:
-        text = normalize_text(paragraph.text)
+        text = _paragraph_to_markdown(paragraph, shape)
         if not text:
             continue
         if list_like:
@@ -186,6 +356,76 @@ def table_to_markdown(table: object) -> str:
     ]
     for row in body:
         lines.append("| " + " | ".join(row) + " |")
+    return "\n".join(lines)
+
+
+def _format_chart_value(value: object) -> str:
+    """Render a chart data point, trimming whole-number floats."""
+    if value is None:
+        return ""
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def chart_to_markdown(chart: object, name: str) -> str:
+    """Render a chart's data as a Markdown table so the numbers survive conversion.
+
+    A native PowerPoint chart stores its data in embedded XML, not in any text
+    frame — emitting only a `[Chart]` placeholder drops every value. The markdown
+    is the content contract for downstream generation, so transcribe categories ×
+    series here. `scripts/pptx_intake.py` writes the same data in structured JSON
+    form for tooling; this is the human- and content-readable mirror.
+    """
+    try:
+        chart_type = str(chart.chart_type)
+    except (ValueError, AttributeError):
+        chart_type = ""
+
+    categories: list[str] = []
+    try:
+        plots = list(chart.plots)
+        if plots:
+            categories = [
+                escape_table_cell(str(cat)) if cat is not None else ""
+                for cat in plots[0].categories
+            ]
+    except (ValueError, IndexError, AttributeError):
+        categories = []
+
+    series_data: list[tuple[str, list[object]]] = []
+    try:
+        for index, series in enumerate(chart.series, start=1):
+            try:
+                values = list(series.values)
+            except (ValueError, TypeError, AttributeError):
+                values = []
+            label = str(series.name) if getattr(series, "name", None) else f"Series {index}"
+            series_data.append((escape_table_cell(label), values))
+    except (ValueError, AttributeError):
+        series_data = []
+
+    header = f"> [Chart] {name}" + (f" — {chart_type}" if chart_type else "")
+    row_count = len(categories) if categories else max((len(v) for _, v in series_data), default=0)
+    if not series_data or row_count == 0:
+        return header
+
+    table_header = (["Category"] if categories else ["#"]) + [sname for sname, _ in series_data]
+    lines = [
+        header,
+        "",
+        "| " + " | ".join(table_header) + " |",
+        "| " + " | ".join(["---"] * len(table_header)) + " |",
+    ]
+    for row_index in range(row_count):
+        if categories:
+            label = categories[row_index] if row_index < len(categories) else ""
+        else:
+            label = str(row_index + 1)
+        cells = [label]
+        for _, values in series_data:
+            cells.append(_format_chart_value(values[row_index]) if row_index < len(values) else "")
+        lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines)
 
 
@@ -434,7 +674,7 @@ def extract_notes(slide: object) -> str:
         shape = item.shape
         if not getattr(shape, "has_text_frame", False):
             continue
-        text = text_frame_to_markdown(shape.text_frame)
+        text = text_frame_to_markdown(shape.text_frame, shape)
         if text:
             blocks.append(text)
 
@@ -534,13 +774,16 @@ def convert_presentation_to_markdown(
                         continue
 
             if getattr(shape, "has_text_frame", False):
-                text_md = text_frame_to_markdown(shape.text_frame)
+                text_md = text_frame_to_markdown(shape.text_frame, shape)
                 if text_md:
                     blocks.append(text_md)
                     continue
 
             if getattr(shape, "has_chart", False):
-                blocks.append(f"> [Chart] {getattr(shape, 'name', 'Chart')}")
+                try:
+                    blocks.append(chart_to_markdown(shape.chart, getattr(shape, "name", "Chart")))
+                except (ValueError, AttributeError, KeyError):
+                    blocks.append(f"> [Chart] {getattr(shape, 'name', 'Chart')}")
 
         if blocks:
             lines.append("\n\n".join(blocks))

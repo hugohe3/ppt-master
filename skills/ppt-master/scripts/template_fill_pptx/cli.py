@@ -8,6 +8,20 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+if __package__ in {None, ''}:
+    import types
+
+    package_dir = Path(__file__).resolve().parent
+    while str(package_dir) in sys.path:
+        sys.path.remove(str(package_dir))
+    scripts_dir = Path(__file__).resolve().parents[1]
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    package = types.ModuleType("template_fill_pptx")
+    package.__path__ = [str(package_dir)]  # type: ignore[attr-defined]
+    sys.modules.setdefault("template_fill_pptx", package)
+    __package__ = "template_fill_pptx"
+
 from .analyzer import analyze_pptx
 from .applier import apply_plan
 from .checker import check_plan, print_check_report
@@ -55,10 +69,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     analyze = subparsers.add_parser("analyze", help="Extract slide library JSON from a PPTX")
     analyze.add_argument("pptx_file", help="Source PPTX file")
-    analyze.add_argument("-o", "--output", required=True, help="Output slide_library.json path")
+    analyze.add_argument("-o", "--output", required=True, help="Output <stem>.slide_library.json path")
 
     scaffold = subparsers.add_parser("scaffold", help="Create an editable fill plan skeleton")
-    scaffold.add_argument("library_json", help="slide_library.json from analyze")
+    scaffold.add_argument("library_json", help="<stem>.slide_library.json from analyze")
     scaffold.add_argument("-o", "--output", required=True, help="Output fill_plan.json path")
     scaffold.add_argument(
         "--slides",
@@ -71,7 +85,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     check = subparsers.add_parser("check-plan", help="Check a fill plan against source slot capacity")
-    check.add_argument("library_json", help="slide_library.json from analyze")
+    check.add_argument("library_json", help="<stem>.slide_library.json from analyze")
     check.add_argument("plan_json", help="Fill plan JSON")
     check.add_argument("-o", "--output", help="Optional JSON report output path")
 
@@ -162,3 +176,7 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.print_help()
     return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -22,6 +22,11 @@ Notes:
   note), to avoid leaving unintended artifacts that could be committed by mistake.
   Pass `--copy` to force a copy for in-repo sources instead.
 - `--move` and `--copy` are mutually exclusive.
+- PPTX-family inputs are enriched automatically under `analysis/` with
+  per-deck `<stem>.identity.json` / `<stem>.slide_library.json` plus the shared
+  multi-deck index `source_profile.json` (`decks[]`).
+  Multi-deck per project: several PPTX imports each get their own `<stem>.*`
+  artifacts and a `decks[]` entry; re-importing the same stem replaces its entry.
 
 Common formats:
 - `ppt169`

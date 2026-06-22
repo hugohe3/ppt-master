@@ -14,6 +14,8 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 >
 > Template fill: when the user provides an existing `.pptx` template plus text materials or a topic and asks to reuse the original PPT design or fill content back into it (for example, "fill this deck with the new content", "fill this back into the template", or "reuse this deck's design"), run the standalone [`template-fill-pptx`](skills/ppt-master/workflows/template-fill-pptx.md) workflow. This route edits PPTX directly and must not enter the SVG generation pipeline.
 >
+> Beautify / re-layout: when the user provides an existing `.pptx` and asks to beautify or re-layout it while keeping the content (for example, "把这份 PPT 美化一下", "重新排版，内容别动", or wants to paste the regenerated elements back into the original deck), run the standalone [`beautify-pptx`](skills/ppt-master/workflows/beautify-pptx.md) workflow. Mirror of template-fill: content is preserved verbatim, the source's palette/fonts are inherited as truth, only layout is redesigned. Unlike template-fill, it regenerates a native deck through the SVG pipeline (Strategist → Executor → export), one source slide to one page; it does not edit the source in place. Routing boundary — beautify is for "keep this deck, just lay it out better": page count and page order are preserved 1:1. If the original page breakdown itself should be reconsidered (merge / split / reorder pages, re-outline the structure), that is NOT beautify: convert the deck with [`ppt_to_md`](skills/ppt-master/scripts/source_to_md/ppt_to_md.py) and run the main SKILL.md pipeline, where the Strategist re-architects the outline freely from the extracted content. The discriminator is page count / order: any change to it — split, merge, drop, reorder, even just splitting a crowded page so it reads better — is the main pipeline; beautify is strictly 1:1. Decide by one question: is the source's page split information to preserve, or just the previous author's structure to improve?
+>
 > Phase B resumption (split-mode execution): when the user opens a fresh chat and says "继续生成 projects/<x>" or similar, run the standalone [`resume-execute`](skills/ppt-master/workflows/resume-execute.md) workflow to enter Phase B (SVG generation + export) without re-running Phase A.
 >
 > Spec refinement (opt-in): when the user explicitly asks to refine / review / revise the spec before generation (for example "refine the spec first", "review the spec before generating", "send me the spec to confirm first"), run the standalone [`refine-spec`](skills/ppt-master/workflows/refine-spec.md) workflow. Strategist produces the full `design_spec.md` + `spec_lock.md` first, then stops so the user can revise any part of it (outline, color, typography, layout, image strategy, …) before any image or SVG work; on approval the pipeline resumes at Step 5/6. Default is OFF — no request means the spec is written in one pass and the pipeline auto-proceeds. Surfaced as an opt-in line in the Eight Confirmations, same shape as the split-mode note; never enter it unprompted.
@@ -22,7 +24,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 >
 > Recorded narration / video export: run the standalone [`generate-audio`](skills/ppt-master/workflows/generate-audio.md) workflow after post-processing.
 >
-> Object-level animation tuning: when the user asks to change animation order, effect, timing, or a specific object's reveal behavior, run the standalone [`customize-animations`](skills/ppt-master/workflows/customize-animations.md) workflow. Default export already has global animations; do not create `animations.json` unless customization was requested.
+> Object-level animation tuning: when the user asks to change animation order, effect, timing, or a specific object's reveal behavior, run the standalone [`customize-animations`](skills/ppt-master/workflows/customize-animations.md) workflow. Default export applies page transitions but no per-element entrance animation (element builds are opt-in); create `animations.json` or pass `-a auto` only when the user asks for element animation or object-level customization.
 >
 > Live preview: any time the user mentions "live preview", "preview", "看效果", or wants to click/select a slide element, run [`live-preview`](skills/ppt-master/workflows/live-preview.md). Step 6 auto-starts it during generation; the workflow covers post-export re-entry and applying submitted annotations.
 >
@@ -71,6 +73,12 @@ uvx ppt-master web-to-md <URL>
 uvx ppt-master project init <project_name> --format ppt169
 uvx ppt-master project import-sources <project_path> <source_files_or_URLs...> --move
 uvx ppt-master project validate <project_path>
+
+# Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
+python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name>...]
+
+# Step 4 Eight Confirmations — interactive visual page (default auto-launch; chat fallback)
+python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
 
 # Image tools and SVG quality check
 uvx ppt-master analyze-images <project_path>/images

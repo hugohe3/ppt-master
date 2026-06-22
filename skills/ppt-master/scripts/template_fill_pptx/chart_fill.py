@@ -77,9 +77,17 @@ def _chart_type_with_series(chart_root: ET.Element) -> ET.Element:
     plot_area = chart_root.find(".//c:plotArea", NS)
     if plot_area is None:
         raise RuntimeError("Chart XML has no plotArea")
+    chart_types: list[ET.Element] = []
     for child in list(plot_area):
         if child.tag.endswith("Chart") and child.findall("c:ser", NS):
-            return child
+            chart_types.append(child)
+    if len(chart_types) > 1:
+        raise RuntimeError(
+            "template-fill chart edits do not support multi-plot / combination charts; "
+            "use beautify/main pipeline to redraw the chart, or leave the native chart untouched"
+        )
+    if chart_types:
+        return chart_types[0]
     raise RuntimeError("Chart XML has no editable series")
 
 

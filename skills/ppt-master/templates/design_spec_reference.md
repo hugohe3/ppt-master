@@ -14,6 +14,7 @@
 | **Design Style** | {design_style} |
 | **Target Audience** | [Filled by Strategist] |
 | **Use Case** | [Filled by Strategist] |
+| **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
 | **Created Date** | {date_str} |
 
 ---
@@ -42,6 +43,7 @@
 ### Color Scheme
 
 > Strategist: determine values from project content, industry, brand colors.
+> Step 4 Confirm UI: present **≥3** color candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each with a user-facing core `palette` (background / secondary_bg / primary / accent / secondary_accent / body_text), in `confirm_ui/recommendations.json`; the confirmed candidate from `result.json` seeds this table. Strategist derives the remaining text, border, state, and style-neutral colors when writing this full scheme. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
 
 | Role | HEX | Purpose |
 | ---- | --- | ------- |
@@ -95,6 +97,8 @@
 > **⚠️ PPT-safe stack discipline (HARD rule).** PPTX stores a single `typeface` per run — no runtime fallback. Every stack MUST end with a cross-platform pre-installed font: `"Microsoft YaHei", sans-serif` / `SimSun, serif` / `Arial, sans-serif` / `"Times New Roman", serif` / `Consolas, "Courier New", monospace`. Stacks led by a non-preinstalled font (Inter / Google Fonts / brand typefaces) are allowed only when this spec notes the font-install or embedding requirement.
 
 **Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
+
+> Step 4 Confirm UI: present **≥3** typography candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks) and declaring `body_size` as the body baseline px, in `confirm_ui/recommendations.json`; the confirmed candidate from `result.json` seeds the plan below. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
 
 Two views on the same font decisions — fill both, keep them consistent:
 
@@ -297,7 +301,8 @@ Catalog read: 71 templates
 
 #### Slide 01 - Cover
 
-- **Layout**: Full-screen background image + centered title
+- **Cover impact**: [MANDATORY — see strategist.md §6.2. Name one concrete hook (provocative core claim / hero number / object-scene metaphor / founder-product-audience moment / distilled conflict) + one composition strategy (full-bleed image + floating title / typographic poster / hero object / data hook / editorial scene / high-contrast abstract geometry / or a fresh one the subject suggests). This is the cover's spine — do NOT fall back to "title + subtitle + decorative background".]
+- **Layout**: [realize the Cover impact above; choose the composition that delivers it — not a default centered title block]
 - **Title**: [Main title]
 - **Subtitle**: [Subtitle]
 - **Info**: [Author / Date / Organization]
@@ -318,6 +323,14 @@ Catalog read: 71 templates
 ---
 
 [Strategist continues adding more pages based on source document content and page count planning...]
+
+---
+
+#### Slide NN - Closing  *(only if the deck genuinely lands on a conclusion / CTA / final-takeaway page — do NOT invent one to fill this slot; see strategist.md §6.2)*
+
+- **Closing impact**: [MANDATORY for the closing page — name the one thing the audience leaves with (distilled takeaway / forward call / memorable restatement of the core claim) + one composition that lands it. Do NOT write a generic "Thank you" / contact-only / centered-title reprise of the cover.]
+- **Layout**: [realize the Closing impact above — the deck's final impression, not a default sign-off]
+- **Content**: [the takeaway / call-to-action itself, phrased to land]
 
 ---
 

@@ -122,6 +122,7 @@ uvx ppt-master ppt-to-md template.ppsx -o notes/template.md
 Behavior:
 - extracts slide text in reading order
 - converts PowerPoint tables to Markdown tables
+- transcribes native chart data (type + categories × series values) into a Markdown table, so chart numbers are not lost in conversion
 - exports embedded pictures to a sibling `_files/` directory
 - appends speaker notes when present
 
@@ -132,6 +133,28 @@ pip install python-pptx
 ```
 
 Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF first.
+
+## `pptx_intake.py`
+
+Standard enrichment layer for PPTX sources. It complements `ppt_to_md.py` rather
+than replacing it: Markdown remains the normalized content source, while intake
+artifacts provide source facts for Strategist and standalone PPTX workflows.
+
+```bash
+uv run skills/ppt-master/scripts/pptx_intake.py deck.pptx -o projects/demo/analysis
+```
+
+Outputs (per source deck, prefixed by file stem):
+- `<stem>.identity.json` — canvas size/aspect, theme palette/fonts, observed colors/fonts
+- `<stem>.slide_library.json` — text slots, geometry, native tables, native chart display caches
+- `source_profile.json` — the single multi-deck index: a compact Strategist-facing digest per deck (over identity, tables, charts, and page types) under `decks[]`, with prefixed artifact pointers
+
+`project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. Multi-deck per project: importing several PPTX files gives each its own `<stem>.*` artifacts and a `decks[]` entry in the shared `source_profile.json` index (re-importing the same stem replaces its entry). The beautify / template-fill workflows stay single-deck and read one chosen deck's `<stem>.*` artifacts.
+
+Usage boundary:
+- Standard generation uses these fields as facts and recommendation candidates; it does not inherit source slide coordinates or page order by default.
+- Beautify promotes selected identity/content fields into locked constraints after confirmation.
+- Template-fill uses the slide library as the native PPTX fill contract.
 
 ## `source_to_md/web_to_md.py`
 

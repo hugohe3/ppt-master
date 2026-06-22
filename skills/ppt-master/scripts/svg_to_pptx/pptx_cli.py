@@ -9,7 +9,15 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
-from .pptx_dimensions import CANVAS_FORMATS, get_project_info
+if __package__ in {None, ''}:
+    import types
+
+    package = types.ModuleType('svg_to_pptx')
+    package.__path__ = [str(Path(__file__).resolve().parent)]  # type: ignore[attr-defined]
+    sys.modules.setdefault('svg_to_pptx', package)
+    __package__ = 'svg_to_pptx'
+
+from .pptx_dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
 from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
 from .pptx_narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
@@ -55,7 +63,7 @@ def _recorded_narration_on_click_slides(
     return blocked
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the SVG to PPTX conversion tool."""
     transition_choices = (
         ['none'] + (list(TRANSITIONS.keys()) if TRANSITIONS
@@ -193,11 +201,12 @@ Recorded narration:
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
                         default=None,
                         help='Per-element entrance animation (native shapes mode '
-                             'only). Pick a single effect, "auto" (default; map '
-                             'effect from group id — image-like ids cycle a richer '
-                             'pool for visual variation, fallback cycles fade/wipe/'
-                             'fly/zoom), "mixed" (legacy 16-effect pool), "random", '
-                             'or "none" to disable.')
+                             'only). Default "none" (no auto element builds; page '
+                             'transitions still apply). Pick a single effect, "auto" '
+                             '(map effect from group id — image-like ids cycle a '
+                             'richer pool for visual variation, fallback cycles fade/'
+                             'wipe/fly/zoom), "mixed" (legacy 16-effect pool), or '
+                             '"random".')
     parser.add_argument('--animation-duration', type=non_negative_float, default=None,
                         help='Per-element entrance duration in seconds (default: 0.4)')
     parser.add_argument('--animation-trigger', type=str,
@@ -239,12 +248,12 @@ Recorded narration:
                         help='Parallel workers for SVG→PNG pre-rendering. '
                              'Default: min(cpu, pages, 8). Set 1 for sequential.')
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     project_path = Path(args.project_path)
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
-        sys.exit(1)
+        return 1
 
     try:
         project_info = get_project_info(str(project_path))
@@ -296,7 +305,7 @@ Recorded narration:
     ref_files = native_files or legacy_files
     if not ref_files:
         print("Error: No SVG files found")
-        sys.exit(1)
+        return 1
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -326,6 +335,28 @@ Recorded narration:
 
     verbose = not args.quiet
 
+    # Honor the actual SVG pixels over a stale project-recorded format. The
+    # canvas_format read from project init can disagree with what the Executor
+    # actually drew — e.g. a mirror template imported at 2560×1440 while the
+    # project was initialized as ppt169 (1280×720). When the first SVG's real
+    # viewBox doesn't match the recorded format's dimensions, drop the format
+    # so the builder sizes the slide by pixels (custom_pixels path). Standard
+    # decks match exactly, so this only changes behavior on the conflict case.
+    # An explicit --format always wins and is never second-guessed.
+    if args.format is None and canvas_format:
+        fmt_info = CANVAS_FORMATS.get(canvas_format)
+        actual_dims = get_viewbox_dimensions(ref_files[0])
+        if fmt_info and actual_dims:
+            fmt_dims = (fmt_info.get('width'), fmt_info.get('height'))
+            if fmt_dims != actual_dims:
+                if verbose:
+                    print(
+                        f"  Recorded format '{canvas_format}' "
+                        f"({fmt_dims[0]}×{fmt_dims[1]}) differs from SVG viewBox "
+                        f"({actual_dims[0]}×{actual_dims[1]}); exporting by SVG pixels"
+                    )
+                canvas_format = None
+
     enable_notes = not args.no_notes
     notes: dict[str, str] = {}
     if enable_notes:
@@ -343,7 +374,7 @@ Recorded narration:
                 f"Error: Recorded narration directory does not exist: {narration_audio_dir}",
                 file=sys.stderr,
             )
-            sys.exit(1)
+            return 1
         narration_audio = find_narration_files(narration_audio_dir, ref_files)
         if verbose:
             print(f"  Narration audio directory: {narration_audio_dir}")
@@ -361,7 +392,7 @@ Recorded narration:
                     print(f"  Missing audio for: {stem}", file=sys.stderr)
                 if len(missing) > 20:
                     print(f"  ... and {len(missing) - 20} more", file=sys.stderr)
-                sys.exit(1)
+                return 1
             unreadable = [
                 f"{stem}: {audio_path}"
                 for stem, audio_path in sorted(narration_audio.items())
@@ -377,7 +408,7 @@ Recorded narration:
                     print(f"  {item}", file=sys.stderr)
                 if len(unreadable) > 20:
                     print(f"  ... and {len(unreadable) - 20} more", file=sys.stderr)
-                sys.exit(1)
+                return 1
         elif narration_audio_dir_arg and verbose:
             missing = [path.stem for path in ref_files if path.stem not in narration_audio]
             if missing:
@@ -392,13 +423,13 @@ Recorded narration:
             config_path = project_path / config_path
         if not config_path.exists():
             print(f"Error: Animation config does not exist: {config_path}")
-            sys.exit(1)
+            return 1
 
     try:
         animation_config = load_animation_config(project_path, args.animation_config)
     except Exception as exc:
         print(f"Error: Failed to load animation config: {exc}")
-        sys.exit(1)
+        return 1
     if animation_config and verbose:
         config_label = args.animation_config or str(project_path / 'animations.json')
         print(f"  Animation config: {config_label}")
@@ -426,7 +457,10 @@ Recorded narration:
     animation_effect = (
         animation_arg
         if animation_arg is not None
-        else animation_defaults.get('effect', 'auto')
+        # Per-element entrance is opt-in by default: auto-firing element builds
+        # read as the "AI deck" tell and were unsolicited. Page transitions stay
+        # on (see transition default above). Re-enable with -a auto / animations.json.
+        else animation_defaults.get('effect', 'none')
     )
     animation = None if animation_effect == 'none' else animation_effect
     animation_duration = (
@@ -473,7 +507,7 @@ Recorded narration:
                 print(f"  on-click trigger: {slide}", file=sys.stderr)
             if len(on_click_slides) > 20:
                 print(f"  ... and {len(on_click_slides) - 20} more", file=sys.stderr)
-            sys.exit(1)
+            return 1
 
     if args.no_cache:
         cache_dir: Path | None = None
@@ -600,4 +634,8 @@ Recorded narration:
             if verbose:
                 print(f"  [warn] cache cleanup skipped: {exc}")
 
-    sys.exit(0 if success else 1)
+    return 0 if success else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

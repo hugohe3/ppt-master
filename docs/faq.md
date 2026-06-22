@@ -87,14 +87,14 @@ If your workflow specifically requires Excel-driven data editing, manually creat
 
 ## Q: Can I change page transitions and element animations?
 
-Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animations (`auto` effect with `after-previous` cascade by default — effect mapped from each group's SVG id, with image-like ids cycling a visual pool for variation) are both controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Common one-liners:
+Yes. Page transitions are on by default (`fade` 0.4s); per-element entrance animation is **off by default** — a page appears as a whole instead of having elements auto-cascade in one by one (that unsolicited cascade is the strongest "AI deck" tell). Both are controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Turn element animation on explicitly when you want it:
 
 ```bash
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -a none       # disable per-element animation
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade        # use a single effect instead of mixed
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click   # presenter-paced reveals
+uvx ppt-master svg-to-pptx <project> -t push       # different transition
+uvx ppt-master svg-to-pptx <project> -t none       # disable transitions
+uvx ppt-master svg-to-pptx <project> -a auto       # enable per-element entrance (effect mapped from group id)
+uvx ppt-master svg-to-pptx <project> --animation fade        # enable with a single effect
+uvx ppt-master svg-to-pptx <project> -a auto --animation-trigger on-click   # presenter-paced reveals
 ```
 
 `on-click` is for live presentations. Narrated/video export via `--recorded-narration` rejects it because PPT Master writes page timings, not object-level click timings; use `after-previous` or `with-previous` for narrated decks.
@@ -153,6 +153,29 @@ Split mode is a **compromise** — it pays ~6K tokens (re-reading SKILL.md) to d
 Yes. You can **interrupt the workflow at any time** — after the first few pages are generated, review them and give feedback. The AI can regenerate specific pages based on your comments. You don't need to wait until the end to make corrections.
 
 For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — the title overlaps the chart" and it will fix that specific SVG.
+
+## Q: I have an existing PPT and want to build on it — which route should I use?
+
+Think of "using an existing PPT" as two questions: **keep its content or not**, and **keep its design (layout + visuals) or not**. The four combinations map to four routes:
+
+| Intent | Route | What stays fixed |
+|---|---|---|
+| Keep content + redo layout | **beautify (re-layout)** | Page count, page order, per-slide wording, chart/table data |
+| Replace content + keep design | **template-fill** | Native source slide design; selected pages may be reused/reordered |
+| Keep only content, redo design and pagination | **main pipeline** | Source facts; story structure and page count may change |
+| Keep content + keep design | No generation needed | Use the original file |
+
+Use **beautify** when the source deck's page split is part of the requested output: text stays verbatim, page count and order are preserved 1:1, only layout / hierarchy / whitespace are redone while inheriting the original palette/fonts. Say "make this deck look better" / "re-layout this, keep the wording". See the [beautify workflow](../skills/ppt-master/workflows/beautify-pptx.md).
+
+Use the **main pipeline** when the source PPT is just material: extract it to Markdown with `ppt_to_md`, read PPTX intake facts from `analysis/`, then let Strategist re-architect the outline freely (merge / split / reorder pages). Say "build a better deck from this one's content" or "turn this into a 10-page executive briefing".
+
+The one-line test between beautify and the main pipeline: **is the source's page split information to preserve, or just the previous author's structure to improve?** Preserve → beautify; improve → main pipeline. The concrete discriminator is **page count / order**: if it changes at all — split, merge, drop, reorder, or even keeping every word but splitting one crowded page so it reads better — that is re-pagination, which is the main pipeline. Beautify is strictly 1:1.
+
+If your request is ambiguous, for example "make this PPT more professional" or "optimize this deck", the AI should ask one clarification before routing: **keep the original page count/order and each slide's wording, or treat the PPT as source material and restructure it into a new story?**
+
+There is also one orthogonal route: if you don't want to produce a deck right now but want to **harvest the design into a reusable template** for future use, use **create-template** (see "How do I create a custom template?" below).
+
+---
 
 ## Q: I already have a finished `.pptx` — can I reuse its design and just fill in new content?
 
