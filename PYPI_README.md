@@ -9,10 +9,6 @@ AI-driven PPT generation CLI — convert documents to editable PowerPoint via SV
 ```bash
 # No install needed — run directly
 uvx ppt-master <command>
-
-# Or install globally
-uv tool install ppt-master
-pip install ppt-master
 ```
 
 ## Quick Start
