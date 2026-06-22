@@ -62,7 +62,7 @@ Content purpose?
 | Story | — | Middle 1500px | Top safe zone 120px, bottom 180px |
 | WeChat Article Header | Center/left-aligned 48-72px | — | Image on right or as background |
 
-> **Body font baseline scales with canvas height** — a baseline tuned for 16:9 (18–24px) is far too small on tall canvases (Xiaohongshu / Story / A4). Pick the baseline from the confirmed canvas, not the recommended one; see the per-canvas anchors in [`strategist.md`](strategist.md) §g "Font Size Ramp".
+> **Body font baseline scales with canvas and delivery purpose** — a PPT 16:9 baseline confirmed for read-close / business / projection cannot be carried onto tall canvases (Xiaohongshu / Story / A4). Pick the baseline from the confirmed canvas, not the recommended one; see the per-canvas anchors and PPT pt→px normalization in [`strategist.md`](strategist.md) §g "Font Size Ramp".
 
 ## ViewBox Examples
 

@@ -448,5 +448,31 @@
       "label_zh": "分段模式",
       "label_en": "split"
     }
+  ],
+  "delivery_purpose": [
+    {
+      "id": "text",
+      "label": "text",
+      "label_zh": "文字型 · 近读",
+      "label_en": "text / read-close",
+      "desc_zh": "当文件读、近距离看（报告、数据密集 brief、留底材料）。正文可小，14–18pt，默认 16pt。",
+      "desc_en": "Read close as a file (report, data-dense brief, leave-behind). Body can run small, 14–18pt, default 16pt."
+    },
+    {
+      "id": "balanced",
+      "label": "balanced",
+      "label_zh": "均衡 · 商务",
+      "label_en": "balanced / business",
+      "desc_zh": "既投影也阅读（路演、业务评审）。默认档，18–22pt，默认 20pt。",
+      "desc_en": "Both projected and read (roadshow, business review). The default tier, 18–22pt, default 20pt."
+    },
+    {
+      "id": "presentation",
+      "label": "presentation",
+      "label_zh": "展示型 · 演讲",
+      "label_en": "presentation / keynote",
+      "desc_zh": "投影、远距离扫一眼、内容稀疏（keynote、发布、课堂）。22–28pt，默认 24pt。",
+      "desc_en": "Projected, glanced from the back, sparse (keynote, launch, classroom). 22–28pt, default 24pt."
+    }
   ]
 }

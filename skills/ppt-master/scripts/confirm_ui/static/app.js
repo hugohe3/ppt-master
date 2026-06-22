@@ -55,6 +55,14 @@
             font_body_size: "Body baseline size",
             font_body_size_hint: "All type sizes derive from this body baseline.",
             body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
+            body_size_hint_pt: "PPT body is confirmed in pt — this purpose suggests ~{lo}–{hi}pt (default {def}pt). Saved as px after confirmation.",
+            body_size_hint_oor: "(Current value is outside this range — it is not auto-converted across canvases; check it fits.)",
+            delivery_purpose: "Delivery purpose",
+            delivery_purpose_hint: "Read-close decks can run smaller; projected decks need larger type.",
+            size_override: "Per-role size override:",
+            size_role_title: "title",
+            size_role_subtitle: "subtitle",
+            size_role_annotation: "annotation",
             custom_typography: "Custom typography",
             custom_typography_placeholder: "Type your font plan, e.g. Heading: Georgia + KaiTi; Body: Microsoft YaHei + Arial…",
             custom_color: "Custom color",
@@ -125,6 +133,14 @@
             font_body_size: "正文基准字号",
             font_body_size_hint: "所有字号按这个正文基准推导。",
             body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
+            body_size_hint_pt: "PPT 正文确认时用 pt — 该交付目的建议 ~{lo}–{hi}pt（默认 {def}pt），确认后保存为 px。",
+            body_size_hint_oor: "（当前数值不在此区间——换画布不会自动换算，请确认是否合适。）",
+            delivery_purpose: "交付目的",
+            delivery_purpose_hint: "近读型可以小一点；投影型需要更大的字。",
+            size_override: "逐角色字号覆盖：",
+            size_role_title: "标题",
+            size_role_subtitle: "副标题",
+            size_role_annotation: "注释",
             custom_typography: "自定义字体方案",
             custom_typography_placeholder: "输入字体方案，如：标题用楷体；正文用微软雅黑…",
             custom_color: "自定义配色",
@@ -497,7 +513,17 @@
         var sec = section(1, "sec_canvas");
         enumField(sec, CAT.canvas, recOrFirst("canvas", CAT.canvas),
             function () { return STATE.canvas; },
-            function (v) { STATE.canvas = v; refreshBodySizeHint(); }, { allowCustom: true });
+            function (v) {
+                STATE.canvas = v;
+                if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
+                // Canvas changes dimensions only — never silently rewrite font sizes
+                // the user can see / edit. The size hint re-renders with the new
+                // canvas; a default body is filled only when none is set yet.
+                if (!STATE.typography.body_size) {
+                    STATE.typography.body_size = defaultBodySizeForCanvas(v, STATE.delivery_purpose);
+                }
+                renderAll();
+            }, { allowCustom: true });
         host.appendChild(sec);
     }
 
@@ -561,6 +587,18 @@
     // Replaced when the typography section mounts; the canvas section calls it so
     // the body-size hint tracks the chosen canvas height.
     var refreshBodySizeHint = function () {};
+    // Replaced when the typography section mounts; body-size / delivery changes
+    // call it so the per-role size overrides the user hasn't pinned re-derive.
+    var refreshSizeInputs = function () {};
+
+    // Per-role size slots the user can edit directly (parallel to color roles).
+    // Defaults derive from `body` via mid-band ramp ratios (strategist.md §g);
+    // values follow body's unit (pt on PPT canvases, px otherwise).
+    var SIZE_ROLES = ["title", "subtitle", "annotation"];
+    var SIZE_RATIO = { title: 1.75, subtitle: 1.35, annotation: 0.78 };
+    function deriveSize(role, bodyVal) {
+        return Math.round((bodyVal || 0) * (SIZE_RATIO[role] || 1));
+    }
 
     // Canvas height (viewBox user units) parsed from a catalog `dim` like
     // "1242×1660" or from a custom canvas string containing WxH; null if unknown.
@@ -569,6 +607,99 @@
         (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
         var m = String(dim || canvasVal || "").match(/(\d{2,5})\s*[×xX*]\s*(\d{2,5})/);
         return m ? parseInt(m[2], 10) : null;
+    }
+
+    function bodySizeRatioBand(canvasVal) {
+        var dim = null;
+        (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
+        var raw = String(dim || canvasVal || "");
+        var id = String(canvasVal || "").toLowerCase();
+        var isPpt = id === "ppt169" || id === "ppt43" ||
+            /1280\s*[×xX*]\s*720/.test(raw) ||
+            /1024\s*[×xX*]\s*768/.test(raw);
+        return isPpt ? { lo: 0.031, hi: 0.047 } : { lo: 0.025, hi: 0.033 };
+    }
+
+    // PPT canvases (16:9 / 4:3) carry the pt design language + pt→px conversion;
+    // social / print canvases have no PowerPoint pt semantics and stay in px.
+    function isPptCanvas(canvasVal) {
+        var dim = null;
+        (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
+        var raw = String(dim || canvasVal || "");
+        var id = String(canvasVal || "").toLowerCase();
+        return id === "ppt169" || id === "ppt43" ||
+            /1280\s*[×xX*]\s*720/.test(raw) ||
+            /1024\s*[×xX*]\s*768/.test(raw);
+    }
+
+    // PPT confirmation pt band + default per delivery purpose (see strategist.md §g).
+    // The confirmed pt is converted to px (×4/3) before any spec is written.
+    function deliveryPtBand(purposeId) {
+        if (purposeId === "text") return { lo: 14, hi: 18, def: 16 };
+        if (purposeId === "presentation") return { lo: 22, hi: 28, def: 24 };
+        return { lo: 18, hi: 22, def: 20 }; // balanced — the default
+    }
+
+    function defaultBodySizeForCanvas(canvasVal, purposeId) {
+        if (isPptCanvas(canvasVal)) return deliveryPtBand(purposeId).def;
+        var h = canvasHeight(canvasVal);
+        if (!h) return 40;
+        var band = bodySizeRatioBand(canvasVal);
+        return Math.round(h * (band.lo + band.hi) / 2);
+    }
+
+    function roundSize(value) {
+        return Math.round(value * 100) / 100;
+    }
+
+    function ptToPx(value) {
+        return roundSize(value * 4 / 3);
+    }
+
+    function normalizeTypographyForSubmit(payload) {
+        if (!payload.typography || typeof payload.typography !== "object") return;
+        var typ = payload.typography;
+        var ppt = isPptCanvas(payload.canvas);
+        var body = parseFloat(typ.body_size);
+        if (!isFinite(body)) {
+            // Cleared / invalid body field — fall back so role sizes never submit
+            // against an empty anchor, and (on PPT) so the pt→px branch still runs
+            // instead of leaking pt-valued role sizes through as px.
+            body = defaultBodySizeForCanvas(payload.canvas, payload.delivery_purpose);
+            typ.body_size = body;
+        }
+        if (ppt && isFinite(body)) {
+            typ.body_size_pt = roundSize(body);
+            typ.body_size = ptToPx(body);
+            typ.body_size_unit = "px";
+            typ.body_size_source_unit = "pt";
+            if (typ.sizes && typeof typ.sizes === "object") {
+                var sizesPt = {};
+                var sizesPx = {};
+                Object.keys(typ.sizes).forEach(function (role) {
+                    var raw = parseFloat(typ.sizes[role]);
+                    if (!isFinite(raw)) return;
+                    sizesPt[role] = roundSize(raw);
+                    sizesPx[role] = ptToPx(raw);
+                });
+                typ.sizes_pt = sizesPt;
+                typ.sizes = sizesPx;
+            }
+            return;
+        }
+        if (isFinite(body)) {
+            typ.body_size = roundSize(body);
+            typ.body_size_unit = "px";
+        }
+        if (typ.sizes && typeof typ.sizes === "object") {
+            Object.keys(typ.sizes).forEach(function (role) {
+                var raw = parseFloat(typ.sizes[role]);
+                if (isFinite(raw)) typ.sizes[role] = roundSize(raw);
+            });
+        }
+        delete typ.body_size_pt;
+        delete typ.sizes_pt;
+        delete payload.delivery_purpose;
     }
 
     function renderColor(host) {
@@ -729,32 +860,38 @@
         customInput.placeholder = t("custom_typography_placeholder");
         customInput.style.display = "none";
 
-        function selectFont(idx) {
+        function selectFont(idx, preserveSizing) {
             var c = normTypography(cands[idx] || {});
+            var prev = STATE.typography || {};
             STATE.typography = {
                 name: c.name || "",
                 heading: c.heading || {},
                 body: c.body || {},
-                body_size: c.body_size || (STATE.typography && STATE.typography.body_size) || ""
+                body_size: (preserveSizing && prev.body_size) ? prev.body_size : (c.body_size || prev.body_size || ""),
+                sizes: (preserveSizing && prev.sizes) ? Object.assign({}, prev.sizes) : Object.assign({}, c.sizes || {})
             };
             if (sizeInput) sizeInput.value = STATE.typography.body_size || "";
             customInput.style.display = "none";
             grid.querySelectorAll(".font-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
+            refreshSizeInputs();   // fill any role with no value yet; never overwrites existing values
             refreshStylePreview();
         }
 
         function selectCustomTypography() {
+            var prev = STATE.typography || {};
             STATE.typography = {
                 name: "custom",
                 custom: customInput.value || "",
                 heading: {},
                 body: {},
-                body_size: (STATE.typography && STATE.typography.body_size) || ""
+                body_size: prev.body_size || "",
+                sizes: Object.assign({}, prev.sizes || {})   // switching font family must not drop sizes
             };
             grid.querySelectorAll(".font-card").forEach(function (card) { card.classList.remove("selected"); });
             customCard.classList.add("selected");
             customInput.style.display = "block";
             customInput.focus();
+            refreshSizeInputs();
             refreshStylePreview();
         }
 
@@ -766,7 +903,7 @@
             top.appendChild(el("span", "font-card-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
             var meta = t("font_heading") + " " + t("cjk") + ":" + (head.cjk || "—") + " / " + t("latin") + ":" + (head.latin || "—")
                 + "  ·  " + t("font_body") + " " + t("cjk") + ":" + (body.cjk || "—") + " / " + t("latin") + ":" + (body.latin || "—");
-            if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + "px";
+            if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + (isPptCanvas(STATE.canvas) ? "pt" : "px");
             top.appendChild(el("span", "font-card-meta", meta));
             card.appendChild(top);
             var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css); card.appendChild(hbox);
@@ -796,31 +933,114 @@
         sizeInput.max = "96";
         sizeInput.step = "1";
         sizeInput.value = (STATE.typography && STATE.typography.body_size) || "";
-        sizeInput.placeholder = "18 / 24";
+        sizeInput.placeholder = isPptCanvas(STATE.canvas) ? "16 / 20 / 24" : "40 / 48";
         sizeInput.addEventListener("input", function () {
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
+            // Independent input — body never auto-changes the role sizes (no
+            // interlinking); the role inputs carry their own values.
             STATE.typography.body_size = sizeInput.value;
+            refreshBodySizeHint();   // hint text only (e.g. out-of-range flag) — no value cascade
             refreshStylePreview();
         });
         sizeRow.appendChild(sizeInput);
         var sizeHint = el("div", "toggle-desc");
         sizeRow.appendChild(sizeHint);
-        // Suggest a canvas-appropriate baseline (≈2.5–3.3% of canvas height) so
-        // a 16:9 default is not silently kept on a tall canvas. Hint only — the
-        // user's value is never overwritten; downstream §g re-derives if ignored.
+        // Hint only — the user's value is never overwritten; downstream §g
+        // re-derives if ignored. PPT canvases speak pt (range by delivery
+        // purpose); non-PPT canvases speak px (≈% of canvas height).
         refreshBodySizeHint = function () {
-            var h = canvasHeight(STATE.canvas);
             var txt = t("font_body_size_hint");
-            if (h) {
-                txt += " " + t("body_size_hint_canvas")
-                    .replace("{lo}", Math.round(h * 0.025))
-                    .replace("{hi}", Math.round(h * 0.033));
+            var lo, hi;
+            if (isPptCanvas(STATE.canvas)) {
+                var pb = deliveryPtBand(STATE.delivery_purpose);
+                lo = pb.lo; hi = pb.hi;
+                txt += " " + t("body_size_hint_pt")
+                    .replace("{lo}", pb.lo).replace("{hi}", pb.hi).replace("{def}", pb.def);
+            } else {
+                var h = canvasHeight(STATE.canvas);
+                var band = bodySizeRatioBand(STATE.canvas);
+                if (h) {
+                    lo = Math.round(h * band.lo); hi = Math.round(h * band.hi);
+                    txt += " " + t("body_size_hint_canvas")
+                        .replace("{lo}", lo).replace("{hi}", hi);
+                }
+            }
+            // Flag (hint only — never auto-corrected) a value outside the range,
+            // e.g. a pt number kept after switching to a px canvas, so a cross-unit
+            // switch is visible instead of silently submitting a mis-unit size.
+            var cur = parseFloat(STATE.typography && STATE.typography.body_size);
+            if (isFinite(cur) && isFinite(lo) && isFinite(hi) && (cur < lo || cur > hi)) {
+                txt += " " + t("body_size_hint_oor");
             }
             sizeHint.textContent = txt;
         };
         refreshBodySizeHint();
         sizeField.appendChild(sizeRow);
+
+        // Delivery purpose (PPT only) — informs the recommended pt baseline and the
+        // suggested-range hint. Picking it updates the hint + strategy signal only;
+        // it does not rewrite the body field (inputs are independent, no cascade).
+        if (isPptCanvas(STATE.canvas)) {
+            var purposeField = el("div", "subfield");
+            purposeField.appendChild(el("div", "subfield-label", t("delivery_purpose")));
+            enumField(purposeField, CAT.delivery_purpose,
+                recOrFirst("delivery_purpose", CAT.delivery_purpose),
+                function () { return STATE.delivery_purpose; },
+                function (v) {
+                    STATE.delivery_purpose = v;
+                    // Purpose only updates the suggested-range hint and the strategy
+                    // signal it carries to result.json — it never rewrites the body
+                    // size the user sees (no input interlinking).
+                    refreshBodySizeHint();
+                    refreshStylePreview();
+                });
+            sec.appendChild(purposeField);
+        }
         sec.appendChild(sizeField);
+
+        // Per-role size override (parallel to color's per-role HEX override): the
+        // ramp derives title / subtitle / annotation from body, but the user may
+        // set each explicitly. Values follow body's unit (pt on PPT, px else).
+        var sizeOverride = el("div", "hex-override");
+        sizeOverride.appendChild(el("div", "subfield-label", t("size_override")));
+        var srow = el("div", "hex-row");
+        var sizeInputs = {};
+        SIZE_ROLES.forEach(function (role) {
+            var wrap = el("div", "hex-cell");
+            wrap.appendChild(el("div", "hex-cell-label", t("size_role_" + role)));
+            var inp = document.createElement("input");
+            inp.type = "number"; inp.min = "6"; inp.max = "200"; inp.step = "1";
+            inp.addEventListener("input", function () {
+                if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
+                if (!STATE.typography.sizes) STATE.typography.sizes = {};
+                // Independent input — each role holds its own value; no cascade.
+                STATE.typography.sizes[role] = inp.value;
+                refreshStylePreview();
+            });
+            sizeInputs[role] = inp;
+            wrap.appendChild(inp); srow.appendChild(wrap);
+        });
+        sizeOverride.appendChild(srow);
+        sec.appendChild(sizeOverride);
+
+        // Inputs are independent — this only **fills a role that has no value yet**
+        // (a one-time starting suggestion from the ramp) and reflects the current
+        // value into the input. It never overwrites an existing value, so editing
+        // body / purpose / canvas does not cascade into the role sizes, and a
+        // re-render (canvas / language switch) preserves exactly what the user sees.
+        refreshSizeInputs = function () {
+            if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
+            if (!STATE.typography.sizes) STATE.typography.sizes = {};
+            var bodyVal = parseFloat(STATE.typography.body_size) ||
+                (isPptCanvas(STATE.canvas) ? deliveryPtBand(STATE.delivery_purpose).def : 40);
+            SIZE_ROLES.forEach(function (role) {
+                var cur = STATE.typography.sizes[role];
+                var hasVal = cur !== undefined && cur !== null && cur !== "";
+                if (!hasVal) STATE.typography.sizes[role] = deriveSize(role, bodyVal);
+                if (sizeInputs[role]) sizeInputs[role].value = STATE.typography.sizes[role];
+            });
+        };
+        refreshSizeInputs();
 
         var subfp = el("div", "subfield");
         subfp.appendChild(el("div", "subfield-label", t("formula_policy")));
@@ -831,7 +1051,7 @@
 
         var selIdx = -1;
         if (STATE.typography && STATE.typography.name) cands.forEach(function (c, i) { if (c.name === STATE.typography.name) selIdx = i; });
-        if (selIdx >= 0) selectFont(selIdx);
+        if (selIdx >= 0) selectFont(selIdx, true);
         else if (STATE.typography && STATE.typography.name === "custom") {
             customInput.value = STATE.typography.custom || "";
             customCard.classList.add("selected");
@@ -888,7 +1108,10 @@
             var acc = hexOr(pal.accent, pri);
             var sacc = hexOr(pal.secondary_accent, acc);
             var txt = hexOr(pal.body_text, "#1d2430");
-            var bodyPx = Math.max(12, Math.min(26, parseInt(typ.body_size, 10) || 18));
+            // body_size is pt on PPT canvases (×4/3 → px) and px elsewhere.
+            var rawSize = parseFloat(typ.body_size) || (isPptCanvas(STATE.canvas) ? 20 : 18);
+            var bodyPx = Math.max(12, Math.min(34,
+                isPptCanvas(STATE.canvas) ? rawSize * 4 / 3 : rawSize));
             var headStack = previewFontStack(head.cjk, head.css);
             var headLatStack = previewFontStack(head.latin, head.css);
             var bodyStack = previewFontStack(body.cjk, body.css);
@@ -1027,6 +1250,7 @@
         // write to now-detached nodes until renderStylePreview remounts it.
         refreshStylePreview = function () {};
         refreshBodySizeHint = function () {};
+        refreshSizeInputs = function () {};
         renderCanvas(host);
         renderPages(host);
         renderAudience(host);
@@ -1077,7 +1301,8 @@
             name: t0.name || "",
             heading: t0.heading || {},
             body: t0.body || {},
-            body_size: t0.body_size || typographyBodySize(REC.typography)
+            body_size: t0.body_size || typographyBodySize(REC.typography),
+            sizes: Object.assign({}, t0.sizes || {})
         };
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
 
@@ -1086,6 +1311,15 @@
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
         STATE.refine_spec = !!((REC.refine_spec && REC.refine_spec.value) || (REC.recommend && REC.recommend.refine_spec));
+        // Delivery purpose drives the PPT confirmation pt baseline; default balanced
+        // (not the catalog-first id) when the Strategist did not recommend one.
+        STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
+        // Guarantee a body baseline even when a candidate omitted body_size, on
+        // any canvas (PPT → pt default by purpose, non-PPT → px from canvas height),
+        // so role sizes never derive from an empty anchor.
+        if (STATE.typography && !STATE.typography.body_size) {
+            STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
+        }
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -1098,7 +1332,8 @@
 
     function confirm() {
         var btn = document.getElementById("btn-confirm");
-        var payload = Object.assign({}, STATE);
+        var payload = JSON.parse(JSON.stringify(STATE));
+        normalizeTypographyForSubmit(payload);
         var customImagePlan = usesCustomImagePlanValue(payload.image_usage);
         if (payload.image_usage === "custom" || (customImagePlan && !String(payload.image_usage).trim())) {
             document.getElementById("confirm-status").textContent = t("image_usage_custom_required");

@@ -1007,7 +1007,11 @@ def _build_run_xml(
 
     text_dec = run.get('text_decoration', '')
 
-    sz = round(fs_px * FONT_PX_TO_HUNDREDTHS_PT)
+    # Snap the exported font size to the nearest 0.5pt so PowerPoint shows a
+    # clean value (integer or half-point), never 15.6pt / 22.67pt. Exact size is
+    # fs_px * FONT_PX_TO_HUNDREDTHS_PT hundredths-of-pt; round that to the
+    # 50-hundredths (0.5pt) grid. (Line spacing below keeps exact precision.)
+    sz = int(fs_px * FONT_PX_TO_HUNDREDTHS_PT / 50 + 0.5) * 50
     b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
     u_attr = ' u="sng"' if 'underline' in text_dec else ''
