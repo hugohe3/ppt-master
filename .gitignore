@@ -171,7 +171,6 @@ yarn.lock
 # Cache and locks
 .cache/
 *.lock
-!uv.lock
 .lock
 
 # Live preview direct-edit history (per-project, regenerated on edit)
