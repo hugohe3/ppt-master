@@ -130,7 +130,7 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 ### Font Size Hierarchy
 
-> **Ramp discipline, not a fixed menu.** `body` is the single anchor; every other size is a ratio of it. Each row below gives the role's allowed ratio band — Executor may pick any unitless px value inside the band (e.g., 48 page title, 18 chart annotation, 88 cover headline) without pre-declaring intermediates in `spec_lock.md`.
+> **Ramp discipline, not a fixed menu.** `body` is the single anchor; every other size is a ratio of it. Each row below gives the role's allowed ratio band. **Structural roles (page title / body / subtitle / annotation / footnote) resolve to one size each and stay that size deck-wide** — pick the value once, lock it, reuse it on every page; same-role drift is what makes a deck look unprofessional. The in-band freedom to use an intermediate value without pre-declaring is for **special / feature elements** (hero number, cover / section display headline, one-off emphasis); if such a size recurs, declare it as its own slot so it too stays consistent.
 > **Unit boundary (HARD rule).** Author this section in **unitless px**. PPT canvases may be confirmed in pt, but that conversion is already resolved before writing this spec (`px = pt × 4⁄3`); `design_spec.md`, `spec_lock.md`, and SVG carry px only. Never write `pt`, `px`, `em`, or any unit in `spec_lock.md` or SVG. Geometry (margins / gaps / card sizes) is px everywhere. Non-PPT canvases use px throughout.
 > **Baseline selection**: drive by **delivery purpose** first (read-close vs. presentation), then content density; visual style only nudges within the chosen band.
 

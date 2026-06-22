@@ -221,7 +221,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 #### Font Size Ramp (confirmation layer in pt → spec layer in px)
 
-> **Ramp, not a fixed menu.** All sizes derive from the `body` baseline as a ratio. `spec_lock.md typography` declares `body` plus the slots this deck uses (`title` / `subtitle` / `annotation` by default; add `cover_title` / `hero_number` / `chart_annotation` as needed). Executor may pick any intermediate size within a role's ratio band.
+> **Ramp, not a fixed menu.** All sizes derive from the `body` baseline as a ratio. `spec_lock.md typography` declares `body` plus the slots this deck uses (`title` / `subtitle` / `annotation` by default; add `cover_title` / `hero_number` / `chart_annotation` as needed). **Structural roles (page title / body / subtitle / annotation / footnote) resolve to one size each and hold it deck-wide** — that consistency is what reads as professional. Picking an intermediate in-band size is for special / feature elements (hero number, display title, one-off emphasis); declare a recurring special size as its own slot so it stays consistent too.
 
 > **Unit boundary (HARD rule).** PPT canvases may use **pt only in the confirmation layer** (`recommendations.json`, the Confirm UI, or chat fallback). Before writing `design_spec.md`, normalize the confirmed font sizes to **unitless px** (`px = pt × 4/3`) and keep px as the only design/execution value in `design_spec.md`, `spec_lock.md`, and SVG. Keep original pt only as provenance (`body_size_pt` / `sizes_pt`) when useful. Non-PPT canvases use px everywhere. Never write `pt` / `px` / `em` units into `spec_lock.md` or SVG; those layers carry unitless px numbers only. Geometry — margins, gaps, card sizes — is px everywhere.
 
@@ -258,7 +258,7 @@ Within the chosen purpose band, **density** picks the point (chart-heavy / 6+ it
 | Annotation / caption | 0.7-0.85x | 22-27px | 17-20px |
 | Page number / footnote | 0.5-0.65x | 16-21px | 12-16px |
 
-> Two baseline columns are illustrative only — for any other normalized `body` px value (21.33 / 26.67 / 29.33 / 32 / ...), multiply the row's ratio. Executor may pick any size within a role's band without pre-declaring; values outside **every** band require lock extension first.
+> Two baseline columns are illustrative only — for any other normalized `body` px value (21.33 / 26.67 / 29.33 / 32 / ...), multiply the row's ratio. Structural roles (page title / body / subtitle / annotation / footnote) take their locked slot value and stay there on every page — not a per-page pick. In-band freedom without pre-declaring is for special / feature elements (hero number, display title, one-off emphasis); a recurring special size should be declared as its own slot. Values outside **every** band require lock extension first.
 
 > **pt → px: where it happens (Mandatory).** PPT canvases confirm in pt; `design_spec.md` / `spec_lock.md` / SVG carry **unitless px only**. The conversion `px = pt × 4 ⁄ 3` happens **once**, by path. (At export the px is converted back with `× 0.75` and **snapped to the nearest 0.5pt** so PowerPoint always shows a clean integer-or-half-point size; a confirmed integer pt round-trips exactly — e.g. 20pt → 26.67px → 20.0pt.)
 > - **Confirm UI path** — already done at submit. `result.json` `typography.body_size` / `sizes` are **already px** (`body_size_pt` / `sizes_pt` are kept only as provenance). Use the px directly; do **not** re-convert.
