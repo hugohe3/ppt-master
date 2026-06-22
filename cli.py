@@ -51,11 +51,17 @@ COMMANDS = {
     "gemini-watermark-remove": "gemini_watermark_remover.py",
     "pptx-animations":        "pptx_animations.py",
     "check-deps-sync":        "check_deps_sync.py",
+    "check-uvx-migration":    "check_uvx_migration.py",
     "pptx-to-svg":            "pptx_to_svg.py",
     "error-helper":           "error_helper.py",
     "project-utils":          "project_utils.py",
     "config":                 "config.py",
     "register-template":      "register_template.py",
+    "icon-sync":              "icon_sync.py",
+    "extract-svg-assets":     "extract_svg_assets.py",
+    "pptx-intake":            "pptx_intake.py",
+    "beautify-identity":      "beautify_identity.py",
+    "beautify-inventory":     "beautify_inventory.py",
 }
 
 COMMAND_DESCRIPTIONS = {
@@ -89,11 +95,17 @@ COMMAND_DESCRIPTIONS = {
     "gemini-watermark-remove": "Remove watermarks from Gemini images",
     "pptx-animations":        "Animation demo and list utilities",
     "check-deps-sync":        "Verify dependency manifest sync",
+    "check-uvx-migration":    "Check for old-style command patterns",
     "pptx-to-svg":            "Convert PPTX to SVG",
     "error-helper":           "Error explanation lookup",
     "project-utils":          "Project utility helpers",
     "config":                 "List canvas formats and color presets",
     "register-template":      "Register layout template",
+    "icon-sync":              "Copy library icons into project icons/",
+    "extract-svg-assets":     "Extract and deduplicate SVG assets",
+    "pptx-intake":            "Standard PPTX intake enrichment",
+    "beautify-identity":      "Extract visual identity from PPTX",
+    "beautify-inventory":     "Extract slide inventory from PPTX",
 }
 
 def main(argv: list[str] | None = None) -> int:

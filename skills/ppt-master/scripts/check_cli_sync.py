@@ -70,7 +70,9 @@ def main(argv: list[str] | None = None) -> int:
     scripts = find_scripts_with_main(SCRIPTS_DIR)
     # Exclude this script itself and Flask helper modules (not CLI tools)
     scripts.discard("check_cli_sync.py")
+    scripts.discard("check_uvx_migration.py")
     scripts.discard("svg_editor/app.py")
+    scripts.discard("confirm_ui/server.py")
     # Exclude internal sub-scripts wrapped by parent commands
     #   svg_finalize/ — called by finalize-svg
     #   svg_to_pptx/pptx_cli.py — called by svg-to-pptx
