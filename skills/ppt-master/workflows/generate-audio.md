@@ -4,7 +4,7 @@ description: Generate per-slide narration audio with AI-recommended voice select
 
 # Generate Audio Workflow
 
-> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one audio file per slide via `edge-tts` by default, or a cloud TTS provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) when the user chooses high-quality narration or a cloned voice, then optionally re-exports a video-ready PPTX with audio embedded and per-slide auto-advance timings.
+> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one audio file per slide via `edge-tts` by default, or a cloud TTS provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) when the user chooses high-quality narration or a cloned voice. Normalize the completed files to a consistent loudness target before optionally re-exporting a video-ready PPTX with audio embedded and per-slide auto-advance timings.
 
 This workflow is **independent**: it reads `notes/*.md` and queries the selected TTS voice catalog — no upstream conversation context required. Safe to invoke in a fresh session.
 
@@ -114,7 +114,7 @@ Send a single message to the user that asks all three questions at once and prov
 
 ## Step 4: Execute (no further interaction)
 
-Run sequentially — do NOT bundle:
+Run sequentially — do NOT bundle. Preserve the raw provider output in `audio/`; normalize into a sibling directory and embed that normalized directory by default. Skip normalization only when the user explicitly asks to preserve the provider's original gain.
 
 ```bash
 # 1A. Generate audio with edge (default)
@@ -142,14 +142,21 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider cosyvoice --voice-id <chosen-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
-# 2. (If user kept embedding) Re-export PPTX with audio embedded
+# 2. Normalize all completed narration files before embedding (default)
+# Uses two-pass EBU R128 normalization; -16 LUFS / -1.5 dBTP is the narration default.
+python3 skills/ppt-master/scripts/normalize_narration_audio.py <project_path>/audio \
+  --output <project_path>/audio_normalized
+
+# 3. (If user kept embedding) Re-export PPTX with the normalized audio embedded
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
-  --recorded-narration audio
+  --recorded-narration audio_normalized
 ```
 
 If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
 
-`--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export.
+`normalize_narration_audio.py` keeps filenames and extensions unchanged, analyzes each file, then applies a two-pass EBU R128 correction. It writes a new directory rather than modifying `audio/`, so the original TTS audio remains available for comparison. Use `--target-lufs`, `--true-peak`, and `--lra` only when the user requests a different delivery standard.
+
+`--recorded-narration audio_normalized` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export.
 
 ---
 
@@ -157,7 +164,8 @@ If `notes_to_audio.py` errors with a missing dependency or missing provider API 
 
 Output one summary block listing:
 
-- Number of audio files generated and their location (`<project_path>/audio/*`).
+- Number of raw and normalized audio files plus both locations (`<project_path>/audio/*`, `<project_path>/audio_normalized/*`).
 - The provider, voice, and rate/settings actually used.
+- The loudness standard actually used (default: `-16 LUFS / -1.5 dBTP`).
 - (If embedded) the new narrated PPTX path under `<project_path>/exports/`.
-- (If skipped embedding) one-line hint on how to embed later: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio`.
+- (If skipped embedding) one-line hint on how to embed later: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --recorded-narration audio_normalized`.
