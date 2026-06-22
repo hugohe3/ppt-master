@@ -7,12 +7,8 @@
 
 [English](./README.md) | 中文
 
-<p align="center">
-  <sub>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> 等赞助方支持，得以持续免费开源。</sub>
-</p>
-
 <details open>
-<summary>点击折叠</summary>
+<summary>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> 等赞助方支持，得以持续免费开源。</summary>
 
 <table>
   <tr>

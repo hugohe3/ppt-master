@@ -7,12 +7,8 @@
 
 English | [中文](./README_CN.md)
 
-<p align="center">
-  <sub>This project is kept free and open source with the support of <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>, <a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> and other sponsors.</sub>
-</p>
-
 <details open>
-<summary>Click to collapse</summary>
+<summary>This project is kept free and open source with the support of <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>, <a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>, <a href="https://runapi.co/register?aff=WMLJ">RunAPI</a> and other sponsors.</summary>
 
 <table>
   <tr>
