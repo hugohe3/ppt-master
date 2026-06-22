@@ -143,10 +143,13 @@ Two views on the same font decisions — fill both, keep them consistent:
 | Page title | 1.5-2x | 48-64 | 36-48 | Bold |
 | Hero number (consulting KPIs) | 1.5-2x | 48-64 | 36-48 | Bold |
 | Subtitle | 1.2-1.5x | 38-48 | 29-36 | SemiBold |
+| Lead-in / intro | 1.1-1.4x | 35-45 | 26-34 | Regular / Medium |
+| Subheading | 1.1-1.3x | 35-42 | 26-31 | SemiBold |
 | **Body content** | **1x** | **32** | **24** | Regular |
 | Annotation / caption | 0.7-0.85x | 22-27 | 17-20 | Regular |
 | Page number / footnote | 0.5-0.65x | 16-21 | 12-16 | Regular |
 
+> **Subtitle / lead-in / subheading bands overlap by design** — choose among them by *role*, not size: `subtitle` sits under a title, `lead` is a lead-in / pull-quote in the body flow, `subheading` labels a block inside the content area. Each is its own slot, declared only when the deck uses it, and then held at one size deck-wide like any structural role. Font stays at the **family** level (no new typeface per role): `subheading` → heading / `title_family`, `lead` → `body_family` or `emphasis_family` — size + weight carry the hierarchy.
 > The two px columns are illustrations for common baselines. For any other `body` value, multiply by each row's ratio. When the confirmation came from PPT pt, you may record the provenance once (e.g. "confirmed as 20pt") in prose, but the size values in this section and in `spec_lock.md` stay normalized px. The checker (`svg_quality_checker._check_spec_lock_drift`) reads the live `body` (px) from `spec_lock.md` and applies the bands, so no code change is needed for a different baseline.
 
 > Sizes outside **every** band remain forbidden — surface the need and extend `spec_lock.md typography` (e.g., `cover_title: 96`) rather than invent a one-off value.
