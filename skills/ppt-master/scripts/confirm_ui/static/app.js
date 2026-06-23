@@ -16,6 +16,8 @@
             loading: "Loading…",
             load_error: "Could not load recommendations.json. The AI must write it before launch.",
             btn_confirm: "Confirm",
+            btn_next: "Next →",
+            deriving: "Generating the downstream options from your choices…",
             already_confirmed: "Already confirmed once. Re-submitting overwrites the previous choices.",
             confirmed_title: "✓ Confirmed",
             confirmed_hint: "Your choices are saved. You can close this page and return to the chat.",
@@ -94,6 +96,8 @@
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
+            btn_next: "下一步 →",
+            deriving: "正在据你的选择生成下游选项…",
             already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
@@ -247,10 +251,15 @@
         return node;
     }
 
+    // Section numbers run 1..N within the tier currently rendered; the counter is
+    // reset at the top of renderForTier. The legacy `num` arg is ignored so each
+    // tier numbers its own sections cleanly (tier 2 is not a continuation of 1).
+    var _secCounter = 0;
     function section(num, titleKey, noteText) {
+        _secCounter += 1;
         var sec = el("div", "section");
         var head = el("div", "section-head");
-        head.appendChild(el("span", "section-num", String(num)));
+        head.appendChild(el("span", "section-num", String(_secCounter)));
         head.appendChild(el("span", "section-title", t(titleKey)));
         if (noteText) head.appendChild(el("span", "section-note", noteText));
         sec.appendChild(head);
@@ -547,6 +556,20 @@
         textField(subDiv, function () { return STATE.content_divergence; },
             function (v) { STATE.content_divergence = v; }, "placeholder_divergence", false);
         sec.appendChild(subDiv);
+        // Delivery purpose (PPT only) lives in the §c key-information confirmation,
+        // beside audience — it is part of "who / how this deck is consumed". It is a
+        // Tier-1 anchor: its value seeds the body-size band, type character, page
+        // density, and the re-derived Tier-2 page-count recommendation. Non-PPT
+        // canvases carry no PowerPoint pt semantics, so the axis does not apply.
+        if (isPptCanvas(STATE.canvas)) {
+            var purposeField = el("div", "subfield");
+            purposeField.appendChild(el("div", "subfield-label", t("delivery_purpose")));
+            enumField(purposeField, CAT.delivery_purpose,
+                recOrFirst("delivery_purpose", CAT.delivery_purpose),
+                function () { return STATE.delivery_purpose; },
+                function (v) { STATE.delivery_purpose = v; });
+            sec.appendChild(purposeField);
+        }
         host.appendChild(sec);
     }
 
@@ -977,25 +1000,10 @@
         refreshBodySizeHint();
         sizeField.appendChild(sizeRow);
 
-        // Delivery purpose (PPT only) — informs the recommended pt baseline and the
-        // suggested-range hint. Picking it updates the hint + strategy signal only;
-        // it does not rewrite the body field (inputs are independent, no cascade).
-        if (isPptCanvas(STATE.canvas)) {
-            var purposeField = el("div", "subfield");
-            purposeField.appendChild(el("div", "subfield-label", t("delivery_purpose")));
-            enumField(purposeField, CAT.delivery_purpose,
-                recOrFirst("delivery_purpose", CAT.delivery_purpose),
-                function () { return STATE.delivery_purpose; },
-                function (v) {
-                    STATE.delivery_purpose = v;
-                    // Purpose only updates the suggested-range hint and the strategy
-                    // signal it carries to result.json — it never rewrites the body
-                    // size the user sees (no input interlinking).
-                    refreshBodySizeHint();
-                    refreshStylePreview();
-                });
-            sec.appendChild(purposeField);
-        }
+        // Delivery purpose is a Tier-1 anchor confirmed inside renderAudience (§c) —
+        // it is set before this Tier-2 section exists, so its value drives the
+        // body-size hint here via STATE.delivery_purpose (preserved across the
+        // single-session transition). The control itself no longer lives here.
         sec.appendChild(sizeField);
 
         // Per-role size override (parallel to color's per-role HEX override): the
@@ -1242,31 +1250,58 @@
         host.appendChild(sec);
     }
 
-    function renderAll() {
+    // Stage of the two-tier confirm flow: 1 = anchors, 2 = re-derived realization,
+    // "all" = legacy single-pass (recommendations.json carried no `tier`).
+    var STAGE = 1;
+
+    function renderForTier(tier) {
         var host = document.getElementById("sections");
         host.innerHTML = "";
-        // Detach the previous preview's repaint closure before the sections
-        // re-render: color/typography auto-select would otherwise call it and
-        // write to now-detached nodes until renderStylePreview remounts it.
+        _secCounter = 0;
+        // Detach the previous preview's repaint closures before the sections
+        // re-render: color/typography auto-select would otherwise call them and
+        // write to now-detached nodes until renderStylePreview remounts them.
         refreshStylePreview = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
-        renderCanvas(host);
-        renderPages(host);
-        renderAudience(host);
-        renderStyle(host);
-        // Group the preview with the three sections it reflects so its sticky
-        // scope ends when typography scrolls past — it does not linger over the
-        // image / mode / refine sections below.
-        var styleGroup = el("div", "style-group");
-        renderStylePreview(styleGroup);
-        renderColor(styleGroup);
-        renderIcons(styleGroup);
-        renderTypography(styleGroup);
-        host.appendChild(styleGroup);
-        renderImages(host);
-        renderMode(host);
-        renderRefine(host);
+        if (tier === 1) {
+            // Anchors — decided first; Tier 2 is re-derived from these.
+            // Delivery purpose rides inside renderAudience (§c key info).
+            renderCanvas(host);
+            renderAudience(host);
+            renderStyle(host);
+        } else {
+            // Tier 2 (realization) or single-pass: page count + visual treatment.
+            // Single-pass also shows the anchors up front on the same page.
+            if (tier === "all") {
+                renderCanvas(host);
+                renderAudience(host);
+                renderStyle(host);
+            }
+            renderPages(host);
+            // Group the preview with the three sections it reflects so its sticky
+            // scope ends when typography scrolls past — it does not linger over the
+            // image / mode / refine sections below.
+            var styleGroup = el("div", "style-group");
+            renderStylePreview(styleGroup);
+            renderColor(styleGroup);
+            renderIcons(styleGroup);
+            renderTypography(styleGroup);
+            host.appendChild(styleGroup);
+            renderImages(host);
+            renderMode(host);
+            renderRefine(host);
+        }
+        updateActionBar(tier);
+    }
+
+    function renderAll() { renderForTier(STAGE); }
+
+    function updateActionBar(tier) {
+        var btn = document.getElementById("btn-confirm");
+        btn.disabled = false;
+        // Tier 1 advances to the re-derived Tier 2; Tier 2 / single-pass confirm.
+        btn.textContent = (tier === 1) ? t("btn_next") : t("btn_confirm");
     }
 
     // ---- state init (once) ----------------------------------------------
@@ -1279,13 +1314,23 @@
         return recOrFirst(field, catList);
     }
 
-    function initState() {
+    function initTier1State() {
         STATE.canvas = pick("canvas", CAT.canvas);
-        STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : "";
         STATE.audience = (REC.audience && REC.audience.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
+        // Delivery purpose drives the PPT confirmation pt baseline; default balanced
+        // (not the catalog-first id) when the Strategist did not recommend one.
+        STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
+    }
+
+    // Tier-2 fields are (re-)read from the recommendations. At boot they come from
+    // whatever recommendations.json carried; after a tier-1 confirm enterTier2()
+    // calls this again with the re-derived candidates. Tier-1 STATE is preserved
+    // across the single-session transition — this never resets the anchors.
+    function initTier2State() {
+        STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
 
         var cc = (REC.color && REC.color.candidates) || [];
         var csel = (REC.color && REC.color.selected) || 0;
@@ -1311,15 +1356,17 @@
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
         STATE.refine_spec = !!((REC.refine_spec && REC.refine_spec.value) || (REC.recommend && REC.recommend.refine_spec));
-        // Delivery purpose drives the PPT confirmation pt baseline; default balanced
-        // (not the catalog-first id) when the Strategist did not recommend one.
-        STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
         // Guarantee a body baseline even when a candidate omitted body_size, on
         // any canvas (PPT → pt default by purpose, non-PPT → px from canvas height),
         // so role sizes never derive from an empty anchor.
         if (STATE.typography && !STATE.typography.body_size) {
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
+    }
+
+    function initState() {
+        initTier1State();
+        initTier2State();
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -1330,10 +1377,78 @@
         ov.style.display = "flex";
     }
 
+    // ---- tier-1 submit + re-derive transition ---------------------------
+    function submitTier1() {
+        var btn = document.getElementById("btn-confirm");
+        // Anchors only — the page stays open; the AI re-derives Tier 2 and the
+        // same browser session renders it (STATE is preserved across the poll).
+        var payload = {
+            stage: "tier1",
+            canvas: STATE.canvas,
+            audience: STATE.audience,
+            content_divergence: STATE.content_divergence,
+            mode: STATE.mode,
+            visual_style: STATE.visual_style
+        };
+        // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
+        // On a non-PPT canvas the control is never shown, so STATE holds an unseen
+        // default — do NOT write it as a confirmed anchor, or it would steer the
+        // Tier-2 page-count / density re-derivation behind the user's back. (The
+        // final submit drops it for non-PPT the same way, via normalizeTypographyForSubmit.)
+        if (isPptCanvas(STATE.canvas)) {
+            payload.delivery_purpose = STATE.delivery_purpose;
+        }
+        btn.disabled = true;
+        fetch("/api/confirm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(function (r) {
+            if (!r.ok) throw new Error("tier1 failed");
+            showDeriving();
+            pollForTier2();
+        }).catch(function () {
+            btn.disabled = false;
+            document.getElementById("confirm-status").textContent = t("error_retry");
+        });
+    }
+
+    function showDeriving() {
+        document.getElementById("sections").style.display = "none";
+        document.getElementById("actionbar").style.display = "none";
+        var l = document.getElementById("loading");
+        l.textContent = t("deriving");
+        l.style.display = "block";
+    }
+
+    // Poll the recommendations endpoint (no-store) until the AI overwrites it with
+    // the re-derived Tier 2, then render Tier 2 in the same session.
+    function pollForTier2() {
+        fetch("/api/recommendations", { cache: "no-store" })
+            .then(function (r) { if (!r.ok) throw new Error("poll failed"); return r.json(); })
+            .then(function (data) {
+                if (data && data.tier === 2) { enterTier2(data); }
+                else { setTimeout(pollForTier2, 1200); }
+            })
+            .catch(function () { setTimeout(pollForTier2, 1500); });
+    }
+
+    function enterTier2(data) {
+        REC = data;
+        initTier2State();   // re-read realization fields; tier-1 STATE preserved
+        STAGE = 2;
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("sections").style.display = "block";
+        document.getElementById("actionbar").style.display = "flex";
+        document.getElementById("confirm-status").textContent = "";
+        renderForTier(2);
+    }
+
     function confirm() {
         var btn = document.getElementById("btn-confirm");
         var payload = JSON.parse(JSON.stringify(STATE));
         normalizeTypographyForSubmit(payload);
+        payload.stage = "final";
         var customImagePlan = usesCustomImagePlanValue(payload.image_usage);
         if (payload.image_usage === "custom" || (customImagePlan && !String(payload.image_usage).trim())) {
             document.getElementById("confirm-status").textContent = t("image_usage_custom_required");
@@ -1391,7 +1506,9 @@
             refreshLangToggle(toggleBtn);
             if (REC && CAT) renderAll();   // STATE persists → selections preserved
         });
-        document.getElementById("btn-confirm").addEventListener("click", confirm);
+        document.getElementById("btn-confirm").addEventListener("click", function () {
+            if (STAGE === 1) { submitTier1(); } else { confirm(); }
+        });
 
         Promise.all([
             loadCatalogs(),
@@ -1405,6 +1522,8 @@
                 if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
             }
             initState();
+            // tier 1 / 2 from the recommendations; absent → legacy single-pass.
+            STAGE = (REC.tier === 1) ? 1 : (REC.tier === 2 ? 2 : "all");
             document.getElementById("loading").style.display = "none";
             document.getElementById("sections").style.display = "block";
             document.getElementById("actionbar").style.display = "flex";

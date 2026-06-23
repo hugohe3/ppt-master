@@ -22,7 +22,16 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 🚧 **GATE — Mandatory read first**: `read_file templates/design_spec_reference.md` before any analysis or writing. The design_spec.md output MUST follow that template's 11-section structure exactly. After writing, self-check each section is present: I Project Info → II Canvas → III Visual Theme → IV Typography → V Layout → VI Icon → VII Visualization → VIII Image → IX Outline → X Speaker Notes → XI Tech Constraints.
 
-⛔ **BLOCKING**: After the read, present professional recommendations for the eight items below as a bundled package and wait for explicit user confirmation.
+⛔ **BLOCKING**: After the read, present professional recommendations for the eight items below and wait for explicit user confirmation.
+
+**Two-tier confirmation (the default Confirm UI flow; chat mirrors it).** The eight items split into a dependency order, confirmed in two passes:
+
+| Tier | Items | Role |
+|---|---|---|
+| **1 — anchors** | `a` canvas · `c` key info — audience + `content_divergence` + **delivery purpose** *(PPT only)* (promoted out of `g`) · `d` mode + visual_style | confirmed first |
+| **2 — realization** (re-derived from the user's *actual* Tier 1) | `b` page count · `e` color · `f` icon · `g` typography (font + size) · `h` image | derived from Tier 1 |
+
+The realization items are anchored by Tier 1 — `visual_style` governs `e` / `f` / `g` / `h` (§d Layer 2), and delivery purpose drives the §g type band, page density, **and** the `b` page-count recommendation. So author Tier 2 *after* Tier 1 is confirmed, against the user's real choices. **Page count is derived, not an anchor** — it follows content volume × delivery purpose, which is why it is Tier 2. The launch / re-derive / wait mechanics live in [SKILL.md Step 4](../SKILL.md); the item specs below keep their `a`–`h` letters.
 
 > **Execution discipline**: This is the last BLOCKING checkpoint in the pipeline. After confirmation, complete the Design Spec and proceed to image generation / SVG / post-processing without further pauses.
 >
@@ -36,11 +45,13 @@ Recommend format based on scenario (see [`canvas-formats.md`](canvas-formats.md)
 
 ### b. Page Count Confirmation
 
-Provide specific page count recommendation based on source document content volume **and the deck's delivery purpose** (文字型 packs denser → the same source fits in fewer pages; 展示型 is one-idea-per-page → the same source may need more) — see §6.1 Content Planning Strategy. The user's confirmed count still wins; delivery purpose governs density and per-page treatment within it.
+**Tier-2 (derived).** Page count is not an anchor — recommend it only after the Tier-1 delivery purpose is confirmed, since the same source yields a different count by purpose. Provide a specific page count recommendation based on source document content volume **and the confirmed delivery purpose** (文字型 packs denser → the same source fits in fewer pages; 展示型 is one-idea-per-page → the same source may need more) — see §6.1 Content Planning Strategy. The user's confirmed count still wins; delivery purpose governs density and per-page treatment within it.
 
 ### c. Key Information Confirmation
 
 Confirm target audience, usage occasion, and core message; provide initial assessment based on document nature.
+
+**Delivery purpose** (PPT only) is confirmed here, beside audience, as part of the key information — the deck's consumption mode: 文字型 (read-close) / 均衡 (business, default) / 展示型 (presentation). It is a Tier-1 anchor: it seeds the §g body-size band, the type character, page density, and the §b page-count recommendation (both re-derived in Tier 2). Recommend one (`recommend.delivery_purpose`, default `balanced`) and let the user confirm. The full size mapping and within-band density / style nudge live in §g and §6.1 — here it is surfaced as a key-information choice, not a separate typography step.
 
 **Material divergence** — a **free-text** intent the user states beside audience (same content-strategy cluster): in their own words, how closely the deck should follow the source vs how freely it may reshape it. This is the user's own call — a free prose field (`content_divergence`), **not** a fixed set of options and **not** something you recommend from analyzing the source. Surface the question (in the confirm UI it is a text box under audience; in chat, ask it plainly); leave it for the user to fill. Blank = a balanced default.
 
@@ -225,7 +236,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 > **Unit boundary (HARD rule).** PPT canvases may use **pt only in the confirmation layer** (`recommendations.json`, the Confirm UI, or chat fallback). Before writing `design_spec.md`, normalize the confirmed font sizes to **unitless px** (`px = pt × 4/3`) and keep px as the only design/execution value in `design_spec.md`, `spec_lock.md`, and SVG. Keep original pt only as provenance (`body_size_pt` / `sizes_pt`) when useful. Non-PPT canvases use px everywhere. Never write `pt` / `px` / `em` units into `spec_lock.md` or SVG; those layers carry unitless px numbers only. Geometry — margins, gaps, card sizes — is px everywhere.
 
-**Baseline — pick by delivery purpose first, then density.** Delivery purpose is one of the Eight Confirmations (item 7 typography); it is the primary driver because the same canvas reads very differently when read close vs. projected. It is a **deck-wide** axis — beyond the body baseline it also drives page density / count / rhythm; see §6.1 for that side. Here it sets the body baseline:
+**Baseline — pick by delivery purpose first, then density.** Delivery purpose is a **Tier-1 anchor confirmed in §c key information** (beside audience, not as a separate typography step — see §1 Two-tier confirmation); it is the primary driver because the same canvas reads very differently when read close vs. projected. It is a **deck-wide** axis — beyond the body baseline it also drives page density / count / rhythm; see §6.1 for that side. Here, with the purpose already confirmed, it sets the body baseline:
 
 | Delivery purpose (PPT 16:9) | Body (pt) | Default | Reads as |
 |---|---|---:|---|
@@ -753,7 +764,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 
 Content-outline and speaker-notes strategy follow the deck's locked **mode** — see [`modes/_index.md`](./modes/_index.md) and the locked mode's file. The guidance below applies within any mode:
 
-**Delivery purpose drives the whole plan, not just type size.** `result.json delivery_purpose` — 文字型 (read-close) / 均衡 (business, default) / 展示型 (presentation), confirmed in item 7 — is a **deck-wide consumption mode**. It seeds the normalized body baseline (§g) **and** governs how content is distributed:
+**Delivery purpose drives the whole plan, not just type size.** `result.json delivery_purpose` — 文字型 (read-close) / 均衡 (business, default) / 展示型 (presentation), confirmed as a Tier-1 anchor (§1) — is a **deck-wide consumption mode**. It seeds the normalized body baseline (§g) **and** governs how content is distributed:
 
 | Delivery purpose | Per-page density & treatment | §IX content per page | page_rhythm lean |
 |---|---|---|---|
