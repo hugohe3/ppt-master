@@ -29,15 +29,15 @@ description: Start the browser SVG editor when it is not running, and apply subm
 **Precondition**: no preview service running on this project.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path>
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon
 ```
 
 (Plain mode — no `--live`. The `--live` flag is reserved for Step 6's auto-startup.)
 
-The server binds `127.0.0.1:5050`, opens the browser on a local desktop, and edits `<project_path>/svg_output/` in place. After it prints `SVG Editor running at http://localhost:5050`, tell the user in their language, in one short message:
+The launcher binds `127.0.0.1:5050` (or the next free port), starts the server in the background, writes runtime files under `<project_path>/live_preview/`, opens the browser on a local desktop when possible, and edits `<project_path>/svg_output/` in place. After it prints the running URL, tell the user in their language, in one short message:
 
-- editor is at `http://localhost:5050`
-- **Direct edit** (deterministic tweaks — wording, color, coordinates, SVG attributes): select an element → change the controls in the right panel → preview updates immediately, but nothing is written to `svg_output/` until **Apply changes**. `Ctrl+Z` or the **Undo** button drops staged edits step by step; applied changes are logged to `<project>/.live_edits.jsonl`. Re-export stays chat-driven: say "re-export" / "重新导出" to refresh the PPTX.
+- editor is at the URL reported by the launcher, e.g. `http://localhost:5050`
+- **Direct edit** (deterministic tweaks — wording, color, coordinates, SVG attributes): select an element → change the controls in the right panel → preview updates immediately, but nothing is written to `svg_output/` until **Apply changes**. `Ctrl+Z` or the **Undo** button drops staged edits step by step; applied changes are logged to `<project>/live_preview/edits.jsonl`. Re-export stays chat-driven: say "re-export" / "重新导出" to refresh the PPTX.
 - **Annotate** (changes that need AI judgement / re-layout): select an element → write the instruction → click **Add annotation** to stage it → click **Apply changes** to write annotation markers → return to the chat and say `apply my annotations` (or quote the browser prompt)
 - to skip the editor, just describe the change in chat
 
@@ -60,6 +60,7 @@ Triggered by the user signals listed in "When to Run".
 3. For each listed annotation:
    - Edit the targeted element in `<project_path>/svg_output/<file>` per the annotation text.
    - Remove `data-edit-target` and `data-edit-annotation` from that element.
+   - Append one `annotation_applied` JSONL record to `<project_path>/live_preview/annotations.jsonl` with `ts`, `file`, `element_id`, and the original annotation text.
 4. Re-export:
    ```bash
    python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
@@ -78,13 +79,13 @@ Triggered by the user signals listed in "When to Run".
 - **Drag to move**: press and drag an already-selected element on the canvas to reposition it (selection stays a separate click, so the background is never dragged by accident); the whole selection moves together under multi-select. The pointer delta is mapped through each element's own CTM, so moves track the cursor regardless of viewport scale or group transforms. Each release stages one direct edit per moved element (the same `x`/`y`-or-`transform` write the geometry inputs produce), previewed live and written only on **Apply changes**; dragging on empty canvas is still rubber-band selection. A failed stage rolls the canvas back to the pre-drag position.
 - **Arrow-key nudge**: with one or more elements selected, `↑ ↓ ← →` moves the selection 1px and `Shift + arrow` moves 10px (suppressed while typing in the annotation box). Arrow keys navigate slides only when nothing is selected. Same staging/coalescing path as drag, so a burst of nudges collapses to one undo step.
 - **Overlap picker**: right-click anywhere on the canvas to list every selectable element under the pointer (top→bottom), so stacked shapes can be reached without blind cycling. Left-click is unchanged (selects the topmost). Hovering a row highlights that element; clicking it selects it; `Esc` or an outside click closes the list. With exactly one element under the pointer, right-click selects it directly.
-- **Undo**: `Ctrl+Z` or the **Undo** button drops the last staged direct edit on the current slide (per-slide LIFO, this session). Consecutive edits to the *same element and same field set* (e.g. nudging one color or coordinate several times) coalesce into a single undo step, keeping the original pre-edit value; switching element or field starts a new step. Applied old→new history is appended to `<project>/.live_edits.jsonl`; un-applied staged edits are in-memory only.
+- **Undo**: `Ctrl+Z` or the **Undo** button drops the last staged direct edit on the current slide (per-slide LIFO, this session). Consecutive edits to the *same element and same field set* (e.g. nudging one color or coordinate several times) coalesce into a single undo step, keeping the original pre-edit value; switching element or field starts a new step. Applied old→new history is appended to `<project>/live_preview/edits.jsonl`; annotation save/update/remove history is appended to `<project>/live_preview/annotations.jsonl`; un-applied staged edits are in-memory only.
 - **Unsaved-work guard**: staged direct edits and annotation changes (added or removed) live in server memory until **Apply changes**; closing the tab triggers the browser's native "leave site?" prompt while any are unapplied, since an idle timeout or process kill would drop them.
 - **Re-export is chat-driven**: applying changes updates `svg_output/` only. Refreshing the PPTX (finalize + svg_to_pptx) stays a chat step — the editor never runs the export pipeline.
 - **Stop conditions**: the service stops when the user clicks **Exit preview** in the browser, asks in chat to stop it, the idle timeout fires, or the process is killed externally.
 - **Port**: default `5050`, auto-advancing to the next free port when another project already holds it (report the actual URL from the launch log); force a specific port with `--port <other>`.
 - **Idle timeout**: plain mode `900s`, `--live` mode `7200s`; override with `--timeout <seconds>` (`0` disables).
-- **Single instance per project**: `<project_path>/.live_preview.lock` records the running pid + port. A second launch against the same project refuses to start and prints the existing URL; stale locks (dead pid) are overwritten on the next launch. Delete the file by hand only if the process is gone but the lock remains (rare — `kill -9` is the only common cause).
+- **Single instance per project**: `<project_path>/live_preview/lock.json` records the running pid + port. A second launch against the same project refuses to start and prints the existing URL; stale locks (dead pid) are overwritten on the next launch. Legacy root locks at `<project_path>/.live_preview.lock` are still detected when they point to a live process.
 - **Transient ids**: each element gets a temporary `_edit_N` id while the editor is running. On save, only annotated elements keep their id; unannotated `_edit_N` ids are stripped before write-back.
 - **Browser preview**: the server inlines `<use data-icon>` placeholders and serves `images/*` so SVG renders correctly; the on-disk SVG is unchanged by this preview.
 
@@ -95,9 +96,9 @@ Triggered by the user signals listed in "When to Run".
 If the project lives on a remote Linux server, run with `--no-browser`:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --daemon --no-browser
 # or for Step 6's auto-startup on a remote host:
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --no-browser
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon --no-browser
 ```
 
 - **VS Code / Cursor Remote-SSH**: open the **PORTS** panel (`Ctrl+Shift+P` → `Ports: Focus on Ports View`), click **Forward a Port**, enter `5050`. The workspace remembers it.
