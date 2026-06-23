@@ -520,7 +520,7 @@ Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `vis
 
 **Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running continuously through Executor + Step 7 export:
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 ```
 - Start it immediately when Executor begins; `svg_output/` may be empty. Editor opens at `http://localhost:5050`; if another project already holds it, the launcher **auto-advances to the next free port** — read the actual URL from the launch log and report that.
 - Run it as a long-running side process/session; do not wait for it to exit before generating SVG pages. Do not wait for user confirmation after startup.

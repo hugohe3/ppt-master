@@ -80,7 +80,7 @@ python3 skills/ppt-master/scripts/image_gen.py --manifest <project_path>/images/
 python3 skills/ppt-master/scripts/image_gen.py --render-md <project_path>/images/image_prompts.json
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
 python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
-python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live
+python3 skills/ppt-master/scripts/svg_editor/server.py <project_path> --live --daemon
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
 python3 skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
