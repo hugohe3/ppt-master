@@ -14,7 +14,7 @@
 | **Design Style** | {design_style} |
 | **Target Audience** | [Filled by Strategist] |
 | **Use Case** | [Filled by Strategist] |
-| **Delivery Purpose** | [文字型 read-close / 均衡 business / 展示型 presentation — confirmed at item 7; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the normalized body baseline. See strategist.md §6.1.] |
+| **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at item 7; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
 | **Created Date** | {date_str} |
 
@@ -99,7 +99,7 @@
 
 **Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
 
-> Step 4 Confirm UI: present **≥3** typography candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks) and declaring `body_size` as the user-facing body baseline (pt for PPT canvases, px for non-PPT), in `confirm_ui/recommendations.json`; the confirmed `result.json` normalizes the execution value to px before this spec is written. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
+> Step 4 Confirm UI: present **≥3** typography candidates (creative recommendations always offer real choice — same rule as h.5; fewer only on the honest-shortfall exception, with a stated reason), each splitting CJK + Latin for `heading` and `body` (with `css` preview stacks) and declaring `body_size` as the body baseline in **px** (the system's only unit, every canvas), in `confirm_ui/recommendations.json`; the confirmed `result.json` carries px directly — no conversion. Schema: [`scripts/docs/confirm_ui.md`](../scripts/docs/confirm_ui.md).
 
 Two views on the same font decisions — fill both, keep them consistent:
 
@@ -131,12 +131,12 @@ Two views on the same font decisions — fill both, keep them consistent:
 ### Font Size Hierarchy
 
 > **Ramp discipline, not a fixed menu.** `body` is the single anchor; every other size is a ratio of it. Each row below gives the role's allowed ratio band. **Structural roles (page title / body / subtitle / annotation / footnote) resolve to one size each and stay that size deck-wide** — pick the value once, lock it, reuse it on every page; same-role drift is what makes a deck look unprofessional. The in-band freedom to use an intermediate value without pre-declaring is for **special / feature elements** (hero number, cover / section display headline, one-off emphasis); if such a size recurs, declare it as its own slot so it too stays consistent.
-> **Unit boundary (HARD rule).** Author this section in **unitless px**. PPT canvases may be confirmed in pt, but that conversion is already resolved before writing this spec (`px = pt × 4⁄3`); `design_spec.md`, `spec_lock.md`, and SVG carry px only. Never write `pt`, `px`, `em`, or any unit in `spec_lock.md` or SVG. Geometry (margins / gaps / card sizes) is px everywhere. Non-PPT canvases use px throughout.
-> **Baseline selection**: drive by **delivery purpose** first (read-close vs. presentation), then content density; visual style only nudges within the chosen band.
+> **Unit boundary (HARD rule).** Author this section in **unitless px** — the system's only unit, every canvas. There is no pt layer and no conversion: the confirmed value is already px. Never write `pt`, `px`, `em`, or any unit in `spec_lock.md` or SVG. Geometry (margins / gaps / card sizes) is px everywhere.
+> **Baseline selection**: **delivery purpose** sets the body baseline to **one fixed value** (not a range); content density and visual style drive page treatment / rhythm / the *other* roles, **not** the body size.
 
-**Baseline (unitless px)**: Body font size = [fill in]. For PPT 16:9, normalize from the confirmed delivery-purpose pt band: **文字型 / read-close** `14–18pt` → `18.67–24`, **均衡 / business** `18–22pt` → `24–29.33` (default `26.67`), **展示型 / presentation** `22–28pt` → `29.33–37.33`. Within the band, density picks the point (6+ items → low · sparse / cover → high) and visual style nudges (technical / data low · corporate / instructional mid · editorial / narrative / showcase high). The user may also pin individual role sizes (`title` / `subtitle` / `annotation`) directly in the Confirm UI — a confirmed per-role value (`result.json typography.sizes`) is already px and becomes the locked slot for that role; the rest derive from the ramp. For non-PPT canvases, author px from the confirmed canvas scale (see [strategist.md §g](../references/strategist.md) per-canvas table).
+**Baseline (unitless px)**: Body font size = [fill in]. For PPT 16:9, the confirmed delivery-purpose value is **one fixed px per purpose, not a range**: **`text` / read-close** `20`, **`balanced` / business** `24` (default), **`presentation`** `32`. The body baseline is purely a function of delivery purpose — density and visual style drive page treatment / rhythm / the other roles, never the body size. The user may also pin individual role sizes (`title` / `subtitle` / `annotation`) directly in the Confirm UI — a confirmed per-role value (`result.json typography.sizes`) is already px and becomes the locked slot for that role; the rest derive from the ramp. For non-PPT canvases, author px from the confirmed canvas scale (see [strategist.md §g](../references/strategist.md) per-canvas table).
 
-| Purpose | Ratio to body | Example @ body=32 (24pt UI) | Example @ body=24 (18pt UI) | Weight |
+| Purpose | Ratio to body | Example @ body=32 (`presentation`) | Example @ body=24 (`balanced`) | Weight |
 | ------- | ------------- | --------------------------- | ------------------------- | ------ |
 | Cover title (hero headline) | 2.5-5x | 80-160 | 60-120 | Bold / Heavy |
 | Chapter / section opener | 2-2.5x | 64-80 | 48-60 | Bold |
@@ -150,7 +150,7 @@ Two views on the same font decisions — fill both, keep them consistent:
 | Page number / footnote | 0.5-0.65x | 16-21 | 12-16 | Regular |
 
 > **Subtitle / lead-in / subheading bands overlap by design** — choose among them by *role*, not size: `subtitle` sits under a title, `lead` is a lead-in / pull-quote in the body flow, `subheading` labels a block inside the content area. Each is its own slot, declared only when the deck uses it, and then held at one size deck-wide like any structural role. Font stays at the **family** level (no new typeface per role): `subheading` → heading / `title_family`, `lead` → `body_family` or `emphasis_family` — size + weight carry the hierarchy.
-> The two px columns are illustrations for common baselines. For any other `body` value, multiply by each row's ratio. When the confirmation came from PPT pt, you may record the provenance once (e.g. "confirmed as 20pt") in prose, but the size values in this section and in `spec_lock.md` stay normalized px. The checker (`svg_quality_checker._check_spec_lock_drift`) reads the live `body` (px) from `spec_lock.md` and applies the bands, so no code change is needed for a different baseline.
+> The two px columns are illustrations for common baselines. For any other `body` value, multiply by each row's ratio. All size values here and in `spec_lock.md` are px (no pt anywhere). The checker (`svg_quality_checker._check_spec_lock_drift`) reads the live `body` (px) from `spec_lock.md` and applies the bands, so no code change is needed for a different baseline.
 
 > Sizes outside **every** band remain forbidden — surface the need and extend `spec_lock.md typography` (e.g., `cover_title: 96`) rather than invent a one-off value.
 

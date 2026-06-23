@@ -62,6 +62,22 @@ With `--no-merge`, every visual line becomes its own PowerPoint text frame. This
 
 When you're chatting with the AI, you can also just ask for strict line fidelity on layout-sensitive pages — the AI will add `--no-merge` when re-exporting.
 
+## Q: Why are font sizes in px, not pt? Do they change on export?
+
+PPT Master works in **unitless px end-to-end** — the confirm page, `spec_lock.md`, and the SVG all carry px; there is no pt layer. The SVG canvas is literally 1280×720 px, so px is the real layout / execution unit, and keeping a single unit avoids the size drift you get when a value is "confirmed as 20pt" but written into the SVG as a different number.
+
+PowerPoint displays pt, so the **export** converts px → pt automatically (`pt = px × 0.75`, kept to one decimal). For example a `24px` body becomes `18pt`, a `42px` title becomes `31.5pt`. So a non-integer like `13.5pt` or `31.5pt` in PowerPoint is **expected and intentional**, not a bug — the size is whatever the px works out to, no longer forced onto whole or half-point values.
+
+The body baseline is a fixed value per **delivery purpose** (not a range):
+
+| Delivery purpose | Body px | ≈ exported pt |
+|---|---|---|
+| `text` (read-close: report / leave-behind) | 20px | 15pt |
+| `balanced` (default: roadshow / review) | 24px | 18pt |
+| `presentation` (projected / launch) | 32px | 24pt |
+
+Title, subtitle, footnote and the other roles derive from the body by ratio and snap to clean even px. You can override any role's px value on the confirm page.
+
 ## Q: How does PPT Master decide a deck's style?
 
 Two independent choices, locked at confirmation `d`:
