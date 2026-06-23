@@ -16,7 +16,7 @@ import json
 import html
 from pathlib import Path
 from typing import List, Dict, Tuple
-from collections import defaultdict
+from collections import Counter, defaultdict
 from xml.etree import ElementTree as ET
 
 try:
@@ -833,8 +833,10 @@ class SVGQualityChecker:
                      else RAMP_MAX_RATIO)
 
         size_drifts = set()
+        used_sizes = []
         for m in re.finditer(r'font-size\s*=\s*["\']([^"\']+)["\']', content):
             val = self._normalize_size(m.group(1))
+            used_sizes.append(val)
             if not allowed_sizes or val in allowed_sizes:
                 continue
             # Intermediate values are allowed when they sit inside the ramp
@@ -847,6 +849,10 @@ class SVGQualityChecker:
                 except ValueError:
                     pass
             size_drifts.add(val)
+
+        template_size_drift = self._detect_template_size_drift(
+            used_sizes, allowed_sizes, body_px
+        )
 
         # Record in run-wide aggregation
         fname = svg_path.name
@@ -870,6 +876,72 @@ class SVGQualityChecker:
                 f"spec_lock drift: {', '.join(parts)} not in spec_lock.md "
                 "(see drift summary for details)"
             )
+        if template_size_drift:
+            result['warnings'].append(template_size_drift)
+
+    def _detect_template_size_drift(self, used_sizes, allowed_sizes, body_px):
+        """Warn when template-like small sizes bypass the locked type ramp.
+
+        The normal drift check deliberately permits in-ramp feature sizes, so
+        it should not hard-fail valid hero numbers or one-off labels. This
+        warning targets the common executor failure mode: copying a template's
+        compact 12/15/16px text stack instead of mapping content roles to
+        spec_lock typography, then reflowing from those locked px values.
+        """
+        if not allowed_sizes or not body_px or body_px <= 0:
+            return None
+
+        try:
+            declared_min = min(float(v) for v in allowed_sizes)
+        except ValueError:
+            declared_min = None
+
+        # Stay narrow on purpose: real decks carry legitimate undeclared
+        # sub-body sizes (intermediate levels, labels, emphasis) just below the
+        # locked body, so "any size < body" floods the warning and destroys its
+        # credibility. Only flag values that read as genuine template leftovers
+        # — at or below `body * 0.75`, or below the smallest declared slot. This
+        # under-warns (a stray 15/16 against a body of 18 can slip through) in
+        # exchange for not crying wolf on valid intermediate type.
+        template_like_limit = body_px * 0.75
+        template_like_sub_body = []
+        for raw in used_sizes:
+            if raw in allowed_sizes:
+                continue
+            try:
+                size = float(raw)
+            except (TypeError, ValueError):
+                continue
+            below_declared_floor = declared_min is not None and size < declared_min
+            if size <= template_like_limit or below_declared_floor:
+                template_like_sub_body.append(raw)
+
+        if not template_like_sub_body:
+            return None
+
+        counts = Counter(template_like_sub_body)
+        distinct = sorted(counts, key=lambda v: float(v))
+        repeated_total = sum(counts.values())
+
+        below_declared_floor = []
+        if declared_min is not None:
+            below_declared_floor = [v for v in distinct if float(v) < declared_min]
+
+        if len(distinct) < 2 and repeated_total < 4 and not below_declared_floor:
+            return None
+
+        sample = ', '.join(
+            f"{v}x{counts[v]}" if counts[v] > 1 else v
+            for v in distinct[:5]
+        )
+        more = len(distinct) - 5
+        suffix = f" (+{more} more)" if more > 0 else ""
+        return (
+            "possible template font-size drift: undeclared sub-body size(s) "
+            f"{sample}{suffix}. Map each text item to a spec_lock typography "
+            "role first, then reflow card height / y / dy / line-height from "
+            "the locked px values."
+        )
 
     def _find_image_sources_manifest(self, svg_path: Path) -> Path | None:
         """Locate image_sources.json for a project SVG.
