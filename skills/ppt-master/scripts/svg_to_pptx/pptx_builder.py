@@ -249,6 +249,16 @@ def _ensure_notes_master(extract_dir: Path) -> None:
     if not notes_master_path.exists():
         notes_master_path.write_text(create_notes_master_xml(), encoding='utf-8')
 
+    theme_dir = ppt_dir / 'theme'
+    theme_dir.mkdir(exist_ok=True)
+    theme1_path = theme_dir / 'theme1.xml'
+    theme2_path = theme_dir / 'theme2.xml'
+    if not theme2_path.exists():
+        if theme1_path.exists():
+            shutil.copy2(theme1_path, theme2_path)
+        else:
+            raise RuntimeError('Cannot create notes theme: ppt/theme/theme1.xml is missing')
+
     notes_master_rels_dir = notes_masters_dir / '_rels'
     notes_master_rels_dir.mkdir(exist_ok=True)
     notes_master_rels_path = notes_master_rels_dir / 'notesMaster1.xml.rels'
@@ -1126,6 +1136,15 @@ def create_pptx_with_native_svg(
 
         # Add notes master / slides content types
         if enable_notes and notes_slides_created:
+            notes_theme_override = (
+                '  <Override PartName="/ppt/theme/theme2.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
+            )
+            if notes_theme_override not in content_types:
+                content_types = content_types.replace(
+                    '</Types>',
+                    notes_theme_override + '\n</Types>',
+                )
             notes_master_override = (
                 '  <Override PartName="/ppt/notesMasters/notesMaster1.xml" '
                 'ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>'
