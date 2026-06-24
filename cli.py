@@ -4,6 +4,7 @@
 Usage:
     ppt-master <command> [args...]
     ppt-master --help
+    ppt-master --version
 
 Examples:
     ppt-master project init my-project --format ppt169
@@ -11,6 +12,7 @@ Examples:
     ppt-master svg-to-pptx projects/my-project
 """
 
+import importlib.metadata
 import os
 import subprocess
 import sys
@@ -119,6 +121,14 @@ def main(argv: list[str] | None = None) -> int:
         for name in sorted(COMMANDS):
             desc = COMMAND_DESCRIPTIONS.get(name, "")
             print(f"  {name:<{width}}{desc}")
+        return 0
+
+    if argv[1] in ("-V", "--version"):
+        try:
+            ver = importlib.metadata.version("ppt-master")
+        except importlib.metadata.PackageNotFoundError:
+            ver = "unknown (not installed)"
+        print(f"ppt-master {ver}")
         return 0
 
     cmd = argv[1]
