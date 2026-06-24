@@ -35,7 +35,10 @@ from .pptx_media import (
 )
 from .pptx_notes import (
     markdown_to_plain_text,
-    create_notes_slide_xml, create_notes_slide_rels_xml,
+    create_notes_master_rels_xml,
+    create_notes_master_xml,
+    create_notes_slide_xml,
+    create_notes_slide_rels_xml,
 )
 from .pptx_narration import (
     AUDIO_CONTENT_TYPES,
@@ -89,6 +92,24 @@ def _append_relationship(
         f.write(rels_content)
 
     return next_rid
+
+
+def _find_relationship_id(
+    rels_path: Path,
+    rel_type: str,
+    target: str,
+) -> str | None:
+    """Find an existing relationship id by type and target."""
+    if not rels_path.exists():
+        return None
+    rels_content = rels_path.read_text(encoding='utf-8')
+    pattern = (
+        r'<Relationship\b[^>]*\bId="([^"]+)"[^>]*'
+        rf'\bType="{re.escape(rel_type)}"[^>]*'
+        rf'\bTarget="{re.escape(target)}"[^>]*/>'
+    )
+    match = re.search(pattern, rels_content)
+    return match.group(1) if match else None
 
 
 def _add_default_content_type(content_types: str, extension: str, content_type: str) -> str:
@@ -208,6 +229,61 @@ def _relax_output_permissions(output_path: Path) -> list[str]:
             warnings.append(f"icacls failed for {output_path}{details}")
 
     return warnings
+
+
+_NOTES_MASTER_REL_TYPE = (
+    'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster'
+)
+
+
+def _ensure_notes_master(extract_dir: Path) -> None:
+    """Create notesMaster parts and wire them into the presentation package."""
+    ppt_dir = extract_dir / 'ppt'
+    notes_masters_dir = ppt_dir / 'notesMasters'
+    notes_masters_dir.mkdir(exist_ok=True)
+
+    notes_master_path = notes_masters_dir / 'notesMaster1.xml'
+    if not notes_master_path.exists():
+        notes_master_path.write_text(create_notes_master_xml(), encoding='utf-8')
+
+    notes_master_rels_dir = notes_masters_dir / '_rels'
+    notes_master_rels_dir.mkdir(exist_ok=True)
+    notes_master_rels_path = notes_master_rels_dir / 'notesMaster1.xml.rels'
+    if not notes_master_rels_path.exists():
+        notes_master_rels_path.write_text(
+            create_notes_master_rels_xml(),
+            encoding='utf-8',
+        )
+
+    presentation_rels_path = ppt_dir / '_rels' / 'presentation.xml.rels'
+    notes_master_rid = _find_relationship_id(
+        presentation_rels_path,
+        _NOTES_MASTER_REL_TYPE,
+        'notesMasters/notesMaster1.xml',
+    )
+    if notes_master_rid is None:
+        notes_master_rid = _append_relationship(
+            presentation_rels_path,
+            _NOTES_MASTER_REL_TYPE,
+            'notesMasters/notesMaster1.xml',
+        )
+
+    presentation_path = ppt_dir / 'presentation.xml'
+    presentation_xml = presentation_path.read_text(encoding='utf-8')
+    if '<p:notesMasterIdLst>' in presentation_xml:
+        return
+    notes_master_lst = (
+        f'<p:notesMasterIdLst><p:notesMasterId r:id="{notes_master_rid}"/>'
+        '</p:notesMasterIdLst>'
+    )
+    if '</p:sldMasterIdLst>' not in presentation_xml:
+        raise RuntimeError('presentation.xml is missing p:sldMasterIdLst')
+    presentation_xml = presentation_xml.replace(
+        '</p:sldMasterIdLst>',
+        '</p:sldMasterIdLst>' + notes_master_lst,
+        1,
+    )
+    presentation_path.write_text(presentation_xml, encoding='utf-8')
 
 
 def _to_float(value: Any, default: float) -> float:
@@ -879,6 +955,8 @@ def create_pptx_with_native_svg(
                     notes_content = notes.get(svg_stem, '') if notes else ''
                     notes_text = markdown_to_plain_text(notes_content) if notes_content else ''
                     if notes_text:
+                        _ensure_notes_master(extract_dir)
+
                         notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
                         notes_slides_dir.mkdir(exist_ok=True)
 
@@ -1014,8 +1092,17 @@ def create_pptx_with_native_svg(
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
 
-        # Add notesSlides content types
+        # Add notes master / slides content types
         if enable_notes and notes_slides_created:
+            notes_master_override = (
+                '  <Override PartName="/ppt/notesMasters/notesMaster1.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>'
+            )
+            if notes_master_override not in content_types:
+                content_types = content_types.replace(
+                    '</Types>',
+                    notes_master_override + '\n</Types>',
+                )
             for i in sorted(notes_slides_created):
                 override = (
                     f'  <Override PartName="/ppt/notesSlides/notesSlide{i}.xml" '
