@@ -205,7 +205,8 @@ def embed_images_in_svg(svg_path: str, dry_run: bool = False,
         with open(svg_path, 'w', encoding='utf-8') as f:
             f.write(new_content)
     
-    return (images_embedded, new_size)
+    processed_count = len(images_found) if dry_run else images_embedded
+    return (processed_count, new_size)
 
 def main() -> None:
     """Run the CLI entry point."""
