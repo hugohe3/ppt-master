@@ -1007,7 +1007,11 @@ def _build_run_xml(
 
     text_dec = run.get('text_decoration', '')
 
-    sz = round(fs_px * FONT_PX_TO_HUNDREDTHS_PT)
+    # Exported font size = fs_px * FONT_PX_TO_HUNDREDTHS_PT hundredths-of-pt,
+    # rounded to **one decimal place of pt** (the nearest 10 hundredths). No 0.5pt
+    # / integer snapping — whatever the px works out to is the size, e.g.
+    # 18px -> 13.5pt, 24px -> 18.0pt, 42px -> 31.5pt.
+    sz = int(round(fs_px * FONT_PX_TO_HUNDREDTHS_PT / 10.0)) * 10
     b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
     u_attr = ' u="sng"' if 'underline' in text_dec else ''

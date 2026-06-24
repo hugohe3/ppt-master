@@ -147,6 +147,7 @@ class ProjectManager:
             "icons",
             "notes",
             "templates",
+            "live_preview",
             SOURCE_DIRNAME,
             "analysis",
             "exports",
@@ -167,6 +168,7 @@ class ProjectManager:
                 "- `icons/`: project icon set — selected library icons copied in (via icon_sync.py) plus any custom icons you add; embedded from here at export\n"
                 "- `notes/`: speaker notes\n"
                 "- `templates/`: project templates\n"
+                "- `live_preview/`: browser preview runtime files and history (lock.json, server.log, edits.jsonl, annotations.jsonl)\n"
                 "- `sources/`: source materials and normalized markdown\n"
                 "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
                 "- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added when exported with `--svg-snapshot`\n"

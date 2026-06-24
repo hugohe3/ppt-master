@@ -90,7 +90,7 @@ uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json
 uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
 uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
-uvx ppt-master svg-editor <project_path> --live
+uvx ppt-master svg-editor <project_path> --live --daemon
 uvx ppt-master svg-quality-check <project_path>
 uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation
 uvx ppt-master animation-config validate <project_path>  # optional, before re-export
