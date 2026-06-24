@@ -521,41 +521,6 @@ def _presentation_format(width: float, height: float) -> str:
     return 'Custom'
 
 
-def _slide_size_type(width: float, height: float) -> str:
-    """Return the PowerPoint slide-size type matching the actual dimensions."""
-    if width <= 0 or height <= 0:
-        return 'custom'
-    ratio = width / height
-    if abs(ratio - (16 / 9)) < 0.02:
-        return 'wide'
-    if abs(ratio - (4 / 3)) < 0.02:
-        return 'screen4x3'
-    return 'custom'
-
-
-def _normalize_slide_size_type(extract_dir: Path, width: float, height: float) -> None:
-    """Keep p:sldSz@type consistent with the exported slide dimensions."""
-    presentation_path = extract_dir / 'ppt' / 'presentation.xml'
-    if not presentation_path.exists():
-        return
-    presentation_xml = presentation_path.read_text(encoding='utf-8')
-    size_type = _slide_size_type(width, height)
-
-    def replace_sld_size(match: re.Match[str]) -> str:
-        element = match.group(0)
-        if ' type="' in element:
-            return re.sub(r' type="[^"]*"', f' type="{size_type}"', element, count=1)
-        return element[:-2] + f' type="{size_type}"/>'
-
-    presentation_xml = re.sub(
-        r'<p:sldSz\b[^>]*/>',
-        replace_sld_size,
-        presentation_xml,
-        count=1,
-    )
-    presentation_path.write_text(presentation_xml, encoding='utf-8')
-
-
 def _stamp_docprops(
     extract_dir: Path,
     slide_count: int,
@@ -1176,7 +1141,6 @@ def create_pptx_with_native_svg(
         # author, 2013 dates, "generated using python-pptx", Slides=0) with
         # accurate, tool-neutral document properties.
         pres_format = _presentation_format(width_emu, height_emu)
-        _normalize_slide_size_type(extract_dir, width_emu, height_emu)
         _stamp_docprops(extract_dir, len(svg_files), pres_format, doc_metadata)
 
         # Repackage PPTX to a temporary file first. The public output path is
