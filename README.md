@@ -1,4 +1,10 @@
 # PPT Master — AI generates natively editable PPTX from any document
+## My Usage
+
+This repository is forked as a reference for creating AI-assisted PowerPoint materials.
+
+Original project: ppt-master by Hugo He  
+License: MIT License
 
 [![Version](https://img.shields.io/badge/version-v2.11.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
