@@ -281,8 +281,26 @@ def is_cjk_char(ch: str) -> bool:
             0x20000 <= cp <= 0x2A6DF)
 
 
-def estimate_text_width(text: str, font_size: float, font_weight: str = '400') -> float:
-    """Estimate text width in SVG pixels."""
+SERIF_FONTS = ('georgia', 'times', 'palatino', 'garamond', 'serif')
+
+
+def estimate_text_width(
+    text: str,
+    font_size: float,
+    font_weight: str = '400',
+    font_family: str = '',
+    letter_spacing: float = 0.0,
+) -> float:
+    """Estimate text width in SVG pixels.
+
+    Accounts for letter-spacing (tracking) and applies a serif-aware
+    multiplier so that wide-caps fonts like Georgia produce a text box
+    large enough for LibreOffice (which ignores ``wrap="none"``).
+    """
+    # Serif fonts have wider average glyphs than the 0.55em baseline.
+    is_serif = any(f in font_family.lower() for f in SERIF_FONTS) if font_family else False
+    serif_mul = 1.25 if is_serif else 1.0
+
     width = 0.0
     for ch in text:
         if is_cjk_char(ch):
@@ -290,14 +308,18 @@ def estimate_text_width(text: str, font_size: float, font_weight: str = '400') -
         elif ch == ' ':
             width += font_size * 0.3
         elif ch in 'mMwWOQ':
-            width += font_size * 0.75
+            width += font_size * 0.75 * serif_mul
         elif ch in 'iIlj1!|':
             width += font_size * 0.3
         else:
-            width += font_size * 0.55
+            width += font_size * 0.55 * serif_mul
 
     if font_weight in ('bold', '600', '700', '800', '900'):
         width *= 1.05
+
+    # Letter-spacing: applies to every inter-character gap.
+    if letter_spacing and len(text) > 1:
+        width += letter_spacing * (len(text) - 1)
 
     return width
 

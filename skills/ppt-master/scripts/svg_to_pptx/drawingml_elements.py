@@ -800,8 +800,23 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if not full_text.strip():
         return None
 
+    # Letter spacing — parse once, used for both box width and DrawingML spc attr
+    spc_attr = ''
+    letter_spacing = _get_attr(elem, 'letter-spacing', ctx)
+    ls_px = 0.0
+    if letter_spacing:
+        try:
+            ls_val = float(letter_spacing)
+            ls_px = ls_val * (ctx.scale_x or 1.0)
+            spc_attr = f' spc="{int(ls_val * 100)}"'
+        except ValueError:
+            pass
+
     # Estimate text dimensions
-    text_width = estimate_text_width(full_text, font_size, font_weight) * 1.15
+    text_width = estimate_text_width(
+        full_text, font_size, font_weight,
+        font_family=font_family_str, letter_spacing=ls_px,
+    ) * 1.15
     text_height = font_size * 1.5
     padding = font_size * 0.1
 
@@ -816,16 +831,6 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     box_y = y - font_size * 0.85
     box_w = text_width + padding * 2
     box_h = text_height + padding
-
-    # Letter spacing
-    spc_attr = ''
-    letter_spacing = _get_attr(elem, 'letter-spacing', ctx)
-    if letter_spacing:
-        try:
-            spc_val = float(letter_spacing) * 100
-            spc_attr = f' spc="{int(spc_val)}"'
-        except ValueError:
-            pass
 
     # Text rotation. SVG's rotate(angle [cx cy]) rotates around (cx, cy), but
     # DrawingML's <a:xfrm rot="..."> rotates the shape around its own center.
