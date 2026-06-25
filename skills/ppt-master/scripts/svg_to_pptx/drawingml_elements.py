@@ -921,9 +921,21 @@ def _estimate_run_text_width(run: dict[str, Any]) -> float:
     return base_width + letter_spacing_px * max(len(text) - 1, 0)
 
 
-def _estimate_text_runs_width(runs: list[dict[str, Any]]) -> float:
-    """Estimate a line of text runs with renderer headroom."""
+def _estimate_text_runs_width(
+    runs: list[dict[str, Any]],
+    *,
+    include_headroom: bool = True,
+) -> float:
+    """Estimate a line of text runs.
+
+    ``include_headroom`` is useful for single-line auto-fit boxes where a
+    renderer that measures text slightly wider would otherwise wrap. Paragraph
+    boxes use this value as a wrapping constraint, so adding headroom there
+    stretches the merged text frame beyond the author's source line width.
+    """
     width = sum(_estimate_run_text_width(run) for run in runs)
+    if not include_headroom:
+        return width
     if any(_is_serif_run(run) for run in runs):
         return width * 1.35
     return width * 1.12
@@ -1202,7 +1214,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             if not line_runs:
                 continue
             visual_line_widths.append(
-                _estimate_text_runs_width(line_runs)
+                _estimate_text_runs_width(line_runs, include_headroom=False)
             )
             soft_break = child.get('data-paragraph-soft-break') == '1'
             if soft_break and paragraph_runs:
@@ -1371,8 +1383,8 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
     # long joined-up <a:p> on one line, blowing past the canvas. The cx we
-    # write below (longest SVG line) is the design target width;
-    # PowerPoint wraps long paragraphs inside this width.
+    # write below is the longest source SVG line without single-line renderer
+    # headroom; PowerPoint wraps long paragraphs inside this design width.
     # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
     if paragraph_runs is not None:
         body_pr_xml = (
