@@ -186,6 +186,15 @@ DY_TOLERANCE_PX = 0.5
 # Cap on dy / base ratio. Anything beyond this (e.g. a 5x gap) is rejected
 # as a real section break that shouldn't merge into one text frame.
 MAX_DY_MULTIPLIER = 3.0
+LIST_MARKER_RE = re.compile(
+    r"^\s*(?:[•·・]\s*|[-–—*]\s+|\d+[.)、]\s+|[（(]\d+[）)]\s*)\S+"
+)
+
+
+def _starts_with_list_marker(line_group: list[ET.Element]) -> bool:
+    """Return True when a visual line starts with an ordered/unordered marker."""
+    text = "".join(collect_text_content(tspan) for tspan in line_group)
+    return bool(LIST_MARKER_RE.match(text))
 
 
 def _tspan_has_positional_descendant(tspan: ET.Element) -> bool:
@@ -296,7 +305,7 @@ def _classify_paragraph_block(
 
     extras: list[float] = [0.0]  # first line never has space-before
     soft_breaks: list[bool] = [False]  # first line starts a paragraph
-    for d in dy_values[1:]:
+    for idx, d in enumerate(dy_values[1:], start=1):
         if d + DY_TOLERANCE_PX < base:
             return None  # below base — line overlap, not a paragraph
         if d > base * MAX_DY_MULTIPLIER + DY_TOLERANCE_PX:
@@ -305,8 +314,13 @@ def _classify_paragraph_block(
         if extra < 0:
             extra = 0.0
         # dy at the base line-height = soft break (SVG was simulating wrap);
-        # dy strictly greater than base = hard paragraph break.
-        is_soft = abs(extra) <= DY_TOLERANCE_PX
+        # dy strictly greater than base = hard paragraph break. List markers
+        # also start a fresh paragraph so bullet/ordered items do not merge
+        # into the previous item when exported to PowerPoint.
+        is_soft = (
+            abs(extra) <= DY_TOLERANCE_PX
+            and not _starts_with_list_marker(line_groups[idx])
+        )
         extras.append(0.0 if is_soft else extra)
         soft_breaks.append(is_soft)
 
