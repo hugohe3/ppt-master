@@ -1,4 +1,4 @@
-"""Command-line interface: analyze / scaffold / check-plan / apply subcommands."""
+"""Command-line interface: analyze / scaffold / check-plan / apply / validate."""
 
 from __future__ import annotations
 
@@ -33,6 +33,7 @@ from .transitions import (
     KEEP_TRANSITION,
     TRANSITIONS,
 )
+from .validator import print_validate_report, validate_project
 
 
 def _parse_slide_list(value: str | None) -> list[int] | None:
@@ -58,6 +59,10 @@ def _timestamped_pptx_path(path: Path) -> Path:
         return path
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return path.with_name(f"{path.stem}_{timestamp}{path.suffix}")
+
+
+def _plan_confirmed(plan: dict) -> bool:
+    return plan.get("status") == "confirmed"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -118,6 +123,14 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_TRANSITION_DURATION,
         help="Transition duration in seconds (default: 0.5).",
     )
+    apply.add_argument(
+        "--force",
+        action="store_true",
+        help="apply without a confirmed fill plan (deliberate recovery/debug only)",
+    )
+
+    validate = subparsers.add_parser("validate", help="Read back and validate the latest project export")
+    validate.add_argument("project_path", help="Template-fill project directory")
 
     return parser
 
@@ -160,6 +173,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "apply":
             pptx_path = Path(args.pptx_file).expanduser().resolve()
             plan = _load_json(Path(args.plan_json).expanduser().resolve())
+            if not _plan_confirmed(plan) and not args.force:
+                print(
+                    "Error: fill plan is not confirmed: "
+                    f"{Path(args.plan_json).expanduser().resolve()} "
+                    '(set status to "confirmed" after user approval, or pass --force)',
+                    file=sys.stderr,
+                )
+                return 1
             output_path = _timestamped_pptx_path(Path(args.output).expanduser().resolve())
             apply_plan(
                 pptx_path,
@@ -170,6 +191,11 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(f"Template-filled PPTX -> {output_path}", file=sys.stderr)
             return 0
+
+        if args.command == "validate":
+            report = validate_project(Path(args.project_path))
+            print_validate_report(report)
+            return 0 if report["summary"]["error"] == 0 else 1
     except RuntimeError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1

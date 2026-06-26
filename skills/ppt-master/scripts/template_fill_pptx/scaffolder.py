@@ -62,6 +62,11 @@ def scaffold_plan(
             {
                 "source_slide": slide["slide_index"],
                 "purpose": slide.get("page_type", "content_candidate"),
+                "layout_rationale": {
+                    "layout_pattern": "",
+                    "why_fit": "",
+                    "risk": "",
+                },
                 "replacements": replacements,
                 "table_edits": table_edits,
                 "chart_edits": chart_edits,
@@ -70,6 +75,8 @@ def scaffold_plan(
 
     return {
         "schema": "template_fill_pptx_plan.v1",
+        "status": "draft",
         "source_pptx": library.get("source_pptx"),
+        "accepted_warnings": [],
         "slides": slides,
     }

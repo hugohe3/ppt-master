@@ -79,14 +79,17 @@ python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 Template fill (direct PPTX, no SVG conversion):
 
 ```bash
-mkdir -p <project_path>/sources <project_path>/analysis <project_path>/exports <project_path>/validation
+python3 scripts/project_manager.py init <project_name> --format ppt169
+python3 scripts/project_manager.py import-sources <project_path> <source.pptx> <material...>
+# Manual fallback when import-sources did not produce analysis/<stem>.slide_library.json:
 python3 scripts/template_fill_pptx.py analyze <project_path>/sources/<source.pptx> -o <project_path>/analysis/<stem>.slide_library.json
 python3 scripts/template_fill_pptx.py scaffold <project_path>/analysis/<stem>.slide_library.json -o <project_path>/analysis/fill_plan.json --slides "1,3,4"
 python3 scripts/template_fill_pptx.py check-plan <project_path>/analysis/<stem>.slide_library.json <project_path>/analysis/fill_plan.json -o <project_path>/analysis/check_report.json
 python3 scripts/template_fill_pptx.py apply <project_path>/sources/<source.pptx> <project_path>/analysis/fill_plan.json -o <project_path>/exports/filled.pptx
+python3 scripts/template_fill_pptx.py validate <project_path>
 ```
 
-`apply` automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It applies a `fade` page transition by default; `--transition <effect>` (fade/push/wipe/split/strips/cover/random, `--transition-duration` in seconds) changes it, `--transition none` removes it, `--transition keep` preserves the source transitions, and a per-slide `transition` field in the plan overrides whatever the CLI selects.
+`apply` requires `fill_plan.json` to have top-level `"status": "confirmed"` unless `--force` is passed. It automatically writes `filled_YYYYMMDD_HHMMSS.pptx` unless the output stem already ends with a timestamp. It applies a `fade` page transition by default; `--transition <effect>` (fade/push/wipe/split/strips/cover/random, `--transition-duration` in seconds) changes it, `--transition none` removes it, `--transition keep` preserves the source transitions, and a per-slide `transition` field in the plan overrides whatever the CLI selects.
 
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
