@@ -837,6 +837,24 @@ _SERIF_WIDTH_FAMILIES = {
     'times new roman',
 }
 
+_TEXTBOX_PADDING_MIN_PX = 0.5
+_TEXTBOX_PADDING_MAX_PX = 2.0
+_TEXTBOX_PADDING_RATIO = 0.04
+# Single-line auto-fit headroom interpolates between a low-caps base and an
+# all-caps ceiling by the fraction of cased letters that are uppercase. The
+# crude per-char width estimate undercounts capitals most, so all-caps lines
+# need the ceiling to keep wrap-ignoring renderers (LibreOffice) from folding;
+# mixed-case titles only need the base, so they no longer inherit the worst-
+# case width. Values are calibrated against LibreOffice renders of all-caps
+# bold lines (the case the per-char estimate undercounts most) with bases left
+# above the mixed-case and CJK render ratios; exact ratios shift with the
+# renderer's font substitution, so these carry deliberate margin rather than
+# tracking one environment's numbers.
+_TEXT_WIDTH_HEADROOM_BASE = 1.06
+_TEXT_WIDTH_HEADROOM_CAPS = 1.12
+_SERIF_TEXT_WIDTH_HEADROOM_BASE = 1.12
+_SERIF_TEXT_WIDTH_HEADROOM_CAPS = 1.36
+
 
 def _normalize_text(text: str, *, preserve_space: bool = False) -> str:
     """Collapse runs of whitespace into a single space; do NOT strip the ends.
@@ -921,6 +939,25 @@ def _estimate_run_text_width(run: dict[str, Any]) -> float:
     return base_width + letter_spacing_px * max(len(text) - 1, 0)
 
 
+def _uppercase_fraction(runs: list[dict[str, Any]]) -> float:
+    """Fraction of cased letters across ``runs`` that are uppercase.
+
+    Caseless scripts (CJK, digits, punctuation) are ignored, so a Chinese or
+    numeric line reports 0.0 and takes the low-caps headroom base.
+    """
+    upper = 0
+    cased = 0
+    for run in runs:
+        for ch in str(run.get('text', '')):
+            if ch.lower() != ch.upper():
+                cased += 1
+                if ch.isupper():
+                    upper += 1
+    if not cased:
+        return 0.0
+    return upper / cased
+
+
 def _estimate_text_runs_width(
     runs: list[dict[str, Any]],
     *,
@@ -929,16 +966,30 @@ def _estimate_text_runs_width(
     """Estimate a line of text runs.
 
     ``include_headroom`` is useful for single-line auto-fit boxes where a
-    renderer that measures text slightly wider would otherwise wrap. Paragraph
-    boxes use this value as a wrapping constraint, so adding headroom there
-    stretches the merged text frame beyond the author's source line width.
+    renderer that measures text slightly wider would otherwise wrap. The
+    headroom scales with the line's uppercase fraction: all-caps lines (whose
+    width the per-char estimate undercounts most) get the full ceiling, while
+    mixed-case titles take a small base instead of inheriting the worst case.
+    Paragraph boxes use this value as a wrapping constraint, so adding headroom
+    there stretches the merged text frame beyond the author's source line width.
     """
     width = sum(_estimate_run_text_width(run) for run in runs)
     if not include_headroom:
         return width
+    caps = _uppercase_fraction(runs)
     if any(_is_serif_run(run) for run in runs):
-        return width * 1.35
-    return width * 1.12
+        base, ceiling = _SERIF_TEXT_WIDTH_HEADROOM_BASE, _SERIF_TEXT_WIDTH_HEADROOM_CAPS
+    else:
+        base, ceiling = _TEXT_WIDTH_HEADROOM_BASE, _TEXT_WIDTH_HEADROOM_CAPS
+    return width * (base + (ceiling - base) * caps)
+
+
+def _textbox_padding(font_size: float) -> float:
+    """Return small text-frame slack without visibly lengthening the box."""
+    return max(
+        _TEXTBOX_PADDING_MIN_PX,
+        min(_TEXTBOX_PADDING_MAX_PX, font_size * _TEXTBOX_PADDING_RATIO),
+    )
 
 
 def _override_run_attrs(
@@ -1273,7 +1324,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     else:
         text_width = _estimate_text_runs_width(runs)
         text_height = font_size * 1.5
-    padding = font_size * 0.1
+    padding = _textbox_padding(font_size)
 
     # Adjust position based on text-anchor
     if text_anchor == 'middle':
