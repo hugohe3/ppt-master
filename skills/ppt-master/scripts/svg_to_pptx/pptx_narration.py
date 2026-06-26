@@ -206,10 +206,16 @@ def apply_recorded_timing(
     transition_match = re.search(r"<p:transition\b[^>]*>", slide_xml)
     if transition_match:
         tag = transition_match.group(0)
-        if "advTm=" in tag:
-            new_tag = re.sub(r'\sadvTm="[^"]*"', f' advTm="{adv_ms}"', tag, count=1)
+        is_self_closing = tag.rstrip().endswith("/>")
+        base_tag = tag.rstrip()
+        if is_self_closing:
+            base_tag = re.sub(r"\s*/>$", ">", base_tag, count=1)
+        if "advTm=" in base_tag:
+            new_tag = re.sub(r'\sadvTm="[^"]*"', f' advTm="{adv_ms}"', base_tag, count=1)
         else:
-            new_tag = tag[:-1] + f' advTm="{adv_ms}">'
+            new_tag = base_tag[:-1] + f' advTm="{adv_ms}">'
+        if is_self_closing:
+            new_tag = new_tag[:-1] + "/>"
         return slide_xml[:transition_match.start()] + new_tag + slide_xml[transition_match.end():]
 
     effect = transition_effect or "fade"

@@ -60,6 +60,8 @@ description: >
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
 | `${SKILL_DIR}/scripts/finalize_svg.py` | SVG post-processing (unified entry) |
 | `${SKILL_DIR}/scripts/svg_to_pptx.py` | Export to PPTX |
+| `${SKILL_DIR}/scripts/native_enhance_pptx.py` | Existing PPTX enhancement project init / validation / direct OOXML patch export |
+| `${SKILL_DIR}/scripts/native_narration_pptx.py` | Backward-compatible entrypoint for existing PPTX notes / narration enhancement |
 | `${SKILL_DIR}/scripts/update_spec.py` | Propagate a `spec_lock.md` color / font_family change across all generated SVGs |
 
 For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
@@ -87,6 +89,8 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `customize-animations` | `workflows/customize-animations.md` | Object-level PPTX animation customization — run only when the user explicitly asks to tune animation order/effects/timing |
+| `native-enhance-pptx` | `workflows/native-enhance-pptx.md` | Existing PPTX native enhancement — optimize a finished deck by appending notes / audio / auto-advance / page transitions without changing existing content or layout |
+| `native-narration-pptx` | `workflows/native-narration-pptx.md` | Compatibility reference for the notes / narration subset of `native-enhance-pptx` |
 | `live-preview` | `workflows/live-preview.md` | Browser-based live preview — auto-started during generation and re-enterable any time the user mentions "live preview", "preview", "看效果", or wants to click/select a slide element |
 | `visual-review` | `workflows/visual-review.md` | Per-page rubric-based visual self-check — run only when the user explicitly asks for a visual re-pass on the generated SVGs (between Executor and post-processing). Opt-in only; never invoked by the main pipeline. |
 
@@ -100,6 +104,7 @@ When the user provides an existing `.pptx`, route by the role of the source deck
 | Treat the deck as source material; rethink the story, merge / split / drop / reorder pages, or change page count | Main pipeline | `ppt_to_md` + PPTX intake provide content facts and candidates; Strategist may re-architect freely |
 | Reuse the deck's native design with new material | `template-fill` | Clone selected source slides and replace text / table / chart data directly in OOXML; no SVG generation |
 | Harvest the deck as a reusable future template | `create-template` | Build a template package, not a one-off generated deck |
+| Keep the finished deck visually stable and append native optimizations such as notes / narration audio / automatic playback | `native-enhance-pptx` | Archive the source PPTX into the project (`projects/` sources move; external sources copy) and patch enhancement metadata/media directly in OOXML; no SVG generation |
 
 **Deciding axis (beautify vs main pipeline) — one question, one discriminator**: is the source's page split a finished artifact to preserve, or a draft structure to overturn? The concrete discriminator is **page count / order**: if it changes at all — any split, merge, drop, or reorder — it is the **main pipeline**, never beautify. Beautify is **strictly 1:1**: same page count, same order, text verbatim, only layout / hierarchy / whitespace redone. Edge case made explicit: "keep all the content but split a crowded page so it reads better" still changes page count, so it is the **main pipeline** (re-pagination is re-architecture), not beautify.
 
