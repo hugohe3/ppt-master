@@ -573,6 +573,66 @@ class SVGQualityChecker:
                 f"Detected {len(text_matches)} potentially overly long single-line text(s) (consider using tspan for wrapping)"
             )
 
+        self._check_unmergeable_leading_text(content, result)
+
+    def _check_unmergeable_leading_text(self, content: str, result: Dict) -> None:
+        """Warn when leading text cannot be normalized for paragraph merging."""
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        risky = []
+        for text_el in root.iter(f'{{{SVG_NS}}}text'):
+            if not (text_el.text or "").strip():
+                continue
+            children = list(text_el)
+            if not any(self._is_line_tspan(child) for child in children):
+                continue
+
+            reason = self._leading_text_normalizer_reject_reason(text_el)
+            if reason is not None:
+                risky.append(reason)
+
+        if risky:
+            sample = '; '.join(risky[:3])
+            suffix = '' if len(risky) <= 3 else f"; +{len(risky) - 3} more"
+            result['warnings'].append(
+                "Detected multi-line <text> with leading direct text that cannot "
+                f"be normalized for PPT paragraph merging ({sample}{suffix})"
+            )
+
+    @staticmethod
+    def _is_tspan(elem: ET.Element) -> bool:
+        return elem.tag == f'{{{SVG_NS}}}tspan'
+
+    @classmethod
+    def _is_line_tspan(cls, elem: ET.Element) -> bool:
+        if not cls._is_tspan(elem):
+            return False
+        if elem.get('x') is not None or elem.get('y') is not None:
+            return True
+        dy = elem.get('dy')
+        if dy is None:
+            return False
+        try:
+            return float(re.match(r'^[\s,]*([+-]?(?:\d+\.?\d*|\d*\.\d+))', dy).group(1)) != 0
+        except (AttributeError, ValueError):
+            return True
+
+    @classmethod
+    def _leading_text_normalizer_reject_reason(cls, text_el: ET.Element) -> str | None:
+        if text_el.get('x') is None:
+            return '<text> has no x anchor'
+
+        for child in list(text_el):
+            if not cls._is_tspan(child):
+                return '<text> has non-tspan child'
+            if (child.tail or "").strip():
+                return '<tspan> has non-empty tail text'
+
+        return None
+
     def _check_image_references(self, content: str, svg_path: Path, result: Dict):
         """Check image file existence and resolution vs display size."""
         # Find all <image ...> elements (capture the full tag)
