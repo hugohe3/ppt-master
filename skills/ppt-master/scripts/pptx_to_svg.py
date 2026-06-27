@@ -30,8 +30,11 @@ from pathlib import Path
 # Allow running this script from anywhere
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from console_encoding import configure_utf8_stdio
 from pptx_to_svg import convert_pptx_to_svg
 from pptx_to_svg.converter import ConvertOptions
+
+configure_utf8_stdio()
 
 
 def parse_args() -> argparse.Namespace:

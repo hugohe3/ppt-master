@@ -18,6 +18,11 @@ import os
 import re
 from pathlib import Path
 from typing import List, Dict, Union, Any, Optional
+
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 from PIL import Image, ExifTags
 
 

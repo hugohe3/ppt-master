@@ -59,6 +59,7 @@ _ROOT_SCRIPTS_DIR = _SCRIPTS_DIR.parent
 if str(_ROOT_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_ROOT_SCRIPTS_DIR))
 
+from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
@@ -66,6 +67,8 @@ from server_common import (  # noqa: E402
     read_lock as _read_lock,
     release_lock as _release_lock,
 )
+
+configure_utf8_stdio()
 
 from annotations import (  # noqa: E402
     assign_temp_ids,

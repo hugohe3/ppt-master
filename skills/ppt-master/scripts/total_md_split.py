@@ -28,6 +28,10 @@ import argparse
 import re
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 HEADING_RE = re.compile(r'^(#{1,6})\s*(.+?)\s*$')
 HR_RE = re.compile(r'^\s*[-*]{3,}\s*$')
 

@@ -19,6 +19,10 @@ from typing import List, Dict, Tuple
 from collections import Counter, defaultdict
 from xml.etree import ElementTree as ET
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 try:
     from project_utils import CANVAS_FORMATS
     from error_helper import ErrorHelper

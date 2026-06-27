@@ -34,10 +34,18 @@ from io import BytesIO
 from pathlib import Path
 from urllib.parse import quote
 
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
 from pptx import Presentation
 from pptx.enum.action import PP_ACTION
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.oxml.ns import qn
+
+configure_utf8_stdio()
 
 
 EMU_PER_INCH = 914400

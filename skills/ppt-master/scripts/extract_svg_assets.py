@@ -37,6 +37,10 @@ from pathlib import Path
 from typing import Optional
 from xml.etree import ElementTree as ET
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 SVG_NS = "http://www.w3.org/2000/svg"
 DRAWABLE = {"path", "polygon", "polyline", "rect", "circle", "ellipse", "line"}
 SEMANTIC_CONTENT = {"text", "tspan", "foreignObject"}
