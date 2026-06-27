@@ -6,5 +6,13 @@
   "google": {
     "summary": "Google brand identity — multi-product corporate decks, developer events (Google I/O style), education and training in the Google ecosystem",
     "primary_color": "#4285F4"
+  },
+  "中国电建": {
+    "summary": "POWERCHINA brand identity for engineering project reports, technical proposals, business negotiations, and corporate promotion",
+    "primary_color": "#00418D"
+  },
+  "中汽研": {
+    "summary": "CATARC brand identity for product certification, evaluation reports, automotive technology promotion, and business visits",
+    "primary_color": "#004098"
   }
 }
