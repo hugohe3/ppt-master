@@ -372,7 +372,7 @@ templates/
 │   └── pixel_retro/       # Pixel retro / cyberpunk structure (no identity)
 └── decks/
     ├── 招商银行/          # China Merchants Bank full PPT replica
-    └── 中国电建_常规/      # PowerChina full PPT replica
+    └── 中国电建/          # PowerChina full PPT replica
 ```
 
 ---
