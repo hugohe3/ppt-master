@@ -1,5 +1,5 @@
 ---
-deck_id: 中汽研_常规
+deck_id: 中汽研
 kind: deck
 summary: Product certification display, evaluation presentations, technology promotion, business visits.
 canvas_format: ppt169
@@ -17,7 +17,7 @@ primary_color: "#004098"
 
 | Property       | Description                                                |
 | -------------- | ---------------------------------------------------------- |
-| **Template Name** | 中汽研_常规 (formerly zhongqiyan)                       |
+| **Template Name** | 中汽研                                                   |
 | **Use Cases**  | Product certification display, evaluation presentations, technology promotion, business visits |
 | **Design Tone** | Professional, authoritative, trustworthy, consulting style |
 | **Theme Mode** | Light theme (white background + deep blue accent)          |
