@@ -19,6 +19,7 @@ Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment)
   IMAGE_BACKEND=fal         -> fal.ai backend
   IMAGE_BACKEND=replicate   -> Replicate backend
   IMAGE_BACKEND=openrouter  -> OpenRouter backend
+  IMAGE_BACKEND=agnes       -> Agnes Image 2.1 Flash backend
 
 Configuration source (process env wins, `.env` is the fallback layer):
   1. Current process environment variables
@@ -78,6 +79,7 @@ IMAGE_ENV_PREFIXES = (
     "FAL_",
     "REPLICATE_",
     "OPENROUTER_",
+    "AGNES_",
 )
 DEPRECATED_IMAGE_KEYS = {
     "IMAGE_API_KEY",
@@ -204,6 +206,14 @@ BACKEND_REGISTRY = {
         "label": "OpenRouter",
         "default_model": "google/gemini-3.1-flash-image-preview",
         "key_hint": "OPENROUTER_API_KEY",
+    },
+    "agnes": {
+        "module": "backend_agnes",
+        "tier": "experimental",
+        "label": "Agnes Image 2.1 Flash",
+        "default_model": "agnes-image-2.1-flash",
+        "key_hint": "AGNES_API_KEY",
+        "aliases": ["sapiens"],
     },
 }
 
