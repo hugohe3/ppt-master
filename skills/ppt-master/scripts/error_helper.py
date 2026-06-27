@@ -8,6 +8,10 @@ Provides user-friendly error messages and specific fix suggestions.
 import argparse
 from typing import Dict, List, Optional
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 
 class ErrorHelper:
     """Error message helper."""

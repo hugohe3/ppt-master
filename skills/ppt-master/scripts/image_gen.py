@@ -53,7 +53,10 @@ import threading
 import time
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
 from config import load_prefixed_env_file, resolve_env_path
+
+configure_utf8_stdio()
 
 ENV_PATH = resolve_env_path()
 IMAGE_ENV_PREFIXES = (

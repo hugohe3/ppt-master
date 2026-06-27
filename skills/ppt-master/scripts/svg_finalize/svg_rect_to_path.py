@@ -26,6 +26,14 @@ from pathlib import Path
 from typing import Any, Tuple
 from xml.etree import ElementTree as ET
 
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
+
 
 def rect_to_rounded_path(
     x: float,

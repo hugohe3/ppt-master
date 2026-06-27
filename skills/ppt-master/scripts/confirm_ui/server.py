@@ -50,6 +50,7 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent.parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
@@ -57,6 +58,8 @@ from server_common import (  # noqa: E402
     read_lock as _read_lock,
     release_lock as _release_lock,
 )
+
+configure_utf8_stdio()
 
 logger = logging.getLogger('confirm_ui')
 

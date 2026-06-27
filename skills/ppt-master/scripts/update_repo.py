@@ -15,6 +15,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 
 TOOLS_DIR = Path(__file__).resolve().parent
 SKILL_DIR = TOOLS_DIR.parent

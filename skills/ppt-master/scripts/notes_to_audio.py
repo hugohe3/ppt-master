@@ -30,6 +30,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
 from config import load_prefixed_env_file
 from tts_backends import (
     backend_cosyvoice,
@@ -38,6 +39,8 @@ from tts_backends import (
     backend_minimax,
     backend_qwen,
 )
+
+configure_utf8_stdio()
 
 
 @dataclass(frozen=True)

@@ -28,6 +28,10 @@ import os
 import sys
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 try:
     from PIL import Image
 except ImportError:

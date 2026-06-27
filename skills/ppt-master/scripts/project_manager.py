@@ -22,6 +22,8 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
+from console_encoding import configure_utf8_stdio
+
 try:
     from project_utils import (
         CANVAS_FORMATS,
@@ -64,6 +66,9 @@ IMAGE_ASSET_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".tif",
     ".emf", ".wmf", ".svg",
 }
+
+
+configure_utf8_stdio()
 
 
 def _curl_cffi_available() -> bool:

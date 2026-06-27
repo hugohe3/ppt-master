@@ -41,6 +41,7 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+from console_encoding import configure_utf8_stdio  # noqa: E402
 from pptx_animations import TRANSITIONS, create_transition_xml  # noqa: E402
 from svg_to_pptx.pptx_builder import (  # noqa: E402
     _add_default_content_type,
@@ -64,6 +65,8 @@ from svg_to_pptx.pptx_notes import (  # noqa: E402
     create_notes_slide_xml,
     markdown_to_plain_text,
 )
+
+configure_utf8_stdio()
 
 
 PROJECT_SCHEMA = "native_pptx_enhancement_project.v1"

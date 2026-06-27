@@ -17,6 +17,15 @@ the corresponding provider_<name>.py module and only imports from here.
 from __future__ import annotations
 
 import sys
+from pathlib import Path
+
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
 
 if __name__ == "__main__":
     print(__doc__)
@@ -25,7 +34,6 @@ if __name__ == "__main__":
 
 import re
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any, Optional
 
 

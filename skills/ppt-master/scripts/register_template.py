@@ -39,10 +39,15 @@ import sys
 from collections import OrderedDict
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
 try:
     import yaml  # type: ignore
 except ImportError:
     yaml = None
+
+
+configure_utf8_stdio()
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent

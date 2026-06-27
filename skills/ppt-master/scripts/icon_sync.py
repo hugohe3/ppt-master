@@ -33,6 +33,10 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 _LIB_ALIASES = {"chunk": "chunk-filled"}
 _GLOBAL_ICONS_DIR = Path(__file__).resolve().parent.parent / "templates" / "icons"
 
