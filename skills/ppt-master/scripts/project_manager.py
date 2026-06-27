@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import filecmp
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -233,6 +234,9 @@ class ProjectManager:
         return destination
 
     def _run_tool(self, args: list[str]) -> None:
+        child_env = os.environ.copy()
+        child_env["PYTHONUTF8"] = "1"
+        child_env["PYTHONIOENCODING"] = "utf-8:replace"
         try:
             result = subprocess.run(
                 args,
@@ -242,6 +246,7 @@ class ProjectManager:
                 text=True,
                 encoding="utf-8",
                 errors="replace",
+                env=child_env,
             )
         except FileNotFoundError as exc:
             raise RuntimeError(f"Missing executable: {args[0]}") from exc
