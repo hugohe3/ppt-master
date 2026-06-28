@@ -1,6 +1,6 @@
 /* PPT Master - Eight Confirmations UI
  * Finite/enumerable fields (canvas, mode, visual style, icons, image usage,
- * AI source, formula policy, generation mode) list ALL options from
+ * illustration usage, AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
  * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
  * Custom controls. On confirm the page saves result.json and closes.
@@ -52,6 +52,7 @@
             image_strategy_color: "Color",
             image_strategy_mood: "Mood",
             image_usage_custom_required: "Describe the custom image plan before confirming.",
+            illustration_usage: "Illustration usage",
             font_heading: "Heading",
             font_body: "Body",
             font_body_size: "Body baseline size",
@@ -132,6 +133,7 @@
             image_strategy_color: "色彩",
             image_strategy_mood: "情绪",
             image_usage_custom_required: "请先写清楚自定义图片方案。",
+            illustration_usage: "插图使用",
             font_heading: "标题",
             font_body: "正文",
             font_body_size: "正文基准字号",
@@ -288,6 +290,7 @@
         if (field === "visual_style") return REC.visual_style || (REC.style && REC.style.value);
         if (field === "icons") return REC.icons && REC.icons.value;
         if (field === "image_usage") return REC.images && REC.images.value;
+        if (field === "illustration_usage") return REC.illustrations && REC.illustrations.value;
         if (field === "image_ai_path") return REC.image_ai_path || (REC.images && REC.images.ai_path);
         if (field === "formula_policy") return REC.typography && REC.typography.formula_policy && REC.typography.formula_policy.value;
         if (field === "generation_mode") return REC.generation_mode && REC.generation_mode.value;
@@ -1197,8 +1200,14 @@
                     ? "例如：封面用 AI 生成，产品页用用户素材，行业页用网络来源"
                     : "e.g. AI cover + user product assets + web industry images"
             });
+        var illusSub = el("div", "subfield");
+        illusSub.appendChild(el("div", "subfield-label", t("illustration_usage")));
+        enumField(illusSub, CAT.illustration_usage, recOrFirst("illustration_usage", CAT.illustration_usage),
+            function () { return STATE.illustration_usage; },
+            function (v) { STATE.illustration_usage = v; });
         enumField(sub, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
             function () { return STATE.image_ai_path; }, function (v) { STATE.image_ai_path = v; });
+        sec.appendChild(illusSub);
         sec.appendChild(sub);
         sec.appendChild(strategySub);
         if (strategyCands.length) selectImageStrategy(imageStrategySelectedIndex());
@@ -1332,6 +1341,7 @@
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
 
         STATE.image_usage = pick("image_usage", CAT.image_usage);
+        STATE.illustration_usage = pick("illustration_usage", CAT.illustration_usage);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
