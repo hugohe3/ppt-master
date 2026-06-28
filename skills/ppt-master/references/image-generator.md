@@ -250,14 +250,34 @@ When a deck wants several small **spot illustrations** scattered as decorative a
 
 **Sheet prompt convention** (one manifest item, `page_role: local`, `text_policy: none`, `image_size` chosen from final placement size):
 
+- Choose the sheet `aspect_ratio` and `--grid` from the target element shape. Do not default every sheet to `1:1` + a symmetric grid.
 - Lay the elements out in an explicit **R×C grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated (no element bleeds into a neighbor).
+- State the intended cell shape in the prompt: compact square object, tall portrait element, or wide landscape vignette. Do not let the model shrink every subject into a centered square sticker.
 - One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box.
 - Shared `deck_rendering` + `deck_palette` as always. NO text, labels, or numbers anywhere (§5.1, §5.3).
 
+**Cell geometry is designed, not assumed.** `slice_images.py --grid RxC` cuts rows first and columns second. The cell ratio is:
+
+```text
+cell_ratio = sheet_ratio * rows / cols
+```
+
+Use that deliberately. On a wide sheet (`16:9`, `21:9`, `4:1`, `8:1`), `1xN` makes each cell tall/portrait because the width is divided by `N` while height is kept; `Nx1` makes each cell wide/landscape because height is divided by `N` while width is kept. A designed `MxN` grid is also valid when the resulting cell ratio matches the intended placements.
+
+| Target spot shape | Sheet plan | Slice grid |
+|---|---|---|
+| Compact objects / badges | `1:1` sheet | `2x2`, `2x3`, or `3x3` |
+| Tall side accents / upright objects | wide or square sheet | `1xN`, or any `MxN` whose cells are portrait |
+| Wide banners / horizontal vignettes | wide sheet | `Nx1`, or any `MxN` whose cells are landscape |
+
+If one deck needs mixed shapes, create separate sheets per shape family unless one carefully designed grid gives every element enough room in its own cell. Keep the visual family consistent through the same `deck_rendering` and `deck_palette`, not by forcing all cells into one square sheet.
+
 **Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists as a resource the Executor is allowed to reference (`spec_lock.md images`). So §VIII carries two row kinds (full rules: [`design_spec_reference.md`](../templates/design_spec_reference.md) §VIII):
 
-- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the grid prompt, named the slice source (`Reference: 2x3 spot sheet`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`.
-- **Element rows** — one per cell, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell. These **are** placed — list every one in `spec_lock.md images`, usually with ` | no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (Step 5 re-runs `analyze_images.py`). **Set each element row's Layout pattern from the decorative-cutout family, never a boxed container** — see Placement below.
+- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the intent prompt, named as the slice source with its intended cell shape and placement purpose (`Reference: landscape footer-vignette spot set`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`. Image_Generator resolves the exact `aspect_ratio`, grid, and slice command from this intent.
+- **Element rows** — one per used element, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell/element. These **are** placed — list every one in `spec_lock.md images`, usually with ` | no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (Step 5 re-runs `analyze_images.py`). **Set each element row's Layout pattern from the decorative-cutout family, never a boxed container** — see Placement below.
+
+For traceability, add optional `slice_grid` and `slice_names` fields to the sheet item in `image_prompts.json` after choosing the geometry. `image_gen.py` ignores unknown item fields but preserves them in the manifest, so these fields document the exact command that must be used for slicing.
 
 **Slice** with [`slice_images.py`](../scripts/slice_images.py) — cells are cut row-major into individual files in `images/`. With `--alpha` they are **transparent cutout stickers** (image-layout-patterns `#63`), not rectangular content images. Recommended flags: `--names` (semantic per-cell filenames matching the element rows; the count **must** equal `rows*cols`), `--trim` (tight-crop each cell so imprecise placement inside a cell doesn't leave lopsided margins), `--alpha` (knock the flat background out to transparency so an element drops onto any slide color):
 
@@ -269,7 +289,7 @@ python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
 **Three constraints that decide whether it looks good**:
 
 1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend.
-2. **Clean grid, or it cuts ugly.** The model will not place every element perfectly; force a clear grid with gutters, and generate **a few sheets** (re-roll the same prompt) to pick the cleanest-laid-out one before slicing. `--trim` absorbs the rest.
+2. **Clean grid, or it cuts ugly.** The model will not place every element perfectly; force a clear grid with gutters, and generate **a few sheets** (re-roll the same prompt) to pick the cleanest-laid-out one before slicing. State the exact row/column structure and cell shape so the model does not invent a square matrix. `--trim` absorbs the rest.
 3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
 **Placement — these are decorative accessories, not boxed pictures.** A transparent spot wasted in a centered rectangle looks cheaper than no spot at all. Each element row's Layout pattern comes from the decorative-cutout family in [`image-layout-patterns.md`](./image-layout-patterns.md): `#63` sticker/cutout, `#4` bleed off the canvas edge, `#58` corner fragment, `#66` fade into the background, `#69` slight editorial rotation, `#49` asymmetric cluster. Push spots to the margins, let them run off-edge or sit behind/beside text, vary size and angle across pages, and overlap the content rather than reserving a tidy tile for them. Anchor most pages on one primary element and let the rest stay small ([primary-per-page](./strategist.md) §h) — scattered same-weight tiles are exactly the generic look to avoid.
@@ -429,6 +449,8 @@ Write `project/images/image_prompts.json` with this shape:
 | `items[].prompt` | yes | §4 assembly | The full assembled paragraph |
 | `items[].image_size` | no | Container sizing | `512px` / `1K` / `2K` / `4K` |
 | `items[].alt_text` | no | Accessibility | Short caption |
+| `items[].slice_grid` | no | §4.3 sheet geometry | Illustration sheet only; exact `RxC` grid to pass to `slice_images.py --grid` |
+| `items[].slice_names` | no | §4.3 sheet geometry | Illustration sheet only; semantic filenames to pass to `slice_images.py --names` |
 | `items[].status` | yes | CLI manages | `Pending` initially; CLI updates to `Generated` / `Failed` / `Needs-Manual` |
 
 > **Back-compat for legacy `type` values**: existing manifests using `background` / `hero` / `portrait` / `typography` (the four removed pseudo-types) remain readable. Read them as: `background` → `page_role: hero_page` + no type; `hero` → `page_role: hero_page` + no type (use §4.1 Primitive A in prompt); `portrait` → `page_role: local` + no type (use §4.1 Primitive B); `typography` → `page_role: hero_page` + `text_policy: embedded` + no type (use §4.1 Primitive C). New manifests should follow the rule above (omit `type` when `page_role: hero_page`).
