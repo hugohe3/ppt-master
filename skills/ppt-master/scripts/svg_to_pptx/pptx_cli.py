@@ -189,6 +189,16 @@ Recorded narration:
                              'canonical output; live preview already provides the SVG visual reference. '
                              'Note: the svg_output/ source snapshot is always written to backup/<ts>/ '
                              'regardless of this flag.')
+    parser.add_argument('--no-image-optimize', action='store_true',
+                        help='Disable native PPTX raster image optimization; embeds original image bytes.')
+    parser.add_argument('--image-max-dimension', type=int, default=2560,
+                        help='Maximum optimized raster image dimension in pixels (default: 2560).')
+    parser.add_argument('--image-sizing', choices=['cap', 'display'], default='cap',
+                        help='Raster sizing mode: cap only limits source dimensions; display sizes from the SVG rendered box (default: cap).')
+    parser.add_argument('--image-scale', type=float, default=2.0,
+                        help='Target optimized image pixels per SVG display pixel when --image-sizing=display (default: 2.0).')
+    parser.add_argument('--image-quality', type=int, default=85,
+                        help='JPEG quality for optimized opaque raster images, 1-100 (default: 85).')
 
     def non_negative_float(value: str) -> float:
         try:
@@ -261,6 +271,15 @@ Recorded narration:
     project_path = Path(args.project_path)
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
+        return 1
+    if args.image_max_dimension < 1:
+        print("Error: --image-max-dimension must be >= 1", file=sys.stderr)
+        return 1
+    if args.image_scale < 1:
+        print("Error: --image-scale must be >= 1", file=sys.stderr)
+        return 1
+    if not 1 <= args.image_quality <= 100:
+        print("Error: --image-quality must be between 1 and 100", file=sys.stderr)
         return 1
 
     try:
@@ -567,6 +586,11 @@ Recorded narration:
         cache_dir=cache_dir,
         workers=args.workers,
         merge_paragraphs=args.merge_paragraphs,
+        image_optimize=not args.no_image_optimize,
+        image_max_dimension=args.image_max_dimension,
+        image_sizing=args.image_sizing,
+        image_scale=args.image_scale,
+        image_quality=args.image_quality,
     )
 
     success = True

@@ -30,3 +30,7 @@ Bloomberg / Economist news-infographic — publication-grade information density
 ## 5. Paired image-rendering
 
 `editorial` — magazine-style infographic imagery sharing the data-publication aesthetic.
+
+## 6. Illustration propensity
+
+**sparse** — charts, sidebars, and data density carry the page; decorative spots undercut the serious data-publication tone. With no user steer, default to none. If the user explicitly asks, keep them minimal and journalistic. `image_usage: none` writes no illustration rows.

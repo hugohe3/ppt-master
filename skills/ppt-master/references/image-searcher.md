@@ -10,12 +10,13 @@ Role definition for the **web image acquisition path**: translate Strategist int
 
 ## 1. License Tier Discipline
 
-Every accepted image is classified into one of two tiers. Anything else is rejected outright.
+Every **provider-sourced** image is classified into one of two tiers; anything else is rejected outright. A third tier, `manual`, exists **only** for a user-supplied [`--from-url`](#5-running-image_searchpy) replacement — it is never the result of a provider search accepting an unknown license.
 
 | Tier | Licenses | On-slide attribution |
 |---|---|---|
 | `no-attribution` | CC0, Public Domain, Pexels License, Pixabay Content License | None |
 | `attribution-required` | CC BY, CC BY-SA | Inline credit `<text>` on the slide |
+| `manual` | User-supplied via `--from-url` (license unverified) | None — verifying rights / any credit is the user's responsibility |
 
 **Forbidden — auto-rejected licenses**:
 
@@ -84,6 +85,10 @@ Then `build_query_progression` tries: original → simplified (4 words) → simp
 | Quality cues | **DO NOT ADD QUALITY CUES** like `professional editorial photography` or `clean composition`. These APIs use exact keyword matching; adding long adjectives will result in 0 matches. |
 | Language | For Chinese landmarks: use precise Chinese names (e.g., `磁器口古镇`) if specifically targeting `--provider wikimedia`. For general stock providers (Pexels/Pixabay), use simple English nouns (e.g., `Chongqing Jiefangbei`); do NOT use complex Chinese sentences or overly long English descriptive strings which fail on these platforms. |
 
+When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
+
+Do **not** loosen `required_terms` to generic category words just to improve coverage. Terms like `canyon`, `grand canyon`, `stone pillar`, `ground fissure`, `ancient town`, `bridge`, `temple`, or `village` belong in the search query, not as the only identity gate. For small / Chinese-local attractions, the correct failure mode is `Needs-Manual` or a user-provided `--from-url`, not a visually plausible image of the wrong place.
+
 **Forbidden — web negative prompts**: `not tourist snapshot`, `no amateur photo`, `avoid low quality`.
 
 > Note: Keyword APIs search negative words literally.
@@ -117,7 +122,12 @@ uvx ppt-master image-search "<query>" \
 | `--orientation` | no | `any` | `any` / `landscape` / `portrait` / `square` |
 | `--provider` | no | (chain) | Pin one provider |
 | `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
+| `--require-terms` | no | — | Entity-safety gate for exact subjects. Repeatable; comma separates required groups; `A|B` means aliases within one group. Example: `--require-terms Chongqing --require-terms "Jiefangbei|Liberation Monument"` |
 | `--manifest` | no | (default) | Override manifest path |
+| `--save-candidates` | no | off | Escalation only: also keep a review pool in `candidates/<stem>/`. Default downloads just the best match (+ a review copy) |
+| `--max-candidates` | no | `4` | Pool size when `--save-candidates` is set |
+| `--promote` | no | — | Promote a reviewed candidate to the target filename, e.g. `--promote candidate_03.jpg --filename team.jpg -o <dir>` |
+| `--from-url` | no | — | Manual replace: download a user-supplied image URL into `--filename` (recorded `license_tier: manual`); works without a multimodal model |
 
 ### Batch mode (≥ 2 web rows) — preferred
 
@@ -134,22 +144,80 @@ uvx ppt-master image-search --batch <project_path>/images/image_queries.json \
 {
   "items": [
     {
-      "filename": "team.jpg",
-      "query": "executive boardroom meeting",
-      "slide": "03_team",
-      "purpose": "background",
+      "filename": "jiefangbei.jpg",
+      "query": "Jiefangbei Chongqing downtown monument",
+      "slide": "03_landmark",
+      "purpose": "exact landmark photo",
       "orientation": "landscape",
+      "required_terms": ["Chongqing", "Jiefangbei|Liberation Monument"],
       "status": "Pending"
     }
   ]
 }
 ```
 
-Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`.
+Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`.
+
+Use `required_terms` for **exact-entity images**: landmarks, people, companies, products, venues, named artworks, and named institutions. Each list item is required; alternatives inside one item use `|`. Example for a Chongqing landmark: `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This is a metadata gate: candidates whose title / author / source URL do not satisfy every group are rejected before ranking, so a visually polished but wrong Rome / Hoi An image cannot win a Chongqing landmark row. Do **not** use `required_terms` for generic mood / background rows such as "modern city skyline" or "team collaboration".
+
+For less-covered local attractions, keep the strict identity gate rather than progressively deleting location anchors or replacing proper names with category words. If strict metadata cannot prove the entity, mark the row `Needs-Manual` and use the manual URL path when the user supplies a confirmed source.
 
 The runner searches all `Pending` / `Failed` rows concurrently, appends each success to `image_sources.json` (the credit source of truth, idempotent on `filename`), and writes status back into `image_queries.json` — `Sourced` on success, `Needs-Manual` when the full provider/stage chain is exhausted. Status is saved after each completion, so an interrupted run preserves finished rows; re-running skips terminal rows. A single `web` row may still use single-query mode above.
 
 **Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
+
+### Ranking model
+
+`image_search.py` ranks provider metadata, not pixels. The order is deliberately conservative:
+
+1. hard reject: invalid license, zero query relevance, or any missing `required_terms`;
+2. identity priority: every required term group must match; candidates whose title also contains the required entity terms get an additional boost over candidates that only match via URL;
+3. query relevance: concrete query tokens dominate generic visual words like "photo", "high quality", "background";
+4. layout fit: requested orientation helps; mismatched orientation is a small penalty, not a hard reject;
+5. license / size tie-breakers: no-attribution is a small bonus; pixel count is capped so a huge but weakly relevant image cannot outrank a smaller accurate image.
+
+Do not tune this into a visual taste engine. The scorer prevents obvious metadata failures and produces a reviewable best match; the `.review` copy still decides whether the image is visually fit for the slide.
+
+### Suitability review — with or without a multimodal model
+
+A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily *visually suitable* — `score_candidate` never sees pixels. So a web best match should be reviewed before it is trusted, by whichever reviewer is available:
+
+- **Multimodal model**: each download writes a downscaled review copy to `images/.review/<stem>.jpg` (the placed asset stays full-resolution; the bounded copy just keeps a very large original safe and quick to open). Read it and judge fit — subject, mood, quality, not just topic overlap.
+- **Non-multimodal model (no vision)**: do **not** pretend to confirm. Hand off to a human — surface each web image's `source_page_url` from `image_sources.json` (live preview also shows the placed result) and let the user judge.
+
+For exact-entity rows, suitability has two gates: `required_terms` first enforces metadata identity, then the `.review` image confirms the pixels actually show the right subject well enough. A row can still be rejected after passing `required_terms` if the visual is weak, cropped badly, or only tangentially shows the subject.
+
+Never treat a generic `required_terms` pass as acceptance. For example, matching `Ground Fissure` can return an unrelated transit station named Yunlong, and matching `stone pillar` can return a different scenic area. If the proper name / geography cannot be retained, stop at `Needs-Manual`.
+
+**Replacement ladder when a best match is not right** (any reviewer):
+
+1. refine the query and re-run that row once;
+2. **manual URL replace (universal, model-agnostic)** — the user finds a better image anywhere and gives its URL; download and swap it in:
+   ```bash
+   uvx ppt-master image-search --from-url <image-url> --filename <name>.jpg -o <project_path>/images
+   ```
+   Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds (executor-base §6.1);
+3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
+4. if nothing fits, mark the row `Needs-Manual`.
+
+Web search is far cheaper than AI generation, so this review pass is well worth it.
+
+**This review never halts the pipeline** (image-base §6 hard rule). It runs inside Step 5 image acquisition: an image that cannot be verified or replaced right now becomes `Needs-Manual` and the deck still builds (placeholder), so generation flows straight into Step 6. Manual `--from-url` replacement is an improvement step, not a blocking gate — do it now, or later from live preview, without stopping the run.
+
+### Manual review candidates (escalation, opt-in)
+
+Candidate-pool saving is **off by default** — reach for it only when a best match fails confirmation, on a subjective topic, or for a prominent image (cover / chapter divider / `hero_page` / photo-led page).
+
+```bash
+uvx ppt-master image-search "<query>" --filename <name>.jpg -o <project_path>/images \
+  --save-candidates --max-candidates 4
+```
+
+Saves the top candidates to `images/candidates/<stem>/` with a `candidates.json` manifest and one downscaled review copy per candidate under `candidates/<stem>/review/`. **Read the candidate review copies**, pick the best fit, then promote it — the full-resolution original is copied to the target filename:
+
+```bash
+uvx ppt-master image-search --promote candidate_03.jpg --filename <name>.jpg -o <project_path>/images
+```
 
 ---
 
@@ -196,7 +264,7 @@ Every successful download appends or replaces one entry keyed on `filename`:
 |---|---|
 | `width` / `height` | Measured from the file actually saved to disk. Use these for layout. |
 | `metadata_dimensions` | Present only when upstream-claimed size differs from the saved file (preview vs original). Informational only. |
-| `license_tier` | Drives Executor's attribution decision. Only `no-attribution` / `attribution-required`. |
+| `license_tier` | Drives Executor's attribution decision: `no-attribution` / `attribution-required` for provider-sourced images, or `manual` for a user-supplied `--from-url` replacement (embed only; rights/credit are the user's responsibility). |
 | `attribution_required` | Boolean alias of `license_tier == "attribution-required"`. |
 | `attribution_text` | Pre-rendered canonical credit string. **Use as-is; do not regenerate.** |
 | `stage` | `all` by default, or `no-attribution-only` when strict mode is used. |
@@ -278,6 +346,7 @@ Executor reads `image_sources.json` per slide that uses a Sourced image. For eac
 |---|---|
 | `no-attribution` | Embed `<image>` only |
 | `attribution-required` | Embed `<image>` **and** an inline credit element per §7 |
+| `manual` | Embed `<image>` only — user-supplied URL (`--from-url`); verifying usage rights / any required credit is the user's responsibility |
 
 Executor does not interpret raw license strings — `license_tier` is sufficient.
 
@@ -290,7 +359,8 @@ Executor does not interpret raw license strings — `license_tier` is sufficient
 In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §10:
 
 - [ ] Every web row has a downloaded file at `project/images/<filename>` OR is marked `Needs-Manual`
-- [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text`
+- [ ] Each `Sourced` web image was reviewed for fit — a multimodal model via its `images/.review/<stem>.jpg` copy, otherwise handed to the user via `source_page_url`; a poor fit was re-queried, replaced with `--from-url`, escalated via `--save-candidates` + `--promote`, or marked `Needs-Manual`
+- [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text` (except `manual` `--from-url` rows, which carry no `attribution_text`)
 - [ ] Any `attribution-required` image has visible inline credit text in the corresponding SVG
 - [ ] `metadata_dimensions` warnings surfaced when downloaded preview is much smaller than upstream-claimed size
 - [ ] `Needs-Manual` rows include the failure reason

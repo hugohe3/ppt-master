@@ -30,3 +30,7 @@ Frosted-glass SaaS — translucent layered panels, flowing gradient light, float
 ## 5. Paired image-rendering
 
 `glassmorphism` — frosted translucent panels / soft-gradient imagery matching the glass surfaces.
+
+## 6. Illustration propensity
+
+**sparse** — translucent panels, gradient light, and floating depth carry the look; decorative spots compete with the glass. With no user steer, default to none. If the user explicitly asks, keep them minimal and let them sit behind / under the glass rather than on top. `image_usage: none` writes no illustration rows.

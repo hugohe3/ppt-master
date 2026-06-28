@@ -114,6 +114,96 @@ SEARCH_VALID_STATUSES = {
 SEARCH_RETRYABLE_STATUSES = {SEARCH_STATUS_PENDING, SEARCH_STATUS_FAILED}
 SEARCH_REQUIRED_ITEM_FIELDS = ("filename", "query", "status")
 
+_WEAK_REQUIRED_TERM_PARTS = frozenset({
+    "ancient town",
+    "bridge",
+    "canyon",
+    "cave",
+    "city",
+    "floating bridge",
+    "forest",
+    "gate",
+    "grand canyon",
+    "ground fissure",
+    "lake",
+    "monastery",
+    "monument",
+    "river",
+    "shrine",
+    "square",
+    "station",
+    "stone forest",
+    "stone pillar",
+    "stream",
+    "temple",
+    "valley",
+    "village",
+    "古城",
+    "古镇",
+    "地缝",
+    "大峡谷",
+    "寺",
+    "峡谷",
+    "广场",
+    "桥",
+    "洞",
+    "溪",
+    "石林",
+    "石柱",
+})
+
+
+def _parse_required_terms(raw: object) -> tuple[str, ...]:
+    """Parse entity-safety terms from CLI / batch JSON.
+
+    Multiple groups are ANDed. Alternatives inside one group are separated by
+    ``|``; comma splitting is accepted as CLI convenience. Examples:
+    ``["Chongqing", "Jiefangbei|Liberation Monument"]``.
+    """
+    if raw is None:
+        return ()
+    values: list[str]
+    if isinstance(raw, str):
+        values = [raw]
+    elif isinstance(raw, (list, tuple)):
+        values = []
+        for item in raw:
+            if not isinstance(item, str):
+                raise ValueError("required_terms items must be strings")
+            values.append(item)
+    else:
+        raise ValueError("required_terms must be a string or list of strings")
+
+    terms: list[str] = []
+    for value in values:
+        for part in value.split(","):
+            part = part.strip()
+            if part:
+                terms.append(part)
+    return tuple(terms)
+
+
+def _warn_weak_required_terms(required_terms: tuple[str, ...]) -> None:
+    """Warn when required_terms contain generic category words.
+
+    These terms are useful in the query but dangerous as identity gates:
+    broadening a small Chinese attraction from its proper name to "canyon" /
+    "stone pillar" raises coverage while admitting wrong entities.
+    """
+    weak: list[str] = []
+    for group in required_terms:
+        for part in group.split("|"):
+            normalized = part.strip().lower()
+            if normalized in _WEAK_REQUIRED_TERM_PARTS:
+                weak.append(part.strip())
+    if weak:
+        print(
+            "  warning: required_terms contains generic category term(s) "
+            f"{weak}; keep proper-name / geography anchors too, and prefer "
+            "Needs-Manual or --from-url over loosening identity gates.",
+            file=sys.stderr,
+        )
+
 
 # ---------------------------------------------------------------------------
 # .env loading
@@ -199,12 +289,38 @@ def _validate_downloaded_quality(path: Path) -> bool:
         return True  # unreadable image; let downstream handle it
 
 
+def _write_review_copy(
+    src: Path, dest_dir: Path, name: str, max_side: int = 1024
+) -> Optional[Path]:
+    """Write a downscaled JPEG review copy of ``src`` into ``dest_dir``.
+
+    The placed / promoted asset is always the full-resolution original; this
+    bounded copy exists only so the agent can Read a sanely-sized image to
+    confirm suitability regardless of how large the source is. Best-effort —
+    returns None (non-fatal) if Pillow or the source is unavailable.
+    """
+    try:
+        from PIL import Image  # type: ignore
+    except ImportError:
+        return None
+    try:
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        review_path = dest_dir / f"{Path(name).stem}.jpg"
+        with Image.open(src) as im:
+            im = im.convert("RGB")
+            im.thumbnail((max_side, max_side))
+            im.save(review_path, "JPEG", quality=85)
+        return review_path
+    except (OSError, ValueError):
+        return None
+
+
 def _save_candidates_pool(
     ranked: list[tuple[float, str, AssetCandidate]],
     output_dir: Path,
     stem: str,
     selected_filename: str,
-    max_candidates: int = 8,
+    max_candidates: int = 4,
 ) -> None:
     """Download top-N candidates into ``candidates/<stem>/`` and write
     a ``candidates.json`` manifest for manual review."""
@@ -232,10 +348,12 @@ def _save_candidates_pool(
             continue
         idx += 1
         actual_dim = _measure_actual_image(cand_path)
+        review_path = _write_review_copy(cand_path, cand_dir / "review", cand_filename)
         pool.append({
             "rank": idx,
             "score": round(score, 2),
             "filename": cand_filename,
+            "review": f"review/{review_path.name}" if review_path else None,
             "provider": provider_name,
             "title": candidate.title,
             "author": candidate.author,
@@ -245,6 +363,7 @@ def _save_candidates_pool(
             "license_url": candidate.license_url,
             "license_tier": candidate.license_tier,
             "attribution_required": candidate.license_tier == "attribution-required",
+            "attribution_text": build_attribution_text(selected_filename, candidate),
             "width": actual_dim[0] if actual_dim else candidate.width,
             "height": actual_dim[1] if actual_dim else candidate.height,
         })
@@ -270,13 +389,15 @@ def search_and_download(
     *,
     output_path: Path,
     strict_no_attribution: bool,
-    save_candidates: bool = True,
-    max_candidates: int = 8,
+    save_candidates: bool = False,
+    max_candidates: int = 4,
 ) -> tuple[Optional[AssetCandidate], Optional[str], Optional[str]]:
     """Find a candidate AND successfully download it.
 
-    When ``save_candidates`` is True (default), the top-N candidates are
-    also saved to ``candidates/<stem>/`` for manual review.
+    By default only the best match is downloaded. When ``save_candidates``
+    is True (opt-in), the top-N candidates are also saved to
+    ``candidates/<stem>/`` so the agent can review and ``--promote`` a
+    better fit when the best match does not pass visual confirmation.
 
     Returns ``(candidate, provider_name, stage)`` for the successfully
     downloaded image, or ``(None, None, None)`` if every combination
@@ -301,8 +422,11 @@ def search_and_download(
                 item for item in provider_ranked if item[0] != float("-inf")
             ]
             if not provider_ranked:
+                reason = "query"
+                if request.required_terms:
+                    reason += f" / required_terms={list(request.required_terms)}"
                 print(
-                    f"    no candidate matched the query; trying next provider/stage",
+                    f"    no candidate matched {reason}; trying next provider/stage",
                     file=sys.stderr,
                 )
                 continue
@@ -332,6 +456,11 @@ def search_and_download(
                 if not _validate_downloaded_quality(output_path):
                     output_path.unlink(missing_ok=True)
                     continue
+                review = _write_review_copy(
+                    output_path, output_path.parent / ".review", output_path.name
+                )
+                if review is not None:
+                    print(f"  review copy: {review}", file=sys.stderr)
                 return candidate, provider_name, stage
             except (requests.RequestException, OSError, RuntimeError, ValueError) as exc:
                 print(
@@ -416,6 +545,11 @@ def _candidate_to_manifest_item(
         "attribution_text": build_attribution_text(args.filename, candidate),
         "status": "sourced",
     }
+    required_terms = _parse_required_terms(
+        getattr(args, "required_terms", None) or getattr(args, "require_terms", None)
+    )
+    if required_terms:
+        item["required_terms"] = list(required_terms)
 
     # Only carry upstream-claimed dimensions when they differ — this flags
     # cases where the provider returned a preview rather than the original.
@@ -520,6 +654,9 @@ def promote_candidate(
 
     shutil.copy2(str(src_path), str(dst_path))
     print(f"  promoted: {candidate_filename} → {target_filename}", file=sys.stderr)
+    review = _write_review_copy(dst_path, output_dir / ".review", target_filename)
+    if review is not None:
+        print(f"  review copy: {review}", file=sys.stderr)
 
     # Update candidates.json
     meta["selected"] = candidate_filename
@@ -546,6 +683,23 @@ def promote_candidate(
             item["license_url"] = entry.get("license_url", "")
             item["license_tier"] = entry["license_tier"]
             item["attribution_required"] = entry.get("attribution_required", False)
+            # Recompute the credit from the promoted candidate — never carry the
+            # replaced image's attribution_text (wrong author/title/source).
+            item["attribution_text"] = build_attribution_text(
+                target_filename,
+                AssetCandidate(
+                    provider=entry.get("provider", ""),
+                    title=entry.get("title", ""),
+                    source_page_url=entry.get("source_page_url", ""),
+                    license_name=entry.get("license_name", ""),
+                    license_url=entry.get("license_url", ""),
+                    license_tier=entry.get("license_tier", ""),
+                    width=w,
+                    height=h,
+                    download_url=entry.get("download_url", ""),
+                    author=entry.get("author", ""),
+                ),
+            )
             item["width"] = w
             item["height"] = h
             item.pop("metadata_dimensions", None)
@@ -557,6 +711,87 @@ def promote_candidate(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8",
     )
     print(f"  manifest updated: {mpath}", file=sys.stderr)
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# Manual URL replacement (model-agnostic)
+# ---------------------------------------------------------------------------
+
+
+def fetch_url_replace(
+    output_dir: Path,
+    target_filename: str,
+    url: str,
+    manifest_path: Optional[Path] = None,
+    *,
+    slide: str = "",
+    purpose: str = "",
+    search_query: str = "",
+    orientation: str = "",
+    required_terms: tuple[str, ...] = (),
+) -> int:
+    """Download a user-supplied image URL into the target and record it.
+
+    The model-agnostic manual path: when an automated best match is not
+    suitable (or the running model cannot see images at all), a human finds a
+    good image, passes its URL, and it replaces the target. License is unknown
+    for an arbitrary URL, so the manifest marks it ``manual`` and notes that
+    verifying usage rights is the user's responsibility.
+    """
+    output_dir.mkdir(parents=True, exist_ok=True)
+    dst_path = output_dir / target_filename
+    try:
+        download_image(url, str(dst_path), headers={"User-Agent": USER_AGENT})
+    except (requests.RequestException, OSError, RuntimeError, ValueError) as exc:
+        print(f"Error: failed to download {url}: {exc}", file=sys.stderr)
+        return 1
+    if not dst_path.exists():
+        print(f"Error: download produced no file at {dst_path}", file=sys.stderr)
+        return 1
+
+    print(f"  fetched: {url} -> {target_filename}", file=sys.stderr)
+    review = _write_review_copy(dst_path, output_dir / ".review", target_filename)
+    if review is not None:
+        print(f"  review copy: {review}", file=sys.stderr)
+
+    actual_dim = _measure_actual_image(dst_path)
+    mpath = manifest_path or default_manifest_path(str(output_dir))
+    # Inherit page context (which slide / purpose / query this image serves)
+    # from the entry being replaced; override only source / license / size /
+    # status so the audit trail survives a manual swap.
+    prior = next(
+        (i for i in _read_existing_manifest(mpath).get("items", [])
+         if i.get("filename") == target_filename),
+        {},
+    )
+    item = {
+        "filename": target_filename,
+        "slide": prior.get("slide") or slide,
+        "purpose": prior.get("purpose") or purpose,
+        "search_query": prior.get("search_query") or search_query,
+        "orientation": prior.get("orientation") or orientation,
+        "provider": "manual",
+        "title": "",
+        "author": "",
+        "source_page_url": url,
+        "download_url": url,
+        "license_name": "unverified — user-supplied URL",
+        "license_url": "",
+        "license_tier": "manual",
+        "attribution_required": False,
+        "width": actual_dim[0] if actual_dim else 0,
+        "height": actual_dim[1] if actual_dim else 0,
+        "attribution_text": "",
+        "status": "manual",
+        "note": "Manually supplied image URL; verifying usage rights is the user's responsibility.",
+    }
+    inherited_required_terms = _parse_required_terms(prior.get("required_terms"))
+    final_required_terms = inherited_required_terms or required_terms
+    if final_required_terms:
+        item["required_terms"] = list(final_required_terms)
+    written = write_sources_manifest(mpath, item)
+    print(f"  manifest updated: {written}", file=sys.stderr)
     return 0
 
 
@@ -607,6 +842,11 @@ def load_search_manifest(path: str) -> dict:
                 f"{prefix} status '{item['status']}' is invalid. "
                 f"Valid: {sorted(SEARCH_VALID_STATUSES)}"
             )
+        if "required_terms" in item:
+            try:
+                _parse_required_terms(item["required_terms"])
+            except ValueError as exc:
+                raise ValueError(f"{prefix} {exc}") from exc
         fname = item["filename"]
         if fname in seen_filenames:
             raise ValueError(f"{prefix} duplicate filename '{fname}'")
@@ -662,6 +902,8 @@ def _search_one_item(
     """
     orientation = item.get("orientation", "any") or "any"
     strict = bool(item.get("strict_no_attribution", default_strict))
+    required_terms = _parse_required_terms(item.get("required_terms"))
+    _warn_weak_required_terms(required_terms)
     request = ImageSearchRequest(
         query=item["query"],
         purpose=item.get("purpose", ""),
@@ -670,6 +912,7 @@ def _search_one_item(
         slide=item.get("slide", ""),
         min_width=int(item.get("min_width", default_min_width)),
         min_height=int(item.get("min_height", default_min_height)),
+        required_terms=required_terms,
     )
 
     pinned = item.get("provider") or default_provider
@@ -694,6 +937,7 @@ def _search_one_item(
         purpose=item.get("purpose", ""),
         query=item["query"],
         orientation=orientation,
+        required_terms=request.required_terms,
     )
     manifest_item = _candidate_to_manifest_item(
         candidate,
@@ -819,7 +1063,8 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help=(
             "Local filename for the chosen image (e.g. cover_bg.jpg). "
-            "Required for single-query and --promote modes; ignored in --batch."
+            "Required for single-query, --promote, and --from-url modes; "
+            "ignored in --batch."
         ),
     )
     parser.add_argument(
@@ -874,6 +1119,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Minimum acceptable image height in pixels (default: 800).",
     )
     parser.add_argument(
+        "--require-terms",
+        action="append",
+        default=None,
+        metavar="TERM[,TERM...]",
+        help=(
+            "Entity-safety gate: require each metadata term group before a "
+            "candidate can be accepted. Repeatable; comma separates groups; "
+            "'A|B' means aliases within one group. Example: "
+            "--require-terms Chongqing --require-terms 'Jiefangbei|Liberation Monument'."
+        ),
+    )
+    parser.add_argument(
         "--manifest",
         default=None,
         help="Override manifest path. Defaults to <output>/image_sources.json.",
@@ -900,15 +1157,20 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
-        "--no-candidates",
+        "--save-candidates",
         action="store_true",
-        help="Disable candidate pool saving (only download the best match).",
+        help=(
+            "Opt-in: also save a small candidate pool to candidates/<stem>/ "
+            "(with downscaled review copies) so a better fit can be promoted "
+            "when the best match fails visual confirmation. Default: only the "
+            "best match is downloaded."
+        ),
     )
     parser.add_argument(
         "--max-candidates",
         type=int,
-        default=8,
-        help="Max number of candidates to save (default: 8).",
+        default=4,
+        help="Max candidates to save when --save-candidates is set (default: 4).",
     )
     parser.add_argument(
         "--promote",
@@ -917,6 +1179,16 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Promote a candidate to replace the primary image. "
             "Example: --promote candidate_03.jpg --filename 05_wulong.jpg -o images/"
+        ),
+    )
+    parser.add_argument(
+        "--from-url",
+        default=None,
+        metavar="URL",
+        help=(
+            "Manual replacement: download a user-supplied image URL into "
+            "--filename and record it (license marked 'manual'). Works without "
+            "a multimodal model. Example: --from-url https://… --filename team.jpg -o images/"
         ),
     )
     return parser
@@ -953,6 +1225,22 @@ def main(argv: Optional[list[str]] = None) -> int:
             manifest_path=Path(args.manifest) if args.manifest else None,
         )
 
+    # --- Manual URL replacement ---
+    if args.from_url:
+        if not args.filename:
+            parser.error("--filename is required with --from-url")
+        return fetch_url_replace(
+            output_dir,
+            args.filename,
+            args.from_url,
+            manifest_path=Path(args.manifest) if args.manifest else None,
+            slide=args.slide,
+            purpose=args.purpose,
+            search_query=args.query or "",
+            orientation="" if args.orientation == "any" else args.orientation,
+            required_terms=_parse_required_terms(args.require_terms),
+        )
+
     # --- Batch mode ---
     if args.batch:
         if not os.path.isfile(args.batch):
@@ -978,7 +1266,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 output_dir=batch_output_dir,
                 sources_manifest_path=sources_manifest_path,
                 concurrency=_resolve_search_concurrency(args.concurrency),
-                save_candidates=not args.no_candidates,
+                save_candidates=args.save_candidates,
                 max_candidates=args.max_candidates,
                 default_provider=args.provider,
                 default_strict=args.strict_no_attribution,
@@ -995,7 +1283,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     # --- Single-query search mode ---
     if not args.query:
-        parser.error("query is required unless --batch or --promote is used")
+        parser.error("query is required unless --batch, --promote, or --from-url is used")
     if not args.filename:
         parser.error("--filename is required in single-query mode")
 
@@ -1007,7 +1295,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         slide=args.slide,
         min_width=args.min_width,
         min_height=args.min_height,
+        required_terms=_parse_required_terms(args.require_terms),
     )
+    _warn_weak_required_terms(request.required_terms)
 
     providers = [args.provider] if args.provider else _default_provider_chain()
 
@@ -1020,7 +1310,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         request,
         output_path=output_path,
         strict_no_attribution=args.strict_no_attribution,
-        save_candidates=not args.no_candidates,
+        save_candidates=args.save_candidates,
         max_candidates=args.max_candidates,
     )
 
