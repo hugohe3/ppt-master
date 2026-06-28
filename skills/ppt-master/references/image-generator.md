@@ -555,7 +555,7 @@ Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails)
 
 - Agent invokes the host's native image tool directly; prompts come from `items[].prompt`
 - Do **not** run `image_gen.py --manifest` in Path B. That command is Path A and may use configured API/proxy backends even when the user confirmed host-native.
-- Still run `python3 scripts/image_gen.py --render-md project/images/image_prompts.json` so the human-readable sidecar exists without touching any backend.
+- Still run `uvx ppt-master image-gen --render-md project/images/image_prompts.json` so the human-readable sidecar exists without touching any backend.
 - **Batch for speed, mind the rate**: when the host can run independent tool calls in parallel (e.g. Claude Code issues independent calls concurrently), fire several generations together in modest groups — a few rows at a time (~3–4), not the whole manifest at once — so their latency overlaps without flooding the host's image quota. When the host only runs tools serially, generate one row at a time. This mirrors Path A's default concurrency of 3.
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
 - Mark each item's `status` `Generated` in the manifest the moment its file lands — as each completes, not in one pass at the end (so an interrupted batch leaves accurate state)

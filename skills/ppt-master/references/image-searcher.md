@@ -194,7 +194,7 @@ Never treat a generic `required_terms` pass as acceptance. For example, matching
 1. refine the query and re-run that row once;
 2. **manual URL replace (universal, model-agnostic)** — the user finds a better image anywhere and gives its URL; download and swap it in:
    ```bash
-   python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
+   uvx ppt-master image-search --from-url <image-url> --filename <name>.jpg -o <project_path>/images
    ```
    Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds (executor-base §6.1);
 3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
@@ -209,14 +209,14 @@ Web search is far cheaper than AI generation, so this review pass is well worth 
 Candidate-pool saving is **off by default** — reach for it only when a best match fails confirmation, on a subjective topic, or for a prominent image (cover / chapter divider / `hero_page` / photo-led page).
 
 ```bash
-python3 scripts/image_search.py "<query>" --filename <name>.jpg -o <project_path>/images \
+uvx ppt-master image-search "<query>" --filename <name>.jpg -o <project_path>/images \
   --save-candidates --max-candidates 4
 ```
 
 Saves the top candidates to `images/candidates/<stem>/` with a `candidates.json` manifest and one downscaled review copy per candidate under `candidates/<stem>/review/`. **Read the candidate review copies**, pick the best fit, then promote it — the full-resolution original is copied to the target filename:
 
 ```bash
-python3 scripts/image_search.py --promote candidate_03.jpg --filename <name>.jpg -o <project_path>/images
+uvx ppt-master image-search --promote candidate_03.jpg --filename <name>.jpg -o <project_path>/images
 ```
 
 ---
