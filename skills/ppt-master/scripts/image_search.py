@@ -127,7 +127,7 @@ def _parse_required_terms(raw: object) -> tuple[str, ...]:
     values: list[str]
     if isinstance(raw, str):
         values = [raw]
-    elif isinstance(raw, list):
+    elif isinstance(raw, (list, tuple)):
         values = []
         for item in raw:
             if not isinstance(item, str):
