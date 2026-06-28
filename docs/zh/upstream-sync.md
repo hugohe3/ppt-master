@@ -53,10 +53,10 @@ git add <冲突文件>
 
 | 文件 | 解决策略 |
 |---|---|
-| `SKILL.md` | 保留上游内容，把 `python3` 换成 `uv run` |
+| `SKILL.md` | 保留上游内容，把 `python3` 换成 `uvx` |
 | `CLAUDE.md` | 同上 |
 | `update_repo.py` | 人工审查：保留 `ensure_uv_available`、`uv sync`、`--skip-deps`、双文件哈希校验；合入上游其他新功能 |
-| `pyproject.toml` | 如果上游在 `requirements.txt` 新增/删除依赖，手动同步到根目录和 `skills/ppt-master/` 下的**两个** `pyproject.toml` 的 `[project] dependencies`，然后分别在两个目录运行 `uv lock`。完成后运行 `uv run skills/ppt-master/scripts/check_deps_sync.py` 校验一致性 |
+| `pyproject.toml` | 如果上游在 `requirements.txt` 新增/删除依赖，手动同步到根目录和 `skills/ppt-master/` 下的**两个** `pyproject.toml` 的 `[project] dependencies`，然后分别在两个目录运行 `uv lock`。完成后运行 `uvx ppt-master check-deps-sync` 校验一致性 |
 | `.python-version` | 永不冲突（上游无此文件） |
 | `generate_examples_index.py` | 该脚本会重新生成 `examples/README.md`，必须确保其内部字符串也已替换为 `uv run`，否则下次运行会覆盖迁移结果 |
 | `docs/windows-installation.md` | 人工审查：保留 uv 安装流程，合入上游其他文档改进 |
@@ -101,7 +101,7 @@ Get-ChildItem -Recurse -Filter "*.py" | ForEach-Object {
 3. 运行 `uv sync` 安装
 4. 运行一致性校验确保三个清单同步：
    ```bash
-   uv run skills/ppt-master/scripts/check_deps_sync.py
+   uvx ppt-master check-deps-sync
    ```
 
 ## 依赖一致性校验
@@ -117,7 +117,7 @@ Get-ChildItem -Recurse -Filter "*.py" | ForEach-Object {
 校验脚本检查四个维度：
 
 ```bash
-uv run skills/ppt-master/scripts/check_deps_sync.py
+uvx ppt-master check-deps-sync
 ```
 
 | 检查项 | 内容 |
@@ -133,5 +133,5 @@ uv run skills/ppt-master/scripts/check_deps_sync.py
 
 - Sync fork 和 CLI 合并**不要混着用在同一批更新上**，选一种方式即可
 - 合并后先跑 `uv run python -c "import pptx; print('OK')"` 验证依赖正常
-- 合并后建议运行 `uv run skills/ppt-master/scripts/check_deps_sync.py` 校验三份依赖清单一致性
+- 合并后建议运行 `uvx ppt-master check-deps-sync` 校验三份依赖清单一致性
 - 两处 `uv.lock` 文件需要提交（`.gitignore` 中 `!uv.lock` 例外规则确保其不被忽略），以实现可重复构建

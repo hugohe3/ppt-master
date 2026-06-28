@@ -78,7 +78,7 @@ source.pptx
 Run:
 
 ```bash
-uv run skills/ppt-master/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
+uvx ppt-master native-enhance-pptx init "<source.pptx>" --name "<project_slug>"
 ```
 
 Project layout:
@@ -115,7 +115,7 @@ The `init` command also writes:
 If the project already existed or notes/audio coverage changed, refresh the draft:
 
 ```bash
-uv run skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
+uvx ppt-master native-enhance-pptx plan "<project>"
 ```
 
 Present the plan to the user before generating notes or audio:
@@ -174,7 +174,7 @@ Write:
 Run coverage check:
 
 ```bash
-uv run skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+uvx ppt-master native-enhance-pptx validate "<project>"
 ```
 
 > Note: before audio generation, missing audio returns exit code `2` only when `audio.enabled` is true. Missing notes are not acceptable once this step is complete.
@@ -232,7 +232,7 @@ uvx ppt-master notes-to-audio "<project>" \
 Validate:
 
 ```bash
-uv run skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+uvx ppt-master native-enhance-pptx validate "<project>"
 ```
 
 ---
@@ -244,13 +244,13 @@ uv run skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
 Run:
 
 ```bash
-uv run skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>"
+uvx ppt-master native-enhance-pptx apply "<project>"
 ```
 
 Optional:
 
 ```bash
-uv run skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
+uvx ppt-master native-enhance-pptx apply "<project>" \
   --transition fade \
   --transition-duration 0.5 \
   --narration-padding 0.4 \

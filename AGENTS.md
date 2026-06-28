@@ -80,7 +80,7 @@ uvx ppt-master project validate <project_path>
 uvx ppt-master icon-sync <project_path> <lib/name> [<lib/name>...]
 
 # Step 4 Eight Confirmations — interactive visual page (default auto-launch; chat fallback)
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
+uvx ppt-master confirm-ui <project_path> --daemon --wait
 
 # Image tools and SVG quality check
 uvx ppt-master analyze-images <project_path>/images
@@ -95,9 +95,9 @@ uvx ppt-master animation-config scaffold <project_path>  # optional, only for cu
 uvx ppt-master animation-config validate <project_path>  # optional, before re-export
 
 # Existing PPTX native enhancement workflow — direct OOXML patch, no SVG conversion
-uv run skills/ppt-master/scripts/native_enhance_pptx.py init <PPTX_file> --name <project_slug>
-uv run skills/ppt-master/scripts/native_enhance_pptx.py validate <project_path>
-uv run skills/ppt-master/scripts/native_enhance_pptx.py apply <project_path>
+uvx ppt-master native-enhance-pptx init <PPTX_file> --name <project_slug>
+uvx ppt-master native-enhance-pptx validate <project_path>
+uvx ppt-master native-enhance-pptx apply <project_path>
 
 # Post-processing pipeline: run sequentially, one command at a time
 uvx ppt-master total-md-split <project_path>

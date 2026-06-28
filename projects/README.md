@@ -5,7 +5,7 @@ This directory is used for storing in-progress projects.
 ## Create a New Project
 
 ```bash
-uv run skills/ppt-master/scripts/project_manager.py init my_project --format ppt169
+uvx ppt-master project init my_project --format ppt169
 ```
 
 ## Directory Structure

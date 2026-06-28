@@ -5,13 +5,13 @@
 ## `confirm_ui/server.py`
 
 ```bash
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait   # launch + wait for Tier 1
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --wait-only       # Tier 2: attach to the running page, wait for the final result
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --port 5051
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --no-browser
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --timeout 0   # disable idle auto-shutdown
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --shutdown    # Step 4 cleanup (idempotent)
+uvx ppt-master confirm-ui <project_path> --daemon --wait   # launch + wait for Tier 1
+uvx ppt-master confirm-ui <project_path> --wait-only       # Tier 2: attach to the running page, wait for the final result
+uvx ppt-master confirm-ui <project_path> --daemon
+uvx ppt-master confirm-ui <project_path> --daemon --port 5051
+uvx ppt-master confirm-ui <project_path> --no-browser
+uvx ppt-master confirm-ui <project_path> --timeout 0   # disable idle auto-shutdown
+uvx ppt-master confirm-ui <project_path> --shutdown    # Step 4 cleanup (idempotent)
 ```
 
 - Binds `127.0.0.1:5050` by default — or the next free port if another project already holds it (the launch log prints the actual URL) — and auto-opens the browser (suppress with `--no-browser`). `--port <other>` forces a specific port.

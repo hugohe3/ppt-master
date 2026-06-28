@@ -41,7 +41,7 @@ deck 导出后，在聊天里直接说就行：
 凡是 `edge-tts` 支持的 locale 都行——大约 90 个，覆盖中文全部主要变体（`zh-CN` 普通话 / `zh-TW` 台湾普通话 / `zh-HK` 粤语）、英文（美/英/澳/印）、日语、韩语、法语、德语、西班牙语、葡萄牙语、俄语、阿拉伯语等。任何 locale 的全量音色清单都可以这样查：
 
 ```bash
-uv run skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale ja-JP
+uvx ppt-master notes-to-audio --list-voices --locale ja-JP
 ```
 
 ## 进阶：手动调用脚本
@@ -50,23 +50,23 @@ uv run skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale ja-JP
 
 ```bash
 # 1. 确保备注已切分（后处理 Step 7.1）
-uv run skills/ppt-master/scripts/total_md_split.py <project_path>
+uvx ppt-master total-md-split <project_path>
 
 # 2A. 用 edge-tts 生成 MP3（默认，无需 API Key）
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
 
 # 2B. 用 MiniMax 生成 MP3（支持系统音色或复刻 voice_id）
 export MINIMAX_API_KEY="your-minimax-api-key"
 # 默认使用国内地址；海外访问可设置 MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider minimax \
   --voice-id <minimax-voice-id> \
   --minimax-model speech-2.8-hd
 
 # 2C. 用 Qwen TTS 生成音频（系统音色或复刻音色）
 export DASHSCOPE_API_KEY="your-dashscope-api-key"
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider qwen \
   --voice-id <qwen-voice> \
   --qwen-model qwen3-tts-flash \
@@ -74,13 +74,13 @@ uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 
 # 2D. 用 CosyVoice 生成 MP3（系统音色或复刻/设计音色）
 export COSYVOICE_API_KEY="your-dashscope-api-key"
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider cosyvoice \
   --voice-id <cosyvoice-voice> \
   --cosyvoice-model cosyvoice-v3-flash
 
 # 3.（可选）重新导出 PPTX 嵌入音频
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
+uvx ppt-master svg-to-pptx <project_path> \
   --recorded-narration audio
 ```
 
@@ -111,7 +111,7 @@ edge 模式下 `--voice` 是必填项。云端 provider 使用 `--voice-id` 传�
 也可以直接跑脚本：
 
 ```bash
-uv run skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+uvx ppt-master notes-to-audio <project_path> \
   --provider minimax --voice-id <你的复刻 voice id> \
   --minimax-model speech-2.8-hd
 ```

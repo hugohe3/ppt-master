@@ -77,7 +77,7 @@ uvx ppt-master project validate <project_path>
 uvx ppt-master icon-sync <project_path> <lib/name> [<lib/name>...]
 
 # Step 4 Eight Confirmations — interactive visual page (default auto-launch; chat fallback)
-uv run skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
+uvx ppt-master confirm-ui <project_path> --daemon --wait
 
 # Image tools and SVG quality check
 uvx ppt-master analyze-images <project_path>/images

@@ -19,13 +19,13 @@ PPT Master 导出的 PPTX 同时支持**页间转场**（page transition）与**
 
 ```bash
 # 从真实顶层 <g id> 锚点生成可编辑模板
-uv run skills/ppt-master/scripts/animation_config.py scaffold <project>
+uvx ppt-master animation-config scaffold <project>
 
 # 导出前校验引用是否存在
-uv run skills/ppt-master/scripts/animation_config.py validate <project>
+uvx ppt-master animation-config validate <project>
 
 # 导出时会自动读取 <project>/animations.json
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project>
+uvx ppt-master svg-to-pptx <project>
 ```
 
 最小 sidecar：
@@ -60,13 +60,13 @@ uv run skills/ppt-master/scripts/svg_to_pptx.py <project>
 
 ```bash
 # 换效果
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
+uvx ppt-master svg-to-pptx <project> -t push --transition-duration 0.6
 
 # 关闭转场
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
+uvx ppt-master svg-to-pptx <project> -t none
 
 # 每 5 秒自动翻页（展厅 / 自动循环）
-uv run skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
+uvx ppt-master svg-to-pptx <project> --auto-advance 5
 ```
 
 可选效果：`fade`、`push`、`wipe`、`split`、`strips`、`cover`、`random`。
