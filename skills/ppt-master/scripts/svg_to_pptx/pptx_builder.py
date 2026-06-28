@@ -624,6 +624,11 @@ def create_pptx_with_native_svg(
     cache_dir: Path | None = None,
     workers: int | None = None,
     merge_paragraphs: bool = True,
+    image_optimize: bool = True,
+    image_max_dimension: int | None = 2560,
+    image_sizing: str = 'cap',
+    image_scale: float = 2.0,
+    image_quality: int = 85,
     conversion_trace_path: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
 ) -> bool:
@@ -653,6 +658,12 @@ def create_pptx_with_native_svg(
         narration_audio: Optional dict mapping SVG stem to narration audio file.
         use_narration_timings: Whether to set slide auto-advance from audio duration.
         narration_padding: Extra seconds added after each narration before advancing.
+        image_optimize: Whether native export downscales oversized raster images.
+        image_max_dimension: Maximum optimized image dimension in pixels.
+        image_sizing: ``cap`` only limits source dimensions; ``display`` sizes
+            from rendered SVG boxes.
+        image_scale: Target image pixels per SVG display pixel.
+        image_quality: JPEG quality used for opaque optimized rasters.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
 
     Returns:
@@ -700,6 +711,20 @@ def create_pptx_with_native_svg(
         print(f"  SVG file count: {len(svg_files)}")
         if use_native_shapes:
             print(f"  Mode: Native DrawingML shapes (directly editable)")
+            if image_optimize:
+                if image_sizing == 'display':
+                    image_mode = (
+                        f"display scale {image_scale:g}, "
+                        f"max {image_max_dimension or 'unlimited'} px"
+                    )
+                else:
+                    image_mode = f"cap max {image_max_dimension or 'unlimited'} px"
+                print(
+                    "  Image optimization: Enabled "
+                    f"({image_mode}, JPEG q{image_quality})"
+                )
+            else:
+                print("  Image optimization: Disabled")
         elif use_compat_mode:
             print(f"  Compatibility mode: Enabled (PNG + SVG dual format)")
             print(f"  PNG renderer: {renderer_name} {renderer_status}")
@@ -779,6 +804,11 @@ def create_pptx_with_native_svg(
                         convert_svg_to_slide_shapes(
                             svg_path, slide_num=slide_num, verbose=verbose,
                             merge_paragraphs=merge_paragraphs,
+                            image_optimize=image_optimize,
+                            image_max_dimension=image_max_dimension,
+                            image_sizing=image_sizing,
+                            image_scale=image_scale,
+                            image_quality=image_quality,
                             trace_out=conversion_trace,
                         )
                     )

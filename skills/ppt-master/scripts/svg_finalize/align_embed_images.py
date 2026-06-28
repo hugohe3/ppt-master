@@ -163,6 +163,43 @@ def _normalize_for_save(img: 'PILImage', mime_type: str) -> 'PILImage':
     return img
 
 
+def _has_alpha(img: 'PILImage') -> bool:
+    """Return whether a PIL image has transparency."""
+    if img.mode in ('RGBA', 'LA'):
+        return True
+    if img.mode == 'P':
+        return 'transparency' in getattr(img, 'info', {})
+    return False
+
+
+def _target_size(
+    box_w: float,
+    box_h: float,
+    *,
+    max_dimension: int | None,
+    image_scale: float,
+) -> tuple[int, int]:
+    """Resolve the pixel budget for a rendered SVG image box."""
+    target_w = max(1, int(round(box_w * max(image_scale, 1.0))))
+    target_h = max(1, int(round(box_h * max(image_scale, 1.0))))
+    if max_dimension and max(target_w, target_h) > max_dimension:
+        ratio = max_dimension / max(target_w, target_h)
+        target_w = max(1, int(round(target_w * ratio)))
+        target_h = max(1, int(round(target_h * ratio)))
+    return target_w, target_h
+
+
+def _downscale_to_target(img: 'PILImage', target_w: int, target_h: int) -> tuple['PILImage', bool]:
+    """Downscale without upsampling."""
+    width, height = img.size
+    ratio = min(target_w / width, target_h / height, 1.0)
+    if ratio >= 1.0:
+        return img, False
+    from PIL import Image
+    new_size = (max(1, int(round(width * ratio))), max(1, int(round(height * ratio))))
+    return img.resize(new_size, Image.Resampling.LANCZOS), True
+
+
 def _encode_pil_to_data_uri(
     img: 'PILImage',
     src_path: Path,
@@ -178,7 +215,10 @@ def _encode_pil_to_data_uri(
     already-optimized asset. *fallback_bytes* carries the raw on-disk
     bytes for that path.
     """
-    mime_type = get_mime_type(src_path.name, fallback_bytes)
+    original_mime_type = get_mime_type(src_path.name, fallback_bytes)
+    mime_type = original_mime_type
+    if compress and mime_type == 'image/png' and not _has_alpha(img):
+        mime_type = 'image/jpeg'
     pil_format = _PIL_FORMAT_BY_MIME.get(mime_type, 'PNG')
 
     # Encode current PIL image
@@ -200,7 +240,7 @@ def _encode_pil_to_data_uri(
     # round-tripping an asset that was already well-compressed inflates it),
     # fall back to those.
     chosen = encoded_bytes
-    if fallback_bytes and len(fallback_bytes) < len(encoded_bytes):
+    if fallback_bytes and mime_type == original_mime_type and len(fallback_bytes) < len(encoded_bytes):
         chosen = fallback_bytes
 
     chosen = _optimize_image_bytes(
@@ -239,6 +279,7 @@ def _process_one_image(
     *,
     compress: bool,
     max_dimension: int | None,
+    image_scale: float,
     verbose: bool,
 ) -> tuple[bool, str | None]:
     """Align (slice/meet) and embed a single <image>.
@@ -288,6 +329,7 @@ def _process_one_image(
     final_img: 'PILImage' = img
     new_x, new_y, new_w, new_h = box_x, box_y, box_w, box_h
     transformed = False  # True iff bitmap content changed (crop happened)
+    target_box_w, target_box_h = box_w, box_h
 
     if not par_attr:
         # No preserveAspectRatio at all. The previous pipeline's fix-aspect
@@ -314,6 +356,16 @@ def _process_one_image(
             new_y = box_y + off_y
             new_w = new_w_calc
             new_h = new_h_calc
+            target_box_w, target_box_h = new_w, new_h
+
+    target_w, target_h = _target_size(
+        target_box_w,
+        target_box_h,
+        max_dimension=max_dimension,
+        image_scale=image_scale,
+    )
+    final_img, resized = _downscale_to_target(final_img, target_w, target_h)
+    transformed = transformed or resized
 
     # ------------------------------------------------------------------
     # Encode and rewrite
@@ -372,8 +424,9 @@ def align_and_embed_images_in_svg(
     *,
     dry_run: bool = False,
     verbose: bool = False,
-    compress: bool = False,
-    max_dimension: int | None = None,
+    compress: bool = True,
+    max_dimension: int | None = 2560,
+    image_scale: float = 2.0,
 ) -> tuple[int, int]:
     """Run the merged align + embed pass on a single SVG file.
 
@@ -412,7 +465,8 @@ def align_and_embed_images_in_svg(
 
         ok, err = _process_one_image(
             image, svg_dir,
-            compress=compress, max_dimension=max_dimension, verbose=verbose,
+            compress=compress, max_dimension=max_dimension,
+            image_scale=image_scale, verbose=verbose,
         )
         if ok:
             processed += 1
@@ -440,10 +494,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('svg', type=Path, help='SVG file to process in place')
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
-    parser.add_argument('--compress', action='store_true',
-                        help='Compress images before embedding')
-    parser.add_argument('--max-dimension', type=int, default=None,
-                        help='Downscale images larger than this on either axis')
+    parser.add_argument('--compress', dest='compress', action='store_true', default=True,
+                        help='Compress images before embedding (default)')
+    parser.add_argument('--no-compress', dest='compress', action='store_false',
+                        help='Disable image compression')
+    parser.add_argument('--max-dimension', type=int, default=2560,
+                        help='Downscale images larger than this on either axis (default: 2560)')
+    parser.add_argument('--image-scale', type=float, default=2.0,
+                        help='Target pixels per rendered SVG pixel')
     return parser
 
 
@@ -455,6 +513,12 @@ def main(argv: list[str] | None = None) -> int:
     if not args.svg.exists():
         print(f'Error: file not found: {args.svg}', file=sys.stderr)
         return 1
+    if args.max_dimension < 1:
+        print('Error: --max-dimension must be >= 1', file=sys.stderr)
+        return 1
+    if args.image_scale < 1:
+        print('Error: --image-scale must be >= 1', file=sys.stderr)
+        return 1
 
     proc, err = align_and_embed_images_in_svg(
         args.svg,
@@ -462,6 +526,7 @@ def main(argv: list[str] | None = None) -> int:
         verbose=args.verbose,
         compress=args.compress,
         max_dimension=args.max_dimension,
+        image_scale=args.image_scale,
     )
     print(f'Processed {proc} image(s), {err} error(s)')
     return 1 if err else 0
