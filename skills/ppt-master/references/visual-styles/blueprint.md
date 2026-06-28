@@ -31,3 +31,7 @@ Engineering schematic — thin line work on dark blueprint paper, isometric proj
 ## 5. Paired image-rendering
 
 `blueprint` — lock it so AI imagery shares the schematic line-drawing aesthetic.
+
+## 6. Illustration propensity
+
+**supportive** — but note the natural illustration here is hand-drawn **SVG schematic line-work / annotated marks**, not raster spot sheets; reach for line diagrams over decorative cutouts. If raster spots are used at all, keep them schematic, sparse, and secondary to the SVG line work. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

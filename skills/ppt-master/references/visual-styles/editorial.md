@@ -32,3 +32,7 @@ Magazine-grade hierarchy. Columns, hairline rules, a serif / sans interplay, str
 ## 5. Paired image-rendering
 
 `editorial` — magazine-style infographic look for AI images.
+
+## 6. Illustration propensity
+
+**supportive** — editorial spot illustrations beside articles are classic here; use them where they lift a section or break text density, kept restrained. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

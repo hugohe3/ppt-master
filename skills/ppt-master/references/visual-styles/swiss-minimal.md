@@ -32,3 +32,7 @@ Strict Swiss-grid discipline. Modular grid, sharp geometry, aggressive whitespac
 ## 5. Paired image-rendering
 
 `minimalist-swiss` — lock it for AI images so illustrations share the grid-austere aesthetic.
+
+## 6. Illustration propensity
+
+**sparse** — the whitespace and grid *are* the design; decorative spots compete with that restraint, so with no user steer, default to none. If the user explicitly asks, use them — but stay austere: very few, very light, never crowding the negative space. `image_usage: none` writes no illustration rows.

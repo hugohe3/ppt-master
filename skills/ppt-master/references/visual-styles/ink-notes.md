@@ -31,3 +31,7 @@ Whiteboard-ink minimalism — a pale field, confident black hand-ink line work, 
 ## 5. Paired image-rendering
 
 `ink-notes` — black-ink visual-note imagery on a clean field, matching the considered hand-drawn aesthetic.
+
+## 6. Illustration propensity
+
+**supportive** — the style is already sparse and considered; a few hand-ink spots fit, but restraint is its temperament — use only where one genuinely earns its place. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
