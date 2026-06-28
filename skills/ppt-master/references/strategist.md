@@ -356,6 +356,8 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 
 **AI generation path — one sheet, then slice.** When spot illustrations are AI-generated and the deck needs ≥3 same-family elements, write one `ai` Illustration Sheet row plus one `slice` row per used element. Step 5 generates the sheet, then slices transparent PNG elements for placement. This is just AI-generated imagery batched for consistency and efficiency; do not generate one image per spot.
 
+**Plan illustration shape from placement, not from a square default.** Before writing the sheet row, group the planned spot illustrations by intended placement shape: compact object, tall side accent, wide banner/vignette, or another explicit shape family. Do not ask for generic "small illustrations" with no shape intent. If one deck needs incompatible shapes, write separate sheet intents instead of forcing every element into one implied square set; Image_Generator owns the exact sheet ratio and grid.
+
 **When recommending C** — surface its three implementation modes so the user knows "no API key" is a supported state:
 
 | Mode | Trigger | Mechanism |
@@ -368,7 +370,7 @@ Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`imag
 
 Selections may be mixed at the row level — e.g. a deck can use C for hero illustrations while sourcing D for supporting team photos.
 
-> **Spot illustrations → one sheet, not N rows.** When the deck wants ≥3 small same-family spot illustrations as decorative accessories across pages (the illustration counterpart to icons), do not write one `ai` row per element. Write **one `ai` sheet row** (the grid prompt — generated but never placed, kept out of `spec_lock.md images`) **plus one `slice` element row per cell** (each placed, each listed in `spec_lock.md images` so the Executor may reference it). Step 5 generates the sheet then slices it; one generation keeps the whole set on one style/palette, the way the deck-wide rendering lock intends. Plan these sparingly, only where decoration genuinely lifts the page. Full resource contract + slice command: [`image-generator.md`](./image-generator.md) §4.3.
+> **Spot illustrations → one sheet, not N rows.** When the deck wants ≥3 small same-family spot illustrations as decorative accessories across pages (the illustration counterpart to icons), do not write one `ai` row per element. Write **one `ai` sheet row** (the sheet prompt intent — generated but never placed, kept out of `spec_lock.md images`) **plus one `slice` element row per used element** (each placed, each listed in `spec_lock.md images` so the Executor may reference it). The sheet row's `Reference` must name the intended cell shape family and placement purpose, such as "portrait side-accent spot set" or "landscape footer-vignette spot set"; the slice rows reference the parent sheet + cell. Step 5 / Image_Generator chooses the exact sheet ratio, grid, and slice command. Plan these sparingly, only where decoration genuinely lifts the page. Full resource contract + slice command: [`image-generator.md`](./image-generator.md) §4.3.
 
 #### h.5 AI Image Strategy — lock rendering + palette (only when C is selected)
 
