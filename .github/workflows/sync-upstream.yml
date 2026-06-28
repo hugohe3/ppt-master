@@ -41,72 +41,13 @@ jobs:
         with:
           model: deepseek/deepseek-v4-pro
           prompt: |
-            ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'DRY RUN MODE: 仅检查上游是否有更新，输出变更摘要，不要做任何修改或提交。' || '' }}
+            ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'DRY RUN MODE: 仅检查上游是否有更新，输出变更摘要。不要修改任何文件。' || '' }}
 
-            执行上游项目 (hugohe3/ppt-master) 的合并与 uvx 适配流程。
+            Read `.opencode/command/sync-upstream.md` and follow ALL steps exactly as written.
 
-            ## 关键约束
-            - 只修改 .md 文件、cli.py、pyproject.toml、requirements.txt、uv.lock
-            - skills/ppt-master/scripts/ 下所有 .py 文件零改动
-            - docs/superpowers/ 目录不改动
-            - 不要创建 git tag
-            - 提交前运行 check_cli_sync.py 和 check_deps_sync.py
-
-            ## 执行步骤
-
-            ### 1. 检查上游
-            ```
-            git remote add upstream https://github.com/hugohe3/ppt-master.git || true
-            git fetch upstream
-            git log main..upstream/main --oneline
-            ```
-
-            无新提交则输出 "No upstream updates." 并结束。
-
-            ### 2. 合并
-            ```
-            git merge upstream/main --no-edit
-            ```
-
-            冲突解决原则：
-            - python3 vs uvx → 保留 uvx
-            - 保留 fork 的 pyproject.toml 结构，只同步依赖变更
-            - 接受上游 .md 内容，将 python3 → uvx
-            - 无法解决时 git merge --abort 并在 PR 中说明
-
-            ### 3. 补全 cli.py
-            ```
-            python skills/ppt-master/scripts/check_cli_sync.py
-            ```
-            缺失脚本按 kebab-case 命名，同时加入根目录和 skills/ppt-master/ 两个 cli.py。
-
-            ### 4. 转换命令格式
-            解析 cli.py COMMANDS 字典，批量替换 skills/ppt-master/、AGENTS.md、CLAUDE.md、docs/（排除 superpowers/、windows-installation、code-style）下所有 .md 文件：
-            - python3 skills/ppt-master/scripts/xxx.py → uvx ppt-master <cmd>
-            - python3 scripts/xxx.py → uvx ppt-master <cmd>
-            - uv run skills/ppt-master/scripts/xxx.py → uvx ppt-master <cmd>
-            - uv run scripts/xxx.py → uvx ppt-master <cmd>
-
-            ### 5. 同步依赖
-            ```
-            uv lock && cd skills/ppt-master && uv lock && cd ..
-            python skills/ppt-master/scripts/check_deps_sync.py
-            ```
-
-            ### 6. Bump 版本
-            ```
-            python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])"
-            ```
-            两个 pyproject.toml 的 version 字段末尾 +1。
-
-            ### 7. 验证并提交
-            ```
-            python skills/ppt-master/scripts/check_cli_sync.py
-            python skills/ppt-master/scripts/check_deps_sync.py
-            git add -u
-            git add cli.py skills/ppt-master/cli.py pyproject.toml skills/ppt-master/pyproject.toml skills/ppt-master/requirements.txt uv.lock skills/ppt-master/uv.lock
-            git status
-            git commit -m "sync upstream: adapt to uvx, bump version"
-            ```
-
-            在 PR 描述中总结上游新增提交数、冲突、新增映射、依赖变更。
+            Important adaptations for this run:
+            - Use `python3` instead of `python` (GitHub Actions Ubuntu runner)
+            - This is a repo event — do NOT manually create or push git tags
+            - Do NOT manually push to main — the infrastructure handles branch/PR creation
+            - If there are no upstream changes, stop immediately
+            - Keep all git commits on the current branch
