@@ -184,7 +184,7 @@ When the user provides non-Markdown content, convert immediately:
 python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
 ```
 
-Format options: `ppt169` (default), `ppt43`, `xhs`, `story`, etc. For the full format list, see `references/canvas-formats.md`.
+Format options must be named with concrete dimensions. Default: `ppt169` = `1280x720`, `viewBox="0 0 1280 720"`. Other examples: `ppt43` = `1024x768`, `story` = `1080x1920`, `banner` = `1920x1080`. For the full format list, see `references/canvas-formats.md`.
 
 Import source content (choose based on the situation):
 

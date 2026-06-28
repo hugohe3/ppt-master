@@ -126,7 +126,7 @@ Before composing Step 2, extract the template's reusable norms from the previous
 
 | Norm area | Extract from | Record as |
 |---|---|---|
-| Canvas / page geometry | `manifest.json` slide size, SVG `viewBox` | `[fact]` canvas format and aspect ratio |
+| Canvas / page geometry | `manifest.json` slide size, SVG `width` / `height` / `viewBox` | `[fact]` canvas format, pixel dimensions, source `viewBox`, and aspect ratio |
 | Identity system | theme colors, font usage, logo / emblem assets, recurring backgrounds | `[fact]` when imported; `[suggested]` only for visual estimates |
 | Layout grammar | masters / layouts, repeated chrome, margins, columns, card grids, section dividers | Template-specific rules, not generic spacing boilerplate |
 | Image system | image crops, masks, full-bleed zones, hero-image placement, mosaic rules, caption / overlay treatment | Template-specific image-placement rules with source examples |
@@ -202,7 +202,7 @@ Compose a single message that surfaces every Required brief item to the user, **
 | Template kind | Recommended localized label with English ID, plus both options and the rule for choosing |
 | Category | Recommended localized category with English ID, plus `brand` / `general` / `scenario` / `government` / `special` with localized explanations |
 | Theme mode | Recommended localized mode with English ID, plus available modes such as `light` / `dark` / `mixed` with localized explanations |
-| Canvas format | Recommended canvas, plus other supported formats from [`canvas-formats.md`](../references/canvas-formats.md) that fit the source aspect ratio or user intent |
+| Canvas format | Recommended canvas, plus other supported formats from [`canvas-formats.md`](../references/canvas-formats.md) that fit the source aspect ratio or user intent. Always show the concrete pixel size and `viewBox`; do not treat two same-ratio formats such as `ppt169` (`1280x720`) and `banner` (`1920x1080`) as interchangeable. |
 | Replication mode | Recommended localized mode with English ID, plus all modes available for the current input type; list forbidden modes for type C / D as unavailable with localized reasons |
 | Visual fidelity for fixed pages | Recommended localized choice with English ID, plus both `literal` / `adapted` options when applicable |
 | Asset bundling | Recommended included assets, plus excluded candidate assets with a one-line reason when reference assets exist |
@@ -217,7 +217,7 @@ Items to surface:
 | Applicable scenarios | Yes | `[suggested]` from analysis; user confirms |
 | Tone summary | Yes | `[suggested]` from analysis (e.g. `Modern, restrained, data-driven`) |
 | Theme mode | Yes | A: `[fact]` from `manifest.json` background colors. B: `[fact]` from SVG `fill`. C: `[suggested]` from visual estimate. D: `[decision]` |
-| Canvas format | Yes | A/B: `[fact]` from slide size or SVG `viewBox`. C: `[suggested]` from image aspect ratio. D: `[decision]`, default `ppt169` |
+| Canvas format and dimensions | Yes | A/B: `[fact]` from slide size or SVG `width` / `height` / `viewBox`; show `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, and `source_viewbox`. C: `[suggested]` from image aspect ratio. D: `[decision]`, default `ppt169` (`1280x720`, `0 0 1280 720`) |
 | Replication mode | Yes | `[decision]` — `standard` always available; `fidelity` and `mirror` available for type A (canonical, manifest-anchored) and type B (AI visual clustering / direct 1:1 copy — see Step 1 caveats); reject `fidelity` / `mirror` upfront for type C / D |
 | Visual fidelity for fixed pages | Yes for `standard` / `fidelity` when reference exists; **N/A for `mirror`** (mirror is implicitly literal) | `[decision]` — `literal` (preserve original geometry / decoration / sprite crops as-is; for cover / chapter / ending especially) or `adapted` (use the reference for tone/structure but allow design evolution). Different page types may take different settings |
 | Basic template norms | Yes when reference exists | `[fact]` / `[suggested]` — layout grammar, image system, density rhythm, page roster semantics, and asset policy extracted in Step 1 |
@@ -235,7 +235,7 @@ For type A, also include in this message:
 
 The user replies with corrections, additions, or "all good".
 
-> **Persist the brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 4, declare a YAML frontmatter block at the top with the confirmed brief (`template_id`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `replication_mode`, etc.). `register_template.py` reads this in Step 6, so the brief flows directly into the index without the AI re-deriving it from prose. See Step 6 for the recommended frontmatter shape.
+> **Persist the brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 4, declare a YAML frontmatter block at the top with the confirmed brief (`template_id`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, `source_viewbox`, `replication_mode`, etc.). `register_template.py` reads this in Step 6, so the brief flows directly into the index without the AI re-deriving it from prose. See Step 6 for the recommended frontmatter shape.
 
 ---
 
@@ -350,7 +350,8 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 - [ ] Every page declared in `design_spec.md §V Page Roster` exists as an SVG file in the template directory (and vice versa — no orphan files)
 - [ ] Variant filenames follow the letter-suffix convention (e.g. `03a_content_two_col.svg`); variants typically reuse the parent type's placeholder set unless the spec frontmatter declares otherwise
 - [ ] If TOC exists, placeholder pattern uses the canonical indexed form
-- [ ] SVG viewBox matches the chosen canvas format (for `ppt169`: `0 0 1280 720`)
+- [ ] `design_spec.md` frontmatter declares `canvas_format`, `canvas_width`, `canvas_height`, and `canvas_viewbox`; PPTX/SVG-backed templates also declare `source_canvas_width`, `source_canvas_height`, and `source_viewbox`
+- [ ] SVG `width` / `height` / `viewBox` match the declared canvas dimensions, not just the aspect ratio (for `ppt169`: `1280x720`, `0 0 1280 720`; for `banner`: `1920x1080`, `0 0 1920 1080`)
 - [ ] Placeholder names follow the canonical convention where applicable; templates with intentionally different vocabularies (e.g. `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`) should declare a `placeholders:` frontmatter block to silence advisory warnings
 - [ ] Asset files referenced by SVGs actually exist in the template package
 - [ ] If any SVG references an extracted vector `data-icon`, the corresponding SVG asset exists directly under the package's `icons/` directory; do not add a separate illustration embedding script
@@ -394,6 +395,12 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > kind: deck
 > summary: ...
 > canvas_format: ppt169
+> canvas_width: 1280
+> canvas_height: 720
+> canvas_viewbox: "0 0 1280 720"
+> source_canvas_width: 1280
+> source_canvas_height: 720
+> source_viewbox: "0 0 1280 720"
 > page_count: 5
 > primary_color: "#005587"
 > ---
@@ -404,6 +411,12 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > kind: layout
 > summary: ...
 > canvas_format: ppt169
+> canvas_width: 1280
+> canvas_height: 720
+> canvas_viewbox: "0 0 1280 720"
+> source_canvas_width: 1280
+> source_canvas_height: 720
+> source_viewbox: "0 0 1280 720"
 > page_count: 5
 > page_types: [cover, toc, chapter, content, ending]
 > ---

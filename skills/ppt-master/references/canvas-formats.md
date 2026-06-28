@@ -4,17 +4,18 @@
 
 ## Format Quick Reference
 
-| Format | viewBox | Ratio | Use Case |
-|--------|---------|-------|----------|
-| PPT 16:9 | `0 0 1280 720` | 16:9 | Business presentations, meetings |
-| PPT 4:3 | `0 0 1024 768` | 4:3 | Traditional projectors, academic talks |
-| Xiaohongshu (RED) | `0 0 1242 1660` | 3:4 | Image-text sharing, knowledge posts |
-| WeChat Moments / IG | `0 0 1080 1080` | 1:1 | Square posters, brand showcases |
-| Story / TikTok | `0 0 1080 1920` | 9:16 | Vertical stories, short video covers |
-| WeChat Article Header | `0 0 900 383` | 2.35:1 | WeChat article cover images |
-| Landscape Banner | `0 0 1920 1080` | 16:9 | Web banners, digital screens |
-| Portrait Poster | `0 0 1080 1920` | 9:16 | Phone screens, elevator ads |
-| A4 Print | `0 0 1240 1754` | 1:sqrt(2) | Print posters, flyers |
+| ID | Format | Size | viewBox | Ratio | Use Case |
+|----|--------|------|---------|-------|----------|
+| `ppt169` | PPT 16:9 | `1280x720` | `0 0 1280 720` | 16:9 | Business presentations, meetings |
+| `ppt43` | PPT 4:3 | `1024x768` | `0 0 1024 768` | 4:3 | Traditional projectors, academic talks |
+| `xiaohongshu` | Xiaohongshu (RED) | `1242x1660` | `0 0 1242 1660` | 3:4 | Image-text sharing, knowledge posts |
+| `moments` | WeChat Moments / IG | `1080x1080` | `0 0 1080 1080` | 1:1 | Square posters, brand showcases |
+| `story` | Story / TikTok | `1080x1920` | `0 0 1080 1920` | 9:16 | Vertical stories, short video covers |
+| `wechat` | WeChat Article Header | `900x383` | `0 0 900 383` | 2.35:1 | WeChat article cover images |
+| `banner` | Landscape Banner | `1920x1080` | `0 0 1920 1080` | 16:9 | Web banners, digital screens |
+| `a4` | A4 Print | `1240x1754` | `0 0 1240 1754` | 1:sqrt(2) | Print posters, flyers |
+
+`ppt169` is the canonical PPT wide-screen canvas in this repo: `1280x720`, not any arbitrary 16:9 size. Same-ratio canvases such as `banner` (`1920x1080`) must be treated as different coordinate systems.
 
 ## Format Selection Decision Tree
 

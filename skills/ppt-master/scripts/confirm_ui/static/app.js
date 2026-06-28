@@ -326,7 +326,7 @@
 
     // Render an enumerable field: ALL options from the catalog, recommended one
     // badged, current selection from STATE, plus a trailing Custom box.
-    // `list` is either a flat array of {id,label,desc,dim} or a grouped array
+    // `list` is either a flat array of {id,label,desc,dim,viewbox} or a grouped array
     // of {group, items:[...]}.
     function enumField(parent, list, recommendedId, getVal, setVal, opts2) {
         list = list || [];
@@ -364,12 +364,16 @@
         function deselect() { allChips.forEach(function (c) { c.classList.remove("selected"); }); }
         function makeChip(o) {
             var label = optionLabel(o);
-            if (o.dim) label += " · " + o.dim;
             var desc = optionDesc(o);
-            if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
             var spec = specById[o.id];
-            if (spec && spec.note) label += " · " + spec.note;
             var chip = el("div", "chip");
+            if (o.viewbox) {
+                label = o.id + (o.dim ? " · " + o.dim : "");
+            } else {
+                if (o.dim) label += " · " + o.dim;
+                if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+                if (spec && spec.note) label += " · " + spec.note;
+            }
             chip.appendChild(el("span", "chip-text", label));
             if (spec) {
                 // spectrum pick: badge shows its temperament tag, not the generic ★

@@ -7,6 +7,7 @@
       "label_zh": "宽屏演示 16:9",
       "label_en": "PPT 16:9",
       "dim": "1280×720",
+      "viewbox": "0 0 1280 720",
       "use_zh": "现代投影 / 在线演示",
       "use_en": "Modern projectors / online"
     },
@@ -16,6 +17,7 @@
       "label_zh": "传统演示 4:3",
       "label_en": "PPT 4:3",
       "dim": "1024×768",
+      "viewbox": "0 0 1024 768",
       "use_zh": "传统投影",
       "use_en": "Traditional projectors"
     },
@@ -25,6 +27,7 @@
       "label_zh": "微信公众号头图",
       "label_en": "WeChat Article Header",
       "dim": "900×383",
+      "viewbox": "0 0 900 383",
       "use_zh": "微信公众号文章封面",
       "use_en": "WeChat article cover"
     },
@@ -34,6 +37,7 @@
       "label_zh": "小红书图文",
       "label_en": "Xiaohongshu (RED)",
       "dim": "1242×1660",
+      "viewbox": "0 0 1242 1660",
       "use_zh": "知识分享 / 种草封面",
       "use_en": "Knowledge sharing"
     },
@@ -43,6 +47,7 @@
       "label_zh": "社交方图",
       "label_en": "WeChat Moments / IG",
       "dim": "1080×1080",
+      "viewbox": "0 0 1080 1080",
       "use_zh": "社交媒体方图",
       "use_en": "Social square"
     },
@@ -52,6 +57,7 @@
       "label_zh": "竖屏短视频",
       "label_en": "Story / TikTok",
       "dim": "1080×1920",
+      "viewbox": "0 0 1080 1920",
       "use_zh": "短视频 / 竖屏封面",
       "use_en": "Short-video / story cover"
     },
@@ -61,6 +67,7 @@
       "label_zh": "横幅",
       "label_en": "Landscape Banner",
       "dim": "1920×1080",
+      "viewbox": "0 0 1920 1080",
       "use_zh": "网页横幅 / 大屏",
       "use_en": "Web banner / big screen"
     },
@@ -70,6 +77,7 @@
       "label_zh": "A4 打印",
       "label_en": "A4 Print",
       "dim": "1240×1754",
+      "viewbox": "0 0 1240 1754",
       "use_zh": "打印 / 文档导出",
       "use_en": "Print / PDF export"
     }
