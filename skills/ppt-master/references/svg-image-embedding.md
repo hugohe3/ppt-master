@@ -18,17 +18,19 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 | product.png | 600x400 | Page 3 product photo | Photography | user | Existing | - |
 | formula_001.png | 736x168 | Page 3 block equation | Latex Formula | formula | Rendered | `E = mc^2` |
 | chart.png | 600x400 | Page 5 placeholder | Illustration | placeholder | Placeholder | Team collaboration scene to be added later |
+| spot_sheet.png | 1024x1024 | 2x2 spot illustration sheet, not placed | Illustration Sheet | ai | Pending | Four same-family spot illustrations on a clean grid |
+| spot_team.png | TBD after slicing | Page 4 team spot illustration | Illustration | slice | Pending | From `spot_sheet.png` cell 1,1 |
 ```
 
 ### Image Status Enum
 
 | Status | Meaning | Executor Handling |
 |--------|---------|-------------------|
-| **Pending** | Acquisition needed (`Acquire Via: ai` or `web`); not yet attempted | Image Acquisition Phase (Step 5) consumes this; must not remain after Step 5 |
-| **Generated** | AI-generated file exists at expected path | Reference from `../images/`; no on-slide credit needed |
+| **Pending** | Acquisition needed (`Acquire Via: ai` / `web`) or derivation needed (`Acquire Via: slice`); not yet attempted | Image Acquisition Phase (Step 5) consumes this; must not remain after Step 5 |
+| **Generated** | AI-generated file exists at expected path, or sliced element file exists at expected path | Reference from `../images/`; no on-slide credit needed. **Exception**: an `Illustration Sheet` row is only a slice source — it lives in §VIII but never in `spec_lock.md images`, so the Executor never places it |
 | **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [executor-base.md §6](./executor-base.md) and [image-searcher.md §7](./image-searcher.md) for the visual spec) |
 | **Rendered** | Deterministic formula PNG exists at expected path (`Acquire Via: formula`) | Reference from `../images/`; use `preserveAspectRatio="xMidYMid meet"` and do not crop |
-| **Needs-Manual** | Acquisition attempted once + one retry, failed | Dashed placeholder unless user has manually supplied the file |
+| **Needs-Manual** | Acquisition attempted once + one retry, failed; for `slice`, parent sheet is unavailable | Dashed placeholder unless user has manually supplied the file. For `slice` rows, place the parent sheet and rerun `slice_images.py`; do not hand-place individual element files |
 | **Existing** | User already has image (`Acquire Via: user`) | Place in `images/`, reference with `<image>` |
 | **Placeholder** | Intentionally not prepared yet (`Acquire Via: placeholder`) | Dashed border placeholder; replace later |
 
@@ -41,6 +43,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 2. Image Acquisition (Step 5):
    - Pending + ai  → Image_Generator runs image_gen.py     → Generated
    - Pending + web → Image_Searcher runs image_search.py   → Sourced
+   - Pending + slice → after parent AI sheet is Generated, slice_images.py cuts element files → Generated
    - formula / user / placeholder rows are skipped
 3. Executor generates SVGs (svg_output/)
    ├── Existing / Generated → <image href="../images/xxx.png" .../>

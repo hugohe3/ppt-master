@@ -266,6 +266,7 @@ Catalog read: 71 templates
 - `Background` — cover / chapter / full-bleed atmosphere
 - `Photography` — real-world photo
 - `Illustration` — vector / flat / painterly art
+- `Illustration Sheet` — a grid of several spot illustrations generated as one image to be sliced (the `ai` sheet row of a `slice` set; never placed itself)
 - `Diagram` — schematic / architecture / flowchart
 - `Portrait` — single-subject person
 - `Latex Formula` — formula PNG rendered by `latex_render.py`
@@ -284,6 +285,9 @@ Catalog read: 71 templates
 - `formula` — already rendered by `latex_render.py` before this spec was written
 - `user` — user-supplied
 - `placeholder` — intentionally deferred
+- `slice` — a spot-illustration element derived in Step 5 by cutting it out of an `ai` sheet row (not generated on its own)
+
+> **Spot-illustration sheets (`slice`).** When the deck draws several same-family spot illustrations from one generated sheet (see [`image-generator.md`](../references/image-generator.md) §4.3), write **two kinds of rows**: one **sheet row** (`Acquire Via: ai`, `Type: Illustration Sheet`, name the grid in `Reference` e.g. `2x3 spot sheet`) that is generated but **never placed** — keep it out of `spec_lock.md images`; and one **element row per cell** (`Acquire Via: slice`, `Reference` naming the parent sheet + cell, dimensions filled after slicing) that **is** placed — list every element row in `spec_lock.md images` so the Executor may reference it. An element row with no sheet row, or a sliced file absent from `spec_lock.md images`, is an invalid spec.
 
 **text_policy** (`ai` rows only; AI judges per row, no global default bias):
 

@@ -2,9 +2,9 @@
 
 # Image_Generator Reference Manual
 
-Role definition for the **AI image generation path**: convert each `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`.
+Role definition for the **AI image generation path**: convert each `Acquire Via: ai` row into an optimized prompt, generate the image, and save it to `project/images/`; also defines the `slice` derivation path for AI-generated illustration sheets.
 
-**Trigger**: resource list rows with `Acquire Via: ai`. The role is loaded only when at least one such row exists.
+**Trigger**: resource list rows with `Acquire Via: ai` or `slice`. The role is loaded only when at least one such row exists.
 
 ---
 
@@ -239,6 +239,36 @@ Example opening for a triptych hero:
 | engineering | schematic notation, dimension callouts, section-cut conventions |
 
 **When uncertain about field conventions**: read `sources/` before drafting the prompt.
+
+### 4.3 Illustration sheets — one generation, many spot elements
+
+When a deck wants several small **spot illustrations** scattered as decorative accessories across pages (the illustration counterpart to icons), do **not** generate them one image per slot — that multiplies generation cost and lets the style drift between calls. Generate **one sheet** that lays out all the elements in a grid, then slice it. One call buys a set of elements with an identical style, palette, and line quality — the same cross-page consistency the deck-wide `deck_rendering` / `deck_palette` lock exists to protect.
+
+**When to use**: ≥3 spot illustrations of the same family needed across the deck. For a single hero/local image, stay with the normal one-row-per-image flow (§4.1). Plan sheets sparingly — only where decorative illustration genuinely lifts the page; an unused element costs nothing, but a deck papered in decoration reads cheap.
+
+**Sheet prompt convention** (one manifest item, `page_role: local`, `text_policy: none`, `image_size` chosen from final placement size):
+
+- Lay the elements out in an explicit **R×C grid, evenly spaced with clear gutters**, each element **centered in its own cell** and isolated (no element bleeds into a neighbor).
+- One **flat single-color background** across the whole sheet, set to the deck's background/secondary HEX — this is what lets the slicer key it out cleanly and lets the cut element sit on the slide without a visible box.
+- Shared `deck_rendering` + `deck_palette` as always. NO text, labels, or numbers anywhere (§5.1, §5.3).
+
+**Resource contract — the sheet and its elements are different row kinds.** A sliced element can only be placed if it exists as a resource the Executor is allowed to reference (`spec_lock.md images`). So §VIII carries two row kinds (full rules: [`design_spec_reference.md`](../templates/design_spec_reference.md) §VIII):
+
+- **Sheet row** — `Acquire Via: ai`, `Type: Illustration Sheet`, the grid prompt, named the slice source (`Reference: 2x3 spot sheet`). It is generated in Step 5 but **never placed on a slide** — keep it **out of** `spec_lock.md images`.
+- **Element rows** — one per cell, `Acquire Via: slice`, filename matching a `--names` output, `Reference` naming the parent sheet + cell. These **are** placed — list every one in `spec_lock.md images`, usually with ` | no-crop` (a tight-trimmed transparent spot should be fit, not cover-cropped). Their dimensions are filled in after slicing (Step 5 re-runs `analyze_images.py`).
+
+**Slice** with [`slice_images.py`](../scripts/slice_images.py) — cells are cut row-major into individual files in `images/`, after which the element rows are ordinary images the Executor places like any other (§6 references, Step 7 embed). Recommended flags: `--names` (semantic per-cell filenames matching the element rows; the count **must** equal `rows*cols`), `--trim` (tight-crop each cell so imprecise placement inside a cell doesn't leave lopsided margins), `--alpha` (knock the flat background out to transparency so an element drops onto any slide color):
+
+```bash
+python3 scripts/slice_images.py <project>/images/illus_sheet.png --grid 2x3 \
+    --names team,product,customer,growth,risk,vision --trim --alpha
+```
+
+**Three constraints that decide whether it looks good**:
+
+1. **Flat background, matched to the slide.** `image_gen.py` has no transparent-background mode, so the cut element carries whatever was behind it. A flat sheet background (= deck background HEX) is what `--alpha` keys out and what makes non-keyed pieces blend.
+2. **Clean grid, or it cuts ugly.** The model will not place every element perfectly; force a clear grid with gutters, and generate **a few sheets** (re-roll the same prompt) to pick the cleanest-laid-out one before slicing. `--trim` absorbs the rest.
+3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
 ---
 
