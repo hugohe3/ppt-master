@@ -40,6 +40,12 @@ Output files land directly under `project/images/`. Formula filenames should use
 
 Unified image generation entry point.
 
+This script is the **Path A** API/proxy executor for generated images. In the
+PPT pipeline, always check the confirmed `image_ai_path` before running manifest
+mode: `host-native` uses the host's image tool directly and must not run
+`image_gen.py --manifest`; use `image_gen.py --render-md` only for its
+read-only Markdown sidecar.
+
 ```bash
 python3 scripts/image_gen.py "A modern futuristic workspace"
 python3 scripts/image_gen.py "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
