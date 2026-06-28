@@ -385,58 +385,6 @@
       "label_en": "No images"
     }
   ],
-  "illustration_usage": [
-    {
-      "id": "none",
-      "label": "不刻意使用插图",
-      "label_zh": "不刻意使用插图",
-      "label_en": "No intentional illustrations",
-      "desc_zh": "默认选项；仅在内容本身需要时使用图片，不额外建立插图系统。",
-      "desc_en": "Default. Use images only when the content itself needs them; no separate illustration system."
-    },
-    {
-      "id": "use",
-      "label": "使用插图",
-      "label_zh": "使用插图",
-      "label_en": "Use illustrations",
-      "desc_zh": "让插图成为版面的一部分；强度与来源由系统按内容、视觉风格和图片策略判断。",
-      "desc_en": "Let illustrations be part of the design; intensity and source are decided from content, visual style, and image strategy."
-    }
-  ],
-  "illustration_strategy": [
-    {
-      "id": "hero-only",
-      "label": "封面 / 章节主视觉",
-      "label_zh": "封面 / 章节主视觉",
-      "label_en": "Hero visuals",
-      "desc_zh": "只在封面、章节页或关键转场页使用大插图，正文页保持克制。",
-      "desc_en": "Use large illustrations only on covers, section openers, or key transitions; keep body pages restrained."
-    },
-    {
-      "id": "sparse-spots",
-      "label": "少量点状插图",
-      "label_zh": "少量点状插图",
-      "label_en": "Sparse spot illustrations",
-      "desc_zh": "在少数正文页放小插图点题，避免每页都有装饰。",
-      "desc_en": "Place small spot illustrations on selected body pages; avoid decorating every slide."
-    },
-    {
-      "id": "recurring-motif",
-      "label": "重复视觉母题",
-      "label_zh": "重复视觉母题",
-      "label_en": "Recurring motif",
-      "desc_zh": "用同一组角色、物件或符号贯穿全稿，建立统一识别。",
-      "desc_en": "Repeat a consistent family of characters, objects, or symbols across the deck."
-    },
-    {
-      "id": "image-as-canvas",
-      "label": "插图作为版面背景",
-      "label_zh": "插图作为版面背景",
-      "label_en": "Image as canvas",
-      "desc_zh": "让插图承担页面空间、背景或场景，文字浮在其上或嵌入其中。",
-      "desc_en": "Let illustrations carry page space, background, or scene structure with text overlaid or embedded."
-    }
-  ],
   "image_ai_path": [
     {
       "id": "auto",
