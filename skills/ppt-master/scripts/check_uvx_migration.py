@@ -34,6 +34,8 @@ ALLOWED_FILES = {
 ALLOWED_DIRS = {
     "docs/superpowers/",
     "docs/zh/upstream-sync.md",
+    # .py files under scripts/ are zero-change per uvx refactor design spec
+    "skills/ppt-master/scripts/",
 }
 
 CHECK_EXTENSIONS = {".md", ".py", ".yml", ".yaml", ".toml", ".txt", ".rst", ".sh", ".ps1", ".cfg"}

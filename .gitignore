@@ -172,6 +172,9 @@ yarn.lock
 .cache/
 *.lock
 .lock
+# uv.lock must be committed for reproducible builds
+!uv.lock
+!skills/ppt-master/uv.lock
 
 # Live preview direct-edit history (per-project, regenerated on edit)
 .live_edits.jsonl
