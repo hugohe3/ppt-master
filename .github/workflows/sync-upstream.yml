@@ -1,12 +1,6 @@
 name: Sync Upstream
 
 on:
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "仅检查是否有上游更新，不实际合并"
-        type: boolean
-        default: false
   schedule:
     # 每周一 UTC 8:00（北京时间 16:00）
     - cron: "0 8 * * 1"
@@ -41,13 +35,11 @@ jobs:
         with:
           model: deepseek/deepseek-v4-pro
           prompt: |
-            ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'DRY RUN MODE: 仅检查上游是否有更新，输出变更摘要。不要修改任何文件。' || '' }}
-
             Read `.opencode/command/sync-upstream.md` and follow ALL steps exactly as written.
 
-            Important adaptations for this run:
-            - Use `python3` instead of `python` (GitHub Actions Ubuntu runner)
-            - This is a repo event — do NOT manually create or push git tags
-            - Do NOT manually push to main — the infrastructure handles branch/PR creation
-            - If there are no upstream changes, stop immediately
-            - Keep all git commits on the current branch
+            Important adaptations for this GHA run:
+            - Use `python3` instead of `python` (Ubuntu runner)
+            - Do NOT manually create or push git tags
+            - Do NOT manually push to main — infrastructure handles branch/PR creation
+            - If no upstream changes, stop immediately
+            - Keep all commits on the current branch
