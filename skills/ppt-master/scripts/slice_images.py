@@ -14,7 +14,7 @@ Two optional cleanups address the realities of cropping a raster sheet:
            placement inside a cell does not leave lopsided margins.
   --alpha  knock the (flat) sheet background out to transparency, so an element
            can sit on a differently-colored slide without a visible box.
-Both need a background color; it is auto-sampled from each cell's corners unless
+Both need a background color; it is auto-sampled from each cell's border unless
 you pass --bg.
 
 Usage:
@@ -35,15 +35,18 @@ import argparse
 import re
 import sys
 from pathlib import Path
+from statistics import median
 from typing import Optional
 
 from console_encoding import configure_utf8_stdio
 
 configure_utf8_stdio()
 
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageFilter
 
 _GRID_RE = re.compile(r"^\s*(\d+)\s*[xX×]\s*(\d+)\s*$")
+_BG_SAMPLE_BORDER = 2
+_DEFAULT_FEATHER = 4
 
 
 def _log(msg: str) -> None:
@@ -80,19 +83,69 @@ def _safe_basename(name: str) -> str:
 
 
 def _sample_bg(cell: Image.Image) -> tuple[int, int, int]:
-    """Estimate the flat background color from a cell's four corner pixels."""
+    """Estimate the flat background color from a cell's border ring."""
     rgb = cell.convert("RGB")
     w, h = rgb.size
-    corners = [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]
-    px = [rgb.getpixel(c) for c in corners]
-    return tuple(round(sum(ch) / len(px)) for ch in zip(*px))  # type: ignore[return-value]
+    border = max(1, min(_BG_SAMPLE_BORDER, w, h))
+    px = rgb.load()
+    pixels = []
+
+    for y in range(border):
+        for x in range(w):
+            pixels.append(px[x, y])
+
+    bottom_start = max(border, h - border)
+    for y in range(bottom_start, h):
+        for x in range(w):
+            pixels.append(px[x, y])
+
+    right_start = max(border, w - border)
+    for y in range(border, bottom_start):
+        for x in range(border):
+            pixels.append(px[x, y])
+        for x in range(right_start, w):
+            pixels.append(px[x, y])
+
+    return tuple(round(median(channel)) for channel in zip(*pixels))  # type: ignore[return-value]
 
 
-def _content_mask(cell: Image.Image, bg: tuple[int, int, int], tolerance: int) -> Image.Image:
-    """Build an 'L' mask: 255 where the cell differs from `bg`, 0 elsewhere."""
+def _max_channel_difference(cell: Image.Image, bg: tuple[int, int, int]) -> Image.Image:
+    """Return the maximum absolute RGB channel difference from the background."""
     diff = ImageChops.difference(cell.convert("RGB"), Image.new("RGB", cell.size, bg))
-    gray = diff.convert("L")
-    return gray.point(lambda p: 255 if p > tolerance else 0)
+    red, green, blue = diff.split()
+    return ImageChops.lighter(ImageChops.lighter(red, green), blue)
+
+
+def _soft_mask_from_diff(diff: Image.Image, tolerance: int) -> Image.Image:
+    """Build a feathered alpha mask around the tolerance threshold."""
+    low = max(0, tolerance - _DEFAULT_FEATHER)
+    high = min(255, tolerance + _DEFAULT_FEATHER)
+    if high <= low:
+        return diff.point(lambda p: 255 if p > tolerance else 0)
+
+    span = high - low
+    lut = []
+    for value in range(256):
+        if value <= low:
+            lut.append(0)
+        elif value >= high:
+            lut.append(255)
+        else:
+            lut.append(round((value - low) * 255 / span))
+    return diff.point(lut)
+
+
+def _content_masks(
+    cell: Image.Image,
+    bg: tuple[int, int, int],
+    tolerance: int,
+) -> tuple[Image.Image, Image.Image]:
+    """Build binary trim and soft alpha masks from the same color distance."""
+    diff = _max_channel_difference(cell, bg)
+    trim_mask = diff.point(lambda p: 255 if p > tolerance else 0)
+    alpha_mask = _soft_mask_from_diff(diff, tolerance)
+    alpha_mask = alpha_mask.filter(ImageFilter.MinFilter(3))
+    return trim_mask, alpha_mask
 
 
 def slice_sheet(
@@ -122,6 +175,11 @@ def slice_sheet(
             f"{total_cells} cells; provide exactly one name per cell"
         )
     safe_names = [_safe_basename(n) for n in names] if names else None
+    if alpha and safe_names:
+        for name in safe_names:
+            suffix = Path(name).suffix.lower()
+            if suffix and suffix != ".png":
+                raise ValueError(f"--alpha requires .png output names, got {name!r}")
 
     sheet = Image.open(sheet_path).convert("RGBA")
     sw, sh = sheet.size
@@ -143,21 +201,22 @@ def slice_sheet(
                 x0, x1, y0, y1 = x0 + dx, x1 - dx, y0 + dy, y1 - dy
             cell = sheet.crop((x0, y0, x1, y1))
 
-            mask: Optional[Image.Image] = None
+            trim_mask: Optional[Image.Image] = None
+            alpha_mask: Optional[Image.Image] = None
             bbox = None
             if trim or alpha:
                 cell_bg = bg if bg is not None else _sample_bg(cell)
-                mask = _content_mask(cell, cell_bg, tolerance)
-                bbox = mask.getbbox()
+                trim_mask, alpha_mask = _content_masks(cell, cell_bg, tolerance)
+                bbox = trim_mask.getbbox()
                 if bbox is None:
                     raise ValueError(f"cell ({r},{c}) is all background; no element was sliced")
 
-            if trim and mask is not None and bbox is not None:
+            if trim and trim_mask is not None and alpha_mask is not None and bbox is not None:
                 cell = cell.crop(bbox)
-                mask = mask.crop(bbox)
+                alpha_mask = alpha_mask.crop(bbox)
 
-            if alpha and mask is not None:
-                cell.putalpha(mask)
+            if alpha and alpha_mask is not None:
+                cell.putalpha(alpha_mask)
 
             if safe_names:
                 out_name = safe_names[idx]
@@ -216,11 +275,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--bg", default=None,
-        help="Background hex color for --trim/--alpha (default: auto-sample cell corners)",
+        help="Background hex color for --trim/--alpha (default: auto-sample cell border)",
     )
     parser.add_argument(
         "--tolerance", type=int, default=18,
-        help="Per-pixel color distance treated as background for --trim/--alpha (default: 18)",
+        help="Maximum per-channel color distance treated as background for --trim/--alpha "
+             "(default: 18)",
     )
     return parser
 
@@ -244,6 +304,9 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     if not 0.0 <= args.inset < 0.5:
         print("[ERROR] --inset must be in [0, 0.5)", file=sys.stderr)
+        return 1
+    if not 0 <= args.tolerance <= 255:
+        print("[ERROR] --tolerance must be in [0, 255]", file=sys.stderr)
         return 1
 
     names = [n.strip() for n in args.names.split(",") if n.strip()] if args.names else None
