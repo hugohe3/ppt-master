@@ -1,6 +1,6 @@
 /* PPT Master - Eight Confirmations UI
  * Finite/enumerable fields (canvas, mode, visual style, icons, image usage,
- * illustration usage, AI source, formula policy, generation mode) list ALL options from
+ * AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
  * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
  * Custom controls. On confirm the page saves result.json and closes.
@@ -52,7 +52,6 @@
             image_strategy_color: "Color",
             image_strategy_mood: "Mood",
             image_usage_custom_required: "Describe the custom image plan before confirming.",
-            illustration_usage: "Illustration usage",
             font_heading: "Heading",
             font_body: "Body",
             font_body_size: "Body baseline size",
@@ -78,8 +77,10 @@
             role_body_text: "body text",
             cjk: "CJK",
             latin: "Latin",
-            sample_cjk: "数字化转型战略",
-            sample_latin: "Digital Transformation",
+            sample_heading_cjk: "主题方案标题",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "关键信息摘要",
+            sample_body_latin: "Key message summary",
             style_preview_label: "Overall impression (color + typography)",
             style_preview_body: "· rough feel only, not the actual slide layout",
             mode_continuous_desc: "Generate the whole deck in one pass.",
@@ -133,7 +134,6 @@
             image_strategy_color: "色彩",
             image_strategy_mood: "情绪",
             image_usage_custom_required: "请先写清楚自定义图片方案。",
-            illustration_usage: "插图使用",
             font_heading: "标题",
             font_body: "正文",
             font_body_size: "正文基准字号",
@@ -159,8 +159,10 @@
             role_body_text: "正文文字",
             cjk: "中文",
             latin: "西文",
-            sample_cjk: "数字化转型战略",
-            sample_latin: "Digital Transformation",
+            sample_heading_cjk: "主题方案标题",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "关键信息摘要",
+            sample_body_latin: "Key message summary",
             style_preview_label: "整体形象（配色 + 字体）",
             style_preview_body: "· 仅大致形象，非实际版式",
             mode_continuous_desc: "一次性连续生成整份演示文稿。",
@@ -279,6 +281,7 @@
     }
 
     function normalizeRecId(field, value) {
+        if (Array.isArray(value)) return normalizeRecId(field, value[0]);
         if (value == null || value === "") return value;
         var aliases = REC_ALIASES[field] || {};
         return aliases[value] || value;
@@ -290,7 +293,6 @@
         if (field === "visual_style") return REC.visual_style || (REC.style && REC.style.value);
         if (field === "icons") return REC.icons && REC.icons.value;
         if (field === "image_usage") return REC.images && REC.images.value;
-        if (field === "illustration_usage") return REC.illustrations && REC.illustrations.value;
         if (field === "image_ai_path") return REC.image_ai_path || (REC.images && REC.images.ai_path);
         if (field === "formula_policy") return REC.typography && REC.typography.formula_policy && REC.typography.formula_policy.value;
         if (field === "generation_mode") return REC.generation_mode && REC.generation_mode.value;
@@ -308,10 +310,9 @@
         if (r != null && r !== "") return r;
         return firstId(list);
     }
-
     // Render an enumerable field: ALL options from the catalog, recommended one
     // badged, current selection from STATE, plus a trailing Custom box.
-    // `list` is either a flat array of {id,label,desc,dim} or a grouped array
+    // `list` is either a flat array of {id,label,desc,dim,viewbox} or a grouped array
     // of {group, items:[...]}.
     function enumField(parent, list, recommendedId, getVal, setVal, opts2) {
         list = list || [];
@@ -349,12 +350,16 @@
         function deselect() { allChips.forEach(function (c) { c.classList.remove("selected"); }); }
         function makeChip(o) {
             var label = optionLabel(o);
-            if (o.dim) label += " · " + o.dim;
             var desc = optionDesc(o);
-            if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
             var spec = specById[o.id];
-            if (spec && spec.note) label += " · " + spec.note;
             var chip = el("div", "chip");
+            if (o.viewbox) {
+                label = label + (o.dim ? " · " + o.dim : "");
+            } else {
+                if (o.dim) label += " · " + o.dim;
+                if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+                if (spec && spec.note) label += " · " + spec.note;
+            }
             chip.appendChild(el("span", "chip-text", label));
             if (spec) {
                 // spectrum pick: badge shows its temperament tag, not the generic ★
@@ -456,7 +461,17 @@
     function normTypography(c) {
         c = c || {};
         if (c.heading && typeof c.heading === "object" && c.body && typeof c.body === "object") {
-            return Object.assign({}, c, { body_size: typographyBodySize(c) });
+            return Object.assign({}, c, {
+                body_size: typographyBodySize(c),
+                heading: Object.assign({}, c.heading, {
+                    sample_cjk: c.heading.sample_cjk || c.sample_heading || "",
+                    sample_latin: c.heading.sample_latin || c.sample_heading_latin || ""
+                }),
+                body: Object.assign({}, c.body, {
+                    sample_cjk: c.body.sample_cjk || c.sample_body || "",
+                    sample_latin: c.body.sample_latin || c.sample_body_latin || ""
+                })
+            });
         }
         return {
             name: c.name || "",
@@ -844,10 +859,35 @@
         return primary + ", " + fallback;
     }
 
-    function fontSample(box, slot, css) {
+    function sampleCandidate(role, script) {
+        var sample = (REC && REC.sample_text) || (REC && REC.samples) || {};
+        var isHeading = role === "heading";
+        var isLatin = script === "latin";
+        var keys = isHeading
+            ? (isLatin ? ["heading_latin", "sample_heading_latin", "title_latin", "title_en"] : ["heading_cjk", "sample_heading", "sample_heading_cjk", "title_zh", "title"])
+            : (isLatin ? ["body_latin", "sample_body_latin", "summary_latin", "summary_en"] : ["body_cjk", "sample_body", "sample_body_cjk", "summary_zh", "summary"]);
+        for (var i = 0; i < keys.length; i += 1) {
+            if (sample[keys[i]]) return sample[keys[i]];
+            if (REC && REC[keys[i]]) {
+                if (typeof REC[keys[i]] === "object" && REC[keys[i]].value) return REC[keys[i]].value;
+                if (typeof REC[keys[i]] === "string") return REC[keys[i]];
+            }
+        }
+        return "";
+    }
+
+    function sampleText(role, script, explicit) {
+        if (explicit) return explicit;
+        var fromRec = sampleCandidate(role, script);
+        if (fromRec) return fromRec;
+        if (role === "heading") return t(script === "latin" ? "sample_heading_latin" : "sample_heading_cjk");
+        return t(script === "latin" ? "sample_body_latin" : "sample_body_cjk");
+    }
+
+    function fontSample(box, slot, css, role) {
         var line = el("div", "font-sample-line");
-        var cjk = el("span", "fs-cjk", slot.sample_cjk || t("sample_cjk"));
-        var lat = el("span", "fs-latin", slot.sample_latin || t("sample_latin"));
+        var cjk = el("span", "fs-cjk", sampleText(role, "cjk", slot.sample_cjk));
+        var lat = el("span", "fs-latin", sampleText(role, "latin", slot.sample_latin));
         var cjkStack = previewFontStack(slot.cjk, css);
         var latinStack = previewFontStack(slot.latin, css);
         if (cjkStack) cjk.style.fontFamily = cjkStack;
@@ -913,8 +953,8 @@
             if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + "px";
             top.appendChild(el("span", "font-card-meta", meta));
             card.appendChild(top);
-            var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css); card.appendChild(hbox);
-            var bbox = el("div", "font-sample-body-box"); fontSample(bbox, body, body.css); card.appendChild(bbox);
+            var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css, "heading"); card.appendChild(hbox);
+            var bbox = el("div", "font-sample-body-box"); fontSample(bbox, body, body.css, "body"); card.appendChild(bbox);
             if (localized(c, "note")) card.appendChild(el("div", "color-note", localized(c, "note")));
             card.addEventListener("click", function () { selectFont(idx); });
             grid.appendChild(card);
@@ -1109,16 +1149,16 @@
             var bodyLatStack = previewFontStack(body.latin, body.css);
 
             card.style.background = bg;
-            titleCjk.textContent = head.sample_cjk || t("sample_cjk");
-            titleLat.textContent = head.sample_latin || t("sample_latin");
+            titleCjk.textContent = sampleText("heading", "cjk", head.sample_cjk);
+            titleLat.textContent = sampleText("heading", "latin", head.sample_latin);
             title.style.color = pri;
             title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
             titleCjk.style.fontFamily = headStack || "";
             titleLat.style.fontFamily = headLatStack || "";
             // CJK and Latin previewed with their own stacks (mirrors the title
             // and the per-card font samples) so each script's font is visible.
-            bodyCjk.textContent = body.sample_cjk || t("sample_cjk");
-            bodyLat.textContent = body.sample_latin || t("sample_latin");
+            bodyCjk.textContent = sampleText("body", "cjk", body.sample_cjk);
+            bodyLat.textContent = sampleText("body", "latin", body.sample_latin);
             bodyWrap.style.color = txt;
             bodyWrap.style.fontSize = bodyPx + "px";
             bodyCjk.style.fontFamily = bodyStack || "";
@@ -1200,14 +1240,8 @@
                     ? "例如：封面用 AI 生成，产品页用用户素材，行业页用网络来源"
                     : "e.g. AI cover + user product assets + web industry images"
             });
-        var illusSub = el("div", "subfield");
-        illusSub.appendChild(el("div", "subfield-label", t("illustration_usage")));
-        enumField(illusSub, CAT.illustration_usage, recOrFirst("illustration_usage", CAT.illustration_usage),
-            function () { return STATE.illustration_usage; },
-            function (v) { STATE.illustration_usage = v; });
         enumField(sub, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
             function () { return STATE.image_ai_path; }, function (v) { STATE.image_ai_path = v; });
-        sec.appendChild(illusSub);
         sec.appendChild(sub);
         sec.appendChild(strategySub);
         if (strategyCands.length) selectImageStrategy(imageStrategySelectedIndex());
@@ -1341,7 +1375,6 @@
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
 
         STATE.image_usage = pick("image_usage", CAT.image_usage);
-        STATE.illustration_usage = pick("illustration_usage", CAT.illustration_usage);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);

@@ -4,24 +4,36 @@ description: PPTX template fill workflow — use a native PowerPoint template de
 
 # Template Fill (PPTX) Workflow
 
-> Run when the user wants to fill new content into an existing deck. Typical requests include "fill this deck with the new content", "fill this back into the template", or "reuse this deck's design". They provide an existing `.pptx` as a native template deck plus topic / text materials and want the content filled back into that deck's design while selecting only the pages that fit the new story (a source page may be reused for several output slides).
+> Run when the user provides a raw `.pptx` template plus new content / a new topic and asks to generate a `.pptx` from that template. Typical requests include "use this PPT template to generate a PPTX", "fill this deck with the new content", "fill this back into the template", "replace the copy in this PowerPoint", or "keep the original PowerPoint pages and swap in this material". This workflow treats the existing `.pptx` as a native slide library and produces a new `.pptx` by selecting, cloning, and patching source slides.
 
 This workflow is **independent** from the SVG generation pipeline. It treats the source PPTX as a native template / slide library, keeps the original PowerPoint design intact, and writes a new `.pptx` by cloning selected source slides and replacing text directly in OOXML.
 
+**Boundary against template-based generation**: run this workflow for raw PPTX template + generated PPTX requests. Skip this workflow only when the user explicitly wants a reusable template package, SVG-derived template roster, or SVG-generated deck that can freely select / repeat / skip / adapt template pages. In that case, they must run [`create-template.md`](./create-template.md) first and then provide the generated template directory path to the main pipeline.
+
+| User wants | Route |
+|---|---|
+| Generate a PPTX from a raw PPTX template | This workflow |
+| Directly edit / fill cloned PPTX slides | This workflow |
+| Create a reusable design asset from the PPTX | `create-template` |
+| Generate a new PPT from a reusable template package | Main pipeline Step 3 with the explicit template directory path |
+| Generate through the SVG pipeline directly from a raw PPTX "template" | Not allowed; create the template package first |
+
 ## When to Run
 
-Recognize any request that combines an existing PowerPoint with new content or a topic, for example:
+Recognize requests that combine an existing PowerPoint template with new content or a topic and ask for a generated `.pptx` without explicitly requesting the reusable SVG/template-package route:
 
 | Pattern | Example |
 |---|---|
 | Existing `.pptx` + "fill back" intent | "Use this deck and fill in the attached material" |
-| Existing `.pptx` + topic reuse | "Rework this PPTX around the new topic" |
+| Raw PPTX template + generated PPTX | "Use this PowerPoint template to generate a PPTX about this topic" |
 | Existing `.pptx` + selective reuse | "Do not keep every page; only use the slides that fit" |
 | Existing `.pptx` + copywriting replacement | "Keep the original design and replace the copy with this text" |
-| Native PPT template fill | "Use this PowerPoint template for this content" |
+| Native PPT template fill | "Use this PowerPoint template for this content and fill the slides directly" |
 | Direct wording | "Fill this deck with the new content" |
 
 **Hard rule**: Do not run `pptx_to_svg.py`, `pptx_template_import.py`, `finalize_svg.py`, or `svg_to_pptx.py` for this workflow. SVG conversion is for presentation generation / template creation; this workflow is direct PowerPoint editing.
+
+**Deterministic routing rule**: do not ask a route-choice question for raw PPTX template + generated PPTX requests; route them here. If the user asks for SVG/template-package generation from a raw PPTX, state that `create-template` must run first and stop this workflow until they provide the generated template directory path.
 
 ---
 

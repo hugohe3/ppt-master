@@ -4,7 +4,7 @@ A vocabulary registry of ways images can be placed on a slide. The point of this
 
 Every entry has a name plus a short technical hint. Common techniques get a single line. Less obvious or easily forgotten techniques get a short paragraph — not a full tutorial, but enough that a model unfamiliar with the project can implement it without guessing. This is a registry, not a teaching document; no use-case prescriptions, no decision tables.
 
-> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56) and **Part 2 — Modifier Layers** (#20–#37, #57–#72). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly.
+> **Numbers are stable identifiers, not sequence.** The file is split into **Part 1 — Primary Structures** (#1–#19, #38–#56, #73–#81) and **Part 2 — Modifier Layers** (#20–#37, #57–#72). Numbers jump within each Part because Primary structures were grouped first; existing references to `#38`, `#48`, etc. anywhere in the project still resolve correctly.
 
 ---
 
@@ -108,6 +108,28 @@ This is the family that opens up the largest design space and the one AI is most
 
 56. **Image triptych** — three independent `<image>` side-by-side, equal widths or 2:1:2 etc. (distinct from #26 baked-in triptych, where the three scenes are inside one image file).
 
+## Imported Deck Patterns (image-led promotional pages)
+
+These patterns come from polished image-text decks where photos define the slide skeleton instead of sitting inside generic cards. Treat them as layout vocabulary for travel, product, venue, hospitality, real-estate, event, and brochure-style decks.
+
+73. **Full-bleed poster image + side title stack** — full-slide image, title stack anchored to the left or lower-left third, no title card. Use native text directly over a calm image region with a subtle scrim only when needed. The title stack can mix huge Latin / display text, local-language title, and small brand/date line.
+
+74. **TOC image-navigation cards** — 3–5 equal vertical image cards across the page. Each card gets a same-color translucent overlay, large chapter number, chapter title, and one-line summary. The TOC becomes a visual preview of the deck, not a text list.
+
+75. **Asymmetric dual-image chapter banner** — two images occupy the upper half: one smaller panel and one wide dominant panel, usually left-small / right-wide. The chapter title lives in the lower half with an oversized section number as a background anchor.
+
+76. **Mid-page image belt with native text inset** — a wide image strip cuts through the middle 45–60% of the slide. Put the key text inside a darker or calmer region of the strip, using native text and a small label, while the top area carries the page heading.
+
+77. **Photo mosaic with a text cell** — an irregular grid where one grid cell is deliberately reserved for copy and the other cells are photos. The missing photo cell creates hierarchy; do not fill every grid slot just because a grid exists.
+
+78. **Ambient banner + evidence photo + text panel** — one wide atmospheric image spans the upper portion, a smaller concrete/evidence photo sits below, and a solid color or tinted panel carries the copy on the side. Useful when one image sets mood and another proves the product/place.
+
+79. **Ribbon-header image cards** — 3 columns, each with a colored ribbon or chevron title above the image, image in the middle, prose below. The ribbon carries category identity; the photo carries evidence; the body copy stays editable.
+
+80. **Side hero image + staggered evidence cards** — one full-height or near-full-height image occupies a side column. The opposite side uses 2–4 smaller evidence cards placed at staggered vertical positions instead of a rigid grid, producing movement and editorial rhythm.
+
+81. **Illustration-as-layout field** — a large decorative vector or cutout illustration behaves like an image region: it sets the page's spatial rhythm, while text blocks sit around or inside its calm areas. Use this when a photo would be too literal but the page still needs image-scale visual mass.
+
 ---
 
 # Part 2 — Modifier Layers
@@ -207,6 +229,19 @@ A page is built by layering. Pick one or more **Primary Structures** (Part 1) as
 - small color-block badge + reversed-out label replacing any opaque color bar that would otherwise sit over the image
 
 Combine freely. The "AI-default" failure mode is the opposite: defaulting to bare #2 / #3 (left/right split) with no Modifier at all.
+
+**Reference — image-led promotional deck moves (not a constraint)**:
+
+| Page intent | Pattern candidates |
+|---|---|
+| Cover / ending with strong atmosphere | `#73` + `#27` / `#30` only if contrast needs it |
+| Visual table of contents | `#74` + `#30` / `#31` |
+| Chapter divider | `#75` |
+| Venue / destination overview | `#76` or `#78` |
+| Many product/place photos | `#77` or `#50` when equality is the message |
+| Service / feature comparison | `#79` |
+| Benefits with one dominant proof image | `#80` |
+| Light promotional page without photos | `#81` |
 
 **Skip-detection signal** — if every page's `Layout pattern` column resolves to bare #2 / #3 / #5 / #6 with no Modifier ids, the catalog was not consulted. Re-read and reconsider.
 
