@@ -292,7 +292,7 @@ _NON_VISUAL_TAGS = frozenset(('defs', 'title', 'desc', 'metadata', 'style'))
 def _supports_matrix_transform(elem: ET.Element) -> bool:
     """Return whether this subtree can consume a full affine matrix directly."""
     tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
-    if tag == 'image':
+    if tag in {'rect', 'circle', 'ellipse', 'line', 'path', 'polygon', 'polyline', 'image'}:
         return True
     if tag == 'svg':
         visual_children = [

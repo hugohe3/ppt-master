@@ -54,6 +54,8 @@
             err_empty_svg: "Slide loaded but the canvas is empty. The SVG may be malformed or missing a root <svg> element.",
             warn_icon_inline: "{count} icon(s) failed to render: {names}",
             warn_svg_no_dims: "SVG is missing width/height attributes. Please ask the AI to strictly follow shared-standards.md §4 and include width & height in the SVG root element.",
+            warn_matrix_transform: "This geometry edit is stored as a transform matrix. Preview is exact; PPTX export depends on matrix-aware conversion.",
+            modal_matrix_transform_note: "\n\nNote: at least one staged geometry edit uses a transform matrix. Re-export with the current PPTX exporter so the matrix is applied.",
             slide_error_tooltip: "Failed to parse this slide: ",
             reload_banner: "This slide was updated on disk. Click to reload.",
             modal_confirm_submit: "Apply staged attribute edits and annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.",
@@ -116,6 +118,8 @@
             err_empty_svg: "幻灯片已加载但画布为空。SVG 可能损坏或缺少根 <svg> 元素。",
             warn_icon_inline: "{count} 个图标渲染失败:{names}",
             warn_svg_no_dims: "SVG 缺少 width/height 属性，预览可能异常。请让 AI 严格遵守 shared-standards.md §4 规范，在 SVG 根元素中补全 width 和 height。",
+            warn_matrix_transform: "本次几何修改会以 transform matrix 保存。预览是准确的；PPTX 导出需要使用支持 matrix 的当前导出器。",
+            modal_matrix_transform_note: "\n\n提示：至少有一条暂存几何修改使用了 transform matrix。请用当前 PPTX 导出器重新导出，确保 matrix 被应用。",
             slide_error_tooltip: "该幻灯片解析失败:",
             reload_banner: "当前页已在磁盘上更新,点此重新加载。",
             modal_confirm_submit: "确认将暂存属性修改和标注写入磁盘?\n\n预览服务会继续运行。需要关闭时请点击退出预览。",
@@ -224,6 +228,8 @@
     var reloadBannerEl    = null;   // singleton banner element shown when currentSlide mtime drifts
     var editStackCount    = {};     // {name: staged edit count} — mirrors backend PENDING_EDITS
     var savedHintShown    = false;  // show the "staged edit" hint once per session
+    var matrixHintShown   = false;  // show transform-matrix export hint once per session
+    var matrixEditSlides  = {};     // {name: true} when a staged edit wrote transform=matrix(...)
     var annotationsDirty  = false;  // unsaved annotations added/removed this session
 
     // Staged edits live in server memory until "Apply changes"; the server can
@@ -1366,7 +1372,8 @@
     // ================================================================
     btnSave.addEventListener("click", function () {
         pendingModalAction = "submit";
-        modalMessage.textContent = t("modal_confirm_submit");
+        modalMessage.textContent = t("modal_confirm_submit") +
+            (hasPendingMatrixEdits() ? t("modal_matrix_transform_note") : "");
         modalConfirm.textContent = t("modal_submit");
         modalConfirm.style.display = "";
         modalCancel.style.display = "";
@@ -1416,6 +1423,8 @@
                 } else {
                     modalMessage.textContent = t("modal_success_submit");
                     editStackCount = {};
+                    matrixEditSlides = {};
+                    matrixHintShown = false;
                     savedHintShown = false;
                     annotationsDirty = false;
                     updateUndoButton();
@@ -1561,6 +1570,7 @@
             .then(function (data) {
                 if (data.status === "empty") {
                     editStackCount[currentSlide] = 0;
+                    matrixEditSlides[currentSlide] = false;
                     updateUndoButton();
                     showWarning(t("undo_empty"));
                     return;
@@ -1583,6 +1593,24 @@
         if (savedHintShown) return;
         savedHintShown = true;
         showWarning(t("edit_saved_hint"));
+    }
+
+    function payloadHasMatrixTransform(payload) {
+        var transform = payload && payload.attrs && payload.attrs.transform;
+        return typeof transform === "string" && /^\s*matrix\s*\(/i.test(transform);
+    }
+
+    function hasPendingMatrixEdits() {
+        return Object.keys(matrixEditSlides).some(function (name) {
+            return !!matrixEditSlides[name];
+        });
+    }
+
+    function markMatrixTransformEdit(slide) {
+        matrixEditSlides[slide] = true;
+        if (matrixHintShown) return;
+        matrixHintShown = true;
+        showWarning(t("warn_matrix_transform"));
     }
 
     // ================================================================
@@ -2238,6 +2266,9 @@
             if (data && data.undo_depth !== undefined) {
                 editStackCount[slide] = data.undo_depth;
                 if (slide === currentSlide) updateUndoButton();
+            }
+            if (payloadHasMatrixTransform(payload)) {
+                markMatrixTransformEdit(slide);
             }
             maybeShowSavedHint();
             return data;
