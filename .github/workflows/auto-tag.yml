@@ -11,7 +11,7 @@ on:
 jobs:
   verify-and-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       id-token: write
       contents: write
@@ -48,55 +48,53 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         run: uv python install 3.12 && uv python pin 3.12
 
-      # ── 自动修复：转换 python3/uv run → uvx ──
-      - name: Auto-fix uvx commands
+      # ── Step 1: OpenCode Agent 自动适配 uvx 命令 ──
+      - name: OpenCode — adapt uvx commands
         if: steps.check.outputs.exists == 'false'
-        id: autofix
+        id: opencode
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
-          python3 -c "
-          import re, ast, pathlib, sys
+          npm install -g opencode-ai@latest
+          opencode run -m deepseek/deepseek-v4-pro "$(cat <<'ENDPROMPT'
+          你是 ppt-master 项目的 uvx 适配助手。当前项目是一个 fork，已将上游的 python3 命令转换为 uvx ppt-master 格式。
 
-          # 解析 cli.py COMMANDS 字典
-          tree = ast.parse(pathlib.Path('cli.py').read_text())
-          commands = {}
-          for node in ast.walk(tree):
-              if isinstance(node, ast.Dict):
-                  keys = [k.value for k in node.keys if isinstance(k, ast.Constant)]
-                  vals = [v.value for v in node.values if isinstance(v, ast.Constant)]
-                  if 'project' in keys and 'project_manager.py' in vals:
-                      commands = dict(zip(keys, vals)); break
+          ## 你的任务
 
-          script_to_cmd = {}
-          for cmd_name, script_rel in commands.items():
-              script_name = script_rel.replace('\\\\', '/').split('/')[-1]
-              script_to_cmd[script_name] = cmd_name
+          扫描以下文件中所有需要转换为 uvx 格式的命令，并直接修改文件：
 
-          exclude = ['superpowers', 'windows-installation', 'code-style', 'upstream-sync']
-          root = pathlib.Path('.')
-          targets = list(root.glob('skills/ppt-master/**/*.md'))
-          targets += [root / 'AGENTS.md', root / 'CLAUDE.md']
-          targets += [f for f in root.glob('docs/**/*.md') if not any(k in str(f) for k in exclude)]
-          targets += list(root.glob('projects/**/*.md'))
+          1. skills/ppt-master/ 下所有 .md 文件中查找并替换：
+             python3 skills/ppt-master/scripts/xxx.py → uvx ppt-master <command>
+             python3 scripts/xxx.py → uvx ppt-master <command>
+             uv run skills/ppt-master/scripts/xxx.py → uvx ppt-master <command>
+             uv run scripts/xxx.py → uvx ppt-master <command>
 
-          fixed = 0
-          for fp in sorted(set(targets)):
-              content = fp.read_text()
-              original = content
-              for script_name, cmd_name in sorted(script_to_cmd.items()):
-                  p = re.escape(script_name)
-                  content = re.sub(rf'python3\s+skills/ppt-master/scripts/(\S*/)?{p}', f'uvx ppt-master {cmd_name}', content)
-                  content = re.sub(rf'(?<!\w)python3\s+scripts/(\S*/)?{p}', f'uvx ppt-master {cmd_name}', content)
-                  content = re.sub(rf'uv\s+run\s+skills/ppt-master/scripts/(\S*/)?{p}', f'uvx ppt-master {cmd_name}', content)
-                  content = re.sub(rf'(?<!\w)uv\s+run\s+scripts/(\S*/)?{p}', f'uvx ppt-master {cmd_name}', content)
-              if content != original:
-                  fp.write_text(content)
-                  fixed += 1
-                  print(f'Fixed: {fp}')
-          print(f'Total files auto-fixed: {fixed}')
-          "
+          2. AGENTS.md 和 CLAUDE.md 中做同样替换
 
-      # ── 提交自动修复 ──
-      - name: Commit auto-fixes
+          3. docs/ 下（排除 superpowers/、windows-installation/、code-style、upstream-sync）做同样替换
+
+          ## 命令映射规则
+
+          查看 cli.py 的 COMMANDS 字典获取映射。关键映射：
+          project_manager.py→project, notes_to_audio.py→notes-to-audio, svg_to_pptx.py→svg-to-pptx,
+          total_md_split.py→total-md-split, finalize_svg.py→finalize-svg, template_fill_pptx.py→template-fill-pptx,
+          native_enhance_pptx.py→native-enhance-pptx, confirm_ui/server.py→confirm-ui, pptx_intake.py→pptx-intake,
+          animation_config.py→animation-config, check_deps_sync.py→check-deps-sync, icon_sync.py→icon-sync
+
+          ## 约束
+
+          - skills/ppt-master/scripts/ 下 .py 文件不要修改
+          - docs/superpowers/ 不要修改
+          - docs/zh/upstream-sync.md 不要修改
+          - svg_finalize/ 下内部脚本不转换（flatten_tspan, svg_rect_to_path, fix_image_aspect, embed_icons）
+
+          完成后运行 python3 skills/ppt-master/scripts/check_cli_sync.py。
+          如有缺失脚本按 kebab-case 同时加入 cli.py 和 skills/ppt-master/cli.py。
+          ENDPROMPT
+          )"
+
+      # ── 提交 OpenCode 改动 ──
+      - name: Commit OpenCode fixes
         if: steps.check.outputs.exists == 'false'
         id: commit
         run: |
@@ -104,12 +102,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if git diff --quiet && git diff --cached --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes from OpenCode adaptation."
           else
             git add -u
-            git commit -m "fix: auto-correct uvx command format" || true
+            git commit -m "fix: opencode auto-correct uvx command format" || true
             git push origin main
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Committed auto-fixes and pushed."
+            echo "Committed OpenCode fixes and pushed."
           fi
 
       # ── Gate 1: CLI 映射完整性 ──
