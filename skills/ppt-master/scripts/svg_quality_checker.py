@@ -1227,11 +1227,22 @@ class SVGQualityChecker:
 
         for row in slice_rows:
             filename = self._row_filename(row)
-            if filename and filename not in lock_images:
+            if not filename:
+                continue
+            if filename not in lock_images:
                 self._illustration_issues.append((
                     'error',
                     'slice_missing_lock',
                     f"{filename} is a slice row but is absent from spec_lock.md images.",
+                ))
+            if (
+                self._row_status(row) == 'generated'
+                and not (project_path / 'images' / filename).exists()
+            ):
+                self._illustration_issues.append((
+                    'error',
+                    'slice_file_missing',
+                    f"{filename} is a Generated slice row but images/{filename} does not exist.",
                 ))
 
         has_coverage_note = 'Image-as-canvas' in spec_text or 'image-as-canvas' in spec_text
@@ -1324,6 +1335,10 @@ class SVGQualityChecker:
     @staticmethod
     def _row_acquire(row: Dict[str, str]) -> str:
         return row.get('Acquire Via', '').strip().lower()
+
+    @staticmethod
+    def _row_status(row: Dict[str, str]) -> str:
+        return row.get('Status', '').strip().lower()
 
     @staticmethod
     def _row_layout(row: Dict[str, str]) -> str:
