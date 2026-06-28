@@ -352,6 +352,8 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 
 > **Confirmed value wins.** The `image_usage` in `result.json` (or the chat reply) **overrides the recommendation here** — map it to §VIII `Acquire Via` (`ai`→`ai`, `web`→`web`, `provided`→**`user`**, `placeholder`→`placeholder`, `none`→option A, no image rows). When it is not `ai` (and the plan has no AI part), skip h.5 entirely and write no `ai` rows. See SKILL.md Step 4 for the full mapping.
 
+> **Illustration usage is a confirmed binary intent toggle inside Image usage, not a second source enum.** If the user confirmed an illustration usage (`result.json.illustration_usage`, or the equivalent chat reply — chat is the canonical channel), honor it: `none` = do not intentionally add decorative illustrations; `use` = make illustrations part of the deck's visual language, with **intensity** (sparse spots vs a recurring system) your own judgment from content + `visual_style`. The actual §VIII `Acquire Via` still comes from `image_usage` and available assets. `image_usage: none` wins over illustration intent and produces no decorative illustration rows. Otherwise, when `use` is set: AI-backed illustration sets may use an `ai` Illustration Sheet plus `slice` element rows, user-provided illustrations are `Type: Illustration` + `Acquire Via: user`, web illustrations are `web` only when licensing/source quality is acceptable, and deferred/copyright-sensitive ones are `placeholder`. Do not expose sheet/slice mechanics to the user in the confirmation copy.
+
 **When recommending C** — surface its three implementation modes so the user knows "no API key" is a supported state:
 
 | Mode | Trigger | Mechanism |
@@ -363,6 +365,8 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`image-generator.md`](./image-generator.md) §3.2.
 
 Selections may be mixed at the row level — e.g. a deck can use C for hero illustrations while sourcing D for supporting team photos.
+
+> **Spot illustrations → one sheet, not N rows.** When the deck wants ≥3 small same-family spot illustrations as decorative accessories across pages (the illustration counterpart to icons), do not write one `ai` row per element. Write **one `ai` sheet row** (the grid prompt — generated but never placed, kept out of `spec_lock.md images`) **plus one `slice` element row per cell** (each placed, each listed in `spec_lock.md images` so the Executor may reference it). Step 5 generates the sheet then slices it; one generation keeps the whole set on one style/palette, the way the deck-wide rendering lock intends. Plan these sparingly, only where decoration genuinely lifts the page. Full resource contract + slice command: [`image-generator.md`](./image-generator.md) §4.3.
 
 #### h.5 AI Image Strategy — lock rendering + palette (only when C is selected)
 
@@ -548,7 +552,7 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | **Layout pattern** | **MANDATORY** — one or more `#<id> <name>` joined by ` + ` from `image-layout-patterns.md`. Combine a Primary id with optional Modifier ids when the page needs it (e.g. `#48 side-by-side comparison + #21 rounded rectangle crop + #29 two-stop scrim`). A single Primary is fine when the page calls for it. See the GATE earlier in this section. Empty cells or invented ids are invalid. |
 | Purpose | e.g., `Cover background` |
 | Type | Free-form category tag — `Background`, `Photography`, `Illustration`, `Diagram`, `Portrait`, `Latex Formula`, etc. Required for formula rows (`Latex Formula`). |
-| **Acquire Via** | `ai` / `web` / `user` / `formula` / `placeholder` — only `ai` and `web` drive Step 5 dispatch |
+| **Acquire Via** | `ai` / `web` / `user` / `formula` / `placeholder` / `slice` — only `ai` and `web` drive Step 5 dispatch; `slice` is derived after its `ai` sheet generates (§4.3) |
 | Status | Initial status must be `Pending`, `Existing`, `Rendered`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
 | **Reference** | Free-form **intent description** (NOT a search query); feeds Image_Generator (ai) or Image_Searcher (web) |
 | `text_policy` (optional, `ai` rows only) | `none` (no text in image) or `embedded` (text is part of the artwork). Leave blank when Image_Generator should decide per row. Long body / data / lists stay in SVG. |
