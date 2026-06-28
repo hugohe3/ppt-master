@@ -7,24 +7,20 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check if merge commit
-        id: merge-check
-        run: |
-          PARENTS=$(git cat-file -p ${{ github.sha }} | grep '^parent ' | wc -l)
-          if [ "$PARENTS" -ge 2 ]; then
-            echo "is_merge=true" >> $GITHUB_OUTPUT
-            echo "Merge commit detected — running uvx migration check."
-          else
-            echo "is_merge=false" >> $GITHUB_OUTPUT
-            echo "Not a merge commit — skipping."
-          fi
-
       - name: Run uvx migration check
-        if: steps.merge-check.outputs.is_merge == 'true'
-        run: python3 skills/ppt-master/scripts/check_uvx_migration.py ${{ github.sha }}
+        id: check
+        run: |
+          EXIT=0
+          python3 skills/ppt-master/scripts/check_uvx_migration.py "${{ github.sha }}" || EXIT=$?
+          echo "exit_code=$EXIT" >> $GITHUB_OUTPUT
+          if [ "$EXIT" -eq 2 ]; then
+            echo "::notice::Not a merge commit — skipped (no upstream code to check)"
+          elif [ "$EXIT" -ne 0 ]; then
+            echo "::error::python3 remnants found in merge commit — uvx adaptation incomplete"
+            exit 1
+          fi

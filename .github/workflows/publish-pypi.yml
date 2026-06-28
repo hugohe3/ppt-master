@@ -11,8 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
+
+      - name: Verify version matches tag
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          ROOT_VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          SKILLS_VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('skills/ppt-master/pyproject.toml','rb'))['project']['version'])")
+          if [ "$TAG_VERSION" != "$ROOT_VERSION" ]; then
+            echo "::error::Tag v${TAG_VERSION} != pyproject.toml version ${ROOT_VERSION}"
+            exit 1
+          fi
+          if [ "$ROOT_VERSION" != "$SKILLS_VERSION" ]; then
+            echo "::error::Root version ${ROOT_VERSION} != skills version ${SKILLS_VERSION}"
+            exit 1
+          fi
+          echo "Version check passed: ${ROOT_VERSION}"
+
       - run: uv build
       - run: uv publish
