@@ -87,6 +87,8 @@ Then `build_query_progression` tries: original → simplified (4 words) → simp
 
 When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
 
+Do **not** loosen `required_terms` to generic category words just to improve coverage. Terms like `canyon`, `grand canyon`, `stone pillar`, `ground fissure`, `ancient town`, `bridge`, `temple`, or `village` belong in the search query, not as the only identity gate. For small / Chinese-local attractions, the correct failure mode is `Needs-Manual` or a user-provided `--from-url`, not a visually plausible image of the wrong place.
+
 **Forbidden — web negative prompts**: `not tourist snapshot`, `no amateur photo`, `avoid low quality`.
 
 > Note: Keyword APIs search negative words literally.
@@ -158,6 +160,8 @@ Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item 
 
 Use `required_terms` for **exact-entity images**: landmarks, people, companies, products, venues, named artworks, and named institutions. Each list item is required; alternatives inside one item use `|`. Example for a Chongqing landmark: `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This is a metadata gate: candidates whose title / author / source URL do not satisfy every group are rejected before ranking, so a visually polished but wrong Rome / Hoi An image cannot win a Chongqing landmark row. Do **not** use `required_terms` for generic mood / background rows such as "modern city skyline" or "team collaboration".
 
+For less-covered local attractions, keep the strict identity gate rather than progressively deleting location anchors or replacing proper names with category words. If strict metadata cannot prove the entity, mark the row `Needs-Manual` and use the manual URL path when the user supplies a confirmed source.
+
 The runner searches all `Pending` / `Failed` rows concurrently, appends each success to `image_sources.json` (the credit source of truth, idempotent on `filename`), and writes status back into `image_queries.json` — `Sourced` on success, `Needs-Manual` when the full provider/stage chain is exhausted. Status is saved after each completion, so an interrupted run preserves finished rows; re-running skips terminal rows. A single `web` row may still use single-query mode above.
 
 **Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
@@ -182,6 +186,8 @@ A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily 
 - **Non-multimodal model (no vision)**: do **not** pretend to confirm. Hand off to a human — surface each web image's `source_page_url` from `image_sources.json` (live preview also shows the placed result) and let the user judge.
 
 For exact-entity rows, suitability has two gates: `required_terms` first enforces metadata identity, then the `.review` image confirms the pixels actually show the right subject well enough. A row can still be rejected after passing `required_terms` if the visual is weak, cropped badly, or only tangentially shows the subject.
+
+Never treat a generic `required_terms` pass as acceptance. For example, matching `Ground Fissure` can return an unrelated transit station named Yunlong, and matching `stone pillar` can return a different scenic area. If the proper name / geography cannot be retained, stop at `Needs-Manual`.
 
 **Replacement ladder when a best match is not right** (any reviewer):
 

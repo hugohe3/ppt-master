@@ -114,6 +114,44 @@ SEARCH_VALID_STATUSES = {
 SEARCH_RETRYABLE_STATUSES = {SEARCH_STATUS_PENDING, SEARCH_STATUS_FAILED}
 SEARCH_REQUIRED_ITEM_FIELDS = ("filename", "query", "status")
 
+_WEAK_REQUIRED_TERM_PARTS = frozenset({
+    "ancient town",
+    "bridge",
+    "canyon",
+    "cave",
+    "city",
+    "floating bridge",
+    "forest",
+    "gate",
+    "grand canyon",
+    "ground fissure",
+    "lake",
+    "monastery",
+    "monument",
+    "river",
+    "shrine",
+    "square",
+    "station",
+    "stone forest",
+    "stone pillar",
+    "stream",
+    "temple",
+    "valley",
+    "village",
+    "古城",
+    "古镇",
+    "地缝",
+    "大峡谷",
+    "寺",
+    "峡谷",
+    "广场",
+    "桥",
+    "洞",
+    "溪",
+    "石林",
+    "石柱",
+})
+
 
 def _parse_required_terms(raw: object) -> tuple[str, ...]:
     """Parse entity-safety terms from CLI / batch JSON.
@@ -143,6 +181,28 @@ def _parse_required_terms(raw: object) -> tuple[str, ...]:
             if part:
                 terms.append(part)
     return tuple(terms)
+
+
+def _warn_weak_required_terms(required_terms: tuple[str, ...]) -> None:
+    """Warn when required_terms contain generic category words.
+
+    These terms are useful in the query but dangerous as identity gates:
+    broadening a small Chinese attraction from its proper name to "canyon" /
+    "stone pillar" raises coverage while admitting wrong entities.
+    """
+    weak: list[str] = []
+    for group in required_terms:
+        for part in group.split("|"):
+            normalized = part.strip().lower()
+            if normalized in _WEAK_REQUIRED_TERM_PARTS:
+                weak.append(part.strip())
+    if weak:
+        print(
+            "  warning: required_terms contains generic category term(s) "
+            f"{weak}; keep proper-name / geography anchors too, and prefer "
+            "Needs-Manual or --from-url over loosening identity gates.",
+            file=sys.stderr,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -842,6 +902,8 @@ def _search_one_item(
     """
     orientation = item.get("orientation", "any") or "any"
     strict = bool(item.get("strict_no_attribution", default_strict))
+    required_terms = _parse_required_terms(item.get("required_terms"))
+    _warn_weak_required_terms(required_terms)
     request = ImageSearchRequest(
         query=item["query"],
         purpose=item.get("purpose", ""),
@@ -850,7 +912,7 @@ def _search_one_item(
         slide=item.get("slide", ""),
         min_width=int(item.get("min_width", default_min_width)),
         min_height=int(item.get("min_height", default_min_height)),
-        required_terms=_parse_required_terms(item.get("required_terms")),
+        required_terms=required_terms,
     )
 
     pinned = item.get("provider") or default_provider
@@ -1235,6 +1297,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         min_height=args.min_height,
         required_terms=_parse_required_terms(args.require_terms),
     )
+    _warn_weak_required_terms(request.required_terms)
 
     providers = [args.provider] if args.provider else _default_provider_chain()
 
