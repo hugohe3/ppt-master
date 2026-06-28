@@ -70,6 +70,8 @@
 
 - **图像变换矩阵端到端保真 + host-native 生成路径** — `svg_to_pptx` 的 DrawingML 图片导出现在如实尊重 SVG 的 transform 矩阵（旋转 / 斜切 / 复合变换不再在嵌套 `<g transform>` 下错位或塌回原点），把「跨四渲染器位置保真」主轴补到 raster 图层；`image_gen.py` 增加 host-native 生成路径，在宿主自带图像生成能力时走原生通道。两者均属修复 / 增量补强，细节见 commit log
 
+- **网络配图改为「最佳图 + 可复核 + 人工换图」** — web 图来源不再默认静默下载一池候选，而是**默认只下最佳匹配图**，候选池退化成 `--save-candidates` 的显式升级路径（默认 4 张）；每张下载图生成 ≤1024px review 副本（`images/.review/`，放置 / promote 仍全分辨率）。合适性复核做成 **model-agnostic**：多模态模型读 review 副本自查，非多模态则把 `source_page_url` 交人工判断——不假设模型有视觉。新增 `image_search.py --from-url <链接>`：把人找到的任意图片 URL 下载并替换目标（记 `license_tier: manual`、继承页面上下文），作为通用人工换图通道；`--promote` 改为从被选候选重算署名（不沿用旧图 credit）。全程在 Step 5 内、不合适转 `Needs-Manual` + 占位，**不阻塞主流程**。定位上 web 搜索是「兜底取图、不保证质量」，真要高质量靠 AI 生图或自己手动挑图换入
+
 ---
 
 ## 进行中 / 下一步
