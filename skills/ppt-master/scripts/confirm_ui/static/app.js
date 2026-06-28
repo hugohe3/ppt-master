@@ -77,8 +77,10 @@
             role_body_text: "body text",
             cjk: "CJK",
             latin: "Latin",
-            sample_cjk: "数字化转型战略",
-            sample_latin: "Digital Transformation",
+            sample_heading_cjk: "主题方案标题",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "关键信息摘要",
+            sample_body_latin: "Key message summary",
             style_preview_label: "Overall impression (color + typography)",
             style_preview_body: "· rough feel only, not the actual slide layout",
             mode_continuous_desc: "Generate the whole deck in one pass.",
@@ -157,8 +159,10 @@
             role_body_text: "正文文字",
             cjk: "中文",
             latin: "西文",
-            sample_cjk: "数字化转型战略",
-            sample_latin: "Digital Transformation",
+            sample_heading_cjk: "主题方案标题",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "关键信息摘要",
+            sample_body_latin: "Key message summary",
             style_preview_label: "整体形象（配色 + 字体）",
             style_preview_body: "· 仅大致形象，非实际版式",
             mode_continuous_desc: "一次性连续生成整份演示文稿。",
@@ -350,7 +354,7 @@
             var spec = specById[o.id];
             var chip = el("div", "chip");
             if (o.viewbox) {
-                label = o.id + (o.dim ? " · " + o.dim : "");
+                label = label + (o.dim ? " · " + o.dim : "");
             } else {
                 if (o.dim) label += " · " + o.dim;
                 if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
@@ -457,7 +461,17 @@
     function normTypography(c) {
         c = c || {};
         if (c.heading && typeof c.heading === "object" && c.body && typeof c.body === "object") {
-            return Object.assign({}, c, { body_size: typographyBodySize(c) });
+            return Object.assign({}, c, {
+                body_size: typographyBodySize(c),
+                heading: Object.assign({}, c.heading, {
+                    sample_cjk: c.heading.sample_cjk || c.sample_heading || "",
+                    sample_latin: c.heading.sample_latin || c.sample_heading_latin || ""
+                }),
+                body: Object.assign({}, c.body, {
+                    sample_cjk: c.body.sample_cjk || c.sample_body || "",
+                    sample_latin: c.body.sample_latin || c.sample_body_latin || ""
+                })
+            });
         }
         return {
             name: c.name || "",
@@ -845,10 +859,35 @@
         return primary + ", " + fallback;
     }
 
-    function fontSample(box, slot, css) {
+    function sampleCandidate(role, script) {
+        var sample = (REC && REC.sample_text) || (REC && REC.samples) || {};
+        var isHeading = role === "heading";
+        var isLatin = script === "latin";
+        var keys = isHeading
+            ? (isLatin ? ["heading_latin", "sample_heading_latin", "title_latin", "title_en"] : ["heading_cjk", "sample_heading", "sample_heading_cjk", "title_zh", "title"])
+            : (isLatin ? ["body_latin", "sample_body_latin", "summary_latin", "summary_en"] : ["body_cjk", "sample_body", "sample_body_cjk", "summary_zh", "summary"]);
+        for (var i = 0; i < keys.length; i += 1) {
+            if (sample[keys[i]]) return sample[keys[i]];
+            if (REC && REC[keys[i]]) {
+                if (typeof REC[keys[i]] === "object" && REC[keys[i]].value) return REC[keys[i]].value;
+                if (typeof REC[keys[i]] === "string") return REC[keys[i]];
+            }
+        }
+        return "";
+    }
+
+    function sampleText(role, script, explicit) {
+        if (explicit) return explicit;
+        var fromRec = sampleCandidate(role, script);
+        if (fromRec) return fromRec;
+        if (role === "heading") return t(script === "latin" ? "sample_heading_latin" : "sample_heading_cjk");
+        return t(script === "latin" ? "sample_body_latin" : "sample_body_cjk");
+    }
+
+    function fontSample(box, slot, css, role) {
         var line = el("div", "font-sample-line");
-        var cjk = el("span", "fs-cjk", slot.sample_cjk || t("sample_cjk"));
-        var lat = el("span", "fs-latin", slot.sample_latin || t("sample_latin"));
+        var cjk = el("span", "fs-cjk", sampleText(role, "cjk", slot.sample_cjk));
+        var lat = el("span", "fs-latin", sampleText(role, "latin", slot.sample_latin));
         var cjkStack = previewFontStack(slot.cjk, css);
         var latinStack = previewFontStack(slot.latin, css);
         if (cjkStack) cjk.style.fontFamily = cjkStack;
@@ -914,8 +953,8 @@
             if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + "px";
             top.appendChild(el("span", "font-card-meta", meta));
             card.appendChild(top);
-            var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css); card.appendChild(hbox);
-            var bbox = el("div", "font-sample-body-box"); fontSample(bbox, body, body.css); card.appendChild(bbox);
+            var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css, "heading"); card.appendChild(hbox);
+            var bbox = el("div", "font-sample-body-box"); fontSample(bbox, body, body.css, "body"); card.appendChild(bbox);
             if (localized(c, "note")) card.appendChild(el("div", "color-note", localized(c, "note")));
             card.addEventListener("click", function () { selectFont(idx); });
             grid.appendChild(card);
@@ -1110,16 +1149,16 @@
             var bodyLatStack = previewFontStack(body.latin, body.css);
 
             card.style.background = bg;
-            titleCjk.textContent = head.sample_cjk || t("sample_cjk");
-            titleLat.textContent = head.sample_latin || t("sample_latin");
+            titleCjk.textContent = sampleText("heading", "cjk", head.sample_cjk);
+            titleLat.textContent = sampleText("heading", "latin", head.sample_latin);
             title.style.color = pri;
             title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
             titleCjk.style.fontFamily = headStack || "";
             titleLat.style.fontFamily = headLatStack || "";
             // CJK and Latin previewed with their own stacks (mirrors the title
             // and the per-card font samples) so each script's font is visible.
-            bodyCjk.textContent = body.sample_cjk || t("sample_cjk");
-            bodyLat.textContent = body.sample_latin || t("sample_latin");
+            bodyCjk.textContent = sampleText("body", "cjk", body.sample_cjk);
+            bodyLat.textContent = sampleText("body", "latin", body.sample_latin);
             bodyWrap.style.color = txt;
             bodyWrap.style.fontSize = bodyPx + "px";
             bodyCjk.style.fontFamily = bodyStack || "";
