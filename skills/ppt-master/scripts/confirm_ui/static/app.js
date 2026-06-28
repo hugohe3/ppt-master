@@ -51,7 +51,10 @@
             image_strategy_visual: "Visual",
             image_strategy_color: "Color",
             image_strategy_mood: "Mood",
-            image_usage_custom_required: "Describe the custom image plan before confirming.",
+            image_usage_notes: "Additional image requirements",
+            image_usage_notes_placeholder: "e.g. realistic handwashing scenes; avoid cartoon germs; keep product photos untouched.",
+            image_usage_required: "Select at least one image usage option.",
+            image_usage_none_exclusive: "No images cannot be combined with other image options.",
             font_heading: "Heading",
             font_body: "Body",
             font_body_size: "Body baseline size",
@@ -133,7 +136,10 @@
             image_strategy_visual: "视觉",
             image_strategy_color: "色彩",
             image_strategy_mood: "情绪",
-            image_usage_custom_required: "请先写清楚自定义图片方案。",
+            image_usage_notes: "图片补充要求",
+            image_usage_notes_placeholder: "例如：优先真实洗手场景；不要卡通病菌；产品照片保持原样。",
+            image_usage_required: "请至少选择一种图片使用方式。",
+            image_usage_none_exclusive: "「不使用图片」不能和其它图片选项同时选择。",
             font_heading: "标题",
             font_body: "正文",
             font_body_size: "正文基准字号",
@@ -287,6 +293,15 @@
         return aliases[value] || value;
     }
 
+    function normalizeRecIds(field, value) {
+        if (Array.isArray(value)) {
+            return value.map(function (item) { return normalizeRecId(field, item); })
+                .filter(function (item, idx, arr) { return item && arr.indexOf(item) === idx; });
+        }
+        var normalized = normalizeRecId(field, value);
+        return normalized ? [normalized] : [];
+    }
+
     function legacyRecId(field) {
         if (!REC) return null;
         if (field === "canvas") return REC.canvas && REC.canvas.value;
@@ -302,6 +317,10 @@
     function recId(field) {
         var value = (REC && REC.recommend && REC.recommend[field]) || legacyRecId(field);
         return normalizeRecId(field, value || null);
+    }
+
+    function recValue(field) {
+        return (REC && REC.recommend && REC.recommend[field]) || legacyRecId(field);
     }
     // Guaranteed recommendation: the AI's pick, or the first catalog option as a
     // fallback so an enumerable field ALWAYS shows a badged recommendation.
@@ -518,6 +537,7 @@
 
     function usesCustomImagePlanValue(value) {
         var ids = (CAT.image_usage || []).map(function (item) { return item.id; });
+        if (Array.isArray(value)) return false;
         return value && ids.indexOf(value) === -1;
     }
 
@@ -526,7 +546,28 @@
     }
 
     function needsGeneratedImagesForUsage(value) {
+        if (Array.isArray(value)) return value.indexOf("ai") >= 0;
         return value === "ai" || (usesCustomImagePlanValue(value) && customImagePlanHasAiSignal());
+    }
+
+    function selectedImageUsageIds(value) {
+        var validIds = (CAT.image_usage || []).map(function (item) { return item.id; });
+        return normalizeRecIds("image_usage", value).filter(function (id) {
+            return validIds.indexOf(id) >= 0;
+        });
+    }
+
+    function imageUsageNotesRecommendation(rawUsage) {
+        var notes = (REC && REC.image_notes && REC.image_notes.value) ||
+            (REC && REC.image_notes) ||
+            (REC && REC.images && REC.images.notes) ||
+            "";
+        if (!notes && usesCustomImagePlanValue(rawUsage)) notes = rawUsage;
+        return typeof notes === "string" ? notes : "";
+    }
+
+    function defaultImageUsageId() {
+        return firstId(CAT.image_usage);
     }
 
     function imageStrategySelectedIndex() {
@@ -1175,15 +1216,20 @@
 
     function renderImages(host) {
         var sec = section(8, "sec_images");
+        var usageChips = el("div", "chips");
+        var usageNote = el("div", "subfield");
+        usageNote.appendChild(el("div", "subfield-label", t("image_usage_notes")));
+        var usageNoteInput = el("textarea", "text-input image-usage-notes-input");
+        usageNoteInput.placeholder = t("image_usage_notes_placeholder");
+        usageNoteInput.value = STATE.image_notes || "";
+        usageNoteInput.addEventListener("input", function () { STATE.image_notes = usageNoteInput.value; });
+        usageNote.appendChild(usageNoteInput);
         var sub = el("div", "subfield");
         sub.appendChild(el("div", "subfield-label", t("image_ai_path")));
         var strategySub = el("div", "subfield image-strategy-subfield");
         strategySub.appendChild(el("div", "subfield-label", t("image_strategy")));
         var strategyGrid = el("div", "font-grid");
         var strategyCands = imageStrategyCandidates();
-        function usesCustomImagePlan() {
-            return usesCustomImagePlanValue(STATE.image_usage);
-        }
         function needsGeneratedImages() {
             return needsGeneratedImagesForUsage(STATE.image_usage);
         }
@@ -1225,27 +1271,51 @@
         });
         if (!strategyCands.length) strategyGrid.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
         strategySub.appendChild(strategyGrid);
-        enumField(sec, CAT.image_usage, recOrFirst("image_usage", CAT.image_usage),
-            function () { return STATE.image_usage; },
-            function (v) {
-                STATE.image_usage = v;
-                refreshAiControls();
-            },
-            {
-                allowCustom: true,
-                customSentinel: "custom",
-                customInvalidValues: ["custom"],
-                inputClass: "image-usage-custom-input",
-                placeholder: LANG === "zh"
-                    ? "例如：封面用 AI 生成，产品页用用户素材，行业页用网络来源"
-                    : "e.g. AI cover + user product assets + web industry images"
+        var recommendedIds = selectedImageUsageIds(recValue("image_usage"));
+        if (!recommendedIds.length) recommendedIds = [defaultImageUsageId()];
+        var usageChipById = {};
+        function refreshUsageChips() {
+            Object.keys(usageChipById).forEach(function (id) {
+                usageChipById[id].classList.toggle("selected", STATE.image_usage.indexOf(id) >= 0);
             });
+            var noImages = STATE.image_usage.indexOf("none") >= 0;
+            usageNote.style.display = noImages ? "none" : "block";
+            refreshAiControls();
+        }
+        function toggleImageUsage(id) {
+            var cur = STATE.image_usage.slice();
+            if (id === "none") {
+                cur = cur.indexOf("none") >= 0 ? [] : ["none"];
+            } else {
+                cur = cur.filter(function (item) { return item !== "none"; });
+                if (cur.indexOf(id) >= 0) cur = cur.filter(function (item) { return item !== id; });
+                else cur.push(id);
+            }
+            STATE.image_usage = cur;
+            refreshUsageChips();
+        }
+        (CAT.image_usage || []).forEach(function (o) {
+            var label = optionLabel(o);
+            var desc = optionDesc(o);
+            if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+            var chip = el("div", "chip");
+            chip.appendChild(el("span", "chip-text", label));
+            if (recommendedIds.indexOf(o.id) >= 0) {
+                chip.classList.add("recommended");
+                chip.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
+            }
+            chip.addEventListener("click", function () { toggleImageUsage(o.id); });
+            usageChipById[o.id] = chip;
+            usageChips.appendChild(chip);
+        });
+        sec.appendChild(usageChips);
+        sec.appendChild(usageNote);
         enumField(sub, CAT.image_ai_path, recOrFirst("image_ai_path", CAT.image_ai_path),
             function () { return STATE.image_ai_path; }, function (v) { STATE.image_ai_path = v; });
         sec.appendChild(sub);
         sec.appendChild(strategySub);
         if (strategyCands.length) selectImageStrategy(imageStrategySelectedIndex());
-        refreshAiControls();
+        refreshUsageChips();
         host.appendChild(sec);
     }
 
@@ -1374,7 +1444,12 @@
         };
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
 
-        STATE.image_usage = pick("image_usage", CAT.image_usage);
+        var rawImageUsage = recValue("image_usage");
+        STATE.image_usage = selectedImageUsageIds(rawImageUsage);
+        if (!STATE.image_usage.length) {
+            STATE.image_usage = [defaultImageUsageId()];
+        }
+        STATE.image_notes = imageUsageNotesRecommendation(rawImageUsage);
         STATE.image_ai_path = pick("image_ai_path", CAT.image_ai_path);
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
@@ -1472,14 +1547,16 @@
         var payload = JSON.parse(JSON.stringify(STATE));
         normalizeTypographyForSubmit(payload);
         payload.stage = "final";
-        var customImagePlan = usesCustomImagePlanValue(payload.image_usage);
-        if (payload.image_usage === "custom" || (customImagePlan && !String(payload.image_usage).trim())) {
-            document.getElementById("confirm-status").textContent = t("image_usage_custom_required");
-            var customImageInput = document.querySelector(".image-usage-custom-input");
-            if (customImageInput) customImageInput.focus();
+        payload.image_usage = selectedImageUsageIds(payload.image_usage);
+        if (!payload.image_usage.length) {
+            document.getElementById("confirm-status").textContent = t("image_usage_required");
             return;
         }
-        if (customImagePlan) payload.image_usage = String(payload.image_usage).trim();
+        if (payload.image_usage.indexOf("none") >= 0 && payload.image_usage.length > 1) {
+            document.getElementById("confirm-status").textContent = t("image_usage_none_exclusive");
+            return;
+        }
+        if (!String(payload.image_notes || "").trim()) delete payload.image_notes;
         if (!needsGeneratedImagesForUsage(payload.image_usage)) {
             delete payload.image_ai_path;
             delete payload.image_strategy;
