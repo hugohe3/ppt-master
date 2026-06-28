@@ -1169,12 +1169,12 @@ class SVGQualityChecker:
             self._check_template_contract(dir_path, svg_files)
         elif dir_path.is_dir():
             self._check_animation_config_contract(dir_path)
-            self._check_illustration_strategy_contract(dir_path)
+            self._check_illustration_resource_contract(dir_path)
 
         return self.results
 
-    def _check_illustration_strategy_contract(self, dir_path: Path) -> None:
-        """Project-level illustration strategy checks."""
+    def _check_illustration_resource_contract(self, dir_path: Path) -> None:
+        """Project-level illustration resource checks."""
         project_path = self._resolve_project_path(dir_path)
         spec_path = project_path / 'design_spec.md'
         if not spec_path.exists():

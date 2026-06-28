@@ -253,24 +253,10 @@ Catalog read: 71 templates
 
 ## VIII. Image Resource List (if needed)
 
-### Illustration System (when `illustration_usage: use`)
-
-| Field | Decision |
-| ----- | -------- |
-| Strategy | [one or more of `hero-only` / `sparse-spots` / `recurring-motif` / `image-as-canvas`; omit this block or write `none` only when no intentional illustrations are used] |
-| Motif family | [the repeated visual family, e.g. paper objects / workflow tokens / product metaphors / cultural symbols] |
-| Reuse rule | [where and how often the motif appears; include size / edge / rotation / behind-text rules for spot illustrations] |
-| Do not use on | [page types where illustrations would weaken clarity, e.g. dense tables, charts, legal text, screenshots] |
-| Boundary | [icons label concepts; illustrations set story / mood / metaphor; charts carry data; photos prove real-world context] |
-
-> **Illustration System is a planning contract** — it does not replace the resource list below. `image_usage` still decides each row's `Acquire Via`; the strategy decides role, reuse, placement, and exclusions.
-
 | Filename | Dimensions | Ratio | Purpose | Type | Layout pattern | Acquire Via | Status | Reference | text_policy | page_role |
 | -------- | --------- | ----- | ------- | ---- | -------------- | ----------- | ------ | --------- | ----------- | --------- |
 | cover_bg.png | {canvas_info['dimensions']} | [ratio] | Atmospheric cover backdrop — SVG title overlays the calm region | Background | #1 full-bleed background with floating title + #29 two-stop scrim | ai | Pending | [subject + intent + composition, no style/HEX] | none | hero_page |
 | comparison_p07.png | {canvas_info['dimensions']} | [ratio] | Three-panel approach comparison — panel labels stay inside the image | Diagram | #44 background image + native network/architecture diagram | ai | Pending | Three side-by-side schematic motifs comparing approach A / B / C, panel labels rendered inside each motif | embedded | local |
-| spot_sheet.png | 1024×1024 | 1.00 | 2x3 same-family spot illustration sheet — generated only, never placed | Illustration Sheet | #63 transparent PNG sticker / cutout | ai | Pending | 2x3 grid of isolated spot elements with flat background for slicing | none | local |
-| spot_growth.png | TBD after slicing | TBD | P06 decorative growth spot from `spot_sheet.png` cell 1,1 | Illustration | #63 transparent PNG sticker / cutout + #58 image fragment as decorative corner element + #69 image rotated at a slight angle for editorial feel | slice | Pending | From `spot_sheet.png` cell 1,1 | | |
 | formula_001.png | [actual dimensions from formula manifest / image_analysis] | [ratio] | Block equation on P03 | Latex Formula | formula-block | formula | Rendered | `E = mc^2` — energy-mass equation | | |
 
 > **Layout pattern column is MANDATORY** — for non-formula rows, value is one or more `#<id> <name>` joined by ` + ` drawn verbatim from [`references/image-layout-patterns.md`](../references/image-layout-patterns.md) (Primary + optional Modifiers). Empty cells, paraphrased names, or invented ids invalidate the row. Formula rows are the only exception; use `formula-inline` or `formula-block`. See `strategist.md §h` GATE for the three-layer requirement (read → produce → image-as-canvas coverage).

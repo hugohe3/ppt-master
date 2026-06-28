@@ -352,28 +352,9 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 
 > **Confirmed value wins.** The `image_usage` in `result.json` (or the chat reply) **overrides the recommendation here** — map it to §VIII `Acquire Via` (`ai`→`ai`, `web`→`web`, `provided`→**`user`**, `placeholder`→`placeholder`, `none`→option A, no image rows). When it is not `ai` (and the plan has no AI part), skip h.5 entirely and write no `ai` rows. See SKILL.md Step 4 for the full mapping.
 
-> **Illustration usage is a confirmed binary intent toggle inside Image usage, not a second source enum.** If the user confirmed an illustration usage (`result.json.illustration_usage`, or the equivalent chat reply — chat is the canonical channel), honor it: `none` = do not intentionally add decorative illustrations; `use` = make illustrations part of the deck's visual language. When `use` is set, also honor `result.json.illustration_strategy` as the user's multi-select choice for how illustrations are used. The actual §VIII `Acquire Via` still comes from `image_usage` and available assets. `image_usage: none` wins over illustration intent and produces no decorative illustration rows. Otherwise, when `use` is set: AI-backed illustration sets may use an `ai` Illustration Sheet plus `slice` element rows, user-provided illustrations are `Type: Illustration` + `Acquire Via: user`, web illustrations are `web` only when licensing/source quality is acceptable, and deferred/copyright-sensitive ones are `placeholder`. Do not expose sheet/slice mechanics to the user in the confirmation copy.
+> **Small spot illustrations are optional visual enhancement, not a confirmation field.** The user confirms image source via `image_usage`; within that boundary, Strategist may proactively add a coherent family of small decorative spot illustrations when the deck's `visual_style`, content texture, and page density would benefit. Do not create a separate system, page-role map, or user-facing picker. Use them on suitable pages; do not force a quota, and do not phrase the rule as "few pages." Suitable means the spot improves rhythm, warmth, continuity, or section identity without carrying facts or competing with charts, photos, tables, screenshots, or key text. `image_usage: none` wins and produces no decorative illustration rows.
 
-**Mandatory — honor the illustration strategy multi-select when `illustration_usage: use`.** Write the result in `design_spec.md §VIII Illustration System`. Use the confirmed `result.json.illustration_strategy` array when present; if chat fallback or a legacy result omits it, infer a conservative array from content + `visual_style` and state that it was inferred. Valid ids:
-
-| Strategy | Behavior |
-|---|---|
-| `hero-only` | Illustrations appear only as cover / chapter / closing hero imagery; no decorative spots. |
-| `sparse-spots` | 3-6 same-family spot illustrations support selected pages as small margin / edge / behind-text accents. |
-| `recurring-motif` | One repeated visual motif family recurs across sections and becomes a deck identity cue. |
-| `image-as-canvas` | Large illustration/photo scenes become canvases for native SVG annotations, KPI cards, routes, or architecture overlays. |
-
-**Default — strategy recommendation (may combine when content demands):**
-
-| Signal | Strategy |
-|---|---|
-| Cover / chapter atmosphere only; dense report body | `hero-only` |
-| Educational / onboarding / cultural / lifestyle deck with repeated concepts | `sparse-spots` |
-| Brand story / product narrative / event deck needing identity cues | `recurring-motif` |
-| Technical / operational / product / data pages where image can carry context behind editable overlays | `image-as-canvas` |
-| Deck has both expressive dividers and content-rich image pages | combine `hero-only` + `image-as-canvas` |
-
-**Hard rule**: `illustration_strategy` is a planning contract, not a source. `image_usage` still decides `Acquire Via`; the strategy decides role, placement, reuse, and where not to use illustrations.
+**AI generation path — one sheet, then slice.** When spot illustrations are AI-generated and the deck needs ≥3 same-family elements, write one `ai` Illustration Sheet row plus one `slice` row per used element. Step 5 generates the sheet, then slices transparent PNG elements for placement. This is just AI-generated imagery batched for consistency and efficiency; do not generate one image per spot.
 
 **When recommending C** — surface its three implementation modes so the user knows "no API key" is a supported state:
 
@@ -578,8 +559,6 @@ After the user picks a candidate, scan the outline and surface any pages where t
 | **Reference** | Free-form **intent description** (NOT a search query); feeds Image_Generator (ai) or Image_Searcher (web) |
 | `text_policy` (optional, `ai` rows only) | `none` (no text in image) or `embedded` (text is part of the artwork). Leave blank when Image_Generator should decide per row. Long body / data / lists stay in SVG. |
 | `page_role` (optional, `ai` rows only) | `local` (image is a region block on an SVG page) or `hero_page` (image is the page's main voice). Leave blank when Image_Generator should decide per row. |
-
-**Mandatory — Illustration System block**: when `illustration_usage: use`, fill the `design_spec.md §VIII Illustration System` table before the resource list. The block must state `Strategy`, `Motif family`, `Reuse rule`, `Do not use on`, and `Boundary`. Use `none` / `not applicable` only when the confirmed image usage is `none` or no intentional illustrations are used.
 
 **No-crop flag (exception only)**: most images are croppable — Executor defaults to `preserveAspectRatio="xMidYMid slice"`. When an image must NOT lose pixels (data screenshots, charts, certificates, contracts, dense diagrams), append `no-crop` to its `spec_lock.md images` entry. Executor will then size the container to the native ratio and use `meet`. Don't tag the rest.
 
