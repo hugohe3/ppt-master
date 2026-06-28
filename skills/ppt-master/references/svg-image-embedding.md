@@ -49,6 +49,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
    ├── Existing / Generated → <image href="../images/xxx.png" .../>
    ├── Sourced + license_tier=no-attribution → <image href=...> only
    ├── Sourced + license_tier=attribution-required → <image href=...> + small <text> credit element on the slide
+   ├── Sourced + license_tier=manual → <image href=...> only (user-supplied --from-url; rights/credit are user responsibility)
    ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
