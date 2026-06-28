@@ -89,6 +89,8 @@ uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json
 uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json
 # Out-of-pipeline one-off / debug / single-image fixup only (no manifest, no sidecar):
 uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+# Spot illustrations — slice one AI grid sheet into individual elements (see image-generator.md §4.3):
+uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
 uvx ppt-master svg-editor <project_path> --live --daemon
 uvx ppt-master svg-quality-check <project_path>
 uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation
