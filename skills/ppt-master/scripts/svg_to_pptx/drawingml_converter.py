@@ -421,6 +421,11 @@ def convert_svg_to_slide_shapes(
     slide_num: int = 1,
     verbose: bool = False,
     merge_paragraphs: bool = True,
+    image_optimize: bool = True,
+    image_max_dimension: int | None = 2560,
+    image_sizing: str = 'cap',
+    image_scale: float = 2.0,
+    image_quality: int = 85,
     trace_out: list[dict[str, Any]] | None = None,
 ) -> tuple[str, dict[str, bytes], list[dict[str, str]], list]:
     """Convert an SVG file to a complete DrawingML slide XML.
@@ -433,6 +438,12 @@ def convert_svg_to_slide_shapes(
             dy clustered around one base line-height) become a single
             editable text frame with multiple <a:p>. Disable it to preserve
             the SVG's exact line layout (one textbox per line).
+        image_optimize: Downsample oversized raster images for PPTX export.
+        image_max_dimension: Maximum optimized image dimension in pixels.
+        image_sizing: ``cap`` to only cap source dimensions, ``display`` to
+            size from rendered SVG boxes.
+        image_scale: Target image pixels per SVG display pixel.
+        image_quality: JPEG quality used for opaque optimized rasters.
         trace_out: Optional list populated with one per-slide trace dictionary.
 
     Returns:
@@ -495,6 +506,11 @@ def convert_svg_to_slide_shapes(
         slide_num=slide_num,
         svg_dir=Path(svg_path).parent,
         merge_paragraphs=merge_paragraphs,
+        image_optimize=image_optimize,
+        image_max_dimension=image_max_dimension,
+        image_sizing=image_sizing,
+        image_scale=image_scale,
+        image_quality=image_quality,
         trace_events=trace_events,
     )
 

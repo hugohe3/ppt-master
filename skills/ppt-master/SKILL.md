@@ -625,10 +625,11 @@ Canonical three-command pipeline (mirrors `references/shared-standards.md` §5):
 python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 ```
 
-**Step 7.2** — SVG post-processing (icon embedding / image crop & embed / text flattening / rounded rect to path):
+**Step 7.2** — SVG post-processing (icon embedding / image crop & embed / raster image optimization / text flattening / rounded rect to path):
 ```bash
 python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 ```
+Default raster handling for `svg_final/`: images are embedded at the rendered SVG size budget (`--image-scale 2`, `--max-dimension 2560`), opaque PNG photos may be written as JPEG, and transparent assets remain PNG. Use `--no-compress` or a higher `--max-dimension` only for diagnostic / high-fidelity SVG snapshots.
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
@@ -643,7 +644,16 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 
 > The native pptx consumes `svg_output/` directly so the converter can preserve
 > high-fidelity primitives (icon `<use>` placeholders, image `preserveAspectRatio`
-> → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`). The `svg_output/`
+> → native picture crop metadata, rounded rect `rx/ry` → `prstGeom roundRect`).
+> Native raster images are optimized by default before writing `ppt/media`
+> (`--image-sizing cap`, `--image-max-dimension 2560`, `--image-quality 85`).
+> This optimization downscales only oversized full source images; it does not
+> crop pixels out of embedded PPTX media, and it does not reduce a small
+> placement image merely because it is currently displayed small. Display
+> cropping remains editable PPT picture-crop metadata. Add `--no-image-optimize`
+> only when the deck must retain original image bytes. Use
+> `--image-sizing display --image-scale 2` only for aggressive size reduction.
+> The `svg_output/`
 > snapshot in `backup/<timestamp>/` is always written so the project can be
 > re-exported from frozen SVG sources without re-running the LLM. The SVG-rendered
 > preview pptx is opt-in via `--svg-snapshot` — live preview already provides the

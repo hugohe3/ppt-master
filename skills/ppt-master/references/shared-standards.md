@@ -299,7 +299,7 @@ Must be executed in order — skipping or adding extra flags is FORBIDDEN:
 # 1. Split speaker notes into per-page note files
 python3 scripts/total_md_split.py <project_path>
 
-# 2. SVG post-processing (icon embedding, image crop/embed, text flattening, rounded rect to path)
+# 2. SVG post-processing (icon embedding, image crop/embed/optimization, text flattening, rounded rect to path)
 python3 scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX (embeds speaker notes by default)
@@ -339,7 +339,9 @@ Full reference: [`animations.md`](animations.md).
 - NEVER force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). Default auto-split already gives native the high-fidelity source it needs without affecting legacy.
 - NEVER use `--only` (it suppresses one of the two output files)
 
-> Source-directory split: by default `svg_to_pptx.py` reads `svg_output/` for the native pptx (preserves icon `<use>`, image `preserveAspectRatio` → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`) and `svg_final/` for the legacy/preview pptx (PowerPoint's internal SVG parser needs the flattened form). Pass `-s output` or `-s final` only when you specifically want both products to read from a single source.
+> Source-directory split: by default `svg_to_pptx.py` reads `svg_output/` for the native pptx (preserves icon `<use>`, image `preserveAspectRatio` as native picture-crop metadata, rounded rect `rx/ry` → `prstGeom roundRect`) and `svg_final/` for the legacy/preview pptx (PowerPoint's internal SVG parser needs the flattened form). Pass `-s output` or `-s final` only when you specifically want both products to read from a single source.
+
+**Default — raster size control**: `finalize_svg.py` optimizes raster images using a rendered-size budget of `2x` display pixels with a `2560px` maximum dimension; it may crop pixels for the flattened SVG snapshot. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: it downscales only oversized full source images to `--image-max-dimension 2560`, keeps display cropping as editable PPT picture-crop metadata, and does not shrink a picture merely because its current SVG placement is small. Opaque PNG photos may become JPEG; transparent assets remain PNG. Use `finalize_svg.py --no-compress` / a higher `--max-dimension` only for diagnostic SVG snapshots, `svg_to_pptx.py --no-image-optimize` only when the native PPTX must retain original image bytes, and `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction.
 
 **Re-run rule**: Any change to `svg_output/` after post-processing requires re-running Steps 2-3. Step 1 only re-runs if `notes/total.md` changed.
 

@@ -1808,6 +1808,184 @@ def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
         return (None, None)
 
 
+def _parse_preserve_aspect_ratio(par: str | None) -> tuple[str, str]:
+    """Parse SVG preserveAspectRatio into ``(align, mode)``."""
+    parts = (par or 'xMidYMid meet').strip().split()
+    align = parts[0] if parts else 'xMidYMid'
+    mode = parts[1] if len(parts) > 1 else 'meet'
+    return align, mode
+
+
+def _image_has_alpha(img: Any) -> bool:
+    """Return whether a PIL image carries useful transparency."""
+    if img.mode in ('RGBA', 'LA'):
+        return True
+    if img.mode == 'P':
+        return 'transparency' in getattr(img, 'info', {})
+    return False
+
+
+def _image_target_size(
+    display_w: float,
+    display_h: float,
+    *,
+    max_dimension: int | None,
+    scale: float,
+) -> tuple[int, int]:
+    """Resolve optimized pixel dimensions from rendered SVG dimensions."""
+    target_w = max(1, int(round(display_w * max(scale, 1.0))))
+    target_h = max(1, int(round(display_h * max(scale, 1.0))))
+    if max_dimension and max(target_w, target_h) > max_dimension:
+        ratio = max_dimension / max(target_w, target_h)
+        target_w = max(1, int(round(target_w * ratio)))
+        target_h = max(1, int(round(target_h * ratio)))
+    return target_w, target_h
+
+
+def _fit_full_image_target(
+    img_w: int,
+    img_h: int,
+    box_w: float,
+    box_h: float,
+    align: str,
+    mode: str,
+    *,
+    sizing: str,
+    max_dimension: int | None,
+    scale: float,
+) -> tuple[int, int]:
+    """Size the full source image; never crop pixels.
+
+    ``cap`` mode only limits oversized source images by maximum dimension.
+    ``display`` mode sizes to the rendered SVG box budget.
+    """
+    if img_w <= 0 or img_h <= 0:
+        return (1, 1)
+
+    if sizing == 'cap':
+        target_w, target_h = img_w, img_h
+        if max_dimension and max(target_w, target_h) > max_dimension:
+            ratio = max_dimension / max(target_w, target_h)
+            target_w = max(1, int(round(target_w * ratio)))
+            target_h = max(1, int(round(target_h * ratio)))
+        return target_w, target_h
+
+    target_box_w, target_box_h = _image_target_size(
+        box_w,
+        box_h,
+        max_dimension=None,
+        scale=scale,
+    )
+    img_ratio = img_w / img_h
+    box_ratio = box_w / box_h if box_h else img_ratio
+
+    if align != 'none' and mode == 'slice':
+        if box_ratio >= img_ratio:
+            target_w = target_box_w
+            target_h = int(round(target_w / img_ratio))
+        else:
+            target_h = target_box_h
+            target_w = int(round(target_h * img_ratio))
+    else:
+        ratio = min(target_box_w / img_w, target_box_h / img_h, 1.0)
+        target_w = int(round(img_w * ratio))
+        target_h = int(round(img_h * ratio))
+
+    target_w = max(1, target_w)
+    target_h = max(1, target_h)
+    if max_dimension and max(target_w, target_h) > max_dimension:
+        ratio = max_dimension / max(target_w, target_h)
+        target_w = max(1, int(round(target_w * ratio)))
+        target_h = max(1, int(round(target_h * ratio)))
+    return target_w, target_h
+
+
+def _resize_for_target(img: Any, target_w: int, target_h: int) -> Any:
+    """Downscale a PIL image to the target dimensions without upsampling."""
+    width, height = img.size
+    if target_w >= width and target_h >= height:
+        return img
+    ratio = min(target_w / width, target_h / height)
+    if ratio >= 1.0:
+        return img
+    try:
+        from PIL import Image  # type: ignore
+    except ImportError:
+        return img
+    new_size = (max(1, int(round(width * ratio))), max(1, int(round(height * ratio))))
+    return img.resize(new_size, Image.Resampling.LANCZOS)
+
+
+def _encode_optimized_image(img: Any, *, prefer_jpeg: bool, quality: int) -> tuple[bytes, str] | None:
+    """Encode a PIL image for PPTX media."""
+    buf = io.BytesIO()
+    try:
+        if prefer_jpeg and not _image_has_alpha(img):
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            img.save(buf, format='JPEG', quality=max(1, min(quality, 100)), optimize=True)
+            return buf.getvalue(), 'jpg'
+        if img.mode == 'P':
+            img = img.convert('RGBA' if _image_has_alpha(img) else 'RGB')
+        img.save(buf, format='PNG', optimize=True)
+        return buf.getvalue(), 'png'
+    except (OSError, ValueError):
+        return None
+
+
+def _optimize_image_for_pptx(
+    elem: ET.Element,
+    ctx: ConvertContext,
+    img_data: bytes,
+    img_format: str,
+    box_w: float,
+    box_h: float,
+) -> tuple[bytes, str]:
+    """Optimize full raster image bytes for native PPTX embedding."""
+    if not ctx.image_optimize:
+        return img_data, img_format
+    if img_format.lower() in {'svg', 'emf', 'wmf'}:
+        return img_data, img_format
+
+    try:
+        from PIL import Image, UnidentifiedImageError  # type: ignore
+    except ImportError:
+        return img_data, img_format
+
+    try:
+        img = Image.open(io.BytesIO(img_data))
+        img.load()
+    except (UnidentifiedImageError, OSError, ValueError):
+        return img_data, img_format
+
+    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    target_w, target_h = _fit_full_image_target(
+        img.size[0],
+        img.size[1],
+        box_w,
+        box_h,
+        align,
+        mode,
+        sizing=ctx.image_sizing,
+        max_dimension=ctx.image_max_dimension,
+        scale=ctx.image_scale,
+    )
+
+    original_size = img.size
+    img = _resize_for_target(img, target_w, target_h)
+    resized = img.size != original_size
+    prefer_jpeg = img_format.lower() in {'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff'}
+    encoded = _encode_optimized_image(img, prefer_jpeg=prefer_jpeg, quality=ctx.image_quality)
+    if encoded is None:
+        return img_data, img_format
+
+    optimized_data, optimized_format = encoded
+    if not resized and len(optimized_data) >= len(img_data):
+        return img_data, img_format
+
+    return optimized_data, optimized_format
+
+
 def _compute_slice_src_rect(
     img_w: float, img_h: float,
     box_w: float, box_h: float,
@@ -1869,10 +2047,7 @@ def _resolve_image_src_rect(
     shrinks the picture frame to match image aspect ratio); none mode keeps
     the legacy stretch behaviour intentionally.
     """
-    par = (elem.get('preserveAspectRatio') or 'xMidYMid meet').strip()
-    parts = par.split()
-    align = parts[0] if parts else 'xMidYMid'
-    mode = parts[1] if len(parts) > 1 else 'meet'
+    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
 
     if align == 'none' or mode != 'slice':
         return ''  # meet handled by frame fit; none → stretch is correct per SVG spec
@@ -1910,10 +2085,7 @@ def _resolve_image_meet_fit(
       - intrinsic image dimensions cannot be read
       - frame already matches image ratio (no-op)
     """
-    par = (elem.get('preserveAspectRatio') or 'xMidYMid meet').strip()
-    parts = par.split()
-    align = parts[0] if parts else 'xMidYMid'
-    mode = parts[1] if len(parts) > 1 else 'meet'
+    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
 
     if align == 'none' or mode == 'slice':
         return None
@@ -1991,6 +2163,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             img_format = 'jpg'
         img_data = img_path.read_bytes()
 
+    img_data, img_format = _optimize_image_for_pptx(
+        elem, ctx, img_data, img_format, w, h,
+    )
+
     img_idx = len(ctx.media_files) + 1
     img_filename = f's{ctx.slide_num}_img{img_idx}.{img_format}'
     ctx.media_files[img_filename] = img_data
@@ -2007,10 +2183,9 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Resolve clip-path → DrawingML geometry
     clip_geom = _resolve_clip_geometry(elem, ctx, raw_x, raw_y, raw_w, raw_h)
 
-    # Resolve preserveAspectRatio="<align> slice" → DrawingML <a:srcRect>.
-    # This keeps the original image intact in the .pptx and lets users
-    # re-crop or reset the picture in PowerPoint, instead of permanently
-    # baking the crop into the embedded asset.
+    # Resolve preserveAspectRatio="<align> slice" as DrawingML crop metadata.
+    # Image optimization only downscales the full source image; it never crops
+    # pixels out of the embedded media.
     src_rect_xml = _resolve_image_src_rect(elem, img_data, w, h)
 
     # Resolve preserveAspectRatio="<align> meet" by shrinking the picture
@@ -2214,6 +2389,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
         if img_format == 'jpeg':
             img_format = 'jpg'
         img_data = img_path.read_bytes()
+
+    img_data, img_format = _optimize_image_for_pptx(
+        image_elem, ctx, img_data, img_format, w, h,
+    )
 
     img_idx = len(ctx.media_files) + 1
     img_filename = f's{ctx.slide_num}_img{img_idx}.{img_format}'
