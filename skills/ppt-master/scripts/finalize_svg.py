@@ -39,6 +39,10 @@ import shutil
 import argparse
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 # Import finalize helpers from the internal package.
 sys.path.insert(0, str(Path(__file__).parent))
 from svg_finalize.align_embed_images import (

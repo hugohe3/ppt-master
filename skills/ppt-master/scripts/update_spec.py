@@ -27,6 +27,10 @@ import re
 import sys
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 HEX_RE = re.compile(r"^#(?:[0-9A-Fa-f]{3,4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
 FONT_FAMILY_RE = re.compile(r"""(font-family\s*=\s*)(["'])(.*?)\2""")
 

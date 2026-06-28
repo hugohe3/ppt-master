@@ -26,11 +26,15 @@ import sys
 import argparse
 from pathlib import Path
 
-import numpy as np
-from PIL import Image
-
 # Import modules from the same directory
 sys.path.insert(0, str(Path(__file__).parent))
+
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
+import numpy as np
+from PIL import Image
 
 # Algorithm parameters
 ALPHA_THRESHOLD = 0.002  # Alpha threshold; values below this are not processed

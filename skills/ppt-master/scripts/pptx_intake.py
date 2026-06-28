@@ -29,8 +29,11 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+from console_encoding import configure_utf8_stdio  # noqa: E402
 from beautify_identity import extract_identity  # noqa: E402
 from template_fill_pptx.analyzer import analyze_pptx  # noqa: E402
+
+configure_utf8_stdio()
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:

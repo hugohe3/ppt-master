@@ -23,6 +23,10 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Optional
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 
 def scan_svg_file(svg_path: Path) -> list[dict]:
     """Scan a single SVG file for edit annotations."""

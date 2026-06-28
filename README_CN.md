@@ -205,7 +205,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 > **模型推荐**：追求最佳效果选 **Claude Opus**，搭配 `gpt-image-2` 生图；**Gemini 3.5 Flash** 目前综合性价比很高，尤其速度很快，值得一试。
 
-**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.co/register?aff=WMLJ)** 都能解决卡点——均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅，支持国内支付。**PackyCode**：充值时填写优惠码 **`ppt-master`** 享 9 折。**APIKEY.FUN**：价格低至官方原价的 **7%**，通过专属链接注册可享受最高永久充值 95 折专属优惠。**RunAPI**：一个 API Key 即可访问 150+ 主流模型，价格低至官方原价的 **1 折**，注册并联系管理员可领取 **￥7 免费额度**。
+**🔑 想用 Claude / GPT / Gemini 但还没有渠道？** 本项目赞助商 **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)**、**[APIKEY.FUN](https://apikey.fun/register?aff=PPT-MASTER)** 与 **[RunAPI](https://runapi.co/register?aff=WMLJ)** 均支持按量调用 Claude、GPT、Gemini 等主流模型，无需订阅、支持国内支付，并为本项目用户提供专属优惠（详情见页首）。
 
 **🔀 手上有多个渠道？** 拿到多家的 API Key 后，[cc-switch](https://github.com/farion1231/cc-switch)（跨平台桌面应用）可以一键切换 Claude Code、Codex、Gemini CLI 等工具的 API 供应商，免去手动改配置。
 

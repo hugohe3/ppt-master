@@ -42,6 +42,10 @@ Usage:
 import argparse
 from typing import Optional, Dict, Any
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 
 # ============================================================================
 # Transition effect definitions

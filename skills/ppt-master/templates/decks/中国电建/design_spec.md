@@ -1,5 +1,5 @@
 ---
-deck_id: 中国电建_常规
+deck_id: 中国电建
 kind: deck
 summary: Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries.
 canvas_format: ppt169
@@ -17,7 +17,7 @@ primary_color: "#00418D"
 
 | Property       | Description                                                      |
 | -------------- | ---------------------------------------------------------------- |
-| **Template Name** | 中国电建_常规 (formerly powerchina)                           |
+| **Template Name** | 中国电建                                                     |
 | **Use Cases**  | Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries |
 | **Design Tone** | Professional, composed, international, state-owned enterprise style |
 | **Theme Mode** | Light theme (white background + POWERCHINA blue accent)          |

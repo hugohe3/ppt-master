@@ -22,7 +22,10 @@ import argparse
 import json
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
 from template_import.manifest import build_manifest
+
+configure_utf8_stdio()
 
 
 def parse_args() -> argparse.Namespace:

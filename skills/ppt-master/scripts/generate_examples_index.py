@@ -14,6 +14,10 @@ from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 try:
     from project_utils import find_all_projects, get_project_info, CANVAS_FORMATS
 except ImportError:

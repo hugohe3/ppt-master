@@ -12,6 +12,10 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 # Canvas format definitions (unified source)
 try:
     from config import CANVAS_FORMATS

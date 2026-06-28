@@ -24,6 +24,8 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 >
 > Recorded narration / video export: run the standalone [`generate-audio`](skills/ppt-master/workflows/generate-audio.md) workflow after post-processing.
 >
+> Existing PPTX native enhancement without regeneration: when the user provides a finished `.pptx` and asks to optimize it while keeping existing content / layout / format stable — for example adding speaker notes, narration audio, automatic slide advance, or page transitions — run the standalone [`native-enhance-pptx`](skills/ppt-master/workflows/native-enhance-pptx.md) workflow. This route archives the source PPTX into the project (`projects/` sources are moved; external sources are copied), then patches it directly at the OOXML zip layer and must not enter the SVG generation pipeline.
+>
 > Object-level animation tuning: when the user asks to change animation order, effect, timing, or a specific object's reveal behavior, run the standalone [`customize-animations`](skills/ppt-master/workflows/customize-animations.md) workflow. Default export applies page transitions but no per-element entrance animation (element builds are opt-in); create `animations.json` or pass `-a auto` only when the user asks for element animation or object-level customization.
 >
 > Live preview: any time the user mentions "live preview", "preview", "看效果", or wants to click/select a slide element, run [`live-preview`](skills/ppt-master/workflows/live-preview.md). Step 6 auto-starts it during generation; the workflow covers post-export re-entry and applying submitted annotations.
@@ -91,6 +93,11 @@ uvx ppt-master svg-editor <project_path> --live --daemon
 uvx ppt-master svg-quality-check <project_path>
 uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation
 uvx ppt-master animation-config validate <project_path>  # optional, before re-export
+
+# Existing PPTX native enhancement workflow — direct OOXML patch, no SVG conversion
+python3 skills/ppt-master/scripts/native_enhance_pptx.py init <PPTX_file> --name <project_slug>
+python3 skills/ppt-master/scripts/native_enhance_pptx.py validate <project_path>
+python3 skills/ppt-master/scripts/native_enhance_pptx.py apply <project_path>
 
 # Post-processing pipeline: run sequentially, one command at a time
 uvx ppt-master total-md-split <project_path>

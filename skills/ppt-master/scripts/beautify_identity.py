@@ -38,9 +38,12 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+from console_encoding import configure_utf8_stdio  # noqa: E402
 from pptx_to_svg.color_resolver import ColorPalette  # noqa: E402
 from pptx_to_svg.emu_units import NS  # noqa: E402
 from pptx_to_svg.ooxml_loader import OoxmlPackage  # noqa: E402
+
+configure_utf8_stdio()
 
 
 def _font_pair(theme_root, font_tag: str) -> dict[str, str]:
