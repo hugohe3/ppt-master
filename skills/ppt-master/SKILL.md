@@ -172,7 +172,7 @@ Import source content (choose based on the situation):
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 
 ```bash
-uv run skills/ppt-master/scripts/pptx_intake.py <project_path>/sources/<source.pptx> -o <project_path>/analysis
+uvx ppt-master pptx-intake <project_path>/sources/<source.pptx> -o <project_path>/analysis
 ```
 
 For each PPTX it writes `<stem>.identity.json` (canvas, theme palette/fonts, observed usage) and `<stem>.slide_library.json` (text slots, geometry, native tables, native chart caches), and merges that deck's Strategist-facing digest into the single multi-deck index `analysis/source_profile.json` (`decks[]`, one self-contained entry per source deck, with prefixed artifact pointers). In the main generation path these are source facts and recommendation candidates, not replica constraints; beautify and template-fill workflows decide separately which fields become locked constraints.

@@ -78,7 +78,7 @@ source.pptx
 Run:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
+uv run skills/ppt-master/scripts/native_enhance_pptx.py init "<source.pptx>" --name "<project_slug>"
 ```
 
 Project layout:
@@ -115,7 +115,7 @@ The `init` command also writes:
 If the project already existed or notes/audio coverage changed, refresh the draft:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
+uv run skills/ppt-master/scripts/native_enhance_pptx.py plan "<project>"
 ```
 
 Present the plan to the user before generating notes or audio:
@@ -174,7 +174,7 @@ Write:
 Run coverage check:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+uv run skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
 ```
 
 > Note: before audio generation, missing audio returns exit code `2` only when `audio.enabled` is true. Missing notes are not acceptable once this step is complete.
@@ -195,7 +195,7 @@ Follow the same one-shot interaction standard as [`generate-audio`](./generate-a
 For edge voices:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
+uvx ppt-master notes-to-audio --list-voices --locale <locale>
 ```
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation of audio backend, voice, rate/settings, and embedding. Do not run `notes_to_audio.py` before this confirmation.
@@ -221,7 +221,7 @@ Record the confirmed audio config into `project.json`:
 Run with the confirmed values:
 
 ```bash
-python3 skills/ppt-master/scripts/notes_to_audio.py "<project>" \
+uvx ppt-master notes-to-audio "<project>" \
   --voice <chosen-ShortName> --rate <chosen-rate>
 ```
 
@@ -232,7 +232,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py "<project>" \
 Validate:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
+uv run skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
 ```
 
 ---
@@ -244,13 +244,13 @@ python3 skills/ppt-master/scripts/native_enhance_pptx.py validate "<project>"
 Run:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>"
+uv run skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>"
 ```
 
 Optional:
 
 ```bash
-python3 skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
+uv run skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
   --transition fade \
   --transition-duration 0.5 \
   --narration-padding 0.4 \
@@ -277,7 +277,7 @@ Patch scope:
 Run read-back:
 
 ```bash
-python3 skills/ppt-master/scripts/source_to_md/ppt_to_md.py \
+uvx ppt-master ppt-to-md \
   "<project>/exports/<source>_enhanced.pptx" \
   -o "<project>/validation/readback.md"
 ```

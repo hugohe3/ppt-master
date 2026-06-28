@@ -91,10 +91,10 @@ uvx ppt-master template-fill-pptx apply <project_path>/sources/<source.pptx> <pr
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
 ```bash
-python3 scripts/native_enhance_pptx.py init <source.pptx> --name <project_slug>
-python3 scripts/native_enhance_pptx.py plan <project_path>
-python3 scripts/native_enhance_pptx.py validate <project_path>
-python3 scripts/native_enhance_pptx.py apply <project_path>
+uv run scripts/native_enhance_pptx.py init <source.pptx> --name <project_slug>
+uv run scripts/native_enhance_pptx.py plan <project_path>
+uv run scripts/native_enhance_pptx.py validate <project_path>
+uv run scripts/native_enhance_pptx.py apply <project_path>
 ```
 
 Post-processing and export:

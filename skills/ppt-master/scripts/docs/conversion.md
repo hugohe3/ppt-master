@@ -141,7 +141,7 @@ than replacing it: Markdown remains the normalized content source, while intake
 artifacts provide source facts for Strategist and standalone PPTX workflows.
 
 ```bash
-uv run skills/ppt-master/scripts/pptx_intake.py deck.pptx -o projects/demo/analysis
+uvx ppt-master pptx-intake deck.pptx -o projects/demo/analysis
 ```
 
 Outputs (per source deck, prefixed by file stem):

@@ -44,8 +44,8 @@ If the content material is only a topic with no supporting facts, gather or ask 
 Create a dedicated project directory under `projects/`. Do not write outputs directly into `projects/` root. Reuse the standard project manager so source import rules stay consistent with the rest of the repository:
 
 ```bash
-python3 skills/ppt-master/scripts/project_manager.py init "<project_name>" --format ppt169
-python3 skills/ppt-master/scripts/project_manager.py import-sources "<project_dir>" "<source.pptx>" "<material...>"
+uvx ppt-master project init "<project_name>" --format ppt169
+uvx ppt-master project import-sources "<project_dir>" "<source.pptx>" "<material...>"
 ```
 
 **Source import rule**: `project_manager.py import-sources` copies files from outside the repository and moves repo-local files by default, unless `--copy` / `--move` is explicitly supplied. Keep this shared behavior; do not create a separate template-fill import path.
@@ -68,7 +68,7 @@ Use this fixed layout:
 `project_manager.py import-sources` automatically runs the standard PPTX intake for imported PowerPoint files and writes `<stem>.slide_library.json` into `<project_dir>/analysis/`. If you are working from a manually assembled project that does not have the intake artifact, run the template-fill analyzer directly:
 
 ```bash
-uv run skills/ppt-master/scripts/pptx_intake.py "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis"
+uvx ppt-master pptx-intake "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis"
 ```
 
 Read `<project_dir>/analysis/<stem>.slide_library.json` (intake prefixes per-deck artifacts by the template deck's file stem) and identify:
