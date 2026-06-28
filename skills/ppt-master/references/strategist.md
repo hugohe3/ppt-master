@@ -354,6 +354,16 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 
 > **Confirmed value wins.** The `image_usage` in `result.json` (or the chat reply) **overrides the recommendation here**. It may be a legacy single string or a Confirm UI multi-select array. Map every selected value to §VIII `Acquire Via` (`ai`→`ai`, `web`→`web`, `provided`→**`user`**, `placeholder`→`placeholder`, `none`→option A, no image rows). When it does not include `ai` (and no legacy prose plan includes AI), skip h.5 entirely and write no `ai` rows. If `image_notes` is present, honor it as the user's image intent while assigning per-page rows. See SKILL.md Step 4 for the full mapping.
 
+> **Illustration roles at a glance (Reference).** Within the `image_usage` source boundary, illustrations can play several roles — pick by what the page needs; the **deck illustration motif** rule below threads them into one system. Mechanics live in the linked files.
+>
+> | Role | When | Mechanism | Source |
+> |---|---|---|---|
+> | Body spot | scattered decorative accent (the icon-counterpart) | `page_role: local`, sheet→slice `#63` ([image-generator §4.3](./image-generator.md)) | `slice` (from an `ai` sheet) / `provided` / `web` |
+> | Hero anchor | cover or a single big statement | `page_role: hero_page` + §4.1 Primitive A or D | per `image_usage` |
+> | Section divider | chapter identity, often recurring | `page_role: hero_page` + `#75` divider layout | same motif family |
+> | Atmospheric background | mood wash behind editable SVG text | `page_role: hero_page` + §4.1 Primitive D | per `image_usage` |
+> | Motif through-line | one family across the roles above, deck-wide (a designed system) | combination of the above | `ai`: generate one family; `provided` / `web`: only if the assets already form one family |
+
 > **Spot illustrations follow the locked `visual_style`'s propensity — a default lean, not a confirmation field.** The user confirms image *source* via `image_usage`; illustrations are not a separate confirmation control, page-role map, or user-facing picker. Within that boundary, whether the deck leans into decorative spot illustrations is anchored by the locked `visual_style`'s **illustration propensity** (`core` / `supportive` / `sparse` — see that style's §6 and the [`visual-styles/_index.md`](./visual-styles/_index.md) `Illus.` column):
 >
 > - **`core`** (e.g. sketch-notes, memphis, paper-cut) — illustration is intrinsic; default to planning a coherent spot family.
