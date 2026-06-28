@@ -377,6 +377,24 @@
       "label_en": "No images"
     }
   ],
+  "illustration_usage": [
+    {
+      "id": "none",
+      "label": "不刻意使用插图",
+      "label_zh": "不刻意使用插图",
+      "label_en": "No intentional illustrations",
+      "desc_zh": "默认选项；仅在内容本身需要时使用图片。",
+      "desc_en": "Default. Use images only when the content itself needs them."
+    },
+    {
+      "id": "use",
+      "label": "使用插图",
+      "label_zh": "使用插图",
+      "label_en": "Use illustrations",
+      "desc_zh": "让插图成为版面的一部分；用多用少由系统按内容与视觉风格判断。",
+      "desc_en": "Let illustrations be part of the design; how heavily is decided by content and visual style."
+    }
+  ],
   "image_ai_path": [
     {
       "id": "auto",
