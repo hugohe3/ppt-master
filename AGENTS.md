@@ -61,6 +61,8 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 # No setup needed — uvx downloads ppt-master from PyPI automatically
 ```
 
+> **uv cache caveat**: `uvx ppt-master` caches downloaded packages locally. After a new version is published, `uvx ppt-master --version` may show the old cached version. Always verify with `uv cache clean ppt-master && uvx ppt-master --version` when version matters, or pin with `uvx ppt-master@<version>`.
+
 ## Command Quick Reference
 
 Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
