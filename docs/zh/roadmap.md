@@ -64,6 +64,10 @@
 
 - **一批默认行为与入口标准化** — 逐元素入场动画默认关（只留转场 `fade`；元素动画改 opt-in `-a auto` / `animations.json`），消除"自动级联入场"的 AI 味；per-project `icons/` 在选择时把选中图标复制进项目、嵌入优先本地；`analysis/` 确立为机器抽取事实的 canonical 必读层（PPTX intake bundle + `image_analysis.csv`）；主管线把源 deck 的身份（配色 / 字体 / 版式）当**参考而非约束**（可继承可重设，由策略师判断，默认从零设计）；confirm 页支持自定义配色输入
 
+- **AI 插画大图 → 切片点缀插画管线**（[`scripts/slice_images.py`](../../skills/ppt-master/scripts/slice_images.py)） — 当一份 deck 需要若干同一家族的点缀插画时，不再一格一次 AI 调用，而是**一次生成一张多格插画大图**（单次调用锁住整组风格 / 色板、成本远低于逐格生成），再由 `slice_images.py` 确定性按 `RxC` 网格切成独立元素文件；`--trim` 按每格内容包围盒紧裁、`--alpha` 抠掉平整底色，让每个元素以**透明剪影**落到异色页面而非带可见方框。资源契约（§VIII）双行落地：一行 `ai` Illustration Sheet（生成但永不直接放置、不进 `spec_lock.md` images）+ 每格一行 `slice` 元素（实际放置、进 spec_lock）；Step 5 生成大图后切片并重跑 `analyze_images`，Step 7 readiness gate 在离线场景列出大图 + 元素目标让用户手动放图再切。确认页加 `illustration_usage` 二元意图开关（`none` / `use`）——只表达「要不要让插画进入这套 deck 的视觉语言」，**用多重 vs 稀疏、走哪种来源都在下游决定**（强度＝Strategist 按内容 + `visual_style` 判断；来源＝沿用 `image_usage`，`image_usage: none` 永远压过插画意图）；用户全程不必选、也看不到内部 sheet/slice 实现。`svg_quality_checker` 加了对应校验，[`image-layout-patterns.md`](../../skills/ppt-master/references/image-layout-patterns.md) 补了图主导的促销 / 宣传版式范式
+
+- **图像变换矩阵端到端保真 + host-native 生成路径** — `svg_to_pptx` 的 DrawingML 图片导出现在如实尊重 SVG 的 transform 矩阵（旋转 / 斜切 / 复合变换不再在嵌套 `<g transform>` 下错位或塌回原点），把「跨四渲染器位置保真」主轴补到 raster 图层；`image_gen.py` 增加 host-native 生成路径，在宿主自带图像生成能力时走原生通道。两者均属修复 / 增量补强，细节见 commit log
+
 ---
 
 ## 进行中 / 下一步
@@ -71,6 +75,7 @@
 明确在做或下一步要做的方向，不承诺时间窗口。
 
 - **多 deck intake 与材料发散度的真实使用校准（刚落地）** — 多 deck 合并 intake（`<stem>` 前缀 + `decks[]` 合并索引）与材料发散度自由文字项（§c 受众下）均已上线（见上「2026-06」），接下来按真实使用信号校准：多份源 deck 同名（stem 冲突）的处理目前是后者覆盖前者，是否需要去重 / 加序号待信号；发散度的自由文字让 Strategist 判得准不准、放开写时「事实守源」边界守不守得住，待真实生成验证。两者都不预先加机械阈值
+- **插画切片管线的真实 deck 校准（刚落地）** — sheet→slice→place 整链与 `illustration_usage` 开关今日刚上线（见上「2026-06」），接下来按真实使用信号校准：一次大图切多格在真实生成里风格 / 色板一致性够不够稳、`--trim` / `--alpha` 对格内不规则 AI 构图的鲁棒性、离线 readiness gate 的手动放图 + 重切体验，以及 Strategist 把 `illustration_usage: use` 落成多重 vs 稀疏的判断准不准。不预先加机械阈值 / 配额
 - 其余：mode / visual-style 体系的验证与校准已收口（见上「2026-06」），结构（5 mode + 18 visual-style + custom）定型、四对近邻消歧并成一张 Close-calls 表、四项校准收紧已落地。后续方向由真实使用信号与反馈驱动；长期改进见下「持续维护方向」，已评估不做的见「明确不做」
 
 ---
