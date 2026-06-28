@@ -1,23 +1,23 @@
 name: Verify & Publish
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "pyproject.toml"
-      - "skills/ppt-master/pyproject.toml"
+  workflow_run:
+    workflows: ["Check UVX Migration"]
+    types: [completed]
 
 jobs:
   verify-and-publish:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    if: github.event.workflow_run.conclusion == 'success'
     permissions:
       id-token: write
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: main
           fetch-depth: 0
           persist-credentials: true
 
@@ -162,11 +162,19 @@ jobs:
           echo "✅ Dependencies in sync"
 
       # ── 通过所有门禁，创建 tag → 触发 publish-pypi.yml ──
-      - name: Create and push tag
+      - name: Create tag
         if: steps.check.outputs.exists == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
           git push origin "${{ steps.version.outputs.tag }}"
-          echo "✅ Tag ${{ steps.version.outputs.tag }} created → publish-pypi.yml"
+          echo "✅ Tag ${{ steps.version.outputs.tag }} created"
+
+      - name: Trigger PyPI publish
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          gh workflow run publish-pypi.yml --ref "${{ steps.version.outputs.tag }}"
+          echo "✅ Triggered publish-pypi.yml for ${{ steps.version.outputs.tag }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
