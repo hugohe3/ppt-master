@@ -10,12 +10,13 @@ Role definition for the **web image acquisition path**: translate Strategist int
 
 ## 1. License Tier Discipline
 
-Every accepted image is classified into one of two tiers. Anything else is rejected outright.
+Every **provider-sourced** image is classified into one of two tiers; anything else is rejected outright. A third tier, `manual`, exists **only** for a user-supplied [`--from-url`](#5-running-image_searchpy) replacement — it is never the result of a provider search accepting an unknown license.
 
 | Tier | Licenses | On-slide attribution |
 |---|---|---|
 | `no-attribution` | CC0, Public Domain, Pexels License, Pixabay Content License | None |
 | `attribution-required` | CC BY, CC BY-SA | Inline credit `<text>` on the slide |
+| `manual` | User-supplied via `--from-url` (license unverified) | None — verifying rights / any credit is the user's responsibility |
 
 **Forbidden — auto-rejected licenses**:
 
@@ -118,6 +119,10 @@ python3 scripts/image_search.py "<query>" \
 | `--provider` | no | (chain) | Pin one provider |
 | `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
 | `--manifest` | no | (default) | Override manifest path |
+| `--save-candidates` | no | off | Escalation only: also keep a review pool in `candidates/<stem>/`. Default downloads just the best match (+ a review copy) |
+| `--max-candidates` | no | `4` | Pool size when `--save-candidates` is set |
+| `--promote` | no | — | Promote a reviewed candidate to the target filename, e.g. `--promote candidate_03.jpg --filename team.jpg -o <dir>` |
+| `--from-url` | no | — | Manual replace: download a user-supplied image URL into `--filename` (recorded `license_tier: manual`); works without a multimodal model |
 
 ### Batch mode (≥ 2 web rows) — preferred
 
@@ -150,6 +155,43 @@ Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item 
 The runner searches all `Pending` / `Failed` rows concurrently, appends each success to `image_sources.json` (the credit source of truth, idempotent on `filename`), and writes status back into `image_queries.json` — `Sourced` on success, `Needs-Manual` when the full provider/stage chain is exhausted. Status is saved after each completion, so an interrupted run preserves finished rows; re-running skips terminal rows. A single `web` row may still use single-query mode above.
 
 **Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
+
+### Suitability review — with or without a multimodal model
+
+A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily *visually suitable* — `score_candidate` never sees pixels. So a web best match should be reviewed before it is trusted, by whichever reviewer is available:
+
+- **Multimodal model**: each download writes a downscaled review copy to `images/.review/<stem>.jpg` (the placed asset stays full-resolution; the bounded copy just keeps a very large original safe and quick to open). Read it and judge fit — subject, mood, quality, not just topic overlap.
+- **Non-multimodal model (no vision)**: do **not** pretend to confirm. Hand off to a human — surface each web image's `source_page_url` from `image_sources.json` (live preview also shows the placed result) and let the user judge.
+
+**Replacement ladder when a best match is not right** (any reviewer):
+
+1. refine the query and re-run that row once;
+2. **manual URL replace (universal, model-agnostic)** — the user finds a better image anywhere and gives its URL; download and swap it in:
+   ```bash
+   python3 scripts/image_search.py --from-url <image-url> --filename <name>.jpg -o <project_path>/images
+   ```
+   Recorded with `license_tier: manual` — verifying usage rights is the user's call. Human replacement is a legitimate outcome, not a failure. It updates the image and `image_sources.json` but does **not** rewrite `image_queries.json`, so a row fixed this way may still read `Needs-Manual` in the batch manifest — harmless: the file is present, so export proceeds (executor-base §6.1);
+3. (opt-in) `--save-candidates` to pull auto-alternatives with their own `source_page_url`s, then `--promote` the best (below);
+4. if nothing fits, mark the row `Needs-Manual`.
+
+Web search is far cheaper than AI generation, so this review pass is well worth it.
+
+**This review never halts the pipeline** (image-base §6 hard rule). It runs inside Step 5 image acquisition: an image that cannot be verified or replaced right now becomes `Needs-Manual` and the deck still builds (placeholder), so generation flows straight into Step 6. Manual `--from-url` replacement is an improvement step, not a blocking gate — do it now, or later from live preview, without stopping the run.
+
+### Manual review candidates (escalation, opt-in)
+
+Candidate-pool saving is **off by default** — reach for it only when a best match fails confirmation, on a subjective topic, or for a prominent image (cover / chapter divider / `hero_page` / photo-led page).
+
+```bash
+python3 scripts/image_search.py "<query>" --filename <name>.jpg -o <project_path>/images \
+  --save-candidates --max-candidates 4
+```
+
+Saves the top candidates to `images/candidates/<stem>/` with a `candidates.json` manifest and one downscaled review copy per candidate under `candidates/<stem>/review/`. **Read the candidate review copies**, pick the best fit, then promote it — the full-resolution original is copied to the target filename:
+
+```bash
+python3 scripts/image_search.py --promote candidate_03.jpg --filename <name>.jpg -o <project_path>/images
+```
 
 ---
 
@@ -196,7 +238,7 @@ Every successful download appends or replaces one entry keyed on `filename`:
 |---|---|
 | `width` / `height` | Measured from the file actually saved to disk. Use these for layout. |
 | `metadata_dimensions` | Present only when upstream-claimed size differs from the saved file (preview vs original). Informational only. |
-| `license_tier` | Drives Executor's attribution decision. Only `no-attribution` / `attribution-required`. |
+| `license_tier` | Drives Executor's attribution decision: `no-attribution` / `attribution-required` for provider-sourced images, or `manual` for a user-supplied `--from-url` replacement (embed only; rights/credit are the user's responsibility). |
 | `attribution_required` | Boolean alias of `license_tier == "attribution-required"`. |
 | `attribution_text` | Pre-rendered canonical credit string. **Use as-is; do not regenerate.** |
 | `stage` | `all` by default, or `no-attribution-only` when strict mode is used. |
@@ -278,6 +320,7 @@ Executor reads `image_sources.json` per slide that uses a Sourced image. For eac
 |---|---|
 | `no-attribution` | Embed `<image>` only |
 | `attribution-required` | Embed `<image>` **and** an inline credit element per §7 |
+| `manual` | Embed `<image>` only — user-supplied URL (`--from-url`); verifying usage rights / any required credit is the user's responsibility |
 
 Executor does not interpret raw license strings — `license_tier` is sufficient.
 
@@ -290,7 +333,8 @@ Executor does not interpret raw license strings — `license_tier` is sufficient
 In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §10:
 
 - [ ] Every web row has a downloaded file at `project/images/<filename>` OR is marked `Needs-Manual`
-- [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text`
+- [ ] Each `Sourced` web image was reviewed for fit — a multimodal model via its `images/.review/<stem>.jpg` copy, otherwise handed to the user via `source_page_url`; a poor fit was re-queried, replaced with `--from-url`, escalated via `--save-candidates` + `--promote`, or marked `Needs-Manual`
+- [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text` (except `manual` `--from-url` rows, which carry no `attribution_text`)
 - [ ] Any `attribution-required` image has visible inline credit text in the corresponding SVG
 - [ ] `metadata_dimensions` warnings surfaced when downloaded preview is much smaller than upstream-claimed size
 - [ ] `Needs-Manual` rows include the failure reason

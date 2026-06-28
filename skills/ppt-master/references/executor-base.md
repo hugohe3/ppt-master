@@ -356,6 +356,7 @@ Whenever the slide uses an image with `Status: Sourced`, look up the correspondi
 |---|---|
 | `no-attribution` | Embed the `<image>` element only. **No credit element needed.** |
 | `attribution-required` | Embed the `<image>` element **plus** a small inline `<text>` credit element per the visual spec in [image-searcher.md §7](./image-searcher.md). |
+| `manual` | Embed the `<image>` element only. **No credit element** — a user-supplied `--from-url` replacement; verifying usage rights / any required credit is the user's responsibility. |
 
 The credit text is **not** rendered by post-processing or export — it must be present in the SVG you produce. The shape of the credit element (size, position, color, multi-image source line, hero gradient overlay) is specified in [image-searcher.md §7](./image-searcher.md). Do not invent a different style.
 
