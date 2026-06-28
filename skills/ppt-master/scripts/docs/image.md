@@ -40,6 +40,12 @@ Output files land directly under `project/images/`. Formula filenames should use
 
 Unified image generation entry point.
 
+This script is the **Path A** API/proxy executor for generated images. In the
+PPT pipeline, always check the confirmed `image_ai_path` before running manifest
+mode: `host-native` uses the host's image tool directly and must not run
+`image_gen.py --manifest`; use `image_gen.py --render-md` only for its
+read-only Markdown sidecar.
+
 ```bash
 uvx ppt-master image-gen "A modern futuristic workspace"
 uvx ppt-master image-gen "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
@@ -208,6 +214,15 @@ uvx ppt-master image-search "abstract gradient" \
   --filename hero.jpg --strict-no-attribution \
   -o projects/demo/images
 ```
+
+Suitability & manual replacement (a web top hit is metadata-relevant, not guaranteed visually right):
+
+- By default only the best match is downloaded, plus a downscaled review copy at `images/.review/<stem>.jpg` (the placed asset stays full-resolution).
+- For exact subjects (landmarks, people, companies, products), use `--require-terms` or batch `required_terms` so visually plausible but wrong metadata is rejected before ranking. Example: `--require-terms Chongqing --require-terms "Jiefangbei|Liberation Monument"`. Keep proper-name / geography anchors; do not broaden to generic terms like `canyon`, `stone pillar`, or `ancient town` just to improve coverage.
+- `--save-candidates` (with `--max-candidates`, default 4) keeps an opt-in escalation pool under `candidates/<stem>/`; review it, then `--promote candidate_03.jpg --filename <name>.jpg`.
+- `--from-url <url> --filename <name>.jpg` downloads a user-chosen image URL and replaces the target (recorded `license_tier: manual`) — the model-agnostic manual path; works even without a multimodal model.
+
+Full review / escalation flow: [`image-searcher.md`](../../references/image-searcher.md) §5.
 
 Output:
 

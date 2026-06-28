@@ -50,6 +50,13 @@ class ConvertContext:
     # Default-on flag: merge mergeable paragraph blocks into one editable
     # text frame with multiple <a:p>. Disable it for strict line fidelity.
     merge_paragraphs: bool = True
+    # Native PPTX image optimization. Keeps generated decks compact by
+    # downsampling oversized raster assets to their rendered size.
+    image_optimize: bool = True
+    image_max_dimension: int | None = 2560
+    image_sizing: str = 'cap'
+    image_scale: float = 2.0
+    image_quality: int = 85
     # Optional per-element conversion diagnostics. Shared by child contexts so
     # callers can inspect native / skipped / unsupported decisions per slide.
     trace_events: list[dict[str, Any]] | None = None
@@ -153,6 +160,11 @@ class ConvertContext:
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
             merge_paragraphs=self.merge_paragraphs,
+            image_optimize=self.image_optimize,
+            image_max_dimension=self.image_max_dimension,
+            image_sizing=self.image_sizing,
+            image_scale=self.image_scale,
+            image_quality=self.image_quality,
             trace_events=self.trace_events,
         )
 

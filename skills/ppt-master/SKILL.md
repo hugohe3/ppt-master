@@ -383,7 +383,7 @@ Steps:
    uvx ppt-master confirm-ui <project_path> --daemon --wait
    ```
    Page opens at `http://localhost:5050` — the **same port as the Step 6 live preview** (they never run at once: this page shuts down at the end of Step 4). If 5050 is held, the launcher **auto-advances** (5051, …) — read the actual URL from the launch log and report it. The page does **not** close after Tier 1: it shows a "deriving…" state and polls for Tier 2. **Launch or wait failure is non-fatal**: if it fails or times out (flask missing, port blocked, no GUI / remote / web host), do **NOT** troubleshoot — **on any non-zero exit, re-check `result.json` once** (a fresh `status: tier1-confirmed`) before dropping to the chat fallback. **On success (exit 0 with a tier-1 result), do not pause or report — go straight to step 3 in the same turn.**
-3. **Re-derive Tier 2 from the confirmed anchors, then write it — immediately, same turn (the page is polling for it).** Read the tier-1 `result.json` (`status: tier1-confirmed`). Using the user's **actual** confirmed anchors (not your originals), author the realization candidates and **overwrite** `recommendations.json` with `"tier": 2`: page count (content volume × `delivery_purpose`); color, typography, and generated-image style as **generative ≥3-candidate** fields (creative recommendations always offer real choice — same rule as h.5; fewer than 3 only on the honest-shortfall exception, with a stated reason; color: core `palette` with background/secondary_bg/primary/accent/secondary_accent/body_text; typography: CJK + Latin for `heading` and `body` with `css` preview stacks + `body_size` as the body baseline in **px** (every canvas) — **one fixed value per confirmed `delivery_purpose`** (`text` 20 / `balanced` 24 / `presentation` 32), not a range; each typography candidate must include topic-matched `sample_heading` / `sample_heading_latin` / `sample_body` / `sample_body_latin` preview text, never a fixed unrelated industry sample; images: `image_strategy.candidates` rendering × palette from h.5); enumerable `icons` / `formula_policy` / `generation_mode` (recommended `id`); `image_usage` (`ai` / `web` / `provided` / `placeholder` / `none`, or a custom prose plan when several sources mix — never bare `"custom"`; write `image_ai_path` only when the plan includes AI). The still-open page polls, renders Tier 2, and preserves the user's Tier 1 picks. Closed fields (`image_ai_path`, `formula_policy`, `generation_mode`, `refine_spec`) stay finite; open fields (`icons`, `image_usage`, typography custom text) show a Custom box.
+3. **Re-derive Tier 2 from the confirmed anchors, then write it — immediately, same turn (the page is polling for it).** Read the tier-1 `result.json` (`status: tier1-confirmed`). Using the user's **actual** confirmed anchors (not your originals), author the realization candidates and **overwrite** `recommendations.json` with `"tier": 2`: page count (content volume × `delivery_purpose`); color, typography, and generated-image style as **generative ≥3-candidate** fields (creative recommendations always offer real choice — same rule as h.5; fewer than 3 only on the honest-shortfall exception, with a stated reason; color: core `palette` with background/secondary_bg/primary/accent/secondary_accent/body_text; typography: CJK + Latin for `heading` and `body` with `css` preview stacks + `body_size` as the body baseline in **px** (every canvas) — **one fixed value per confirmed `delivery_purpose`** (`text` 20 / `balanced` 24 / `presentation` 32), not a range; each typography candidate must include topic-matched `sample_heading` / `sample_heading_latin` / `sample_body` / `sample_body_latin` preview text, never a fixed unrelated industry sample; images: `image_strategy.candidates` rendering × palette from h.5); enumerable `icons` / `formula_policy` / `generation_mode` (recommended `id`); `image_usage` as one or more source ids (`["ai"]`, `["ai","provided"]`, `["web","placeholder"]`, or `["none"]`; `none` is exclusive). If the recommendation involves several sources, keep the source list structured in `recommend.image_usage` and write the usage rationale / page-role guidance into `image_notes` (for example, "封面和章节页用 AI 主视觉，产品页优先用户素材，行业背景页可用网络参考"). Write `image_ai_path` only when `image_usage` includes `ai`. Spot-illustration lean is **not** a candidate field here: it derives from the locked `visual_style`'s illustration propensity and is expressed only in the recommendation rationale / `image_notes`, never as a new confirmation field. The still-open page polls, renders Tier 2, and preserves the user's Tier 1 picks. Closed fields (`image_ai_path`, `formula_policy`, `generation_mode`, `refine_spec`) stay finite; open fields (`icons`, typography custom text, image notes) expose free-text controls.
 4. **Wait for the final confirmation** — attach to the already-running page, do **not** relaunch (same 600000 ms budget):
    ```bash
    uvx ppt-master confirm-ui <project_path> --wait-only
@@ -397,19 +397,20 @@ Steps:
 
 **Always also print each tier's recommendations + URL in chat** as the always-valid fallback. **The chat fallback is two-step too**: if the page never opens or a wait times out with no fresh result, present Tier 1 in chat → get confirmation → re-derive → present Tier 2 → get confirmation → take those values. Either path converges.
 
-**Honoring the confirmation (result.json is authoritative — Mandatory)**: the confirmed values **override your own recommendations** when you write `design_spec.md` / `spec_lock.md`. A user who changed any field changed it on purpose. In particular, map `image_usage` to §VIII `Acquire Via` (its value names differ from §h options — translate):
+**Honoring the confirmation (result.json is authoritative — Mandatory)**: the confirmed values **override your own recommendations** when you write `design_spec.md` / `spec_lock.md`. A user who changed any field changed it on purpose. In particular, map `image_usage` to §VIII `Acquire Via` (its value names differ from §h options — translate). `image_usage` may be either a legacy single string or a Confirm UI multi-select array; for arrays, apply every selected source. `image_notes`, when present, is a user-authored image intent note that Strategist must honor while assigning per-page §VIII rows:
 
 | `result.json.image_usage` | §VIII `Acquire Via` | h.5 + Step 5 generation |
 |---|---|---|
-| `ai` (or a custom plan that includes AI) | `ai` rows | Run h.5 (lock rendering + palette); Step 5 generates |
+| `ai` | `ai` rows | Run h.5 (lock rendering + palette); Step 5 generates |
 | `web` | `web` rows | None |
 | `provided` | **`user`** rows | None — never generate |
 | `placeholder` | `placeholder` rows | None |
 | `none` | no image rows (§h option A) | None |
+| Legacy custom prose | Infer the intended rows from the prose | Run h.5 only if the prose includes AI |
 
-When the confirmed `image_usage` is not `ai` (and the plan has no AI part), do **NOT** run h.5, do **NOT** write `ai` rows, and do **NOT** generate images in Step 5 — regardless of what you recommended. The same "confirmed value wins" rule applies to every field (color → §III, typography → §IV, etc.).
+When the confirmed `image_usage` does not include `ai` (and no legacy custom prose includes AI), do **NOT** run h.5, do **NOT** write `ai` rows, and do **NOT** generate images in Step 5 — regardless of what you recommended. `none` is exclusive: if confirmed, write no §VIII image rows. The same "confirmed value wins" rule applies to every field (color → §III, typography → §IV, etc.).
 
-**Small spot illustrations are a Strategist judgment, not a confirmation field.** The user chooses image source through `image_usage`; within that boundary, Strategist may proactively add a coherent family of small decorative illustrations when the confirmed style and content benefit from them. They are ordinary §VIII image rows (`Type: Illustration` / `Illustration Sheet`) using normal `Acquire Via` values. `image_usage: none` still wins: write no decorative illustration rows. If the plan needs ≥3 same-family AI spot illustrations, use the `ai` Illustration Sheet + `slice` workflow by default; do not generate one AI image per spot. Use them on suitable pages and omit them where they would weaken clarity.
+**Small spot illustrations are a Strategist judgment, not a confirmation field.** The user chooses image *source* through `image_usage`; whether the deck leans into decorative illustrations is anchored by the locked `visual_style`'s **illustration propensity** (`core` / `supportive` / `sparse`), expressed only in the `image_notes` rationale — never a new confirmation control. An explicit user request to use or skip illustrations overrides that default either way; `image_usage: none` still wins (write no illustration rows); and source still comes from `image_usage` — a `core` style does not silently generate AI spots when the user did not pick AI. They are ordinary §VIII image rows (`Type: Illustration` / `Illustration Sheet`) using normal `Acquire Via` values. If the plan needs ≥3 same-family AI spot illustrations, use the `ai` Illustration Sheet + `slice` workflow by default; do not generate one AI image per spot. Full rule + precedence: [`references/strategist.md`](references/strategist.md) §h. Use them on suitable pages and omit them where they would weaken clarity.
 
 **Upstream override → re-derive untouched downstream (Mandatory — chat-fallback / single-pass path).** On the **two-tier page path this is already handled** (Step 3 re-derives Tier 2 from the user's actual anchors). It still applies whenever anchors and realization are confirmed **together** — the two-step chat fallback collapsed into one bundle, or a legacy single-pass `result.json`. "Confirmed value wins" governs each field's *own* value — never recompute a value the user set (a size, canvas, or palette they edited stays verbatim). But a single-pass `result.json` can carry a changed **anchor** beside downstream fields still holding your original — now incoherent — recommendation (e.g. switched to `dark-tech` while the light palette you proposed is untouched). Before writing the spec, reconcile: when the user changed an anchor, re-derive the downstream fields the user did **not** themselves edit so they realize the new anchor; fields the user pinned stay as confirmed.
 
@@ -501,20 +502,20 @@ Then **lazy-load the path-specific reference** for each row that actually needs 
 
 | Acquire Via | Load reference (only if any such row exists) | Run |
 |---|---|---|
-| `ai` | `references/image-generator.md` | `uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json` |
+| `ai` | `references/image-generator.md` | write `<project_path>/images/image_prompts.json`, then follow `image-generator.md §7 Path Selection` (`uvx ppt-master image-gen --manifest` is **Path A only**) |
 | `web` | `references/image-searcher.md` | `uvx ppt-master image-search ...` (≥2 web rows → `--batch images/image_queries.json`) |
 | `slice` | `references/image-generator.md` §4.3 | derived — **after** the parent `ai` sheet row is `Generated`, run `uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha` (see workflow step 2.5) |
 | `user` / `formula` / `placeholder` | (skip) | (skip) |
 
 A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.json` and `image_sources.json`.
 
-> ⚠️ **In-pipeline ai path MUST use manifest mode** — even when only 1 ai row exists. Write `images/image_prompts.json` first, then run `image_gen.py --manifest`, then `image_gen.py --render-md` to produce the `image_prompts.md` sidecar. The positional form (`image_gen.py "prompt" ...`) is reserved for **out-of-pipeline one-off testing / single-image fixups** — it skips manifest + sidecar, leaving no audit trail.
+> ⚠️ **In-pipeline ai rows MUST use the manifest contract** — even when only 1 ai row exists. Always write `images/image_prompts.json` first and render `image_prompts.md` with `image_gen.py --render-md`. Then execute the confirmed path from `image-generator.md §7`: `image_gen.py --manifest` is **Path A only**; `host-native` is **Path B** and MUST skip `--manifest`; `manual` writes the prompts and stops for external generation. The positional form (`image_gen.py "prompt" ...`) is reserved for **out-of-pipeline one-off testing / single-image fixups** — it skips manifest + sidecar, leaving no audit trail.
 
 > ⚠️ **web path — batch multiple rows**: when ≥2 rows are `Acquire Via: web`, write all queries into `images/image_queries.json` and run `image_search.py --batch` once (concurrent acquisition, status written back), instead of one CLI call per row. A single web row may use the positional single-query form. See [image-searcher.md](references/image-searcher.md) §5.
 
 > 💡 **ai path — spot illustrations as one sheet**: when the §VIII image resource plan needs ≥3 same-family spot illustrations as decorative accessories, generate **one grid sheet** (a single `ai` sheet row) instead of one row per element, then slice it (workflow step 2.5 below). Choose sheet geometry from intended placement: `1xN` / `Nx1` are useful for extreme portrait / landscape cells, and a designed `MxN` grid is valid when its cell ratio fits the planned elements. The sheet row is generated but not placed; each cut **element row** (`Acquire Via: slice`) is placed and must appear in `spec_lock.md images`. One generation = one coherent style across all pieces. Resource contract + the geometry rules: [image-generator.md](references/image-generator.md) §4.3.
 
-> ⚠️ **Honor the confirmed image source**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — a confirmed choice other than `auto` wins, whether it came from chat (canonical) or, when the page was used, `result.json.image_ai_path`. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. The `--manifest` command above is Path A. Full selection rule: [image-generator.md](references/image-generator.md) §7 Path Selection.
+> ⚠️ **Honor the confirmed image source before running any generation command**: the `ai` generation path (Path A = `image_gen.py` API / Path B = host-native tool / Offline Manual) is **not** auto-only — a confirmed choice other than `auto` wins, whether it came from chat (canonical) or, when the page was used, `result.json.image_ai_path`. `host-native` forces Path B even when `IMAGE_BACKEND` is configured; `api` forces Path A; `manual` forces offline. Never run `image_gen.py --manifest` when the confirmed value is `host-native` or `manual`. Full selection rule: [image-generator.md](references/image-generator.md) §7 Path Selection.
 
 Workflow:
 
@@ -630,10 +631,11 @@ Canonical three-command pipeline (mirrors `references/shared-standards.md` §5):
 uvx ppt-master total-md-split <project_path>
 ```
 
-**Step 7.2** — SVG post-processing (icon embedding / image crop & embed / text flattening / rounded rect to path):
+**Step 7.2** — SVG post-processing (icon embedding / image crop & embed / raster image optimization / text flattening / rounded rect to path):
 ```bash
 uvx ppt-master finalize-svg <project_path>
 ```
+Default raster handling for `svg_final/`: images are embedded at the rendered SVG size budget (`--image-scale 2`, `--max-dimension 2560`), opaque PNG photos may be written as JPEG, and transparent assets remain PNG. Use `--no-compress` or a higher `--max-dimension` only for diagnostic / high-fidelity SVG snapshots.
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
@@ -648,7 +650,16 @@ uvx ppt-master svg-to-pptx <project_path>
 
 > The native pptx consumes `svg_output/` directly so the converter can preserve
 > high-fidelity primitives (icon `<use>` placeholders, image `preserveAspectRatio`
-> → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`). The `svg_output/`
+> → native picture crop metadata, rounded rect `rx/ry` → `prstGeom roundRect`).
+> Native raster images are optimized by default before writing `ppt/media`
+> (`--image-sizing cap`, `--image-max-dimension 2560`, `--image-quality 85`).
+> This optimization downscales only oversized full source images; it does not
+> crop pixels out of embedded PPTX media, and it does not reduce a small
+> placement image merely because it is currently displayed small. Display
+> cropping remains editable PPT picture-crop metadata. Add `--no-image-optimize`
+> only when the deck must retain original image bytes. Use
+> `--image-sizing display --image-scale 2` only for aggressive size reduction.
+> The `svg_output/`
 > snapshot in `backup/<timestamp>/` is always written so the project can be
 > re-exported from frozen SVG sources without re-running the LLM. The SVG-rendered
 > preview pptx is opt-in via `--svg-snapshot` — live preview already provides the

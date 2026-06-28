@@ -130,9 +130,9 @@ For each `Acquire Via: ai` row in `design_spec.md §VIII`:
 
 The assembled prompt is **one cohesive paragraph**, not a bulleted list of tags. See §4 for the assembly template.
 
-### Step 4 — Write the manifest and generate
+### Step 4 — Write the manifest and execute the confirmed path
 
-Write `project/images/image_prompts.json` per §6. Then run `image_gen.py --manifest` (§7 Path A). The CLI iterates `items[]`, writes status back, and re-renders the Markdown sidecar.
+Write `project/images/image_prompts.json` per §6. Then follow §7 Path Selection. `image_gen.py --manifest` is Path A only; confirmed `host-native` runs the host image tool directly, and confirmed `manual` renders the Markdown sidecar and hands off without API generation.
 
 ---
 
@@ -293,6 +293,8 @@ uvx ppt-master slice-images <project>/images/illus_sheet.png --grid 2x3 \
 3. **Generate only as large as needed.** Each cell is a fraction of the sheet. Pick the smallest sheet size that keeps each sliced cell at least **1.5-2x** the intended display size. `1K` is usually enough for small 80-160px decorative spots; use `2K` for medium 180-320px placements; reserve `4K` for large, cropped, or potentially enlarged elements.
 
 **Placement — these are decorative accessories, not boxed pictures.** A transparent spot wasted in a centered rectangle looks cheaper than no spot at all. Each element row's Layout pattern comes from the decorative-cutout family in [`image-layout-patterns.md`](./image-layout-patterns.md): `#63` sticker/cutout, `#4` bleed off the canvas edge, `#58` corner fragment, `#66` fade into the background, `#69` slight editorial rotation, `#49` asymmetric cluster. Push spots to the margins, let them run off-edge or sit behind/beside text, vary size and angle across pages, and overlap the content rather than reserving a tidy tile for them. Anchor most pages on one primary element and let the rest stay small ([primary-per-page](./strategist.md) §h) — scattered same-weight tiles are exactly the generic look to avoid.
+
+**Through-line — one family, many roles.** A spot sheet pays off more when the same motif family also drives the deck's cover and section dividers, so the deck reads as one designed system rather than a hero plus unrelated doodles. Because the slicer cuts a **uniform grid**, a large cover / divider anchor is **not** a giant cell in the spot sheet — generate it as its own `page_role: hero_page` image (§4.1 primitives) that shares this sheet's `deck_rendering`, `deck_palette`, and subject world. In §VIII the hero_page anchor row(s) and the `slice` spot rows then belong to one visual family (name the shared subject world in each `Reference`), differing only in scale and role. Plan this only when the deck leans into illustration — never a per-section quota; the planning rule lives in [strategist.md](./strategist.md) (deck illustration motif).
 
 ---
 
@@ -461,7 +463,7 @@ Write `project/images/image_prompts.json` with this shape:
 
 ## 7. Generation Execution
 
-> Prerequisite: §3 Steps 1-3 complete; `images/image_prompts.json` exists and validates.
+> Prerequisite: §3 Steps 1-3 complete; `images/image_prompts.json` exists and validates. The manifest is the shared audit/source contract for all modes. It does **not** imply that `image_gen.py --manifest` should run; that command is Path A only.
 
 ### Path Selection (Deterministic)
 
@@ -477,8 +479,8 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 
 0. **Confirmed override (wins)** — honor the confirmed image source. The **chat choice is canonical**; the Confirm UI is only a convenience surface that, when used, records the same choice to `<project>/confirm_ui/result.json` as `image_ai_path` (so there is no `result.json` on the chat path — read the choice from the conversation). From either channel, if the choice is set and not `auto`, honor it directly, **even when it contradicts `IMAGE_BACKEND`**:
    - `api` → **Path A** (`image_gen.py --manifest`).
-   - `host-native` → **Path B** (host's native image tool) — skip A *even if `IMAGE_BACKEND` is configured*.
-   - `manual` → **Offline Manual** (write prompts, hand off).
+   - `host-native` → **Path B** (host's native image tool) — skip A and do **not** run `image_gen.py --manifest`, *even if `IMAGE_BACKEND` is configured*.
+   - `manual` → **Offline Manual** (write prompts, render the Markdown sidecar, hand off; do **not** run `image_gen.py --manifest`).
    ("use Codex's image tool" / "走接口生成" in chat = `host-native` / `api`.) If the chosen path turns out unavailable (e.g. `host-native` but the host has no image tool), fall through along the chain below from that point. Only when no source named a path (chat silent, and `image_ai_path` `auto` / absent) does the automatic chain decide.
 1. **Try Path A** — if `IMAGE_BACKEND` is configured (env or `.env`), run `image_gen.py --manifest`. If it fails twice in a row, fall to Path B.
 2. **Try Path B** — if `IMAGE_BACKEND` was not configured (A skipped), or A failed, and the host has a native image tool (Codex / Antigravity / Claude Code / similar), the agent invokes the host's image capability directly.
@@ -552,6 +554,8 @@ Precedence:
 Triggered automatically when `IMAGE_BACKEND` is not configured (or Path A fails) **and** the host provides a native image generation tool (Codex, Antigravity, Claude Code's image tool, and similar). No user prompting required — the agent detects the host capability and proceeds. The user may also explicitly name this path ("use Codex's image tool") to force it even when `IMAGE_BACKEND` is configured.
 
 - Agent invokes the host's native image tool directly; prompts come from `items[].prompt`
+- Do **not** run `image_gen.py --manifest` in Path B. That command is Path A and may use configured API/proxy backends even when the user confirmed host-native.
+- Still run `python3 scripts/image_gen.py --render-md project/images/image_prompts.json` so the human-readable sidecar exists without touching any backend.
 - **Batch for speed, mind the rate**: when the host can run independent tool calls in parallel (e.g. Claude Code issues independent calls concurrently), fire several generations together in modest groups — a few rows at a time (~3–4), not the whole manifest at once — so their latency overlaps without flooding the host's image quota. When the host only runs tools serially, generate one row at a time. This mirrors Path A's default concurrency of 3.
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
 - Mark each item's `status` `Generated` in the manifest the moment its file lands — as each completes, not in one pass at the end (so an interrupted batch leaves accurate state)
@@ -633,7 +637,7 @@ Diagnose the failure category, adjust the **one specific dimension** responsible
 **Variant workflow**:
 
 1. Set the unsatisfactory item's `status` back to `Pending` and update its `prompt` in place
-2. Re-run `image_gen.py --manifest` — only that item is re-processed
+2. Re-run the same confirmed path used for the original item: Path A may re-run `image_gen.py --manifest` (only that item is re-processed); Path B uses the host-native tool again for that item; Offline Manual re-renders the sidecar and hands off
 3. To try multiple stylistic approaches, append additional items with distinct filenames (e.g. `cover_bg_v2.png`) rather than overwriting
 
 ---

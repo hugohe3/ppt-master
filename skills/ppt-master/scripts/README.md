@@ -106,6 +106,8 @@ uvx ppt-master finalize-svg <project_path>
 uvx ppt-master svg-to-pptx <project_path>
 ```
 
+`finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
+
 Image generation:
 
 ```bash

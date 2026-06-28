@@ -11,6 +11,7 @@
             page_title: "PPT Master - Live Preview",
             panel_slides: "Slides",
             panel_annotations: "Annotations",
+            panel_edit_annotate: "Edit / Annotate",
             placeholder_select_slide: "Select a slide on the left to begin",
             label_selected_element: "Selected element",
             empty_selected_element: "Click an element on the slide to select it",
@@ -22,6 +23,14 @@
             section_text_style: "Text",
             section_raw_attrs: "Raw attributes",
             label_edit_instruction: "Edit instruction",
+            pending_none: "No pending changes",
+            pending_summary: "{edits} direct edit(s), {annotations} annotation page(s) pending",
+            pending_pages: "Pages: {pages}",
+            quick_align: "Align / move",
+            quick_resize: "Resize",
+            quick_replace_image: "Replace image",
+            quick_copy: "Revise copy",
+            quick_relayout: "Relayout area",
             placeholder_annotation: "Describe how the AI should modify this element...",
             placeholder_annotation_multi: "Describe how to modify all {count} elements...",
             btn_add_annotation: "Add annotation",
@@ -54,10 +63,15 @@
             err_empty_svg: "Slide loaded but the canvas is empty. The SVG may be malformed or missing a root <svg> element.",
             warn_icon_inline: "{count} icon(s) failed to render: {names}",
             warn_svg_no_dims: "SVG is missing width/height attributes. Please ask the AI to strictly follow shared-standards.md §4 and include width & height in the SVG root element.",
+            warn_matrix_transform: "This geometry edit is stored as a transform matrix. Preview is exact; PPTX export depends on matrix-aware conversion.",
+            modal_matrix_transform_note: "\n\nNote: at least one staged geometry edit uses a transform matrix. Re-export with the current PPTX exporter so the matrix is applied.",
             slide_error_tooltip: "Failed to parse this slide: ",
             reload_banner: "This slide was updated on disk. Click to reload.",
-            modal_confirm_submit: "Apply staged attribute edits and annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.",
-            modal_success_submit: "Changes saved to svg_output.\n\nReturn to the chat to re-export the PPTX or apply AI-needed annotations. The preview service is still running.",
+            modal_confirm_submit: "Apply staged direct edits and AI annotations to disk?\n\nThe preview service will keep running. Click Exit preview when you want to stop it.",
+            modal_success_submit: "Changes saved to svg_output.\n\nThe preview service is still running.",
+            modal_success_direct_only: "Changes saved to svg_output.\n\nDirect edits are now in the SVG source. Return to the chat and ask to re-export when you want a refreshed PPTX. The preview service is still running.",
+            modal_success_annotations_only: "Annotations saved to svg_output.\n\nReturn to the chat and ask to apply annotations when you want AI to interpret them. The preview service is still running.",
+            modal_success_mixed: "Direct edits and annotations saved to svg_output.\n\nReturn to the chat to apply AI-needed annotations, then re-export the PPTX when ready. The preview service is still running.",
             modal_confirm_exit: "Exit preview and stop the local server?\n\nUnapplied edits and annotations will be discarded.",
             modal_success_exit: "Preview stopped.\n\nYou can close this tab and return to the chat.",
             modal_stopping: "Stopping preview server...",
@@ -73,6 +87,7 @@
             page_title: "PPT Master - 实时预览",
             panel_slides: "幻灯片",
             panel_annotations: "标注",
+            panel_edit_annotate: "编辑 / 标注",
             placeholder_select_slide: "在左侧选择一张幻灯片开始",
             label_selected_element: "已选元素",
             empty_selected_element: "点击幻灯片中的元素进行选择",
@@ -84,6 +99,14 @@
             section_text_style: "文本",
             section_raw_attrs: "原始属性",
             label_edit_instruction: "修改说明",
+            pending_none: "没有待应用修改",
+            pending_summary: "{edits} 条直接修改、{annotations} 个页面有 AI 标注待应用",
+            pending_pages: "页面：{pages}",
+            quick_align: "对齐/移动",
+            quick_resize: "调整大小",
+            quick_replace_image: "换图",
+            quick_copy: "改文案",
+            quick_relayout: "重排此区域",
             placeholder_annotation: "描述希望 AI 如何修改该元素……",
             placeholder_annotation_multi: "描述希望如何修改所选 {count} 个元素……",
             btn_add_annotation: "添加标注",
@@ -116,10 +139,15 @@
             err_empty_svg: "幻灯片已加载但画布为空。SVG 可能损坏或缺少根 <svg> 元素。",
             warn_icon_inline: "{count} 个图标渲染失败:{names}",
             warn_svg_no_dims: "SVG 缺少 width/height 属性，预览可能异常。请让 AI 严格遵守 shared-standards.md §4 规范，在 SVG 根元素中补全 width 和 height。",
+            warn_matrix_transform: "本次几何修改会以 transform matrix 保存。预览是准确的；PPTX 导出需要使用支持 matrix 的当前导出器。",
+            modal_matrix_transform_note: "\n\n提示：至少有一条暂存几何修改使用了 transform matrix。请用当前 PPTX 导出器重新导出，确保 matrix 被应用。",
             slide_error_tooltip: "该幻灯片解析失败:",
             reload_banner: "当前页已在磁盘上更新,点此重新加载。",
-            modal_confirm_submit: "确认将暂存属性修改和标注写入磁盘?\n\n预览服务会继续运行。需要关闭时请点击退出预览。",
-            modal_success_submit: "修改已保存到 svg_output。\n\n请回到对话窗口重新导出 PPTX，或让 AI 应用需要判断的标注。预览服务仍在运行。",
+            modal_confirm_submit: "确认将暂存的直接修改和 AI 标注写入磁盘?\n\n预览服务会继续运行。需要关闭时请点击退出预览。",
+            modal_success_submit: "修改已保存到 svg_output。\n\n预览服务仍在运行。",
+            modal_success_direct_only: "修改已保存到 svg_output。\n\n直接修改已经写入 SVG 源文件；需要刷新 PPTX 时，请回到对话窗口要求重新导出。预览服务仍在运行。",
+            modal_success_annotations_only: "标注已保存到 svg_output。\n\n需要 AI 理解并执行这些标注时，请回到对话窗口要求应用标注。预览服务仍在运行。",
+            modal_success_mixed: "直接修改和标注已保存到 svg_output。\n\n请回到对话窗口先应用需要 AI 判断的标注，确认后再重新导出 PPTX。预览服务仍在运行。",
             modal_confirm_exit: "退出预览并停止本地服务?\n\n未应用的属性修改和标注将被丢弃。",
             modal_success_exit: "预览已停止。\n\n可以关闭本标签页并回到对话窗口。",
             modal_stopping: "正在停止预览服务……",
@@ -184,6 +212,8 @@
         updateSelectionPanel();
         updateAnnotationList();
         updateUndoButton();
+        updatePendingStatus();
+        initAnnotationQuickActions();
         loadSlides();
     }
 
@@ -193,6 +223,7 @@
     var svgContent        = document.getElementById("svg-content");
     var selectedElementEl = document.getElementById("selected-element");
     var annotationInput   = document.getElementById("annotation-input");
+    var annotationQuickActions = document.getElementById("annotation-quick-actions");
     var annotationText    = document.getElementById("annotation-text");
     var btnAddAnnotation  = document.getElementById("btn-add-annotation");
     var annotationsEl     = document.getElementById("annotations");
@@ -204,6 +235,7 @@
     var modalConfirm      = document.getElementById("modal-confirm");
     var modalCancel       = document.getElementById("modal-cancel");
     var elementPropsEl    = document.getElementById("element-props");
+    var pendingStatusEl   = document.getElementById("pending-status");
 
     var navFirstBtn       = document.getElementById("nav-first");
     var navPrevBtn        = document.getElementById("nav-prev");
@@ -224,7 +256,98 @@
     var reloadBannerEl    = null;   // singleton banner element shown when currentSlide mtime drifts
     var editStackCount    = {};     // {name: staged edit count} — mirrors backend PENDING_EDITS
     var savedHintShown    = false;  // show the "staged edit" hint once per session
+    var matrixHintShown   = false;  // show transform-matrix export hint once per session
+    var matrixEditSlides  = {};     // {name: true} when a staged edit wrote transform=matrix(...)
     var annotationsDirty  = false;  // unsaved annotations added/removed this session
+    var annotationEditSlides = {};  // {name: true} when annotations changed this session
+
+    function pendingDirectEditCount() {
+        return Object.keys(editStackCount).reduce(function (total, name) {
+            return total + Math.max(0, editStackCount[name] || 0);
+        }, 0);
+    }
+
+    function pendingDirectEditSlides() {
+        return Object.keys(editStackCount).filter(function (name) {
+            return (editStackCount[name] || 0) > 0;
+        });
+    }
+
+    function pendingAnnotationSlides() {
+        return Object.keys(annotationEditSlides).filter(function (name) {
+            return !!annotationEditSlides[name];
+        });
+    }
+
+    function pendingAnnotationChangeCount() {
+        return pendingAnnotationSlides().length;
+    }
+
+    function pendingSlideNames() {
+        var seen = {};
+        pendingDirectEditSlides().concat(pendingAnnotationSlides()).forEach(function (name) {
+            seen[name] = true;
+        });
+        return Object.keys(seen).sort();
+    }
+
+    function updatePendingStatus() {
+        if (!pendingStatusEl) return;
+        var edits = pendingDirectEditCount();
+        var annotations = pendingAnnotationChangeCount();
+        if (edits === 0 && annotations === 0) {
+            pendingStatusEl.className = "pending-status empty";
+            pendingStatusEl.textContent = t("pending_none");
+            return;
+        }
+        var pages = pendingSlideNames();
+        pendingStatusEl.className = "pending-status active";
+        pendingStatusEl.innerHTML =
+            '<div>' + escapeHtml(t("pending_summary", {
+                edits: edits,
+                annotations: annotations,
+            })) + '</div>' +
+            (pages.length ? '<div class="pending-pages">' + escapeHtml(t("pending_pages", {
+                pages: pages.join(", "),
+            })) + '</div>' : '');
+    }
+
+    function markAnnotationChanged(slide) {
+        if (!slide) return;
+        annotationEditSlides[slide] = true;
+        annotationsDirty = true;
+        updatePendingStatus();
+    }
+
+    function initAnnotationQuickActions() {
+        if (!annotationQuickActions) return;
+        var actions = [
+            { key: "quick_align" },
+            { key: "quick_resize" },
+            { key: "quick_replace_image" },
+            { key: "quick_copy" },
+            { key: "quick_relayout" },
+        ];
+        annotationQuickActions.innerHTML = "";
+        actions.forEach(function (action) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "annotation-quick-chip";
+            btn.textContent = t(action.key);
+            btn.addEventListener("click", function () {
+                var label = t(action.key);
+                var prefix = LANG === "zh" ? label + "：" : label + ": ";
+                if (!annotationText.value.trim()) {
+                    annotationText.value = prefix;
+                } else if (annotationText.value.indexOf(prefix) === -1) {
+                    annotationText.value = prefix + annotationText.value;
+                }
+                annotationText.focus();
+                annotationText.selectionStart = annotationText.selectionEnd = annotationText.value.length;
+            });
+            annotationQuickActions.appendChild(btn);
+        });
+    }
 
     // Staged edits live in server memory until "Apply changes"; the server can
     // still idle-timeout or be killed and drop them. Warn before the tab leaves
@@ -304,6 +427,7 @@
                         svgContent.style.display = "none";
                     }
                     updateNavLabel();
+                    updatePendingStatus();
                     return;
                 }
 
@@ -356,6 +480,7 @@
                     showReloadBanner(currentSlide);
                 }
                 updateNavLabel();
+                updatePendingStatus();
             })
             .catch(function (err) {
                 console.error("loadSlides:", err);
@@ -468,6 +593,7 @@
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 updateUndoButton();
+                updatePendingStatus();
             })
             .catch(function (err) {
                 console.error("selectSlide:", err);
@@ -1253,7 +1379,7 @@
                 ids.forEach(function (eid) {
                     slideAnnotations[eid] = text;
                 });
-                annotationsDirty = true;
+                markAnnotationChanged(currentSlide);
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 annotationText.value = "";
@@ -1277,7 +1403,7 @@
             .then(function (res) { return res.json(); })
             .then(function () {
                 delete slideAnnotations[elementId];
-                annotationsDirty = true;
+                markAnnotationChanged(currentSlide);
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 loadSlides();
@@ -1366,7 +1492,8 @@
     // ================================================================
     btnSave.addEventListener("click", function () {
         pendingModalAction = "submit";
-        modalMessage.textContent = t("modal_confirm_submit");
+        modalMessage.textContent = t("modal_confirm_submit") +
+            (hasPendingMatrixEdits() ? t("modal_matrix_transform_note") : "");
         modalConfirm.textContent = t("modal_submit");
         modalConfirm.style.display = "";
         modalCancel.style.display = "";
@@ -1402,6 +1529,8 @@
         }
 
         // Step 2: save annotations. Service lifetime is controlled only by Exit preview.
+        var hadDirectEdits = pendingDirectEditCount() > 0;
+        var hadAnnotationChanges = pendingAnnotationChangeCount() > 0;
         modalConfirm.style.display = "none";
         modalCancel.style.display = "none";
 
@@ -1414,11 +1543,23 @@
                 if (data.error) {
                     modalMessage.textContent = t("err_save") + data.error;
                 } else {
-                    modalMessage.textContent = t("modal_success_submit");
+                    if (hadDirectEdits && hadAnnotationChanges) {
+                        modalMessage.textContent = t("modal_success_mixed");
+                    } else if (hadDirectEdits) {
+                        modalMessage.textContent = t("modal_success_direct_only");
+                    } else if (hadAnnotationChanges) {
+                        modalMessage.textContent = t("modal_success_annotations_only");
+                    } else {
+                        modalMessage.textContent = t("modal_success_submit");
+                    }
                     editStackCount = {};
+                    matrixEditSlides = {};
+                    matrixHintShown = false;
                     savedHintShown = false;
                     annotationsDirty = false;
+                    annotationEditSlides = {};
                     updateUndoButton();
+                    updatePendingStatus();
                     var activeSlide = currentSlide;
                     loadSlides().then(function () {
                         if (activeSlide) {
@@ -1561,7 +1702,9 @@
             .then(function (data) {
                 if (data.status === "empty") {
                     editStackCount[currentSlide] = 0;
+                    matrixEditSlides[currentSlide] = false;
                     updateUndoButton();
+                    updatePendingStatus();
                     showWarning(t("undo_empty"));
                     return;
                 }
@@ -1572,6 +1715,7 @@
                 // selectSlide refreshes editStackCount + the undo button.
                 var item = slideListEl.querySelector('.slide-item[data-name="' + cssAttr(currentSlide) + '"]');
                 selectSlide(currentSlide, item || undefined);
+                updatePendingStatus();
                 showWarning(t("undo_done"));
             })
             .catch(function (err) {
@@ -1583,6 +1727,24 @@
         if (savedHintShown) return;
         savedHintShown = true;
         showWarning(t("edit_saved_hint"));
+    }
+
+    function payloadHasMatrixTransform(payload) {
+        var transform = payload && payload.attrs && payload.attrs.transform;
+        return typeof transform === "string" && /^\s*matrix\s*\(/i.test(transform);
+    }
+
+    function hasPendingMatrixEdits() {
+        return Object.keys(matrixEditSlides).some(function (name) {
+            return !!matrixEditSlides[name];
+        });
+    }
+
+    function markMatrixTransformEdit(slide) {
+        matrixEditSlides[slide] = true;
+        if (matrixHintShown) return;
+        matrixHintShown = true;
+        showWarning(t("warn_matrix_transform"));
     }
 
     // ================================================================
@@ -1621,17 +1783,27 @@
         } catch (e) { /* no geometry */ }
         html += '</table>';
 
-        // L1: text content — only when the element owns no <tspan> children.
-        if (tag === "text" || tag === "tspan") {
+        var textStyleTargets = textStyleTargetsForSelection(el);
+
+        // L1: text content + computed text styles. When a textbox/group is
+        // selected, style controls target its descendant text leaves.
+        if (tag === "text" || tag === "tspan" || textStyleTargets.length > 0) {
             html += '<div class="prop-section">' + escapeHtml(t("section_text_style")) + '</div>';
             html += '<table class="prop-table">';
-            if (el.querySelector("tspan")) {
+            if ((tag === "text" || tag === "tspan") && el.querySelector("tspan")) {
                 html += '<tr><td class="prop-key">content</td><td class="prop-val prop-note">' +
                     escapeHtml(t("prop_multiline_hint")) + '</td></tr>';
-            } else {
+            } else if (tag === "text" || tag === "tspan") {
                 html += '<tr><td class="prop-key">content</td><td class="prop-val">' +
                     '<textarea class="prop-edit prop-edit-content" rows="2">' +
                     escapeHtml(el.textContent || "") + '</textarea></td></tr>';
+            }
+            if (textStyleTargets.length > 0) {
+                textStyleSpecs(textStyleTargets).forEach(function (spec) {
+                    html += '<tr><td class="prop-key">' + escapeHtml(spec.key) + '</td><td class="prop-val">';
+                    html += renderTextStyleControl(spec, textStyleTargets);
+                    html += '</td></tr>';
+                });
             }
             html += '</table>';
         }
@@ -1680,6 +1852,88 @@
         if (k === "id" || k === "class" || k === "href" || k === "xlink:href") return false;
         if (k.indexOf("on") === 0) return false;
         return /^[A-Za-z_][A-Za-z0-9_.:-]*$/.test(key);
+    }
+
+    function textStyleTargetsForSelection(el) {
+        if (!el) return [];
+        var tag = localName(el);
+        if (tag === "tspan") return el.id ? [el] : [];
+        if (tag === "text") return textStyleLeavesForText(el);
+
+        var targets = [];
+        el.querySelectorAll("text").forEach(function (textEl) {
+            targets = targets.concat(textStyleLeavesForText(textEl));
+        });
+        return uniqueElements(targets);
+    }
+
+    function textStyleLeavesForText(textEl) {
+        var tspans = Array.from(textEl.querySelectorAll("tspan")).filter(function (tspan) {
+            return !!tspan.id;
+        });
+        if (tspans.length > 0) return tspans;
+        return textEl.id ? [textEl] : [];
+    }
+
+    function uniqueElements(elements) {
+        var seen = new Set();
+        return elements.filter(function (el) {
+            if (!el || !el.id || seen.has(el.id)) return false;
+            seen.add(el.id);
+            return true;
+        });
+    }
+
+    function textStyleSpecs(targets) {
+        return [
+            { key: "fill", type: "color" },
+            { key: "font-size", type: "text" },
+            { key: "font-family", type: "text" },
+            { key: "font-weight", type: "select",
+              options: ["", "normal", "bold", "300", "400", "500", "600", "700", "800"] },
+            { key: "text-anchor", type: "select", options: ["", "start", "middle", "end"] }
+        ].map(function (spec) {
+            var value = commonAttrValue(targets, spec.key);
+            var copy = Object.assign({}, spec);
+            copy.value = value === null ? "" : value;
+            copy.mixed = value === null;
+            return copy;
+        });
+    }
+
+    function renderTextStyleControl(spec, targets) {
+        var targetIds = encodeURIComponent(JSON.stringify(targets.map(function (el) { return el.id; })));
+        var placeholder = spec.mixed ? t("multi_mixed") : "";
+        if (spec.type === "color") {
+            return '<input type="color" class="prop-edit prop-edit-text-style-color" data-key="' +
+                escapeHtml(spec.key) + '" data-target-ids="' + targetIds +
+                '" value="' + normalizeHexForPicker(spec.value) + '">' +
+                '<input type="text" class="prop-edit prop-edit-text-style" data-key="' +
+                escapeHtml(spec.key) + '" data-target-ids="' + targetIds +
+                '" placeholder="' + escapeHtml(placeholder) +
+                '" value="' + escapeHtml(spec.mixed ? "" : spec.value) + '">';
+        }
+        if (spec.type === "select") {
+            var html = '<select class="prop-edit prop-edit-text-style" data-key="' +
+                escapeHtml(spec.key) + '" data-target-ids="' + targetIds + '">';
+            var hasValue = spec.options.indexOf(spec.value) !== -1;
+            if (!spec.mixed && spec.value && !hasValue) {
+                html += '<option value="' + escapeHtml(spec.value) + '" selected>' +
+                    escapeHtml(spec.value) + '</option>';
+            }
+            spec.options.forEach(function (opt) {
+                var label = opt || placeholder || "";
+                var selected = !spec.mixed && spec.value === opt ? " selected" : "";
+                html += '<option value="' + escapeHtml(opt) + '"' + selected + '>' +
+                    escapeHtml(label) + '</option>';
+            });
+            html += '</select>';
+            return html;
+        }
+        return '<input type="text" class="prop-edit prop-edit-text-style" data-key="' +
+            escapeHtml(spec.key) + '" data-target-ids="' + targetIds +
+            '" placeholder="' + escapeHtml(placeholder) +
+            '" value="' + escapeHtml(spec.mixed ? "" : spec.value) + '">';
     }
 
     function isColorAttribute(key, value) {
@@ -1796,6 +2050,27 @@
             return "#" + s[1] + s[1] + s[2] + s[2] + s[3] + s[3];
         }
         return "#000000";
+    }
+
+    var SVG_UNIT_OPTIONAL_LENGTH_ATTRS = new Set([
+        "x", "y", "x1", "x2", "y1", "y2",
+        "cx", "cy", "r", "rx", "ry",
+        "dx", "dy", "width", "height",
+        "font-size", "stroke-width", "stroke-dashoffset",
+        "letter-spacing", "word-spacing"
+    ]);
+
+    function normalizeSvgLengthValue(key, value) {
+        var s = String(value || "");
+        if (!SVG_UNIT_OPTIONAL_LENGTH_ATTRS.has(String(key).toLowerCase())) return s;
+        s = s.trim();
+        var m = s.match(/^(-?\d+(?:\.\d+)?)px$/i);
+        return m ? m[1] : s;
+    }
+
+    function normalizeEditableAttrValue(key, value) {
+        var s = String(value || "").trim();
+        return normalizeSvgLengthValue(key, s);
     }
 
     function isSafeColor(val) {
@@ -2132,10 +2407,30 @@
             });
         });
 
+        panel.querySelectorAll(".prop-edit-text-style-color").forEach(function (picker) {
+            var key = picker.getAttribute("data-key");
+            var textInput = panel.querySelector('.prop-edit-text-style[data-key="' + key + '"]');
+            picker.addEventListener("input", function () {
+                if (textInput) textInput.value = picker.value;
+            });
+            picker.addEventListener("change", function () {
+                if (textInput) textInput.value = picker.value;
+                stageTextStyleAttr(key, picker.value, picker.getAttribute("data-target-ids"));
+            });
+        });
+        panel.querySelectorAll(".prop-edit-text-style").forEach(function (input) {
+            input.addEventListener("change", function () {
+                var key = input.getAttribute("data-key");
+                var value = normalizeEditableAttrValue(key, input.value);
+                if (!value) return;
+                stageTextStyleAttr(key, value, input.getAttribute("data-target-ids"));
+            });
+        });
+
         panel.querySelectorAll(".prop-edit-attr, .prop-edit-attr-area").forEach(function (input) {
             var key = input.getAttribute("data-key");
             input.addEventListener("change", function () {
-                stageAttr(el, eid, key, input.value.trim());
+                stageAttr(el, eid, key, normalizeEditableAttrValue(key, input.value));
             });
         });
 
@@ -2195,7 +2490,39 @@
         }
     }
 
+    function stageTextStyleAttr(key, value, encodedTargetIds) {
+        value = normalizeEditableAttrValue(key, value);
+        if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
+            showError(t("err_edit") + key);
+            return;
+        }
+        var ids;
+        try {
+            ids = JSON.parse(decodeURIComponent(encodedTargetIds || "%5B%5D"));
+        } catch (e) {
+            ids = [];
+        }
+        var targets = ids.map(function (id) {
+            return svgContent.querySelector("#" + CSS.escape(id));
+        }).filter(function (target) {
+            return target && attrOrComputedValue(target, key) !== value;
+        });
+        if (targets.length === 0) return;
+
+        var attrs = {};
+        attrs[key] = value;
+        var jobs = targets.map(function (target) {
+            return stageEditRequest(target.id, { attrs: attrs }).then(function () {
+                target.setAttribute(key, value);
+            });
+        });
+        Promise.all(jobs)
+            .then(function () { updateSelectionPanel(); })
+            .catch(function (err) { showError(t("err_edit") + err.message); });
+    }
+
     function stageAttr(el, eid, key, value) {
+        value = normalizeEditableAttrValue(key, value);
         if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
             showError(t("err_edit") + key);
             return;
@@ -2238,6 +2565,10 @@
             if (data && data.undo_depth !== undefined) {
                 editStackCount[slide] = data.undo_depth;
                 if (slide === currentSlide) updateUndoButton();
+                updatePendingStatus();
+            }
+            if (payloadHasMatrixTransform(payload)) {
+                markMatrixTransformEdit(slide);
             }
             maybeShowSavedHint();
             return data;
@@ -2316,7 +2647,7 @@
 
     function attrOrComputedValue(el, key) {
         var value = el.getAttribute(key);
-        if (value !== null && value !== "") return value;
+        if (value !== null && value !== "") return normalizeSvgLengthValue(key, value);
         var style = window.getComputedStyle(el);
         var map = {
             "fill": "fill",
@@ -2327,7 +2658,7 @@
             "font-weight": "fontWeight",
             "text-anchor": "textAnchor"
         };
-        return (map[key] && style[map[key]]) || "";
+        return normalizeSvgLengthValue(key, (map[key] && style[map[key]]) || "");
     }
 
     function renderBatchControl(spec) {
@@ -2418,7 +2749,7 @@
         panel.querySelectorAll(".prop-edit-batch").forEach(function (input) {
             input.addEventListener("change", function () {
                 var key = input.getAttribute("data-key");
-                var value = input.value.trim();
+                var value = normalizeEditableAttrValue(key, input.value);
                 if (!value) return;
                 commitBatchAttr(key, value, moveEls);
             });
@@ -2426,6 +2757,7 @@
     }
 
     function commitBatchAttr(key, value, elements) {
+        value = normalizeEditableAttrValue(key, value);
         if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
             showError(t("err_edit") + key);
             return;
@@ -2446,6 +2778,8 @@
     //  Boot
     // ================================================================
     applyI18n();
+    initAnnotationQuickActions();
+    updatePendingStatus();
     var langToggleBtn = document.getElementById("btn-lang-toggle");
     if (langToggleBtn) {
         langToggleBtn.textContent = LANG === "zh" ? "EN" : "中";

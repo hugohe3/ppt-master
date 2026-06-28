@@ -30,3 +30,7 @@ Mid-century print poster (1950s–1970s) — bold rounded-geometric shapes, limi
 ## 5. Paired image-rendering
 
 `vintage-poster` — mid-century poster imagery with matching halftone and retro-geometric warmth.
+
+## 6. Illustration propensity
+
+**core** — mid-century spot motifs and halftone cuts are intrinsic to the poster look; with no user steer, default to recommending a coherent spot-illustration family. Default *lean* only — heaviness and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

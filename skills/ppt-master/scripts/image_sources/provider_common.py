@@ -208,6 +208,7 @@ class ImageSearchRequest:
     min_height: int = 0
     filename: str = ""
     slide: str = ""
+    required_terms: tuple[str, ...] = ()
 
 
 @dataclass
@@ -265,6 +266,7 @@ _SOFT_NOISE_WORDS = frozenset({
 })
 
 _TOKEN_STRIP_CHARS = ".,;:!?\"'()[]{}，。；：！？、"
+_MATCH_SEPARATOR_RE = re.compile(r"""[\s\-_./:;,'"()[\]{}]+""")
 
 
 def simplify_query(query: str, max_words: int = 4) -> str:
@@ -357,7 +359,65 @@ def _query_tokens(query: str) -> list[str]:
 
 def _candidate_text(candidate: AssetCandidate) -> str:
     """Concatenate the candidate's matchable metadata fields for scoring."""
-    return " ".join(filter(None, (candidate.title, candidate.author))).lower()
+    return " ".join(
+        filter(
+            None,
+            (
+                candidate.title,
+                candidate.author,
+                candidate.source_page_url,
+            ),
+        )
+    ).lower()
+
+
+def _normalize_match_text(text: str) -> str:
+    """Normalize metadata / required terms for conservative substring matching."""
+    lowered = (text or "").lower()
+    return _MATCH_SEPARATOR_RE.sub(" ", lowered).strip()
+
+
+def _term_group_alternatives(term_group: str) -> list[str]:
+    """Split one required term group into alternatives.
+
+    ``"Jiefangbei|Liberation Monument"`` means either alternative satisfies
+    that required group. Different list items are ANDed by
+    ``missing_required_terms``.
+    """
+    return [
+        _normalize_match_text(part)
+        for part in str(term_group or "").split("|")
+        if _normalize_match_text(part)
+    ]
+
+
+def missing_required_terms(
+    candidate: AssetCandidate,
+    required_terms: tuple[str, ...] | list[str] | None,
+) -> list[str]:
+    """Return required term groups not present in candidate metadata.
+
+    This is an entity-safety gate, not a fuzzy visual classifier. Use it for
+    exact subjects such as landmarks, people, companies, or products where a
+    visually nice but wrong image is worse than no image.
+    """
+    if not required_terms:
+        return []
+
+    text = _normalize_match_text(_candidate_text(candidate))
+    compact_text = text.replace(" ", "")
+    missing: list[str] = []
+    for group in required_terms:
+        alternatives = _term_group_alternatives(group)
+        if not alternatives:
+            continue
+        matched = any(
+            alt in text or alt.replace(" ", "") in compact_text
+            for alt in alternatives
+        )
+        if not matched:
+            missing.append(str(group))
+    return missing
 
 
 def compute_relevance(candidate: AssetCandidate, query: str) -> float:
@@ -387,18 +447,34 @@ def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> f
     if not candidate.license_tier:
         return float("-inf")
 
+    required_misses = missing_required_terms(candidate, request.required_terms)
+    if required_misses:
+        return float("-inf")
+
     relevance = compute_relevance(candidate, request.query)
-    if relevance == 0.0:
+    if relevance == 0.0 and not request.required_terms:
         return float("-inf")
 
     score = relevance * 10000.0
+    title_text = _normalize_match_text(candidate.title)
+    compact_title = title_text.replace(" ", "")
+    for group in request.required_terms or ():
+        alternatives = _term_group_alternatives(group)
+        if any(
+            alt in title_text or alt.replace(" ", "") in compact_title
+            for alt in alternatives
+        ):
+            score += 1500.0
 
     # Penalize infrastructure/transit metadata if the user didn't explicitly ask for it.
     # This prevents high-res subway station photos from outranking actual tourist landmarks.
     text = _candidate_text(candidate)
     query_lower = request.query.lower()
-    infra_terms = ["station", "subway", "metro", "rail", "transit", "airport", "bus", "地铁", "站", "轨道"]
-    
+    infra_terms = [
+        "station", "subway", "metro", "rail", "transit", "airport", "bus",
+        "地铁", "站", "轨道",
+    ]
+
     if not any(t in query_lower for t in infra_terms):
         if any(t in text for t in infra_terms):
             score -= 5000.0
@@ -416,9 +492,13 @@ def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> f
     if request.min_height and candidate.height < request.min_height:
         score -= 500.0
 
-    # Larger images score higher, capped to avoid runaway dominance.
+    if candidate.license_tier == LICENSE_TIER_NO_ATTRIBUTION:
+        score += 250.0
+
+    # Larger images score higher, but only as a tie-breaker; entity accuracy
+    # and metadata relevance must dominate pixel count.
     pixel_score = max(candidate.width, 0) * max(candidate.height, 0) / 1000.0
-    score += min(pixel_score, 5000.0)
+    score += min(pixel_score, 1500.0)
     return score
 
 

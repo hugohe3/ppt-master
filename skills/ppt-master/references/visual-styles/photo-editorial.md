@@ -32,3 +32,7 @@ Photo-led editorial — large full-bleed photography dominates the page, text po
 ## 5. Paired image-rendering
 
 `corporate-photo` — real editorial photography as the hero imagery the layout is built around.
+
+## 6. Illustration propensity
+
+**sparse** — photography *is* the visual; illustration competes with the hero image. With no user steer, default to none. If the user explicitly asks, keep them to tiny captional marks that never rival the photo. `image_usage: none` writes no illustration rows.

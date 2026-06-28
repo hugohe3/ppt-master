@@ -175,6 +175,7 @@ body {
 .font-sample-body { font-size: 14px; color: #333; margin-top: 4px; }
 .custom-typography-input { margin-top: 8px; min-height: 58px; resize: vertical; }
 .custom-color-input { margin-top: 8px; min-height: 58px; resize: vertical; }
+.image-usage-notes-input { min-height: 64px; resize: vertical; }
 .font-size-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .font-size-input { width: 96px; }
 
