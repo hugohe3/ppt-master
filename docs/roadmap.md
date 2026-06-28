@@ -70,6 +70,8 @@ The past two months' structural capability growth. Single flags / incremental po
 
 - **Image transform-matrix fidelity end-to-end + host-native generation path** — `svg_to_pptx`'s DrawingML picture export now honors the SVG transform matrix (rotation / skew / compound transforms no longer shift or collapse to the origin under nested `<g transform>`), extending the cross-four-renderer position-fidelity axis to the raster layer; `image_gen.py` adds a host-native generation path that routes through the host's own image-generation capability when present. Both are fixes / incremental hardening — details in the commit log
 
+- **Web image sourcing → best-match + reviewable + manual replace** — web rows no longer silently download a candidate pool; the default downloads **only the best match**, with the pool demoted to an opt-in `--save-candidates` escalation (default 4). Every download writes a ≤1024px review copy under `images/.review/` (placed / promoted asset stays full-resolution). Suitability review is **model-agnostic**: a multimodal model reads the review copy, a non-multimodal one hands the `source_page_url` to a human — no assumption of vision. New `image_search.py --from-url <url>` downloads any human-chosen image URL into the target (recorded `license_tier: manual`, inheriting page context) as the universal manual-replacement path; `--promote` now recomputes the credit from the chosen candidate (never the replaced image's). It all runs inside Step 5 and never halts the pipeline (a poor fit becomes `Needs-Manual` + placeholder). Web search is positioned as a placeholder-grade fallback that does **not** guarantee quality — high quality comes from AI generation or picking an image by hand and swapping it in
+
 ---
 
 ## In progress / Next
