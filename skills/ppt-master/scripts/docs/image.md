@@ -224,9 +224,9 @@ The full role-level reference (intent → query translation, on-slide attributio
 Remove Gemini watermark assets after manual download.
 
 ```bash
-uv run scripts/gemini_watermark_remover.py <image_path>
-uv run scripts/gemini_watermark_remover.py <image_path> -o output_path.png
-uv run scripts/gemini_watermark_remover.py <image_path> -q
+uvx ppt-master gemini-watermark-remove <image_path>
+uvx ppt-master gemini-watermark-remove <image_path> -o output_path.png
+uvx ppt-master gemini-watermark-remove <image_path> -q
 ```
 
 Notes:

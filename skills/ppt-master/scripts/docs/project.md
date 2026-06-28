@@ -58,7 +58,7 @@ from project_utils import get_project_info, validate_project_structure
 You can also run it directly for quick checks:
 
 ```bash
-uv run scripts/project_utils.py <project_path>
+uvx ppt-master project-utils <project_path>
 ```
 
 ## `batch_validate.py`
@@ -66,10 +66,10 @@ uv run scripts/project_utils.py <project_path>
 Batch-check project structure and compliance.
 
 ```bash
-uv run scripts/batch_validate.py examples
-uv run scripts/batch_validate.py examples projects
-uv run scripts/batch_validate.py --all
-uv run scripts/batch_validate.py examples --export
+uvx ppt-master batch-validate examples
+uvx ppt-master batch-validate examples projects
+uvx ppt-master batch-validate --all
+uvx ppt-master batch-validate examples --export
 ```
 
 Use this for repository-wide health checks before release or cleanup.
@@ -79,8 +79,8 @@ Use this for repository-wide health checks before release or cleanup.
 Rebuild `examples/README.md` automatically.
 
 ```bash
-uv run scripts/generate_examples_index.py
-uv run scripts/generate_examples_index.py examples
+uvx ppt-master generate-examples-index
+uvx ppt-master generate-examples-index examples
 ```
 
 ## `pptx_template_import.py`
@@ -127,7 +127,7 @@ Implementation note:
 Show standardized fixes for common project errors.
 
 ```bash
-uv run scripts/error_helper.py
-uv run scripts/error_helper.py missing_readme
-uv run scripts/error_helper.py missing_readme project_path=my_project
+uvx ppt-master error-helper
+uvx ppt-master error-helper missing_readme
+uvx ppt-master error-helper missing_readme project_path=my_project
 ```

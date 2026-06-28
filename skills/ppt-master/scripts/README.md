@@ -18,22 +18,22 @@ This directory contains user-facing scripts for conversion, project setup, direc
 Typical end-to-end workflow:
 
 ```bash
-uv run scripts/source_to_md/pdf_to_md.py <file.pdf>
+uvx ppt-master pdf-to-md <file.pdf>
 # or
-uv run scripts/source_to_md/ppt_to_md.py <deck.pptx>
-uv run scripts/source_to_md/excel_to_md.py <workbook.xlsx>
-uv run scripts/project_manager.py init <project_name> --format ppt169
-uv run scripts/project_manager.py import-sources <project_path> <source_files...> --move
-uv run scripts/total_md_split.py <project_path>
-uv run scripts/finalize_svg.py <project_path>
-uv run scripts/animation_config.py scaffold <project_path>  # optional object-level animation overrides
-uv run scripts/svg_to_pptx.py <project_path>
+uvx ppt-master ppt-to-md <deck.pptx>
+uvx ppt-master excel-to-md <workbook.xlsx>
+uvx ppt-master project init <project_name> --format ppt169
+uvx ppt-master project import-sources <project_path> <source_files...> --move
+uvx ppt-master total-md-split <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master animation-config scaffold <project_path>  # optional object-level animation overrides
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 Repository update:
 
 ```bash
-uv run scripts/update_repo.py
+uvx ppt-master update-repo
 ```
 
 ## Script Index
@@ -53,27 +53,27 @@ uv run scripts/update_repo.py
 Conversion:
 
 ```bash
-uv run scripts/source_to_md/pdf_to_md.py <file.pdf>
-uv run scripts/source_to_md/ppt_to_md.py <deck.pptx>
-uv run scripts/source_to_md/doc_to_md.py <file.docx>
-uv run scripts/source_to_md/excel_to_md.py <workbook.xlsx>
-uv run scripts/source_to_md/web_to_md.py <url>
+uvx ppt-master pdf-to-md <file.pdf>
+uvx ppt-master ppt-to-md <deck.pptx>
+uvx ppt-master doc-to-md <file.docx>
+uvx ppt-master excel-to-md <workbook.xlsx>
+uvx ppt-master web-to-md <url>
 ```
 
 Project setup:
 
 ```bash
-uv run scripts/project_manager.py init <project_name> --format ppt169
-uv run scripts/project_manager.py import-sources <project_path> <source_files...> --move
-uv run scripts/project_manager.py validate <project_path>
+uvx ppt-master project init <project_name> --format ppt169
+uvx ppt-master project import-sources <project_path> <source_files...> --move
+uvx ppt-master project validate <project_path>
 ```
 
 Template source import:
 
 ```bash
-uv run scripts/pptx_template_import.py <template.pptx>
-uv run scripts/pptx_template_import.py <template.pptx> --manifest-only
-uv run scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
+uvx ppt-master pptx-template-import <template.pptx>
+uvx ppt-master pptx-template-import <template.pptx> --manifest-only
+uvx ppt-master pptx-template-import <template.pptx> --inheritance-mode both
 ```
 
 Template fill (direct PPTX, no SVG conversion):
@@ -91,10 +91,10 @@ uvx ppt-master template-fill-pptx apply <project_path>/sources/<source.pptx> <pr
 Native existing-PPTX enhancement (direct PPTX, no SVG conversion):
 
 ```bash
-uv run scripts/native_enhance_pptx.py init <source.pptx> --name <project_slug>
-uv run scripts/native_enhance_pptx.py plan <project_path>
-uv run scripts/native_enhance_pptx.py validate <project_path>
-uv run scripts/native_enhance_pptx.py apply <project_path>
+uvx ppt-master native-enhance-pptx init <source.pptx> --name <project_slug>
+uvx ppt-master native-enhance-pptx plan <project_path>
+uvx ppt-master native-enhance-pptx validate <project_path>
+uvx ppt-master native-enhance-pptx apply <project_path>
 ```
 
 Post-processing and export:
@@ -111,16 +111,16 @@ Image generation:
 ```bash
 uvx ppt-master image-gen "A modern futuristic workspace"
 uvx ppt-master image-gen --list-backends
-uv run scripts/analyze_images.py <project_path>/images
-uv run scripts/latex_render.py <project_path>
-uv run scripts/latex_render.py <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
+uvx ppt-master analyze-images <project_path>/images
+uvx ppt-master latex-render <project_path>
+uvx ppt-master latex-render <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 ```
 
 Repository update:
 
 ```bash
-uv run scripts/update_repo.py
-uv run scripts/update_repo.py --skip-deps
+uvx ppt-master update-repo
+uvx ppt-master update-repo --skip-deps
 ```
 
 ## Recommendations
