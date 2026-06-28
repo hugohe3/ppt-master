@@ -244,7 +244,9 @@ Example opening for a triptych hero:
 
 When a deck wants several small **spot illustrations** scattered as decorative accessories across pages (the illustration counterpart to icons), do **not** generate them one image per slot — that multiplies generation cost and lets the style drift between calls. Generate **one sheet** that lays out all the elements in a grid, then slice it. One call buys a set of elements with an identical style, palette, and line quality — the same cross-page consistency the deck-wide `deck_rendering` / `deck_palette` lock exists to protect.
 
-**When to use**: ≥3 spot illustrations of the same family needed across the deck. For a single hero/local image, stay with the normal one-row-per-image flow (§4.1). Plan sheets sparingly — only where decorative illustration genuinely lifts the page; an unused element costs nothing, but a deck papered in decoration reads cheap.
+**When to use**: `design_spec.md §VIII Illustration System` has a Strategy including `sparse-spots` or `recurring-motif` and ≥3 spot illustrations of the same family are needed across the deck. For a single hero/local image, stay with the normal one-row-per-image flow (§4.1). Plan sheets sparingly — only where decorative illustration genuinely lifts the page; an unused element costs nothing, but a deck papered in decoration reads cheap.
+
+**Hard rule**: a spot sheet is a generation source, not a slide asset. The sheet row is never listed in `spec_lock.md images` and never referenced from SVG. Only the sliced element rows are placed.
 
 **Sheet prompt convention** (one manifest item, `page_role: local`, `text_policy: none`, `image_size` chosen from final placement size):
 

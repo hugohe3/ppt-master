@@ -221,6 +221,8 @@ class SVGQualityChecker:
         # severity is 'error' or 'warning'. Printed in print_summary.
         self._template_issues: List[Tuple[str, str, str]] = []
         self._animation_issues: List[Tuple[str, str]] = []
+        self._illustration_issues: List[Tuple[str, str, str]] = []
+        self._aggregate_counts_applied = False
 
     def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
         """
@@ -1167,8 +1169,360 @@ class SVGQualityChecker:
             self._check_template_contract(dir_path, svg_files)
         elif dir_path.is_dir():
             self._check_animation_config_contract(dir_path)
+            self._check_illustration_strategy_contract(dir_path)
 
         return self.results
+
+    def _check_illustration_strategy_contract(self, dir_path: Path) -> None:
+        """Project-level illustration strategy checks."""
+        project_path = self._resolve_project_path(dir_path)
+        spec_path = project_path / 'design_spec.md'
+        if not spec_path.exists():
+            return
+
+        try:
+            spec_text = spec_path.read_text(encoding='utf-8')
+        except OSError as exc:
+            self._illustration_issues.append((
+                'warning',
+                'spec_unreadable',
+                f"could not read {spec_path}: {exc}",
+            ))
+            return
+
+        rows = self._extract_image_resource_rows(spec_text)
+        if not rows:
+            return
+
+        lock_images = self._load_project_lock_images(project_path)
+        svg_texts = self._load_project_svg_texts(project_path)
+        all_svg_text = "\n".join(svg_texts.values())
+
+        sheet_rows = [row for row in rows if self._row_type(row).lower() == 'illustration sheet']
+        slice_rows = [row for row in rows if self._row_acquire(row) == 'slice']
+        image_rows = [
+            row for row in rows
+            if self._row_acquire(row) in {'ai', 'web', 'user', 'placeholder', 'slice'}
+            and self._row_type(row).lower() not in {'latex formula', 'illustration sheet'}
+        ]
+
+        for row in sheet_rows:
+            filename = self._row_filename(row)
+            if not filename:
+                continue
+            if filename in lock_images:
+                self._illustration_issues.append((
+                    'error',
+                    'sheet_in_lock',
+                    f"{filename} is an Illustration Sheet but is listed in spec_lock.md images; "
+                    "only sliced element rows may be listed.",
+                ))
+            if filename in all_svg_text:
+                self._illustration_issues.append((
+                    'error',
+                    'sheet_referenced',
+                    f"{filename} is an Illustration Sheet but is referenced by an SVG; "
+                    "generate it only as a slice source, never place it.",
+                ))
+
+        for row in slice_rows:
+            filename = self._row_filename(row)
+            if filename and filename not in lock_images:
+                self._illustration_issues.append((
+                    'error',
+                    'slice_missing_lock',
+                    f"{filename} is a slice row but is absent from spec_lock.md images.",
+                ))
+
+        has_coverage_note = 'Image-as-canvas' in spec_text or 'image-as-canvas' in spec_text
+        pattern_ids = self._collect_layout_pattern_ids(image_rows)
+        if len(image_rows) >= 4 and not any(38 <= pid <= 46 for pid in pattern_ids):
+            if not has_coverage_note:
+                self._illustration_issues.append((
+                    'warning',
+                    'missing_image_as_canvas',
+                    "deck has 4+ image-bearing rows but no #38-#46 image-as-canvas "
+                    "layout and no coverage note in design_spec.md §VIII.",
+                ))
+
+        conventional_ids = {1, 2, 3, 5, 6}
+        if len(image_rows) >= 4 and pattern_ids and pattern_ids.issubset(conventional_ids):
+            if not has_coverage_note:
+                self._illustration_issues.append((
+                    'warning',
+                    'layout_pattern_degenerated',
+                    "all image-bearing rows use only basic full-bleed / left-right / "
+                    "top-bottom patterns (#1/#2/#3/#5/#6); re-check "
+                    "references/image-layout-patterns.md for modifiers or image-as-canvas options.",
+                ))
+
+        for row in image_rows:
+            self._check_decorative_image_row(row, project_path, svg_texts)
+
+    @staticmethod
+    def _resolve_project_path(dir_path: Path) -> Path:
+        """Resolve a checker target directory to its project root."""
+        if dir_path.name in {'svg_output', 'svg_final'}:
+            return dir_path.parent
+        if (dir_path / 'svg_output').exists() or (dir_path / 'design_spec.md').exists():
+            return dir_path
+        return dir_path.parent
+
+    @staticmethod
+    def _split_md_table_row(line: str) -> List[str]:
+        """Split a simple Markdown table row into stripped cells."""
+        return [cell.strip().strip('`') for cell in line.strip().strip('|').split('|')]
+
+    @classmethod
+    def _extract_image_resource_rows(cls, spec_text: str) -> List[Dict[str, str]]:
+        """Extract rows from design_spec.md §VIII Image Resource List."""
+        section_match = re.search(
+            r"^##\s+VIII\.\s+Image Resource List\b.*?(?=^##\s+|\Z)",
+            spec_text,
+            re.MULTILINE | re.DOTALL,
+        )
+        if not section_match:
+            return []
+
+        lines = section_match.group(0).splitlines()
+        header = None
+        rows: List[Dict[str, str]] = []
+        in_resource_table = False
+        for line in lines:
+            if not line.strip().startswith('|'):
+                if in_resource_table and rows:
+                    break
+                continue
+
+            cells = cls._split_md_table_row(line)
+            if not cells:
+                continue
+            if header is None:
+                if any(cell.lower() == 'filename' for cell in cells):
+                    header = cells
+                    in_resource_table = True
+                continue
+            if set(cell.replace('-', '').strip() for cell in cells) == {''}:
+                continue
+            if not in_resource_table:
+                continue
+            row = {header[i]: cells[i] if i < len(cells) else '' for i in range(len(header))}
+            filename = row.get('Filename', '').strip()
+            if filename and filename.lower() != 'filename':
+                rows.append(row)
+
+        return rows
+
+    @staticmethod
+    def _row_filename(row: Dict[str, str]) -> str:
+        return Path(row.get('Filename', '').strip()).name
+
+    @staticmethod
+    def _row_type(row: Dict[str, str]) -> str:
+        return row.get('Type', '').strip()
+
+    @staticmethod
+    def _row_acquire(row: Dict[str, str]) -> str:
+        return row.get('Acquire Via', '').strip().lower()
+
+    @staticmethod
+    def _row_layout(row: Dict[str, str]) -> str:
+        return row.get('Layout pattern', '').strip()
+
+    @staticmethod
+    def _collect_layout_pattern_ids(rows: List[Dict[str, str]]) -> set[int]:
+        ids: set[int] = set()
+        for row in rows:
+            for match in re.finditer(r'#(\d+)\b', SVGQualityChecker._row_layout(row)):
+                ids.add(int(match.group(1)))
+        return ids
+
+    def _load_project_lock_images(self, project_path: Path) -> set[str]:
+        """Return filenames listed under spec_lock.md images."""
+        lock_path = project_path / 'spec_lock.md'
+        if _parse_spec_lock is None or not lock_path.exists():
+            return set()
+        try:
+            lock = _parse_spec_lock(lock_path)
+        except Exception:
+            return set()
+        images = set()
+        for value in lock.get('images', {}).values():
+            path_part = value.split('|', 1)[0].strip()
+            images.add(Path(path_part).name)
+        return images
+
+    @staticmethod
+    def _load_project_svg_texts(project_path: Path) -> Dict[Path, str]:
+        """Read project SVG output files for project-level cross-checks."""
+        svg_dir = project_path / 'svg_output'
+        if not svg_dir.exists():
+            return {}
+        out: Dict[Path, str] = {}
+        for svg_path in sorted(svg_dir.glob('*.svg')):
+            try:
+                out[svg_path] = svg_path.read_text(encoding='utf-8')
+            except OSError:
+                continue
+        return out
+
+    def _check_decorative_image_row(
+        self,
+        row: Dict[str, str],
+        project_path: Path,
+        svg_texts: Dict[Path, str],
+    ) -> None:
+        """Warn when decorative image patterns lack obvious SVG/file evidence."""
+        filename = self._row_filename(row)
+        if not filename:
+            return
+        layout = self._row_layout(row)
+        ids = {int(match.group(1)) for match in re.finditer(r'#(\d+)\b', layout)}
+        decorative_ids = ids & {4, 58, 63, 66, 69}
+        if not decorative_ids:
+            return
+        if self._row_type(row).lower() == 'illustration sheet':
+            return
+
+        referenced_tags: List[Tuple[Path, str]] = []
+        for svg_path, content in svg_texts.items():
+            for tag in re.findall(r'<image\b[^>]*>', content, re.IGNORECASE):
+                if filename in tag:
+                    referenced_tags.append((svg_path, tag))
+
+        if 63 in decorative_ids:
+            if Path(filename).suffix.lower() != '.png':
+                self._illustration_issues.append((
+                    'warning',
+                    'sticker_not_png',
+                    f"{filename} uses #63 transparent sticker / cutout but is not a PNG.",
+                ))
+            elif not self._png_has_alpha(project_path / 'images' / filename):
+                self._illustration_issues.append((
+                    'warning',
+                    'sticker_no_alpha',
+                    f"{filename} uses #63 transparent sticker / cutout but the PNG "
+                    "does not appear to have an alpha channel.",
+                ))
+
+        if not referenced_tags:
+            return
+
+        if 69 in decorative_ids and not any('rotate(' in tag for _path, tag in referenced_tags):
+            self._illustration_issues.append((
+                'warning',
+                'rotation_missing',
+                f"{filename} declares #69 slight rotation but no referenced <image> "
+                "tag contains rotate(...).",
+            ))
+
+        if 4 in decorative_ids and not self._has_off_canvas_reference(referenced_tags):
+            self._illustration_issues.append((
+                'warning',
+                'edge_bleed_missing',
+                f"{filename} declares #4 edge bleed but no referenced <image> appears "
+                "to extend past the canvas edge.",
+            ))
+
+        if 58 in decorative_ids and not self._has_corner_fragment_reference(referenced_tags):
+            self._illustration_issues.append((
+                'warning',
+                'corner_fragment_missing',
+                f"{filename} declares #58 decorative corner fragment but no referenced "
+                "<image> appears near a canvas corner.",
+            ))
+
+        if 66 in decorative_ids:
+            content_scope = "\n".join(svg_texts.get(path, '') for path, _tag in referenced_tags)
+            if '<linearGradient' not in content_scope and 'opacity' not in content_scope:
+                self._illustration_issues.append((
+                    'warning',
+                    'fade_missing',
+                    f"{filename} declares #66 fade into background but the referencing "
+                    "SVG has no obvious gradient or opacity treatment.",
+                ))
+
+    @staticmethod
+    def _png_has_alpha(path: Path) -> bool:
+        """Return True when a PNG appears to carry transparent pixels."""
+        if not path.exists():
+            return False
+        try:
+            from PIL import Image as PILImage
+            with PILImage.open(path) as img:
+                if img.mode in {'RGBA', 'LA'}:
+                    alpha = img.getchannel('A')
+                    return alpha.getextrema()[0] < 255
+                return 'transparency' in img.info
+        except (ImportError, OSError, ValueError):
+            return False
+
+    @staticmethod
+    def _parse_image_geometry(tag: str) -> Tuple[float, float, float, float] | None:
+        """Extract x/y/width/height from an <image> tag."""
+        values = {}
+        for attr in ('x', 'y', 'width', 'height'):
+            match = re.search(rf'\b{attr}\s*=\s*["\']([^"\']+)["\']', tag)
+            if not match:
+                return None
+            try:
+                values[attr] = float(match.group(1))
+            except ValueError:
+                return None
+        return values['x'], values['y'], values['width'], values['height']
+
+    @staticmethod
+    def _parse_svg_viewbox(content: str) -> Tuple[float, float] | None:
+        """Return viewBox width/height from SVG content."""
+        match = re.search(r'viewBox="[^"]*?\s+([0-9.]+)\s+([0-9.]+)"', content)
+        if not match:
+            return None
+        try:
+            return float(match.group(1)), float(match.group(2))
+        except ValueError:
+            return None
+
+    @classmethod
+    def _has_off_canvas_reference(cls, refs: List[Tuple[Path, str]]) -> bool:
+        for svg_path, tag in refs:
+            geometry = cls._parse_image_geometry(tag)
+            if geometry is None:
+                continue
+            x, y, width, height = geometry
+            try:
+                content = svg_path.read_text(encoding='utf-8')
+            except OSError:
+                continue
+            viewbox = cls._parse_svg_viewbox(content)
+            if viewbox is None:
+                continue
+            vb_width, vb_height = viewbox
+            if x < 0 or y < 0 or x + width > vb_width or y + height > vb_height:
+                return True
+        return False
+
+    @classmethod
+    def _has_corner_fragment_reference(cls, refs: List[Tuple[Path, str]]) -> bool:
+        for svg_path, tag in refs:
+            geometry = cls._parse_image_geometry(tag)
+            if geometry is None:
+                continue
+            x, y, width, height = geometry
+            try:
+                content = svg_path.read_text(encoding='utf-8')
+            except OSError:
+                continue
+            viewbox = cls._parse_svg_viewbox(content)
+            if viewbox is None:
+                continue
+            vb_width, vb_height = viewbox
+            near_left = x <= 40
+            near_top = y <= 40
+            near_right = x + width >= vb_width - 40
+            near_bottom = y + height >= vb_height - 40
+            if (near_left or near_right) and (near_top or near_bottom):
+                return True
+        return False
 
     def _check_animation_config_contract(self, dir_path: Path) -> None:
         """Project-level animations.json reference checks."""
@@ -1447,6 +1801,8 @@ class SVGQualityChecker:
 
     def print_summary(self):
         """Print check summary"""
+        self._apply_aggregated_issue_counts()
+
         print("=" * 80)
         print("[SUMMARY] Check Summary")
         print("=" * 80)
@@ -1473,6 +1829,9 @@ class SVGQualityChecker:
         # Animation config aggregation.
         self._print_animation_summary()
 
+        # Illustration strategy aggregation.
+        self._print_illustration_summary()
+
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
@@ -1488,16 +1847,30 @@ class SVGQualityChecker:
 
         errors = [item for item in self._animation_issues if item[0] == 'error']
         warnings = [item for item in self._animation_issues if item[0] == 'warning']
-        self.summary['errors'] += len(errors)
-        self.summary['warnings'] += len(warnings)
-        for severity, _msg in self._animation_issues:
-            self.issue_types[f'animation_config_{severity}'] += 1
 
         print("\n[ANIMATION] animations.json checks")
         for _severity, msg in errors:
             print(f"  [ERROR] {msg}")
         for _severity, msg in warnings:
             print(f"  [WARN] {msg}")
+
+    def _print_illustration_summary(self):
+        """Print project-level illustration strategy issues if present."""
+        if not self._illustration_issues:
+            return
+
+        errors = [item for item in self._illustration_issues if item[0] == 'error']
+        warnings = [item for item in self._illustration_issues if item[0] == 'warning']
+
+        print("\n[ILLUSTRATION] Illustration strategy checks")
+        if errors:
+            print(f"  Errors ({len(errors)}):")
+            for _severity, kind, msg in errors:
+                print(f"    [{kind}] {msg}")
+        if warnings:
+            print(f"  Warnings ({len(warnings)}):")
+            for _severity, kind, msg in warnings:
+                print(f"    [{kind}] {msg}")
 
     def _print_template_summary(self):
         """Aggregate template-mode roster / placeholder issues at the bottom.
@@ -1512,13 +1885,6 @@ class SVGQualityChecker:
         errors = [item for item in self._template_issues if item[0] == 'error']
         warnings = [item for item in self._template_issues if item[0] == 'warning']
 
-        # Mirror into the global summary so downstream "0 errors" gates honor
-        # template-mode issues.
-        self.summary['errors'] += len(errors)
-        self.summary['warnings'] += len(warnings)
-        for severity, kind, _msg in self._template_issues:
-            self.issue_types[f"template_{kind}"] += 1
-
         print("\n[TEMPLATE] Template mode checks")
         if errors:
             print(f"  Errors ({len(errors)}):")
@@ -1531,6 +1897,33 @@ class SVGQualityChecker:
         if not errors:
             print("  No structural roster issues. Placeholder hints above are advisory only;")
             print("  declare 'placeholders:' frontmatter in design_spec.md to silence them.")
+
+    def _apply_aggregated_issue_counts(self):
+        """Mirror project-level aggregate issues into summary counters once."""
+        if self._aggregate_counts_applied:
+            return
+        self._aggregate_counts_applied = True
+
+        animation_errors = [item for item in self._animation_issues if item[0] == 'error']
+        animation_warnings = [item for item in self._animation_issues if item[0] == 'warning']
+        self.summary['errors'] += len(animation_errors)
+        self.summary['warnings'] += len(animation_warnings)
+        for severity, _msg in self._animation_issues:
+            self.issue_types[f'animation_config_{severity}'] += 1
+
+        template_errors = [item for item in self._template_issues if item[0] == 'error']
+        template_warnings = [item for item in self._template_issues if item[0] == 'warning']
+        self.summary['errors'] += len(template_errors)
+        self.summary['warnings'] += len(template_warnings)
+        for severity, kind, _msg in self._template_issues:
+            self.issue_types[f'template_{kind}_{severity}'] += 1
+
+        illustration_errors = [item for item in self._illustration_issues if item[0] == 'error']
+        illustration_warnings = [item for item in self._illustration_issues if item[0] == 'warning']
+        self.summary['errors'] += len(illustration_errors)
+        self.summary['warnings'] += len(illustration_warnings)
+        for severity, kind, _msg in self._illustration_issues:
+            self.issue_types[f'illustration_{kind}_{severity}'] += 1
 
     def _print_drift_summary(self):
         """Print spec_lock drift aggregation if any was observed.
@@ -1571,7 +1964,7 @@ class SVGQualityChecker:
         """Calculate percentage"""
         if self.summary['total'] == 0:
             return 0
-        return int(count / self.summary['total'] * 100)
+        return min(100, int(count / self.summary['total'] * 100))
 
     def export_report(self, output_file: str = 'svg_quality_report.txt'):
         """Export check report"""
