@@ -230,7 +230,16 @@ python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['proj
 # 提交版本号变更
 git add pyproject.toml skills/ppt-master/pyproject.toml
 git commit -m "chore: bump version to X.Y.Z"
+```
 
+**如果在 GitHub Actions 环境中运行（`$env:GITHUB_ACTIONS` 或 `$GITHUB_ACTIONS` 为 true）：**
+- 跳过以下 tag 和 push 步骤
+- OpenCode 基础设施会自动将分支推送并创建 PR
+- PR 合并到 main 后，`auto-tag.yml` 自动读取版本号创建 tag
+- tag 推送后 `publish-pypi.yml` 自动发布到 PyPI
+
+**如果本地运行：**
+```bash
 # 打 tag 并推送
 git tag vX.Y.Z
 git push origin main
@@ -241,9 +250,13 @@ git push origin vX.Y.Z
 
 ### Step 7: 验证 PyPI 发布
 
-GitHub Actions 的 `publish-pypi.yml` 在 tag 推送后自动构建并发布到 PyPI。
+**GitHub Actions 自动流程：**
+```
+PR merge → auto-tag.yml 创建 tag → publish-pypi.yml 构建发布
+```
 访问 `https://github.com/elvisw/ppt-master/actions` 确认流水线成功。
-待发布完成后运行 `uvx ppt-master --version` 验证版本号。
+
+**本地流程：** `publish-pypi.yml` 在 tag 推送后自动构建发布，访问 Actions 页面确认。发布后运行 `uvx ppt-master --version` 验证。
 
 ---
 
