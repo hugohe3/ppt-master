@@ -1783,17 +1783,27 @@
         } catch (e) { /* no geometry */ }
         html += '</table>';
 
-        // L1: text content — only when the element owns no <tspan> children.
-        if (tag === "text" || tag === "tspan") {
+        var textStyleTargets = textStyleTargetsForSelection(el);
+
+        // L1: text content + computed text styles. When a textbox/group is
+        // selected, style controls target its descendant text leaves.
+        if (tag === "text" || tag === "tspan" || textStyleTargets.length > 0) {
             html += '<div class="prop-section">' + escapeHtml(t("section_text_style")) + '</div>';
             html += '<table class="prop-table">';
-            if (el.querySelector("tspan")) {
+            if ((tag === "text" || tag === "tspan") && el.querySelector("tspan")) {
                 html += '<tr><td class="prop-key">content</td><td class="prop-val prop-note">' +
                     escapeHtml(t("prop_multiline_hint")) + '</td></tr>';
-            } else {
+            } else if (tag === "text" || tag === "tspan") {
                 html += '<tr><td class="prop-key">content</td><td class="prop-val">' +
                     '<textarea class="prop-edit prop-edit-content" rows="2">' +
                     escapeHtml(el.textContent || "") + '</textarea></td></tr>';
+            }
+            if (textStyleTargets.length > 0) {
+                textStyleSpecs(textStyleTargets).forEach(function (spec) {
+                    html += '<tr><td class="prop-key">' + escapeHtml(spec.key) + '</td><td class="prop-val">';
+                    html += renderTextStyleControl(spec, textStyleTargets);
+                    html += '</td></tr>';
+                });
             }
             html += '</table>';
         }
@@ -1842,6 +1852,88 @@
         if (k === "id" || k === "class" || k === "href" || k === "xlink:href") return false;
         if (k.indexOf("on") === 0) return false;
         return /^[A-Za-z_][A-Za-z0-9_.:-]*$/.test(key);
+    }
+
+    function textStyleTargetsForSelection(el) {
+        if (!el) return [];
+        var tag = localName(el);
+        if (tag === "tspan") return el.id ? [el] : [];
+        if (tag === "text") return textStyleLeavesForText(el);
+
+        var targets = [];
+        el.querySelectorAll("text").forEach(function (textEl) {
+            targets = targets.concat(textStyleLeavesForText(textEl));
+        });
+        return uniqueElements(targets);
+    }
+
+    function textStyleLeavesForText(textEl) {
+        var tspans = Array.from(textEl.querySelectorAll("tspan")).filter(function (tspan) {
+            return !!tspan.id;
+        });
+        if (tspans.length > 0) return tspans;
+        return textEl.id ? [textEl] : [];
+    }
+
+    function uniqueElements(elements) {
+        var seen = new Set();
+        return elements.filter(function (el) {
+            if (!el || !el.id || seen.has(el.id)) return false;
+            seen.add(el.id);
+            return true;
+        });
+    }
+
+    function textStyleSpecs(targets) {
+        return [
+            { key: "fill", type: "color" },
+            { key: "font-size", type: "text" },
+            { key: "font-family", type: "text" },
+            { key: "font-weight", type: "select",
+              options: ["", "normal", "bold", "300", "400", "500", "600", "700", "800"] },
+            { key: "text-anchor", type: "select", options: ["", "start", "middle", "end"] }
+        ].map(function (spec) {
+            var value = commonAttrValue(targets, spec.key);
+            var copy = Object.assign({}, spec);
+            copy.value = value === null ? "" : value;
+            copy.mixed = value === null;
+            return copy;
+        });
+    }
+
+    function renderTextStyleControl(spec, targets) {
+        var targetIds = encodeURIComponent(JSON.stringify(targets.map(function (el) { return el.id; })));
+        var placeholder = spec.mixed ? t("multi_mixed") : "";
+        if (spec.type === "color") {
+            return '<input type="color" class="prop-edit prop-edit-text-style-color" data-key="' +
+                escapeHtml(spec.key) + '" data-target-ids="' + targetIds +
+                '" value="' + normalizeHexForPicker(spec.value) + '">' +
+                '<input type="text" class="prop-edit prop-edit-text-style" data-key="' +
+                escapeHtml(spec.key) + '" data-target-ids="' + targetIds +
+                '" placeholder="' + escapeHtml(placeholder) +
+                '" value="' + escapeHtml(spec.mixed ? "" : spec.value) + '">';
+        }
+        if (spec.type === "select") {
+            var html = '<select class="prop-edit prop-edit-text-style" data-key="' +
+                escapeHtml(spec.key) + '" data-target-ids="' + targetIds + '">';
+            var hasValue = spec.options.indexOf(spec.value) !== -1;
+            if (!spec.mixed && spec.value && !hasValue) {
+                html += '<option value="' + escapeHtml(spec.value) + '" selected>' +
+                    escapeHtml(spec.value) + '</option>';
+            }
+            spec.options.forEach(function (opt) {
+                var label = opt || placeholder || "";
+                var selected = !spec.mixed && spec.value === opt ? " selected" : "";
+                html += '<option value="' + escapeHtml(opt) + '"' + selected + '>' +
+                    escapeHtml(label) + '</option>';
+            });
+            html += '</select>';
+            return html;
+        }
+        return '<input type="text" class="prop-edit prop-edit-text-style" data-key="' +
+            escapeHtml(spec.key) + '" data-target-ids="' + targetIds +
+            '" placeholder="' + escapeHtml(placeholder) +
+            '" value="' + escapeHtml(spec.mixed ? "" : spec.value) + '">';
     }
 
     function isColorAttribute(key, value) {
@@ -2294,6 +2386,26 @@
             });
         });
 
+        panel.querySelectorAll(".prop-edit-text-style-color").forEach(function (picker) {
+            var key = picker.getAttribute("data-key");
+            var textInput = panel.querySelector('.prop-edit-text-style[data-key="' + key + '"]');
+            picker.addEventListener("input", function () {
+                if (textInput) textInput.value = picker.value;
+            });
+            picker.addEventListener("change", function () {
+                if (textInput) textInput.value = picker.value;
+                stageTextStyleAttr(key, picker.value, picker.getAttribute("data-target-ids"));
+            });
+        });
+        panel.querySelectorAll(".prop-edit-text-style").forEach(function (input) {
+            input.addEventListener("change", function () {
+                var key = input.getAttribute("data-key");
+                var value = input.value.trim();
+                if (!value) return;
+                stageTextStyleAttr(key, value, input.getAttribute("data-target-ids"));
+            });
+        });
+
         panel.querySelectorAll(".prop-edit-attr, .prop-edit-attr-area").forEach(function (input) {
             var key = input.getAttribute("data-key");
             input.addEventListener("change", function () {
@@ -2355,6 +2467,36 @@
                 inp.addEventListener("change", function () { commitGeo("resize"); });
             });
         }
+    }
+
+    function stageTextStyleAttr(key, value, encodedTargetIds) {
+        if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
+            showError(t("err_edit") + key);
+            return;
+        }
+        var ids;
+        try {
+            ids = JSON.parse(decodeURIComponent(encodedTargetIds || "%5B%5D"));
+        } catch (e) {
+            ids = [];
+        }
+        var targets = ids.map(function (id) {
+            return svgContent.querySelector("#" + CSS.escape(id));
+        }).filter(function (target) {
+            return target && attrOrComputedValue(target, key) !== value;
+        });
+        if (targets.length === 0) return;
+
+        var attrs = {};
+        attrs[key] = value;
+        var jobs = targets.map(function (target) {
+            return stageEditRequest(target.id, { attrs: attrs }).then(function () {
+                target.setAttribute(key, value);
+            });
+        });
+        Promise.all(jobs)
+            .then(function () { updateSelectionPanel(); })
+            .catch(function (err) { showError(t("err_edit") + err.message); });
     }
 
     function stageAttr(el, eid, key, value) {
