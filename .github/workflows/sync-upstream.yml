@@ -2,8 +2,8 @@ name: Sync Upstream
 
 on:
   schedule:
-    # DEBUG: 每分钟一次测试，通过后改回 "0 8 * * 1"
-    - cron: "* * * * *"
+    # 每周一 UTC 8:00（北京时间 16:00）
+    - cron: "0 8 * * 1"
 
 jobs:
   sync-upstream:
