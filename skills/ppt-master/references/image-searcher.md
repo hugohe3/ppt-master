@@ -85,6 +85,8 @@ Then `build_query_progression` tries: original → simplified (4 words) → simp
 | Quality cues | **DO NOT ADD QUALITY CUES** like `professional editorial photography` or `clean composition`. These APIs use exact keyword matching; adding long adjectives will result in 0 matches. |
 | Language | For Chinese landmarks: use precise Chinese names (e.g., `磁器口古镇`) if specifically targeting `--provider wikimedia`. For general stock providers (Pexels/Pixabay), use simple English nouns (e.g., `Chongqing Jiefangbei`); do NOT use complex Chinese sentences or overly long English descriptive strings which fail on these platforms. |
 
+When the subject is an exact entity (landmark / person / company / product / venue), write `required_terms` at the same time you write the row's `query`. Use one required group per identity anchor and `|` for aliases / translations, e.g. `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This keeps the query short for provider search while preventing metadata-ranked wrong entities from being accepted.
+
 **Forbidden — web negative prompts**: `not tourist snapshot`, `no amateur photo`, `avoid low quality`.
 
 > Note: Keyword APIs search negative words literally.
@@ -118,6 +120,7 @@ python3 scripts/image_search.py "<query>" \
 | `--orientation` | no | `any` | `any` / `landscape` / `portrait` / `square` |
 | `--provider` | no | (chain) | Pin one provider |
 | `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
+| `--require-terms` | no | — | Entity-safety gate for exact subjects. Repeatable; comma separates required groups; `A|B` means aliases within one group. Example: `--require-terms Chongqing --require-terms "Jiefangbei|Liberation Monument"` |
 | `--manifest` | no | (default) | Override manifest path |
 | `--save-candidates` | no | off | Escalation only: also keep a review pool in `candidates/<stem>/`. Default downloads just the best match (+ a review copy) |
 | `--max-candidates` | no | `4` | Pool size when `--save-candidates` is set |
@@ -139,22 +142,37 @@ python3 scripts/image_search.py --batch <project_path>/images/image_queries.json
 {
   "items": [
     {
-      "filename": "team.jpg",
-      "query": "executive boardroom meeting",
-      "slide": "03_team",
-      "purpose": "background",
+      "filename": "jiefangbei.jpg",
+      "query": "Jiefangbei Chongqing downtown monument",
+      "slide": "03_landmark",
+      "purpose": "exact landmark photo",
       "orientation": "landscape",
+      "required_terms": ["Chongqing", "Jiefangbei|Liberation Monument"],
       "status": "Pending"
     }
   ]
 }
 ```
 
-Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`.
+Required per item: `filename`, `query`, `status` (`Pending`). Optional per-item overrides: `slide`, `purpose`, `orientation`, `provider`, `strict_no_attribution`, `min_width`, `min_height`, `required_terms`.
+
+Use `required_terms` for **exact-entity images**: landmarks, people, companies, products, venues, named artworks, and named institutions. Each list item is required; alternatives inside one item use `|`. Example for a Chongqing landmark: `["Chongqing|重庆", "Jiefangbei|解放碑|Liberation Monument"]`. This is a metadata gate: candidates whose title / author / source URL do not satisfy every group are rejected before ranking, so a visually polished but wrong Rome / Hoi An image cannot win a Chongqing landmark row. Do **not** use `required_terms` for generic mood / background rows such as "modern city skyline" or "team collaboration".
 
 The runner searches all `Pending` / `Failed` rows concurrently, appends each success to `image_sources.json` (the credit source of truth, idempotent on `filename`), and writes status back into `image_queries.json` — `Sourced` on success, `Needs-Manual` when the full provider/stage chain is exhausted. Status is saved after each completion, so an interrupted run preserves finished rows; re-running skips terminal rows. A single `web` row may still use single-query mode above.
 
 **Pacing**: free providers (Wikimedia/Openverse) are rate-sensitive, so batch concurrency defaults to a modest **3** (`--concurrency N`, or `IMAGE_SEARCH_CONCURRENCY` env). Use `--concurrency 1` to restore strict one-at-a-time pacing. Single-query mode is one request at a time by nature.
+
+### Ranking model
+
+`image_search.py` ranks provider metadata, not pixels. The order is deliberately conservative:
+
+1. hard reject: invalid license, zero query relevance, or any missing `required_terms`;
+2. identity priority: every required term group must match; candidates whose title also contains the required entity terms get an additional boost over candidates that only match via URL;
+3. query relevance: concrete query tokens dominate generic visual words like "photo", "high quality", "background";
+4. layout fit: requested orientation helps; mismatched orientation is a small penalty, not a hard reject;
+5. license / size tie-breakers: no-attribution is a small bonus; pixel count is capped so a huge but weakly relevant image cannot outrank a smaller accurate image.
+
+Do not tune this into a visual taste engine. The scorer prevents obvious metadata failures and produces a reviewable best match; the `.review` copy still decides whether the image is visually fit for the slide.
 
 ### Suitability review — with or without a multimodal model
 
@@ -162,6 +180,8 @@ A metadata-ranked top hit is *downloadable and token-relevant*, not necessarily 
 
 - **Multimodal model**: each download writes a downscaled review copy to `images/.review/<stem>.jpg` (the placed asset stays full-resolution; the bounded copy just keeps a very large original safe and quick to open). Read it and judge fit — subject, mood, quality, not just topic overlap.
 - **Non-multimodal model (no vision)**: do **not** pretend to confirm. Hand off to a human — surface each web image's `source_page_url` from `image_sources.json` (live preview also shows the placed result) and let the user judge.
+
+For exact-entity rows, suitability has two gates: `required_terms` first enforces metadata identity, then the `.review` image confirms the pixels actually show the right subject well enough. A row can still be rejected after passing `required_terms` if the visual is weak, cropped badly, or only tangentially shows the subject.
 
 **Replacement ladder when a best match is not right** (any reviewer):
 

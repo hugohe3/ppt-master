@@ -115,6 +115,36 @@ SEARCH_RETRYABLE_STATUSES = {SEARCH_STATUS_PENDING, SEARCH_STATUS_FAILED}
 SEARCH_REQUIRED_ITEM_FIELDS = ("filename", "query", "status")
 
 
+def _parse_required_terms(raw: object) -> tuple[str, ...]:
+    """Parse entity-safety terms from CLI / batch JSON.
+
+    Multiple groups are ANDed. Alternatives inside one group are separated by
+    ``|``; comma splitting is accepted as CLI convenience. Examples:
+    ``["Chongqing", "Jiefangbei|Liberation Monument"]``.
+    """
+    if raw is None:
+        return ()
+    values: list[str]
+    if isinstance(raw, str):
+        values = [raw]
+    elif isinstance(raw, list):
+        values = []
+        for item in raw:
+            if not isinstance(item, str):
+                raise ValueError("required_terms items must be strings")
+            values.append(item)
+    else:
+        raise ValueError("required_terms must be a string or list of strings")
+
+    terms: list[str] = []
+    for value in values:
+        for part in value.split(","):
+            part = part.strip()
+            if part:
+                terms.append(part)
+    return tuple(terms)
+
+
 # ---------------------------------------------------------------------------
 # .env loading
 # ---------------------------------------------------------------------------
@@ -332,8 +362,11 @@ def search_and_download(
                 item for item in provider_ranked if item[0] != float("-inf")
             ]
             if not provider_ranked:
+                reason = "query"
+                if request.required_terms:
+                    reason += f" / required_terms={list(request.required_terms)}"
                 print(
-                    f"    no candidate matched the query; trying next provider/stage",
+                    f"    no candidate matched {reason}; trying next provider/stage",
                     file=sys.stderr,
                 )
                 continue
@@ -452,6 +485,11 @@ def _candidate_to_manifest_item(
         "attribution_text": build_attribution_text(args.filename, candidate),
         "status": "sourced",
     }
+    required_terms = _parse_required_terms(
+        getattr(args, "required_terms", None) or getattr(args, "require_terms", None)
+    )
+    if required_terms:
+        item["required_terms"] = list(required_terms)
 
     # Only carry upstream-claimed dimensions when they differ — this flags
     # cases where the provider returned a preview rather than the original.
@@ -631,6 +669,7 @@ def fetch_url_replace(
     purpose: str = "",
     search_query: str = "",
     orientation: str = "",
+    required_terms: tuple[str, ...] = (),
 ) -> int:
     """Download a user-supplied image URL into the target and record it.
 
@@ -687,6 +726,10 @@ def fetch_url_replace(
         "status": "manual",
         "note": "Manually supplied image URL; verifying usage rights is the user's responsibility.",
     }
+    inherited_required_terms = _parse_required_terms(prior.get("required_terms"))
+    final_required_terms = inherited_required_terms or required_terms
+    if final_required_terms:
+        item["required_terms"] = list(final_required_terms)
     written = write_sources_manifest(mpath, item)
     print(f"  manifest updated: {written}", file=sys.stderr)
     return 0
@@ -739,6 +782,11 @@ def load_search_manifest(path: str) -> dict:
                 f"{prefix} status '{item['status']}' is invalid. "
                 f"Valid: {sorted(SEARCH_VALID_STATUSES)}"
             )
+        if "required_terms" in item:
+            try:
+                _parse_required_terms(item["required_terms"])
+            except ValueError as exc:
+                raise ValueError(f"{prefix} {exc}") from exc
         fname = item["filename"]
         if fname in seen_filenames:
             raise ValueError(f"{prefix} duplicate filename '{fname}'")
@@ -802,6 +850,7 @@ def _search_one_item(
         slide=item.get("slide", ""),
         min_width=int(item.get("min_width", default_min_width)),
         min_height=int(item.get("min_height", default_min_height)),
+        required_terms=_parse_required_terms(item.get("required_terms")),
     )
 
     pinned = item.get("provider") or default_provider
@@ -826,6 +875,7 @@ def _search_one_item(
         purpose=item.get("purpose", ""),
         query=item["query"],
         orientation=orientation,
+        required_terms=request.required_terms,
     )
     manifest_item = _candidate_to_manifest_item(
         candidate,
@@ -1007,6 +1057,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Minimum acceptable image height in pixels (default: 800).",
     )
     parser.add_argument(
+        "--require-terms",
+        action="append",
+        default=None,
+        metavar="TERM[,TERM...]",
+        help=(
+            "Entity-safety gate: require each metadata term group before a "
+            "candidate can be accepted. Repeatable; comma separates groups; "
+            "'A|B' means aliases within one group. Example: "
+            "--require-terms Chongqing --require-terms 'Jiefangbei|Liberation Monument'."
+        ),
+    )
+    parser.add_argument(
         "--manifest",
         default=None,
         help="Override manifest path. Defaults to <output>/image_sources.json.",
@@ -1114,6 +1176,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             purpose=args.purpose,
             search_query=args.query or "",
             orientation="" if args.orientation == "any" else args.orientation,
+            required_terms=_parse_required_terms(args.require_terms),
         )
 
     # --- Batch mode ---
@@ -1170,6 +1233,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         slide=args.slide,
         min_width=args.min_width,
         min_height=args.min_height,
+        required_terms=_parse_required_terms(args.require_terms),
     )
 
     providers = [args.provider] if args.provider else _default_provider_chain()
