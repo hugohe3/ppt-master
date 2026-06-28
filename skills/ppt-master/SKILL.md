@@ -27,11 +27,13 @@ description: >
 > 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
 > 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also look up the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), `page_layouts` (which template SVG to inherit, if any), and `page_charts` (which chart template to adapt, if any). Empty / absent entries are intentional Strategist signals — see executor-base.md §2.1. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
 > 9. **SVG MUST BE HAND-WRITTEN, NOT SCRIPT-GENERATED** — Every SVG page is written by the main agent directly, one page at a time (see rules 6 and 7). Writing or running a Python / Node / shell script that produces the SVG files in batch — looping over pages, templating from data, or emitting them via a generator — is FORBIDDEN, including under "save tokens", "quick draft", or "user is in a hurry" pretexts. The script-generation path was tried on a feature branch and abandoned: cross-page visual consistency depends on per-page authoring with full upstream context, which a generator script cannot reproduce
+> 10. **FOLLOW DETERMINISTIC ROUTING RULES** — Do not add blocking routing questions when this skill defines a route. If the user request violates a route precondition, state the required prerequisite and stop that route instead of asking the user to choose around the rule. Ordinary finite options, stylistic preferences, and recoverable details are surfaced with a recommended value plus alternatives at the next existing confirmation gate.
 
 > [!IMPORTANT]
 > ## 🌐 Language & Communication Rule
 >
 > - **Response language**: match the user's input and source materials. Explicit user override (e.g., "请用英文回答") takes precedence.
+> - **User-facing option labels**: when presenting confirmations, brief proposals, choices, or finite option sets, use the user's language for labels and explanations. English enum IDs / file fields may appear in parentheses for precision, but never rely on English-only labels such as `deck`, `layout`, `mirror`, or `fidelity` without a localized explanation.
 > - **Template format**: `design_spec.md` MUST follow its original English template structure (section headings, field names) regardless of conversation language. Content values may be in the user's language.
 
 > [!IMPORTANT]
@@ -85,7 +87,6 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | `topic-research` | `workflows/topic-research.md` | Pre-pipeline — gather web sources when the user supplies only a topic with no source files |
 | `template-fill` | `workflows/template-fill-pptx.md` | Give a native PPTX template deck plus source material; select fitting pages (a page may be reused for several output slides) and fill text back without SVG conversion |
 | `beautify` | `workflows/beautify-pptx.md` | Re-layout an existing PPTX through the SVG pipeline — preserve its text verbatim, inherit its palette/fonts as truth, redo only layout; mirror of `template-fill` |
-| `svg-remix` | `workflows/svg-remix.md` | Use project-local `svg-flat` prototypes from PPTX intake, remix them for new content, then export PPTX without registering a template |
 | `create-template` | `workflows/create-template.md` | Standalone layout template creation workflow |
 | `create-brand` | `workflows/create-brand.md` | Standalone brand-only template creation (identity preset; no SVG page roster) |
 | `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
@@ -98,14 +99,34 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 ### PPTX Route Boundary
 
+> [!CAUTION]
+> **Raw PPTX template requests route to `template-fill` by default.** A `.pptx` may enter the main pipeline as source material. But when the user provides a raw `.pptx` template plus new material / a new topic and asks to generate a `.pptx`, use [`workflows/template-fill-pptx.md`](workflows/template-fill-pptx.md). The SVG generation route can consume only an explicit template directory path; if the user wants SVG/template-based generation from that PPTX, they must run [`workflows/create-template.md`](workflows/create-template.md) first and return with the generated template directory path.
+
 When the user provides an existing `.pptx`, route by the role of the source deck:
+
+**Template-fill vs template-based generation — mutually exclusive routes.** Do not treat these as two implementations of the same request. They answer different user intents:
+
+- `template-fill` means **native PPTX fill**: clone selected source slides and patch their existing text / tables / charts.
+- `create-template` first, then main pipeline means **template-based generation**: turn the source deck into a reusable template package, then generate a new deck through the SVG pipeline from that template directory.
+- A raw PPTX template plus a request to output a PPTX defaults to `template-fill`; it does not enter the SVG route unless the user explicitly asks to create / use a reusable template package.
+
+| Axis | `template-fill` | `create-template` first, then main pipeline |
+|---|---|---|
+| Source deck role | Native slide library to clone and patch | Design reference to convert into a reusable template package |
+| Output mechanics | Direct OOXML editing; no SVG pipeline | SVG generation pipeline after a template directory exists |
+| User expectation | "Use this PPT template to generate a PPTX", "fill / replace text / keep these PowerPoint slide shells" | "Create / use this as a reusable template style for SVG-generated decks" |
+| Design freedom | Low to moderate: selected source slides are reused as native shells | Moderate to high: generated deck may select, repeat, skip, reorder, and adapt template pages |
+| Reusability | One-off project output | Reusable `templates/<kind>/<id>/` asset |
+| Direct signal phrases | "fill back", "replace the copy", "keep these slides", "edit this PPTX directly" | "create a template", "make this reusable", "generate from this template directory", "use this SVG template package" |
+
+Apply the route deterministically: raw `.pptx` template + "generate PPTX" → `template-fill`. SVG/template-based generation → requires a pre-created template directory path. If the user asks for SVG/template-based generation from a raw PPTX, tell them to run `create-template` first and return with the generated template directory path; do not ask a route-choice question.
 
 | User intent | Route | Contract |
 |---|---|---|
 | Preserve the deck's page split, page order, and per-slide wording; improve layout / hierarchy / whitespace | `beautify` | Source page count and order are 1:1; text and data values are frozen; visual identity is inherited after confirmation |
 | Treat the deck as source material; rethink the story, merge / split / drop / reorder pages, or change page count | Main pipeline | `ppt_to_md` + PPTX intake provide content facts and candidates; Strategist may re-architect freely |
-| Reuse the deck's native design with new material | `template-fill` | Clone selected source slides and replace text / table / chart data directly in OOXML; no SVG generation |
-| Reuse the deck's SVG layout language with new material | `svg-remix` | Use flat SVG intake only to capture project-local `svg-flat` prototypes, then hand-author new `svg_output/` pages under an approved remix-freedom level; no native OOXML fill, no forced page-by-page mirror replication, and no template-library registration |
+| Use a raw PPTX template to generate a new PPTX with new material | `template-fill` | Clone selected source slides and replace text / table / chart data directly in OOXML; no SVG generation, no reusable template package |
+| Use the SVG generation route with this deck's design language | `create-template` first, then main pipeline | A raw PPTX is not a Step 3 template. The user must create a reusable template package first; once they provide the resulting template directory path, Step 3 can consume it like any other explicit template path |
 | Harvest the deck as a reusable future template | `create-template` | Build a template package, not a one-off generated deck |
 | Keep the finished deck visually stable and append native optimizations such as notes / narration audio / automatic playback | `native-enhance-pptx` | Archive the source PPTX into the project (`projects/` sources move; external sources copy) and patch enhancement metadata/media directly in OOXML; no SVG generation |
 
@@ -193,6 +214,10 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 🚧 **GATE**: Step 2 complete; project directory structure is ready.
 
 **Default — free design.** Proceed directly to Step 4. Do NOT query any `*_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
+
+**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template directory path. Step 3 only consumes an explicit template directory that already contains `design_spec.md` with `kind: brand` / `kind: layout` / `kind: deck`.
+
+Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use `template-fill` for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
 
 **Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message. The trigger rule is mechanical, not interpretive:
 
