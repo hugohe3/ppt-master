@@ -10,6 +10,12 @@ description: >
 # PPT Master Skill
 
 > **Note:** No setup required — `uvx ppt-master <command>` downloads the tool from PyPI automatically.
+>
+> **uv cache caveat**: `uvx ppt-master` caches downloaded packages locally. After a new version is published, `uvx ppt-master --version` may show the old cached version. At session start, read the expected version from `pyproject.toml` or `skills/ppt-master/pyproject.toml`, compare with `uvx ppt-master --version` output. If they differ, clear the cache:
+> ```bash
+> uv cache clean ppt-master && uvx ppt-master --version
+> ```
+> Always pin with `uvx ppt-master@<version>` when the exact version matters.
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
