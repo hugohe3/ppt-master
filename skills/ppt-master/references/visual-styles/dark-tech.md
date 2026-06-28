@@ -31,3 +31,7 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 ## 5. Paired image-rendering
 
 `digital-dashboard` or `blueprint` — polished UI / technical-schematic look for AI images.
+
+## 6. Illustration propensity
+
+**sparse** — glow accents and geometric precision lead, and raster spots tend to read as clip-art against the dark UI. With no user steer, default to none. If the user explicitly asks, prefer restrained geometric marks over illustrated characters. `image_usage: none` writes no illustration rows.

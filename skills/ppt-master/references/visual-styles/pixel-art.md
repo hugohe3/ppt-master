@@ -30,3 +30,7 @@
 ## 5. Paired image-rendering
 
 `pixel-art` — 8-bit imagery on the same grid, sharing the retro-game aesthetic.
+
+## 6. Illustration propensity
+
+**core** — pixel sprites and blocky icons *are* the style; with no user steer, default to recommending a coherent spot-illustration family. Default *lean* only — heaviness and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

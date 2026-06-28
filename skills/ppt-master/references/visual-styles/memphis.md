@@ -31,3 +31,7 @@ Memphis / Pop — clashing color blocks, geometric confetti, bold outlines, 80s-
 ## 5. Paired image-rendering
 
 `flat` — clean vivid flat-color illustration that matches the pop-block energy.
+
+## 6. Illustration propensity
+
+**core** — bold-outline spots, confetti, and geometric shapes *are* the Memphis language; with no user steer, default to recommending a coherent spot-illustration family. Default *lean* only — heaviness and placement stay Strategist judgment, an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

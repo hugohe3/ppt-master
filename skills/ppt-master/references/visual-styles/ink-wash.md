@@ -30,3 +30,7 @@ New-Chinese ink-wash — a rice-paper field, vast literati whitespace, restraine
 ## 5. Paired image-rendering
 
 `ink-notes` or `watercolor` — mono-ink or soft-wash imagery that shares the literati restraint.
+
+## 6. Illustration propensity
+
+**supportive** — a single brush mark or seal can anchor a page, but stillness and whitespace lead; use very few, very quiet. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

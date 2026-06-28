@@ -32,3 +32,7 @@ Brutalist editorial newspaper. Wall-to-wall small type, irregular column widths,
 ## 5. Paired image-rendering
 
 `screen-print` or `editorial` — halftone monochrome imagery that sits inside the newsprint aesthetic.
+
+## 6. Illustration propensity
+
+**supportive** — raw halftone cuts fit the newsprint density, but structure leads; use them sparingly, only where a page needs a visual jolt. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.

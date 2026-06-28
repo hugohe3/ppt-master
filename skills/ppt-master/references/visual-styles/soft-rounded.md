@@ -31,3 +31,7 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 ## 5. Paired image-rendering
 
 `flat` — clean modern blocks for AI images. (For frosted-glass depth, see the dedicated [`glassmorphism`](./glassmorphism.md) style.)
+
+## 6. Illustration propensity
+
+**supportive** — friendly rounded spots suit this approachable style; use them where they lift rhythm or section warmth, kept restrained. With no user steer this is the default lean; an explicit user request wins either way, and `image_usage: none` writes no illustration rows.
