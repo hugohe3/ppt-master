@@ -2052,6 +2052,27 @@
         return "#000000";
     }
 
+    var SVG_UNIT_OPTIONAL_LENGTH_ATTRS = new Set([
+        "x", "y", "x1", "x2", "y1", "y2",
+        "cx", "cy", "r", "rx", "ry",
+        "dx", "dy", "width", "height",
+        "font-size", "stroke-width", "stroke-dashoffset",
+        "letter-spacing", "word-spacing"
+    ]);
+
+    function normalizeSvgLengthValue(key, value) {
+        var s = String(value || "");
+        if (!SVG_UNIT_OPTIONAL_LENGTH_ATTRS.has(String(key).toLowerCase())) return s;
+        s = s.trim();
+        var m = s.match(/^(-?\d+(?:\.\d+)?)px$/i);
+        return m ? m[1] : s;
+    }
+
+    function normalizeEditableAttrValue(key, value) {
+        var s = String(value || "").trim();
+        return normalizeSvgLengthValue(key, s);
+    }
+
     function isSafeColor(val) {
         // Only allow values that look like CSS colors (hex, rgb, rgba, hsl, named).
         // Reject anything with ; : url @ \ to prevent CSS injection.
@@ -2400,7 +2421,7 @@
         panel.querySelectorAll(".prop-edit-text-style").forEach(function (input) {
             input.addEventListener("change", function () {
                 var key = input.getAttribute("data-key");
-                var value = input.value.trim();
+                var value = normalizeEditableAttrValue(key, input.value);
                 if (!value) return;
                 stageTextStyleAttr(key, value, input.getAttribute("data-target-ids"));
             });
@@ -2409,7 +2430,7 @@
         panel.querySelectorAll(".prop-edit-attr, .prop-edit-attr-area").forEach(function (input) {
             var key = input.getAttribute("data-key");
             input.addEventListener("change", function () {
-                stageAttr(el, eid, key, input.value.trim());
+                stageAttr(el, eid, key, normalizeEditableAttrValue(key, input.value));
             });
         });
 
@@ -2470,6 +2491,7 @@
     }
 
     function stageTextStyleAttr(key, value, encodedTargetIds) {
+        value = normalizeEditableAttrValue(key, value);
         if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
             showError(t("err_edit") + key);
             return;
@@ -2500,6 +2522,7 @@
     }
 
     function stageAttr(el, eid, key, value) {
+        value = normalizeEditableAttrValue(key, value);
         if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
             showError(t("err_edit") + key);
             return;
@@ -2624,7 +2647,7 @@
 
     function attrOrComputedValue(el, key) {
         var value = el.getAttribute(key);
-        if (value !== null && value !== "") return value;
+        if (value !== null && value !== "") return normalizeSvgLengthValue(key, value);
         var style = window.getComputedStyle(el);
         var map = {
             "fill": "fill",
@@ -2635,7 +2658,7 @@
             "font-weight": "fontWeight",
             "text-anchor": "textAnchor"
         };
-        return (map[key] && style[map[key]]) || "";
+        return normalizeSvgLengthValue(key, (map[key] && style[map[key]]) || "");
     }
 
     function renderBatchControl(spec) {
@@ -2726,7 +2749,7 @@
         panel.querySelectorAll(".prop-edit-batch").forEach(function (input) {
             input.addEventListener("change", function () {
                 var key = input.getAttribute("data-key");
-                var value = input.value.trim();
+                var value = normalizeEditableAttrValue(key, input.value);
                 if (!value) return;
                 commitBatchAttr(key, value, moveEls);
             });
@@ -2734,6 +2757,7 @@
     }
 
     function commitBatchAttr(key, value, elements) {
+        value = normalizeEditableAttrValue(key, value);
         if ((key === "fill" || key === "stroke") && !isSafeColor(value)) {
             showError(t("err_edit") + key);
             return;
