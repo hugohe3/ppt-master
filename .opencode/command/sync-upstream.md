@@ -234,13 +234,14 @@ git commit -m "chore: bump version to X.Y.Z"
 
 **如果在 GitHub Actions 环境中运行：**
 
-- **OpenCode Action 路径（schedule 触发）**：跳过 push — action 会自动创建分支和 PR，PR 合并后 `auto-tag.yml` 打 tag → `publish-pypi.yml` 发布
-- **CLI 路径（workflow_dispatch / `opencode run`）**：必须直接 push 到 main 让 `auto-tag.yml` 接管
+- **OpenCode Action 路径（schedule 触发）**：跳过 push — action 会自动创建分支和 PR，PR 合并后触发下游 CI 链（`check-uvx-migration` → `auto-tag` → `publish-pypi`）
+- **CLI 路径（workflow_dispatch / `opencode run`）**：直接 push 到 main。git remote 已配置为 `secrets.PUSH_PAT`，PAT 推送会自然触发下游 CI 链
 
 CLI 路径执行：
 ```bash
 git push origin main
 ```
+push 后下游自动触发，无需手动 `gh workflow run`。
 
 > ⚠️ 无论是哪种路径，都不要手动 `git tag`。tag 由 `auto-tag.yml` 统一管理。
 
