@@ -20,7 +20,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ## 1. Eight Confirmations Process
 
-🚧 **GATE — Mandatory read first**: `read_file templates/design_spec_reference.md` before any analysis or writing. The design_spec.md output MUST follow that template's 11-section structure exactly. After writing, self-check each section is present: I Project Info → II Canvas → III Visual Theme → IV Typography → V Layout → VI Icon → VII Visualization → VIII Image → IX Outline → X Speaker Notes → XI Tech Constraints.
+🚧 **GATE — Mandatory read first**: `read_file templates/design_spec_reference.md` and `read_file references/quality-gates.md` before any analysis or writing. The design_spec.md output MUST follow that template's 11-section structure exactly. After writing, self-check each section is present: I Project Info → II Canvas → III Visual Theme → IV Typography → V Layout → VI Icon → VII Visualization → VIII Image → IX Outline → X Speaker Notes → XI Tech Constraints.
 
 ⛔ **BLOCKING**: After the read, present professional recommendations for the eight items below and wait for explicit user confirmation.
 
@@ -806,6 +806,23 @@ This is what makes the axis meaningful: a `presentation` deck and a `text` deck 
 
 > Note: §IX is the only content copy the Executor re-reads after context compression — what you write there is what survives.
 
+### 6.1.1 Storyline and Page Contract
+
+**Mandatory**: Apply [`quality-gates.md`](quality-gates.md) §2-§4 before writing `design_spec.md`. The storyline and page contracts are the planning layer that prevents text-heavy, loosely connected pages.
+
+| Artifact | Write location | Requirement |
+|---|---|---|
+| Storyline | `<project_path>/storyline.md` for long / split-mode decks; otherwise `design_spec.md §IX` planning notes are acceptable | Include deck thesis, audience, desired behavior, chapter claims, and per-page one-message fields. |
+| Page contract | `design_spec.md §IX Content Outline` | Every page needs a sentence headline, audience question, one message, supporting evidence, visual type, density budget, exclusions, and speaker-note role. |
+| Layout budget | `spec_lock.md quality` when the deck is dense / long / training-oriented | Use `quality-gates.md §4` defaults unless the deck needs stricter values. |
+
+**Forbidden — planning shortcuts**:
+
+- Writing noun-only slide titles for content pages.
+- Leaving `visual_type` implicit.
+- Using `page_rhythm` without a corresponding density / narrative reason.
+- Treating speaker notes as a duplicate of visible text.
+
 ### 6.2 Outline Output Specification (Must include 11 chapters)
 
 | Chapter | Content Requirements |
@@ -826,7 +843,9 @@ This is what makes the axis meaningful: a `presentation` deck and a `text` deck 
 1. Read reference template: `templates/design_spec_reference.md`
 2. Generate complete spec from scratch based on analysis
 3. Save to: `projects/<project_name>.../design_spec.md`
-4. **Generate execution lock**: read `templates/spec_lock_reference.md` and produce `projects/<project_name>.../spec_lock.md` — a distilled, machine-readable short form of the color / typography / icon / image / **page_rhythm** / **page_layouts** / **page_charts** decisions above. This file is what the Executor re-reads before every page (see [executor-base.md](executor-base.md) §2.1). The values in `spec_lock.md` MUST exactly match the decisions recorded in `design_spec.md`; if they ever diverge, `spec_lock.md` wins and `design_spec.md` should be treated as historical narrative.
+4. **Generate storyline**: save `projects/<project_name>.../storyline.md` when the deck is long / split-mode / source-heavy; for short decks, ensure the same fields are visible in `design_spec.md §IX`.
+5. **Generate execution lock**: read `templates/spec_lock_reference.md` and produce `projects/<project_name>.../spec_lock.md` — a distilled, machine-readable short form of the color / typography / icon / image / **quality** / **page_rhythm** / **page_layouts** / **page_charts** decisions above. This file is what the Executor re-reads before every page (see [executor-base.md](executor-base.md) §2.1). The values in `spec_lock.md` MUST exactly match the decisions recorded in `design_spec.md`; if they ever diverge, `spec_lock.md` wins and `design_spec.md` should be treated as historical narrative.
+   - **quality is required for dense / long decks**: Add layout budgets from `quality-gates.md §4` when the deck is training-oriented, table-heavy, or likely to exceed 12 pages. Omit the section only for simple low-density decks; Executor will use defaults.
    - **page_rhythm is mandatory**: Based on the page list in §IX Content Outline, assign each page one of `anchor` / `dense` / `breathing` (see `spec_lock_reference.md` for the full vocabulary). This is what breaks the uniform "every page is a card grid" feel — without it the Executor defaults all pages to `dense`.
    - **Rhythm follows narrative, not quota**: `breathing` pages mark natural pauses — chapter transitions, standalone emphasis (hero quote / big number), SCQA bridges. Dense decks may legitimately be all `dense`. **Do NOT invent filler pages** ("Thank you", empty dividers) to pad rhythm — every `breathing` page must say something independent. Delivery purpose biases the overall lean (`presentation` toward more `anchor` / `breathing`, `text` toward `dense`; see §6.1) — a bias, never a quota.
    - **Cover impact is mandatory**: Page `P01` is the deck's first visual contract, not a generic title slide. In `design_spec.md §IX`, add a `Cover impact` line for `P01` that names one concrete hook and one concrete composition strategy. Use the source's strongest available signal: a provocative core claim, object / scene metaphor, hero number, founder / product / audience moment, or a distilled conflict. Pair it with one concrete composition strategy — such as `full-bleed image + floating title`, `typographic poster`, `hero object`, `data hook`, `editorial scene`, `high-contrast abstract geometry`, or a fresh composition the deck's subject suggests (these are starting points, not the allowed set). If no external or AI image is available, still specify a native-SVG visual hook; do not fall back to "title + subtitle + decorative background". (Beautify / template-fill keep the source cover verbatim — this rule does not apply on those preservation paths.)

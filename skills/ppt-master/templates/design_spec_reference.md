@@ -318,15 +318,26 @@ Catalog read: 71 templates
 #### Slide 02 - [Page Name]
 
 - **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
-- **Title**: [Page title]
+- **Headline**: [Sentence headline that states the takeaway]
+- **Audience Question**: [The question this page answers for the audience]
 - **Core message**: [the one thing this page exists to land — its spine, always phrased as one assertion sentence (prose by nature). One per page; can't name it → merge or cut the page.]
+- **Supporting Evidence**: [Data / example / command / screenshot / quote / workflow / rationale]
+- **Visual Type**: [table / process / matrix / journey / metric / command / checklist / screenshot / image / custom]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
+- **Density Budget**:
+  - max_text_blocks: [N]
+  - max_bullets: [N]
+  - max_rows: [N]
+  - max_columns: [N]
+- **Must Not Include**: [Exclusions that prevent clutter or scope creep]
+- **Speaker Note Role**: [Transition / nuance / example / caution / decision framing]
 - **Content**: write each block in the phrasing that fits it (prose / bullet / keyword / … any phrasing the content calls for) and write it already in that mode, so the texture itself carries the intent — a prose block reads as a real sentence, not a fragment. One page may mix modes; blocks still sit under the core message, never replace it:
   - [a connected sentence or two that argues the point]
   - [parallel fragment] · [parallel fragment] · [parallel fragment]
   - [label] / [label] / [label]
 
 > **Visualization field**: add only when the page has data visualization or structured infographic elements. Type must be listed in §VII.
+> **Page contract**: fields above mirror `references/quality-gates.md` §3. Cover / agenda / ending pages may use the shorter structural format when a full contract adds no value.
 
 ---
 

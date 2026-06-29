@@ -100,6 +100,21 @@
 
 > One entry per image file used. Append ` | no-crop` only for images that must not lose pixels (data screenshots, charts, certificates, rendered LaTeX formulas) — Executor will size the container to native ratio and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries default to croppable (`slice`). Remove the section entirely if no images.
 
+## quality
+- max_cards_per_dense_page: 6
+- max_parallel_columns: 4
+- min_outer_margin: 72
+- min_card_gap: 24
+- min_line_height_ratio: 1.35
+- max_body_lines_per_text_block: 2
+- max_bullets_per_block: 4
+- max_table_rows_regular: 6
+- max_table_cols_regular: 4
+
+> Strategist: include this section for dense, long, table-heavy, training-oriented, or split-mode decks. Omit only for simple low-density decks; Executor falls back to `references/quality-gates.md` §4 defaults.
+>
+> Values are layout budgets, not visual style. If content exceeds a budget, split the page, change the visual structure, move detail to speaker notes / appendix, or explicitly flag the overflow in the completion note.
+
 ## page_rhythm
 - P01: anchor
 - P02: dense

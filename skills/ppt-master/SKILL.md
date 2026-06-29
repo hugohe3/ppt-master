@@ -93,6 +93,12 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 > **Windows note**: if a `python3 ...` command fails (common on python.org installs, which provide `python.exe` but not `python3.exe`), rerun the same command with `python` instead.
 
+## Quality Reference
+
+| Reference | Purpose |
+|----------|---------|
+| `${SKILL_DIR}/references/quality-gates.md` | Storyline, page contract, density, accessibility, and human release checks used by Strategist and Executor |
+
 ## Template Index
 
 | Index | Path | Purpose |
@@ -327,6 +333,7 @@ Single-path Step 3 does **not** add provenance (the source is self-evident from 
 First, read the role definition:
 ```
 Read references/strategist.md
+Read references/quality-gates.md
 ```
 
 > ⚠️ **Mandatory gate**: before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and follow its full I–XI section structure. See `strategist.md` Section 1.
@@ -457,6 +464,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 **Output**:
 - `<project_path>/design_spec.md` — human-readable design narrative
 - `<project_path>/spec_lock.md` — machine-readable execution contract (skeleton: `templates/spec_lock_reference.md`); Executor re-reads before every page
+- `<project_path>/storyline.md` — required for long / split-mode decks; optional for short decks if the same storyline fields are represented in `design_spec.md §IX`
 
 **✅ Checkpoint — Phase deliverables complete, auto-proceed to next step**:
 ```markdown
@@ -465,6 +473,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 - [x] Eight Confirmations completed (user confirmed via Confirm UI `result.json` or chat fallback)
 - [x] Split-mode note appended below the eight items (heavy or normal variant)
 - [x] Spec-refinement opt-in line appended (default OFF; only the user's explicit request enters the refine-spec workflow)
+- [x] Storyline / page contracts completed per quality-gates.md
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
@@ -546,6 +555,7 @@ Workflow:
 Read the execution references for this deck's locked `mode` + `visual_style` (from `spec_lock.md`):
 ```
 Read references/executor-base.md                  # REQUIRED: common guidelines
+Read references/quality-gates.md                  # REQUIRED: storyline / density / accessibility gates
 Read references/shared-standards.md               # REQUIRED: SVG/PPT technical constraints
 Read references/modes/<locked-mode>.md            # narrative skeleton (spec_lock.md `mode`)
 Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `visual_style`)
@@ -554,6 +564,8 @@ Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `vis
 > Read executor-base + shared-standards + the one locked mode file + the one locked visual-style file. For `mode: custom` or `visual_style: custom`, skip that preset file and follow `mode_behavior` / `visual_style_behavior` from `spec_lock.md` instead. Never glob `modes/` or `visual-styles/`.
 
 **Design Parameter Confirmation (Mandatory)**: before the first SVG, output key design parameters from the spec (canvas dimensions, color scheme, font plan, body font size). See executor-base.md §2.
+
+**Quality Contract Confirmation (Mandatory)**: before the first SVG, confirm the deck thesis, page-count target, density budget source (`spec_lock.md quality` or defaults), and release checks from `quality-gates.md`.
 
 **Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running continuously through Executor + Step 7 export:
 ```bash
@@ -583,6 +595,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
+- Apply `quality-gates.md` human checks before export: 5-second readability, one-minute explainability, one primary focus, and accessibility readiness. Record residual issues in the completion note.
 
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
 
@@ -592,6 +605,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - [x] Live preview started and kept available at the reported URL
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
+- [x] Quality gates reviewed: density, one-message, visual-support, readability, accessibility readiness
 - [x] Speaker notes generated at notes/total.md
 ```
 
@@ -717,6 +731,7 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 | Image-text layout patterns (Primary structures + Modifier layers — combine freely) | `references/image-layout-patterns.md` |
 | Image layout sizing (math for side-by-side container dimensions) | `references/image-layout-spec.md` |
 | SVG image embedding | `references/svg-image-embedding.md` |
+| Quality gates | `references/quality-gates.md` |
 | Icon library | `templates/icons/README.md` |
 
 ---

@@ -1,6 +1,7 @@
 # Executor Common Guidelines
 
 > Narrative skeleton and visual aesthetic come from this deck's locked files under [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md). Technical constraints are in shared-standards.md.
+> See [`quality-gates.md`](quality-gates.md) for storyline, density, accessibility, and human release checks.
 
 ---
 
@@ -97,6 +98,8 @@ Before generating each page, output which template is used:
 
 Before the first SVG page, output a confirmation listing: canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan. Prevents spec/execution drift.
 
+**Mandatory**: Also output the quality contract: deck thesis, page-count target, layout budget source (`spec_lock.md quality` or `quality-gates.md` defaults), and human release checks that will be applied after SVG generation.
+
 ### 2.1 Per-page spec_lock re-read (Mandatory)
 
 > Long decks drift off the declared palette/icons mid-deck due to context compression. `spec_lock.md` is the canonical execution reference — re-read it per page to bypass model memory.
@@ -160,19 +163,35 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 - No entry for this page → either no chart on this page, or a chart that didn't match any catalog template (Strategist's `no-template-match` fallback). Design the visualization from scratch using `design_spec.md §VII` for guidance.
 - Whole section absent → no chart pages in this deck.
 
+**Per-deck quality budget — `quality` section**:
+
+Before drawing each page, read any `quality` rows from `spec_lock.md`. Missing values fall back to [`quality-gates.md`](quality-gates.md) §4 defaults.
+
+| Budget | Execution behavior |
+|---|---|
+| `max_cards_per_dense_page` | Do not add card containers beyond this cap; switch structure or split page. |
+| `max_parallel_columns` | Do not create wider parallel grids than this cap. |
+| `min_outer_margin` | Keep meaningful content inside this margin unless full-bleed imagery is intentional. |
+| `min_card_gap` | Preserve gap between peer cards / panels. |
+| `min_line_height_ratio` | Apply to body paragraphs and bullet blocks. |
+| `max_body_lines_per_text_block` | Convert long paragraphs into visual structure, notes, or split pages. |
+| `max_bullets_per_block` | Keep bullet blocks within the cap. |
+| `max_table_rows_regular` / `max_table_cols_regular` | Simplify, split, or make an appendix-style page when regular tables exceed the cap. |
+
 ---
 
 ## 3. Execution Guidelines
 
 - **Proximity**: group related elements with tight spacing; separate unrelated groups
 - **Spec adherence**: follow color, layout, canvas format, and typography in the spec
+- **Quality adherence**: follow [`quality-gates.md`](quality-gates.md) §3-§6 for one-message pages, sentence headlines, visual-support checks, density limits, and accessibility readiness
 - **Template structure**: if templates exist, inherit the visual framework
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
 - **Generation rhythm**: lock global design context first, then generate pages sequentially in one continuous context. No batched groups (e.g., 5 at a time).
 - **Reference — image-led promotional pages (not a constraint)**: for travel, venue, product-introduction, hospitality, event, real-estate, and brochure-style decks, let images define the page skeleton before placing text. Consult [`image-layout-patterns.md`](image-layout-patterns.md) §Imported Deck Patterns and prefer patterns such as `#74` TOC image-navigation cards, `#75` asymmetric chapter banners, `#77` photo mosaic with a text cell, `#78` ambient banner + evidence photo + text panel, `#79` ribbon-header image cards, and `#80` side hero image + staggered evidence cards before falling back to plain left/right image-text splits.
 - **Phased batch generation** (recommended):
   1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per §3.1 below on every chart page — coordinate calibration is a post-generation step (see [`workflows/verify-charts.md`](../workflows/verify-charts.md)) that depends on these markers.
-  2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
+  2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. Then apply `quality-gates.md` human checks: 5-second readability, one-minute explainability, one primary focus, visual supports headline, and accessibility readiness. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
 ### 3.1 Chart Plot-Area Marker (MANDATORY on every chart page)
