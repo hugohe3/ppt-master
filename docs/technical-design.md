@@ -63,6 +63,27 @@ Direct PPTX workflows intentionally bypass this SVG route:
 
 ---
 
+## Route Decision Quick Reference
+
+Use this table before reasoning about implementation details. Most failed runs start with the wrong route, not the wrong command.
+
+| Request shape | Route | Boundary |
+|---|---|---|
+| Topic only, no source file or substantive source text | `topic-research` first, then main pipeline | web/source collection is a pre-pipeline step |
+| Source files or conversation text, deck structure may be rethought | main SVG pipeline | Strategist may split, merge, drop, reorder, and redesign |
+| PPTX as source material, user allows a new story/page structure | `ppt_to_md` + `pptx_intake`, then main SVG pipeline | PPTX identity/geometry are facts and candidates, not replica constraints |
+| Raw PPTX template plus new material/topic | `template-fill-pptx` | clone/fill native slides; no SVG generation |
+| Existing PPTX, preserve page count/order/wording 1:1, improve layout | `beautify-pptx` | regenerate through SVG; content and pagination are locked |
+| Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | `native-enhance-pptx` | direct OOXML patch; no design regeneration |
+| User wants a reusable template package from a PPTX or design reference | `create-template` or `create-brand` | outputs a directory that later triggers Step 3 |
+| User supplies an explicit `templates/.../<id>/` directory with `kind: brand/layout/deck` | main SVG pipeline Step 3 | template segment ownership and fusion rules apply |
+| User asks to tune object-level animation order/effect/timing | `customize-animations` | optional export policy via `animations.json` |
+| User asks to preview, select, annotate, or re-export browser edits | `live-preview` | browser workflow; annotations apply only at defined handoff points |
+
+Ambiguous "optimize this PPT" requests reduce to one discriminator: preserve the original page count/order/wording, or treat the deck as source material and rebuild the story. Preserve means `beautify-pptx`; restructure means the main pipeline.
+
+---
+
 ## Technical Pipeline
 
 **The pipeline: AI generates SVG → post-processing converts to DrawingML (PPTX).**
@@ -77,6 +98,33 @@ The Executor role generates each slide as an SVG file. The output of this stage 
 
 **Stage 3 — Engineering Conversion**
 Post-processing scripts convert SVG to DrawingML. Every shape becomes a real native PowerPoint object — clickable, editable, recolorable — not an embedded image.
+
+---
+
+## Artifact Flow
+
+The workflow is easier to maintain if the artifacts are read as a dataflow rather than as folders that happen to exist:
+
+```text
+sources/<stem>.md ──────────────┐
+analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spec_lock.md
+analysis/image_analysis.csv ────┘
+
+spec_lock.md + images/ + icons/ + templates/
+    └─> Executor -> svg_output/
+              ├─> svg_quality_checker.py
+              ├─> finalize_svg.py -> svg_final/
+              └─> svg_to_pptx.py -> exports/<name>_<ts>.pptx
+                                      backup/<ts>/svg_output/
+
+Direct OOXML routes:
+analysis/<stem>.slide_library.json + source PPTX + fill_plan.json
+    └─> template_fill_pptx.py -> exports/*.pptx
+source PPTX project copy + enhancement plan + notes/audio/timing assets
+    └─> native_enhance_pptx.py -> exports/*.pptx
+```
+
+The critical split is that `svg_output/` is authored state, while `svg_final/`, `exports/`, and `backup/` are derived delivery or archival state. Deleting that distinction makes validation, re-export, and manual repair much harder to reason about.
 
 ---
 
@@ -149,6 +197,25 @@ Two converter design choices still shape the system:
 | `backup/<timestamp>/` | frozen `svg_output/` snapshots written by default export |
 
 The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The production workflow in `SKILL.md` deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
+
+---
+
+## Architecture Invariants
+
+These invariants are stronger than ordinary implementation preferences. If a change violates one, it is probably changing the architecture rather than refactoring it.
+
+| Invariant | Practical consequence |
+|---|---|
+| `sources/<stem>.md` is the main-pipeline content contract | text, tables, and chart values come from Markdown in the main SVG route |
+| `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist; they do not lock page count/order except in workflows that say so |
+| `design_spec.md` explains the design; `spec_lock.md` executes it | Executor reads locked values from `spec_lock.md`, not from prose memory |
+| `spec_lock.md` is re-read before every page | colors, fonts, icons, images, rhythm, layouts, and chart choices stay stable across long decks |
+| `svg_output/` is the only hand-authored SVG directory | quality checks, manual edits, re-export, and `update_spec.py` target authored source |
+| `svg_final/` is derived | it can be regenerated from `svg_output/` and should not become the native export source of truth |
+| Native PPTX export reads `svg_output/` by default | converter preserves icons, `preserveAspectRatio`, rounded rects, and native image crop metadata before finalization rewrites them |
+| Direct OOXML routes do not enter the SVG pipeline | preservation workflows patch native PPTX parts directly |
+| Image facts come from regenerated metadata | `analysis/image_analysis.csv` is re-derived from the live `images/` folder; agents do not inspect image pixels directly |
+| Raw PPTX templates are not Step 3 templates | Step 3 consumes reusable template directories only |
 
 ---
 
@@ -363,6 +430,25 @@ The interesting design choice is the animation **anchor**, not the effect list.
 **Why recorded narration drives auto-advance from clip duration.** When narration is embedded, the deck targets video export — and a video has no presenter to click. Setting per-slide auto-advance timings to the audio clip's actual duration produces a deck PowerPoint exports cleanly to MP4 without manual timing work. Picking any other duration source (estimated reading speed, fixed per-slide) breaks the audio-visual sync.
 
 **Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but PPT Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. For narrated decks, object entrances must be click-free (`after-previous` or `with-previous`).
+
+---
+
+## Maintenance Boundaries: What Not To Collapse
+
+The tempting simplifications below have explicit costs. Treat them as negative contracts unless the surrounding architecture is deliberately redesigned.
+
+| Do not collapse or add | Why |
+|---|---|
+| Do not fuzzy-match template names or style phrases to library paths | Step 3 must be deterministic; wrong template selection is harder to recover from than free design |
+| Do not treat a raw PPTX template as a Step 3 template | raw PPTX template requests expect native slide cloning/filling, not SVG synthesis |
+| Do not merge `template-fill-pptx`, `beautify-pptx`, and `native-enhance-pptx` into one "PPTX optimization" route | their preservation contracts differ: native fill, 1:1 redesign, and direct enhancement are separate operations |
+| Do not script-generate batches of Executor SVG pages | cross-page design judgment depends on sequential main-agent authoring |
+| Do not make `image_analysis.csv` a durable cache | `images/` is a live folder; facts must be regenerated on use |
+| Do not make `svg_final/` the default native PPTX input | `svg_final/` is rewritten for self-contained preview, while native conversion needs high-fidelity `svg_output/` semantics |
+| Do not auto-enable object-level entrance animations | page transitions are default; object builds are an explicit export policy |
+| Do not default visual review, narration, chart verification, or animation customization into every run | these workflows have narrow triggers and extra dependencies |
+| Do not replace `finalize_svg.py` with a file copy | finalization embeds icons/images, flattens special text, and prepares preview artifacts |
+| Do not use `analysis/<stem>.slide_library.json` as a second source of chart values in the main pipeline | Markdown owns content values; intake chart/table entries are structural digests unless a direct-PPTX workflow owns them |
 
 ---
 
