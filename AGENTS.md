@@ -2,6 +2,8 @@
 
 This file is the project entry point for general AI agents.
 
+**Web search**: do NOT append a hardcoded year to search queries. Search engines handle recency natively; adding a year reduces result quality.
+
 **You MUST read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) before any PPT generation task or repo modification.** This repository exists to generate presentations; SKILL.md is the authoritative workflow that owns project creation, role switching, serial execution, quality gates, post-processing, export, and every per-step command. The rest of this file only points to where related material lives — it never substitutes for SKILL.md.
 
 ## Project Overview
