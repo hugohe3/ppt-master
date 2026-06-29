@@ -73,10 +73,10 @@ jobs:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           npm install -g opencode-ai@latest
-          opencode run -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes."
+          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes."
 
       - name: Trigger auto-tag pipeline (manual)
         if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
-        run: gh workflow run auto-tag.yml --ref main
+        run: gh workflow run auto-tag.yml --ref main --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ github.token }}
