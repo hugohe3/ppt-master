@@ -28,6 +28,9 @@ jobs:
       - name: Setup Python
         run: uv python install 3.12 && uv python pin 3.12
 
+      - name: Install ripgrep
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep
+
       - name: Check upstream changes
         id: upstream
         run: |
