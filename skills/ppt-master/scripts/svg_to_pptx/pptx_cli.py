@@ -89,7 +89,7 @@ def main(argv: list[str] | None = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo -s final               # Default: native pptx -> exports/, svg_output -> backup/<ts>/
+    %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
     %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG-rendered snapshot pptx alongside native in exports/
     %(prog)s examples/ppt169_demo --only legacy          # Only SVG image version (skips native)
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
@@ -99,9 +99,10 @@ Examples:
     %(prog)s examples/ppt169_demo -t push --transition-duration 1.0
 
 SVG source directory (-s):
-    output   - svg_output (original version)
-    final    - svg_final (post-processed, recommended)
+    output   - svg_output (hand-authored source; native default)
+    final    - svg_final (post-processed; legacy SVG-image path source)
     <any>    - Specify a subdirectory name directly
+    Omit -s to use the default: native reads svg_output, legacy reads svg_final.
 
 Transition effects (-t/--transition):
     {', '.join(transition_choices)}
@@ -136,7 +137,7 @@ Speaker notes (enabled by default):
     - Use --no-notes to disable
 
 Recorded narration:
-    %(prog)s examples/ppt169_demo -s final --recorded-narration audio
+    %(prog)s examples/ppt169_demo --recorded-narration audio
     - Keeps speaker notes when enabled
     - Prepares PowerPoint recorded timings and narrations
     - Requires one m4a/mp3/wav file per slide
