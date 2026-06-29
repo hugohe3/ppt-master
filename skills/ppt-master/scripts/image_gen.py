@@ -484,7 +484,9 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
       - On any rate-limit error in a batch, halve concurrency (min 1) and
         requeue the rate-limited items.
       - Per-item failures are recorded as `status: Failed` + `last_error`
-        and not retried within this run.
+        and not retried within this run. `Failed` remains retryable and
+        non-terminal; the Step 5 gate must resolve it by rerunning this
+        manifest or marking the item `Needs-Manual`.
       - Status is written back to the manifest file after each completion;
         a Ctrl-C in the middle still preserves done items.
       - `Needs-Manual` items are skipped (user processes them externally).
@@ -563,7 +565,10 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
                         item["status"] = STATUS_FAILED
                         item["last_error"] = str(exc)[:500]
                         fail_count += 1
-                        print(f"  [FAIL] {item['filename']}: {exc}")
+                        print(
+                            f"  [FAIL] {item['filename']}: {exc} "
+                            "(status=Failed; retry or mark Needs-Manual before Executor)"
+                        )
                     save_manifest(manifest_path, manifest)
 
         if rate_limited and current > 1:
@@ -581,6 +586,12 @@ def _run_manifest(manifest: dict, manifest_path: str, backend_module, *,
         f"\n[Manifest] Done: {ok_count} ok / {fail_count} failed "
         f"({skipped} pre-skipped). Manifest written to {manifest_path}"
     )
+    if fail_count:
+        print(
+            "[Manifest] Failed is retryable and non-terminal. "
+            "Resolve failed item(s) by rerunning this manifest or marking them "
+            "Needs-Manual before entering Executor."
+        )
     return ok_count, fail_count, skipped
 
 
