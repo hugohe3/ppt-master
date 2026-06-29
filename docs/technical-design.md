@@ -15,22 +15,25 @@ The generated PPTX is a **design draft**, not a finished product. Think of it li
 ## System Architecture
 
 ```
-User Input (PDF/DOCX/XLSX/URL/Markdown)
+User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ↓
 [Source Content Conversion] → source_to_md/pdf_to_md.py / doc_to_md.py / excel_to_md.py / ppt_to_md.py / web_to_md.py
+    ├── Markdown is the content contract
+    └── PPTX intake writes analysis/<stem>.identity.json, <stem>.slide_library.json, source_profile.json
     ↓
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
-[Template (optional)] — default: skip, proceed with free design
-    User names a template: copy template files into the project
-    Need a new global template: use /create-template workflow separately
+[Template / Brand / Layout (optional)] — default: skip, proceed with free design
+    Trigger only on an explicit template directory path containing design_spec.md kind: brand/layout/deck
+    Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
-[Strategist] - Eight Confirmations & Design Specifications → design_spec.md + spec_lock.md
+[Strategist] - two-tier Eight Confirmations & Design Specifications → design_spec.md + spec_lock.md
     ↓
-[Image Acquisition] (when any row in the resource list needs AI generation or web search)
+[Image Acquisition] (when any resource row needs AI generation, web search, or slicing)
     ↓
 [Executor]
-    ├── Visual construction: generate all SVG pages → svg_output/
+    ├── Live preview starts and stays available during generation
+    ├── Visual construction: generate SVG pages sequentially → svg_output/
     ├── [Quality Check] svg_quality_checker.py (mandatory — must pass with 0 errors)
     └── Notes generation: complete speaker notes → notes/total.md
     ↓
@@ -50,6 +53,14 @@ Output:
     └── svg_output/                            ← Archived Executor SVG source (rerun finalize_svg → svg_to_pptx to rebuild)
 ```
 
+Direct PPTX workflows intentionally bypass this SVG route:
+
+| Workflow | Input role | Output mechanics | Why it is separate |
+|---|---|---|---|
+| `template-fill-pptx` | a native PPTX template deck plus new material | clone selected slides and patch text / tables / charts in OOXML | preserves the user's PowerPoint slide shells instead of converting them into SVG |
+| `native-enhance-pptx` | a finished PPTX whose layout/content should remain stable | patch notes, narration, timings, and transitions directly in OOXML | appends native enhancements without regenerating design |
+| `beautify-pptx` | an existing PPTX whose page count/order/wording must stay 1:1 | extract source facts, regenerate a native deck through the SVG pipeline | changes layout and hierarchy only; it is not direct in-place editing |
+
 ---
 
 ## Technical Pipeline
@@ -59,7 +70,7 @@ Output:
 The full flow breaks into three stages:
 
 **Stage 1 — Content Understanding & Design Planning**
-Source documents (PDF/DOCX/URL/Markdown) are converted to structured text. The Strategist role analyzes the content, plans the slide structure, and confirms the visual style, producing a complete design specification.
+Source documents (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text) are converted into the content and analysis facts the Strategist needs. The Strategist role analyzes the material, reads relevant `analysis/` artifacts, plans the slide structure, and confirms the visual style, producing a complete design specification.
 
 **Stage 2 — AI Visual Generation**
 The Executor role generates each slide as an SVG file. The output of this stage is a **design draft**, not a finished product.
@@ -100,17 +111,44 @@ SVG is also the only format that simultaneously satisfies every role in the pipe
 
 ## Source Content Conversion
 
-Source documents (PDF / DOCX / EPUB / XLSX / PPTX / web pages) are normalized into Markdown before the pipeline starts — this is the source of truth Strategist reads from. Two design choices shape the converters:
+Source documents (PDF / DOCX / EPUB / XLSX / PPTX / web pages) are normalized before Strategist work starts, but there is no single "everything becomes Markdown and nothing else matters" channel anymore. The current design has two fact channels with explicit ownership:
 
-**Native-Python first, external binaries as fallback.** Common formats are handled by pure-Python wheels; pandoc is only invoked for the long tail of niche formats. Forcing every user to install system binaries they may not have permission for is a usability tax that doesn't pay off when 95% of inputs are docx / pdf / html.
+| Channel | Artifact | Owner | Used for |
+|---|---|---|---|
+| Content contract | `sources/<stem>.md` | `source_to_md/*` converters | text, tables, chart values, citations, and source narrative |
+| Structured analysis | `analysis/*.json` / `analysis/*.csv` | intake and analysis tools | PPTX identity, slide geometry, native tables/charts, image dimensions/colors/subjects |
 
-**TLS fingerprint impersonation for high-security sites.** Web fetching impersonates a Chrome TLS fingerprint by default. WeChat Official Accounts and several CDNs block Python's default `requests` handshake outright, and a single dependency that handles them is preferable to maintaining a parallel Node.js fetcher as the primary path.
+For PPTX sources, `project_manager.py import-sources` runs both `ppt_to_md.py` and `pptx_intake.py`. The Markdown remains the content source for the main generation pipeline. The intake bundle writes `<stem>.identity.json`, `<stem>.slide_library.json`, and merges a compact multi-deck index into `analysis/source_profile.json`. Strategist reads the compact index for source facts and opens raw per-deck artifacts only when a workflow needs them. That distinction matters: the main pipeline may rethink page count and story, while `template-fill` and `beautify` promote parts of the same intake facts into stronger constraints.
+
+Converter-generated image assets are also normalized. Companion `<stem>_files/` directories are imported into the project `images/` pool, `image_manifest.json` is merged by filename, and Markdown asset references are rewritten when imported names change. Office vector images (`.emf` / `.wmf`) are first-class runtime assets: they are not rasterized during intake, `finalize_svg.py` leaves them external for the native path, and `svg_to_pptx.py` embeds them as Office vector media so CJK fonts and vector detail are not lost.
+
+Two converter design choices still shape the system:
+
+**Native-Python first, external binaries as fallback.** Common formats are handled by pure-Python wheels; pandoc is only invoked for the long tail of niche formats. Forcing every user to install system binaries they may not have permission for is a usability tax that does not pay off when most inputs are docx / pdf / html / pptx.
+
+**TLS fingerprint impersonation for high-security sites.** Web fetching uses the Python `web_to_md.py` path by default and relies on `curl_cffi` when available for Chrome-like TLS impersonation. WeChat Official Accounts and several CDNs block Python's default handshake outright; keeping this in the Python converter path avoids making a Node fetcher the primary architecture.
 
 ---
 
 ## Project Structure & Lifecycle
 
-The non-obvious bit of the project layout is `import-sources`'s **asymmetric default**: files outside the repo are *copied* in (preserving the user's original), files inside the repo are *moved* in (so intermediate artifacts don't get committed by accident). The asymmetry tracks the natural risk profile — outside-repo files are typically user assets we shouldn't disturb, inside-repo files are typically transient artifacts that should be cleaned up. A single uniform default would get one or the other case wrong every time.
+`project_manager.py init` creates a project as a self-contained workspace, not just an output folder:
+
+| Directory | Role |
+|---|---|
+| `sources/` | archived originals, normalized Markdown, and converter companion files |
+| `analysis/` | machine-extracted facts: PPTX intake bundles and regenerated image analysis |
+| `images/` | single runtime image pool for user, extracted, formula, web, AI, sliced, EMF/WMF assets |
+| `icons/` | project-local icon set copied by `icon_sync.py`, with global library fallback at export |
+| `templates/` | copied template specs / SVG references / non-image template assets |
+| `svg_output/` | the only hand-authored SVG source directory |
+| `svg_final/` | derived, self-contained SVGs for IDE/browser/preview-snapshot workflows |
+| `live_preview/` | preview server state, edit history, and annotation logs |
+| `notes/` | `total.md` and split per-slide speaker notes |
+| `exports/` | timestamped native PPTX deliverables |
+| `backup/<timestamp>/` | frozen `svg_output/` snapshots written by default export |
+
+The CLI still supports three source-import modes: `--move`, `--copy`, and an automatic default that moves repo-local files but copies external files. The production workflow in `SKILL.md` deliberately tightens that: agents must call `import-sources ... --move` so every source artifact and generated intermediate enters `sources/` and the working root stays clean. The script-level default exists for ad hoc CLI safety; the workflow-level contract is stricter so AI runs are reproducible and auditable.
 
 ---
 
@@ -124,27 +162,39 @@ The architectural choice worth flagging: **viewBox is in pixels, not absolute un
 
 ## Template System & Optional Path
 
-Templates are **opt-in, not default**. The default Strategist flow is free design — AI invents the visual system from the source content alone. The template path activates only on explicit user trigger.
+Templates are **opt-in, not default**. The default Strategist flow is free design — AI invents the visual system from the source content alone. The template path activates only on an explicit directory path supplied by the user.
 
 **Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
 
-**No proactive matching.** The AI does not suggest, hint at, or auto-map content to a template. Even when a deck looks like an obvious fit for an existing template, the AI stays silent and proceeds with free design unless the user has named the template. The reason is reliability over discoverability: matching content to templates is a judgment call that drifts as the library evolves, and a wrong "you might want X" pushes the user toward a commitment the AI cannot reliably make. Discoverability is handed to docs (the three `templates/{brands,layouts,decks}/README.md` per-kind indexes) and to the explicit query path ("what templates are available?"), not the runtime prompt.
+**Mechanical trigger, not semantic matching.** A bare name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 only consumes a path that resolves to a directory whose `design_spec.md` declares `kind: brand`, `kind: layout`, or `kind: deck`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+
+The three template kinds own different segments of the design contract:
+
+| Kind | Owns | Typical contents | Effect on Strategist |
+|---|---|---|---|
+| `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
+| `layout` | structure | canvas, page structure, page types, SVG roster | locks structure; identity is confirmed in the Eight Confirmations |
+| `deck` | identity + structure + template overview | full replica-style package | locks the full template grammar, with only content-specific choices left |
+
+When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the middle/template-overview segment. Same-kind conflicts are surfaced as conflicts rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
+
+**Raw PPTX templates are outside Step 3.** A `.pptx` may be source material, and PPTX intake can extract its identity and geometry. But a raw PPTX template plus a request to generate a new PPTX routes to `template-fill`, because the user's expectation is native slide cloning and text/table/chart replacement. The SVG route can consume only a reusable template package; to use a PPTX's design language in the SVG route, the PPTX must first pass through `create-template`, then the resulting template directory path can be supplied to Step 3.
 
 **Layouts are opt-in; charts and icons are not.** The asymmetry isn't an inconsistency — *layout* is what locks visual idiom (the floor/ceiling problem above), while charts and icons are reusable primitives that don't impose deck-wide style. Same `templates/` directory, different role in the visual contract.
 
 ---
 
-## Role System: Three Specialized Agents in a Single Pipeline
+## Role System: Specialized Modes in a Single Pipeline
 
-PPT Master uses **role switching within one main agent** rather than parallel sub-agents. The choice has three connected reasons:
+PPT Master uses **role switching within one main agent** rather than parallel sub-agents. Strategist, Image_Generator, Executor, and workflow-specific modes are instruction scopes loaded on demand; they are not independent agents with their own stale copies of the deck state. The choice has three connected reasons:
 
 **Why one agent, not parallel sub-agents.** Page design depends on the full upstream context — Strategist's color choices, the image resources that actually got acquired (vs failed and substituted), prior pages' visual rhythm. Sub-agents would start with a stale partial snapshot of that context and produce visually drifting decks. The same logic forbids batched page generation (e.g., five pages per turn): batching accelerates context compression and the deck's visual consistency degrades faster than the speed gain is worth.
 
 **Why role-specialized references, not one mega prompt.** Strategist runs in "negotiate with user" mode (open-ended, conversational, willing to back up); Executor runs in "produce strict XML" mode (no improvisation, no missing attributes). Mixing both into one prompt forces the model to hold incompatible discipline in the same turn — every prompt-engineering pathology of mode-mixing shows up. Splitting into per-role files lets each role load only what it needs and discard the rest.
 
-**Eight Confirmations as the only blocking gate.** Strategist ends with eight bundled user confirmations (canvas / page count / audience / style / color / icon / typography / image) presented as one blocking decision point. After confirmation, the pipeline runs to completion without further interrupts. The reason it's bundled and singular: design choices are correlated (color affects icon library affects typography), so resolving them together produces coherent decisions, while spreading confirmations across phases would invite contradictory user inputs and force backtracking.
+**Eight Confirmations as the only blocking gate.** Strategist ends with eight bundled user confirmations (canvas / page count / audience / style / color / icon / typography / image). In the current workflow this is normally delivered through the Confirm UI in two tiers: Tier 1 confirms anchors (canvas, audience, divergence, delivery purpose, mode, visual style); Tier 2 is re-derived from the confirmed anchors and confirms realization choices (page count, palette, typography, icons, formula policy, image usage, AI image path, generation mode, refine-spec). The final `confirm_ui/result.json` is authoritative — if the user changes a field, the generated `design_spec.md` and `spec_lock.md` must use that value, not the AI's original recommendation.
 
-**User-provided image analysis goes through metadata, not pixels.** When the user supplies images, Strategist runs an extractor that summarizes dimensions, EXIF orientation, dominant color, and subject — and reasons over that text. Opening image bytes directly is forbidden because the LLM doesn't need pixels to make layout decisions; it needs facts that fit on a page (aspect ratio for placement, color tone for palette compatibility, subject for slide assignment). Pixel reading would burn context for no decision-quality gain.
+**Image analysis goes through regenerated metadata, not pixels.** When images exist, Strategist and Executor use `analyze_images.py` output (`analysis/image_analysis.csv`) rather than directly opening image files. The CSV is a regenerated view over the live `images/` folder, not a durable cache. Re-running it before image-sensitive decisions is the staleness strategy: user images, extracted images, web images, AI outputs, formulas, and sliced elements all converge into the same measured fact table.
 
 **Per-page spec_lock re-read** is the long-deck anti-drift mechanism — full rationale in § Spec Propagation below.
 
@@ -152,7 +202,9 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 ## Execution Discipline
 
-The pipeline is enforced by an 8-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, and long-deck color/font drift.
+The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+
+Two newer rules are especially important to the architecture. First, Executor page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, routing is deterministic: raw PPTX template requests, beautify requests, native enhancement, custom animation, live preview, and other workflow triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
 The Role Switching Protocol (mandated read of `references/<role>.md` before mode change) serves two reinforcing purposes: forcing fresh role instructions into context overrides drift from the previous mode, and the visible marker in the conversation transcript creates an audit trail so the user can see when the agent moved between modes — critical when reviewing why a particular decision was made.
 
@@ -167,6 +219,8 @@ The Strategist phase produces two artifacts that look redundant but serve differ
 
 Why both? Without `spec_lock.md`, the Executor would re-read `design_spec.md` per page during long decks and the LLM's context-compression drift would gradually mutate colors and fonts mid-deck. `spec_lock.md` is the **anti-drift mechanism** — the SKILL.md mandates `read_file <project>/spec_lock.md` before every page, so values stay verbatim across 20+ slides.
 
+The lock is also the per-page routing table. Beyond global colors and typography, it carries `page_rhythm` (`anchor` / `dense` / `breathing`), `page_layouts` (which layout template SVG, if any, a page should inherit), `page_charts` (which chart template should be adapted), image rows with placement/cropping contracts, and the locked `mode` / `visual_style` references that decide which execution rule files are loaded. Empty entries are meaningful signals: no template, no chart, or no image is often a design decision rather than missing data.
+
 `update_spec.py` propagates a post-generation change in two coordinated steps: write the new value to `spec_lock.md`, then literal-replace it across every `svg_output/*.svg`. The tool's scope is deliberately narrow — only `colors.*` (HEX values, case-insensitive replacement) and `typography.font_family` (attribute-scoped). Other fields (font sizes, icons, images, canvas) are intentionally **not supported** because their replacements would need attribute-scoped or semantic awareness whose risk/benefit doesn't justify bulk propagation. For those, edit `spec_lock.md` and re-author the affected pages.
 
 The tool refuses to back up: it relies on git for revert. Adding a backup mechanism would just duplicate git's job and create stale snapshots.
@@ -175,11 +229,17 @@ The tool refuses to back up: it relies on git for revert. Adding a backup mechan
 
 ## Image Acquisition & Embedding
 
-Two architectural decisions shape this phase:
+Several architectural decisions shape this phase:
 
 **Provider-specific config keys, not a generic `IMAGE_API_KEY`.** Every backend takes its own `OPENAI_API_KEY` / `MINIMAX_API_KEY` / etc. and the active one is selected by an explicit `IMAGE_BACKEND=<name>`. A unified `IMAGE_API_KEY` field looks tidier on first glance but causes silent confusion when a user has multiple providers configured at once and isn't sure which one is active — the kind of fault that surfaces only as "image generation gives weird results" with no clear failure point. Forcing per-provider keys makes "which backend am I using" a config-readable fact, not an inference.
 
 **Permissive-by-default license filter, with strict mode for credit-incompatible layouts.** Web image search defaults to allowing CC BY / CC BY-SA images with inline attribution — most slides have visual room for a credit element. `--strict-no-attribution` is the escape hatch for full-bleed hero images and tight composition where there's no place to put a credit without breaking the design. Non-commercial (CC BY-NC*) and no-derivatives (CC BY-ND*) licenses are auto-rejected because the typical PPT Master output is shared in commercial or modified contexts; a permissive default with that floor is the failure mode users actually want.
+
+**Manifest-first acquisition.** In-pipeline AI generation always writes `images/image_prompts.json` and renders the sidecar `image_prompts.md`, even for one image. The positional `image_gen.py "prompt"` form is intentionally limited to one-off debugging because it leaves no manifest/sidecar audit trail. Web acquisition mirrors this with `images/image_queries.json` for multi-row batches and `image_sources.json` for attribution/source tracking.
+
+**One coherent sheet for related spot illustrations.** When a deck needs three or more same-family small illustrations, the plan uses one AI illustration sheet row plus `slice` rows rather than separate generations. `slice_images.py` cuts the sheet into named transparent elements, those derived files join `images/`, and `analyze_images.py` is rerun so Executor sees their real dimensions. This is a style-cohesion rule as much as a cost rule: one sheet forces the small elements to share a visual hand.
+
+**Terminal status before Executor.** Rows that require acquisition must end in `Generated`, `Sourced`, or `Needs-Manual`; `Pending` and `Failed` are not allowed to leak into Executor. A `Needs-Manual` row can continue through SVG generation only as a known placeholder/dependency, and Step 7 re-checks required files before final export.
 
 **External refs during development, two divergent embedding strategies for delivery.** While editing in `svg_output/`, images are external file references — fast iteration, single-source-of-truth replacement. The two delivery artifacts then diverge: `svg_final/` Base64-inlines (a folder of self-contained SVGs that IDE preview, browser, and the preview pptx can all open without missing the bitmap dependencies); native pptx instead copies bitmaps into the PPTX media folder and uses `<a:srcRect>` to express the cropping. The split exists because Base64 inside DrawingML works but bloats file size 3-4×, while file-referenced bitmaps are PowerPoint's native idiom for which `<a:srcRect>` is the canonical crop expression — wrong tool in either direction would cost editability or file size.
 
@@ -233,9 +293,9 @@ The architectural reasons worth knowing here:
 
 > Why each artifact and module exists in the engineering conversion stage, and which workflows would break if you delete it. Read this before considering any simplification of `svg_final/` / `finalize_svg.py` / `svg_to_pptx.py`.
 
-### Four artifacts, four workflows
+### Five artifacts, five workflows
 
-The post-processing stage produces four artifacts. Each one serves a workflow that nothing else in the pipeline can replace.
+The post-processing stage works with five artifacts. Each one serves a workflow that nothing else in the pipeline can replace.
 
 | Artifact | Workflow it serves | Why nothing else replaces it |
 | --- | --- | --- |
@@ -270,6 +330,18 @@ This is the key insight that's easy to miss when reading the code. The same modu
 
 ---
 
+## Direct OOXML Routes
+
+Not every PPTX-related request should regenerate slides. PPT Master now has direct OOXML routes for cases where the native deck itself is the object being edited.
+
+`template_fill_pptx.py` is a thin CLI wrapper over `scripts/template_fill_pptx/`. Its analyzer extracts a slide library with text slots, tables, charts, and geometry; the fill plan selects source slides, confirms replacements, then the applier clones slides and patches XML parts directly. This route deliberately avoids SVG: a user who supplies a PowerPoint template usually wants those native slide masters, placeholders, tables, and charts to remain PowerPoint-native.
+
+`native_enhance_pptx.py` is the stable entry point for finished-deck enhancement. It delegates to the native narration/timing implementation and patches the PPTX package in place from a project copy: notes, page transitions, recorded narration media, slide timings, and related metadata. The contract is preservation: existing content, layout, and formatting are not regenerated.
+
+These direct routes share some analysis primitives with the main pipeline, especially PPTX intake, but they do not share the SVG authoring or post-processing stages. That separation is intentional: SVG generation is a design synthesis path; direct OOXML editing is a preservation path.
+
+---
+
 ## Native PPTX Conversion Internals
 
 **Why per-element dispatch, not whole-file translation.** SVG's hierarchical model maps cleanly onto DrawingML's group / shape / picture types — there's no need for a holistic optimizer that re-plans the slide. Each shape kind gets its own narrow translator, which keeps each translator simple enough to debug and unit-test in isolation. The output quality of a slide is the sum of independent local conversions; that property is fragile under whole-file translation but robust under element dispatch.
@@ -296,4 +368,22 @@ The interesting design choice is the animation **anchor**, not the effect list.
 
 ## Standalone Workflows
 
-Six capabilities (`create-template`, `verify-charts`, `customize-animations`, `live-preview`, `generate-audio`, `visual-review`) live as standalone workflows rather than pipeline steps. Each is sparsely triggered — per-template, per-chart-deck, per-animation-tuning request, per-complaint, per-video-export, per explicit visual-review request — not per-deck. Folding any into the default pipeline would either run unnecessary steps for the majority of users (added latency and failure surface) or force a one-size-fits-all narrowing of the main flow. Keeping them opt-in lets the deck-generation pipeline stay tight and predictable while making the capability available when its trigger condition fires; each `workflows/<name>.md` is self-contained and loaded on demand, so paying the prompt-context cost is also opt-in.
+Standalone workflows are route definitions, not optional decorations. They exist when a capability has a different contract from the main pipeline or is too sparse to justify loading by default.
+
+| Workflow | Trigger | Contract |
+|---|---|---|
+| `topic-research` | user provides only a topic and no source material | gather web materials before Step 1 |
+| `template-fill-pptx` | raw PPTX template + new material/topic | direct native slide clone/fill; no SVG pipeline |
+| `beautify-pptx` | existing PPTX, preserve page count/order/wording 1:1, improve layout | regenerate through SVG pipeline with source identity/content locked |
+| `create-template` | build a reusable layout/deck template package | output a directory Step 3 can consume later |
+| `create-brand` | extract or define a reusable brand identity | output `templates/brands/<id>/` |
+| `resume-execute` | fresh chat after Phase A; user says to continue a project | enter Phase B without rerunning Strategist |
+| `refine-spec` | user explicitly wants to review/refine the spec before generation | stop after full spec/lock for revision, then resume |
+| `verify-charts` | generated deck contains data charts | calibrate chart geometry before export |
+| `customize-animations` | user asks for object-level animation order/effect/timing | create/validate `animations.json` and re-export policy |
+| `live-preview` | user asks to preview, click/select, apply annotations, or re-export browser edits | start/re-enter browser preview and apply submitted edits only at the defined point |
+| `visual-review` | user explicitly requests per-page visual self-check | rubric pass between Executor and post-processing |
+| `generate-audio` | user asks for narration/video export | produce narration audio and recorded timing export path |
+| `native-enhance-pptx` | finished PPTX should keep existing content/layout while adding native enhancements | direct OOXML patch route |
+
+Keeping these files separate is a dependency-control decision. The main path loads only the roles and references it actually needs; a narration backend, animation sidecar, chart calibration rubric, or template-import contract is pulled into context only when the trigger fires. That keeps the default deck-generation path tight while making the rarer capabilities deterministic rather than improvised.
