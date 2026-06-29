@@ -28,9 +28,24 @@ jobs:
       - name: Setup Python
         run: uv python install 3.12 && uv python pin 3.12
 
+      - name: Check upstream changes
+        id: upstream
+        run: |
+          git remote add upstream https://github.com/hugohe3/ppt-master.git 2>/dev/null || true
+          git fetch upstream main
+          CHANGES=$(git log main..upstream/main --oneline)
+          if [ -z "$CHANGES" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No upstream changes — skipping sync."
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Upstream changes detected:"
+            echo "$CHANGES"
+          fi
+
       # schedule 事件：OpenCode action 自动跳过权限，创建分支+PR
       - name: Run OpenCode Sync (auto)
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' && steps.upstream.outputs.has_changes == 'true'
         uses: anomalyco/opencode/github@v1
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -43,7 +58,7 @@ jobs:
 
       # workflow_dispatch 事件：opencode CLI 非交互模式（自动批准权限）
       - name: Run OpenCode Sync (manual)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
