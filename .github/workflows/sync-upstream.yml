@@ -46,7 +46,7 @@ jobs:
       # schedule 事件：OpenCode action 自动跳过权限，创建分支+PR
       - name: Run OpenCode Sync (auto)
         if: github.event_name == 'schedule' && steps.upstream.outputs.has_changes == 'true'
-        uses: anomalyco/opencode/github@v1
+        uses: anomalyco/opencode/github@latest
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         with:
