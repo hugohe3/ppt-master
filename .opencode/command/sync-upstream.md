@@ -232,17 +232,22 @@ git add pyproject.toml skills/ppt-master/pyproject.toml
 git commit -m "chore: bump version to X.Y.Z"
 ```
 
-**如果在 GitHub Actions 环境中运行（`$env:GITHUB_ACTIONS` 或 `$GITHUB_ACTIONS` 为 true）：**
-- 跳过以下 tag 和 push 步骤
-- OpenCode 基础设施会自动将分支推送并创建 PR
-- PR 合并到 main 后，`auto-tag.yml` 自动读取版本号创建 tag
-- tag 推送后 `publish-pypi.yml` 自动发布到 PyPI
+**如果在 GitHub Actions 环境中运行：**
+
+- **OpenCode Action 路径（schedule 触发）**：跳过 push — action 会自动创建分支和 PR，PR 合并后 `auto-tag.yml` 打 tag → `publish-pypi.yml` 发布
+- **CLI 路径（workflow_dispatch / `opencode run`）**：必须直接 push 到 main 让 `auto-tag.yml` 接管
+
+CLI 路径执行：
+```bash
+git push origin main
+```
+
+> ⚠️ 无论是哪种路径，都不要手动 `git tag`。tag 由 `auto-tag.yml` 统一管理。
 
 **如果本地运行：**
 ```bash
-# 打 tag 并推送
-git tag vX.Y.Z
 git push origin main
+git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
 
