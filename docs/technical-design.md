@@ -65,6 +65,8 @@ Direct PPTX workflows intentionally bypass this SVG route:
 
 ## Route Decision Quick Reference
 
+Executable route selection is authoritative in [`workflows/routing.md`](../skills/ppt-master/workflows/routing.md); this section is a rationale-oriented quick reference, not a second route matrix to maintain.
+
 Use this table before reasoning about implementation details. Most failed runs start with the wrong route, not the wrong command.
 
 | Request shape | Route | Boundary |
@@ -102,6 +104,8 @@ Post-processing scripts convert SVG to DrawingML. Every shape becomes a real nat
 ---
 
 ## Artifact Flow
+
+Artifact source/derived ownership is authoritative in [`artifact-ownership.md`](../skills/ppt-master/references/artifact-ownership.md); this section visualizes the same dataflow for architecture rationale.
 
 The workflow is easier to maintain if the artifacts are read as a dataflow rather than as folders that happen to exist:
 
@@ -202,6 +206,8 @@ The CLI still supports three source-import modes: `--move`, `--copy`, and an aut
 
 ## Architecture Invariants
 
+Executable artifact ownership invariants are authoritative in [`artifact-ownership.md`](../skills/ppt-master/references/artifact-ownership.md); this section explains why those boundaries matter architecturally.
+
 These invariants are stronger than ordinary implementation preferences. If a change violates one, it is probably changing the architecture rather than refactoring it.
 
 | Invariant | Practical consequence |
@@ -270,6 +276,8 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 ## Execution Discipline
 
 The pipeline is enforced by a 10-rule set in [`SKILL.md` § Global Execution Discipline](../skills/ppt-master/SKILL.md) — that file is authoritative; the rules live there. They look bureaucratic but exist because LLMs default to "let me solve the whole problem in this turn", which is exactly the wrong shape for a serial pipeline where each step's output is bounded, checkpointed, and consumed by the next. The rules collectively close failure modes that surfaced repeatedly in practice: out-of-order execution, AI proxying user design decisions, cross-phase bundling, missing prerequisites, speculative pre-work, sub-agent context loss, page-batching drift, long-deck color/font drift, batch/script-generated SVG drift, and routing ambiguity.
+
+Common stop/continue recovery behavior is authoritative in [`failure-recovery.md`](../skills/ppt-master/workflows/failure-recovery.md); this section does not duplicate that matrix.
 
 Two newer rules are especially important to the architecture. First, Executor page SVGs must be hand-authored by the current main agent, one page at a time; writing a Python/Node/shell generator to emit pages is prohibited because the resulting deck loses cross-page judgment and visual continuity. Second, routing is deterministic: raw PPTX template requests, beautify requests, native enhancement, custom animation, live preview, and other workflow triggers are not turned into open-ended user route questions when the repository already defines the boundary.
 
@@ -453,6 +461,8 @@ The tempting simplifications below have explicit costs. Treat them as negative c
 ---
 
 ## Standalone Workflows
+
+The standalone workflow registry is authoritative in [`workflows/index.md`](../skills/ppt-master/workflows/index.md); this section explains why these capabilities stay separate.
 
 Standalone workflows are route definitions, not optional decorations. They exist when a capability has a different contract from the main pipeline or is too sparse to justify loading by default.
 
