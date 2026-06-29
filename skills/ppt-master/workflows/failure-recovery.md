@@ -1,0 +1,69 @@
+---
+description: Failure recovery matrix for PPT Master generation routes
+---
+
+# Failure Recovery Matrix
+
+Central recovery rules for common PPT Master failures. Route-specific workflow files may add narrower handling, but must not weaken these stop/continue decisions.
+
+**Hard rule**: A failed required artifact blocks the next gate. A failed convenience surface falls back to the canonical channel and does not block generation.
+
+---
+
+## 1. Recovery Matrix
+
+| Failure point | Blocking | Automatic recovery | User intervention | Resume entry |
+|---|---:|---|---|---|
+| Confirm UI launch failure | No | Re-check `confirm_ui/result.json` once, then use chat fallback | No | `SKILL.md` Step 4 chat confirmation |
+| Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same tier or chat fallback |
+| Confirm UI Tier 1 completed then interrupted | Yes until Tier 2 is written/confirmed | Read existing Tier 1 `result.json`, write Tier 2 recommendations, then `--wait-only` | Usually no | Step 4 Tier 2 write/wait |
+| Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
+| Formula rendering provider failure | No if fallback succeeds; yes if selected formulas remain missing | Provider fallback chain; otherwise mark affected rows manual only if acceptable | Only if rendered formula files are required and unavailable | Step 4 formula rendering / Step 7 image readiness gate |
+| AI image generation failure | No | Retry once through the confirmed path, then mark row `Needs-Manual` | Only when missing files are required before export | Step 5 / Step 7 image readiness gate |
+| Web image search/download failure | No | Adjust query/source per image-searcher rules, then mark `Needs-Manual` if unresolved | Only if the resource is required and no acceptable substitute exists | Step 5 |
+| Slice sheet missing | Yes for derived slice rows | Wait for parent sheet; run `slice_images.py`; rerun image analysis | Yes when sheet was manual/offline | Step 5 slice handling / Step 7 image readiness gate |
+| Residual `Pending` or `Failed` image row before Executor | Yes | Re-run path or mark `Needs-Manual` | Only if file must be supplied manually | Step 5 terminal-state check |
+| User replaces/adds images after analysis | No | Re-run `analyze_images.py` before reading image facts | No | Step 4/5/6 image-fact read |
+| Live preview fails to start | No | Continue generation; report that preview is unavailable | Only if user requires browser preview | Step 6 or `live-preview` Step 1 |
+| Live preview closed by user | No | Continue generation | No | Restart through `live-preview` only if requested |
+| Browser annotations submitted during generation | No | Defer application until after Step 7 | User asks to apply annotations | `live-preview` Step 2 |
+| `svg_quality_checker.py` error | Yes | Fix the affected SVG, then rerun checker | No unless required asset is missing | Step 6 Visual Construction |
+| `svg_quality_checker.py` warning | No | Fix when straightforward; otherwise acknowledge residual risk | No | Step 6 warning handling |
+| Missing `notes/total.md` | Yes | Generate speaker notes before Step 7 | No | Step 6 Logic Construction |
+| Step 7 image readiness missing manual files | Yes | None for manual assets; list required filenames and prompts | Yes | Step 7 image readiness gate |
+| `total_md_split.py` failure | Yes | Fix notes format/path, rerun only Step 7.1 | Usually no | Step 7.1 |
+| `finalize_svg.py` failure | Yes | Fix SVG/assets, rerun Step 7.2 | Only if source asset is missing | Step 7.2 |
+| `svg_to_pptx.py` failure | Yes | Fix conversion issue, rerun Step 7.3 | Only if required artifact is missing | Step 7.3 |
+| Export succeeds but user wants direct browser edits re-exported | No | Rerun Step 7.2 and Step 7.3 after applied edits | No | Post-export live-preview handling |
+
+---
+
+## 2. Stop/Continue Rules
+
+| Condition | Action |
+|---|---|
+| Required gate artifact missing | Stop at that gate and name the missing artifact. |
+| Optional workflow not explicitly requested | Do not run it as recovery. |
+| Convenience UI/server failure | Fall back to chat or continue without the surface. |
+| Derived artifact stale | Regenerate it from its owning source. |
+| Manual image asset missing at Step 7 | Pause and list exact filenames; resume only after files exist. |
+| Checker/export error | Fix the source artifact, then rerun the failed command and downstream commands only. |
+
+**Forbidden - silent downgrade**: Do not skip a required gate because a downstream command might tolerate the missing file. Fix or pause at the owning gate.
+
+---
+
+## 3. Resume Pointers
+
+| Last good state | Resume from |
+|---|---|
+| Tier 1 confirmation exists, Tier 2 missing | Write Tier 2 recommendations, then `confirm_ui/server.py <project> --wait-only` |
+| `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](./resume-execute.md) |
+| Images acquired but SVGs not started | `SKILL.md` Step 6 |
+| SVGs complete and checker passed, notes missing | Step 6 Logic Construction |
+| SVGs and notes complete | Step 7.1 |
+| Step 7.1 complete, export not complete | Step 7.2 |
+| Step 7.2 complete, PPTX not complete | Step 7.3 |
+| Browser annotations saved after export | [`live-preview`](./live-preview.md) Step 2 |
+
+**Default - resume at the owning failed step**: Do not restart Phase A or regenerate prior artifacts unless the owning source has changed.

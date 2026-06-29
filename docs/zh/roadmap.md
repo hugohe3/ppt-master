@@ -72,6 +72,10 @@
 
 - **网络配图改为「最佳图 + 可复核 + 人工换图」** — web 图来源不再默认静默下载一池候选，而是**默认只下最佳匹配图**，候选池退化成 `--save-candidates` 的显式升级路径（默认 4 张）；每张下载图生成 ≤1024px review 副本（`images/.review/`，放置 / promote 仍全分辨率）。合适性复核做成 **model-agnostic**：多模态模型读 review 副本自查，非多模态则把 `source_page_url` 交人工判断——不假设模型有视觉。新增 `image_search.py --from-url <链接>`：把人找到的任意图片 URL 下载并替换目标（记 `license_tier: manual`、继承页面上下文），作为通用人工换图通道；`--promote` 改为从被选候选重算署名（不沿用旧图 credit）。全程在 Step 5 内、不合适转 `Needs-Manual` + 占位，**不阻塞主流程**。定位上 web 搜索是「兜底取图、不保证质量」，真要高质量靠 AI 生图或自己手动挑图换入
 
+- **Web 配图实体安全门（精确主体不再被「高清错图」赢走）** — 承上条 web 配图：给 web 候选加 `required_terms` 实体门控，挡住「元数据相关但主体错误」的图（一张精修的罗马纪念碑赢下「重庆地标」行）。`required_terms` 各组之间 AND、组内 `A|B` 给别名（跨语言 `Chongqing|重庆`），匹配做小写 / 分隔符归一 / 空白压缩以兼容多词与 CJK 名；命中实体即视作相关信号（零 query 词重叠不再否决，CJK 标题地标可在英文 query 下通过，无 `required_terms` 时旧的否决逻辑照旧）。像素面积从主导分（cap 5000）降级为 tie-breaker（cap 1500）+ 标题命中加权，让实体准确性与相关性压过纯分辨率（避免高清错主体赢）。CLI `--require-terms`（可重复，逗号 / `|`）、批量 `required_terms`、`--from-url` 均继承，记入 `image_sources.json` 备审；门控形同虚设（弱 `required_terms`）会发 warning。定位是与 `.review` 视觉复核配对的**元数据门**，不是视觉分类器
+
+- **原生 PPTX 导出图片媒体大小封顶** — 保持生成 deck 可编辑、不嵌入巨幅源图：新增原生图片尺寸模式——`cap`（默认）只对超大源图限制最大边长，`display` 按渲染 SVG 框尺寸做更激进压缩；原生导出保留完整嵌入像素，SVG/PPT 显示裁剪仍走可编辑的 picture-crop 元数据；`finalize_svg` 保留原有 slice/meet 行为，另加默认按渲染尺寸下采样以产出紧凑 SVG 快照。文档落地 `cap` / `display` 两模式与 `--no-image-optimize` 逃生舱
+
 ---
 
 ## 进行中 / 下一步
