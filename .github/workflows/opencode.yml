@@ -8,6 +8,7 @@ on:
 
 jobs:
   opencode:
+    timeout-minutes: 30
     if: |
       (contains(github.event.comment.body, '/oc ') || contains(github.event.comment.body, '/oc\n') ||
        startsWith(github.event.comment.body, '/oc ') || startsWith(github.event.comment.body, '/oc\n') ||
