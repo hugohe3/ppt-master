@@ -2,6 +2,22 @@
 
 > The interactive, visual surface for SKILL.md Step 4 (the Eight Confirmations). Enumerable fields list **all** options from a catalog with the AI's recommendation badged; generative fields (color, typography, generated-image style) show **≥3** AI candidates (creative recommendations always offer real choice — same rule as the h.5 image strategy; fewer only on the honest-shortfall exception, with a stated reason). Fields whose universe is open (canvas, mode, visual style, icons) also get a **Custom** box; image usage is a multi-select source list plus a free-text `image_notes` box. Fully closed fields (AI source when applicable, formula policy, generation mode, refine spec) do not. The AI writes its recommendation to `recommendations.json`; the user's final choices are written back to `result.json` for the AI to read. On confirm the page saves the result and shuts the server down (auto-close). The chat path is always a valid fallback — if the browser cannot open (remote / headless / web host), the AI presents the same confirmations in chat.
 
+## Authority and Scope
+
+| Concern | Owner |
+|---|---|
+| Step 4 gate and pipeline order | `SKILL.md` |
+| Confirm UI schema | This document |
+| Tier 1 / Tier 2 field membership | This document |
+| Server launch / wait / shutdown behavior | This document |
+| Port and lock behavior | This document |
+| Chat fallback equivalence | This document |
+| Confirmed-value precedence | `SKILL.md` plus this document's `result.json` contract |
+
+**Hard rule**: Keep detailed Confirm UI behavior here. `SKILL.md` may summarize the orchestration, but it should not duplicate the full JSON schema, catalog behavior, or launcher lifecycle.
+
+**Fallback rule**: Browser failure never cancels Step 4. Re-check `result.json` once, then use the chat confirmation path with the same two-tier semantics.
+
 ## `confirm_ui/server.py`
 
 ```bash
