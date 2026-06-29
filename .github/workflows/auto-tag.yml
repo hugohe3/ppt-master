@@ -1,6 +1,7 @@
 name: Verify & Publish
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Check UVX Migration"]
     types: [completed]
@@ -9,7 +10,7 @@ jobs:
   verify-and-publish:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     permissions:
       id-token: write
       contents: write

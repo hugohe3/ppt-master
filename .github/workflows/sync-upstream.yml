@@ -59,11 +59,24 @@ jobs:
             Use `python3` not `python`. Do NOT manually create tags or push to main.
             If no upstream changes, stop immediately.
 
-      # workflow_dispatch 事件：opencode CLI 非交互模式（自动批准权限）
+      # workflow_dispatch 事件：opencode CLI 非交互模式
+      - name: Configure git for push (manual)
+        if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ github.token }}@github.com/elvisw/ppt-master.git"
+
       - name: Run OpenCode Sync (manual)
         if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           npm install -g opencode-ai@latest
-          opencode run -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Stop if no upstream changes."
+          opencode run -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes."
+
+      - name: Trigger auto-tag pipeline (manual)
+        if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
+        run: gh workflow run auto-tag.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
