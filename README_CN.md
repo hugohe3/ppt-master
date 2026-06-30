@@ -30,7 +30,7 @@
   </tr>
   <tr>
     <td width="180"><a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624"><img src="docs/assets/sponsors/youyun.png" alt="优云智算" width="150"></a></td>
-    <td>感谢优云智算赞助了本项目！优云智算是 UCloud 旗下 AI 云平台，一站式提供国内外主流模型的 API 服务，一个 Key 即可调用所有模型。主打高性价比国产模型 CodingPlan 套餐（GLM5.2、Deepseek-v4 等），同时提供官方转发的稳定海外模型通道，满足多场景开发需求。已兼容 Claude Code、Codex 等主流 AI 编程工具及通用 API 调用，支持企业级高并发、7×24 技术支持和自助开票。通过<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">此链接</a>注册，最高可获得 <strong>¥10 免费体验金</strong>，即刻开始使用。</td>
+    <td>感谢优云智算赞助了本项目！优云智算是 UCloud 旗下 AI 云平台，一站式提供国内外主流模型的 API 服务，一个 Key 即可调用所有模型。主打高性价比国产模型 CodingPlan 套餐（GLM5.2、Deepseek-v4 等），同时提供官方转发的稳定海外模型通道，满足多场景开发需求。已兼容 Claude Code、Codex 等主流 AI 编程工具及通用 API 调用，支持企业级高并发、7×24 技术支持和自助开票。通过<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">此链接</a>注册，最高可获得 <strong>¥10 免费体验金</strong>。该项目已制作成 Agent【PPT 制作大师】，无需本地部署即可使用。</td>
   </tr>
 </table>
 
