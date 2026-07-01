@@ -36,6 +36,7 @@ Routing is centralized in `source_to_md/_dispatcher.py` and reused by
 ```bash
 python3 scripts/source_to_md.py paper.pdf
 python3 scripts/source_to_md.py paper.pdf report.docx deck.pptx
+python3 scripts/source_to_md.py ./sources -o ./markdown
 python3 scripts/source_to_md.py ./pdfs/*.pdf
 python3 scripts/source_to_md.py ./decks/*.pptx
 python3 scripts/source_to_md.py report.docx -o report.md
@@ -54,16 +55,12 @@ Useful options:
   existing PDF image mode. They are intentionally PDF-only until other backends
   expose the same behavior natively.
 - Unknown backend-specific flags are passed through to each selected converter.
-- `-o/--output` is valid only with one input. Multiple explicit inputs write
-  one Markdown/profile pair per source.
+- `-o/--output` selects one Markdown file for one input, or an output directory
+  for multiple inputs / directory inputs.
 
 For multi-source project intake, use `project_manager.py import-sources` with
-all source paths / URLs. `source_to_md.py` intentionally rejects directory
-batching; pass explicit files/URLs or use project intake.
-
-Backend converters are single-file tools. For ad hoc multi-file conversion,
-pass explicit files or shell-expanded globs to `source_to_md.py`; for project
-intake, use `project_manager.py import-sources`.
+all source paths / URLs. `source_to_md.py` and the backend converters support
+single files, explicit multi-file inputs, and non-recursive directory inputs.
 
 ## `source_to_md/pdf_to_md.py`
 
@@ -72,6 +69,8 @@ Recommended first choice for native PDFs.
 ```bash
 python3 scripts/source_to_md/pdf_to_md.py book.pdf
 python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
+python3 scripts/source_to_md/pdf_to_md.py book.pdf appendix.pdf
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown
 
 # Image extraction control (default: filtered)
 python3 scripts/source_to_md/pdf_to_md.py book.pdf --images filtered  # size/quality filters applied
@@ -111,6 +110,8 @@ Pandoc fallback (only if you need these):
 ```bash
 python3 scripts/source_to_md/doc_to_md.py lecture.docx
 python3 scripts/source_to_md/doc_to_md.py lecture.docx -o output.md
+python3 scripts/source_to_md/doc_to_md.py lecture.docx notes.html
+python3 scripts/source_to_md/doc_to_md.py ./docs -o ./markdown
 python3 scripts/source_to_md/doc_to_md.py notes.epub
 python3 scripts/source_to_md/doc_to_md.py paper.tex -o paper.md  # uses pandoc
 ```
@@ -144,6 +145,8 @@ Unsupported by default:
 ```bash
 python3 scripts/source_to_md/excel_to_md.py report.xlsx
 python3 scripts/source_to_md/excel_to_md.py report.xlsx -o output.md
+python3 scripts/source_to_md/excel_to_md.py report.xlsx budget.xlsm
+python3 scripts/source_to_md/excel_to_md.py ./workbooks -o ./markdown
 python3 scripts/source_to_md/excel_to_md.py report.xlsm --max-rows 200 --max-cols 40
 ```
 
@@ -175,6 +178,8 @@ Supported formats include:
 ```bash
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx -o output.md
+python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx appendix.pptx
+python3 scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown
 python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 ```
 
@@ -225,6 +230,7 @@ python3 scripts/source_to_md/web_to_md.py https://example.com/article
 python3 scripts/source_to_md/web_to_md.py https://url1.com https://url2.com
 python3 scripts/source_to_md/web_to_md.py -f urls.txt
 python3 scripts/source_to_md/web_to_md.py https://example.com -o output.md
+python3 scripts/source_to_md/web_to_md.py https://example.com --emit-result /tmp/result.json
 ```
 
 When `curl_cffi` is installed (included in `requirements.txt`), this script
@@ -235,6 +241,8 @@ block Python's default TLS fingerprint. No extra flags needed. If
 
 On success, the converter writes `<output>.conversion_profile.json` beside the
 Markdown output.
+`--emit-result` is for wrapper scripts that need the actual saved Markdown path
+when the converter derives a title-based filename.
 
 
 ## `rotate_images.py`

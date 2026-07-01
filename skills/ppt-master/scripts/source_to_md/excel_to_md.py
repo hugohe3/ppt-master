@@ -25,6 +25,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 configure_utf8_stdio()
@@ -351,13 +352,15 @@ def convert_to_markdown(
     return markdown
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Convert Excel workbooks to Markdown",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   python excel_to_md.py report.xlsx
+  python excel_to_md.py report.xlsx budget.xlsm
+  python excel_to_md.py ./workbooks -o ./markdown
   python excel_to_md.py report.xlsx -o output.md
   python excel_to_md.py report.xlsm --max-rows 200 --max-cols 40
 
@@ -368,8 +371,12 @@ Unsupported by default:
   .xls   Resave as .xlsx first
         """,
     )
-    parser.add_argument("input", help="Input Excel workbook")
-    parser.add_argument("-o", "--output", help="Output Markdown file path")
+    parser.add_argument("inputs", nargs="+", help="Input Excel workbook(s) or directories")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output Markdown file for one input, or output directory for multiple inputs/directories",
+    )
     parser.add_argument(
         "--max-rows",
         type=int,
@@ -384,14 +391,20 @@ Unsupported by default:
     )
     args = parser.parse_args()
 
-    result = convert_to_markdown(
-        args.input,
+    return run_path_batch(
+        args.inputs,
+        EXCEL_FORMATS | LEGACY_EXCEL_FORMATS,
         args.output,
-        max_rows=args.max_rows,
-        max_cols=args.max_cols,
+        lambda source, output: bool(
+            convert_to_markdown(
+                str(source),
+                str(output),
+                max_rows=args.max_rows,
+                max_cols=args.max_cols,
+            )
+        ),
     )
-    sys.exit(0 if result else 1)
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

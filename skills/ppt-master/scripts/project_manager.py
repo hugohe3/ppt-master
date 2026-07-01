@@ -612,16 +612,37 @@ class ProjectManager:
             "notes": [],
             "skipped": [],
         }
+
+        expanded_items: list[str] = []
+        for item in source_items:
+            if is_url(item):
+                expanded_items.append(item)
+                continue
+            item_path = Path(item)
+            if item_path.is_dir():
+                directory_files = sorted(
+                    path for path in item_path.iterdir() if path.is_file()
+                )
+                if directory_files:
+                    expanded_items.extend(str(path) for path in directory_files)
+                    summary["notes"].append(
+                        f"{item}: expanded directory into {len(directory_files)} file(s)"
+                    )
+                else:
+                    summary["skipped"].append(f"{item}: directory contains no files")
+                continue
+            expanded_items.append(item)
+
         explicit_markdown_stems = {
             Path(item).stem
-            for item in source_items
+            for item in expanded_items
             if not is_url(item)
             and Path(item).exists()
             and Path(item).is_file()
             and Path(item).suffix.lower() in {".md", ".markdown"}
         }
 
-        for item in source_items:
+        for item in expanded_items:
             if is_url(item):
                 markdown_path = self._ensure_unique_path(
                     sources_dir / f"{derive_url_basename(item)}.md"
@@ -861,7 +882,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Import source files or URLs into a project",
     )
     import_sources.add_argument("project_path", help="Project directory")
-    import_sources.add_argument("sources", nargs="+", help="Source files or URLs")
+    import_sources.add_argument("sources", nargs="+", help="Source files, directories, or URLs")
     mode = import_sources.add_mutually_exclusive_group()
     mode.add_argument("--move", action="store_true", help="Move local source files")
     mode.add_argument("--copy", action="store_true", help="Copy local source files")
