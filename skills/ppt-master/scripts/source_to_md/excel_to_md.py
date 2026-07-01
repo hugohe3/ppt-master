@@ -25,6 +25,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -337,7 +338,17 @@ def convert_to_markdown(
     out_file.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"[INFO] Converting Excel workbook: {input_file.name}")
-    return _convert_excel(input_file, out_file, max_rows=max_rows, max_cols=max_cols)
+    markdown = _convert_excel(input_file, out_file, max_rows=max_rows, max_cols=max_cols)
+    if markdown:
+        profile_path = write_conversion_profile_best_effort(
+            input_path=str(input_file),
+            markdown_path=out_file,
+            converter="excel_to_md.py",
+            conversion_type=suffix.lstrip("."),
+        )
+        if profile_path:
+            print(f"   Wrote conversion profile -> {profile_path}")
+    return markdown
 
 
 def main() -> None:
