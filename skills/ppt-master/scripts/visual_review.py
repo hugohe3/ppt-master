@@ -38,6 +38,10 @@ import urllib.request
 from contextlib import contextmanager
 from pathlib import Path
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 
 # Histogram threshold: PNG counts as "all background" if a single quantized
 # color bucket holds >= ALL_BG_THRESHOLD of pixels. Guards against blank

@@ -16,8 +16,12 @@ import json
 import html
 from pathlib import Path
 from typing import List, Dict, Tuple
-from collections import defaultdict
+from collections import Counter, defaultdict
 from xml.etree import ElementTree as ET
+
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
 
 try:
     from project_utils import CANVAS_FORMATS
@@ -573,6 +577,66 @@ class SVGQualityChecker:
                 f"Detected {len(text_matches)} potentially overly long single-line text(s) (consider using tspan for wrapping)"
             )
 
+        self._check_unmergeable_leading_text(content, result)
+
+    def _check_unmergeable_leading_text(self, content: str, result: Dict) -> None:
+        """Warn when leading text cannot be normalized for paragraph merging."""
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        risky = []
+        for text_el in root.iter(f'{{{SVG_NS}}}text'):
+            if not (text_el.text or "").strip():
+                continue
+            children = list(text_el)
+            if not any(self._is_line_tspan(child) for child in children):
+                continue
+
+            reason = self._leading_text_normalizer_reject_reason(text_el)
+            if reason is not None:
+                risky.append(reason)
+
+        if risky:
+            sample = '; '.join(risky[:3])
+            suffix = '' if len(risky) <= 3 else f"; +{len(risky) - 3} more"
+            result['warnings'].append(
+                "Detected multi-line <text> with leading direct text that cannot "
+                f"be normalized for PPT paragraph merging ({sample}{suffix})"
+            )
+
+    @staticmethod
+    def _is_tspan(elem: ET.Element) -> bool:
+        return elem.tag == f'{{{SVG_NS}}}tspan'
+
+    @classmethod
+    def _is_line_tspan(cls, elem: ET.Element) -> bool:
+        if not cls._is_tspan(elem):
+            return False
+        if elem.get('x') is not None or elem.get('y') is not None:
+            return True
+        dy = elem.get('dy')
+        if dy is None:
+            return False
+        try:
+            return float(re.match(r'^[\s,]*([+-]?(?:\d+\.?\d*|\d*\.\d+))', dy).group(1)) != 0
+        except (AttributeError, ValueError):
+            return True
+
+    @classmethod
+    def _leading_text_normalizer_reject_reason(cls, text_el: ET.Element) -> str | None:
+        if text_el.get('x') is None:
+            return '<text> has no x anchor'
+
+        for child in list(text_el):
+            if not cls._is_tspan(child):
+                return '<text> has non-tspan child'
+            if (child.tail or "").strip():
+                return '<tspan> has non-empty tail text'
+
+        return None
+
     def _check_image_references(self, content: str, svg_path: Path, result: Dict):
         """Check image file existence and resolution vs display size."""
         # Find all <image ...> elements (capture the full tag)
@@ -833,8 +897,10 @@ class SVGQualityChecker:
                      else RAMP_MAX_RATIO)
 
         size_drifts = set()
+        used_sizes = []
         for m in re.finditer(r'font-size\s*=\s*["\']([^"\']+)["\']', content):
             val = self._normalize_size(m.group(1))
+            used_sizes.append(val)
             if not allowed_sizes or val in allowed_sizes:
                 continue
             # Intermediate values are allowed when they sit inside the ramp
@@ -847,6 +913,10 @@ class SVGQualityChecker:
                 except ValueError:
                     pass
             size_drifts.add(val)
+
+        template_size_drift = self._detect_template_size_drift(
+            used_sizes, allowed_sizes, body_px
+        )
 
         # Record in run-wide aggregation
         fname = svg_path.name
@@ -870,6 +940,72 @@ class SVGQualityChecker:
                 f"spec_lock drift: {', '.join(parts)} not in spec_lock.md "
                 "(see drift summary for details)"
             )
+        if template_size_drift:
+            result['warnings'].append(template_size_drift)
+
+    def _detect_template_size_drift(self, used_sizes, allowed_sizes, body_px):
+        """Warn when template-like small sizes bypass the locked type ramp.
+
+        The normal drift check deliberately permits in-ramp feature sizes, so
+        it should not hard-fail valid hero numbers or one-off labels. This
+        warning targets the common executor failure mode: copying a template's
+        compact 12/15/16px text stack instead of mapping content roles to
+        spec_lock typography, then reflowing from those locked px values.
+        """
+        if not allowed_sizes or not body_px or body_px <= 0:
+            return None
+
+        try:
+            declared_min = min(float(v) for v in allowed_sizes)
+        except ValueError:
+            declared_min = None
+
+        # Stay narrow on purpose: real decks carry legitimate undeclared
+        # sub-body sizes (intermediate levels, labels, emphasis) just below the
+        # locked body, so "any size < body" floods the warning and destroys its
+        # credibility. Only flag values that read as genuine template leftovers
+        # — at or below `body * 0.75`, or below the smallest declared slot. This
+        # under-warns (a stray 15/16 against a body of 18 can slip through) in
+        # exchange for not crying wolf on valid intermediate type.
+        template_like_limit = body_px * 0.75
+        template_like_sub_body = []
+        for raw in used_sizes:
+            if raw in allowed_sizes:
+                continue
+            try:
+                size = float(raw)
+            except (TypeError, ValueError):
+                continue
+            below_declared_floor = declared_min is not None and size < declared_min
+            if size <= template_like_limit or below_declared_floor:
+                template_like_sub_body.append(raw)
+
+        if not template_like_sub_body:
+            return None
+
+        counts = Counter(template_like_sub_body)
+        distinct = sorted(counts, key=lambda v: float(v))
+        repeated_total = sum(counts.values())
+
+        below_declared_floor = []
+        if declared_min is not None:
+            below_declared_floor = [v for v in distinct if float(v) < declared_min]
+
+        if len(distinct) < 2 and repeated_total < 4 and not below_declared_floor:
+            return None
+
+        sample = ', '.join(
+            f"{v}x{counts[v]}" if counts[v] > 1 else v
+            for v in distinct[:5]
+        )
+        more = len(distinct) - 5
+        suffix = f" (+{more} more)" if more > 0 else ""
+        return (
+            "possible template font-size drift: undeclared sub-body size(s) "
+            f"{sample}{suffix}. Map each text item to a spec_lock typography "
+            "role first, then reflow card height / y / dy / line-height from "
+            "the locked px values."
+        )
 
     def _find_image_sources_manifest(self, svg_path: Path) -> Path | None:
         """Locate image_sources.json for a project SVG.

@@ -25,9 +25,12 @@ import logging
 import os
 import re
 import signal
+import subprocess
 import sys
 import threading
 import time
+import urllib.error
+import urllib.request
 import webbrowser
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -37,9 +40,10 @@ from flask import Flask, jsonify, request, send_from_directory
 
 logger = logging.getLogger('svg_editor')
 
-# Per-project lock file. Lives at <project_path>/.live_preview.lock and
-# matches the *.lock entry already in the repo .gitignore.
-LOCK_FILE_NAME = '.live_preview.lock'
+# Per-project runtime files live under <project_path>/live_preview/.
+LIVE_PREVIEW_DIR_NAME = 'live_preview'
+LOCK_FILE_NAME = 'lock.json'
+LEGACY_LOCK_FILE_NAME = '.live_preview.lock'
 
 # Local — sys.path injection for sibling module (code-style.md §3)
 _SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -55,6 +59,7 @@ _ROOT_SCRIPTS_DIR = _SCRIPTS_DIR.parent
 if str(_ROOT_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_ROOT_SCRIPTS_DIR))
 
+from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
@@ -62,6 +67,8 @@ from server_common import (  # noqa: E402
     read_lock as _read_lock,
     release_lock as _release_lock,
 )
+
+configure_utf8_stdio()
 
 from annotations import (  # noqa: E402
     assign_temp_ids,
@@ -217,20 +224,29 @@ def _validate_edit_attrs(attrs: dict, existing_attrs: set[str]) -> Optional[str]
     return None
 
 
-_EDIT_LOG_NAME = '.live_edits.jsonl'
+EDIT_LOG_NAME = 'edits.jsonl'
+ANNOTATION_LOG_NAME = 'annotations.jsonl'
+
+
+def _append_live_preview_log(project_path: Path, filename: str, record: dict) -> None:
+    """Append one live-preview history record under ``live_preview/``."""
+    try:
+        log_dir = _runtime_dir(project_path)
+        log_dir.mkdir(parents=True, exist_ok=True)
+        with open(log_dir / filename, 'a', encoding='utf-8') as fh:
+            fh.write(json.dumps(record, ensure_ascii=False) + '\n')
+    except OSError as exc:
+        logger.warning('live preview log append failed: %s', exc)
 
 
 def _append_edit_log(project_path: Path, record: dict) -> None:
-    """Append one applied edit record (old→new) to the project's history.
+    """Append one applied direct-edit record to the preview history."""
+    _append_live_preview_log(project_path, EDIT_LOG_NAME, record)
 
-    The on-disk JSONL is the durable trail the user can review to see exactly
-    what changed. Un-applied staged edits stay in memory only.
-    """
-    try:
-        with open(project_path / _EDIT_LOG_NAME, 'a', encoding='utf-8') as fh:
-            fh.write(json.dumps(record, ensure_ascii=False) + '\n')
-    except OSError as exc:
-        logger.warning('edit log append failed: %s', exc)
+
+def _append_annotation_log(project_path: Path, record: dict) -> None:
+    """Append one annotation lifecycle record to the preview history."""
+    _append_live_preview_log(project_path, ANNOTATION_LOG_NAME, record)
 
 
 def _find_by_id(root: ET.Element, element_id: str) -> Optional[ET.Element]:
@@ -780,6 +796,11 @@ def create_app(
             if not ok:
                 return jsonify({'error': f'Failed to apply edits in {filename}: {reason}'}), 400
 
+            old_annotations = {
+                item['element_id']: item['annotation']
+                for item in parse_annotations(root)
+            }
+
             # Clear all existing annotations from the file before writing current state
             for elem in root.iter():
                 elem.attrib.pop('data-edit-target', None)
@@ -796,6 +817,21 @@ def create_app(
 
             tree.write(str(svg_file), encoding='UTF-8', xml_declaration=True)
             ts = time.time()
+            for element_id, annotation_text in anns.items():
+                old_text = old_annotations.get(element_id)
+                action = 'annotation_saved' if old_text is None else 'annotation_updated'
+                if old_text == annotation_text:
+                    action = 'annotation_saved'
+                _append_annotation_log(project_path, {
+                    'ts': ts, 'file': filename, 'element_id': element_id,
+                    'action': action, 'old': old_text, 'new': annotation_text,
+                })
+            for element_id, old_text in old_annotations.items():
+                if element_id not in anns:
+                    _append_annotation_log(project_path, {
+                        'ts': ts, 'file': filename, 'element_id': element_id,
+                        'action': 'annotation_removed', 'old': old_text, 'new': None,
+                    })
             for edit in edits:
                 for chg in edit.get('changes', []):
                     _append_edit_log(project_path, {
@@ -813,6 +849,53 @@ def create_app(
     return app
 
 
+def _runtime_dir(project_path: Path) -> Path:
+    return project_path / LIVE_PREVIEW_DIR_NAME
+
+
+def _lock_file(project_path: Path) -> Path:
+    return _runtime_dir(project_path) / LOCK_FILE_NAME
+
+
+def _legacy_live_lock(project_path: Path) -> Optional[dict]:
+    """Return a live legacy root lock, if one exists."""
+    legacy_lock = project_path / LEGACY_LOCK_FILE_NAME
+    existing = _read_lock(legacy_lock)
+    if existing and _process_alive(int(existing.get('pid', 0))):
+        return existing
+    return None
+
+
+def _wait_for_ready(url: str, proc: subprocess.Popen, timeout: int = 15) -> bool:
+    """Wait until the server responds or the child exits."""
+    deadline = time.time() + timeout
+    health_url = f'{url}/api/config'
+    while time.time() < deadline:
+        if proc.poll() is not None:
+            return False
+        try:
+            with urllib.request.urlopen(health_url, timeout=1) as response:
+                if response.status == 200:
+                    return True
+        except (urllib.error.URLError, TimeoutError, OSError):
+            time.sleep(0.25)
+    return False
+
+
+def _open_browser(url: str) -> bool:
+    """Best-effort browser launch after the local server is reachable."""
+    try:
+        if os.name == 'nt':
+            os.startfile(url)  # type: ignore[attr-defined]
+            return True
+        return bool(webbrowser.open(url))
+    except OSError as exc:
+        logger.warning('browser auto-open failed: %s', exc)
+    except webbrowser.Error as exc:
+        logger.warning('browser auto-open failed: %s', exc)
+    return False
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description='PPT Master SVG Editor',
@@ -821,6 +904,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
     parser.add_argument('--port', type=int, default=5050, help='Port to listen on (default: 5050)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
+    parser.add_argument(
+        '--daemon',
+        action='store_true',
+        help='Start the server in the background and return after it is reachable',
+    )
     parser.add_argument(
         '--live',
         action='store_true',
@@ -857,6 +945,84 @@ def main(argv: Optional[list[str]] = None) -> int:
         logger.error('%s is not a directory', svg_output)
         return 1
 
+    legacy_existing = _legacy_live_lock(project_path)
+    if legacy_existing:
+        existing_pid = legacy_existing.get('pid', '?')
+        existing_port = legacy_existing.get('port', '?')
+        logger.error(
+            'live preview is already running for this project via legacy lock '
+            '(pid=%s, port=%s). Open http://localhost:%s, click '
+            'Exit preview in the browser, or stop pid %s',
+            existing_pid, existing_port, existing_port, existing_pid,
+        )
+        return 1
+
+    runtime_dir = _runtime_dir(project_path)
+    lock_file = _lock_file(project_path)
+
+    if args.daemon:
+        existing = _read_lock(lock_file)
+        if existing and _process_alive(int(existing.get('pid', 0))):
+            existing_pid = existing.get('pid', '?')
+            existing_port = existing.get('port', '?')
+            logger.error(
+                'live preview is already running for this project '
+                '(pid=%s, port=%s). Open http://localhost:%s',
+                existing_pid, existing_port, existing_port,
+            )
+            return 1
+
+        try:
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            logger.error('cannot create live preview runtime directory: %s (%s)', runtime_dir, exc)
+            return 1
+        log_path = runtime_dir / 'server.log'
+        port = _find_free_port(args.port)
+        idle_timeout = args.timeout
+        if idle_timeout is None:
+            idle_timeout = 7200 if args.live else 900
+        cmd = [
+            sys.executable,
+            str(Path(__file__).resolve()),
+            str(project_path),
+            '--port',
+            str(port),
+            '--timeout',
+            str(idle_timeout),
+            '--no-browser',
+        ]
+        if args.live:
+            cmd.append('--live')
+        creationflags = 0
+        popen_kwargs = {}
+        if os.name == 'nt':
+            creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+        else:
+            popen_kwargs['start_new_session'] = True
+        try:
+            with log_path.open('a', encoding='utf-8') as log:
+                proc = subprocess.Popen(
+                    cmd,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    stdin=subprocess.DEVNULL,
+                    creationflags=creationflags,
+                    **popen_kwargs,
+                )
+        except OSError as exc:
+            logger.error('cannot write live preview log: %s (%s)', log_path, exc)
+            return 1
+        url = f'http://localhost:{port}'
+        if not _wait_for_ready(url, proc):
+            logger.error('live preview failed to become reachable: %s (log: %s)', url, log_path)
+            return 1
+        logger.info('started live preview in background: %s (pid=%s)', url, proc.pid)
+        logger.info('log: %s', log_path)
+        if not args.no_browser and not _open_browser(url):
+            logger.info('browser did not auto-open; open %s manually', url)
+        return 0
+
     # Pick a free port: another project's preview/confirm server may already
     # hold the default, so bind the next free one instead of crashing — each
     # project then serves its own data on its own port (no cross-project mix-up).
@@ -866,7 +1032,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     # --live mode (which used to disable idle timeout entirely) combined with
     # silent restarts; refusing duplicate launches catches the accumulation
     # at its source. Stale locks (dead pid) are overwritten by _claim_lock.
-    lock_file = project_path / LOCK_FILE_NAME
+    try:
+        runtime_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        logger.error('cannot create live preview runtime directory: %s (%s)', runtime_dir, exc)
+        return 1
     existing = _claim_lock(lock_file, port)
     if existing:
         existing_pid = existing.get('pid', '?')
@@ -911,7 +1081,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     url = f'http://localhost:{port}'
     if not args.no_browser:
-        webbrowser.open(url)
+        _open_browser(url)
 
     mode = "live preview (auto-startup)" if args.live else "live preview"
     svg_count = len(list(svg_output.glob('*.svg')))

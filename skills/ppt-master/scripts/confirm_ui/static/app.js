@@ -16,6 +16,8 @@
             loading: "Loading…",
             load_error: "Could not load recommendations.json. The AI must write it before launch.",
             btn_confirm: "Confirm",
+            btn_next: "Next →",
+            deriving: "Generating the downstream options from your choices…",
             already_confirmed: "Already confirmed once. Re-submitting overwrites the previous choices.",
             confirmed_title: "✓ Confirmed",
             confirmed_hint: "Your choices are saved. You can close this page and return to the chat.",
@@ -55,8 +57,8 @@
             font_body_size: "Body baseline size",
             font_body_size_hint: "All type sizes derive from this body baseline.",
             body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
-            body_size_hint_pt: "PPT body is confirmed in pt — this purpose suggests ~{lo}–{hi}pt (default {def}pt). Saved as px after confirmation.",
-            body_size_hint_oor: "(Current value is outside this range — it is not auto-converted across canvases; check it fits.)",
+            body_size_hint_purpose: "This delivery purpose recommends {def}px — one fixed size, not a range.",
+            body_size_hint_oor: "(Current value is outside the usual range for this canvas — check the unit is right and that it fits.)",
             delivery_purpose: "Delivery purpose",
             delivery_purpose_hint: "Read-close decks can run smaller; projected decks need larger type.",
             size_override: "Per-role size override:",
@@ -94,6 +96,8 @@
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
+            btn_next: "下一步 →",
+            deriving: "正在据你的选择生成下游选项…",
             already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
@@ -133,8 +137,8 @@
             font_body_size: "正文基准字号",
             font_body_size_hint: "所有字号按这个正文基准推导。",
             body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
-            body_size_hint_pt: "PPT 正文确认时用 pt — 该交付目的建议 ~{lo}–{hi}pt（默认 {def}pt），确认后保存为 px。",
-            body_size_hint_oor: "（当前数值不在此区间——换画布不会自动换算，请确认是否合适。）",
+            body_size_hint_purpose: "该交付目的推荐 {def}px（单一固定值，非区间）。",
+            body_size_hint_oor: "（当前数值超出该画布的常用范围——请确认单位无误、是否合适。）",
             delivery_purpose: "交付目的",
             delivery_purpose_hint: "近读型可以小一点；投影型需要更大的字。",
             size_override: "逐角色字号覆盖：",
@@ -247,10 +251,15 @@
         return node;
     }
 
+    // Section numbers run 1..N within the tier currently rendered; the counter is
+    // reset at the top of renderForTier. The legacy `num` arg is ignored so each
+    // tier numbers its own sections cleanly (tier 2 is not a continuation of 1).
+    var _secCounter = 0;
     function section(num, titleKey, noteText) {
+        _secCounter += 1;
         var sec = el("div", "section");
         var head = el("div", "section-head");
-        head.appendChild(el("span", "section-num", String(num)));
+        head.appendChild(el("span", "section-num", String(_secCounter)));
         head.appendChild(el("span", "section-title", t(titleKey)));
         if (noteText) head.appendChild(el("span", "section-note", noteText));
         sec.appendChild(head);
@@ -547,6 +556,20 @@
         textField(subDiv, function () { return STATE.content_divergence; },
             function (v) { STATE.content_divergence = v; }, "placeholder_divergence", false);
         sec.appendChild(subDiv);
+        // Delivery purpose (PPT only) lives in the §c key-information confirmation,
+        // beside audience — it is part of "who / how this deck is consumed". It is a
+        // Tier-1 anchor: its value sets the body size (one fixed value per purpose), page
+        // density, and the re-derived Tier-2 page-count recommendation. Non-PPT
+        // canvases scale the body by canvas height instead, so the axis does not apply.
+        if (isPptCanvas(STATE.canvas)) {
+            var purposeField = el("div", "subfield");
+            purposeField.appendChild(el("div", "subfield-label", t("delivery_purpose")));
+            enumField(purposeField, CAT.delivery_purpose,
+                recOrFirst("delivery_purpose", CAT.delivery_purpose),
+                function () { return STATE.delivery_purpose; },
+                function (v) { STATE.delivery_purpose = v; });
+            sec.appendChild(purposeField);
+        }
         host.appendChild(sec);
     }
 
@@ -593,11 +616,16 @@
 
     // Per-role size slots the user can edit directly (parallel to color roles).
     // Defaults derive from `body` via mid-band ramp ratios (strategist.md §g);
-    // values follow body's unit (pt on PPT canvases, px otherwise).
+    // values are px (the system's only unit).
     var SIZE_ROLES = ["title", "subtitle", "annotation"];
     var SIZE_RATIO = { title: 1.75, subtitle: 1.35, annotation: 0.78 };
     function deriveSize(role, bodyVal) {
-        return Math.round((bodyVal || 0) * (SIZE_RATIO[role] || 1));
+        var raw = (bodyVal || 0) * (SIZE_RATIO[role] || 1);
+        // All px. On PPT, snap the recommended role size to a clean even number so
+        // the user sees conventional sizes (body 24 → title 42, subtitle 32), not
+        // ratio leftovers. Non-PPT keeps a plain integer — large px, snapping moot.
+        if (isPptCanvas(STATE.canvas)) return Math.round(raw / 2) * 2;
+        return Math.round(raw);
     }
 
     // Canvas height (viewBox user units) parsed from a catalog `dim` like
@@ -620,8 +648,8 @@
         return isPpt ? { lo: 0.031, hi: 0.047 } : { lo: 0.025, hi: 0.033 };
     }
 
-    // PPT canvases (16:9 / 4:3) carry the pt design language + pt→px conversion;
-    // social / print canvases have no PowerPoint pt semantics and stay in px.
+    // PPT canvases (16:9 / 4:3) take the fixed per-delivery-purpose body px;
+    // social / print canvases scale the body px by canvas height instead.
     function isPptCanvas(canvasVal) {
         var dim = null;
         (CAT.canvas || []).forEach(function (o) { if (o.id === canvasVal) dim = o.dim; });
@@ -632,16 +660,18 @@
             /1024\s*[×xX*]\s*768/.test(raw);
     }
 
-    // PPT confirmation pt band + default per delivery purpose (see strategist.md §g).
-    // The confirmed pt is converted to px (×4/3) before any spec is written.
-    function deliveryPtBand(purposeId) {
-        if (purposeId === "text") return { lo: 14, hi: 18, def: 16 };
-        if (purposeId === "presentation") return { lo: 22, hi: 28, def: 24 };
-        return { lo: 18, hi: 22, def: 20 }; // balanced — the default
+    // Body baseline in **px** per delivery purpose (see strategist.md §g). The
+    // system is px-only — these are the SVG/execution px values, recalibrated for
+    // the 1280×720 PPT canvas. No pt layer, no conversion. `def` is the fixed
+    // recommendation; lo/hi are a sanity envelope for the out-of-range flag only.
+    function deliveryBodyPx(purposeId) {
+        if (purposeId === "text") return { lo: 18, hi: 21, def: 20 };
+        if (purposeId === "presentation") return { lo: 28, hi: 32, def: 32 };
+        return { lo: 22, hi: 25, def: 24 }; // balanced — the default
     }
 
     function defaultBodySizeForCanvas(canvasVal, purposeId) {
-        if (isPptCanvas(canvasVal)) return deliveryPtBand(purposeId).def;
+        if (isPptCanvas(canvasVal)) return deliveryBodyPx(purposeId).def;
         var h = canvasHeight(canvasVal);
         if (!h) return 40;
         var band = bodySizeRatioBand(canvasVal);
@@ -652,54 +682,28 @@
         return Math.round(value * 100) / 100;
     }
 
-    function ptToPx(value) {
-        return roundSize(value * 4 / 3);
-    }
-
     function normalizeTypographyForSubmit(payload) {
         if (!payload.typography || typeof payload.typography !== "object") return;
         var typ = payload.typography;
-        var ppt = isPptCanvas(payload.canvas);
         var body = parseFloat(typ.body_size);
         if (!isFinite(body)) {
             // Cleared / invalid body field — fall back so role sizes never submit
-            // against an empty anchor, and (on PPT) so the pt→px branch still runs
-            // instead of leaking pt-valued role sizes through as px.
+            // against an empty anchor.
             body = defaultBodySizeForCanvas(payload.canvas, payload.delivery_purpose);
-            typ.body_size = body;
         }
-        if (ppt && isFinite(body)) {
-            typ.body_size_pt = roundSize(body);
-            typ.body_size = ptToPx(body);
-            typ.body_size_unit = "px";
-            typ.body_size_source_unit = "pt";
-            if (typ.sizes && typeof typ.sizes === "object") {
-                var sizesPt = {};
-                var sizesPx = {};
-                Object.keys(typ.sizes).forEach(function (role) {
-                    var raw = parseFloat(typ.sizes[role]);
-                    if (!isFinite(raw)) return;
-                    sizesPt[role] = roundSize(raw);
-                    sizesPx[role] = ptToPx(raw);
-                });
-                typ.sizes_pt = sizesPt;
-                typ.sizes = sizesPx;
-            }
-            return;
-        }
-        if (isFinite(body)) {
-            typ.body_size = roundSize(body);
-            typ.body_size_unit = "px";
-        }
+        // px is the only unit — round and submit as-is. No pt conversion, no
+        // body_size_pt / sizes_pt provenance (the system never carries pt).
+        typ.body_size = roundSize(body);
+        typ.body_size_unit = "px";
         if (typ.sizes && typeof typ.sizes === "object") {
             Object.keys(typ.sizes).forEach(function (role) {
                 var raw = parseFloat(typ.sizes[role]);
                 if (isFinite(raw)) typ.sizes[role] = roundSize(raw);
             });
         }
-        delete typ.body_size_pt;
-        delete typ.sizes_pt;
-        delete payload.delivery_purpose;
+        // delivery_purpose is PPT-only; drop it on non-PPT canvases where it has
+        // no meaning and was never shown.
+        if (!isPptCanvas(payload.canvas)) delete payload.delivery_purpose;
     }
 
     function renderColor(host) {
@@ -903,7 +907,7 @@
             top.appendChild(el("span", "font-card-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
             var meta = t("font_heading") + " " + t("cjk") + ":" + (head.cjk || "—") + " / " + t("latin") + ":" + (head.latin || "—")
                 + "  ·  " + t("font_body") + " " + t("cjk") + ":" + (body.cjk || "—") + " / " + t("latin") + ":" + (body.latin || "—");
-            if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + (isPptCanvas(STATE.canvas) ? "pt" : "px");
+            if (c.body_size) meta += "  ·  " + t("font_body_size") + ":" + c.body_size + "px";
             top.appendChild(el("span", "font-card-meta", meta));
             card.appendChild(top);
             var hbox = el("div", "font-sample-heading-box"); fontSample(hbox, head, head.css); card.appendChild(hbox);
@@ -946,16 +950,16 @@
         var sizeHint = el("div", "toggle-desc");
         sizeRow.appendChild(sizeHint);
         // Hint only — the user's value is never overwritten; downstream §g
-        // re-derives if ignored. PPT canvases speak pt (range by delivery
-        // purpose); non-PPT canvases speak px (≈% of canvas height).
+        // re-derives if ignored. PPT body is one fixed px value per delivery
+        // purpose (not a range); non-PPT canvases scale px to canvas height.
+        // Everything is px — lo/hi are only a sanity envelope for the OOR flag.
         refreshBodySizeHint = function () {
             var txt = t("font_body_size_hint");
             var lo, hi;
             if (isPptCanvas(STATE.canvas)) {
-                var pb = deliveryPtBand(STATE.delivery_purpose);
+                var pb = deliveryBodyPx(STATE.delivery_purpose);
                 lo = pb.lo; hi = pb.hi;
-                txt += " " + t("body_size_hint_pt")
-                    .replace("{lo}", pb.lo).replace("{hi}", pb.hi).replace("{def}", pb.def);
+                txt += " " + t("body_size_hint_purpose").replace("{def}", pb.def);
             } else {
                 var h = canvasHeight(STATE.canvas);
                 var band = bodySizeRatioBand(STATE.canvas);
@@ -965,9 +969,9 @@
                         .replace("{lo}", lo).replace("{hi}", hi);
                 }
             }
-            // Flag (hint only — never auto-corrected) a value outside the range,
-            // e.g. a pt number kept after switching to a px canvas, so a cross-unit
-            // switch is visible instead of silently submitting a mis-unit size.
+            // Flag (hint only — never auto-corrected) a value far outside the
+            // canvas's usual px range, so an accidental extreme value is visible
+            // instead of silently submitting it.
             var cur = parseFloat(STATE.typography && STATE.typography.body_size);
             if (isFinite(cur) && isFinite(lo) && isFinite(hi) && (cur < lo || cur > hi)) {
                 txt += " " + t("body_size_hint_oor");
@@ -977,30 +981,15 @@
         refreshBodySizeHint();
         sizeField.appendChild(sizeRow);
 
-        // Delivery purpose (PPT only) — informs the recommended pt baseline and the
-        // suggested-range hint. Picking it updates the hint + strategy signal only;
-        // it does not rewrite the body field (inputs are independent, no cascade).
-        if (isPptCanvas(STATE.canvas)) {
-            var purposeField = el("div", "subfield");
-            purposeField.appendChild(el("div", "subfield-label", t("delivery_purpose")));
-            enumField(purposeField, CAT.delivery_purpose,
-                recOrFirst("delivery_purpose", CAT.delivery_purpose),
-                function () { return STATE.delivery_purpose; },
-                function (v) {
-                    STATE.delivery_purpose = v;
-                    // Purpose only updates the suggested-range hint and the strategy
-                    // signal it carries to result.json — it never rewrites the body
-                    // size the user sees (no input interlinking).
-                    refreshBodySizeHint();
-                    refreshStylePreview();
-                });
-            sec.appendChild(purposeField);
-        }
+        // Delivery purpose is a Tier-1 anchor confirmed inside renderAudience (§c) —
+        // it is set before this Tier-2 section exists, so its value drives the
+        // body-size hint here via STATE.delivery_purpose (preserved across the
+        // single-session transition). The control itself no longer lives here.
         sec.appendChild(sizeField);
 
         // Per-role size override (parallel to color's per-role HEX override): the
         // ramp derives title / subtitle / annotation from body, but the user may
-        // set each explicitly. Values follow body's unit (pt on PPT, px else).
+        // set each explicitly. Values are px (the system's only unit).
         var sizeOverride = el("div", "hex-override");
         sizeOverride.appendChild(el("div", "subfield-label", t("size_override")));
         var srow = el("div", "hex-row");
@@ -1032,7 +1021,7 @@
             if (!STATE.typography) STATE.typography = { name: "", heading: {}, body: {} };
             if (!STATE.typography.sizes) STATE.typography.sizes = {};
             var bodyVal = parseFloat(STATE.typography.body_size) ||
-                (isPptCanvas(STATE.canvas) ? deliveryPtBand(STATE.delivery_purpose).def : 40);
+                (isPptCanvas(STATE.canvas) ? deliveryBodyPx(STATE.delivery_purpose).def : 40);
             SIZE_ROLES.forEach(function (role) {
                 var cur = STATE.typography.sizes[role];
                 var hasVal = cur !== undefined && cur !== null && cur !== "";
@@ -1108,10 +1097,9 @@
             var acc = hexOr(pal.accent, pri);
             var sacc = hexOr(pal.secondary_accent, acc);
             var txt = hexOr(pal.body_text, "#1d2430");
-            // body_size is pt on PPT canvases (×4/3 → px) and px elsewhere.
-            var rawSize = parseFloat(typ.body_size) || (isPptCanvas(STATE.canvas) ? 20 : 18);
-            var bodyPx = Math.max(12, Math.min(34,
-                isPptCanvas(STATE.canvas) ? rawSize * 4 / 3 : rawSize));
+            // body_size is px everywhere — preview it directly, no conversion.
+            var rawSize = parseFloat(typ.body_size) || (isPptCanvas(STATE.canvas) ? 24 : 18);
+            var bodyPx = Math.max(12, Math.min(34, rawSize));
             var headStack = previewFontStack(head.cjk, head.css);
             var headLatStack = previewFontStack(head.latin, head.css);
             var bodyStack = previewFontStack(body.cjk, body.css);
@@ -1242,31 +1230,58 @@
         host.appendChild(sec);
     }
 
-    function renderAll() {
+    // Stage of the two-tier confirm flow: 1 = anchors, 2 = re-derived realization,
+    // "all" = legacy single-pass (recommendations.json carried no `tier`).
+    var STAGE = 1;
+
+    function renderForTier(tier) {
         var host = document.getElementById("sections");
         host.innerHTML = "";
-        // Detach the previous preview's repaint closure before the sections
-        // re-render: color/typography auto-select would otherwise call it and
-        // write to now-detached nodes until renderStylePreview remounts it.
+        _secCounter = 0;
+        // Detach the previous preview's repaint closures before the sections
+        // re-render: color/typography auto-select would otherwise call them and
+        // write to now-detached nodes until renderStylePreview remounts them.
         refreshStylePreview = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
-        renderCanvas(host);
-        renderPages(host);
-        renderAudience(host);
-        renderStyle(host);
-        // Group the preview with the three sections it reflects so its sticky
-        // scope ends when typography scrolls past — it does not linger over the
-        // image / mode / refine sections below.
-        var styleGroup = el("div", "style-group");
-        renderStylePreview(styleGroup);
-        renderColor(styleGroup);
-        renderIcons(styleGroup);
-        renderTypography(styleGroup);
-        host.appendChild(styleGroup);
-        renderImages(host);
-        renderMode(host);
-        renderRefine(host);
+        if (tier === 1) {
+            // Anchors — decided first; Tier 2 is re-derived from these.
+            // Delivery purpose rides inside renderAudience (§c key info).
+            renderCanvas(host);
+            renderAudience(host);
+            renderStyle(host);
+        } else {
+            // Tier 2 (realization) or single-pass: page count + visual treatment.
+            // Single-pass also shows the anchors up front on the same page.
+            if (tier === "all") {
+                renderCanvas(host);
+                renderAudience(host);
+                renderStyle(host);
+            }
+            renderPages(host);
+            // Group the preview with the three sections it reflects so its sticky
+            // scope ends when typography scrolls past — it does not linger over the
+            // image / mode / refine sections below.
+            var styleGroup = el("div", "style-group");
+            renderStylePreview(styleGroup);
+            renderColor(styleGroup);
+            renderIcons(styleGroup);
+            renderTypography(styleGroup);
+            host.appendChild(styleGroup);
+            renderImages(host);
+            renderMode(host);
+            renderRefine(host);
+        }
+        updateActionBar(tier);
+    }
+
+    function renderAll() { renderForTier(STAGE); }
+
+    function updateActionBar(tier) {
+        var btn = document.getElementById("btn-confirm");
+        btn.disabled = false;
+        // Tier 1 advances to the re-derived Tier 2; Tier 2 / single-pass confirm.
+        btn.textContent = (tier === 1) ? t("btn_next") : t("btn_confirm");
     }
 
     // ---- state init (once) ----------------------------------------------
@@ -1279,13 +1294,23 @@
         return recOrFirst(field, catList);
     }
 
-    function initState() {
+    function initTier1State() {
         STATE.canvas = pick("canvas", CAT.canvas);
-        STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : "";
         STATE.audience = (REC.audience && REC.audience.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
+        // Delivery purpose drives the PPT body px baseline; default balanced
+        // (not the catalog-first id) when the Strategist did not recommend one.
+        STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
+    }
+
+    // Tier-2 fields are (re-)read from the recommendations. At boot they come from
+    // whatever recommendations.json carried; after a tier-1 confirm enterTier2()
+    // calls this again with the re-derived candidates. Tier-1 STATE is preserved
+    // across the single-session transition — this never resets the anchors.
+    function initTier2State() {
+        STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
 
         var cc = (REC.color && REC.color.candidates) || [];
         var csel = (REC.color && REC.color.selected) || 0;
@@ -1311,15 +1336,17 @@
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
         STATE.refine_spec = !!((REC.refine_spec && REC.refine_spec.value) || (REC.recommend && REC.recommend.refine_spec));
-        // Delivery purpose drives the PPT confirmation pt baseline; default balanced
-        // (not the catalog-first id) when the Strategist did not recommend one.
-        STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
         // Guarantee a body baseline even when a candidate omitted body_size, on
-        // any canvas (PPT → pt default by purpose, non-PPT → px from canvas height),
+        // any canvas (PPT → px default by purpose, non-PPT → px from canvas height),
         // so role sizes never derive from an empty anchor.
         if (STATE.typography && !STATE.typography.body_size) {
             STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
         }
+    }
+
+    function initState() {
+        initTier1State();
+        initTier2State();
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -1330,10 +1357,78 @@
         ov.style.display = "flex";
     }
 
+    // ---- tier-1 submit + re-derive transition ---------------------------
+    function submitTier1() {
+        var btn = document.getElementById("btn-confirm");
+        // Anchors only — the page stays open; the AI re-derives Tier 2 and the
+        // same browser session renders it (STATE is preserved across the poll).
+        var payload = {
+            stage: "tier1",
+            canvas: STATE.canvas,
+            audience: STATE.audience,
+            content_divergence: STATE.content_divergence,
+            mode: STATE.mode,
+            visual_style: STATE.visual_style
+        };
+        // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
+        // On a non-PPT canvas the control is never shown, so STATE holds an unseen
+        // default — do NOT write it as a confirmed anchor, or it would steer the
+        // Tier-2 page-count / density re-derivation behind the user's back. (The
+        // final submit drops it for non-PPT the same way, via normalizeTypographyForSubmit.)
+        if (isPptCanvas(STATE.canvas)) {
+            payload.delivery_purpose = STATE.delivery_purpose;
+        }
+        btn.disabled = true;
+        fetch("/api/confirm", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(function (r) {
+            if (!r.ok) throw new Error("tier1 failed");
+            showDeriving();
+            pollForTier2();
+        }).catch(function () {
+            btn.disabled = false;
+            document.getElementById("confirm-status").textContent = t("error_retry");
+        });
+    }
+
+    function showDeriving() {
+        document.getElementById("sections").style.display = "none";
+        document.getElementById("actionbar").style.display = "none";
+        var l = document.getElementById("loading");
+        l.textContent = t("deriving");
+        l.style.display = "block";
+    }
+
+    // Poll the recommendations endpoint (no-store) until the AI overwrites it with
+    // the re-derived Tier 2, then render Tier 2 in the same session.
+    function pollForTier2() {
+        fetch("/api/recommendations", { cache: "no-store" })
+            .then(function (r) { if (!r.ok) throw new Error("poll failed"); return r.json(); })
+            .then(function (data) {
+                if (data && data.tier === 2) { enterTier2(data); }
+                else { setTimeout(pollForTier2, 1200); }
+            })
+            .catch(function () { setTimeout(pollForTier2, 1500); });
+    }
+
+    function enterTier2(data) {
+        REC = data;
+        initTier2State();   // re-read realization fields; tier-1 STATE preserved
+        STAGE = 2;
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("sections").style.display = "block";
+        document.getElementById("actionbar").style.display = "flex";
+        document.getElementById("confirm-status").textContent = "";
+        renderForTier(2);
+    }
+
     function confirm() {
         var btn = document.getElementById("btn-confirm");
         var payload = JSON.parse(JSON.stringify(STATE));
         normalizeTypographyForSubmit(payload);
+        payload.stage = "final";
         var customImagePlan = usesCustomImagePlanValue(payload.image_usage);
         if (payload.image_usage === "custom" || (customImagePlan && !String(payload.image_usage).trim())) {
             document.getElementById("confirm-status").textContent = t("image_usage_custom_required");
@@ -1391,7 +1486,9 @@
             refreshLangToggle(toggleBtn);
             if (REC && CAT) renderAll();   // STATE persists → selections preserved
         });
-        document.getElementById("btn-confirm").addEventListener("click", confirm);
+        document.getElementById("btn-confirm").addEventListener("click", function () {
+            if (STAGE === 1) { submitTier1(); } else { confirm(); }
+        });
 
         Promise.all([
             loadCatalogs(),
@@ -1405,6 +1502,8 @@
                 if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
             }
             initState();
+            // tier 1 / 2 from the recommendations; absent → legacy single-pass.
+            STAGE = (REC.tier === 1) ? 1 : (REC.tier === 2 ? 2 : "all");
             document.getElementById("loading").style.display = "none";
             document.getElementById("sections").style.display = "block";
             document.getElementById("actionbar").style.display = "flex";

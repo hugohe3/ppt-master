@@ -831,7 +831,15 @@ def _char_width(ch: str, font_size: float, bold: bool) -> float:
 
 
 def _estimate_run_width(text: str, run: TextRun) -> float:
-    return sum(_char_width(c, run.font_size_px, run.bold) for c in text) * 1.05
+    glyph_width = sum(_char_width(c, run.font_size_px, run.bold) for c in text)
+    tracking_width = run.letter_spacing_px * max(len(text) - 1, 0)
+    return (glyph_width + tracking_width) * 1.05
+
+
+def _advance_width(ch: str, index_in_segment: int, run: TextRun) -> float:
+    """Return the width added by one character inside a measured line segment."""
+    tracking = run.letter_spacing_px if index_in_segment > 0 else 0.0
+    return _char_width(ch, run.font_size_px, run.bold) + tracking
 
 
 def _find_break_point(
@@ -849,7 +857,7 @@ def _find_break_point(
 
     for i in range(start, len(text)):
         ch = text[i]
-        ch_w = _char_width(ch, run.font_size_px, run.bold)
+        ch_w = _advance_width(ch, i - start, run)
         if cur_w + ch_w > max_width:
             if last_break > start:
                 return last_break, last_break_w
@@ -898,7 +906,6 @@ def _wrap_paragraph_into_lines(
         text = run.text
         i = 0
         while i < len(text):
-            remaining = text[i:]
             avail = max_width - cur_w
             if avail <= 0 and lines[-1]:
                 # Line is full; start a new one
@@ -906,21 +913,21 @@ def _wrap_paragraph_into_lines(
                 cur_w = 0.0
                 avail = max_width
 
-            end, used = _find_break_point(remaining, 0, avail, run)
-            if end == 0:
+            end, used = _find_break_point(text, i, avail, run)
+            if end == i:
                 # Nothing fits even from a fresh line — force one char to avoid
                 # an infinite loop.
                 if lines[-1]:
                     lines.append([])
                     cur_w = 0.0
                     continue
-                end = 1
-                used = _char_width(remaining[0], run.font_size_px, run.bold)
+                end = i + 1
+                used = _advance_width(text[i], 0, run)
 
-            chunk = remaining[:end]
+            chunk = text[i:end]
             lines[-1].append(_copy_run(run, text=chunk))
             cur_w += used
-            i += end
+            i = end
 
             if i < len(text):
                 # More to render — wrap to next line

@@ -9,6 +9,15 @@ Configuration keys:
 """
 
 import sys
+from pathlib import Path
+
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
 
 if __name__ == "__main__":
     print(__doc__)
@@ -97,6 +106,9 @@ def _resolve_url(base_url: str) -> str:
 
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset."""
+    import re
+    if re.match(r"^\d+x\d+$", image_size):
+        return image_size
     normalized = normalize_image_size(image_size)
     size = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
     if not size:

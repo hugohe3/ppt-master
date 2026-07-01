@@ -30,6 +30,10 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from console_encoding import configure_utf8_stdio
+
+configure_utf8_stdio()
+
 
 def _images_by_slide(manifest: list) -> dict[int, list[dict]]:
     """Map slide_index -> [image entries on that slide], from ppt_to_md occurrences."""

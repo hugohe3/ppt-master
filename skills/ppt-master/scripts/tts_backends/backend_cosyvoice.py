@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import time
 from pathlib import Path
 
 from tts_backends.backend_common import download_audio, extension_from_format, post_json, read_api_key
@@ -10,6 +11,8 @@ from tts_backends.backend_common import download_audio, extension_from_format, p
 
 DEFAULT_ENDPOINT = "https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer"
 DEFAULT_MODEL = "cosyvoice-v3-flash"
+MAX_RETRIES = 3
+RETRY_DELAY = 5
 
 
 def output_extension(audio_format: str) -> str:
@@ -61,20 +64,30 @@ def generate(
     if language_hint:
         input_payload["language_hints"] = [language_hint]
 
-    data = post_json(
-        resolve_url(base_url),
-        headers={"Authorization": f"Bearer {api_key}"},
-        payload={
-            "model": model,
-            "input": input_payload,
-        },
-        timeout=180,
-    )
-    audio = (data.get("output") or {}).get("audio") or {}
-    audio_url = audio.get("url")
-    if not audio_url:
-        raise RuntimeError(f"CosyVoice response missing audio URL: {data}")
-    download_audio(audio_url, output_path)
+    last_error = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            data = post_json(
+                resolve_url(base_url),
+                headers={"Authorization": f"Bearer {api_key}"},
+                payload={
+                    "model": model,
+                    "input": input_payload,
+                },
+                timeout=300,
+            )
+            audio = (data.get("output") or {}).get("audio") or {}
+            audio_url = audio.get("url")
+            if not audio_url:
+                raise RuntimeError(f"CosyVoice response missing audio URL: {data}")
+            download_audio(audio_url, output_path)
+            return
+        except Exception as exc:
+            last_error = exc
+            if attempt < MAX_RETRIES - 1:
+                print(f"  [WARN] CosyVoice attempt {attempt+1} failed: {exc}. Retrying in {RETRY_DELAY}s...")
+                time.sleep(RETRY_DELAY)
+    raise RuntimeError(f"Failed after {MAX_RETRIES} attempts. Last error: {last_error}")
 
 
 def print_voices() -> None:

@@ -32,10 +32,15 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from console_encoding import configure_utf8_stdio
+
 try:
     from PIL import Image
 except ImportError:
     Image = None
+
+
+configure_utf8_stdio()
 
 
 DEFAULT_DPI = 300
