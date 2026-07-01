@@ -17,6 +17,15 @@ import base64
 import re
 import sys
 import argparse
+from pathlib import Path
+
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
 
 
 def get_mime_type(filename: str, file_bytes: bytes | None = None) -> str:
@@ -131,14 +140,15 @@ def embed_images_in_svg(svg_path: str, dry_run: bool = False,
     original_size = len(content.encode('utf-8'))
     
     # Match href="xxx.png" or href="xxx.jpg" etc. (exclude those already using data:)
-    pattern = r'href="(?!data:)([^"]+\.(png|jpg|jpeg|gif|webp))"'
+    pattern = r'(xlink:)?href="(?!data:)([^"]+\.(png|jpg|jpeg|gif|webp|svg))"'
     
     images_found = []
     images_embedded = 0
     
     def replace_with_base64(match):
         nonlocal images_embedded
-        img_path = match.group(1)
+        xlink_prefix = match.group(1) or ''
+        img_path = match.group(2)
         
         # Decode XML/HTML entities (e.g., &amp; -> &)
         import html
@@ -178,7 +188,7 @@ def embed_images_in_svg(svg_path: str, dry_run: bool = False,
         else:
             images_found.append((img_path, "EMBEDDED", img_size, None))
 
-        return f'href="data:{mime_type};base64,{b64_data}"'
+        return f'{xlink_prefix}href="data:{mime_type};base64,{b64_data}"'
     
     new_content = re.sub(pattern, replace_with_base64, content)
     
@@ -205,7 +215,8 @@ def embed_images_in_svg(svg_path: str, dry_run: bool = False,
         with open(svg_path, 'w', encoding='utf-8') as f:
             f.write(new_content)
     
-    return (images_embedded, new_size)
+    processed_count = len(images_found) if dry_run else images_embedded
+    return (processed_count, new_size)
 
 def main() -> None:
     """Run the CLI entry point."""
