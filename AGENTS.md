@@ -30,7 +30,6 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 - **Repo-wide style rules** — when editing prompt files under [`skills/ppt-master/references/`](skills/ppt-master/references/), Python under [`skills/ppt-master/scripts/`](skills/ppt-master/scripts/), or any other code/prose in the repo, follow the matching style rule in [`docs/rules/`](docs/rules/).
 - **Markdown language consistency** — Markdown files under `skills/ppt-master/workflows/`, `skills/ppt-master/references/`, and `docs/` are currently single-language per directory. New files mirror the language of their siblings; do not mix English scaffolding with Chinese paragraphs (or vice versa) inside one file. Chat replies are unaffected.
-- **Tag-version sync** — before creating or pushing a `v*` tag, you MUST update `version` in both `pyproject.toml` and `skills/ppt-master/pyproject.toml` to match the tag (e.g., tag `v0.1.6` → `version = "0.1.6"` in both files). Pushing a tag without syncing the version will cause the PyPI publish workflow to fail with "File already exists". Commit the version bump before the tag.
 
 ## Compatibility Boundary
 
@@ -38,29 +37,17 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 - Do NOT assume generic-project conventions like `.worktrees/`, `tests/`, or mandatory branch setup unless the user explicitly requests them.
 - On conflict with a generic coding skill, prioritize [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) inside this repository.
 
-## Setup
-
-```bash
-# No setup needed — uvx downloads ppt-master from PyPI automatically
-```
-
-> **uv cache caveat**: `uvx ppt-master` caches downloaded packages locally. After a new version is published, `uvx ppt-master --version` may show the old cached version. Always verify with `uv cache clean ppt-master && uvx ppt-master --version` when version matters, or pin with `uvx ppt-master@<version>`.
-
 ## Command Quick Reference
 
 Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
 
 ```bash
 # Source content conversion
-uvx ppt-master pdf-to-md <PDF_file>
-uvx ppt-master doc-to-md <DOCX_or_other_file>
-uvx ppt-master excel-to-md <XLSX_or_XLSM_file>
-uvx ppt-master ppt-to-md <PPTX_file>
-uvx ppt-master web-to-md <URL>
+uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]
 
 # Project management
 uvx ppt-master project init <project_name> --format ppt169
-uvx ppt-master project import-sources <project_path> <source_files_or_URLs...> --move
+uvx ppt-master project import-sources <project_path> <source_files_or_dirs_or_URLs...> --move
 uvx ppt-master project validate <project_path>
 
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
@@ -71,6 +58,10 @@ uvx ppt-master confirm-ui <project_path> --daemon --wait
 
 # Image tools and SVG quality check
 uvx ppt-master analyze-images <project_path>/images
+# Formula rendering — manifest written by Strategist after typography confirmation:
+uvx ppt-master latex-render <project_path>
+uvx ppt-master latex-render <project_path> --dry-run
+uvx ppt-master latex-render <project_path> --providers codecogs,quicklatex,mathpad,wikimedia
 # In-pipeline AI image generation — manifest mode (required, even for 1 image):
 uvx ppt-master image-gen --manifest <project_path>/images/image_prompts.json
 uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json

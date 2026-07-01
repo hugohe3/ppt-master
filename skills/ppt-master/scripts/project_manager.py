@@ -47,21 +47,22 @@ except ImportError:
 TOOLS_DIR = Path(__file__).resolve().parent
 SKILL_DIR = TOOLS_DIR.parent
 REPO_ROOT = SKILL_DIR.parent.parent
+SOURCE_TO_MD_TOOLS_DIR = TOOLS_DIR / "source_to_md"
+if str(SOURCE_TO_MD_TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(SOURCE_TO_MD_TOOLS_DIR))
+
+from _dispatcher import (  # noqa: E402
+    DOC_SUFFIXES,
+    EXCEL_SUFFIXES,
+    LEGACY_EXCEL_SUFFIXES,
+    PDF_SUFFIXES,
+    PRESENTATION_SUFFIXES,
+    build_conversion_command,
+)
+
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
 TABLE_TEXT_SUFFIXES = {".csv", ".tsv"}
-PDF_SUFFIXES = {".pdf"}
-PRESENTATION_SUFFIXES = {".pptx", ".pptm", ".ppsx", ".ppsm", ".potx", ".potm"}
-EXCEL_SUFFIXES = {".xlsx", ".xlsm"}
-LEGACY_EXCEL_SUFFIXES = {".xls"}
-DOC_SUFFIXES = {
-    ".docx", ".doc", ".odt", ".rtf",          # Office documents
-    ".epub",                                    # eBooks
-    ".html", ".htm",                            # Web pages
-    ".tex", ".latex", ".rst", ".org",           # Academic / technical
-    ".ipynb", ".typ",                           # Notebooks / Typst
-}
-WECHAT_HOST_KEYWORDS = ("mp.weixin.qq.com", "weixin.qq.com")
 IMAGE_ASSET_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".tif",
     ".emf", ".wmf", ".svg",
@@ -69,15 +70,6 @@ IMAGE_ASSET_SUFFIXES = {
 
 
 configure_utf8_stdio()
-
-
-def _curl_cffi_available() -> bool:
-    """Return whether curl_cffi is importable (enables Python TLS impersonation)."""
-    try:
-        import curl_cffi  # noqa: F401
-        return True
-    except ImportError:
-        return False
 
 
 def is_url(value: str) -> bool:
@@ -263,37 +255,28 @@ class ProjectManager:
             print(result.stdout.strip())
 
     def _import_pdf(self, pdf_path: Path, markdown_path: Path) -> None:
-        self._run_tool(
-            [
-                sys.executable,
-                str(TOOLS_DIR / "source_to_md" / "pdf_to_md.py"),
-                str(pdf_path),
-                "-o",
-                str(markdown_path),
-            ]
+        route = build_conversion_command(
+            str(pdf_path),
+            markdown_path,
+            forced_type="pdf",
         )
+        self._run_tool(route.command)
 
     def _import_doc(self, doc_path: Path, markdown_path: Path) -> None:
-        self._run_tool(
-            [
-                sys.executable,
-                str(TOOLS_DIR / "source_to_md" / "doc_to_md.py"),
-                str(doc_path),
-                "-o",
-                str(markdown_path),
-            ]
+        route = build_conversion_command(
+            str(doc_path),
+            markdown_path,
+            forced_type="doc",
         )
+        self._run_tool(route.command)
 
     def _import_presentation(self, presentation_path: Path, markdown_path: Path) -> None:
-        self._run_tool(
-            [
-                sys.executable,
-                str(TOOLS_DIR / "source_to_md" / "ppt_to_md.py"),
-                str(presentation_path),
-                "-o",
-                str(markdown_path),
-            ]
+        route = build_conversion_command(
+            str(presentation_path),
+            markdown_path,
+            forced_type="pptx",
         )
+        self._run_tool(route.command)
 
     def _import_pptx_intake(self, presentation_path: Path, project_dir: Path) -> Path:
         # Multi-deck intake: each PPTX writes its own `<stem>.identity.json` /
@@ -312,36 +295,20 @@ class ProjectManager:
         return analysis_dir
 
     def _import_excel(self, excel_path: Path, markdown_path: Path) -> None:
-        self._run_tool(
-            [
-                sys.executable,
-                str(TOOLS_DIR / "source_to_md" / "excel_to_md.py"),
-                str(excel_path),
-                "-o",
-                str(markdown_path),
-            ]
+        route = build_conversion_command(
+            str(excel_path),
+            markdown_path,
+            forced_type="excel",
         )
+        self._run_tool(route.command)
 
     def _import_url(self, url: str, markdown_path: Path) -> None:
-        # Prefer web_to_md.py: it uses curl_cffi internally when available,
-        # which handles WeChat and other TLS-fingerprint-blocked sites.
-        # Fall back to the Node.js version only when the URL is known to
-        # require TLS impersonation AND curl_cffi isn't installed.
-        host = urlparse(url).netloc.lower()
-        is_tls_sensitive = any(keyword in host for keyword in WECHAT_HOST_KEYWORDS)
-
-        if is_tls_sensitive and not _curl_cffi_available() and shutil.which("node"):
-            command = ["node", str(TOOLS_DIR / "source_to_md" / "web_to_md.cjs"),
-                       url, "-o", str(markdown_path)]
-        else:
-            command = [
-                sys.executable,
-                str(TOOLS_DIR / "source_to_md" / "web_to_md.py"),
-                url,
-                "-o",
-                str(markdown_path),
-            ]
-        self._run_tool(command)
+        route = build_conversion_command(
+            url,
+            markdown_path,
+            forced_type="web",
+        )
+        self._run_tool(route.command)
 
     def _is_valid_imported_url_markdown(self, markdown_path: Path) -> bool:
         """Return whether web_to_md produced a usable Markdown source."""
@@ -645,16 +612,37 @@ class ProjectManager:
             "notes": [],
             "skipped": [],
         }
+
+        expanded_items: list[str] = []
+        for item in source_items:
+            if is_url(item):
+                expanded_items.append(item)
+                continue
+            item_path = Path(item)
+            if item_path.is_dir():
+                directory_files = sorted(
+                    path for path in item_path.iterdir() if path.is_file()
+                )
+                if directory_files:
+                    expanded_items.extend(str(path) for path in directory_files)
+                    summary["notes"].append(
+                        f"{item}: expanded directory into {len(directory_files)} file(s)"
+                    )
+                else:
+                    summary["skipped"].append(f"{item}: directory contains no files")
+                continue
+            expanded_items.append(item)
+
         explicit_markdown_stems = {
             Path(item).stem
-            for item in source_items
+            for item in expanded_items
             if not is_url(item)
             and Path(item).exists()
             and Path(item).is_file()
             and Path(item).suffix.lower() in {".md", ".markdown"}
         }
 
-        for item in source_items:
+        for item in expanded_items:
             if is_url(item):
                 markdown_path = self._ensure_unique_path(
                     sources_dir / f"{derive_url_basename(item)}.md"
@@ -894,7 +882,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Import source files or URLs into a project",
     )
     import_sources.add_argument("project_path", help="Project directory")
-    import_sources.add_argument("sources", nargs="+", help="Source files or URLs")
+    import_sources.add_argument("sources", nargs="+", help="Source files, directories, or URLs")
     mode = import_sources.add_mutually_exclusive_group()
     mode.add_argument("--move", action="store_true", help="Move local source files")
     mode.add_argument("--copy", action="store_true", help="Copy local source files")

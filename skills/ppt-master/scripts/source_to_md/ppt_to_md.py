@@ -39,6 +39,8 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _batch import run_path_batch  # noqa: E402
+from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 from pptx import Presentation
 from pptx.enum.action import PP_ACTION
@@ -814,8 +816,17 @@ def convert_presentation_to_markdown(
             json.dumps(image_manifest, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+    profile_path = write_conversion_profile_best_effort(
+        input_path=str(input_file),
+        markdown_path=out_file,
+        converter="ppt_to_md.py",
+        conversion_type=suffix.lstrip("."),
+        asset_dir=asset_dir,
+    )
 
     print(f"[OK] Saved Markdown to: {out_file}")
+    if profile_path:
+        print(f"   Wrote conversion profile -> {profile_path}")
     if asset_dir_used:
         media_files = [
             path for path in asset_dir.iterdir()
@@ -832,31 +843,7 @@ def convert_presentation_to_markdown(
     return markdown_content
 
 
-def process_directory(input_dir: str, output_dir: str | None = None) -> None:
-    """Convert all supported PowerPoint files in a directory to Markdown."""
-    input_path = Path(input_dir)
-
-    if output_dir:
-        output_path = Path(output_dir)
-    else:
-        output_path = input_path
-
-    presentation_files = sorted(
-        path for path in input_path.iterdir()
-        if path.is_file() and path.suffix.lower() in SUPPORTED_FORMATS
-    )
-
-    print(f"Found {len(presentation_files)} PowerPoint files")
-
-    for presentation_file in presentation_files:
-        output_file = output_path / f"{presentation_file.stem}.md"
-        print(f"Processing: {presentation_file.name}")
-        result = convert_presentation_to_markdown(str(presentation_file), str(output_file))
-        if not result:
-            print(f"[WARN] Skipped failed file: {presentation_file.name}")
-
-
-def main() -> None:
+def main() -> int:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Convert PowerPoint files to Markdown",
@@ -864,9 +851,9 @@ def main() -> None:
         epilog="""
 Examples:
   python ppt_to_md.py slides.pptx
-  python ppt_to_md.py slides.pptx -o output.md
-  python ppt_to_md.py ./decks
+  python ppt_to_md.py slides.pptx appendix.pptx
   python ppt_to_md.py ./decks -o ./markdown
+  python ppt_to_md.py slides.pptx -o output.md
   python ppt_to_md.py deck.ppsx -o notes/deck.md
 
 Supported formats:
@@ -875,23 +862,22 @@ Supported formats:
 Legacy .ppt is not parsed directly. Resave it as .pptx or export it to PDF first.
         """,
     )
-    parser.add_argument("input", help="Input PowerPoint file or directory")
-    parser.add_argument("-o", "--output", help="Output Markdown file or directory path")
+    parser.add_argument("inputs", nargs="+", help="Input PowerPoint file(s) or directories")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output Markdown file for one input, or output directory for multiple inputs/directories",
+    )
 
     args = parser.parse_args()
-    input_path = Path(args.input)
 
-    if input_path.is_file():
-        output = args.output or str(input_path.with_suffix(".md"))
-        result = convert_presentation_to_markdown(str(input_path), output)
-        sys.exit(0 if result else 1)
-    if input_path.is_dir():
-        process_directory(str(input_path), args.output)
-        sys.exit(0)
-
-    print(f"Error: File or directory not found: {args.input}")
-    sys.exit(1)
+    return run_path_batch(
+        args.inputs,
+        set(SUPPORTED_FORMATS),
+        args.output,
+        lambda source, output: bool(convert_presentation_to_markdown(str(source), str(output))),
+    )
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
