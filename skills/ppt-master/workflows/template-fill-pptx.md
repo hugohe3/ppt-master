@@ -41,11 +41,14 @@ If the content material is only a topic with no supporting facts, gather or ask 
 
 ## Step 2: Create the Project Workspace
 
-Create a dedicated project directory under `projects/`. Do not write outputs directly into `projects/` root.
+Create a dedicated project directory under `projects/`. Do not write outputs directly into `projects/` root. Reuse the standard project manager so source import rules stay consistent with the rest of the repository:
 
 ```bash
-mkdir -p "<project_dir>/sources" "<project_dir>/analysis" "<project_dir>/exports" "<project_dir>/validation"
+python3 skills/ppt-master/scripts/project_manager.py init "<project_name>" --format ppt169
+python3 skills/ppt-master/scripts/project_manager.py import-sources "<project_dir>" "<source.pptx>" "<material...>"
 ```
+
+**Source import rule**: `project_manager.py import-sources` copies files from outside the repository and moves repo-local files by default, unless `--copy` / `--move` is explicitly supplied. Keep this shared behavior; do not create a separate template-fill import path.
 
 Use this fixed layout:
 
@@ -62,10 +65,10 @@ Use this fixed layout:
 
 ## Step 3: Extract the PPTX Intake Bundle
 
-Run:
+`project_manager.py import-sources` automatically runs the standard PPTX intake for imported PowerPoint files and writes `<stem>.slide_library.json` into `<project_dir>/analysis/`. If you are working from a manually assembled project that does not have the intake artifact, run the template-fill analyzer directly:
 
 ```bash
-python3 skills/ppt-master/scripts/pptx_intake.py "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis"
+python3 skills/ppt-master/scripts/template_fill_pptx.py analyze "<project_dir>/sources/<source.pptx>" -o "<project_dir>/analysis/<stem>.slide_library.json"
 ```
 
 Read `<project_dir>/analysis/<stem>.slide_library.json` (intake prefixes per-deck artifacts by the template deck's file stem) and identify:
@@ -95,7 +98,7 @@ A page's layout already encodes a rhetorical shape — a single hero statement, 
 
 **Hard rule**: The target story controls output order. Source slides may move forward, move backward, be omitted, or be reused several times when their layout matches multiple target messages. Never treat source slide order as a default outline unless the user explicitly asks to preserve it.
 
-**Required mapping pass**: Create a concise page-to-layout rationale in `<project_dir>/analysis/` before finalizing the plan. It can be JSON or Markdown, but it must record the intended target slide, chosen `source_slide`, and the layout reason (for example: `three-column strategy`, `two-problem contrast`, `timeline`, `metric focus`, `chapter divider`). This is evidence that selection came from template structure rather than sequential replacement.
+**Required mapping pass**: Record a concise page-to-layout rationale in each planned slide before finalizing the plan. Use the per-slide `layout_rationale` object in `fill_plan.json` with `layout_pattern`, `why_fit`, and `risk`. This is human-review evidence that selection came from template structure rather than sequential replacement; it is not a mechanical checker gate.
 
 ---
 
@@ -118,11 +121,25 @@ The plan structure:
 ```json
 {
   "schema": "template_fill_pptx_plan.v1",
+  "status": "draft",
   "source_pptx": "projects/source.pptx",
+  "accepted_warnings": [
+    {
+      "plan_slide": 3,
+      "slot_id": "s03_sh5",
+      "code": "text_capacity",
+      "reason": "User accepted dense wording"
+    }
+  ],
   "slides": [
     {
       "source_slide": 1,
       "purpose": "cover",
+      "layout_rationale": {
+        "layout_pattern": "hero cover",
+        "why_fit": "Large title and subtitle slots fit the opening message without redesign.",
+        "risk": "Subtitle must stay short."
+      },
       "notes": "Speaker notes for this filled slide.",
       "transition": "fade",
       "replacements": [
@@ -158,7 +175,10 @@ The plan structure:
 
 | Decision | Rule |
 |---|---|
+| `status` | Keep `"draft"` until the user has reviewed the page sequence / reuse / deletion decisions. Set to `"confirmed"` only after approval. |
 | `source_slide` | Repeat the same value across multiple entries to reuse one source layout for several output slides; order is free and must follow the target story rather than source deck order |
+| `layout_rationale` | Human review aid for page selection. Include `layout_pattern`, `why_fit`, and `risk`; it is not a mechanical checker gate. |
+| `accepted_warnings` | Optional audit trail for warnings the user or agent explicitly accepts. `check-plan` warnings remain non-blocking; errors must be fixed. |
 | `notes` | Optional spoken speaker notes for the filled slide — see **Speaker notes** below; write prose, not a copy of the on-slide text |
 | `transition` | Optional per-slide page transition; overrides the `apply --transition` default. Accepts an effect name (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`), `none` to strip it, or `{ "effect": "push", "duration": 0.6 }` |
 | `replacements` | Target by `slot_id` whenever possible; `shape_id` and `shape_name` are fallback selectors |
@@ -219,11 +239,15 @@ Interpret the report:
 | Body much longer than source slot | Compress, split across another selected page, or choose a larger source page |
 | Missing target | Fix `slot_id` / `shape_id`; do not apply the plan |
 
+`check-plan` emits stable `code` fields in its JSON results so warnings can be tracked without parsing message text. Warnings are advisory and do not fail the command; record any intentionally accepted warning in `accepted_warnings` when it matters for review. Errors are blocking and must be fixed before apply.
+
 **Default fitting policy**: Check fit against visual capacity, not raw character count. CJK characters, Latin letters, numbers, and punctuation occupy different visual widths; old placeholder text is only a weak signal. Use `capacity_visual_width` when present, together with `slots[].geometry` and `slots[].text_metrics.font_size_px`, to decide whether to rewrite, split, or choose a different source layout. Do not use per-item font shrinking as a default strategy because it breaks template consistency.
 
 ---
 
 ## Step 6: Apply the Plan
+
+⛔ **BLOCKING GATE**: The user has reviewed the planned output order, omitted pages, reused pages, and material-to-layout fit. Set `<project_dir>/analysis/fill_plan.json` top-level `status` to `"confirmed"` only after that review. `apply` rejects an unconfirmed plan by default; `--force` exists only for deliberate recovery/debug use.
 
 Run:
 
@@ -256,10 +280,10 @@ The script:
 Run a lightweight readability check:
 
 ```bash
-python3 skills/ppt-master/scripts/source_to_md/ppt_to_md.py "<project_dir>/exports/<output.pptx>"
+python3 skills/ppt-master/scripts/template_fill_pptx.py validate "<project_dir>"
 ```
 
-Move or copy the read-back Markdown and extracted files into `<project_dir>/validation/` so `exports/` contains only final deliverables.
+The validator finds the latest PPTX in `<project_dir>/exports/`, runs `ppt_to_md.py` into `<project_dir>/validation/readback.md`, and writes `<project_dir>/validation/validate_report.json`. `exports/` must contain only final deliverables.
 
 Verify:
 
@@ -269,9 +293,9 @@ Verify:
 | Slide count | Matches `len(fill_plan.slides)` |
 | Key title text | Appears in the extracted Markdown |
 | Native table cells | Updated values appear in the extracted Markdown table |
-| Native chart data | Updated labels / values are present in the cloned chart XML |
+| Native chart data | Updated labels / values are readable from the extracted Markdown when `ppt_to_md.py` can surface them |
 | Multi-line body text | Preserves intended line / paragraph breaks |
-| Speaker notes | `ppt_to_md.py` can read the generated PPTX without notes-related errors |
+| Speaker notes | Read-back note count matches planned `notes` fields |
 | Missing target errors | None from `template_fill_pptx.py apply` |
 
 If the extracted text is correct but visual overflow is likely, reduce the text in `fill_plan.json` and re-run Step 4.
@@ -281,10 +305,11 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 
 - [x] Standard PPTX intake extracted from the source deck, including `<stem>.slide_library.json`
 - [x] `fill_plan.json` selects only pages that fit the target story
-- [x] `check-plan` run and capacity warnings resolved or explicitly accepted
+- [x] User reviewed the story structure and `fill_plan.json` has `status: "confirmed"`
+- [x] `check-plan` run; errors fixed; warnings reviewed / optionally recorded in `accepted_warnings`
 - [x] Output PPTX generated through direct OOXML text replacement
 - [x] Speaker notes embedded when `notes` fields are present
-- [x] `ppt_to_md.py` readability check passed
+- [x] `template_fill_pptx.py validate` read-back check passed
 ```
 
 ---
