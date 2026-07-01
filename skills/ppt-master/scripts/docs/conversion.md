@@ -41,7 +41,7 @@ pip install PyMuPDF
 Hybrid converter: pure-Python for the common formats, pandoc fallback for the rest.
 
 Native path (no external binary required):
-- `.docx` — via `mammoth`; OMML / Office Math equations (Word-native or MathType "Convert to Office Math") are rewritten to inline LaTeX. Classic MathType OLE objects carry no OMML and are kept only as their preview image.
+- `.docx` — via `markitdown` (preferred); falls back to `mammoth` if `markitdown` is unavailable. OMML / Office Math equations are preserved as inline LaTeX (`$...$` / `$$...$$`). Embedded images are extracted to `<input>_files/` with an `image_manifest.json` so downstream tools (`analyze_images.py`, `project_manager.py import-sources`) work the same as before. markitdown's own conversion preserves more document structure (headings, tables, lists) than mammoth alone, which is why it is the default.
 - `.html` / `.htm` — via `markdownify` + `beautifulsoup4`
 - `.epub` — via `ebooklib` + `markdownify`
 - `.ipynb` — via `nbconvert`
@@ -60,7 +60,7 @@ Dependencies:
 
 ```bash
 # Native path — always required
-pip install mammoth markdownify ebooklib nbconvert beautifulsoup4
+pip install 'markitdown[docx]' mammoth markdownify ebooklib nbconvert beautifulsoup4
 
 # Fallback path — only for .doc/.odt/.rtf/.tex/.rst/.org/.typ
 # macOS:   brew install pandoc

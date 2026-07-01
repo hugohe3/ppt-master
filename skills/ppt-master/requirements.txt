@@ -46,10 +46,11 @@ PyMuPDF>=1.23.0
 # ─────────────────────────────────────────────────────────────
 # Native (pure-Python) paths — no external binary required:
 # 原生路径（纯 Python，无需外部程序）：
-#   .docx   → mammoth
+#   .docx   → markitdown (preferred), mammoth fallback
 #   .html   → markdownify (+ beautifulsoup4, listed below)
 #   .epub   → ebooklib (+ markdownify)
 #   .ipynb  → nbconvert
+markitdown[docx]>=0.1.0
 mammoth>=1.6.0
 markdownify>=0.11.6
 ebooklib>=0.18

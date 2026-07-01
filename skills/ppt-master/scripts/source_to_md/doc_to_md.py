@@ -3,7 +3,7 @@
 Document to Markdown Converter (hybrid Python + Pandoc fallback)
 
 Primary formats (pure Python, no external tools required):
-    .docx   → mammoth (OMML/Office Math equations rewritten to inline LaTeX)
+    .docx   → markitdown (mammoth fallback; OMML/Office Math preserved as LaTeX)
     .html   → markdownify + BeautifulSoup
     .epub   → ebooklib + markdownify
     .ipynb  → nbconvert
@@ -681,10 +681,129 @@ def _docx_inject_math_latex(
 
 
 # ─────────────────────────────────────────────────────────────
-# DOCX → Markdown (mammoth)
+# DOCX → Markdown (markitdown preferred, mammoth fallback)
 # ─────────────────────────────────────────────────────────────
 
-def _convert_docx(input_file: Path, out_file: Path) -> str:
+def _extract_docx_images_to_media(input_file: Path, media_dir: Path, rel_media_dir: str) -> list[dict[str, object]]:
+    """Extract every `word/media/*` part from the DOCX into media_dir.
+
+    markitdown's docx path uses mammoth internally and emits images as
+    truncated `data:` URIs, so the binary never reaches the markdown. To keep
+    parity with the rest of the source_to_md tools — which produce
+    `<input>_files/` with relative refs and an `image_manifest.json` — we
+    extract every media part ourselves and return a manifest. The caller
+    rewrites the truncated `data:` placeholders in document order.
+    """
+    manifest: list[dict[str, object]] = []
+    try:
+        with zipfile.ZipFile(input_file) as docx:
+            names = sorted(n for n in docx.namelist() if n.startswith("word/media/"))
+            for index, name in enumerate(names, 1):
+                data = docx.read(name)
+                source_ext = _normalize_ext(Path(name).suffix)
+                if source_ext == ".bin":
+                    guessed = mimetypes.guess_extension(mimetypes.guess_type(name)[0] or "")
+                    source_ext = _normalize_ext(guessed)
+                filename = f"image_{index:03d}{source_ext}"
+                (media_dir / filename).write_bytes(data)
+                asset_kind = "office_vector" if _is_office_vector(source_ext) else "bitmap"
+                width, height = _image_size(media_dir / filename)
+                ratio = width / height if width and height else None
+                manifest.append({
+                    "index": index,
+                    "filename": filename,
+                    "original_filename": filename,
+                    "asset_kind": asset_kind,
+                    "svg_renderable": asset_kind != "office_vector",
+                    "pptx_native_supported": True,
+                    "source_kind": "drawing",
+                    "source_ext": source_ext,
+                    "source_target": name,
+                    "source_path": name,
+                    "pixel_width": width,
+                    "pixel_height": height,
+                    "pixel_ratio": round(ratio, 6) if ratio else None,
+                    "display_ratio": round(ratio, 6) if ratio else None,
+                    "occurrences": [{
+                        "occurrence_index": 1,
+                        "source_ref": f"{rel_media_dir}/{filename}",
+                    }],
+                    "usage_count": 1,
+                })
+    except (KeyError, zipfile.BadZipFile, OSError):
+        return []
+    return manifest
+
+
+def _rewrite_markitdown_image_refs(markdown: str, rel_media_dir: str, manifest: list[dict[str, object]]) -> str:
+    """Rewrite markitdown's truncated `data:` image placeholders to our `_files/` refs.
+
+    markitdown truncates every docx image to `![alt](data:...)`. We replace
+    each placeholder in document order with `<rel_media_dir>/<filename>` from
+    the manifest. If placeholder count exceeds manifest entries, extra
+    placeholders are left in place (rather than silently dropped) so the user
+    sees something is off.
+    """
+    if not manifest:
+        return markdown
+
+    filenames = [entry["filename"] for entry in manifest]
+    counter = {"n": 0}
+
+    def _repl(match: re.Match[str]) -> str:
+        counter["n"] += 1
+        idx = counter["n"]
+        if idx > len(filenames):
+            return match.group(0)
+        alt = match.group("alt")
+        return f"![{alt}]({rel_media_dir}/{filenames[idx - 1]})"
+
+    return re.sub(r"!\[(?P<alt>[^\]]*)\]\(data:[^)]*\)", _repl, markdown)
+
+
+def _convert_docx_with_markitdown(input_file: Path, out_file: Path) -> str:
+    try:
+        from markitdown import MarkItDown
+    except ImportError:
+        return ""
+
+    media_dir, rel_media_dir = _ensure_media_dir(out_file)
+
+    # markitdown preserves OMML as $...$ / $$...$$ LaTeX itself (pre_process_docx),
+    # so no math-injection pass is needed here.
+    try:
+        md = MarkItDown()
+        result = md.convert(str(input_file))
+        markdown = result.text_content
+    except Exception as exc:
+        print(f"[WARN] markitdown failed ({exc}); falling back to mammoth")
+        try:
+            if media_dir.exists() and not any(media_dir.iterdir()):
+                media_dir.rmdir()
+        except OSError:
+            pass
+        return ""
+
+    manifest = _extract_docx_images_to_media(input_file, media_dir, rel_media_dir)
+    markdown = _rewrite_markitdown_image_refs(markdown, rel_media_dir, manifest)
+
+    out_file.write_text(markdown, encoding="utf-8")
+
+    if manifest:
+        (media_dir / "image_manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    if not any(media_dir.iterdir()):
+        media_dir.rmdir()
+        media_dir = None  # type: ignore[assignment]
+
+    _report_result(out_file, media_dir)
+    return markdown
+
+
+def _convert_docx_with_mammoth(input_file: Path, out_file: Path) -> str:
     try:
         import mammoth
     except ImportError:
@@ -779,6 +898,15 @@ def _convert_docx(input_file: Path, out_file: Path) -> str:
 
     _report_result(out_file, media_dir)
     return markdown
+
+
+def _convert_docx(input_file: Path, out_file: Path) -> str:
+    """Convert .docx → Markdown, preferring markitdown and falling back to mammoth."""
+    result = _convert_docx_with_markitdown(input_file, out_file)
+    if result:
+        return result
+    print("[INFO] markitdown unavailable; using mammoth path")
+    return _convert_docx_with_mammoth(input_file, out_file)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1235,7 +1363,7 @@ def _convert_with_pandoc(input_file: Path, out_file: Path, suffix: str) -> str:
 # ─────────────────────────────────────────────────────────────
 
 _FORMAT_DESC = {
-    ".docx":  "Microsoft Word (mammoth)",
+    ".docx":  "Microsoft Word (markitdown)",
     ".html":  "HTML (markdownify)",
     ".htm":   "HTML (markdownify)",
     ".epub":  "EPUB (ebooklib)",
@@ -1283,7 +1411,7 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python doc_to_md.py lecture.docx                # Word → Markdown (mammoth)
+  python doc_to_md.py lecture.docx                # Word → Markdown (markitdown, mammoth fallback)
   python doc_to_md.py article.html                # HTML → Markdown (markdownify)
   python doc_to_md.py book.epub                   # EPUB → Markdown (ebooklib)
   python doc_to_md.py notebook.ipynb              # Jupyter → Markdown (nbconvert)
