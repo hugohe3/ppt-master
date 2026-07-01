@@ -9,6 +9,14 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
+
 if __package__ in {None, ''}:
     import types
 
@@ -383,16 +391,14 @@ Recorded narration:
             missing = [path.stem for path in ref_files if path.stem not in narration_audio]
             if missing:
                 print(
-                    "Error: Recorded narration requires one supported audio file per slide. "
-                    f"Matched {len(narration_audio)}/{len(ref_files)} slide(s). "
-                    f"Supported extensions: {', '.join(NARRATION_EXTENSIONS)}",
+                    f"Warning: Recorded narration matched {len(narration_audio)}/{len(ref_files)} slides. "
+                    f"{len(missing)} slide(s) will have no audio and will use manual advance.",
                     file=sys.stderr,
                 )
-                for stem in missing[:20]:
-                    print(f"  Missing audio for: {stem}", file=sys.stderr)
-                if len(missing) > 20:
-                    print(f"  ... and {len(missing) - 20} more", file=sys.stderr)
-                return 1
+                for stem in missing[:10]:
+                    print(f"  Missing audio: {stem}", file=sys.stderr)
+                if len(missing) > 10:
+                    print(f"  ... and {len(missing) - 10} more", file=sys.stderr)
             unreadable = [
                 f"{stem}: {audio_path}"
                 for stem, audio_path in sorted(narration_audio.items())
@@ -400,15 +406,15 @@ Recorded narration:
             ]
             if unreadable:
                 print(
-                    "Error: Recorded narration requires readable audio durations. "
-                    "Install ffprobe/ffmpeg or replace the listed audio files.",
+                    "Warning: Could not read duration for some audio files "
+                    "(ffprobe/mutagen not available or files unreadable). "
+                    "These slides will use a default 5-second advance time.",
                     file=sys.stderr,
                 )
-                for item in unreadable[:20]:
-                    print(f"  {item}", file=sys.stderr)
-                if len(unreadable) > 20:
-                    print(f"  ... and {len(unreadable) - 20} more", file=sys.stderr)
-                return 1
+                for item in unreadable[:10]:
+                    print(f"  Unreadable duration: {item}", file=sys.stderr)
+                if len(unreadable) > 10:
+                    print(f"  ... and {len(unreadable) - 10} more", file=sys.stderr)
         elif narration_audio_dir_arg and verbose:
             missing = [path.stem for path in ref_files if path.stem not in narration_audio]
             if missing:
