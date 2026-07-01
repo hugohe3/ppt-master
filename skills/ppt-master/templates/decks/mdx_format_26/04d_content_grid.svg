@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- MDX Format '26 — Content, comparison grid / cards (fidelity). Source slide36/43/59 ×1.3333 -->
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <image href="assets/content_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="header">
+    <text x="96" y="107" text-anchor="start" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="39" font-weight="bold" fill="#000000">{{TITLE}}</text>
+  </g>
+
+  <!-- {{CELLS}} — three peer cards, flat (equal grid). Rotate accent bar navy → cyan → pink across cells -->
+  <g id="cell-1">
+    <rect x="96" y="200" width="336" height="380" rx="8" ry="8" fill="#EDEDF3"/>
+    <rect x="96" y="200" width="336" height="8" fill="#1D2088"/>
+    <text x="128" y="270" text-anchor="start" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="24" font-weight="bold" fill="#1D2088">{{CELL_1_TITLE}}</text>
+    <text x="128" y="320" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="18" fill="#333333">{{CELL_1_BODY}}</text>
+  </g>
+  <g id="cell-2">
+    <rect x="472" y="200" width="336" height="380" rx="8" ry="8" fill="#EDEDF3"/>
+    <rect x="472" y="200" width="336" height="8" fill="#00A0E9"/>
+    <text x="504" y="270" text-anchor="start" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="24" font-weight="bold" fill="#00A0E9">{{CELL_2_TITLE}}</text>
+    <text x="504" y="320" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="18" fill="#333333">{{CELL_2_BODY}}</text>
+  </g>
+  <g id="cell-3">
+    <rect x="848" y="200" width="336" height="380" rx="8" ry="8" fill="#EDEDF3"/>
+    <rect x="848" y="200" width="336" height="8" fill="#E4007F"/>
+    <text x="880" y="270" text-anchor="start" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="24" font-weight="bold" fill="#E4007F">{{CELL_3_TITLE}}</text>
+    <text x="880" y="320" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="18" fill="#333333">{{CELL_3_BODY}}</text>
+  </g>
+
+  <g id="caption">
+    <text x="96" y="620" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="14" fill="#666666">{{CAPTION}}</text>
+  </g>
+
+  <g id="footer">
+    <text x="142" y="668" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">© 2026 Givery, Inc</text>
+    <line x1="59" y1="688" x2="226" y2="688" stroke="#1D2088" stroke-width="2"/>
+  </g>
+
+  <g id="pagenum">
+    <rect x="1119" y="657" width="121" height="42" rx="6" ry="6" fill="#1D2088"/>
+    <text x="1179" y="684" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#FFFFFF">Page {{PAGE_NUM}}</text>
+  </g>
+</svg>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- MDX Format '26 — Big message / 3-box hero (fidelity). Source slide13/19 ×1.3333 -->
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <image href="assets/message_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="header">
+    <text x="1026" y="140" text-anchor="end" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="32" fill="#1D2088">{{SUBTEXT}}</text>
+  </g>
+
+  <g id="message">
+    <text x="640" y="330" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="57" fill="#000000">{{MESSAGE}}</text>
+  </g>
+
+  <!-- {{BOXES}} — optional supporting boxes; accent bar cycles navy → cyan → pink -->
+  <g id="box-1">
+    <rect x="96" y="450" width="336" height="130" rx="8" ry="8" fill="#1D2088"/>
+    <text x="264" y="527" text-anchor="middle" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{BOX_1}}</text>
+  </g>
+  <g id="box-2">
+    <rect x="472" y="450" width="336" height="130" rx="8" ry="8" fill="#00A0E9"/>
+    <text x="640" y="527" text-anchor="middle" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{BOX_2}}</text>
+  </g>
+  <g id="box-3">
+    <rect x="848" y="450" width="336" height="130" rx="8" ry="8" fill="#E4007F"/>
+    <text x="1016" y="527" text-anchor="middle" font-family="Arial, &quot;Noto Sans JP&quot;, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{BOX_3}}</text>
+  </g>
+
+  <g id="footer">
+    <text x="142" y="668" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">© 2026 Givery, Inc</text>
+    <line x1="59" y1="688" x2="226" y2="688" stroke="#1D2088" stroke-width="2"/>
+  </g>
+
+  <g id="pagenum">
+    <rect x="1119" y="657" width="121" height="42" rx="6" ry="6" fill="#1D2088"/>
+    <text x="1179" y="684" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#FFFFFF">Page {{PAGE_NUM}}</text>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- MDX Format '26 — Table of contents (fidelity). Source slide2 ×1.3333 -->
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <image href="assets/toc_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="toc-heading">
+    <text x="545" y="209" text-anchor="start" font-family="&quot;Poppins&quot;, sans-serif" font-size="85" font-weight="bold" fill="#1D2088">Index</text>
+    <text x="545" y="232" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="22" font-weight="bold" fill="#1D2088">{{TOC_HEADING}}</text>
+  </g>
+
+  <g id="toc-items">
+    <!-- {{TOC_ITEMS}} — one bullet line per chapter; navy leads the reached item, hlink #0097A7 underlined for others -->
+    <text x="561" y="345" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#1D2088"><tspan fill="#1D2088" font-weight="bold">● </tspan>{{TOC_ITEM_1_TITLE}}</text>
+    <text x="561" y="393" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#0097A7" text-decoration="underline"><tspan fill="#0097A7" font-weight="bold">● </tspan>{{TOC_ITEM_2_TITLE}}</text>
+    <text x="561" y="441" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#0097A7" text-decoration="underline"><tspan fill="#0097A7" font-weight="bold">● </tspan>{{TOC_ITEM_3_TITLE}}</text>
+    <text x="561" y="489" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#0097A7" text-decoration="underline"><tspan fill="#0097A7" font-weight="bold">● </tspan>{{TOC_ITEM_4_TITLE}}</text>
+  </g>
+</svg>

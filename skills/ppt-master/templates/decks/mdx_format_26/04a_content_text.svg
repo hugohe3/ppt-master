@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- MDX Format '26 — Content, text-led (fidelity). Source slide8/9 ×1.3333 -->
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <image href="assets/content_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="header">
+    <text x="97" y="91" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="36" fill="#1D2088">{{TITLE}}</text>
+  </g>
+
+  <g id="lead">
+    <text x="100" y="160" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="34" fill="#000000">{{LEAD}}</text>
+  </g>
+
+  <g id="note">
+    <text x="100" y="255" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="18" fill="#333333">{{NOTE}}</text>
+  </g>
+
+  <g id="figure">
+    <rect x="100" y="378" width="1080" height="240" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="3" stroke-dasharray="4,4"/>
+    <image href="assets/figure_placeholder.png" x="606" y="464" width="68" height="68" preserveAspectRatio="xMidYMid meet"/>
+    <text x="640" y="560" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="16" fill="#A81B8D">{{FIGURE}}</text>
+  </g>
+
+  <g id="footer">
+    <text x="142" y="668" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">© 2026 Givery, Inc</text>
+    <line x1="59" y1="688" x2="226" y2="688" stroke="#1D2088" stroke-width="2"/>
+  </g>
+
+  <g id="pagenum">
+    <rect x="1119" y="657" width="121" height="42" rx="6" ry="6" fill="#1D2088"/>
+    <text x="1179" y="684" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#FFFFFF">Page {{PAGE_NUM}}</text>
+  </g>
+</svg>

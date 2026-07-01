@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- MDX Format '26 — Cover ② client-addressed (literal). Source slide6 ×1.3333 -->
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <image href="assets/cover_client_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="cover-heading">
+    <text x="113" y="286" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" fill="#1D2088">{{CLIENT_NAME}}</text>
+    <text x="118" y="398" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="64" font-weight="bold" fill="#1D2088">{{TITLE}}</text>
+  </g>
+
+  <g id="cover-logo">
+    <text x="640" y="600" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="30" fill="#1D2088">Marketing DX</text>
+    <text x="640" y="631" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">powered by Givery</text>
+    <line x1="557" y1="649" x2="723" y2="649" stroke="#1D2088" stroke-width="2"/>
+  </g>
+
+  <g id="cover-footer">
+    <text x="164" y="626" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">© 2026 Givery, Inc</text>
+    <line x1="80" y1="646" x2="247" y2="646" stroke="#1D2088" stroke-width="2"/>
+    <text x="1116" y="626" text-anchor="middle" font-family="&quot;Montserrat&quot;, Arial, sans-serif" font-size="18" fill="#1D2088">{{DATE}}</text>
+    <line x1="1033" y1="646" x2="1200" y2="646" stroke="#1D2088" stroke-width="2"/>
+  </g>
+</svg>

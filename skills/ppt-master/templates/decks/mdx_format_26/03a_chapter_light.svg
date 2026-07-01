@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- MDX Format '26 — Chapter divider, light (literal). Source slide7/45 ×1.3333 -->
+  <g id="bg">
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <image href="assets/chapter_light_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="chapter-title">
+    <text x="640" y="394" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="71" fill="#1D2088">{{SECTION_TITLE}}</text>
+  </g>
+
+  <g id="chapter-index">
+    <line x1="219" y1="574" x2="473" y2="574" stroke="#1D2088" stroke-width="2"/>
+    <rect x="532" y="552" width="217" height="42" rx="6" ry="6" fill="#1D2088"/>
+    <text x="640" y="581" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">{{SECTION_INDEX}}</text>
+    <line x1="807" y1="574" x2="1061" y2="574" stroke="#1D2088" stroke-width="2"/>
+  </g>
+
+  <g id="pagenum">
+    <text x="1195" y="695" text-anchor="end" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="23" fill="#1D2088">{{PAGE_NUM}}</text>
+  </g>
+</svg>
