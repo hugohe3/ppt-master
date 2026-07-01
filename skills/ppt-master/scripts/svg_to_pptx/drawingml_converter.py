@@ -490,12 +490,39 @@ def convert_svg_to_slide_shapes(
         )
 
     defs = collect_defs(root)
+
+    # Extract canvas dimensions from SVG root for percentage resolution.
+    # Prefer viewBox; fall back to width/height attributes.
+    _vb_w = 0.0
+    _vb_h = 0.0
+    _vb = root.get('viewBox')
+    if _vb:
+        _vb_parts = re.split(r'[\s,]+', _vb.strip())
+        if len(_vb_parts) >= 4:
+            try:
+                _vb_w = float(_vb_parts[2])
+                _vb_h = float(_vb_parts[3])
+            except ValueError:
+                _vb_w = 0.0
+                _vb_h = 0.0
+    if _vb_w <= 0 or _vb_h <= 0:
+        try:
+            _w = root.get('width', '0')
+            _h = root.get('height', '0')
+            if _w and _h:
+                _vb_w = float(_w.rstrip('%px')) if not _w.endswith('%') else 0.0
+                _vb_h = float(_h.rstrip('%px')) if not _h.endswith('%') else 0.0
+        except ValueError:
+            pass
+
     ctx = ConvertContext(
         defs=defs,
         slide_num=slide_num,
         svg_dir=Path(svg_path).parent,
         merge_paragraphs=merge_paragraphs,
         trace_events=trace_events,
+        viewbox_w=_vb_w,
+        viewbox_h=_vb_h,
     )
 
     shapes: list[str] = []

@@ -53,6 +53,10 @@ class ConvertContext:
     # Optional per-element conversion diagnostics. Shared by child contexts so
     # callers can inspect native / skipped / unsupported decisions per slide.
     trace_events: list[dict[str, Any]] | None = None
+    # SVG viewbox / canvas dimensions in user units (typically pixels).
+    # Used to resolve percentage-based widths/heights like width="100%".
+    viewbox_w: float = 0.0
+    viewbox_h: float = 0.0
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -135,6 +139,8 @@ class ConvertContext:
 
         return ConvertContext(
             defs=self.defs,
+            viewbox_w=self.viewbox_w,
+            viewbox_h=self.viewbox_h,
             id_counter=self.id_counter,
             slide_num=self.slide_num,
             translate_x=self.translate_x + dx,

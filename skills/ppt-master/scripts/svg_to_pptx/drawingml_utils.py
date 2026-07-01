@@ -155,6 +155,30 @@ def _f(val: str | None, default: float = 0.0) -> float:
         return default
 
 
+def _f_pct(val: str | None, base: float, default: float = 0.0) -> float:
+    """Parse a length attribute that may be a percentage or a number.
+
+    Percentage values like "50%" are resolved against *base*.
+    Plain numeric values are returned as-is.
+    Returns *default* if val is None or unparseable.
+    """
+    if val is None:
+        return default
+    val = val.strip()
+    if not val:
+        return default
+    if val.endswith('%'):
+        try:
+            pct = float(val[:-1])
+            return base * pct / 100.0
+        except (ValueError, TypeError):
+            return default
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return default
+
+
 # ---------------------------------------------------------------------------
 # SVG transform matrix helpers
 # ---------------------------------------------------------------------------
@@ -325,6 +349,46 @@ def ctx_w(val: float, ctx: ConvertContext) -> float:
 def ctx_h(val: float, ctx: ConvertContext) -> float:
     """Apply context scale to a height value."""
     return val * ctx.scale_y
+
+
+def ctx_w_pct(val_str: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    """Parse a width value that may be a percentage, then apply context scale.
+
+    Percentage is resolved against ctx.viewbox_w (fallback: 0).
+    """
+    base = ctx.viewbox_w if ctx.viewbox_w > 0 else 0.0
+    px = _f_pct(val_str, base, default)
+    return px * ctx.scale_x
+
+
+def ctx_h_pct(val_str: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    """Parse a height value that may be a percentage, then apply context scale.
+
+    Percentage is resolved against ctx.viewbox_h (fallback: 0).
+    """
+    base = ctx.viewbox_h if ctx.viewbox_h > 0 else 0.0
+    px = _f_pct(val_str, base, default)
+    return px * ctx.scale_y
+
+
+def ctx_x_pct(val_str: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    """Parse an x coordinate that may be a percentage, then apply context transform.
+
+    Percentage is resolved against ctx.viewbox_w.
+    """
+    base = ctx.viewbox_w if ctx.viewbox_w > 0 else 0.0
+    px = _f_pct(val_str, base, default)
+    return px * ctx.scale_x + ctx.translate_x
+
+
+def ctx_y_pct(val_str: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    """Parse a y coordinate that may be a percentage, then apply context transform.
+
+    Percentage is resolved against ctx.viewbox_h.
+    """
+    base = ctx.viewbox_h if ctx.viewbox_h > 0 else 0.0
+    px = _f_pct(val_str, base, default)
+    return px * ctx.scale_y + ctx.translate_y
 
 
 # ---------------------------------------------------------------------------
