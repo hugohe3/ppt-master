@@ -19,6 +19,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 configure_utf8_stdio()
@@ -1082,6 +1083,8 @@ def main() -> int:
         epilog='''
 Examples:
   python pdf_to_md.py book.pdf                    # Convert a single file
+  python pdf_to_md.py book.pdf appendix.pdf       # Convert multiple files
+  python pdf_to_md.py ./pdfs -o ./markdown        # Convert PDFs in a directory
   python pdf_to_md.py book.pdf -o output.md      # Specify output file
   python pdf_to_md.py book.pdf --render-vector-figures
 
@@ -1095,8 +1098,12 @@ Structure detection features:
 '''
     )
 
-    parser.add_argument('input', help='PDF file')
-    parser.add_argument('-o', '--output', help='Output Markdown file')
+    parser.add_argument('inputs', nargs='+', help='PDF file(s) or directories')
+    parser.add_argument(
+        '-o',
+        '--output',
+        help='Output Markdown file for one input, or output directory for multiple inputs/directories',
+    )
     parser.add_argument(
         '--images',
         choices=['all', 'filtered', 'none'],
@@ -1117,22 +1124,21 @@ Structure detection features:
 
     args = parser.parse_args()
 
-    input_path = Path(args.input)
-
-    if not input_path.is_file():
-        print(f"Error: PDF file not found: {args.input}")
-        return 1
-
-    output = args.output or str(input_path.with_suffix('.md'))
-    extract_pdf_to_markdown(
-        str(input_path),
-        output,
-        images=args.images,
-        render_vector_figures=args.render_vector_figures,
-        vector_figure_dpi=args.vector_figure_dpi,
+    return run_path_batch(
+        args.inputs,
+        {'.pdf'},
+        args.output,
+        lambda source, output: bool(
+            extract_pdf_to_markdown(
+                str(source),
+                str(output),
+                images=args.images,
+                render_vector_figures=args.render_vector_figures,
+                vector_figure_dpi=args.vector_figure_dpi,
+            )
+        ),
     )
-    return 0
 
 
 if __name__ == '__main__':
-    exit(main())
+    raise SystemExit(main())

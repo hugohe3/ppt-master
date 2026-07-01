@@ -5,11 +5,12 @@ PPT Master - Unified Markdown Converter
 Auto-detect source type and dispatch to the existing source_to_md converters.
 
 Usage:
-    python3 scripts/source_to_md.py <file_or_url> [<file_or_url> ...] [options]
+    python3 scripts/source_to_md.py <file_or_url_or_dir> [<file_or_url_or_dir> ...] [options]
 
 Examples:
     python3 scripts/source_to_md.py paper.pdf
     python3 scripts/source_to_md.py paper.pdf report.docx deck.pptx
+    python3 scripts/source_to_md.py ./sources -o ./markdown
     python3 scripts/source_to_md.py report.docx -o report.md
     python3 scripts/source_to_md.py deck.pptx --json
 
@@ -21,11 +22,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
-from urllib.parse import urlparse
 
 _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -42,6 +42,7 @@ from _conversion_profile import (  # noqa: E402
     profile_path_for,
     write_conversion_profile,
 )
+from _batch import expand_directory_inputs, unique_output_path  # noqa: E402
 from _dispatcher import (  # noqa: E402
     build_conversion_command,
     default_markdown_path,
@@ -60,23 +61,34 @@ def _print_status(message: str) -> None:
     print(message, file=sys.stderr)
 
 
-def _sanitize_output_stem(value: str) -> str:
-    safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", value.strip())
-    safe = safe.strip("._-")
-    while "__" in safe:
-        safe = safe.replace("__", "_")
-    return safe[:120] or "web_source"
+def _is_supported_directory_item(path: Path) -> bool:
+    return detect_source_type(str(path)) in {
+        "pdf", "doc", "excel", "pptx", "markdown", "text",
+    }
 
 
-def _default_batch_output(input_arg: str, conversion_type: str) -> str | None:
-    """Return a deterministic per-source output path for batch mode."""
-    if conversion_type == "web":
-        parsed = urlparse(input_arg)
-        parts = [parsed.netloc]
-        if parsed.path and parsed.path != "/":
-            parts.append(parsed.path.strip("/").replace("/", "_"))
-        return str(Path(f"{_sanitize_output_stem('_'.join(parts))}.md"))
-    return str(default_markdown_path(input_arg))
+def _dispatch_output_arg(
+    input_arg: str,
+    conversion_type: str,
+    output_arg: str | None,
+    batch_mode: bool,
+    used_outputs: set[Path],
+) -> str | None:
+    if output_arg and batch_mode and conversion_type == "web":
+        return None
+    if output_arg and batch_mode:
+        return str(
+            unique_output_path(
+                Path(output_arg),
+                default_markdown_path(input_arg).stem,
+                used_outputs,
+            )
+        )
+    if output_arg:
+        return output_arg
+    if batch_mode and conversion_type != "web":
+        return str(default_markdown_path(input_arg))
+    return None
 
 
 def run_backend(command: list[str], script_name: str) -> int:
@@ -176,6 +188,15 @@ def print_json_result(
     print(json.dumps(payload, ensure_ascii=False))
 
 
+def _read_emit_result(path: Path) -> Path | None:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    markdown = payload.get("markdown")
+    return Path(markdown) if isinstance(markdown, str) and markdown else None
+
+
 def _pdf_image_mode(args: argparse.Namespace) -> str | None:
     image_mode = args.images
     if args.no_images:
@@ -202,18 +223,11 @@ def dispatch_single(
     output_arg: str | None,
     args: argparse.Namespace,
     unknown_args: list[str],
+    web_output_dir: str | None = None,
 ) -> int:
     """Dispatch one source to the matching existing converter."""
     if conversion_type == "auto":
         conversion_type = detect_source_type(input_arg)
-
-    if conversion_type == "directory":
-        print(
-            "[ERROR] Directories are not supported by source_to_md.py; "
-            "use project_manager.py import-sources for multi-source project intake.",
-            file=sys.stderr,
-        )
-        return 1
 
     if conversion_type == "markdown":
         output = resolve_output(output_arg, input_arg)
@@ -224,25 +238,51 @@ def dispatch_single(
 
     if conversion_type == "web":
         output = Path(output_arg) if output_arg else None
+        emit_result: Path | None = None
+        extra_args = list(unknown_args)
+        if output is None:
+            emit_file = tempfile.NamedTemporaryFile(
+                prefix="ppt-master-web-result-",
+                suffix=".json",
+                delete=False,
+            )
+            emit_file.close()
+            emit_result = Path(emit_file.name)
+            extra_args.extend(["--emit-result", str(emit_result)])
+            if web_output_dir:
+                extra_args.extend(["--dir", web_output_dir])
         try:
             route = build_conversion_command(
                 input_arg,
                 output,
                 forced_type="web",
-                extra_args=unknown_args,
+                extra_args=extra_args,
             )
         except ValueError as exc:
+            if emit_result:
+                emit_result.unlink(missing_ok=True)
             print(f"[ERROR] {exc}", file=sys.stderr)
             return 1
         rc = run_backend(route.command, route.script_name)
         if rc != 0:
+            if emit_result:
+                emit_result.unlink(missing_ok=True)
             return rc
-        if route.output_path and route.output_path.is_file():
-            profile = ensure_profile(input_arg, route.output_path, route.script_name, "web")
-            print_output(route.output_path)
+        output_path = route.output_path
+        if output_path is None and emit_result is not None:
+            output_path = _read_emit_result(emit_result)
+            emit_result.unlink(missing_ok=True)
+        if output_path and output_path.is_file():
+            profile = ensure_profile(input_arg, output_path, route.script_name, "web")
+            print_output(output_path)
             if args.json:
-                print_json_result(input_arg, route.output_path, route.script_name, "web", profile)
-        return 0
+                print_json_result(input_arg, output_path, route.script_name, "web", profile)
+            return 0
+        if output is not None:
+            print(f"[ERROR] Expected Markdown output not found: {output}", file=sys.stderr)
+        else:
+            print("[ERROR] Web conversion did not report a Markdown output path", file=sys.stderr)
+        return 1
 
     if conversion_type not in {"pdf", "doc", "excel", "pptx"}:
         print(
@@ -291,6 +331,7 @@ def build_parser() -> argparse.ArgumentParser:
 Examples:
   python3 scripts/source_to_md.py paper.pdf
   python3 scripts/source_to_md.py paper.pdf report.docx deck.pptx
+  python3 scripts/source_to_md.py ./sources -o ./markdown
   python3 scripts/source_to_md.py report.docx -o output.md
   python3 scripts/source_to_md.py deck.pptx --json
   python3 scripts/source_to_md.py https://example.com/article -o article.md
@@ -299,7 +340,7 @@ Backend-specific flags not listed here are passed through to the selected
 converter, so existing converter behavior remains the source of truth.
         """,
     )
-    parser.add_argument("inputs", nargs="+", help="Input file(s) or URL(s)")
+    parser.add_argument("inputs", nargs="+", help="Input file(s), directories, or URL(s)")
     parser.add_argument(
         "-t",
         "--type",
@@ -307,7 +348,11 @@ converter, so existing converter behavior remains the source of truth.
         default="auto",
         help="Force a conversion type (default: auto)",
     )
-    parser.add_argument("-o", "--output", help="Output Markdown file")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output Markdown file for one input, or output directory for multiple inputs/directories",
+    )
     parser.add_argument(
         "--images",
         choices=["all", "filtered", "none"],
@@ -360,31 +405,63 @@ def dispatch_many(
     args: argparse.Namespace,
     unknown_args: list[str],
     conversion_types: list[str],
+    batch_mode: bool = False,
+    initial_failures: list[str] | None = None,
 ) -> int:
     success_count = 0
-    failed: list[tuple[str, int]] = []
-    batch_mode = len(inputs) > 1
+    failed: list[str] = []
+    skipped: list[str] = list(initial_failures or [])
+    batch_mode = batch_mode or len(inputs) > 1
+    if args.output and batch_mode:
+        output_dir = Path(args.output)
+        if output_dir.exists() and not output_dir.is_dir():
+            print(f"[ERROR] Batch output path is not a directory: {args.output}", file=sys.stderr)
+            return 1
+        output_dir.mkdir(parents=True, exist_ok=True)
 
+    used_outputs: set[Path] = set()
     for input_arg, conversion_type in zip(inputs, conversion_types):
-        output_arg = args.output
+        output_arg = _dispatch_output_arg(
+            input_arg,
+            conversion_type,
+            args.output,
+            batch_mode,
+            used_outputs,
+        )
+        web_output_dir = (
+            args.output
+            if args.output and batch_mode and conversion_type == "web"
+            else None
+        )
         if batch_mode:
-            output_arg = _default_batch_output(input_arg, conversion_type)
             _print_status(f"\n==> {input_arg}")
 
-        rc = dispatch_single(input_arg, conversion_type, output_arg, args, unknown_args)
+        rc = dispatch_single(
+            input_arg,
+            conversion_type,
+            output_arg,
+            args,
+            unknown_args,
+            web_output_dir=web_output_dir,
+        )
         if rc == 0:
             success_count += 1
         else:
-            failed.append((input_arg, rc))
+            failed.append(f"{input_arg}: exit {rc}")
 
     if batch_mode:
         _print_status(f"\n[Done] Success: {success_count}/{len(inputs)}, Failed: {len(failed)}")
+        if skipped:
+            _print_status("\n[Skipped directories]:")
+            for item in skipped:
+                _print_status(f"  - {item}")
         if failed:
             _print_status("\n[Failed inputs]:")
-            for input_arg, rc in failed:
-                _print_status(f"  - {input_arg}: exit {rc}")
-            return 1
-    return 0 if not failed else failed[0][1]
+            for item in failed:
+                _print_status(f"  - {item}")
+    if not inputs:
+        return 1
+    return 0 if not failed and not skipped else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -394,11 +471,14 @@ def main(argv: list[str] | None = None) -> int:
     if not _validate_image_options(args):
         return 2
 
-    if len(args.inputs) > 1 and args.output:
-        print("[ERROR] -o/--output is only valid with a single input", file=sys.stderr)
-        return 2
+    inputs, expansion_errors, saw_directory = expand_directory_inputs(
+        args.inputs,
+        _is_supported_directory_item,
+        is_external_ref=is_url,
+    )
+    batch_mode = saw_directory or len(inputs) > 1
 
-    conversion_types = [_conversion_type_for_input(item, args.type) for item in args.inputs]
+    conversion_types = [_conversion_type_for_input(item, args.type) for item in inputs]
     if not _validate_pdf_image_flags(args, conversion_types):
         return 2
 
@@ -411,7 +491,14 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2
 
-    return dispatch_many(args.inputs, args, unknown_args, conversion_types)
+    return dispatch_many(
+        inputs,
+        args,
+        unknown_args,
+        conversion_types,
+        batch_mode=batch_mode,
+        initial_failures=expansion_errors,
+    )
 
 
 if __name__ == "__main__":

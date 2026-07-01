@@ -10,7 +10,7 @@ Main entry point for project setup and validation.
 
 ```bash
 python3 scripts/project_manager.py init <project_name> --format ppt169
-python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...]
+python3 scripts/project_manager.py import-sources <project_path> <source1_or_dir> [<source2_or_dir> ...]
 python3 scripts/project_manager.py validate <project_path>
 python3 scripts/project_manager.py info <project_path>
 ```
@@ -18,6 +18,9 @@ python3 scripts/project_manager.py info <project_path>
 Notes:
 - Files outside the repo are copied into `sources/` by default
 - With `--move`, files outside the repo are moved into `sources/`
+- Directory inputs are expanded non-recursively. After Step 1 conversion,
+  pass both the original source file/directory and the generated Markdown
+  file/directory so both are archived under `sources/`.
 - Files already inside the repo are moved into `sources/` by default (with a stderr
   note), to avoid leaving unintended artifacts that could be committed by mistake.
   Pass `--copy` to force a copy for in-repo sources instead.

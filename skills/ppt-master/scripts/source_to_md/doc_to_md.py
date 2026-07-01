@@ -38,6 +38,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 configure_utf8_stdio()
@@ -1448,7 +1449,7 @@ def convert_to_markdown(input_path: str, output_path: str | None = None) -> str:
     return markdown
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Convert documents to Markdown "
                     "(pure-Python for common formats, pandoc fallback for the rest)",
@@ -1456,6 +1457,8 @@ def main() -> None:
         epilog="""
 Examples:
   python doc_to_md.py lecture.docx                # Word → Markdown (mammoth)
+  python doc_to_md.py lecture.docx notes.html     # Convert multiple files
+  python doc_to_md.py ./docs -o ./markdown        # Convert supported files in a directory
   python doc_to_md.py article.html                # HTML → Markdown (markdownify)
   python doc_to_md.py book.epub                   # EPUB → Markdown (ebooklib)
   python doc_to_md.py notebook.ipynb              # Jupyter → Markdown (nbconvert)
@@ -1468,13 +1471,22 @@ Pandoc fallback formats (require system pandoc):
   .doc  .odt  .rtf  .tex/.latex  .rst  .org  .typ
         """,
     )
-    parser.add_argument("input", help="Input document file")
-    parser.add_argument("-o", "--output", help="Output Markdown file path")
+    parser.add_argument("inputs", nargs="+", help="Input document file(s) or directories")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output Markdown file for one input, or output directory for multiple inputs/directories",
+    )
     args = parser.parse_args()
 
-    result = convert_to_markdown(args.input, args.output)
-    sys.exit(0 if result else 1)
+    supported_suffixes = set(NATIVE_FORMATS) | set(PANDOC_FORMATS)
+    return run_path_batch(
+        args.inputs,
+        supported_suffixes,
+        args.output,
+        lambda source, output: bool(convert_to_markdown(str(source), str(output))),
+    )
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -39,6 +39,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 from pptx import Presentation
@@ -842,7 +843,7 @@ def convert_presentation_to_markdown(
     return markdown_content
 
 
-def main() -> None:
+def main() -> int:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Convert PowerPoint files to Markdown",
@@ -850,6 +851,8 @@ def main() -> None:
         epilog="""
 Examples:
   python ppt_to_md.py slides.pptx
+  python ppt_to_md.py slides.pptx appendix.pptx
+  python ppt_to_md.py ./decks -o ./markdown
   python ppt_to_md.py slides.pptx -o output.md
   python ppt_to_md.py deck.ppsx -o notes/deck.md
 
@@ -859,20 +862,22 @@ Supported formats:
 Legacy .ppt is not parsed directly. Resave it as .pptx or export it to PDF first.
         """,
     )
-    parser.add_argument("input", help="Input PowerPoint file")
-    parser.add_argument("-o", "--output", help="Output Markdown file")
+    parser.add_argument("inputs", nargs="+", help="Input PowerPoint file(s) or directories")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Output Markdown file for one input, or output directory for multiple inputs/directories",
+    )
 
     args = parser.parse_args()
-    input_path = Path(args.input)
 
-    if not input_path.is_file():
-        print(f"Error: PowerPoint file not found: {args.input}")
-        sys.exit(1)
-
-    output = args.output or str(input_path.with_suffix(".md"))
-    result = convert_presentation_to_markdown(str(input_path), output)
-    sys.exit(0 if result else 1)
+    return run_path_batch(
+        args.inputs,
+        set(SUPPORTED_FORMATS),
+        args.output,
+        lambda source, output: bool(convert_presentation_to_markdown(str(source), str(output))),
+    )
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
