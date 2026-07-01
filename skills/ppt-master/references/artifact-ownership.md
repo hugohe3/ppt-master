@@ -10,8 +10,9 @@ Global artifact ownership rules for PPT Master projects.
 
 | Artifact | Owner | Role | Read/write contract |
 |---|---|---|---|
-| `sources/<stem>.md` | Content contract | Main pipeline source for text, tables, and chart data values | Strategist reads for content; do not replace values with PPTX geometry JSON in the main pipeline |
-| `sources/` originals | Source archive | Imported source files and source-adjacent extracted assets | Project manager imports here; downstream reads by route |
+| `sources/` content-type files | Content contract | Main pipeline source for text, tables, and chart data values | Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judges by content; do not replace values with PPTX geometry JSON in the main pipeline |
+| `sources/` converted-source originals | Source archive | Imported source files that have a converted content contract (`.pdf` / `.pptx` / `.docx` / `.xlsx` / `.html` / `.epub` / `.tex` / `.rst` / `.ipynb` / `.typ`, etc.) and source-adjacent extracted assets | Read via the converted `<stem>.md` in the main pipeline; direct-PPTX workflows read the `.pptx` by route |
+| `sources/*.conversion_profile.json`, `sources/*_files/image_manifest.json` | Pipeline sidecar | Conversion audit record / asset index | NOT read as slide content; open only to audit a conversion or resolve assets |
 | `analysis/source_profile.json` | Machine fact index | Compact Strategist-facing PPTX intake digest | Main pipeline reads as factual context and recommendation candidates |
 | `analysis/<stem>.identity.json` | Native deck identity facts | Canvas, theme palette/fonts, observed usage | Read selectively when detailed identity facts are needed |
 | `analysis/<stem>.slide_library.json` | Native PPTX structure facts | Text slots, geometry, native tables, native chart caches | Direct PPTX workflows use as native fill/structure contract |
@@ -37,7 +38,8 @@ Global artifact ownership rules for PPT Master projects.
 
 | Invariant | Rule |
 |---|---|
-| Content values | Main pipeline text, tables, and chart values come from `sources/<stem>.md`, not from `slide_library.json`. |
+| Content values | Main pipeline text, tables, and chart values come from content-type files in `sources/` (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), not from `slide_library.json`. |
+| Sources read policy | In `sources/`, read content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judge by content — a `.json` / `.csv` may be core content or just data. Exclude known sidecars: `*.conversion_profile.json` and `*_files/image_manifest.json`. `analysis/` facts (`source_profile.json`, `<stem>.slide_library.json`) are read per Step 4 / direct-PPTX workflow, not in the `sources/` content scan. |
 | PPTX structure | `slide_library.json` owns native geometry and slot facts for direct PPTX workflows. |
 | Design contract | `design_spec.md` explains; `spec_lock.md` executes. Executor must not infer execution values from prose. |
 | Image facts | `images/` is live state; `analysis/image_analysis.csv` is a regenerated view, not a durable cache. |

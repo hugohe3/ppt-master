@@ -18,7 +18,7 @@ The generated PPTX is a **design draft**, not a finished product. Think of it li
 User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ↓
 [Source Content Conversion] → source_to_md/pdf_to_md.py / doc_to_md.py / excel_to_md.py / ppt_to_md.py / web_to_md.py
-    ├── Markdown is the content contract
+    ├── Content-type files in sources/ are the content contract
     └── PPTX intake writes analysis/<stem>.identity.json, <stem>.slide_library.json, source_profile.json
     ↓
 [Create Project] → project_manager.py init <project_name> --format <format>
@@ -110,7 +110,7 @@ Artifact source/derived ownership is authoritative in [`artifact-ownership.md`](
 The workflow is easier to maintain if the artifacts are read as a dataflow rather than as folders that happen to exist:
 
 ```text
-sources/<stem>.md ──────────────┐
+sources/<content files> ────────┐
 analysis/source_profile.json ───┼─> Strategist -> design_spec.md + spec_lock.md
 analysis/image_analysis.csv ────┘
 
@@ -167,7 +167,7 @@ Source documents (PDF / DOCX / EPUB / XLSX / PPTX / web pages) are normalized be
 
 | Channel | Artifact | Owner | Used for |
 |---|---|---|---|
-| Content contract | `sources/<stem>.md` | `source_to_md/*` converters | text, tables, chart values, citations, and source narrative |
+| Content contract | `sources/` content-type files (primarily `<stem>.md`) | `source_to_md/*` converters + `import-sources` | text, tables, chart values, citations, and source narrative |
 | Structured analysis | `analysis/*.json` / `analysis/*.csv` | intake and analysis tools | PPTX identity, slide geometry, native tables/charts, image dimensions/colors/subjects |
 
 For PPTX sources, `project_manager.py import-sources` runs both `ppt_to_md.py` and `pptx_intake.py`. The Markdown remains the content source for the main generation pipeline. The intake bundle writes `<stem>.identity.json`, `<stem>.slide_library.json`, and merges a compact multi-deck index into `analysis/source_profile.json`. Strategist reads the compact index for source facts and opens raw per-deck artifacts only when a workflow needs them. That distinction matters: the main pipeline may rethink page count and story, while `template-fill` and `beautify` promote parts of the same intake facts into stronger constraints.
@@ -212,7 +212,7 @@ These invariants are stronger than ordinary implementation preferences. If a cha
 
 | Invariant | Practical consequence |
 |---|---|
-| `sources/<stem>.md` is the main-pipeline content contract | text, tables, and chart values come from Markdown in the main SVG route |
+| `sources/` content-type files are the main-pipeline content contract | text, tables, and chart values come from content-type files in `sources/` (Markdown is primary, but `.txt` / `.csv` / `.json` / `.yaml` / … count too); known sidecars (`*.conversion_profile.json`, `*_files/image_manifest.json`) are excluded |
 | `analysis/` stores machine facts, not design contracts | `source_profile.json` and intake artifacts inform Strategist; they do not lock page count/order except in workflows that say so |
 | `design_spec.md` explains the design; `spec_lock.md` executes it | Executor reads locked values from `spec_lock.md`, not from prose memory |
 | `spec_lock.md` is re-read before every page | colors, fonts, icons, images, rhythm, layouts, and chart choices stay stable across long decks |
