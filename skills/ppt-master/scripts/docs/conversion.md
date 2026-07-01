@@ -4,6 +4,67 @@
 
 Source conversion tools turn PDFs, documents, slide decks, and web pages into Markdown before project creation.
 
+Default workflow entry: use `source_to_md.py` unless a backend-specific
+diagnostic or forced route is needed.
+
+## Shared Output Contract
+
+All `source_to_md` converters keep their existing Markdown output behavior and
+now also write a lightweight sidecar profile when conversion succeeds:
+
+| Output | Convention |
+|---|---|
+| Markdown | `<stem>.md` unless `-o` selects another path |
+| Asset directory | `<stem>_files/` when the backend extracts images or media |
+| Image manifest | `<stem>_files/image_manifest.json` when image metadata is available |
+| Conversion profile | `<stem>.conversion_profile.json` beside the Markdown output |
+
+The conversion profile is metadata only. It records the converter, source path,
+Markdown structure counts, asset directory, image manifest path, and image
+count. Downstream PPT workflows still use the Markdown and image manifest as the
+content/asset contract; the profile is for inspection and debugging.
+
+## `source_to_md.py`
+
+Unified dispatcher for ad hoc explicit-source conversion. It auto-detects each
+listed input file or URL and calls the existing backend converter, so backend
+behavior remains the source of truth.
+
+Routing is centralized in `source_to_md/_dispatcher.py` and reused by
+`project_manager.py import-sources`; do not add a second type-to-backend table.
+
+```bash
+python3 scripts/source_to_md.py paper.pdf
+python3 scripts/source_to_md.py paper.pdf report.docx deck.pptx
+python3 scripts/source_to_md.py ./pdfs/*.pdf
+python3 scripts/source_to_md.py ./decks/*.pptx
+python3 scripts/source_to_md.py report.docx -o report.md
+python3 scripts/source_to_md.py workbook.xlsx --json
+python3 scripts/source_to_md.py deck.pptx
+python3 scripts/source_to_md.py https://example.com/article -o article.md
+```
+
+Useful options:
+- `-t pdf|doc|excel|pptx|web|markdown|text` forces a route when extension
+  detection is not enough.
+- `--json` prints a compact machine-readable result after success when the
+  output path is known. With multiple inputs, each successful conversion prints
+  its own JSON line after that source finishes.
+- `--images all|filtered|none`, `--no-images`, and `--filter-images` map to the
+  existing PDF image mode. They are intentionally PDF-only until other backends
+  expose the same behavior natively.
+- Unknown backend-specific flags are passed through to each selected converter.
+- `-o/--output` is valid only with one input. Multiple explicit inputs write
+  one Markdown/profile pair per source.
+
+For multi-source project intake, use `project_manager.py import-sources` with
+all source paths / URLs. `source_to_md.py` intentionally rejects directory
+batching; pass explicit files/URLs or use project intake.
+
+Backend converters are single-file tools. For ad hoc multi-file conversion,
+pass explicit files or shell-expanded globs to `source_to_md.py`; for project
+intake, use `project_manager.py import-sources`.
+
 ## `source_to_md/pdf_to_md.py`
 
 Recommended first choice for native PDFs.
@@ -11,8 +72,6 @@ Recommended first choice for native PDFs.
 ```bash
 python3 scripts/source_to_md/pdf_to_md.py book.pdf
 python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
-python3 scripts/source_to_md/pdf_to_md.py ./pdfs
-python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown
 
 # Image extraction control (default: filtered)
 python3 scripts/source_to_md/pdf_to_md.py book.pdf --images filtered  # size/quality filters applied
@@ -69,6 +128,7 @@ pip install mammoth markdownify ebooklib nbconvert beautifulsoup4
 ```
 
 All paths produce the same output convention: `<input>.md` plus a sibling `<input>_files/` directory containing extracted images with relative references.
+On success, a sibling `<input>.conversion_profile.json` is also written.
 
 ## `source_to_md/excel_to_md.py`
 
@@ -93,6 +153,7 @@ Behavior:
 - trims empty outer rows and columns
 - propagates merged-cell labels for readable Markdown tables
 - exports formula cells as cached values; it does not recalculate formulas
+- writes `<input>.conversion_profile.json` after successful conversion
 
 Dependency:
 
@@ -114,8 +175,6 @@ Supported formats include:
 ```bash
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx -o output.md
-python3 scripts/source_to_md/ppt_to_md.py ./decks
-python3 scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown
 python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 ```
 
@@ -125,6 +184,7 @@ Behavior:
 - transcribes native chart data (type + categories × series values) into a Markdown table, so chart numbers are not lost in conversion
 - exports embedded pictures to a sibling `_files/` directory
 - appends speaker notes when present
+- writes `<input>.conversion_profile.json` after successful conversion
 
 Dependency:
 
@@ -172,6 +232,9 @@ automatically impersonates a modern Chrome TLS fingerprint, which lets it
 fetch WeChat Official Accounts (`mp.weixin.qq.com`) and other sites that
 block Python's default TLS fingerprint. No extra flags needed. If
 `curl_cffi` is not available, it falls back to plain `requests`.
+
+On success, the converter writes `<output>.conversion_profile.json` beside the
+Markdown output.
 
 
 ## `rotate_images.py`

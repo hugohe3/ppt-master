@@ -69,12 +69,8 @@ description: >
 
 | Script | Purpose |
 |--------|---------|
-| `${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py` | PDF to Markdown |
-| `${SKILL_DIR}/scripts/source_to_md/doc_to_md.py` | Documents to Markdown — native Python for DOCX/HTML/EPUB/IPYNB, pandoc fallback for legacy formats (.doc/.odt/.rtf/.tex/.rst/.org/.typ) |
-| `${SKILL_DIR}/scripts/source_to_md/excel_to_md.py` | Excel workbooks to Markdown — supports .xlsx/.xlsm; legacy .xls should be resaved as .xlsx |
-| `${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py` | PowerPoint to Markdown |
+| `${SKILL_DIR}/scripts/source_to_md.py` | Unified source-to-Markdown dispatcher — default Step 1 entry for explicit file(s) or URL(s) |
 | `${SKILL_DIR}/scripts/pptx_intake.py` | Standard PPTX intake enrichment — canvas / identity / slide geometry / tables / native chart data |
-| `${SKILL_DIR}/scripts/source_to_md/web_to_md.py` | Web page to Markdown (supports WeChat via `curl_cffi`) |
 | `${SKILL_DIR}/scripts/project_manager.py` | Project init / validate / manage |
 | `${SKILL_DIR}/scripts/icon_sync.py` | Copy chosen library icons into `<project>/icons/` at selection time; missing names reported + non-zero (re-pick gate) |
 | `${SKILL_DIR}/scripts/analyze_images.py` | Image analysis |
@@ -114,7 +110,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 |---|---|
 | Raw PPTX template plus new material/topic, generate a PPTX | [`template-fill-pptx`](workflows/template-fill-pptx.md) |
 | Existing PPTX, preserve page count/order and slide wording 1:1, improve layout | [`beautify-pptx`](workflows/beautify-pptx.md) |
-| Existing PPTX as source material, rethink outline or change page count/order | Main pipeline via `ppt_to_md.py` plus PPTX intake |
+| Existing PPTX as source material, rethink outline or change page count/order | Main pipeline via `source_to_md.py` plus PPTX intake |
 | Build a reusable template package from a PPTX/design reference | [`create-template`](workflows/create-template.md), then return with the generated template directory path |
 | Finished PPTX, keep content/layout stable and add notes/audio/timing/transitions | [`native-enhance-pptx`](workflows/native-enhance-pptx.md) |
 
@@ -134,23 +130,26 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 > **No source content?** When the user supplies only a topic name or requirements without any file or substantive description, run the [`topic-research`](workflows/topic-research.md) workflow first, then return here with its products as input.
 
-When the user provides non-Markdown content, convert immediately:
+When the user provides non-Markdown content, convert immediately through the
+unified dispatcher. It preserves the backend converters' existing behavior,
+routes by source type, and writes the standard Markdown plus conversion profile.
 
-| User Provides | Command |
-|---------------|---------|
-| PDF file | `python3 ${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py <file>` |
-| DOCX / Word / Office document | `python3 ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
-| XLSX / XLSM / Excel workbook | `python3 ${SKILL_DIR}/scripts/source_to_md/excel_to_md.py <file>` |
+| User Provides | Action |
+|---------------|--------|
+| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL> [<file_or_URL> ...]` |
 | CSV / TSV | Read directly as plain-text table source |
-| PPTX / PowerPoint deck | `python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <file>` for Markdown content; after Step 2 `import-sources`, standard PPTX intake is also written to `<project>/analysis/` |
-| EPUB / HTML / LaTeX / RST / other | `python3 ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
-| Web link | `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` |
-| WeChat / high-security site | `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` (requires `curl_cffi`, included in `requirements.txt`) |
 | Markdown | Read directly |
 
+For PPTX sources, Step 1 converts the deck to Markdown content; after Step 2
+`import-sources`, standard PPTX intake is also written to `<project>/analysis/`.
+Use `source_to_md.py -t <type>` only when extension detection is ambiguous. Use
+`-o` only with a single input; explicit multi-input conversion writes one
+Markdown/profile pair per source. Backend converter details are documented in
+[`scripts/docs/conversion.md`](scripts/docs/conversion.md).
+
 > **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
-> `doc_to_md.py` / `ppt_to_md.py` extract embedded Office vector images (.emf/.wmf)
-> alongside bitmap images. After `import-sources`, these land in `images/`
+> Source conversion extracts embedded Office vector images (.emf/.wmf)
+> alongside bitmap images when the source format exposes them. After `import-sources`, these land in `images/`
 > together with `image_manifest.json` and are first-class assets in §VIII Image Resource List.
 >
 > **Do NOT convert EMF/WMF to PNG.** The PPT Master pipeline preserves them as external

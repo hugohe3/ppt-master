@@ -43,6 +43,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -869,8 +870,17 @@ def process_url(url: str, output_file: str | None = None) -> tuple[bool, str, st
 
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(full_content)
+        profile_path = write_conversion_profile_best_effort(
+            input_path=url,
+            markdown_path=output_path,
+            converter="web_to_md.py",
+            conversion_type="web",
+            asset_dir=image_dir,
+        )
 
         print(f"   [OK] Saved: {output_path}")
+        if profile_path:
+            print(f"   [OK] Conversion profile: {profile_path}")
         return True, url, None
 
     except Exception as e:

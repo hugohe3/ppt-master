@@ -19,6 +19,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -1059,48 +1060,18 @@ def extract_pdf_to_markdown(
                 json.dumps(image_manifest, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
+        profile_path = write_conversion_profile_best_effort(
+            input_path=pdf_path,
+            markdown_path=output_path,
+            converter="pdf_to_md.py",
+            conversion_type="pdf",
+            asset_dir=img_dir,
+        )
         print(f"[OK] Saved Markdown to: {output_path}")
+        if profile_path:
+            print(f"   Wrote conversion profile -> {profile_path}")
 
     return markdown_content
-
-
-def process_directory(
-    input_dir: str,
-    output_dir: str | None = None,
-    images: str = "filtered",
-    render_vector_figures: bool = False,
-    vector_figure_dpi: int = VECTOR_FIGURE_DPI,
-) -> None:
-    """Convert all PDFs in a directory to Markdown.
-
-    Args:
-        input_dir: Directory containing PDF files.
-        output_dir: Optional output directory for Markdown files.
-        images: Image extraction mode passed through to each file conversion.
-        render_vector_figures: Rasterize large vector drawing regions as PNGs.
-        vector_figure_dpi: DPI used for rendered vector figure PNGs.
-    """
-    input_path = Path(input_dir)
-
-    if output_dir:
-        output_path = Path(output_dir)
-    else:
-        output_path = input_path
-
-    pdf_files = sorted(input_path.glob('*.pdf'))
-
-    print(f"Found {len(pdf_files)} PDF files")
-
-    for pdf_file in pdf_files:
-        output_file = output_path / (pdf_file.stem + '.md')
-        print(f"Processing: {pdf_file.name}")
-        extract_pdf_to_markdown(
-            str(pdf_file),
-            str(output_file),
-            images=images,
-            render_vector_figures=render_vector_figures,
-            vector_figure_dpi=vector_figure_dpi,
-        )
 
 
 def main() -> int:
@@ -1113,8 +1084,6 @@ Examples:
   python pdf_to_md.py book.pdf                    # Convert a single file
   python pdf_to_md.py book.pdf -o output.md      # Specify output file
   python pdf_to_md.py book.pdf --render-vector-figures
-  python pdf_to_md.py ./pdfs                      # Convert all PDFs in directory
-  python pdf_to_md.py ./pdfs -o ./markdown       # Specify output directory
 
 Structure detection features:
   - Auto-detect heading levels (based on font size)
@@ -1126,8 +1095,8 @@ Structure detection features:
 '''
     )
 
-    parser.add_argument('input', help='PDF file or directory containing PDFs')
-    parser.add_argument('-o', '--output', help='Output file or directory')
+    parser.add_argument('input', help='PDF file')
+    parser.add_argument('-o', '--output', help='Output Markdown file')
     parser.add_argument(
         '--images',
         choices=['all', 'filtered', 'none'],
@@ -1150,27 +1119,18 @@ Structure detection features:
 
     input_path = Path(args.input)
 
-    if input_path.is_file():
-        output = args.output or str(input_path.with_suffix('.md'))
-        extract_pdf_to_markdown(
-            str(input_path),
-            output,
-            images=args.images,
-            render_vector_figures=args.render_vector_figures,
-            vector_figure_dpi=args.vector_figure_dpi,
-        )
-    elif input_path.is_dir():
-        process_directory(
-            str(input_path),
-            args.output,
-            images=args.images,
-            render_vector_figures=args.render_vector_figures,
-            vector_figure_dpi=args.vector_figure_dpi,
-        )
-    else:
-        print(f"Error: File or directory not found: {args.input}")
+    if not input_path.is_file():
+        print(f"Error: PDF file not found: {args.input}")
         return 1
 
+    output = args.output or str(input_path.with_suffix('.md'))
+    extract_pdf_to_markdown(
+        str(input_path),
+        output,
+        images=args.images,
+        render_vector_figures=args.render_vector_figures,
+        vector_figure_dpi=args.vector_figure_dpi,
+    )
     return 0
 
 
