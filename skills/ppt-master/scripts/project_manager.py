@@ -565,6 +565,14 @@ class ProjectManager:
             move=move,
         )
 
+        profile_src = source_path.with_name(f"{source_path.stem}.conversion_profile.json")
+        if profile_src.is_file():
+            self._copy_or_move_file(
+                profile_src,
+                sources_dir / f"{archived_markdown.stem}.conversion_profile.json",
+                move=move,
+            )
+
         asset_dir = self._companion_asset_dir(source_path)
         if asset_dir is None:
             return archived_markdown, None, None

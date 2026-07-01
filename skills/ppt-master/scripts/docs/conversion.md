@@ -4,15 +4,77 @@
 
 Source conversion tools turn PDFs, documents, slide decks, and web pages into Markdown before project creation.
 
+Default workflow entry: use `source_to_md.py` unless a backend-specific
+diagnostic or forced route is needed.
+
+## Shared Output Contract
+
+All `source_to_md` converters keep their existing Markdown output behavior and
+now also write a lightweight sidecar profile when conversion succeeds:
+
+| Output | Convention |
+|---|---|
+| Markdown | `<stem>.md` beside the local source unless `-o` selects another path |
+| Asset directory | `<stem>_files/` when the backend extracts images or media |
+| Image manifest | `<stem>_files/image_manifest.json` when image metadata is available |
+| Conversion profile | `<stem>.conversion_profile.json` beside the Markdown output |
+
+The conversion profile is metadata only. It records the converter, source path,
+Markdown structure counts, asset directory, image manifest path, and image
+count. Downstream PPT workflows still use the Markdown and image manifest as the
+content/asset contract; the profile is for inspection and debugging.
+
+## `source_to_md.py`
+
+Unified dispatcher for ad hoc explicit-source conversion. It auto-detects each
+listed input file or URL and calls the existing backend converter, so backend
+behavior remains the source of truth.
+
+Routing is centralized in `source_to_md/_dispatcher.py` and reused by
+`project_manager.py import-sources`; do not add a second type-to-backend table.
+
+```bash
+python3 scripts/source_to_md.py paper.pdf
+python3 scripts/source_to_md.py paper.pdf report.docx deck.pptx
+python3 scripts/source_to_md.py ./sources
+python3 scripts/source_to_md.py ./pdfs/*.pdf
+python3 scripts/source_to_md.py ./decks/*.pptx
+python3 scripts/source_to_md.py report.docx -o report.md
+python3 scripts/source_to_md.py ./sources -o ./markdown  # explicit separate output directory
+python3 scripts/source_to_md.py workbook.xlsx --json
+python3 scripts/source_to_md.py deck.pptx
+python3 scripts/source_to_md.py https://example.com/article -o article.md
+```
+
+Useful options:
+- `-t pdf|doc|excel|pptx|web|markdown|text` forces a route when extension
+  detection is not enough.
+- `--json` prints a compact machine-readable result after success when the
+  output path is known. With multiple inputs, each successful conversion prints
+  its own JSON line after that source finishes.
+- `--images all|filtered|none`, `--no-images`, and `--filter-images` map to the
+  existing PDF image mode. They are intentionally PDF-only until other backends
+  expose the same behavior natively.
+- Unknown backend-specific flags are passed through to each selected converter.
+- `-o/--output` selects one Markdown file for one input, or an output directory
+  for multiple inputs / directory inputs.
+
+For multi-source project intake, use `project_manager.py import-sources` with
+all source paths / URLs. For local files, the default is to keep generated
+Markdown/profile outputs beside the original source. `source_to_md.py` and the
+backend converters support single files, explicit multi-file inputs, and
+non-recursive directory inputs.
+
 ## `source_to_md/pdf_to_md.py`
 
 Recommended first choice for native PDFs.
 
 ```bash
-uvx ppt-master pdf-to-md book.pdf
-uvx ppt-master pdf-to-md book.pdf -o output.md
-uvx ppt-master pdf-to-md ./pdfs
-uvx ppt-master pdf-to-md ./pdfs -o ./markdown
+python3 scripts/source_to_md/pdf_to_md.py book.pdf
+python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
+python3 scripts/source_to_md/pdf_to_md.py book.pdf appendix.pdf
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown  # explicit separate output directory
 
 # Image extraction control (default: filtered)
 uvx ppt-master pdf-to-md book.pdf --images filtered  # size/quality filters applied
@@ -50,10 +112,13 @@ Pandoc fallback (only if you need these):
 - `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
 
 ```bash
-uvx ppt-master doc-to-md lecture.docx
-uvx ppt-master doc-to-md lecture.docx -o output.md
-uvx ppt-master doc-to-md notes.epub
-uvx ppt-master doc-to-md paper.tex -o paper.md  # uses pandoc
+python3 scripts/source_to_md/doc_to_md.py lecture.docx
+python3 scripts/source_to_md/doc_to_md.py lecture.docx -o output.md
+python3 scripts/source_to_md/doc_to_md.py lecture.docx notes.html
+python3 scripts/source_to_md/doc_to_md.py ./docs
+python3 scripts/source_to_md/doc_to_md.py ./docs -o ./markdown  # explicit separate output directory
+python3 scripts/source_to_md/doc_to_md.py notes.epub
+python3 scripts/source_to_md/doc_to_md.py paper.tex -o paper.md  # uses pandoc
 ```
 
 Dependencies:
@@ -82,9 +147,12 @@ Unsupported by default:
 - `.xls` — resave as `.xlsx` first
 
 ```bash
-uvx ppt-master excel-to-md report.xlsx
-uvx ppt-master excel-to-md report.xlsx -o output.md
-uvx ppt-master excel-to-md report.xlsm --max-rows 200 --max-cols 40
+python3 scripts/source_to_md/excel_to_md.py report.xlsx
+python3 scripts/source_to_md/excel_to_md.py report.xlsx -o output.md
+python3 scripts/source_to_md/excel_to_md.py report.xlsx budget.xlsm
+python3 scripts/source_to_md/excel_to_md.py ./workbooks
+python3 scripts/source_to_md/excel_to_md.py ./workbooks -o ./markdown  # explicit separate output directory
+python3 scripts/source_to_md/excel_to_md.py report.xlsm --max-rows 200 --max-cols 40
 ```
 
 Behavior:
@@ -112,11 +180,12 @@ Supported formats include:
 - `.potx`, `.potm`
 
 ```bash
-uvx ppt-master ppt-to-md sales_deck.pptx
-uvx ppt-master ppt-to-md sales_deck.pptx -o output.md
-uvx ppt-master ppt-to-md ./decks
-uvx ppt-master ppt-to-md ./decks -o ./markdown
-uvx ppt-master ppt-to-md template.ppsx -o notes/template.md
+python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx
+python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx -o output.md
+python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx appendix.pptx
+python3 scripts/source_to_md/ppt_to_md.py ./decks
+python3 scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown  # explicit separate output directory
+python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 ```
 
 Behavior:

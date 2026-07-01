@@ -18,6 +18,10 @@ uvx ppt-master project info <project_path>
 Notes:
 - Files outside the repo are copied into `sources/` by default
 - With `--move`, files outside the repo are moved into `sources/`
+- Directory inputs are expanded non-recursively. After Step 1 conversion,
+  pass the source file/directory once when generated Markdown lives beside the
+  original source. If Step 1 used `-o` to write Markdown elsewhere, pass both
+  the original source path/directory and the Markdown output path/directory.
 - Files already inside the repo are moved into `sources/` by default (with a stderr
   note), to avoid leaving unintended artifacts that could be committed by mistake.
   Pass `--copy` to force a copy for in-repo sources instead.
