@@ -54,6 +54,14 @@ from typing import TYPE_CHECKING
 from urllib.parse import unquote
 from xml.etree import ElementTree as ET
 
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from console_encoding import configure_utf8_stdio  # noqa: E402
+
+configure_utf8_stdio()
+
 if __package__ in {None, ''}:
     import types
 
@@ -83,6 +91,37 @@ _PIL_FORMAT_BY_MIME = {
     'image/webp': 'WEBP',
 }
 _OFFICE_VECTOR_EXTENSIONS = {'.emf', '.wmf'}
+_SVG_EXTENSIONS = {'.svg'}
+
+
+def _is_svg_image(img_path: Path, raw_bytes: bytes | None = None) -> bool:
+    """Check if an image is SVG by extension or content."""
+    if img_path.suffix.lower() in _SVG_EXTENSIONS:
+        return True
+    if raw_bytes is not None:
+        stripped = raw_bytes.lstrip()
+        if stripped.startswith(b'<svg') or stripped.startswith(b'<?xml'):
+            return True
+    return False
+
+
+def _embed_svg_direct(image, raw_bytes: bytes,
+                      box_x: float, box_y: float, box_w: float, box_h: float,
+                      ) -> bool:
+    """Embed an SVG image directly as base64 data URI without PIL processing.
+
+    SVG images cannot be loaded by PIL, so we embed them verbatim.
+    preserveAspectRatio is left untouched for SVG-in-SVG.
+    """
+    mime_type = 'image/svg+xml'
+    b64 = base64.b64encode(raw_bytes).decode('ascii')
+    data_uri = f'data:{mime_type};base64,{b64}'
+    _set_href(image, data_uri)
+    image.set('x', _format_number(box_x))
+    image.set('y', _format_number(box_y))
+    image.set('width', _format_number(box_w))
+    image.set('height', _format_number(box_h))
+    return True
 
 
 def _parse_float(val: str | None, default: float = 0.0) -> float:
@@ -259,6 +298,20 @@ def _process_one_image(
         if verbose:
             print(f'   [INFO] {img_path.name}: Office vector left external for native PPTX passthrough')
         return False, None
+
+    if _is_svg_image(img_path, raw_bytes):
+        box_x = _parse_float(image.get('x'))
+        box_y = _parse_float(image.get('y'))
+        box_w = _parse_float(image.get('width'))
+        box_h = _parse_float(image.get('height'))
+        if box_w <= 0 or box_h <= 0:
+            return False, 'zero-sized box'
+        ok = _embed_svg_direct(image, raw_bytes, box_x, box_y, box_w, box_h)
+        if ok:
+            if verbose:
+                print(f'   [OK] {img_path.name} (SVG, direct embed)')
+            return True, None
+        return False, 'SVG embed failed'
 
     img = _load_pil_image(img_path)
     if img is None:
