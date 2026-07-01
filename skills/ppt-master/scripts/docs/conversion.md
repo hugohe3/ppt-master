@@ -14,7 +14,7 @@ now also write a lightweight sidecar profile when conversion succeeds:
 
 | Output | Convention |
 |---|---|
-| Markdown | `<stem>.md` unless `-o` selects another path |
+| Markdown | `<stem>.md` beside the local source unless `-o` selects another path |
 | Asset directory | `<stem>_files/` when the backend extracts images or media |
 | Image manifest | `<stem>_files/image_manifest.json` when image metadata is available |
 | Conversion profile | `<stem>.conversion_profile.json` beside the Markdown output |
@@ -36,10 +36,11 @@ Routing is centralized in `source_to_md/_dispatcher.py` and reused by
 ```bash
 python3 scripts/source_to_md.py paper.pdf
 python3 scripts/source_to_md.py paper.pdf report.docx deck.pptx
-python3 scripts/source_to_md.py ./sources -o ./markdown
+python3 scripts/source_to_md.py ./sources
 python3 scripts/source_to_md.py ./pdfs/*.pdf
 python3 scripts/source_to_md.py ./decks/*.pptx
 python3 scripts/source_to_md.py report.docx -o report.md
+python3 scripts/source_to_md.py ./sources -o ./markdown  # explicit separate output directory
 python3 scripts/source_to_md.py workbook.xlsx --json
 python3 scripts/source_to_md.py deck.pptx
 python3 scripts/source_to_md.py https://example.com/article -o article.md
@@ -59,8 +60,10 @@ Useful options:
   for multiple inputs / directory inputs.
 
 For multi-source project intake, use `project_manager.py import-sources` with
-all source paths / URLs. `source_to_md.py` and the backend converters support
-single files, explicit multi-file inputs, and non-recursive directory inputs.
+all source paths / URLs. For local files, the default is to keep generated
+Markdown/profile outputs beside the original source. `source_to_md.py` and the
+backend converters support single files, explicit multi-file inputs, and
+non-recursive directory inputs.
 
 ## `source_to_md/pdf_to_md.py`
 
@@ -70,7 +73,8 @@ Recommended first choice for native PDFs.
 python3 scripts/source_to_md/pdf_to_md.py book.pdf
 python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
 python3 scripts/source_to_md/pdf_to_md.py book.pdf appendix.pdf
-python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown  # explicit separate output directory
 
 # Image extraction control (default: filtered)
 python3 scripts/source_to_md/pdf_to_md.py book.pdf --images filtered  # size/quality filters applied
@@ -111,7 +115,8 @@ Pandoc fallback (only if you need these):
 python3 scripts/source_to_md/doc_to_md.py lecture.docx
 python3 scripts/source_to_md/doc_to_md.py lecture.docx -o output.md
 python3 scripts/source_to_md/doc_to_md.py lecture.docx notes.html
-python3 scripts/source_to_md/doc_to_md.py ./docs -o ./markdown
+python3 scripts/source_to_md/doc_to_md.py ./docs
+python3 scripts/source_to_md/doc_to_md.py ./docs -o ./markdown  # explicit separate output directory
 python3 scripts/source_to_md/doc_to_md.py notes.epub
 python3 scripts/source_to_md/doc_to_md.py paper.tex -o paper.md  # uses pandoc
 ```
@@ -146,7 +151,8 @@ Unsupported by default:
 python3 scripts/source_to_md/excel_to_md.py report.xlsx
 python3 scripts/source_to_md/excel_to_md.py report.xlsx -o output.md
 python3 scripts/source_to_md/excel_to_md.py report.xlsx budget.xlsm
-python3 scripts/source_to_md/excel_to_md.py ./workbooks -o ./markdown
+python3 scripts/source_to_md/excel_to_md.py ./workbooks
+python3 scripts/source_to_md/excel_to_md.py ./workbooks -o ./markdown  # explicit separate output directory
 python3 scripts/source_to_md/excel_to_md.py report.xlsm --max-rows 200 --max-cols 40
 ```
 
@@ -179,7 +185,8 @@ Supported formats include:
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx -o output.md
 python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx appendix.pptx
-python3 scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown
+python3 scripts/source_to_md/ppt_to_md.py ./decks
+python3 scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown  # explicit separate output directory
 python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 ```
 

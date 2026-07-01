@@ -142,9 +142,10 @@ routes by source type, and writes the standard Markdown plus conversion profile.
 
 For PPTX sources, Step 1 converts the deck to Markdown content; after Step 2
 `import-sources`, standard PPTX intake is also written to `<project>/analysis/`.
-Use `source_to_md.py -t <type>` only when extension detection is ambiguous. With
-multiple inputs or directory inputs, `-o` is an output directory and conversion
-writes one Markdown/profile pair per source. Backend converter details are documented in
+Use `source_to_md.py -t <type>` only when extension detection is ambiguous.
+Default local conversion writes Markdown/profile outputs beside each source file.
+Use `-o` only when a specific output file/directory is required; with multiple
+inputs or directory inputs, `-o` is an output directory. Backend converter details are documented in
 [`scripts/docs/conversion.md`](scripts/docs/conversion.md).
 
 > **Office vector assets (EMF/WMF) from DOCX/PPTX sources**:
@@ -192,7 +193,7 @@ For each PPTX it writes `<stem>.identity.json` (canvas, theme palette/fonts, obs
 
 Multi-deck: several PPTX files may be imported into one main-pipeline project — each gets its own `<stem>.*` artifacts and a deck entry in `source_profile.json`. `source_profile.json` stays the single must-read index (one entry for a one-deck project, several for a combined-source project). Stems must be distinct; re-importing the same stem replaces that deck's entry. The beautify / template-fill workflows remain single-deck (1:1 to one chosen source deck) and read that deck's `<stem>.*` artifacts.
 
-> ⚠️ **MUST use `--move`** (not copy): all source files — Step 1's generated Markdown, original PDFs / MDs / images — go into `sources/` via `import-sources --move`. Pass both the original source path(s)/directory and the Step 1 Markdown output path(s)/directory. After execution they no longer exist at the original location. Intermediate artifacts (e.g., `_files/`) are handled automatically.
+> ⚠️ **MUST use `--move`** (not copy): all source files — Step 1's generated Markdown, original PDFs / MDs / images — go into `sources/` via `import-sources --move`. If Step 1 wrote Markdown beside the original sources, pass that source path/directory once. If Step 1 used `-o` to write Markdown elsewhere, pass both the original source path(s)/directory and the Markdown output path(s)/directory. After execution they no longer exist at the original location. Intermediate artifacts (e.g., `_files/`) are handled automatically.
 
 **✅ Checkpoint — Confirm project structure created successfully, `sources/` contains all source files, converted materials are ready. Proceed to Step 3.**
 
