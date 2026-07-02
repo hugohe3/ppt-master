@@ -42,11 +42,9 @@
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>在线预览</strong></a> ·
-  <a href="https://www.hehugo.com/"><strong>关于何雨果</strong></a> ·
   <a href="./examples/"><strong>示例下载</strong></a> ·
   <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·
-  <a href="./docs/zh/roadmap.md"><strong>路线图</strong></a> ·
-  <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
+  <a href="./docs/zh/roadmap.md"><strong>路线图</strong></a>
 </p>
 
 <h3 align="center">下载这份<a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">带音频旁白的 <em>Attention Is All You Need</em> 论文精读 deck</a>，在 PowerPoint 里直接放映，每一页都会自己"读"给你听 —— 这只是 PPT Master 能力的冰山一角。</h3>
@@ -138,8 +136,6 @@ PPT Master 不一样：
 ## 关于作者
 
 我是何雨果（Hugo He），投融资领域从业者（注册会计师 · 资产评估师 · 咨询工程师（投资）），工作中经常审阅和修改 PPT。我希望 AI 生成的幻灯片仍然能在 PowerPoint 里继续编辑，而不是被压成一张张图片——所以做了这个。
-
-🌐 [个人网站](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
 
 ---
 
@@ -338,7 +334,6 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 
 - 💬 **提问与分享** — [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
 - 🐛 **Bug 反馈与功能建议** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
-- 🌐 **了解更多** — [www.hehugo.com](https://www.hehugo.com/)
 
 ---
 
