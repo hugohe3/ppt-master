@@ -69,7 +69,7 @@ After all rows reach terminal status:
 - `image_prompts.json` exists when ≥1 ai row processed; every entry has `status ∈ {Generated, Needs-Manual}` (no `Pending` or `Failed` remaining)
 - `image_sources.json` exists when ≥1 web row processed; every entry has `license_tier ∈ {no-attribution, attribution-required, manual}` (`manual` = a user-supplied `--from-url` replacement)
 
-> `Needs-Manual` is a legitimate terminal state for ai rows — Step 7 entry waits for the user to place the file. See [`image-generator.md`](./image-generator.md) §3.2 Offline Manual Mode.
+> `Needs-Manual` is a legitimate terminal state for ai rows — Step 7 entry waits for the user to place the file. See [`image-generator.md`](./image-generator.md) §7 Offline Manual Mode.
 
 ---
 
@@ -82,7 +82,7 @@ After all rows reach terminal status:
 3. On second failure, set `Status: Needs-Manual`, log the reason in conversation, continue
 4. After the phase completes, summarize all `Needs-Manual` rows for the user — list filenames, where prompts live (`images/image_prompts.md` paste-ready blocks for ai rows; refresh via `image_gen.py --render-md` if stale), and where to place generated files (`project/images/<filename>`). For `slice` rows, list the parent sheet filename and target element names; the user places the sheet, then the agent reruns `slice_images.py`.
 
-`Needs-Manual` is also the entry status for **Offline Manual Mode** (no `IMAGE_BACKEND` configured, no host-native image tool in use). Affected ai rows are marked `Needs-Manual` from the start without a failed attempt — see [`image-generator.md`](./image-generator.md) §3.2.
+`Needs-Manual` is also the entry status for **Offline Manual Mode** (no `IMAGE_BACKEND` configured, no host-native image tool in use). Affected ai rows are marked `Needs-Manual` from the start without a failed attempt — see [`image-generator.md`](./image-generator.md) §7 Offline Manual Mode.
 
 Path-specific retry policies (provider chain, backend chain) live in the path's own reference.
 
