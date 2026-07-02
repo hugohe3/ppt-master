@@ -132,7 +132,13 @@ class ProjectManager:
             )
 
         date_str = datetime.now().strftime("%Y%m%d")
-        project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
+        # A name already carrying a `_<format>_<YYYYMMDD>` suffix (e.g. a full
+        # project dir name pasted back into init) is used as-is — re-appending
+        # would produce `name_ppt169_20260101_ppt169_20260102`.
+        if re.search(rf"_{re.escape(normalized_format)}_\d{{8}}$", project_name):
+            project_dir_name = project_name
+        else:
+            project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
         project_path = base_path / project_dir_name
 
         if project_path.exists():
