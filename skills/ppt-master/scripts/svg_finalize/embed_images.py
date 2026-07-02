@@ -84,6 +84,19 @@ def _optimize_image_bytes(img_bytes: bytes, mime_type: str,
     except Exception:
         return img_bytes
 
+    # Multi-frame images (animated GIF / WebP / APNG): resize/re-save below
+    # keeps frame 0 only, silently flattening the animation. Pass the
+    # original bytes through — animations are exempt from compression and
+    # the size cap.
+    if getattr(img, 'is_animated', False):
+        if max_dimension:
+            w, h = img.size
+            if w > max_dimension or h > max_dimension:
+                print(f"  [WARN] Animated image kept as-is ({w}x{h} exceeds "
+                      f"max dimension {max_dimension}px); animations are "
+                      f"exempt from size limits")
+        return img_bytes
+
     changed = False
 
     # Downscale if exceeding max_dimension
