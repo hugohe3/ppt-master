@@ -179,16 +179,110 @@
             on: "开",
             option_prefix: "方案",
             error_retry: "出错，请重试"
+        },
+        ja: {
+            page_title: "PPT Master - デザイン確認",
+            topbar_hint: "各項目を選択または入力し、「確認」をクリックしてください。ページが閉じてチャット画面に戻ります。",
+            loading: "読み込み中…",
+            load_error: "recommendations.json を読み込めませんでした。起動前にAIが書き込む必要があります。",
+            btn_confirm: "確認",
+            btn_next: "次へ →",
+            deriving: "選択内容から後続の選択肢を生成中…",
+            already_confirmed: "すでに一度確認済みです。再送信すると以前の選択内容が上書きされます。",
+            confirmed_title: "✓ 確認済み",
+            confirmed_hint: "選択内容は保存されました。このページを閉じてチャットに戻ってください。",
+            lang_toggle_title: "言語を切り替え",
+            sec_canvas: "キャンバス形式",
+            sec_pages: "ページ数",
+            sec_audience: "対象読者",
+            sec_style: "スタイルの目的",
+            sec_color: "配色",
+            sec_icons: "アイコンの使用",
+            sec_type: "フォント設定",
+            sec_images: "画像の使用",
+            sec_mode: "生成モード",
+            sec_refine: "先に仕様を精査",
+            sub_mode: "構成モード",
+            sub_visual: "ビジュアルスタイル",
+            sub_divergence: "資料からの発散度(元資料にどれだけ忠実に再構成するか)",
+            placeholder_divergence: "自由記述 — 例:「資料の内容に忠実に」/「元資料の範囲で自由に再構成・拡張」。空欄の場合はバランスの取れた既定値になります。",
+            custom: "カスタム",
+            custom_placeholder: "自由入力…",
+            recommended: "おすすめ",
+            placeholder_audience: "このスライドは誰向けですか?",
+            placeholder_pages: "例: 12-15",
+            hex_override: "カスタムHEXで上書き:",
+            formula_policy: "数式レンダリング方針",
+            image_ai_path: "AI画像の生成元",
+            image_strategy: "生成画像のスタイル",
+            image_strategy_empty: "生成画像スタイルの候補が提供されていません。",
+            image_strategy_rendering: "レンダリング",
+            image_strategy_palette: "パレット",
+            image_strategy_visual: "ビジュアル",
+            image_strategy_color: "カラー",
+            image_strategy_mood: "雰囲気",
+            image_usage_notes: "画像に関する追加要望",
+            image_usage_notes_placeholder: "例: リアルな手洗いシーン、カートゥーン風の菌イラストは避ける、製品写真は加工しない。",
+            image_usage_required: "画像の使用方法を1つ以上選択してください。",
+            image_usage_none_exclusive: "「画像を使用しない」は他の画像オプションと併用できません。",
+            font_heading: "見出し",
+            font_body: "本文",
+            font_body_size: "本文の基準サイズ",
+            font_body_size_hint: "すべての文字サイズはこの本文基準値から算出されます。",
+            body_size_hint_canvas: "このキャンバスの推奨は ~{lo}–{hi}px です(キャンバスの高さに応じて変動します)。",
+            body_size_hint_purpose: "この配布目的では {def}px を推奨します — 範囲ではなく固定値です。",
+            body_size_hint_oor: "(現在の値はこのキャンバスの通常範囲外です — 単位が正しいか、収まりが良いかを確認してください。)",
+            delivery_purpose: "配布目的",
+            delivery_purpose_hint: "近くで読む資料は小さめでも可、投影用資料には大きめの文字が必要です。",
+            size_override: "役割別サイズの上書き:",
+            size_role_title: "タイトル",
+            size_role_subtitle: "サブタイトル",
+            size_role_annotation: "注釈",
+            custom_typography: "カスタムフォント設定",
+            custom_typography_placeholder: "フォント方針を入力、例: 見出し: 游ゴシック + Georgia、本文: メイリオ + Arial…",
+            custom_color: "カスタム配色",
+            custom_color_placeholder: "配色を言葉で説明、例: ダークネイビーを基調に暖色系オレンジをアクセント、背景は白 — またはHEX値を貼り付け…",
+            role_background: "背景",
+            role_secondary_bg: "背景(2)",
+            role_primary: "メイン",
+            role_accent: "アクセント",
+            role_secondary_accent: "アクセント(2)",
+            role_body_text: "本文テキスト",
+            cjk: "和文",
+            latin: "欧文",
+            sample_heading_cjk: "プレゼンテーションのタイトル",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "重要ポイントの要約",
+            sample_body_latin: "Key message summary",
+            style_preview_label: "全体の印象(配色 + フォント)",
+            style_preview_body: "・あくまで雰囲気の確認用で、実際のスライド構成とは異なります",
+            mode_continuous_desc: "スライド全体を一括で生成します。",
+            mode_split_desc: "仕様の確定後に一旦停止し、新しいウィンドウでSVG生成を再開します。",
+            refine_off_desc: "仕様を一括で作成し、そのまま自動的に処理を続行します。",
+            refine_on_desc: "仕様作成後に一旦停止し、生成前にレビュー・修正できます。",
+            off_default: "オフ",
+            on: "オン",
+            option_prefix: "オプション",
+            error_retry: "エラー - 再試行"
         }
     };
+
+    var LANG_ORDER = ["en", "zh", "ja"];
+    var LANG_LABELS = { en: "EN", zh: "中", ja: "日" };
+
+    function nextLang(lang) {
+        return LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
+    }
 
     var LANG = (function () {
         try {
             var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en") return stored;
+            if (LANG_ORDER.indexOf(stored) !== -1) return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        return nav.indexOf("zh") === 0 ? "zh" : "en";
+        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("ja") === 0) return "ja";
+        return "en";
     })();
 
     function t(key) {
@@ -199,15 +293,18 @@
     function localized(obj, base) {
         if (!obj) return "";
         var langKey = base + "_" + LANG;
-        var fallbackKey = base + "_" + (LANG === "zh" ? "en" : "zh");
         if (obj[langKey] != null) return obj[langKey];
         if (obj[base] != null) {
             if (typeof obj[base] === "object") {
-                return obj[base][LANG] || obj[base].en || obj[base].zh || "";
+                return obj[base][LANG] || obj[base].en || obj[base].zh || obj[base].ja || "";
             }
             return obj[base];
         }
-        return obj[fallbackKey] || "";
+        for (var i = 0; i < LANG_ORDER.length; i++) {
+            var fk = base + "_" + LANG_ORDER[i];
+            if (obj[fk] != null) return obj[fk];
+        }
+        return "";
     }
 
     function optionLabel(option) {
@@ -223,14 +320,14 @@
     }
 
     function applyStaticTranslations() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : "en");
+        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
         document.querySelectorAll("[data-i18n]").forEach(function (node) {
             node.textContent = t(node.getAttribute("data-i18n"));
         });
     }
 
     function refreshLangToggle(toggleBtn) {
-        toggleBtn.textContent = LANG === "zh" ? "EN" : "中";
+        toggleBtn.textContent = LANG_LABELS[nextLang(LANG)];
         toggleBtn.title = t("lang_toggle_title");
     }
 
@@ -376,7 +473,7 @@
                 label = label + (o.dim ? " · " + o.dim : "");
             } else {
                 if (o.dim) label += " · " + o.dim;
-                if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+                if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
                 if (spec && spec.note) label += " · " + spec.note;
             }
             chip.appendChild(el("span", "chip-text", label));
@@ -1297,7 +1394,7 @@
         (CAT.image_usage || []).forEach(function (o) {
             var label = optionLabel(o);
             var desc = optionDesc(o);
-            if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+            if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
             var chip = el("div", "chip");
             chip.appendChild(el("span", "chip-text", label));
             if (recommendedIds.indexOf(o.id) >= 0) {
@@ -1600,7 +1697,7 @@
         var toggleBtn = document.getElementById("btn-lang-toggle");
         refreshLangToggle(toggleBtn);
         toggleBtn.addEventListener("click", function () {
-            LANG = (LANG === "zh") ? "en" : "zh";
+            LANG = nextLang(LANG);
             try { window.localStorage.setItem("ppt_lang", LANG); } catch (e) { /* ignore */ }
             applyStaticTranslations();
             refreshLangToggle(toggleBtn);
@@ -1616,7 +1713,7 @@
         ]).then(function (res) {
             CAT = res[0];
             REC = res[1];
-            if (REC.lang === "zh" || REC.lang === "en") {
+            if (LANG_ORDER.indexOf(REC.lang) !== -1) {
                 var hasStored = false;
                 try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
                 if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
