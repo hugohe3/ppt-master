@@ -2,8 +2,8 @@ name: Sync Upstream
 
 on:
   schedule:
-    # 每天 UTC 8:00（北京时间 16:00）
-    - cron: "0 8 * * *"
+    # 每天 UTC 18:00（北京时间次日凌晨 02:00，避开 DeepSeek 高峰时段）
+    - cron: "0 18 * * *"
   workflow_dispatch:
 
 jobs:
