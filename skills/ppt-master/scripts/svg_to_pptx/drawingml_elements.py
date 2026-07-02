@@ -1958,6 +1958,14 @@ def _optimize_image_for_pptx(
     except (UnidentifiedImageError, OSError, ValueError):
         return img_data, img_format
 
+    # Multi-frame images (animated GIF / WebP / APNG): resize/re-encode
+    # below keeps frame 0 only, flattening the animation in the exported
+    # PPTX. Pass the original bytes through — animations are exempt from
+    # optimization and the size cap (before this optimizer existed, the
+    # native path embedded raster bytes verbatim and animations survived).
+    if getattr(img, 'is_animated', False):
+        return img_data, img_format
+
     align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
     target_w, target_h = _fit_full_image_target(
         img.size[0],
