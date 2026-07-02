@@ -42,11 +42,9 @@ English | [中文](./README_CN.md)
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
-  <a href="https://www.hehugo.com/"><strong>About Hugo He</strong></a> ·
   <a href="./examples/"><strong>Examples</strong></a> ·
   <a href="./docs/faq.md"><strong>FAQ</strong></a> ·
-  <a href="./docs/roadmap.md"><strong>Roadmap</strong></a> ·
-  <a href="mailto:heyug3@gmail.com"><strong>Contact</strong></a>
+  <a href="./docs/roadmap.md"><strong>Roadmap</strong></a>
 </p>
 
 <h3 align="center">Download the new <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">narrated <em>Attention Is All You Need</em> deck</a> — play it in PowerPoint and every slide reads itself out loud. That's just the tip of what PPT Master can do.</h3>
@@ -134,8 +132,6 @@ The best results do need Claude. Before you call it expensive, think about what 
 ## Built by Hugo He
 
 I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who regularly reviews and edits presentation decks. I wanted AI-generated slides to remain editable in PowerPoint, not flattened into images — so I built this.
-
-🌐 [Personal website](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
 
 ---
 
@@ -330,7 +326,6 @@ Looking to collaborate, integrate PPT Master into your workflow, or just have qu
 
 - 💬 **Questions & sharing** — [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
 - 🐛 **Bug reports & feature requests** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
-- 🌐 **Learn more about the author** — [www.hehugo.com](https://www.hehugo.com/)
 
 ---
 
