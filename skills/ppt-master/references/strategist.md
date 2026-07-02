@@ -388,7 +388,7 @@ The script renders PNGs into `images/`, trying `codecogs`, `quicklatex`, `mathpa
 | **Path B** | `IMAGE_BACKEND` not configured AND host has a native image tool (Codex / Antigravity / Claude Code / similar) — auto-selected, no user prompting needed | Host-native generation |
 | **Offline Manual** | `IMAGE_BACKEND` not configured AND host has no native image tool | Prompts written to `images/image_prompts.json`; user generates externally and places files in `project/images/` |
 
-Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`image-generator.md`](./image-generator.md) §3.2.
+Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`image-generator.md`](./image-generator.md) §7 Path Selection (Deterministic).
 
 Selections may be mixed at the row level — e.g. a deck can use C for hero illustrations while sourcing D for supporting team photos.
 
@@ -429,7 +429,7 @@ After the candidates, append one line:
 | `Mood` line MUST include a real-world analogy | Company / publication / event the user can picture. Adjective stacks alone are forbidden. |
 | Adapt labels to chat language | Schema is English by default. Chinese chat → render as 「方案 A / 视觉 / 色彩 / 情绪」. Structure stays the same; only the labels translate. |
 | Skip presentation when user has specified | User-named rendering or palette (chat / brand / template), **or a Confirm UI pick in `result.json.image_strategy`** (same shape as color / typography honoring their confirmed candidate), bypasses the candidate flow — lock *that chosen candidate's* `rendering` + `palette` directly per the truth-precedence rule; do not re-pick. |
-| `custom` is a tail-case, not a default | When no preset fits, a candidate may set `rendering: custom` and / or `palette: custom` (rules: [`image-renderings/_index.md`](../image-renderings/_index.md) §1.5, [`image-palettes/_index.md`](../image-palettes/_index.md) §2). At most one candidate per dimension may carry `custom`; one candidate may carry both dimensions as `custom`. `Visual` / `Color` lines describe the behavior in prose, never by naming a competing preset. |
+| `custom` is a tail-case, not a default | When no preset fits, a candidate may set `rendering: custom` and / or `palette: custom` (rules: [`image-renderings/_index.md`](./image-renderings/_index.md) §1.5, [`image-palettes/_index.md`](./image-palettes/_index.md) §2). At most one candidate per dimension may carry `custom`; one candidate may carry both dimensions as `custom`. `Visual` / `Color` lines describe the behavior in prose, never by naming a competing preset. |
 
 **Forbidden — padding with conflicts**: if e.'s HEX cannot find ≥3 compatible palettes, present the smaller set (2 candidates) and state "your color is unusual — only N palettes can carry it without conflict." A `custom` candidate is allowed only when its prose genuinely describes a tail-case the presets cannot — not as a slot-filler. Never fill remaining slots with known-conflicting options.
 
@@ -548,7 +548,7 @@ After auto-selecting, cross-check `image-palettes/_index.md` compatibility matri
   - image_palette: cool-corporate
   ```
 
-**Hard rule — `custom` recording**: when the picked candidate has `rendering: custom` or `palette: custom`, also write the sibling `*_behavior` row. Source: the candidate's `Visual` line (for rendering) / `Color` line (for palette), expanded to cover the prose requirements in [`image-renderings/_index.md`](../image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](../image-palettes/_index.md) §2 (chat candidates are compressed; spec_lock prose covers all axes). Both `design_spec.md` and `spec_lock.md` must carry the behavior line. Example for the `custom × custom` candidate above:
+**Hard rule — `custom` recording**: when the picked candidate has `rendering: custom` or `palette: custom`, also write the sibling `*_behavior` row. Source: the candidate's `Visual` line (for rendering) / `Color` line (for palette), expanded to cover the prose requirements in [`image-renderings/_index.md`](./image-renderings/_index.md) §1.5 / [`image-palettes/_index.md`](./image-palettes/_index.md) §2 (chat candidates are compressed; spec_lock prose covers all axes). Both `design_spec.md` and `spec_lock.md` must carry the behavior line. Example for the `custom × custom` candidate above:
 
 ```
 - image_rendering: custom
