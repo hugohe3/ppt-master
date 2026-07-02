@@ -154,6 +154,8 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 ## Overlay & Masking Treatments
 
+> **Crop displacement (HARD rule for text over images).** `preserveAspectRatio="xMidYMid slice"` center-crops whatever the source aspect ratio does not cover — when source and display aspects differ, the subject can land under the text column even if the prompt asked for it on the "focal side". Before layering text on a slice-cropped image: estimate the crop from the aspect-ratio difference, and keep the **entire text column on the scrim's opaque plateau** — text must never start inside a gradient's transition zone. When the subject position is unverified, fall back to an opaque treatment (`#30` at high opacity, or a solid panel) instead of a two-stop scrim (`#29`).
+
 27. **Linear gradient mask for text legibility** — `<linearGradient>` in `<defs>` (set `x1/y1/x2/y2` for direction) + overlay `<rect fill="url(#grad)">`. Most common is top-to-bottom darkening on full-bleed cover images.
 
 28. **Radial gradient vignette** — `<radialGradient cx cy r>` with dark outer stops; overlay `<rect>`. Focuses attention by darkening the periphery.
