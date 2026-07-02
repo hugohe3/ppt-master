@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- プロジェクト事例フォーマット (source: layout25 chrome + slide53, 960x540 -> x1.3333) -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 右上 Givery ロゴ（小） -->
+  <image href="assets/givery_logo.png" x="1084.29" y="52.44" width="140.95" height="36.41" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- 英語サブタイトル（レガシー赤・小） -->
+  <text x="95.56" y="106.95" text-anchor="start" font-family="Montserrat, &quot;Noto Sans JP&quot;, Arial, sans-serif" font-size="17.78" fill="#C60000">{{EN_SUBTITLE}}</text>
+
+  <!-- ページタイトル（小さめ） -->
+  <text x="95.56" y="152.85" text-anchor="start" font-family="Montserrat, &quot;Noto Sans JP&quot;, Arial, sans-serif" font-size="39.11" font-weight="bold" fill="#000000">{{TITLE}}</text>
+
+  <!-- グレー帯 -->
+  <rect x="0" y="176.37" width="1280" height="495.37" fill="#EFEFEF"/>
+
+  <!-- 強調リード（2行、1行目は赤強調のローテーション運用） -->
+  <text x="106.23" y="238.17" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="39.11" font-weight="bold" fill="#C60000">{{LEAD}}</text>
+
+  <!-- 課題･要件 -->
+  <polygon points="82.77,330.89 95.81,330.89 108.85,344.40 95.81,357.89 82.77,357.89" fill="#C60000"/>
+  <text x="121.64" y="354.36" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#C60000">課題･要件</text>
+  <text x="104.17" y="388.48" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#000000">{{ISSUE_BODY}}</text>
+
+  <!-- 施策 -->
+  <polygon points="82.77,496.32 95.81,496.32 108.85,509.81 95.81,523.32 82.77,523.32" fill="#C60000"/>
+  <text x="121.64" y="519.77" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#C60000">施策</text>
+  <text x="104.17" y="553.89" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#000000">{{ACTION_BODY}}</text>
+
+  <!-- 右の白パネル（イメージ図） -->
+  <rect x="621.09" y="326.45" width="575.96" height="325.21" fill="#FFFFFF"/>
+  <text x="909.08" y="375.65" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" font-weight="bold" font-style="italic" fill="#434343">{{PANEL_CAPTION}}</text>
+  <rect x="639.68" y="402.25" width="538.79" height="225.49" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="4" stroke-dasharray="5.33 5.33"/>
+  <image href="assets/figure_placeholder.png" x="875.28" y="481.19" width="67.59" height="67.59" preserveAspectRatio="xMidYMid meet"/>
+  <!-- {{FIGURE}} -->
+
+  <!-- 右上 ✕ マーク（クライアントロゴとの掛け合わせ位置） -->
+  <g stroke="#000000" stroke-width="1.44">
+    <line x1="1026.61" y1="69.47" x2="1075.08" y2="69.47" transform="rotate(45 1050.85 69.47)"/>
+    <line x1="1026.61" y1="69.47" x2="1075.08" y2="69.47" transform="rotate(135 1050.85 69.47)"/>
+  </g>
+
+  <!-- ニュースリンク（右下・シアン下線） -->
+  <text x="1213.44" y="701.48" text-anchor="end" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="14.22" fill="#0097A7" text-decoration="underline">{{NEWS_LINK}}</text>
+
+  <!-- フッター左: コピーライト（黒・小） -->
+  <text x="75.21" y="707.17" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="14.22" fill="#000000">© 2026 Givery, Inc</text>
+
+  <!-- ページ番号（右下・赤） -->
+  <text x="1261.07" y="704.89" text-anchor="end" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" fill="#C60000">{{PAGE_NUM}}</text>
+</svg>

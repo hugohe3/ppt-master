@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- ギブリーフォーマット (source: layout20 + slide24/25, 960x540 -> x1.3333) -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 右上 Givery ロゴ -->
+  <image href="assets/givery_logo.png" x="1037.31" y="72.03" width="190.31" height="49.16" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- 英語サブタイトル（レガシー赤） -->
+  <text x="96.03" y="110.67" text-anchor="start" font-family="Montserrat, &quot;Noto Sans JP&quot;, Arial, sans-serif" font-size="24" fill="#C60000">{{EN_SUBTITLE}}</text>
+
+  <!-- ページタイトル（大） -->
+  <text x="94.99" y="181.47" text-anchor="start" font-family="Montserrat, &quot;Noto Sans JP&quot;, Arial, sans-serif" font-size="58.67" font-weight="bold" fill="#000000">{{TITLE}}</text>
+
+  <!-- 補足文（3行以内） -->
+  <text x="96.03" y="212.55" text-anchor="start" font-family="Montserrat, &quot;Noto Sans JP&quot;, Arial, sans-serif" font-size="17.78" fill="#000000">{{NOTE}}</text>
+
+  <!-- 図式エリア -->
+  <rect x="95.75" y="289.76" width="1088.51" height="302.36" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="4" stroke-dasharray="5.33 5.33"/>
+  <image href="assets/figure_placeholder.png" x="606.20" y="407.15" width="67.59" height="67.59" preserveAspectRatio="xMidYMid meet"/>
+  <!-- {{FIGURE}} -->
+
+  <!-- フッター左: コピーライト（黒・小） -->
+  <text x="75.21" y="707.17" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="14.22" fill="#000000">© 2026 Givery, Inc</text>
+
+  <!-- ページ番号（右下・赤） -->
+  <text x="1261.07" y="704.89" text-anchor="end" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" fill="#C60000">{{PAGE_NUM}}</text>
+</svg>

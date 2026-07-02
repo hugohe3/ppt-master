@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- 右寄せページタイトル (source: layout15 + slide19, 960x540 -> x1.3333) -->
+  <image href="assets/right_title_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+
+  <!-- 右上ネイビーブロック＋右寄せタイトル -->
+  <rect x="1119.71" y="64.79" width="160.29" height="63.49" fill="#1D2088"/>
+  <text x="1089.29" y="116.16" text-anchor="end" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="800" fill="#000000">{{TITLE}}</text>
+
+  <!-- 補足文（3行以内） -->
+  <text x="100.57" y="178.41" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#000000">{{NOTE}}</text>
+
+  <!-- 図式エリア -->
+  <rect x="100.79" y="277.16" width="1078.43" height="377.95" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="4" stroke-dasharray="5.33 5.33"/>
+  <image href="assets/figure_placeholder.png" x="606.20" y="432.35" width="67.59" height="67.59" preserveAspectRatio="xMidYMid meet"/>
+  <!-- {{FIGURE}} -->
+
+  <!-- フッター左: コピーライト（ネイビー・小） -->
+  <text x="127.60" y="684.16" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="14.73" fill="#1D2088">© 2026 Givery, Inc</text>
+  <line x1="58.55" y1="700.89" x2="196.63" y2="700.89" stroke="#1D2088" stroke-width="2.21"/>
+
+  <!-- フッター右: 白 Page ピル -->
+  <line x1="802.84" y1="685.05" x2="1099.16" y2="685.05" stroke="#1D2088" stroke-width="2.21"/>
+  <rect x="1129.45" y="667.48" width="100.16" height="35.15" rx="5.11" ry="5.11" fill="#FFFFFF"/>
+  <text x="1169.67" y="697.80" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="17.67" fill="#1D2088">Page</text>
+  <text x="1204.15" y="691.25" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.67" fill="#000000">{{PAGE_NUM}}</text>
+</svg>

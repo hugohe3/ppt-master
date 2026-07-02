@@ -1,29 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
-  <!-- MDX Format '26 — Ending / thanks + contact (literal, reconstructed from layout34).
-       Sample-specific dark photo bg omitted; rebuilt on brand navy so the page is self-contained. -->
-  <g id="bg">
-    <rect x="0" y="0" width="1280" height="720" fill="#1D2088"/>
-  </g>
+  <!-- エンディング（サンクス） (source: layout34 literal, 960x540 -> x1.3333) -->
+  <image href="assets/ending_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
 
-  <g id="thanks">
-    <image href="assets/givery_logo.png" x="441" y="156" width="398" height="79" preserveAspectRatio="xMidYMid meet"/>
-    <text x="640" y="300" text-anchor="middle" font-family="&quot;Poppins&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">{{THANKS}}</text>
-  </g>
+  <!-- Givery 白ロゴ -->
+  <image href="assets/givery_logo_white.png" x="441.41" y="155.64" width="397.17" height="78.91" preserveAspectRatio="xMidYMid meet"/>
 
-  <g id="deca-mark">
-    <rect x="537" y="360" width="206" height="72" rx="16" ry="16" fill="#FFFFFF"/>
-    <text x="620" y="418" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="53" font-weight="bold" fill="#1D2088">DECA</text>
-    <circle cx="692" cy="396" r="18" fill="none" stroke="#1D2088" stroke-width="4"/>
-    <line x1="705" y1="409" x2="720" y2="424" stroke="#1D2088" stroke-width="4" stroke-linecap="round"/>
-  </g>
+  <!-- サンクスライン -->
+  <text x="640" y="300.08" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">{{THANKS}}</text>
+  <text x="640" y="377.25" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="32" fill="#FFFFFF">{{SUBTEXT}}</text>
 
-  <g id="contact">
-    <text x="640" y="510" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="21" fill="#FFFFFF">{{CONTACT}}</text>
-  </g>
+  <!-- DECA 検索ピル -->
+  <rect x="322.67" y="432.40" width="549.33" height="98.67" rx="16.44" ry="16.44" fill="#FFFFFF"/>
+  <rect x="852.01" y="432.39" width="129.31" height="98.65" rx="16.44" ry="16.44" fill="#1D2088"/>
+  <rect x="884.65" y="448.39" width="56.03" height="56.03" fill="#FFFFFF"/>
+  <line x1="926.79" y1="492.55" x2="949.43" y2="515.19" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <text x="587.33" y="511.85" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="53.33" font-weight="bold" fill="#1D2088" letter-spacing="12">DECA</text>
 
-  <g id="logo-footer">
-    <text x="640" y="640" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#FFFFFF">© 2026 Givery, Inc</text>
-    <line x1="557" y1="660" x2="723" y2="660" stroke="#FFFFFF" stroke-width="2"/>
-  </g>
+  <!-- 連絡先 -->
+  <text x="640" y="590.31" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">{{CONTACT}}</text>
 </svg>

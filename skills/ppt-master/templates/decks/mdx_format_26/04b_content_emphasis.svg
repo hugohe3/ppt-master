@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- １行の強調タイトル (source: layout7 + slide11, 960x540 -> x1.3333) -->
+  <image href="assets/emphasis_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+
+  <!-- １行の強調タイトル -->
+  <text x="121.24" y="184.87" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="71.11" font-weight="800" fill="#000000">{{EMPHASIS}}</text>
+
+  <!-- 図式エリア -->
+  <rect x="119.15" y="233.11" width="1041.72" height="386.09" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="4" stroke-dasharray="5.33 5.33"/>
+  <image href="assets/figure_placeholder.png" x="606.20" y="392.36" width="67.59" height="67.59" preserveAspectRatio="xMidYMid meet"/>
+  <!-- {{FIGURE}} -->
+
+  <!-- フッター左: コピーライト -->
+  <text x="142.48" y="668.60" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#1D2088">© 2026 Givery, Inc</text>
+  <line x1="59.13" y1="688.77" x2="225.81" y2="688.77" stroke="#1D2088" stroke-width="2.67"/>
+
+  <!-- フッター右: Page ピル -->
+  <line x1="725.33" y1="678.77" x2="1082.96" y2="678.77" stroke="#1D2088" stroke-width="2.67"/>
+  <rect x="1118.79" y="657.57" width="120.87" height="42.41" rx="6.17" ry="6.17" fill="#1D2088"/>
+  <text x="1167.33" y="694.17" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">Page</text>
+  <text x="1208.93" y="686.24" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">{{PAGE_NUM}}</text>
+</svg>

@@ -1,36 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
-  <!-- MDX Format '26 — Content, text-led (fidelity). Source slide8/9 ×1.3333 -->
-  <g id="bg">
-    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
-    <image href="assets/content_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
-  </g>
+  <!-- テキスト主体のフォーマット (source: layout4 + slide8, 960x540 -> x1.3333) -->
+  <image href="assets/content_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
 
-  <g id="header">
-    <text x="97" y="91" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="36" fill="#1D2088">{{TITLE}}</text>
-  </g>
+  <!-- 左端シアンタブ -->
+  <rect x="0" y="56.44" width="77.81" height="31.08" fill="#00A0E9"/>
 
-  <g id="lead">
-    <text x="100" y="160" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="34" fill="#000000">{{LEAD}}</text>
-  </g>
+  <!-- ページタイトル -->
+  <text x="97.28" y="93.91" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="35.56" font-weight="800" fill="#000000">{{TITLE}}</text>
 
-  <g id="note">
-    <text x="100" y="255" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="18" fill="#333333">{{NOTE}}</text>
-  </g>
+  <!-- 強調リード（2行以内） -->
+  <text x="100.27" y="171.72" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="34.67" font-weight="800" fill="#000000">{{LEAD}}</text>
 
-  <g id="figure">
-    <rect x="100" y="378" width="1080" height="240" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="3" stroke-dasharray="4,4"/>
-    <image href="assets/figure_placeholder.png" x="606" y="464" width="68" height="68" preserveAspectRatio="xMidYMid meet"/>
-    <text x="640" y="560" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="16" fill="#A81B8D">{{FIGURE}}</text>
-  </g>
+  <!-- 補足文（3行以内） -->
+  <text x="100.76" y="275.43" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#000000">{{NOTE}}</text>
 
-  <g id="footer">
-    <text x="142" y="668" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">© 2026 Givery, Inc</text>
-    <line x1="59" y1="688" x2="226" y2="688" stroke="#1D2088" stroke-width="2"/>
-  </g>
+  <!-- 図式エリア -->
+  <rect x="100.79" y="377.95" width="1078.43" height="239.37" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="4" stroke-dasharray="5.33 5.33"/>
+  <image href="assets/figure_placeholder.png" x="606.20" y="463.84" width="67.59" height="67.59" preserveAspectRatio="xMidYMid meet"/>
+  <!-- {{FIGURE}} -->
 
-  <g id="pagenum">
-    <rect x="1119" y="657" width="121" height="42" rx="6" ry="6" fill="#1D2088"/>
-    <text x="1179" y="684" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#FFFFFF">Page {{PAGE_NUM}}</text>
-  </g>
+  <!-- フッター左: コピーライト -->
+  <text x="142.48" y="668.60" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#1D2088">© 2026 Givery, Inc</text>
+  <line x1="59.13" y1="688.77" x2="225.81" y2="688.77" stroke="#1D2088" stroke-width="2.67"/>
+
+  <!-- フッター右: Page ピル -->
+  <line x1="725.33" y1="678.77" x2="1082.96" y2="678.77" stroke="#1D2088" stroke-width="2.67"/>
+  <rect x="1118.79" y="657.57" width="120.87" height="42.41" rx="6.17" ry="6.17" fill="#1D2088"/>
+  <text x="1167.33" y="694.17" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">Page</text>
+  <text x="1208.93" y="686.24" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">{{PAGE_NUM}}</text>
 </svg>

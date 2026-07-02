@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- 3カードグリッド (source: layout4 chrome + slide50 cards, 960x540 -> x1.3333) -->
+  <image href="assets/content_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+
+  <!-- 左端シアンタブ -->
+  <rect x="0" y="56.44" width="77.81" height="31.08" fill="#00A0E9"/>
+
+  <!-- ページタイトル -->
+  <text x="97.28" y="93.91" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="35.56" font-weight="800" fill="#000000">{{TITLE}}</text>
+
+  <!-- 強調リード（2行以内） -->
+  <text x="100.27" y="171.72" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="34.67" font-weight="800" fill="#000000">{{LEAD}}</text>
+
+  <!-- 補足文（3行以内） -->
+  <text x="100.76" y="275.43" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#000000">{{NOTE}}</text>
+
+  <!-- カード1 -->
+  <rect x="100.79" y="376.35" width="342.05" height="208.92" rx="12.12" ry="12.12" fill="#1D2088" fill-opacity="0.25"/>
+  <text x="271.81" y="440.71" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="33.77" font-weight="800" fill="#1D2088">01</text>
+  <text x="271.81" y="497.64" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="28.44" font-weight="800" fill="#1D2088">{{CELL_1_TITLE}}</text>
+  <text x="271.81" y="541.96" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="26.67" font-weight="800" fill="#1D2088">{{CELL_1_SUB}}</text>
+
+  <!-- ✕ コネクタ 1 -->
+  <g stroke="#E4007F" stroke-width="2.31">
+    <line x1="416.71" y1="480.77" x2="494.52" y2="480.77" transform="rotate(45 455.61 480.77)"/>
+    <line x1="416.71" y1="480.77" x2="494.52" y2="480.77" transform="rotate(135 455.61 480.77)"/>
+  </g>
+
+  <!-- カード2 -->
+  <rect x="468.97" y="376.35" width="342.05" height="208.92" rx="12.12" ry="12.12" fill="#1D2088" fill-opacity="0.25"/>
+  <text x="640" y="440.71" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="33.77" font-weight="800" fill="#1D2088">02</text>
+  <text x="640" y="497.64" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="28.44" font-weight="800" fill="#1D2088">{{CELL_2_TITLE}}</text>
+  <text x="640" y="541.96" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="26.67" font-weight="800" fill="#1D2088">{{CELL_2_SUB}}</text>
+
+  <!-- ✕ コネクタ 2 -->
+  <g stroke="#E4007F" stroke-width="2.31">
+    <line x1="785.19" y1="480.77" x2="863.00" y2="480.77" transform="rotate(45 824.09 480.77)"/>
+    <line x1="785.19" y1="480.77" x2="863.00" y2="480.77" transform="rotate(135 824.09 480.77)"/>
+  </g>
+
+  <!-- カード3 -->
+  <rect x="837.16" y="376.35" width="342.05" height="208.92" rx="12.12" ry="12.12" fill="#1D2088" fill-opacity="0.25"/>
+  <text x="1008.19" y="440.71" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="33.77" font-weight="800" fill="#1D2088">03</text>
+  <text x="1008.19" y="497.64" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="28.44" font-weight="800" fill="#1D2088">{{CELL_3_TITLE}}</text>
+  <text x="1008.19" y="541.96" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="26.67" font-weight="800" fill="#1D2088">{{CELL_3_SUB}}</text>
+
+  <!-- フッター左: コピーライト -->
+  <text x="142.48" y="668.60" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#1D2088">© 2026 Givery, Inc</text>
+  <line x1="59.13" y1="688.77" x2="225.81" y2="688.77" stroke="#1D2088" stroke-width="2.67"/>
+
+  <!-- フッター右: Page ピル -->
+  <line x1="725.33" y1="678.77" x2="1082.96" y2="678.77" stroke="#1D2088" stroke-width="2.67"/>
+  <rect x="1118.79" y="657.57" width="120.87" height="42.41" rx="6.17" ry="6.17" fill="#1D2088"/>
+  <text x="1167.33" y="694.17" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">Page</text>
+  <text x="1208.93" y="686.24" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="21.33" fill="#FFFFFF">{{PAGE_NUM}}</text>
+</svg>

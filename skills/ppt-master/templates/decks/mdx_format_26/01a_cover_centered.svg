@@ -1,31 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
-  <!-- MDX Format '26 — Cover ① centered (literal). Source slide1 ×1.3333 -->
-  <g id="bg">
-    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
-    <image href="assets/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
-  </g>
+  <!-- 表紙① タイトル (source: layout1 + slide1, 960x540 -> x1.3333) -->
+  <image href="assets/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
 
-  <g id="cover-tabs">
-    <rect x="0" y="329" width="164" height="62" fill="#1D2088"/>
-    <rect x="1116" y="329" width="164" height="62" fill="#1D2088"/>
-  </g>
+  <!-- 左右のネイビーエッジタブ -->
+  <rect x="0" y="329.07" width="164.49" height="61.85" fill="#1D2088"/>
+  <rect x="1115.51" y="329.07" width="164.49" height="61.85" fill="#1D2088"/>
 
-  <g id="cover-title">
-    <text x="640" y="394" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, sans-serif" font-size="71" fill="#1D2088">{{TITLE}}</text>
-  </g>
+  <!-- 中央ロゴロックアップ -->
+  <image href="assets/marketing_dx_logo.png" x="516.08" y="239.29" width="202.11" height="60.09" preserveAspectRatio="xMidYMid meet"/>
 
-  <g id="cover-logo">
-    <image href="assets/givery_logo.png" x="516" y="239" width="202" height="60" preserveAspectRatio="xMidYMid meet"/>
-    <text x="640" y="600" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="30" fill="#1D2088">Marketing DX</text>
-    <text x="640" y="631" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">powered by Givery</text>
-    <line x1="557" y1="649" x2="723" y2="649" stroke="#1D2088" stroke-width="2"/>
-  </g>
+  <!-- タイトル -->
+  <text x="640" y="394.21" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="71.11" font-weight="800" fill="#000000">{{TITLE}}</text>
 
-  <g id="cover-footer">
-    <text x="164" y="626" text-anchor="middle" font-family="&quot;Poppins&quot;, sans-serif" font-size="18" fill="#1D2088">© 2026 Givery, Inc</text>
-    <line x1="80" y1="646" x2="247" y2="646" stroke="#1D2088" stroke-width="2"/>
-    <text x="1116" y="626" text-anchor="middle" font-family="&quot;Montserrat&quot;, Arial, sans-serif" font-size="18" fill="#1D2088">{{UPDATE_DATE}}</text>
-    <line x1="1033" y1="646" x2="1200" y2="646" stroke="#1D2088" stroke-width="2"/>
-  </g>
+  <!-- Marketing DX / powered by Givery ロックアップ -->
+  <text x="640" y="592.11" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="30.22" fill="#1D2088">Marketing DX</text>
+  <text x="640" y="627.05" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#1D2088">powered by Givery</text>
+  <line x1="556.65" y1="649.36" x2="723.33" y2="649.36" stroke="#1D2088" stroke-width="2.67"/>
+
+  <!-- フッター左: コピーライト -->
+  <text x="163.81" y="625.93" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#1D2088">© 2026 Givery, Inc</text>
+  <line x1="80.47" y1="646.11" x2="247.15" y2="646.11" stroke="#1D2088" stroke-width="2.67"/>
+
+  <!-- フッター右: 更新日 -->
+  <text x="1116.19" y="625.93" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="17.78" fill="#000000">{{UPDATE_DATE}}</text>
+  <line x1="1032.85" y1="646.11" x2="1199.53" y2="646.11" stroke="#1D2088" stroke-width="2.67"/>
 </svg>

@@ -1,11 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
-  <!-- 中表紙（チャプター） (source: layout3 + slide6, 960x540 -> x1.3333) -->
+  <!-- 中表紙＋セクションタイトル (source: layout33 + slide7, 960x540 -> x1.3333) -->
   <image href="assets/chapter_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+
+  <!-- 中表紙タイトル（章の親ラベル） -->
+  <text x="639.75" y="285.00" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#000000">{{CHAPTER_LABEL}}</text>
 
   <!-- セクションタイトル -->
   <text x="640" y="394.25" text-anchor="middle" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="71.11" font-weight="800" fill="#000000">{{SECTION_TITLE}}</text>
 
-  <!-- Index｜NN ピル＋左右ルール -->
+  <!-- Index｜NN-n ピル＋左右ルール -->
   <line x1="218.71" y1="573.67" x2="472.91" y2="573.67" stroke="#1D2088" stroke-width="2.67"/>
   <rect x="531.65" y="552.45" width="216.69" height="42.41" rx="6.17" ry="6.17" fill="#1D2088"/>
   <text x="640" y="597.15" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">Index｜{{SECTION_INDEX}}</text>

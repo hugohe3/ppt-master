@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
+  <!-- 図･イラスト主体のフォーマット (source: layout10 + slide14, 960x540 -> x1.3333) -->
+  <image href="assets/figure_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="none"/>
+
+  <!-- 左端シアンタブ（小） -->
+  <rect x="0" y="30.07" width="70.93" height="23.56" fill="#00A0E9"/>
+
+  <!-- ページタイトル（小） -->
+  <text x="88.08" y="55.44" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="24.89" font-weight="800" fill="#000000">{{TITLE}}</text>
+
+  <!-- 強調リード（2行以内） -->
+  <text x="48.55" y="107.49" text-anchor="start" font-family="&quot;Poppins ExtraBold&quot;, &quot;Noto Sans JP&quot;, sans-serif" font-size="32" font-weight="800" fill="#000000">{{LEAD}}</text>
+
+  <!-- 補足文（3行以内・小） -->
+  <text x="48.55" y="172.93" text-anchor="start" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="12.44" fill="#000000">{{NOTE}}</text>
+
+  <!-- 大型図式エリア -->
+  <rect x="36.87" y="239.29" width="1206.25" height="415.83" fill="#FFFFFF" fill-opacity="0.25" stroke="#E4007F" stroke-width="4" stroke-dasharray="5.33 5.33"/>
+  <image href="assets/figure_placeholder.png" x="606.20" y="413.41" width="67.59" height="67.59" preserveAspectRatio="xMidYMid meet"/>
+  <!-- {{FIGURE}} -->
+
+  <!-- フッター左: コピーライト（白・小） -->
+  <text x="88.39" y="687.37" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="11.89" fill="#FFFFFF">© 2026 Givery, Inc</text>
+  <line x1="32.64" y1="700.89" x2="144.13" y2="700.89" stroke="#FFFFFF" stroke-width="1.79"/>
+
+  <!-- フッター右: Page ピル（小） -->
+  <line x1="794.88" y1="681.05" x2="1152.51" y2="681.05" stroke="#1D2088" stroke-width="1.33"/>
+  <rect x="1174.99" y="668.60" width="70.93" height="24.91" rx="3.63" ry="3.63" fill="#1D2088"/>
+  <text x="1203.49" y="690.08" text-anchor="middle" font-family="Poppins, &quot;Noto Sans JP&quot;, sans-serif" font-size="12.52" fill="#FFFFFF">Page</text>
+  <text x="1227.88" y="685.43" text-anchor="middle" font-family="&quot;Noto Sans JP&quot;, sans-serif" font-size="12.52" fill="#FFFFFF">{{PAGE_NUM}}</text>
+</svg>
