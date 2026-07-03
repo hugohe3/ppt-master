@@ -45,8 +45,9 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ↓
 Output:
     exports/
-    ├── presentation_<timestamp>.pptx          ← Native shapes (DrawingML) — canonical output, edit & deliver from here
-    └── presentation_<timestamp>_svg.pptx      ← SVG snapshot pptx — pixel-perfect visual reference (opt-in via --svg-snapshot)
+    ├── presentation_<timestamp>.pptx                ← Native shapes (DrawingML) — canonical output, edit & deliver from here
+    ├── presentation_<timestamp>_native_charts.pptx  ← Native chart/table objects instead of flattened shapes (opt-in via --native-objects)
+    └── presentation_<timestamp>_svg.pptx            ← SVG snapshot pptx — pixel-perfect visual reference (opt-in via --svg-snapshot)
 
     # Always written in default-flow mode (no -o)
     backup/<timestamp>/
@@ -377,6 +378,7 @@ The post-processing stage works with five artifacts. Each one serves a workflow 
 | `svg_output/` | source of truth, manual editing, `update_spec.py`, `svg_quality_checker.py` | only directory whose contents are authored, not derived |
 | `svg_final/` | IDE inline preview (VSCode/Cursor open `.svg` directly), browser open of a single page | `.pptx` is not openable in IDEs; `svg_output/` won't render fully because of external icon / image refs |
 | `exports/<name>_<ts>.pptx` (native) | primary deliverable — editable in PowerPoint with DrawingML shapes | only artifact whose shapes the user can resize / recolor / restyle natively in PowerPoint |
+| `exports/<name>_<ts>_native_charts.pptx` (opt-in via `--native-objects`) | when `data-pptx-native` chart/table markers should ship as real editable PowerPoint objects instead of flattened shapes | data-backed chart/table objects the user can edit in PowerPoint; name marks it apart from the plain shape export |
 | `exports/<name>_<ts>_svg.pptx` (preview, opt-in via `--svg-snapshot`) | cross-platform single-file distribution, multi-page browse, email attachment | self-contained, multi-page, opens in PowerPoint / Keynote / WPS / LibreOffice; an `svg_final/` folder is harder to distribute. Off by default — live preview already provides the SVG visual reference for dev/diagnostic work |
 | `backup/<ts>/svg_output/` (always written in default-flow mode) | re-export from frozen SVG sources without re-running the LLM, archival | the only persisted copy of the Executor's raw SVG source after the project has been edited downstream |
 
