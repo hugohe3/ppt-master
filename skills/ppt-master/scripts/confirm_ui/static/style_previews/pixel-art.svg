@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" shape-rendering="crispEdges">
+  <rect width="1280" height="720" fill="#1A1C2C"/>
+  <rect x="0" y="600" width="1280" height="120" fill="#2A2F4A"/>
+  <rect x="0" y="600" width="1280" height="20" fill="#3B4670"/>
+  <text x="80" y="182" font-family="'Courier New',monospace" font-size="92" font-weight="700" fill="#FFCD75" letter-spacing="2">LOREM IPSUM</text>
+  <text x="84" y="238" font-family="'Courier New',monospace" font-size="27" fill="#41A6F6">STRICT PIXEL GRID · LIMITED PALETTE</text>
+  <g>
+    <rect x="160" y="340" width="160" height="40" fill="#EF7D57"/>
+    <rect x="200" y="300" width="80" height="40" fill="#FFCD75"/>
+    <rect x="200" y="380" width="120" height="120" fill="#41A6F6"/>
+    <rect x="160" y="420" width="40" height="80" fill="#41A6F6"/>
+    <rect x="320" y="420" width="40" height="80" fill="#41A6F6"/>
+    <rect x="200" y="500" width="40" height="60" fill="#38213A"/>
+    <rect x="280" y="500" width="40" height="60" fill="#38213A"/>
+    <rect x="220" y="320" width="16" height="16" fill="#1A1C2C"/>
+    <rect x="252" y="320" width="16" height="16" fill="#1A1C2C"/>
+  </g>
+  <g>
+    <rect x="640" y="480" width="60" height="80" fill="#38B764"/>
+    <rect x="720" y="420" width="60" height="140" fill="#38B764"/>
+    <rect x="800" y="360" width="60" height="200" fill="#FFCD75"/>
+    <rect x="880" y="440" width="60" height="120" fill="#38B764"/>
+    <rect x="960" y="300" width="60" height="260" fill="#EF7D57"/>
+  </g>
+  <path d="M620 560H1060" stroke="#94B0C2" stroke-width="8"/>
+  <g fill="#FFCD75"><rect x="1120" y="120" width="24" height="24"/><rect x="1096" y="144" width="72" height="24"/><rect x="1120" y="168" width="24" height="24"/></g>
+  <text x="1250" y="470" text-anchor="end" font-family="'Courier New',monospace" font-size="84" font-weight="700" fill="#FFCD75">72%</text>
+</svg>

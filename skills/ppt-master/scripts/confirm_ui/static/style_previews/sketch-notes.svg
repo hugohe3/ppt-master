@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#FFFBEF"/>
+  <rect x="86" y="118" width="430" height="48" rx="8" fill="#FDE68A" opacity="0.8" transform="rotate(-1 300 142)"/>
+  <text x="96" y="172" font-family="'Comic Sans MS','Segoe Print',cursive" font-size="70" font-weight="700" fill="#1F2937">Lorem ipsum</text>
+  <text x="98" y="220" font-family="'Comic Sans MS',cursive" font-size="26" fill="#6B7280">Warm paper · doodle lines · soft color blocks</text>
+  <path d="M96 280q220 -8 300 0q6 90 0 150q-160 8 -300 2q-6 -80 0 -154Z" fill="#FEE2E2" stroke="#1F2937" stroke-width="3" stroke-linejoin="round"/>
+  <text x="128" y="342" font-family="'Comic Sans MS',cursive" font-size="30" font-weight="700" fill="#1F2937">Lorem</text>
+  <path d="M128 372h230M128 400h180" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M430 360q90 -30 150 10" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+  <path d="M580 370l-22 -6l14 20z" fill="#2563EB"/>
+  <path d="M600 300q210 -8 290 4q6 80 0 140q-150 8 -290 0q-6 -74 0 -144Z" fill="#DBEAFE" stroke="#1F2937" stroke-width="3" stroke-linejoin="round"/>
+  <text x="632" y="358" font-family="'Comic Sans MS',cursive" font-size="30" font-weight="700" fill="#1F2937">Ipsum</text>
+  <circle cx="652" cy="394" r="8" fill="#34D399" stroke="#1F2937" stroke-width="2"/>
+  <circle cx="692" cy="394" r="8" fill="#FBBF24" stroke="#1F2937" stroke-width="2"/>
+  <path d="M1000 200l14 40l42 2l-33 26l12 41l-35 -24l-35 24l12 -41l-33 -26l42 -2z" fill="#FDE047" stroke="#1F2937" stroke-width="3" stroke-linejoin="round"/>
+  <g stroke="#1F2937" stroke-width="3" fill="none"><path d="M120 560v120h520" stroke-linecap="round"/></g>
+  <path d="M150 640q90 -60 180 -20t180 -70" fill="none" stroke="#EC4899" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="510" cy="530" r="6" fill="#EC4899"/>
+  <text x="1000" y="300" font-family="'Comic Sans MS',cursive" font-size="40" font-weight="700" fill="#1F2937">72%!</text>
+</svg>

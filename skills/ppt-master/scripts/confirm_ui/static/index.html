@@ -7,33 +7,47 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <header id="topbar">
-        <div id="topbar-inner">
-            <div class="topbar-titles">
-                <h1 data-i18n="page_title">PPT Master - Confirm Design</h1>
-                <p id="topbar-hint" data-i18n="topbar_hint">After confirming, return to the chat and say “done”.</p>
+    <div id="app">
+        <aside id="preview-panel" aria-label="Design preview">
+            <div class="brand-block">
+                <div class="brand-mark">PM</div>
+                <div>
+                    <div class="panel-kicker">PPT Master</div>
+                    <div class="panel-title" data-i18n="page_title">PPT Master - Confirm Design</div>
+                </div>
             </div>
-            <div class="lang-select">
-                <button id="btn-lang-toggle" class="lang-select-btn" type="button" title="Switch language" aria-haspopup="listbox" aria-expanded="false"><span id="lang-current"></span><span class="lang-caret" aria-hidden="true">▾</span></button>
-                <ul id="lang-menu" class="lang-menu" role="listbox" hidden>
-                    <li role="option" tabindex="0" aria-selected="false" data-lang="zh">中文</li>
-                    <li role="option" tabindex="0" aria-selected="false" data-lang="en">English</li>
-                    <li role="option" tabindex="0" aria-selected="false" data-lang="ja">日本語</li>
-                </ul>
-            </div>
-        </div>
-    </header>
+            <div id="topbar-preview"></div>
+        </aside>
 
-    <main id="form">
-        <div id="loading" data-i18n="loading">Loading recommendations…</div>
-        <div id="error" style="display:none;"></div>
-        <div id="sections" style="display:none;"></div>
-    </main>
+        <section id="control-panel">
+            <header id="topbar">
+                <div id="topbar-inner">
+                    <div class="topbar-titles">
+                        <h1 data-i18n="page_title">PPT Master - Confirm Design</h1>
+                        <p id="topbar-hint" data-i18n="topbar_hint">After confirming, return to the chat and say “done”.</p>
+                    </div>
+                    <div class="lang-select">
+                        <button id="btn-lang-toggle" class="lang-select-btn" type="button" title="Switch language" aria-haspopup="listbox" aria-expanded="false"><span id="lang-current"></span><span class="lang-caret" aria-hidden="true">▾</span></button>
+                        <ul id="lang-menu" class="lang-menu" role="listbox" hidden>
+                            <li role="option" tabindex="0" aria-selected="false" data-lang="zh">中文</li>
+                            <li role="option" tabindex="0" aria-selected="false" data-lang="en">English</li>
+                            <li role="option" tabindex="0" aria-selected="false" data-lang="ja">日本語</li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
 
-    <footer id="actionbar" style="display:none;">
-        <span id="confirm-status"></span>
-        <button id="btn-confirm" data-i18n="btn_confirm">Confirm</button>
-    </footer>
+            <main id="form">
+                <div id="loading" data-i18n="loading">Loading recommendations…</div>
+                <div id="error" style="display:none;"></div>
+                <div id="sections" style="display:none;"></div>
+            </main>
+            <footer id="actionbar" style="display:none;">
+                <span id="confirm-status"></span>
+                <button id="btn-confirm" data-i18n="btn_confirm">Confirm</button>
+            </footer>
+        </section>
+    </div>
 
     <div id="confirmed-overlay" style="display:none;">
         <div class="cf-card">

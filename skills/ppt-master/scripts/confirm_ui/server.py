@@ -33,6 +33,7 @@ import atexit
 import json
 import logging
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -75,6 +76,14 @@ RESULT_NAME = 'result.json'
 
 # Static option universe served at /api/catalogs (canvas synced live from config).
 _CATALOGS_PATH = Path(__file__).resolve().parent / 'static' / 'catalogs.json'
+_ICON_LIBRARY_DIR = Path(__file__).resolve().parents[2] / 'templates' / 'icons'
+_AI_IMAGE_COMPARISON_DIR = Path(__file__).resolve().parents[2] / 'references' / 'ai-image-comparison'
+_ICON_PREVIEW_SAMPLES = {
+    'chunk-filled': ('home', 'chart-line', 'users', 'target'),
+    'tabler-filled': ('home', 'chart-dots', 'user', 'bulb'),
+    'tabler-outline': ('home', 'chart-line', 'users', 'bulb'),
+    'phosphor-duotone': ('house', 'chart-line', 'users', 'target'),
+}
 
 # Shares port 5050 with the live preview server (svg_editor/server.py). The two
 # never run at once: confirm is Step 4 and shuts down on confirm (or idle),
@@ -128,7 +137,7 @@ def _wait_for_result(
 
 
 def _result_stage(result_file: Path) -> Optional[str]:
-    """Return the ``stage`` field of result.json (``tier1`` / ``final``), or None."""
+    """Return the ``stage`` field of result.json, or None."""
     try:
         data = json.loads(result_file.read_text(encoding='utf-8'))
     except (OSError, json.JSONDecodeError):
@@ -136,18 +145,18 @@ def _result_stage(result_file: Path) -> Optional[str]:
     return data.get('stage') if isinstance(data, dict) else None
 
 
-# Tier-1 anchors. On the Tier-2 page these sections are not rendered (they were
-# confirmed in Tier 1), so their values live only in browser STATE — lost on a
-# refresh. Folding them from result.json into the served Tier-2 recommendations
-# lets the page re-initialize them from the user's actual choices.
+# Stage-1 anchors and Stage-2 design-system choices. On later pages these sections
+# are not rendered (they were already confirmed), so their values live only in
+# browser STATE — lost on a refresh. Folding them from result.json into the
+# served recommendations lets a refresh / reopen re-initialize from the user's
+# actual choices instead of catalog defaults.
 _ANCHOR_RECOMMEND_KEYS = ('canvas', 'mode', 'visual_style', 'delivery_purpose')
 _ANCHOR_VALUE_KEYS = ('audience', 'content_divergence')
+_DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
 
 
-def _merge_confirmed_anchors(data: dict, result_file: Path) -> None:
-    """Fold the Tier-1 anchors confirmed in result.json into a Tier-2
-    recommendations payload, so a refresh / reopen re-initializes them. The
-    confirmed value is truth — it overrides any stale recommend entry."""
+def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
+    """Fold already-confirmed choices into later-stage recommendations."""
     try:
         res = json.loads(result_file.read_text(encoding='utf-8'))
     except (OSError, json.JSONDecodeError):
@@ -163,42 +172,56 @@ def _merge_confirmed_anchors(data: dict, result_file: Path) -> None:
     for key in _ANCHOR_VALUE_KEYS:
         if key in res:
             data[key] = {'value': res.get(key) or ''}
+    try:
+        tier = int(data.get('tier') or 0)
+    except (TypeError, ValueError):
+        tier = 0
+    if tier < 3:
+        return
+    for key in _DESIGN_RECOMMEND_KEYS:
+        if res.get(key) not in (None, ''):
+            recommend[key] = res[key]
+    if 'page_count' in res:
+        data['page_count'] = {'value': res.get('page_count') or ''}
+    if isinstance(res.get('color'), dict):
+        data['color'] = {'selected': 0, 'candidates': [res['color']]}
+    if isinstance(res.get('typography'), dict):
+        typography = {'selected': 0, 'candidates': [res['typography']]}
+        if res.get('formula_policy') not in (None, ''):
+            typography['formula_policy'] = {'value': res['formula_policy']}
+        data['typography'] = typography
 
 
 def _wait_only_for_result(
     result_file: Path,
     lock_file: Path,
     timeout: int,
+    target_stage: str = 'final',
 ) -> int:
-    """Attach to an already-running confirm server and wait for the **final**
-    (tier-2) result.json — the second leg of the two-tier flow. No child is
-    launched here: the page is still open from the first ``--wait`` launch, so
-    liveness is tracked via the recorded pid, not a ``proc`` handle. Only the
-    ``stage == 'final'`` guard is used (no mtime gate): this run's tier-1 confirm
-    already left result.json at stage ``tier1``, so any ``final`` is the tier-2
-    submit, and a mtime gate would race-miss a user who confirms before this wait.
+    """Attach to an already-running confirm server and wait for a target stage.
+
+    No child is launched here: the page is still open from the first ``--wait``
+    launch, so liveness is tracked via the recorded pid, not a ``proc`` handle.
+    Only the stage guard is used (no mtime gate), because intermediate submits
+    may happen before this wait command is issued.
     """
-    logger.info('waiting for tier-2 browser confirmation...')
+    logger.info('waiting for browser confirmation stage=%s...', target_stage)
     deadline = None if timeout <= 0 else time.time() + timeout
     while True:
-        # `stage == 'final'` alone is the signal: this run's tier-1 confirm already
-        # overwrote result.json to stage 'tier1', so any 'final' here is the tier-2
-        # submit we are waiting for. Gating on mtime >= started_at would race-miss a
-        # user who confirms tier 2 before this wait is even issued.
-        if _result_stage(result_file) == 'final':
-            logger.info('tier-2 confirmation received: %s', result_file)
+        if _result_stage(result_file) == target_stage:
+            logger.info('confirmation stage=%s received: %s', target_stage, result_file)
             return 0
 
         lock = _read_lock(lock_file)
         pid = int((lock or {}).get('pid', 0) or 0)
         if not pid or not _process_alive(pid):
-            logger.error('confirm server is no longer running before tier 2 was confirmed')
+            logger.error('confirm server is no longer running before stage=%s was confirmed', target_stage)
             return 1
 
         if deadline is not None and time.time() >= deadline:
             logger.error(
-                'timed out waiting for tier-2 confirmation — the page may still '
-                'be open; re-check %s before falling back to chat', result_file,
+                'timed out waiting for confirmation stage=%s — the page may still '
+                'be open; re-check %s before falling back to chat', target_stage, result_file,
             )
             return 124
 
@@ -285,6 +308,61 @@ def _build_catalogs() -> dict:
     return data
 
 
+def _icon_preview_svg(library: str, name: str) -> str:
+    """Read a trusted sample SVG from the bundled icon templates."""
+    icon_path = _ICON_LIBRARY_DIR / library / f'{name}.svg'
+    raw = icon_path.read_text(encoding='utf-8')
+    raw = re.sub(r'<\?xml[^>]*>\s*', '', raw)
+    raw = re.sub(r'<!--.*?-->\s*', '', raw, flags=re.S)
+    return raw.strip()
+
+
+def _build_icon_previews() -> dict:
+    previews = {}
+    for library, names in _ICON_PREVIEW_SAMPLES.items():
+        items = []
+        for name in names:
+            try:
+                items.append({'name': name, 'svg': _icon_preview_svg(library, name)})
+            except OSError as exc:
+                logger.warning('icon preview sample missing: %s/%s (%s)', library, name, exc)
+        previews[library] = items
+    return previews
+
+
+def _ai_comparison_items(kind: str) -> list[dict[str, str]]:
+    manifest = _AI_IMAGE_COMPARISON_DIR / kind / '_manifest.json'
+    if not manifest.exists():
+        return []
+    data = json.loads(manifest.read_text(encoding='utf-8'))
+    items = []
+    for item in data.get('items', []):
+        filename = item.get('filename')
+        if not isinstance(filename, str) or not filename.endswith('.png'):
+            continue
+        if not re.fullmatch(r'[A-Za-z0-9_.-]+\.png', filename):
+            continue
+        if not (_AI_IMAGE_COMPARISON_DIR / kind / filename).exists():
+            continue
+        item_id = Path(filename).stem
+        items.append({
+            'id': item_id,
+            'label': item.get('type') or item_id,
+            'filename': filename,
+            'purpose': item.get('purpose') or '',
+            'alt_text': item.get('alt_text') or '',
+        })
+    return items
+
+
+def _build_ai_image_comparison() -> dict:
+    return {
+        'rendering': _ai_comparison_items('rendering'),
+        'palette': _ai_comparison_items('palette'),
+        'type': _ai_comparison_items('type'),
+    }
+
+
 # --- app --------------------------------------------------------------------
 
 def create_app(
@@ -352,6 +430,32 @@ def create_app(
         except (OSError, json.JSONDecodeError) as exc:
             return jsonify({'error': f'invalid catalogs.json: {exc}'}), 500
 
+    @app.route('/api/icon-previews')
+    def get_icon_previews():
+        """Serve real sample icons from templates/icons for the icon chooser."""
+        resp = jsonify(_build_icon_previews())
+        resp.headers['Cache-Control'] = 'no-store'
+        return resp
+
+    @app.route('/api/ai-image-comparison')
+    def get_ai_image_comparison_manifest():
+        """Serve generated-image reference options from ai-image-comparison."""
+        try:
+            resp = jsonify(_build_ai_image_comparison())
+            resp.headers['Cache-Control'] = 'no-store'
+            return resp
+        except (OSError, json.JSONDecodeError) as exc:
+            return jsonify({'error': f'invalid ai-image-comparison manifest: {exc}'}), 500
+
+    @app.route('/ai-image-comparison/<kind>/<filename>')
+    def get_ai_image_comparison(kind: str, filename: str):
+        """Serve reference images for generated-image strategy candidates."""
+        if kind not in {'rendering', 'palette', 'type'}:
+            return jsonify({'error': 'invalid comparison kind'}), 404
+        if not re.fullmatch(r'[A-Za-z0-9_.-]+\.png', filename or ''):
+            return jsonify({'error': 'invalid comparison filename'}), 404
+        return send_from_directory(_AI_IMAGE_COMPARISON_DIR / kind, filename)
+
     @app.route('/api/recommendations')
     def get_recommendations():
         """Serve the Strategist-authored recommendations for this project."""
@@ -365,14 +469,17 @@ def create_app(
         # Report whether a result already exists (re-open after confirm).
         result_file = confirm_dir / RESULT_NAME
         data['_already_confirmed'] = result_file.exists()
-        # Tier 2 renders only realization sections, so fold the confirmed Tier-1
-        # anchors from result.json back in — a refresh / reopen then re-inits
-        # canvas / audience / mode / visual_style / delivery_purpose from the
-        # user's choices instead of catalog defaults.
-        if data.get('tier') == 2 and result_file.exists():
-            _merge_confirmed_anchors(data, result_file)
-        # The page polls this endpoint after a tier-1 confirm until the AI
-        # overwrites the file with the re-derived tier-2 recommendations, so it
+        # Later stages render only downstream sections, so fold earlier confirmed
+        # choices from result.json back in. A refresh / reopen then re-inits from
+        # the user's choices instead of catalog defaults.
+        try:
+            tier = int(data.get('tier') or 0)
+        except (TypeError, ValueError):
+            tier = 0
+        if tier >= 2 and result_file.exists():
+            _merge_confirmed_choices(data, result_file)
+        # The page polls this endpoint after a stage-1 confirm until the AI
+        # overwrites the file with the re-derived stage-2 recommendations, so it
         # must never be served from a cache.
         resp = jsonify(data)
         resp.headers['Cache-Control'] = 'no-store'
@@ -386,12 +493,11 @@ def create_app(
             return jsonify({'error': 'invalid payload'}), 400
         confirm_dir.mkdir(parents=True, exist_ok=True)
         result = dict(payload)
-        # Two-tier flow: a tier-1 submit records the anchor choices but does NOT
-        # close the page (the AI re-derives tier 2, the same browser session
-        # renders it). Only a final submit is a full confirmation. A payload with
-        # no stage is a single-pass confirmation (chat-opt-out parity).
+        # Staged flow: stage-1 / stage-2 submits record intermediate choices but do
+        # NOT close the page. Only a final submit is a full confirmation. A
+        # payload with no stage is a single-pass confirmation (chat-opt-out parity).
         stage = result.get('stage')
-        result['status'] = 'tier1-confirmed' if stage == 'tier1' else 'confirmed'
+        result['status'] = f'{stage}-confirmed' if stage in {'tier1', 'tier2'} else 'confirmed'
         result['confirmed_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
         result_file = confirm_dir / RESULT_NAME
         result_file.write_text(
@@ -426,9 +532,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--wait-only', action='store_true',
         help='Do not launch. Attach to the already-running confirm server for '
-             'this project and wait for the final (tier-2) result.json. Used for '
-             'the second leg of the two-tier flow after the tier-2 '
-             'recommendations have been re-derived and written.',
+             'this project and wait for an already-open page to write result.json.',
+    )
+    parser.add_argument(
+        '--wait-stage', choices=('tier2', 'final'), default='final',
+        help='With --wait-only, wait for this result.json stage (default: final). '
+             'Use tier2 for the middle handoff in the three-stage flow.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,
@@ -468,13 +577,14 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.shutdown:
         return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
-    # Tier-2 wait: attach to the server already serving this project (launched by
+    # Stage-2 wait: attach to the server already serving this project (launched by
     # the first --wait) and block until the page writes the final result.json.
     if args.wait_only:
         return _wait_only_for_result(
             project_path / CONFIRM_DIR_NAME / RESULT_NAME,
             project_path / LOCK_FILE_NAME,
             args.wait_timeout,
+            args.wait_stage,
         )
 
     rec_file = project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME

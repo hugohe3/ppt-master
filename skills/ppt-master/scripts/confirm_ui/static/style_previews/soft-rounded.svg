@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="sr-sh" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#1D4ED8" flood-opacity="0.16"/>
+    </filter>
+    <linearGradient id="sr-ic" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60A5FA"/><stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#EAF1FB"/>
+  <rect x="90" y="96" width="700" height="528" rx="48" fill="#FFFFFF" filter="url(#sr-sh)"/>
+  <rect x="140" y="150" width="176" height="54" rx="27" fill="#DBEAFE"/>
+  <text x="166" y="186" font-family="Arial, sans-serif" font-size="25" font-weight="600" fill="#2563EB">Overview 04</text>
+  <circle cx="184" cy="300" r="48" fill="url(#sr-ic)"/>
+  <path d="M162 300l16 16l28 -34" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="256" y="292" font-family="Arial, sans-serif" font-size="60" font-weight="700" fill="#0F172A">Lorem ipsum</text>
+  <text x="258" y="344" font-family="Arial, sans-serif" font-size="26" fill="#64748B">Rounded cards · soft shadows · friendly</text>
+  <rect x="140" y="424" width="290" height="152" rx="30" fill="#F1F6FE"/>
+  <rect x="460" y="424" width="290" height="152" rx="30" fill="#F1F6FE"/>
+  <text x="172" y="494" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#2563EB">72%</text>
+  <text x="172" y="536" font-family="Arial, sans-serif" font-size="22" fill="#64748B">dolor sit</text>
+  <text x="492" y="494" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#2563EB">1.8x</text>
+  <text x="492" y="536" font-family="Arial, sans-serif" font-size="22" fill="#64748B">amet elit</text>
+  <rect x="840" y="150" width="350" height="182" rx="40" fill="#FFFFFF" filter="url(#sr-sh)"/>
+  <rect x="840" y="382" width="350" height="242" rx="40" fill="#2563EB" filter="url(#sr-sh)"/>
+  <circle cx="905" cy="241" r="30" fill="#BFDBFE"/>
+  <rect x="955" y="214" width="185" height="20" rx="10" fill="#E2E8F0"/>
+  <rect x="955" y="250" width="120" height="16" rx="8" fill="#EDF2F8"/>
+  <text x="885" y="474" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#fff">Consectetur</text>
+  <rect x="885" y="506" width="200" height="64" rx="32" fill="#fff"/>
+  <text x="917" y="548" font-family="Arial, sans-serif" font-size="27" font-weight="600" fill="#2563EB">Get started →</text>
+</svg>
