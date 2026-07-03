@@ -129,6 +129,21 @@ def _resolve_image_path(href: str, svg_dir: Path) -> Path | None:
     return candidate if candidate.exists() else None
 
 
+def _is_svg_image(img_path: Path, raw_bytes: bytes) -> bool:
+    """Return True when an image reference is an SVG document."""
+    if img_path.suffix.lower() == '.svg':
+        return True
+    head = raw_bytes.lstrip()[:512].lower()
+    return head.startswith(b'<svg') or (head.startswith(b'<?xml') and b'<svg' in head)
+
+
+def _embed_raw_image(image: ET.Element, img_path: Path, raw_bytes: bytes) -> None:
+    """Embed raw image bytes without PIL transforms."""
+    mime_type = get_mime_type(img_path.name, raw_bytes)
+    b64 = base64.b64encode(raw_bytes).decode('ascii')
+    _set_href(image, f'data:{mime_type};base64,{b64}')
+
+
 def _load_pil_image(img_path: Path) -> 'PILImage' | None:
     """Open an image with PIL, returning None on any failure."""
     try:
@@ -309,6 +324,12 @@ def _process_one_image(
             print(f'   [INFO] {img_path.name}: Office vector left external for native PPTX passthrough')
         return False, None
 
+    if _is_svg_image(img_path, raw_bytes):
+        _embed_raw_image(image, img_path, raw_bytes)
+        if verbose:
+            print(f'   [OK] {img_path.name} (svg, embedded as-is)')
+        return True, None
+
     img = _load_pil_image(img_path)
     if img is None:
         return False, 'PIL open failed'
@@ -322,9 +343,7 @@ def _process_one_image(
     # non-destructively). Animated assets skip re-encode, resize, and the
     # size cap.
     if getattr(img, 'is_animated', False):
-        mime_type = get_mime_type(img_path.name, raw_bytes)
-        b64 = base64.b64encode(raw_bytes).decode('ascii')
-        _set_href(image, f'data:{mime_type};base64,{b64}')
+        _embed_raw_image(image, img_path, raw_bytes)
         if max_dimension and max(img.size) > max_dimension:
             print(f'   [WARN] {img_path.name}: animated image kept as-is '
                   f'({img.size[0]}x{img.size[1]} exceeds max dimension '
