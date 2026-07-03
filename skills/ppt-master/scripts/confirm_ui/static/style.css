@@ -42,17 +42,46 @@ body {
 .topbar-titles h1 { margin: 0; font-size: 18px; font-weight: 650; }
 .topbar-titles p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
 
-.btn-lang-toggle {
-    flex: none;
-    width: 38px; height: 38px;
-    border-radius: 50%;
+.lang-select { position: relative; flex: none; }
+.lang-select-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
     border: 1px solid var(--line);
     background: var(--card);
     color: var(--ink);
     font-size: 14px;
     cursor: pointer;
 }
-.btn-lang-toggle:hover { background: var(--bg); }
+.lang-select-btn:hover { background: var(--bg); }
+.lang-caret { font-size: 10px; color: var(--muted); }
+.lang-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    min-width: 110px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12);
+    z-index: 60;
+}
+.lang-menu li {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+}
+.lang-menu li:hover,
+.lang-menu li:focus { background: var(--bg); }
+.lang-menu li.selected { font-weight: 650; }
 
 /* ---- form ---- */
 #form { max-width: 880px; margin: 0 auto; padding: 24px; }

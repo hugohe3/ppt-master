@@ -95,6 +95,91 @@
             option_prefix: "Option",
             error_retry: "Error - retry"
         },
+        ja: {
+            page_title: "PPT Master - デザイン確認",
+            topbar_hint: "各項目を選択または入力して「確定」を押してください。ページが閉じたらチャットに戻ります。",
+            loading: "読み込み中…",
+            load_error: "recommendations.json を読み込めませんでした。起動前にAIが書き込む必要があります。",
+            btn_confirm: "確定",
+            btn_next: "次へ →",
+            deriving: "選択内容をもとに後続の選択肢を生成しています…",
+            already_confirmed: "すでに一度確定済みです。再送信すると前回の選択を上書きします。",
+            confirmed_title: "✓ 確定しました",
+            confirmed_hint: "選択内容を保存しました。このページを閉じてチャットに戻ってください。",
+            lang_toggle_title: "言語を切り替え",
+            sec_canvas: "キャンバス形式",
+            sec_pages: "ページ数",
+            sec_audience: "想定読者",
+            sec_style: "スタイルの狙い",
+            sec_color: "配色",
+            sec_icons: "アイコンの使用",
+            sec_type: "タイポグラフィ",
+            sec_images: "画像の使用",
+            sec_mode: "生成モード",
+            sec_refine: "先に設計仕様を精査",
+            sub_mode: "ナラティブモード",
+            sub_visual: "ビジュアルスタイル",
+            sub_divergence: "素材からの発散度（どこまで自由に再構成するか、原文に忠実か）",
+            placeholder_divergence: "自分の言葉でどうぞ — 例：「文書に忠実に」「元素材の範囲内で自由に再構成・展開」。空欄ならバランス型になります。",
+            custom: "カスタム",
+            custom_placeholder: "自由に入力…",
+            recommended: "おすすめ",
+            placeholder_audience: "この資料は誰に向けたもの？",
+            placeholder_pages: "例：12-15",
+            hex_override: "カスタムHEXで上書き：",
+            formula_policy: "数式レンダリング方針",
+            image_ai_path: "AI画像の生成元",
+            image_strategy: "生成画像のスタイル",
+            image_strategy_empty: "生成画像スタイルの候補がまだありません。",
+            image_strategy_rendering: "レンダリング",
+            image_strategy_palette: "パレット",
+            image_strategy_visual: "ビジュアル",
+            image_strategy_color: "カラー",
+            image_strategy_mood: "ムード",
+            image_usage_notes: "画像に関する補足要件",
+            image_usage_notes_placeholder: "例：リアルな手洗いシーンを優先、漫画調の菌のイラストは避ける、製品写真はそのまま使う。",
+            image_usage_required: "画像の使用方法を少なくとも1つ選択してください。",
+            image_usage_none_exclusive: "「画像なし」は他の画像オプションと同時に選択できません。",
+            font_heading: "見出し",
+            font_body: "本文",
+            font_body_size: "本文の基準サイズ",
+            font_body_size_hint: "すべての文字サイズはこの本文基準から導出されます。",
+            body_size_hint_canvas: "このキャンバスの目安は約{lo}–{hi}px（キャンバスの高さに応じて変化）。",
+            body_size_hint_purpose: "この利用シーンの推奨は{def}px — 範囲ではなく固定値です。",
+            body_size_hint_oor: "（現在の値はこのキャンバスの通常範囲外です — 単位とサイズ感を確認してください。）",
+            delivery_purpose: "利用シーン",
+            delivery_purpose_hint: "手元で読む資料は小さめでOK、投影する資料は大きめの文字が必要です。",
+            size_override: "役割ごとのサイズ上書き：",
+            size_role_title: "タイトル",
+            size_role_subtitle: "サブタイトル",
+            size_role_annotation: "注釈",
+            custom_typography: "カスタムタイポグラフィ",
+            custom_typography_placeholder: "フォント案を入力 — 例：見出し：Georgia + 游明朝 / 本文：游ゴシック + Arial…",
+            custom_color: "カスタム配色",
+            custom_color_placeholder: "配色を言葉で説明 — 例：濃紺をメインに暖色オレンジのアクセント、背景は白 — またはHEX値を貼り付け…",
+            role_background: "背景",
+            role_secondary_bg: "第2背景",
+            role_primary: "メイン",
+            role_accent: "アクセント",
+            role_secondary_accent: "第2アクセント",
+            role_body_text: "本文文字",
+            cjk: "和文",
+            latin: "欧文",
+            sample_heading_cjk: "プレゼンテーションの表題",
+            sample_heading_latin: "Presentation Title",
+            sample_body_cjk: "キーメッセージの要約",
+            sample_body_latin: "Key message summary",
+            style_preview_label: "全体の印象（配色 + タイポグラフィ）",
+            style_preview_body: "· 雰囲気の確認用で、実際のレイアウトではありません",
+            mode_continuous_desc: "デッキ全体を一気に生成します。",
+            mode_split_desc: "設計仕様の作成後に停止し、別ウィンドウでSVG生成を再開します。",
+            refine_off_desc: "設計仕様を一度で書き上げ、パイプラインは自動で進みます。",
+            refine_on_desc: "設計仕様の作成後に停止し、生成前にレビュー・修正できます。",
+            off_default: "オフ",
+            on: "オン",
+            option_prefix: "案",
+            error_retry: "エラー - 再試行"
+        },
         zh: {
             page_title: "确认设计方案",
             topbar_hint: "选择或自定义各项后点「确认」；页面会关闭，请回到聊天窗口。",
@@ -185,10 +270,12 @@
     var LANG = (function () {
         try {
             var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en") return stored;
+            if (stored === "zh" || stored === "en" || stored === "ja") return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        return nav.indexOf("zh") === 0 ? "zh" : "en";
+        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("ja") === 0) return "ja";
+        return "en";
     })();
 
     function t(key) {
@@ -196,18 +283,29 @@
         return dict[key] != null ? dict[key] : key;
     }
 
+    // Fallback stays LANG-relative: zh/en users never see Japanese labels,
+    // ja pages fall back ja → en → zh.
+    var LANG_FALLBACK = { zh: ["zh", "en", "ja"], en: ["en", "zh", "ja"], ja: ["ja", "en", "zh"] };
+
     function localized(obj, base) {
         if (!obj) return "";
         var langKey = base + "_" + LANG;
-        var fallbackKey = base + "_" + (LANG === "zh" ? "en" : "zh");
         if (obj[langKey] != null) return obj[langKey];
+        var order = LANG_FALLBACK[LANG] || LANG_FALLBACK.en;
+        var i;
         if (obj[base] != null) {
             if (typeof obj[base] === "object") {
-                return obj[base][LANG] || obj[base].en || obj[base].zh || "";
+                for (i = 0; i < order.length; i++) {
+                    if (obj[base][order[i]]) return obj[base][order[i]];
+                }
+                return "";
             }
             return obj[base];
         }
-        return obj[fallbackKey] || "";
+        for (i = 0; i < order.length; i++) {
+            if (obj[base + "_" + order[i]]) return obj[base + "_" + order[i]];
+        }
+        return "";
     }
 
     function optionLabel(option) {
@@ -223,15 +321,24 @@
     }
 
     function applyStaticTranslations() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : "en");
+        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
         document.querySelectorAll("[data-i18n]").forEach(function (node) {
             node.textContent = t(node.getAttribute("data-i18n"));
         });
     }
 
+    var LANG_NAMES = { zh: "中文", en: "English", ja: "日本語" };
+
     function refreshLangToggle(toggleBtn) {
-        toggleBtn.textContent = LANG === "zh" ? "EN" : "中";
+        // Custom dropdown (OS-independent): button shows the CURRENT language.
+        var cur = document.getElementById("lang-current");
+        if (cur) cur.textContent = LANG_NAMES[LANG] || LANG;
         toggleBtn.title = t("lang_toggle_title");
+        document.querySelectorAll("#lang-menu li").forEach(function (li) {
+            var selected = li.getAttribute("data-lang") === LANG;
+            li.classList.toggle("selected", selected);
+            li.setAttribute("aria-selected", selected ? "true" : "false");
+        });
     }
 
     // ---- state -----------------------------------------------------------
@@ -376,7 +483,7 @@
                 label = label + (o.dim ? " · " + o.dim : "");
             } else {
                 if (o.dim) label += " · " + o.dim;
-                if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+                if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
                 if (spec && spec.note) label += " · " + spec.note;
             }
             chip.appendChild(el("span", "chip-text", label));
@@ -1297,7 +1404,7 @@
         (CAT.image_usage || []).forEach(function (o) {
             var label = optionLabel(o);
             var desc = optionDesc(o);
-            if (desc) label += (LANG === "zh" ? "：" : " — ") + desc;
+            if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
             var chip = el("div", "chip");
             chip.appendChild(el("span", "chip-text", label));
             if (recommendedIds.indexOf(o.id) >= 0) {
@@ -1598,13 +1705,78 @@
     function boot() {
         applyStaticTranslations();
         var toggleBtn = document.getElementById("btn-lang-toggle");
+        var langMenu = document.getElementById("lang-menu");
         refreshLangToggle(toggleBtn);
-        toggleBtn.addEventListener("click", function () {
-            LANG = (LANG === "zh") ? "en" : "zh";
-            try { window.localStorage.setItem("ppt_lang", LANG); } catch (e) { /* ignore */ }
+        var setMenuOpen = function (open) {
+            langMenu.hidden = !open;
+            toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+            if (open) {
+                var sel = langMenu.querySelector("li.selected") || langMenu.querySelector("li[data-lang]");
+                if (sel) sel.focus();
+            }
+        };
+        var chooseLang = function (v) {
+            setMenuOpen(false);
+            toggleBtn.focus();
+            if (v !== "ja" && v !== "en" && v !== "zh") return;
+            if (v === LANG) return;
+            LANG = v;
+            try { window.localStorage.setItem("ppt_lang", LANG); } catch (e2) { /* ignore */ }
             applyStaticTranslations();
             refreshLangToggle(toggleBtn);
             if (REC && CAT) renderAll();   // STATE persists → selections preserved
+        };
+        toggleBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            setMenuOpen(langMenu.hidden);
+        });
+        toggleBtn.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && !langMenu.hidden) {
+                e.stopPropagation();
+                setMenuOpen(false);
+            } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && langMenu.hidden) {
+                e.preventDefault();
+                e.stopPropagation();
+                setMenuOpen(true);
+            }
+        });
+        langMenu.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var li = e.target && e.target.closest ? e.target.closest("li[data-lang]") : null;
+            if (li) chooseLang(li.getAttribute("data-lang"));
+            else setMenuOpen(false);
+        });
+        langMenu.addEventListener("keydown", function (e) {
+            e.stopPropagation();   // page-level shortcuts must not fire while the menu is open
+            var items = Array.prototype.slice.call(langMenu.querySelectorAll("li[data-lang]"));
+            var idx = items.indexOf(document.activeElement);
+            if (e.key === "Escape") {
+                setMenuOpen(false);
+                toggleBtn.focus();
+            } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                (items[idx + 1] || items[0]).focus();
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                (items[idx - 1] || items[items.length - 1]).focus();
+            } else if (e.key === "Home") {
+                e.preventDefault();
+                items[0].focus();
+            } else if (e.key === "End") {
+                e.preventDefault();
+                items[items.length - 1].focus();
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                e.preventDefault();
+            } else if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (idx >= 0) chooseLang(items[idx].getAttribute("data-lang"));
+            }
+        });
+        toggleBtn.parentElement.addEventListener("focusout", function (e) {
+            if (!langMenu.hidden && !toggleBtn.parentElement.contains(e.relatedTarget)) setMenuOpen(false);
+        });
+        document.addEventListener("click", function () {
+            if (!langMenu.hidden) setMenuOpen(false);
         });
         document.getElementById("btn-confirm").addEventListener("click", function () {
             if (STAGE === 1) { submitTier1(); } else { confirm(); }
@@ -1616,7 +1788,7 @@
         ]).then(function (res) {
             CAT = res[0];
             REC = res[1];
-            if (REC.lang === "zh" || REC.lang === "en") {
+            if (REC.lang === "zh" || REC.lang === "en" || REC.lang === "ja") {
                 var hasStored = false;
                 try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
                 if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
