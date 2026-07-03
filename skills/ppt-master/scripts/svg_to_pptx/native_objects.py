@@ -429,6 +429,63 @@ def _font_size_hpt(value: Any, default_px: int = 18) -> int:
     return int(round(px * FONT_PX_TO_HUNDREDTHS_PT / 10.0)) * 10
 
 
+def _first_present(*values: Any) -> Any:
+    for value in values:
+        if value is not None:
+            return value
+    return None
+
+
+def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    base_raw = _first_present(
+        payload.get("font_size"),
+        payload.get("chart_font_size"),
+        payload.get("chartFontSize"),
+        style.get("font_size"),
+        style.get("chart_font_size"),
+        style.get("chartFontSize"),
+    )
+    axis_raw = _first_present(
+        payload.get("axis_font_size"),
+        payload.get("axisFontSize"),
+        payload.get("tick_font_size"),
+        payload.get("tickFontSize"),
+        style.get("axis_font_size"),
+        style.get("axisFontSize"),
+        style.get("tick_font_size"),
+        style.get("tickFontSize"),
+        base_raw,
+    )
+    legend_raw = _first_present(
+        payload.get("legend_font_size"),
+        payload.get("legendFontSize"),
+        style.get("legend_font_size"),
+        style.get("legendFontSize"),
+        base_raw,
+    )
+    title_raw = _first_present(
+        payload.get("title_font_size"),
+        payload.get("titleFontSize"),
+        style.get("title_font_size"),
+        style.get("titleFontSize"),
+    )
+    return {
+        "axis": _font_size_hpt(axis_raw, 12),
+        "base": _font_size_hpt(base_raw, 12),
+        "legend": _font_size_hpt(legend_raw, 12),
+        "title": _font_size_hpt(title_raw, 16),
+    }
+
+
+def _chart_tx_pr_xml(font_size: int) -> str:
+    return (
+        "<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>"
+        f'<a:defRPr sz="{font_size}"/>'
+        '</a:pPr><a:endParaRPr lang="en-US"/></a:p></c:txPr>'
+    )
+
+
 def _bool_attr(value: bool) -> str:
     return "1" if value else "0"
 
@@ -461,7 +518,27 @@ def _cell_payload(value: Any) -> dict[str, Any]:
     return {"text": "" if value is None else str(value)}
 
 
-def _validate_table_payload(payload: dict[str, Any]) -> None:
+_TABLE_SPAN_KEYS = {
+    "col_span",
+    "colSpan",
+    "grid_span",
+    "gridSpan",
+    "hMerge",
+    "merge",
+    "merged",
+    "row_span",
+    "rowSpan",
+    "vMerge",
+}
+_TABLE_TOP_LEVEL_SPAN_KEYS = {
+    "merge_cells",
+    "merged_cells",
+    "merges",
+    "spans",
+}
+
+
+def _table_rows(payload: dict[str, Any]) -> list[list[Any]]:
     columns = payload.get("columns") or []
     rows = payload.get("rows") or []
     if not isinstance(columns, list) or not isinstance(rows, list):
@@ -470,26 +547,253 @@ def _validate_table_payload(payload: dict[str, Any]) -> None:
         if not isinstance(row, list):
             raise RuntimeError(f"Native PPTX table row {idx} must be a list")
 
-    table_rows = [columns] if columns else []
-    table_rows.extend(rows)
+    table_rows = [list(columns)] if columns else []
+    table_rows.extend(list(row) for row in rows)
+    return table_rows
+
+
+def _check_table_spans(payload: dict[str, Any], table_rows: list[list[Any]]) -> None:
+    for key in _TABLE_TOP_LEVEL_SPAN_KEYS:
+        if key in payload:
+            raise RuntimeError(
+                "Native PPTX table merged cells are not supported; use SVG fallback "
+                "or merge cells in PowerPoint after export"
+            )
+    for row_idx, row in enumerate(table_rows, start=1):
+        for col_idx, cell in enumerate(row, start=1):
+            if not isinstance(cell, dict):
+                continue
+            used_keys = sorted(key for key in _TABLE_SPAN_KEYS if key in cell)
+            if used_keys:
+                keys = ", ".join(used_keys)
+                raise RuntimeError(
+                    f"Native PPTX table cell R{row_idx}C{col_idx} uses unsupported "
+                    f"merged-cell field(s): {keys}"
+                )
+
+
+def _grid_is_strict(payload: dict[str, Any]) -> bool:
+    return bool(payload.get("strict_grid", payload.get("strictGrid", False)))
+
+
+def _validate_table_lengths(payload: dict[str, Any], table_rows: list[list[Any]]) -> int:
     if not table_rows:
         raise RuntimeError("Native PPTX table requires at least one row")
-    if max(len(row) for row in table_rows) <= 0:
+    col_count = max(len(row) for row in table_rows)
+    if col_count <= 0:
         raise RuntimeError("Native PPTX table requires at least one column")
+    if _grid_is_strict(payload) and any(len(row) != col_count for row in table_rows):
+        raise RuntimeError("Native PPTX table strict_grid requires every row to have the same length")
+
+    column_widths = payload.get("column_widths")
+    if column_widths is not None:
+        if not isinstance(column_widths, list) or len(column_widths) != col_count:
+            raise RuntimeError("Native PPTX table column_widths must match the resolved column count")
+        for idx, width in enumerate(column_widths, start=1):
+            _number(width, f"column_widths[{idx}]")
+
+    row_heights = payload.get("row_heights")
+    if row_heights is not None:
+        if not isinstance(row_heights, list) or len(row_heights) != len(table_rows):
+            raise RuntimeError("Native PPTX table row_heights must match the resolved row count")
+        for idx, height in enumerate(row_heights, start=1):
+            _number(height, f"row_heights[{idx}]")
+
+    return col_count
+
+
+def _validate_table_cell_formatting(payload: dict[str, Any], table_rows: list[list[Any]]) -> None:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    for row in table_rows:
+        for cell in row:
+            cell_data = _cell_payload(cell)
+            for side in ("left", "right", "top", "bottom"):
+                _table_padding_value(cell_data, style, side)
+            _table_border_width(cell_data, style)
+            _table_anchor(cell_data, style)
+
+
+def _validate_table_payload(payload: dict[str, Any]) -> tuple[list[list[Any]], int]:
+    table_rows = _table_rows(payload)
+    _check_table_spans(payload, table_rows)
+    col_count = _validate_table_lengths(payload, table_rows)
+    _validate_table_cell_formatting(payload, table_rows)
+    return table_rows, col_count
+
+
+def _normalized_table_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
+def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for row in table_rows:
+        for cell in row:
+            cell_data = _cell_payload(cell)
+            text = _normalized_table_text(cell_data.get("text"))
+            if text:
+                counts[text] = counts.get(text, 0) + 1
+    return counts
+
+
+def _visible_fallback_texts(elem: ET.Element) -> list[str]:
+    texts: list[str] = []
+    for child in elem.iter():
+        tag = _local_tag(child)
+        if tag != "text":
+            continue
+        if child.get("display") == "none" or child.get("visibility") == "hidden":
+            continue
+        text = _normalized_table_text("".join(child.itertext()))
+        if text:
+            texts.append(text)
+    return texts
+
+
+def _native_table_warnings(elem: ET.Element, table_rows: list[list[Any]]) -> list[str]:
+    fallback_texts = _visible_fallback_texts(elem)
+    if not fallback_texts:
+        return []
+    metadata_counts = _native_table_metadata_texts(table_rows)
+    missing: list[str] = []
+    seen_counts: dict[str, int] = {}
+    for text in fallback_texts:
+        seen_counts[text] = seen_counts.get(text, 0) + 1
+        if seen_counts[text] > metadata_counts.get(text, 0):
+            missing.append(text)
+    if not missing:
+        return []
+
+    sample = ", ".join(repr(text) for text in missing[:5])
+    suffix = "" if len(missing) <= 5 else f", and {len(missing) - 5} more"
+    return [
+        "Native PPTX table fallback text is missing from metadata columns/rows "
+        f"and will disappear with --native-objects: {sample}{suffix}"
+    ]
+
+
+def _weighted_lengths(
+    total: int,
+    count: int,
+    weights: list[Any] | None,
+    *,
+    field_name: str,
+) -> list[int]:
+    if weights is None:
+        base = max(total // count, 1)
+        values = [base] * count
+        values[-1] += total - sum(values)
+        return values
+
+    numeric = [max(_number(weight, field_name), 0.0) for weight in weights]
+    numeric_total = sum(numeric)
+    if numeric_total <= 0:
+        raise RuntimeError(f"Native PPTX table {field_name} values must sum to a positive number")
+    values = [max(round(total * weight / numeric_total), 1) for weight in numeric]
+    values[-1] += total - sum(values)
+    return values
+
+
+def _table_padding_value(
+    cell_data: dict[str, Any],
+    style: dict[str, Any],
+    side: str,
+) -> int | None:
+    side_keys = {
+        "left": ("left", "l", "padding_left", "paddingLeft"),
+        "right": ("right", "r", "padding_right", "paddingRight"),
+        "top": ("top", "t", "padding_top", "paddingTop"),
+        "bottom": ("bottom", "b", "padding_bottom", "paddingBottom"),
+    }
+
+    def from_source(source: dict[str, Any]) -> Any:
+        for key in side_keys[side]:
+            if key in source:
+                return source[key]
+        padding = source.get("padding", source.get("cell_padding"))
+        if isinstance(padding, dict):
+            for key in side_keys[side]:
+                if key in padding:
+                    return padding[key]
+        elif padding is not None:
+            return padding
+        return None
+
+    value = from_source(cell_data)
+    if value is None:
+        value = from_source(style)
+    if value is None:
+        return None
+    return max(px_to_emu(max(_number(value, f"table {side} padding"), 0.0)), 0)
+
+
+def _table_padding_attrs(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
+    attrs = []
+    for attr, side in (
+        ("marL", "left"),
+        ("marR", "right"),
+        ("marT", "top"),
+        ("marB", "bottom"),
+    ):
+        value = _table_padding_value(cell_data, style, side)
+        if value is not None:
+            attrs.append(f'{attr}="{value}"')
+    return (" " + " ".join(attrs)) if attrs else ""
+
+
+def _table_anchor(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
+    raw = _first_present(
+        cell_data.get("valign"),
+        cell_data.get("vertical_align"),
+        style.get("valign"),
+        style.get("vertical_align"),
+        "middle",
+    )
+    aliases = {
+        "bottom": "b",
+        "b": "b",
+        "center": "ctr",
+        "ctr": "ctr",
+        "middle": "ctr",
+        "top": "t",
+        "t": "t",
+    }
+    anchor = aliases.get(_compact_key(raw))
+    if not anchor:
+        raise RuntimeError("Native PPTX table valign must be one of: top, middle, bottom")
+    return anchor
+
+
+def _table_border_width(cell_data: dict[str, Any], style: dict[str, Any]) -> float:
+    width_raw = cell_data.get("border_width", cell_data.get("borderWidth", style.get("border_width")))
+    color_raw = cell_data.get("border_color", cell_data.get("borderColor", style.get("border_color")))
+    if width_raw is None and color_raw is None:
+        return 0.0
+    return _number(1 if width_raw is None else width_raw, "table border_width")
+
+
+def _table_border_xml(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
+    color_raw = cell_data.get("border_color", cell_data.get("borderColor", style.get("border_color")))
+    width = _table_border_width(cell_data, style)
+    if width <= 0:
+        return ""
+    color = _clean_hex(color_raw, "#D9DEE7")
+    line = (
+        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        '<a:prstDash val="solid"/>'
+    )
+    line_width = max(px_to_emu(width), 1)
+    return "".join(
+        f'<a:{tag} w="{line_width}">{line}</a:{tag}>'
+        for tag in ("lnL", "lnR", "lnT", "lnB")
+    )
 
 
 def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
-    _validate_table_payload(payload)
-    columns = payload.get("columns") or []
-    rows = payload.get("rows") or []
+    table_rows, col_count = _validate_table_payload(payload)
+    has_columns = bool(payload.get("columns") or [])
+    header_rows = int(payload.get("header_rows", 1 if has_columns else 0))
 
-    table_rows: list[list[Any]] = []
-    header_rows = int(payload.get("header_rows", 1 if columns else 0))
-    if columns:
-        table_rows.append(columns)
-    table_rows.extend(rows)
-
-    col_count = max(len(row) for row in table_rows)
     for row in table_rows:
         row.extend([""] * (col_count - len(row)))
 
@@ -507,17 +811,21 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     )
 
     off_x, off_y, ext_cx, ext_cy = _bounds(elem, payload, ctx)
-    row_height = max(ext_cy // len(table_rows), 1)
 
     column_widths = payload.get("column_widths")
-    if isinstance(column_widths, list) and len(column_widths) == col_count:
-        total = sum(max(float(width), 0.0) for width in column_widths) or col_count
-        grid_widths = [max(round(ext_cx * max(float(width), 0.0) / total), 1) for width in column_widths]
-        grid_widths[-1] += ext_cx - sum(grid_widths)
-    else:
-        base_width = max(ext_cx // col_count, 1)
-        grid_widths = [base_width] * col_count
-        grid_widths[-1] += ext_cx - sum(grid_widths)
+    grid_widths = _weighted_lengths(
+        ext_cx,
+        col_count,
+        column_widths if isinstance(column_widths, list) else None,
+        field_name="column_widths",
+    )
+    row_heights_raw = payload.get("row_heights")
+    row_heights = _weighted_lengths(
+        ext_cy,
+        len(table_rows),
+        row_heights_raw if isinstance(row_heights_raw, list) else None,
+        field_name="row_heights",
+    )
 
     grid_xml = "".join(f'<a:gridCol w="{width}"/>' for width in grid_widths)
     rows_xml: list[str] = []
@@ -544,16 +852,21 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             if is_header and "font_size" not in cell_data:
                 cell_font_size = header_font_size
             paragraph_props = f'<a:pPr algn="{align}"/>' if align != "l" else "<a:pPr/>"
+            tc_pr_attrs = (
+                f' anchor="{_table_anchor(cell_data, style)}"'
+                f'{_table_padding_attrs(cell_data, style)}'
+            )
+            border_xml = _table_border_xml(cell_data, style)
             cells_xml.append(
                 "<a:tc>"
                 "<a:txBody><a:bodyPr/><a:lstStyle/>"
                 f"<a:p>{paragraph_props}"
                 f"{_table_text_run(text, color=color, bold=bold, font_size=cell_font_size, font_face=font_face)}"
                 "</a:p></a:txBody>"
-                f'<a:tcPr anchor="ctr"><a:solidFill><a:srgbClr val="{fill}"/></a:solidFill></a:tcPr>'
+                f'<a:tcPr{tc_pr_attrs}>{border_xml}<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill></a:tcPr>'
                 "</a:tc>"
             )
-        rows_xml.append(f'<a:tr h="{row_height}">{"".join(cells_xml)}</a:tr>')
+        rows_xml.append(f'<a:tr h="{row_heights[row_idx]}">{"".join(cells_xml)}</a:tr>')
 
     shape_id = ctx.next_id()
     first_row = _bool_attr(header_rows > 0)
@@ -1420,19 +1733,19 @@ def _series_xml(
     return "".join(parts)
 
 
-def _chart_title_xml(title: Any) -> str:
+def _chart_title_xml(title: Any, *, font_size: int) -> str:
     if not title:
         return '<c:autoTitleDeleted val="1"/>'
     text = _xml_escape(str(title))
     return (
         "<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/>"
-        f"<a:p><a:r><a:rPr lang=\"en-US\"/><a:t>{text}</a:t></a:r></a:p>"
+        f'<a:p><a:r><a:rPr lang="en-US" sz="{font_size}"/><a:t>{text}</a:t></a:r></a:p>'
         "</c:rich></c:tx><c:layout/></c:title>"
         '<c:autoTitleDeleted val="0"/>'
     )
 
 
-def _chart_legend_xml(payload: dict[str, Any]) -> str:
+def _chart_legend_xml(payload: dict[str, Any], *, font_size: int) -> str:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     show_legend = payload.get("show_legend", style.get("show_legend", False))
     if not show_legend:
@@ -1449,7 +1762,12 @@ def _chart_legend_xml(payload: dict[str, Any]) -> str:
         "t": "t",
     }
     position = positions.get(position_key, "b")
-    return f'<c:legend><c:legendPos val="{position}"/><c:layout/><c:overlay val="0"/></c:legend>'
+    return (
+        f'<c:legend><c:legendPos val="{position}"/><c:layout/>'
+        '<c:overlay val="0"/>'
+        f'{_chart_tx_pr_xml(font_size)}'
+        '</c:legend>'
+    )
 
 
 def _chart_ex_legend_xml(payload: dict[str, Any]) -> str:
@@ -1587,7 +1905,13 @@ def _line_area_chart_group_xml(
     )
 
 
-def _secondary_axis_xml(cat_ax_id: str, val_ax_id: str, *, grouping: str | None = None) -> str:
+def _secondary_axis_xml(
+    cat_ax_id: str,
+    val_ax_id: str,
+    *,
+    axis_font_size: int,
+    grouping: str | None = None,
+) -> str:
     val_num_fmt = (
         '<c:numFmt formatCode="0%" sourceLinked="0"/>'
         if grouping == "percentStacked"
@@ -1598,6 +1922,7 @@ def _secondary_axis_xml(cat_ax_id: str, val_ax_id: str, *, grouping: str | None 
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         '<c:delete val="1"/><c:axPos val="b"/><c:majorTickMark val="none"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="max"/><c:auto val="1"/>'
         '<c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/>'
         "</c:catAx>"
@@ -1606,6 +1931,7 @@ def _secondary_axis_xml(cat_ax_id: str, val_ax_id: str, *, grouping: str | None 
         f'<c:delete val="0"/><c:axPos val="r"/>{val_num_fmt}'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="max"/>'
         "</c:valAx>"
     )
@@ -1618,7 +1944,7 @@ def _combo_axis_grouping(plots: list[dict[str, Any]], axis: str) -> str | None:
     return None
 
 
-def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
+def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_size: int) -> str:
     categories = chart_data["categories"]
     primary_cat_ax_id = "2068027336"
     primary_val_ax_id = "2113994440"
@@ -1665,6 +1991,7 @@ def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
     axes_xml = _axis_xml(
         primary_cat_ax_id,
         primary_val_ax_id,
+        axis_font_size=axis_font_size,
         chart_type="column",
         grouping=_combo_axis_grouping(chart_data["plots"], "primary"),
     )
@@ -1672,17 +1999,18 @@ def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
         axes_xml += _secondary_axis_xml(
             secondary_cat_ax_id,
             secondary_val_ax_id,
+            axis_font_size=axis_font_size,
             grouping=_combo_axis_grouping(chart_data["plots"], "secondary"),
         )
     return "".join(parts) + axes_xml
 
 
-def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
+def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_size: int) -> str:
     chart_type = chart_data["type"]
     cat_ax_id = "2068027336"
     val_ax_id = "2113994440"
     if chart_data["kind"] == "combo":
-        return _combo_plot_xml(chart_data, colors)
+        return _combo_plot_xml(chart_data, colors, axis_font_size=axis_font_size)
     if chart_data["kind"] == "xy":
         x_ax_id = "2080229232"
         y_ax_id = "2098941040"
@@ -1700,7 +2028,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
                 f"{ser_xml}"
                 f'<c:axId val="{x_ax_id}"/><c:axId val="{y_ax_id}"/>'
                 "</c:scatterChart>"
-                f'{_xy_axis_xml(x_ax_id, y_ax_id)}'
+                f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size)}'
             )
         return (
             '<c:bubbleChart><c:varyColors val="0"/>'
@@ -1708,7 +2036,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
             '<c:bubbleScale val="100"/><c:showNegBubbles val="0"/>'
             f'<c:axId val="{x_ax_id}"/><c:axId val="{y_ax_id}"/>'
             "</c:bubbleChart>"
-            f'{_xy_axis_xml(x_ax_id, y_ax_id)}'
+            f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size)}'
         )
 
     categories = chart_data["categories"]
@@ -1723,7 +2051,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
             '<c:upDownBars><c:gapWidth val="150"/><c:upBars/><c:downBars/></c:upDownBars>'
             f'<c:axId val="{stock_cat_ax_id}"/><c:axId val="{stock_val_ax_id}"/>'
             "</c:stockChart>"
-            f'{_stock_axis_xml(stock_cat_ax_id, stock_val_ax_id)}'
+            f'{_stock_axis_xml(stock_cat_ax_id, stock_val_ax_id, axis_font_size=axis_font_size)}'
         )
     ser_xml = _series_xml(
         categories,
@@ -1751,7 +2079,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
             f"{overlap_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:barChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type, grouping=grouping)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_type=chart_type, grouping=grouping)}'
         )
     if chart_type in {"line", "area"}:
         tag = "lineChart" if chart_type == "line" else "areaChart"
@@ -1763,7 +2091,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
             f"{line_tail_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             f"</c:{tag}>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type, grouping=grouping)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_type=chart_type, grouping=grouping)}'
         )
     if chart_type == "doughnut":
         return (
@@ -1789,7 +2117,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
             f"{ser_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:radarChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_type=chart_type)}'
         )
     return f'<c:pieChart><c:varyColors val="1"/>{ser_xml}<c:firstSliceAng val="0"/></c:pieChart>'
 
@@ -1798,6 +2126,7 @@ def _axis_xml(
     cat_ax_id: str,
     val_ax_id: str,
     *,
+    axis_font_size: int,
     chart_type: str,
     grouping: str | None = None,
 ) -> str:
@@ -1813,6 +2142,7 @@ def _axis_xml(
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         f'<c:delete val="0"/><c:axPos val="{cat_pos}"/><c:majorTickMark val="out"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="autoZero"/><c:auto val="1"/>'
         '<c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/>'
         "</c:catAx>"
@@ -1822,17 +2152,19 @@ def _axis_xml(
         f"{val_num_fmt}"
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
         "</c:valAx>"
     )
 
 
-def _xy_axis_xml(x_ax_id: str, y_ax_id: str) -> str:
+def _xy_axis_xml(x_ax_id: str, y_ax_id: str, *, axis_font_size: int) -> str:
     return (
         "<c:valAx>"
         f'<c:axId val="{x_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         '<c:delete val="0"/><c:axPos val="b"/><c:majorTickMark val="out"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{y_ax_id}"/><c:crosses val="autoZero"/>'
         '<c:crossBetween val="midCat"/>'
         "</c:valAx>"
@@ -1841,6 +2173,7 @@ def _xy_axis_xml(x_ax_id: str, y_ax_id: str) -> str:
         '<c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/>'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{x_ax_id}"/><c:crosses val="autoZero"/>'
         '<c:crossBetween val="midCat"/>'
         "</c:valAx>"
@@ -1879,7 +2212,7 @@ def _stock_series_xml(
     return "".join(parts)
 
 
-def _stock_axis_xml(cat_ax_id: str, val_ax_id: str) -> str:
+def _stock_axis_xml(cat_ax_id: str, val_ax_id: str, *, axis_font_size: int) -> str:
     return (
         "<c:dateAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
@@ -1887,6 +2220,7 @@ def _stock_axis_xml(cat_ax_id: str, val_ax_id: str) -> str:
         '<c:numFmt formatCode="m/d/yyyy" sourceLinked="1"/>'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="autoZero"/>'
         '<c:auto val="1"/><c:lblOffset val="100"/><c:baseTimeUnit val="days"/>'
         "</c:dateAx>"
@@ -1895,6 +2229,7 @@ def _stock_axis_xml(cat_ax_id: str, val_ax_id: str) -> str:
         '<c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/>'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
+        f'{_chart_tx_pr_xml(axis_font_size)}'
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
         "</c:valAx>"
     )
@@ -2103,7 +2438,8 @@ def _chart_xml(
         if isinstance(style.get("colors"), list)
         else []
     )
-    plot_xml = _chart_plot_xml(chart_data, colors)
+    text_sizes = _chart_text_sizes(payload)
+    plot_xml = _chart_plot_xml(chart_data, colors, axis_font_size=text_sizes["axis"])
     xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
               xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -2111,14 +2447,13 @@ def _chart_xml(
 <c:date1904 val="0"/>
 <c:lang val="en-US"/>
 <c:chart>
-{_chart_title_xml(payload.get("title"))}
+{_chart_title_xml(payload.get("title"), font_size=text_sizes["title"])}
 <c:plotArea><c:layout/>{plot_xml}</c:plotArea>
-{_chart_legend_xml(payload)}
+{_chart_legend_xml(payload, font_size=text_sizes["legend"])}
 <c:plotVisOnly val="1"/>
 <c:dispBlanksAs val="gap"/>
 </c:chart>
-<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="1800"/></a:pPr>
-<a:endParaRPr lang="en-US"/></a:p></c:txPr>
+{_chart_tx_pr_xml(text_sizes["base"])}
 <c:externalData r:id="{chart_rels_id}"><c:autoUpdate val="0"/></c:externalData>
 </c:chartSpace>'''
     return xml.encode("utf-8")
@@ -2396,11 +2731,12 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     return ShapeResult(xml=xml, bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
 
 
-def validate_native_object_marker(elem: ET.Element) -> None:
-    """Validate a data-pptx-native marker without mutating the PPTX package."""
+def _validate_native_object_marker_payload(
+    elem: ET.Element,
+) -> tuple[str, dict[str, Any], list[list[Any]] | None]:
     kind = (elem.get("data-pptx-native") or "").strip().lower()
     if not kind:
-        return
+        return "", {}, None
     if kind not in _NATIVE_KINDS:
         raise RuntimeError(f"Unsupported data-pptx-native value: {kind}")
     if _local_tag(elem) != "g":
@@ -2411,10 +2747,30 @@ def validate_native_object_marker(elem: ET.Element) -> None:
 
     payload = _load_payload(elem, kind)
     _validate_bounds_inputs(elem, payload)
+    table_rows = None
     if kind == "table":
-        _validate_table_payload(payload)
+        table_rows, _ = _validate_table_payload(payload)
     else:
         _chart_data(payload)
+    return kind, payload, table_rows
+
+
+def validate_native_object_marker(elem: ET.Element) -> None:
+    """Validate a data-pptx-native marker without mutating the PPTX package."""
+    _validate_native_object_marker_payload(elem)
+
+
+def validate_native_object_marker_with_warnings(elem: ET.Element) -> list[str]:
+    """Validate a data-pptx-native marker and return non-fatal warnings."""
+    kind, _, table_rows = _validate_native_object_marker_payload(elem)
+    if kind != "table" or table_rows is None:
+        return []
+    return _native_table_warnings(elem, table_rows)
+
+
+def native_object_marker_warnings(elem: ET.Element) -> list[str]:
+    """Return non-fatal warnings for a data-pptx-native marker."""
+    return validate_native_object_marker_with_warnings(elem)
 
 
 def convert_native_object(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
