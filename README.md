@@ -1,6 +1,6 @@
 # PPT Master — AI generates natively editable PPTX from any document
 
-[![Version](https://img.shields.io/badge/version-v2.13.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
+[![Version](https://img.shields.io/github/v/release/hugohe3/ppt-master?label=version&color=blue)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 [![AtomGit stars](https://atomgit.com/hugohe3/ppt-master/star/badge.svg)](https://atomgit.com/hugohe3/ppt-master)
@@ -36,9 +36,7 @@ English | [中文](./README_CN.md)
 
 </details>
 
-> [!IMPORTANT]
-> ### This is a tool, not a wishing well
-> Don't expect it to hand you a finished, perfect deck in one shot. Its real value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. The cheaper the model, the more there is to do. How good the result turns out comes down to your skill with this project and with PowerPoint.
+> **AI generates your deck — it doesn't fill in a template.** PPT Master is a workflow that runs inside AI IDEs (Claude Code, Cursor, VS Code + Copilot, etc.): hand the AI your PDF / DOCX / web pages, and it produces a real PowerPoint on your machine — every element editable in PowerPoint, your data stays local, no platform or model lock-in. How it works and where the limits are → [Product Positioning](#product-positioning).
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
@@ -48,7 +46,6 @@ English | [中文](./README_CN.md)
 </p>
 
 <h3 align="center">Download the new <a href="https://raw.githubusercontent.com/hugohe3/ppt-master/main/examples/ppt169_attention_is_all_you_need/exports/attention_is_all_you_need_narrated.pptx">narrated <em>Attention Is All You Need</em> deck</a> — play it in PowerPoint and every slide reads itself out loud. That's just the tip of what PPT Master can do.</h3>
-<h3 align="center">Of course, you can also download any of the six example decks below — opening the raw .pptx in PowerPoint is the fastest way to see this project's real capability ceiling.</h3>
 
 <table>
   <tr>
@@ -88,29 +85,16 @@ English | [中文](./README_CN.md)
 </table>
 
 <p align="center">
-  <sub>Generated with Claude Opus 4.7 + <code>gpt-image-2</code>. <a href="https://hugohe3.github.io/ppt-master/">Flip through all examples online →</a> · <a href="./examples/"><code>examples/</code> directory</a> · <a href="./docs/why-ppt-master.md">Why PPT Master?</a></sub>
+  <sub>All examples above were generated in a single pass, with no manual polish (Claude Opus 4.7 + <code>gpt-image-2</code>). Downloading any .pptx and opening it in PowerPoint is the fastest way to see what it can really do.<br/><a href="https://hugohe3.github.io/ppt-master/">Flip through all examples online →</a> · <a href="./examples/"><code>examples/</code> directory</a> · <a href="./docs/why-ppt-master.md">Why PPT Master?</a></sub>
 </p>
 
 ---
 
-Drop in your source material and get back a **real PowerPoint**: directly editable, with native slide transitions and entrance animations, speaker notes you can turn into audio narration, and the option to follow your own PPT template — a complete deck you can present as-is and keep editing. How to use each capability → [Getting Started](./docs/getting-started.md).
+Drop in your source material, and the deck you get back is **more than just editable**: it has native slide transitions and entrance animations, speaker notes that can become audio narration, and it can follow your own PPT template — a complete deck you can present as-is and keep refining. How to use each capability → [Getting Started](./docs/getting-started.md).
 
-> **⚠️ PPT Master is a harness, not a complete agent.** `harness + model = agent` — the tool owns the workflow; the model sets the ceiling. To form a genuinely high-quality agent, use **Claude with a large context window (~1M tokens) + AI image generation (`gpt-image-2`)**. Other models can run the pipeline but cannot reach the same quality ceiling. If results disappoint, upgrade the model — don't blame the harness.
+## Product Positioning
 
-> **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
->
-> **What you'll do**: install Python, install an AI IDE, drop in your material.
-
-> **Why it's shaped this way** — knowing how to use Python and AI agents will matter more and more. This project is meant to show how far you can go with just those two things. There's a learning curve if you're starting cold, but it's the curve worth climbing. Making a deck is just the excuse — what I'm really pushing is Python and agents.
-
-PPT Master is different:
-
-- **Real PowerPoint** — if a file can't be opened and edited in PowerPoint, it shouldn't be called a PPT. Every element PPT Master outputs is directly clickable and editable
-- **Transparent, predictable cost** — the tool is free and open source; the only cost is your AI model usage. As AI tools move to usage-based billing, you pay exactly what you consume — no separate PPT subscription added on top
-- **Data stays local** — your files shouldn't have to be uploaded to someone else's server just to make a presentation. Apart from AI model communication, the entire pipeline runs on your machine
-- **No platform lock-in** — your workflow shouldn't be held hostage by any single company. Works with Claude Code, Cursor, VS Code Copilot, and more; supports Claude, GPT, Gemini, Kimi, and other models
-
-AI presentation tools roughly fall into four categories. PPT Master only does the last one:
+**If a file can't be opened and edited in PowerPoint, it shouldn't be called a PPT.** AI presentation tools roughly fall into four categories, and PPT Master only does the last one:
 
 | Category | Output | Editable element-by-element in PowerPoint? |
 |---|---|:---:|
@@ -119,13 +103,19 @@ AI presentation tools roughly fall into four categories. PPT Master only does th
 | HTML presentation | Web-based deck | ❌ not a PPTX |
 | **Native editable (PPT Master)** | **Real DrawingML shapes, text boxes, charts** | ✅ click any element to edit |
 
----
+In form, it's not a website or an app but a workflow (a "skill") that runs inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy: you tell the AI in the IDE's chat — "make a deck from this PDF" — and it follows the workflow to produce a genuinely editable `.pptx` on your machine. No coding on your side; you do exactly three things — install Python, install an AI IDE, drop in your material.
 
-## The person using it matters more
+This form buys three promises that other tools struggle to make at the same time:
 
-The examples above were all made in a single pass — I didn't even refine them; spend some time polishing and it's a different story entirely. With the same PowerPoint, a designer can produce something stunning while most people only ever touch a few basic features — the difference isn't the tool, it's the person using it. If you can't get there yet, it's most likely that you haven't learned the workflow — start with [Getting Started](./docs/getting-started.md) and the example projects.
+- **Transparent, predictable cost** — the tool is free and open source; the only cost is your AI model usage. You pay exactly what you consume — no separate PPT subscription added on top
+- **Data stays local** — your files shouldn't have to be uploaded to someone else's server just to make a presentation. Apart from AI model communication, the entire pipeline runs on your machine
+- **No platform lock-in** — your workflow shouldn't be held hostage by any single company. Works with Claude Code, Cursor, VS Code Copilot, and more; supports Claude, GPT, Gemini, Kimi, and other models
 
-The best results do need Claude. Before you call it expensive, think about what it would cost to hire someone to produce a deck at the same level. The project also supports GPT, Gemini, Kimi, and other models — the results simply differ. Expecting top-tier output while paying the lowest possible cost was never reasonable to begin with.
+> [!IMPORTANT]
+> ### This is a tool, not a wishing well
+> `harness + model = agent` — PPT Master only owns the workflow; the model sets the ceiling. Recommended: **Claude with a large context window (~1M tokens) + AI image generation (`gpt-image-2`)**; other models can run the pipeline, with a quality gap.
+>
+> And don't expect a finished, perfect deck in one shot. The tool's value is taking most of the tedious work off your plate; the polishing that's left is yours — a natively editable deck exists precisely so you can keep working on it, not a flat image you can't touch. The cheaper the model, the more there is to do; if results disappoint, upgrade the model first, then check your usage against [Getting Started](./docs/getting-started.md) and the example projects.
 
 ---
 
@@ -133,28 +123,24 @@ The best results do need Claude. Before you call it expensive, think about what 
 
 I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who regularly reviews and edits presentation decks. I wanted AI-generated slides to remain editable in PowerPoint, not flattened into images — so I built this.
 
+Knowing how to use Python and AI agents will matter more and more, and this project is also meant to show how far you can go with just those two things. There's a learning curve if you're starting cold, but it's the curve worth climbing — making a deck is just the excuse; what I'm really pushing is Python and agents.
+
 ---
 
 ## Quick Start
 
 ### 1. Prerequisites
 
-**You only need Python.** Everything else is installed via `pip install -r requirements.txt`.
+**All you need to install is [Python](https://www.python.org/downloads/) 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — after you download the project in Step 3.
 
-| Dependency | Required? | What it does |
-|------------|:---------:|--------------|
-| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — the only thing you actually need to install |
-
-> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations.
-
-<details open>
-<summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
+<details>
+<summary><strong>Windows</strong> — see the dedicated <a href="./docs/windows-installation.md">step-by-step guide</a> ⚠️</summary>
 
 Windows requires a few extra steps (PATH setup, execution policy, etc.). We wrote a **step-by-step guide** specifically for Windows users:
 
 **📖 [Windows Installation Guide](./docs/windows-installation.md)** — from zero to a working presentation in 10 minutes.
 
-Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → `pip install -r requirements.txt` → done.
+Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → done; dependencies are installed in Step 3.
 </details>
 
 <details>
@@ -163,11 +149,9 @@ Quick version: download Python from [python.org](https://www.python.org/download
 ```bash
 # macOS
 brew install python
-pip install -r requirements.txt
 
 # Ubuntu / Debian
 sudo apt install python3 python3-pip
-pip install -r requirements.txt
 ```
 </details>
 
@@ -269,15 +253,22 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **Already have a `.pptx` you want to reuse?** Hand the AI that deck plus your material and ask it to "fill this deck with the new content" — it fills text, table, and chart data into your existing design and exports only the pages you pick, staying natively editable. See the [FAQ](./docs/faq.md) and [template-fill workflow](./skills/ppt-master/workflows/template-fill-pptx.md).
 
-> **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
-
-> **Something went wrong?** Check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
+> **Something went wrong?** If the AI loses context, ask it to read `skills/ppt-master/SKILL.md`; for everything else, check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
 
 ### 5. Image Acquisition (Optional)
 
-Two paths for non-user images, mixable per row in the same deck:
+Two paths for non-user images, mixable per image in the same deck:
 
-For API-backed features, put credentials in `.env`. Clone installs can use `cp .env.example .env`; skill marketplace installs should use a persistent user config:
+**A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
+
+**B) Web image search** — `image_search.py`. **Zero-config works**; configure `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) for consistently higher-quality results:
+
+- Without keys, search uses Openverse / Wikimedia Commons only — useful as a fallback, but image quality can be uneven because many results are ordinary user uploads
+- With keys, the default provider chain also appends Pexels / Pixabay, which materially improves modern stock photography, people, workplace, lifestyle, and illustration coverage
+- Licensing is handled automatically: CC0, Public Domain, Pexels / Pixabay no-attribution licenses, CC BY, and CC BY-SA are all considered together, and Executor adds a small inline credit whenever the selected image requires attribution. Use `--strict-no-attribution` only when a slide cannot tolerate any credit line
+- For high-impact covers, product shots, portraits, and branded scenes, prefer this order: user-provided high-resolution assets / AI generation > web search with Pexels / Pixabay keys > zero-config web search
+
+The API keys above all live in `.env`. Clone installs can use `cp .env.example .env`; skill marketplace installs should use a persistent user config:
 
 ```bash
 mkdir -p ~/.ppt-master
@@ -285,10 +276,6 @@ cp /path/to/installed/ppt-master/.env.example ~/.ppt-master/.env
 ```
 
 PPT Master reads the current process environment first, then the first `.env` found in this order: current working directory, skill directory (e.g. `~/.agents/skills/ppt-master/.env`), clone repo root, `~/.ppt-master/.env`.
-
-**A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
-
-**B) Web image search** — `image_search.py`. **Zero-config works**, but configure `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) for higher-quality results. Without keys, search uses Openverse / Wikimedia Commons only; this is useful as a fallback, but image quality can be uneven because many results are ordinary user uploads. With keys, the default provider chain also appends Pexels / Pixabay, which materially improves modern stock photography, people, workplace, lifestyle, and illustration coverage. The default is quality-first: CC0, Public Domain, Pexels / Pixabay no-attribution licenses, CC BY, and CC BY-SA are considered together, and Executor adds a small inline credit whenever the selected image requires attribution. Use `--strict-no-attribution` only when a slide cannot tolerate any credit line. For high-impact covers, product shots, portraits, and branded scenes, prefer this order: user-provided high-resolution assets / AI generation > web search with Pexels / Pixabay keys > zero-config web search.
 
 > Full reference: [`image-generator.md`](./skills/ppt-master/references/image-generator.md) (AI) · [`image-searcher.md`](./skills/ppt-master/references/image-searcher.md) (web).
 
@@ -324,7 +311,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to get involved.
 
 ## Related Tools
 
-[cc-switch](https://github.com/farion1231/cc-switch) — a cross-platform desktop app to manage and one-click switch API providers across Claude Code, Codex, Gemini CLI and more. Handy when running PPT Master inside any of these agents.
+[cc-switch](https://github.com/farion1231/cc-switch) — one-click switching of API providers across Claude Code / Codex / Gemini CLI and more.
 
 ## Contact & Collaboration
 
