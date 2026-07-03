@@ -127,7 +127,6 @@ python3 scripts/svg_quality_checker.py examples/project --export
 Checks include:
 - `viewBox`
 - banned elements
-- width/height consistency
 - line-break structure
 
 ## `svg_position_calculator.py`

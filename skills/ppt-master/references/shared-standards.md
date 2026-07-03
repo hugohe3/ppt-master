@@ -169,7 +169,7 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ## 4. Basic SVG Rules
 
-- **viewBox** MUST match the canvas dimensions; it is the single source of truth for canvas size. Root `width`/`height` are optional — if written, they MUST equal `viewBox`
+- **viewBox** MUST match the canvas dimensions; it is the single source of truth for canvas size. Root `width`/`height` are optional compatibility attributes and are not used as PPT Master canvas authority.
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
 - **Fonts**: every `font-family` stack MUST end with a pre-installed family (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas …); `@font-face` is FORBIDDEN. Full rule: [`strategist.md §g`](strategist.md).

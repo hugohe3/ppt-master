@@ -618,14 +618,15 @@
                 // Empty-canvas guard: surface a clear error if the SVG parsed
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
-                // The width/height:auto preview CSS collapses without the root
-                // attributes (issue #115); derive them from viewBox at render
-                // time. View-layer only — the file on disk is never touched.
-                if (rootSvg && (!rootSvg.hasAttribute("width") || !rootSvg.hasAttribute("height"))) {
+                // viewBox is the PPT Master canvas authority. Normalize the
+                // preview DOM from it so stale or missing root width/height
+                // cannot shrink the slide. View-layer only — the file on disk
+                // is never touched.
+                if (rootSvg) {
                     var vb = (rootSvg.getAttribute("viewBox") || "").trim().split(/[\s,]+/);
                     if (vb.length === 4 && parseFloat(vb[2]) > 0 && parseFloat(vb[3]) > 0) {
-                        if (!rootSvg.hasAttribute("width")) rootSvg.setAttribute("width", vb[2]);
-                        if (!rootSvg.hasAttribute("height")) rootSvg.setAttribute("height", vb[3]);
+                        rootSvg.setAttribute("width", vb[2]);
+                        rootSvg.setAttribute("height", vb[3]);
                     }
                 }
                 var hasContent = false;
