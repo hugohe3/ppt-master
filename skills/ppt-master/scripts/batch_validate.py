@@ -203,8 +203,8 @@ class BatchValidator:
                     f"     Reference: examples/google_annual_report_ppt169_20251116/README.md")
 
             if self.summary['svg_issues'] > 0:
-                print(f"  2. Check and fix SVG viewBox settings")
-                print(f"     Ensure consistency with canvas format")
+                print(f"  2. Check SVG root viewBox settings")
+                print(f"     The SVG root viewBox is the export canvas authority")
 
             if self.summary['missing_spec'] > 0:
                 print(f"  3. Add design specification files")

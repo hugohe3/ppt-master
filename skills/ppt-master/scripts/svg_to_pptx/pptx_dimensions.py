@@ -93,6 +93,28 @@ def get_pixel_dimensions(
     return 1280, 720
 
 
+def _root_viewbox(svg_path: Path) -> str | None:
+    """Return the root SVG viewBox, ignoring nested sprite/crop viewBoxes."""
+    try:
+        root = ET.parse(svg_path).getroot()
+    except (ET.ParseError, OSError):
+        return None
+    return root.get('viewBox')
+
+
+def _parse_viewbox_values(viewbox: str) -> tuple[float, float, float, float] | None:
+    parts = re.split(r'[\s,]+', viewbox.strip())
+    if len(parts) != 4:
+        return None
+    try:
+        values = tuple(float(part) for part in parts)
+    except ValueError:
+        return None
+    if values[2] <= 0 or values[3] <= 0:
+        return None
+    return values
+
+
 def get_viewbox_dimensions(svg_path: Path) -> tuple[int, int] | None:
     """Extract pixel dimensions from SVG viewBox.
 
@@ -102,26 +124,13 @@ def get_viewbox_dimensions(svg_path: Path) -> tuple[int, int] | None:
     Returns:
         (width, height) as integers, or None if not found.
     """
-    try:
-        with open(svg_path, 'r', encoding='utf-8') as f:
-            content = f.read(2000)
-
-        match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
-        if not match:
-            return None
-
-        parts = re.split(r'[\s,]+', match.group(1).strip())
-        if len(parts) != 4:
-            return None
-
-        width = float(parts[2])
-        height = float(parts[3])
-        if width <= 0 or height <= 0:
-            return None
-
-        return int(round(width)), int(round(height))
-    except Exception:
+    viewbox = _root_viewbox(svg_path)
+    if not viewbox:
         return None
+    values = _parse_viewbox_values(viewbox)
+    if values is None:
+        return None
+    return int(round(values[2])), int(round(values[3]))
 
 
 def detect_format_from_svg(svg_path: Path) -> str | None:
@@ -133,16 +142,14 @@ def detect_format_from_svg(svg_path: Path) -> str | None:
     Returns:
         Canvas format key (e.g. 'ppt169'), or None if not detected.
     """
-    try:
-        with open(svg_path, 'r', encoding='utf-8') as f:
-            content = f.read(2000)
-
-        match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
-        if match:
-            viewbox = match.group(1)
-            for fmt_key, fmt_info in CANVAS_FORMATS.items():
-                if fmt_info['viewbox'] == viewbox:
-                    return fmt_key
-    except Exception:
-        pass
+    viewbox = _root_viewbox(svg_path)
+    if not viewbox:
+        return None
+    values = _parse_viewbox_values(viewbox)
+    if values is None:
+        return None
+    for fmt_key, fmt_info in CANVAS_FORMATS.items():
+        expected = _parse_viewbox_values(fmt_info['viewbox'])
+        if expected and values == expected:
+            return fmt_key
     return None

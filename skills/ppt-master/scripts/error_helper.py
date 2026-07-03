@@ -75,10 +75,11 @@ class ErrorHelper:
             'severity': 'warning'
         },
         'viewbox_mismatch': {
-            'message': 'SVG viewBox does not match canvas format',
+            'message': 'SVG viewBox differs from the recorded canvas format',
             'solutions': [
                 'Check the viewBox attribute of SVG files',
-                'Ensure it matches the project canvas format',
+                'Treat the root viewBox as the actual canvas size',
+                'If the project metadata is stale, export will use the SVG viewBox',
                 'PPT 16:9 should be: viewBox="0 0 1280 720"',
                 'PPT 4:3 should be: viewBox="0 0 1024 768"',
                 'Reference: references/canvas-formats.md'
@@ -100,8 +101,8 @@ class ErrorHelper:
             'solutions': [
                 'Add the viewBox attribute to the SVG root element',
                 'Format: <svg viewBox="0 0 1280 720" ...>',
-                'Ensure width, height are consistent with viewBox',
-                'This is a mandatory requirement for SVG generation'
+                'Root width/height are optional compatibility attributes',
+                'The root viewBox is mandatory for SVG generation'
             ],
             'severity': 'error'
         },

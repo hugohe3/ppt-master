@@ -11,6 +11,7 @@ import re
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
+from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
 
@@ -323,7 +324,6 @@ def validate_svg_viewbox(svg_files: List[Path], expected_format: Optional[str] =
         List of warnings
     """
     warnings = []
-    viewbox_pattern = re.compile(r'viewBox\s*=\s*["\']([^"\']+)["\']')
     viewboxes = set()
 
     # Determine expected viewBox
@@ -333,27 +333,28 @@ def validate_svg_viewbox(svg_files: List[Path], expected_format: Optional[str] =
 
     for svg_file in svg_files[:10]:  # Check first 10 files
         try:
-            with open(svg_file, 'r', encoding='utf-8') as f:
-                content = f.read(2000)  # Only read first 2000 characters
-                match = viewbox_pattern.search(content)
-                if match:
-                    viewbox = match.group(1)
-                    viewboxes.add(viewbox)
+            viewbox = ET.parse(svg_file).getroot().get('viewBox')
+            if viewbox:
+                viewboxes.add(viewbox)
 
-                    # If expected format is specified, check for match
-                    if expected_viewbox and viewbox != expected_viewbox:
-                        warnings.append(
-                            f"{svg_file.name}: viewBox '{viewbox}' does not match expected format "
-                            f"'{expected_format}' (expected: '{expected_viewbox}')"
-                        )
-                else:
-                    warnings.append(f"{svg_file.name}: viewBox attribute not found")
+                # If expected format is specified, check for match
+                if expected_viewbox and viewbox != expected_viewbox:
+                    warnings.append(
+                        f"{svg_file.name}: root viewBox '{viewbox}' differs from recorded "
+                        f"project format '{expected_format}' ({expected_viewbox}); export uses "
+                        f"the SVG viewBox as the canvas size"
+                    )
+            else:
+                warnings.append(f"{svg_file.name}: root viewBox attribute not found")
         except Exception as e:
             warnings.append(f"{svg_file.name}: Failed to read - {e}")
 
     # Check for multiple different viewBoxes
     if len(viewboxes) > 1:
-        warnings.append(f"Multiple different viewBox settings detected: {viewboxes}")
+        warnings.append(
+            f"Multiple different root viewBox settings detected: {viewboxes}; "
+            "confirm this mixed-canvas project is intentional"
+        )
 
     return warnings
 
