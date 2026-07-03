@@ -361,6 +361,35 @@ def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> t
     return off_x, off_y, ext_cx, ext_cy
 
 
+def _validate_bounds_inputs(elem: ET.Element, payload: dict[str, Any]) -> None:
+    raw_x = payload.get("x", elem.get("data-pptx-x"))
+    raw_y = payload.get("y", elem.get("data-pptx-y"))
+    raw_width = payload.get("width", elem.get("data-pptx-width"))
+    raw_height = payload.get("height", elem.get("data-pptx-height"))
+    inferred = None
+    if any(value is None for value in (raw_x, raw_y, raw_width, raw_height)):
+        inferred = _inferred_bounds(elem)
+        if inferred is None:
+            raise RuntimeError(
+                "Native PPTX object requires x/y/width/height or visible fallback geometry"
+            )
+
+    width = (
+        _number(raw_width, "width")
+        if raw_width is not None else inferred[2] - inferred[0]  # type: ignore[index]
+    )
+    height = (
+        _number(raw_height, "height")
+        if raw_height is not None else inferred[3] - inferred[1]  # type: ignore[index]
+    )
+    if raw_x is not None:
+        _number(raw_x, "x")
+    if raw_y is not None:
+        _number(raw_y, "y")
+    if width <= 0 or height <= 0:
+        raise RuntimeError("Native PPTX object width/height must be positive")
+
+
 def _load_payload(elem: ET.Element, kind: str) -> dict[str, Any]:
     raw = elem.get("data-pptx-json") or elem.get("data-pptx-data")
     if raw is None:
@@ -397,13 +426,23 @@ def _bool_attr(value: bool) -> str:
     return "1" if value else "0"
 
 
-def _table_text_run(text: str, *, color: str, bold: bool, font_size: int, font_face: str) -> str:
+def _table_text_run(
+    text: str,
+    *,
+    color: str,
+    bold: bool,
+    font_size: int,
+    font_face: str | None,
+) -> str:
     bold_attr = ' b="1"' if bold else ""
+    font_xml = ""
+    if font_face:
+        clean_font = _xml_escape(font_face)
+        font_xml = f'<a:latin typeface="{clean_font}"/><a:ea typeface="{clean_font}"/>'
     return (
         f'<a:r><a:rPr lang="en-US" sz="{font_size}"{bold_attr}>'
         f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
-        f'<a:latin typeface="{_xml_escape(font_face)}"/>'
-        f'<a:ea typeface="{_xml_escape(font_face)}"/>'
+        f'{font_xml}'
         "</a:rPr>"
         f"<a:t>{_xml_escape(text)}</a:t></a:r>"
     )
@@ -415,23 +454,35 @@ def _cell_payload(value: Any) -> dict[str, Any]:
     return {"text": "" if value is None else str(value)}
 
 
-def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
+def _validate_table_payload(payload: dict[str, Any]) -> None:
     columns = payload.get("columns") or []
     rows = payload.get("rows") or []
     if not isinstance(columns, list) or not isinstance(rows, list):
         raise RuntimeError("Native PPTX table requires columns/rows lists")
+    for idx, row in enumerate(rows, start=1):
+        if not isinstance(row, list):
+            raise RuntimeError(f"Native PPTX table row {idx} must be a list")
+
+    table_rows = [columns] if columns else []
+    table_rows.extend(rows)
+    if not table_rows:
+        raise RuntimeError("Native PPTX table requires at least one row")
+    if max(len(row) for row in table_rows) <= 0:
+        raise RuntimeError("Native PPTX table requires at least one column")
+
+
+def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
+    _validate_table_payload(payload)
+    columns = payload.get("columns") or []
+    rows = payload.get("rows") or []
 
     table_rows: list[list[Any]] = []
     header_rows = int(payload.get("header_rows", 1 if columns else 0))
     if columns:
         table_rows.append(columns)
-    table_rows.extend(row for row in rows if isinstance(row, list))
-    if not table_rows:
-        raise RuntimeError("Native PPTX table requires at least one row")
+    table_rows.extend(rows)
 
     col_count = max(len(row) for row in table_rows)
-    if col_count <= 0:
-        raise RuntimeError("Native PPTX table requires at least one column")
     for row in table_rows:
         row.extend([""] * (col_count - len(row)))
 
@@ -441,7 +492,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     body_fill = _clean_hex(style.get("body_fill"), "#FFFFFF")
     body_text = _clean_hex(style.get("body_text"), "#1F2937")
     band_fill = _clean_hex(style.get("band_fill"), "#F3F6FA")
-    font_face = str(style.get("font_family") or "Aptos")
+    font_face = str(style["font_family"]) if style.get("font_family") else None
     body_font_size = _font_size_hpt(style.get("font_size"), 18)
     header_font_size = _font_size_hpt(
         style.get("header_font_size", style.get("font_size")),
@@ -492,7 +543,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 f"<a:p>{paragraph_props}"
                 f"{_table_text_run(text, color=color, bold=bold, font_size=cell_font_size, font_face=font_face)}"
                 "</a:p></a:txBody>"
-                f'<a:tcPr><a:solidFill><a:srgbClr val="{fill}"/></a:solidFill></a:tcPr>'
+                f'<a:tcPr anchor="ctr"><a:solidFill><a:srgbClr val="{fill}"/></a:solidFill></a:tcPr>'
                 "</a:tc>"
             )
         rows_xml.append(f'<a:tr h="{row_height}">{"".join(cells_xml)}</a:tr>')
@@ -540,6 +591,14 @@ def _chart_number(value: Any) -> int | float:
     except (TypeError, ValueError) as exc:
         raise RuntimeError(f"Native PPTX chart value is not numeric: {value}") from exc
     return int(number) if number.is_integer() else number
+
+
+def _chart_list(value: Any, field_name: str) -> list[Any]:
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise RuntimeError(f"Native PPTX chart {field_name} must be a list")
+    return value
 
 
 _CATEGORY_CHART_TYPES = {
@@ -729,36 +788,26 @@ def _chart_kind(payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
     return chart_type, grouping, style
 
 
-def _base_chart_type(chart_type: str) -> str:
-    return chart_type
-
-
 def _chart_grouping(
     chart_type: str,
     payload: dict[str, Any],
     alias_grouping: str | None,
 ) -> str | None:
-    base_type = _base_chart_type(chart_type)
     grouping = payload.get("grouping") or payload.get("chart_grouping") or alias_grouping
     if not grouping and payload.get("stacked"):
         grouping = "stacked"
     if not grouping:
-        return "clustered" if base_type in {"bar", "column"} else "standard"
+        return "clustered" if chart_type in {"bar", "column"} else "standard"
 
-    key = _compact_key(grouping)
-    aliases = {
-        "clustered": "clustered",
-        "standard": "standard",
-    }
-    normalized = aliases.get(key)
-    if normalized is None:
+    normalized = _compact_key(grouping)
+    allowed = {"clustered"} if chart_type in {"bar", "column"} else {"standard"}
+    if normalized not in allowed:
+        if normalized in {"clustered", "standard"}:
+            allowed_text = ", ".join(sorted(allowed))
+            raise RuntimeError(f"Native PPTX {chart_type} chart grouping must be one of: {allowed_text}")
         raise RuntimeError(
             f"Native PPTX {grouping} grouping is outside current basic chart support"
         )
-    allowed = {"clustered"} if base_type in {"bar", "column"} else {"standard"}
-    if normalized not in allowed:
-        allowed_text = ", ".join(sorted(allowed))
-        raise RuntimeError(f"Native PPTX {chart_type} chart grouping must be one of: {allowed_text}")
     return normalized
 
 
@@ -771,7 +820,10 @@ def _category_series(payload: dict[str, Any], categories: list[str]) -> list[dic
     for idx, item in enumerate(raw_series, start=1):
         if not isinstance(item, dict):
             raise RuntimeError("Native PPTX chart series entries must be objects")
-        values = [_chart_number(value) for value in item.get("values", [])]
+        values = [
+            _chart_number(value)
+            for value in _chart_list(item.get("values", []), "series[].values")
+        ]
         if len(values) != len(categories):
             raise RuntimeError("Native PPTX chart series values must match categories length")
         series.append({"name": str(item.get("name") or f"Series {idx}"), "values": values})
@@ -784,33 +836,29 @@ def _category_chart_data(
     alias_grouping: str | None,
     alias_style: str | None,
 ) -> dict[str, Any]:
-    base_type = _base_chart_type(chart_type)
-    categories = [str(item) for item in payload.get("categories", [])]
+    categories = [str(item) for item in _chart_list(payload.get("categories", []), "categories")]
 
     series = _category_series(payload, categories)
-    if base_type == "pie":
+    if chart_type in {"doughnut", "pie"}:
         if len(series) != 1:
             raise RuntimeError("Native PPTX pie-family charts support exactly one series")
 
     radar_style = _compact_key(payload.get("radar_style") or alias_style or "marker")
     radar_aliases = {"marker": "marker", "markers": "marker"}
-    if base_type == "radar" and radar_style not in radar_aliases:
+    if chart_type == "radar" and radar_style not in radar_aliases:
         raise RuntimeError(
             f"Native PPTX radar_style {radar_style} is outside current basic chart support"
         )
 
-    pie_explosion = 0
     if alias_style == "exploded" or payload.get("exploded"):
         raise RuntimeError("Native PPTX exploded pie/doughnut is outside current basic chart support")
 
     return {
-        "base_type": base_type,
         "kind": "category",
         "type": chart_type,
         "categories": categories,
-        "pie_explosion": pie_explosion,
         "grouping": _chart_grouping(chart_type, payload, alias_grouping)
-        if base_type in {"bar", "column", "line", "area"}
+        if chart_type in {"bar", "column", "line", "area"}
         else None,
         "radar_style": radar_aliases.get(radar_style, "marker"),
         "series": series,
@@ -842,15 +890,24 @@ def _xy_chart_data(
         if not isinstance(item, dict):
             raise RuntimeError("Native PPTX chart series entries must be objects")
 
-        if isinstance(item.get("points"), list):
-            points = [_point_values(point, chart_type=chart_type) for point in item["points"]]
+        if item.get("points") is not None:
+            points = [
+                _point_values(point, chart_type=chart_type)
+                for point in _chart_list(item.get("points"), "series[].points")
+            ]
             x_values = [_chart_number(point[0]) for point in points]
             y_values = [_chart_number(point[1]) for point in points]
             size_values = [_chart_number(point[2]) for point in points if point[2] is not None]
         else:
-            x_raw = item.get("x", item.get("xs", []))
-            y_raw = item.get("y", item.get("ys", item.get("values", [])))
-            size_raw = item.get("size", item.get("sizes", item.get("bubble_size", [])))
+            x_raw = _chart_list(item.get("x", item.get("xs", [])), "series[].x")
+            y_raw = _chart_list(
+                item.get("y", item.get("ys", item.get("values", []))),
+                "series[].y",
+            )
+            size_raw = _chart_list(
+                item.get("size", item.get("sizes", item.get("bubble_size", []))),
+                "series[].size",
+            )
             x_values = [_chart_number(value) for value in x_raw]
             y_values = [_chart_number(value) for value in y_raw]
             size_values = [_chart_number(value) for value in size_raw]
@@ -912,14 +969,18 @@ def _number_cache(values: list[int | float]) -> str:
     )
 
 
-def _series_color_xml(color: str | None) -> str:
+def _series_color_xml(color: str | None, *, line: bool = True) -> str:
     if not color:
         return ""
     clean = _clean_hex(color, "#4472C4")
+    line_xml = (
+        f'<a:ln><a:solidFill><a:srgbClr val="{clean}"/></a:solidFill></a:ln>'
+        if line else '<a:ln><a:noFill/></a:ln>'
+    )
     return (
         "<c:spPr>"
         f'<a:solidFill><a:srgbClr val="{clean}"/></a:solidFill>'
-        f'<a:ln><a:solidFill><a:srgbClr val="{clean}"/></a:solidFill></a:ln>'
+        f'{line_xml}'
         "</c:spPr>"
     )
 
@@ -946,10 +1007,8 @@ def _series_xml(
     colors: list[str],
     start_column: int = 2,
     start_index: int = 0,
-    explosion: int = 0,
 ) -> str:
     parts: list[str] = []
-    base_type = _base_chart_type(chart_type)
     for offset, item in enumerate(series):
         index = start_index + offset
         column_index = offset + start_column
@@ -958,11 +1017,8 @@ def _series_xml(
         if chart_type in {"doughnut", "pie"}:
             color_xml = ""
             point_colors_xml = _data_point_colors_xml(len(categories), colors)
-        marker_xml = '<c:marker><c:symbol val="circle"/></c:marker>' if base_type == "line" else ""
-        if chart_type == "radar" and radar_style == "filled":
-            marker_xml = '<c:marker><c:symbol val="none"/></c:marker>'
-        smooth_xml = '<c:smooth val="0"/>' if base_type == "line" else ""
-        explosion_xml = f'<c:explosion val="{explosion}"/>' if explosion else ""
+        marker_xml = '<c:marker><c:symbol val="circle"/></c:marker>' if chart_type == "line" else ""
+        smooth_xml = '<c:smooth val="0"/>' if chart_type == "line" else ""
         parts.append(
             "<c:ser>"
             f'<c:idx val="{index}"/><c:order val="{index}"/>'
@@ -970,7 +1026,7 @@ def _series_xml(
             f"<c:f>Sheet1!${_excel_col(column_index)}$1</c:f>"
             f"{_string_cache([str(item['name'])])}"
             "</c:strRef></c:tx>"
-            f"{color_xml}{marker_xml}{explosion_xml}{point_colors_xml}"
+            f"{color_xml}{marker_xml}{point_colors_xml}"
             "<c:cat><c:strRef>"
             f"<c:f>Sheet1!$A$2:$A${len(categories) + 1}</c:f>"
             f"{_string_cache(categories)}"
@@ -1017,7 +1073,25 @@ def _chart_legend_xml(payload: dict[str, Any]) -> str:
     return f'<c:legend><c:legendPos val="{position}"/><c:layout/><c:overlay val="0"/></c:legend>'
 
 
-def _xy_series_xml(series: list[dict[str, Any]], *, chart_type: str, colors: list[str]) -> str:
+def _scatter_series_style_xml(scatter_style: str, color: str) -> tuple[str, str, str]:
+    has_line = scatter_style in {"line", "lineMarker", "smooth", "smoothMarker"}
+    has_marker = scatter_style in {"lineMarker", "marker", "smoothMarker"}
+    smooth = scatter_style in {"smooth", "smoothMarker"}
+    marker_symbol = "circle" if has_marker else "none"
+    return (
+        _series_color_xml(color, line=has_line),
+        f'<c:marker><c:symbol val="{marker_symbol}"/></c:marker>',
+        f'<c:smooth val="{_bool_attr(smooth)}"/>',
+    )
+
+
+def _xy_series_xml(
+    series: list[dict[str, Any]],
+    *,
+    chart_type: str,
+    colors: list[str],
+    scatter_style: str = "lineMarker",
+) -> str:
     parts: list[str] = []
     column_stride = 3 if chart_type == "bubble" else 2
     for index, item in enumerate(series):
@@ -1025,7 +1099,12 @@ def _xy_series_xml(series: list[dict[str, Any]], *, chart_type: str, colors: lis
         y_col = x_col + 1
         first_row = 2
         last_row = len(item["x"]) + 1
-        color_xml = _series_color_xml(_chart_color(colors, index))
+        color = _chart_color(colors, index)
+        color_xml = _series_color_xml(color)
+        marker_xml = ""
+        smooth_xml = ""
+        if chart_type == "scatter":
+            color_xml, marker_xml, smooth_xml = _scatter_series_style_xml(scatter_style, color)
         invert_xml = '<c:invertIfNegative val="0"/>' if chart_type == "bubble" else ""
         size_xml = ""
         if chart_type == "bubble":
@@ -1037,7 +1116,6 @@ def _xy_series_xml(series: list[dict[str, Any]], *, chart_type: str, colors: lis
                 f"{_number_cache(item['sizes'])}"
                 "</c:numRef></c:bubbleSize><c:bubble3D val=\"0\"/>"
             )
-        smooth_xml = '<c:smooth val="0"/>' if chart_type == "scatter" else ""
         parts.append(
             "<c:ser>"
             f'<c:idx val="{index}"/><c:order val="{index}"/>'
@@ -1046,6 +1124,7 @@ def _xy_series_xml(series: list[dict[str, Any]], *, chart_type: str, colors: lis
             f"{_string_cache([str(item['name'])])}"
             "</c:strRef></c:tx>"
             f"{color_xml}"
+            f"{marker_xml}"
             f"{invert_xml}"
             "<c:xVal><c:numRef>"
             f"<c:f>Sheet1!${_excel_col(x_col)}${first_row}:"
@@ -1071,7 +1150,12 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
     if chart_data["kind"] == "xy":
         x_ax_id = "2080229232"
         y_ax_id = "2098941040"
-        ser_xml = _xy_series_xml(chart_data["series"], chart_type=chart_type, colors=colors)
+        ser_xml = _xy_series_xml(
+            chart_data["series"],
+            chart_type=chart_type,
+            colors=colors,
+            scatter_style=chart_data.get("scatter_style", "lineMarker"),
+        )
         if chart_type == "scatter":
             scatter_style = chart_data.get("scatter_style", "lineMarker")
             return (
@@ -1099,7 +1183,6 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
         chart_type=chart_type,
         radar_style=chart_data.get("radar_style", "marker"),
         colors=colors,
-        explosion=chart_data.get("pie_explosion", 0),
     )
 
     if chart_type in {"bar", "column"}:
@@ -1393,6 +1476,27 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 </a:graphic>
 </p:graphicFrame>'''
     return ShapeResult(xml=xml, bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
+
+
+def validate_native_object_marker(elem: ET.Element) -> None:
+    """Validate a data-pptx-native marker without mutating the PPTX package."""
+    kind = (elem.get("data-pptx-native") or "").strip().lower()
+    if not kind:
+        return
+    if kind not in _NATIVE_KINDS:
+        raise RuntimeError(f"Unsupported data-pptx-native value: {kind}")
+    if _local_tag(elem) != "g":
+        raise RuntimeError("Native PPTX table/chart markers must be <g> elements")
+    transform = elem.get("transform", "")
+    if transform and any(token in transform for token in ("rotate", "matrix", "skew")):
+        raise RuntimeError("Native PPTX table/chart markers support translate/scale transforms only")
+
+    payload = _load_payload(elem, kind)
+    _validate_bounds_inputs(elem, payload)
+    if kind == "table":
+        _validate_table_payload(payload)
+    else:
+        _chart_data(payload)
 
 
 def convert_native_object(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
