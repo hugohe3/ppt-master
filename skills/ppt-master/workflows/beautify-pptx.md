@@ -176,14 +176,14 @@ Write `<project_path>/confirm_ui/recommendations.json` and launch the same confi
   "page_count": <source-slide-count>,
   "audience": "<carry over from the deck's apparent audience, or leave blank>",
   "color": { "selected": 0, "candidates": [
-    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
-    { "name_zh": "实际用色（observed）", "name_en": "Observed palette", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
-    { "name_zh": "备选配色 A", "name_en": "Alternative palette A", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } }
+    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "name_ja": "元PPTを再現（推奨）", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
+    { "name_zh": "实际用色（observed）", "name_en": "Observed palette", "name_ja": "実際の使用色（observed）", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } },
+    { "name_zh": "备选配色 A", "name_en": "Alternative palette A", "name_ja": "代替配色A", "palette": { "background": "#...", "secondary_bg": "#...", "primary": "#...", "accent": "#...", "secondary_accent": "#...", "body_text": "#..." } }
   ] },
   "typography": { "selected": 0, "candidates": [
-    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> },
-    { "name_zh": "实际字体（observed）", "name_en": "Observed fonts", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> },
-    { "name_zh": "备选字体 A", "name_en": "Alternative pairing A", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <canvas-appropriate baseline> }
+    { "name_zh": "复刻源 PPT（推荐）", "name_en": "Source replica (recommended)", "name_ja": "元PPTを再現（推奨）", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> },
+    { "name_zh": "实际字体（observed）", "name_en": "Observed fonts", "name_ja": "実際のフォント（observed）", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <dominant observed.sizes_pt × 4/3, as px> },
+    { "name_zh": "备选字体 A", "name_en": "Alternative pairing A", "name_ja": "代替ペアリングA", "heading": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body": { "cjk": "...", "latin": "...", "css": "<PPT-safe stack>" }, "body_size": <canvas-appropriate baseline> }
   ] }
 }
 ```
