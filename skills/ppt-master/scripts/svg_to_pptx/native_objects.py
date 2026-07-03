@@ -607,6 +607,7 @@ _CATEGORY_CHART_TYPES = {
     "column",
     "doughnut",
     "line",
+    "of_pie",
     "pie",
     "radar",
 }
@@ -614,13 +615,11 @@ _XY_CHART_TYPES = {"scatter", "bubble"}
 _DEFERRED_CHART_TYPES = {
     "box_whisker",
     "bullet",
-    "combo",
     "funnel",
     "gantt",
     "heatmap",
     "histogram",
     "map",
-    "of_pie",
     "pareto",
     "stock",
     "sunburst",
@@ -709,12 +708,17 @@ def _chart_kind(payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
         "heatmapchart": ("heatmap", None, None),
         "histogram": ("histogram", None, None),
         "histogramchart": ("histogram", None, None),
-        "line": ("line", "standard", None),
-        "linemarkers": ("line", "standard", None),
-        "linestacked": ("line", "stacked", None),
-        "linestacked100": ("line", "percentStacked", None),
+        "line": ("line", "standard", "line"),
+        "linemarkers": ("line", "standard", "lineMarker"),
+        "linemarkersstacked": ("line", "stacked", "lineMarker"),
+        "linemarkersstacked100": ("line", "percentStacked", "lineMarker"),
+        "linestacked": ("line", "stacked", "line"),
+        "linestacked100": ("line", "percentStacked", "line"),
+        "linestackedmarkers": ("line", "stacked", "lineMarker"),
+        "linestackedmarkers100": ("line", "percentStacked", "lineMarker"),
         "pie": ("pie", None, None),
         "pieexploded": ("pie", None, "exploded"),
+        "ofpie": ("of_pie", None, "pie"),
         "pieofpie": ("of_pie", None, "pie"),
         "pareto": ("pareto", None, None),
         "paretochart": ("pareto", None, None),
@@ -725,10 +729,10 @@ def _chart_kind(payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
         "pyramidcolclustered": ("column3d", "clustered", "pyramid"),
         "pyramidcolstacked": ("column3d", "stacked", "pyramid"),
         "pyramidcolstacked100": ("column3d", "percentStacked", "pyramid"),
-        "radar": ("radar", None, "marker"),
+        "radar": ("radar", None, "line"),
         "radarfilled": ("radar", None, "filled"),
-        "radarmarkers": ("radar", None, "marker"),
-        "scatter": ("scatter", None, "lineMarker"),
+        "radarmarkers": ("radar", None, "lineMarker"),
+        "scatter": ("scatter", None, "marker"),
         "stock": ("stock", None, "hlc"),
         "stockhlc": ("stock", None, "hlc"),
         "stockohlc": ("stock", None, "ohlc"),
@@ -761,8 +765,8 @@ def _chart_kind(payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
         "treemapchart": ("treemap", None, None),
         "waterfall": ("waterfall", None, None),
         "waterfallchart": ("waterfall", None, None),
-        "xy": ("scatter", None, "lineMarker"),
-        "xyscatter": ("scatter", None, "lineMarker"),
+        "xy": ("scatter", None, "marker"),
+        "xyscatter": ("scatter", None, "marker"),
         "xyscatterlines": ("scatter", None, "lineMarker"),
         "xyscatterlinesnomarkers": ("scatter", None, "line"),
         "xyscattersmooth": ("scatter", None, "smoothMarker"),
@@ -782,7 +786,7 @@ def _chart_kind(payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
             f"Native PPTX {chart_type} chart is outside current basic chart support"
         )
 
-    supported = sorted(_CATEGORY_CHART_TYPES | _XY_CHART_TYPES)
+    supported = sorted(_CATEGORY_CHART_TYPES | _XY_CHART_TYPES | {"combo"})
     if chart_type not in supported:
         raise RuntimeError(f"Native PPTX chart type must be one of: {', '.join(supported)}")
     return chart_type, grouping, style
@@ -810,11 +814,12 @@ def _chart_grouping(
         "standard": "standard",
     }
     normalized = aliases.get(_compact_key(grouping))
-    allowed = (
-        {"clustered", "stacked", "percentStacked"}
-        if chart_type in {"bar", "column"}
-        else {"standard"}
-    )
+    if chart_type in {"bar", "column"}:
+        allowed = {"clustered", "stacked", "percentStacked"}
+    elif chart_type in {"area", "line"}:
+        allowed = {"standard", "stacked", "percentStacked"}
+    else:
+        allowed = {"standard"}
     if normalized not in allowed:
         if normalized in {"clustered", "standard"}:
             allowed_text = ", ".join(sorted(allowed))
@@ -823,6 +828,43 @@ def _chart_grouping(
             f"Native PPTX {grouping} grouping is outside current basic chart support"
         )
     return normalized
+
+
+def _line_style(payload: dict[str, Any], alias_style: str | None) -> str:
+    raw_style = payload.get("line_style") or payload.get("lineStyle") or alias_style
+    if raw_style is None:
+        raw_style = "lineMarker" if payload.get("markers") else "line"
+    aliases = {
+        "line": "line",
+        "linemarker": "lineMarker",
+        "marker": "lineMarker",
+        "markers": "lineMarker",
+        "none": "line",
+        "nomarker": "line",
+        "nomarkers": "line",
+    }
+    style = aliases.get(_compact_key(raw_style))
+    if not style:
+        raise RuntimeError("Native PPTX line_style must be one of: line, lineMarker")
+    return style
+
+
+def _radar_style(payload: dict[str, Any], alias_style: str | None) -> tuple[str, str | None]:
+    raw_style = payload.get("radar_style") or payload.get("radarStyle") or alias_style or "line"
+    aliases = {
+        "filled": ("filled", None),
+        "line": ("marker", "none"),
+        "linemarker": ("marker", "circle"),
+        "marker": ("marker", "none"),
+        "markers": ("marker", "circle"),
+        "standard": ("marker", "none"),
+    }
+    style = aliases.get(_compact_key(raw_style))
+    if not style:
+        raise RuntimeError(
+            f"Native PPTX radar_style {raw_style} is outside current basic chart support"
+        )
+    return style
 
 
 def _category_series(payload: dict[str, Any], categories: list[str]) -> list[dict[str, Any]]:
@@ -853,16 +895,34 @@ def _category_chart_data(
     categories = [str(item) for item in _chart_list(payload.get("categories", []), "categories")]
 
     series = _category_series(payload, categories)
-    if chart_type in {"doughnut", "pie"}:
+    if chart_type in {"doughnut", "of_pie", "pie"}:
         if len(series) != 1:
             raise RuntimeError("Native PPTX pie-family charts support exactly one series")
 
-    radar_style = _compact_key(payload.get("radar_style") or alias_style or "marker")
-    radar_aliases = {"marker": "marker", "markers": "marker"}
-    if chart_type == "radar" and radar_style not in radar_aliases:
-        raise RuntimeError(
-            f"Native PPTX radar_style {radar_style} is outside current basic chart support"
+    of_pie_type = None
+    if chart_type == "of_pie":
+        raw_of_pie_type = (
+            payload.get("of_pie_type")
+            or payload.get("ofPieType")
+            or payload.get("secondary_type")
+            or alias_style
+            or "pie"
         )
+        of_pie_aliases = {
+            "bar": "bar",
+            "barofpie": "bar",
+            "pie": "pie",
+            "pieofpie": "pie",
+        }
+        of_pie_type = of_pie_aliases.get(_compact_key(raw_of_pie_type))
+        if not of_pie_type:
+            raise RuntimeError("Native PPTX of_pie_type must be one of: bar, pie")
+
+    line_style = _line_style(payload, alias_style) if chart_type == "line" else None
+    radar_style = None
+    radar_marker_style = None
+    if chart_type == "radar":
+        radar_style, radar_marker_style = _radar_style(payload, alias_style)
 
     if alias_style == "exploded" or payload.get("exploded"):
         raise RuntimeError("Native PPTX exploded pie/doughnut is outside current basic chart support")
@@ -874,8 +934,114 @@ def _category_chart_data(
         "grouping": _chart_grouping(chart_type, payload, alias_grouping)
         if chart_type in {"bar", "column", "line", "area"}
         else None,
-        "radar_style": radar_aliases.get(radar_style, "marker"),
+        "of_pie_type": of_pie_type,
+        "line_style": line_style,
+        "radar_marker_style": radar_marker_style,
+        "radar_style": radar_style,
         "series": series,
+    }
+
+
+def _combo_axis_name(plot_payload: dict[str, Any]) -> str:
+    axis = plot_payload.get("axis") or plot_payload.get("value_axis")
+    if axis is None and plot_payload.get("secondary_axis"):
+        axis = "secondary"
+    axis_key = _compact_key(axis or "primary")
+    aliases = {
+        "left": "primary",
+        "primary": "primary",
+        "right": "secondary",
+        "secondary": "secondary",
+        "secondaryaxis": "secondary",
+    }
+    normalized = aliases.get(axis_key)
+    if not normalized:
+        raise RuntimeError("Native PPTX combo plot axis must be primary or secondary")
+    return normalized
+
+
+def _combo_plot_type(plot_payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
+    chart_type, alias_grouping, alias_style = _chart_kind(plot_payload)
+    if chart_type not in {"area", "column", "line"}:
+        raise RuntimeError("Native PPTX combo plots support column, line, and area only")
+    return chart_type, alias_grouping, alias_style
+
+
+def _combo_plot_entry(
+    plot_payload: dict[str, Any],
+    categories: list[str],
+    *,
+    fallback_series: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    chart_type, alias_grouping, alias_style = _combo_plot_type(plot_payload)
+    plot_series = fallback_series or _category_series(plot_payload, categories)
+    entry: dict[str, Any] = {
+        "axis": _combo_axis_name(plot_payload),
+        "grouping": _chart_grouping(chart_type, plot_payload, alias_grouping)
+        if chart_type in {"area", "column", "line"}
+        else None,
+        "series": plot_series,
+        "type": chart_type,
+    }
+    if chart_type == "line":
+        entry["line_style"] = _line_style(plot_payload, alias_style)
+    return entry
+
+
+def _combo_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
+    categories = [str(item) for item in _chart_list(payload.get("categories", []), "categories")]
+    raw_plots = payload.get("plots", payload.get("chart_plots"))
+    plots: list[dict[str, Any]] = []
+
+    if raw_plots is not None:
+        for item in _chart_list(raw_plots, "plots"):
+            if not isinstance(item, dict):
+                raise RuntimeError("Native PPTX combo plots must be objects")
+            plots.append(_combo_plot_entry(item, categories))
+    else:
+        raw_series = _chart_list(payload.get("series", []), "series")
+        if not raw_series:
+            raise RuntimeError("Native PPTX combo chart requires plots or typed series")
+        for idx, item in enumerate(raw_series, start=1):
+            if not isinstance(item, dict):
+                raise RuntimeError("Native PPTX chart series entries must be objects")
+            if not (item.get("type") or item.get("chart_type")):
+                raise RuntimeError("Native PPTX combo series entries require type")
+            one_series = _category_series({"series": [item]}, categories)
+            plot = _combo_plot_entry(item, categories, fallback_series=one_series)
+            signature = (
+                plot["axis"],
+                plot.get("grouping"),
+                plot.get("line_style"),
+                plot["type"],
+            )
+            previous = plots[-1] if plots else None
+            previous_signature = (
+                previous.get("axis"),
+                previous.get("grouping"),
+                previous.get("line_style"),
+                previous.get("type"),
+            ) if previous else None
+            if previous is not None and signature == previous_signature:
+                previous["series"].extend(plot["series"])
+            else:
+                plots.append(plot)
+
+    if not plots:
+        raise RuntimeError("Native PPTX combo chart requires at least one plot")
+    flat_series: list[dict[str, Any]] = []
+    for plot in plots:
+        plot["start_index"] = len(flat_series)
+        flat_series.extend(plot["series"])
+    if not flat_series:
+        raise RuntimeError("Native PPTX combo chart requires at least one series")
+
+    return {
+        "categories": categories,
+        "kind": "combo",
+        "plots": plots,
+        "series": flat_series,
+        "type": "combo",
     }
 
 
@@ -938,7 +1104,7 @@ def _xy_chart_data(
             "y": y_values,
         })
 
-    scatter_style = _compact_key(payload.get("scatter_style") or alias_style or "lineMarker")
+    scatter_style = _compact_key(payload.get("scatter_style") or alias_style or "marker")
     style_aliases = {
         "line": "line",
         "linemarker": "lineMarker",
@@ -952,13 +1118,15 @@ def _xy_chart_data(
     return {
         "kind": "xy",
         "type": chart_type,
-        "scatter_style": style_aliases.get(scatter_style, "lineMarker"),
+        "scatter_style": style_aliases.get(scatter_style, "marker"),
         "series": series,
     }
 
 
 def _chart_data(payload: dict[str, Any]) -> dict[str, Any]:
     chart_type, alias_grouping, alias_style = _chart_kind(payload)
+    if chart_type == "combo":
+        return _combo_chart_data(payload)
     if chart_type in _XY_CHART_TYPES:
         return _xy_chart_data(payload, chart_type, alias_style)
     return _category_chart_data(payload, chart_type, alias_grouping, alias_style)
@@ -1012,11 +1180,21 @@ def _data_point_colors_xml(count: int, colors: list[str]) -> str:
     )
 
 
+def _marker_xml(symbol: str | None) -> str:
+    if not symbol:
+        return ""
+    if symbol == "none":
+        return '<c:marker><c:symbol val="none"/></c:marker>'
+    return f'<c:marker><c:symbol val="{_xml_escape(symbol)}"/></c:marker>'
+
+
 def _series_xml(
     categories: list[str],
     series: list[dict[str, Any]],
     *,
     chart_type: str,
+    line_style: str = "line",
+    radar_marker_style: str | None = None,
     radar_style: str = "marker",
     colors: list[str],
     start_column: int = 2,
@@ -1028,11 +1206,23 @@ def _series_xml(
         column_index = offset + start_column
         color_xml = _series_color_xml(_chart_color(colors, index))
         point_colors_xml = ""
-        if chart_type in {"doughnut", "pie"}:
+        marker_xml = ""
+        smooth_xml = ""
+        if chart_type in {"doughnut", "of_pie", "pie"}:
             color_xml = ""
-            point_colors_xml = _data_point_colors_xml(len(categories), colors)
-        marker_xml = '<c:marker><c:symbol val="circle"/></c:marker>' if chart_type == "line" else ""
-        smooth_xml = '<c:smooth val="0"/>' if chart_type == "line" else ""
+            point_count = (
+                len(categories) + 1
+                if chart_type == "of_pie"
+                else len(categories)
+            )
+            point_colors_xml = _data_point_colors_xml(point_count, colors)
+        if chart_type == "line":
+            marker_xml = _marker_xml("circle" if line_style == "lineMarker" else "none")
+            smooth_xml = '<c:smooth val="0"/>'
+        if chart_type == "radar":
+            if radar_style == "filled":
+                color_xml = _series_color_xml(_chart_color(colors, index), line=False)
+            marker_xml = _marker_xml(radar_marker_style)
         parts.append(
             "<c:ser>"
             f'<c:idx val="{index}"/><c:order val="{index}"/>'
@@ -1157,10 +1347,147 @@ def _xy_series_xml(
     return "".join(parts)
 
 
+def _bar_chart_group_xml(
+    chart_type: str,
+    grouping: str,
+    ser_xml: str,
+    *,
+    cat_ax_id: str,
+    val_ax_id: str,
+) -> str:
+    bar_dir = "bar" if chart_type == "bar" else "col"
+    overlap_xml = (
+        '<c:overlap val="100"/>'
+        if grouping in {"stacked", "percentStacked"}
+        else ""
+    )
+    return (
+        "<c:barChart>"
+        f'<c:barDir val="{bar_dir}"/><c:grouping val="{grouping}"/>'
+        '<c:varyColors val="0"/>'
+        f"{ser_xml}"
+        '<c:gapWidth val="150"/>'
+        f"{overlap_xml}"
+        f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
+        "</c:barChart>"
+    )
+
+
+def _line_area_chart_group_xml(
+    chart_type: str,
+    grouping: str,
+    ser_xml: str,
+    *,
+    cat_ax_id: str,
+    val_ax_id: str,
+) -> str:
+    tag = "lineChart" if chart_type == "line" else "areaChart"
+    line_tail_xml = '<c:marker val="1"/><c:smooth val="0"/>' if chart_type == "line" else ""
+    return (
+        f'<c:{tag}><c:grouping val="{grouping}"/><c:varyColors val="0"/>'
+        f"{ser_xml}"
+        f"{line_tail_xml}"
+        f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
+        f"</c:{tag}>"
+    )
+
+
+def _secondary_axis_xml(cat_ax_id: str, val_ax_id: str, *, grouping: str | None = None) -> str:
+    val_num_fmt = (
+        '<c:numFmt formatCode="0%" sourceLinked="0"/>'
+        if grouping == "percentStacked"
+        else ""
+    )
+    return (
+        "<c:catAx>"
+        f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
+        '<c:delete val="1"/><c:axPos val="b"/><c:majorTickMark val="none"/>'
+        '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
+        f'<c:crossAx val="{val_ax_id}"/><c:crosses val="max"/><c:auto val="1"/>'
+        '<c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/>'
+        "</c:catAx>"
+        "<c:valAx>"
+        f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
+        f'<c:delete val="0"/><c:axPos val="r"/>{val_num_fmt}'
+        '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
+        '<c:tickLblPos val="nextTo"/>'
+        f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="max"/>'
+        "</c:valAx>"
+    )
+
+
+def _combo_axis_grouping(plots: list[dict[str, Any]], axis: str) -> str | None:
+    for plot in plots:
+        if plot.get("axis") == axis and plot.get("grouping") == "percentStacked":
+            return "percentStacked"
+    return None
+
+
+def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
+    categories = chart_data["categories"]
+    primary_cat_ax_id = "2068027336"
+    primary_val_ax_id = "2113994440"
+    secondary_cat_ax_id = "2080229232"
+    secondary_val_ax_id = "2098941040"
+    parts: list[str] = []
+
+    for plot in chart_data["plots"]:
+        chart_type = plot["type"]
+        axis = plot.get("axis", "primary")
+        cat_ax_id = secondary_cat_ax_id if axis == "secondary" else primary_cat_ax_id
+        val_ax_id = secondary_val_ax_id if axis == "secondary" else primary_val_ax_id
+        start_index = int(plot.get("start_index", 0))
+        ser_xml = _series_xml(
+            categories,
+            plot["series"],
+            chart_type=chart_type,
+            colors=colors,
+            line_style=plot.get("line_style", "line"),
+            start_column=2 + start_index,
+            start_index=start_index,
+        )
+        grouping = plot.get("grouping") or ("clustered" if chart_type == "column" else "standard")
+        if chart_type == "column":
+            parts.append(_bar_chart_group_xml(
+                chart_type,
+                grouping,
+                ser_xml,
+                cat_ax_id=cat_ax_id,
+                val_ax_id=val_ax_id,
+            ))
+        elif chart_type in {"area", "line"}:
+            parts.append(_line_area_chart_group_xml(
+                chart_type,
+                grouping,
+                ser_xml,
+                cat_ax_id=cat_ax_id,
+                val_ax_id=val_ax_id,
+            ))
+        else:
+            raise RuntimeError("Native PPTX combo plots support column, line, and area only")
+
+    has_secondary_axis = any(plot.get("axis") == "secondary" for plot in chart_data["plots"])
+    axes_xml = _axis_xml(
+        primary_cat_ax_id,
+        primary_val_ax_id,
+        chart_type="column",
+        grouping=_combo_axis_grouping(chart_data["plots"], "primary"),
+    )
+    if has_secondary_axis:
+        axes_xml += _secondary_axis_xml(
+            secondary_cat_ax_id,
+            secondary_val_ax_id,
+            grouping=_combo_axis_grouping(chart_data["plots"], "secondary"),
+        )
+    return "".join(parts) + axes_xml
+
+
 def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
     chart_type = chart_data["type"]
     cat_ax_id = "2068027336"
     val_ax_id = "2113994440"
+    if chart_data["kind"] == "combo":
+        return _combo_plot_xml(chart_data, colors)
     if chart_data["kind"] == "xy":
         x_ax_id = "2080229232"
         y_ax_id = "2098941040"
@@ -1195,6 +1522,8 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
         categories,
         series,
         chart_type=chart_type,
+        line_style=chart_data.get("line_style", "line"),
+        radar_marker_style=chart_data.get("radar_marker_style"),
         radar_style=chart_data.get("radar_style", "marker"),
         colors=colors,
     )
@@ -1220,19 +1549,30 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
     if chart_type in {"line", "area"}:
         tag = "lineChart" if chart_type == "line" else "areaChart"
         grouping = chart_data.get("grouping") or "standard"
+        line_tail_xml = '<c:marker val="1"/><c:smooth val="0"/>' if chart_type == "line" else ""
         return (
             f'<c:{tag}><c:grouping val="{grouping}"/><c:varyColors val="0"/>'
             f"{ser_xml}"
+            f"{line_tail_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             f"</c:{tag}>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type, grouping=grouping)}'
         )
     if chart_type == "doughnut":
         return (
             '<c:doughnutChart><c:varyColors val="1"/>'
             f"{ser_xml}"
-            '<c:firstSliceAng val="0"/><c:holeSize val="50"/>'
+            '<c:firstSliceAng val="0"/><c:holeSize val="75"/>'
             "</c:doughnutChart>"
+        )
+    if chart_type == "of_pie":
+        of_pie_type = chart_data.get("of_pie_type", "pie")
+        return (
+            f'<c:ofPieChart><c:ofPieType val="{of_pie_type}"/>'
+            '<c:varyColors val="1"/>'
+            f"{ser_xml}"
+            '<c:gapWidth val="100"/><c:secondPieSize val="75"/><c:serLines/>'
+            "</c:ofPieChart>"
         )
     if chart_type == "radar":
         radar_style = chart_data.get("radar_style", "marker")

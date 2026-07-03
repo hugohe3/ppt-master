@@ -734,30 +734,37 @@ type, and chart data shape before export.
 ```
 
 **Category chart schema**: `column`, `bar`, `line`, `area`, `pie`,
-`doughnut`, and `radar` use `categories` plus `series[].values`.
-`pie` and `doughnut` must have exactly one series; the exporter assigns
-per-category slice colors so single-series charts do not collapse into one
-solid color.
+`doughnut`, `pieOfPie`, `barOfPie`, and `radar` use `categories` plus
+`series[].values`. Pie-family charts (`pie`, `doughnut`, `pieOfPie`, and
+`barOfPie`) must have exactly one series; the exporter assigns per-category
+slice colors so single-series charts do not collapse into one solid color.
+
+**Combo chart schema**: `combo` uses shared `categories` plus either `plots[]`
+or typed `series[]`. Each plot supports `type: "column" | "line" | "area"`,
+its own `series`, and optional `axis: "secondary"` for a right-side value axis.
+Typed `series[]` accepts the same `type` and `axis` fields per series, and
+adjacent compatible series are grouped into the same PowerPoint plot.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
 
-**Deferred chart types**: Stacked / percent-stacked `line` and `area` variants,
-exploded pie / doughnut variants, filled radar, `pieOfPie`, `barOfPie`,
-`stock*`, `combo`, `waterfall`, `funnel`, `treemap`, `sunburst`, `histogram`,
-`pareto`, `boxWhisker`, `map`, `heatmap`, `bullet`, and `gantt` are
-intentionally outside the current native-object support boundary. The exporter
-fails fast for these types until each mapping is implemented and validated one
-by one.
+**Deferred chart types**: Exploded pie / doughnut variants, `stock*`,
+`waterfall`, `funnel`, `treemap`, `sunburst`, `histogram`, `pareto`,
+`boxWhisker`, `map`, `heatmap`, `bullet`, and `gantt` are intentionally outside
+the current native-object support boundary. The exporter fails fast for these
+types until each mapping is implemented and validated one by one.
 
 **Supported chart types**:
 
 - `column`, `bar`: `clustered`, `stacked`, or `percentStacked` (`grouping`)
-- `line`, `area`: standard only
+- `line`: `standard`, `stacked`, or `percentStacked` (`grouping`); `line` or `lineMarker` (`line_style`, default `line` / no markers)
+- `area`: `standard`, `stacked`, or `percentStacked` (`grouping`)
 - `pie`: exactly one series, per-slice colors
 - `doughnut`: exactly one series, per-slice colors
-- `radar`: marker only
-- `scatter`: `lineMarker`, `line`, `marker`, `smoothMarker`, or `smooth` (`scatter_style`)
+- `pieOfPie`, `barOfPie`: exactly one series, per-slice colors
+- `radar`, `radarMarkers`, `radarFilled`
+- `scatter`: `marker` (default), `lineMarker`, `line`, `smoothMarker`, or `smooth` (`scatter_style`)
 - `bubble`: x/y/size series
+- `combo`: `column`, `line`, and `area` plots, optional secondary value axis
 
 3D chart aliases (`3DColumn`, `3DBar`, `3DLine`, `3DArea`, `3DPie`, cone,
 cylinder, pyramid variants, and `surface`) are intentionally unsupported. They
