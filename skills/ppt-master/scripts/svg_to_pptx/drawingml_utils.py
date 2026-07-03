@@ -155,6 +155,66 @@ def _f(val: str | None, default: float = 0.0) -> float:
         return default
 
 
+_LENGTH_RE = re.compile(r'^\s*([-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?)\s*([A-Za-z%]*)\s*$')
+
+
+def parse_svg_length(
+    val: str | None,
+    default: float = 0.0,
+    *,
+    percent_base: float | None = None,
+    font_size: float = 16.0,
+) -> float:
+    """Parse SVG/CSS length values into SVG px.
+
+    Unitless and ``px`` values are already SVG px. Percentages need a caller
+    supplied reference length because SVG uses different bases for x, y,
+    width, height, and radii.
+    """
+    if val is None:
+        return default
+    match = _LENGTH_RE.match(str(val))
+    if not match:
+        return default
+
+    number = float(match.group(1))
+    unit = match.group(2).lower() or 'px'
+    if unit == '%':
+        if percent_base is None:
+            return default
+        return percent_base * number / 100.0
+    if unit in ('', 'px'):
+        return number
+    if unit == 'pt':
+        return number * 96.0 / 72.0
+    if unit in ('pc', 'pica'):
+        return number * 16.0
+    if unit == 'in':
+        return number * 96.0
+    if unit == 'cm':
+        return number * 96.0 / 2.54
+    if unit == 'mm':
+        return number * 96.0 / 25.4
+    if unit == 'q':
+        return number * 96.0 / 101.6
+    if unit in ('em', 'rem'):
+        return number * font_size
+    return default
+
+
+def svg_length_x(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    return parse_svg_length(val, default, percent_base=ctx.viewport_width)
+
+
+def svg_length_y(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    return parse_svg_length(val, default, percent_base=ctx.viewport_height)
+
+
+def svg_length_size(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    base = min(ctx.viewport_width, ctx.viewport_height)
+    return parse_svg_length(val, default, percent_base=base)
+
+
 # ---------------------------------------------------------------------------
 # SVG transform matrix helpers
 # ---------------------------------------------------------------------------

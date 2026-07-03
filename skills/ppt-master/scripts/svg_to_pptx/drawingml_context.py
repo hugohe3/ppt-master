@@ -34,6 +34,8 @@ class ConvertContext:
     translate_y: float = 0.0
     scale_x: float = 1.0
     scale_y: float = 1.0
+    viewport_width: float = 1280.0
+    viewport_height: float = 720.0
     transform_matrix: AffineMatrix = IDENTITY_MATRIX
     use_transform_matrix: bool = False
     filter_id: str | None = None
@@ -153,6 +155,8 @@ class ConvertContext:
             translate_y=self.translate_y + dy,
             scale_x=self.scale_x * sx,
             scale_y=self.scale_y * sy,
+            viewport_width=self.viewport_width,
+            viewport_height=self.viewport_height,
             transform_matrix=combined_matrix,
             use_transform_matrix=self.use_transform_matrix or transform_matrix is not None,
             filter_id=filter_id or self.filter_id,
