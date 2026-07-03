@@ -39,6 +39,14 @@ PPT Master is solo-maintained with limited review bandwidth. To keep things heal
 
 This isn't gatekeeping — it protects your time. A PR should be a meaningful, independently reviewable change, not just a few lines the maintainer could patch faster from an issue report. A 500-line PR that doesn't match the project direction is worse for you than a 10-line issue comment that clarifies it upfront.
 
+### AI-assisted PRs
+
+AI assistance is welcome — this project is itself AI-driven. But an AI-drafted PR you haven't personally reviewed is not a contribution; it's an unreviewed code dump:
+
+- **Purely AI-generated PRs submitted without human review will be closed unmerged.** Before opening a PR, read the full diff yourself, run the affected scripts, and confirm the problem described actually exists in this repository — not just that it sounds plausible.
+- **Every factual claim in the PR description is yours, not the AI's.** A description that asserts failures in code paths the repository doesn't actually have (an AI-invented problem narrative) gets the PR closed regardless of diff quality.
+- Read this file in full before opening a PR; the PR template asks you to confirm both points above.
+
 ## What We Accept / What We Don't
 
 **Welcome:**
