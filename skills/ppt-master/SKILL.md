@@ -643,6 +643,8 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 #
 # Add --svg-snapshot to additionally emit the SVG-image preview pptx alongside the native pptx:
 #   exports/<project_name>_<timestamp>_svg.pptx      ← SVG preview pptx (reads svg_final/)
+# Add --native-objects to emit real editable chart/table objects instead of flattened shapes:
+#   exports/<project_name>_<timestamp>_native_charts.pptx  ← native chart/table objects (data-pptx-native markers)
 ```
 
 > The native pptx consumes `svg_output/` directly so the converter can preserve
