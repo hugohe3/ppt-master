@@ -47,6 +47,11 @@
     <g id="funnel_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "funnel_chart",
+              "x": 340,
+              "y": 160,
+              "width": 630,
+              "height": 410,
               "type": "funnel",
               "categories": ["Awareness", "Interest", "Consideration", "Conversion"],
               "values": [10000, 4500, 1800, 650],

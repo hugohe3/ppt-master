@@ -35,6 +35,11 @@
     <g id="pareto_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "pareto_chart",
+              "x": 56,
+              "y": 100,
+              "width": 1168,
+              "height": 528,
               "type": "pareto",
               "categories": ["Function Error", "Appearance", "Missing Parts", "Ship Damage", "Manual Error", "Packaging", "Other"],
               "values": [350, 220, 150, 120, 70, 50, 40],

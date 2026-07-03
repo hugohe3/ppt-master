@@ -38,6 +38,11 @@
     <g id="scatter_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "scatter_chart",
+              "x": 30,
+              "y": 151,
+              "width": 1013.1,
+              "height": 477.75,
               "type": "scatter",
               "scatter_style": "marker",
               "series": [

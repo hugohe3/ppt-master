@@ -57,6 +57,11 @@
     <g id="stacked_area_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "stacked_area_chart",
+              "x": 85,
+              "y": 150,
+              "width": 1095,
+              "height": 433.25,
               "type": "area",
               "grouping": "stacked",
               "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],

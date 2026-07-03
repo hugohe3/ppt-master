@@ -38,6 +38,11 @@
     <g id="treemap_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "treemap_chart",
+              "x": 60,
+              "y": 130,
+              "width": 1011.3,
+              "height": 480,
               "type": "treemap",
               "levels": [
                 ["Human Resources", "Human Resources", "Human Resources", "Operations", "Operations", "Operations", "Marketing", "Marketing", "R&amp;D", "Other"],

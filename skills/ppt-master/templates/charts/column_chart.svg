@@ -42,6 +42,11 @@
     <g id="column_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "column_chart",
+              "x": 125,
+              "y": 141,
+              "width": 1099.2,
+              "height": 443,
               "type": "column",
               "categories": ["East", "South", "North", "Southwest", "Central", "Northeast"],
               "series": [

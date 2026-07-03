@@ -36,6 +36,11 @@
     <g id="radar_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "radar_chart",
+              "x": 290,
+              "y": 124,
+              "width": 499.2,
+              "height": 515,
               "type": "radarFilled",
               "categories": ["Performance", "Security", "Usability", "Pricing", "Support", "Innovation"],
               "series": [

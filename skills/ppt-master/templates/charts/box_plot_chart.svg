@@ -50,6 +50,11 @@
     <g id="box_plot_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "box_plot_chart",
+              "x": 30,
+              "y": 122,
+              "width": 970,
+              "height": 471.75,
               "type": "boxWhisker",
               "series": [
                 {"name": "Tech", "values": [15, 25, 35, 45, 58, 8]},

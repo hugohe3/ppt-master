@@ -58,6 +58,11 @@
     <g id="dual_axis_line_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "dual_axis_line_chart",
+              "x": 14,
+              "y": 181,
+              "width": 1252,
+              "height": 463,
               "type": "combo",
               "categories": ["Jan", "Mar", "Jun", "Sep", "Nov", "Dec"],
               "plots": [

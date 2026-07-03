@@ -51,6 +51,11 @@
     <g id="area_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "area_chart",
+              "x": 105,
+              "y": 160,
+              "width": 1095,
+              "height": 433.5,
               "type": "area",
               "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
               "series": [
