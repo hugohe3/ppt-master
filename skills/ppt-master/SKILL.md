@@ -665,12 +665,14 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > layout-tight page must keep every dy-stacked line as its own text frame. The
 > merge detector is conservative; mixed-layout text falls back to per-line frames.
 
-> **Native table/chart objects** — explicit `data-pptx-native="table|chart"`
-> markers are dormant by default. Add `--native-objects` only when the user
-> explicitly wants PowerPoint-editable native tables/charts and accepts that
-> those objects may render differently across PowerPoint / Keynote /
-> LibreOffice / WPS. Without the flag, marked groups export through their SVG
-> fallback children like ordinary SVG content.
+> **Native table/chart objects** — supported data charts carry
+> `data-pptx-native` markers by default (Executor transcribes them at draw
+> time; see `references/executor-base.md` §3.2) and the markers stay dormant.
+> Add `--native-objects` only when the user explicitly wants
+> PowerPoint-editable native tables/charts and accepts that those objects may
+> render differently across PowerPoint / Keynote / LibreOffice / WPS. Without
+> the flag, marked groups export through their SVG fallback children like
+> ordinary SVG content.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
