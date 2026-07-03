@@ -313,6 +313,26 @@ def _process_one_image(
     if img is None:
         return False, 'PIL open failed'
 
+    # Multi-frame images (animated GIF / WebP / APNG): every PIL transform
+    # and re-save below operates on frame 0 only, silently flattening the
+    # animation — and the "original bytes are smaller" fallback never fires
+    # because one frame is always smaller than all frames. Embed the raw
+    # bytes untouched and keep the geometry attributes (including
+    # preserveAspectRatio, which the native converter maps to srcRect
+    # non-destructively). Animated assets skip re-encode, resize, and the
+    # size cap.
+    if getattr(img, 'is_animated', False):
+        mime_type = get_mime_type(img_path.name, raw_bytes)
+        b64 = base64.b64encode(raw_bytes).decode('ascii')
+        _set_href(image, f'data:{mime_type};base64,{b64}')
+        if max_dimension and max(img.size) > max_dimension:
+            print(f'   [WARN] {img_path.name}: animated image kept as-is '
+                  f'({img.size[0]}x{img.size[1]} exceeds max dimension '
+                  f'{max_dimension}px); animations are exempt from size limits')
+        if verbose:
+            print(f'   [OK] {img_path.name} (animated, embedded as-is)')
+        return True, None
+
     box_x = _parse_float(image.get('x'))
     box_y = _parse_float(image.get('y'))
     box_w = _parse_float(image.get('width'))

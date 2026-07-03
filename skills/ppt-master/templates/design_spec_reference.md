@@ -14,7 +14,7 @@
 | **Design Style** | {design_style} |
 | **Target Audience** | [Filled by Strategist] |
 | **Use Case** | [Filled by Strategist] |
-| **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at item 7; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
+| **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at c; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
 | **Created Date** | {date_str} |
 
