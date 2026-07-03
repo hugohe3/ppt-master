@@ -687,7 +687,7 @@ The most common Strategist failure mode is missing the structural half — treat
 >
 > | Page | Template      | Path                              | Summary-quote (verbatim) | Usage |
 > | ---- | ------------- | --------------------------------- | ------------------------ | ----- |
-> | P03  | bar_chart     | templates/charts/bar_chart.svg    | "<verbatim first sentence>" | <intent> |
+> | P03  | column_chart     | templates/charts/column_chart.svg    | "<verbatim first sentence>" | <intent> |
 > | P07  | line_chart    | templates/charts/line_chart.svg   | "<verbatim first sentence>" | <intent> |
 > | P11  | pie_chart     | templates/charts/pie_chart.svg    | "<verbatim first sentence>" | <intent> |
 >
