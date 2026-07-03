@@ -799,8 +799,22 @@ def _chart_grouping(
     if not grouping:
         return "clustered" if chart_type in {"bar", "column"} else "standard"
 
-    normalized = _compact_key(grouping)
-    allowed = {"clustered"} if chart_type in {"bar", "column"} else {"standard"}
+    aliases = {
+        "100": "percentStacked",
+        "100percent": "percentStacked",
+        "100percentstacked": "percentStacked",
+        "clustered": "clustered",
+        "percent": "percentStacked",
+        "percentstacked": "percentStacked",
+        "stacked": "stacked",
+        "standard": "standard",
+    }
+    normalized = aliases.get(_compact_key(grouping))
+    allowed = (
+        {"clustered", "stacked", "percentStacked"}
+        if chart_type in {"bar", "column"}
+        else {"standard"}
+    )
     if normalized not in allowed:
         if normalized in {"clustered", "standard"}:
             allowed_text = ", ".join(sorted(allowed))
@@ -1188,14 +1202,20 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
     if chart_type in {"bar", "column"}:
         bar_dir = "bar" if chart_type == "bar" else "col"
         grouping = chart_data.get("grouping") or "clustered"
+        overlap_xml = (
+            '<c:overlap val="100"/>'
+            if grouping in {"stacked", "percentStacked"}
+            else ""
+        )
         return (
             "<c:barChart>"
             f'<c:barDir val="{bar_dir}"/><c:grouping val="{grouping}"/>'
             f"{ser_xml}"
             '<c:gapWidth val="150"/>'
+            f"{overlap_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:barChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, chart_type=chart_type, grouping=grouping)}'
         )
     if chart_type in {"line", "area"}:
         tag = "lineChart" if chart_type == "line" else "areaChart"
@@ -1227,9 +1247,20 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
     return f'<c:pieChart><c:varyColors val="1"/>{ser_xml}<c:firstSliceAng val="0"/></c:pieChart>'
 
 
-def _axis_xml(cat_ax_id: str, val_ax_id: str, *, chart_type: str) -> str:
+def _axis_xml(
+    cat_ax_id: str,
+    val_ax_id: str,
+    *,
+    chart_type: str,
+    grouping: str | None = None,
+) -> str:
     cat_pos = "l" if chart_type == "bar" else "b"
     val_pos = "b" if chart_type == "bar" else "l"
+    val_num_fmt = (
+        '<c:numFmt formatCode="0%" sourceLinked="0"/>'
+        if grouping == "percentStacked"
+        else ""
+    )
     return (
         "<c:catAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
@@ -1241,6 +1272,7 @@ def _axis_xml(cat_ax_id: str, val_ax_id: str, *, chart_type: str) -> str:
         "<c:valAx>"
         f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         f'<c:delete val="0"/><c:axPos val="{val_pos}"/><c:majorGridlines/>'
+        f"{val_num_fmt}"
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
