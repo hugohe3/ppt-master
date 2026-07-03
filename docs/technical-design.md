@@ -27,7 +27,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     Trigger only on an explicit template directory path containing design_spec.md kind: brand/layout/deck
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
-[Strategist] - two-tier Eight Confirmations & Design Specifications → design_spec.md + spec_lock.md
+[Strategist] - three-stage Strategist confirmation stage & Design Specifications → design_spec.md + spec_lock.md
     ↓
 [Image Acquisition] (when any resource row needs AI generation, web search, or slicing)
     ↓
@@ -246,7 +246,7 @@ The three template kinds own different segments of the design contract:
 | Kind | Owns | Typical contents | Effect on Strategist |
 |---|---|---|---|
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
-| `layout` | structure | canvas, page structure, page types, SVG roster | locks structure; identity is confirmed in the Eight Confirmations |
+| `layout` | structure | canvas, page structure, page types, SVG roster | locks structure; identity is confirmed in the Strategist confirmation stage |
 | `deck` | identity + structure + template overview | full replica-style package | locks the full template grammar, with only content-specific choices left |
 
 When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the middle/template-overview segment. Same-kind conflicts are surfaced as conflicts rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
@@ -265,7 +265,7 @@ PPT Master uses **role switching within one main agent** rather than parallel su
 
 **Why role-specialized references, not one mega prompt.** Strategist runs in "negotiate with user" mode (open-ended, conversational, willing to back up); Executor runs in "produce strict XML" mode (no improvisation, no missing attributes). Mixing both into one prompt forces the model to hold incompatible discipline in the same turn — every prompt-engineering pathology of mode-mixing shows up. Splitting into per-role files lets each role load only what it needs and discard the rest.
 
-**Eight Confirmations as the only blocking gate.** Strategist ends with eight bundled user confirmations (canvas / page count / audience / style / color / icon / typography / image). In the current workflow this is normally delivered through the Confirm UI in two tiers: Tier 1 confirms anchors (canvas, audience, divergence, delivery purpose, mode, visual style); Tier 2 is re-derived from the confirmed anchors and confirms realization choices (page count, palette, typography, icons, formula policy, image usage, AI image path, generation mode, refine-spec). The final `confirm_ui/result.json` is authoritative — if the user changes a field, the generated `design_spec.md` and `spec_lock.md` must use that value, not the AI's original recommendation.
+**Strategist confirmation stage as the only blocking gate.** Strategist ends with a single confirmation gate delivered in three stages: Stage 1 confirms direction anchors (canvas, audience, divergence, delivery purpose, mode, visual style); Stage 2 is re-derived from those anchors and confirms the design system (page count, palette, typography, icons, formula policy); Stage 3 is re-derived from the confirmed design system and confirms images / execution (image usage, generated-image style, AI image path, generation mode, refine-spec). The final `confirm_ui/result.json` is authoritative — if the user changes a field, the generated `design_spec.md` and `spec_lock.md` must use that value, not the AI's original recommendation.
 
 **Image analysis goes through regenerated metadata, not pixels.** When images exist, Strategist and Executor use `analyze_images.py` output (`analysis/image_analysis.csv`) rather than directly opening image files. The CSV is a regenerated view over the live `images/` folder, not a durable cache. Re-running it before image-sensitive decisions is the staleness strategy: user images, extracted images, web images, AI outputs, formulas, and sliced elements all converge into the same measured fact table.
 
@@ -318,7 +318,7 @@ Several architectural decisions shape this phase:
 
 **External refs during development, two divergent embedding strategies for delivery.** While editing in `svg_output/`, images are external file references — fast iteration, single-source-of-truth replacement. The two delivery artifacts then diverge: `svg_final/` Base64-inlines (a folder of self-contained SVGs that IDE preview, browser, and the preview pptx can all open without missing the bitmap dependencies); native pptx instead copies bitmaps into the PPTX media folder and uses `<a:srcRect>` to express the cropping. The split exists because Base64 inside DrawingML works but bloats file size 3-4×, while file-referenced bitmaps are PowerPoint's native idiom for which `<a:srcRect>` is the canonical crop expression — wrong tool in either direction would cost editability or file size.
 
-**Three-dimensional AI image lock at Strategist time.** When the deck includes AI-generated images, Strategist decides three orthogonal dimensions up front — `rendering` (visual style family: vector-illustration / editorial / 3d-isometric / sketch-notes / …), `palette` (how the deck's HEX values are *used*: proportion + role + temperament), `type` (per-image internal composition: background / hero / framework / comparison / …). The first two are deck-wide and written into `spec_lock.md`; Image_Generator then assembles every per-image prompt from the single locked rendering + palette plus a per-image type, instead of re-deciding style per image. Without this, every image gets its own style drift and the deck reads as a stack of unrelated illustrations. This is the visual-cohesion dual of `spec_lock`'s typography/color anti-drift mechanism, just one level upstream of pixels. Strategist surfaces ≥3 candidate `rendering × palette` combinations to the user during the Eight Confirmations — never auto-locking a single combination silently, because the choice has far-reaching deck-wide consequences and the user's taste is the only oracle for it.
+**Three-dimensional AI image lock at Strategist time.** When the deck includes AI-generated images, Strategist decides three orthogonal dimensions up front — `rendering` (visual style family: vector-illustration / editorial / 3d-isometric / sketch-notes / …), `palette` (how the deck's HEX values are *used*: proportion + role + temperament), `type` (per-image internal composition: background / hero / framework / comparison / …). The first two are deck-wide and written into `spec_lock.md`; Image_Generator then assembles every per-image prompt from the single locked rendering + palette plus a per-image type, instead of re-deciding style per image. Without this, every image gets its own style drift and the deck reads as a stack of unrelated illustrations. This is the visual-cohesion dual of `spec_lock`'s typography/color anti-drift mechanism, just one level upstream of pixels. Strategist surfaces ≥3 candidate `rendering × palette` combinations to the user during the Strategist confirmation stage — never auto-locking a single combination silently, because the choice has far-reaching deck-wide consequences and the user's taste is the only oracle for it.
 
 ---
 
@@ -473,7 +473,7 @@ Standalone workflows are route definitions, not optional decorations. They exist
 | `beautify-pptx` | existing PPTX, preserve page count/order/wording 1:1, improve layout | regenerate through SVG pipeline with source identity/content locked |
 | `create-template` | build a reusable layout/deck template package | output a directory Step 3 can consume later |
 | `create-brand` | extract or define a reusable brand identity | output `templates/brands/<id>/` |
-| `resume-execute` | fresh chat after Phase A; user says to continue a project | enter Phase B without rerunning Strategist |
+| `resume-execute` | fresh chat after the planning session; user says to continue a project | enter the execution session without rerunning Strategist |
 | `refine-spec` | user explicitly wants to review/refine the spec before generation | stop after full spec/lock for revision, then resume |
 | `verify-charts` | generated deck contains data charts | calibrate chart geometry before export |
 | `customize-animations` | user asks for object-level animation order/effect/timing | create/validate `animations.json` and re-export policy |

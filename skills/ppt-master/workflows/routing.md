@@ -55,8 +55,8 @@ Route selection authority for PPT Master. Use this file before entering the main
 | Request shape | Trigger | Route | Preconditions | Output contract | Stop condition |
 |---|---|---|---|---|---|
 | Brand identity setup | Brand asset, brand site URL, branded PPTX/PDF, or explicit brand setup request | [`create-brand`](./create-brand.md) | Brand source exists or can be inspected | Brand preset under `templates/brands/<id>/` | Stop if no brand source or brand intent exists |
-| Continue a split-mode project | "Continue generating `projects/<name>`" after Phase A | [`resume-execute`](./resume-execute.md) | Project has Phase A artifacts | Phase B SVG generation and export | Stop if required Phase A artifacts are missing |
-| Refine spec before generation | User explicitly asks to refine/review/revise the spec before SVG work, or confirms `refine_spec: true` | [`refine-spec`](./refine-spec.md) | Eight Confirmations completed | Revised `design_spec.md` and `spec_lock.md` before Step 5/6 | Stop until user approves the refined spec |
+| Continue a split-mode project | "Continue generating `projects/<name>`" after the planning session | [`resume-execute`](./resume-execute.md) | Project has planning-session artifacts | Execution-session SVG generation and export | Stop if required planning artifacts are missing |
+| Refine spec before generation | User explicitly asks to refine/review/revise the spec before SVG work, or confirms `refine_spec: true` | [`refine-spec`](./refine-spec.md) | Strategist confirmation stage completed | Revised `design_spec.md` and `spec_lock.md` before Step 5/6 | Stop until user approves the refined spec |
 | Data chart calibration | Generated deck contains data charts | [`verify-charts`](./verify-charts.md) between Step 6 and Step 7 | SVG pages exist | Calibrated chart coordinates before export | Stop on chart geometry errors until fixed |
 | Object-level animation tuning | User asks for animation order, timing, effects, or object reveal behavior | [`customize-animations`](./customize-animations.md) | SVG groups / exported context exist | `animations.json` or validated animation config | Stop if requested target objects cannot be identified |
 | Live preview / element selection / annotations | User mentions live preview, preview, visual check in browser, clicking/selecting an element, or applying browser annotations | [`live-preview`](./live-preview.md) | Project exists; for annotation apply, generated SVGs exist | Running preview service or applied annotations plus re-export | Stop only if project path or SVGs are missing |
@@ -70,7 +70,7 @@ Route selection authority for PPT Master. Use this file before entering the main
 | User input | Route behavior |
 |---|---|
 | Explicit directory path containing a valid template `design_spec.md` | Enter main Step 3 template option |
-| Bare template name, brand name, style label, or vague "use a template" | Do not trigger Step 3; treat as style input for Eight Confirmations |
+| Bare template name, brand name, style label, or vague "use a template" | Do not trigger Step 3; treat as style input for Strategist confirmation stage |
 | User asks "what templates exist?" | Answer as Q&A by listing indexed paths; do not advance the pipeline |
 | Raw `.pptx` called a template | Route by §3, usually `template-fill-pptx`; never treat it as a Step 3 template path |
 

@@ -573,7 +573,7 @@
       "label_en": "balanced / business",
       "label_ja": "バランス型・ビジネス",
       "desc_zh": "既投影也阅读（路演、业务评审）。默认档，正文 24px。",
-      "desc_en": "Both projected and read (roadshow, business review). The default tier, body 24px.",
+      "desc_en": "Both projected and read (roadshow, business review). The default option, body 24px.",
       "desc_ja": "投影でも閲覧でも使う用途（ロードショー、事業レビュー）。デフォルトの選択、本文24px。"
     },
     {

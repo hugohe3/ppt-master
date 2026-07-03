@@ -1,6 +1,6 @@
 # Layout Templates
 
-**Layout = structure-only template.** Captures canvas, page structure, page types, and SVG roster — but **no identity segment** (color / typography / logo / voice / icon style). Layered identity comes from `templates/brands/` or is decided per-deck in Strategist's Eight Confirmations. For full-identity replicas of specific PPTs, see [`templates/decks/`](../decks/) instead.
+**Layout = structure-only template.** Captures canvas, page structure, page types, and SVG roster — but **no identity segment** (color / typography / logo / voice / icon style). Layered identity comes from `templates/brands/` or is decided per-deck in Strategist's confirmation stage. For full-identity replicas of specific PPTs, see [`templates/decks/`](../decks/) instead.
 
 Single source of truth for what layouts exist: [`layouts_index.json`](./layouts_index.json) (`layout_id → { summary, canvas_format, page_count, page_types }`). This README explains the kind; it does **not** enumerate layouts.
 

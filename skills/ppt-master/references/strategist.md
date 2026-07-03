@@ -8,7 +8,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 | Previous Step | Current | Next Step |
 |--------------|---------|-----------|
-| Project creation + Template option confirmed | **Strategist**: Eight Confirmations + Design Spec | Image_Generator or Executor |
+| Project creation + Template option confirmed | **Strategist**: Strategist confirmation stage + Design Spec | Image_Generator or Executor |
 
 ---
 
@@ -18,13 +18,13 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ---
 
-## 1. Eight Confirmations Process
+## 1. Strategist Confirmation Stage
 
 🚧 **GATE — Mandatory read first**: `read_file templates/design_spec_reference.md` before any analysis or writing. The design_spec.md output MUST follow that template's 11-section structure exactly. After writing, self-check each section is present: I Project Info → II Canvas → III Visual Theme → IV Typography → V Layout → VI Icon → VII Visualization → VIII Image → IX Outline → X Speaker Notes → XI Tech Constraints.
 
-⛔ **BLOCKING**: After the read, present professional recommendations for the eight items below and wait for explicit user confirmation.
+⛔ **BLOCKING**: After the read, present professional recommendations for the confirmation fields below and wait for explicit user confirmation.
 
-**Three-stage confirmation (the default Confirm UI flow; chat mirrors it).** The eight items split into a dependency order, confirmed in three passes:
+**Three-stage confirmation (the default Confirm UI flow; chat mirrors it).** The confirmation fields split into a dependency order, confirmed in three passes:
 
 | Stage | Items | Role |
 |---|---|---|
@@ -86,7 +86,7 @@ Write the locked value to `spec_lock.md` `- mode:` and record the rationale in `
 
 🚧 **GATE**: read [`visual-styles/_index.md`](./visual-styles/_index.md) before recommending.
 
-The deck's **visual aesthetic** — shape language, decoration density, whitespace rhythm, typographic character, texture. Anchors the downstream confirmations e (Color), f (Icon), g (Typography), h (Image). Lock one preset from the catalog, or `custom`.
+The deck's **visual aesthetic** — shape language, decoration density, whitespace rhythm, typographic character, texture. Anchors downstream fields e (Color), f (Icon), g (Typography), h (Image). Lock one preset from the catalog, or `custom`.
 
 **Source**:
 - User named a style (chat / template / beautify) → it is truth: map to the closest preset (or `custom` with a `visual_style_behavior` paragraph) and lock directly. **Skip the spectrum below** — do not re-offer choice they already made.
@@ -144,7 +144,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 
 > **Mandatory rules when choosing C**:
 >
-> **At the eight-confirmation stage — decide the library only. Do NOT run `ls | grep` yet.**
+> **At the Strategist confirmation stage — decide the library only. Do NOT run `ls | grep` yet.**
 >
 > 1. **Pick exactly one stylistic library** — read the source material, then choose the library whose visual character best serves the deck:
 >    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
@@ -155,7 +155,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 >    - **Brand-logo exception**: `simple-icons` is NOT a stylistic library. Add it to the deck's icon inventory **only when** the deck genuinely contains real company / product / service brand marks (customer logos, tech-stack icons, social handles). Never substitute it for a missing generic icon.
 > 2. **Stroke weight lock (stroke-style libraries only)** — for stroke-based libraries (currently `tabler-outline`), pick one deck-wide value from `{1.5, 2, 3}` (default `2`). For heavier presence, switch library instead of going above `3`.
 >
-> **After all eight confirmations are approved — when writing `design_spec.md` §VI / `spec_lock.md`**, then materialize the icon inventory:
+> **After the Strategist confirmation stage is approved — when writing `design_spec.md` §VI / `spec_lock.md`**, then materialize the icon inventory:
 >
 > 3. Enumerate the concepts the deck actually needs (home, chart, users, …) based on the confirmed outline.
 > 4. Search for each concept's filename in the chosen library: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
@@ -304,7 +304,7 @@ Formula rendering is part of Typography confirmation. Recommend one policy and l
 
 **Forbidden — invented math**: formula assets must faithfully structure source content. Do not create a new equation just to make a slide look more academic.
 
-**Manifest step**: After the Eight Confirmations and before writing `design_spec.md`, if policy is `mixed` or `render-all` and formulas are selected:
+**Manifest step**: After the Strategist confirmation stage and before writing `design_spec.md`, if policy is `mixed` or `render-all` and formulas are selected:
 
 ```bash
 mkdir -p <project_path>/images
@@ -673,7 +673,7 @@ The catalog covers **both data charts and structural information designs**. A "m
 The most common Strategist failure mode is missing the structural half — treating "chart" as "numeric chart only" and leaving team / agenda / principles / journey pages as text-only when a template would fit. Read the catalog with both lenses.
 
 > **Reading is mandatory; the catalog is a starting point, not a copy target.**
-> - Fully read `templates/charts/charts_index.json` **before drafting the Eight Confirmations** — the read happens up front, not when you sit down to write Section VII. The file contains `meta` + `charts.<key>.summary` only; each `summary` is a selection rule (`"Pick for … Skip if …"`), not a description. There is **no category, quickLookup, or keyword index** — selection is done by semantically matching each page's content shape against all 76 summaries in one pass.
+> - Fully read `templates/charts/charts_index.json` **before drafting the Strategist confirmation stage** — the read happens up front, not when you sit down to write Section VII. The file contains `meta` + `charts.<key>.summary` only; each `summary` is a selection rule (`"Pick for … Skip if …"`), not a description. There is **no category, quickLookup, or keyword index** — selection is done by semantically matching each page's content shape against all 76 summaries in one pass.
 > - Not every page needs a chart. When a page's information structure matches a catalog entry, **use that template as a structural starting point** — keep the visualization type and core layout logic, then adapt composition, density, color, decoration, and accompanying elements to fit this deck's content and visual tone. Free adjustment is encouraged; what is forbidden is (a) generating without reading the catalog, and (b) blind verbatim mimicry that ignores the page's actual content weight.
 >
 > **Workflow**:

@@ -15,8 +15,8 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 | Failure point | Blocking | Automatic recovery | User intervention | Resume entry |
 |---|---:|---|---|---|
 | Confirm UI launch failure | No | Re-check `confirm_ui/result.json` once, then use chat fallback | No | `SKILL.md` Step 4 chat confirmation |
-| Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same tier or chat fallback |
-| Confirm UI Tier 1 completed then interrupted | Yes until Tier 2 is written/confirmed | Read existing Tier 1 `result.json`, write Tier 2 recommendations, then `--wait-only` | Usually no | Step 4 Tier 2 write/wait |
+| Confirm UI wait timeout | No, if no final result yet | Re-check `result.json` once; keep server cleanup mandatory | Only if user still wants the page | Step 4 same stage or chat fallback |
+| Confirm UI Stage 1 completed then interrupted | Yes until Stage 2 is written/confirmed | Read existing Stage 1 `result.json`, write Stage 2 recommendations, then `--wait-only --wait-stage stage2` | Usually no | Step 4 Stage 2 write/wait |
 | Missing final confirmation | Yes | None | User must confirm or change the values | Step 4 final confirmation |
 | Formula rendering provider failure | No if fallback succeeds; yes if selected formulas remain missing | Provider fallback chain; otherwise mark affected rows manual only if acceptable | Only if rendered formula files are required and unavailable | Step 4 formula rendering / Step 7 image readiness gate |
 | AI image generation failure | No | Retry once through the confirmed path, then mark row `Needs-Manual` | Only when missing files are required before export | Step 5 / Step 7 image readiness gate |
@@ -57,7 +57,7 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 
 | Last good state | Resume from |
 |---|---|
-| Tier 1 confirmation exists, Tier 2 missing | Write Tier 2 recommendations, then `confirm_ui/server.py <project> --wait-only` |
+| Stage 1 confirmation exists, Stage 2 missing | Write Stage 2 recommendations, then `confirm_ui/server.py <project> --wait-only --wait-stage stage2` |
 | `design_spec.md` and `spec_lock.md` complete, split mode selected | [`resume-execute`](./resume-execute.md) |
 | Images acquired but SVGs not started | `SKILL.md` Step 6 |
 | SVGs complete and checker passed, notes missing | Step 6 Logic Construction |
@@ -66,4 +66,4 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 | Step 7.2 complete, PPTX not complete | Step 7.3 |
 | Browser annotations saved after export | [`live-preview`](./live-preview.md) Step 2 |
 
-**Default - resume at the owning failed step**: Do not restart Phase A or regenerate prior artifacts unless the owning source has changed.
+**Default - resume at the owning failed step**: Do not restart the planning session or regenerate prior artifacts unless the owning source has changed.

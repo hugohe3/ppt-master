@@ -59,7 +59,7 @@ A **style** is a description ("minimalist" / "Keynote-style" / "magazine 风") �
 | | Template | Style |
 |---|---|---|
 | How invoked | Explicit directory path in your message | Free-form description in your message |
-| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Eight Confirmations |
+| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Strategist confirmation stage |
 | Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
 | Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
 
@@ -101,7 +101,7 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 | **Memphis / pop** | High-saturation blocks, geometric, 80s |
 | **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
 
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's Eight Confirmations, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `pixel_retro` / `psychology_attachment`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
+When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `pixel_retro` / `psychology_attachment`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
 
 ---
 

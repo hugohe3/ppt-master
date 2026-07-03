@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-PPT Master - Eight Confirmations UI Server (Step 4)
+PPT Master - Strategist confirmation stage UI Server (Step 4)
 
-Lightweight Flask backend for the interactive, visual Eight Confirmations page.
+Lightweight Flask backend for the interactive, visual Strategist confirmation stage page.
 Strategist writes its recommendations to
 ``<project>/confirm_ui/recommendations.json``; this server renders them as a
 clickable page (color swatches, live font previews, candidate picks). On
@@ -11,7 +11,7 @@ submit it writes the user's final choices to
 
 This is the confirmation surface only. The chat fallback always remains valid:
 if the browser cannot open (remote / headless / web host), the AI presents the
-same Eight Confirmations in chat.
+same Strategist confirmation stage in chat.
 
 See scripts/docs/confirm_ui.md for the round-trip data contract and schema.
 
@@ -137,12 +137,42 @@ def _wait_for_result(
 
 
 def _result_stage(result_file: Path) -> Optional[str]:
-    """Return the ``stage`` field of result.json, or None."""
+    """Return the canonical ``stage`` field of result.json, or None."""
     try:
         data = json.loads(result_file.read_text(encoding='utf-8'))
     except (OSError, json.JSONDecodeError):
         return None
-    return data.get('stage') if isinstance(data, dict) else None
+    return _stage_key(data.get('stage')) if isinstance(data, dict) else None
+
+
+def _stage_key(value: object) -> Optional[str]:
+    """Normalize current stage names while accepting legacy tier values."""
+    if value is None:
+        return None
+    raw = str(value).strip().lower()
+    if raw in {'1', 'stage1', 'tier1'}:
+        return 'stage1'
+    if raw in {'2', 'stage2', 'tier2'}:
+        return 'stage2'
+    if raw in {'3', 'stage3', 'tier3'}:
+        return 'stage3'
+    if raw == 'final':
+        return 'final'
+    return None
+
+
+def _recommendation_stage(data: dict) -> int:
+    """Return recommendations.json stage number, with legacy tier fallback."""
+    stage = _stage_key(data.get('stage'))
+    if not stage and 'tier' in data:
+        stage = _stage_key(data.get('tier'))
+    if stage == 'stage1':
+        return 1
+    if stage == 'stage2':
+        return 2
+    if stage == 'stage3':
+        return 3
+    return 0
 
 
 # Stage-1 anchors and Stage-2 design-system choices. On later pages these sections
@@ -172,11 +202,7 @@ def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     for key in _ANCHOR_VALUE_KEYS:
         if key in res:
             data[key] = {'value': res.get(key) or ''}
-    try:
-        tier = int(data.get('tier') or 0)
-    except (TypeError, ValueError):
-        tier = 0
-    if tier < 3:
+    if _recommendation_stage(data) < 3:
         return
     for key in _DESIGN_RECOMMEND_KEYS:
         if res.get(key) not in (None, ''):
@@ -472,11 +498,7 @@ def create_app(
         # Later stages render only downstream sections, so fold earlier confirmed
         # choices from result.json back in. A refresh / reopen then re-inits from
         # the user's choices instead of catalog defaults.
-        try:
-            tier = int(data.get('tier') or 0)
-        except (TypeError, ValueError):
-            tier = 0
-        if tier >= 2 and result_file.exists():
+        if _recommendation_stage(data) >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
         # The page polls this endpoint after a stage-1 confirm until the AI
         # overwrites the file with the re-derived stage-2 recommendations, so it
@@ -496,15 +518,20 @@ def create_app(
         # Staged flow: stage-1 / stage-2 submits record intermediate choices but do
         # NOT close the page. Only a final submit is a full confirmation. A
         # payload with no stage is a single-pass confirmation (chat-opt-out parity).
-        stage = result.get('stage')
-        result['status'] = f'{stage}-confirmed' if stage in {'tier1', 'tier2'} else 'confirmed'
+        stage = _stage_key(result.get('stage'))
+        if stage in {'stage1', 'stage2'}:
+            result['stage'] = stage
+            result['status'] = f'{stage}-confirmed'
+        else:
+            result['stage'] = 'final'
+            result['status'] = 'confirmed'
         result['confirmed_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
         result_file = confirm_dir / RESULT_NAME
         result_file.write_text(
             json.dumps(result, ensure_ascii=False, indent=2),
             encoding='utf-8',
         )
-        logger.info('%s confirmation written to %s', stage or 'final', result_file)
+        logger.info('%s confirmation written to %s', result['stage'], result_file)
         return jsonify({'status': 'ok'})
 
     return app
@@ -512,7 +539,7 @@ def create_app(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='PPT Master Eight Confirmations UI',
+        description='PPT Master Strategist confirmation stage UI',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('project_dir', help='Path to project directory')
@@ -535,9 +562,9 @@ def build_parser() -> argparse.ArgumentParser:
              'this project and wait for an already-open page to write result.json.',
     )
     parser.add_argument(
-        '--wait-stage', choices=('tier2', 'final'), default='final',
+        '--wait-stage', default='final', metavar='{stage2,final}',
         help='With --wait-only, wait for this result.json stage (default: final). '
-             'Use tier2 for the middle handoff in the three-stage flow.',
+             'Use stage2 for the middle handoff in the three-stage flow.',
     )
     parser.add_argument(
         '--wait-timeout', type=int, default=WAIT_TIMEOUT_DEFAULT,
@@ -571,20 +598,24 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not project_path.is_dir():
         logger.error('%s is not a directory', project_path)
         return 1
+    wait_stage = _stage_key(args.wait_stage)
+    if wait_stage not in {'stage2', 'final'}:
+        logger.error('--wait-stage must be stage2 or final')
+        return 2
 
     # Step 4 cleanup: stop any lingering confirm server and exit. Independent of
     # recommendations.json (the page may never have been confirmed).
     if args.shutdown:
         return _shutdown_existing(project_path / LOCK_FILE_NAME)
 
-    # Stage-2 wait: attach to the server already serving this project (launched by
-    # the first --wait) and block until the page writes the final result.json.
+    # Staged wait: attach to the server launched by the first --wait and block
+    # until the page writes the requested intermediate or final result.json.
     if args.wait_only:
         return _wait_only_for_result(
             project_path / CONFIRM_DIR_NAME / RESULT_NAME,
             project_path / LOCK_FILE_NAME,
             args.wait_timeout,
-            args.wait_stage,
+            wait_stage,
         )
 
     rec_file = project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME
