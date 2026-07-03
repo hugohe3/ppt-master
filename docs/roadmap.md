@@ -114,9 +114,9 @@ PPT Master's main route is "AI generates SVG from scratch → DrawingML", with t
 
 **Issues**: [#99](https://github.com/hugohe3/ppt-master/issues/99), [#100](https://github.com/hugohe3/ppt-master/issues/100)-class
 
-Pixel-fidelity across the four renderers (PowerPoint / Keynote / LibreOffice / WPS) is the project's spine. Switching to native PowerPoint charts breaks that — the same PPTX renders different chart layouts across renderers. Charts as SVG is **by design**, not a capability gap.
+Pixel-fidelity across the four renderers (PowerPoint / Keynote / LibreOffice / WPS) is the project's spine. Switching the default route to native PowerPoint charts breaks that — the same PPTX renders different chart layouts across renderers. Charts as SVG is **by design**, not a capability gap.
 
-If you need data-driven native Excel charts, pick a different tool or manually replace charts in PowerPoint post-export — this project won't build that path in.
+The narrow exception under exploration is an explicit `data-pptx-native` marker for pages that deliberately trade cross-renderer fidelity for PowerPoint-side editability. It is opt-in metadata inside the SVG export path, not a replacement for the default SVG chart/table system.
 
 ### uv as default / required dependency
 

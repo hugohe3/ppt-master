@@ -114,9 +114,9 @@ PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围
 
 **对应 Issue**：[#99](https://github.com/hugohe3/ppt-master/issues/99)、[#100](https://github.com/hugohe3/ppt-master/issues/100) 类
 
-跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真是项目主轴。改用 PowerPoint 原生图表会让「像素级一致性」破功——同一个 PPTX 在不同渲染器里图表会显示不同布局。图表用 SVG 是 **by design**，不是能力缺失。
+跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真是项目主轴。把默认路线改成 PowerPoint 原生图表会让「像素级一致性」破功——同一个 PPTX 在不同渲染器里图表会显示不同布局。图表默认用 SVG 是 **by design**，不是能力缺失。
 
-如果需要数据驱动的原生 Excel 图表，建议另选工具或在导出后用 PowerPoint 手动替换；本项目不会内置这条路径。
+目前探索的窄例外是显式 `data-pptx-native` marker：只有页面主动声明愿意用跨渲染器保真换取 PowerPoint 内可编辑性时，才在 SVG 导出路径里生成原生对象。它是 opt-in 元数据，不替代默认 SVG 图表 / 表格系统。
 
 ### uv 作为默认 / 必需依赖
 

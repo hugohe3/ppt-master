@@ -90,7 +90,7 @@ def main(argv: list[str] | None = None) -> int:
         epilog=f'''
 Examples:
     %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
-    %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG-rendered snapshot pptx alongside native in exports/
+    %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG-rendered snapshot pptx
     %(prog)s examples/ppt169_demo --only legacy          # Only SVG image version (skips native)
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
 
@@ -184,10 +184,16 @@ Recorded narration:
                         help='Write a JSON diagnostics report next to the native PPTX '
                              '(<output>.trace.json). Records per-slide SVG element '
                              'conversion decisions for debugging.')
+    parser.add_argument('--native-objects', action='store_true', default=False,
+                        help='Opt in to converting explicit data-pptx-native table/chart '
+                             'markers into native PowerPoint objects. Default off: marked '
+                             'groups export through their SVG fallback children.')
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
-                        help='Also emit the SVG-rendered snapshot pptx alongside the native pptx in exports/ '
-                             '(named <project>_<ts>_svg.pptx). Off by default — the native pptx is the '
-                             'canonical output; live preview already provides the SVG visual reference. '
+                        help='Also emit the SVG-rendered snapshot pptx alongside '
+                             'the native pptx in exports/ (named '
+                             '<project>_<ts>_svg.pptx). Off by default — the '
+                             'native pptx is the canonical output; live preview '
+                             'already provides the SVG visual reference. '
                              'Note: the svg_output/ source snapshot is always written to backup/<ts>/ '
                              'regardless of this flag.')
     parser.add_argument('--no-image-optimize', action='store_true',
@@ -195,9 +201,11 @@ Recorded narration:
     parser.add_argument('--image-max-dimension', type=int, default=2560,
                         help='Maximum optimized raster image dimension in pixels (default: 2560).')
     parser.add_argument('--image-sizing', choices=['cap', 'display'], default='cap',
-                        help='Raster sizing mode: cap only limits source dimensions; display sizes from the SVG rendered box (default: cap).')
+                        help='Raster sizing mode: cap only limits source dimensions; '
+                             'display sizes from the SVG rendered box (default: cap).')
     parser.add_argument('--image-scale', type=float, default=2.0,
-                        help='Target optimized image pixels per SVG display pixel when --image-sizing=display (default: 2.0).')
+                        help='Target optimized image pixels per SVG display pixel '
+                             'when --image-sizing=display (default: 2.0).')
     parser.add_argument('--image-quality', type=int, default=85,
                         help='JPEG quality for optimized opaque raster images, 1-100 (default: 85).')
 
@@ -592,6 +600,7 @@ Recorded narration:
         image_sizing=args.image_sizing,
         image_scale=args.image_scale,
         image_quality=args.image_quality,
+        native_objects=args.native_objects,
     )
 
     success = True

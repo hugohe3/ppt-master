@@ -690,6 +690,75 @@ The child `<path>`'s `stroke` becomes the foreground color (the pattern's line c
 
 > `svg_quality_checker.py` warns on missing `data-pptx-pattern` and errors on values outside the enum. Catch these pre-export — PowerPoint's repair dialog hides which pattern broke.
 
+### Native PPTX Table / Chart Markers (Experimental)
+
+Native PowerPoint tables and Excel-backed charts are opt-in only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
+
+**Hard rule**: Use a native object marker only when editability in PowerPoint matters more than cross-renderer layout fidelity. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
+
+**Default — dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Passing `--native-objects` emits the PowerPoint object and skips the fallback children to avoid duplicates.
+
+| Marker | Native output | Required metadata |
+|---|---|---|
+| `<g data-pptx-native="table">` | `<p:graphicFrame>` with `<a:tbl>` | `x`, `y`, `width`, `height`, `columns` or `rows` |
+| `<g data-pptx-native="chart">` | `<p:graphicFrame>` with `c:chart` + chart part + embedded workbook | `x`, `y`, `width`, `height`, `type`, plus chart data |
+
+**Metadata placement**: Put JSON in a child `<metadata data-pptx-native="...">`. Attribute JSON (`data-pptx-json="..."`) is supported but harder to XML-escape correctly.
+
+```xml
+<g id="p03-revenue-chart" data-pptx-native="chart">
+  <metadata data-pptx-native="chart">
+    {
+      "x": 120, "y": 150, "width": 520, "height": 320,
+      "type": "column",
+      "title": "Revenue by Segment",
+      "categories": ["Q1", "Q2", "Q3"],
+      "series": [
+        {"name": "Cloud", "values": [12, 15, 19]},
+        {"name": "Services", "values": [8, 9, 11]}
+      ]
+    }
+  </metadata>
+  <!-- Visible SVG fallback for live preview / non-native export goes here. -->
+</g>
+```
+
+**Category chart schema**: `column`, `bar`, `line`, `area`, `pie`,
+`doughnut`, and `radar` use `categories` plus `series[].values`.
+`pie` and `doughnut` must have exactly one series; the exporter assigns
+per-category slice colors so single-series charts do not collapse into one
+solid color.
+
+**XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
+
+**Deferred chart types**: Stacked / percent-stacked variants, exploded pie /
+doughnut variants, filled radar, `pieOfPie`, `barOfPie`, `stock*`, `combo`,
+`waterfall`, `funnel`, `treemap`, `sunburst`, `histogram`, `pareto`,
+`boxWhisker`, `map`, `heatmap`, `bullet`, and `gantt` are intentionally outside
+the current native-object support boundary. The exporter fails fast for these
+types until each mapping is implemented and validated one by one.
+
+**Supported chart types**:
+
+- `column`, `bar`: clustered only
+- `line`, `area`: standard only
+- `pie`: exactly one series, per-slice colors
+- `doughnut`: exactly one series, per-slice colors
+- `radar`: marker only
+- `scatter`: `lineMarker`, `line`, `marker`, `smoothMarker`, or `smooth` (`scatter_style`)
+- `bubble`: x/y/size series
+
+3D chart aliases (`3DColumn`, `3DBar`, `3DLine`, `3DArea`, `3DPie`, cone,
+cylinder, pyramid variants, and `surface`) are intentionally unsupported. They
+add compatibility risk without meaningful presentation value.
+
+Native chart legends are off by default because right-side legends routinely
+steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
+`legend_position` defaults to `bottom` and also accepts `top`, `left`, or
+`right`.
+
+**Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
+
 ### transform: rotate — Element Rotation
 
 Rotation converts to native PPTX `<a:xfrm rot="...">`. Supported on all element types: `rect`, `circle`, `ellipse`, `line`, `path`, `polygon`, `polyline`, `image`, and `text`.
