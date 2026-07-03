@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 from .drawingml_context import ConvertContext
 from .drawingml_utils import (
     SVG_NS, ANGLE_UNIT, DASH_PRESETS,
-    px_to_emu, _f, _get_attr,
+    px_to_emu, _f, _get_attr, parse_svg_length,
     parse_hex_color, parse_stop_style, resolve_url_id,
 )
 
@@ -118,7 +118,7 @@ def build_fill_xml(
     if fill is None:
         fill = '#000000'  # SVG default fill is black
 
-    if fill == 'none':
+    if fill.strip().lower() in ('none', 'transparent'):
         return '<a:noFill/>'
 
     ref_id = resolve_url_id(fill)
@@ -343,10 +343,10 @@ def build_stroke_xml(
 ) -> str:
     """Build <a:ln> XML for stroke, with inherited style support."""
     stroke = _get_attr(elem, 'stroke', ctx)
-    if not stroke or stroke == 'none':
+    if not stroke or stroke.strip().lower() in ('none', 'transparent'):
         return '<a:ln><a:noFill/></a:ln>'
 
-    width = _f(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    width = parse_svg_length(_get_attr(elem, 'stroke-width', ctx), 1.0)
     width_emu = px_to_emu(width)
 
     # Dash pattern
