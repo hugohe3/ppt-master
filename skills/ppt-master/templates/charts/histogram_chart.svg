@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Histogram Chart Template
+    Purpose: Numeric distribution shape from raw observations
+    Use cases: cycle time, order value, response latency, quality measurements
+    Feature: Binned bars, median marker, right-side interpretation card
+    -->
+    <defs>
+        <linearGradient id="histGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#60A5FA"/>
+            <stop offset="100%" stop-color="#2563EB"/>
+        </linearGradient>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="34" font-weight="800" fill="#0F172A"><tspan>Order Value Distribution</tspan></text>
+    <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>SAMPLE ORDERS · USD THOUSANDS</tspan></text>
+    <g id="histogram_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "name": "histogram_chart",
+              "x": 80,
+              "y": 130,
+              "width": 900,
+              "height": 500,
+              "type": "histogram",
+              "values": [12, 15, 18, 19, 22, 24, 25, 28, 29, 31, 33, 35, 37, 38, 41, 44, 46, 48, 52, 55, 58, 61, 66, 72, 80],
+              "style": {"colors": ["#2563EB"]}
+            }
+        </metadata>
+        <g id="chartArea">
+            <rect x="80" y="130" width="900" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+            <line x1="150" y1="560" x2="920" y2="560" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="150" y1="170" x2="150" y2="560" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="150" y1="462" x2="920" y2="462" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="5,5"/>
+            <line x1="150" y1="364" x2="920" y2="364" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="5,5"/>
+            <line x1="150" y1="266" x2="920" y2="266" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="5,5"/>
+            <!-- chart-plot-area: 150,170,920,560 -->
+            <rect x="185" y="430" width="82" height="130" rx="6" fill="#BFDBFE"/>
+            <rect x="285" y="330" width="82" height="230" rx="6" fill="#93C5FD"/>
+            <rect x="385" y="230" width="82" height="330" rx="6" fill="#60A5FA"/>
+            <rect x="485" y="270" width="82" height="290" rx="6" fill="url(#histGrad)"/>
+            <rect x="585" y="360" width="82" height="200" rx="6" fill="#2563EB"/>
+            <rect x="685" y="450" width="82" height="110" rx="6" fill="#1D4ED8"/>
+            <rect x="785" y="500" width="82" height="60" rx="6" fill="#1E40AF"/>
+            <line x1="515" y1="170" x2="515" y2="560" stroke="#F43F5E" stroke-width="2.5" stroke-dasharray="6,5"/>
+            <rect x="472" y="182" width="86" height="28" rx="14" fill="#FFF1F2" stroke="#FDA4AF"/>
+            <text x="515" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle"><tspan>Median</tspan></text>
+            <text x="226" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>10-20</tspan></text>
+            <text x="326" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>20-30</tspan></text>
+            <text x="426" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>30-40</tspan></text>
+            <text x="526" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>40-50</tspan></text>
+            <text x="626" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>50-60</tspan></text>
+            <text x="726" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>60-70</tspan></text>
+            <text x="826" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle"><tspan>70-80</tspan></text>
+        </g>
+    </g>
+    <g id="insightPanel" transform="translate(1010, 170)">
+        <rect x="0" y="0" width="220" height="360" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <text x="24" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A"><tspan>Distribution Notes</tspan></text>
+        <line x1="24" y1="58" x2="196" y2="58" stroke="#E2E8F0"/>
+        <text x="24" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Peak bin</tspan></text>
+        <text x="24" y="124" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#2563EB"><tspan>30-40K</tspan></text>
+        <text x="24" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Observation count</tspan></text>
+        <text x="24" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#0F172A"><tspan>25</tspan></text>
+        <rect x="24" y="235" width="172" height="72" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+        <text x="42" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#1D4ED8"><tspan>Right tail exists</tspan></text>
+        <text x="42" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#475569"><tspan>Large orders remain sparse.</tspan></text>
+    </g>
+    <text x="60" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#94A3B8"><tspan>Data Source: Commerce Analytics</tspan></text>
+</svg>

@@ -1,16 +1,19 @@
 {
   "meta": {
-    "total": 71,
+    "total": 76,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
     "libraryPositioning": "Visualization template library covering charts, infographics, diagrams, and strategic frameworks. The `charts/` path is retained for backward compatibility. Templates are named by visual structure, not by business-model name — model-specific frameworks (SWOT, BCG, PEST, OKR, Porter's Five Forces, Value Chain, etc.) are matched via keywords in `summary`.",
-    "summaryGrammar": "Each chart's `summary` is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'. Strategist matches every page's content shape against all 71 summaries; no category/keyword index — full-read is intentional.",
-    "updated": "2026-05-13"
+    "summaryGrammar": "Each chart's `summary` is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'. Strategist matches every page's content shape against all 76 summaries; no category/keyword index — full-read is intentional.",
+    "updated": "2026-07-03"
   },
   "charts": {
     "area_chart": {
       "summary": "Pick for 1-2 cumulative trend series emphasizing volume over time. Skip for >=3 series (use stacked_area_chart) or pure direction without volume (use line_chart)."
+    },
+    "bar_of_pie_chart": {
+      "summary": "Pick for pie composition where small long-tail slices should be expanded into a stacked bar detail. Skip if secondary detail should stay circular (use pie_of_pie_chart) or flat shares suffice (use pie_chart)."
     },
     "column_chart": {
       "summary": "Pick for single-series category value comparison, 3-8 categories. Skip for >12 long-label items (use horizontal_bar_chart) or multi-series (use grouped_bar_chart)."
@@ -51,6 +54,9 @@
     "heatmap_chart": {
       "summary": "Pick for 2D matrix where each cell is an intensity value (activity grid, correlation matrix). Skip for ranked categories (use column_chart)."
     },
+    "histogram_chart": {
+      "summary": "Pick for numeric distribution across many observations or bins. Skip if comparing named categories (use column_chart) or comparing distributions per group (use box_plot_chart)."
+    },
     "horizontal_bar_chart": {
       "summary": "Pick for ranking 5-12 items, especially with long labels. Skip if <=8 short-label items (use column_chart)."
     },
@@ -75,6 +81,9 @@
     "pie_chart": {
       "summary": "Pick for simple 3-6 part proportions of one whole. Skip for >=7 parts (use donut_chart or treemap_chart) or hierarchical composition (use treemap_chart)."
     },
+    "pie_of_pie_chart": {
+      "summary": "Pick for pie composition where small slices need a secondary pie detail. Skip if the secondary detail is easier to compare as bars (use bar_of_pie_chart) or hierarchy matters (use sunburst_chart)."
+    },
     "hub_inward_arrows": {
       "summary": "Pick for 1 center subject + 4-5 surrounding forces with arrows pointing inward — Porter's Five Forces (central rivalry, threat of new entrants/substitutes, bargaining power of buyers/suppliers), threat-model with central asset, pressure-on-core diagrams. Skip for outward radiation from center capability (use hub_spoke) or non-directional cluster (use mind_map)."
     },
@@ -98,6 +107,12 @@
     },
     "stacked_bar_chart": {
       "summary": "Pick when each category splits into 2-4 internal parts and total still matters. Skip if only comparing totals (use column_chart)."
+    },
+    "stock_chart": {
+      "summary": "Pick for open-high-low-close price movement over dates. Skip if showing only close-price direction (use line_chart) or category volume comparison (use column_chart)."
+    },
+    "sunburst_chart": {
+      "summary": "Pick for hierarchical part-to-whole composition across 2-3 levels where each ring should stay visible. Skip if rectangular area comparison is clearer (use treemap_chart) or shares are flat (use donut_chart)."
     },
     "timeline": {
       "summary": "Pick for 3-8 milestone events on a horizontal time axis (no duration). Skip for tasks with start/end ranges (use gantt_chart) or vertical layout (use roadmap_vertical)."

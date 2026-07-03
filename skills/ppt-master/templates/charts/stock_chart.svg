@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Stock Chart Template
+    Purpose: OHLC price movement over ordered dates
+    Use cases: securities, commodities, exchange rates
+    Feature: Solid candlestick fallback, day KPI strip, editable stock chart marker
+    -->
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetBlur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <g id="header">
+        <text x="60" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="34" font-weight="800" fill="#0F172A"><tspan>Five-Day OHLC Movement</tspan></text>
+        <text x="60" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>SAMPLE EQUITY PRICE · OPEN, HIGH, LOW, CLOSE</tspan></text>
+    </g>
+    <g id="stock_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "name": "stock_chart",
+              "x": 80,
+              "y": 140,
+              "width": 900,
+              "height": 460,
+              "type": "stock",
+              "categories": [45658, 45659, 45660, 45661, 45662],
+              "open": [102, 108, 105, 112, 118],
+              "high": [112, 114, 116, 122, 126],
+              "low": [98, 101, 103, 109, 115],
+              "close": [108, 105, 112, 118, 124],
+              "style": {"colors": ["#64748B", "#16A34A", "#DC2626", "#0F172A"]}
+            }
+        </metadata>
+        <g id="chartArea">
+            <rect x="80" y="140" width="900" height="460" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+            <line x1="140" y1="540" x2="920" y2="540" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="140" y1="180" x2="140" y2="540" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="140" y1="450" x2="920" y2="450" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <line x1="140" y1="360" x2="920" y2="360" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <line x1="140" y1="270" x2="920" y2="270" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <!-- chart-plot-area: 140,180,920,540 -->
+            <text x="122" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#64748B" text-anchor="end"><tspan>96</tspan></text>
+            <text x="122" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#64748B" text-anchor="end"><tspan>104</tspan></text>
+            <text x="122" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#64748B" text-anchor="end"><tspan>112</tspan></text>
+            <text x="122" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#64748B" text-anchor="end"><tspan>120</tspan></text>
+            <g id="day-1">
+                <line x1="230" y1="270" x2="230" y2="495" stroke="#16A34A" stroke-width="3"/>
+                <rect x="204" y="315" width="52" height="67" rx="4" fill="#16A34A" stroke="#15803D" stroke-width="2"/>
+            </g>
+            <g id="day-2">
+                <line x1="380" y1="247" x2="380" y2="460" stroke="#DC2626" stroke-width="3"/>
+                <rect x="354" y="315" width="52" height="34" rx="4" fill="#DC2626" stroke="#B91C1C" stroke-width="2"/>
+            </g>
+            <g id="day-3">
+                <line x1="530" y1="225" x2="530" y2="438" stroke="#16A34A" stroke-width="3"/>
+                <rect x="504" y="270" width="52" height="79" rx="4" fill="#16A34A" stroke="#15803D" stroke-width="2"/>
+            </g>
+            <g id="day-4">
+                <line x1="680" y1="180" x2="680" y2="370" stroke="#16A34A" stroke-width="3"/>
+                <rect x="654" y="225" width="52" height="67" rx="4" fill="#16A34A" stroke="#15803D" stroke-width="2"/>
+            </g>
+            <g id="day-5">
+                <line x1="830" y1="158" x2="830" y2="303" stroke="#16A34A" stroke-width="3"/>
+                <rect x="804" y="202" width="52" height="67" rx="4" fill="#16A34A" stroke="#15803D" stroke-width="2"/>
+            </g>
+            <text x="230" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Mon</tspan></text>
+            <text x="380" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Tue</tspan></text>
+            <text x="530" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Wed</tspan></text>
+            <text x="680" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Thu</tspan></text>
+            <text x="830" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Fri</tspan></text>
+        </g>
+    </g>
+    <g id="summaryPanel" transform="translate(1010, 170)">
+        <rect x="0" y="0" width="220" height="360" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <text x="24" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A"><tspan>Trading Summary</tspan></text>
+        <line x1="24" y1="58" x2="196" y2="58" stroke="#E2E8F0"/>
+        <text x="24" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Close change</tspan></text>
+        <text x="24" y="126" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#16A34A"><tspan>+14.8%</tspan></text>
+        <text x="24" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>High-low range</tspan></text>
+        <text x="24" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#0F172A"><tspan>28</tspan></text>
+        <rect x="24" y="250" width="172" height="62" rx="8" fill="#ECFDF5" stroke="#BBF7D0"/>
+        <text x="42" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#15803D"><tspan>Four sessions</tspan></text>
+        <text x="42" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569"><tspan>closed above open.</tspan></text>
+    </g>
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#94A3B8"><tspan>Data Source: Market Data Feed</tspan></text>
+</svg>

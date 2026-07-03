@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Sunburst Chart Template
+    Purpose: Hierarchical part-to-whole composition across 2-3 levels
+    Use cases: portfolio mix, budget tree, customer segment hierarchy
+    Feature: Ring hierarchy, leaf legend, compact interpretation panel
+    -->
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="34" font-weight="800" fill="#0F172A"><tspan>Revenue Mix by Segment</tspan></text>
+    <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>2025 PORTFOLIO REVENUE · HIERARCHICAL SHARE VIEW</tspan></text>
+    <g id="sunburst_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "name": "sunburst_chart",
+              "x": 224,
+              "y": 104,
+              "width": 552,
+              "height": 552,
+              "type": "sunburst",
+              "levels": [
+                ["North America", "North America", "Europe", "Europe", "Asia Pacific"],
+                ["Enterprise", "SMB", "Enterprise", "SMB", "Digital"]
+              ],
+              "values": [35, 20, 25, 12, 8],
+              "style": {"colors": ["#2563EB", "#60A5FA", "#10B981", "#34D399", "#F59E0B"]}
+            }
+        </metadata>
+        <!-- chart-plot-area: sunburst | center: 500,380 | outer-radius: 240 | inner-radius: 72 -->
+        <g id="chartArea">
+            <circle cx="500" cy="380" r="276" fill="#FFFFFF" filter="url(#cardShadow)"/>
+            <circle cx="500" cy="380" r="72" fill="#0F172A"/>
+            <text x="500" y="374" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>Total</tspan></text>
+            <text x="500" y="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  font-size="15" font-weight="700" fill="#CBD5E1" text-anchor="middle"><tspan>100%</tspan></text>
+            <!-- Parent ring -->
+            <circle cx="500" cy="380" r="146" fill="none" stroke="#2563EB" stroke-width="82"
+                    stroke-dasharray="504 917" stroke-dashoffset="0" transform="rotate(-90 500 380)"/>
+            <circle cx="500" cy="380" r="146" fill="none" stroke="#10B981" stroke-width="82"
+                    stroke-dasharray="339 917" stroke-dashoffset="-520" transform="rotate(-90 500 380)"/>
+            <circle cx="500" cy="380" r="146" fill="none" stroke="#F59E0B" stroke-width="82"
+                    stroke-dasharray="73 917" stroke-dashoffset="-875" transform="rotate(-90 500 380)"/>
+            <!-- Leaf ring -->
+            <circle cx="500" cy="380" r="238" fill="none" stroke="#2563EB" stroke-width="72"
+                    stroke-dasharray="523 1495" stroke-dashoffset="0" transform="rotate(-90 500 380)"/>
+            <circle cx="500" cy="380" r="238" fill="none" stroke="#60A5FA" stroke-width="72"
+                    stroke-dasharray="299 1495" stroke-dashoffset="-540" transform="rotate(-90 500 380)"/>
+            <circle cx="500" cy="380" r="238" fill="none" stroke="#10B981" stroke-width="72"
+                    stroke-dasharray="374 1495" stroke-dashoffset="-855" transform="rotate(-90 500 380)"/>
+            <circle cx="500" cy="380" r="238" fill="none" stroke="#34D399" stroke-width="72"
+                    stroke-dasharray="179 1495" stroke-dashoffset="-1245" transform="rotate(-90 500 380)"/>
+            <circle cx="500" cy="380" r="238" fill="none" stroke="#F59E0B" stroke-width="72"
+                    stroke-dasharray="120 1495" stroke-dashoffset="-1440" transform="rotate(-90 500 380)"/>
+            <!-- White separators preserve the sunburst reading in fallback mode. -->
+            <circle cx="500" cy="380" r="104" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+            <circle cx="500" cy="380" r="188" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+            <circle cx="500" cy="380" r="276" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="500" y1="104" x2="500" y2="184" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="654" y1="151" x2="610" y2="218" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="740" y1="519" x2="670" y2="480" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="325" y1="594" x2="375" y2="532" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="270" y1="228" x2="340" y2="268" stroke="#FFFFFF" stroke-width="4"/>
+            <text x="500" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>NA</tspan></text>
+            <text x="668" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>EU</tspan></text>
+            <text x="350" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                  font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>APAC</tspan></text>
+        </g>
+    </g>
+    <g id="legend" transform="translate(820, 150)">
+        <rect x="0" y="0" width="390" height="430" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <text x="28" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="18" font-weight="800" fill="#0F172A"><tspan>Leaf Segments</tspan></text>
+        <text x="28" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="13" font-weight="600" fill="#64748B"><tspan>Outer ring values map to editable native sunburst leaves.</tspan></text>
+        <rect x="28" y="105" width="16" height="16" rx="4" fill="#2563EB"/>
+        <text x="58" y="119" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#334155"><tspan>North America - Enterprise</tspan></text>
+        <text x="340" y="119" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A" text-anchor="end"><tspan>35</tspan></text>
+        <rect x="28" y="153" width="16" height="16" rx="4" fill="#60A5FA"/>
+        <text x="58" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#334155"><tspan>North America - SMB</tspan></text>
+        <text x="340" y="167" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A" text-anchor="end"><tspan>20</tspan></text>
+        <rect x="28" y="201" width="16" height="16" rx="4" fill="#10B981"/>
+        <text x="58" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#334155"><tspan>Europe - Enterprise</tspan></text>
+        <text x="340" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A" text-anchor="end"><tspan>25</tspan></text>
+        <rect x="28" y="249" width="16" height="16" rx="4" fill="#34D399"/>
+        <text x="58" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#334155"><tspan>Europe - SMB</tspan></text>
+        <text x="340" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A" text-anchor="end"><tspan>12</tspan></text>
+        <rect x="28" y="297" width="16" height="16" rx="4" fill="#F59E0B"/>
+        <text x="58" y="311" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#334155"><tspan>Asia Pacific - Digital</tspan></text>
+        <text x="340" y="311" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A" text-anchor="end"><tspan>8</tspan></text>
+        <rect x="28" y="355" width="330" height="46" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+        <text x="48" y="384" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="800" fill="#1D4ED8"><tspan>North America contributes 55% of total.</tspan></text>
+    </g>
+    <text x="60" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#94A3B8"><tspan>Data Source: Revenue Operations</tspan></text>
+</svg>
