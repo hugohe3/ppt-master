@@ -52,6 +52,20 @@ try:
 except ImportError:
     _validate_native_object_marker = None
 
+try:
+    from svg_to_pptx.native_objects import (
+        validate_native_object_marker_with_warnings as _validate_native_object_marker_with_warnings,
+    )
+except ImportError:
+    _validate_native_object_marker_with_warnings = None
+
+try:
+    from svg_to_pptx.native_objects import (
+        native_object_marker_warnings as _native_object_marker_warnings,
+    )
+except ImportError:
+    _native_object_marker_warnings = None
+
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -816,11 +830,32 @@ class SVGQualityChecker:
 
         for marker in markers:
             marker_id = marker.get('id') or '<unnamed>'
+            if _validate_native_object_marker_with_warnings is not None:
+                try:
+                    warnings = _validate_native_object_marker_with_warnings(marker)
+                except RuntimeError as exc:
+                    result['errors'].append(
+                        f"Invalid data-pptx-native marker {marker_id}: {exc}"
+                    )
+                    continue
+                for warning in warnings:
+                    result['warnings'].append(
+                        f"data-pptx-native marker {marker_id}: {warning}"
+                    )
+                continue
+
             try:
                 _validate_native_object_marker(marker)
             except RuntimeError as exc:
                 result['errors'].append(
                     f"Invalid data-pptx-native marker {marker_id}: {exc}"
+                )
+                continue
+            if _native_object_marker_warnings is None:
+                continue
+            for warning in _native_object_marker_warnings(marker):
+                result['warnings'].append(
+                    f"data-pptx-native marker {marker_id}: {warning}"
                 )
 
     def _get_spec_lock(self, svg_path: Path):

@@ -733,6 +733,29 @@ type, and chart data shape before export.
 </g>
 ```
 
+**Table schema**: Native tables are rectangular DrawingML grids. Use `columns`
+for the optional header row and `rows` for body rows; shorter rows are padded
+with blank cells unless `strict_grid: true` is set. Use `column_widths` and
+`row_heights` as relative weights. Cell objects accept `text`, `fill`, `color`,
+`align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
+`border_width`; the same `padding`, `border_color`, and `border_width` keys may
+also live under `style` as table defaults.
+
+**Hard rule — table metadata is the native source of truth**: Every row,
+summary line, value, and cell-level style that must survive
+`--native-objects` must be present in `columns` / `rows`. SVG fallback text is
+discarded during native export. `svg_quality_checker.py` warns when visible
+fallback `<text>` inside a native table marker does not appear in metadata.
+For numeric or currency columns, use cell objects with `align: "r"`; SVG
+`text-anchor="end"` does not carry into the native table.
+
+**Forbidden — native merged table cells**: Do not use `rowSpan`, `colSpan`,
+`gridSpan`, `hMerge`, `vMerge`, or top-level merge lists in native table
+metadata. `svg_to_pptx.py --native-objects` rejects them so merged-cell tables
+do not silently degrade into incorrect grids. Keep merged-cell tables on the
+default SVG fallback route, or merge cells manually in PowerPoint after native
+export.
+
 **Category chart schema**: `column`, `bar`, `line`, `area`, `pie`,
 `doughnut`, `pieOfPie`, `barOfPie`, and `radar` use `categories` plus
 `series[].values`. Pie-family charts (`pie`, `doughnut`, `pieOfPie`, and
@@ -746,6 +769,14 @@ Typed `series[]` accepts the same `type` and `axis` fields per series, and
 adjacent compatible series are grouped into the same PowerPoint plot.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
+
+**Chart typography**: Native classic charts default to compact PowerPoint
+text: `axis_font_size: 12` (9pt), `legend_font_size: 12` (9pt), and
+`title_font_size: 16` (12pt). These values use the same px-style metadata unit
+as SVG text (`1px = 0.75pt`). Put overrides at the chart root or under `style`;
+`font_size` / `chart_font_size` sets the base chart text size, while
+`axis_font_size`, `legend_font_size`, and `title_font_size` target those
+regions directly.
 
 **PowerPoint chartEx schema**: `treemap`, `sunburst`, `histogram`, `pareto`,
 `boxWhisker`, `waterfall`, and `funnel` use Office 2016+ chartEx parts. Use
