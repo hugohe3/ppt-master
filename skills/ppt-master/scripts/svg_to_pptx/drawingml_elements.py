@@ -801,7 +801,7 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
 def _parse_points(points_str: str) -> list[tuple[float, float]]:
     """Parse SVG points attribute into a list of (x, y) tuples."""
-    nums = re.findall(r'[-+]?(?:\d+\.?\d*|\.\d+)', points_str)
+    nums = re.findall(r'[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?', points_str)
     if len(nums) < 4:
         return []
     return [(float(nums[i]), float(nums[i + 1])) for i in range(0, len(nums) - 1, 2)]
