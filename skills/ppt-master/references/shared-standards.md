@@ -789,7 +789,9 @@ axis/grid colors. Override any of them explicitly under `style` with
 `grid_color`; use `"none"` for transparent chart or plot area fill. Color
 values may be `#RRGGBB`, `#RGB`, `rgb(...)` / `rgba(...)`, or common CSS names
 such as `white`, `black`, and `gray`; the exporter normalizes them to 6-digit
-OOXML RGB.
+OOXML RGB. Bar and column series also disable PowerPoint's negative-value
+inversion so negative bars keep the same series fill instead of turning into
+white/theme fill.
 
 **PowerPoint chartEx schema**: `treemap`, `sunburst`, `histogram`, `pareto`,
 `boxWhisker`, `waterfall`, and `funnel` use Office 2016+ chartEx parts. Use

@@ -2025,6 +2025,7 @@ def _series_xml(
             if radar_style == "filled":
                 color_xml = _series_color_xml(_chart_color(colors, index), line=False)
             marker_xml = _marker_xml(radar_marker_style)
+        invert_xml = '<c:invertIfNegative val="0"/>' if chart_type in {"bar", "column"} else ""
         parts.append(
             "<c:ser>"
             f'<c:idx val="{index}"/><c:order val="{index}"/>'
@@ -2032,7 +2033,7 @@ def _series_xml(
             f"<c:f>Sheet1!${_excel_col(column_index)}$1</c:f>"
             f"{_string_cache([str(item['name'])])}"
             "</c:strRef></c:tx>"
-            f"{color_xml}{marker_xml}{point_colors_xml}"
+            f"{color_xml}{invert_xml}{marker_xml}{point_colors_xml}"
             "<c:cat><c:strRef>"
             f"<c:f>Sheet1!$A$2:$A${len(categories) + 1}</c:f>"
             f"{_string_cache(categories)}"
