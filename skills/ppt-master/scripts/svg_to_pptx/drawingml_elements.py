@@ -13,7 +13,8 @@ from xml.etree import ElementTree as ET
 from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
-    px_to_emu, _f, _get_attr,
+    px_to_emu, _f, _get_attr, parse_svg_length,
+    svg_length_x, svg_length_y, svg_length_size,
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
@@ -301,10 +302,10 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     for now — current corpora contain none, but the branch keeps callers from
     silently producing distorted custom geometry if one ever appears.
     """
-    raw_x = _f(elem.get('x'))
-    raw_y = _f(elem.get('y'))
-    raw_w = _f(elem.get('width'))
-    raw_h = _f(elem.get('height'))
+    raw_x = svg_length_x(elem.get('x'), ctx)
+    raw_y = svg_length_y(elem.get('y'), ctx)
+    raw_w = svg_length_x(elem.get('width'), ctx)
+    raw_h = svg_length_y(elem.get('height'), ctx)
     x = ctx_x(raw_x, ctx)
     y = ctx_y(raw_y, ctx)
     w = ctx_w(raw_w, ctx)
@@ -318,8 +319,8 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # be inferred to keep round corners from collapsing to zero on one axis.
     rx_attr = elem.get('rx')
     ry_attr = elem.get('ry')
-    rx_raw = _f(rx_attr) if rx_attr is not None else 0.0
-    ry_raw = _f(ry_attr) if ry_attr is not None else 0.0
+    rx_raw = svg_length_x(rx_attr, ctx) if rx_attr is not None else 0.0
+    ry_raw = svg_length_y(ry_attr, ctx) if ry_attr is not None else 0.0
     if rx_attr is not None and ry_attr is None:
         ry_raw = rx_raw
     elif ry_attr is not None and rx_attr is None:
@@ -475,8 +476,8 @@ def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
     if not stroke or stroke == 'none':
         return False
 
-    sw = _f(_get_attr(elem, 'stroke-width', ctx), 0)
-    r = _f(elem.get('r'), 0)
+    sw = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 0)
+    r = svg_length_size(elem.get('r'), ctx, 0)
     if sw <= 0 or r <= 0:
         return False
 
@@ -494,9 +495,9 @@ def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
 
 def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <circle> to DrawingML ellipse or donut-arc shape."""
-    cx_ = _f(elem.get('cx'))
-    cy_ = _f(elem.get('cy'))
-    r = _f(elem.get('r'))
+    cx_ = svg_length_x(elem.get('cx'), ctx)
+    cy_ = svg_length_y(elem.get('cy'), ctx)
+    r = svg_length_size(elem.get('r'), ctx)
 
     if r <= 0:
         return None
@@ -506,8 +507,8 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
         dash_vals = re.split(r'[\s,]+', dasharray.strip())
         dash_len = float(dash_vals[0]) if dash_vals else 0
-        dash_offset = _f(elem.get('stroke-dashoffset'), 0)
-        stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1)
+        dash_offset = svg_length_size(elem.get('stroke-dashoffset'), ctx, 0)
+        stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1)
 
         rotate_deg = 0.0
         transform = elem.get('transform', '')
@@ -613,8 +614,18 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     use custom geometry which is sufficient and avoids flipH/flipV complexity.
     """
     transform = elem.get('transform')
-    x1, y1 = _transformed_point(ctx, _f(elem.get('x1')), _f(elem.get('y1')), transform)
-    x2, y2 = _transformed_point(ctx, _f(elem.get('x2')), _f(elem.get('y2')), transform)
+    x1, y1 = _transformed_point(
+        ctx,
+        svg_length_x(elem.get('x1'), ctx),
+        svg_length_y(elem.get('y1'), ctx),
+        transform,
+    )
+    x2, y2 = _transformed_point(
+        ctx,
+        svg_length_x(elem.get('x2'), ctx),
+        svg_length_y(elem.get('y2'), ctx),
+        transform,
+    )
 
     min_x = min(x1, x2)
     min_y = min(y1, y2)
@@ -1097,14 +1108,22 @@ def _override_run_attrs(
     if tspan.get('stroke'):
         run_attrs['stroke_raw'] = tspan.get('stroke')
     if tspan.get('stroke-width'):
-        run_attrs['stroke_width'] = _f(tspan.get('stroke-width'), run_attrs.get('stroke_width', 1.0))
+        run_attrs['stroke_width'] = parse_svg_length(
+            tspan.get('stroke-width'),
+            run_attrs.get('stroke_width', 1.0),
+            font_size=float(run_attrs.get('font_size', 16)),
+        )
     if tspan.get('stroke-opacity'):
         try:
             run_attrs['stroke_opacity'] = float(tspan.get('stroke-opacity', '1'))
         except ValueError:
             pass
     if tspan.get('font-size'):
-        run_attrs['font_size'] = _f(tspan.get('font-size'), run_attrs['font_size'])
+        run_attrs['font_size'] = parse_svg_length(
+            tspan.get('font-size'),
+            run_attrs['font_size'],
+            font_size=float(run_attrs.get('font_size', 16)),
+        )
     if tspan.get('font-family'):
         run_attrs['font_family'] = tspan.get('font-family')
     if tspan.get('font-style'):
@@ -1284,9 +1303,12 @@ def _build_run_xml(
 
 def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <text> to DrawingML text shape with multi-run support."""
-    x = ctx_x(_f(elem.get('x')), ctx)
-    y = ctx_y(_f(elem.get('y')), ctx)
-    font_size = _f(_get_attr(elem, 'font-size', ctx), 16) * ctx.scale_y
+    x = ctx_x(svg_length_x(elem.get('x'), ctx), ctx)
+    y = ctx_y(svg_length_y(elem.get('y'), ctx), ctx)
+    font_size = (
+        parse_svg_length(_get_attr(elem, 'font-size', ctx), 16, font_size=16)
+        * ctx.scale_y
+    )
     font_weight = _get_attr(elem, 'font-weight', ctx) or '400'
     font_family_str = _get_attr(elem, 'font-family', ctx) or ''
     text_anchor = _get_attr(elem, 'text-anchor', ctx) or 'start'
@@ -1294,7 +1316,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
     stroke_raw = _get_attr(elem, 'stroke', ctx) or ''
-    stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
     font_style = _get_attr(elem, 'font-style', ctx) or ''
     text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
@@ -2132,10 +2154,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         return None
 
     # Raw coordinates (pre-context-transform) for clip path calculations
-    raw_x = _f(elem.get('x'))
-    raw_y = _f(elem.get('y'))
-    raw_w = _f(elem.get('width'))
-    raw_h = _f(elem.get('height'))
+    raw_x = svg_length_x(elem.get('x'), ctx)
+    raw_y = svg_length_y(elem.get('y'), ctx)
+    raw_w = svg_length_x(elem.get('width'), ctx)
+    raw_h = svg_length_y(elem.get('height'), ctx)
 
     if ctx.use_transform_matrix:
         x = raw_x
@@ -2268,10 +2290,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
 def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <ellipse> to DrawingML ellipse shape."""
-    raw_cx = _f(elem.get('cx'))
-    raw_cy = _f(elem.get('cy'))
-    raw_rx = _f(elem.get('rx'))
-    raw_ry = _f(elem.get('ry'))
+    raw_cx = svg_length_x(elem.get('cx'), ctx)
+    raw_cy = svg_length_y(elem.get('cy'), ctx)
+    raw_rx = svg_length_x(elem.get('rx'), ctx)
+    raw_ry = svg_length_y(elem.get('ry'), ctx)
     cx_ = ctx_x(raw_cx, ctx)
     cy_ = ctx_y(raw_cy, ctx)
     rx = raw_rx * ctx.scale_x
@@ -2348,10 +2370,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     if not href:
         return None
 
-    svg_x = _f(elem.get('x'))
-    svg_y = _f(elem.get('y'))
-    svg_w = _f(elem.get('width'))
-    svg_h = _f(elem.get('height'))
+    svg_x = svg_length_x(elem.get('x'), ctx)
+    svg_y = svg_length_y(elem.get('y'), ctx)
+    svg_w = svg_length_x(elem.get('width'), ctx)
+    svg_h = svg_length_y(elem.get('height'), ctx)
     if svg_w <= 0 or svg_h <= 0:
         return None
 
