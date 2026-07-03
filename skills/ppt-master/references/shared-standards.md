@@ -741,16 +741,17 @@ solid color.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
 
-**Deferred chart types**: Stacked / percent-stacked variants, exploded pie /
-doughnut variants, filled radar, `pieOfPie`, `barOfPie`, `stock*`, `combo`,
-`waterfall`, `funnel`, `treemap`, `sunburst`, `histogram`, `pareto`,
-`boxWhisker`, `map`, `heatmap`, `bullet`, and `gantt` are intentionally outside
-the current native-object support boundary. The exporter fails fast for these
-types until each mapping is implemented and validated one by one.
+**Deferred chart types**: Stacked / percent-stacked `line` and `area` variants,
+exploded pie / doughnut variants, filled radar, `pieOfPie`, `barOfPie`,
+`stock*`, `combo`, `waterfall`, `funnel`, `treemap`, `sunburst`, `histogram`,
+`pareto`, `boxWhisker`, `map`, `heatmap`, `bullet`, and `gantt` are
+intentionally outside the current native-object support boundary. The exporter
+fails fast for these types until each mapping is implemented and validated one
+by one.
 
 **Supported chart types**:
 
-- `column`, `bar`: clustered only
+- `column`, `bar`: `clustered`, `stacked`, or `percentStacked` (`grouping`)
 - `line`, `area`: standard only
 - `pie`: exactly one series, per-slice colors
 - `doughnut`: exactly one series, per-slice colors
