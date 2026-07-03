@@ -692,11 +692,11 @@ The child `<path>`'s `stroke` becomes the foreground color (the pattern's line c
 
 ### Native PPTX Table / Chart Markers (Experimental)
 
-Native PowerPoint tables and Excel-backed charts are opt-in only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
+Native PowerPoint tables and Excel-backed charts activate at export time only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
 
-**Hard rule**: Use a native object marker only when editability in PowerPoint matters more than cross-renderer layout fidelity. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
+**Authoring — markers are standard on supported data charts**: Executor writes the marker at draw time on every data chart whose type falls in the supported set ([executor-base.md §3.2](executor-base.md)), so any deck can later form native charts without regeneration. Table markers are author-optional. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
 
-**Default — dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Passing `--native-objects` emits the PowerPoint object and skips the fallback children to avoid duplicates.
+**Hard rule — activation is the opt-in, dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Pass `--native-objects` only when editability in PowerPoint matters more than cross-renderer layout fidelity: it emits the PowerPoint object and skips the fallback children to avoid duplicates. Native styling is PowerPoint-default plus the marker's palette colors — visual parity with the SVG drawing is not a goal; users restyle natively exported objects by hand.
 
 | Marker | Native output | Required metadata |
 |---|---|---|

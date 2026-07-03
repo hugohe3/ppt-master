@@ -116,7 +116,7 @@ PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围
 
 跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真是项目主轴。把默认路线改成 PowerPoint 原生图表会让「像素级一致性」破功——同一个 PPTX 在不同渲染器里图表会显示不同布局。图表默认用 SVG 是 **by design**，不是能力缺失。
 
-目前探索的窄例外是显式 `data-pptx-native` marker：只有页面主动声明愿意用跨渲染器保真换取 PowerPoint 内可编辑性时，才在 SVG 导出路径里生成原生对象。它是 opt-in 元数据，不替代默认 SVG 图表 / 表格系统。
+窄例外是 `data-pptx-native` marker：受支持的数据图表在生成时默认携带休眠的原生图表元数据，导出加 `--native-objects` 才激活——供主动用跨渲染器保真换取 PowerPoint 内可编辑性的用户使用。默认导出路径与 SVG 图表 / 表格系统不变。
 
 ### uv 作为默认 / 必需依赖
 
