@@ -5,6 +5,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 [![AtomGit stars](https://atomgit.com/hugohe3/ppt-master/star/badge.svg)](https://atomgit.com/hugohe3/ppt-master)
 [![The Agentic Leaderboard](https://www.theagenticleaderboard.com/badges/ppt-master.svg)](https://www.theagenticleaderboard.com/agent/?q=ppt-master)
+[![Sync Upstream](https://github.com/elvisw/ppt-master/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/elvisw/ppt-master/actions/workflows/sync-upstream.yml)
+[![Publish to PyPI](https://github.com/elvisw/ppt-master/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/elvisw/ppt-master/actions/workflows/publish-pypi.yml)
 
 <p align="center">
   <a href="https://trendshift.io/repositories/25760?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-25760" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/25760" alt="hugohe3%2Fppt-master | Trendshift" width="250" height="55"/></a>
