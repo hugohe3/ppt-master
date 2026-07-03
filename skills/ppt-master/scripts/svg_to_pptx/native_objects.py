@@ -30,9 +30,16 @@ from .drawingml_utils import (
 
 TABLE_URI = "http://schemas.openxmlformats.org/drawingml/2006/table"
 CHART_URI = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+CHARTEX_URI = "http://schemas.microsoft.com/office/drawing/2014/chartex"
 CHART_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
+CHARTEX_REL_TYPE = "http://schemas.microsoft.com/office/2014/relationships/chartEx"
+CHART_COLOR_STYLE_REL_TYPE = "http://schemas.microsoft.com/office/2011/relationships/chartColorStyle"
+CHART_STYLE_REL_TYPE = "http://schemas.microsoft.com/office/2011/relationships/chartStyle"
 PACKAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package"
 CHART_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
+CHARTEX_CONTENT_TYPE = "application/vnd.ms-office.chartex+xml"
+CHART_COLOR_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartcolorstyle+xml"
+CHART_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartstyle+xml"
 
 _NATIVE_KINDS = {"table", "chart"}
 _HEX_RE = re.compile(r"^#?([0-9a-fA-F]{6})$")
@@ -612,19 +619,20 @@ _CATEGORY_CHART_TYPES = {
     "radar",
 }
 _XY_CHART_TYPES = {"scatter", "bubble"}
-_DEFERRED_CHART_TYPES = {
+_CHARTEX_CHART_TYPES = {
     "box_whisker",
-    "bullet",
     "funnel",
-    "gantt",
-    "heatmap",
     "histogram",
-    "map",
     "pareto",
-    "stock",
     "sunburst",
     "treemap",
     "waterfall",
+}
+_DEFERRED_CHART_TYPES = {
+    "bullet",
+    "gantt",
+    "heatmap",
+    "map",
 }
 _UNSUPPORTED_3D_CHART_TYPES = {
     "area3d",
@@ -786,7 +794,7 @@ def _chart_kind(payload: dict[str, Any]) -> tuple[str, str | None, str | None]:
             f"Native PPTX {chart_type} chart is outside current basic chart support"
         )
 
-    supported = sorted(_CATEGORY_CHART_TYPES | _XY_CHART_TYPES | {"combo"})
+    supported = sorted(_CATEGORY_CHART_TYPES | _XY_CHART_TYPES | _CHARTEX_CHART_TYPES | {"combo", "stock"})
     if chart_type not in supported:
         raise RuntimeError(f"Native PPTX chart type must be one of: {', '.join(supported)}")
     return chart_type, grouping, style
@@ -1045,6 +1053,151 @@ def _combo_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _chart_values(payload: dict[str, Any], field_name: str = "values") -> list[int | float]:
+    raw_values = payload.get(field_name)
+    if raw_values is None and isinstance(payload.get("series"), list) and payload["series"]:
+        first_series = payload["series"][0]
+        if isinstance(first_series, dict):
+            raw_values = first_series.get("values")
+    values = [_chart_number(value) for value in _chart_list(raw_values, field_name)]
+    if not values:
+        raise RuntimeError(f"Native PPTX chart {field_name} must be a non-empty list")
+    return values
+
+
+def _chart_categories(payload: dict[str, Any], count: int | None = None) -> list[str]:
+    raw_categories = payload.get("categories", payload.get("labels", []))
+    categories = [str(item) for item in _chart_list(raw_categories, "categories")]
+    if count is not None:
+        if not categories:
+            categories = [f"Category {idx + 1}" for idx in range(count)]
+        if len(categories) != count:
+            raise RuntimeError("Native PPTX chart categories length must match values length")
+    elif not categories:
+        raise RuntimeError("Native PPTX chart requires non-empty categories")
+    return categories
+
+
+def _hierarchy_levels(payload: dict[str, Any], count: int) -> list[list[str]]:
+    raw_levels = payload.get("levels")
+    if raw_levels is not None:
+        levels = [
+            [str(value) for value in _chart_list(level, "levels[]")]
+            for level in _chart_list(raw_levels, "levels")
+        ]
+    else:
+        raw_categories = _chart_list(payload.get("categories", []), "categories")
+        if raw_categories and all(isinstance(item, list) for item in raw_categories):
+            path_rows = [[str(value) for value in item] for item in raw_categories]
+        else:
+            path_rows = [[str(item)] for item in raw_categories]
+        if len(path_rows) != count:
+            raise RuntimeError("Native PPTX hierarchical chart categories length must match values length")
+        max_depth = max((len(row) for row in path_rows), default=0)
+        levels = [
+            [row[depth] if depth < len(row) else "" for row in path_rows]
+            for depth in range(max_depth)
+        ]
+
+    if not levels:
+        raise RuntimeError("Native PPTX hierarchical charts require levels or path categories")
+    for level in levels:
+        if len(level) != count:
+            raise RuntimeError("Native PPTX hierarchical chart levels must match values length")
+    return levels
+
+
+def _chartex_chart_data(payload: dict[str, Any], chart_type: str) -> dict[str, Any]:
+    if chart_type in {"sunburst", "treemap"}:
+        values = _chart_values(payload)
+        levels = _hierarchy_levels(payload, len(values))
+        return {
+            "kind": "chartex",
+            "levels": levels,
+            "type": chart_type,
+            "values": values,
+        }
+
+    if chart_type == "histogram":
+        return {
+            "kind": "chartex",
+            "type": chart_type,
+            "values": _chart_values(payload),
+        }
+
+    if chart_type in {"funnel", "pareto", "waterfall"}:
+        values = _chart_values(payload)
+        data = {
+            "categories": _chart_categories(payload, len(values)),
+            "kind": "chartex",
+            "type": chart_type,
+            "values": values,
+        }
+        if chart_type == "waterfall":
+            subtotals = payload.get("subtotals", payload.get("subtotal_indices", []))
+            data["subtotals"] = [
+                int(_chart_number(value))
+                for value in _chart_list(subtotals, "subtotals")
+            ]
+        return data
+
+    if chart_type == "box_whisker":
+        raw_series = _chart_list(payload.get("series", []), "series")
+        if not raw_series:
+            raise RuntimeError("Native PPTX boxWhisker chart requires non-empty series")
+        series: list[dict[str, Any]] = []
+        for idx, item in enumerate(raw_series, start=1):
+            if not isinstance(item, dict):
+                raise RuntimeError("Native PPTX chart series entries must be objects")
+            values = [_chart_number(value) for value in _chart_list(item.get("values", []), "series[].values")]
+            if not values:
+                raise RuntimeError("Native PPTX boxWhisker series values must be non-empty")
+            categories = item.get("categories")
+            if categories is None:
+                categories = [str(item.get("name") or f"Series {idx}")] * len(values)
+            categories_list = [str(value) for value in _chart_list(categories, "series[].categories")]
+            if len(categories_list) != len(values):
+                raise RuntimeError("Native PPTX boxWhisker series categories must match values length")
+            series.append({
+                "categories": categories_list,
+                "name": str(item.get("name") or f"Series {idx}"),
+                "values": values,
+            })
+        return {
+            "kind": "chartex",
+            "series": series,
+            "type": chart_type,
+        }
+
+    raise RuntimeError(f"Native PPTX {chart_type} chart is outside current basic chart support")
+
+
+def _stock_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
+    categories = [
+        _chart_number(item)
+        for item in _chart_list(payload.get("categories", payload.get("dates", [])), "categories")
+    ]
+    if not categories:
+        raise RuntimeError("Native PPTX stock chart requires non-empty categories or dates")
+
+    raw_series = payload.get("series")
+    if raw_series is None:
+        field_names = [("open", "Open"), ("high", "High"), ("low", "Low"), ("close", "Close")]
+        raw_series = [
+            {"name": default_name, "values": payload.get(field_name, [])}
+            for field_name, default_name in field_names
+        ]
+    series = _category_series({"series": raw_series}, categories)
+    if len(series) != 4:
+        raise RuntimeError("Native PPTX stock chart requires exactly four series: open, high, low, close")
+    return {
+        "categories": categories,
+        "kind": "category",
+        "series": series,
+        "type": "stock",
+    }
+
+
 def _point_values(point: Any, *, chart_type: str) -> tuple[Any, Any, Any | None]:
     if isinstance(point, dict):
         return point.get("x"), point.get("y"), point.get("size", point.get("bubble_size"))
@@ -1127,6 +1280,10 @@ def _chart_data(payload: dict[str, Any]) -> dict[str, Any]:
     chart_type, alias_grouping, alias_style = _chart_kind(payload)
     if chart_type == "combo":
         return _combo_chart_data(payload)
+    if chart_type in _CHARTEX_CHART_TYPES:
+        return _chartex_chart_data(payload, chart_type)
+    if chart_type == "stock":
+        return _stock_chart_data(payload)
     if chart_type in _XY_CHART_TYPES:
         return _xy_chart_data(payload, chart_type, alias_style)
     return _category_chart_data(payload, chart_type, alias_grouping, alias_style)
@@ -1275,6 +1432,26 @@ def _chart_legend_xml(payload: dict[str, Any]) -> str:
     }
     position = positions.get(position_key, "b")
     return f'<c:legend><c:legendPos val="{position}"/><c:layout/><c:overlay val="0"/></c:legend>'
+
+
+def _chart_ex_legend_xml(payload: dict[str, Any]) -> str:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    show_legend = payload.get("show_legend", style.get("show_legend", False))
+    if not show_legend:
+        return ""
+    position_key = _compact_key(payload.get("legend_position") or style.get("legend_position") or "bottom")
+    positions = {
+        "bottom": "b",
+        "b": "b",
+        "left": "l",
+        "l": "l",
+        "right": "r",
+        "r": "r",
+        "top": "t",
+        "t": "t",
+    }
+    position = positions.get(position_key, "b")
+    return f'<cx:legend pos="{position}" align="ctr" overlay="0"/>'
 
 
 def _scatter_series_style_xml(scatter_style: str, color: str) -> tuple[str, str, str]:
@@ -1518,6 +1695,18 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str]) -> str:
 
     categories = chart_data["categories"]
     series = chart_data["series"]
+    if chart_type == "stock":
+        stock_cat_ax_id = "2068027336"
+        stock_val_ax_id = "2113994440"
+        return (
+            "<c:stockChart>"
+            f"{_stock_series_xml(categories, series, colors=colors)}"
+            '<c:hiLowLines/>'
+            '<c:upDownBars><c:gapWidth val="150"/><c:upBars/><c:downBars/></c:upDownBars>'
+            f'<c:axId val="{stock_cat_ax_id}"/><c:axId val="{stock_val_ax_id}"/>'
+            "</c:stockChart>"
+            f'{_stock_axis_xml(stock_cat_ax_id, stock_val_ax_id)}'
+        )
     ser_xml = _series_xml(
         categories,
         series,
@@ -1640,6 +1829,243 @@ def _xy_axis_xml(x_ax_id: str, y_ax_id: str) -> str:
     )
 
 
+def _stock_series_xml(
+    categories: list[int | float],
+    series: list[dict[str, Any]],
+    *,
+    colors: list[str],
+) -> str:
+    parts: list[str] = []
+    for index, item in enumerate(series):
+        column_index = index + 2
+        parts.append(
+            "<c:ser>"
+            f'<c:idx val="{index}"/><c:order val="{index}"/>'
+            "<c:tx><c:strRef>"
+            f"<c:f>Sheet1!${_excel_col(column_index)}$1</c:f>"
+            f"{_string_cache([str(item['name'])])}"
+            "</c:strRef></c:tx>"
+            '<c:spPr><a:ln><a:noFill/></a:ln></c:spPr>'
+            '<c:marker><c:symbol val="none"/></c:marker>'
+            "<c:cat><c:numRef>"
+            f"<c:f>Sheet1!$A$2:$A${len(categories) + 1}</c:f>"
+            f"{_number_cache(categories)}"
+            "</c:numRef></c:cat>"
+            "<c:val><c:numRef>"
+            f"<c:f>Sheet1!${_excel_col(column_index)}$2:${_excel_col(column_index)}${len(categories) + 1}</c:f>"
+            f"{_number_cache(item['values'])}"
+            "</c:numRef></c:val>"
+            '<c:smooth val="0"/>'
+            "</c:ser>"
+        )
+    return "".join(parts)
+
+
+def _stock_axis_xml(cat_ax_id: str, val_ax_id: str) -> str:
+    return (
+        "<c:dateAx>"
+        f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
+        '<c:delete val="0"/><c:axPos val="b"/>'
+        '<c:numFmt formatCode="m/d/yyyy" sourceLinked="1"/>'
+        '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
+        '<c:tickLblPos val="nextTo"/>'
+        f'<c:crossAx val="{val_ax_id}"/><c:crosses val="autoZero"/>'
+        '<c:auto val="1"/><c:lblOffset val="100"/><c:baseTimeUnit val="days"/>'
+        "</c:dateAx>"
+        "<c:valAx>"
+        f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
+        '<c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/>'
+        '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
+        '<c:tickLblPos val="nextTo"/>'
+        f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
+        "</c:valAx>"
+    )
+
+
+def _cx_points(values: list[Any]) -> str:
+    return "".join(
+        f'<cx:pt idx="{idx}">{_xml_escape(str(value))}</cx:pt>'
+        for idx, value in enumerate(values)
+    )
+
+
+def _cx_col_range(start_col: int, col_count: int, row_count: int) -> str:
+    start = _excel_col(start_col)
+    end = _excel_col(start_col + col_count - 1)
+    return f"Sheet1!${start}$2:${end}${row_count + 1}"
+
+
+def _cx_str_dim(levels: list[list[str]], *, start_col: int, row_count: int) -> str:
+    levels_xml = "".join(
+        f'<cx:lvl ptCount="{len(level)}">{_cx_points(level)}</cx:lvl>'
+        for level in reversed(levels)
+    )
+    return (
+        '<cx:strDim type="cat">'
+        f"<cx:f>{_cx_col_range(start_col, len(levels), row_count)}</cx:f>"
+        f"{levels_xml}"
+        "</cx:strDim>"
+    )
+
+
+def _cx_num_dim(
+    values: list[int | float],
+    *,
+    dim_type: str,
+    col: int,
+) -> str:
+    return (
+        f'<cx:numDim type="{dim_type}">'
+        f"<cx:f>Sheet1!${_excel_col(col)}$2:${_excel_col(col)}${len(values) + 1}</cx:f>"
+        f'<cx:lvl ptCount="{len(values)}" formatCode="General">{_cx_points(values)}</cx:lvl>'
+        "</cx:numDim>"
+    )
+
+
+def _chart_ex_data_xml(chart_data: dict[str, Any]) -> str:
+    chart_type = chart_data["type"]
+    if chart_type in {"sunburst", "treemap"}:
+        values = chart_data["values"]
+        levels = chart_data["levels"]
+        return (
+            '<cx:data id="0">'
+            f'{_cx_str_dim(levels, start_col=1, row_count=len(values))}'
+            f'{_cx_num_dim(values, dim_type="size", col=len(levels) + 1)}'
+            "</cx:data>"
+        )
+    if chart_type == "histogram":
+        values = chart_data["values"]
+        return f'<cx:data id="0">{_cx_num_dim(values, dim_type="val", col=1)}</cx:data>'
+    if chart_type in {"funnel", "pareto", "waterfall"}:
+        values = chart_data["values"]
+        categories = chart_data["categories"]
+        return (
+            '<cx:data id="0">'
+            f'{_cx_str_dim([categories], start_col=1, row_count=len(values))}'
+            f'{_cx_num_dim(values, dim_type="val", col=2)}'
+            "</cx:data>"
+        )
+    if chart_type == "box_whisker":
+        parts: list[str] = []
+        for idx, item in enumerate(chart_data["series"]):
+            start_col = idx * 2 + 1
+            parts.append(
+                f'<cx:data id="{idx}">'
+                f'{_cx_str_dim([item["categories"]], start_col=start_col, row_count=len(item["values"]))}'
+                f'{_cx_num_dim(item["values"], dim_type="val", col=start_col + 1)}'
+                "</cx:data>"
+            )
+        return "".join(parts)
+    raise RuntimeError(f"Native PPTX {chart_type} chart is outside current basic chart support")
+
+
+def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
+    chart_type = chart_data["type"]
+    if chart_type in {"sunburst", "treemap"}:
+        layout_id = chart_type
+        label_pos = "ctr" if chart_type == "sunburst" else "inEnd"
+        layout_pr = "<cx:layoutPr/>" if chart_type == "treemap" else ""
+        return (
+            f'<cx:series layoutId="{layout_id}" uniqueId="{{00000000-0000-4000-8000-000000000001}}">'
+            '<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            f'<cx:dataLabels pos="{label_pos}"><cx:visibility seriesName="0" categoryName="1" value="1"/></cx:dataLabels>'
+            '<cx:dataId val="0"/>'
+            f"{layout_pr}"
+            "</cx:series>"
+        )
+    if chart_type == "histogram":
+        return (
+            '<cx:series layoutId="clusteredColumn" uniqueId="{00000000-0000-4000-8000-000000000001}">'
+            '<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            '<cx:dataId val="0"/><cx:layoutPr><cx:binning intervalClosed="r"/></cx:layoutPr>'
+            "</cx:series>"
+        )
+    if chart_type == "pareto":
+        return (
+            '<cx:series layoutId="clusteredColumn" uniqueId="{00000000-0000-4000-8000-000000000001}">'
+            '<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            '<cx:dataId val="0"/><cx:layoutPr><cx:aggregation/></cx:layoutPr>'
+            '<cx:axisId val="1"/></cx:series>'
+            '<cx:series layoutId="paretoLine" ownerIdx="0" uniqueId="{00000000-0000-4000-8000-000000000002}">'
+            '<cx:axisId val="2"/></cx:series>'
+        )
+    if chart_type == "waterfall":
+        subtotals_xml = ""
+        if chart_data.get("subtotals"):
+            subtotal_items = "".join(f'<cx:idx val="{idx}"/>' for idx in chart_data["subtotals"])
+            subtotals_xml = f"<cx:subtotals>{subtotal_items}</cx:subtotals>"
+        return (
+            '<cx:series layoutId="waterfall" uniqueId="{00000000-0000-4000-8000-000000000001}">'
+            '<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            '<cx:dataLabels pos="outEnd"><cx:visibility seriesName="0" categoryName="0" value="1"/></cx:dataLabels>'
+            f'<cx:dataId val="0"/><cx:layoutPr>{subtotals_xml}</cx:layoutPr>'
+            "</cx:series>"
+        )
+    if chart_type == "funnel":
+        return (
+            '<cx:series layoutId="funnel" uniqueId="{00000000-0000-4000-8000-000000000001}">'
+            '<cx:tx><cx:txData><cx:f>Sheet1!$B$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
+            '<cx:dataLabels><cx:visibility seriesName="0" categoryName="0" value="1"/></cx:dataLabels>'
+            '<cx:dataId val="0"/></cx:series>'
+        )
+    if chart_type == "box_whisker":
+        parts: list[str] = []
+        for idx, item in enumerate(chart_data["series"]):
+            value_col = _excel_col(idx * 2 + 2)
+            parts.append(
+                f'<cx:series layoutId="boxWhisker" uniqueId="{{00000000-0000-4000-8000-{idx + 1:012d}}}">'
+                f'<cx:tx><cx:txData><cx:f>Sheet1!${value_col}$1</cx:f><cx:v>{_xml_escape(str(item["name"]))}</cx:v></cx:txData></cx:tx>'
+                f'<cx:dataId val="{idx}"/><cx:layoutPr>'
+                '<cx:visibility meanMarker="1" outliers="1"/>'
+                '<cx:statistics quartileMethod="exclusive"/>'
+                '</cx:layoutPr></cx:series>'
+            )
+        return "".join(parts)
+    raise RuntimeError(f"Native PPTX {chart_type} chart is outside current basic chart support")
+
+
+def _chart_ex_axes_xml(chart_data: dict[str, Any]) -> str:
+    chart_type = chart_data["type"]
+    if chart_type in {"sunburst", "treemap"}:
+        return ""
+    if chart_type == "pareto":
+        return (
+            '<cx:axis id="0"><cx:catScaling gapWidth="0"/><cx:tickLabels/></cx:axis>'
+            '<cx:axis id="1"><cx:valScaling/><cx:majorGridlines/><cx:tickLabels/></cx:axis>'
+            '<cx:axis id="2"><cx:valScaling max="1" min="0"/><cx:units unit="percentage"/><cx:tickLabels/></cx:axis>'
+        )
+    if chart_type == "funnel":
+        return '<cx:axis id="1"><cx:catScaling gapWidth="0.06"/><cx:tickLabels/></cx:axis>'
+    gap_width = "0.5" if chart_type == "waterfall" else "0"
+    if chart_type == "box_whisker":
+        gap_width = "1"
+    return (
+        f'<cx:axis id="0"><cx:catScaling gapWidth="{gap_width}"/><cx:tickLabels/></cx:axis>'
+        '<cx:axis id="1"><cx:valScaling/><cx:majorGridlines/><cx:tickLabels/></cx:axis>'
+    )
+
+
+def _chart_ex_xml(
+    payload: dict[str, Any],
+    chart_data: dict[str, Any],
+    *,
+    chart_rels_id: str,
+) -> bytes:
+    data_xml = _chart_ex_data_xml(chart_data)
+    series_xml = _chart_ex_series_xml(chart_data)
+    axes_xml = _chart_ex_axes_xml(chart_data)
+    xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cx:chartSpace xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+               xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+               xmlns:cx="{CHARTEX_URI}">
+<cx:chartData><cx:externalData r:id="{chart_rels_id}" cx:autoUpdate="0"/>{data_xml}</cx:chartData>
+<cx:chart><cx:title pos="t" align="ctr" overlay="0"/>
+<cx:plotArea><cx:plotAreaRegion>{series_xml}</cx:plotAreaRegion>{axes_xml}</cx:plotArea>
+{_chart_ex_legend_xml(payload)}</cx:chart>
+</cx:chartSpace>'''
+    return xml.encode("utf-8")
+
+
 def _chart_xml(
     payload: dict[str, Any],
     *,
@@ -1679,6 +2105,30 @@ def _chart_rels_xml(workbook_target: str) -> bytes:
 <Relationship Id="rId1" Type="{PACKAGE_REL_TYPE}" Target="{_xml_escape(workbook_target)}"/>
 </Relationships>'''
     return xml.encode("utf-8")
+
+
+def _chart_ex_rels_xml(workbook_target: str, style_target: str, colors_target: str) -> bytes:
+    xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="{PACKAGE_REL_TYPE}" Target="{_xml_escape(workbook_target)}"/>
+<Relationship Id="rId2" Type="{CHART_STYLE_REL_TYPE}" Target="{_xml_escape(style_target)}"/>
+<Relationship Id="rId3" Type="{CHART_COLOR_STYLE_REL_TYPE}" Target="{_xml_escape(colors_target)}"/>
+</Relationships>'''
+    return xml.encode("utf-8")
+
+
+def _chart_ex_style_xml() -> bytes:
+    return b'''<cs:chartStyle xmlns:cs="http://schemas.microsoft.com/office/drawing/2012/chartStyle" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" id="410"><cs:axisTitle><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="bg1"><a:lumMod val="65000"/></a:schemeClr></a:solidFill><a:ln w="19050"><a:solidFill><a:schemeClr val="bg1"/></a:solidFill></a:ln></cs:spPr><cs:defRPr sz="1197"/></cs:axisTitle><cs:categoryAxis><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr><cs:defRPr sz="1197"/></cs:categoryAxis><cs:chartArea mods="allowNoFillOverride allowNoLineOverride"><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="bg1"/></a:solidFill><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr><cs:defRPr sz="1330"/></cs:chartArea><cs:dataLabel><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="lt1"/></cs:fontRef><cs:defRPr sz="1197"/></cs:dataLabel><cs:dataLabelCallout><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="dk1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="lt1"/></a:solidFill><a:ln><a:solidFill><a:schemeClr val="dk1"><a:lumMod val="25000"/><a:lumOff val="75000"/></a:schemeClr></a:solidFill></a:ln></cs:spPr><cs:defRPr sz="1197"/><cs:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="clip" horzOverflow="clip" vert="horz" wrap="square" lIns="36576" tIns="18288" rIns="36576" bIns="18288" anchor="ctr" anchorCtr="1"><a:spAutoFit/></cs:bodyPr></cs:dataLabelCallout><cs:dataPoint><cs:lnRef idx="0"/><cs:fillRef idx="0"><cs:styleClr val="auto"/></cs:fillRef><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:ln w="19050"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></cs:spPr></cs:dataPoint><cs:dataPoint3D><cs:lnRef idx="0"/><cs:fillRef idx="0"><cs:styleClr val="auto"/></cs:fillRef><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></cs:spPr></cs:dataPoint3D><cs:dataPointLine><cs:lnRef idx="0"><cs:styleClr val="auto"/></cs:lnRef><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="28575" cap="rnd"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:round/></a:ln></cs:spPr></cs:dataPointLine><cs:dataPointMarker><cs:lnRef idx="0"/><cs:fillRef idx="0"><cs:styleClr val="auto"/></cs:fillRef><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:ln w="9525"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></cs:spPr></cs:dataPointMarker><cs:dataPointMarkerLayout symbol="circle" size="5"/><cs:dataPointWireframe><cs:lnRef idx="0"><cs:styleClr val="auto"/></cs:lnRef><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="28575" cap="rnd"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:round/></a:ln></cs:spPr></cs:dataPointWireframe><cs:dataTable><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:spPr><a:ln w="9525"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill></a:ln></cs:spPr><cs:defRPr sz="1197"/></cs:dataTable><cs:downBar><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="dk1"/></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="dk1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill><a:ln w="9525"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill></a:ln></cs:spPr></cs:downBar><cs:dropLine><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="35000"/><a:lumOff val="65000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr></cs:dropLine><cs:errorBar><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr></cs:errorBar><cs:floor><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef></cs:floor><cs:gridlineMajor><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr></cs:gridlineMajor><cs:gridlineMinor><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr></cs:gridlineMinor><cs:hiLoLine><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="75000"/><a:lumOff val="25000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr></cs:hiLoLine><cs:leaderLine><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="35000"/><a:lumOff val="65000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr></cs:leaderLine><cs:legend><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:defRPr sz="1197"/></cs:legend><cs:plotArea mods="allowNoFillOverride allowNoLineOverride"><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef></cs:plotArea><cs:plotArea3D mods="allowNoFillOverride allowNoLineOverride"><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef></cs:plotArea3D><cs:seriesAxis><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln></cs:spPr><cs:defRPr sz="1197"/></cs:seriesAxis><cs:seriesLine><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="D9D9D9"/></a:solidFill><a:round/></a:ln></cs:spPr></cs:seriesLine><cs:title><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:defRPr sz="1862"/></cs:title><cs:trendline><cs:lnRef idx="0"><cs:styleClr val="auto"/></cs:lnRef><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef><cs:spPr><a:ln w="19050" cap="rnd"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="sysDash"/></a:ln></cs:spPr></cs:trendline><cs:trendlineLabel><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:defRPr sz="1197"/></cs:trendlineLabel><cs:upBar><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="dk1"/></cs:fontRef><cs:spPr><a:solidFill><a:schemeClr val="lt1"/></a:solidFill><a:ln w="9525"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill></a:ln></cs:spPr></cs:upBar><cs:valueAxis><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></cs:fontRef><cs:defRPr sz="1197"/></cs:valueAxis><cs:wall><cs:lnRef idx="0"/><cs:fillRef idx="0"/><cs:effectRef idx="0"/><cs:fontRef idx="minor"><a:schemeClr val="tx1"/></cs:fontRef></cs:wall></cs:chartStyle>'''
+
+
+def _chart_ex_colors_xml() -> bytes:
+    return b'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cs:colorStyle xmlns:cs="http://schemas.microsoft.com/office/drawing/2012/chartStyle"
+               xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+               meth="cycle" id="10">
+<a:schemeClr val="accent1"/><a:schemeClr val="accent2"/><a:schemeClr val="accent3"/>
+<a:schemeClr val="accent4"/><a:schemeClr val="accent5"/><a:schemeClr val="accent6"/>
+</cs:colorStyle>'''
 
 
 def _xlsx_cell_ref(row: int, col: int) -> str:
@@ -1802,6 +2252,40 @@ def _minimal_xy_chart_workbook(chart_data: dict[str, Any]) -> bytes:
     return _minimal_workbook(rows)
 
 
+def _minimal_chart_ex_workbook(chart_data: dict[str, Any]) -> bytes:
+    chart_type = chart_data["type"]
+    if chart_type in {"sunburst", "treemap"}:
+        levels = chart_data["levels"]
+        rows: list[list[Any]] = [[f"Level {idx + 1}" for idx in range(len(levels))] + ["Value"]]
+        for row_idx, value in enumerate(chart_data["values"]):
+            rows.append([level[row_idx] for level in levels] + [value])
+        return _minimal_workbook(rows)
+    if chart_type == "histogram":
+        return _minimal_workbook([["Value"]] + [[value] for value in chart_data["values"]])
+    if chart_type in {"funnel", "pareto", "waterfall"}:
+        rows = [["Category", "Value"]]
+        rows.extend(
+            [category, chart_data["values"][idx]]
+            for idx, category in enumerate(chart_data["categories"])
+        )
+        return _minimal_workbook(rows)
+    if chart_type == "box_whisker":
+        rows = [[]]
+        for item in chart_data["series"]:
+            rows[0].extend([f"{item['name']} Category", item["name"]])
+        max_rows = max(len(item["values"]) for item in chart_data["series"])
+        for row_idx in range(max_rows):
+            row: list[Any] = []
+            for item in chart_data["series"]:
+                if row_idx < len(item["values"]):
+                    row.extend([item["categories"][row_idx], item["values"][row_idx]])
+                else:
+                    row.extend(["", ""])
+            rows.append(row)
+        return _minimal_workbook(rows)
+    raise RuntimeError(f"Native PPTX {chart_type} chart is outside current basic chart support")
+
+
 def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
     chart_data = _chart_data(payload)
     off_x, off_y, ext_cx, ext_cy = _bounds(elem, payload, ctx)
@@ -1810,28 +2294,65 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     rel_id = ctx.next_rel_id()
     local_index = 1 + sum(1 for part in ctx.package_files if part.startswith("ppt/charts/chart"))
     part_index = ctx.slide_num * 100 + local_index
-    chart_name = f"chart{part_index}.xml"
     workbook_name = f"Microsoft_Excel_Sheet{part_index}.xlsx"
-    chart_part = f"ppt/charts/{chart_name}"
-    chart_rels_part = f"ppt/charts/_rels/{chart_name}.rels"
     workbook_part = f"ppt/embeddings/{workbook_name}"
 
-    ctx.rel_entries.append({
-        "id": rel_id,
-        "type": CHART_REL_TYPE,
-        "target": f"../charts/{chart_name}",
-    })
-    ctx.package_files[chart_part] = _chart_xml(
-        payload,
-        chart_rels_id="rId1",
-        chart_data=chart_data,
-    )
-    ctx.package_files[chart_rels_part] = _chart_rels_xml(f"../embeddings/{workbook_name}")
-    if chart_data["kind"] == "xy":
-        ctx.package_files[workbook_part] = _minimal_xy_chart_workbook(chart_data)
+    if chart_data["kind"] == "chartex":
+        chart_name = f"chartEx{part_index}.xml"
+        style_name = f"style{part_index}.xml"
+        colors_name = f"colors{part_index}.xml"
+        chart_part = f"ppt/charts/{chart_name}"
+        chart_rels_part = f"ppt/charts/_rels/{chart_name}.rels"
+        style_part = f"ppt/charts/{style_name}"
+        colors_part = f"ppt/charts/{colors_name}"
+        graphic_uri = CHARTEX_URI
+        chart_ref_xml = (
+            f'<cx:chart xmlns:cx="{CHARTEX_URI}" '
+            f'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+            f'r:id="{rel_id}"/>'
+        )
+        ctx.rel_entries.append({
+            "id": rel_id,
+            "type": CHARTEX_REL_TYPE,
+            "target": f"../charts/{chart_name}",
+        })
+        ctx.package_files[chart_part] = _chart_ex_xml(payload, chart_data, chart_rels_id="rId1")
+        ctx.package_files[chart_rels_part] = _chart_ex_rels_xml(
+            f"../embeddings/{workbook_name}",
+            style_name,
+            colors_name,
+        )
+        ctx.package_files[style_part] = _chart_ex_style_xml()
+        ctx.package_files[colors_part] = _chart_ex_colors_xml()
+        ctx.package_files[workbook_part] = _minimal_chart_ex_workbook(chart_data)
+        ctx.content_type_overrides[chart_part] = CHARTEX_CONTENT_TYPE
+        ctx.content_type_overrides[style_part] = CHART_STYLE_CONTENT_TYPE
+        ctx.content_type_overrides[colors_part] = CHART_COLOR_STYLE_CONTENT_TYPE
     else:
-        ctx.package_files[workbook_part] = _minimal_category_chart_workbook(chart_data)
-    ctx.content_type_overrides[chart_part] = CHART_CONTENT_TYPE
+        chart_name = f"chart{part_index}.xml"
+        chart_part = f"ppt/charts/{chart_name}"
+        chart_rels_part = f"ppt/charts/_rels/{chart_name}.rels"
+        graphic_uri = CHART_URI
+        chart_ref_xml = (
+            '<c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" '
+            f'r:id="{rel_id}"/>'
+        )
+        ctx.rel_entries.append({
+            "id": rel_id,
+            "type": CHART_REL_TYPE,
+            "target": f"../charts/{chart_name}",
+        })
+        ctx.package_files[chart_part] = _chart_xml(
+            payload,
+            chart_rels_id="rId1",
+            chart_data=chart_data,
+        )
+        ctx.package_files[chart_rels_part] = _chart_rels_xml(f"../embeddings/{workbook_name}")
+        if chart_data["kind"] == "xy":
+            ctx.package_files[workbook_part] = _minimal_xy_chart_workbook(chart_data)
+        else:
+            ctx.package_files[workbook_part] = _minimal_category_chart_workbook(chart_data)
+        ctx.content_type_overrides[chart_part] = CHART_CONTENT_TYPE
 
     name = _xml_escape(str(payload.get("name") or elem.get("id") or f"Native Chart {shape_id}"))
     xml = f'''<p:graphicFrame>
@@ -1842,8 +2363,8 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 </p:nvGraphicFramePr>
 <p:xfrm><a:off x="{off_x}" y="{off_y}"/><a:ext cx="{ext_cx}" cy="{ext_cy}"/></p:xfrm>
 <a:graphic>
-<a:graphicData uri="{CHART_URI}">
-<c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="{rel_id}"/>
+<a:graphicData uri="{graphic_uri}">
+{chart_ref_xml}
 </a:graphicData>
 </a:graphic>
 </p:graphicFrame>'''

@@ -701,7 +701,7 @@ Native PowerPoint tables and Excel-backed charts activate at export time only. T
 | Marker | Native output | Required metadata |
 |---|---|---|
 | `<g data-pptx-native="table">` | `<p:graphicFrame>` with `<a:tbl>` | bounds + `columns` or `rows` |
-| `<g data-pptx-native="chart">` | `<p:graphicFrame>` with `c:chart` + chart part + embedded workbook | bounds + `type`, plus chart data |
+| `<g data-pptx-native="chart">` | `<p:graphicFrame>` with `c:chart` / `cx:chart` + chart part + embedded workbook | bounds + `type`, plus chart data |
 
 **Metadata placement**: Put JSON in a child `<metadata data-pptx-native="...">`. Attribute JSON (`data-pptx-json="..."`) is supported but harder to XML-escape correctly.
 
@@ -747,11 +747,29 @@ adjacent compatible series are grouped into the same PowerPoint plot.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
 
-**Deferred chart types**: Exploded pie / doughnut variants, `stock*`,
-`waterfall`, `funnel`, `treemap`, `sunburst`, `histogram`, `pareto`,
-`boxWhisker`, `map`, `heatmap`, `bullet`, and `gantt` are intentionally outside
-the current native-object support boundary. The exporter fails fast for these
-types until each mapping is implemented and validated one by one.
+**PowerPoint chartEx schema**: `treemap`, `sunburst`, `histogram`, `pareto`,
+`boxWhisker`, `waterfall`, and `funnel` use Office 2016+ chartEx parts. Use
+these input shapes:
+
+| Type | Required data |
+|---|---|
+| `treemap`, `sunburst` | `values` plus either `levels` (`levels[level][point]`) or path-style `categories` (`[["Region", "Group", "Leaf"], ...]`) |
+| `histogram` | `values` |
+| `pareto`, `waterfall`, `funnel` | `categories` + `values`; `waterfall` also accepts `subtotals` / `subtotal_indices` point indexes |
+| `boxWhisker` | `series[].values`; optional `series[].categories` per value |
+
+> Note: chartEx files are valid PPTX and editable in PowerPoint; non-Microsoft
+> renderers can display a limited subset.
+
+**Stock chart schema**: `stock` uses numeric Excel date serials in
+`categories` or `dates`, plus exactly four series in open / high / low / close
+order. Use either `series` with four entries, or top-level `open`, `high`,
+`low`, and `close` arrays.
+
+**Deferred chart types**: Exploded pie / doughnut variants, `map`, `heatmap`,
+`bullet`, and `gantt` are intentionally outside the current native-object
+support boundary. The exporter fails fast for these types until each mapping is
+implemented and validated one by one.
 
 **Supported chart types**:
 
@@ -765,6 +783,11 @@ types until each mapping is implemented and validated one by one.
 - `scatter`: `marker` (default), `lineMarker`, `line`, `smoothMarker`, or `smooth` (`scatter_style`)
 - `bubble`: x/y/size series
 - `combo`: `column`, `line`, and `area` plots, optional secondary value axis
+- `treemap`, `sunburst`: hierarchical chartEx charts
+- `histogram`, `pareto`
+- `boxWhisker`
+- `waterfall`, `funnel`
+- `stock`: open / high / low / close series
 
 3D chart aliases (`3DColumn`, `3DBar`, `3DLine`, `3DArea`, `3DPie`, cone,
 cylinder, pyramid variants, and `surface`) are intentionally unsupported. They
