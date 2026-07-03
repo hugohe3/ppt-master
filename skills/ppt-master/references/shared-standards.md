@@ -700,10 +700,20 @@ Native PowerPoint tables and Excel-backed charts are opt-in only. The default ch
 
 | Marker | Native output | Required metadata |
 |---|---|---|
-| `<g data-pptx-native="table">` | `<p:graphicFrame>` with `<a:tbl>` | `x`, `y`, `width`, `height`, `columns` or `rows` |
-| `<g data-pptx-native="chart">` | `<p:graphicFrame>` with `c:chart` + chart part + embedded workbook | `x`, `y`, `width`, `height`, `type`, plus chart data |
+| `<g data-pptx-native="table">` | `<p:graphicFrame>` with `<a:tbl>` | bounds + `columns` or `rows` |
+| `<g data-pptx-native="chart">` | `<p:graphicFrame>` with `c:chart` + chart part + embedded workbook | bounds + `type`, plus chart data |
 
 **Metadata placement**: Put JSON in a child `<metadata data-pptx-native="...">`. Attribute JSON (`data-pptx-json="..."`) is supported but harder to XML-escape correctly.
+
+**Bounds**: Provide `x`, `y`, `width`, and `height` in metadata, or as
+`data-pptx-x` / `data-pptx-y` / `data-pptx-width` / `data-pptx-height` on the
+marker group. If any bound is omitted, the exporter infers the object frame
+from the visible fallback geometry; this keeps SVG fallback and native object
+placement aligned.
+
+**Validation**: `svg_quality_checker.py` validates native marker kind, JSON
+metadata, bounds/fallback availability, table rows/columns, supported chart
+type, and chart data shape before export.
 
 ```xml
 <g id="p03-revenue-chart" data-pptx-native="chart">

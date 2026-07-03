@@ -45,6 +45,13 @@ except ImportError:
     _load_animation_config = None
     _validate_animation_config = None
 
+try:
+    from svg_to_pptx.native_objects import (
+        validate_native_object_marker as _validate_native_object_marker,
+    )
+except ImportError:
+    _validate_native_object_marker = None
+
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -290,6 +297,9 @@ class SVGQualityChecker:
 
                 # 8b. Check <pattern> elements declare a PPTX preset.
                 self._check_pattern_fills(content, result)
+
+                # 8c. Check opt-in native table/chart markers before export.
+                self._check_native_object_markers(content, result)
 
                 # 9. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
@@ -782,6 +792,35 @@ class SVGQualityChecker:
                     "ltUpDiag / dkUpDiag / cross / diagCross / weave / plaid / "
                     "horzBrick (others); full enum in svg_quality_checker.py "
                     "_OOXML_PATTERN_PRESETS."
+                )
+
+    def _check_native_object_markers(self, content: str, result: Dict) -> None:
+        """Validate opt-in native table/chart markers before PPTX export."""
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        markers = [
+            elem for elem in root.iter()
+            if elem.get('data-pptx-native') and elem.tag.rsplit('}', 1)[-1] != 'metadata'
+        ]
+        if not markers:
+            return
+        if _validate_native_object_marker is None:
+            result['warnings'].append(
+                "Detected data-pptx-native markers, but native-object validator "
+                "could not be imported; export-time validation will still run."
+            )
+            return
+
+        for marker in markers:
+            marker_id = marker.get('id') or '<unnamed>'
+            try:
+                _validate_native_object_marker(marker)
+            except RuntimeError as exc:
+                result['errors'].append(
+                    f"Invalid data-pptx-native marker {marker_id}: {exc}"
                 )
 
     def _get_spec_lock(self, svg_path: Path):
