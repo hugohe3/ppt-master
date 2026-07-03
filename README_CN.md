@@ -193,11 +193,15 @@ sudo apt install pandoc
 
 PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、持续多轮对话）的工具里都能跑。
 
+没用过这类工具也不用担心：它们在本项目里只扮演一个角色——一个能读写文件的 AI 聊天窗口。从下表任选一款装好即可，全程只用它的聊天面板，不需要写任何代码。
+
+> **作者最推荐：[Claude Code](https://claude.ai/code)** ——本项目开发与测试最充分的环境，CLI 与 VS Code / JetBrains 扩展均可。
+
 | 类型 | 代表工具 | 说明 |
 |---|---|---|
-| **IDE 内置 agent** | • VS Code 架构（含 [VS Code](https://code.visualstudio.com/) 本体及分支与衍生）：[Cursor](https://cursor.sh/)、Trae、Codebuddy IDE、[Windsurf](https://codeium.com/windsurf)、Void 等<br>• 其他架构：[Zed](https://zed.dev/) 等 | 编辑器原生集成 agent |
-| **IDE 插件 / 扩展** | [GitHub Copilot](https://github.com/features/copilot)、[Claude Code](https://claude.ai/code)（VS Code / JetBrains 扩展）、[Cline](https://cline.bot/)、[Continue](https://continue.dev/)、Roo Code、通义灵码、CodeGeeX 等 | 装在 VS Code / JetBrains 等宿主里使用 |
-| **CLI agent** | [Claude Code](https://claude.ai/code) CLI、[Codex CLI](https://github.com/openai/codex)、[Aider](https://aider.chat/)、Gemini CLI 等 | 终端里运行，适合脚本化 / 远程 / 服务器场景 |
+| **IDE 内置 agent** | • VS Code 架构（含 [VS Code](https://code.visualstudio.com/) 本体及分支与衍生）：[Cursor](https://cursor.sh/)、Trae、Codebuddy IDE、[Windsurf](https://codeium.com/windsurf) 等<br>• 其他架构：[Zed](https://zed.dev/) 等 | 编辑器原生集成 agent |
+| **IDE 插件 / 扩展** | [Claude Code](https://claude.ai/code)（VS Code / JetBrains 扩展）、[GitHub Copilot](https://github.com/features/copilot)、[Cline](https://cline.bot/)、通义灵码 等 | 装在 VS Code / JetBrains 等宿主里使用 |
+| **CLI agent** | [Claude Code](https://claude.ai/code) CLI、[Codex CLI](https://github.com/openai/codex)、Gemini CLI 等 | 终端里运行，适合脚本化 / 远程 / 服务器场景 |
 
 > **模型推荐**：追求最佳效果选 **Claude Opus**，搭配 `gpt-image-2` 生图；**Gemini 3.5 Flash** 目前综合性价比很高，尤其速度很快，值得一试。
 
@@ -242,6 +246,8 @@ pip install -r requirements.txt
 > 上述两种安装方式都只会拉取 skill 文件本身（不含完整仓库），后处理脚本仍需在安装目录跑 `pip install -r requirements.txt`。
 
 ### 4. 开始创作
+
+**先在 Agent 里打开项目文件夹：** 目标是让 AI 工作在上一步解压 / 克隆出来的 `ppt-master` 目录里——IDE 类工具通过菜单 **文件 → 打开文件夹**（File → Open Folder）打开它，AI 聊天面板通常在侧边栏；CLI 类工具先 `cd ppt-master` 再启动。之后的一切都在聊天里完成。
 
 **提供原始材料（推荐）：** 将 PDF、DOCX、图片等文件放入 `projects/` 目录下，在 AI 聊天面板中告诉它使用哪些文件。获取路径的最快方式：在文件管理器或 IDE 侧边栏中右键文件 → **复制路径**（Copy Path / Copy Relative Path），直接粘贴进聊天框。
 
