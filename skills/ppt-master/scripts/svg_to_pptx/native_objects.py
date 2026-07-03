@@ -1107,16 +1107,34 @@ def _hierarchy_levels(payload: dict[str, Any], count: int) -> list[list[str]]:
     return levels
 
 
+def _treemap_parent_labels(payload: dict[str, Any]) -> str:
+    raw = payload.get("parent_label_layout", payload.get("parent_labels", "overlapping"))
+    aliases = {
+        "banner": "banner",
+        "none": "none",
+        "overlapping": "overlapping",
+    }
+    layout = aliases.get(_compact_key(raw))
+    if not layout:
+        raise RuntimeError(
+            "Native PPTX treemap parent_label_layout must be one of: banner, none, overlapping"
+        )
+    return layout
+
+
 def _chartex_chart_data(payload: dict[str, Any], chart_type: str) -> dict[str, Any]:
     if chart_type in {"sunburst", "treemap"}:
         values = _chart_values(payload)
         levels = _hierarchy_levels(payload, len(values))
-        return {
+        data = {
             "kind": "chartex",
             "levels": levels,
             "type": chart_type,
             "values": values,
         }
+        if chart_type == "treemap":
+            data["parent_labels"] = _treemap_parent_labels(payload)
+        return data
 
     if chart_type == "histogram":
         return {
@@ -1964,7 +1982,14 @@ def _chart_ex_series_xml(chart_data: dict[str, Any]) -> str:
     if chart_type in {"sunburst", "treemap"}:
         layout_id = chart_type
         label_pos = "ctr" if chart_type == "sunburst" else "inEnd"
-        layout_pr = "<cx:layoutPr/>" if chart_type == "treemap" else ""
+        layout_pr = ""
+        if chart_type == "treemap":
+            parent_labels = chart_data.get("parent_labels", "overlapping")
+            layout_pr = (
+                "<cx:layoutPr>"
+                f'<cx:parentLabelLayout val="{parent_labels}"/>'
+                "</cx:layoutPr>"
+            )
         return (
             f'<cx:series layoutId="{layout_id}" uniqueId="{{00000000-0000-4000-8000-000000000001}}">'
             '<cx:tx><cx:txData><cx:f>Sheet1!$A$1</cx:f><cx:v>Series 1</cx:v></cx:txData></cx:tx>'
