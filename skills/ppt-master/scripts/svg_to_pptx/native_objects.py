@@ -42,8 +42,33 @@ CHART_COLOR_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartcolorstyle+xml"
 CHART_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartstyle+xml"
 
 _NATIVE_KINDS = {"table", "chart"}
-_HEX_RE = re.compile(r"^#?([0-9a-fA-F]{6})$")
+_HEX_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+_RGB_RE = re.compile(r"^rgba?\(([^)]+)\)$", re.IGNORECASE)
 _POINT_RE = re.compile(r"[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?")
+_CSS_NAMED_COLORS = {
+    "aliceblue": "F0F8FF",
+    "black": "000000",
+    "blue": "0000FF",
+    "brown": "A52A2A",
+    "cyan": "00FFFF",
+    "darkgray": "A9A9A9",
+    "darkgrey": "A9A9A9",
+    "gold": "FFD700",
+    "gray": "808080",
+    "green": "008000",
+    "grey": "808080",
+    "lightgray": "D3D3D3",
+    "lightgrey": "D3D3D3",
+    "magenta": "FF00FF",
+    "navy": "000080",
+    "orange": "FFA500",
+    "purple": "800080",
+    "red": "FF0000",
+    "silver": "C0C0C0",
+    "transparent": None,
+    "white": "FFFFFF",
+    "yellow": "FFFF00",
+}
 
 
 def _local_tag(elem: ET.Element) -> str:
@@ -51,10 +76,69 @@ def _local_tag(elem: ET.Element) -> str:
 
 
 def _clean_hex(value: Any, default: str) -> str:
-    match = _HEX_RE.match(str(value or ""))
+    return _hex_or_none(value) or _hex_or_none(default) or "000000"
+
+
+def _hex_or_none(value: Any) -> str | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    named = _CSS_NAMED_COLORS.get(raw.lower())
+    if named is not None or raw.lower() in _CSS_NAMED_COLORS:
+        return named
+
+    match = _HEX_RE.match(raw)
+    if match:
+        color = match.group(1).upper()
+        if len(color) == 3:
+            return "".join(channel * 2 for channel in color)
+        return color
+
+    match = _RGB_RE.match(raw)
     if not match:
-        match = _HEX_RE.match(default)
-    return match.group(1).upper() if match else "000000"
+        return None
+    parts = [part.strip() for part in match.group(1).split(",")]
+    if len(parts) not in {3, 4}:
+        return None
+    channels: list[int] = []
+    for part in parts[:3]:
+        try:
+            if part.endswith("%"):
+                value_float = float(part[:-1]) * 255.0 / 100.0
+            else:
+                value_float = float(part)
+        except ValueError:
+            return None
+        channels.append(max(0, min(255, int(round(value_float)))))
+    return "".join(f"{channel:02X}" for channel in channels)
+
+
+def _style_attr(elem: ET.Element, name: str) -> str | None:
+    if elem.get(name) is not None:
+        return elem.get(name)
+    style = elem.get("style")
+    if not style:
+        return None
+    for part in style.split(";"):
+        if ":" not in part:
+            continue
+        key, value = part.split(":", 1)
+        if key.strip() == name:
+            return value.strip()
+    return None
+
+
+def _paint_visible(elem: ET.Element, paint: str) -> bool:
+    for name in ("opacity", f"{paint}-opacity"):
+        raw = _style_attr(elem, name)
+        if raw is None:
+            continue
+        try:
+            if float(raw) <= 0:
+                return False
+        except ValueError:
+            continue
+    return True
 
 
 def _number(value: Any, field_name: str) -> float:
@@ -327,6 +411,133 @@ def _inferred_bounds(elem: ET.Element) -> tuple[float, float, float, float] | No
     return bbox
 
 
+def _fallback_fill_candidates(
+    elem: ET.Element,
+    matrix: tuple[float, float, float, float, float, float] = IDENTITY_MATRIX,
+    inherited_fill: str | None = None,
+) -> list[tuple[float, str]]:
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if elem.get("display") == "none" or elem.get("visibility") == "hidden":
+        return []
+    if not _paint_visible(elem, "fill"):
+        return []
+
+    local_matrix = matrix
+    transform = elem.get("transform")
+    if transform:
+        local_matrix = matrix_multiply(matrix, parse_transform_matrix(transform))
+
+    fill = _style_attr(elem, "fill")
+    next_fill = fill if fill is not None else inherited_fill
+    if tag in {"g", "svg", "a"}:
+        candidates: list[tuple[float, str]] = []
+        for child in elem:
+            candidates.extend(_fallback_fill_candidates(child, local_matrix, next_fill))
+        return candidates
+
+    if tag != "rect":
+        return []
+    if not next_fill or next_fill.strip().lower() in {"none", "transparent"}:
+        return []
+    color = _hex_or_none(next_fill)
+    if not color:
+        return []
+    local_bbox = _element_local_bbox(elem)
+    if local_bbox is None:
+        return []
+    x1, y1, x2, y2 = _apply_matrix_bbox(local_bbox, local_matrix)
+    area = max(x2 - x1, 0.0) * max(y2 - y1, 0.0)
+    return [(area, color)] if area > 0 else []
+
+
+def _inferred_chart_background(elem: ET.Element) -> str | None:
+    bounds = _inferred_bounds(elem)
+    if bounds is None:
+        return None
+    x1, y1, x2, y2 = bounds
+    bounds_area = max(x2 - x1, 0.0) * max(y2 - y1, 0.0)
+    if bounds_area <= 0:
+        return None
+
+    candidates: list[tuple[float, str]] = []
+    for child in elem:
+        candidates.extend(_fallback_fill_candidates(child))
+    if not candidates:
+        return None
+    area, color = max(candidates, key=lambda item: item[0])
+    # Avoid mistaking a large data bar for a chart background when no panel /
+    # plot-area rectangle exists in the fallback drawing.
+    return color if area >= bounds_area * 0.25 else None
+
+
+def _fallback_text_colors(
+    elem: ET.Element,
+    inherited_fill: str | None = None,
+) -> list[str]:
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if elem.get("display") == "none" or elem.get("visibility") == "hidden":
+        return []
+    if not _paint_visible(elem, "fill"):
+        return []
+
+    fill = _style_attr(elem, "fill")
+    next_fill = fill if fill is not None else inherited_fill
+    colors: list[str] = []
+    if tag in {"text", "tspan"} and next_fill:
+        color = _hex_or_none(next_fill)
+        if color:
+            colors.append(color)
+    for child in elem:
+        colors.extend(_fallback_text_colors(child, next_fill))
+    return colors
+
+
+def _fallback_stroke_colors(
+    elem: ET.Element,
+    inherited_stroke: str | None = None,
+) -> list[str]:
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if elem.get("display") == "none" or elem.get("visibility") == "hidden":
+        return []
+    if not _paint_visible(elem, "stroke"):
+        return []
+
+    stroke = _style_attr(elem, "stroke")
+    next_stroke = stroke if stroke is not None else inherited_stroke
+    colors: list[str] = []
+    if tag in {"circle", "ellipse", "line", "path", "polygon", "polyline", "rect"} and next_stroke:
+        color = _hex_or_none(next_stroke)
+        if color:
+            colors.append(color)
+    for child in elem:
+        colors.extend(_fallback_stroke_colors(child, next_stroke))
+    return colors
+
+
+def _most_common_color(colors: list[str]) -> str | None:
+    if not colors:
+        return None
+    counts: dict[str, int] = {}
+    for color in colors:
+        counts[color] = counts.get(color, 0) + 1
+    return max(counts.items(), key=lambda item: item[1])[0]
+
+
+def _relative_luminance(color: str) -> float:
+    channels = [int(color[idx:idx + 2], 16) / 255.0 for idx in (0, 2, 4)]
+    linear = [
+        channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+        for channel in channels
+    ]
+    return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722
+
+
 def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> tuple[int, int, int, int]:
     """Return object bounds as DrawingML EMU tuple."""
     if ctx.use_transform_matrix:
@@ -436,6 +647,79 @@ def _first_present(*values: Any) -> Any:
     return None
 
 
+def _chart_style_value(payload: dict[str, Any], *keys: str) -> Any:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    for source in (payload, style):
+        for key in keys:
+            if source.get(key) is not None:
+                return source.get(key)
+    return None
+
+
+def _chart_style_color(
+    payload: dict[str, Any],
+    keys: tuple[str, ...],
+    default: str | None,
+) -> str | None:
+    raw = _chart_style_value(payload, *keys)
+    if raw is None:
+        return default
+    if str(raw).strip().lower() in {"none", "transparent"}:
+        return None
+    return _hex_or_none(raw) or default
+
+
+def _classic_chart_style(payload: dict[str, Any], elem: ET.Element) -> dict[str, str | None]:
+    fallback_background = _inferred_chart_background(elem)
+    text_color = _most_common_color(_fallback_text_colors(elem)) or "404040"
+    stroke_colors = _fallback_stroke_colors(elem)
+    darkest_stroke = min(stroke_colors, key=_relative_luminance) if stroke_colors else None
+    lightest_stroke = max(stroke_colors, key=_relative_luminance) if stroke_colors else None
+    axis_color = darkest_stroke or text_color
+    grid_color = (
+        lightest_stroke
+        if lightest_stroke and _relative_luminance(lightest_stroke) > _relative_luminance(axis_color)
+        else "D9DED8"
+    )
+    chart_fill = _chart_style_color(
+        payload,
+        (
+            "chart_area_fill",
+            "chartAreaFill",
+            "chart_fill",
+            "chartFill",
+            "background",
+            "background_color",
+            "backgroundColor",
+            "fill",
+        ),
+        fallback_background,
+    )
+    return {
+        "axis_color": _chart_style_color(
+            payload,
+            ("axis_color", "axisColor", "axis_line_color", "axisLineColor"),
+            axis_color,
+        ),
+        "chart_fill": chart_fill,
+        "grid_color": _chart_style_color(
+            payload,
+            ("grid_color", "gridColor", "gridline_color", "gridlineColor"),
+            grid_color,
+        ),
+        "plot_fill": _chart_style_color(
+            payload,
+            ("plot_area_fill", "plotAreaFill", "plot_background", "plotBackground"),
+            None,
+        ),
+        "text_color": _chart_style_color(
+            payload,
+            ("text_color", "textColor", "label_color", "labelColor", "font_color", "fontColor"),
+            text_color,
+        ),
+    }
+
+
 def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     base_raw = _first_present(
@@ -478,10 +762,40 @@ def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
     }
 
 
-def _chart_tx_pr_xml(font_size: int) -> str:
+def _solid_fill_xml(color: str | None) -> str:
+    if not color:
+        return "<a:noFill/>"
+    return f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+
+
+def _chart_area_sp_pr_xml(fill_color: str | None) -> str:
+    return f"<c:spPr>{_solid_fill_xml(fill_color)}<a:ln><a:noFill/></a:ln></c:spPr>"
+
+
+def _chart_line_sp_pr_xml(color: str | None, *, width: int = 9525) -> str:
+    if not color:
+        line_xml = "<a:ln><a:noFill/></a:ln>"
+    else:
+        line_xml = (
+            f'<a:ln w="{width}" cap="flat" cmpd="sng" algn="ctr">'
+            f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+            "<a:round/></a:ln>"
+        )
+    return f"<c:spPr>{line_xml}</c:spPr>"
+
+
+def _major_gridlines_xml(color: str | None) -> str:
+    return f'<c:majorGridlines>{_chart_line_sp_pr_xml(color, width=6350)}</c:majorGridlines>'
+
+
+def _chart_tx_pr_xml(font_size: int, color: str | None = None) -> str:
+    fill_xml = (
+        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
     return (
         "<c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>"
-        f'<a:defRPr sz="{font_size}"/>'
+        f'<a:defRPr sz="{font_size}">{fill_xml}</a:defRPr>'
         '</a:pPr><a:endParaRPr lang="en-US"/></a:p></c:txPr>'
     )
 
@@ -1733,19 +2047,23 @@ def _series_xml(
     return "".join(parts)
 
 
-def _chart_title_xml(title: Any, *, font_size: int) -> str:
+def _chart_title_xml(title: Any, *, font_size: int, color: str | None = None) -> str:
     if not title:
         return '<c:autoTitleDeleted val="1"/>'
     text = _xml_escape(str(title))
+    fill_xml = (
+        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
     return (
         "<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/>"
-        f'<a:p><a:r><a:rPr lang="en-US" sz="{font_size}"/><a:t>{text}</a:t></a:r></a:p>'
+        f'<a:p><a:r><a:rPr lang="en-US" sz="{font_size}">{fill_xml}</a:rPr><a:t>{text}</a:t></a:r></a:p>'
         "</c:rich></c:tx><c:layout/></c:title>"
         '<c:autoTitleDeleted val="0"/>'
     )
 
 
-def _chart_legend_xml(payload: dict[str, Any], *, font_size: int) -> str:
+def _chart_legend_xml(payload: dict[str, Any], *, font_size: int, color: str | None = None) -> str:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     show_legend = payload.get("show_legend", style.get("show_legend", False))
     if not show_legend:
@@ -1765,7 +2083,7 @@ def _chart_legend_xml(payload: dict[str, Any], *, font_size: int) -> str:
     return (
         f'<c:legend><c:legendPos val="{position}"/><c:layout/>'
         '<c:overlay val="0"/>'
-        f'{_chart_tx_pr_xml(font_size)}'
+        f'{_chart_tx_pr_xml(font_size, color)}'
         '</c:legend>'
     )
 
@@ -1910,6 +2228,7 @@ def _secondary_axis_xml(
     val_ax_id: str,
     *,
     axis_font_size: int,
+    chart_style: dict[str, str | None],
     grouping: str | None = None,
 ) -> str:
     val_num_fmt = (
@@ -1917,12 +2236,14 @@ def _secondary_axis_xml(
         if grouping == "percentStacked"
         else ""
     )
+    axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
+    axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
     return (
         "<c:catAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         '<c:delete val="1"/><c:axPos val="b"/><c:majorTickMark val="none"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="max"/><c:auto val="1"/>'
         '<c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/>'
         "</c:catAx>"
@@ -1931,7 +2252,7 @@ def _secondary_axis_xml(
         f'<c:delete val="0"/><c:axPos val="r"/>{val_num_fmt}'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="max"/>'
         "</c:valAx>"
     )
@@ -1944,7 +2265,13 @@ def _combo_axis_grouping(plots: list[dict[str, Any]], axis: str) -> str | None:
     return None
 
 
-def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_size: int) -> str:
+def _combo_plot_xml(
+    chart_data: dict[str, Any],
+    colors: list[str],
+    *,
+    axis_font_size: int,
+    chart_style: dict[str, str | None],
+) -> str:
     categories = chart_data["categories"]
     primary_cat_ax_id = "2068027336"
     primary_val_ax_id = "2113994440"
@@ -1992,6 +2319,7 @@ def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
         primary_cat_ax_id,
         primary_val_ax_id,
         axis_font_size=axis_font_size,
+        chart_style=chart_style,
         chart_type="column",
         grouping=_combo_axis_grouping(chart_data["plots"], "primary"),
     )
@@ -2000,17 +2328,29 @@ def _combo_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
             secondary_cat_ax_id,
             secondary_val_ax_id,
             axis_font_size=axis_font_size,
+            chart_style=chart_style,
             grouping=_combo_axis_grouping(chart_data["plots"], "secondary"),
         )
     return "".join(parts) + axes_xml
 
 
-def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_size: int) -> str:
+def _chart_plot_xml(
+    chart_data: dict[str, Any],
+    colors: list[str],
+    *,
+    axis_font_size: int,
+    chart_style: dict[str, str | None],
+) -> str:
     chart_type = chart_data["type"]
     cat_ax_id = "2068027336"
     val_ax_id = "2113994440"
     if chart_data["kind"] == "combo":
-        return _combo_plot_xml(chart_data, colors, axis_font_size=axis_font_size)
+        return _combo_plot_xml(
+            chart_data,
+            colors,
+            axis_font_size=axis_font_size,
+            chart_style=chart_style,
+        )
     if chart_data["kind"] == "xy":
         x_ax_id = "2080229232"
         y_ax_id = "2098941040"
@@ -2028,7 +2368,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
                 f"{ser_xml}"
                 f'<c:axId val="{x_ax_id}"/><c:axId val="{y_ax_id}"/>'
                 "</c:scatterChart>"
-                f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size)}'
+                f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size, chart_style=chart_style)}'
             )
         return (
             '<c:bubbleChart><c:varyColors val="0"/>'
@@ -2036,7 +2376,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
             '<c:bubbleScale val="100"/><c:showNegBubbles val="0"/>'
             f'<c:axId val="{x_ax_id}"/><c:axId val="{y_ax_id}"/>'
             "</c:bubbleChart>"
-            f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size)}'
+            f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size, chart_style=chart_style)}'
         )
 
     categories = chart_data["categories"]
@@ -2051,7 +2391,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
             '<c:upDownBars><c:gapWidth val="150"/><c:upBars/><c:downBars/></c:upDownBars>'
             f'<c:axId val="{stock_cat_ax_id}"/><c:axId val="{stock_val_ax_id}"/>'
             "</c:stockChart>"
-            f'{_stock_axis_xml(stock_cat_ax_id, stock_val_ax_id, axis_font_size=axis_font_size)}'
+            f'{_stock_axis_xml(stock_cat_ax_id, stock_val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style)}'
         )
     ser_xml = _series_xml(
         categories,
@@ -2079,7 +2419,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
             f"{overlap_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:barChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_type=chart_type, grouping=grouping)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style, chart_type=chart_type, grouping=grouping)}'
         )
     if chart_type in {"line", "area"}:
         tag = "lineChart" if chart_type == "line" else "areaChart"
@@ -2091,7 +2431,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
             f"{line_tail_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             f"</c:{tag}>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_type=chart_type, grouping=grouping)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style, chart_type=chart_type, grouping=grouping)}'
         )
     if chart_type == "doughnut":
         return (
@@ -2117,7 +2457,7 @@ def _chart_plot_xml(chart_data: dict[str, Any], colors: list[str], *, axis_font_
             f"{ser_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:radarChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_type=chart_type)}'
+            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style, chart_type=chart_type)}'
         )
     return f'<c:pieChart><c:varyColors val="1"/>{ser_xml}<c:firstSliceAng val="0"/></c:pieChart>'
 
@@ -2127,6 +2467,7 @@ def _axis_xml(
     val_ax_id: str,
     *,
     axis_font_size: int,
+    chart_style: dict[str, str | None],
     chart_type: str,
     grouping: str | None = None,
 ) -> str:
@@ -2137,43 +2478,53 @@ def _axis_xml(
         if grouping == "percentStacked"
         else ""
     )
+    axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
+    axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
     return (
         "<c:catAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         f'<c:delete val="0"/><c:axPos val="{cat_pos}"/><c:majorTickMark val="out"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="autoZero"/><c:auto val="1"/>'
         '<c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/>'
         "</c:catAx>"
         "<c:valAx>"
         f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        f'<c:delete val="0"/><c:axPos val="{val_pos}"/><c:majorGridlines/>'
+        f'<c:delete val="0"/><c:axPos val="{val_pos}"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
         f"{val_num_fmt}"
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
         "</c:valAx>"
     )
 
 
-def _xy_axis_xml(x_ax_id: str, y_ax_id: str, *, axis_font_size: int) -> str:
+def _xy_axis_xml(
+    x_ax_id: str,
+    y_ax_id: str,
+    *,
+    axis_font_size: int,
+    chart_style: dict[str, str | None],
+) -> str:
+    axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
+    axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
     return (
         "<c:valAx>"
         f'<c:axId val="{x_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         '<c:delete val="0"/><c:axPos val="b"/><c:majorTickMark val="out"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{y_ax_id}"/><c:crosses val="autoZero"/>'
         '<c:crossBetween val="midCat"/>'
         "</c:valAx>"
         "<c:valAx>"
         f'<c:axId val="{y_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        '<c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/>'
+        f'<c:delete val="0"/><c:axPos val="l"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{x_ax_id}"/><c:crosses val="autoZero"/>'
         '<c:crossBetween val="midCat"/>'
         "</c:valAx>"
@@ -2212,7 +2563,15 @@ def _stock_series_xml(
     return "".join(parts)
 
 
-def _stock_axis_xml(cat_ax_id: str, val_ax_id: str, *, axis_font_size: int) -> str:
+def _stock_axis_xml(
+    cat_ax_id: str,
+    val_ax_id: str,
+    *,
+    axis_font_size: int,
+    chart_style: dict[str, str | None],
+) -> str:
+    axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
+    axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
     return (
         "<c:dateAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
@@ -2220,16 +2579,16 @@ def _stock_axis_xml(cat_ax_id: str, val_ax_id: str, *, axis_font_size: int) -> s
         '<c:numFmt formatCode="m/d/yyyy" sourceLinked="1"/>'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="autoZero"/>'
         '<c:auto val="1"/><c:lblOffset val="100"/><c:baseTimeUnit val="days"/>'
         "</c:dateAx>"
         "<c:valAx>"
         f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        '<c:delete val="0"/><c:axPos val="l"/><c:majorGridlines/>'
+        f'<c:delete val="0"/><c:axPos val="l"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
-        f'{_chart_tx_pr_xml(axis_font_size)}'
+        f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
         "</c:valAx>"
     )
@@ -2427,6 +2786,7 @@ def _chart_ex_xml(
 
 
 def _chart_xml(
+    elem: ET.Element,
     payload: dict[str, Any],
     *,
     chart_rels_id: str,
@@ -2439,7 +2799,13 @@ def _chart_xml(
         else []
     )
     text_sizes = _chart_text_sizes(payload)
-    plot_xml = _chart_plot_xml(chart_data, colors, axis_font_size=text_sizes["axis"])
+    chart_style = _classic_chart_style(payload, elem)
+    plot_xml = _chart_plot_xml(
+        chart_data,
+        colors,
+        axis_font_size=text_sizes["axis"],
+        chart_style=chart_style,
+    )
     xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
               xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -2447,13 +2813,14 @@ def _chart_xml(
 <c:date1904 val="0"/>
 <c:lang val="en-US"/>
 <c:chart>
-{_chart_title_xml(payload.get("title"), font_size=text_sizes["title"])}
-<c:plotArea><c:layout/>{plot_xml}</c:plotArea>
-{_chart_legend_xml(payload, font_size=text_sizes["legend"])}
+{_chart_title_xml(payload.get("title"), font_size=text_sizes["title"], color=chart_style.get("text_color"))}
+<c:plotArea><c:layout/>{plot_xml}{_chart_area_sp_pr_xml(chart_style.get("plot_fill"))}</c:plotArea>
+{_chart_legend_xml(payload, font_size=text_sizes["legend"], color=chart_style.get("text_color"))}
 <c:plotVisOnly val="1"/>
 <c:dispBlanksAs val="gap"/>
 </c:chart>
-{_chart_tx_pr_xml(text_sizes["base"])}
+{_chart_area_sp_pr_xml(chart_style.get("chart_fill"))}
+{_chart_tx_pr_xml(text_sizes["base"], chart_style.get("text_color"))}
 <c:externalData r:id="{chart_rels_id}"><c:autoUpdate val="0"/></c:externalData>
 </c:chartSpace>'''
     return xml.encode("utf-8")
@@ -2703,6 +3070,7 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             "target": f"../charts/{chart_name}",
         })
         ctx.package_files[chart_part] = _chart_xml(
+            elem,
             payload,
             chart_rels_id="rId1",
             chart_data=chart_data,
