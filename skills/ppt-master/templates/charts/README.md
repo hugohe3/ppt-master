@@ -14,9 +14,9 @@ See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typograp
 
 ## Native editable export markers
 
-Some chart templates include a `<g data-pptx-native="chart">` marker. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart using the JSON metadata inside the child `<metadata data-pptx-native="chart">` node.
+Supported data chart templates include a `<g data-pptx-native="chart">` marker by default. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart using the JSON metadata inside the child `<metadata data-pptx-native="chart">` node.
 
-Native chart markers are opt-in and must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable chart frame aligns with the fallback drawing. Keep legends, explanatory cards, and source notes outside the marker when they should remain as separate editable shapes.
+Native chart marker authoring is default for supported data charts; native object activation is opt-in via `--native-objects`. Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable chart frame aligns with the fallback drawing. Keep legends, explanatory cards, and source notes outside the marker when they should remain as separate editable shapes.
 
 | Family | Native-marker templates | Use when |
 |---|---|---|
