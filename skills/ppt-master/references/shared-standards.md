@@ -696,7 +696,7 @@ Native PowerPoint tables and Excel-backed charts activate at export time only. T
 
 **Authoring — markers are standard on supported data charts and text-grid tables**: Executor writes the marker at draw time on every data chart whose type falls in the supported set and on every pure text-grid data table ([executor-base.md §3.2](executor-base.md)), so any deck can later form native objects without regeneration. Tables with merged or graphical cells stay unmarked on the SVG fallback route. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
 
-**Hard rule — activation is the opt-in, dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Pass `--native-objects` only when editability in PowerPoint matters more than cross-renderer layout fidelity: it emits the PowerPoint object and skips the fallback children to avoid duplicates. Native styling is PowerPoint-default plus the marker's palette colors — visual parity with the SVG drawing is not a goal; users restyle natively exported objects by hand.
+**Hard rule — activation is the opt-in, dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Pass `--native-objects` only when editability in PowerPoint matters more than cross-renderer layout fidelity: it emits the PowerPoint object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint chart/table object rather than a pixel-identical SVG drawing.
 
 | Marker | Native output | Required metadata |
 |---|---|---|
@@ -777,6 +777,19 @@ as SVG text (`1px = 0.75pt`). Put overrides at the chart root or under `style`;
 `font_size` / `chart_font_size` sets the base chart text size, while
 `axis_font_size`, `legend_font_size`, and `title_font_size` target those
 regions directly.
+
+**Chart color styling**: For classic native charts, `style.colors` sets series
+colors. The exporter also writes explicit chart-area fill, plot-area fill,
+axis line, gridline, and label text colors so PowerPoint does not substitute a
+white/default-theme chart. If omitted, the exporter infers these colors from
+the visible SVG fallback: the largest panel-like `<rect>` becomes the chart
+background, fallback text supplies label color, and fallback strokes supply
+axis/grid colors. Override any of them explicitly under `style` with
+`chart_area_fill`, `plot_area_fill`, `text_color`, `axis_color`, and
+`grid_color`; use `"none"` for transparent chart or plot area fill. Color
+values may be `#RRGGBB`, `#RGB`, `rgb(...)` / `rgba(...)`, or common CSS names
+such as `white`, `black`, and `gray`; the exporter normalizes them to 6-digit
+OOXML RGB.
 
 **PowerPoint chartEx schema**: `treemap`, `sunburst`, `histogram`, `pareto`,
 `boxWhisker`, `waterfall`, and `funnel` use Office 2016+ chartEx parts. Use
