@@ -8,6 +8,7 @@ import re
 import base64
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote_to_bytes
 from xml.etree import ElementTree as ET
 
 from .drawingml_context import ConvertContext, ShapeResult
@@ -51,6 +52,33 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
         if candidate.exists():
             return candidate
     raise FileNotFoundError(f'External image not found: {href}')
+
+
+def _decode_data_image_uri(href: str) -> tuple[str, bytes] | None:
+    """Decode SVG image data URIs, including URL-encoded non-base64 payloads."""
+    if not href.startswith('data:') or ',' not in href:
+        return None
+
+    header, payload = href.split(',', 1)
+    match = re.match(r'data:image/([^;,]+)', header, flags=re.IGNORECASE)
+    if not match:
+        return None
+
+    img_format = match.group(1).lower()
+    if img_format == 'svg+xml':
+        img_format = 'svg'
+    elif img_format == 'jpeg':
+        img_format = 'jpg'
+
+    is_base64 = any(
+        part.strip().lower() == 'base64'
+        for part in header.split(';')[1:]
+    )
+    if is_base64:
+        img_data = base64.b64decode(payload)
+    else:
+        img_data = unquote_to_bytes(payload)
+    return img_format, img_data
 
 
 def _wrap_shape(
@@ -2180,15 +2208,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     # Extract image data
     if href.startswith('data:'):
-        match = re.match(r'data:image/([A-Za-z0-9.+-]+);base64,(.+)', href, re.DOTALL)
-        if not match:
+        decoded = _decode_data_image_uri(href)
+        if decoded is None:
             return None
-        img_format = match.group(1).lower()
-        if img_format == 'svg+xml':
-            img_format = 'svg'
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = base64.b64decode(match.group(2))
+        img_format, img_data = decoded
     else:
         if ctx.svg_dir is None:
             return None
@@ -2407,15 +2430,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
                 src_rect_xml = f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
 
     if href.startswith('data:'):
-        match = re.match(r'data:image/([A-Za-z0-9.+-]+);base64,(.+)', href, re.DOTALL)
-        if not match:
+        decoded = _decode_data_image_uri(href)
+        if decoded is None:
             return None
-        img_format = match.group(1).lower()
-        if img_format == 'svg+xml':
-            img_format = 'svg'
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = base64.b64decode(match.group(2))
+        img_format, img_data = decoded
     else:
         if ctx.svg_dir is None:
             return None
