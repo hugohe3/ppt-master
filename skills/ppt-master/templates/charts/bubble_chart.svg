@@ -51,6 +51,21 @@
     <text x="60" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="18" fill="#64748B">Market Size vs Growth vs Share · Bubble Size = Market Share</text>
     <!-- Chart Area -->
+    <g id="bubble_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "bubble",
+              "series": [
+                {"name": "Product A", "points": [[120, 35, 28]]},
+                {"name": "Product B", "points": [[85, 25, 18]]},
+                {"name": "Product C", "points": [[45, 42, 12]]},
+                {"name": "Product D", "points": [[130, 8, 25]]},
+                {"name": "Product E", "points": [[30, -5, 8]]},
+                {"name": "Product F", "points": [[65, 15, 9]]}
+              ],
+              "style": {"colors": ["#10B981", "#7C3AED", "#F59E0B", "#2563EB", "#E11D48", "#059669"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Quadrant Background -->
         <rect x="160" y="130" width="440" height="215" fill="#FFF1F2" opacity="0.3"/>
@@ -180,6 +195,7 @@
             <text x="820" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
                   font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">A</text>
         </g>
+    </g>
     </g>
     <!-- Product List -->
     <g id="productList" transform="translate(1060, 130)">

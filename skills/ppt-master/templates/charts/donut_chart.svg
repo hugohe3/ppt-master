@@ -23,6 +23,17 @@
           font-size="34" font-weight="bold" fill="#0F172A">Product Line Revenue Share</text>
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">Q3 2025 · Total Revenue $520M</text>
+    <g id="donut_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "doughnut",
+              "categories": ["Enterprise Services", "Consumer Electronics", "Cloud Computing", "IoT", "Others"],
+              "series": [
+                {"name": "Revenue", "values": [182, 146, 104, 62, 26]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#CBD5E1"]}
+            }
+        </metadata>
     <!-- chart-plot-area: donut | center: 400,410 | outer-radius: 180 | inner-radius: 100 -->
     <!-- Donut Chart Center -->
     <g id="donutChart" transform="translate(400, 410)">
@@ -110,6 +121,7 @@
         <circle cx="375" cy="240" r="3" fill="#CBD5E1"/>
         <text x="330" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="20" font-weight="600" fill="#94A3B8" text-anchor="end">5%</text>
+    </g>
     </g>
     </g>
     <!-- Right Detail List -->

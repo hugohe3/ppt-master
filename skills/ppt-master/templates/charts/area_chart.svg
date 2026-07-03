@@ -48,6 +48,18 @@
               font-size="15" fill="#475569">Mobile Visits</text>
     </g>
     <!-- Chart Area -->
+    <g id="area_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "area",
+              "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+              "series": [
+                {"name": "PC Visits", "values": [320, 280, 350, 420, 480, 520, 580, 620, 550, 490, 460, 520]},
+                {"name": "Mobile Visits", "values": [180, 160, 210, 280, 350, 420, 480, 540, 500, 460, 430, 490]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Y-axis Grid Lines -->
         <line x1="120" y1="560" x2="1200" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
@@ -154,6 +166,7 @@
                   font-size="13" fill="#FFFFFF" text-anchor="middle">6.2M</text>
             <path d="M 795,270 L 790,281 L 800,281 Z" fill="#3B82F6"/>
         </g>
+    </g>
     </g>
     <!-- Stat Cards -->
     <g id="statsCards" transform="translate(60, 620)">

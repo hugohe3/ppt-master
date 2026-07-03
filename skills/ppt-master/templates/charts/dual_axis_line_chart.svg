@@ -55,6 +55,28 @@
     <text x="1009" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="13" font-weight="600" fill="#6C5CE7" text-anchor="middle">Phase 05: Recovery</text>
     <!-- Chart Area -->
+    <g id="dual_axis_line_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "combo",
+              "categories": ["Jan", "Mar", "Jun", "Sep", "Nov", "Dec"],
+              "plots": [
+                {
+                  "type": "line",
+                  "line_style": "lineMarker",
+                  "axis": "primary",
+                  "series": [{"name": "Revenue ($M)", "values": [53, 96, 96, 13, 13, 53]}]
+                },
+                {
+                  "type": "line",
+                  "line_style": "lineMarker",
+                  "axis": "secondary",
+                  "series": [{"name": "Profit Margin (%)", "values": [15, 35, 35, 8, 8, 15]}]
+                }
+              ],
+              "style": {"colors": ["#E17055", "#0984E3"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Phase separator background color bands (alternating in chart) -->
         <rect x="140" y="190" width="158" height="390" fill="#E17055" fill-opacity="0.03"/>
@@ -110,6 +132,7 @@
         <line x1="140" y1="190" x2="140" y2="580" stroke="#94A3B8" stroke-width="2"/>
         <line x1="140" y1="580" x2="1088" y2="580" stroke="#94A3B8" stroke-width="2"/>
         <line x1="1088" y1="190" x2="1088" y2="580" stroke="#94A3B8" stroke-width="2"/>
+        <!-- chart-plot-area: 140,190,1088,580 -->
         <!-- X-axis time labels -->
         <text x="140" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="13" fill="#475569" text-anchor="middle">Jan</text>
@@ -185,6 +208,7 @@
         <rect x="1018" y="304" width="46" height="22" fill="#0984E3" rx="4"/>
         <text x="1041" y="319" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">15%</text>
+    </g>
     </g>
     <!-- Legend -->
     <g id="legend">

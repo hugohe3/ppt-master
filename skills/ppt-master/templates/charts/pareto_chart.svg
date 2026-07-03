@@ -32,6 +32,15 @@
         <circle cx="305" cy="6" r="4" fill="#FFFFFF" stroke="#F43F5E" stroke-width="2"/>
         <text x="330" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Cumulative %</text>
     </g>
+    <g id="pareto_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "pareto",
+              "categories": ["Function Error", "Appearance", "Missing Parts", "Ship Damage", "Manual Error", "Packaging", "Other"],
+              "values": [350, 220, 150, 120, 70, 50, 40],
+              "style": {"colors": ["#4F46E5", "#CBD5E1", "#F43F5E"]}
+            }
+        </metadata>
     <!-- ==================== Axes and Grids ==================== -->
     <!-- X-axis -->
     <line x1="130" y1="580" x2="1150" y2="580" stroke="#CBD5E1" stroke-width="2"/>
@@ -118,6 +127,7 @@
     <text x="740" y="152" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle">91%</text>
     <text x="870" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle">96%</text>
     <text x="1000" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle">100%</text>
+    </g>
     <!-- ==================== Insight Box ==================== -->
     <rect x="130" y="650" width="1020" height="46" rx="8" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="1.5"/>
     <text x="150" y="678" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#9F1239">Key Finding:</text>

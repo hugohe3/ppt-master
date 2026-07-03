@@ -36,6 +36,26 @@
     <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">2025 Consumer Survey Report · Sample Size N=5,000</text>
     <!-- Chart Area -->
+    <g id="horizontal_bar_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "bar",
+              "categories": [
+                "Brand A (Market Leader)",
+                "Brand B (Emerging Challenger)",
+                "Brand C (Legacy Brand)",
+                "Brand D (Regional Player)",
+                "Brand E (Value Choice)",
+                "Brand F (Premium Tier)",
+                "Brand G (New Entrant)",
+                "Other Brands"
+              ],
+              "series": [
+                {"name": "Awareness", "values": [92, 78, 65, 52, 45, 38, 25, 12]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981", "#F59E0B"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- X-Axis Grid Lines -->
         <line x1="300" y1="140" x2="300" y2="620" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
@@ -110,6 +130,7 @@
         <rect x="300" y="575" width="108" height="36" rx="4" fill="url(#hbarGrad3)" filter="url(#barShadow)"/>
         <text x="418" y="599" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="16" font-weight="700" fill="#0F172A">12%</text>
+    </g>
     </g>
     <!-- Legend -->
     <g id="legend">

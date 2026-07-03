@@ -50,6 +50,19 @@
               font-size="15" fill="#475569">Division C</text>
     </g>
     <!-- Chart Area -->
+    <g id="grouped_bar_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "column",
+              "categories": ["Q1", "Q2", "Q3", "Q4"],
+              "series": [
+                {"name": "Division A", "values": [120, 145, 168, 185]},
+                {"name": "Division B", "values": [85, 98, 112, 125]},
+                {"name": "Division C", "values": [65, 78, 92, 108]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981", "#F59E0B"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Y-Axis Grid Lines -->
         <line x1="140" y1="570" x2="1180" y2="570" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
@@ -136,6 +149,7 @@
         <!-- Q4 Label -->
         <text x="1035" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="18" fill="#475569" text-anchor="middle">Q4</text>
+    </g>
     </g>
     <!-- Trend Summary Card -->
     <g id="summaryCard">
