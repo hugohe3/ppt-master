@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <g stroke="#ECEFF3" stroke-width="1.5">
+    <path d="M96 0V720M448 0V720M800 0V720M1152 0V720"/>
+    <path d="M0 96H1280M0 624H1280"/>
+  </g>
+  <path d="M96 96H1184" stroke="#0F172A" stroke-width="3"/>
+  <text x="96" y="78" font-family="Helvetica Neue, Arial, sans-serif" font-size="27" letter-spacing="7" fill="#0F172A">SECTION 04</text>
+  <text x="1184" y="78" text-anchor="end" font-family="Helvetica Neue, Arial, sans-serif" font-size="27" letter-spacing="3" fill="#9AA3AF">SWISS · GRID</text>
+  <text x="94" y="322" font-family="Helvetica Neue, Arial, sans-serif" font-size="128" font-weight="700" fill="#0F172A" letter-spacing="-3">Lorem ipsum</text>
+  <text x="98" y="396" font-family="Helvetica Neue, Arial, sans-serif" font-size="38" font-weight="300" fill="#475569">Grid-locked hierarchy, generous whitespace</text>
+  <rect x="96" y="470" width="130" height="130" fill="#E4002B"/>
+  <text x="1184" y="556" text-anchor="end" font-family="Helvetica Neue, Arial, sans-serif" font-size="200" font-weight="700" fill="#0F172A" letter-spacing="-4">72</text>
+  <text x="1184" y="602" text-anchor="end" font-family="Helvetica Neue, Arial, sans-serif" font-size="30" fill="#64748B">aggregate index</text>
+</svg>

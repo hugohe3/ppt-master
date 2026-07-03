@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <pattern id="bp-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#2E6EA8" stroke-width="0.8" opacity="0.55"/>
+    </pattern>
+    <pattern id="bp-grid5" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M200 0H0V200" fill="none" stroke="#5AA0D6" stroke-width="1.2" opacity="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="720" fill="#0C3A63"/>
+  <rect width="1280" height="720" fill="url(#bp-grid)"/>
+  <rect width="1280" height="720" fill="url(#bp-grid5)"/>
+  <text x="80" y="108" font-family="Consolas, monospace" font-size="24" letter-spacing="3" fill="#CFE8FF">DWG / SECTION-04</text>
+  <text x="78" y="198" font-family="Helvetica Neue, Arial, sans-serif" font-size="76" font-weight="700" fill="#EAF4FF">Lorem ipsum</text>
+  <text x="80" y="248" font-family="Consolas, monospace" font-size="21" fill="#9CC9EC">DARK LINEWORK · ISOMETRIC · ANNOTATED</text>
+  <g stroke="#BAE0FF" stroke-width="2" fill="none">
+    <path d="M520 470L720 560L920 470L720 380Z"/>
+    <path d="M520 470L520 320L720 230L720 380M920 470L920 320L720 230M720 380L720 560M520 320L720 410L920 320M720 410L720 560"/>
+  </g>
+  <g stroke="#7FC4FF" stroke-width="1.5">
+    <path d="M520 620H920"/>
+    <path d="M520 610V630M920 610V630"/>
+    <path d="M520 620l16 -6v12zM920 620l-16 -6v12z" fill="#7FC4FF"/>
+  </g>
+  <text x="700" y="612" font-family="Consolas, monospace" font-size="20" fill="#CFE8FF">400.0</text>
+  <circle cx="720" cy="230" r="6" fill="#FBBF24"/>
+  <path d="M720 230L1010 156" stroke="#FBBF24" stroke-width="1.5"/>
+  <text x="1020" y="162" font-family="Consolas, monospace" font-size="18" fill="#FBBF24">NODE A-01</text>
+  <path d="M980 320H1120" stroke="#7FC4FF" stroke-width="1.5"/>
+  <text x="1000" y="308" font-family="Consolas, monospace" font-size="17" fill="#CFE8FF">R = 120</text>
+  <g stroke="#7FC4FF" stroke-width="1.5" fill="none">
+    <rect x="960" y="600" width="240" height="80"/>
+    <path d="M960 640H1200M1080 600V680"/>
+  </g>
+  <text x="972" y="628" font-family="Consolas, monospace" font-size="15" fill="#CFE8FF">SCALE 1:50</text>
+  <text x="1092" y="628" font-family="Consolas, monospace" font-size="15" fill="#CFE8FF">REV 04</text>
+  <text x="972" y="666" font-family="Consolas, monospace" font-size="15" fill="#CFE8FF">BLUEPRINT</text>
+  <text x="1092" y="666" font-family="Consolas, monospace" font-size="15" fill="#CFE8FF">SHT 1/3</text>
+</svg>

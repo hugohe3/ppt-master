@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="iw-paper" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#FBF8EF"/><stop offset="1" stop-color="#EEE6D2"/></radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#iw-paper)"/>
+  <path d="M620 470C700 300 800 250 900 300C860 340 900 380 980 360C920 420 1000 460 1080 430C1000 500 900 520 800 500C720 486 660 500 620 470Z" fill="#1F2937" opacity="0.16"/>
+  <path d="M700 480C780 360 860 330 940 370C900 400 940 430 1010 418C960 470 1030 496 1110 470C1030 520 940 528 860 512C790 498 740 508 700 480Z" fill="#1F2937" opacity="0.3"/>
+  <path d="M640 560C760 500 900 540 1160 470" fill="none" stroke="#1F2937" stroke-width="14" stroke-linecap="round" opacity="0.85"/>
+  <path d="M660 600C820 560 980 588 1140 548" fill="none" stroke="#1F2937" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+  <text x="120" y="176" font-family="Georgia, serif" font-size="28" letter-spacing="4" fill="#7F1D1D">SCROLL · IV</text>
+  <text x="118" y="288" font-family="'Songti SC','STSong',Georgia,serif" font-size="90" font-weight="700" fill="#1F2937">Lorem ipsum</text>
+  <text x="120" y="346" font-family="Arial,sans-serif" font-size="24" fill="#4B5563">Rice-paper whitespace · brushwork · seal · calm</text>
+  <text x="120" y="446" font-family="Georgia,serif" font-size="30" fill="#374151">I. Lorem ipsum dolor</text>
+  <text x="120" y="500" font-family="Georgia,serif" font-size="30" fill="#374151">II. Sit amet consectetur</text>
+  <text x="120" y="554" font-family="Georgia,serif" font-size="30" fill="#374151">III. Adipiscing elit sed</text>
+  <rect x="470" y="474" width="72" height="72" rx="6" fill="#B91C1C"/>
+  <g stroke="#FBEAEA" stroke-width="6" stroke-linecap="round"><path d="M490 496h32M490 512h32M506 496v34"/></g>
+</svg>

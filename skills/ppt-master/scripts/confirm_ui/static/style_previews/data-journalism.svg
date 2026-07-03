@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <text x="72" y="86" font-family="Georgia, serif" font-size="20" letter-spacing="3" fill="#C2410C">DATA DESK · ANALYSIS</text>
+  <text x="70" y="150" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#111827">Lorem ipsum dolor</text>
+  <text x="72" y="192" font-family="Arial, sans-serif" font-size="23" fill="#6B7280">Multi-column microcharts, sidebars and source lines</text>
+  <path d="M72 220H1208" stroke="#111827" stroke-width="2"/>
+  <g transform="translate(72 250)">
+    <rect x="0" y="0" width="560" height="260" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <text x="16" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">Trend · 2019–2026</text>
+    <g stroke="#E2E8F0"><path d="M16 210H544M16 160H544M16 110H544M16 60H544"/></g>
+    <path d="M16 190L100 170L184 176L268 120L352 130L436 70L520 40" fill="none" stroke="#2563EB" stroke-width="3"/>
+    <path d="M16 190L100 170L184 176L268 120L352 130L436 70L520 40L520 210L16 210Z" fill="#2563EB" opacity="0.08"/>
+    <circle cx="520" cy="40" r="5" fill="#C2410C"/>
+  </g>
+  <g transform="translate(660 250)">
+    <rect x="0" y="0" width="250" height="122" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <text x="14" y="26" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#111827">Share</text>
+    <g fill="#2563EB"><rect x="16" y="96" width="26" height="14"/><rect x="56" y="78" width="26" height="32"/><rect x="96" y="58" width="26" height="52"/><rect x="136" y="70" width="26" height="40"/><rect x="176" y="44" width="26" height="66"/><rect x="216" y="86" width="26" height="24"/></g>
+  </g>
+  <g transform="translate(940 250)">
+    <rect x="0" y="0" width="268" height="122" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <text x="14" y="26" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#111827">Mix</text>
+    <circle cx="70" cy="74" r="34" fill="none" stroke="#E2E8F0" stroke-width="16"/>
+    <circle cx="70" cy="74" r="34" fill="none" stroke="#2563EB" stroke-width="16" stroke-dasharray="150 214" transform="rotate(-90 70 74)"/>
+    <circle cx="70" cy="74" r="34" fill="none" stroke="#C2410C" stroke-width="16" stroke-dasharray="55 214" stroke-dashoffset="-150" transform="rotate(-90 70 74)"/>
+    <text x="132" y="62" font-family="Arial, sans-serif" font-size="16" fill="#2563EB">68% a</text>
+    <text x="132" y="92" font-family="Arial, sans-serif" font-size="16" fill="#C2410C">24% b</text>
+  </g>
+  <g transform="translate(660 396)">
+    <rect x="0" y="0" width="250" height="114" fill="#111827"/>
+    <text x="16" y="54" font-family="Georgia, serif" font-size="46" font-weight="700" fill="#fff">72%</text>
+    <text x="16" y="88" font-family="Arial, sans-serif" font-size="16" fill="#CBD5E1">Consectetur elit</text>
+  </g>
+  <g transform="translate(940 396)">
+    <rect x="0" y="0" width="268" height="114" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <path d="M14 96L60 80L106 88L152 60L198 70L254 40L254 104L14 104Z" fill="#2563EB" opacity="0.15"/>
+    <path d="M14 96L60 80L106 88L152 60L198 70L254 40" fill="none" stroke="#2563EB" stroke-width="2.5"/>
+  </g>
+  <path d="M72 548H1208" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="72" y="576" font-family="Arial, sans-serif" font-size="16" fill="#9CA3AF">Source: lorem ipsum operating data (2019–2026) · Chart: PM Data Desk</text>
+</svg>

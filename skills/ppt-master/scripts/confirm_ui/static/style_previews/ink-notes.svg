@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#FAFAF7"/>
+  <text x="100" y="150" font-family="'Segoe Script','Bradley Hand',cursive" font-size="30" fill="#111827">04 —</text>
+  <text x="100" y="252" font-family="Georgia, serif" font-size="88" font-weight="700" fill="#111827">Lorem ipsum</text>
+  <path d="M100 278q200 -14 380 -2" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
+  <text x="100" y="332" font-family="Arial, sans-serif" font-size="26" fill="#4B5563">Light ground · handwritten ink · sparse emphasis</text>
+  <text x="100" y="432" font-family="Arial, sans-serif" font-size="30" fill="#1F2937">— Lorem ipsum dolor</text>
+  <text x="100" y="492" font-family="Arial, sans-serif" font-size="30" fill="#1F2937">— Sit amet</text>
+  <path d="M182 464q120 -22 210 6q34 42 -10 62q-150 26 -214 -8q-32 -34 14 -60Z" fill="none" stroke="#DC2626" stroke-width="4"/>
+  <text x="100" y="552" font-family="Arial, sans-serif" font-size="30" fill="#1F2937">— Consectetur adipiscing</text>
+  <path d="M820 170q120 40 60 160t80 210" fill="none" stroke="#111827" stroke-width="11" stroke-linecap="round" opacity="0.85"/>
+  <path d="M900 250q80 -10 140 40" fill="none" stroke="#111827" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
+  <path d="M760 548q120 -30 250 -72" fill="none" stroke="#DC2626" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1010 476l-30 4l16 24z" fill="#DC2626"/>
+  <text x="1030" y="600" text-anchor="end" font-family="Georgia, serif" font-size="64" font-weight="700" fill="#111827">72%</text>
+</svg>

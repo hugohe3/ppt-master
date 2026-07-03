@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="ck-rough"><feTurbulence type="fractalNoise" baseFrequency="0.04 0.09" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter>
+  </defs>
+  <rect width="1280" height="720" fill="#23423C"/>
+  <rect width="1280" height="720" fill="#1C3833" opacity="0.5"/>
+  <text x="96" y="172" font-family="'Segoe Print',Arial,sans-serif" font-size="78" font-weight="700" fill="#F4F7EF" filter="url(#ck-rough)">Lorem ipsum</text>
+  <path d="M96 198q220 -10 420 2" stroke="#F4F7EF" stroke-width="4" fill="none" opacity="0.8" filter="url(#ck-rough)"/>
+  <text x="98" y="252" font-family="Arial,sans-serif" font-size="26" fill="#BEE3D0">Dark slate · chalk strokes · pastel emphasis</text>
+  <g filter="url(#ck-rough)">
+    <circle cx="300" cy="480" r="90" fill="none" stroke="#FDE68A" stroke-width="4"/>
+    <text x="300" y="494" text-anchor="middle" font-family="'Segoe Print',sans-serif" font-size="40" fill="#FDE68A">72%</text>
+    <path d="M410 480h150" stroke="#F4F7EF" stroke-width="4" fill="none"/>
+    <path d="M560 480l-24 -10v20z" fill="#F4F7EF"/>
+    <rect x="580" y="420" width="190" height="120" rx="6" fill="none" stroke="#93C5FD" stroke-width="4"/>
+    <text x="602" y="490" font-family="'Segoe Print',sans-serif" font-size="26" fill="#93C5FD">Ipsum</text>
+  </g>
+  <g filter="url(#ck-rough)" stroke="#F4F7EF" stroke-width="3" fill="none">
+    <path d="M900 560h280M900 560v-200"/>
+  </g>
+  <g fill="#F9A8D4" opacity="0.85"><rect x="930" y="482" width="40" height="76"/><rect x="990" y="442" width="40" height="116"/><rect x="1050" y="402" width="40" height="156"/><rect x="1110" y="462" width="40" height="96"/></g>
+  <g fill="#F4F7EF" opacity="0.14"><circle cx="200" cy="640" r="3"/><circle cx="240" cy="650" r="2"/><circle cx="1000" cy="605" r="2"/><circle cx="700" cy="300" r="2"/></g>
+</svg>

@@ -13,6 +13,10 @@
         en: {
             page_title: "PPT Master - Confirm Design",
             topbar_hint: "Pick or type your choices, then click Confirm — the page closes and you return to the chat.",
+            stage_anchors: "Stage 1 · Direction",
+            stage_design: "Stage 2 · Design system",
+            stage_images: "Stage 3 · Images & execution",
+            stage_realization: "Stage 2 · Design system",
             loading: "Loading…",
             load_error: "Could not load recommendations.json. The AI must write it before launch.",
             btn_confirm: "Confirm",
@@ -51,6 +55,11 @@
             image_strategy_visual: "Visual",
             image_strategy_color: "Color",
             image_strategy_mood: "Mood",
+            image_strategy_manual: "Custom",
+            image_strategy_manual_desc: "Choose a rendering and palette manually, or use custom prose.",
+            image_strategy_reference_hint: "Reference images show rendering / color-behavior only. Final AI images use the color scheme selected above.",
+            image_strategy_color_follow: "Uses the color scheme selected above; the palette only controls color behavior.",
+            image_strategy_no_reference: "No reference image for this custom choice.",
             image_usage_notes: "Additional image requirements",
             image_usage_notes_placeholder: "e.g. realistic handwashing scenes; avoid cartoon germs; keep product photos untouched.",
             image_usage_required: "Select at least one image usage option.",
@@ -84,8 +93,20 @@
             sample_heading_latin: "Presentation Title",
             sample_body_cjk: "关键信息摘要",
             sample_body_latin: "Key message summary",
-            style_preview_label: "Overall impression (color + typography)",
+            style_preview_label: "Overall impression (color + typography + icons)",
             style_preview_body: "· rough feel only, not the actual slide layout",
+            no_icons: "No icons",
+            preview_big_title: "Big Title",
+            preview_section_title: "Section Title",
+            preview_latin_title: "Section Title",
+            preview_body_intro: "Body copy shows the baseline text rhythm and contrast.",
+            preview_latin_body: "Body text sample for checking Latin typography.",
+            preview_point_1_title: "Body content",
+            preview_point_1_text: "Use this area to judge paragraph density and line spacing.",
+            preview_point_2_title: "Key point",
+            preview_point_2_text: "Icons are placed next to real text instead of floating alone.",
+            preview_point_3_title: "Conclusion",
+            preview_point_3_text: "The combination should stay readable at presentation scale.",
             mode_continuous_desc: "Generate the whole deck in one pass.",
             mode_split_desc: "Stop after the spec; resume SVG generation in a fresh window.",
             refine_off_desc: "Spec is written in one go; the pipeline auto-proceeds.",
@@ -98,6 +119,10 @@
         ja: {
             page_title: "PPT Master - デザイン確認",
             topbar_hint: "各項目を選択または入力して「確定」を押してください。ページが閉じたらチャットに戻ります。",
+            stage_anchors: "ステージ 1 · 方向性",
+            stage_design: "ステージ 2 · デザインシステム",
+            stage_images: "ステージ 3 · 画像と実行方法",
+            stage_realization: "ステージ 2 · デザインシステム",
             loading: "読み込み中…",
             load_error: "recommendations.json を読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
@@ -136,6 +161,11 @@
             image_strategy_visual: "ビジュアル",
             image_strategy_color: "カラー",
             image_strategy_mood: "ムード",
+            image_strategy_manual: "カスタム",
+            image_strategy_manual_desc: "レンダリングとパレットを手動で選ぶか、カスタム記述を使います。",
+            image_strategy_reference_hint: "参照画像はレンダリング／色の使い方だけを示します。最終AI画像の色は上で選んだ配色に従います。",
+            image_strategy_color_follow: "上で選んだ配色を使用します。パレットは色の使い方だけを制御します。",
+            image_strategy_no_reference: "このカスタム選択には参照画像がありません。",
             image_usage_notes: "画像に関する補足要件",
             image_usage_notes_placeholder: "例：リアルな手洗いシーンを優先、漫画調の菌のイラストは避ける、製品写真はそのまま使う。",
             image_usage_required: "画像の使用方法を少なくとも1つ選択してください。",
@@ -169,8 +199,20 @@
             sample_heading_latin: "Presentation Title",
             sample_body_cjk: "キーメッセージの要約",
             sample_body_latin: "Key message summary",
-            style_preview_label: "全体の印象（配色 + タイポグラフィ）",
+            style_preview_label: "全体の印象（配色 + タイポグラフィ + アイコン）",
             style_preview_body: "· 雰囲気の確認用で、実際のレイアウトではありません",
+            no_icons: "アイコンなし",
+            preview_big_title: "大見出し",
+            preview_section_title: "章タイトル",
+            preview_latin_title: "Section Title",
+            preview_body_intro: "本文の基準サイズとコントラストを確認するための文です。",
+            preview_latin_body: "Body text sample for checking Latin typography.",
+            preview_point_1_title: "本文内容",
+            preview_point_1_text: "段落密度と行間の見え方をここで確認します。",
+            preview_point_2_title: "要点説明",
+            preview_point_2_text: "アイコンは単独ではなく、実際の文章の横に配置します。",
+            preview_point_3_title: "結論・提案",
+            preview_point_3_text: "投影時にも読みやすい組み合わせかを判断します。",
             mode_continuous_desc: "デッキ全体を一気に生成します。",
             mode_split_desc: "設計仕様の作成後に停止し、別ウィンドウでSVG生成を再開します。",
             refine_off_desc: "設計仕様を一度で書き上げ、パイプラインは自動で進みます。",
@@ -183,11 +225,15 @@
         zh: {
             page_title: "确认设计方案",
             topbar_hint: "选择或自定义各项后点「确认」；页面会关闭，请回到聊天窗口。",
+            stage_anchors: "第一阶段 · 方向确认",
+            stage_design: "第二阶段 · 设计系统",
+            stage_images: "第三阶段 · 图片与执行方式",
+            stage_realization: "第二阶段 · 设计系统",
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
             btn_next: "下一步 →",
-            deriving: "正在据你的选择生成下游选项…",
+            deriving: "正在根据你的选择生成下游选项…",
             already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
@@ -221,6 +267,11 @@
             image_strategy_visual: "视觉",
             image_strategy_color: "色彩",
             image_strategy_mood: "情绪",
+            image_strategy_manual: "自定义",
+            image_strategy_manual_desc: "手动选择渲染风格和图像调色，也可以使用自定义描述。",
+            image_strategy_reference_hint: "参考图只展示渲染风格 / 用色行为；最终 AI 图片颜色跟随上方色彩方案。",
+            image_strategy_color_follow: "使用上方已选色彩方案；图像调色只控制用色比例和行为。",
+            image_strategy_no_reference: "自定义选择没有参考图。",
             image_usage_notes: "图片补充要求",
             image_usage_notes_placeholder: "例如：优先真实洗手场景；不要卡通病菌；产品照片保持原样。",
             image_usage_required: "请至少选择一种图片使用方式。",
@@ -254,8 +305,20 @@
             sample_heading_latin: "Presentation Title",
             sample_body_cjk: "关键信息摘要",
             sample_body_latin: "Key message summary",
-            style_preview_label: "整体形象（配色 + 字体）",
+            style_preview_label: "整体形象（配色 + 字体 + 图标）",
             style_preview_body: "· 仅大致形象，非实际版式",
+            no_icons: "无图标",
+            preview_big_title: "大标题",
+            preview_section_title: "章节标题",
+            preview_latin_title: "Section Title",
+            preview_body_intro: "正文内容用于判断基础字号、行距和颜色对比。",
+            preview_latin_body: "Body text sample for checking Latin typography.",
+            preview_point_1_title: "正文内容",
+            preview_point_1_text: "这里展示普通段落的密度和阅读节奏。",
+            preview_point_2_title: "要点说明",
+            preview_point_2_text: "图标和文字放在一起，判断真实使用效果。",
+            preview_point_3_title: "结论建议",
+            preview_point_3_text: "组合效果需要在演示场景下保持清晰可读。",
             mode_continuous_desc: "一次性连续生成整份演示文稿。",
             mode_split_desc: "写完设计规范后停止，另开窗口继续生成页面。",
             refine_off_desc: "设计规范一次写完，流程自动继续。",
@@ -286,6 +349,46 @@
     // Fallback stays LANG-relative: zh/en users never see Japanese labels,
     // ja pages fall back ja → en → zh.
     var LANG_FALLBACK = { zh: ["zh", "en", "ja"], en: ["en", "zh", "ja"], ja: ["ja", "en", "zh"] };
+    var IMAGE_COMPARISON_LABELS = {
+        rendering: {
+            "vector-illustration": { zh: "矢量插画", en: "Vector illustration", ja: "ベクターイラスト" },
+            flat: { zh: "扁平插画", en: "Flat illustration", ja: "フラットイラスト" },
+            "3d-isometric": { zh: "3D 等距", en: "3D isometric", ja: "3Dアイソメトリック" },
+            "digital-dashboard": { zh: "数字仪表盘", en: "Digital dashboard", ja: "デジタルダッシュボード" },
+            "corporate-photo": { zh: "企业摄影", en: "Corporate photo", ja: "企業写真" },
+            blueprint: { zh: "蓝图线稿", en: "Blueprint", ja: "ブループリント" },
+            editorial: { zh: "编辑杂志", en: "Editorial", ja: "エディトリアル" },
+            "sketch-notes": { zh: "手绘笔记", en: "Sketch notes", ja: "スケッチノート" },
+            "ink-notes": { zh: "墨线笔记", en: "Ink notes", ja: "インクノート" },
+            chalkboard: { zh: "粉笔黑板", en: "Chalkboard", ja: "チョークボード" },
+            watercolor: { zh: "水彩", en: "Watercolor", ja: "水彩" },
+            "warm-scene": { zh: "暖调场景", en: "Warm scene", ja: "暖色シーン" },
+            "screen-print": { zh: "丝网印刷", en: "Screen print", ja: "スクリーンプリント" },
+            "fantasy-animation": { zh: "幻想动画", en: "Fantasy animation", ja: "ファンタジーアニメ" },
+            "pixel-art": { zh: "像素艺术", en: "Pixel art", ja: "ピクセルアート" },
+            nature: { zh: "自然有机", en: "Nature", ja: "自然・オーガニック" },
+            "minimalist-swiss": { zh: "瑞士极简", en: "Minimalist Swiss", ja: "スイスミニマル" },
+            glassmorphism: { zh: "玻璃拟态", en: "Glassmorphism", ja: "グラスモーフィズム" },
+            "vintage-poster": { zh: "复古海报", en: "Vintage poster", ja: "ヴィンテージポスター" },
+            "paper-cut": { zh: "剪纸拼贴", en: "Paper cut", ja: "ペーパーカット" }
+        },
+        palette: {
+            "cool-corporate": { zh: "冷静企业色", en: "Cool corporate", ja: "クール企業色" },
+            "warm-earth": { zh: "暖土色", en: "Warm earth", ja: "ウォームアース" },
+            "tech-neon": { zh: "科技霓虹", en: "Tech neon", ja: "テックネオン" },
+            "editorial-classic": { zh: "经典编辑色", en: "Editorial classic", ja: "エディトリアルクラシック" },
+            macaron: { zh: "马卡龙", en: "Macaron", ja: "マカロン" },
+            "mono-ink": { zh: "单色墨线", en: "Mono ink", ja: "モノインク" },
+            "vivid-launch": { zh: "高饱和发布", en: "Vivid launch", ja: "ビビッドローンチ" },
+            "dark-cinematic": { zh: "暗色电影感", en: "Dark cinematic", ja: "ダークシネマティック" },
+            duotone: { zh: "双色调", en: "Duotone", ja: "デュオトーン" },
+            "nature-organic": { zh: "自然有机色", en: "Nature organic", ja: "自然オーガニック色" },
+            "jewel-tone": { zh: "宝石色", en: "Jewel tone", ja: "ジュエルトーン" },
+            "frost-ice": { zh: "霜冰浅色", en: "Frost ice", ja: "フロストアイス" },
+            "sunset-gradient": { zh: "日落渐变", en: "Sunset gradient", ja: "サンセットグラデーション" },
+            "earthy-dusty": { zh: "尘土大地色", en: "Earthy dusty", ja: "ダスティアース" }
+        }
+    };
 
     function localized(obj, base) {
         if (!obj) return "";
@@ -320,6 +423,28 @@
         return localized(group, "group");
     }
 
+    function humanizeId(value) {
+        return String(value || "")
+            .replace(/[_-]+/g, " ")
+            .replace(/\b[a-z]/g, function (match) { return match.toUpperCase(); });
+    }
+
+    function langMappedLabel(kind, id) {
+        if (!id) return "";
+        if (id === "custom") return t("custom");
+        var entry = IMAGE_COMPARISON_LABELS[kind] && IMAGE_COMPARISON_LABELS[kind][id];
+        if (!entry) return "";
+        var order = LANG_FALLBACK[LANG] || LANG_FALLBACK.en;
+        for (var i = 0; i < order.length; i += 1) {
+            if (entry[order[i]]) return entry[order[i]];
+        }
+        return entry.en || "";
+    }
+
+    function comparisonValueLabel(kind, id) {
+        return langMappedLabel(kind, id) || humanizeId(id);
+    }
+
     function applyStaticTranslations() {
         document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
         document.querySelectorAll("[data-i18n]").forEach(function (node) {
@@ -344,6 +469,8 @@
     // ---- state -----------------------------------------------------------
     var CAT = null;     // catalogs.json — finite option universe
     var REC = null;     // recommendations.json — AI picks + candidates
+    var ICON_PREVIEWS = {};  // /api/icon-previews — real SVG samples from templates/icons
+    var AI_IMAGE_COMPARISON = {};  // /api/ai-image-comparison — reference PNG options
     var STATE = {};
     var REC_ALIASES = {
         icons: {
@@ -368,9 +495,157 @@
         return node;
     }
 
-    // Section numbers run 1..N within the tier currently rendered; the counter is
+    function previewNode(kind, id) {
+        var node = el("div", "option-preview option-preview-" + kind);
+        node.setAttribute("aria-hidden", "true");
+        if (kind === "visual_style") {
+            appendVisualStyleImage(node, id);
+            return node;
+        }
+        var markup = kind === "icons" ? iconStylePreview(id) : "";
+        if (!markup) return null;
+        node.innerHTML = markup;
+        return node;
+    }
+
+    function visualStylePreviewSrc(id) {
+        return "/static/style_previews/" + encodeURIComponent(id || "") + ".svg";
+    }
+
+    function appendVisualStyleImage(parent, id) {
+        var img = document.createElement("img");
+        img.alt = "";
+        img.loading = "lazy";
+        img.src = visualStylePreviewSrc(id);
+        img.onerror = function () {
+            parent.innerHTML = visualStylePreview(id);
+        };
+        parent.appendChild(img);
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function visualStylePreview(id) {
+        var label = escapeHtml(humanizeId(id) || t("sub_visual"));
+        var fallback = escapeHtml(t("error_retry"));
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">' +
+            '<rect width="1280" height="720" fill="#F8FAFC"/>' +
+            '<path d="M0 160H1280M0 360H1280M0 560H1280M220 0V720M640 0V720M1060 0V720" stroke="#E2E8F0" stroke-width="2"/>' +
+            '<rect x="116" y="96" width="1048" height="528" rx="28" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3"/>' +
+            '<rect x="164" y="148" width="360" height="34" rx="17" fill="#111827"/>' +
+            '<rect x="164" y="228" width="520" height="20" rx="10" fill="#CBD5E1"/>' +
+            '<rect x="164" y="274" width="440" height="20" rx="10" fill="#E2E8F0"/>' +
+            '<rect x="760" y="188" width="292" height="236" rx="22" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="3"/>' +
+            '<path d="M808 378L874 308L942 348L1012 258" fill="none" stroke="#2563EB" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<circle cx="1012" cy="258" r="22" fill="#0F172A"/>' +
+            '<rect x="164" y="464" width="220" height="24" rx="12" fill="#94A3B8"/>' +
+            '<text x="164" y="548" fill="#475569" font-family="Arial, sans-serif" font-size="34">' + label + '</text>' +
+            '<text x="164" y="594" fill="#94A3B8" font-family="Arial, sans-serif" font-size="24">' + fallback + '</text>' +
+            '</svg>';
+    }
+
+    function iconStylePreview(id) {
+        var common = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100"';
+        var samples = ICON_PREVIEWS[id] || [];
+        if (samples.length) {
+            var sample = samples[0] || {};
+            return '<div class="real-icon-preview real-icon-preview-' + escapeHtml(id) + '">' +
+                '<div class="real-icon-sample"><div class="real-icon-mark">' +
+                (sample.svg || "") +
+                '</div><span class="real-icon-label">' + escapeHtml(sample.name || "") + '</span></div>' +
+                '</div>';
+        }
+        if (id === "emoji") return '<svg ' + common + '><rect width="160" height="100" rx="10" fill="#FFF7ED"/><text x="80" y="60" text-anchor="middle" font-size="34">📊</text></svg>';
+        if (id === "none") return '<svg ' + common + '><rect width="160" height="100" rx="10" fill="#FFFFFF"/><rect x="22" y="20" width="116" height="9" rx="4.5" fill="#111827"/><rect x="22" y="42" width="90" height="6" rx="3" fill="#CBD5E1"/><rect x="22" y="56" width="104" height="6" rx="3" fill="#CBD5E1"/><rect x="22" y="70" width="70" height="6" rx="3" fill="#CBD5E1"/><path d="M118 42l24 24M142 42l-24 24" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/></svg>';
+        return "";
+    }
+
+    function comparisonImageUrl(kind, id) {
+        var value = String(id || "").trim();
+        if (!value || value === "custom") return "";
+        if (!/^[A-Za-z0-9_.-]+$/.test(value)) return "";
+        return "/ai-image-comparison/" + kind + "/" + encodeURIComponent(value) + ".png";
+    }
+
+    function appendImageStrategyPreviews(card, candidate) {
+        if (candidate.rendering === "custom" || candidate.palette === "custom") return;
+        var previews = [
+            [t("image_strategy_rendering"), comparisonImageUrl("rendering", candidate.rendering)],
+            [t("image_strategy_palette"), comparisonImageUrl("palette", candidate.palette)]
+        ].filter(function (item) { return item[1]; });
+        if (!previews.length) return;
+        var row = el("div", "image-strategy-previews");
+        previews.forEach(function (item) {
+            var frame = el("div", "image-strategy-preview");
+            var img = document.createElement("img");
+            img.alt = item[0];
+            img.loading = "lazy";
+            img.src = item[1];
+            img.onerror = function () {
+                frame.remove();
+                if (!row.childElementCount) row.remove();
+            };
+            frame.appendChild(img);
+            frame.appendChild(el("span", "image-strategy-preview-label", item[0]));
+            row.appendChild(frame);
+        });
+        card.appendChild(row);
+        return row;
+    }
+
+    function comparisonItems(kind) {
+        return (AI_IMAGE_COMPARISON && AI_IMAGE_COMPARISON[kind]) || [];
+    }
+
+    function comparisonItem(kind, id) {
+        var items = comparisonItems(kind);
+        for (var i = 0; i < items.length; i += 1) {
+            if (items[i] && items[i].id === id) return items[i];
+        }
+        return null;
+    }
+
+    function comparisonLabel(item, kind) {
+        return item ? (comparisonValueLabel(kind, item.id) || item.label || item.id || "") : "";
+    }
+
+    function firstComparisonId(kind, fallback) {
+        var items = comparisonItems(kind);
+        if (fallback === "custom") return fallback;
+        if (fallback && comparisonItem(kind, fallback)) return fallback;
+        return items.length ? items[0].id : (fallback || "");
+    }
+
+    function comparisonSelect(kind, value) {
+        var select = el("select", "text-input image-strategy-select");
+        comparisonItems(kind).forEach(function (item) {
+            var option = document.createElement("option");
+            option.value = item.id;
+            option.textContent = comparisonLabel(item, kind);
+            select.appendChild(option);
+        });
+        var customOption = document.createElement("option");
+        customOption.value = "custom";
+        customOption.textContent = t("custom");
+        select.appendChild(customOption);
+        select.value = firstComparisonId(kind, value);
+        return select;
+    }
+
+    function imageStrategyColorSummary(candidate) {
+        var behavior = localized(candidate || {}, "color");
+        return t("image_strategy_color_follow") + (behavior ? " " + behavior : "");
+    }
+
+    // Section numbers run 1..N within the stage currently rendered; the counter is
     // reset at the top of renderForTier. The legacy `num` arg is ignored so each
-    // tier numbers its own sections cleanly (tier 2 is not a continuation of 1).
+    // stage numbers its own sections cleanly (stage 2 is not a continuation of 1).
     var _secCounter = 0;
     function section(num, titleKey, noteText) {
         _secCounter += 1;
@@ -479,6 +754,13 @@
             var desc = optionDesc(o);
             var spec = specById[o.id];
             var chip = el("div", "chip");
+            var preview = previewNode(opts2.preview, o.id);
+            if (preview) {
+                chip.classList.add("chip-with-preview");
+                chip.classList.add("chip-preview-" + opts2.preview);
+                chip.appendChild(preview);
+            }
+            var copy = el("div", "chip-copy");
             if (o.viewbox) {
                 label = label + (o.dim ? " · " + o.dim : "");
             } else {
@@ -486,15 +768,16 @@
                 if (desc) label += (LANG === "zh" || LANG === "ja" ? "：" : " — ") + desc;
                 if (spec && spec.note) label += " · " + spec.note;
             }
-            chip.appendChild(el("span", "chip-text", label));
+            copy.appendChild(el("span", "chip-text", label));
             if (spec) {
                 // spectrum pick: badge shows its temperament tag, not the generic ★
                 chip.classList.add("recommended");
-                chip.appendChild(el("span", "rec-badge", "★ " + (spec.tag || t("recommended"))));
+                copy.appendChild(el("span", "rec-badge", "★ " + (spec.tag || t("recommended"))));
             } else if (!spectrum && o.id === recommendedId) {
                 chip.classList.add("recommended");
-                chip.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
+                copy.appendChild(el("span", "rec-badge", "★ " + t("recommended")));
             }
+            chip.appendChild(copy);
             if (!isCustom && o.id === cur) chip.classList.add("selected");
             chip.addEventListener("click", function () {
                 deselect();
@@ -642,6 +925,12 @@
         return spec.candidates || spec.options || [];
     }
 
+    function imageStrategyRecommendationCandidates() {
+        return imageStrategyCandidates().filter(function (candidate) {
+            return candidate && candidate.rendering !== "custom" && candidate.palette !== "custom";
+        }).slice(0, 3);
+    }
+
     function usesCustomImagePlanValue(value) {
         var ids = (CAT.image_usage || []).map(function (item) { return item.id; });
         if (Array.isArray(value)) return false;
@@ -649,7 +938,7 @@
     }
 
     function customImagePlanHasAiSignal() {
-        return imageStrategyCandidates().length > 0 || !!recId("image_ai_path");
+        return imageStrategyRecommendationCandidates().length > 0 || !!recId("image_ai_path");
     }
 
     function needsGeneratedImagesForUsage(value) {
@@ -680,7 +969,7 @@
     function imageStrategySelectedIndex() {
         var spec = imageStrategySpec();
         var idx = spec.selected || 0;
-        return Math.min(idx, Math.max(imageStrategyCandidates().length - 1, 0));
+        return Math.min(idx, Math.max(imageStrategyRecommendationCandidates().length - 1, 0));
     }
 
     // ---- section renderers ----------------------------------------------
@@ -724,8 +1013,8 @@
         sec.appendChild(subDiv);
         // Delivery purpose (PPT only) lives in the §c key-information confirmation,
         // beside audience — it is part of "who / how this deck is consumed". It is a
-        // Tier-1 anchor: its value sets the body size (one fixed value per purpose), page
-        // density, and the re-derived Tier-2 page-count recommendation. Non-PPT
+        // Stage-1 anchor: its value sets the body size (one fixed value per purpose), page
+        // density, and the re-derived Stage-2 page-count recommendation. Non-PPT
         // canvases scale the body by canvas height instead, so the axis does not apply.
         if (isPptCanvas(STATE.canvas)) {
             var purposeField = el("div", "subfield");
@@ -747,7 +1036,7 @@
         var sub2 = el("div", "subfield");
         sub2.appendChild(el("div", "subfield-label", t("sub_visual")));
         enumField(sub2, CAT.visual_styles, recOrFirst("visual_style", CAT.visual_styles),
-            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; },
+            function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; refreshDirectionPreview(); },
             { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
         sec.appendChild(sub2);
         host.appendChild(sec);
@@ -773,6 +1062,10 @@
     // Replaced when the combined color+typography preview mounts; the color and
     // typography sections call it after every change so the preview stays live.
     var refreshStylePreview = function () {};
+    // Replaced when the Stage-1 visual-style preview mounts.
+    var refreshDirectionPreview = function () {};
+    // Replaced when the Stage-3 generated-image preview mounts.
+    var refreshImageStrategyPreview = function () {};
     // Replaced when the typography section mounts; the canvas section calls it so
     // the body-size hint tracks the chosen canvas height.
     var refreshBodySizeHint = function () {};
@@ -997,7 +1290,8 @@
     function renderIcons(host) {
         var sec = section(6, "sec_icons");
         enumField(sec, CAT.icons, recOrFirst("icons", CAT.icons),
-            function () { return STATE.icons; }, function (v) { STATE.icons = v; }, { allowCustom: true });
+            function () { return STATE.icons; }, function (v) { STATE.icons = v; refreshStylePreview(); },
+            { allowCustom: true });
         host.appendChild(sec);
     }
 
@@ -1007,35 +1301,15 @@
         return primary + ", " + fallback;
     }
 
-    function sampleCandidate(role, script) {
-        var sample = (REC && REC.sample_text) || (REC && REC.samples) || {};
-        var isHeading = role === "heading";
-        var isLatin = script === "latin";
-        var keys = isHeading
-            ? (isLatin ? ["heading_latin", "sample_heading_latin", "title_latin", "title_en"] : ["heading_cjk", "sample_heading", "sample_heading_cjk", "title_zh", "title"])
-            : (isLatin ? ["body_latin", "sample_body_latin", "summary_latin", "summary_en"] : ["body_cjk", "sample_body", "sample_body_cjk", "summary_zh", "summary"]);
-        for (var i = 0; i < keys.length; i += 1) {
-            if (sample[keys[i]]) return sample[keys[i]];
-            if (REC && REC[keys[i]]) {
-                if (typeof REC[keys[i]] === "object" && REC[keys[i]].value) return REC[keys[i]].value;
-                if (typeof REC[keys[i]] === "string") return REC[keys[i]];
-            }
-        }
-        return "";
-    }
-
-    function sampleText(role, script, explicit) {
-        if (explicit) return explicit;
-        var fromRec = sampleCandidate(role, script);
-        if (fromRec) return fromRec;
-        if (role === "heading") return t(script === "latin" ? "sample_heading_latin" : "sample_heading_cjk");
-        return t(script === "latin" ? "sample_body_latin" : "sample_body_cjk");
+    function sampleText(role, script) {
+        if (role === "heading") return t(script === "latin" ? "preview_latin_title" : "preview_big_title");
+        return t(script === "latin" ? "preview_latin_body" : "preview_body_intro");
     }
 
     function fontSample(box, slot, css, role) {
         var line = el("div", "font-sample-line");
-        var cjk = el("span", "fs-cjk", sampleText(role, "cjk", slot.sample_cjk));
-        var lat = el("span", "fs-latin", sampleText(role, "latin", slot.sample_latin));
+        var cjk = el("span", "fs-cjk", sampleText(role, "cjk"));
+        var lat = el("span", "fs-latin", sampleText(role, "latin"));
         var cjkStack = previewFontStack(slot.cjk, css);
         var latinStack = previewFontStack(slot.latin, css);
         if (cjkStack) cjk.style.fontFamily = cjkStack;
@@ -1172,8 +1446,8 @@
         refreshBodySizeHint();
         sizeField.appendChild(sizeRow);
 
-        // Delivery purpose is a Tier-1 anchor confirmed inside renderAudience (§c) —
-        // it is set before this Tier-2 section exists, so its value drives the
+        // Delivery purpose is a Stage-1 anchor confirmed inside renderAudience (§c) —
+        // it is set before this Stage-2 section exists, so its value drives the
         // body-size hint here via STATE.delivery_purpose (preserved across the
         // single-session transition). The control itself no longer lives here.
         sec.appendChild(sizeField);
@@ -1239,8 +1513,8 @@
         }
     }
 
-    // Combined color + typography preview — not a ninth confirmation, just a
-    // live "overall impression" of the two style choices made above. Kept
+    // Combined color + typography + icon preview — not a ninth confirmation, just a
+    // live "overall impression" of the style choices made above. Kept
     // deliberately abstract (a style chip, not a slide layout); page layout
     // preview is the live-preview server's job (Step 6).
     function renderStylePreview(host) {
@@ -1266,17 +1540,17 @@
         bodyWrap.appendChild(bodyCjk); bodyWrap.appendChild(bodyLat);
         bodyRow.appendChild(accentBar); bodyRow.appendChild(bodyWrap);
         textcol.appendChild(title); textcol.appendChild(bodyRow);
+        var content = el("div", "sp-content");
         var chip = el("div", "sp-chip");
         var chipDot = el("span", "sp-chip-dot");
         var chipLabel = el("span", "sp-chip-label");
         chip.appendChild(chipDot); chip.appendChild(chipLabel);
-        card.appendChild(textcol); card.appendChild(chip);
+        card.appendChild(textcol); card.appendChild(content); card.appendChild(chip);
         wrap.appendChild(card);
         host.appendChild(wrap);
-        // Pin the strip just under the sticky topbar so it stays visible while
-        // the user scrolls through the color / icon / typography sections.
-        var topbar = document.getElementById("topbar");
-        if (topbar) wrap.style.top = topbar.offsetHeight + "px";
+        // The strip is mounted inside the top bar on Stage 2, so it stays visible
+        // while the center form scrolls.
+        wrap.style.top = "0px";
 
         function paint() {
             var pal = (STATE.color && STATE.color.palette) || {};
@@ -1297,21 +1571,23 @@
             var bodyLatStack = previewFontStack(body.latin, body.css);
 
             card.style.background = bg;
-            titleCjk.textContent = sampleText("heading", "cjk", head.sample_cjk);
-            titleLat.textContent = sampleText("heading", "latin", head.sample_latin);
+            titleCjk.textContent = t("preview_big_title");
+            titleLat.textContent = t("preview_section_title");
             title.style.color = pri;
             title.style.fontSize = Math.round(bodyPx * 1.7) + "px";
             titleCjk.style.fontFamily = headStack || "";
             titleLat.style.fontFamily = headLatStack || "";
             // CJK and Latin previewed with their own stacks (mirrors the title
             // and the per-card font samples) so each script's font is visible.
-            bodyCjk.textContent = sampleText("body", "cjk", body.sample_cjk);
-            bodyLat.textContent = sampleText("body", "latin", body.sample_latin);
+            bodyCjk.textContent = t("preview_body_intro");
+            bodyLat.textContent = "";
             bodyWrap.style.color = txt;
             bodyWrap.style.fontSize = bodyPx + "px";
             bodyCjk.style.fontFamily = bodyStack || "";
             bodyLat.style.fontFamily = bodyLatStack || "";
             accentBar.style.background = acc;
+            content.style.color = txt;
+            content.innerHTML = stylePreviewContentMarkup(STATE.icons);
             chip.style.background = sbg;
             chipDot.style.background = sacc;
             chipLabel.textContent = t("role_secondary_bg");
@@ -1319,6 +1595,115 @@
         }
         refreshStylePreview = paint;
         paint();
+    }
+
+    function renderDirectionPreview(host) {
+        var wrap = el("div", "style-preview direction-preview");
+        var label = el("div", "style-preview-label");
+        label.appendChild(el("span", "spl-title", t("sub_visual")));
+        label.appendChild(el("span", "spl-note", t("style_preview_body")));
+        wrap.appendChild(label);
+        var card = el("div", "style-preview-card direction-preview-card");
+        var visual = el("div", "direction-preview-visual");
+        var copy = el("div", "direction-preview-copy");
+        var title = el("div", "direction-preview-title");
+        var desc = el("div", "direction-preview-desc");
+        copy.appendChild(title);
+        copy.appendChild(desc);
+        card.appendChild(visual);
+        card.appendChild(copy);
+        wrap.appendChild(card);
+        host.appendChild(wrap);
+        function paint() {
+            var option = findCatalogOption(CAT.visual_styles, STATE.visual_style);
+            visual.innerHTML = "";
+            appendVisualStyleImage(visual, STATE.visual_style);
+            title.textContent = option ? optionLabel(option) : (STATE.visual_style || "");
+            desc.textContent = option ? optionDesc(option) : "";
+        }
+        refreshDirectionPreview = paint;
+        paint();
+    }
+
+    function renderImageStrategyPreview(host) {
+        var wrap = el("div", "style-preview image-strategy-left-preview");
+        var label = el("div", "style-preview-label");
+        label.appendChild(el("span", "spl-title", t("image_strategy")));
+        label.appendChild(el("span", "spl-note", t("image_strategy_reference_hint")));
+        wrap.appendChild(label);
+        var card = el("div", "style-preview-card image-strategy-preview-card");
+        var visual = el("div", "image-strategy-preview-visual");
+        var copy = el("div", "direction-preview-copy");
+        var title = el("div", "direction-preview-title");
+        var desc = el("div", "direction-preview-desc");
+        copy.appendChild(title);
+        copy.appendChild(desc);
+        card.appendChild(visual);
+        card.appendChild(copy);
+        wrap.appendChild(card);
+        host.appendChild(wrap);
+        function paint() {
+            var show = needsGeneratedImagesForUsage(STATE.image_usage);
+            wrap.hidden = !show;
+            if (!show) return;
+            var strategy = STATE.image_strategy || {};
+            visual.innerHTML = "";
+            var row = appendImageStrategyPreviews(visual, strategy);
+            visual.classList.toggle("image-strategy-preview-empty", !row);
+            if (!row) visual.appendChild(el("div", "toggle-desc", t("image_strategy_no_reference")));
+            title.textContent = strategy.name || t("image_strategy_manual");
+            var parts = [];
+            if (strategy.rendering) parts.push(t("image_strategy_rendering") + ": " + comparisonValueLabel("rendering", strategy.rendering));
+            if (strategy.palette) parts.push(t("image_strategy_palette") + ": " + comparisonValueLabel("palette", strategy.palette));
+            desc.textContent = parts.join(" · ") || t("image_strategy_reference_hint");
+        }
+        refreshImageStrategyPreview = paint;
+        paint();
+    }
+
+    function findCatalogOption(list, id) {
+        var flat = [];
+        (list || []).forEach(function (item) {
+            if (item && item.items) flat = flat.concat(item.items);
+            else flat.push(item);
+        });
+        for (var i = 0; i < flat.length; i += 1) {
+            if (flat[i] && flat[i].id === id) return flat[i];
+        }
+        return null;
+    }
+
+    function stylePreviewRows() {
+        return [
+            [t("preview_point_1_title"), t("preview_point_1_text")],
+            [t("preview_point_2_title"), t("preview_point_2_text")],
+            [t("preview_point_3_title"), t("preview_point_3_text")]
+        ];
+    }
+
+    function stylePreviewContentMarkup(iconId) {
+        var rows = stylePreviewRows();
+        var icons = stylePreviewIconSamples(iconId, rows.length);
+        return rows.map(function (row, idx) {
+            return '<div class="sp-content-row">' +
+                '<span class="sp-content-icon">' + icons[idx] + '</span>' +
+                '<span class="sp-content-copy"><b>' + escapeHtml(row[0]) + '</b><small>' + escapeHtml(row[1]) + '</small></span>' +
+                '</div>';
+        }).join("");
+    }
+
+    function stylePreviewIconSamples(iconId, count) {
+        if (iconId === "emoji") return ["📊", "💡", "✅"].slice(0, count).map(function (x) {
+            return '<span class="sp-icon-emoji">' + x + '</span>';
+        });
+        if (iconId === "none") return new Array(count).fill('<span class="sp-icon-none-dot"></span>');
+        var samples = ICON_PREVIEWS[iconId] || [];
+        var out = [];
+        for (var i = 0; i < count; i += 1) {
+            var sample = samples[i % Math.max(samples.length, 1)];
+            out.push(sample ? '<span class="sp-icon-mark" title="' + escapeHtml(sample.name || "") + '">' + (sample.svg || "") + '</span>' : '<span class="sp-icon-none-dot"></span>');
+        }
+        return out;
     }
 
     function renderImages(host) {
@@ -1335,8 +1720,9 @@
         sub.appendChild(el("div", "subfield-label", t("image_ai_path")));
         var strategySub = el("div", "subfield image-strategy-subfield");
         strategySub.appendChild(el("div", "subfield-label", t("image_strategy")));
+        strategySub.appendChild(el("div", "toggle-desc", t("image_strategy_reference_hint")));
         var strategyGrid = el("div", "font-grid");
-        var strategyCands = imageStrategyCandidates();
+        var strategyCands = imageStrategyRecommendationCandidates();
         function needsGeneratedImages() {
             return needsGeneratedImagesForUsage(STATE.image_usage);
         }
@@ -1344,39 +1730,88 @@
             var needsAiPath = needsGeneratedImages();
             sub.style.display = needsAiPath ? "block" : "none";
             strategySub.style.display = needsAiPath ? "block" : "none";
+            refreshImageStrategyPreview();
         }
-        function selectImageStrategy(idx) {
+        function markStrategyCard(selectedCard) {
+            strategyGrid.querySelectorAll(".font-card").forEach(function (card) {
+                card.classList.toggle("selected", card === selectedCard);
+            });
+        }
+        function selectImageStrategy(idx, selectedCard) {
             var c = strategyCands[idx] || {};
             STATE.image_strategy = {
                 name: localized(c, "name") || c.name || "",
                 rendering: c.rendering || "",
                 palette: c.palette || "",
                 visual: localized(c, "visual") || "",
-                color: localized(c, "color") || "",
+                color: imageStrategyColorSummary(c),
                 mood: localized(c, "mood") || ""
             };
-            strategyGrid.querySelectorAll(".font-card").forEach(function (card, i) { card.classList.toggle("selected", i === idx); });
+            markStrategyCard(selectedCard || strategyGrid.querySelector('[data-strategy-index="' + idx + '"]'));
+            refreshImageStrategyPreview();
         }
         strategyCands.forEach(function (c, idx) {
             var card = el("div", "font-card");
+            card.setAttribute("data-strategy-index", String(idx));
             var top = el("div", "font-card-head");
             top.appendChild(el("span", "font-card-name", localized(c, "name") || (t("option_prefix") + " " + (idx + 1))));
             var meta = [];
-            if (c.rendering) meta.push(t("image_strategy_rendering") + ":" + c.rendering);
-            if (c.palette) meta.push(t("image_strategy_palette") + ":" + c.palette);
+            if (c.rendering) meta.push(t("image_strategy_rendering") + ":" + comparisonValueLabel("rendering", c.rendering));
+            if (c.palette) meta.push(t("image_strategy_palette") + ":" + comparisonValueLabel("palette", c.palette));
             if (meta.length) top.appendChild(el("span", "font-card-meta", meta.join("  ·  ")));
             card.appendChild(top);
             [
                 ["image_strategy_visual", localized(c, "visual")],
-                ["image_strategy_color", localized(c, "color")],
+                ["image_strategy_color", imageStrategyColorSummary(c)],
                 ["image_strategy_mood", localized(c, "mood")]
             ].forEach(function (row) {
                 if (row[1]) card.appendChild(el("div", "color-note", t(row[0]) + "：" + row[1]));
             });
-            card.addEventListener("click", function () { selectImageStrategy(idx); });
+            card.addEventListener("click", function () { selectImageStrategy(idx, card); });
             strategyGrid.appendChild(card);
         });
         if (!strategyCands.length) strategyGrid.appendChild(el("div", "toggle-desc", t("image_strategy_empty")));
+        var manualCard = el("div", "font-card image-strategy-manual-card");
+        var manualTop = el("div", "font-card-head");
+        manualTop.appendChild(el("span", "font-card-name", t("image_strategy_manual")));
+        manualTop.appendChild(el("span", "font-card-meta", t("image_strategy_manual_desc")));
+        manualCard.appendChild(manualTop);
+        var manualControls = el("div", "image-strategy-manual-controls");
+        var manualRendering = firstComparisonId("rendering", (STATE.image_strategy && STATE.image_strategy.rendering) || (strategyCands[0] && strategyCands[0].rendering));
+        var manualPalette = firstComparisonId("palette", (STATE.image_strategy && STATE.image_strategy.palette) || (strategyCands[0] && strategyCands[0].palette));
+        var renderingWrap = el("label", "image-strategy-select-wrap");
+        renderingWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_rendering")));
+        var renderingSelect = comparisonSelect("rendering", manualRendering);
+        renderingWrap.appendChild(renderingSelect);
+        var paletteWrap = el("label", "image-strategy-select-wrap");
+        paletteWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_palette")));
+        var paletteSelect = comparisonSelect("palette", manualPalette);
+        paletteWrap.appendChild(paletteSelect);
+        manualControls.appendChild(renderingWrap);
+        manualControls.appendChild(paletteWrap);
+        manualCard.appendChild(manualControls);
+        function selectManualImageStrategy() {
+            var rendering = renderingSelect.value;
+            var palette = paletteSelect.value;
+            STATE.image_strategy = {
+                name: t("image_strategy_manual"),
+                rendering: rendering,
+                palette: palette,
+                visual: comparisonLabel(comparisonItem("rendering", rendering), "rendering") || comparisonValueLabel("rendering", rendering),
+                color: t("image_strategy_color_follow"),
+                mood: t("image_strategy_manual_desc")
+            };
+            markStrategyCard(manualCard);
+            refreshImageStrategyPreview();
+        }
+        [renderingSelect, paletteSelect].forEach(function (select) {
+            select.addEventListener("click", function (e) { e.stopPropagation(); });
+            select.addEventListener("change", function () {
+                selectManualImageStrategy();
+            });
+        });
+        manualCard.addEventListener("click", selectManualImageStrategy);
+        strategyGrid.appendChild(manualCard);
         strategySub.appendChild(strategyGrid);
         var recommendedIds = selectedImageUsageIds(recValue("image_usage"));
         if (!recommendedIds.length) recommendedIds = [defaultImageUsageId()];
@@ -1422,6 +1857,7 @@
         sec.appendChild(sub);
         sec.appendChild(strategySub);
         if (strategyCands.length) selectImageStrategy(imageStrategySelectedIndex());
+        else selectManualImageStrategy();
         refreshUsageChips();
         host.appendChild(sec);
     }
@@ -1450,44 +1886,67 @@
         host.appendChild(sec);
     }
 
-    // Stage of the two-tier confirm flow: 1 = anchors, 2 = re-derived realization,
+    // Stage of the staged confirm flow:
+    // 1 = direction anchors, 2 = design system, 3 = images/execution,
     // "all" = legacy single-pass (recommendations.json carried no `tier`).
     var STAGE = 1;
+
+    function stageTitle(tier) {
+        if (tier === 1) return t("stage_anchors");
+        if (tier === 2) return t("stage_design");
+        if (tier === 3) return t("stage_images");
+        return t("page_title");
+    }
 
     function renderForTier(tier) {
         var host = document.getElementById("sections");
         host.innerHTML = "";
         _secCounter = 0;
+        var heading = document.querySelector("#topbar .topbar-titles h1");
+        if (heading) heading.textContent = stageTitle(tier);
         // Detach the previous preview's repaint closures before the sections
         // re-render: color/typography auto-select would otherwise call them and
         // write to now-detached nodes until renderStylePreview remounts them.
         refreshStylePreview = function () {};
+        refreshDirectionPreview = function () {};
+        refreshImageStrategyPreview = function () {};
         refreshBodySizeHint = function () {};
         refreshSizeInputs = function () {};
+        var previewHost = document.getElementById("topbar-preview");
+        if (previewHost) previewHost.innerHTML = "";
         if (tier === 1) {
-            // Anchors — decided first; Tier 2 is re-derived from these.
+            if (previewHost) renderDirectionPreview(previewHost);
+            // Direction anchors — Stage 2 is re-derived from these.
             // Delivery purpose rides inside renderAudience (§c key info).
             renderCanvas(host);
             renderAudience(host);
             renderStyle(host);
-        } else {
-            // Tier 2 (realization) or single-pass: page count + visual treatment.
-            // Single-pass also shows the anchors up front on the same page.
-            if (tier === "all") {
-                renderCanvas(host);
-                renderAudience(host);
-                renderStyle(host);
-            }
+        } else if (tier === 2) {
+            if (previewHost) renderStylePreview(previewHost);
             renderPages(host);
-            // Group the preview with the three sections it reflects so its sticky
-            // scope ends when typography scrolls past — it does not linger over the
-            // image / mode / refine sections below.
+            // Group the three sections reflected by the fixed preview strip.
             var styleGroup = el("div", "style-group");
-            renderStylePreview(styleGroup);
             renderColor(styleGroup);
             renderIcons(styleGroup);
             renderTypography(styleGroup);
             host.appendChild(styleGroup);
+        } else if (tier === 3) {
+            if (previewHost) renderImageStrategyPreview(previewHost);
+            renderImages(host);
+            renderMode(host);
+            renderRefine(host);
+        } else {
+            // Legacy single-pass: show every section on one page.
+            if (previewHost) renderStylePreview(previewHost);
+            renderCanvas(host);
+            renderAudience(host);
+            renderStyle(host);
+            renderPages(host);
+            var legacyStyleGroup = el("div", "style-group");
+            renderColor(legacyStyleGroup);
+            renderIcons(legacyStyleGroup);
+            renderTypography(legacyStyleGroup);
+            host.appendChild(legacyStyleGroup);
             renderImages(host);
             renderMode(host);
             renderRefine(host);
@@ -1500,8 +1959,8 @@
     function updateActionBar(tier) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = false;
-        // Tier 1 advances to the re-derived Tier 2; Tier 2 / single-pass confirm.
-        btn.textContent = (tier === 1) ? t("btn_next") : t("btn_confirm");
+        // Stage 1/2 advance; Stage 3 / single-pass confirm.
+        btn.textContent = (tier === 1 || tier === 2) ? t("btn_next") : t("btn_confirm");
     }
 
     // ---- state init (once) ----------------------------------------------
@@ -1525,9 +1984,9 @@
         STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
     }
 
-    // Tier-2 fields are (re-)read from the recommendations. At boot they come from
-    // whatever recommendations.json carried; after a tier-1 confirm enterTier2()
-    // calls this again with the re-derived candidates. Tier-1 STATE is preserved
+    // Stage-2 fields are (re-)read from the recommendations. At boot they come from
+    // whatever recommendations.json carried; after a stage-1 confirm enterTier()
+    // calls this again with the re-derived candidates. Stage-1 STATE is preserved
     // across the single-session transition — this never resets the anchors.
     function initTier2State() {
         STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
@@ -1551,6 +2010,15 @@
         };
         STATE.formula_policy = pick("formula_policy", CAT.formula_policy);
 
+        // Guarantee a body baseline even when a candidate omitted body_size, on
+        // any canvas (PPT → px default by purpose, non-PPT → px from canvas height),
+        // so role sizes never derive from an empty anchor.
+        if (STATE.typography && !STATE.typography.body_size) {
+            STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
+        }
+    }
+
+    function initTier3State() {
         var rawImageUsage = recValue("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
         if (!STATE.image_usage.length) {
@@ -1561,17 +2029,12 @@
 
         STATE.generation_mode = pick("generation_mode", CAT.generation_mode);
         STATE.refine_spec = !!((REC.refine_spec && REC.refine_spec.value) || (REC.recommend && REC.recommend.refine_spec));
-        // Guarantee a body baseline even when a candidate omitted body_size, on
-        // any canvas (PPT → px default by purpose, non-PPT → px from canvas height),
-        // so role sizes never derive from an empty anchor.
-        if (STATE.typography && !STATE.typography.body_size) {
-            STATE.typography.body_size = defaultBodySizeForCanvas(STATE.canvas, STATE.delivery_purpose);
-        }
     }
 
     function initState() {
         initTier1State();
         initTier2State();
+        initTier3State();
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -1582,11 +2045,8 @@
         ov.style.display = "flex";
     }
 
-    // ---- tier-1 submit + re-derive transition ---------------------------
-    function submitTier1() {
-        var btn = document.getElementById("btn-confirm");
-        // Anchors only — the page stays open; the AI re-derives Tier 2 and the
-        // same browser session renders it (STATE is preserved across the poll).
+    // ---- staged submit + re-derive transitions --------------------------
+    function tier1Payload() {
         var payload = {
             stage: "tier1",
             canvas: STATE.canvas,
@@ -1596,27 +2056,49 @@
             visual_style: STATE.visual_style
         };
         // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
-        // On a non-PPT canvas the control is never shown, so STATE holds an unseen
-        // default — do NOT write it as a confirmed anchor, or it would steer the
-        // Tier-2 page-count / density re-derivation behind the user's back. (The
-        // final submit drops it for non-PPT the same way, via normalizeTypographyForSubmit.)
-        if (isPptCanvas(STATE.canvas)) {
-            payload.delivery_purpose = STATE.delivery_purpose;
-        }
+        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
+        return payload;
+    }
+
+    function tier2Payload() {
+        var payload = {
+            stage: "tier2",
+            canvas: STATE.canvas,
+            audience: STATE.audience,
+            content_divergence: STATE.content_divergence,
+            mode: STATE.mode,
+            visual_style: STATE.visual_style,
+            page_count: STATE.page_count,
+            color: STATE.color,
+            icons: STATE.icons,
+            typography: STATE.typography,
+            formula_policy: STATE.formula_policy
+        };
+        if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
+        normalizeTypographyForSubmit(payload);
+        return payload;
+    }
+
+    function submitStage(payload, nextTier) {
+        var btn = document.getElementById("btn-confirm");
         btn.disabled = true;
         fetch("/api/confirm", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         }).then(function (r) {
-            if (!r.ok) throw new Error("tier1 failed");
+            if (!r.ok) throw new Error("stage submit failed");
             showDeriving();
-            pollForTier2();
+            pollForTier(nextTier);
         }).catch(function () {
             btn.disabled = false;
             document.getElementById("confirm-status").textContent = t("error_retry");
         });
     }
+
+    function submitTier1() { submitStage(tier1Payload(), 2); }
+
+    function submitTier2() { submitStage(tier2Payload(), 3); }
 
     function showDeriving() {
         document.getElementById("sections").style.display = "none";
@@ -1627,26 +2109,30 @@
     }
 
     // Poll the recommendations endpoint (no-store) until the AI overwrites it with
-    // the re-derived Tier 2, then render Tier 2 in the same session.
-    function pollForTier2() {
+    // the next re-derived tier, then render it in the same session.
+    function pollForTier(nextTier) {
         fetch("/api/recommendations", { cache: "no-store" })
             .then(function (r) { if (!r.ok) throw new Error("poll failed"); return r.json(); })
             .then(function (data) {
-                if (data && data.tier === 2) { enterTier2(data); }
-                else { setTimeout(pollForTier2, 1200); }
-            })
-            .catch(function () { setTimeout(pollForTier2, 1500); });
+                if (data && String(data.tier) === String(nextTier)) { enterTier(data, nextTier); }
+                else { setTimeout(function () { pollForTier(nextTier); }, 1200); }
+            }).catch(function (err) {
+                var l = document.getElementById("loading");
+                if (l) l.textContent = t("load_error") + " " + (err && err.message ? err.message : "");
+                setTimeout(function () { pollForTier(nextTier); }, 1500);
+            });
     }
 
-    function enterTier2(data) {
+    function enterTier(data, tier) {
         REC = data;
-        initTier2State();   // re-read realization fields; tier-1 STATE preserved
-        STAGE = 2;
+        if (tier === 2) initTier2State();
+        if (tier === 3) initTier3State();
+        STAGE = tier;
         document.getElementById("loading").style.display = "none";
         document.getElementById("sections").style.display = "block";
         document.getElementById("actionbar").style.display = "flex";
         document.getElementById("confirm-status").textContent = "";
-        renderForTier(2);
+        renderForTier(tier);
     }
 
     function confirm() {
@@ -1700,6 +2186,18 @@
         return fetch("/api/catalogs")
             .then(function (r) { if (r.ok) return r.json(); throw new Error("no api"); })
             .catch(function () { return fetch("/static/catalogs.json").then(function (r) { return r.json(); }); });
+    }
+
+    function loadIconPreviews() {
+        return fetch("/api/icon-previews")
+            .then(function (r) { if (r.ok) return r.json(); throw new Error("no icon preview api"); })
+            .catch(function () { return {}; });
+    }
+
+    function loadAiImageComparison() {
+        return fetch("/api/ai-image-comparison")
+            .then(function (r) { if (r.ok) return r.json(); throw new Error("no ai image comparison api"); })
+            .catch(function () { return {}; });
     }
 
     function boot() {
@@ -1779,23 +2277,30 @@
             if (!langMenu.hidden) setMenuOpen(false);
         });
         document.getElementById("btn-confirm").addEventListener("click", function () {
-            if (STAGE === 1) { submitTier1(); } else { confirm(); }
+            if (STAGE === 1) submitTier1();
+            else if (STAGE === 2) submitTier2();
+            else confirm();
         });
 
         Promise.all([
             loadCatalogs(),
-            fetch("/api/recommendations").then(function (r) { if (!r.ok) throw new Error("load failed"); return r.json(); })
+            fetch("/api/recommendations").then(function (r) { if (!r.ok) throw new Error("load failed"); return r.json(); }),
+            loadIconPreviews(),
+            loadAiImageComparison()
         ]).then(function (res) {
             CAT = res[0];
             REC = res[1];
+            ICON_PREVIEWS = res[2] || {};
+            AI_IMAGE_COMPARISON = res[3] || {};
             if (REC.lang === "zh" || REC.lang === "en" || REC.lang === "ja") {
                 var hasStored = false;
                 try { hasStored = !!window.localStorage.getItem("ppt_lang"); } catch (e) { /* ignore */ }
                 if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
             }
             initState();
-            // tier 1 / 2 from the recommendations; absent → legacy single-pass.
-            STAGE = (REC.tier === 1) ? 1 : (REC.tier === 2 ? 2 : "all");
+            // tier 1 / 2 / 3 from the recommendations; absent → legacy single-pass.
+            STAGE = (String(REC.tier) === "1") ? 1 :
+                (String(REC.tier) === "2" ? 2 : (String(REC.tier) === "3" ? 3 : "all"));
             document.getElementById("loading").style.display = "none";
             document.getElementById("sections").style.display = "block";
             document.getElementById("actionbar").style.display = "flex";
