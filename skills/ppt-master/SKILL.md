@@ -665,9 +665,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > layout-tight page must keep every dy-stacked line as its own text frame. The
 > merge detector is conservative; mixed-layout text falls back to per-line frames.
 
-> **Native table/chart objects** — supported data charts carry
-> `data-pptx-native` markers by default (Executor transcribes them at draw
-> time; see `references/executor-base.md` §3.2) and the markers stay dormant.
+> **Native table/chart objects** — supported data charts and pure text-grid
+> tables carry `data-pptx-native` markers by default (Executor transcribes
+> them at draw time; see `references/executor-base.md` §3.2) and the markers
+> stay dormant.
 > Add `--native-objects` only when the user explicitly wants
 > PowerPoint-editable native tables/charts and accepts that those objects may
 > render differently across PowerPoint / Keynote / LibreOffice / WPS. Without
