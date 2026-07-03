@@ -189,11 +189,15 @@ sudo apt install pandoc
 
 PPT Master runs in **any tool with agent capability** — read/write files, execute commands, and sustain multi-turn conversation.
 
+Never used one of these? Don't worry — in this project they play exactly one role: an AI chat window that can read and write files. Pick any tool from the table, install it, and you'll only ever use its chat panel. No coding involved.
+
+> **Author's pick: [Claude Code](https://claude.ai/code)** — the environment this project is developed and tested on most thoroughly, as the CLI or the VS Code / JetBrains extension.
+
 | Type | Examples | Notes |
 |---|---|---|
-| **IDE-native agent** | • VS Code architecture ([VS Code](https://code.visualstudio.com/) itself, plus forks & derivatives): [Cursor](https://cursor.sh/), Trae, Codebuddy IDE, [Windsurf](https://codeium.com/windsurf), Void, etc.<br>• Other architectures: [Zed](https://zed.dev/), etc. | Editor with a built-in agent |
-| **IDE plugin / extension** | [GitHub Copilot](https://github.com/features/copilot), [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [Cline](https://cline.bot/), [Continue](https://continue.dev/), Roo Code, etc. | Installed inside hosts like VS Code or JetBrains |
-| **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), [Aider](https://aider.chat/), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
+| **IDE-native agent** | • VS Code architecture ([VS Code](https://code.visualstudio.com/) itself, plus forks & derivatives): [Cursor](https://cursor.sh/), Trae, Codebuddy IDE, [Windsurf](https://codeium.com/windsurf), etc.<br>• Other architectures: [Zed](https://zed.dev/), etc. | Editor with a built-in agent |
+| **IDE plugin / extension** | [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [GitHub Copilot](https://github.com/features/copilot), [Cline](https://cline.bot/), etc. | Installed inside hosts like VS Code or JetBrains |
+| **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
 
 > **Model recommendation**: for the best results, use **Claude Opus** with `gpt-image-2`; **Gemini 3.5 Flash** currently offers great overall value for money — notably fast and well worth a try.
 
@@ -234,6 +238,8 @@ To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.p
 > Both install paths above only fetch the skill files (not the full repo); you still need to `pip install -r requirements.txt` from the installed location for the post-processing scripts to run.
 
 ### 4. Create
+
+**First, open the project folder in your agent:** the goal is to point the AI at the `ppt-master` directory you unzipped / cloned in the previous step. In an IDE-type tool, use **File → Open Folder** — the AI chat panel is usually in the sidebar; in a CLI agent, `cd ppt-master` first, then launch it. Everything from here on happens in the chat.
 
 **Provide source materials (recommended):** Place your PDF, DOCX, images, or other files in the `projects/` directory, then tell the AI chat panel which files to use. The quickest way to get the path: right-click the file in your file manager or IDE sidebar → **Copy Path** (or **Copy Relative Path**) and paste it directly into the chat.
 
