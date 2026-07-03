@@ -13,7 +13,14 @@
                 <h1 data-i18n="page_title">PPT Master - Confirm Design</h1>
                 <p id="topbar-hint" data-i18n="topbar_hint">After confirming, return to the chat and say “done”.</p>
             </div>
-            <button id="btn-lang-toggle" class="btn-lang-toggle" title="Switch language">中</button>
+            <div class="lang-select">
+                <button id="btn-lang-toggle" class="lang-select-btn" type="button" title="Switch language" aria-haspopup="listbox" aria-expanded="false"><span id="lang-current"></span><span class="lang-caret" aria-hidden="true">▾</span></button>
+                <ul id="lang-menu" class="lang-menu" role="listbox" hidden>
+                    <li role="option" tabindex="0" aria-selected="false" data-lang="zh">中文</li>
+                    <li role="option" tabindex="0" aria-selected="false" data-lang="en">English</li>
+                    <li role="option" tabindex="0" aria-selected="false" data-lang="ja">日本語</li>
+                </ul>
+            </div>
         </div>
     </header>
 
