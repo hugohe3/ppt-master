@@ -331,7 +331,7 @@ Chart SVGs referenced in **VII. Visualization Reference List** are loaded once v
 - **Freely adjust**: composition, axis ranges, grid, legend, spacing, decoration — as long as the chart stays accurate and readable
 - **Forbidden**: changing visualization type without spec justification; omitting data points or structural elements from the outline
 
-> Templates: `templates/charts/` (70 types). Index: `templates/charts/charts_index.json`
+> Templates: `templates/charts/` (76 types). Index: `templates/charts/charts_index.json`
 
 ### 5.1 Chart Coordinate Calibration
 
