@@ -26,6 +26,11 @@
     <g id="donut_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "donut_chart",
+              "x": 140,
+              "y": 165,
+              "width": 523,
+              "height": 385,
               "type": "doughnut",
               "categories": ["Enterprise Services", "Consumer Electronics", "Cloud Computing", "IoT", "Others"],
               "series": [

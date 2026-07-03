@@ -53,6 +53,11 @@
     <g id="grouped_bar_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "grouped_bar_chart",
+              "x": 125,
+              "y": 165,
+              "width": 1055,
+              "height": 439.5,
               "type": "column",
               "categories": ["Q1", "Q2", "Q3", "Q4"],
               "series": [

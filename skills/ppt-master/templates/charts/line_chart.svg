@@ -44,6 +44,11 @@
     <g id="line_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "line_chart",
+              "x": 120,
+              "y": 141,
+              "width": 1063.1,
+              "height": 447.5,
               "type": "line",
               "line_style": "lineMarker",
               "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],

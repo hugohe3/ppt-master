@@ -54,6 +54,11 @@
     <g id="bubble_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "bubble_chart",
+              "x": 20,
+              "y": 122,
+              "width": 1041.45,
+              "height": 506.75,
               "type": "bubble",
               "series": [
                 {"name": "Product A", "points": [[120, 35, 28]]},

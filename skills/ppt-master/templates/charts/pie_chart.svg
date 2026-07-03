@@ -26,6 +26,11 @@
     <g id="pie_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "pie_chart",
+              "x": 229.79,
+              "y": 149,
+              "width": 352.01,
+              "height": 412.8,
               "type": "pie",
               "categories": ["Competitor A", "Competitor B", "Competitor C", "Competitor D", "Others"],
               "series": [

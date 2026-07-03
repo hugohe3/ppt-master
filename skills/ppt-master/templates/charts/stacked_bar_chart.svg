@@ -38,6 +38,11 @@
     <g id="stacked_bar_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "stacked_bar_chart",
+              "x": 120,
+              "y": 121,
+              "width": 960,
+              "height": 462.5,
               "type": "column",
               "grouping": "stacked",
               "categories": ["Q1'24", "Q2'24", "Q3'24", "Q4'24", "Q1'25"],

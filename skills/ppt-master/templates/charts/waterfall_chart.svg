@@ -52,6 +52,11 @@
     <g id="waterfall_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "waterfall_chart",
+              "x": 120,
+              "y": 130,
+              "width": 1080,
+              "height": 483.25,
               "type": "waterfall",
               "categories": ["2024 Profit", "Revenue Growth", "New Products", "Material Costs", "Labor Costs", "Marketing Spend", "Ops Efficiency", "2025 Profit"],
               "values": [280, 120, 65, -45, -35, -25, 40, 400],

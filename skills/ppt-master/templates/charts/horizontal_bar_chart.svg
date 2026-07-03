@@ -39,6 +39,11 @@
     <g id="horizontal_bar_chart" data-pptx-native="chart">
         <metadata data-pptx-native="chart">
             {
+              "name": "horizontal_bar_chart",
+              "x": 290,
+              "y": 140,
+              "width": 940.8,
+              "height": 513.5,
               "type": "bar",
               "categories": [
                 "Brand A (Market Leader)",
