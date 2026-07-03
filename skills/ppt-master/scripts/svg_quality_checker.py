@@ -376,7 +376,7 @@ class SVGQualityChecker:
 
     def _check_viewbox(self, content: str, result: Dict, expected_format: str = None):
         """Check viewBox attribute"""
-        viewbox_match = re.search(r'viewBox="([^"]+)"', content)
+        viewbox_match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
 
         if not viewbox_match:
             result['errors'].append("Missing viewBox attribute")
@@ -1563,11 +1563,14 @@ class SVGQualityChecker:
     @staticmethod
     def _parse_svg_viewbox(content: str) -> Tuple[float, float] | None:
         """Return viewBox width/height from SVG content."""
-        match = re.search(r'viewBox="[^"]*?\s+([0-9.]+)\s+([0-9.]+)"', content)
+        match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
         if not match:
             return None
+        parts = re.split(r'[\s,]+', match.group(1).strip())
+        if len(parts) < 4:
+            return None
         try:
-            return float(match.group(1)), float(match.group(2))
+            return float(parts[2]), float(parts[3])
         except ValueError:
             return None
 

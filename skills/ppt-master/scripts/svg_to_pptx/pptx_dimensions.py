@@ -106,7 +106,7 @@ def get_viewbox_dimensions(svg_path: Path) -> tuple[int, int] | None:
         with open(svg_path, 'r', encoding='utf-8') as f:
             content = f.read(2000)
 
-        match = re.search(r'viewBox="([^"]+)"', content)
+        match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
         if not match:
             return None
 
@@ -137,7 +137,7 @@ def detect_format_from_svg(svg_path: Path) -> str | None:
         with open(svg_path, 'r', encoding='utf-8') as f:
             content = f.read(2000)
 
-        match = re.search(r'viewBox="([^"]+)"', content)
+        match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
         if match:
             viewbox = match.group(1)
             for fmt_key, fmt_info in CANVAS_FORMATS.items():

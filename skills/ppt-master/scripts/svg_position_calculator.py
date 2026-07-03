@@ -1007,7 +1007,7 @@ def analyze_svg_file(svg_file: str) -> None:
     print(f"{'='*70}")
 
     # Extract viewBox
-    viewbox_match = re.search(r'viewBox="([^"]+)"', content)
+    viewbox_match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
     if viewbox_match:
         print(f"Canvas viewBox: {viewbox_match.group(1)}")
 
