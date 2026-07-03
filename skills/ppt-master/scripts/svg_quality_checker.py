@@ -297,31 +297,28 @@ class SVGQualityChecker:
                 # 4. Check fonts
                 self._check_fonts(content, result)
 
-                # 5. Check width/height consistency with viewBox
-                self._check_dimensions(content, result)
-
-                # 6. Check text wrapping methods
+                # 5. Check text wrapping methods
                 self._check_text_elements(content, result)
 
-                # 7. Check image references (file existence and resolution)
+                # 6. Check image references (file existence and resolution)
                 self._check_image_references(content, svg_path, result)
 
-                # 8. Check object-level animation anchor quality.
+                # 7. Check object-level animation anchor quality.
                 self._check_animation_group_ids(content, result)
 
-                # 8b. Check <pattern> elements declare a PPTX preset.
+                # 7b. Check <pattern> elements declare a PPTX preset.
                 self._check_pattern_fills(content, result)
 
-                # 8c. Check opt-in native table/chart markers before export.
+                # 7c. Check opt-in native table/chart markers before export.
                 self._check_native_object_markers(content, result)
 
-                # 9. Check spec_lock drift (colors / font-family / font-size).
+                # 8. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
                 #    mode to avoid noise.
                 if not self.template_mode:
                     self._check_spec_lock_drift(content, svg_path, result)
 
-                # 10. Check web-sourced image attribution. Templates don't carry
+                # 9. Check web-sourced image attribution. Templates don't carry
                 #    image_sources.json; skip in template mode.
                 if not self.template_mode:
                     self._check_sourced_image_attribution(content, svg_path, result)
@@ -565,27 +562,6 @@ class SVGQualityChecker:
                     f"Times New Roman / Consolas): {font_family}"
                 )
                 break
-
-    def _check_dimensions(self, content: str, result: Dict):
-        """Check width/height consistency with viewBox"""
-        width_match = re.search(r'width="(\d+)"', content)
-        height_match = re.search(r'height="(\d+)"', content)
-
-        if width_match and height_match:
-            width = width_match.group(1)
-            height = height_match.group(1)
-            result['info']['dimensions'] = f"{width}x{height}"
-
-            # Check consistency with viewBox
-            if 'viewbox' in result['info']:
-                viewbox_parts = result['info']['viewbox'].split()
-                if len(viewbox_parts) == 4:
-                    vb_width, vb_height = viewbox_parts[2], viewbox_parts[3]
-                    if width != vb_width or height != vb_height:
-                        result['warnings'].append(
-                            f"width/height ({width}x{height}) does not match viewBox "
-                            f"({vb_width}x{vb_height})"
-                        )
 
     def _check_text_elements(self, content: str, result: Dict):
         """Check text elements and wrapping methods"""
