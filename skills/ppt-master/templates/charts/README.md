@@ -14,9 +14,9 @@ See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typograp
 
 ## Native editable export markers
 
-Supported data chart templates include a `<g data-pptx-native="chart">` marker by default. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart using the JSON metadata inside the child `<metadata data-pptx-native="chart">` node.
+Supported data chart templates include a `<g data-pptx-native="chart">` marker by default, and pure text-grid table templates include a `<g data-pptx-native="table">` marker the same way. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart or table using the JSON metadata inside the child `<metadata data-pptx-native="...">` node.
 
-Native chart marker authoring is default for supported data charts; native object activation is opt-in via `--native-objects`. Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable chart frame aligns with the fallback drawing. Keep legends, explanatory cards, and source notes outside the marker when they should remain as separate editable shapes.
+Native marker authoring is default for supported data charts and text-grid tables; native object activation is opt-in via `--native-objects`. Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable frame aligns with the fallback drawing. Keep legends, explanatory cards, and source notes outside the marker when they should remain as separate editable shapes. Tables with merged, spanning, or graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route.
 
 | Family | Native-marker templates | Use when |
 |---|---|---|
@@ -25,6 +25,7 @@ Native chart marker authoring is default for supported data charts; native objec
 | Part-to-whole | `pie_chart`, `donut_chart`, `pie_of_pie_chart`, `bar_of_pie_chart`, `treemap_chart`, `sunburst_chart` | Showing share, long-tail split, or hierarchy composition |
 | Distribution and relationship | `scatter_chart`, `bubble_chart`, `histogram_chart`, `pareto_chart`, `box_plot_chart` | Showing correlation, spread, frequency, defects, or statistical ranges |
 | Specialty business charts | `waterfall_chart`, `funnel_chart`, `stock_chart`, `radar_chart` | Showing bridges, conversion stages, OHLC movement, or multi-axis capability profiles |
+| Text-grid tables | `basic_table`, `financial_statement_table` | Presenting rectangular text/number grids that should become editable PowerPoint tables |
 
 ## Usage
 
