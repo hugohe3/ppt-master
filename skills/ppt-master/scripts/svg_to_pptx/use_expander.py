@@ -8,7 +8,7 @@ expansion in memory so ``svg_to_pptx`` can consume ``svg_output/`` directly
 without first running the on-disk finalize step.
 
 Public API:
-    expand_use_data_icons(root, icons_dir) -> int
+    expand_use_data_icons(root, icons_dir, fallback_dir=None) -> int
         Walk the SVG element tree, replace every ``<use data-icon="...">``
         with its expanded ``<g>`` group of primitive shapes, and return
         the number of replacements made.
@@ -40,6 +40,7 @@ def _import_embed_icons():
 def _build_replacement_g(
     use_elem: ET.Element,
     icons_dir: Path,
+    fallback_dir: Path | None,
     embed_icons_mod,
 ) -> ET.Element | None:
     """Resolve a single ``<use data-icon="...">`` into an expanded ``<g>``.
@@ -55,7 +56,7 @@ def _build_replacement_g(
         return None
 
     icon_path, _base_size = embed_icons_mod.resolve_icon_path(
-        attrs['icon'], icons_dir,
+        attrs['icon'], icons_dir, fallback_dir,
     )
     if not icon_path.exists():
         return None
@@ -84,12 +85,17 @@ def _build_replacement_g(
     return None
 
 
-def expand_use_data_icons(root: ET.Element, icons_dir: Path) -> int:
+def expand_use_data_icons(
+    root: ET.Element,
+    icons_dir: Path,
+    fallback_dir: Path | None = None,
+) -> int:
     """Replace every ``<use data-icon="...">`` in *root* with its expansion.
 
     Walks the tree, finds use elements that carry a ``data-icon`` attribute,
-    builds a new ``<g>`` subtree from the corresponding icon library, and
-    swaps it into the parent element at the same position.
+    builds a new ``<g>`` subtree from the project icon library (falling back to
+    the global library when supplied), and swaps it into the parent element at
+    the same position.
 
     Returns the number of placeholders successfully expanded. Unresolvable
     placeholders are left in place so callers can decide whether to warn.
@@ -116,7 +122,7 @@ def expand_use_data_icons(root: ET.Element, icons_dir: Path) -> int:
         parent = parent_of.get(use_elem)
         if parent is None:
             continue
-        replacement = _build_replacement_g(use_elem, icons_dir, embed_icons_mod)
+        replacement = _build_replacement_g(use_elem, icons_dir, fallback_dir, embed_icons_mod)
         if replacement is None:
             continue
         idx = list(parent).index(use_elem)

@@ -20,9 +20,7 @@ Unified post-processing entry point. This is the preferred way to run SVG cleanu
 
 It aggregates:
 - `embed_icons.py`
-- `crop_images.py`
-- `fix_image_aspect.py`
-- `embed_images.py`
+- `align_embed_images.py` (`crop-images` / `fix-aspect` / `embed-images` aliases route here)
 - `flatten_tspan.py`
 - `svg_rect_to_path.py`
 
@@ -179,15 +177,18 @@ python3 scripts/svg_finalize/svg_rect_to_path.py path/to/file.svg
 
 Use when rounded corners must survive PowerPoint shape conversion.
 
-### `fix_image_aspect.py`
+### `align_embed_images.py`
 
 ```bash
-python3 scripts/svg_finalize/fix_image_aspect.py path/to/slide.svg
-python3 scripts/svg_finalize/fix_image_aspect.py 01_cover.svg 02_toc.svg
-python3 scripts/svg_finalize/fix_image_aspect.py --dry-run path/to/slide.svg
+python3 scripts/svg_finalize/align_embed_images.py path/to/slide.svg
+python3 scripts/svg_finalize/align_embed_images.py --dry-run path/to/slide.svg
 ```
 
-Use when embedded images stretch after PowerPoint shape conversion.
+Use for rare single-file diagnostics when image `slice` / `meet` alignment and
+Base64 embedding must be inspected outside `finalize_svg.py`. In normal project
+runs, use `python3 scripts/finalize_svg.py <project_path>`; the old
+`crop-images`, `fix-aspect`, and `embed-images` names remain accepted only as
+`finalize_svg.py --only` aliases for the merged `align-images` step.
 
 ### `embed_icons.py`
 
@@ -209,7 +210,7 @@ Use PowerPoint-safe transparency syntax:
 | `<g opacity=\"...\">` | Set opacity on each child |
 | `<image opacity=\"...\">` | Overlay with a mask layer |
 
-PowerPoint also has trouble with:
-- marker-based arrows
-- unsupported filters
-- direct SVG features not mapped to DrawingML
+PowerPoint also has trouble with unsupported filters and direct SVG features
+not mapped to DrawingML. Connector arrows may use qualified
+`marker-start` / `marker-end`; chunky or exotic arrows should be standalone
+`<path>` / `<polygon>` shapes.
