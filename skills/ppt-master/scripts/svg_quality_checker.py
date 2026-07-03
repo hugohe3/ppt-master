@@ -46,6 +46,13 @@ except ImportError:
     _validate_animation_config = None
 
 try:
+    from svg_to_pptx.drawingml_utils import (
+        parse_font_family as _parse_export_font_family,
+    )
+except ImportError:
+    _parse_export_font_family = None
+
+try:
     from svg_to_pptx.native_objects import (
         validate_native_object_marker as _validate_native_object_marker,
     )
@@ -69,6 +76,21 @@ except ImportError:
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 SVG_NS = "http://www.w3.org/2000/svg"
+
+# Fonts that survive direct PPTX typeface assignment on a typical Windows /
+# macOS viewer without requiring a custom install. Keep this aligned with
+# strategist.md §g and drawingml_utils.FONT_FALLBACK_WIN.
+PPT_SAFE_FONTS = {
+    'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
+    'dengxian', 'microsoft jhenghei',
+    'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
+    'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
+    'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
+    'times new roman', 'times', 'georgia', 'cambria', 'palatino',
+    'garamond', 'book antiqua',
+    'consolas', 'courier new', 'menlo', 'monaco',
+    'impact',
+}
 
 # Ramp envelope for font-size drift detection.
 # From design_spec_reference.md §IV — Font Size Hierarchy: the ramp spans
@@ -518,50 +540,52 @@ class SVGQualityChecker:
     def _check_fonts(self, content: str, result: Dict):
         """Check font usage.
 
-        PPTX stores a single `typeface` per run with no runtime fallback, so every
-        stack must END with a cross-platform pre-installed family. See
-        strategist.md §g "PPT-safe font discipline".
+        PPTX stores concrete typefaces per run with no CSS fallback. The
+        converter resolves each SVG font stack to exported latin / EA typefaces;
+        validate those exported values rather than the visual-preview tail.
         """
-        font_matches = re.findall(
-            r'font-family[:\s]*["\']([^"\']+)["\']', content, re.IGNORECASE)
+        font_matches = self._font_family_values(content)
 
         if not font_matches:
             return
 
-        result['info']['fonts'] = list(set(font_matches))
-
-        # Pre-installed on Windows + macOS out of the box (plus their direct
-        # FONT_FALLBACK_WIN mappings). A stack whose last concrete family is in
-        # this set survives the PPTX round-trip on any viewer machine.
-        ppt_safe_tail = {
-            'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
-            'dengxian', 'microsoft jhenghei',
-            'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
-            'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
-            'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
-            'times new roman', 'times', 'georgia', 'cambria', 'palatino',
-            'consolas', 'courier new', 'menlo', 'monaco',
-            'impact',
-        }
+        result['info']['fonts'] = sorted(set(font_matches))
+        if _parse_export_font_family is None:
+            result['warnings'].append(
+                "Unable to import svg_to_pptx font resolver; skipped exported-font safety check"
+            )
+            return
 
         for font_family in font_matches:
-            # Drop the generic CSS fallback (sans-serif / serif / monospace)
-            # and inspect the last concrete family.
-            parts = [p.strip().strip('"').strip("'").lower()
-                     for p in font_family.split(',')]
-            parts = [p for p in parts
-                     if p and p not in ('sans-serif', 'serif', 'monospace',
-                                        'cursive', 'fantasy', 'system-ui')]
-            if not parts:
-                continue
-            tail = parts[-1]
-            if tail not in ppt_safe_tail:
+            exported = _parse_export_font_family(font_family)
+            unsafe = [
+                f"{role}={family}"
+                for role, family in exported.items()
+                if family.strip().lower() not in PPT_SAFE_FONTS
+            ]
+            if unsafe:
                 result['warnings'].append(
-                    f"Font stack does not end on a PPT-safe family "
-                    f"(expected e.g. Microsoft YaHei / SimSun / Arial / "
-                    f"Times New Roman / Consolas): {font_family}"
+                    "Font stack exports non-PPT-safe typeface(s) to PPTX "
+                    f"({', '.join(unsafe)}): {font_family}"
                 )
                 break
+
+    @staticmethod
+    def _font_family_values(content: str) -> List[str]:
+        """Extract SVG font-family values from attributes and inline styles."""
+        values: List[str] = []
+        for match in re.finditer(r'\bfont-family\s*=\s*(["\'])(.*?)\1', content, re.IGNORECASE):
+            values.append(html.unescape(match.group(2)).strip())
+
+        for match in re.finditer(r'\bstyle\s*=\s*(["\'])(.*?)\1', content, re.IGNORECASE | re.DOTALL):
+            style_value = html.unescape(match.group(2))
+            for part in style_value.split(';'):
+                if ':' not in part:
+                    continue
+                name, value = part.split(':', 1)
+                if name.strip().lower() == 'font-family':
+                    values.append(value.strip())
+        return [value for value in values if value]
 
     def _check_text_elements(self, content: str, result: Dict):
         """Check text elements and wrapping methods"""
@@ -1906,7 +1930,7 @@ class SVGQualityChecker:
             print(f"  1. XML well-formedness: write typography as raw Unicode (—, ©, →, NBSP); escape XML reserved chars as &amp; &lt; &gt; &quot; &apos; — never use HTML named entities like &nbsp; &mdash; &copy;")
             print(f"  2. viewBox issues: Ensure consistency with canvas format (see references/canvas-formats.md)")
             print(f"  3. foreignObject: Use <text> + <tspan> for manual line breaks")
-            print(f"  4. Font issues: end every font-family stack with a PPT-safe family (e.g. Microsoft YaHei / Arial / Consolas)")
+            print(f"  4. Font issues: use PPT-safe exported typefaces (e.g. Microsoft YaHei / Arial / Consolas)")
 
     def _print_animation_summary(self):
         """Print animations.json validation issues if present."""

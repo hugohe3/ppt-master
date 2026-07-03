@@ -266,7 +266,7 @@ class ErrorHelper:
             'message': 'Forbidden web font (@font-face) detected',
             'solutions': [
                 'Remove @font-face declarations',
-                'End every font-family stack with a PPT-safe pre-installed family',
+                'Use font-family stacks that export PPT-safe pre-installed typefaces',
                 'Example: font-family: "Microsoft YaHei", Arial, sans-serif'
             ],
             'severity': 'error'
@@ -290,9 +290,9 @@ class ErrorHelper:
             'severity': 'error'
         },
         'invalid_font': {
-            'message': 'Font stack does not end on a PPT-safe family',
+            'message': 'Font stack exports non-PPT-safe typefaces to PPTX',
             'solutions': [
-                'End the stack with a cross-platform pre-installed family',
+                'Use stacks whose exported Latin / EA typefaces are pre-installed',
                 'CJK: "Microsoft YaHei", sans-serif  |  SimSun, serif',
                 'Latin: Arial, sans-serif  |  "Times New Roman", serif',
                 'Mono: Consolas, "Courier New", monospace',
