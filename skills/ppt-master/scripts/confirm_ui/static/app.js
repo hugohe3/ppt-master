@@ -1,4 +1,4 @@
-/* PPT Master - Eight Confirmations UI
+/* PPT Master - Strategist confirmation stage UI
  * Finite/enumerable fields (canvas, mode, visual style, icons, image usage,
  * AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
@@ -16,7 +16,6 @@
             stage_anchors: "Stage 1 · Direction",
             stage_design: "Stage 2 · Design system",
             stage_images: "Stage 3 · Images & execution",
-            stage_realization: "Stage 2 · Design system",
             loading: "Loading…",
             load_error: "Could not load recommendations.json. The AI must write it before launch.",
             btn_confirm: "Confirm",
@@ -122,7 +121,6 @@
             stage_anchors: "ステージ 1 · 方向性",
             stage_design: "ステージ 2 · デザインシステム",
             stage_images: "ステージ 3 · 画像と実行方法",
-            stage_realization: "ステージ 2 · デザインシステム",
             loading: "読み込み中…",
             load_error: "recommendations.json を読み込めませんでした。起動前にAIが書き込む必要があります。",
             btn_confirm: "確定",
@@ -228,7 +226,6 @@
             stage_anchors: "第一阶段 · 方向确认",
             stage_design: "第二阶段 · 设计系统",
             stage_images: "第三阶段 · 图片与执行方式",
-            stage_realization: "第二阶段 · 设计系统",
             loading: "加载中…",
             load_error: "无法加载推荐文件，需在启动前写入。",
             btn_confirm: "确认",
@@ -644,7 +641,7 @@
     }
 
     // Section numbers run 1..N within the stage currently rendered; the counter is
-    // reset at the top of renderForTier. The legacy `num` arg is ignored so each
+    // reset at the top of renderForStage. The legacy `num` arg is ignored so each
     // stage numbers its own sections cleanly (stage 2 is not a continuation of 1).
     var _secCounter = 0;
     function section(num, titleKey, noteText) {
@@ -1513,7 +1510,7 @@
         }
     }
 
-    // Combined color + typography + icon preview — not a ninth confirmation, just a
+    // Combined color + typography + icon preview — not a separate confirmation, just a
     // live "overall impression" of the style choices made above. Kept
     // deliberately abstract (a style chip, not a slide layout); page layout
     // preview is the live-preview server's job (Step 6).
@@ -1888,22 +1885,31 @@
 
     // Stage of the staged confirm flow:
     // 1 = direction anchors, 2 = design system, 3 = images/execution,
-    // "all" = legacy single-pass (recommendations.json carried no `tier`).
+    // "all" = legacy single-pass (recommendations.json carried no stage).
     var STAGE = 1;
 
-    function stageTitle(tier) {
-        if (tier === 1) return t("stage_anchors");
-        if (tier === 2) return t("stage_design");
-        if (tier === 3) return t("stage_images");
+    function stageNumber(data) {
+        var raw = data && data.stage != null ? data.stage : (data && data.tier);
+        raw = String(raw == null ? "" : raw).toLowerCase();
+        if (raw === "1" || raw === "stage1" || raw === "tier1") return 1;
+        if (raw === "2" || raw === "stage2" || raw === "tier2") return 2;
+        if (raw === "3" || raw === "stage3" || raw === "tier3") return 3;
+        return "all";
+    }
+
+    function stageTitle(stage) {
+        if (stage === 1) return t("stage_anchors");
+        if (stage === 2) return t("stage_design");
+        if (stage === 3) return t("stage_images");
         return t("page_title");
     }
 
-    function renderForTier(tier) {
+    function renderForStage(stage) {
         var host = document.getElementById("sections");
         host.innerHTML = "";
         _secCounter = 0;
         var heading = document.querySelector("#topbar .topbar-titles h1");
-        if (heading) heading.textContent = stageTitle(tier);
+        if (heading) heading.textContent = stageTitle(stage);
         // Detach the previous preview's repaint closures before the sections
         // re-render: color/typography auto-select would otherwise call them and
         // write to now-detached nodes until renderStylePreview remounts them.
@@ -1914,14 +1920,14 @@
         refreshSizeInputs = function () {};
         var previewHost = document.getElementById("topbar-preview");
         if (previewHost) previewHost.innerHTML = "";
-        if (tier === 1) {
+        if (stage === 1) {
             if (previewHost) renderDirectionPreview(previewHost);
             // Direction anchors — Stage 2 is re-derived from these.
             // Delivery purpose rides inside renderAudience (§c key info).
             renderCanvas(host);
             renderAudience(host);
             renderStyle(host);
-        } else if (tier === 2) {
+        } else if (stage === 2) {
             if (previewHost) renderStylePreview(previewHost);
             renderPages(host);
             // Group the three sections reflected by the fixed preview strip.
@@ -1930,7 +1936,7 @@
             renderIcons(styleGroup);
             renderTypography(styleGroup);
             host.appendChild(styleGroup);
-        } else if (tier === 3) {
+        } else if (stage === 3) {
             if (previewHost) renderImageStrategyPreview(previewHost);
             renderImages(host);
             renderMode(host);
@@ -1951,16 +1957,16 @@
             renderMode(host);
             renderRefine(host);
         }
-        updateActionBar(tier);
+        updateActionBar(stage);
     }
 
-    function renderAll() { renderForTier(STAGE); }
+    function renderAll() { renderForStage(STAGE); }
 
-    function updateActionBar(tier) {
+    function updateActionBar(stage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = false;
         // Stage 1/2 advance; Stage 3 / single-pass confirm.
-        btn.textContent = (tier === 1 || tier === 2) ? t("btn_next") : t("btn_confirm");
+        btn.textContent = (stage === 1 || stage === 2) ? t("btn_next") : t("btn_confirm");
     }
 
     // ---- state init (once) ----------------------------------------------
@@ -1973,7 +1979,7 @@
         return recOrFirst(field, catList);
     }
 
-    function initTier1State() {
+    function initStage1State() {
         STATE.canvas = pick("canvas", CAT.canvas);
         STATE.audience = (REC.audience && REC.audience.value) || "";
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
@@ -1985,10 +1991,10 @@
     }
 
     // Stage-2 fields are (re-)read from the recommendations. At boot they come from
-    // whatever recommendations.json carried; after a stage-1 confirm enterTier()
+    // whatever recommendations.json carried; after a stage-1 confirm enterStage()
     // calls this again with the re-derived candidates. Stage-1 STATE is preserved
     // across the single-session transition — this never resets the anchors.
-    function initTier2State() {
+    function initStage2State() {
         STATE.page_count = (REC.page_count && REC.page_count.value != null) ? String(REC.page_count.value) : (STATE.page_count || "");
 
         var cc = (REC.color && REC.color.candidates) || [];
@@ -2018,7 +2024,7 @@
         }
     }
 
-    function initTier3State() {
+    function initStage3State() {
         var rawImageUsage = recValue("image_usage");
         STATE.image_usage = selectedImageUsageIds(rawImageUsage);
         if (!STATE.image_usage.length) {
@@ -2032,9 +2038,9 @@
     }
 
     function initState() {
-        initTier1State();
-        initTier2State();
-        initTier3State();
+        initStage1State();
+        initStage2State();
+        initStage3State();
     }
 
     // ---- confirm + close -------------------------------------------------
@@ -2046,9 +2052,9 @@
     }
 
     // ---- staged submit + re-derive transitions --------------------------
-    function tier1Payload() {
+    function stage1Payload() {
         var payload = {
-            stage: "tier1",
+            stage: "stage1",
             canvas: STATE.canvas,
             audience: STATE.audience,
             content_divergence: STATE.content_divergence,
@@ -2060,9 +2066,9 @@
         return payload;
     }
 
-    function tier2Payload() {
+    function stage2Payload() {
         var payload = {
-            stage: "tier2",
+            stage: "stage2",
             canvas: STATE.canvas,
             audience: STATE.audience,
             content_divergence: STATE.content_divergence,
@@ -2079,7 +2085,7 @@
         return payload;
     }
 
-    function submitStage(payload, nextTier) {
+    function submitStage(payload, nextStage) {
         var btn = document.getElementById("btn-confirm");
         btn.disabled = true;
         fetch("/api/confirm", {
@@ -2089,16 +2095,16 @@
         }).then(function (r) {
             if (!r.ok) throw new Error("stage submit failed");
             showDeriving();
-            pollForTier(nextTier);
+            pollForStage(nextStage);
         }).catch(function () {
             btn.disabled = false;
             document.getElementById("confirm-status").textContent = t("error_retry");
         });
     }
 
-    function submitTier1() { submitStage(tier1Payload(), 2); }
+    function submitStage1() { submitStage(stage1Payload(), 2); }
 
-    function submitTier2() { submitStage(tier2Payload(), 3); }
+    function submitStage2() { submitStage(stage2Payload(), 3); }
 
     function showDeriving() {
         document.getElementById("sections").style.display = "none";
@@ -2109,30 +2115,30 @@
     }
 
     // Poll the recommendations endpoint (no-store) until the AI overwrites it with
-    // the next re-derived tier, then render it in the same session.
-    function pollForTier(nextTier) {
+    // the next re-derived stage, then render it in the same session.
+    function pollForStage(nextStage) {
         fetch("/api/recommendations", { cache: "no-store" })
             .then(function (r) { if (!r.ok) throw new Error("poll failed"); return r.json(); })
             .then(function (data) {
-                if (data && String(data.tier) === String(nextTier)) { enterTier(data, nextTier); }
-                else { setTimeout(function () { pollForTier(nextTier); }, 1200); }
+                if (data && stageNumber(data) === nextStage) { enterStage(data, nextStage); }
+                else { setTimeout(function () { pollForStage(nextStage); }, 1200); }
             }).catch(function (err) {
                 var l = document.getElementById("loading");
                 if (l) l.textContent = t("load_error") + " " + (err && err.message ? err.message : "");
-                setTimeout(function () { pollForTier(nextTier); }, 1500);
+                setTimeout(function () { pollForStage(nextStage); }, 1500);
             });
     }
 
-    function enterTier(data, tier) {
+    function enterStage(data, stage) {
         REC = data;
-        if (tier === 2) initTier2State();
-        if (tier === 3) initTier3State();
-        STAGE = tier;
+        if (stage === 2) initStage2State();
+        if (stage === 3) initStage3State();
+        STAGE = stage;
         document.getElementById("loading").style.display = "none";
         document.getElementById("sections").style.display = "block";
         document.getElementById("actionbar").style.display = "flex";
         document.getElementById("confirm-status").textContent = "";
-        renderForTier(tier);
+        renderForStage(stage);
     }
 
     function confirm() {
@@ -2277,8 +2283,8 @@
             if (!langMenu.hidden) setMenuOpen(false);
         });
         document.getElementById("btn-confirm").addEventListener("click", function () {
-            if (STAGE === 1) submitTier1();
-            else if (STAGE === 2) submitTier2();
+            if (STAGE === 1) submitStage1();
+            else if (STAGE === 2) submitStage2();
             else confirm();
         });
 
@@ -2298,9 +2304,8 @@
                 if (!hasStored) { LANG = REC.lang; applyStaticTranslations(); refreshLangToggle(toggleBtn); }
             }
             initState();
-            // tier 1 / 2 / 3 from the recommendations; absent → legacy single-pass.
-            STAGE = (String(REC.tier) === "1") ? 1 :
-                (String(REC.tier) === "2" ? 2 : (String(REC.tier) === "3" ? 3 : "all"));
+            // stage 1 / 2 / 3 from the recommendations; absent → legacy single-pass.
+            STAGE = stageNumber(REC);
             document.getElementById("loading").style.display = "none";
             document.getElementById("sections").style.display = "block";
             document.getElementById("actionbar").style.display = "flex";

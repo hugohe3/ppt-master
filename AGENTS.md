@@ -8,7 +8,7 @@ This file is the project entry point for general AI agents.
 
 PPT Master is an AI-driven presentation generation system. Multi-role collaboration (Strategist → Image_Generator → Executor) converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
 
-**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist Eight Confirmations → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export PPTX`
+**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist confirmation stage → [Image_Generator] → Executor Live Preview → Quality Check → Post-processing → Export PPTX`
 
 **Route selection authority**: [`skills/ppt-master/workflows/routing.md`](skills/ppt-master/workflows/routing.md) owns the complete route matrix. The hard boundaries below stay inline because they bypass or redirect the main pipeline and are the most expensive to misroute.
 
@@ -53,7 +53,7 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 # Icon selection — copy chosen library icons into <project>/icons/ (missing names reported + non-zero = re-pick)
 python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name>...]
 
-# Step 4 Eight Confirmations — interactive visual page (default auto-launch; chat fallback)
+# Step 4 Strategist confirmation stage — interactive visual page (default auto-launch; chat fallback)
 python3 skills/ppt-master/scripts/confirm_ui/server.py <project_path> --daemon --wait
 
 # Image tools and SVG quality check
