@@ -528,28 +528,62 @@ body.svg-dragging * {
     flex-shrink: 0;
 }
 
-.btn-lang-toggle {
+.lang-select {
     position: absolute;
     top: 10px;
     right: 12px;
-    z-index: 2;
+    z-index: 5;
+}
+
+.lang-select-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     min-width: 34px;
     padding: 3px 10px;
     font-size: 12px;
     font-weight: 600;
     color: #c0c0d8;
-    background: transparent;
+    background: #1e1e3a;
     border: 1px solid #3a3a5a;
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.btn-lang-toggle:hover {
+.lang-select-btn:hover {
     color: #ffffff;
     background: #2a2a4a;
     border-color: #5a5a7a;
 }
+
+.lang-caret { font-size: 9px; color: #8a8aa8; }
+
+.lang-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    min-width: 96px;
+    background: #1e1e3a;
+    border: 1px solid #3a3a5a;
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.lang-menu li {
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #c0c0d8;
+    cursor: pointer;
+}
+
+.lang-menu li:hover,
+.lang-menu li:focus { background: #2a2a4a; color: #ffffff; }
+.lang-menu li.selected { color: #ffffff; font-weight: 600; }
 
 #btn-save {
     padding: 11px 0;

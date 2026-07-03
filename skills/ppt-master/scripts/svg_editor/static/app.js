@@ -83,6 +83,82 @@
             nav_counter: "{current} / {total}",
             nav_empty: "— / —"
         },
+        ja: {
+            page_title: "PPT Master - ライブプレビュー",
+            panel_slides: "スライド",
+            panel_annotations: "注釈",
+            panel_edit_annotate: "編集 / 注釈",
+            placeholder_select_slide: "左のスライドを選択して開始",
+            label_selected_element: "選択中の要素",
+            empty_selected_element: "スライド上の要素をクリックして選択",
+            btn_select_group: "親グループを選択",
+            label_batch_edit: "一括編集",
+            label_group_edit: "グループ編集",
+            section_geometry: "位置・サイズ",
+            section_style: "スタイル",
+            section_text_style: "テキスト",
+            section_raw_attrs: "生の属性",
+            label_edit_instruction: "編集指示",
+            pending_none: "未適用の変更はありません",
+            pending_summary: "直接編集{edits}件、AI注釈のあるページ{annotations}件が未適用",
+            pending_pages: "対象ページ：{pages}",
+            quick_align: "整列 / 移動",
+            quick_resize: "サイズ変更",
+            quick_replace_image: "画像を差し替え",
+            quick_copy: "文言を修正",
+            quick_relayout: "この領域を再レイアウト",
+            placeholder_annotation: "この要素をAIにどう修正してほしいか記述…",
+            placeholder_annotation_multi: "選択した{count}個の要素をどう修正するか記述…",
+            btn_add_annotation: "注釈を追加",
+            label_annotations_on_slide: "このスライドの注釈",
+            btn_submit_annotations: "変更を適用",
+            btn_exit_preview: "プレビューを終了",
+            modal_submit: "送信",
+            modal_cancel: "キャンセル",
+            empty_waiting_slides: "スライドの生成を待っています…",
+            empty_no_slides: "スライドが見つかりません",
+            placeholder_live_ready: "ライブプレビュー準備完了。生成されたスライドがここに表示されます。",
+            placeholder_slide_writing: "スライドはまだ書き込み中です。次の更新を待っています…",
+            empty_annotations: "注釈はまだありません",
+            tooltip_remove_annotation: "注釈を削除",
+            multi_selected: "{count}個の要素を選択中",
+            multi_mixed: "混在",
+            err_load_slides: "スライド一覧の読み込みに失敗: ",
+            err_load_slide: "スライドの読み込みに失敗: ",
+            err_add_annotation: "注釈の追加に失敗: ",
+            err_remove_annotation: "注釈の削除に失敗: ",
+            err_save: "保存に失敗: ",
+            err_edit: "編集に失敗: ",
+            label_direct_edit: "オブジェクト属性（「変更を適用」までは保留）",
+            prop_multiline_hint: "複数行テキストです — 文字を編集するには1行（tspan）を選択してください",
+            edit_saved_hint: "変更を一時保存しました。「変更を適用」で svg_output に書き込まれます。",
+            btn_undo: "元に戻す",
+            undo_done: "直前の一時保存済み編集を取り消しました",
+            undo_empty: "取り消せる編集はありません",
+            overlap_caption: "要素が重なっています — 1つ選択してください",
+            err_empty_svg: "スライドは読み込めましたがキャンバスが空です。SVGが不正か、ルート<svg>要素がない可能性があります。",
+            warn_icon_inline: "{count}個のアイコンを描画できませんでした: {names}",
+            warn_svg_no_dims: "SVGにwidth/height属性がありません。shared-standards.md §4に厳密に従い、SVGルート要素にwidthとheightを含めるようAIに依頼してください。",
+            warn_matrix_transform: "このジオメトリ編集は transform matrix として保存されます。プレビューは正確ですが、PPTX出力にはmatrix対応の現行エクスポーターが必要です。",
+            modal_matrix_transform_note: "\n\n注意：一時保存済みのジオメトリ編集に transform matrix を使うものがあります。matrixが反映されるよう、現行のPPTXエクスポーターで再エクスポートしてください。",
+            slide_error_tooltip: "このスライドの解析に失敗: ",
+            reload_banner: "このスライドはディスク上で更新されました。クリックで再読み込み。",
+            modal_confirm_submit: "一時保存済みの直接編集とAI注釈をディスクに書き込みますか？\n\nプレビューサービスは動き続けます。止めたいときは「プレビューを終了」を押してください。",
+            modal_success_submit: "変更を svg_output に保存しました。\n\nプレビューサービスは引き続き動作中です。",
+            modal_success_direct_only: "変更を svg_output に保存しました。\n\n直接編集はSVGソースに反映済みです。PPTXを更新したいときは、チャットに戻って再エクスポートを依頼してください。プレビューサービスは引き続き動作中です。",
+            modal_success_annotations_only: "注釈を svg_output に保存しました。\n\nAIに注釈を解釈・反映させたいときは、チャットに戻って注釈の適用を依頼してください。プレビューサービスは引き続き動作中です。",
+            modal_success_mixed: "直接編集と注釈を svg_output に保存しました。\n\nチャットに戻ってAI判断が必要な注釈の適用を先に依頼し、確認できたらPPTXを再エクスポートしてください。プレビューサービスは引き続き動作中です。",
+            modal_confirm_exit: "プレビューを終了してローカルサーバーを停止しますか？\n\n未適用の編集と注釈は破棄されます。",
+            modal_success_exit: "プレビューを停止しました。\n\nこのタブを閉じてチャットに戻れます。",
+            modal_stopping: "プレビューサーバーを停止しています…",
+            lang_toggle_title: "言語を切り替え",
+            nav_first: "最初のスライド (Home)",
+            nav_prev: "前のスライド (←)",
+            nav_next: "次のスライド (→)",
+            nav_last: "最後のスライド (End)",
+            nav_counter: "{current} / {total}",
+            nav_empty: "— / —"
+        },
         zh: {
             page_title: "PPT Master - 实时预览",
             panel_slides: "幻灯片",
@@ -164,10 +240,12 @@
     var LANG = (function () {
         try {
             var stored = window.localStorage.getItem("ppt_lang");
-            if (stored === "zh" || stored === "en") return stored;
+            if (stored === "zh" || stored === "en" || stored === "ja") return stored;
         } catch (e) { /* ignore */ }
         var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-        return nav.indexOf("zh") === 0 ? "zh" : "en";
+        if (nav.indexOf("zh") === 0) return "zh";
+        if (nav.indexOf("ja") === 0) return "ja";
+        return "en";
     })();
 
     function t(key, params) {
@@ -184,7 +262,7 @@
     }
 
     function applyI18n() {
-        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : "en");
+        document.documentElement.setAttribute("lang", LANG === "zh" ? "zh-CN" : (LANG === "ja" ? "ja" : "en"));
         document.title = t("page_title");
         document.querySelectorAll("[data-i18n]").forEach(function (el) {
             el.textContent = t(el.getAttribute("data-i18n"));
@@ -198,16 +276,27 @@
         updateNavLabel();
     }
 
+    var LANG_NAMES = { zh: "中文", en: "English", ja: "日本語" };
+
+    function refreshLangUI(lang) {
+        // Custom dropdown (OS-independent): button shows the CURRENT language.
+        var cur = document.getElementById("lang-current");
+        if (cur) cur.textContent = LANG_NAMES[lang] || lang;
+        var btn = document.getElementById("btn-lang-toggle");
+        if (btn) btn.title = t("lang_toggle_title");
+        document.querySelectorAll("#lang-menu li").forEach(function (li) {
+            var selected = li.getAttribute("data-lang") === lang;
+            li.classList.toggle("selected", selected);
+            li.setAttribute("aria-selected", selected ? "true" : "false");
+        });
+    }
+
     function setLang(lang) {
-        if (lang !== "zh" && lang !== "en") return;
+        if (lang !== "zh" && lang !== "en" && lang !== "ja") return;
         LANG = lang;
         try { window.localStorage.setItem("ppt_lang", lang); } catch (e) { /* ignore */ }
         applyI18n();
-        var toggleBtn = document.getElementById("btn-lang-toggle");
-        if (toggleBtn) {
-            toggleBtn.textContent = lang === "zh" ? "EN" : "中";
-            toggleBtn.title = t("lang_toggle_title");
-        }
+        refreshLangUI(lang);
         // Re-render dynamic regions so they pick up the new language
         updateSelectionPanel();
         updateAnnotationList();
@@ -336,7 +425,7 @@
             btn.textContent = t(action.key);
             btn.addEventListener("click", function () {
                 var label = t(action.key);
-                var prefix = LANG === "zh" ? label + "：" : label + ": ";
+                var prefix = (LANG === "zh" || LANG === "ja") ? label + "：" : label + ": ";
                 if (!annotationText.value.trim()) {
                     annotationText.value = prefix;
                 } else if (annotationText.value.indexOf(prefix) === -1) {
@@ -2781,11 +2870,73 @@
     initAnnotationQuickActions();
     updatePendingStatus();
     var langToggleBtn = document.getElementById("btn-lang-toggle");
-    if (langToggleBtn) {
-        langToggleBtn.textContent = LANG === "zh" ? "EN" : "中";
-        langToggleBtn.title = t("lang_toggle_title");
-        langToggleBtn.addEventListener("click", function () {
-            setLang(LANG === "zh" ? "en" : "zh");
+    var langMenu = document.getElementById("lang-menu");
+    if (langToggleBtn && langMenu) {
+        refreshLangUI(LANG);
+        var setMenuOpen = function (open) {
+            langMenu.hidden = !open;
+            langToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+            if (open) {
+                var sel = langMenu.querySelector("li.selected") || langMenu.querySelector("li[data-lang]");
+                if (sel) sel.focus();
+            }
+        };
+        var chooseLang = function (v) {
+            setMenuOpen(false);
+            langToggleBtn.focus();
+            if (v) setLang(v);
+        };
+        langToggleBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            setMenuOpen(langMenu.hidden);
+        });
+        langToggleBtn.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && !langMenu.hidden) {
+                e.stopPropagation();
+                setMenuOpen(false);
+            } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && langMenu.hidden) {
+                e.preventDefault();
+                e.stopPropagation();
+                setMenuOpen(true);
+            }
+        });
+        langMenu.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var li = e.target && e.target.closest ? e.target.closest("li[data-lang]") : null;
+            if (li) chooseLang(li.getAttribute("data-lang"));
+            else setMenuOpen(false);
+        });
+        langMenu.addEventListener("keydown", function (e) {
+            e.stopPropagation();   // keep nudge / slide-nav shortcuts away while the menu is open
+            var items = Array.prototype.slice.call(langMenu.querySelectorAll("li[data-lang]"));
+            var idx = items.indexOf(document.activeElement);
+            if (e.key === "Escape") {
+                setMenuOpen(false);
+                langToggleBtn.focus();
+            } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                (items[idx + 1] || items[0]).focus();
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                (items[idx - 1] || items[items.length - 1]).focus();
+            } else if (e.key === "Home") {
+                e.preventDefault();
+                items[0].focus();
+            } else if (e.key === "End") {
+                e.preventDefault();
+                items[items.length - 1].focus();
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                e.preventDefault();
+            } else if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (idx >= 0) chooseLang(items[idx].getAttribute("data-lang"));
+            }
+        });
+        langToggleBtn.parentElement.addEventListener("focusout", function (e) {
+            if (!langMenu.hidden && !langToggleBtn.parentElement.contains(e.relatedTarget)) setMenuOpen(false);
+        });
+        document.addEventListener("click", function () {
+            if (!langMenu.hidden) setMenuOpen(false);
         });
     }
 
