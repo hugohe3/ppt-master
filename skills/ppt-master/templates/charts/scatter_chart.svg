@@ -35,6 +35,26 @@
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Ad Spend vs. Sales Revenue Correlation</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">2025 REGIONAL DATA · SAMPLE SIZE N=28</text>
     <!-- ==================== Chart Area ==================== -->
+    <g id="scatter_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "scatter",
+              "scatter_style": "marker",
+              "series": [
+                {
+                  "name": "Online",
+                  "x": [10, 15, 22, 28, 35, 42, 48, 55, 60, 68, 75, 82, 88, 95],
+                  "y": [130, 160, 240, 270, 340, 390, 420, 480, 550, 580, 660, 690, 770, 820]
+                },
+                {
+                  "name": "Offline",
+                  "x": [12, 18, 25, 30, 38, 45, 52, 58, 65, 72, 78, 85, 92, 98],
+                  "y": [210, 250, 280, 290, 340, 370, 410, 430, 470, 510, 550, 580, 620, 630]
+                }
+              ],
+              "style": {"colors": ["#4F46E5", "#E11D48"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Horizontal Grid Lines -->
         <line x1="120" y1="560" x2="1020" y2="560" stroke="#E2E8F0" stroke-width="1.5"/>
@@ -108,6 +128,7 @@
         <circle cx="885" cy="328" r="7" fill="#E11D48" stroke="#FFFFFF" stroke-width="2.5" filter="url(#pointShadow)"/>
         <circle cx="948" cy="312" r="7" fill="#E11D48" stroke="#FFFFFF" stroke-width="2.5" filter="url(#pointShadow)"/>
         <circle cx="1002" cy="308" r="7" fill="#E11D48" stroke="#FFFFFF" stroke-width="2.5" filter="url(#pointShadow)"/>
+    </g>
     </g>
     <!-- ==================== Right Dashboard Panel ==================== -->
     <g id="dashboardPanel">

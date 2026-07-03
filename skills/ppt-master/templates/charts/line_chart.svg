@@ -41,6 +41,19 @@
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="16" font-weight="600" fill="#64748B" letter-spacing="1">FISCAL YEAR 2025 · JAN TO DEC · VALUES IN USD MILLIONS</text>
     <!-- Chart Area -->
+    <g id="line_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "line",
+              "line_style": "lineMarker",
+              "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+              "series": [
+                {"name": "Revenue", "values": [32, 38, 45, 52, 58, 62, 68, 75, 78, 82, 88, 92]},
+                {"name": "Net Profit", "values": [12, 15, 18, 22, 25, 28, 32, 36, 38, 42, 48, 52]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Grid Lines -->
         <line x1="140" y1="550" x2="1160" y2="550" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4,4"/>
@@ -121,6 +134,7 @@
             <circle cx="1075" cy="358" r="6"/>
             <circle cx="1160" cy="342" r="6"/>
         </g>
+    </g>
     </g>
     <!-- Legend -->
     <g id="legend">

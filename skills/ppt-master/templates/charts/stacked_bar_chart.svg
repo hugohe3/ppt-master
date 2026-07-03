@@ -35,6 +35,21 @@
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Quarterly Revenue Breakdown</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">2024-2025 FINANCIAL YEAR · UNIT: $M</text>
     <!-- ==================== Chart Area ==================== -->
+    <g id="stacked_bar_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "column",
+              "grouping": "stacked",
+              "categories": ["Q1'24", "Q2'24", "Q3'24", "Q4'24", "Q1'25"],
+              "series": [
+                {"name": "Product Sales", "values": [140, 160, 180, 200, 220]},
+                {"name": "Services", "values": [90, 100, 110, 120, 130]},
+                {"name": "Subscriptions", "values": [50, 60, 75, 90, 105]},
+                {"name": "Other Revenue", "values": [20, 30, 35, 40, 45]}
+              ],
+              "style": {"colors": ["#6366F1", "#0EA5E9", "#10B981", "#F59E0B"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Zebra Shading for Quarters -->
         <rect x="332" y="150" width="192" height="400" fill="#F1F5F9" opacity="0.5"/>
@@ -123,6 +138,7 @@
         <text x="1004" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">45</text>
         <text x="1004" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">500</text>
         <text x="1004" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">Q1'25</text>
+    </g>
     </g>
     <!-- ==================== Right Insight Dashboard ==================== -->
     <g id="dashboardPanel">

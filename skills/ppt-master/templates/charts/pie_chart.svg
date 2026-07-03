@@ -23,6 +23,17 @@
           font-size="32" font-weight="800" fill="#0F172A">Market Share Distribution</text>
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5">Q3 2025 · TOTAL INDUSTRY MARKET SIZE: $12B</text>
+    <g id="pie_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "type": "pie",
+              "categories": ["Competitor A", "Competitor B", "Competitor C", "Competitor D", "Others"],
+              "series": [
+                {"name": "Market Share", "values": [35, 25, 20, 12, 8]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#94A3B8"]}
+            }
+        </metadata>
     <!-- chart-plot-area: pie | center: 420,400 | radius: 200 -->
     <!-- ==================== Pie Chart Graphic ==================== -->
     <g id="pieChart" transform="translate(420, 400)" filter="url(#softShadow)">
@@ -68,6 +79,7 @@
         <circle cx="380" cy="220" r="5" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
         <text x="320" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="16" font-weight="800" fill="#64748B" text-anchor="end">8%</text>
+    </g>
     </g>
     <!-- ==================== Data Table Legend ==================== -->
     <g id="legend" transform="translate(720, 200)">
