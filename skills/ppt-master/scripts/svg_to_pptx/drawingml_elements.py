@@ -8,7 +8,7 @@ import re
 import base64
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote_to_bytes
+from urllib.parse import unquote, unquote_to_bytes, urlsplit
 from xml.etree import ElementTree as ET
 
 from .drawingml_context import ConvertContext, ShapeResult
@@ -43,11 +43,16 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
     (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
     of these exist.
     """
+    parsed = urlsplit(href)
+    if parsed.scheme and parsed.scheme not in ('file',):
+        raise FileNotFoundError(f'External image not found: {href}')
+    decoded = unquote(parsed.path if parsed.scheme else href.split('?', 1)[0].split('#', 1)[0])
+
     for candidate in (
-        svg_dir / href,
-        svg_dir.parent / href,
-        svg_dir.parent / 'images' / href,
-        svg_dir.parent / 'templates' / href,
+        svg_dir / decoded,
+        svg_dir.parent / decoded,
+        svg_dir.parent / 'images' / decoded,
+        svg_dir.parent / 'templates' / decoded,
     ):
         if candidate.exists():
             return candidate
