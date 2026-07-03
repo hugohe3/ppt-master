@@ -567,10 +567,27 @@ class SVGQualityChecker:
         # Other discouraged elements
         if 'iframe' in local_names:
             result['errors'].append("Detected <iframe> element (should not appear in SVG)")
-        for attr in ('fill', 'stroke', 'stop-color'):
-            if any('rgba' in value.lower() for value in self._svg_property_values(content, attr)):
-                result['errors'].append("Detected forbidden rgba() color (use fill-opacity/stroke-opacity instead)")
-                break
+        # Paint grammar: rgba()/hsl()/alpha-hex all render in browser preview
+        # but come back as None from parse_hex_color, so the exporter writes
+        # <a:noFill/> — the fill silently disappears in PPTX. Named colors and
+        # rgb() export correctly and are deliberately not flagged.
+        paint_values = [
+            value
+            for attr in ('fill', 'stroke', 'stop-color')
+            for value in self._svg_property_values(content, attr)
+        ]
+        if any('rgba' in value.lower() for value in paint_values):
+            result['errors'].append("Detected forbidden rgba() color (use fill-opacity/stroke-opacity instead)")
+        if any('hsl' in value.lower() for value in paint_values):
+            result['errors'].append(
+                "Detected hsl()/hsla() color (not exported to PPTX — fills become "
+                "invisible; use 6-digit HEX instead)")
+        alpha_hex_re = re.compile(r'^#[0-9A-Fa-f]{4}$|^#[0-9A-Fa-f]{8}$')
+        if any(alpha_hex_re.match(value.strip()) for value in paint_values):
+            result['errors'].append(
+                "Detected alpha-channel HEX color (#RGBA/#RRGGBBAA is not exported "
+                "to PPTX — fills become invisible; use 6-digit HEX plus "
+                "fill-opacity/stroke-opacity)")
         if any(_local_name(elem).lower() == 'g' and elem.get('opacity') for elem in elems):
             result['errors'].append("Detected forbidden <g opacity> (set opacity on each child element individually)")
         if any(_local_name(elem).lower() == 'image' and elem.get('opacity') for elem in elems):
