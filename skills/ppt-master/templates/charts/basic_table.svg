@@ -10,6 +10,84 @@
     <text x="80" y="70" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Quarterly Resource Allocation</text>
     <text x="80" y="100" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">BASIC TABLE FORMAT · TRADITIONAL FULL GRID WITH ALIGNMENT RULES</text>
     <!-- ==================== Table Structure ==================== -->
+    <g id="basic_table" data-pptx-native="table">
+        <metadata data-pptx-native="table">
+            {
+              "name": "basic_table",
+              "x": 80,
+              "y": 150,
+              "width": 1120,
+              "height": 340,
+              "strict_grid": true,
+              "column_widths": [160, 400, 160, 280, 120],
+              "row_heights": [50, 48, 48, 48, 48, 48, 50],
+              "style": {
+                "font_family": "Roboto",
+                "font_size": 15,
+                "header_font_size": 13,
+                "header_fill": "#F8FAFC",
+                "header_text": "#475569",
+                "body_fill": "#FFFFFF",
+                "body_text": "#0F172A",
+                "band_fill": "#FFFFFF",
+                "border_color": "#E2E8F0",
+                "border_width": 1,
+                "padding": {"left": 10, "right": 10, "top": 4, "bottom": 4},
+                "valign": "middle"
+              },
+              "columns": [
+                {"text": "PROJECT ID", "bold": true},
+                {"text": "PROJECT DESCRIPTION", "bold": true},
+                {"text": "DEPARTMENT", "align": "ctr", "bold": true},
+                {"text": "HEADCOUNT", "align": "ctr", "bold": true},
+                {"text": "BUDGET (USD)", "align": "r", "bold": true}
+              ],
+              "rows": [
+                [
+                  {"text": "PRJ-2025-01A", "color": "#334155"},
+                  {"text": "Cloud Infrastructure Migration", "bold": true},
+                  {"text": "Engineering", "align": "ctr", "color": "#475569"},
+                  {"text": "12", "align": "ctr", "color": "#334155", "bold": true},
+                  {"text": "450,000", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "PRJ-2025-02B", "color": "#334155"},
+                  {"text": "Global Marketing Campaign Q2", "bold": true},
+                  {"text": "Marketing", "align": "ctr", "color": "#475569"},
+                  {"text": "8", "align": "ctr", "color": "#334155", "bold": true},
+                  {"text": "820,500", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "PRJ-2025-03C", "color": "#334155"},
+                  {"text": "Sales Enablement Training", "bold": true},
+                  {"text": "Sales", "align": "ctr", "color": "#475569"},
+                  {"text": "4", "align": "ctr", "color": "#334155", "bold": true},
+                  {"text": "95,000", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "PRJ-2025-04A", "color": "#334155"},
+                  {"text": "Mobile App Redesign V3.0", "bold": true},
+                  {"text": "Product", "align": "ctr", "color": "#475569"},
+                  {"text": "15", "align": "ctr", "color": "#334155", "bold": true},
+                  {"text": "315,200", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "PRJ-2025-05B", "color": "#334155"},
+                  {"text": "Cybersecurity Audit &amp; Fixes", "bold": true},
+                  {"text": "IT Security", "align": "ctr", "color": "#475569"},
+                  {"text": "5", "align": "ctr", "color": "#334155", "bold": true},
+                  {"text": "120,000", "align": "r", "bold": true}
+                ],
+                [
+                  {"text": "TOTAL ALLOCATION", "color": "#1D4ED8", "bold": true, "fill": "#EFF6FF"},
+                  {"text": "", "fill": "#EFF6FF"},
+                  {"text": "", "fill": "#EFF6FF"},
+                  {"text": "44", "align": "ctr", "color": "#1D4ED8", "bold": true, "fill": "#EFF6FF"},
+                  {"text": "1,800,700", "align": "r", "color": "#1D4ED8", "bold": true, "fill": "#EFF6FF"}
+                ]
+              ]
+            }
+        </metadata>
     <!-- Table bounding box -->
     <rect x="80" y="150" width="1120" height="340" fill="none" stroke="#CBD5E1" stroke-width="2"/>
     <g id="tableArea" transform="translate(80, 150)">
@@ -72,6 +150,7 @@
         <text x="20" y="322" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="800" fill="#1D4ED8" letter-spacing="1">TOTAL ALLOCATION</text>
         <text x="860" y="322" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="800" fill="#1D4ED8" text-anchor="middle">44</text>
         <text x="1100" y="322" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" fill="#1D4ED8" text-anchor="end">1,800,700</text>
+    </g>
     </g>
     <!-- ==================== Footer ==================== -->
     <text x="1200" y="530" text-anchor="end" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Data Source: PMO Budget Allocation Draft V1.0</text>

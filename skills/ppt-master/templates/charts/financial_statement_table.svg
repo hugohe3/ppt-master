@@ -19,6 +19,123 @@
     <text x="80" y="70" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Income Statement Summary</text>
     <text x="80" y="100" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">Q1 - Q3 2025 · IN MILLIONS USD (UNAUDITED)</text>
     <!-- ==================== Table Structure ==================== -->
+    <g id="financial_statement_table" data-pptx-native="table">
+        <metadata data-pptx-native="table">
+            {
+              "name": "financial_statement_table",
+              "x": 80,
+              "y": 160,
+              "width": 1120,
+              "height": 530,
+              "strict_grid": true,
+              "column_widths": [340, 160, 180, 180, 180, 80],
+              "row_heights": [45, 42, 35, 35, 50, 45, 42, 35, 35, 35, 60],
+              "style": {
+                "font_family": "Roboto",
+                "font_size": 15,
+                "header_font_size": 13,
+                "header_fill": "#FFFFFF",
+                "header_text": "#475569",
+                "body_fill": "#FFFFFF",
+                "body_text": "#0F172A",
+                "band_fill": "#FFFFFF",
+                "border_color": "#E2E8F0",
+                "border_width": 0.5,
+                "padding": {"left": 10, "right": 10, "top": 4, "bottom": 4},
+                "valign": "middle"
+              },
+              "columns": [
+                {"text": "FINANCIAL LINE ITEM", "bold": true},
+                {"text": "Q1 2025", "align": "r", "bold": true},
+                {"text": "Q2 2025", "align": "r", "bold": true},
+                {"text": "Q3 2025", "align": "r", "bold": true},
+                {"text": "YTD TOTAL", "align": "r", "bold": true, "color": "#0F172A"},
+                {"text": "YOY%", "align": "r", "bold": true}
+              ],
+              "rows": [
+                [
+                  {"text": "Total Revenue", "bold": true},
+                  {"text": "245.8", "align": "r", "bold": true},
+                  {"text": "268.4", "align": "r", "bold": true},
+                  {"text": "294.2", "align": "r", "bold": true},
+                  {"text": "808.4", "align": "r", "bold": true},
+                  {"text": "+24%", "align": "r", "color": "#10B981", "bold": true}
+                ],
+                [
+                  {"text": "Software Subscriptions", "color": "#475569"},
+                  {"text": "180.5", "align": "r", "color": "#475569"},
+                  {"text": "200.2", "align": "r", "color": "#475569"},
+                  {"text": "225.0", "align": "r", "color": "#475569"},
+                  {"text": "605.7", "align": "r", "color": "#334155", "bold": true},
+                  {"text": "+32%", "align": "r", "color": "#10B981", "bold": true}
+                ],
+                [
+                  {"text": "Professional Services", "color": "#475569"},
+                  {"text": "65.3", "align": "r", "color": "#475569"},
+                  {"text": "68.2", "align": "r", "color": "#475569"},
+                  {"text": "69.2", "align": "r", "color": "#475569"},
+                  {"text": "202.7", "align": "r", "color": "#334155", "bold": true},
+                  {"text": "+4%", "align": "r", "color": "#F59E0B", "bold": true}
+                ],
+                [
+                  {"text": "Cost of Revenue", "bold": true},
+                  {"text": "(75.4)", "align": "r"},
+                  {"text": "(80.1)", "align": "r"},
+                  {"text": "(85.5)", "align": "r"},
+                  {"text": "(241.0)", "align": "r", "bold": true},
+                  {"text": "+12%", "align": "r", "color": "#F43F5E", "bold": true}
+                ],
+                [
+                  {"text": "Gross Profit", "bold": true, "fill": "#F1F5F9"},
+                  {"text": "170.4", "align": "r", "bold": true, "fill": "#F1F5F9"},
+                  {"text": "188.3", "align": "r", "bold": true, "fill": "#F1F5F9"},
+                  {"text": "208.7", "align": "r", "bold": true, "fill": "#F1F5F9"},
+                  {"text": "567.4", "align": "r", "bold": true, "fill": "#F1F5F9"},
+                  {"text": "+28%", "align": "r", "color": "#10B981", "bold": true, "fill": "#F1F5F9"}
+                ],
+                [
+                  {"text": "Operating Expenses", "bold": true},
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  {"text": "Research &amp; Development", "color": "#475569"},
+                  {"text": "(45.2)", "align": "r", "color": "#475569"},
+                  {"text": "(48.5)", "align": "r", "color": "#475569"},
+                  {"text": "(52.0)", "align": "r", "color": "#475569"},
+                  {"text": "(145.7)", "align": "r", "color": "#334155", "bold": true},
+                  ""
+                ],
+                [
+                  {"text": "Sales &amp; Marketing", "color": "#475569"},
+                  {"text": "(60.8)", "align": "r", "color": "#475569"},
+                  {"text": "(65.2)", "align": "r", "color": "#475569"},
+                  {"text": "(70.5)", "align": "r", "color": "#475569"},
+                  {"text": "(196.5)", "align": "r", "color": "#334155", "bold": true},
+                  ""
+                ],
+                [
+                  {"text": "General &amp; Administrative", "color": "#475569"},
+                  {"text": "(22.4)", "align": "r", "color": "#475569"},
+                  {"text": "(23.1)", "align": "r", "color": "#475569"},
+                  {"text": "(24.0)", "align": "r", "color": "#475569"},
+                  {"text": "(69.5)", "align": "r", "color": "#334155", "bold": true},
+                  ""
+                ],
+                [
+                  {"text": "Net Operating Income", "bold": true, "font_size": 18},
+                  {"text": "42.0", "align": "r", "bold": true, "font_size": 18},
+                  {"text": "51.5", "align": "r", "bold": true, "font_size": 18},
+                  {"text": "62.2", "align": "r", "bold": true, "font_size": 18},
+                  {"text": "155.7", "align": "r", "color": "#2563EB", "bold": true, "font_size": 24},
+                  {"text": "+48%", "align": "r", "color": "#10B981", "bold": true, "font_size": 18}
+                ]
+              ]
+            }
+        </metadata>
     <g id="tableArea" transform="translate(80, 140)">
         <!-- Table Header (Double Top Line) -->
         <line x1="0" y1="20" x2="1120" y2="20" stroke="#0F172A" stroke-width="3"/>
@@ -97,6 +214,7 @@
         <text x="1000" y="524" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="800" fill="#2563EB" text-anchor="end">155.7</text>
         <text x="1100" y="522" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#10B981" text-anchor="end">+48%</text>
         <line x1="0" y1="550" x2="1120" y2="550" stroke="#CBD5E1" stroke-width="1"/>
+    </g>
     </g>
     <!-- ==================== Footer ==================== -->
     <text x="1200" y="690" text-anchor="end" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Data Source: Q3 2025 Financial Earnings Report</text>
