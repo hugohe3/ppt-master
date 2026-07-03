@@ -136,7 +136,7 @@
 > **Strategist source**: copy the per-page SVG choices from `design_spec.md §VI Page Roster` (or §IX outline if Roster is absent). Names must match files in `templates/` exactly — typos cause silent fallback to free design.
 
 ## page_charts
-- P05: bar_chart
+- P05: column_chart
 - P09: timeline_horizontal
 - P12: quadrant_bubble_scatter
 

@@ -24,7 +24,7 @@ Read `<project_path>/design_spec.md` §VII Visualization Reference List (authori
 
 | Mode | `charts_index.json` keys | Notes |
 |------|--------------------------|-------|
-| `direct-calc` | `bar_chart`, `horizontal_bar_chart` | Use `calc bar`; add `--horizontal` for horizontal bars. |
+| `direct-calc` | `column_chart`, `horizontal_bar_chart` | Use `calc bar`; add `--horizontal` for horizontal bars. |
 | `direct-calc` | `line_chart`, `area_chart`, `scatter_chart` | Use `calc line`; area uses line output as the top boundary, then closes to `y_max`. |
 | `direct-calc` | `pie_chart`, `donut_chart` | Use `calc pie`; donut passes `--inner-radius`. |
 | `direct-calc` | `radar_chart` | Use `calc radar`; separate subcommand, not under `calc pie`. |
@@ -69,7 +69,7 @@ For each page in the Step 1 list:
 5. Run the matching calculator command:
 
    ```bash
-   # bar_chart / horizontal_bar_chart (add --horizontal for the latter)
+   # column_chart / horizontal_bar_chart (add --horizontal for the latter)
    # IMPORTANT: always pass --value-range from axis tick labels (step 4)
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
      --data "Label1:Value1,Label2:Value2" --area "x_min,y_min,x_max,y_max" \

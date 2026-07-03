@@ -12,11 +12,11 @@
     "area_chart": {
       "summary": "Pick for 1-2 cumulative trend series emphasizing volume over time. Skip for >=3 series (use stacked_area_chart) or pure direction without volume (use line_chart)."
     },
-    "bar_chart": {
+    "column_chart": {
       "summary": "Pick for single-series category value comparison, 3-8 categories. Skip for >12 long-label items (use horizontal_bar_chart) or multi-series (use grouped_bar_chart)."
     },
     "box_plot_chart": {
-      "summary": "Pick for distribution shape per group (median, quartiles, outliers). Skip if only the average per group matters (use bar_chart)."
+      "summary": "Pick for distribution shape per group (median, quartiles, outliers). Skip if only the average per group matters (use column_chart)."
     },
     "bubble_chart": {
       "summary": "Pick for 3-axis data (x position, y position, size). Skip for plain x-y correlation (use scatter_chart)."
@@ -34,7 +34,7 @@
       "summary": "Pick when 2 metrics with different units/scales must be compared over time. Skip if both metrics share the same unit (use line_chart)."
     },
     "dumbbell_chart": {
-      "summary": "Pick for before-vs-after or two-state difference across 5-10 items. Skip for single snapshot (use bar_chart) or 3+ states (use grouped_bar_chart)."
+      "summary": "Pick for before-vs-after or two-state difference across 5-10 items. Skip for single snapshot (use column_chart) or 3+ states (use grouped_bar_chart)."
     },
     "funnel_chart": {
       "summary": "Pick for 3-5 sequential conversion stages with monotonic drop-off. Skip if flow branches/merges (use sankey_chart) or steps don't entail loss (use process_flow)."
@@ -49,10 +49,10 @@
       "summary": "Pick for 2-4 series side-by-side across the same categories (e.g. YoY/QoQ). Skip if showing composition within each category (use stacked_bar_chart)."
     },
     "heatmap_chart": {
-      "summary": "Pick for 2D matrix where each cell is an intensity value (activity grid, correlation matrix). Skip for ranked categories (use bar_chart)."
+      "summary": "Pick for 2D matrix where each cell is an intensity value (activity grid, correlation matrix). Skip for ranked categories (use column_chart)."
     },
     "horizontal_bar_chart": {
-      "summary": "Pick for ranking 5-12 items, especially with long labels. Skip if <=8 short-label items (use bar_chart)."
+      "summary": "Pick for ranking 5-12 items, especially with long labels. Skip if <=8 short-label items (use column_chart)."
     },
     "kpi_cards": {
       "summary": "Pick for 4-8 standalone numeric metrics shown as overview cards (2x2 or 1x4) — exec summary opener, dashboard headline, quarterly recap, results-at-a-glance. Skip if metrics have target baselines (use bullet_chart) or single hero number (use gauge_chart)."
@@ -70,7 +70,7 @@
       "summary": "Pick for 2×2 portfolio where items are plotted as bubbles sized by a third metric — BCG Growth × Share with Stars/Cash Cows/Question Marks/Dogs, revenue-weighted portfolio matrix. Skip for textual named quadrants (use quadrant_text_bullets) or generic prioritization without bubble size (use matrix_2x2)."
     },
     "pareto_chart": {
-      "summary": "Pick to show 80/20 contribution: descending bars + cumulative line. Skip if cumulative line is not the message (use bar_chart)."
+      "summary": "Pick to show 80/20 contribution: descending bars + cumulative line. Skip if cumulative line is not the message (use column_chart)."
     },
     "pie_chart": {
       "summary": "Pick for simple 3-6 part proportions of one whole. Skip for >=7 parts (use donut_chart or treemap_chart) or hierarchical composition (use treemap_chart)."
@@ -97,7 +97,7 @@
       "summary": "Pick for 2-4 series showing both total and composition over time. Skip if individual series matter more than total (use line_chart)."
     },
     "stacked_bar_chart": {
-      "summary": "Pick when each category splits into 2-4 internal parts and total still matters. Skip if only comparing totals (use bar_chart)."
+      "summary": "Pick when each category splits into 2-4 internal parts and total still matters. Skip if only comparing totals (use column_chart)."
     },
     "timeline": {
       "summary": "Pick for 3-8 milestone events on a horizontal time axis (no duration). Skip for tasks with start/end ranges (use gantt_chart) or vertical layout (use roadmap_vertical)."
@@ -106,7 +106,7 @@
       "summary": "Pick for hierarchical/grouped area proportion with many parts of varying size. Skip for flat 3-6 parts (use pie_chart or donut_chart)."
     },
     "waterfall_chart": {
-      "summary": "Pick for stepwise additive/subtractive breakdown bridging a starting value to an ending value. Skip if no running total (use bar_chart)."
+      "summary": "Pick for stepwise additive/subtractive breakdown bridging a starting value to an ending value. Skip if no running total (use column_chart)."
     },
     "pyramid_chart": {
       "summary": "Pick for 3-6 stratified hierarchy layers in flat 2D side-view — Maslow's hierarchy, maturity models, value hierarchy, capability tiers, market segments, audience pyramid. Skip for dramatic tone (use pyramid_isometric), flat priority list (use vertical_list), or org reporting (use top_down_tree)."
