@@ -86,6 +86,7 @@ from embed_icons import (  # noqa: E402
     extract_paths_from_icon,
     generate_icon_group,
 )
+from normalize_dimensions import backfill_root_dimensions  # noqa: E402
 
 _ICONS_DIR = _SCRIPTS_DIR.parent.parent / 'templates' / 'icons'
 _USE_ICON_PATTERN = re.compile(r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>')
@@ -549,6 +550,11 @@ def create_app(
                 logger.warning('slide parse failed: %s: %s', name, exc)
                 return jsonify({'error': f'Failed to parse SVG: {exc}'}), 500
 
+            # Deterministically restore root width/height from viewBox before
+            # serving (in memory only — svg_output on disk stays raw). Kills
+            # the "missing width/height" preview banner regardless of which
+            # model wrote the SVG. See svg_finalize/normalize_dimensions.py.
+            backfill_root_dimensions(root)
             assign_temp_ids(root)
             if pending_edits:
                 ok, reason = _apply_edit_records(root, pending_edits)

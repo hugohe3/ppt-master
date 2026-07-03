@@ -567,9 +567,24 @@ class SVGQualityChecker:
                 break
 
     def _check_dimensions(self, content: str, result: Dict):
-        """Check width/height consistency with viewBox"""
-        width_match = re.search(r'width="(\d+)"', content)
-        height_match = re.search(r'height="(\d+)"', content)
+        """Check root <svg> width/height presence and consistency with viewBox.
+
+        Scoped to the root ``<svg>`` open tag — a bare ``width="(\\d+)"`` search
+        over the whole document would match a child ``<rect>`` and falsely
+        report the root as dimensioned. A root that omits width/height is valid
+        scalable SVG but trips PPT preview/export dim detection; the finalize +
+        live-preview pipeline auto-backfills from viewBox (see
+        svg_finalize/normalize_dimensions.py), so this is a warning (observ-
+        ability), not a hard error — erroring would false-fail decks the
+        pipeline renders correctly.
+        """
+        svg_tag_match = re.search(r'<svg\b[^>]*>', content)
+        if svg_tag_match is None:
+            return
+        svg_tag = svg_tag_match.group(0)
+
+        width_match = re.search(r'\bwidth\s*=\s*"(\d+)"', svg_tag)
+        height_match = re.search(r'\bheight\s*=\s*"(\d+)"', svg_tag)
 
         if width_match and height_match:
             width = width_match.group(1)
@@ -586,6 +601,17 @@ class SVGQualityChecker:
                             f"width/height ({width}x{height}) does not match viewBox "
                             f"({vb_width}x{vb_height})"
                         )
+            return
+
+        missing = [
+            name for name, m in (('width', width_match), ('height', height_match))
+            if m is None
+        ]
+        result['warnings'].append(
+            f"Root <svg> missing {'/'.join(missing)} attribute(s) — the pipeline "
+            f"auto-backfills from viewBox, but per shared-standards.md §4 set "
+            f"width/height explicitly on the root (both must equal viewBox)."
+        )
 
     def _check_text_elements(self, content: str, result: Dict):
         """Check text elements and wrapping methods"""

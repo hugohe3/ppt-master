@@ -169,7 +169,7 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ## 4. Basic SVG Rules
 
-- **viewBox** must match the canvas dimensions (`width`/`height` must match `viewBox`)
+- **Root `<svg>` MUST carry explicit `width` and `height` attributes**, and both MUST equal the `viewBox` size — `viewBox="0 0 W H"` → `width="W" height="H"`. A root with only `viewBox` renders fine in browsers but trips PPT preview/export dimension detection (the live-preview banner "SVG missing width/height" fires). The finalize + live-preview pipeline auto-backfills missing `width`/`height` from `viewBox` as a safety net — do not rely on it; write them explicitly.
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
 - **Fonts**: every `font-family` stack MUST end with a pre-installed family (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas …); `@font-face` is FORBIDDEN. Full rule: [`strategist.md §g`](strategist.md).

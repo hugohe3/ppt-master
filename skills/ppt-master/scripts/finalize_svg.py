@@ -31,6 +31,7 @@ Processing options:
                     merged step, so existing --only invocations keep working.
     flatten-text  - Convert <tspan> to independent <text> (for special renderers)
     fix-rounded   - Convert <rect rx="..."/> to <path> (for PPT shape conversion)
+    backfill-dims - Restore root <svg> width/height from viewBox when missing
 """
 
 import os
@@ -50,6 +51,7 @@ from svg_finalize.align_embed_images import (
     count_office_vector_refs_in_svg,
 )
 from svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
+from svg_finalize.normalize_dimensions import backfill_svg_dimensions
 
 
 def safe_print(text: str) -> None:
@@ -174,7 +176,7 @@ def finalize_project(
     # Step 2: Embed icons
     if options.get('embed_icons'):
         if not quiet:
-            safe_print("[1/4] Embedding icons...")
+            safe_print("[1/5] Embedding icons...")
         icons_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = embed_icons_in_file(svg_file, icons_dir, dry_run=False, verbose=False, fallback_dir=icons_fallback_dir)
@@ -193,7 +195,7 @@ def finalize_project(
     # from disk once.
     if options.get('align_images'):
         if not quiet:
-            safe_print("[2/4] Aligning + embedding images...")
+            safe_print("[2/5] Aligning + embedding images...")
         img_count = 0
         img_errors = 0
         office_vector_count = 0
@@ -231,7 +233,7 @@ def finalize_project(
     # Step 4: Flatten text
     if options.get('flatten_text'):
         if not quiet:
-            safe_print("[3/4] Flattening text...")
+            safe_print("[3/5] Flattening text...")
         flatten_count = 0
         for svg_file in svg_final.glob('*.svg'):
             if process_flatten_text(svg_file, verbose=False):
@@ -245,7 +247,7 @@ def finalize_project(
     # Step 5: Convert rounded rects to Path
     if options.get('fix_rounded'):
         if not quiet:
-            safe_print("[4/4] Converting rounded rects to Path...")
+            safe_print("[4/5] Converting rounded rects to Path...")
         rounded_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = process_rounded_rect(svg_file, verbose=False)
@@ -255,6 +257,33 @@ def finalize_project(
                 safe_print(f"      {rounded_count} rounded rectangle(s) converted")
             else:
                 safe_print("      No rounded rectangles")
+
+    # Step 6: Backfill root <svg> width/height from viewBox (runs last so the
+    # final files carry explicit dimensions regardless of what earlier ET
+    # round-trips did). A root that omits width/height is valid, scalable SVG
+    # but trips PPT preview/export dimension detection (and the live-preview
+    # "missing width/height" banner); viewBox already holds the exact canvas
+    # size, so the backfill is lossless. See svg_finalize/normalize_dimensions.py
+    # and shared-standards.md §4.
+    if options.get('backfill_dims'):
+        if not quiet:
+            safe_print("[5/5] Backfilling root width/height...")
+        backfilled_count = 0
+        for svg_file in svg_final.glob('*.svg'):
+            try:
+                content = svg_file.read_text(encoding='utf-8')
+                new_content, changed = backfill_svg_dimensions(content)
+                if changed:
+                    svg_file.write_text(new_content, encoding='utf-8')
+                    backfilled_count += 1
+            except OSError as exc:
+                if not quiet:
+                    safe_print(f"   [ERROR] {svg_file.name}: {exc}")
+        if not quiet:
+            if backfilled_count > 0:
+                safe_print(f"      {backfilled_count} file(s) backfilled from viewBox")
+            else:
+                safe_print("      All roots already carry width/height")
 
     # Done
     if not quiet:
@@ -283,6 +312,7 @@ Processing options (for --only):
   align-images  Align (slice/meet) + Base64-embed all <image> (single pass)
   flatten-text  Flatten text
   fix-rounded   Convert rounded rects to Path
+  backfill-dims Restore root <svg> width/height from viewBox when missing
 
 Aliases (still accepted):
   crop-images, fix-aspect, embed-images  → all map to align-images
@@ -297,7 +327,7 @@ Aliases (still accepted):
             'align-images',
             # Backwards-compatible aliases — all three map to align-images now.
             'crop-images', 'fix-aspect', 'embed-images',
-            'flatten-text', 'fix-rounded',
+            'flatten-text', 'fix-rounded', 'backfill-dims',
         ],
         help=('Execute only specified processing steps (default: all). '
               'crop-images / fix-aspect / embed-images are accepted as '
@@ -334,6 +364,7 @@ Aliases (still accepted):
             'align_images': bool(only & _ALIGN_ALIASES),
             'flatten_text': 'flatten-text' in only,
             'fix_rounded': 'fix-rounded' in only,
+            'backfill_dims': 'backfill-dims' in only,
         }
     else:
         # Execute all by default
@@ -342,6 +373,7 @@ Aliases (still accepted):
             'align_images': True,
             'flatten_text': True,
             'fix_rounded': True,
+            'backfill_dims': True,
         }
 
     if args.max_dimension < 1:
