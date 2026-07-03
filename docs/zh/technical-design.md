@@ -27,7 +27,7 @@
     仅在用户提供明确模板目录路径且其中 design_spec.md 声明 kind: brand/layout/deck 时触发
     原生 PPTX 模板请求进入 template-fill；可复用 SVG 模板需先通过 create-template 创建
     ↓
-[Strategist] 策略师 - 两层八项确认与设计规范 → design_spec.md + spec_lock.md
+[Strategist] 策略师 - 三阶段策略师确认与设计规范 → design_spec.md + spec_lock.md
     ↓
 [Image Acquisition] 图片获取（当资源列表中有需要 AI 生成、网络搜索或切片的图片时）
     ↓
@@ -45,8 +45,9 @@
     ↓
 输出：
     exports/
-    ├── presentation_<timestamp>.pptx          ← 原生形状版（DrawingML）— 唯一标准产物，编辑/交付从这里走
-    └── presentation_<timestamp>_svg.pptx      ← SVG 快照版 pptx — 像素级视觉参考（加 --svg-snapshot 时生成）
+    ├── presentation_<timestamp>.pptx                ← 原生形状版（DrawingML）— 唯一标准产物，编辑/交付从这里走
+    ├── presentation_<timestamp>_native_charts.pptx  ← 原生图表/表格对象版（而非压平形状，加 --native-objects 时生成）
+    └── presentation_<timestamp>_svg.pptx            ← SVG 快照版 pptx — 像素级视觉参考（加 --svg-snapshot 时生成）
 
     # 默认流程（未指定 -o）始终写入
     backup/<timestamp>/
@@ -246,7 +247,7 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 | Kind | 拥有的片段 | 典型内容 | 对 Strategist 的影响 |
 |---|---|---|---|
 | `brand` | 身份片段 | 配色、字体、logo、语气、图标风格 | 锁定身份；结构保持自由 |
-| `layout` | 结构片段 | 画布、页面结构、页面类型、SVG roster | 锁定结构；身份仍在八项确认里确定 |
+| `layout` | 结构片段 | 画布、页面结构、页面类型、SVG roster | 锁定结构；身份仍在策略师确认阶段里确定 |
 | `deck` | 身份 + 结构 + 模板总览 | 完整复刻型包 | 锁定完整模板语法，只剩内容相关选择 |
 
 当用户提供多个路径时，融合是**片段级**而不是字段级：brand 覆盖身份片段，layout 覆盖结构片段，deck 提供中间的 template overview 片段。同类冲突会被显式列为冲突，而不是按输入顺序默默决定。这样融合后的 spec 能明确说明每个片段来自哪里，便于审计和复现。
@@ -265,7 +266,7 @@ PPT Master 用的是**单主代理内的角色切换**，不是并行子代理�
 
 **为什么是角色专属 reference 而不是一个超大 prompt。** Strategist 跑的是「跟用户协商」模式（开放式、对话式、可以回退），Executor 跑的是「产出严格 XML」模式（不准即兴、不准漏属性）。把两者塞进同一个 prompt，强迫模型在同一个 turn 里持守相互矛盾的纪律——所有混合模式的 prompt 工程病灶都会出现。按角色拆开，每个角色只加载它需要的、扔掉其他。
 
-**Eight Confirmations 是唯一的阻塞 gate。** Strategist 阶段以八项打包确认（画布 / 页数 / 受众 / 风格 / 配色 / 图标 / 排版 / 图像）作为核心阻塞决策点。当前流程默认通过 Confirm UI 分两层呈现：Tier 1 确认锚点（画布、受众、改写幅度、交付目的、mode、visual style）；Tier 2 基于用户已确认的锚点重新推导，再确认实现层选择（页数、调色板、字体、图标、公式策略、图片来源、AI 图片路径、生成模式、refine-spec）。最终的 `confirm_ui/result.json` 是权威输入——用户改过的字段必须进入 `design_spec.md` 和 `spec_lock.md`，不能回退到 AI 的原始推荐。
+**策略师确认阶段是唯一的阻塞 gate。** Strategist 阶段以一个三阶段确认 gate 作为核心阻塞决策点：第一阶段确认方向锚点（画布、受众、改写幅度、交付目的、mode、visual style）；第二阶段基于已确认锚点重新推导并确认设计系统（页数、调色板、字体、图标、公式策略）；第三阶段基于已确认设计系统重新推导并确认图片与执行方式（图片来源、生成图风格、AI 图片路径、生成模式、refine-spec）。最终的 `confirm_ui/result.json` 是权威输入——用户改过的字段必须进入 `design_spec.md` 和 `spec_lock.md`，不能回退到 AI 的原始推荐。
 
 **图片分析走重算元数据，不读像素。** 当项目里存在图片时，Strategist 和 Executor 使用 `analyze_images.py` 的输出（`analysis/image_analysis.csv`），而不是直接打开图片文件。这个 CSV 是基于当前 `images/` 目录重算出来的视图，不是持久缓存。每次做图片敏感决策前重跑分析，就是它的防陈旧策略：用户图、抽取图、网络图、AI 图、公式图和切片图最终都会汇入同一张可度量事实表。
 
@@ -318,7 +319,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 **开发期外部引用，交付期分叉成两套嵌入策略。** 在 `svg_output/` 里编辑时，图片是外部文件引用——快速迭代、单点替换。两份交付产物随后分叉：`svg_final/` 走 Base64 内联（产出一组自包含 SVG，IDE 预览、浏览器、preview pptx 都能开而不丢位图依赖）；native pptx 反过来把位图复制进 PPTX 的 media 文件夹，用 `<a:srcRect>` 表达裁剪。分叉的理由：在 DrawingML 里塞 Base64 能跑但文件膨胀 3-4 倍；文件引用的位图是 PowerPoint 原生表达方式，配 `<a:srcRect>` 的裁剪也是 DrawingML 的规范写法——任一方向用错工具都要付出可编辑性或文件大小的代价。
 
-**AI 图片三维系统：Strategist 阶段就锁定。** 当 deck 包含 AI 生成图片时，Strategist 在前置阶段一次性确定三个正交维度——`rendering`（视觉风格家族：vector-illustration / editorial / 3d-isometric / sketch-notes / ……）、`palette`（deck 的 HEX 在图里**怎么用**：比例 + 角色 + 气质）、`type`（每张图的内部构图：background / hero / framework / comparison / ……）。前两个是 deck 级、写进 `spec_lock.md`；Image_Generator 此后每张图的 prompt 都从同一份锁定的 rendering + palette 加上该图的 type 组装出来，而不是逐图重决风格。没有这层锁定，每张图都会自己风格漂移，整套 deck 读起来就是一摞互不相关的插画。这是 `spec_lock` 字体/色彩抗漂移机制在像素上游的对偶——同一思路，往前推一层。Strategist 在八项确认阶段会向用户呈现 **≥3 个 `rendering × palette` 候选**，绝不静默地自动锁定单一组合，因为这是一个会牵动全 deck 视觉的选择，唯一权威只有用户的品味。
+**AI 图片三维系统：Strategist 阶段就锁定。** 当 deck 包含 AI 生成图片时，Strategist 在前置阶段一次性确定三个正交维度——`rendering`（视觉风格家族：vector-illustration / editorial / 3d-isometric / sketch-notes / ……）、`palette`（deck 的 HEX 在图里**怎么用**：比例 + 角色 + 气质）、`type`（每张图的内部构图：background / hero / framework / comparison / ……）。前两个是 deck 级、写进 `spec_lock.md`；Image_Generator 此后每张图的 prompt 都从同一份锁定的 rendering + palette 加上该图的 type 组装出来，而不是逐图重决风格。没有这层锁定，每张图都会自己风格漂移，整套 deck 读起来就是一摞互不相关的插画。这是 `spec_lock` 字体/色彩抗漂移机制在像素上游的对偶——同一思路，往前推一层。Strategist 在策略师确认阶段会向用户呈现 **≥3 个 `rendering × palette` 候选**，绝不静默地自动锁定单一组合，因为这是一个会牵动全 deck 视觉的选择，唯一权威只有用户的品味。
 
 ---
 
@@ -377,6 +378,7 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。Executor 在一份�
 | `svg_output/` | 唯一源、手工编辑入口、`update_spec.py`、`svg_quality_checker.py` | 流水线中唯一**手写**而非派生的目录 |
 | `svg_final/` | IDE 内即时预览（VSCode/Cursor 直接打开 `.svg`）、浏览器单页预览 | `.pptx` 在 IDE 里打不开；`svg_output/` 因图标 / 图片是外部引用，IDE 中渲染不完整 |
 | `exports/<name>_<ts>.pptx`（native） | 主交付物——PowerPoint 中以 DrawingML 形状形态可编辑 | 唯一一份用户可在 PowerPoint 中原生改尺寸 / 改色 / 改样式的产物 |
+| `exports/<name>_<ts>_native_charts.pptx`（需 `--native-objects` 显式开启） | 让带 `data-pptx-native` 标记的图表/表格以真·PowerPoint 原生对象交付,而非压平形状 | 带数据、可在 PowerPoint 中直接编辑的图表/表格对象;命名与普通压平形状导出区分开 |
 | `exports/<name>_<ts>_svg.pptx`（preview，需 `--svg-snapshot` 显式开启） | 跨平台单文件分发、整体多页浏览、邮件附件 | 自包含、多页、PowerPoint / Keynote / WPS / LibreOffice 都能直接打开；`svg_final/` 是文件夹，分发不便。默认关闭——live preview 已经覆盖 dev / 诊断场景的 SVG 视觉参考需求 |
 | `backup/<ts>/svg_output/`（默认流程下始终生成） | 不重跑 LLM 的前提下从冻结 SVG 源重建 pptx、长期存档 | 项目下游被改动后，Executor 原始 SVG 唯一的留存副本 |
 
@@ -473,7 +475,7 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。Executor 在一份�
 | `beautify-pptx` | 现有 PPTX，页数/页序/措辞必须 1:1 保留，只改善排版 | 锁定源身份与内容后，通过 SVG 流水线重新生成 |
 | `create-template` | 构建可复用 layout/deck 模板包 | 输出后续 Step 3 可消费的目录 |
 | `create-brand` | 提取或定义可复用品牌身份 | 输出 `templates/brands/<id>/` |
-| `resume-execute` | Phase A 后新开聊天，用户要求继续某项目 | 不重跑 Strategist，直接进入 Phase B |
+| `resume-execute` | 规划会话后新开聊天，用户要求继续某项目 | 不重跑 Strategist，直接进入执行会话 |
 | `refine-spec` | 用户明确要求生成前先审阅 / 修改 spec | 写出完整 spec/lock 后停下，用户修改后再恢复 |
 | `verify-charts` | 生成 deck 含数据图表 | 导出前校准图表几何 |
 | `customize-animations` | 用户要求调对象级动画顺序 / 效果 / 计时 | 创建 / 校验 `animations.json` 并控制再导出策略 |

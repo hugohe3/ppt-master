@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!-- 
-    Bar Chart Template
+    Column Chart Template
     Usage: Category data comparison
     Scenarios: Sales comparison, regional ranking, annual data comparison
     Supports: 6 bars (adjustable to 3-8)
     -->
     <defs>
-        <!-- Bar gradient -->
+        <!-- Column gradient -->
         <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
             <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
@@ -39,6 +39,22 @@
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">Q3 2025 · Unit: Millions</text>
     <!-- Chart Area -->
+    <g id="column_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "name": "column_chart",
+              "x": 125,
+              "y": 141,
+              "width": 1099.2,
+              "height": 443,
+              "type": "column",
+              "categories": ["East", "South", "North", "Southwest", "Central", "Northeast"],
+              "series": [
+                {"name": "Sales", "values": [185, 142, 128, 96, 73, 52]}
+              ],
+              "style": {"colors": ["#3B82F6", "#10B981", "#F59E0B"]}
+            }
+        </metadata>
     <g id="chartArea">
         <!-- Y-axis Grid Lines -->
         <line x1="140" y1="550" x2="1160" y2="550" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
@@ -110,6 +126,7 @@
             <text x="1145" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">Northeast</text>
         </g>
+    </g>
     </g>
     <!-- Legend -->
     <g id="legend">

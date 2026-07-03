@@ -8,16 +8,18 @@ import re
 import base64
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, unquote_to_bytes, urlsplit
 from xml.etree import ElementTree as ET
 
 from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
-    px_to_emu, _f, _get_attr,
+    px_to_emu, _f, _get_attr, parse_svg_length,
+    svg_length_x, svg_length_y, svg_length_size,
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
-    parse_font_family, is_cjk_char, estimate_text_width,
+    parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
     detect_text_lang, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
 )
@@ -41,15 +43,47 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
     (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
     of these exist.
     """
+    parsed = urlsplit(href)
+    if parsed.scheme and parsed.scheme not in ('file',):
+        raise FileNotFoundError(f'External image not found: {href}')
+    decoded = unquote(parsed.path if parsed.scheme else href.split('?', 1)[0].split('#', 1)[0])
+
     for candidate in (
-        svg_dir / href,
-        svg_dir.parent / href,
-        svg_dir.parent / 'images' / href,
-        svg_dir.parent / 'templates' / href,
+        svg_dir / decoded,
+        svg_dir.parent / decoded,
+        svg_dir.parent / 'images' / decoded,
+        svg_dir.parent / 'templates' / decoded,
     ):
         if candidate.exists():
             return candidate
     raise FileNotFoundError(f'External image not found: {href}')
+
+
+def _decode_data_image_uri(href: str) -> tuple[str, bytes] | None:
+    """Decode SVG image data URIs, including URL-encoded non-base64 payloads."""
+    if not href.startswith('data:') or ',' not in href:
+        return None
+
+    header, payload = href.split(',', 1)
+    match = re.match(r'data:image/([^;,]+)', header, flags=re.IGNORECASE)
+    if not match:
+        return None
+
+    img_format = match.group(1).lower()
+    if img_format == 'svg+xml':
+        img_format = 'svg'
+    elif img_format == 'jpeg':
+        img_format = 'jpg'
+
+    is_base64 = any(
+        part.strip().lower() == 'base64'
+        for part in header.split(';')[1:]
+    )
+    if is_base64:
+        img_data = base64.b64decode(payload)
+    else:
+        img_data = unquote_to_bytes(payload)
+    return img_format, img_data
 
 
 def _wrap_shape(
@@ -301,10 +335,10 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     for now — current corpora contain none, but the branch keeps callers from
     silently producing distorted custom geometry if one ever appears.
     """
-    raw_x = _f(elem.get('x'))
-    raw_y = _f(elem.get('y'))
-    raw_w = _f(elem.get('width'))
-    raw_h = _f(elem.get('height'))
+    raw_x = svg_length_x(elem.get('x'), ctx)
+    raw_y = svg_length_y(elem.get('y'), ctx)
+    raw_w = svg_length_x(elem.get('width'), ctx)
+    raw_h = svg_length_y(elem.get('height'), ctx)
     x = ctx_x(raw_x, ctx)
     y = ctx_y(raw_y, ctx)
     w = ctx_w(raw_w, ctx)
@@ -318,8 +352,8 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # be inferred to keep round corners from collapsing to zero on one axis.
     rx_attr = elem.get('rx')
     ry_attr = elem.get('ry')
-    rx_raw = _f(rx_attr) if rx_attr is not None else 0.0
-    ry_raw = _f(ry_attr) if ry_attr is not None else 0.0
+    rx_raw = svg_length_x(rx_attr, ctx) if rx_attr is not None else 0.0
+    ry_raw = svg_length_y(ry_attr, ctx) if ry_attr is not None else 0.0
     if rx_attr is not None and ry_attr is None:
         ry_raw = rx_raw
     elif ry_attr is not None and rx_attr is None:
@@ -475,8 +509,8 @@ def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
     if not stroke or stroke == 'none':
         return False
 
-    sw = _f(_get_attr(elem, 'stroke-width', ctx), 0)
-    r = _f(elem.get('r'), 0)
+    sw = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 0)
+    r = svg_length_size(elem.get('r'), ctx, 0)
     if sw <= 0 or r <= 0:
         return False
 
@@ -494,9 +528,9 @@ def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
 
 def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <circle> to DrawingML ellipse or donut-arc shape."""
-    cx_ = _f(elem.get('cx'))
-    cy_ = _f(elem.get('cy'))
-    r = _f(elem.get('r'))
+    cx_ = svg_length_x(elem.get('cx'), ctx)
+    cy_ = svg_length_y(elem.get('cy'), ctx)
+    r = svg_length_size(elem.get('r'), ctx)
 
     if r <= 0:
         return None
@@ -506,8 +540,8 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
         dash_vals = re.split(r'[\s,]+', dasharray.strip())
         dash_len = float(dash_vals[0]) if dash_vals else 0
-        dash_offset = _f(elem.get('stroke-dashoffset'), 0)
-        stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1)
+        dash_offset = svg_length_size(elem.get('stroke-dashoffset'), ctx, 0)
+        stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1)
 
         rotate_deg = 0.0
         transform = elem.get('transform', '')
@@ -613,8 +647,18 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     use custom geometry which is sufficient and avoids flipH/flipV complexity.
     """
     transform = elem.get('transform')
-    x1, y1 = _transformed_point(ctx, _f(elem.get('x1')), _f(elem.get('y1')), transform)
-    x2, y2 = _transformed_point(ctx, _f(elem.get('x2')), _f(elem.get('y2')), transform)
+    x1, y1 = _transformed_point(
+        ctx,
+        svg_length_x(elem.get('x1'), ctx),
+        svg_length_y(elem.get('y1'), ctx),
+        transform,
+    )
+    x2, y2 = _transformed_point(
+        ctx,
+        svg_length_x(elem.get('x2'), ctx),
+        svg_length_y(elem.get('y2'), ctx),
+        transform,
+    )
 
     min_x = min(x1, x2)
     min_y = min(y1, y2)
@@ -790,7 +834,7 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
 def _parse_points(points_str: str) -> list[tuple[float, float]]:
     """Parse SVG points attribute into a list of (x, y) tuples."""
-    nums = re.findall(r'[-+]?(?:\d+\.?\d*|\.\d+)', points_str)
+    nums = re.findall(r'[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?', points_str)
     if len(nums) < 4:
         return []
     return [(float(nums[i]), float(nums[i + 1])) for i in range(0, len(nums) - 1, 2)]
@@ -1086,34 +1130,47 @@ def _override_run_attrs(
 ) -> dict[str, Any]:
     """Layer a tspan's styling attributes over the inherited run attrs."""
     run_attrs = dict(parent_attrs)
-    if tspan.get('font-weight'):
-        run_attrs['font_weight'] = tspan.get('font-weight')
-    if tspan.get('fill'):
-        child_fill = tspan.get('fill')
+    inline_style = parse_inline_style(tspan.get('style'))
+
+    def tspan_attr(name: str) -> str | None:
+        return inline_style.get(name) or tspan.get(name)
+
+    if tspan_attr('font-weight'):
+        run_attrs['font_weight'] = tspan_attr('font-weight')
+    if tspan_attr('fill'):
+        child_fill = tspan_attr('fill')
         run_attrs['fill_raw'] = child_fill
         c = parse_hex_color(child_fill)
         if c:
             run_attrs['fill'] = c
-    if tspan.get('stroke'):
-        run_attrs['stroke_raw'] = tspan.get('stroke')
-    if tspan.get('stroke-width'):
-        run_attrs['stroke_width'] = _f(tspan.get('stroke-width'), run_attrs.get('stroke_width', 1.0))
-    if tspan.get('stroke-opacity'):
+    if tspan_attr('stroke'):
+        run_attrs['stroke_raw'] = tspan_attr('stroke')
+    if tspan_attr('stroke-width'):
+        run_attrs['stroke_width'] = parse_svg_length(
+            tspan_attr('stroke-width'),
+            run_attrs.get('stroke_width', 1.0),
+            font_size=float(run_attrs.get('font_size', 16)),
+        )
+    if tspan_attr('stroke-opacity'):
         try:
-            run_attrs['stroke_opacity'] = float(tspan.get('stroke-opacity', '1'))
+            run_attrs['stroke_opacity'] = float(tspan_attr('stroke-opacity') or '1')
         except ValueError:
             pass
-    if tspan.get('font-size'):
-        run_attrs['font_size'] = _f(tspan.get('font-size'), run_attrs['font_size'])
-    if tspan.get('font-family'):
-        run_attrs['font_family'] = tspan.get('font-family')
-    if tspan.get('font-style'):
-        run_attrs['font_style'] = tspan.get('font-style')
-    if tspan.get('text-decoration'):
-        run_attrs['text_decoration'] = tspan.get('text-decoration')
-    if tspan.get('letter-spacing'):
+    if tspan_attr('font-size'):
+        run_attrs['font_size'] = parse_svg_length(
+            tspan_attr('font-size'),
+            run_attrs['font_size'],
+            font_size=float(run_attrs.get('font_size', 16)),
+        )
+    if tspan_attr('font-family'):
+        run_attrs['font_family'] = tspan_attr('font-family')
+    if tspan_attr('font-style'):
+        run_attrs['font_style'] = tspan_attr('font-style')
+    if tspan_attr('text-decoration'):
+        run_attrs['text_decoration'] = tspan_attr('text-decoration')
+    if tspan_attr('letter-spacing'):
         run_attrs['letter_spacing'] = _parse_letter_spacing_px(
-            tspan.get('letter-spacing'),
+            tspan_attr('letter-spacing'),
             font_size=float(run_attrs.get('font_size', 16)),
             scale_x=float(run_attrs.get('_scale_x', 1.0)),
         )
@@ -1194,7 +1251,7 @@ def _build_text_fill_xml(
     ctx: ConvertContext | None,
 ) -> str:
     """Build DrawingML fill XML for a text run."""
-    if fill_raw == 'none':
+    if fill_raw.strip().lower() in ('none', 'transparent'):
         return '<a:noFill/>'
 
     grad_id = resolve_url_id(fill_raw)
@@ -1210,7 +1267,7 @@ def _build_text_fill_xml(
 def _build_text_outline_xml(run: dict[str, Any]) -> str:
     """Build DrawingML outline XML for a text run from SVG stroke attributes."""
     stroke_raw = run.get('stroke_raw')
-    if not stroke_raw or stroke_raw == 'none':
+    if not stroke_raw or stroke_raw.strip().lower() in ('none', 'transparent'):
         return ''
 
     color = parse_hex_color(stroke_raw)
@@ -1284,9 +1341,12 @@ def _build_run_xml(
 
 def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <text> to DrawingML text shape with multi-run support."""
-    x = ctx_x(_f(elem.get('x')), ctx)
-    y = ctx_y(_f(elem.get('y')), ctx)
-    font_size = _f(_get_attr(elem, 'font-size', ctx), 16) * ctx.scale_y
+    x = ctx_x(svg_length_x(elem.get('x'), ctx), ctx)
+    y = ctx_y(svg_length_y(elem.get('y'), ctx), ctx)
+    font_size = (
+        parse_svg_length(_get_attr(elem, 'font-size', ctx), 16, font_size=16)
+        * ctx.scale_y
+    )
     font_weight = _get_attr(elem, 'font-weight', ctx) or '400'
     font_family_str = _get_attr(elem, 'font-family', ctx) or ''
     text_anchor = _get_attr(elem, 'text-anchor', ctx) or 'start'
@@ -1294,7 +1354,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
     stroke_raw = _get_attr(elem, 'stroke', ctx) or ''
-    stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
     font_style = _get_attr(elem, 'font-style', ctx) or ''
     text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
@@ -2132,10 +2192,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         return None
 
     # Raw coordinates (pre-context-transform) for clip path calculations
-    raw_x = _f(elem.get('x'))
-    raw_y = _f(elem.get('y'))
-    raw_w = _f(elem.get('width'))
-    raw_h = _f(elem.get('height'))
+    raw_x = svg_length_x(elem.get('x'), ctx)
+    raw_y = svg_length_y(elem.get('y'), ctx)
+    raw_w = svg_length_x(elem.get('width'), ctx)
+    raw_h = svg_length_y(elem.get('height'), ctx)
 
     if ctx.use_transform_matrix:
         x = raw_x
@@ -2153,15 +2213,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     # Extract image data
     if href.startswith('data:'):
-        match = re.match(r'data:image/([A-Za-z0-9.+-]+);base64,(.+)', href, re.DOTALL)
-        if not match:
+        decoded = _decode_data_image_uri(href)
+        if decoded is None:
             return None
-        img_format = match.group(1).lower()
-        if img_format == 'svg+xml':
-            img_format = 'svg'
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = base64.b64decode(match.group(2))
+        img_format, img_data = decoded
     else:
         if ctx.svg_dir is None:
             return None
@@ -2268,10 +2323,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
 def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <ellipse> to DrawingML ellipse shape."""
-    raw_cx = _f(elem.get('cx'))
-    raw_cy = _f(elem.get('cy'))
-    raw_rx = _f(elem.get('rx'))
-    raw_ry = _f(elem.get('ry'))
+    raw_cx = svg_length_x(elem.get('cx'), ctx)
+    raw_cy = svg_length_y(elem.get('cy'), ctx)
+    raw_rx = svg_length_x(elem.get('rx'), ctx)
+    raw_ry = svg_length_y(elem.get('ry'), ctx)
     cx_ = ctx_x(raw_cx, ctx)
     cy_ = ctx_y(raw_cy, ctx)
     rx = raw_rx * ctx.scale_x
@@ -2348,10 +2403,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     if not href:
         return None
 
-    svg_x = _f(elem.get('x'))
-    svg_y = _f(elem.get('y'))
-    svg_w = _f(elem.get('width'))
-    svg_h = _f(elem.get('height'))
+    svg_x = svg_length_x(elem.get('x'), ctx)
+    svg_y = svg_length_y(elem.get('y'), ctx)
+    svg_w = svg_length_x(elem.get('width'), ctx)
+    svg_h = svg_length_y(elem.get('height'), ctx)
     if svg_w <= 0 or svg_h <= 0:
         return None
 
@@ -2380,15 +2435,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
                 src_rect_xml = f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
 
     if href.startswith('data:'):
-        match = re.match(r'data:image/([A-Za-z0-9.+-]+);base64,(.+)', href, re.DOTALL)
-        if not match:
+        decoded = _decode_data_image_uri(href)
+        if decoded is None:
             return None
-        img_format = match.group(1).lower()
-        if img_format == 'svg+xml':
-            img_format = 'svg'
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = base64.b64decode(match.group(2))
+        img_format, img_data = decoded
     else:
         if ctx.svg_dir is None:
             return None

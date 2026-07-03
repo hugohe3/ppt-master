@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <pattern id="z-half" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="2.6" fill="#EC4899"/></pattern>
+    <filter id="z-grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="720" fill="#F6F1E7"/>
+  <text x="96" y="248" font-family="Arial Black, Arial, sans-serif" font-size="132" font-weight="900" fill="#2563EB">LOREM</text>
+  <text x="86" y="240" font-family="Arial Black, Arial, sans-serif" font-size="132" font-weight="900" fill="#EC4899" opacity="0.85">LOREM</text>
+  <circle cx="1010" cy="230" r="150" fill="url(#z-half)"/>
+  <circle cx="1010" cy="230" r="150" fill="none" stroke="#2563EB" stroke-width="4"/>
+  <circle cx="990" cy="212" r="150" fill="none" stroke="#EC4899" stroke-width="4" opacity="0.7"/>
+  <rect x="96" y="322" width="560" height="70" fill="#EC4899"/>
+  <rect x="88" y="314" width="560" height="70" fill="#2563EB" opacity="0.55"/>
+  <text x="120" y="372" font-family="Courier New, monospace" font-size="30" font-weight="700" fill="#F6F1E7">RISO · 2-COLOR · No.04</text>
+  <text x="96" y="466" font-family="Courier New, monospace" font-size="26" fill="#2563EB">Riso offsets · halftone dots</text>
+  <text x="96" y="508" font-family="Courier New, monospace" font-size="26" fill="#EC4899">limited colors · print grain</text>
+  <g stroke="#111827" stroke-width="4"><path d="M96 556h120M96 592h90"/></g>
+  <rect x="760" y="440" width="420" height="200" fill="url(#z-half)" opacity="0.9"/>
+  <rect x="752" y="432" width="420" height="200" fill="none" stroke="#2563EB" stroke-width="4"/>
+  <text x="792" y="562" font-family="Arial Black, Arial, sans-serif" font-size="92" font-weight="900" fill="#2563EB">72</text>
+  <text x="792" y="602" font-family="Courier New, monospace" font-size="22" fill="#111827">PERCENT</text>
+  <rect width="1280" height="720" filter="url(#z-grain)" opacity="0.08"/>
+</svg>

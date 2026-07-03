@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="neon" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="dt-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22D3EE" stop-opacity="0.4"/><stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#070B16"/>
+  <g stroke="#16324D" stroke-width="1" opacity="0.6">
+    <path d="M0 180H1280M0 360H1280M0 540H1280M160 0V720M400 0V720M640 0V720M880 0V720M1120 0V720"/>
+  </g>
+  <text x="96" y="118" font-family="Consolas, monospace" font-size="24" letter-spacing="4" fill="#22D3EE">// SYSTEM.OVERVIEW_04</text>
+  <text x="94" y="248" font-family="Helvetica Neue, Arial, sans-serif" font-size="94" font-weight="700" fill="#F1F5F9">Lorem ipsum</text>
+  <text x="98" y="306" font-family="Arial, sans-serif" font-size="27" fill="#7DD3FC">Dark canvas · glowing accents · precise geometry</text>
+  <g transform="translate(96 360)">
+    <path d="M0 220L120 170L240 190L360 110L480 140L600 60L720 90L840 20" fill="none" stroke="#22D3EE" stroke-width="4" filter="url(#neon)" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M0 220L120 170L240 190L360 110L480 140L600 60L720 90L840 20L840 240L0 240Z" fill="url(#dt-fill)"/>
+    <circle cx="600" cy="60" r="8" fill="#A3E635" filter="url(#neon)"/>
+    <circle cx="840" cy="20" r="8" fill="#A3E635" filter="url(#neon)"/>
+  </g>
+  <g transform="translate(980 360)">
+    <rect x="0" y="0" width="200" height="240" rx="10" fill="#0C1526" stroke="#1E3A5F"/>
+    <text x="24" y="92" font-family="Helvetica Neue, Arial, sans-serif" font-size="74" font-weight="700" fill="#22D3EE" filter="url(#neon)">72%</text>
+    <text x="24" y="130" font-family="Consolas, monospace" font-size="18" fill="#64748B">UPTIME</text>
+    <rect x="24" y="162" width="152" height="10" rx="5" fill="#12233B"/>
+    <rect x="24" y="162" width="110" height="10" rx="5" fill="#A3E635"/>
+    <text x="24" y="214" font-family="Consolas, monospace" font-size="16" fill="#7DD3FC">+18% QoQ</text>
+  </g>
+</svg>

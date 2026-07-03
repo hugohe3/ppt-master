@@ -323,7 +323,7 @@ def validate_svg_viewbox(svg_files: List[Path], expected_format: Optional[str] =
         List of warnings
     """
     warnings = []
-    viewbox_pattern = re.compile(r'viewBox="([^"]+)"')
+    viewbox_pattern = re.compile(r'viewBox\s*=\s*["\']([^"\']+)["\']')
     viewboxes = set()
 
     # Determine expected viewBox

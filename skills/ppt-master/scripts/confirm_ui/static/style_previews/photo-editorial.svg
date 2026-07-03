@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="pe-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2A4A"/><stop offset="0.5" stop-color="#7C4A6B"/><stop offset="0.78" stop-color="#E08A63"/><stop offset="1" stop-color="#F3B77E"/>
+    </linearGradient>
+    <radialGradient id="pe-sun" cx="72%" cy="72%" r="36%">
+      <stop offset="0" stop-color="#FFE7B8"/><stop offset="0.35" stop-color="#FBC26B" stop-opacity="0.8"/><stop offset="1" stop-color="#FBC26B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pe-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#pe-sky)"/>
+  <rect width="1280" height="720" fill="url(#pe-sun)"/>
+  <circle cx="922" cy="516" r="72" fill="#FFEFC8" opacity="0.95"/>
+  <path d="M0 470L220 420L470 500L720 430L980 500L1280 440V720H0Z" fill="#5A4A6E" opacity="0.55"/>
+  <path d="M0 540L260 500L520 560L780 505L1040 570L1280 520V720H0Z" fill="#3E3352" opacity="0.72"/>
+  <path d="M0 610L300 575L600 630L900 580L1280 625V720H0Z" fill="#241C33"/>
+  <path d="M300 250q14 -12 28 0q14 -12 28 0" fill="none" stroke="#1B2A4A" stroke-width="3"/>
+  <path d="M362 286q10 -9 20 0q10 -9 20 0" fill="none" stroke="#1B2A4A" stroke-width="2.5"/>
+  <rect x="0" y="440" width="1280" height="280" fill="url(#pe-grad)"/>
+  <rect x="80" y="560" width="8" height="96" fill="#F3B77E"/>
+  <text x="112" y="548" font-family="Helvetica Neue, Arial, sans-serif" font-size="22" letter-spacing="5" fill="#F3B77E">FIELD NOTES · 04</text>
+  <text x="108" y="622" font-family="Helvetica Neue, Arial, sans-serif" font-size="76" font-weight="700" fill="#fff">Lorem ipsum</text>
+  <text x="112" y="666" font-family="Helvetica Neue, Arial, sans-serif" font-size="24" fill="#E7DCD2">Full-bleed photography with light text and captions</text>
+  <rect x="20" y="20" width="1240" height="680" fill="none" stroke="#fff" stroke-opacity="0.6" stroke-width="2"/>
+</svg>

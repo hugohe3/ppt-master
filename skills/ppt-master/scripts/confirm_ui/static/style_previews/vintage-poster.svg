@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <pattern id="vp-half" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.4" fill="#7C2D12" opacity="0.45"/></pattern>
+  </defs>
+  <rect width="1280" height="720" fill="#EFD9A8"/>
+  <circle cx="890" cy="300" r="180" fill="#E07A3E"/>
+  <rect x="710" y="300" width="360" height="180" fill="url(#vp-half)"/>
+  <path d="M0 520L240 380L440 520Z" fill="#2E6E5E"/>
+  <path d="M320 540L620 340L900 540Z" fill="#245A4C"/>
+  <path d="M760 540L1020 400L1280 540V560H760Z" fill="#2E6E5E"/>
+  <rect x="0" y="540" width="1280" height="180" fill="#C6612E"/>
+  <rect x="0" y="540" width="1280" height="180" fill="url(#vp-half)"/>
+  <text x="90" y="180" font-family="Georgia, serif" font-size="26" letter-spacing="8" fill="#7C2D12">EST. 04 · SERIES</text>
+  <text x="86" y="296" font-family="Georgia, 'Times New Roman', serif" font-size="120" font-weight="900" fill="#7C2D12">Lorem</text>
+  <text x="90" y="352" font-family="Georgia, serif" font-size="27" fill="#8A4B24">Mid-century flat blocks · halftone · warm geometry</text>
+  <text x="90" y="628" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#F3E4C4">72% · dolor sit amet</text>
+  <rect x="28" y="28" width="1224" height="664" fill="none" stroke="#7C2D12" stroke-width="4"/>
+</svg>

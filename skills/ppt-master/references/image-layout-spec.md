@@ -22,7 +22,7 @@ Layout rules for pages where the image is placed **side-by-side with body text**
 7. Fill results into the Design Specification's image resource list
 ```
 
-**When to run**: if image approach includes "B) User-provided", run the scan and populate the image resource list after the Strategist's Eight Confirmations and before content analysis / outlining.
+**When to run**: if image approach includes "B) User-provided", run the scan and populate the image resource list after the Strategist's confirmation stage and before content analysis / outlining.
 
 ---
 
