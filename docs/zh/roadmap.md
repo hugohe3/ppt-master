@@ -76,6 +76,12 @@
 
 - **原生 PPTX 导出图片媒体大小封顶** — 保持生成 deck 可编辑、不嵌入巨幅源图：新增原生图片尺寸模式——`cap`（默认）只对超大源图限制最大边长，`display` 按渲染 SVG 框尺寸做更激进压缩；原生导出保留完整嵌入像素，SVG/PPT 显示裁剪仍走可编辑的 picture-crop 元数据；`finalize_svg` 保留原有 slice/meet 行为，另加默认按渲染尺寸下采样以产出紧凑 SVG 快照。文档落地 `cap` / `display` 两模式与 `--no-image-optimize` 逃生舱
 
+### 2026-07（分阶段确认 UI + 原生图表 / 表格成熟）
+
+- **Step 4 确认 gate 重构为三阶段向导 + 可视化预览** — 原来单次「八项确认」gate 拆成一个浏览器会话内的三阶段流程（方向锚点 → 设计系统 → 图片 / 执行方式），每个下游阶段都从用户**实际已确认**的上游选择重新推导，而非 AI 原始推荐——于是图片策略天然吻合已确认的配色系统。确认页为难以凭名字判断的选项补上视觉辅助：18 个 `visual_style` 每个一张专属 real-SVG 页面缩略图、真实图标库样本、AI 图参考图预览。`recommendations.json` 改用规范的 `stage` 选择器（`tier` 仅作内部向后兼容读取），用户可见措辞统一为「阶段」；聊天 fallback 镜像同样的分阶段顺序
+
+- **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
+
 ---
 
 ## 进行中 / 下一步
@@ -116,7 +122,7 @@ PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围
 
 跨四渲染器（PowerPoint / Keynote / LibreOffice / WPS）的位置保真是项目主轴。把默认路线改成 PowerPoint 原生图表会让「像素级一致性」破功——同一个 PPTX 在不同渲染器里图表会显示不同布局。图表默认用 SVG 是 **by design**，不是能力缺失。
 
-窄例外是 `data-pptx-native` marker：受支持的数据图表与纯文本网格表格在生成时默认携带休眠的原生对象元数据，导出加 `--native-objects` 才激活——供主动用跨渲染器保真换取 PowerPoint 内可编辑性的用户使用。默认导出路径与 SVG 图表 / 表格系统不变。
+窄例外是 `data-pptx-native` marker：受支持的数据图表与纯文本网格表格在生成时携带原生对象元数据，导出加 `--native-objects` 才激活——供主动用跨渲染器保真换取 PowerPoint 内可编辑性的用户使用；激活后的对象现在会保留 deck 的 chart-area / plot / 轴线 / 网格线 / 标签颜色与原生表格格式，不再塌回 PowerPoint 默认主题（见上文 2026-07）。默认导出路径与 SVG 图表 / 表格系统不变。
 
 ### uv 作为默认 / 必需依赖
 

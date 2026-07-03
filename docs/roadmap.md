@@ -76,6 +76,12 @@ The past two months' structural capability growth. Single flags / incremental po
 
 - **Native PPTX export caps image media size** — keep generated decks editable without embedding huge source images: new native image sizing modes — `cap` (default) limits only oversized source images to a max dimension, while `display` sizes from the rendered SVG box for more aggressive compression; native export preserves full embedded pixels while SVG/PPT display cropping stays as editable picture-crop metadata; `finalize_svg` keeps its existing slice/meet behavior and adds default rendered-size downsampling for compact SVG snapshots. Docs land the `cap` / `display` modes and the `--no-image-optimize` escape hatch
 
+### 2026-07 — Staged confirmation UI + native chart / table maturation
+
+- **Step 4 confirmation gate restaged into a three-pass wizard + visual previews** — the single Eight-Confirmations gate became a three-stage flow in one browser session (direction anchors → design system → images / execution), each downstream stage re-derived from the user's **actual** confirmed upstream choices instead of the AI's originals — so, e.g., the image strategy fits the confirmed color system by construction. The confirm page adds visual aids for the hard-to-name picks: a bespoke real-SVG page thumbnail for each of the 18 `visual_style` options, real icon-library samples, and AI-image reference previews. `recommendations.json` now carries a canonical `stage` selector (`tier` retained only as an internal back-compat read) and user-facing wording is unified on "stage"; the chat fallback mirrors the same staged order
+
+- **`--native-objects` hardened from dormant marker to production-quality opt-in** — the narrow native-object exception (see Non-goals below) now emits charts and pure-text tables that keep the deck's own design instead of snapping to PowerPoint's white default theme. Classic native charts write explicit chart-area / plot-area / axis-line / gridline / label-text colors — inferred from the visible SVG fallback (largest panel `<rect>` → background, fallback text → labels, fallback strokes → axis/grid) or overridden per `style` (`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`, `"none"` for transparent); the color parser normalizes named CSS colors, `#RGB` shorthand, and `rgb()` / `rgba()` to OOXML hex; bar/column series disable negative-value fill inversion so negative bars keep their series color. The activated export is named `<name>_<ts>_native_charts.pptx` to tell it apart from the default flattened-shape export. **The default route is unchanged** — charts/tables still export as SVG-derived DrawingML shapes for cross-renderer fidelity; native objects stay the deliberate opt-in trade documented under Non-goals below
+
 ---
 
 ## In progress / Next
@@ -116,7 +122,7 @@ PPT Master's main route is "AI generates SVG from scratch → DrawingML", with t
 
 Pixel-fidelity across the four renderers (PowerPoint / Keynote / LibreOffice / WPS) is the project's spine. Switching the default route to native PowerPoint charts breaks that — the same PPTX renders different chart layouts across renderers. Charts as SVG is **by design**, not a capability gap.
 
-The narrow exception is the `data-pptx-native` marker: supported data charts and pure text-grid tables carry dormant native-object metadata at generation time, and exporting with `--native-objects` activates it for users who deliberately trade cross-renderer fidelity for PowerPoint-side editability on those objects. The default export path and the SVG chart/table system are unchanged.
+The narrow exception is the `data-pptx-native` marker: supported data charts and pure text-grid tables carry native-object metadata at generation time, and exporting with `--native-objects` activates it for users who deliberately trade cross-renderer fidelity for PowerPoint-side editability on those objects — the activated objects now preserve the deck's chart-area / plot / axis / gridline / label colors and native table formatting rather than snapping to PowerPoint's default theme (see 2026-07 above). The default export path and the SVG chart/table system are unchanged.
 
 ### uv as default / required dependency
 
