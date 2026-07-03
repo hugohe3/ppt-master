@@ -254,7 +254,7 @@ def _build_catalogs() -> dict:
     """Return the static catalog set with the canvas list synced live from
     ``config.CANVAS_FORMATS`` — the single source of truth for canvas formats —
     so the confirm page can never drift from the pipeline's real formats. The
-    set of formats and their dimensions come from config; bilingual labels and
+    set of formats and their dimensions come from config; trilingual labels and
     use text are kept from catalogs.json (with a plain fallback for any new id).
     """
     data = json.loads(_CATALOGS_PATH.read_text(encoding='utf-8'))
