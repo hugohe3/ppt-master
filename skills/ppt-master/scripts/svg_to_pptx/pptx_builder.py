@@ -43,9 +43,9 @@ from .pptx_notes import (
 from .pptx_narration import (
     AUDIO_CONTENT_TYPES,
     AUDIO_REL_TYPE,
+    AUDIO_MARKER_PNG_BYTES,
     IMAGE_REL_TYPE,
     MEDIA_REL_TYPE,
-    TRANSPARENT_PNG_BYTES,
     apply_recorded_timing,
     inject_narration,
     next_shape_id,
@@ -1081,7 +1081,7 @@ def create_pptx_with_native_svg(
                     poster_name = 'narration_poster.png'
                     poster_path = media_dir / poster_name
                     if not poster_path.exists():
-                        poster_path.write_bytes(TRANSPARENT_PNG_BYTES)
+                        poster_path.write_bytes(AUDIO_MARKER_PNG_BYTES)
                     has_any_image = True
                     image_exts_used.add('png')
 
