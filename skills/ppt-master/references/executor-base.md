@@ -95,7 +95,7 @@ Before generating each page, output which template is used:
 
 ## 2. Design Parameter Confirmation (Mandatory Step)
 
-Before the first SVG page, output a confirmation listing: canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan. Prevents spec/execution drift.
+Before the first SVG page, output a confirmation listing: canvas dimensions, body font size, color scheme (primary/secondary/accent HEX), font plan, and the live-preview URL reported by the launcher. If the preview launch failed, state that failure before generating SVGs instead of silently proceeding. Prevents spec/execution drift.
 
 ### 2.1 Per-page spec_lock re-read (Mandatory)
 
