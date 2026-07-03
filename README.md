@@ -85,7 +85,7 @@ English | [中文](./README_CN.md)
 </table>
 
 <p align="center">
-  <sub>All examples above were generated in a single pass, with no manual polish (Claude Opus 4.7 + <code>gpt-image-2</code>). Downloading any .pptx and opening it in PowerPoint is the fastest way to feel the capability ceiling.<br/><a href="https://hugohe3.github.io/ppt-master/">Flip through all examples online →</a> · <a href="./examples/"><code>examples/</code> directory</a> · <a href="./docs/why-ppt-master.md">Why PPT Master?</a></sub>
+  <sub>All examples above were generated in a single pass, with no manual polish (Claude Opus 4.7 + <code>gpt-image-2</code>). Downloading any .pptx and opening it in PowerPoint is the fastest way to see what it can really do.<br/><a href="https://hugohe3.github.io/ppt-master/">Flip through all examples online →</a> · <a href="./examples/"><code>examples/</code> directory</a> · <a href="./docs/why-ppt-master.md">Why PPT Master?</a></sub>
 </p>
 
 ---
@@ -133,8 +133,8 @@ Knowing how to use Python and AI agents will matter more and more, and this proj
 
 **All you need to install is [Python](https://www.python.org/downloads/) 3.10+.** Everything else comes with one line — `pip install -r requirements.txt` — after you download the project in Step 3.
 
-<details open>
-<summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
+<details>
+<summary><strong>Windows</strong> — see the dedicated <a href="./docs/windows-installation.md">step-by-step guide</a> ⚠️</summary>
 
 Windows requires a few extra steps (PATH setup, execution policy, etc.). We wrote a **step-by-step guide** specifically for Windows users:
 
@@ -253,13 +253,11 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **Already have a `.pptx` you want to reuse?** Hand the AI that deck plus your material and ask it to "fill this deck with the new content" — it fills text, table, and chart data into your existing design and exports only the pages you pick, staying natively editable. See the [FAQ](./docs/faq.md) and [template-fill workflow](./skills/ppt-master/workflows/template-fill-pptx.md).
 
-> **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
-
-> **Something went wrong?** Check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
+> **Something went wrong?** If the AI loses context, ask it to read `skills/ppt-master/SKILL.md`; for everything else, check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
 
 ### 5. Image Acquisition (Optional)
 
-Two paths for non-user images, mixable per row in the same deck:
+Two paths for non-user images, mixable per image in the same deck:
 
 **A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
 

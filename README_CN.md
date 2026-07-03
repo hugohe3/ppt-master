@@ -85,7 +85,7 @@
 </table>
 
 <p align="center">
-  <sub>以上示例均为一次性生成、未经精修（生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>）。下载任意一份 .pptx 在 PowerPoint 里打开，是感受能力边界最快的方式。<br/><a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
+  <sub>以上示例均为一次性生成、未经精修（生成模型：Claude Opus 4.7 + <code>gpt-image-2</code>）。下载任意一份 .pptx 在 PowerPoint 里打开，是感受真实产出水平最快的方式。<br/><a href="https://hugohe3.github.io/ppt-master/">在线翻看全部示例 →</a> · <a href="./examples/"><code>examples/</code> 目录</a> · <a href="./docs/zh/why-ppt-master.md">为什么选 PPT Master？</a></sub>
 </p>
 
 <p align="center">
@@ -137,8 +137,8 @@
 
 **只需安装 [Python](https://www.python.org/downloads/) 3.10+。** 其余依赖在第 3 步下载好项目后，用一行 `pip install -r requirements.txt` 装齐。
 
-<details open>
-<summary><strong>Windows</strong> — 请看专门的手把手安装指南 ⚠️</summary>
+<details>
+<summary><strong>Windows</strong> — 请看专门的<a href="./docs/zh/windows-installation.md">手把手安装指南</a> ⚠️</summary>
 
 Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 Windows 用户写了一份**手把手安装指南**：
 
@@ -261,13 +261,11 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 > **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
 
-> **AI 迷失上下文？** 让它先读 `skills/ppt-master/SKILL.md`。
-
-> **遇到问题？** 查看 **[常见问题](./docs/zh/faq.md)** — 涵盖模型选择、排版问题、导出异常等，基于真实用户反馈持续更新。
+> **遇到问题？** AI 迷失上下文时，让它先读 `skills/ppt-master/SKILL.md`；其他问题查看 **[常见问题](./docs/zh/faq.md)** — 涵盖模型选择、排版问题、导出异常等，基于真实用户反馈持续更新。
 
 ### 5. 图片获取（可选）
 
-非用户自带图片有两条路径，可在同一份 deck 里按行混用：
+非用户自带图片有两条路径，可在同一份 deck 里按图混用：
 
 **A) AI 生图** — `image_gen.py`。设置 `IMAGE_BACKEND` 和对应 `*_API_KEY`（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等），流程会自动调用。`python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整后端清单。`gpt-image-2` 目前综合质量最佳。
 
