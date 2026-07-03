@@ -138,7 +138,7 @@ for node in ast.walk(tree):
 # 构建脚本名 → uvx 命令名 的映射
 script_to_cmd = {}
 for cmd_name, script_rel in commands.items():
-    script_name = script_rel.replace('/', '\\').replace('\\', '/').split('/')[-1]
+    script_name = script_rel.rsplit('/', 1)[-1]
     script_to_cmd[script_name] = cmd_name
 
 # 需要处理的文件目录
