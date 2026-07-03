@@ -404,8 +404,28 @@ class SVGQualityChecker:
         viewbox = viewbox_match.group(1)
         result['info']['viewbox'] = viewbox
 
-        # Check format
-        if not re.match(r'0 0 \d+ \d+', viewbox):
+        parts = re.split(r'[\s,]+', viewbox.strip())
+        if len(parts) != 4:
+            result['errors'].append(
+                f"viewBox must contain exactly four numeric values; got: {viewbox}"
+            )
+            return
+
+        try:
+            values = [float(part) for part in parts]
+        except ValueError:
+            result['errors'].append(
+                f"viewBox must contain exactly four numeric values; got: {viewbox}"
+            )
+            return
+
+        if values[2] <= 0 or values[3] <= 0:
+            result['errors'].append(
+                f"viewBox width/height must be positive; got: {viewbox}"
+            )
+            return
+
+        if values[0] != 0 or values[1] != 0 or any(not part.isdigit() for part in parts):
             result['warnings'].append(f"Unusual viewBox format: {viewbox}")
 
         # Check if it matches expected format
@@ -573,8 +593,17 @@ class SVGQualityChecker:
     @staticmethod
     def _font_family_values(content: str) -> List[str]:
         """Extract SVG font-family values from attributes and inline styles."""
+        return SVGQualityChecker._svg_property_values(content, 'font-family')
+
+    @staticmethod
+    def _svg_property_values(content: str, property_name: str) -> List[str]:
+        """Extract a SVG property from direct attributes and inline styles."""
         values: List[str] = []
-        for match in re.finditer(r'\bfont-family\s*=\s*(["\'])(.*?)\1', content, re.IGNORECASE):
+        attr_re = re.compile(
+            rf'\b{re.escape(property_name)}\s*=\s*(["\'])(.*?)\1',
+            re.IGNORECASE | re.DOTALL,
+        )
+        for match in attr_re.finditer(content):
             values.append(html.unescape(match.group(2)).strip())
 
         for match in re.finditer(r'\bstyle\s*=\s*(["\'])(.*?)\1', content, re.IGNORECASE | re.DOTALL):
@@ -583,7 +612,7 @@ class SVGQualityChecker:
                 if ':' not in part:
                     continue
                 name, value = part.split(':', 1)
-                if name.strip().lower() == 'font-family':
+                if name.strip().lower() == property_name.lower():
                     values.append(value.strip())
         return [value for value in values if value]
 
@@ -952,17 +981,15 @@ class SVGQualityChecker:
         # Scan SVG for used values
         color_drifts = set()
         for attr in ('fill', 'stroke', 'stop-color'):
-            pattern = re.compile(rf'\b{attr}\s*=\s*["\'](#[0-9A-Fa-f]{{3,8}})["\']')
-            for m in pattern.finditer(content):
-                val = m.group(1).upper()
+            for raw_value in self._svg_property_values(content, attr):
+                if not HEX_VALUE_RE.fullmatch(raw_value):
+                    continue
+                val = raw_value.upper()
                 if val not in allowed_colors:
                     color_drifts.add(val)
 
         font_drifts = set()
-        # Capture to the matching delimiter (group 1) so a double-quoted stack
-        # containing single-quoted family names is not truncated at the inner quote.
-        for m in re.finditer(r'font-family\s*=\s*(["\'])(.*?)\1', content):
-            val = m.group(2).strip()
+        for val in self._font_family_values(content):
             if allowed_fonts and self._normalize_font_stack(val) not in allowed_fonts:
                 font_drifts.add(val)
 
@@ -974,8 +1001,8 @@ class SVGQualityChecker:
 
         size_drifts = set()
         used_sizes = []
-        for m in re.finditer(r'font-size\s*=\s*["\']([^"\']+)["\']', content):
-            val = self._normalize_size(m.group(1))
+        for raw_value in self._svg_property_values(content, 'font-size'):
+            val = self._normalize_size(raw_value)
             used_sizes.append(val)
             if not allowed_sizes or val in allowed_sizes:
                 continue
@@ -1567,12 +1594,16 @@ class SVGQualityChecker:
         if not match:
             return None
         parts = re.split(r'[\s,]+', match.group(1).strip())
-        if len(parts) < 4:
+        if len(parts) != 4:
             return None
         try:
-            return float(parts[2]), float(parts[3])
+            width = float(parts[2])
+            height = float(parts[3])
         except ValueError:
             return None
+        if width <= 0 or height <= 0:
+            return None
+        return width, height
 
     @classmethod
     def _has_off_canvas_reference(cls, refs: List[Tuple[Path, str]]) -> bool:

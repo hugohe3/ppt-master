@@ -114,9 +114,14 @@ def _root_viewport_size(root: ET.Element) -> tuple[float, float]:
     """Return the SVG root viewport size in user units."""
     view_box = root.get('viewBox')
     if view_box:
-        parts = [float(n) for n in re.findall(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?', view_box)]
-        if len(parts) == 4 and parts[2] > 0 and parts[3] > 0:
-            return parts[2], parts[3]
+        raw_parts = re.split(r'[\s,]+', view_box.strip())
+        if len(raw_parts) == 4:
+            try:
+                parts = [float(n) for n in raw_parts]
+            except ValueError:
+                parts = []
+            if parts and parts[2] > 0 and parts[3] > 0:
+                return parts[2], parts[3]
 
     width = parse_svg_length(root.get('width'), 1280.0)
     height = parse_svg_length(root.get('height'), 720.0)

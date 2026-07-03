@@ -111,7 +111,7 @@ def get_viewbox_dimensions(svg_path: Path) -> tuple[int, int] | None:
             return None
 
         parts = re.split(r'[\s,]+', match.group(1).strip())
-        if len(parts) < 4:
+        if len(parts) != 4:
             return None
 
         width = float(parts[2])

@@ -624,7 +624,15 @@
                 // is never touched.
                 if (rootSvg) {
                     var vb = (rootSvg.getAttribute("viewBox") || "").trim().split(/[\s,]+/);
-                    if (vb.length === 4 && parseFloat(vb[2]) > 0 && parseFloat(vb[3]) > 0) {
+                    var vbWidth = Number(vb[2]);
+                    var vbHeight = Number(vb[3]);
+                    if (
+                        vb.length === 4 &&
+                        Number.isFinite(vbWidth) &&
+                        Number.isFinite(vbHeight) &&
+                        vbWidth > 0 &&
+                        vbHeight > 0
+                    ) {
                         rootSvg.setAttribute("width", vb[2]);
                         rootSvg.setAttribute("height", vb[3]);
                     }
