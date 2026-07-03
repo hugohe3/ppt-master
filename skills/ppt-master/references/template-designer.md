@@ -194,7 +194,7 @@ When rewriting an existing template that contains the omitted sections, delete t
 ### 2. Inherit Design Specification
 
 Templates must strictly follow the finalized template brief and the generated `design_spec.md`:
-- **Canvas dimensions**: `canvas_format` is not enough; root SVG `width` / `height` / `viewBox` match `canvas_width`, `canvas_height`, and `canvas_viewbox` in the design spec
+- **Canvas dimensions**: `canvas_format` is not enough; root SVG `viewBox` matches `canvas_viewbox` in the design spec (`width` / `height`, if written, equal it)
 - **Source canvas**: when a PPTX/SVG reference is used, record `source_canvas_width`, `source_canvas_height`, and `source_viewbox`. If the output canvas differs from the source, normalize all geometry, typography, line heights, strokes, and image crop coordinates explicitly instead of relying on the shared aspect ratio.
 - **Color scheme**: Uses primary, secondary, and accent colors from the spec
 - **Font plan**: Uses the per-role font families declared in the spec

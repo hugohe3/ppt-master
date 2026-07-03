@@ -62,7 +62,6 @@
             overlap_caption: "Overlapping here — pick one",
             err_empty_svg: "Slide loaded but the canvas is empty. The SVG may be malformed or missing a root <svg> element.",
             warn_icon_inline: "{count} icon(s) failed to render: {names}",
-            warn_svg_no_dims: "SVG is missing width/height attributes. Please ask the AI to strictly follow shared-standards.md §4 and include width & height in the SVG root element.",
             warn_matrix_transform: "This geometry edit is stored as a transform matrix. Preview is exact; PPTX export depends on matrix-aware conversion.",
             modal_matrix_transform_note: "\n\nNote: at least one staged geometry edit uses a transform matrix. Re-export with the current PPTX exporter so the matrix is applied.",
             slide_error_tooltip: "Failed to parse this slide: ",
@@ -138,7 +137,6 @@
             overlap_caption: "要素が重なっています — 1つ選択してください",
             err_empty_svg: "スライドは読み込めましたがキャンバスが空です。SVGが不正か、ルート<svg>要素がない可能性があります。",
             warn_icon_inline: "{count}個のアイコンを描画できませんでした: {names}",
-            warn_svg_no_dims: "SVGにwidth/height属性がありません。shared-standards.md §4に厳密に従い、SVGルート要素にwidthとheightを含めるようAIに依頼してください。",
             warn_matrix_transform: "このジオメトリ編集は transform matrix として保存されます。プレビューは正確ですが、PPTX出力にはmatrix対応の現行エクスポーターが必要です。",
             modal_matrix_transform_note: "\n\n注意：一時保存済みのジオメトリ編集に transform matrix を使うものがあります。matrixが反映されるよう、現行のPPTXエクスポーターで再エクスポートしてください。",
             slide_error_tooltip: "このスライドの解析に失敗: ",
@@ -214,7 +212,6 @@
             overlap_caption: "此处重叠元素——点击选择",
             err_empty_svg: "幻灯片已加载但画布为空。SVG 可能损坏或缺少根 <svg> 元素。",
             warn_icon_inline: "{count} 个图标渲染失败:{names}",
-            warn_svg_no_dims: "SVG 缺少 width/height 属性，预览可能异常。请让 AI 严格遵守 shared-standards.md §4 规范，在 SVG 根元素中补全 width 和 height。",
             warn_matrix_transform: "本次几何修改会以 transform matrix 保存。预览是准确的；PPTX 导出需要使用支持 matrix 的当前导出器。",
             modal_matrix_transform_note: "\n\n提示：至少有一条暂存几何修改使用了 transform matrix。请用当前 PPTX 导出器重新导出，确保 matrix 被应用。",
             slide_error_tooltip: "该幻灯片解析失败:",
@@ -599,10 +596,6 @@
         // Selecting a slide implicitly dismisses any stale "page updated" banner.
         hideReloadBanner();
 
-        // Remove any stale spec-violation banner from a previous load.
-        var oldSpecBanner = document.getElementById("spec-banner");
-        if (oldSpecBanner) oldSpecBanner.remove();
-
         fetch("/api/slide/" + encodeURIComponent(name))
             .then(function (res) { return res.json(); })
             .then(function (data) {
@@ -625,16 +618,15 @@
                 // Empty-canvas guard: surface a clear error if the SVG parsed
                 // to nothing renderable (issue #115's silent-blank scenario).
                 var rootSvg = svgContent.querySelector("svg");
-                // Spec observability: missing width/height → red banner only
+                // The width/height:auto preview CSS collapses without the root
+                // attributes (issue #115); derive them from viewBox at render
+                // time. View-layer only — the file on disk is never touched.
                 if (rootSvg && (!rootSvg.hasAttribute("width") || !rootSvg.hasAttribute("height"))) {
-                    var specBanner = document.createElement("div");
-                    specBanner.id = "spec-banner";
-                    specBanner.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);"
-                        + "background:#fee2e2;color:#b91c1c;border:2px solid #f87171;border-radius:8px;"
-                        + "padding:24px 36px;font-size:16px;font-weight:bold;text-align:center;z-index:9999;"
-                        + "width:420px;line-height:1.6;box-shadow:0 4px 12px rgba(0,0,0,0.15);";
-                    specBanner.textContent = t("warn_svg_no_dims");
-                    document.body.appendChild(specBanner);
+                    var vb = (rootSvg.getAttribute("viewBox") || "").trim().split(/[\s,]+/);
+                    if (vb.length === 4 && parseFloat(vb[2]) > 0 && parseFloat(vb[3]) > 0) {
+                        if (!rootSvg.hasAttribute("width")) rootSvg.setAttribute("width", vb[2]);
+                        if (!rootSvg.hasAttribute("height")) rootSvg.setAttribute("height", vb[3]);
+                    }
                 }
                 var hasContent = false;
                 if (rootSvg) {
