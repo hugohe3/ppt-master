@@ -124,6 +124,15 @@ def _add_default_content_type(content_types: str, extension: str, content_type: 
     return content_types.replace('</Types>', entry + '\n</Types>')
 
 
+def _add_content_type_override(content_types: str, part_name: str, content_type: str) -> str:
+    """Add an Override content type if it is not already present."""
+    normalized = '/' + part_name.lstrip('/')
+    if f'PartName="{normalized}"' in content_types:
+        return content_types
+    entry = f'  <Override PartName="{normalized}" ContentType="{content_type}"/>'
+    return content_types.replace('</Types>', entry + '\n</Types>')
+
+
 _IMAGE_CONTENT_TYPES = {
     'png': 'image/png',
     'jpg': 'image/jpeg',
@@ -629,6 +638,7 @@ def create_pptx_with_native_svg(
     image_sizing: str = 'cap',
     image_scale: float = 2.0,
     image_quality: int = 85,
+    native_objects: bool = False,
     conversion_trace_path: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
 ) -> bool:
@@ -664,6 +674,8 @@ def create_pptx_with_native_svg(
             from rendered SVG boxes.
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used for opaque optimized rasters.
+        native_objects: Convert explicit ``data-pptx-native`` table/chart
+            markers to native PowerPoint objects. Default off.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
 
     Returns:
@@ -711,6 +723,10 @@ def create_pptx_with_native_svg(
         print(f"  SVG file count: {len(svg_files)}")
         if use_native_shapes:
             print(f"  Mode: Native DrawingML shapes (directly editable)")
+            print(
+                "  Native table/chart objects: "
+                f"{'Enabled' if native_objects else 'Disabled'}"
+            )
             if image_optimize:
                 if image_sizing == 'display':
                     image_mode = (
@@ -787,6 +803,8 @@ def create_pptx_with_native_svg(
         has_any_image = False
         media_cache: dict[tuple[str, str], str] = {}
         image_exts_used: set[str] = set()
+        package_exts_used: set[str] = set()
+        package_content_overrides: dict[str, str] = {}
         notes_slides_created: set[int] = set()
         narration_slides_created: set[int] = set()
         audio_exts_used: set[str] = set()
@@ -800,7 +818,14 @@ def create_pptx_with_native_svg(
                 # ---- Native shapes mode ----
                 if use_native_shapes:
                     slide_cfg = _slide_config(animation_config, svg_path.stem)
-                    slide_xml, media_files_dict, rel_entries, anim_targets = (
+                    (
+                        slide_xml,
+                        media_files_dict,
+                        rel_entries,
+                        anim_targets,
+                        package_files_dict,
+                        content_type_overrides,
+                    ) = (
                         convert_svg_to_slide_shapes(
                             svg_path, slide_num=slide_num, verbose=verbose,
                             merge_paragraphs=merge_paragraphs,
@@ -809,6 +834,7 @@ def create_pptx_with_native_svg(
                             image_sizing=image_sizing,
                             image_scale=image_scale,
                             image_quality=image_quality,
+                            native_objects=native_objects,
                             trace_out=conversion_trace,
                         )
                     )
@@ -903,6 +929,19 @@ def create_pptx_with_native_svg(
                         if mapped_name:
                             rel['target'] = f'../media/{mapped_name}'
 
+                    # Write non-media OOXML package parts produced by native
+                    # object converters, e.g. chart XML, chart rels, and
+                    # embedded workbooks.
+                    for part_name, part_data in package_files_dict.items():
+                        package_path = extract_dir / part_name
+                        package_path.parent.mkdir(parents=True, exist_ok=True)
+                        with open(package_path, 'wb') as f:
+                            f.write(part_data)
+                        suffix = package_path.suffix.lstrip('.').lower()
+                        if suffix:
+                            package_exts_used.add(suffix)
+                    package_content_overrides.update(content_type_overrides)
+
                     # Build relationships XML
                     rels_dir = extract_dir / 'ppt' / 'slides' / '_rels'
                     rels_dir.mkdir(exist_ok=True)
@@ -917,7 +956,9 @@ def create_pptx_with_native_svg(
 
                     rels_xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>{extra_rels}
+  <Relationship Id="rId1"
+                Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+                Target="../slideLayouts/slideLayout1.xml"/>{extra_rels}
 </Relationships>'''
                     with open(rels_path, 'w', encoding='utf-8') as f:
                         f.write(rels_xml)
@@ -964,7 +1005,10 @@ def create_pptx_with_native_svg(
                             image_exts_used.add('png')
                         else:
                             if verbose:
-                                print(f"  [{i}/{len(svg_files)}] {svg_path.name} - PNG generation failed, using pure SVG")
+                                print(
+                                    f"  [{i}/{len(svg_files)}] {svg_path.name} - "
+                                    "PNG generation failed, using pure SVG"
+                                )
                             svg_rid = 'rId2'
 
                     slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
@@ -1116,6 +1160,14 @@ def create_pptx_with_native_svg(
                 ext,
                 _content_type_for_extension(ext),
             )
+        if 'xlsx' in package_exts_used:
+            content_types = _add_default_content_type(
+                content_types,
+                'xlsx',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        for part_name, content_type in sorted(package_content_overrides.items()):
+            content_types = _add_content_type_override(content_types, part_name, content_type)
         with open(content_types_path, 'w', encoding='utf-8') as f:
             f.write(content_types)
 
