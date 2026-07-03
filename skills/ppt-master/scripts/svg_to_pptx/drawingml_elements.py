@@ -18,7 +18,7 @@ from .drawingml_utils import (
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
-    parse_font_family, is_cjk_char, estimate_text_width,
+    parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
     detect_text_lang, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
 )
@@ -1097,42 +1097,47 @@ def _override_run_attrs(
 ) -> dict[str, Any]:
     """Layer a tspan's styling attributes over the inherited run attrs."""
     run_attrs = dict(parent_attrs)
-    if tspan.get('font-weight'):
-        run_attrs['font_weight'] = tspan.get('font-weight')
-    if tspan.get('fill'):
-        child_fill = tspan.get('fill')
+    inline_style = parse_inline_style(tspan.get('style'))
+
+    def tspan_attr(name: str) -> str | None:
+        return inline_style.get(name) or tspan.get(name)
+
+    if tspan_attr('font-weight'):
+        run_attrs['font_weight'] = tspan_attr('font-weight')
+    if tspan_attr('fill'):
+        child_fill = tspan_attr('fill')
         run_attrs['fill_raw'] = child_fill
         c = parse_hex_color(child_fill)
         if c:
             run_attrs['fill'] = c
-    if tspan.get('stroke'):
-        run_attrs['stroke_raw'] = tspan.get('stroke')
-    if tspan.get('stroke-width'):
+    if tspan_attr('stroke'):
+        run_attrs['stroke_raw'] = tspan_attr('stroke')
+    if tspan_attr('stroke-width'):
         run_attrs['stroke_width'] = parse_svg_length(
-            tspan.get('stroke-width'),
+            tspan_attr('stroke-width'),
             run_attrs.get('stroke_width', 1.0),
             font_size=float(run_attrs.get('font_size', 16)),
         )
-    if tspan.get('stroke-opacity'):
+    if tspan_attr('stroke-opacity'):
         try:
-            run_attrs['stroke_opacity'] = float(tspan.get('stroke-opacity', '1'))
+            run_attrs['stroke_opacity'] = float(tspan_attr('stroke-opacity') or '1')
         except ValueError:
             pass
-    if tspan.get('font-size'):
+    if tspan_attr('font-size'):
         run_attrs['font_size'] = parse_svg_length(
-            tspan.get('font-size'),
+            tspan_attr('font-size'),
             run_attrs['font_size'],
             font_size=float(run_attrs.get('font_size', 16)),
         )
-    if tspan.get('font-family'):
-        run_attrs['font_family'] = tspan.get('font-family')
-    if tspan.get('font-style'):
-        run_attrs['font_style'] = tspan.get('font-style')
-    if tspan.get('text-decoration'):
-        run_attrs['text_decoration'] = tspan.get('text-decoration')
-    if tspan.get('letter-spacing'):
+    if tspan_attr('font-family'):
+        run_attrs['font_family'] = tspan_attr('font-family')
+    if tspan_attr('font-style'):
+        run_attrs['font_style'] = tspan_attr('font-style')
+    if tspan_attr('text-decoration'):
+        run_attrs['text_decoration'] = tspan_attr('text-decoration')
+    if tspan_attr('letter-spacing'):
         run_attrs['letter_spacing'] = _parse_letter_spacing_px(
-            tspan.get('letter-spacing'),
+            tspan_attr('letter-spacing'),
             font_size=float(run_attrs.get('font_size', 16)),
             scale_x=float(run_attrs.get('_scale_x', 1.0)),
         )
@@ -1213,7 +1218,7 @@ def _build_text_fill_xml(
     ctx: ConvertContext | None,
 ) -> str:
     """Build DrawingML fill XML for a text run."""
-    if fill_raw == 'none':
+    if fill_raw.strip().lower() in ('none', 'transparent'):
         return '<a:noFill/>'
 
     grad_id = resolve_url_id(fill_raw)
@@ -1229,7 +1234,7 @@ def _build_text_fill_xml(
 def _build_text_outline_xml(run: dict[str, Any]) -> str:
     """Build DrawingML outline XML for a text run from SVG stroke attributes."""
     stroke_raw = run.get('stroke_raw')
-    if not stroke_raw or stroke_raw == 'none':
+    if not stroke_raw or stroke_raw.strip().lower() in ('none', 'transparent'):
         return ''
 
     color = parse_hex_color(stroke_raw)
