@@ -30,7 +30,14 @@
             </div>
         </div>
         <div id="panel-right">
-            <button id="btn-lang-toggle" class="btn-lang-toggle" title="Switch language">中</button>
+            <div class="lang-select">
+                <button id="btn-lang-toggle" class="lang-select-btn" type="button" title="Switch language" aria-haspopup="listbox" aria-expanded="false"><span id="lang-current"></span><span class="lang-caret" aria-hidden="true">▾</span></button>
+                <ul id="lang-menu" class="lang-menu" role="listbox" hidden>
+                    <li role="option" tabindex="0" aria-selected="false" data-lang="zh">中文</li>
+                    <li role="option" tabindex="0" aria-selected="false" data-lang="en">English</li>
+                    <li role="option" tabindex="0" aria-selected="false" data-lang="ja">日本語</li>
+                </ul>
+            </div>
             <div class="panel-header" data-i18n="panel_edit_annotate">Edit / Annotate</div>
             <div id="pending-status" class="pending-status"></div>
             <div id="selection-info">
