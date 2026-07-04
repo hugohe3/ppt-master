@@ -813,13 +813,19 @@ default to compact PowerPoint text: `title_font_size: 16` (12pt),
 `note_font_size: 12` (9pt).
 
 **Chart chrome metadata**: Text that is visually part of the chart must be in
-metadata, not only in SVG fallback children. `title` becomes the native chart
-title on classic charts; `subtitle` becomes the second rich-text line of that
-classic chart title. `title`, `subtitle`, and axis-title values may be strings
-or objects with `text`, `font_size`, `font_family`, and `color` when the fallback uses local
-role typography. chartEx keeps PowerPoint's empty `<cx:title>` and emits the
-title / subtitle as companion editable text boxes until chartEx rich titles are
-validated. Axis titles are optional and explicit: use `axis_titles` with
+metadata, not only in SVG fallback children; metadata MUST still match visible
+fallback chrome. `title` becomes the native chart title on classic charts; it
+is not an object name, so use `name` for semantic object naming. `subtitle`
+becomes the second rich-text line of that classic chart title. `title`,
+`subtitle`, and axis-title values may be strings or objects with `text`,
+`font_size`, `font_family`, and `color` when the fallback uses local role
+typography. `svg_quality_checker.py` rejects `title`, `subtitle`, or axis-title
+metadata whose text is not visible inside the native marker's fallback. Direct
+`--native-objects` export keeps the chart native but omits that inconsistent
+chrome with a warning. chartEx keeps PowerPoint's empty `<cx:title>` and emits
+the title / subtitle as companion editable text boxes until chartEx rich titles
+are validated. Axis
+titles are optional and explicit: use `axis_titles` with
 `category`, `value`, `x`, `y`, or `secondary_value` keys, or the root aliases
 `category_axis_title`, `value_axis_title`, `x_axis_title`, `y_axis_title`, and
 `secondary_value_axis_title`; do not add semantic axis titles that are not

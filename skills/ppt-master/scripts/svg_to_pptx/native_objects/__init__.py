@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -14,6 +15,9 @@ from .chart_style import (
     _chart_companion_text_xml,
     _chart_text_sizes,
     _classic_chart_style,
+    _native_chart_chrome_errors,
+    _native_chart_chrome_warnings,
+    _native_chart_export_payload,
 )
 from .chart_xml import _chart_rels_xml, _chart_xml
 from .chartex import (
@@ -158,6 +162,8 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 
 def _validate_native_object_marker_payload(
     elem: ET.Element,
+    *,
+    validate_chrome: bool = True,
 ) -> tuple[str, dict[str, Any], list[list[Any]] | None]:
     kind = (elem.get("data-pptx-native") or "").strip().lower()
     if not kind:
@@ -177,6 +183,10 @@ def _validate_native_object_marker_payload(
         table_rows, _ = _validate_table_payload(payload)
     else:
         _chart_data(payload)
+        if validate_chrome:
+            chrome_errors = _native_chart_chrome_errors(elem, payload)
+            if chrome_errors:
+                raise RuntimeError("; ".join(chrome_errors))
     return kind, payload, table_rows
 
 
@@ -187,10 +197,12 @@ def validate_native_object_marker(elem: ET.Element) -> None:
 
 def validate_native_object_marker_with_warnings(elem: ET.Element) -> list[str]:
     """Validate a data-pptx-native marker and return non-fatal warnings."""
-    kind, _, table_rows = _validate_native_object_marker_payload(elem)
-    if kind != "table" or table_rows is None:
-        return []
-    return _native_table_warnings(elem, table_rows)
+    kind, payload, table_rows = _validate_native_object_marker_payload(elem)
+    if kind == "table" and table_rows is not None:
+        return _native_table_warnings(elem, table_rows)
+    if kind == "chart":
+        return _native_chart_chrome_warnings(elem, payload)
+    return []
 
 
 def native_object_marker_warnings(elem: ET.Element) -> list[str]:
@@ -203,15 +215,15 @@ def convert_native_object(elem: ET.Element, ctx: ConvertContext) -> ShapeResult 
     kind = (elem.get("data-pptx-native") or "").strip().lower()
     if not kind:
         return None
-    if kind not in _NATIVE_KINDS:
-        raise RuntimeError(f"Unsupported data-pptx-native value: {kind}")
-    if _local_tag(elem) != "g":
-        raise RuntimeError("Native PPTX table/chart markers must be <g> elements")
-    transform = elem.get("transform", "")
-    if transform and any(token in transform for token in ("rotate", "matrix", "skew")):
-        raise RuntimeError("Native PPTX table/chart markers support translate/scale transforms only")
 
-    payload = _load_payload(elem, kind)
+    kind, payload, _ = _validate_native_object_marker_payload(elem, validate_chrome=False)
     if kind == "table":
         return _build_native_table(elem, ctx, payload)
+    payload, warnings = _native_chart_export_payload(elem, payload)
+    marker_id = elem.get("id") or "<unnamed>"
+    for warning in warnings:
+        print(
+            f"  Warning: data-pptx-native marker {marker_id}: {warning}",
+            file=sys.stderr,
+        )
     return _build_native_chart(elem, ctx, payload)

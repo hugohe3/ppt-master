@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -18,8 +17,9 @@ from .marker_common import (
     _compact_key,
     _first_present,
     _font_size_hpt,
-    _local_tag,
+    _normalized_fallback_text,
     _number,
+    _visible_fallback_texts,
 )
 
 
@@ -150,33 +150,15 @@ def _validate_table_payload(payload: dict[str, Any]) -> tuple[list[list[Any]], i
     return table_rows, col_count
 
 
-def _normalized_table_text(value: Any) -> str:
-    return re.sub(r"\s+", " ", str(value or "")).strip()
-
-
 def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
     counts: dict[str, int] = {}
     for row in table_rows:
         for cell in row:
             cell_data = _cell_payload(cell)
-            text = _normalized_table_text(cell_data.get("text"))
+            text = _normalized_fallback_text(cell_data.get("text"))
             if text:
                 counts[text] = counts.get(text, 0) + 1
     return counts
-
-
-def _visible_fallback_texts(elem: ET.Element) -> list[str]:
-    texts: list[str] = []
-    for child in elem.iter():
-        tag = _local_tag(child)
-        if tag != "text":
-            continue
-        if child.get("display") == "none" or child.get("visibility") == "hidden":
-            continue
-        text = _normalized_table_text("".join(child.itertext()))
-        if text:
-            texts.append(text)
-    return texts
 
 
 def _native_table_warnings(elem: ET.Element, table_rows: list[list[Any]]) -> list[str]:
