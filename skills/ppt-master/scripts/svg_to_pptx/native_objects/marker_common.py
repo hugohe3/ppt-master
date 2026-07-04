@@ -539,8 +539,9 @@ def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> t
     raw_y = payload.get("y", elem.get("data-pptx-y"))
     raw_width = payload.get("width", elem.get("data-pptx-width"))
     raw_height = payload.get("height", elem.get("data-pptx-height"))
+    explicit_bounds = all(value is not None for value in (raw_x, raw_y, raw_width, raw_height))
     inferred = None
-    if any(value is None for value in (raw_x, raw_y, raw_width, raw_height)):
+    if not explicit_bounds:
         inferred = _inferred_bounds(elem)
         if inferred is None:
             raise RuntimeError(
@@ -560,10 +561,16 @@ def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> t
     if width <= 0 or height <= 0:
         raise RuntimeError("Native PPTX object width/height must be positive")
 
-    resolved_x = ctx_x(x, ctx)
-    resolved_y = ctx_y(y, ctx)
-    resolved_w = ctx_w(width, ctx)
-    resolved_h = ctx_h(height, ctx)
+    if explicit_bounds:
+        resolved_x = x
+        resolved_y = y
+        resolved_w = width
+        resolved_h = height
+    else:
+        resolved_x = ctx_x(x, ctx)
+        resolved_y = ctx_y(y, ctx)
+        resolved_w = ctx_w(width, ctx)
+        resolved_h = ctx_h(height, ctx)
     off_x = px_to_emu(resolved_x)
     off_y = px_to_emu(resolved_y)
     ext_cx = px_to_emu(resolved_w)
