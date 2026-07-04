@@ -291,9 +291,16 @@ def _chart_color(colors: list[str], index: int) -> str:
     return _DEFAULT_CHART_COLORS[index % len(_DEFAULT_CHART_COLORS)]
 
 
-def _data_point_colors_xml(count: int, colors: list[str]) -> str:
+def _data_point_colors_xml(
+    count: int,
+    colors: list[str],
+    *,
+    disable_negative_invert: bool = False,
+) -> str:
+    invert_xml = '<c:invertIfNegative val="0"/>' if disable_negative_invert else ""
     return "".join(
-        f'<c:dPt><c:idx val="{idx}"/>{_series_color_xml(_chart_color(colors, idx))}</c:dPt>'
+        f'<c:dPt><c:idx val="{idx}"/>{invert_xml}'
+        f'{_series_color_xml(_chart_color(colors, idx))}</c:dPt>'
         for idx in range(count)
     )
 
@@ -352,6 +359,7 @@ def _series_xml(
             point_colors_xml = _data_point_colors_xml(
                 len(item["values"]),
                 item["point_colors"],
+                disable_negative_invert=True,
             )
         if chart_type == "line":
             marker_xml = _marker_xml("circle" if line_style == "lineMarker" else "none")

@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     # SVG to PPTX export
     "python-pptx>=0.6.21",
+    "XlsxWriter>=3.0.0",
     # Recorded narration
     "edge-tts>=7.2.8",
     # Office compatibility (SVG to PNG fallback)
@@ -29,7 +30,6 @@ dependencies = [
     "curl_cffi>=0.7.0",
     # AI image generation
     "google-genai>=1.0.0",
-    "openai>=1.0.0",
     # SVG editor server
     "flask>=3.0.0",
 ]
