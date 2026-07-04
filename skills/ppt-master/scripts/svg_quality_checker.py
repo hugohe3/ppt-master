@@ -348,15 +348,16 @@ class SVGQualityChecker:
             with open(svg_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
-            # 0. Check XML well-formedness — every other check assumes the file
-            # is valid XML.  Bail early on failure so the regex-based checks
-            # below don't produce misleading errors on a broken document.
-            if self._check_xml_well_formed(content, result):
+            # 0. Parse XML once — every other check assumes the file is valid
+            # XML. Bail early on failure so the regex-based checks below don't
+            # produce misleading errors on a broken document.
+            root = self._parse_xml_root(content, result)
+            if root is not None:
                 # 1. Check viewBox
-                self._check_viewbox(content, result, expected_format)
+                self._check_viewbox(root, result, expected_format)
 
                 # 2. Check forbidden elements
-                self._check_forbidden_elements(content, result)
+                self._check_forbidden_elements(content, root, result)
 
                 # 3. Check font-size values
                 self._check_font_size_values(content, result)
@@ -365,22 +366,22 @@ class SVGQualityChecker:
                 self._check_fonts(content, result)
 
                 # 5. Check text wrapping methods
-                self._check_text_elements(content, result)
+                self._check_text_elements(content, root, result)
 
                 # 6. Check image references (file existence and resolution)
-                self._check_image_references(content, svg_path, result)
+                self._check_image_references(root, svg_path, result)
 
                 # 7. Check icon placeholders resolve before post-processing.
-                self._check_icon_placeholders(content, svg_path, result)
+                self._check_icon_placeholders(root, svg_path, result)
 
                 # 8. Check object-level animation anchor quality.
-                self._check_animation_group_ids(content, result)
+                self._check_animation_group_ids(root, result)
 
                 # 8b. Check <pattern> elements declare a PPTX preset.
-                self._check_pattern_fills(content, result)
+                self._check_pattern_fills(root, result)
 
                 # 8c. Check opt-in native table/chart markers before export.
-                self._check_native_object_markers(content, result)
+                self._check_native_object_markers(root, result)
 
                 # 9. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
@@ -417,8 +418,8 @@ class SVGQualityChecker:
         self.results.append(result)
         return result
 
-    def _check_xml_well_formed(self, content: str, result: Dict) -> bool:
-        """Check that the SVG content parses as well-formed XML.
+    def _parse_xml_root(self, content: str, result: Dict) -> ET.Element | None:
+        """Parse the SVG content as well-formed XML.
 
         SVG is strict XML.  AI-generated decks frequently produce content that
         looks fine in HTML5-tolerant previews but fails strict XML parsing —
@@ -427,11 +428,11 @@ class SVGQualityChecker:
         cannot be exported to PPTX, so we surface them here as a hard error
         before any downstream check looks at them.
 
-        Returns True when the document is well-formed; False otherwise.
+        Returns the parsed root when the document is well-formed; otherwise
+        appends an error and returns None.
         """
         try:
-            ET.fromstring(content)
-            return True
+            return ET.fromstring(content)
         except ET.ParseError as e:
             result['errors'].append(
                 f"Invalid XML: {e} — SVG must be well-formed XML. "
@@ -439,15 +440,10 @@ class SVGQualityChecker:
                 f"escape XML reserved chars as &amp; &lt; &gt; &quot; &apos; "
                 f"(see references/shared-standards.md §1)."
             )
-            return False
+            return None
 
-    def _check_viewbox(self, content: str, result: Dict, expected_format: str = None):
+    def _check_viewbox(self, root: ET.Element, result: Dict, expected_format: str = None):
         """Check viewBox attribute"""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
-
         viewbox = root.get('viewBox')
         if not viewbox:
             result['errors'].append("Missing viewBox attribute")
@@ -486,15 +482,10 @@ class SVGQualityChecker:
                     f"viewBox mismatch: expected '{expected_viewbox}', got '{viewbox}'"
                 )
 
-    def _check_forbidden_elements(self, content: str, result: Dict):
+    def _check_forbidden_elements(self, content: str, root: ET.Element, result: Dict):
         """Check forbidden elements (blocklist)"""
         content_lower = content.lower()
-        try:
-            root = ET.fromstring(content)
-            elems = list(root.iter())
-        except ET.ParseError:
-            root = None
-            elems = []
+        elems = list(root.iter())
         local_names = {_local_name(elem).lower() for elem in elems}
 
         # ============================================================
@@ -606,8 +597,6 @@ class SVGQualityChecker:
             result['errors'].append("Detected forbidden <g opacity> (set opacity on each child element individually)")
         if any(_local_name(elem).lower() == 'image' and elem.get('opacity') for elem in elems):
             result['errors'].append("Detected forbidden <image opacity> (use overlay mask approach)")
-        if root is None and re.search(r'rgba\s*\(', content_lower):
-            result['errors'].append("Detected forbidden rgba() color (use fill-opacity/stroke-opacity instead)")
 
     def _check_font_size_values(self, content: str, result: Dict):
         """Require font-size values to be unitless numeric SVG px values."""
@@ -693,7 +682,7 @@ class SVGQualityChecker:
                     values.append(value.strip())
         return [value for value in values if value]
 
-    def _check_text_elements(self, content: str, result: Dict):
+    def _check_text_elements(self, content: str, root: ET.Element, result: Dict):
         """Check text elements and wrapping methods"""
         # Count text and tspan elements
         text_count = content.count('<text')
@@ -709,15 +698,10 @@ class SVGQualityChecker:
                 f"Detected {len(text_matches)} potentially overly long single-line text(s) (consider using tspan for wrapping)"
             )
 
-        self._check_unmergeable_leading_text(content, result)
+        self._check_unmergeable_leading_text(root, result)
 
-    def _check_unmergeable_leading_text(self, content: str, result: Dict) -> None:
+    def _check_unmergeable_leading_text(self, root: ET.Element, result: Dict) -> None:
         """Warn when leading text cannot be normalized for paragraph merging."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
-
         risky = []
         for text_el in root.iter(f'{{{SVG_NS}}}text'):
             if not (text_el.text or "").strip():
@@ -769,12 +753,8 @@ class SVGQualityChecker:
 
         return None
 
-    def _check_image_references(self, content: str, svg_path: Path, result: Dict):
+    def _check_image_references(self, root: ET.Element, svg_path: Path, result: Dict):
         """Check image file existence and resolution vs display size."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
         svg_dir = svg_path.parent
         checked = set()
 
@@ -833,13 +813,8 @@ class SVGQualityChecker:
             except Exception:
                 pass  # Image unreadable, skip resolution check
 
-    def _check_icon_placeholders(self, content: str, svg_path: Path, result: Dict) -> None:
+    def _check_icon_placeholders(self, root: ET.Element, svg_path: Path, result: Dict) -> None:
         """Check that <use data-icon="..."> placeholders resolve."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
-
         placeholders = [
             elem for elem in root.iter()
             if _local_name(elem).lower() == 'use' and elem.get('data-icon') is not None
@@ -879,13 +854,8 @@ class SVGQualityChecker:
                     f"{fallback_msg})"
                 )
 
-    def _check_animation_group_ids(self, content: str, result: Dict):
+    def _check_animation_group_ids(self, root: ET.Element, result: Dict):
         """Warn when visible top-level groups cannot be customized."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
-
         non_visual = {'defs', 'title', 'desc', 'metadata', 'style'}
         for index, child in enumerate(list(root), start=1):
             tag = child.tag.split('}', 1)[-1]
@@ -913,7 +883,7 @@ class SVGQualityChecker:
         'divot', 'shingle',
     })
 
-    def _check_pattern_fills(self, content: str, result: Dict):
+    def _check_pattern_fills(self, root: ET.Element, result: Dict):
         """Audit <pattern> defs that drive PPTX <a:pattFill> output.
 
         svg_to_pptx maps <pattern fill> to native <a:pattFill prst="...">. The
@@ -931,11 +901,6 @@ class SVGQualityChecker:
            value) is the canonical mistake; the only grids are `smGrid` /
            `lgGrid` / `dotGrid`.
         """
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
-
         for pattern in root.iter(f'{{{SVG_NS}}}pattern'):
             pat_id = pattern.get('id', '<unnamed>')
             prst = pattern.get('data-pptx-pattern')
@@ -959,13 +924,8 @@ class SVGQualityChecker:
                     "_OOXML_PATTERN_PRESETS."
                 )
 
-    def _check_native_object_markers(self, content: str, result: Dict) -> None:
+    def _check_native_object_markers(self, root: ET.Element, result: Dict) -> None:
         """Validate opt-in native table/chart markers before PPTX export."""
-        try:
-            root = ET.fromstring(content)
-        except ET.ParseError:
-            return
-
         markers = [
             elem for elem in root.iter()
             if elem.get('data-pptx-native') and elem.tag.rsplit('}', 1)[-1] != 'metadata'
