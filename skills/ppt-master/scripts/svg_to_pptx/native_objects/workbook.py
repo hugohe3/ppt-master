@@ -7,9 +7,14 @@ import zipfile
 from typing import Any
 
 try:
-    from openpyxl import Workbook
+    from xlsxwriter import Workbook as XlsxWriterWorkbook
 except ImportError:  # pragma: no cover - optional compatibility enhancement
-    Workbook = None
+    XlsxWriterWorkbook = None
+
+try:
+    from openpyxl import Workbook as OpenpyxlWorkbook
+except ImportError:  # pragma: no cover - optional compatibility enhancement
+    OpenpyxlWorkbook = None
 
 from ..drawingml.utils import _xml_escape
 from .marker_common import _excel_col
@@ -20,6 +25,8 @@ def _xlsx_cell_ref(row: int, col: int) -> str:
 
 
 def _xlsx_cell(value: Any, row: int, col: int) -> str:
+    if value is None:
+        return ""
     ref = _xlsx_cell_ref(row, col)
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         return f'<c r="{ref}"><v>{value}</v></c>'
@@ -29,8 +36,18 @@ def _xlsx_cell(value: Any, row: int, col: int) -> str:
 
 
 def _minimal_workbook(rows: list[list[Any]]) -> bytes:
-    if Workbook is not None:
-        workbook = Workbook()
+    if XlsxWriterWorkbook is not None:
+        buffer = io.BytesIO()
+        workbook = XlsxWriterWorkbook(buffer, {"in_memory": True})
+        worksheet = workbook.add_worksheet("Sheet1")
+        for row_index, row in enumerate(rows):
+            for col_index, value in enumerate(row):
+                worksheet.write(row_index, col_index, value)
+        workbook.close()
+        return buffer.getvalue()
+
+    if OpenpyxlWorkbook is not None:
+        workbook = OpenpyxlWorkbook()
         worksheet = workbook.active
         worksheet.title = "Sheet1"
         for row in rows:
@@ -105,7 +122,7 @@ def _minimal_workbook(rows: list[list[Any]]) -> bytes:
 def _minimal_category_chart_workbook(chart_data: dict[str, Any]) -> bytes:
     categories = chart_data["categories"]
     series = chart_data["series"]
-    rows: list[list[Any]] = [["Category"] + [item["name"] for item in series]]
+    rows: list[list[Any]] = [[None] + [item["name"] for item in series]]
     for row_index, category in enumerate(categories):
         rows.append([category] + [item["values"][row_index] for item in series])
     return _minimal_workbook(rows)
