@@ -799,7 +799,10 @@ match fallback `stroke-width`.
 fallback. Copy fallback chart text sizes into metadata using the same px-style
 unit as SVG text (`1px = 0.75pt`). Put the shared visible chart font in
 `style.font_family`, and override local chart text objects or `data_labels`
-with `font_family` only when the fallback visibly differs. Typical mappings are chart title
+with `font_family` only when the fallback visibly differs. If omitted, the
+exporter infers the shared font family and base chart text size from visible
+fallback text inside the native marker, but explicit metadata remains the
+stable contract when roles differ. Typical mappings are chart title
 (`title_font_size`), chart subtitle (`subtitle_font_size`), chart labels
 (`axis_font_size`, shared by axis titles / ticks / legend unless the fallback
 differs), and notes (`note_font_size`). Use `axis_title_font_size`,

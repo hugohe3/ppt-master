@@ -6,7 +6,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext
-from ..drawingml.utils import detect_text_lang, px_to_emu, _xml_escape
+from ..drawingml.utils import detect_text_lang, parse_font_family, px_to_emu, _xml_escape
 from .chart_data import _DEFAULT_CHART_COLORS
 from .marker_common import (
     _bool_attr,
@@ -21,10 +21,12 @@ from .marker_common import (
     _font_size_hpt,
     _hex_or_none,
     _inferred_chart_background,
+    _local_tag,
     _maybe_number,
     _most_common_color,
     _number,
     _relative_luminance,
+    _style_attr,
 )
 
 
@@ -50,14 +52,76 @@ def _chart_style_color(
     return _hex_or_none(raw) or default
 
 
-def _classic_chart_style(payload: dict[str, Any], elem: ET.Element) -> dict[str, str | None]:
+def _fallback_text_attr_values(
+    elem: ET.Element,
+    attr: str,
+    inherited_value: str | None = None,
+) -> list[str]:
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if elem.get("display") == "none" or elem.get("visibility") == "hidden":
+        return []
+
+    own_value = _style_attr(elem, attr)
+    next_value = own_value if own_value is not None else inherited_value
+    values: list[str] = []
+    if tag in {"text", "tspan"} and next_value:
+        values.append(str(next_value).strip())
+    for child in elem:
+        values.extend(_fallback_text_attr_values(child, attr, next_value))
+    return values
+
+
+def _most_common_value(values: list[str]) -> str | None:
+    if not values:
+        return None
+    counts: dict[str, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return max(counts.items(), key=lambda item: item[1])[0]
+
+
+def _most_common_font_size(values: list[str]) -> str | None:
+    if not values:
+        return None
+    counts: dict[str, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    max_count = max(counts.values())
+    candidates = [value for value, count in counts.items() if count == max_count]
+    numeric_candidates = [
+        (float(value), value)
+        for value in candidates
+        if _maybe_number(value) is not None
+    ]
+    if numeric_candidates:
+        return min(numeric_candidates, key=lambda item: item[0])[1]
+    return candidates[0]
+
+
+def _classic_chart_style(
+    payload: dict[str, Any],
+    elem: ET.Element,
+    inherited_styles: dict[str, str] | None = None,
+) -> dict[str, str | None]:
+    inherited_styles = inherited_styles or {}
     fallback_background = _inferred_chart_background(elem)
-    text_color = _most_common_color(_fallback_text_colors(elem)) or "404040"
-    stroke_colors = _fallback_stroke_colors(elem)
+    text_color = _most_common_color(
+        _fallback_text_colors(elem, inherited_styles.get("fill"))
+    ) or "404040"
+    stroke_colors = _fallback_stroke_colors(elem, inherited_styles.get("stroke"))
     darkest_stroke = min(stroke_colors, key=_relative_luminance) if stroke_colors else None
     lightest_stroke = max(stroke_colors, key=_relative_luminance) if stroke_colors else None
     raw_font_face = _chart_style_value(payload, "font_family", "fontFamily", "font_face", "fontFace")
-    font_face = str(raw_font_face).strip() if raw_font_face is not None else None
+    fallback_font_face = _most_common_value(
+        _fallback_text_attr_values(
+            elem,
+            "font-family",
+            inherited_styles.get("font-family"),
+        )
+    )
+    font_face = str(raw_font_face).strip() if raw_font_face is not None else fallback_font_face
     axis_color = darkest_stroke or text_color
     grid_color = (
         lightest_stroke
@@ -104,8 +168,23 @@ def _classic_chart_style(payload: dict[str, Any], elem: ET.Element) -> dict[str,
     }
 
 
-def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
+def _chart_text_sizes(
+    payload: dict[str, Any],
+    elem: ET.Element | None = None,
+    inherited_styles: dict[str, str] | None = None,
+) -> dict[str, int]:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    inherited_styles = inherited_styles or {}
+    fallback_font_size = (
+        _most_common_font_size(
+            _fallback_text_attr_values(
+                elem,
+                "font-size",
+                inherited_styles.get("font-size"),
+            )
+        )
+        if elem is not None else None
+    )
     base_raw = _first_present(
         payload.get("font_size"),
         payload.get("chart_font_size"),
@@ -113,6 +192,7 @@ def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
         style.get("font_size"),
         style.get("chart_font_size"),
         style.get("chartFontSize"),
+        fallback_font_size,
     )
     axis_raw = _first_present(
         payload.get("axis_font_size"),
@@ -201,8 +281,10 @@ def _major_gridlines_xml(color: str | None) -> str:
 def _font_face_xml(font_face: str | None) -> str:
     if not font_face:
         return ""
-    clean_font = _xml_escape(font_face)
-    return f'<a:latin typeface="{clean_font}"/><a:ea typeface="{clean_font}"/>'
+    fonts = parse_font_family(font_face)
+    latin_font = _xml_escape(fonts["latin"])
+    ea_font = _xml_escape(fonts["ea"])
+    return f'<a:latin typeface="{latin_font}"/><a:ea typeface="{ea_font}"/>'
 
 
 def _chart_tx_pr_xml(
@@ -355,6 +437,7 @@ def _text_box_xml(
     color: str | None,
     align: str = "l",
     bold: bool = False,
+    font_face: str | None = None,
 ) -> str:
     shape_id = ctx.next_id()
     align_key = _compact_key(align)
@@ -390,7 +473,7 @@ def _text_box_xml(
 <a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0"/>
 <a:lstStyle/>
 <a:p><a:pPr algn="{algn}"/>
-<a:r><a:rPr lang="{lang}" sz="{font_size}"{bold_attr}>{fill_xml}</a:rPr><a:t>{_xml_escape(text)}</a:t></a:r>
+<a:r><a:rPr lang="{lang}" sz="{font_size}"{bold_attr}>{fill_xml}{_font_face_xml(font_face)}</a:rPr><a:t>{_xml_escape(text)}</a:t></a:r>
 </a:p>
 </p:txBody>
 </p:sp>'''
@@ -462,6 +545,7 @@ def _chart_companion_text_xml(
             font_size = note_font_size
 
         color = _hex_or_none(item.get("color")) or chart_style.get("text_color")
+        font_face = _chart_text_entry_font_face(item, chart_style.get("font_face"))
         align = str(item.get("align") or ("ctr" if role == "title" else "l"))
         bold = bool(item.get("bold", role == "title"))
         has_box = all(_maybe_number(item.get(key)) is not None for key in ("x", "y", "width", "height"))
@@ -493,5 +577,6 @@ def _chart_companion_text_xml(
             color=color,
             align=align,
             bold=bold,
+            font_face=font_face,
         ))
     return "".join(parts)

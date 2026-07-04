@@ -117,6 +117,7 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             payload,
             chart_rels_id="rId1",
             chart_data=chart_data,
+            inherited_styles=ctx.inherited_styles,
         )
         ctx.package_files[chart_rels_part] = _chart_rels_xml(f"../embeddings/{workbook_name}")
         if chart_data["kind"] == "xy":
@@ -139,8 +140,8 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 </a:graphicData>
 </a:graphic>
 </p:graphicFrame>'''
-    text_sizes = _chart_text_sizes(payload)
-    chart_style = _classic_chart_style(payload, elem)
+    text_sizes = _chart_text_sizes(payload, elem, ctx.inherited_styles)
+    chart_style = _classic_chart_style(payload, elem, ctx.inherited_styles)
     companion_xml = _chart_companion_text_xml(
         ctx,
         payload,
