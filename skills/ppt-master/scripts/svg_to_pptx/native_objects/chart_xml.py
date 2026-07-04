@@ -344,7 +344,10 @@ def _series_xml(
                 if chart_type == "of_pie"
                 else len(categories)
             )
-            point_colors_xml = _data_point_colors_xml(point_count, colors)
+            point_colors_xml = _data_point_colors_xml(
+                point_count,
+                item.get("point_colors") or colors,
+            )
         elif chart_type in {"bar", "column"} and item.get("point_colors"):
             point_colors_xml = _data_point_colors_xml(
                 len(item["values"]),
@@ -557,8 +560,10 @@ def _bar_chart_group_xml(
     *,
     cat_ax_id: str,
     val_ax_id: str,
+    vary_colors: bool = False,
 ) -> str:
     bar_dir = "bar" if chart_type == "bar" else "col"
+    vary_colors_xml = '<c:varyColors val="1"/>' if vary_colors else '<c:varyColors val="0"/>'
     overlap_xml = (
         '<c:overlap val="100"/>'
         if grouping in {"stacked", "percentStacked"}
@@ -567,7 +572,7 @@ def _bar_chart_group_xml(
     return (
         "<c:barChart>"
         f'<c:barDir val="{bar_dir}"/><c:grouping val="{grouping}"/>'
-        '<c:varyColors val="0"/>'
+        f"{vary_colors_xml}"
         f"{ser_xml}"
         '<c:gapWidth val="150"/>'
         f"{overlap_xml}"
@@ -702,6 +707,7 @@ def _combo_plot_xml(
                 ser_xml,
                 cat_ax_id=cat_ax_id,
                 val_ax_id=val_ax_id,
+                vary_colors=any(item.get("point_colors") for item in plot["series"]),
             ))
         elif chart_type in {"area", "line"}:
             parts.append(_line_area_chart_group_xml(
@@ -861,9 +867,15 @@ def _chart_plot_xml(
             if grouping in {"stacked", "percentStacked"}
             else ""
         )
+        vary_colors_xml = (
+            '<c:varyColors val="1"/>'
+            if any(item.get("point_colors") for item in series)
+            else '<c:varyColors val="0"/>'
+        )
         return (
             "<c:barChart>"
             f'<c:barDir val="{bar_dir}"/><c:grouping val="{grouping}"/>'
+            f"{vary_colors_xml}"
             f"{ser_xml}"
             '<c:gapWidth val="150"/>'
             f"{overlap_xml}"
