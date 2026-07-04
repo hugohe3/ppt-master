@@ -424,6 +424,8 @@ After the candidates, append one line:
 
 **Confirm UI packaging**: when writing `recommendations.json` Stage 3, put **exactly three non-custom** generated-image recommendations in `image_strategy.candidates`. The page appends one built-in **Custom** card after those three recommendations, so do not use a `custom` candidate as a fourth option or as a slot filler in the UI payload.
 
+**Confirmed Custom card prose**: when `result.json.image_strategy.custom` is non-empty, treat it as a confirmed deck-wide image-direction constraint. Write the prose into `design_spec.md §III` image direction notes and carry it into every `Acquire Via: ai` prompt brief / `images/image_prompts.json` prompt guidance that it applies to. It augments the locked `rendering` + `palette` ids; preserve those ids for catalog / comparison-reference behavior, and use the custom prose for subject, composition, texture, avoidance, or other prompt specifics.
+
 **Hard rules for candidate construction**:
 
 | Rule | Behavior |
