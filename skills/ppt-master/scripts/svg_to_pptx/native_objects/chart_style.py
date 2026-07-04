@@ -6,7 +6,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext
-from ..drawingml.utils import ctx_h, ctx_w, ctx_x, ctx_y, detect_text_lang, px_to_emu, _xml_escape
+from ..drawingml.utils import detect_text_lang, parse_font_family, px_to_emu, _xml_escape
 from .chart_data import _DEFAULT_CHART_COLORS
 from .marker_common import (
     _bool_attr,
@@ -21,10 +21,14 @@ from .marker_common import (
     _font_size_hpt,
     _hex_or_none,
     _inferred_chart_background,
+    _local_tag,
     _maybe_number,
     _most_common_color,
     _number,
+    _normalized_fallback_text,
     _relative_luminance,
+    _style_attr,
+    _visible_fallback_texts,
 )
 
 
@@ -50,14 +54,76 @@ def _chart_style_color(
     return _hex_or_none(raw) or default
 
 
-def _classic_chart_style(payload: dict[str, Any], elem: ET.Element) -> dict[str, str | None]:
+def _fallback_text_attr_values(
+    elem: ET.Element,
+    attr: str,
+    inherited_value: str | None = None,
+) -> list[str]:
+    tag = _local_tag(elem)
+    if tag == "metadata" or tag in {"defs", "clipPath", "mask", "filter", "style"}:
+        return []
+    if elem.get("display") == "none" or elem.get("visibility") == "hidden":
+        return []
+
+    own_value = _style_attr(elem, attr)
+    next_value = own_value if own_value is not None else inherited_value
+    values: list[str] = []
+    if tag in {"text", "tspan"} and next_value:
+        values.append(str(next_value).strip())
+    for child in elem:
+        values.extend(_fallback_text_attr_values(child, attr, next_value))
+    return values
+
+
+def _most_common_value(values: list[str]) -> str | None:
+    if not values:
+        return None
+    counts: dict[str, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return max(counts.items(), key=lambda item: item[1])[0]
+
+
+def _most_common_font_size(values: list[str]) -> str | None:
+    if not values:
+        return None
+    counts: dict[str, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    max_count = max(counts.values())
+    candidates = [value for value, count in counts.items() if count == max_count]
+    numeric_candidates = [
+        (float(value), value)
+        for value in candidates
+        if _maybe_number(value) is not None
+    ]
+    if numeric_candidates:
+        return min(numeric_candidates, key=lambda item: item[0])[1]
+    return candidates[0]
+
+
+def _classic_chart_style(
+    payload: dict[str, Any],
+    elem: ET.Element,
+    inherited_styles: dict[str, str] | None = None,
+) -> dict[str, str | None]:
+    inherited_styles = inherited_styles or {}
     fallback_background = _inferred_chart_background(elem)
-    text_color = _most_common_color(_fallback_text_colors(elem)) or "404040"
-    stroke_colors = _fallback_stroke_colors(elem)
+    text_color = _most_common_color(
+        _fallback_text_colors(elem, inherited_styles.get("fill"))
+    ) or "404040"
+    stroke_colors = _fallback_stroke_colors(elem, inherited_styles.get("stroke"))
     darkest_stroke = min(stroke_colors, key=_relative_luminance) if stroke_colors else None
     lightest_stroke = max(stroke_colors, key=_relative_luminance) if stroke_colors else None
     raw_font_face = _chart_style_value(payload, "font_family", "fontFamily", "font_face", "fontFace")
-    font_face = str(raw_font_face).strip() if raw_font_face is not None else None
+    fallback_font_face = _most_common_value(
+        _fallback_text_attr_values(
+            elem,
+            "font-family",
+            inherited_styles.get("font-family"),
+        )
+    )
+    font_face = str(raw_font_face).strip() if raw_font_face is not None else fallback_font_face
     axis_color = darkest_stroke or text_color
     grid_color = (
         lightest_stroke
@@ -104,8 +170,23 @@ def _classic_chart_style(payload: dict[str, Any], elem: ET.Element) -> dict[str,
     }
 
 
-def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
+def _chart_text_sizes(
+    payload: dict[str, Any],
+    elem: ET.Element | None = None,
+    inherited_styles: dict[str, str] | None = None,
+) -> dict[str, int]:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    inherited_styles = inherited_styles or {}
+    fallback_font_size = (
+        _most_common_font_size(
+            _fallback_text_attr_values(
+                elem,
+                "font-size",
+                inherited_styles.get("font-size"),
+            )
+        )
+        if elem is not None else None
+    )
     base_raw = _first_present(
         payload.get("font_size"),
         payload.get("chart_font_size"),
@@ -113,6 +194,7 @@ def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
         style.get("font_size"),
         style.get("chart_font_size"),
         style.get("chartFontSize"),
+        fallback_font_size,
     )
     axis_raw = _first_present(
         payload.get("axis_font_size"),
@@ -201,8 +283,10 @@ def _major_gridlines_xml(color: str | None) -> str:
 def _font_face_xml(font_face: str | None) -> str:
     if not font_face:
         return ""
-    clean_font = _xml_escape(font_face)
-    return f'<a:latin typeface="{clean_font}"/><a:ea typeface="{clean_font}"/>'
+    fonts = parse_font_family(font_face)
+    latin_font = _xml_escape(fonts["latin"])
+    ea_font = _xml_escape(fonts["ea"])
+    return f'<a:latin typeface="{latin_font}"/><a:ea typeface="{ea_font}"/>'
 
 
 def _chart_tx_pr_xml(
@@ -303,6 +387,30 @@ def _axis_title_xml(
     )
 
 
+_AXIS_TITLE_KEY_GROUPS = {
+    "category": (
+        ("category",),
+        ("category_axis_title", "categoryAxisTitle"),
+    ),
+    "value": (
+        ("value",),
+        ("value_axis_title", "valueAxisTitle"),
+    ),
+    "x": (
+        ("x",),
+        ("x_axis_title", "xAxisTitle"),
+    ),
+    "y": (
+        ("y",),
+        ("y_axis_title", "yAxisTitle"),
+    ),
+    "secondary_value": (
+        ("secondary_value", "secondaryValue"),
+        ("secondary_value_axis_title", "secondaryValueAxisTitle"),
+    ),
+}
+
+
 def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     raw = payload.get("axis_titles", payload.get("axisTitles"))
@@ -325,21 +433,189 @@ def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
         return _first_present(*values)
 
     return {
-        "category": pick(
-            ("category",),
-            ("category_axis_title", "categoryAxisTitle"),
-        ),
-        "value": pick(
-            ("value",),
-            ("value_axis_title", "valueAxisTitle"),
-        ),
-        "x": pick(("x",), ("x_axis_title", "xAxisTitle")),
-        "y": pick(("y",), ("y_axis_title", "yAxisTitle")),
-        "secondary_value": pick(
-            ("secondary_value", "secondaryValue"),
-            ("secondary_value_axis_title", "secondaryValueAxisTitle"),
-        ),
+        field_name: pick(axis_keys, root_keys)
+        for field_name, (axis_keys, root_keys) in _AXIS_TITLE_KEY_GROUPS.items()
     }
+
+
+def _metadata_text(value: Any) -> str | None:
+    entry = _chart_text_entry(value)
+    if entry is None:
+        return None
+    text, _ = entry
+    return _normalized_fallback_text(text)
+
+
+def _native_chart_chrome_errors(elem: ET.Element, payload: dict[str, Any]) -> list[str]:
+    fallback_texts = set(_visible_fallback_texts(elem))
+    missing: list[str] = []
+
+    for field_name in ("title", "subtitle"):
+        text = _metadata_text(payload.get(field_name))
+        if text and text not in fallback_texts:
+            missing.append(f"{field_name}={text!r}")
+
+    for field_name, value in _axis_titles(payload).items():
+        text = _metadata_text(value)
+        if text and text not in fallback_texts:
+            missing.append(f"axis_titles.{field_name}={text!r}")
+
+    if not missing:
+        return []
+
+    sample = ", ".join(missing[:5])
+    suffix = "" if len(missing) <= 5 else f", and {len(missing) - 5} more"
+    return [
+        "Native PPTX chart metadata contains title/axis text that is not visible "
+        f"inside the fallback marker and would appear only after --native-objects: {sample}{suffix}. "
+        "Use `name` for object naming, or draw the same text in the chart fallback."
+    ]
+
+
+def _native_chart_export_payload(
+    elem: ET.Element,
+    payload: dict[str, Any],
+) -> tuple[dict[str, Any], list[str]]:
+    fallback_texts = set(_visible_fallback_texts(elem))
+    output = payload
+    messages: list[str] = []
+
+    def mutable_payload() -> dict[str, Any]:
+        nonlocal output
+        if output is payload:
+            output = dict(payload)
+        return output
+
+    def mutable_style(target: dict[str, Any]) -> dict[str, Any] | None:
+        style = target.get("style")
+        if not isinstance(style, dict):
+            return None
+        if target.get("style") is payload.get("style"):
+            style = dict(style)
+            target["style"] = style
+        return style
+
+    def drop_map_keys(source: dict[str, Any], map_key: str, keys: tuple[str, ...]) -> None:
+        raw_map = source.get(map_key)
+        if not isinstance(raw_map, dict):
+            return
+        next_map = dict(raw_map)
+        for key in keys:
+            next_map.pop(key, None)
+        if next_map:
+            source[map_key] = next_map
+        else:
+            source.pop(map_key, None)
+
+    for key in ("title", "subtitle"):
+        text = _metadata_text(payload.get(key))
+        if text and text not in fallback_texts:
+            mutable_payload().pop(key, None)
+            messages.append(
+                f"omitted native chart {key} {text!r} because it is not visible in the fallback"
+            )
+
+    for field_name, value in _axis_titles(payload).items():
+        text = _metadata_text(value)
+        if not text or text in fallback_texts:
+            continue
+        axis_keys, root_keys = _AXIS_TITLE_KEY_GROUPS[field_name]
+        target = mutable_payload()
+        for key in root_keys:
+            target.pop(key, None)
+        for map_key in ("axis_titles", "axisTitles"):
+            drop_map_keys(target, map_key, axis_keys + root_keys)
+        style = mutable_style(target)
+        if style is not None:
+            for key in root_keys:
+                style.pop(key, None)
+            for map_key in ("axis_titles", "axisTitles"):
+                drop_map_keys(style, map_key, axis_keys + root_keys)
+        messages.append(
+            f"omitted native chart axis_titles.{field_name} {text!r} "
+            "because it is not visible in the fallback"
+        )
+
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    show_legend = payload.get("show_legend", style.get("show_legend", False))
+    if show_legend:
+        legend_texts = _legend_candidate_texts(payload)
+        if legend_texts and not any(text in fallback_texts for text in legend_texts):
+            mutable_payload()["show_legend"] = False
+            messages.append(
+                "omitted native chart legend because show_legend=true has no "
+                "visible fallback legend text"
+            )
+
+    return output, messages
+
+
+def _legend_candidate_texts(payload: dict[str, Any]) -> list[str]:
+    series_values: list[str] = []
+    category_values: list[str] = []
+    categories = payload.get("categories")
+    if isinstance(categories, list):
+        category_values.extend(str(item) for item in categories if str(item).strip())
+    series = payload.get("series")
+    if isinstance(series, list):
+        for item in series:
+            if isinstance(item, dict) and item.get("name") is not None:
+                series_values.append(str(item.get("name")))
+    plots = payload.get("plots")
+    if isinstance(plots, list):
+        for plot in plots:
+            if not isinstance(plot, dict):
+                continue
+            plot_series = plot.get("series")
+            if not isinstance(plot_series, list):
+                continue
+            for item in plot_series:
+                if isinstance(item, dict) and item.get("name") is not None:
+                    series_values.append(str(item.get("name")))
+    chart_type = _compact_key(payload.get("type") or payload.get("chart_type") or "")
+    category_legend_types = {"pie", "doughnut", "donut", "ofpie", "pieofpie", "barofpie"}
+    values = category_values if chart_type in category_legend_types else series_values
+    normalized: list[str] = []
+    for value in values:
+        text = _normalized_fallback_text(value)
+        if text:
+            normalized.append(text)
+    return normalized
+
+
+def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> list[str]:
+    fallback_texts = set(_visible_fallback_texts(elem))
+    warnings: list[str] = []
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    show_legend = payload.get("show_legend", style.get("show_legend", False))
+    if show_legend:
+        legend_texts = _legend_candidate_texts(payload)
+        if legend_texts and not any(text in fallback_texts for text in legend_texts):
+            warnings.append(
+                "Native PPTX chart has show_legend=true, but no series/category "
+                "legend text is visible inside the fallback marker. Add the "
+                "fallback legend or remove show_legend."
+            )
+
+    companion_entries = _chart_companion_entries(
+        payload,
+        include_title=False,
+        include_subtitle_as_caption=False,
+    )
+    missing_companion: list[str] = []
+    for item in companion_entries:
+        text = _normalized_fallback_text(item.get("text"))
+        if text and text not in fallback_texts:
+            missing_companion.append(text)
+    if missing_companion:
+        sample = ", ".join(repr(text) for text in missing_companion[:5])
+        suffix = "" if len(missing_companion) <= 5 else f", and {len(missing_companion) - 5} more"
+        warnings.append(
+            "Native PPTX chart companion text is not visible inside the fallback "
+            f"marker and may appear only after --native-objects: {sample}{suffix}. "
+            "Keep companion metadata aligned with visible chart annotations."
+        )
+    return warnings
 
 
 def _text_box_xml(
@@ -355,6 +631,7 @@ def _text_box_xml(
     color: str | None,
     align: str = "l",
     bold: bool = False,
+    font_face: str | None = None,
 ) -> str:
     shape_id = ctx.next_id()
     align_key = _compact_key(align)
@@ -390,7 +667,7 @@ def _text_box_xml(
 <a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0"/>
 <a:lstStyle/>
 <a:p><a:pPr algn="{algn}"/>
-<a:r><a:rPr lang="{lang}" sz="{font_size}"{bold_attr}>{fill_xml}</a:rPr><a:t>{_xml_escape(text)}</a:t></a:r>
+<a:r><a:rPr lang="{lang}" sz="{font_size}"{bold_attr}>{fill_xml}{_font_face_xml(font_face)}</a:rPr><a:t>{_xml_escape(text)}</a:t></a:r>
 </a:p>
 </p:txBody>
 </p:sp>'''
@@ -462,14 +739,15 @@ def _chart_companion_text_xml(
             font_size = note_font_size
 
         color = _hex_or_none(item.get("color")) or chart_style.get("text_color")
+        font_face = _chart_text_entry_font_face(item, chart_style.get("font_face"))
         align = str(item.get("align") or ("ctr" if role == "title" else "l"))
         bold = bool(item.get("bold", role == "title"))
         has_box = all(_maybe_number(item.get(key)) is not None for key in ("x", "y", "width", "height"))
         if has_box:
-            off_x = px_to_emu(ctx_x(_number(item["x"], "companion text x"), ctx))
-            off_y = px_to_emu(ctx_y(_number(item["y"], "companion text y"), ctx))
-            ext_cx = px_to_emu(ctx_w(_number(item["width"], "companion text width"), ctx))
-            ext_cy = px_to_emu(ctx_h(_number(item["height"], "companion text height"), ctx))
+            off_x = px_to_emu(_number(item["x"], "companion text x"))
+            off_y = px_to_emu(_number(item["y"], "companion text y"))
+            ext_cx = px_to_emu(_number(item["width"], "companion text width"))
+            ext_cy = px_to_emu(_number(item["height"], "companion text height"))
         elif role == "title":
             off_x = chart_off_x
             off_y = chart_off_y
@@ -493,5 +771,6 @@ def _chart_companion_text_xml(
             color=color,
             align=align,
             bold=bold,
+            font_face=font_face,
         ))
     return "".join(parts)

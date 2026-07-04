@@ -799,7 +799,10 @@ match fallback `stroke-width`.
 fallback. Copy fallback chart text sizes into metadata using the same px-style
 unit as SVG text (`1px = 0.75pt`). Put the shared visible chart font in
 `style.font_family`, and override local chart text objects or `data_labels`
-with `font_family` only when the fallback visibly differs. Typical mappings are chart title
+with `font_family` only when the fallback visibly differs. If omitted, the
+exporter infers the shared font family and base chart text size from visible
+fallback text inside the native marker, but explicit metadata remains the
+stable contract when roles differ. Typical mappings are chart title
 (`title_font_size`), chart subtitle (`subtitle_font_size`), chart labels
 (`axis_font_size`, shared by axis titles / ticks / legend unless the fallback
 differs), and notes (`note_font_size`). Use `axis_title_font_size`,
@@ -810,26 +813,36 @@ default to compact PowerPoint text: `title_font_size: 16` (12pt),
 `note_font_size: 12` (9pt).
 
 **Chart chrome metadata**: Text that is visually part of the chart must be in
-metadata, not only in SVG fallback children. `title` becomes the native chart
-title on classic charts; `subtitle` becomes the second rich-text line of that
-classic chart title. `title`, `subtitle`, and axis-title values may be strings
-or objects with `text`, `font_size`, `font_family`, and `color` when the fallback uses local
-role typography. chartEx keeps PowerPoint's empty `<cx:title>` and emits the
-title / subtitle as companion editable text boxes until chartEx rich titles are
-validated. Axis titles are optional and explicit: use `axis_titles` with
+metadata, not only in SVG fallback children; metadata MUST still match visible
+fallback chrome. `title` becomes the native chart title on classic charts; it
+is not an object name, so use `name` for semantic object naming. `subtitle`
+becomes the second rich-text line of that classic chart title. `title`,
+`subtitle`, and axis-title values may be strings or objects with `text`,
+`font_size`, `font_family`, and `color` when the fallback uses local role
+typography. `svg_quality_checker.py` rejects `title`, `subtitle`, or axis-title
+metadata whose text is not visible inside the native marker's fallback. Direct
+`--native-objects` export keeps the chart native but omits that inconsistent
+chrome with a warning. chartEx keeps PowerPoint's empty `<cx:title>` and emits
+the title / subtitle as companion editable text boxes until chartEx rich titles
+are validated. Axis
+titles are optional and explicit: use `axis_titles` with
 `category`, `value`, `x`, `y`, or `secondary_value` keys, or the root aliases
 `category_axis_title`, `value_axis_title`, `x_axis_title`, `y_axis_title`, and
 `secondary_value_axis_title`; do not add semantic axis titles that are not
-visible in the fallback. Native legends are metadata-controlled: use
+visible in the fallback. Set `show_value_axis_labels: false` when the fallback
+keeps category labels but omits numeric value-axis tick labels, such as a radar
+chart without radial coordinates. Native legends are metadata-controlled: use
 `show_legend: true` and `legend_position` only when the fallback's legend is
 meant to be replaced by PowerPoint's native legend.
 Companion text such as `caption`, `source`, `note`, `notes`, `footnote`, and
 `footnotes` is exported as editable PPT text boxes next to the native chart. A
 companion entry may be a string or an object with `text`, `x`, `y`, `width`,
 `height`, `font_size`, `color`, `align`, and `bold`; explicit bounds are
-recommended so the native export matches the SVG fallback placement.
-Use companion text for chart captions, source notes, and freeform annotations;
-use `data_labels` for values that belong to chart points.
+recommended so the native export matches the SVG fallback placement. Explicit
+companion bounds are slide coordinates, not local coordinates inside a
+transformed marker group. Use companion text for chart captions, source notes,
+center labels, and freeform annotations; use `data_labels` for values that
+belong to chart points.
 
 **Chart color styling**: For classic native charts, `style.colors` sets series
 colors. The exporter also writes explicit chart-area fill, plot-area fill,
