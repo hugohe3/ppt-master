@@ -25,8 +25,10 @@ from .marker_common import (
     _maybe_number,
     _most_common_color,
     _number,
+    _normalized_fallback_text,
     _relative_luminance,
     _style_attr,
+    _visible_fallback_texts,
 )
 
 
@@ -385,6 +387,30 @@ def _axis_title_xml(
     )
 
 
+_AXIS_TITLE_KEY_GROUPS = {
+    "category": (
+        ("category",),
+        ("category_axis_title", "categoryAxisTitle"),
+    ),
+    "value": (
+        ("value",),
+        ("value_axis_title", "valueAxisTitle"),
+    ),
+    "x": (
+        ("x",),
+        ("x_axis_title", "xAxisTitle"),
+    ),
+    "y": (
+        ("y",),
+        ("y_axis_title", "yAxisTitle"),
+    ),
+    "secondary_value": (
+        ("secondary_value", "secondaryValue"),
+        ("secondary_value_axis_title", "secondaryValueAxisTitle"),
+    ),
+}
+
+
 def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     raw = payload.get("axis_titles", payload.get("axisTitles"))
@@ -407,21 +433,189 @@ def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
         return _first_present(*values)
 
     return {
-        "category": pick(
-            ("category",),
-            ("category_axis_title", "categoryAxisTitle"),
-        ),
-        "value": pick(
-            ("value",),
-            ("value_axis_title", "valueAxisTitle"),
-        ),
-        "x": pick(("x",), ("x_axis_title", "xAxisTitle")),
-        "y": pick(("y",), ("y_axis_title", "yAxisTitle")),
-        "secondary_value": pick(
-            ("secondary_value", "secondaryValue"),
-            ("secondary_value_axis_title", "secondaryValueAxisTitle"),
-        ),
+        field_name: pick(axis_keys, root_keys)
+        for field_name, (axis_keys, root_keys) in _AXIS_TITLE_KEY_GROUPS.items()
     }
+
+
+def _metadata_text(value: Any) -> str | None:
+    entry = _chart_text_entry(value)
+    if entry is None:
+        return None
+    text, _ = entry
+    return _normalized_fallback_text(text)
+
+
+def _native_chart_chrome_errors(elem: ET.Element, payload: dict[str, Any]) -> list[str]:
+    fallback_texts = set(_visible_fallback_texts(elem))
+    missing: list[str] = []
+
+    for field_name in ("title", "subtitle"):
+        text = _metadata_text(payload.get(field_name))
+        if text and text not in fallback_texts:
+            missing.append(f"{field_name}={text!r}")
+
+    for field_name, value in _axis_titles(payload).items():
+        text = _metadata_text(value)
+        if text and text not in fallback_texts:
+            missing.append(f"axis_titles.{field_name}={text!r}")
+
+    if not missing:
+        return []
+
+    sample = ", ".join(missing[:5])
+    suffix = "" if len(missing) <= 5 else f", and {len(missing) - 5} more"
+    return [
+        "Native PPTX chart metadata contains title/axis text that is not visible "
+        f"inside the fallback marker and would appear only after --native-objects: {sample}{suffix}. "
+        "Use `name` for object naming, or draw the same text in the chart fallback."
+    ]
+
+
+def _native_chart_export_payload(
+    elem: ET.Element,
+    payload: dict[str, Any],
+) -> tuple[dict[str, Any], list[str]]:
+    fallback_texts = set(_visible_fallback_texts(elem))
+    output = payload
+    messages: list[str] = []
+
+    def mutable_payload() -> dict[str, Any]:
+        nonlocal output
+        if output is payload:
+            output = dict(payload)
+        return output
+
+    def mutable_style(target: dict[str, Any]) -> dict[str, Any] | None:
+        style = target.get("style")
+        if not isinstance(style, dict):
+            return None
+        if target.get("style") is payload.get("style"):
+            style = dict(style)
+            target["style"] = style
+        return style
+
+    def drop_map_keys(source: dict[str, Any], map_key: str, keys: tuple[str, ...]) -> None:
+        raw_map = source.get(map_key)
+        if not isinstance(raw_map, dict):
+            return
+        next_map = dict(raw_map)
+        for key in keys:
+            next_map.pop(key, None)
+        if next_map:
+            source[map_key] = next_map
+        else:
+            source.pop(map_key, None)
+
+    for key in ("title", "subtitle"):
+        text = _metadata_text(payload.get(key))
+        if text and text not in fallback_texts:
+            mutable_payload().pop(key, None)
+            messages.append(
+                f"omitted native chart {key} {text!r} because it is not visible in the fallback"
+            )
+
+    for field_name, value in _axis_titles(payload).items():
+        text = _metadata_text(value)
+        if not text or text in fallback_texts:
+            continue
+        axis_keys, root_keys = _AXIS_TITLE_KEY_GROUPS[field_name]
+        target = mutable_payload()
+        for key in root_keys:
+            target.pop(key, None)
+        for map_key in ("axis_titles", "axisTitles"):
+            drop_map_keys(target, map_key, axis_keys + root_keys)
+        style = mutable_style(target)
+        if style is not None:
+            for key in root_keys:
+                style.pop(key, None)
+            for map_key in ("axis_titles", "axisTitles"):
+                drop_map_keys(style, map_key, axis_keys + root_keys)
+        messages.append(
+            f"omitted native chart axis_titles.{field_name} {text!r} "
+            "because it is not visible in the fallback"
+        )
+
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    show_legend = payload.get("show_legend", style.get("show_legend", False))
+    if show_legend:
+        legend_texts = _legend_candidate_texts(payload)
+        if legend_texts and not any(text in fallback_texts for text in legend_texts):
+            mutable_payload()["show_legend"] = False
+            messages.append(
+                "omitted native chart legend because show_legend=true has no "
+                "visible fallback legend text"
+            )
+
+    return output, messages
+
+
+def _legend_candidate_texts(payload: dict[str, Any]) -> list[str]:
+    series_values: list[str] = []
+    category_values: list[str] = []
+    categories = payload.get("categories")
+    if isinstance(categories, list):
+        category_values.extend(str(item) for item in categories if str(item).strip())
+    series = payload.get("series")
+    if isinstance(series, list):
+        for item in series:
+            if isinstance(item, dict) and item.get("name") is not None:
+                series_values.append(str(item.get("name")))
+    plots = payload.get("plots")
+    if isinstance(plots, list):
+        for plot in plots:
+            if not isinstance(plot, dict):
+                continue
+            plot_series = plot.get("series")
+            if not isinstance(plot_series, list):
+                continue
+            for item in plot_series:
+                if isinstance(item, dict) and item.get("name") is not None:
+                    series_values.append(str(item.get("name")))
+    chart_type = _compact_key(payload.get("type") or payload.get("chart_type") or "")
+    category_legend_types = {"pie", "doughnut", "donut", "ofpie", "pieofpie", "barofpie"}
+    values = category_values if chart_type in category_legend_types else series_values
+    normalized: list[str] = []
+    for value in values:
+        text = _normalized_fallback_text(value)
+        if text:
+            normalized.append(text)
+    return normalized
+
+
+def _native_chart_chrome_warnings(elem: ET.Element, payload: dict[str, Any]) -> list[str]:
+    fallback_texts = set(_visible_fallback_texts(elem))
+    warnings: list[str] = []
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    show_legend = payload.get("show_legend", style.get("show_legend", False))
+    if show_legend:
+        legend_texts = _legend_candidate_texts(payload)
+        if legend_texts and not any(text in fallback_texts for text in legend_texts):
+            warnings.append(
+                "Native PPTX chart has show_legend=true, but no series/category "
+                "legend text is visible inside the fallback marker. Add the "
+                "fallback legend or remove show_legend."
+            )
+
+    companion_entries = _chart_companion_entries(
+        payload,
+        include_title=False,
+        include_subtitle_as_caption=False,
+    )
+    missing_companion: list[str] = []
+    for item in companion_entries:
+        text = _normalized_fallback_text(item.get("text"))
+        if text and text not in fallback_texts:
+            missing_companion.append(text)
+    if missing_companion:
+        sample = ", ".join(repr(text) for text in missing_companion[:5])
+        suffix = "" if len(missing_companion) <= 5 else f", and {len(missing_companion) - 5} more"
+        warnings.append(
+            "Native PPTX chart companion text is not visible inside the fallback "
+            f"marker and may appear only after --native-objects: {sample}{suffix}. "
+            "Keep companion metadata aligned with visible chart annotations."
+        )
+    return warnings
 
 
 def _text_box_xml(

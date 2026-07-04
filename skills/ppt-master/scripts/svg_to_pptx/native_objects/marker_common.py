@@ -133,6 +133,36 @@ def _paint_visible(elem: ET.Element, paint: str) -> bool:
     return True
 
 
+def _normalized_fallback_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
+def _visible_fallback_texts(elem: ET.Element, *, include_metadata: bool = False) -> list[str]:
+    texts: list[str] = []
+
+    def visit(node: ET.Element, hidden: bool) -> None:
+        tag = _local_tag(node)
+        if tag in {"defs", "clipPath", "mask", "filter", "style"}:
+            return
+        if tag == "metadata" and not include_metadata:
+            return
+        node_hidden = (
+            hidden
+            or _style_attr(node, "display") == "none"
+            or _style_attr(node, "visibility") == "hidden"
+        )
+        if tag == "text" and not node_hidden:
+            text = _normalized_fallback_text("".join(node.itertext()))
+            if text:
+                texts.append(text)
+            return
+        for child in node:
+            visit(child, node_hidden)
+
+    visit(elem, False)
+    return texts
+
+
 def _number(value: Any, field_name: str) -> float:
     try:
         return float(value)
