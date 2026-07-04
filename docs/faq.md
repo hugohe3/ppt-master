@@ -32,6 +32,26 @@ Just specify the format when starting a project (e.g., `--format xhs`). The outp
 
 PPT Master works with any AI coding agent that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
 
+## Q: I downloaded an old version. How do I update to the latest?
+
+It depends on how you installed PPT Master:
+
+| Install method | Update method |
+|---|---|
+| Git clone | Run `python3 skills/ppt-master/scripts/update_repo.py` inside the `ppt-master` folder |
+| Download ZIP | Download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run `pip install -r requirements.txt` |
+| Skill marketplace | Reinstall or update through the matching marketplace / skills tool |
+
+For long-term use, Git clone is recommended. ZIP is fine for a quick trial, but it has no Git history and cannot run `git pull`.
+
+If you are not sure which install method you used, ask the AI to run this from the project folder:
+
+```bash
+python3 skills/ppt-master/scripts/update_repo.py
+```
+
+If the folder is not a Git clone, the script will tell you how to migrate a ZIP install.
+
 ## Q: Can I use AI-generated images in my presentation?
 
 Yes. PPT Master includes a built-in image generation script that supports multiple providers (Gemini, OpenAI, FLUX, Qwen, Zhipu, etc.). During the Strategist phase, if you choose "AI generation" for the image approach, the pipeline will automatically generate images based on your content. You can also provide your own images — just place them in the project's `images/` folder.

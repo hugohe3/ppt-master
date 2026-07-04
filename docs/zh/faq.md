@@ -32,6 +32,26 @@
 
 PPT Master 可以在任何能读取文件和执行命令的 AI 编程代理中运行——**Claude Code**（CLI / VS Code / JetBrains / Web）、**VS Code Copilot**、**Codex** 等均可使用。不同工具的使用成本可参考下方的费用对比。
 
+## Q: 我下载过旧版本，怎么更新到最新版？
+
+看你当时怎么安装：
+
+| 安装方式 | 更新方式 |
+|---|---|
+| Git clone | 在 `ppt-master` 目录运行 `python3 skills/ppt-master/scripts/update_repo.py` |
+| Download ZIP | 重新下载最新版 ZIP，解压到新目录；把旧目录里的 `.env` 和 `projects/` 复制过去；再运行 `pip install -r requirements.txt` |
+| Skill marketplace | 用对应的 marketplace / skills 工具重新安装或更新 |
+
+长期使用建议用 Git clone。ZIP 适合快速体验，但没有 Git 历史，不能自动 `git pull`。
+
+如果不确定自己是哪种安装方式，可以让 AI 在项目目录里运行：
+
+```bash
+python3 skills/ppt-master/scripts/update_repo.py
+```
+
+如果当前目录不是 Git clone 版本，脚本会提示你按 ZIP 方式迁移。
+
 ## Q: 能用 AI 生成配图吗？
 
 可以。PPT Master 内置了图片生成脚本，支持多个供应商（Gemini、OpenAI、FLUX、通义千问、智谱等）。在策略师阶段选择"AI 生图"方案后，流程会根据内容自动生成配图。你也可以使用自己的图片——只需放到项目的 `images/` 目录下即可。

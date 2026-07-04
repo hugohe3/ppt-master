@@ -191,9 +191,11 @@ Never used one of these? Don't worry — in this project they play exactly one r
 
 ### 3. Set Up
 
-**Option A — Download ZIP** (no Git required): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip.
+**Option A — Download ZIP** (no Git required; best for a quick trial): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip.
 
-**Option B — Git clone** (requires [Git](https://git-scm.com/downloads) installed):
+If you plan to keep using PPT Master and update it over time, use Git clone instead.
+
+**Option B — Git clone** (recommended; requires [Git](https://git-scm.com/downloads) installed):
 
 ```bash
 git clone https://github.com/hugohe3/ppt-master.git
@@ -206,7 +208,23 @@ Then install dependencies:
 pip install -r requirements.txt
 ```
 
-To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.py`
+#### Updating Later
+
+**Git clone installs:**
+
+```bash
+python3 skills/ppt-master/scripts/update_repo.py
+```
+
+The script pulls the latest version and syncs Python dependencies when `requirements.txt` changes.
+
+**Download ZIP installs:**
+
+ZIP folders do not include Git history, so they cannot run `git pull`. To update, download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run:
+
+```bash
+pip install -r requirements.txt
+```
 
 > **Option C — Skill marketplace**: the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
 >
