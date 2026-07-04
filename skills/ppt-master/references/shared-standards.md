@@ -766,39 +766,70 @@ export.
 `series[].values`. Pie-family charts (`pie`, `doughnut`, `pieOfPie`, and
 `barOfPie`) must have exactly one series; the exporter assigns per-category
 slice colors so single-series charts do not collapse into one solid color.
+Column and bar charts may set per-point colors with `series[].point_colors`
+or `series[].pointColors`; the list must match `series[].values` length.
+Classic category charts may set native PowerPoint data labels with
+`data_labels`. Use `data_labels: true` for default value labels, or an object
+with `show_value`, `position`, `number_format`, `font_size`, `font_family`,
+`bold`, `color`, and optional per-point `colors`. Supported label positions
+depend on chart type: clustered column/bar labels may use `outside_end`,
+`inside_end`, `inside_base`, or `center`; stacked / percent-stacked column/bar
+labels may use `inside_end`, `inside_base`, or `center`; line labels may use
+`above`, `center`, or `best_fit`; area labels do not emit a native label
+position. To label only selected data points, use `data_labels.points` with
+zero-based `idx` plus optional per-point `position`, `number_format`,
+`font_size`, `font_family`, `bold`, and `color`.
 
 **Combo chart schema**: `combo` uses shared `categories` plus either `plots[]`
 or typed `series[]`. Each plot supports `type: "column" | "line" | "area"`,
 its own `series`, and optional `axis: "secondary"` for a right-side value axis.
 Typed `series[]` accepts the same `type` and `axis` fields per series, and
-adjacent compatible series are grouped into the same PowerPoint plot.
+adjacent compatible series are grouped into the same PowerPoint plot. Area
+series may set `fill_opacity` / `fillOpacity` as a `0..1` SVG opacity value
+when the SVG fallback uses a transparent area fill under an opaque line. A line plot with `area_fill: true`
+is exported as a PowerPoint area chart under the hood; `fill_opacity` only sets
+the fill style and does not trigger conversion by itself. Combo export layers
+area plots below columns and lines while preserving the original series indices.
+Line and area series may set `line_width` / `lineWidth` in SVG px units to
+match fallback `stroke-width`.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
 
 **Chart typography**: Native classic chart typography mirrors the visible SVG
 fallback. Copy fallback chart text sizes into metadata using the same px-style
-unit as SVG text (`1px = 0.75pt`). Typical mappings are chart title
-(`title_font_size`), chart labels (`axis_font_size`, shared by axis titles /
-ticks / legend unless the fallback differs), and notes (`note_font_size`). Use
-`axis_title_font_size`, `legend_font_size`, or per-entry companion `font_size`
-only when the fallback visibly uses a separate size. When no explicit fallback
-size exists for a role, default to compact PowerPoint text: `title_font_size:
-16` (12pt), `axis_font_size: 12` (9pt), and `note_font_size: 12` (9pt).
+unit as SVG text (`1px = 0.75pt`). Put the shared visible chart font in
+`style.font_family`, and override local chart text objects or `data_labels`
+with `font_family` only when the fallback visibly differs. Typical mappings are chart title
+(`title_font_size`), chart subtitle (`subtitle_font_size`), chart labels
+(`axis_font_size`, shared by axis titles / ticks / legend unless the fallback
+differs), and notes (`note_font_size`). Use `axis_title_font_size`,
+`legend_font_size`, or per-entry companion `font_size` only when the fallback
+visibly uses a separate size. When no explicit fallback size exists for a role,
+default to compact PowerPoint text: `title_font_size: 16` (12pt),
+`subtitle_font_size: 12` (9pt), `axis_font_size: 12` (9pt), and
+`note_font_size: 12` (9pt).
 
 **Chart chrome metadata**: Text that is visually part of the chart must be in
 metadata, not only in SVG fallback children. `title` becomes the native chart
-title on classic charts; chartEx keeps PowerPoint's empty `<cx:title>` and
-emits the title as a companion editable text box until chartEx rich titles are
+title on classic charts; `subtitle` becomes the second rich-text line of that
+classic chart title. `title`, `subtitle`, and axis-title values may be strings
+or objects with `text`, `font_size`, `font_family`, and `color` when the fallback uses local
+role typography. chartEx keeps PowerPoint's empty `<cx:title>` and emits the
+title / subtitle as companion editable text boxes until chartEx rich titles are
 validated. Axis titles are optional and explicit: use `axis_titles` with
 `category`, `value`, `x`, `y`, or `secondary_value` keys, or the root aliases
 `category_axis_title`, `value_axis_title`, `x_axis_title`, `y_axis_title`, and
-`secondary_value_axis_title`. Native legends are metadata-controlled: use
-`show_legend: true` and `legend_position` when the fallback shows a legend.
+`secondary_value_axis_title`; do not add semantic axis titles that are not
+visible in the fallback. Native legends are metadata-controlled: use
+`show_legend: true` and `legend_position` only when the fallback's legend is
+meant to be replaced by PowerPoint's native legend.
 Companion text such as `caption`, `source`, `note`, `notes`, `footnote`, and
 `footnotes` is exported as editable PPT text boxes next to the native chart. A
 companion entry may be a string or an object with `text`, `x`, `y`, `width`,
 `height`, `font_size`, `color`, `align`, and `bold`; explicit bounds are
 recommended so the native export matches the SVG fallback placement.
+Use companion text for chart captions, source notes, and freeform annotations;
+use `data_labels` for values that belong to chart points.
 
 **Chart color styling**: For classic native charts, `style.colors` sets series
 colors. The exporter also writes explicit chart-area fill, plot-area fill,
