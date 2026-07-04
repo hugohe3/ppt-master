@@ -17,7 +17,6 @@ import html
 from pathlib import Path
 from typing import List, Dict, Tuple
 from collections import Counter, defaultdict
-from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
@@ -80,6 +79,21 @@ try:
     )
 except ImportError:
     _resolve_icon_path = None
+
+try:
+    from resource_paths import (
+        SVG_WORK_DIR_NAMES as _SVG_WORK_DIR_NAMES,
+        icon_search_dirs_for_svg as _icon_search_dirs_for_svg,
+        project_root_for_svg_path as _project_root_for_svg_path,
+        resolve_external_image_reference as _resolve_external_image_reference,
+        unresolved_external_image_reference_path as _unresolved_external_image_reference_path,
+    )
+except ImportError:
+    _SVG_WORK_DIR_NAMES = frozenset()
+    _icon_search_dirs_for_svg = None
+    _project_root_for_svg_path = None
+    _resolve_external_image_reference = None
+    _unresolved_external_image_reference_path = None
 
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
@@ -771,14 +785,21 @@ class SVGQualityChecker:
             href = image.get('href') or image.get(f'{{{XLINK_NS}}}href')
             if not href or href.startswith('data:'):
                 continue
+            if _resolve_external_image_reference is None or _unresolved_external_image_reference_path is None:
+                result['warnings'].append(
+                    "Detected image references, but shared image resolver could not be imported; "
+                    "export will still validate them."
+                )
+                return
             if href in checked:
                 continue
             checked.add(href)
 
-            img_path = self._resolve_image_reference(svg_dir, href)
-            if not img_path.exists():
+            img_path = _resolve_external_image_reference(svg_dir, href)
+            if img_path is None:
+                resolved_path = _unresolved_external_image_reference_path(svg_dir, href)
                 result['errors'].append(
-                    f"Image file not found: {href} (resolved to {img_path})")
+                    f"Image file not found: {href} (resolved to {resolved_path})")
                 continue
 
             # Check resolution vs display size
@@ -812,25 +833,6 @@ class SVGQualityChecker:
             except Exception:
                 pass  # Image unreadable, skip resolution check
 
-    @staticmethod
-    def _resolve_image_reference(svg_dir: Path, href: str) -> Path:
-        """Resolve an external image reference using the exporter search order."""
-        parsed = urlsplit(href)
-        if parsed.scheme and parsed.scheme not in ('file',):
-            return (svg_dir / href).resolve()
-        decoded = unquote(
-            parsed.path if parsed.scheme else href.split('?', 1)[0].split('#', 1)[0]
-        )
-        for candidate in (
-            svg_dir / decoded,
-            svg_dir.parent / decoded,
-            svg_dir.parent / 'images' / decoded,
-            svg_dir.parent / 'templates' / decoded,
-        ):
-            if candidate.exists():
-                return candidate.resolve()
-        return (svg_dir / decoded).resolve()
-
     def _check_icon_placeholders(self, content: str, svg_path: Path, result: Dict) -> None:
         """Check that <use data-icon="..."> placeholders resolve."""
         try:
@@ -851,8 +853,14 @@ class SVGQualityChecker:
                 "post-processing/export will still validate them."
             )
             return
+        if _icon_search_dirs_for_svg is None:
+            result['warnings'].append(
+                "Detected data-icon placeholders, but shared icon search helper could not be imported; "
+                "post-processing/export will still validate them."
+            )
+            return
 
-        icons_dir, fallback_dir = self._icon_search_dirs(svg_path)
+        icons_dir, fallback_dir = _icon_search_dirs_for_svg(svg_path)
         seen = set()
         for elem in placeholders:
             icon_name = (elem.get('data-icon') or '').strip()
@@ -870,18 +878,6 @@ class SVGQualityChecker:
                     f"Icon not found: {icon_name} (searched {icons_dir}"
                     f"{fallback_msg})"
                 )
-
-    @staticmethod
-    def _icon_search_dirs(svg_path: Path) -> Tuple[Path, Path | None]:
-        """Return project-first icon dirs matching finalize_svg.py."""
-        project_path = svg_path.parent.parent if svg_path.parent.name in {
-            'svg_output', 'svg_final', 'svg-flat', 'svg_flat',
-        } else svg_path.parent
-        global_icons_dir = Path(__file__).resolve().parent.parent / 'templates' / 'icons'
-        project_icons_dir = project_path / 'icons'
-        if project_icons_dir.is_dir():
-            return project_icons_dir, global_icons_dir
-        return global_icons_dir, None
 
     def _check_animation_group_ids(self, content: str, result: Dict):
         """Warn when visible top-level groups cannot be customized."""
@@ -1500,8 +1496,8 @@ class SVGQualityChecker:
     @staticmethod
     def _resolve_project_path(dir_path: Path) -> Path:
         """Resolve a checker target directory to its project root."""
-        if dir_path.name in {'svg_output', 'svg_final'}:
-            return dir_path.parent
+        if _project_root_for_svg_path is not None and dir_path.name in _SVG_WORK_DIR_NAMES:
+            return _project_root_for_svg_path(dir_path)
         if (dir_path / 'svg_output').exists() or (dir_path / 'design_spec.md').exists():
             return dir_path
         return dir_path.parent
@@ -1774,7 +1770,7 @@ class SVGQualityChecker:
         """Project-level animations.json reference checks."""
         if _load_animation_config is None or _validate_animation_config is None:
             return
-        project_path = dir_path if (dir_path / 'svg_output').exists() else dir_path.parent
+        project_path = self._resolve_project_path(dir_path)
         try:
             config = _load_animation_config(project_path)
         except Exception as exc:
