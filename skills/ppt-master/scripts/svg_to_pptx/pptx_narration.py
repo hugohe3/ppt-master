@@ -21,9 +21,18 @@ AUDIO_CONTENT_TYPES = {
 
 NARRATION_EXTENSIONS = tuple(AUDIO_CONTENT_TYPES.keys())
 
-TRANSPARENT_PNG_BYTES = base64.b64decode(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/"
-    "lBf7WQAAAABJRU5ErkJggg=="
+AUDIO_MARKER_SIZE_EMU = 457200  # 48 SVG px
+AUDIO_MARKER_PNG_BYTES = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABsUlEQVR4nO2aQZaDIAyG"
+    "cd4cQRdzgHqxeiy9mB5gFvUO7Qon0gAhJEDf+G/a92rJ9ycEqNaYS3XVSQ94uz+esWu"
+    "2ZRCLKzIQBdqnXDPsL+dA+8Qx88UJpAHPHTfJsRY4Jmo1yBUoCZ8Sj2SgNHxK3KiBWv"
+    "DU+EEDteGtQhxeA63AW/l4WMuolNa5zx4DNaCd/XXuWfAY15sBTXguOJTL9501GlG50"
+    "Ovc/xpjzDjtP+5nqj0gkXEL7763OhmQmj4S4FZY1iGnaAUkwQMxTlWouoz65CYBq4LV"
+    "0cTU6VMgw8frOO3e6273x3Nbhq7JCmCCVYDTqDkDMOuUajdnIFWXgdq6DEgLNm5oGbV"
+    "qzoBPcOmES+qxkW3L0FE2s1BWJDa5cdqjm5gxf7ddmqyAC4+dQq1EDYzTTpq3mTFO56"
+    "KTAam7xpJGsOxDTtUpJGEEZhw7lRb5SWlNcJs8dJx+q4DkwwcEJLsiLh86hTRNGMM3g"
+    "nFVXUYlGt1rQLsKqfLxBCvQiokQR3QK1TYRi0/qgVomKHHJTVzaBDUeC0rzBnBqoljL"
+    "qFY1OOP+3yf1PpX+r8TH6wW14c3/7xdFRAAAAABJRU5ErkJggg=="
 )
 
 
@@ -104,7 +113,7 @@ def create_audio_pic_xml(
     media_rid: str,
     poster_rid: str,
 ) -> str:
-    """Create a tiny audio picture shape carrying narration media."""
+    """Create a visible audio picture shape carrying narration media."""
     return f'''<p:pic>
         <p:nvPicPr>
           <p:cNvPr id="{shape_id}" name="{shape_name}">
@@ -129,7 +138,7 @@ def create_audio_pic_xml(
         <p:spPr>
           <a:xfrm>
             <a:off x="0" y="0"/>
-            <a:ext cx="1" cy="1"/>
+            <a:ext cx="{AUDIO_MARKER_SIZE_EMU}" cy="{AUDIO_MARKER_SIZE_EMU}"/>
           </a:xfrm>
           <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
         </p:spPr>

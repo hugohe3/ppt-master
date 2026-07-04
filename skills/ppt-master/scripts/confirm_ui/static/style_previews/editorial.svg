@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#FBFAF7"/>
+  <text x="80" y="76" font-family="Georgia, serif" font-size="24" letter-spacing="8" fill="#111827">THE REVIEW</text>
+  <text x="1200" y="76" text-anchor="end" font-family="Georgia, serif" font-size="22" fill="#8A8377">FEATURE · No.04</text>
+  <path d="M80 96H1200" stroke="#111827" stroke-width="3"/>
+  <path d="M80 103H1200" stroke="#111827" stroke-width="1"/>
+  <text x="80" y="216" font-family="Georgia, 'Times New Roman', serif" font-size="98" font-weight="700" fill="#111827">Lorem ipsum</text>
+  <text x="80" y="272" font-family="Georgia, serif" font-size="30" font-style="italic" fill="#6B7280">A serif / sans-serif hierarchy set in columns</text>
+  <path d="M80 308H1200" stroke="#111827" stroke-width="1"/>
+  <path d="M450 336V648M820 336V648" stroke="#D8D2C4" stroke-width="1.5"/>
+  <text x="80" y="452" font-family="Georgia, serif" font-size="118" font-weight="700" fill="#B45309">L</text>
+  <g fill="#CFC9BC"><rect x="196" y="356" width="222" height="11" rx="2"/><rect x="196" y="384" width="222" height="11" rx="2"/><rect x="196" y="412" width="205" height="11" rx="2"/><rect x="80" y="470" width="338" height="11" rx="2"/><rect x="80" y="498" width="338" height="11" rx="2"/><rect x="80" y="526" width="300" height="11" rx="2"/><rect x="80" y="554" width="338" height="11" rx="2"/><rect x="80" y="582" width="250" height="11" rx="2"/></g>
+  <text x="490" y="404" font-family="Georgia, serif" font-size="33" font-style="italic" fill="#111827">“Lorem ipsum</text>
+  <text x="490" y="446" font-family="Georgia, serif" font-size="33" font-style="italic" fill="#111827">dolor sit amet,</text>
+  <text x="490" y="488" font-family="Georgia, serif" font-size="33" font-style="italic" fill="#111827">consectetur.”</text>
+  <g fill="#CFC9BC"><rect x="490" y="536" width="300" height="11" rx="2"/><rect x="490" y="564" width="300" height="11" rx="2"/><rect x="490" y="592" width="230" height="11" rx="2"/></g>
+  <g fill="#CFC9BC"><rect x="860" y="356" width="340" height="11" rx="2"/><rect x="860" y="384" width="340" height="11" rx="2"/><rect x="860" y="412" width="300" height="11" rx="2"/><rect x="860" y="440" width="340" height="11" rx="2"/><rect x="860" y="468" width="270" height="11" rx="2"/></g>
+  <rect x="860" y="506" width="340" height="110" fill="#EDE9DF"/>
+  <text x="882" y="558" font-family="Georgia, serif" font-size="46" font-weight="700" fill="#111827">72%</text>
+  <text x="882" y="594" font-family="Georgia, serif" font-size="20" fill="#6B7280">dolor sit amet</text>
+  <text x="80" y="686" font-family="Georgia, serif" font-size="20" font-style="italic" fill="#8A8377">By Strategy Desk · Illustration by PM</text>
+</svg>

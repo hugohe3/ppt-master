@@ -155,6 +155,66 @@ def _f(val: str | None, default: float = 0.0) -> float:
         return default
 
 
+_LENGTH_RE = re.compile(r'^\s*([-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?)\s*([A-Za-z%]*)\s*$')
+
+
+def parse_svg_length(
+    val: str | None,
+    default: float = 0.0,
+    *,
+    percent_base: float | None = None,
+    font_size: float = 16.0,
+) -> float:
+    """Parse SVG/CSS length values into SVG px.
+
+    Unitless and ``px`` values are already SVG px. Percentages need a caller
+    supplied reference length because SVG uses different bases for x, y,
+    width, height, and radii.
+    """
+    if val is None:
+        return default
+    match = _LENGTH_RE.match(str(val))
+    if not match:
+        return default
+
+    number = float(match.group(1))
+    unit = match.group(2).lower() or 'px'
+    if unit == '%':
+        if percent_base is None:
+            return default
+        return percent_base * number / 100.0
+    if unit in ('', 'px'):
+        return number
+    if unit == 'pt':
+        return number * 96.0 / 72.0
+    if unit in ('pc', 'pica'):
+        return number * 16.0
+    if unit == 'in':
+        return number * 96.0
+    if unit == 'cm':
+        return number * 96.0 / 2.54
+    if unit == 'mm':
+        return number * 96.0 / 25.4
+    if unit == 'q':
+        return number * 96.0 / 101.6
+    if unit in ('em', 'rem'):
+        return number * font_size
+    return default
+
+
+def svg_length_x(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    return parse_svg_length(val, default, percent_base=ctx.viewport_width)
+
+
+def svg_length_y(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    return parse_svg_length(val, default, percent_base=ctx.viewport_height)
+
+
+def svg_length_size(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
+    base = min(ctx.viewport_width, ctx.viewport_height)
+    return parse_svg_length(val, default, percent_base=base)
+
+
 # ---------------------------------------------------------------------------
 # SVG transform matrix helpers
 # ---------------------------------------------------------------------------
@@ -296,11 +356,19 @@ def _extract_inheritable_styles(elem: ET.Element) -> dict[str, str]:
         val = elem.get(attr)
         if val is not None:
             styles[attr] = val
+    styles.update({
+        attr: val
+        for attr, val in parse_inline_style(elem.get('style')).items()
+        if attr in INHERITABLE_ATTRS
+    })
     return styles
 
 
 def _get_attr(elem: ET.Element, attr: str, ctx: ConvertContext) -> str | None:
     """Get effective attribute: element's own value first, then inherited."""
+    style_val = parse_inline_style(elem.get('style')).get(attr)
+    if style_val is not None:
+        return style_val
     val = elem.get(attr)
     if val is not None:
         return val
@@ -331,11 +399,82 @@ def ctx_h(val: float, ctx: ConvertContext) -> float:
 # Color / style parsing
 # ---------------------------------------------------------------------------
 
+_CSS_NAMED_COLORS = {
+    'black': '000000',
+    'silver': 'C0C0C0',
+    'gray': '808080',
+    'grey': '808080',
+    'white': 'FFFFFF',
+    'maroon': '800000',
+    'red': 'FF0000',
+    'purple': '800080',
+    'fuchsia': 'FF00FF',
+    'magenta': 'FF00FF',
+    'green': '008000',
+    'lime': '00FF00',
+    'olive': '808000',
+    'yellow': 'FFFF00',
+    'navy': '000080',
+    'blue': '0000FF',
+    'teal': '008080',
+    'aqua': '00FFFF',
+    'cyan': '00FFFF',
+    'orange': 'FFA500',
+    'brown': 'A52A2A',
+    'pink': 'FFC0CB',
+    'gold': 'FFD700',
+    'transparent': None,
+    'lightgray': 'D3D3D3',
+    'lightgrey': 'D3D3D3',
+    'darkgray': 'A9A9A9',
+    'darkgrey': 'A9A9A9',
+}
+
+
+def parse_inline_style(style_str: str | None) -> dict[str, str]:
+    """Parse an SVG inline style declaration into ``property: value`` pairs."""
+    styles: dict[str, str] = {}
+    if not style_str:
+        return styles
+    for part in style_str.split(';'):
+        if ':' not in part:
+            continue
+        name, value = part.split(':', 1)
+        name = name.strip().lower()
+        value = value.strip()
+        if name and value:
+            styles[name] = value
+    return styles
+
+
+def _parse_color_channel(raw: str) -> int:
+    raw = raw.strip()
+    if raw.endswith('%'):
+        value = float(raw[:-1]) * 255.0 / 100.0
+    else:
+        value = float(raw)
+    return max(0, min(255, int(round(value))))
+
+
 def parse_hex_color(color_str: str) -> str | None:
-    """Parse '#RRGGBB' or '#RGB' to 'RRGGBB'. Returns None on failure."""
+    """Parse SVG color values to 'RRGGBB'. Returns None on failure."""
     if not color_str:
         return None
     color_str = color_str.strip()
+    named = _CSS_NAMED_COLORS.get(color_str.lower())
+    if named is not None or color_str.lower() in _CSS_NAMED_COLORS:
+        return named
+
+    rgb_match = re.match(r'rgba?\((.+)\)$', color_str, flags=re.IGNORECASE)
+    if rgb_match:
+        channels = re.findall(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?%?', rgb_match.group(1))
+        if len(channels) >= 3:
+            try:
+                r, g, b = (_parse_color_channel(ch) for ch in channels[:3])
+                return f'{r:02X}{g:02X}{b:02X}'
+            except ValueError:
+                return None
+
     if color_str.startswith('#'):
         color_str = color_str[1:]
     if len(color_str) == 3:

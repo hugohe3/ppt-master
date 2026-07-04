@@ -34,11 +34,15 @@ class ConvertContext:
     translate_y: float = 0.0
     scale_x: float = 1.0
     scale_y: float = 1.0
+    viewport_width: float = 1280.0
+    viewport_height: float = 720.0
     transform_matrix: AffineMatrix = IDENTITY_MATRIX
     use_transform_matrix: bool = False
     filter_id: str | None = None
     media_files: dict[str, bytes] = field(default_factory=dict)
     rel_entries: list[dict[str, str]] = field(default_factory=list)
+    package_files: dict[str, bytes] = field(default_factory=dict)
+    content_type_overrides: dict[str, str] = field(default_factory=dict)
     rel_id_counter: int = 2  # rId1 reserved for slideLayout
     svg_dir: Path | None = None
     inherited_styles: dict[str, str] = field(default_factory=dict)
@@ -50,6 +54,9 @@ class ConvertContext:
     # Default-on flag: merge mergeable paragraph blocks into one editable
     # text frame with multiple <a:p>. Disable it for strict line fidelity.
     merge_paragraphs: bool = True
+    # Explicit opt-in: convert data-pptx-native table/chart marker groups to
+    # native PowerPoint graphicFrames. Default stays off to preserve SVG output.
+    native_objects_enabled: bool = False
     # Native PPTX image optimization. Keeps generated decks compact by
     # downsampling oversized raster assets to their rendered size.
     image_optimize: bool = True
@@ -148,11 +155,15 @@ class ConvertContext:
             translate_y=self.translate_y + dy,
             scale_x=self.scale_x * sx,
             scale_y=self.scale_y * sy,
+            viewport_width=self.viewport_width,
+            viewport_height=self.viewport_height,
             transform_matrix=combined_matrix,
             use_transform_matrix=self.use_transform_matrix or transform_matrix is not None,
             filter_id=filter_id or self.filter_id,
             media_files=self.media_files,
             rel_entries=self.rel_entries,
+            package_files=self.package_files,
+            content_type_overrides=self.content_type_overrides,
             rel_id_counter=self.rel_id_counter,
             svg_dir=self.svg_dir,
             inherited_styles=merged,
@@ -160,6 +171,7 @@ class ConvertContext:
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
             merge_paragraphs=self.merge_paragraphs,
+            native_objects_enabled=self.native_objects_enabled,
             image_optimize=self.image_optimize,
             image_max_dimension=self.image_max_dimension,
             image_sizing=self.image_sizing,

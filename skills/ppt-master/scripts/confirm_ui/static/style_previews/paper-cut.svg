@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="pc-sh" x="-20%" y="-45%" width="140%" height="190%"><feDropShadow dx="0" dy="-8" stdDeviation="10" flood-color="#1E3A5F" flood-opacity="0.18"/></filter>
+    <filter id="pc-sh2" x="-20%" y="-45%" width="140%" height="190%"><feDropShadow dx="0" dy="-11" stdDeviation="14" flood-color="#0F2A44" flood-opacity="0.2"/></filter>
+  </defs>
+  <rect width="1280" height="720" fill="#EAF3FB"/>
+  <circle cx="980" cy="220" r="112" fill="#FBBF6E" filter="url(#pc-sh)"/>
+  <path d="M0 430C220 370 420 470 660 420C900 370 1080 450 1280 400V720H0Z" fill="#BFE0F5" filter="url(#pc-sh)"/>
+  <path d="M0 520C260 460 460 560 720 500C980 440 1120 520 1280 480V720H0Z" fill="#7FBEE8" filter="url(#pc-sh2)"/>
+  <path d="M0 610C280 555 520 640 800 580C1060 525 1160 600 1280 570V720H0Z" fill="#3E8FCB" filter="url(#pc-sh2)"/>
+  <path d="M560 470l64 -30l-8 44z" fill="#F87171" filter="url(#pc-sh)"/>
+  <rect x="90" y="150" width="540" height="200" rx="18" fill="#FFFFFF" filter="url(#pc-sh)"/>
+  <text x="128" y="238" font-family="Arial, sans-serif" font-size="62" font-weight="800" fill="#1E4E79">Lorem ipsum</text>
+  <text x="130" y="292" font-family="Arial, sans-serif" font-size="24" fill="#5B7A94">Layered cut paper · soft shadows · handmade</text>
+  <rect x="130" y="316" width="120" height="12" rx="6" fill="#FBBF6E"/>
+</svg>

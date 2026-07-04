@@ -12,6 +12,21 @@ To browse the library, open `charts_index.json` and scan the `charts` block top-
 
 See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typography, and SVG authoring conventions all templates must follow.
 
+## Native editable export markers
+
+Supported data chart templates include a `<g data-pptx-native="chart">` marker by default, and pure text-grid table templates include a `<g data-pptx-native="table">` marker the same way. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart or table using the JSON metadata inside the child `<metadata data-pptx-native="...">` node.
+
+Native marker authoring is default for supported data charts and text-grid tables; native object activation is opt-in via `--native-objects`. Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable frame aligns with the fallback drawing. Keep legends, explanatory cards, and source notes outside the marker when they should remain as separate editable shapes. Tables with merged, spanning, or graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route.
+
+| Family | Native-marker templates | Use when |
+|---|---|---|
+| Category comparison | `column_chart`, `horizontal_bar_chart`, `grouped_bar_chart`, `stacked_bar_chart` | Comparing named categories, rankings, or stacked totals |
+| Time trend | `line_chart`, `area_chart`, `stacked_area_chart`, `dual_axis_line_chart` | Showing direction, volume, cumulative share, or two-axis trends |
+| Part-to-whole | `pie_chart`, `donut_chart`, `pie_of_pie_chart`, `bar_of_pie_chart`, `treemap_chart`, `sunburst_chart` | Showing share, long-tail split, or hierarchy composition |
+| Distribution and relationship | `scatter_chart`, `bubble_chart`, `histogram_chart`, `pareto_chart`, `box_plot_chart` | Showing correlation, spread, frequency, defects, or statistical ranges |
+| Specialty business charts | `waterfall_chart`, `funnel_chart`, `stock_chart`, `radar_chart` | Showing bridges, conversion stages, OHLC movement, or multi-axis capability profiles |
+| Text-grid tables | `basic_table`, `financial_statement_table` | Presenting rectangular text/number grids that should become editable PowerPoint tables |
+
 ## Usage
 
-Before generating a chart page, open the corresponding `<key>.svg` file to read its structure and layout. Files are named after the `key` field in `charts_index.json` (e.g. `bar_chart.svg`, `quadrant_bubble_scatter.svg`). Templates are named by visual structure, not by business-model name — keywords like SWOT, BCG, PEST, OKR, Porter's Five Forces, Value Chain are matched via each template's `summary` field.
+Before generating a chart page, open the corresponding `<key>.svg` file to read its structure and layout. Files are named after the `key` field in `charts_index.json` (e.g. `column_chart.svg`, `quadrant_bubble_scatter.svg`). Templates are named by visual structure, not by business-model name — keywords like SWOT, BCG, PEST, OKR, Porter's Five Forces, Value Chain are matched via each template's `summary` field.

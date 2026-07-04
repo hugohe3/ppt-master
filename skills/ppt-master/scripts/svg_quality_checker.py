@@ -45,6 +45,27 @@ except ImportError:
     _load_animation_config = None
     _validate_animation_config = None
 
+try:
+    from svg_to_pptx.native_objects import (
+        validate_native_object_marker as _validate_native_object_marker,
+    )
+except ImportError:
+    _validate_native_object_marker = None
+
+try:
+    from svg_to_pptx.native_objects import (
+        validate_native_object_marker_with_warnings as _validate_native_object_marker_with_warnings,
+    )
+except ImportError:
+    _validate_native_object_marker_with_warnings = None
+
+try:
+    from svg_to_pptx.native_objects import (
+        native_object_marker_warnings as _native_object_marker_warnings,
+    )
+except ImportError:
+    _native_object_marker_warnings = None
+
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -291,6 +312,9 @@ class SVGQualityChecker:
                 # 8b. Check <pattern> elements declare a PPTX preset.
                 self._check_pattern_fills(content, result)
 
+                # 8c. Check opt-in native table/chart markers before export.
+                self._check_native_object_markers(content, result)
+
                 # 9. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
                 #    mode to avoid noise.
@@ -352,7 +376,7 @@ class SVGQualityChecker:
 
     def _check_viewbox(self, content: str, result: Dict, expected_format: str = None):
         """Check viewBox attribute"""
-        viewbox_match = re.search(r'viewBox="([^"]+)"', content)
+        viewbox_match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
 
         if not viewbox_match:
             result['errors'].append("Missing viewBox attribute")
@@ -782,6 +806,56 @@ class SVGQualityChecker:
                     "ltUpDiag / dkUpDiag / cross / diagCross / weave / plaid / "
                     "horzBrick (others); full enum in svg_quality_checker.py "
                     "_OOXML_PATTERN_PRESETS."
+                )
+
+    def _check_native_object_markers(self, content: str, result: Dict) -> None:
+        """Validate opt-in native table/chart markers before PPTX export."""
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        markers = [
+            elem for elem in root.iter()
+            if elem.get('data-pptx-native') and elem.tag.rsplit('}', 1)[-1] != 'metadata'
+        ]
+        if not markers:
+            return
+        if _validate_native_object_marker is None:
+            result['warnings'].append(
+                "Detected data-pptx-native markers, but native-object validator "
+                "could not be imported; export-time validation will still run."
+            )
+            return
+
+        for marker in markers:
+            marker_id = marker.get('id') or '<unnamed>'
+            if _validate_native_object_marker_with_warnings is not None:
+                try:
+                    warnings = _validate_native_object_marker_with_warnings(marker)
+                except RuntimeError as exc:
+                    result['errors'].append(
+                        f"Invalid data-pptx-native marker {marker_id}: {exc}"
+                    )
+                    continue
+                for warning in warnings:
+                    result['warnings'].append(
+                        f"data-pptx-native marker {marker_id}: {warning}"
+                    )
+                continue
+
+            try:
+                _validate_native_object_marker(marker)
+            except RuntimeError as exc:
+                result['errors'].append(
+                    f"Invalid data-pptx-native marker {marker_id}: {exc}"
+                )
+                continue
+            if _native_object_marker_warnings is None:
+                continue
+            for warning in _native_object_marker_warnings(marker):
+                result['warnings'].append(
+                    f"data-pptx-native marker {marker_id}: {warning}"
                 )
 
     def _get_spec_lock(self, svg_path: Path):
@@ -1489,11 +1563,14 @@ class SVGQualityChecker:
     @staticmethod
     def _parse_svg_viewbox(content: str) -> Tuple[float, float] | None:
         """Return viewBox width/height from SVG content."""
-        match = re.search(r'viewBox="[^"]*?\s+([0-9.]+)\s+([0-9.]+)"', content)
+        match = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', content)
         if not match:
             return None
+        parts = re.split(r'[\s,]+', match.group(1).strip())
+        if len(parts) < 4:
+            return None
         try:
-            return float(match.group(1)), float(match.group(2))
+            return float(parts[2]), float(parts[3])
         except ValueError:
             return None
 

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="g-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4F46E5"/><stop offset="0.5" stop-color="#7C3AED"/><stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="g-blur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="44"/></filter>
+    <linearGradient id="g-panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.38"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#g-bg)"/>
+  <circle cx="240" cy="180" r="150" fill="#22D3EE" filter="url(#g-blur)" opacity="0.85"/>
+  <circle cx="1080" cy="560" r="185" fill="#F472B6" filter="url(#g-blur)" opacity="0.9"/>
+  <circle cx="980" cy="150" r="95" fill="#FDE68A" filter="url(#g-blur)" opacity="0.75"/>
+  <rect x="150" y="150" width="640" height="420" rx="36" fill="url(#g-panel)" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.5"/>
+  <rect x="200" y="205" width="150" height="48" rx="24" fill="#FFFFFF" fill-opacity="0.25" stroke="#fff" stroke-opacity="0.5"/>
+  <text x="224" y="238" font-family="Arial, sans-serif" font-size="24" fill="#fff">GLASS 04</text>
+  <text x="200" y="362" font-family="Helvetica Neue, Arial, sans-serif" font-size="80" font-weight="700" fill="#FFFFFF">Lorem ipsum</text>
+  <text x="202" y="414" font-family="Arial, sans-serif" font-size="26" fill="#EDE9FE">Translucent panels · gradient light · depth</text>
+  <rect x="200" y="452" width="270" height="92" rx="20" fill="#FFFFFF" fill-opacity="0.2" stroke="#fff" stroke-opacity="0.4"/>
+  <rect x="490" y="452" width="270" height="92" rx="20" fill="#FFFFFF" fill-opacity="0.2" stroke="#fff" stroke-opacity="0.4"/>
+  <text x="228" y="512" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#fff">72%</text>
+  <text x="360" y="512" font-family="Arial, sans-serif" font-size="20" fill="#EDE9FE">dolor</text>
+  <text x="518" y="512" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#fff">1.8x</text>
+  <text x="652" y="512" font-family="Arial, sans-serif" font-size="20" fill="#EDE9FE">amet</text>
+  <rect x="830" y="205" width="260" height="310" rx="26" fill="#FFFFFF" fill-opacity="0.16" stroke="#fff" stroke-opacity="0.4"/>
+  <circle cx="960" cy="308" r="54" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="13"/>
+  <path d="M960 254a54 54 0 0 1 47 81" fill="none" stroke="#FDE68A" stroke-width="13" stroke-linecap="round"/>
+  <rect x="870" y="400" width="180" height="16" rx="8" fill="#fff" fill-opacity="0.55"/>
+  <rect x="870" y="432" width="130" height="14" rx="7" fill="#fff" fill-opacity="0.4"/>
+</svg>

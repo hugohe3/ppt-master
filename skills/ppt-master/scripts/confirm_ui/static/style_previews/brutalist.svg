@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <pattern id="bru-half" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="2.4" fill="#111"/><circle cx="11" cy="11" r="2.4" fill="#111"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="720" fill="#EDEAE0"/>
+  <rect x="40" y="40" width="1200" height="640" fill="none" stroke="#111" stroke-width="7"/>
+  <rect x="40" y="40" width="1200" height="118" fill="#111"/>
+  <text x="66" y="124" font-family="Arial Black, Arial, sans-serif" font-size="62" font-weight="900" fill="#EDEAE0">LOREM IPSUM</text>
+  <text x="1214" y="112" text-anchor="end" font-family="Courier New, monospace" font-size="20" fill="#EDEAE0">VOL.04</text>
+  <text x="1214" y="140" text-anchor="end" font-family="Courier New, monospace" font-size="20" fill="#EDEAE0">RAW/FLAT</text>
+  <path d="M40 300H1240M40 470H1240M470 158V680M820 158V680" stroke="#111" stroke-width="5"/>
+  <text x="66" y="208" font-family="Courier New, monospace" font-size="19" fill="#111">NEWSPAPER DENSITY · HEAVY RULES · NO SOFT CHROME</text>
+  <text x="66" y="252" font-family="Georgia, serif" font-size="21" fill="#111">Lorem ipsum dolor sit amet, consectetur</text>
+  <text x="66" y="282" font-family="Georgia, serif" font-size="21" fill="#111">adipiscing elit — a content page, not a poster.</text>
+  <rect x="490" y="180" width="310" height="270" fill="url(#bru-half)"/>
+  <rect x="490" y="180" width="310" height="270" fill="none" stroke="#111" stroke-width="5"/>
+  <rect x="510" y="330" width="270" height="100" fill="#EDEAE0"/>
+  <text x="524" y="410" font-family="Arial Black, Arial, sans-serif" font-size="82" font-weight="900" fill="#111">72</text>
+  <text x="662" y="410" font-family="Arial Black, Arial, sans-serif" font-size="42" fill="#DC2626">%</text>
+  <rect x="840" y="180" width="360" height="270" fill="#DC2626"/>
+  <text x="864" y="268" font-family="Arial Black, Arial, sans-serif" font-size="56" font-weight="900" fill="#fff">ONE</text>
+  <text x="864" y="328" font-family="Arial Black, Arial, sans-serif" font-size="56" font-weight="900" fill="#fff">LOUD</text>
+  <text x="864" y="388" font-family="Arial Black, Arial, sans-serif" font-size="56" font-weight="900" fill="#fff">SPOT</text>
+  <text x="66" y="514" font-family="Courier New, monospace" font-size="19" fill="#111">INDEX ------------------- VALUE -- TREND</text>
+  <text x="66" y="550" font-family="Courier New, monospace" font-size="19" fill="#111">A  LOREM                 124     UP</text>
+  <text x="66" y="586" font-family="Courier New, monospace" font-size="19" fill="#111">B  IPSUM                 092     FLAT</text>
+  <text x="66" y="622" font-family="Courier New, monospace" font-size="19" fill="#111">C  DOLOR                 051     DOWN</text>
+  <text x="66" y="658" font-family="Courier New, monospace" font-size="19" fill="#111">D  AMET                  148     UP</text>
+</svg>

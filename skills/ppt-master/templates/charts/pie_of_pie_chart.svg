@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    Pie of Pie Chart Template
+    Purpose: Expand small pie slices into a secondary pie
+    Use cases: revenue mix with long-tail categories, survey results, expense composition
+    Feature: Native pie-of-pie marker with fallback split-pie composition
+    -->
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetBlur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <g id="header">
+        <text x="60" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="34" font-weight="800" fill="#0F172A"><tspan>Category Share with Long Tail</tspan></text>
+        <text x="60" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>PIE OF PIE · SECONDARY DETAIL FOR SMALL SEGMENTS</tspan></text>
+    </g>
+    <g id="pie_of_pie_chart" data-pptx-native="chart">
+        <metadata data-pptx-native="chart">
+            {
+              "name": "pie_of_pie_chart",
+              "x": 80,
+              "y": 145,
+              "width": 900,
+              "height": 450,
+              "type": "pieOfPie",
+              "categories": ["Product A", "Product B", "Product C", "Tail D", "Tail E", "Tail F"],
+              "series": [
+                {"name": "Share", "values": [45, 25, 12, 8, 6, 4]}
+              ],
+              "style": {"colors": ["#2563EB", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#94A3B8"]}
+            }
+        </metadata>
+        <g id="chartArea">
+            <rect x="80" y="145" width="900" height="450" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+            <!-- chart-plot-area: pie-of-pie | main-center: 360,370 | main-radius: 170 | secondary-center: 785,370 | secondary-radius: 110 -->
+            <g id="mainPie">
+                <circle cx="360" cy="370" r="170" fill="#EFF6FF"/>
+                <path d="M 360,370 L 360,200 A 170,170 0 1,1 307.5,531.7 Z" fill="#2563EB" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 360,370 L 307.5,531.7 A 170,170 0 0,1 198.3,317.5 Z" fill="#10B981" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 360,370 L 198.3,317.5 A 170,170 0 0,1 360,200 Z" fill="#F59E0B" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+                <text x="360" y="374" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>82%</tspan></text>
+                <text x="360" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Primary slices</tspan></text>
+            </g>
+            <g id="connectorLines">
+                <line x1="515" y1="300" x2="675" y2="275" stroke="#CBD5E1" stroke-width="2"/>
+                <line x1="515" y1="440" x2="675" y2="465" stroke="#CBD5E1" stroke-width="2"/>
+            </g>
+            <g id="secondaryPie">
+                <circle cx="785" cy="370" r="110" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+                <path d="M 785,370 L 785,260 A 110,110 0 0,1 890,396 Z" fill="#8B5CF6" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 785,370 L 890,396 A 110,110 0 0,1 728,464 Z" fill="#EC4899" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M 785,370 L 728,464 A 110,110 0 0,1 785,260 Z" fill="#94A3B8" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+                <text x="785" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle"><tspan>18%</tspan></text>
+                <text x="785" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#475569" text-anchor="middle"><tspan>Expanded tail</tspan></text>
+            </g>
+        </g>
+    </g>
+    <g id="splitPanel" transform="translate(1010, 170)">
+        <rect x="0" y="0" width="220" height="360" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <text x="24" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A"><tspan>Split Logic</tspan></text>
+        <line x1="24" y1="58" x2="196" y2="58" stroke="#E2E8F0"/>
+        <text x="24" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Main pie</tspan></text>
+        <text x="24" y="124" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#2563EB"><tspan>82%</tspan></text>
+        <text x="24" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B"><tspan>Tail detail</tspan></text>
+        <text x="24" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="800" fill="#8B5CF6"><tspan>18%</tspan></text>
+        <rect x="24" y="235" width="172" height="78" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+        <text x="42" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#1D4ED8"><tspan>Best when</tspan></text>
+        <text x="42" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#475569"><tspan>small slices still need</tspan></text>
+        <text x="42" y="304" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#475569"><tspan>individual labels.</tspan></text>
+    </g>
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#94A3B8"><tspan>Data Source: Product Analytics</tspan></text>
+</svg>
