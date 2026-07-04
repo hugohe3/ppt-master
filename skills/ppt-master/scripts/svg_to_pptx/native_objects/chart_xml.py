@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml_utils import detect_text_lang, px_to_emu, _xml_escape
+from ..drawingml.utils import detect_text_lang, px_to_emu, _xml_escape
 from .chart_data import _chart_list, _data_labels_config
 from .chart_style import (
     _alpha_xml,

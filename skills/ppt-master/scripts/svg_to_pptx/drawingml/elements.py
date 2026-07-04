@@ -13,8 +13,8 @@ from xml.etree import ElementTree as ET
 
 from resource_paths import resolve_external_image_reference
 
-from .drawingml_context import ConvertContext, ShapeResult
-from .drawingml_utils import (
+from .context import ConvertContext, ShapeResult
+from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
     svg_length_x, svg_length_y, svg_length_size,
@@ -25,12 +25,12 @@ from .drawingml_utils import (
     detect_text_lang, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
 )
-from .drawingml_styles import (
+from .styles import (
     build_solid_fill, build_gradient_fill,
     build_fill_xml, build_stroke_xml, build_effect_xml, classify_filter_effect,
     get_fill_opacity, get_stroke_opacity,
 )
-from .drawingml_paths import (
+from .paths import (
     PathCommand, parse_svg_path, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
 )

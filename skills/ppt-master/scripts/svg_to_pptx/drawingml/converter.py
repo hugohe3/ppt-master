@@ -10,20 +10,20 @@ from xml.etree import ElementTree as ET
 
 from resource_paths import icon_search_dirs_for_svg
 
-from .drawingml_context import ConvertContext, ShapeResult
-from .drawingml_utils import (
+from .context import ConvertContext, ShapeResult
+from .utils import (
     SVG_NS, EMU_PER_PX,
     _extract_inheritable_styles, parse_transform_matrix, resolve_url_id,
     parse_svg_length,
 )
-from .drawingml_styles import build_effect_xml
-from .drawingml_elements import (
+from .styles import build_effect_xml
+from .elements import (
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
     convert_polygon, convert_polyline,
     convert_text, convert_image, convert_nested_svg,
 )
-from .native_objects import convert_native_object
+from ..native_objects import convert_native_object
 
 
 class SvgNativeConversionError(RuntimeError):
@@ -515,7 +515,7 @@ def convert_svg_to_slide_shapes(
     # running this here makes the two pipelines behaviourally aligned.
     icons_dir, icons_fallback_dir = icon_search_dirs_for_svg(svg_path)
     if icons_dir.exists():
-        from .use_expander import expand_use_data_icons
+        from ..use_expander import expand_use_data_icons
         expanded = expand_use_data_icons(root, icons_dir, icons_fallback_dir)
         if expanded:
             trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
@@ -530,7 +530,7 @@ def convert_svg_to_slide_shapes(
     # correct when reading raw svg_output/.
     # merge_paragraphs additionally folds mergeable paragraph blocks into a
     # single annotated <text> for downstream multi-<a:p> conversion.
-    from .tspan_flattener import flatten_positional_tspans
+    from ..tspan_flattener import flatten_positional_tspans
     flattened = flatten_positional_tspans(tree, merge_paragraphs=merge_paragraphs)
     if flattened:
         trace_steps.append({

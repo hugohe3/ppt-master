@@ -6,8 +6,8 @@ import math
 import re
 from xml.etree import ElementTree as ET
 
-from .drawingml_context import ConvertContext
-from .drawingml_utils import (
+from .context import ConvertContext
+from .utils import (
     SVG_NS, ANGLE_UNIT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
     parse_hex_color, parse_stop_style, resolve_url_id,

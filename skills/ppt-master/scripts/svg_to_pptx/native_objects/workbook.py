@@ -11,7 +11,7 @@ try:
 except ImportError:  # pragma: no cover - optional compatibility enhancement
     Workbook = None
 
-from ..drawingml_utils import _xml_escape
+from ..drawingml.utils import _xml_escape
 from .marker_common import _excel_col
 
 

@@ -7,8 +7,8 @@ import re
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml_context import ConvertContext, IDENTITY_MATRIX
-from ..drawingml_utils import (
+from ..drawingml.context import ConvertContext, IDENTITY_MATRIX
+from ..drawingml.utils import (
     FONT_PX_TO_HUNDREDTHS_PT,
     ctx_h,
     ctx_w,

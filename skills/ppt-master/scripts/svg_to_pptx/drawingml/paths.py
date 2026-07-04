@@ -6,7 +6,7 @@ import math
 import re
 from dataclasses import dataclass, field
 
-from .drawingml_utils import px_to_emu
+from .utils import px_to_emu
 
 
 @dataclass
