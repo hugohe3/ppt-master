@@ -946,18 +946,18 @@ def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "category": pick(
-            ("category", "cat", "category_axis", "categoryAxis"),
+            ("category",),
             ("category_axis_title", "categoryAxisTitle"),
         ),
         "value": pick(
-            ("value", "val", "value_axis", "valueAxis"),
+            ("value",),
             ("value_axis_title", "valueAxisTitle"),
         ),
-        "x": pick(("x", "x_axis", "xAxis"), ("x_axis_title", "xAxisTitle")),
-        "y": pick(("y", "y_axis", "yAxis"), ("y_axis_title", "yAxisTitle")),
+        "x": pick(("x",), ("x_axis_title", "xAxisTitle")),
+        "y": pick(("y",), ("y_axis_title", "yAxisTitle")),
         "secondary_value": pick(
-            ("secondary_value", "secondaryValue", "secondary_value_axis", "secondaryValueAxis"),
-            ("secondary_value_axis_title", "secondaryValueAxisTitle", "right_axis_title", "rightAxisTitle"),
+            ("secondary_value", "secondaryValue"),
+            ("secondary_value_axis_title", "secondaryValueAxisTitle"),
         ),
     }
 
@@ -1042,21 +1042,9 @@ def _chart_companion_entries(
     if caption_value is None and include_subtitle_as_caption:
         caption_value = payload.get("subtitle")
     add("caption", caption_value)
-    add("source", _first_present(
-        payload.get("source"),
-        payload.get("source_note"),
-        payload.get("sourceNote"),
-    ))
-    add("note", _first_present(
-        payload.get("note"),
-        payload.get("notes"),
-        payload.get("footnote"),
-        payload.get("footnotes"),
-        payload.get("chart_note"),
-        payload.get("chartNote"),
-        payload.get("chart_notes"),
-        payload.get("chartNotes"),
-    ))
+    add("source", payload.get("source"))
+    for key in ("note", "notes", "footnote", "footnotes"):
+        add("note", payload.get(key))
     return entries
 
 
