@@ -778,6 +778,21 @@ as SVG text (`1px = 0.75pt`). Put overrides at the chart root or under `style`;
 `axis_font_size`, `legend_font_size`, and `title_font_size` target those
 regions directly.
 
+**Chart chrome metadata**: Text that is visually part of the chart must be in
+metadata, not only in SVG fallback children. `title` becomes the native chart
+title on classic charts; chartEx keeps PowerPoint's empty `<cx:title>` and
+emits the title as a companion editable text box until chartEx rich titles are
+validated. Axis titles are optional and explicit: use `axis_titles` with
+`category`, `value`, `x`, `y`, or `secondary_value` keys, or the root aliases
+`category_axis_title`, `value_axis_title`, `x_axis_title`, `y_axis_title`, and
+`secondary_value_axis_title`. Native legends are metadata-controlled: use
+`show_legend: true` and `legend_position` when the fallback shows a legend.
+Companion text such as `caption`, `source`, `note`, `notes`, `footnote`, and
+`footnotes` is exported as editable PPT text boxes next to the native chart. A
+companion entry may be a string or an object with `text`, `x`, `y`, `width`,
+`height`, `font_size`, `color`, `align`, and `bold`; explicit bounds are
+recommended so the native export matches the SVG fallback placement.
+
 **Chart color styling**: For classic native charts, `style.colors` sets series
 colors. The exporter also writes explicit chart-area fill, plot-area fill,
 axis line, gridline, and label text colors so PowerPoint does not substitute a

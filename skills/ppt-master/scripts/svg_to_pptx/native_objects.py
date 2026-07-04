@@ -21,6 +21,7 @@ from .drawingml_utils import (
     ctx_w,
     ctx_x,
     ctx_y,
+    detect_text_lang,
     matrix_multiply,
     parse_transform_matrix,
     px_to_emu,
@@ -741,6 +742,13 @@ def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
         style.get("tickFontSize"),
         base_raw,
     )
+    axis_title_raw = _first_present(
+        payload.get("axis_title_font_size"),
+        payload.get("axisTitleFontSize"),
+        style.get("axis_title_font_size"),
+        style.get("axisTitleFontSize"),
+        axis_raw,
+    )
     legend_raw = _first_present(
         payload.get("legend_font_size"),
         payload.get("legendFontSize"),
@@ -754,10 +762,21 @@ def _chart_text_sizes(payload: dict[str, Any]) -> dict[str, int]:
         style.get("title_font_size"),
         style.get("titleFontSize"),
     )
+    note_raw = _first_present(
+        payload.get("note_font_size"),
+        payload.get("noteFontSize"),
+        style.get("note_font_size"),
+        style.get("noteFontSize"),
+        style.get("caption_font_size"),
+        style.get("captionFontSize"),
+        base_raw,
+    )
     return {
         "axis": _font_size_hpt(axis_raw, 12),
+        "axis_title": _font_size_hpt(axis_title_raw, 12),
         "base": _font_size_hpt(base_raw, 12),
         "legend": _font_size_hpt(legend_raw, 12),
+        "note": _font_size_hpt(note_raw, 12),
         "title": _font_size_hpt(title_raw, 16),
     }
 
@@ -798,6 +817,220 @@ def _chart_tx_pr_xml(font_size: int, color: str | None = None) -> str:
         f'<a:defRPr sz="{font_size}">{fill_xml}</a:defRPr>'
         '</a:pPr><a:endParaRPr lang="en-US"/></a:p></c:txPr>'
     )
+
+
+def _axis_title_xml(title: Any, *, font_size: int, color: str | None = None) -> str:
+    if not title:
+        return ""
+    text = str(title)
+    fill_xml = (
+        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
+    lang = detect_text_lang(text)
+    return (
+        "<c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/>"
+        f'<a:p><a:r><a:rPr lang="{lang}" sz="{font_size}">{fill_xml}</a:rPr>'
+        f"<a:t>{_xml_escape(text)}</a:t></a:r></a:p>"
+        "</c:rich></c:tx><c:layout/><c:overlay val=\"0\"/></c:title>"
+    )
+
+
+def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    raw = payload.get("axis_titles", payload.get("axisTitles"))
+    style_raw = style.get("axis_titles", style.get("axisTitles"))
+    axis_map = raw if isinstance(raw, dict) else {}
+    style_axis_map = style_raw if isinstance(style_raw, dict) else {}
+
+    def pick(*keys: str) -> Any:
+        values: list[Any] = []
+        for key in keys:
+            values.extend((
+                payload.get(key),
+                style.get(key),
+                axis_map.get(key),
+                style_axis_map.get(key),
+            ))
+        return _first_present(*values)
+
+    return {
+        "category": pick(
+            "category",
+            "cat",
+            "category_axis",
+            "categoryAxis",
+            "category_axis_title",
+            "categoryAxisTitle",
+        ),
+        "value": pick("value", "val", "value_axis", "valueAxis", "value_axis_title", "valueAxisTitle"),
+        "x": pick("x", "x_axis", "xAxis", "x_axis_title", "xAxisTitle"),
+        "y": pick("y", "y_axis", "yAxis", "y_axis_title", "yAxisTitle"),
+        "secondary_value": pick(
+            "secondary_value",
+            "secondaryValue",
+            "secondary_value_axis",
+            "secondaryValueAxis",
+            "secondary_value_axis_title",
+            "secondaryValueAxisTitle",
+            "right_axis_title",
+            "rightAxisTitle",
+        ),
+    }
+
+
+def _text_box_xml(
+    ctx: ConvertContext,
+    *,
+    text: str,
+    role: str,
+    off_x: int,
+    off_y: int,
+    ext_cx: int,
+    ext_cy: int,
+    font_size: int,
+    color: str | None,
+    align: str = "l",
+    bold: bool = False,
+) -> str:
+    shape_id = ctx.next_id()
+    align_key = _compact_key(align)
+    algn = {
+        "center": "ctr",
+        "centre": "ctr",
+        "ctr": "ctr",
+        "middle": "ctr",
+        "right": "r",
+        "r": "r",
+        "left": "l",
+        "l": "l",
+    }.get(align_key, "l")
+    fill_xml = (
+        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
+    bold_attr = ' b="1"' if bold else ""
+    lang = detect_text_lang(text)
+    name = _xml_escape(f"Chart {role.title()} {shape_id}")
+    return f'''<p:sp>
+<p:nvSpPr>
+<p:cNvPr id="{shape_id}" name="{name}"/>
+<p:cNvSpPr txBox="1"/><p:nvPr/>
+</p:nvSpPr>
+<p:spPr>
+<a:xfrm><a:off x="{off_x}" y="{off_y}"/><a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
+<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+<a:noFill/>
+<a:ln><a:noFill/></a:ln>
+</p:spPr>
+<p:txBody>
+<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0"/>
+<a:lstStyle/>
+<a:p><a:pPr algn="{algn}"/>
+<a:r><a:rPr lang="{lang}" sz="{font_size}"{bold_attr}>{fill_xml}</a:rPr><a:t>{_xml_escape(text)}</a:t></a:r>
+</a:p>
+</p:txBody>
+</p:sp>'''
+
+
+def _chart_companion_entries(payload: dict[str, Any], *, include_title: bool) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+
+    def add(role: str, value: Any) -> None:
+        if value is None:
+            return
+        values = value if isinstance(value, list) else [value]
+        for item in values:
+            if isinstance(item, dict):
+                text = _first_present(item.get("text"), item.get("value"), item.get("content"))
+                if text:
+                    entries.append({"role": role, **item, "text": str(text)})
+            elif str(item).strip():
+                entries.append({"role": role, "text": str(item)})
+
+    if include_title:
+        add("title", payload.get("title"))
+    add("caption", _first_present(payload.get("caption"), payload.get("subtitle")))
+    add("source", _first_present(
+        payload.get("source"),
+        payload.get("source_note"),
+        payload.get("sourceNote"),
+    ))
+    add("note", _first_present(
+        payload.get("note"),
+        payload.get("notes"),
+        payload.get("footnote"),
+        payload.get("footnotes"),
+        payload.get("chart_note"),
+        payload.get("chartNote"),
+        payload.get("chart_notes"),
+        payload.get("chartNotes"),
+    ))
+    return entries
+
+
+def _chart_companion_text_xml(
+    ctx: ConvertContext,
+    payload: dict[str, Any],
+    *,
+    chart_bounds: tuple[int, int, int, int],
+    chart_style: dict[str, str | None],
+    note_font_size: int,
+    title_font_size: int,
+    include_title: bool,
+) -> str:
+    entries = _chart_companion_entries(payload, include_title=include_title)
+    if not entries:
+        return ""
+
+    chart_off_x, chart_off_y, chart_ext_cx, chart_ext_cy = chart_bounds
+    parts: list[str] = []
+    below_index = 0
+    for item in entries:
+        role = str(item.get("role") or "note")
+        text = str(item.get("text") or "").strip()
+        if not text:
+            continue
+        font_size = _font_size_hpt(item.get("font_size", item.get("fontSize")), 16 if role == "title" else 12)
+        if role == "title" and item.get("font_size") is None and item.get("fontSize") is None:
+            font_size = title_font_size
+        elif item.get("font_size") is None and item.get("fontSize") is None:
+            font_size = note_font_size
+
+        color = _hex_or_none(item.get("color")) or chart_style.get("text_color")
+        align = str(item.get("align") or ("ctr" if role == "title" else "l"))
+        bold = bool(item.get("bold", role == "title"))
+        has_box = all(_maybe_number(item.get(key)) is not None for key in ("x", "y", "width", "height"))
+        if has_box:
+            off_x = px_to_emu(ctx_x(_number(item["x"], "companion text x"), ctx))
+            off_y = px_to_emu(ctx_y(_number(item["y"], "companion text y"), ctx))
+            ext_cx = px_to_emu(ctx_w(_number(item["width"], "companion text width"), ctx))
+            ext_cy = px_to_emu(ctx_h(_number(item["height"], "companion text height"), ctx))
+        elif role == "title":
+            off_x = chart_off_x
+            off_y = chart_off_y
+            ext_cx = chart_ext_cx
+            ext_cy = px_to_emu(28)
+        else:
+            off_x = chart_off_x
+            off_y = chart_off_y + chart_ext_cy + px_to_emu(4 + below_index * 18)
+            ext_cx = chart_ext_cx
+            ext_cy = px_to_emu(16)
+            below_index += 1
+        parts.append(_text_box_xml(
+            ctx,
+            text=text,
+            role=role,
+            off_x=off_x,
+            off_y=off_y,
+            ext_cx=ext_cx,
+            ext_cy=ext_cy,
+            font_size=font_size,
+            color=color,
+            align=align,
+            bold=bold,
+        ))
+    return "".join(parts)
 
 
 def _bool_attr(value: bool) -> str:
@@ -2229,6 +2462,8 @@ def _secondary_axis_xml(
     val_ax_id: str,
     *,
     axis_font_size: int,
+    axis_title_font_size: int,
+    axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
     grouping: str | None = None,
 ) -> str:
@@ -2239,6 +2474,11 @@ def _secondary_axis_xml(
     )
     axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
     axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
+    val_title_xml = _axis_title_xml(
+        axis_titles.get("secondary_value"),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
     return (
         "<c:catAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
@@ -2250,7 +2490,7 @@ def _secondary_axis_xml(
         "</c:catAx>"
         "<c:valAx>"
         f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        f'<c:delete val="0"/><c:axPos val="r"/>{val_num_fmt}'
+        f'<c:delete val="0"/><c:axPos val="r"/>{val_title_xml}{val_num_fmt}'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
@@ -2271,6 +2511,8 @@ def _combo_plot_xml(
     colors: list[str],
     *,
     axis_font_size: int,
+    axis_title_font_size: int,
+    axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
 ) -> str:
     categories = chart_data["categories"]
@@ -2320,6 +2562,8 @@ def _combo_plot_xml(
         primary_cat_ax_id,
         primary_val_ax_id,
         axis_font_size=axis_font_size,
+        axis_title_font_size=axis_title_font_size,
+        axis_titles=axis_titles,
         chart_style=chart_style,
         chart_type="column",
         grouping=_combo_axis_grouping(chart_data["plots"], "primary"),
@@ -2329,6 +2573,8 @@ def _combo_plot_xml(
             secondary_cat_ax_id,
             secondary_val_ax_id,
             axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
             chart_style=chart_style,
             grouping=_combo_axis_grouping(chart_data["plots"], "secondary"),
         )
@@ -2340,6 +2586,8 @@ def _chart_plot_xml(
     colors: list[str],
     *,
     axis_font_size: int,
+    axis_title_font_size: int,
+    axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
 ) -> str:
     chart_type = chart_data["type"]
@@ -2350,6 +2598,8 @@ def _chart_plot_xml(
             chart_data,
             colors,
             axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
             chart_style=chart_style,
         )
     if chart_data["kind"] == "xy":
@@ -2363,21 +2613,37 @@ def _chart_plot_xml(
         )
         if chart_type == "scatter":
             scatter_style = chart_data.get("scatter_style", "lineMarker")
+            axes_xml = _xy_axis_xml(
+                x_ax_id,
+                y_ax_id,
+                axis_font_size=axis_font_size,
+                axis_title_font_size=axis_title_font_size,
+                axis_titles=axis_titles,
+                chart_style=chart_style,
+            )
             return (
                 f'<c:scatterChart><c:scatterStyle val="{scatter_style}"/>'
                 '<c:varyColors val="0"/>'
                 f"{ser_xml}"
                 f'<c:axId val="{x_ax_id}"/><c:axId val="{y_ax_id}"/>'
                 "</c:scatterChart>"
-                f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size, chart_style=chart_style)}'
+                f"{axes_xml}"
             )
+        axes_xml = _xy_axis_xml(
+            x_ax_id,
+            y_ax_id,
+            axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
+            chart_style=chart_style,
+        )
         return (
             '<c:bubbleChart><c:varyColors val="0"/>'
             f"{ser_xml}"
             '<c:bubbleScale val="100"/><c:showNegBubbles val="0"/>'
             f'<c:axId val="{x_ax_id}"/><c:axId val="{y_ax_id}"/>'
             "</c:bubbleChart>"
-            f'{_xy_axis_xml(x_ax_id, y_ax_id, axis_font_size=axis_font_size, chart_style=chart_style)}'
+            f"{axes_xml}"
         )
 
     categories = chart_data["categories"]
@@ -2385,6 +2651,14 @@ def _chart_plot_xml(
     if chart_type == "stock":
         stock_cat_ax_id = "2068027336"
         stock_val_ax_id = "2113994440"
+        axes_xml = _stock_axis_xml(
+            stock_cat_ax_id,
+            stock_val_ax_id,
+            axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
+            chart_style=chart_style,
+        )
         return (
             "<c:stockChart>"
             f"{_stock_series_xml(categories, series, colors=colors)}"
@@ -2392,7 +2666,7 @@ def _chart_plot_xml(
             '<c:upDownBars><c:gapWidth val="150"/><c:upBars/><c:downBars/></c:upDownBars>'
             f'<c:axId val="{stock_cat_ax_id}"/><c:axId val="{stock_val_ax_id}"/>'
             "</c:stockChart>"
-            f'{_stock_axis_xml(stock_cat_ax_id, stock_val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style)}'
+            f"{axes_xml}"
         )
     ser_xml = _series_xml(
         categories,
@@ -2407,6 +2681,16 @@ def _chart_plot_xml(
     if chart_type in {"bar", "column"}:
         bar_dir = "bar" if chart_type == "bar" else "col"
         grouping = chart_data.get("grouping") or "clustered"
+        axes_xml = _axis_xml(
+            cat_ax_id,
+            val_ax_id,
+            axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
+            chart_style=chart_style,
+            chart_type=chart_type,
+            grouping=grouping,
+        )
         overlap_xml = (
             '<c:overlap val="100"/>'
             if grouping in {"stacked", "percentStacked"}
@@ -2420,11 +2704,21 @@ def _chart_plot_xml(
             f"{overlap_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:barChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style, chart_type=chart_type, grouping=grouping)}'
+            f"{axes_xml}"
         )
     if chart_type in {"line", "area"}:
         tag = "lineChart" if chart_type == "line" else "areaChart"
         grouping = chart_data.get("grouping") or "standard"
+        axes_xml = _axis_xml(
+            cat_ax_id,
+            val_ax_id,
+            axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
+            chart_style=chart_style,
+            chart_type=chart_type,
+            grouping=grouping,
+        )
         line_tail_xml = '<c:marker val="1"/><c:smooth val="0"/>' if chart_type == "line" else ""
         return (
             f'<c:{tag}><c:grouping val="{grouping}"/><c:varyColors val="0"/>'
@@ -2432,7 +2726,7 @@ def _chart_plot_xml(
             f"{line_tail_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             f"</c:{tag}>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style, chart_type=chart_type, grouping=grouping)}'
+            f"{axes_xml}"
         )
     if chart_type == "doughnut":
         return (
@@ -2452,13 +2746,22 @@ def _chart_plot_xml(
         )
     if chart_type == "radar":
         radar_style = chart_data.get("radar_style", "marker")
+        axes_xml = _axis_xml(
+            cat_ax_id,
+            val_ax_id,
+            axis_font_size=axis_font_size,
+            axis_title_font_size=axis_title_font_size,
+            axis_titles=axis_titles,
+            chart_style=chart_style,
+            chart_type=chart_type,
+        )
         return (
             f'<c:radarChart><c:radarStyle val="{radar_style}"/>'
             '<c:varyColors val="0"/>'
             f"{ser_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             "</c:radarChart>"
-            f'{_axis_xml(cat_ax_id, val_ax_id, axis_font_size=axis_font_size, chart_style=chart_style, chart_type=chart_type)}'
+            f"{axes_xml}"
         )
     return f'<c:pieChart><c:varyColors val="1"/>{ser_xml}<c:firstSliceAng val="0"/></c:pieChart>'
 
@@ -2468,6 +2771,8 @@ def _axis_xml(
     val_ax_id: str,
     *,
     axis_font_size: int,
+    axis_title_font_size: int,
+    axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
     chart_type: str,
     grouping: str | None = None,
@@ -2481,10 +2786,20 @@ def _axis_xml(
     )
     axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
     axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
+    cat_title_xml = _axis_title_xml(
+        _first_present(axis_titles.get("category"), axis_titles.get("x")),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
+    val_title_xml = _axis_title_xml(
+        _first_present(axis_titles.get("value"), axis_titles.get("y")),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
     return (
         "<c:catAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        f'<c:delete val="0"/><c:axPos val="{cat_pos}"/><c:majorTickMark val="out"/>'
+        f'<c:delete val="0"/><c:axPos val="{cat_pos}"/>{cat_title_xml}<c:majorTickMark val="out"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{val_ax_id}"/><c:crosses val="autoZero"/><c:auto val="1"/>'
@@ -2493,7 +2808,7 @@ def _axis_xml(
         "<c:valAx>"
         f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         f'<c:delete val="0"/><c:axPos val="{val_pos}"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
-        f"{val_num_fmt}"
+        f"{val_title_xml}{val_num_fmt}"
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
@@ -2507,14 +2822,26 @@ def _xy_axis_xml(
     y_ax_id: str,
     *,
     axis_font_size: int,
+    axis_title_font_size: int,
+    axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
 ) -> str:
     axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
     axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
+    x_title_xml = _axis_title_xml(
+        _first_present(axis_titles.get("x"), axis_titles.get("category")),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
+    y_title_xml = _axis_title_xml(
+        _first_present(axis_titles.get("y"), axis_titles.get("value")),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
     return (
         "<c:valAx>"
         f'<c:axId val="{x_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        '<c:delete val="0"/><c:axPos val="b"/><c:majorTickMark val="out"/>'
+        f'<c:delete val="0"/><c:axPos val="b"/>{x_title_xml}<c:majorTickMark val="out"/>'
         '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{y_ax_id}"/><c:crosses val="autoZero"/>'
@@ -2523,7 +2850,7 @@ def _xy_axis_xml(
         "<c:valAx>"
         f'<c:axId val="{y_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         f'<c:delete val="0"/><c:axPos val="l"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
-        '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
+        f'{y_title_xml}<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{x_ax_id}"/><c:crosses val="autoZero"/>'
@@ -2569,15 +2896,27 @@ def _stock_axis_xml(
     val_ax_id: str,
     *,
     axis_font_size: int,
+    axis_title_font_size: int,
+    axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
 ) -> str:
     axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
     axis_tx_pr = _chart_tx_pr_xml(axis_font_size, chart_style.get("text_color"))
+    cat_title_xml = _axis_title_xml(
+        _first_present(axis_titles.get("category"), axis_titles.get("x")),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
+    val_title_xml = _axis_title_xml(
+        _first_present(axis_titles.get("value"), axis_titles.get("y")),
+        font_size=axis_title_font_size,
+        color=chart_style.get("text_color"),
+    )
     return (
         "<c:dateAx>"
         f'<c:axId val="{cat_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         '<c:delete val="0"/><c:axPos val="b"/>'
-        '<c:numFmt formatCode="m/d/yyyy" sourceLinked="1"/>'
+        f'{cat_title_xml}<c:numFmt formatCode="m/d/yyyy" sourceLinked="1"/>'
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
@@ -2587,7 +2926,7 @@ def _stock_axis_xml(
         "<c:valAx>"
         f'<c:axId val="{val_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
         f'<c:delete val="0"/><c:axPos val="l"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
-        '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
+        f'{val_title_xml}<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
         '<c:tickLblPos val="nextTo"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
@@ -2800,11 +3139,14 @@ def _chart_xml(
         else []
     )
     text_sizes = _chart_text_sizes(payload)
+    axis_titles = _axis_titles(payload)
     chart_style = _classic_chart_style(payload, elem)
     plot_xml = _chart_plot_xml(
         chart_data,
         colors,
         axis_font_size=text_sizes["axis"],
+        axis_title_font_size=text_sizes["axis_title"],
+        axis_titles=axis_titles,
         chart_style=chart_style,
     )
     xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -3084,7 +3426,7 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         ctx.content_type_overrides[chart_part] = CHART_CONTENT_TYPE
 
     name = _xml_escape(str(payload.get("name") or elem.get("id") or f"Native Chart {shape_id}"))
-    xml = f'''<p:graphicFrame>
+    chart_frame_xml = f'''<p:graphicFrame>
 <p:nvGraphicFramePr>
 <p:cNvPr id="{shape_id}" name="{name}"/>
 <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>
@@ -3097,6 +3439,18 @@ def _build_native_chart(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 </a:graphicData>
 </a:graphic>
 </p:graphicFrame>'''
+    text_sizes = _chart_text_sizes(payload)
+    chart_style = _classic_chart_style(payload, elem)
+    companion_xml = _chart_companion_text_xml(
+        ctx,
+        payload,
+        chart_bounds=(off_x, off_y, ext_cx, ext_cy),
+        chart_style=chart_style,
+        note_font_size=text_sizes["note"],
+        title_font_size=text_sizes["title"],
+        include_title=chart_data["kind"] == "chartex",
+    )
+    xml = chart_frame_xml + companion_xml
     return ShapeResult(xml=xml, bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
 
 
