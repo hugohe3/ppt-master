@@ -1140,6 +1140,7 @@ def _chart_xml(
     *,
     chart_rels_id: str,
     chart_data: dict[str, Any],
+    inherited_styles: dict[str, str] | None = None,
 ) -> bytes:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     colors = (
@@ -1147,9 +1148,9 @@ def _chart_xml(
         if isinstance(style.get("colors"), list)
         else []
     )
-    text_sizes = _chart_text_sizes(payload)
+    text_sizes = _chart_text_sizes(payload, elem, inherited_styles)
     axis_titles = _axis_titles(payload)
-    chart_style = _classic_chart_style(payload, elem)
+    chart_style = _classic_chart_style(payload, elem, inherited_styles)
     plot_xml = _chart_plot_xml(
         chart_data,
         colors,
