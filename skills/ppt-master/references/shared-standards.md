@@ -820,16 +820,20 @@ validated. Axis titles are optional and explicit: use `axis_titles` with
 `category`, `value`, `x`, `y`, or `secondary_value` keys, or the root aliases
 `category_axis_title`, `value_axis_title`, `x_axis_title`, `y_axis_title`, and
 `secondary_value_axis_title`; do not add semantic axis titles that are not
-visible in the fallback. Native legends are metadata-controlled: use
+visible in the fallback. Set `show_value_axis_labels: false` when the fallback
+keeps category labels but omits numeric value-axis tick labels, such as a radar
+chart without radial coordinates. Native legends are metadata-controlled: use
 `show_legend: true` and `legend_position` only when the fallback's legend is
 meant to be replaced by PowerPoint's native legend.
 Companion text such as `caption`, `source`, `note`, `notes`, `footnote`, and
 `footnotes` is exported as editable PPT text boxes next to the native chart. A
 companion entry may be a string or an object with `text`, `x`, `y`, `width`,
 `height`, `font_size`, `color`, `align`, and `bold`; explicit bounds are
-recommended so the native export matches the SVG fallback placement.
-Use companion text for chart captions, source notes, and freeform annotations;
-use `data_labels` for values that belong to chart points.
+recommended so the native export matches the SVG fallback placement. Explicit
+companion bounds are slide coordinates, not local coordinates inside a
+transformed marker group. Use companion text for chart captions, source notes,
+center labels, and freeform annotations; use `data_labels` for values that
+belong to chart points.
 
 **Chart color styling**: For classic native charts, `style.colors` sets series
 colors. The exporter also writes explicit chart-area fill, plot-area fill,

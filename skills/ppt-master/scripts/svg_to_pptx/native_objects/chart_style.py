@@ -6,7 +6,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext
-from ..drawingml.utils import ctx_h, ctx_w, ctx_x, ctx_y, detect_text_lang, px_to_emu, _xml_escape
+from ..drawingml.utils import detect_text_lang, px_to_emu, _xml_escape
 from .chart_data import _DEFAULT_CHART_COLORS
 from .marker_common import (
     _bool_attr,
@@ -466,10 +466,10 @@ def _chart_companion_text_xml(
         bold = bool(item.get("bold", role == "title"))
         has_box = all(_maybe_number(item.get(key)) is not None for key in ("x", "y", "width", "height"))
         if has_box:
-            off_x = px_to_emu(ctx_x(_number(item["x"], "companion text x"), ctx))
-            off_y = px_to_emu(ctx_y(_number(item["y"], "companion text y"), ctx))
-            ext_cx = px_to_emu(ctx_w(_number(item["width"], "companion text width"), ctx))
-            ext_cy = px_to_emu(ctx_h(_number(item["height"], "companion text height"), ctx))
+            off_x = px_to_emu(_number(item["x"], "companion text x"))
+            off_y = px_to_emu(_number(item["y"], "companion text y"))
+            ext_cx = px_to_emu(_number(item["width"], "companion text width"))
+            ext_cy = px_to_emu(_number(item["height"], "companion text height"))
         elif role == "title":
             off_x = chart_off_x
             off_y = chart_off_y

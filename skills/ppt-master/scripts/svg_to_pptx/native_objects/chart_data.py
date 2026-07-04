@@ -363,6 +363,7 @@ def _category_chart_data(
     alias_style: str | None,
 ) -> dict[str, Any]:
     categories = [str(item) for item in _chart_list(payload.get("categories", []), "categories")]
+    style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
 
     series = _category_series(payload, categories)
     if chart_type in {"doughnut", "of_pie", "pie"}:
@@ -408,6 +409,15 @@ def _category_chart_data(
         "line_style": line_style,
         "radar_marker_style": radar_marker_style,
         "radar_style": radar_style,
+        "show_value_axis_labels": _chart_bool(
+            _first_present(
+                payload.get("show_value_axis_labels"),
+                payload.get("showValueAxisLabels"),
+                style.get("show_value_axis_labels"),
+                style.get("showValueAxisLabels"),
+            ),
+            True,
+        ),
         "data_labels": _data_labels_config(payload),
         "series": series,
     }
