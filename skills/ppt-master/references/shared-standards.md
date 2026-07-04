@@ -739,7 +739,12 @@ with blank cells unless `strict_grid: true` is set. Use `column_widths` and
 `row_heights` as relative weights. Cell objects accept `text`, `fill`, `color`,
 `align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
 `border_width`; the same `padding`, `border_color`, and `border_width` keys may
-also live under `style` as table defaults.
+also live under `style` as table defaults. Native table typography mirrors the
+visible SVG fallback: put `style.font_family` and `style.font_size` on the
+marker from the table text already drawn, then use `style.header_font_size` or
+per-cell `font_size` only when the fallback visibly differs. If the fallback
+has no explicit table font, use the deck body family and locked body size from
+`spec_lock.md`.
 
 **Hard rule — table metadata is the native source of truth**: Every row,
 summary line, value, and cell-level style that must survive
@@ -770,13 +775,15 @@ adjacent compatible series are grouped into the same PowerPoint plot.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
 
-**Chart typography**: Native classic charts default to compact PowerPoint
-text: `axis_font_size: 12` (9pt), `legend_font_size: 12` (9pt), and
-`title_font_size: 16` (12pt). These values use the same px-style metadata unit
-as SVG text (`1px = 0.75pt`). Put overrides at the chart root or under `style`;
-`font_size` / `chart_font_size` sets the base chart text size, while
-`axis_font_size`, `legend_font_size`, and `title_font_size` target those
-regions directly.
+**Chart typography**: Native classic chart typography mirrors the visible SVG
+fallback. Copy fallback chart text sizes into metadata using the same px-style
+unit as SVG text (`1px = 0.75pt`). Typical mappings are chart title
+(`title_font_size`), chart labels (`axis_font_size`, shared by axis titles /
+ticks / legend unless the fallback differs), and notes (`note_font_size`). Use
+`axis_title_font_size`, `legend_font_size`, or per-entry companion `font_size`
+only when the fallback visibly uses a separate size. When no explicit fallback
+size exists for a role, default to compact PowerPoint text: `title_font_size:
+16` (12pt), `axis_font_size: 12` (9pt), and `note_font_size: 12` (9pt).
 
 **Chart chrome metadata**: Text that is visually part of the chart must be in
 metadata, not only in SVG fallback children. `title` becomes the native chart
