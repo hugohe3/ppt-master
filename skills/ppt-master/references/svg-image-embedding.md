@@ -135,15 +135,18 @@ uvx ppt-master finalize-svg <project_path>
 uvx ppt-master svg-to-pptx <project_path>
 ```
 
-### Standalone: embed_images.py (advanced)
+### Standalone: align_embed_images.py (advanced)
 
 For processing specific SVGs without the full pipeline:
 
 ```bash
-uv run scripts/svg_finalize/embed_images.py <svg_file>                         # Single file
-uv run scripts/svg_finalize/embed_images.py <project_path>/svg_output/*.svg    # Batch
-uv run scripts/svg_finalize/embed_images.py --dry-run <project_path>/svg_output/*.svg  # Preview
+uv run scripts/svg_finalize/align_embed_images.py <svg_file>
+uv run scripts/svg_finalize/align_embed_images.py --dry-run <svg_file>
 ```
+
+Use `finalize_svg.py --only align-images` for project-level batches. The old
+`crop-images`, `fix-aspect`, and `embed-images` step names are compatibility
+aliases only when invoked through `finalize_svg.py --only`.
 
 ---
 

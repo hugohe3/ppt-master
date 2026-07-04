@@ -8,20 +8,22 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from .drawingml_context import ConvertContext, ShapeResult
-from .drawingml_utils import (
+from resource_paths import icon_search_dirs_for_svg
+
+from .context import ConvertContext, ShapeResult
+from .utils import (
     SVG_NS, EMU_PER_PX,
     _extract_inheritable_styles, parse_transform_matrix, resolve_url_id,
     parse_svg_length,
 )
-from .drawingml_styles import build_effect_xml
-from .drawingml_elements import (
+from .styles import build_effect_xml
+from .elements import (
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
     convert_polygon, convert_polyline,
     convert_text, convert_image, convert_nested_svg,
 )
-from .native_objects import convert_native_object
+from ..native_objects import convert_native_object
 
 
 class SvgNativeConversionError(RuntimeError):
@@ -114,9 +116,14 @@ def _root_viewport_size(root: ET.Element) -> tuple[float, float]:
     """Return the SVG root viewport size in user units."""
     view_box = root.get('viewBox')
     if view_box:
-        parts = [float(n) for n in re.findall(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?', view_box)]
-        if len(parts) == 4 and parts[2] > 0 and parts[3] > 0:
-            return parts[2], parts[3]
+        raw_parts = re.split(r'[\s,]+', view_box.strip())
+        if len(raw_parts) == 4:
+            try:
+                parts = [float(n) for n in raw_parts]
+            except ValueError:
+                parts = []
+            if parts and parts[2] > 0 and parts[3] > 0:
+                return parts[2], parts[3]
 
     width = parse_svg_length(root.get('width'), 1280.0)
     height = parse_svg_length(root.get('height'), 720.0)
@@ -506,10 +513,10 @@ def convert_svg_to_slide_shapes(
     # both ignore data-icon, so without expansion icons would silently drop.
     # The on-disk finalize_svg pipeline does the same expansion for svg_final/;
     # running this here makes the two pipelines behaviourally aligned.
-    icons_dir = Path(__file__).resolve().parent.parent.parent / 'templates' / 'icons'
+    icons_dir, icons_fallback_dir = icon_search_dirs_for_svg(svg_path)
     if icons_dir.exists():
-        from .use_expander import expand_use_data_icons
-        expanded = expand_use_data_icons(root, icons_dir)
+        from ..use_expander import expand_use_data_icons
+        expanded = expand_use_data_icons(root, icons_dir, icons_fallback_dir)
         if expanded:
             trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
         if verbose and expanded:
@@ -523,7 +530,7 @@ def convert_svg_to_slide_shapes(
     # correct when reading raw svg_output/.
     # merge_paragraphs additionally folds mergeable paragraph blocks into a
     # single annotated <text> for downstream multi-<a:p> conversion.
-    from .tspan_flattener import flatten_positional_tspans
+    from ..tspan_flattener import flatten_positional_tspans
     flattened = flatten_positional_tspans(tree, merge_paragraphs=merge_paragraphs)
     if flattened:
         trace_steps.append({

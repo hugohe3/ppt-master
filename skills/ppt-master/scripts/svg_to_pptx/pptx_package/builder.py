@@ -23,24 +23,24 @@ from xml.sax.saxutils import escape
 from pptx import Presentation
 from pptx.util import Emu
 
-from .drawingml_converter import convert_svg_to_slide_shapes
-from .pptx_dimensions import (
+from ..drawingml.converter import convert_svg_to_slide_shapes
+from .dimensions import (
     CANVAS_FORMATS,
     get_slide_dimensions, get_pixel_dimensions,
     get_viewbox_dimensions, detect_format_from_svg,
 )
-from .pptx_media import (
+from .media import (
     PNG_RENDERER,
     get_png_renderer_info, convert_svg_to_png, convert_svg_to_png_cached,
 )
-from .pptx_notes import (
+from .notes import (
     markdown_to_plain_text,
     create_notes_master_rels_xml,
     create_notes_master_xml,
     create_notes_slide_xml,
     create_notes_slide_rels_xml,
 )
-from .pptx_narration import (
+from .narration import (
     AUDIO_CONTENT_TYPES,
     AUDIO_REL_TYPE,
     AUDIO_MARKER_PNG_BYTES,
@@ -51,7 +51,7 @@ from .pptx_narration import (
     next_shape_id,
     probe_audio_duration,
 )
-from .pptx_slide_xml import (
+from .slide_xml import (
     ANIMATIONS_AVAILABLE, TRANSITIONS,
     create_slide_xml_with_svg, create_slide_rels_xml,
 )

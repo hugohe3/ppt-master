@@ -230,6 +230,16 @@ def extract_paths_from_icon(icon_path: Path, target_color: str = '#000000') -> t
     return elements, style, base_size
 
 
+def _attr_value(tag_text: str, attr: str) -> str | None:
+    """Return an attribute value from a raw tag, accepting either quote style."""
+    match = re.search(
+        rf'\b{re.escape(attr)}\s*=\s*(["\'])(.*?)\1',
+        tag_text,
+        re.DOTALL,
+    )
+    return match.group(2) if match else None
+
+
 def parse_use_element(use_match: str) -> dict[str, str | float]:
     """
     Parse attributes of a use element.
@@ -241,42 +251,42 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
         Attribute dictionary
     """
     attrs: dict[str, str | float] = {}
-    
+
     # Extract data-icon
-    icon_match = re.search(r'data-icon="([^"]+)"', use_match)
-    if icon_match:
-        attrs['icon'] = icon_match.group(1)
-    
+    icon_value = _attr_value(use_match, 'data-icon')
+    if icon_value:
+        attrs['icon'] = icon_value
+
     # Extract numeric attributes
     for attr in ['x', 'y', 'width', 'height']:
-        match = re.search(rf'{attr}="([^"]+)"', use_match)
-        if match:
-            attrs[attr] = float(match.group(1))
-    
+        value = _attr_value(use_match, attr)
+        if value is not None:
+            attrs[attr] = float(value)
+
     # Extract fill color
-    fill_match = re.search(r'fill="([^"]+)"', use_match)
-    if fill_match:
-        attrs['fill'] = fill_match.group(1)
+    fill_value = _attr_value(use_match, 'fill')
+    if fill_value is not None:
+        attrs['fill'] = fill_value
 
     # Stroke-style icons may be authored with natural SVG semantics:
     # fill="none" stroke="#HEX". Keep accepting fill as the canonical color
     # carrier, but preserve stroke so outline icons do not collapse to none.
-    stroke_match = re.search(r'stroke="([^"]+)"', use_match)
-    if stroke_match:
-        attrs['stroke'] = stroke_match.group(1)
+    stroke_value = _attr_value(use_match, 'stroke')
+    if stroke_value is not None:
+        attrs['stroke'] = stroke_value
 
     # Live preview direct edits may write an absolute transform matrix back to
     # the placeholder. Preserve it so the expanded icon matches the edited
     # browser geometry instead of falling back to the original x/y placement.
-    transform_match = re.search(r'transform="([^"]+)"', use_match)
-    if transform_match:
-        attrs['transform'] = transform_match.group(1)
+    transform_value = _attr_value(use_match, 'transform')
+    if transform_value is not None:
+        attrs['transform'] = transform_value
 
     # Extract optional stroke-width override (stroke-style icons only).
     # Tabler-outline ships at stroke-width=2; passing 1.5 reads thin, 3 reads bold.
-    stroke_width_match = re.search(r'stroke-width="([^"]+)"', use_match)
-    if stroke_width_match:
-        attrs['stroke-width'] = stroke_width_match.group(1)
+    stroke_width_value = _attr_value(use_match, 'stroke-width')
+    if stroke_width_value is not None:
+        attrs['stroke-width'] = stroke_width_value
 
     return attrs
 
@@ -386,9 +396,10 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
     
     content = svg_path.read_text(encoding='utf-8')
     
-    # Match <use data-icon="xxx" ... /> elements
-    use_pattern = r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>'
-    matches = list(re.finditer(use_pattern, content))
+    # Match self-closing <use data-icon="..."/> placeholders. Attribute
+    # parsing below accepts both single and double quotes.
+    use_pattern = r'<use\b(?=[^>]*\bdata-icon\s*=)[^>]*/>'
+    matches = list(re.finditer(use_pattern, content, re.IGNORECASE | re.DOTALL))
     
     if not matches:
         if verbose:

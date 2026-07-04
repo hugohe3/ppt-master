@@ -8,11 +8,13 @@ import re
 import base64
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote, unquote_to_bytes, urlsplit
+from urllib.parse import unquote_to_bytes
 from xml.etree import ElementTree as ET
 
-from .drawingml_context import ConvertContext, ShapeResult
-from .drawingml_utils import (
+from resource_paths import resolve_external_image_reference
+
+from .context import ConvertContext, ShapeResult
+from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
     svg_length_x, svg_length_y, svg_length_size,
@@ -23,12 +25,12 @@ from .drawingml_utils import (
     detect_text_lang, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
 )
-from .drawingml_styles import (
+from .styles import (
     build_solid_fill, build_gradient_fill,
     build_fill_xml, build_stroke_xml, build_effect_xml, classify_filter_effect,
     get_fill_opacity, get_stroke_opacity,
 )
-from .drawingml_paths import (
+from .paths import (
     PathCommand, parse_svg_path, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
 )
@@ -43,19 +45,9 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
     (legacy flat-copied template assets). Raises ``FileNotFoundError`` if none
     of these exist.
     """
-    parsed = urlsplit(href)
-    if parsed.scheme and parsed.scheme not in ('file',):
-        raise FileNotFoundError(f'External image not found: {href}')
-    decoded = unquote(parsed.path if parsed.scheme else href.split('?', 1)[0].split('#', 1)[0])
-
-    for candidate in (
-        svg_dir / decoded,
-        svg_dir.parent / decoded,
-        svg_dir.parent / 'images' / decoded,
-        svg_dir.parent / 'templates' / decoded,
-    ):
-        if candidate.exists():
-            return candidate
+    candidate = resolve_external_image_reference(svg_dir, href)
+    if candidate is not None:
+        return candidate
     raise FileNotFoundError(f'External image not found: {href}')
 
 

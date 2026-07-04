@@ -75,10 +75,11 @@ class ErrorHelper:
             'severity': 'warning'
         },
         'viewbox_mismatch': {
-            'message': 'SVG viewBox does not match canvas format',
+            'message': 'SVG viewBox differs from the recorded canvas format',
             'solutions': [
                 'Check the viewBox attribute of SVG files',
-                'Ensure it matches the project canvas format',
+                'Treat the root viewBox as the actual canvas size',
+                'If the project metadata is stale, export will use the SVG viewBox',
                 'PPT 16:9 should be: viewBox="0 0 1280 720"',
                 'PPT 4:3 should be: viewBox="0 0 1024 768"',
                 'Reference: references/canvas-formats.md'
@@ -100,8 +101,8 @@ class ErrorHelper:
             'solutions': [
                 'Add the viewBox attribute to the SVG root element',
                 'Format: <svg viewBox="0 0 1280 720" ...>',
-                'Ensure width, height are consistent with viewBox',
-                'This is a mandatory requirement for SVG generation'
+                'Root width/height are optional compatibility attributes',
+                'The root viewBox is mandatory for SVG generation'
             ],
             'severity': 'error'
         },
@@ -266,7 +267,7 @@ class ErrorHelper:
             'message': 'Forbidden web font (@font-face) detected',
             'solutions': [
                 'Remove @font-face declarations',
-                'End every font-family stack with a PPT-safe pre-installed family',
+                'Use font-family stacks that export PPT-safe pre-installed typefaces',
                 'Example: font-family: "Microsoft YaHei", Arial, sans-serif'
             ],
             'severity': 'error'
@@ -290,9 +291,9 @@ class ErrorHelper:
             'severity': 'error'
         },
         'invalid_font': {
-            'message': 'Font stack does not end on a PPT-safe family',
+            'message': 'Font stack exports non-PPT-safe typefaces to PPTX',
             'solutions': [
-                'End the stack with a cross-platform pre-installed family',
+                'Use stacks whose exported Latin / EA typefaces are pre-installed',
                 'CJK: "Microsoft YaHei", sans-serif  |  SimSun, serif',
                 'Latin: Arial, sans-serif  |  "Times New Roman", serif',
                 'Mono: Consolas, "Courier New", monospace',
