@@ -6,8 +6,8 @@ import re
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml_context import ConvertContext, ShapeResult
-from ..drawingml_utils import px_to_emu, _xml_escape
+from ..drawingml.context import ConvertContext, ShapeResult
+from ..drawingml.utils import px_to_emu, _xml_escape
 from .chart_style import _font_face_xml
 from .marker_common import (
     TABLE_URI,

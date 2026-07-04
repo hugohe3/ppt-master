@@ -1,6 +1,6 @@
 """DrawingML <p:txBody> -> SVG <text> conversion.
 
-Reverse of svg_to_pptx/drawingml_elements.convert_text.
+Reverse of svg_to_pptx/drawingml/elements.py convert_text.
 
 Strategy (v1):
 - Each <a:p> paragraph emits one <text> element (one line of baseline).
@@ -803,7 +803,7 @@ def _is_cjk(ch: str) -> bool:
 def _char_width(ch: str, font_size: float, bold: bool) -> float:
     """Estimate a single character's rendered width in pixels.
 
-    Mirrors svg_to_pptx/drawingml_utils.estimate_text_width so wrapping breaks
+    Mirrors svg_to_pptx/drawingml/utils.py estimate_text_width so wrapping breaks
     align with the same heuristic used to estimate text-box sizes elsewhere.
     """
     if _is_cjk(ch):

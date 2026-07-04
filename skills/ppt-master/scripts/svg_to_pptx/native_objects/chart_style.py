@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml_context import ConvertContext
-from ..drawingml_utils import detect_text_lang, _xml_escape
+from ..drawingml.context import ConvertContext
+from ..drawingml.utils import detect_text_lang, _xml_escape
 from .chart_data import _DEFAULT_CHART_COLORS
 from .marker_common import (
     _bool_attr,

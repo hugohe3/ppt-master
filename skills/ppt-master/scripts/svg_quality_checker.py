@@ -46,7 +46,7 @@ except ImportError:
     _validate_animation_config = None
 
 try:
-    from svg_to_pptx.drawingml_utils import (
+    from svg_to_pptx.drawingml.utils import (
         parse_font_family as _parse_export_font_family,
     )
 except ImportError:
@@ -102,7 +102,7 @@ XLINK_NS = "http://www.w3.org/1999/xlink"
 
 # Fonts that survive direct PPTX typeface assignment on a typical Windows /
 # macOS viewer without requiring a custom install. Keep this aligned with
-# strategist.md §g and drawingml_utils.FONT_FALLBACK_WIN.
+# strategist.md §g and drawingml/utils.py FONT_FALLBACK_WIN.
 PPT_SAFE_FONTS = {
     'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
     'dengxian', 'microsoft jhenghei',

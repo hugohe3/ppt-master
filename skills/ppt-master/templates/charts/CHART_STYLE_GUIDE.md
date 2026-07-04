@@ -162,7 +162,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 - `<feComponentTransfer>` + `<feFuncA slope=...>` → 用 `<feFlood flood-color flood-opacity>` 替代
 - `flood-opacity > 0.20` → 阴影过重，最大 0.15-0.20
 
-> **被禁的是 sub-element，不是 `<filter>` 本身。** `<filter>` 是 PPT Master 允许的、官方推荐的阴影/发光路径（见 [`shared-standards.md`](../../references/shared-standards.md) §1 黑名单不含 filter、§6 把 filter shadow 列为 drop-shadow 的官方实现），转换器 [`svg_to_pptx/drawingml_styles.py`](../../scripts/svg_to_pptx/drawingml_styles.py) 也主动把 `feGaussianBlur` + `feOffset` + `feFlood` + `feComposite` + `feMerge`（以及 `feDropShadow` 简写）映射成 DrawingML `<a:outerShdw>`。
+> **被禁的是 sub-element，不是 `<filter>` 本身。** `<filter>` 是 PPT Master 允许的、官方推荐的阴影/发光路径（见 [`shared-standards.md`](../../references/shared-standards.md) §1 黑名单不含 filter、§6 把 filter shadow 列为 drop-shadow 的官方实现），转换器 [`svg_to_pptx/drawingml/styles.py`](../../scripts/svg_to_pptx/drawingml/styles.py) 也主动把 `feGaussianBlur` + `feOffset` + `feFlood` + `feComposite` + `feMerge`（以及 `feDropShadow` 简写）映射成 DrawingML `<a:outerShdw>`。
 >
 > 单独禁 `feComponentTransfer/feFuncA(slope)` 的原因：**它物理上只能调透明度、无法携带颜色**。转换器读到 `feFuncA slope` 时只把它当作 alpha，颜色字段保持默认 `'000000'`——SVG 端看起来阴影颜色正常（因为 SourceAlpha 本身是黑），但导出到 PPTX 后阴影颜色会被定死成纯黑 `#000000`，与同页其他用 `feFlood flood-color="#0F172A"` 的卡片产生肉眼可见的冷暖色差。
 >

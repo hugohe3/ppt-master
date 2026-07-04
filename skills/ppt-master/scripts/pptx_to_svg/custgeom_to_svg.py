@@ -1,6 +1,6 @@
 """DrawingML <a:custGeom> -> SVG <path d="..."> conversion.
 
-Reverse of svg_to_pptx/drawingml_paths.path_commands_to_drawingml.
+Reverse of svg_to_pptx/drawingml/paths.py path_commands_to_drawingml.
 
 Path command mapping:
     <a:moveTo>      -> M

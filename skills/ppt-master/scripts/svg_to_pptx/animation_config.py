@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from .drawingml_utils import SVG_NS
+from .drawingml.utils import SVG_NS
 
 try:
     from pptx_animations import ANIMATIONS, TRANSITIONS

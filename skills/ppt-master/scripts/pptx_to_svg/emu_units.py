@@ -1,6 +1,6 @@
 """EMU <-> pixel conversion and DrawingML unit constants.
 
-Mirrors svg_to_pptx/drawingml_utils.py and pptx_dimensions.py, in reverse.
+Mirrors svg_to_pptx/drawingml/utils.py and pptx_package/dimensions.py, in reverse.
 
 DrawingML unit conventions:
 - Coordinates / sizes: EMU (English Metric Unit). 914400 EMU = 1 inch = 96 px.

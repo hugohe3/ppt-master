@@ -25,12 +25,12 @@ if __package__ in {None, ''}:
     sys.modules.setdefault('svg_to_pptx', package)
     __package__ = 'svg_to_pptx'
 
-from .pptx_dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
-from .pptx_discovery import find_svg_files, find_notes_files
-from .pptx_builder import create_pptx_with_native_svg
-from .pptx_narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
-from .pptx_slide_xml import TRANSITIONS
-from .animation_config import load_animation_config, validate_animation_config
+from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
+from .discovery import find_svg_files, find_notes_files
+from .builder import create_pptx_with_native_svg
+from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
+from .slide_xml import TRANSITIONS
+from ..animation_config import load_animation_config, validate_animation_config
 
 try:
     from pptx_animations import ANIMATIONS as _ANIMATIONS

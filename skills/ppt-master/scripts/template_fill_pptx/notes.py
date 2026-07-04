@@ -10,7 +10,7 @@ from __future__ import annotations
 import posixpath
 from xml.etree import ElementTree as ET
 
-from svg_to_pptx.pptx_notes import create_notes_slide_xml, markdown_to_plain_text
+from svg_to_pptx.pptx_package.notes import create_notes_slide_xml, markdown_to_plain_text
 
 from .ooxml import NOTES_SLIDE_REL_TYPE, REL_NS, SLIDE_REL_TYPE, _qn, _xml_bytes
 from .package import _empty_relationships_root, _max_numeric_rid

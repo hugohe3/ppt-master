@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..drawingml_utils import _xml_escape
+from ..drawingml.utils import _xml_escape
 from .marker_common import (
     CHARTEX_URI,
     CHART_COLOR_STYLE_REL_TYPE,

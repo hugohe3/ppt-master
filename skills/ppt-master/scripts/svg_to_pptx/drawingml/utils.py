@@ -6,7 +6,7 @@ import re
 import math
 from xml.etree import ElementTree as ET
 
-from .drawingml_context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
+from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
 # ---------------------------------------------------------------------------
 # Constants

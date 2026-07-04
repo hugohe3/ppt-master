@@ -1,6 +1,6 @@
 """DrawingML <a:effectLst> -> SVG <filter> conversion.
 
-Reverse of svg_to_pptx/drawingml_styles.build_effect_xml.
+Reverse of svg_to_pptx/drawingml/styles.py build_effect_xml.
 
 Covers the most common DrawingML effects:
 - <a:outerShdw>  -> feDropShadow (or feGaussianBlur+feOffset+feFlood)

@@ -1,6 +1,6 @@
 """DrawingML <a:ln> -> SVG stroke conversion.
 
-Reverse of svg_to_pptx/drawingml_styles.build_stroke_xml.
+Reverse of svg_to_pptx/drawingml/styles.py build_stroke_xml.
 
 Produces an SVG attribute dict with stroke / stroke-width / stroke-opacity /
 stroke-dasharray / stroke-linecap / stroke-linejoin / marker-start /

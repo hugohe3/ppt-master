@@ -43,12 +43,12 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from pptx_animations import TRANSITIONS, create_transition_xml  # noqa: E402
-from svg_to_pptx.pptx_builder import (  # noqa: E402
+from svg_to_pptx.pptx_package.builder import (  # noqa: E402
     _add_default_content_type,
     _append_relationship,
     _ensure_notes_master,
 )
-from svg_to_pptx.pptx_narration import (  # noqa: E402
+from svg_to_pptx.pptx_package.narration import (  # noqa: E402
     AUDIO_CONTENT_TYPES,
     AUDIO_MARKER_PNG_BYTES,
     AUDIO_REL_TYPE,
@@ -60,7 +60,7 @@ from svg_to_pptx.pptx_narration import (  # noqa: E402
     next_shape_id,
     probe_audio_duration,
 )
-from svg_to_pptx.pptx_notes import (  # noqa: E402
+from svg_to_pptx.pptx_package.notes import (  # noqa: E402
     create_notes_slide_rels_xml,
     create_notes_slide_xml,
     markdown_to_plain_text,

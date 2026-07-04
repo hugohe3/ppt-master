@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from .drawingml_utils import detect_text_lang
+from ..drawingml.utils import detect_text_lang
 
 
 def markdown_to_plain_text(md_content: str) -> str:

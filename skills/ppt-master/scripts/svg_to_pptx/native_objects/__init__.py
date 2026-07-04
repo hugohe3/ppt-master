@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml_context import ConvertContext, ShapeResult
-from ..drawingml_utils import _xml_escape
+from ..drawingml.context import ConvertContext, ShapeResult
+from ..drawingml.utils import _xml_escape
 from .chart_data import _chart_data
 from .chart_style import (
     _axis_titles,
