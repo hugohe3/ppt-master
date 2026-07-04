@@ -46,6 +46,10 @@ mode: `host-native` uses the host's image tool directly and must not run
 `image_gen.py --manifest`; use `image_gen.py --render-md` only for its
 read-only Markdown sidecar.
 
+Manifest mode and `--render-md` both expect `images/image_prompts.json` to be a
+JSON object with an `items` array at the top level. Do not write a raw array;
+
+
 ```bash
 python3 scripts/image_gen.py "A modern futuristic workspace"
 python3 scripts/image_gen.py "Abstract tech background" --aspect_ratio 16:9 --image_size 4K

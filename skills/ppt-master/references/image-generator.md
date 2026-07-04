@@ -132,7 +132,7 @@ The assembled prompt is **one cohesive paragraph**, not a bulleted list of tags.
 
 ### Step 4 — Write the manifest and execute the confirmed path
 
-Write `project/images/image_prompts.json` per §6. Then follow §7 Path Selection. `image_gen.py --manifest` is Path A only; confirmed `host-native` runs the host image tool directly, and confirmed `manual` renders the Markdown sidecar and hands off without API generation.
+Write `project/images/image_prompts.json` per §6. The file must be a JSON object whose top-level `items` field holds the manifest rows; never write a raw top-level array. Then follow §7 Path Selection. `image_gen.py --manifest` is Path A only; confirmed `host-native` runs the host image tool directly, and confirmed `manual` renders the Markdown sidecar and hands off without API generation.
 
 ---
 
