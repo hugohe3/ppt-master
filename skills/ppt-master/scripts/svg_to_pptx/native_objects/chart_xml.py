@@ -861,6 +861,7 @@ def _chart_plot_xml(
             chart_style=chart_style,
             chart_type=chart_type,
             grouping=grouping,
+            show_value_axis_labels=chart_data.get("show_value_axis_labels", True),
         )
         overlap_xml = (
             '<c:overlap val="100"/>'
@@ -895,6 +896,7 @@ def _chart_plot_xml(
             chart_style=chart_style,
             chart_type=chart_type,
             grouping=grouping,
+            show_value_axis_labels=chart_data.get("show_value_axis_labels", True),
         )
         line_tail_xml = '<c:marker val="1"/><c:smooth val="0"/>' if chart_type == "line" else ""
         return (
@@ -931,6 +933,7 @@ def _chart_plot_xml(
             axis_titles=axis_titles,
             chart_style=chart_style,
             chart_type=chart_type,
+            show_value_axis_labels=chart_data.get("show_value_axis_labels", True),
         )
         return (
             f'<c:radarChart><c:radarStyle val="{radar_style}"/>'
@@ -953,6 +956,7 @@ def _axis_xml(
     chart_style: dict[str, str | None],
     chart_type: str,
     grouping: str | None = None,
+    show_value_axis_labels: bool = True,
 ) -> str:
     cat_pos = "l" if chart_type == "bar" else "b"
     val_pos = "b" if chart_type == "bar" else "l"
@@ -961,6 +965,7 @@ def _axis_xml(
         if grouping == "percentStacked"
         else ""
     )
+    val_tick_label_pos = "nextTo" if show_value_axis_labels else "none"
     axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
     axis_tx_pr = _chart_tx_pr_xml(
         axis_font_size,
@@ -993,7 +998,7 @@ def _axis_xml(
         f'<c:delete val="0"/><c:axPos val="{val_pos}"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
         f"{val_title_xml}{val_num_fmt}"
         '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
-        '<c:tickLblPos val="nextTo"/>'
+        f'<c:tickLblPos val="{val_tick_label_pos}"/>'
         f"{axis_sp_pr}{axis_tx_pr}"
         f'<c:crossAx val="{cat_ax_id}"/><c:crosses val="autoZero"/>'
         "</c:valAx>"
