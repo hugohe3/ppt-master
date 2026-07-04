@@ -79,6 +79,7 @@ def main(argv: list[str] | None = None) -> int:
     #   template_fill_pptx/cli.py — called by template-fill-pptx
     scripts = {s for s in scripts if not s.startswith("svg_finalize/")}
     scripts.discard("svg_to_pptx/pptx_cli.py")
+    scripts.discard("svg_to_pptx/pptx_package/cli.py")
     scripts.discard("template_fill_pptx/cli.py")
 
     if not os.path.exists(CLI_FILE):

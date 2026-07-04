@@ -186,7 +186,7 @@ uv run scripts/svg_finalize/align_embed_images.py --dry-run path/to/slide.svg
 
 Use for rare single-file diagnostics when image `slice` / `meet` alignment and
 Base64 embedding must be inspected outside `finalize_svg.py`. In normal project
-runs, use `python3 scripts/finalize_svg.py <project_path>`; the old
+runs, use `uvx ppt-master finalize-svg <project_path>`; the old
 `crop-images`, `fix-aspect`, and `embed-images` names remain accepted only as
 `finalize_svg.py --only` aliases for the merged `align-images` step.
 
