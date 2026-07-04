@@ -6,7 +6,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext
-from ..drawingml.utils import detect_text_lang, _xml_escape
+from ..drawingml.utils import ctx_h, ctx_w, ctx_x, ctx_y, detect_text_lang, px_to_emu, _xml_escape
 from .chart_data import _DEFAULT_CHART_COLORS
 from .marker_common import (
     _bool_attr,
@@ -21,6 +21,7 @@ from .marker_common import (
     _font_size_hpt,
     _hex_or_none,
     _inferred_chart_background,
+    _maybe_number,
     _most_common_color,
     _number,
     _relative_luminance,
