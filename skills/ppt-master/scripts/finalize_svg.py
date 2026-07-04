@@ -45,6 +45,7 @@ configure_utf8_stdio()
 
 # Import finalize helpers from the internal package.
 sys.path.insert(0, str(Path(__file__).parent))
+from resource_paths import icon_search_dirs_for_project  # noqa: E402
 from svg_finalize.align_embed_images import (
     align_and_embed_images_in_svg,
     count_office_vector_refs_in_svg,
@@ -136,12 +137,7 @@ def finalize_project(
     """
     svg_output = project_dir / 'svg_output'
     svg_final = project_dir / 'svg_final'
-    # Project-first: embed from the deck's own icons/ (synced library icons +
-    # any custom icons), falling back to the global library per-icon.
-    global_icons_dir = Path(__file__).parent.parent / 'templates' / 'icons'
-    project_icons_dir = project_dir / 'icons'
-    icons_dir = project_icons_dir if project_icons_dir.is_dir() else global_icons_dir
-    icons_fallback_dir = global_icons_dir if icons_dir != global_icons_dir else None
+    icons_dir, icons_fallback_dir = icon_search_dirs_for_project(project_dir)
 
     # Check if svg_output exists
     if not svg_output.exists():
