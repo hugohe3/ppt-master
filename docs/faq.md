@@ -99,9 +99,9 @@ For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/mon
 
 ## Q: Are the charts in the generated PPTX editable?
 
-Charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — fully editable as shapes (move, recolor, retype, restyle). This is a deliberate choice over Excel-driven chart objects: PowerPoint's default charts look generic and dated, and lock decks into rigid templates. SVG charts give you publication-quality visuals you can fine-tune directly in PowerPoint.
+By default, charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — fully editable as shapes (move, recolor, retype, restyle). This is a deliberate default over Excel-driven chart objects: PowerPoint's default charts look generic and dated, and lock decks into rigid templates. SVG charts give you publication-quality visuals you can fine-tune directly in PowerPoint, and they render pixel-consistently across PowerPoint / Keynote / LibreOffice / WPS.
 
-If your workflow specifically requires Excel-driven data editing, manually create a similar chart yourself in PowerPoint after export.
+If your workflow specifically requires Excel-driven data editing, export with `--native-objects`: supported data charts and pure text-grid tables then ship as **real editable PowerPoint chart / table objects backed by data** (saved as `exports/<name>_<timestamp>_native_charts.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The trade-off is cross-app rendering — native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, which is why SVG shapes stay the default.
 
 ## Q: Can I change page transitions and element animations?
 
