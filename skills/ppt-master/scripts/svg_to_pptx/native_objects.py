@@ -843,12 +843,15 @@ def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
     axis_map = raw if isinstance(raw, dict) else {}
     style_axis_map = style_raw if isinstance(style_raw, dict) else {}
 
-    def pick(*keys: str) -> Any:
+    def pick(axis_keys: tuple[str, ...], root_keys: tuple[str, ...]) -> Any:
         values: list[Any] = []
-        for key in keys:
+        for key in root_keys:
             values.extend((
                 payload.get(key),
                 style.get(key),
+            ))
+        for key in axis_keys + root_keys:
+            values.extend((
                 axis_map.get(key),
                 style_axis_map.get(key),
             ))
@@ -856,25 +859,18 @@ def _axis_titles(payload: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "category": pick(
-            "category",
-            "cat",
-            "category_axis",
-            "categoryAxis",
-            "category_axis_title",
-            "categoryAxisTitle",
+            ("category", "cat", "category_axis", "categoryAxis"),
+            ("category_axis_title", "categoryAxisTitle"),
         ),
-        "value": pick("value", "val", "value_axis", "valueAxis", "value_axis_title", "valueAxisTitle"),
-        "x": pick("x", "x_axis", "xAxis", "x_axis_title", "xAxisTitle"),
-        "y": pick("y", "y_axis", "yAxis", "y_axis_title", "yAxisTitle"),
+        "value": pick(
+            ("value", "val", "value_axis", "valueAxis"),
+            ("value_axis_title", "valueAxisTitle"),
+        ),
+        "x": pick(("x", "x_axis", "xAxis"), ("x_axis_title", "xAxisTitle")),
+        "y": pick(("y", "y_axis", "yAxis"), ("y_axis_title", "yAxisTitle")),
         "secondary_value": pick(
-            "secondary_value",
-            "secondaryValue",
-            "secondary_value_axis",
-            "secondaryValueAxis",
-            "secondary_value_axis_title",
-            "secondaryValueAxisTitle",
-            "right_axis_title",
-            "rightAxisTitle",
+            ("secondary_value", "secondaryValue", "secondary_value_axis", "secondaryValueAxis"),
+            ("secondary_value_axis_title", "secondaryValueAxisTitle", "right_axis_title", "rightAxisTitle"),
         ),
     }
 
