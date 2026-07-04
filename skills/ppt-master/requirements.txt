@@ -15,6 +15,7 @@
 # Uses Office-compatible mode (PNG + SVG dual format) by default, supports all Office versions.
 # 默认使用 Office 兼容模式（PNG + SVG 双格式），支持所有 Office 版本
 python-pptx>=0.6.21
+XlsxWriter>=3.0.0
 
 # Recorded narration / 录制计时和旁白
 # notes_to_audio.py generates per-slide narration audio on macOS/Linux/Windows.
