@@ -139,7 +139,7 @@ def render_pages(server_url: str, pages: list[str], preview_dir: Path) -> list[d
 
     inject_js = """
 async (pageName) => {
-    const res = await fetch('/api/slide/' + pageName + '?_=' + Date.now());
+    const res = await fetch('/api/slide/' + encodeURIComponent(pageName) + '?_=' + Date.now());
     if (!res.ok) throw new Error('fetch /api/slide/' + pageName + ' returned ' + res.status);
     const data = await res.json();
     document.documentElement.innerHTML =
