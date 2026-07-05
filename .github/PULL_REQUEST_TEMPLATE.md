@@ -13,3 +13,4 @@
 
 - [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [ ] I personally reviewed the full diff and verified every claim in this description against this repository's actual code (purely AI-generated PRs without human review are closed unmerged)
+- [ ] This PR is code-only, **or** it touches prompt/instruction text (`SKILL.md`, `references/*.md`, `workflows/*.md`, …) and was discussed and agreed in an issue first — link it here: #___
