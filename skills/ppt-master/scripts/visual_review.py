@@ -34,6 +34,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from contextlib import contextmanager
 from pathlib import Path
@@ -114,7 +115,7 @@ def fetch_slide_text(server_url: str, page_name: str, timeout: float = 5.0) -> i
     """Probe that the server can return the slide. Returns content length.
     Used only for failure detection — the actual fetch happens inside the
     browser via fetch() so the response is parsed by JS, not Python."""
-    url = f"{server_url.rstrip('/')}/api/slide/{page_name}"
+    url = f"{server_url.rstrip('/')}/api/slide/{urllib.parse.quote(page_name)}"
     req = urllib.request.Request(url, headers={'Accept': 'application/json'})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         payload = json.loads(resp.read().decode('utf-8'))
