@@ -47,7 +47,7 @@ AI assistance is welcome — this project is itself AI-driven. But an AI-drafted
 
 - **Purely AI-generated PRs submitted without human review will be closed unmerged.** Before opening a PR, read the full diff yourself, run the affected scripts, and confirm the problem described actually exists in this repository — not just that it sounds plausible.
 - **Every factual claim in the PR description is yours, not the AI's.** A description that asserts failures in code paths the repository doesn't actually have (an AI-invented problem narrative) gets the PR closed regardless of diff quality.
-- Read this file in full before opening a PR; the PR template asks you to confirm both points above.
+- Read this file in full before opening a PR; the PR template asks you to confirm the points above. **The template has three confirmation checkboxes — if any one of them is left unchecked, the PR is closed without review.**
 
 ## What We Accept / What We Don't
 
@@ -67,6 +67,10 @@ AI assistance is welcome — this project is itself AI-driven. But an AI-drafted
 - Architectural refactors or large-scale renames — incremental cleanup only
 - "Drive-by" cosmetic reformatting unrelated to a real fix
 - Pure translations or wording-only edits that were not requested or discussed first
+- Changing a foundational setting — the MIT license, or DrawingML component reuse / template-fill in place of AI-generated shapes. These are deliberate founding choices and won't change midway
+- Fixed numeric quotas to constrain generation (`max_cards` / `max_bullets` / `max_table_rows` and similar) — density is governed by narrative rhythm and one primary focus per page, not hard caps
+- Post-processing that is quality smoothing rather than compatibility — we fix things that are broken/unusable if not done (e.g. AI-image size/format/alpha); "nicer if done" polish (loudness normalization, kerning) stays out. If a model or service falls short, the fix is to switch it, not to make the project adapt to it
+- A new backend, path, or option that duplicates a capability the repo already provides — check current behavior first (e.g. OpenAI-compatible providers already run under `IMAGE_BACKEND=openai`)
 
 If you're unsure, open an issue to ask — that's always welcome.
 
