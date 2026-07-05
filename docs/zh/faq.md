@@ -32,6 +32,26 @@
 
 PPT Master 可以在任何能读取文件和执行命令的 AI 编程代理中运行——**Claude Code**（CLI / VS Code / JetBrains / Web）、**VS Code Copilot**、**Codex** 等均可使用。不同工具的使用成本可参考下方的费用对比。
 
+## Q: 我下载过旧版本，怎么更新到最新版？
+
+看你当时怎么安装：
+
+| 安装方式 | 更新方式 |
+|---|---|
+| Git clone | 在 `ppt-master` 目录运行 `uvx ppt-master update-repo` |
+| Download ZIP | 重新下载最新版 ZIP，解压到新目录；把旧目录里的 `.env` 和 `projects/` 复制过去；再运行 `pip install -r requirements.txt` |
+| Skill marketplace | 用对应的 marketplace / skills 工具重新安装或更新 |
+
+长期使用建议用 Git clone。ZIP 适合快速体验，但没有 Git 历史，不能自动 `git pull`。
+
+如果不确定自己是哪种安装方式，可以让 AI 在项目目录里运行：
+
+```bash
+uvx ppt-master update-repo
+```
+
+如果当前目录不是 Git clone 版本，脚本会提示你按 ZIP 方式迁移。
+
 ## Q: 能用 AI 生成配图吗？
 
 可以。PPT Master 内置了图片生成脚本，支持多个供应商（Gemini、OpenAI、FLUX、通义千问、智谱等）。在策略师阶段选择"AI 生图"方案后，流程会根据内容自动生成配图。你也可以使用自己的图片——只需放到项目的 `images/` 目录下即可。
@@ -99,9 +119,9 @@ PPT Master 本身免费开源，唯一的成本来自你自己的 AI 模型用�
 
 ## Q: 生成的图表可以编辑数据吗？
 
-图表以**自定义设计的 SVG 图形**形式渲染，转换为原生 PowerPoint 形状——形状级别完全可编辑（移动、改色、改文字、调样式）。这是一个有意为之的选择，而不是 Excel 驱动的图表对象：PowerPoint 默认图表样式陈旧、视觉受限于固定模板。SVG 图表则提供出版物级的视觉质量，并且可以在 PowerPoint 中直接精修。
+默认情况下，图表以**自定义设计的 SVG 图形**形式渲染，转换为原生 PowerPoint 形状——形状级别完全可编辑（移动、改色、改文字、调样式）。默认不用 Excel 驱动的图表对象是有意为之：PowerPoint 默认图表样式陈旧、视觉受限于固定模板。SVG 图表则提供出版物级的视觉质量，可以在 PowerPoint 中直接精修，且在 PowerPoint / Keynote / LibreOffice / WPS 间像素一致。
 
-如果你的工作流明确需要 Excel 驱动的数据编辑，可以在导出后自己手动在 PowerPoint 里制作一张类似的原生图表。
+如果你的工作流明确需要 Excel 驱动的数据编辑，导出时加 `--native-objects`：受支持的数据图表和纯文本表格会以**带数据、可直接编辑的 PowerPoint 原生图表 / 表格对象**形式导出（保存为 `exports/<name>_<timestamp>_native_charts.pptx`，并保留这份 deck 自己的配色，而不是套用 PowerPoint 默认主题）。代价是跨软件渲染——原生对象在 PowerPoint / Keynote / LibreOffice / WPS 间可能略有差异，所以 SVG 形状仍是默认路径。
 
 ## Q: 页面切换和元素动画可以调吗？
 

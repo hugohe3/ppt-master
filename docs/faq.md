@@ -32,6 +32,26 @@ Just specify the format when starting a project (e.g., `--format xhs`). The outp
 
 PPT Master works with any AI coding agent that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
 
+## Q: I downloaded an old version. How do I update to the latest?
+
+It depends on how you installed PPT Master:
+
+| Install method | Update method |
+|---|---|
+| Git clone | Run `uvx ppt-master update-repo` inside the `ppt-master` folder |
+| Download ZIP | Download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run `pip install -r requirements.txt` |
+| Skill marketplace | Reinstall or update through the matching marketplace / skills tool |
+
+For long-term use, Git clone is recommended. ZIP is fine for a quick trial, but it has no Git history and cannot run `git pull`.
+
+If you are not sure which install method you used, ask the AI to run this from the project folder:
+
+```bash
+uvx ppt-master update-repo
+```
+
+If the folder is not a Git clone, the script will tell you how to migrate a ZIP install.
+
 ## Q: Can I use AI-generated images in my presentation?
 
 Yes. PPT Master includes a built-in image generation script that supports multiple providers (Gemini, OpenAI, FLUX, Qwen, Zhipu, etc.). During the Strategist phase, if you choose "AI generation" for the image approach, the pipeline will automatically generate images based on your content. You can also provide your own images — just place them in the project's `images/` folder.
@@ -99,9 +119,9 @@ For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/mon
 
 ## Q: Are the charts in the generated PPTX editable?
 
-Charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — fully editable as shapes (move, recolor, retype, restyle). This is a deliberate choice over Excel-driven chart objects: PowerPoint's default charts look generic and dated, and lock decks into rigid templates. SVG charts give you publication-quality visuals you can fine-tune directly in PowerPoint.
+By default, charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — fully editable as shapes (move, recolor, retype, restyle). This is a deliberate default over Excel-driven chart objects: PowerPoint's default charts look generic and dated, and lock decks into rigid templates. SVG charts give you publication-quality visuals you can fine-tune directly in PowerPoint, and they render pixel-consistently across PowerPoint / Keynote / LibreOffice / WPS.
 
-If your workflow specifically requires Excel-driven data editing, manually create a similar chart yourself in PowerPoint after export.
+If your workflow specifically requires Excel-driven data editing, export with `--native-objects`: supported data charts and pure text-grid tables then ship as **real editable PowerPoint chart / table objects backed by data** (saved as `exports/<name>_<timestamp>_native_charts.pptx`, keeping the deck's own colors instead of PowerPoint's default theme). The trade-off is cross-app rendering — native objects may look slightly different across PowerPoint / Keynote / LibreOffice / WPS, which is why SVG shapes stay the default.
 
 ## Q: Can I change page transitions and element animations?
 

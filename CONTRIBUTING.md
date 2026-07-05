@@ -34,6 +34,8 @@ PPT Master is solo-maintained with limited review bandwidth. To keep things heal
 - **Tiny fixes** (typos, one-line usage/doc corrections, obvious small inconsistencies) — please open an issue instead of a PR. A clear report is usually faster for the maintainer to apply directly
 - **Translations & wording-only edits** — please open an issue rather than a PR. Like other tiny fixes, these are faster for the maintainer to apply directly, and unrequested translation files add ongoing sync burden without a clear owner. Translated governance docs (CONTRIBUTING, Code of Conduct) are intentionally not maintained as separate `_CN` files
 - **Focused bug fixes** — PRs are welcome when the fix is self-contained, has clear reproduction steps, and includes local verification
+- **Code-only changes** — self-contained fixes to scripts or script behavior, with no edits to prompt/instruction text, can go straight to a PR as long as they meet the focused-bug-fix bar above
+- **Prompt / instruction changes require a prior issue** — edits to `SKILL.md`, `references/*.md`, `workflows/*.md`, or any other agent-facing instruction text **must be discussed and agreed in an issue *before* you open a PR**. These files steer AI behavior deck-wide, sit close to a fixed prompt-token budget, and restating a rule the docs already state rarely fixes a non-compliant agent — the fix usually belongs in the agent, not in more prompt text. PRs that touch prompt/instruction files without a prior agreed issue may be closed without detailed review
 - **Substantial features, new backends, or new abstractions** — please open an issue first to discuss fit and direction. PRs submitted without prior discussion may be closed without detailed review
 - **Refactors, structural changes, broad cleanup, or workflow changes** — open an issue first. The project deliberately stays close to its current shape
 
@@ -45,11 +47,12 @@ AI assistance is welcome — this project is itself AI-driven. But an AI-drafted
 
 - **Purely AI-generated PRs submitted without human review will be closed unmerged.** Before opening a PR, read the full diff yourself, run the affected scripts, and confirm the problem described actually exists in this repository — not just that it sounds plausible.
 - **Every factual claim in the PR description is yours, not the AI's.** A description that asserts failures in code paths the repository doesn't actually have (an AI-invented problem narrative) gets the PR closed regardless of diff quality.
-- Read this file in full before opening a PR; the PR template asks you to confirm both points above.
+- Read this file in full before opening a PR; the PR template asks you to confirm the points above. **The template has three confirmation checkboxes — if any one of them is left unchecked, the PR is closed without review.**
 
 ## What We Accept / What We Don't
 
 **Welcome:**
+
 - Bug fixes with clear reproduction
 - New layout templates, chart templates, icons
 - Documentation updates that materially improve an existing workflow, installation path, or troubleshooting path
@@ -57,12 +60,17 @@ AI assistance is welcome — this project is itself AI-driven. But an AI-drafted
 - SVG quality improvements that stay within the declared constraints
 
 **Not a fit (please don't open PRs for these):**
+
 - Introducing `uv`, `poetry`, or other tools as required dependencies — `pip + requirements.txt` is the only official install path
 - Adding CI, test frameworks, pre-commit hooks, or linting infrastructure — deliberately out of scope for a solo-maintained project
 - Repackaging the skill as a CLI, SaaS, desktop app, or installer — PPT Master is a chat-driven skill for AI IDEs by design
 - Architectural refactors or large-scale renames — incremental cleanup only
 - "Drive-by" cosmetic reformatting unrelated to a real fix
 - Pure translations or wording-only edits that were not requested or discussed first
+- Changing a foundational setting — the MIT license, or DrawingML component reuse / template-fill in place of AI-generated shapes. These are deliberate founding choices and won't change midway
+- Fixed numeric quotas to constrain generation (`max_cards` / `max_bullets` / `max_table_rows` and similar) — density is governed by narrative rhythm and one primary focus per page, not hard caps
+- Post-processing that is quality smoothing rather than compatibility — we fix things that are broken/unusable if not done (e.g. AI-image size/format/alpha); "nicer if done" polish (loudness normalization, kerning) stays out. If a model or service falls short, the fix is to switch it, not to make the project adapt to it
+- A new backend, path, or option that duplicates a capability the repo already provides — check current behavior first (e.g. OpenAI-compatible providers already run under `IMAGE_BACKEND=openai`)
 
 If you're unsure, open an issue to ask — that's always welcome.
 

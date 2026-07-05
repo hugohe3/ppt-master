@@ -16,6 +16,7 @@ classifiers = [
 dependencies = [
     # SVG to PPTX export
     "python-pptx>=0.6.21",
+    "XlsxWriter>=3.0.0",
     # Recorded narration
     "edge-tts>=7.2.8",
     # Office compatibility (SVG to PNG fallback)

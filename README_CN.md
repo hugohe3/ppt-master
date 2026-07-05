@@ -99,7 +99,7 @@
 
 ---
 
-丢进你的原材料，拿回的是一份**真正的 PowerPoint**：可以直接修改，有 PPT 原生的转场与入场动画，演讲者备注能合成音频旁白，还能参考你自己的 PPT 模板——一份能直接拿去讲、回头还能改的真 PPT。每项能力怎么用 → [快速入门](./docs/zh/getting-started.md)。
+丢进原材料，拿回的这份 PPT **不只是能改**：它有 PPT 原生的转场与入场动画，演讲者备注能直接合成音频旁白，图表和表格还能以带数据的 PowerPoint 原生对象形式导出，也能参考你自己的 PPT 模板来设计——一份能直接拿去讲、回头还能改的成品。每项能力怎么用 → [快速入门](./docs/zh/getting-started.md)。
 
 > **⚠️ PPT Master 是 harness，不是完整的 agent。** `harness + model = agent`——工具负责工作流，模型决定上限。要组成真正高质量的 agent，推荐组合是：**Claude 大上下文窗口（~100 万 token）+ AI 生图（`gpt-image-2`）**。其他模型能跑流程，但达不到同等质量上限。效果不理想，请先换模型，不要质疑 harness。
 
@@ -209,10 +209,12 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 ### 3. 配置项目
 
-**方式 A — 下载 ZIP**（无需安装 Git）：
-[GitHub](https://github.com/elvisw/ppt-master) → **Code → Download ZIP**（国内网速慢可开代理）
+**方式 A — 下载 ZIP**（无需安装 Git，适合快速体验）：
+[GitHub](https://github.com/elvisw/ppt-master) → **Code → Download ZIP**
 
-**方式 B — Git clone**（需先安装 [Git](https://git-scm.com/downloads)）：
+如果你打算长期使用并持续更新，推荐使用下面的 Git clone 方式。
+
+**方式 B — Git clone**（推荐；需先安装 [Git](https://git-scm.com/downloads)）：
 
 ```bash
 git clone https://github.com/elvisw/ppt-master.git
@@ -221,7 +223,27 @@ cd ppt-master
 
 CLI 工具已发布到 PyPI，`uvx ppt-master <command>` 自动下载运行，无需手动安装。
 
-日常更新（方式 A / B）：`uvx ppt-master update-repo`
+```bash
+pip install -r requirements.txt
+```
+
+#### 日常更新
+
+**Git clone 安装：**
+
+```bash
+uvx ppt-master update-repo
+```
+
+脚本会拉取最新版；如果 `requirements.txt` 有变化，会自动同步 Python 依赖。
+
+**下载 ZIP 安装：**
+
+ZIP 目录没有 Git 历史，不能自动 `git pull`。更新时请重新下载最新版 ZIP，解压到新目录，然后把旧目录里的 `.env` 和 `projects/` 复制过去，再执行：
+
+```bash
+pip install -r requirements.txt
+```
 
 > **方式 C — Skill marketplace**：仓库已添加 `.claude-plugin/marketplace.json` 元数据，可通过 [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) 生态一行安装：
 >
@@ -262,7 +284,7 @@ AI：好的，先确认设计规范：
 
 AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
-> **输出说明：** 原生形状版 `.pptx`（可直接编辑）保存至 `exports/<name>_<timestamp>.pptx`；`svg_output/` 始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或后续重跑。加 `--svg-snapshot` 时，额外在 `exports/` 内并排生成 SVG 快照版 pptx（详见[常见问题](./docs/zh/faq.md)）。需要 Office 2016+。
+> **输出说明：** 原生形状版 `.pptx`（可直接编辑）保存至 `exports/<name>_<timestamp>.pptx`；`svg_output/` 始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或后续重跑。加 `--svg-snapshot` 时，额外在 `exports/` 内并排生成 SVG 快照版 pptx（详见[常见问题](./docs/zh/faq.md)）。需要 Office 2016+。图表和表格默认导出为 SVG 派生的形状（在 PowerPoint / Keynote / WPS 间像素一致）；加 `--native-objects` 则改为导出**带数据、可直接编辑的 PowerPoint 原生图表 / 表格对象**（跨软件渲染可能略有差异），保存为 `exports/<name>_<timestamp>_native_charts.pptx`。
 
 > **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
 

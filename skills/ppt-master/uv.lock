@@ -1416,7 +1416,7 @@ wheels = [
 
 [[package]]
 name = "ppt-master"
-version = "0.1.30"
+version = "0.1.31"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1437,6 +1437,7 @@ dependencies = [
     { name = "reportlab" },
     { name = "requests" },
     { name = "svglib" },
+    { name = "xlsxwriter" },
 ]
 
 [package.metadata]
@@ -1459,6 +1460,7 @@ requires-dist = [
     { name = "reportlab", specifier = ">=4.0.0" },
     { name = "requests", specifier = ">=2.31.0" },
     { name = "svglib", specifier = ">=1.5.0" },
+    { name = "xlsxwriter", specifier = ">=3.0.0" },
 ]
 
 [[package]]
