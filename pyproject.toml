@@ -1,6 +1,6 @@
 [project]
 name = "ppt-master"
-version = "0.1.31"
+version = "0.1.32"
 description = "AI-driven multi-format SVG content generation system"
 readme = "PYPI_README.md"
 license = { text = "MIT" }
@@ -16,6 +16,7 @@ classifiers = [
 dependencies = [
     # SVG to PPTX export
     "python-pptx>=0.6.21",
+    "XlsxWriter>=3.0.0",
     # Recorded narration
     "edge-tts>=7.2.8",
     # Office compatibility (SVG to PNG fallback)
@@ -39,7 +40,6 @@ dependencies = [
     "curl_cffi>=0.7.0",
     # AI image generation
     "google-genai>=1.0.0",
-    "openai>=1.0.0",
     # SVG editor server
     "flask>=3.0.0",
 ]

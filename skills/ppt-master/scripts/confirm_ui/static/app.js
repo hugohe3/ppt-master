@@ -56,6 +56,8 @@
             image_strategy_mood: "Mood",
             image_strategy_manual: "Custom",
             image_strategy_manual_desc: "Choose a rendering and palette manually, or use custom prose.",
+            image_strategy_custom_prompt: "Custom prompt notes",
+            image_strategy_custom_placeholder: "Describe the exact generated-image direction, subjects, composition, style cues, or things to avoid.",
             image_strategy_reference_hint: "Reference images show rendering / color-behavior only. Final AI images use the color scheme selected above.",
             image_strategy_color_follow: "Uses the color scheme selected above; the palette only controls color behavior.",
             image_strategy_no_reference: "No reference image for this custom choice.",
@@ -161,6 +163,8 @@
             image_strategy_mood: "ムード",
             image_strategy_manual: "カスタム",
             image_strategy_manual_desc: "レンダリングとパレットを手動で選ぶか、カスタム記述を使います。",
+            image_strategy_custom_prompt: "カスタム指示",
+            image_strategy_custom_placeholder: "生成画像の方向性、被写体、構図、スタイル要素、避けたい要素を具体的に入力してください。",
             image_strategy_reference_hint: "参照画像はレンダリング／色の使い方だけを示します。最終AI画像の色は上で選んだ配色に従います。",
             image_strategy_color_follow: "上で選んだ配色を使用します。パレットは色の使い方だけを制御します。",
             image_strategy_no_reference: "このカスタム選択には参照画像がありません。",
@@ -266,6 +270,8 @@
             image_strategy_mood: "情绪",
             image_strategy_manual: "自定义",
             image_strategy_manual_desc: "手动选择渲染风格和图像调色，也可以使用自定义描述。",
+            image_strategy_custom_prompt: "自定义提示要求",
+            image_strategy_custom_placeholder: "描述生成图的具体方向、主体、构图、风格关键词或需要避免的内容。",
             image_strategy_reference_hint: "参考图只展示渲染风格 / 用色行为；最终 AI 图片颜色跟随上方色彩方案。",
             image_strategy_color_follow: "使用上方已选色彩方案；图像调色只控制用色比例和行为。",
             image_strategy_no_reference: "自定义选择没有参考图。",
@@ -1652,6 +1658,7 @@
             var parts = [];
             if (strategy.rendering) parts.push(t("image_strategy_rendering") + ": " + comparisonValueLabel("rendering", strategy.rendering));
             if (strategy.palette) parts.push(t("image_strategy_palette") + ": " + comparisonValueLabel("palette", strategy.palette));
+            if (strategy.custom) parts.push(strategy.custom);
             desc.textContent = parts.join(" · ") || t("image_strategy_reference_hint");
         }
         refreshImageStrategyPreview = paint;
@@ -1747,6 +1754,24 @@
             markStrategyCard(selectedCard || strategyGrid.querySelector('[data-strategy-index="' + idx + '"]'));
             refreshImageStrategyPreview();
         }
+        function imageStrategyCandidateIndex(strategy) {
+            if (!strategy) return -1;
+            for (var i = 0; i < strategyCands.length; i += 1) {
+                if (strategyCands[i] &&
+                        strategyCands[i].rendering === strategy.rendering &&
+                        strategyCands[i].palette === strategy.palette) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        function isManualImageStrategy(strategy) {
+            if (!strategy) return false;
+            return Object.prototype.hasOwnProperty.call(strategy, "custom") ||
+                strategy.rendering === "custom" ||
+                strategy.palette === "custom" ||
+                imageStrategyCandidateIndex(strategy) < 0;
+        }
         strategyCands.forEach(function (c, idx) {
             var card = el("div", "font-card");
             card.setAttribute("data-strategy-index", String(idx));
@@ -1787,16 +1812,26 @@
         manualControls.appendChild(renderingWrap);
         manualControls.appendChild(paletteWrap);
         manualCard.appendChild(manualControls);
+        var customWrap = el("label", "image-strategy-custom-wrap");
+        customWrap.appendChild(el("span", "image-strategy-select-label", t("image_strategy_custom_prompt")));
+        var customInput = el("textarea", "text-input image-strategy-custom-input");
+        customInput.rows = 3;
+        customInput.placeholder = t("image_strategy_custom_placeholder");
+        customInput.value = (STATE.image_strategy && STATE.image_strategy.custom) || "";
+        customWrap.appendChild(customInput);
+        manualCard.appendChild(customWrap);
         function selectManualImageStrategy() {
             var rendering = renderingSelect.value;
             var palette = paletteSelect.value;
+            var custom = customInput.value || "";
             STATE.image_strategy = {
                 name: t("image_strategy_manual"),
                 rendering: rendering,
                 palette: palette,
                 visual: comparisonLabel(comparisonItem("rendering", rendering), "rendering") || comparisonValueLabel("rendering", rendering),
                 color: t("image_strategy_color_follow"),
-                mood: t("image_strategy_manual_desc")
+                mood: t("image_strategy_manual_desc"),
+                custom: custom
             };
             markStrategyCard(manualCard);
             refreshImageStrategyPreview();
@@ -1807,6 +1842,8 @@
                 selectManualImageStrategy();
             });
         });
+        customInput.addEventListener("click", function (e) { e.stopPropagation(); });
+        customInput.addEventListener("input", selectManualImageStrategy);
         manualCard.addEventListener("click", selectManualImageStrategy);
         strategyGrid.appendChild(manualCard);
         strategySub.appendChild(strategyGrid);
@@ -1853,8 +1890,18 @@
             function () { return STATE.image_ai_path; }, function (v) { STATE.image_ai_path = v; });
         sec.appendChild(sub);
         sec.appendChild(strategySub);
-        if (strategyCands.length) selectImageStrategy(imageStrategySelectedIndex());
-        else selectManualImageStrategy();
+        if (isManualImageStrategy(STATE.image_strategy)) {
+            renderingSelect.value = firstComparisonId("rendering", STATE.image_strategy.rendering || renderingSelect.value);
+            paletteSelect.value = firstComparisonId("palette", STATE.image_strategy.palette || paletteSelect.value);
+            customInput.value = STATE.image_strategy.custom || "";
+            selectManualImageStrategy();
+        } else if (STATE.image_strategy && imageStrategyCandidateIndex(STATE.image_strategy) >= 0) {
+            selectImageStrategy(imageStrategyCandidateIndex(STATE.image_strategy));
+        } else if (strategyCands.length) {
+            selectImageStrategy(imageStrategySelectedIndex());
+        } else {
+            selectManualImageStrategy();
+        }
         refreshUsageChips();
         host.appendChild(sec);
     }
