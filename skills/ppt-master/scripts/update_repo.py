@@ -115,6 +115,11 @@ def ensure_uv_available() -> None:
         raise RuntimeError("Missing executable: uv — install from https://docs.astral.sh/uv/getting-started/installation/")
 
 
+def ensure_git_checkout() -> None:
+    if not (REPO_ROOT / ".git").exists():
+        raise RuntimeError(non_git_checkout_message())
+
+
 def ensure_clean_tracked_worktree() -> None:
     status = run_command(["git", "status", "--porcelain", "--untracked-files=no"], check=False)
     if status.returncode != 0:
