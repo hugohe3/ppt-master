@@ -210,7 +210,7 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 ### 3. 配置项目
 
 **方式 A — 下载 ZIP**（无需安装 Git，适合快速体验）：
-[GitHub](https://github.com/elvisw/ppt-master) → **Code → Download ZIP**
+[GitHub](https://github.com/elvisw/ppt-master) → **Code → Download ZIP** · [AtomGit](https://atomgit.com/hugohe3/ppt-master) → **克隆/下载 → 下载ZIP**（国内网速更快）
 
 如果你打算长期使用并持续更新，推荐使用下面的 Git clone 方式。
 
@@ -224,7 +224,7 @@ cd ppt-master
 CLI 工具已发布到 PyPI，`uvx ppt-master <command>` 自动下载运行，无需手动安装。
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 #### 日常更新
@@ -242,7 +242,7 @@ uvx ppt-master update-repo
 ZIP 目录没有 Git 历史，不能自动 `git pull`。更新时请重新下载最新版 ZIP，解压到新目录，然后把旧目录里的 `.env` 和 `projects/` 复制过去，再执行：
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 > **方式 C — Skill marketplace**：仓库已添加 `.claude-plugin/marketplace.json` 元数据，可通过 [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) 生态一行安装：

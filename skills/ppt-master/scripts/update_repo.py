@@ -7,6 +7,13 @@ change.
 Usage:
     uv run skills/ppt-master/scripts/update_repo.py
     uv run skills/ppt-master/scripts/update_repo.py --skip-deps
+
+Examples:
+    uv run skills/ppt-master/scripts/update_repo.py
+    uv run skills/ppt-master/scripts/update_repo.py --skip-deps
+
+Dependencies:
+    None (standard library only)
 """
 
 from __future__ import annotations
@@ -96,6 +103,11 @@ def file_digest(path: Path) -> str | None:
 def ensure_git_available() -> None:
     if shutil.which("git") is None:
         raise RuntimeError("Missing executable: git")
+
+
+def ensure_git_checkout() -> None:
+    if not (REPO_ROOT / ".git").exists():
+        raise RuntimeError(non_git_checkout_message())
 
 
 def ensure_uv_available() -> None:

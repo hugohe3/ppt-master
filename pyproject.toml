@@ -40,7 +40,6 @@ dependencies = [
     "curl_cffi>=0.7.0",
     # AI image generation
     "google-genai>=1.0.0",
-    "openai>=1.0.0",
     # SVG editor server
     "flask>=3.0.0",
 ]

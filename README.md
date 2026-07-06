@@ -219,7 +219,7 @@ cd ppt-master
 The CLI tool is published on PyPI — `uvx ppt-master <command>` downloads and runs it automatically. No manual install needed.
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 #### Updating Later
@@ -237,7 +237,7 @@ The script pulls the latest version and syncs Python dependencies when `requirem
 ZIP folders do not include Git history, so they cannot run `git pull`. To update, download the latest ZIP, unzip it into a new folder, copy your old `.env` and `projects/` folder into the new folder, then run:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 > **Option C — Skill marketplace**: the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
