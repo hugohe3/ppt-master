@@ -22,6 +22,8 @@ Re-lays-out an existing `.pptx`: the text is preserved **verbatim**, the source 
 
 **Hard rule — content is frozen**: every text string from the source is preserved exactly (no add / remove / reword / reorder). Beautification freedom lives only in layout, hierarchy, spacing, and visual rhythm.
 
+**Hard rule — no truncation**: beautify pages MUST NOT use line caps, summary-only cards, ellipses, or hidden overflow to make content fit. If a source slide is dense, keep the 1:1 page but solve fit with layout, columns, image size, local body-size fallback within Executor limits, or a clearly dense reference layout. A beautified page with missing source text is a failed page, even when the SVG and PPTX export technically succeed.
+
 **Hard rule — not a patch, not a fill**: this regenerates a native deck through Strategist → Executor → export (SKILL.md Steps 4–7). It does **not** edit the source file in place, and it is **not** [`template-fill-pptx`](./template-fill-pptx.md) (which clones source slides and replaces text). It also does not parse an arbitrary third-party template for text-only substitution (the rejected #53 direction) — it builds every page from scratch.
 
 **Distinct from mirror templates**: `replication_mode: mirror` (executor §1.1) keeps layout + visuals verbatim and edits text. Beautify is the inverse — content verbatim, layout redone, identity inherited.
@@ -209,6 +211,14 @@ On confirmation, enter SKILL.md Step 4 as Strategist with the plan pre-resolved.
 
 Run the standard pipeline (SKILL.md Steps 6–7). The Executor re-lays-out each page — hierarchy, spacing, alignment, page rhythm — using **only** the inherited palette + fonts from `spec_lock.md`, regenerates charts / tables as native SVG from the extracted data, and re-lays-out the source pictures.
 
+Before Step 7 post-processing, run the beautify text-fidelity gate against the authored SVGs:
+
+```bash
+python3 ${SKILL_DIR}/scripts/verify_beautify_fidelity.py <project_path> --write-report
+```
+
+Any missing text, mojibake, XML parse failure, or page-count mismatch is a blocking error. Return to Executor, fix the owning SVG page(s), and re-run the fidelity gate until it exits 0. Do not continue to `finalize_svg.py` or `svg_to_pptx.py` while this gate fails.
+
 ```bash
 python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
@@ -220,6 +230,8 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 
 ```bash
 python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <project_path>/exports/<output.pptx>
+python3 ${SKILL_DIR}/scripts/verify_beautify_fidelity.py <project_path> --target-pptx <project_path>/exports/<output.pptx> --write-report
+python3 ${SKILL_DIR}/scripts/export_qa.py <project_path> --pptx <project_path>/exports/<output.pptx> --beautify
 ```
 
 | Check | Expected |

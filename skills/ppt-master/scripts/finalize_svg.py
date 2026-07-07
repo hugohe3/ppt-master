@@ -161,8 +161,14 @@ def finalize_project(
 
     # Step 1: Copy directory
     if svg_final.exists():
-        shutil.rmtree(svg_final)
-    shutil.copytree(svg_output, svg_final)
+        try:
+            shutil.rmtree(svg_final)
+        except PermissionError:
+            # Windows can briefly keep an empty output directory locked by
+            # Explorer / preview tooling.  Continue with an overwrite copy so
+            # generated decks are not blocked by a stale directory handle.
+            pass
+    shutil.copytree(svg_output, svg_final, dirs_exist_ok=True)
 
     if not quiet:
         print()

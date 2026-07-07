@@ -182,11 +182,12 @@ def _create_writable_work_dir(output_path: Path) -> Path:
             errors.append(f"{parent}: cannot create parent ({exc})")
             continue
 
-        for _ in range(3):
-            work_dir = parent / f".pptx-build-{os.getpid()}-{uuid.uuid4().hex}"
+        for attempt in range(6):
+            prefix = ".pptx-build" if attempt < 3 else "pptx-build"
+            work_dir = parent / f"{prefix}-{os.getpid()}-{uuid.uuid4().hex}"
             try:
                 work_dir.mkdir(mode=0o700)
-                probe_path = work_dir / ".write-probe"
+                probe_path = work_dir / "write-probe.txt"
                 probe_path.write_text("ok", encoding="utf-8")
                 probe_path.unlink()
                 return work_dir

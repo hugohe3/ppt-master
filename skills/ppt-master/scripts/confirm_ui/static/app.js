@@ -8,6 +8,9 @@
 (function () {
     "use strict";
 
+    var LOCAL_DATA = window.PPT_MASTER_LOCAL_DATA || null;
+    function isLocalMode() { return !!LOCAL_DATA; }
+
     // ---- i18n ------------------------------------------------------------
     var MESSAGES = {
         en: {
@@ -512,6 +515,10 @@
     }
 
     function visualStylePreviewSrc(id) {
+        if (isLocalMode()) {
+            var svg = LOCAL_DATA.stylePreviews && LOCAL_DATA.stylePreviews[id || ""];
+            if (svg) return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+        }
         return "/static/style_previews/" + encodeURIComponent(id || "") + ".svg";
     }
 
@@ -2098,6 +2105,69 @@
         ov.style.display = "flex";
     }
 
+    function normalizeSubmittedResult(payload) {
+        var result = JSON.parse(JSON.stringify(payload));
+        var rawStage = String(result.stage || "").toLowerCase();
+        if (rawStage === "stage1" || rawStage === "stage2") {
+            result.status = rawStage + "-confirmed";
+        } else {
+            result.stage = "final";
+            result.status = "confirmed";
+        }
+        result.confirmed_at = new Date().toISOString().replace(/\.\d{3}Z$/, "");
+        return result;
+    }
+
+    function downloadResultJson(result) {
+        var json = JSON.stringify(result, null, 2);
+        var blob = new Blob([json + "\n"], { type: "application/json;charset=utf-8" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "result.json";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+            URL.revokeObjectURL(a.href);
+            a.remove();
+        }, 1000);
+        return json;
+    }
+
+    function showLocalResult(result) {
+        var json = downloadResultJson(result);
+        var ov = document.getElementById("confirmed-overlay");
+        ov.querySelector(".cf-title").textContent = t("confirmed_title");
+        ov.querySelector(".cf-hint").innerHTML =
+            "本地 HTML 已下载 <code>result.json</code>。也可以复制下面 JSON，或用命令 <code>--import-result</code> 导入下载文件。";
+        var pre = document.createElement("pre");
+        pre.style.cssText = "max-height:45vh;overflow:auto;text-align:left;white-space:pre-wrap;background:#0c1020;color:#e8eefc;padding:12px;border-radius:8px;margin-top:12px;font-size:12px;";
+        pre.textContent = json;
+        var copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "btn-primary";
+        copyBtn.style.marginTop = "12px";
+        copyBtn.textContent = "复制 JSON";
+        copyBtn.addEventListener("click", function () {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(json).then(function () {
+                    copyBtn.textContent = "已复制";
+                }).catch(function () {
+                    copyBtn.textContent = "复制失败，请手动选择";
+                });
+            } else {
+                copyBtn.textContent = "请手动选择复制";
+            }
+        });
+        var card = ov.querySelector(".cf-card");
+        var old = card.querySelector("pre");
+        if (old) old.remove();
+        var oldBtn = card.querySelector(".btn-primary");
+        if (oldBtn) oldBtn.remove();
+        card.appendChild(pre);
+        card.appendChild(copyBtn);
+        ov.style.display = "flex";
+    }
+
     // ---- staged submit + re-derive transitions --------------------------
     function stage1Payload() {
         var payload = {
@@ -2133,6 +2203,10 @@
     }
 
     function submitStage(payload, nextStage) {
+        if (isLocalMode()) {
+            showLocalResult(normalizeSubmittedResult(payload));
+            return;
+        }
         var btn = document.getElementById("btn-confirm");
         btn.disabled = true;
         fetch("/api/confirm", {
@@ -2207,6 +2281,10 @@
             delete payload.image_ai_path;
             delete payload.image_strategy;
         }
+        if (isLocalMode()) {
+            showLocalResult(normalizeSubmittedResult(payload));
+            return;
+        }
         btn.disabled = true;
         fetch("/api/confirm", {
             method: "POST",
@@ -2236,18 +2314,21 @@
     }
 
     function loadCatalogs() {
+        if (isLocalMode()) return Promise.resolve(LOCAL_DATA.catalogs || {});
         return fetch("/api/catalogs")
             .then(function (r) { if (r.ok) return r.json(); throw new Error("no api"); })
             .catch(function () { return fetch("/static/catalogs.json").then(function (r) { return r.json(); }); });
     }
 
     function loadIconPreviews() {
+        if (isLocalMode()) return Promise.resolve(LOCAL_DATA.iconPreviews || {});
         return fetch("/api/icon-previews")
             .then(function (r) { if (r.ok) return r.json(); throw new Error("no icon preview api"); })
             .catch(function () { return {}; });
     }
 
     function loadAiImageComparison() {
+        if (isLocalMode()) return Promise.resolve(LOCAL_DATA.aiImageComparison || {});
         return fetch("/api/ai-image-comparison")
             .then(function (r) { if (r.ok) return r.json(); throw new Error("no ai image comparison api"); })
             .catch(function () { return {}; });
@@ -2337,7 +2418,9 @@
 
         Promise.all([
             loadCatalogs(),
-            fetch("/api/recommendations").then(function (r) { if (!r.ok) throw new Error("load failed"); return r.json(); }),
+            isLocalMode()
+                ? Promise.resolve(LOCAL_DATA.recommendations || {})
+                : fetch("/api/recommendations").then(function (r) { if (!r.ok) throw new Error("load failed"); return r.json(); }),
             loadIconPreviews(),
             loadAiImageComparison()
         ]).then(function (res) {

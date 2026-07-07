@@ -44,7 +44,13 @@ import webbrowser
 from pathlib import Path
 from typing import Optional
 
-from flask import Flask, jsonify, request, send_from_directory
+try:
+    from flask import Flask, jsonify, request, send_from_directory
+except ImportError:
+    Flask = None
+    jsonify = None
+    request = None
+    send_from_directory = None
 
 # Local — sys.path injection for sibling module (code-style.md §3)
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent
@@ -139,7 +145,7 @@ def _wait_for_result(
 def _result_stage(result_file: Path) -> Optional[str]:
     """Return the canonical ``stage`` field of result.json, or None."""
     try:
-        data = json.loads(result_file.read_text(encoding='utf-8'))
+        data = _read_json_lenient(result_file)
     except (OSError, json.JSONDecodeError):
         return None
     return _stage_key(data.get('stage')) if isinstance(data, dict) else None
@@ -188,7 +194,7 @@ _DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     """Fold already-confirmed choices into later-stage recommendations."""
     try:
-        res = json.loads(result_file.read_text(encoding='utf-8'))
+        res = _read_json_lenient(result_file)
     except (OSError, json.JSONDecodeError):
         return
     if not isinstance(res, dict):
@@ -389,14 +395,118 @@ def _build_ai_image_comparison() -> dict:
     }
 
 
+def _build_style_previews() -> dict:
+    """Inline visual-style preview SVGs for local HTML mode."""
+    preview_dir = Path(__file__).resolve().parent / 'static' / 'style_previews'
+    previews = {}
+    for path in preview_dir.glob('*.svg'):
+        try:
+            previews[path.stem] = path.read_text(encoding='utf-8')
+        except OSError:
+            continue
+    return previews
+
+
+def _read_json_lenient(path: Path) -> dict:
+    """Read JSON written by shells/editors that may prepend a UTF-8 BOM."""
+    return json.loads(path.read_text(encoding='utf-8-sig'))
+
+
+def _write_json_utf8(path: Path, data: dict) -> None:
+    """Write JSON as UTF-8 without BOM."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2) + '\n',
+        encoding='utf-8',
+    )
+
+
+def _import_local_result(project_path: Path, source: Path) -> Path:
+    """Import a local-HTML downloaded result.json into the project."""
+    data = _read_json_lenient(source)
+    if not isinstance(data, dict):
+        raise ValueError('result JSON must be an object')
+    stage = _stage_key(data.get('stage'))
+    if stage not in {'stage1', 'stage2', 'final'}:
+        data['stage'] = 'final'
+    if data.get('stage') in {'stage1', 'stage2'}:
+        data['status'] = f"{data['stage']}-confirmed"
+    else:
+        data['stage'] = 'final'
+        data['status'] = 'confirmed'
+    data.setdefault('confirmed_at', time.strftime('%Y-%m-%dT%H:%M:%S'))
+    result_file = project_path / CONFIRM_DIR_NAME / RESULT_NAME
+    _write_json_utf8(result_file, data)
+    return result_file
+
+
+def _build_local_html(project_path: Path, output: Optional[Path] = None) -> Path:
+    """Write a self-contained local confirmation page into the project.
+
+    The local page is a fallback for Windows/Python environments where the
+    Flask server cannot start. It embeds the current recommendations and
+    catalogs directly, so users can open it with ``file://``. Because browsers
+    cannot silently write local files from ``file://`` pages, confirmation
+    downloads ``result.json`` and also shows the JSON on screen for saving.
+    """
+    confirm_dir = project_path / CONFIRM_DIR_NAME
+    rec_file = confirm_dir / RECOMMENDATIONS_NAME
+    if not rec_file.exists():
+        raise FileNotFoundError(f'{rec_file} not found')
+    confirm_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output or (confirm_dir / 'confirm_local.html')
+
+    static_dir = Path(__file__).resolve().parent / 'static'
+    index_html = (static_dir / 'index.html').read_text(encoding='utf-8')
+    style_css = (static_dir / 'style.css').read_text(encoding='utf-8')
+    app_js = (static_dir / 'app.js').read_text(encoding='utf-8')
+
+    payload = {
+        'recommendations': _read_json_lenient(rec_file),
+        'catalogs': _build_catalogs(),
+        'iconPreviews': _build_icon_previews(),
+        'aiImageComparison': _build_ai_image_comparison(),
+        'stylePreviews': _build_style_previews(),
+    }
+    data_script = (
+        '<script>\n'
+        'window.PPT_MASTER_LOCAL_DATA = '
+        + json.dumps(payload, ensure_ascii=False)
+        + ';\n</script>'
+    )
+
+    html = index_html
+    html = re.sub(
+        r'<link\s+rel="stylesheet"\s+href="/static/style\.css"\s*/?>',
+        lambda _match: '<style>\n' + style_css + '\n</style>',
+        html,
+        count=1,
+    )
+    html = re.sub(
+        r'<script\s+src="/static/app\.js"></script>',
+        lambda _match: data_script + '\n<script>\n' + app_js + '\n</script>',
+        html,
+        count=1,
+    )
+    # Some old mojibake in the static template can leave malformed visible
+    # glyphs; keep generated HTML parseable and self-contained.
+    if '<script src="/static/app.js"></script>' in html:
+        html += '\n' + data_script + '\n<script>\n' + app_js + '\n</script>\n'
+
+    output_path.write_text(html, encoding='utf-8')
+    return output_path
+
+
 # --- app --------------------------------------------------------------------
 
 def create_app(
     project_dir: str,
     idle_timeout: int = 900,
     lock_file: Optional[Path] = None,
-) -> Flask:
+) -> "Flask":
     """Create and configure the Flask app for a given project directory."""
+    if Flask is None:
+        raise RuntimeError("Flask is required for server mode. Use --local-html to generate an offline page.")
     project_path = Path(project_dir).resolve()
     confirm_dir = project_path / CONFIRM_DIR_NAME
 
@@ -489,7 +599,7 @@ def create_app(
         if not rec_file.exists():
             return jsonify({'error': 'recommendations not found'}), 404
         try:
-            data = json.loads(rec_file.read_text(encoding='utf-8'))
+            data = json.loads(rec_file.read_text(encoding='utf-8-sig'))
         except (OSError, json.JSONDecodeError) as exc:
             return jsonify({'error': f'invalid recommendations.json: {exc}'}), 400
         # Report whether a result already exists (re-open after confirm).
@@ -527,10 +637,7 @@ def create_app(
             result['status'] = 'confirmed'
         result['confirmed_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
         result_file = confirm_dir / RESULT_NAME
-        result_file.write_text(
-            json.dumps(result, ensure_ascii=False, indent=2),
-            encoding='utf-8',
-        )
+        _write_json_utf8(result_file, result)
         logger.info('%s confirmation written to %s', result['stage'], result_file)
         return jsonify({'status': 'ok'})
 
@@ -581,6 +688,19 @@ def build_parser() -> argparse.ArgumentParser:
              '(idempotent). Run at the end of Step 4 so the page never lingers '
              'on the shared port before live preview starts.',
     )
+    parser.add_argument(
+        '--local-html', action='store_true',
+        help='Write a self-contained confirm_local.html that can be opened from '
+             'the filesystem without running Flask.',
+    )
+    parser.add_argument(
+        '--local-output', default=None,
+        help='Output path for --local-html. Default: <project>/confirm_ui/confirm_local.html.',
+    )
+    parser.add_argument(
+        '--import-result', default=None,
+        help='Import a result.json downloaded from --local-html into <project>/confirm_ui/result.json.',
+    )
     return parser
 
 
@@ -598,6 +718,23 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not project_path.is_dir():
         logger.error('%s is not a directory', project_path)
         return 1
+    if args.import_result:
+        try:
+            result_file = _import_local_result(project_path, Path(args.import_result).resolve())
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            logger.error('failed to import local result: %s', exc)
+            return 1
+        logger.info('local result imported: %s', result_file)
+        return 0
+    if args.local_html:
+        try:
+            output = Path(args.local_output).resolve() if args.local_output else None
+            html_path = _build_local_html(project_path, output)
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.error('failed to write local confirm HTML: %s', exc)
+            return 1
+        logger.info('local confirm HTML written: %s', html_path)
+        return 0
     wait_stage = _stage_key(args.wait_stage)
     if wait_stage not in {'stage2', 'final'}:
         logger.error('--wait-stage must be stage2 or final')
