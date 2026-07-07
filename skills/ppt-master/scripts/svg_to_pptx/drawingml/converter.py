@@ -423,7 +423,7 @@ def _background_xml_from_rect(
     fill_xml = build_fill_xml(elem, ctx, get_fill_opacity(elem, ctx))
     if not fill_xml or '<a:noFill' in fill_xml:
         return ''
-    return f'<p:bg><p:bgPr>{fill_xml}</p:bgPr></p:bg>'
+    return f'<p:bg><p:bgPr>{fill_xml}<a:effectLst/></p:bgPr></p:bg>'
 
 
 def _extract_background_candidate(
@@ -683,6 +683,7 @@ def convert_svg_to_slide_shapes(
     converted = 0
     skipped = 0
     background_xml, background_skip_id = _extract_background_candidate(root, ctx)
+    promoted_backgrounds = 1 if background_xml else 0
     if background_xml and trace_events is not None:
         trace_events.append({
             'tag': 'rect',
@@ -698,7 +699,6 @@ def convert_svg_to_slide_shapes(
         if tag == 'defs':
             continue
         if id(child) == background_skip_id:
-            skipped += 1
             continue
         result = convert_element(child, ctx)
         if result:
@@ -722,7 +722,11 @@ def convert_svg_to_slide_shapes(
         ctx.anim_targets = fallback_targets
 
     if verbose:
-        print(f'  Converted {converted} elements, skipped {skipped}')
+        promoted = (
+            f', promoted {promoted_backgrounds} background'
+            if promoted_backgrounds else ''
+        )
+        print(f'  Converted {converted} elements, skipped {skipped}{promoted}')
 
     if trace_out is not None:
         trace_out.append({
@@ -731,6 +735,7 @@ def convert_svg_to_slide_shapes(
             'summary': {
                 'converted': converted,
                 'skipped': skipped,
+                'promoted_backgrounds': promoted_backgrounds,
                 'media_files': len(ctx.media_files),
                 'package_files': len(ctx.package_files),
                 'relationships': len(ctx.rel_entries),
