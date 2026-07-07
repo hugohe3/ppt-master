@@ -53,6 +53,7 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
         with:
           model: deepseek/deepseek-v4-pro
           prompt: |
@@ -72,6 +73,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           npm install -g opencode-ai@latest
           opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes."

@@ -256,13 +256,13 @@ git push origin vX.Y.Z
 
 ### Step 7: 验证 PyPI 发布
 
-**GitHub Actions 自动流程：**
-```
-PR merge → auto-tag.yml 创建 tag → publish-pypi.yml 构建发布
-```
-访问 `https://github.com/elvisw/ppt-master/actions` 确认流水线成功。
+输出验证信息即可，不要尝试执行 `gh` CLI 命令。
 
-**本地流程：** `publish-pypi.yml` 在 tag 推送后自动构建发布，访问 Actions 页面确认。发布后运行 `uvx ppt-master --version` 验证。
+**schedule 触发路径：** 输出 "PR 已创建，合并后 auto-tag → publish-pypi 自动触发。查看 https://github.com/elvisw/ppt-master/actions"
+
+**workflow_dispatch 路径：** 输出 "Push 成功，下游 CI 链自动触发。查看 https://github.com/elvisw/ppt-master/actions"
+
+**本地流程：** 输出 Actions 页面 URL，提醒用户运行 `uvx ppt-master --version` 验证。
 
 ---
 
