@@ -13,10 +13,12 @@ from resource_paths import icon_search_dirs_for_svg
 from .context import ConvertContext, ShapeResult
 from .utils import (
     SVG_NS, EMU_PER_PX,
-    _extract_inheritable_styles, parse_transform_matrix, resolve_url_id,
+    _extract_inheritable_styles, _f, _get_attr, parse_transform_matrix, resolve_url_id,
     parse_svg_length,
 )
-from .styles import build_effect_xml
+from .styles import (
+    build_effect_xml, build_fill_xml, get_fill_opacity, get_stroke_opacity,
+)
 from .elements import (
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
@@ -361,6 +363,118 @@ _CONVERTERS = {
 _SUPPORTED_VISUAL_CHILD_TAGS = frozenset(('tspan',))
 
 
+def _parse_svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
+    """Return the SVG canvas as (x, y, width, height) in SVG units."""
+    view_box = root.get('viewBox', '')
+    parts = re.split(r'[\s,]+', view_box.strip()) if view_box else []
+    if len(parts) == 4:
+        try:
+            x, y, w, h = (float(part) for part in parts)
+            if w > 0 and h > 0:
+                return x, y, w, h
+        except ValueError:
+            pass
+    return 0.0, 0.0, _f(root.get('width')), _f(root.get('height'))
+
+
+def _is_full_canvas_rect(
+    elem: ET.Element,
+    ctx: ConvertContext,
+    canvas: tuple[float, float, float, float],
+) -> bool:
+    """Return whether a rect is a safe candidate for native slide background."""
+    if elem.get('transform') or elem.get('filter') or elem.get('clip-path'):
+        return False
+    if _f(elem.get('rx')) > 0 or _f(elem.get('ry')) > 0:
+        return False
+
+    canvas_x, canvas_y, canvas_w, canvas_h = canvas
+    if canvas_w <= 0 or canvas_h <= 0:
+        return False
+
+    tolerance = 0.5
+    if abs(_f(elem.get('x')) - canvas_x) > tolerance:
+        return False
+    if abs(_f(elem.get('y')) - canvas_y) > tolerance:
+        return False
+    if abs(_f(elem.get('width')) - canvas_w) > tolerance:
+        return False
+    if abs(_f(elem.get('height')) - canvas_h) > tolerance:
+        return False
+
+    fill = _get_attr(elem, 'fill', ctx)
+    if fill == 'none':
+        return False
+
+    stroke = _get_attr(elem, 'stroke', ctx)
+    stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    stroke_opacity = get_stroke_opacity(elem, ctx)
+    if stroke and stroke != 'none' and stroke_width > 0 and stroke_opacity != 0:
+        return False
+
+    return True
+
+
+def _background_xml_from_rect(
+    elem: ET.Element,
+    ctx: ConvertContext,
+) -> str:
+    """Build native ``p:bg`` XML from a full-slide SVG background rect."""
+    fill_xml = build_fill_xml(elem, ctx, get_fill_opacity(elem, ctx))
+    if not fill_xml or '<a:noFill' in fill_xml:
+        return ''
+    return f'<p:bg><p:bgPr>{fill_xml}</p:bgPr></p:bg>'
+
+
+def _extract_background_candidate(
+    root: ET.Element,
+    ctx: ConvertContext,
+) -> tuple[str, int | None]:
+    """Promote a first-layer SVG background rect to native PowerPoint bgPr.
+
+    PowerPoint stores page background fills under ``p:cSld/p:bg/p:bgPr``.
+    Keeping the full-canvas SVG rect in ``p:spTree`` makes it an ordinary
+    selectable shape, so users hit it during bulk element selection. Only the
+    first visual layer is considered, matching pptx_to_svg's round-trip output
+    and avoiding accidental promotion of content panels.
+    """
+    canvas = _parse_svg_canvas(root)
+    for child in root:
+        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if tag in _NON_VISUAL_TAGS:
+            continue
+
+        if tag == 'rect' and _is_full_canvas_rect(child, ctx, canvas):
+            bg_xml = _background_xml_from_rect(child, ctx)
+            if bg_xml:
+                return bg_xml, id(child)
+            return '', None
+
+        if tag != 'g':
+            return '', None
+        if child.get('transform') or child.get('filter') or child.get('clip-path'):
+            return '', None
+        style_overrides = _extract_inheritable_styles(child)
+        child_ctx = ctx.child(style_overrides=style_overrides)
+        visual_children = [
+            grandchild for grandchild in child
+            if grandchild.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
+        ]
+        if len(visual_children) != 1:
+            return '', None
+        only_child = visual_children[0]
+        only_tag = only_child.tag.replace(f'{{{SVG_NS}}}', '')
+        if only_tag == 'rect' and _is_full_canvas_rect(only_child, child_ctx, canvas):
+            bg_xml = _background_xml_from_rect(only_child, child_ctx)
+            if bg_xml:
+                ctx.sync_from_child(child_ctx)
+                return bg_xml, id(child)
+            return '', None
+        return '', None
+
+    return '', None
+
+
 def collect_defs(root: ET.Element) -> dict[str, ET.Element]:
     """Collect all <defs> children into an {id: element} dictionary."""
     defs: dict[str, ET.Element] = {}
@@ -568,6 +682,13 @@ def convert_svg_to_slide_shapes(
     shapes: list[str] = []
     converted = 0
     skipped = 0
+    background_xml, background_skip_id = _extract_background_candidate(root, ctx)
+    if background_xml and trace_events is not None:
+        trace_events.append({
+            'tag': 'rect',
+            'decision': 'native-background',
+            'reason': 'promoted-full-canvas-rect-to-bgPr',
+        })
     # Per-element shape ids of every top-level child, used as an animation
     # fallback when no <g id="..."> groups are present at the root.
     fallback_targets: list = []
@@ -575,6 +696,9 @@ def convert_svg_to_slide_shapes(
     for child in root:
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if tag == 'defs':
+            continue
+        if id(child) == background_skip_id:
+            skipped += 1
             continue
         result = convert_element(child, ctx)
         if result:
@@ -623,6 +747,7 @@ def convert_svg_to_slide_shapes(
        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
        xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
 <p:cSld>
+{background_xml}
 <p:spTree>
 <p:nvGrpSpPr>
 <p:cNvPr id="1" name=""/>
