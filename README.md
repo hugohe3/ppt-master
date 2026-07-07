@@ -127,6 +127,47 @@ Knowing how to use Python and AI agents will matter more and more, and this proj
 
 ---
 
+## You Might Also Like
+
+### <a href="https://github.com/microsoft/ResearchStudio">ResearchStudio-<img src="https://raw.githubusercontent.com/ai-nuts/Storage/main/ResearchStudio/ResearchStudio-Reel/docs/figures/reel-wordmark.png" alt="Reel" height="16"></a>
+
+> A Microsoft open-source project I recently joined — from **paper** to **talk video**, **poster**, and **blog**, automating the **last mile** of research dissemination.
+>
+> 📄 **Paper:** [arXiv:2607.04438](https://arxiv.org/abs/2607.04438) · 📦 **Repo:** [microsoft/ResearchStudio](https://github.com/microsoft/ResearchStudio)
+
+<table align="center">
+<tr>
+<td align="center" valign="middle" width="53%">
+  <a href="https://aka.ms/ResearchStudio">
+    <img src="https://raw.githubusercontent.com/ai-nuts/Storage/main/ResearchStudio/ResearchStudio-Reel/docs/figures/reel_demo.gif" width="100%"
+    alt="ResearchStudio-Reel demo" />
+  </a>
+</td>
+<td align="center" valign="middle" width="47%">
+  <a href="https://aka.ms/ResearchStudio">
+    <img src="https://raw.githubusercontent.com/ai-nuts/Storage/main/ResearchStudio/ResearchStudio-Reel/docs/examples/latent_diffusion_landscape/poster.png" width="100%" alt="ResearchStudio-Reel generated poster" />
+  </a>
+</td>
+</tr>
+</table>
+
+<details>
+<summary><strong>BibTeX</strong> — if you use ResearchStudio-Reel in your research</summary>
+
+```bibtex
+@article{xiao2026researchstudioreel,
+  title   = {ResearchStudio-Reel: Automate the Last Mile of Research from Paper to Poster, Video, and Blog},
+  author  = {Lingao Xiao and Yalun Dai and Yangyu Huang and Qihao Zhao and Wenshan Wu and Hugo He and Ruishuo Chen and Jin Jiang and Qianli Ma and Jiahuan Zhang and Xin Zhang and Ying Xin and Yang Ou and Yan Xia and Scarlett Li and Longbo Huang and Zhipeng Zhang and Yang He and Yap Kim Hui and Yan Lu},
+  journal = {arXiv preprint arXiv:2607.04438},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2607.04438}
+}
+```
+
+</details>
+
+---
+
 ## Quick Start
 
 ### 1. Prerequisites
