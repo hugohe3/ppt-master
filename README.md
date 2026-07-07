@@ -133,7 +133,7 @@ Knowing how to use Python and AI agents will matter more and more, and this proj
 
 > A Microsoft open-source project I recently joined — from **paper** to **talk video**, **poster**, and **blog**, automating the **last mile** of research dissemination.
 >
-> 📄 **Paper:** [arXiv:2607.04438](https://arxiv.org/abs/2607.04438) · 📦 **Repo:** [microsoft/ResearchStudio](https://github.com/microsoft/ResearchStudio)
+> 📦 **Repo:** [microsoft/ResearchStudio](https://github.com/microsoft/ResearchStudio) · 📄 **Paper:** [arXiv:2607.04438](https://arxiv.org/abs/2607.04438)
 
 <table align="center">
 <tr>

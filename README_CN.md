@@ -137,7 +137,7 @@
 
 > 微软开源项目，我最近也参与其中——从**论文**到**演讲视频**、**海报**与**博客**，自动化科研传播的**最后一公里**。
 >
-> 📄 **论文：**[arXiv:2607.04438](https://arxiv.org/abs/2607.04438) · 📦 **仓库：**[microsoft/ResearchStudio](https://github.com/microsoft/ResearchStudio)
+> 📦 **仓库：**[microsoft/ResearchStudio](https://github.com/microsoft/ResearchStudio) · 📄 **论文：**[arXiv:2607.04438](https://arxiv.org/abs/2607.04438)
 
 <table align="center">
 <tr>
