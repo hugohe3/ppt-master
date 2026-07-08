@@ -175,7 +175,7 @@ class ProjectManager:
                 "- `live_preview/`: browser preview runtime files and history (lock.json, server.log, edits.jsonl, annotations.jsonl)\n"
                 "- `sources/`: source materials and normalized markdown\n"
                 "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
-                "- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added with `--svg-snapshot`, `_native_charts.pptx` name with `--native-objects`\n"
+                "- `exports/`: latest native pptx only (timestamped); `_svg.pptx` sibling added with `--svg-snapshot`, `_native_charts.pptx` name with `--native-objects`; older exports auto-move to `exports/archive/`\n"
                 "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
             ),
             encoding="utf-8",

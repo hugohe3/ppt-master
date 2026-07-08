@@ -71,6 +71,39 @@ def _recorded_narration_on_click_slides(
     return blocked
 
 
+def _archive_previous_exports(exports_dir: Path, keep: set[Path], verbose: bool) -> None:
+    """Move every pptx in exports/ root except `keep` (plus .trace.json sidecars) into exports/archive/.
+
+    Keeps the freshest deliverable as the only pptx directly under exports/.
+    A name collision in archive/ gets a numeric suffix; a failed move warns
+    and continues so one locked file cannot abort the sweep.
+    """
+    stale = [
+        path for path in sorted(exports_dir.glob("*.pptx"))
+        if path.is_file() and path not in keep
+    ]
+    if not stale:
+        return
+    archive_dir = exports_dir / "archive"
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    for old_pptx in stale:
+        sidecar = old_pptx.with_name(old_pptx.name + ".trace.json")
+        for src in (old_pptx, sidecar):
+            if not src.is_file():
+                continue
+            dst = archive_dir / src.name
+            counter = 1
+            while dst.exists():
+                dst = archive_dir / f"{src.stem}_{counter}{src.suffix}"
+                counter += 1
+            try:
+                shutil.move(str(src), str(dst))
+            except OSError as exc:
+                print(f"  [warn] archive move skipped for {src.name}: {exc}", file=sys.stderr)
+    if verbose:
+        print(f"  Previous export(s) archived: {len(stale)} -> {archive_dir}")
+
+
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point for the SVG to PPTX conversion tool."""
     transition_choices = (
@@ -655,6 +688,10 @@ Recorded narration:
             **shared_kwargs,
         )
         success = success and ok
+
+    if success and args.output is None:
+        keep = {path for path in (native_path, legacy_path) if path is not None}
+        _archive_previous_exports(exports_dir, keep, verbose)
 
     # svg_output/ snapshot — runs once per export in default-flow mode,
     # decoupled from --svg-snapshot. Preserves the AI-generated SVG sources

@@ -640,6 +640,7 @@ Default raster handling for `svg_final/`: images are embedded at the rendered SV
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
+#   exports/archive/                                  ← older exports auto-moved here; exports/ root keeps only the latest
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
 #
 # Add --svg-snapshot to additionally emit the SVG-image preview pptx alongside the native pptx:
