@@ -21,8 +21,8 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 
 | 命令 | 用途 |
 |---|---|
-| `--recorded-narration audio` | 准备 PowerPoint 的"录制的计时和旁白"。要求每页都有音频，并写入页面自动推进时间。用于旁白视频导出。 |
-| `--narration-audio-dir audio` | 底层音频嵌入能力。只嵌入匹配到的文件，允许部分页面有音频。用于测试或后续手工整理。 |
+| `--recorded-narration audio` | 准备 PowerPoint 的"录制的计时和旁白"。要求每页都有音频，并写入页面自动推进时间。用于旁白视频导出。重导出文件保存为 `exports/<name>_<timestamp>_narrated.pptx`。 |
+| `--narration-audio-dir audio` | 底层音频嵌入能力。只嵌入匹配到的文件，允许部分页面有音频。用于测试或后续手工整理。导出文件同样带 `_narrated` 后缀。 |
 
 ## 怎么触发
 
