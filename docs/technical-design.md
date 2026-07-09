@@ -427,6 +427,10 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why compatibility fallback belongs to the SVG snapshot path, not native shapes.** Native PPTX export translates supported SVG elements into DrawingML shapes and explicitly disables PNG+SVG compatibility mode in native-shapes mode. The PNG fallback is used only by the legacy SVG-image path (`--svg-snapshot` / `--only legacy`) when a renderer is available, because that path embeds SVG media that older Office builds may not display. Legacy compatibility is therefore an optional snapshot deliverable, not a fallback bundled inside the primary editable native deck.
 
+**Why the default native deck has a baseline master, not inferred templates.** `svg_to_pptx.py` keeps the actual blank slide layout relationship from the base package and defaults to `--pptx-structure baseline`. Baseline promotes only low-risk shared structure: identical slide backgrounds, plus repeated top-level SVG chrome groups whose ids clearly say `logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber`, or `slideNumber` and whose generated OOXML is identical across slides sharing the same master. Image relationships for promoted chrome are copied to the slide master. This gives ordinary decks real master/layout structure without guessing reusable layouts or placeholders from visual similarity.
+
+**Why native-object round-trip uses markers, not automatic object replacement.** PPTX intake can emit visible SVG fallback plus `data-pptx-native` metadata for supported tables and classic chart cache data. The default export still consumes the fallback as regular DrawingML shapes; only `--native-objects` activates editable PowerPoint tables/charts. Unsupported cases such as merged tables, ChartEx, 3D charts, combo charts, or cache-missing charts keep the preview and carry an explicit unsupported status instead of pretending to round-trip.
+
 ---
 
 ## Animation & Transition Model
