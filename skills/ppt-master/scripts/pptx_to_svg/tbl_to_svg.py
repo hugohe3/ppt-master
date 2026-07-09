@@ -41,7 +41,14 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
-from .emu_units import NS, Xfrm, emu_to_px, fmt_num, hundredths_pt_to_px
+from .emu_units import (
+    NS,
+    Xfrm,
+    emu_to_px,
+    fmt_num,
+    hundredths_pt_to_px,
+    ooxml_bool,
+)
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
 from .txbody_to_svg import convert_txbody
@@ -105,7 +112,16 @@ def convert_tbl(
     # and dropped cells don't render anything. PowerPoint expresses merges via
     # gridSpan/rowSpan on the anchor cell + hMerge/vMerge on the dropped cells.
     cells = _build_cell_grid(rows, len(col_widths))
-    native_status = "unsupported-merge" if _table_has_merges(rows) else None
+    if xfrm.rot or xfrm.flip_h or xfrm.flip_v:
+        native_status = "unsupported-native-transform"
+    elif _table_has_merges(rows):
+        native_status = "unsupported-merge"
+    elif _table_has_unsupported_style(tbl):
+        native_status = "unsupported-table-style"
+    elif _table_has_unsupported_direct_formatting(tbl, palette):
+        native_status = "unsupported-table-direct-formatting"
+    else:
+        native_status = None
     native_payload = (
         None if native_status else _native_table_payload(
             tbl,
@@ -271,8 +287,8 @@ def _build_cell_grid(rows: list[ET.Element], col_count: int) -> list[list[_CellS
 
             grid_span = _safe_int(tc.attrib.get("gridSpan"), 1)
             row_span = _safe_int(tc.attrib.get("rowSpan"), 1)
-            h_merge = tc.attrib.get("hMerge") == "1"
-            v_merge = tc.attrib.get("vMerge") == "1"
+            h_merge = ooxml_bool(tc.attrib.get("hMerge"))
+            v_merge = ooxml_bool(tc.attrib.get("vMerge"))
 
             if h_merge or v_merge:
                 # This cell is a merge slave; leave the slot tied to the anchor
@@ -317,13 +333,173 @@ def _table_has_merges(rows: list[ET.Element]) -> bool:
     """Return True when the table uses merged cells."""
     for row in rows:
         for tc in row.findall("a:tc", NS):
-            if tc.attrib.get("hMerge") == "1" or tc.attrib.get("vMerge") == "1":
+            if ooxml_bool(tc.attrib.get("hMerge")) or ooxml_bool(tc.attrib.get("vMerge")):
                 return True
             if _safe_int(tc.attrib.get("gridSpan"), 1) > 1:
                 return True
             if _safe_int(tc.attrib.get("rowSpan"), 1) > 1:
                 return True
     return False
+
+
+def _table_has_unsupported_style(tbl: ET.Element) -> bool:
+    tbl_pr = tbl.find("a:tblPr", NS)
+    if tbl_pr is None:
+        return False
+    allowed_attrs = {
+        "firstRow", "bandRow", "firstCol", "lastCol", "lastRow",
+        "bandCol", "rtl",
+    }
+    if any(name not in allowed_attrs for name in tbl_pr.attrib):
+        return True
+    if any(
+        ooxml_bool(tbl_pr.attrib.get(name))
+        for name in ("firstCol", "lastCol", "lastRow", "bandCol", "rtl")
+    ):
+        return True
+    return any(
+        child.tag.rsplit("}", 1)[-1] != "tableStyleId"
+        for child in tbl_pr
+    )
+
+
+def _table_has_unsupported_direct_formatting(
+    tbl: ET.Element,
+    palette: ColorPalette | None,
+) -> bool:
+    """Reject direct cell features the compact native schema cannot retain."""
+    for tc in tbl.findall(".//a:tc", NS):
+        tc_pr = tc.find("a:tcPr", NS)
+        if tc_pr is not None:
+            allowed_attrs = {"marL", "marR", "marT", "marB", "anchor"}
+            if any(name not in allowed_attrs for name in tc_pr.attrib):
+                return True
+            if tc_pr.get("anchor") not in {None, "t", "ctr", "b"}:
+                return True
+            if any(
+                child.tag.rsplit("}", 1)[-1] != "solidFill"
+                for child in tc_pr
+            ):
+                return True
+            solid_fill = tc_pr.find("a:solidFill", NS)
+            if solid_fill is not None:
+                if solid_fill.find(".//a:alpha", NS) is not None:
+                    return True
+                if _cell_fill_hex(tc_pr, palette) is None:
+                    return True
+        tx_body = tc.find("a:txBody", NS)
+        if _text_body_has_unsupported_formatting(tx_body):
+            return True
+        if (
+            tx_body is not None
+            and tx_body.find(".//a:solidFill", NS) is not None
+            and _cell_text_color(tx_body, palette) is None
+        ):
+            return True
+    return False
+
+
+def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
+    if tx_body is None:
+        return False
+    body_pr = tx_body.find("a:bodyPr", NS)
+    if body_pr is not None and (body_pr.attrib or list(body_pr)):
+        return True
+    list_style = tx_body.find("a:lstStyle", NS)
+    if list_style is not None and (list_style.attrib or list(list_style)):
+        return True
+    if (
+        tx_body.find(".//a:br", NS) is not None
+        or tx_body.find(".//a:fld", NS) is not None
+        or tx_body.find(".//a:tab", NS) is not None
+    ):
+        return True
+
+    paragraphs = tx_body.findall("a:p", NS)
+    if len(paragraphs) > 1:
+        return True
+
+    alignments: set[str | None] = set()
+    run_signatures: set[tuple[str | None, str | None, bytes | None]] = set()
+    for paragraph in paragraphs:
+        p_pr = paragraph.find("a:pPr", NS)
+        alignment = p_pr.get("algn") if p_pr is not None else None
+        if alignment not in {None, "l", "ctr", "r"}:
+            return True
+        alignments.add(alignment)
+        if p_pr is not None:
+            if any(name != "algn" for name in p_pr.attrib):
+                return True
+            if any(
+                child.tag.rsplit("}", 1)[-1] not in {"defRPr", "buNone"}
+                for child in p_pr
+            ):
+                return True
+
+        default_r_pr = p_pr.find("a:defRPr", NS) if p_pr is not None else None
+        if _run_props_have_unsupported_formatting(default_r_pr):
+            return True
+        for run in paragraph.findall("a:r", NS):
+            r_pr = run.find("a:rPr", NS)
+            if _run_props_have_unsupported_formatting(r_pr):
+                return True
+            run_signatures.add(_effective_run_signature(r_pr, default_r_pr))
+        end_r_pr = paragraph.find("a:endParaRPr", NS)
+        if _run_props_have_unsupported_formatting(end_r_pr):
+            return True
+        if not paragraph.findall("a:r", NS) and end_r_pr is not None:
+            run_signatures.add(_effective_run_signature(end_r_pr, default_r_pr))
+
+    return len(alignments) > 1 or len(run_signatures) > 1
+
+
+def _run_props_have_unsupported_formatting(r_pr: ET.Element | None) -> bool:
+    if r_pr is None:
+        return False
+    if ooxml_bool(r_pr.get("i")):
+        return True
+    if r_pr.get("u") not in {None, "none"}:
+        return True
+    if r_pr.get("strike") not in {None, "noStrike"}:
+        return True
+    if r_pr.get("baseline") not in {None, "0"}:
+        return True
+    if r_pr.get("cap") not in {None, "none"}:
+        return True
+    if r_pr.get("spc") not in {None, "0"}:
+        return True
+    allowed_attrs = {
+        "lang", "altLang", "sz", "b", "i", "u", "strike", "dirty",
+        "baseline", "cap", "spc",
+    }
+    if any(name not in allowed_attrs for name in r_pr.attrib):
+        return True
+    solid_fill = r_pr.find("a:solidFill", NS)
+    if solid_fill is not None and solid_fill.find(".//a:alpha", NS) is not None:
+        return True
+    return any(
+        child.tag.rsplit("}", 1)[-1] != "solidFill"
+        for child in r_pr
+    )
+
+
+def _effective_run_signature(
+    r_pr: ET.Element | None,
+    default_r_pr: ET.Element | None,
+) -> tuple[str | None, str | None, bytes | None]:
+    def attr(name: str) -> str | None:
+        if r_pr is not None and r_pr.get(name) is not None:
+            return r_pr.get(name)
+        return default_r_pr.get(name) if default_r_pr is not None else None
+
+    solid_fill = r_pr.find("a:solidFill", NS) if r_pr is not None else None
+    if solid_fill is None and default_r_pr is not None:
+        solid_fill = default_r_pr.find("a:solidFill", NS)
+    fill_xml = (
+        ET.tostring(solid_fill, encoding="utf-8")
+        if solid_fill is not None else None
+    )
+    return attr("b"), attr("sz"), fill_xml
 
 
 def _round_payload_number(value: float) -> int | float:
@@ -347,13 +523,21 @@ def _native_table_payload(
         "width": _round_payload_number(xfrm.w),
         "height": _round_payload_number(xfrm.h),
         "strict_grid": True,
-        "header_rows": 1 if tbl_pr is not None and tbl_pr.get("firstRow") == "1" else 0,
+        "header_rows": (
+            1 if tbl_pr is not None and ooxml_bool(tbl_pr.get("firstRow")) else 0
+        ),
         "column_widths": [_round_payload_number(width) for width in column_widths],
         "row_heights": [_round_payload_number(height) for height in row_heights],
         "rows": [],
     }
-    if tbl_pr is not None and tbl_pr.get("bandRow") is not None:
-        payload["style"] = {"band_row": tbl_pr.get("bandRow") != "0"}
+    style: dict[str, Any] = {
+        "band_row": bool(tbl_pr is not None and ooxml_bool(tbl_pr.get("bandRow"))),
+    }
+    if tbl_pr is not None:
+        table_style_id = tbl_pr.findtext("a:tableStyleId", default="", namespaces=NS).strip()
+        if table_style_id:
+            style["table_style_id"] = table_style_id
+    payload["style"] = style
 
     rows_payload: list[list[Any]] = []
     for row_cells in cells:
@@ -388,8 +572,9 @@ def _native_cell_payload(tc: ET.Element, palette: ColorPalette | None) -> dict[s
     valign = _cell_valign(tc_pr)
     if valign:
         cell["valign"] = valign
-    if _cell_bold(tx_body):
-        cell["bold"] = True
+    bold = _cell_bold(tx_body)
+    if bold is not None:
+        cell["bold"] = bold
     _copy_cell_margins(tc_pr, cell)
     return cell
 
@@ -414,19 +599,22 @@ def _cell_fill_hex(tc_pr: ET.Element | None, palette: ColorPalette | None) -> st
 
 
 def _cell_text_color(tx_body: ET.Element | None, palette: ColorPalette | None) -> str | None:
-    r_pr = _first_text_run_props(tx_body)
-    color, _alpha = resolve_color(find_color_elem(r_pr), palette)
-    return color
+    for r_pr in _text_run_props_in_priority(tx_body):
+        solid_fill = r_pr.find("a:solidFill", NS)
+        if solid_fill is not None:
+            color, _alpha = resolve_color(find_color_elem(solid_fill), palette)
+            return color
+    return None
 
 
 def _cell_font_size_px(tx_body: ET.Element | None) -> int | float | None:
-    r_pr = _first_text_run_props(tx_body)
-    if r_pr is None or not r_pr.get("sz"):
-        return None
-    size = hundredths_pt_to_px(r_pr.get("sz"))
-    if size <= 0:
-        return None
-    return _round_payload_number(size)
+    for r_pr in _text_run_props_in_priority(tx_body):
+        if not r_pr.get("sz"):
+            continue
+        size = hundredths_pt_to_px(r_pr.get("sz"))
+        if size > 0:
+            return _round_payload_number(size)
+    return None
 
 
 def _cell_align(tx_body: ET.Element | None) -> str | None:
@@ -448,18 +636,22 @@ def _cell_valign(tc_pr: ET.Element | None) -> str | None:
     }.get(anchor)
 
 
-def _cell_bold(tx_body: ET.Element | None) -> bool:
-    r_pr = _first_text_run_props(tx_body)
-    return r_pr is not None and r_pr.get("b") == "1"
+def _cell_bold(tx_body: ET.Element | None) -> bool | None:
+    for r_pr in _text_run_props_in_priority(tx_body):
+        if r_pr.get("b") is not None:
+            return ooxml_bool(r_pr.get("b"))
+    return None
 
 
-def _first_text_run_props(tx_body: ET.Element | None) -> ET.Element | None:
+def _text_run_props_in_priority(tx_body: ET.Element | None) -> list[ET.Element]:
     if tx_body is None:
-        return None
-    r_pr = tx_body.find(".//a:r/a:rPr", NS)
-    if r_pr is not None:
-        return r_pr
-    return tx_body.find(".//a:endParaRPr", NS)
+        return []
+    props: list[ET.Element] = []
+    for path in (".//a:r/a:rPr", ".//a:pPr/a:defRPr", ".//a:endParaRPr"):
+        r_pr = tx_body.find(path, NS)
+        if r_pr is not None:
+            props.append(r_pr)
+    return props
 
 
 def _copy_cell_margins(tc_pr: ET.Element | None, cell: dict[str, Any]) -> None:

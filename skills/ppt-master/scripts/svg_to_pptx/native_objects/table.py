@@ -26,18 +26,24 @@ from .marker_common import (
 def _table_text_run(
     text: str,
     *,
-    color: str,
-    bold: bool,
-    font_size: int,
+    color: str | None,
+    bold: bool | None,
+    font_size: int | None,
     font_face: str | None,
 ) -> str:
-    bold_attr = ' b="1"' if bold else ""
-    return (
-        f'<a:r><a:rPr lang="en-US" sz="{font_size}"{bold_attr}>'
+    size_attr = f' sz="{font_size}"' if font_size is not None else ""
+    bold_attr = f' b="{_bool_attr(bold)}"' if bold is not None else ""
+    color_xml = (
         f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
+    space_attr = ' xml:space="preserve"' if text != text.strip() else ""
+    return (
+        f'<a:r><a:rPr lang="en-US"{size_attr}{bold_attr}>'
+        f'{color_xml}'
         f'{_font_face_xml(font_face)}'
         "</a:rPr>"
-        f"<a:t>{_xml_escape(text)}</a:t></a:r>"
+        f"<a:t{space_attr}>{_xml_escape(text)}</a:t></a:r>"
     )
 
 
@@ -304,6 +310,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     table_rows, col_count = _validate_table_payload(payload)
     has_columns = bool(payload.get("columns") or [])
     header_rows = int(payload.get("header_rows", 1 if has_columns else 0))
+    preserve_source_style = elem.get("data-pptx-native-source") == "pptx"
 
     for row in table_rows:
         row.extend([""] * (col_count - len(row)))
@@ -345,36 +352,64 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         cells_xml: list[str] = []
         for cell in row:
             cell_data = _cell_payload(cell)
-            fill = _clean_hex(
-                cell_data.get("fill"),
-                header_fill if is_header else (band_fill if row_idx % 2 == 0 and row_idx else body_fill),
-            )
-            color = _clean_hex(cell_data.get("color"), header_text if is_header else body_text)
-            align = str(cell_data.get("align") or ("ctr" if is_header else "l"))
+            if preserve_source_style:
+                fill = (
+                    _clean_hex(cell_data.get("fill"), "#FFFFFF")
+                    if cell_data.get("fill") is not None else None
+                )
+                color = (
+                    _clean_hex(cell_data.get("color"), "#000000")
+                    if cell_data.get("color") is not None else None
+                )
+                align = str(cell_data.get("align") or "l")
+            else:
+                fill = _clean_hex(
+                    cell_data.get("fill"),
+                    header_fill if is_header else (
+                        band_fill if row_idx % 2 == 0 and row_idx else body_fill
+                    ),
+                )
+                color = _clean_hex(
+                    cell_data.get("color"),
+                    header_text if is_header else body_text,
+                )
+                align = str(cell_data.get("align") or ("ctr" if is_header else "l"))
             if align not in {"l", "ctr", "r"}:
                 align = "l"
             text = "" if cell_data.get("text") is None else str(cell_data.get("text"))
-            bold = bool(cell_data.get("bold", is_header))
-            cell_font_size = (
-                _font_size_hpt(cell_data.get("font_size"), 18)
-                if "font_size" in cell_data
-                else body_font_size
-            )
-            if is_header and "font_size" not in cell_data:
-                cell_font_size = header_font_size
+            if preserve_source_style:
+                bold = bool(cell_data["bold"]) if "bold" in cell_data else None
+                cell_font_size = (
+                    _font_size_hpt(cell_data.get("font_size"), 18)
+                    if "font_size" in cell_data else None
+                )
+            else:
+                bold = bool(cell_data.get("bold", is_header))
+                cell_font_size = (
+                    _font_size_hpt(cell_data.get("font_size"), 18)
+                    if "font_size" in cell_data
+                    else body_font_size
+                )
+                if is_header and "font_size" not in cell_data:
+                    cell_font_size = header_font_size
             paragraph_props = f'<a:pPr algn="{align}"/>' if align != "l" else "<a:pPr/>"
-            tc_pr_attrs = (
-                f' anchor="{_table_anchor(cell_data, style)}"'
-                f'{_table_padding_attrs(cell_data, style)}'
-            )
+            anchor_keys = {"valign", "vertical_align"}
+            anchor_attr = ""
+            if not preserve_source_style or anchor_keys.intersection(cell_data) or anchor_keys.intersection(style):
+                anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
+            tc_pr_attrs = f'{anchor_attr}{_table_padding_attrs(cell_data, style)}'
             border_xml = _table_border_xml(cell_data, style)
+            fill_xml = (
+                f'<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill>'
+                if fill else ""
+            )
             cells_xml.append(
                 "<a:tc>"
                 "<a:txBody><a:bodyPr/><a:lstStyle/>"
                 f"<a:p>{paragraph_props}"
                 f"{_table_text_run(text, color=color, bold=bold, font_size=cell_font_size, font_face=font_face)}"
                 "</a:p></a:txBody>"
-                f'<a:tcPr{tc_pr_attrs}>{border_xml}<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill></a:tcPr>'
+                f'<a:tcPr{tc_pr_attrs}>{border_xml}{fill_xml}</a:tcPr>'
                 "</a:tc>"
             )
         rows_xml.append(f'<a:tr h="{row_heights[row_idx]}">{"".join(cells_xml)}</a:tr>')
@@ -382,7 +417,13 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     shape_id = ctx.next_id()
     first_row = _bool_attr(header_rows > 0)
     band_row = _bool_attr(bool(style.get("band_row", True)))
-    table_style_id = str(style.get("table_style_id") or "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}")
+    table_style_id = style.get("table_style_id")
+    if table_style_id is None and not preserve_source_style:
+        table_style_id = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"
+    table_style_xml = (
+        f'<a:tableStyleId>{_xml_escape(str(table_style_id))}</a:tableStyleId>'
+        if table_style_id else ""
+    )
     name = _xml_escape(str(payload.get("name") or elem.get("id") or f"Native Table {shape_id}"))
     xml = f'''<p:graphicFrame>
 <p:nvGraphicFramePr>
@@ -395,7 +436,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 <a:graphicData uri="{TABLE_URI}">
 <a:tbl>
 <a:tblPr firstRow="{first_row}" bandRow="{band_row}">
-<a:tableStyleId>{_xml_escape(table_style_id)}</a:tableStyleId>
+{table_style_xml}
 </a:tblPr>
 <a:tblGrid>{grid_xml}</a:tblGrid>
 {''.join(rows_xml)}

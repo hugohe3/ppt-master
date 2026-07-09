@@ -183,7 +183,7 @@ def _validate_native_object_marker_payload(
         table_rows, _ = _validate_table_payload(payload)
     else:
         _chart_data(payload)
-        if validate_chrome:
+        if validate_chrome and elem.get("data-pptx-native-source") != "pptx":
             chrome_errors = _native_chart_chrome_errors(elem, payload)
             if chrome_errors:
                 raise RuntimeError("; ".join(chrome_errors))

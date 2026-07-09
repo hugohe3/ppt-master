@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 from .marker_common import (
@@ -20,6 +21,8 @@ def _chart_number(value: Any) -> int | float:
         number = float(value)
     except (TypeError, ValueError) as exc:
         raise RuntimeError(f"Native PPTX chart value is not numeric: {value}") from exc
+    if not math.isfinite(number):
+        raise RuntimeError(f"Native PPTX chart value must be finite: {value}")
     return int(number) if number.is_integer() else number
 
 
@@ -40,6 +43,70 @@ def _data_labels_config(payload: dict[str, Any]) -> dict[str, Any] | None:
     if not isinstance(raw, dict):
         raise RuntimeError("Native PPTX chart data_labels must be a boolean or object")
     return raw
+
+
+def _data_label_position(value: Any, chart_type: str, grouping: str | None) -> str | None:
+    """Normalize and validate a label position for its chart plot."""
+    if chart_type == "area":
+        if value is not None:
+            raise RuntimeError("Native PPTX area data labels do not support label position")
+        return None
+    is_stacked = chart_type in {"bar", "column"} and grouping in {
+        "percentStacked", "stacked",
+    }
+    default = "ctr" if is_stacked else (
+        "outEnd" if chart_type in {"bar", "column"} else "t"
+    )
+    if value is None:
+        return default
+    aliases = {
+        "above": "t",
+        "bestfit": "bestFit",
+        "center": "ctr",
+        "inbase": "inBase",
+        "insidebase": "inBase",
+        "insideend": "inEnd",
+        "inend": "inEnd",
+        "outend": "outEnd",
+        "outsideend": "outEnd",
+    }
+    position = aliases.get(_compact_key(value))
+    if not position:
+        raise RuntimeError(
+            "Native PPTX chart data label position must be one of: "
+            "above, best_fit, center, inside_base, inside_end, outside_end"
+        )
+    if chart_type in {"bar", "column"}:
+        if position not in {"ctr", "inBase", "inEnd", "outEnd"}:
+            raise RuntimeError(
+                "Native PPTX bar/column data label position must be one of: "
+                "center, inside_base, inside_end, outside_end"
+            )
+        if is_stacked and position == "outEnd":
+            raise RuntimeError(
+                "Native PPTX stacked bar/column data labels do not support outside_end"
+            )
+    elif chart_type == "line" and position not in {"bestFit", "ctr", "t"}:
+        raise RuntimeError(
+            "Native PPTX line data label position must be one of: above, best_fit, center"
+        )
+    return position
+
+
+def _chart_data_labels(
+    payload: dict[str, Any],
+    chart_type: str,
+    grouping: str | None,
+) -> dict[str, Any] | None:
+    config = _data_labels_config(payload)
+    if config is None:
+        return None
+    if chart_type not in {"area", "bar", "column", "line"}:
+        raise RuntimeError(
+            f"Native PPTX {chart_type} chart data labels are outside current support"
+        )
+    _data_label_position(config.get("position"), chart_type, grouping)
+    return config
 
 
 _CATEGORY_CHART_TYPES = {
@@ -398,13 +465,16 @@ def _category_chart_data(
     if alias_style == "exploded" or payload.get("exploded"):
         raise RuntimeError("Native PPTX exploded pie/doughnut is outside current basic chart support")
 
+    grouping = (
+        _chart_grouping(chart_type, payload, alias_grouping)
+        if chart_type in {"bar", "column", "line", "area"}
+        else None
+    )
     return {
         "kind": "category",
         "type": chart_type,
         "categories": categories,
-        "grouping": _chart_grouping(chart_type, payload, alias_grouping)
-        if chart_type in {"bar", "column", "line", "area"}
-        else None,
+        "grouping": grouping,
         "of_pie_type": of_pie_type,
         "line_style": line_style,
         "radar_marker_style": radar_marker_style,
@@ -418,7 +488,7 @@ def _category_chart_data(
             ),
             True,
         ),
-        "data_labels": _data_labels_config(payload),
+        "data_labels": _chart_data_labels(payload, chart_type, grouping),
         "series": series,
     }
 
@@ -475,12 +545,15 @@ def _combo_plot_entry(
             "Native PPTX combo line plot with series fill_opacity requires area_fill: true"
         )
     plot_series = fallback_series or _category_series(plot_payload, categories)
+    grouping = (
+        _chart_grouping(chart_type, plot_payload, alias_grouping)
+        if chart_type in {"area", "column", "line"}
+        else None
+    )
     entry: dict[str, Any] = {
         "axis": _combo_axis_name(plot_payload),
-        "data_labels": _data_labels_config(plot_payload),
-        "grouping": _chart_grouping(chart_type, plot_payload, alias_grouping)
-        if chart_type in {"area", "column", "line"}
-        else None,
+        "data_labels": _chart_data_labels(plot_payload, chart_type, grouping),
+        "grouping": grouping,
         "series": plot_series,
         "type": chart_type,
     }
@@ -523,7 +596,11 @@ def _combo_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
                 previous.get("line_style"),
                 previous.get("type"),
             ) if previous else None
-            if previous is not None and signature == previous_signature:
+            if (
+                previous is not None
+                and signature == previous_signature
+                and plot.get("data_labels") == previous.get("data_labels")
+            ):
                 previous["series"].extend(plot["series"])
             else:
                 plots.append(plot)
@@ -684,6 +761,8 @@ def _chartex_chart_data(payload: dict[str, Any], chart_type: str) -> dict[str, A
 
 
 def _stock_chart_data(payload: dict[str, Any]) -> dict[str, Any]:
+    if _data_labels_config(payload) is not None:
+        raise RuntimeError("Native PPTX stock chart data labels are outside current support")
     categories = [
         _chart_number(item)
         for item in _chart_list(payload.get("categories", payload.get("dates", [])), "categories")
@@ -725,6 +804,10 @@ def _xy_chart_data(
     chart_type: str,
     alias_style: str | None,
 ) -> dict[str, Any]:
+    if _data_labels_config(payload) is not None:
+        raise RuntimeError(
+            f"Native PPTX {chart_type} chart data labels are outside current support"
+        )
     raw_series = payload.get("series", [])
     if not isinstance(raw_series, list) or not raw_series:
         raise RuntimeError("Native PPTX XY chart requires non-empty series")
@@ -789,6 +872,13 @@ def _xy_chart_data(
 
 def _chart_data(payload: dict[str, Any]) -> dict[str, Any]:
     chart_type, alias_grouping, alias_style = _chart_kind(payload)
+    if (
+        chart_type not in _CATEGORY_CHART_TYPES | {"combo", "stock"} | _XY_CHART_TYPES
+        and _data_labels_config(payload) is not None
+    ):
+        raise RuntimeError(
+            f"Native PPTX {chart_type} chart data labels are outside current support"
+        )
     if chart_type == "combo":
         return _combo_chart_data(payload)
     if chart_type in _CHARTEX_CHART_TYPES:

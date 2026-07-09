@@ -43,7 +43,7 @@ python3 scripts/update_repo.py
 
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
-| Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py` | [docs/conversion.md](./docs/conversion.md) |
+| Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -62,6 +62,7 @@ python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
 python3 scripts/source_to_md/doc_to_md.py <file.docx>
 python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
 python3 scripts/source_to_md/web_to_md.py <url>
+python3 scripts/pptx_to_svg.py <deck.pptx> -o <output_dir>  # reconstruction/reference SVG import
 ```
 
 Project setup:
@@ -115,7 +116,9 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 `finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
 
-Native `svg_to_pptx.py` also defaults to `--pptx-structure baseline`: the generated deck keeps a standard master/layout relationship and promotes identical native slide backgrounds into the slide master. Repeated top-level SVG elements with chrome-oriented ids such as `logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber`, or `slideNumber` are also promoted when their generated OOXML is identical on every slide sharing a master; image relationships are copied to the master. Use `--pptx-structure flat` only when debugging or comparing fully slide-local output.
+Native `svg_to_pptx.py` also defaults to `--pptx-structure baseline`: the generated deck keeps a standard master/layout relationship and promotes identical native slide backgrounds into the slide master. A shared leading prefix of top-level SVG elements with exact chrome id tokens such as `logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber`, or `slideNumber` may also be promoted when its generated OOXML is identical, it is not referenced by slide timing, and moving it behind slide-local content preserves z-order; image relationships are copied to the master. Use `--pptx-structure flat` when all generated backgrounds and chrome must remain slide-local for debugging or comparison.
+
+`pptx_to_svg.py` annotates supported unmerged tables and conservative classic-chart caches with `data-pptx-native` metadata. Source table-style inheritance, supported solid cell fills/basic text formatting, chart title/legend/axis titles, and plot-level data-label flags for area/bar/column/line charts are retained when the current schema can represent them. Tables with direct borders, non-solid fills, or mixed rich-text formatting remain fallback-only, as do charts with unsupported label scopes/types, custom axis semantics, trendlines/error bars, or subtype options. Unsupported objects keep their SVG preview (or an explicit placeholder when the source has no baked preview) and carry `data-pptx-native-status`; `svg_quality_checker.py` and `svg_to_pptx.py --native-objects` report those fallback-only objects as warnings.
 
 Image generation:
 
@@ -139,7 +142,7 @@ python3 scripts/update_repo.py --skip-pip
 - Keep one user-facing entry point per workflow at the top level of `scripts/`
 - Move provider-specific or helper internals into subdirectories
 - Prefer the unified entry points `project_manager.py`, `finalize_svg.py`, and `image_gen.py`
-- Prefer `svg_final/` over `svg_output/` when exporting
+- Use `svg_output/` for native export and `svg_final/` for SVG snapshot/preview export
 
 ## Related Docs
 

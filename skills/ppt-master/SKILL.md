@@ -672,13 +672,14 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `--pptx-structure baseline`: the package keeps the real slide master/layout
 > relationship from the base deck and promotes identical native slide
 > backgrounds into the slide master, so ordinary decks do not repeat safe shared
-> background fills on every slide. Baseline also promotes repeated top-level SVG
-> elements whose `id` clearly marks page chrome (`logo`, `footer`, `header`,
-> `watermark`, `chrome`, `pageNumber` / `slideNumber`) when the generated OOXML
-> is identical on every slide sharing the same master; image relationships are
-> copied to the master. Add `--pptx-structure flat` only for
-> debugging/comparison when every background and chrome element must remain
-> slide-local.
+> background fills on every slide. Baseline may also promote a shared **leading**
+> prefix of top-level SVG elements whose exact id tokens mark page chrome
+> (`logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber` /
+> `slideNumber`). Promotion requires identical generated OOXML on every slide
+> sharing the master, no slide-timing reference, and z-order safety; overlay
+> chrome stays slide-local. Image relationships for promoted chrome are copied to
+> the master. Add `--pptx-structure flat` only for debugging/comparison when all
+> generated backgrounds and chrome must remain slide-local.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
@@ -695,7 +696,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > PowerPoint-editable native tables/charts and accepts that those objects may
 > render differently across PowerPoint / Keynote / LibreOffice / WPS. Without
 > the flag, marked groups export through their SVG fallback children like
-> ordinary SVG content.
+> ordinary SVG content. Imported objects that carry
+> `data-pptx-native-status` are fallback-only; the quality checker and
+> `--native-objects` export surface their reason as warnings rather than silently
+> claiming editability.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
