@@ -672,8 +672,13 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `--pptx-structure baseline`: the package keeps the real slide master/layout
 > relationship from the base deck and promotes identical native slide
 > backgrounds into the slide master, so ordinary decks do not repeat safe shared
-> background fills on every slide. Add `--pptx-structure flat` only for
-> debugging/comparison when every background must remain slide-local.
+> background fills on every slide. Baseline also promotes repeated top-level SVG
+> elements whose `id` clearly marks page chrome (`logo`, `footer`, `header`,
+> `watermark`, `chrome`, `pageNumber` / `slideNumber`) when the generated OOXML
+> is identical on every slide sharing the same master; image relationships are
+> copied to the master. Add `--pptx-structure flat` only for
+> debugging/comparison when every background and chrome element must remain
+> slide-local.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
