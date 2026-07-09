@@ -16,8 +16,10 @@ Dependencies:
 """
 
 import json
+import logging
 import os
 import socket
+import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -38,6 +40,40 @@ def find_free_port(preferred: int, host: str = '127.0.0.1', span: int = 50) -> i
             except OSError:
                 continue
     return preferred
+
+
+def popen_detached(
+    args: list[str],
+    *,
+    logger: Optional[logging.Logger] = None,
+    **kwargs: object,
+) -> subprocess.Popen:
+    """Start a long-running child process detached from the caller.
+
+    Windows hosts such as terminal sandboxes may place child processes in the
+    caller's Job Object. ``CREATE_BREAKAWAY_FROM_JOB`` lets the local UI server
+    survive after the launcher command returns; when that flag is forbidden, the
+    function falls back to the previous detached-process flags.
+    """
+    if os.name != 'nt':
+        return subprocess.Popen(args, start_new_session=True, **kwargs)
+
+    base_flags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+    breakaway_flag = getattr(subprocess, 'CREATE_BREAKAWAY_FROM_JOB', 0x01000000)
+    try:
+        return subprocess.Popen(
+            args,
+            creationflags=base_flags | breakaway_flag,
+            **kwargs,
+        )
+    except OSError as exc:
+        if logger is not None:
+            logger.warning(
+                'Windows process breakaway failed; falling back to detached '
+                'process-group launch (%s)',
+                exc,
+            )
+        return subprocess.Popen(args, creationflags=base_flags, **kwargs)
 
 
 def process_alive(pid: int) -> bool:
