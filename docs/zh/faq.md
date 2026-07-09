@@ -52,6 +52,17 @@ python3 skills/ppt-master/scripts/update_repo.py
 
 如果当前目录不是 Git clone 版本，脚本会提示你按 ZIP 方式迁移。
 
+## Q: 仓库超过 1 GB，skills 工具下载直接失败——能只拿 skill 吗？
+
+可以。完整仓库确实很大（Git 历史，加上内置的示例 deck 及其素材），而且这个体积是写进历史里的——在不破坏已有大量 fork 的前提下没法瘦身。如果你只想要 skill、不需要完整仓库，用下面的轻量方式：
+
+- **Marketplace CLI**：`npx skills add hugohe3/ppt-master`，或 Claude Code 里的 `/plugin install`，都只拉取 skill 文件（见 README 的「开始设置」一节）。
+- **手动下载**：到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载 `ppt-master-skill-*.zip`——只含 skill 文件（约 50 MB），无需 clone 完整仓库。
+
+两种方式装好后，都要在安装目录跑 `pip install -r requirements.txt`，后处理脚本才能工作。
+
+中国大陆地区访问 GitHub 下载不便的话，完整仓库在 [AtomGit](https://atomgit.com/hugohe3/ppt-master) 也有镜像（clone 或下载 ZIP）；1 GB 出头的体积在中国大陆地区网络下载一般没问题。
+
 ## Q: 能用 AI 生成配图吗？
 
 可以。PPT Master 内置了图片生成脚本，支持多个供应商（Gemini、OpenAI、FLUX、通义千问、智谱等）。在策略师阶段选择"AI 生图"方案后，流程会根据内容自动生成配图。你也可以使用自己的图片——只需放到项目的 `images/` 目录下即可。
