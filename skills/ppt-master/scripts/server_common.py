@@ -9,7 +9,7 @@ cross-platform process-liveness check and the claim/read/release lock logic so
 the two servers cannot drift apart.
 
 Usage:
-    from server_common import process_alive, read_lock, claim_lock, release_lock, find_free_port
+    from server_common import process_alive, read_lock, lock_pid, claim_lock, release_lock, clear_lock, find_free_port
 
 Dependencies:
     None (only uses standard library)
@@ -76,7 +76,7 @@ def popen_detached(
         return subprocess.Popen(args, creationflags=base_flags, **kwargs)
 
 
-def process_alive(pid: int) -> bool:
+def process_alive(pid: object) -> bool:
     """Return True if a process with this pid is reachable.
 
     On POSIX, ``os.kill(pid, 0)`` succeeds when the process exists even without
@@ -84,7 +84,11 @@ def process_alive(pid: int) -> bool:
     alive. On Windows there is no ``os.kill(pid, 0)`` equivalent, so probe via
     ``OpenProcess`` + ``WaitForSingleObject``.
     """
-    if pid <= 0:
+    try:
+        pid_int = int(pid)
+    except (TypeError, ValueError):
+        return False
+    if pid_int <= 0:
         return False
     if os.name == 'nt':
         import ctypes
@@ -114,7 +118,7 @@ def process_alive(pid: int) -> bool:
         handle = kernel32.OpenProcess(
             process_query_limited_information | synchronize,
             False,
-            pid,
+            pid_int,
         )
         if not handle:
             return ctypes.get_last_error() == 5  # ERROR_ACCESS_DENIED
@@ -129,7 +133,7 @@ def process_alive(pid: int) -> bool:
             kernel32.CloseHandle(handle)
 
     try:
-        os.kill(pid, 0)
+        os.kill(pid_int, 0)
     except ProcessLookupError:
         return False
     except PermissionError:
@@ -148,6 +152,20 @@ def read_lock(lock_file: Path) -> Optional[dict]:
         return None
 
 
+def lock_pid(lock: Optional[dict]) -> int:
+    """Return a valid pid from a lock dict, or 0 if absent/corrupt."""
+    if not lock:
+        return 0
+    raw_pid = lock.get('pid', 0)
+    if isinstance(raw_pid, bool):
+        return 0
+    if isinstance(raw_pid, int):
+        return raw_pid if raw_pid > 0 else 0
+    if isinstance(raw_pid, str) and raw_pid.strip().isdigit():
+        return int(raw_pid.strip())
+    return 0
+
+
 def claim_lock(lock_file: Path, port: int) -> Optional[dict]:
     """Try to claim the per-project preview slot.
 
@@ -156,7 +174,7 @@ def claim_lock(lock_file: Path, port: int) -> Optional[dict]:
     A stale lock (pointing at a dead pid) is silently overwritten.
     """
     existing = read_lock(lock_file)
-    if existing and process_alive(int(existing.get('pid', 0))):
+    if existing and process_alive(lock_pid(existing)):
         return existing
     lock_file.write_text(
         json.dumps({'pid': os.getpid(), 'port': port}),
@@ -169,7 +187,15 @@ def release_lock(lock_file: Path) -> None:
     """Best-effort cleanup: only delete the lock if it still names *us*."""
     try:
         current = read_lock(lock_file)
-        if current and int(current.get('pid', 0)) == os.getpid():
+        if lock_pid(current) == os.getpid():
             lock_file.unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
+def clear_lock(lock_file: Path) -> None:
+    """Best-effort cleanup for a lock already proven stale by the caller."""
+    try:
+        lock_file.unlink(missing_ok=True)
     except OSError:
         pass

@@ -62,7 +62,9 @@ if str(_ROOT_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
+    clear_lock as _clear_lock,
     find_free_port as _find_free_port,
+    lock_pid as _lock_pid,
     popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
@@ -129,8 +131,7 @@ def _cache_put(cache: dict, lock: threading.Lock, path: str, mtime: float, value
         cache[path] = (mtime, value)
 
 
-# Lock / liveness helpers are shared with confirm_ui via server_common
-# (imported above as _process_alive / _read_lock / _claim_lock / _release_lock).
+# Lock / liveness helpers are shared with confirm_ui via server_common.
 
 
 def _inline_icons(content: str) -> tuple[str, list[dict]]:
@@ -889,7 +890,7 @@ def _legacy_live_lock(project_path: Path) -> Optional[dict]:
     """Return a live legacy root lock, if one exists."""
     legacy_lock = project_path / LEGACY_LOCK_FILE_NAME
     existing = _read_lock(legacy_lock)
-    if existing and _process_alive(int(existing.get('pid', 0))):
+    if existing and _process_alive(_lock_pid(existing)):
         return existing
     return None
 
@@ -906,13 +907,13 @@ def _shutdown_existing(project_path: Path) -> int:
         logger.info('no live preview server running — nothing to stop')
         return 0
 
-    pid = int(existing.get('pid', 0) or 0)
+    pid = _lock_pid(existing)
     try:
         port = int(existing.get('port', 0) or 0)
     except (TypeError, ValueError):
         port = 0
     if not _process_alive(pid):
-        _release_lock(lock_file)
+        _clear_lock(lock_file)
         logger.info('live preview already stopped; cleared stale lock')
         return 0
 
@@ -937,7 +938,7 @@ def _shutdown_existing(project_path: Path) -> int:
             os.kill(pid, signal.SIGTERM)
         except OSError:
             pass
-    _release_lock(lock_file)
+    _clear_lock(lock_file)
     logger.info('live preview server stopped (pid=%s)', pid)
     return 0
 
@@ -1073,7 +1074,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     if args.daemon:
         existing = _read_lock(lock_file)
-        if existing and _process_alive(int(existing.get('pid', 0))):
+        if existing and _process_alive(_lock_pid(existing)):
             existing_pid = existing.get('pid', '?')
             existing_port = existing.get('port', '?')
             logger.error(
