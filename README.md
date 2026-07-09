@@ -246,11 +246,7 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 
 ### 3. Set Up
 
-**Option A — Download ZIP** (no Git required; best for a quick trial): click **Code → Download ZIP** on the [GitHub page](https://github.com/elvisw/ppt-master), then unzip.
-
-If you plan to keep using PPT Master and update it over time, use Git clone instead.
-
-**Option B — Git clone** (recommended; requires [Git](https://git-scm.com/downloads) installed):
+**Option A — Git clone** (recommended; requires [Git](https://git-scm.com/downloads) installed): the preferred path, since a clone can pull the latest version at any time.
 
 ```bash
 git clone https://github.com/elvisw/ppt-master.git
@@ -262,6 +258,8 @@ The CLI tool is published on PyPI — `uvx ppt-master <command>` downloads and r
 ```bash
 uv sync
 ```
+
+**Option B — Download ZIP** (no Git required; best for a quick trial): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip, and install dependencies with `pip install -r requirements.txt`. A ZIP has no Git history, so it can't `git pull` — see Updating Later. If that download is too large or fails, grab the skill-only package `ppt-master-skill-*.zip` (~50 MB, fully functional but without the bundled example decks) from the [Releases](https://github.com/hugohe3/ppt-master/releases) page instead.
 
 #### Updating Later
 

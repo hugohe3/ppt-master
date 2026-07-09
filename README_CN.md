@@ -250,15 +250,13 @@ PPT Master 在**任何具备 agent 能力**（可读写文件、执行命令、�
 
 ### 3. 配置项目
 
-**方式 A — 下载 ZIP**（无需安装 Git，适合快速体验）：
-[GitHub](https://github.com/elvisw/ppt-master) → **Code → Download ZIP** · [AtomGit](https://atomgit.com/hugohe3/ppt-master) → **克隆/下载 → 下载ZIP**（国内网速更快）
-
-如果你打算长期使用并持续更新，推荐使用下面的 Git clone 方式。
-
-**方式 B — Git clone**（推荐；需先安装 [Git](https://git-scm.com/downloads)）：
+**方式 A — Git clone**（推荐；需先安装 [Git](https://git-scm.com/downloads)）：首选这种方式，因为 clone 可以随时拉取最新版本。
 
 ```bash
+# GitHub
 git clone https://github.com/elvisw/ppt-master.git
+# AtomGit（中国大陆地区网速更快）
+git clone https://atomgit.com/hugohe3/ppt-master.git
 cd ppt-master
 ```
 
@@ -267,6 +265,11 @@ CLI 工具已发布到 PyPI，`uvx ppt-master <command>` 自动下载运行，�
 ```bash
 uv sync
 ```
+
+**方式 B — 下载 ZIP**（无需安装 Git，适合快速体验）：
+[GitHub](https://github.com/hugohe3/ppt-master) → **Code → Download ZIP** · [AtomGit](https://atomgit.com/hugohe3/ppt-master) → **克隆/下载 → 下载ZIP**（中国大陆地区访问 GitHub 下载不便时用这个，网速更快）；解压后同样用 `pip install -r requirements.txt` 装依赖。ZIP 没有 Git 历史，不能自动 `git pull`（更新见下）。
+
+如果完整仓库下载失败、或嫌体积太大，可以改到 [Releases](https://github.com/hugohe3/ppt-master/releases) 页面下载纯技能包 `ppt-master-skill-*.zip`（约 50 MB，功能完整，但不含内置示例 deck）。
 
 #### 日常更新
 
