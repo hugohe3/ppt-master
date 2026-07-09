@@ -37,7 +37,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
     ├── [Quality Check] svg_quality_checker.py (mandatory — must pass with 0 errors)
     └── Notes generation: complete speaker notes → notes/total.md
     ↓
-[Chart calibration (optional)] → verify-charts workflow (for decks containing data charts)
+[Chart calibration (conditional)] → verify-charts workflow (required for decks containing data charts)
     ↓
 [Visual self-check (optional, opt-in)] → visual-review workflow (only when the user explicitly requests it)
     ↓
@@ -101,7 +101,7 @@ Source documents (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text) are converted into
 The Executor role generates each slide as an SVG file. The output of this stage is a **design draft**, not a finished product.
 
 **Stage 3 — Engineering Conversion**
-Post-processing scripts convert SVG to DrawingML. Every shape becomes a real native PowerPoint object — clickable, editable, recolorable — not an embedded image.
+Post-processing scripts convert supported SVG vector elements to DrawingML. Text and vector shapes stay native PowerPoint objects — clickable, editable, and restylable — while raster assets are copied as PPT picture media instead of flattening the slide into one image.
 
 ---
 
@@ -370,9 +370,9 @@ The architectural reasons worth knowing here:
 
 > Why each artifact and module exists in the engineering conversion stage, and which workflows would break if you delete it. Read this before considering any simplification of `svg_final/` / `finalize_svg.py` / `svg_to_pptx.py`.
 
-### Five artifacts, five workflows
+### Delivery artifacts and workflows
 
-The post-processing stage works with five artifacts. Each one serves a workflow that nothing else in the pipeline can replace.
+The post-processing and export stages work with distinct artifacts. Each one serves a workflow that nothing else in the pipeline can replace.
 
 | Artifact | Workflow it serves | Why nothing else replaces it |
 | --- | --- | --- |
@@ -425,7 +425,7 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why per-element dispatch, not whole-file translation.** SVG's hierarchical model maps cleanly onto DrawingML's group / shape / picture types — there's no need for a holistic optimizer that re-plans the slide. Each shape kind gets its own narrow translator, which keeps each translator simple enough to debug and unit-test in isolation. The output quality of a slide is the sum of independent local conversions; that property is fragile under whole-file translation but robust under element dispatch.
 
-**Why Office compatibility mode is on by default.** PowerPoint versions before 2019 can't render SVG natively. The converter generates a per-slide PNG fallback and embeds it alongside the native shapes — newer Office still shows editable shapes, older Office falls back to the PNG. The default-on choice trades a moderate file-size cost for not silently shipping unopenable decks to users on legacy installs; the escape hatch exists for users who know they're on a modern stack and want the smaller file.
+**Why compatibility fallback belongs to the SVG snapshot path, not native shapes.** Native PPTX export translates supported SVG elements into DrawingML shapes and explicitly disables PNG+SVG compatibility mode in native-shapes mode. The PNG fallback is used only by the legacy SVG-image path (`--svg-snapshot` / `--only legacy`) when a renderer is available, because that path embeds SVG media that older Office builds may not display. Legacy compatibility is therefore an optional snapshot deliverable, not a fallback bundled inside the primary editable native deck.
 
 ---
 
