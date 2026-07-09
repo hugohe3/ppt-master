@@ -77,6 +77,15 @@ SLIDE_LAYOUT_REL_TYPE = (
 SLIDE_MASTER_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
 )
+PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
+DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+
+for _prefix, _uri in (("p", PML_NS), ("a", DML_NS), ("r", REL_NS)):
+    try:
+        ET.register_namespace(_prefix, _uri)
+    except (ValueError, AttributeError):
+        pass
 
 
 @dataclass(frozen=True)
@@ -132,6 +141,32 @@ def _find_relationship_target(
         attrs = _relationship_attrs(elem)
         if attrs.get("Type") == rel_type:
             return attrs.get("Target")
+    return None
+
+
+def _read_relationships(rels_path: Path) -> dict[str, dict[str, str]]:
+    """Return relationship attributes keyed by rId."""
+    if not rels_path.exists():
+        return {}
+    root = ET.parse(rels_path).getroot()
+    rels: dict[str, dict[str, str]] = {}
+    for elem in root:
+        attrs = _relationship_attrs(elem)
+        rel_id = attrs.get("Id")
+        if rel_id:
+            rels[rel_id] = attrs
+    return rels
+
+
+def _find_relationship_id(
+    rels_path: Path,
+    rel_type: str,
+    target: str,
+) -> str | None:
+    """Find an existing relationship by type and target."""
+    for rel_id, attrs in _read_relationships(rels_path).items():
+        if attrs.get("Type") == rel_type and attrs.get("Target") == target:
+            return rel_id
     return None
 
 
@@ -253,6 +288,304 @@ def _promote_common_slide_backgrounds_to_masters(
 
     if verbose and promoted:
         print(f"  Baseline master background: promoted {promoted} slide background(s)")
+    return promoted
+
+
+_CHROME_TRACE_TOKENS = (
+    "logo",
+    "footer",
+    "header",
+    "watermark",
+    "chrome",
+    "pagenumber",
+    "slidenumber",
+    "pagenum",
+)
+_TOP_LEVEL_SHAPE_TAGS = {
+    f"{{{PML_NS}}}sp",
+    f"{{{PML_NS}}}grpSp",
+    f"{{{PML_NS}}}pic",
+    f"{{{PML_NS}}}cxnSp",
+    f"{{{PML_NS}}}graphicFrame",
+}
+_REL_ATTRS = {
+    f"{{{REL_NS}}}embed",
+    f"{{{REL_NS}}}link",
+    f"{{{REL_NS}}}id",
+}
+
+
+def _chrome_token_from_svg_id(svg_id: str | None) -> str | None:
+    """Return the baseline chrome token encoded in a source SVG id."""
+    if not svg_id:
+        return None
+    lower = svg_id.lower()
+    compact = re.sub(r"[-_\s]+", "", lower)
+    split_tokens = {token for token in re.split(r"[-_\s]+", lower) if token}
+    for token in _CHROME_TRACE_TOKENS:
+        if token in split_tokens or token in compact:
+            return token
+    return None
+
+
+def _trace_chrome_shape_ids(
+    trace: dict[str, Any] | None,
+) -> dict[str, list[str]]:
+    """Map chrome token to generated top-level shape ids for one slide."""
+    result: dict[str, list[str]] = {}
+    if not trace:
+        return result
+    for event in trace.get("events", []):
+        if event.get("decision") != "native":
+            continue
+        token = _chrome_token_from_svg_id(event.get("id"))
+        shape_id = event.get("shape_id")
+        if token and shape_id is not None:
+            result.setdefault(token, []).append(str(shape_id))
+    return result
+
+
+def _shape_id(elem: ET.Element) -> str | None:
+    for cnv in elem.iter(f"{{{PML_NS}}}cNvPr"):
+        return cnv.attrib.get("id")
+    return None
+
+
+def _top_level_shapes_by_id(root: ET.Element) -> dict[str, ET.Element]:
+    sp_tree = root.find(f".//{{{PML_NS}}}cSld/{{{PML_NS}}}spTree")
+    if sp_tree is None:
+        return {}
+    shapes: dict[str, ET.Element] = {}
+    for child in list(sp_tree):
+        if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
+            continue
+        shape_id = _shape_id(child)
+        if shape_id:
+            shapes[shape_id] = child
+    return shapes
+
+
+def _relationship_ids_in_shape(elem: ET.Element) -> set[str]:
+    rel_ids: set[str] = set()
+    for node in elem.iter():
+        for attr_name, value in node.attrib.items():
+            if attr_name in _REL_ATTRS and value:
+                rel_ids.add(value)
+    return rel_ids
+
+
+def _shape_relationships_supported(
+    elem: ET.Element,
+    rels: dict[str, dict[str, str]],
+) -> bool:
+    """Only image relationships are safe to copy into a slide master here."""
+    for rel_id in _relationship_ids_in_shape(elem):
+        attrs = rels.get(rel_id)
+        if not attrs:
+            return False
+        if attrs.get("TargetMode"):
+            return False
+        if attrs.get("Type") != IMAGE_REL_TYPE:
+            return False
+    return True
+
+
+def _canonical_shape_xml(
+    elem: ET.Element,
+    rels: dict[str, dict[str, str]],
+) -> bytes:
+    """Canonicalize ids and relationship ids for cross-slide equality."""
+    clone = ET.fromstring(ET.tostring(elem, encoding="utf-8"))
+    for cnv in clone.iter(f"{{{PML_NS}}}cNvPr"):
+        cnv.set("id", "ID")
+    for node in clone.iter():
+        for attr_name, value in list(node.attrib.items()):
+            if attr_name not in _REL_ATTRS:
+                continue
+            attrs = rels.get(value, {})
+            node.set(
+                attr_name,
+                f"{attrs.get('Type', '')}|{attrs.get('Target', '')}",
+            )
+    return ET.tostring(clone, encoding="utf-8")
+
+
+def _ensure_relationship(
+    rels_path: Path,
+    rel_type: str,
+    target: str,
+) -> str:
+    existing = _find_relationship_id(rels_path, rel_type, target)
+    if existing:
+        return existing
+    return _append_relationship(rels_path, rel_type, target)
+
+
+def _copy_shape_relationships_to_master(
+    elem: ET.Element,
+    slide_rels: dict[str, dict[str, str]],
+    master_rels_path: Path,
+) -> ET.Element:
+    """Clone a shape and retarget supported relationship ids to the master."""
+    clone = ET.fromstring(ET.tostring(elem, encoding="utf-8"))
+    for node in clone.iter():
+        for attr_name, value in list(node.attrib.items()):
+            if attr_name not in _REL_ATTRS:
+                continue
+            rel = slide_rels.get(value)
+            if not rel:
+                raise RuntimeError(f"Missing slide relationship for {value}")
+            new_rid = _ensure_relationship(
+                master_rels_path,
+                rel["Type"],
+                rel["Target"],
+            )
+            node.set(attr_name, new_rid)
+    return clone
+
+
+def _next_master_shape_id(master_xml: str) -> int:
+    ids = [
+        int(match)
+        for match in re.findall(r"<p:cNvPr\b[^>]*\bid=\"(\d+)\"", master_xml)
+    ]
+    return max(ids, default=1) + 1
+
+
+def _renumber_shape_ids(elem: ET.Element, start_id: int) -> None:
+    next_id = start_id
+    for cnv in elem.iter(f"{{{PML_NS}}}cNvPr"):
+        cnv.set("id", str(next_id))
+        next_id += 1
+
+
+def _append_shape_to_master(master_path: Path, elem: ET.Element) -> None:
+    master_xml = master_path.read_text(encoding="utf-8")
+    _renumber_shape_ids(elem, _next_master_shape_id(master_xml))
+    shape_xml = ET.tostring(elem, encoding="unicode")
+    if "</p:spTree>" not in master_xml:
+        raise RuntimeError(f"Slide master has no p:spTree: {master_path}")
+    master_path.write_text(
+        master_xml.replace("</p:spTree>", f"{shape_xml}\n</p:spTree>", 1),
+        encoding="utf-8",
+    )
+
+
+def _write_xml_tree(path: Path, tree: ET.ElementTree) -> None:
+    tree.write(path, encoding="utf-8", xml_declaration=True)
+
+
+def _promote_common_chrome_shapes_to_masters(
+    extract_dir: Path,
+    structure: PptxStructureContext,
+    slide_count: int,
+    conversion_traces: list[dict[str, Any]] | None,
+    *,
+    verbose: bool = False,
+) -> int:
+    """Promote explicit repeated chrome SVG ids to their shared master."""
+    if not conversion_traces:
+        return 0
+    trace_by_slide = {
+        int(trace.get("slide_num", 0)): trace
+        for trace in conversion_traces
+        if trace.get("slide_num") is not None
+    }
+    if len(trace_by_slide) < slide_count:
+        return 0
+
+    slides_by_master: dict[str, list[int]] = {}
+    for slide_num in range(1, slide_count + 1):
+        master_part = structure.slide_master_part(slide_num)
+        slides_by_master.setdefault(master_part, []).append(slide_num)
+
+    promoted = 0
+    promoted_roles = 0
+    for master_part, slide_nums in slides_by_master.items():
+        if len(slide_nums) < 2:
+            continue
+        slide_state: dict[int, dict[str, Any]] = {}
+        for slide_num in slide_nums:
+            slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+            rels_path = extract_dir / "ppt" / "slides" / "_rels" / f"slide{slide_num}.xml.rels"
+            tree = ET.parse(slide_path)
+            root = tree.getroot()
+            slide_state[slide_num] = {
+                "path": slide_path,
+                "rels": _read_relationships(rels_path),
+                "root": root,
+                "shapes": _top_level_shapes_by_id(root),
+                "tokens": _trace_chrome_shape_ids(trace_by_slide.get(slide_num)),
+                "tree": tree,
+            }
+
+        promotions: list[tuple[str, dict[int, str]]] = []
+        all_tokens = sorted({
+            token
+            for state in slide_state.values()
+            for token in state["tokens"]
+        })
+        for token in all_tokens:
+            shape_ids_by_slide: dict[int, str] = {}
+            canonical_by_slide: dict[int, bytes] = {}
+            for slide_num in slide_nums:
+                state = slide_state[slide_num]
+                shape_ids = state["tokens"].get(token, [])
+                if len(shape_ids) != 1:
+                    shape_ids_by_slide = {}
+                    break
+                shape_id = shape_ids[0]
+                shape = state["shapes"].get(shape_id)
+                if shape is None:
+                    shape_ids_by_slide = {}
+                    break
+                if not _shape_relationships_supported(shape, state["rels"]):
+                    shape_ids_by_slide = {}
+                    break
+                shape_ids_by_slide[slide_num] = shape_id
+                canonical_by_slide[slide_num] = _canonical_shape_xml(
+                    shape,
+                    state["rels"],
+                )
+            if set(shape_ids_by_slide) != set(slide_nums):
+                continue
+            if len(set(canonical_by_slide.values())) != 1:
+                continue
+            promotions.append((token, shape_ids_by_slide))
+
+        if not promotions:
+            continue
+
+        master_path = extract_dir / master_part
+        master_rels_path = _relationships_path_for_part(extract_dir, master_part)
+        for _token, shape_ids_by_slide in promotions:
+            first_slide = slide_nums[0]
+            first_state = slide_state[first_slide]
+            shape = first_state["shapes"][shape_ids_by_slide[first_slide]]
+            master_shape = _copy_shape_relationships_to_master(
+                shape,
+                first_state["rels"],
+                master_rels_path,
+            )
+            _append_shape_to_master(master_path, master_shape)
+            promoted_roles += 1
+
+            for slide_num, shape_id in shape_ids_by_slide.items():
+                state = slide_state[slide_num]
+                shape_to_remove = state["shapes"].get(shape_id)
+                sp_tree = state["root"].find(f".//{{{PML_NS}}}cSld/{{{PML_NS}}}spTree")
+                if sp_tree is not None and shape_to_remove is not None:
+                    sp_tree.remove(shape_to_remove)
+                    promoted += 1
+
+        for state in slide_state.values():
+            _write_xml_tree(state["path"], state["tree"])
+
+    if verbose and promoted:
+        print(
+            "  Baseline master chrome: "
+            f"promoted {promoted} slide shape(s) across {promoted_roles} shared object(s)"
+        )
     return promoted
 
 
@@ -1005,6 +1338,9 @@ def create_pptx_with_native_svg(
         audio_exts_used: set[str] = set()
         mixed_animation_offset = 0
         conversion_trace: list[dict[str, Any]] | None = [] if conversion_trace_path else None
+        structure_trace: list[dict[str, Any]] | None = (
+            [] if use_native_shapes and pptx_structure == "baseline" else None
+        )
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
@@ -1030,7 +1366,9 @@ def create_pptx_with_native_svg(
                             image_scale=image_scale,
                             image_quality=image_quality,
                             native_objects=native_objects,
-                            trace_out=conversion_trace,
+                            trace_out=conversion_trace
+                            if conversion_trace is not None
+                            else structure_trace,
                         )
                     )
                     slide_transition, slide_transition_duration, slide_auto_advance = (
@@ -1352,6 +1690,13 @@ def create_pptx_with_native_svg(
                 extract_dir,
                 structure,
                 len(svg_files),
+                verbose=verbose,
+            )
+            _promote_common_chrome_shapes_to_masters(
+                extract_dir,
+                structure,
+                len(svg_files),
+                conversion_trace if conversion_trace is not None else structure_trace,
                 verbose=verbose,
             )
 
