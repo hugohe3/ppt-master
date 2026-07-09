@@ -110,17 +110,20 @@ Transition effects (-t/--transition):
 Per-element entrance animation (-a/--animation, native shapes mode):
     {', '.join(animation_choices)}
     Notes: applied to top-level <g id="..."> SVG groups in z-order. Default is
-           "auto" (map effect from group id: chart→wipe, card-/step-/pillar-→fly,
-           title/takeaway→fade; image-like ids hero/figure-/image/img-/kpi cycle
-           zoom/dissolve/circle/box/diamond/wheel so multiple images vary across
-           the deck; unmatched ids cycle fade/wipe/fly/zoom). Start mode set by
-           --animation-trigger, matching PowerPoint's Start dropdown:
+           "none" (no auto element builds; page transitions still apply). Use
+           "-a auto" to map effects from group id: chart→wipe,
+           card-/step-/pillar-→fly, title/takeaway→fade; image-like ids
+           hero/figure-/image/img-/kpi cycle zoom/dissolve/circle/box/diamond/
+           wheel so multiple images vary across the deck; unmatched ids cycle
+           fade/wipe/fly/zoom. Start mode set by --animation-trigger, matching
+           PowerPoint's Start dropdown:
              on-click              one presenter click per group
              with-previous         all groups start together on slide entry
              after-previous (default)  cascade on slide entry;
                                        gap = --animation-stagger seconds
            mixed (legacy) cycles a larger 16-effect pool by group order;
-           random samples from the same legacy pool. Use "-a none" to disable.
+           random samples from the same legacy pool. Use "-a none" to disable
+           element builds explicitly.
 
 Compatibility mode (enabled by default):
     - Automatically generates PNG fallback images, SVG embedded as extension
