@@ -25,40 +25,12 @@ from .elements import (
     convert_polygon, convert_polyline,
     convert_text, convert_image, convert_nested_svg,
 )
+from ..animation_config import is_chrome_id
 from ..native_objects import convert_native_object
 
 
 class SvgNativeConversionError(RuntimeError):
     """Raised when an SVG cannot be faithfully converted to native DrawingML."""
-
-
-# ---------------------------------------------------------------------------
-# Animation anchor selection
-# ---------------------------------------------------------------------------
-
-# Tokens that mark a top-level <g id="..."> as page chrome rather than animated
-# content. When any token (after splitting id on '-' and '_') matches, the group
-# is excluded from the per-element entrance animation cascade so background,
-# header/footer, decorations etc. appear together with the slide instead of
-# requiring presenter clicks.
-_CHROME_ID_TOKENS = frozenset({
-    'background', 'bg',
-    'decoration', 'decorations', 'decor',
-    'header', 'footer',
-    'chrome', 'watermark',
-    'pagenumber', 'pagenum',
-    'nav', 'logo', 'rule',
-})
-
-
-def _is_chrome_id(elem_id: str | None) -> bool:
-    if not elem_id:
-        return False
-    lower = elem_id.lower()
-    if lower.replace('-', '').replace('_', '') in _CHROME_ID_TOKENS:
-        return True
-    tokens = re.split(r'[-_]', lower)
-    return any(t in _CHROME_ID_TOKENS for t in tokens if t)
 
 
 # ---------------------------------------------------------------------------
@@ -172,7 +144,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     style_overrides = _extract_inheritable_styles(elem)
 
     elem_id = elem.get('id')
-    should_animate_group = ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id)
+    should_animate_group = ctx.depth == 0 and elem_id and not is_chrome_id(elem_id)
     visual_children = [
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS

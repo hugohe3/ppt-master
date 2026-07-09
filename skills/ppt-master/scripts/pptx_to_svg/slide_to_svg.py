@@ -670,8 +670,11 @@ def _render_graphic_table(
         ctx.defs.extend(result.defs)
     native_attrs: list[str] = ['data-pptx-native-source="pptx"']
     if result.native_payload:
+        if node.name and not result.native_payload.get("name"):
+            result.native_payload["name"] = node.name
         payload_json = json.dumps(
             result.native_payload,
+            allow_nan=False,
             ensure_ascii=False,
             separators=(",", ":"),
         )
@@ -704,6 +707,7 @@ def _render_graphic_chart(
             result.native_payload["name"] = node.name
         payload_json = json.dumps(
             result.native_payload,
+            allow_nan=False,
             ensure_ascii=False,
             separators=(",", ":"),
         )
@@ -719,8 +723,6 @@ def _render_graphic_chart(
     rendered = ""
     if ctx.render_graphic_previews:
         rendered = _render_graphic_preview(node, ctx)
-        if rendered:
-            rendered += "\n" + _graphic_preview_label(node, "chart preview")
     return rendered, native_attrs
 
 

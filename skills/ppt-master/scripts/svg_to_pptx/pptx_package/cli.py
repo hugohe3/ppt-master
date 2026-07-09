@@ -8,6 +8,7 @@ import shutil
 import argparse
 from datetime import datetime
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -40,6 +41,23 @@ except ImportError:
 
 def _as_dict(value: object) -> dict:
     return value if isinstance(value, dict) else {}
+
+
+def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]]:
+    """Return fallback-only native object statuses from SVG inputs."""
+    fallbacks: list[tuple[str, str, str]] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        for elem in root.iter():
+            status = elem.get('data-pptx-native-status')
+            if not status or elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            fallbacks.append((svg_path.name, marker_id, status))
+    return fallbacks
 
 
 def _recorded_narration_on_click_slides(
@@ -196,8 +214,9 @@ Recorded narration:
     parser.add_argument('--pptx-structure', choices=['baseline', 'flat'], default='baseline',
                         help='PPTX structure strategy for native export. baseline (default) '
                              'keeps a standard master/layout package and promotes identical '
-                             'native slide backgrounds to the slide master; flat leaves '
-                             'those backgrounds slide-local for debugging/comparison.')
+                             'native slide backgrounds plus a safe leading prefix of repeated '
+                             'chrome to the slide master; flat leaves generated backgrounds '
+                             'and chrome slide-local for debugging/comparison.')
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
                         help='Also emit the SVG-rendered snapshot pptx alongside '
                              'the native pptx in exports/ (named '
@@ -355,6 +374,19 @@ Recorded narration:
     if not ref_files:
         print("Error: No SVG files found")
         return 1
+
+    if args.native_objects:
+        fallbacks = _native_object_fallbacks(native_files)
+        if fallbacks:
+            print(
+                "Warning: --native-objects found fallback-only PPTX objects; "
+                "they will export through their SVG preview instead of editable objects.",
+                file=sys.stderr,
+            )
+            for filename, marker_id, status in fallbacks[:20]:
+                print(f"  {filename}: {marker_id} ({status})", file=sys.stderr)
+            if len(fallbacks) > 20:
+                print(f"  ... and {len(fallbacks) - 20} more", file=sys.stderr)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 

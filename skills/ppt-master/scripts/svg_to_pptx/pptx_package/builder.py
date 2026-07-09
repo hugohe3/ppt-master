@@ -300,6 +300,7 @@ _CHROME_TRACE_TOKENS = (
     "pagenumber",
     "slidenumber",
     "pagenum",
+    "slidenum",
 )
 _TOP_LEVEL_SHAPE_TAGS = {
     f"{{{PML_NS}}}sp",
@@ -321,9 +322,11 @@ def _chrome_token_from_svg_id(svg_id: str | None) -> str | None:
         return None
     lower = svg_id.lower()
     compact = re.sub(r"[-_\s]+", "", lower)
+    if compact in _CHROME_TRACE_TOKENS:
+        return compact
     split_tokens = {token for token in re.split(r"[-_\s]+", lower) if token}
     for token in _CHROME_TRACE_TOKENS:
-        if token in split_tokens or token in compact:
+        if token in split_tokens:
             return token
     return None
 
@@ -341,7 +344,10 @@ def _trace_chrome_shape_ids(
         token = _chrome_token_from_svg_id(event.get("id"))
         shape_id = event.get("shape_id")
         if token and shape_id is not None:
-            result.setdefault(token, []).append(str(shape_id))
+            shape_ids = result.setdefault(token, [])
+            normalized_shape_id = str(shape_id)
+            if normalized_shape_id not in shape_ids:
+                shape_ids.append(normalized_shape_id)
     return result
 
 
@@ -363,6 +369,15 @@ def _top_level_shapes_by_id(root: ET.Element) -> dict[str, ET.Element]:
         if shape_id:
             shapes[shape_id] = child
     return shapes
+
+
+def _timing_shape_ids(root: ET.Element) -> set[str]:
+    """Return slide-local shape ids referenced by animation timing."""
+    return {
+        elem.attrib["spid"]
+        for elem in root.findall(f".//{{{PML_NS}}}timing//{{{PML_NS}}}spTgt")
+        if elem.attrib.get("spid")
+    }
 
 
 def _relationship_ids_in_shape(elem: ET.Element) -> set[str]:
@@ -398,6 +413,10 @@ def _canonical_shape_xml(
     clone = ET.fromstring(ET.tostring(elem, encoding="utf-8"))
     for cnv in clone.iter(f"{{{PML_NS}}}cNvPr"):
         cnv.set("id", "ID")
+        # Generated names include the slide-local shape id (for example,
+        # ``Image 2`` versus ``Image 8``) but do not affect rendering.
+        if "name" in cnv.attrib:
+            cnv.set("name", "NAME")
     for node in clone.iter():
         for attr_name, value in list(node.attrib.items()):
             if attr_name not in _REL_ATTRS:
@@ -515,11 +534,15 @@ def _promote_common_chrome_shapes_to_masters(
                 "rels": _read_relationships(rels_path),
                 "root": root,
                 "shapes": _top_level_shapes_by_id(root),
+                "timing_shape_ids": _timing_shape_ids(root),
                 "tokens": _trace_chrome_shape_ids(trace_by_slide.get(slide_num)),
                 "tree": tree,
             }
 
         promotions: list[tuple[str, dict[int, str]]] = []
+        claimed_shape_ids: dict[int, set[str]] = {
+            slide_num: set() for slide_num in slide_nums
+        }
         all_tokens = sorted({
             token
             for state in slide_state.values()
@@ -539,6 +562,9 @@ def _promote_common_chrome_shapes_to_masters(
                 if shape is None:
                     shape_ids_by_slide = {}
                     break
+                if shape_id in state["timing_shape_ids"]:
+                    shape_ids_by_slide = {}
+                    break
                 if not _shape_relationships_supported(shape, state["rels"]):
                     shape_ids_by_slide = {}
                     break
@@ -551,7 +577,55 @@ def _promote_common_chrome_shapes_to_masters(
                 continue
             if len(set(canonical_by_slide.values())) != 1:
                 continue
+            # A flattened nested chrome group can emit several semantic trace
+            # ids for the same generated DrawingML shape. Claim it once.
+            if any(
+                shape_ids_by_slide[slide_num] in claimed_shape_ids[slide_num]
+                for slide_num in slide_nums
+            ):
+                continue
+            for slide_num, shape_id in shape_ids_by_slide.items():
+                claimed_shape_ids[slide_num].add(shape_id)
             promotions.append((token, shape_ids_by_slide))
+
+        if not promotions:
+            continue
+
+        # Master shapes always render behind slide-local shapes. Preserve the
+        # original z-order by promoting only a common leading chrome prefix;
+        # overlay headers/footers remain slide-local.
+        token_by_shape_id = {
+            slide_num: {
+                shape_ids[slide_num]: token
+                for token, shape_ids in promotions
+            }
+            for slide_num in slide_nums
+        }
+        leading_token_orders: list[list[str]] = []
+        for slide_num in slide_nums:
+            order: list[str] = []
+            for shape_id in slide_state[slide_num]["shapes"]:
+                token = token_by_shape_id[slide_num].get(shape_id)
+                if token is None:
+                    break
+                order.append(token)
+            leading_token_orders.append(order)
+
+        safe_tokens = list(leading_token_orders[0])
+        for order in leading_token_orders[1:]:
+            common_length = 0
+            for expected, actual in zip(safe_tokens, order):
+                if expected != actual:
+                    break
+                common_length += 1
+            safe_tokens = safe_tokens[:common_length]
+            if not safe_tokens:
+                break
+        promotion_by_token = {token: shape_ids for token, shape_ids in promotions}
+        promotions = [
+            (token, promotion_by_token[token])
+            for token in safe_tokens
+        ]
 
         if not promotions:
             continue
@@ -612,24 +686,6 @@ def _append_relationship(
         f.write(rels_content)
 
     return next_rid
-
-
-def _find_relationship_id(
-    rels_path: Path,
-    rel_type: str,
-    target: str,
-) -> str | None:
-    """Find an existing relationship id by type and target."""
-    if not rels_path.exists():
-        return None
-    rels_content = rels_path.read_text(encoding='utf-8')
-    pattern = (
-        r'<Relationship\b[^>]*\bId="([^"]+)"[^>]*'
-        rf'\bType="{re.escape(rel_type)}"[^>]*'
-        rf'\bTarget="{re.escape(target)}"[^>]*/>'
-    )
-    match = re.search(pattern, rels_content)
-    return match.group(1) if match else None
 
 
 def _add_default_content_type(content_types: str, extension: str, content_type: str) -> str:
@@ -1159,9 +1215,9 @@ def create_pptx_with_native_svg(
     image_scale: float = 2.0,
     image_quality: int = 85,
     native_objects: bool = False,
-    pptx_structure: str = "baseline",
     conversion_trace_path: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
+    pptx_structure: str = "baseline",
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -1197,10 +1253,10 @@ def create_pptx_with_native_svg(
         image_quality: JPEG quality used for opaque optimized rasters.
         native_objects: Convert explicit ``data-pptx-native`` table/chart
             markers to native PowerPoint objects. Default off.
-        pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
-            shared native backgrounds to slide masters; ``flat`` leaves all
-            slide backgrounds slide-local for debugging/comparison.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
+        pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
+            shared native backgrounds and leading chrome to slide masters;
+            ``flat`` keeps generated backgrounds/chrome slide-local.
 
     Returns:
         Whether all slides were successfully created.

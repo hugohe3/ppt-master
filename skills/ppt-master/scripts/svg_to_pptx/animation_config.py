@@ -24,8 +24,8 @@ _CHROME_ID_TOKENS = frozenset({
     'decoration', 'decorations', 'decor',
     'header', 'footer',
     'chrome', 'watermark',
-    'pagenumber', 'pagenum',
-    'page-number',
+    'pagenumber', 'pagenum', 'slidenumber', 'slidenum',
+    'logo', 'nav', 'rule',
 })
 
 

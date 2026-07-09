@@ -476,6 +476,8 @@ def _native_chart_export_payload(
     elem: ET.Element,
     payload: dict[str, Any],
 ) -> tuple[dict[str, Any], list[str]]:
+    if elem.get("data-pptx-native-source") == "pptx":
+        return payload, []
     fallback_texts = set(_visible_fallback_texts(elem))
     output = payload
     messages: list[str] = []
