@@ -978,6 +978,20 @@ _TEXT_WIDTH_HEADROOM_BASE = 1.06
 _TEXT_WIDTH_HEADROOM_CAPS = 1.12
 _SERIF_TEXT_WIDTH_HEADROOM_BASE = 1.12
 _SERIF_TEXT_WIDTH_HEADROOM_CAPS = 1.36
+_TEXT_BULLET_MARKERS = {
+    '·': '•',
+    '•': '•',
+    '●': '●',
+    '▪': '▪',
+    '■': '■',
+    '◆': '◆',
+    '◇': '◇',
+    '◦': '◦',
+    '‣': '‣',
+}
+_TEXT_BULLET_RE = re.compile(
+    r'^(?P<prefix>\s*)(?P<marker>[·•●▪■◆◇◦‣])(?P<space>\s*)'
+)
 
 
 def _normalize_text(text: str, *, preserve_space: bool = False) -> str:
@@ -1106,6 +1120,131 @@ def _estimate_text_runs_width(
     else:
         base, ceiling = _TEXT_WIDTH_HEADROOM_BASE, _TEXT_WIDTH_HEADROOM_CAPS
     return width * (base + (ceiling - base) * caps)
+
+
+def _first_nonspace_run(runs: list[dict[str, Any]]) -> dict[str, Any] | None:
+    for run in runs:
+        if str(run.get('text', '')).strip():
+            return run
+    return None
+
+
+def _strip_leading_chars_from_runs(
+    runs: list[dict[str, Any]],
+    char_count: int,
+) -> list[dict[str, Any]]:
+    stripped: list[dict[str, Any]] = []
+    remaining = char_count
+    for run in runs:
+        text = str(run.get('text', ''))
+        if remaining >= len(text):
+            remaining -= len(text)
+            continue
+        if remaining > 0:
+            text = text[remaining:]
+            remaining = 0
+        if text:
+            stripped.append({**run, 'text': text})
+    return stripped
+
+
+def _take_leading_chars_from_runs(
+    runs: list[dict[str, Any]],
+    char_count: int,
+) -> list[dict[str, Any]]:
+    taken: list[dict[str, Any]] = []
+    remaining = char_count
+    for run in runs:
+        if remaining <= 0:
+            break
+        text = str(run.get('text', ''))
+        if remaining >= len(text):
+            prefix = text
+            remaining -= len(text)
+        else:
+            prefix = text[:remaining]
+            remaining = 0
+        if prefix:
+            taken.append({**run, 'text': prefix})
+    return taken
+
+
+def _extract_text_bullet(
+    runs: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    """Convert a leading text bullet marker into paragraph metadata."""
+    full_text = ''.join(str(run.get('text', '')) for run in runs)
+    match = _TEXT_BULLET_RE.match(full_text)
+    if not match:
+        return runs, None
+    if not full_text[match.end():].strip():
+        return runs, None
+
+    marker = match.group('marker')
+    marker_run = _first_nonspace_run(runs) or {}
+    prefix_runs = _take_leading_chars_from_runs(runs, match.end())
+    replacement_prefix = _TEXT_BULLET_MARKERS.get(marker, marker) + (match.group('space') or ' ')
+    replacement_runs = [{**marker_run, 'text': replacement_prefix}] if marker_run else []
+    bullet = {
+        'char': _TEXT_BULLET_MARKERS.get(marker, marker),
+        'fill': marker_run.get('fill'),
+        'source_prefix_width_px': _estimate_text_runs_width(prefix_runs, include_headroom=False),
+        'margin_px': max(
+            _estimate_text_runs_width(replacement_runs, include_headroom=False),
+            8.0,
+        ),
+    }
+    stripped = _strip_leading_chars_from_runs(runs, match.end())
+    return (stripped or runs), bullet
+
+
+def _bullet_margin_px(bullet: dict[str, Any], font_size: float) -> float:
+    try:
+        return float(bullet.get('margin_px', 0.0))
+    except (TypeError, ValueError):
+        return max(font_size * 0.95, 12.0)
+
+
+def _bullet_indent_px(bullet: dict[str, Any], font_size: float) -> float:
+    return -_bullet_margin_px(bullet, font_size)
+
+
+def _build_bullet_xml(bullet: dict[str, Any] | None) -> str:
+    if not bullet:
+        return ''
+    fill = bullet.get('fill')
+    if isinstance(fill, str) and re.fullmatch(r'[0-9A-Fa-f]{6}', fill):
+        color_xml = f'<a:buClr><a:srgbClr val="{fill.upper()}"/></a:buClr>'
+    else:
+        color_xml = '<a:buClrTx/>'
+    return (
+        f'{color_xml}<a:buSzTx/><a:buFontTx/>'
+        f'<a:buChar char="{_xml_escape(str(bullet.get("char", "•")))}"/>'
+    )
+
+
+def _paragraph_pr_xml(
+    *,
+    algn: str,
+    font_size: float,
+    body_xml: str = '',
+    bullet: dict[str, Any] | None = None,
+) -> str:
+    attrs = f'algn="{algn}"'
+    if bullet:
+        margin = px_to_emu(_bullet_margin_px(bullet, font_size))
+        indent = px_to_emu(_bullet_indent_px(bullet, font_size))
+        attrs += f' marL="{margin}" indent="{indent}"'
+    return f'<a:pPr {attrs}>{body_xml}{_build_bullet_xml(bullet)}</a:pPr>'
+
+
+def _estimate_bullet_line_width(runs: list[dict[str, Any]]) -> float:
+    line_runs, bullet = _extract_text_bullet(runs)
+    width = _estimate_text_runs_width(line_runs, include_headroom=False)
+    if bullet:
+        fs_px = float(line_runs[0].get('font_size', 16)) if line_runs else 16.0
+        width += _bullet_margin_px(bullet, fs_px)
+    return width
 
 
 def _textbox_padding(font_size: float) -> float:
@@ -1387,6 +1526,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     line_height_px = _f(line_height_attr) if line_height_attr is not None else None
     paragraph_runs: list[list[dict[str, Any]]] | None = None
     paragraph_space_before: list[float] = []
+    paragraph_bullets: list[dict[str, Any] | None] = []
     # Per-tspan widths (visual lines as the deck author drew them) regardless
     # of how many merge into one <a:p>; used to size the textbox so PowerPoint
     # has room to wrap text to the SVG's original line widths.
@@ -1404,9 +1544,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 line_runs = [r for r in line_runs if r['text']]
             if not line_runs:
                 continue
-            visual_line_widths.append(
-                _estimate_text_runs_width(line_runs, include_headroom=False)
-            )
+            visual_line_widths.append(_estimate_bullet_line_width(line_runs))
             soft_break = child.get('data-paragraph-soft-break') == '1'
             if soft_break and paragraph_runs:
                 # Append to the previous paragraph. A Latin line-wrap needs a
@@ -1433,11 +1571,19 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             paragraph_runs = None
             paragraph_space_before = []
             visual_line_widths = []
+        else:
+            stripped_paragraphs: list[list[dict[str, Any]]] = []
+            for line_runs in paragraph_runs:
+                stripped_runs, bullet = _extract_text_bullet(line_runs)
+                stripped_paragraphs.append(stripped_runs)
+                paragraph_bullets.append(bullet)
+            paragraph_runs = stripped_paragraphs
 
     if paragraph_runs is not None:
         runs = [r for line in paragraph_runs for r in line]
     else:
         runs = _build_text_runs(elem, parent_attrs)
+        runs, single_bullet = _extract_text_bullet(runs)
 
     if not runs:
         return None
@@ -1463,6 +1609,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         )
     else:
         text_width = _estimate_text_runs_width(runs)
+        if single_bullet:
+            fs_px = float(runs[0].get('font_size', font_size)) if runs else font_size
+            text_width += _bullet_margin_px(single_bullet, fs_px)
         text_height = font_size * 1.5
     padding = _textbox_padding(font_size)
 
@@ -1551,20 +1700,30 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         line_spc_val = round(line_height_px * FONT_PX_TO_HUNDREDTHS_PT)
         ln_spc_xml = f'<a:lnSpc><a:spcPts val="{line_spc_val}"/></a:lnSpc>'
         paragraph_xml_chunks = []
-        for line, extra_px in zip(paragraph_runs, paragraph_space_before):
+        for line, extra_px, bullet in zip(paragraph_runs, paragraph_space_before, paragraph_bullets):
             spc_bef_xml = ''
             if extra_px > 0:
                 spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
                 spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
             runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in line)
+            p_pr_xml = _paragraph_pr_xml(
+                algn=algn,
+                font_size=float(line[0].get('font_size', font_size)) if line else font_size,
+                body_xml=f'{ln_spc_xml}{spc_bef_xml}',
+                bullet=bullet,
+            )
             paragraph_xml_chunks.append(
-                f'<a:p>\n<a:pPr algn="{algn}">{ln_spc_xml}{spc_bef_xml}</a:pPr>\n'
-                f'{runs_inner}\n</a:p>'
+                f'<a:p>\n{p_pr_xml}\n{runs_inner}\n</a:p>'
             )
         paragraphs_xml = '\n'.join(paragraph_xml_chunks)
     else:
         runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
-        paragraphs_xml = f'<a:p>\n<a:pPr algn="{algn}"/>\n{runs_xml}\n</a:p>'
+        p_pr_xml = _paragraph_pr_xml(
+            algn=algn,
+            font_size=float(runs[0].get('font_size', font_size)) if runs else font_size,
+            bullet=single_bullet,
+        )
+        paragraphs_xml = f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
 
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
