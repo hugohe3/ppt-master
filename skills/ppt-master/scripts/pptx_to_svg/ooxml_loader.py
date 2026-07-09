@@ -186,6 +186,10 @@ class OoxmlPackage:
         rels = _parse_rels(self.zip, _rels_path_for(part_path))
         return PartRef(path=part_path, xml=xml, rels=rels)
 
+    def load_part(self, part_path: str) -> PartRef | None:
+        """Load an arbitrary XML part by package path."""
+        return self._load_part(part_path)
+
     def read_media(self, part_path: str) -> bytes | None:
         """Return raw bytes of an embedded media part (e.g. ppt/media/image1.png)."""
         assert self.zip is not None
@@ -372,4 +376,3 @@ class OoxmlPackage:
                         continue
                     self._layouts[target] = cached
                 yield cached, master
-
