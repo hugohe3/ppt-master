@@ -39,7 +39,9 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.error
 import urllib.request
+import uuid
 import webbrowser
 from pathlib import Path
 from typing import Optional
@@ -55,6 +57,7 @@ from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
+    popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
     release_lock as _release_lock,
@@ -69,10 +72,11 @@ logger = logging.getLogger('confirm_ui')
 # preview lock so the two surfaces never collide.
 LOCK_FILE_NAME = '.confirm_ui.lock'
 
-# Round-trip files, both under <project_path>/confirm_ui/.
+# Round-trip/session files, all under <project_path>/confirm_ui/.
 CONFIRM_DIR_NAME = 'confirm_ui'
 RECOMMENDATIONS_NAME = 'recommendations.json'
 RESULT_NAME = 'result.json'
+SESSION_NAME = 'session.json'
 
 # Static option universe served at /api/catalogs (canvas synced live from config).
 _CATALOGS_PATH = Path(__file__).resolve().parent / 'static' / 'catalogs.json'
@@ -90,6 +94,8 @@ _ICON_PREVIEW_SAMPLES = {
 # freeing the port before live preview starts at Step 6. One port = one forward
 # rule for the whole pipeline. They still keep separate processes and locks.
 DEFAULT_PORT = 5050
+PUBLIC_HOST = '127.0.0.1'
+STARTUP_TIMEOUT = 10
 
 # Default --wait budget, kept just under the 600s Bash-tool ceiling so the
 # parent (waiting) command returns before the calling harness kills it. The
@@ -97,6 +103,147 @@ DEFAULT_PORT = 5050
 # slow user can still confirm after the wait returns; the caller re-checks
 # result.json before falling back to chat.
 WAIT_TIMEOUT_DEFAULT = 590
+
+
+def _read_json_object(path: Path, retries: int = 2, delay: float = 0.08) -> dict:
+    """Read a JSON object, retrying briefly around non-atomic external writes."""
+    last_error: Exception = ValueError('unknown JSON read error')
+    for attempt in range(retries + 1):
+        try:
+            data = json.loads(path.read_text(encoding='utf-8-sig'))
+            if isinstance(data, dict):
+                return data
+            raise ValueError(f'{path} top-level JSON value must be an object')
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            last_error = exc
+            if attempt < retries:
+                time.sleep(delay)
+                continue
+            raise last_error
+    raise last_error
+
+
+def _write_json_atomic(path: Path, data: dict) -> None:
+    """Write a JSON object with replace semantics so waiters never see a partial file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f'.{path.name}.{os.getpid()}.tmp')
+    try:
+        tmp.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            encoding='utf-8',
+        )
+        os.replace(tmp, path)
+    finally:
+        try:
+            tmp.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+
+def _server_url(port: int, path: str = '') -> str:
+    """Return the loopback URL shown to users and used by readiness probes."""
+    suffix = path if path.startswith('/') or not path else f'/{path}'
+    return f'http://{PUBLIC_HOST}:{port}{suffix}'
+
+
+def _wait_for_server_ready(
+    port: int,
+    proc: subprocess.Popen,
+    timeout: int = STARTUP_TIMEOUT,
+) -> bool:
+    """Wait until the detached child is accepting HTTP requests."""
+    deadline = time.time() + timeout
+    last_error = ''
+    health_url = _server_url(port, '/api/health')
+    while time.time() < deadline:
+        returncode = proc.poll()
+        if returncode is not None:
+            logger.error('confirm UI exited during startup (code=%s)', returncode)
+            return False
+        try:
+            with urllib.request.urlopen(health_url, timeout=1) as resp:
+                if 200 <= resp.status < 500:
+                    return True
+        except (OSError, urllib.error.URLError) as exc:
+            last_error = str(exc)
+        time.sleep(0.2)
+    logger.error(
+        'confirm UI did not become ready at %s within %ss%s',
+        health_url,
+        timeout,
+        f' (last error: {last_error})' if last_error else '',
+    )
+    return False
+
+
+def _launch_background_server(
+    project_path: Path,
+    *,
+    preferred_port: int,
+    idle_timeout: int,
+    open_browser: bool,
+) -> tuple[subprocess.Popen, int, Path]:
+    """Start the confirm server child and wait until it is reachable."""
+    confirm_dir = project_path / CONFIRM_DIR_NAME
+    confirm_dir.mkdir(parents=True, exist_ok=True)
+    log_path = confirm_dir / 'server.log'
+    port = _find_free_port(preferred_port)
+    cmd = [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        str(project_path),
+        '--port',
+        str(port),
+        '--timeout',
+        str(idle_timeout),
+        '--no-browser',
+    ]
+    with log_path.open('a', encoding='utf-8') as log:
+        proc = _popen_detached(
+            cmd,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            stdin=subprocess.DEVNULL,
+            logger=logger,
+        )
+    logger.info('log: %s', log_path)
+    if not _wait_for_server_ready(port, proc):
+        raise RuntimeError(f'confirm UI failed to become reachable: {_server_url(port)}')
+    _sync_session_state(confirm_dir, server_port=port, event='server-ready')
+    url = _server_url(port)
+    logger.info('started confirm UI in background: %s (pid=%s)', url, proc.pid)
+    if open_browser:
+        webbrowser.open(url)
+    return proc, port, log_path
+
+
+def _live_lock(lock_file: Path) -> Optional[dict]:
+    """Return a live lock; stale entries are overwritten by the recovered child."""
+    existing = _read_lock(lock_file)
+    if not existing:
+        return None
+    if _process_alive(int(existing.get('pid', 0) or 0)):
+        return existing
+    return None
+
+
+def _preferred_recovery_port(lock_file: Path, fallback: int) -> int:
+    """Prefer a stale lock's port so an already-open browser can reconnect."""
+    existing = _read_lock(lock_file)
+    try:
+        port = int((existing or {}).get('port', 0) or 0)
+    except (TypeError, ValueError):
+        port = 0
+    return port or fallback
+
+
+def _open_browser_async(url: str, delay: float = 0.4) -> None:
+    """Open the browser after Flask has had a moment to bind its socket."""
+    def _open() -> None:
+        time.sleep(delay)
+        webbrowser.open(url)
+
+    threading.Thread(target=_open, daemon=True).start()
 
 
 def _wait_for_result(
@@ -139,10 +286,10 @@ def _wait_for_result(
 def _result_stage(result_file: Path) -> Optional[str]:
     """Return the canonical ``stage`` field of result.json, or None."""
     try:
-        data = json.loads(result_file.read_text(encoding='utf-8'))
-    except (OSError, json.JSONDecodeError):
+        data = _read_json_object(result_file)
+    except (OSError, json.JSONDecodeError, ValueError):
         return None
-    return _stage_key(data.get('stage')) if isinstance(data, dict) else None
+    return _stage_key(data.get('stage'))
 
 
 def _stage_key(value: object) -> Optional[str]:
@@ -175,6 +322,137 @@ def _recommendation_stage(data: dict) -> int:
     return 0
 
 
+def _stage_name(number: Optional[int]) -> Optional[str]:
+    """Return the canonical stage key for a stage number."""
+    if number == 1:
+        return 'stage1'
+    if number == 2:
+        return 'stage2'
+    if number == 3:
+        return 'stage3'
+    return None
+
+
+def _result_stage_number(stage: Optional[str]) -> int:
+    """Return result progression: stage1=1, stage2=2, final=4."""
+    if stage == 'stage1':
+        return 1
+    if stage == 'stage2':
+        return 2
+    if stage == 'final':
+        return 4
+    return 0
+
+
+def _file_version(path: Path) -> Optional[float]:
+    """Return a cheap file version for polling state, or None when absent."""
+    try:
+        return path.stat().st_mtime
+    except OSError:
+        return None
+
+
+def _read_session(confirm_dir: Path) -> dict:
+    """Read session.json if present, returning an object."""
+    session_file = confirm_dir / SESSION_NAME
+    if not session_file.exists():
+        return {}
+    try:
+        return _read_json_object(session_file)
+    except (OSError, json.JSONDecodeError, ValueError):
+        return {}
+
+
+def _build_session_state(
+    confirm_dir: Path,
+    *,
+    server_port: Optional[int] = None,
+    event: Optional[str] = None,
+) -> dict:
+    """Derive the resumable Confirm UI state from disk artifacts."""
+    previous = _read_session(confirm_dir)
+    rec_file = confirm_dir / RECOMMENDATIONS_NAME
+    result_file = confirm_dir / RESULT_NAME
+
+    rec_stage_number = 0
+    rec_stage = None
+    rec_error = None
+    if rec_file.exists():
+        try:
+            rec_data = _read_json_object(rec_file)
+            rec_stage_number = _recommendation_stage(rec_data)
+            rec_stage = _stage_name(rec_stage_number)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            rec_error = str(exc)
+
+    result_stage = _result_stage(result_file)
+    result_stage_number = _result_stage_number(result_stage)
+
+    if result_stage == 'final':
+        expected_stage_number = None
+        status = 'done'
+        current_stage = 'final'
+    elif result_stage == 'stage2':
+        expected_stage_number = 3
+        status = 'ready_user' if rec_stage_number >= 3 else 'waiting_agent'
+        current_stage = _stage_name(rec_stage_number) if rec_stage_number >= 3 else 'stage2'
+    elif result_stage == 'stage1':
+        expected_stage_number = 2
+        status = 'ready_user' if rec_stage_number >= 2 else 'waiting_agent'
+        current_stage = _stage_name(rec_stage_number) if rec_stage_number >= 2 else 'stage1'
+    else:
+        expected_stage_number = rec_stage_number or 1
+        status = 'ready_user' if rec_stage_number else 'waiting_agent'
+        current_stage = rec_stage or 'stage1'
+
+    return {
+        'session_id': previous.get('session_id') or uuid.uuid4().hex,
+        'status': status,
+        'current_stage': current_stage,
+        'expected_stage': _stage_name(expected_stage_number),
+        'expected_stage_number': expected_stage_number,
+        'recommendation_stage': rec_stage,
+        'recommendation_stage_number': rec_stage_number,
+        'recommendation_version': _file_version(rec_file),
+        'recommendation_error': rec_error,
+        'result_stage': result_stage,
+        'result_stage_number': result_stage_number,
+        'result_version': _file_version(result_file),
+        'server_port': server_port or previous.get('server_port'),
+        'event': event or previous.get('event') or 'derived',
+    }
+
+
+def _write_session_state(confirm_dir: Path, session: dict) -> None:
+    """Persist session.json only when stable state changes."""
+    previous = _read_session(confirm_dir)
+    comparable_previous = dict(previous)
+    comparable_current = dict(session)
+    comparable_previous.pop('updated_at', None)
+    comparable_current.pop('updated_at', None)
+    if comparable_previous == comparable_current:
+        return
+    session = dict(session)
+    session['updated_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
+    _write_json_atomic(confirm_dir / SESSION_NAME, session)
+
+
+def _sync_session_state(
+    confirm_dir: Path,
+    *,
+    server_port: Optional[int] = None,
+    event: Optional[str] = None,
+) -> dict:
+    """Derive and persist the current session state."""
+    session = _build_session_state(
+        confirm_dir,
+        server_port=server_port,
+        event=event,
+    )
+    _write_session_state(confirm_dir, session)
+    return session
+
+
 # Stage-1 anchors and Stage-2 design-system choices. On later pages these sections
 # are not rendered (they were already confirmed), so their values live only in
 # browser STATE — lost on a refresh. Folding them from result.json into the
@@ -188,10 +466,8 @@ _DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
     """Fold already-confirmed choices into later-stage recommendations."""
     try:
-        res = json.loads(result_file.read_text(encoding='utf-8'))
-    except (OSError, json.JSONDecodeError):
-        return
-    if not isinstance(res, dict):
+        res = _read_json_object(result_file)
+    except (OSError, json.JSONDecodeError, ValueError):
         return
     recommend = data.setdefault('recommend', {})
     if not isinstance(recommend, dict):
@@ -395,6 +671,7 @@ def create_app(
     project_dir: str,
     idle_timeout: int = 900,
     lock_file: Optional[Path] = None,
+    server_port: Optional[int] = None,
 ) -> Flask:
     """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
@@ -404,6 +681,7 @@ def create_app(
     app.config['PROJECT_PATH'] = project_path
     app.config['CONFIRM_DIR'] = confirm_dir
     app.config['LOCK_FILE'] = lock_file
+    app.config['SERVER_PORT'] = server_port
     app.config['LAST_REQUEST_TIME'] = time.time()
 
     @app.before_request
@@ -444,6 +722,44 @@ def create_app(
     @app.route('/')
     def index():
         return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/api/health')
+    def health():
+        """Expose a cheap readiness probe for the daemon launcher."""
+        rec_file = confirm_dir / RECOMMENDATIONS_NAME
+        rec_ok = False
+        stage = None
+        if rec_file.exists():
+            try:
+                rec_data = _read_json_object(rec_file, retries=0)
+                rec_ok = True
+                stage = _recommendation_stage(rec_data)
+            except (OSError, json.JSONDecodeError, ValueError):
+                rec_ok = False
+        resp = jsonify({
+            'status': 'ok',
+            'project': str(project_path),
+            'recommendations': rec_ok,
+            'stage': stage,
+            'session': _build_session_state(
+                confirm_dir,
+                server_port=app.config.get('SERVER_PORT'),
+            ),
+        })
+        resp.headers['Cache-Control'] = 'no-store'
+        return resp
+
+    @app.route('/api/session')
+    def get_session():
+        """Expose the derived three-stage wizard state for browser polling."""
+        session = _sync_session_state(
+            confirm_dir,
+            server_port=app.config.get('SERVER_PORT'),
+            event='poll',
+        )
+        resp = jsonify(session)
+        resp.headers['Cache-Control'] = 'no-store'
+        return resp
 
     @app.route('/api/catalogs')
     def get_catalogs():
@@ -489,8 +805,8 @@ def create_app(
         if not rec_file.exists():
             return jsonify({'error': 'recommendations not found'}), 404
         try:
-            data = json.loads(rec_file.read_text(encoding='utf-8'))
-        except (OSError, json.JSONDecodeError) as exc:
+            data = _read_json_object(rec_file)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
             return jsonify({'error': f'invalid recommendations.json: {exc}'}), 400
         # Report whether a result already exists (re-open after confirm).
         result_file = confirm_dir / RESULT_NAME
@@ -527,9 +843,11 @@ def create_app(
             result['status'] = 'confirmed'
         result['confirmed_at'] = time.strftime('%Y-%m-%dT%H:%M:%S')
         result_file = confirm_dir / RESULT_NAME
-        result_file.write_text(
-            json.dumps(result, ensure_ascii=False, indent=2),
-            encoding='utf-8',
+        _write_json_atomic(result_file, result)
+        _sync_session_state(
+            confirm_dir,
+            server_port=app.config.get('SERVER_PORT'),
+            event=f'{result["stage"]}-submitted',
         )
         logger.info('%s confirmation written to %s', result['stage'], result_file)
         return jsonify({'status': 'ok'})
@@ -558,8 +876,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '--wait-only', action='store_true',
-        help='Do not launch. Attach to the already-running confirm server for '
-             'this project and wait for an already-open page to write result.json.',
+        help='Attach to the confirm server for this project and wait for an '
+             'already-open page to write result.json. If the server died, '
+             'recover it on the recorded/default port so browser polling can resume.',
     )
     parser.add_argument(
         '--wait-stage', default='final', metavar='{stage2,final}',
@@ -611,9 +930,34 @@ def main(argv: Optional[list[str]] = None) -> int:
     # Staged wait: attach to the server launched by the first --wait and block
     # until the page writes the requested intermediate or final result.json.
     if args.wait_only:
+        lock_file = project_path / LOCK_FILE_NAME
+        if not _live_lock(lock_file):
+            if not (project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME).exists():
+                logger.error(
+                    '%s not found — cannot recover confirm UI before wait-only',
+                    project_path / CONFIRM_DIR_NAME / RECOMMENDATIONS_NAME,
+                )
+                return 1
+            recovery_port = _preferred_recovery_port(lock_file, args.port)
+            try:
+                _, actual_port, _ = _launch_background_server(
+                    project_path,
+                    preferred_port=recovery_port,
+                    idle_timeout=args.timeout,
+                    open_browser=False,
+                )
+            except RuntimeError as exc:
+                logger.error('%s', exc)
+                return 1
+            if actual_port != recovery_port and not args.no_browser:
+                webbrowser.open(_server_url(actual_port))
+            logger.info(
+                'recovered confirm UI for wait-only at %s; the browser polling should resume',
+                _server_url(actual_port),
+            )
         return _wait_only_for_result(
             project_path / CONFIRM_DIR_NAME / RESULT_NAME,
-            project_path / LOCK_FILE_NAME,
+            lock_file,
             args.wait_timeout,
             wait_stage,
         )
@@ -634,48 +978,24 @@ def main(argv: Optional[list[str]] = None) -> int:
             existing_port = existing.get('port', '?')
             logger.error(
                 'confirm UI is already running for this project '
-                '(pid=%s, port=%s). Open http://localhost:%s',
-                existing_pid, existing_port, existing_port,
+                '(pid=%s, port=%s). Open http://%s:%s',
+                existing_pid, existing_port, PUBLIC_HOST, existing_port,
             )
             return 1
 
         confirm_dir = project_path / CONFIRM_DIR_NAME
-        confirm_dir.mkdir(parents=True, exist_ok=True)
-        log_path = confirm_dir / 'server.log'
         result_file = confirm_dir / RESULT_NAME
         started_at = time.time()
-        # Pick a free port up front (another project may hold the default) and
-        # pass the concrete port to the child so the reported URL is accurate.
-        port = _find_free_port(args.port)
-        cmd = [
-            sys.executable,
-            str(Path(__file__).resolve()),
-            str(project_path),
-            '--port',
-            str(port),
-            '--timeout',
-            str(args.timeout),
-        ]
-        if args.no_browser:
-            cmd.append('--no-browser')
-        creationflags = 0
-        popen_kwargs = {}
-        if os.name == 'nt':
-            creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
-        else:
-            popen_kwargs['start_new_session'] = True
-        with log_path.open('a', encoding='utf-8') as log:
-            proc = subprocess.Popen(
-                cmd,
-                stdout=log,
-                stderr=subprocess.STDOUT,
-                stdin=subprocess.DEVNULL,
-                creationflags=creationflags,
-                **popen_kwargs,
+        try:
+            proc, port, _ = _launch_background_server(
+                project_path,
+                preferred_port=args.port,
+                idle_timeout=args.timeout,
+                open_browser=not args.no_browser,
             )
-        url = f'http://localhost:{port}'
-        logger.info('started confirm UI in background: %s (pid=%s)', url, proc.pid)
-        logger.info('log: %s', log_path)
+        except RuntimeError as exc:
+            logger.error('%s', exc)
+            return 1
         if args.wait:
             return _wait_for_result(result_file, proc, started_at, args.wait_timeout)
         return 0
@@ -689,8 +1009,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         existing_port = existing.get('port', '?')
         logger.error(
             'confirm UI is already running for this project '
-            '(pid=%s, port=%s). Open http://localhost:%s, or run: kill %s',
-            existing_pid, existing_port, existing_port, existing_pid,
+            '(pid=%s, port=%s). Open http://%s:%s, or run: kill %s',
+            existing_pid, existing_port, PUBLIC_HOST, existing_port, existing_pid,
         )
         return 1
     atexit.register(_release_lock, lock_file)
@@ -707,16 +1027,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         str(project_path),
         idle_timeout=args.timeout,
         lock_file=lock_file,
+        server_port=args.port,
     )
 
-    url = f'http://localhost:{args.port}'
+    url = _server_url(args.port)
     if not args.no_browser:
-        webbrowser.open(url)
+        _open_browser_async(url)
 
     logger.info('running at %s', url)
     logger.info('project: %s', project_path)
     logger.info('idle timeout: %ds (0 = disabled)', args.timeout)
-    app.run(host='127.0.0.1', port=args.port, debug=False)
+    app.run(host=PUBLIC_HOST, port=args.port, debug=False)
     return 0
 
 

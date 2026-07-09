@@ -63,6 +63,7 @@ from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
     find_free_port as _find_free_port,
+    popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
     release_lock as _release_lock,
@@ -98,6 +99,16 @@ _SLIDE_CACHE: dict = {}  # path -> (mtime, (content, warnings))
 
 _LIST_CACHE_LOCK = threading.Lock()
 _LIST_CACHE: dict = {}  # path -> (mtime, annotation_count_on_disk)
+
+DEFAULT_PORT = 5050
+PUBLIC_HOST = '127.0.0.1'
+STARTUP_TIMEOUT = 15
+
+
+def _server_url(port: int, path: str = '') -> str:
+    """Return the loopback URL shown to users and used by readiness probes."""
+    suffix = path if path.startswith('/') or not path else f'/{path}'
+    return f'http://{PUBLIC_HOST}:{port}{suffix}'
 
 
 def _xml_attr(value: object) -> str:
@@ -408,6 +419,23 @@ def create_app(
         return jsonify({
             'live': app.config['LIVE_MODE'],
         })
+
+    @app.route('/api/health')
+    def health():
+        """Expose a cheap readiness probe for the daemon launcher."""
+        try:
+            slide_count = len(list(svg_dir.glob('*.svg'))) if svg_dir.exists() else 0
+        except OSError:
+            slide_count = 0
+        resp = jsonify({
+            'status': 'ok',
+            'project': str(project_path),
+            'live': app.config['LIVE_MODE'],
+            'svg_output': str(svg_dir),
+            'slides': slide_count,
+        })
+        resp.headers['Cache-Control'] = 'no-store'
+        return resp
 
     @app.route('/images/<path:filename>')
     def serve_image(filename: str):
@@ -879,7 +907,10 @@ def _shutdown_existing(project_path: Path) -> int:
         return 0
 
     pid = int(existing.get('pid', 0) or 0)
-    port = existing.get('port')
+    try:
+        port = int(existing.get('port', 0) or 0)
+    except (TypeError, ValueError):
+        port = 0
     if not _process_alive(pid):
         _release_lock(lock_file)
         logger.info('live preview already stopped; cleared stale lock')
@@ -888,7 +919,7 @@ def _shutdown_existing(project_path: Path) -> int:
     if port:
         try:
             req = urllib.request.Request(
-                f'http://127.0.0.1:{port}/api/shutdown',
+                _server_url(port, '/api/shutdown'),
                 data=b'{"reason": "cli-shutdown"}',
                 headers={'Content-Type': 'application/json'},
                 method='POST',
@@ -911,19 +942,32 @@ def _shutdown_existing(project_path: Path) -> int:
     return 0
 
 
-def _wait_for_ready(url: str, proc: subprocess.Popen, timeout: int = 15) -> bool:
+def _wait_for_ready(
+    port: int,
+    proc: subprocess.Popen,
+    timeout: int = STARTUP_TIMEOUT,
+) -> bool:
     """Wait until the server responds or the child exits."""
     deadline = time.time() + timeout
-    health_url = f'{url}/api/config'
+    health_url = _server_url(port, '/api/health')
+    last_error = ''
     while time.time() < deadline:
         if proc.poll() is not None:
+            logger.error('live preview exited during startup (code=%s)', proc.returncode)
             return False
         try:
             with urllib.request.urlopen(health_url, timeout=1) as response:
                 if response.status == 200:
                     return True
-        except (urllib.error.URLError, TimeoutError, OSError):
-            time.sleep(0.25)
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            last_error = str(exc)
+        time.sleep(0.25)
+    logger.error(
+        'live preview did not become ready at %s within %ss%s',
+        health_url,
+        timeout,
+        f' (last error: {last_error})' if last_error else '',
+    )
     return False
 
 
@@ -941,13 +985,27 @@ def _open_browser(url: str) -> bool:
     return False
 
 
+def _open_browser_async(url: str, delay: float = 0.4) -> None:
+    """Open the browser shortly after Flask starts binding its socket."""
+    def _open() -> None:
+        time.sleep(delay)
+        _open_browser(url)
+
+    threading.Thread(target=_open, daemon=True).start()
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description='PPT Master SVG Editor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
-    parser.add_argument('--port', type=int, default=5050, help='Port to listen on (default: 5050)')
+    parser.add_argument(
+        '--port',
+        type=int,
+        default=DEFAULT_PORT,
+        help=f'Port to listen on (default: {DEFAULT_PORT})',
+    )
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument(
         '--daemon',
@@ -1004,9 +1062,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         existing_port = legacy_existing.get('port', '?')
         logger.error(
             'live preview is already running for this project via legacy lock '
-            '(pid=%s, port=%s). Open http://localhost:%s, click '
+            '(pid=%s, port=%s). Open http://%s:%s, click '
             'Exit preview in the browser, or stop pid %s',
-            existing_pid, existing_port, existing_port, existing_pid,
+            existing_pid, existing_port, PUBLIC_HOST, existing_port, existing_pid,
         )
         return 1
 
@@ -1020,8 +1078,8 @@ def main(argv: Optional[list[str]] = None) -> int:
             existing_port = existing.get('port', '?')
             logger.error(
                 'live preview is already running for this project '
-                '(pid=%s, port=%s). Open http://localhost:%s',
-                existing_pid, existing_port, existing_port,
+                '(pid=%s, port=%s). Open http://%s:%s',
+                existing_pid, existing_port, PUBLIC_HOST, existing_port,
             )
             return 1
 
@@ -1047,27 +1105,20 @@ def main(argv: Optional[list[str]] = None) -> int:
         ]
         if args.live:
             cmd.append('--live')
-        creationflags = 0
-        popen_kwargs = {}
-        if os.name == 'nt':
-            creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
-        else:
-            popen_kwargs['start_new_session'] = True
         try:
             with log_path.open('a', encoding='utf-8') as log:
-                proc = subprocess.Popen(
+                proc = _popen_detached(
                     cmd,
                     stdout=log,
                     stderr=subprocess.STDOUT,
                     stdin=subprocess.DEVNULL,
-                    creationflags=creationflags,
-                    **popen_kwargs,
+                    logger=logger,
                 )
         except OSError as exc:
             logger.error('cannot write live preview log: %s (%s)', log_path, exc)
             return 1
-        url = f'http://localhost:{port}'
-        if not _wait_for_ready(url, proc):
+        url = _server_url(port)
+        if not _wait_for_ready(port, proc):
             logger.error('live preview failed to become reachable: %s (log: %s)', url, log_path)
             return 1
         logger.info('started live preview in background: %s (pid=%s)', url, proc.pid)
@@ -1096,9 +1147,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         existing_port = existing.get('port', '?')
         logger.error(
             'live preview is already running for this project '
-            '(pid=%s, port=%s). Open http://localhost:%s, click '
+            '(pid=%s, port=%s). Open http://%s:%s, click '
             'Exit preview in the browser, or run: kill %s',
-            existing_pid, existing_port, existing_port, existing_pid,
+            existing_pid, existing_port, PUBLIC_HOST, existing_port, existing_pid,
         )
         return 1
     # atexit covers normal interpreter shutdown (Ctrl+C / SystemExit);
@@ -1132,9 +1183,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         lock_file=lock_file,
     )
 
-    url = f'http://localhost:{port}'
+    url = _server_url(port)
     if not args.no_browser:
-        _open_browser(url)
+        _open_browser_async(url)
 
     mode = "live preview (auto-startup)" if args.live else "live preview"
     svg_count = len(list(svg_output.glob('*.svg')))
@@ -1142,7 +1193,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     logger.info('project: %s', project_path)
     logger.info('svg_output: %s (%d slides)', svg_output, svg_count)
     logger.info('idle timeout: %ds (0 = disabled)', idle_timeout)
-    app.run(host='127.0.0.1', port=port, debug=False)
+    app.run(host=PUBLIC_HOST, port=port, debug=False)
     return 0
 
 
