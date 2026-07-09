@@ -56,7 +56,9 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from server_common import (  # noqa: E402
     claim_lock as _claim_lock,
+    clear_lock as _clear_lock,
     find_free_port as _find_free_port,
+    lock_pid as _lock_pid,
     popen_detached as _popen_detached,
     process_alive as _process_alive,
     read_lock as _read_lock,
@@ -222,7 +224,7 @@ def _live_lock(lock_file: Path) -> Optional[dict]:
     existing = _read_lock(lock_file)
     if not existing:
         return None
-    if _process_alive(int(existing.get('pid', 0) or 0)):
+    if _process_alive(_lock_pid(existing)):
         return existing
     return None
 
@@ -515,7 +517,7 @@ def _wait_only_for_result(
             return 0
 
         lock = _read_lock(lock_file)
-        pid = int((lock or {}).get('pid', 0) or 0)
+        pid = _lock_pid(lock)
         if not pid or not _process_alive(pid):
             logger.error('confirm server is no longer running before stage=%s was confirmed', target_stage)
             return 1
@@ -543,10 +545,10 @@ def _shutdown_existing(lock_file: Path) -> int:
     if not existing:
         logger.info('no confirm server running — nothing to stop')
         return 0
-    pid = int(existing.get('pid', 0) or 0)
+    pid = _lock_pid(existing)
     port = existing.get('port')
     if not _process_alive(pid):
-        _release_lock(lock_file)
+        _clear_lock(lock_file)
         logger.info('confirm server already stopped; cleared stale lock')
         return 0
     # Graceful first: the server flushes and releases its own lock.
@@ -570,7 +572,7 @@ def _shutdown_existing(lock_file: Path) -> int:
             os.kill(pid, signal.SIGTERM)
         except OSError:
             pass
-    _release_lock(lock_file)
+    _clear_lock(lock_file)
     logger.info('confirm server stopped (pid=%s)', pid)
     return 0
 
@@ -973,7 +975,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.daemon:
         lock_file = project_path / LOCK_FILE_NAME
         existing = _read_lock(lock_file)
-        if existing and _process_alive(int(existing.get('pid', 0))):
+        if existing and _process_alive(_lock_pid(existing)):
             existing_pid = existing.get('pid', '?')
             existing_port = existing.get('port', '?')
             logger.error(
