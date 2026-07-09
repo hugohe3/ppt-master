@@ -27,6 +27,7 @@ from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
+from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
 from .custgeom_to_svg import convert_custom_geom
 from .effect_to_svg import convert_effects
 from .emu_units import NS, Xfrm, fmt_num
@@ -580,15 +581,26 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
     - ``...presentationml/2006/ole`` → render the ``mc:Fallback`` preview
       bitmap that PowerPoint bakes alongside every embedded OLE object.
       Visually identical to what PowerPoint shows for an unedited embed.
-    - everything else (chart / SmartArt / diagram) → labelled bounding
-      rectangle so the slide composition is preserved even though the inner
-      content can't be drawn yet.
+    - supported classic charts → baked preview plus native chart metadata.
+    - everything else (SmartArt / diagram / unsupported chart) → labelled
+      preview or bounding rectangle plus transparent unsupported metadata.
     """
     graphic_data = node.xml.find("a:graphic/a:graphicData", NS)
     uri = graphic_data.attrib.get("uri", "graphicFrame") if graphic_data is not None else "graphicFrame"
 
     if uri == "http://schemas.openxmlformats.org/drawingml/2006/table":
         rendered, native_attrs = _render_graphic_table(node, ctx, graphic_data)
+        if rendered:
+            return _wrap_shape_group(
+                rendered,
+                node,
+                ctx,
+                top_level=top_level,
+                extra_attrs=native_attrs,
+            )
+
+    if uri in {CHART_URI, CHARTEX_URI}:
+        rendered, native_attrs = _render_graphic_chart(node, ctx, graphic_data)
         if rendered:
             return _wrap_shape_group(
                 rendered,
@@ -620,7 +632,10 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         f'text-anchor="middle" font-size="14" fill="#999999">'
         f"[{_xml_escape(label)}]</text>"
     )
-    return _wrap_shape_group(placeholder, node, ctx, top_level=top_level)
+    extra_attrs = []
+    if uri in {CHART_URI, CHARTEX_URI}:
+        _rendered, extra_attrs = _render_graphic_chart(node, ctx, graphic_data)
+    return _wrap_shape_group(placeholder, node, ctx, top_level=top_level, extra_attrs=extra_attrs)
 
 
 def _graphic_preview_label(node: ShapeNode, label: str) -> str:
@@ -669,6 +684,44 @@ def _render_graphic_table(
             f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
         )
     return result.svg, native_attrs
+
+
+def _render_graphic_chart(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    graphic_data: ET.Element | None,
+) -> tuple[str, list[str]]:
+    """Return a chart preview plus native chart marker attributes."""
+    result = extract_native_chart_payload(
+        graphic_data,
+        node.xfrm,
+        ctx.slide_part,
+        ctx.pkg,
+    )
+    native_attrs: list[str] = ['data-pptx-native-source="pptx"']
+    if result.native_payload:
+        if node.name and not result.native_payload.get("name"):
+            result.native_payload["name"] = node.name
+        payload_json = json.dumps(
+            result.native_payload,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        native_attrs.extend([
+            'data-pptx-native="chart"',
+            f'data-pptx-json="{_xml_escape(payload_json)}"',
+        ])
+    elif result.native_status:
+        native_attrs.append(
+            f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
+        )
+
+    rendered = ""
+    if ctx.render_graphic_previews:
+        rendered = _render_graphic_preview(node, ctx)
+        if rendered:
+            rendered += "\n" + _graphic_preview_label(node, "chart preview")
+    return rendered, native_attrs
 
 
 def _render_graphic_preview(node: ShapeNode, ctx: AssemblyContext) -> str:
