@@ -15,9 +15,11 @@ import tempfile
 import uuid
 import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
 
 from pptx import Presentation
@@ -67,6 +69,56 @@ except ImportError:
     create_transition_xml = None
     create_sequence_timing_xml = None
     pick_animation_effect = None
+
+
+SLIDE_LAYOUT_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+)
+
+
+@dataclass(frozen=True)
+class PptxStructureContext:
+    """Resolved base package structure reused when slide XML is regenerated."""
+
+    slide_layout_targets: dict[int, str]
+
+    def slide_layout_target(self, slide_num: int) -> str:
+        """Return the slide layout target for a generated slide."""
+        try:
+            return self.slide_layout_targets[slide_num]
+        except KeyError as exc:
+            raise RuntimeError(
+                f"Missing slide layout relationship for generated slide {slide_num}"
+            ) from exc
+
+
+def _relationship_attrs(elem: ET.Element) -> dict[str, str]:
+    return {key.rsplit("}", 1)[-1]: value for key, value in elem.attrib.items()}
+
+
+def _read_slide_layout_targets(extract_dir: Path, slide_count: int) -> PptxStructureContext:
+    """Read the actual layout relationship target for every generated slide."""
+    slide_layout_targets: dict[int, str] = {}
+    rels_dir = extract_dir / "ppt" / "slides" / "_rels"
+    for slide_num in range(1, slide_count + 1):
+        rels_path = rels_dir / f"slide{slide_num}.xml.rels"
+        if not rels_path.exists():
+            raise RuntimeError(f"Missing slide relationship file: {rels_path}")
+        root = ET.parse(rels_path).getroot()
+        for elem in root:
+            attrs = _relationship_attrs(elem)
+            if attrs.get("Type") != SLIDE_LAYOUT_REL_TYPE:
+                continue
+            target = attrs.get("Target")
+            if not target:
+                raise RuntimeError(
+                    f"Slide {slide_num} layout relationship has no Target"
+                )
+            slide_layout_targets[slide_num] = target
+            break
+        if slide_num not in slide_layout_targets:
+            raise RuntimeError(f"Slide {slide_num} has no slide layout relationship")
+    return PptxStructureContext(slide_layout_targets=slide_layout_targets)
 
 
 def _append_relationship(
@@ -778,6 +830,7 @@ def create_pptx_with_native_svg(
         extract_dir = temp_dir / 'pptx_content'
         with zipfile.ZipFile(base_pptx, 'r') as zf:
             zf.extractall(extract_dir)
+        structure = _read_slide_layout_targets(extract_dir, len(svg_files))
 
         media_dir = extract_dir / 'ppt' / 'media'
         media_dir.mkdir(exist_ok=True)
@@ -957,8 +1010,8 @@ def create_pptx_with_native_svg(
                     rels_xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1"
-                Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
-                Target="../slideLayouts/slideLayout1.xml"/>{extra_rels}
+                Type="{SLIDE_LAYOUT_REL_TYPE}"
+                Target="{structure.slide_layout_target(slide_num)}"/>{extra_rels}
 </Relationships>'''
                     with open(rels_path, 'w', encoding='utf-8') as f:
                         f.write(rels_xml)
@@ -1031,6 +1084,7 @@ def create_pptx_with_native_svg(
                         png_rid=png_rid, png_filename=png_filename,
                         svg_rid=svg_rid, svg_filename=svg_filename,
                         use_compat_mode=(use_compat_mode and slide_has_png),
+                        slide_layout_target=structure.slide_layout_target(slide_num),
                     )
                     with open(rels_path, 'w', encoding='utf-8') as f:
                         f.write(rels_xml)
