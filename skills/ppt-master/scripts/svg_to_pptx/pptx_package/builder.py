@@ -74,6 +74,9 @@ except ImportError:
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 )
+SLIDE_MASTER_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
+)
 
 
 @dataclass(frozen=True)
@@ -81,6 +84,7 @@ class PptxStructureContext:
     """Resolved base package structure reused when slide XML is regenerated."""
 
     slide_layout_targets: dict[int, str]
+    slide_master_parts: dict[int, str]
 
     def slide_layout_target(self, slide_num: int) -> str:
         """Return the slide layout target for a generated slide."""
@@ -91,34 +95,165 @@ class PptxStructureContext:
                 f"Missing slide layout relationship for generated slide {slide_num}"
             ) from exc
 
+    def slide_master_part(self, slide_num: int) -> str:
+        """Return the slide master package part for a generated slide."""
+        try:
+            return self.slide_master_parts[slide_num]
+        except KeyError as exc:
+            raise RuntimeError(
+                f"Missing slide master relationship for generated slide {slide_num}"
+            ) from exc
+
 
 def _relationship_attrs(elem: ET.Element) -> dict[str, str]:
     return {key.rsplit("}", 1)[-1]: value for key, value in elem.attrib.items()}
 
 
+def _resolve_package_target(source_part: str, target: str) -> str:
+    """Resolve a relationship target relative to a package part path."""
+    return posixpath.normpath(posixpath.join(posixpath.dirname(source_part), target))
+
+
+def _relationships_path_for_part(extract_dir: Path, part_name: str) -> Path:
+    """Return the package relationship sidecar path for a part name."""
+    path = Path(part_name)
+    return extract_dir / path.parent / "_rels" / f"{path.name}.rels"
+
+
+def _find_relationship_target(
+    rels_path: Path,
+    rel_type: str,
+) -> str | None:
+    """Find the first relationship target for a relationship type."""
+    if not rels_path.exists():
+        return None
+    root = ET.parse(rels_path).getroot()
+    for elem in root:
+        attrs = _relationship_attrs(elem)
+        if attrs.get("Type") == rel_type:
+            return attrs.get("Target")
+    return None
+
+
 def _read_slide_layout_targets(extract_dir: Path, slide_count: int) -> PptxStructureContext:
     """Read the actual layout relationship target for every generated slide."""
     slide_layout_targets: dict[int, str] = {}
+    slide_master_parts: dict[int, str] = {}
     rels_dir = extract_dir / "ppt" / "slides" / "_rels"
     for slide_num in range(1, slide_count + 1):
         rels_path = rels_dir / f"slide{slide_num}.xml.rels"
         if not rels_path.exists():
             raise RuntimeError(f"Missing slide relationship file: {rels_path}")
-        root = ET.parse(rels_path).getroot()
-        for elem in root:
-            attrs = _relationship_attrs(elem)
-            if attrs.get("Type") != SLIDE_LAYOUT_REL_TYPE:
-                continue
-            target = attrs.get("Target")
-            if not target:
-                raise RuntimeError(
-                    f"Slide {slide_num} layout relationship has no Target"
-                )
-            slide_layout_targets[slide_num] = target
-            break
-        if slide_num not in slide_layout_targets:
+        target = _find_relationship_target(rels_path, SLIDE_LAYOUT_REL_TYPE)
+        if not target:
             raise RuntimeError(f"Slide {slide_num} has no slide layout relationship")
-    return PptxStructureContext(slide_layout_targets=slide_layout_targets)
+        slide_layout_targets[slide_num] = target
+
+        slide_part = f"ppt/slides/slide{slide_num}.xml"
+        layout_part = _resolve_package_target(slide_part, target)
+        layout_rels_path = _relationships_path_for_part(extract_dir, layout_part)
+        master_target = _find_relationship_target(layout_rels_path, SLIDE_MASTER_REL_TYPE)
+        if not master_target:
+            raise RuntimeError(
+                f"Slide {slide_num} layout has no slide master relationship"
+            )
+        slide_master_parts[slide_num] = _resolve_package_target(layout_part, master_target)
+    return PptxStructureContext(
+        slide_layout_targets=slide_layout_targets,
+        slide_master_parts=slide_master_parts,
+    )
+
+
+_SLIDE_BACKGROUND_RE = re.compile(
+    r"(?P<prefix><p:cSld\b[^>]*>\s*)"
+    r"(?P<bg><p:bg\b.*?</p:bg>)"
+    r"(?P<suffix>\s*<p:spTree\b)",
+    re.DOTALL,
+)
+
+
+def _extract_slide_background_xml(slide_xml: str) -> str | None:
+    """Return the slide-level p:bg XML when it directly precedes spTree."""
+    match = _SLIDE_BACKGROUND_RE.search(slide_xml)
+    return match.group("bg") if match else None
+
+
+def _remove_slide_background_xml(slide_xml: str) -> str:
+    """Remove a promoted slide-level p:bg from cSld."""
+    return _SLIDE_BACKGROUND_RE.sub(r"\g<prefix>\g<suffix>", slide_xml, count=1)
+
+
+def _put_background_on_master(master_xml: str, background_xml: str) -> str:
+    """Replace or insert the master-level p:bg before the master spTree."""
+    match = _SLIDE_BACKGROUND_RE.search(master_xml)
+    if match:
+        return (
+            master_xml[:match.start("bg")]
+            + background_xml
+            + master_xml[match.end("bg"):]
+        )
+
+    cslide_match = re.search(r"(<p:cSld\b[^>]*>)", master_xml)
+    if not cslide_match:
+        raise RuntimeError("Slide master XML has no p:cSld element")
+    return (
+        master_xml[:cslide_match.end()]
+        + background_xml
+        + master_xml[cslide_match.end():]
+    )
+
+
+def _promote_common_slide_backgrounds_to_masters(
+    extract_dir: Path,
+    structure: PptxStructureContext,
+    slide_count: int,
+    *,
+    verbose: bool = False,
+) -> int:
+    """Promote identical slide backgrounds to their shared slide master."""
+    slides_by_master: dict[str, list[int]] = {}
+    for slide_num in range(1, slide_count + 1):
+        master_part = structure.slide_master_part(slide_num)
+        slides_by_master.setdefault(master_part, []).append(slide_num)
+
+    promoted = 0
+    for master_part, slide_nums in slides_by_master.items():
+        slide_backgrounds: dict[int, str] = {}
+        for slide_num in slide_nums:
+            slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+            slide_xml = slide_path.read_text(encoding="utf-8")
+            background_xml = _extract_slide_background_xml(slide_xml)
+            if not background_xml:
+                slide_backgrounds = {}
+                break
+            slide_backgrounds[slide_num] = background_xml
+
+        if not slide_backgrounds:
+            continue
+        unique_backgrounds = set(slide_backgrounds.values())
+        if len(unique_backgrounds) != 1:
+            continue
+
+        background_xml = next(iter(unique_backgrounds))
+        master_path = extract_dir / master_part
+        master_xml = master_path.read_text(encoding="utf-8")
+        master_path.write_text(
+            _put_background_on_master(master_xml, background_xml),
+            encoding="utf-8",
+        )
+
+        for slide_num in slide_nums:
+            slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+            slide_xml = slide_path.read_text(encoding="utf-8")
+            slide_path.write_text(
+                _remove_slide_background_xml(slide_xml),
+                encoding="utf-8",
+            )
+            promoted += 1
+
+    if verbose and promoted:
+        print(f"  Baseline master background: promoted {promoted} slide background(s)")
+    return promoted
 
 
 def _append_relationship(
@@ -1200,6 +1335,14 @@ def create_pptx_with_native_svg(
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name} - Error: {e}")
                 if use_native_shapes:
                     raise
+
+        if use_native_shapes and success_count == len(svg_files):
+            _promote_common_slide_backgrounds_to_masters(
+                extract_dir,
+                structure,
+                len(svg_files),
+                verbose=verbose,
+            )
 
         # Update [Content_Types].xml
         content_types_path = extract_dir / '[Content_Types].xml'
