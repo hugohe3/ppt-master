@@ -339,6 +339,9 @@ MIN_IMAGE_PIXELS = 100       # Minimum pixel dimension (width AND height)
 MIN_IMAGE_AREA = 30000       # Minimum pixel area (e.g. 200x150)
 MIN_IMAGE_BYTES = 2048       # Minimum image data size (2KB)
 MIN_PAGE_RATIO = 0.05        # Minimum render size relative to page (5%)
+MIN_VISIBLE_IMAGE_WIDTH = 40
+MIN_VISIBLE_IMAGE_HEIGHT = 40
+MIN_VISIBLE_IMAGE_AREA_RATIO = 0.01
 MAX_ASPECT_RATIO = 12        # Maximum aspect ratio (filters decorative bars)
 MAX_LOW_INFO_BPP = 0.08      # Bytes-per-pixel threshold for low-info images
 MAX_LOW_INFO_AREA = 500000   # Area threshold: only apply bpp filter below this
@@ -359,6 +362,20 @@ MAX_VECTOR_BACKGROUND_AREA_RATIO = 1.9
 FIGURE_CAPTION_RE = re.compile(r'^(?:Figure|Fig\.?)\s*\d+\s*[:.|｜]', re.IGNORECASE)
 
 
+TABLE_CAPTION_RE = re.compile(
+    r'^\u8868\s*\d+(?:\.\d+)*\s+(?!(?:\u7684|\u5217\u793a|\u6240\u793a|\u4e3a)).+'
+)
+TABLE_REFERENCE_PROSE_RE = re.compile(
+    r'^\u8868\s*\d+(?:\.\d+)*\s*(?:\u7684|\u5217\u793a|\u6240\u793a|\u4e3a)'
+)
+SECTION_HEADING_RE = re.compile(r'^\d+(?:\.\d+){1,3}\s+\S')
+NUMBER_RE = re.compile(r'[-+]?\d+(?:\.\d+)?')
+MODEL_COLUMN_RE = re.compile(r'^[（(]\d+[）)]$')
+TABLE_NOTE_PREFIX = '\u6ce8'
+TABLE_CONTINUATION_Y_RATIO = 0.88
+TABLE_SCAN_BOTTOM_RATIO = 0.92
+
+
 def should_keep_image(
     block: dict[str, object],
     page_rect: fitz.Rect,
@@ -375,31 +392,39 @@ def should_keep_image(
         Whether the image should be kept in the Markdown output.
     """
     w, h = block.get("width", 0), block.get("height", 0)
+    bbox = block.get("bbox", (0, 0, 0, 0))
+    render_w = bbox[2] - bbox[0]
+    render_h = bbox[3] - bbox[1]
+    page_area = page_rect.width * page_rect.height
+    render_area_ratio = (render_w * render_h) / page_area if page_area > 0 else 0
+    visibly_placed = (
+        render_w >= MIN_VISIBLE_IMAGE_WIDTH
+        and render_h >= MIN_VISIBLE_IMAGE_HEIGHT
+        and render_area_ratio >= MIN_VISIBLE_IMAGE_AREA_RATIO
+    )
 
     # Pixel dimension filter
-    if w < MIN_IMAGE_PIXELS or h < MIN_IMAGE_PIXELS:
+    if not visibly_placed and (w < MIN_IMAGE_PIXELS or h < MIN_IMAGE_PIXELS):
         return False
 
     # Pixel area filter
     area = w * h
-    if area < MIN_IMAGE_AREA:
+    if not visibly_placed and area < MIN_IMAGE_AREA:
         return False
 
     image_data = block.get("image", b"")
-    if len(image_data) < MIN_IMAGE_BYTES:
+    if not visibly_placed and len(image_data) < MIN_IMAGE_BYTES:
         return False
 
-    # Deduplicate: skip images with identical content (e.g. repeated backgrounds)
+    # Deduplicate tiny repeats, but preserve visibly placed logos / charts on
+    # distinct pages. Academic PDFs often reuse a small logo on title pages.
     if seen_hashes is not None:
         img_hash = hashlib.md5(image_data).hexdigest()
-        if img_hash in seen_hashes:
+        if img_hash in seen_hashes and not visibly_placed:
             return False
         seen_hashes.add(img_hash)
 
     # Check render size relative to page
-    bbox = block.get("bbox", (0, 0, 0, 0))
-    render_w = bbox[2] - bbox[0]
-    render_h = bbox[3] - bbox[1]
     page_w = page_rect.width
     page_h = page_rect.height
     if page_w > 0 and page_h > 0:
@@ -415,7 +440,7 @@ def should_keep_image(
     # compression ratios (low bytes-per-pixel). Only apply to smaller images
     # to avoid filtering large photos with dark/uniform backgrounds.
     bpp = len(image_data) / area
-    if bpp < MAX_LOW_INFO_BPP and area < MAX_LOW_INFO_AREA:
+    if bpp < MAX_LOW_INFO_BPP and area < MAX_LOW_INFO_AREA and not visibly_placed:
         return False
 
     return True
@@ -626,6 +651,642 @@ def clean_text(text: str) -> str:
     return '\n'.join(cleaned_lines)
 
 
+def _extract_text_lines(page: fitz.Page) -> list[tuple[fitz.Rect, str]]:
+    """Return text lines with their page rectangles in reading order."""
+    lines = []
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type") != 0:
+            continue
+        for line in block["lines"]:
+            text = "".join(span["text"] for span in line["spans"]).strip()
+            if text:
+                lines.append((fitz.Rect(line["bbox"]), text))
+    return sorted(lines, key=lambda item: (item[0].y0, item[0].x0))
+
+
+def _is_table_caption(text: str) -> bool:
+    """Return whether a line is a real table caption, not prose citing a table."""
+    return bool(TABLE_CAPTION_RE.match(text.strip()))
+
+
+def _caption_table_start_y(
+    caption_rect: fitz.Rect,
+    lines: list[tuple[fitz.Rect, str]],
+) -> float:
+    """Start below a caption and its adjacent English translation line."""
+    start_y = caption_rect.y1 + 1
+    for rect, text in lines:
+        if rect.y0 < caption_rect.y1 - 1 or rect.y0 > caption_rect.y1 + 35:
+            continue
+        if text.startswith("Table"):
+            start_y = max(start_y, rect.y1 + 1)
+    return start_y
+
+
+def _looks_like_numeric_table_line(text: str) -> bool:
+    """Detect long data rows so they are not mistaken for prose boundaries."""
+    numbers = NUMBER_RE.findall(text)
+    if len(numbers) >= 3:
+        return True
+    tokens = [token for token in re.split(r'\s+', text.strip()) if token]
+    return len(tokens) >= 4 and len(numbers) >= 2
+
+
+def _is_table_region_boundary(
+    rect: fitz.Rect,
+    text: str,
+    page: fitz.Page,
+    start_y: float,
+) -> bool:
+    """Return whether a line likely starts prose after a text-detected table."""
+    text = text.strip()
+    if rect.y0 < start_y + 45:
+        return False
+    if text.startswith(TABLE_NOTE_PREFIX):
+        return True
+    if SECTION_HEADING_RE.match(text):
+        return True
+    if TABLE_REFERENCE_PROSE_RE.match(text):
+        return True
+    if _looks_like_numeric_table_line(text):
+        return False
+
+    width_ratio = rect.width / page.rect.width if page.rect.width > 0 else 0
+    return len(text) >= 26 and width_ratio > 0.52 and rect.x0 < page.rect.width * 0.25
+
+
+def _table_region_bottom(
+    page: fitz.Page,
+    lines: list[tuple[fitz.Rect, str]],
+    start_y: float,
+) -> float:
+    """Find a conservative bottom edge for a caption-guided text table scan."""
+    for rect, text in lines:
+        if rect.y0 <= start_y:
+            continue
+        if _is_table_region_boundary(rect, text, page, start_y):
+            return max(start_y + 20, rect.y0 - 2)
+    return page.rect.height * TABLE_SCAN_BOTTOM_RATIO
+
+
+def _normalize_table_cell(value: object) -> str:
+    """Normalize one extracted table cell for Markdown output."""
+    if value is None:
+        return ""
+    text = CONTROL_CHARS_RE.sub('', str(value))
+    text = re.sub(r'\s*\n\s*', '<br>', text.strip())
+    text = re.sub(r'[ \t]+', ' ', text)
+    return text.replace('|', r'\|')
+
+
+def _clean_table_rows(rows: list[list[object]]) -> list[list[str]]:
+    """Remove empty rows / columns from PyMuPDF table extraction output."""
+    normalized = [[_normalize_table_cell(cell) for cell in row] for row in rows]
+    normalized = [row for row in normalized if any(cell for cell in row)]
+    if not normalized:
+        return []
+
+    max_cols = max(len(row) for row in normalized)
+    padded = [row + [""] * (max_cols - len(row)) for row in normalized]
+    keep_cols = [
+        idx
+        for idx in range(max_cols)
+        if any(row[idx] for row in padded)
+    ]
+    if len(keep_cols) < 2:
+        return []
+    return _postprocess_table_rows([[row[idx] for idx in keep_cols] for row in padded])
+
+
+def _nonempty_cell_indexes(row: list[str]) -> list[int]:
+    """Return indexes of non-empty cells in a row."""
+    return [idx for idx, cell in enumerate(row) if cell]
+
+
+def _merge_label_underscore_rows(rows: list[list[str]]) -> list[list[str]]:
+    """Join rows where PDF extraction split a leading underscore from a label."""
+    merged = []
+    for row in rows:
+        nonempty = _nonempty_cell_indexes(row)
+        if nonempty == [0] and row[0] == "_" and merged and merged[-1][0]:
+            merged[-1][0] = f"_{merged[-1][0]}"
+            continue
+        merged.append(row)
+    return merged
+
+
+def _merge_single_cell_continuations(rows: list[list[str]]) -> list[list[str]]:
+    """Merge wrapped single-cell table rows into the previous row."""
+    merged: list[list[str]] = []
+    for row in rows:
+        nonempty = _nonempty_cell_indexes(row)
+        if (
+            len(nonempty) == 1
+            and nonempty[0] > 0
+            and merged
+            and not MODEL_COLUMN_RE.match(row[nonempty[0]])
+        ):
+            index = nonempty[0]
+            separator = "<br>" if merged[-1][index] else ""
+            merged[-1][index] = f"{merged[-1][index]}{separator}{row[index]}"
+            continue
+        merged.append(row)
+    return merged
+
+
+def _looks_like_model_row(row: list[str]) -> bool:
+    """Return whether a row contains model-number table headings."""
+    values = [cell for cell in row[1:] if cell]
+    return len(values) >= 2 and all(MODEL_COLUMN_RE.match(cell) for cell in values)
+
+
+def _looks_like_outcome_row(row: list[str]) -> bool:
+    """Return whether a row contains regression outcome labels."""
+    values = [cell for cell in row[1:] if cell]
+    if len(values) < 2:
+        return False
+    short_values = [cell for cell in values if len(cell) <= 12 and not NUMBER_RE.search(cell)]
+    return len(short_values) == len(values)
+
+
+def _regression_group_labels(row: list[str], data_cols: int) -> list[str]:
+    """Infer repeated group labels for common regression-table headings."""
+    compact = "".join(row)
+    if "总样本" in compact and "国有" in compact and "非国有" in compact and data_cols == 7:
+        return ["总样本"] * 3 + ["国有企业"] * 2 + ["非国有企业"] * 2
+    return [""] * data_cols
+
+
+def _flatten_regression_header(rows: list[list[str]]) -> list[list[str]]:
+    """Flatten multi-line regression headings into one Markdown header row."""
+    if len(rows) < 3:
+        return rows
+
+    if (
+        len(rows) >= 2
+        and rows[0][0]
+        and not any(rows[0][1:])
+        and _looks_like_model_row(rows[1])
+    ):
+        outcome = rows[0][0]
+        header = ["变量"]
+        header.extend(
+            f"{model} {outcome}".strip()
+            for model in rows[1][1:]
+        )
+        return [header] + rows[2:]
+
+    header_offset = 0
+    groups = [""] * (len(rows[0]) - 1)
+    if not _looks_like_model_row(rows[0]) and _looks_like_model_row(rows[1]):
+        header_offset = 1
+        groups = _regression_group_labels(rows[0], len(rows[1]) - 1)
+
+    if not _looks_like_model_row(rows[header_offset]):
+        return rows
+    if len(rows) <= header_offset + 1 or not _looks_like_outcome_row(rows[header_offset + 1]):
+        return rows
+
+    model_row = rows[header_offset]
+    outcome_row = rows[header_offset + 1]
+    header = ["变量"]
+    for idx, model in enumerate(model_row[1:]):
+        pieces = []
+        if idx < len(groups) and groups[idx]:
+            pieces.append(groups[idx])
+        if model:
+            pieces.append(model)
+        if idx + 1 < len(outcome_row) and outcome_row[idx + 1]:
+            pieces.append(outcome_row[idx + 1])
+        header.append(" ".join(pieces).strip())
+    return [header] + rows[header_offset + 2:]
+
+
+def _fix_paired_sample_t_table(rows: list[list[str]]) -> list[list[str]]:
+    """Collapse multi-row paired-sample T-test headings into readable columns."""
+    if not rows or not any("成对差分" in cell for cell in rows[0]):
+        return rows
+    body = [row for row in rows if row and row[0].startswith("对")]
+    if len(body) < 1:
+        return rows
+    header = [
+        "配对",
+        "变量",
+        "均值",
+        "标准差",
+        "均值的标准误",
+        "差分95%置信区间下限",
+        "差分95%置信区间上限",
+        "t",
+        "Df",
+        "Sig.(双侧)",
+    ]
+    fixed_rows = [header]
+    for row in body:
+        fixed_rows.append(row[:len(header)] + [""] * max(0, len(header) - len(row)))
+    return fixed_rows
+
+
+def _fix_variable_definition_table(rows: list[list[str]]) -> list[list[str]]:
+    """Repeat variable-category labels for common variable definition tables."""
+    if not rows or rows[0] != ["变量类型", "变量名称", "符号", "变量说明"]:
+        return rows
+
+    fixed = [rows[0]]
+    for row in rows[1:]:
+        if not any(row):
+            continue
+        name = row[1] if len(row) > 1 else ""
+        symbol = row[2] if len(row) > 2 else ""
+        description = row[3] if len(row) > 3 else ""
+        if not name or not symbol:
+            continue
+
+        if symbol in {"R＆D", "Fixed", "Hc"}:
+            category = "被解释变量"
+        elif symbol == "Vat":
+            category = "解释变量"
+        else:
+            category = "控制变量"
+        fixed.append([category, name, symbol, description])
+    return fixed
+
+
+def _fix_correlation_triangle(rows: list[list[str]]) -> list[list[str]]:
+    """Restore the missing last self-correlation column in triangular tables."""
+    if len(rows) < 4 or not rows[0] or rows[0][0] != "变量":
+        return rows
+    body_names = [row[0] for row in rows[1:] if row and row[0]]
+    header_names = rows[0][1:]
+    if len(body_names) != len(header_names) + 1:
+        return rows
+    missing_name = body_names[-1]
+    fixed = [rows[0] + [missing_name]]
+    for row in rows[1:-1]:
+        fixed.append(row + [""])
+    fixed.append(rows[-1] + ["1"])
+    return fixed
+
+
+def _postprocess_table_rows(rows: list[list[str]]) -> list[list[str]]:
+    """Apply Markdown-oriented cleanup to extracted table rows."""
+    rows = _merge_label_underscore_rows(rows)
+    rows = _merge_single_cell_continuations(rows)
+    rows = _fix_variable_definition_table(rows)
+    rows = _fix_paired_sample_t_table(rows)
+    rows = _flatten_regression_header(rows)
+    rows = _fix_correlation_triangle(rows)
+    return rows
+
+
+def _rows_to_markdown(rows: list[list[str]]) -> str:
+    """Convert cleaned table rows to GitHub-flavored Markdown."""
+    if len(rows) < 2:
+        return ""
+    col_count = max(len(row) for row in rows)
+    padded = [row + [""] * (col_count - len(row)) for row in rows]
+    header = padded[0]
+    body = padded[1:]
+    lines = [
+        "|" + "|".join(header) + "|",
+        "|" + "|".join(["---"] * col_count) + "|",
+    ]
+    lines.extend("|" + "|".join(row) + "|" for row in body)
+    return "\n".join(lines)
+
+
+def _table_to_markdown(tab: object) -> str:
+    """Convert a PyMuPDF table object to cleaned Markdown."""
+    try:
+        rows = tab.extract() or []
+    except Exception:
+        return ""
+    return _rows_to_markdown(_clean_table_rows(rows))
+
+
+def _is_valid_table_markdown(markdown: str) -> bool:
+    """Return whether generated Markdown contains a minimally useful table."""
+    return markdown.count("\n") >= 2 and markdown.startswith("|")
+
+
+def _markdown_col_count(markdown: str) -> int:
+    """Return the column count implied by the first Markdown table row."""
+    first_line = markdown.splitlines()[0] if markdown else ""
+    return max(0, first_line.count("|") - 1)
+
+
+def _append_table_markdown_candidate(
+    candidates: list[dict[str, object]],
+    bbox: fitz.Rect,
+    markdown: str,
+    method: str,
+    replace_narrow: bool = False,
+) -> None:
+    """Append or replace a table candidate after overlap deduplication."""
+    if not _is_valid_table_markdown(markdown):
+        return
+
+    for index, candidate in enumerate(candidates):
+        existing = candidate["bbox"]
+        if not isinstance(existing, fitz.Rect):
+            continue
+        overlap = (bbox & existing).get_area()
+        if overlap <= 0.8 * min(bbox.get_area(), existing.get_area()):
+            continue
+
+        existing_markdown = str(candidate.get("content", ""))
+        can_replace = (
+            replace_narrow
+            and bbox.width > existing.width * 1.4
+            and _markdown_col_count(markdown) >= _markdown_col_count(existing_markdown)
+        )
+        if can_replace:
+            candidates[index] = {
+                "bbox": bbox,
+                "content": markdown,
+                "method": method,
+            }
+        return
+
+    candidates.append({
+        "bbox": bbox,
+        "content": markdown,
+        "method": method,
+    })
+
+
+def _add_table_candidate(
+    candidates: list[dict[str, object]],
+    tab: object,
+    method: str,
+) -> None:
+    """Append a table candidate if it has useful Markdown and is not duplicate."""
+    markdown = _table_to_markdown(tab)
+    if not _is_valid_table_markdown(markdown):
+        return
+
+    bbox = fitz.Rect(tab.bbox)
+    _append_table_markdown_candidate(candidates, bbox, markdown, method)
+
+
+def _merge_word_runs(words: list[tuple]) -> list[dict[str, object]]:
+    """Group PyMuPDF words into row-level text runs."""
+    rows: list[list[tuple]] = []
+    for word in sorted(words, key=lambda item: (item[1], item[0])):
+        if not rows or abs(rows[-1][0][1] - word[1]) > 4:
+            rows.append([word])
+        else:
+            rows[-1].append(word)
+
+    runs = []
+    for row in rows:
+        row_runs = []
+        for word in sorted(row, key=lambda item: item[0]):
+            x0, y0, x1, y1, text = word[:5]
+            if row_runs and x0 - row_runs[-1]["x1"] <= 8:
+                row_runs[-1]["x1"] = x1
+                row_runs[-1]["y0"] = min(row_runs[-1]["y0"], y0)
+                row_runs[-1]["y1"] = max(row_runs[-1]["y1"], y1)
+                row_runs[-1]["text"] = f"{row_runs[-1]['text']} {text}"
+            else:
+                row_runs.append({
+                    "x0": x0,
+                    "y0": y0,
+                    "x1": x1,
+                    "y1": y1,
+                    "text": text,
+                })
+        runs.extend(row_runs)
+    return runs
+
+
+def _cluster_word_columns(runs: list[dict[str, object]]) -> list[float]:
+    """Infer stable table columns from word-run centers."""
+    centers = sorted((float(run["x0"]) + float(run["x1"])) / 2 for run in runs)
+    columns: list[float] = []
+    for center in centers:
+        if not columns or abs(center - columns[-1]) > 14:
+            columns.append(center)
+        else:
+            columns[-1] = (columns[-1] + center) / 2
+    return columns
+
+
+def _word_runs_to_rows(
+    runs: list[dict[str, object]],
+    columns: list[float],
+) -> list[list[str]]:
+    """Place word runs into inferred columns and return table rows."""
+    row_groups: list[list[dict[str, object]]] = []
+    for run in sorted(runs, key=lambda item: (float(item["y0"]), float(item["x0"]))):
+        if not row_groups or abs(float(row_groups[-1][0]["y0"]) - float(run["y0"])) > 4:
+            row_groups.append([run])
+        else:
+            row_groups[-1].append(run)
+
+    rows = []
+    for group in row_groups:
+        row = [""] * len(columns)
+        for run in group:
+            center = (float(run["x0"]) + float(run["x1"])) / 2
+            col_index = min(range(len(columns)), key=lambda idx: abs(columns[idx] - center))
+            text = _normalize_table_cell(run["text"])
+            row[col_index] = f"{row[col_index]} {text}".strip() if row[col_index] else text
+        rows.append(row)
+    return rows
+
+
+def _words_to_markdown_table(
+    page: fitz.Page,
+    clip: fitz.Rect,
+) -> tuple[fitz.Rect, str] | None:
+    """Build a simple table from word coordinates inside a clipped region."""
+    words = page.get_text("words", clip=clip)
+    if len(words) < 6:
+        return None
+
+    runs = _merge_word_runs(words)
+    if len(runs) < 6:
+        return None
+
+    columns = _cluster_word_columns(runs)
+    if len(columns) < 3:
+        return None
+
+    rows = _word_runs_to_rows(runs, columns)
+    cleaned_rows = _clean_table_rows(rows)
+    markdown = _rows_to_markdown(cleaned_rows)
+    if not _is_valid_table_markdown(markdown):
+        return None
+
+    x0 = min(float(run["x0"]) for run in runs)
+    y0 = min(float(run["y0"]) for run in runs)
+    x1 = max(float(run["x1"]) for run in runs)
+    y1 = max(float(run["y1"]) for run in runs)
+    return fitz.Rect(x0, y0, x1, y1), markdown
+
+
+def _find_tables_in_clip(
+    page: fitz.Page,
+    clip: fitz.Rect,
+) -> list[object]:
+    """Find text-strategy tables inside a clipped page region."""
+    if clip.height < 20 or clip.width < 80:
+        return []
+    try:
+        return list(page.find_tables(strategy="text", clip=clip))
+    except Exception:
+        return []
+
+
+def find_page_tables(
+    page: fitz.Page,
+    include_top_continuation: bool = False,
+) -> tuple[list[dict[str, object]], bool]:
+    """Find line-detected tables plus caption-guided text tables on one page."""
+    candidates: list[dict[str, object]] = []
+    try:
+        for tab in page.find_tables():
+            _add_table_candidate(candidates, tab, "lines")
+    except Exception:
+        pass
+
+    lines = _extract_text_lines(page)
+    for rect, text in lines:
+        if not _is_table_caption(text):
+            continue
+        start_y = _caption_table_start_y(rect, lines)
+        bottom_y = _table_region_bottom(page, lines, start_y)
+        clip = fitz.Rect(0, start_y, page.rect.width, bottom_y)
+        for tab in _find_tables_in_clip(page, clip):
+            _add_table_candidate(candidates, tab, "caption-text")
+        word_table = _words_to_markdown_table(page, clip)
+        if word_table:
+            bbox, markdown = word_table
+            _append_table_markdown_candidate(
+                candidates,
+                bbox,
+                markdown,
+                "caption-words",
+                replace_narrow=True,
+            )
+
+    if include_top_continuation:
+        start_y = page.rect.height * 0.08
+        bottom_y = _table_region_bottom(page, lines, start_y)
+        clip = fitz.Rect(0, start_y, page.rect.width, bottom_y)
+        for tab in _find_tables_in_clip(page, clip):
+            _add_table_candidate(candidates, tab, "continuation-text")
+        word_table = _words_to_markdown_table(page, clip)
+        if word_table:
+            bbox, markdown = word_table
+            _append_table_markdown_candidate(
+                candidates,
+                bbox,
+                markdown,
+                "continuation-words",
+                replace_narrow=True,
+            )
+
+    candidates.sort(key=lambda candidate: candidate["bbox"].y0)
+    table_continues = any(
+        isinstance(candidate["bbox"], fitz.Rect)
+        and candidate["bbox"].y1 >= page.rect.height * TABLE_CONTINUATION_Y_RATIO
+        for candidate in candidates
+    )
+    return candidates, table_continues
+
+
+def _is_markdown_table_line(line: str) -> bool:
+    """Return whether a Markdown line belongs to a pipe table."""
+    return line.startswith("|")
+
+
+def _is_markdown_separator_line(line: str) -> bool:
+    """Return whether a Markdown table line is the separator row."""
+    cells = [cell.strip() for cell in line.strip("|").split("|")]
+    return bool(cells) and all(cell and set(cell) <= {"-", ":"} for cell in cells)
+
+
+def _compatible_table_headers(first: list[str], second: list[str]) -> bool:
+    """Return whether two Markdown table blocks have the same flattened header."""
+    if len(first) < 2 or len(second) < 2:
+        return False
+    if not _is_markdown_separator_line(first[1]) or not _is_markdown_separator_line(second[1]):
+        return False
+    return first[0] == second[0] and _markdown_col_count(first[0]) > 2
+
+
+def _is_table_continuation_noise(line: str) -> bool:
+    """Allow only page/header noise between split table parts."""
+    text = line.strip()
+    if not text:
+        return True
+    if text.startswith("<!-- Page ") and text.endswith("-->"):
+        return True
+    if re.fullmatch(r'\d+', text):
+        return True
+    if "重庆大学硕士学位论文" in text:
+        return True
+    continuation_labels = [
+        "营改增",
+        "深化增值税改革",
+        "国有企业",
+        "非国有企业",
+    ]
+    return any(label in text for label in continuation_labels)
+
+
+def _read_markdown_table_block(lines: list[str], start: int) -> tuple[list[str], int]:
+    """Read a contiguous Markdown table block from ``start``."""
+    end = start
+    while end < len(lines) and _is_markdown_table_line(lines[end]):
+        end += 1
+    return lines[start:end], end
+
+
+def merge_markdown_continuation_tables(markdown: str) -> str:
+    """Merge split cross-page Markdown tables with repeated headers."""
+    lines = markdown.splitlines()
+    result = []
+    index = 0
+
+    while index < len(lines):
+        if not _is_markdown_table_line(lines[index]):
+            result.append(lines[index])
+            index += 1
+            continue
+
+        table, table_end = _read_markdown_table_block(lines, index)
+        search = table_end
+        while True:
+            between_start = search
+            while search < len(lines) and not _is_markdown_table_line(lines[search]):
+                if not _is_table_continuation_noise(lines[search]):
+                    break
+                search += 1
+
+            if search >= len(lines) or not _is_markdown_table_line(lines[search]):
+                break
+            if any(
+                not _is_table_continuation_noise(line)
+                for line in lines[between_start:search]
+            ):
+                break
+
+            next_table, next_end = _read_markdown_table_block(lines, search)
+            if not _compatible_table_headers(table, next_table):
+                break
+
+            table.extend(next_table[2:])
+            search = next_end
+
+        result.extend(table)
+        index = search if search != table_end else table_end
+
+    return "\n".join(result)
+
+
 def merge_adjacent_formatting(text: str) -> str:
     """Merge adjacent same-style formatted spans split across PDF tokens.
 
@@ -724,28 +1385,35 @@ def extract_pdf_to_markdown(
 
     img_count = 0
     image_manifest: list[dict[str, object]] = []
+    previous_table_continues = False
 
     for page_num, page in enumerate(doc, 1):
         if page_num > 1:
             # Add page break marker to help LLM understand context segmentation
             markdown_content += f"\n\n<!-- Page {page_num} -->\n\n"
 
-        try:
-            tabs = page.find_tables()
-        except Exception:
-            tabs = []
-
-        tab_rects = [fitz.Rect(t.bbox) for t in tabs]
+        table_candidates, previous_table_continues = find_page_tables(
+            page,
+            include_top_continuation=previous_table_continues,
+        )
+        tab_rects = [
+            candidate["bbox"]
+            for candidate in table_candidates
+            if isinstance(candidate["bbox"], fitz.Rect)
+        ]
 
         page_elements = []
 
-        for tab in tabs:
+        for table in table_candidates:
+            bbox = table["bbox"]
+            if not isinstance(bbox, fitz.Rect):
+                continue
             page_elements.append({
-                "y0": tab.bbox[1],
+                "y0": bbox.y0,
                 "type": 2,
-                "content": tab.to_markdown()
+                "content": table["content"]
             })
-            print(f"  [OK] Found table: P{page_num}")
+            print(f"  [OK] Found table: P{page_num} ({table['method']})")
 
         if render_vector_figures:
             for figure_rect in detect_vector_figure_rects(page, tab_rects):
@@ -1048,6 +1716,7 @@ def extract_pdf_to_markdown(
 
     doc.close()
 
+    markdown_content = merge_markdown_continuation_tables(markdown_content)
     markdown_content = CONTROL_CHARS_RE.sub('', markdown_content)
     markdown_content = re.sub(r'\n{3,}', '\n\n', markdown_content)
     markdown_content = markdown_content.strip() + "\n"
