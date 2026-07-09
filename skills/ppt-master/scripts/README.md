@@ -115,6 +115,8 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 `finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
 
+Native `svg_to_pptx.py` also defaults to `--pptx-structure baseline`: the generated deck keeps a standard master/layout relationship and promotes identical native slide backgrounds into the slide master. Use `--pptx-structure flat` only when debugging or comparing fully slide-local output.
+
 Image generation:
 
 ```bash

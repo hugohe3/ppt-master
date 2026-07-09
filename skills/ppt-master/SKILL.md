@@ -668,6 +668,13 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > SVG visual reference, so it's only needed when you want a self-contained file
 > to share. Pass `-s output` or `-s final` to force a single source if you need it.
 
+> **PPTX structure mode** — native export defaults to
+> `--pptx-structure baseline`: the package keeps the real slide master/layout
+> relationship from the base deck and promotes identical native slide
+> backgrounds into the slide master, so ordinary decks do not repeat safe shared
+> background fills on every slide. Add `--pptx-structure flat` only for
+> debugging/comparison when every background must remain slide-local.
+
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
 > `<a:p>`, improving body-text editing and resize/reflow behavior. Add `--no-merge`
