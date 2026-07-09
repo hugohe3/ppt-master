@@ -22,6 +22,7 @@ animation anchor.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
@@ -587,9 +588,15 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
     uri = graphic_data.attrib.get("uri", "graphicFrame") if graphic_data is not None else "graphicFrame"
 
     if uri == "http://schemas.openxmlformats.org/drawingml/2006/table":
-        rendered = _render_graphic_table(node, ctx, graphic_data)
+        rendered, native_attrs = _render_graphic_table(node, ctx, graphic_data)
         if rendered:
-            return _wrap_shape_group(rendered, node, ctx, top_level=top_level)
+            return _wrap_shape_group(
+                rendered,
+                node,
+                ctx,
+                top_level=top_level,
+                extra_attrs=native_attrs,
+            )
 
     if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole" and ctx.render_graphic_previews:
         rendered = _render_graphic_preview(node, ctx)
@@ -626,14 +633,17 @@ def _graphic_preview_label(node: ShapeNode, label: str) -> str:
     )
 
 
-def _render_graphic_table(node: ShapeNode, ctx: AssemblyContext,
-                          graphic_data: ET.Element | None) -> str:
-    """Convert the <a:tbl> child of a graphicFrame to SVG, or return ''."""
+def _render_graphic_table(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    graphic_data: ET.Element | None,
+) -> tuple[str, list[str]]:
+    """Convert the <a:tbl> child of a graphicFrame to SVG plus metadata."""
     if graphic_data is None:
-        return ""
+        return "", []
     tbl = graphic_data.find("a:tbl", NS)
     if tbl is None:
-        return ""
+        return "", []
     result = convert_tbl(
         tbl, node.xfrm, ctx.palette,
         theme_fonts=ctx.theme_fonts,
@@ -643,7 +653,22 @@ def _render_graphic_table(node: ShapeNode, ctx: AssemblyContext,
     )
     if result.defs:
         ctx.defs.extend(result.defs)
-    return result.svg
+    native_attrs: list[str] = ['data-pptx-native-source="pptx"']
+    if result.native_payload:
+        payload_json = json.dumps(
+            result.native_payload,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        native_attrs.extend([
+            'data-pptx-native="table"',
+            f'data-pptx-json="{_xml_escape(payload_json)}"',
+        ])
+    elif result.native_status:
+        native_attrs.append(
+            f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
+        )
+    return result.svg, native_attrs
 
 
 def _render_graphic_preview(node: ShapeNode, ctx: AssemblyContext) -> str:
@@ -889,8 +914,14 @@ def _convert_placeholder_guide(node: ShapeNode, ctx: AssemblyContext,
 # Wrap / utilities
 # ---------------------------------------------------------------------------
 
-def _wrap_shape_group(inner: str, node: ShapeNode, ctx: AssemblyContext,
-                      *, top_level: bool) -> str:
+def _wrap_shape_group(
+    inner: str,
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    *,
+    top_level: bool,
+    extra_attrs: list[str] | None = None,
+) -> str:
     """Wrap a shape's body in a <g> that carries the transform (rotation /
     flip) and an id for animation anchoring."""
     if not inner.strip():
@@ -907,6 +938,8 @@ def _wrap_shape_group(inner: str, node: ShapeNode, ctx: AssemblyContext,
         attrs.append(f'data-name="{_xml_escape(node.name)}"')
     if node.placeholder is not None and node.placeholder.type:
         attrs.append(f'data-ph-type="{_xml_escape(node.placeholder.type)}"')
+    if extra_attrs:
+        attrs.extend(extra_attrs)
     if transform:
         attrs.append(f'transform="{transform}"')
     return f"<g {' '.join(attrs)}>\n{inner}\n</g>"
