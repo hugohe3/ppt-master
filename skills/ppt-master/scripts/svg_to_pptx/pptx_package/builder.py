@@ -826,6 +826,7 @@ def create_pptx_with_native_svg(
     image_scale: float = 2.0,
     image_quality: int = 85,
     native_objects: bool = False,
+    pptx_structure: str = "baseline",
     conversion_trace_path: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
 ) -> bool:
@@ -863,6 +864,9 @@ def create_pptx_with_native_svg(
         image_quality: JPEG quality used for opaque optimized rasters.
         native_objects: Convert explicit ``data-pptx-native`` table/chart
             markers to native PowerPoint objects. Default off.
+        pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
+            shared native backgrounds to slide masters; ``flat`` leaves all
+            slide backgrounds slide-local for debugging/comparison.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
 
     Returns:
@@ -875,6 +879,8 @@ def create_pptx_with_native_svg(
     # Native shapes mode takes priority over compat mode
     if use_native_shapes:
         use_compat_mode = False
+    if pptx_structure not in {"baseline", "flat"}:
+        raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
 
     # Check compatibility mode dependencies
     renderer_name, renderer_status, renderer_hint = get_png_renderer_info()
@@ -914,6 +920,7 @@ def create_pptx_with_native_svg(
                 "  Native table/chart objects: "
                 f"{'Enabled' if native_objects else 'Disabled'}"
             )
+            print(f"  PPTX structure: {pptx_structure}")
             if image_optimize:
                 if image_sizing == 'display':
                     image_mode = (
@@ -1336,7 +1343,11 @@ def create_pptx_with_native_svg(
                 if use_native_shapes:
                     raise
 
-        if use_native_shapes and success_count == len(svg_files):
+        if (
+            use_native_shapes
+            and pptx_structure == "baseline"
+            and success_count == len(svg_files)
+        ):
             _promote_common_slide_backgrounds_to_masters(
                 extract_dir,
                 structure,

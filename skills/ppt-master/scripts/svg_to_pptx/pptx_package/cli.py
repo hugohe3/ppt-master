@@ -193,6 +193,11 @@ Recorded narration:
                              'groups export through their SVG fallback children. When set, '
                              'the default-flow export is named <project>_<ts>_native_charts.pptx '
                              'to tell it apart from a plain shape export.')
+    parser.add_argument('--pptx-structure', choices=['baseline', 'flat'], default='baseline',
+                        help='PPTX structure strategy for native export. baseline (default) '
+                             'keeps a standard master/layout package and promotes identical '
+                             'native slide backgrounds to the slide master; flat leaves '
+                             'those backgrounds slide-local for debugging/comparison.')
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
                         help='Also emit the SVG-rendered snapshot pptx alongside '
                              'the native pptx in exports/ (named '
@@ -618,6 +623,7 @@ Recorded narration:
         image_scale=args.image_scale,
         image_quality=args.image_quality,
         native_objects=args.native_objects,
+        pptx_structure=args.pptx_structure,
     )
 
     success = True
