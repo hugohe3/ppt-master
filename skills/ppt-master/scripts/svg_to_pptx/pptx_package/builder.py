@@ -81,8 +81,9 @@ SLIDE_MASTER_REL_TYPE = (
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 
-for _prefix, _uri in (("p", PML_NS), ("a", DML_NS), ("r", REL_NS)):
+for _prefix, _uri in (("p", PML_NS), ("a", DML_NS), ("r", REL_NS), ("p14", P14_NS)):
     try:
         ET.register_namespace(_prefix, _uri)
     except (ValueError, AttributeError):
@@ -219,8 +220,12 @@ def _remove_slide_background_xml(slide_xml: str) -> str:
     return _SLIDE_BACKGROUND_RE.sub(r"\g<prefix>\g<suffix>", slide_xml, count=1)
 
 
-def _put_background_on_master(master_xml: str, background_xml: str) -> str:
-    """Replace or insert the master-level p:bg before the master spTree."""
+def _put_background_on_master(master_xml: str, background_xml: str) -> str | None:
+    """Replace or insert the master-level p:bg before the master spTree.
+
+    Returns None when the master carries a p:bg the canonical pattern cannot
+    replace; inserting there would leave two p:bg children under p:cSld.
+    """
     match = _SLIDE_BACKGROUND_RE.search(master_xml)
     if match:
         return (
@@ -228,6 +233,8 @@ def _put_background_on_master(master_xml: str, background_xml: str) -> str:
             + background_xml
             + master_xml[match.end("bg"):]
         )
+    if "<p:bg" in master_xml:
+        return None
 
     cslide_match = re.search(r"(<p:cSld\b[^>]*>)", master_xml)
     if not cslide_match:
@@ -273,10 +280,10 @@ def _promote_common_slide_backgrounds_to_masters(
         background_xml = next(iter(unique_backgrounds))
         master_path = extract_dir / master_part
         master_xml = master_path.read_text(encoding="utf-8")
-        master_path.write_text(
-            _put_background_on_master(master_xml, background_xml),
-            encoding="utf-8",
-        )
+        promoted_master_xml = _put_background_on_master(master_xml, background_xml)
+        if promoted_master_xml is None:
+            continue
+        master_path.write_text(promoted_master_xml, encoding="utf-8")
 
         for slide_num in slide_nums:
             slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
