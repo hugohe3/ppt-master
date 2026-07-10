@@ -41,7 +41,7 @@ _LENGTH_RE = re.compile(
     r'^\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)\s*(?:px)?\s*$'
 )
 _VIEWBOX_SPLIT_RE = re.compile(r'[\s,]+')
-_URL_REF_RE = re.compile(r'url\(#([^#\s)]+)\)')
+_URL_REF_RE = re.compile(r'''url\(#([^#\s()'"\\]+)\)''')
 _URL_FUNCTION_RE = re.compile(r'\burl\s*\([^)]*\)', re.IGNORECASE)
 _URL_FUNCTION_START_RE = re.compile(r'\burl\s*\(', re.IGNORECASE)
 _MAX_LOCAL_USE_DEPTH = 64
@@ -334,8 +334,11 @@ class _LocalUseExpander:
                         f'Local <use> {label} cannot carry structural {attr} metadata'
                     )
 
-    @staticmethod
-    def _validate_fragment_reference_syntax(elem: ET.Element, label: str) -> None:
+    def _validate_fragment_reference_syntax(
+        self,
+        elem: ET.Element,
+        label: str,
+    ) -> None:
         """Reject URL fragment forms the clone rewriter cannot preserve."""
         for candidate in elem.iter():
             for value in candidate.attrib.values():
@@ -349,10 +352,21 @@ class _LocalUseExpander:
                     )
                 for function in functions:
                     raw = function.group(0)
-                    if _URL_REF_RE.fullmatch(raw) is None:
+                    match = _URL_REF_RE.fullmatch(raw)
+                    if match is None:
                         raise UseExpansionError(
                             f'Local <use> {label} requires exact url(#id) fragments; '
                             f'got {raw!r}'
+                        )
+                    ref_id = match.group(1)
+                    if ref_id in self.duplicate_ids:
+                        raise UseExpansionError(
+                            f'Local <use> {label} has ambiguous url(#{ref_id}); '
+                            'the referenced id is duplicated'
+                        )
+                    if ref_id not in self.targets:
+                        raise UseExpansionError(
+                            f'Local <use> {label} has unresolved url(#{ref_id})'
                         )
 
     def _next_instance_prefix(self, clone: ET.Element) -> str:
