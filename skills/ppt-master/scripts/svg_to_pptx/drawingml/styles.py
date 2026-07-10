@@ -181,25 +181,94 @@ def build_pattern_fill(
     """
     prst = pattern_elem.get('data-pptx-pattern') or 'ltUpDiag'
 
+    paint_entries = []
+    for child in pattern_elem:
+        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        style_values = parse_inline_style(child.get('style'))
+        object_opacity = parse_opacity(
+            style_values.get('opacity') or child.get('opacity')
+        )
+        for paint_attr in ('fill', 'stroke'):
+            paint = style_values.get(paint_attr) or child.get(paint_attr)
+            paint_hex, paint_alpha = parse_svg_color(paint) if paint else (None, 1.0)
+            if paint_hex is None:
+                continue
+            paint_opacity = parse_opacity(
+                style_values.get(f'{paint_attr}-opacity')
+                or child.get(f'{paint_attr}-opacity')
+            )
+            paint_entries.append({
+                'attr': paint_attr,
+                'alpha': paint_alpha,
+                'color': paint,
+                'hex': paint_hex,
+                'opacity': object_opacity * paint_opacity,
+                'tag': tag,
+            })
+
+    fallback_bg = next((
+        entry
+        for entry in paint_entries
+        if entry['tag'] == 'rect' and entry['attr'] == 'fill'
+    ), None)
+    fallback_fg = next((
+        entry for entry in paint_entries if entry['attr'] == 'stroke'
+    ), None)
+    if fallback_fg is None:
+        fallback_fg = next((
+            entry
+            for entry in paint_entries
+            if entry['attr'] == 'fill' and entry is not fallback_bg
+        ), None)
+
     fg_color = pattern_elem.get('data-pptx-fg')
     bg_color = pattern_elem.get('data-pptx-bg')
-
-    if not fg_color or not bg_color:
-        # Hand-authored fallback: derive from child elements.
-        for child in pattern_elem:
-            tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-            if tag == 'rect' and not bg_color:
-                bg_color = child.get('fill')
-            elif tag == 'path' and not fg_color:
-                fg_color = child.get('stroke')
+    fg_from_metadata = bool(fg_color)
+    bg_from_metadata = bool(bg_color)
+    if not fg_color and fallback_fg is not None:
+        fg_color = fallback_fg['color']
+    if not bg_color and fallback_bg is not None:
+        bg_color = fallback_bg['color']
 
     fg_hex, fg_alpha = parse_svg_color(fg_color) if fg_color else (None, 1.0)
     bg_hex, bg_alpha = parse_svg_color(bg_color) if bg_color else (None, 1.0)
     if not fg_hex:
         return ''
 
-    fg_opacity = combine_opacity(opacity, fg_alpha)
-    bg_opacity = combine_opacity(opacity, bg_alpha)
+    bg_source = next((
+        entry
+        for entry in paint_entries
+        if entry['tag'] == 'rect'
+        and entry['attr'] == 'fill'
+        and entry['hex'] == bg_hex
+    ), None)
+    fg_source = next((
+        entry
+        for entry in paint_entries
+        if entry['attr'] == 'stroke' and entry['hex'] == fg_hex
+    ), None)
+    if fg_source is None:
+        fg_source = next((
+            entry
+            for entry in paint_entries
+            if entry['attr'] == 'fill'
+            and entry['hex'] == fg_hex
+            and entry is not bg_source
+        ), None)
+
+    fg_child_opacity = 1.0
+    if fg_source is not None:
+        fg_child_opacity = fg_source['opacity'] * (
+            fg_source['alpha'] if fg_from_metadata else 1.0
+        )
+    bg_child_opacity = 1.0
+    if bg_source is not None:
+        bg_child_opacity = bg_source['opacity'] * (
+            bg_source['alpha'] if bg_from_metadata else 1.0
+        )
+
+    fg_opacity = combine_opacity(opacity, fg_alpha, fg_child_opacity)
+    bg_opacity = combine_opacity(opacity, bg_alpha, bg_child_opacity)
     fg_alpha_xml = (
         f'<a:alpha val="{int(fg_opacity * 100000)}"/>'
         if fg_opacity is not None else ''
