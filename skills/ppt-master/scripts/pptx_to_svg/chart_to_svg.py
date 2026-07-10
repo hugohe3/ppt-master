@@ -14,7 +14,10 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from svg_to_pptx.drawingml.utils import parse_font_family
-from svg_to_pptx.native_objects.chart_data import _chart_data, _data_label_position
+from svg_to_pptx.native_objects.chart_data import (
+    validate_chart_payload,
+    validate_data_label_position,
+)
 
 from .emu_units import NS, Xfrm, ooxml_bool
 from .ooxml_loader import OoxmlPackage, PartRef
@@ -80,7 +83,7 @@ def extract_native_chart_payload(
 
     try:
         payload = _payload_from_chart_xml(chart_part.xml, xfrm)
-        _chart_data(payload)
+        validate_chart_payload(payload)
     except _UnsupportedChart as exc:
         return ChartResult(native_status=exc.status)
     except RuntimeError:
@@ -477,7 +480,7 @@ def _apply_chart_metadata(
         if payload["type"] not in {"area", "bar", "column", "line"}:
             raise _UnsupportedChart("unsupported-chart-data-labels")
         try:
-            _data_label_position(
+            validate_data_label_position(
                 data_labels.get("position"),
                 payload["type"],
                 payload.get("grouping"),

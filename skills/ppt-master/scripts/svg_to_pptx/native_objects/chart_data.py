@@ -991,3 +991,25 @@ def _chart_data(payload: dict[str, Any]) -> dict[str, Any]:
     if chart_type in _XY_CHART_TYPES:
         return _xy_chart_data(payload, chart_type, alias_style)
     return _category_chart_data(payload, chart_type, alias_grouping, alias_style)
+
+
+def validate_chart_payload(payload: dict[str, Any]) -> None:
+    """Check a native chart payload against the export schema.
+
+    Public contract for the pptx_to_svg importer: raises RuntimeError on any
+    payload the native chart exporter cannot represent.
+    """
+    _chart_data(payload)
+
+
+def validate_data_label_position(
+    value: Any,
+    chart_type: str,
+    grouping: str | None,
+) -> None:
+    """Check a data-label position against the export schema.
+
+    Public contract for the pptx_to_svg importer: raises RuntimeError when the
+    position is not representable for the given plot.
+    """
+    _data_label_position(value, chart_type, grouping)

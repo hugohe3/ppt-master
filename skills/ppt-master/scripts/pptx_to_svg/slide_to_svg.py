@@ -603,15 +603,16 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                 extra_attrs=native_attrs,
             )
 
+    chart_native_attrs: list[str] = []
     if uri in {CHART_URI, CHARTEX_URI}:
-        rendered, native_attrs = _render_graphic_chart(node, ctx, graphic_data)
+        rendered, chart_native_attrs = _render_graphic_chart(node, ctx, graphic_data)
         if rendered:
             return _wrap_shape_group(
                 rendered,
                 node,
                 ctx,
                 top_level=top_level,
-                extra_attrs=native_attrs,
+                extra_attrs=chart_native_attrs,
             )
 
     if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole" and ctx.render_graphic_previews:
@@ -636,10 +637,9 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         f'text-anchor="middle" font-size="14" fill="#999999">'
         f"[{_xml_escape(label)}]</text>"
     )
-    extra_attrs = []
-    if uri in {CHART_URI, CHARTEX_URI}:
-        _rendered, extra_attrs = _render_graphic_chart(node, ctx, graphic_data)
-    return _wrap_shape_group(placeholder, node, ctx, top_level=top_level, extra_attrs=extra_attrs)
+    return _wrap_shape_group(
+        placeholder, node, ctx, top_level=top_level, extra_attrs=chart_native_attrs,
+    )
 
 
 def _graphic_preview_label(node: ShapeNode, label: str) -> str:
