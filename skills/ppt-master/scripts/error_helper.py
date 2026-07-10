@@ -219,15 +219,6 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
-        'image_opacity_detected': {
-            'message': 'Forbidden <image opacity> detected',
-            'solutions': [
-                'Remove image opacity attribute',
-                'Add a <rect> overlay to control transparency',
-                'Ensure overlay color matches the background'
-            ],
-            'severity': 'error'
-        },
         'event_attribute_detected': {
             'message': 'Forbidden event attribute detected',
             'solutions': [

@@ -228,7 +228,9 @@ Use PowerPoint-safe transparency syntax:
 |------|-------------|
 | `fill=\"rgba(...)\"` | `fill=\"#hex\"` + `fill-opacity` |
 | `<g opacity=\"...\">` | Set opacity on each child |
-| `<image opacity=\"...\">` | Overlay with a mask layer |
+
+`<image opacity="0..1">` is supported directly. Native export writes
+DrawingML `a:alphaModFix`, and PPTX import restores the SVG opacity value.
 
 PowerPoint also has trouble with unsupported filters and direct SVG features
 not mapped to DrawingML. Connector arrows may use qualified
