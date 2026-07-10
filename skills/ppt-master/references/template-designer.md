@@ -104,7 +104,7 @@ When the brief sets `Replication mode: mirror`, preserve literal page appearance
 
 - Visual source: `<import_workspace>/svg-flat/slide_NN.svg` (the self-contained "what PowerPoint shows" view). Structural source: `svg/master_*.svg`, `svg/layout_*.svg`, and `svg/inheritance.json`.
 - Output: `templates/<kind_dir>/<template_id>/<NNN>_<page_type>.svg`, where `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
-- Required metadata rewrite: declare the output Layout on the root, mark inherited Master/Layout visuals as direct preview layers, and map source content slots to semantic `data-pptx-placeholder` markers where the imported contract exposes them.
+- Required metadata rewrite: declare the output Layout on the root, mark inherited Master/Layout visuals as direct preview layers, and map source content slots to semantic `data-pptx-placeholder` markers where the imported contract exposes them. Add `data-pptx-role` only to structural page-frame objects whose behavior is not already expressed by those specialized markers.
 - Other allowed modifications: rewrite `<image href="...">` paths to local assets and rename assets semantically. Keep geometry, decoration, sprite-sheet wrappers, original example text, chart previews, and fonts visually unchanged.
 - Forbidden: simplifying decorative complexity, merging similar slides, or dropping inherited preview chrome.
 - `design_spec.md` §V Page Roster lists every emitted file with a one-line content-fit description; SVG metadata owns native reconstruction.
@@ -247,10 +247,11 @@ Do not:
 | Rebuilt master/layout visual | Direct preview child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"` |
 | Semantic content slot | Direct content child with `data-pptx-placeholder`; add `data-pptx-placeholder-idx` when same-role slots require stable disambiguation |
 | Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
+| Structural page-frame hint | Optional `data-pptx-role` only when background/decoration/header/footer/logo/watermark/chrome/page-number behavior is not already expressed by layer/placeholder metadata; stable unique `id` required |
 
 Repeat inherited visuals in every standalone SVG so browser preview remains complete. Template export validates their equality, moves one copy into the generated Master/Layout parts, and removes the repeated Slide copies. Do not flatten inherited visuals into unmarked slide content.
 
-Use the imported semantic roles verbatim: `title`, `subtitle`, `body`,
+Use the imported placeholder types verbatim: `title`, `subtitle`, `body`,
 `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and
 `slide-number`. In particular, do not collapse source `subTitle`, `obj`,
 `media`, or `dt` placeholders into a generic body marker. A reconstructed
@@ -265,13 +266,16 @@ Use clear placeholder markers for replaceable content:
 
 ```xml
 <!-- Text placeholder -->
-<text x="80" y="320" fill="#FFFFFF" font-size="48" font-weight="bold">
+<text id="title-slot" data-pptx-placeholder="title"
+      x="80" y="320" fill="#FFFFFF" font-size="48" font-weight="bold">
   {{TITLE}}
 </text>
 
 <!-- Content area placeholder (content page only) -->
 <rect x="40" y="90" width="1200" height="550" fill="#FFFFFF" rx="8"/>
-<text x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="16">
+<text id="body-slot" data-pptx-placeholder="body"
+      data-pptx-placeholder-bounds="40 90 1200 550"
+      x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="16">
   {{CONTENT_AREA}}
 </text>
 ```

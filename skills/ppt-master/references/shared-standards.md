@@ -180,6 +180,18 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 **Hard rule — page-design closure**: A final page SVG is the sole visual/design authority for that page on every SVG-authoring route. SVG is not the authority for the entire PPTX package.
 
+### 4.1 Semantic SVG Marker Contract
+
+Semantic markers are minimal compiler hints orthogonal to native SVG semantics.
+Existing `data-pptx-layout` / layer / placeholder / native-object metadata is
+authoritative and read first. A `baseline` / free-design root declares
+`data-pptx-page-role`; template/preserve roots already declare their Layout.
+Add `data-pptx-role` only when no specialized marker expresses the required
+page-frame behavior; the element also uses a stable unique `id`. Do not classify
+ordinary page content or move visible facts out of SVG attributes/text into
+metadata. See
+[`semantic-svg.md`](semantic-svg.md) for the canonical vocabulary and examples.
+
 - **viewBox** MUST match the canvas dimensions; it is the single source of truth for canvas size. Root `width`/`height` are optional compatibility attributes and are not used as PPT Master canvas authority.
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
@@ -264,9 +276,9 @@ Wrap logically related elements in top-level `<g id="...">` groups. Produces Pow
 
 **Animation-ready rule**: direct children of `<svg>` should be semantic groups, not raw drawing atoms. Aim for **3–8 top-level content `<g id>` groups per slide** (the 3–8 budget excludes page chrome — see below); each content group becomes one entrance step under the chosen `--animation-trigger` mode (one click in `on-click`, one cascade slot in `after-previous`, parallel in `with-previous`).
 
-**Chrome groups are excluded automatically.** The exporter treats top-level groups whose id contains chrome tokens as page chrome and skips them in the animation sequence — they appear together with the slide. Tokens (matched against id after splitting on `-` / `_`): `background`, `bg`, `decoration` / `decorations` / `decor`, `header`, `footer`, `chrome`, `watermark`, `pagenumber` / `pagenum` / `page-number`, `nav`, `logo`, `rule`. So `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">` all skip animation while keeping their `<g>` wrapper for editing/grouping. Use these naming conventions for chrome — do **not** strip the `<g>` wrapper.
+**Chrome groups are excluded automatically.** Existing `data-pptx-layer` and `data-pptx-placeholder="slide-number"` semantics are read first. Otherwise, explicit `data-pptx-role` values `background`, `decoration`, `header`, `footer`, `chrome`, `watermark`, `page-number`, and `logo` identify static page framing. For marker-free legacy SVGs, ids remain a compatibility fallback using these tokens after splitting on `-` / `_`: `background`, `bg`, `decoration` / `decorations` / `decor`, `header`, `footer`, `chrome`, `watermark`, `pagenumber` / `pagenum` / `page-number`, `nav`, `logo`, `rule`. Keep the `<g>` wrapper for editing/grouping.
 
-These ids also drive slide-master promotion in the default native export: `logo` / `footer` / `header` / `watermark` / `chrome` / `pageNumber` chrome that is drawn **before** content and repeated **verbatim** across pages moves into the slide master (pages without it, like covers, are isolated automatically), and a `pageNumber` text whose content is exactly the page's display number becomes a self-renumbering PowerPoint field.
+Minimal structural roles also drive slide-master promotion in the default native export: `logo` / `footer` / `header` / `watermark` / `chrome` elements drawn **before** content and repeated **verbatim** across pages may move into the slide master (pages without them, like covers, are isolated automatically). A `data-pptx-placeholder="slide-number"` text, or a free-design `data-pptx-role="page-number"` text, whose content exactly equals the page's display number becomes a self-renumbering PowerPoint field. Exact id tokens remain a fallback only when specialized/minimal markers are absent.
 
 **What to group**:
 
@@ -941,13 +953,18 @@ steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
 Native `baseline` export assigns layout families after every SVG page has been
 converted. This package-only pass does not change SVG authoring or live preview.
 
-| Filename evidence | Output layout |
+| Root `data-pptx-page-role` | Output layout |
 |---|---|
-| `cover`, `frontcover`, `封面` | `Cover` |
-| `agenda`, `contents`, `outline`, `toc`, `目录`, `议程` | `Agenda` |
-| `chapter`, `divider`, `section`, `transition`, `章节`, `过渡页` | `Section` |
-| `closing`, `end`, `ending`, `qa`, `thankyou`, `thanks`, `封底`, `结束`, `结尾`, `结语`, `致谢`, `谢谢` | `Closing` |
-| No exact role token | `Content` |
+| `cover` | `Cover` |
+| `toc` | `Agenda` |
+| `section` | `Section` |
+| `ending` | `Closing` |
+| `content` | `Content` |
+
+Marker-free legacy SVGs retain conservative filename-token fallback: explicit
+cover / agenda / section / closing tokens select those families, and every
+other page becomes `Content`. When a valid root marker exists, it is
+authoritative even if the filename suggests another family.
 
 Keep an existing `Cover` assignment when the Master chrome safety pass already
 used it to hide promoted Master shapes from a minority page.
@@ -962,8 +979,9 @@ keep each background on its Slide. Preserve whether each family shows or hides
 the parent Master shape tree.
 
 **Layout chrome rule**: After family assignment, move only the identical
-leading prefix of explicitly named chrome (`logo`, `footer`, `header`,
-`watermark`, `chrome`) carried by every family member. Generated OOXML and
+leading prefix of explicitly marked chrome (`logo`, `footer`, `header`,
+`watermark`, `chrome`) carried by every family member. Legacy id tokens are
+consulted only when `data-pptx-role` is absent. Generated OOXML and
 image relationships must match exactly, no animation may target the shapes,
 and moving them behind Slide content must preserve z-order. Keep page numbers
 and every non-identical object Slide-local.

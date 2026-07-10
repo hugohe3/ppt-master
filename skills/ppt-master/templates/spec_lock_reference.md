@@ -134,7 +134,7 @@
 > ```
 > Omit the row for free design and brand-only templates. Both values require one `page_layouts` and one `pptx_layouts` row per page. `strict` keeps the selected Layout contract; `adaptive` may create a new explicit Layout under the same template Master.
 >
-> - `baseline` — default for free design and brand-only routes. Preserve conservative shared Master/background/chrome behavior, then assign filename-backed Cover/Agenda/Section/Closing/Content layouts. It may also promote exact family-wide leading chrome into a Layout. Actual content stays slide-local; no placeholders or visual-similarity inference are authored.
+> - `baseline` — default for free design and brand-only routes. Preserve conservative shared Master/background/chrome behavior, then assign Cover/Agenda/Section/Closing/Content from root `data-pptx-page-role`. It may also promote exact family-wide leading structurally marked chrome into a Layout. Marker-free legacy SVGs retain filename/id fallback. Actual content stays slide-local; no placeholders or visual-similarity inference are authored.
 > - `template` — required whenever Step 3 loaded a deck/layout template. Requires complete `page_layouts` and `pptx_layouts` sections plus explicit SVG structure metadata on every generated page.
 > - `preserve` — legacy strict-only compatibility for an existing project that already ships `native_structure.json` + `source_template.pptx`. Do not select it for newly created templates.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
