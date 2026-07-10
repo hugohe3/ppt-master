@@ -196,8 +196,6 @@ primary_color: "#00418D"
 - `textPath` (text on path)
 - `animate`, `animateTransform`, `set` (animations)
 
-- `rgba()` color format (must use hex + opacity)
-
 ---
 
 ## XI. Placeholder Specification

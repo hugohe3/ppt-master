@@ -291,10 +291,8 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ### PPT Compatibility Rules
 
-| Prohibited                         | Correct Alternative                                    |
-| ---------------------------------- | ------------------------------------------------------ |
-| `fill="rgba(255,255,255,0.1)"`     | `fill="#FFFFFF" fill-opacity="0.1"`                    |
-| `stroke="rgba(0,0,0,0.5)"`        | `stroke="#000000" stroke-opacity="0.5"`                |
+Supported CSS alpha colors and explicit `fill-opacity` / `stroke-opacity`
+both export to DrawingML; when combined, their alpha values multiply.
 
 `<g opacity="0..1">` is supported as per-descendant alpha; overlapping
 children may composite differently from an isolated SVG group.

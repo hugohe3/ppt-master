@@ -529,7 +529,6 @@ SVG_CONSTRAINTS = {
     # Forbidden patterns (regex matching)
     'forbidden_patterns': [
         r'@font-face',  # Web fonts
-        r'rgba\s*\(',   # rgba colors (PPT incompatible)
         r'<\?xml-stylesheet\b',  # External CSS
         r'<link[^>]*rel\s*=\s*["\']stylesheet["\']',
         r'@import\s+',  # External CSS

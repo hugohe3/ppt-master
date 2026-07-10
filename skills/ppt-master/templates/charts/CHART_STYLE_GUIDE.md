@@ -296,11 +296,11 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | `<script>` / event 属性 | 无 |
 | `<iframe>` | 无 |
 
-### 6.2 PPT 兼容性替代
+### 6.2 PPT 颜色语法
 
-| 禁止语法 | 正确替代 |
-|---------|----------|
-| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
+支持常用命名色、`rgb()` / `rgba()`、`hsl()` / `hsla()` 以及 3/4/6/8 位
+HEX。颜色内嵌 alpha 会与 `opacity`、`fill-opacity`、`stroke-opacity`、
+`stop-opacity` 继续相乘；需要复用同一色板时，也可继续采用独立透明度属性。
 
 ### 6.3 条件允许
 
@@ -420,7 +420,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ### 结构
 - [ ] 主要元素有语义化 `<g id="...">`
-- [ ] 无 `<style>`、`class`、`<foreignObject>`、`mask`、`rgba()`
+- [ ] 无 `<style>`、`class`、`<foreignObject>`、`mask`
 - [ ] `<g>` 标签无 `opacity` 属性
 - [ ] 文本字符为原生 Unicode（`—` `©` `→` NBSP 等），无 HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` 等）；裸 `& < >` 已转义为 `&amp; &lt; &gt;`
 

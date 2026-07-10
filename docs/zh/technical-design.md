@@ -352,7 +352,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 **为什么组合走 Strategist 资源列表，不只交给 Executor 临场发挥。** `§VIII 图片资源列表` 的 `Layout pattern` 列接受 `#<id> + #<id> ...` 表达式——Primary id 加可选 Modifier id——所以组合在 SVG 生成**之前**就被声明、被 `svg_quality_checker` 审计、并能在 session 重入后存活。把组合责任只压在 Executor 身上，长 deck 上下文压缩时就会丢；把它编码进 spec_lock 旁的资源列表，组合就成为设计契约的一部分。
 
-**为什么真正的硬约束留在上游。** 跨切的技术硬约束（`<clipPath>` 只能用在 `<image>` 上、用 `fill-opacity` 而非 `rgba()`、禁 `<mask>`、alpha 效果的路由表）独家住在 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)。版式词表只用一行指针指向它们，不复述——这样某条约束放开时（比如某个 DrawingML 特性变得可靠），只有一个文件要改，词表里也不会留下一份过期副本继续暗中强制旧规则。
+**为什么真正的硬约束留在上游。** 跨切的技术硬约束（`<clipPath>` 只能用在 `<image>` 上、禁 `<mask>`、受支持的 CSS 颜色语法、alpha 效果的路由表）独家住在 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)。版式词表只用一行指针指向它们，不复述——这样某条约束放开时（比如某个 DrawingML 特性变得可靠），只有一个文件要改，词表里也不会留下一份过期副本继续暗中强制旧规则。
 
 ---
 

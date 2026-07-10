@@ -201,15 +201,6 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
-        'rgba_detected': {
-            'message': 'Forbidden rgba() color detected',
-            'solutions': [
-                'Replace rgba() with hex + opacity notation',
-                'Example: fill="#FFFFFF" fill-opacity="0.1"',
-                'Use stroke-opacity for strokes'
-            ],
-            'severity': 'error'
-        },
         'event_attribute_detected': {
             'message': 'Forbidden event attribute detected',
             'solutions': [
