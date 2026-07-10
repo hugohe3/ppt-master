@@ -74,6 +74,31 @@ except ImportError:
     _native_object_marker_warnings = None
 
 try:
+    from svg_to_pptx.pptx_package.template_structure import (
+        TemplateStructureError as _TemplateStructureError,
+        PptxLayoutReference as _PptxLayoutReference,
+        PptxStructureLock as _PptxStructureLock,
+        load_native_structure_contract as _load_native_structure_contract,
+        load_pptx_structure_lock as _load_pptx_structure_lock,
+        native_structure_lock_errors as _native_structure_lock_errors,
+        parse_preserve_slides as _parse_preserve_structure_slides,
+        parse_template_slides as _parse_template_structure_slides,
+        template_lock_errors as _template_lock_errors,
+        validate_template_svg as _validate_template_structure_svg,
+    )
+except ImportError:
+    _TemplateStructureError = None
+    _PptxLayoutReference = None
+    _PptxStructureLock = None
+    _load_native_structure_contract = None
+    _load_pptx_structure_lock = None
+    _native_structure_lock_errors = None
+    _parse_preserve_structure_slides = None
+    _parse_template_structure_slides = None
+    _template_lock_errors = None
+    _validate_template_structure_svg = None
+
+try:
     from svg_finalize.embed_icons import (
         resolve_icon_path as _resolve_icon_path,
     )
@@ -310,6 +335,7 @@ class SVGQualityChecker:
         self._template_issues: List[Tuple[str, str, str]] = []
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
+        self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._aggregate_counts_applied = False
 
     def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
@@ -382,6 +408,9 @@ class SVGQualityChecker:
 
                 # 8c. Check opt-in native table/chart markers before export.
                 self._check_native_object_markers(root, result)
+
+                # 8d. Validate explicit master/layout/placeholder metadata.
+                self._check_pptx_structure_metadata(root, svg_path, result)
 
                 # 9. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
@@ -926,6 +955,15 @@ class SVGQualityChecker:
 
     def _check_native_object_markers(self, root: ET.Element, result: Dict) -> None:
         """Validate opt-in native table/chart markers before PPTX export."""
+        for elem in root.iter():
+            status = elem.get('data-pptx-native-status')
+            if not status or elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            result['warnings'].append(
+                f"Native PPTX object {marker_id} is fallback-only: {status}"
+            )
+
         markers = [
             elem for elem in root.iter()
             if elem.get('data-pptx-native') and elem.tag.rsplit('}', 1)[-1] != 'metadata'
@@ -939,11 +977,27 @@ class SVGQualityChecker:
             )
             return
 
+        parent_map = {
+            child: parent
+            for parent in root.iter()
+            for child in parent
+        }
+
         for marker in markers:
             marker_id = marker.get('id') or '<unnamed>'
+            ancestors = []
+            parent = parent_map.get(marker)
+            while parent is not None and parent is not root:
+                if parent.tag.rsplit('}', 1)[-1] == 'g':
+                    ancestors.append(parent)
+                parent = parent_map.get(parent)
+            ancestors_tuple = tuple(reversed(ancestors))
             if _validate_native_object_marker_with_warnings is not None:
                 try:
-                    warnings = _validate_native_object_marker_with_warnings(marker)
+                    warnings = _validate_native_object_marker_with_warnings(
+                        marker,
+                        ancestors=ancestors_tuple,
+                    )
                 except RuntimeError as exc:
                     result['errors'].append(
                         f"Invalid data-pptx-native marker {marker_id}: {exc}"
@@ -956,7 +1010,7 @@ class SVGQualityChecker:
                 continue
 
             try:
-                _validate_native_object_marker(marker)
+                _validate_native_object_marker(marker, ancestors=ancestors_tuple)
             except RuntimeError as exc:
                 result['errors'].append(
                     f"Invalid data-pptx-native marker {marker_id}: {exc}"
@@ -964,10 +1018,43 @@ class SVGQualityChecker:
                 continue
             if _native_object_marker_warnings is None:
                 continue
-            for warning in _native_object_marker_warnings(marker):
+            for warning in _native_object_marker_warnings(
+                marker,
+                ancestors=ancestors_tuple,
+            ):
                 result['warnings'].append(
                     f"data-pptx-native marker {marker_id}: {warning}"
                 )
+
+    def _check_pptx_structure_metadata(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Validate explicit template-export metadata when any is present."""
+        structure_attrs = {
+            'data-pptx-layer',
+            'data-pptx-layout',
+            'data-pptx-layout-name',
+            'data-pptx-placeholder',
+            'data-pptx-placeholder-bounds',
+            'data-pptx-placeholder-idx',
+            'data-pptx-editable',
+        }
+        if not any(
+            elem.get(attr) is not None
+            for elem in root.iter()
+            for attr in structure_attrs
+        ):
+            return
+        if _validate_template_structure_svg is None:
+            result['warnings'].append(
+                "Detected PPTX template structure metadata, but its validator "
+                "could not be imported; template export will still validate it."
+            )
+            return
+        result['errors'].extend(_validate_template_structure_svg(svg_path))
 
     def _get_spec_lock(self, svg_path: Path):
         """Locate and parse spec_lock.md near the SVG. Returns dict or None.
@@ -1348,6 +1435,7 @@ class SVGQualityChecker:
             result = self.check_file(str(svg_file), expected_format)
             self._print_result(result)
 
+        self._check_pptx_structure_contract(dir_path, svg_files)
         if self.template_mode and dir_path.is_dir():
             self._check_template_contract(dir_path, svg_files)
         elif dir_path.is_dir():
@@ -1355,6 +1443,125 @@ class SVGQualityChecker:
             self._check_illustration_resource_contract(dir_path)
 
         return self.results
+
+    def _check_pptx_structure_contract(
+        self,
+        target_path: Path,
+        svg_files: List[Path],
+    ) -> None:
+        """Validate project-level layout reuse and spec_lock mappings."""
+        if (
+            _load_pptx_structure_lock is None
+            or _parse_template_structure_slides is None
+            or _template_lock_errors is None
+            or _TemplateStructureError is None
+        ):
+            return
+        project_path = self._resolve_project_path(target_path)
+        try:
+            structure_lock = _load_pptx_structure_lock(project_path)
+        except _TemplateStructureError as exc:
+            self._pptx_structure_issues.append(('error', str(exc)))
+            return
+
+        if (
+            structure_lock is not None
+            and structure_lock.template_adherence == 'strict'
+            and _parse_spec_lock is not None
+        ):
+            lock_path = project_path / 'spec_lock.md'
+            lock = _parse_spec_lock(lock_path)
+            page_layouts = lock.get('page_layouts', {})
+            expected_pages = {f'P{index:02d}' for index in range(1, len(svg_files) + 1)}
+            missing_pages = sorted(expected_pages - set(page_layouts))
+            if missing_pages:
+                self._pptx_structure_issues.append((
+                    'error',
+                    'spec_lock.md strict template_adherence requires page_layouts '
+                    'rows for every generated page; missing: ' + ', '.join(missing_pages),
+                ))
+            template_dir = project_path / 'templates'
+            template_svgs = {path.stem for path in template_dir.glob('*.svg')}
+            missing_templates = sorted({
+                value.strip().removesuffix('.svg')
+                for page, value in page_layouts.items()
+                if page in expected_pages
+                and value.strip().removesuffix('.svg') not in template_svgs
+            })
+            if missing_templates:
+                self._pptx_structure_issues.append((
+                    'error',
+                    'spec_lock.md strict template_adherence references missing '
+                    'template SVG(s): ' + ', '.join(missing_templates),
+                ))
+
+        structure_attrs = {
+            'data-pptx-layer',
+            'data-pptx-layout',
+            'data-pptx-layout-name',
+            'data-pptx-placeholder',
+            'data-pptx-placeholder-bounds',
+            'data-pptx-placeholder-idx',
+            'data-pptx-editable',
+        }
+        has_metadata = False
+        for svg_path in svg_files:
+            try:
+                root = ET.parse(svg_path).getroot()
+            except (OSError, ET.ParseError):
+                continue
+            if any(
+                elem.get(attr) is not None
+                for elem in root.iter()
+                for attr in structure_attrs
+            ):
+                has_metadata = True
+                break
+        locked_mode = structure_lock.mode if structure_lock is not None else None
+        structure_locked = locked_mode in {'template', 'preserve'}
+        if not has_metadata and not structure_locked:
+            return
+
+        try:
+            if locked_mode == 'preserve':
+                if _parse_preserve_structure_slides is None:
+                    return
+                specs = _parse_preserve_structure_slides(svg_files)
+            else:
+                specs = _parse_template_structure_slides(svg_files)
+        except _TemplateStructureError as exc:
+            self._pptx_structure_issues.append(('error', str(exc)))
+            return
+        if not structure_locked:
+            return
+        self._pptx_structure_issues.extend(
+            ('error', message)
+            for message in _template_lock_errors(specs, structure_lock)
+        )
+        if locked_mode != 'preserve':
+            return
+        if (
+            _load_native_structure_contract is None
+            or _native_structure_lock_errors is None
+        ):
+            self._pptx_structure_issues.append((
+                'error',
+                'Preserve mode validator could not load the native structure contract.',
+            ))
+            return
+        try:
+            contract = _load_native_structure_contract(structure_lock)
+        except _TemplateStructureError as exc:
+            self._pptx_structure_issues.append(('error', str(exc)))
+            return
+        self._pptx_structure_issues.extend(
+            ('error', message)
+            for message in _native_structure_lock_errors(
+                specs,
+                structure_lock,
+                contract,
+            )
+        )
 
     def _check_illustration_resource_contract(self, dir_path: Path) -> None:
         """Project-level illustration resource checks."""
@@ -1758,6 +1965,88 @@ class SVGQualityChecker:
         Issues are aggregated and printed in :py:meth:`print_summary` so the
         per-file report stays focused on intrinsic SVG validity.
         """
+        native_contract_path = dir_path / 'native_structure.json'
+        source_template_path = dir_path / 'source_template.pptx'
+        native_contract = None
+        if native_contract_path.exists() != source_template_path.exists():
+            self._template_issues.append((
+                'error',
+                'native_structure_pair',
+                "native_structure.json and source_template.pptx must be shipped together",
+            ))
+        elif native_contract_path.exists():
+            if (
+                _PptxStructureLock is None
+                or _load_native_structure_contract is None
+                or _TemplateStructureError is None
+            ):
+                self._template_issues.append((
+                    'error',
+                    'native_structure_validator',
+                    "native structure validator is unavailable",
+                ))
+            else:
+                try:
+                    native_contract = _load_native_structure_contract(_PptxStructureLock(
+                        mode='preserve',
+                        source_template=source_template_path,
+                        native_structure=native_contract_path,
+                    ))
+                except _TemplateStructureError as exc:
+                    self._template_issues.append((
+                        'error',
+                        'native_structure_invalid',
+                        str(exc),
+                    ))
+        if (
+            native_contract is not None
+            and _PptxLayoutReference is not None
+            and _parse_preserve_structure_slides is not None
+            and _template_lock_errors is not None
+            and _native_structure_lock_errors is not None
+        ):
+            try:
+                native_specs = _parse_preserve_structure_slides(svg_files)
+                native_layouts = {
+                    layout.key: layout for layout in native_contract.layouts
+                }
+                references = tuple(
+                    _PptxLayoutReference(
+                        slide_num=spec.slide_num,
+                        layout_key=spec.layout_key,
+                        layout_name=(
+                            native_layouts[spec.layout_key].name
+                            if spec.layout_key in native_layouts
+                            else spec.layout_name
+                        ),
+                    )
+                    for spec in native_specs
+                )
+                native_lock = _PptxStructureLock(
+                    mode='preserve',
+                    layouts=references,
+                    source_template=source_template_path,
+                    native_structure=native_contract_path,
+                )
+                native_errors = _template_lock_errors(native_specs, native_lock)
+                native_errors.extend(_native_structure_lock_errors(
+                    native_specs,
+                    native_lock,
+                    native_contract,
+                ))
+                for message in native_errors:
+                    self._template_issues.append((
+                        'error',
+                        'native_structure_svg',
+                        message,
+                    ))
+            except _TemplateStructureError as exc:
+                self._template_issues.append((
+                    'error',
+                    'native_structure_svg',
+                    str(exc),
+                ))
+
         spec_path = dir_path / 'design_spec.md'
         spec_text = spec_path.read_text(encoding='utf-8') if spec_path.exists() else ""
         spec_pages = self._extract_spec_roster(spec_text) if spec_text else []
@@ -2034,6 +2323,9 @@ class SVGQualityChecker:
         # Illustration strategy aggregation.
         self._print_illustration_summary()
 
+        # Explicit PowerPoint master/layout structure aggregation.
+        self._print_pptx_structure_summary()
+
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
@@ -2073,6 +2365,14 @@ class SVGQualityChecker:
             print(f"  Warnings ({len(warnings)}):")
             for _severity, kind, msg in warnings:
                 print(f"    [{kind}] {msg}")
+
+    def _print_pptx_structure_summary(self):
+        """Print project-level PowerPoint structure contract issues."""
+        if not self._pptx_structure_issues:
+            return
+        print("\n[PPTX STRUCTURE] Master/layout contract checks")
+        for severity, message in self._pptx_structure_issues:
+            print(f"  [{severity.upper()}] {message}")
 
     def _print_template_summary(self):
         """Aggregate template-mode roster / placeholder issues at the bottom.
@@ -2126,6 +2426,13 @@ class SVGQualityChecker:
         self.summary['warnings'] += len(illustration_warnings)
         for severity, kind, _msg in self._illustration_issues:
             self.issue_types[f'illustration_{kind}_{severity}'] += 1
+
+        structure_errors = [item for item in self._pptx_structure_issues if item[0] == 'error']
+        structure_warnings = [item for item in self._pptx_structure_issues if item[0] == 'warning']
+        self.summary['errors'] += len(structure_errors)
+        self.summary['warnings'] += len(structure_warnings)
+        for severity, _msg in self._pptx_structure_issues:
+            self.issue_types[f'pptx_structure_{severity}'] += 1
 
     def _print_drift_summary(self):
         """Print spec_lock drift aggregation if any was observed.

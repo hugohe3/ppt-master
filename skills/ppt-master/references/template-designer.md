@@ -18,6 +18,8 @@ When the workflow provides a PPTX reference source, the effective input package 
 
 - finalized template brief
 - `manifest.json` — single source of truth (slide size, theme, per-master themes, assets, asset map, placeholders, layouts, masters, slides, SVG file paths, page-type candidates)
+- `native_structure.json` — stable source master/layout keys, picker names, parent-master relationships, placeholder type/index/geometry, source hash, and template-packaging preserve-vs-rebuild recommendation
+- `source_template.pptx` — byte-preserved source package paired with `native_structure.json`
 - `summary.md` — short orientation digest derived from manifest.json
 - exported `assets/`
 - `svg/master_*.svg` / `svg/layout_*.svg` — every master / layout in the deck rendered once as standalone SVG, including ones no sample slide references (template packages often ship more design surfaces than the embedded samples exercise)
@@ -35,12 +37,24 @@ PPTX import interpretation:
 Input priority for PPTX-backed template creation:
 
 1. `manifest.json` for all factual metadata (theme, assets, unique layout/master structure, slide reuse, page-type guidance)
-2. `svg/master_*.svg` + `svg/layout_*.svg` — the **primary source for the deck's shared visual language**: backgrounds, page chrome, decorative bars, recurring brand motifs. These are what the new template's fixed structure should adopt or reinterpret. Read these before any slide SVG.
-3. `svg/inheritance.json` for confirming which slide uses which layout / master
-4. exported `assets/` for reusable visual resources
-5. `svg/slide_NN.svg` — each slide's unique content, useful for judging composition rhythm and content density (not for fixed structure)
-6. `summary.md` only as a fast scan; never as the canonical fact source
-7. screenshots / original PPTX only for style verification
+2. `native_structure.json` for native PowerPoint identities, source placeholder indices, relationship completeness, and the confirmed template-packaging strategy
+3. `svg/master_*.svg` + `svg/layout_*.svg` — the **primary source for the deck's shared visual language**: backgrounds, page chrome, decorative bars, recurring brand motifs. These are what the new template's fixed structure should adopt or reinterpret. Read these before any slide SVG.
+4. `svg/inheritance.json` for confirming which slide uses which layout / master
+5. exported `assets/` for reusable visual resources
+6. `svg/slide_NN.svg` — each slide's unique content, useful for judging composition rhythm and content density (not for fixed structure)
+7. `summary.md` only as a fast scan; never as the canonical fact source
+8. screenshots / original PPTX only for style verification
+
+**Native structure packaging strategy**:
+
+| Confirmed value | Output behavior |
+|---|---|
+| `preserve` | Copy `native_structure.json` and `source_template.pptx` unchanged. Bind every template SVG to one source layout key/name and source placeholder identities. This retains a downstream strict-use capability; it does not force every project to activate it. |
+| `template` | Do not ship the source pair. Reconstruct one master plus semantic layouts through explicit SVG structure metadata. |
+
+Mirror replication cannot use `preserve`: flat SVGs no longer identify which pixels belong to the source master/layout.
+
+**Downstream boundary**: The Strategist confirmation stage selects `strict` or `adaptive` when a project consumes this package. `strict` may activate the preserved pair; `adaptive` uses selected template SVGs as references and exports through baseline. Template_Designer does not preselect that project-level choice.
 
 ---
 
@@ -138,6 +152,11 @@ source_canvas_width: 1280
 source_canvas_height: 720
 source_viewbox: "0 0 1280 720"
 replication_mode: standard | fidelity | mirror
+# Type-A native retention capability only; omit these rows for rebuilt templates.
+# Downstream strict/adaptive use is confirmed by Strategist.
+# native_structure_mode: preserve
+# native_structure: native_structure.json
+# source_template: source_template.pptx
 # Optional — only when this template overrides canonical placeholder vocabulary.
 # Omit entirely for `mirror` mode (mirror has no placeholders).
 # placeholders:
@@ -166,7 +185,7 @@ replication_mode: standard | fidelity | mirror
 - Optional XML snippet for any reusable component unique to this template
 
 ## V. Page Roster
-One row per emitted SVG describing what this template's version of cover / chapter / content / ending looks like (background treatment, decorative anchors, layout rhythm, image behavior, content density, intended content slot). For `fidelity` mode, also note the cluster source and visual differentiator. For `mirror` mode the roster is the **load-bearing artifact** — Strategist picks pages from these descriptions, so each row must include enough detail to distinguish it from siblings (column count, hero element, content density, what kind of content slot it fits — "three-column KPI grid with large numbers, suits quarterly summary"). Roster entries must match the actual SVG files on disk.
+One row per emitted SVG describing what this template's version of cover / chapter / content / ending looks like (background treatment, decorative anchors, layout rhythm, image behavior, content density, intended content slot). For a preserved template, also record the source native layout key and PowerPoint picker name. For `fidelity` mode, note the cluster source and visual differentiator. For `mirror` mode the roster is the **load-bearing artifact** — Strategist picks pages from these descriptions, so each row must include enough detail to distinguish it from siblings (column count, hero element, content density, what kind of content slot it fits — "three-column KPI grid with large numbers, suits quarterly summary"). Roster entries must match the actual SVG files on disk.
 
 ## VI. Assets (omit when none)
 Logos, cover backgrounds, brand textures bundled with the template package — file name, dimensions, intended usage.
@@ -215,6 +234,8 @@ If PPTX import output exists:
 
 The imported PPTX is a **reference source**, not a direct conversion target.
 
+> Preserve exception: `source_template.pptx` is the native package retention target. Keep it byte-identical; only the companion SVG authoring references are simplified.
+
 Do:
 - preserve brand assets, recurring backgrounds, and stable structural motifs
 - rebuild the layout into a clean SVG structure aligned with PPT Master constraints
@@ -228,6 +249,17 @@ Do not:
 - attempt 1:1 translation of every PowerPoint shape, group, shadow, or decorative fragment
 - mirror PPT-specific complexity when it makes the resulting SVG brittle or hard to edit
 - introduce dense low-value vector detail that does not materially improve template reuse
+
+**Preserve-mode SVG contract**:
+
+| Source fact | Template SVG declaration |
+|---|---|
+| Chosen source layout | Root `data-pptx-layout` + exact `data-pptx-layout-name` |
+| Source master/layout visual | Direct preview child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"` |
+| Source placeholder | Direct content child with `data-pptx-placeholder`; add exact `data-pptx-placeholder-idx` when the source placeholder has an index |
+| Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
+
+Repeat inherited visuals in the standalone SVG so browser preview remains complete. Preserve export removes those preview copies and renders the original source master/layout parts instead. Do not flatten inherited visuals into unmarked slide content.
 
 ### 3. Placeholder Markers
 
@@ -330,6 +362,20 @@ templates/<kind_dir>/<template_name>/
 └── *.png / *.jpg
 ```
 
+Preserve-mode standard/fidelity packages add the native pair:
+
+```
+templates/<kind_dir>/<template_name>/
+├── design_spec.md
+├── native_structure.json
+├── source_template.pptx
+├── 01_cover.svg
+├── 03a_content_two_col.svg
+└── ...
+```
+
+Do not add the pair to mirror packages or rebuilt templates.
+
 Mirror mode emits one SVG per source slide, named by source order:
 
 ```
@@ -357,6 +403,7 @@ If the template is based on PPTX import output, briefly note:
 - which extracted assets were reused directly
 - which complex original decorations were intentionally simplified
 - whether any page-type mapping required judgment beyond the import heuristic
+- whether native structure was preserved or rebuilt; for preserve, list the retained master/layout counts
 
 ---
 
@@ -364,7 +411,7 @@ If the template is based on PPTX import output, briefly note:
 
 If suitable template resources already exist, use them directly instead of generating new ones:
 
-1. **Copy template**: copy the spec + template SVGs into the project's `templates/`, and any bundled bitmaps into the project's `images/` (the runtime image pool, referenced as `../images/`)
+1. **Copy template**: copy the spec + template SVGs and optional native structure pair into the project's `templates/`, and any bundled bitmaps into the project's `images/` (the runtime image pool, referenced as `../images/`). The pair remains optional capability until Strategist confirms strict template adherence.
 2. **Adjust colors**: Modify colors per the project design spec
 3. **Customize**: Make project-specific adjustments
 
@@ -398,5 +445,6 @@ templates/
 - [x] Naming convention applied (standard / fidelity: letter-suffix variants; mirror: `<NNN>_<page_type>.svg`)
 - [x] Templates follow design spec (colors, fonts, layout)
 - [x] Placeholder markers are clear and standardized (standard / fidelity); mirror SVGs contain **no** `{{}}` markers
+- [x] Native structure packaging strategy applied: preserve pair + source bindings, or explicit rebuilt structure; downstream strict/adaptive choice remains unforced
 - [ ] **Next step**: Validate assets and register the template via `register_template.py <id> --kind <deck|layout>`
 ```

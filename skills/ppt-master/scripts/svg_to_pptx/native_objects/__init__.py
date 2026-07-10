@@ -18,6 +18,7 @@ from .chart_style import (
     _native_chart_chrome_errors,
     _native_chart_chrome_warnings,
     _native_chart_export_payload,
+    _validate_chart_companion_boxes,
 )
 from .chart_xml import _chart_rels_xml, _chart_xml
 from .chartex import (
@@ -39,7 +40,9 @@ from .marker_common import (
     _bounds,
     _load_payload,
     _local_tag,
+    _native_marker_validation_context,
     _validate_bounds_inputs,
+    native_marker_transform,
 )
 from .table import (
     _build_native_table,
@@ -55,6 +58,7 @@ from .workbook import (
 __all__ = [
     "convert_native_object",
     "native_object_marker_warnings",
+    "native_marker_transform",
     "validate_native_object_marker",
     "validate_native_object_marker_with_warnings",
 ]
@@ -164,6 +168,8 @@ def _validate_native_object_marker_payload(
     elem: ET.Element,
     *,
     validate_chrome: bool = True,
+    ctx: ConvertContext | None = None,
+    ancestors: tuple[ET.Element, ...] = (),
 ) -> tuple[str, dict[str, Any], list[list[Any]] | None]:
     kind = (elem.get("data-pptx-native") or "").strip().lower()
     if not kind:
@@ -172,32 +178,52 @@ def _validate_native_object_marker_payload(
         raise RuntimeError(f"Unsupported data-pptx-native value: {kind}")
     if _local_tag(elem) != "g":
         raise RuntimeError("Native PPTX table/chart markers must be <g> elements")
-    transform = elem.get("transform", "")
-    if transform and any(token in transform for token in ("rotate", "matrix", "skew")):
-        raise RuntimeError("Native PPTX table/chart markers support translate/scale transforms only")
+    native_marker_transform(elem.get("transform"))
 
     payload = _load_payload(elem, kind)
-    _validate_bounds_inputs(elem, payload)
+    bounds_ctx = ctx or _native_marker_validation_context(elem, ancestors)
+    off_x, off_y, ext_cx, ext_cy, _ = _validate_bounds_inputs(elem, payload, bounds_ctx)
     table_rows = None
     if kind == "table":
-        table_rows, _ = _validate_table_payload(payload)
+        table_rows, col_count = _validate_table_payload(payload)
+        if ext_cx < col_count or ext_cy < len(table_rows):
+            raise RuntimeError(
+                "Native PPTX table bounds must provide at least one EMU per row and column"
+            )
     else:
-        _chart_data(payload)
-        if validate_chrome:
+        chart_data = _chart_data(payload)
+        _validate_chart_companion_boxes(
+            payload,
+            chart_bounds=(off_x, off_y, ext_cx, ext_cy),
+            include_title=chart_data["kind"] == "chartex",
+            include_subtitle_as_caption=chart_data["kind"] == "chartex",
+        )
+        if validate_chrome and elem.get("data-pptx-native-source") != "pptx":
             chrome_errors = _native_chart_chrome_errors(elem, payload)
             if chrome_errors:
                 raise RuntimeError("; ".join(chrome_errors))
     return kind, payload, table_rows
 
 
-def validate_native_object_marker(elem: ET.Element) -> None:
+def validate_native_object_marker(
+    elem: ET.Element,
+    *,
+    ancestors: tuple[ET.Element, ...] = (),
+) -> None:
     """Validate a data-pptx-native marker without mutating the PPTX package."""
-    _validate_native_object_marker_payload(elem)
+    _validate_native_object_marker_payload(elem, ancestors=ancestors)
 
 
-def validate_native_object_marker_with_warnings(elem: ET.Element) -> list[str]:
+def validate_native_object_marker_with_warnings(
+    elem: ET.Element,
+    *,
+    ancestors: tuple[ET.Element, ...] = (),
+) -> list[str]:
     """Validate a data-pptx-native marker and return non-fatal warnings."""
-    kind, payload, table_rows = _validate_native_object_marker_payload(elem)
+    kind, payload, table_rows = _validate_native_object_marker_payload(
+        elem,
+        ancestors=ancestors,
+    )
     if kind == "table" and table_rows is not None:
         return _native_table_warnings(elem, table_rows)
     if kind == "chart":
@@ -205,9 +231,13 @@ def validate_native_object_marker_with_warnings(elem: ET.Element) -> list[str]:
     return []
 
 
-def native_object_marker_warnings(elem: ET.Element) -> list[str]:
+def native_object_marker_warnings(
+    elem: ET.Element,
+    *,
+    ancestors: tuple[ET.Element, ...] = (),
+) -> list[str]:
     """Return non-fatal warnings for a data-pptx-native marker."""
-    return validate_native_object_marker_with_warnings(elem)
+    return validate_native_object_marker_with_warnings(elem, ancestors=ancestors)
 
 
 def convert_native_object(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
@@ -216,7 +246,11 @@ def convert_native_object(elem: ET.Element, ctx: ConvertContext) -> ShapeResult 
     if not kind:
         return None
 
-    kind, payload, _ = _validate_native_object_marker_payload(elem, validate_chrome=False)
+    kind, payload, _ = _validate_native_object_marker_payload(
+        elem,
+        validate_chrome=False,
+        ctx=ctx,
+    )
     if kind == "table":
         return _build_native_table(elem, ctx, payload)
     payload, warnings = _native_chart_export_payload(elem, payload)
