@@ -21,6 +21,7 @@
             btn_confirm: "Confirm",
             btn_next: "Next →",
             deriving: "Generating the downstream options from your choices…",
+            connection_lost: "Connection to the confirm server was interrupted; retrying. If this keeps failing, return to the chat for confirmation.",
             already_confirmed: "Already confirmed once. Re-submitting overwrites the previous choices.",
             confirmed_title: "✓ Confirmed",
             confirmed_hint: "Your choices are saved. You can close this page and return to the chat.",
@@ -69,6 +70,9 @@
             font_body: "Body",
             font_body_size: "Body baseline size",
             font_body_size_hint: "All type sizes derive from this body baseline.",
+            body_size_unit_relation: "SVG px to PPT pt: 1px = 0.75pt.",
+            body_size_pt_hint: "Approximately {pt} pt (1px = 0.75pt; saved as px).",
+            role_size_pt_hint: "≈ {pt} pt",
             body_size_hint_canvas: "This canvas suggests ~{lo}–{hi}px (scales with canvas height).",
             body_size_hint_purpose: "This delivery purpose recommends {def}px — one fixed size, not a range.",
             body_size_hint_oor: "(Current value is outside the usual range for this canvas — check the unit is right and that it fits.)",
@@ -128,6 +132,7 @@
             btn_confirm: "確定",
             btn_next: "次へ →",
             deriving: "選択内容をもとに後続の選択肢を生成しています…",
+            connection_lost: "確認ページのサーバー接続が中断されました。再試行しています。失敗が続く場合はチャットで確認してください。",
             already_confirmed: "すでに一度確定済みです。再送信すると前回の選択を上書きします。",
             confirmed_title: "✓ 確定しました",
             confirmed_hint: "選択内容を保存しました。このページを閉じてチャットに戻ってください。",
@@ -176,6 +181,9 @@
             font_body: "本文",
             font_body_size: "本文の基準サイズ",
             font_body_size_hint: "すべての文字サイズはこの本文基準から導出されます。",
+            body_size_unit_relation: "SVG px と PPT pt の換算：1px = 0.75pt。",
+            body_size_pt_hint: "約 {pt} pt（1px = 0.75pt 換算、保存は px）。",
+            role_size_pt_hint: "約 {pt} pt",
             body_size_hint_canvas: "このキャンバスの目安は約{lo}–{hi}px（キャンバスの高さに応じて変化）。",
             body_size_hint_purpose: "この利用シーンの推奨は{def}px — 範囲ではなく固定値です。",
             body_size_hint_oor: "（現在の値はこのキャンバスの通常範囲外です — 単位とサイズ感を確認してください。）",
@@ -235,6 +243,7 @@
             btn_confirm: "确认",
             btn_next: "下一步 →",
             deriving: "正在根据你的选择生成下游选项…",
+            connection_lost: "确认页服务连接中断，正在重试；如果持续失败，请回到聊天窗口走聊天确认。",
             already_confirmed: "已确认过一次，重新提交会覆盖之前的选择。",
             confirmed_title: "✓ 已确认",
             confirmed_hint: "选择已保存，可关闭此页并回到聊天窗口。",
@@ -283,6 +292,9 @@
             font_body: "正文",
             font_body_size: "正文基准字号",
             font_body_size_hint: "所有字号按这个正文基准推导。",
+            body_size_unit_relation: "SVG px 与 PPT pt 的换算：1px = 0.75pt。",
+            body_size_pt_hint: "约 {pt} pt（按 1px = 0.75pt 换算；提交仍保存 px）。",
+            role_size_pt_hint: "约 {pt} pt",
             body_size_hint_canvas: "当前画布建议 ~{lo}–{hi}px（随画布高度缩放）。",
             body_size_hint_purpose: "该交付目的推荐 {def}px（单一固定值，非区间）。",
             body_size_hint_oor: "（当前数值超出该画布的常用范围——请确认单位无误、是否合适。）",
@@ -1144,6 +1156,13 @@
         return Math.round(value * 100) / 100;
     }
 
+    function formatPtFromPx(value) {
+        var px = parseFloat(value);
+        if (!isFinite(px)) return "";
+        var pt = Math.round(px * 0.75 * 10) / 10;
+        return pt % 1 === 0 ? String(Math.round(pt)) : String(pt);
+    }
+
     function normalizeTypographyForSubmit(payload) {
         if (!payload.typography || typeof payload.typography !== "object") return;
         var typ = payload.typography;
@@ -1398,6 +1417,7 @@
 
         var sizeField = el("div", "subfield");
         sizeField.appendChild(el("div", "subfield-label", t("font_body_size")));
+        sizeField.appendChild(el("div", "toggle-desc body-size-relation", t("body_size_unit_relation")));
         var sizeRow = el("div", "font-size-row");
         var sizeInput = el("input", "num-input font-size-input");
         sizeInput.type = "number";
@@ -1415,8 +1435,9 @@
             refreshStylePreview();
         });
         sizeRow.appendChild(sizeInput);
-        var sizeHint = el("div", "toggle-desc");
-        sizeRow.appendChild(sizeHint);
+        sizeRow.appendChild(el("span", "font-size-unit", "px"));
+        var sizePtHint = el("div", "toggle-desc body-size-pt");
+        var sizeHint = el("div", "toggle-desc body-size-hint");
         // Hint only — the user's value is never overwritten; downstream §g
         // re-derives if ignored. PPT body is one fixed px value per delivery
         // purpose (not a range); non-PPT canvases scale px to canvas height.
@@ -1441,6 +1462,9 @@
             // canvas's usual px range, so an accidental extreme value is visible
             // instead of silently submitting it.
             var cur = parseFloat(STATE.typography && STATE.typography.body_size);
+            sizePtHint.textContent = isFinite(cur)
+                ? t("body_size_pt_hint").replace("{pt}", formatPtFromPx(cur))
+                : "";
             if (isFinite(cur) && isFinite(lo) && isFinite(hi) && (cur < lo || cur > hi)) {
                 txt += " " + t("body_size_hint_oor");
             }
@@ -1448,6 +1472,8 @@
         };
         refreshBodySizeHint();
         sizeField.appendChild(sizeRow);
+        sizeField.appendChild(sizePtHint);
+        sizeField.appendChild(sizeHint);
 
         // Delivery purpose is a Stage-1 anchor confirmed inside renderAudience (§c) —
         // it is set before this Stage-2 section exists, so its value drives the
@@ -1462,9 +1488,18 @@
         sizeOverride.appendChild(el("div", "subfield-label", t("size_override")));
         var srow = el("div", "hex-row");
         var sizeInputs = {};
+        var sizePtHints = {};
+        function refreshRolePtHint(role) {
+            var input = sizeInputs[role];
+            var hint = sizePtHints[role];
+            if (!input || !hint) return;
+            var pt = formatPtFromPx(input.value);
+            hint.textContent = pt ? t("role_size_pt_hint").replace("{pt}", pt) : "";
+        }
         SIZE_ROLES.forEach(function (role) {
             var wrap = el("div", "hex-cell");
             wrap.appendChild(el("div", "hex-cell-label", t("size_role_" + role)));
+            var inputLine = el("div", "role-size-line");
             var inp = document.createElement("input");
             inp.type = "number"; inp.min = "6"; inp.max = "200"; inp.step = "1";
             inp.addEventListener("input", function () {
@@ -1472,10 +1507,16 @@
                 if (!STATE.typography.sizes) STATE.typography.sizes = {};
                 // Independent input — each role holds its own value; no cascade.
                 STATE.typography.sizes[role] = inp.value;
+                refreshRolePtHint(role);
                 refreshStylePreview();
             });
             sizeInputs[role] = inp;
-            wrap.appendChild(inp); srow.appendChild(wrap);
+            inputLine.appendChild(inp);
+            inputLine.appendChild(el("span", "font-size-unit", "px"));
+            wrap.appendChild(inputLine);
+            sizePtHints[role] = el("div", "role-size-pt");
+            wrap.appendChild(sizePtHints[role]);
+            srow.appendChild(wrap);
         });
         sizeOverride.appendChild(srow);
         sec.appendChild(sizeOverride);
@@ -1495,6 +1536,7 @@
                 var hasVal = cur !== undefined && cur !== null && cur !== "";
                 if (!hasVal) STATE.typography.sizes[role] = deriveSize(role, bodyVal);
                 if (sizeInputs[role]) sizeInputs[role].value = STATE.typography.sizes[role];
+                refreshRolePtHint(role);
             });
         };
         refreshSizeInputs();
@@ -2161,25 +2203,36 @@
         l.style.display = "block";
     }
 
-    // Poll the recommendations endpoint (no-store) until the AI overwrites it with
-    // the next re-derived stage, then render it in the same session.
+    // Poll session state first. It is derived from recommendations.json and
+    // result.json, so a recovered server can tell the existing page exactly when
+    // the next re-derived stage is ready.
     function pollForStage(nextStage) {
-        fetch("/api/recommendations", { cache: "no-store" })
-            .then(function (r) { if (!r.ok) throw new Error("poll failed"); return r.json(); })
-            .then(function (data) {
-                if (data && stageNumber(data) === nextStage) { enterStage(data, nextStage); }
-                else { setTimeout(function () { pollForStage(nextStage); }, 1200); }
+        fetchJson("/api/session", "session")
+            .then(function (session) {
+                var readyStage = Number(session && session.recommendation_stage_number || 0);
+                if (readyStage < nextStage) {
+                    setTimeout(function () { pollForStage(nextStage); }, 1200);
+                    return null;
+                }
+                return fetchJson("/api/recommendations", "recommendations").then(function (data) {
+                    var serverStage = stageNumber(data);
+                    if (data && typeof serverStage === "number" && serverStage >= nextStage) {
+                        enterStage(data, serverStage);
+                    }
+                    else { setTimeout(function () { pollForStage(nextStage); }, 1200); }
+                    return null;
+                });
             }).catch(function (err) {
                 var l = document.getElementById("loading");
-                if (l) l.textContent = t("load_error") + " " + (err && err.message ? err.message : "");
+                if (l) l.textContent = t("connection_lost") + " " + (err && err.message ? err.message : "");
                 setTimeout(function () { pollForStage(nextStage); }, 1500);
             });
     }
 
     function enterStage(data, stage) {
         REC = data;
-        if (stage === 2) initStage2State();
-        if (stage === 3) initStage3State();
+        if (stage >= 2) initStage2State();
+        if (stage >= 3) initStage3State();
         STAGE = stage;
         document.getElementById("loading").style.display = "none";
         document.getElementById("sections").style.display = "block";
@@ -2235,21 +2288,37 @@
         e.textContent = msg;
     }
 
+    function fetchJson(url, label) {
+        return fetch(url, { cache: "no-store" }).then(function (r) {
+            return r.text().then(function (text) {
+                var data = null;
+                if (text) {
+                    try { data = JSON.parse(text); }
+                    catch (e) {
+                        if (r.ok) throw new Error((label || url) + ": invalid JSON");
+                    }
+                }
+                if (!r.ok) {
+                    var serverMsg = data && data.error ? data.error : (text || r.statusText || r.status);
+                    throw new Error((label || url) + ": " + serverMsg);
+                }
+                return data || {};
+            });
+        });
+    }
+
     function loadCatalogs() {
-        return fetch("/api/catalogs")
-            .then(function (r) { if (r.ok) return r.json(); throw new Error("no api"); })
-            .catch(function () { return fetch("/static/catalogs.json").then(function (r) { return r.json(); }); });
+        return fetchJson("/api/catalogs", "catalogs")
+            .catch(function () { return fetchJson("/static/catalogs.json", "static catalogs"); });
     }
 
     function loadIconPreviews() {
-        return fetch("/api/icon-previews")
-            .then(function (r) { if (r.ok) return r.json(); throw new Error("no icon preview api"); })
+        return fetchJson("/api/icon-previews", "icon previews")
             .catch(function () { return {}; });
     }
 
     function loadAiImageComparison() {
-        return fetch("/api/ai-image-comparison")
-            .then(function (r) { if (r.ok) return r.json(); throw new Error("no ai image comparison api"); })
+        return fetchJson("/api/ai-image-comparison", "ai image comparison")
             .catch(function () { return {}; });
     }
 
@@ -2337,7 +2406,7 @@
 
         Promise.all([
             loadCatalogs(),
-            fetch("/api/recommendations").then(function (r) { if (!r.ok) throw new Error("load failed"); return r.json(); }),
+            fetchJson("/api/recommendations", "recommendations"),
             loadIconPreviews(),
             loadAiImageComparison()
         ]).then(function (res) {
@@ -2360,8 +2429,8 @@
             if (REC._already_confirmed) {
                 document.getElementById("confirm-status").textContent = t("already_confirmed");
             }
-        }).catch(function () {
-            showError(t("load_error"));
+        }).catch(function (err) {
+            showError(t("load_error") + " " + (err && err.message ? err.message : ""));
         });
     }
 
