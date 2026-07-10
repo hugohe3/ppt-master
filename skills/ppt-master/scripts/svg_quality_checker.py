@@ -90,6 +90,15 @@ except ImportError:
     _validate_semantic_markers = None
 
 try:
+    from svg_to_pptx.geometry_properties import (
+        materialize_inline_geometry_properties as _materialize_inline_geometry_properties,
+        validate_inline_geometry_properties as _validate_inline_geometry_properties,
+    )
+except ImportError:
+    _materialize_inline_geometry_properties = None
+    _validate_inline_geometry_properties = None
+
+try:
     from svg_to_pptx.use_expander import (
         validate_local_use_references as _validate_local_use_references,
     )
@@ -606,6 +615,17 @@ class SVGQualityChecker:
             result['errors'].append("Detected forbidden <link rel=\"stylesheet\"> (external CSS references forbidden)")
         if re.search(r'@import\s+', content_lower):
             result['errors'].append("Detected forbidden @import (external CSS references forbidden)")
+        if _validate_inline_geometry_properties is None:
+            result['warnings'].append(
+                "Unable to import inline geometry validator; "
+                "native export will still validate geometry styles."
+            )
+        else:
+            geometry_errors = _validate_inline_geometry_properties(root)
+            for error in geometry_errors:
+                result['errors'].append(f"Invalid inline geometry property: {error}")
+            if not geometry_errors:
+                _materialize_inline_geometry_properties(root)
 
         # Structure / nesting
         if 'foreignobject' in local_names:

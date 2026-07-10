@@ -211,6 +211,33 @@ attributes remain valid when keeping palette and transparency separate is
 clearer. This guarantee applies to the SVG-derived DrawingML route; opt-in
 native table/chart payload styling follows its narrower native-object contract.
 
+**Allowed — literal inline geometry**: the following geometry properties may
+appear in the same element's `style="..."`. The pipeline materializes them as
+XML geometry attributes before SVG post-processing and native PPTX conversion.
+An inline geometry declaration overrides an existing same-name XML attribute.
+
+| Element | Supported properties |
+|---|---|
+| `<rect>` | `x`, `y`, `width`, `height`, `rx`, `ry` |
+| `<circle>` | `cx`, `cy`, `r` |
+| `<ellipse>` | `cx`, `cy`, `rx`, `ry` |
+| `<image>` | `x`, `y`, `width`, `height` |
+| `<svg>` | `x`, `y`, `width`, `height` |
+| `<use>` | `x`, `y`, `width`, `height` |
+
+**Hard rule — inline geometry grammar**: every non-zero value is one finite
+`px` literal, such as `120px` or `-8.5px`; exact zero may be unitless. `width`,
+`height`, `rx`, `ry`, and `r` must be non-negative. Percentages, `auto`,
+`calc()`, `var()`, `!important`, `inherit`, and every other unit are forbidden.
+Do not put geometry on an unsupported element: line endpoints, text positions,
+path data, and polygon/polyline points remain XML attributes.
+
+**Forbidden — CSS geometry cascade**: `<style>`, `class`, selector rules,
+external stylesheets, and imported styles remain forbidden. This allowance is
+only for literal declarations in an element's own `style` attribute; PPT Master
+does not compute CSS cascade or custom properties. Root canvas authority remains
+the `viewBox`, regardless of root `<svg>` compatibility width/height values.
+
 **Allowed — group opacity (approximate)**: `<g opacity="0.3">...</g>` maps the
 group alpha onto each descendant shape, text run, picture, and supported
 shadow/glow effect. Nested group and child opacity values multiply. Overlapping
@@ -264,7 +291,9 @@ metadata. See
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
 - **Fonts**: every `font-family` stack MUST resolve to pre-installed exported Latin / EA typefaces (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas …); `@font-face` is FORBIDDEN. Full rule: [`strategist.md §g`](strategist.md).
-- **Styles**: inline only (`fill=""`, `font-size=""`); `<style>`/`class` FORBIDDEN (`id` inside `<defs>` is fine)
+- **Styles**: per-element only (`fill=""`, `font-size=""`, or `style="..."`);
+  literal inline geometry is restricted to §2. `<style>`/`class` are FORBIDDEN
+  (`id` inside `<defs>` is fine)
 - **Colors**: common named colors, `rgb()` / `rgba()`, `hsl()` / `hsla()`, or
   3/4/6/8-digit HEX; embedded and explicit opacity values multiply
 - **Images**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`; optional `opacity="0..1"` maps to native picture transparency
