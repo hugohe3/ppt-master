@@ -163,7 +163,6 @@ page_types: [cover, toc, chapter, content, ending]
 | `foreignObject`      | Use `<tspan>` for wrapping     |
 | `textPath`           | Use standard `<text>`          |
 | `animate*` / `set`   | Do not use animations          |
-| `<g opacity>`        | Set opacity on each element individually |
 
 > `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval). The converter maps them to native DrawingML arrow heads.
 

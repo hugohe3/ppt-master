@@ -368,6 +368,6 @@ One speaker note file per page, saved to `notes/`:
 
 ### PPT Compatibility Rules:
 
-- `<g opacity="...">` FORBIDDEN (group opacity); set on each child element individually
+- `<g opacity="0..1">` is allowed as per-descendant alpha; overlapping children may composite differently
 - Image transparency may use `<image opacity="0..1">`; use overlays only for a color wash
 - Inline styles only; external CSS and `@font-face` FORBIDDEN

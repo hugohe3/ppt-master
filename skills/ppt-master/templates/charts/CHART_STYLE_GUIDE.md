@@ -254,7 +254,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 **命名约定**：使用描述性 `id`（如 `card-1`、`step-discover`、`header`、`footer`）。
 
-> 只有 `<g opacity="...">` 被禁止（见 SS2）。纯结构 `<g>` 是必需的。
+> `<g opacity="0..1">` 可按 SS2 近似转换；纯结构 `<g>` 仍是常规分组方式。
 
 ### 5.2 viewBox
 
@@ -301,12 +301,12 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 禁止语法 | 正确替代 |
 |---------|----------|
 | `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
-| `<g opacity="0.2">...</g>` | 在每个子元素上单独设置 `fill-opacity` / `stroke-opacity` |
 
 ### 6.3 条件允许
 
 | 特性 | 条件 | 转换结果 |
 |------|------|----------|
+| `<g opacity="...">` | 数值范围 `0..1`；不包裹 `data-pptx-native` 图表/表格 | 后代对象分别写入 DrawingML alpha；重叠区域为近似 |
 | `<image opacity="...">` | 数值范围 `0..1` | DrawingML `<a:alphaModFix>` |
 | `marker-start` / `marker-end` | `<marker>` 在 `<defs>` 中，`orient="auto"`，形状为三角/菱形/圆 | DrawingML `<a:headEnd>` / `<a:tailEnd>` |
 | `clipPath` on `<image>` | `<clipPath>` 在 `<defs>` 中，单子元素，**仅用于 image** | DrawingML `<a:prstGeom>` / `<a:custGeom>` |

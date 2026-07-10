@@ -225,7 +225,6 @@ Small circle elements representing the nighttime lights of the Mountain City:
 - `mask`, `<style>`, `class`; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 - `foreignObject`, `textPath`, `animate*`
 - `rgba()` color format
-- `<g opacity="...">` (group opacity)
 
 ---
 

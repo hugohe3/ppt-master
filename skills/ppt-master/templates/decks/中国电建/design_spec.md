@@ -197,7 +197,6 @@ primary_color: "#00418D"
 - `animate`, `animateTransform`, `set` (animations)
 
 - `rgba()` color format (must use hex + opacity)
-- `<g opacity="...">` (group opacity — set individually on each element)
 
 ---
 

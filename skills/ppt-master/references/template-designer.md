@@ -190,7 +190,7 @@ Sections to **omit** from template `design_spec.md` (sourced elsewhere — listi
 | Don't write | Source |
 |---|---|
 | SVG technical constraints / Mandatory rules / Prohibited elements | `shared-standards.md` §1 |
-| PPT compatibility rules (`<g opacity>`, inline-styles-only, etc.) | `shared-standards.md` |
+| PPT compatibility rules (opacity mapping, inline-styles-only, etc.) | `shared-standards.md` |
 | Generic layout pattern library (centered card / 三栏 / timeline / …) | `design_spec_reference.md` §V |
 | Generic spacing bands (margin 40-60px, card gap 20-32px, etc.) | `design_spec_reference.md` §V |
 | Generic font-size hierarchy (cover 2.5-5x body, page title 1.5-2x, …) | `design_spec_reference.md` §IV |

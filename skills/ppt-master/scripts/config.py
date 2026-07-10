@@ -533,7 +533,6 @@ SVG_CONSTRAINTS = {
         r'<\?xml-stylesheet\b',  # External CSS
         r'<link[^>]*rel\s*=\s*["\']stylesheet["\']',
         r'@import\s+',  # External CSS
-        r'<g[^>]*\sopacity\s*=',  # Group opacity
         r'\bon\w+\s*=',  # Event attributes
         r'(?s)(?=.*<symbol)(?=.*<use\b)',  # <symbol> + <use> complex usage (order-independent)
     ],
