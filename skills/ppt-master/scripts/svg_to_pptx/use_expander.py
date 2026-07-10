@@ -41,7 +41,9 @@ _LENGTH_RE = re.compile(
     r'^\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)\s*(?:px)?\s*$'
 )
 _VIEWBOX_SPLIT_RE = re.compile(r'[\s,]+')
-_URL_REF_RE = re.compile(r'url\(#([^)]+)\)')
+_URL_REF_RE = re.compile(r'url\(#([^#\s)]+)\)')
+_URL_FUNCTION_RE = re.compile(r'\burl\s*\([^)]*\)', re.IGNORECASE)
+_URL_FUNCTION_START_RE = re.compile(r'\burl\s*\(', re.IGNORECASE)
 _MAX_LOCAL_USE_DEPTH = 64
 _MAX_LOCAL_USE_INSTANCES = 10_000
 _NON_REUSABLE_METADATA_PREFIXES = (
@@ -238,13 +240,13 @@ class _LocalUseExpander:
         href = use_elem.get('href')
         xlink_href = use_elem.get(f'{{{XLINK_NS}}}href')
         if href is not None and xlink_href is not None:
-            if href.strip() != xlink_href.strip():
+            if href != xlink_href:
                 raise UseExpansionError(
                     'Conflicting href and xlink:href values on local <use>'
                 )
         if href is None:
             href = xlink_href
-        match = _LOCAL_HREF_RE.fullmatch((href or '').strip())
+        match = _LOCAL_HREF_RE.fullmatch(href or '')
         if match is None:
             raise UseExpansionError(
                 '<use> must reference a same-document fragment with href="#id"; '
@@ -282,6 +284,8 @@ class _LocalUseExpander:
 
         self._reject_structural_metadata(use_elem, 'instance')
         self._reject_structural_metadata(target, f'target #{ref_id}')
+        self._validate_fragment_reference_syntax(use_elem, 'instance')
+        self._validate_fragment_reference_syntax(target, f'target #{ref_id}')
 
         target_ids = {
             elem_id
@@ -329,6 +333,27 @@ class _LocalUseExpander:
                     raise UseExpansionError(
                         f'Local <use> {label} cannot carry structural {attr} metadata'
                     )
+
+    @staticmethod
+    def _validate_fragment_reference_syntax(elem: ET.Element, label: str) -> None:
+        """Reject URL fragment forms the clone rewriter cannot preserve."""
+        for candidate in elem.iter():
+            for value in candidate.attrib.values():
+                starts = list(_URL_FUNCTION_START_RE.finditer(value))
+                if not starts:
+                    continue
+                functions = list(_URL_FUNCTION_RE.finditer(value))
+                if len(functions) != len(starts):
+                    raise UseExpansionError(
+                        f'Local <use> {label} has malformed url(...) reference {value!r}'
+                    )
+                for function in functions:
+                    raw = function.group(0)
+                    if _URL_REF_RE.fullmatch(raw) is None:
+                        raise UseExpansionError(
+                            f'Local <use> {label} requires exact url(#id) fragments; '
+                            f'got {raw!r}'
+                        )
 
     def _next_instance_prefix(self, clone: ET.Element) -> str:
         """Reserve a deterministic clone prefix that cannot collide."""
