@@ -14,6 +14,7 @@ from xml.etree import ElementTree as ET
 from resource_paths import resolve_external_image_reference
 
 from .context import ConvertContext, ShapeResult
+from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
 from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
@@ -556,10 +557,18 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         op = get_fill_opacity(elem, ctx)
         grad_id = resolve_url_id(stroke_val) if stroke_val else None
         if grad_id and grad_id in ctx.defs:
-            fill = build_gradient_fill(ctx.defs[grad_id], op)
+            fill = build_gradient_fill(
+                ctx.defs[grad_id],
+                op,
+                ctx.theme_color_spec,
+                "fill",
+            )
         elif stroke_val:
             color = parse_hex_color(stroke_val)
-            fill = build_solid_fill(color, op) if color else '<a:noFill/>'
+            fill = (
+                build_solid_fill(color, op, ctx.theme_color_spec, "fill")
+                if color else '<a:noFill/>'
+            )
         else:
             fill = '<a:noFill/>'
 
@@ -1210,12 +1219,18 @@ def _bullet_indent_px(bullet: dict[str, Any], font_size: float) -> float:
     return -_bullet_margin_px(bullet, font_size)
 
 
-def _build_bullet_xml(bullet: dict[str, Any] | None) -> str:
+def _build_bullet_xml(
+    bullet: dict[str, Any] | None,
+    ctx: ConvertContext | None,
+) -> str:
     if not bullet:
         return ''
     fill = bullet.get('fill')
     if isinstance(fill, str) and re.fullmatch(r'[0-9A-Fa-f]{6}', fill):
-        color_xml = f'<a:buClr><a:srgbClr val="{fill.upper()}"/></a:buClr>'
+        theme_spec = ctx.theme_color_spec if ctx is not None else None
+        color_xml = (
+            f'<a:buClr>{color_node_xml(fill, theme_spec, "text")}</a:buClr>'
+        )
     else:
         color_xml = '<a:buClrTx/>'
     return (
@@ -1230,13 +1245,14 @@ def _paragraph_pr_xml(
     font_size: float,
     body_xml: str = '',
     bullet: dict[str, Any] | None = None,
+    ctx: ConvertContext | None = None,
 ) -> str:
     attrs = f'algn="{algn}"'
     if bullet:
         margin = px_to_emu(_bullet_margin_px(bullet, font_size))
         indent = px_to_emu(_bullet_indent_px(bullet, font_size))
         attrs += f' marL="{margin}" indent="{indent}"'
-    return f'<a:pPr {attrs}>{body_xml}{_build_bullet_xml(bullet)}</a:pPr>'
+    return f'<a:pPr {attrs}>{body_xml}{_build_bullet_xml(bullet, ctx)}</a:pPr>'
 
 
 def _estimate_bullet_line_width(runs: list[dict[str, Any]]) -> float:
@@ -1388,15 +1404,28 @@ def _build_text_fill_xml(
 
     grad_id = resolve_url_id(fill_raw)
     if grad_id and ctx and grad_id in ctx.defs:
-        return build_gradient_fill(ctx.defs[grad_id], opacity)
+        return build_gradient_fill(
+            ctx.defs[grad_id],
+            opacity,
+            ctx.theme_color_spec,
+            "text",
+        )
 
     alpha_xml = ''
     if opacity is not None and opacity < 1.0:
         alpha_xml = f'<a:alphaMod val="{int(opacity * 100000)}"/>'
-    return f'<a:solidFill><a:srgbClr val="{fill}">{alpha_xml}</a:srgbClr></a:solidFill>'
+    theme_spec = ctx.theme_color_spec if ctx is not None else None
+    return (
+        '<a:solidFill>'
+        f'{color_node_xml(fill, theme_spec, "text", alpha_xml)}'
+        '</a:solidFill>'
+    )
 
 
-def _build_text_outline_xml(run: dict[str, Any]) -> str:
+def _build_text_outline_xml(
+    run: dict[str, Any],
+    ctx: ConvertContext | None,
+) -> str:
     """Build DrawingML outline XML for a text run from SVG stroke attributes."""
     stroke_raw = run.get('stroke_raw')
     if not stroke_raw or stroke_raw.strip().lower() in ('none', 'transparent'):
@@ -1412,9 +1441,12 @@ def _build_text_outline_xml(run: dict[str, Any]) -> str:
     if stroke_opacity is not None and stroke_opacity < 1.0:
         alpha_xml = f'<a:alphaMod val="{int(stroke_opacity * 100000)}"/>'
 
+    theme_spec = ctx.theme_color_spec if ctx is not None else None
     return (
         f'<a:ln w="{px_to_emu(stroke_width)}">'
-        f'<a:solidFill><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:solidFill>'
+        '<a:solidFill>'
+        f'{color_node_xml(color, theme_spec, "stroke", alpha_xml)}'
+        '</a:solidFill>'
         '</a:ln>'
     )
 
@@ -1457,7 +1489,7 @@ def _build_run_xml(
     lang = detect_text_lang(text)
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
-    outline_xml = _build_text_outline_xml(run)
+    outline_xml = _build_text_outline_xml(run, ctx)
 
     space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
 
@@ -1715,6 +1747,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 font_size=float(line[0].get('font_size', font_size)) if line else font_size,
                 body_xml=f'{ln_spc_xml}{spc_bef_xml}',
                 bullet=bullet,
+                ctx=ctx,
             )
             paragraph_xml_chunks.append(
                 f'<a:p>\n{p_pr_xml}\n{runs_inner}\n</a:p>'
@@ -1726,6 +1759,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             algn=algn,
             font_size=float(runs[0].get('font_size', font_size)) if runs else font_size,
             bullet=single_bullet,
+            ctx=ctx,
         )
         paragraphs_xml = f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
 

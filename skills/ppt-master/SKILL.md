@@ -704,7 +704,12 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `spec_lock.md` typography contract, baseline also installs `title_family` as
 > the PowerPoint theme major font and `body_family` / `font_family` as the minor
 > font; matching SVG runs use theme tokens so later theme edits can cascade
-> without changing initial rendering. Add
+> without changing initial rendering. Baseline/template export likewise maps
+> the locked background, text, primary/accent, and border roles into the
+> PowerPoint color scheme. Exact matching SVG/native-object colors use
+> context-safe theme tokens; unrelated local colors, inverse white/black, and
+> effects stay concrete, so the first rendering remains the SVG design while
+> later theme edits can cascade selectively. Add
 > `--pptx-structure flat` only for debugging/comparison when all generated
 > backgrounds and chrome must remain slide-local and fonts must stay concrete.
 

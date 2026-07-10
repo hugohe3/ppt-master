@@ -8,6 +8,7 @@ from xml.etree import ElementTree as ET
 from dataclasses import dataclass, field
 
 if TYPE_CHECKING:
+    from .theme_colors import ThemeColorSpec
     from .theme_fonts import ThemeFontSpec
 
 AffineMatrix = tuple[float, float, float, float, float, float]
@@ -73,6 +74,9 @@ class ConvertContext:
     # Optional project theme contract. Matching SVG title/body families emit
     # DrawingML +mj/+mn tokens instead of fixed typeface names.
     theme_font_spec: ThemeFontSpec | None = None
+    # Optional project theme-color contract. Exact locked colors are promoted
+    # to context-safe DrawingML scheme slots while local colors stay concrete.
+    theme_color_spec: ThemeColorSpec | None = None
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -185,6 +189,7 @@ class ConvertContext:
             image_quality=self.image_quality,
             trace_events=self.trace_events,
             theme_font_spec=self.theme_font_spec,
+            theme_color_spec=self.theme_color_spec,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:
