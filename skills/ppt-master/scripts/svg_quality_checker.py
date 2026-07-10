@@ -948,11 +948,27 @@ class SVGQualityChecker:
             )
             return
 
+        parent_map = {
+            child: parent
+            for parent in root.iter()
+            for child in parent
+        }
+
         for marker in markers:
             marker_id = marker.get('id') or '<unnamed>'
+            ancestors = []
+            parent = parent_map.get(marker)
+            while parent is not None and parent is not root:
+                if parent.tag.rsplit('}', 1)[-1] == 'g':
+                    ancestors.append(parent)
+                parent = parent_map.get(parent)
+            ancestors_tuple = tuple(reversed(ancestors))
             if _validate_native_object_marker_with_warnings is not None:
                 try:
-                    warnings = _validate_native_object_marker_with_warnings(marker)
+                    warnings = _validate_native_object_marker_with_warnings(
+                        marker,
+                        ancestors=ancestors_tuple,
+                    )
                 except RuntimeError as exc:
                     result['errors'].append(
                         f"Invalid data-pptx-native marker {marker_id}: {exc}"
@@ -965,7 +981,7 @@ class SVGQualityChecker:
                 continue
 
             try:
-                _validate_native_object_marker(marker)
+                _validate_native_object_marker(marker, ancestors=ancestors_tuple)
             except RuntimeError as exc:
                 result['errors'].append(
                     f"Invalid data-pptx-native marker {marker_id}: {exc}"
@@ -973,7 +989,10 @@ class SVGQualityChecker:
                 continue
             if _native_object_marker_warnings is None:
                 continue
-            for warning in _native_object_marker_warnings(marker):
+            for warning in _native_object_marker_warnings(
+                marker,
+                ancestors=ancestors_tuple,
+            ):
                 result['warnings'].append(
                     f"data-pptx-native marker {marker_id}: {warning}"
                 )

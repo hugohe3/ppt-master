@@ -61,6 +61,7 @@ class AssemblyContext:
     palette: ColorPalette | None
     pkg: OoxmlPackage
     slide_part: PartRef
+    slide_number: int | None = None
     theme_fonts: dict[str, str] = field(default_factory=dict)
     media_subdir: str = "assets"
     embed_images: bool = False
@@ -112,6 +113,7 @@ def assemble_slide(
         palette=palette,
         pkg=pkg,
         slide_part=slide.part,
+        slide_number=pkg.first_slide_number + slide.index - 1,
         theme_fonts=theme_fonts or {},
         media_subdir=media_subdir,
         embed_images=embed_images,
@@ -323,6 +325,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         text_result = convert_vertical_txbody(
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
+            slide_number=ctx.slide_number,
             default_fill=text_default_fill,
             default_font_size_px=DEFAULT_FONT_SIZE_PX,
             fallback_lst_styles=node.inherited_lst_styles,
@@ -333,6 +336,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         text_result = convert_txbody(
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
+            slide_number=ctx.slide_number,
             default_fill=text_default_fill,
             default_font_size_px=DEFAULT_FONT_SIZE_PX,
             fallback_lst_styles=node.inherited_lst_styles,
@@ -662,6 +666,7 @@ def _render_graphic_table(
     result = convert_tbl(
         tbl, node.xfrm, ctx.palette,
         theme_fonts=ctx.theme_fonts,
+        slide_number=ctx.slide_number,
         id_prefix=f"tbl{ctx.shape_seq[0]}",
         grad_seq=ctx.grad_seq,
         marker_seq=ctx.marker_seq,

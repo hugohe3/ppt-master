@@ -10,7 +10,9 @@ from .marker_common import (
     _clean_hex,
     _compact_key,
     _first_present,
+    _hex_or_none,
     _number,
+    _powerpoint_line_width_emu,
 )
 
 
@@ -19,8 +21,8 @@ def _chart_number(value: Any) -> int | float:
         raise RuntimeError("Native PPTX chart values must be numeric")
     try:
         number = float(value)
-    except (TypeError, ValueError) as exc:
-        raise RuntimeError(f"Native PPTX chart value is not numeric: {value}") from exc
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise RuntimeError("Native PPTX chart value is not numeric") from exc
     if not math.isfinite(number):
         raise RuntimeError(f"Native PPTX chart value must be finite: {value}")
     return int(number) if number.is_integer() else number
@@ -97,6 +99,7 @@ def _chart_data_labels(
     payload: dict[str, Any],
     chart_type: str,
     grouping: str | None,
+    point_count: int,
 ) -> dict[str, Any] | None:
     config = _data_labels_config(payload)
     if config is None:
@@ -106,7 +109,72 @@ def _chart_data_labels(
             f"Native PPTX {chart_type} chart data labels are outside current support"
         )
     _data_label_position(config.get("position"), chart_type, grouping)
+    if config.get("color") is not None and _hex_or_none(config["color"]) is None:
+        raise RuntimeError("Native PPTX chart data_labels.color must be a color")
+    point_items = _data_label_point_items(
+        config,
+        chart_type,
+        grouping,
+        point_count,
+    )
+    for item in point_items:
+        if item.get("color") is not None and _hex_or_none(item["color"]) is None:
+            raise RuntimeError(
+                "Native PPTX chart data_labels.points color must be a color"
+            )
+    colors = _chart_list(
+        _first_present(
+            config.get("colors"),
+            config.get("label_colors"),
+            config.get("labelColors"),
+        ),
+        "data_labels.colors",
+    )
+    if colors and len(colors) != point_count:
+        raise RuntimeError("Native PPTX chart data_labels.colors must match point count")
+    if any(_hex_or_none(color) is None for color in colors):
+        raise RuntimeError("Native PPTX chart data_labels.colors entries must be colors")
     return config
+
+
+def _data_label_point_items(
+    config: dict[str, Any],
+    chart_type: str,
+    grouping: str | None,
+    point_count: int,
+) -> list[dict[str, Any]]:
+    """Normalize selected point labels and validate their plot semantics."""
+    raw_points = config.get("points")
+    if raw_points is None:
+        return []
+    items: list[dict[str, Any]] = []
+    seen: set[int] = set()
+    for item in _chart_list(raw_points, "data_labels.points"):
+        if isinstance(item, dict):
+            raw_index = item.get("idx")
+            data = dict(item)
+        else:
+            raw_index = item
+            data = {}
+        if isinstance(raw_index, bool):
+            raise RuntimeError("Native PPTX chart data_labels.points idx must be an integer")
+        index_value = _number(raw_index, "data_labels.points idx")
+        if not index_value.is_integer():
+            raise RuntimeError("Native PPTX chart data_labels.points idx must be an integer")
+        index = int(index_value)
+        if index < 0 or index >= point_count:
+            raise RuntimeError("Native PPTX chart data_labels.points idx is outside point range")
+        if index in seen:
+            raise RuntimeError("Native PPTX chart data_labels.points idx values must be unique")
+        _data_label_position(
+            _first_present(data.get("position"), config.get("position")),
+            chart_type,
+            grouping,
+        )
+        seen.add(index)
+        data["idx"] = index
+        items.append(data)
+    return items
 
 
 _CATEGORY_CHART_TYPES = {
@@ -412,12 +480,21 @@ def _category_series(payload: dict[str, Any], categories: list[str]) -> list[dic
             item.get("fillOpacity"),
         )
         if fill_opacity is not None:
+            fill_opacity = _number(fill_opacity, "series fill_opacity")
+            if not 0 <= fill_opacity <= 1:
+                raise RuntimeError(
+                    "Native PPTX chart series fill_opacity must be between 0 and 1"
+                )
             series_item["fill_opacity"] = fill_opacity
         line_width = _first_present(
             item.get("line_width"),
             item.get("lineWidth"),
         )
         if line_width is not None:
+            line_width = _number(line_width, "series line_width")
+            if line_width <= 0:
+                raise RuntimeError("Native PPTX chart series line_width must be positive")
+            _powerpoint_line_width_emu(line_width, "series line_width")
             series_item["line_width"] = line_width
         series.append(series_item)
     return series
@@ -488,7 +565,12 @@ def _category_chart_data(
             ),
             True,
         ),
-        "data_labels": _chart_data_labels(payload, chart_type, grouping),
+        "data_labels": _chart_data_labels(
+            payload,
+            chart_type,
+            grouping,
+            len(categories),
+        ),
         "series": series,
     }
 
@@ -552,7 +634,12 @@ def _combo_plot_entry(
     )
     entry: dict[str, Any] = {
         "axis": _combo_axis_name(plot_payload),
-        "data_labels": _chart_data_labels(plot_payload, chart_type, grouping),
+        "data_labels": _chart_data_labels(
+            plot_payload,
+            chart_type,
+            grouping,
+            len(categories),
+        ),
         "grouping": grouping,
         "series": plot_series,
         "type": chart_type,
@@ -722,11 +809,27 @@ def _chartex_chart_data(payload: dict[str, Any], chart_type: str) -> dict[str, A
             "values": values,
         }
         if chart_type == "waterfall":
-            subtotals = payload.get("subtotals", payload.get("subtotal_indices", []))
-            data["subtotals"] = [
-                int(_chart_number(value))
-                for value in _chart_list(subtotals, "subtotals")
-            ]
+            raw_subtotals = payload.get(
+                "subtotals",
+                payload.get("subtotal_indices", []),
+            )
+            subtotals: list[int] = []
+            seen_subtotals: set[int] = set()
+            for value in _chart_list(raw_subtotals, "subtotals"):
+                index = _chart_number(value)
+                if not isinstance(index, int):
+                    raise RuntimeError("Native PPTX waterfall subtotal indices must be integers")
+                if index < 0 or index >= len(values):
+                    raise RuntimeError(
+                        "Native PPTX waterfall subtotal index is outside point range"
+                    )
+                if index in seen_subtotals:
+                    raise RuntimeError(
+                        "Native PPTX waterfall subtotal indices must be unique"
+                    )
+                seen_subtotals.add(index)
+                subtotals.append(index)
+            data["subtotals"] = subtotals
         return data
 
     if chart_type == "box_whisker":
