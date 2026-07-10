@@ -121,7 +121,7 @@ The workflow will then **mandatorily** confirm a template brief with you before 
 
 ### Step 1 — Prepare reference material
 
-**Strongly recommended: hand over the original `.pptx` file.** The importer reads OOXML directly, extracts every master/layout and placeholder, and emits both layered SVG references and a paired `native_structure.json` + byte-preserved `source_template.pptx`. When the source structure is reusable, generated pages can bind to its original layouts; when it is minimal, Template_Designer rebuilds a clean master plus semantic layouts from the layered references.
+**Strongly recommended: hand over the original `.pptx` file.** The importer reads OOXML directly, extracts every master/layout and placeholder, and emits both layered SVG references and a paired `native_structure.json` + byte-preserved `source_template.pptx`. When the source structure is reusable, the template package retains the option to bind generated pages to its original layouts; when it is minimal, Template_Designer rebuilds a clean master plus semantic layouts from the layered references. Retention does not force later decks to use the native structure.
 
 You can also design from scratch from a brand guideline: provide a logo, primary color HEX, fonts, tone description, and a few mood references — the AI will design the page skeletons on the spot. This suits brands that don't yet have a finished PPT, only a VI manual.
 
@@ -141,7 +141,7 @@ The workflow does not silently infer values — before generation it lists these
 | **Theme mode** | Light / dark / gradient / ... |
 | **Canvas format** | Default `ppt169` (16:9); specify other formats up front |
 | **Replication mode** | `standard` (default 5-page roster) / `fidelity` (one variant per visually distinct cluster from a `.pptx` source — count is driven by the source) / `mirror` (1:1 verbatim copy of every source slide, no abstraction, no placeholders) — `fidelity` and `mirror` both require a `.pptx` reference |
-| **Native structure strategy** | `preserve` when the source master/layout graph is reusable; `template` to rebuild one master plus semantic layouts when it is minimal. `mirror` uses the rebuilt/baseline path because its inherited layers are flattened. |
+| **Native structure packaging** | `preserve` when the source master/layout graph is reusable; `template` to rebuild one master plus semantic layouts when it is minimal. This decides what capability the library package retains, not how every future deck must use it. `mirror` uses the rebuilt/baseline path because its inherited layers are flattened. |
 | **Visual fidelity** | (required for `standard` / `fidelity` when a reference exists) `literal` (reproduce original geometry / decoration / sprite crops as-is) or `adapted` (use reference for tone and structure but allow design evolution). Cover / chapter / ending are usually `literal`. **Not asked for `mirror`** — mirror is implicitly literal |
 | **Keywords** | 3–5 tags for index lookup |
 | Theme color / design notes / asset list | Optional — can be auto-extracted from the source |
@@ -177,6 +177,11 @@ After generation, the workflow:
 3. Syncs the table in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md)
 
 Registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use it in a new project, follow the SKILL.md Step 3 rule: name its directory path in your first message, e.g. `use this template: skills/ppt-master/templates/layouts/<your_template_id>/`.
+
+When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
+
+- **adaptive** — use suitable SVG template pages, allow unmatched pages to be designed freely, and keep native export on the normal baseline path
+- **strict** — map every generated page to the template roster; when the package carries a compatible native pair, reuse its original Master/Layout/Placeholder structure
 
 ### What a derived template looks like
 
@@ -225,7 +230,7 @@ Don't confuse the two:
 
 Common misconceptions to avoid:
 
-- **A template is not always a Slide Master, but it may carry one.** Ordinary templates remain SVG skeletons. An imported template with `native_structure.json` + `source_template.pptx` preserves the original master/layout/theme package and binds generated content to source placeholders
+- **A template is not always a Slide Master, but it may carry one.** Ordinary templates remain SVG skeletons. An imported template with `native_structure.json` + `source_template.pptx` retains the original master/layout/theme package as an optional strict-use capability; adaptive use still follows the ordinary SVG + baseline path
 - **A template is not a "style skin".** It bundles structure (which blocks per page, how information is hierarchized) with style (colors, fonts, decoration). Trying to swap "skin" without structure tends to put the information architecture and the visuals at odds
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes

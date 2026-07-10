@@ -1464,6 +1464,37 @@ class SVGQualityChecker:
             self._pptx_structure_issues.append(('error', str(exc)))
             return
 
+        if (
+            structure_lock is not None
+            and structure_lock.template_adherence == 'strict'
+            and _parse_spec_lock is not None
+        ):
+            lock_path = project_path / 'spec_lock.md'
+            lock = _parse_spec_lock(lock_path)
+            page_layouts = lock.get('page_layouts', {})
+            expected_pages = {f'P{index:02d}' for index in range(1, len(svg_files) + 1)}
+            missing_pages = sorted(expected_pages - set(page_layouts))
+            if missing_pages:
+                self._pptx_structure_issues.append((
+                    'error',
+                    'spec_lock.md strict template_adherence requires page_layouts '
+                    'rows for every generated page; missing: ' + ', '.join(missing_pages),
+                ))
+            template_dir = project_path / 'templates'
+            template_svgs = {path.stem for path in template_dir.glob('*.svg')}
+            missing_templates = sorted({
+                value.strip().removesuffix('.svg')
+                for page, value in page_layouts.items()
+                if page in expected_pages
+                and value.strip().removesuffix('.svg') not in template_svgs
+            })
+            if missing_templates:
+                self._pptx_structure_issues.append((
+                    'error',
+                    'spec_lock.md strict template_adherence references missing '
+                    'template SVG(s): ' + ', '.join(missing_templates),
+                ))
+
         structure_attrs = {
             'data-pptx-layer',
             'data-pptx-layout',

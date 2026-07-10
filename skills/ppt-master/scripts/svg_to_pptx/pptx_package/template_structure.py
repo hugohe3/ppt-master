@@ -52,6 +52,7 @@ _LAYOUT_KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
 _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
 PPTX_STRUCTURE_MODES = frozenset({"baseline", "template", "preserve", "flat"})
+TEMPLATE_ADHERENCE_MODES = frozenset({"strict", "adaptive"})
 NATIVE_STRUCTURE_SCHEMA = "ppt-master.native-structure.v1"
 
 
@@ -73,6 +74,7 @@ class PptxStructureLock:
     """Optional project-level PPTX structure export policy."""
 
     mode: str
+    template_adherence: str | None = None
     layouts: tuple[PptxLayoutReference, ...] = ()
     source_template: Path | None = None
     native_structure: Path | None = None
@@ -314,6 +316,29 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             f"spec_lock.md pptx_structure.mode must be one of: {allowed}"
         )
 
+    adherence_rows = [
+        value.strip().lower()
+        for key, value in structure_rows
+        if key == "template_adherence"
+    ]
+    if len(adherence_rows) > 1:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_structure allows at most one "
+            "'- template_adherence:' row"
+        )
+    template_adherence = adherence_rows[0] if adherence_rows else None
+    if template_adherence and template_adherence not in TEMPLATE_ADHERENCE_MODES:
+        allowed = ", ".join(sorted(TEMPLATE_ADHERENCE_MODES))
+        raise TemplateStructureError(
+            "spec_lock.md pptx_structure.template_adherence must be one of: "
+            f"{allowed}"
+        )
+    if mode == "preserve" and template_adherence == "adaptive":
+        raise TemplateStructureError(
+            "spec_lock.md preserve mode requires template_adherence: strict; "
+            "adaptive template use must export through baseline"
+        )
+
     source_rows = [
         value for key, value in structure_rows if key == "source_template"
     ]
@@ -389,6 +414,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
         )
     return PptxStructureLock(
         mode=mode,
+        template_adherence=template_adherence,
         layouts=tuple(sorted(references, key=lambda item: item.slide_num)),
         source_template=source_template,
         native_structure=native_structure,

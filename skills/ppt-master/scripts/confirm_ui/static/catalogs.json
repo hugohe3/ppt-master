@@ -555,6 +555,28 @@
       "label_ja": "分割モード"
     }
   ],
+  "template_adherence": [
+    {
+      "id": "adaptive",
+      "label": "adaptive",
+      "label_zh": "适应性使用",
+      "label_en": "adaptive",
+      "label_ja": "適応的に使用",
+      "desc_zh": "沿用模板的视觉语言和合适版式，允许不适配的页面自由设计；原生结构文件不会强制整份演示使用 preserve。",
+      "desc_en": "Reuse the template's visual language and suitable layouts while allowing unmatched pages to be designed freely; native structure files do not force preserve mode for the whole deck.",
+      "desc_ja": "テンプレートのビジュアル言語と適合するレイアウトを再利用し、合わないページは自由に設計する。ネイティブ構造ファイルがあっても、デッキ全体に preserve を強制しない。"
+    },
+    {
+      "id": "strict",
+      "label": "strict",
+      "label_zh": "严格套用",
+      "label_en": "strict",
+      "label_ja": "厳密に適用",
+      "desc_zh": "每一页都从模板 SVG roster 选择版式；模板携带兼容的原生结构时，复用其 Master/Layout/Placeholder。",
+      "desc_en": "Map every page to the template SVG roster; when the package carries compatible native structure, reuse its Master, Layout, and Placeholder contracts.",
+      "desc_ja": "すべてのページをテンプレートSVG一覧へ割り当て、互換性のあるネイティブ構造が含まれる場合はMaster／Layout／Placeholderを再利用する。"
+    }
+  ],
   "delivery_purpose": [
     {
       "id": "text",
