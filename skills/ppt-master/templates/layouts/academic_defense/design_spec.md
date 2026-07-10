@@ -157,7 +157,7 @@ page_types: [cover, toc, chapter, content, ending]
 ### PPT Compatibility Rules
 
 - No `<g opacity="...">` (group opacity); set opacity on each child element individually
-- Use overlay layers for image transparency
+- `<image opacity="0..1">` maps to native picture transparency; use overlays only for color washes
 - Inline styles only; no external CSS or `@font-face`
 
 ---
