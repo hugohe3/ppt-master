@@ -261,6 +261,13 @@ Do not:
 
 Repeat inherited visuals in the standalone SVG so browser preview remains complete. Preserve export removes those preview copies and renders the original source master/layout parts instead. Do not flatten inherited visuals into unmarked slide content.
 
+Use the imported semantic roles verbatim: `title`, `subtitle`, `body`,
+`picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and
+`slide-number`. In particular, do not collapse source `subTitle`, `obj`,
+`media`, or `dt` placeholders into a generic body marker. A reconstructed
+title normally has no index; if the imported source title has one, retain it.
+All indexed source placeholders keep their exact indices.
+
 ### 3. Placeholder Markers
 
 > **Mirror mode skips this section entirely.** Mirror SVGs are verbatim copies of the source flat slides — they carry no `{{}}` markers. Mirror is only a template-creation mode; downstream generation treats the finished files as normal template roster candidates. The rest of this section applies to `standard` and `fidelity` only.

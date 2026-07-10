@@ -52,7 +52,8 @@ def _has_reusable_structure(manifest: dict[str, Any]) -> bool:
         layout.get("backgroundAsset")
         or int(layout.get("drawableShapeCount") or 0) > 0
         or any(
-            placeholder.get("semanticRole") not in {"footer", "slide-number", "other"}
+            placeholder.get("semanticRole")
+            not in {"date", "footer", "slide-number", "other"}
             for placeholder in layout.get("placeholders", [])
         )
         for layout in candidate_layouts

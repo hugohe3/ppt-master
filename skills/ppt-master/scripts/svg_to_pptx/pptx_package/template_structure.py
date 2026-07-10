@@ -40,14 +40,36 @@ _STRUCTURE_ATTRS = frozenset({
 _LAYERS = frozenset({"master", "layout", "slide"})
 _PLACEHOLDERS = frozenset({
     "title",
+    "subtitle",
     "body",
     "picture",
     "chart",
     "table",
+    "object",
+    "media",
+    "date",
     "footer",
     "slide-number",
 })
-_TEXT_PLACEHOLDERS = frozenset({"title", "body", "footer", "slide-number"})
+_TEXT_PLACEHOLDERS = frozenset({
+    "title",
+    "subtitle",
+    "body",
+    "date",
+    "footer",
+    "slide-number",
+})
+_OBJECT_PLACEHOLDER_TAGS = frozenset({
+    "rect",
+    "circle",
+    "ellipse",
+    "line",
+    "path",
+    "polygon",
+    "polyline",
+    "text",
+    "image",
+})
 _LAYOUT_KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
 _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
@@ -655,6 +677,16 @@ def _validate_placeholder_element(
             f"{svg_path.name}: {element_id} picture placeholder must be declared "
             "on a direct <image> or nested crop <svg> element"
         )
+    if placeholder == "media" and tag not in {"image", "svg"}:
+        raise TemplateStructureError(
+            f"{svg_path.name}: {element_id} media placeholder must be declared "
+            "on a direct <image> or nested crop <svg> element"
+        )
+    if placeholder == "object" and tag not in _OBJECT_PLACEHOLDER_TAGS:
+        raise TemplateStructureError(
+            f"{svg_path.name}: {element_id} object placeholder must resolve to "
+            "one direct text, image, or basic SVG shape"
+        )
     if placeholder in {"chart", "table"}:
         native_kind = (elem.get("data-pptx-native") or "").strip().lower()
         if tag != "g" or native_kind != placeholder:
@@ -972,14 +1004,18 @@ def template_lock_errors(
     return errors
 
 
-_PRESERVE_PLACEHOLDER_TYPES = {
-    "title": frozenset({"title", "ctrTitle"}),
-    "body": frozenset({"body", "subTitle", "obj"}),
-    "picture": frozenset({"pic", "obj"}),
-    "chart": frozenset({"chart", "obj"}),
-    "table": frozenset({"tbl", "obj"}),
-    "footer": frozenset({"ftr"}),
-    "slide-number": frozenset({"sldNum"}),
+_PRESERVE_PLACEHOLDER_TYPE_ORDER = {
+    "title": ("title", "ctrTitle"),
+    "subtitle": ("subTitle", "body", "obj"),
+    "body": ("body", "obj", "subTitle"),
+    "picture": ("pic", "obj"),
+    "chart": ("chart", "obj"),
+    "table": ("tbl", "obj"),
+    "object": ("obj",),
+    "media": ("media", "obj", "pic"),
+    "date": ("dt",),
+    "footer": ("ftr",),
+    "slide-number": ("sldNum",),
 }
 
 
@@ -991,15 +1027,24 @@ def match_native_placeholders(
     available = list(layout.placeholders)
     matches: list[tuple[TemplateElementSpec, NativePlaceholderSpec]] = []
     for item in spec.placeholders:
-        allowed_types = _PRESERVE_PLACEHOLDER_TYPES.get(item.placeholder or "", frozenset())
+        allowed_types = _PRESERVE_PLACEHOLDER_TYPE_ORDER.get(
+            item.placeholder or "",
+            (),
+        )
         candidate_index = None
-        for index, candidate in enumerate(available):
-            if candidate.placeholder_type not in allowed_types:
-                continue
-            if item.placeholder_idx is not None and candidate.idx != item.placeholder_idx:
-                continue
-            candidate_index = index
-            break
+        for placeholder_type in allowed_types:
+            for index, candidate in enumerate(available):
+                if candidate.placeholder_type != placeholder_type:
+                    continue
+                if (
+                    item.placeholder_idx is not None
+                    and candidate.idx != item.placeholder_idx
+                ):
+                    continue
+                candidate_index = index
+                break
+            if candidate_index is not None:
+                break
         if candidate_index is None:
             idx_note = (
                 f" idx={item.placeholder_idx}"
