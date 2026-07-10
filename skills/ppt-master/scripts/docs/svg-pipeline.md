@@ -29,20 +29,20 @@ It aggregates:
 Convert project SVGs into PPTX.
 
 ```bash
-python3 scripts/svg_to_pptx.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> --native-objects
-python3 scripts/svg_to_pptx.py <project_path> --pptx-structure template  # explicit SVG template metadata
-python3 scripts/svg_to_pptx.py <project_path> --pptx-structure preserve  # imported source package contract
-python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # structure diagnostic
+uvx ppt-master svg-to-pptx <project_path>
+uvx ppt-master svg-to-pptx <project_path> --native-objects
+uvx ppt-master svg-to-pptx <project_path> --pptx-structure template  # explicit SVG template metadata
+uvx ppt-master svg-to-pptx <project_path> --pptx-structure preserve  # imported source package contract
+uvx ppt-master svg-to-pptx <project_path> --pptx-structure flat  # structure diagnostic
 # Template-import visual round-trip diagnostic only:
-python3 scripts/svg_to_pptx.py <template_import_output> --only native -s svg-flat
-python3 scripts/svg_to_pptx.py <project_path> --no-notes
-python3 scripts/svg_to_pptx.py <project_path> -t none
-python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
-python3 scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
-python3 scripts/svg_to_pptx.py <project_path> --no-merge   # strict line-fidelity mode (see below)
-python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
+uvx ppt-master svg-to-pptx <template_import_output> --only native -s svg-flat
+uvx ppt-master svg-to-pptx <project_path> --no-notes
+uvx ppt-master svg-to-pptx <project_path> -t none
+uvx ppt-master svg-to-pptx <project_path> --auto-advance 3
+uvx ppt-master svg-to-pptx <project_path> --animation mixed --animation-duration 0.8
+uvx ppt-master svg-to-pptx <project_path> --no-merge   # strict line-fidelity mode (see below)
+uvx ppt-master notes-to-audio <project_path> --voice zh-CN-XiaoxiaoNeural
+uvx ppt-master svg-to-pptx <project_path> --recorded-narration audio
 ```
 
 Behavior:

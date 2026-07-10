@@ -230,9 +230,9 @@ Usage boundary:
 Reconstruct a PPTX package as editable SVG views by reading OOXML directly.
 
 ```bash
-python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode both
-python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode layered
-python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
+uvx ppt-master pptx-to-svg deck.pptx --inheritance-mode both
+uvx ppt-master pptx-to-svg deck.pptx --inheritance-mode layered
+uvx ppt-master pptx-to-svg deck.pptx --inheritance-mode flat
 ```
 
 | Mode | Output |

@@ -57,13 +57,13 @@ uvx ppt-master update-repo
 Conversion:
 
 ```bash
-python3 scripts/source_to_md.py <file-or-url-or-dir> [<file-or-url-or-dir> ...]
-python3 scripts/source_to_md/pdf_to_md.py <file.pdf>
-python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
-python3 scripts/source_to_md/doc_to_md.py <file.docx>
-python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
-python3 scripts/source_to_md/web_to_md.py <url>
-python3 scripts/pptx_to_svg.py <deck.pptx> -o <output_dir>  # reconstruction/reference SVG import
+uvx ppt-master source-to-md <file-or-url-or-dir> [<file-or-url-or-dir> ...]
+uvx ppt-master pdf-to-md <file.pdf>
+uvx ppt-master ppt-to-md <deck.pptx>
+uvx ppt-master doc-to-md <file.docx>
+uvx ppt-master excel-to-md <workbook.xlsx>
+uvx ppt-master web-to-md <url>
+uvx ppt-master pptx-to-svg <deck.pptx> -o <output_dir>  # reconstruction/reference SVG import
 ```
 
 Project setup:
