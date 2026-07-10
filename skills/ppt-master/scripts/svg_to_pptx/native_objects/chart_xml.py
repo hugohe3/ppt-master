@@ -5,8 +5,14 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml.utils import detect_text_lang, px_to_emu, _xml_escape
-from .chart_data import _DEFAULT_CHART_COLORS, _chart_list, _data_labels_config
+from ..drawingml.utils import detect_text_lang, _xml_escape
+from .chart_data import (
+    _DEFAULT_CHART_COLORS,
+    _chart_list,
+    _data_label_position,
+    _data_label_point_items,
+    _data_labels_config,
+)
 from .chart_style import (
     _alpha_xml,
     _axis_title_xml,
@@ -33,7 +39,7 @@ from .marker_common import (
     _first_present,
     _font_size_hpt,
     _hex_or_none,
-    _number,
+    _powerpoint_line_width_emu,
 )
 
 
@@ -69,7 +75,9 @@ def _series_color_xml(
     alpha_xml = _alpha_xml(fill_opacity, "series fill_opacity")
     line_width_xml = ""
     if line_width is not None:
-        line_width_xml = f' w="{max(px_to_emu(_number(line_width, "series line_width")), 1)}"'
+        line_width_xml = (
+            f' w="{_powerpoint_line_width_emu(line_width, "series line_width")}"'
+        )
     line_xml = (
         f'<a:ln{line_width_xml}><a:solidFill><a:srgbClr val="{clean}"/></a:solidFill></a:ln>'
         if line else '<a:ln><a:noFill/></a:ln>'
@@ -80,49 +88,6 @@ def _series_color_xml(
         f'{line_xml}'
         "</c:spPr>"
     )
-
-
-def _data_label_position(value: Any, chart_type: str, grouping: str | None) -> str | None:
-    if chart_type == "area":
-        if value is not None:
-            raise RuntimeError("Native PPTX area data labels do not support label position")
-        return None
-    is_stacked = chart_type in {"bar", "column"} and grouping in {"percentStacked", "stacked"}
-    default = "ctr" if is_stacked else ("outEnd" if chart_type in {"bar", "column"} else "t")
-    if value is None:
-        return default
-    aliases = {
-        "above": "t",
-        "bestfit": "bestFit",
-        "center": "ctr",
-        "inbase": "inBase",
-        "insidebase": "inBase",
-        "insideend": "inEnd",
-        "inend": "inEnd",
-        "outend": "outEnd",
-        "outsideend": "outEnd",
-    }
-    position = aliases.get(_compact_key(value))
-    if not position:
-        raise RuntimeError(
-            "Native PPTX chart data label position must be one of: "
-            "above, best_fit, center, inside_base, inside_end, outside_end"
-        )
-    if chart_type in {"bar", "column"}:
-        if position not in {"ctr", "inBase", "inEnd", "outEnd"}:
-            raise RuntimeError(
-                "Native PPTX bar/column data label position must be one of: "
-                "center, inside_base, inside_end, outside_end"
-            )
-        if is_stacked and position == "outEnd":
-            raise RuntimeError(
-                "Native PPTX stacked bar/column data labels do not support outside_end"
-            )
-    elif chart_type == "line" and position not in {"bestFit", "ctr", "t"}:
-        raise RuntimeError(
-            "Native PPTX line data label position must be one of: above, best_fit, center"
-        )
-    return position
 
 
 def _data_label_flags_xml(config: dict[str, Any]) -> str:
@@ -152,35 +117,6 @@ def _data_label_flags_xml(config: dict[str, Any]) -> str:
     )
 
 
-def _data_label_point_items(config: dict[str, Any], point_count: int) -> list[dict[str, Any]]:
-    raw_points = config.get("points")
-    if raw_points is None:
-        return []
-    items: list[dict[str, Any]] = []
-    seen: set[int] = set()
-    for item in _chart_list(raw_points, "data_labels.points"):
-        if isinstance(item, dict):
-            raw_index = item.get("idx")
-            data = dict(item)
-        else:
-            raw_index = item
-            data = {}
-        if isinstance(raw_index, bool):
-            raise RuntimeError("Native PPTX chart data_labels.points idx must be an integer")
-        index_value = _number(raw_index, "data_labels.points idx")
-        if not index_value.is_integer():
-            raise RuntimeError("Native PPTX chart data_labels.points idx must be an integer")
-        index = int(index_value)
-        if index < 0 or index >= point_count:
-            raise RuntimeError("Native PPTX chart data_labels.points idx is outside point range")
-        if index in seen:
-            raise RuntimeError("Native PPTX chart data_labels.points idx values must be unique")
-        seen.add(index)
-        data["idx"] = index
-        items.append(data)
-    return items
-
-
 def _data_labels_xml(
     config: dict[str, Any] | None,
     *,
@@ -193,6 +129,14 @@ def _data_labels_xml(
 ) -> str:
     if config is None:
         return ""
+    show_leader_lines = _chart_bool(
+        _first_present(
+            config.get("show_leader_lines"),
+            config.get("showLeaderLines"),
+        ),
+        False,
+    )
+    leader_lines_xml = f'<c:showLeaderLines val="{_bool_attr(show_leader_lines)}"/>'
     position = _data_label_position(config.get("position"), chart_type, grouping)
     raw_font_size = _first_present(config.get("font_size"), config.get("fontSize"))
     label_font_size = _font_size_hpt(raw_font_size, 12) if raw_font_size is not None else font_size
@@ -210,7 +154,12 @@ def _data_labels_xml(
         if num_fmt else ""
     )
     flags_xml = _data_label_flags_xml(config)
-    point_items = _data_label_point_items(config, point_count)
+    point_items = _data_label_point_items(
+        config,
+        chart_type,
+        grouping,
+        point_count,
+    )
     if point_items:
         selected_items = {int(item["idx"]): item for item in point_items}
         point_label_xml = ""
@@ -251,7 +200,7 @@ def _data_labels_xml(
                 f"{_data_label_flags_xml({**config, **item})}"
                 "</c:dLbl>"
             )
-        return f"<c:dLbls>{point_label_xml}<c:showLeaderLines val=\"0\"/></c:dLbls>"
+        return f"<c:dLbls>{point_label_xml}{leader_lines_xml}</c:dLbls>"
 
     label_colors = [
         _clean_hex(item, "#404040")
@@ -280,8 +229,18 @@ def _data_labels_xml(
         f"{num_fmt_xml}{tx_pr_xml}"
         f"{position_xml}"
         f"{flags_xml}"
-        '<c:showLeaderLines val="0"/>'
+        f'{leader_lines_xml}'
         "</c:dLbls>"
+    )
+
+
+def _series_scoped_data_labels(config: dict[str, Any] | None) -> bool:
+    """Return whether point-level overrides require a series ``c:dLbls``."""
+    if config is None:
+        return False
+    return any(
+        bool(config.get(key))
+        for key in ("points", "colors", "label_colors", "labelColors")
     )
 
 
@@ -379,7 +338,9 @@ def _series_xml(
                 default_color=data_label_color,
                 default_font_face=data_label_font_face,
             )
-            if chart_type in {"area", "bar", "column", "line"} else ""
+            if _series_scoped_data_labels(data_labels)
+            and chart_type in {"area", "bar", "column", "line"}
+            else ""
         )
         parts.append(
             "<c:ser>"
@@ -569,6 +530,7 @@ def _bar_chart_group_xml(
     cat_ax_id: str,
     val_ax_id: str,
     vary_colors: bool = False,
+    data_labels_xml: str = "",
 ) -> str:
     bar_dir = "bar" if chart_type == "bar" else "col"
     vary_colors_xml = '<c:varyColors val="1"/>' if vary_colors else '<c:varyColors val="0"/>'
@@ -582,6 +544,7 @@ def _bar_chart_group_xml(
         f'<c:barDir val="{bar_dir}"/><c:grouping val="{grouping}"/>'
         f"{vary_colors_xml}"
         f"{ser_xml}"
+        f"{data_labels_xml}"
         '<c:gapWidth val="150"/>'
         f"{overlap_xml}"
         f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
@@ -596,12 +559,14 @@ def _line_area_chart_group_xml(
     *,
     cat_ax_id: str,
     val_ax_id: str,
+    data_labels_xml: str = "",
 ) -> str:
     tag = "lineChart" if chart_type == "line" else "areaChart"
     line_tail_xml = '<c:marker val="1"/><c:smooth val="0"/>' if chart_type == "line" else ""
     return (
         f'<c:{tag}><c:grouping val="{grouping}"/><c:varyColors val="0"/>'
         f"{ser_xml}"
+        f"{data_labels_xml}"
         f"{line_tail_xml}"
         f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
         f"</c:{tag}>"
@@ -708,6 +673,20 @@ def _combo_plot_xml(
             start_column=2 + start_index,
             start_index=start_index,
         )
+        data_labels = _data_labels_config(plot)
+        data_labels_xml = (
+            _data_labels_xml(
+                data_labels,
+                chart_type=chart_type,
+                grouping=grouping,
+                point_count=len(plot["series"][0]["values"]),
+                font_size=axis_font_size,
+                default_color=chart_style.get("text_color"),
+                default_font_face=chart_style.get("font_face"),
+            )
+            if not _series_scoped_data_labels(data_labels)
+            else ""
+        )
         if chart_type == "column":
             parts.append(_bar_chart_group_xml(
                 chart_type,
@@ -716,6 +695,7 @@ def _combo_plot_xml(
                 cat_ax_id=cat_ax_id,
                 val_ax_id=val_ax_id,
                 vary_colors=any(item.get("point_colors") for item in plot["series"]),
+                data_labels_xml=data_labels_xml,
             ))
         elif chart_type in {"area", "line"}:
             parts.append(_line_area_chart_group_xml(
@@ -724,6 +704,7 @@ def _combo_plot_xml(
                 ser_xml,
                 cat_ax_id=cat_ax_id,
                 val_ax_id=val_ax_id,
+                data_labels_xml=data_labels_xml,
             ))
         else:
             raise RuntimeError("Native PPTX combo plots support column, line, and area only")
@@ -856,6 +837,20 @@ def _chart_plot_xml(
         data_label_color=chart_style.get("text_color"),
         data_label_font_face=chart_style.get("font_face"),
     )
+    data_labels_xml = (
+        _data_labels_xml(
+            chart_data.get("data_labels"),
+            chart_type=chart_type,
+            grouping=series_grouping,
+            point_count=len(series[0]["values"]),
+            font_size=axis_font_size,
+            default_color=chart_style.get("text_color"),
+            default_font_face=chart_style.get("font_face"),
+        )
+        if chart_type in {"area", "bar", "column", "line"}
+        and not _series_scoped_data_labels(chart_data.get("data_labels"))
+        else ""
+    )
 
     if chart_type in {"bar", "column"}:
         bar_dir = "bar" if chart_type == "bar" else "col"
@@ -886,6 +881,7 @@ def _chart_plot_xml(
             f'<c:barDir val="{bar_dir}"/><c:grouping val="{grouping}"/>'
             f"{vary_colors_xml}"
             f"{ser_xml}"
+            f"{data_labels_xml}"
             '<c:gapWidth val="150"/>'
             f"{overlap_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
@@ -910,6 +906,7 @@ def _chart_plot_xml(
         return (
             f'<c:{tag}><c:grouping val="{grouping}"/><c:varyColors val="0"/>'
             f"{ser_xml}"
+            f"{data_labels_xml}"
             f"{line_tail_xml}"
             f'<c:axId val="{cat_ax_id}"/><c:axId val="{val_ax_id}"/>'
             f"</c:{tag}>"

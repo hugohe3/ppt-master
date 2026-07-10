@@ -10,6 +10,8 @@ Handles:
 - <p:grpSp>        -> GROUP (recurses; resolves a:chOff/a:chExt frame)
 - <p:graphicFrame> -> GRAPHIC (table / chart / SmartArt — emitted as opaque
                      placeholder for v1 so callers can decide a fallback)
+- <mc:AlternateContent> -> supported Choice shape with the baked Fallback
+                           preview retained for graphic frames
 """
 
 from __future__ import annotations
@@ -17,7 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
-from .emu_units import NS, Xfrm, parse_xfrm
+from .emu_units import NS, Xfrm, ooxml_bool, parse_xfrm
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +86,7 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
     if cnv is not None:
         name = cnv.attrib.get("name", "")
         spid = cnv.attrib.get("id", "")
-        if cnv.attrib.get("hidden") == "1":
+        if ooxml_bool(cnv.attrib.get("hidden")):
             hidden = True
 
     nv_pr = container.find("p:nvPr", NS)
@@ -160,6 +162,44 @@ _KIND_MAP = {
 }
 
 
+def _first_shape_child(container: ET.Element | None) -> ET.Element | None:
+    if container is None:
+        return None
+    for child in list(container):
+        if not isinstance(child.tag, str):
+            continue
+        if child.tag.split("}", 1)[-1] in _KIND_MAP:
+            return child
+    return None
+
+
+def _resolve_alternate_content(wrapper: ET.Element) -> ET.Element | None:
+    """Select an AlternateContent shape while retaining its baked preview."""
+    choice = wrapper.find("mc:Choice", NS)
+    fallback = wrapper.find("mc:Fallback", NS)
+    selected = _first_shape_child(choice)
+    selected_from_choice = selected is not None
+    if selected is None:
+        selected = _first_shape_child(fallback)
+    if selected is None:
+        return None
+
+    clone = ET.fromstring(ET.tostring(selected, encoding="utf-8"))
+    if (
+        selected_from_choice
+        and clone.tag.split("}", 1)[-1] == "graphicFrame"
+        and fallback is not None
+    ):
+        graphic_data = clone.find("a:graphic/a:graphicData", NS)
+        if graphic_data is not None:
+            preview = ET.Element(f"{{{NS['mc']}}}AlternateContent")
+            preview.append(
+                ET.fromstring(ET.tostring(fallback, encoding="utf-8"))
+            )
+            graphic_data.append(preview)
+    return clone
+
+
 def _walk_container(
     container: ET.Element,
     parent_group_xfrm: Xfrm | None,
@@ -176,6 +216,12 @@ def _walk_container(
         if not isinstance(child.tag, str):
             continue
         local = child.tag.split("}", 1)[-1]
+        if local == "AlternateContent":
+            resolved = _resolve_alternate_content(child)
+            if resolved is None:
+                continue
+            child = resolved
+            local = child.tag.split("}", 1)[-1]
         kind_info = _KIND_MAP.get(local)
         if kind_info is None:
             continue

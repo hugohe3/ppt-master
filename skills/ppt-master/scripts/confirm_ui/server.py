@@ -460,9 +460,34 @@ def _sync_session_state(
 # browser STATE — lost on a refresh. Folding them from result.json into the
 # served recommendations lets a refresh / reopen re-initialize from the user's
 # actual choices instead of catalog defaults.
-_ANCHOR_RECOMMEND_KEYS = ('canvas', 'mode', 'visual_style', 'delivery_purpose')
+_ANCHOR_RECOMMEND_KEYS = (
+    'canvas',
+    'mode',
+    'visual_style',
+    'delivery_purpose',
+    'template_adherence',
+)
 _ANCHOR_VALUE_KEYS = ('audience', 'content_divergence')
 _DESIGN_RECOMMEND_KEYS = ('icons', 'formula_policy')
+
+
+def _template_adherence_enabled(project_path: Path) -> bool:
+    """Return whether Step 3 loaded a deck/layout template into the project."""
+    spec_path = project_path / 'templates' / 'design_spec.md'
+    try:
+        lines = spec_path.read_text(encoding='utf-8').splitlines()
+    except OSError:
+        return False
+    if not lines or lines[0].strip() != '---':
+        return False
+    for line in lines[1:]:
+        stripped = line.strip()
+        if stripped == '---':
+            return False
+        match = re.fullmatch(r'kind\s*:\s*["\']?(brand|layout|deck)["\']?', stripped)
+        if match:
+            return match.group(1) in {'layout', 'deck'}
+    return False
 
 
 def _merge_confirmed_choices(data: dict, result_file: Path) -> None:
@@ -818,6 +843,17 @@ def create_app(
         # the user's choices instead of catalog defaults.
         if _recommendation_stage(data) >= 2 and result_file.exists():
             _merge_confirmed_choices(data, result_file)
+        template_adherence_enabled = _template_adherence_enabled(project_path)
+        data['_template_adherence_enabled'] = template_adherence_enabled
+        recommend = data.get('recommend')
+        if template_adherence_enabled:
+            if not isinstance(recommend, dict):
+                recommend = data['recommend'] = {}
+            recommend.setdefault('template_adherence', 'adaptive')
+        else:
+            if isinstance(recommend, dict):
+                recommend.pop('template_adherence', None)
+            data.pop('template_adherence', None)
         # The page polls this endpoint after a stage-1 confirm until the AI
         # overwrites the file with the re-derived stage-2 recommendations, so it
         # must never be served from a cache.

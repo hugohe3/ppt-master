@@ -6,19 +6,20 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext, ShapeResult
-from ..drawingml.utils import px_to_emu, _xml_escape
+from ..drawingml.utils import _xml_escape
 from .chart_style import _font_face_xml
 from .marker_common import (
     TABLE_URI,
     _bool_attr,
     _bounds,
-    _chart_bool,
     _clean_hex,
     _compact_key,
     _first_present,
     _font_size_hpt,
     _normalized_fallback_text,
     _number,
+    _powerpoint_emu,
+    _powerpoint_line_width_emu,
     _visible_fallback_texts,
 )
 
@@ -26,18 +27,24 @@ from .marker_common import (
 def _table_text_run(
     text: str,
     *,
-    color: str,
-    bold: bool,
-    font_size: int,
+    color: str | None,
+    bold: bool | None,
+    font_size: int | None,
     font_face: str | None,
 ) -> str:
-    bold_attr = ' b="1"' if bold else ""
-    return (
-        f'<a:r><a:rPr lang="en-US" sz="{font_size}"{bold_attr}>'
+    size_attr = f' sz="{font_size}"' if font_size is not None else ""
+    bold_attr = f' b="{_bool_attr(bold)}"' if bold is not None else ""
+    color_xml = (
         f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        if color else ""
+    )
+    space_attr = ' xml:space="preserve"' if text != text.strip() else ""
+    return (
+        f'<a:r><a:rPr lang="en-US"{size_attr}{bold_attr}>'
+        f'{color_xml}'
         f'{_font_face_xml(font_face)}'
         "</a:rPr>"
-        f"<a:t>{_xml_escape(text)}</a:t></a:r>"
+        f"<a:t{space_attr}>{_xml_escape(text)}</a:t></a:r>"
     )
 
 
@@ -65,6 +72,8 @@ _TABLE_TOP_LEVEL_SPAN_KEYS = {
     "merges",
     "spans",
 }
+_TABLE_MAX_ROWS = 1000
+_TABLE_MAX_COLUMNS = 1000
 
 
 def _table_rows(payload: dict[str, Any]) -> list[list[Any]]:
@@ -102,7 +111,36 @@ def _check_table_spans(payload: dict[str, Any], table_rows: list[list[Any]]) -> 
 
 
 def _grid_is_strict(payload: dict[str, Any]) -> bool:
-    return bool(payload.get("strict_grid", payload.get("strictGrid", False)))
+    value = payload.get("strict_grid", payload.get("strictGrid"))
+    return _table_bool(value, "strict_grid", default=False)
+
+
+def _table_bool(value: Any, field_name: str, *, default: bool) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if value in (0, 1):
+        return bool(value)
+    key = _compact_key(value)
+    if key in {"1", "on", "true", "yes"}:
+        return True
+    if key in {"0", "false", "no", "off"}:
+        return False
+    raise RuntimeError(f"Native PPTX table {field_name} must be a boolean")
+
+
+def _table_header_rows(payload: dict[str, Any], row_count: int) -> int:
+    default = 1 if payload.get("columns") else 0
+    value = _number(payload.get("header_rows", default), "table header_rows")
+    if not value.is_integer():
+        raise RuntimeError("Native PPTX table header_rows must be an integer")
+    header_rows = int(value)
+    if not 0 <= header_rows <= row_count:
+        raise RuntimeError(
+            "Native PPTX table header_rows must be between zero and the resolved row count"
+        )
+    return header_rows
 
 
 def _validate_table_lengths(payload: dict[str, Any], table_rows: list[list[Any]]) -> int:
@@ -111,6 +149,8 @@ def _validate_table_lengths(payload: dict[str, Any], table_rows: list[list[Any]]
     col_count = max(len(row) for row in table_rows)
     if col_count <= 0:
         raise RuntimeError("Native PPTX table requires at least one column")
+    if len(table_rows) > _TABLE_MAX_ROWS or col_count > _TABLE_MAX_COLUMNS:
+        raise RuntimeError("Native PPTX table supports at most 1000 rows and columns")
     if _grid_is_strict(payload) and any(len(row) != col_count for row in table_rows):
         raise RuntimeError("Native PPTX table strict_grid requires every row to have the same length")
 
@@ -118,27 +158,33 @@ def _validate_table_lengths(payload: dict[str, Any], table_rows: list[list[Any]]
     if column_widths is not None:
         if not isinstance(column_widths, list) or len(column_widths) != col_count:
             raise RuntimeError("Native PPTX table column_widths must match the resolved column count")
-        for idx, width in enumerate(column_widths, start=1):
-            _number(width, f"column_widths[{idx}]")
+        _table_weights(column_widths, "column_widths")
 
     row_heights = payload.get("row_heights")
     if row_heights is not None:
         if not isinstance(row_heights, list) or len(row_heights) != len(table_rows):
             raise RuntimeError("Native PPTX table row_heights must match the resolved row count")
-        for idx, height in enumerate(row_heights, start=1):
-            _number(height, f"row_heights[{idx}]")
+        _table_weights(row_heights, "row_heights")
 
     return col_count
 
 
 def _validate_table_cell_formatting(payload: dict[str, Any], table_rows: list[list[Any]]) -> None:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
+    _table_bool(style.get("band_row"), "style.band_row", default=True)
     for row in table_rows:
         for cell in row:
             cell_data = _cell_payload(cell)
+            if "bold" in cell_data:
+                _table_bool(cell_data["bold"], "cell bold", default=False)
             for side in ("left", "right", "top", "bottom"):
                 _table_padding_value(cell_data, style, side)
-            _table_border_width(cell_data, style)
+            border_width = _table_border_width(cell_data, style)
+            if border_width > 0:
+                _powerpoint_line_width_emu(
+                    border_width,
+                    "table border_width",
+                )
             _table_anchor(cell_data, style)
 
 
@@ -146,6 +192,7 @@ def _validate_table_payload(payload: dict[str, Any]) -> tuple[list[list[Any]], i
     table_rows = _table_rows(payload)
     _check_table_spans(payload, table_rows)
     col_count = _validate_table_lengths(payload, table_rows)
+    _table_header_rows(payload, len(table_rows))
     _validate_table_cell_formatting(payload, table_rows)
     return table_rows, col_count
 
@@ -190,19 +237,46 @@ def _weighted_lengths(
     *,
     field_name: str,
 ) -> list[int]:
+    if total < count:
+        raise RuntimeError(
+            f"Native PPTX table {field_name} cannot fit {count} positive grid lengths"
+        )
     if weights is None:
-        base = max(total // count, 1)
-        values = [base] * count
-        values[-1] += total - sum(values)
-        return values
+        base, remainder = divmod(total, count)
+        return [base + (1 if idx < remainder else 0) for idx in range(count)]
 
-    numeric = [max(_number(weight, field_name), 0.0) for weight in weights]
-    numeric_total = sum(numeric)
-    if numeric_total <= 0:
-        raise RuntimeError(f"Native PPTX table {field_name} values must sum to a positive number")
-    values = [max(round(total * weight / numeric_total), 1) for weight in numeric]
-    values[-1] += total - sum(values)
-    return values
+    numeric = _table_weights(weights, field_name)
+    largest = max(numeric)
+    normalized = [weight / largest for weight in numeric]
+    normalized_total = sum(normalized)
+    distributable = total - count
+    quotas = [distributable * weight / normalized_total for weight in normalized]
+    extras = [int(quota) for quota in quotas]
+    remainder = distributable - sum(extras)
+    if remainder < 0 or remainder > count:
+        raise RuntimeError(f"Native PPTX table {field_name} allocation overflowed")
+    order = sorted(
+        range(count),
+        key=lambda idx: (quotas[idx] - extras[idx], normalized[idx], -idx),
+        reverse=True,
+    )
+    for idx in order[:remainder]:
+        extras[idx] += 1
+    return [extra + 1 for extra in extras]
+
+
+def _table_weights(weights: list[Any], field_name: str) -> list[float]:
+    numeric = [
+        _number(weight, f"{field_name}[{idx}]")
+        for idx, weight in enumerate(weights, start=1)
+    ]
+    if any(weight < 0 for weight in numeric):
+        raise RuntimeError(f"Native PPTX table {field_name} values must be non-negative")
+    if max(numeric, default=0.0) <= 0:
+        raise RuntimeError(
+            f"Native PPTX table {field_name} values must sum to a positive number"
+        )
+    return numeric
 
 
 def _table_padding_value(
@@ -235,7 +309,8 @@ def _table_padding_value(
         value = from_source(style)
     if value is None:
         return None
-    return max(px_to_emu(max(_number(value, f"table {side} padding"), 0.0)), 0)
+    pixels = max(_number(value, f"table {side} padding"), 0.0)
+    return _powerpoint_emu(pixels, f"table {side} padding")
 
 
 def _table_padding_attrs(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
@@ -293,7 +368,7 @@ def _table_border_xml(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
         f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
         '<a:prstDash val="solid"/>'
     )
-    line_width = max(px_to_emu(width), 1)
+    line_width = _powerpoint_line_width_emu(width, "table border_width")
     return "".join(
         f'<a:{tag} w="{line_width}">{line}</a:{tag}>'
         for tag in ("lnL", "lnR", "lnT", "lnB")
@@ -302,8 +377,8 @@ def _table_border_xml(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
 
 def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
     table_rows, col_count = _validate_table_payload(payload)
-    has_columns = bool(payload.get("columns") or [])
-    header_rows = int(payload.get("header_rows", 1 if has_columns else 0))
+    header_rows = _table_header_rows(payload, len(table_rows))
+    preserve_source_style = elem.get("data-pptx-native-source") == "pptx"
 
     for row in table_rows:
         row.extend([""] * (col_count - len(row)))
@@ -345,44 +420,81 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
         cells_xml: list[str] = []
         for cell in row:
             cell_data = _cell_payload(cell)
-            fill = _clean_hex(
-                cell_data.get("fill"),
-                header_fill if is_header else (band_fill if row_idx % 2 == 0 and row_idx else body_fill),
-            )
-            color = _clean_hex(cell_data.get("color"), header_text if is_header else body_text)
-            align = str(cell_data.get("align") or ("ctr" if is_header else "l"))
+            if preserve_source_style:
+                fill = (
+                    _clean_hex(cell_data.get("fill"), "#FFFFFF")
+                    if cell_data.get("fill") is not None else None
+                )
+                color = (
+                    _clean_hex(cell_data.get("color"), "#000000")
+                    if cell_data.get("color") is not None else None
+                )
+                align = str(cell_data.get("align") or "l")
+            else:
+                fill = _clean_hex(
+                    cell_data.get("fill"),
+                    header_fill if is_header else (
+                        band_fill if row_idx % 2 == 0 and row_idx else body_fill
+                    ),
+                )
+                color = _clean_hex(
+                    cell_data.get("color"),
+                    header_text if is_header else body_text,
+                )
+                align = str(cell_data.get("align") or ("ctr" if is_header else "l"))
             if align not in {"l", "ctr", "r"}:
                 align = "l"
             text = "" if cell_data.get("text") is None else str(cell_data.get("text"))
-            bold = bool(cell_data.get("bold", is_header))
-            cell_font_size = (
-                _font_size_hpt(cell_data.get("font_size"), 18)
-                if "font_size" in cell_data
-                else body_font_size
-            )
-            if is_header and "font_size" not in cell_data:
-                cell_font_size = header_font_size
+            if preserve_source_style:
+                bold = (
+                    _table_bool(cell_data["bold"], "cell bold", default=False)
+                    if "bold" in cell_data else None
+                )
+                cell_font_size = (
+                    _font_size_hpt(cell_data.get("font_size"), 18)
+                    if "font_size" in cell_data else None
+                )
+            else:
+                bold = _table_bool(cell_data.get("bold"), "cell bold", default=is_header)
+                cell_font_size = (
+                    _font_size_hpt(cell_data.get("font_size"), 18)
+                    if "font_size" in cell_data
+                    else body_font_size
+                )
+                if is_header and "font_size" not in cell_data:
+                    cell_font_size = header_font_size
             paragraph_props = f'<a:pPr algn="{align}"/>' if align != "l" else "<a:pPr/>"
-            tc_pr_attrs = (
-                f' anchor="{_table_anchor(cell_data, style)}"'
-                f'{_table_padding_attrs(cell_data, style)}'
-            )
+            anchor_keys = {"valign", "vertical_align"}
+            anchor_attr = ""
+            if not preserve_source_style or anchor_keys.intersection(cell_data) or anchor_keys.intersection(style):
+                anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
+            tc_pr_attrs = f'{anchor_attr}{_table_padding_attrs(cell_data, style)}'
             border_xml = _table_border_xml(cell_data, style)
+            fill_xml = (
+                f'<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill>'
+                if fill else ""
+            )
             cells_xml.append(
                 "<a:tc>"
                 "<a:txBody><a:bodyPr/><a:lstStyle/>"
                 f"<a:p>{paragraph_props}"
                 f"{_table_text_run(text, color=color, bold=bold, font_size=cell_font_size, font_face=font_face)}"
                 "</a:p></a:txBody>"
-                f'<a:tcPr{tc_pr_attrs}>{border_xml}<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill></a:tcPr>'
+                f'<a:tcPr{tc_pr_attrs}>{border_xml}{fill_xml}</a:tcPr>'
                 "</a:tc>"
             )
         rows_xml.append(f'<a:tr h="{row_heights[row_idx]}">{"".join(cells_xml)}</a:tr>')
 
     shape_id = ctx.next_id()
     first_row = _bool_attr(header_rows > 0)
-    band_row = _bool_attr(bool(style.get("band_row", True)))
-    table_style_id = str(style.get("table_style_id") or "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}")
+    band_row = _bool_attr(_table_bool(style.get("band_row"), "style.band_row", default=True))
+    table_style_id = style.get("table_style_id")
+    if table_style_id is None and not preserve_source_style:
+        table_style_id = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"
+    table_style_xml = (
+        f'<a:tableStyleId>{_xml_escape(str(table_style_id))}</a:tableStyleId>'
+        if table_style_id else ""
+    )
     name = _xml_escape(str(payload.get("name") or elem.get("id") or f"Native Table {shape_id}"))
     xml = f'''<p:graphicFrame>
 <p:nvGraphicFramePr>
@@ -395,7 +507,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 <a:graphicData uri="{TABLE_URI}">
 <a:tbl>
 <a:tblPr firstRow="{first_row}" bandRow="{band_row}">
-<a:tableStyleId>{_xml_escape(table_style_id)}</a:tableStyleId>
+{table_style_xml}
 </a:tblPr>
 <a:tblGrid>{grid_xml}</a:tblGrid>
 {''.join(rows_xml)}

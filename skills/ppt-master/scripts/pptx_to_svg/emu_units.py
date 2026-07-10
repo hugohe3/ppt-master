@@ -93,6 +93,18 @@ def percent_to_ratio(val: float | int | str | None, default: float = 0.0) -> flo
         return default
 
 
+def ooxml_bool(value: str | None, default: bool = False) -> bool:
+    """Parse the boolean lexical forms accepted by OOXML."""
+    if value is None:
+        return default
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "on"}:
+        return True
+    if normalized in {"0", "false", "off"}:
+        return False
+    return default
+
+
 # ---------------------------------------------------------------------------
 # xfrm / transform parsing
 # ---------------------------------------------------------------------------
@@ -179,8 +191,8 @@ def parse_xfrm(xfrm_elem: ET.Element | None) -> Xfrm:
         return Xfrm()
 
     rot = angle_to_deg(xfrm_elem.get("rot"))
-    flip_h = xfrm_elem.get("flipH") == "1"
-    flip_v = xfrm_elem.get("flipV") == "1"
+    flip_h = ooxml_bool(xfrm_elem.get("flipH"))
+    flip_v = ooxml_bool(xfrm_elem.get("flipV"))
 
     off = xfrm_elem.find("a:off", NS)
     ext = xfrm_elem.find("a:ext", NS)

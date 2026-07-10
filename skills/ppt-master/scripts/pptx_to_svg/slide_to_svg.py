@@ -22,10 +22,12 @@ animation anchor.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
+from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
 from .custgeom_to_svg import convert_custom_geom
 from .effect_to_svg import convert_effects
 from .emu_units import NS, Xfrm, fmt_num
@@ -59,6 +61,7 @@ class AssemblyContext:
     palette: ColorPalette | None
     pkg: OoxmlPackage
     slide_part: PartRef
+    slide_number: int | None = None
     theme_fonts: dict[str, str] = field(default_factory=dict)
     media_subdir: str = "assets"
     embed_images: bool = False
@@ -110,6 +113,7 @@ def assemble_slide(
         palette=palette,
         pkg=pkg,
         slide_part=slide.part,
+        slide_number=pkg.first_slide_number + slide.index - 1,
         theme_fonts=theme_fonts or {},
         media_subdir=media_subdir,
         embed_images=embed_images,
@@ -321,6 +325,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         text_result = convert_vertical_txbody(
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
+            slide_number=ctx.slide_number,
             default_fill=text_default_fill,
             default_font_size_px=DEFAULT_FONT_SIZE_PX,
             fallback_lst_styles=node.inherited_lst_styles,
@@ -331,6 +336,7 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         text_result = convert_txbody(
             tx_body, node.xfrm, ctx.palette,
             theme_fonts=ctx.theme_fonts,
+            slide_number=ctx.slide_number,
             default_fill=text_default_fill,
             default_font_size_px=DEFAULT_FONT_SIZE_PX,
             fallback_lst_styles=node.inherited_lst_styles,
@@ -579,17 +585,35 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
     - ``...presentationml/2006/ole`` → render the ``mc:Fallback`` preview
       bitmap that PowerPoint bakes alongside every embedded OLE object.
       Visually identical to what PowerPoint shows for an unedited embed.
-    - everything else (chart / SmartArt / diagram) → labelled bounding
-      rectangle so the slide composition is preserved even though the inner
-      content can't be drawn yet.
+    - supported classic charts → baked preview plus native chart metadata.
+    - everything else (SmartArt / diagram / unsupported chart) → labelled
+      preview or bounding rectangle plus transparent unsupported metadata.
     """
     graphic_data = node.xml.find("a:graphic/a:graphicData", NS)
     uri = graphic_data.attrib.get("uri", "graphicFrame") if graphic_data is not None else "graphicFrame"
 
     if uri == "http://schemas.openxmlformats.org/drawingml/2006/table":
-        rendered = _render_graphic_table(node, ctx, graphic_data)
+        rendered, native_attrs = _render_graphic_table(node, ctx, graphic_data)
         if rendered:
-            return _wrap_shape_group(rendered, node, ctx, top_level=top_level)
+            return _wrap_shape_group(
+                rendered,
+                node,
+                ctx,
+                top_level=top_level,
+                extra_attrs=native_attrs,
+            )
+
+    chart_native_attrs: list[str] = []
+    if uri in {CHART_URI, CHARTEX_URI}:
+        rendered, chart_native_attrs = _render_graphic_chart(node, ctx, graphic_data)
+        if rendered:
+            return _wrap_shape_group(
+                rendered,
+                node,
+                ctx,
+                top_level=top_level,
+                extra_attrs=chart_native_attrs,
+            )
 
     if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole" and ctx.render_graphic_previews:
         rendered = _render_graphic_preview(node, ctx)
@@ -613,7 +637,9 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         f'text-anchor="middle" font-size="14" fill="#999999">'
         f"[{_xml_escape(label)}]</text>"
     )
-    return _wrap_shape_group(placeholder, node, ctx, top_level=top_level)
+    return _wrap_shape_group(
+        placeholder, node, ctx, top_level=top_level, extra_attrs=chart_native_attrs,
+    )
 
 
 def _graphic_preview_label(node: ShapeNode, label: str) -> str:
@@ -626,24 +652,83 @@ def _graphic_preview_label(node: ShapeNode, label: str) -> str:
     )
 
 
-def _render_graphic_table(node: ShapeNode, ctx: AssemblyContext,
-                          graphic_data: ET.Element | None) -> str:
-    """Convert the <a:tbl> child of a graphicFrame to SVG, or return ''."""
+def _render_graphic_table(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    graphic_data: ET.Element | None,
+) -> tuple[str, list[str]]:
+    """Convert the <a:tbl> child of a graphicFrame to SVG plus metadata."""
     if graphic_data is None:
-        return ""
+        return "", []
     tbl = graphic_data.find("a:tbl", NS)
     if tbl is None:
-        return ""
+        return "", []
     result = convert_tbl(
         tbl, node.xfrm, ctx.palette,
         theme_fonts=ctx.theme_fonts,
+        slide_number=ctx.slide_number,
         id_prefix=f"tbl{ctx.shape_seq[0]}",
         grad_seq=ctx.grad_seq,
         marker_seq=ctx.marker_seq,
     )
     if result.defs:
         ctx.defs.extend(result.defs)
-    return result.svg
+    native_attrs: list[str] = ['data-pptx-native-source="pptx"']
+    if result.native_payload:
+        if node.name and not result.native_payload.get("name"):
+            result.native_payload["name"] = node.name
+        payload_json = json.dumps(
+            result.native_payload,
+            allow_nan=False,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        native_attrs.extend([
+            'data-pptx-native="table"',
+            f'data-pptx-json="{_xml_escape(payload_json)}"',
+        ])
+    elif result.native_status:
+        native_attrs.append(
+            f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
+        )
+    return result.svg, native_attrs
+
+
+def _render_graphic_chart(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    graphic_data: ET.Element | None,
+) -> tuple[str, list[str]]:
+    """Return a chart preview plus native chart marker attributes."""
+    result = extract_native_chart_payload(
+        graphic_data,
+        node.xfrm,
+        ctx.slide_part,
+        ctx.pkg,
+    )
+    native_attrs: list[str] = ['data-pptx-native-source="pptx"']
+    if result.native_payload:
+        if node.name and not result.native_payload.get("name"):
+            result.native_payload["name"] = node.name
+        payload_json = json.dumps(
+            result.native_payload,
+            allow_nan=False,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        native_attrs.extend([
+            'data-pptx-native="chart"',
+            f'data-pptx-json="{_xml_escape(payload_json)}"',
+        ])
+    elif result.native_status:
+        native_attrs.append(
+            f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
+        )
+
+    rendered = ""
+    if ctx.render_graphic_previews:
+        rendered = _render_graphic_preview(node, ctx)
+    return rendered, native_attrs
 
 
 def _render_graphic_preview(node: ShapeNode, ctx: AssemblyContext) -> str:
@@ -889,8 +974,14 @@ def _convert_placeholder_guide(node: ShapeNode, ctx: AssemblyContext,
 # Wrap / utilities
 # ---------------------------------------------------------------------------
 
-def _wrap_shape_group(inner: str, node: ShapeNode, ctx: AssemblyContext,
-                      *, top_level: bool) -> str:
+def _wrap_shape_group(
+    inner: str,
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    *,
+    top_level: bool,
+    extra_attrs: list[str] | None = None,
+) -> str:
     """Wrap a shape's body in a <g> that carries the transform (rotation /
     flip) and an id for animation anchoring."""
     if not inner.strip():
@@ -907,6 +998,8 @@ def _wrap_shape_group(inner: str, node: ShapeNode, ctx: AssemblyContext,
         attrs.append(f'data-name="{_xml_escape(node.name)}"')
     if node.placeholder is not None and node.placeholder.type:
         attrs.append(f'data-ph-type="{_xml_escape(node.placeholder.type)}"')
+    if extra_attrs:
+        attrs.extend(extra_attrs)
     if transform:
         attrs.append(f'transform="{transform}"')
     return f"<g {' '.join(attrs)}>\n{inner}\n</g>"

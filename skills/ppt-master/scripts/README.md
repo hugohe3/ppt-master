@@ -43,7 +43,7 @@ python3 scripts/update_repo.py
 
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
-| Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py` | [docs/conversion.md](./docs/conversion.md) |
+| Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -62,6 +62,7 @@ python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
 python3 scripts/source_to_md/doc_to_md.py <file.docx>
 python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
 python3 scripts/source_to_md/web_to_md.py <url>
+python3 scripts/pptx_to_svg.py <deck.pptx> -o <output_dir>  # reconstruction/reference SVG import
 ```
 
 Project setup:
@@ -115,6 +116,20 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 `finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
 
+When `spec_lock.md` has no `pptx_structure` section, native `svg_to_pptx.py` falls back to `baseline`: the generated deck keeps a standard master/layout relationship and promotes the strict-majority identical native slide background into the slide master (minority slides keep their own overriding background). A shared leading prefix of top-level SVG elements with exact chrome id tokens such as `logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber`, or `slideNumber` may also be promoted when its generated OOXML is identical on a strict majority of slides, it is not referenced by slide timing, and moving it behind slide-local content preserves z-order; image relationships are copied to the master. Minority slides such as covers keep every shape slide-local and are bound to a generated `Cover` layout (`showMasterSp="0"`) that hides the promoted master chrome. Baseline additionally prunes base-template slide layouts that no generated slide references, and swaps `pageNumber`/`slideNumber` chrome text for an auto-updating slide-number field when the text exactly equals the slide's display number. Use `--pptx-structure flat` when all generated backgrounds and chrome must remain slide-local for debugging or comparison.
+
+Use template structure only when the final slide SVGs explicitly declare reusable PowerPoint structure. The CLI reads `spec_lock.md` `pptx_structure.mode` when `--pptx-structure` is omitted, so a locked `template` project exports structurally through the standard command; an explicit CLI value still overrides the lock. Each SVG names its layout with `data-pptx-layout`; direct root children may opt into master/layout layers with `data-pptx-layer`, and supported text, picture, chart, table, footer, or slide-number elements may declare `data-pptx-placeholder`. The exporter validates the project-level `pptx_layouts` mapping and cross-slide consistency, creates one reusable layout per layout key, and keeps actual content slide-local. A direct full-canvas solid rect becomes a real Master/Layout/Slide `p:bg` according to its declared scope; an unmarked full-canvas solid rect is a Slide override. It never infers placeholders from visual similarity. The complete metadata contract lives in [`references/shared-standards.md`](../references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata-template-export).
+
+`create-template` may retain `native_structure.json` plus `source_template.pptx` as an optional native capability. Their presence does not select the export route. When Strategist confirms `template_adherence: strict`, lock `pptx_structure.mode: preserve`, point the lock at both project-relative files, and map every page to an exact imported layout key/name. The exporter verifies the source hash and package parts, keeps the source master/layout/theme roster (including multiple source masters), removes SVG preview copies of inherited layers, and binds generated slide content back to source placeholder indices. Preserve mode does not prune unused source layouts. With `template_adherence: adaptive`, keep `pptx_structure.mode: baseline`; template SVGs remain optional page references and free pages remain slide-local.
+
+`pptx_to_svg.py` annotates supported unmerged tables and conservative classic-chart caches with `data-pptx-native` metadata. Source table-style inheritance, supported solid cell fills/basic text formatting, chart title/legend/axis titles, and plot-level data-label flags for area/bar/column/line charts are retained when the current schema can represent them. Tables with direct borders, non-solid fills, or mixed rich-text formatting remain fallback-only, as do charts with unsupported label scopes/types, custom axis semantics, trendlines/error bars, or subtype options. Unsupported tables keep their rendered SVG table; unsupported charts keep a baked preview or explicit placeholder. Both carry `data-pptx-native-status`, which `svg_quality_checker.py` and `svg_to_pptx.py --native-objects` report as a warning.
+
+Exporter-canonical classic charts also recover canonical solid series/slice
+colors and exact one- or two-paragraph title styling; two paragraphs retain
+their `title` / `subtitle` roles. Slide-number fields resolve to the display
+number defined by `firstSlideNum`; standalone master/layout SVGs retain their
+literal field fallback because they are shared by multiple slides.
+
 Image generation:
 
 ```bash
@@ -137,7 +152,7 @@ python3 scripts/update_repo.py --skip-pip
 - Keep one user-facing entry point per workflow at the top level of `scripts/`
 - Move provider-specific or helper internals into subdirectories
 - Prefer the unified entry points `project_manager.py`, `finalize_svg.py`, and `image_gen.py`
-- Prefer `svg_final/` over `svg_output/` when exporting
+- Use `svg_output/` for native export and `svg_final/` for SVG snapshot/preview export
 
 ## Related Docs
 
@@ -148,4 +163,4 @@ python3 scripts/update_repo.py --skip-pip
 - [Troubleshooting](./docs/troubleshooting.md)
 - [Skill Entry](../SKILL.md)
 
-_Last updated: 2026-04-09_
+_Last updated: 2026-07-10_

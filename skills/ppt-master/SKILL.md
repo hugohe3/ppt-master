@@ -25,7 +25,7 @@ description: >
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
 > 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
 > 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
-> 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also look up the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), `page_layouts` (which template SVG to inherit, if any), and `page_charts` (which chart template to adapt, if any). Empty / absent entries are intentional Strategist signals — see executor-base.md §2.1. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
+> 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also look up the confirmed `pptx_structure.template_adherence` when present, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), `page_layouts` (which template SVG to inherit, if any), `page_charts` (which chart template to adapt, if any), and — when `pptx_structure.mode` is `template` or `preserve` — `pptx_layouts` (which native PowerPoint layout the page references). Empty / absent `page_layouts` rows are intentional only for adaptive/free design; strict template use requires one per page — see executor-base.md §2.1. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
 > 9. **SVG MUST BE HAND-WRITTEN, NOT SCRIPT-GENERATED** — Every SVG page is written by the main agent directly, one page at a time (see rules 6 and 7). Writing or running a Python / Node / shell script that produces the SVG files in batch — looping over pages, templating from data, or emitting them via a generator — is FORBIDDEN, including under "save tokens", "quick draft", or "user is in a hurry" pretexts. The script-generation path was tried on a feature branch and abandoned: cross-page visual consistency depends on per-page authoring with full upstream context, which a generator script cannot reproduce
 > 10. **FOLLOW DETERMINISTIC ROUTING RULES** — Do not add blocking routing questions when this skill defines a route. If the user request violates a route precondition, state the required prerequisite and stop that route instead of asking the user to choose around the rule. Ordinary finite options, stylistic preferences, and recoverable details are surfaced with a recommended value plus alternatives at the next existing confirmation gate.
 
@@ -263,6 +263,10 @@ find <project_path>/templates -type f \( -iname '*.png' -o -iname '*.jpg' -o -in
 
 The same split applies to all three kinds — bitmaps always land in `images/`, the rest in `templates/`. The spec's `kind` field tells Strategist how to read the `templates/` side; downstream code doesn't distinguish. (Template SVGs in `templates/` are reference material only — the rendered pages live in `svg_output/` and reference images via `../images/`.)
 
+If the selected structure owner ships `native_structure.json` + `source_template.pptx`, keep the pair together in `<project>/templates/`. During fusion, only the winning **structure segment** may contribute this pair: a layout override without a native pair removes a deck's pair, while a brand-only identity override leaves it intact. Never mix one template's contract with another template's source package.
+
+The pair is retained capability, not an automatic generation route. The Strategist confirmation stage decides whether the selected template is used `strict` (every page follows the SVG roster; compatible native structure may use `preserve`) or `adaptive` (template SVGs are optional page references; native export stays `baseline`). Its mere presence must never force `preserve`.
+
 #### Multi-path fusion
 
 When the user gives two or more paths of **different kinds**, Step 3 fuses them into a single `<project>/templates/design_spec.md`. **Default granularity is segment-level integer replacement** — entire identity / structure / middle segments are taken from the highest-priority source for that segment, no implicit field-level mixing.
@@ -316,6 +320,8 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 
 Single-path Step 3 does **not** add provenance (the source is self-evident from the copied files).
 
+The fused frontmatter `kind` describes the resulting bundle: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. Keep this field accurate; the Strategist confirmation server uses it to show template adherence only for bundles that actually own page structure.
+
 **✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user supplied one or more explicit template paths, those have been dispatched (or fused) into `<project_path>/templates/` before advancing.**
 
 ---
@@ -345,16 +351,17 @@ Read references/strategist.md
 2. Page count range
 3. Target audience
 4. Style objective
-5. Color scheme
-6. Icon usage approach
-7. Typography plan, including formula rendering policy
-8. Image usage approach
+5. Template adherence — `strict` / `adaptive` (only when Step 3 loaded a deck/layout template)
+6. Color scheme
+7. Icon usage approach
+8. Typography plan, including formula rendering policy
+9. Image usage approach
 
 **Confirm UI Auto-Launch (Mandatory — default visual confirmation surface)**: by default the Strategist confirmation stage is presented through an interactive local page in **three stages within one browser session** — Stage 1 confirms the direction anchors; the AI then re-derives the design-system layer from the **user's actual** anchors; Stage 2 confirms that layer; the AI then re-derives image and execution choices from the confirmed direction + design system; Stage 3 confirms the final operational layer. Color swatches, live font previews, icon samples, image-style reference previews, and candidate picks appear where they help judgment; the chat path is the always-valid fallback. [`scripts/docs/confirm_ui.md`](scripts/docs/confirm_ui.md) owns the schema, server lifecycle, port strategy, and fallback details; this section keeps the orchestration contract. The split:
 
 | Stage | Confirms | Driven by |
 |---|---|---|
-| **1 — direction anchors** | canvas · audience + core message + `content_divergence` + `delivery_purpose` *(PPT only — omitted on non-PPT canvases)* (all §c key info) · `mode` + `visual_style` | the source + user intent |
+| **1 — direction anchors** | canvas · audience + core message + `content_divergence` + `delivery_purpose` *(PPT only — omitted on non-PPT canvases)* (all §c key info) · `mode` + `visual_style` · `template_adherence` *(only when Step 3 loaded a deck/layout template)* | the source + user intent |
 | **2 — design system** (re-derived from Stage 1) | page count · color · typography (font + size) · icons · formula policy | the confirmed Stage 1 |
 | **3 — images / execution** (re-derived from Stage 1 + Stage 2) | image usage · generated-image style · AI-image generation path · generation mode · refine-spec toggle | the confirmed direction + design system |
 
@@ -364,7 +371,7 @@ Steps:
 
 > ⛔ **Steps 2 → 3 → 4 are ONE uninterrupted run — do NOT yield to the user mid-flow.** When an intermediate `--wait` returns, the AI **immediately and autonomously** re-derives and writes the next stage in the **same turn**: do **not** summarize, ask a question, report progress, or end the turn in between. The browser is sitting on a "deriving…" spinner polling for the next stage you must write — stopping here strands the page and the user must prod you in chat to finish (a bug, not the intended flow). **Stage-1 and Stage-2 confirmations are intermediate machine handoffs, not stopping points.** The single ⛔ BLOCKING wait is the **final** confirmation at the end of step 4. (Chat-fallback path — only when the page never opened — is the exception: there you do present each stage in chat and wait for a reply.)
 
-1. **Write Stage 1** to `<project_path>/confirm_ui/recommendations.json` with `"stage": "stage1"` and only the anchor fields. New recommendations MUST use the canonical `stage` selector. Enumerable anchors (`canvas` / `mode` / `visual_style` / `delivery_purpose`) name a recommended canonical `id` in a `recommend` block (the page lists common options from `confirm_ui/static/catalogs.json`); `visual_style` also carries the ≥3-style `visual_style_spectrum` (safe / shifted / bold — same hard rule as h.5). `audience` and `content_divergence` are plain `{ "value": "<free text>" }`. `content_divergence` is the **free-text** field shown under audience in §c — how closely to follow the source vs how freely to reshape it (blank = balanced; facts stay sourced at every level); it is consumed by Strategist when authoring `§IX`, recorded in `design_spec.md §I`, carries no page-count coupling, and is **not** written to `spec_lock.md`. Set `lang` to the page language (`zh` / `en` / `ja`); visible text matches `lang`, or provide multilingual `name_zh` / `name_en` / `name_ja` + `note_zh` / `note_en` / `note_ja` — when the user's language is Japanese, set `lang: "ja"` and always include the `_ja` variants (labels resolve in the page language first — a `ja` page falls back ja → en → zh, so missing `_ja` labels silently render in English; zh/en pages keep their zh↔en fallback and only try `_ja` last).
+1. **Write Stage 1** to `<project_path>/confirm_ui/recommendations.json` with `"stage": "stage1"` and only the anchor fields. New recommendations MUST use the canonical `stage` selector. Enumerable anchors (`canvas` / `mode` / `visual_style` / `delivery_purpose`) name a recommended canonical `id` in a `recommend` block (the page lists common options from `confirm_ui/static/catalogs.json`); `visual_style` also carries the ≥3-style `visual_style_spectrum` (safe / shifted / bold — same hard rule as h.5). When Step 3 loaded a deck/layout template, also set `recommend.template_adherence` to `strict` or `adaptive`; omit the field entirely for free design and brand-only templates so the page does not display it. `audience` and `content_divergence` are plain `{ "value": "<free text>" }`. `content_divergence` is the **free-text** field shown under audience in §c — how closely to follow the source vs how freely to reshape it (blank = balanced; facts stay sourced at every level); it is consumed by Strategist when authoring `§IX`, recorded in `design_spec.md §I`, carries no page-count coupling, and is **not** written to `spec_lock.md`. Set `lang` to the page language (`zh` / `en` / `ja`); visible text matches `lang`, or provide multilingual `name_zh` / `name_en` / `name_ja` + `note_zh` / `note_en` / `note_ja` — when the user's language is Japanese, set `lang: "ja"` and always include the `_ja` variants (labels resolve in the page language first — a `ja` page falls back ja → en → zh, so missing `_ja` labels silently render in English; zh/en pages keep their zh↔en fallback and only try `_ja` last).
 2. **Launch + wait for Stage 1.** Background launch; the parent returns when the page writes the stage-1 `result.json`. **Long tool timeout — 600000 ms** (the `--wait` ≈590 s budget):
    ```bash
    python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
@@ -575,7 +582,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
-**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus the per-page `page_rhythm` / `page_layouts` / `page_charts` lookups (resolves to template SVGs already loaded in the batch read above). Resists context-compression drift on long decks. See executor-base.md §2.1.
+**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus the per-page `page_rhythm` / `page_layouts` / `page_charts` lookups and the optional `pptx_structure` / `pptx_layouts` native-layout contract. Resists context-compression drift on long decks. See executor-base.md §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
@@ -641,6 +648,9 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
+#   backup/<timestamp>/templates/{native_structure.json,source_template.pptx}
+#                                                     ← preserve mode only
+#   backup/<timestamp>/spec_lock.md                   ← preserve mode only
 #
 # Add --svg-snapshot to additionally emit the SVG-image preview pptx alongside the native pptx:
 #   exports/<project_name>_<timestamp>_svg.pptx      ← SVG preview pptx (reads svg_final/)
@@ -664,9 +674,74 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > The `svg_output/`
 > snapshot in `backup/<timestamp>/` is always written so the project can be
 > re-exported from frozen SVG sources without re-running the LLM. The SVG-rendered
-> preview pptx is opt-in via `--svg-snapshot` — live preview already provides the
+> preview pptx is opt-in via `--svg-snapshot`. Preserve mode also backs up the
+> paired native structure/source files and `spec_lock.md` under the same timestamp.
+> Live preview already provides the
 > SVG visual reference, so it's only needed when you want a self-contained file
 > to share. Pass `-s output` or `-s final` to force a single source if you need it.
+
+> **PPTX structure mode** — native export first reads
+> `spec_lock.md` `pptx_structure.mode`, then falls back to `baseline` when the
+> section is absent. An explicit `--pptx-structure` CLI value overrides the
+> lock for diagnostics. Baseline keeps the real slide master/layout
+> relationship from the base deck and promotes the strict-majority identical
+> native slide background into the slide master (every slide must carry an
+> explicit background; minority slides keep their own, which overrides the
+> master fill). Baseline may also promote a shared **leading** prefix of
+> top-level SVG elements whose exact id tokens mark page chrome (`logo`,
+> `footer`, `header`, `watermark`, `chrome`, `pageNumber` / `slideNumber`).
+> Promotion requires identical generated OOXML on a strict majority of slides
+> sharing the master, no slide-timing reference, and z-order safety; overlay
+> chrome stays slide-local. Minority slides (covers, section pages) keep every
+> shape slide-local and are bound to a generated `Cover` layout with
+> `showMasterSp="0"`, so promoted master chrome never appears on them. Image
+> relationships for promoted chrome are copied to the master. Baseline also
+> prunes base-template slide layouts no generated slide references, so the
+> PowerPoint new-slide picker only offers layouts that belong to the deck, and
+> converts `pageNumber` / `slideNumber` chrome whose text exactly equals the
+> slide's display number into an auto-updating PowerPoint slide-number field
+> (other numbering schemes keep their literal text). Add
+> `--pptx-structure flat` only for debugging/comparison when all generated
+> backgrounds and chrome must remain slide-local.
+
+> **Preserved source-template export** — a reusable template package created
+> from a structured PPTX may ship `native_structure.json` plus
+> `source_template.pptx`. This pair records a reusable capability; it does not
+> select the downstream route by itself. Only a confirmed
+> `template_adherence: strict` deck may set `pptx_structure.mode: preserve`.
+> Add project-relative
+> `source_template` / `native_structure` rows, and map every page in
+> `pptx_layouts` to an exact imported layout key/name. Native export verifies the
+> source SHA-256 and package parts, creates the generated slides against the
+> original layouts (including multiple source masters), removes SVG-only preview
+> copies of inherited master/layout visuals, and binds slide content to the
+> original placeholder type/index. Preserve mode keeps the source layout picker
+> roster; it does not prune unused source layouts.
+>
+> A confirmed `template_adherence: adaptive` deck continues to use the created
+> template SVG roster as optional visual/layout references and exports through
+> `baseline`, even when the template directory contains the native pair. Pages
+> without a `page_layouts` row remain free design; the baseline post-pass owns
+> conservative Master/background/chrome extraction exactly as it does without a
+> template.
+
+> **Explicit reusable template export** — set `spec_lock.md`
+> `pptx_structure.mode: template` (or pass `--pptx-structure template`
+> explicitly) only when every SVG root declares `data-pptx-layout` and direct children
+> explicitly declare master/layout layers, an optional Slide background, or
+> PowerPoint placeholders. This
+> mode builds named reusable layouts and placeholder mappings; it does not
+> infer them from visual similarity. Static master/layout elements must be
+> repeated consistently in PowerPoint paint order. Chart/table placeholders
+> additionally require `--native-objects`. The metadata contract and authoring
+> example live in
+> [`references/shared-standards.md`](references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata-template-export).
+> Raw PPTX templates still route to `template-fill-pptx`; `template` structure
+> mode is for explicitly annotated SVG authoring. Source-package preservation is
+> available only after `create-template` has produced the reusable native pair.
+> In template mode, `pptx_layouts` contains exactly one locked
+> layout key/name per page; reuse a key for a shared structure instead of
+> creating one key per content instance.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
@@ -683,7 +758,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > PowerPoint-editable native tables/charts and accepts that those objects may
 > render differently across PowerPoint / Keynote / LibreOffice / WPS. Without
 > the flag, marked groups export through their SVG fallback children like
-> ordinary SVG content.
+> ordinary SVG content. Imported objects that carry
+> `data-pptx-native-status` are fallback-only; the quality checker and
+> `--native-objects` export surface their reason as warnings rather than silently
+> claiming editability.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
@@ -706,7 +784,8 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
 > ❌ **NEVER** force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). The default auto-split already gives native the high-fidelity source it needs without touching legacy.
-> ❌ **NEVER** use `--only` (it suppresses one of the two output files)
+> ❌ **NEVER** use `--only` in the standard pipeline. Keep it only for explicit
+> one-product diagnostics or compatibility checks.
 
 > **Post-export annotation window**: the preview service from Step 6 typically remains running after export. If the user submitted annotations in the browser (during Executor or after export) and now asks to apply them — they may quote the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`), say "apply my annotations" / "应用注解" / equivalent — run [`live-preview`](workflows/live-preview.md) Step 2 to apply and re-export. Annotations submitted during generation are also handled here, not earlier.
 

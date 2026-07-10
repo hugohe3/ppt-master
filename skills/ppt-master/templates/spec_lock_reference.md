@@ -120,6 +120,45 @@
 >
 > **Missing or empty section** → Executor falls back to `dense` for every page (legacy pre-rhythm behavior). Remove the section only for legacy decks; new decks MUST fill it.
 
+## pptx_structure
+- mode: baseline
+
+> One deck-wide native PowerPoint structure policy. New projects always include this section.
+>
+> When Step 3 loaded a deck/layout template, add exactly one of:
+> ```
+> - template_adherence: adaptive
+> - template_adherence: strict
+> ```
+> Omit the row for free design and brand-only templates. `adaptive` treats template SVGs as optional page references and always exports through `baseline`; `strict` requires one `page_layouts` row per page and may use `preserve` when the template carries a compatible native pair.
+>
+> - `baseline` — default. Preserve the conservative shared Master/background/chrome behavior; no explicit reusable placeholder layouts are authored.
+> - `template` — use only when the user explicitly requests a reusable PowerPoint template/master/layout deliverable. Requires a complete `pptx_layouts` section and explicit SVG structure metadata on every generated page.
+> - `preserve` — use only with `template_adherence: strict` when the selected reusable template ships `native_structure.json` + `source_template.pptx`. Add both project-relative rows below and map every page under `pptx_layouts`. `adaptive + preserve` is invalid.
+> - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
+>
+> Preserve example:
+> ```
+> - mode: preserve
+> - template_adherence: strict
+> - source_template: templates/source_template.pptx
+> - native_structure: templates/native_structure.json
+> ```
+
+## pptx_layouts
+
+> Emit this section only when `pptx_structure.mode` is `template` or `preserve`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Preserve mode uses exact keys/names from `native_structure.json` and the selected template SVG root.
+>
+> Example:
+> ```
+> - P01: cover | Cover
+> - P02: title-content | Title and Content
+> - P03: title-content | Title and Content
+> - P04: section | Section Header
+> ```
+>
+> Reuse one key only when pages share the same static layout layer and placeholder contract. Do not generate one unique key per slide merely because every page has different content. A one-off cover/section layout is valid; content differences stay slide-local.
+
 ## page_layouts
 - P01: 01_cover
 - P03: 02a_chapter
