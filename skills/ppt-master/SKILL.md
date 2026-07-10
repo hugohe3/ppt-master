@@ -741,8 +741,8 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > template SVG roster as optional visual/layout references and exports through
 > `baseline`, even when the template directory contains the native pair. Pages
 > without a `page_layouts` row remain free design; the baseline post-pass owns
-> conservative Master/background/chrome extraction exactly as it does without a
-> template.
+> conservative Master/background/chrome extraction plus filename-backed Layout
+> family assignment exactly as it does without a template.
 
 > **Explicit reusable template export** — set `spec_lock.md`
 > `pptx_structure.mode: template` (or pass `--pptx-structure template`
