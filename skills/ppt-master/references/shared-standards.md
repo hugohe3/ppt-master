@@ -949,6 +949,7 @@ spec lock; the SVG metadata remains the exporter source of truth.
 | `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
 | `data-pptx-placeholder="..."` | direct visual child | Keeps actual content on the slide and maps it to a generated layout placeholder |
 | `data-pptx-placeholder-bounds="x y width height"` | placeholder element | Overrides the reusable placeholder frame in SVG user units |
+| `data-pptx-placeholder-idx="1"` | placeholder element | Retains an imported source layout placeholder index; optional for reconstructed layouts |
 | `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
 
 **Hard rule — explicit only**: Template export never promotes visually similar
@@ -995,6 +996,23 @@ master or layout background.
 **Native object placeholders**: `chart` / `table` placeholders require
 `--native-objects`; fallback groups contain several shapes and cannot map to one
 PowerPoint placeholder.
+
+### Preserved Source Master / Layout Contract
+
+**Trigger**: A reusable template package ships `native_structure.json` and `source_template.pptx`, and `spec_lock.md` sets `pptx_structure.mode: preserve` with project-relative paths to both files.
+
+| Artifact | Authority |
+|---|---|
+| `source_template.pptx` | Original master/layout/theme/package parts |
+| `native_structure.json` | Stable layout keys, picker names, parent masters, placeholder types/indices, source SHA-256 |
+| `pptx_layouts` | Per-generated-page source layout selection |
+| SVG metadata | Standalone preview layers and slide-content placeholder binding |
+
+**Hard rule — source package wins**: Mark source master/layout visuals as direct `data-pptx-layer="master|layout"` preview children. Preserve export removes those generated copies and renders the original source parts. Unmarked content stays slide-local.
+
+**Placeholder identity**: Keep actual content on the slide. Copy the source placeholder index into `data-pptx-placeholder-idx` when present; the exporter restores the source placeholder type/idx pair. Multiple placeholders with the same semantic role require explicit indices.
+
+**Multi-master boundary**: Preserve every source master already present in the package. Do not synthesize a new master merely for cover/section differences; rebuilt templates continue to prefer one master plus semantic layouts.
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg"

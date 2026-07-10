@@ -242,7 +242,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第一步 — 准备参考材料**
 
-**最推荐的方式是直接给原始 `.pptx` 文件**。当前的 PPTX 导入管线能做到接近高保真还原——PPT Master 会从 PPTX 中提取主题色、字体、母版/版式结构、可复用图片资源（包括精灵图裁剪关系），再用这些素材重建出干净可维护的模板。封面、章节、装饰繁复的页面都能稳定还原，这是目前最靠谱的派生路径。
+**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、全部 master/layout、placeholder type/idx 和可复用图片资源。源结构完整时，模板包会保留原 package 并让生成页引用原版式；源结构薄弱时，再用 layered SVG 重建一个干净的 master + 语义版式体系。
 
 没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 

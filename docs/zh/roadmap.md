@@ -82,7 +82,7 @@
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 
-- **原生 package 结构 + 保守 PPTX 对象回转** — 原生导出现在保留基础 package 的真实空白版式关系，并默认使用 baseline master；只提升完全一致的背景和安全的前置重复 chrome。锁定的 `pptx_structure.mode: template` 会把 SVG 中声明的 master/layout layer 与有类型的 placeholder 编译成可复用 PowerPoint 版式，不做视觉推断；每页通过 `pptx_layouts` 映射，同 key 页面复用同一 contract，全 deck / 页型 / 单页纯色背景分别成为真实 Master/Layout/Slide `p:bg`。用户提供的 PPTX 模板仍走以保留为目标的 `template-fill-pptx` 路线。独立 `pptx_to_svg.py` 导入器会为受支持的未合并表格与 classic-chart cache 输出 fallback SVG 加原生元数据；由本 exporter 生成的规范纯色系列 / 切片与精确 title/subtitle 结构可经第二次 `--native-objects` 导出继续保留，无法等价表达的表格 / 图表语义则保持明确的 fallback-only marker
+- **原生 package 结构 + 保守 PPTX 对象回转** — 原生导出保留真实 master/layout 关系，默认 baseline 只提升安全的共享背景/chrome。锁定的 `template` 模式把显式 SVG master/layout layer 与有类型的 placeholder 编译成可复用版式，不做视觉推断；通过 `create-template` 导入的可复用 PPTX 还可锁定 `preserve`，保留原 master/layout/theme 清单（包括多母版）、把页面绑定到精确源版式并恢复源 placeholder idx。原始 PPTX 的一次性直接填充继续走 `template-fill-pptx`。导入器也会为受支持的未合并表格与 classic-chart cache 输出 fallback SVG 加原生元数据；无法等价表达的语义保持明确的 fallback-only marker
 
 ---
 
@@ -112,11 +112,11 @@
 
 **对应 Issue**：[#53](https://github.com/hugohe3/ppt-master/issues/53)、[#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。「解析既有 PPTX 占位符 + 仅回填文字」是另一种产品形态，需要处理任意来源的母版 / 主题 / 占位符体系，与现有架构发力点正交。
+PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。结构完整的 PPTX 现在可以先转成经过确认的可复用模板包，并保留其 master/layout/theme；但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
 
-> **与 `template-fill-pptx` 路线的区别**：「复用某份 deck **自己的**设计、把新内容回填进去」是已支持的能力（见上「2026-06」），输出仍原生可编辑。这里拒的是另一种形态——解析**任意第三方**模板的母版 / 主题 / 占位符体系并仅做文字替换；两者发力点不同，别混为一谈。
+> **已支持边界**：`template-fill-pptx` 直接回填选中的源页面；`create-template` + `preserve` 先把结构完整的源文件收敛成经过确认的可复用契约，再让新页面引用精确源版式。仍不做的是未经审查、没有契约的任意第三方 placeholder 全自动文字替换。
 
 ### 改用原生 PowerPoint 图表（Excel-native chart）
 

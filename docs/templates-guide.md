@@ -1,6 +1,6 @@
 # Templates Guide: Use, Derive, and Boundaries
 
-A PPT Master "template" is a **structure + style** preset bundle: a set of page layout SVGs (cover / chapter / TOC / content / ending and their variants), a `design_spec.md` design specification, and matching assets (logos, backgrounds, decorative imagery). It is **not** a PowerPoint Slide Master, and **not** just a color palette — it is a reusable page-skeleton bundle the workflow can invoke directly.
+A PPT Master "template" is a **structure + style** preset bundle: a set of page layout SVGs (cover / chapter / TOC / content / ending and their variants), a `design_spec.md` design specification, and matching assets (logos, backgrounds, decorative imagery). When derived from a structured PPTX it may also carry a native master/layout contract and preserved source package; without that pair it remains a reusable SVG page-skeleton bundle.
 
 This guide answers three questions:
 
@@ -121,7 +121,7 @@ The workflow will then **mandatorily** confirm a template brief with you before 
 
 ### Step 1 — Prepare reference material
 
-**Strongly recommended: hand over the original `.pptx` file.** The current PPTX import pipeline achieves near-high-fidelity reconstruction — the workflow uses [`pptx_template_import.py`](../skills/ppt-master/scripts/pptx_template_import.py) to read OOXML directly, extracting theme colors, fonts, per-master themes, master/layout structure, placeholder metadata, and reusable image assets. It emits a layered `svg/` view as the machine-readable template source plus a self-contained `svg-flat/` view for visual preview, then hands the package to Template_Designer which rebuilds clean, maintainable SVGs. Covers, chapter dividers, and decoration-heavy pages all reproduce reliably. This is by far the most dependable derivation path today.
+**Strongly recommended: hand over the original `.pptx` file.** The importer reads OOXML directly, extracts every master/layout and placeholder, and emits both layered SVG references and a paired `native_structure.json` + byte-preserved `source_template.pptx`. When the source structure is reusable, generated pages can bind to its original layouts; when it is minimal, Template_Designer rebuilds a clean master plus semantic layouts from the layered references.
 
 You can also design from scratch from a brand guideline: provide a logo, primary color HEX, fonts, tone description, and a few mood references — the AI will design the page skeletons on the spot. This suits brands that don't yet have a finished PPT, only a VI manual.
 
@@ -141,6 +141,7 @@ The workflow does not silently infer values — before generation it lists these
 | **Theme mode** | Light / dark / gradient / ... |
 | **Canvas format** | Default `ppt169` (16:9); specify other formats up front |
 | **Replication mode** | `standard` (default 5-page roster) / `fidelity` (one variant per visually distinct cluster from a `.pptx` source — count is driven by the source) / `mirror` (1:1 verbatim copy of every source slide, no abstraction, no placeholders) — `fidelity` and `mirror` both require a `.pptx` reference |
+| **Native structure strategy** | `preserve` when the source master/layout graph is reusable; `template` to rebuild one master plus semantic layouts when it is minimal. `mirror` uses the rebuilt/baseline path because its inherited layers are flattened. |
 | **Visual fidelity** | (required for `standard` / `fidelity` when a reference exists) `literal` (reproduce original geometry / decoration / sprite crops as-is) or `adapted` (use reference for tone and structure but allow design evolution). Cover / chapter / ending are usually `literal`. **Not asked for `mirror`** — mirror is implicitly literal |
 | **Keywords** | 3–5 tags for index lookup |
 | Theme color / design notes / asset list | Optional — can be auto-extracted from the source |
@@ -224,7 +225,7 @@ Don't confuse the two:
 
 Common misconceptions to avoid:
 
-- **A template is not a PowerPoint Slide Master.** PPT Master outputs native DrawingML shapes and does not depend on the PowerPoint master mechanism. The template is an SVG skeleton, translated to PPTX shapes at export time
+- **A template is not always a Slide Master, but it may carry one.** Ordinary templates remain SVG skeletons. An imported template with `native_structure.json` + `source_template.pptx` preserves the original master/layout/theme package and binds generated content to source placeholders
 - **A template is not a "style skin".** It bundles structure (which blocks per page, how information is hierarchized) with style (colors, fonts, decoration). Trying to swap "skin" without structure tends to put the information architecture and the visuals at odds
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes

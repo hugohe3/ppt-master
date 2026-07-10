@@ -13,6 +13,7 @@
 | Source list | Read path |
 |---|---|
 | Chosen template's `design_spec.md` (read frontmatter to detect `replication_mode`) | `templates/design_spec.md` |
+| Preserve-mode native layout/placeholder contract | `templates/native_structure.json` |
 | Every distinct `<basename>` in `spec_lock.md page_layouts` | `templates/<basename>.svg` |
 | Every distinct chart name in `spec_lock.md page_charts` | `templates/charts/<chart_name>.svg` |
 | Chart types in `design_spec.md §VII` not covered above | `templates/charts/<chart_name>.svg` |
@@ -99,12 +100,15 @@ Before generating each page, output which template is used:
 |---|---|
 | `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template. |
 | `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
+| `preserve` | Every generated SVG MUST use the locked source layout key/name. Keep inherited master/layout visuals as marked preview layers; export removes the previews and reuses the original source package parts. |
 
-**Hard rule — every template-mode page references one layout**: Read `P<NN>: <layout_key> | <layout name>` from `pptx_layouts`, then put both values on the root SVG as `data-pptx-layout` and `data-pptx-layout-name`. Do not invent, rename, or omit a key.
+**Hard rule — every structured page references one layout**: In `template` or `preserve` mode, read `P<NN>: <layout_key> | <layout name>` from `pptx_layouts`, then put both values on the root SVG as `data-pptx-layout` and `data-pptx-layout-name`. Do not invent, rename, or omit a key.
 
 **Hard rule — PowerPoint paint order**: Direct visual children appear in this order: Master background, Layout background, optional Slide background, shared Master shapes, same-key Layout shapes, then slide-local content/placeholders. Backgrounds are the special plane beneath all inherited shapes. Repeat the same Master contract on every page and the same Layout contract on every page sharing a key.
 
 **Placeholder ownership**: Keep actual title/body/picture/chart/table/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. Chart/table placeholders require native markers and a later `--native-objects` export.
+
+**Preserve-mode source identity**: Copy `data-pptx-placeholder-idx` from the chosen template SVG/native contract whenever the source placeholder has an index. Preserve the source placeholder type/idx pairing; do not assign a convenient new index. Master/layout elements in the SVG are preview copies only and MUST retain `data-pptx-layer` + `data-pptx-editable="false"`; never flatten them into unmarked slide-local content.
 
 **Background ownership**:
 
@@ -179,7 +183,7 @@ Do **not** invent a layout entry, and do **not** assume a template just because 
 
 **Per-page PowerPoint layout lookup — `pptx_layouts` section**:
 
-- `pptx_structure.mode: template` → a `P<NN>` row is mandatory; apply §1.2 to the root and direct children.
+- `pptx_structure.mode: template` or `preserve` → a `P<NN>` row is mandatory; apply §1.2 to the root and direct children. Preserve mode uses the exact source key/name and placeholder indices.
 - `pptx_structure.mode: baseline` or missing → omit explicit PPTX structure metadata; baseline export owns conservative promotion.
 - A layout key may repeat across non-adjacent pages. Reuse is based on identical static/placeholder contracts, not page proximity or content wording.
 
