@@ -53,7 +53,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
    ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
-5. Post-processing & Export → follow shared-standards.md §5
+5. Post-processing & Export → follow [`SKILL.md` Step 7](../SKILL.md)
 ```
 
 > Keep external references in `svg_output/` during generation. `finalize_svg.py` auto-embeds images into `svg_final/`; export PPTX from `svg_final/`.
@@ -128,7 +128,7 @@ python3 -m http.server -d <project_path> 8000
 
 ## Conversion Process
 
-Use the unified pipeline in [shared-standards.md §5](shared-standards.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
+Use the unified pipeline in [`SKILL.md` Step 7](../SKILL.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
 
 ```bash
 python3 scripts/finalize_svg.py <project_path>

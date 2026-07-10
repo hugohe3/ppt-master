@@ -256,31 +256,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## X. SVG Technical Constraints
-
-### Mandatory Rules
-
-1. viewBox: `0 0 1280 720`
-2. Use `<rect>` elements for backgrounds
-3. Use `<tspan>` for text wrapping (**`<foreignObject>` is strictly prohibited**)
-4. CSS alpha colors and explicit `fill-opacity` / `stroke-opacity` are both supported; values multiply
-5. Prohibited: `mask`, `<style>`, `class`, `foreignObject` (`id` is allowed for local references and semantic markers). `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-6. Prohibited: `textPath`, `animate*`, `script`
-7. Static same-document `<use>` / `<symbol>` reuse is allowed only under `shared-standards.md` §1.3: exact `href="#id"` / `xlink:href="#id"` and `url(#id)` fragments; targets limited to `symbol/g/use/rect/circle/ellipse/line/path/polygon/polyline/text/image`; unitless/`px` `x/y`; valid symbol `viewBox` plus positive unitless/`px` use `width/height`; aligned `meet` or plain `none`. External/missing/conflicting/circular/duplicate-ID references, `slice` / `refX` / `refY`, and reused `data-pptx-layer*` / `data-pptx-native*` / `data-pptx-placeholder*` metadata are prohibited. PPTX import does not reconstruct `<use>`
-8. Prohibited: `<iframe>`, `@font-face`
-9. `<g opacity="0..1">` is allowed as per-descendant alpha; overlapping children may composite differently
-10. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
-11. Use only system fonts and inline styles
-
-### PPT Compatibility Rules
-
-- `<image opacity="0..1">` maps to native picture transparency; use overlays only for color washes
-- Define gradients using `<linearGradient>` inside `<defs>`
-- Use `rx`/`ry` attributes for rounded rectangles (post-processing converts to Path)
-
----
-
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 The template uses `{{PLACEHOLDER}}` format placeholders:
 
@@ -305,7 +281,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 
 ---
 
-## XII. Usage Notes
+## XI. Usage Notes
 
 1. Copy this template directory to the project `templates/` directory
 2. Review `reference_style.svg` to understand the core visual style
@@ -316,7 +292,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 
 ---
 
-## XIII. Design Highlights
+## XII. Design Highlights
 
 - **Telecom DNA**: Derived from real telecom AI operations architecture reports, naturally suited for telecom/enterprise presentation styles
 - **High Information Density**: A single page can accommodate a complete architecture view (objectives → results → scenarios → orchestration → foundational capabilities)

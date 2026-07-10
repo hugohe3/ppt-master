@@ -135,27 +135,7 @@ page_types: [cover, toc, chapter, content, ending]
 
 ---
 
-## VIII. SVG Technical Constraints
-
-### Mandatory Rules
-
-1. viewBox: `0 0 1280 720`
-2. Use `<rect>` elements for backgrounds
-3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
-4. CSS alpha colors and explicit `fill-opacity` / `stroke-opacity` are both supported; values multiply
-5. Prohibited: `mask`, `<style>`, `class`, `foreignObject`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-6. Prohibited: `textPath`, `animate*`, `script`
-7. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
-
-### PPT Compatibility Rules
-
-- `<g opacity="0..1">` is allowed as per-descendant alpha; overlapping children may composite differently
-- `<image opacity="0..1">` maps to native picture transparency; use overlays only for color washes
-- Use inline styles only; external CSS and `@font-face` are prohibited
-
----
-
-## IX. Placeholder Specification
+## VIII. Placeholder Specification
 
 Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
@@ -178,7 +158,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## X. Usage Instructions
+## IX. Usage Instructions
 
 1. Copy the template to the project directory
 2. Replace logo files in the images directory (if applicable)
@@ -188,7 +168,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XI. Design Highlights
+## X. Design Highlights
 
 - **Dual-Color Gradient Top Decoration**: Red-blue gradient reflects a government style
 - **Gold Accent Elements**: Adds a sense of dignity

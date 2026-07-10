@@ -191,16 +191,7 @@
 
 ## forbidden
 - Mixing icon libraries
-- `<style>`, `class`, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<script>`, `<iframe>`
-- HTML named entities in text (`&nbsp;`, `&mdash;`, `&copy;`, `&ndash;`, `&reg;`, `&hellip;`, `&bull;` …) — write as raw Unicode (`—`, `©`, `→`, NBSP, etc.); XML reserved chars `& < > " '` must be escaped as `&amp; &lt; &gt; &quot; &apos;`. See shared-standards.md §1.0
+- `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
+- HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
 
-> Static same-document `<use>` / `<symbol>` is allowed only under
-> `shared-standards.md` §1.3: exact `href="#id"` / `xlink:href="#id"` and
-> `url(#id)` fragments; targets limited to
-> `symbol/g/use/rect/circle/ellipse/line/path/polygon/polyline/text/image`;
-> unitless/`px` `x/y`; valid symbol `viewBox` plus positive unitless/`px`
-> `width/height`; aligned `meet` or plain `none`. External, missing,
-> conflicting, circular, or duplicate-ID references; `slice` / `refX` / `refY`;
-> and reused `data-pptx-layer*` / `data-pptx-native*` /
-> `data-pptx-placeholder*` metadata remain forbidden. PPTX import does not
-> reconstruct `<use>`.
+> **Execution reminder — not authoring authority**: the baseline blacklist above is intentionally terse. Add only deck-specific execution locks. General SVG required / forbidden / conditional rules are owned by [`shared-standards.md`](../references/shared-standards.md); do not copy its feature matrix or parameter contracts into `spec_lock.md`.

@@ -196,6 +196,8 @@ Small circle elements representing the nighttime lights of the Mountain City:
 - Content page header: Width 160-200px
 - Ending page: Width 320-400px
 
+Use the packaged university logo assets through the standard project image pipeline.
+
 ---
 
 ## IX. Spacing Specification
@@ -210,24 +212,7 @@ Small circle elements representing the nighttime lights of the Mountain City:
 
 ---
 
-## X. SVG Technical Constraints
-
-### Mandatory Rules
-
-1. viewBox: `0 0 1280 720`
-2. Define gradients using `<linearGradient>` inside `<defs>`
-3. Use `fill-opacity` / `stroke-opacity` for transparency
-4. Use `<tspan>` for text wrapping
-5. Use Base64 inline or `<image>` reference for logos
-
-### Prohibited Elements
-
-- `mask`, `<style>`, `class`; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-- `foreignObject`, `textPath`, `animate*`
-
----
-
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 | Placeholder          | Description            |
 | -------------------- | ---------------------- |

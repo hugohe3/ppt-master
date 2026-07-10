@@ -148,7 +148,7 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 24. **Custom path crop (blob, arrow, leaf, silhouette)** — `<clipPath><path d="…"/></clipPath>`; allows any curved or organic shape. PowerPoint export translates this to `custGeom` and survives roundtrip.
 
-25. **Layered paper-cut stack** — multiple image or shape layers each with `clipPath` + a small `<feDropShadow>` offset to fake physical layering depth. Each layer casts a shadow onto the next, producing real-looking craft depth.
+25. **Layered paper-cut stack** — clip each image layer under the image-only contract in [`shared-standards.md`](shared-standards.md) §1.2; draw vector layers directly in their final geometry. A small conditional shadow on each layer can create physical separation.
 
 26. **Triptych baked into a single wide image** — one wide `<image width=1160 height=334>` whose internal composition already contains 2–3 scenes. Generate the triptych as one image (not three separate calls) when scene-to-scene consistency matters — the model preserves character identity, lighting continuity, and color grading far more reliably when panels are produced together.
 
@@ -170,9 +170,9 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 33. **Spotlight mask — clear region surrounded by darkness** — cover the canvas with `<rect>` filled by a `<radialGradient>` whose inner stop is fully transparent and outer stop is opaque dark. Reads as a flashlight beam on the focal area. Use sparingly — it kills everything outside the spotlight.
 
-34. **Gaussian-blur backdrop** — `<filter><feGaussianBlur stdDeviation="8–15"/></filter>` applied to the background image, with sharp content layered on top unblurred. Reads as depth-of-field. Be aware that filters have inconsistent PPT export support — if fidelity matters, bake the blur into the source image instead.
+34. **Gaussian-blur backdrop** — blur the background in the source image, then layer sharp SVG content above it. Native filter export maps the supported blur graph to a glow/shadow effect; it does not preserve a blurred-image backdrop.
 
-35. **Duotone treatment** — two-color mapping of a photograph (e.g. deep navy shadows + warm cream highlights). Most reliable when baked into the source image at generation time. Runtime SVG duotone via `<feColorMatrix>` + `<feComponentTransfer>` is possible but the filter chain is fragile through PPT export — only attempt if you control the renderer.
+35. **Duotone treatment** — two-color mapping of a photograph (e.g. deep navy shadows + warm cream highlights). Bake it into the source image; the native PPT route does not support a runtime duotone filter chain.
 
 36. **Drop shadow under image panel** — `<filter><feDropShadow dx dy stdDeviation flood-color flood-opacity/></filter>` applied to the image's container `<rect>` (or to the `<image>` itself). Standard depth lift.
 
@@ -204,7 +204,7 @@ Stack any of these freely on top of a Primary structure. Multiple Modifiers per 
 
 67. **Image with knock-out / cut-out shape** — overlay a shape filled with the background color or another image, creating the impression of a hole punched through the underlying image.
 
-68. **Text-as-mask over image** — letterforms revealing image through them. SVG-level `<mask>` is forbidden in this project (PPT export breaks). The only reliable way: bake this effect into the image at generation time by prompting for "large lettering revealing the underlying scene through letterforms." Treat as a pre-rendered artistic choice, not a runtime effect.
+68. **Text-as-mask over image** — letterforms revealing image through them. Under the canonical SVG compatibility boundary in [`shared-standards.md`](shared-standards.md), realize this pattern as a pre-rendered image rather than a runtime effect. Prompt for "large lettering revealing the underlying scene through letterforms" and treat the result as a fixed artistic choice.
 
 69. **Image rotated at a slight angle for editorial feel** — `transform="rotate(angle cx cy)"` on the `<image>` or its container `<g>`; 2–6 degrees typical. Adds dynamism without breaking layout.
 
@@ -252,12 +252,10 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 ## Hard Constraints
 
 - Long body copy, data points, numeric labels, and Chinese text always go in the SVG layer — never baked into the image.
-- `<clipPath>` on `<image>` and transparency encoding (CSS alpha colors or
-  explicit opacity attributes) — authoritative form in
-  [`shared-standards.md`](shared-standards.md) §1.2 and §2; do not restate or
-  relax here.
-- No `<mask>`, no `<feComposite>` for alpha compositing. Alpha-effect routing (gradient overlays, clipPath crops, filter shadows, baked-in source image) is the table in [`shared-standards.md`](shared-standards.md) §1.0.
-- `<feDropShadow>` / `<feGaussianBlur>` are accepted but PPT export is inconsistent — bake into the source image when fidelity is critical.
+- All project-wide SVG compatibility exceptions and conditional mappings are
+  owned by [`shared-standards.md`](shared-standards.md). This catalog neither
+  restates nor relaxes that contract; each pattern records only its
+  scenario-specific rendering choice.
 
 ---
 

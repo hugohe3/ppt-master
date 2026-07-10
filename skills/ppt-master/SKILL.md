@@ -347,7 +347,7 @@ First, read the role definition:
 Read references/strategist.md
 ```
 
-> ⚠️ **Mandatory gate**: before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and follow its full I–XI section structure. See `strategist.md` Section 1.
+> ⚠️ **Mandatory gate**: before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and follow its full I–X section structure. See `strategist.md` Section 1.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -645,7 +645,8 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 > ⚠️ Run the three sub-steps **one at a time** — each must complete successfully before the next.
 > ❌ **NEVER** combine them into a single code block or shell invocation.
 
-Canonical three-command pipeline (mirrors `references/shared-standards.md` §5):
+Canonical three-command pipeline (this step is the workflow authority;
+`references/shared-standards.md` §5 points here):
 
 **Step 7.1** — Split speaker notes:
 ```bash

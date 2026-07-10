@@ -140,15 +140,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 | **Title to Body** | 44px |
 | **Footer Offset** | 32px from bottom |
 
-## X. SVG Technical Constraints
-
-1. `viewBox` must stay `0 0 1280 720`
-2. No `mask`, `<style>`, `class`, `foreignObject`, `textPath`, or animation tags. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-3. Use supported CSS colors or HEX; embedded alpha multiplies with `fill-opacity` / `stroke-opacity`
-4. Keep image assets semantic and minimal
-5. Prefer vector reconstruction over embedding PPT-export fragments
-
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 | Placeholder | Description |
 | --- | --- |
@@ -184,7 +176,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 | `{{CONTACT_EMAIL}}` | Ending email address |
 | `{{CONTACT_PHONE}}` | Ending phone number |
 
-## XII. Asset Specification
+## XI. Asset Specification
 
 ### Core Assets
 
@@ -206,7 +198,10 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 
 Core assets are wired into SVG templates. `logo_dark.png` is used on light pages (TOC, content); `logo_white.png` and `cover_bg.png` on dark pages (cover, chapter, ending). Optional assets are available for project-specific customization.
 
-## XIII. Chart Specifications
+- Keep bundled image assets semantic and minimal.
+- Reconstruct editable template geometry instead of embedding fragments exported from PowerPoint.
+
+## XII. Chart Specifications
 
 ### Recommended Chart Dimensions
 
@@ -228,7 +223,7 @@ Core assets are wired into SVG templates. `logo_dark.png` is used on light pages
 | Negative indicator | `#E74C3C` |
 | Neutral | `#666666` |
 
-## XIV. Usage Instructions
+## XIII. Usage Instructions
 
 1. Copy the template directory to the project `templates/` folder
 2. Read this design specification to understand the visual system

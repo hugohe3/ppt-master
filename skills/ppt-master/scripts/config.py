@@ -486,59 +486,15 @@ LAYOUT_MARGINS = {
 
 
 # ============================================================
-# SVG Technical Specifications
+# SVG Policy Reference
 # ============================================================
 
+# Do not mirror element/attribute rules here. The shared standard is the
+# authoring authority and the quality checker enforces it.
+# Keep the exported key for compatibility with existing config consumers.
 SVG_CONSTRAINTS = {
-    # Forbidden elements - PPT incompatible
-    'forbidden_elements': [
-        # Clipping / Masking
-        # Note: `clipPath` on <image> elements is conditionally allowed — the
-        # converter maps qualifying clip shapes to DrawingML picture geometry.
-        # See references/shared-standards.md §1.2. It is NOT listed here
-        # because this flat list has no per-parent-element semantics; the
-        # actual validation is in svg_quality_checker._check_forbidden_elements.
-        'mask',
-        # Style system
-        'style',
-        # Structure / Nesting
-        'foreignObject',
-        # Text / Fonts
-        'textPath',
-        # Animation / Interaction
-        'animate',
-        'animateMotion',
-        'animateTransform',
-        'animateColor',
-        'set',
-        'script',
-        # Others
-        'iframe',
-    ],
-    # Forbidden attributes
-    # Note: marker-start / marker-end are NOT banned — they are conditionally
-    # allowed (see references/shared-standards.md §1.1). The svg_to_pptx
-    # converter maps qualifying <marker> defs to native DrawingML
-    # <a:headEnd>/<a:tailEnd>.
-    'forbidden_attributes': [
-        'class',
-        'onclick', 'onload', 'onmouseover', 'onmouseout',
-        'onfocus', 'onblur', 'onchange',
-    ],
-    # Forbidden patterns (regex matching)
-    'forbidden_patterns': [
-        r'@font-face',  # Web fonts
-        r'<\?xml-stylesheet\b',  # External CSS
-        r'<link[^>]*rel\s*=\s*["\']stylesheet["\']',
-        r'@import\s+',  # External CSS
-        r'\bon\w+\s*=',  # Event attributes
-    ],
-    'recommended_fonts': [
-        'system-ui',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        'Segoe UI'
-    ]
+    'authority': 'skills/ppt-master/references/shared-standards.md',
+    'validator': 'skills/ppt-master/scripts/svg_quality_checker.py',
 }
 
 
@@ -636,19 +592,6 @@ class Config:
             Font size (pixels)
         """
         return FONT_SIZES.get(size_name, FONT_SIZES['body'])
-
-    @staticmethod
-    def validate_svg_element(element_name: str) -> bool:
-        """
-        Validate whether an SVG element is allowed.
-
-        Args:
-            element_name: Element name
-
-        Returns:
-            Whether the element is allowed
-        """
-        return element_name.lower() not in [e.lower() for e in SVG_CONSTRAINTS['forbidden_elements']]
 
     @staticmethod
     def get_project_path(subdir: str = '') -> Path:
