@@ -16,10 +16,14 @@ Dependencies:
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import re
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 from xml.etree import ElementTree as ET
 
 
@@ -30,6 +34,7 @@ _STRUCTURE_ATTRS = frozenset({
     "data-pptx-layout-name",
     "data-pptx-placeholder",
     "data-pptx-placeholder-bounds",
+    "data-pptx-placeholder-idx",
     "data-pptx-editable",
 })
 _LAYERS = frozenset({"master", "layout", "slide"})
@@ -46,7 +51,8 @@ _TEXT_PLACEHOLDERS = frozenset({"title", "body", "footer", "slide-number"})
 _LAYOUT_KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
 _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
-PPTX_STRUCTURE_MODES = frozenset({"baseline", "template", "flat"})
+PPTX_STRUCTURE_MODES = frozenset({"baseline", "template", "preserve", "flat"})
+NATIVE_STRUCTURE_SCHEMA = "ppt-master.native-structure.v1"
 
 
 class TemplateStructureError(RuntimeError):
@@ -68,6 +74,48 @@ class PptxStructureLock:
 
     mode: str
     layouts: tuple[PptxLayoutReference, ...] = ()
+    source_template: Path | None = None
+    native_structure: Path | None = None
+
+
+@dataclass(frozen=True)
+class NativePlaceholderSpec:
+    """One placeholder exposed by a preserved source layout."""
+
+    semantic_role: str
+    placeholder_type: str
+    idx: int | None
+    geometry: tuple[float, float, float, float] | None = None
+
+
+@dataclass(frozen=True)
+class NativeLayoutSpec:
+    """One named layout retained from the source PPTX package."""
+
+    key: str
+    name: str
+    package_part: str
+    master_key: str
+    placeholders: tuple[NativePlaceholderSpec, ...] = ()
+
+
+@dataclass(frozen=True)
+class NativeStructureContract:
+    """Validated portable contract for a preserved source PPTX package."""
+
+    source_template: Path
+    contract_path: Path
+    source_sha256: str
+    slide_size_emu: tuple[int, int]
+    layouts: tuple[NativeLayoutSpec, ...]
+
+    def layout(self, key: str) -> NativeLayoutSpec:
+        for layout in self.layouts:
+            if layout.key == key:
+                return layout
+        raise TemplateStructureError(
+            f"native_structure.json has no layout key {key!r}"
+        )
 
 
 @dataclass(frozen=True)
@@ -80,6 +128,7 @@ class TemplateElementSpec:
     layer: str | None = None
     placeholder: str | None = None
     placeholder_bounds: tuple[float, float, float, float] | None = None
+    placeholder_idx: int | None = None
     is_background: bool = False
 
     def contract_signature(self) -> tuple[object, ...]:
@@ -90,6 +139,7 @@ class TemplateElementSpec:
             self.layer,
             self.placeholder,
             self.placeholder_bounds,
+            self.placeholder_idx,
             self.is_background,
         )
 
@@ -186,6 +236,44 @@ def _is_full_canvas_solid_rect(
     return True
 
 
+def _portable_project_file(
+    project_path: Path,
+    raw_value: str,
+    field_name: str,
+    suffix: str,
+) -> Path:
+    """Resolve a project-relative structure file without allowing escape."""
+    value = raw_value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+        value = value[1:-1].strip()
+    if not value:
+        raise TemplateStructureError(
+            f"spec_lock.md pptx_structure.{field_name} cannot be empty"
+        )
+    candidate = Path(value)
+    if candidate.is_absolute():
+        raise TemplateStructureError(
+            f"spec_lock.md pptx_structure.{field_name} must be project-relative"
+        )
+    root = project_path.resolve()
+    resolved = (root / candidate).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise TemplateStructureError(
+            f"spec_lock.md pptx_structure.{field_name} escapes the project directory"
+        ) from exc
+    if resolved.suffix.lower() != suffix:
+        raise TemplateStructureError(
+            f"spec_lock.md pptx_structure.{field_name} must reference a {suffix} file"
+        )
+    if not resolved.is_file():
+        raise TemplateStructureError(
+            f"spec_lock.md pptx_structure.{field_name} does not exist: {candidate}"
+        )
+    return resolved
+
+
 def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     """Load optional pptx_structure/pptx_layouts sections from spec_lock.md."""
     lock_path = project_path / "spec_lock.md"
@@ -226,6 +314,38 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             f"spec_lock.md pptx_structure.mode must be one of: {allowed}"
         )
 
+    source_rows = [
+        value for key, value in structure_rows if key == "source_template"
+    ]
+    contract_rows = [
+        value for key, value in structure_rows if key == "native_structure"
+    ]
+    source_template = None
+    native_structure = None
+    if mode == "preserve":
+        if len(source_rows) != 1 or len(contract_rows) != 1:
+            raise TemplateStructureError(
+                "spec_lock.md preserve mode requires exactly one '- source_template:' "
+                "row and one '- native_structure:' row"
+            )
+        source_template = _portable_project_file(
+            project_path,
+            source_rows[0],
+            "source_template",
+            ".pptx",
+        )
+        native_structure = _portable_project_file(
+            project_path,
+            contract_rows[0],
+            "native_structure",
+            ".json",
+        )
+    elif source_rows or contract_rows:
+        raise TemplateStructureError(
+            "spec_lock.md source_template/native_structure rows are allowed only "
+            "when pptx_structure.mode is preserve"
+        )
+
     references: list[PptxLayoutReference] = []
     seen_slides: set[int] = set()
     for page_key, raw_value in layout_rows:
@@ -258,18 +378,188 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             layout_name=layout_name,
         ))
 
-    if mode == "template" and not references:
+    if mode in {"template", "preserve"} and not references:
         raise TemplateStructureError(
-            "spec_lock.md template mode requires one pptx_layouts row per page"
+            f"spec_lock.md {mode} mode requires one pptx_layouts row per page"
         )
-    if mode != "template" and references:
+    if mode not in {"template", "preserve"} and references:
         raise TemplateStructureError(
             "spec_lock.md pptx_layouts is allowed only when pptx_structure.mode "
-            "is template"
+            "is template or preserve"
         )
     return PptxStructureLock(
         mode=mode,
         layouts=tuple(sorted(references, key=lambda item: item.slide_num)),
+        source_template=source_template,
+        native_structure=native_structure,
+    )
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _native_geometry(raw: Any, context: str) -> tuple[float, float, float, float] | None:
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise TemplateStructureError(f"{context} geometry must be an object or null")
+    try:
+        values = tuple(float(raw[key]) for key in ("x", "y", "width", "height"))
+    except (KeyError, TypeError, ValueError) as exc:
+        raise TemplateStructureError(f"{context} geometry is invalid") from exc
+    if not all(math.isfinite(value) for value in values) or values[2] <= 0 or values[3] <= 0:
+        raise TemplateStructureError(f"{context} geometry must be finite and positive")
+    return values
+
+
+def load_native_structure_contract(
+    structure_lock: PptxStructureLock,
+) -> NativeStructureContract:
+    """Load and verify the native structure bundle selected by preserve mode."""
+    if structure_lock.mode != "preserve":
+        raise TemplateStructureError(
+            "native structure contracts are available only in preserve mode"
+        )
+    source_template = structure_lock.source_template
+    contract_path = structure_lock.native_structure
+    if source_template is None or contract_path is None:
+        raise TemplateStructureError(
+            "preserve mode is missing source_template or native_structure"
+        )
+    try:
+        raw = json.loads(contract_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise TemplateStructureError(
+            f"Cannot read native structure contract {contract_path}: {exc}"
+        ) from exc
+    if not isinstance(raw, dict) or raw.get("schema") != NATIVE_STRUCTURE_SCHEMA:
+        raise TemplateStructureError(
+            f"{contract_path.name} must use schema {NATIVE_STRUCTURE_SCHEMA!r}"
+        )
+
+    source = raw.get("source")
+    expected_sha = source.get("sha256") if isinstance(source, dict) else None
+    if not isinstance(expected_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_sha):
+        raise TemplateStructureError(
+            f"{contract_path.name} source.sha256 must be a lowercase SHA-256 digest"
+        )
+    actual_sha = _file_sha256(source_template)
+    if actual_sha != expected_sha:
+        raise TemplateStructureError(
+            f"{source_template.name} does not match {contract_path.name} source.sha256"
+        )
+
+    slide_size = raw.get("slideSize")
+    try:
+        slide_size_emu = (
+            int(slide_size["width_emu"]),
+            int(slide_size["height_emu"]),
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise TemplateStructureError(
+            f"{contract_path.name} slideSize must contain width_emu/height_emu"
+        ) from exc
+    if slide_size_emu[0] <= 0 or slide_size_emu[1] <= 0:
+        raise TemplateStructureError(
+            f"{contract_path.name} slideSize values must be positive"
+        )
+
+    raw_layouts = raw.get("layouts")
+    if not isinstance(raw_layouts, list) or not raw_layouts:
+        raise TemplateStructureError(
+            f"{contract_path.name} must contain at least one layout"
+        )
+    layouts: list[NativeLayoutSpec] = []
+    seen_keys: set[str] = set()
+    seen_parts: set[str] = set()
+    for index, item in enumerate(raw_layouts, start=1):
+        context = f"{contract_path.name} layouts[{index}]"
+        if not isinstance(item, dict):
+            raise TemplateStructureError(f"{context} must be an object")
+        key = str(item.get("key") or "")
+        name = str(item.get("name") or "").strip()
+        package_part = str(item.get("packagePart") or "")
+        master_key = str(item.get("masterKey") or "")
+        if not _LAYOUT_KEY_RE.fullmatch(key):
+            raise TemplateStructureError(f"{context} has invalid key {key!r}")
+        if key in seen_keys:
+            raise TemplateStructureError(f"{context} repeats layout key {key!r}")
+        if not name:
+            raise TemplateStructureError(f"{context} name cannot be empty")
+        if (
+            not package_part.startswith("ppt/slideLayouts/")
+            or ".." in Path(package_part).parts
+            or not package_part.endswith(".xml")
+        ):
+            raise TemplateStructureError(
+                f"{context} packagePart must be a ppt/slideLayouts/*.xml part"
+            )
+        if package_part in seen_parts:
+            raise TemplateStructureError(
+                f"{context} repeats package part {package_part!r}"
+            )
+        if not master_key:
+            raise TemplateStructureError(f"{context} masterKey cannot be empty")
+
+        raw_placeholders = item.get("placeholders", [])
+        if not isinstance(raw_placeholders, list):
+            raise TemplateStructureError(f"{context} placeholders must be a list")
+        placeholders: list[NativePlaceholderSpec] = []
+        for ph_index, placeholder in enumerate(raw_placeholders, start=1):
+            ph_context = f"{context} placeholders[{ph_index}]"
+            if not isinstance(placeholder, dict):
+                raise TemplateStructureError(f"{ph_context} must be an object")
+            semantic_role = str(placeholder.get("semanticRole") or "other")
+            placeholder_type = str(placeholder.get("type") or "obj")
+            raw_idx = placeholder.get("idx")
+            try:
+                placeholder_idx = int(raw_idx) if raw_idx is not None else None
+            except (TypeError, ValueError) as exc:
+                raise TemplateStructureError(
+                    f"{ph_context} idx must be an integer or null"
+                ) from exc
+            if placeholder_idx is not None and placeholder_idx < 0:
+                raise TemplateStructureError(f"{ph_context} idx cannot be negative")
+            placeholders.append(NativePlaceholderSpec(
+                semantic_role=semantic_role,
+                placeholder_type=placeholder_type,
+                idx=placeholder_idx,
+                geometry=_native_geometry(placeholder.get("geometry"), ph_context),
+            ))
+        layouts.append(NativeLayoutSpec(
+            key=key,
+            name=name,
+            package_part=package_part,
+            master_key=master_key,
+            placeholders=tuple(placeholders),
+        ))
+        seen_keys.add(key)
+        seen_parts.add(package_part)
+
+    try:
+        with zipfile.ZipFile(source_template, "r") as package:
+            package_parts = set(package.namelist())
+    except (OSError, zipfile.BadZipFile) as exc:
+        raise TemplateStructureError(
+            f"Cannot open preserved source template {source_template}: {exc}"
+        ) from exc
+    missing_parts = sorted(seen_parts - package_parts)
+    if missing_parts:
+        raise TemplateStructureError(
+            f"{source_template.name} is missing layout part(s): " + ", ".join(missing_parts)
+        )
+
+    return NativeStructureContract(
+        source_template=source_template,
+        contract_path=contract_path,
+        source_sha256=expected_sha,
+        slide_size_emu=slide_size_emu,
+        layouts=tuple(layouts),
     )
 
 
@@ -302,6 +592,23 @@ def _parse_placeholder_bounds(
             f"{svg_path.name}: {element_id} placeholder width/height must be positive"
         )
     return x, y, width, height
+
+
+def _parse_placeholder_idx(
+    raw: str | None,
+    *,
+    svg_path: Path,
+    element_id: str,
+) -> int | None:
+    if raw is None:
+        return None
+    value = raw.strip()
+    if not value or not value.isdigit():
+        raise TemplateStructureError(
+            f"{svg_path.name}: {element_id} data-pptx-placeholder-idx must be "
+            "a non-negative integer"
+        )
+    return int(value)
 
 
 def _validate_placeholder_element(
@@ -410,6 +717,7 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             (placeholder_raw or "").strip().lower() or None
         )
         bounds_raw = elem.get("data-pptx-placeholder-bounds")
+        placeholder_idx_raw = elem.get("data-pptx-placeholder-idx")
         editable_raw = elem.get("data-pptx-editable")
         is_background = _is_full_canvas_solid_rect(elem, canvas)
         effective_layer = layer or ("slide" if is_background else None)
@@ -456,6 +764,11 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
                 f"{svg_path.name}: {element_id or tag} has placeholder bounds without "
                 "data-pptx-placeholder"
             )
+        if placeholder_idx_raw is not None and not placeholder:
+            raise TemplateStructureError(
+                f"{svg_path.name}: {element_id or tag} has placeholder idx without "
+                "data-pptx-placeholder"
+            )
         if (effective_layer or placeholder) and not element_id:
             raise TemplateStructureError(
                 f"{svg_path.name}: direct <{tag}> with template metadata requires an id"
@@ -495,6 +808,11 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             svg_path=svg_path,
             element_id=element_id or tag,
         )
+        placeholder_idx = _parse_placeholder_idx(
+            placeholder_idx_raw,
+            svg_path=svg_path,
+            element_id=element_id or tag,
+        )
 
         if effective_layer or placeholder:
             elements.append(TemplateElementSpec(
@@ -504,6 +822,7 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
                 layer=effective_layer,
                 placeholder=placeholder,
                 placeholder_bounds=placeholder_bounds,
+                placeholder_idx=placeholder_idx,
                 is_background=is_background,
             ))
         visual_order += 1
@@ -571,12 +890,23 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
     return specs
 
 
+def parse_preserve_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
+    """Parse preserve-mode slides before source master grouping is known."""
+    specs = [
+        parse_template_slide(svg_path, slide_num)
+        for slide_num, svg_path in enumerate(svg_files, start=1)
+    ]
+    if not specs:
+        raise TemplateStructureError("Preserve export requires at least one SVG slide")
+    return specs
+
+
 def template_lock_errors(
     specs: list[TemplateSlideSpec],
     structure_lock: PptxStructureLock,
 ) -> list[str]:
     """Return mismatches between parsed SVG layouts and the project lock."""
-    if structure_lock.mode != "template":
+    if structure_lock.mode not in {"template", "preserve"}:
         return []
     errors: list[str] = []
     references = {
@@ -613,6 +943,112 @@ def template_lock_errors(
                 f"does not match spec_lock P{spec.slide_num:02d} layout name "
                 f"{reference.layout_name!r}"
             )
+    return errors
+
+
+_PRESERVE_PLACEHOLDER_TYPES = {
+    "title": frozenset({"title", "ctrTitle"}),
+    "body": frozenset({"body", "subTitle", "obj"}),
+    "picture": frozenset({"pic", "obj"}),
+    "chart": frozenset({"chart", "obj"}),
+    "table": frozenset({"tbl", "obj"}),
+    "footer": frozenset({"ftr"}),
+    "slide-number": frozenset({"sldNum"}),
+}
+
+
+def match_native_placeholders(
+    spec: TemplateSlideSpec,
+    layout: NativeLayoutSpec,
+) -> tuple[tuple[TemplateElementSpec, NativePlaceholderSpec], ...]:
+    """Match slide placeholder markers to source layout placeholder identities."""
+    available = list(layout.placeholders)
+    matches: list[tuple[TemplateElementSpec, NativePlaceholderSpec]] = []
+    for item in spec.placeholders:
+        allowed_types = _PRESERVE_PLACEHOLDER_TYPES.get(item.placeholder or "", frozenset())
+        candidate_index = None
+        for index, candidate in enumerate(available):
+            if candidate.placeholder_type not in allowed_types:
+                continue
+            if item.placeholder_idx is not None and candidate.idx != item.placeholder_idx:
+                continue
+            candidate_index = index
+            break
+        if candidate_index is None:
+            idx_note = (
+                f" idx={item.placeholder_idx}"
+                if item.placeholder_idx is not None
+                else ""
+            )
+            raise TemplateStructureError(
+                f"{spec.svg_path.name}: placeholder {item.element_id!r} "
+                f"({item.placeholder}{idx_note}) has no compatible source placeholder "
+                f"in layout {layout.key!r}"
+            )
+        matches.append((item, available.pop(candidate_index)))
+    return tuple(matches)
+
+
+def native_structure_lock_errors(
+    specs: list[TemplateSlideSpec],
+    structure_lock: PptxStructureLock,
+    contract: NativeStructureContract,
+) -> list[str]:
+    """Return preserve-mode mismatches against the imported source contract."""
+    if structure_lock.mode != "preserve":
+        return []
+    errors: list[str] = []
+    references = {item.slide_num: item for item in structure_lock.layouts}
+    contract_layouts = {layout.key: layout for layout in contract.layouts}
+
+    for reference in structure_lock.layouts:
+        layout = contract_layouts.get(reference.layout_key)
+        if layout is None:
+            errors.append(
+                f"spec_lock.md P{reference.slide_num:02d} references unknown source "
+                f"layout key {reference.layout_key!r}"
+            )
+            continue
+        if reference.layout_name and reference.layout_name != layout.name:
+            errors.append(
+                f"spec_lock.md P{reference.slide_num:02d} layout name "
+                f"{reference.layout_name!r} does not match source name {layout.name!r}"
+            )
+
+    master_contracts: dict[str, tuple[tuple[object, ...], ...]] = {}
+    layout_contracts: dict[str, tuple[tuple[object, ...], ...]] = {}
+    for spec in specs:
+        reference = references.get(spec.slide_num)
+        if reference is None:
+            continue
+        layout = contract_layouts.get(reference.layout_key)
+        if layout is None:
+            continue
+        master_contract = tuple(
+            item.contract_signature() for item in spec.master_elements
+        )
+        expected_master = master_contracts.setdefault(
+            layout.master_key,
+            master_contract,
+        )
+        if master_contract != expected_master:
+            errors.append(
+                f"{spec.svg_path.name}: preview master layer differs from another "
+                f"page using source master {layout.master_key!r}"
+            )
+        expected_layout = layout_contracts.setdefault(
+            layout.key,
+            spec.layout_contract,
+        )
+        if spec.layout_contract != expected_layout:
+            errors.append(
+                f"{spec.svg_path.name}: preview layout/placeholder contract differs "
+                f"from another page using source layout {layout.key!r}"
+            )
+        try:
+            match_native_placeholders(spec, layout)
+        except TemplateStructureError as exc:
+            errors.append(str(exc))
     return errors
 
 

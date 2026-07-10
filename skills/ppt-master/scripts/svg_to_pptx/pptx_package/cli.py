@@ -33,7 +33,10 @@ from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_d
 from .slide_xml import TRANSITIONS
 from .template_structure import (
     TemplateStructureError,
+    load_native_structure_contract,
     load_pptx_structure_lock,
+    native_structure_lock_errors,
+    parse_preserve_slides,
     parse_template_slides,
     template_lock_errors,
 )
@@ -219,13 +222,14 @@ Recorded narration:
                              'to tell it apart from a plain shape export.')
     parser.add_argument(
         '--pptx-structure',
-        choices=['baseline', 'template', 'flat'],
+        choices=['baseline', 'template', 'preserve', 'flat'],
         default=None,
         help=(
             'PPTX structure strategy for native export. When omitted, read '
             'spec_lock.md pptx_structure.mode, falling back to baseline. baseline '
             'promotes safe repeated background/chrome; template consumes explicit '
             'data-pptx-layout/layer/placeholder metadata to build reusable layouts; '
+            'preserve binds generated slides to an imported source template package; '
             'flat leaves generated structure slide-local for debugging/comparison.'
         ),
     )
@@ -326,6 +330,7 @@ Recorded narration:
         print(f"Error: Path does not exist: {project_path}")
         return 1
     structure_lock = None
+    native_structure_contract = None
     pptx_structure = args.pptx_structure
     if pptx_structure is None:
         try:
@@ -334,6 +339,28 @@ Recorded narration:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
         pptx_structure = structure_lock.mode if structure_lock else 'baseline'
+    elif pptx_structure == 'preserve':
+        try:
+            structure_lock = load_pptx_structure_lock(project_path)
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        if structure_lock is None or structure_lock.mode != 'preserve':
+            print(
+                "Error: --pptx-structure preserve requires a preserve-mode "
+                "spec_lock.md with source_template/native_structure rows",
+                file=sys.stderr,
+            )
+            return 1
+    if pptx_structure == 'preserve':
+        if structure_lock is None:
+            print("Error: preserve mode requires spec_lock.md", file=sys.stderr)
+            return 1
+        try:
+            native_structure_contract = load_native_structure_contract(structure_lock)
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
     if args.image_max_dimension < 1:
         print("Error: --image-max-dimension must be >= 1", file=sys.stderr)
         return 1
@@ -396,9 +423,17 @@ Recorded narration:
         print("Error: No SVG files found")
         return 1
 
-    if gen_native and pptx_structure == 'template' and structure_lock is not None:
+    if (
+        gen_native
+        and pptx_structure in {'template', 'preserve'}
+        and structure_lock is not None
+    ):
         try:
-            template_specs = parse_template_slides(native_files)
+            template_specs = (
+                parse_preserve_slides(native_files)
+                if pptx_structure == 'preserve'
+                else parse_template_slides(native_files)
+            )
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
@@ -408,6 +443,23 @@ Recorded narration:
             for message in lock_errors:
                 print(f"  {message}", file=sys.stderr)
             return 1
+        if pptx_structure == 'preserve':
+            if native_structure_contract is None:
+                print("Error: preserve mode contract is unavailable", file=sys.stderr)
+                return 1
+            preserve_errors = native_structure_lock_errors(
+                template_specs,
+                structure_lock,
+                native_structure_contract,
+            )
+            if preserve_errors:
+                print(
+                    "Error: PPTX structure does not match native_structure.json:",
+                    file=sys.stderr,
+                )
+                for message in preserve_errors:
+                    print(f"  {message}", file=sys.stderr)
+                return 1
 
     if args.native_objects:
         fallbacks = _native_object_fallbacks(native_files)
@@ -690,6 +742,7 @@ Recorded narration:
         image_quality=args.image_quality,
         native_objects=args.native_objects,
         pptx_structure=pptx_structure,
+        native_structure_contract=native_structure_contract,
     )
 
     success = True
@@ -758,6 +811,26 @@ Recorded narration:
                     print(f"  [warn] svg_output backup skipped: {exc}")
         elif verbose:
             print(f"  [info] svg_output/ not found, backup skipped")
+        if pptx_structure == 'preserve' and structure_lock is not None:
+            try:
+                preserve_sources = [
+                    project_path / 'spec_lock.md',
+                    structure_lock.source_template,
+                    structure_lock.native_structure,
+                ]
+                for source in preserve_sources:
+                    if source is None or not source.is_file():
+                        continue
+                    source_path = source.resolve()
+                    relative = source_path.relative_to(project_path.resolve())
+                    destination = backup_dir / relative
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source_path, destination)
+                if verbose:
+                    print(f"  preserve contract backup: {backup_dir}")
+            except (OSError, ValueError) as exc:
+                if verbose:
+                    print(f"  [warn] preserve contract backup skipped: {exc}")
 
     if success and cache_dir is not None and cache_dir.is_dir() and not args.keep_cache:
         try:

@@ -60,9 +60,12 @@ from .slide_xml import (
     create_slide_xml_with_svg, create_slide_rels_xml,
 )
 from .template_structure import (
+    NativeStructureContract,
     TemplateElementSpec,
     TemplateSlideSpec,
     TemplateStructureError,
+    match_native_placeholders,
+    parse_preserve_slides,
     parse_template_slides,
 )
 
@@ -1404,10 +1407,13 @@ def _layout_placeholder_shape(
 def _patch_slide_placeholder(
     shape: ET.Element,
     item: TemplateElementSpec,
-    placeholder_idx: int,
+    placeholder_idx: int | None,
+    placeholder_type: str | None = None,
 ) -> None:
-    placeholder_type = _TEMPLATE_PLACEHOLDER_TYPES.get(item.placeholder or "")
-    if placeholder_type is None:
+    resolved_type = placeholder_type or _TEMPLATE_PLACEHOLDER_TYPES.get(
+        item.placeholder or ""
+    )
+    if resolved_type is None:
         raise TemplateStructureError(
             f"Unsupported placeholder type: {item.placeholder!r}"
         )
@@ -1434,11 +1440,11 @@ def _patch_slide_placeholder(
     for existing in list(nv_pr):
         if existing.tag == f"{{{PML_NS}}}ph":
             nv_pr.remove(existing)
-    placeholder_attrs = (
-        {"type": placeholder_type}
-        if item.placeholder == "title"
-        else {"idx": str(placeholder_idx)}
-    )
+    placeholder_attrs: dict[str, str] = {}
+    if placeholder_type is not None or item.placeholder == "title" or placeholder_idx is None:
+        placeholder_attrs["type"] = resolved_type
+    if placeholder_idx is not None:
+        placeholder_attrs["idx"] = str(placeholder_idx)
     ph = ET.Element(f"{{{PML_NS}}}ph", placeholder_attrs)
     ext_tag = f"{{{PML_NS}}}extLst"
     insert_at = next(
@@ -1541,6 +1547,7 @@ def _apply_template_structure(
         layout_rels_path = _relationships_path_for_part(extract_dir, layout_part)
 
         placeholder_idx = 1
+        assigned_placeholder_indices: set[int] = set()
         for item in prototype.elements:
             if item.layer == "layout":
                 _move_template_static_shape(
@@ -1559,10 +1566,19 @@ def _apply_template_structure(
                 raise TemplateStructureError(
                     f"Placeholder {item.element_id!r} cannot be a slide background"
                 )
+            assigned_idx = (
+                item.placeholder_idx
+                if item.placeholder_idx is not None
+                else placeholder_idx
+            )
+            if item.placeholder != "title" and assigned_idx in assigned_placeholder_indices:
+                raise TemplateStructureError(
+                    f"Layout {layout_key!r} repeats placeholder idx {assigned_idx}"
+                )
             layout_placeholder = _layout_placeholder_shape(
                 prototype_shape,
                 item,
-                placeholder_idx,
+                assigned_idx,
             )
             _append_shape_to_part(layout_path, layout_placeholder)
             for state in layout_states:
@@ -1572,9 +1588,10 @@ def _apply_template_structure(
                         f"{state.spec.svg_path.name}: placeholder {item.element_id!r} "
                         "did not produce a shape"
                     )
-                _patch_slide_placeholder(shape, item, placeholder_idx)
+                _patch_slide_placeholder(shape, item, assigned_idx)
             if item.placeholder != "title":
-                placeholder_idx += 1
+                assigned_placeholder_indices.add(assigned_idx)
+                placeholder_idx = max(placeholder_idx, assigned_idx + 1)
             placeholder_count += 1
 
         _set_template_layout_header_footer(layout_path, prototype.placeholders)
@@ -1596,6 +1613,76 @@ def _apply_template_structure(
             f"{layout_shape_count} layout element(s), "
             f"{slide_background_count} slide background(s), "
             f"{placeholder_count} placeholder definition(s)"
+        )
+
+
+def _apply_preserved_structure(
+    extract_dir: Path,
+    specs: list[TemplateSlideSpec],
+    contract: NativeStructureContract,
+    conversion_traces: list[dict[str, Any]] | None,
+    *,
+    verbose: bool = False,
+) -> None:
+    """Drop preview-only inherited layers and bind content to source placeholders."""
+    states = _template_runtime_slides(extract_dir, specs, conversion_traces)
+    removed_preview_shapes = 0
+    removed_preview_backgrounds = 0
+    placeholder_count = 0
+    for state in states:
+        removed_background = False
+        for item in state.spec.elements:
+            if item.layer not in {"master", "layout"}:
+                continue
+            shape = _template_shape_for_item(state, item)
+            if shape is not None:
+                _remove_template_shape(state, shape)
+                removed_preview_shapes += 1
+                continue
+            if removed_background:
+                raise TemplateStructureError(
+                    f"{state.spec.svg_path.name}: multiple inherited preview "
+                    "backgrounds resolved to one slide background"
+                )
+            common_slide = state.root.find(f"{{{PML_NS}}}cSld")
+            background = (
+                common_slide.find(f"{{{PML_NS}}}bg")
+                if common_slide is not None
+                else None
+            )
+            if common_slide is None or background is None:
+                raise TemplateStructureError(
+                    f"{state.spec.svg_path.name}: inherited preview background "
+                    "did not produce a removable slide background"
+                )
+            common_slide.remove(background)
+            removed_background = True
+            removed_preview_backgrounds += 1
+
+        layout = contract.layout(state.spec.layout_key)
+        for item, source_placeholder in match_native_placeholders(state.spec, layout):
+            shape = _template_shape_for_item(state, item)
+            if shape is None:
+                raise TemplateStructureError(
+                    f"{state.spec.svg_path.name}: placeholder {item.element_id!r} "
+                    "cannot resolve to a slide background"
+                )
+            _patch_slide_placeholder(
+                shape,
+                item,
+                source_placeholder.idx,
+                source_placeholder.placeholder_type,
+            )
+            placeholder_count += 1
+        _write_xml_tree(state.slide_path, state.tree)
+
+    if verbose:
+        print(
+            "  Preserved structure: "
+            f"{len({spec.layout_key for spec in specs})} source layout(s), "
+            f"{removed_preview_shapes} preview shape(s) removed, "
+            f"{removed_preview_backgrounds} preview background(s) removed, "
+            f"{placeholder_count} source placeholder binding(s)"
         )
 
 
@@ -2648,6 +2735,66 @@ def _stamp_docprops(
         app_path.write_text(app, encoding='utf-8')
 
 
+def _create_preserved_base_pptx(
+    contract: NativeStructureContract,
+    specs: list[TemplateSlideSpec],
+    output_path: Path,
+    slide_size_emu: tuple[int, int],
+) -> None:
+    """Create empty slides bound to the source package's original layouts."""
+    presentation = Presentation(str(contract.source_template))
+    actual_size = (int(presentation.slide_width), int(presentation.slide_height))
+    if actual_size != contract.slide_size_emu:
+        raise TemplateStructureError(
+            f"{contract.source_template.name} slide size does not match "
+            f"{contract.contract_path.name}"
+        )
+    if actual_size != slide_size_emu:
+        raise TemplateStructureError(
+            "Generated SVG canvas does not match the preserved source template size"
+        )
+
+    layouts_by_part = {
+        str(layout.part.partname).lstrip("/"): layout
+        for master in presentation.slide_masters
+        for layout in master.slide_layouts
+    }
+    slide_ids = presentation.slides._sldIdLst
+    for slide_id in list(slide_ids):
+        presentation.part.drop_rel(slide_id.rId)
+        slide_ids.remove(slide_id)
+
+    for spec in specs:
+        layout_contract = contract.layout(spec.layout_key)
+        layout = layouts_by_part.get(layout_contract.package_part)
+        if layout is None:
+            raise TemplateStructureError(
+                f"Preserved source package did not load layout part "
+                f"{layout_contract.package_part!r}"
+            )
+        presentation.slides.add_slide(layout)
+    presentation.save(str(output_path))
+
+
+def _clear_preserved_slide_collections(extract_dir: Path) -> None:
+    """Remove source slide-order metadata that cannot apply to generated pages."""
+    presentation_path = extract_dir / "ppt" / "presentation.xml"
+    tree = ET.parse(presentation_path)
+    root = tree.getroot()
+    custom_shows = root.find(f"{{{PML_NS}}}custShowLst")
+    if custom_shows is not None:
+        root.remove(custom_shows)
+    for extension_list in root.findall(f".//{{{PML_NS}}}extLst"):
+        for extension in list(extension_list):
+            if any(
+                child.tag.rsplit("}", 1)[-1] == "sectionLst"
+                for child in extension.iter()
+                if isinstance(child.tag, str)
+            ):
+                extension_list.remove(extension)
+    _write_xml_tree(presentation_path, tree)
+
+
 def create_pptx_with_native_svg(
     svg_files: list[Path],
     output_path: Path,
@@ -2681,6 +2828,7 @@ def create_pptx_with_native_svg(
     conversion_trace_path: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
     pptx_structure: str = "baseline",
+    native_structure_contract: NativeStructureContract | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -2720,7 +2868,10 @@ def create_pptx_with_native_svg(
         pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
             shared native backgrounds and leading chrome to slide masters;
             ``template`` consumes explicit SVG master/layout/placeholder
-            metadata; ``flat`` keeps generated structure slide-local.
+            metadata; ``preserve`` reuses an imported source PPTX package;
+            ``flat`` keeps generated structure slide-local.
+        native_structure_contract: Validated source package contract for
+            ``preserve`` mode.
 
     Returns:
         Whether all slides were successfully created.
@@ -2732,13 +2883,20 @@ def create_pptx_with_native_svg(
     # Native shapes mode takes priority over compat mode
     if use_native_shapes:
         use_compat_mode = False
-    if pptx_structure not in {"baseline", "template", "flat"}:
+    if pptx_structure not in {"baseline", "template", "preserve", "flat"}:
         raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
-    template_specs = (
-        parse_template_slides(svg_files)
-        if use_native_shapes and pptx_structure == "template"
-        else None
-    )
+    if use_native_shapes and pptx_structure == "template":
+        template_specs = parse_template_slides(svg_files)
+    elif use_native_shapes and pptx_structure == "preserve":
+        if native_structure_contract is None:
+            raise TemplateStructureError(
+                "Preserve export requires a validated native structure contract"
+            )
+        template_specs = parse_preserve_slides(svg_files)
+        for spec in template_specs:
+            native_structure_contract.layout(spec.layout_key)
+    else:
+        template_specs = None
     if template_specs is not None and not native_objects:
         native_placeholders = sorted({
             item.placeholder
@@ -2827,22 +2985,36 @@ def create_pptx_with_native_svg(
     temp_dir = _create_writable_work_dir(output_path)
 
     try:
-        # Create base PPTX with python-pptx
-        prs = Presentation()
-        prs.slide_width = width_emu
-        prs.slide_height = height_emu
-
-        blank_layout = prs.slide_layouts[6]
-        for _ in svg_files:
-            prs.slides.add_slide(blank_layout)
-
         base_pptx = temp_dir / 'base.pptx'
-        prs.save(str(base_pptx))
+        if (
+            use_native_shapes
+            and pptx_structure == "preserve"
+            and native_structure_contract is not None
+            and template_specs is not None
+        ):
+            _create_preserved_base_pptx(
+                native_structure_contract,
+                template_specs,
+                base_pptx,
+                (width_emu, height_emu),
+            )
+        else:
+            # Create the standard base PPTX with python-pptx.
+            prs = Presentation()
+            prs.slide_width = width_emu
+            prs.slide_height = height_emu
+
+            blank_layout = prs.slide_layouts[6]
+            for _ in svg_files:
+                prs.slides.add_slide(blank_layout)
+            prs.save(str(base_pptx))
 
         # Extract PPTX
         extract_dir = temp_dir / 'pptx_content'
         with zipfile.ZipFile(base_pptx, 'r') as zf:
             zf.extractall(extract_dir)
+        if use_native_shapes and pptx_structure == "preserve":
+            _clear_preserved_slide_collections(extract_dir)
         structure = _read_slide_layout_targets(extract_dir, len(svg_files))
 
         media_dir = extract_dir / 'ppt' / 'media'
@@ -2878,7 +3050,7 @@ def create_pptx_with_native_svg(
         conversion_trace: list[dict[str, Any]] | None = [] if conversion_trace_path else None
         structure_trace: list[dict[str, Any]] | None = (
             []
-            if use_native_shapes and pptx_structure in {"baseline", "template"}
+            if use_native_shapes and pptx_structure in {"baseline", "template", "preserve"}
             else None
         )
 
@@ -3279,6 +3451,30 @@ def create_pptx_with_native_svg(
                 extract_dir,
                 structure,
                 len(svg_files),
+                verbose=verbose,
+            )
+
+        if (
+            use_native_shapes
+            and pptx_structure == "preserve"
+            and success_count == len(svg_files)
+        ):
+            _convert_page_number_texts_to_fields(
+                extract_dir,
+                len(svg_files),
+                conversion_trace if conversion_trace is not None else structure_trace,
+                context="Preserve",
+                verbose=verbose,
+            )
+            if template_specs is None or native_structure_contract is None:
+                raise TemplateStructureError(
+                    "Preserved structure metadata was not parsed before export"
+                )
+            _apply_preserved_structure(
+                extract_dir,
+                template_specs,
+                native_structure_contract,
+                conversion_trace if conversion_trace is not None else structure_trace,
                 verbose=verbose,
             )
 

@@ -503,6 +503,7 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             'data-pptx-layer',
             'data-pptx-placeholder',
             'data-pptx-placeholder-bounds',
+            'data-pptx-placeholder-idx',
         ):
             value = elem.get(attr)
             if value is not None:

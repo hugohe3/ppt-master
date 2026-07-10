@@ -32,6 +32,7 @@ Convert project SVGs into PPTX.
 python3 scripts/svg_to_pptx.py <project_path>
 python3 scripts/svg_to_pptx.py <project_path> --native-objects
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure template  # explicit SVG template metadata
+python3 scripts/svg_to_pptx.py <project_path> --pptx-structure preserve  # imported source package contract
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # structure diagnostic
 # Template-import visual round-trip diagnostic only:
 python3 scripts/svg_to_pptx.py <template_import_output> --only native -s svg-flat
@@ -62,6 +63,7 @@ Behavior:
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.
 - Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
 - Omitting `--pptx-structure` reads `spec_lock.md` `pptx_structure.mode`, then falls back to `baseline`; an explicit CLI value overrides the lock. Template mode builds reusable PowerPoint layouts only from explicit SVG metadata: root `data-pptx-layout`, direct-child `data-pptx-layer="master|layout"`, optional `data-pptx-layer="slide"` on a full-canvas solid background, and direct-child `data-pptx-placeholder`. It validates the per-page `pptx_layouts` lock plus cross-slide structure consistency and never infers layouts from visual similarity. Direct full-canvas solid rects compile to Master/Layout/Slide `p:bg` by scope; an unmarked one is a Slide override. Chart/table placeholders also require `--native-objects`. Full contract: [`shared-standards.md`](../../references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata-template-export).
+- Preserve mode requires a `create-template` native pair (`native_structure.json` + `source_template.pptx`) declared in `spec_lock.md`. It verifies the source digest, binds each generated page to an imported layout part, retains the source master/layout/theme roster, removes preview-only inherited SVG layers, and restores source placeholder type/index identities. The SVG root still declares `data-pptx-layout`; repeated semantic placeholders may disambiguate with `data-pptx-placeholder-idx`.
 - Native output uses content-hash media filenames, so identical images are reused and different images cannot overwrite each other by sharing a basename.
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.
 - Native export writes to a temporary file first and publishes the requested PPTX only after conversion succeeds. A failed conversion does not replace the main output file.

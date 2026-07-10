@@ -76,14 +76,24 @@ except ImportError:
 try:
     from svg_to_pptx.pptx_package.template_structure import (
         TemplateStructureError as _TemplateStructureError,
+        PptxLayoutReference as _PptxLayoutReference,
+        PptxStructureLock as _PptxStructureLock,
+        load_native_structure_contract as _load_native_structure_contract,
         load_pptx_structure_lock as _load_pptx_structure_lock,
+        native_structure_lock_errors as _native_structure_lock_errors,
+        parse_preserve_slides as _parse_preserve_structure_slides,
         parse_template_slides as _parse_template_structure_slides,
         template_lock_errors as _template_lock_errors,
         validate_template_svg as _validate_template_structure_svg,
     )
 except ImportError:
     _TemplateStructureError = None
+    _PptxLayoutReference = None
+    _PptxStructureLock = None
+    _load_native_structure_contract = None
     _load_pptx_structure_lock = None
+    _native_structure_lock_errors = None
+    _parse_preserve_structure_slides = None
     _parse_template_structure_slides = None
     _template_lock_errors = None
     _validate_template_structure_svg = None
@@ -1029,6 +1039,7 @@ class SVGQualityChecker:
             'data-pptx-layout-name',
             'data-pptx-placeholder',
             'data-pptx-placeholder-bounds',
+            'data-pptx-placeholder-idx',
             'data-pptx-editable',
         }
         if not any(
@@ -1459,6 +1470,7 @@ class SVGQualityChecker:
             'data-pptx-layout-name',
             'data-pptx-placeholder',
             'data-pptx-placeholder-bounds',
+            'data-pptx-placeholder-idx',
             'data-pptx-editable',
         }
         has_metadata = False
@@ -1474,20 +1486,50 @@ class SVGQualityChecker:
             ):
                 has_metadata = True
                 break
-        template_locked = structure_lock is not None and structure_lock.mode == 'template'
-        if not has_metadata and not template_locked:
+        locked_mode = structure_lock.mode if structure_lock is not None else None
+        structure_locked = locked_mode in {'template', 'preserve'}
+        if not has_metadata and not structure_locked:
             return
 
         try:
-            specs = _parse_template_structure_slides(svg_files)
+            if locked_mode == 'preserve':
+                if _parse_preserve_structure_slides is None:
+                    return
+                specs = _parse_preserve_structure_slides(svg_files)
+            else:
+                specs = _parse_template_structure_slides(svg_files)
         except _TemplateStructureError as exc:
             self._pptx_structure_issues.append(('error', str(exc)))
             return
-        if not template_locked:
+        if not structure_locked:
             return
         self._pptx_structure_issues.extend(
             ('error', message)
             for message in _template_lock_errors(specs, structure_lock)
+        )
+        if locked_mode != 'preserve':
+            return
+        if (
+            _load_native_structure_contract is None
+            or _native_structure_lock_errors is None
+        ):
+            self._pptx_structure_issues.append((
+                'error',
+                'Preserve mode validator could not load the native structure contract.',
+            ))
+            return
+        try:
+            contract = _load_native_structure_contract(structure_lock)
+        except _TemplateStructureError as exc:
+            self._pptx_structure_issues.append(('error', str(exc)))
+            return
+        self._pptx_structure_issues.extend(
+            ('error', message)
+            for message in _native_structure_lock_errors(
+                specs,
+                structure_lock,
+                contract,
+            )
         )
 
     def _check_illustration_resource_contract(self, dir_path: Path) -> None:
@@ -1892,6 +1934,88 @@ class SVGQualityChecker:
         Issues are aggregated and printed in :py:meth:`print_summary` so the
         per-file report stays focused on intrinsic SVG validity.
         """
+        native_contract_path = dir_path / 'native_structure.json'
+        source_template_path = dir_path / 'source_template.pptx'
+        native_contract = None
+        if native_contract_path.exists() != source_template_path.exists():
+            self._template_issues.append((
+                'error',
+                'native_structure_pair',
+                "native_structure.json and source_template.pptx must be shipped together",
+            ))
+        elif native_contract_path.exists():
+            if (
+                _PptxStructureLock is None
+                or _load_native_structure_contract is None
+                or _TemplateStructureError is None
+            ):
+                self._template_issues.append((
+                    'error',
+                    'native_structure_validator',
+                    "native structure validator is unavailable",
+                ))
+            else:
+                try:
+                    native_contract = _load_native_structure_contract(_PptxStructureLock(
+                        mode='preserve',
+                        source_template=source_template_path,
+                        native_structure=native_contract_path,
+                    ))
+                except _TemplateStructureError as exc:
+                    self._template_issues.append((
+                        'error',
+                        'native_structure_invalid',
+                        str(exc),
+                    ))
+        if (
+            native_contract is not None
+            and _PptxLayoutReference is not None
+            and _parse_preserve_structure_slides is not None
+            and _template_lock_errors is not None
+            and _native_structure_lock_errors is not None
+        ):
+            try:
+                native_specs = _parse_preserve_structure_slides(svg_files)
+                native_layouts = {
+                    layout.key: layout for layout in native_contract.layouts
+                }
+                references = tuple(
+                    _PptxLayoutReference(
+                        slide_num=spec.slide_num,
+                        layout_key=spec.layout_key,
+                        layout_name=(
+                            native_layouts[spec.layout_key].name
+                            if spec.layout_key in native_layouts
+                            else spec.layout_name
+                        ),
+                    )
+                    for spec in native_specs
+                )
+                native_lock = _PptxStructureLock(
+                    mode='preserve',
+                    layouts=references,
+                    source_template=source_template_path,
+                    native_structure=native_contract_path,
+                )
+                native_errors = _template_lock_errors(native_specs, native_lock)
+                native_errors.extend(_native_structure_lock_errors(
+                    native_specs,
+                    native_lock,
+                    native_contract,
+                ))
+                for message in native_errors:
+                    self._template_issues.append((
+                        'error',
+                        'native_structure_svg',
+                        message,
+                    ))
+            except _TemplateStructureError as exc:
+                self._template_issues.append((
+                    'error',
+                    'native_structure_svg',
+                    str(exc),
+                ))
+
         spec_path = dir_path / 'design_spec.md'
         spec_text = spec_path.read_text(encoding='utf-8') if spec_path.exists() else ""
         spec_pages = self._extract_spec_roster(spec_text) if spec_text else []

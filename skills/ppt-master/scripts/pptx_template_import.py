@@ -5,6 +5,8 @@ Reads OOXML directly via `pptx_to_svg` and writes a reusable reference workspace
 
 - `manifest.json` — single source of truth for slide size, theme colors, fonts,
   asset inventory, and per-slide / per-layout / per-master metadata
+- `native_structure.json` + `source_template.pptx` — portable source-package
+  contract for preserving native masters, layouts, themes, and placeholders
 - `summary.md` — short human-readable digest derived from manifest.json
 - `assets/` — extracted reusable image assets
 - `svg/` — primary view: by default the layered template view (every master
@@ -24,6 +26,7 @@ from pathlib import Path
 
 from console_encoding import configure_utf8_stdio
 from template_import.manifest import build_manifest
+from template_import.native_structure import write_native_structure_bundle
 
 configure_utf8_stdio()
 
@@ -42,14 +45,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skip-manifest",
         action="store_true",
-        help="Skip PPTX metadata extraction and asset inventory generation",
+        help=(
+            "Skip metadata, asset inventory, native structure contract, and "
+            "preserved source-package generation"
+        ),
     )
     parser.add_argument(
         "--manifest-only",
         action="store_true",
         help=(
-            "Only extract manifest.json + summary.md + reusable assets, "
-            "without exporting slides to SVG"
+            "Only extract manifest.json + summary.md + reusable assets + the "
+            "native structure/source pair, without exporting slides to SVG"
         ),
     )
     parser.add_argument(
@@ -98,6 +104,7 @@ def main() -> int:
         return 1
 
     manifest = None
+    native_structure = None
     manifest_path = output_dir / "manifest.json"
     if not args.skip_manifest:
         try:
@@ -110,12 +117,27 @@ def main() -> int:
             json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+        try:
+            native_structure = write_native_structure_bundle(
+                pptx_path,
+                output_dir,
+                manifest,
+            )
+        except (OSError, ValueError) as exc:
+            print(f"Error: failed to write native structure bundle: {exc}")
+            return 1
 
     if args.manifest_only:
         print(f"Imported PPTX template source: {pptx_path.name}")
         print(f"Output directory: {output_dir}")
         if manifest is not None:
             print(f"Manifest: {manifest_path.name}")
+            print("Native structure: native_structure.json")
+            print("Preserved source package: source_template.pptx")
+            print(
+                "Recommended structure mode: "
+                f"{native_structure['strategy']['recommendedMode']}"
+            )
             print("Summary: summary.md")
             print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
             print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
@@ -147,6 +169,11 @@ def main() -> int:
         print(f"Flat companion slides: {len(result.flat_slides)} (svg-flat/)")
     print(f"SVG bytes (primary): {total_bytes}")
     print(f"Output directory: {output_dir}")
+    if native_structure is not None:
+        print(
+            "Native structure: "
+            f"{native_structure['strategy']['recommendedMode']} recommended"
+        )
     return 0
 
 

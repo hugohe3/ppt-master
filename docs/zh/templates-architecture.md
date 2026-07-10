@@ -14,6 +14,8 @@
 | **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template.md`（layout 分支）|
 | **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template.md`（deck 分支，默认）|
 
+从结构完整的 PPTX 导入的 Layout/Deck 可以额外携带一对原生结构文件：`native_structure.json` 记录稳定 master/layout key、版式显示名称、父母版和 placeholder type/idx；`source_template.pptx` 保存原 package。两者必须同时存在且 SHA-256 匹配。下游 `pptx_structure.mode: preserve` 会复用源 master/layout/theme；没有这对文件时继续使用现有 `baseline` 或显式 `template` 重建。
+
 三者是**三种并列的 reference bundle**，物理目录与 frontmatter `kind` 字段双向对齐：
 
 ```yaml

@@ -65,6 +65,7 @@ class SlideRecord:
     text_samples: list[str]
     text_count: int
     shape_count: int
+    placeholders: list[dict[str, Any]]
     page_type: str
     svg_file: str
     flat_svg_file: str
@@ -87,9 +88,13 @@ def summarize_part_record(
 
     bg_asset = detect_background_asset(root, rels)
     image_targets = extract_image_targets(root, rels)
+    display_name = part_display_name(root, part_path)
+    layout_type = root.attrib.get("type") if root is not None else None
     return {
         "path": part_path,
         "name": PurePosixPath(part_path).name,
+        "displayName": display_name,
+        "layoutType": layout_type,
         "svgFile": svg_file,
         "parentPath": parent_path,
         "themePath": theme_path,
@@ -100,6 +105,7 @@ def summarize_part_record(
         "textSamples": extract_text_samples(root),
         "textCount": len(root.findall(".//a:t", NS)) if root is not None else 0,
         "shapeCount": count_slide_shapes(root),
+        "drawableShapeCount": count_drawable_shapes(root),
         "usedBySlides": used_by_slides,
     }
 
@@ -201,6 +207,38 @@ def parse_xfrm_record(sp: ET.Element) -> dict[str, int] | None:
     }
 
 
+def part_display_name(root: ET.Element | None, part_path: str) -> str:
+    """Return the PowerPoint picker name, falling back to the package stem."""
+    if root is not None:
+        common_slide = root.find("p:cSld", NS)
+        if common_slide is not None:
+            name = (common_slide.attrib.get("name") or "").strip()
+            if name:
+                return name
+        matching_name = (root.attrib.get("matchingName") or "").strip()
+        if matching_name:
+            return matching_name
+    return PurePosixPath(part_path).stem
+
+
+def placeholder_semantic_role(placeholder_type: str | None) -> str:
+    """Map an OOXML placeholder type to the exporter role vocabulary."""
+    normalized = placeholder_type or "obj"
+    role_by_type = {
+        "title": "title",
+        "ctrTitle": "title",
+        "body": "body",
+        "subTitle": "body",
+        "obj": "body",
+        "pic": "picture",
+        "chart": "chart",
+        "tbl": "table",
+        "ftr": "footer",
+        "sldNum": "slide-number",
+    }
+    return role_by_type.get(normalized, "other")
+
+
 def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
     if root is None:
         return []
@@ -209,11 +247,16 @@ def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
         ph = sp.find("p:nvSpPr/p:nvPr/p:ph", NS)
         if ph is None:
             continue
+        non_visual = sp.find("p:nvSpPr/p:cNvPr", NS)
+        placeholder_type = ph.attrib.get("type")
         record: dict[str, Any] = {
-            "type": ph.attrib.get("type"),
+            "type": placeholder_type,
             "idx": ph.attrib.get("idx"),
             "size": ph.attrib.get("sz"),
             "orient": ph.attrib.get("orient"),
+            "semanticRole": placeholder_semantic_role(placeholder_type),
+            "shapeId": non_visual.attrib.get("id") if non_visual is not None else None,
+            "shapeName": non_visual.attrib.get("name") if non_visual is not None else None,
             "geometry": parse_xfrm_record(sp),
             "textSamples": extract_text_samples(sp, limit=2),
         }
@@ -222,6 +265,30 @@ def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
             record["textStyle"] = style
         placeholders.append(record)
     return placeholders
+
+
+def count_drawable_shapes(root: ET.Element | None) -> int:
+    """Count top-level visual shapes that are not placeholder definitions."""
+    if root is None:
+        return 0
+    sp_tree = root.find("p:cSld/p:spTree", NS)
+    if sp_tree is None:
+        return 0
+    visual_tags = {
+        f"{{{NS['p']}}}sp",
+        f"{{{NS['p']}}}grpSp",
+        f"{{{NS['p']}}}graphicFrame",
+        f"{{{NS['p']}}}pic",
+        f"{{{NS['p']}}}cxnSp",
+    }
+    count = 0
+    for child in sp_tree:
+        if child.tag not in visual_tags:
+            continue
+        if child.find("p:nvSpPr/p:nvPr/p:ph", NS) is not None:
+            continue
+        count += 1
+    return count
 
 
 def extract_placeholder_text_style(sp: ET.Element) -> dict[str, Any]:
@@ -572,6 +639,7 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             image_targets = extract_image_targets(slide_root, slide_rels)
             texts = extract_text_samples(slide_root)
             shape_count = count_slide_shapes(slide_root)
+            placeholders = extract_placeholders(slide_root)
             page_type = classify_slide(index, len(slide_parts), texts, len(image_targets), shape_count)
 
             resolved_bg = copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None)
@@ -623,6 +691,7 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     text_samples=texts,
                     text_count=len(texts),
                     shape_count=shape_count,
+                    placeholders=placeholders,
                     page_type=page_type,
                     svg_file=slide_svg_filename(index),
                     flat_svg_file=slide_svg_filename(index),
@@ -740,6 +809,7 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     "textSamples": slide.text_samples,
                     "textCount": slide.text_count,
                     "shapeCount": slide.shape_count,
+                    "placeholders": slide.placeholders,
                     "pageType": slide.page_type,
                 }
                 for slide in slide_records

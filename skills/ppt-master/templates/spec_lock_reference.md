@@ -127,11 +127,19 @@
 >
 > - `baseline` — default. Preserve the conservative shared Master/background/chrome behavior; no explicit reusable placeholder layouts are authored.
 > - `template` — use only when the user explicitly requests a reusable PowerPoint template/master/layout deliverable. Requires a complete `pptx_layouts` section and explicit SVG structure metadata on every generated page.
+> - `preserve` — use when the selected reusable template ships `native_structure.json` + `source_template.pptx`. Add both project-relative rows below and map every page under `pptx_layouts`.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
+>
+> Preserve example:
+> ```
+> - mode: preserve
+> - source_template: templates/source_template.pptx
+> - native_structure: templates/native_structure.json
+> ```
 
 ## pptx_layouts
 
-> Emit this section only when `pptx_structure.mode` is `template`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`.
+> Emit this section only when `pptx_structure.mode` is `template` or `preserve`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Preserve mode uses exact keys/names from `native_structure.json` and the selected template SVG root.
 >
 > Example:
 > ```
