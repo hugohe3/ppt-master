@@ -358,7 +358,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     if mode == "preserve" and template_adherence == "adaptive":
         raise TemplateStructureError(
             "spec_lock.md preserve mode requires template_adherence: strict; "
-            "adaptive template use must export through baseline"
+            "adaptive template use must export through template mode"
         )
 
     source_rows = [

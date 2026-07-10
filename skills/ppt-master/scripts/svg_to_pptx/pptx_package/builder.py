@@ -975,6 +975,165 @@ def _extract_baseline_layout_families(
     return created
 
 
+def _promote_common_chrome_shapes_to_layouts(
+    extract_dir: Path,
+    slide_count: int,
+    conversion_traces: list[dict[str, Any]] | None,
+    *,
+    verbose: bool = False,
+) -> int:
+    """Promote exact leading chrome shared by every slide in one layout."""
+    if not conversion_traces:
+        return 0
+    trace_by_slide = {
+        int(trace.get("slide_num", 0)): trace
+        for trace in conversion_traces
+        if trace.get("slide_num") is not None
+    }
+    if len(trace_by_slide) < slide_count:
+        return 0
+
+    slides_by_layout: dict[str, list[int]] = {}
+    for slide_num in range(1, slide_count + 1):
+        rels_path = (
+            extract_dir
+            / "ppt"
+            / "slides"
+            / "_rels"
+            / f"slide{slide_num}.xml.rels"
+        )
+        layout_target = _find_relationship_target(rels_path, SLIDE_LAYOUT_REL_TYPE)
+        if not layout_target:
+            raise RuntimeError(f"Slide {slide_num} has no slide layout relationship")
+        layout_part = _resolve_package_target(
+            f"ppt/slides/slide{slide_num}.xml",
+            layout_target,
+        )
+        slides_by_layout.setdefault(layout_part, []).append(slide_num)
+
+    promoted = 0
+    promoted_roles = 0
+    for layout_part, slide_nums in slides_by_layout.items():
+        if len(slide_nums) < 2:
+            continue
+        slide_state: dict[int, dict[str, Any]] = {}
+        for slide_num in slide_nums:
+            slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+            rels_path = (
+                extract_dir
+                / "ppt"
+                / "slides"
+                / "_rels"
+                / f"slide{slide_num}.xml.rels"
+            )
+            tree = ET.parse(slide_path)
+            root = tree.getroot()
+            slide_state[slide_num] = {
+                "path": slide_path,
+                "rels": _read_relationships(rels_path),
+                "root": root,
+                "shapes": _top_level_shapes_by_id(root),
+                "timing_shape_ids": _timing_shape_ids(root),
+                "tokens": _trace_chrome_shape_ids(trace_by_slide.get(slide_num)),
+                "tree": tree,
+            }
+
+        common_tokens = set.intersection(*(
+            set(state["tokens"])
+            for state in slide_state.values()
+        ))
+        common_tokens.difference_update(_PAGE_NUMBER_TOKENS)
+        candidates: dict[str, dict[int, str]] = {}
+        for token in sorted(common_tokens):
+            shape_ids_by_slide: dict[int, str] = {}
+            canonical_shapes: set[bytes] = set()
+            for slide_num in slide_nums:
+                state = slide_state[slide_num]
+                shape_ids = state["tokens"].get(token, [])
+                if len(shape_ids) != 1:
+                    break
+                shape_id = shape_ids[0]
+                shape = state["shapes"].get(shape_id)
+                if shape is None or shape_id in state["timing_shape_ids"]:
+                    break
+                if not _shape_relationships_supported(shape, state["rels"]):
+                    break
+                shape_ids_by_slide[slide_num] = shape_id
+                canonical_shapes.add(_canonical_shape_xml(shape, state["rels"]))
+            if len(shape_ids_by_slide) == len(slide_nums) and len(canonical_shapes) == 1:
+                candidates[token] = shape_ids_by_slide
+
+        if not candidates:
+            continue
+
+        # Layout shapes render behind slide-local shapes. Keep visual z-order by
+        # accepting only the identical leading prefix shared by every family page.
+        token_by_shape_id = {
+            slide_num: {
+                shape_ids[slide_num]: token
+                for token, shape_ids in candidates.items()
+            }
+            for slide_num in slide_nums
+        }
+        leading_orders: list[list[str]] = []
+        for slide_num in slide_nums:
+            order: list[str] = []
+            for shape_id in slide_state[slide_num]["shapes"]:
+                token = token_by_shape_id[slide_num].get(shape_id)
+                if token is None:
+                    break
+                order.append(token)
+            leading_orders.append(order)
+        safe_tokens = list(leading_orders[0])
+        for order in leading_orders[1:]:
+            common_length = 0
+            for expected, actual in zip(safe_tokens, order):
+                if expected != actual:
+                    break
+                common_length += 1
+            safe_tokens = safe_tokens[:common_length]
+            if not safe_tokens:
+                break
+        if not safe_tokens:
+            continue
+
+        layout_path = extract_dir / layout_part
+        layout_rels_path = _relationships_path_for_part(extract_dir, layout_part)
+        for token in safe_tokens:
+            shape_ids_by_slide = candidates[token]
+            first_slide = slide_nums[0]
+            first_state = slide_state[first_slide]
+            shape = first_state["shapes"][shape_ids_by_slide[first_slide]]
+            layout_shape = _copy_shape_relationships_to_part(
+                shape,
+                first_state["rels"],
+                layout_rels_path,
+            )
+            _append_shape_to_part(layout_path, layout_shape)
+            promoted_roles += 1
+            for slide_num, shape_id in shape_ids_by_slide.items():
+                state = slide_state[slide_num]
+                shape_to_remove = state["shapes"].get(shape_id)
+                sp_tree = state["root"].find(
+                    f".//{{{PML_NS}}}cSld/{{{PML_NS}}}spTree"
+                )
+                if sp_tree is not None and shape_to_remove is not None:
+                    sp_tree.remove(shape_to_remove)
+                    promoted += 1
+
+        for slide_num in slide_nums:
+            state = slide_state[slide_num]
+            _write_xml_tree(state["path"], state["tree"])
+
+    if verbose and promoted:
+        print(
+            "  Baseline layout chrome: "
+            f"promoted {promoted} slide shape(s) across "
+            f"{promoted_roles} shared object(s)"
+        )
+    return promoted
+
+
 _TEMPLATE_PLACEHOLDER_TYPES = {
     "title": "title",
     "subtitle": "subTitle",
@@ -3108,7 +3267,8 @@ def create_pptx_with_native_svg(
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
         pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
             shared native backgrounds and leading chrome to slide masters,
-            then extracts conservative filename-backed layout families;
+            then extracts conservative filename-backed layout families and
+            exact family-wide leading chrome;
             ``template`` consumes explicit SVG master/layout/placeholder
             metadata; ``preserve`` reuses an imported source PPTX package;
             ``flat`` keeps generated structure slide-local.
@@ -3692,6 +3852,12 @@ def create_pptx_with_native_svg(
                 extract_dir,
                 structure,
                 svg_files,
+                verbose=verbose,
+            )
+            _promote_common_chrome_shapes_to_layouts(
+                extract_dir,
+                len(svg_files),
+                conversion_trace if conversion_trace is not None else structure_trace,
                 verbose=verbose,
             )
             _prune_unused_slide_layouts(

@@ -1,6 +1,7 @@
 ---
 deck_id: 中汽研
 kind: deck
+native_structure_mode: template
 summary: Product certification display, evaluation presentations, technology promotion, business visits.
 canvas_format: ppt169
 page_count: 5

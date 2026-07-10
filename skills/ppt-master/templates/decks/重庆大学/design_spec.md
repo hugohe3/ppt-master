@@ -1,6 +1,7 @@
 ---
 deck_id: 重庆大学
 kind: deck
+native_structure_mode: template
 summary: Academic defense, research reports, teaching presentations, scholarly exchange.
 canvas_format: ppt169
 page_count: 5

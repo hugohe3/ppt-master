@@ -1,6 +1,7 @@
 ---
 deck_id: 中国电建
 kind: deck
+native_structure_mode: template
 summary: Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries.
 canvas_format: ppt169
 page_count: 5

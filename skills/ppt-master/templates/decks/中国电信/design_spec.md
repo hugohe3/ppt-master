@@ -1,6 +1,7 @@
 ---
 deck_id: 中国电信
 kind: deck
+native_structure_mode: template
 summary: China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.
 canvas_format: ppt169
 page_count: 5

@@ -1,6 +1,6 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
   <!-- Background -->
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-01_cover-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <!-- Top Red Banner -->
   <rect x="0" y="0" width="1280" height="8" fill="#C00000" />
@@ -13,10 +13,10 @@
   <rect x="60" y="280" width="1220" height="60" fill="#F2F2F2" />
 
   <!-- Title Group -->
-  <text x="640" y="220" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="56" font-weight="bold" fill="#C00000" text-anchor="middle">{{TITLE}}</text>
+  <text x="640" y="220" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="56" font-weight="bold" fill="#C00000" text-anchor="middle" id="slot-01_cover-title-1" data-pptx-placeholder="title">{{TITLE}}</text>
 
   <!-- Subtitle -->
-  <text x="640" y="320" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" fill="#666666" text-anchor="middle">{{SUBTITLE}}</text>
+  <text x="640" y="320" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" fill="#666666" text-anchor="middle" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">{{SUBTITLE}}</text>
 
   <!-- Decorative Numbered Badges (referencing architecture style) -->
   <rect x="200" y="400" width="40" height="40" fill="#C00000" />

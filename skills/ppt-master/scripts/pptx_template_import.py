@@ -5,8 +5,8 @@ Reads OOXML directly via `pptx_to_svg` and writes a reusable reference workspace
 
 - `manifest.json` — single source of truth for slide size, theme colors, fonts,
   asset inventory, and per-slide / per-layout / per-master metadata
-- `native_structure.json` + `source_template.pptx` — portable source-package
-  contract for preserving native masters, layouts, themes, and placeholders
+- `native_structure.json` + `source_template.pptx` — source-structure facts and
+  a byte-identical analysis copy used to rebuild explicit SVG structure
 - `summary.md` — short human-readable digest derived from manifest.json
 - `assets/` — extracted reusable image assets
 - `svg/` — primary view: by default the layered template view (every master
@@ -133,12 +133,12 @@ def main() -> int:
         if manifest is not None:
             print(f"Manifest: {manifest_path.name}")
             print("Native structure: native_structure.json")
-            print("Preserved source package: source_template.pptx")
+            print("Source package analysis copy: source_template.pptx")
             print(
-                "Recommended template packaging mode: "
+                "Source structure assessment: "
                 f"{native_structure['strategy']['recommendedMode']}"
             )
-            print("Downstream template adherence: Strategist-confirmed")
+            print("Template output mode: explicit SVG structure")
             print("Summary: summary.md")
             print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
             print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
@@ -172,9 +172,9 @@ def main() -> int:
     print(f"Output directory: {output_dir}")
     if native_structure is not None:
         print(
-            "Native structure packaging: "
-            f"{native_structure['strategy']['recommendedMode']} recommended; "
-            "downstream use is Strategist-confirmed"
+            "Source structure assessment: "
+            f"{native_structure['strategy']['recommendedMode']}; "
+            "create-template rebuilds explicit SVG structure"
         )
     return 0
 

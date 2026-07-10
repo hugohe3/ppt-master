@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
     <!-- 模板: 封面页 - 中汽研风格 -->
+
+    <rect id="layout-01_cover-marker" data-pptx-layer="layout"
+        data-pptx-editable="false" x="0" y="0" width="1" height="1"
+        fill="#FFFFFF" fill-opacity="0" />
 
     <!-- 背景层 - 使用封面背景图（AI生成或用户提供） -->
     <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720"
         preserveAspectRatio="xMidYMid slice" />
 
     <!-- 半透明遮罩层 - 增强文字可读性 -->
-    <rect x="0" y="0" width="1280" height="720" fill="#001F4D" fill-opacity="0.4" />
+    <rect id="cover-overlay" x="0" y="0" width="1280" height="720"
+        fill="#001F4D" fill-opacity="0.4" transform="translate(0 0)" />
 
     <!-- 顶部装饰线 -->
     <rect x="0" y="0" width="1280" height="4" fill="#FFFFFF" fill-opacity="0.3" />
@@ -18,13 +23,13 @@
 
     <!-- 主标题区域 -->
     <text x="640" y="440" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="48"
-        font-weight="bold" fill="#FFFFFF">
+        font-weight="bold" fill="#FFFFFF" id="slot-01_cover-title-1" data-pptx-placeholder="title">
         {{TITLE}}
     </text>
 
     <!-- 副标题 -->
     <text x="640" y="500" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26"
-        fill="#FFFFFF" fill-opacity="0.85">
+        fill="#FFFFFF" fill-opacity="0.85" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">
         {{SUBTITLE}}
     </text>
 

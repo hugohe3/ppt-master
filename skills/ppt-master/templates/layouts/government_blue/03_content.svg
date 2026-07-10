@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="03_content" data-pptx-layout-name="Content">
     <!-- 模板: 内容页 - 政府蓝风格 (优化版) -->
 
     <defs>
@@ -21,7 +21,7 @@
     </defs>
 
     <!-- 背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="url(#bgGrad)" />
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgGrad)"  id="layout-03_content-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 顶部渐变装饰线 -->
     <rect x="0" y="0" width="1280" height="6" fill="url(#topGrad)" />
@@ -32,7 +32,7 @@
     <text x="85" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">{{CHAPTER_NUM}}</text>
 
     <!-- 页面标题 -->
-    <text x="130" y="65" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="28" font-weight="bold" fill="#1A1A1A">{{PAGE_TITLE}}</text>
+    <text x="130" y="65" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="28" font-weight="bold" fill="#1A1A1A" id="slot-03_content-title-1" data-pptx-placeholder="title">{{PAGE_TITLE}}</text>
 
     <!-- 右上角单位标识 -->
     <text x="1220" y="50" text-anchor="end" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#718096">{{ORG_SHORT}}</text>
@@ -52,7 +52,7 @@
        - 流程图
   -->
     <rect x="60" y="110" width="1160" height="550" fill="none" stroke="#E4E7EB" stroke-width="2" stroke-dasharray="8,8" />
-    <text x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="18" font-family="Microsoft YaHei, sans-serif">
+    <text x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="18" font-family="Microsoft YaHei, sans-serif" id="slot-03_content-body-2" data-pptx-placeholder="body">
         {{CONTENT_AREA}}
     </text>
     <text x="640" y="400" text-anchor="middle" fill="#CBD5E1" font-size="14" font-family="Microsoft YaHei, sans-serif">
@@ -70,7 +70,7 @@
     <rect x="0" y="716" width="1280" height="4" fill="#0050B3" />
 
     <!-- 页码 -->
-    <text x="640" y="695" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#718096">{{PAGE_NUM}}</text>
+    <text x="640" y="695" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#718096" id="slot-03_content-slide_number-3" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
 
     <!-- 底部单位名称 -->
     <text x="1220" y="695" text-anchor="end" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#718096" fill-opacity="0.6">{{ORG_SHORT}}</text>

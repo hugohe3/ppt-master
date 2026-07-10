@@ -1,6 +1,7 @@
 ---
 layout_id: academic_defense
 kind: layout
+native_structure_mode: template
 summary: Thesis defense, academic presentations, research progress reports, grant applications.
 canvas_format: ppt169
 page_count: 5

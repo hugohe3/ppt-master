@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="02_chapter" data-pptx-layout-name="Section">
     <!-- 背景：深医学蓝，营造专业感和过渡感 -->
-    <rect width="1280" height="720" fill="#004080" />
+    <rect width="1280" height="720" fill="#004080"  id="layout-02_chapter-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 背景装饰：右侧几何图形，医疗主题 -->
     <path d="M850 0 L1280 0 L1280 720 L650 720 Z" fill="#0066B3" fill-opacity="0.3" />
@@ -32,7 +32,7 @@
 
     <!-- 章节标题：醒目白色 -->
     <text x="380" y="360" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="52"
-        font-weight="bold">
+        font-weight="bold" id="slot-02_chapter-title-1" data-pptx-placeholder="title">
         {{CHAPTER_TITLE}}
     </text>
 

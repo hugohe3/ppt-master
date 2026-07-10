@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
     <defs>
         <linearGradient id="coverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" style="stop-color:#1E3A5F" />
@@ -8,7 +8,7 @@
     </defs>
 
     <!-- 背景渐变 -->
-    <rect width="1280" height="720" fill="url(#coverGradient)" />
+    <rect width="1280" height="720" fill="url(#coverGradient)"  id="layout-01_cover-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 可选：背景图片（使用时替换 {{COVER_BG_IMAGE}}） -->
     <!-- 如需弱化图片，请改用叠加蒙层，不要直接设置 <image opacity> -->
@@ -28,13 +28,13 @@
 
     <!-- 主标题 -->
     <text x="640" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="52" font-weight="bold"
-        fill="#FFFFFF" text-anchor="middle">
+        fill="#FFFFFF" text-anchor="middle" id="slot-01_cover-title-1" data-pptx-placeholder="title">
         {{TITLE}}
     </text>
 
     <!-- 副标题 -->
     <text x="640" y="340" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#E5E7EB"
-        text-anchor="middle">
+        text-anchor="middle" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">
         {{SUBTITLE}}
     </text>
 

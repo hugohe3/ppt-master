@@ -1,6 +1,7 @@
 ---
 layout_id: government_red
 kind: layout
+native_structure_mode: template
 summary: Government briefings, policy interpretation, work summaries, project introductions, investment promotion.
 canvas_format: ppt169
 page_count: 5

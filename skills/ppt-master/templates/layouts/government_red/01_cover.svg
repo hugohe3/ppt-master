@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
     <!-- 模板: 封面页 - 重庆两江新区发改委风格 -->
 
     <defs>
@@ -17,7 +17,7 @@
     </defs>
 
     <!-- 背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="url(#coverBgGrad)" />
+    <rect x="0" y="0" width="1280" height="720" fill="url(#coverBgGrad)"  id="layout-01_cover-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 装饰元素 - 几何图案 -->
     <circle cx="1200" cy="100" r="300" fill="#FFFFFF" fill-opacity="0.02" />
@@ -37,12 +37,12 @@
     <rect x="60" y="200" width="6" height="320" fill="#DAA520" fill-opacity="0.6" />
 
     <!-- 主标题区域 -->
-    <text x="640" y="300" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="52" font-weight="bold" fill="#FFFFFF">
+    <text x="640" y="300" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="52" font-weight="bold" fill="#FFFFFF" id="slot-01_cover-title-1" data-pptx-placeholder="title">
         {{TITLE}}
     </text>
 
     <!-- 副标题 -->
-    <text x="640" y="370" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="28" fill="#FFFFFF" fill-opacity="0.85">
+    <text x="640" y="370" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="28" fill="#FFFFFF" fill-opacity="0.85" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">
         {{SUBTITLE}}
     </text>
 

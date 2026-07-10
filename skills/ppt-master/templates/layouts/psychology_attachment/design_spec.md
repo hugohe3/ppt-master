@@ -1,6 +1,7 @@
 ---
 layout_id: psychology_attachment
 kind: layout
+native_structure_mode: template
 summary: Psychotherapy training, academic lectures, counseling case analysis, professional sharing.
 canvas_format: ppt169
 page_count: 5

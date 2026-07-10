@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
   <defs>
     <!-- 左侧主渐变 -->
     <linearGradient id="leftGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -14,7 +14,7 @@
   </defs>
   
   <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect width="1280" height="720" fill="#FFFFFF" id="layout-01_cover-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   
   <!-- 左侧色块（占据左边约 35%） -->
   <rect x="0" y="0" width="450" height="720" fill="url(#leftGradient)"/>
@@ -36,10 +36,10 @@
   
   <!-- 右侧内容区 -->
   <!-- 主标题 -->
-  <text x="860" y="280" text-anchor="middle" fill="#1A2E44" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="44" font-weight="bold">{{TITLE}}</text>
+  <text x="860" y="280" text-anchor="middle" fill="#1A2E44" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="44" font-weight="bold" id="slot-01_cover-title-1" data-pptx-placeholder="title">{{TITLE}}</text>
   
   <!-- 副标题 -->
-  <text x="860" y="340" text-anchor="middle" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20">{{SUBTITLE}}</text>
+  <text x="860" y="340" text-anchor="middle" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">{{SUBTITLE}}</text>
   
   <!-- 金色装饰分隔线 -->
   <rect x="710" y="380" width="300" height="2" fill="url(#goldLine)"/>
