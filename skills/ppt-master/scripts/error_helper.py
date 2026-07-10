@@ -210,15 +210,6 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
-        'group_opacity_detected': {
-            'message': 'Forbidden <g opacity> detected',
-            'solutions': [
-                'Remove group-level opacity',
-                'Set opacity individually on each child element',
-                'Use fill-opacity / stroke-opacity for control'
-            ],
-            'severity': 'error'
-        },
         'event_attribute_detected': {
             'message': 'Forbidden event attribute detected',
             'solutions': [

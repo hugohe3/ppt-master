@@ -152,14 +152,20 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 | Banned Syntax | Correct Alternative |
 |---------------|---------------------|
 | `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
-| `<g opacity="0.2">...</g>` | Set `fill-opacity` / `stroke-opacity` on each child element individually |
+
+**Allowed — group opacity (approximate)**: `<g opacity="0.3">...</g>` maps the
+group alpha onto each descendant shape, text run, picture, and supported
+shadow/glow effect. Nested group and child opacity values multiply. Overlapping
+children may differ from SVG isolated-group compositing because DrawingML has no
+equivalent group-alpha model. With `--native-objects`, transparent native
+table/chart markers are rejected; omit that flag to export their SVG fallback.
 
 **Allowed — picture opacity**: `<image opacity="0.3"/>` maps to native DrawingML
 `a:alphaModFix` and round-trips back to SVG. Use a numeric value from `0` to
 `1`; use an overlay only when the design needs a color wash rather than simple
 transparency.
 
-**Mnemonic**: use explicit paint alpha for shapes; image opacity is native.
+**Mnemonic**: image opacity is native; group opacity is a per-object approximation.
 
 > Arrows: prefer `marker-end` for connector lines (§1.1) — converter produces native auto-rotating arrow heads. For block/chunky arrows, use standalone closed shapes; see `templates/charts/chevron_process.svg` and `templates/charts/process_flow.svg`.
 
@@ -276,7 +282,8 @@ Color: use the deck's primary brand color for emphasis. Reserve green/red for ac
 
 Wrap logically related elements in top-level `<g id="...">` groups. Produces PowerPoint groups in PPTX, making slides easier to select/move/edit and providing stable anchors for optional per-element entrance animation.
 
-> ⚠️ Only `<g opacity="...">` is banned (§2). Plain `<g>` for grouping is required.
+> `<g opacity="0..1">` is supported through the per-descendant alpha
+> approximation in §2. Plain `<g>` remains the normal grouping primitive.
 
 **Animation-ready rule**: direct children of `<svg>` should be semantic groups, not raw drawing atoms. Aim for **3–8 top-level content `<g id>` groups per slide** (the 3–8 budget excludes page chrome — see below); each content group becomes one entrance step under the chosen `--animation-trigger` mode (one click in `on-click`, one cascade slot in `after-previous`, parallel in `with-previous`).
 

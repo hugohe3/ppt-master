@@ -267,7 +267,7 @@ This template emulates the visual language of telecom technical reports. The cor
 5. Prohibited: `mask`, `<style>`, `class`, `foreignObject` (`id` inside `<defs>` is allowed). `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 6. Prohibited: `textPath`, `animate*`, `script`
 7. Prohibited: `<symbol>+<use>`, `<iframe>`, `@font-face`
-8. Prohibited: `<g opacity="...">` (group opacity) — set opacity on each child element individually
+8. `<g opacity="0..1">` is allowed as per-descendant alpha; overlapping children may composite differently
 9. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
 10. Use only system fonts and inline styles
 

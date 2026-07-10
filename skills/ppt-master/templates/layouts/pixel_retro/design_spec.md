@@ -206,7 +206,7 @@ Apply glow filters to key text/elements:
 
 ### PPT Compatibility Rules
 
-- No `<g opacity="...">` (group opacity); set opacity on each child element individually
+- `<g opacity="0..1">` is allowed as per-descendant alpha; overlapping children may composite differently
 - `<image opacity="0..1">` maps to native picture transparency; use overlays only for color washes
 - Use inline styles only; external CSS and `@font-face` are prohibited
 - `filter` effects serve as enhancements (allowed) and do not affect baseline display

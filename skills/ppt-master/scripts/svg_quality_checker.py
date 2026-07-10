@@ -637,10 +637,9 @@ class SVGQualityChecker:
                 "Detected alpha-channel HEX color (#RGBA/#RRGGBBAA is not exported "
                 "to PPTX — fills become invisible; use 6-digit HEX plus "
                 "fill-opacity/stroke-opacity)")
-        if any(_local_name(elem).lower() == 'g' and elem.get('opacity') for elem in elems):
-            result['errors'].append("Detected forbidden <g opacity> (set opacity on each child element individually)")
         for elem in elems:
-            if _local_name(elem).lower() != 'image':
+            tag = _local_name(elem).lower()
+            if tag not in {'g', 'image'}:
                 continue
             raw_opacity = elem.get('opacity')
             if raw_opacity is None:
@@ -658,7 +657,15 @@ class SVGQualityChecker:
                 opacity = -1.0
             if not 0.0 <= opacity <= 1.0:
                 result['errors'].append(
-                    f"<image opacity> must be a numeric value from 0 to 1, got {raw_opacity!r}"
+                    f"<{tag} opacity> must be a numeric value from 0 to 1, got {raw_opacity!r}"
+                )
+            if tag == 'g' and opacity < 1.0 and any(
+                descendant.get('data-pptx-native')
+                for descendant in elem.iter()
+            ):
+                result['warnings'].append(
+                    "<g opacity> around data-pptx-native content uses the SVG "
+                    "fallback; --native-objects export rejects that combination"
                 )
 
     def _check_font_size_values(self, content: str, result: Dict):

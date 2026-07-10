@@ -295,7 +295,9 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 | ---------------------------------- | ------------------------------------------------------ |
 | `fill="rgba(255,255,255,0.1)"`     | `fill="#FFFFFF" fill-opacity="0.1"`                    |
 | `stroke="rgba(0,0,0,0.5)"`        | `stroke="#000000" stroke-opacity="0.5"`                |
-| `<g opacity="0.2">...</g>`        | Set `opacity` / `fill-opacity` on each child element individually |
+
+`<g opacity="0..1">` is supported as per-descendant alpha; overlapping
+children may composite differently from an isolated SVG group.
 
 ---
 

@@ -227,7 +227,11 @@ Use PowerPoint-safe transparency syntax:
 | Avoid | Use instead |
 |------|-------------|
 | `fill=\"rgba(...)\"` | `fill=\"#hex\"` + `fill-opacity` |
-| `<g opacity=\"...\">` | Set opacity on each child |
+
+`<g opacity="0..1">` is supported as a per-descendant alpha approximation.
+Nested values multiply; overlapping children may differ from isolated SVG
+group compositing. Transparent native table/chart markers require the default
+SVG fallback rather than `--native-objects`.
 
 `<image opacity="0..1">` is supported directly. Native export writes
 DrawingML `a:alphaModFix`, and PPTX import restores the SVG opacity value.
