@@ -20,7 +20,7 @@
 
     <!-- 右上角Logo -->
     <image href="../images/{{LOGO_HEADER}}" x="1107" y="30" width="113" height="50"
-        preserveAspectRatio="xMidYMid meet" />
+        preserveAspectRatio="xMidYMid meet" id="semantic-03_content-logo-1" data-pptx-role="logo" />
 
     <!-- 内容区域 - 灵活布局，由 Executor 根据实际内容自由设计 -->
     <!-- 可使用的布局模式：

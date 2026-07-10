@@ -4,6 +4,8 @@
 
 **Hard rule — complete page SVG**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content.
 
+**Hard rule — minimal semantics without semantic loss**: `baseline` / free-design roots declare `data-pptx-page-role`; `template` / `preserve` roots already use `data-pptx-layout` and do not duplicate that identity. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by layer, placeholder, or native-object metadata; the marked element uses a stable unique `id`. Ordinary page content keeps normal SVG structure without duplicate semantic classification. See [`semantic-svg.md`](./semantic-svg.md).
+
 > Note: this rule covers page design only. Speaker notes, animations, transitions, narration, and direct native-PPTX workflows retain their separate artifacts and package-level processing.
 
 ---
@@ -104,7 +106,7 @@ Before generating each page, output which template is used:
 
 | `pptx_structure.mode` | Executor behavior |
 |---|---|
-| `baseline` or missing | Free design or brand-only route. Author ordinary standalone SVG pages; export assigns conservative filename-backed Layout families after generation. |
+| `baseline` or missing | Free design or brand-only route. Author complete standalone SVG pages with root page-role and only necessary structural hints; export assigns conservative marker-backed Layout families after generation. |
 | `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
 | `preserve` | Legacy strict-only compatibility. Use the locked source layout key/name and retain marked preview layers for source-package reuse. |
 
@@ -112,7 +114,7 @@ Before generating each page, output which template is used:
 
 **Hard rule — PowerPoint paint order**: Direct visual children appear in this order: Master background, Layout background, optional Slide background, shared Master shapes, same-key Layout shapes, then slide-local content/placeholders. Backgrounds are the special plane beneath all inherited shapes. Repeat the same Master contract on every page and the same Layout contract on every page sharing a key.
 
-**Placeholder ownership**: Keep actual title/subtitle/body/picture/chart/table/object/media/date/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. A reconstructed `title` normally omits `data-pptx-placeholder-idx`; preserve an explicit imported title index when present. Every indexed placeholder on one layout uses a unique index. Chart/table placeholders require native markers and a later `--native-objects` export; object/media placeholders must each resolve to one top-level DrawingML object.
+**Placeholder ownership**: Keep actual title/subtitle/body/picture/chart/table/object/media/date/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not duplicate placeholder identity with `data-pptx-role`; in particular, `data-pptx-placeholder="slide-number"` already owns page-number field behavior. A reconstructed `title` normally omits `data-pptx-placeholder-idx`; preserve an explicit imported title index when present. Every indexed placeholder on one layout uses a unique index. Chart/table placeholders require native markers and a later `--native-objects` export; object/media placeholders must each resolve to one top-level DrawingML object.
 
 **Adaptive Layout creation**: Start from the selected template SVG, keep every Master element identical, and change only the Layout layer/placeholder contract needed for the new composition. Pages sharing the new key repeat the same static Layout elements and placeholder ids/types in the same order.
 
@@ -193,7 +195,7 @@ Do **not** invent a layout entry, and do **not** assume a template just because 
 **Per-page PowerPoint layout lookup — `pptx_layouts` section**:
 
 - `pptx_structure.mode: template` or `preserve` → a `P<NN>` row is mandatory; apply §1.2 to the root and direct children. Preserve mode uses the exact source key/name and placeholder indices.
-- `pptx_structure.mode: baseline` or missing → omit explicit PPTX structure metadata; baseline export owns conservative Master/background/chrome promotion plus filename-backed Layout family assignment.
+- `pptx_structure.mode: baseline` or missing → omit explicit PPTX layer/layout metadata, but keep the root page role and only necessary structural hints. Baseline export owns conservative Master/background/chrome promotion plus page-role-backed Layout family assignment; filenames and ids are legacy fallbacks only when the corresponding marker is absent.
 - A layout key may repeat across non-adjacent pages. Reuse is based on identical static/placeholder contracts, not page proximity or content wording.
 
 **Per-page chart reference — `page_charts` section**:

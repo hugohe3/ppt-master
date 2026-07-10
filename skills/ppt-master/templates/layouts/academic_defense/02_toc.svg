@@ -13,7 +13,7 @@
   </text>
   
   <!-- 右上角 Logo -->
-  <text x="1200" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">
+  <text x="1200" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold" id="semantic-02_toc-logo-1" data-pptx-role="logo">
     {{LOGO}}
   </text>
   

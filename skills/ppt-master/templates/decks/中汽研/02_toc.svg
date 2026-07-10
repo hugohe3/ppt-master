@@ -12,7 +12,7 @@
     <rect x="60" y="30" width="50" height="50" fill="#004098"/>
     <text x="85" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">目</text>
     <text x="130" y="65" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="28" font-weight="bold" fill="#333333">目 录</text>
-    <image href="../images/{{LOGO_HEADER}}" x="1107" y="30" width="113" height="50" preserveAspectRatio="xMidYMid meet"/>
+    <image href="../images/{{LOGO_HEADER}}" x="1107" y="30" width="113" height="50" preserveAspectRatio="xMidYMid meet" id="semantic-02_toc-logo-1" data-pptx-role="logo"/>
   
     <!-- 左侧装饰竖线 -->
     <rect x="300" y="140" width="4" height="480" fill="#004098"/>

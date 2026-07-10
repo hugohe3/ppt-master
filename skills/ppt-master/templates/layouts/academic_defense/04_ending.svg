@@ -8,7 +8,7 @@
   <rect x="0" y="0" width="6" height="100" fill="#CC0000"/>
   
   <!-- 右上角 Logo -->
-  <text x="1200" y="58" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">
+  <text x="1200" y="58" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold" id="semantic-04_ending-logo-1" data-pptx-role="logo">
     {{LOGO}}
   </text>
   

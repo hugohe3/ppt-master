@@ -11,7 +11,7 @@
   
   <!-- 右上角 Logo 区域占位 -->
   <rect x="1080" y="25" width="160" height="50" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" rx="4"/>
-  <text x="1160" y="58" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">
+  <text x="1160" y="58" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold" id="semantic-01_cover-logo-1" data-pptx-role="logo">
     {{LOGO}}
   </text>
   

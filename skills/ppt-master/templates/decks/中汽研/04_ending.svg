@@ -23,7 +23,7 @@
 
     <!-- 大型Logo - 居中 -->
     <image href="../images/{{LOGO_LARGE}}" x="344" y="160" width="592" height="238"
-        preserveAspectRatio="xMidYMid meet" />
+        preserveAspectRatio="xMidYMid meet" id="semantic-04_ending-logo-1" data-pptx-role="logo" />
 
     <!-- 感谢语（中文） -->
     <text x="640" y="480" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="56"
