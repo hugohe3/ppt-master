@@ -581,25 +581,50 @@ def _local_tag(elem: ET.Element) -> str:
     return elem.tag.split('}', 1)[-1] if isinstance(elem.tag, str) and '}' in elem.tag else str(elem.tag)
 
 
-def _collect_unsupported_visuals(root: ET.Element) -> list[str]:
+def collect_unsupported_visuals(
+    root: ET.Element,
+    *,
+    allow_data_icon_use: bool = False,
+) -> list[str]:
+    """Return visual element paths that the native converter cannot dispatch."""
     issues: list[str] = []
 
-    def walk(elem: ET.Element, path: str, in_defs: bool = False) -> None:
+    def walk(
+        elem: ET.Element,
+        path: str,
+        in_defs: bool = False,
+        parent_tag: str | None = None,
+    ) -> None:
         tag = _local_tag(elem)
         current = f'{path}/{tag}'
         if in_defs:
             return
         if tag in _NON_VISUAL_TAGS:
             return
+        is_supported_visual_child = (
+            tag in _SUPPORTED_VISUAL_CHILD_TAGS
+            and parent_tag in {'text', 'tspan'}
+        )
+        is_data_icon_placeholder = (
+            allow_data_icon_use
+            and tag == 'use'
+            and elem.get('data-icon') is not None
+        )
         if (tag not in _CONVERTERS
                 and tag not in _NON_VISUAL_TAGS
-                and tag not in _SUPPORTED_VISUAL_CHILD_TAGS):
+                and not is_supported_visual_child
+                and not is_data_icon_placeholder):
             issues.append(current)
         for idx, child in enumerate(list(elem), start=1):
-            walk(child, f'{current}[{idx}]', in_defs=(tag == 'defs'))
+            walk(
+                child,
+                f'{current}[{idx}]',
+                in_defs=(tag == 'defs'),
+                parent_tag=tag,
+            )
 
     for idx, child in enumerate(list(root), start=1):
-        walk(child, f'/svg[{idx}]')
+        walk(child, f'/svg[{idx}]', parent_tag='svg')
     return issues
 
 
@@ -762,7 +787,7 @@ def convert_svg_to_slide_shapes(
         if verbose:
             print('  Flattened positional <tspan> into independent <text>')
 
-    unsupported = _collect_unsupported_visuals(root)
+    unsupported = collect_unsupported_visuals(root)
     if unsupported:
         preview = '; '.join(unsupported[:8])
         suffix = '' if len(unsupported) <= 8 else f'; +{len(unsupported) - 8} more'
