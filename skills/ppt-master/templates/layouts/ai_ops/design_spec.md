@@ -273,7 +273,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ### PPT Compatibility Rules
 
-- Use overlay layers instead of image opacity
+- `<image opacity="0..1">` maps to native picture transparency; use overlays only for color washes
 - Define gradients using `<linearGradient>` inside `<defs>`
 - Use `rx`/`ry` attributes for rounded rectangles (post-processing converts to Path)
 

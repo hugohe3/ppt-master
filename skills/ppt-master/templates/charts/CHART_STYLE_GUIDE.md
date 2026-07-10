@@ -302,12 +302,12 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 |---------|----------|
 | `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
 | `<g opacity="0.2">...</g>` | 在每个子元素上单独设置 `fill-opacity` / `stroke-opacity` |
-| `<image opacity="0.3"/>` | 在 image 后叠加 `<rect fill="背景色" opacity="0.7"/>` |
 
 ### 6.3 条件允许
 
 | 特性 | 条件 | 转换结果 |
 |------|------|----------|
+| `<image opacity="...">` | 数值范围 `0..1` | DrawingML `<a:alphaModFix>` |
 | `marker-start` / `marker-end` | `<marker>` 在 `<defs>` 中，`orient="auto"`，形状为三角/菱形/圆 | DrawingML `<a:headEnd>` / `<a:tailEnd>` |
 | `clipPath` on `<image>` | `<clipPath>` 在 `<defs>` 中，单子元素，**仅用于 image** | DrawingML `<a:prstGeom>` / `<a:custGeom>` |
 | `stroke-dasharray` | 使用预设值 `4,4` / `2,2` / `8,4` / `8,4,2,4` | PPTX `<a:prstDash>` |

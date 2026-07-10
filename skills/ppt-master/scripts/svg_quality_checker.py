@@ -639,8 +639,27 @@ class SVGQualityChecker:
                 "fill-opacity/stroke-opacity)")
         if any(_local_name(elem).lower() == 'g' and elem.get('opacity') for elem in elems):
             result['errors'].append("Detected forbidden <g opacity> (set opacity on each child element individually)")
-        if any(_local_name(elem).lower() == 'image' and elem.get('opacity') for elem in elems):
-            result['errors'].append("Detected forbidden <image opacity> (use overlay mask approach)")
+        for elem in elems:
+            if _local_name(elem).lower() != 'image':
+                continue
+            raw_opacity = elem.get('opacity')
+            if raw_opacity is None:
+                style_match = re.search(
+                    r'(?:^|;)\s*opacity\s*:\s*([^;]+)',
+                    elem.get('style', ''),
+                    flags=re.IGNORECASE,
+                )
+                raw_opacity = style_match.group(1).strip() if style_match else None
+            if raw_opacity is None:
+                continue
+            try:
+                opacity = float(raw_opacity)
+            except ValueError:
+                opacity = -1.0
+            if not 0.0 <= opacity <= 1.0:
+                result['errors'].append(
+                    f"<image opacity> must be a numeric value from 0 to 1, got {raw_opacity!r}"
+                )
 
     def _check_font_size_values(self, content: str, result: Dict):
         """Require font-size values to be unitless numeric SVG px values."""
