@@ -925,6 +925,78 @@ steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
 
 **Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
 
+### Explicit PPTX Master / Layout / Placeholder Metadata (Template Export)
+
+**Trigger**: Pass `--pptx-structure template`. Without that flag, the metadata
+stays visually dormant and the SVG exports through the normal baseline / flat
+path.
+
+| Metadata | Placement | Behavior |
+|---|---|---|
+| `data-pptx-layout="content"` | root `<svg>` | Binds the slide to one generated reusable layout key |
+| `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
+| `data-pptx-layer="master"` | direct visual child | Moves one repeated static object/background into the slide master |
+| `data-pptx-layer="layout"` | direct visual child | Moves one repeated static object/background into the selected layout |
+| `data-pptx-placeholder="..."` | direct visual child | Keeps actual content on the slide and maps it to a generated layout placeholder |
+| `data-pptx-placeholder-bounds="x y width height"` | placeholder element | Overrides the reusable placeholder frame in SVG user units |
+| `data-pptx-editable="false"` | master/layout element | Declares intentional editing through Master View, not Normal View |
+
+**Hard rule — explicit only**: Template export never promotes visually similar
+content by inference. Every SVG requires a root `data-pptx-layout`; every
+master/layout/placeholder element requires a unique `id` and must be a direct
+child of the root SVG.
+
+**Layer order**: Author the SVG in PowerPoint inheritance order: master elements
+first, then layout elements, then slide-local content/placeholders. Moving a
+later overlay behind slide content changes z-order, so the exporter rejects
+interleaved structure layers.
+
+| Placeholder value | SVG element | PowerPoint placeholder |
+|---|---|---|
+| `title`, `body`, `footer`, `slide-number` | direct `<text>` | `title`, `body`, `ftr`, `sldNum` |
+| `picture` | direct `<image>` or imported crop `<svg>` | `pic` |
+| `chart`, `table` | direct matching `data-pptx-native` marker group | `chart`, `tbl` |
+
+**Placeholder prototype**: The first slide using a layout key supplies that
+layout's placeholder formatting. `data-pptx-placeholder-bounds` supplies the
+reusable frame; when omitted, the exporter uses the prototype object's native
+DrawingML bounds. Repeat the same placeholder ids/types on every slide using
+that layout. Actual slide content and local geometry may differ.
+
+**Static structure consistency**: Repeat the same master element ids on every
+slide and the same layout element ids on every slide sharing a layout. Their
+generated OOXML must be identical within the affected master/layout group.
+Static structure may carry shapes, text, or images; non-image/external
+relationships are rejected. A full-canvas first rect/group may be marked as a
+master or layout background.
+
+**Native object placeholders**: `chart` / `table` placeholders require
+`--native-objects`; fallback groups contain several shapes and cannot map to one
+PowerPoint placeholder.
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720"
+     data-pptx-layout="content"
+     data-pptx-layout-name="Title and Content">
+  <rect id="master-bg" data-pptx-layer="master"
+        data-pptx-editable="false"
+        width="1280" height="720" fill="#F8FAFC"/>
+  <g id="content-rule" data-pptx-layer="layout"
+     data-pptx-editable="false">
+    <line x1="48" y1="96" x2="1232" y2="96"
+          stroke="#CBD5E1" stroke-width="2"/>
+  </g>
+  <text id="page-title" data-pptx-placeholder="title"
+        data-pptx-placeholder-bounds="80 112 1120 72"
+        x="80" y="158" font-size="40">Actual page title</text>
+  <image id="hero-image" data-pptx-placeholder="picture"
+         data-pptx-placeholder-bounds="680 210 480 320"
+         x="680" y="210" width="480" height="320"
+         href="../images/hero.png"/>
+</svg>
+```
+
 ### transform: rotate — Element Rotation
 
 Rotation converts to native PPTX `<a:xfrm rot="...">`. Supported on all element types: `rect`, `circle`, `ellipse`, `line`, `path`, `polygon`, `polyline`, `image`, and `text`.

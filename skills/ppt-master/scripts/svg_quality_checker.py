@@ -74,6 +74,13 @@ except ImportError:
     _native_object_marker_warnings = None
 
 try:
+    from svg_to_pptx.pptx_package.template_structure import (
+        validate_template_svg as _validate_template_structure_svg,
+    )
+except ImportError:
+    _validate_template_structure_svg = None
+
+try:
     from svg_finalize.embed_icons import (
         resolve_icon_path as _resolve_icon_path,
     )
@@ -382,6 +389,9 @@ class SVGQualityChecker:
 
                 # 8c. Check opt-in native table/chart markers before export.
                 self._check_native_object_markers(root, result)
+
+                # 8d. Validate explicit master/layout/placeholder metadata.
+                self._check_pptx_structure_metadata(root, svg_path, result)
 
                 # 9. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
@@ -996,6 +1006,35 @@ class SVGQualityChecker:
                 result['warnings'].append(
                     f"data-pptx-native marker {marker_id}: {warning}"
                 )
+
+    def _check_pptx_structure_metadata(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Validate explicit template-export metadata when any is present."""
+        structure_attrs = {
+            'data-pptx-layer',
+            'data-pptx-layout',
+            'data-pptx-layout-name',
+            'data-pptx-placeholder',
+            'data-pptx-placeholder-bounds',
+            'data-pptx-editable',
+        }
+        if not any(
+            elem.get(attr) is not None
+            for elem in root.iter()
+            for attr in structure_attrs
+        ):
+            return
+        if _validate_template_structure_svg is None:
+            result['warnings'].append(
+                "Detected PPTX template structure metadata, but its validator "
+                "could not be imported; template export will still validate it."
+            )
+            return
+        result['errors'].extend(_validate_template_structure_svg(svg_path))
 
     def _get_spec_lock(self, svg_path: Path):
         """Locate and parse spec_lock.md near the SVG. Returns dict or None.

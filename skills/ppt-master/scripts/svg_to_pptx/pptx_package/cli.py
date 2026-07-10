@@ -31,6 +31,7 @@ from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
 from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
 from .slide_xml import TRANSITIONS
+from .template_structure import TemplateStructureError
 from ..animation_config import load_animation_config, validate_animation_config
 
 try:
@@ -211,12 +212,18 @@ Recorded narration:
                              'groups export through their SVG fallback children. When set, '
                              'the default-flow export is named <project>_<ts>_native_charts.pptx '
                              'to tell it apart from a plain shape export.')
-    parser.add_argument('--pptx-structure', choices=['baseline', 'flat'], default='baseline',
-                        help='PPTX structure strategy for native export. baseline (default) '
-                             'keeps a standard master/layout package and promotes identical '
-                             'native slide backgrounds plus a safe leading prefix of repeated '
-                             'chrome to the slide master; flat leaves generated backgrounds '
-                             'and chrome slide-local for debugging/comparison.')
+    parser.add_argument(
+        '--pptx-structure',
+        choices=['baseline', 'template', 'flat'],
+        default='baseline',
+        help=(
+            'PPTX structure strategy for native export. baseline (default) keeps '
+            'a standard master/layout package and promotes safe repeated background/'
+            'chrome; template consumes explicit data-pptx-layout/layer/placeholder '
+            'metadata to build reusable layouts; flat leaves generated structure '
+            'slide-local for debugging/comparison.'
+        ),
+    )
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
                         help='Also emit the SVG-rendered snapshot pptx alongside '
                              'the native pptx in exports/ (named '
@@ -670,16 +677,20 @@ Recorded narration:
             print(f"  Output file: {native_path}")
             print()
 
-        ok = create_pptx_with_native_svg(
-            output_path=native_path,
-            use_native_shapes=True,
-            svg_files=native_files,
-            conversion_trace_path=(
-                native_path.with_name(native_path.name + '.trace.json')
-                if args.conversion_trace else None
-            ),
-            **shared_kwargs,
-        )
+        try:
+            ok = create_pptx_with_native_svg(
+                output_path=native_path,
+                use_native_shapes=True,
+                svg_files=native_files,
+                conversion_trace_path=(
+                    native_path.with_name(native_path.name + '.trace.json')
+                    if args.conversion_trace else None
+                ),
+                **shared_kwargs,
+            )
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
         success = success and ok
 
     # --- SVG image reference version ---

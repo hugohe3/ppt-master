@@ -153,7 +153,12 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     style_overrides = _extract_inheritable_styles(elem)
 
     elem_id = elem.get('id')
-    should_animate_group = ctx.depth == 0 and elem_id and not is_chrome_id(elem_id)
+    should_animate_group = (
+        ctx.depth == 0
+        and elem_id
+        and not is_chrome_id(elem_id)
+        and not elem.get('data-pptx-layer')
+    )
     visual_children = [
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
@@ -494,6 +499,14 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         }
         if elem_id:
             event['id'] = elem_id
+        for attr in (
+            'data-pptx-layer',
+            'data-pptx-placeholder',
+            'data-pptx-placeholder-bounds',
+        ):
+            value = elem.get(attr)
+            if value is not None:
+                event[attr] = value
         event.update(metadata)
         ctx.trace_events.append(event)
 
@@ -693,7 +706,7 @@ def convert_svg_to_slide_shapes(
             shapes.append(result.xml)
             converted += 1
             m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
-            if m:
+            if m and not child.get('data-pptx-layer'):
                 fallback_targets.append((int(m.group(1)), tag))
         else:
             if tag not in _NON_VISUAL_TAGS:

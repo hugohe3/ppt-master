@@ -690,6 +690,19 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `--pptx-structure flat` only for debugging/comparison when all generated
 > backgrounds and chrome must remain slide-local.
 
+> **Explicit reusable template export** — pass `--pptx-structure template`
+> only when every SVG root declares `data-pptx-layout` and direct children
+> explicitly declare master/layout layers or PowerPoint placeholders. This
+> mode builds named reusable layouts and placeholder mappings; it does not
+> infer them from visual similarity. Static master/layout elements must be
+> repeated consistently in inheritance/z-order order. Chart/table placeholders
+> additionally require `--native-objects`. The metadata contract and authoring
+> example live in
+> [`references/shared-standards.md`](references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata-template-export).
+> Raw PPTX templates still route to `template-fill-pptx`; `template` structure
+> mode is for explicitly annotated SVG authoring, not source-package
+> preservation.
+
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
 > `<a:p>`, improving body-text editing and resize/reflow behavior. Add `--no-merge`
