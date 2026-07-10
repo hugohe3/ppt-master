@@ -1,6 +1,7 @@
 ---
 layout_id: ai_ops
 kind: layout
+native_structure_mode: template
 summary: Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports.
 canvas_format: ppt169
 page_count: 6

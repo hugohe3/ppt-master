@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="03_content" data-pptx-layout-name="Content">
   <defs>
     <!-- 顶部斜切渐变 -->
     <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -8,7 +8,7 @@
   </defs>
   
   <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FAFCFF"/>
+  <rect width="1280" height="720" fill="#FAFCFF" id="layout-03_content-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   
   <!-- 顶部斜切蓝色装饰带（左高右低） -->
   <polygon points="0,0 1280,0 1280,70 0,90" fill="url(#headerGradient)"/>
@@ -17,7 +17,7 @@
   <polygon points="0,90 1280,70 1280,85 0,105" fill="#E3F2FD"/>
   
   <!-- 页面标题 -->
-  <text x="60" y="55" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="24" font-weight="bold">{{PAGE_TITLE}}</text>
+  <text x="60" y="55" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="24" font-weight="bold" id="slot-03_content-title-1" data-pptx-placeholder="title">{{PAGE_TITLE}}</text>
   
   <!-- Logo（右上角，在斜切带上） -->
   <image x="1040" y="12" width="200" height="50" xlink:href="重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
@@ -29,7 +29,7 @@
   <rect x="60" y="120" width="1160" height="50" fill="#E3F2FD" rx="6"/>
   <rect x="60" y="120" width="4" height="50" fill="#006BB7"/>
   <text x="80" y="152" fill="#006BB7" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">核心观点</text>
-  <text x="170" y="152" fill="#333D4A" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15">{{KEY_MESSAGE}}</text>
+  <text x="170" y="152" fill="#333D4A" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" id="slot-03_content-body-2" data-pptx-placeholder="body">{{KEY_MESSAGE}}</text>
   
   <!-- 内容区域占位 -->
   <rect x="60" y="190" width="1160" height="440" fill="#FFFFFF" stroke="#E3F2FD" stroke-width="2" rx="8"/>
@@ -49,7 +49,7 @@
   
   <!-- 页脚右侧：页码（金色装饰） -->
   <rect x="1180" y="665" width="40" height="28" fill="#006BB7" rx="4"/>
-  <text x="1200" y="685" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="13" font-weight="bold">{{PAGE_NUM}}</text>
+  <text x="1200" y="685" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="13" font-weight="bold" id="slot-03_content-slide_number-3" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
   
   <!-- 左下角金色光点 -->
   <circle cx="50" cy="670" r="3" fill="#D4A84B" fill-opacity="0.5"/>

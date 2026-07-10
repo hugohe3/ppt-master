@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="03_content" data-pptx-layout-name="Content">
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#F8FAFC" />
+    <rect width="1280" height="720" fill="#F8FAFC"  id="layout-03_content-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 左侧装饰条 -->
     <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
 
     <!-- 标题区域 -->
     <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold"
-        fill="#1E293B">
+        fill="#1E293B" id="slot-03_content-title-1" data-pptx-placeholder="title">
         {{PAGE_TITLE}}
     </text>
     <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
@@ -31,11 +31,11 @@
     <rect x="60" y="140" width="1180" height="490" fill="none" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="8,4"
         rx="8" />
     <text x="650" y="390" text-anchor="middle" fill="#CBD5E1" font-family="PingFang SC, Microsoft YaHei, sans-serif"
-        font-size="14">
+        font-size="14" id="slot-03_content-body-2" data-pptx-placeholder="body">
         {{CONTENT_AREA}}
     </text>
 
     <!-- 页码 -->
     <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF"
-        text-anchor="end">{{PAGE_NUM}}</text>
+        text-anchor="end" id="slot-03_content-slide_number-3" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
 </svg>

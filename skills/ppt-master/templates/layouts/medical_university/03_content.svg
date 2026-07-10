@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="03_content" data-pptx-layout-name="Content">
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect width="1280" height="720" fill="#FFFFFF"  id="layout-03_content-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- ==================== 页眉区域 ==================== -->
     <!-- 医学蓝页眉背景 -->
@@ -11,7 +11,7 @@
 
     <!-- 章节编号 + 页面标题 -->
     <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26"
-        font-weight="bold">
+        font-weight="bold" id="slot-03_content-title-1" data-pptx-placeholder="title">
         {{SECTION_NUM}} {{PAGE_TITLE}}
     </text>
 
@@ -25,7 +25,7 @@
     <!-- ==================== 核心观点条 ==================== -->
     <rect x="0" y="70" width="1280" height="50" fill="#E6F3FA" />
     <rect x="0" y="70" width="6" height="50" fill="#00A86B" />
-    <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">
+    <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" id="slot-03_content-body-2" data-pptx-placeholder="body">
         {{KEY_MESSAGE}}
     </text>
 
@@ -72,7 +72,7 @@
         {{SECTION_NAME}}
     </text>
     <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif"
-        font-size="14">
+        font-size="14" id="slot-03_content-slide_number-3" data-pptx-placeholder="slide-number">
         {{PAGE_NUM}}
     </text>
 </svg>

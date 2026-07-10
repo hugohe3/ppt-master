@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" data-pptx-layout="reference_style" data-pptx-layout-name="Reference Style">
   <!-- Background -->
-  <rect x="0" y="0" width="1280" height="720" fill="#ffffff" />
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff"  id="layout-reference_style-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   
   <!-- Header -->
   <rect x="30" y="20" width="10" height="40" fill="#C00000" />

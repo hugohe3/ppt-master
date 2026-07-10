@@ -1,6 +1,7 @@
 ---
 layout_id: government_blue
 kind: layout
+native_structure_mode: template
 summary: Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation.
 canvas_format: ppt169
 page_count: 5

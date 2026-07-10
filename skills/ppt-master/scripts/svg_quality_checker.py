@@ -794,6 +794,8 @@ class SVGQualityChecker:
             href = image.get('href') or image.get(f'{{{XLINK_NS}}}href')
             if not href or href.startswith('data:'):
                 continue
+            if self.template_mode and '{{' in href and '}}' in href:
+                continue
             if _resolve_external_image_reference is None or _unresolved_external_image_reference_path is None:
                 result['warnings'].append(
                     "Detected image references, but shared image resolver could not be imported; "
@@ -1466,7 +1468,8 @@ class SVGQualityChecker:
 
         if (
             structure_lock is not None
-            and structure_lock.template_adherence == 'strict'
+            and structure_lock.mode == 'template'
+            and structure_lock.template_adherence in {'strict', 'adaptive'}
             and _parse_spec_lock is not None
         ):
             lock_path = project_path / 'spec_lock.md'
@@ -1477,7 +1480,7 @@ class SVGQualityChecker:
             if missing_pages:
                 self._pptx_structure_issues.append((
                     'error',
-                    'spec_lock.md strict template_adherence requires page_layouts '
+                    'spec_lock.md template export requires page_layouts '
                     'rows for every generated page; missing: ' + ', '.join(missing_pages),
                 ))
             template_dir = project_path / 'templates'
@@ -1491,7 +1494,7 @@ class SVGQualityChecker:
             if missing_templates:
                 self._pptx_structure_issues.append((
                     'error',
-                    'spec_lock.md strict template_adherence references missing '
+                    'spec_lock.md template export references missing '
                     'template SVG(s): ' + ', '.join(missing_templates),
                 ))
 
@@ -1950,11 +1953,12 @@ class SVGQualityChecker:
 
     def _check_template_contract(self, dir_path: Path,
                                  svg_files: List[Path]) -> None:
-        """Template-mode-only checks: roster ↔ design_spec consistency and
-        per-page placeholder hints.
+        """Check reusable-template structure, roster, and placeholder hints.
 
         - **Roster mismatch (orphan / missing)** is reported as an *error*: a
           stale roster will produce a wrong ``layouts_index.json`` entry.
+        - **Explicit structure gaps** are errors: every reusable SVG declares
+          its Layout and at least one direct structure/placeholder element.
         - **Placeholder gaps** are reported as *warnings*. Templates may
           legitimately omit conventional placeholders or swap them out (e.g.
           ``{{CLOSING_MESSAGE}}`` instead of ``{{THANK_YOU}}``), and a content
@@ -1968,6 +1972,37 @@ class SVGQualityChecker:
         native_contract_path = dir_path / 'native_structure.json'
         source_template_path = dir_path / 'source_template.pptx'
         native_contract = None
+        for svg_file in svg_files:
+            try:
+                root = ET.parse(svg_file).getroot()
+            except (OSError, ET.ParseError):
+                continue
+            if not root.get('data-pptx-layout'):
+                self._template_issues.append((
+                    'error',
+                    'explicit_structure_missing',
+                    f"{svg_file.name}: reusable templates require root "
+                    "data-pptx-layout metadata",
+                ))
+            if not root.get('data-pptx-layout-name'):
+                self._template_issues.append((
+                    'error',
+                    'explicit_structure_name_missing',
+                    f"{svg_file.name}: reusable templates require root "
+                    "data-pptx-layout-name metadata",
+                ))
+            has_structure_child = any(
+                child.get('data-pptx-layer') in {'master', 'layout'}
+                or child.get('data-pptx-placeholder')
+                for child in list(root)
+            )
+            if not has_structure_child:
+                self._template_issues.append((
+                    'error',
+                    'explicit_structure_empty',
+                    f"{svg_file.name}: reusable templates require at least one "
+                    "direct master/layout/placeholder declaration",
+                ))
         if native_contract_path.exists() != source_template_path.exists():
             self._template_issues.append((
                 'error',
@@ -2049,6 +2084,19 @@ class SVGQualityChecker:
 
         spec_path = dir_path / 'design_spec.md'
         spec_text = spec_path.read_text(encoding='utf-8') if spec_path.exists() else ""
+        mode_match = re.search(
+            r'^native_structure_mode:\s*([A-Za-z0-9_-]+)\s*$',
+            spec_text,
+            re.MULTILINE,
+        )
+        declared_structure_mode = mode_match.group(1).lower() if mode_match else None
+        if native_contract is None and declared_structure_mode != 'template':
+            self._template_issues.append((
+                'error',
+                'explicit_structure_mode',
+                "design_spec.md frontmatter must declare "
+                "native_structure_mode: template",
+            ))
         spec_pages = self._extract_spec_roster(spec_text) if spec_text else []
         custom_contract = self._extract_frontmatter_placeholders(spec_text) if spec_text else {}
 
@@ -2179,18 +2227,40 @@ class SVGQualityChecker:
         that as "skip orphan/missing checks", not as "no pages declared".
         """
         # Pass 1: explicit roster section, any roman numeral.
-        section = re.search(
-            r"^##\s+[IVX]+\.\s+(?:Page Roster|Page Structure|Pages|Page Types)\b.*?(?=^##\s+|\Z)",
+        sections = list(re.finditer(
+            r"^##\s+[IVX]+\.\s+(?:(?:SVG\s+)?Page Roster|Page Structure|Pages|Page Types)\b.*?(?=^##\s+|\Z)",
             spec_text,
             re.MULTILINE | re.DOTALL | re.IGNORECASE,
+        ))
+        roster_scope = next(
+            (
+                section.group(0)
+                for section in sections
+                if re.match(
+                    r"^##\s+[IVX]+\.\s+(?:SVG\s+)?Page Roster\b",
+                    section.group(0),
+                    re.IGNORECASE,
+                )
+            ),
+            None,
         )
-        scope = section.group(0) if section else None
+        scope = roster_scope or next(
+            (
+                section.group(0)
+                for section in sections
+                if re.search(r"[`\(][0-9A-Za-z_]+\.svg[`\)]", section.group(0))
+            ),
+            sections[0].group(0) if sections else None,
+        )
 
         # Pass 2: full document. We *only* trust this scan when the explicit
         # roster scan came up empty (no `<stem>.svg` references inside it) —
         # otherwise the explicit section's deliberate roster wins over loose
         # mentions elsewhere.
-        if scope and re.search(r"[`\(][0-9A-Za-z_]+\.svg[`\)]", scope):
+        explicit_scope = bool(
+            scope and re.search(r"[`\(][0-9A-Za-z_]+\.svg[`\)]", scope)
+        )
+        if explicit_scope:
             text = scope
         else:
             text = spec_text
@@ -2202,7 +2272,7 @@ class SVGQualityChecker:
         svg_ref_re = re.compile(r"[`\(]([0-9A-Za-z_]+\.svg)[`\)]")
         for match in svg_ref_re.finditer(text):
             stem = match.group(1)[:-4]
-            if stem in seen or not re.match(r"^\d", stem):
+            if stem in seen or (not explicit_scope and not re.match(r"^\d", stem)):
                 continue
             seen.add(stem)
             stems.append(stem)

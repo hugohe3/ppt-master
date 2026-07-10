@@ -1,6 +1,7 @@
 ---
 layout_id: medical_university
 kind: layout
+native_structure_mode: template
 summary: Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.
 canvas_format: ppt169
 page_count: 5

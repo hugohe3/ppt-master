@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="04_ending" data-pptx-layout-name="Closing">
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-04_ending-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <image x="72" y="34" width="214" height="58" xlink:href="logo.png" />
   <text x="96" y="274" fill="#111827" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="40" font-weight="700">{{THANK_YOU}}</text>
@@ -14,5 +14,5 @@
   <image x="872" y="356" width="304" height="84" xlink:href="skyline_bg.png" preserveAspectRatio="xMidYMid meet" />
 
   <image x="0" y="554" width="1280" height="166" xlink:href="footer_ribbon.png" preserveAspectRatio="xMidYMid slice" />
-  <text x="1208" y="676" text-anchor="end" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="13">{{PAGE_NUM}}</text>
+  <text x="1208" y="676" text-anchor="end" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="13" id="slot-04_ending-slide_number-1" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
 </svg>

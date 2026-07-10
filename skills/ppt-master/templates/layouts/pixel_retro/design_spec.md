@@ -1,6 +1,7 @@
 ---
 layout_id: pixel_retro
 kind: layout
+native_structure_mode: template
 summary: Tech talks, programming tutorials, game introductions, geek-style showcases.
 canvas_format: ppt169
 page_count: 5

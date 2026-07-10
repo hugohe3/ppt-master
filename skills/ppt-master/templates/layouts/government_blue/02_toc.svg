@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="02_toc" data-pptx-layout-name="Agenda">
     <!-- 模板: 目录页 - 政府蓝风格 (优化版) -->
 
     <defs>
@@ -21,7 +21,7 @@
     </defs>
 
     <!-- 背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="url(#bgGrad)"/>
+    <rect x="0" y="0" width="1280" height="720" fill="url(#bgGrad)" id="layout-02_toc-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 顶部渐变装饰线 -->
     <rect x="0" y="0" width="1280" height="6" fill="url(#topGrad)"/>
@@ -102,6 +102,6 @@
     <rect x="0" y="716" width="1280" height="4" fill="#0050B3"/>
 
     <!-- 页码 -->
-    <text x="640" y="695" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#718096">{{PAGE_NUM}}</text>
+    <text x="640" y="695" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#718096" id="slot-02_toc-slide_number-1" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
 
 </svg>

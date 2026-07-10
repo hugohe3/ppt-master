@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="02_chapter" data-pptx-layout-name="Section">
     <!-- 模板: 章节页 - 政府蓝风格 (优化版) -->
 
     <defs>
@@ -22,10 +22,10 @@
     </defs>
 
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="url(#gradChapter)"/>
+    <rect width="1280" height="720" fill="url(#gradChapter)" id="layout-02_chapter-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 径向光晕装饰 -->
-    <rect width="1280" height="720" fill="url(#glowGrad)"/>
+    <rect width="1280" height="720" fill="url(#glowGrad)" id="full-canvas-02_chapter-1"/>
 
     <!-- 装饰元素 - 几何图案 -->
     <circle cx="1200" cy="100" r="300" fill="#FFFFFF" fill-opacity="0.02"/>

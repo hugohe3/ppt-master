@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="04_ending" data-pptx-layout-name="Closing">
     <!-- 模板: 结束页 - 政府蓝风格 (优化版) -->
 
     <defs>
@@ -17,7 +17,7 @@
     </defs>
 
     <!-- 背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="url(#endBgGrad)" />
+    <rect x="0" y="0" width="1280" height="720" fill="url(#endBgGrad)"  id="layout-04_ending-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 装饰元素 - 几何图案 -->
     <circle cx="100" cy="120" r="200" fill="#FFFFFF" fill-opacity="0.02" />

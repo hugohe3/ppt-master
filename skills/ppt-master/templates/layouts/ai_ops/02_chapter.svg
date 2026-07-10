@@ -1,6 +1,6 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" data-pptx-layout="02_chapter" data-pptx-layout-name="Section">
   <!-- Background -->
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-02_chapter-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <!-- Top Red Strip -->
   <rect x="0" y="0" width="1280" height="8" fill="#C00000" />
@@ -21,7 +21,7 @@
   <text x="640" y="340" font-family="Arial, sans-serif" font-size="160" font-weight="bold" fill="#F2F2F2" text-anchor="middle">{{CHAPTER_NUM}}</text>
 
   <!-- Chapter Title -->
-  <text x="640" y="420" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="48" font-weight="bold" fill="#000000" text-anchor="middle">{{CHAPTER_TITLE}}</text>
+  <text x="640" y="420" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="48" font-weight="bold" fill="#000000" text-anchor="middle" id="slot-02_chapter-title-1" data-pptx-placeholder="title">{{CHAPTER_TITLE}}</text>
 
   <!-- Decorative Lines -->
   <line x1="480" y1="450" x2="800" y2="450" stroke="#C00000" stroke-width="3" />

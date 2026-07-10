@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="02_toc" data-pptx-layout-name="Agenda">
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-02_toc-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <rect x="0" y="32" width="158" height="64" rx="24" fill="#C00000" />
   <rect x="114" y="32" width="1166" height="64" fill="#C00000" />

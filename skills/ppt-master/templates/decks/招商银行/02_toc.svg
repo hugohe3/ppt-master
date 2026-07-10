@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <rect width="1280" height="720" fill="#FFFFFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-layout="02_toc" data-pptx-layout-name="Agenda">
+  <rect width="1280" height="720" fill="#FFFFFF" id="layout-02_toc-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect x="0" y="0" width="1280" height="30" fill="#C8152D"/>
   <defs>
     <linearGradient id="accentFade" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -36,7 +36,7 @@
       分隔线:   <line stroke="#ECECEC" stroke-width="1.5"/>
       列分隔:   <line stroke="#EFEFEF" stroke-width="2"/> (纵向)
   -->
-  <text x="641" y="400" text-anchor="middle" fill="#D8D8D8" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">
+  <text x="641" y="400" text-anchor="middle" fill="#D8D8D8" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3" id="slot-02_toc-body-1" data-pptx-placeholder="body">
     {{CONTENT_AREA}}
   </text>
   <text x="641" y="436" text-anchor="middle" fill="#E6E6E6" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="14">
