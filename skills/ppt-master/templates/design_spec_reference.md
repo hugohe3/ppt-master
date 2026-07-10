@@ -16,6 +16,7 @@
 | **Use Case** | [Filled by Strategist] |
 | **Delivery Purpose** | [`text` read-close / `balanced` business / `presentation` — confirmed at c; a deck-wide consumption mode that drives per-page density, page-count recommendation, page_rhythm lean, and the body baseline (px). See strategist.md §6.1.] |
 | **Content Strategy** | [Material divergence — the user's free-text intent on how closely to follow the source vs how freely to reshape it (or "balanced default"); facts stay sourced however free. Confirmed at c; consumed when authoring §IX. Not in spec_lock.] |
+| **Template Adherence** | [`adaptive` / `strict` — include only when Step 3 loaded a deck/layout template; omit for free design and brand-only templates. Also written under `spec_lock.md pptx_structure`.] |
 | **Created Date** | {date_str} |
 
 ---

@@ -999,7 +999,7 @@ PowerPoint placeholder.
 
 ### Preserved Source Master / Layout Contract
 
-**Trigger**: A reusable template package ships `native_structure.json` and `source_template.pptx`, and `spec_lock.md` sets `pptx_structure.mode: preserve` with project-relative paths to both files.
+**Trigger**: A reusable template package ships `native_structure.json` and `source_template.pptx`, the Strategist-confirmed `template_adherence` is `strict`, and `spec_lock.md` sets `pptx_structure.mode: preserve` with project-relative paths to both files. The pair's presence alone is not a trigger; `adaptive` template use stays on `baseline`.
 
 | Artifact | Authority |
 |---|---|

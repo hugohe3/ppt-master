@@ -96,9 +96,11 @@ Before generating each page, output which template is used:
 
 `page_layouts` selects an SVG design reference; `pptx_layouts` declares the native PowerPoint layout produced at export. They are independent contracts.
 
+`pptx_structure.template_adherence` records the Strategist's confirmed template-use policy. `strict` requires one real `page_layouts` roster entry for every page; `adaptive` permits missing rows and keeps native export on `baseline` even when the template directory contains `native_structure.json` + `source_template.pptx`.
+
 | `pptx_structure.mode` | Executor behavior |
 |---|---|
-| `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template. |
+| `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template or its directory carries a native structure pair. |
 | `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
 | `preserve` | Every generated SVG MUST use the locked source layout key/name. Keep inherited master/layout visuals as marked preview layers; export removes the previews and reuses the original source package parts. |
 
@@ -175,11 +177,12 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 Before drawing each page, look up its entry in `page_layouts` to decide which basename to inherit (the SVG itself was loaded in §1.0):
 
-- Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding SVG already in context. The basename **must match** an actual file in the chosen template directory; if it doesn't, emit `warning: page_layouts P<NN> references missing file <basename>.svg — falling back to free design` and proceed.
-- No entry for this page → free design, no inheritance. **Not an error** — Strategist intentionally left this page free.
+- Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding SVG already in context. The basename **must match** an actual file in the chosen template directory. If it does not, `adaptive` emits `warning: page_layouts P<NN> references missing file <basename>.svg — falling back to free design`; `strict` stops and reports the invalid mapping.
+- No entry for this page with `template_adherence: adaptive` (or no adherence row) → free design, no inheritance. **Not an error** — Strategist intentionally left this page free.
+- No entry for this page with `template_adherence: strict` → stop before drawing and report the missing Strategist mapping; strict template use cannot silently fall back to free design.
 - Whole section absent → see §1 fallback (legacy page-type matching).
 
-Do **not** invent a layout entry, and do **not** assume a template just because `templates/` exists — if `page_layouts` is present but silent for this page, that silence is the instruction.
+Do **not** invent a layout entry, and do **not** assume a template just because `templates/` exists. In `adaptive` mode, a silent `page_layouts` row is the instruction to design freely; in `strict` mode, silence is an upstream contract error.
 
 **Per-page PowerPoint layout lookup — `pptx_layouts` section**:
 

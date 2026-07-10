@@ -1,6 +1,6 @@
 /* PPT Master - Strategist confirmation stage UI
- * Finite/enumerable fields (canvas, mode, visual style, icons, image usage,
- * AI source, formula policy, generation mode) list ALL options from
+ * Finite/enumerable fields (canvas, mode, visual style, template adherence,
+ * icons, image usage, AI source, formula policy, generation mode) list ALL options from
  * /static/catalogs.json with the AI's recommendation marked. Open/generative
  * fields (color, typography, generated-image style) show >=3 AI candidates. Open fields also expose
  * Custom controls. On confirm the page saves result.json and closes.
@@ -38,6 +38,7 @@
             sec_refine: "Refine spec first",
             sub_mode: "Narrative mode",
             sub_visual: "Visual style",
+            sub_template_adherence: "Template adherence",
             sub_divergence: "Material divergence (how freely to reshape vs. stay close to the source)",
             placeholder_divergence: "In your words — e.g. \"stick closely to the document\" / \"freely restructure and expand within the source\". Leave blank for a balanced default.",
             custom: "Custom",
@@ -149,6 +150,7 @@
             sec_refine: "先に設計仕様を精査",
             sub_mode: "ナラティブモード",
             sub_visual: "ビジュアルスタイル",
+            sub_template_adherence: "テンプレートの適用方法",
             sub_divergence: "素材からの発散度（どこまで自由に再構成するか、原文に忠実か）",
             placeholder_divergence: "自分の言葉でどうぞ — 例：「文書に忠実に」「元素材の範囲内で自由に再構成・展開」。空欄ならバランス型になります。",
             custom: "カスタム",
@@ -260,6 +262,7 @@
             sec_refine: "先精修设计规范",
             sub_mode: "叙事模式",
             sub_visual: "视觉风格",
+            sub_template_adherence: "模板遵循方式",
             sub_divergence: "材料发散度（多大程度重塑，还是贴近源材料）",
             placeholder_divergence: "用你自己的话写，例如「严格贴着文档来」/「在源材料范围内自由重组并展开」。留空则按平衡处理。",
             custom: "自定义",
@@ -719,6 +722,15 @@
     function recValue(field) {
         return (REC && REC.recommend && REC.recommend[field]) || legacyRecId(field);
     }
+
+    function hasTemplateAdherence() {
+        if (!REC) return false;
+        if (typeof REC._template_adherence_enabled === "boolean") {
+            return REC._template_adherence_enabled;
+        }
+        if (REC.recommend && REC.recommend.template_adherence != null) return true;
+        return REC.template_adherence != null;
+    }
     // Guaranteed recommendation: the AI's pick, or the first catalog option as a
     // fallback so an enumerable field ALWAYS shows a badged recommendation.
     function recOrFirst(field, list) {
@@ -1054,6 +1066,15 @@
             function () { return STATE.visual_style; }, function (v) { STATE.visual_style = v; refreshDirectionPreview(); },
             { allowCustom: true, spectrum: REC && REC.visual_style_spectrum });
         sec.appendChild(sub2);
+        if (hasTemplateAdherence()) {
+            var templateField = el("div", "subfield");
+            templateField.appendChild(el("div", "subfield-label", t("sub_template_adherence")));
+            enumField(templateField, CAT.template_adherence,
+                recOrFirst("template_adherence", CAT.template_adherence),
+                function () { return STATE.template_adherence; },
+                function (v) { STATE.template_adherence = v; });
+            sec.appendChild(templateField);
+        }
         host.appendChild(sec);
     }
 
@@ -2074,6 +2095,11 @@
         STATE.content_divergence = (REC.content_divergence && REC.content_divergence.value) || "";  // free text; blank = balanced default
         STATE.mode = pick("mode", CAT.modes);
         STATE.visual_style = pick("visual_style", CAT.visual_styles);
+        if (hasTemplateAdherence()) {
+            STATE.template_adherence = pick("template_adherence", CAT.template_adherence);
+        } else {
+            delete STATE.template_adherence;
+        }
         // Delivery purpose drives the PPT body px baseline; default balanced
         // (not the catalog-first id) when the Strategist did not recommend one.
         STATE.delivery_purpose = recId("delivery_purpose") || "balanced";
@@ -2150,6 +2176,7 @@
             mode: STATE.mode,
             visual_style: STATE.visual_style
         };
+        if (STATE.template_adherence) payload.template_adherence = STATE.template_adherence;
         // Delivery purpose is PPT-only and rendered only on PPT canvases (§c).
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
         return payload;
@@ -2169,6 +2196,7 @@
             typography: STATE.typography,
             formula_policy: STATE.formula_policy
         };
+        if (STATE.template_adherence) payload.template_adherence = STATE.template_adherence;
         if (isPptCanvas(STATE.canvas)) payload.delivery_purpose = STATE.delivery_purpose;
         normalizeTypographyForSubmit(payload);
         return payload;

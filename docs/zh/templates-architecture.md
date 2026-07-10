@@ -14,9 +14,11 @@
 | **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template.md`（layout 分支）|
 | **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template.md`（deck 分支，默认）|
 
-从结构完整的 PPTX 导入的 Layout/Deck 可以额外携带一对原生结构文件：`native_structure.json` 记录稳定 master/layout key、版式显示名称、父母版和 placeholder type/idx；`source_template.pptx` 保存原 package。两者必须同时存在且 SHA-256 匹配。下游 `pptx_structure.mode: preserve` 会复用源 master/layout/theme；没有这对文件时继续使用现有 `baseline` 或显式 `template` 重建。
+从结构完整的 PPTX 导入的 Layout/Deck 可以额外携带一对原生结构文件：`native_structure.json` 记录稳定 master/layout key、版式显示名称、父母版和 placeholder type/idx；`source_template.pptx` 保存原 package。两者必须同时存在且 SHA-256 匹配。这是一项模板包能力，不是自动路由：下游 Strategist 确认 `strict` 时可用 `pptx_structure.mode: preserve` 复用源 master/layout/theme；确认 `adaptive` 时仍按 SVG 模板参考 + `baseline` 自由生成。没有这对文件时继续使用现有 `baseline` 或显式 `template` 重建。
 
 三者是**三种并列的 reference bundle**，物理目录与 frontmatter `kind` 字段双向对齐：
+
+多路径合成后的项目级 `design_spec.md` 也必须保留准确的 `kind`：同时具备身份段和结构段时为 `deck`，只有结构段时为 `layout`，只有身份段时为 `brand`。Strategist 确认页据此只对真正包含页面结构的 Deck/Layout 显示 `adaptive / strict`。
 
 ```yaml
 # templates/brands/anthropic/design_spec.md

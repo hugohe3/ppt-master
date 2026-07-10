@@ -168,6 +168,8 @@ def build_native_structure(
             "preservationEligible": complete_graph,
             "reusableStructureDetected": reusable_structure,
             "recommendedMode": recommended_mode,
+            "recommendationScope": "template-packaging",
+            "downstreamTemplateAdherence": "strategist-confirmed",
             "hasMultipleMasters": len(masters) > 1,
             "reasonCodes": reasons,
         },

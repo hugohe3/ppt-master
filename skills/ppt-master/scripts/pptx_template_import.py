@@ -135,9 +135,10 @@ def main() -> int:
             print("Native structure: native_structure.json")
             print("Preserved source package: source_template.pptx")
             print(
-                "Recommended structure mode: "
+                "Recommended template packaging mode: "
                 f"{native_structure['strategy']['recommendedMode']}"
             )
+            print("Downstream template adherence: Strategist-confirmed")
             print("Summary: summary.md")
             print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
             print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
@@ -171,8 +172,9 @@ def main() -> int:
     print(f"Output directory: {output_dir}")
     if native_structure is not None:
         print(
-            "Native structure: "
-            f"{native_structure['strategy']['recommendedMode']} recommended"
+            "Native structure packaging: "
+            f"{native_structure['strategy']['recommendedMode']} recommended; "
+            "downstream use is Strategist-confirmed"
         )
     return 0
 
