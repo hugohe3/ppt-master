@@ -118,7 +118,13 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 Native `svg_to_pptx.py` also defaults to `--pptx-structure baseline`: the generated deck keeps a standard master/layout relationship and promotes identical native slide backgrounds into the slide master. A shared leading prefix of top-level SVG elements with exact chrome id tokens such as `logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber`, or `slideNumber` may also be promoted when its generated OOXML is identical, it is not referenced by slide timing, and moving it behind slide-local content preserves z-order; image relationships are copied to the master. Use `--pptx-structure flat` when all generated backgrounds and chrome must remain slide-local for debugging or comparison.
 
-`pptx_to_svg.py` annotates supported unmerged tables and conservative classic-chart caches with `data-pptx-native` metadata. Source table-style inheritance, supported solid cell fills/basic text formatting, chart title/legend/axis titles, and plot-level data-label flags for area/bar/column/line charts are retained when the current schema can represent them. Tables with direct borders, non-solid fills, or mixed rich-text formatting remain fallback-only, as do charts with unsupported label scopes/types, custom axis semantics, trendlines/error bars, or subtype options. Unsupported objects keep their SVG preview (or an explicit placeholder when the source has no baked preview) and carry `data-pptx-native-status`; `svg_quality_checker.py` and `svg_to_pptx.py --native-objects` report those fallback-only objects as warnings.
+`pptx_to_svg.py` annotates supported unmerged tables and conservative classic-chart caches with `data-pptx-native` metadata. Source table-style inheritance, supported solid cell fills/basic text formatting, chart title/legend/axis titles, and plot-level data-label flags for area/bar/column/line charts are retained when the current schema can represent them. Tables with direct borders, non-solid fills, or mixed rich-text formatting remain fallback-only, as do charts with unsupported label scopes/types, custom axis semantics, trendlines/error bars, or subtype options. Unsupported tables keep their rendered SVG table; unsupported charts keep a baked preview or explicit placeholder. Both carry `data-pptx-native-status`, which `svg_quality_checker.py` and `svg_to_pptx.py --native-objects` report as a warning.
+
+Exporter-canonical classic charts also recover canonical solid series/slice
+colors and exact one- or two-paragraph title styling; two paragraphs retain
+their `title` / `subtitle` roles. Slide-number fields resolve to the display
+number defined by `firstSlideNum`; standalone master/layout SVGs retain their
+literal field fallback because they are shared by multiple slides.
 
 Image generation:
 
@@ -153,4 +159,4 @@ python3 scripts/update_repo.py --skip-pip
 - [Troubleshooting](./docs/troubleshooting.md)
 - [Skill Entry](../SKILL.md)
 
-_Last updated: 2026-04-09_
+_Last updated: 2026-07-10_
