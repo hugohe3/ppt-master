@@ -30,7 +30,7 @@ from .utils import (
 from .styles import (
     build_solid_fill, build_gradient_fill,
     build_fill_xml, build_stroke_xml, build_effect_xml, classify_filter_effect,
-    get_fill_opacity, get_stroke_opacity,
+    get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .paths import (
     PathCommand, parse_svg_path, svg_path_to_absolute,
@@ -2369,6 +2369,18 @@ def _resolve_image_meet_fit(
     return (dx, dy, fit_w, fit_h)
 
 
+def _build_image_blip_xml(r_id: str, opacity: float | None) -> str:
+    """Build an image blip with native DrawingML transparency when requested."""
+    if opacity is None:
+        return f'<a:blip r:embed="{r_id}"/>'
+    alpha = int(round(opacity * 100000))
+    return (
+        f'<a:blip r:embed="{r_id}">'
+        f'<a:alphaModFix amt="{alpha}"/>'
+        '</a:blip>'
+    )
+
+
 def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <image> to DrawingML picture element.
 
@@ -2439,6 +2451,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Image optimization only downscales the full source image; it never crops
     # pixels out of the embedded media.
     src_rect_xml = _resolve_image_src_rect(elem, img_data, w, h)
+    blip_xml = _build_image_blip_xml(r_id, get_element_opacity(elem, ctx))
 
     # Resolve preserveAspectRatio="<align> meet" by shrinking the picture
     # frame to match the image's aspect ratio. Skipped when a real clip-path
@@ -2495,7 +2508,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <p:nvPr/>
 </p:nvPicPr>
 <p:blipFill>
-<a:blip r:embed="{r_id}"/>
+{blip_xml}
 {src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>
@@ -2668,6 +2681,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
         transform,
     )
     clip_geom = _resolve_clip_geometry(elem, ctx, svg_x, svg_y, svg_w, svg_h)
+    blip_xml = _build_image_blip_xml(
+        r_id,
+        get_element_opacity(image_elem, ctx),
+    )
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
@@ -2676,7 +2693,7 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
 <p:nvPr/>
 </p:nvPicPr>
 <p:blipFill>
-<a:blip r:embed="{r_id}"/>
+{blip_xml}
 {src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>

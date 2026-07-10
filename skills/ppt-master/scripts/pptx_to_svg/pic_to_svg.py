@@ -104,6 +104,7 @@ def convert_blip_fill(
     filename, img_bytes = _normalize_office_media(filename, img_bytes)
     filename, img_bytes = _apply_blip_image_effects(filename, img_bytes, blip)
     href = _build_href(filename, img_bytes, media_subdir, embed_inline)
+    opacity_attr = _blip_opacity_attr(blip)
 
     # srcRect: l/t/r/b in 1/100000ths (so 50000 = 50%).
     src_rect = blip_fill_elem.find("a:srcRect", NS)
@@ -120,7 +121,7 @@ def convert_blip_fill(
         svg = (
             f'<image href="{href}" x="{fmt_num(xfrm.x)}" y="{fmt_num(xfrm.y)}" '
             f'width="{fmt_num(xfrm.w)}" height="{fmt_num(xfrm.h)}" '
-            f'preserveAspectRatio="none"/>'
+            f'preserveAspectRatio="none"{opacity_attr}/>'
         )
     else:
         # Crop expressed as a unit-rectangle viewBox on a nested <svg>.
@@ -132,7 +133,7 @@ def convert_blip_fill(
             f'{fmt_num(vb_w, 5)} {fmt_num(vb_h, 5)}" '
             f'preserveAspectRatio="none">'
             f'<image href="{href}" x="0" y="0" width="1" height="1" '
-            f'preserveAspectRatio="none"/>'
+            f'preserveAspectRatio="none"{opacity_attr}/>'
             f"</svg>"
         )
 
@@ -168,6 +169,20 @@ def convert_picture(
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+
+def _blip_opacity_attr(blip: ET.Element) -> str:
+    """Translate DrawingML fixed image alpha to an SVG opacity attribute."""
+    alpha = blip.find("a:alphaModFix", NS)
+    if alpha is None:
+        return ""
+    try:
+        opacity = max(0.0, min(1.0, float(alpha.attrib.get("amt", "100000")) / 100000.0))
+    except ValueError:
+        return ""
+    if opacity >= 1.0:
+        return ""
+    return f' opacity="{fmt_num(opacity, 5)}"'
 
 _OFFICE_VECTOR_EXTS = {".emf", ".wmf"}
 
