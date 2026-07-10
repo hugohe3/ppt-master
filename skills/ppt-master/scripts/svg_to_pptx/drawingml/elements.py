@@ -22,7 +22,8 @@ from .utils import (
     svg_length_x, svg_length_y, svg_length_size,
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
-    parse_hex_color, resolve_url_id, get_effective_filter_id,
+    combine_opacity, parse_hex_color, parse_svg_color,
+    resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
     detect_text_lang, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
@@ -557,7 +558,7 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
         # Use the stroke color/gradient as fill for the arc shape
         stroke_val = _get_attr(elem, 'stroke', ctx)
-        op = get_fill_opacity(elem, ctx)
+        op = get_stroke_opacity(elem, ctx)
         grad_id = resolve_url_id(stroke_val) if stroke_val else None
         if grad_id and grad_id in ctx.defs:
             fill = build_gradient_fill(
@@ -567,9 +568,14 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 "fill",
             )
         elif stroke_val:
-            color = parse_hex_color(stroke_val)
+            color, color_alpha = parse_svg_color(stroke_val)
             fill = (
-                build_solid_fill(color, op, ctx.theme_color_spec, "fill")
+                build_solid_fill(
+                    color,
+                    combine_opacity(op, color_alpha),
+                    ctx.theme_color_spec,
+                    "fill",
+                )
                 if color else '<a:noFill/>'
             )
         else:
@@ -1210,6 +1216,8 @@ def _extract_text_bullet(
     bullet = {
         'char': _TEXT_BULLET_MARKERS.get(marker, marker),
         'fill': marker_run.get('fill'),
+        'fill_raw': marker_run.get('fill_raw'),
+        'opacity': marker_run.get('opacity'),
         'source_prefix_width_px': _estimate_text_runs_width(prefix_runs, include_headroom=False),
         'margin_px': max(
             _estimate_text_runs_width(replacement_runs, include_headroom=False),
@@ -1238,10 +1246,21 @@ def _build_bullet_xml(
     if not bullet:
         return ''
     fill = bullet.get('fill')
-    if isinstance(fill, str) and re.fullmatch(r'[0-9A-Fa-f]{6}', fill):
+    fill_raw = bullet.get('fill_raw')
+    color, color_alpha = parse_svg_color(
+        fill_raw if isinstance(fill_raw, str) else ''
+    )
+    if color is None and isinstance(fill, str):
+        color = parse_hex_color(fill)
+    if color:
+        opacity = combine_opacity(bullet.get('opacity'), color_alpha)
+        alpha_xml = (
+            f'<a:alphaMod val="{int(opacity * 100000)}"/>'
+            if opacity is not None else ''
+        )
         theme_spec = ctx.theme_color_spec if ctx is not None else None
         color_xml = (
-            f'<a:buClr>{color_node_xml(fill, theme_spec, "text")}</a:buClr>'
+            f'<a:buClr>{color_node_xml(color, theme_spec, "text", alpha_xml)}</a:buClr>'
         )
     else:
         color_xml = '<a:buClrTx/>'
@@ -1449,8 +1468,11 @@ def _build_text_fill_xml(
             "text",
         )
 
+    parsed_color, color_alpha = parse_svg_color(fill_raw)
+    fill = parsed_color or fill
+    opacity = combine_opacity(opacity, color_alpha)
     alpha_xml = ''
-    if opacity is not None and opacity < 1.0:
+    if opacity is not None:
         alpha_xml = f'<a:alphaMod val="{int(opacity * 100000)}"/>'
     theme_spec = ctx.theme_color_spec if ctx is not None else None
     return (
@@ -1469,14 +1491,14 @@ def _build_text_outline_xml(
     if not stroke_raw or stroke_raw.strip().lower() in ('none', 'transparent'):
         return ''
 
-    color = parse_hex_color(stroke_raw)
+    color, color_alpha = parse_svg_color(stroke_raw)
     if not color:
         return ''
 
     stroke_width = _f(str(run.get('stroke_width', 1.0)), 1.0)
-    stroke_opacity = run.get('stroke_opacity')
+    stroke_opacity = combine_opacity(run.get('stroke_opacity'), color_alpha)
     alpha_xml = ''
-    if stroke_opacity is not None and stroke_opacity < 1.0:
+    if stroke_opacity is not None:
         alpha_xml = f'<a:alphaMod val="{int(stroke_opacity * 100000)}"/>'
 
     theme_spec = ctx.theme_color_spec if ctx is not None else None
