@@ -27,6 +27,10 @@ from pptx import Presentation
 from pptx.util import Emu
 
 from ..drawingml.converter import convert_svg_to_slide_shapes
+from ..drawingml.theme_fonts import (
+    ThemeFontSpec,
+    apply_theme_font_spec,
+)
 from ..drawingml.utils import EMU_PER_PX
 from .dimensions import (
     CANVAS_FORMATS,
@@ -1357,10 +1361,33 @@ def _set_body_placeholder_no_bullets(
         paragraph_props.insert(insert_at, ET.Element(f"{{{DML_NS}}}buNone"))
 
 
+def _set_placeholder_theme_font_role(
+    shape: ET.Element,
+    item: TemplateElementSpec,
+    theme_font_spec: ThemeFontSpec | None,
+) -> None:
+    """Force semantic text placeholders onto the correct theme font role."""
+    if theme_font_spec is None:
+        return
+    if item.placeholder == "title":
+        prefix = "+mj"
+    elif item.placeholder in {"body", "footer", "slide-number"}:
+        prefix = "+mn"
+    else:
+        return
+    for props_tag in ("rPr", "defRPr", "endParaRPr"):
+        for props in shape.iter(f"{{{DML_NS}}}{props_tag}"):
+            for font_tag, suffix in (("latin", "lt"), ("ea", "ea"), ("cs", "cs")):
+                font = props.find(f"{{{DML_NS}}}{font_tag}")
+                if font is not None:
+                    font.set("typeface", f"{prefix}-{suffix}")
+
+
 def _layout_placeholder_shape(
     source_shape: ET.Element,
     item: TemplateElementSpec,
     placeholder_idx: int,
+    theme_font_spec: ThemeFontSpec | None = None,
 ) -> ET.Element:
     """Build one reusable p:sp placeholder from a prototype slide object."""
     placeholder_type = _TEMPLATE_PLACEHOLDER_TYPES.get(item.placeholder or "")
@@ -1401,6 +1428,7 @@ def _layout_placeholder_shape(
     _replace_shape_xfrm(sp_pr, bounds)
     shape.append(sp_pr)
     shape.append(_placeholder_text_body(source_shape, item))
+    _set_placeholder_theme_font_role(shape, item, theme_font_spec)
     return shape
 
 
@@ -1409,6 +1437,7 @@ def _patch_slide_placeholder(
     item: TemplateElementSpec,
     placeholder_idx: int | None,
     placeholder_type: str | None = None,
+    theme_font_spec: ThemeFontSpec | None = None,
 ) -> None:
     resolved_type = placeholder_type or _TEMPLATE_PLACEHOLDER_TYPES.get(
         item.placeholder or ""
@@ -1437,6 +1466,7 @@ def _patch_slide_placeholder(
             f"Placeholder {item.element_id!r} has no non-visual properties"
         )
     _set_body_placeholder_no_bullets(shape, item)
+    _set_placeholder_theme_font_role(shape, item, theme_font_spec)
     for existing in list(nv_pr):
         if existing.tag == f"{{{PML_NS}}}ph":
             nv_pr.remove(existing)
@@ -1489,6 +1519,7 @@ def _apply_template_structure(
     structure: PptxStructureContext,
     specs: list[TemplateSlideSpec],
     conversion_traces: list[dict[str, Any]] | None,
+    theme_font_spec: ThemeFontSpec | None,
     *,
     verbose: bool = False,
 ) -> None:
@@ -1579,6 +1610,7 @@ def _apply_template_structure(
                 prototype_shape,
                 item,
                 assigned_idx,
+                theme_font_spec,
             )
             _append_shape_to_part(layout_path, layout_placeholder)
             for state in layout_states:
@@ -1588,7 +1620,12 @@ def _apply_template_structure(
                         f"{state.spec.svg_path.name}: placeholder {item.element_id!r} "
                         "did not produce a shape"
                     )
-                _patch_slide_placeholder(shape, item, assigned_idx)
+                _patch_slide_placeholder(
+                    shape,
+                    item,
+                    assigned_idx,
+                    theme_font_spec=theme_font_spec,
+                )
             if item.placeholder != "title":
                 assigned_placeholder_indices.add(assigned_idx)
                 placeholder_idx = max(placeholder_idx, assigned_idx + 1)
@@ -2829,6 +2866,7 @@ def create_pptx_with_native_svg(
     doc_metadata: dict[str, Any] | None = None,
     pptx_structure: str = "baseline",
     native_structure_contract: NativeStructureContract | None = None,
+    theme_font_spec: ThemeFontSpec | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -2872,6 +2910,8 @@ def create_pptx_with_native_svg(
             ``flat`` keeps generated structure slide-local.
         native_structure_contract: Validated source package contract for
             ``preserve`` mode.
+        theme_font_spec: Locked project major/minor fonts for baseline/template
+            theme inheritance. Preserve and flat modes ignore this value.
 
     Returns:
         Whether all slides were successfully created.
@@ -3015,6 +3055,13 @@ def create_pptx_with_native_svg(
             zf.extractall(extract_dir)
         if use_native_shapes and pptx_structure == "preserve":
             _clear_preserved_slide_collections(extract_dir)
+        active_theme_font_spec = (
+            theme_font_spec
+            if use_native_shapes and pptx_structure in {"baseline", "template"}
+            else None
+        )
+        if active_theme_font_spec is not None:
+            apply_theme_font_spec(extract_dir, active_theme_font_spec)
         structure = _read_slide_layout_targets(extract_dir, len(svg_files))
 
         media_dir = extract_dir / 'ppt' / 'media'
@@ -3078,6 +3125,7 @@ def create_pptx_with_native_svg(
                             image_scale=image_scale,
                             image_quality=image_quality,
                             native_objects=native_objects,
+                            theme_font_spec=active_theme_font_spec,
                             trace_out=conversion_trace
                             if conversion_trace is not None
                             else structure_trace,
@@ -3445,6 +3493,7 @@ def create_pptx_with_native_svg(
                 structure,
                 template_specs,
                 conversion_trace if conversion_trace is not None else structure_trace,
+                active_theme_font_spec,
                 verbose=verbose,
             )
             _prune_unused_slide_layouts(
