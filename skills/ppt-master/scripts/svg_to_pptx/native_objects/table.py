@@ -6,6 +6,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext, ShapeResult
+from ..drawingml.theme_colors import ThemeColorSpec, color_node_xml
 from ..drawingml.utils import _xml_escape
 from .chart_style import _font_face_xml
 from .marker_common import (
@@ -31,11 +32,12 @@ def _table_text_run(
     bold: bool | None,
     font_size: int | None,
     font_face: str | None,
+    theme_color_spec: ThemeColorSpec | None,
 ) -> str:
     size_attr = f' sz="{font_size}"' if font_size is not None else ""
     bold_attr = f' b="{_bool_attr(bold)}"' if bold is not None else ""
     color_xml = (
-        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        f'<a:solidFill>{color_node_xml(color, theme_color_spec, "text")}</a:solidFill>'
         if color else ""
     )
     space_attr = ' xml:space="preserve"' if text != text.strip() else ""
@@ -358,14 +360,18 @@ def _table_border_width(cell_data: dict[str, Any], style: dict[str, Any]) -> flo
     return _number(1 if width_raw is None else width_raw, "table border_width")
 
 
-def _table_border_xml(cell_data: dict[str, Any], style: dict[str, Any]) -> str:
+def _table_border_xml(
+    cell_data: dict[str, Any],
+    style: dict[str, Any],
+    theme_color_spec: ThemeColorSpec | None,
+) -> str:
     color_raw = cell_data.get("border_color", cell_data.get("borderColor", style.get("border_color")))
     width = _table_border_width(cell_data, style)
     if width <= 0:
         return ""
     color = _clean_hex(color_raw, "#D9DEE7")
     line = (
-        f'<a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+        f'<a:solidFill>{color_node_xml(color, theme_color_spec, "stroke")}</a:solidFill>'
         '<a:prstDash val="solid"/>'
     )
     line_width = _powerpoint_line_width_emu(width, "table border_width")
@@ -469,16 +475,30 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
             if not preserve_source_style or anchor_keys.intersection(cell_data) or anchor_keys.intersection(style):
                 anchor_attr = f' anchor="{_table_anchor(cell_data, style)}"'
             tc_pr_attrs = f'{anchor_attr}{_table_padding_attrs(cell_data, style)}'
-            border_xml = _table_border_xml(cell_data, style)
+            border_xml = _table_border_xml(
+                cell_data,
+                style,
+                ctx.theme_color_spec,
+            )
             fill_xml = (
-                f'<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill>'
+                '<a:solidFill>'
+                f'{color_node_xml(fill, ctx.theme_color_spec, "fill")}'
+                '</a:solidFill>'
                 if fill else ""
+            )
+            text_run_xml = _table_text_run(
+                text,
+                color=color,
+                bold=bold,
+                font_size=cell_font_size,
+                font_face=font_face,
+                theme_color_spec=ctx.theme_color_spec,
             )
             cells_xml.append(
                 "<a:tc>"
                 "<a:txBody><a:bodyPr/><a:lstStyle/>"
                 f"<a:p>{paragraph_props}"
-                f"{_table_text_run(text, color=color, bold=bold, font_size=cell_font_size, font_face=font_face)}"
+                f"{text_run_xml}"
                 "</a:p></a:txBody>"
                 f'<a:tcPr{tc_pr_attrs}>{border_xml}{fill_xml}</a:tcPr>'
                 "</a:tc>"

@@ -27,6 +27,11 @@ from pptx import Presentation
 from pptx.util import Emu
 
 from ..drawingml.converter import convert_svg_to_slide_shapes
+from ..drawingml.theme_colors import (
+    ThemeColorSpec,
+    apply_theme_color_spec,
+    rewrite_chart_accent_colors,
+)
 from ..drawingml.theme_fonts import (
     ThemeFontSpec,
     apply_theme_font_spec,
@@ -2867,6 +2872,7 @@ def create_pptx_with_native_svg(
     pptx_structure: str = "baseline",
     native_structure_contract: NativeStructureContract | None = None,
     theme_font_spec: ThemeFontSpec | None = None,
+    theme_color_spec: ThemeColorSpec | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -2912,6 +2918,9 @@ def create_pptx_with_native_svg(
             ``preserve`` mode.
         theme_font_spec: Locked project major/minor fonts for baseline/template
             theme inheritance. Preserve and flat modes ignore this value.
+        theme_color_spec: Locked project color scheme for context-aware
+            baseline/template theme inheritance. Preserve and flat modes
+            ignore this value.
 
     Returns:
         Whether all slides were successfully created.
@@ -3062,6 +3071,13 @@ def create_pptx_with_native_svg(
         )
         if active_theme_font_spec is not None:
             apply_theme_font_spec(extract_dir, active_theme_font_spec)
+        active_theme_color_spec = (
+            theme_color_spec
+            if use_native_shapes and pptx_structure in {"baseline", "template"}
+            else None
+        )
+        if active_theme_color_spec is not None:
+            apply_theme_color_spec(extract_dir, active_theme_color_spec)
         structure = _read_slide_layout_targets(extract_dir, len(svg_files))
 
         media_dir = extract_dir / 'ppt' / 'media'
@@ -3126,6 +3142,7 @@ def create_pptx_with_native_svg(
                             image_quality=image_quality,
                             native_objects=native_objects,
                             theme_font_spec=active_theme_font_spec,
+                            theme_color_spec=active_theme_color_spec,
                             trace_out=conversion_trace
                             if conversion_trace is not None
                             else structure_trace,
@@ -3226,6 +3243,14 @@ def create_pptx_with_native_svg(
                     # object converters, e.g. chart XML, chart rels, and
                     # embedded workbooks.
                     for part_name, part_data in package_files_dict.items():
+                        if (
+                            part_name.startswith('ppt/charts/')
+                            and part_name.endswith('.xml')
+                        ):
+                            part_data = rewrite_chart_accent_colors(
+                                part_data,
+                                active_theme_color_spec,
+                            )
                         package_path = extract_dir / part_name
                         package_path.parent.mkdir(parents=True, exist_ok=True)
                         with open(package_path, 'wb') as f:

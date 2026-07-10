@@ -950,6 +950,39 @@ without changing the SVG geometry or the first export's visual design.
 diagnostic slide-local/fixed-font comparison path. A project without a usable
 `spec_lock.md` typography section keeps the legacy concrete-font behavior.
 
+### Theme Color Inheritance (Baseline and Template Export)
+
+Native `baseline` and `template` export also derive the PowerPoint color scheme
+from `spec_lock.md` colors. The canonical mapping is:
+
+| Lock role | PowerPoint scheme slot |
+|---|---|
+| `bg` / `background` / `master_bg` | `lt1` |
+| `secondary_bg` / `bg_secondary` | `lt2` |
+| `text` / `body_text` | `dk1` |
+| `text_secondary` | `dk2` |
+| `primary` | `accent1` |
+| `accent` | `accent2` |
+| `secondary_accent` | `accent3` |
+| `border` | `accent4` |
+| First two additional non-black/non-white roles | `accent5` / `accent6` |
+
+The converter promotes an exact locked HEX to `a:schemeClr` only when its
+usage is compatible with the role: backgrounds prefer background roles, text
+prefers text/accent roles, strokes prefer `border`, and chart series use only
+the primary/accent family. This prevents the same literal HEX from coupling
+unrelated semantics such as a white page background and fixed white inverse
+text. Gradients, patterns, bullets, native tables, and exact native-chart
+series colors follow the same rule. Shadows, effects, unmatched local colors,
+and additional palette roles remain concrete `a:srgbClr` values.
+
+The initial rendering is unchanged because every scheme slot resolves to the
+same locked HEX. A later PowerPoint theme edit can update only the promoted
+roles; it does not rewrite the SVG or local exceptions. `preserve` never
+rewrites the imported source color scheme, `flat` keeps concrete colors for
+diagnostics, and projects without a usable colors section retain legacy fixed
+colors.
+
 ### Explicit PPTX Master / Layout / Placeholder Metadata (Template Export)
 
 **Trigger**: Set `spec_lock.md` `pptx_structure.mode` to `template`, or pass

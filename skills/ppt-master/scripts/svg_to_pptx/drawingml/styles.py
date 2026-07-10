@@ -7,6 +7,7 @@ import re
 from xml.etree import ElementTree as ET
 
 from .context import ConvertContext
+from .theme_colors import ThemeColorSpec, color_node_xml
 from .utils import (
     SVG_NS, ANGLE_UNIT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
@@ -14,17 +15,28 @@ from .utils import (
 )
 
 
-def build_solid_fill(color: str, opacity: float | None = None) -> str:
+def build_solid_fill(
+    color: str,
+    opacity: float | None = None,
+    theme_color_spec: ThemeColorSpec | None = None,
+    usage: str = "fill",
+) -> str:
     """Build <a:solidFill> XML."""
     alpha = ''
     if opacity is not None and opacity < 1.0:
         alpha = f'<a:alpha val="{int(opacity * 100000)}"/>'
-    return f'<a:solidFill><a:srgbClr val="{color}">{alpha}</a:srgbClr></a:solidFill>'
+    return (
+        '<a:solidFill>'
+        f'{color_node_xml(color, theme_color_spec, usage, alpha)}'
+        '</a:solidFill>'
+    )
 
 
 def build_gradient_fill(
     grad_elem: ET.Element,
     opacity: float | None = None,
+    theme_color_spec: ThemeColorSpec | None = None,
+    usage: str = "fill",
 ) -> str:
     """Build <a:gradFill> from SVG linearGradient or radialGradient element."""
     tag = grad_elem.tag.replace(f'{{{SVG_NS}}}', '')
@@ -67,7 +79,9 @@ def build_gradient_fill(
             alpha_xml = f'<a:alpha val="{int(effective_opacity * 100000)}"/>'
 
         stops_xml.append(
-            f'<a:gs pos="{pos}"><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:gs>'
+            f'<a:gs pos="{pos}">'
+            f'{color_node_xml(color, theme_color_spec, usage, alpha_xml)}'
+            '</a:gs>'
         )
 
     if not stops_xml:
@@ -112,6 +126,7 @@ def build_fill_xml(
     elem: ET.Element,
     ctx: ConvertContext,
     opacity: float | None = None,
+    usage: str = "fill",
 ) -> str:
     """Build fill XML for a shape element, with inherited style support."""
     fill = _get_attr(elem, 'fill', ctx)
@@ -126,15 +141,25 @@ def build_fill_xml(
         ref_elem = ctx.defs[ref_id]
         ref_tag = ref_elem.tag.replace(f'{{{SVG_NS}}}', '')
         if ref_tag == 'pattern':
-            patt_xml = build_pattern_fill(ref_elem, opacity)
+            patt_xml = build_pattern_fill(
+                ref_elem,
+                opacity,
+                ctx.theme_color_spec,
+                usage,
+            )
             if patt_xml:
                 return patt_xml
             return '<a:noFill/>'
-        return build_gradient_fill(ref_elem, opacity)
+        return build_gradient_fill(
+            ref_elem,
+            opacity,
+            ctx.theme_color_spec,
+            usage,
+        )
 
     color = parse_hex_color(fill)
     if color:
-        return build_solid_fill(color, opacity)
+        return build_solid_fill(color, opacity, ctx.theme_color_spec, usage)
 
     return '<a:noFill/>'
 
@@ -142,6 +167,8 @@ def build_fill_xml(
 def build_pattern_fill(
     pattern_elem: ET.Element,
     opacity: float | None = None,
+    theme_color_spec: ThemeColorSpec | None = None,
+    usage: str = "fill",
 ) -> str:
     """Build <a:pattFill> from an SVG <pattern> emitted by pptx_to_svg.
 
@@ -172,11 +199,11 @@ def build_pattern_fill(
     if opacity is not None and opacity < 1.0:
         alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
 
-    fg_xml = f'<a:srgbClr val="{fg_hex}">{alpha_xml}</a:srgbClr>'
+    fg_xml = color_node_xml(fg_hex, theme_color_spec, usage, alpha_xml)
     if bg_hex:
-        bg_xml = f'<a:srgbClr val="{bg_hex}"/>'
+        bg_xml = color_node_xml(bg_hex, theme_color_spec, usage)
     else:
-        bg_xml = '<a:srgbClr val="FFFFFF"/>'
+        bg_xml = color_node_xml('FFFFFF', theme_color_spec, usage)
 
     return (
         f'<a:pattFill prst="{prst}">'
@@ -396,7 +423,12 @@ def build_stroke_xml(
     # Gradient stroke
     grad_id = resolve_url_id(stroke)
     if grad_id and grad_id in ctx.defs:
-        grad_fill = build_gradient_fill(ctx.defs[grad_id], opacity)
+        grad_fill = build_gradient_fill(
+            ctx.defs[grad_id],
+            opacity,
+            ctx.theme_color_spec,
+            "stroke",
+        )
         return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}{join_xml}{line_ends}</a:ln>'
 
     # Solid color stroke
@@ -408,8 +440,9 @@ def build_stroke_xml(
     if opacity is not None and opacity < 1.0:
         alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
 
+    color_xml = color_node_xml(color, ctx.theme_color_spec, "stroke", alpha_xml)
     return f'''<a:ln w="{width_emu}"{cap_attr}>
-<a:solidFill><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:solidFill>{dash_xml}{join_xml}{line_ends}
+<a:solidFill>{color_xml}</a:solidFill>{dash_xml}{join_xml}{line_ends}
 </a:ln>'''
 
 
