@@ -24,7 +24,7 @@ Global artifact ownership rules for PPT Master projects.
 | `templates/` | Project template reference | Step 3 imported specs, template SVGs, and non-image assets | Strategist/Executor read only when Step 3 is triggered |
 | `confirm_ui/recommendations.json` | Confirmation proposal | Strategist-authored confirmation payload | Confirm UI reads; rewritten between Stage 1, Stage 2, and Stage 3 |
 | `confirm_ui/result.json` | Confirmation result | User-confirmed values | Strategist treats final result as authoritative over recommendations |
-| `svg_output/` | Author source | Main-agent handwritten SVG pages | Quality checker and native PPTX export read this as canonical page source |
+| `svg_output/` | Page-design author source | Main-agent handwritten SVG pages containing the complete visible design | Quality checker and native PPTX export read this as the canonical visual/page-layout source; templates and locks do not add missing visible objects at export |
 | `notes/total.md` | Speaker-note source | Complete notes before splitting | Step 6 writes; Step 7.1 splits |
 | `notes/slide_*.md` | Split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` |
 | `svg_final/` | Derived preview/export SVGs | Self-contained post-processed SVGs | Rebuild from `svg_output/` with `finalize_svg.py` |
@@ -44,6 +44,8 @@ Global artifact ownership rules for PPT Master projects.
 | Design contract | `design_spec.md` explains; `spec_lock.md` executes. Executor must not infer execution values from prose. |
 | Image facts | `images/` is live state; `analysis/image_analysis.csv` is a regenerated view, not a durable cache. |
 | SVG source | `svg_output/` is the only author source for generated pages. |
+| Page-design closure | On SVG-authoring routes, every visible exported-slide object exists in the corresponding page SVG or an explicitly referenced visual asset. |
+| Package-behavior separation | Speaker notes, animations, transitions, narration, and direct native-PPTX workflows keep their owning artifacts; do not force them into SVG metadata. |
 | Post-processed SVG | `svg_final/` is disposable and must be rebuildable from `svg_output/`. |
 | Export source | Native PPTX export reads `svg_output/` by default. SVG snapshot export reads `svg_final/` only when requested. |
 | Confirmation | Final `confirm_ui/result.json` or chat confirmation overrides recommendations. |

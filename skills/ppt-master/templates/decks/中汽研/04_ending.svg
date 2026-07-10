@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="04_ending" data-pptx-layout-name="Closing">
     <!-- 模板: 结束页 - 中汽研风格 -->
 
     <!-- 深蓝色背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="#004098" />
+    <rect x="0" y="0" width="1280" height="720" fill="#004098"  id="layout-04_ending-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 装饰元素 - 几何图案（低透明度圆形） -->
     <circle cx="100" cy="100" r="200" fill="#FFFFFF" fill-opacity="0.03" />

@@ -238,9 +238,9 @@ Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
 **Step 1 — Prepare Reference Material**
 
-The simplest path is still to prepare screenshots of the key page types from your reference PPT — cover page, table of contents, chapter divider, content page, and closing page. Save them as images in a single folder with clear, descriptive filenames (e.g., `cover.png`, `toc.png`, `chapter.png`, `content.png`, `closing.png`).
+The recommended input is the original `.pptx`. PPT Master extracts theme identity, every Master/Layout, placeholder metadata, and reusable assets, then rebuilds one clean Master plus semantic Layouts as complete, explicitly annotated SVG pages. When that template is used, `adaptive` may create a new explicit Layout under the same Master; `strict` keeps the selected Layout contract unchanged. Both routes reconstruct native structure from the SVGs.
 
-If you already have the original `.pptx` template file, you can also provide it as a reference source. PPT Master can extract reusable background images, logos, theme colors, and font metadata from the PPTX first, then use those assets during template reconstruction.
+If no source PPTX exists, screenshots of the key page types still work — cover, TOC, chapter, content, and closing — but geometry, fonts, and inheritance must then be inferred visually.
 
 **Step 2 — Let AI Create the Template**
 

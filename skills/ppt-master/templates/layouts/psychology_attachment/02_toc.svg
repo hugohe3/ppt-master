@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="02_toc" data-pptx-layout-name="Agenda">
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#F8FAFC" />
+    <rect width="1280" height="720" fill="#F8FAFC"  id="layout-02_toc-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- 左侧装饰条 -->
     <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />

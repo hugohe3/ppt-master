@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="02_toc" data-pptx-layout-name="Agenda">
     <!-- 模板: 目录页 - 中汽研风格 -->
   
     <!-- 白色背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" id="layout-02_toc-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   
     <!-- 顶部深蓝色装饰线 -->
     <rect x="0" y="0" width="1280" height="4" fill="#004098"/>
@@ -68,6 +68,6 @@
     <rect x="0" y="716" width="1280" height="4" fill="#004098"/>
   
     <!-- 页码 -->
-    <text x="1220" y="705" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#999999">{{PAGE_NUM}}</text>
+    <text x="1220" y="705" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#999999" id="slot-02_toc-slide_number-1" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
   
 </svg>

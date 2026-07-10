@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect width="1280" height="720" fill="#FFFFFF"  id="layout-01_cover-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
     <!-- ==================== 顶部装饰区域 ==================== -->
     <!-- 医学蓝主横条 -->
@@ -24,13 +24,13 @@
     <!-- ==================== 主内容区域 ==================== -->
     <!-- 主标题 -->
     <text x="640" y="320" text-anchor="middle" fill="#004080" font-family="Microsoft YaHei, Arial, sans-serif"
-        font-size="52" font-weight="bold">
+        font-size="52" font-weight="bold" id="slot-01_cover-title-1" data-pptx-placeholder="title">
         {{TITLE}}
     </text>
 
     <!-- 副标题 -->
     <text x="640" y="385" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif"
-        font-size="26">
+        font-size="26" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">
         {{SUBTITLE}}
     </text>
 

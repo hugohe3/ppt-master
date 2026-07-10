@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" data-pptx-layout="04_ending" data-pptx-layout-name="Closing">
   <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect width="1280" height="720" fill="#FFFFFF" id="layout-04_ending-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   
   <!-- ==================== 顶部装饰区域 ==================== -->
   <rect x="0" y="0" width="1280" height="100" fill="#003366"/>
@@ -46,7 +46,7 @@
   <text x="640" y="698" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">
     {{COPYRIGHT}}
   </text>
-  <text x="1220" y="698" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">
+  <text x="1220" y="698" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" id="slot-04_ending-slide_number-1" data-pptx-placeholder="slide-number">
     {{PAGE_NUM}}
   </text>
 </svg>

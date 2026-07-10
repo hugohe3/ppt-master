@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" data-pptx-layout="04_ending" data-pptx-layout-name="Closing">
   <!-- 模板: 结束页 - 像素复古风格 -->
   
   <defs>
@@ -20,7 +20,7 @@
   </defs>
   
   <!-- 深空黑背景 -->
-  <rect width="1280" height="720" fill="#0D1117" />
+  <rect width="1280" height="720" fill="#0D1117"  id="layout-04_ending-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   
   <!-- 顶部装饰线（加粗） -->
   <rect x="0" y="0" width="1280" height="4" fill="#39FF14" fill-opacity="0.8" />
@@ -157,7 +157,7 @@
   <rect x="1228" y="640" width="12" height="12" fill="#FF2E97" />
   
   <!-- 页码 -->
-  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">{{PAGE_NUM}}/{{TOTAL_PAGES}}</text>
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E" id="slot-04_ending-slide_number-1" data-pptx-placeholder="slide-number">{{PAGE_NUM}}/{{TOTAL_PAGES}}</text>
   
   <!-- 结束标识 -->
   <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#39FF14">

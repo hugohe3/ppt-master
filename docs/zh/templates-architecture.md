@@ -14,7 +14,11 @@
 | **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template.md`（layout 分支）|
 | **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template.md`（deck 分支，默认）|
 
+Layout/Deck 的每张 SVG 都是完整预览，同时显式声明 `data-pptx-layout`、Master/Layout 层和语义 placeholder。PPTX 导入产生的 `native_structure.json` 与 `source_template.pptx` 只用于分析源结构，不进入新模板包。模板负责指导生成完整的页面 SVG；导出时不得再回读模板，向生成 SVG 叠加其中缺失的可见内容。下游 `strict` 保持所选 Layout 契约，`adaptive` 可在同一 Master 下创建新 Layout；两者都使用 `pptx_structure.mode: template`。旧 `preserve` 契约仅保留兼容读取。
+
 三者是**三种并列的 reference bundle**，物理目录与 frontmatter `kind` 字段双向对齐：
+
+多路径合成后的项目级 `design_spec.md` 也必须保留准确的 `kind`：同时具备身份段和结构段时为 `deck`，只有结构段时为 `layout`，只有身份段时为 `brand`。Strategist 确认页据此只对真正包含页面结构的 Deck/Layout 显示 `adaptive / strict`。
 
 ```yaml
 # templates/brands/anthropic/design_spec.md
@@ -26,12 +30,14 @@ kind: brand
 # templates/layouts/academic_defense/design_spec.md
 ---
 kind: layout
+native_structure_mode: template
 ...
 ---
 
 # templates/decks/招商银行/design_spec.md
 ---
 kind: deck
+native_structure_mode: template
 ...
 ---
 ```
@@ -92,6 +98,7 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
+native_structure_mode: template
 summary: <一句话描述用途>
 canvas_format: <ppt169 | ppt43 | a4 | ...>
 page_count: <N>
@@ -119,6 +126,7 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
+native_structure_mode: template
 summary: <一句话描述用途>
 canvas_format: <ppt169 | ...>
 page_count: <N>

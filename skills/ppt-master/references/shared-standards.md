@@ -169,6 +169,17 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ## 4. Basic SVG Rules
 
+### 4.0 Complete Page-Design Contract
+
+| Concern | Requirement |
+|---|---|
+| Visible slide result | The completed `svg_output/<slide>.svg` MUST contain every visible text, image, shape, diagram, chart/table fallback, background, and template-derived layout element intended for that slide. External visual assets are valid when the SVG references them explicitly. |
+| Template/control inputs | Templates, `design_spec.md`, and `spec_lock.md` guide authoring. Do not depend on them to add visible elements after the page SVG is complete. |
+| PPTX translation | The exporter may map represented SVG content to DrawingML/native objects and deduplicate represented elements into Master/Layout/Slide parts. It MUST NOT invent visible slide content absent from the SVG. |
+| Excluded package behavior | Speaker notes, animations, transitions, narration audio, PPTX relationships, and direct native-PPTX workflows remain separately owned. They are not part of the SVG page-design contract. |
+
+**Hard rule — page-design closure**: A final page SVG is the sole visual/design authority for that page on every SVG-authoring route. SVG is not the authority for the entire PPTX package.
+
 - **viewBox** MUST match the canvas dimensions; it is the single source of truth for canvas size. Root `width`/`height` are optional compatibility attributes and are not used as PPT Master canvas authority.
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
@@ -255,6 +266,8 @@ Wrap logically related elements in top-level `<g id="...">` groups. Produces Pow
 
 **Chrome groups are excluded automatically.** The exporter treats top-level groups whose id contains chrome tokens as page chrome and skips them in the animation sequence — they appear together with the slide. Tokens (matched against id after splitting on `-` / `_`): `background`, `bg`, `decoration` / `decorations` / `decor`, `header`, `footer`, `chrome`, `watermark`, `pagenumber` / `pagenum` / `page-number`, `nav`, `logo`, `rule`. So `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">` all skip animation while keeping their `<g>` wrapper for editing/grouping. Use these naming conventions for chrome — do **not** strip the `<g>` wrapper.
 
+These ids also drive slide-master promotion in the default native export: `logo` / `footer` / `header` / `watermark` / `chrome` / `pageNumber` chrome that is drawn **before** content and repeated **verbatim** across pages moves into the slide master (pages without it, like covers, are isolated automatically), and a `pageNumber` text whose content is exactly the page's display number becomes a self-renumbering PowerPoint field.
+
 **What to group**:
 
 | Grouping Unit | Contains |
@@ -337,7 +350,7 @@ Full reference: [`animations.md`](animations.md).
 **Prohibited**:
 - NEVER use `cp` as a substitute for `finalize_svg.py`
 - NEVER force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). Default auto-split already gives native the high-fidelity source it needs without affecting legacy.
-- NEVER use `--only` (it suppresses one of the two output files)
+- NEVER use `--only` in the standard pipeline; keep it for explicit one-product diagnostics or compatibility checks
 
 > Source-directory split: by default `svg_to_pptx.py` reads `svg_output/` for the native pptx (preserves icon `<use>`, image `preserveAspectRatio` as native picture-crop metadata, rounded rect `rx/ry` → `prstGeom roundRect`) and `svg_final/` for the legacy/preview pptx (PowerPoint's internal SVG parser needs the flattened form). Pass `-s output` or `-s final` only when you specifically want both products to read from a single source.
 
@@ -690,7 +703,7 @@ The child `<path>`'s `stroke` becomes the foreground color (the pattern's line c
 
 > `svg_quality_checker.py` warns on missing `data-pptx-pattern` and errors on values outside the enum. Catch these pre-export — PowerPoint's repair dialog hides which pattern broke.
 
-### Native PPTX Table / Chart Markers (Experimental)
+### Native PPTX Table / Chart Markers (Opt-in)
 
 Native PowerPoint tables and Excel-backed charts activate at export time only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
 
@@ -709,7 +722,12 @@ Native PowerPoint tables and Excel-backed charts activate at export time only. T
 `data-pptx-x` / `data-pptx-y` / `data-pptx-width` / `data-pptx-height` on the
 marker group. If any bound is omitted, the exporter infers the object frame
 from the visible fallback geometry; this keeps SVG fallback and native object
-placement aligned.
+placement aligned. Complete explicit bounds are absolute slide coordinates;
+marker/ancestor `translate` and `scale` transforms apply only when at least one
+bound is inferred. `x`, `y`, `width`, and `height` must be finite and resolve
+inside PowerPoint's 32-bit DrawingML coordinate range; `width` and `height`
+must resolve to at least one EMU. Native table frames must additionally resolve
+to at least one EMU per resolved row and column.
 
 **Validation**: `svg_quality_checker.py` validates native marker kind, JSON
 metadata, bounds/fallback availability, table rows/columns, supported chart
@@ -735,8 +753,13 @@ type, and chart data shape before export.
 
 **Table schema**: Native tables are rectangular DrawingML grids. Use `columns`
 for the optional header row and `rows` for body rows; shorter rows are padded
-with blank cells unless `strict_grid: true` is set. Use `column_widths` and
-`row_heights` as relative weights. Cell objects accept `text`, `fill`, `color`,
+with blank cells unless `strict_grid: true` is set. Tables may contain at most
+1000 resolved rows and 1000 resolved columns. Use `column_widths` and
+`row_heights` as relative weights. Weight lists must match the resolved grid,
+contain finite non-negative numbers, and include at least one positive value.
+If present, `header_rows` must be an integer from `0` through the resolved row
+count. Write `strict_grid`, `style.band_row`, and cell `bold` as JSON booleans.
+Cell objects accept `text`, `fill`, `color`,
 `align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
 `border_width`; the same `padding`, `border_color`, and `border_width` keys may
 also live under `style` as table defaults. Native table typography mirrors the
@@ -912,6 +935,228 @@ steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
 `right`.
 
 **Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
+
+### Baseline Layout Family Extraction
+
+Native `baseline` export assigns layout families after every SVG page has been
+converted. This package-only pass does not change SVG authoring or live preview.
+
+| Filename evidence | Output layout |
+|---|---|
+| `cover`, `frontcover`, `封面` | `Cover` |
+| `agenda`, `contents`, `outline`, `toc`, `目录`, `议程` | `Agenda` |
+| `chapter`, `divider`, `section`, `transition`, `章节`, `过渡页` | `Section` |
+| `closing`, `end`, `ending`, `qa`, `thankyou`, `thanks`, `封底`, `结束`, `结尾`, `结语`, `致谢`, `谢谢` | `Closing` |
+| No exact role token | `Content` |
+
+Keep an existing `Cover` assignment when the Master chrome safety pass already
+used it to hide promoted Master shapes from a minority page.
+
+**Hard rule — no visual inference**: Keep every actual title, body, picture,
+chart, table, and page-specific shape on the Slide. Baseline layouts do not
+infer placeholders or promote visually similar content.
+
+**Background rule**: Move a Slide `p:bg` to its family Layout only when every
+slide in that family carries exactly the same explicit background. Otherwise,
+keep each background on its Slide. Preserve whether each family shows or hides
+the parent Master shape tree.
+
+**Layout chrome rule**: After family assignment, move only the identical
+leading prefix of explicitly named chrome (`logo`, `footer`, `header`,
+`watermark`, `chrome`) carried by every family member. Generated OOXML and
+image relationships must match exactly, no animation may target the shapes,
+and moving them behind Slide content must preserve z-order. Keep page numbers
+and every non-identical object Slide-local.
+
+### Theme Font Inheritance (Baseline and Template Export)
+
+New projects derive PowerPoint theme fonts from `spec_lock.md` typography when
+native export uses `baseline` or `template` structure mode:
+
+- `title_family` (falling back to `font_family`) becomes the theme major font.
+- `body_family` (falling back to `font_family`) becomes the theme minor font.
+- SVG text whose resolved exported face matches either locked family emits
+  DrawingML `+mj-*` / `+mn-*` tokens instead of a fixed typeface.
+- When major and minor resolve to the same face, ordinary slide-local text uses
+  the minor role; semantic `title` placeholders are forced to major, while all
+  other semantic placeholders are forced to minor.
+- Local emphasis, code, brand, or other families that do not match the locked
+  title/body faces remain concrete per-run fonts and do not change with the
+  theme.
+
+This substitution is package-only: the SVG stays the live-preview truth, and
+the installed theme resolves the tokens to the same concrete fonts on initial
+open. Changing the PowerPoint theme later can therefore update matching text
+without changing the SVG geometry or the first export's visual design.
+
+`preserve` mode never rewrites source theme fonts, and `flat` remains the
+diagnostic slide-local/fixed-font comparison path. A project without a usable
+`spec_lock.md` typography section keeps the legacy concrete-font behavior.
+
+### Theme Color Inheritance (Baseline and Template Export)
+
+Native `baseline` and `template` export also derive the PowerPoint color scheme
+from `spec_lock.md` colors. The canonical mapping is:
+
+| Lock role | PowerPoint scheme slot |
+|---|---|
+| `bg` / `background` / `master_bg` | `lt1` |
+| `secondary_bg` / `bg_secondary` | `lt2` |
+| `text` / `body_text` | `dk1` |
+| `text_secondary` | `dk2` |
+| `primary` | `accent1` |
+| `accent` | `accent2` |
+| `secondary_accent` | `accent3` |
+| `border` | `accent4` |
+| First two additional non-black/non-white roles | `accent5` / `accent6` |
+
+The converter promotes an exact locked HEX to `a:schemeClr` only when its
+usage is compatible with the role: backgrounds prefer background roles, text
+prefers text/accent roles, strokes prefer `border`, and chart series use only
+the primary/accent family. This prevents the same literal HEX from coupling
+unrelated semantics such as a white page background and fixed white inverse
+text. Gradients, patterns, bullets, native tables, and exact native-chart
+series colors follow the same rule. Shadows, effects, unmatched local colors,
+and additional palette roles remain concrete `a:srgbClr` values.
+
+The initial rendering is unchanged because every scheme slot resolves to the
+same locked HEX. A later PowerPoint theme edit can update only the promoted
+roles; it does not rewrite the SVG or local exceptions. `preserve` never
+rewrites the imported source color scheme, `flat` keeps concrete colors for
+diagnostics, and projects without a usable colors section retain legacy fixed
+colors.
+
+### Explicit PPTX Master / Layout / Placeholder Metadata (Template Export)
+
+**Trigger**: Deck/layout template routes set `spec_lock.md`
+`pptx_structure.mode` to `template`; direct diagnostics may pass
+`--pptx-structure template`. Both strict and adaptive template adherence use
+this mode. Without either trigger, metadata stays visually dormant.
+
+**Project lock**: In the standard project pipeline, template mode requires one
+`pptx_layouts` row per page using
+`P<NN>: <layout_key> | <PowerPoint layout name>`. The SVG root values MUST
+match that row. Strict uses the selected template key/name. Adaptive may create
+a new key/name while repeating the same Master contract. Reuse one layout key
+only when pages share the same static Layout layer and placeholder contract;
+different content is not a reason to create a new layout. Direct diagnostic
+exports may pass the CLI flag without a spec lock.
+
+| Metadata | Placement | Behavior |
+|---|---|---|
+| `data-pptx-layout="content"` | root `<svg>` | Binds the slide to one generated reusable layout key |
+| `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
+| `data-pptx-layer="master"` | direct visual child | Moves one repeated static object/background into the slide master |
+| `data-pptx-layer="layout"` | direct visual child | Moves one repeated static object/background into the selected layout |
+| `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
+| `data-pptx-placeholder="..."` | direct visual child | Keeps actual content on the slide and maps it to a generated layout placeholder |
+| `data-pptx-placeholder-bounds="x y width height"` | placeholder element | Overrides the reusable placeholder frame in SVG user units |
+| `data-pptx-placeholder-idx="1"` | placeholder element | Retains an imported source layout placeholder index; optional for reconstructed layouts |
+| `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
+
+**Hard rule — explicit only**: Template export never promotes visually similar
+content by inference. Every SVG requires a root `data-pptx-layout`; every
+master/layout/placeholder element requires a unique `id` and must be a direct
+child of the root SVG.
+
+**Layer order**: Author the SVG in PowerPoint paint order: Master background,
+Layout background, optional Slide background, Master shapes, Layout shapes,
+then slide-local content/placeholders. Backgrounds are a special inheritance
+plane beneath every shape; this order keeps standalone SVG preview and
+PowerPoint rendering aligned. The exporter rejects interleaved layers.
+
+**Solid background ownership**: A direct full-canvas solid `<rect>` becomes a
+real `p:bg`, not a selectable shape. Mark it `data-pptx-layer="master"` for the
+deck-wide default, `data-pptx-layer="layout"` for a page-type override, or
+`data-pptx-layer="slide"` for a one-slide override. An unmarked direct
+full-canvas solid rect in the background plane is also treated as Slide scope. A
+Layout background overrides the Master background; a Slide background
+overrides both. Use the Master for a globally stable color and the Layout for
+cover/section/content variants under the same design language. Gradients,
+images, textures, transformed rects, and visible-stroke rects are not promoted
+by this solid-background rule.
+
+| Placeholder value | SVG element | PowerPoint placeholder |
+|---|---|---|
+| `title`, `subtitle`, `body` | direct `<text>` | `title`, `subTitle`, `body` |
+| `date`, `footer`, `slide-number` | direct `<text>` | `dt`, `ftr`, `sldNum` |
+| `picture` | direct `<image>` or imported crop `<svg>` | `pic` |
+| `chart`, `table` | direct matching `data-pptx-native` marker group | `chart`, `tbl` |
+| `object` | one direct text, image, or basic SVG shape | `obj` |
+| `media` | direct `<image>` or imported crop `<svg>` | `media` |
+
+`title` is normally type-matched without an index in reconstructed layouts; if
+an imported source title explicitly has one, preserve that exact index. Every
+indexed placeholder on one layout uses a unique non-negative index. Template
+export writes the semantic type on both the Layout and Slide placeholder
+(except `obj`, whose OOXML default is already
+`obj`) so PowerPoint and `python-pptx` retain the same identity. A `date`
+placeholder also enables the layout date flag and gets a
+`datetimeFigureOut` field in the reusable Layout definition; the current
+Slide keeps its authored date content.
+
+**Placeholder prototype**: The first slide using a layout key supplies that
+layout's placeholder formatting. `data-pptx-placeholder-bounds` supplies the
+reusable frame; when omitted, the exporter uses the prototype object's native
+DrawingML bounds. Repeat the same placeholder ids/types on every slide using
+that layout. Actual slide content and local geometry may differ.
+
+**Static structure consistency**: Repeat the same master element ids on every
+slide and the same layout element ids on every slide sharing a layout. Their
+generated OOXML must be identical within the affected master/layout group.
+Static structure may carry shapes, text, or images; non-image/external
+relationships are rejected. A full-canvas first rect/group may be marked as a
+master or layout background.
+
+**Native object placeholders**: `chart` / `table` placeholders require
+`--native-objects`; fallback groups contain several shapes and cannot map to one
+PowerPoint placeholder. `object` is the generic PowerPoint content slot and
+must still resolve to one top-level DrawingML object. `media` currently binds
+an authored image/crop to a native `media` placeholder; it does not synthesize
+video or audio media from a decorative SVG group.
+
+### Legacy Preserved Source Master / Layout Contract
+
+**Trigger**: An existing project already ships `native_structure.json` and `source_template.pptx`, has strict template adherence, and sets `pptx_structure.mode: preserve`. Current `create-template` output does not emit this pair; retain this contract only for backward compatibility.
+
+| Artifact | Authority |
+|---|---|
+| `source_template.pptx` | Original master/layout/theme/package parts |
+| `native_structure.json` | Stable layout keys, picker names, parent masters, placeholder types/indices, source SHA-256 |
+| `pptx_layouts` | Per-generated-page source layout selection |
+| SVG metadata | Standalone preview layers and slide-content placeholder binding |
+
+**Hard rule — source package wins**: Mark source master/layout visuals as direct `data-pptx-layer="master|layout"` preview children. Preserve export removes those generated copies and renders the original source parts. Unmarked content stays slide-local.
+
+**Placeholder identity**: Keep actual content on the slide. Copy the source placeholder index into `data-pptx-placeholder-idx` when present; the exporter restores the source placeholder type/idx pair. Imported `subTitle`, `obj`, `media`, and `dt` placeholders retain distinct `subtitle`, `object`, `media`, and `date` semantic roles instead of collapsing into body/other. Multiple placeholders with the same semantic role require explicit indices.
+
+**Multi-master boundary**: Preserve every source master already present in the package. Do not synthesize a new master merely for cover/section differences; rebuilt templates continue to prefer one master plus semantic layouts.
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720"
+     data-pptx-layout="content"
+     data-pptx-layout-name="Title and Content">
+  <rect id="master-bg" data-pptx-layer="master"
+        data-pptx-editable="false"
+        width="1280" height="720" fill="#F8FAFC"/>
+  <rect id="content-bg" data-pptx-layer="layout"
+        data-pptx-editable="false"
+        width="1280" height="720" fill="#FFFFFF"/>
+  <g id="content-rule" data-pptx-layer="layout"
+     data-pptx-editable="false">
+    <line x1="48" y1="96" x2="1232" y2="96"
+          stroke="#CBD5E1" stroke-width="2"/>
+  </g>
+  <text id="page-title" data-pptx-placeholder="title"
+        data-pptx-placeholder-bounds="80 112 1120 72"
+        x="80" y="158" font-size="40">Actual page title</text>
+  <image id="hero-image" data-pptx-placeholder="picture"
+         data-pptx-placeholder-bounds="680 210 480 320"
+         x="680" y="210" width="480" height="320"
+         href="../images/hero.png"/>
+</svg>
+```
 
 ### transform: rotate — Element Rotation
 

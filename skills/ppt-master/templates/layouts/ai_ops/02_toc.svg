@@ -1,6 +1,6 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" data-pptx-layout="02_toc" data-pptx-layout-name="Agenda">
   <!-- Background -->
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-02_toc-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <!-- Top Red Strip -->
   <rect x="0" y="0" width="1280" height="8" fill="#C00000" />

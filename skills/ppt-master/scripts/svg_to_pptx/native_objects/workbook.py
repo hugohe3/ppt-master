@@ -38,7 +38,11 @@ def _xlsx_cell(value: Any, row: int, col: int) -> str:
 def _minimal_workbook(rows: list[list[Any]]) -> bytes:
     if XlsxWriterWorkbook is not None:
         buffer = io.BytesIO()
-        workbook = XlsxWriterWorkbook(buffer, {"in_memory": True})
+        workbook = XlsxWriterWorkbook(buffer, {
+            "in_memory": True,
+            "strings_to_formulas": False,
+            "strings_to_urls": False,
+        })
         worksheet = workbook.add_worksheet("Sheet1")
         for row_index, row in enumerate(rows):
             for col_index, value in enumerate(row):
@@ -50,8 +54,11 @@ def _minimal_workbook(rows: list[list[Any]]) -> bytes:
         workbook = OpenpyxlWorkbook()
         worksheet = workbook.active
         worksheet.title = "Sheet1"
-        for row in rows:
-            worksheet.append(row)
+        for row_index, row in enumerate(rows, start=1):
+            for col_index, value in enumerate(row, start=1):
+                cell = worksheet.cell(row=row_index, column=col_index, value=value)
+                if isinstance(value, str):
+                    cell.data_type = "s"
         buffer = io.BytesIO()
         workbook.save(buffer)
         workbook.close()

@@ -111,6 +111,7 @@ def create_slide_rels_xml(
     svg_rid: str,
     svg_filename: str,
     use_compat_mode: bool = True,
+    slide_layout_target: str = "../slideLayouts/slideLayout1.xml",
 ) -> str:
     """Create slide relationship file XML.
 
@@ -120,17 +121,18 @@ def create_slide_rels_xml(
         svg_rid: SVG relationship ID.
         svg_filename: SVG filename.
         use_compat_mode: Whether to use compatibility mode.
+        slide_layout_target: Target for the slide's actual layout part.
     """
     if use_compat_mode:
         return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="{slide_layout_target}"/>
   <Relationship Id="{png_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{png_filename}"/>
   <Relationship Id="{svg_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{svg_filename}"/>
 </Relationships>'''
     else:
         return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="{slide_layout_target}"/>
   <Relationship Id="{svg_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{svg_filename}"/>
 </Relationships>'''

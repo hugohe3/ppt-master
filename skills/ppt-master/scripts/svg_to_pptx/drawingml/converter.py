@@ -11,6 +11,8 @@ from xml.etree import ElementTree as ET
 from resource_paths import icon_search_dirs_for_svg
 
 from .context import ConvertContext, ShapeResult
+from .theme_colors import ThemeColorSpec
+from .theme_fonts import ThemeFontSpec
 from .utils import (
     SVG_NS, EMU_PER_PX,
     _extract_inheritable_styles, _f, _get_attr, parse_transform_matrix, resolve_url_id,
@@ -25,40 +27,12 @@ from .elements import (
     convert_polygon, convert_polyline,
     convert_text, convert_image, convert_nested_svg,
 )
-from ..native_objects import convert_native_object
+from ..animation_config import is_chrome_id
+from ..native_objects import convert_native_object, native_marker_transform
 
 
 class SvgNativeConversionError(RuntimeError):
     """Raised when an SVG cannot be faithfully converted to native DrawingML."""
-
-
-# ---------------------------------------------------------------------------
-# Animation anchor selection
-# ---------------------------------------------------------------------------
-
-# Tokens that mark a top-level <g id="..."> as page chrome rather than animated
-# content. When any token (after splitting id on '-' and '_') matches, the group
-# is excluded from the per-element entrance animation cascade so background,
-# header/footer, decorations etc. appear together with the slide instead of
-# requiring presenter clicks.
-_CHROME_ID_TOKENS = frozenset({
-    'background', 'bg',
-    'decoration', 'decorations', 'decor',
-    'header', 'footer',
-    'chrome', 'watermark',
-    'pagenumber', 'pagenum',
-    'nav', 'logo', 'rule',
-})
-
-
-def _is_chrome_id(elem_id: str | None) -> bool:
-    if not elem_id:
-        return False
-    lower = elem_id.lower()
-    if lower.replace('-', '').replace('_', '') in _CHROME_ID_TOKENS:
-        return True
-    tokens = re.split(r'[-_]', lower)
-    return any(t in _CHROME_ID_TOKENS for t in tokens if t)
 
 
 # ---------------------------------------------------------------------------
@@ -166,18 +140,32 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     keep their absolute slide coordinates unchanged.
     """
     transform = elem.get('transform', '')
-    dx, dy, sx, sy, angle_deg = parse_transform(transform)
+    native_subtree_active = ctx.native_objects_enabled and any(
+        descendant.get('data-pptx-native')
+        and descendant.tag.replace(f'{{{SVG_NS}}}', '') != 'metadata'
+        for descendant in elem.iter()
+    )
+    if native_subtree_active:
+        dx, dy, sx, sy = native_marker_transform(transform)
+        angle_deg = 0.0
+    else:
+        dx, dy, sx, sy, angle_deg = parse_transform(transform)
 
     filter_id = resolve_url_id(elem.get('filter', ''))
     style_overrides = _extract_inheritable_styles(elem)
 
     elem_id = elem.get('id')
-    should_animate_group = ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id)
+    should_animate_group = (
+        ctx.depth == 0
+        and elem_id
+        and not is_chrome_id(elem_id)
+        and not elem.get('data-pptx-layer')
+    )
     visual_children = [
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
     ]
-    matrix_supported = bool(transform) and visual_children and all(
+    matrix_supported = not native_subtree_active and bool(transform) and visual_children and all(
         _supports_matrix_transform(child) for child in visual_children
     )
     # A pure ``rotate(angle [cx cy])`` falls through to the fallback path
@@ -203,7 +191,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             style_overrides=style_overrides,
         )
     else:
-        child_ctx = ctx.child(dx, dy, sx, sy, filter_id=filter_id, style_overrides=style_overrides)
+        child_ctx = ctx.child(
+            ctx.scale_x * dx if native_subtree_active else dx,
+            ctx.scale_y * dy if native_subtree_active else dy,
+            sx,
+            sy,
+            filter_id=filter_id,
+            style_overrides=style_overrides,
+        )
 
     if child_ctx.native_objects_enabled:
         native_result = convert_native_object(elem, child_ctx)
@@ -420,7 +415,12 @@ def _background_xml_from_rect(
     ctx: ConvertContext,
 ) -> str:
     """Build native ``p:bg`` XML from a full-slide SVG background rect."""
-    fill_xml = build_fill_xml(elem, ctx, get_fill_opacity(elem, ctx))
+    fill_xml = build_fill_xml(
+        elem,
+        ctx,
+        get_fill_opacity(elem, ctx),
+        usage="background",
+    )
     if not fill_xml or '<a:noFill' in fill_xml:
         return ''
     return f'<p:bg><p:bgPr>{fill_xml}<a:effectLst/></p:bgPr></p:bg>'
@@ -506,6 +506,15 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         }
         if elem_id:
             event['id'] = elem_id
+        for attr in (
+            'data-pptx-layer',
+            'data-pptx-placeholder',
+            'data-pptx-placeholder-bounds',
+            'data-pptx-placeholder-idx',
+        ):
+            value = elem.get(attr)
+            if value is not None:
+                event[attr] = value
         event.update(metadata)
         ctx.trace_events.append(event)
 
@@ -573,6 +582,8 @@ def convert_svg_to_slide_shapes(
     image_scale: float = 2.0,
     image_quality: int = 85,
     native_objects: bool = False,
+    theme_font_spec: ThemeFontSpec | None = None,
+    theme_color_spec: ThemeColorSpec | None = None,
     trace_out: list[dict[str, Any]] | None = None,
 ) -> tuple[
     str,
@@ -600,6 +611,11 @@ def convert_svg_to_slide_shapes(
         image_quality: JPEG quality used for opaque optimized rasters.
         native_objects: Convert explicit ``data-pptx-native`` table/chart
             markers to native PowerPoint objects. Default off.
+        theme_font_spec: Optional major/minor theme-font contract. Matching SVG
+            families emit DrawingML theme tokens instead of fixed typefaces.
+        theme_color_spec: Optional context-aware theme-color contract. Exact
+            locked colors emit DrawingML scheme tokens while local colors stay
+            fixed.
         trace_out: Optional list populated with one per-slide trace dictionary.
 
     Returns:
@@ -677,6 +693,8 @@ def convert_svg_to_slide_shapes(
         image_quality=image_quality,
         native_objects_enabled=native_objects,
         trace_events=trace_events,
+        theme_font_spec=theme_font_spec,
+        theme_color_spec=theme_color_spec,
     )
 
     shapes: list[str] = []
@@ -705,7 +723,7 @@ def convert_svg_to_slide_shapes(
             shapes.append(result.xml)
             converted += 1
             m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
-            if m:
+            if m and not child.get('data-pptx-layer'):
                 fallback_targets.append((int(m.group(1)), tag))
         else:
             if tag not in _NON_VISUAL_TAGS:

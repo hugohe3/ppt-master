@@ -40,7 +40,11 @@ uvx ppt-master update-repo
 
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
-| Conversion | `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py` | [docs/conversion.md](./docs/conversion.md) |
+<<<<<<< HEAD
+| Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
+=======
+| Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
+>>>>>>> upstream/main
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -53,11 +57,13 @@ uvx ppt-master update-repo
 Conversion:
 
 ```bash
-uvx ppt-master pdf-to-md <file.pdf>
-uvx ppt-master ppt-to-md <deck.pptx>
-uvx ppt-master doc-to-md <file.docx>
-uvx ppt-master excel-to-md <workbook.xlsx>
-uvx ppt-master web-to-md <url>
+python3 scripts/source_to_md.py <file-or-url-or-dir> [<file-or-url-or-dir> ...]
+python3 scripts/source_to_md/pdf_to_md.py <file.pdf>
+python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
+python3 scripts/source_to_md/doc_to_md.py <file.docx>
+python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
+python3 scripts/source_to_md/web_to_md.py <url>
+python3 scripts/pptx_to_svg.py <deck.pptx> -o <output_dir>  # reconstruction/reference SVG import
 ```
 
 Project setup:
@@ -108,6 +114,22 @@ uvx ppt-master svg-to-pptx <project_path>
 
 `finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
 
+For SVG-authoring routes, `svg_output/` is the complete visible page-design source: every exported text, image, shape, background, and template-derived layout element is present in the page SVG or explicitly referenced by it. Export may translate represented content into Master/Layout/Slide parts or native objects, but it does not retrieve missing visible content from templates or planning files. Speaker notes, animation, narration, transitions, `template-fill-pptx`, and `native-enhance-pptx` remain separately owned capabilities.
+
+When `spec_lock.md` has no `pptx_structure` section, native `svg_to_pptx.py` falls back to `baseline`: the generated deck keeps a standard Master/Layout relationship and promotes only exact, z-order-safe shared backgrounds/chrome. It then assigns filename-backed `Cover`, `Agenda`, `Section`, `Closing`, or fallback `Content` layouts. A family-wide exact background and an exact leading chrome prefix may move into that Layout; actual titles, body content, pictures, charts, tables, page numbers, and page-specific shapes remain on Slide. No visual-similarity or placeholder inference is performed. Baseline also prunes unused layouts and maps locked typography/colors into the PowerPoint theme. Use `--pptx-structure flat` for slide-local diagnostics.
+
+Deck/layout template routes use explicit template structure. Each complete SVG names its output Layout, repeats inherited Master/Layout preview layers, and marks supported content placeholders. Strict keeps the selected Layout contract; adaptive may create a new Layout while retaining the Master. The exporter validates cross-slide equality, creates one reusable Layout per key, removes repeated inherited copies, and keeps actual content Slide-local. The complete contract lives in [`references/shared-standards.md`](../references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata-template-export).
+
+Current `create-template` output always rebuilds explicit SVG structure and does not package `native_structure.json` or `source_template.pptx`. `preserve` remains available only for existing projects that already carry the legacy pair.
+
+`pptx_to_svg.py` annotates supported unmerged tables and conservative classic-chart caches with `data-pptx-native` metadata. Source table-style inheritance, supported solid cell fills/basic text formatting, chart title/legend/axis titles, and plot-level data-label flags for area/bar/column/line charts are retained when the current schema can represent them. Tables with direct borders, non-solid fills, or mixed rich-text formatting remain fallback-only, as do charts with unsupported label scopes/types, custom axis semantics, trendlines/error bars, or subtype options. Unsupported tables keep their rendered SVG table; unsupported charts keep a baked preview or explicit placeholder. Both carry `data-pptx-native-status`, which `svg_quality_checker.py` and `svg_to_pptx.py --native-objects` report as a warning.
+
+Exporter-canonical classic charts also recover canonical solid series/slice
+colors and exact one- or two-paragraph title styling; two paragraphs retain
+their `title` / `subtitle` roles. Slide-number fields resolve to the display
+number defined by `firstSlideNum`; standalone master/layout SVGs retain their
+literal field fallback because they are shared by multiple slides.
+
 Image generation:
 
 ```bash
@@ -130,7 +152,7 @@ uvx ppt-master update-repo --skip-deps
 - Keep one user-facing entry point per workflow at the top level of `scripts/`
 - Move provider-specific or helper internals into subdirectories
 - Prefer the unified entry points `project_manager.py`, `finalize_svg.py`, and `image_gen.py`
-- Prefer `svg_final/` over `svg_output/` when exporting
+- Use `svg_output/` for native export and `svg_final/` for SVG snapshot/preview export
 
 ## Related Docs
 
@@ -141,4 +163,4 @@ uvx ppt-master update-repo --skip-deps
 - [Troubleshooting](./docs/troubleshooting.md)
 - [Skill Entry](../SKILL.md)
 
-_Last updated: 2026-04-09_
+_Last updated: 2026-07-10_

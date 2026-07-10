@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <rect width="1280" height="720" fill="#A61120"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-layout="02_chapter" data-pptx-layout-name="Section">
+  <rect width="1280" height="720" fill="#A61120" id="layout-02_chapter-background" data-pptx-layer="layout" data-pptx-editable="false"/>
 
   <circle cx="1010" cy="344" r="286" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-opacity="0.06"/>
   <circle cx="1042" cy="344" r="184" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-opacity="0.05"/>
@@ -16,7 +16,7 @@
   <text x="154" y="258" fill="#FFFFFF" fill-opacity="0.12" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="220" font-weight="700">
     {{CHAPTER_NUM}}
   </text>
-  <text x="154" y="334" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="46" font-weight="700">
+  <text x="154" y="334" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="46" font-weight="700" id="slot-02_chapter-title-1" data-pptx-placeholder="title">
     {{CHAPTER_TITLE}}
   </text>
   <text x="154" y="392" fill="#FFFFFF" fill-opacity="0.82" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="20">

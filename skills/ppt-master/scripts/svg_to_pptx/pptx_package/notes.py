@@ -114,7 +114,7 @@ def create_notes_slide_xml(slide_num: int, notes_text: str) -> str:
             <a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/>
           </p:cNvSpPr>
           <p:nvPr>
-            <p:ph type="sldImg"/>
+            <p:ph type="sldImg" idx="2"/>
           </p:nvPr>
         </p:nvSpPr>
         <p:spPr/>
@@ -126,7 +126,7 @@ def create_notes_slide_xml(slide_num: int, notes_text: str) -> str:
             <a:spLocks noGrp="1"/>
           </p:cNvSpPr>
           <p:nvPr>
-            <p:ph type="body" idx="1"/>
+            <p:ph type="body" sz="quarter" idx="3"/>
           </p:nvPr>
         </p:nvSpPr>
         <p:spPr/>
@@ -187,7 +187,13 @@ def create_notes_master_xml() -> str:
           <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
           <p:nvPr><p:ph type="hdr" sz="quarter"/></p:nvPr>
         </p:nvSpPr>
-        <p:spPr/>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="0" y="0"/>
+            <a:ext cx="2971800" cy="457200"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+        </p:spPr>
         <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
@@ -196,7 +202,13 @@ def create_notes_master_xml() -> str:
           <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
           <p:nvPr><p:ph type="dt" sz="half" idx="1"/></p:nvPr>
         </p:nvSpPr>
-        <p:spPr/>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="3884613" y="0"/>
+            <a:ext cx="2971800" cy="457200"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+        </p:spPr>
         <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
@@ -205,7 +217,13 @@ def create_notes_master_xml() -> str:
           <p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/></p:cNvSpPr>
           <p:nvPr><p:ph type="sldImg" idx="2"/></p:nvPr>
         </p:nvSpPr>
-        <p:spPr/>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="1143000" y="685800"/>
+            <a:ext cx="4572000" cy="3429000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+        </p:spPr>
       </p:sp>
       <p:sp>
         <p:nvSpPr>
@@ -213,7 +231,13 @@ def create_notes_master_xml() -> str:
           <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
           <p:nvPr><p:ph type="body" sz="quarter" idx="3"/></p:nvPr>
         </p:nvSpPr>
-        <p:spPr/>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="685800" y="4343400"/>
+            <a:ext cx="5486400" cy="4114800"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+        </p:spPr>
         <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
@@ -222,7 +246,13 @@ def create_notes_master_xml() -> str:
           <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
           <p:nvPr><p:ph type="ftr" sz="quarter" idx="4"/></p:nvPr>
         </p:nvSpPr>
-        <p:spPr/>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="0" y="8685213"/>
+            <a:ext cx="2971800" cy="457200"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+        </p:spPr>
         <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
       </p:sp>
       <p:sp>
@@ -231,7 +261,13 @@ def create_notes_master_xml() -> str:
           <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>
           <p:nvPr><p:ph type="sldNum" sz="quarter" idx="5"/></p:nvPr>
         </p:nvSpPr>
-        <p:spPr/>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="3884613" y="8685213"/>
+            <a:ext cx="2971800" cy="457200"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+        </p:spPr>
         <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
       </p:sp>
     </p:spTree>

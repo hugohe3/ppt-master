@@ -1,6 +1,7 @@
 ---
 deck_id: 招商银行
 kind: deck
+native_structure_mode: template
 summary: 交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料.
 canvas_format: ppt169
 page_count: 5

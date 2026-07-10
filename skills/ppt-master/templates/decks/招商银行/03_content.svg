@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <rect width="1280" height="720" fill="#FFFFFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-layout="03_content" data-pptx-layout-name="Content">
+  <rect width="1280" height="720" fill="#FFFFFF" id="layout-03_content-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect x="0" y="0" width="1280" height="30" fill="#C8152D"/>
   <defs>
     <linearGradient id="accentFade" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -12,7 +12,7 @@
   <image href="logo_dark.png" x="940" y="42" width="280" height="48" preserveAspectRatio="xMidYMid meet"/>
 
 
-  <text x="72" y="84" fill="#1F1F1F" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="26" font-weight="700">
+  <text x="72" y="84" fill="#1F1F1F" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="26" font-weight="700" id="slot-03_content-title-1" data-pptx-placeholder="title">
     {{PAGE_TITLE}}
   </text>
   <line x1="72" y1="98" x2="286" y2="98" stroke="#C8152D" stroke-width="3"/>
@@ -23,7 +23,7 @@
   </text>
 
   <rect x="72" y="158" width="4" height="26" fill="#C8152D"/>
-  <text x="90" y="177" fill="#666666" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="16">
+  <text x="90" y="177" fill="#666666" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="16" id="slot-03_content-body-2" data-pptx-placeholder="body">
     {{KEY_MESSAGE}}
   </text>
   <line x1="72" y1="204" x2="1210" y2="204" stroke="#E9E9E9" stroke-width="2"/>
@@ -65,7 +65,7 @@
   <text x="72" y="698" fill="#8A8A8A" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="12">
     数据来源：{{SOURCE}}
   </text>
-  <text x="1210" y="698" text-anchor="end" fill="#777777" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="14">
+  <text x="1210" y="698" text-anchor="end" fill="#777777" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="14" id="slot-03_content-slide_number-3" data-pptx-placeholder="slide-number">
     {{PAGE_NUM}}
   </text>
 </svg>

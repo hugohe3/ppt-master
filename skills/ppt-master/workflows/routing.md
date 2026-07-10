@@ -22,6 +22,17 @@ Route selection authority for PPT Master. Use this file before entering the main
 
 **Forbidden - route-choice prompts**: Do not present multiple implementation paths when this file already defines the route. Ordinary style choices and finite options belong at the next existing confirmation gate.
 
+### 1.1 SVG Page-Design Scope
+
+| Route family | SVG contract |
+|---|---|
+| Main SVG pipeline and `beautify-pptx` | Every visible output-page object is authored in the completed page SVG; templates and locks guide authoring but are not export-time visual overlays. |
+| `create-template` | Each reusable template SVG is a complete visual reference plus explicit PowerPoint structure metadata. |
+| `template-fill-pptx` and `native-enhance-pptx` | Native PPTX editing routes. They retain their OOXML contracts and are not forced through SVG. |
+| Animation, transition, speaker-note, and narration workflows | Presentation behavior/content outside the visible page-design layer; keep their dedicated sidecars and package post-processing. |
+
+**Hard rule**: Apply SVG page-design closure only after selecting an SVG-authoring route. Do not reroute a native PPTX operation merely to make every package-level capability pass through SVG.
+
 ---
 
 ## 2. Main Route Matrix

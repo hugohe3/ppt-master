@@ -17,4 +17,4 @@ from svg_to_pptx import main
 configure_utf8_stdio()
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

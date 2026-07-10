@@ -555,6 +555,28 @@
       "label_ja": "分割モード"
     }
   ],
+  "template_adherence": [
+    {
+      "id": "adaptive",
+      "label": "adaptive",
+      "label_zh": "适应性使用",
+      "label_en": "adaptive",
+      "label_ja": "適応的に使用",
+      "desc_zh": "每页选择一个模板 SVG 作为架构参考；没有合适版式时沿用同一 Master 创建新的显式 Layout。",
+      "desc_en": "Choose a template SVG as the architecture reference for every page; when no layout fits, create a new explicit Layout under the same Master.",
+      "desc_ja": "各ページでテンプレートSVGを構造参照として選び、適合する版式がない場合は同じMaster配下に新しい明示的Layoutを作成する。"
+    },
+    {
+      "id": "strict",
+      "label": "strict",
+      "label_zh": "严格套用",
+      "label_en": "strict",
+      "label_ja": "厳密に適用",
+      "desc_zh": "每一页都从模板 SVG roster 选择版式，并保持其显式 Master、Layout 与 Placeholder 契约不变。",
+      "desc_en": "Map every page to the template SVG roster and keep its explicit Master, Layout, and Placeholder contract unchanged.",
+      "desc_ja": "すべてのページをテンプレートSVG一覧へ割り当て、明示されたMaster／Layout／Placeholder契約を変更せずに維持する。"
+    }
+  ],
   "delivery_purpose": [
     {
       "id": "text",
