@@ -37,6 +37,10 @@ from ..drawingml.theme_fonts import (
     apply_theme_font_spec,
 )
 from ..drawingml.utils import EMU_PER_PX
+from ..semantic_markers import (
+    chrome_token_from_markers,
+    page_layout_name_from_svg,
+)
 from .dimensions import (
     CANVAS_FORMATS,
     get_slide_dimensions, get_pixel_dimensions,
@@ -413,7 +417,16 @@ def _trace_chrome_shape_ids(
     for event in trace.get("events", []):
         if event.get("decision") != "native":
             continue
-        token = _chrome_token_from_svg_id(event.get("id"))
+        semantic_role = event.get("data-pptx-role")
+        placeholder = event.get("data-pptx-placeholder")
+        has_explicit_semantics = (
+            semantic_role is not None or placeholder is not None
+        )
+        token = (
+            chrome_token_from_markers(semantic_role, placeholder)
+            if has_explicit_semantics
+            else _chrome_token_from_svg_id(event.get("id"))
+        )
         shape_id = event.get("shape_id")
         if token and shape_id is not None:
             shape_ids = result.setdefault(token, [])
@@ -839,7 +852,10 @@ _BASELINE_LAYOUT_ROLE_TOKENS = (
 
 
 def _baseline_layout_role(svg_path: Path) -> str:
-    """Classify only explicit filename roles; keep every other page as Content."""
+    """Use explicit page semantics, then fall back to conservative filename roles."""
+    semantic_role = page_layout_name_from_svg(svg_path)
+    if semantic_role:
+        return semantic_role
     stem = svg_path.stem.casefold()
     tokens = {
         token
@@ -3267,8 +3283,9 @@ def create_pptx_with_native_svg(
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
         pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
             shared native backgrounds and leading chrome to slide masters,
-            then extracts conservative filename-backed layout families and
-            exact family-wide leading chrome;
+            then extracts semantic page-role layout families and exact
+            family-wide structurally marked leading chrome; marker-free legacy
+            SVGs retain filename/id fallback;
             ``template`` consumes explicit SVG master/layout/placeholder
             metadata; ``preserve`` reuses an imported source PPTX package;
             ``flat`` keeps generated structure slide-local.
