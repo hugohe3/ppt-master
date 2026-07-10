@@ -255,6 +255,8 @@ Wrap logically related elements in top-level `<g id="...">` groups. Produces Pow
 
 **Chrome groups are excluded automatically.** The exporter treats top-level groups whose id contains chrome tokens as page chrome and skips them in the animation sequence — they appear together with the slide. Tokens (matched against id after splitting on `-` / `_`): `background`, `bg`, `decoration` / `decorations` / `decor`, `header`, `footer`, `chrome`, `watermark`, `pagenumber` / `pagenum` / `page-number`, `nav`, `logo`, `rule`. So `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="nav">`, `<g id="logo-area">`, `<g id="column-rule">` all skip animation while keeping their `<g>` wrapper for editing/grouping. Use these naming conventions for chrome — do **not** strip the `<g>` wrapper.
 
+These ids also drive slide-master promotion in the default native export: `logo` / `footer` / `header` / `watermark` / `chrome` / `pageNumber` chrome that is drawn **before** content and repeated **verbatim** across pages moves into the slide master (pages without it, like covers, are isolated automatically), and a `pageNumber` text whose content is exactly the page's display number becomes a self-renumbering PowerPoint field.
+
 **What to group**:
 
 | Grouping Unit | Contains |
