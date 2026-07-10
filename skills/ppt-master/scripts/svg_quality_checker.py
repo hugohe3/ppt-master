@@ -75,9 +75,17 @@ except ImportError:
 
 try:
     from svg_to_pptx.pptx_package.template_structure import (
+        TemplateStructureError as _TemplateStructureError,
+        load_pptx_structure_lock as _load_pptx_structure_lock,
+        parse_template_slides as _parse_template_structure_slides,
+        template_lock_errors as _template_lock_errors,
         validate_template_svg as _validate_template_structure_svg,
     )
 except ImportError:
+    _TemplateStructureError = None
+    _load_pptx_structure_lock = None
+    _parse_template_structure_slides = None
+    _template_lock_errors = None
     _validate_template_structure_svg = None
 
 try:
@@ -317,6 +325,7 @@ class SVGQualityChecker:
         self._template_issues: List[Tuple[str, str, str]] = []
         self._animation_issues: List[Tuple[str, str]] = []
         self._illustration_issues: List[Tuple[str, str, str]] = []
+        self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._aggregate_counts_applied = False
 
     def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
@@ -1415,6 +1424,7 @@ class SVGQualityChecker:
             result = self.check_file(str(svg_file), expected_format)
             self._print_result(result)
 
+        self._check_pptx_structure_contract(dir_path, svg_files)
         if self.template_mode and dir_path.is_dir():
             self._check_template_contract(dir_path, svg_files)
         elif dir_path.is_dir():
@@ -1422,6 +1432,63 @@ class SVGQualityChecker:
             self._check_illustration_resource_contract(dir_path)
 
         return self.results
+
+    def _check_pptx_structure_contract(
+        self,
+        target_path: Path,
+        svg_files: List[Path],
+    ) -> None:
+        """Validate project-level layout reuse and spec_lock mappings."""
+        if (
+            _load_pptx_structure_lock is None
+            or _parse_template_structure_slides is None
+            or _template_lock_errors is None
+            or _TemplateStructureError is None
+        ):
+            return
+        project_path = self._resolve_project_path(target_path)
+        try:
+            structure_lock = _load_pptx_structure_lock(project_path)
+        except _TemplateStructureError as exc:
+            self._pptx_structure_issues.append(('error', str(exc)))
+            return
+
+        structure_attrs = {
+            'data-pptx-layer',
+            'data-pptx-layout',
+            'data-pptx-layout-name',
+            'data-pptx-placeholder',
+            'data-pptx-placeholder-bounds',
+            'data-pptx-editable',
+        }
+        has_metadata = False
+        for svg_path in svg_files:
+            try:
+                root = ET.parse(svg_path).getroot()
+            except (OSError, ET.ParseError):
+                continue
+            if any(
+                elem.get(attr) is not None
+                for elem in root.iter()
+                for attr in structure_attrs
+            ):
+                has_metadata = True
+                break
+        template_locked = structure_lock is not None and structure_lock.mode == 'template'
+        if not has_metadata and not template_locked:
+            return
+
+        try:
+            specs = _parse_template_structure_slides(svg_files)
+        except _TemplateStructureError as exc:
+            self._pptx_structure_issues.append(('error', str(exc)))
+            return
+        if not template_locked:
+            return
+        self._pptx_structure_issues.extend(
+            ('error', message)
+            for message in _template_lock_errors(specs, structure_lock)
+        )
 
     def _check_illustration_resource_contract(self, dir_path: Path) -> None:
         """Project-level illustration resource checks."""
@@ -2101,6 +2168,9 @@ class SVGQualityChecker:
         # Illustration strategy aggregation.
         self._print_illustration_summary()
 
+        # Explicit PowerPoint master/layout structure aggregation.
+        self._print_pptx_structure_summary()
+
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
@@ -2140,6 +2210,14 @@ class SVGQualityChecker:
             print(f"  Warnings ({len(warnings)}):")
             for _severity, kind, msg in warnings:
                 print(f"    [{kind}] {msg}")
+
+    def _print_pptx_structure_summary(self):
+        """Print project-level PowerPoint structure contract issues."""
+        if not self._pptx_structure_issues:
+            return
+        print("\n[PPTX STRUCTURE] Master/layout contract checks")
+        for severity, message in self._pptx_structure_issues:
+            print(f"  [{severity.upper()}] {message}")
 
     def _print_template_summary(self):
         """Aggregate template-mode roster / placeholder issues at the bottom.
@@ -2193,6 +2271,13 @@ class SVGQualityChecker:
         self.summary['warnings'] += len(illustration_warnings)
         for severity, kind, _msg in self._illustration_issues:
             self.issue_types[f'illustration_{kind}_{severity}'] += 1
+
+        structure_errors = [item for item in self._pptx_structure_issues if item[0] == 'error']
+        structure_warnings = [item for item in self._pptx_structure_issues if item[0] == 'warning']
+        self.summary['errors'] += len(structure_errors)
+        self.summary['warnings'] += len(structure_warnings)
+        for severity, _msg in self._pptx_structure_issues:
+            self.issue_types[f'pptx_structure_{severity}'] += 1
 
     def _print_drift_summary(self):
         """Print spec_lock drift aggregation if any was observed.

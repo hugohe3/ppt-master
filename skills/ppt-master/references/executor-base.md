@@ -91,6 +91,31 @@ Before generating each page, output which template is used:
 - **Content pages**: template defines only header/footer; content area is free
 - **No template**: generate entirely per the Design Spec
 
+### 1.2 PowerPoint Master / Layout Mapping
+
+`page_layouts` selects an SVG design reference; `pptx_layouts` declares the native PowerPoint layout produced at export. They are independent contracts.
+
+| `pptx_structure.mode` | Executor behavior |
+|---|---|
+| `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template. |
+| `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
+
+**Hard rule — every template-mode page references one layout**: Read `P<NN>: <layout_key> | <layout name>` from `pptx_layouts`, then put both values on the root SVG as `data-pptx-layout` and `data-pptx-layout-name`. Do not invent, rename, or omit a key.
+
+**Hard rule — PowerPoint paint order**: Direct visual children appear in this order: Master background, Layout background, optional Slide background, shared Master shapes, same-key Layout shapes, then slide-local content/placeholders. Backgrounds are the special plane beneath all inherited shapes. Repeat the same Master contract on every page and the same Layout contract on every page sharing a key.
+
+**Placeholder ownership**: Keep actual title/body/picture/chart/table/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. Chart/table placeholders require native markers and a later `--native-objects` export.
+
+**Background ownership**:
+
+| Scope | SVG authoring |
+|---|---|
+| Deck-wide default | Direct full-canvas solid `<rect data-pptx-layer="master">` repeated identically on every page |
+| Page-type default | Direct full-canvas solid `<rect data-pptx-layer="layout">` repeated on every page sharing that layout key |
+| One-page exception | Direct full-canvas solid `<rect data-pptx-layer="slide">` |
+
+The exporter writes these solid fills as real Master/Layout/Slide `p:bg`, not selectable full-canvas shapes. Gradients, images, textures, and overlay panels stay explicit shapes unless the shared standard says otherwise.
+
 ---
 
 ## 2. Design Parameter Confirmation (Mandatory Step)
@@ -151,6 +176,12 @@ Before drawing each page, look up its entry in `page_layouts` to decide which ba
 - Whole section absent → see §1 fallback (legacy page-type matching).
 
 Do **not** invent a layout entry, and do **not** assume a template just because `templates/` exists — if `page_layouts` is present but silent for this page, that silence is the instruction.
+
+**Per-page PowerPoint layout lookup — `pptx_layouts` section**:
+
+- `pptx_structure.mode: template` → a `P<NN>` row is mandatory; apply §1.2 to the root and direct children.
+- `pptx_structure.mode: baseline` or missing → omit explicit PPTX structure metadata; baseline export owns conservative promotion.
+- A layout key may repeat across non-adjacent pages. Reuse is based on identical static/placeholder contracts, not page proximity or content wording.
 
 **Per-page chart reference — `page_charts` section**:
 

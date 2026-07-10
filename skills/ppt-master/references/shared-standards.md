@@ -927,9 +927,18 @@ steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
 
 ### Explicit PPTX Master / Layout / Placeholder Metadata (Template Export)
 
-**Trigger**: Pass `--pptx-structure template`. Without that flag, the metadata
-stays visually dormant and the SVG exports through the normal baseline / flat
-path.
+**Trigger**: Set `spec_lock.md` `pptx_structure.mode` to `template`, or pass
+`--pptx-structure template` explicitly. The CLI value overrides the lock;
+without either trigger, metadata stays visually dormant and the SVG exports
+through the normal baseline / flat path.
+
+**Project lock**: In the standard project pipeline, template mode requires one
+`pptx_layouts` row per page using
+`P<NN>: <layout_key> | <PowerPoint layout name>`. The SVG root values MUST
+match that row. Reuse one layout key only when pages share the same static
+layout layer and placeholder contract; different content is not a reason to
+create a new layout. Direct diagnostic exports may pass the CLI flag without a
+spec lock; the SVG metadata remains the exporter source of truth.
 
 | Metadata | Placement | Behavior |
 |---|---|---|
@@ -937,19 +946,32 @@ path.
 | `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
 | `data-pptx-layer="master"` | direct visual child | Moves one repeated static object/background into the slide master |
 | `data-pptx-layer="layout"` | direct visual child | Moves one repeated static object/background into the selected layout |
+| `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
 | `data-pptx-placeholder="..."` | direct visual child | Keeps actual content on the slide and maps it to a generated layout placeholder |
 | `data-pptx-placeholder-bounds="x y width height"` | placeholder element | Overrides the reusable placeholder frame in SVG user units |
-| `data-pptx-editable="false"` | master/layout element | Declares intentional editing through Master View, not Normal View |
+| `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
 
 **Hard rule — explicit only**: Template export never promotes visually similar
 content by inference. Every SVG requires a root `data-pptx-layout`; every
 master/layout/placeholder element requires a unique `id` and must be a direct
 child of the root SVG.
 
-**Layer order**: Author the SVG in PowerPoint inheritance order: master elements
-first, then layout elements, then slide-local content/placeholders. Moving a
-later overlay behind slide content changes z-order, so the exporter rejects
-interleaved structure layers.
+**Layer order**: Author the SVG in PowerPoint paint order: Master background,
+Layout background, optional Slide background, Master shapes, Layout shapes,
+then slide-local content/placeholders. Backgrounds are a special inheritance
+plane beneath every shape; this order keeps standalone SVG preview and
+PowerPoint rendering aligned. The exporter rejects interleaved layers.
+
+**Solid background ownership**: A direct full-canvas solid `<rect>` becomes a
+real `p:bg`, not a selectable shape. Mark it `data-pptx-layer="master"` for the
+deck-wide default, `data-pptx-layer="layout"` for a page-type override, or
+`data-pptx-layer="slide"` for a one-slide override. An unmarked direct
+full-canvas solid rect in the background plane is also treated as Slide scope. A
+Layout background overrides the Master background; a Slide background
+overrides both. Use the Master for a globally stable color and the Layout for
+cover/section/content variants under the same design language. Gradients,
+images, textures, transformed rects, and visible-stroke rects are not promoted
+by this solid-background rule.
 
 | Placeholder value | SVG element | PowerPoint placeholder |
 |---|---|---|
@@ -982,6 +1004,9 @@ PowerPoint placeholder.
   <rect id="master-bg" data-pptx-layer="master"
         data-pptx-editable="false"
         width="1280" height="720" fill="#F8FAFC"/>
+  <rect id="content-bg" data-pptx-layer="layout"
+        data-pptx-editable="false"
+        width="1280" height="720" fill="#FFFFFF"/>
   <g id="content-rule" data-pptx-layer="layout"
      data-pptx-editable="false">
     <line x1="48" y1="96" x2="1232" y2="96"

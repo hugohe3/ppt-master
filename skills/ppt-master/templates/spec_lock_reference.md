@@ -120,6 +120,29 @@
 >
 > **Missing or empty section** → Executor falls back to `dense` for every page (legacy pre-rhythm behavior). Remove the section only for legacy decks; new decks MUST fill it.
 
+## pptx_structure
+- mode: baseline
+
+> One deck-wide native PowerPoint structure policy. New projects always include this section.
+>
+> - `baseline` — default. Preserve the conservative shared Master/background/chrome behavior; no explicit reusable placeholder layouts are authored.
+> - `template` — use only when the user explicitly requests a reusable PowerPoint template/master/layout deliverable. Requires a complete `pptx_layouts` section and explicit SVG structure metadata on every generated page.
+> - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
+
+## pptx_layouts
+
+> Emit this section only when `pptx_structure.mode` is `template`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`.
+>
+> Example:
+> ```
+> - P01: cover | Cover
+> - P02: title-content | Title and Content
+> - P03: title-content | Title and Content
+> - P04: section | Section Header
+> ```
+>
+> Reuse one key only when pages share the same static layout layer and placeholder contract. Do not generate one unique key per slide merely because every page has different content. A one-off cover/section layout is valid; content differences stay slide-local.
+
 ## page_layouts
 - P01: 01_cover
 - P03: 02a_chapter
