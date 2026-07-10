@@ -22,7 +22,7 @@ ANGLE_UNIT = 60000  # DrawingML angle: 60000ths of a degree
 # SVG attributes inheritable from parent <g>
 INHERITABLE_ATTRS = [
     'fill', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linecap',
-    'stroke-linejoin', 'opacity', 'fill-opacity', 'stroke-opacity',
+    'stroke-linejoin', 'fill-opacity', 'stroke-opacity',
     'font-family', 'font-size', 'font-weight', 'font-style',
     'text-anchor', 'letter-spacing', 'text-decoration',
 ]

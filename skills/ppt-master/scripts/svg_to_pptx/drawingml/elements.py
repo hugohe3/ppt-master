@@ -363,7 +363,10 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_effect_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
 
     transform = elem.get('transform')
 
@@ -577,7 +580,10 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         effect = ''
         filt_id = get_effective_filter_id(elem, ctx)
         if filt_id and filt_id in ctx.defs:
-            effect = build_effect_xml(ctx.defs[filt_id])
+            effect = build_effect_xml(
+                ctx.defs[filt_id],
+                get_element_opacity(elem, ctx),
+            )
 
         shape_id = ctx.next_id()
         return ShapeResult(
@@ -609,7 +615,10 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_effect_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
 
     geom = '<a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>'
 
@@ -815,7 +824,10 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_effect_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
 
     shape_id = ctx.next_id()
     off_x = px_to_emu(min_x)
@@ -1272,6 +1284,16 @@ def _textbox_padding(font_size: float) -> float:
     )
 
 
+def _text_opacity_ratio(value: str | None) -> float:
+    """Parse a text opacity component and clamp it to the SVG ``0..1`` range."""
+    if value is None:
+        return 1.0
+    try:
+        return max(0.0, min(1.0, float(value)))
+    except ValueError:
+        return 1.0
+
+
 def _override_run_attrs(
     parent_attrs: dict[str, Any],
     tspan: ET.Element,
@@ -1282,6 +1304,27 @@ def _override_run_attrs(
 
     def tspan_attr(name: str) -> str | None:
         return inline_style.get(name) or tspan.get(name)
+
+    object_opacity = float(run_attrs.get('_object_opacity', 1.0))
+    fill_opacity = float(run_attrs.get('_fill_opacity', 1.0))
+    stroke_opacity = float(run_attrs.get('_stroke_opacity', 1.0))
+    if tspan_attr('opacity') is not None:
+        object_opacity *= _text_opacity_ratio(tspan_attr('opacity'))
+    if tspan_attr('fill-opacity') is not None:
+        fill_opacity = _text_opacity_ratio(tspan_attr('fill-opacity'))
+    if tspan_attr('stroke-opacity') is not None:
+        stroke_opacity = _text_opacity_ratio(tspan_attr('stroke-opacity'))
+    run_attrs['_object_opacity'] = object_opacity
+    run_attrs['_fill_opacity'] = fill_opacity
+    run_attrs['_stroke_opacity'] = stroke_opacity
+    effective_fill_opacity = object_opacity * fill_opacity
+    effective_stroke_opacity = object_opacity * stroke_opacity
+    run_attrs['opacity'] = (
+        effective_fill_opacity if effective_fill_opacity < 1.0 else None
+    )
+    run_attrs['stroke_opacity'] = (
+        effective_stroke_opacity if effective_stroke_opacity < 1.0 else None
+    )
 
     if tspan_attr('font-weight'):
         run_attrs['font_weight'] = tspan_attr('font-weight')
@@ -1299,11 +1342,6 @@ def _override_run_attrs(
             run_attrs.get('stroke_width', 1.0),
             font_size=float(run_attrs.get('font_size', 16)),
         )
-    if tspan_attr('stroke-opacity'):
-        try:
-            run_attrs['stroke_opacity'] = float(tspan_attr('stroke-opacity') or '1')
-        except ValueError:
-            pass
     if tspan_attr('font-size'):
         run_attrs['font_size'] = parse_svg_length(
             tspan_attr('font-size'),
@@ -1520,9 +1558,13 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     fill_raw = _get_attr(elem, 'fill', ctx) or '#000000'
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
+    object_opacity = get_element_opacity(elem, ctx)
+    object_opacity = 1.0 if object_opacity is None else object_opacity
+    fill_opacity = _text_opacity_ratio(_get_attr(elem, 'fill-opacity', ctx))
     stroke_raw = _get_attr(elem, 'stroke', ctx) or ''
     stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
+    stroke_opacity_value = _text_opacity_ratio(_get_attr(elem, 'stroke-opacity', ctx))
     font_style = _get_attr(elem, 'font-style', ctx) or ''
     text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
     letter_spacing_px = _parse_letter_spacing_px(
@@ -1543,6 +1585,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'text_decoration': text_decoration,
         'letter_spacing': letter_spacing_px,
         '_scale_x': ctx.scale_x or 1.0,
+        '_object_opacity': object_opacity,
+        '_fill_opacity': fill_opacity,
+        '_stroke_opacity': stroke_opacity_value,
         'opacity': opacity,
         'stroke_raw': stroke_raw,
         'stroke_width': stroke_width,
@@ -1724,9 +1769,15 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         filter_elem = ctx.defs[filt_id]
         effect_kind = classify_filter_effect(filter_elem)
         if effect_kind == 'glow':
-            text_effect_xml = build_effect_xml(filter_elem)
+            text_effect_xml = build_effect_xml(
+                filter_elem,
+                get_element_opacity(elem, ctx),
+            )
         elif effect_kind == 'shadow':
-            shape_effect_xml = build_effect_xml(filter_elem)
+            shape_effect_xml = build_effect_xml(
+                filter_elem,
+                get_element_opacity(elem, ctx),
+            )
 
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
