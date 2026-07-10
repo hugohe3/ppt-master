@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import re
+import colorsys
 import math
+import re
 from xml.etree import ElementTree as ET
 
 from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
@@ -447,41 +448,146 @@ def parse_inline_style(style_str: str | None) -> dict[str, str]:
     return styles
 
 
+def _finite_float(raw: str) -> float:
+    """Parse a finite floating-point number."""
+    value = float(raw)
+    if not math.isfinite(value):
+        raise ValueError(f'Non-finite numeric value: {raw}')
+    return value
+
+
 def _parse_color_channel(raw: str) -> int:
     raw = raw.strip()
     if raw.endswith('%'):
-        value = float(raw[:-1]) * 255.0 / 100.0
+        value = _finite_float(raw[:-1]) * 255.0 / 100.0
     else:
-        value = float(raw)
+        value = _finite_float(raw)
     return max(0, min(255, int(round(value))))
 
 
-def parse_hex_color(color_str: str) -> str | None:
-    """Parse SVG color values to 'RRGGBB'. Returns None on failure."""
+def _parse_alpha_channel(raw: str) -> float:
+    """Parse a CSS alpha channel as a clamped ``0..1`` ratio."""
+    raw = raw.strip()
+    value = (
+        _finite_float(raw[:-1]) / 100.0
+        if raw.endswith('%')
+        else _finite_float(raw)
+    )
+    return max(0.0, min(1.0, value))
+
+
+def parse_opacity(raw: str | None, default: float = 1.0) -> float:
+    """Parse a number or percentage opacity, falling back to ``default``."""
+    if raw is None:
+        return max(0.0, min(1.0, default))
+    try:
+        return _parse_alpha_channel(raw)
+    except ValueError:
+        return max(0.0, min(1.0, default))
+
+
+def _functional_color_parts(body: str) -> tuple[list[str], str | None]:
+    """Split legacy comma or modern space/slash functional color syntax."""
+    before, separator, after = body.partition('/')
+    parts = [part for part in re.split(r'[\s,]+', before.strip()) if part]
+    alpha = after.strip() if separator else None
+    if alpha is None and len(parts) > 3:
+        alpha = parts.pop()
+    return parts, alpha
+
+
+def _parse_hue_degrees(raw: str) -> float:
+    """Normalize a CSS hue angle to degrees."""
+    value = raw.strip().lower()
+    for suffix, multiplier in (
+        ('turn', 360.0),
+        ('grad', 0.9),
+        ('rad', 180.0 / math.pi),
+        ('deg', 1.0),
+    ):
+        if value.endswith(suffix):
+            return _finite_float(value[:-len(suffix)]) * multiplier
+    return _finite_float(value)
+
+
+def _parse_percentage(raw: str) -> float:
+    """Parse a CSS percentage channel as a clamped ``0..1`` ratio."""
+    value = raw.strip()
+    ratio = (
+        _finite_float(value[:-1]) / 100.0
+        if value.endswith('%')
+        else _finite_float(value) / 100.0
+    )
+    return max(0.0, min(1.0, ratio))
+
+
+def parse_svg_color(color_str: str) -> tuple[str | None, float]:
+    """Parse an SVG/CSS color into ``(RRGGBB, alpha)``."""
     if not color_str:
-        return None
+        return None, 1.0
     color_str = color_str.strip()
     named = _CSS_NAMED_COLORS.get(color_str.lower())
     if named is not None or color_str.lower() in _CSS_NAMED_COLORS:
-        return named
+        if color_str.lower() == 'transparent':
+            return '000000', 0.0
+        return named, 1.0
 
     rgb_match = re.match(r'rgba?\((.+)\)$', color_str, flags=re.IGNORECASE)
     if rgb_match:
-        channels = re.findall(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?%?', rgb_match.group(1))
-        if len(channels) >= 3:
+        channels, alpha_raw = _functional_color_parts(rgb_match.group(1))
+        if len(channels) == 3:
             try:
-                r, g, b = (_parse_color_channel(ch) for ch in channels[:3])
-                return f'{r:02X}{g:02X}{b:02X}'
+                r, g, b = (_parse_color_channel(ch) for ch in channels)
+                alpha = _parse_alpha_channel(alpha_raw) if alpha_raw is not None else 1.0
+                return f'{r:02X}{g:02X}{b:02X}', alpha
             except ValueError:
-                return None
+                return None, 1.0
+
+    hsl_match = re.match(r'hsla?\((.+)\)$', color_str, flags=re.IGNORECASE)
+    if hsl_match:
+        channels, alpha_raw = _functional_color_parts(hsl_match.group(1))
+        if len(channels) == 3:
+            try:
+                hue = (_parse_hue_degrees(channels[0]) % 360.0) / 360.0
+                saturation = _parse_percentage(channels[1])
+                lightness = _parse_percentage(channels[2])
+                red, green, blue = colorsys.hls_to_rgb(hue, lightness, saturation)
+                alpha = _parse_alpha_channel(alpha_raw) if alpha_raw is not None else 1.0
+                return (
+                    f'{round(red * 255):02X}{round(green * 255):02X}{round(blue * 255):02X}',
+                    alpha,
+                )
+            except ValueError:
+                return None, 1.0
 
     if color_str.startswith('#'):
         color_str = color_str[1:]
     if len(color_str) == 3:
         color_str = ''.join(c * 2 for c in color_str)
+    elif len(color_str) == 4:
+        color_str = ''.join(c * 2 for c in color_str)
+    if len(color_str) == 8 and all(c in '0123456789abcdefABCDEF' for c in color_str):
+        return color_str[:6].upper(), int(color_str[6:], 16) / 255.0
     if len(color_str) == 6 and all(c in '0123456789abcdefABCDEF' for c in color_str):
-        return color_str.upper()
-    return None
+        return color_str.upper(), 1.0
+    return None, 1.0
+
+
+def parse_hex_color(color_str: str) -> str | None:
+    """Parse SVG color values to ``RRGGBB``, ignoring any alpha channel."""
+    if color_str and color_str.strip().lower() == 'transparent':
+        return None
+    color, _alpha = parse_svg_color(color_str)
+    return color
+
+
+def combine_opacity(*values: float | None) -> float | None:
+    """Multiply opacity components, returning ``None`` when fully opaque."""
+    combined = 1.0
+    for value in values:
+        if value is not None:
+            combined *= max(0.0, min(1.0, value))
+    return combined if combined < 1.0 else None
 
 
 def parse_stop_style(style_str: str) -> tuple[str | None, float]:
@@ -494,21 +600,18 @@ def parse_stop_style(style_str: str) -> tuple[str | None, float]:
         (color, opacity) tuple.
     """
     color = None
-    opacity = 1.0
-    if not style_str:
-        return color, opacity
+    color_alpha = 1.0
+    stop_opacity = 1.0
+    style_values = parse_inline_style(style_str)
+    if not style_values:
+        return color, stop_opacity
 
-    for part in style_str.split(';'):
-        part = part.strip()
-        if part.startswith('stop-color:'):
-            color = parse_hex_color(part.split(':', 1)[1].strip())
-        elif part.startswith('stop-opacity:'):
-            try:
-                opacity = float(part.split(':', 1)[1].strip())
-            except ValueError:
-                pass
+    if 'stop-color' in style_values:
+        color, color_alpha = parse_svg_color(style_values['stop-color'])
+    if 'stop-opacity' in style_values:
+        stop_opacity = parse_opacity(style_values['stop-opacity'])
 
-    return color, opacity
+    return color, color_alpha * stop_opacity
 
 
 def resolve_url_id(url_str: str) -> str | None:
