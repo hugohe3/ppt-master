@@ -78,6 +78,7 @@ def convert_tbl(
     palette: ColorPalette | None,
     *,
     theme_fonts: dict[str, str] | None = None,
+    slide_number: int | None = None,
     id_prefix: str = "tbl",
     grad_seq: list[int] | None = None,
     marker_seq: list[int] | None = None,
@@ -116,6 +117,15 @@ def convert_tbl(
         native_status = "unsupported-native-transform"
     elif _table_has_merges(rows):
         native_status = "unsupported-merge"
+    elif len(rows) > 1000 or len(col_widths) > 1000:
+        native_status = "unsupported-table-size"
+    elif (
+        any(width < 0 for width in col_widths)
+        or any(height < 0 for height in row_heights)
+        or sum(col_widths) <= 0
+        or sum(row_heights) <= 0
+    ):
+        native_status = "unsupported-table-geometry"
     elif _table_has_unsupported_style(tbl):
         native_status = "unsupported-table-style"
     elif _table_has_unsupported_direct_formatting(tbl, palette):
@@ -176,6 +186,7 @@ def convert_tbl(
             cell_xfrm = Xfrm(x=cell_x, y=cell_y, w=cell_w, h=cell_h)
             text_result = _convert_cell_text(
                 tx_body, tcPr, cell_xfrm, palette, theme_fonts,
+                slide_number=slide_number,
                 id_prefix=f"{id_prefix}txt",
                 id_seq=grad_seq,
             )
@@ -679,6 +690,7 @@ def _convert_cell_text(
     palette: ColorPalette | None,
     theme_fonts: dict[str, str] | None,
     *,
+    slide_number: int | None,
     id_prefix: str,
     id_seq: list[int] | None,
 ):
@@ -697,6 +709,7 @@ def _convert_cell_text(
     try:
         return convert_txbody(
             tx_body, cell_xfrm, palette, theme_fonts=theme_fonts,
+            slide_number=slide_number,
             id_prefix=id_prefix,
             id_seq=id_seq,
         )

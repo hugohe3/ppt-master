@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+import math
 import re
+from collections.abc import Iterable
 from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext, IDENTITY_MATRIX
 from ..drawingml.utils import (
+    EMU_PER_PX,
     FONT_PX_TO_HUNDREDTHS_PT,
     ctx_h,
     ctx_w,
@@ -16,7 +19,6 @@ from ..drawingml.utils import (
     ctx_y,
     matrix_multiply,
     parse_transform_matrix,
-    px_to_emu,
     transform_point,
 )
 
@@ -34,6 +36,20 @@ CHART_COLOR_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartcolorstyle+xml"
 CHART_STYLE_CONTENT_TYPE = "application/vnd.ms-office.chartstyle+xml"
 
 _NATIVE_KINDS = {"table", "chart"}
+_POWERPOINT_COORD_MIN = -(2**31)
+_POWERPOINT_COORD_MAX = 2**31 - 1
+_POWERPOINT_LINE_WIDTH_MAX = 20116800
+_TEXT_FONT_SIZE_MIN = 100
+_TEXT_FONT_SIZE_MAX = 400000
+_NATIVE_TRANSFORM_OPERATION_RE = re.compile(r"([A-Za-z]+)\s*\(([^()]*)\)")
+_NATIVE_TRANSFORM_SEPARATOR_RE = re.compile(r"\s*,?\s*")
+_NATIVE_TRANSFORM_ARGS_RE = re.compile(
+    r"\s*"
+    r"([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)"
+    r"(?:\s*(?:,\s*|\s+)"
+    r"([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?))?"
+    r"\s*"
+)
 _HEX_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 _RGB_RE = re.compile(r"^rgba?\(([^)]+)\)$", re.IGNORECASE)
 _POINT_RE = re.compile(r"[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?")
@@ -101,6 +117,8 @@ def _hex_or_none(value: Any) -> str | None:
                 value_float = float(part)
         except ValueError:
             return None
+        if not math.isfinite(value_float):
+            return None
         channels.append(max(0, min(255, int(round(value_float)))))
     return "".join(f"{channel:02X}" for channel in channels)
 
@@ -164,19 +182,125 @@ def _visible_fallback_texts(elem: ET.Element, *, include_metadata: bool = False)
 
 
 def _number(value: Any, field_name: str) -> float:
+    if isinstance(value, bool):
+        raise RuntimeError(f"Native PPTX object requires numeric {field_name}")
     try:
-        return float(value)
-    except (TypeError, ValueError) as exc:
+        number = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
         raise RuntimeError(f"Native PPTX object requires numeric {field_name}") from exc
+    if not math.isfinite(number):
+        raise RuntimeError(f"Native PPTX object requires finite numeric {field_name}")
+    return number
 
 
 def _maybe_number(value: Any) -> float | None:
-    if value is None:
+    if value is None or isinstance(value, bool):
         return None
     try:
-        return float(value)
-    except (TypeError, ValueError):
+        number = float(value)
+    except (TypeError, ValueError, OverflowError):
         return None
+    return number if math.isfinite(number) else None
+
+
+def _powerpoint_emu_value(
+    emu: int,
+    field_name: str,
+    *,
+    positive: bool = False,
+) -> int:
+    """Validate an already-resolved EMU value for a PowerPoint coordinate."""
+    lower_bound = 1 if positive else _POWERPOINT_COORD_MIN
+    if emu < lower_bound or emu > _POWERPOINT_COORD_MAX:
+        qualifier = "positive " if positive else ""
+        raise RuntimeError(
+            f"Native PPTX object {field_name} must resolve to a {qualifier}"
+            "32-bit PowerPoint coordinate"
+        )
+    return emu
+
+
+def _powerpoint_emu(value: Any, field_name: str, *, positive: bool = False) -> int:
+    """Convert SVG px to an EMU value that PowerPoint can represent."""
+    number = _number(value, field_name)
+    scaled = number * EMU_PER_PX
+    if not math.isfinite(scaled):
+        raise RuntimeError(f"Native PPTX object {field_name} exceeds PowerPoint coordinates")
+    return _powerpoint_emu_value(round(scaled), field_name, positive=positive)
+
+
+def _powerpoint_line_width_emu(value: Any, field_name: str) -> int:
+    """Convert SVG px to a legal DrawingML ``ST_LineWidth`` value."""
+    emu = _powerpoint_emu(value, field_name, positive=True)
+    if emu > _POWERPOINT_LINE_WIDTH_MAX:
+        raise RuntimeError(
+            f"Native PPTX object {field_name} exceeds DrawingML line-width range"
+        )
+    return emu
+
+
+def native_marker_transform(transform: str | None) -> tuple[float, float, float, float]:
+    """Return a strict native-marker transform as ``dx, dy, sx, sy``."""
+    raw = (transform or "").strip()
+    if not raw:
+        return 0.0, 0.0, 1.0, 1.0
+
+    cursor = 0
+    operation_count = 0
+    for match in _NATIVE_TRANSFORM_OPERATION_RE.finditer(raw):
+        gap = raw[cursor:match.start()]
+        valid_gap = (
+            not gap
+            if operation_count == 0
+            else _NATIVE_TRANSFORM_SEPARATOR_RE.fullmatch(gap) is not None
+        )
+        if not valid_gap:
+            raise RuntimeError(
+                "Native PPTX table/chart markers support translate/scale transforms only"
+            )
+        name = match.group(1).lower()
+        args_match = _NATIVE_TRANSFORM_ARGS_RE.fullmatch(match.group(2))
+        if name not in {"translate", "scale"} or args_match is None:
+            raise RuntimeError(
+                "Native PPTX table/chart markers support translate/scale transforms only"
+            )
+        values = [float(value) for value in args_match.groups() if value is not None]
+        if not all(math.isfinite(value) for value in values):
+            raise RuntimeError("Native PPTX marker transform values must be finite")
+        operation_count += 1
+        cursor = match.end()
+
+    if operation_count == 0 or raw[cursor:]:
+        raise RuntimeError(
+            "Native PPTX table/chart markers support translate/scale transforms only"
+        )
+
+    a, b, c, d, e, f = parse_transform_matrix(raw)
+    components = (a, b, c, d, e, f)
+    if not all(math.isfinite(value) for value in components):
+        raise RuntimeError("Native PPTX marker transform exceeds finite coordinates")
+    if b != 0.0 or c != 0.0:
+        raise RuntimeError(
+            "Native PPTX table/chart markers support translate/scale transforms only"
+        )
+    return e, f, a, d
+
+
+def _native_marker_validation_context(
+    elem: ET.Element,
+    ancestors: Iterable[ET.Element] = (),
+) -> ConvertContext:
+    """Build the scalar context used by native export for one marker path."""
+    ctx = ConvertContext()
+    for current in (*ancestors, elem):
+        dx, dy, sx, sy = native_marker_transform(current.get("transform"))
+        ctx = ctx.child(
+            dx=ctx.scale_x * dx,
+            dy=ctx.scale_y * dy,
+            sx=sx,
+            sy=sy,
+        )
+    return ctx
 
 
 def _bbox_union(
@@ -560,8 +684,12 @@ def _relative_luminance(color: str) -> float:
     return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722
 
 
-def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> tuple[int, int, int, int]:
-    """Return object bounds as DrawingML EMU tuple."""
+def _resolved_bounds(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    ctx: ConvertContext,
+) -> tuple[float, float, float, float, bool]:
+    """Resolve object bounds in SVG px plus whether all bounds were explicit."""
     if ctx.use_transform_matrix:
         raise RuntimeError("Native PPTX table/chart markers support translate/scale only")
 
@@ -601,40 +729,61 @@ def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> t
         resolved_y = ctx_y(y, ctx)
         resolved_w = ctx_w(width, ctx)
         resolved_h = ctx_h(height, ctx)
-    off_x = px_to_emu(resolved_x)
-    off_y = px_to_emu(resolved_y)
-    ext_cx = px_to_emu(resolved_w)
-    ext_cy = px_to_emu(resolved_h)
-    return off_x, off_y, ext_cx, ext_cy
+    return resolved_x, resolved_y, resolved_w, resolved_h, explicit_bounds
 
 
-def _validate_bounds_inputs(elem: ET.Element, payload: dict[str, Any]) -> None:
-    raw_x = payload.get("x", elem.get("data-pptx-x"))
-    raw_y = payload.get("y", elem.get("data-pptx-y"))
-    raw_width = payload.get("width", elem.get("data-pptx-width"))
-    raw_height = payload.get("height", elem.get("data-pptx-height"))
-    inferred = None
-    if any(value is None for value in (raw_x, raw_y, raw_width, raw_height)):
-        inferred = _inferred_bounds(elem)
-        if inferred is None:
-            raise RuntimeError(
-                "Native PPTX object requires x/y/width/height or visible fallback geometry"
-            )
-
-    width = (
-        _number(raw_width, "width")
-        if raw_width is not None else inferred[2] - inferred[0]  # type: ignore[index]
+def _bounds(elem: ET.Element, payload: dict[str, Any], ctx: ConvertContext) -> tuple[int, int, int, int]:
+    """Return object bounds as DrawingML EMU tuple."""
+    x, y, width, height, _ = _resolved_bounds(elem, payload, ctx)
+    return (
+        _powerpoint_emu(x, "x"),
+        _powerpoint_emu(y, "y"),
+        _powerpoint_emu(width, "width", positive=True),
+        _powerpoint_emu(height, "height", positive=True),
     )
-    height = (
-        _number(raw_height, "height")
-        if raw_height is not None else inferred[3] - inferred[1]  # type: ignore[index]
+
+
+def _validate_bounds_inputs(
+    elem: ET.Element,
+    payload: dict[str, Any],
+    ctx: ConvertContext,
+) -> tuple[int, int, int, int, bool]:
+    x, y, width, height, explicit_bounds = _resolved_bounds(elem, payload, ctx)
+    return (
+        _powerpoint_emu(x, "x"),
+        _powerpoint_emu(y, "y"),
+        _powerpoint_emu(width, "width", positive=True),
+        _powerpoint_emu(height, "height", positive=True),
+        explicit_bounds,
     )
-    if raw_x is not None:
-        _number(raw_x, "x")
-    if raw_y is not None:
-        _number(raw_y, "y")
-    if width <= 0 or height <= 0:
-        raise RuntimeError("Native PPTX object width/height must be positive")
+
+
+def _validate_payload_xml_strings(value: Any) -> None:
+    """Reject JSON strings that cannot be serialized into PPTX XML 1.0 parts."""
+    if isinstance(value, dict):
+        for key, item in value.items():
+            _validate_payload_xml_strings(key)
+            _validate_payload_xml_strings(item)
+        return
+    if isinstance(value, list):
+        for item in value:
+            _validate_payload_xml_strings(item)
+        return
+    if not isinstance(value, str):
+        return
+    for char in value:
+        codepoint = ord(char)
+        if (
+            codepoint in {0x09, 0x0A, 0x0D}
+            or 0x20 <= codepoint <= 0xD7FF
+            or 0xE000 <= codepoint <= 0xFFFD
+            or 0x10000 <= codepoint <= 0x10FFFF
+        ):
+            continue
+        raise RuntimeError(
+            "Native PPTX metadata contains an XML 1.0-invalid character "
+            f"U+{codepoint:04X}"
+        )
 
 
 def _load_payload(elem: ET.Element, kind: str) -> dict[str, Any]:
@@ -656,17 +805,29 @@ def _load_payload(elem: ET.Element, kind: str) -> dict[str, Any]:
         payload = json.loads(raw)
     except json.JSONDecodeError as exc:
         raise RuntimeError(f"Native PPTX {kind} metadata is not valid JSON: {exc.msg}") from exc
+    except (ValueError, RecursionError) as exc:
+        raise RuntimeError(f"Native PPTX {kind} metadata cannot be decoded") from exc
     if not isinstance(payload, dict):
         raise RuntimeError(f"Native PPTX {kind} metadata must be a JSON object")
+    _validate_payload_xml_strings(payload)
     return payload
 
 
 def _font_size_hpt(value: Any, default_px: int = 18) -> int:
-    try:
-        px = float(value)
-    except (TypeError, ValueError):
-        px = float(default_px)
-    return int(round(px * FONT_PX_TO_HUNDREDTHS_PT / 10.0)) * 10
+    def convert(raw: Any) -> int | None:
+        try:
+            px = float(raw)
+        except (TypeError, ValueError, OverflowError):
+            return None
+        scaled = px * FONT_PX_TO_HUNDREDTHS_PT
+        if not math.isfinite(scaled):
+            return None
+        size = int(round(scaled / 10.0)) * 10
+        if not _TEXT_FONT_SIZE_MIN <= size <= _TEXT_FONT_SIZE_MAX:
+            return None
+        return size
+
+    return convert(value) or convert(default_px) or 1350
 
 
 def _first_present(*values: Any) -> Any:

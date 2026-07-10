@@ -26,7 +26,7 @@ from .elements import (
     convert_text, convert_image, convert_nested_svg,
 )
 from ..animation_config import is_chrome_id
-from ..native_objects import convert_native_object
+from ..native_objects import convert_native_object, native_marker_transform
 
 
 class SvgNativeConversionError(RuntimeError):
@@ -138,7 +138,16 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     keep their absolute slide coordinates unchanged.
     """
     transform = elem.get('transform', '')
-    dx, dy, sx, sy, angle_deg = parse_transform(transform)
+    native_subtree_active = ctx.native_objects_enabled and any(
+        descendant.get('data-pptx-native')
+        and descendant.tag.replace(f'{{{SVG_NS}}}', '') != 'metadata'
+        for descendant in elem.iter()
+    )
+    if native_subtree_active:
+        dx, dy, sx, sy = native_marker_transform(transform)
+        angle_deg = 0.0
+    else:
+        dx, dy, sx, sy, angle_deg = parse_transform(transform)
 
     filter_id = resolve_url_id(elem.get('filter', ''))
     style_overrides = _extract_inheritable_styles(elem)
@@ -149,7 +158,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
     ]
-    matrix_supported = bool(transform) and visual_children and all(
+    matrix_supported = not native_subtree_active and bool(transform) and visual_children and all(
         _supports_matrix_transform(child) for child in visual_children
     )
     # A pure ``rotate(angle [cx cy])`` falls through to the fallback path
@@ -175,7 +184,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             style_overrides=style_overrides,
         )
     else:
-        child_ctx = ctx.child(dx, dy, sx, sy, filter_id=filter_id, style_overrides=style_overrides)
+        child_ctx = ctx.child(
+            ctx.scale_x * dx if native_subtree_active else dx,
+            ctx.scale_y * dy if native_subtree_active else dy,
+            sx,
+            sy,
+            filter_id=filter_id,
+            style_overrides=style_overrides,
+        )
 
     if child_ctx.native_objects_enabled:
         native_result = convert_native_object(elem, child_ctx)

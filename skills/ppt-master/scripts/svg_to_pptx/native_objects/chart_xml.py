@@ -5,11 +5,12 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..drawingml.utils import detect_text_lang, px_to_emu, _xml_escape
+from ..drawingml.utils import detect_text_lang, _xml_escape
 from .chart_data import (
     _DEFAULT_CHART_COLORS,
     _chart_list,
     _data_label_position,
+    _data_label_point_items,
     _data_labels_config,
 )
 from .chart_style import (
@@ -38,7 +39,7 @@ from .marker_common import (
     _first_present,
     _font_size_hpt,
     _hex_or_none,
-    _number,
+    _powerpoint_line_width_emu,
 )
 
 
@@ -74,7 +75,9 @@ def _series_color_xml(
     alpha_xml = _alpha_xml(fill_opacity, "series fill_opacity")
     line_width_xml = ""
     if line_width is not None:
-        line_width_xml = f' w="{max(px_to_emu(_number(line_width, "series line_width")), 1)}"'
+        line_width_xml = (
+            f' w="{_powerpoint_line_width_emu(line_width, "series line_width")}"'
+        )
     line_xml = (
         f'<a:ln{line_width_xml}><a:solidFill><a:srgbClr val="{clean}"/></a:solidFill></a:ln>'
         if line else '<a:ln><a:noFill/></a:ln>'
@@ -114,35 +117,6 @@ def _data_label_flags_xml(config: dict[str, Any]) -> str:
     )
 
 
-def _data_label_point_items(config: dict[str, Any], point_count: int) -> list[dict[str, Any]]:
-    raw_points = config.get("points")
-    if raw_points is None:
-        return []
-    items: list[dict[str, Any]] = []
-    seen: set[int] = set()
-    for item in _chart_list(raw_points, "data_labels.points"):
-        if isinstance(item, dict):
-            raw_index = item.get("idx")
-            data = dict(item)
-        else:
-            raw_index = item
-            data = {}
-        if isinstance(raw_index, bool):
-            raise RuntimeError("Native PPTX chart data_labels.points idx must be an integer")
-        index_value = _number(raw_index, "data_labels.points idx")
-        if not index_value.is_integer():
-            raise RuntimeError("Native PPTX chart data_labels.points idx must be an integer")
-        index = int(index_value)
-        if index < 0 or index >= point_count:
-            raise RuntimeError("Native PPTX chart data_labels.points idx is outside point range")
-        if index in seen:
-            raise RuntimeError("Native PPTX chart data_labels.points idx values must be unique")
-        seen.add(index)
-        data["idx"] = index
-        items.append(data)
-    return items
-
-
 def _data_labels_xml(
     config: dict[str, Any] | None,
     *,
@@ -180,7 +154,12 @@ def _data_labels_xml(
         if num_fmt else ""
     )
     flags_xml = _data_label_flags_xml(config)
-    point_items = _data_label_point_items(config, point_count)
+    point_items = _data_label_point_items(
+        config,
+        chart_type,
+        grouping,
+        point_count,
+    )
     if point_items:
         selected_items = {int(item["idx"]): item for item in point_items}
         point_label_xml = ""

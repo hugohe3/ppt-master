@@ -8,10 +8,12 @@ when the chart XML cache can be mapped to the current native chart schema.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from svg_to_pptx.drawingml.utils import parse_font_family
 from svg_to_pptx.native_objects.chart_data import _chart_data, _data_label_position
 
 from .emu_units import NS, Xfrm, ooxml_bool
@@ -132,6 +134,106 @@ def _payload_from_chart_xml(chart_root: ET.Element, xfrm: Xfrm) -> dict[str, Any
     return payload
 
 
+def _canonical_srgb_color(fill: ET.Element | None) -> str:
+    """Return an exporter-canonical solid RGB fill, or reject the style."""
+    if fill is None or fill.attrib:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    children = list(fill)
+    if (
+        len(children) != 1
+        or _local_name(children[0].tag) != "srgbClr"
+        or set(children[0].attrib) != {"val"}
+        or list(children[0])
+    ):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    color = children[0].attrib["val"].strip()
+    if len(color) != 6 or any(char not in "0123456789abcdefABCDEF" for char in color):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    return color.upper()
+
+
+def _canonical_sp_pr_color(sp_pr: ET.Element, *, line_visible: bool) -> str:
+    """Extract a color only from the exact series style emitted here."""
+    if sp_pr.attrib:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    children = list(sp_pr)
+    if [_local_name(child.tag) for child in children] != ["solidFill", "ln"]:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    color = _canonical_srgb_color(children[0])
+    line = children[1]
+    if line.attrib or len(line) != 1:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    line_child = line[0]
+    if line_visible:
+        if _local_name(line_child.tag) != "solidFill":
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        if _canonical_srgb_color(line_child) != color:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+    elif (
+        _local_name(line_child.tag) != "noFill"
+        or line_child.attrib
+        or list(line_child)
+    ):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    return color
+
+
+def _canonical_chart_colors(payload: dict[str, Any], plot: ET.Element) -> list[str] | None:
+    """Recover colors from canonical series or pie data-point formatting."""
+    chart_type = payload["type"]
+    series_nodes = plot.findall("c:ser", C_NS)
+    if chart_type in {"pie", "doughnut", "of_pie"}:
+        if any(series.find("c:spPr", C_NS) is not None for series in series_nodes):
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        point_nodes = [
+            point
+            for series in series_nodes
+            for point in series.findall("c:dPt", C_NS)
+        ]
+        if not point_nodes:
+            return None
+        expected_count = len(payload["categories"]) + (1 if chart_type == "of_pie" else 0)
+        colors: dict[int, str] = {}
+        for point in point_nodes:
+            if point.attrib or [_local_name(child.tag) for child in point] != ["idx", "spPr"]:
+                raise _UnsupportedChart("unsupported-chart-series-style")
+            idx = point.find("c:idx", C_NS)
+            sp_pr = point.find("c:spPr", C_NS)
+            try:
+                point_index = int(idx.attrib.get("val", "")) if idx is not None else -1
+            except ValueError:
+                raise _UnsupportedChart("unsupported-chart-series-style") from None
+            if (
+                idx is None
+                or set(idx.attrib) != {"val"}
+                or list(idx)
+                or sp_pr is None
+                or point_index in colors
+            ):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+            colors[point_index] = _canonical_sp_pr_color(sp_pr, line_visible=True)
+        if set(colors) != set(range(expected_count)):
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        return [f"#{colors[index]}" for index in range(expected_count)]
+
+    if any(series.find("c:dPt", C_NS) is not None for series in series_nodes):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    sp_pr_nodes = [series.find("c:spPr", C_NS) for series in series_nodes]
+    if not any(sp_pr is not None for sp_pr in sp_pr_nodes):
+        return None
+    if any(sp_pr is None for sp_pr in sp_pr_nodes):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    line_visible = not (
+        chart_type == "scatter"
+        and payload.get("scatter_style", "marker") == "marker"
+    )
+    return [
+        f"#{_canonical_sp_pr_color(sp_pr, line_visible=line_visible)}"
+        for sp_pr in sp_pr_nodes
+        if sp_pr is not None
+    ]
+
+
 def _validate_chart_semantics(
     payload: dict[str, Any],
     plot_area: ET.Element,
@@ -139,6 +241,9 @@ def _validate_chart_semantics(
 ) -> None:
     """Reject valid chart features the compact marker cannot reproduce."""
     chart_type = payload["type"]
+    colors = _canonical_chart_colors(payload, plot)
+    if colors:
+        payload["style"] = {"colors": colors}
     for tag in (
         "trendline", "errBars", "dropLines", "hiLowLines", "upDownBars",
     ):
@@ -330,12 +435,25 @@ def _apply_chart_metadata(
     if chart is None:
         return
 
-    title = _chart_text(chart.find("c:title", C_NS))
+    title_element = chart.find("c:title", C_NS)
+    overlay = title_element.find("c:overlay", C_NS) if title_element is not None else None
+    if overlay is not None and ooxml_bool(overlay.attrib.get("val"), True):
+        raise _UnsupportedChart("unsupported-chart-title-overlay")
+    title_entries = _canonical_title_entries(title_element)
+    if (
+        title_element is not None
+        and title_element.find("c:tx/c:rich", C_NS) is not None
+        and title_entries is None
+    ):
+        raise _UnsupportedChart("unsupported-chart-title-format")
+    title = _chart_text(title_element)
     if title:
-        overlay = chart.find("c:title/c:overlay", C_NS)
-        if overlay is not None and ooxml_bool(overlay.attrib.get("val"), True):
-            raise _UnsupportedChart("unsupported-chart-title-overlay")
-        payload["title"] = title
+        if title_entries is not None:
+            payload["title"] = title_entries[0]
+            if len(title_entries) == 2:
+                payload["subtitle"] = title_entries[1]
+        else:
+            payload["title"] = title
 
     legend = chart.find("c:legend", C_NS)
     if legend is not None:
@@ -419,6 +537,133 @@ def _chart_text(container: ET.Element | None) -> str:
         return "\n".join(paragraphs)
     values = [node.text or "" for node in container.findall(".//c:v", C_NS)]
     return "".join(values)
+
+
+def _canonical_title_paragraph(paragraph: ET.Element) -> dict[str, Any] | None:
+    """Return one exporter-canonical or basic Office title paragraph."""
+    if paragraph.attrib or [_local_name(child.tag) for child in paragraph] != ["r"]:
+        return None
+    run = paragraph.find("a:r", C_NS)
+    if run is None or run.attrib:
+        return None
+    run_child_names = [_local_name(child.tag) for child in run]
+    if run_child_names == ["t"]:
+        text = run.find("a:t", C_NS)
+        if (
+            text is None
+            or text.attrib
+            or list(text)
+            or not (text.text or "")
+            or text.text != text.text.strip()
+        ):
+            return None
+        return {"text": text.text}
+    if run_child_names != ["rPr", "t"]:
+        return None
+    run_props = run.find("a:rPr", C_NS)
+    text = run.find("a:t", C_NS)
+    if (
+        run_props is None
+        or set(run_props.attrib) != {"lang", "sz"}
+        or text is None
+        or text.attrib
+        or list(text)
+        or not (text.text or "")
+        or text.text != text.text.strip()
+    ):
+        return None
+    size_token = run_props.attrib["sz"]
+    if re.fullmatch(r"[0-9]+", size_token) is None:
+        return None
+    size = int(size_token)
+    if size % 10 != 0 or not 100 <= size <= 400000:
+        return None
+    child_names = [_local_name(child.tag) for child in run_props]
+    if child_names not in ([], ["solidFill"], ["latin", "ea"], ["solidFill", "latin", "ea"]):
+        return None
+    solid_fill = run_props.find("a:solidFill", C_NS)
+    color = None
+    if solid_fill is not None:
+        try:
+            color = _canonical_srgb_color(solid_fill)
+        except _UnsupportedChart:
+            return None
+    latin = run_props.find("a:latin", C_NS)
+    east_asian = run_props.find("a:ea", C_NS)
+    if (latin is None) != (east_asian is None):
+        return None
+    for font in (latin, east_asian):
+        if font is not None and (
+            set(font.attrib) != {"typeface"}
+            or not font.attrib["typeface"].strip()
+            or list(font)
+        ):
+            return None
+    entry: dict[str, Any] = {
+        "text": text.text,
+        "font_size": _round_payload_number(size / 75.0),
+    }
+    if color is not None:
+        entry["color"] = f"#{color}"
+    if latin is not None and east_asian is not None:
+        latin_name = latin.attrib["typeface"]
+        east_asian_name = east_asian.attrib["typeface"]
+        font_family = (
+            latin_name
+            if latin_name == east_asian_name
+            else f"{latin_name}, {east_asian_name}"
+        )
+        resolved_fonts = parse_font_family(font_family)
+        if (
+            resolved_fonts["latin"] != latin_name
+            or resolved_fonts["ea"] != east_asian_name
+        ):
+            return None
+        entry["font_family"] = font_family
+    return entry
+
+
+def _canonical_title_entries(title: ET.Element | None) -> list[dict[str, Any]] | None:
+    """Recognize exporter-canonical or basic Office rich title structure."""
+    if title is None:
+        return None
+    title_child_names = [_local_name(child.tag) for child in title]
+    if title_child_names not in (["tx", "layout"], ["tx", "layout", "overlay"]):
+        return None
+    overlay = title.find("c:overlay", C_NS)
+    if overlay is not None and (
+        set(overlay.attrib) != {"val"}
+        or list(overlay)
+        or ooxml_bool(overlay.attrib.get("val"), True)
+    ):
+        return None
+    tx = title.find("c:tx", C_NS)
+    layout = title.find("c:layout", C_NS)
+    rich = title.find("c:tx/c:rich", C_NS)
+    if (
+        tx is None
+        or tx.attrib
+        or [_local_name(child.tag) for child in tx] != ["rich"]
+        or layout is None
+        or layout.attrib
+        or list(layout)
+        or rich is None
+        or rich.attrib
+    ):
+        return None
+    children = list(rich)
+    child_names = [_local_name(child.tag) for child in children]
+    if child_names not in (
+        ["bodyPr", "lstStyle", "p"],
+        ["bodyPr", "lstStyle", "p", "p"],
+    ):
+        return None
+    if children[0].attrib or list(children[0]) or children[1].attrib or list(children[1]):
+        return None
+    entries = [_canonical_title_paragraph(paragraph) for paragraph in children[2:]]
+    if any(entry is None for entry in entries):
+        return None
+    return [entry for entry in entries if entry is not None]
 
 
 def _data_label_text_style(tx_pr: ET.Element) -> dict[str, Any]:
