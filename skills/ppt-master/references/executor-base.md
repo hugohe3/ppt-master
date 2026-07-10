@@ -108,7 +108,7 @@ Before generating each page, output which template is used:
 
 **Hard rule — PowerPoint paint order**: Direct visual children appear in this order: Master background, Layout background, optional Slide background, shared Master shapes, same-key Layout shapes, then slide-local content/placeholders. Backgrounds are the special plane beneath all inherited shapes. Repeat the same Master contract on every page and the same Layout contract on every page sharing a key.
 
-**Placeholder ownership**: Keep actual title/body/picture/chart/table/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. Chart/table placeholders require native markers and a later `--native-objects` export.
+**Placeholder ownership**: Keep actual title/subtitle/body/picture/chart/table/object/media/date/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. A reconstructed `title` normally omits `data-pptx-placeholder-idx`; preserve an explicit imported title index when present. Every indexed placeholder on one layout uses a unique index. Chart/table placeholders require native markers and a later `--native-objects` export; object/media placeholders must each resolve to one top-level DrawingML object.
 
 **Preserve-mode source identity**: Copy `data-pptx-placeholder-idx` from the chosen template SVG/native contract whenever the source placeholder has an index. Preserve the source placeholder type/idx pairing; do not assign a convenient new index. Master/layout elements in the SVG are preview copies only and MUST retain `data-pptx-layer` + `data-pptx-editable="false"`; never flatten them into unmarked slide-local content.
 

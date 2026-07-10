@@ -935,8 +935,8 @@ native export uses `baseline` or `template` structure mode:
 - SVG text whose resolved exported face matches either locked family emits
   DrawingML `+mj-*` / `+mn-*` tokens instead of a fixed typeface.
 - When major and minor resolve to the same face, ordinary slide-local text uses
-  the minor role; semantic `title` placeholders are forced to major, while
-  body/footer/slide-number placeholders are forced to minor.
+  the minor role; semantic `title` placeholders are forced to major, while all
+  other semantic placeholders are forced to minor.
 - Local emphasis, code, brand, or other families that do not match the locked
   title/body faces remain concrete per-run fonts and do not change with the
   theme.
@@ -1034,9 +1034,22 @@ by this solid-background rule.
 
 | Placeholder value | SVG element | PowerPoint placeholder |
 |---|---|---|
-| `title`, `body`, `footer`, `slide-number` | direct `<text>` | `title`, `body`, `ftr`, `sldNum` |
+| `title`, `subtitle`, `body` | direct `<text>` | `title`, `subTitle`, `body` |
+| `date`, `footer`, `slide-number` | direct `<text>` | `dt`, `ftr`, `sldNum` |
 | `picture` | direct `<image>` or imported crop `<svg>` | `pic` |
 | `chart`, `table` | direct matching `data-pptx-native` marker group | `chart`, `tbl` |
+| `object` | one direct text, image, or basic SVG shape | `obj` |
+| `media` | direct `<image>` or imported crop `<svg>` | `media` |
+
+`title` is normally type-matched without an index in reconstructed layouts; if
+an imported source title explicitly has one, preserve that exact index. Every
+indexed placeholder on one layout uses a unique non-negative index. Template
+export writes the semantic type on both the Layout and Slide placeholder
+(except `obj`, whose OOXML default is already
+`obj`) so PowerPoint and `python-pptx` retain the same identity. A `date`
+placeholder also enables the layout date flag and gets a
+`datetimeFigureOut` field in the reusable Layout definition; the current
+Slide keeps its authored date content.
 
 **Placeholder prototype**: The first slide using a layout key supplies that
 layout's placeholder formatting. `data-pptx-placeholder-bounds` supplies the
@@ -1053,7 +1066,10 @@ master or layout background.
 
 **Native object placeholders**: `chart` / `table` placeholders require
 `--native-objects`; fallback groups contain several shapes and cannot map to one
-PowerPoint placeholder.
+PowerPoint placeholder. `object` is the generic PowerPoint content slot and
+must still resolve to one top-level DrawingML object. `media` currently binds
+an authored image/crop to a native `media` placeholder; it does not synthesize
+video or audio media from a decorative SVG group.
 
 ### Preserved Source Master / Layout Contract
 
@@ -1068,7 +1084,7 @@ PowerPoint placeholder.
 
 **Hard rule — source package wins**: Mark source master/layout visuals as direct `data-pptx-layer="master|layout"` preview children. Preserve export removes those generated copies and renders the original source parts. Unmarked content stays slide-local.
 
-**Placeholder identity**: Keep actual content on the slide. Copy the source placeholder index into `data-pptx-placeholder-idx` when present; the exporter restores the source placeholder type/idx pair. Multiple placeholders with the same semantic role require explicit indices.
+**Placeholder identity**: Keep actual content on the slide. Copy the source placeholder index into `data-pptx-placeholder-idx` when present; the exporter restores the source placeholder type/idx pair. Imported `subTitle`, `obj`, `media`, and `dt` placeholders retain distinct `subtitle`, `object`, `media`, and `date` semantic roles instead of collapsing into body/other. Multiple placeholders with the same semantic role require explicit indices.
 
 **Multi-master boundary**: Preserve every source master already present in the package. Do not synthesize a new master merely for cover/section differences; rebuilt templates continue to prefer one master plus semantic layouts.
 

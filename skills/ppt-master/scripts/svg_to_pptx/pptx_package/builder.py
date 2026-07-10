@@ -818,19 +818,27 @@ def _set_slide_layout_target(rels_path: Path, target: str) -> None:
 
 _TEMPLATE_PLACEHOLDER_TYPES = {
     "title": "title",
+    "subtitle": "subTitle",
     "body": "body",
     "picture": "pic",
     "chart": "chart",
     "table": "tbl",
+    "object": "obj",
+    "media": "media",
+    "date": "dt",
     "footer": "ftr",
     "slide-number": "sldNum",
 }
 _TEMPLATE_PLACEHOLDER_PROMPTS = {
     "title": "Click to add title",
+    "subtitle": "Click to add subtitle",
     "body": "Click to add text",
     "picture": "Click to add picture",
     "chart": "Click to add chart",
     "table": "Click to add table",
+    "object": "Click to add content",
+    "media": "Click to add media",
+    "date": "Date",
     "footer": "Footer",
 }
 
@@ -1305,15 +1313,31 @@ def _placeholder_text_body(
         if source_tx_body is not None
         else None
     )
-    if item.placeholder == "slide-number":
+    if item.placeholder in {"slide-number", "date"}:
+        field_type = (
+            "slidenum"
+            if item.placeholder == "slide-number"
+            else "datetimeFigureOut"
+        )
         field = ET.SubElement(
             paragraph,
             f"{{{DML_NS}}}fld",
-            {"id": f"{{{str(uuid.uuid4()).upper()}}}", "type": "slidenum"},
+            {"id": f"{{{str(uuid.uuid4()).upper()}}}", "type": field_type},
         )
         if source_run_pr is not None:
             field.append(ET.fromstring(ET.tostring(source_run_pr, encoding="utf-8")))
-        ET.SubElement(field, f"{{{DML_NS}}}t").text = "‹#›"
+        source_text = ""
+        if source_tx_body is not None:
+            source_text = "".join(
+                text.text or ""
+                for text in source_tx_body.findall(f".//{{{DML_NS}}}t")
+            )
+        field_text = (
+            "‹#›"
+            if item.placeholder == "slide-number"
+            else source_text or "Date"
+        )
+        ET.SubElement(field, f"{{{DML_NS}}}t").text = field_text
     else:
         run = ET.SubElement(paragraph, f"{{{DML_NS}}}r")
         if source_run_pr is not None:
@@ -1376,7 +1400,7 @@ def _set_placeholder_theme_font_role(
         return
     if item.placeholder == "title":
         prefix = "+mj"
-    elif item.placeholder in {"body", "footer", "slide-number"}:
+    elif item.placeholder in _TEMPLATE_PLACEHOLDER_TYPES:
         prefix = "+mn"
     else:
         return
@@ -1391,7 +1415,7 @@ def _set_placeholder_theme_font_role(
 def _layout_placeholder_shape(
     source_shape: ET.Element,
     item: TemplateElementSpec,
-    placeholder_idx: int,
+    placeholder_idx: int | None,
     theme_font_spec: ThemeFontSpec | None = None,
 ) -> ET.Element:
     """Build one reusable p:sp placeholder from a prototype slide object."""
@@ -1412,8 +1436,12 @@ def _layout_placeholder_shape(
     ET.SubElement(c_nv_sp_pr, f"{{{DML_NS}}}spLocks", {"noGrp": "1"})
     nv_pr = ET.SubElement(nv_sp_pr, f"{{{PML_NS}}}nvPr")
     placeholder_attrs = {"type": placeholder_type}
-    if item.placeholder != "title":
+    if placeholder_idx is not None:
         placeholder_attrs["idx"] = str(placeholder_idx)
+    elif item.placeholder != "title":
+        raise TemplateStructureError(
+            f"Placeholder {item.element_id!r} requires an idx"
+        )
     ET.SubElement(nv_pr, f"{{{PML_NS}}}ph", placeholder_attrs)
 
     source_sp_pr = (
@@ -1476,7 +1504,11 @@ def _patch_slide_placeholder(
         if existing.tag == f"{{{PML_NS}}}ph":
             nv_pr.remove(existing)
     placeholder_attrs: dict[str, str] = {}
-    if placeholder_type is not None or item.placeholder == "title" or placeholder_idx is None:
+    if (
+        placeholder_type is not None
+        or resolved_type != "obj"
+        or placeholder_idx is None
+    ):
         placeholder_attrs["type"] = resolved_type
     if placeholder_idx is not None:
         placeholder_attrs["idx"] = str(placeholder_idx)
@@ -1495,7 +1527,7 @@ def _set_template_layout_header_footer(
 ) -> None:
     """Enable declared footer fields for slides newly created from the layout."""
     kinds = {item.placeholder for item in placeholders}
-    if not kinds.intersection({"footer", "slide-number"}):
+    if not kinds.intersection({"date", "footer", "slide-number"}):
         return
     tree = ET.parse(layout_path)
     root = tree.getroot()
@@ -1513,7 +1545,7 @@ def _set_template_layout_header_footer(
         )
         root.insert(insert_at, hf)
     hf.set("hdr", "0")
-    hf.set("dt", "0")
+    hf.set("dt", "1" if "date" in kinds else "0")
     hf.set("ftr", "1" if "footer" in kinds else "0")
     hf.set("sldNum", "1" if "slide-number" in kinds else "0")
     _write_xml_tree(layout_path, tree)
@@ -1602,12 +1634,18 @@ def _apply_template_structure(
                 raise TemplateStructureError(
                     f"Placeholder {item.element_id!r} cannot be a slide background"
                 )
-            assigned_idx = (
-                item.placeholder_idx
-                if item.placeholder_idx is not None
-                else placeholder_idx
-            )
-            if item.placeholder != "title" and assigned_idx in assigned_placeholder_indices:
+            if item.placeholder == "title":
+                assigned_idx = item.placeholder_idx
+            else:
+                assigned_idx = (
+                    item.placeholder_idx
+                    if item.placeholder_idx is not None
+                    else placeholder_idx
+                )
+            if (
+                assigned_idx is not None
+                and assigned_idx in assigned_placeholder_indices
+            ):
                 raise TemplateStructureError(
                     f"Layout {layout_key!r} repeats placeholder idx {assigned_idx}"
                 )
@@ -1631,7 +1669,7 @@ def _apply_template_structure(
                     assigned_idx,
                     theme_font_spec=theme_font_spec,
                 )
-            if item.placeholder != "title":
+            if assigned_idx is not None:
                 assigned_placeholder_indices.add(assigned_idx)
                 placeholder_idx = max(placeholder_idx, assigned_idx + 1)
             placeholder_count += 1
