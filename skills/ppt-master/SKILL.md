@@ -670,21 +670,25 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 
 > **PPTX structure mode** — native export defaults to
 > `--pptx-structure baseline`: the package keeps the real slide master/layout
-> relationship from the base deck and promotes identical native slide
-> backgrounds into the slide master, so ordinary decks do not repeat safe shared
-> background fills on every slide. Baseline may also promote a shared **leading**
-> prefix of top-level SVG elements whose exact id tokens mark page chrome
-> (`logo`, `footer`, `header`, `watermark`, `chrome`, `pageNumber` /
-> `slideNumber`). Promotion requires identical generated OOXML on every slide
+> relationship from the base deck and promotes the strict-majority identical
+> native slide background into the slide master (every slide must carry an
+> explicit background; minority slides keep their own, which overrides the
+> master fill). Baseline may also promote a shared **leading** prefix of
+> top-level SVG elements whose exact id tokens mark page chrome (`logo`,
+> `footer`, `header`, `watermark`, `chrome`, `pageNumber` / `slideNumber`).
+> Promotion requires identical generated OOXML on a strict majority of slides
 > sharing the master, no slide-timing reference, and z-order safety; overlay
-> chrome stays slide-local. Image relationships for promoted chrome are copied to
-> the master. Baseline also prunes base-template slide layouts no generated
-> slide references, so the PowerPoint new-slide picker only offers layouts that
-> belong to the deck, and converts `pageNumber` / `slideNumber` chrome whose
-> text exactly equals the slide's display number into an auto-updating
-> PowerPoint slide-number field (other numbering schemes keep their literal
-> text). Add `--pptx-structure flat` only for debugging/comparison when all
-> generated backgrounds and chrome must remain slide-local.
+> chrome stays slide-local. Minority slides (covers, section pages) keep every
+> shape slide-local and are bound to a generated `Cover` layout with
+> `showMasterSp="0"`, so promoted master chrome never appears on them. Image
+> relationships for promoted chrome are copied to the master. Baseline also
+> prunes base-template slide layouts no generated slide references, so the
+> PowerPoint new-slide picker only offers layouts that belong to the deck, and
+> converts `pageNumber` / `slideNumber` chrome whose text exactly equals the
+> slide's display number into an auto-updating PowerPoint slide-number field
+> (other numbering schemes keep their literal text). Add
+> `--pptx-structure flat` only for debugging/comparison when all generated
+> backgrounds and chrome must remain slide-local.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
