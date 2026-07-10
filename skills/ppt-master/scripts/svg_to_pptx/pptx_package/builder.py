@@ -246,6 +246,30 @@ def _put_background_on_master(master_xml: str, background_xml: str) -> str | Non
     )
 
 
+def _dominant_variant(
+    values_by_slide: dict[int, Any],
+) -> tuple[Any | None, list[int]]:
+    """Return the most common value and its slides, or None on a tie."""
+    slides_by_value: dict[Any, list[int]] = {}
+    for slide_num, value in sorted(values_by_slide.items()):
+        slides_by_value.setdefault(value, []).append(slide_num)
+    if not slides_by_value:
+        return None, []
+    best_count = max(len(slides) for slides in slides_by_value.values())
+    dominant = [
+        (value, slides)
+        for value, slides in slides_by_value.items()
+        if len(slides) == best_count
+    ]
+    if len(dominant) != 1:
+        return None, []
+    return dominant[0]
+
+
+def _is_strict_majority(subset_size: int, total: int) -> bool:
+    return subset_size >= 2 and subset_size * 2 > total
+
+
 def _promote_common_slide_backgrounds_to_masters(
     extract_dir: Path,
     structure: PptxStructureContext,
@@ -253,7 +277,13 @@ def _promote_common_slide_backgrounds_to_masters(
     *,
     verbose: bool = False,
 ) -> int:
-    """Promote identical slide backgrounds to their shared slide master."""
+    """Promote the majority slide background to its shared slide master.
+
+    Every slide in the master group must carry an explicit background —
+    a slide without one would start inheriting the promoted master fill.
+    Minority slides keep their own slide-level background, which always
+    overrides the master fill.
+    """
     slides_by_master: dict[str, list[int]] = {}
     for slide_num in range(1, slide_count + 1):
         master_part = structure.slide_master_part(slide_num)
@@ -273,11 +303,12 @@ def _promote_common_slide_backgrounds_to_masters(
 
         if not slide_backgrounds:
             continue
-        unique_backgrounds = set(slide_backgrounds.values())
-        if len(unique_backgrounds) != 1:
+        background_xml, dominant_slides = _dominant_variant(slide_backgrounds)
+        if background_xml is None:
+            continue
+        if not _is_strict_majority(len(dominant_slides), len(slide_nums)):
             continue
 
-        background_xml = next(iter(unique_backgrounds))
         master_path = extract_dir / master_part
         master_xml = master_path.read_text(encoding="utf-8")
         promoted_master_xml = _put_background_on_master(master_xml, background_xml)
@@ -285,7 +316,7 @@ def _promote_common_slide_backgrounds_to_masters(
             continue
         master_path.write_text(promoted_master_xml, encoding="utf-8")
 
-        for slide_num in slide_nums:
+        for slide_num in dominant_slides:
             slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
             slide_xml = slide_path.read_text(encoding="utf-8")
             slide_path.write_text(
@@ -425,6 +456,13 @@ def _canonical_shape_xml(
         # ``Image 2`` versus ``Image 8``) but do not affect rendering.
         if "name" in cnv.attrib:
             cnv.set("name", "NAME")
+    for fld in clone.iter(f"{{{DML_NS}}}fld"):
+        # The literal inside a slide-number field is a per-slide render
+        # cache that PowerPoint recomputes from the slide position.
+        if fld.attrib.get("type") == "slidenum":
+            cached = fld.find(f"{{{DML_NS}}}t")
+            if cached is not None:
+                cached.text = ""
     for node in clone.iter():
         for attr_name, value in list(node.attrib.items()):
             if attr_name not in _REL_ATTRS:
@@ -502,6 +540,117 @@ def _write_xml_tree(path: Path, tree: ET.ElementTree) -> None:
     tree.write(path, encoding="utf-8", xml_declaration=True)
 
 
+COVER_LAYOUT_NAME = "Cover"
+
+
+def _next_layout_part_number(extract_dir: Path) -> int:
+    layouts_dir = extract_dir / "ppt" / "slideLayouts"
+    numbers = [
+        int(match.group(1))
+        for path in layouts_dir.glob("slideLayout*.xml")
+        if (match := re.fullmatch(r"slideLayout(\d+)\.xml", path.name))
+    ]
+    return max(numbers, default=0) + 1
+
+
+def _next_slide_layout_id(extract_dir: Path, master_xml: str) -> int:
+    """Return an unused id for a new sldLayoutId entry."""
+    ids = [int(value) for value in re.findall(r'\bid="(\d{9,})"', master_xml)]
+    presentation_path = extract_dir / "ppt" / "presentation.xml"
+    if presentation_path.exists():
+        ids.extend(
+            int(value)
+            for value in re.findall(
+                r'\bid="(\d{9,})"', presentation_path.read_text(encoding="utf-8")
+            )
+        )
+    return max([*ids, 2147483648]) + 1
+
+
+def _create_cover_layout(extract_dir: Path, master_part: str, base_layout_part: str) -> str:
+    """Clone a layout into a Cover layout that hides master shapes.
+
+    Returns the new layout target relative to slide parts.
+    """
+    base_layout_path = extract_dir / base_layout_part
+    layout_xml = base_layout_path.read_text(encoding="utf-8")
+
+    root_match = re.search(r"<p:sldLayout\b[^>]*>", layout_xml)
+    if not root_match:
+        raise RuntimeError(f"Slide layout has no p:sldLayout root: {base_layout_part}")
+    root_tag = root_match.group(0)
+    if "showMasterSp=" in root_tag:
+        new_root_tag = re.sub(r'showMasterSp="[^"]*"', 'showMasterSp="0"', root_tag)
+    else:
+        new_root_tag = root_tag[:-1] + ' showMasterSp="0">'
+    layout_xml = layout_xml.replace(root_tag, new_root_tag, 1)
+    layout_xml = re.sub(
+        r"(<p:cSld\b[^>]*?)\s+name=\"[^\"]*\"",
+        rf'\g<1> name="{COVER_LAYOUT_NAME}"',
+        layout_xml,
+        count=1,
+    )
+
+    layout_num = _next_layout_part_number(extract_dir)
+    new_layout_part = f"ppt/slideLayouts/slideLayout{layout_num}.xml"
+    new_layout_path = extract_dir / new_layout_part
+    new_layout_path.write_text(layout_xml, encoding="utf-8")
+
+    base_rels_path = _relationships_path_for_part(extract_dir, base_layout_part)
+    new_rels_path = _relationships_path_for_part(extract_dir, new_layout_part)
+    new_rels_path.parent.mkdir(exist_ok=True)
+    new_rels_path.write_text(
+        base_rels_path.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+
+    master_path = extract_dir / master_part
+    master_rels_path = _relationships_path_for_part(extract_dir, master_part)
+    layout_target = posixpath.relpath(
+        new_layout_part, posixpath.dirname(master_part)
+    )
+    rel_id = _append_relationship(master_rels_path, SLIDE_LAYOUT_REL_TYPE, layout_target)
+
+    master_xml = master_path.read_text(encoding="utf-8")
+    layout_id = _next_slide_layout_id(extract_dir, master_xml)
+    entry = f'<p:sldLayoutId id="{layout_id}" r:id="{rel_id}"/>'
+    if "</p:sldLayoutIdLst>" not in master_xml:
+        raise RuntimeError(f"Slide master has no sldLayoutIdLst: {master_part}")
+    master_path.write_text(
+        master_xml.replace("</p:sldLayoutIdLst>", f"{entry}</p:sldLayoutIdLst>", 1),
+        encoding="utf-8",
+    )
+
+    content_types_path = extract_dir / "[Content_Types].xml"
+    content_types_path.write_text(
+        _add_content_type_override(
+            content_types_path.read_text(encoding="utf-8"),
+            new_layout_part,
+            "application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml",
+        ),
+        encoding="utf-8",
+    )
+    return posixpath.relpath(new_layout_part, "ppt/slides")
+
+
+def _set_slide_layout_target(rels_path: Path, target: str) -> None:
+    """Point a slide's layout relationship at a different layout part."""
+    content = rels_path.read_text(encoding="utf-8")
+    rel_id = None
+    for existing_id, attrs in _read_relationships(rels_path).items():
+        if attrs.get("Type") == SLIDE_LAYOUT_REL_TYPE:
+            rel_id = existing_id
+            break
+    if rel_id is None:
+        raise RuntimeError(f"No slide layout relationship in {rels_path}")
+    pattern = re.compile(
+        rf'(<Relationship\b[^>]*\bId="{re.escape(rel_id)}"[^>]*\bTarget=")[^"]*(")'
+    )
+    new_content, replaced = pattern.subn(rf"\g<1>{target}\g<2>", content, count=1)
+    if not replaced:
+        raise RuntimeError(f"Could not retarget layout relationship in {rels_path}")
+    rels_path.write_text(new_content, encoding="utf-8")
+
+
 def _promote_common_chrome_shapes_to_masters(
     extract_dir: Path,
     structure: PptxStructureContext,
@@ -547,49 +696,66 @@ def _promote_common_chrome_shapes_to_masters(
                 "tree": tree,
             }
 
-        promotions: list[tuple[str, dict[int, str]]] = []
-        claimed_shape_ids: dict[int, set[str]] = {
-            slide_num: set() for slide_num in slide_nums
-        }
+        # Per token, find the strict-majority identical variant. Slides
+        # outside every dominant set become cover-layout minority slides.
+        candidate_sets: dict[str, dict[int, str]] = {}
         all_tokens = sorted({
             token
             for state in slide_state.values()
             for token in state["tokens"]
         })
         for token in all_tokens:
-            shape_ids_by_slide: dict[int, str] = {}
+            carriers: dict[int, str] = {}
             canonical_by_slide: dict[int, bytes] = {}
             for slide_num in slide_nums:
                 state = slide_state[slide_num]
                 shape_ids = state["tokens"].get(token, [])
                 if len(shape_ids) != 1:
-                    shape_ids_by_slide = {}
-                    break
+                    continue
                 shape_id = shape_ids[0]
                 shape = state["shapes"].get(shape_id)
                 if shape is None:
-                    shape_ids_by_slide = {}
-                    break
+                    continue
                 if shape_id in state["timing_shape_ids"]:
-                    shape_ids_by_slide = {}
-                    break
+                    continue
                 if not _shape_relationships_supported(shape, state["rels"]):
-                    shape_ids_by_slide = {}
-                    break
-                shape_ids_by_slide[slide_num] = shape_id
+                    continue
+                carriers[slide_num] = shape_id
                 canonical_by_slide[slide_num] = _canonical_shape_xml(
                     shape,
                     state["rels"],
                 )
-            if set(shape_ids_by_slide) != set(slide_nums):
+            dominant_xml, dominant_slides = _dominant_variant(canonical_by_slide)
+            if dominant_xml is None:
                 continue
-            if len(set(canonical_by_slide.values())) != 1:
+            if not _is_strict_majority(len(dominant_slides), len(slide_nums)):
                 continue
+            candidate_sets[token] = {
+                slide_num: carriers[slide_num] for slide_num in dominant_slides
+            }
+
+        if not candidate_sets:
+            continue
+        content_slides = sorted(set.intersection(
+            *(set(slides) for slides in candidate_sets.values())
+        ))
+        if not _is_strict_majority(len(content_slides), len(slide_nums)):
+            continue
+
+        promotions: list[tuple[str, dict[int, str]]] = []
+        claimed_shape_ids: dict[int, set[str]] = {
+            slide_num: set() for slide_num in content_slides
+        }
+        for token in sorted(candidate_sets):
+            shape_ids_by_slide = {
+                slide_num: candidate_sets[token][slide_num]
+                for slide_num in content_slides
+            }
             # A flattened nested chrome group can emit several semantic trace
             # ids for the same generated DrawingML shape. Claim it once.
             if any(
                 shape_ids_by_slide[slide_num] in claimed_shape_ids[slide_num]
-                for slide_num in slide_nums
+                for slide_num in content_slides
             ):
                 continue
             for slide_num, shape_id in shape_ids_by_slide.items():
@@ -607,10 +773,10 @@ def _promote_common_chrome_shapes_to_masters(
                 shape_ids[slide_num]: token
                 for token, shape_ids in promotions
             }
-            for slide_num in slide_nums
+            for slide_num in content_slides
         }
         leading_token_orders: list[list[str]] = []
-        for slide_num in slide_nums:
+        for slide_num in content_slides:
             order: list[str] = []
             for shape_id in slide_state[slide_num]["shapes"]:
                 token = token_by_shape_id[slide_num].get(shape_id)
@@ -641,7 +807,7 @@ def _promote_common_chrome_shapes_to_masters(
         master_path = extract_dir / master_part
         master_rels_path = _relationships_path_for_part(extract_dir, master_part)
         for _token, shape_ids_by_slide in promotions:
-            first_slide = slide_nums[0]
+            first_slide = content_slides[0]
             first_state = slide_state[first_slide]
             shape = first_state["shapes"][shape_ids_by_slide[first_slide]]
             master_shape = _copy_shape_relationships_to_master(
@@ -660,8 +826,46 @@ def _promote_common_chrome_shapes_to_masters(
                     sp_tree.remove(shape_to_remove)
                     promoted += 1
 
-        for state in slide_state.values():
+        for slide_num in content_slides:
+            state = slide_state[slide_num]
             _write_xml_tree(state["path"], state["tree"])
+
+        # Minority slides (covers, section pages) keep every shape
+        # slide-local and move to a Cover layout that hides the newly
+        # promoted master chrome, so their rendering never changes.
+        minority_slides = [
+            slide_num for slide_num in slide_nums
+            if slide_num not in set(content_slides)
+        ]
+        if minority_slides:
+            first_minority_rels = (
+                extract_dir / "ppt" / "slides" / "_rels"
+                / f"slide{minority_slides[0]}.xml.rels"
+            )
+            base_target = _find_relationship_target(
+                first_minority_rels, SLIDE_LAYOUT_REL_TYPE
+            )
+            if not base_target:
+                raise RuntimeError(
+                    f"Slide {minority_slides[0]} has no slide layout relationship"
+                )
+            base_layout_part = _resolve_package_target(
+                f"ppt/slides/slide{minority_slides[0]}.xml", base_target
+            )
+            cover_target = _create_cover_layout(
+                extract_dir, master_part, base_layout_part
+            )
+            for slide_num in minority_slides:
+                rels_path = (
+                    extract_dir / "ppt" / "slides" / "_rels"
+                    / f"slide{slide_num}.xml.rels"
+                )
+                _set_slide_layout_target(rels_path, cover_target)
+            if verbose:
+                print(
+                    "  Baseline cover layout: "
+                    f"{len(minority_slides)} slide(s) keep slide-local chrome"
+                )
 
     if verbose and promoted:
         print(
@@ -823,13 +1027,20 @@ def _prune_unused_slide_layouts(
     by any generated slide are always kept, and a master keeps its layout
     list untouched unless at least one referenced layout remains in it.
     """
-    referenced_layouts = {
-        _resolve_package_target(
-            f"ppt/slides/slide{slide_num}.xml",
-            structure.slide_layout_target(slide_num),
+    # Read layout references live: earlier baseline passes may have rebound
+    # minority slides to a Cover layout that the initial structure context
+    # does not know about.
+    referenced_layouts: set[str] = set()
+    for slide_num in range(1, slide_count + 1):
+        rels_path = (
+            extract_dir / "ppt" / "slides" / "_rels" / f"slide{slide_num}.xml.rels"
         )
-        for slide_num in range(1, slide_count + 1)
-    }
+        target = _find_relationship_target(rels_path, SLIDE_LAYOUT_REL_TYPE)
+        if not target:
+            raise RuntimeError(f"Slide {slide_num} has no slide layout relationship")
+        referenced_layouts.add(
+            _resolve_package_target(f"ppt/slides/slide{slide_num}.xml", target)
+        )
 
     pruned = 0
     content_types_path = extract_dir / "[Content_Types].xml"
