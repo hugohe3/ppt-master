@@ -52,6 +52,10 @@ from svg_finalize.align_embed_images import (
     count_office_vector_refs_in_svg,
 )
 from svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
+from svg_to_pptx.geometry_properties import (
+    GeometryStyleError,
+    materialize_inline_geometry_in_file,
+)
 from svg_to_pptx.use_expander import (
     UseExpansionError,
     expand_local_use_references_in_file,
@@ -172,6 +176,16 @@ def finalize_project(
     if not quiet:
         print()
 
+    # Core normalization: downstream image/rect processors read XML geometry.
+    geometry_count = 0
+    for svg_file in svg_final.glob('*.svg'):
+        try:
+            geometry_count += materialize_inline_geometry_in_file(svg_file)
+        except (OSError, ET.ParseError, GeometryStyleError) as exc:
+            safe_print(
+                f"[ERROR] {svg_file.name}: inline geometry materialization failed: {exc}"
+            )
+            return False
     # Step 2: Expand project icons, then standard same-document use references.
     if options.get('embed_icons'):
         if not quiet:
@@ -186,6 +200,15 @@ def finalize_project(
                 fallback_dir=icons_fallback_dir,
             )
             icons_count += count
+        for svg_file in svg_final.glob('*.svg'):
+            try:
+                geometry_count += materialize_inline_geometry_in_file(svg_file)
+            except (OSError, ET.ParseError, GeometryStyleError) as exc:
+                safe_print(
+                    f"[ERROR] {svg_file.name}: expanded icon geometry "
+                    f"materialization failed: {exc}"
+                )
+                return False
         local_use_count = 0
         for svg_file in svg_final.glob('*.svg'):
             try:
@@ -204,6 +227,11 @@ def finalize_project(
                 safe_print(f"      {local_use_count} local use reference(s) expanded")
             else:
                 safe_print("      No local use references")
+
+    if not quiet and geometry_count:
+        safe_print(
+            f"[PREP] {geometry_count} inline geometry declaration(s) materialized"
+        )
 
     # Step 3: Align (slice/meet) and Base64-embed all <image> in one pass.
     # Replaces the former crop-images / fix-aspect / embed-images trio: the
