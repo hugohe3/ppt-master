@@ -671,6 +671,91 @@ def _promote_common_chrome_shapes_to_masters(
     return promoted
 
 
+def _remove_relationship(rels_path: Path, rel_id: str) -> None:
+    """Remove one relationship entry by rId."""
+    rels_content = rels_path.read_text(encoding="utf-8")
+    pattern = re.compile(
+        rf'[ \t]*<Relationship\b[^>]*\bId="{re.escape(rel_id)}"[^>]*/>[ \t]*\n?'
+    )
+    new_content, removed = pattern.subn("", rels_content, count=1)
+    if not removed:
+        raise RuntimeError(f"Relationship {rel_id} not found in {rels_path}")
+    rels_path.write_text(new_content, encoding="utf-8")
+
+
+def _remove_content_type_override(content_types_path: Path, part_name: str) -> None:
+    """Remove the Override content-type entry for a deleted package part."""
+    normalized = "/" + part_name.lstrip("/")
+    content = content_types_path.read_text(encoding="utf-8")
+    pattern = re.compile(
+        rf'[ \t]*<Override\b[^>]*\bPartName="{re.escape(normalized)}"[^>]*/>[ \t]*\n?'
+    )
+    new_content, removed = pattern.subn("", content, count=1)
+    if removed:
+        content_types_path.write_text(new_content, encoding="utf-8")
+
+
+def _prune_unused_slide_layouts(
+    extract_dir: Path,
+    structure: PptxStructureContext,
+    slide_count: int,
+    *,
+    verbose: bool = False,
+) -> int:
+    """Remove base-template slide layouts no generated slide references.
+
+    The python-pptx base package ships the full Office layout set; unused
+    entries only pollute the PowerPoint new-slide picker. Layouts referenced
+    by any generated slide are always kept, and a master keeps its layout
+    list untouched unless at least one referenced layout remains in it.
+    """
+    referenced_layouts = {
+        _resolve_package_target(
+            f"ppt/slides/slide{slide_num}.xml",
+            structure.slide_layout_target(slide_num),
+        )
+        for slide_num in range(1, slide_count + 1)
+    }
+
+    pruned = 0
+    content_types_path = extract_dir / "[Content_Types].xml"
+    for master_part in sorted(set(structure.slide_master_parts.values())):
+        master_path = extract_dir / master_part
+        master_rels_path = _relationships_path_for_part(extract_dir, master_part)
+        layout_rels = {
+            rel_id: _resolve_package_target(master_part, attrs.get("Target", ""))
+            for rel_id, attrs in _read_relationships(master_rels_path).items()
+            if attrs.get("Type") == SLIDE_LAYOUT_REL_TYPE
+        }
+        if not any(part in referenced_layouts for part in layout_rels.values()):
+            continue
+
+        master_xml = master_path.read_text(encoding="utf-8")
+        for rel_id, layout_part in sorted(layout_rels.items()):
+            if layout_part in referenced_layouts:
+                continue
+            entry_re = re.compile(
+                rf'[ \t]*<p:sldLayoutId\b[^>]*\br:id="{re.escape(rel_id)}"[^>]*/>[ \t]*\n?'
+            )
+            master_xml, removed = entry_re.subn("", master_xml, count=1)
+            if not removed:
+                raise RuntimeError(
+                    f"Slide master {master_part} has no sldLayoutId entry for {rel_id}"
+                )
+            _remove_relationship(master_rels_path, rel_id)
+            (extract_dir / layout_part).unlink()
+            layout_rels_path = _relationships_path_for_part(extract_dir, layout_part)
+            if layout_rels_path.exists():
+                layout_rels_path.unlink()
+            _remove_content_type_override(content_types_path, layout_part)
+            pruned += 1
+        master_path.write_text(master_xml, encoding="utf-8")
+
+    if verbose and pruned:
+        print(f"  Baseline layout prune: removed {pruned} unused base layout(s)")
+    return pruned
+
+
 def _append_relationship(
     rels_path: Path,
     rel_type: str,
@@ -1854,6 +1939,12 @@ def create_pptx_with_native_svg(
                 structure,
                 len(svg_files),
                 conversion_trace if conversion_trace is not None else structure_trace,
+                verbose=verbose,
+            )
+            _prune_unused_slide_layouts(
+                extract_dir,
+                structure,
+                len(svg_files),
                 verbose=verbose,
             )
 
