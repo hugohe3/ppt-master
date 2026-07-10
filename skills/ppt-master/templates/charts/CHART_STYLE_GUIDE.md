@@ -286,10 +286,9 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 |---------|---------| 
 | HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` `&ndash;` `&reg;` `&hellip;` `&bull;` …） | 直接写原生 Unicode 字符（`—` `–` `©` `®` `→` NBSP …） |
 | 文本/属性值中裸写 `& < > " '` | 必须写成 XML 实体 `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` |
-| `<style>` / `class` | 内联属性（`id` 在 `<defs>` 内合法） |
+| `<style>` / `class` | 内联属性（`id` 可用于本地引用和语义标记） |
 | `<foreignObject>` | `<text>` + `<tspan>` |
 | `mask` | 叠加遮罩矩形 / gradient overlay |
-| `<symbol>` + `<use>` | 直接写出完整元素 |
 | `textPath` | 手动排列 `<text>` |
 | `@font-face` | 系统字体栈 |
 | `<animate*>` / `<set>` | 无（PPT 侧处理动画） |
@@ -308,13 +307,19 @@ HEX。颜色内嵌 alpha 会与 `opacity`、`fill-opacity`、`stroke-opacity`、
 |------|------|----------|
 | `<g opacity="...">` | 数值范围 `0..1`；不包裹 `data-pptx-native` 图表/表格 | 后代对象分别写入 DrawingML alpha；重叠区域为近似 |
 | `<image opacity="...">` | 数值范围 `0..1` | DrawingML `<a:alphaModFix>` |
+| 本文档内静态 `<use href="#id">` / `xlink:href="#id"` | 目标为 `symbol/g/use/rect/circle/ellipse/line/path/polygon/polyline/text/image`；`x/y` 仅 unitless/`px`；`symbol` 还需合法 `viewBox` 与正数 unitless/`px` `width/height` | 导出前递归展开为带独立 ID 的完整元素 |
 | `marker-start` / `marker-end` | `<marker>` 在 `<defs>` 中，`orient="auto"`，形状为三角/菱形/圆 | DrawingML `<a:headEnd>` / `<a:tailEnd>` |
 | `clipPath` on `<image>` | `<clipPath>` 在 `<defs>` 中，单子元素，**仅用于 image** | DrawingML `<a:prstGeom>` / `<a:custGeom>` |
 | `stroke-dasharray` | 使用预设值 `4,4` / `2,2` / `8,4` / `8,4,2,4` | PPTX `<a:prstDash>` |
 | `text-decoration` | `underline` / `line-through` | PPTX 原生文本格式 |
 | `transform="rotate(...)"` | 所有元素类型均支持 | PPTX `<a:xfrm rot="...">` |
 
-> 完整条件约束见 [`shared-standards.md`](../../references/shared-standards.md) SS1.1（marker 约束）和 SS1.2（clipPath 约束）。
+> 本地 `<use>` 只接受精确 `#id` / `url(#id)` 内部片段。外部、缺失、
+> 冲突、循环、重复 ID，`symbol` 的 `slice` / `refX` / `refY`，以及对
+> `data-pptx-layer*` / `data-pptx-native*` / `data-pptx-placeholder*` 结构元数据的
+> 复用均禁止；PPTX 回导不重建 `<use>`。完整条件约束见
+> [`shared-standards.md`](../../references/shared-standards.md) SS1.1（marker）、
+> SS1.2（clipPath）和 SS1.3（本地 use）。
 
 ### 6.4 虚线预设对照
 

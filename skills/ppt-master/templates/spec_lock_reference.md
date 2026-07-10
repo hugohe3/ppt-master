@@ -191,5 +191,16 @@
 
 ## forbidden
 - Mixing icon libraries
-- `<style>`, `class`, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<script>`, `<iframe>`, `<symbol>`+`<use>`
+- `<style>`, `class`, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<script>`, `<iframe>`
 - HTML named entities in text (`&nbsp;`, `&mdash;`, `&copy;`, `&ndash;`, `&reg;`, `&hellip;`, `&bull;` …) — write as raw Unicode (`—`, `©`, `→`, NBSP, etc.); XML reserved chars `& < > " '` must be escaped as `&amp; &lt; &gt; &quot; &apos;`. See shared-standards.md §1.0
+
+> Static same-document `<use>` / `<symbol>` is allowed only under
+> `shared-standards.md` §1.3: exact `href="#id"` / `xlink:href="#id"` and
+> `url(#id)` fragments; targets limited to
+> `symbol/g/use/rect/circle/ellipse/line/path/polygon/polyline/text/image`;
+> unitless/`px` `x/y`; valid symbol `viewBox` plus positive unitless/`px`
+> `width/height`; aligned `meet` or plain `none`. External, missing,
+> conflicting, circular, or duplicate-ID references; `slice` / `refX` / `refY`;
+> and reused `data-pptx-layer*` / `data-pptx-native*` /
+> `data-pptx-placeholder*` metadata remain forbidden. PPTX import does not
+> reconstruct `<use>`.

@@ -162,11 +162,11 @@ class ErrorHelper:
             'severity': 'error'
         },
         'id_attribute_detected': {
-            'message': 'Forbidden id attribute detected',
+            'message': 'Forbidden CSS selector usage with id detected',
             'solutions': [
-                'Remove all id attributes',
-                'Use inline styles instead',
-                'Avoid relying on selectors for positioning or style reuse'
+                'Keep IDs for local references or documented semantic/animation groups',
+                'Remove <style> rules and CSS selectors',
+                'Use inline presentation attributes instead'
             ],
             'severity': 'error'
         },
@@ -177,15 +177,6 @@ class ErrorHelper:
                 'Remove <link rel="stylesheet"> references',
                 'Remove @import external styles',
                 'Convert styles to inline attributes'
-            ],
-            'severity': 'error'
-        },
-        'symbol_use_detected': {
-            'message': 'Forbidden <symbol> + <use> complex usage detected',
-            'solutions': [
-                'Expand <symbol> into actual SVG code',
-                'Avoid <symbol> + <use> reuse structures',
-                'Embed SVG paths directly when icons are needed'
             ],
             'severity': 'error'
         },

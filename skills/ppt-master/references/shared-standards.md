@@ -4,7 +4,7 @@ Common technical constraints for PPT Master, eliminating cross-role file duplica
 
 ---
 
-## 1. SVG Banned Features Blacklist
+## 1. SVG Banned Features and Conditional Allowances
 
 The following are **forbidden** in generated SVGs — PPT export breaks otherwise:
 
@@ -25,10 +25,9 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 |----------------|-------------|
 | `mask` | Masks |
 | `<style>` | Embedded stylesheets |
-| `class` | CSS selector attributes (`id` inside `<defs>` is a legitimate reference and is NOT banned) |
+| `class` | CSS selector attributes (`id` remains allowed for local references and semantic markers when no `<style>` selector is used) |
 | External CSS | External stylesheet links |
 | `<foreignObject>` | Embedded external content |
-| `<symbol>` + `<use>` | Symbol reference reuse |
 | `textPath` | Text along a path |
 | `@font-face` | Custom font declarations |
 | `<animate*>` / `<set>` | SVG animations |
@@ -38,6 +37,10 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 > **`marker-start` / `marker-end` is conditionally allowed** — see §1.1 for constraints. The converter maps qualifying markers to native DrawingML `<a:headEnd>` / `<a:tailEnd>`.
 >
 > **`clipPath` on `<image>` is conditionally allowed** — see §1.2 for constraints. The converter maps qualifying clip shapes to native DrawingML picture geometry (`<a:prstGeom>` or `<a:custGeom>`).
+>
+> **Static same-document `<use>` is conditionally allowed** — see §1.3. The
+> pipeline materializes qualifying references before SVG snapshot/native PPTX
+> conversion; PowerPoint does not retain the reference structure.
 >
 > **`<pattern>` fills are conditionally allowed** — see §7 *Pattern Fill* for the required `data-pptx-pattern` annotation and the closed OOXML preset enum. Hand-drawn pattern geometry is NOT honored; the converter emits the named PPTX preset only. Missing or invalid preset values produce diagonal stripes (warning) or schema-failed PPTX (error).
 >
@@ -147,6 +150,55 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ---
 
+### 1.3 Static Same-Document `<use>` (Conditionally Allowed)
+
+**Expansion contract**: Static local reuse is compile-time authoring shorthand. `finalize_svg.py` and
+native export replace each qualifying instance with cloned primitive content;
+PPTX-to-SVG import emits the resulting primitives and does **not** reconstruct
+the original `<use>` / `<symbol>` structure.
+
+| Concern | Required form |
+|---|---|
+| Reference syntax | Exact same-document fragment: `href="#id"` or `xlink:href="#id"`. If both attributes exist, their values MUST match. |
+| Referenced target | One of `<symbol>`, `<g>`, `<use>`, `<rect>`, `<circle>`, `<ellipse>`, `<line>`, `<path>`, `<polygon>`, `<polyline>`, `<text>`, or `<image>`. Nested local `<use>` is recursively expanded. |
+| Instance position | `<use x>` / `<use y>` are finite unitless or `px` values; omitted values default to `0`. |
+| Symbol viewport | A referenced `<symbol>` MUST have a finite four-number `viewBox` with positive width/height. Its `<use>` MUST have positive finite unitless or `px` `width` and `height`. |
+| Aspect ratio | Default/aligned `meet` values and plain `preserveAspectRatio="none"` are supported. `slice`, `refX`, and `refY` are forbidden. |
+| Viewport boundary | Symbol artwork MUST stay inside its `viewBox`; expansion does not reproduce symbol overflow clipping. |
+| Internal references | Reusable subtrees use exact fragment forms: `href="#id"`, `xlink:href="#id"`, and `url(#id)`. The expander rewrites these references together with instance-local cloned IDs. |
+| Structural metadata | Neither the `<use>` instance nor its referenced subtree may carry `data-pptx-layer*`, `data-pptx-native*`, or `data-pptx-placeholder*`. Author those objects directly instead of reusing them. |
+| Safety limits | A reachable reference chain may contain at most 64 instances, and one SVG may expand at most 10,000 local `<use>` instances. |
+
+**Forbidden — unsafe local references**:
+
+- External/file/data URLs, missing targets, conflicting `href` / `xlink:href`,
+  unsupported target elements, and circular reference chains
+- Duplicate IDs on the referenced target, the `<use>` instance, or anywhere in
+  the reused subtree
+- Quoted/whitespace CSS fragment variants such as `url('#id')`; use exact
+  `url(#id)` when an internal paint/filter/clip reference must be rewritten
+
+**Supported example**:
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <symbol id="statusDot" viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet">
+      <circle cx="10" cy="10" r="8" fill="#16A34A"/>
+    </symbol>
+    <g id="legendRow">
+      <rect width="120" height="32" rx="8" fill="#F1F5F9"/>
+      <text x="42" y="22" font-size="16" fill="#0F172A">Ready</text>
+    </g>
+  </defs>
+  <use href="#statusDot" x="80" y="120" width="32" height="32"/>
+  <use xlink:href="#legendRow" x="120" y="120"/>
+</svg>
+```
+
+---
+
 ## 2. PPT Compatibility Mappings
 
 **Allowed — CSS paint colors**: fills, strokes, gradient stops, and supported
@@ -217,6 +269,7 @@ metadata. See
   3/4/6/8-digit HEX; embedded and explicit opacity values multiply
 - **Images**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`; optional `opacity="0..1"` maps to native picture transparency
 - **Icons**: `<use data-icon="<library>/<name>" x="" y="" width="48" height="48" fill="#HEX"/>` (auto-embedded post-processing). Always include library prefix. One stylistic library per deck (`chunk-filled`/`tabler-filled`/`tabler-outline`/`phosphor-duotone`); `simple-icons` only for real brand marks. See [`../templates/icons/README.md`](../templates/icons/README.md).
+- **Static local reuse**: `<use href="#id" .../>` / `<use xlink:href="#id" .../>` is allowed only under §1.3. This is separate from `data-icon` placeholders and is expanded before export.
 
 ### Inline Text Runs (Single Logical Line = Single `<text>`)
 

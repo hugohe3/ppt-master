@@ -522,7 +522,6 @@ SVG_CONSTRAINTS = {
     # <a:headEnd>/<a:tailEnd>.
     'forbidden_attributes': [
         'class',
-        'id',
         'onclick', 'onload', 'onmouseover', 'onmouseout',
         'onfocus', 'onblur', 'onchange',
     ],
@@ -533,7 +532,6 @@ SVG_CONSTRAINTS = {
         r'<link[^>]*rel\s*=\s*["\']stylesheet["\']',
         r'@import\s+',  # External CSS
         r'\bon\w+\s*=',  # Event attributes
-        r'(?s)(?=.*<symbol)(?=.*<use\b)',  # <symbol> + <use> complex usage (order-independent)
     ],
     'recommended_fonts': [
         'system-ui',
