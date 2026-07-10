@@ -713,11 +713,13 @@ def _create_cover_layout(extract_dir: Path, master_part: str, base_layout_part: 
     return posixpath.relpath(new_layout_part, "ppt/slides")
 
 
-def _create_template_layout(
+def _create_custom_layout(
     extract_dir: Path,
     master_part: str,
     base_layout_part: str,
     layout_name: str,
+    *,
+    show_master_shapes: bool = True,
 ) -> tuple[str, str]:
     """Clone a clean custom layout and register it under its slide master.
 
@@ -728,7 +730,7 @@ def _create_template_layout(
     root = tree.getroot()
     root.set("type", "cust")
     root.set("preserve", "1")
-    root.set("showMasterSp", "1")
+    root.set("showMasterSp", "1" if show_master_shapes else "0")
 
     c_sld = root.find(f"{{{PML_NS}}}cSld")
     if c_sld is None:
@@ -814,6 +816,163 @@ def _set_slide_layout_target(rels_path: Path, target: str) -> None:
     if not replaced:
         raise RuntimeError(f"Could not retarget layout relationship in {rels_path}")
     rels_path.write_text(new_content, encoding="utf-8")
+
+
+_BASELINE_LAYOUT_ROLE_TOKENS = (
+    ("Cover", frozenset({"cover", "frontcover"}), ("封面",)),
+    (
+        "Agenda",
+        frozenset({"agenda", "contents", "outline", "toc"}),
+        ("目录", "议程"),
+    ),
+    (
+        "Section",
+        frozenset({"chapter", "divider", "section", "transition"}),
+        ("章节", "过渡页"),
+    ),
+    (
+        "Closing",
+        frozenset({"closing", "end", "ending", "qa", "thankyou", "thanks"}),
+        ("封底", "结束", "结尾", "结语", "致谢", "谢谢"),
+    ),
+)
+
+
+def _baseline_layout_role(svg_path: Path) -> str:
+    """Classify only explicit filename roles; keep every other page as Content."""
+    stem = svg_path.stem.casefold()
+    tokens = {
+        token
+        for token in re.split(r"[^0-9a-z]+", stem)
+        if token and not token.isdigit()
+    }
+    for role, english_tokens, cjk_tokens in _BASELINE_LAYOUT_ROLE_TOKENS:
+        if tokens.intersection(english_tokens) or any(
+            token in stem for token in cjk_tokens
+        ):
+            return role
+    return "Content"
+
+
+def _layout_identity(layout_path: Path) -> tuple[str, bool]:
+    """Return a layout's picker name and master-shape visibility."""
+    root = ET.parse(layout_path).getroot()
+    c_sld = root.find(f"{{{PML_NS}}}cSld")
+    name = c_sld.attrib.get("name", "") if c_sld is not None else ""
+    return name, root.attrib.get("showMasterSp", "1") != "0"
+
+
+def _shared_explicit_slide_background(
+    extract_dir: Path,
+    slide_nums: list[int],
+) -> str | None:
+    """Return one exact background only when every family slide carries it."""
+    backgrounds: list[str] = []
+    for slide_num in slide_nums:
+        slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+        background = _extract_slide_background_xml(
+            slide_path.read_text(encoding="utf-8")
+        )
+        if background is None:
+            return None
+        backgrounds.append(background)
+    if not backgrounds or len(set(backgrounds)) != 1:
+        return None
+    return backgrounds[0]
+
+
+def _extract_baseline_layout_families(
+    extract_dir: Path,
+    structure: PptxStructureContext,
+    svg_files: list[Path],
+    *,
+    verbose: bool = False,
+) -> int:
+    """Build conservative post-generation layout families for a free SVG deck."""
+    families: dict[tuple[str, str, bool], list[int]] = {}
+    base_layouts: dict[tuple[str, str, bool], str] = {}
+    for slide_num, svg_path in enumerate(svg_files, 1):
+        rels_path = (
+            extract_dir
+            / "ppt"
+            / "slides"
+            / "_rels"
+            / f"slide{slide_num}.xml.rels"
+        )
+        layout_target = _find_relationship_target(rels_path, SLIDE_LAYOUT_REL_TYPE)
+        if not layout_target:
+            raise RuntimeError(f"Slide {slide_num} has no slide layout relationship")
+        layout_part = _resolve_package_target(
+            f"ppt/slides/slide{slide_num}.xml", layout_target
+        )
+        layout_name, show_master_shapes = _layout_identity(extract_dir / layout_part)
+        role = _baseline_layout_role(svg_path)
+        if role == "Content" and layout_name == COVER_LAYOUT_NAME:
+            role = COVER_LAYOUT_NAME
+        key = (
+            structure.slide_master_part(slide_num),
+            role,
+            show_master_shapes,
+        )
+        families.setdefault(key, []).append(slide_num)
+        base_layouts.setdefault(key, layout_part)
+
+    created = 0
+    lifted_backgrounds = 0
+    role_counts: dict[tuple[str, str], int] = {}
+    for key, slide_nums in families.items():
+        master_part, role, show_master_shapes = key
+        role_key = (master_part, role)
+        role_counts[role_key] = role_counts.get(role_key, 0) + 1
+        variant = role_counts[role_key]
+        layout_name = role if variant == 1 else f"{role} {variant}"
+        layout_target, layout_part = _create_custom_layout(
+            extract_dir,
+            master_part,
+            base_layouts[key],
+            layout_name,
+            show_master_shapes=show_master_shapes,
+        )
+
+        background_xml = _shared_explicit_slide_background(
+            extract_dir, slide_nums
+        )
+        if background_xml is not None:
+            layout_path = extract_dir / layout_part
+            layout_xml = layout_path.read_text(encoding="utf-8")
+            updated_layout_xml = _put_background_on_part(layout_xml, background_xml)
+            if updated_layout_xml is not None:
+                layout_path.write_text(updated_layout_xml, encoding="utf-8")
+                for slide_num in slide_nums:
+                    slide_path = (
+                        extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+                    )
+                    slide_path.write_text(
+                        _remove_slide_background_xml(
+                            slide_path.read_text(encoding="utf-8")
+                        ),
+                        encoding="utf-8",
+                    )
+                lifted_backgrounds += len(slide_nums)
+
+        for slide_num in slide_nums:
+            rels_path = (
+                extract_dir
+                / "ppt"
+                / "slides"
+                / "_rels"
+                / f"slide{slide_num}.xml.rels"
+            )
+            _set_slide_layout_target(rels_path, layout_target)
+        created += 1
+
+    if verbose and created:
+        print(
+            "  Baseline layout families: "
+            f"created {created} reusable layout(s), "
+            f"lifted {lifted_backgrounds} slide background(s)"
+        )
+    return created
 
 
 _TEMPLATE_PLACEHOLDER_TYPES = {
@@ -1605,7 +1764,7 @@ def _apply_template_structure(
             f"ppt/slides/slide{prototype.slide_num}.xml",
             base_target,
         )
-        layout_target, layout_part = _create_template_layout(
+        layout_target, layout_part = _create_custom_layout(
             extract_dir,
             master_part,
             base_layout_part,
@@ -2948,7 +3107,8 @@ def create_pptx_with_native_svg(
             markers to native PowerPoint objects. Default off.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
         pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
-            shared native backgrounds and leading chrome to slide masters;
+            shared native backgrounds and leading chrome to slide masters,
+            then extracts conservative filename-backed layout families;
             ``template`` consumes explicit SVG master/layout/placeholder
             metadata; ``preserve`` reuses an imported source PPTX package;
             ``flat`` keeps generated structure slide-local.
@@ -3526,6 +3686,12 @@ def create_pptx_with_native_svg(
                 structure,
                 len(svg_files),
                 conversion_trace if conversion_trace is not None else structure_trace,
+                verbose=verbose,
+            )
+            _extract_baseline_layout_families(
+                extract_dir,
+                structure,
+                svg_files,
                 verbose=verbose,
             )
             _prune_unused_slide_layouts(
