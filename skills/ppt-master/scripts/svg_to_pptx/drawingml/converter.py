@@ -29,6 +29,7 @@ from .elements import (
 )
 from ..animation_config import is_chrome_id
 from ..native_objects import convert_native_object, native_marker_transform
+from ..semantic_markers import is_static_page_frame
 
 
 class SvgNativeConversionError(RuntimeError):
@@ -155,10 +156,20 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     style_overrides = _extract_inheritable_styles(elem)
 
     elem_id = elem.get('id')
+    semantic_role = elem.get('data-pptx-role')
+    placeholder = elem.get('data-pptx-placeholder')
+    has_explicit_semantics = (
+        semantic_role is not None or placeholder is not None
+    )
+    is_chrome = (
+        is_static_page_frame(semantic_role, placeholder)
+        if has_explicit_semantics
+        else is_chrome_id(elem_id)
+    )
     should_animate_group = (
         ctx.depth == 0
         and elem_id
-        and not is_chrome_id(elem_id)
+        and not is_chrome
         and not elem.get('data-pptx-layer')
     )
     visual_children = [
@@ -511,6 +522,7 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             'data-pptx-placeholder',
             'data-pptx-placeholder-bounds',
             'data-pptx-placeholder-idx',
+            'data-pptx-role',
         ):
             value = elem.get(attr)
             if value is not None:
@@ -724,7 +736,11 @@ def convert_svg_to_slide_shapes(
             converted += 1
             m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
             if m and not child.get('data-pptx-layer'):
-                fallback_targets.append((int(m.group(1)), tag))
+                if not is_static_page_frame(
+                    child.get('data-pptx-role'),
+                    child.get('data-pptx-placeholder'),
+                ):
+                    fallback_targets.append((int(m.group(1)), tag))
         else:
             if tag not in _NON_VISUAL_TAGS:
                 skipped += 1
@@ -750,6 +766,7 @@ def convert_svg_to_slide_shapes(
         trace_out.append({
             'slide_num': slide_num,
             'svg': str(svg_path),
+            'page_role': root.get('data-pptx-page-role'),
             'summary': {
                 'converted': converted,
                 'skipped': skipped,

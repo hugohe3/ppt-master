@@ -74,6 +74,18 @@ except ImportError:
     _native_object_marker_warnings = None
 
 try:
+    from svg_to_pptx.semantic_markers import (
+        SEMANTIC_ATTRS as _SEMANTIC_ATTRS,
+        validate_semantic_markers as _validate_semantic_markers,
+    )
+except ImportError:
+    _SEMANTIC_ATTRS = frozenset({
+        'data-pptx-page-role',
+        'data-pptx-role',
+    })
+    _validate_semantic_markers = None
+
+try:
     from svg_to_pptx.pptx_package.template_structure import (
         TemplateStructureError as _TemplateStructureError,
         PptxLayoutReference as _PptxLayoutReference,
@@ -411,6 +423,9 @@ class SVGQualityChecker:
 
                 # 8d. Validate explicit master/layout/placeholder metadata.
                 self._check_pptx_structure_metadata(root, svg_path, result)
+
+                # 8e. Validate rendering-neutral page/structure compiler hints.
+                self._check_semantic_markers(root, svg_path, result)
 
                 # 9. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
@@ -1057,6 +1072,38 @@ class SVGQualityChecker:
             )
             return
         result['errors'].extend(_validate_template_structure_svg(svg_path))
+
+    def _check_semantic_markers(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Validate minimal compiler hints without changing SVG rendering."""
+        has_semantics = any(
+            elem.get(attr) is not None
+            for elem in root.iter()
+            for attr in _SEMANTIC_ATTRS
+        )
+        require_page_role = (
+            svg_path.parent.name in {'svg_output', 'svg_final'}
+            and root.get('data-pptx-layout') is None
+        )
+        if _validate_semantic_markers is None:
+            if has_semantics:
+                result['warnings'].append(
+                    "Detected Semantic SVG markers, but their validator could "
+                    "not be imported."
+                )
+            return
+        for issue in _validate_semantic_markers(
+            root,
+            require_page_role=require_page_role,
+        ):
+            if issue.severity == 'error':
+                result['errors'].append(issue.message)
+            else:
+                result['warnings'].append(issue.message)
 
     def _get_spec_lock(self, svg_path: Path):
         """Locate and parse spec_lock.md near the SVG. Returns dict or None.
