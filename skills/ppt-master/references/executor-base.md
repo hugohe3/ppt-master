@@ -100,7 +100,7 @@ Before generating each page, output which template is used:
 
 | `pptx_structure.mode` | Executor behavior |
 |---|---|
-| `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template or its directory carries a native structure pair. |
+| `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template or its directory carries a native structure pair; export assigns conservative filename-backed Layout families after generation. |
 | `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
 | `preserve` | Every generated SVG MUST use the locked source layout key/name. Keep inherited master/layout visuals as marked preview layers; export removes the previews and reuses the original source package parts. |
 
@@ -187,7 +187,7 @@ Do **not** invent a layout entry, and do **not** assume a template just because 
 **Per-page PowerPoint layout lookup — `pptx_layouts` section**:
 
 - `pptx_structure.mode: template` or `preserve` → a `P<NN>` row is mandatory; apply §1.2 to the root and direct children. Preserve mode uses the exact source key/name and placeholder indices.
-- `pptx_structure.mode: baseline` or missing → omit explicit PPTX structure metadata; baseline export owns conservative promotion.
+- `pptx_structure.mode: baseline` or missing → omit explicit PPTX structure metadata; baseline export owns conservative Master/background/chrome promotion plus filename-backed Layout family assignment.
 - A layout key may repeat across non-adjacent pages. Reuse is based on identical static/placeholder contracts, not page proximity or content wording.
 
 **Per-page chart reference — `page_charts` section**:
