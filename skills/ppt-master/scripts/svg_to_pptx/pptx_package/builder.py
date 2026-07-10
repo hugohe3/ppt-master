@@ -1285,6 +1285,9 @@ def _placeholder_text_body(
     )
 
     paragraph = ET.SubElement(tx_body, f"{{{DML_NS}}}p")
+    if item.placeholder == "body":
+        paragraph_props = ET.SubElement(paragraph, f"{{{DML_NS}}}pPr")
+        ET.SubElement(paragraph_props, f"{{{DML_NS}}}buNone")
     source_run_pr = (
         source_tx_body.find(f".//{{{DML_NS}}}rPr")
         if source_tx_body is not None
@@ -1309,6 +1312,46 @@ def _placeholder_text_body(
         )
     ET.SubElement(paragraph, f"{{{DML_NS}}}endParaRPr", {"lang": "en-US"})
     return tx_body
+
+
+def _set_body_placeholder_no_bullets(
+    shape: ET.Element,
+    item: TemplateElementSpec,
+) -> None:
+    """Preserve SVG prose instead of inheriting master bullet defaults."""
+    if item.placeholder != "body":
+        return
+    tx_body = shape.find(f"{{{PML_NS}}}txBody")
+    if tx_body is None:
+        return
+    bullet_tags = {
+        f"{{{DML_NS}}}buNone",
+        f"{{{DML_NS}}}buAutoNum",
+        f"{{{DML_NS}}}buChar",
+        f"{{{DML_NS}}}buBlip",
+    }
+    trailing_tags = {
+        f"{{{DML_NS}}}tabLst",
+        f"{{{DML_NS}}}defRPr",
+        f"{{{DML_NS}}}extLst",
+    }
+    for paragraph in tx_body.findall(f"{{{DML_NS}}}p"):
+        paragraph_props = paragraph.find(f"{{{DML_NS}}}pPr")
+        if paragraph_props is None:
+            paragraph_props = ET.Element(f"{{{DML_NS}}}pPr")
+            paragraph.insert(0, paragraph_props)
+        for child in list(paragraph_props):
+            if child.tag in bullet_tags:
+                paragraph_props.remove(child)
+        insert_at = next(
+            (
+                index
+                for index, child in enumerate(paragraph_props)
+                if child.tag in trailing_tags
+            ),
+            len(paragraph_props),
+        )
+        paragraph_props.insert(insert_at, ET.Element(f"{{{DML_NS}}}buNone"))
 
 
 def _layout_placeholder_shape(
@@ -1387,6 +1430,7 @@ def _patch_slide_placeholder(
         raise TemplateStructureError(
             f"Placeholder {item.element_id!r} has no non-visual properties"
         )
+    _set_body_placeholder_no_bullets(shape, item)
     for existing in list(nv_pr):
         if existing.tag == f"{{{PML_NS}}}ph":
             nv_pr.remove(existing)
