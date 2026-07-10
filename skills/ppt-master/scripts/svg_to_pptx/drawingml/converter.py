@@ -19,7 +19,8 @@ from .utils import (
     parse_svg_length,
 )
 from .styles import (
-    build_effect_xml, build_fill_xml, get_fill_opacity, get_stroke_opacity,
+    build_effect_xml, build_fill_xml,
+    get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .elements import (
     convert_rect, convert_circle, convert_ellipse,
@@ -154,6 +155,9 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     filter_id = resolve_url_id(elem.get('filter', ''))
     style_overrides = _extract_inheritable_styles(elem)
+    local_opacity = get_element_opacity(elem)
+    if local_opacity is None:
+        local_opacity = 1.0
 
     elem_id = elem.get('id')
     semantic_role = elem.get('data-pptx-role')
@@ -194,12 +198,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             transform_matrix=parse_transform_matrix(transform),
             filter_id=filter_id,
             style_overrides=style_overrides,
+            opacity_multiplier=local_opacity,
         )
     elif rotate_pivot is not None:
         child_ctx = ctx.child(
             0, 0, 1.0, 1.0,
             filter_id=filter_id,
             style_overrides=style_overrides,
+            opacity_multiplier=local_opacity,
         )
     else:
         child_ctx = ctx.child(
@@ -209,6 +215,13 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             sy,
             filter_id=filter_id,
             style_overrides=style_overrides,
+            opacity_multiplier=local_opacity,
+        )
+
+    if native_subtree_active and child_ctx.opacity_multiplier < 1.0:
+        raise SvgNativeConversionError(
+            "Group opacity cannot be applied to data-pptx-native table/chart "
+            "objects; export without --native-objects to use the SVG fallback"
         )
 
     if child_ctx.native_objects_enabled:
@@ -298,7 +311,10 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     group_effect = ''
     if filter_id and filter_id in ctx.defs:
-        group_effect = build_effect_xml(ctx.defs[filter_id])
+        group_effect = build_effect_xml(
+            ctx.defs[filter_id],
+            child_ctx.opacity_multiplier,
+        )
 
     rot_emu = 0 if matrix_supported else int(angle_deg * 60000)
     rot_attr = f' rot="{rot_emu}"' if rot_emu else ''
@@ -466,7 +482,11 @@ def _extract_background_candidate(
         if child.get('transform') or child.get('filter') or child.get('clip-path'):
             return '', None
         style_overrides = _extract_inheritable_styles(child)
-        child_ctx = ctx.child(style_overrides=style_overrides)
+        local_opacity = get_element_opacity(child)
+        child_ctx = ctx.child(
+            style_overrides=style_overrides,
+            opacity_multiplier=1.0 if local_opacity is None else local_opacity,
+        )
         visual_children = [
             grandchild for grandchild in child
             if grandchild.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS

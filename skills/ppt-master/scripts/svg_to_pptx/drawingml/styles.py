@@ -11,7 +11,7 @@ from .theme_colors import ThemeColorSpec, color_node_xml
 from .utils import (
     SVG_NS, ANGLE_UNIT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
-    parse_hex_color, parse_stop_style, resolve_url_id,
+    parse_hex_color, parse_inline_style, parse_stop_style, resolve_url_id,
 )
 
 
@@ -534,7 +534,10 @@ def _shadow_dir_angle(dx: float, dy: float) -> int:
     return int(angle_deg * ANGLE_UNIT)
 
 
-def build_shadow_xml(filter_elem: ET.Element) -> str:
+def build_shadow_xml(
+    filter_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
     """Build <a:effectLst> with <a:outerShdw> from SVG filter element.
 
     SVG-to-DrawingML shadow mapping notes:
@@ -564,7 +567,8 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
     # PowerPoint renders outerShdw alpha slightly heavier than SVG's filter
     # composite (different blending path). Scale by 0.75 to match the SVG
     # preview after blur has been corrected to 2.0× σ.
-    alpha_val = int(p['opacity'] * 75000)
+    opacity_multiplier = 1.0 if opacity is None else opacity
+    alpha_val = int(p['opacity'] * opacity_multiplier * 75000)
     algn = _infer_shadow_alignment(dx, dy)
 
     return f'''<a:effectLst>
@@ -574,7 +578,10 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
 </a:effectLst>'''
 
 
-def build_glow_xml(filter_elem: ET.Element) -> str:
+def build_glow_xml(
+    filter_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
     """Build <a:effectLst> with <a:glow> from SVG filter element.
 
     Used for filters that have feGaussianBlur without meaningful feOffset,
@@ -585,7 +592,8 @@ def build_glow_xml(filter_elem: ET.Element) -> str:
 
     p = _parse_filter_params(filter_elem)
     rad = px_to_emu(p['std_dev'])
-    alpha_val = int(p['opacity'] * 100000)
+    opacity_multiplier = 1.0 if opacity is None else opacity
+    alpha_val = int(p['opacity'] * opacity_multiplier * 100000)
 
     return f'''<a:effectLst>
 <a:glow rad="{rad}">
@@ -603,7 +611,10 @@ def classify_filter_effect(filter_elem: ET.Element) -> str | None:
     return 'shadow' if p['has_offset'] else 'glow'
 
 
-def build_effect_xml(filter_elem: ET.Element) -> str:
+def build_effect_xml(
+    filter_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
     """Build effect XML by classifying the SVG filter as shadow or glow.
 
     Classification rules:
@@ -615,9 +626,9 @@ def build_effect_xml(filter_elem: ET.Element) -> str:
 
     effect_kind = classify_filter_effect(filter_elem)
     if effect_kind == 'shadow':
-        return build_shadow_xml(filter_elem)
+        return build_shadow_xml(filter_elem, opacity)
     if effect_kind == 'glow':
-        return build_glow_xml(filter_elem)
+        return build_glow_xml(filter_elem, opacity)
     return ''
 
 
@@ -625,15 +636,19 @@ def get_element_opacity(
     elem: ET.Element,
     ctx: ConvertContext | None = None,
 ) -> float | None:
-    """Get the effective element opacity, clamped to the SVG ``0..1`` range."""
-    op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
+    """Get local opacity multiplied by any approximated ancestor group alpha."""
+    base = ctx.opacity_multiplier if ctx is not None else 1.0
+    if ctx is not None:
+        op = _get_attr(elem, 'opacity', ctx)
+    else:
+        op = parse_inline_style(elem.get('style')).get('opacity') or elem.get('opacity')
     if op is None:
-        return None
+        return base if base < 1.0 else None
     try:
-        val = max(0.0, min(1.0, float(op)))
+        val = base * max(0.0, min(1.0, float(op)))
         return val if val < 1.0 else None
     except ValueError:
-        return None
+        return base if base < 1.0 else None
 
 
 def get_fill_opacity(
@@ -645,19 +660,19 @@ def get_fill_opacity(
     Returns:
         Combined opacity value, or None if fully opaque.
     """
-    base = 1.0
+    base = ctx.opacity_multiplier if ctx is not None else 1.0
 
     op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
     if op:
         try:
-            base = float(op)
+            base *= max(0.0, min(1.0, float(op)))
         except ValueError:
             pass
 
     fill_op = _get_attr(elem, 'fill-opacity', ctx) if ctx else elem.get('fill-opacity')
     if fill_op:
         try:
-            base *= float(fill_op)
+            base *= max(0.0, min(1.0, float(fill_op)))
         except ValueError:
             pass
 
@@ -673,19 +688,19 @@ def get_stroke_opacity(
     Returns:
         Combined opacity value, or None if fully opaque.
     """
-    base = 1.0
+    base = ctx.opacity_multiplier if ctx is not None else 1.0
 
     op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
     if op:
         try:
-            base = float(op)
+            base *= max(0.0, min(1.0, float(op)))
         except ValueError:
             pass
 
     stroke_op = _get_attr(elem, 'stroke-opacity', ctx) if ctx else elem.get('stroke-opacity')
     if stroke_op:
         try:
-            base *= float(stroke_op)
+            base *= max(0.0, min(1.0, float(stroke_op)))
         except ValueError:
             pass
 
