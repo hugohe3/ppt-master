@@ -24,7 +24,7 @@ Examples:
     python3 scripts/finalize_svg.py examples/ppt169_demo --only embed-icons
 
 Processing options:
-    embed-icons   - Replace <use data-icon="..."/> with actual icon SVG
+    embed-icons   - Expand project icons and static same-document <use>
     align-images  - Align (slice/meet) and Base64-embed all <image> in one pass.
                     Replaces the former crop-images + fix-aspect + embed-images
                     trio. The old names remain accepted as aliases for the
@@ -38,6 +38,7 @@ import sys
 import shutil
 import argparse
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
 
@@ -51,6 +52,10 @@ from svg_finalize.align_embed_images import (
     count_office_vector_refs_in_svg,
 )
 from svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
+from svg_to_pptx.use_expander import (
+    UseExpansionError,
+    expand_local_use_references_in_file,
+)
 
 
 def safe_print(text: str) -> None:
@@ -167,19 +172,38 @@ def finalize_project(
     if not quiet:
         print()
 
-    # Step 2: Embed icons
+    # Step 2: Expand project icons, then standard same-document use references.
     if options.get('embed_icons'):
         if not quiet:
-            safe_print("[1/4] Embedding icons...")
+            safe_print("[1/4] Expanding icons + local use references...")
         icons_count = 0
         for svg_file in svg_final.glob('*.svg'):
-            count = embed_icons_in_file(svg_file, icons_dir, dry_run=False, verbose=False, fallback_dir=icons_fallback_dir)
+            count = embed_icons_in_file(
+                svg_file,
+                icons_dir,
+                dry_run=False,
+                verbose=False,
+                fallback_dir=icons_fallback_dir,
+            )
             icons_count += count
+        local_use_count = 0
+        for svg_file in svg_final.glob('*.svg'):
+            try:
+                local_use_count += expand_local_use_references_in_file(svg_file)
+            except (OSError, ET.ParseError, UseExpansionError) as exc:
+                safe_print(
+                    f"[ERROR] {svg_file.name}: local <use> expansion failed: {exc}"
+                )
+                return False
         if not quiet:
             if icons_count > 0:
                 safe_print(f"      {icons_count} icon(s) embedded")
             else:
                 safe_print("      No icons")
+            if local_use_count > 0:
+                safe_print(f"      {local_use_count} local use reference(s) expanded")
+            else:
+                safe_print("      No local use references")
 
     # Step 3: Align (slice/meet) and Base64-embed all <image> in one pass.
     # Replaces the former crop-images / fix-aspect / embed-images trio: the
@@ -275,7 +299,7 @@ Examples:
   %(prog)s projects/my_project -q        # Quiet mode
 
 Processing options (for --only):
-  embed-icons   Embed icons
+  embed-icons   Expand project icons and static same-document <use>
   align-images  Align (slice/meet) + Base64-embed all <image> (single pass)
   flatten-text  Flatten text
   fix-rounded   Convert rounded rects to Path

@@ -670,19 +670,35 @@ def convert_svg_to_slide_shapes(
     trace_events: list[dict[str, Any]] | None = [] if trace_out is not None else None
     trace_steps: list[dict[str, Any]] = []
 
-    # Expand <use data-icon="..."/> placeholders in-memory so this dispatcher
-    # can consume svg_output/ directly. Standard renderers and this converter
-    # both ignore data-icon, so without expansion icons would silently drop.
-    # The on-disk finalize_svg pipeline does the same expansion for svg_final/;
-    # running this here makes the two pipelines behaviourally aligned.
+    # Expand project icon placeholders and static same-document <use>
+    # references before unsupported-element preflight.
+    from ..use_expander import (
+        UseExpansionError,
+        expand_local_use_references,
+        expand_use_data_icons,
+    )
+
     icons_dir, icons_fallback_dir = icon_search_dirs_for_svg(svg_path)
     if icons_dir.exists():
-        from ..use_expander import expand_use_data_icons
         expanded = expand_use_data_icons(root, icons_dir, icons_fallback_dir)
         if expanded:
             trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
         if verbose and expanded:
             print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
+
+    try:
+        expanded_local = expand_local_use_references(root)
+    except UseExpansionError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: local <use> expansion failed: {exc}'
+        ) from exc
+    if expanded_local:
+        trace_steps.append({
+            'action': 'expand-local-use-references',
+            'count': expanded_local,
+        })
+        if verbose:
+            print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
     # Flatten positional <tspan> (those with x/y/non-zero dy) into independent
     # <text> elements. DrawingML runs cannot reposition mid-paragraph, so a
