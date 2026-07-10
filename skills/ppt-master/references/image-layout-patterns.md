@@ -252,7 +252,10 @@ Combine freely. The "AI-default" failure mode is the opposite: defaulting to bar
 ## Hard Constraints
 
 - Long body copy, data points, numeric labels, and Chinese text always go in the SVG layer — never baked into the image.
-- `<clipPath>` on `<image>` and transparency encoding (`fill-opacity` / `stop-opacity`, never `rgba()`) — authoritative form in [`shared-standards.md`](shared-standards.md) §1.2 and §2; do not restate or relax here.
+- `<clipPath>` on `<image>` and transparency encoding (CSS alpha colors or
+  explicit opacity attributes) — authoritative form in
+  [`shared-standards.md`](shared-standards.md) §1.2 and §2; do not restate or
+  relax here.
 - No `<mask>`, no `<feComposite>` for alpha compositing. Alpha-effect routing (gradient overlays, clipPath crops, filter shadows, baked-in source image) is the table in [`shared-standards.md`](shared-standards.md) §1.0.
 - `<feDropShadow>` / `<feGaussianBlur>` are accepted but PPT export is inconsistent — bake into the source image when fidelity is critical.
 

@@ -183,9 +183,9 @@ primary_color: "#C00000"
 ## X. SVG Technical Constraints
 
 1. `viewBox` must remain `0 0 1280 720`
-2. Do not use `mask`, `<style>`, `class`, `foreignObject`, or `rgba()`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
+2. Do not use `mask`, `<style>`, `class`, or `foreignObject`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 3. Use plain vector geometry and `<image>` references to packaged assets only
-4. Transparency must use `fill-opacity` / `stroke-opacity`
+4. CSS alpha colors and explicit `fill-opacity` / `stroke-opacity` are both supported; values multiply
 5. Text wrapping should be handled with `<tspan>` if needed
 6. Avoid PPT-fragile decorative complexity; simplify repeated motifs into reusable structures
 

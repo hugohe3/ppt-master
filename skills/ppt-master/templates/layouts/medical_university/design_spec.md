@@ -149,8 +149,8 @@ page_types: [cover, toc, chapter, content, ending]
 - viewBox fixed at `0 0 1280 720`
 - Use `<rect>` elements for backgrounds
 - Use `<tspan>` for text wrapping
-- All colors in HEX format (no rgba)
-- Use `fill-opacity` / `stroke-opacity` for transparency
+- Use supported CSS colors or HEX; embedded alpha multiplies with
+  `fill-opacity` / `stroke-opacity`
 
 ### Prohibited Elements (PPT Incompatible)
 

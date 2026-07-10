@@ -48,9 +48,13 @@ except ImportError:
 try:
     from svg_to_pptx.drawingml.utils import (
         parse_font_family as _parse_export_font_family,
+        parse_inline_style as _parse_inline_style,
+        parse_svg_color as _parse_export_color,
     )
 except ImportError:
     _parse_export_font_family = None
+    _parse_inline_style = None
+    _parse_export_color = None
 
 try:
     from svg_to_pptx.native_objects import (
@@ -133,9 +137,25 @@ except ImportError:
     _unresolved_external_image_reference_path = None
 
 
-HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
+HEX_VALUE_RE = re.compile(
+    r"#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
+)
+_BARE_HEX_VALUE_RE = re.compile(
+    r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
+)
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
+
+
+def _normalize_hex_rgb(value: str) -> str | None:
+    """Normalize 3/4/6/8-digit HEX to alpha-free ``RRGGBB``."""
+    if not HEX_VALUE_RE.fullmatch(value):
+        return None
+    color = value[1:]
+    if len(color) in {3, 4}:
+        color = ''.join(channel * 2 for channel in color)
+    return color[:6].upper()
+
 
 # Fonts that survive direct PPTX typeface assignment on a typical Windows /
 # macOS viewer without requiring a custom install. Keep this aligned with
@@ -616,27 +636,130 @@ class SVGQualityChecker:
         # Other discouraged elements
         if 'iframe' in local_names:
             result['errors'].append("Detected <iframe> element (should not appear in SVG)")
-        # Paint grammar: rgba()/hsl()/alpha-hex all render in browser preview
-        # but come back as None from parse_hex_color, so the exporter writes
-        # <a:noFill/> — the fill silently disappears in PPTX. Named colors and
-        # rgb() export correctly and are deliberately not flagged.
+
+        # Paint-server references must match the exact definitions consumed by
+        # drawingml.converter.collect_defs: direct children of <defs> only.
+        defs_by_id = {}
+        for defs_elem in elems:
+            if _local_name(defs_elem).lower() != 'defs':
+                continue
+            for child in defs_elem:
+                child_id = child.get('id')
+                if child_id:
+                    defs_by_id[child_id] = child
+        pattern_descendant_ids = {
+            id(descendant)
+            for pattern in elems
+            if _local_name(pattern).lower() == 'pattern'
+            for descendant in pattern.iter()
+            if descendant is not pattern
+        }
+        fill_shape_tags = {'rect', 'circle', 'ellipse', 'path', 'polygon', 'polyline'}
+        stroke_shape_tags = fill_shape_tags | {'line'}
+        paint_reference_errors = set()
+        for elem in elems:
+            style_values = (
+                _parse_inline_style(elem.get('style'))
+                if _parse_inline_style is not None else {}
+            )
+            for attr in ('fill', 'stroke'):
+                value = style_values.get(attr) or elem.get(attr)
+                match = re.fullmatch(r'url\(#([^)]+)\)', (value or '').strip())
+                if match is None:
+                    continue
+                ref_id = match.group(1)
+                target = defs_by_id.get(ref_id)
+                elem_tag = _local_name(elem)
+                elem_tag_lower = elem_tag.lower()
+                if target is None:
+                    paint_reference_errors.add(
+                        f"<{elem_tag}> {attr}=url(#{ref_id}) has no matching "
+                        "direct <defs> definition"
+                    )
+                    continue
+                has_text_descendant = any(
+                    _local_name(descendant).lower() in {'text', 'tspan'}
+                    for descendant in elem.iter()
+                    if descendant is not elem
+                )
+                if id(elem) in pattern_descendant_ids:
+                    allowed_tags = ()
+                elif attr == 'fill' and elem_tag_lower in fill_shape_tags:
+                    allowed_tags = ('lineargradient', 'radialgradient', 'pattern')
+                elif attr == 'stroke' and elem_tag_lower in stroke_shape_tags:
+                    allowed_tags = ('lineargradient', 'radialgradient')
+                elif attr == 'fill' and elem_tag_lower in {'text', 'tspan'}:
+                    allowed_tags = ('lineargradient', 'radialgradient')
+                elif attr == 'fill' and elem_tag_lower == 'g':
+                    allowed_tags = (
+                        ('lineargradient', 'radialgradient')
+                        if has_text_descendant
+                        else ('lineargradient', 'radialgradient', 'pattern')
+                    )
+                elif attr == 'stroke' and elem_tag_lower == 'g' and not has_text_descendant:
+                    allowed_tags = ('lineargradient', 'radialgradient')
+                else:
+                    allowed_tags = ()
+                target_tag = _local_name(target).lower()
+                if not allowed_tags:
+                    paint_reference_errors.add(
+                        f"<{elem_tag}> {attr}=url(#{ref_id}) is not supported "
+                        "by native PPTX conversion in this context"
+                    )
+                    continue
+                if target_tag not in allowed_tags:
+                    tag_labels = {
+                        'lineargradient': 'linearGradient',
+                        'radialgradient': 'radialGradient',
+                        'pattern': 'pattern',
+                    }
+                    expected = '/'.join(
+                        tag_labels[tag] for tag in allowed_tags
+                    )
+                    paint_reference_errors.add(
+                        f"<{elem_tag}> {attr}=url(#{ref_id}) resolves to "
+                        f"<{_local_name(target)}>; expected {expected}"
+                    )
+        result['errors'].extend(sorted(paint_reference_errors))
+
+        # Paint grammar: use the exporter's parser so authoring validation and
+        # native conversion accept the same CSS color subset.
         paint_values = [
-            value
-            for attr in ('fill', 'stroke', 'stop-color')
+            (attr, value)
+            for attr in (
+                'fill', 'stroke', 'stop-color', 'flood-color',
+                'data-pptx-fg', 'data-pptx-bg',
+            )
             for value in self._svg_property_values(content, attr)
         ]
-        if any('rgba' in value.lower() for value in paint_values):
-            result['errors'].append("Detected forbidden rgba() color (use fill-opacity/stroke-opacity instead)")
-        if any('hsl' in value.lower() for value in paint_values):
-            result['errors'].append(
-                "Detected hsl()/hsla() color (not exported to PPTX — fills become "
-                "invisible; use 6-digit HEX instead)")
-        alpha_hex_re = re.compile(r'^#[0-9A-Fa-f]{4}$|^#[0-9A-Fa-f]{8}$')
-        if any(alpha_hex_re.match(value.strip()) for value in paint_values):
-            result['errors'].append(
-                "Detected alpha-channel HEX color (#RGBA/#RRGGBBAA is not exported "
-                "to PPTX — fills become invisible; use 6-digit HEX plus "
-                "fill-opacity/stroke-opacity)")
+        if _parse_export_color is None:
+            result['warnings'].append(
+                "Unable to import svg_to_pptx color parser; skipped paint syntax check"
+            )
+        else:
+            invalid_paints = set()
+            for attr, value in paint_values:
+                normalized = value.strip()
+                if attr in {'fill', 'stroke'} and (
+                    normalized.lower() == 'none'
+                    or re.fullmatch(r'url\(#[^)]+\)', normalized)
+                ):
+                    continue
+                if _BARE_HEX_VALUE_RE.fullmatch(normalized):
+                    invalid_paints.add(value)
+                    continue
+                color, _alpha = _parse_export_color(normalized)
+                if color is None:
+                    invalid_paints.add(value)
+            if invalid_paints:
+                shown = ', '.join(sorted(invalid_paints)[:5])
+                more = len(invalid_paints) - 5
+                suffix = f" (+{more} more)" if more > 0 else ""
+                result['errors'].append(
+                    "Unsupported SVG paint value(s) for PPTX export: "
+                    f"{shown}{suffix}. Use a supported named color, rgb()/rgba(), "
+                    "hsl()/hsla(), or #RGB/#RGBA/#RRGGBB/#RRGGBBAA."
+                )
         for elem in elems:
             tag = _local_name(elem).lower()
             if tag not in {'g', 'image'}:
@@ -1158,7 +1281,8 @@ class SVGQualityChecker:
     def _check_spec_lock_drift(self, content: str, svg_path: Path, result: Dict):
         """Detect values used in the SVG that fall outside spec_lock.md.
 
-        Covers colors (fill / stroke / stop-color), font-family, and font-size.
+        Covers colors (fill / stroke / stop-color / flood-color / pattern
+        metadata), font-family, and font-size.
         Emits per-file warnings summarising the drift counts; exact drifting
         values are accumulated in self._drift_summary for the end-of-run
         aggregation. When spec_lock.md is missing, silently skip (consistent
@@ -1171,8 +1295,14 @@ class SVGQualityChecker:
         # Build allow-sets from the lock
         allowed_colors = set()
         for v in lock.get('colors', {}).values():
-            if HEX_VALUE_RE.fullmatch(v):
-                allowed_colors.add(v.upper())
+            if _parse_export_color is not None:
+                color, _alpha = _parse_export_color(v)
+                if color:
+                    allowed_colors.add(color)
+            else:
+                color = _normalize_hex_rgb(v)
+                if color:
+                    allowed_colors.add(color)
 
         typo = lock.get('typography', {})
         numeric_size_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
@@ -1224,13 +1354,28 @@ class SVGQualityChecker:
 
         # Scan SVG for used values
         color_drifts = set()
-        for attr in ('fill', 'stroke', 'stop-color'):
+        for attr in (
+            'fill', 'stroke', 'stop-color', 'flood-color',
+            'data-pptx-fg', 'data-pptx-bg',
+        ):
             for raw_value in self._svg_property_values(content, attr):
-                if not HEX_VALUE_RE.fullmatch(raw_value):
+                normalized = raw_value.strip()
+                if normalized.lower() in {'none', 'transparent'} or re.fullmatch(
+                    r'url\(#[^)]+\)', normalized
+                ):
                     continue
-                val = raw_value.upper()
+                if _BARE_HEX_VALUE_RE.fullmatch(normalized):
+                    continue
+                if _parse_export_color is not None:
+                    val, _alpha = _parse_export_color(normalized)
+                    if val is None:
+                        continue
+                else:
+                    val = _normalize_hex_rgb(normalized)
+                    if val is None:
+                        continue
                 if val not in allowed_colors:
-                    color_drifts.add(val)
+                    color_drifts.add(f'#{val}')
 
         font_drifts = set()
         for val in self._font_family_values(content):

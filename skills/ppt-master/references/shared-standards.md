@@ -147,11 +147,17 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ---
 
-## 2. PPT Compatibility Alternatives
+## 2. PPT Compatibility Mappings
 
-| Banned Syntax | Correct Alternative |
-|---------------|---------------------|
-| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
+**Allowed — CSS paint colors**: fills, strokes, gradient stops, and supported
+filter flood colors may use common named colors, `rgb()` / `rgba()` (legacy
+comma or modern space/slash syntax), `hsl()` / `hsla()`, `#RGB`, `#RGBA`,
+`#RRGGBB`, or `#RRGGBBAA`. Native export converts the color to DrawingML RGB
+and multiplies any embedded alpha with `opacity`, `fill-opacity`,
+`stroke-opacity`, `stop-opacity`, and supported effect alpha. Explicit opacity
+attributes remain valid when keeping palette and transparency separate is
+clearer. This guarantee applies to the SVG-derived DrawingML route; opt-in
+native table/chart payload styling follows its narrower native-object contract.
 
 **Allowed — group opacity (approximate)**: `<g opacity="0.3">...</g>` maps the
 group alpha onto each descendant shape, text run, picture, and supported
@@ -165,7 +171,7 @@ table/chart markers are rejected; omit that flag to export their SVG fallback.
 `1`; use an overlay only when the design needs a color wash rather than simple
 transparency.
 
-**Mnemonic**: image opacity is native; group opacity is a per-object approximation.
+**Mnemonic**: color and image alpha are native; group opacity is a per-object approximation.
 
 > Arrows: prefer `marker-end` for connector lines (§1.1) — converter produces native auto-rotating arrow heads. For block/chunky arrows, use standalone closed shapes; see `templates/charts/chevron_process.svg` and `templates/charts/process_flow.svg`.
 
@@ -207,7 +213,8 @@ metadata. See
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
 - **Fonts**: every `font-family` stack MUST resolve to pre-installed exported Latin / EA typefaces (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas …); `@font-face` is FORBIDDEN. Full rule: [`strategist.md §g`](strategist.md).
 - **Styles**: inline only (`fill=""`, `font-size=""`); `<style>`/`class` FORBIDDEN (`id` inside `<defs>` is fine)
-- **Colors**: HEX only; transparency via `fill-opacity`/`stroke-opacity`
+- **Colors**: common named colors, `rgb()` / `rgba()`, `hsl()` / `hsla()`, or
+  3/4/6/8-digit HEX; embedded and explicit opacity values multiply
 - **Images**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`; optional `opacity="0..1"` maps to native picture transparency
 - **Icons**: `<use data-icon="<library>/<name>" x="" y="" width="48" height="48" fill="#HEX"/>` (auto-embedded post-processing). Always include library prefix. One stylistic library per deck (`chunk-filled`/`tabler-filled`/`tabler-outline`/`phosphor-duotone`); `simple-icons` only for real brand marks. See [`../templates/icons/README.md`](../templates/icons/README.md).
 

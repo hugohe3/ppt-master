@@ -352,7 +352,7 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 **Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so the composition is declared *before* SVG generation, audited by `svg_quality_checker`, and survives session re-entry. Pushing composition onto Executor alone would lose it on context compression in long decks; encoding it in the spec_lock-adjacent resource list makes it a piece of the design contract.
 
-**Why true hard constraints stay upstream.** Cross-cutting technical constraints (`<clipPath>` only on `<image>`, `fill-opacity` instead of `rgba()`, no `<mask>`, alpha-effect routing) live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points at them with one-line references rather than restating — so when a constraint relaxes (e.g., a new DrawingML feature becomes reliable), only one file changes, and a stale duplicate in patterns can't silently keep enforcing the old rule.
+**Why true hard constraints stay upstream.** Cross-cutting technical constraints (`<clipPath>` only on `<image>`, no `<mask>`, supported CSS paint grammar, alpha-effect routing) live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points at them with one-line references rather than restating — so when a constraint relaxes (e.g., a new DrawingML feature becomes reliable), only one file changes, and a stale duplicate in patterns can't silently keep enforcing the old rule.
 
 ---
 

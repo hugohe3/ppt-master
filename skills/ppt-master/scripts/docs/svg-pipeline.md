@@ -222,11 +222,11 @@ Replaces `<use data-icon="chunk-filled/name" .../>`, `<use data-icon="tabler-fil
 
 ## PPT Compatibility Rules
 
-Use PowerPoint-safe transparency syntax:
-
-| Avoid | Use instead |
-|------|-------------|
-| `fill=\"rgba(...)\"` | `fill=\"#hex\"` + `fill-opacity` |
+Supported CSS paint colors include named colors, `rgb()` / `rgba()`, `hsl()` /
+`hsla()`, and 3/4/6/8-digit HEX. Alpha embedded in the color multiplies with
+`opacity`, `fill-opacity`, `stroke-opacity`, `stop-opacity`, or supported
+effect alpha during native export. Explicit opacity attributes remain valid
+when they make palette reuse clearer.
 
 `<g opacity="0..1">` is supported as a per-descendant alpha approximation.
 Nested values multiply; overlapping children may differ from isolated SVG
