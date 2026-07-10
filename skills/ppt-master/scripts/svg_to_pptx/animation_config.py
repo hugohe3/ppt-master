@@ -10,6 +10,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from .drawingml.utils import SVG_NS
+from .semantic_markers import is_static_page_frame
 
 try:
     from pptx_animations import ANIMATIONS, TRANSITIONS
@@ -73,12 +74,21 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
         if not group_id:
             anonymous_groups.append(f'{svg_path.stem}: top-level group #{visual_index}')
             continue
+        role = child.get('data-pptx-role')
+        placeholder = child.get('data-pptx-placeholder')
+        has_explicit_semantics = role is not None or placeholder is not None
+        if child.get('data-pptx-layer') is not None:
+            chrome = True
+        elif has_explicit_semantics:
+            chrome = is_static_page_frame(role, placeholder)
+        else:
+            chrome = is_chrome_id(group_id)
         targets.append(
             GroupTarget(
                 slide=svg_path.stem,
                 group_id=group_id,
                 order=visual_index,
-                chrome=is_chrome_id(group_id),
+                chrome=chrome,
             )
         )
 
@@ -204,10 +214,12 @@ def _validate_scope_effects(scope: dict[str, Any], label: str, warnings: list[st
 def build_scaffold(project_path: Path) -> dict[str, Any]:
     """Build an editable animation override scaffold from current SVGs.
 
-    Chrome groups are omitted — exporter auto-detects them as ``none`` via
-    ``is_chrome_id`` at render time, so listing them in the scaffold is pure
-    noise. A ``defaults`` stub is emitted up front to remind the editor that
-    deck-wide overrides exist and most pages should inherit them.
+    Chrome groups are omitted — layer/slide-number placeholder semantics are
+    authoritative, followed by an explicit structural role. ``is_chrome_id``
+    remains only for marker-free legacy SVGs. Listing static page framing in
+    the scaffold would be pure noise. A ``defaults`` stub is emitted up front
+    to remind the editor that deck-wide overrides exist and most pages should
+    inherit them.
     """
     targets_by_slide, _anonymous = scan_project_targets(project_path)
     slides: dict[str, Any] = {}

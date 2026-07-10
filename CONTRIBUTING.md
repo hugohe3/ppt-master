@@ -90,13 +90,16 @@ If you're unsure, open an issue to ask — that's always welcome.
 
 ## SVG Guidelines
 
-If your contribution involves SVG files, follow the technical constraints documented in [CLAUDE.md](./CLAUDE.md):
+If your contribution involves SVG files, follow the canonical authoring and
+PPTX-compatibility contract in
+[`shared-standards.md`](./skills/ppt-master/references/shared-standards.md).
+This guide does not duplicate its required, forbidden, or conditional entries.
 
-- Do not use: `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `<animate*>`, `<script>`, `<symbol>+<use>`
-- Use `fill-opacity` / `stroke-opacity` instead of `rgba()`
-- `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (must live in `<defs>`, `orient="auto"`, shape must be triangle / diamond / oval)
-- `clipPath` on `<image>` is conditionally allowed — see `shared-standards.md` §1.2 (must live in `<defs>`, single shape child, only on `<image>` elements)
-- All SVGs must use the correct `viewBox` for the target canvas format
+Validate the affected SVG file or directory before submitting:
+
+```bash
+python3 skills/ppt-master/scripts/svg_quality_checker.py <file_or_directory>
+```
 
 ## Reporting Bugs
 

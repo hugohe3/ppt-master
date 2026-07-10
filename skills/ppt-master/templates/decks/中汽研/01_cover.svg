@@ -8,7 +8,7 @@
 
     <!-- 背景层 - 使用封面背景图（AI生成或用户提供） -->
     <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720"
-        preserveAspectRatio="xMidYMid slice" />
+        preserveAspectRatio="xMidYMid slice" id="semantic-01_cover-background-1" data-pptx-role="background" />
 
     <!-- 半透明遮罩层 - 增强文字可读性 -->
     <rect id="cover-overlay" x="0" y="0" width="1280" height="720"
@@ -19,7 +19,7 @@
 
     <!-- 大型Logo - 居中偏上 -->
     <image href="../images/{{LOGO_LARGE}}" x="344" y="120" width="592" height="238"
-        preserveAspectRatio="xMidYMid meet" />
+        preserveAspectRatio="xMidYMid meet" id="semantic-01_cover-logo-1" data-pptx-role="logo" />
 
     <!-- 主标题区域 -->
     <text x="640" y="440" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="48"

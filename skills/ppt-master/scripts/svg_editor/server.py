@@ -34,7 +34,7 @@ import urllib.request
 import webbrowser
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Optional
+from typing import Iterable, Optional
 
 from flask import Flask, jsonify, request, send_from_directory
 
@@ -88,6 +88,11 @@ from embed_icons import (  # noqa: E402
     resolve_icon_path,
     extract_paths_from_icon,
     generate_icon_group,
+)
+from svg_to_pptx.geometry_properties import (  # noqa: E402
+    GeometryStyleError,
+    INLINE_GEOMETRY_PROPERTIES,
+    materialize_inline_geometry_properties,
 )
 
 _ICONS_DIR = _SCRIPTS_DIR.parent.parent / 'templates' / 'icons'
@@ -182,6 +187,47 @@ def _inline_icons(content: str) -> tuple[str, list[dict]]:
             )
         new_content = new_content[:match.start()] + replacement + new_content[match.end():]
     return new_content, warnings
+
+
+def _strip_edited_inline_geometry(
+    elem: ET.Element,
+    attr_names: Iterable[str],
+) -> None:
+    """Remove style declarations superseded by edited geometry attributes."""
+    style = elem.get('style')
+    if not style:
+        return
+    tag = elem.tag.rsplit('}', 1)[-1] if '}' in elem.tag else elem.tag
+    supported = INLINE_GEOMETRY_PROPERTIES.get(tag, frozenset())
+    edited = {
+        str(name).lower()
+        for name in attr_names
+        if str(name).lower() in supported
+    }
+    if not edited:
+        return
+
+    retained = []
+    changed = False
+    for raw_declaration in style.split(';'):
+        declaration = raw_declaration.strip()
+        if not declaration:
+            continue
+        if ':' not in declaration:
+            retained.append(declaration)
+            continue
+        raw_name, _raw_value = declaration.split(':', 1)
+        if raw_name.strip().lower() in edited:
+            changed = True
+            continue
+        retained.append(declaration)
+
+    if not changed:
+        return
+    if retained:
+        elem.set('style', '; '.join(retained))
+    else:
+        elem.attrib.pop('style', None)
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +336,10 @@ def _apply_edit_record(root: ET.Element, record: dict) -> tuple[bool, Optional[s
             return ok, reason
     attrs = record.get('attrs')
     if attrs:
+        target = _find_by_id(root, element_id)
+        if target is None:
+            return False, 'not-found'
+        _strip_edited_inline_geometry(target, attrs.keys())
         ok, reason = set_attributes(root, element_id, attrs)
         if not ok:
             return ok, reason
@@ -578,6 +628,12 @@ def create_app(
                 logger.warning('slide parse failed: %s: %s', name, exc)
                 return jsonify({'error': f'Failed to parse SVG: {exc}'}), 500
 
+            try:
+                materialize_inline_geometry_properties(root)
+            except GeometryStyleError as exc:
+                logger.warning('slide geometry materialization failed: %s: %s', name, exc)
+                return jsonify({'error': f'Invalid inline geometry: {exc}'}), 400
+
             assign_temp_ids(root)
             if pending_edits:
                 ok, reason = _apply_edit_records(root, pending_edits)
@@ -712,6 +768,11 @@ def create_app(
         except ET.ParseError as exc:
             return jsonify({'error': f'Failed to parse SVG: {exc}'}), 500
 
+        try:
+            materialize_inline_geometry_properties(root)
+        except GeometryStyleError as exc:
+            return jsonify({'error': f'Invalid inline geometry: {exc}'}), 400
+
         assign_temp_ids(root)
         pending = app.config['PENDING_EDITS'].get(name) or []
         ok, reason = _apply_edit_records(root, pending)
@@ -741,6 +802,7 @@ def create_app(
             staged['text'] = new_text
         if attrs:
             old_attrs = {k: target.get(k) for k in attrs}
+            _strip_edited_inline_geometry(target, attrs.keys())
             ok, reason = set_attributes(root, element_id, attrs)
             if not ok:
                 return jsonify({'error': f'Attribute edit failed: {reason}'}), (

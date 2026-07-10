@@ -269,37 +269,7 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ---
 
-## IX. SVG Technical Constraints
-
-### viewBox Specification
-
-```xml
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
-```
-
-### Prohibited Features (Blocklist)
-
-| Category           | Prohibited Items                        |
-| ------------------ | --------------------------------------- |
-| **Clipping/Masking** | `mask` is forbidden; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2 |
-| **Style System**   | `<style>`, `class` (`id` inside `<defs>` is allowed) |
-| **Structure/Nesting** | `<foreignObject>`                   |
-| **Text/Font**      | `textPath`, `@font-face`               |
-| **Animation/Interaction** | `<animate*>`, `<set>`, `on*`    |
-
-> `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval).
-
-### PPT Compatibility Rules
-
-| Prohibited                         | Correct Alternative                                    |
-| ---------------------------------- | ------------------------------------------------------ |
-| `fill="rgba(255,255,255,0.1)"`     | `fill="#FFFFFF" fill-opacity="0.1"`                    |
-| `stroke="rgba(0,0,0,0.5)"`        | `stroke="#000000" stroke-opacity="0.5"`                |
-| `<g opacity="0.2">...</g>`        | Set `opacity` / `fill-opacity` on each child element individually |
-
----
-
-## X. Placeholder Specification
+## IX. Placeholder Specification
 
 | Placeholder          | Usage                |
 | -------------------- | -------------------- |
@@ -322,7 +292,7 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ---
 
-## XI. Usage Notes
+## X. Usage Notes
 
 ### Template Usage Steps
 

@@ -4,6 +4,8 @@
 
 **Hard rule — complete page SVG**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content.
 
+**Hard rule — minimal semantics without semantic loss**: `baseline` / free-design roots declare `data-pptx-page-role`; `template` / `preserve` roots already use `data-pptx-layout` and do not duplicate that identity. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by layer, placeholder, or native-object metadata; the marked element uses a stable unique `id`. Ordinary page content keeps normal SVG structure without duplicate semantic classification. See [`semantic-svg.md`](./semantic-svg.md).
+
 > Note: this rule covers page design only. Speaker notes, animations, transitions, narration, and direct native-PPTX workflows retain their separate artifacts and package-level processing.
 
 ---
@@ -104,7 +106,7 @@ Before generating each page, output which template is used:
 
 | `pptx_structure.mode` | Executor behavior |
 |---|---|
-| `baseline` or missing | Free design or brand-only route. Author ordinary standalone SVG pages; export assigns conservative filename-backed Layout families after generation. |
+| `baseline` or missing | Free design or brand-only route. Author complete standalone SVG pages with root page-role and only necessary structural hints; export assigns conservative marker-backed Layout families after generation. |
 | `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
 | `preserve` | Legacy strict-only compatibility. Use the locked source layout key/name and retain marked preview layers for source-package reuse. |
 
@@ -112,7 +114,7 @@ Before generating each page, output which template is used:
 
 **Hard rule — PowerPoint paint order**: Direct visual children appear in this order: Master background, Layout background, optional Slide background, shared Master shapes, same-key Layout shapes, then slide-local content/placeholders. Backgrounds are the special plane beneath all inherited shapes. Repeat the same Master contract on every page and the same Layout contract on every page sharing a key.
 
-**Placeholder ownership**: Keep actual title/subtitle/body/picture/chart/table/object/media/date/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. A reconstructed `title` normally omits `data-pptx-placeholder-idx`; preserve an explicit imported title index when present. Every indexed placeholder on one layout uses a unique index. Chart/table placeholders require native markers and a later `--native-objects` export; object/media placeholders must each resolve to one top-level DrawingML object.
+**Placeholder ownership**: Keep actual title/subtitle/body/picture/chart/table/object/media/date/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not duplicate placeholder identity with `data-pptx-role`; in particular, `data-pptx-placeholder="slide-number"` already owns page-number field behavior. A reconstructed `title` normally omits `data-pptx-placeholder-idx`; preserve an explicit imported title index when present. Every indexed placeholder on one layout uses a unique index. Chart/table placeholders require native markers and a later `--native-objects` export; object/media placeholders must each resolve to one top-level DrawingML object.
 
 **Adaptive Layout creation**: Start from the selected template SVG, keep every Master element identical, and change only the Layout layer/placeholder contract needed for the new composition. Pages sharing the new key repeat the same static Layout elements and placeholder ids/types in the same order.
 
@@ -193,7 +195,7 @@ Do **not** invent a layout entry, and do **not** assume a template just because 
 **Per-page PowerPoint layout lookup — `pptx_layouts` section**:
 
 - `pptx_structure.mode: template` or `preserve` → a `P<NN>` row is mandatory; apply §1.2 to the root and direct children. Preserve mode uses the exact source key/name and placeholder indices.
-- `pptx_structure.mode: baseline` or missing → omit explicit PPTX structure metadata; baseline export owns conservative Master/background/chrome promotion plus filename-backed Layout family assignment.
+- `pptx_structure.mode: baseline` or missing → omit explicit PPTX layer/layout metadata, but keep the root page role and only necessary structural hints. Baseline export owns conservative Master/background/chrome promotion plus page-role-backed Layout family assignment; filenames and ids are legacy fallbacks only when the corresponding marker is absent.
 - A layout key may repeat across non-adjacent pages. Reuse is based on identical static/placeholder contracts, not page proximity or content wording.
 
 **Per-page chart reference — `page_charts` section**:
@@ -260,7 +262,7 @@ grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 - **Technical specs**: see [shared-standards.md](shared-standards.md) for SVG/PPT constraints
 - **Card containers — use the documented patterns**: when a content page needs section cards (4 quadrants, parallel aspects, capability blocks, info cards), use the patterns codified in [`templates/charts/CHART_STYLE_GUIDE.md`](../templates/charts/CHART_STYLE_GUIDE.md) §11 — half-rounded section tab (§11.1), nested card border without stroke (§11.2), card-grid skeletons (§11.3), diagonal dashed connector for cross-quadrant relationships (§11.5), ground-anchor ellipse as a non-filter depth marker (§11.6), bidirectional interaction arrows for paired protocols (§11.7). Do not reinvent the "tinted full-rounded rect + white cover-rect to hide the bottom corners" hack; it survives in older templates but breaks SVG→PPTX color editing. Reference templates: [`labeled_card.svg`](../templates/charts/labeled_card.svg), [`quadrant_text_bullets.svg`](../templates/charts/quadrant_text_bullets.svg), [`kpi_cards.svg`](../templates/charts/kpi_cards.svg), [`matrix_2x2.svg`](../templates/charts/matrix_2x2.svg), [`team_roster.svg`](../templates/charts/team_roster.svg), [`client_server_flow.svg`](../templates/charts/client_server_flow.svg).
 - **Reference — prefer semantic shapes over preset stacks (not a constraint)**: when a slide needs to express "ascending / converging / breaking through / stacking" — i.e., a relationship that goes beyond a generic arrow — prefer a single custom `<polygon>` or `<path>` that encodes the semantics geometrically, rather than stacking multiple preset arrows. A converging-tip path or a podium polygon reads faster than three arrows pointing at a label. Examples of this technique appear in many imported corporate decks; see `projects/01_template_import/svg_output/slide_01.svg` shape-158 for a reference (gradient-filled inward-pointing arrow). Do not codify these as templates — they are page-specific; the rule is just "consider polygon before stacking presets."
-- **Reference — visual depth through restraint (not a constraint)**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Shadow typically suits 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow. Full rules in shared-standards.md §6.
+- **Reference — visual depth through restraint (not a constraint)**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Shadow typically suits 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow.
 
 ### 3.2 Native Object Metadata Marker (MANDATORY on eligible data-chart and text-grid table pages)
 
@@ -278,7 +280,7 @@ grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 - Native chrome: write `title`, `subtitle`, axis titles, or `show_legend: true` only when the fallback visibly renders the same chrome inside the native chart's replacement scope. `title` is the PowerPoint chart title, not an object name; use `name` for page-semantic object naming (e.g. `p03-revenue-chart`). Write explicit `x`/`y`/`width`/`height` read from the drawn plot area; omission is the fallback — the exporter then infers the frame from the drawn fallback geometry.
 - Value-axis labels: when the fallback keeps category labels but intentionally omits numeric value-axis tick labels, set `show_value_axis_labels: false`.
 - Freeform chart text: transcribe center labels, source notes, and other in-chart annotations as companion `caption` / `note` / `notes` entries with explicit slide-coordinate bounds; do not rely on fallback `<text>` children to survive native export.
-- Native chart typography mirrors the SVG fallback. Copy the fallback's shared chart font into `style.font_family` and visible chart text sizes into the matching metadata fields (`title_font_size`, `subtitle_font_size`, `axis_font_size`, `note_font_size`, etc.) when role sizes differ; if omitted, the exporter infers shared font family and base chart text size from visible fallback text inside the native marker. When a visible chart title, subtitle, or axis title needs its own size/color/font, write that field as an object with `text`, `font_size`, `font_family`, and `color`. Use `axis_title_font_size`, `legend_font_size`, or companion per-entry `font_size` only when the fallback visibly uses a separate size. If a fallback role has no explicit size, use the compact three-tier chart defaults from [shared-standards.md](shared-standards.md).
+- Native chart typography mirrors the SVG fallback. Copy the fallback's shared chart font into `style.font_family` and visible chart text sizes into the matching metadata fields (`title_font_size`, `subtitle_font_size`, `axis_font_size`, `note_font_size`, etc.) only when role sizes differ; otherwise let the exporter infer them from visible fallback text. When a visible chart title, subtitle, or axis title needs its own size/color/font, write that field as an object with `text`, `font_size`, `font_family`, and `color`. Use `axis_title_font_size`, `legend_font_size`, or companion per-entry `font_size` only when the fallback visibly uses a separate size.
 - Native table typography mirrors the SVG fallback. Write `style.font_family` and `style.font_size` from the visible table text; use `header_font_size` or per-cell `font_size` only when the fallback visibly does so. If the fallback has no explicit table font, fall back to the deck body family and locked body size from `spec_lock.md typography`.
 - The marker group's transform stays translate/scale only (no rotate / matrix / skew).
 - Visual parity is not a goal: the SVG drawing remains the designed visual; the native object is a data-editable counterpart with PowerPoint-default styling that users restyle by hand after export. Never simplify the SVG design to match what a native object could show.
@@ -498,7 +500,7 @@ Auto-split `notes/total.md` into per-page files in `notes/`.
 
 > **Auto-continuation**: After Visual Construction Phase (all SVG pages) and Logic Construction Phase (all notes) are complete, the Executor proceeds directly to the post-processing pipeline.
 
-**Post-processing & Export** (same canonical pipeline as [shared-standards.md §5](shared-standards.md)):
+**Post-processing & Export** (canonical workflow: [`SKILL.md` Step 7](../SKILL.md)):
 
 ```bash
 # 1. Split speaker notes

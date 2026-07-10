@@ -11,7 +11,8 @@ from .theme_colors import ThemeColorSpec, color_node_xml
 from .utils import (
     SVG_NS, ANGLE_UNIT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
-    parse_hex_color, parse_stop_style, resolve_url_id,
+    combine_opacity, parse_inline_style, parse_opacity, parse_stop_style,
+    parse_svg_color, resolve_url_id,
 )
 
 
@@ -58,24 +59,21 @@ def build_gradient_fill(
 
         # Parse color from style attribute or direct attributes
         style = child.get('style', '')
+        style_values = parse_inline_style(style)
         color, stop_opacity = parse_stop_style(style)
         if not color:
-            color = parse_hex_color(child.get('stop-color', '#000000'))
+            color, color_alpha = parse_svg_color(child.get('stop-color', '#000000'))
+            stop_opacity *= color_alpha
         if color is None:
             color = '000000'
 
         direct_stop_op = child.get('stop-opacity')
-        if direct_stop_op is not None:
-            try:
-                stop_opacity = float(direct_stop_op)
-            except ValueError:
-                pass
+        if direct_stop_op is not None and 'stop-opacity' not in style_values:
+            stop_opacity *= parse_opacity(direct_stop_op)
 
         alpha_xml = ''
-        effective_opacity = stop_opacity
-        if opacity is not None:
-            effective_opacity *= opacity
-        if effective_opacity < 1.0:
+        effective_opacity = combine_opacity(stop_opacity, opacity)
+        if effective_opacity is not None:
             alpha_xml = f'<a:alpha val="{int(effective_opacity * 100000)}"/>'
 
         stops_xml.append(
@@ -157,9 +155,14 @@ def build_fill_xml(
             usage,
         )
 
-    color = parse_hex_color(fill)
+    color, color_alpha = parse_svg_color(fill)
     if color:
-        return build_solid_fill(color, opacity, ctx.theme_color_spec, usage)
+        return build_solid_fill(
+            color,
+            combine_opacity(opacity, color_alpha),
+            ctx.theme_color_spec,
+            usage,
+        )
 
     return '<a:noFill/>'
 
@@ -178,32 +181,108 @@ def build_pattern_fill(
     """
     prst = pattern_elem.get('data-pptx-pattern') or 'ltUpDiag'
 
+    paint_entries = []
+    for child in pattern_elem:
+        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        style_values = parse_inline_style(child.get('style'))
+        object_opacity = parse_opacity(
+            style_values.get('opacity') or child.get('opacity')
+        )
+        for paint_attr in ('fill', 'stroke'):
+            paint = style_values.get(paint_attr) or child.get(paint_attr)
+            paint_hex, paint_alpha = parse_svg_color(paint) if paint else (None, 1.0)
+            if paint_hex is None:
+                continue
+            paint_opacity = parse_opacity(
+                style_values.get(f'{paint_attr}-opacity')
+                or child.get(f'{paint_attr}-opacity')
+            )
+            paint_entries.append({
+                'attr': paint_attr,
+                'alpha': paint_alpha,
+                'color': paint,
+                'hex': paint_hex,
+                'opacity': object_opacity * paint_opacity,
+                'tag': tag,
+            })
+
+    fallback_bg = next((
+        entry
+        for entry in paint_entries
+        if entry['tag'] == 'rect' and entry['attr'] == 'fill'
+    ), None)
+    fallback_fg = next((
+        entry for entry in paint_entries if entry['attr'] == 'stroke'
+    ), None)
+    if fallback_fg is None:
+        fallback_fg = next((
+            entry
+            for entry in paint_entries
+            if entry['attr'] == 'fill' and entry is not fallback_bg
+        ), None)
+
     fg_color = pattern_elem.get('data-pptx-fg')
     bg_color = pattern_elem.get('data-pptx-bg')
+    fg_from_metadata = bool(fg_color)
+    bg_from_metadata = bool(bg_color)
+    if not fg_color and fallback_fg is not None:
+        fg_color = fallback_fg['color']
+    if not bg_color and fallback_bg is not None:
+        bg_color = fallback_bg['color']
 
-    if not fg_color or not bg_color:
-        # Hand-authored fallback: derive from child elements.
-        for child in pattern_elem:
-            tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-            if tag == 'rect' and not bg_color:
-                bg_color = child.get('fill')
-            elif tag == 'path' and not fg_color:
-                fg_color = child.get('stroke')
-
-    fg_hex = parse_hex_color(fg_color) if fg_color else None
-    bg_hex = parse_hex_color(bg_color) if bg_color else None
+    fg_hex, fg_alpha = parse_svg_color(fg_color) if fg_color else (None, 1.0)
+    bg_hex, bg_alpha = parse_svg_color(bg_color) if bg_color else (None, 1.0)
     if not fg_hex:
         return ''
 
-    alpha_xml = ''
-    if opacity is not None and opacity < 1.0:
-        alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
+    bg_source = next((
+        entry
+        for entry in paint_entries
+        if entry['tag'] == 'rect'
+        and entry['attr'] == 'fill'
+        and entry['hex'] == bg_hex
+    ), None)
+    fg_source = next((
+        entry
+        for entry in paint_entries
+        if entry['attr'] == 'stroke' and entry['hex'] == fg_hex
+    ), None)
+    if fg_source is None:
+        fg_source = next((
+            entry
+            for entry in paint_entries
+            if entry['attr'] == 'fill'
+            and entry['hex'] == fg_hex
+            and entry is not bg_source
+        ), None)
 
-    fg_xml = color_node_xml(fg_hex, theme_color_spec, usage, alpha_xml)
+    fg_child_opacity = 1.0
+    if fg_source is not None:
+        fg_child_opacity = fg_source['opacity'] * (
+            fg_source['alpha'] if fg_from_metadata else 1.0
+        )
+    bg_child_opacity = 1.0
+    if bg_source is not None:
+        bg_child_opacity = bg_source['opacity'] * (
+            bg_source['alpha'] if bg_from_metadata else 1.0
+        )
+
+    fg_opacity = combine_opacity(opacity, fg_alpha, fg_child_opacity)
+    bg_opacity = combine_opacity(opacity, bg_alpha, bg_child_opacity)
+    fg_alpha_xml = (
+        f'<a:alpha val="{int(fg_opacity * 100000)}"/>'
+        if fg_opacity is not None else ''
+    )
+    bg_alpha_xml = (
+        f'<a:alpha val="{int(bg_opacity * 100000)}"/>'
+        if bg_opacity is not None else ''
+    )
+
+    fg_xml = color_node_xml(fg_hex, theme_color_spec, usage, fg_alpha_xml)
     if bg_hex:
-        bg_xml = color_node_xml(bg_hex, theme_color_spec, usage)
+        bg_xml = color_node_xml(bg_hex, theme_color_spec, usage, bg_alpha_xml)
     else:
-        bg_xml = color_node_xml('FFFFFF', theme_color_spec, usage)
+        bg_xml = color_node_xml('FFFFFF', theme_color_spec, usage, bg_alpha_xml)
 
     return (
         f'<a:pattFill prst="{prst}">'
@@ -432,10 +511,11 @@ def build_stroke_xml(
         return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}{join_xml}{line_ends}</a:ln>'
 
     # Solid color stroke
-    color = parse_hex_color(stroke)
+    color, color_alpha = parse_svg_color(stroke)
     if not color:
         return '<a:ln><a:noFill/></a:ln>'
 
+    opacity = combine_opacity(opacity, color_alpha)
     alpha_xml = ''
     if opacity is not None and opacity < 1.0:
         alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
@@ -457,12 +537,19 @@ def _parse_filter_params(
     std_dev = 4.0
     dx = 0.0
     dy = 0.0
-    opacity = 0.3
+    paint_opacity: float | None = None
+    transfer_opacity: float | None = None
+    color_alpha = 1.0
     color = '000000'
     has_offset = False
 
     for child in filter_elem.iter():
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        style_values = parse_inline_style(child.get('style'))
+
+        def effect_attr(name: str, default: str | None = None) -> str | None:
+            return style_values.get(name) or child.get(name, default)
+
         if tag == 'feDropShadow':
             # Shorthand element: all params in one place
             std_dev = _f(child.get('stdDeviation'), 4.0)
@@ -470,10 +557,13 @@ def _parse_filter_params(
             dy = _f(child.get('dy'), 0.0)
             if abs(dx) > 0.01 or abs(dy) > 0.01:
                 has_offset = True
-            opacity = _f(child.get('flood-opacity'), 0.3)
-            raw_color = child.get('flood-color', '').strip().lstrip('#')
-            if len(raw_color) == 6 and all(c in '0123456789abcdefABCDEF' for c in raw_color):
-                color = raw_color.upper()
+            paint_opacity = parse_opacity(effect_attr('flood-opacity'), 0.3)
+            parsed_color, parsed_alpha = parse_svg_color(
+                effect_attr('flood-color', '#000000')
+            )
+            if parsed_color:
+                color = parsed_color
+                color_alpha = parsed_alpha
         elif tag == 'feGaussianBlur':
             std_dev = _f(child.get('stdDeviation'), 4.0)
         elif tag == 'feOffset':
@@ -482,13 +572,29 @@ def _parse_filter_params(
             if abs(dx) > 0.01 or abs(dy) > 0.01:
                 has_offset = True
         elif tag == 'feFlood':
-            opacity = _f(child.get('flood-opacity'), 0.3)
-            raw_color = child.get('flood-color', '').strip().lstrip('#')
-            if len(raw_color) == 6 and all(c in '0123456789abcdefABCDEF' for c in raw_color):
-                color = raw_color.upper()
+            paint_opacity = parse_opacity(effect_attr('flood-opacity'), 0.3)
+            parsed_color, parsed_alpha = parse_svg_color(
+                effect_attr('flood-color', '#000000')
+            )
+            if parsed_color:
+                color = parsed_color
+                color_alpha = parsed_alpha
         elif tag == 'feFuncA':
             if child.get('type') == 'linear':
-                opacity = _f(child.get('slope'), 0.3)
+                slope = max(0.0, _f(child.get('slope'), 0.3))
+                transfer_opacity = (
+                    slope
+                    if transfer_opacity is None
+                    else transfer_opacity * slope
+                )
+
+    if paint_opacity is None:
+        opacity = transfer_opacity if transfer_opacity is not None else 0.3
+    elif transfer_opacity is None:
+        opacity = paint_opacity
+    else:
+        opacity = paint_opacity * transfer_opacity
+    opacity = max(0.0, min(1.0, opacity * color_alpha))
 
     return {
         'std_dev': std_dev, 'dx': dx, 'dy': dy,
@@ -534,7 +640,10 @@ def _shadow_dir_angle(dx: float, dy: float) -> int:
     return int(angle_deg * ANGLE_UNIT)
 
 
-def build_shadow_xml(filter_elem: ET.Element) -> str:
+def build_shadow_xml(
+    filter_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
     """Build <a:effectLst> with <a:outerShdw> from SVG filter element.
 
     SVG-to-DrawingML shadow mapping notes:
@@ -564,7 +673,8 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
     # PowerPoint renders outerShdw alpha slightly heavier than SVG's filter
     # composite (different blending path). Scale by 0.75 to match the SVG
     # preview after blur has been corrected to 2.0× σ.
-    alpha_val = int(p['opacity'] * 75000)
+    opacity_multiplier = 1.0 if opacity is None else opacity
+    alpha_val = int(p['opacity'] * opacity_multiplier * 75000)
     algn = _infer_shadow_alignment(dx, dy)
 
     return f'''<a:effectLst>
@@ -574,7 +684,10 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
 </a:effectLst>'''
 
 
-def build_glow_xml(filter_elem: ET.Element) -> str:
+def build_glow_xml(
+    filter_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
     """Build <a:effectLst> with <a:glow> from SVG filter element.
 
     Used for filters that have feGaussianBlur without meaningful feOffset,
@@ -585,7 +698,8 @@ def build_glow_xml(filter_elem: ET.Element) -> str:
 
     p = _parse_filter_params(filter_elem)
     rad = px_to_emu(p['std_dev'])
-    alpha_val = int(p['opacity'] * 100000)
+    opacity_multiplier = 1.0 if opacity is None else opacity
+    alpha_val = int(p['opacity'] * opacity_multiplier * 100000)
 
     return f'''<a:effectLst>
 <a:glow rad="{rad}">
@@ -603,7 +717,10 @@ def classify_filter_effect(filter_elem: ET.Element) -> str | None:
     return 'shadow' if p['has_offset'] else 'glow'
 
 
-def build_effect_xml(filter_elem: ET.Element) -> str:
+def build_effect_xml(
+    filter_elem: ET.Element,
+    opacity: float | None = None,
+) -> str:
     """Build effect XML by classifying the SVG filter as shadow or glow.
 
     Classification rules:
@@ -615,22 +732,29 @@ def build_effect_xml(filter_elem: ET.Element) -> str:
 
     effect_kind = classify_filter_effect(filter_elem)
     if effect_kind == 'shadow':
-        return build_shadow_xml(filter_elem)
+        return build_shadow_xml(filter_elem, opacity)
     if effect_kind == 'glow':
-        return build_glow_xml(filter_elem)
+        return build_glow_xml(filter_elem, opacity)
     return ''
 
 
-def get_element_opacity(elem: ET.Element) -> float | None:
-    """Get opacity value from element. Returns None if 1.0 or not set."""
-    op = elem.get('opacity')
+def get_element_opacity(
+    elem: ET.Element,
+    ctx: ConvertContext | None = None,
+) -> float | None:
+    """Get local opacity multiplied by any approximated ancestor group alpha."""
+    base = ctx.opacity_multiplier if ctx is not None else 1.0
+    if ctx is not None:
+        op = _get_attr(elem, 'opacity', ctx)
+    else:
+        op = parse_inline_style(elem.get('style')).get('opacity') or elem.get('opacity')
     if op is None:
-        return None
+        return base if base < 1.0 else None
     try:
-        val = float(op)
+        val = base * max(0.0, min(1.0, float(op)))
         return val if val < 1.0 else None
     except ValueError:
-        return None
+        return base if base < 1.0 else None
 
 
 def get_fill_opacity(
@@ -642,19 +766,19 @@ def get_fill_opacity(
     Returns:
         Combined opacity value, or None if fully opaque.
     """
-    base = 1.0
+    base = ctx.opacity_multiplier if ctx is not None else 1.0
 
     op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
     if op:
         try:
-            base = float(op)
+            base *= max(0.0, min(1.0, float(op)))
         except ValueError:
             pass
 
     fill_op = _get_attr(elem, 'fill-opacity', ctx) if ctx else elem.get('fill-opacity')
     if fill_op:
         try:
-            base *= float(fill_op)
+            base *= max(0.0, min(1.0, float(fill_op)))
         except ValueError:
             pass
 
@@ -670,19 +794,19 @@ def get_stroke_opacity(
     Returns:
         Combined opacity value, or None if fully opaque.
     """
-    base = 1.0
+    base = ctx.opacity_multiplier if ctx is not None else 1.0
 
     op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
     if op:
         try:
-            base = float(op)
+            base *= max(0.0, min(1.0, float(op)))
         except ValueError:
             pass
 
     stroke_op = _get_attr(elem, 'stroke-opacity', ctx) if ctx else elem.get('stroke-opacity')
     if stroke_op:
         try:
-            base *= float(stroke_op)
+            base *= max(0.0, min(1.0, float(stroke_op)))
         except ValueError:
             pass
 

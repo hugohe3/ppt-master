@@ -19,7 +19,8 @@ from .utils import (
     parse_svg_length,
 )
 from .styles import (
-    build_effect_xml, build_fill_xml, get_fill_opacity, get_stroke_opacity,
+    build_effect_xml, build_fill_xml,
+    get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .elements import (
     convert_rect, convert_circle, convert_ellipse,
@@ -29,6 +30,7 @@ from .elements import (
 )
 from ..animation_config import is_chrome_id
 from ..native_objects import convert_native_object, native_marker_transform
+from ..semantic_markers import is_static_page_frame
 
 
 class SvgNativeConversionError(RuntimeError):
@@ -153,12 +155,25 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     filter_id = resolve_url_id(elem.get('filter', ''))
     style_overrides = _extract_inheritable_styles(elem)
+    local_opacity = get_element_opacity(elem)
+    if local_opacity is None:
+        local_opacity = 1.0
 
     elem_id = elem.get('id')
+    semantic_role = elem.get('data-pptx-role')
+    placeholder = elem.get('data-pptx-placeholder')
+    has_explicit_semantics = (
+        semantic_role is not None or placeholder is not None
+    )
+    is_chrome = (
+        is_static_page_frame(semantic_role, placeholder)
+        if has_explicit_semantics
+        else is_chrome_id(elem_id)
+    )
     should_animate_group = (
         ctx.depth == 0
         and elem_id
-        and not is_chrome_id(elem_id)
+        and not is_chrome
         and not elem.get('data-pptx-layer')
     )
     visual_children = [
@@ -183,12 +198,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             transform_matrix=parse_transform_matrix(transform),
             filter_id=filter_id,
             style_overrides=style_overrides,
+            opacity_multiplier=local_opacity,
         )
     elif rotate_pivot is not None:
         child_ctx = ctx.child(
             0, 0, 1.0, 1.0,
             filter_id=filter_id,
             style_overrides=style_overrides,
+            opacity_multiplier=local_opacity,
         )
     else:
         child_ctx = ctx.child(
@@ -198,6 +215,13 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             sy,
             filter_id=filter_id,
             style_overrides=style_overrides,
+            opacity_multiplier=local_opacity,
+        )
+
+    if native_subtree_active and child_ctx.opacity_multiplier < 1.0:
+        raise SvgNativeConversionError(
+            "Group opacity cannot be applied to data-pptx-native table/chart "
+            "objects; export without --native-objects to use the SVG fallback"
         )
 
     if child_ctx.native_objects_enabled:
@@ -287,7 +311,10 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     group_effect = ''
     if filter_id and filter_id in ctx.defs:
-        group_effect = build_effect_xml(ctx.defs[filter_id])
+        group_effect = build_effect_xml(
+            ctx.defs[filter_id],
+            child_ctx.opacity_multiplier,
+        )
 
     rot_emu = 0 if matrix_supported else int(angle_deg * 60000)
     rot_attr = f' rot="{rot_emu}"' if rot_emu else ''
@@ -455,7 +482,11 @@ def _extract_background_candidate(
         if child.get('transform') or child.get('filter') or child.get('clip-path'):
             return '', None
         style_overrides = _extract_inheritable_styles(child)
-        child_ctx = ctx.child(style_overrides=style_overrides)
+        local_opacity = get_element_opacity(child)
+        child_ctx = ctx.child(
+            style_overrides=style_overrides,
+            opacity_multiplier=1.0 if local_opacity is None else local_opacity,
+        )
         visual_children = [
             grandchild for grandchild in child
             if grandchild.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
@@ -511,6 +542,7 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             'data-pptx-placeholder',
             'data-pptx-placeholder-bounds',
             'data-pptx-placeholder-idx',
+            'data-pptx-role',
         ):
             value = elem.get(attr)
             if value is not None:
@@ -549,25 +581,50 @@ def _local_tag(elem: ET.Element) -> str:
     return elem.tag.split('}', 1)[-1] if isinstance(elem.tag, str) and '}' in elem.tag else str(elem.tag)
 
 
-def _collect_unsupported_visuals(root: ET.Element) -> list[str]:
+def collect_unsupported_visuals(
+    root: ET.Element,
+    *,
+    allow_data_icon_use: bool = False,
+) -> list[str]:
+    """Return visual element paths that the native converter cannot dispatch."""
     issues: list[str] = []
 
-    def walk(elem: ET.Element, path: str, in_defs: bool = False) -> None:
+    def walk(
+        elem: ET.Element,
+        path: str,
+        in_defs: bool = False,
+        parent_tag: str | None = None,
+    ) -> None:
         tag = _local_tag(elem)
         current = f'{path}/{tag}'
         if in_defs:
             return
         if tag in _NON_VISUAL_TAGS:
             return
+        is_supported_visual_child = (
+            tag in _SUPPORTED_VISUAL_CHILD_TAGS
+            and parent_tag in {'text', 'tspan'}
+        )
+        is_data_icon_placeholder = (
+            allow_data_icon_use
+            and tag == 'use'
+            and elem.get('data-icon') is not None
+        )
         if (tag not in _CONVERTERS
                 and tag not in _NON_VISUAL_TAGS
-                and tag not in _SUPPORTED_VISUAL_CHILD_TAGS):
+                and not is_supported_visual_child
+                and not is_data_icon_placeholder):
             issues.append(current)
         for idx, child in enumerate(list(elem), start=1):
-            walk(child, f'{current}[{idx}]', in_defs=(tag == 'defs'))
+            walk(
+                child,
+                f'{current}[{idx}]',
+                in_defs=(tag == 'defs'),
+                parent_tag=tag,
+            )
 
     for idx, child in enumerate(list(root), start=1):
-        walk(child, f'/svg[{idx}]')
+        walk(child, f'/svg[{idx}]', parent_tag='svg')
     return issues
 
 
@@ -634,23 +691,83 @@ def convert_svg_to_slide_shapes(
     """
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
-    viewport_width, viewport_height = _root_viewport_size(root)
     trace_events: list[dict[str, Any]] | None = [] if trace_out is not None else None
     trace_steps: list[dict[str, Any]] = []
 
-    # Expand <use data-icon="..."/> placeholders in-memory so this dispatcher
-    # can consume svg_output/ directly. Standard renderers and this converter
-    # both ignore data-icon, so without expansion icons would silently drop.
-    # The on-disk finalize_svg pipeline does the same expansion for svg_final/;
-    # running this here makes the two pipelines behaviourally aligned.
+    from ..geometry_properties import (
+        GeometryStyleError,
+        materialize_inline_geometry_properties,
+    )
+
+    try:
+        geometry_count = materialize_inline_geometry_properties(root)
+    except GeometryStyleError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: inline geometry materialization failed: {exc}'
+        ) from exc
+    geometry_trace = None
+    if geometry_count:
+        geometry_trace = {
+            'action': 'materialize-inline-geometry',
+            'count': geometry_count,
+        }
+        trace_steps.append(geometry_trace)
+        if verbose:
+            print(f'  Materialized {geometry_count} inline geometry declaration(s)')
+
+    viewport_width, viewport_height = _root_viewport_size(root)
+
+    # Expand project icon placeholders and static same-document <use>
+    # references before unsupported-element preflight.
+    from ..use_expander import (
+        UseExpansionError,
+        expand_local_use_references,
+        expand_use_data_icons,
+    )
+
     icons_dir, icons_fallback_dir = icon_search_dirs_for_svg(svg_path)
     if icons_dir.exists():
-        from ..use_expander import expand_use_data_icons
         expanded = expand_use_data_icons(root, icons_dir, icons_fallback_dir)
         if expanded:
             trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
         if verbose and expanded:
             print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
+
+    try:
+        injected_geometry_count = materialize_inline_geometry_properties(root)
+    except GeometryStyleError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: expanded icon geometry materialization failed: {exc}'
+        ) from exc
+    if injected_geometry_count:
+        geometry_count += injected_geometry_count
+        if geometry_trace is None:
+            geometry_trace = {
+                'action': 'materialize-inline-geometry',
+                'count': geometry_count,
+            }
+            trace_steps.append(geometry_trace)
+        else:
+            geometry_trace['count'] = geometry_count
+        if verbose:
+            print(
+                f'  Materialized {injected_geometry_count} inline geometry '
+                'declaration(s) from expanded icons'
+            )
+
+    try:
+        expanded_local = expand_local_use_references(root)
+    except UseExpansionError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: local <use> expansion failed: {exc}'
+        ) from exc
+    if expanded_local:
+        trace_steps.append({
+            'action': 'expand-local-use-references',
+            'count': expanded_local,
+        })
+        if verbose:
+            print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
     # Flatten positional <tspan> (those with x/y/non-zero dy) into independent
     # <text> elements. DrawingML runs cannot reposition mid-paragraph, so a
@@ -670,7 +787,7 @@ def convert_svg_to_slide_shapes(
         if verbose:
             print('  Flattened positional <tspan> into independent <text>')
 
-    unsupported = _collect_unsupported_visuals(root)
+    unsupported = collect_unsupported_visuals(root)
     if unsupported:
         preview = '; '.join(unsupported[:8])
         suffix = '' if len(unsupported) <= 8 else f'; +{len(unsupported) - 8} more'
@@ -724,7 +841,11 @@ def convert_svg_to_slide_shapes(
             converted += 1
             m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
             if m and not child.get('data-pptx-layer'):
-                fallback_targets.append((int(m.group(1)), tag))
+                if not is_static_page_frame(
+                    child.get('data-pptx-role'),
+                    child.get('data-pptx-placeholder'),
+                ):
+                    fallback_targets.append((int(m.group(1)), tag))
         else:
             if tag not in _NON_VISUAL_TAGS:
                 skipped += 1
@@ -750,6 +871,7 @@ def convert_svg_to_slide_shapes(
         trace_out.append({
             'slide_num': slide_num,
             'svg': str(svg_path),
+            'page_role': root.get('data-pptx-page-role'),
             'summary': {
                 'converted': converted,
                 'skipped': skipped,

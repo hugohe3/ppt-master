@@ -52,8 +52,8 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
    ├── Sourced + license_tier=manual → <image href=...> only (user-supplied --from-url; rights/credit are user responsibility)
    ├── Rendered formula → <image href="../images/formula_001.png" preserveAspectRatio="xMidYMid meet" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
-4. Preview: python -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
-5. Post-processing & Export → follow shared-standards.md §5
+4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
+5. Post-processing & Export → follow [`SKILL.md` Step 7](../SKILL.md)
 ```
 
 > Keep external references in `svg_output/` during generation. `finalize_svg.py` auto-embeds images into `svg_final/`; export PPTX from `svg_final/`.
@@ -100,7 +100,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 Browser security blocks external images on directly opened SVGs. Serve via HTTP from the project root:
 
 ```bash
-python -m http.server -d <project_path> 8000
+python3 -m http.server -d <project_path> 8000
 # Visit http://localhost:8000/svg_output/your_file.svg
 ```
 
@@ -128,11 +128,11 @@ python -m http.server -d <project_path> 8000
 
 ## Conversion Process
 
-Use the unified pipeline in [shared-standards.md §5](shared-standards.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
+Use the unified pipeline in [`SKILL.md` Step 7](../SKILL.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
 
 ```bash
-uvx ppt-master finalize-svg <project_path>
-uvx ppt-master svg-to-pptx <project_path>
+python3 scripts/finalize_svg.py <project_path>
+python3 scripts/svg_to_pptx.py <project_path>
 ```
 
 ### Standalone: align_embed_images.py (advanced)
@@ -140,8 +140,8 @@ uvx ppt-master svg-to-pptx <project_path>
 For processing specific SVGs without the full pipeline:
 
 ```bash
-uv run scripts/svg_finalize/align_embed_images.py <svg_file>
-uv run scripts/svg_finalize/align_embed_images.py --dry-run <svg_file>
+python3 scripts/svg_finalize/align_embed_images.py <svg_file>
+python3 scripts/svg_finalize/align_embed_images.py --dry-run <svg_file>
 ```
 
 Use `finalize_svg.py --only align-images` for project-level batches. The old

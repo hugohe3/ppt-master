@@ -256,30 +256,7 @@ This template emulates the visual language of telecom technical reports. The cor
 
 ---
 
-## X. SVG Technical Constraints
-
-### Mandatory Rules
-
-1. viewBox: `0 0 1280 720`
-2. Use `<rect>` elements for backgrounds
-3. Use `<tspan>` for text wrapping (**`<foreignObject>` is strictly prohibited**)
-4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
-5. Prohibited: `mask`, `<style>`, `class`, `foreignObject` (`id` inside `<defs>` is allowed). `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-6. Prohibited: `textPath`, `animate*`, `script`
-7. Prohibited: `<symbol>+<use>`, `<iframe>`, `@font-face`
-8. Prohibited: `<g opacity="...">` (group opacity) — set opacity on each child element individually
-9. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
-10. Use only system fonts and inline styles
-
-### PPT Compatibility Rules
-
-- Use overlay layers instead of image opacity
-- Define gradients using `<linearGradient>` inside `<defs>`
-- Use `rx`/`ry` attributes for rounded rectangles (post-processing converts to Path)
-
----
-
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 The template uses `{{PLACEHOLDER}}` format placeholders:
 
@@ -304,7 +281,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 
 ---
 
-## XII. Usage Notes
+## XI. Usage Notes
 
 1. Copy this template directory to the project `templates/` directory
 2. Review `reference_style.svg` to understand the core visual style
@@ -315,7 +292,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 
 ---
 
-## XIII. Design Highlights
+## XII. Design Highlights
 
 - **Telecom DNA**: Derived from real telecom AI operations architecture reports, naturally suited for telecom/enterprise presentation styles
 - **High Information Density**: A single page can accommodate a complete architecture view (objectives → results → scenarios → orchestration → foundational capabilities)

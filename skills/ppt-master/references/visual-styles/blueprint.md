@@ -26,7 +26,7 @@ Engineering schematic — thin line work on dark blueprint paper, isometric proj
 
 ## 4. Texture / elevation
 
-- Flat line work, not material elevation. Depth reads from isometric projection and layered line weights, not shadows. Optional subtle corner vignette / accent glow on the dark paper — keep it faint. (Dark-field legibility: [`shared-standards.md §6`](../shared-standards.md).)
+- Flat line work, not material elevation. Depth reads from isometric projection and layered line weights, not shadows. Optional subtle corner vignette / accent glow on the dark paper — keep it faint.
 
 ## 5. Paired image-rendering
 
