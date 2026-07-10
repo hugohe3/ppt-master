@@ -131,8 +131,8 @@ python3 -m http.server -d <project_path> 8000
 Use the unified pipeline in [`SKILL.md` Step 7](../SKILL.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
 
 ```bash
-python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path>
+uvx ppt-master finalize-svg <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 ```
 
 ### Standalone: align_embed_images.py (advanced)
