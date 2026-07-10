@@ -121,7 +121,7 @@ When the brief sets `Replication mode: mirror`, preserve literal page appearance
 
 **Scope rule — personality only.** A template `design_spec.md` describes **what makes this template recognizable**: brand colors, signature decorative motifs, page-by-page visual character, bundled assets. It does **not** restate generic constraints — those live in the canonical references and are already loaded by every downstream role:
 
-- SVG technical constraints, PPT compatibility rules → [`shared-standards.md`](shared-standards.md)
+- General SVG required / forbidden / conditional interfaces → [`shared-standards.md`](shared-standards.md)
 - Generic layout pattern library, spacing bands, font-size ratio bands → [`templates/design_spec_reference.md`](../templates/design_spec_reference.md) (read by Strategist when authoring the **project** design_spec)
 - Canonical placeholder vocabulary → §4 below
 - Content methodology (pyramid / SCQA / MECE) → [`strategist.md`](strategist.md)
@@ -189,8 +189,7 @@ Sections to **omit** from template `design_spec.md` (sourced elsewhere — listi
 
 | Don't write | Source |
 |---|---|
-| SVG technical constraints / Mandatory rules / Prohibited elements | `shared-standards.md` §1 |
-| PPT compatibility rules (opacity mapping, inline-styles-only, etc.) | `shared-standards.md` |
+| General SVG technical / compatibility rules | `shared-standards.md` |
 | Generic layout pattern library (centered card / 三栏 / timeline / …) | `design_spec_reference.md` §V |
 | Generic spacing bands (margin 40-60px, card gap 20-32px, etc.) | `design_spec_reference.md` §V |
 | Generic font-size hierarchy (cover 2.5-5x body, page title 1.5-2x, …) | `design_spec_reference.md` §IV |
@@ -199,7 +198,10 @@ Sections to **omit** from template `design_spec.md` (sourced elsewhere — listi
 | "Usage Instructions" boilerplate (copy template / select page / …) | `create-template.md` |
 | Created Date / Page Count rows | not a library-level field |
 
-When rewriting an existing template that contains the omitted sections, delete them — do not leave a "see XXX" pointer behind. The pointer is what this scope rule replaces.
+When rewriting an existing template that contains an omitted generic section,
+delete it rather than leaving a pointer. Keep a template-specific boundary only
+inside the personality section it qualifies (asset system, motif, image
+treatment, or page roster); do not preserve a generic technical-rules heading.
 
 ### 2. Inherit Design Specification
 

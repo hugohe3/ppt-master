@@ -25,7 +25,7 @@ Frosted-glass SaaS — translucent layered panels, flowing gradient light, float
 
 ## 4. Texture / elevation
 
-- Depth via translucency, layering, bright edge highlights, and soft background glow — not hard drop shadows. Smooth multi-stop gradients are intrinsic here (the one style where generous gradient use is on-brand); keep them luminous, not muddy. (Dark-field legibility: [`shared-standards.md §6`](../shared-standards.md).)
+- Depth via translucency, layering, bright edge highlights, and soft background glow — not hard drop shadows. Smooth multi-stop gradients are intrinsic here (the one style where generous gradient use is on-brand); keep them luminous, not muddy.
 
 ## 5. Paired image-rendering
 

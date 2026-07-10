@@ -25,7 +25,7 @@ Layered paper-craft — scissor-cut shapes stacked in tactile layers, soft shado
 
 ## 4. Texture / elevation
 
-- Real layered depth — a soft 8-12% drop shadow under each cut layer is core here (the one style where layered shadow is the point, not a violation). Matte paper grain on each sheet. (Shadow rules: [`shared-standards.md §6`](../shared-standards.md).)
+- Real layered depth — a soft 8-12% drop shadow under each cut layer is core here (the one style where layered shadow is the point, not a violation). Matte paper grain on each sheet.
 
 ## 5. Paired image-rendering
 

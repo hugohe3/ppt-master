@@ -26,7 +26,7 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 
 ## 4. Texture / elevation
 
-- Depth via glow and layering on dark, not drop shadows. Outer glow / light strokes mark elevation; gradients stay same-hue and subtle. (Dark-theme legibility — prefer light stroke / outer glow over black shadow: [`shared-standards.md §6`](../shared-standards.md).)
+- Depth via glow and layering on dark, not drop shadows. Outer glow / light strokes mark elevation; gradients stay same-hue and subtle.
 
 ## 5. Paired image-rendering
 

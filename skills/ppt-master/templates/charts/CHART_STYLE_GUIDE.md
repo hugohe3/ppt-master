@@ -5,11 +5,10 @@
 
 ## 0. 上游规范引用
 
-本文档是 **图表模板专用** 的美学与实现规范。所有图表同时必须遵守项目级通用技术约束：
-
-> **[`references/shared-standards.md`](../../references/shared-standards.md)** — SVG 禁用特性黑名单、PPT 兼容性替代、Canvas 格式、tspan 内联规则、分组规范、阴影/叠加技术、后处理管线
-
-以下章节摘录了 shared-standards 中与图表模板最密切相关的条目。完整细节（如 marker 条件约束、clipPath 条件约束、弧线路径计算公式等）请查阅上游文档。
+本文档只定义 **图表模板专用** 的美学与实现配方。项目级 SVG
+创作、兼容性例外与条件映射统一以
+[`references/shared-standards.md`](../../references/shared-standards.md)
+为权威；本指南不摘录、不放宽该合同。
 
 ---
 
@@ -75,7 +74,6 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 ```
 
 - 纯英文场景可省略 `'PingFang SC', 'Microsoft YaHei'`
-- **禁止** 使用 `@font-face`、外部字体、`<style>` 标签
 
 ### 2.2 字号层级
 
@@ -90,23 +88,9 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 > **最小字号下限：12px**。所有文本不得小于 12px。
 
-### 2.3 tspan 规范
+### 2.3 同一图表标签的内联格式
 
-所有 `<text>` 元素的文本内容 **必须** 包裹在 `<tspan>` 中：
-
-```xml
-<!-- 正确 -->
-<text x="60" y="80" font-size="34" fill="#0F172A">
-    <tspan>图表标题</tspan>
-</text>
-
-<!-- 错误 -->
-<text x="60" y="80" font-size="34" fill="#0F172A">图表标题</text>
-```
-
-### 2.4 内联格式化规则（shared-standards SS4）
-
-**单逻辑行 = 单 `<text>`**。同一行内需要多色/多粗细时，用内联 `<tspan>` 实现，**不要**用多个并排 `<text>`：
+当一个图表标签需要在 PPT 中保持为单一可编辑文本框时，把同一逻辑行写进一个 `<text>`，并用内联 `<tspan>` 表达多色或多粗细。若本来就需要多个独立文本框，则可使用多个 `<text>`：
 
 ```xml
 <!-- 正确：一个 text frame，三个 run -->
@@ -114,15 +98,15 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
   实现<tspan fill="#3B82F6" font-weight="bold">10倍</tspan>效率提升
 </text>
 
-<!-- 错误：三个独立 text frame，PPT 中无法作为一行编辑 -->
+<!-- 若目标是单一文本框，则不适用：下面会生成三个独立 text frame -->
 <text x="100" y="200">实现</text>
 <text x="160" y="200" fill="#3B82F6">10倍</text>
 <text x="240" y="200">效率提升</text>
 ```
 
-> 内联 tspan **不得** 携带 `x` / `y` / `dy`，否则后处理会将其拆分为独立 text frame。`dx` 可用于微调字距。
+> 只有需要留在同一文本框内的 inline tspan 才不带 `x` / `y` / `dy`；带这些定位属性的 tspan 会按独立文本框处理。`dx` 可用于微调字距。
 
-### 2.5 数据高亮默认行为
+### 2.4 数据高亮默认行为
 
 图表中的关键数据文本应默认高亮：
 - **数值结果** — 百分比、倍数、金额 → `<tspan fill="主题色" font-weight="bold">`
@@ -133,7 +117,9 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ## 3. 阴影滤镜
 
-`<filter>` 本身是允许的、且是 PPT 阴影/发光的官方推荐路径（详见本节末尾的"禁用列表"说明）。本节统一阴影 primitive 写法——使用 `feFlood` 方案，**禁止** `<filter>` 内部使用 `<feComponentTransfer>`：
+本节只规定图表模板库采用的阴影配方，不定义项目级 filter
+支持边界。图表阴影统一使用 `feFlood` 方案，本指南不采用
+`<feComponentTransfer>`：
 
 ```xml
 <filter id="chartShadow" x="-15%" y="-15%" width="130%" height="130%">
@@ -156,19 +142,20 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 中型元素（柱子、箱体） | 2-3 | 1-2 | 0.10-0.15 |
 | 轻型元素（底部卡片） | 4-6 | 2-4 | 0.06-0.08 |
 
-### 禁用列表
+### 本指南实现约定
 
 - `flood-color="#000000"` → 必须用 `#0F172A`
 - `<feComponentTransfer>` + `<feFuncA slope=...>` → 用 `<feFlood flood-color flood-opacity>` 替代
 - `flood-opacity > 0.20` → 阴影过重，最大 0.15-0.20
 
-> **被禁的是 sub-element，不是 `<filter>` 本身。** `<filter>` 是 PPT Master 允许的、官方推荐的阴影/发光路径（见 [`shared-standards.md`](../../references/shared-standards.md) §1 黑名单不含 filter、§6 把 filter shadow 列为 drop-shadow 的官方实现），转换器 [`svg_to_pptx/drawingml/styles.py`](../../scripts/svg_to_pptx/drawingml/styles.py) 也主动把 `feGaussianBlur` + `feOffset` + `feFlood` + `feComposite` + `feMerge`（以及 `feDropShadow` 简写）映射成 DrawingML `<a:outerShdw>`。
+> 这是图表模板的色彩一致性约定，不是项目级 SVG 黑名单。单独排除
+> `feComponentTransfer/feFuncA(slope)`，是因为它只能调透明度、无法携带
+> 颜色，容易让阴影退回纯黑，与同页使用 `feFlood`
+> `flood-color="#0F172A"` 的卡片产生肉眼可见的冷暖色差。
 >
-> 单独禁 `feComponentTransfer/feFuncA(slope)` 的原因：**它物理上只能调透明度、无法携带颜色**。转换器读到 `feFuncA slope` 时只把它当作 alpha，颜色字段保持默认 `'000000'`——SVG 端看起来阴影颜色正常（因为 SourceAlpha 本身是黑），但导出到 PPTX 后阴影颜色会被定死成纯黑 `#000000`，与同页其他用 `feFlood flood-color="#0F172A"` 的卡片产生肉眼可见的冷暖色差。
->
-> 简言之：**用 filter 没问题，但 primitive 必须能把"颜色"显式表达出来；只能表达"透明度"的 primitive 是被禁的。**
+> 简言之：本库的图表阴影必须显式表达颜色，而不能只表达透明度。
 
-### 阴影使用原则（shared-standards SS6）
+### 图表阴影使用原则
 
 > **阴影是美学成分，不是默认处理。** 克制而非丰富才能产生"经过设计"的感觉。 "阴影被感知而非被看见" 是高端美学标准。
 
@@ -222,7 +209,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ## 5. 结构规范
 
-### 5.1 层级分组（shared-standards SS4 Grouping）
+### 5.1 图表层级分组
 
 使用 `<g id="...">` 进行语义分组，便于 PPT 中逐个操作/动画：
 
@@ -241,7 +228,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 </g>
 ```
 
-**分组单元参考**（来自 shared-standards）：
+**图表模板分组单元**：
 
 | 分组单元 | 包含内容 |
 |---------|---------|
@@ -253,8 +240,6 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 | 装饰集群 | 相关装饰形状（环、球、点） |
 
 **命名约定**：使用描述性 `id`（如 `card-1`、`step-discover`、`header`、`footer`）。
-
-> `<g opacity="0..1">` 可按 SS2 近似转换；纯结构 `<g>` 仍是常规分组方式。
 
 ### 5.2 viewBox
 
@@ -278,57 +263,11 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ---
 
-## 6. SVG 禁用特性与兼容性（shared-standards SS1-2）
+## 6. 通用 SVG 技术约束
 
-### 6.1 绝对禁止
-
-| 禁用特性 | 替代方案 |
-|---------|---------| 
-| HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` `&ndash;` `&reg;` `&hellip;` `&bull;` …） | 直接写原生 Unicode 字符（`—` `–` `©` `®` `→` NBSP …） |
-| 文本/属性值中裸写 `& < > " '` | 必须写成 XML 实体 `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` |
-| `<style>` / `class` | 内联属性（`id` 可用于本地引用和语义标记） |
-| `<foreignObject>` | `<text>` + `<tspan>` |
-| `mask` | 叠加遮罩矩形 / gradient overlay |
-| `textPath` | 手动排列 `<text>` |
-| `@font-face` | 系统字体栈 |
-| `<animate*>` / `<set>` | 无（PPT 侧处理动画） |
-| `<script>` / event 属性 | 无 |
-| `<iframe>` | 无 |
-
-### 6.2 PPT 颜色语法
-
-支持常用命名色、`rgb()` / `rgba()`、`hsl()` / `hsla()` 以及 3/4/6/8 位
-HEX。颜色内嵌 alpha 会与 `opacity`、`fill-opacity`、`stroke-opacity`、
-`stop-opacity` 继续相乘；需要复用同一色板时，也可继续采用独立透明度属性。
-
-### 6.3 条件允许
-
-| 特性 | 条件 | 转换结果 |
-|------|------|----------|
-| `<g opacity="...">` | 数值范围 `0..1`；不包裹 `data-pptx-native` 图表/表格 | 后代对象分别写入 DrawingML alpha；重叠区域为近似 |
-| `<image opacity="...">` | 数值范围 `0..1` | DrawingML `<a:alphaModFix>` |
-| 本文档内静态 `<use href="#id">` / `xlink:href="#id"` | 目标为 `symbol/g/use/rect/circle/ellipse/line/path/polygon/polyline/text/image`；`x/y` 仅 unitless/`px`；`symbol` 还需合法 `viewBox` 与正数 unitless/`px` `width/height` | 导出前递归展开为带独立 ID 的完整元素 |
-| `marker-start` / `marker-end` | `<marker>` 在 `<defs>` 中，`orient="auto"`，形状为三角/菱形/圆 | DrawingML `<a:headEnd>` / `<a:tailEnd>` |
-| `clipPath` on `<image>` | `<clipPath>` 在 `<defs>` 中，单子元素，**仅用于 image** | DrawingML `<a:prstGeom>` / `<a:custGeom>` |
-| `stroke-dasharray` | 使用预设值 `4,4` / `2,2` / `8,4` / `8,4,2,4` | PPTX `<a:prstDash>` |
-| `text-decoration` | `underline` / `line-through` | PPTX 原生文本格式 |
-| `transform="rotate(...)"` | 所有元素类型均支持 | PPTX `<a:xfrm rot="...">` |
-
-> 本地 `<use>` 只接受精确 `#id` / `url(#id)` 内部片段。外部、缺失、
-> 冲突、循环、重复 ID，`symbol` 的 `slice` / `refX` / `refY`，以及对
-> `data-pptx-layer*` / `data-pptx-native*` / `data-pptx-placeholder*` 结构元数据的
-> 复用均禁止；PPTX 回导不重建 `<use>`。完整条件约束见
-> [`shared-standards.md`](../../references/shared-standards.md) SS1.1（marker）、
-> SS1.2（clipPath）和 SS1.3（本地 use）。
-
-### 6.4 虚线预设对照
-
-| SVG 值 | PPTX 预设 | 适用场景 |
-|--------|-----------|---------|
-| `4,4` | Dash | 通用虚线、分隔线 |
-| `2,2` | Dot (sysDot) | 占位轮廓、细边框 |
-| `8,4` | Long dash | 时间线连接、流程箭头 |
-| `8,4,2,4` | Long dash-dot | 技术图纸、尺寸线 |
+本指南不定义或摘录项目级 SVG 允许项、禁用项与条件映射。当前合同统一见
+[`shared-standards.md`](../../references/shared-standards.md)；新增或修改模板时，
+必须对目标文件运行 `svg_quality_checker.py` 并通过校验。
 
 ---
 
@@ -418,15 +357,12 @@ HEX。颜色内嵌 alpha 会与 `opacity`、`fill-opacity`、`stroke-opacity`、
 
 ### 排版
 - [ ] 无 `font-size < 12` 的文本
-- [ ] 所有 `<text>` 内容包裹 `<tspan>`
-- [ ] 同一行多格式用内联 `<tspan>`，**非**多个并排 `<text>`
-- [ ] 内联 `<tspan>` 不携带 `x` / `y` / `dy`
+- [ ] 需要保持为单一 PPT 文本框的多格式标签使用 inline `<tspan>`；只有这类 inline run 不携带 `x` / `y` / `dy`
 - [ ] 标题 34px、副标题 18px、来源 14px
 
 ### 结构
 - [ ] 主要元素有语义化 `<g id="...">`
-- [ ] 无 `<style>`、`class`、`<foreignObject>`、`mask`
-- [ ] 文本字符为原生 Unicode（`—` `©` `→` NBSP 等），无 HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` 等）；裸 `& < >` 已转义为 `&amp; &lt; &gt;`
+- [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
 
 ### 阴影
 - [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）
@@ -644,4 +580,3 @@ echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/
 | §11.5 倾斜虚线连接箭头 | `matrix_2x2.svg` |
 | §11.6 接地椭圆 | `team_roster.svg` |
 | §11.7 双向交互箭头 | `client_server_flow.svg` |
-

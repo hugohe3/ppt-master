@@ -39,7 +39,7 @@ page_types: [cover, toc, chapter, content, ending]
 ## V. SVG Page Roster           # File list + per-file purpose
 ```
 
-Layouts may include additional supporting sections (Layout Patterns, Spacing Guidelines, SVG Technical Constraints, Placeholder Specification, Usage Notes). Do **not** include Color Scheme or Typography sections — those are identity-segment fields owned by `templates/brands/` and `templates/decks/`.
+Layouts may include additional supporting sections (Layout Patterns, Spacing Guidelines, Placeholder Specification, Usage Notes). Put a layout-specific required / forbidden / conditional boundary inside the personality section it qualifies. Do **not** include Color Scheme or Typography sections — those are identity-segment fields owned by `templates/brands/` and `templates/decks/`. General SVG/PPT authoring rules belong only in [`shared-standards.md`](../../references/shared-standards.md); do not add a generic technical-rules section or pointer to a layout spec.
 
 ---
 
@@ -75,6 +75,6 @@ The register step updates [`layouts_index.json`](./layouts_index.json) — the s
 
 ---
 
-## SVG technical constraints
+## SVG technical authority
 
-See [`shared-standards.md`](../../references/shared-standards.md) for the authoritative ban list (PPT incompatibilities, raw-character rules, clipPath conditional allowance, etc.). Layouts must comply.
+[`shared-standards.md`](../../references/shared-standards.md) is authoritative for general SVG/PPT required, forbidden, and conditional rules. Layout specs add only constraints unique to that layout.

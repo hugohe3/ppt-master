@@ -269,37 +269,7 @@ Use `tabler-outline` as the stylistic icon library for this template. It matches
 
 ---
 
-## IX. SVG Technical Constraints
-
-### viewBox Specification
-
-```xml
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
-```
-
-### Prohibited Features (Blocklist)
-
-| Category           | Prohibited Items                        |
-| ------------------ | --------------------------------------- |
-| **Clipping/Masking** | `mask` is forbidden; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2 |
-| **Style System**   | `<style>`, `class` (`id` inside `<defs>` is allowed) |
-| **Structure/Nesting** | `<foreignObject>`                   |
-| **Text/Font**      | `textPath`, `@font-face`               |
-| **Animation/Interaction** | `<animate*>`, `<set>`, `on*`    |
-
-> `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval).
-
-### PPT Compatibility Rules
-
-Supported CSS alpha colors and explicit `fill-opacity` / `stroke-opacity`
-both export to DrawingML; when combined, their alpha values multiply.
-
-`<g opacity="0..1">` is supported as per-descendant alpha; overlapping
-children may composite differently from an isolated SVG group.
-
----
-
-## X. Placeholder Specification
+## IX. Placeholder Specification
 
 | Placeholder          | Usage                |
 | -------------------- | -------------------- |
@@ -322,7 +292,7 @@ children may composite differently from an isolated SVG group.
 
 ---
 
-## XI. Usage Notes
+## X. Usage Notes
 
 ### Template Usage Steps
 

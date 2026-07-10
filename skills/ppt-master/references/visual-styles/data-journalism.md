@@ -21,7 +21,7 @@ Bloomberg / Economist news-infographic — publication-grade information density
 - A restrained field — light publication paper or dark graphite both fit (Economist vs Bloomberg-terminal); the deck's accent marks risk / key figures, an optional secondary distinguishes a second series; charts use tints of the same family, never a rainbow.
 - Numbers are colored to *mean* (up / down / risk / focus), not to decorate.
 
-> HEX values come from confirmation `e`; this style only governs the restrained-field, meaning-coded-data discipline — it names no colors. (Dark-field legibility, if dark: [`shared-standards.md §6`](../shared-standards.md).)
+> HEX values come from confirmation `e`; this style only governs the restrained-field, meaning-coded-data discipline — it names no colors.
 
 ## 4. Texture / elevation
 

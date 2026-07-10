@@ -98,6 +98,8 @@ primary_color: "#00418D"
 | **Content** | y=100, h=560px | Main content area                     |
 | **Footer** | y=680, h=40px   | Page number, company name, bottom decorative line |
 
+**Required background layer**: Every page retains the template's full-canvas background layer.
+
 ---
 
 ## VI. Page Types
@@ -178,27 +180,7 @@ primary_color: "#00418D"
 
 ---
 
-## X. SVG Technical Constraints
-
-### Mandatory Rules
-
-1. viewBox fixed at `0 0 1280 720`
-2. Background must include a full-screen `<rect>`
-3. Text wrapping via `<tspan>`
-4. Opacity must use `fill-opacity` / `stroke-opacity`
-5. `marker-start` / `marker-end` conditionally allowed — see shared-standards.md §1.1 (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval)
-
-### Forbidden Elements (Blacklist)
-
-- `mask` (masking); `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-- `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
-- `foreignObject` (foreign objects)
-- `textPath` (text on path)
-- `animate`, `animateTransform`, `set` (animations)
-
----
-
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 | Placeholder          | Description        |
 | -------------------- | ------------------ |
@@ -219,7 +201,7 @@ primary_color: "#00418D"
 
 ---
 
-## XII. Usage Notes (Recommended)
+## XI. Usage Notes (Recommended)
 
 1. **Logo Adaptation**: Cover and ending pages use inverted (white) Logo; content page upper-right uses color or inverted Logo.
 2. **Image Assets**: Ensure the `images/` folder under the template directory contains necessary Logo files.

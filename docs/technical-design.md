@@ -172,9 +172,13 @@ SVG wins because it shares the same world view as DrawingML: both are absolute-c
 | `linearGradient` / `radialGradient` | `<a:gradFill>` |
 | `fill-opacity` / `stroke-opacity` | `<a:alpha>` |
 
+This table shows conceptual counterparts, not an authoring allowlist or a
+promise of lossless semantics. Restricted or approximate mappings are owned by
+[`shared-standards.md`](../skills/ppt-master/references/shared-standards.md).
+
 The conversion is a translation between two dialects of the same idea — not a format mismatch.
 
-SVG is also the only format that simultaneously satisfies every role in the pipeline: **AI can reliably generate it, humans can preview and debug it in any browser, and scripts can precisely convert it** — all before a single line of DrawingML is written.
+SVG is also the only format that simultaneously satisfies every role in the pipeline: **AI can reliably generate it, humans can preview and debug it in any browser, and scripts can translate it under an explicit compatibility contract** — all before a single line of DrawingML is written.
 
 ---
 
@@ -352,32 +356,32 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 **Why composition flows through Strategist's resource list, not just Executor's improvisation.** The `Layout pattern` column in `§VIII Image Resource List` accepts a `#<id> + #<id> ...` expression — Primary id plus optional Modifier ids — so the composition is declared *before* SVG generation, audited by `svg_quality_checker`, and survives session re-entry. Pushing composition onto Executor alone would lose it on context compression in long decks; encoding it in the spec_lock-adjacent resource list makes it a piece of the design contract.
 
-**Why true hard constraints stay upstream.** Cross-cutting technical constraints (`<clipPath>` only on `<image>`, no `<mask>`, supported CSS paint grammar, alpha-effect routing) live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points at them with one-line references rather than restating — so when a constraint relaxes (e.g., a new DrawingML feature becomes reliable), only one file changes, and a stale duplicate in patterns can't silently keep enforcing the old rule.
+**Why true hard constraints stay upstream.** Cross-cutting SVG authoring and PPTX-compatibility exceptions live exclusively in [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md). The layout patterns file points there rather than restating the contract — so when a constraint changes, only one file changes, and a stale duplicate in patterns cannot silently keep enforcing the old rule.
 
 ---
 
-## SVG Constraints: Banned Features and Conditional Allowances
+## SVG Compatibility Boundary
 
-PowerPoint's DrawingML is a strict subset of what SVG can express. The Executor operates inside an empirically-grown blacklist (mask, style/class, `@font-face`, foreignObject, textPath, animate*, script/iframe …) plus narrow conditional allowances for `marker-start`/`marker-end`, image-only `clip-path`, and static same-document `<use>` / `<symbol>` reuse. The authoritative list and exact per-feature constraints — including the substitute-effect routing table for `<mask>` (gradient overlays, clipPath, filter shadow, source-image bake-in) — live in [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md).
+PowerPoint's DrawingML is a strict subset of what SVG can express. Within the converter's implemented vocabulary, ordinary SVG is allowed by default. Only rejected constructs and features that require constrained mappings are enumerated in [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md), the sole authority for their accepted forms and limits; this architecture document deliberately does not reproduce them.
 
-**Why local `<use>` is compile-time reuse, not a retained PowerPoint object.** The accepted form is an exact same-document `href="#id"` or `xlink:href="#id"` targeting `symbol`, `g`, `use`, `rect`, `circle`, `ellipse`, `line`, `path`, `polygon`, `polyline`, `text`, or `image`; internal references use exact `url(#id)` fragments. `x` / `y` are finite unitless or `px` values. A symbol requires a valid `viewBox` whose dimensions are positive, positive unitless/`px` instance `width` / `height`, and either aligned `meet` or plain `none`; `slice`, `refX`, and `refY` are rejected. Symbol artwork must stay inside the `viewBox` because expansion does not reproduce overflow clipping. External, missing, conflicting, circular, and duplicate-ID references fail validation, as does reuse of `data-pptx-layer*`, `data-pptx-native*`, or `data-pptx-placeholder*` structure. The pipeline recursively materializes the subtree and rewrites cloned IDs before export. PPTX-to-SVG import returns the expanded primitives rather than reconstructing the authoring-time `<use>` graph.
+**Why local reuse is compile-time reuse, not a retained PowerPoint object.** The canonical contract defines accepted authoring forms, and the shared validator enforces them. After validation, the pipeline recursively materializes each referenced subtree and rewrites clone-local IDs before export. PPTX-to-SVG import therefore returns expanded primitives rather than reconstructing the authoring-time reuse graph.
 
 The architectural reasons worth knowing here:
 
-- **Why a blacklist, not a whitelist.** SVG is a wide spec; enumerating allowed features would force constant maintenance as the Executor finds new useful constructs. The blacklist captures the narrow set whose semantics have no DrawingML representation, leaving everything else implicitly available.
-- **Why empirical, not derived from spec.** The list grew from real PPT export failures, not from reading the OOXML spec. Several features (e.g., `<mask>`) are theoretically expressible in DrawingML but practically unreliable across PowerPoint versions; the blacklist reflects the actually-shippable subset.
-- **XML well-formedness traps.** Two cross-cutting gotchas independent of DrawingML: typography must use raw Unicode (`—`, `→`, `©`, NBSP) since HTML named entities (`&mdash;`) are XML-illegal in SVG, and reserved XML chars (`& < >`) must be entity-escaped or `R&D` will abort the export. These bite often enough to flag at the architecture level.
-- **The blacklist runs before post-processing.** `svg_quality_checker.py` enforces it on `svg_output/`; post-processing rewrites SVG and would mask source-level violations. Fixes are always re-authoring in the Executor — there is intentionally no auto-fix mode (see Quality Gate).
+- **Why an exception list, not an allowlist.** SVG is a wide specification; enumerating every allowed feature would require constant maintenance as the converter grows. A centralized exception list leaves ordinary implemented constructs available by default.
+- **Why empirical, not derived from spec.** The compatibility boundary grew from real PPT export failures, not from reading the OOXML specification. Some theoretically representable effects remain unreliable across PowerPoint versions, so the contract reflects the actually shippable subset.
+- **XML well-formedness remains a precondition.** Malformed SVG fails before DrawingML compatibility matters. The canonical contract owns the accepted authoring forms so XML guidance cannot drift across architecture and prompt documents.
+- **Compatibility validation runs before post-processing.** `svg_quality_checker.py` evaluates `svg_output/`; post-processing rewrites SVG and could mask source-level violations. Fixes are always re-authoring in the Executor — there is intentionally no auto-fix mode (see Quality Gate).
 
 ---
 
 ## Quality Gate
 
-**Why a checker exists at all.** SVG generated by an LLM is not deterministic — banned features creep in over long decks and only surface when `svg_to_pptx` aborts mid-conversion or PowerPoint silently drops elements. The checker turns "PowerPoint export failed at page 14" into "the Executor used `<style>` on page 14, regenerate it" — an order-of-magnitude faster diagnosis loop, which is what makes long decks economically feasible to iterate on.
+**Why a checker exists at all.** SVG generated by an LLM is not deterministic — compatibility violations creep in over long decks and only surface when `svg_to_pptx` aborts mid-conversion or PowerPoint silently drops elements. The checker turns "PowerPoint export failed at page 14" into "page 14 violates the SVG compatibility contract" — an order-of-magnitude faster diagnosis loop, which is what makes long decks economically feasible to iterate on.
 
 **Why placed before post-processing, not after.** Post-processing rewrites SVG (icon embedding, image inlining), which would mask source-level violations. Reading `svg_output/` directly catches the Executor's actual output, before any cleanup that might paper over a bug.
 
-**Severity model: errors block, warnings don't, and there is intentionally no auto-fix.** Errors require the Executor to re-author the offending page in context — a banned `<style>` element isn't a mechanical patch, because the Executor used it for a reason and the substitute (e.g., inline attributes) needs the same design intent re-applied. Auto-fix would silently lose that intent and ship a worse-looking page.
+**Severity model: errors block, warnings don't, and there is intentionally no auto-fix.** Errors require the Executor to re-author the offending page in context — a compatibility violation is not necessarily a mechanical patch, because the replacement must preserve the same design intent. Auto-fix would silently lose that intent and ship a worse-looking page.
 
 **Why chart coordinate verification hangs off the same gate.** Chart pages have geometric correctness requirements (bar heights / pie sweep angles / axis tick positions) that aren't structural and aren't caught by SVG validity rules. The natural place to catch them is the same gate where the AI is asked to revisit its output — bundling the cognitive context "look at what you generated and fix it" into one phase, rather than splitting structural and geometric review into separate review rounds.
 

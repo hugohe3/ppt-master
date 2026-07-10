@@ -21,7 +21,7 @@ Classroom chalkboard — a dark slate field, soft chalk-stroke line work, powder
 - Dark slate field; off-white chalk carries most marks; the deck's colors appear as soft, powdery pastel chalk accents, used sparingly.
 - Restrained and powdery — never saturated fills.
 
-> HEX values come from confirmation `e`; this style only governs the chalk-on-slate, powdery-accent discipline — it names no colors. (Dark-field legibility: [`shared-standards.md §6`](../shared-standards.md).)
+> HEX values come from confirmation `e`; this style only governs the chalk-on-slate, powdery-accent discipline — it names no colors.
 
 ## 4. Texture / elevation
 

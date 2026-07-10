@@ -183,27 +183,7 @@ primary_color: "#004098"
 
 ---
 
-## X. SVG Technical Constraints
-
-### Mandatory Rules
-
-1. viewBox: `0 0 1280 720`
-2. Use `<rect>` elements for backgrounds
-3. Text wrapping via `<tspan>` (no `<foreignObject>`)
-4. CSS alpha colors and explicit `fill-opacity` / `stroke-opacity` are both supported; values multiply
-5. Forbidden: `mask`, `<style>`, `class`, `foreignObject`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
-6. Forbidden: `textPath`, `animate*`, `script`
-7. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
-
-### PPT Compatibility Rules
-
-- `<g opacity="0..1">` is allowed as per-descendant alpha; overlapping children may composite differently
-- `<image opacity="0..1">` maps to native picture transparency; use overlays only for color washes
-- Inline styles only — no external CSS or `@font-face`
-
----
-
-## XI. Placeholder Specification
+## X. Placeholder Specification
 
 Templates use `{{PLACEHOLDER}}` format. Common placeholders:
 
@@ -226,7 +206,7 @@ Templates use `{{PLACEHOLDER}}` format. Common placeholders:
 
 ---
 
-## XII. Usage Notes (Recommended)
+## XI. Usage Notes (Recommended)
 
 1. **Template Deployment**: Copy the template to your project directory.
 2. **Asset Replacement**: Replace `大型 logo.png` (592×238) and `右上角 logo.png` (113×50) in the `images` directory.
