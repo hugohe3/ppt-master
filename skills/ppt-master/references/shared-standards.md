@@ -925,6 +925,31 @@ steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
 
 **Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
 
+### Theme Font Inheritance (Baseline and Template Export)
+
+New projects derive PowerPoint theme fonts from `spec_lock.md` typography when
+native export uses `baseline` or `template` structure mode:
+
+- `title_family` (falling back to `font_family`) becomes the theme major font.
+- `body_family` (falling back to `font_family`) becomes the theme minor font.
+- SVG text whose resolved exported face matches either locked family emits
+  DrawingML `+mj-*` / `+mn-*` tokens instead of a fixed typeface.
+- When major and minor resolve to the same face, ordinary slide-local text uses
+  the minor role; semantic `title` placeholders are forced to major, while
+  body/footer/slide-number placeholders are forced to minor.
+- Local emphasis, code, brand, or other families that do not match the locked
+  title/body faces remain concrete per-run fonts and do not change with the
+  theme.
+
+This substitution is package-only: the SVG stays the live-preview truth, and
+the installed theme resolves the tokens to the same concrete fonts on initial
+open. Changing the PowerPoint theme later can therefore update matching text
+without changing the SVG geometry or the first export's visual design.
+
+`preserve` mode never rewrites source theme fonts, and `flat` remains the
+diagnostic slide-local/fixed-font comparison path. A project without a usable
+`spec_lock.md` typography section keeps the legacy concrete-font behavior.
+
 ### Explicit PPTX Master / Layout / Placeholder Metadata (Template Export)
 
 **Trigger**: Set `spec_lock.md` `pptx_structure.mode` to `template`, or pass

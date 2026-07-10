@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from xml.etree import ElementTree as ET
 from dataclasses import dataclass, field
+
+if TYPE_CHECKING:
+    from .theme_fonts import ThemeFontSpec
 
 AffineMatrix = tuple[float, float, float, float, float, float]
 IDENTITY_MATRIX: AffineMatrix = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
@@ -67,6 +70,9 @@ class ConvertContext:
     # Optional per-element conversion diagnostics. Shared by child contexts so
     # callers can inspect native / skipped / unsupported decisions per slide.
     trace_events: list[dict[str, Any]] | None = None
+    # Optional project theme contract. Matching SVG title/body families emit
+    # DrawingML +mj/+mn tokens instead of fixed typeface names.
+    theme_font_spec: ThemeFontSpec | None = None
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -178,6 +184,7 @@ class ConvertContext:
             image_scale=self.image_scale,
             image_quality=self.image_quality,
             trace_events=self.trace_events,
+            theme_font_spec=self.theme_font_spec,
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:

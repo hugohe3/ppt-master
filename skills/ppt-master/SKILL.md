@@ -700,9 +700,13 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > PowerPoint new-slide picker only offers layouts that belong to the deck, and
 > converts `pageNumber` / `slideNumber` chrome whose text exactly equals the
 > slide's display number into an auto-updating PowerPoint slide-number field
-> (other numbering schemes keep their literal text). Add
+> (other numbering schemes keep their literal text). For projects with a
+> `spec_lock.md` typography contract, baseline also installs `title_family` as
+> the PowerPoint theme major font and `body_family` / `font_family` as the minor
+> font; matching SVG runs use theme tokens so later theme edits can cascade
+> without changing initial rendering. Add
 > `--pptx-structure flat` only for debugging/comparison when all generated
-> backgrounds and chrome must remain slide-local.
+> backgrounds and chrome must remain slide-local and fonts must stay concrete.
 
 > **Preserved source-template export** — a reusable template package created
 > from a structured PPTX may ship `native_structure.json` plus

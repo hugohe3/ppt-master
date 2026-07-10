@@ -14,6 +14,7 @@ from xml.etree import ElementTree as ET
 from resource_paths import resolve_external_image_reference
 
 from .context import ConvertContext, ShapeResult
+from .theme_fonts import theme_font_tokens
 from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
@@ -1449,7 +1450,10 @@ def _build_run_xml(
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
 
     fonts = parse_font_family(ff) if ff else default_fonts
-    run_fonts = resolve_text_run_fonts(text, fonts)
+    run_fonts = theme_font_tokens(
+        fonts,
+        ctx.theme_font_spec if ctx is not None else None,
+    ) or resolve_text_run_fonts(text, fonts)
     lang = detect_text_lang(text)
 
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
