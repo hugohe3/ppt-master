@@ -2,6 +2,10 @@
 
 > Narrative skeleton and visual aesthetic come from this deck's locked files under [`modes/`](./modes/_index.md) and [`visual-styles/`](./visual-styles/_index.md). Technical constraints are in shared-standards.md.
 
+**Hard rule — complete page SVG**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content.
+
+> Note: this rule covers page design only. Speaker notes, animations, transitions, narration, and direct native-PPTX workflows retain their separate artifacts and package-level processing.
+
 ---
 
 ## 1. Template Adherence Rules
@@ -13,7 +17,7 @@
 | Source list | Read path |
 |---|---|
 | Chosen template's `design_spec.md` (read frontmatter to detect `replication_mode`) | `templates/design_spec.md` |
-| Preserve-mode native layout/placeholder contract | `templates/native_structure.json` |
+| Legacy preserve-mode native layout/placeholder contract, when present | `templates/native_structure.json` |
 | Every distinct `<basename>` in `spec_lock.md page_layouts` | `templates/<basename>.svg` |
 | Every distinct chart name in `spec_lock.md page_charts` | `templates/charts/<chart_name>.svg` |
 | Chart types in `design_spec.md §VII` not covered above | `templates/charts/<chart_name>.svg` |
@@ -34,9 +38,9 @@ Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative
 
 1. **Mirror-mode template** (template's `design_spec.md` frontmatter has `replication_mode: mirror`) → see §1.1 below. The page is consumed as a **visual reference**, not as a placeholder shell.
 2. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → inherit the structure of `templates/<basename>.svg` (already in context from §1.0).
-3. `page_layouts` exists but **no entry** for this page → **free design**, no template inheritance.
-4. `page_layouts` section absent (legacy deck) **and** `templates/` directory exists → fall back to the page-type table below, matching by SVG filename keyword (cover/chapter/content/ending/toc). Read the matched file at first use if §1.0 batch did not cover it.
-5. No template at all → free design.
+3. `pptx_structure.mode: template` but this page has no `page_layouts` entry → stop; the template contract is incomplete. Adaptive mode must still select a reference SVG.
+4. `page_layouts` section absent in a legacy project and `templates/` exists → fall back to the page-type table below, matching by SVG filename keyword. Read the matched file at first use if §1.0 did not cover it.
+5. No deck/layout template at all → free design.
 
 > Note: `page_layouts` disambiguates the multiple content variants modern templates ship (e.g., `graduation_defense` has 8); the legacy table cannot.
 
@@ -59,14 +63,14 @@ Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative
 When the project's chosen template is a `mirror` template (`design_spec.md` frontmatter declares `replication_mode: mirror`), Executor switches to a **reference-style** consumption path that bypasses placeholder substitution:
 
 1. **Per-page reference selection** — Strategist selects one mirror page per project page via `spec_lock.md page_layouts` (e.g., `P04: 015_content`). The basename is the mirror filename without extension; Strategist made this choice by reading `design_spec.md §V Page Roster` descriptions, not by guessing.
-2. **Copy, don't fill** — open the referenced mirror SVG (already in context from §1.0). **Copy it as the starting point for the project page**, then edit text elements in place to express the project's content for `P<NN>`. Preserve every non-text element verbatim: backgrounds, decorative shapes, sprite-cropped images, charts, icon usage, color values, font families, geometry, sprite `<svg viewBox>` wrappers, and **which image** each `<image>` points at.
+2. **Copy, don't fill** — open the referenced mirror SVG (already in context from §1.0). Copy it as the starting point, then edit slide-specific text in place. Preserve every non-text element and every `data-pptx-*` structure attribute verbatim unless adaptive mode intentionally assigns a new Layout contract.
 3. **What you may edit** — the visible text content of `<text>` / `<tspan>` elements that express slide-specific content (title, body, captions, KPI labels, dates, page numbers). Replace the source deck's example text with the project's text for this page from `design_spec.md §IX` and `notes/<NN>_*.md`.
 4. **What you must not touch** — element positions, sizes, fonts, colors, fills, strokes, gradients, **which image each `<image>` points at**, `<g>` grouping, sprite-sheet `<svg viewBox>` wrappers, decorative `<rect>` / `<path>` / `<circle>` / `<polygon>` shapes, `<use data-icon="...">` markers, embedded chart data structures. Mirror's value is preserving the source deck's visual identity — any geometric / decorative drift defeats the purpose. **The `href` path is not the image**: normalizing a bare `href="cover_bg.png"` to `href="../images/<name>"` (when Step 3 relocated the asset to `images/`) points at the *same* image and changes nothing visual — that is an allowed path fix, not a fidelity edit. Leaving the bare href as-is is also fine; the exporter and live preview resolve bare hrefs against `images/` either way.
 5. **Content fit** — the mirror page was chosen by Strategist because its layout matches the content slot. If the project's content for `P<NN>` legitimately needs more / fewer items than the mirror page provides (e.g. mirror shows 3 KPI cards, project has 4 metrics), keep the mirror page's visual rhythm and either drop one metric to fit or split across two pages — do **not** restructure the mirror page's grid. If neither works, surface a `warning: P<NN> content does not fit mirror reference <basename>; suggest different reference page` and proceed with the closest-fit edit.
-6. **No `{{}}` substitution** — mirror SVGs do not contain placeholder markers. Do not search for `{{TITLE}}` / `{{CONTENT_AREA}}` etc.; do not invent placeholders. The whole mirror contract is "verbatim source + in-place text edit".
+6. **Visible text editing** — mirror SVGs may keep literal source text rather than `{{...}}` authoring markers. Edit visible text in place, but retain any imported semantic `data-pptx-placeholder` identity.
 7. **Output filename** — follow the standard project SVG naming convention (`<NN>_<page_name>.svg` where `<NN>` matches the project page index, not the mirror source index). The mirror filename is the *reference*, not the *output*.
 
-**Detecting mirror mode**: read the chosen template's `design_spec.md` frontmatter once during §1.0 batch read. If `replication_mode: mirror`, every page that hits `page_layouts` follows §1.1 above; pages without a `page_layouts` entry still fall through to free design (resolution rule 3 above).
+**Detecting mirror mode**: read the chosen template's `design_spec.md` frontmatter once during §1.0 batch read. If `replication_mode: mirror`, every page follows §1.1 through its mandatory `page_layouts` reference.
 
 **Mirror + chart pages**: chart structures inside a mirror SVG are already drawn (axis, series, labels). Treat them as visual references — replace the data labels and series text content to match the project's chart spec, but do not redraw the chart from a `templates/charts/<name>.svg` baseline. A mirror template's `page_charts` entries are normally absent for this reason.
 
@@ -85,32 +89,34 @@ When the project's chosen template is a `mirror` template (`design_spec.md` fron
 Before generating each page, output which template is used:
 
 ```
-📝 **Template mapping**: `templates/03a_content_image_text.svg` (or "None (free design)")
+📝 **Template mapping**: `templates/03a_content_image_text.svg` (free-design routes may use "None")
 🎯 **Adherence rules / layout strategy**: [specific description]
 ```
 
 - **Content pages**: template defines only header/footer; content area is free
-- **No template**: generate entirely per the Design Spec
+- **No template**: allowed only on free-design or brand-only routes
 
 ### 1.2 PowerPoint Master / Layout Mapping
 
 `page_layouts` selects an SVG design reference; `pptx_layouts` declares the native PowerPoint layout produced at export. They are independent contracts.
 
-`pptx_structure.template_adherence` records the Strategist's confirmed template-use policy. `strict` requires one real `page_layouts` roster entry for every page; `adaptive` permits missing rows and keeps native export on `baseline` even when the template directory contains `native_structure.json` + `source_template.pptx`.
+`pptx_structure.template_adherence` records the Strategist's confirmed template-use policy. Both `strict` and `adaptive` require one real `page_layouts` reference and one `pptx_layouts` output mapping per page. Strict keeps the referenced Layout contract; adaptive may create a new explicit Layout while retaining the template Master.
 
 | `pptx_structure.mode` | Executor behavior |
 |---|---|
-| `baseline` or missing | Author ordinary SVG pages. Do not add explicit PPTX structure metadata merely because a page uses a visual template or its directory carries a native structure pair; export assigns conservative filename-backed Layout families after generation. |
+| `baseline` or missing | Free design or brand-only route. Author ordinary standalone SVG pages; export assigns conservative filename-backed Layout families after generation. |
 | `template` | Every generated SVG MUST implement the matching `pptx_layouts` row and the explicit structure contract below. |
-| `preserve` | Every generated SVG MUST use the locked source layout key/name. Keep inherited master/layout visuals as marked preview layers; export removes the previews and reuses the original source package parts. |
+| `preserve` | Legacy strict-only compatibility. Use the locked source layout key/name and retain marked preview layers for source-package reuse. |
 
-**Hard rule — every structured page references one layout**: In `template` or `preserve` mode, read `P<NN>: <layout_key> | <layout name>` from `pptx_layouts`, then put both values on the root SVG as `data-pptx-layout` and `data-pptx-layout-name`. Do not invent, rename, or omit a key.
+**Hard rule — every structured page references one layout**: In `template` or `preserve` mode, read `P<NN>: <layout_key> | <layout name>` from `pptx_layouts`, then put both values on the root SVG as `data-pptx-layout` and `data-pptx-layout-name`. Strict copies the selected template key/name. Adaptive may use the new key/name already locked by Strategist; Executor must not improvise another.
 
 **Hard rule — PowerPoint paint order**: Direct visual children appear in this order: Master background, Layout background, optional Slide background, shared Master shapes, same-key Layout shapes, then slide-local content/placeholders. Backgrounds are the special plane beneath all inherited shapes. Repeat the same Master contract on every page and the same Layout contract on every page sharing a key.
 
 **Placeholder ownership**: Keep actual title/subtitle/body/picture/chart/table/object/media/date/footer/slide-number content on the Slide and add the matching `data-pptx-placeholder`. Do not move actual content into a Layout. A reconstructed `title` normally omits `data-pptx-placeholder-idx`; preserve an explicit imported title index when present. Every indexed placeholder on one layout uses a unique index. Chart/table placeholders require native markers and a later `--native-objects` export; object/media placeholders must each resolve to one top-level DrawingML object.
 
-**Preserve-mode source identity**: Copy `data-pptx-placeholder-idx` from the chosen template SVG/native contract whenever the source placeholder has an index. Preserve the source placeholder type/idx pairing; do not assign a convenient new index. Master/layout elements in the SVG are preview copies only and MUST retain `data-pptx-layer` + `data-pptx-editable="false"`; never flatten them into unmarked slide-local content.
+**Adaptive Layout creation**: Start from the selected template SVG, keep every Master element identical, and change only the Layout layer/placeholder contract needed for the new composition. Pages sharing the new key repeat the same static Layout elements and placeholder ids/types in the same order.
+
+**Legacy preserve identity**: In `preserve` mode only, copy source `data-pptx-placeholder-idx` values and retain the source placeholder type/index pairing. Master/Layout preview elements keep `data-pptx-layer` plus `data-pptx-editable="false"`.
 
 **Background ownership**:
 
@@ -177,12 +183,12 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 Before drawing each page, look up its entry in `page_layouts` to decide which basename to inherit (the SVG itself was loaded in §1.0):
 
-- Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding SVG already in context. The basename **must match** an actual file in the chosen template directory. If it does not, `adaptive` emits `warning: page_layouts P<NN> references missing file <basename>.svg — falling back to free design`; `strict` stops and reports the invalid mapping.
-- No entry for this page with `template_adherence: adaptive` (or no adherence row) → free design, no inheritance. **Not an error** — Strategist intentionally left this page free.
-- No entry for this page with `template_adherence: strict` → stop before drawing and report the missing Strategist mapping; strict template use cannot silently fall back to free design.
-- Whole section absent → see §1 fallback (legacy page-type matching).
+- Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding SVG already in context. The basename **must match** an actual file in the chosen template directory. If it does not, stop before drawing and report the invalid mapping; neither `strict` nor `adaptive` may fall back to free design inside a template deck.
+- No entry for this page with `template_adherence: strict|adaptive` → stop before drawing and report the missing Strategist mapping. Adaptive mode still selects the closest template SVG as its visual/structural reference; flexibility applies to the new output Layout, not to whether a template reference exists.
+- Whole section absent with `pptx_structure.mode: template` → stop before drawing; the current template contract is incomplete.
+- Whole section absent only in a legacy project without the current template contract → see §1 fallback (legacy page-type matching).
 
-Do **not** invent a layout entry, and do **not** assume a template just because `templates/` exists. In `adaptive` mode, a silent `page_layouts` row is the instruction to design freely; in `strict` mode, silence is an upstream contract error.
+Do **not** invent a layout entry, and do **not** assume a template just because `templates/` exists. For either template-adherence value, a missing or invalid `page_layouts` row is an upstream contract error. Free design is a separate deck route, never a per-page fallback inside template mode.
 
 **Per-page PowerPoint layout lookup — `pptx_layouts` section**:
 

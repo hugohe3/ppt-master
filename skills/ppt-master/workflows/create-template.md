@@ -66,8 +66,8 @@ python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.p
 This produces, in one workspace:
 
 - `manifest.json` — single source of truth: slide size, theme colors, fonts, per-master theme summaries, asset inventory, placeholder metadata, SVG file paths, per-slide / per-layout / per-master metadata, page-type candidates
-- `native_structure.json` — portable machine contract: stable master/layout keys, source package parts, layout picker names, placeholder type/index/geometry, source hash, and a template-packaging preserve-vs-rebuild recommendation
-- `source_template.pptx` — byte-preserved source package paired with `native_structure.json`; required for downstream `pptx_structure.mode: preserve`
+- `native_structure.json` — analysis contract: stable master/layout keys, layout picker names, placeholder type/index/geometry, source hash, and source-graph quality facts
+- `source_template.pptx` — byte-preserved analysis copy for visual/package cross-checking; it is not copied into the final template package
 - `summary.md` — short human-readable digest derived from manifest.json (for quick scanning only)
 - `assets/` — extracted reusable image assets; `manifest.json` owns the asset-name mapping and SVG `href` values reuse that mapping
 - `svg/` — **primary view** (layered template view):
@@ -95,7 +95,8 @@ Before the Template_Designer reads imported SVGs, factor large decorative vector
 # standard / fidelity analysis path
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/svg" --icons-dir "<import_workspace>/icons" --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
 
-# mirror creation path
+# mirror visual-copy path; also run the layered command above because Master/Layout
+# ownership remains required for the rebuilt explicit structure
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/svg-flat" --icons-dir "<import_workspace>/icons" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
 ```
 
@@ -115,7 +116,7 @@ The source SVGs in `<import_workspace>/svg/` / `<import_workspace>/svg-flat/` ar
 Interpretation rule (carries forward into Steps 2 and 4):
 
 - `manifest.json` is the source of truth for slide size, theme colors, fonts, background inheritance, reusable asset inventory, unique layout/master structure, and slide reuse relationships
-- `native_structure.json` is the source of truth for native PowerPoint identity: stable layout keys, picker names, parent masters, placeholder types/indices, and the source-package hash. Its `recommendedMode` guides this template-creation workflow only; downstream deck generation confirms `strict` vs `adaptive` separately in the Strategist stage.
+- `native_structure.json` is the source of truth for source PowerPoint identity: stable layout keys, picker names, parent masters, placeholder types/indices, and the source-package hash. Use those facts to rebuild the explicit SVG contract; never retain the source package as the new template architecture.
 - `summary.md` is a quick scan; never treat it as the canonical fact source — go back to `manifest.json` if anything is unclear
 - exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
 - exported `icons/*.svg` are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Read the cleaned SVGs and `*_vector_asset_inventory.json` first; open a specific icon SVG only when the cleaned page or inventory shows that the extracted asset is relevant to the current design decision. This is what makes the SVG work surface smaller.
@@ -137,21 +138,18 @@ Before composing Step 2, extract the template's reusable norms from the previous
 | Density rhythm | title scale, content block count, whitespace balance, dense vs. breathing pages | Page-type guidance for Strategist / Executor |
 | Page roster semantics | cover / TOC / chapter / content / ending variants and their intended content slots | `design_spec.md §V Page Roster` rows |
 | Asset policy | source images / icons / textures that are part of the template vs. sample-only content | `design_spec.md §VI Assets` or omit sample-only assets |
-| Native PowerPoint structure | `native_structure.json` strategy, masters/layouts, picker names, placeholder type/index, source slide mapping | Package the preserved contract when reusable; otherwise rebuild one master plus semantic layouts. Do not decide downstream strict/adaptive use here. |
+| Native PowerPoint structure | `native_structure.json` source facts, masters/layouts, picker names, placeholder type/index, source slide mapping | Rebuild one clean Master plus semantic Layouts in complete, explicitly annotated SVG pages. |
 
 Distinguish observed facts from template rules: "`slide_07` uses a left photo crop" is a fact; "content pages may use a left photo rail for location / product / case-study pages" is the reusable rule.
 
-**Hard read gate** (`standard` / `fidelity` modes — `mirror` differs, see below):
+**Hard read gate** (all replication modes):
 
 - The agent MUST finish reading every cleaned `master_*.svg`, `layout_*.svg`, and `slide_*.svg` file from the layered `svg/` view before moving on to Step 2
 - The agent MUST list the read master / layout / slide filenames inside the Step 2 brief proposal as proof of the gate
 
 Do **not** treat the imported PPTX or exported slide SVGs as direct final template assets — Step 4 reconstructs them as a clean, maintainable PPT Master template package, not a 1:1 shape translation.
 
-> **Mirror-mode fast path** — when the user has indicated mirror replication (verbatim copy of every source slide):
-> - Run the vector illustration readability pass on `svg-flat/`, then read **only** the cleaned flat `slide_*.svg` files (the self-contained, what-PowerPoint-shows view) and `manifest.json` (for theme colors, fonts, asset inventory).
-> - Skip `svg/master_*.svg` / `svg/layout_*.svg` / `svg/inheritance.json` — chrome / content separation is irrelevant in mirror mode (no placeholder insertion happens).
-> - Mirror is explicitly a visual-verbatim copy flow: every slide becomes a template page as-is, except that large vector illustrations may be factored into `icons/` placeholders for maintainability. The "reconstruct, don't translate" rule applies to `standard` / `fidelity` only.
+> **Mirror-mode visual path** — when the user selects mirror replication, use cleaned `svg-flat/slide_*.svg` for literal page appearance, but still read cleaned `svg/master_*.svg`, `svg/layout_*.svg`, and `svg/inheritance.json` to recover layer ownership. Mirror preserves page visuals; it does not bypass the explicit Master/Layout reconstruction contract.
 
 ### 1B. Existing SVG assets
 
@@ -209,7 +207,7 @@ Compose a single message that surfaces every Required brief item to the user, **
 | Theme mode | Recommended localized mode with English ID, plus available modes such as `light` / `dark` / `mixed` with localized explanations |
 | Canvas format | Recommended canvas, plus other supported formats from [`canvas-formats.md`](../references/canvas-formats.md) that fit the source aspect ratio or user intent. Always show the concrete pixel size and `viewBox`; do not treat two same-ratio formats such as `ppt169` (`1280x720`) and `banner` (`1920x1080`) as interchangeable. |
 | Replication mode | Recommended localized mode with English ID, plus all modes available for the current input type; list forbidden modes for type C / D as unavailable with localized reasons |
-| Native structure packaging | For type A, show the `native_structure.json` recommendation and both choices: retain the source package (`preserve`) or rebuild explicit layouts (`template`). This is a library-package capability choice, not downstream strict/adaptive adherence. `mirror` cannot retain the native pair because its flat SVGs do not identify inherited layers. |
+| Native structure reconstruction | For type A, summarize the source master/layout graph from `native_structure.json`, then state the fixed output policy: rebuild one clean Master plus explicit semantic Layouts (`template`). The source package is analysis input only. |
 | Visual fidelity for fixed pages | Recommended localized choice with English ID, plus both `literal` / `adapted` options when applicable |
 | Asset bundling | Recommended included assets, plus excluded candidate assets with a one-line reason when reference assets exist |
 
@@ -225,7 +223,7 @@ Items to surface:
 | Theme mode | Yes | A: `[fact]` from `manifest.json` background colors. B: `[fact]` from SVG `fill`. C: `[suggested]` from visual estimate. D: `[decision]` |
 | Canvas format and dimensions | Yes | A/B: `[fact]` from slide size or SVG `width` / `height` / `viewBox`; show `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, and `source_viewbox`. C: `[suggested]` from image aspect ratio. D: `[decision]`, default `ppt169` (`1280x720`, `0 0 1280 720`) |
 | Replication mode | Yes | `[decision]` — `standard` always available; `fidelity` and `mirror` available for type A (canonical, manifest-anchored) and type B (AI visual clustering / direct 1:1 copy — see Step 1 caveats); reject `fidelity` / `mirror` upfront for type C / D |
-| Native structure strategy | Type A only | `[fact]` recommendation from `native_structure.json.strategy`; preserve (`preserve`) when the source graph is complete/reusable, rebuild (`template`) when minimal/incomplete. Force rebuild for `mirror`. |
+| Native structure facts | Type A only | `[fact]` from `native_structure.json.strategy`: master/layout counts, source placeholder identities, multi-master status, and reason codes. Output remains rebuilt explicit SVG structure (`template`) for every replication mode. |
 | Visual fidelity for fixed pages | Yes for `standard` / `fidelity` when reference exists; **N/A for `mirror`** (mirror is implicitly literal) | `[decision]` — `literal` (preserve original geometry / decoration / sprite crops as-is; for cover / chapter / ending especially) or `adapted` (use the reference for tone/structure but allow design evolution). Different page types may take different settings |
 | Basic template norms | Yes when reference exists | `[fact]` / `[suggested]` — layout grammar, image system, density rhythm, page roster semantics, and asset policy extracted in Step 1 |
 | Reference source | Optional | already known if Step 1 ran |
@@ -239,7 +237,7 @@ For type A, also include in this message:
 
 - the exact cleaned `master_*.svg`, `layout_*.svg`, `slide_*.svg` filenames you read from the layered `svg/` view (proof of the hard read gate)
 - a one-line summary of the master / layout structure you extracted
-- the native structure recommendation, including master/layout counts, multi-master status, and reason codes
+- the source structure facts, including master/layout counts, multi-master status, and reason codes; state that the final package will rebuild one clean Master plus semantic Layouts
 
 The user replies with corrections, additions, or "all good".
 
@@ -291,7 +289,7 @@ If the input source is type A, pass the following internal package to the role:
 
 - finalized brief from Step 3
 - `manifest.json`
-- `native_structure.json` and `source_template.pptx`
+- `native_structure.json` and `source_template.pptx` as read-only analysis inputs
 - `summary.md` (orientation only)
 - exported `assets/`
 - `*_vector_asset_inventory.json`, when the vector readability pass extracted assets; do not bulk-read `icons/*.svg`
@@ -304,9 +302,9 @@ For type D, pass only the finalized brief.
 
 The role uses the analysis bundle to anchor objective facts such as theme colors, fonts, reusable backgrounds, common branding assets, layout grammar, image-placement rules, density rhythm, and page-slot semantics, then rebuilds the final SVG templates in a simplified, maintainable form.
 
-**Native structure packaging strategy**: When the confirmed strategy is `preserve`, copy `native_structure.json` and `source_template.pptx` unchanged into the final template directory. Author every template SVG with the source layout key/name on the root, source master/layout visuals as preview layers, and slide content as source-compatible placeholder markers. Preserve the importer's distinct `subtitle` / `object` / `media` / `date` roles and exact source indices instead of reducing them to body/other. This retains a future strict-use capability; it does not force every downstream deck to use it. When the strategy is `template`, do not copy the native pair; reconstruct one master plus semantic layouts through the explicit metadata contract. Mirror mode always takes this rebuild/baseline path because flat slides do not retain layer ownership.
+**Native structure reconstruction**: Do not copy `native_structure.json` or `source_template.pptx` into the final template directory. Use their master/layout/placeholder facts to reconstruct one clean Master plus semantic Layouts through the explicit SVG metadata contract. Every emitted SVG is a complete standalone preview: repeat the identical Master layer, repeat the selected Layout layer for pages sharing a key, and keep actual content on the Slide with semantic placeholder markers.
 
-Downstream, the Strategist confirmation stage owns template adherence. `strict` maps every generated page to this SVG roster and may activate `pptx_structure.mode: preserve`; `adaptive` may use only selected SVGs and always keeps native export on `baseline`, even though the pair remains available in the template directory.
+Downstream, both template-adherence choices stay on `pptx_structure.mode: template`. `strict` preserves the selected template Layout contract. `adaptive` still references one template SVG per page, keeps the same Master contract, and may author a new explicit Layout key when the source roster has no suitable composition. It never falls back to baseline inside a template deck.
 
 **Apply the visual-fidelity decision from Step 3**: pages marked `literal` (typically cover / chapter / ending) must reproduce the reference's geometry, decoration, and sprite-sheet crops as-is — "simplified, maintainable form" applies only to genuinely redundant structure, not to load-bearing layout. Pages marked `adapted` may use the reference for tone and structural rhythm but evolve the design.
 
@@ -314,7 +312,7 @@ Downstream, the Strategist confirmation stage owns template adherence. `strict` 
 
 **Mirror-mode override** (type A or B): when `Replication mode: mirror`, this step is a **verbatim copy** rather than a reconstruction. The Template_Designer role:
 
-1. **Copies the cleaned source pages** into the template directory **without reconstruction** — no content placeholder insertion, no decorative simplification, no chrome/content reorganization. The SVG that ships in the template is the cleaned source page, modulo filename changes, asset path rewrites, and the vector illustration placeholders created by the readability pass.
+1. **Copies the cleaned source pages** into the template directory with literal visual fidelity — no content rewriting or decorative simplification. Then annotate the complete page with root Layout identity plus direct Master/Layout/placeholder metadata derived from the layered source. The SVG remains visually identical when opened alone, while export can deterministically reconstruct native structure.
    - Type A: source is the cleaned flat `<import_workspace>/svg-flat/slide_NN.svg`
    - Type B: source is each cleaned `*.svg` in the analysis workspace when extraction ran; otherwise each `*.svg` in the input directory (already self-contained)
 2. **Renames each file** using the source-order-first convention `<NNN>_<page_type>.svg`, where `<NNN>` is the source-order index zero-padded to 3 digits and `<page_type>` is typically `cover` / `toc` / `chapter` / `content` / `ending` (fall back to `content` when the type cannot be confidently classified). Examples: `001_cover.svg`, `002_toc.svg`, `003_content.svg`, ..., `050_ending.svg`.
@@ -324,16 +322,16 @@ Downstream, the Strategist confirmation stage owns template adherence. `strict` 
    - Type A: assets come from `<import_workspace>/assets/`
    - Type B: resolve relative paths in source `<image href="...">` against the source SVG location and copy each unique asset; if the source already follows PPT Master conventions (assets co-located with SVGs in the same directory), copy the whole asset set and then rewrite paths
 4. **Copies `icons/` when present** and preserves every extracted `<use data-icon="..."/>` reference. Do not inline these assets manually in the template working SVGs; the shared icon embedding path owns re-inlining before export.
-5. Writes `design_spec.md` per [template-designer.md](../references/template-designer.md) §1 — the **§V Page Roster description per page is the load-bearing artifact** because mirror has no placeholders to advertise the per-page contract. Mirror is only the template-creation replication mode; downstream generation still treats the finished template package as a selectable / reusable roster, not as a forced 1:1 slide sequence.
+5. Writes `design_spec.md` per [template-designer.md](../references/template-designer.md) §1. The §V Page Roster remains the content-fit index; explicit SVG metadata is the native Master/Layout contract. Mirror is only the template-creation replication mode; downstream generation still treats the finished package as a selectable / reusable roster, not as a forced 1:1 slide sequence.
 
-Mirror mode does **not** invoke the "reconstruct into clean SVG" pathway. The sprite-sheet preservation rule still applies (because the flat SVGs already contain the original sprite wrappers — do not flatten them when copying). Vector illustration placeholders are the only allowed maintainability rewrite.
+Mirror mode does not simplify the visual page, but it still reconstructs layer ownership. The sprite-sheet preservation rule applies because flat SVGs already contain the original crop wrappers; do not flatten them when annotating the page.
 
 **Expected outputs from this step** (full spec → [template-designer.md](../references/template-designer.md)):
 
 1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare brief frontmatter for `register_template.py`. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
 2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` / `fidelity` / `mirror` mode rosters, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
-   - `{{...}}` placeholders are the authoring contract used to generate final slide content; they are not PowerPoint `p:ph` objects. For an explicitly requested reusable PowerPoint structure, use `pptx_structure.mode: template`. A package carrying `native_structure.json` + `source_template.pptx` may use `mode: preserve` only when downstream template adherence is confirmed as `strict`. `adaptive` use keeps `baseline`. Template/preserve modes require `pptx_layouts` and explicit root/layer/placeholder metadata; preserve-mode placeholders retain the source `data-pptx-placeholder-idx`.
+   - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root `data-pptx-layout` / `data-pptx-layout-name`, direct Master/Layout layers, and direct semantic `data-pptx-placeholder` markers. Both strict and adaptive downstream use set `mode: template` and require `page_layouts` plus `pptx_layouts` for every page.
 4. Template assets (optional) — Logos / PNG / JPG / reference SVG bundled with the template package
 
 ---
@@ -357,7 +355,8 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 - skip `spec_lock.md` drift checks (templates do not ship a spec_lock)
 - enforce roster ↔ `design_spec.md` consistency as **errors** (orphan files / missing files break the target kind's index)
 - emit advisory **warnings** when a page lacks a conventional placeholder — these are hints, not failures. Declare a `placeholders:` block in `design_spec.md` frontmatter to silence them when your template intentionally uses a different vocabulary
-- validate `native_structure.json` and `source_template.pptx` as an inseparable pair, including source hash, package layout parts, SVG layout keys/names, and placeholder compatibility
+- require every SVG root to declare an output Layout and every SVG to contain at least one direct Master/Layout/placeholder declaration
+- validate cross-page Master equality plus same-key Layout/placeholder equality
 
 **Checklist**:
 
@@ -369,7 +368,8 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 - [ ] SVG `viewBox` matches the declared canvas dimensions, not just the aspect ratio (for `ppt169`: `0 0 1280 720`; for `banner`: `0 0 1920 1080`); `width` / `height`, if written, equal it
 - [ ] Placeholder names follow the canonical convention where applicable; templates with intentionally different vocabularies (e.g. `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`) should declare a `placeholders:` frontmatter block to silence advisory warnings
 - [ ] Asset files referenced by SVGs actually exist in the template package
-- [ ] When native strategy is `preserve`, both `native_structure.json` and `source_template.pptx` exist; every SVG root references a contract layout key/name and every placeholder uses a compatible source type/index
+- [ ] `design_spec.md` frontmatter declares `native_structure_mode: template`; no `native_structure.json` or `source_template.pptx` is packaged
+- [ ] Every SVG root declares `data-pptx-layout` and `data-pptx-layout-name`; direct Master/Layout elements and semantic placeholders obey the explicit paint-order contract
 - [ ] If any SVG references an extracted vector `data-icon`, the corresponding SVG asset exists directly under the package's `icons/` directory; do not add a separate illustration embedding script
 - [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
 - [ ] For `mirror` mode: file count equals source page count (type A: `ls templates/<kind_dir>/<id>/*_*.svg | wc -l` matches the cleaned flat `<import_workspace>/svg-flat/slide_*.svg | wc -l`; type B: matches the source SVG count); filenames follow the `<NNN>_<page_type>.svg` convention; **no `{{...}}` placeholder strings appear in any copied SVG** (`grep -l "{{" templates/<kind_dir>/<id>/*.svg` should return nothing — if the type B source itself contains placeholders, the user should be in `standard` mode, not `mirror`); §V Page Roster in `design_spec.md` lists every emitted file with a one-line description of what the page contains and what content slot it suits
@@ -417,11 +417,9 @@ The index file is a **discovery index** — it lets the AI answer "what template
 > source_canvas_width: 1280
 > source_canvas_height: 720
 > source_viewbox: "0 0 1280 720"
-> # Type-A native retention capability only; omit all three rows for rebuilt templates.
+> # All current deck/layout templates rebuild an explicit SVG structure.
 > # Downstream strict/adaptive use is confirmed by Strategist and is not stored here.
-> native_structure_mode: preserve
-> native_structure: native_structure.json
-> source_template: source_template.pptx
+> native_structure_mode: template
 > page_count: 5
 > primary_color: "#005587"
 > ---

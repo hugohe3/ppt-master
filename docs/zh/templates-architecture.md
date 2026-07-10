@@ -14,7 +14,7 @@
 | **Layout** | `templates/layouts/<id>/` | 仅结构段：canvas / page structure / page types / SVG roster | 不写品牌身份（无 logo、无品牌色硬约束） | `workflows/create-template.md`（layout 分支）|
 | **Deck** | `templates/decks/<id>/` | 全段：身份段 + 结构段 + 中间段（template overview） | —— | `workflows/create-template.md`（deck 分支，默认）|
 
-从结构完整的 PPTX 导入的 Layout/Deck 可以额外携带一对原生结构文件：`native_structure.json` 记录稳定 master/layout key、版式显示名称、父母版和 placeholder type/idx；`source_template.pptx` 保存原 package。两者必须同时存在且 SHA-256 匹配。这是一项模板包能力，不是自动路由：下游 Strategist 确认 `strict` 时可用 `pptx_structure.mode: preserve` 复用源 master/layout/theme；确认 `adaptive` 时仍按 SVG 模板参考 + `baseline` 自由生成。没有这对文件时继续使用现有 `baseline` 或显式 `template` 重建。
+Layout/Deck 的每张 SVG 都是完整预览，同时显式声明 `data-pptx-layout`、Master/Layout 层和语义 placeholder。PPTX 导入产生的 `native_structure.json` 与 `source_template.pptx` 只用于分析源结构，不进入新模板包。模板负责指导生成完整的页面 SVG；导出时不得再回读模板，向生成 SVG 叠加其中缺失的可见内容。下游 `strict` 保持所选 Layout 契约，`adaptive` 可在同一 Master 下创建新 Layout；两者都使用 `pptx_structure.mode: template`。旧 `preserve` 契约仅保留兼容读取。
 
 三者是**三种并列的 reference bundle**，物理目录与 frontmatter `kind` 字段双向对齐：
 
@@ -30,12 +30,14 @@ kind: brand
 # templates/layouts/academic_defense/design_spec.md
 ---
 kind: layout
+native_structure_mode: template
 ...
 ---
 
 # templates/decks/招商银行/design_spec.md
 ---
 kind: deck
+native_structure_mode: template
 ...
 ---
 ```
@@ -96,6 +98,7 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
+native_structure_mode: template
 summary: <一句话描述用途>
 canvas_format: <ppt169 | ppt43 | a4 | ...>
 page_count: <N>
@@ -123,6 +126,7 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
+native_structure_mode: template
 summary: <一句话描述用途>
 canvas_format: <ppt169 | ...>
 page_count: <N>

@@ -169,6 +169,17 @@ One offending character invalidates the file and aborts export. Numeric refs (`&
 
 ## 4. Basic SVG Rules
 
+### 4.0 Complete Page-Design Contract
+
+| Concern | Requirement |
+|---|---|
+| Visible slide result | The completed `svg_output/<slide>.svg` MUST contain every visible text, image, shape, diagram, chart/table fallback, background, and template-derived layout element intended for that slide. External visual assets are valid when the SVG references them explicitly. |
+| Template/control inputs | Templates, `design_spec.md`, and `spec_lock.md` guide authoring. Do not depend on them to add visible elements after the page SVG is complete. |
+| PPTX translation | The exporter may map represented SVG content to DrawingML/native objects and deduplicate represented elements into Master/Layout/Slide parts. It MUST NOT invent visible slide content absent from the SVG. |
+| Excluded package behavior | Speaker notes, animations, transitions, narration audio, PPTX relationships, and direct native-PPTX workflows remain separately owned. They are not part of the SVG page-design contract. |
+
+**Hard rule — page-design closure**: A final page SVG is the sole visual/design authority for that page on every SVG-authoring route. SVG is not the authority for the entire PPTX package.
+
 - **viewBox** MUST match the canvas dimensions; it is the single source of truth for canvas size. Root `width`/`height` are optional compatibility attributes and are not used as PPT Master canvas authority.
 - **Background**: Use `<rect>` to define the page background color
 - **`<tspan>`** has two purposes: (1) manual line breaks (use `dy` or explicit `y`); (2) inline run formatting on the same line (color/weight/size). `<foreignObject>` is FORBIDDEN. See "Single logical line" rule below.
@@ -950,6 +961,13 @@ slide in that family carries exactly the same explicit background. Otherwise,
 keep each background on its Slide. Preserve whether each family shows or hides
 the parent Master shape tree.
 
+**Layout chrome rule**: After family assignment, move only the identical
+leading prefix of explicitly named chrome (`logo`, `footer`, `header`,
+`watermark`, `chrome`) carried by every family member. Generated OOXML and
+image relationships must match exactly, no animation may target the shapes,
+and moving them behind Slide content must preserve z-order. Keep page numbers
+and every non-identical object Slide-local.
+
 ### Theme Font Inheritance (Baseline and Template Export)
 
 New projects derive PowerPoint theme fonts from `spec_lock.md` typography when
@@ -1010,18 +1028,19 @@ colors.
 
 ### Explicit PPTX Master / Layout / Placeholder Metadata (Template Export)
 
-**Trigger**: Set `spec_lock.md` `pptx_structure.mode` to `template`, or pass
-`--pptx-structure template` explicitly. The CLI value overrides the lock;
-without either trigger, metadata stays visually dormant and the SVG exports
-through the normal baseline / flat path.
+**Trigger**: Deck/layout template routes set `spec_lock.md`
+`pptx_structure.mode` to `template`; direct diagnostics may pass
+`--pptx-structure template`. Both strict and adaptive template adherence use
+this mode. Without either trigger, metadata stays visually dormant.
 
 **Project lock**: In the standard project pipeline, template mode requires one
 `pptx_layouts` row per page using
 `P<NN>: <layout_key> | <PowerPoint layout name>`. The SVG root values MUST
-match that row. Reuse one layout key only when pages share the same static
-layout layer and placeholder contract; different content is not a reason to
-create a new layout. Direct diagnostic exports may pass the CLI flag without a
-spec lock; the SVG metadata remains the exporter source of truth.
+match that row. Strict uses the selected template key/name. Adaptive may create
+a new key/name while repeating the same Master contract. Reuse one layout key
+only when pages share the same static Layout layer and placeholder contract;
+different content is not a reason to create a new layout. Direct diagnostic
+exports may pass the CLI flag without a spec lock.
 
 | Metadata | Placement | Behavior |
 |---|---|---|
@@ -1096,9 +1115,9 @@ must still resolve to one top-level DrawingML object. `media` currently binds
 an authored image/crop to a native `media` placeholder; it does not synthesize
 video or audio media from a decorative SVG group.
 
-### Preserved Source Master / Layout Contract
+### Legacy Preserved Source Master / Layout Contract
 
-**Trigger**: A reusable template package ships `native_structure.json` and `source_template.pptx`, the Strategist-confirmed `template_adherence` is `strict`, and `spec_lock.md` sets `pptx_structure.mode: preserve` with project-relative paths to both files. The pair's presence alone is not a trigger; `adaptive` template use stays on `baseline`.
+**Trigger**: An existing project already ships `native_structure.json` and `source_template.pptx`, has strict template adherence, and sets `pptx_structure.mode: preserve`. Current `create-template` output does not emit this pair; retain this contract only for backward compatibility.
 
 | Artifact | Authority |
 |---|---|
