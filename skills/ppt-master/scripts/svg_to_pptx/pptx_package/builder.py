@@ -671,6 +671,120 @@ def _promote_common_chrome_shapes_to_masters(
     return promoted
 
 
+_PAGE_NUMBER_TOKENS = {"pagenumber", "pagenum", "slidenumber"}
+
+
+def _first_slide_number(extract_dir: Path) -> int:
+    """Read firstSlideNum from presentation.xml (defaults to 1)."""
+    presentation_path = extract_dir / "ppt" / "presentation.xml"
+    try:
+        root = ET.parse(presentation_path).getroot()
+    except (OSError, ET.ParseError):
+        return 1
+    raw = root.attrib.get("firstSlideNum")
+    if raw is None:
+        return 1
+    try:
+        return int(raw)
+    except ValueError:
+        return 1
+
+
+def _shape_with_id(root: ET.Element, shape_id: str) -> ET.Element | None:
+    """Find a p:sp anywhere in the slide tree by its cNvPr id."""
+    for shape in root.iter(f"{{{PML_NS}}}sp"):
+        cnv = shape.find(f"{{{PML_NS}}}nvSpPr/{{{PML_NS}}}cNvPr")
+        if cnv is not None and cnv.attrib.get("id") == shape_id:
+            return shape
+    return None
+
+
+def _replace_literal_run_with_slidenum_field(
+    shape: ET.Element,
+    expected_text: str,
+    field_guid: str,
+) -> bool:
+    """Swap a single literal page-number run for an a:fld slidenum field."""
+    tx_body = shape.find(f"{{{PML_NS}}}txBody")
+    if tx_body is None:
+        return False
+    a_t = f"{{{DML_NS}}}t"
+    total_text = "".join(t.text or "" for t in tx_body.iter(a_t))
+    if total_text.strip() != expected_text:
+        return False
+    text_runs = [
+        (paragraph, run)
+        for paragraph in tx_body.iter(f"{{{DML_NS}}}p")
+        for run in paragraph.findall(f"{{{DML_NS}}}r")
+        if (run.findtext(a_t) or "").strip()
+    ]
+    if len(text_runs) != 1:
+        return False
+    paragraph, run = text_runs[0]
+    if (run.findtext(a_t) or "").strip() != expected_text:
+        return False
+
+    fld = ET.Element(f"{{{DML_NS}}}fld", {"id": field_guid, "type": "slidenum"})
+    r_pr = run.find(f"{{{DML_NS}}}rPr")
+    if r_pr is not None:
+        fld.append(ET.fromstring(ET.tostring(r_pr, encoding="utf-8")))
+    fld_text = ET.SubElement(fld, a_t)
+    fld_text.text = expected_text
+    index = list(paragraph).index(run)
+    paragraph.remove(run)
+    paragraph.insert(index, fld)
+    return True
+
+
+def _convert_page_number_texts_to_fields(
+    extract_dir: Path,
+    slide_count: int,
+    conversion_traces: list[dict[str, Any]] | None,
+    *,
+    verbose: bool = False,
+) -> int:
+    """Replace literal page-number chrome text with auto-updating fields.
+
+    Only converts when the traced pageNumber/slideNumber shape's whole text
+    equals the slide's expected display number (honoring firstSlideNum), so
+    schemes like content-only numbering keep their literal text untouched.
+    """
+    if not conversion_traces:
+        return 0
+    trace_by_slide = {
+        int(trace.get("slide_num", 0)): trace
+        for trace in conversion_traces
+        if trace.get("slide_num") is not None
+    }
+    first_slide_number = _first_slide_number(extract_dir)
+    field_guid = f"{{{str(uuid.uuid4()).upper()}}}"
+
+    converted = 0
+    for slide_num in range(1, slide_count + 1):
+        tokens = _trace_chrome_shape_ids(trace_by_slide.get(slide_num))
+        shape_ids = sorted({
+            shape_id
+            for token, ids in tokens.items()
+            if token in _PAGE_NUMBER_TOKENS
+            for shape_id in ids
+        })
+        if len(shape_ids) != 1:
+            continue
+        slide_path = extract_dir / "ppt" / "slides" / f"slide{slide_num}.xml"
+        tree = ET.parse(slide_path)
+        shape = _shape_with_id(tree.getroot(), shape_ids[0])
+        if shape is None:
+            continue
+        expected_text = str(first_slide_number + slide_num - 1)
+        if _replace_literal_run_with_slidenum_field(shape, expected_text, field_guid):
+            _write_xml_tree(slide_path, tree)
+            converted += 1
+
+    if verbose and converted:
+        print(f"  Baseline slide-number fields: converted {converted} page number(s)")
+    return converted
+
+
 def _remove_relationship(rels_path: Path, rel_id: str) -> None:
     """Remove one relationship entry by rId."""
     rels_content = rels_path.read_text(encoding="utf-8")
@@ -1928,6 +2042,12 @@ def create_pptx_with_native_svg(
             and pptx_structure == "baseline"
             and success_count == len(svg_files)
         ):
+            _convert_page_number_texts_to_fields(
+                extract_dir,
+                len(svg_files),
+                conversion_trace if conversion_trace is not None else structure_trace,
+                verbose=verbose,
+            )
             _promote_common_slide_backgrounds_to_masters(
                 extract_dir,
                 structure,

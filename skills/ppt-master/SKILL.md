@@ -680,8 +680,11 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > chrome stays slide-local. Image relationships for promoted chrome are copied to
 > the master. Baseline also prunes base-template slide layouts no generated
 > slide references, so the PowerPoint new-slide picker only offers layouts that
-> belong to the deck. Add `--pptx-structure flat` only for debugging/comparison
-> when all generated backgrounds and chrome must remain slide-local.
+> belong to the deck, and converts `pageNumber` / `slideNumber` chrome whose
+> text exactly equals the slide's display number into an auto-updating
+> PowerPoint slide-number field (other numbering schemes keep their literal
+> text). Add `--pptx-structure flat` only for debugging/comparison when all
+> generated backgrounds and chrome must remain slide-local.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
