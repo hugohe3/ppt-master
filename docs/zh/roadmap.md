@@ -82,6 +82,8 @@
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 
+- **原生 package 结构 + 保守 PPTX 对象回转** — 原生导出现在保留基础 package 的真实空白版式关系，并默认使用 baseline master；只提升完全一致的背景和安全的前置重复 chrome。独立 `pptx_to_svg.py` 导入器会为受支持的未合并表格与 classic-chart cache 输出 fallback SVG 加原生元数据；由本 exporter 生成的规范纯色系列 / 切片与精确 title/subtitle 结构可经第二次 `--native-objects` 导出继续保留，无法等价表达的表格 / 图表语义则保持明确的 fallback-only marker
+
 ---
 
 ## 进行中 / 下一步

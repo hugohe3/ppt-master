@@ -337,7 +337,7 @@ Full reference: [`animations.md`](animations.md).
 **Prohibited**:
 - NEVER use `cp` as a substitute for `finalize_svg.py`
 - NEVER force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). Default auto-split already gives native the high-fidelity source it needs without affecting legacy.
-- NEVER use `--only` (it suppresses one of the two output files)
+- NEVER use `--only` in the standard pipeline; keep it for explicit one-product diagnostics or compatibility checks
 
 > Source-directory split: by default `svg_to_pptx.py` reads `svg_output/` for the native pptx (preserves icon `<use>`, image `preserveAspectRatio` as native picture-crop metadata, rounded rect `rx/ry` → `prstGeom roundRect`) and `svg_final/` for the legacy/preview pptx (PowerPoint's internal SVG parser needs the flattened form). Pass `-s output` or `-s final` only when you specifically want both products to read from a single source.
 
@@ -690,7 +690,7 @@ The child `<path>`'s `stroke` becomes the foreground color (the pattern's line c
 
 > `svg_quality_checker.py` warns on missing `data-pptx-pattern` and errors on values outside the enum. Catch these pre-export — PowerPoint's repair dialog hides which pattern broke.
 
-### Native PPTX Table / Chart Markers (Experimental)
+### Native PPTX Table / Chart Markers (Opt-in)
 
 Native PowerPoint tables and Excel-backed charts activate at export time only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
 
@@ -709,7 +709,12 @@ Native PowerPoint tables and Excel-backed charts activate at export time only. T
 `data-pptx-x` / `data-pptx-y` / `data-pptx-width` / `data-pptx-height` on the
 marker group. If any bound is omitted, the exporter infers the object frame
 from the visible fallback geometry; this keeps SVG fallback and native object
-placement aligned.
+placement aligned. Complete explicit bounds are absolute slide coordinates;
+marker/ancestor `translate` and `scale` transforms apply only when at least one
+bound is inferred. `x`, `y`, `width`, and `height` must be finite and resolve
+inside PowerPoint's 32-bit DrawingML coordinate range; `width` and `height`
+must resolve to at least one EMU. Native table frames must additionally resolve
+to at least one EMU per resolved row and column.
 
 **Validation**: `svg_quality_checker.py` validates native marker kind, JSON
 metadata, bounds/fallback availability, table rows/columns, supported chart
@@ -735,8 +740,13 @@ type, and chart data shape before export.
 
 **Table schema**: Native tables are rectangular DrawingML grids. Use `columns`
 for the optional header row and `rows` for body rows; shorter rows are padded
-with blank cells unless `strict_grid: true` is set. Use `column_widths` and
-`row_heights` as relative weights. Cell objects accept `text`, `fill`, `color`,
+with blank cells unless `strict_grid: true` is set. Tables may contain at most
+1000 resolved rows and 1000 resolved columns. Use `column_widths` and
+`row_heights` as relative weights. Weight lists must match the resolved grid,
+contain finite non-negative numbers, and include at least one positive value.
+If present, `header_rows` must be an integer from `0` through the resolved row
+count. Write `strict_grid`, `style.band_row`, and cell `bold` as JSON booleans.
+Cell objects accept `text`, `fill`, `color`,
 `align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
 `border_width`; the same `padding`, `border_color`, and `border_width` keys may
 also live under `style` as table defaults. Native table typography mirrors the

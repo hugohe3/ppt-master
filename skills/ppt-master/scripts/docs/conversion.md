@@ -228,6 +228,36 @@ Usage boundary:
 - Beautify promotes selected identity/content fields into locked constraints after confirmation.
 - Template-fill uses the slide library as the native PPTX fill contract.
 
+## `pptx_to_svg.py`
+
+Reconstruct a PPTX package as editable SVG views by reading OOXML directly.
+
+```bash
+python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode both
+python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode layered
+python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
+```
+
+| Mode | Output |
+|---|---|
+| `both` (default) | Layered master/layout/slide SVGs under `svg/`, plus self-contained slides under `svg-flat/` |
+| `layered` | Only the layered `svg/` view and inheritance metadata |
+| `flat` | One self-contained slide SVG per page under `svg/` |
+
+Supported unmerged tables and conservative classic-chart caches carry
+`data-pptx-native` metadata beside their SVG fallback. Markers remain dormant
+unless a later export uses `--native-objects`. Unsupported tables keep their
+rendered SVG table; unsupported charts keep a baked preview or explicit
+placeholder. Both carry `data-pptx-native-status`.
+
+Exporter-canonical charts recover canonical solid series/slice colors and exact
+one- or two-paragraph title styling; two paragraphs retain their `title` /
+`subtitle` roles. This is not a general source-chart style round-trip guarantee.
+
+Concrete slide SVGs resolve `<a:fld type="slidenum">` using the presentation's
+`firstSlideNum` display numbering. Standalone master/layout SVGs keep the
+literal field fallback because one shared part can serve multiple slides.
+
 ## `source_to_md/web_to_md.py`
 
 Convert web pages to Markdown and download images locally.
