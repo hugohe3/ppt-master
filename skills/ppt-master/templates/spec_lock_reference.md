@@ -132,11 +132,11 @@
 > - template_adherence: adaptive
 > - template_adherence: strict
 > ```
-> Omit the row for free design and brand-only templates. `adaptive` treats template SVGs as optional page references and always exports through `baseline`; `strict` requires one `page_layouts` row per page and may use `preserve` when the template carries a compatible native pair.
+> Omit the row for free design and brand-only templates. Both values require one `page_layouts` and one `pptx_layouts` row per page. `strict` keeps the selected Layout contract; `adaptive` may create a new explicit Layout under the same template Master.
 >
-> - `baseline` — default. Preserve conservative shared Master/background/chrome behavior, then assign filename-backed Cover/Agenda/Section/Closing/Content layouts after SVG generation. Actual content stays slide-local; no reusable placeholders or visual-similarity inference are authored.
-> - `template` — use only when the user explicitly requests a reusable PowerPoint template/master/layout deliverable. Requires a complete `pptx_layouts` section and explicit SVG structure metadata on every generated page.
-> - `preserve` — use only with `template_adherence: strict` when the selected reusable template ships `native_structure.json` + `source_template.pptx`. Add both project-relative rows below and map every page under `pptx_layouts`. `adaptive + preserve` is invalid.
+> - `baseline` — default for free design and brand-only routes. Preserve conservative shared Master/background/chrome behavior, then assign filename-backed Cover/Agenda/Section/Closing/Content layouts. It may also promote exact family-wide leading chrome into a Layout. Actual content stays slide-local; no placeholders or visual-similarity inference are authored.
+> - `template` — required whenever Step 3 loaded a deck/layout template. Requires complete `page_layouts` and `pptx_layouts` sections plus explicit SVG structure metadata on every generated page.
+> - `preserve` — legacy strict-only compatibility for an existing project that already ships `native_structure.json` + `source_template.pptx`. Do not select it for newly created templates.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
 >
 > Preserve example:
@@ -149,7 +149,7 @@
 
 ## pptx_layouts
 
-> Emit this section only when `pptx_structure.mode` is `template` or `preserve`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Preserve mode uses exact keys/names from `native_structure.json` and the selected template SVG root.
+> Emit this section only when `pptx_structure.mode` is `template` or legacy `preserve`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Strict template use copies the selected SVG key/name; adaptive use may declare a new stable key/name. Preserve uses the legacy native contract.
 >
 > Example:
 > ```
@@ -166,13 +166,13 @@
 - P03: 02a_chapter
 - P04: 03a_content_abstract
 
-> One entry per page **that uses a template SVG**. Key: `P<NN>` matching §IX. Value: the template's SVG basename without extension (e.g., `01_cover`, `03a_content_image_text`) — Executor resolves it to `templates/<value>.svg`. Modern templates ship many content-page variants (`03a_content_abstract`, `03b_content_image_text`, `03c_content_three_items` …); the page-type → single-file mapping in `executor-base.md §1` no longer covers them, so this section is the per-page truth.
+> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. Strict inherits it unchanged; adaptive uses it as the architecture reference and may output a new `pptx_layouts` key.
 >
-> **No entry for a page** → that page is free design (no template inheritance). Mixed decks are supported: e.g., cover/chapter pages inherit a template while content pages are free.
+> **No entry for a page** is valid only when the entire route is free design or brand-only. It is an error in template mode.
 >
-> **Hard rule**: Use both `page_layouts` and `page_charts` for the same page only when the layout template is a compatible shell for the chart. Do not assign a conflicting layout just to fill every page: a waterfall chart should not inherit a timeline layout, and KPI cards should not inherit a circle-diagram layout unless that is the intended visual structure. When no compatible layout exists, omit the page from `page_layouts`.
+> **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and create a new explicit Layout; strict mode must choose an existing compatible Layout or revise the outline.
 >
-> **Whole section omitted** → entire deck is free design. Equivalent to no rows but cleaner; do this when zero pages reference a template.
+> **Whole section omitted** → free design or brand-only route.
 >
 > **Strategist source**: copy the per-page SVG choices from `design_spec.md §VI Page Roster` (or §IX outline if Roster is absent). Names must match files in `templates/` exactly — typos cause silent fallback to free design.
 

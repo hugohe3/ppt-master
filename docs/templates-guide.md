@@ -1,6 +1,6 @@
 # Templates Guide: Use, Derive, and Boundaries
 
-A PPT Master "template" is a **structure + style** preset bundle: a set of page layout SVGs (cover / chapter / TOC / content / ending and their variants), a `design_spec.md` design specification, and matching assets (logos, backgrounds, decorative imagery). When derived from a structured PPTX it may also carry a native master/layout contract and preserved source package; without that pair it remains a reusable SVG page-skeleton bundle.
+A PPT Master "template" is a **structure + style** preset bundle: complete standalone SVG pages whose metadata explicitly identifies Master, Layout, Slide, and placeholders, plus `design_spec.md` and matching assets. Export deterministically reconstructs native PowerPoint structure from those SVGs.
 
 This guide answers three questions:
 
@@ -121,7 +121,7 @@ The workflow will then **mandatorily** confirm a template brief with you before 
 
 ### Step 1 — Prepare reference material
 
-**Strongly recommended: hand over the original `.pptx` file.** The importer reads OOXML directly, extracts every master/layout and placeholder, and emits both layered SVG references and a paired `native_structure.json` + byte-preserved `source_template.pptx`. When the source structure is reusable, the template package retains the option to bind generated pages to its original layouts; when it is minimal, Template_Designer rebuilds a clean master plus semantic layouts from the layered references. Retention does not force later decks to use the native structure.
+**Strongly recommended: hand over the original `.pptx` file.** The importer reads OOXML directly and extracts every Master, Layout, placeholder, theme, and reusable asset into layered analysis references. Template_Designer uses those facts to rebuild one clean Master plus semantic Layouts as complete, explicitly annotated SVG pages. The original PPTX remains analysis input and is not packaged into the new template.
 
 You can also design from scratch from a brand guideline: provide a logo, primary color HEX, fonts, tone description, and a few mood references — the AI will design the page skeletons on the spot. This suits brands that don't yet have a finished PPT, only a VI manual.
 
@@ -140,8 +140,8 @@ The workflow does not silently infer values — before generation it lists these
 | **Tone summary** | One line, e.g. "modern, restrained, data-driven" |
 | **Theme mode** | Light / dark / gradient / ... |
 | **Canvas format** | Default `ppt169` (16:9); specify other formats up front |
-| **Replication mode** | `standard` (default 5-page roster) / `fidelity` (one variant per visually distinct cluster from a `.pptx` source — count is driven by the source) / `mirror` (1:1 verbatim copy of every source slide, no abstraction, no placeholders) — `fidelity` and `mirror` both require a `.pptx` reference |
-| **Native structure packaging** | `preserve` when the source master/layout graph is reusable; `template` to rebuild one master plus semantic layouts when it is minimal. This decides what capability the library package retains, not how every future deck must use it. `mirror` uses the rebuilt/baseline path because its inherited layers are flattened. |
+| **Replication mode** | `standard` (default 5-page roster) / `fidelity` (one variant per visually distinct cluster) / `mirror` (literal visual copy of every source slide plus explicit layer ownership) |
+| **Native structure facts** | The brief reports source Master/Layout counts, placeholder identities, and multi-master status. Output is always rebuilt explicit SVG structure (`template`). |
 | **Visual fidelity** | (required for `standard` / `fidelity` when a reference exists) `literal` (reproduce original geometry / decoration / sprite crops as-is) or `adapted` (use reference for tone and structure but allow design evolution). Cover / chapter / ending are usually `literal`. **Not asked for `mirror`** — mirror is implicitly literal |
 | **Keywords** | 3–5 tags for index lookup |
 | Theme color / design notes / asset list | Optional — can be auto-extracted from the source |
@@ -158,15 +158,15 @@ This is the most easily confused decision when deriving a template.
 |---|---|---|---|
 | Output pages | 5 (cover / chapter / TOC / content / ending) | one variant per visually distinct cluster — count driven by the source | one page per source slide (1:1) |
 | Abstraction | High — clean, reusable skeleton | Medium — clusters preserved with cleanup | **Zero** — verbatim copy |
-| Placeholders inserted? | Yes (`{{TITLE}}`, `{{CONTENT_AREA}}`, …) | Yes | **No** — Executor edits text in place against the project content |
+| Authoring placeholders | Yes (`{{TITLE}}`, `{{CONTENT_AREA}}`, …) | Yes | Literal text may remain, but imported native content slots still carry semantic metadata |
 | Best for | You want "tone + basic skeleton" to generate brand-new decks later | The source PPTX itself is a customized layout library and every variant matters | Someone else's polished deck is great as-is, you want every page available as a reference |
 | Typical use | Building a base brand template | Replicating a 20-variant government briefing layout set | Reusing a 50-page McKinsey-style deck verbatim |
 | Requires PPTX source? | No | **Yes** | **Yes** |
-| Decoration complexity | Usually simpler | Must preserve sprite-sheet (cropped image) structure | Inherits whatever the source had, byte-for-byte |
+| Decoration complexity | Usually simpler | Must preserve sprite-sheet crop structure | Preserves literal geometry while adding explicit layer ownership |
 
 **About sprite sheets**: PPTX-exported assets are often a single large image referenced from multiple slides, each cropping a different region via nested `<svg viewBox=...>` wrappers. In `fidelity` and `mirror` modes this nesting must be preserved — you cannot flatten it to a bare `<image>`, or the crop is lost and the page misaligns. The workflow validates this automatically.
 
-**How mirror is consumed**: a mirror template carries no `{{}}` placeholders, so the Strategist picks one mirror page per project page (using `design_spec.md §V Page Roster` descriptions to match content), and the Executor copies that mirror SVG and edits the text in place against the project content — preserving all decoration, sprite crops, and geometry. The library asset stays 100% verbatim; per-project edits live in `projects/<project>/svg_output/`.
+**How mirror is consumed**: the Strategist picks one mirror page per project page, and the Executor copies that complete SVG and edits visible text in place while preserving decoration, sprite crops, geometry, and every `data-pptx-*` structure declaration.
 
 ### Step 4 — Registration and discovery
 
@@ -180,8 +180,8 @@ Registration makes the template **discoverable** — when someone asks "what tem
 
 When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
 
-- **adaptive** — use suitable SVG template pages, allow unmatched pages to be designed freely, and keep native export on the normal baseline path
-- **strict** — map every generated page to the template roster; when the package carries a compatible native pair, reuse its original Master/Layout/Placeholder structure
+- **adaptive** — choose one template SVG per page; when no Layout fits, keep the same Master and create a new explicit Layout
+- **strict** — choose one template SVG per page and keep its Master/Layout/Placeholder contract unchanged
 
 ### What a derived template looks like
 
@@ -200,7 +200,7 @@ skills/ppt-master/templates/layouts/<your_template_id>/
 
 `standard` and `fidelity` SVGs use a unified placeholder convention (`{{TITLE}}`, `{{CHAPTER_TITLE}}`, `{{PAGE_TITLE}}`, `{{CONTENT_AREA}}`, ...) that the Strategist phase fills with content.
 
-A `mirror` template emits one SVG per source slide, named by source order, with **no** placeholders inside:
+A `mirror` template emits one SVG per source slide, named by source order. It may keep literal example text instead of `{{...}}` markers, but imported native slots still carry semantic metadata:
 
 ```
 skills/ppt-master/templates/layouts/<your_template_id>/
@@ -230,7 +230,7 @@ Don't confuse the two:
 
 Common misconceptions to avoid:
 
-- **A template is not always a Slide Master, but it may carry one.** Ordinary templates remain SVG skeletons. An imported template with `native_structure.json` + `source_template.pptx` retains the original master/layout/theme package as an optional strict-use capability; adaptive use still follows the ordinary SVG + baseline path
+- **A reusable template is a complete SVG reconstruction contract, not a preserved source package.** Every page previews independently, while explicit metadata lets export restore Master/Layout/Slide structure
 - **A template is not a "style skin".** It bundles structure (which blocks per page, how information is hierarchized) with style (colors, fonts, decoration). Trying to swap "skin" without structure tends to put the information architecture and the visuals at odds
 - **A template does not make content decisions for you.** The Strategist still decides per-page which layout to use and whether to extend a variant. Templates offer candidates, not predetermined results
 - **`fidelity` mode is not pixel-perfect copying.** Even with `literal` fidelity, the AI still strips noise and unnecessary repetition — geometry stays, redundancy goes

@@ -242,7 +242,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第一步 — 准备参考材料**
 
-**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、全部 master/layout、placeholder type/idx 和可复用图片资源。源结构完整时，模板包会把原 package 保留为严格套用时的可选能力；源结构薄弱时，再用 layered SVG 重建一个干净的 master + 语义版式体系。使用该模板生成新 deck 时，Strategist 会确认是 `adaptive`（SVG 模板参考 + 自由页面，baseline 导出）还是 `strict`（每页套用模板 roster，并在兼容时保留原生版式）。
+**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、全部 Master/Layout、placeholder type/idx 和可复用图片资源，再重建一个干净 Master 与语义 Layout，输出完整且显式分层的 SVG。使用该模板生成新 deck 时，`adaptive` 可在同一 Master 下创建新 Layout，`strict` 保持所选 Layout 契约不变；两者都从 SVG 确定性还原原生结构。
 
 没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 

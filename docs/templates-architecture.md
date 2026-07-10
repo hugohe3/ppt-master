@@ -14,6 +14,8 @@
 | **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template.md` (layout branch) |
 | **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template.md` (deck branch, default) |
 
+Every Layout/Deck SVG is a complete preview with explicit `data-pptx-layout`, Master/Layout layers, and semantic placeholders. PPTX-import artifacts are analysis inputs only and are not packaged into new templates. The template guides authoring of a complete generated page SVG; export never reaches back into the template to overlay visible content missing from that generated SVG. Strict use keeps the selected Layout contract; adaptive use may create a new Layout under the same Master. Both export through `pptx_structure.mode: template`; legacy `preserve` remains compatibility-only.
+
 The three are **parallel reference bundles**. The physical directory and the frontmatter `kind` field correspond one-to-one:
 
 ```yaml
@@ -26,12 +28,14 @@ kind: brand
 # templates/layouts/academic_defense/design_spec.md
 ---
 kind: layout
+native_structure_mode: template
 ...
 ---
 
 # templates/decks/招商银行/design_spec.md
 ---
 kind: deck
+native_structure_mode: template
 ...
 ---
 ```
@@ -92,6 +96,7 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
+native_structure_mode: template
 summary: <one-line use cases>
 canvas_format: <ppt169 | ppt43 | a4 | ...>
 page_count: <N>
@@ -119,6 +124,7 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
+native_structure_mode: template
 summary: <one-line use cases>
 canvas_format: <ppt169 | ...>
 page_count: <N>
