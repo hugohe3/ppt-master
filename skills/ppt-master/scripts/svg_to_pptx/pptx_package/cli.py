@@ -229,7 +229,8 @@ Recorded narration:
         help=(
             'PPTX structure strategy for native export. When omitted, read '
             'spec_lock.md pptx_structure.mode, falling back to baseline. baseline '
-            'promotes safe repeated background/chrome; template consumes explicit '
+            'promotes safe repeated background/chrome and extracts conservative '
+            'filename-backed layout families; template consumes explicit '
             'data-pptx-layout/layer/placeholder metadata to build reusable layouts; '
             'preserve binds generated slides to an imported source template package; '
             'flat leaves generated structure slide-local for debugging/comparison.'

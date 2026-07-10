@@ -925,6 +925,31 @@ steal plot area in PPT. Add `show_legend: true` only when the legend is needed;
 
 **Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
 
+### Baseline Layout Family Extraction
+
+Native `baseline` export assigns layout families after every SVG page has been
+converted. This package-only pass does not change SVG authoring or live preview.
+
+| Filename evidence | Output layout |
+|---|---|
+| `cover`, `frontcover`, `封面` | `Cover` |
+| `agenda`, `contents`, `outline`, `toc`, `目录`, `议程` | `Agenda` |
+| `chapter`, `divider`, `section`, `transition`, `章节`, `过渡页` | `Section` |
+| `closing`, `end`, `ending`, `qa`, `thankyou`, `thanks`, `封底`, `结束`, `结尾`, `结语`, `致谢`, `谢谢` | `Closing` |
+| No exact role token | `Content` |
+
+Keep an existing `Cover` assignment when the Master chrome safety pass already
+used it to hide promoted Master shapes from a minority page.
+
+**Hard rule — no visual inference**: Keep every actual title, body, picture,
+chart, table, and page-specific shape on the Slide. Baseline layouts do not
+infer placeholders or promote visually similar content.
+
+**Background rule**: Move a Slide `p:bg` to its family Layout only when every
+slide in that family carries exactly the same explicit background. Otherwise,
+keep each background on its Slide. Preserve whether each family shows or hides
+the parent Master shape tree.
+
 ### Theme Font Inheritance (Baseline and Template Export)
 
 New projects derive PowerPoint theme fonts from `spec_lock.md` typography when

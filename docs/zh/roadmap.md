@@ -82,7 +82,7 @@
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 
-- **原生 package 结构 + 保守 PPTX 对象回转** — 原生导出保留真实 master/layout 关系，默认 baseline 只提升安全的共享背景/chrome。锁定的 `template` 模式把显式 SVG master/layout layer 与有类型的 placeholder 编译成可复用版式，不做视觉推断；通过 `create-template` 导入的可复用 PPTX 会把原生结构对保留为可选能力。Strategist 进一步确认模板遵循方式：`strict` 可锁定 `preserve`，保留原 master/layout/theme 清单（包括多母版）、把每页绑定到精确源版式并恢复源 placeholder idx；`adaptive` 则把 SVG roster 作为可选参考并继续走 baseline。原始 PPTX 的一次性直接填充继续走 `template-fill-pptx`。导入器也会为受支持的未合并表格与 classic-chart cache 输出 fallback SVG 加原生元数据；无法等价表达的语义保持明确的 fallback-only marker
+- **原生 package 结构 + 保守 PPTX 对象回转** — 原生导出保留真实 master/layout 关系，默认 baseline 只提升安全的共享背景/chrome。SVG 生成完成后，baseline 根据文件名中的明确角色分配 Cover/Agenda/Section/Closing/Content 版式，并且只提升家族内完全一致的背景；实际内容继续留在 Slide，不推断占位符。锁定的 `template` 模式把显式 SVG master/layout layer 与有类型的 placeholder 编译成可复用版式，不做视觉推断；通过 `create-template` 导入的可复用 PPTX 会把原生结构对保留为可选能力。Strategist 进一步确认模板遵循方式：`strict` 可锁定 `preserve`，保留原 master/layout/theme 清单（包括多母版）、把每页绑定到精确源版式并恢复源 placeholder idx；`adaptive` 则把 SVG roster 作为可选参考并继续走 baseline。原始 PPTX 的一次性直接填充继续走 `template-fill-pptx`。导入器也会为受支持的未合并表格与 classic-chart cache 输出 fallback SVG 加原生元数据；无法等价表达的语义保持明确的 fallback-only marker
 
 ---
 

@@ -134,7 +134,7 @@
 > ```
 > Omit the row for free design and brand-only templates. `adaptive` treats template SVGs as optional page references and always exports through `baseline`; `strict` requires one `page_layouts` row per page and may use `preserve` when the template carries a compatible native pair.
 >
-> - `baseline` — default. Preserve the conservative shared Master/background/chrome behavior; no explicit reusable placeholder layouts are authored.
+> - `baseline` — default. Preserve conservative shared Master/background/chrome behavior, then assign filename-backed Cover/Agenda/Section/Closing/Content layouts after SVG generation. Actual content stays slide-local; no reusable placeholders or visual-similarity inference are authored.
 > - `template` — use only when the user explicitly requests a reusable PowerPoint template/master/layout deliverable. Requires a complete `pptx_layouts` section and explicit SVG structure metadata on every generated page.
 > - `preserve` — use only with `template_adherence: strict` when the selected reusable template ships `native_structure.json` + `source_template.pptx`. Add both project-relative rows below and map every page under `pptx_layouts`. `adaptive + preserve` is invalid.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
