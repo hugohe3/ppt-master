@@ -90,6 +90,13 @@ except ImportError:
     _validate_semantic_markers = None
 
 try:
+    from svg_to_pptx.use_expander import (
+        validate_local_use_references as _validate_local_use_references,
+    )
+except ImportError:
+    _validate_local_use_references = None
+
+try:
     from svg_to_pptx.pptx_package.template_structure import (
         TemplateStructureError as _TemplateStructureError,
         PptxLayoutReference as _PptxLayoutReference,
@@ -604,10 +611,19 @@ class SVGQualityChecker:
         if 'foreignobject' in local_names:
             result['errors'].append(
                 "Detected forbidden <foreignObject> element (use <tspan> for manual line breaks)")
-        has_symbol = 'symbol' in local_names
-        has_use = 'use' in local_names
-        if has_symbol and has_use:
-            result['errors'].append("Detected forbidden <symbol> + <use> complex usage (use basic shapes or simple <use> instead)")
+        has_generic_use = any(
+            _local_name(elem).lower() == 'use' and elem.get('data-icon') is None
+            for elem in elems
+        )
+        if has_generic_use:
+            if _validate_local_use_references is None:
+                result['warnings'].append(
+                    "Detected local <use> references, but the shared validator "
+                    "could not be imported; native export will still validate them."
+                )
+            else:
+                for error in _validate_local_use_references(root):
+                    result['errors'].append(f"Invalid local <use> reference: {error}")
         # marker-start / marker-end are conditionally allowed (see shared-standards.md §1.1).
         # The converter maps qualifying <marker> defs to native DrawingML <a:headEnd>/<a:tailEnd>.
         # We only warn when a marker is used without an obvious <defs> definition in the same file.

@@ -358,7 +358,9 @@ The catalog of *how an image is placed on a slide* (full vocabulary in [`referen
 
 ## SVG Constraints: Banned Features and Conditional Allowances
 
-PowerPoint's DrawingML is a strict subset of what SVG can express. The Executor operates inside an empirically-grown blacklist (mask, style/class, `@font-face`, foreignObject, symbol+use, textPath, animate*, script/iframe …) plus narrow conditional allowances for `marker-start`/`marker-end` and image-only `clip-path`. The authoritative list and exact per-feature constraints — including the substitute-effect routing table for `<mask>` (gradient overlays, clipPath, filter shadow, source-image bake-in) — live in [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md).
+PowerPoint's DrawingML is a strict subset of what SVG can express. The Executor operates inside an empirically-grown blacklist (mask, style/class, `@font-face`, foreignObject, textPath, animate*, script/iframe …) plus narrow conditional allowances for `marker-start`/`marker-end`, image-only `clip-path`, and static same-document `<use>` / `<symbol>` reuse. The authoritative list and exact per-feature constraints — including the substitute-effect routing table for `<mask>` (gradient overlays, clipPath, filter shadow, source-image bake-in) — live in [`references/shared-standards.md`](../skills/ppt-master/references/shared-standards.md).
+
+**Why local `<use>` is compile-time reuse, not a retained PowerPoint object.** The accepted form is an exact same-document `href="#id"` or `xlink:href="#id"` targeting `symbol`, `g`, `use`, `rect`, `circle`, `ellipse`, `line`, `path`, `polygon`, `polyline`, `text`, or `image`; internal references use exact `url(#id)` fragments. `x` / `y` are finite unitless or `px` values. A symbol requires a valid `viewBox` whose dimensions are positive, positive unitless/`px` instance `width` / `height`, and either aligned `meet` or plain `none`; `slice`, `refX`, and `refY` are rejected. Symbol artwork must stay inside the `viewBox` because expansion does not reproduce overflow clipping. External, missing, conflicting, circular, and duplicate-ID references fail validation, as does reuse of `data-pptx-layer*`, `data-pptx-native*`, or `data-pptx-placeholder*` structure. The pipeline recursively materializes the subtree and rewrites cloned IDs before export. PPTX-to-SVG import returns the expanded primitives rather than reconstructing the authoring-time `<use>` graph.
 
 The architectural reasons worth knowing here:
 
@@ -399,24 +401,26 @@ The post-processing and export stages work with distinct artifacts. Each one ser
 | `exports/<name>_<ts>_svg.pptx` (preview, opt-in via `--svg-snapshot`) | cross-platform single-file distribution, multi-page browse, email attachment | self-contained, multi-page, opens in PowerPoint / Keynote / WPS / LibreOffice; an `svg_final/` folder is harder to distribute. Off by default — live preview already provides the SVG visual reference for dev/diagnostic work |
 | `backup/<ts>/svg_output/` (always written in default-flow mode) | re-export from frozen SVG sources without re-running the LLM, archival | the only persisted copy of the Executor's raw SVG source after the project has been edited downstream |
 
-### The `svg_finalize/` package has TWO consumers
+### SVG preprocessors have TWO consumers
 
-This is the key insight that's easy to miss when reading the code. The same modules under `skills/ppt-master/scripts/svg_finalize/` are used in two places, for two different products.
+This is the key insight that's easy to miss when reading the code. Cleanup modules under `skills/ppt-master/scripts/svg_finalize/`, together with the local-reference expander, are used in two places for two different products.
 
-**Disk consumer** — `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run. `svg_final/` then feeds IDE preview and the preview pptx.
+**Disk consumer** — `finalize_svg.py` writes `svg_output/` → `svg_final/` once per run, expanding both project icon placeholders and qualified local `<use>` references. `svg_final/` then feeds IDE preview and the preview pptx.
 
-**Memory consumer** — native pptx generation reads `svg_output/` directly (no disk hop), but DrawingML can't handle two SVG features inline, so the converter calls `svg_finalize` modules **in memory**:
+**Memory consumer** — native pptx generation reads `svg_output/` directly (no disk hop), but DrawingML cannot consume project icon placeholders, retained SVG reference instances, or positional text runs inline, so the converter applies the matching preprocessors **in memory**:
 
-| In-memory call site | Module reused | Why native pptx needs it |
+| In-memory call site | Preprocessor | Why native pptx needs it |
 | --- | --- | --- |
 | `svg_to_pptx/use_expander.py` | `svg_finalize.embed_icons` | DrawingML doesn't recognize `<use data-icon="...">`; without expansion every icon silently drops |
+| `svg_to_pptx/use_expander.py` | static local-reference expansion | DrawingML does not preserve SVG `<use>` instance graphs; qualifying subtrees must be materialized with instance-local IDs |
 | `svg_to_pptx/tspan_flattener.py` | `svg_finalize.flatten_tspan` | DrawingML text runs cannot reposition mid-paragraph; a dy-stacked block of `<tspan>`s would otherwise collapse onto one baseline, and an x-anchored tspan would render in the wrong column |
 
 ### Per-module consumer table
 
 | Module | Disk consumer | Memory consumer | Delete impact |
 | --- | --- | --- | --- |
-| `embed_icons.py` | `finalize_svg` `embed-icons` step | `svg_to_pptx/use_expander.py` | native pptx loses all icons + `svg_final/` not self-contained |
+| `embed_icons.py` | `finalize_svg` `embed-icons` step (followed by local-use expansion) | `svg_to_pptx/use_expander.py` | native pptx loses all icons + `svg_final/` not self-contained |
+| `svg_to_pptx/use_expander.py` (local references) | `finalize_svg` `embed-icons` step | native converter preflight | finalize/native export can no longer materialize qualified local reuse |
 | `flatten_tspan.py` | `finalize_svg` `flatten-text` step | `svg_to_pptx/tspan_flattener.py` | **native pptx multi-line `dy`-stacked text collapses to one line** |
 | `align_embed_images.py` | `finalize_svg` `align-images` step | — | `svg_final/` loses image embedding → IDE preview / preview pptx have no images |
 | `crop_images.py` / `embed_images.py` / `fix_image_aspect.py` | imported by `align_embed_images.py` | — | `align_embed_images` `ImportError`, full chain broken |
