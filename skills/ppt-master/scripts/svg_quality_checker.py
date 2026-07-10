@@ -10,6 +10,7 @@ Usage:
     python3 scripts/svg_quality_checker.py --all examples
 """
 
+import copy
 import sys
 import re
 import json
@@ -25,11 +26,9 @@ configure_utf8_stdio()
 
 try:
     from project_utils import CANVAS_FORMATS
-    from error_helper import ErrorHelper
 except ImportError:
-    print("Warning: Unable to import dependency modules")
+    print("Warning: Unable to import project_utils")
     CANVAS_FORMATS = {}
-    ErrorHelper = None
 
 try:
     from update_spec import parse_lock as _parse_spec_lock
@@ -55,6 +54,13 @@ except ImportError:
     _parse_export_font_family = None
     _parse_inline_style = None
     _parse_export_color = None
+
+try:
+    from svg_to_pptx.drawingml.converter import (
+        collect_unsupported_visuals as _collect_unsupported_visuals,
+    )
+except ImportError:
+    _collect_unsupported_visuals = None
 
 try:
     from svg_to_pptx.native_objects import (
@@ -100,9 +106,13 @@ except ImportError:
 
 try:
     from svg_to_pptx.use_expander import (
+        UseExpansionError as _UseExpansionError,
+        expand_local_use_references as _expand_local_use_references,
         validate_local_use_references as _validate_local_use_references,
     )
 except ImportError:
+    _UseExpansionError = None
+    _expand_local_use_references = None
     _validate_local_use_references = None
 
 try:
@@ -161,6 +171,18 @@ _BARE_HEX_VALUE_RE = re.compile(
 )
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
+_SUPPORTED_FILTER_PRIMITIVES = frozenset({
+    'feDropShadow',
+    'feGaussianBlur',
+    'feOffset',
+    'feFlood',
+    'feComposite',
+    'feMerge',
+    'feMergeNode',
+    'feComponentTransfer',
+    'feFuncA',
+})
+_FILTER_EFFECT_PRIMITIVES = frozenset({'feDropShadow', 'feGaussianBlur'})
 
 
 def _normalize_hex_rgb(value: str) -> str | None:
@@ -433,6 +455,12 @@ class SVGQualityChecker:
                 # 2. Check forbidden elements
                 self._check_forbidden_elements(content, root, result)
 
+                # 2b. Validate the supported shadow/glow filter interface.
+                self._check_filter_effects(root, result)
+
+                # 2c. Reject gradient inheritance and transform semantics.
+                self._check_gradient_interfaces(root, result)
+
                 # 3. Check font-size values
                 self._check_font_size_values(content, result)
 
@@ -447,6 +475,9 @@ class SVGQualityChecker:
 
                 # 7. Check icon placeholders resolve before post-processing.
                 self._check_icon_placeholders(root, svg_path, result)
+
+                # 7b. Reject visual elements the native converter cannot dispatch.
+                self._check_unsupported_visual_elements(root, result)
 
                 # 8. Check object-level animation anchor quality.
                 self._check_animation_group_ids(root, result)
@@ -827,6 +858,106 @@ class SVGQualityChecker:
                     "fallback; --native-objects export rejects that combination"
                 )
 
+    def _check_filter_effects(self, root: ET.Element, result: Dict) -> None:
+        """Validate filters against the native shadow/glow approximation."""
+        elems = list(root.iter())
+        direct_filters = []
+        filters_by_id = {}
+        for defs_elem in elems:
+            if _local_name(defs_elem) != 'defs':
+                continue
+            for child in defs_elem:
+                if _local_name(child) != 'filter':
+                    continue
+                direct_filters.append(child)
+                filter_id = child.get('id')
+                if filter_id:
+                    filters_by_id[filter_id] = child
+
+        issues = set()
+        for elem in elems:
+            tag = _local_name(elem)
+            style_values = (
+                _parse_inline_style(elem.get('style'))
+                if _parse_inline_style is not None else {}
+            )
+            if style_values.get('filter'):
+                issues.add(
+                    f"<{tag}> filter must use a direct filter=\"url(#id)\" "
+                    "attribute; inline style filters are not supported"
+                )
+
+            raw_filter = elem.get('filter')
+            if raw_filter is None:
+                continue
+            match = re.fullmatch(r'url\(#([^)]+)\)', raw_filter.strip())
+            if match is None:
+                issues.add(
+                    f"<{tag}> filter must be an exact local url(#id) reference; "
+                    f"got {raw_filter!r}"
+                )
+                continue
+            filter_id = match.group(1)
+            if filter_id not in filters_by_id:
+                issues.add(
+                    f"<{tag}> filter=url(#{filter_id}) has no matching direct "
+                    f"<defs><filter id=\"{filter_id}\"> definition"
+                )
+
+        for filter_elem in direct_filters:
+            filter_id = filter_elem.get('id')
+            label = f"filter #{filter_id}" if filter_id else '<filter> without id'
+            primitives = [
+                _local_name(descendant)
+                for descendant in filter_elem.iter()
+                if descendant is not filter_elem
+            ]
+            unsupported = sorted(
+                set(primitives) - _SUPPORTED_FILTER_PRIMITIVES
+            )
+            if unsupported:
+                issues.add(
+                    f"{label} uses unsupported filter primitive(s): "
+                    f"{', '.join(unsupported)}"
+                )
+            if not _FILTER_EFFECT_PRIMITIVES.intersection(primitives):
+                issues.add(
+                    f"{label} must contain feDropShadow or feGaussianBlur"
+                )
+            if any(
+                _local_name(descendant) == 'feFuncA'
+                and descendant.get('type') != 'linear'
+                for descendant in filter_elem.iter()
+            ):
+                issues.add(f"{label} requires feFuncA type=\"linear\"")
+
+        result['errors'].extend(sorted(issues))
+
+    def _check_gradient_interfaces(self, root: ET.Element, result: Dict) -> None:
+        """Reject gradient inheritance, transforms, and spread modes."""
+        issues = set()
+        for gradient in root.iter():
+            tag = _local_name(gradient)
+            if tag not in {'linearGradient', 'radialGradient'}:
+                continue
+            gradient_id = gradient.get('id')
+            label = f"<{tag} id=\"{gradient_id}\">" if gradient_id else f'<{tag}>'
+            attribute_names = {
+                name.rsplit('}', 1)[-1]
+                for name in gradient.attrib
+            }
+            if 'href' in attribute_names:
+                issues.add(
+                    f"{label} cannot inherit from href/xlink:href; "
+                    "define gradient stops directly"
+                )
+            if 'gradientTransform' in attribute_names:
+                issues.add(f"{label} cannot use gradientTransform")
+            if 'spreadMethod' in attribute_names:
+                issues.add(f"{label} cannot use spreadMethod")
+
+        result['errors'].extend(sorted(issues))
+
     def _check_font_size_values(self, content: str, result: Dict):
         """Require font-size values to be unitless numeric SVG px values."""
         numeric_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
@@ -1084,6 +1215,47 @@ class SVGQualityChecker:
                     f"Icon not found: {icon_name} (searched {icons_dir}"
                     f"{fallback_msg})"
                 )
+
+    def _check_unsupported_visual_elements(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject authored visual elements with no native converter dispatch."""
+        if _collect_unsupported_visuals is None:
+            result['errors'].append(
+                "Unable to import native visual-element preflight; "
+                "cannot verify SVG element support"
+            )
+            return
+        if _expand_local_use_references is None or _UseExpansionError is None:
+            result['errors'].append(
+                "Unable to import local <use> expansion; "
+                "cannot verify SVG element support"
+            )
+            return
+
+        expanded_root = copy.deepcopy(root)
+        try:
+            _expand_local_use_references(expanded_root)
+        except _UseExpansionError:
+            # _check_forbidden_elements already reports the actionable
+            # local-reference validation error.
+            return
+
+        unsupported = _collect_unsupported_visuals(
+            expanded_root,
+            allow_data_icon_use=True,
+        )
+        if not unsupported:
+            return
+
+        preview = '; '.join(unsupported[:8])
+        suffix = '' if len(unsupported) <= 8 else f'; +{len(unsupported) - 8} more'
+        result['errors'].append(
+            f"Unsupported visual SVG element(s) for native PPTX export: "
+            f"{preview}{suffix}"
+        )
 
     def _check_animation_group_ids(self, root: ET.Element, result: Dict):
         """Warn when visible top-level groups cannot be customized."""
