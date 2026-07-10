@@ -666,9 +666,31 @@ def convert_svg_to_slide_shapes(
     """
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
-    viewport_width, viewport_height = _root_viewport_size(root)
     trace_events: list[dict[str, Any]] | None = [] if trace_out is not None else None
     trace_steps: list[dict[str, Any]] = []
+
+    from ..geometry_properties import (
+        GeometryStyleError,
+        materialize_inline_geometry_properties,
+    )
+
+    try:
+        geometry_count = materialize_inline_geometry_properties(root)
+    except GeometryStyleError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: inline geometry materialization failed: {exc}'
+        ) from exc
+    geometry_trace = None
+    if geometry_count:
+        geometry_trace = {
+            'action': 'materialize-inline-geometry',
+            'count': geometry_count,
+        }
+        trace_steps.append(geometry_trace)
+        if verbose:
+            print(f'  Materialized {geometry_count} inline geometry declaration(s)')
+
+    viewport_width, viewport_height = _root_viewport_size(root)
 
     # Expand project icon placeholders and static same-document <use>
     # references before unsupported-element preflight.
@@ -685,6 +707,28 @@ def convert_svg_to_slide_shapes(
             trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
         if verbose and expanded:
             print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
+
+    try:
+        injected_geometry_count = materialize_inline_geometry_properties(root)
+    except GeometryStyleError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: expanded icon geometry materialization failed: {exc}'
+        ) from exc
+    if injected_geometry_count:
+        geometry_count += injected_geometry_count
+        if geometry_trace is None:
+            geometry_trace = {
+                'action': 'materialize-inline-geometry',
+                'count': geometry_count,
+            }
+            trace_steps.append(geometry_trace)
+        else:
+            geometry_trace['count'] = geometry_count
+        if verbose:
+            print(
+                f'  Materialized {injected_geometry_count} inline geometry '
+                'declaration(s) from expanded icons'
+            )
 
     try:
         expanded_local = expand_local_use_references(root)

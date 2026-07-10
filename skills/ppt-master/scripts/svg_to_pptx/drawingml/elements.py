@@ -2600,8 +2600,14 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
     """Convert SVG <ellipse> to DrawingML ellipse shape."""
     raw_cx = svg_length_x(elem.get('cx'), ctx)
     raw_cy = svg_length_y(elem.get('cy'), ctx)
-    raw_rx = svg_length_x(elem.get('rx'), ctx)
-    raw_ry = svg_length_y(elem.get('ry'), ctx)
+    rx_attr = elem.get('rx')
+    ry_attr = elem.get('ry')
+    raw_rx = svg_length_x(rx_attr, ctx) if rx_attr is not None else 0.0
+    raw_ry = svg_length_y(ry_attr, ctx) if ry_attr is not None else 0.0
+    if rx_attr is not None and ry_attr is None:
+        raw_ry = raw_rx
+    elif ry_attr is not None and rx_attr is None:
+        raw_rx = raw_ry
     cx_ = ctx_x(raw_cx, ctx)
     cy_ = ctx_y(raw_cy, ctx)
     rx = raw_rx * ctx.scale_x
