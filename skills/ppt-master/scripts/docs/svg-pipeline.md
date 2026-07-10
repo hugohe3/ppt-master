@@ -229,6 +229,17 @@ Supported CSS paint colors include named colors, `rgb()` / `rgba()`, `hsl()` /
 effect alpha during native export. Explicit opacity attributes remain valid
 when they make palette reuse clearer.
 
+Literal inline geometry is compiled before finalize and native conversion.
+Supported pairs are `rect` (`x/y/width/height/rx/ry`), `circle` (`cx/cy/r`),
+`ellipse` (`cx/cy/rx/ry`), and `image` / `svg` / `use`
+(`x/y/width/height`). A declaration in `style="..."` overrides the same XML
+attribute. Non-zero values must be finite `px` literals; exact zero may omit the
+unit, and sizes/radii cannot be negative. Percentages, `auto`, `calc()`,
+`var()`, `!important`, `inherit`, other units, unsupported element/property
+pairs, stylesheets, selectors, and CSS cascade are rejected. Use XML attributes
+for line endpoints, text positions, path data, and polygon/polyline points. See
+[`shared-standards.md`](../../references/shared-standards.md) §2.
+
 `<g opacity="0..1">` is supported as a per-descendant alpha approximation.
 Nested values multiply; overlapping children may differ from isolated SVG
 group compositing. Transparent native table/chart markers require the default
