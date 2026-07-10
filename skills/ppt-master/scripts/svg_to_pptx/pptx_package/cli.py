@@ -31,7 +31,12 @@ from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
 from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
 from .slide_xml import TRANSITIONS
-from .template_structure import TemplateStructureError
+from .template_structure import (
+    TemplateStructureError,
+    load_pptx_structure_lock,
+    parse_template_slides,
+    template_lock_errors,
+)
 from ..animation_config import load_animation_config, validate_animation_config
 
 try:
@@ -215,13 +220,13 @@ Recorded narration:
     parser.add_argument(
         '--pptx-structure',
         choices=['baseline', 'template', 'flat'],
-        default='baseline',
+        default=None,
         help=(
-            'PPTX structure strategy for native export. baseline (default) keeps '
-            'a standard master/layout package and promotes safe repeated background/'
-            'chrome; template consumes explicit data-pptx-layout/layer/placeholder '
-            'metadata to build reusable layouts; flat leaves generated structure '
-            'slide-local for debugging/comparison.'
+            'PPTX structure strategy for native export. When omitted, read '
+            'spec_lock.md pptx_structure.mode, falling back to baseline. baseline '
+            'promotes safe repeated background/chrome; template consumes explicit '
+            'data-pptx-layout/layer/placeholder metadata to build reusable layouts; '
+            'flat leaves generated structure slide-local for debugging/comparison.'
         ),
     )
     parser.add_argument('--svg-snapshot', action='store_true', default=False,
@@ -320,6 +325,15 @@ Recorded narration:
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
         return 1
+    structure_lock = None
+    pptx_structure = args.pptx_structure
+    if pptx_structure is None:
+        try:
+            structure_lock = load_pptx_structure_lock(project_path)
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        pptx_structure = structure_lock.mode if structure_lock else 'baseline'
     if args.image_max_dimension < 1:
         print("Error: --image-max-dimension must be >= 1", file=sys.stderr)
         return 1
@@ -381,6 +395,19 @@ Recorded narration:
     if not ref_files:
         print("Error: No SVG files found")
         return 1
+
+    if gen_native and pptx_structure == 'template' and structure_lock is not None:
+        try:
+            template_specs = parse_template_slides(native_files)
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        lock_errors = template_lock_errors(template_specs, structure_lock)
+        if lock_errors:
+            print("Error: PPTX structure does not match spec_lock.md:", file=sys.stderr)
+            for message in lock_errors:
+                print(f"  {message}", file=sys.stderr)
+            return 1
 
     if args.native_objects:
         fallbacks = _native_object_fallbacks(native_files)
@@ -662,7 +689,7 @@ Recorded narration:
         image_scale=args.image_scale,
         image_quality=args.image_quality,
         native_objects=args.native_objects,
-        pptx_structure=args.pptx_structure,
+        pptx_structure=pptx_structure,
     )
 
     success = True

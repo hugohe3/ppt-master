@@ -241,29 +241,29 @@ def _remove_slide_background_xml(slide_xml: str) -> str:
     return _SLIDE_BACKGROUND_RE.sub(r"\g<prefix>\g<suffix>", slide_xml, count=1)
 
 
-def _put_background_on_master(master_xml: str, background_xml: str) -> str | None:
-    """Replace or insert the master-level p:bg before the master spTree.
+def _put_background_on_part(part_xml: str, background_xml: str) -> str | None:
+    """Replace or insert p:bg before a slide/master/layout spTree.
 
-    Returns None when the master carries a p:bg the canonical pattern cannot
+    Returns None when the part carries a p:bg the canonical pattern cannot
     replace; inserting there would leave two p:bg children under p:cSld.
     """
-    match = _SLIDE_BACKGROUND_RE.search(master_xml)
+    match = _SLIDE_BACKGROUND_RE.search(part_xml)
     if match:
         return (
-            master_xml[:match.start("bg")]
+            part_xml[:match.start("bg")]
             + background_xml
-            + master_xml[match.end("bg"):]
+            + part_xml[match.end("bg"):]
         )
-    if "<p:bg" in master_xml:
+    if "<p:bg" in part_xml:
         return None
 
-    cslide_match = re.search(r"(<p:cSld\b[^>]*>)", master_xml)
+    cslide_match = re.search(r"(<p:cSld\b[^>]*>)", part_xml)
     if not cslide_match:
-        raise RuntimeError("Slide master XML has no p:cSld element")
+        raise RuntimeError("PPTX slide/master/layout part has no p:cSld element")
     return (
-        master_xml[:cslide_match.end()]
+        part_xml[:cslide_match.end()]
         + background_xml
-        + master_xml[cslide_match.end():]
+        + part_xml[cslide_match.end():]
     )
 
 
@@ -332,7 +332,7 @@ def _promote_common_slide_backgrounds_to_masters(
 
         master_path = extract_dir / master_part
         master_xml = master_path.read_text(encoding="utf-8")
-        promoted_master_xml = _put_background_on_master(master_xml, background_xml)
+        promoted_master_xml = _put_background_on_part(master_xml, background_xml)
         if promoted_master_xml is None:
             continue
         master_path.write_text(promoted_master_xml, encoding="utf-8")
@@ -903,6 +903,86 @@ def _slide_sp_tree(state: _TemplateRuntimeSlide) -> ET.Element:
     return sp_tree
 
 
+def _presentation_slide_size_emu(extract_dir: Path) -> tuple[int, int]:
+    """Return the package slide size in EMU."""
+    presentation_path = extract_dir / "ppt" / "presentation.xml"
+    root = ET.parse(presentation_path).getroot()
+    slide_size = root.find(f"{{{PML_NS}}}sldSz")
+    if slide_size is None:
+        raise TemplateStructureError("presentation.xml has no p:sldSz")
+    try:
+        width = int(slide_size.attrib["cx"])
+        height = int(slide_size.attrib["cy"])
+    except (KeyError, ValueError) as exc:
+        raise TemplateStructureError("presentation.xml has an invalid p:sldSz") from exc
+    if width <= 0 or height <= 0:
+        raise TemplateStructureError("presentation.xml p:sldSz must be positive")
+    return width, height
+
+
+def _solid_background_xml_from_shape(
+    shape: ET.Element,
+    slide_size_emu: tuple[int, int],
+) -> str | None:
+    """Convert one exact full-slide solid rectangle shape into p:bg XML."""
+    if shape.tag != f"{{{PML_NS}}}sp":
+        return None
+    if shape.find(f"{{{PML_NS}}}txBody") is not None:
+        return None
+    sp_pr = shape.find(f"{{{PML_NS}}}spPr")
+    if sp_pr is None:
+        return None
+    xfrm = sp_pr.find(f"{{{DML_NS}}}xfrm")
+    if xfrm is None or xfrm.attrib:
+        return None
+    off = xfrm.find(f"{{{DML_NS}}}off")
+    ext = xfrm.find(f"{{{DML_NS}}}ext")
+    if off is None or ext is None:
+        return None
+    try:
+        bounds = (
+            int(off.attrib["x"]),
+            int(off.attrib["y"]),
+            int(ext.attrib["cx"]),
+            int(ext.attrib["cy"]),
+        )
+    except (KeyError, ValueError):
+        return None
+    if bounds != (0, 0, *slide_size_emu):
+        return None
+
+    geometry = sp_pr.find(f"{{{DML_NS}}}prstGeom")
+    if geometry is None or geometry.attrib.get("prst") != "rect":
+        return None
+    solid_fill = sp_pr.find(f"{{{DML_NS}}}solidFill")
+    if solid_fill is None:
+        return None
+    competing_fills = {
+        f"{{{DML_NS}}}noFill",
+        f"{{{DML_NS}}}gradFill",
+        f"{{{DML_NS}}}blipFill",
+        f"{{{DML_NS}}}pattFill",
+        f"{{{DML_NS}}}grpFill",
+    }
+    if any(child.tag in competing_fills for child in sp_pr):
+        return None
+    line = sp_pr.find(f"{{{DML_NS}}}ln")
+    if line is not None and line.find(f"{{{DML_NS}}}noFill") is None:
+        return None
+    for effect_tag in (f"{{{DML_NS}}}effectLst", f"{{{DML_NS}}}effectDag"):
+        effect = sp_pr.find(effect_tag)
+        if effect is not None and (effect.attrib or list(effect)):
+            return None
+
+    background = ET.Element(f"{{{PML_NS}}}bg")
+    background_props = ET.SubElement(background, f"{{{PML_NS}}}bgPr")
+    background_props.append(
+        ET.fromstring(ET.tostring(solid_fill, encoding="utf-8"))
+    )
+    ET.SubElement(background_props, f"{{{DML_NS}}}effectLst")
+    return ET.tostring(background, encoding="unicode")
+
+
 def _remove_template_shape(
     state: _TemplateRuntimeSlide,
     shape: ET.Element,
@@ -947,7 +1027,7 @@ def _move_template_background(
     if background_xml is None:
         raise TemplateStructureError("Template background is unexpectedly empty")
     target_xml = target_path.read_text(encoding="utf-8")
-    updated = _put_background_on_master(target_xml, background_xml)
+    updated = _put_background_on_part(target_xml, background_xml)
     if updated is None:
         raise TemplateStructureError(
             f"Cannot install explicit background on {target_path.name}"
@@ -966,11 +1046,109 @@ def _move_template_background(
         c_sld.remove(background)
 
 
+def _move_template_solid_background_shapes(
+    states: list[_TemplateRuntimeSlide],
+    shapes: list[ET.Element],
+    target_path: Path,
+    slide_size_emu: tuple[int, int],
+) -> bool:
+    """Move repeated full-slide solid rects into a master/layout p:bg."""
+    backgrounds = [
+        _solid_background_xml_from_shape(shape, slide_size_emu)
+        for shape in shapes
+    ]
+    if not any(backgrounds):
+        return False
+    if any(background is None for background in backgrounds):
+        raise TemplateStructureError(
+            "A template background resolves to a full-slide solid rect on only "
+            "some slides sharing the structure"
+        )
+    canonical = {background for background in backgrounds if background is not None}
+    if len(canonical) != 1:
+        slide_names = ", ".join(state.spec.svg_path.name for state in states)
+        raise TemplateStructureError(
+            f"Explicit template solid background differs across slides: {slide_names}"
+        )
+    background_xml = backgrounds[0]
+    if background_xml is None:
+        return False
+    target_xml = target_path.read_text(encoding="utf-8")
+    updated = _put_background_on_part(target_xml, background_xml)
+    if updated is None:
+        raise TemplateStructureError(
+            f"Cannot install explicit solid background on {target_path.name}"
+        )
+    target_path.write_text(updated, encoding="utf-8")
+    for state, shape in zip(states, shapes):
+        _remove_template_shape(state, shape)
+    return True
+
+
+def _set_slide_tree_background(
+    state: _TemplateRuntimeSlide,
+    background_xml: str,
+) -> None:
+    """Replace the slide tree's p:bg with explicit background XML."""
+    c_sld = state.root.find(f"{{{PML_NS}}}cSld")
+    if c_sld is None:
+        raise TemplateStructureError(
+            f"{state.spec.svg_path.name}: slide has no p:cSld"
+        )
+    for existing in list(c_sld):
+        if existing.tag == f"{{{PML_NS}}}bg":
+            c_sld.remove(existing)
+    background = ET.fromstring(background_xml)
+    sp_tree_tag = f"{{{PML_NS}}}spTree"
+    insert_at = next(
+        (index for index, child in enumerate(c_sld) if child.tag == sp_tree_tag),
+        0,
+    )
+    c_sld.insert(insert_at, background)
+
+
+def _apply_template_slide_backgrounds(
+    states: list[_TemplateRuntimeSlide],
+    slide_size_emu: tuple[int, int],
+) -> int:
+    """Compile one-page solid backgrounds into slide-level p:bg."""
+    applied = 0
+    for state in states:
+        items = [
+            item for item in state.spec.elements
+            if item.layer == "slide" and item.is_background
+        ]
+        if not items:
+            continue
+        item = items[0]
+        shape = _template_shape_for_item(state, item)
+        if shape is None:
+            c_sld = state.root.find(f"{{{PML_NS}}}cSld")
+            if c_sld is None or c_sld.find(f"{{{PML_NS}}}bg") is None:
+                raise TemplateStructureError(
+                    f"{state.spec.svg_path.name}: slide background disappeared "
+                    "during template structure assembly"
+                )
+            applied += 1
+            continue
+        background_xml = _solid_background_xml_from_shape(shape, slide_size_emu)
+        if background_xml is None:
+            raise TemplateStructureError(
+                f"{state.spec.svg_path.name}: {item.element_id!r} must remain an "
+                "exact full-slide solid rectangle"
+            )
+        _remove_template_shape(state, shape)
+        _set_slide_tree_background(state, background_xml)
+        applied += 1
+    return applied
+
+
 def _move_template_static_shape(
     states: list[_TemplateRuntimeSlide],
     item: TemplateElementSpec,
     target_path: Path,
     target_rels_path: Path,
+    slide_size_emu: tuple[int, int],
 ) -> None:
     shapes = [_template_shape_for_item(state, item) for state in states]
     if any(shape is None for shape in shapes):
@@ -982,6 +1160,16 @@ def _move_template_static_shape(
         return
 
     resolved_shapes = [shape for shape in shapes if shape is not None]
+    if (
+        item.is_background
+        and _move_template_solid_background_shapes(
+            states,
+            resolved_shapes,
+            target_path,
+            slide_size_emu,
+        )
+    ):
+        return
     canonical = {
         _canonical_shape_xml(shape, state.rels)
         for state, shape in zip(states, resolved_shapes)
@@ -1257,6 +1445,7 @@ def _apply_template_structure(
     """Materialize explicit SVG master/layout/placeholder metadata into OOXML."""
     states = _template_runtime_slides(extract_dir, specs, conversion_traces)
     states_by_slide = {state.spec.slide_num: state for state in states}
+    slide_size_emu = _presentation_slide_size_emu(extract_dir)
 
     master_items = specs[0].master_elements
     states_by_master: dict[str, list[_TemplateRuntimeSlide]] = {}
@@ -1273,6 +1462,7 @@ def _apply_template_structure(
                 item,
                 master_path,
                 master_rels_path,
+                slide_size_emu,
             )
 
     specs_by_layout: dict[str, list[TemplateSlideSpec]] = {}
@@ -1314,6 +1504,7 @@ def _apply_template_structure(
                     item,
                     layout_path,
                     layout_rels_path,
+                    slide_size_emu,
                 )
                 layout_shape_count += 1
                 continue
@@ -1346,6 +1537,10 @@ def _apply_template_structure(
         for state in layout_states:
             _set_slide_layout_target(state.rels_path, layout_target)
 
+    slide_background_count = _apply_template_slide_backgrounds(
+        states,
+        slide_size_emu,
+    )
     for state in states:
         _write_xml_tree(state.slide_path, state.tree)
 
@@ -1355,6 +1550,7 @@ def _apply_template_structure(
             f"{len(specs_by_layout)} layout(s), "
             f"{len(master_items)} master element(s), "
             f"{layout_shape_count} layout element(s), "
+            f"{slide_background_count} slide background(s), "
             f"{placeholder_count} placeholder definition(s)"
         )
 

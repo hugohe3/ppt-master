@@ -32,7 +32,7 @@ _STRUCTURE_ATTRS = frozenset({
     "data-pptx-placeholder-bounds",
     "data-pptx-editable",
 })
-_LAYERS = frozenset({"master", "layout"})
+_LAYERS = frozenset({"master", "layout", "slide"})
 _PLACEHOLDERS = frozenset({
     "title",
     "body",
@@ -44,10 +44,30 @@ _PLACEHOLDERS = frozenset({
 })
 _TEXT_PLACEHOLDERS = frozenset({"title", "body", "footer", "slide-number"})
 _LAYOUT_KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+_LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
+_LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
+PPTX_STRUCTURE_MODES = frozenset({"baseline", "template", "flat"})
 
 
 class TemplateStructureError(RuntimeError):
     """Reject invalid or ambiguous template-structure metadata."""
+
+
+@dataclass(frozen=True)
+class PptxLayoutReference:
+    """One spec_lock page-to-PowerPoint-layout declaration."""
+
+    slide_num: int
+    layout_key: str
+    layout_name: str | None = None
+
+
+@dataclass(frozen=True)
+class PptxStructureLock:
+    """Optional project-level PPTX structure export policy."""
+
+    mode: str
+    layouts: tuple[PptxLayoutReference, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -60,6 +80,7 @@ class TemplateElementSpec:
     layer: str | None = None
     placeholder: str | None = None
     placeholder_bounds: tuple[float, float, float, float] | None = None
+    is_background: bool = False
 
     def contract_signature(self) -> tuple[object, ...]:
         """Return metadata that must agree across slides sharing a structure."""
@@ -69,6 +90,7 @@ class TemplateElementSpec:
             self.layer,
             self.placeholder,
             self.placeholder_bounds,
+            self.is_background,
         )
 
 
@@ -105,6 +127,150 @@ class TemplateSlideSpec:
 
 def _local_tag(elem: ET.Element) -> str:
     return elem.tag.rsplit("}", 1)[-1] if isinstance(elem.tag, str) else ""
+
+
+def _svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
+    raw_viewbox = (root.get("viewBox") or "").strip()
+    values = [part for part in re.split(r"[\s,]+", raw_viewbox) if part]
+    if len(values) != 4:
+        return 0.0, 0.0, 0.0, 0.0
+    try:
+        x, y, width, height = (float(value) for value in values)
+    except ValueError:
+        return 0.0, 0.0, 0.0, 0.0
+    if not all(math.isfinite(value) for value in (x, y, width, height)):
+        return 0.0, 0.0, 0.0, 0.0
+    return x, y, width, height
+
+
+def _is_full_canvas_solid_rect(
+    elem: ET.Element,
+    canvas: tuple[float, float, float, float],
+) -> bool:
+    """Return whether a direct rect is eligible for scoped p:bg compilation."""
+    if canvas[2] <= 0 or canvas[3] <= 0:
+        return False
+    if _local_tag(elem) != "rect":
+        return False
+    if any(elem.get(attr) for attr in ("transform", "filter", "clip-path")):
+        return False
+    try:
+        geometry = (
+            float(elem.get("x", "0")),
+            float(elem.get("y", "0")),
+            float(elem.get("width", "0")),
+            float(elem.get("height", "0")),
+        )
+        corner_radius = (
+            float(elem.get("rx", "0")),
+            float(elem.get("ry", "0")),
+        )
+    except ValueError:
+        return False
+    if not all(math.isfinite(value) for value in (*geometry, *corner_radius)):
+        return False
+    if corner_radius != (0.0, 0.0):
+        return False
+    if any(abs(actual - expected) > 0.5 for actual, expected in zip(geometry, canvas)):
+        return False
+    fill = (elem.get("fill") or "").strip().lower()
+    if not fill or fill == "none" or fill.startswith("url("):
+        return False
+    stroke = (elem.get("stroke") or "none").strip().lower()
+    if stroke != "none":
+        try:
+            if float(elem.get("stroke-opacity", "1")) != 0:
+                return False
+        except ValueError:
+            return False
+    return True
+
+
+def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
+    """Load optional pptx_structure/pptx_layouts sections from spec_lock.md."""
+    lock_path = project_path / "spec_lock.md"
+    if not lock_path.is_file():
+        return None
+    try:
+        lines = lock_path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        raise TemplateStructureError(f"Cannot read {lock_path}: {exc}") from exc
+
+    sections: dict[str, list[tuple[str, str]]] = {}
+    current_section: str | None = None
+    for raw_line in lines:
+        line = raw_line.strip()
+        if line.startswith("## "):
+            current_section = line[3:].strip()
+            sections.setdefault(current_section, [])
+            continue
+        if current_section not in {"pptx_structure", "pptx_layouts"}:
+            continue
+        match = _LOCK_ROW_RE.fullmatch(line)
+        if match:
+            sections[current_section].append((match.group(1), match.group(2)))
+
+    structure_rows = sections.get("pptx_structure", [])
+    layout_rows = sections.get("pptx_layouts", [])
+    if not structure_rows and not layout_rows:
+        return None
+    mode_rows = [value.strip().lower() for key, value in structure_rows if key == "mode"]
+    if len(mode_rows) != 1:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_structure requires exactly one '- mode:' row"
+        )
+    mode = mode_rows[0]
+    if mode not in PPTX_STRUCTURE_MODES:
+        allowed = ", ".join(sorted(PPTX_STRUCTURE_MODES))
+        raise TemplateStructureError(
+            f"spec_lock.md pptx_structure.mode must be one of: {allowed}"
+        )
+
+    references: list[PptxLayoutReference] = []
+    seen_slides: set[int] = set()
+    for page_key, raw_value in layout_rows:
+        page_match = _LOCK_PAGE_RE.fullmatch(page_key)
+        if not page_match or int(page_match.group(1)) <= 0:
+            raise TemplateStructureError(
+                f"spec_lock.md pptx_layouts key {page_key!r} must be P<NN>"
+            )
+        slide_num = int(page_match.group(1))
+        if slide_num in seen_slides:
+            raise TemplateStructureError(
+                f"spec_lock.md pptx_layouts repeats page P{slide_num:02d}"
+            )
+        seen_slides.add(slide_num)
+        value_parts = raw_value.split("|", 1)
+        layout_key = value_parts[0].strip()
+        layout_name = value_parts[1].strip() if len(value_parts) == 2 else None
+        if not _LAYOUT_KEY_RE.fullmatch(layout_key):
+            raise TemplateStructureError(
+                f"spec_lock.md P{slide_num:02d} has invalid layout key "
+                f"{layout_key!r}"
+            )
+        if len(value_parts) == 2 and not layout_name:
+            raise TemplateStructureError(
+                f"spec_lock.md P{slide_num:02d} has an empty layout name"
+            )
+        references.append(PptxLayoutReference(
+            slide_num=slide_num,
+            layout_key=layout_key,
+            layout_name=layout_name,
+        ))
+
+    if mode == "template" and not references:
+        raise TemplateStructureError(
+            "spec_lock.md template mode requires one pptx_layouts row per page"
+        )
+    if mode != "template" and references:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_layouts is allowed only when pptx_structure.mode "
+            "is template"
+        )
+    return PptxStructureLock(
+        mode=mode,
+        layouts=tuple(sorted(references, key=lambda item: item.slide_num)),
+    )
 
 
 def _parse_placeholder_bounds(
@@ -228,7 +394,8 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             )
 
     elements: list[TemplateElementSpec] = []
-    phase = "master"
+    canvas = _svg_canvas(root)
+    last_order_rank = -1
     visual_order = 0
     for elem in root:
         tag = _local_tag(elem)
@@ -244,6 +411,8 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
         )
         bounds_raw = elem.get("data-pptx-placeholder-bounds")
         editable_raw = elem.get("data-pptx-editable")
+        is_background = _is_full_canvas_solid_rect(elem, canvas)
+        effective_layer = layer or ("slide" if is_background else None)
 
         if (
             elem.get("data-pptx-layout") is not None
@@ -272,42 +441,47 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
                 f"{svg_path.name}: {element_id or tag} has empty "
                 "data-pptx-placeholder"
             )
-        if layer and placeholder:
+        if effective_layer and placeholder:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} cannot be both a static "
-                "master/layout layer and a content placeholder"
+                "structure/background layer and a content placeholder"
+            )
+        if layer == "slide" and not is_background:
+            raise TemplateStructureError(
+                f"{svg_path.name}: data-pptx-layer='slide' is allowed only on a "
+                "direct full-canvas solid background rect"
             )
         if bounds_raw is not None and not placeholder:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} has placeholder bounds without "
                 "data-pptx-placeholder"
             )
-        if (layer or placeholder) and not element_id:
+        if (effective_layer or placeholder) and not element_id:
             raise TemplateStructureError(
                 f"{svg_path.name}: direct <{tag}> with template metadata requires an id"
             )
         if editable_raw is not None:
-            if not layer or editable_raw.strip().lower() != "false":
+            if not effective_layer or editable_raw.strip().lower() != "false":
                 raise TemplateStructureError(
                     f"{svg_path.name}: data-pptx-editable currently supports only "
-                    "'false' on master/layout layer elements"
+                    "'false' on master/layout elements or slide backgrounds"
                 )
 
-        if layer == "master":
-            if phase != "master":
-                raise TemplateStructureError(
-                    f"{svg_path.name}: master layer element {element_id} must precede "
-                    "all layout and slide-local content"
-                )
-        elif layer == "layout":
-            if phase == "slide":
-                raise TemplateStructureError(
-                    f"{svg_path.name}: layout layer element {element_id} must precede "
-                    "all slide-local content"
-                )
-            phase = "layout"
+        if is_background:
+            order_rank = {"master": 0, "layout": 1, "slide": 2}[effective_layer]
+        elif effective_layer == "master":
+            order_rank = 3
+        elif effective_layer == "layout":
+            order_rank = 4
         else:
-            phase = "slide"
+            order_rank = 5
+        if order_rank < last_order_rank:
+            raise TemplateStructureError(
+                f"{svg_path.name}: {element_id or tag} violates template paint order; "
+                "use Master background, Layout background, Slide background, "
+                "Master shapes, Layout shapes, then Slide content/placeholders"
+            )
+        last_order_rank = order_rank
 
         if placeholder:
             _validate_placeholder_element(
@@ -322,16 +496,28 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             element_id=element_id or tag,
         )
 
-        if layer or placeholder:
+        if effective_layer or placeholder:
             elements.append(TemplateElementSpec(
                 element_id=element_id,
                 order=visual_order,
                 tag=tag,
-                layer=layer,
+                layer=effective_layer,
                 placeholder=placeholder,
                 placeholder_bounds=placeholder_bounds,
+                is_background=is_background,
             ))
         visual_order += 1
+
+    for scope in ("master", "layout", "slide"):
+        backgrounds = [
+            item for item in elements
+            if item.layer == scope and item.is_background
+        ]
+        if len(backgrounds) > 1:
+            raise TemplateStructureError(
+                f"{svg_path.name}: template mode allows at most one {scope} "
+                "solid background"
+            )
 
     return TemplateSlideSpec(
         slide_num=slide_num,
@@ -383,6 +569,51 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
                     "layers and placeholder ids/types in the same order"
                 )
     return specs
+
+
+def template_lock_errors(
+    specs: list[TemplateSlideSpec],
+    structure_lock: PptxStructureLock,
+) -> list[str]:
+    """Return mismatches between parsed SVG layouts and the project lock."""
+    if structure_lock.mode != "template":
+        return []
+    errors: list[str] = []
+    references = {
+        reference.slide_num: reference
+        for reference in structure_lock.layouts
+    }
+    actual_slides = {spec.slide_num for spec in specs}
+    expected_slides = set(references)
+    missing = sorted(actual_slides - expected_slides)
+    extra = sorted(expected_slides - actual_slides)
+    if missing:
+        pages = ", ".join(f"P{slide_num:02d}" for slide_num in missing)
+        errors.append(
+            f"spec_lock.md pptx_layouts is missing generated page(s): {pages}"
+        )
+    if extra:
+        pages = ", ".join(f"P{slide_num:02d}" for slide_num in extra)
+        errors.append(
+            f"spec_lock.md pptx_layouts references absent page(s): {pages}"
+        )
+    for spec in specs:
+        reference = references.get(spec.slide_num)
+        if reference is None:
+            continue
+        if spec.layout_key != reference.layout_key:
+            errors.append(
+                f"{spec.svg_path.name}: data-pptx-layout={spec.layout_key!r} "
+                f"does not match spec_lock P{spec.slide_num:02d} layout key "
+                f"{reference.layout_key!r}"
+            )
+        if reference.layout_name and spec.layout_name != reference.layout_name:
+            errors.append(
+                f"{spec.svg_path.name}: data-pptx-layout-name={spec.layout_name!r} "
+                f"does not match spec_lock P{spec.slide_num:02d} layout name "
+                f"{reference.layout_name!r}"
+            )
+    return errors
 
 
 def validate_template_svg(svg_path: Path) -> list[str]:
