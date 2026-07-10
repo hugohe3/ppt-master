@@ -421,7 +421,6 @@ HEX。颜色内嵌 alpha 会与 `opacity`、`fill-opacity`、`stroke-opacity`、
 ### 结构
 - [ ] 主要元素有语义化 `<g id="...">`
 - [ ] 无 `<style>`、`class`、`<foreignObject>`、`mask`
-- [ ] `<g>` 标签无 `opacity` 属性
 - [ ] 文本字符为原生 Unicode（`—` `©` `→` NBSP 等），无 HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` 等）；裸 `& < >` 已转义为 `&amp; &lt; &gt;`
 
 ### 阴影
