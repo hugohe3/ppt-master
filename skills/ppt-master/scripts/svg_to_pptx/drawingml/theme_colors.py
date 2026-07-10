@@ -13,7 +13,7 @@ from .utils import parse_hex_color
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 _LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
 _SRGB_PAIR_RE = re.compile(
-    r"<a:srgbClr\b(?P<attrs>[^>]*)>(?P<body>.*?)</a:srgbClr>",
+    r"<a:srgbClr\b(?P<attrs>[^>]*?)(?<!/)>(?P<body>.*?)</a:srgbClr>",
     re.DOTALL,
 )
 _SRGB_EMPTY_RE = re.compile(r"<a:srgbClr\b(?P<attrs>[^>]*)/>")
