@@ -678,8 +678,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `slideNumber`). Promotion requires identical generated OOXML on every slide
 > sharing the master, no slide-timing reference, and z-order safety; overlay
 > chrome stays slide-local. Image relationships for promoted chrome are copied to
-> the master. Add `--pptx-structure flat` only for debugging/comparison when all
-> generated backgrounds and chrome must remain slide-local.
+> the master. Baseline also prunes base-template slide layouts no generated
+> slide references, so the PowerPoint new-slide picker only offers layouts that
+> belong to the deck. Add `--pptx-structure flat` only for debugging/comparison
+> when all generated backgrounds and chrome must remain slide-local.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
