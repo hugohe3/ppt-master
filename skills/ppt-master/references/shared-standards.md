@@ -1003,11 +1003,30 @@ to at least one EMU per resolved row and column.
 
 **Validation**: `svg_quality_checker.py` validates native marker kind, JSON
 metadata, bounds/fallback availability, table rows/columns, supported chart
-type, and chart data shape before export.
+type, chart data shape, and any imported fallback baseline before export.
+
+**Hard rule — imported fallback freshness**: active table/chart markers emitted
+by `pptx_to_svg.py` carry `data-pptx-fallback-sha256`, a canonical hash of the
+marker fallback plus reachable document-level SVG fragment definitions. Editing
+geometry/text/paint, switching a local `url(#...)` or `href="#..."` target,
+changing a reachable definition, or changing the marker transform makes the
+native metadata stale. The mandatory quality checker warns and the default route
+keeps the edited SVG; `--native-objects` hard-fails before replacement so it
+cannot discard that edit. Metadata/title/description nodes, `data-pptx-*`
+runtime attributes, marker-local stable ID renames, and marker-local
+`display:none` subtrees are excluded. `visibility:hidden` content,
+marker-local unused definitions, and explicitly referenced document-level
+target roots (even when hidden) remain conservatively hashed. External
+image/font file bytes are not read.
+Hashless legacy markers remain native-compatible and warn in the checker/native
+route that stale detection is unavailable. A stale hash is an integrity mismatch,
+not a visual-parity gate on an unchanged active marker.
 
 **Hard rule — imported visual/route status**: A PPTX chart with a complete baked preview
-may carry `data-pptx-visual-status="source-preview"`. When no preview exists,
-the importer emits its typed reconstruction aid with both
+may carry `data-pptx-visual-status="source-preview"`. Supported parsed classic
+families without a preview use a deterministic readable fallback marked
+`data-pptx-visual-status="normalized"`; it is explicitly not source-exact.
+When no current renderer exists, the importer emits its typed reconstruction aid with both
 `data-pptx-visual-status="placeholder"` and
 `data-pptx-route-status="reconstruction-only"`. The valid pair is diagnostic:
 quality checking and export warn, default export keeps the placeholder, and
@@ -1158,6 +1177,10 @@ such as `white`, `black`, and `gray`; the exporter normalizes them to 6-digit
 OOXML RGB. Bar and column series also disable PowerPoint's negative-value
 inversion so negative bars keep the same series fill instead of turning into
 white/theme fill.
+
+For ChartEx native charts, valid payload `style.colors` (or root `colors`)
+populate the ChartEx color-style part instead of being replaced by a fixed
+accent1–accent6 list. Other ChartEx style semantics remain normalized.
 
 **PowerPoint chartEx schema**: `treemap`, `sunburst`, `histogram`, `pareto`,
 `boxWhisker`, `waterfall`, and `funnel` use Office 2016+ chartEx parts. Use

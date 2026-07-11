@@ -859,7 +859,16 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > Default export keeps that placeholder with a warning; when the same group has
 > a valid active `data-pptx-native="chart"` payload, `--native-objects` may still
 > reconstruct the editable chart. Invalid or contradictory status declarations
-> remain export errors.
+> remain export errors. For supported parsed classic families, the importer
+> instead emits a deterministic visible fallback with
+> `data-pptx-visual-status="normalized"`; this is readable reconstruction, not
+> a claim of Office pixel parity. Active imported table/chart markers also carry
+> `data-pptx-fallback-sha256`. If their fallback, reachable SVG fragment
+> definition, local reference target, or marker transform changes later, default
+> export keeps that SVG, the mandatory quality checker warns, and
+> `--native-objects` fails rather than discard the edit. Legacy markers
+> without a baseline remain native-compatible and only warn that stale detection
+> is unavailable.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`. `none` removes only the visual transition; an explicit automatic advance remains valid.
