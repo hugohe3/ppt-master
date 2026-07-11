@@ -91,8 +91,8 @@ Read `<project_dir>/analysis/<stem>.slide_library.json` (intake prefixes per-dec
 | `slides[].text_summary` | Current semantic purpose of the source page |
 | `slides[].slots[]` | Replaceable text slots with `slot_id`, `role`, `geometry`, paragraph count, and old text |
 | `slides[].slots[].role` | Title / body / label candidate hint |
-| `slides[].tables[]` | Native PowerPoint tables with `table_id`, row / column counts, and per-cell coordinates + text |
-| `slides[].charts[]` | Native PowerPoint charts with `chart_id` |
+| `slides[].tables[]` | Native PowerPoint tables with `table_id`, row / column counts, per-cell coordinates/text, and merge anchor/slave topology |
+| `slides[].charts[]` | Native PowerPoint charts with `chart_id` and an `edit_capability` safety result derived from the actual chart XML |
 | `slides[].diagrams[]` | SmartArt layout, semantic nodes, hierarchy/connections, geometry, and extraction status; inventory-only |
 
 **Selection rule**: Pick pages by content fitness, not by source order alone. A source page is useful only if its visible structure can carry the target message without heavy redesign.
@@ -203,9 +203,9 @@ The plan structure:
 | Short text | For labels / chapter names / directory items, fit the slot's visual capacity from geometry and font size; do not rely on old placeholder length alone |
 | Body text | May be moderately freer than the original, but keep paragraph count, visual width, and information density near the slot's geometry capacity |
 | Empty slots | Use `scaffold --include-empty` only when a real placeholder is empty in the source deck |
-| Native tables | Keep the original table row and column count; this workflow edits existing cells, not table structure |
-| Native charts | Each series `values` list must match the category count; this workflow edits chart data, not chart styling |
-| Multi-plot / combo charts | Not supported for direct `chart_edits`; `check-plan` reports an error rather than silently writing the wrong plot. Use beautify / main pipeline to redraw them, or leave the native chart untouched. |
+| Native tables | Keep the original table row and column count; edit ordinary cells or a merge anchor only. A merge slave is not visible and is rejected by both `check-plan` and `apply`. This workflow never changes table structure. |
+| Native charts | Each series `values` list must match the category count. Single-plot classic charts whose every series uses `c:cat/c:val` are editable; analyzer/checker preflight the structure and the runtime writer revalidates the actual chart XML before mutation. |
+| Chart edit boundary | A single classic plot is editable when every series uses `c:cat/c:val`, including stock, 3D, surface, and other classic plot types. Date-axis and multi-level categories are accepted with a warning because replacement categories are flattened to one level. Scatter, bubble, ChartEx/unknown frames, multi-plot/combo charts, missing-series charts, and non-`c:cat/c:val` data models are rejected. Use beautify / main pipeline to redraw unsupported charts, or leave the native chart untouched. |
 | Facts | Every substantive claim must come from the user material |
 
 **Fit check before apply**:
@@ -337,8 +337,8 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 |---|---|
 | Select / reorder / repeat source slides | Supported |
 | Replace text in existing text frames | Supported |
-| Edit native PowerPoint table cell text | Supported |
-| Edit native PowerPoint chart categories / series data | Supported |
+| Edit native PowerPoint table cell text | Supported for ordinary cells and merge anchors; merge slaves fail closed |
+| Edit native PowerPoint chart categories / series data | Supported for single-plot classic `c:cat/c:val` charts; runtime XML validation remains authoritative |
 | Read SmartArt node text / hierarchy / layout | Supported in intake and planning |
 | Preserve existing native SmartArt unchanged | Supported by recursive private-part cloning |
 | Preserve original visual design | Supported by cloning slide parts directly |

@@ -846,12 +846,20 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > stay dormant.
 > Add `--native-objects` only when the user explicitly wants
 > PowerPoint-editable native tables/charts and accepts that those objects may
-> render differently across PowerPoint / Keynote / LibreOffice / WPS. Without
+> render differently across PowerPoint / Keynote / LibreOffice / WPS; marker-local
+> details not represented by native metadata may be omitted. This is a lossy
+> editable-first contract, not a reason to disable an otherwise supported marker. Without
 > the flag, marked groups export through their SVG fallback children like
 > ordinary SVG content. Imported objects that carry
 > `data-pptx-native-status` are fallback-only; the quality checker and
 > `--native-objects` export surface their reason as warnings rather than silently
-> claiming editability.
+> claiming editability. An imported chart with no baked preview is a different
+> case: `data-pptx-visual-status="placeholder"` plus
+> `data-pptx-route-status="reconstruction-only"` records a diagnostic route.
+> Default export keeps that placeholder with a warning; when the same group has
+> a valid active `data-pptx-native="chart"` payload, `--native-objects` may still
+> reconstruct the editable chart. Invalid or contradictory status declarations
+> remain export errors.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`. `none` removes only the visual transition; an explicit automatic advance remains valid.
