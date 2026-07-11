@@ -56,7 +56,7 @@ Use placeholder syntax **during SVG generation**:
 `finalize_svg.py` auto-embeds all placeholders during post-processing. To run manually:
 
 ```bash
-uv run scripts/svg_finalize/embed_icons.py svg_output/*.svg
+uvx ppt-master embed-icons svg_output/*.svg
 ```
 
 ---
