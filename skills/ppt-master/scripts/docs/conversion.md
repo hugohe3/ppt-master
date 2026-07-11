@@ -246,8 +246,12 @@ python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
 | `layered` | Only the layered `svg/` view and inheritance metadata |
 | `flat` | One self-contained slide SVG per page under `svg/` |
 
-Supported unmerged tables and conservative classic-chart caches carry
-`data-pptx-native` metadata beside their SVG fallback. Markers remain dormant
+Supported text-grid tables and conservative classic-chart caches carry
+`data-pptx-native` metadata beside their SVG fallback. Table import accepts
+unmerged grids plus canonical rectangular merges, safe solid/no-fill per-side
+borders, and plain multi-paragraph cells. Noncanonical/overlapping merges,
+nonblank merge slaves, unsafe border XML, non-solid fills, and mixed run-level
+rich text remain fallback-only. Markers remain dormant
 unless a later export uses `--native-objects`. That opt-in is editable-first:
 it may normalize styling or omit marker-local details not represented by the
 payload, and export reports that risk without disabling an otherwise supported
@@ -289,8 +293,21 @@ checker/native route that stale detection is unavailable.
 For table style `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}`, the importer resolves
 the normalized `wholeTbl`, `firstRow`, `band1H`/`band2H`, theme color/font, and
 direct-format override subset. Other built-in/custom style families remain
-outside this guarantee. ChartEx native output consumes valid payload colors in
-its color-style part; other ChartEx style details remain normalized.
+outside this guarantee.
+
+The chart importer also accepts the verified column/line/area combo subset,
+canonical four-series OHLC stock charts with shared numeric date caches, and
+area charts with numeric date axes. Combo primary/secondary plots may retain
+independent category caches and workbook ranges. Axis read-back is limited to
+the closed category/value roles and the supported kind/position/visibility,
+label-position, number-format, min/max/major-unit, reverse, and major-gridline
+fields. This is not a full `AxisSpec`: ChartEx import, arbitrary stock variants,
+other date-axis chart families, and unlisted axis semantics remain fallback-only.
+Safe stock series style may pass the structural gate, while stock series,
+`hiLowLines`, and up-down bar local styling can still normalize under the
+editable-first contract.
+ChartEx native **output** still consumes valid payload colors in its color-style
+part; other ChartEx style details remain normalized.
 
 Exporter-canonical charts recover canonical solid series/slice colors and exact
 one- or two-paragraph title styling; two paragraphs retain their `title` /

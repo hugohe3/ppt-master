@@ -977,7 +977,7 @@ the preset is outside this enum.
 
 Native PowerPoint tables and Excel-backed charts activate at export time only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
 
-**Authoring — markers are standard on supported data charts and text-grid tables**: Executor writes the marker at draw time on every data chart whose type falls in the supported set and on every pure text-grid data table ([executor-base.md §3.2](executor-base.md)), so any deck can later form native objects without regeneration. Tables with merged or graphical cells stay unmarked on the SVG fallback route. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
+**Authoring — markers are standard on supported data charts and text-grid tables**: Executor writes the marker at draw time on every data chart whose type falls in the supported set and on every pure text-grid data table ([executor-base.md §3.2](executor-base.md)), so any deck can later form native objects without regeneration. Canonical rectangular merged text cells may use the narrow `row_span` / `col_span` contract below; graphical cells stay unmarked on the SVG fallback route. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
 
 **Hard rule — activation is the opt-in, dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Pass `--native-objects` only when editability in PowerPoint matters more than cross-renderer layout fidelity: it emits the PowerPoint object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint chart/table object rather than a pixel-identical SVG drawing.
 
@@ -1066,6 +1066,15 @@ Cell objects accept `text`, `fill`, `color`,
 `align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
 `border_width`, plus optional `lang`; the same `padding`, `border_color`,
 `border_width`, and `lang` keys may also live under `style` as table defaults.
+For plain multi-paragraph text, replace `text` with a non-empty `paragraphs`
+list. Each entry is either a string or `{ "text": "...", "align": "l|ctr|r" }`;
+empty paragraph strings are preserved, and `text` / `paragraphs` are mutually
+exclusive. This is paragraph-level plain text, not run-level rich text.
+Per-side cell borders use `borders.left|right|top|bottom`, where each value is
+either `{ "style": "none" }` or
+`{ "style": "solid", "color": "#RRGGBB", "width": <positive-px> }`.
+Per-side borders are cell-only; legacy uniform `border_color` / `border_width`
+remain supported as defaults that an individual side may override.
 When `lang` is absent, export derives `zh-CN` for CJK text and `en-US`
 otherwise. `style.band_row: false` disables both `<a:tblPr bandRow>` and
 materialized alternating row fills. Native table typography mirrors the
@@ -1083,12 +1092,16 @@ fallback `<text>` inside a native table marker does not appear in metadata.
 For numeric or currency columns, use cell objects with `align: "r"`; SVG
 `text-anchor="end"` does not carry into the native table.
 
-**Forbidden — native merged table cells**: Do not use `rowSpan`, `colSpan`,
-`gridSpan`, `hMerge`, `vMerge`, or top-level merge lists in native table
-metadata. `svg_to_pptx.py --native-objects` rejects them so merged-cell tables
-do not silently degrade into incorrect grids. Keep merged-cell tables on the
-default SVG fallback route, or merge cells manually in PowerPoint after native
-export.
+**Merged table cells — canonical rectangular contract only**: Put positive JSON
+integer `row_span` / `col_span` values on the merge anchor and keep every
+covered grid cell blank. Spans must stay within the resolved rectangular grid
+and may not overlap. The exporter emits the canonical DrawingML topology
+(`rowSpan` on the top edge, `gridSpan` on the left edge, `hMerge` / `vMerge` on
+covered cells). CamelCase aliases, raw OOXML merge fields, top-level merge lists,
+nonblank covered cells, invalid spans, and overlaps fail fast. The PPTX importer
+activates native reconstruction only for that same explicit rectangular topology
+with empty merge-slave text bodies; other merge encodings remain fallback-only
+with `unsupported-merge-topology`.
 
 **Category chart schema**: `column`, `bar`, `line`, `area`, `pie`,
 `doughnut`, `pieOfPie`, `barOfPie`, and `radar` use `categories` plus
@@ -1112,6 +1125,16 @@ zero-based `idx` plus optional per-point `position`, `number_format`,
 **Combo chart schema**: `combo` uses shared `categories` plus either `plots[]`
 or typed `series[]`. Each plot supports `type: "column" | "line" | "area"`,
 its own `series`, and optional `axis: "secondary"` for a right-side value axis.
+When primary and secondary plots genuinely use different category caches,
+`plots[]` may also carry its own `categories` and `category_numeric`; the
+workbook writer allocates independent category/value ranges. Typed `series[]`
+continues to require the shared top-level categories.
+Imported `plots[]` may carry `series_indices` so the verified source identity
+where each `c:idx` equals its `c:order` survives when physical plot order differs
+from legend order. If one plot supplies it, every plot must supply a same-length
+list of unique non-negative JSON integers, and the combined values must form one
+contiguous `0..N-1` range. Sources whose `idx` and `order` differ stay
+fallback-only; typed `series[]` does not accept this plot-scoped field.
 Typed `series[]` accepts the same `type` and `axis` fields per series, and
 adjacent compatible series are grouped into the same PowerPoint plot. Area
 series may set `fill_opacity` / `fillOpacity` as a `0..1` SVG opacity value
@@ -1121,6 +1144,18 @@ the fill style and does not trigger conversion by itself. Combo export layers
 area plots below columns and lines while preserving the original series indices.
 Line and area series may set `line_width` / `lineWidth` in SVG px units to
 match fallback `stroke-width`.
+
+**Narrow classic-axis schema**: `axes` is a closed object with the roles
+`category`, `value`, `secondary_category`, and `secondary_value`. Each role may
+set only `kind` (`text`, `date`, or `value`, as appropriate), `position`,
+`visible`, `label_position` (`next_to`, `none`, `low`, or `high`),
+`number_format`, `minimum`, `maximum`, `major_unit`, `reverse`, and
+`major_gridlines`. `major_unit` applies to value axes only. PPTX date-axis
+**import** is deliberately narrow: numeric Excel date serials are accepted for
+area charts and OHLC stock charts; arbitrary date-axis source families are not.
+This contract is not a full `AxisSpec`: logarithmic scales, minor units/gridlines,
+crossing values, display units, tick skipping, and other unlisted OOXML semantics
+remain unsupported and fail closed on import.
 
 **XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
 
@@ -1200,7 +1235,20 @@ these input shapes:
 **Stock chart schema**: `stock` uses numeric Excel date serials in
 `categories` or `dates`, plus exactly four series in open / high / low / close
 order. Use either `series` with four entries, or top-level `open`, `high`,
-`low`, and `close` arrays.
+`low`, and `close` arrays. PPTX import currently recognizes only canonical OHLC
+stock charts with shared numeric date caches, `hiLowLines`, and `upDownBars`.
+Safe stock series style may pass the structural gate, but stock series,
+`hiLowLines`, and up-down bar local styling can still normalize under the
+editable-first contract. HLC, volume, noncanonical structure, and style XML
+outside the safe parsing boundary stay fallback-only.
+
+**PPTX chart-import boundary**: The importer recognizes conservative classic
+single-plot charts plus the verified column/line/area combo, area date-axis, and
+canonical OHLC stock subsets above. ChartEx output can be authored from marker
+metadata, but ChartEx **import** is still unsupported. Full `AxisSpec`, radar
+import, arbitrary stock variants, and combo/date-axis semantics outside the
+closed fields above remain fallback-only; this does not reduce the existing
+SVG-marker-to-native writer support.
 
 **Deferred chart types**: Exploded pie / doughnut variants, `map`, `heatmap`,
 `bullet`, and `gantt` are intentionally outside the current native-object
