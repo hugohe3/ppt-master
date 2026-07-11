@@ -30,7 +30,9 @@ from xml.etree import ElementTree as ET
 
 from pptx_shapes import (
     CONNECTOR_PRESET_TYPES,
+    NATIVE_FALLBACK_SHA256_ATTR,
     has_relationship_attributes,
+    svg_native_fallback_markup_fingerprint,
     svg_text_fingerprint,
 )
 
@@ -782,8 +784,12 @@ def _render_graphic_table(
     tbl = graphic_data.find("a:tbl", NS)
     if tbl is None:
         return "", []
+    table_styles_part = ctx.pkg.resolve_table_styles()
     result = convert_tbl(
         tbl, node.xfrm, ctx.palette,
+        table_styles=(
+            table_styles_part.xml if table_styles_part is not None else None
+        ),
         theme_fonts=ctx.theme_fonts,
         slide_number=ctx.slide_number,
         id_prefix=f"tbl{ctx.shape_seq[0]}",
@@ -824,6 +830,7 @@ def _render_graphic_chart(
         node.xfrm,
         ctx.slide_part,
         ctx.pkg,
+        ctx.palette,
     )
     native_attrs: list[str] = ['data-pptx-native-source="pptx"']
     if result.native_payload:
@@ -849,6 +856,9 @@ def _render_graphic_chart(
         rendered = _render_graphic_preview(node, ctx)
     if rendered:
         native_attrs.append('data-pptx-visual-status="source-preview"')
+    elif result.normalized_svg:
+        rendered = result.normalized_svg
+        native_attrs.append('data-pptx-visual-status="normalized"')
     else:
         native_attrs.extend([
             'data-pptx-visual-status="placeholder"',
@@ -1134,6 +1144,18 @@ def _wrap_shape_group(
         attrs.append(f'data-ph-type="{_xml_escape(node.placeholder.type)}"')
     if extra_attrs:
         attrs.extend(extra_attrs)
+        if any(
+            attribute.split("=", 1)[0] == "data-pptx-native"
+            for attribute in extra_attrs
+        ):
+            fallback_hash = svg_native_fallback_markup_fingerprint(
+                inner,
+                root_transform=transform,
+                external_markup="".join(ctx.defs),
+            )
+            attrs.append(
+                f'{NATIVE_FALLBACK_SHA256_ATTR}="{fallback_hash}"'
+            )
     if transform:
         attrs.append(f'transform="{transform}"')
     return f"<g {' '.join(attrs)}>\n{inner}\n</g>"

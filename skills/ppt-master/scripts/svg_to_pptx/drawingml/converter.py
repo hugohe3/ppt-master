@@ -45,7 +45,11 @@ from .elements import (
     convert_text, convert_image, convert_nested_svg,
 )
 from ..animation_config import is_chrome_id
-from ..native_objects import convert_native_object, native_marker_transform
+from ..native_objects import (
+    convert_native_object,
+    native_marker_transform,
+    snapshot_native_fallback_freshness,
+)
 from ..semantic_markers import is_static_page_frame
 
 
@@ -1078,6 +1082,8 @@ def convert_svg_to_slide_shapes(
         )
     _mark_unchanged_txbody_groups(root)
     _mark_unchanged_preset_previews(root)
+    if native_objects:
+        snapshot_native_fallback_freshness(root)
     trace_events: list[dict[str, Any]] | None = [] if trace_out is not None else None
     trace_steps: list[dict[str, Any]] = []
 

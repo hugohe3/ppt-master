@@ -56,7 +56,10 @@ from .registry import (
     get_preset_registry,
 )
 from .semantic_hash import (
+    NATIVE_FALLBACK_SHA256_ATTR,
     resolve_preset_preview_hash,
+    svg_native_fallback_fingerprint,
+    svg_native_fallback_markup_fingerprint,
     svg_preset_preview_fingerprint,
     svg_text_fingerprint,
 )
@@ -76,6 +79,7 @@ __all__ = [
     "OOXML_COORDINATE_MIN",
     "OOXML_DEGREE",
     "OOXML_LINE_WIDTH_MAX",
+    "NATIVE_FALLBACK_SHA256_ATTR",
     "SUPPORTED_OPERATORS",
     "EvaluatedPresetGeometry",
     "FormulaEvaluationError",
@@ -95,6 +99,8 @@ __all__ = [
     "load_preset_shape_definitions",
     "load_shape_type_values",
     "resolve_preset_preview_hash",
+    "svg_native_fallback_fingerprint",
+    "svg_native_fallback_markup_fingerprint",
     "svg_text_fingerprint",
     "svg_preset_preview_fingerprint",
     "validate_ooxml_line_width",
