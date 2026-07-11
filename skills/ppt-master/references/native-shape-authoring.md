@@ -11,6 +11,11 @@ atomic fragment.
 
 Apply this decision order before drawing a stock geometric object.
 
+> This gate is for picking the **right** native shape, not for avoiding presets.
+> When a page needs an arrow, chevron, callout, banner, flowchart node, or a
+> literal Office symbol, authoring it as a preset is the **default** — the
+> ordinary-SVG rows below are deliberate exceptions, not the norm.
+
 | Condition | Action |
 |---|---|
 | Plain rectangle, symmetric rounded rectangle, circle, or ellipse | Write the ordinary SVG primitive; the exporter already emits an editable native shape. |
@@ -26,6 +31,10 @@ carrier, preview, or fingerprint attributes to a hand-written path.
 ---
 
 ## 2. Semantic Preset Candidate Guide
+
+Use the table below as the **go-to menu**: match the page's visual intent to a
+candidate preset *before* defaulting to a plain rect or path. Reaching here
+first is exactly how presets get used instead of forgotten.
 
 "Automatic" means the Executor independently applies this semantic decision
 gate before drawing a new object. It does not scan existing SVG, classify
@@ -110,6 +119,12 @@ and one complete visible preview.
 
 **Hard rule**: treat the returned group as atomic. Put labels, icons, or other
 decorations beside it in a parent `<g>`, never inside the preset group.
+
+**Frame coordinate space**: `--frame x y w h` is expressed in the coordinate
+space where you insert the fragment. At the page root that is page coordinates;
+inside a `<g transform="translate(…)">` use **group-local** coordinates — the
+ancestor transform stacks on top, so page-absolute values would double-offset
+the shape off-canvas.
 
 **Regeneration rule**: rerun the helper when preset, frame, adjustment, fill,
 stroke, or stroke width changes. Moving, scaling, rotating, or flipping the
