@@ -76,15 +76,22 @@ git merge --abort
 
 #### 4a. 扫描所有 `python3` / `uv run` 残留
 
-PowerShell 等效命令：
+扫描**全仓库**所有 `.md` 文件（排除豁免目录 `.opencode/`、`docs/superpowers/`、`docs/zh/upstream-sync.md`）：
 
-```powershell
-rg --include '*.md' 'python3 skills/ppt-master/scripts/' skills/ppt-master/ AGENTS.md CLAUDE.md docs/
-rg --include '*.md' 'python3 scripts/' skills/ppt-master/scripts/docs/
-rg --include '*.md' 'uv run skills/ppt-master/scripts/' skills/ppt-master/ AGENTS.md CLAUDE.md docs/
+```bash
+# 扫描 python3 命令残留（全仓库 .md 文件）
+rg -g '*.md' 'python3 (scripts/|skills/)' . \
+  --glob '!.opencode/**' \
+  --glob '!docs/superpowers/**' \
+  --glob '!docs/zh/upstream-sync.md'
+
+# 扫描 uv run 残留
+rg -g '*.md' 'uv run skills/ppt-master/scripts/' . \
+  --glob '!.opencode/**' \
+  --glob '!docs/superpowers/**'
 ```
 
-记录所有匹配的文件和行。
+**重要：** 扫描范围必须覆盖全仓库，不得遗漏任何目录。上游随时可能新增文件到任意位置。记录所有匹配的文件和行。
 
 ---
 
@@ -141,18 +148,15 @@ for cmd_name, script_rel in commands.items():
     script_name = script_rel.rsplit('/', 1)[-1]
     script_to_cmd[script_name] = cmd_name
 
-# 需要处理的文件目录
-target_dirs = ['AGENTS.md', 'CLAUDE.md', 'CONTRIBUTING.md', 'skills/ppt-master/', 'docs/', 'examples/', 'projects/']
-exclude_keywords = ['superpowers', 'windows-installation', 'code-style']
+# 需要扫描的豁免目录（这些目录下的文件不参与替换）
+EXCLUDE_DIRS = ['.opencode', 'docs/superpowers', 'docs/zh']
 
-# 收集所有目标 .md 文件
+# 收集全仓库所有 .md 文件（排除豁免目录）
 files = []
-for d in target_dirs:
-    p = pathlib.Path(d)
-    if p.is_file():
-        files.append(p)
-    elif p.is_dir():
-        files.extend(f for f in p.rglob('*.md') if not any(k in str(f) for k in exclude_keywords))
+for f in pathlib.Path('.').rglob('*.md'):
+    if any(str(f).startswith(d + '/') or str(f).startswith(d + '\\') for d in EXCLUDE_DIRS):
+        continue
+    files.append(f)
 
 # 统计
 total_replacements = 0
@@ -183,21 +187,39 @@ for filepath in sorted(set(files)):
 print(f'\nDone: {total_replacements} files updated.')
 ```
 
-**重要：** 脚本使用 AST 解析 `cli.py` 而非 `exec()` 执行，避免顶层导入失败。所有替换使用正则精确匹配，排除 `docs/superpowers/` 和 `docs/windows-installation.md` 等设计/故障排除文档。
+**重要：** 脚本使用 AST 解析 `cli.py` 而非 `exec()` 执行，避免顶层导入失败。所有替换使用正则精确匹配。豁免目录（`.opencode/`、`docs/superpowers/`、`docs/zh/`）不参与替换。
 
 ---
 
-#### 4d. 验证
+#### 4d. 全仓库验证
 
 ```bash
-# 确认 skills/ppt-master/ 下无 python3 残留
-python -c "import subprocess; subprocess.run('rg --include *.md python3 skills/ppt-master/', shell=True)"
+# 确认全仓库 .md 文件无 python3 残留（排除豁免目录）
+rg -g '*.md' 'python3 (scripts/|skills/)' . \
+  --glob '!.opencode/**' \
+  --glob '!docs/superpowers/**' \
+  --glob '!docs/zh/upstream-sync.md'
+```
 
+如果仍有输出，**必须回到 Step 4c 重新处理**，直到无残留为止。
+
+```bash
 # 确认 cli.py 映射完整 + 双文件同步（一次调用检查两者）
 python skills/ppt-master/scripts/check_cli_sync.py
 ```
 
-`check_cli_sync.py` 一次运行会同时检查映射完整性和双 cli.py 同步。
+`check_cli_sync.py` 一次运行会同时检查映射完整性和双 cli.py 同步。如果报错，回到 Step 4b 补全映射。
+
+---
+
+#### 4e. 提交前门禁（必须通过）
+
+在 `git commit` 之前，**必须**确认以下两项全部通过：
+
+1. **全仓库扫描零残留**：重复 Step 4d 的 `rg` 命令，确认输出为空
+2. **cli.py 同步**：`python skills/ppt-master/scripts/check_cli_sync.py` 确认 OK
+
+**两项有任何一项不通过，禁止提交。** 回到对应步骤修复后重新验证。
 
 ---
 
@@ -215,6 +237,8 @@ python skills/ppt-master/scripts/check_deps_sync.py
 ---
 
 ### Step 6: 提交、打版本号、推送
+
+**提交前确认 Step 4e 门禁已通过（全仓库扫描零残留 + cli.py 同步）。**
 
 ```bash
 # 提交合并和适配（仅已追踪文件的更新 + 新文件）

@@ -61,6 +61,16 @@ jobs:
             Use `python3` not `python`. Do NOT manually create tags or push to main.
             If no upstream changes, stop immediately.
 
+            CRITICAL: In Step 4, you MUST scan ALL .md files in the entire repo (not just a few
+            directories). The scan scope must include: root .md files (AGENTS.md, CLAUDE.md,
+            CONTRIBUTING.md, README.md, etc.), skills/ppt-master/, docs/, examples/, projects/,
+            and any other directory that contains .md files. Only exclude .opencode/,
+            docs/superpowers/, and docs/zh/upstream-sync.md.
+
+            CRITICAL: Before committing, you MUST run the Step 4e gate: verify zero python3
+            remnants across the entire repo using rg. If ANY python3 remains, go back to Step 4c.
+            Do NOT commit until the gate is clean.
+
       # workflow_dispatch 事件：opencode CLI 非交互模式
       - name: Configure git for push (manual)
         if: github.event_name == 'workflow_dispatch' && steps.upstream.outputs.has_changes == 'true'
@@ -76,6 +86,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           npm install -g opencode-ai@latest
-          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes."
+          opencode run --dangerously-skip-permissions -m deepseek/deepseek-v4-pro "Read .opencode/command/sync-upstream.md and follow ALL steps. Use python3. No tags. Push to main at Step 6. Stop if no upstream changes. CRITICAL: Step 4 must scan ALL .md files in the entire repo. Before committing, run Step 4e gate — rg 'python3' across all .md files (excluding .opencode/, docs/superpowers/). Do NOT commit until clean."
 
 
