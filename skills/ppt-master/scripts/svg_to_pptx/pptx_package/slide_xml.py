@@ -2,13 +2,7 @@
 
 from __future__ import annotations
 
-# Import animation module (optional)
-try:
-    from pptx_animations import create_transition_xml, TRANSITIONS
-    ANIMATIONS_AVAILABLE = True
-except ImportError:
-    ANIMATIONS_AVAILABLE = False
-    TRANSITIONS = {}
+from pptx_transitions import TRANSITIONS, create_transition_xml
 
 
 def create_slide_xml_with_svg(
@@ -36,12 +30,14 @@ def create_slide_xml_with_svg(
         use_compat_mode: Whether to use compatibility mode (PNG + SVG dual format).
     """
     transition_xml = ''
-    if transition and ANIMATIONS_AVAILABLE:
-        transition_xml = '\n' + create_transition_xml(
+    if transition is not None or auto_advance is not None:
+        transition_fragment = create_transition_xml(
             effect=transition,
             duration=transition_duration,
             advance_after=auto_advance,
         )
+        if transition_fragment:
+            transition_xml = '\n' + transition_fragment
 
     if use_compat_mode:
         blip_xml = f'''<a:blip r:embed="{png_rid}">

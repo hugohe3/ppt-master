@@ -42,7 +42,15 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
-from pptx_animations import TRANSITIONS, create_transition_xml  # noqa: E402
+from pptx_transitions import (  # noqa: E402
+    AdvanceUpdate,
+    EnterUpdate,
+    TRANSITIONS,
+    apply_slide_motion_xml,
+    set_directory_use_timings,
+    validate_pptx_transition_package,
+    validate_seconds,
+)
 from svg_to_pptx.pptx_package.builder import (  # noqa: E402
     _add_default_content_type,
     _append_relationship,
@@ -55,7 +63,6 @@ from svg_to_pptx.pptx_package.narration import (  # noqa: E402
     IMAGE_REL_TYPE,
     MEDIA_REL_TYPE,
     NARRATION_EXTENSIONS,
-    apply_recorded_timing,
     inject_narration,
     next_shape_id,
     probe_audio_duration,
@@ -94,6 +101,20 @@ class SlidePart:
 def _sanitize_slug(value: str) -> str:
     slug = re.sub(r"[^0-9A-Za-z_-]+", "_", value).strip("_")
     return slug or "native_enhance"
+
+
+def _positive_seconds_arg(value: str) -> float:
+    try:
+        return validate_seconds(value, "transition duration", allow_zero=False)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
+def _non_negative_seconds_arg(value: str) -> float:
+    try:
+        return validate_seconds(value, "narration padding", allow_zero=True)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
 
 
 def _read_json(path: Path) -> dict:
@@ -276,39 +297,6 @@ def _add_notes_content_types(content_types: str, note_indices: set[int]) -> str:
     return content_types
 
 
-def _set_transition_only(slide_xml: str, effect: str, duration: float) -> str:
-    transition_xml = create_transition_xml(effect=effect, duration=duration)
-    if re.search(r"<p:transition\b[^>]*/>", slide_xml):
-        return re.sub(r"\s*<p:transition\b[^>]*/>", "\n" + transition_xml, slide_xml, count=1)
-    if re.search(r"<p:transition\b[^>]*>.*?</p:transition>", slide_xml, re.S):
-        return re.sub(
-            r"\s*<p:transition\b[^>]*>.*?</p:transition>",
-            "\n" + transition_xml,
-            slide_xml,
-            count=1,
-            flags=re.S,
-        )
-    if "<p:timing>" in slide_xml:
-        return slide_xml.replace("<p:timing>", transition_xml + "\n  <p:timing>", 1)
-    return slide_xml.replace("</p:sld>", transition_xml + "\n</p:sld>", 1)
-
-
-def _apply_recorded_timing_without_transition(slide_xml: str, advance_after: float) -> str:
-    adv_ms = max(1, int(advance_after * 1000))
-    transition_xml = f'  <p:transition advTm="{adv_ms}"/>'
-    slide_xml = re.sub(r"\s*<p:transition\b[^>]*/>", "", slide_xml, count=1)
-    slide_xml = re.sub(
-        r"\s*<p:transition\b[^>]*>.*?</p:transition>",
-        "",
-        slide_xml,
-        count=1,
-        flags=re.S,
-    )
-    if "<p:timing>" in slide_xml:
-        return slide_xml.replace("<p:timing>", transition_xml + "\n  <p:timing>", 1)
-    return slide_xml.replace("</p:sld>", transition_xml + "\n</p:sld>", 1)
-
-
 def _apply_notes(extract_dir: Path, slide: SlidePart, note_md: Path) -> None:
     notes_text = markdown_to_plain_text(note_md.read_text(encoding="utf-8"))
     if not notes_text:
@@ -346,10 +334,10 @@ def _apply_audio(
     slide: SlidePart,
     audio_path: Path,
     *,
-    transition: str,
-    transition_duration: float,
+    enter: EnterUpdate,
+    timings_enabled: bool,
     narration_padding: float,
-) -> None:
+) -> bool:
     media_dir = extract_dir / "ppt" / "media"
     media_dir.mkdir(parents=True, exist_ok=True)
 
@@ -380,20 +368,25 @@ def _apply_audio(
         poster_rid=poster_rid,
     )
 
-    duration = probe_audio_duration(audio_path)
-    if duration is None:
-        raise RuntimeError(f"Unable to read narration duration with ffprobe: {audio_path}")
-    advance_after = duration + narration_padding
-    if transition == "none":
-        slide_xml = _apply_recorded_timing_without_transition(slide_xml, advance_after)
-    else:
-        slide_xml = apply_recorded_timing(
+    advance = AdvanceUpdate(mode="preserve")
+    if timings_enabled:
+        duration = probe_audio_duration(audio_path)
+        if duration is None:
+            raise RuntimeError(f"Unable to read narration duration with ffprobe: {audio_path}")
+        advance = AdvanceUpdate(
+            mode="narration",
+            after=duration + narration_padding,
+        )
+
+    wrote_advance = False
+    if enter.policy != "preserve" or timings_enabled:
+        slide_xml, wrote_advance = apply_slide_motion_xml(
             slide_xml,
-            advance_after=advance_after,
-            transition_duration=transition_duration,
-            transition_effect=transition,
+            enter=enter,
+            advance=advance,
         )
     slide_xml_path.write_text(slide_xml, encoding="utf-8")
+    return timings_enabled and wrote_advance
 
 
 def _update_content_types(extract_dir: Path, note_indices: set[int], audio_exts: set[str]) -> None:
@@ -439,6 +432,32 @@ def _enabled_modules(plan: dict) -> set[str]:
         if isinstance(config, dict) and config.get("enabled") is True:
             enabled.add(str(name))
     return enabled
+
+
+def _resolve_enter_update(
+    *,
+    cli_effect: str | None,
+    configured_effect: object,
+    transitions_enabled: bool,
+    duration: float,
+) -> EnterUpdate:
+    if cli_effect is None and not transitions_enabled:
+        if configured_effect == "none":
+            return EnterUpdate(policy="none", effect=None, duration=duration)
+        return EnterUpdate(policy="preserve", duration=duration)
+
+    effect = cli_effect if cli_effect is not None else configured_effect
+    if not isinstance(effect, str):
+        raise ValueError(f"transition effect must be a string: {effect!r}")
+    if effect == "none":
+        return EnterUpdate(policy="none", effect=None, duration=duration)
+    if effect not in TRANSITIONS:
+        valid = ", ".join(sorted(TRANSITIONS))
+        raise ValueError(
+            f"unknown transition effect {effect!r}; valid effects: {valid}, none"
+        )
+
+    return EnterUpdate(policy="replace", effect=effect, duration=duration)
 
 
 def _plan_confirmed(plan: dict) -> bool:
@@ -661,32 +680,64 @@ def apply_project(args: argparse.Namespace) -> int:
         return 1
 
     modules = _enabled_modules(plan)
-    transitions_cfg = (
-        plan.get("modules", {}).get("transitions", {})
-        if isinstance(plan.get("modules"), dict)
-        else {}
-    )
-    timings_cfg = (
-        plan.get("modules", {}).get("timings", {})
-        if isinstance(plan.get("modules"), dict)
-        else {}
-    )
-    transition = (
-        args.transition
-        or transitions_cfg.get("effect")
-        or transition_cfg.get("effect")
-        or "fade"
-    )
-    transition_duration = (
-        args.transition_duration
-        or transitions_cfg.get("duration")
-        or float(transition_cfg.get("duration") or 0.5)
-    )
-    narration_padding = (
-        args.narration_padding
-        if args.narration_padding is not None
-        else float(timings_cfg.get("narration_padding") or 0.4)
-    )
+    modules_cfg = plan.get("modules") if isinstance(plan.get("modules"), dict) else {}
+    transitions_cfg = modules_cfg.get("transitions", {})
+    if not isinstance(transitions_cfg, dict):
+        transitions_cfg = {}
+    timings_cfg = modules_cfg.get("timings", {})
+    if not isinstance(timings_cfg, dict):
+        timings_cfg = {}
+
+    if "effect" in transitions_cfg:
+        configured_effect = transitions_cfg["effect"]
+    elif "effect" in transition_cfg:
+        configured_effect = transition_cfg["effect"]
+    else:
+        configured_effect = "fade"
+
+    if args.transition_duration is not None:
+        raw_transition_duration = args.transition_duration
+    elif "duration" in transitions_cfg:
+        raw_transition_duration = transitions_cfg["duration"]
+    elif "duration" in transition_cfg:
+        raw_transition_duration = transition_cfg["duration"]
+    else:
+        raw_transition_duration = 0.5
+
+    if args.narration_padding is not None:
+        raw_narration_padding = args.narration_padding
+    elif "narration_padding" in timings_cfg:
+        raw_narration_padding = timings_cfg["narration_padding"]
+    else:
+        raw_narration_padding = 0.4
+
+    try:
+        if args.transition is not None or "transitions" in modules:
+            transition_duration = validate_seconds(
+                raw_transition_duration,
+                "transition duration",
+                allow_zero=False,
+            )
+        else:
+            transition_duration = 0.5
+        if "timings" in modules:
+            narration_padding = validate_seconds(
+                raw_narration_padding,
+                "narration padding",
+                allow_zero=True,
+            )
+        else:
+            narration_padding = 0.4
+        enter_update = _resolve_enter_update(
+            cli_effect=args.transition,
+            configured_effect=configured_effect,
+            transitions_enabled="transitions" in modules,
+            duration=transition_duration,
+        )
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
     apply_transition_without_audio = (
         args.apply_transition_without_audio
         or bool(transitions_cfg.get("apply_without_audio"))
@@ -710,6 +761,7 @@ def apply_project(args: argparse.Namespace) -> int:
         audio_exts: set[str] = set()
         audio_count = 0
         transition_only_count = 0
+        wrote_auto_advance = False
         for slide in slides:
             note = _note_path(notes_dir, slide.index)
             if "notes" in modules and note:
@@ -718,33 +770,55 @@ def apply_project(args: argparse.Namespace) -> int:
 
             audio = _audio_path(audio_dir, slide.index)
             if "audio" in modules and audio:
-                _apply_audio(
+                wrote_auto_advance = _apply_audio(
                     extract_dir,
                     slide,
                     audio,
-                    transition=transition if "transitions" in modules else "none",
-                    transition_duration=transition_duration,
-                    narration_padding=narration_padding if "timings" in modules else 0,
-                )
+                    enter=enter_update,
+                    timings_enabled="timings" in modules,
+                    narration_padding=narration_padding,
+                ) or wrote_auto_advance
                 audio_exts.add(audio.suffix.lower())
                 audio_count += 1
                 continue
 
             if (
-                "transitions" in modules
-                and apply_transition_without_audio
-                and transition != "none"
+                apply_transition_without_audio
+                and enter_update.policy != "preserve"
             ):
                 slide_xml_path = extract_dir / slide.part_name
                 slide_xml = slide_xml_path.read_text(encoding="utf-8")
+                slide_xml, _uses_timings = apply_slide_motion_xml(
+                    slide_xml,
+                    enter=enter_update,
+                    advance=AdvanceUpdate(mode="preserve"),
+                )
                 slide_xml_path.write_text(
-                    _set_transition_only(slide_xml, transition, transition_duration),
+                    slide_xml,
                     encoding="utf-8",
                 )
                 transition_only_count += 1
 
         _update_content_types(extract_dir, note_indices, audio_exts)
-        _zip_dir(extract_dir, output_path)
+        if wrote_auto_advance:
+            set_directory_use_timings(extract_dir)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(
+            prefix="native-enhance-output-",
+            dir=output_path.parent,
+        ) as output_tmp:
+            candidate_path = Path(output_tmp) / output_path.name
+            _zip_dir(extract_dir, candidate_path)
+            try:
+                validate_pptx_transition_package(
+                    candidate_path,
+                    require_use_timings=wrote_auto_advance,
+                )
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"PPTX transition package validation failed: {exc}"
+                ) from exc
+            candidate_path.replace(output_path)
 
     print(f"Output: {output_path}", file=sys.stderr)
     print(f"Notes applied: {len(note_indices)}", file=sys.stderr)
@@ -813,8 +887,8 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--project-dir", default=None, help="explicit project directory")
     init.add_argument("--projects-root", default="projects", help="projects root (default: projects)")
     init.add_argument("--transition", default="fade", choices=sorted(TRANSITIONS.keys()))
-    init.add_argument("--transition-duration", type=float, default=0.5)
-    init.add_argument("--narration-padding", type=float, default=0.4)
+    init.add_argument("--transition-duration", type=_positive_seconds_arg, default=0.5)
+    init.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=0.4)
     init.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
@@ -825,8 +899,8 @@ def build_parser() -> argparse.ArgumentParser:
     plan = subparsers.add_parser("plan", help="draft an enhancement module plan")
     plan.add_argument("project_path", help="native enhancement project directory")
     plan.add_argument("--transition", default="fade", choices=sorted(TRANSITIONS.keys()) + ["none"])
-    plan.add_argument("--transition-duration", type=float, default=0.5)
-    plan.add_argument("--narration-padding", type=float, default=0.4)
+    plan.add_argument("--transition-duration", type=_positive_seconds_arg, default=0.5)
+    plan.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=0.4)
     plan.add_argument(
         "--apply-transition-without-audio",
         action="store_true",
@@ -839,8 +913,8 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument("-o", "--output", default=None, help="output .pptx path")
     apply.add_argument("--overwrite", action="store_true", help="overwrite output if it exists")
     apply.add_argument("--transition", default=None, choices=sorted(TRANSITIONS.keys()) + ["none"])
-    apply.add_argument("--transition-duration", type=float, default=None)
-    apply.add_argument("--narration-padding", type=float, default=None)
+    apply.add_argument("--transition-duration", type=_positive_seconds_arg, default=None)
+    apply.add_argument("--narration-padding", type=_non_negative_seconds_arg, default=None)
     apply.add_argument("--force", action="store_true", help="apply without a confirmed enhancement plan")
     apply.add_argument(
         "--apply-transition-without-audio",

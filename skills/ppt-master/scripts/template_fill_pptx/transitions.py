@@ -2,8 +2,8 @@
 
 Native templates usually ship an empty ``<p:transition/>`` that renders as no
 motion, so ``apply`` injects a default transition unless told to ``keep`` the
-source or set ``none``. Effects come from the shared ``pptx_animations``
-vocabulary so they match the SVG export path.
+source or set ``none``. Effects and OOXML mutation come from the shared
+``pptx_transitions`` core so every PPTX path uses the same writer.
 """
 
 from __future__ import annotations
@@ -11,12 +11,13 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from .ooxml import NS, P14_NS, _qn
-
-try:
-    from pptx_animations import TRANSITIONS
-except ImportError:
-    TRANSITIONS = {}
+from pptx_transitions import (
+    TRANSITIONS,
+    AdvanceUpdate,
+    EnterUpdate,
+    apply_slide_motion,
+    validate_seconds,
+)
 
 # Default page transition injected by `apply` when neither the CLI flag nor a
 # per-slide plan field asks for something else. Use `keep` to preserve the
@@ -28,59 +29,52 @@ KEEP_TRANSITION = "keep"
 _UNSET = object()
 
 
-def _build_transition_element(
-    effect: str,
-    duration: float,
-    advance_after: float | None = None,
-) -> ET.Element:
-    """Build a populated <p:transition> element from the shared TRANSITIONS vocabulary."""
-    info = TRANSITIONS[effect]
-    transition = ET.Element(_qn(NS["p"], "transition"))
-    transition.set(_qn(P14_NS, "dur"), str(int(float(duration) * 1000)))
-    if advance_after is not None:
-        transition.set("advTm", str(int(float(advance_after) * 1000)))
-    child = ET.SubElement(transition, _qn(NS["p"], info["element"]))
-    for key, value in info.get("attrs", {}).items():
-        child.set(key, str(value))
-    return transition
-
-
 def _set_slide_transition(
     slide_root: ET.Element,
     *,
     effect: str | None,
     duration: float,
     advance_after: float | None = None,
-) -> None:
-    """Replace the cloned slide's transition element (empty in most templates).
+) -> bool:
+    """Apply a legacy template-fill transition through the shared core.
 
-    ``effect`` of ``None`` or ``"keep"`` leaves the source transition untouched;
-    ``"none"`` strips it so the slide advances with no animation. OOXML requires
-    the transition to sit after ``p:clrMapOvr`` and before ``p:timing``.
+    ``None`` and ``keep`` preserve the source transition. ``none`` removes the
+    visual transition while retaining an explicitly requested auto-advance.
+    Legacy ``advance_after`` allowed both click and timed advance, so it maps to
+    ``both`` rather than the stricter ``after`` mode. The return value reports
+    whether the resulting slide contains an automatic advance.
     """
     if effect is None or effect == KEEP_TRANSITION:
-        return
+        enter = EnterUpdate(policy="preserve")
+        advance = AdvanceUpdate(
+            mode="preserve" if advance_after is None else "both",
+            after=advance_after,
+        )
+    elif effect == "none":
+        enter = EnterUpdate(policy="none", effect=None, duration=duration)
+        advance = AdvanceUpdate(
+            mode="click" if advance_after is None else "both",
+            after=advance_after,
+        )
+    else:
+        enter = EnterUpdate(
+            policy="replace",
+            effect=effect,
+            duration=duration,
+        )
+        advance = AdvanceUpdate(
+            mode="click" if advance_after is None else "both",
+            after=advance_after,
+        )
 
-    new_element = None if effect == "none" else _build_transition_element(effect, duration, advance_after)
-    existing = slide_root.find("p:transition", NS)
-    if existing is not None:
-        index = list(slide_root).index(existing)
-        slide_root.remove(existing)
-        if new_element is not None:
-            slide_root.insert(index, new_element)
-        return
-    if new_element is None:
-        return
-
-    timing = slide_root.find("p:timing", NS)
-    if timing is not None:
-        slide_root.insert(list(slide_root).index(timing), new_element)
-        return
-    clr_map_ovr = slide_root.find("p:clrMapOvr", NS)
-    if clr_map_ovr is not None:
-        slide_root.insert(list(slide_root).index(clr_map_ovr) + 1, new_element)
-        return
-    slide_root.append(new_element)
+    try:
+        return apply_slide_motion(
+            slide_root,
+            enter=enter,
+            advance=advance,
+        )
+    except ValueError as exc:
+        raise RuntimeError(str(exc)) from exc
 
 
 def _resolve_slide_transition(
@@ -98,11 +92,19 @@ def _resolve_slide_transition(
         duration = raw.get("duration", default_duration)
         advance_after = raw.get("advance_after")
     else:
-        effect = str(raw)
+        effect = None if raw is None else str(raw)
         duration = default_duration
         advance_after = None
     if effect is not None and effect not in ("none", KEEP_TRANSITION) and effect not in TRANSITIONS:
         raise RuntimeError(
             f"Unknown transition effect '{effect}'. Valid: {', '.join(sorted(TRANSITIONS))}, none, {KEEP_TRANSITION}"
         )
-    return effect, float(duration), advance_after
+    try:
+        resolved_duration = validate_seconds(
+            duration,
+            "transition duration",
+            allow_zero=False,
+        )
+    except ValueError as exc:
+        raise RuntimeError(str(exc)) from exc
+    return effect, resolved_duration, advance_after

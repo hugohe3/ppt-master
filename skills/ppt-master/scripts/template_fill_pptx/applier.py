@@ -6,10 +6,18 @@ and rebuilds the presentation slide list, relationships, and content types.
 
 from __future__ import annotations
 
+import tempfile
 import zipfile
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
+
+from pptx_transitions import (
+    parse_source_xml,
+    serialize_source_xml,
+    set_package_use_timings,
+    validate_pptx_transition_package,
+)
 
 from .chart_fill import (
     _apply_chart_edits_to_slide_package,
@@ -76,6 +84,7 @@ def apply_plan(
     next_chart_number = _max_chart_part_number(entries)
     next_embedding_number = _max_embedding_part_number(entries)
     allocate_part = _make_part_allocator(entries)
+    wrote_auto_advance = False
 
     for offset, item in enumerate(plan_slides):
         source_slide = int(item.get("source_slide", 0))
@@ -87,7 +96,8 @@ def apply_plan(
         new_rels = f"ppt/slides/_rels/slide{new_slide_number}.xml.rels"
         new_rid = f"rId{next_rel_number + offset}"
 
-        slide_root = ET.fromstring(entries[source_ref.part_name])
+        source_slide_xml = entries[source_ref.part_name]
+        slide_root = parse_source_xml(source_slide_xml)
         replacements = item.get("replacements", [])
         if not isinstance(replacements, list):
             raise RuntimeError(f"Slide {source_slide} replacements must be a list")
@@ -109,12 +119,14 @@ def apply_plan(
             default_effect=transition,
             default_duration=transition_duration,
         )
-        _set_slide_transition(
+        slide_has_auto_advance = _set_slide_transition(
             slide_root,
             effect=slide_effect,
             duration=slide_duration,
             advance_after=slide_advance,
         )
+        if slide_advance is not None and slide_has_auto_advance:
+            wrote_auto_advance = True
 
         source_rels = entries.get(source_ref.rels_name)
         slide_rels_root = ET.fromstring(source_rels) if source_rels else _empty_relationships_root()
@@ -139,7 +151,13 @@ def apply_plan(
             next_chart_number=next_chart_number,
             next_embedding_number=next_embedding_number,
         )
-        entries[new_part] = _xml_bytes(slide_root)
+        try:
+            entries[new_part] = serialize_source_xml(
+                slide_root,
+                source_slide_xml,
+            )
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
         notes_text = str(item.get("notes") or item.get("speaker_notes") or "")
         entries[new_rels], note_entries = _slide_rels_with_notes(
             _xml_bytes(slide_rels_root),
@@ -171,8 +189,32 @@ def apply_plan(
     entries["ppt/_rels/presentation.xml.rels"] = _xml_bytes(pres_rels_root)
     _prune_unreferenced_parts(entries, content_root)
     entries["[Content_Types].xml"] = _xml_bytes(content_root)
+    if wrote_auto_advance:
+        try:
+            set_package_use_timings(entries)
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(output_path, "w", compression=zipfile.ZIP_DEFLATED) as out:
-        for name, data in entries.items():
-            out.writestr(name, data)
+    with tempfile.TemporaryDirectory(
+        prefix="template-fill-pptx-",
+        dir=output_path.parent,
+    ) as temp_dir:
+        candidate_path = Path(temp_dir) / output_path.name
+        with zipfile.ZipFile(
+            candidate_path,
+            "w",
+            compression=zipfile.ZIP_DEFLATED,
+        ) as out:
+            for name, data in entries.items():
+                out.writestr(name, data)
+        try:
+            validate_pptx_transition_package(
+                candidate_path,
+                require_use_timings=wrote_auto_advance,
+            )
+        except ValueError as exc:
+            raise RuntimeError(
+                f"PPTX transition package validation failed: {exc}"
+            ) from exc
+        candidate_path.replace(output_path)

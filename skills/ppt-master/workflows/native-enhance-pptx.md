@@ -129,6 +129,18 @@ Present the plan to the user before generating notes or audio:
 
 **⛔ BLOCKING**: Stop here and wait for explicit user confirmation. Do not generate notes, generate audio, or patch the PPTX until the user confirms the module plan.
 
+**Transition/timing ownership**:
+
+| Confirmed state | Enter transition | Slide advance |
+|---|---|---|
+| Transitions enabled with an effect | Replace with that exact effect and duration | Preserve unless timings is enabled |
+| Transitions disabled with a non-`none` configured effect | Preserve the source effect, including unknown `AlternateContent` | Preserve unless timings is enabled |
+| Explicit `none` | Remove the visual effect | Preserve, or write timing-only advance when timings is enabled |
+| Timings enabled with audio | Keep the resolved enter policy | Use audio duration plus narration padding; click disabled |
+| Timings disabled | Apply the confirmed enter policy only | Do not run `ffprobe`; do not add/change `advTm` or `useTimings` |
+
+**Hard rule — no silent downgrade**: a requested supported effect must be written with its established direction/variant attributes. Unknown requested effects fail; unknown source effects are preserved when the transition module is disabled.
+
 After confirmation, update `<project>/analysis/enhancement_plan.json`:
 
 ```json
@@ -254,8 +266,13 @@ python3 skills/ppt-master/scripts/native_enhance_pptx.py apply "<project>" \
   --transition fade \
   --transition-duration 0.5 \
   --narration-padding 0.4 \
+  --apply-transition-without-audio \
   --overwrite
 ```
+
+Without `--apply-transition-without-audio` (or the matching confirmed-plan
+field), the resolved enter policy is applied while processing slides with
+audio; slides without audio keep their source transition.
 
 Patch scope:
 
@@ -266,6 +283,7 @@ Patch scope:
 | `ppt/slides/_rels/slideN.xml.rels` | Relationships for notes/audio/media/poster |
 | `ppt/media/` | Narration audio and transparent poster |
 | `ppt/slides/slideN.xml` | Hidden autoplay audio shape and page timing |
+| `ppt/presProps.xml` | `showPr useTimings=1` only when this run writes automatic slide advance |
 | `[Content_Types].xml` | Required content types |
 
 **Hard rule**: Do not modify existing slide shapes, text bodies, images, chart data, master/layout parts, or existing non-target relationships.
@@ -291,6 +309,8 @@ Check:
 | Notes | Present on intended slides |
 | Audio media | Present under `ppt/media/` when generated |
 | Auto-play | Narrated slides advance by audio duration |
+| Transition | Requested effect remains exact; preserved `AlternateContent` keeps its primary and fallback branches |
+| Timings disabled | Source `advTm` and package `useTimings` are not changed |
 
 ```markdown
 ## ✅ Native PPTX Enhancement V1 Complete
