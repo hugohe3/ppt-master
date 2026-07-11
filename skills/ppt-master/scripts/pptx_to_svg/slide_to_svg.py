@@ -847,6 +847,13 @@ def _render_graphic_chart(
     rendered = ""
     if ctx.render_graphic_previews:
         rendered = _render_graphic_preview(node, ctx)
+    if rendered:
+        native_attrs.append('data-pptx-visual-status="source-preview"')
+    else:
+        native_attrs.extend([
+            'data-pptx-visual-status="placeholder"',
+            'data-pptx-route-status="reconstruction-only"',
+        ])
     return rendered, native_attrs
 
 

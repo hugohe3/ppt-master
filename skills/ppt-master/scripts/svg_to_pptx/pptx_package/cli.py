@@ -37,6 +37,7 @@ if __package__ in {None, ''}:
 from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
 from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
+from ..native_objects.marker_status import native_marker_release_block_reason
 from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
 from ..drawingml.theme_fonts import (
     ThemeFontError,
@@ -81,6 +82,50 @@ def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
             fallbacks.append((svg_path.name, marker_id, status))
     return fallbacks
+
+
+def _release_blocked_graphics(
+    svg_files: list[Path],
+) -> list[tuple[str, str, str]]:
+    """Return graphics whose status metadata is invalid."""
+    blocked: list[tuple[str, str, str]] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        for elem in root.iter():
+            if elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            reason = native_marker_release_block_reason(elem)
+            if reason is None:
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            blocked.append((svg_path.name, marker_id, reason))
+    return blocked
+
+
+def _reconstruction_only_graphics(
+    svg_files: list[Path],
+) -> list[tuple[str, str, bool]]:
+    """Return valid placeholder routes for non-blocking diagnostics."""
+    diagnostics: list[tuple[str, str, bool]] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        for elem in root.iter():
+            if elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            if elem.get('data-pptx-route-status') != 'reconstruction-only':
+                continue
+            if native_marker_release_block_reason(elem) is not None:
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            active_native = bool((elem.get('data-pptx-native') or '').strip())
+            diagnostics.append((svg_path.name, marker_id, active_native))
+    return diagnostics
 
 
 def _recorded_narration_on_click_slides(
@@ -214,8 +259,10 @@ Recorded narration:
                              'conversion decisions for debugging.')
     parser.add_argument('--native-objects', action='store_true', default=False,
                         help='Opt in to converting explicit data-pptx-native table/chart '
-                             'markers into native PowerPoint objects. Default off: marked '
-                             'groups export through their SVG fallback children. When set, '
+                             'markers into editable PowerPoint objects. This editable-first '
+                             'replacement may normalize styling or omit unmodeled marker-local '
+                             'visuals. Default off: marked groups export through their SVG '
+                             'fallback children. When set, '
                              'the default-flow export is named <project>_<ts>_native_charts.pptx '
                              'to tell it apart from a plain shape export.')
     parser.add_argument(
@@ -428,7 +475,47 @@ Recorded narration:
                     print(f"  {message}", file=sys.stderr)
                 return 1
 
+    release_blocked = _release_blocked_graphics(native_files)
+    if release_blocked:
+        print(
+            "Error: invalid PPTX graphic status metadata cannot enter an export. "
+            "Correct the reported visual/route/native status attributes first.",
+            file=sys.stderr,
+        )
+        for filename, marker_id, status in release_blocked[:20]:
+            print(f"  {filename}: {marker_id} ({status})", file=sys.stderr)
+        if len(release_blocked) > 20:
+            print(
+                f"  ... and {len(release_blocked) - 20} more",
+                file=sys.stderr,
+            )
+        return 1
+
+    reconstruction_only = _reconstruction_only_graphics(native_files)
+    if reconstruction_only:
+        print(
+            "Warning: reconstruction-only PPTX chart placeholder(s) have no baked "
+            "preview. Default export keeps the placeholder; --native-objects "
+            "reconstructs entries that carry a valid active native marker.",
+            file=sys.stderr,
+        )
+        for filename, marker_id, active_native in reconstruction_only[:20]:
+            route = "active native reconstruction" if active_native else "placeholder fallback"
+            print(f"  {filename}: {marker_id} ({route})", file=sys.stderr)
+        if len(reconstruction_only) > 20:
+            print(
+                f"  ... and {len(reconstruction_only) - 20} more",
+                file=sys.stderr,
+            )
+
     if args.native_objects:
+        print(
+            "Warning: --native-objects is an editable-first replacement route. "
+            "Native charts/tables may normalize styling or omit SVG details that "
+            "are not represented by marker metadata; use the default export when "
+            "exact fallback artwork is required.",
+            file=sys.stderr,
+        )
         fallbacks = _native_object_fallbacks(native_files)
         if fallbacks:
             print(

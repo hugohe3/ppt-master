@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 # Allow running this script from anywhere
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -35,6 +36,23 @@ from pptx_to_svg import convert_pptx_to_svg
 from pptx_to_svg.converter import ConvertOptions
 
 configure_utf8_stdio()
+
+
+def _reconstruction_only_graphics(result: object) -> list[tuple[int, str]]:
+    """Return slide/object labels for generated placeholders."""
+    artifacts = getattr(result, "flat_slides", None) or getattr(result, "slides", [])
+    diagnostics: list[tuple[int, str]] = []
+    for artifact in artifacts:
+        try:
+            root = ET.fromstring(artifact.svg)
+        except ET.ParseError:
+            continue
+        for elem in root.iter():
+            if elem.get("data-pptx-route-status") != "reconstruction-only":
+                continue
+            marker_id = elem.get("id") or elem.get("data-name") or "<unnamed>"
+            diagnostics.append((artifact.index, marker_id))
+    return diagnostics
 
 
 def parse_args() -> argparse.Namespace:
@@ -110,6 +128,21 @@ def main() -> int:
         fonts = ", ".join(f"{k}={v}" for k, v in result.theme_fonts.items())
         print(f"Theme fonts: {fonts}")
     print(f"Slides converted: {len(result.slides)}")
+    reconstruction_only = _reconstruction_only_graphics(result)
+    if reconstruction_only:
+        print(
+            "Warning: chart placeholder(s) without a baked preview are "
+            "reconstruction-only. Default export keeps the placeholder; "
+            "--native-objects may reconstruct entries with a valid active marker:",
+            file=sys.stderr,
+        )
+        for slide_index, marker_id in reconstruction_only[:20]:
+            print(f"  slide {slide_index}: {marker_id}", file=sys.stderr)
+        if len(reconstruction_only) > 20:
+            print(
+                f"  ... and {len(reconstruction_only) - 20} more",
+                file=sys.stderr,
+            )
     print(f"Output: {output_dir}")
     return 0
 

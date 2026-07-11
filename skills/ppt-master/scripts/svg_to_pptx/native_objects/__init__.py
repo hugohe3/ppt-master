@@ -44,6 +44,7 @@ from .marker_common import (
     _validate_bounds_inputs,
     native_marker_transform,
 )
+from .marker_status import native_marker_status_errors
 from .table import (
     _build_native_table,
     _native_table_warnings,
@@ -174,6 +175,9 @@ def _validate_native_object_marker_payload(
     kind = (elem.get("data-pptx-native") or "").strip().lower()
     if not kind:
         return "", {}, None
+    status_errors = native_marker_status_errors(elem)
+    if status_errors:
+        raise RuntimeError("; ".join(status_errors))
     if kind not in _NATIVE_KINDS:
         raise RuntimeError(f"Unsupported data-pptx-native value: {kind}")
     if _local_tag(elem) != "g":
