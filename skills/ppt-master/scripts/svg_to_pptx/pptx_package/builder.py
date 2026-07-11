@@ -8,6 +8,7 @@ import math
 import mimetypes
 import os
 import posixpath
+import random
 import re
 import shutil
 import stat
@@ -35,6 +36,15 @@ from pptx_transitions import (
     validate_generated_transition_xml,
     validate_pptx_transition_package,
     validate_seconds,
+)
+from pptx_animations import (
+    animation_seconds_to_milliseconds,
+    create_sequence_timing_xml,
+    normalize_animation_effect,
+    normalize_animation_trigger,
+    pick_animation_effect,
+    validate_generated_animation_xml,
+    validate_pptx_animation_package,
 )
 
 from ..drawingml.converter import convert_svg_to_slide_shapes
@@ -91,16 +101,6 @@ from .template_structure import (
     parse_preserve_slides,
     parse_template_slides,
 )
-
-try:
-    from pptx_animations import (
-        create_sequence_timing_xml,
-        pick_animation_effect,
-    )
-except ImportError:
-    create_sequence_timing_xml = None
-    pick_animation_effect = None
-
 
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
@@ -2762,16 +2762,6 @@ def _ensure_notes_master(extract_dir: Path) -> None:
     presentation_path.write_text(presentation_xml, encoding='utf-8')
 
 
-def _to_float(value: Any, default: float) -> float:
-    if value is None:
-        return default
-    try:
-        number = float(value)
-    except (TypeError, ValueError):
-        return default
-    return number if math.isfinite(number) and number >= 0 else default
-
-
 def _slide_config(animation_config: dict[str, Any] | None, svg_stem: str) -> dict[str, Any]:
     if not animation_config:
         return {}
@@ -2809,7 +2799,7 @@ def _slide_transition_settings(
             duration = validate_seconds(
                 trans_cfg.get('duration'),
                 "transition duration",
-                allow_zero=False,
+                allow_zero=effect is None,
             )
     if not cli_overrides.get('auto_advance') and 'auto_advance' in trans_cfg:
         auto_advance = validate_seconds(
@@ -2828,65 +2818,131 @@ def _slide_animation_settings(
     trigger: str,
     cli_overrides: dict[str, bool],
 ) -> tuple[str | None, float, float, str]:
-    anim_cfg = _as_dict(slide_cfg.get('animation'))
-    effect = animation
+    anim_value = slide_cfg.get('animation', {})
+    if not isinstance(anim_value, dict):
+        raise ValueError('animations.json slide animation must be an object')
+    anim_cfg = anim_value
+    effect = normalize_animation_effect(
+        animation,
+        allow_none=True,
+        allow_modes=True,
+    )
     if not cli_overrides.get('animation') and 'effect' in anim_cfg:
-        cfg_effect = str(anim_cfg.get('effect'))
-        effect = None if cfg_effect == 'none' else cfg_effect
+        effect = normalize_animation_effect(
+            anim_cfg.get('effect'),
+            allow_none=True,
+            allow_modes=True,
+        )
     if not cli_overrides.get('animation_duration'):
-        duration = _to_float(anim_cfg.get('duration'), duration)
+        duration = validate_seconds(
+            anim_cfg.get('duration', duration),
+            'animation duration',
+            allow_zero=False,
+        )
     if not cli_overrides.get('animation_stagger'):
-        stagger = _to_float(anim_cfg.get('stagger'), stagger)
-    if not cli_overrides.get('animation_trigger') and anim_cfg.get('trigger'):
-        trigger = str(anim_cfg.get('trigger'))
+        stagger = validate_seconds(
+            anim_cfg.get('stagger', stagger),
+            'animation stagger',
+            allow_zero=True,
+        )
+    if not cli_overrides.get('animation_trigger') and 'trigger' in anim_cfg:
+        trigger = normalize_animation_trigger(anim_cfg.get('trigger'))
+    else:
+        trigger = normalize_animation_trigger(trigger)
+    animation_seconds_to_milliseconds(
+        duration,
+        'animation duration',
+        allow_zero=False,
+    )
+    animation_seconds_to_milliseconds(
+        stagger,
+        'animation stagger',
+        allow_zero=True,
+    )
     return effect, duration, stagger, trigger
 
 
 def _build_sequence_targets(
     anim_targets: list[tuple[int, str]],
     slide_cfg: dict[str, Any],
-    animation: str,
+    animation: str | None,
     duration: float,
     stagger: float,
     mixed_animation_offset: int,
+    animation_rng: random.Random,
 ) -> tuple[list[tuple[int, int, str, float]], int]:
-    groups_cfg = _as_dict(slide_cfg.get('groups'))
-    ordered: list[tuple[int, int, int, str, dict[str, Any]]] = []
+    groups_value = slide_cfg.get('groups', {})
+    if not isinstance(groups_value, dict):
+        raise ValueError('animations.json slide groups must be an object')
+    groups_cfg = groups_value
+    ordered: list[tuple[int, int, str, dict[str, Any]]] = []
     for idx, (sid, svg_id) in enumerate(anim_targets):
-        group_cfg = _as_dict(groups_cfg.get(svg_id))
-        if str(group_cfg.get('effect', '')).lower() == 'none':
+        group_value = groups_cfg.get(svg_id, {})
+        if not isinstance(group_value, dict):
+            raise ValueError(
+                f'animations.json group "{svg_id}" must be an object'
+            )
+        group_cfg = group_value
+        raw_effect = group_cfg.get('effect')
+        if raw_effect is not None:
+            normalized_effect = normalize_animation_effect(
+                raw_effect,
+                allow_none=True,
+                allow_modes=True,
+            )
+        else:
+            normalized_effect = None
+        if 'effect' in group_cfg and normalized_effect is None:
+            continue
+        if animation is None and normalized_effect is None:
             continue
         order_value = group_cfg.get('order')
-        try:
-            order = int(order_value)
-            has_order = 0
-        except (TypeError, ValueError):
-            order = idx
-            has_order = 1
+        order = order_value if order_value is not None else idx + 1
+        if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
+            raise ValueError(
+                f'animations.json group "{svg_id}" order must be a positive integer'
+            )
         group_entry = dict(group_cfg)
         group_entry['_shape_id'] = sid
-        ordered.append((has_order, order, idx, svg_id, group_entry))
+        group_entry['_effect'] = normalized_effect
+        ordered.append((order, idx, svg_id, group_entry))
 
-    ordered.sort(key=lambda item: (item[0], item[1], item[2]))
+    ordered.sort(key=lambda item: (item[0], item[1]))
 
     seq_targets: list[tuple[int, int, str, float]] = []
-    for seq_idx, (_has_order, _order, _original_idx, _svg_id, group_cfg) in enumerate(ordered):
+    resolved_group_modes: list[str | None] = []
+    for seq_idx, (_order, _original_idx, _svg_id, group_cfg) in enumerate(ordered):
         shape_id = int(group_cfg['_shape_id'])
-        raw_effect = group_cfg.get('effect')
+        raw_effect = group_cfg.get('_effect')
+        resolved_group_modes.append(
+            raw_effect if raw_effect in ('auto', 'mixed', 'random') else None
+        )
         if raw_effect in ('auto', 'mixed', 'random'):
             effect = pick_animation_effect(
                 str(raw_effect), seq_idx, mixed_animation_offset, group_id=_svg_id,
+                rng=animation_rng,
             )
         else:
             effect = str(raw_effect or pick_animation_effect(
                 animation, seq_idx, mixed_animation_offset, group_id=_svg_id,
+                rng=animation_rng,
             ))
-        item_duration = _to_float(group_cfg.get('duration'), duration)
-        delay_seconds = _to_float(
-            group_cfg.get('delay'),
-            0 if seq_idx == 0 else stagger,
+        item_duration = validate_seconds(
+            group_cfg.get('duration', duration),
+            f'animation duration for group "{_svg_id}"',
+            allow_zero=False,
         )
-        seq_targets.append((shape_id, int(delay_seconds * 1000), effect, item_duration))
+        delay_seconds = validate_seconds(
+            group_cfg.get('delay', 0 if seq_idx == 0 else stagger),
+            f'animation delay for group "{_svg_id}"',
+            allow_zero=True,
+        )
+        delay_ms = animation_seconds_to_milliseconds(
+            delay_seconds,
+            f'animation delay for group "{_svg_id}"',
+            allow_zero=True,
+        )
+        seq_targets.append((shape_id, delay_ms, effect, item_duration))
 
     mixed_count = 0
     if animation == 'mixed':
@@ -2897,6 +2953,12 @@ def _build_sequence_targets(
         # semantic matches (title→fade, chart→wipe etc.) are unaffected
         # because they ignore the offset.
         mixed_count = len(seq_targets)
+    else:
+        mixed_count = sum(
+            1
+            for seq_idx, mode in enumerate(resolved_group_modes)
+            if mode == 'auto' or (mode == 'mixed' and seq_idx > 0)
+        )
     return seq_targets, mixed_count
 
 
@@ -3518,6 +3580,17 @@ def create_pptx_with_native_svg(
         audio_exts_used: set[str] = set()
         package_uses_timings = False
         mixed_animation_offset = 0
+        animation_seed = json.dumps(
+            {
+                'animation': animation,
+                'config': animation_config,
+                'slides': [path.name for path in svg_files],
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(',', ':'),
+        )
+        animation_rng = random.Random(animation_seed)
         conversion_trace: list[dict[str, Any]] | None = [] if conversion_trace_path else None
         structure_trace: list[dict[str, Any]] | None = (
             []
@@ -3527,35 +3600,14 @@ def create_pptx_with_native_svg(
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
+            expected_animation_targets: list[tuple[int, int, str, float]] = []
+            expected_animation_duration = animation_duration
+            expected_animation_trigger = normalize_animation_trigger(animation_trigger)
 
             try:
                 # ---- Native shapes mode ----
                 if use_native_shapes:
                     slide_cfg = _slide_config(animation_config, svg_path.stem)
-                    (
-                        slide_xml,
-                        media_files_dict,
-                        rel_entries,
-                        anim_targets,
-                        package_files_dict,
-                        content_type_overrides,
-                    ) = (
-                        convert_svg_to_slide_shapes(
-                            svg_path, slide_num=slide_num, verbose=verbose,
-                            merge_paragraphs=merge_paragraphs,
-                            image_optimize=image_optimize,
-                            image_max_dimension=image_max_dimension,
-                            image_sizing=image_sizing,
-                            image_scale=image_scale,
-                            image_quality=image_quality,
-                            native_objects=native_objects,
-                            theme_font_spec=active_theme_font_spec,
-                            theme_color_spec=active_theme_color_spec,
-                            trace_out=conversion_trace
-                            if conversion_trace is not None
-                            else structure_trace,
-                        )
-                    )
                     slide_transition, slide_transition_duration, slide_auto_advance = (
                         _slide_transition_settings(
                             slide_cfg,
@@ -3578,7 +3630,54 @@ def create_pptx_with_native_svg(
                         animation_trigger,
                         animation_cli_overrides,
                     )
-
+                    groups_value = slide_cfg.get('groups', {})
+                    if not isinstance(groups_value, dict):
+                        raise ValueError(
+                            'animations.json slide groups must be an object'
+                        )
+                    animation_hard_disabled = (
+                        animation_cli_overrides.get('animation', False)
+                        and animation is None
+                    )
+                    explicit_animation_groups = (
+                        frozenset(
+                            str(group_id)
+                            for group_id, group_cfg in groups_value.items()
+                            if isinstance(group_cfg, dict)
+                            and group_cfg.get('effect') != 'none'
+                            and (
+                                slide_animation is not None
+                                or 'effect' in group_cfg
+                            )
+                        )
+                        if not animation_hard_disabled
+                        else frozenset()
+                    )
+                    (
+                        slide_xml,
+                        media_files_dict,
+                        rel_entries,
+                        anim_targets,
+                        package_files_dict,
+                        content_type_overrides,
+                    ) = (
+                        convert_svg_to_slide_shapes(
+                            svg_path, slide_num=slide_num, verbose=verbose,
+                            merge_paragraphs=merge_paragraphs,
+                            image_optimize=image_optimize,
+                            image_max_dimension=image_max_dimension,
+                            image_sizing=image_sizing,
+                            image_scale=image_scale,
+                            image_quality=image_quality,
+                            native_objects=native_objects,
+                            animation_group_overrides=explicit_animation_groups,
+                            theme_font_spec=active_theme_font_spec,
+                            theme_color_spec=active_theme_color_spec,
+                            trace_out=conversion_trace
+                            if conversion_trace is not None
+                            else structure_trace,
+                        )
+                    )
                     # Order matters: OOXML schema requires <p:transition>
                     # to precede <p:timing> inside <p:sld>. Both use the same
                     # </p:sld> string-replace anchor, so transition must be
@@ -3597,10 +3696,13 @@ def create_pptx_with_native_svg(
                         if slide_auto_advance is not None:
                             package_uses_timings = True
 
-                    if (slide_animation and slide_animation != 'none'
-                            and create_sequence_timing_xml
-                            and pick_animation_effect
-                            and anim_targets):
+                    expected_animation_duration = slide_animation_duration
+                    expected_animation_trigger = slide_animation_trigger
+                    if (
+                        not animation_hard_disabled
+                        and (slide_animation or explicit_animation_groups)
+                        and anim_targets
+                    ):
                         seq_targets, mixed_count = _build_sequence_targets(
                             anim_targets,
                             slide_cfg,
@@ -3608,8 +3710,10 @@ def create_pptx_with_native_svg(
                             slide_animation_duration,
                             slide_animation_stagger,
                             mixed_animation_offset,
+                            animation_rng,
                         )
-                        if slide_animation in ('mixed', 'auto'):
+                        expected_animation_targets = seq_targets
+                        if mixed_count:
                             mixed_animation_offset += mixed_count
                         timing_xml = '\n' + create_sequence_timing_xml(
                             seq_targets, duration=slide_animation_duration,
@@ -3876,12 +3980,24 @@ def create_pptx_with_native_svg(
                     raise RuntimeError(
                         f'Slide {slide_num} transition validation failed: {exc}'
                     ) from exc
+                try:
+                    resolved_animation = validate_generated_animation_xml(
+                        final_slide_xml,
+                        expected_animation_targets,
+                        duration=expected_animation_duration,
+                        trigger=expected_animation_trigger,
+                    )
+                except ValueError as exc:
+                    raise RuntimeError(
+                        f'Slide {slide_num} animation validation failed: {exc}'
+                    ) from exc
 
                 if conversion_trace is not None:
                     motion_summary = asdict(resolved_motion)
                     for trace_entry in reversed(conversion_trace):
                         if trace_entry.get('slide_num') == slide_num:
                             trace_entry['motion'] = motion_summary
+                            trace_entry['animation'] = asdict(resolved_animation)
                             break
 
                 if verbose:
@@ -4099,6 +4215,15 @@ def create_pptx_with_native_svg(
         except ValueError as exc:
             raise RuntimeError(
                 f'PPTX transition package validation failed: {exc}'
+            ) from exc
+        try:
+            validate_pptx_animation_package(
+                temp_output_path,
+                require_supported_effects=True,
+            )
+        except ValueError as exc:
+            raise RuntimeError(
+                f'PPTX animation package validation failed: {exc}'
             ) from exc
         shutil.move(str(temp_output_path), str(output_path))
         permission_warnings = _relax_output_permissions(output_path)

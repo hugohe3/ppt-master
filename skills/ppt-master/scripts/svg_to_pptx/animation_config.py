@@ -9,15 +9,18 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from .drawingml.utils import SVG_NS
-from .semantic_markers import is_static_page_frame
-
+from pptx_animations import (
+    ANIMATIONS,
+    ANIMATION_MODES,
+    ANIMATION_TRIGGERS,
+    animation_seconds_to_milliseconds,
+    normalize_animation_effect,
+    normalize_animation_trigger,
+)
 from pptx_transitions import TRANSITIONS, validate_seconds
 
-try:
-    from pptx_animations import ANIMATIONS
-except ImportError:
-    ANIMATIONS = {}
+from .drawingml.utils import SVG_NS
+from .semantic_markers import is_static_page_frame
 
 
 _NON_VISUAL_TAGS = frozenset(('defs', 'title', 'desc', 'metadata', 'style'))
@@ -39,6 +42,7 @@ class GroupTarget:
     group_id: str
     order: int
     chrome: bool = False
+    structurally_static: bool = False
 
 
 def _tag_name(elem: ET.Element) -> str:
@@ -78,10 +82,16 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
         role = child.get('data-pptx-role')
         placeholder = child.get('data-pptx-placeholder')
         has_explicit_semantics = role is not None or placeholder is not None
-        if child.get('data-pptx-layer') is not None:
+        has_structural_layer = child.get('data-pptx-layer') is not None
+        semantic_static = (
+            has_explicit_semantics
+            and is_static_page_frame(role, placeholder)
+        )
+        structurally_static = has_structural_layer or semantic_static
+        if has_structural_layer:
             chrome = True
         elif has_explicit_semantics:
-            chrome = is_static_page_frame(role, placeholder)
+            chrome = semantic_static
         else:
             chrome = is_chrome_id(group_id)
         targets.append(
@@ -90,6 +100,7 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
                 group_id=group_id,
                 order=visual_index,
                 chrome=chrome,
+                structurally_static=structurally_static,
             )
         )
 
@@ -136,22 +147,69 @@ def load_animation_config(project_path: Path, config_path: str | None = None) ->
     return data
 
 
-def _valid_animation_effect(effect: str) -> bool:
-    return effect == 'none' or effect in ANIMATIONS or effect in ('auto', 'mixed', 'random')
-
-
 def _valid_transition_effect(effect: str) -> bool:
     return effect == 'none' or effect in TRANSITIONS
+
+
+def _animation_effect_error(effect: object, label: str) -> str | None:
+    if not isinstance(effect, str):
+        return f'animations.json {label} animation effect must be a string'
+    try:
+        normalize_animation_effect(effect)
+    except ValueError:
+        valid = ', '.join((*ANIMATIONS, *ANIMATION_MODES, 'none'))
+        return (
+            f'animations.json {label} has unknown animation effect: {effect}; '
+            f'valid effects: {valid}'
+        )
+    return None
+
+
+def _animation_trigger_error(trigger: object, label: str) -> str | None:
+    if not isinstance(trigger, str):
+        return f'animations.json {label} animation trigger must be a string'
+    try:
+        normalize_animation_trigger(trigger)
+    except ValueError:
+        valid = ', '.join(ANIMATION_TRIGGERS)
+        return (
+            f'animations.json {label} has unknown animation trigger: {trigger}; '
+            f'valid triggers: {valid}'
+        )
+    return None
+
+
+def _unknown_field_errors(
+    value: dict[str, Any],
+    allowed: frozenset[str],
+    label: str,
+) -> list[str]:
+    return [
+        f'animations.json {label} has unknown field: {field}'
+        for field in sorted(set(value) - allowed)
+    ]
 
 
 def validate_transition_config(config: dict[str, Any]) -> list[str]:
     """Return fatal transition-sidecar errors that must block export."""
     errors: list[str] = []
     defaults = config.get('defaults', {})
+    default_effect = 'fade'
     if not isinstance(defaults, dict):
         errors.append('animations.json field "defaults" must be an object')
     else:
-        errors.extend(_transition_scope_errors(defaults, 'defaults'))
+        errors.extend(
+            _transition_scope_errors(
+                defaults,
+                'defaults',
+                inherited_effect='fade',
+            )
+        )
+        transition_defaults = defaults.get('transition', {})
+        if isinstance(transition_defaults, dict):
+            value = transition_defaults.get('effect', default_effect)
+            if isinstance(value, str) and _valid_transition_effect(value):
+                default_effect = value
 
     slides = config.get('slides', {})
     if not isinstance(slides, dict):
@@ -162,19 +220,32 @@ def validate_transition_config(config: dict[str, Any]) -> list[str]:
             errors.append(f'animations.json slide "{slide_name}" must be an object')
             continue
         errors.extend(
-            _transition_scope_errors(slide_cfg, f'slide "{slide_name}"')
+            _transition_scope_errors(
+                slide_cfg,
+                f'slide "{slide_name}"',
+                inherited_effect=default_effect,
+            )
         )
     return errors
 
 
-def _transition_scope_errors(scope: dict[str, Any], label: str) -> list[str]:
+def _transition_scope_errors(
+    scope: dict[str, Any],
+    label: str,
+    *,
+    inherited_effect: str,
+) -> list[str]:
     if 'transition' not in scope:
         return []
     transition = scope['transition']
     if not isinstance(transition, dict):
         return [f'animations.json {label} field "transition" must be an object']
 
-    errors: list[str] = []
+    errors = _unknown_field_errors(
+        transition,
+        frozenset({'effect', 'duration', 'auto_advance'}),
+        f'{label} transition',
+    )
     if 'effect' in transition:
         effect = transition['effect']
         if not isinstance(effect, str):
@@ -185,7 +256,11 @@ def _transition_scope_errors(scope: dict[str, Any], label: str) -> list[str]:
             errors.append(
                 f'animations.json {label} has unknown transition effect: {effect}'
             )
-    for field, allow_zero in (('duration', False), ('auto_advance', True)):
+    duration_allows_zero = transition.get('effect', inherited_effect) == 'none'
+    for field, allow_zero in (
+        ('duration', duration_allows_zero),
+        ('auto_advance', True),
+    ):
         if field not in transition:
             continue
         try:
@@ -199,68 +274,195 @@ def _transition_scope_errors(scope: dict[str, Any], label: str) -> list[str]:
     return errors
 
 
+def validate_animation_config_errors(config: dict[str, Any]) -> list[str]:
+    """Return fatal object-animation errors that must block export."""
+    errors = _unknown_field_errors(
+        config,
+        frozenset({'version', 'defaults', 'slides'}),
+        'top level',
+    )
+    defaults = config.get('defaults', {})
+    if not isinstance(defaults, dict):
+        errors.append('animations.json field "defaults" must be an object')
+    else:
+        errors.extend(
+            _unknown_field_errors(
+                defaults,
+                frozenset({'transition', 'animation'}),
+                'defaults',
+            )
+        )
+        errors.extend(_animation_scope_errors(defaults, 'defaults'))
+
+    slides = config.get('slides', {})
+    if not isinstance(slides, dict):
+        errors.append('animations.json field "slides" must be an object')
+        return list(dict.fromkeys(errors))
+
+    for slide_name, slide_cfg in slides.items():
+        if not isinstance(slide_cfg, dict):
+            errors.append(f'animations.json slide "{slide_name}" must be an object')
+            continue
+        errors.extend(
+            _unknown_field_errors(
+                slide_cfg,
+                frozenset({'transition', 'animation', 'groups'}),
+                f'slide "{slide_name}"',
+            )
+        )
+        errors.extend(
+            _animation_scope_errors(slide_cfg, f'slide "{slide_name}"')
+        )
+        errors.extend(_animation_group_errors(slide_name, slide_cfg))
+    return list(dict.fromkeys(errors))
+
+
+def _animation_scope_errors(scope: dict[str, Any], label: str) -> list[str]:
+    if 'animation' not in scope:
+        return []
+    animation = scope['animation']
+    if not isinstance(animation, dict):
+        return [f'animations.json {label} field "animation" must be an object']
+
+    errors = _unknown_field_errors(
+        animation,
+        frozenset({'effect', 'duration', 'stagger', 'trigger'}),
+        f'{label} animation',
+    )
+    if 'effect' in animation:
+        effect_error = _animation_effect_error(animation['effect'], label)
+        if effect_error:
+            errors.append(effect_error)
+
+    for field, allow_zero in (('duration', False), ('stagger', True)):
+        if field not in animation:
+            continue
+        try:
+            animation_seconds_to_milliseconds(
+                animation[field],
+                f'animations.json {label} animation {field}',
+                allow_zero=allow_zero,
+            )
+        except ValueError as exc:
+            errors.append(str(exc))
+
+    if 'trigger' in animation:
+        trigger_error = _animation_trigger_error(animation['trigger'], label)
+        if trigger_error:
+            errors.append(trigger_error)
+    return errors
+
+
+def _animation_group_errors(
+    slide_name: object,
+    slide_cfg: dict[str, Any],
+) -> list[str]:
+    if 'groups' not in slide_cfg:
+        return []
+    groups = slide_cfg['groups']
+    if not isinstance(groups, dict):
+        return [
+            f'animations.json slide "{slide_name}" field "groups" must be an object'
+        ]
+
+    errors: list[str] = []
+    for group_id, group_cfg in groups.items():
+        label = f'group "{slide_name}/{group_id}"'
+        if not isinstance(group_cfg, dict):
+            errors.append(f'animations.json {label} must be an object')
+            continue
+
+        errors.extend(
+            _unknown_field_errors(
+                group_cfg,
+                frozenset({'effect', 'duration', 'delay', 'order'}),
+                label,
+            )
+        )
+
+        if 'effect' in group_cfg:
+            effect_error = _animation_effect_error(group_cfg['effect'], label)
+            if effect_error:
+                errors.append(effect_error)
+
+        for field, allow_zero in (('duration', False), ('delay', True)):
+            if field not in group_cfg:
+                continue
+            try:
+                animation_seconds_to_milliseconds(
+                    group_cfg[field],
+                    f'animations.json {label} animation {field}',
+                    allow_zero=allow_zero,
+                )
+            except ValueError as exc:
+                errors.append(str(exc))
+
+        if 'order' in group_cfg:
+            order = group_cfg['order']
+            if isinstance(order, bool) or not isinstance(order, int) or order <= 0:
+                errors.append(
+                    f'animations.json {label} animation order must be a positive integer: '
+                    f'{order!r}'
+                )
+    return errors
+
+
 def validate_animation_config(
     project_path: Path,
     config: dict[str, Any] | None = None,
     config_path: str | None = None,
 ) -> list[str]:
-    """Validate sidecar references against current ``svg_output``."""
+    """Return sidecar-reference diagnostics for ``svg_output``.
+
+    Fatal field/type/value checks are owned by
+    :func:`validate_animation_config_errors`.  Anonymous groups are warnings;
+    missing slides/groups and structural targets are fatal at export call sites.
+    """
     if config is None:
         config = load_animation_config(project_path, config_path)
     if not config:
         return []
 
-    warnings = validate_transition_config(config)
+    warnings: list[str] = []
     targets_by_slide, anonymous_groups = scan_project_targets(project_path)
     for item in anonymous_groups:
         warnings.append(f'{item} has no id and cannot be customized in animations.json')
 
     known_slides = set(targets_by_slide)
     slides = config.get('slides', {})
-    if slides and not isinstance(slides, dict):
-        warnings.append('animations.json field "slides" must be an object')
+    if not isinstance(slides, dict):
         return list(dict.fromkeys(warnings))
+    for slide_name in sorted(known_slides - set(slides)):
+        warnings.append(f'animations.json omits slide: {slide_name}')
 
-    defaults = config.get('defaults', {})
-    if isinstance(defaults, dict):
-        _validate_scope_effects(defaults, 'defaults', warnings)
-
-    for slide_name, slide_cfg in (slides or {}).items():
+    for slide_name, slide_cfg in slides.items():
         if slide_name not in known_slides:
             warnings.append(f'animations.json references missing slide: {slide_name}')
             continue
         if not isinstance(slide_cfg, dict):
-            warnings.append(f'animations.json slide "{slide_name}" must be an object')
             continue
-        _validate_scope_effects(slide_cfg, f'slide "{slide_name}"', warnings)
 
-        known_groups = {target.group_id for target in targets_by_slide[slide_name]}
+        known_groups = {
+            target.group_id: target
+            for target in targets_by_slide.get(slide_name, [])
+        }
         groups = slide_cfg.get('groups', {})
-        if groups and not isinstance(groups, dict):
-            warnings.append(f'animations.json slide "{slide_name}" field "groups" must be an object')
+        if not isinstance(groups, dict):
             continue
-        for group_id, group_cfg in (groups or {}).items():
+        for group_id, group_cfg in groups.items():
             if group_id not in known_groups:
                 warnings.append(
                     f'animations.json references missing group: {slide_name}/{group_id}'
                 )
-            if not isinstance(group_cfg, dict):
-                warnings.append(f'animations.json group "{slide_name}/{group_id}" must be an object')
                 continue
-            effect = group_cfg.get('effect')
-            if effect is not None and not _valid_animation_effect(str(effect)):
+            target = known_groups[group_id]
+            effect = group_cfg.get('effect') if isinstance(group_cfg, dict) else None
+            if target.structurally_static and effect != 'none':
                 warnings.append(
-                    f'animations.json group "{slide_name}/{group_id}" has unknown effect: {effect}'
+                    'animations.json references non-animatable structural group: '
+                    f'{slide_name}/{group_id}'
                 )
     return list(dict.fromkeys(warnings))
-
-
-def _validate_scope_effects(scope: dict[str, Any], label: str, warnings: list[str]) -> None:
-    animation = scope.get('animation', {})
-    if isinstance(animation, dict):
-        effect = animation.get('effect')
-        if effect is not None and not _valid_animation_effect(str(effect)):
-            warnings.append(f'animations.json {label} has unknown animation effect: {effect}')
 
 
 def build_scaffold(project_path: Path) -> dict[str, Any]:

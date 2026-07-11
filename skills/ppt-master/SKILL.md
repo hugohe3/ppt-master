@@ -818,6 +818,21 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 - `--animation-config <path>` — optional object-level sidecar. Default: `<project_path>/animations.json` when present.
 - `--auto-advance <seconds>` — kiosk-style auto-play. Click remains enabled, so click or timer may advance the slide.
 
+**Animation compatibility gate**: the default element animation remains `none`.
+When animation is enabled, unknown effects/modes/triggers, invalid numeric or
+order values, missing slide/group references, and explicit structural layer,
+static-role, or static-placeholder targets fail export; they never downgrade
+or disappear silently. An explicit
+sidecar group may override only the legacy chrome-name heuristic. `random`
+resolution is stable for the same effective input; with `--conversion-trace`,
+its resolved rows are written to the trace. Generated export performs per-slide semantic
+read-back plus package timing/`p:cTn`/`p:spTgt` validation. Narration merges
+audio timing into the existing DOM and preserves animation rows. Direct-PPTX
+routes preserve source object animation, compare its object-animation fingerprint
+before/after allowed edits, and validate structure; they do not author
+animation effects. The exact 22 tuples and OOXML rules live in
+[`scripts/docs/pptx-animations.md`](scripts/docs/pptx-animations.md).
+
 **Optional custom animations** (only when the user asks to tune animation order/effects/timing for specific objects):
 
 Run the standalone [`customize-animations`](workflows/customize-animations.md) workflow. Default export applies page transitions but no per-element entrance animation; create `animations.json` (or pass `-a auto`) only when the user asks for element animation or object-level customization.
@@ -829,6 +844,8 @@ Run the standalone [`generate-audio`](workflows/generate-audio.md) workflow. The
 Do NOT call `notes_to_audio.py` directly without going through the workflow — `--voice` / `--voice-id` is required and the workflow produces the locale/provider-aware recommendation that makes the choice meaningful.
 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
+The compatibility contract covers PowerPoint OOXML; do not promise identical
+animation playback in Keynote or other presentation applications.
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
 > ❌ **NEVER** use `-s final` for a release export. It is a diagnostic comparison only; the supported native route reads `svg_output/`.

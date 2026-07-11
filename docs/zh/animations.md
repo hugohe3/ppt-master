@@ -1,6 +1,6 @@
 # 页间转场与页内元素动画
 
-PPT Master 导出的 PPTX 同时支持**页间转场**（page transition）与**页内元素入场动画**（per-element entrance animation）。两者都通过 `svg_to_pptx.py` 的 CLI 参数控制，输出为真正的 OOXML 动画——在 PowerPoint 和 Keynote 中原生播放，不是嵌入视频。
+PPT Master 导出的 PPTX 同时支持**页间转场**（page transition）与**页内元素入场动画**（per-element entrance animation）。两者都通过 `svg_to_pptx.py` 的 CLI 参数控制，输出为真正的 OOXML 动画，不是嵌入视频。Microsoft PowerPoint 桌面版是动效行为的主要验证目标；Keynote、WPS、LibreOffice 可以打开 PPTX，但可能以不同方式映射个别效果或 Start 语义。
 
 ## 默认行为
 
@@ -28,18 +28,44 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```
 
-最小 sidecar：
+完整 sidecar 示例（假设项目只有下面两页）：
 
 ```json
 {
   "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.4 },
+    "animation": {
+      "effect": "auto",
+      "duration": 0.4,
+      "stagger": 0.5,
+      "trigger": "after-previous"
+    }
+  },
   "slides": {
-    "03_market": {
+    "01_cover": {
+      "transition": { "effect": "fade", "duration": 0.5 },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.5,
+        "stagger": 0.3,
+        "trigger": "after-previous"
+      },
       "groups": {
-        "title": { "effect": "fade", "order": 1 },
+        "cover-hero": { "effect": "zoom", "order": 2, "duration": 0.6 }
+      }
+    },
+    "03_market": {
+      "transition": { "effect": "wipe", "duration": 0.35 },
+      "animation": {
+        "effect": "fade",
+        "duration": 0.4,
+        "stagger": 0.25,
+        "trigger": "after-previous"
+      },
+      "groups": {
         "chart": { "effect": "wipe", "order": 2, "duration": 0.6 },
-        "insight": { "effect": "fly", "order": 3, "delay": 0.2 },
-        "footer": { "effect": "none" }
+        "insight": { "effect": "fly", "order": 3, "delay": 0.2 }
       }
     }
   }
@@ -48,12 +74,14 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 
 规则：
 
+- `defaults` 是未列页面的回退值；正式自定义配置仍应把 `svg_output/` 中的每一页都写进 `slides`。
 - `slides` key 匹配 SVG 文件 stem（`03_market.svg` → `03_market`）。
-- `groups` key 匹配顶层 `<g id="...">` 锚点。
+- 每个页面都显式写完整的 `transition`、`animation` 和 `groups`；`groups` 只列真正偏离页面默认值的对象。
+- `groups` key 只能匹配可动画的顶层 `<g id="...">` 内容锚点；带 `data-pptx-layer` 或显式静态 role/placeholder 标记的 Master / Layout / 静态框架对象不属于可覆盖目标。
 - `effect: none` 会把该组移出入场动画序列。
-- `order` 只改变动画顺序，不改变页面图层顺序。
+- `order` 必须是大于零的整数，只改变动画顺序，不改变页面图层顺序。
 - `delay` 是 `after-previous` 模式下该组开始前的秒数。
-- `duration` 覆盖该组的入场时长。
+- `duration` 覆盖该组的排程时长；`appear` 的可见性切换固定为 1ms，该值只用于计算下一条 `after-previous` 的间隔。
 - `--animation none` 覆盖 sidecar，强制关闭所有页内动画。
 
 ## 页间转场
@@ -103,14 +131,16 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
         --animation-stagger 0.6 --animation-duration 0.5
 
 # 所有组进入页面时同时入场
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous
 ```
 
 22 种单一效果：`appear`、`fade`、`fly`、`cut`、`zoom`、`wipe`、`split`、`blinds`、`checkerboard`、`dissolve`、`random_bars`、`peek`、`wheel`、`box`、`circle`、`diamond`、`plus`、`strips`、`wedge`、`stretch`、`expand`、`swivel`。再加三种自动模式：
 
+这些 key 保留既有的 `filter + presetID + presetSubtype` tuple。`cut` 是兼容旧配置的公开 key；项目承诺保持其既有 tuple，不根据外部 preset 表推测或重命名视觉语义。
+
 - `auto`（开启时推荐）—— 按 group 的 SVG id 映射效果。信息密集元素稳定映射：`chart` / `table` / `legend` / `timeline` / `track` → `wipe`；`card-*` / `pillar-*` / `item-*` / `step-*` / `stage-*` / `tier-*` / `principle-*` → `fly`；`title` / `chapter-*` / `section-*` / `cover-*` / `tagline` / `subtitle` → `fade`；`takeaway` / `callout` / `quote` / `source` / `conclusion` / `note` → `fade`。图片类 id `hero` / `figure-*` / `image` / `img-*` / `kpi` 则在更丰富的视觉池（`zoom` / `dissolve` / `circle` / `box` / `diamond` / `wheel`）中循环，使多张图片在 deck 内呈现不同入场。未命中的 id 在 `fade` / `wipe` / `fly` / `zoom` 之间循环。
 - `mixed`（旧逻辑）—— 确定性轮换。每页第一个动画组使用 `fade`，后续组在整份 deck 范围内按 16 效果池（`blinds` / `checkerboard` / `dissolve` / `fly` / `cut` / `random_bars` / `box` / `split` / `strips` / `wedge` / `wheel` / `wipe` / `expand` / `fade` / `swivel` / `zoom`）连续轮换。保留以兼容旧配置。
-- `random` —— 在旧的 16 效果池中随机抽取。
+- `random` —— 从旧的 16 效果池中按有效 deck 输入使用稳定 seed 抽取；相同输入得到相同结果，启用 `--conversion-trace` 时记录每个已解析效果。
 
 所有轮换池都排除了 `appear`，因为它没有可见动画过程。
 
@@ -124,13 +154,28 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 
 > Note: `--recorded-narration` 会拒绝 `on-click`；带旁白的视频导出请使用 `after-previous` 或 `with-previous`。
 
+## 严格校验与导出回读
+
+动画配置不会静默换成另一个效果或触发方式。运行 `animation_config.py validate` 后，以下问题都会返回非零：
+
+| 问题 | 结果 |
+|---|---|
+| 未知效果、自动模式或 Start 模式 | 报错；不会回退为 `fade` 或 `on-click` |
+| `duration` 非有限或不大于零 | 报错；页间 `effect: none` 是兼容例外，可使用 `duration: 0` |
+| `stagger` / `delay` 非有限或小于零 | 报错 |
+| `order` 不是大于零的整数（含布尔、浮点或字符串） | 报错 |
+| `slides` / `groups` 引用不存在 | 报错并阻止导出 |
+| 顶层 `<g>` 没有 `id` | 给出警告；该组不能被 `groups` 精确引用，建议补稳定 id |
+
+导出先写候选 PPTX，再回读整个包：每页只能有一个合法的根级 `p:timing`，时间节点 ID 必须唯一，`spTgt` / `bldP` 必须指向现存 shape，效果、时长和 Start 模式必须与已解析配置一致。旁白加入音频 timing 后也走同一包级校验；任何失败都不会替换已有公开产物。
+
 ## 锚点机制 — 顶层 `<g id="...">`
 
-页内动画锚定在 SVG 的**顶层 `<g id="...">` 内容组**上（如 `<g id="cover-title">`、`<g id="card-1">`），一个组对应一次点击入场。
+页内动画锚定在 SVG 的**顶层 `<g id="...">` 内容组**上（如 `<g id="cover-title">`、`<g id="card-1">`），一个组对应动画窗格中的一条入场记录；是否需要点击由 Start 模式决定。
 
 每页建议 **3–8 个内容组**。这同时也是 PowerPoint 框选 / 整体移动的颗粒度，与是否启用动画无关，都能改善编辑体验。
 
-**装饰类分组自动跳过。** 顶层中看起来属于页面装饰的组（背景、页头页脚、装饰元素、水印、页码、导航、logo、分隔线）会被排除在点击序列外，跟随页面立即显示。识别基于 `id`：按 `-` 和 `_` 切分后，若任一 token 命中 `background` / `bg` / `decoration` / `decorations` / `decor` / `header` / `footer` / `chrome` / `watermark` / `pagenumber` / `pagenum` / `nav` / `logo` / `rule`，则视为装饰类。会自动跳过的例子：`<g id="background">`、`<g id="bg-texture">`、`<g id="cover-footer">`、`<g id="p03-header">`、`<g id="bottom-decor">`、`<g id="watermark">`、`<g id="nav">`、`<g id="logo-area">`、`<g id="column-rule">`。仍会动画的例子：`<g id="card-1">`、`<g id="cover-title">`、`<g id="step-discover">`、`<g id="timeline-track">`。**不要为了规避动画去掉 `<g>` 包裹**——保留分组（PowerPoint 框选需要），只要给个合适的 id 即可。
+**静态结构优先于动画覆盖。** `data-pptx-layer` 明确标记 Master / Layout / 静态页面框架，永远不会成为页内动画锚点，`groups` 中的手工覆盖也不能强制开启。没有该标记时，结构角色 / placeholder 语义继续优先；只对缺少显式语义的旧 SVG 使用 id token 回退。若 id 按 `-` 和 `_` 切分后命中 `background` / `bg` / `decoration` / `decorations` / `decor` / `header` / `footer` / `chrome` / `watermark` / `pagenumber` / `pagenum` / `nav` / `logo` / `rule`，该组会跟随页面立即显示。会跳过的例子：`<g id="background">`、`<g id="cover-footer">`、`<g id="p03-header">`、`<g id="bottom-decor">`、`<g id="watermark">`、`<g id="logo-area">`。仍会动画的例子：`<g id="card-1">`、`<g id="cover-title">`、`<g id="step-discover">`、`<g id="timeline-track">`。**不要为了规避动画去掉 `<g>` 包裹**——保留分组（PowerPoint 框选需要），为静态结构使用正确的 layer / role 标记。
 
 **扁平 SVG 的回退逻辑**（顶层没有 `<g>`，只有裸 `<rect>` / `<text>` / `<path>`）：
 
@@ -142,7 +187,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 ## 限制
 
 - **动画只写入原生 DrawingML PPTX。** 页间转场和页内元素动画都属于项目转换器从 `svg_output/` 生成的 PPTX；`svg_final/` 仍是静态视觉预览，不是带动画的替代 PPTX 路线。
-- **不同 Office 版本对元素动画存在轻微差异。** 实现走 `<p:animEffect filter=...>` 路径（而非 `presetID` 查找表），在 PowerPoint 2016+ 上表现一致；更老的 Office 可能把部分效果降级为 Appear。
+- **直接 PPTX 路线只保留对象动画。** Template Fill 与 Native Enhance 不把源 `p:timing` 翻译或重建为生成路线的效果模型；它们保留源对象动画，Native Enhance 仅在需要时合并旁白音频 timing，并在封包前校验结果。旁白合并只接受根级 `p:sld/p:timing`；若源 timing 位于 `mc:AlternateContent` 或其他非根容器中，会安全报错，不会重写或重复 timing 树。
+- **PowerPoint 是主要动效验证目标。** Keynote、WPS、LibreOffice 与较旧 Office 可能重新映射、简化或忽略部分效果；动效是交付要求时，请在 Microsoft PowerPoint 桌面版中完成最终播放检查。
 - **手工 SVG 形状转换不受支持。** 把 `svg_final/` 页面作为 SVG 图片插入 PowerPoint，不会获得元素级动画锚点；需要可编辑且可动画的形状时，请使用原生 PPTX。
 
 ## 常用速查
@@ -154,10 +200,10 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 | 转场放慢 | `--transition-duration 0.8` |
 | 自动播放 | `--auto-advance 5` |
 | 关闭页内动画 | `-a none` |
-| 改为单击触发 | `--animation-trigger on-click` |
+| 改为单击触发 | `-a auto --animation-trigger on-click` |
 | 切换为单一效果 | `--animation fade` |
-| 所有组同时入场 | `--animation-trigger with-previous` |
-| 元素入场放慢 | `--animation-duration 0.5` |
-| after-previous 拉大间隔 | `--animation-stagger 0.8` |
+| 所有组同时入场 | `-a auto --animation-trigger with-previous` |
+| 元素入场放慢 | `-a auto --animation-duration 0.5` |
+| after-previous 拉大间隔 | `-a auto --animation-stagger 0.8` |
 
 完整 `svg_to_pptx.py` 参考：[`scripts/docs/svg-pipeline.md`](../../skills/ppt-master/scripts/docs/svg-pipeline.md)。

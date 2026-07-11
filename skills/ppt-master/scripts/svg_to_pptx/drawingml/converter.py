@@ -173,8 +173,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     should_animate_group = (
         ctx.depth == 0
         and elem_id
-        and not is_chrome
-        and not elem.get('data-pptx-layer')
+        and (
+            not is_chrome
+            or (
+                not has_explicit_semantics
+                and elem_id in ctx.animation_group_overrides
+            )
+        )
+        and elem.get('data-pptx-layer') is None
     )
     visual_children = [
         child for child in elem
@@ -639,6 +645,7 @@ def convert_svg_to_slide_shapes(
     image_scale: float = 2.0,
     image_quality: int = 85,
     native_objects: bool = False,
+    animation_group_overrides: frozenset[str] | None = None,
     theme_font_spec: ThemeFontSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
     trace_out: list[dict[str, Any]] | None = None,
@@ -668,6 +675,9 @@ def convert_svg_to_slide_shapes(
         image_quality: JPEG quality used for opaque optimized rasters.
         native_objects: Convert explicit ``data-pptx-native`` table/chart
             markers to native PowerPoint objects. Default off.
+        animation_group_overrides: Explicit top-level SVG group ids from
+            ``animations.json`` that override the legacy chrome-name fallback.
+            Explicit structural layer/role/placeholder markers remain excluded.
         theme_font_spec: Optional major/minor theme-font contract. Matching SVG
             families emit DrawingML theme tokens instead of fixed typefaces.
         theme_color_spec: Optional context-aware theme-color contract. Exact
@@ -809,6 +819,7 @@ def convert_svg_to_slide_shapes(
         image_scale=image_scale,
         image_quality=image_quality,
         native_objects_enabled=native_objects,
+        animation_group_overrides=animation_group_overrides or frozenset(),
         trace_events=trace_events,
         theme_font_spec=theme_font_spec,
         theme_color_spec=theme_color_spec,
@@ -817,6 +828,10 @@ def convert_svg_to_slide_shapes(
     shapes: list[str] = []
     converted = 0
     skipped = 0
+    has_top_level_group = any(
+        child.tag.replace(f'{{{SVG_NS}}}', '') == 'g'
+        for child in root
+    )
     background_xml, background_skip_id = _extract_background_candidate(root, ctx)
     promoted_backgrounds = 1 if background_xml else 0
     if background_xml and trace_events is not None:
@@ -840,12 +855,31 @@ def convert_svg_to_slide_shapes(
             shapes.append(result.xml)
             converted += 1
             m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
-            if m and not child.get('data-pptx-layer'):
-                if not is_static_page_frame(
-                    child.get('data-pptx-role'),
-                    child.get('data-pptx-placeholder'),
-                ):
-                    fallback_targets.append((int(m.group(1)), tag))
+            elem_id = child.get('id')
+            role = child.get('data-pptx-role')
+            placeholder = child.get('data-pptx-placeholder')
+            has_explicit_semantics = role is not None or placeholder is not None
+            structurally_static = (
+                child.get('data-pptx-layer') is not None
+                or (
+                    has_explicit_semantics
+                    and is_static_page_frame(role, placeholder)
+                )
+            )
+            legacy_chrome = (
+                not has_explicit_semantics
+                and is_chrome_id(elem_id)
+            )
+            explicit_legacy_override = (
+                elem_id is not None
+                and elem_id in ctx.animation_group_overrides
+            )
+            if (
+                m
+                and not structurally_static
+                and (not legacy_chrome or explicit_legacy_override)
+            ):
+                fallback_targets.append((int(m.group(1)), elem_id or tag))
         else:
             if tag not in _NON_VISUAL_TAGS:
                 skipped += 1
@@ -857,7 +891,11 @@ def convert_svg_to_slide_shapes(
     # semantic blocks, not atomized drawing primitives, so fallback is
     # intentionally capped at a low count.
     _ANIM_FALLBACK_CAP = 8
-    if not ctx.anim_targets and 0 < len(fallback_targets) <= _ANIM_FALLBACK_CAP:
+    if (
+        not has_top_level_group
+        and not ctx.anim_targets
+        and 0 < len(fallback_targets) <= _ANIM_FALLBACK_CAP
+    ):
         ctx.anim_targets = fallback_targets
 
     if verbose:

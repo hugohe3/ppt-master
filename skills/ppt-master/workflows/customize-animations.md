@@ -28,12 +28,16 @@ description: Customize default PPTX animations with per-slide and per-object tim
 python3 skills/ppt-master/scripts/animation_config.py list-groups <project_path>
 ```
 
-Output is one line per slide: `<slide_basename>: id1, id2, id3` — chrome
-groups (`bg` / `*-header` / `*-footer` / `*-decor` / `nav` / `watermark` /
-`logo` / `pagenumber`) are excluded because the exporter already pins them
-to `none`. Use this as the source of truth when planning §3 and editing §4
+Output is one line per slide: `<slide_basename>: id1, id2, id3` — default
+chrome groups (`bg` / `*-header` / `*-footer` / `*-decor` / `nav` /
+`watermark` / `logo` / `pagenumber`) are excluded from the ordinary target
+list. Use this as the source of truth when planning §3 and editing §4
 — **do not read the full scaffold file unless you need it as an editing
 starting point**.
+
+An explicit sidecar entry may override only the marker-free legacy id-name
+heuristic. A group carrying `data-pptx-layer` or an explicit static
+role/placeholder marker can never animate, even when it is named explicitly.
 
 If `animations.json` does not exist and you want a starting file to edit:
 
@@ -124,7 +128,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `appear` | Visibility flip without motion |
 | `fade` | Neutral entrance |
 | `fly` | Fly in from bottom |
-| `cut` | Cut in from left |
+| `cut` | Legacy compatibility key; preserve its registered tuple exactly |
 | `zoom` | Scale/zoom entrance |
 | `wipe` | Wipe entrance |
 | `split` | Split/barn entrance |
@@ -145,7 +149,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 | `swivel` | Swivel entrance |
 | `auto` | Map effect from group id (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (hero/figure-/image/img-/kpi) cycle zoom/dissolve/circle/box/diamond/wheel for visual variation; unmatched ids cycle fade/wipe/fly/zoom |
 | `mixed` | Legacy 16-effect cycle by group order (first group fades, rest cycle the larger pool) |
-| `random` | Random effect per animated group, sampled from the legacy pool |
+| `random` | Stable seeded effect per animated group; `--conversion-trace` records resolved effects when diagnostics are enabled |
 
 **Start modes**:
 
@@ -166,18 +170,25 @@ even when the values match `defaults`. This makes per-page rhythm visible
 at a glance without mentally merging the inheritance chain. Group-level
 overrides remain opt-in — list only the groups that genuinely diverge from
 the slide's `animation` block. Chrome groups stay out (the exporter pins
-them to `none`).
+them to `none` by default). Name a legacy chrome-like id only when the user
+explicitly wants that content animated and the SVG has no explicit structural
+layer, role, or placeholder marker.
 
-`defaults` is still required: it supplies values for any slide not yet
-present in `slides` (rare, e.g. mid-edit drafts) and acts as the single
-source for the deck-wide baseline you copy into each slide block.
+> Note: version-1 legacy sidecars may omit fields inside a listed slide and
+> inherit them from `defaults`; the loader preserves that compatibility. This
+> workflow writes complete new slide blocks, and validation still requires
+> every current SVG stem to be present under `slides`.
+
+`defaults` is still required: it supplies the legacy inheritance baseline and
+the deck-wide values copied into every complete new slide block.
 
 **Forbidden**:
 
 - Omitting a slide that exists in `svg_output/` — every produced slide must appear under `slides`
 - Writing a slide block with only `groups` and no `transition`/`animation`
 - Enumerating every content group in a slide just to restate the slide-level default effect
-- Listing chrome groups (`bg`, `*-header`, `*-footer`, `*-decor`, `nav`, `watermark`, `logo`, `pagenumber`)
+- Listing a group with `data-pptx-layer` or an explicit static role/placeholder marker
+- Listing a legacy chrome-like id without an explicit, reviewed intent to override the name heuristic
 
 | Field | Behavior |
 |---|---|
@@ -190,7 +201,7 @@ source for the deck-wide baseline you copy into each slide block.
 | `groups.<id>.effect` | Object-specific entrance effect, `auto`, `mixed`, `random`, or `none` |
 | `order` | Animation order only; does not change SVG layer order |
 | `delay` | Extra seconds before this group starts in `after-previous` mode |
-| `duration` | Per-group entrance duration in seconds; vary when semantic weight or pacing calls for it |
+| `duration` | Per-group schedule duration in seconds; `appear` stays a 1ms visibility flip and uses this value only for subsequent `after-previous` spacing |
 
 **Canonical example — every slide carries explicit transition + animation;
 groups appear only when they diverge**:
@@ -233,7 +244,7 @@ groups appear only when they diverge**:
 Notes:
 - `02_agenda` repeats `defaults` verbatim — this is intentional under the new rule so per-page rhythm is auditable in one read.
 - `03_market` and `07_hero_quote` only list the groups that diverge; `title`, `footer`, `bg`, `header` etc. are not enumerated.
-- Chrome groups are never listed; the exporter pins them to `none`.
+- Structural chrome groups are never listed. Legacy id-only chrome groups remain omitted unless an explicit reviewed override is required.
 
 **Forbidden — SVG pollution**: do not add `data-*` animation attributes to SVG files. Animation customization belongs in `animations.json`.
 
@@ -251,7 +262,11 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 ```
 
-**Validation**: the exported native PPTX should reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`. Unknown transition effects, NaN/Infinity, non-positive transition duration, and negative automatic advance fail validation; they never fall back to `fade`. A `defaults.transition.auto_advance` value participates in normal defaults resolution.
+**Validation**: the exported native PPTX must reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`. Unknown animation effects/modes/triggers; boolean, NaN, or Infinity numeric values; non-positive durations; negative delay/stagger; invalid order; missing slides/groups; and structural-layer targets fail validation. Transition validation remains strict as well. None of these failures substitutes a fallback effect or silently drops a requested target.
+
+Generated export performs semantic read-back per slide, comparing row order, trigger, target, resolved effect tuple, duration, and offset. It then validates timing-tree placement, `p:cTn` ids, and `p:spTgt` references across the packaged PPTX. Stable `random` choices appear in the conversion trace when export enables `--conversion-trace`. Narration merges audio into the existing timing tree and must preserve these rows.
+
+Direct-PPTX routes are preserve-only for object animation: they compare the source object-animation fingerprint before and after allowed edits, run structural package validation, and do not write, normalize, or claim ownership of effects. See [`pptx-animations.md`](../scripts/docs/pptx-animations.md) for the exact compatibility and OOXML contract.
 
 ---
 
@@ -265,3 +280,4 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 - [x] Transition and object durations were chosen intentionally for the deck's pacing
 - [x] `animation_config.py validate` passed
 - [x] PPTX re-export completed with custom animation overrides
+- [x] Generated animation semantic read-back and package validation passed

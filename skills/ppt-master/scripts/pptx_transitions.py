@@ -55,6 +55,9 @@ PRESENTATION_PROPS_CONTENT_TYPE = (
 DEFAULT_TRANSITION = "fade"
 DEFAULT_TRANSITION_DURATION = 0.4
 MAX_OOXML_MILLISECONDS = 4_294_967_295
+# OOXML stores millisecond values and identifiers (shape ids, time-node ids,
+# preset codes) as xsd:unsignedInt, so both ceilings share one value.
+MAX_OOXML_UNSIGNED_INT = MAX_OOXML_MILLISECONDS
 
 
 TRANSITIONS: dict[str, dict[str, Any]] = {

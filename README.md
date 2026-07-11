@@ -90,7 +90,7 @@ English | [中文](./README_CN.md)
 
 ---
 
-Drop in your source material, and the deck you get back is **more than just editable**: it has native slide transitions and entrance animations, speaker notes that can become audio narration, charts and tables that can ship as real data-backed PowerPoint objects, and it can follow your own PPT template — a complete deck you can present as-is and keep refining. How to use each capability → [Getting Started](./docs/getting-started.md).
+Drop in your source material, and the deck you get back is **more than just editable**: it has native slide transitions plus opt-in entrance animations (off by default), speaker notes that can become audio narration, charts and tables that can ship as real data-backed PowerPoint objects, and it can follow your own PPT template — a complete deck you can present as-is and keep refining. How to use each capability → [Getting Started](./docs/getting-started.md).
 
 ## Product Positioning
 
