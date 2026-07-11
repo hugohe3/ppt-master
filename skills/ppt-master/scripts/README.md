@@ -116,6 +116,8 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 `finalize_svg.py` optimizes raster images by default using `2x` display pixels and max `2560px`. Native `svg_to_pptx.py` defaults to `--image-sizing cap`: only oversized full source images are reduced to max `2560px`, so later PowerPoint resizing keeps more image detail. Use `svg_to_pptx.py --image-sizing display --image-scale 2` only for aggressive size reduction, or `--no-image-optimize` when the native PPTX must embed original image bytes.
 
+`finalize_svg.py` remains mandatory because it creates the self-contained `svg_final/` visual preview. Those SVGs may be opened directly or inserted into PowerPoint as SVG pictures. The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter; `-s final` is diagnostic-only, and PowerPoint's manual Convert-to-Shape operation is unsupported.
+
 For SVG-authoring routes, `svg_output/` is the complete visible page-design source: every exported text, image, shape, background, and template-derived layout element is present in the page SVG or explicitly referenced by it. Export may translate represented content into Master/Layout/Slide parts or native objects, but it does not retrieve missing visible content from templates or planning files. Speaker notes, animation, narration, transitions, `template-fill-pptx`, and `native-enhance-pptx` remain separately owned capabilities.
 
 When `spec_lock.md` has no `pptx_structure` section, native `svg_to_pptx.py` falls back to `baseline`: the generated deck keeps a standard Master/Layout relationship and promotes only exact, z-order-safe shared backgrounds/chrome. Root `data-pptx-page-role` selects `Cover`, `Agenda`, `Section`, `Closing`, or `Content`; filenames are a fallback for marker-free legacy SVGs. A family-wide exact background and an exact leading structurally marked chrome prefix may move into that Layout; ids are consulted only when the structural role is absent. Actual titles, body content, pictures, charts, tables, page numbers, and page-specific shapes remain on Slide. No visual-similarity or placeholder inference is performed. Baseline also prunes unused layouts and maps locked typography/colors into the PowerPoint theme. Use `--pptx-structure flat` for slide-local diagnostics.
@@ -154,7 +156,7 @@ python3 scripts/update_repo.py --skip-pip
 - Keep one user-facing entry point per workflow at the top level of `scripts/`
 - Move provider-specific or helper internals into subdirectories
 - Prefer the unified entry points `project_manager.py`, `finalize_svg.py`, and `image_gen.py`
-- Use `svg_output/` for native export and `svg_final/` for SVG snapshot/preview export
+- Use `svg_output/` for the only supported native PPTX export and `svg_final/` for self-contained SVG visual preview / picture insertion
 
 ## Related Docs
 
@@ -165,4 +167,4 @@ python3 scripts/update_repo.py --skip-pip
 - [Troubleshooting](./docs/troubleshooting.md)
 - [Skill Entry](../SKILL.md)
 
-_Last updated: 2026-07-10_
+_Last updated: 2026-07-11_

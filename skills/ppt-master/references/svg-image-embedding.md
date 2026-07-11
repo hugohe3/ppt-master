@@ -56,7 +56,9 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 5. Post-processing & Export → follow [`SKILL.md` Step 7](../SKILL.md)
 ```
 
-> Keep external references in `svg_output/` during generation. `finalize_svg.py` auto-embeds images into `svg_final/`; export PPTX from `svg_final/`.
+> Keep external references in `svg_output/` during generation. `finalize_svg.py` auto-embeds images into the mandatory `svg_final/` visual preview; native PPTX export independently reads `svg_output/`.
+
+**Hard rule — export boundary**: `svg_final/` is a self-contained SVG preview for embeddable raster/SVG assets and may be manually inserted into PowerPoint as an SVG picture. EMF/WMF assets retain the documented external-reference exception for lossless native passthrough. The only supported generated-PPTX route is `svg_output/` through the project SVG-to-DrawingML converter. PowerPoint's manual Convert-to-Shape operation is unsupported.
 
 ---
 
@@ -65,7 +67,7 @@ Defined in the Design Specification & Content Outline; each image carries an `Ac
 | Method | Pros | Cons | Suitable For |
 |--------|------|------|-------------|
 | **External reference** | Small file size, fast iteration, easy to replace | Preview requires HTTP server from project root | `svg_output/` development phase |
-| **Base64 embedding** | Self-contained file, stable export | Large file size | `svg_final/` delivery phase |
+| **Base64 embedding** | Self-contained file, stable direct preview / SVG-picture insertion | Large file size | `svg_final/` preview phase |
 
 ---
 
@@ -106,7 +108,7 @@ python3 -m http.server -d <project_path> 8000
 
 ---
 
-## Method 2: Base64 Embedding (Recommended for Delivery Phase)
+## Method 2: Base64 Embedding (Recommended for Preview Phase)
 
 ### Syntax
 
@@ -128,7 +130,7 @@ python3 -m http.server -d <project_path> 8000
 
 ## Conversion Process
 
-Use the unified pipeline in [`SKILL.md` Step 7](../SKILL.md). `finalize_svg.py` runs before export so image references in `svg_output/` become embedded assets in `svg_final/`.
+Use the unified pipeline in [`SKILL.md` Step 7](../SKILL.md). `finalize_svg.py` remains mandatory and embeds image references into the self-contained `svg_final/` preview. The following PPTX command still reads `svg_output/` by default and converts it directly to native DrawingML; it does not consume `svg_final/` in the supported release route.
 
 ```bash
 python3 scripts/finalize_svg.py <project_path>
@@ -169,7 +171,7 @@ project/
 ├── sources/           # Source files and their accompanying images
 │   └── article_files/
 ├── svg_output/        # Raw version (external references)
-└── svg_final/         # Final version (images embedded)
+└── svg_final/         # Derived self-contained visual preview (images embedded)
 ```
 
 ### Rounded Corner / Non-rectangular Image Cropping

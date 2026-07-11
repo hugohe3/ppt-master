@@ -20,7 +20,8 @@ description: >
 | Any route that authors or regenerates slide visuals through SVG | `svg_output/` is the complete page-design source: every visible text, image, shape, chart/table fallback, and layout element that should appear on the exported slide is present in that page SVG or referenced by it. |
 | Templates, `design_spec.md`, and `spec_lock.md` | Authoring/control inputs. They guide SVG creation but MUST NOT supply visible slide content that is absent from the completed SVG during export. |
 | Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. They never replace native SVG geometry, text, styles, grouping, or asset references. |
-| SVG-to-PPTX export | Translation only: map SVG content to DrawingML/native objects and reorganize represented content into Master/Layout/Slide structure without inventing new visible page content. |
+| `svg_final/` | Mandatory derived, self-contained SVG visual preview. It may be opened directly or inserted into PowerPoint as an SVG picture, but it is not a supported PPTX source and carries no manual Convert-to-Shape compatibility contract. |
+| SVG-to-PPTX export | The only supported generated-PPTX route reads `svg_output/` and maps its content through the project converter to DrawingML/native objects. It may reorganize represented content into Master/Layout/Slide structure but MUST NOT invent new visible page content. |
 | Direct PPTX and presentation-behavior workflows | Remain separate. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
 
 **MUST — page-design closure**: For an SVG-authoring route, inspect the final page SVG to determine what the exported slide looks like. Do not reinterpret “SVG is the page-design language” as “SVG is the complete PPTX package description language.”
@@ -653,11 +654,11 @@ Canonical three-command pipeline (this step is the workflow authority;
 python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 ```
 
-**Step 7.2** — SVG post-processing (icon embedding / image crop & embed / raster image optimization / text flattening / rounded rect to path):
+**Step 7.2** — SVG post-processing (icon embedding / image crop & embed / raster image optimization / text flattening):
 ```bash
 python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 ```
-Default raster handling for `svg_final/`: images are embedded at the rendered SVG size budget (`--image-scale 2`, `--max-dimension 2560`), opaque PNG photos may be written as JPEG, and transparent assets remain PNG. Use `--no-compress` or a higher `--max-dimension` only for diagnostic / high-fidelity SVG snapshots.
+This mandatory step writes self-contained visual-preview SVGs to `svg_final/`. Those files may be opened directly or manually inserted into PowerPoint as SVG pictures. Default raster handling embeds images at the rendered SVG size budget (`--image-scale 2`, `--max-dimension 2560`); opaque PNG photos may be written as JPEG, and transparent assets remain PNG. The existing EMF/WMF exception still applies: Office vector assets stay externally referenced for lossless native-PPTX passthrough, so the native PPTX remains the source of truth for pages that use them. Use `--no-compress` or a higher `--max-dimension` only for diagnostic / high-fidelity SVG previews.
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
@@ -668,9 +669,6 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 #   backup/<timestamp>/templates/{native_structure.json,source_template.pptx}
 #                                                     ← preserve mode only
 #   backup/<timestamp>/spec_lock.md                   ← preserve mode only
-#
-# Add --svg-snapshot to additionally emit the SVG-image preview pptx alongside the native pptx:
-#   exports/<project_name>_<timestamp>_svg.pptx      ← SVG preview pptx (reads svg_final/)
 # Add --native-objects to emit real editable chart/table objects instead of flattened shapes:
 #   exports/<project_name>_<timestamp>_native_charts.pptx  ← native chart/table objects (data-pptx-native markers)
 # Re-export with --recorded-narration audio (generate-audio workflow) embeds per-slide narration:
@@ -691,11 +689,19 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > The `svg_output/`
 > snapshot in `backup/<timestamp>/` is always written so the project can be
 > re-exported from frozen SVG sources without re-running the LLM. The SVG-rendered
-> preview pptx is opt-in via `--svg-snapshot`. Preserve mode also backs up the
-> paired native structure/source files and `spec_lock.md` under the same timestamp.
-> Live preview already provides the
-> SVG visual reference, so it's only needed when you want a self-contained file
-> to share. Pass `-s output` or `-s final` to force a single source if you need it.
+> preview remains the mandatory `svg_final/` artifact from Step 7.2; it is not
+> packaged as a second PPTX. Preserve mode also backs up the paired native
+> structure/source files and `spec_lock.md` under the same timestamp. Use the
+> default source selection for release exports. `-s final` is diagnostic-only
+> when comparing conversion behavior against the post-processed SVGs; it does
+> not change `svg_output/` ownership or establish a supported release route.
+
+> **Supported PPTX boundary** — the only supported generated-PPTX path is
+> `svg_output/` → the project SVG-to-DrawingML converter → native PPTX. The
+> project does not emit an SVG-image PPTX and does not support PowerPoint's
+> manual **Convert to Shape** operation on `svg_final/`. Inserted `svg_final/`
+> pages remain ordinary SVG pictures unless the user independently accepts the
+> results of an unsupported Office conversion.
 
 > **PPTX structure mode** — native export first reads
 > `spec_lock.md` `pptx_structure.mode`, then falls back to `baseline` when the
@@ -825,9 +831,7 @@ Do NOT call `notes_to_audio.py` directly without going through the workflow — 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
-> ❌ **NEVER** force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). The default auto-split already gives native the high-fidelity source it needs without touching legacy.
-> ❌ **NEVER** use `--only` in the standard pipeline. Keep it only for explicit
-> one-product diagnostics or compatibility checks.
+> ❌ **NEVER** use `-s final` for a release export. It is a diagnostic comparison only; the supported native route reads `svg_output/`.
 
 > **Post-export annotation window**: the preview service from Step 6 typically remains running after export. If the user submitted annotations in the browser (during Executor or after export) and now asks to apply them — they may quote the browser prompt (`Changes saved to svg_output...` / `修改已保存到 svg_output...`), say "apply my annotations" / "应用注解" / equivalent — run [`live-preview`](workflows/live-preview.md) Step 2 to apply and re-export. Annotations submitted during generation are also handled here, not earlier.
 

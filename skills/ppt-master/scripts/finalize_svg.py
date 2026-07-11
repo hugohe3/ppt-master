@@ -2,9 +2,12 @@
 """
 PPT Master - SVG Post-processing Tool (Unified Entry Point)
 
-Processes SVG files from svg_output/ and outputs them to svg_final/.
-By default, all processing steps are executed. You can also specify
-individual steps via arguments.
+Processes SVG files from svg_output/ and produces the visual preview in
+svg_final/, embedding supported raster/SVG assets. Native PPTX export continues
+to read svg_output/ by default; svg_final/ may be opened directly or inserted
+as an SVG image. EMF/WMF assets retain their external-reference exception.
+By default, all processing steps are executed. You can also specify individual
+steps via arguments.
 
 Architecture note: this module's outputs feed svg_final/ on disk AND its
 sub-modules (svg_finalize.embed_icons, svg_finalize.flatten_tspan, ...)
@@ -17,7 +20,7 @@ Usage:
     python3 scripts/finalize_svg.py <project_directory>
 
     # Execute only specific steps
-    python3 scripts/finalize_svg.py <project_directory> --only embed-icons fix-rounded
+    python3 scripts/finalize_svg.py <project_directory> --only embed-icons align-images
 
 Examples:
     python3 scripts/finalize_svg.py projects/my_project
@@ -30,10 +33,8 @@ Processing options:
                     trio. The old names remain accepted as aliases for the
                     merged step, so existing --only invocations keep working.
     flatten-text  - Convert <tspan> to independent <text> (for special renderers)
-    fix-rounded   - Convert <rect rx="..."/> to <path> (for PPT shape conversion)
 """
 
-import os
 import sys
 import shutil
 import argparse
@@ -99,28 +100,6 @@ def process_flatten_text(svg_file: Path, verbose: bool = False) -> bool:
         if verbose:
             safe_print(f"   [ERROR] {svg_file.name}: {e}")
         return False
-
-
-def process_rounded_rect(svg_file: Path, verbose: bool = False) -> int:
-    """Convert rounded rectangles in a single SVG file (in-place modification)"""
-    try:
-        from svg_finalize.svg_rect_to_path import process_svg
-
-        with open(svg_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-        processed, count = process_svg(content, verbose=False)
-
-        if count > 0:
-            with open(svg_file, 'w', encoding='utf-8') as f:
-                f.write(processed)
-            if verbose:
-                safe_print(f"   [OK] {svg_file.name}: {count} rounded rectangle(s)")
-        return count
-    except Exception as e:
-        if verbose:
-            safe_print(f"   [ERROR] {svg_file.name}: {e}")
-        return 0
 
 
 def finalize_project(
@@ -189,7 +168,7 @@ def finalize_project(
     # Step 2: Expand project icons, then standard same-document use references.
     if options.get('embed_icons'):
         if not quiet:
-            safe_print("[1/4] Expanding icons + local use references...")
+            safe_print("[1/3] Expanding icons + local use references...")
         icons_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = embed_icons_in_file(
@@ -241,7 +220,7 @@ def finalize_project(
     # from disk once.
     if options.get('align_images'):
         if not quiet:
-            safe_print("[2/4] Aligning + embedding images...")
+            safe_print("[2/3] Aligning + embedding images...")
         img_count = 0
         img_errors = 0
         office_vector_count = 0
@@ -279,7 +258,7 @@ def finalize_project(
     # Step 4: Flatten text
     if options.get('flatten_text'):
         if not quiet:
-            safe_print("[3/4] Flattening text...")
+            safe_print("[3/3] Flattening text...")
         flatten_count = 0
         for svg_file in svg_final.glob('*.svg'):
             if process_flatten_text(svg_file, verbose=False):
@@ -289,20 +268,6 @@ def finalize_project(
                 safe_print(f"      {flatten_count} file(s) processed")
             else:
                 safe_print("      No processing needed")
-
-    # Step 5: Convert rounded rects to Path
-    if options.get('fix_rounded'):
-        if not quiet:
-            safe_print("[4/4] Converting rounded rects to Path...")
-        rounded_count = 0
-        for svg_file in svg_final.glob('*.svg'):
-            count = process_rounded_rect(svg_file, verbose=False)
-            rounded_count += count
-        if not quiet:
-            if rounded_count > 0:
-                safe_print(f"      {rounded_count} rounded rectangle(s) converted")
-            else:
-                safe_print("      No rounded rectangles")
 
     # Done
     if not quiet:
@@ -323,14 +288,13 @@ def main() -> None:
         epilog='''
 Examples:
   %(prog)s projects/my_project           # Execute all processing (default)
-  %(prog)s projects/my_project --only embed-icons fix-rounded
+  %(prog)s projects/my_project --only embed-icons align-images
   %(prog)s projects/my_project -q        # Quiet mode
 
 Processing options (for --only):
   embed-icons   Expand project icons and static same-document <use>
   align-images  Align (slice/meet) + Base64-embed all <image> (single pass)
   flatten-text  Flatten text
-  fix-rounded   Convert rounded rects to Path
 
 Aliases (still accepted):
   crop-images, fix-aspect, embed-images  → all map to align-images
@@ -345,7 +309,7 @@ Aliases (still accepted):
             'align-images',
             # Backwards-compatible aliases — all three map to align-images now.
             'crop-images', 'fix-aspect', 'embed-images',
-            'flatten-text', 'fix-rounded',
+            'flatten-text',
         ],
         help=('Execute only specified processing steps (default: all). '
               'crop-images / fix-aspect / embed-images are accepted as '
@@ -381,7 +345,6 @@ Aliases (still accepted):
             'embed_icons': 'embed-icons' in only,
             'align_images': bool(only & _ALIGN_ALIASES),
             'flatten_text': 'flatten-text' in only,
-            'fix_rounded': 'fix-rounded' in only,
         }
     else:
         # Execute all by default
@@ -389,7 +352,6 @@ Aliases (still accepted):
             'embed_icons': True,
             'align_images': True,
             'flatten_text': True,
-            'fix_rounded': True,
         }
 
     if args.max_dimension < 1:

@@ -9,7 +9,7 @@ PPT Master 导出的 PPTX 同时支持**页间转场**（page transition）与**
 | 页间转场 | `fade`，0.4 秒 | 适合大多数 deck 的中性基线 |
 | 页内元素动画 | **`none`（关闭）** | 翻到一页时整页一次性呈现。元素一个个自动级联出来是「AI 味」最重的信号，且没人主动要，所以页内动画改为按需开启。用 `-a auto`（或其它效果）开启：根据每个 group 的 SVG id 映射效果（chart→wipe、card-/step-/pillar-→fly、title/takeaway→fade），图片类 id（`hero` / `figure-` / `image` / `img-` / `kpi`）在更丰富的视觉池（zoom / dissolve / circle / box / diamond / wheel）中循环以产生 deck 内变化，未命中的 id 在 fade/wipe/fly/zoom 间循环 |
 
-修改设置只需对同一份 `svg_output/`（或 `svg_final/`）重跑 `svg_to_pptx.py`，无需重新跑 LLM。如要为整份 deck 开启页内动画，加 `-a auto`。
+修改设置只需对同一份 `svg_output/` 重跑 `svg_to_pptx.py`，无需重新跑 LLM。`-s final` 只保留给诊断对比，不能作为受支持的发布源。如要为整份 deck 开启页内动画，加 `-a auto`。
 
 ## 对象级自定义动画
 
@@ -141,9 +141,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 
 ## 限制
 
-- **仅原生形状模式生效。** 页内动画需要可编辑形状作为锚点。`--only legacy` 模式每页一张大图，没有元素粒度，因此不响应 `-a/--animation`，只受 `-t/--transition` 影响。
+- **动画只写入原生 DrawingML PPTX。** 页间转场和页内元素动画都属于项目转换器从 `svg_output/` 生成的 PPTX；`svg_final/` 仍是静态视觉预览，不是带动画的替代 PPTX 路线。
 - **不同 Office 版本对元素动画存在轻微差异。** 实现走 `<p:animEffect filter=...>` 路径（而非 `presetID` 查找表），在 PowerPoint 2016+ 上表现一致；更老的 Office 可能把部分效果降级为 Appear。
-- **兼容模式的 PNG fallback 只用于显示。** 转场与动画都在 slide XML 里，不在 PNG 中；关掉兼容模式不影响两个动画层。
+- **手工 SVG 形状转换不受支持。** 把 `svg_final/` 页面作为 SVG 图片插入 PowerPoint，不会获得元素级动画锚点；需要可编辑且可动画的形状时，请使用原生 PPTX。
 
 ## 常用速查
 

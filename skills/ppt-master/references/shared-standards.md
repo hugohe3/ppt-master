@@ -252,6 +252,8 @@ These forms are needed only when the stated PPT behavior matters:
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
 | Free-design page family/chrome extraction | Use the semantic markers in §4.1. Marker-free pages retain conservative filename/id fallbacks, but no visual content is inferred. |
 
+**Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
+
 ---
 
 ## 5. Workflow Authority

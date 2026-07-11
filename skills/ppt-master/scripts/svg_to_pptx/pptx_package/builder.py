@@ -3220,7 +3220,7 @@ def create_pptx_with_native_svg(
     use_compat_mode: bool = True,
     notes: dict[str, str] | None = None,
     enable_notes: bool = True,
-    use_native_shapes: bool = False,
+    use_native_shapes: bool = True,
     animation: str | None = None,
     animation_duration: float = 0.4,
     animation_stagger: float = 0.5,
@@ -3246,7 +3246,7 @@ def create_pptx_with_native_svg(
     theme_font_spec: ThemeFontSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
 ) -> bool:
-    """Create a PPTX file with native SVG.
+    """Create a PPTX file with native DrawingML shapes.
 
     Args:
         svg_files: List of SVG files.
@@ -3256,10 +3256,10 @@ def create_pptx_with_native_svg(
         transition: Transition effect name.
         transition_duration: Transition duration in seconds.
         auto_advance: Auto-advance interval in seconds.
-        use_compat_mode: Use Office compatibility mode (PNG + SVG dual format).
+        use_compat_mode: Retained for API compatibility; ignored in native mode.
         notes: Notes dict, key is SVG stem, value is notes content.
         enable_notes: Whether to enable notes embedding.
-        use_native_shapes: Convert SVG to native DrawingML shapes.
+        use_native_shapes: Must remain true; SVG-image PPTX export is unsupported.
         animation: Per-element entrance animation mode (single effect name,
             'mixed', 'random', or None to disable). Native shapes mode only.
         animation_duration: Per-element entrance duration in seconds.
@@ -3300,13 +3300,16 @@ def create_pptx_with_native_svg(
     Returns:
         Whether all slides were successfully created.
     """
+    if not use_native_shapes:
+        raise ValueError(
+            "SVG-image PPTX export is no longer supported; use svg_final/ "
+            "directly for preview and native DrawingML PPTX for delivery"
+        )
     if not svg_files:
         print("Error: No SVG files found")
         return False
 
-    # Native shapes mode takes priority over compat mode
-    if use_native_shapes:
-        use_compat_mode = False
+    use_compat_mode = False
     if pptx_structure not in {"baseline", "template", "preserve", "flat"}:
         raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
     if use_native_shapes and pptx_structure == "template":

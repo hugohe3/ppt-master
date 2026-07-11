@@ -9,7 +9,7 @@ PPT Master's exported PPTX supports **page transitions** (slide-to-slide) and **
 | Page transition | `fade`, 0.4s | Calm baseline that suits most decks |
 | Per-element animation | **`none` (off)** | A page appears as a whole. Auto-firing element builds are an unsolicited "AI deck" tell, so element entrance is opt-in. Turn it on with `-a auto` (or another effect): effects map from group id (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (`hero` / `figure-` / `image` / `img-` / `kpi`) cycle a richer visual pool (zoom / dissolve / circle / box / diamond / wheel) so multiple images vary across the deck; unmatched ids cycle a small fade/wipe/fly/zoom pool |
 
-To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM. To turn per-element animation on for the whole deck, pass `-a auto`.
+To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` — no need to rerun the LLM. `-s final` is reserved for diagnostic comparison and is not a supported release source. To turn per-element animation on for the whole deck, pass `-a auto`.
 
 ## Custom Object-Level Animation
 
@@ -141,9 +141,9 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 
 ## Limitations
 
-- **Native shapes mode only.** Per-element animation needs editable shape anchors. `--only legacy` produces one image per slide and has no element granularity to animate; that mode is unaffected by `-a/--animation` and only honors `-t/--transition`.
+- **Native DrawingML output only.** Page transitions and per-element animations are authored on the PPTX produced by the project converter from `svg_output/`. `svg_final/` remains a static SVG visual preview, not an animated or alternate PPTX route.
 - **Office version drift on element animations.** Effects use the `<p:animEffect filter=...>` path (vs. `presetID` lookup tables) to stay stable across Office versions. Most filters render identically in PowerPoint 2016+; older Office may downgrade some filters to plain Appear.
-- **PNG fallback (compat mode) is for visual rendering only.** Transitions and animations live in the slide XML, not in the PNG, so disabling compat mode does not affect either layer.
+- **Manual SVG shape conversion is unsupported.** Inserting an `svg_final/` page as an SVG picture does not establish element animation anchors; use the native PPTX when editable animated shapes are required.
 
 ## Quick Reference
 
