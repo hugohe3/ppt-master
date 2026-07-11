@@ -174,14 +174,16 @@ class Xfrm:
         cy = self.y + self.h / 2.0
         parts: list[str] = []
         if self.rot:
-            parts.append(f"rotate({_fmt(self.rot)} {_fmt(cx)} {_fmt(cy)})")
+            parts.append(
+                f"rotate({_fmt(self.rot, 8)} {_fmt(cx, 8)} {_fmt(cy, 8)})"
+            )
         if self.flip_h or self.flip_v:
             sx = -1 if self.flip_h else 1
             sy = -1 if self.flip_v else 1
             # scale around shape center
-            parts.append(f"translate({_fmt(cx)} {_fmt(cy)})")
+            parts.append(f"translate({_fmt(cx, 8)} {_fmt(cy, 8)})")
             parts.append(f"scale({sx} {sy})")
-            parts.append(f"translate({_fmt(-cx)} {_fmt(-cy)})")
+            parts.append(f"translate({_fmt(-cx, 8)} {_fmt(-cy, 8)})")
         return " ".join(parts) if parts else None
 
 

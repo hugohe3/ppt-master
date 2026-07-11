@@ -7,7 +7,7 @@ Other files link here instead of restating its contracts.
 
 | Section | Owns | Strength |
 |---|---|---|
-| §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the exhaustive structural blacklist, native line ends, image clipping, and static local reuse | Required / Forbidden / Conditional |
+| §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the exhaustive structural blacklist, native line ends, image clipping, static local reuse, and imported native-shape semantics | Required / Forbidden / Conditional |
 | §2 Conditional Compatibility Mappings | Inline geometry and approximate group opacity | Conditional |
 | §3 Canvas Format Quick Reference | Pointer to the complete canvas catalog | Reference |
 | §4 Required Page Contract and Conditional Packaging | Complete-page authority, semantic markers, editable text/grouping, and package promotion | Required / Conditional |
@@ -28,6 +28,7 @@ Other files link here instead of restating its contracts.
 | Text treatments | Mixed runs, tracking, underline, strikethrough, gradient fill, outline, transparency, watermark text, and text glow | §4.2, §6.7 |
 | Transforms and composition | Translate, scale, rotate, mirror, supported matrix composition, layering, and static local reuse | §1.3, §6.8 |
 | Freeform geometry | Full SVG path vocabulary, curves, organic containers, multi-subpaths, and asymmetric rounded rectangles | §6.9 |
+| Imported PowerPoint shapes | All 187 preset geometries, adjustments, logical frames, custom geometry, connectors, and unchanged native text bodies | §1.4 |
 | Radial/chart geometry | Pie/donut arcs, dashed-circle ring segments, gauges, progress rings, sunbursts, and diagonal polygon arrowheads | §6.10 |
 | Constructed visual styles | Faux glass, hand-drawn marks, ink wash, Riso offset, pixel grid, halftone, isometric facets, paper cut, and line-plus-area data treatment | §6.11 |
 | Unsupported-effect fallbacks | Raster baking or explicit-geometry alternatives for blur, inner shadow, soft edge, reflection, turbulence, blend modes, and arbitrary masks | §6.12 |
@@ -99,6 +100,8 @@ under the conditional contracts below.
 > **`clipPath` on `<image>` is conditional** — see §1.2.
 >
 > **Static same-document `<use>` is conditional** — see §1.3.
+>
+> **Imported native-shape metadata is conditional** — see §1.4.
 >
 > **Inline CSS geometry, group opacity, simple gradients, and filters are
 > conditional** — see §2 and §6.
@@ -202,6 +205,60 @@ the original `<use>` / `<symbol>` structure.
   <use xlink:href="#legendRow" x="120" y="120"/>
 </svg>
 ```
+
+---
+
+### 1.4 Imported Native PowerPoint Shapes (Conditional Contract)
+
+`pptx_to_svg.py` emits rendering-neutral metadata when a visible SVG object
+originates from `p:sp`, `p:cxnSp`, or `p:grpSp`. This contract is for imported
+round-trip SVG; ordinary authored SVG does not need these attributes.
+
+| Metadata | Placement | Required behavior |
+|---|---|---|
+| `data-pptx-object` | Logical `<g>` and native carrier | `shape`, `connector`, `group`, or `picture`; never infer the object kind from path appearance. |
+| `data-pptx-shape-id` + `data-pptx-shape-scope` | Logical `<g>` and carrier | Preserve the source part-scoped identity. Export remaps duplicate Master/Layout/Slide ids into page-unique ids before restoring connector references. |
+| `data-pptx-frame="x y width height"` | Logical `<g>` and carrier | Own native `a:xfrm` position and size. Values use sufficient precision for exact EMU recovery; path bounds, stroke, markers, shadows, and text glyph bounds never replace this frame. |
+| `data-pptx-prst` | Preset carrier and logical `<g>` | One of the locked 187 DrawingML `ST_ShapeType` values. |
+| `data-pptx-av-*` | Preset carrier and logical `<g>` | Preserve the complete validated DrawingML adjustment formula, including non-`val` formulas. |
+| `data-pptx-part="geometry"` | One hidden carrier path | The single native export authority for frame, base fill/line/effect, preset/custom geometry, and object identity. |
+| `data-pptx-part="geometry-preview"` / `geometry-detail` | Visible preview group/paths | Render the preset's independent path fill/stroke layers. These elements are never emitted as duplicate PowerPoint shapes. |
+| `data-pptx-preview-sha256` | Logical preset `<g>` and carrier | Detect edits to visible preset paths or paint. A stale preview fails quality check/export instead of silently restoring old native metadata. |
+| `data-pptx-geometry-kind="custom"` + `data-pptx-custgeom` | Custom-geometry carrier | Preserve the validated original `a:custGeom` subtree. If the visible path hash is unchanged, export restores formulas, handles, connection sites, text rectangle, and path list exactly; edited paths compile from current SVG geometry. |
+| `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
+| `data-pptx-shape-style` | Native carrier | Preserve a relationship-free `p:style` independently of text, including shapes with no visible text. |
+| `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, or visible typography edits invalidate the payload and use the normal SVG text fallback. |
+
+**Registry and rendering rules**:
+
+- The hash-locked shared registry must equal the independent 187-value shape
+  catalog. Missing, duplicate, unknown, or corrupt definitions fail closed.
+- Preset preview paths come from the shared DrawingML formula evaluator; do not
+  add per-shape Python geometry handlers.
+- Preset size is controlled only by `data-pptx-frame` / `a:xfrm`. Adjustment
+  formulas control the contour inside that frame and are not rescaled when the
+  frame changes.
+- A group transform may move, scale, rotate, or flip the complete logical
+  shape without invalidating its preview fingerprint. Editing a generated
+  `geometry-detail` path directly is unsupported unless the carrier metadata
+  and preview fingerprint are regenerated together.
+- Unknown or malformed SVG transform operations fail closed. DrawingML cannot
+  represent arbitrary shear, so a non-orthogonal transform must stop native
+  export instead of being silently approximated as rotation and scale.
+- Opaque XML payloads containing any `r:*` relationship attribute are never
+  copied into a new slide part. Relationship-bearing text content and
+  shape-level `a:blipFill` use the existing rebuilt visual fallback and are
+  not covered by atomic `p:sp + p:txBody` restoration.
+- Unknown future presets and explicit `unsupported` geometry status never
+  downgrade silently to `rect`; native export stops with the recorded reason.
+
+**Fidelity boundary**: native preset/custom geometry, logical frame, scoped
+identity, connector topology, and relationship-free unchanged horizontal
+text-body semantics on ordinary shape fills are `Native-stable`. The SVG
+preview paint for gradient/pattern
+`darken`/`lighten` layers is `Native-normalized`; original group child
+coordinates, shape-level image-fill reconstruction, and vertical-text
+reconstruction are also normalized rather than byte-identical OOXML.
 
 ---
 

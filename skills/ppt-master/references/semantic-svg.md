@@ -22,6 +22,10 @@ Use the existing specialized contracts for specialized facts:
 - `data-pptx-layout` and `data-pptx-layer` own Master/Layout/Slide structure;
 - `data-pptx-placeholder` owns PowerPoint placeholder identity;
 - `data-pptx-native` owns native chart/table reconstruction.
+- `data-pptx-object`, `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*`,
+  `data-pptx-geometry-*`, and `data-pptx-part` own imported native-shape
+  round-trip semantics under
+  [`shared-standards.md §1.4`](shared-standards.md#14-imported-native-powerpoint-shapes-conditional-contract).
 
 Do not duplicate those facts with `data-pptx-role`. Consumers resolve semantics
 in this order: specialized metadata, minimal compiler hints, then legacy

@@ -22,9 +22,18 @@ animation anchor.
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
+
+from pptx_shapes import (
+    CONNECTOR_PRESET_TYPES,
+    has_relationship_attributes,
+    svg_preset_preview_fingerprint,
+    svg_text_fingerprint,
+)
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
@@ -349,7 +358,13 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     if is_vertical:
         # Vertical text: geometry + image in one group, text in separate group
         geom_inner = (blip_image + "\n" + geom_xml) if blip_image else geom_xml
-        shape_xml = _wrap_shape_group(geom_inner, node, ctx, top_level=top_level)
+        shape_xml = _wrap_shape_group(
+            geom_inner,
+            node,
+            ctx,
+            top_level=top_level,
+            extra_attrs=_geometry_group_attrs(geom),
+        )
         if not text_result.svg:
             return shape_xml
         text_group = (
@@ -365,35 +380,85 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         inner_parts.append(blip_image)
     if geom_xml:
         inner_parts.append(geom_xml)
+    if tx_body is not None and geom is not None:
+        inner_parts.append(
+            _txbody_metadata(
+                tx_body,
+                text_result.svg,
+            )
+        )
     if text_result.svg:
         inner_parts.append(text_result.svg)
     inner = "\n".join(inner_parts) if inner_parts else ""
-    return _wrap_shape_group(inner, node, ctx, top_level=top_level)
+    return _wrap_shape_group(
+        inner,
+        node,
+        ctx,
+        top_level=top_level,
+        extra_attrs=_geometry_group_attrs(geom),
+    )
+
+
+def _txbody_metadata(
+    tx_body: ET.Element,
+    visible_text_svg: str,
+) -> str:
+    """Preserve the native text body while its visible SVG remains authoritative."""
+    if has_relationship_attributes(tx_body):
+        # Relationship ids are part-local and cannot be copied into a newly
+        # generated slide without rebuilding the relationship target.
+        return ""
+    raw = ET.tostring(tx_body, encoding="utf-8")
+    encoded = base64.b64encode(raw).decode("ascii")
+    wrapper = ET.fromstring(
+        f'<svg xmlns="http://www.w3.org/2000/svg">{visible_text_svg}</svg>'
+    )
+    digest = svg_text_fingerprint(wrapper)
+    return (
+        '<metadata data-pptx-part="txbody" data-pptx-encoding="base64" '
+        f'data-pptx-text-sha256="{digest}">{encoded}</metadata>'
+    )
 
 
 def _resolve_geometry(node: ShapeNode, sp_pr: ET.Element | None) -> GeomResult | None:
     """Resolve a DrawingML shape geometry into an absolute SVG geometry model."""
     prst_geom = sp_pr.find("a:prstGeom", NS) if sp_pr is not None else None
     cust_geom = sp_pr.find("a:custGeom", NS) if sp_pr is not None else None
+    prst = prst_geom.attrib.get("prst", "rect") if prst_geom is not None else None
 
     geom: GeomResult | None = None
     if prst_geom is not None:
-        prst = prst_geom.attrib.get("prst", "rect")
         geom = convert_prst_geom(prst, node.xfrm, prst_geom)
-        if geom is None:
-            # Unknown prst — fall back to rect bounding box
-            geom = convert_prst_geom("rect", node.xfrm, None)
     elif cust_geom is not None:
         d = convert_custom_geom(cust_geom, node.xfrm)
         if d:
-            geom = GeomResult(tag="path", path_d=d)
+            raw = ET.tostring(cust_geom, encoding="utf-8")
+            geom = GeomResult(
+                tag="path",
+                path_d=d,
+                attrs={
+                    "data-pptx-part": "geometry",
+                    "data-pptx-geometry-kind": "custom",
+                    "data-pptx-custgeom": base64.b64encode(raw).decode("ascii"),
+                    "data-pptx-geometry-sha256": hashlib.sha256(
+                        d.strip().encode("utf-8")
+                    ).hexdigest(),
+                },
+            )
     else:
         # No geometry hint at all — render bounding rect
         geom = convert_prst_geom("rect", node.xfrm, None)
 
     if geom is None:
         return None
-    if geom.tag != "line" and (node.xfrm.w <= 0 or node.xfrm.h <= 0):
+    permits_degenerate_axis = (
+        node.kind == CONNECTOR
+        or prst in CONNECTOR_PRESET_TYPES
+    )
+    if (
+        not permits_degenerate_axis
+        and (node.xfrm.w <= 0 or node.xfrm.h <= 0)
+    ):
         return None
     return geom
 
@@ -443,8 +508,21 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
         # Skip emitting stroke="none" to keep markup tight.
         pass
 
-    geom_attrs_xml = _attrs_to_xml({**geom.attrs, **attrs})
-    return _geom_to_svg(geom, geom_attrs_xml)
+    semantic_attrs = {
+        **geom.attrs,
+        **_object_metadata(node, ctx),
+    }
+    shape_style = node.xml.find("p:style", NS)
+    if shape_style is not None:
+        semantic_attrs["data-pptx-shape-style"] = base64.b64encode(
+            ET.tostring(shape_style, encoding="utf-8")
+        ).decode("ascii")
+    if geom.layers:
+        return _preset_layers_to_svg(geom, semantic_attrs, attrs)
+    return _geom_to_svg(
+        geom,
+        _attrs_to_xml({**semantic_attrs, **attrs}),
+    )
 
 
 def _resolve_shape_style_defaults(node: ShapeNode, ctx: AssemblyContext) -> dict[str, str]:
@@ -490,15 +568,101 @@ def _resolve_ref_color(ref_elem: ET.Element | None, ctx: AssemblyContext) -> str
     return hex_
 
 
-def _geom_to_svg(geom: GeomResult, attrs_xml: str = "") -> str:
+def _geom_to_svg(geom: GeomResult, attrs_xml: str | None = None) -> str:
     """Serialize a resolved geometry with optional SVG attributes."""
-    if not attrs_xml:
+    if attrs_xml is None:
         attrs_xml = _attrs_to_xml(geom.attrs)
     if geom.tag == "path":
         return f'<path d="{geom.path_d}"{attrs_xml}/>'
     if geom.tag in ("polygon", "polyline"):
         return f'<{geom.tag} points="{geom.points}"{attrs_xml}/>'
     return f"<{geom.tag}{attrs_xml}/>"
+
+
+def _preset_layers_to_svg(
+    geom: GeomResult,
+    semantic_attrs: dict[str, str],
+    style_attrs: dict[str, str],
+) -> str:
+    """Serialize one semantic carrier plus every visible preset path layer.
+
+    DrawingML applies shape-level fill/line first, then each preset path can
+    override whether and how that paint is used.  A hidden carrier retains the
+    unmodified shape-level style for native round-trip; visible detail paths
+    reproduce the preset's independent paint behavior without being exported
+    as duplicate PowerPoint shapes.
+    """
+    detail_style_attrs = dict(style_attrs)
+    preview_group_attrs = {"data-pptx-part": "geometry-preview"}
+    for name in ("filter", "opacity"):
+        value = detail_style_attrs.pop(name, None)
+        if value is not None:
+            preview_group_attrs[name] = value
+    detail_layers: list[str] = []
+    for layer in geom.layers:
+        attrs = dict(detail_style_attrs)
+        _apply_preset_path_fill(attrs, layer.fill)
+        if not layer.stroke:
+            _remove_stroke_attrs(attrs)
+            attrs["stroke"] = "none"
+        attrs["data-pptx-part"] = "geometry-detail"
+        detail_layers.append(
+            f'<path d="{layer.d}"{_attrs_to_xml(attrs)}/>'
+        )
+    preview_markup = (
+        f'<g{_attrs_to_xml(preview_group_attrs)}>\n'
+        + "\n".join(detail_layers)
+        + "\n</g>"
+    )
+    preview_root = ET.fromstring(
+        f'<svg xmlns="http://www.w3.org/2000/svg">{preview_markup}</svg>'
+    )
+    preview_hash = svg_preset_preview_fingerprint(preview_root)
+    geom.attrs["data-pptx-preview-sha256"] = preview_hash
+    semantic_attrs["data-pptx-preview-sha256"] = preview_hash
+    carrier_attrs = {
+        **style_attrs,
+        **semantic_attrs,
+        "data-pptx-part": "geometry",
+        "visibility": "hidden",
+        "pointer-events": "none",
+    }
+    carrier = f'<path d="{geom.path_d}"{_attrs_to_xml(carrier_attrs)}/>'
+    return f"{carrier}\n{preview_markup}"
+
+
+def _apply_preset_path_fill(attrs: dict[str, str], mode: str) -> None:
+    if mode == "none":
+        attrs["fill"] = "none"
+        attrs.pop("fill-opacity", None)
+        return
+    if mode == "norm":
+        return
+    color = attrs.get("fill", "")
+    if not color.startswith("#") or len(color) != 7:
+        return
+    try:
+        channels = tuple(int(color[offset:offset + 2], 16) for offset in (1, 3, 5))
+    except ValueError:
+        return
+    if mode in {"darken", "darkenLess"}:
+        factor = 0.65 if mode == "darken" else 0.82
+        adjusted = tuple(round(channel * factor) for channel in channels)
+    elif mode in {"lighten", "lightenLess"}:
+        amount = 0.4 if mode == "lighten" else 0.2
+        adjusted = tuple(
+            round(channel + (255 - channel) * amount)
+            for channel in channels
+        )
+    else:
+        return
+    attrs["fill"] = "#" + "".join(f"{channel:02X}" for channel in adjusted)
+
+
+def _remove_stroke_attrs(attrs: dict[str, str]) -> None:
+    for name in tuple(attrs):
+        if name.startswith("stroke") or name in {"marker-start", "marker-end"}:
+            attrs.pop(name, None)
 
 
 def _clip_blip_image(image_xml: str, geom: GeomResult | None,
@@ -511,7 +675,7 @@ def _clip_blip_image(image_xml: str, geom: GeomResult | None,
 
     ctx.clip_seq[0] += 1
     clip_id = f"{ctx.group_id_prefix}clip{ctx.clip_seq[0]}"
-    clip_shape = _geom_to_svg(geom)
+    clip_shape = _geom_to_svg(geom, "")
     ctx.defs.append(
         f'<clipPath id="{clip_id}" clipPathUnits="userSpaceOnUse">'
         f'{clip_shape}</clipPath>'
@@ -542,7 +706,18 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
     if not result.svg:
         return ""
     ctx.media.update(result.media)
-    return _wrap_shape_group(result.svg, node, ctx, top_level=top_level)
+    picture_svg = _inject_root_svg_attrs(result.svg, _object_metadata(node, ctx))
+    return _wrap_shape_group(picture_svg, node, ctx, top_level=top_level)
+
+
+def _inject_root_svg_attrs(markup: str, attrs: dict[str, str]) -> str:
+    """Attach source-object identity to a picture's root SVG element."""
+    attrs_xml = _attrs_to_xml(attrs)
+    for tag in ("image", "svg"):
+        prefix = f"<{tag}"
+        if markup.startswith(prefix):
+            return markup.replace(prefix, f"{prefix}{attrs_xml}", 1)
+    return markup
 
 
 # ---------------------------------------------------------------------------
@@ -551,8 +726,15 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
 
 def _convert_connector(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     sp_pr = node.xml.find("p:spPr", NS)
-    geom_xml = _build_geometry_xml(node, sp_pr, ctx)
-    return _wrap_shape_group(geom_xml, node, ctx, top_level=top_level)
+    geom = _resolve_geometry(node, sp_pr)
+    geom_xml = _build_geometry_xml(node, sp_pr, ctx, geom=geom)
+    return _wrap_shape_group(
+        geom_xml,
+        node,
+        ctx,
+        top_level=top_level,
+        extra_attrs=_geometry_group_attrs(geom),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -994,6 +1176,14 @@ def _wrap_shape_group(
     g_id = f"{ctx.group_id_prefix}shape-{sid}"
 
     attrs: list[str] = [f'id="{g_id}"']
+    attrs.extend(
+        f'{key}="{_xml_escape(value)}"'
+        for key, value in _object_metadata(
+            node,
+            ctx,
+            fallback_shape_id=sid,
+        ).items()
+    )
     if node.name:
         attrs.append(f'data-name="{_xml_escape(node.name)}"')
     if node.placeholder is not None and node.placeholder.type:
@@ -1008,7 +1198,89 @@ def _wrap_shape_group(
 def _attrs_to_xml(attrs: dict[str, str]) -> str:
     if not attrs:
         return ""
-    return "".join(f' {k}="{v}"' for k, v in attrs.items())
+    return "".join(f' {key}="{_xml_escape(value)}"' for key, value in attrs.items())
+
+
+def _geometry_group_attrs(geom: GeomResult | None) -> list[str]:
+    """Mirror native geometry semantics onto the logical shape container."""
+    if geom is None:
+        return []
+    keys = (
+        "data-pptx-prst",
+        "data-pptx-geometry-kind",
+        "data-pptx-geometry-sha256",
+        "data-pptx-preview-sha256",
+        "data-pptx-geometry-status",
+        "data-pptx-geometry-reason",
+    )
+    attrs: list[str] = []
+    for key, value in geom.attrs.items():
+        if key in keys or key.startswith("data-pptx-av-"):
+            attrs.append(f'{key}="{_xml_escape(value)}"')
+    return attrs
+
+
+def _object_metadata(
+    node: ShapeNode,
+    ctx: AssemblyContext,
+    *,
+    fallback_shape_id: str = "",
+) -> dict[str, str]:
+    """Describe the source object without coupling geometry to its SVG bounds."""
+    object_kind = {
+        SHAPE: "shape",
+        PICTURE: "picture",
+        CONNECTOR: "connector",
+        GROUP: "group",
+        GRAPHIC: "graphic-frame",
+    }.get(node.kind, node.kind)
+    shape_id = node.spid or fallback_shape_id
+    frame = " ".join((
+        fmt_num(node.xfrm.x, 8),
+        fmt_num(node.xfrm.y, 8),
+        fmt_num(node.xfrm.w, 8),
+        fmt_num(node.xfrm.h, 8),
+    ))
+    attrs = {
+        "data-pptx-object": object_kind,
+        "data-pptx-shape-id": shape_id,
+        "data-pptx-shape-scope": _shape_scope(ctx),
+        "data-pptx-frame": frame,
+    }
+    if node.name:
+        attrs["data-pptx-shape-name"] = node.name
+    if node.kind == CONNECTOR:
+        attrs.update(_connector_metadata(node, _shape_scope(ctx)))
+    return attrs
+
+
+def _shape_scope(ctx: AssemblyContext) -> str:
+    if ctx.group_id_prefix.startswith("master-"):
+        return "master"
+    if ctx.group_id_prefix.startswith("layout-"):
+        return "layout"
+    return "slide"
+
+
+def _connector_metadata(node: ShapeNode, scope: str) -> dict[str, str]:
+    """Preserve connector endpoint references when PowerPoint declares them."""
+    attrs: dict[str, str] = {}
+    cnv = node.xml.find("p:nvCxnSpPr/p:cNvCxnSpPr", NS)
+    if cnv is None:
+        return attrs
+
+    for endpoint, prefix in (("stCxn", "start"), ("endCxn", "end")):
+        connection = cnv.find(f"a:{endpoint}", NS)
+        if connection is None:
+            continue
+        shape_id = connection.attrib.get("id")
+        site = connection.attrib.get("idx")
+        if shape_id is not None:
+            attrs[f"data-pptx-{prefix}-shape-id"] = shape_id
+            attrs[f"data-pptx-{prefix}-shape-scope"] = scope
+        if site is not None:
+            attrs[f"data-pptx-{prefix}-site"] = site
+    return attrs
 
 
 def _xml_escape(text: str) -> str:
