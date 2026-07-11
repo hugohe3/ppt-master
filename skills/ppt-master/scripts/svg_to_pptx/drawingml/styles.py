@@ -6,6 +6,8 @@ import math
 import re
 from xml.etree import ElementTree as ET
 
+from pptx_shapes import validate_ooxml_line_width
+
 from .context import ConvertContext
 from .theme_colors import ThemeColorSpec, color_node_xml
 from .utils import (
@@ -454,6 +456,7 @@ def build_stroke_xml(
 
     width = parse_svg_length(_get_attr(elem, 'stroke-width', ctx), 1.0)
     width_emu = px_to_emu(width)
+    validate_ooxml_line_width(width_emu)
 
     # Dash pattern
     dash_xml = ''

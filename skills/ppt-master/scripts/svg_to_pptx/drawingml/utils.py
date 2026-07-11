@@ -7,6 +7,8 @@ import math
 import re
 from xml.etree import ElementTree as ET
 
+from pptx_shapes import validate_ooxml_xfrm
+
 from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
 # ---------------------------------------------------------------------------
@@ -336,6 +338,24 @@ def transform_point(matrix: AffineMatrix, x: float, y: float) -> tuple[float, fl
     return a * x + c * y + e, b * x + d * y + f
 
 
+def validate_dml_shape_matrix(matrix: AffineMatrix) -> None:
+    """Reject affine shear that a DrawingML shape transform cannot express."""
+    a, b, c, d, _e, _f = matrix
+    x_length = math.hypot(a, b)
+    y_length = math.hypot(c, d)
+    if x_length <= 1e-12 or y_length <= 1e-12:
+        raise ValueError(
+            'SVG zero-scale transform cannot be represented by a visible '
+            'DrawingML shape'
+        )
+    dot = a * c + b * d
+    if abs(dot) > x_length * y_length * 1e-9:
+        raise ValueError(
+            'SVG shear/skew cannot be represented by a DrawingML '
+            'shape transform'
+        )
+
+
 def rect_to_dml_xfrm(
     x: float,
     y: float,
@@ -363,13 +383,7 @@ def rect_to_dml_xfrm(
 
     rect_w = math.hypot(ux, uy)
     rect_h = math.hypot(vx, vy)
-    if rect_w > 1e-12 and rect_h > 1e-12:
-        dot = ux * vx + uy * vy
-        if abs(dot) > rect_w * rect_h * 1e-9:
-            raise ValueError(
-                'SVG shear/skew cannot be represented by a DrawingML '
-                'shape transform'
-            )
+    validate_dml_shape_matrix(matrix)
     if not preserve_degenerate_axes:
         rect_w = max(rect_w, 0.001)
         rect_h = max(rect_h, 0.001)
@@ -394,6 +408,7 @@ def rect_to_dml_xfrm(
     off_y = px_to_emu(center_y - rect_h / 2)
     ext_cx = px_to_emu(rect_w)
     ext_cy = px_to_emu(rect_h)
+    validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
 
     xs = [p0[0], p1[0], p2[0], p3[0]]
     ys = [p0[1], p1[1], p2[1], p3[1]]

@@ -223,6 +223,39 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
   2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
+### 3.0 Native Preset Shape Selection
+
+**Default — use one native preset when it exactly expresses one object (may
+override for page-specific geometry)**: apply the decision gate in
+[`native-shape-authoring.md`](./native-shape-authoring.md) before drawing a
+literal stock shape, block arrow, standard flowchart node, connector, callout,
+ribbon, or Office symbol.
+
+| Decision | Action |
+|---|---|
+| Plain rect / symmetric round rect / circle / ellipse | Keep the ordinary SVG primitive; it is already natively editable. |
+| Exact single-preset match | Call `preset_shape_svg.py render` and paste its complete stdout fragment into the current hand-authored SVG. |
+| Page-specific, compound, organic, branded, icon, or data geometry | Keep ordinary SVG path/polygon geometry. |
+| Similar-looking contour only | Never guess; keep ordinary SVG. |
+
+This automatic decision applies only before drawing a new object. Do not scan
+existing SVG, classify path contours, or upgrade ordinary SVG during export.
+
+**Hard rule**: do not hand-write `data-pptx-authoring`, `data-pptx-prst`,
+`data-pptx-frame`, adjustment, carrier, preview, or fingerprint metadata. The
+helper generates them atomically from the shared 187-shape registry. Rerun the
+helper when geometry or paint changes.
+
+Connector-family presets require `--object-kind connector`, `fill="none"`, and
+a visible stroke. They export as unconnected `p:cxnSp`; do not hand-add
+endpoint/site metadata. `actionButton*` presets provide visual geometry only,
+not actions or hyperlinks.
+
+**Hard rule — narrow helper scope**: the helper prints one shape fragment to
+stdout. It does not write a page or choose layout. Read the fragment and insert
+it through the normal `apply_patch` page edit; never redirect, loop, or batch it
+into `svg_output/`.
+
 ### 3.1 Chart Plot-Area Marker (MANDATORY on every chart page)
 
 > The [`verify-charts`](../workflows/verify-charts.md) workflow enumerates chart pages from `design_spec.md §VII`, then reads each page's plot-area marker to feed `svg_position_calculator.py`. Missing marker → verify-charts has to re-derive the plot area from axis lines, paying the cost on every run.
