@@ -31,6 +31,9 @@ from .errors import (
 
 OOXML_DEGREE = 60000.0
 FULL_CIRCLE = 360.0 * OOXML_DEGREE
+OOXML_COORDINATE_MIN = -27273042329600
+OOXML_COORDINATE_MAX = 27273042316900
+OOXML_LINE_WIDTH_MAX = 20116800
 
 _OPERATOR_ARITY = {
     "val": 1,
@@ -55,6 +58,35 @@ SUPPORTED_OPERATORS = frozenset(_OPERATOR_ARITY)
 
 _DIMENSION_GUIDE_RE = re.compile(r"^(wd|hd|ssd)([1-9][0-9]*)$")
 _ANGLE_GUIDE_RE = re.compile(r"^(?:(\d+))?cd([1-9][0-9]*)$")
+
+
+def validate_ooxml_xfrm(
+    off_x: int,
+    off_y: int,
+    ext_cx: int,
+    ext_cy: int,
+) -> None:
+    """Validate DrawingML shape offsets and extents in EMU."""
+    for name, value in (("x", off_x), ("y", off_y)):
+        if not OOXML_COORDINATE_MIN <= value <= OOXML_COORDINATE_MAX:
+            raise ValueError(
+                f"DrawingML xfrm offset {name}={value} is outside the "
+                "OOXML coordinate range"
+            )
+    for name, value in (("cx", ext_cx), ("cy", ext_cy)):
+        if value < 0 or value > OOXML_COORDINATE_MAX:
+            raise ValueError(
+                f"DrawingML xfrm extent {name}={value} is outside the "
+                "OOXML positive-coordinate range"
+            )
+
+
+def validate_ooxml_line_width(width: int) -> None:
+    """Validate one DrawingML ``ST_LineWidth`` value in EMU."""
+    if width < 0 or width > OOXML_LINE_WIDTH_MAX:
+        raise ValueError(
+            f"DrawingML line width {width} is outside the OOXML line-width range"
+        )
 
 
 def build_builtin_guides(

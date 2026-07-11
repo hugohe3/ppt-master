@@ -23,9 +23,12 @@ Use the existing specialized contracts for specialized facts:
 - `data-pptx-placeholder` owns PowerPoint placeholder identity;
 - `data-pptx-native` owns native chart/table reconstruction.
 - `data-pptx-object`, `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*`,
-  `data-pptx-geometry-*`, and `data-pptx-part` own imported native-shape
-  round-trip semantics under
-  [`shared-standards.md §1.4`](shared-standards.md#14-imported-native-powerpoint-shapes-conditional-contract).
+  `data-pptx-geometry-*`, `data-pptx-authoring`, and `data-pptx-part` own
+  imported round-trip and authored preset-shape semantics under
+  [`shared-standards.md`](./shared-standards.md) §§1.4–1.5.
+
+Authored preset metadata comes only from `preset_shape_svg.py`; ordinary SVG
+paths are never scanned, classified, or automatically upgraded to a preset.
 
 Do not duplicate those facts with `data-pptx-role`. Consumers resolve semantics
 in this order: specialized metadata, minimal compiler hints, then legacy

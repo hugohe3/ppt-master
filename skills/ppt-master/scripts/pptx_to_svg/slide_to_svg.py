@@ -31,7 +31,6 @@ from xml.etree import ElementTree as ET
 from pptx_shapes import (
     CONNECTOR_PRESET_TYPES,
     has_relationship_attributes,
-    svg_preset_preview_fingerprint,
     svg_text_fingerprint,
 )
 
@@ -45,6 +44,7 @@ from .ln_to_svg import resolve_stroke
 from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
 from .pic_to_svg import convert_blip_fill, convert_picture
 from .prstgeom_to_svg import GeomResult, convert_prst_geom
+from .preset_svg_markup import serialize_preset_layers
 from .shape_walker import (
     CONNECTOR, GRAPHIC, GROUP, PICTURE, SHAPE,
     ShapeNode, get_background, walk_sp_tree,
@@ -592,77 +592,14 @@ def _preset_layers_to_svg(
     reproduce the preset's independent paint behavior without being exported
     as duplicate PowerPoint shapes.
     """
-    detail_style_attrs = dict(style_attrs)
-    preview_group_attrs = {"data-pptx-part": "geometry-preview"}
-    for name in ("filter", "opacity"):
-        value = detail_style_attrs.pop(name, None)
-        if value is not None:
-            preview_group_attrs[name] = value
-    detail_layers: list[str] = []
-    for layer in geom.layers:
-        attrs = dict(detail_style_attrs)
-        _apply_preset_path_fill(attrs, layer.fill)
-        if not layer.stroke:
-            _remove_stroke_attrs(attrs)
-            attrs["stroke"] = "none"
-        attrs["data-pptx-part"] = "geometry-detail"
-        detail_layers.append(
-            f'<path d="{layer.d}"{_attrs_to_xml(attrs)}/>'
-        )
-    preview_markup = (
-        f'<g{_attrs_to_xml(preview_group_attrs)}>\n'
-        + "\n".join(detail_layers)
-        + "\n</g>"
+    markup = serialize_preset_layers(
+        geom.layers,
+        semantic_attrs,
+        style_attrs,
     )
-    preview_root = ET.fromstring(
-        f'<svg xmlns="http://www.w3.org/2000/svg">{preview_markup}</svg>'
-    )
-    preview_hash = svg_preset_preview_fingerprint(preview_root)
-    geom.attrs["data-pptx-preview-sha256"] = preview_hash
-    semantic_attrs["data-pptx-preview-sha256"] = preview_hash
-    carrier_attrs = {
-        **style_attrs,
-        **semantic_attrs,
-        "data-pptx-part": "geometry",
-        "visibility": "hidden",
-        "pointer-events": "none",
-    }
-    carrier = f'<path d="{geom.path_d}"{_attrs_to_xml(carrier_attrs)}/>'
-    return f"{carrier}\n{preview_markup}"
-
-
-def _apply_preset_path_fill(attrs: dict[str, str], mode: str) -> None:
-    if mode == "none":
-        attrs["fill"] = "none"
-        attrs.pop("fill-opacity", None)
-        return
-    if mode == "norm":
-        return
-    color = attrs.get("fill", "")
-    if not color.startswith("#") or len(color) != 7:
-        return
-    try:
-        channels = tuple(int(color[offset:offset + 2], 16) for offset in (1, 3, 5))
-    except ValueError:
-        return
-    if mode in {"darken", "darkenLess"}:
-        factor = 0.65 if mode == "darken" else 0.82
-        adjusted = tuple(round(channel * factor) for channel in channels)
-    elif mode in {"lighten", "lightenLess"}:
-        amount = 0.4 if mode == "lighten" else 0.2
-        adjusted = tuple(
-            round(channel + (255 - channel) * amount)
-            for channel in channels
-        )
-    else:
-        return
-    attrs["fill"] = "#" + "".join(f"{channel:02X}" for channel in adjusted)
-
-
-def _remove_stroke_attrs(attrs: dict[str, str]) -> None:
-    for name in tuple(attrs):
-        if name.startswith("stroke") or name in {"marker-start", "marker-end"}:
-            attrs.pop(name, None)
+    geom.attrs["data-pptx-preview-sha256"] = markup.preview_hash
+    semantic_attrs["data-pptx-preview-sha256"] = markup.preview_hash
+    return markup.markup
 
 
 def _clip_blip_image(image_xml: str, geom: GeomResult | None,

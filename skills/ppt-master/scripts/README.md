@@ -45,7 +45,7 @@ python3 scripts/update_repo.py
 |------|-----------------|---------------|
 | Conversion | `source_to_md.py`, `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `pptx_intake.py`, `pptx_to_svg.py` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py`, `template_fill_pptx.py`, `native_enhance_pptx.py` | [docs/project.md](./docs/project.md) |
-| SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
+| SVG pipeline | `preset_shape_svg.py`, `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `extract_svg_assets.py`, `animation_config.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md); [native preset authoring](../references/native-shape-authoring.md) |
 | PPTX transitions | `pptx_transitions.py` | [docs/pptx-transitions.md](./docs/pptx-transitions.md) |
 | PPTX animations | `pptx_animations.py`, `animation_config.py` | [docs/pptx-animations.md](./docs/pptx-animations.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -106,6 +106,16 @@ python3 scripts/native_enhance_pptx.py plan <project_path>
 python3 scripts/native_enhance_pptx.py validate <project_path>
 python3 scripts/native_enhance_pptx.py apply <project_path>
 ```
+
+Native preset shape authoring (one registry-backed fragment on stdout):
+
+```bash
+python3 scripts/preset_shape_svg.py list --search arrow
+python3 scripts/preset_shape_svg.py describe rightArrow
+python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
+```
+
+The helper never writes a page or project file. Select one exact semantic stock-shape match, inspect the emitted fragment, and insert it into the hand-authored SVG with the normal patch workflow. Keep ordinary rectangles, ellipses, freeform geometry, charts, icons, and ambiguous silhouettes as regular SVG. See [`references/native-shape-authoring.md`](../references/native-shape-authoring.md) for the selection and metadata contract.
 
 Post-processing and export:
 

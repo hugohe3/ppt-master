@@ -15,10 +15,14 @@ from xml.etree import ElementTree as ET
 
 from pptx_shapes import (
     CONNECTOR_PRESET_TYPES,
+    OOXML_COORDINATE_MAX,
+    OOXML_COORDINATE_MIN,
     get_preset_registry,
     has_relationship_attributes,
     load_shape_type_values,
+    validate_ooxml_xfrm,
 )
+from pptx_to_svg.preset_authoring import AUTHORING_ATTR, AUTHORING_VALUE
 from resource_paths import resolve_external_image_reference
 
 from .context import ConvertContext, ShapeResult
@@ -377,15 +381,35 @@ PPTX_PRESET_SHAPE_TYPES = frozenset(load_shape_type_values())
 _PPTX_AV_PREFIX = 'data-pptx-av-'
 _PPTX_GUIDE_NAME_RE = re.compile(r'[A-Za-z_][A-Za-z0-9_.-]{0,63}')
 _PPTX_VAL_FORMULA_RE = re.compile(r'val[\t ]+([+-]?\d+)')
-_PPTX_COORD_MIN = -27273042329600
-_PPTX_COORD_MAX = 27273042316900
-
-
 def _parse_preset_geometry_metadata(
     elem: ET.Element,
 ) -> tuple[str | None, list[tuple[str, str]], tuple[float, float, float, float] | None]:
     """Parse and validate rendering-neutral preset geometry metadata."""
     status = (elem.get('data-pptx-geometry-status') or '').strip()
+    authoring = elem.get(AUTHORING_ATTR)
+    if authoring not in {None, AUTHORING_VALUE}:
+        raise ValueError(f'Unsupported {AUTHORING_ATTR} value {authoring!r}')
+    if authoring == AUTHORING_VALUE:
+        object_kind = elem.get('data-pptx-object')
+        if object_kind not in {'shape', 'connector'}:
+            raise ValueError(
+                'Authored preset metadata requires data-pptx-object='
+                '"shape" or "connector"'
+            )
+        preset = elem.get('data-pptx-prst')
+        if preset is None:
+            raise ValueError('Authored preset metadata requires data-pptx-prst')
+        if preset in CONNECTOR_PRESET_TYPES and object_kind != 'connector':
+            raise ValueError(
+                f'Connector preset {preset!r} requires '
+                'data-pptx-object="connector"'
+            )
+        if object_kind == 'connector' and preset not in CONNECTOR_PRESET_TYPES:
+            raise ValueError(
+                f'Authored connector requires a connector preset, got {preset!r}'
+            )
+        if elem.get('data-pptx-frame') is None:
+            raise ValueError('Authored preset metadata requires data-pptx-frame')
     if status not in {'', 'exact', 'unsupported'}:
         raise ValueError(
             f'Unsupported data-pptx-geometry-status {status!r}; '
@@ -430,7 +454,7 @@ def _parse_preset_geometry_metadata(
         match = _PPTX_VAL_FORMULA_RE.fullmatch(formula)
         if match is not None:
             value = int(match.group(1))
-            if not _PPTX_COORD_MIN <= value <= _PPTX_COORD_MAX:
+            if not OOXML_COORDINATE_MIN <= value <= OOXML_COORDINATE_MAX:
                 raise ValueError(
                     f'{attr_name} value {value} is outside OOXML coordinate range'
                 )
@@ -467,7 +491,12 @@ def _parse_preset_geometry_metadata(
                 f'Invalid adjustment formula for preset {prst!r}: {exc}'
             ) from exc
         for name, value in evaluated.adjustments.items():
-            if name in guide_formulas and not _PPTX_COORD_MIN <= value <= _PPTX_COORD_MAX:
+            if (
+                name in guide_formulas
+                and not OOXML_COORDINATE_MIN
+                <= value
+                <= OOXML_COORDINATE_MAX
+            ):
                 raise ValueError(
                     f'data-pptx-av-{name} evaluates outside OOXML coordinate range'
                 )
@@ -505,6 +534,12 @@ def _parse_preset_geometry_metadata(
             raise ValueError(
                 f'data-pptx-frame width and height must be positive, got {raw_frame!r}'
             )
+        validate_ooxml_xfrm(
+            px_to_emu(frame[0]),
+            px_to_emu(frame[1]),
+            px_to_emu(frame[2]),
+            px_to_emu(frame[3]),
+        )
 
     return prst, guides, frame
 

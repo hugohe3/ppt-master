@@ -25,11 +25,16 @@ from .errors import (
 )
 from .formula import (
     FULL_CIRCLE,
+    OOXML_COORDINATE_MAX,
+    OOXML_COORDINATE_MIN,
     OOXML_DEGREE,
+    OOXML_LINE_WIDTH_MAX,
     SUPPORTED_OPERATORS,
     FormulaEvaluator,
     build_builtin_guides,
     evaluate_formula,
+    validate_ooxml_line_width,
+    validate_ooxml_xfrm,
 )
 from .loader import (
     BUNDLED_DEFINITIONS_PATH,
@@ -67,7 +72,10 @@ __all__ = [
     "DRAWINGML_NS",
     "EXPECTED_SHAPE_COUNT",
     "FULL_CIRCLE",
+    "OOXML_COORDINATE_MAX",
+    "OOXML_COORDINATE_MIN",
     "OOXML_DEGREE",
+    "OOXML_LINE_WIDTH_MAX",
     "SUPPORTED_OPERATORS",
     "EvaluatedPresetGeometry",
     "FormulaEvaluationError",
@@ -89,4 +97,6 @@ __all__ = [
     "resolve_preset_preview_hash",
     "svg_text_fingerprint",
     "svg_preset_preview_fingerprint",
+    "validate_ooxml_line_width",
+    "validate_ooxml_xfrm",
 ]
