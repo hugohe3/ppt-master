@@ -96,13 +96,17 @@ from .slide_xml import (
 )
 from .template_structure import (
     NativeStructureContract,
+    OOXML_UINT32_MAX,
+    TEMPLATE_PLACEHOLDER_TYPES,
     TemplateElementSpec,
     TemplateSlideSpec,
     TemplateStructureError,
     match_native_placeholders,
     parse_preserve_slides,
     parse_template_slides,
+    template_placeholder_bindings,
 )
+from .template_validation import validate_pptx_template_package
 
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
@@ -667,7 +671,13 @@ def _next_slide_layout_id(extract_dir: Path, master_xml: str) -> int:
                 r'\bid="(\d{9,})"', presentation_path.read_text(encoding="utf-8")
             )
         )
-    return max([*ids, 2147483648]) + 1
+    next_id = max([*ids, 2147483648]) + 1
+    if next_id > OOXML_UINT32_MAX:
+        raise TemplateStructureError(
+            "Cannot register another Slide Layout because the OOXML UInt32 "
+            "identifier range is exhausted"
+        )
+    return next_id
 
 
 def _create_cover_layout(extract_dir: Path, master_part: str, base_layout_part: str) -> str:
@@ -1159,19 +1169,6 @@ def _promote_common_chrome_shapes_to_layouts(
     return promoted
 
 
-_TEMPLATE_PLACEHOLDER_TYPES = {
-    "title": "title",
-    "subtitle": "subTitle",
-    "body": "body",
-    "picture": "pic",
-    "chart": "chart",
-    "table": "tbl",
-    "object": "obj",
-    "media": "media",
-    "date": "dt",
-    "footer": "ftr",
-    "slide-number": "sldNum",
-}
 _TEMPLATE_PLACEHOLDER_PROMPTS = {
     "title": "Click to add title",
     "subtitle": "Click to add subtitle",
@@ -1620,6 +1617,46 @@ def _replace_shape_xfrm(
     sp_pr.insert(0, xfrm)
 
 
+def _set_layout_level_one_default_size(
+    list_style: ET.Element,
+    source_run_pr: ET.Element | None,
+) -> None:
+    """Persist the prototype run size as the Layout's level-one text default."""
+    if source_run_pr is None or source_run_pr.get("sz") is None:
+        return
+    level_tag = f"{{{DML_NS}}}lvl1pPr"
+    level_props = list_style.find(level_tag)
+    if level_props is None:
+        level_props = ET.Element(level_tag)
+        trailing_tags = {
+            f"{{{DML_NS}}}lvl{level}pPr" for level in range(2, 10)
+        }
+        trailing_tags.add(f"{{{DML_NS}}}extLst")
+        insert_at = next(
+            (
+                index
+                for index, child in enumerate(list_style)
+                if child.tag in trailing_tags
+            ),
+            len(list_style),
+        )
+        list_style.insert(insert_at, level_props)
+    default_props = level_props.find(f"{{{DML_NS}}}defRPr")
+    if default_props is None:
+        default_props = ET.Element(f"{{{DML_NS}}}defRPr")
+        ext_tag = f"{{{DML_NS}}}extLst"
+        insert_at = next(
+            (
+                index
+                for index, child in enumerate(level_props)
+                if child.tag == ext_tag
+            ),
+            len(level_props),
+        )
+        level_props.insert(insert_at, default_props)
+    default_props.set("sz", source_run_pr.get("sz", ""))
+
+
 def _placeholder_text_body(
     source_shape: ET.Element,
     item: TemplateElementSpec,
@@ -1636,26 +1673,28 @@ def _placeholder_text_body(
         if source_tx_body is not None
         else None
     )
-    tx_body.append(
-        ET.fromstring(ET.tostring(source_body_pr, encoding="utf-8"))
-        if source_body_pr is not None
-        else ET.Element(f"{{{DML_NS}}}bodyPr")
-    )
-    tx_body.append(
-        ET.fromstring(ET.tostring(source_lst_style, encoding="utf-8"))
-        if source_lst_style is not None
-        else ET.Element(f"{{{DML_NS}}}lstStyle")
-    )
-
-    paragraph = ET.SubElement(tx_body, f"{{{DML_NS}}}p")
-    if item.placeholder == "body":
-        paragraph_props = ET.SubElement(paragraph, f"{{{DML_NS}}}pPr")
-        ET.SubElement(paragraph_props, f"{{{DML_NS}}}buNone")
     source_run_pr = (
         source_tx_body.find(f".//{{{DML_NS}}}rPr")
         if source_tx_body is not None
         else None
     )
+    tx_body.append(
+        ET.fromstring(ET.tostring(source_body_pr, encoding="utf-8"))
+        if source_body_pr is not None
+        else ET.Element(f"{{{DML_NS}}}bodyPr")
+    )
+    list_style = (
+        ET.fromstring(ET.tostring(source_lst_style, encoding="utf-8"))
+        if source_lst_style is not None
+        else ET.Element(f"{{{DML_NS}}}lstStyle")
+    )
+    _set_layout_level_one_default_size(list_style, source_run_pr)
+    tx_body.append(list_style)
+
+    paragraph = ET.SubElement(tx_body, f"{{{DML_NS}}}p")
+    if item.placeholder == "body":
+        paragraph_props = ET.SubElement(paragraph, f"{{{DML_NS}}}pPr")
+        ET.SubElement(paragraph_props, f"{{{DML_NS}}}buNone")
     if item.placeholder in {"slide-number", "date"}:
         field_type = (
             "slidenum"
@@ -1743,7 +1782,7 @@ def _set_placeholder_theme_font_role(
         return
     if item.placeholder == "title":
         prefix = "+mj"
-    elif item.placeholder in _TEMPLATE_PLACEHOLDER_TYPES:
+    elif item.placeholder in TEMPLATE_PLACEHOLDER_TYPES:
         prefix = "+mn"
     else:
         return
@@ -1762,7 +1801,7 @@ def _layout_placeholder_shape(
     theme_font_spec: ThemeFontSpec | None = None,
 ) -> ET.Element:
     """Build one reusable p:sp placeholder from a prototype slide object."""
-    placeholder_type = _TEMPLATE_PLACEHOLDER_TYPES.get(item.placeholder or "")
+    placeholder_type = TEMPLATE_PLACEHOLDER_TYPES.get(item.placeholder or "")
     if placeholder_type is None:
         raise TemplateStructureError(
             f"Unsupported placeholder type: {item.placeholder!r}"
@@ -1815,7 +1854,7 @@ def _patch_slide_placeholder(
     placeholder_type: str | None = None,
     theme_font_spec: ThemeFontSpec | None = None,
 ) -> None:
-    resolved_type = placeholder_type or _TEMPLATE_PLACEHOLDER_TYPES.get(
+    resolved_type = placeholder_type or TEMPLATE_PLACEHOLDER_TYPES.get(
         item.placeholder or ""
     )
     if resolved_type is None:
@@ -1957,8 +1996,10 @@ def _apply_template_structure(
         layout_path = extract_dir / layout_part
         layout_rels_path = _relationships_path_for_part(extract_dir, layout_part)
 
-        placeholder_idx = 1
-        assigned_placeholder_indices: set[int] = set()
+        placeholder_bindings = {
+            binding.element.element_id: binding
+            for binding in template_placeholder_bindings(prototype)
+        }
         for item in prototype.elements:
             if item.layer == "layout":
                 _move_template_static_shape(
@@ -1977,21 +2018,8 @@ def _apply_template_structure(
                 raise TemplateStructureError(
                     f"Placeholder {item.element_id!r} cannot be a slide background"
                 )
-            if item.placeholder == "title":
-                assigned_idx = item.placeholder_idx
-            else:
-                assigned_idx = (
-                    item.placeholder_idx
-                    if item.placeholder_idx is not None
-                    else placeholder_idx
-                )
-            if (
-                assigned_idx is not None
-                and assigned_idx in assigned_placeholder_indices
-            ):
-                raise TemplateStructureError(
-                    f"Layout {layout_key!r} repeats placeholder idx {assigned_idx}"
-                )
+            binding = placeholder_bindings[item.element_id]
+            assigned_idx = binding.assigned_idx
             layout_placeholder = _layout_placeholder_shape(
                 prototype_shape,
                 item,
@@ -2012,9 +2040,6 @@ def _apply_template_structure(
                     assigned_idx,
                     theme_font_spec=theme_font_spec,
                 )
-            if assigned_idx is not None:
-                assigned_placeholder_indices.add(assigned_idx)
-                placeholder_idx = max(placeholder_idx, assigned_idx + 1)
             placeholder_count += 1
 
         _set_template_layout_header_footer(layout_path, prototype.placeholders)
@@ -4229,6 +4254,21 @@ def create_pptx_with_native_svg(
                 if file_path.is_file():
                     arcname = file_path.relative_to(extract_dir)
                     zf.write(file_path, arcname)
+        if (
+            use_native_shapes
+            and pptx_structure == "template"
+            and success_count == len(svg_files)
+        ):
+            if template_specs is None:
+                raise TemplateStructureError(
+                    "Template structure metadata was not parsed before validation"
+                )
+            try:
+                validate_pptx_template_package(temp_output_path, template_specs)
+            except ValueError as exc:
+                raise TemplateStructureError(
+                    f"PPTX template package validation failed: {exc}"
+                ) from exc
         try:
             validate_pptx_transition_package(
                 temp_output_path,
