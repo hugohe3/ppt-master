@@ -114,19 +114,21 @@ python3 ${SKILL_DIR}/scripts/beautify_inventory.py <project_path>/analysis/<stem
     --images <project_path>/images/image_manifest.json -o <project_path>/analysis/beautify_inventory.json
 ```
 
-If `images/image_manifest.json` does not exist because the source deck has no extracted pictures, omit `--images`. The script joins per slide: `text_blocks` (slot text + geometry), `tables` (cell grid) / `charts` (categories + series values) — the **frozen data values inlined**, so the inventory is a self-contained contract, not a pointer back to `slide_library.json` — and `images` (bound via `image_manifest` `occurrences[].slide_index`, with geometry / `usage_count`). It emits `ignored` and `needs_confirmation` as **empty arrays** — fill them with judgment before Step 5:
+If `images/image_manifest.json` does not exist because the source deck has no extracted pictures, omit `--images`. The script joins per slide: `text_blocks` (slot text + geometry), `tables` (cell grid), `charts` (categories + series values), `diagrams` (SmartArt nodes + hierarchy/connections + source layout), and `images` (bound via `image_manifest` `occurrences[].slide_index`, with geometry / `usage_count`). The **frozen source values are inlined**, so the inventory is a self-contained contract, not a pointer back to `slide_library.json`. It emits `ignored` and `needs_confirmation` as **empty arrays** — fill them with judgment before Step 5:
 
 | Field | Fill with |
 |---|---|
 | `ignored` | hidden slides / shapes, master-only text, image crop / opacity / rotation / mask (not captured upstream) |
-| `needs_confirmation` | combo / dual-axis / waterfall charts (only the first plot type is captured), merged-cell or multi-header tables, density-outlier pages — **either** overcrowded **or** near-empty / title-only (e.g. a divider page with a heading and no body) |
+| `needs_confirmation` | unreadable SmartArt data; combo / dual-axis / waterfall charts; merged-cell or multi-header tables; density-outlier pages — **either** overcrowded **or** near-empty / title-only |
+
+**SmartArt output boundary**: Preserve its extracted wording and semantic relationships, then redraw it through SVG as ordinary editable PowerPoint shapes. Do not attempt to regenerate a native SmartArt object or reuse persisted-drawing text as a second content source.
 
 ```markdown
 ## ✅ Extraction Complete
 
 - [x] `sources/<stem>.md` (from Step 3) holds every source slide's text, in order; extracted pictures, if any, are in `images/` + `images/image_manifest.json`
 - [x] `analysis/<stem>.identity.json` has theme + observed identity + canvas aspect
-- [x] `analysis/<stem>.slide_library.json` holds chart + table data for regeneration
+- [x] `analysis/<stem>.slide_library.json` holds chart + table data and SmartArt semantic structure for regeneration
 - [x] `analysis/source_profile.json` (multi-deck index) summarizes the source facts in its `decks[]` entry
 - [x] `analysis/beautify_inventory.json` ledgers per-slide text / images / data + ignored + needs-confirmation
 - [ ] **Next**: Step 5 — Beautify Plan (recommend & confirm)
@@ -145,7 +147,7 @@ This step has two halves:
 | Plan item | Recommend from | Default lean |
 |---|---|---|
 | Identity source | `<stem>.identity.json` `theme` vs `observed` | present **both as color / typography candidates in the confirm UI** so the user picks the one that looks right (theme first when the deck is theme-driven; observed first when slides override heavily) — recommend a default ordering and say why |
-| Preserve scope | inventory `text_blocks` / `images` / `charts` / `tables` | all text verbatim; data values frozen; pictures reused |
+| Preserve scope | inventory `text_blocks` / `images` / `charts` / `tables` / `diagrams` | all text verbatim; data values and SmartArt relationships frozen; pictures reused |
 | Ignored | inventory `ignored` | name them so the user sees what drops (hidden / master-only text / image crop / rotation) |
 | Needs confirmation | inventory `needs_confirmation` | flag complex charts + overcrowded pages explicitly; ask how to handle |
 | Verification level | deck size / risk | recommend the Step 7 per-page checks; user sets strictness |

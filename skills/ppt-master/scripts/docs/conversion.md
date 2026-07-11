@@ -194,6 +194,7 @@ Behavior:
 - extracts slide text in reading order
 - converts PowerPoint tables to Markdown tables
 - transcribes native chart data (type + categories × series values) into a Markdown table, so chart numbers are not lost in conversion
+- transcribes SmartArt semantic nodes as hierarchical Markdown; unreadable diagram data emits an explicit placeholder and conversion warning
 - exports embedded pictures to a sibling `_files/` directory
 - appends speaker notes when present
 - writes `<input>.conversion_profile.json` after successful conversion
@@ -218,15 +219,15 @@ python3 scripts/pptx_intake.py deck.pptx -o projects/demo/analysis
 
 Outputs (per source deck, prefixed by file stem):
 - `<stem>.identity.json` — canvas size/aspect, theme palette/fonts, observed colors/fonts
-- `<stem>.slide_library.json` — text slots, geometry, native tables, native chart display caches
-- `source_profile.json` — the single multi-deck index: a compact Strategist-facing digest per deck (over identity, tables, charts, and page types) under `decks[]`, with prefixed artifact pointers
+- `<stem>.slide_library.json` — text slots, geometry, native tables, native chart display caches, and SmartArt nodes/connections
+- `source_profile.json` — the single multi-deck index: a compact Strategist-facing digest per deck (over identity, tables, charts, SmartArt, and page types) under `decks[]`, with prefixed artifact pointers
 
 `project_manager.py import-sources` runs this automatically for PPTX/PPTM/PPSX/PPSM/POTX/POTM inputs and stores the bundle directly under `analysis/`. Multi-deck per project: importing several PPTX files gives each its own `<stem>.*` artifacts and a `decks[]` entry in the shared `source_profile.json` index (re-importing the same stem replaces its entry). The beautify / template-fill workflows stay single-deck and read one chosen deck's `<stem>.*` artifacts.
 
 Usage boundary:
 - Standard generation uses these fields as facts and recommendation candidates; it does not inherit source slide coordinates or page order by default.
-- Beautify promotes selected identity/content fields into locked constraints after confirmation.
-- Template-fill uses the slide library as the native PPTX fill contract.
+- Beautify promotes selected identity/content fields into locked constraints after confirmation and redraws SmartArt meaning with ordinary editable shapes.
+- Template-fill uses the slide library as the native PPTX fill contract; SmartArt is inventory-only and remains unchanged.
 
 ## `pptx_to_svg.py`
 

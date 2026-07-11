@@ -2,8 +2,8 @@
 """
 PowerPoint to Markdown Converter
 
-Extracts slide text, tables, speaker notes, and embedded pictures from
-Open XML PowerPoint files into Markdown.
+Extracts slide text, tables, SmartArt node structure, speaker notes, and
+embedded pictures from Open XML PowerPoint files into Markdown.
 
 Primary use case: PPTX source decks -> Markdown for PPT generation input.
 
@@ -29,10 +29,12 @@ import json
 import re
 import shutil
 import sys
+import zipfile
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import quote
+from xml.etree import ElementTree as ET
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(_SCRIPTS_DIR) not in sys.path:
@@ -41,6 +43,10 @@ if str(_SCRIPTS_DIR) not in sys.path:
 from console_encoding import configure_utf8_stdio  # noqa: E402
 from _batch import run_path_batch  # noqa: E402
 from _conversion_profile import write_conversion_profile_best_effort  # noqa: E402
+from template_fill_pptx.diagram_read import (  # noqa: E402
+    read_smartart_diagrams,
+    smartart_to_markdown,
+)
 
 from pptx import Presentation
 from pptx.enum.action import PP_ACTION
@@ -721,6 +727,39 @@ def convert_presentation_to_markdown(
     _reset_generated_asset_dir(asset_dir)
 
     presentation = Presentation(str(input_file))
+    conversion_warnings: list[str] = []
+    diagrams_by_slide: dict[int, list[dict[str, object]]] = {}
+    diagram_scan_failures: dict[int, str] = {}
+    try:
+        with zipfile.ZipFile(input_file) as package:
+            for slide_index, slide in enumerate(presentation.slides, 1):
+                slide_part = str(slide.part.partname).lstrip("/")
+                try:
+                    diagrams = read_smartart_diagrams(package, slide_part, slide_index)
+                except (OSError, RuntimeError, zipfile.BadZipFile, ET.ParseError) as exc:
+                    diagrams_by_slide[slide_index] = []
+                    diagram_scan_failures[slide_index] = str(exc)
+                    conversion_warnings.append(
+                        f"Slide {slide_index}: SmartArt scan failed: {exc}"
+                    )
+                    continue
+                diagrams_by_slide[slide_index] = diagrams
+                for diagram in diagrams:
+                    issues = [str(item) for item in diagram.get("warnings", []) if item]
+                    if diagram.get("status") != "ok":
+                        issues.insert(0, f"status={diagram.get('status')}")
+                    if not issues:
+                        continue
+                    conversion_warnings.append(
+                        f"Slide {slide_index}, {diagram.get('shape_name') or diagram.get('diagram_id')}: "
+                        f"SmartArt content {'; '.join(issues)}"
+                    )
+    except (OSError, RuntimeError, zipfile.BadZipFile, ET.ParseError) as exc:
+        conversion_warnings.append(f"SmartArt package scan failed: {exc}")
+        for slide_index in range(1, len(presentation.slides) + 1):
+            diagrams_by_slide.setdefault(slide_index, [])
+            diagram_scan_failures.setdefault(slide_index, str(exc))
+
     lines = [
         f"# {input_file.stem}",
         "",
@@ -741,6 +780,13 @@ def convert_presentation_to_markdown(
         lines.append("")
 
         blocks = []
+        slide_diagrams = diagrams_by_slide.get(slide_index, [])
+        diagrams_by_shape_id = {
+            str(diagram.get("shape_id")): diagram
+            for diagram in slide_diagrams
+            if diagram.get("shape_id") is not None
+        }
+        emitted_diagram_ids: set[str] = set()
         for item in iter_leaf_shapes(slide.shapes):
             shape = item.shape
 
@@ -748,6 +794,13 @@ def convert_presentation_to_markdown(
                 table_md = table_to_markdown(shape.table)
                 if table_md:
                     blocks.append(table_md)
+                continue
+
+            shape_id = str(getattr(shape, "shape_id", ""))
+            diagram = diagrams_by_shape_id.get(shape_id)
+            if diagram is not None:
+                blocks.append(smartart_to_markdown(diagram))
+                emitted_diagram_ids.add(str(diagram.get("diagram_id")))
                 continue
 
             is_picture_shape = shape.shape_type in {
@@ -795,6 +848,15 @@ def convert_presentation_to_markdown(
                 except (ValueError, AttributeError, KeyError):
                     blocks.append(f"> [Chart] {getattr(shape, 'name', 'Chart')}")
 
+        for diagram in slide_diagrams:
+            if str(diagram.get("diagram_id")) in emitted_diagram_ids:
+                continue
+            blocks.append(smartart_to_markdown(diagram))
+        if slide_index in diagram_scan_failures:
+            blocks.append(
+                f"> [SmartArt scan unavailable: {diagram_scan_failures[slide_index]}]"
+            )
+
         if blocks:
             lines.append("\n\n".join(blocks))
             lines.append("")
@@ -822,6 +884,7 @@ def convert_presentation_to_markdown(
         converter="ppt_to_md.py",
         conversion_type=suffix.lstrip("."),
         asset_dir=asset_dir,
+        warnings=conversion_warnings,
     )
 
     print(f"[OK] Saved Markdown to: {out_file}")

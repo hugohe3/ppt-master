@@ -1,4 +1,4 @@
-"""analyze: read a PPTX as a reusable slide library of text / table / chart slots."""
+"""Analyze a PPTX as reusable text, table, chart, and SmartArt source facts."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from .chart_read import empty_chart_data, read_chart_data
+from .diagram_read import read_smartart_diagrams
 from .ooxml import (
     CHART_REL_TYPE,
     NS,
@@ -143,26 +144,36 @@ def _canvas_px(pres_root: ET.Element) -> dict[str, int | None]:
     }
 
 
-def _fill_risk(tables: list[dict[str, Any]], charts: list[dict[str, Any]]) -> dict[str, Any] | None:
+def _fill_risk(
+    tables: list[dict[str, Any]],
+    charts: list[dict[str, Any]],
+    diagrams: list[dict[str, Any]],
+) -> dict[str, Any] | None:
     """Return a fill_risk descriptor when the slide has non-text content that text-fill cannot replace.
 
-    Only tables and charts are checked; no new dependencies are introduced.
-    Returns None when the slide has no such content.
+    Tables and charts may be covered by explicit edits. SmartArt is inventory-only:
+    template-fill preserves it unchanged, so its source text may show through.
     """
     kinds: list[str] = []
     if tables:
         kinds.append("table")
     if charts:
         kinds.append("chart")
+    if diagrams:
+        kinds.append("smartart")
     if not kinds:
         return None
     kind_str = "/".join(kinds)
+    guidance: list[str] = []
+    if tables or charts:
+        guidance.append("cover tables/charts with explicit edits")
+    if diagrams:
+        guidance.append("review preserved SmartArt source text")
+    guidance_text = "; ".join(guidance)
     return {
         "has_non_text_content": True,
-        "reason": (
-            f"has non-text content ({kind_str}) that text-fill cannot replace; "
-            "provide table_edits/chart_edits or pick another source slide"
-        ),
+        "kinds": kinds,
+        "reason": f"has non-text content ({kind_str}) that text-fill does not replace automatically; {guidance_text}",
     }
 
 
@@ -202,7 +213,16 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
 
             tables = _analyze_tables(slide_root, slide_ref.index)
             charts = _analyze_charts(zf, slide_root, slide_ref)
-            slide_text = "\n".join(slot["text"] for slot in slots if slot["text"])
+            diagrams = read_smartart_diagrams(zf, slide_ref.part_name, slide_ref.index)
+            slide_text = "\n".join(
+                [slot["text"] for slot in slots if slot["text"]]
+                + [
+                    str(text)
+                    for diagram in diagrams
+                    for text in diagram.get("text_items", [])
+                    if text
+                ]
+            )
             slide: dict[str, Any] = {
                 "slide_index": slide_ref.index,
                 "page_type": _classify_page_type(slide_ref.index, len(slide_refs), slide_text, slots),
@@ -210,8 +230,9 @@ def analyze_pptx(pptx_path: Path) -> dict[str, Any]:
                 "slots": slots,
                 "tables": tables,
                 "charts": charts,
+                "diagrams": diagrams,
             }
-            risk = _fill_risk(tables, charts)
+            risk = _fill_risk(tables, charts, diagrams)
             if risk is not None:
                 slide["fill_risk"] = risk
             slides.append(slide)
