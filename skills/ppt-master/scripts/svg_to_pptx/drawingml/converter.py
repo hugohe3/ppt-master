@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
+import hashlib
 import math
 import re
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from pptx_shapes import (
+    has_relationship_attributes,
+    resolve_preset_preview_hash,
+    svg_preset_preview_fingerprint,
+    svg_text_fingerprint,
+)
 from resource_paths import icon_search_dirs_for_svg
 
 from .context import ConvertContext, ShapeResult
@@ -128,6 +137,125 @@ def _extract_rotate_pivot(transform_str: str) -> tuple[float, float] | None:
     return cx, cy
 
 
+def _txbody_metadata(elem: ET.Element) -> ET.Element | None:
+    for child in elem:
+        if (
+            child.tag.replace(f'{{{SVG_NS}}}', '') == 'metadata'
+            and child.get('data-pptx-part') == 'txbody'
+        ):
+            return child
+    return None
+
+
+_TXBODY_UNCHANGED_ATTR = 'data-pptx-runtime-txbody-unchanged'
+_PREVIEW_UNCHANGED_ATTR = 'data-pptx-runtime-preview-unchanged'
+
+
+def _mark_unchanged_txbody_groups(root: ET.Element) -> None:
+    """Snapshot author-visible text state before exporter preprocessing."""
+    for group in root.iter():
+        if group.tag.replace(f'{{{SVG_NS}}}', '') != 'g':
+            continue
+        metadata = _txbody_metadata(group)
+        if metadata is None:
+            continue
+        expected = metadata.get('data-pptx-text-sha256')
+        actual = svg_text_fingerprint(group)
+        group.set(_TXBODY_UNCHANGED_ATTR, '1' if expected == actual else '0')
+
+
+def _mark_unchanged_preset_previews(root: ET.Element) -> None:
+    """Snapshot visible preset layers before exporter preprocessing."""
+    for group in root.iter():
+        if group.tag.replace(f'{{{SVG_NS}}}', '') != 'g':
+            continue
+        if (
+            group.get('data-pptx-object') not in {'shape', 'connector'}
+            or group.get('data-pptx-prst') is None
+        ):
+            continue
+        try:
+            expected = resolve_preset_preview_hash(group)
+        except ValueError as exc:
+            raise SvgNativeConversionError(
+                f'Invalid preset preview fingerprint contract: {exc}'
+            ) from exc
+        if expected is None:
+            continue
+        actual = svg_preset_preview_fingerprint(group)
+        group.set(_PREVIEW_UNCHANGED_ATTR, '1' if expected == actual else '0')
+
+
+def _require_unchanged_preset_preview(group: ET.Element) -> None:
+    try:
+        expected = resolve_preset_preview_hash(group)
+    except ValueError as exc:
+        raise SvgNativeConversionError(
+            f'Invalid preset preview fingerprint contract: {exc}'
+        ) from exc
+    if expected is None:
+        return
+    snapshot = group.get(_PREVIEW_UNCHANGED_ATTR)
+    if snapshot == '1':
+        return
+    if snapshot is None and svg_preset_preview_fingerprint(group) == expected:
+        return
+    raise SvgNativeConversionError(
+        'Visible preset preview was edited without updating its native '
+        'data-pptx-prst/frame/adjustment carrier; export stopped to avoid '
+        'silently discarding the SVG edit'
+    )
+
+
+def _decode_unchanged_txbody(
+    group: ET.Element,
+    metadata: ET.Element,
+) -> str | None:
+    expected_hash = metadata.get('data-pptx-text-sha256')
+    if not expected_hash:
+        raise SvgNativeConversionError('txbody metadata requires a text hash')
+    snapshot = group.get(_TXBODY_UNCHANGED_ATTR)
+    if snapshot == '0':
+        return None
+    if snapshot != '1' and svg_text_fingerprint(group) != expected_hash:
+        return None
+    if metadata.get('data-pptx-encoding') != 'base64':
+        raise SvgNativeConversionError('txbody metadata requires base64 encoding')
+    try:
+        raw = base64.b64decode((metadata.text or '').strip(), validate=True)
+        txbody = ET.fromstring(raw)
+        decoded = raw.decode('utf-8')
+    except (ValueError, binascii.Error, UnicodeDecodeError, ET.ParseError) as exc:
+        raise SvgNativeConversionError(f'Invalid txbody metadata: {exc}') from exc
+    if txbody.tag != (
+        '{http://schemas.openxmlformats.org/presentationml/2006/main}txBody'
+    ):
+        raise SvgNativeConversionError('txbody metadata payload must be p:txBody')
+    if has_relationship_attributes(txbody):
+        raise SvgNativeConversionError(
+            'txbody metadata must not contain part-local relationship attributes'
+        )
+    return decoded
+
+
+def _append_shape_text(
+    shape: ShapeResult,
+    txbody_xml: str,
+) -> ShapeResult:
+    if not shape.xml.lstrip().startswith('<p:sp>') or not shape.xml.rstrip().endswith('</p:sp>'):
+        raise SvgNativeConversionError('Native txBody can only attach to p:sp')
+    closing = shape.xml.rfind('</p:sp>')
+    return ShapeResult(
+        xml=(
+            shape.xml[:closing]
+            + txbody_xml
+            + '\n'
+            + shape.xml[closing:]
+        ),
+        bounds_emu=shape.bounds_emu,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Group handling
 # ---------------------------------------------------------------------------
@@ -240,6 +368,64 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                     ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
             return native_result
 
+    if (
+        elem.get('data-pptx-object') in {'shape', 'connector'}
+        and elem.get('data-pptx-prst') is not None
+    ):
+        _require_unchanged_preset_preview(elem)
+
+    txbody_meta = _txbody_metadata(elem)
+    logical_text_shape = (
+        elem.get('data-pptx-object') == 'shape'
+        and (
+            elem.get('data-pptx-prst') is not None
+            or elem.get('data-pptx-geometry-kind') == 'custom'
+        )
+        and txbody_meta is not None
+    )
+    if logical_text_shape:
+        carrier_children = [
+            child for child in elem
+            if child.get('data-pptx-part') == 'geometry'
+        ]
+        allowed_parts = {
+            'geometry',
+            'geometry-detail',
+            'geometry-preview',
+            'txbody',
+        }
+        has_foreign_visual = any(
+            child.tag.replace(f'{{{SVG_NS}}}', '') not in {'text', 'metadata'}
+            and child.get('data-pptx-part') not in allowed_parts
+            for child in elem
+        )
+        native_text = _decode_unchanged_txbody(elem, txbody_meta)
+        if len(carrier_children) == 1 and not has_foreign_visual and native_text is not None:
+            geometry_ctx = child_ctx
+            if transform and not native_subtree_active:
+                geometry_ctx = ctx.child(
+                    0, 0, 1.0, 1.0,
+                    transform_matrix=parse_transform_matrix(transform),
+                    filter_id=filter_id,
+                    style_overrides=style_overrides,
+                    opacity_multiplier=local_opacity,
+                )
+            geometry_result = convert_element(carrier_children[0], geometry_ctx)
+            ctx.sync_from_child(geometry_ctx)
+            if geometry_result is None:
+                raise SvgNativeConversionError(
+                    'Logical text shape has no convertible geometry carrier'
+                )
+            restored = _append_shape_text(
+                geometry_result,
+                native_text,
+            )
+            if should_animate_group and elem_id:
+                shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored.xml)
+                if shape_match:
+                    ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
+            return restored
+
     child_results: list[ShapeResult] = []
     for child in elem:
         result = convert_element(child, child_ctx)
@@ -251,10 +437,28 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if not child_results:
         return None
 
-    # Single-child non-semantic groups are flattened to reduce nesting. Top-level
-    # semantic groups are preserved so animations target the group, not its
-    # individual child shapes.
-    if len(child_results) == 1 and not should_animate_group:
+    # A logical imported preset may contain several render-only SVG detail
+    # paths, but after those are skipped it owns exactly one native object.
+    # Flatten that carrier even at the top level; otherwise animation grouping
+    # would turn one source ``p:sp`` into a ``p:grpSp`` wrapper. Retarget an
+    # optional animation to the restored leaf shape ID.
+    logical_native_shape_group = (
+        elem.get('data-pptx-object') in {'shape', 'connector'}
+        and (
+            elem.get('data-pptx-prst') is not None
+            or elem.get('data-pptx-geometry-kind') == 'custom'
+        )
+    )
+    explicit_native_group = elem.get('data-pptx-object') == 'group'
+    if (
+        len(child_results) == 1
+        and not explicit_native_group
+        and (not should_animate_group or logical_native_shape_group)
+    ):
+        if should_animate_group and elem_id:
+            shape_match = re.search(r'<p:cNvPr id="(\d+)"', child_results[0].xml)
+            if shape_match:
+                ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
         return child_results[0]
 
     # Multiple children, or a top-level semantic one-child group: wrap in
@@ -305,7 +509,14 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         off_y = int(round(group_y + delta_y))
 
     shapes_xml = '\n'.join(result.xml for result in child_results)
-    group_id = ctx.next_id()
+    group_id = (
+        ctx.claim_shape_id(
+            elem.get('data-pptx-shape-id'),
+            elem.get('data-pptx-shape-scope'),
+        )
+        if elem.get('data-pptx-object') == 'group'
+        else ctx.next_id()
+    )
 
     # Record top-level semantic groups (e.g. <g id="p02-title">) so the
     # PPTX builder can emit per-element entrance timing. Only the outermost
@@ -412,6 +623,16 @@ def _is_full_canvas_rect(
 ) -> bool:
     """Return whether a rect is a safe candidate for native slide background."""
     if elem.get('transform') or elem.get('filter') or elem.get('clip-path'):
+        return False
+    if any(
+        elem.get(attr) is not None
+        for attr in (
+            'data-pptx-object',
+            'data-pptx-prst',
+            'data-pptx-frame',
+            'data-pptx-geometry-status',
+        )
+    ):
         return False
     if _f(elem.get('rx')) > 0 or _f(elem.get('ry')) > 0:
         return False
@@ -529,6 +750,115 @@ def collect_defs(root: ET.Element) -> dict[str, ET.Element]:
     return defs
 
 
+def _build_source_shape_id_map(root: ET.Element) -> dict[tuple[str, str], int]:
+    """Allocate page-unique ids for part-scoped imported shape identities."""
+    source_entries: list[tuple[tuple[str, str], int]] = []
+    seen_keys: set[tuple[str, str]] = set()
+    for elem in root.iter():
+        raw_id = elem.get('data-pptx-shape-id')
+        if raw_id is None:
+            continue
+        scope = elem.get('data-pptx-shape-scope') or 'slide'
+        if re.fullmatch(r'[A-Za-z0-9_.-]{1,64}', scope) is None:
+            raise SvgNativeConversionError(
+                f'Invalid data-pptx-shape-scope {scope!r}'
+            )
+        try:
+            shape_id = int(raw_id)
+        except ValueError as exc:
+            raise SvgNativeConversionError(
+                f'Invalid data-pptx-shape-id {raw_id!r}'
+            ) from exc
+        if shape_id < 2 or shape_id > 0xFFFFFFFF:
+            raise SvgNativeConversionError(
+                f'data-pptx-shape-id must be between 2 and 4294967295, got {raw_id!r}'
+            )
+        key = (scope, raw_id)
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        source_entries.append((key, shape_id))
+
+    preferred_ids = {shape_id for _key, shape_id in source_entries}
+    next_fresh = max(preferred_ids, default=1) + 1
+    used: set[int] = set()
+    mapping: dict[tuple[str, str], int] = {}
+    for key, preferred in source_entries:
+        output_id = preferred
+        if output_id in used:
+            while next_fresh in preferred_ids or next_fresh in used:
+                next_fresh += 1
+            if next_fresh > 0xFFFFFFFF:
+                raise SvgNativeConversionError('Exhausted PowerPoint shape id range')
+            output_id = next_fresh
+            next_fresh += 1
+        used.add(output_id)
+        mapping[key] = output_id
+    return mapping
+
+
+def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str, Any]:
+    """Describe the native geometry decision for conversion diagnostics."""
+    xml = result.xml.lstrip()
+    if xml.startswith('<p:grpSp>'):
+        return {'output_geometry': 'group', 'fidelity': 'visual-only'}
+    if xml.startswith('<p:pic>'):
+        return {'output_geometry': 'picture', 'fidelity': 'native-normalized'}
+    if xml.startswith('<p:graphicFrame>'):
+        return {'output_geometry': 'native-object', 'fidelity': 'native-normalized'}
+
+    preset_match = re.search(r'<a:prstGeom prst="([^"]+)"', xml)
+    if preset_match is not None:
+        preset = preset_match.group(1)
+        source_preset = elem.get('data-pptx-prst')
+        is_connector = xml.startswith('<p:cxnSp>')
+        fidelity = (
+            'exact'
+            if source_preset == preset
+            and elem.get('data-pptx-frame') is not None
+            and not is_connector
+            else 'native-normalized'
+        )
+        return {
+            'output_geometry': 'preset',
+            'preset': preset,
+            'fidelity': fidelity,
+        }
+    if re.search(r'<a:custGeom(?:\s|>)', xml):
+        carrier = next(
+            (
+                candidate
+                for candidate in elem.iter()
+                if candidate.get('data-pptx-part') == 'geometry'
+            ),
+            elem,
+        )
+        source_custom = (
+            carrier.get('data-pptx-geometry-kind') == 'custom'
+            and carrier.get('data-pptx-frame') is not None
+        )
+        expected_hash = carrier.get('data-pptx-geometry-sha256')
+        actual_hash = hashlib.sha256(
+            (carrier.get('d') or '').strip().encode('utf-8')
+        ).hexdigest()
+        unchanged = source_custom and expected_hash == actual_hash
+        if unchanged:
+            fidelity = 'exact'
+            geometry_source = 'preserved-metadata'
+        elif source_custom:
+            fidelity = 'native-normalized'
+            geometry_source = 'svg-recompiled'
+        else:
+            fidelity = 'visual-only'
+            geometry_source = 'svg-authored'
+        return {
+            'output_geometry': 'custom',
+            'fidelity': fidelity,
+            'geometry_source': geometry_source,
+        }
+    return {'output_geometry': 'unknown', 'fidelity': 'visual-only'}
+
+
 def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Dispatch an SVG element to the appropriate converter."""
     tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
@@ -545,6 +875,13 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             event['id'] = elem_id
         for attr in (
             'data-pptx-layer',
+            'data-pptx-object',
+            'data-pptx-shape-id',
+            'data-pptx-frame',
+            'data-pptx-prst',
+            'data-pptx-part',
+            'data-pptx-geometry-status',
+            'data-pptx-geometry-reason',
             'data-pptx-placeholder',
             'data-pptx-placeholder-bounds',
             'data-pptx-placeholder-idx',
@@ -553,8 +890,19 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             value = elem.get(attr)
             if value is not None:
                 event[attr] = value
+        adjustments = {
+            attr[len('data-pptx-av-'):]: value
+            for attr, value in elem.attrib.items()
+            if attr.startswith('data-pptx-av-')
+        }
+        if adjustments:
+            event['adjustments'] = dict(sorted(adjustments.items()))
         event.update(metadata)
         ctx.trace_events.append(event)
+
+    if elem.get('data-pptx-part') == 'geometry-detail':
+        trace('skip', reason='render-only-preset-geometry-detail')
+        return None
 
     converter = _CONVERTERS.get(tag)
     if converter:
@@ -570,6 +918,7 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
                 metadata['shape_id'] = int(shape_match.group(1))
             if result.bounds_emu is not None:
                 metadata['bounds_emu'] = list(result.bounds_emu)
+            metadata.update(_geometry_trace_metadata(elem, result))
             trace('native', **metadata)
         else:
             trace('skip', reason='empty-or-non-rendering')
@@ -701,6 +1050,8 @@ def convert_svg_to_slide_shapes(
     """
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
+    _mark_unchanged_txbody_groups(root)
+    _mark_unchanged_preset_previews(root)
     trace_events: list[dict[str, Any]] | None = [] if trace_out is not None else None
     trace_steps: list[dict[str, Any]] = []
 
@@ -806,8 +1157,11 @@ def convert_svg_to_slide_shapes(
         )
 
     defs = collect_defs(root)
+    source_shape_id_map = _build_source_shape_id_map(root)
     ctx = ConvertContext(
         defs=defs,
+        reserved_shape_ids=frozenset(source_shape_id_map.values()),
+        source_shape_id_map=source_shape_id_map,
         slide_num=slide_num,
         viewport_width=viewport_width,
         viewport_height=viewport_height,
@@ -883,6 +1237,15 @@ def convert_svg_to_slide_shapes(
         else:
             if tag not in _NON_VISUAL_TAGS:
                 skipped += 1
+
+    unresolved_connector_targets = sorted(
+        ctx.referenced_shape_ids - ctx.claimed_shape_ids
+    )
+    if unresolved_connector_targets:
+        raise SvgNativeConversionError(
+            'Connector target shape ids were reserved but not restored: '
+            + ', '.join(str(shape_id) for shape_id in unresolved_connector_targets)
+        )
 
     # Animation target fallback. Semantic <g id="..."> groups are the
     # preferred anchors (set inside convert_g). When the SVG has none

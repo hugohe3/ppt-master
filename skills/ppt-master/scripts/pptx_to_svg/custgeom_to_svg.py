@@ -11,182 +11,155 @@ Path command mapping:
                             to SVG endpoint parameterization)
     <a:close/>      -> Z
 
-DrawingML <a:path w="..." h="..."> defines a local EMU coordinate system. We
-remap path coordinates from path-local to slide-absolute pixels using the
-shape's xfrm.
+DrawingML <a:path w="..." h="..."> defines a shape-local coordinate system.
+Each path resolves guide formulas against that local coordinate system, then
+its coordinates are projected into the shape's absolute SVG frame.
 """
 
 from __future__ import annotations
 
-import math
+from dataclasses import dataclass
 from xml.etree import ElementTree as ET
 
-from .emu_units import NS, Xfrm, emu_to_px, fmt_num
+from pptx_shapes import FormulaEvaluationError, FormulaEvaluator
+
+from .emu_units import NS, Xfrm
+from .preset_registry_to_svg import render_evaluated_path
+
+
+@dataclass(frozen=True)
+class _EvaluatedCommand:
+    name: str
+    parameters: tuple[float, ...]
 
 
 def convert_custom_geom(
     cust_geom: ET.Element,
     xfrm: Xfrm,
 ) -> str | None:
-    """Return an SVG path d="..." string in slide-absolute coordinates, or None.
-    """
+    """Evaluate a complete custom geometry and return absolute SVG path data."""
     path_lst = cust_geom.find("a:pathLst", NS)
     if path_lst is None:
         return None
-
-    paths = path_lst.findall("a:path", NS)
-    if not paths:
-        return None
-
-    d_segments: list[str] = []
-    for path_elem in paths:
-        d = _convert_one_path(path_elem, xfrm)
-        if d:
-            d_segments.append(d)
-
-    if not d_segments:
-        return None
-    return " ".join(d_segments)
+    shape_evaluator = _custom_geometry_evaluator(cust_geom, xfrm.w, xfrm.h)
+    paths = [
+        _convert_one_path(path_elem, cust_geom, xfrm, shape_evaluator)
+        for path_elem in path_lst.findall("a:path", NS)
+    ]
+    rendered = [path for path in paths if path]
+    return " ".join(rendered) if rendered else None
 
 
-def _convert_one_path(path_elem: ET.Element, xfrm: Xfrm) -> str:
-    """Convert a single <a:path> to SVG path commands (slide-absolute coords)."""
-    try:
-        path_w_emu = int(path_elem.attrib.get("w", "0"))
-        path_h_emu = int(path_elem.attrib.get("h", "0"))
-    except ValueError:
-        return ""
-    path_w_px = emu_to_px(path_w_emu) if path_w_emu else xfrm.w
-    path_h_px = emu_to_px(path_h_emu) if path_h_emu else xfrm.h
-    if path_w_px <= 0 or path_h_px <= 0:
-        return ""
-    sx = xfrm.w / path_w_px if path_w_px else 1.0
-    sy = xfrm.h / path_h_px if path_h_px else 1.0
-
-    def map_pt(x_emu: float, y_emu: float) -> tuple[float, float]:
-        x = emu_to_px(x_emu) * sx + xfrm.x
-        y = emu_to_px(y_emu) * sy + xfrm.y
-        return x, y
-
-    # Track current point so a:arcTo (center-based) can compute its endpoint
-    cx, cy = 0.0, 0.0  # slide-absolute pixels
-
-    parts: list[str] = []
-    for child in list(path_elem):
-        if not isinstance(child.tag, str):
+def _custom_geometry_evaluator(
+    cust_geom: ET.Element,
+    width: float,
+    height: float,
+) -> FormulaEvaluator:
+    evaluator = FormulaEvaluator(width, height)
+    for list_name in ("avLst", "gdLst"):
+        guide_list = cust_geom.find(f"a:{list_name}", NS)
+        if guide_list is None:
             continue
-        local = child.tag.split("}", 1)[-1]
-        if local == "moveTo":
-            pt = child.find("a:pt", NS)
-            if pt is None:
-                continue
-            x, y = _read_pt(pt, map_pt)
-            parts.append(f"M {fmt_num(x)} {fmt_num(y)}")
-            cx, cy = x, y
-        elif local == "lnTo":
-            pt = child.find("a:pt", NS)
-            if pt is None:
-                continue
-            x, y = _read_pt(pt, map_pt)
-            parts.append(f"L {fmt_num(x)} {fmt_num(y)}")
-            cx, cy = x, y
-        elif local == "cubicBezTo":
-            pts = child.findall("a:pt", NS)
-            if len(pts) < 3:
-                continue
-            p1 = _read_pt(pts[0], map_pt)
-            p2 = _read_pt(pts[1], map_pt)
-            p3 = _read_pt(pts[2], map_pt)
-            parts.append(
-                f"C {fmt_num(p1[0])} {fmt_num(p1[1])} "
-                f"{fmt_num(p2[0])} {fmt_num(p2[1])} "
-                f"{fmt_num(p3[0])} {fmt_num(p3[1])}"
-            )
-            cx, cy = p3
-        elif local == "quadBezTo":
-            pts = child.findall("a:pt", NS)
-            if len(pts) < 2:
-                continue
-            p1 = _read_pt(pts[0], map_pt)
-            p2 = _read_pt(pts[1], map_pt)
-            parts.append(
-                f"Q {fmt_num(p1[0])} {fmt_num(p1[1])} "
-                f"{fmt_num(p2[0])} {fmt_num(p2[1])}"
-            )
-            cx, cy = p2
-        elif local == "arcTo":
-            arc_d, end_x, end_y = _arc_to_svg(child, cx, cy, sx, sy)
-            if arc_d:
-                parts.append(arc_d)
-                cx, cy = end_x, end_y
-        elif local == "close":
-            parts.append("Z")
-            # SVG semantics: Z returns to subpath start; we don't track that
-            # explicitly here. cx/cy stays as-is — subsequent moveTo will reset.
-
-    return " ".join(parts)
+        for guide in guide_list.findall("a:gd", NS):
+            name = guide.attrib.get("name", "").strip()
+            formula = guide.attrib.get("fmla", "").strip()
+            if not name or not formula:
+                raise FormulaEvaluationError(
+                    f"Custom geometry {list_name} contains an incomplete guide"
+                )
+            evaluator.bind(name, evaluator.evaluate(formula))
+    return evaluator
 
 
-def _read_pt(pt_elem: ET.Element, mapper) -> tuple[float, float]:
-    try:
-        x = float(pt_elem.attrib.get("x", "0"))
-        y = float(pt_elem.attrib.get("y", "0"))
-    except ValueError:
-        x = 0.0
-        y = 0.0
-    return mapper(x, y)
-
-
-def _arc_to_svg(
-    arc_elem: ET.Element,
-    cx: float, cy: float,
-    sx: float, sy: float,
-) -> tuple[str, float, float]:
-    """Convert <a:arcTo wR hR stAng swAng/> to an SVG A command.
-
-    DrawingML semantics: starting at the current point, draw an elliptical arc
-    where the ellipse has radii (wR, hR) in path-local EMU. stAng/swAng are
-    1/60000 degrees, with 0° = +x axis, increasing clockwise.
-
-    The center of the ellipse is at:
-        center.x = cur.x - wR * cos(stAng)
-        center.y = cur.y - hR * sin(stAng)
-    The end point is on the same ellipse at angle (stAng + swAng).
-
-    We emit a single SVG A command. SVG's sweep_flag = 1 means clockwise; the
-    DrawingML convention is also clockwise so we pass sweep_flag = 1 when
-    swAng > 0.
-    """
-    try:
-        wR_emu = float(arc_elem.attrib.get("wR", "0"))
-        hR_emu = float(arc_elem.attrib.get("hR", "0"))
-        st_ang = float(arc_elem.attrib.get("stAng", "0"))
-        sw_ang = float(arc_elem.attrib.get("swAng", "0"))
-    except ValueError:
-        return "", cx, cy
-
-    if wR_emu <= 0 or hR_emu <= 0:
-        return "", cx, cy
-
-    rx = emu_to_px(wR_emu) * sx
-    ry = emu_to_px(hR_emu) * sy
-    st_rad = math.radians(st_ang / 60000.0)
-    sw_rad = math.radians(sw_ang / 60000.0)
-    end_rad = st_rad + sw_rad
-
-    # Center of the ellipse in slide-absolute coords
-    arc_cx = cx - rx * math.cos(st_rad)
-    arc_cy = cy - ry * math.sin(st_rad)
-    end_x = arc_cx + rx * math.cos(end_rad)
-    end_y = arc_cy + ry * math.sin(end_rad)
-
-    abs_sw = abs(sw_ang) / 60000.0
-    large_arc = 1 if abs_sw > 180.0 else 0
-    sweep = 1 if sw_ang >= 0 else 0
-
-    return (
-        f"A {fmt_num(rx)} {fmt_num(ry)} 0 {large_arc} {sweep} "
-        f"{fmt_num(end_x)} {fmt_num(end_y)}",
-        end_x,
-        end_y,
+def _convert_one_path(
+    path_elem: ET.Element,
+    cust_geom: ET.Element,
+    xfrm: Xfrm,
+    shape_evaluator: FormulaEvaluator,
+) -> str:
+    coordinate_width = _path_extent(
+        path_elem.get("w"),
+        xfrm.w,
+        shape_evaluator,
     )
+    coordinate_height = _path_extent(
+        path_elem.get("h"),
+        xfrm.h,
+        shape_evaluator,
+    )
+    path_evaluator = _custom_geometry_evaluator(
+        cust_geom,
+        coordinate_width,
+        coordinate_height,
+    )
+    commands = tuple(
+        _evaluate_path_command(command, path_evaluator)
+        for command in path_elem
+        if isinstance(command.tag, str)
+    )
+    return render_evaluated_path(
+        commands,
+        x=xfrm.x,
+        y=xfrm.y,
+        width=xfrm.w,
+        height=xfrm.h,
+        coordinate_width=coordinate_width,
+        coordinate_height=coordinate_height,
+    )
+
+
+def _evaluate_path_command(
+    element: ET.Element,
+    evaluator: FormulaEvaluator,
+) -> _EvaluatedCommand:
+    name = element.tag.rsplit("}", 1)[-1]
+    if name == "arcTo":
+        values = tuple(
+            evaluator.evaluate_value(_required_attr(element, attr))
+            for attr in ("wR", "hR", "stAng", "swAng")
+        )
+        return _EvaluatedCommand(name=name, parameters=values)
+    expected_points = {
+        "moveTo": 1,
+        "lnTo": 1,
+        "quadBezTo": 2,
+        "cubicBezTo": 3,
+        "close": 0,
+    }.get(name)
+    if expected_points is None:
+        raise FormulaEvaluationError(
+            f"Unsupported custom geometry path command: {name!r}"
+        )
+    points = element.findall("a:pt", NS)
+    if len(points) != expected_points:
+        raise FormulaEvaluationError(
+            f"Custom path command {name!r} expects {expected_points} point(s), "
+            f"found {len(points)}"
+        )
+    values = tuple(
+        evaluator.evaluate_value(_required_attr(point, coordinate))
+        for point in points
+        for coordinate in ("x", "y")
+    )
+    return _EvaluatedCommand(name=name, parameters=values)
+
+
+def _path_extent(
+    raw: str | None,
+    shape_extent: float,
+    evaluator: FormulaEvaluator,
+) -> float:
+    if raw is None:
+        return shape_extent
+    value = evaluator.evaluate_value(raw)
+    return shape_extent if value == 0 else value
+
+
+def _required_attr(element: ET.Element, name: str) -> str:
+    value = element.attrib.get(name)
+    if value is None or not value.strip():
+        raise FormulaEvaluationError(
+            f"Custom geometry element {element.tag.rsplit('}', 1)[-1]!r} "
+            f"requires attribute {name!r}"
+        )
+    return value.strip()
