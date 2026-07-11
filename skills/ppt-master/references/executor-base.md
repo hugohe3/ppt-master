@@ -213,6 +213,7 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 ## 3. Execution Guidelines
 
 - **Proximity**: group related elements with tight spacing; separate unrelated groups
+- **Element grouping (Mandatory)**: wrap every logical content unit — title, core-message line, each content block, card, list item, diagram, and footer chrome — in a top-level `<g id="...">` with a descriptive id. This is a hard requirement per [`shared-standards.md`](shared-standards.md) §4.3, not an optional convenience: aim for 3–8 content groups per slide (chrome excluded), because ungrouped top-level `<text>` / `<rect>` / `<path>` loses real PowerPoint groups and per-element animation anchors, and degrades select/move/edit. Authored native preset fragments (`preset_shape_svg.py`) already are one atomic `<g id>` each and count as one group; keep their labels in a sibling parent `<g>`.
 - **Spec adherence**: follow color, layout, canvas format, and typography in the spec
 - **Template structure**: if templates exist, inherit the visual framework
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
