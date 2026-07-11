@@ -222,11 +222,12 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 
 Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use `template-fill` for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
 
-**Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message. The trigger rule is mechanical, not interpretive:
+**Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message, plus one narrow workflow handoff: a project-scoped `create-template` run in the current conversation may pass its exact validated `<project>/templates/` output directly into this Step. The trigger rule is mechanical, not interpretive:
 
 | User input contains | Step 3 action |
 |---|---|
 | One or more explicit template directory paths (each resolves to a directory containing `design_spec.md` with `kind: brand` / `kind: layout` / `kind: deck` in its YAML frontmatter) | Read each spec's `kind`, dispatch per the kind matrix below, fuse if multiple |
+| Current `create-template` workflow just completed project scope and validated its exact `<project>/templates/` output | Consume that single directory in place; it cannot join multi-path fusion |
 | Anything else — bare template names ("用 academic_defense"), style descriptions ("麦肯锡风格"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
 There is no slug matching, no name lookup, no fuzzy resolution. A name without a path does not trigger — the user must give a path the AI can `cd` into.
@@ -266,15 +267,39 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 | `kind: deck` | `design_spec.md` + template SVGs → `<project>/templates/`; logos / backgrounds / other **bitmaps** → `<project>/images/`. Strategist locks all segments; Strategist confirmation stage narrows to deck-content fields (audience / page count / outline / tone tweaks). |
 
 ```bash
-TEMPLATE_DIR=<user-supplied path>
+TEMPLATE_DIR="<user-supplied path>"
+PROJECT_TEMPLATES="<project_path>/templates"
+resolve_path() {
+  python3 -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve())' "$1"
+}
 # Bitmaps join the project's single runtime image pool (images/, referenced as
 # ../images/); the spec + template SVGs + other non-image assets stay in
 # templates/ as design reference the Strategist/Executor read but never render.
-cp -r ${TEMPLATE_DIR}/* <project_path>/templates/
-find <project_path>/templates -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' -o -iname '*.bmp' \) -exec mv {} <project_path>/images/ \;
+if [ "$(resolve_path "${TEMPLATE_DIR}")" = "$(resolve_path "${PROJECT_TEMPLATES}")" ]; then
+  # Project-scoped create-template output is already staged in place.
+  true
+else
+  cp -r "${TEMPLATE_DIR}"/. "${PROJECT_TEMPLATES}/"
+  find "${PROJECT_TEMPLATES}" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' -o -iname '*.bmp' \) -exec mv {} "<project_path>/images/" \;
+fi
 ```
 
 The same split applies to all three kinds — bitmaps always land in `images/`, the rest in `templates/`. The spec's `kind` field tells Strategist how to read the `templates/` side; downstream code doesn't distinguish. (Template SVGs in `templates/` are reference material only — the rendered pages live in `svg_output/` and reference images via `../images/`.)
+
+When `create-template` used project output scope, its directory is already the
+target project's `templates/` root and its bitmap/icon runtime copies are already
+in their final project pools. Resolve both paths before copying: equality means
+**in-place consumption**, so skip both the copy and bitmap move. An in-place
+directory is one complete bundle and cannot participate in multi-path fusion;
+use external library bundles for fusion. Never place the local bundle under a
+nested `templates/local_master/` directory because the confirmation and quality
+gates read the project `templates/` root.
+
+A project-scoped bundle belongs only to its target project: its SVGs may refer
+to sibling `../images/` and runtime `../icons/` pools that are outside the
+template root. Do not copy another project's `templates/` root as an external
+bundle. For cross-project reuse, recreate/promote the design with
+`create-template` library scope so the package is self-contained.
 
 Legacy template packages may ship `native_structure.json` + `source_template.pptx`; keep the pair together in `<project>/templates/` for backward-compatible `preserve` export. Current `create-template` output does not package this pair: it rebuilds complete, explicitly layered SVG templates instead. During fusion, never mix one legacy contract with another template's source package.
 
@@ -335,13 +360,13 @@ Single-path Step 3 does **not** add provenance (the source is self-evident from 
 
 The fused frontmatter `kind` describes the resulting bundle: `deck` when both identity and structure are present, `layout` when only structure is present, and `brand` when only identity is present. Keep this field accurate; the Strategist confirmation server uses it to show template adherence only for bundles that actually own page structure.
 
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user supplied one or more explicit template paths, those have been dispatched (or fused) into `<project_path>/templates/` before advancing.**
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user supplied one or more explicit template paths, those have been copied, staged in place, or fused into `<project_path>/templates/` before advancing.**
 
 ---
 
 ### Step 4: Strategist Phase (MANDATORY — cannot be skipped)
 
-🚧 **GATE**: Step 3 complete; default free-design path taken, or (if triggered) template files copied into the project.
+🚧 **GATE**: Step 3 complete; default free-design path taken, or (if triggered) template files copied or confirmed in place in the project.
 
 First, read the role definition:
 ```

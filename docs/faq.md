@@ -252,12 +252,13 @@ Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Ma
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")
 - Category preference (`brand` / `general` / `scenario` / `government` / `special`)
 - Canvas format, if not the default 16:9
+- Output scope: indexed `library` (default) or one already initialized `project`
 
-You don't need to supply every detail upfront — the AI agent will ask follow-up questions to fill in anything missing (template ID, theme mode, etc.).
+You don't need to supply every detail upfront — the AI agent will ask follow-up questions to fill in anything missing (output scope, template ID, theme mode, etc.).
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, and registering the template so it appears as a selectable option in the PPT Master workflow.
+The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, and validating the template. Library scope registers it so it appears in global discovery. Project scope writes the thin bundle directly into that project's `templates/` root and deliberately skips global registration.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 
