@@ -25,7 +25,7 @@ from .utils import (
     combine_opacity, parse_hex_color, parse_svg_color,
     resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
-    detect_text_lang, resolve_text_run_fonts,
+    detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
 )
 from .styles import (
@@ -1534,7 +1534,7 @@ def _build_run_xml(
     # rounded to **one decimal place of pt** (the nearest 10 hundredths). No 0.5pt
     # / integer snapping — whatever the px works out to is the size, e.g.
     # 18px -> 13.5pt, 24px -> 18.0pt, 42px -> 31.5pt.
-    sz = int(round(fs_px * FONT_PX_TO_HUNDREDTHS_PT / 10.0)) * 10
+    sz = font_px_to_hpt(fs_px)
     b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
     u_attr = ' u="sng"' if 'underline' in text_dec else ''
