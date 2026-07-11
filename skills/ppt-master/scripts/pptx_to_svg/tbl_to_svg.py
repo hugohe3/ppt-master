@@ -36,6 +36,7 @@ Cell painting order:
 
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
@@ -49,9 +50,49 @@ from .emu_units import (
     hundredths_pt_to_px,
     ooxml_bool,
 )
-from .fill_to_svg import resolve_fill
+from .fill_to_svg import FillResult, resolve_fill
 from .ln_to_svg import resolve_stroke
 from .txbody_to_svg import convert_txbody
+
+
+BUILTIN_MEDIUM_STYLE_2_ACCENT_1 = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"
+
+_BUILTIN_MEDIUM_STYLE_2_ACCENT_1_XML = ET.fromstring(
+    f'''<a:tblStyle xmlns:a="{NS["a"]}"
+        styleId="{BUILTIN_MEDIUM_STYLE_2_ACCENT_1}">
+      <a:wholeTbl>
+        <a:tcTxStyle>
+          <a:fontRef idx="minor"><a:prstClr val="black"/></a:fontRef>
+          <a:schemeClr val="dk1"/>
+        </a:tcTxStyle>
+        <a:tcStyle>
+          <a:tcBdr>
+            <a:left><a:ln w="12700"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:left>
+            <a:right><a:ln w="12700"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:right>
+            <a:top><a:ln w="12700"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:top>
+            <a:bottom><a:ln w="12700"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:bottom>
+            <a:insideH><a:ln w="12700"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:insideH>
+            <a:insideV><a:ln w="12700"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:insideV>
+          </a:tcBdr>
+          <a:fill><a:solidFill><a:schemeClr val="accent1"><a:tint val="20000"/></a:schemeClr></a:solidFill></a:fill>
+        </a:tcStyle>
+      </a:wholeTbl>
+      <a:band1H>
+        <a:tcStyle><a:fill><a:solidFill><a:schemeClr val="accent1"><a:tint val="40000"/></a:schemeClr></a:solidFill></a:fill></a:tcStyle>
+      </a:band1H>
+      <a:band2H><a:tcStyle/></a:band2H>
+      <a:firstRow>
+        <a:tcTxStyle b="on">
+          <a:fontRef idx="minor"><a:prstClr val="black"/></a:fontRef>
+          <a:schemeClr val="lt1"/>
+        </a:tcTxStyle>
+        <a:tcStyle>
+          <a:tcBdr><a:bottom><a:ln w="38100"><a:solidFill><a:schemeClr val="lt1"/></a:solidFill></a:ln></a:bottom></a:tcBdr>
+          <a:fill><a:solidFill><a:schemeClr val="accent1"/></a:solidFill></a:fill>
+        </a:tcStyle>
+      </a:firstRow>
+    </a:tblStyle>'''
+)
 
 
 @dataclass
@@ -68,6 +109,155 @@ class TableResult:
             self.defs = []
 
 
+@dataclass(frozen=True)
+class _TableStyleContext:
+    """Small, best-effort view of the table style regions we render."""
+
+    style: ET.Element | None
+    table_properties: ET.Element | None
+
+    def regions_for_row(self, row_index: int) -> tuple[tuple[str, ET.Element], ...]:
+        if self.style is None:
+            return ()
+
+        names: list[str] = []
+        first_row = bool(
+            self.table_properties is not None
+            and ooxml_bool(self.table_properties.get("firstRow"))
+        )
+        if first_row and row_index == 0:
+            names.append("firstRow")
+        elif (
+            self.table_properties is not None
+            and ooxml_bool(self.table_properties.get("bandRow"))
+        ):
+            band_index = row_index - (1 if first_row else 0)
+            names.append("band1H" if band_index % 2 == 0 else "band2H")
+        names.append("wholeTbl")
+
+        regions: list[tuple[str, ET.Element]] = []
+        for name in names:
+            region = self.style.find(f"a:{name}", NS)
+            if region is not None:
+                regions.append((name, region))
+        return tuple(regions)
+
+
+def _normalize_table_style_id(value: str | None) -> str:
+    return (value or "").strip().strip("{}").upper()
+
+
+def _resolve_table_style(
+    tbl: ET.Element,
+    table_styles: ET.Element | None,
+) -> _TableStyleContext:
+    tbl_pr = tbl.find("a:tblPr", NS)
+    style_id = (
+        tbl_pr.findtext("a:tableStyleId", default="", namespaces=NS).strip()
+        if tbl_pr is not None else ""
+    )
+    if not style_id and table_styles is not None:
+        style_id = table_styles.get("def", "").strip()
+    normalized_id = _normalize_table_style_id(style_id)
+    supported_id = _normalize_table_style_id(BUILTIN_MEDIUM_STYLE_2_ACCENT_1)
+
+    # P1 deliberately supports one built-in family.  Consuming an arbitrary
+    # custom definition here would be asymmetric: native reconstruction keeps
+    # only the style id and does not copy custom tableStyles.xml definitions.
+    if normalized_id != supported_id:
+        return _TableStyleContext(None, tbl_pr)
+
+    if table_styles is not None and normalized_id:
+        for candidate in table_styles.findall("a:tblStyle", NS):
+            if _normalize_table_style_id(candidate.get("styleId")) == normalized_id:
+                return _TableStyleContext(candidate, tbl_pr)
+
+    return _TableStyleContext(_BUILTIN_MEDIUM_STYLE_2_ACCENT_1_XML, tbl_pr)
+
+
+def _effective_cell_fill(
+    tc_pr: ET.Element | None,
+    table_style: _TableStyleContext,
+    row_index: int,
+    palette: ColorPalette | None,
+    *,
+    id_prefix: str,
+    id_seq: list[int],
+) -> FillResult:
+    """Resolve direct cell fill before row-region and whole-table defaults."""
+    direct = resolve_fill(
+        tc_pr, palette, id_prefix=id_prefix, id_seq=id_seq,
+    )
+    if direct.attrs or direct.defs:
+        return direct
+
+    for _name, region in table_style.regions_for_row(row_index):
+        fill_parent = region.find("a:tcStyle/a:fill", NS)
+        if fill_parent is None:
+            continue
+        inherited = resolve_fill(
+            fill_parent, palette, id_prefix=id_prefix, id_seq=id_seq,
+        )
+        if inherited.attrs or inherited.defs:
+            return inherited
+    return direct
+
+
+def _table_text_run_props(
+    table_style: _TableStyleContext,
+    row_index: int,
+    theme_fonts: dict[str, str],
+) -> tuple[ET.Element, ...]:
+    """Materialize table text-style regions as lowest-priority run defaults."""
+    props: list[ET.Element] = []
+    for _name, region in table_style.regions_for_row(row_index):
+        tx_style = region.find("a:tcTxStyle", NS)
+        if tx_style is None:
+            continue
+        run_props = _table_tx_style_run_props(tx_style, theme_fonts)
+        if run_props is not None:
+            props.append(run_props)
+    return tuple(props)
+
+
+def _table_tx_style_run_props(
+    tx_style: ET.Element,
+    theme_fonts: dict[str, str],
+) -> ET.Element | None:
+    run_props = ET.Element(f"{{{NS['a']}}}rPr")
+    for attr in ("b", "i"):
+        value = tx_style.get(attr)
+        if value is not None:
+            run_props.set(attr, "1" if ooxml_bool(value) else "0")
+
+    font_ref = tx_style.find("a:fontRef", NS)
+    font_role = font_ref.get("idx") if font_ref is not None else None
+    if font_role in {"major", "minor"}:
+        prefix = "major" if font_role == "major" else "minor"
+        latin = theme_fonts.get(f"{prefix}Latin")
+        east_asia = theme_fonts.get(f"{prefix}EastAsia") or latin
+        complex_script = theme_fonts.get(f"{prefix}ComplexScript") or latin
+        for tag, typeface in (
+            ("latin", latin),
+            ("ea", east_asia),
+            ("cs", complex_script),
+        ):
+            if typeface:
+                ET.SubElement(
+                    run_props, f"{{{NS['a']}}}{tag}",
+                    {"typeface": typeface},
+                )
+
+    color = find_color_elem(tx_style)
+    if color is not None:
+        solid_fill = ET.SubElement(run_props, f"{{{NS['a']}}}solidFill")
+        solid_fill.append(copy.deepcopy(color))
+
+    if not run_props.attrib and not list(run_props):
+        return None
+    return run_props
+
+
 # ---------------------------------------------------------------------------
 # Public entry
 # ---------------------------------------------------------------------------
@@ -77,6 +267,7 @@ def convert_tbl(
     xfrm: Xfrm,
     palette: ColorPalette | None,
     *,
+    table_styles: ET.Element | None = None,
     theme_fonts: dict[str, str] | None = None,
     slide_number: int | None = None,
     id_prefix: str = "tbl",
@@ -93,6 +284,7 @@ def convert_tbl(
     rows = tbl.findall("a:tr", NS)
     if not rows:
         return TableResult()
+    table_style = _resolve_table_style(tbl, table_styles)
     row_heights_px = [_row_height_px(r) for r in rows]
 
     # PowerPoint's tblGrid widths and tr heights together describe the
@@ -156,8 +348,8 @@ def convert_tbl(
             rect_w = sum(col_widths[c:c + cell.col_span])
             rect_h = sum(row_heights[r:r + cell.row_span])
             tcPr = cell.element.find("a:tcPr", NS)
-            fill = resolve_fill(
-                tcPr, palette,
+            fill = _effective_cell_fill(
+                tcPr, table_style, r, palette,
                 id_prefix=f"{id_prefix}fill",
                 id_seq=grad_seq,
             )
@@ -186,6 +378,9 @@ def convert_tbl(
             cell_xfrm = Xfrm(x=cell_x, y=cell_y, w=cell_w, h=cell_h)
             text_result = _convert_cell_text(
                 tx_body, tcPr, cell_xfrm, palette, theme_fonts,
+                fallback_run_props=_table_text_run_props(
+                    table_style, r, theme_fonts or {},
+                ),
                 slide_number=slide_number,
                 id_prefix=f"{id_prefix}txt",
                 id_seq=grad_seq,
@@ -211,7 +406,8 @@ def convert_tbl(
                 ("a:lnL", cell_x, cell_y, cell_x, cell_y + cell_h),
             ):
                 line_xml = _border_line(
-                    tcPr, tag, x1, y1, x2, y2, palette,
+                    tcPr, table_style, r, c, len(rows), len(col_widths), tag,
+                    x1, y1, x2, y2, palette,
                     id_prefix=f"{id_prefix}stk", id_seq=marker_seq, defs=defs,
                 )
                 if line_xml:
@@ -698,6 +894,7 @@ def _convert_cell_text(
     palette: ColorPalette | None,
     theme_fonts: dict[str, str] | None,
     *,
+    fallback_run_props: tuple[ET.Element, ...],
     slide_number: int | None,
     id_prefix: str,
     id_seq: list[int] | None,
@@ -717,6 +914,7 @@ def _convert_cell_text(
     try:
         return convert_txbody(
             tx_body, cell_xfrm, palette, theme_fonts=theme_fonts,
+            fallback_run_props=fallback_run_props,
             slide_number=slide_number,
             id_prefix=id_prefix,
             id_seq=id_seq,
@@ -743,6 +941,11 @@ def _tcPr_inset_overrides(tcPr: ET.Element | None) -> dict[str, str]:
 
 def _border_line(
     tcPr: ET.Element | None,
+    table_style: _TableStyleContext,
+    row_index: int,
+    col_index: int,
+    row_count: int,
+    col_count: int,
     tag: str,
     x1: float, y1: float, x2: float, y2: float,
     palette: ColorPalette | None,
@@ -753,11 +956,69 @@ def _border_line(
 ) -> str:
     """Emit a single border <line> for a given cell side, or empty string when
     that side is explicitly noFill / not specified."""
-    if tcPr is None:
+    ln = tcPr.find(tag, NS) if tcPr is not None else None
+    if ln is not None:
+        return _line_element_to_svg(
+            ln, x1, y1, x2, y2, palette,
+            id_prefix=id_prefix, id_seq=id_seq, defs=defs,
+        )
+
+    # Draw inherited shared edges once, from the upper/left cell.  This keeps
+    # a specific firstRow bottom border from being painted over by the next
+    # row's whole-table top border.  A direct border above still wins because
+    # it is handled before this de-duplication gate.
+    if (tag == "a:lnT" and row_index > 0) or (
+        tag == "a:lnL" and col_index > 0
+    ):
         return ""
-    ln = tcPr.find(tag, NS)
-    if ln is None:
-        return ""
+
+    for region_name, region in table_style.regions_for_row(row_index):
+        for border_name in _table_style_border_names(
+            region_name, row_index, col_index, row_count, col_count, tag,
+        ):
+            ln = region.find(
+                f"a:tcStyle/a:tcBdr/a:{border_name}/a:ln", NS,
+            )
+            if ln is not None:
+                return _line_element_to_svg(
+                    ln, x1, y1, x2, y2, palette,
+                    id_prefix=id_prefix, id_seq=id_seq, defs=defs,
+                )
+    return ""
+
+
+def _table_style_border_names(
+    region_name: str,
+    row_index: int,
+    col_index: int,
+    row_count: int,
+    col_count: int,
+    tag: str,
+) -> tuple[str, ...]:
+    side_names = {
+        "a:lnT": ("top", "insideH", row_index > 0),
+        "a:lnR": ("right", "insideV", col_index < col_count - 1),
+        "a:lnB": ("bottom", "insideH", row_index < row_count - 1),
+        "a:lnL": ("left", "insideV", col_index > 0),
+    }
+    side, inside, is_internal = side_names[tag]
+    if region_name == "wholeTbl" and is_internal:
+        return inside, side
+    return side, inside
+
+
+def _line_element_to_svg(
+    ln: ET.Element,
+    x1: float,
+    y1: float,
+    x2: float,
+    y2: float,
+    palette: ColorPalette | None,
+    *,
+    id_prefix: str,
+    id_seq: list[int],
+    defs: list[str],
+) -> str:
     # Skip explicit no-line.
     if ln.find("a:noFill", NS) is not None:
         return ""

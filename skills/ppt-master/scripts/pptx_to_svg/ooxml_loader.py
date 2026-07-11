@@ -130,6 +130,7 @@ REL_TYPES = {
     "slideLayout": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout",
     "slideMaster": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster",
     "theme": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme",
+    "tableStyles": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles",
     "image": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
     "media": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/media",
 }
@@ -156,6 +157,8 @@ class OoxmlPackage:
         self._layouts: dict[str, PartRef] = {}
         self._masters: dict[str, PartRef] = {}
         self._themes: dict[str, PartRef] = {}
+        self._table_styles: PartRef | None = None
+        self._table_styles_loaded = False
 
     # ------------------- context manager -------------------
 
@@ -310,6 +313,32 @@ class OoxmlPackage:
                         self._themes[target] = cached
                 return cached
         return None
+
+    def resolve_table_styles(self) -> PartRef | None:
+        """Return the presentation-level table style list, when usable.
+
+        Table style definitions are optional and some producers emit only the
+        built-in style id.  A missing or malformed style part must therefore
+        not prevent otherwise valid slides from being converted.
+        """
+        if self._table_styles_loaded:
+            return self._table_styles
+        self._table_styles_loaded = True
+
+        target: str | None = None
+        if self.presentation is not None:
+            for info in self.presentation.rels.values():
+                if info.get("type") == REL_TYPES["tableStyles"]:
+                    target = info.get("target")
+                    break
+        if target is None:
+            target = "ppt/tableStyles.xml"
+
+        try:
+            self._table_styles = self._load_part(target)
+        except RuntimeError:
+            self._table_styles = None
+        return self._table_styles
 
     # ------------------- public iteration -------------------
 

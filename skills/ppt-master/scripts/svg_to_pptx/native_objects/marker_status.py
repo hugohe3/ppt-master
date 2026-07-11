@@ -5,7 +5,7 @@ from __future__ import annotations
 from xml.etree import ElementTree as ET
 
 
-VISUAL_STATUSES = frozenset({"source-preview", "placeholder"})
+VISUAL_STATUSES = frozenset({"source-preview", "normalized", "placeholder"})
 ROUTE_STATUSES = frozenset({"reconstruction-only"})
 
 

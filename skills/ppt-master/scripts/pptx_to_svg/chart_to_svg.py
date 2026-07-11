@@ -19,7 +19,9 @@ from svg_to_pptx.native_objects.chart_data import (
     validate_data_label_position,
 )
 
+from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import NS, Xfrm, ooxml_bool
+from .normalized_chart_svg import SeriesVisualStyle, render_normalized_chart_svg
 from .ooxml_loader import OoxmlPackage, PartRef
 
 
@@ -39,6 +41,7 @@ class ChartResult:
 
     native_payload: dict[str, Any] | None = None
     native_status: str | None = None
+    normalized_svg: str | None = None
 
 
 class _UnsupportedChart(RuntimeError):
@@ -54,6 +57,7 @@ def extract_native_chart_payload(
     xfrm: Xfrm,
     slide_part: PartRef,
     pkg: OoxmlPackage,
+    palette: ColorPalette | None = None,
 ) -> ChartResult:
     """Return native chart metadata for a supported classic chart."""
     if graphic_data is None:
@@ -82,7 +86,11 @@ def extract_native_chart_payload(
         return ChartResult(native_status="unsupported-chart-part")
 
     try:
-        payload = _payload_from_chart_xml(chart_part.xml, xfrm)
+        payload, visual_styles = _payload_from_chart_xml(
+            chart_part.xml,
+            xfrm,
+            palette=palette,
+        )
         validate_chart_payload(payload)
     except _UnsupportedChart as exc:
         return ChartResult(native_status=exc.status)
@@ -90,10 +98,22 @@ def extract_native_chart_payload(
         return ChartResult(native_status="unsupported-chart-schema")
     except (TypeError, ValueError, AttributeError):
         return ChartResult(native_status="unsupported-chart-parse")
-    return ChartResult(native_payload=payload)
+    # The visual fallback is deliberately best-effort and isolated from the
+    # active native payload. A renderer defect must never downgrade a chart
+    # that the native schema has already validated.
+    try:
+        normalized_svg = render_normalized_chart_svg(payload, visual_styles)
+    except (KeyError, TypeError, ValueError, OverflowError, ArithmeticError):
+        normalized_svg = None
+    return ChartResult(native_payload=payload, normalized_svg=normalized_svg)
 
 
-def _payload_from_chart_xml(chart_root: ET.Element, xfrm: Xfrm) -> dict[str, Any]:
+def _payload_from_chart_xml(
+    chart_root: ET.Element,
+    xfrm: Xfrm,
+    *,
+    palette: ColorPalette | None = None,
+) -> tuple[dict[str, Any], list[SeriesVisualStyle]]:
     plot_area = chart_root.find(".//c:plotArea", C_NS)
     if plot_area is None:
         raise _UnsupportedChart("unsupported-chart-plot")
@@ -132,9 +152,14 @@ def _payload_from_chart_xml(chart_root: ET.Element, xfrm: Xfrm) -> dict[str, Any
     else:
         raise _UnsupportedChart("unsupported-chart-type")
 
-    _validate_chart_semantics(payload, plot_area, chart)
+    visual_styles = _validate_chart_semantics(
+        payload,
+        plot_area,
+        chart,
+        palette=palette,
+    )
     _apply_chart_metadata(payload, chart_root, plot_area, chart)
-    return payload
+    return payload, visual_styles
 
 
 def _canonical_srgb_color(fill: ET.Element | None) -> str:
@@ -155,98 +180,375 @@ def _canonical_srgb_color(fill: ET.Element | None) -> str:
     return color.upper()
 
 
-def _canonical_sp_pr_color(sp_pr: ET.Element, *, line_visible: bool) -> str:
-    """Extract a color only from the exact series style emitted here."""
+@dataclass(frozen=True)
+class _LinePaint:
+    color: str | None
+    opacity: float
+    width: float
+    cap: str
+    visible: bool
+    automatic: bool
+
+
+@dataclass(frozen=True)
+class _ShapePaint:
+    fill: str | None
+    fill_opacity: float
+    fill_explicit: bool
+    line: _LinePaint | None
+
+
+@dataclass(frozen=True)
+class _MarkerPaint:
+    symbol: str | None
+    size: float
+    shape: _ShapePaint
+
+
+_FALLBACK_CHART_COLORS = (
+    "#4472C4", "#ED7D31", "#A5A5A5", "#FFC000",
+    "#5B9BD5", "#70AD47", "#264478", "#9E480E",
+)
+_COLOR_MODIFIERS_WITH_VALUE = {
+    "alpha", "alphaMod", "alphaOff", "hueMod", "hueOff", "lumMod",
+    "lumOff", "satMod", "satOff", "shade", "tint",
+}
+_COLOR_MODIFIERS_WITHOUT_VALUE = {"comp", "gray", "inv"}
+
+
+def _resolved_solid_fill(
+    fill: ET.Element,
+    palette: ColorPalette | None,
+) -> tuple[str, float]:
+    if fill.attrib or len(fill) != 1:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    color = find_color_elem(fill)
+    if color is None or color is not fill[0]:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    tag = _local_name(color.tag)
+    allowed_attrs = {
+        "srgbClr": {"val"},
+        "schemeClr": {"val"},
+        "sysClr": {"val", "lastClr"},
+        "prstClr": {"val"},
+        "hslClr": {"hue", "sat", "lum"},
+        "scrgbClr": {"r", "g", "b"},
+    }.get(tag)
+    if allowed_attrs is None or not set(color.attrib).issubset(allowed_attrs):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    required = {
+        "srgbClr": {"val"}, "schemeClr": {"val"}, "prstClr": {"val"},
+        "hslClr": {"hue", "sat", "lum"}, "scrgbClr": {"r", "g", "b"},
+    }.get(tag, set())
+    if not required.issubset(color.attrib):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    for modifier in color:
+        modifier_name = _local_name(modifier.tag)
+        if modifier_name in _COLOR_MODIFIERS_WITH_VALUE:
+            if set(modifier.attrib) != {"val"} or list(modifier):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+            try:
+                modifier_value = float(modifier.attrib["val"])
+            except (TypeError, ValueError, OverflowError):
+                raise _UnsupportedChart("unsupported-chart-series-style") from None
+            if not math.isfinite(modifier_value):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        elif modifier_name in _COLOR_MODIFIERS_WITHOUT_VALUE:
+            if modifier.attrib or list(modifier):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        else:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+    try:
+        resolved, alpha = resolve_color(color, palette)
+    except (TypeError, ValueError, OverflowError):
+        raise _UnsupportedChart("unsupported-chart-series-style") from None
+    if resolved is None or not math.isfinite(alpha):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    return resolved.upper(), max(0.0, min(1.0, alpha))
+
+
+def _resolved_line(
+    line: ET.Element,
+    palette: ColorPalette | None,
+) -> _LinePaint:
+    if not set(line.attrib).issubset({"w", "cap"}):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    raw_width = line.attrib.get("w")
+    if raw_width is None:
+        width = 1.5
+    else:
+        if re.fullmatch(r"[0-9]+", raw_width) is None:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        width = int(raw_width) / 9525.0
+        if not 0 <= width <= 1000:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+    cap_aliases = {None: "round", "rnd": "round", "sq": "square", "flat": "butt"}
+    cap = cap_aliases.get(line.attrib.get("cap"))
+    if cap is None:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+
+    fill_nodes: list[ET.Element] = []
+    for child in line:
+        name = _local_name(child.tag)
+        if name in {"solidFill", "noFill"}:
+            fill_nodes.append(child)
+        elif name == "prstDash":
+            if child.attrib != {"val": "solid"} or list(child):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        elif name in {"round", "bevel"}:
+            if child.attrib or list(child):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        elif name == "miter":
+            if not set(child.attrib).issubset({"lim"}) or list(child):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+            raw_limit = child.attrib.get("lim")
+            if raw_limit is not None and re.fullmatch(r"[0-9]+", raw_limit) is None:
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        else:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+    if len(fill_nodes) > 1:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    if not fill_nodes:
+        return _LinePaint(None, 1.0, width, cap, True, True)
+    fill = fill_nodes[0]
+    if _local_name(fill.tag) == "noFill":
+        if fill.attrib or list(fill):
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        return _LinePaint(None, 1.0, width, cap, False, False)
+    color, opacity = _resolved_solid_fill(fill, palette)
+    return _LinePaint(color, opacity, width, cap, True, False)
+
+
+def _resolved_shape_paint(
+    sp_pr: ET.Element | None,
+    palette: ColorPalette | None,
+) -> _ShapePaint:
+    if sp_pr is None:
+        return _ShapePaint(None, 1.0, False, None)
     if sp_pr.attrib:
         raise _UnsupportedChart("unsupported-chart-series-style")
-    children = list(sp_pr)
-    if [_local_name(child.tag) for child in children] != ["solidFill", "ln"]:
-        raise _UnsupportedChart("unsupported-chart-series-style")
-    color = _canonical_srgb_color(children[0])
-    line = children[1]
-    if line.attrib or len(line) != 1:
-        raise _UnsupportedChart("unsupported-chart-series-style")
-    line_child = line[0]
-    if line_visible:
-        if _local_name(line_child.tag) != "solidFill":
+    fill_nodes: list[ET.Element] = []
+    line_nodes: list[ET.Element] = []
+    for child in sp_pr:
+        name = _local_name(child.tag)
+        if name in {"solidFill", "noFill"}:
+            fill_nodes.append(child)
+        elif name == "ln":
+            line_nodes.append(child)
+        elif name == "effectLst":
+            if child.attrib or list(child):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        else:
             raise _UnsupportedChart("unsupported-chart-series-style")
-        if _canonical_srgb_color(line_child) != color:
-            raise _UnsupportedChart("unsupported-chart-series-style")
-    elif (
-        _local_name(line_child.tag) != "noFill"
-        or line_child.attrib
-        or list(line_child)
+    if len(fill_nodes) > 1 or len(line_nodes) > 1:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    fill_color: str | None = None
+    fill_opacity = 1.0
+    fill_explicit = bool(fill_nodes)
+    if fill_nodes:
+        fill = fill_nodes[0]
+        if _local_name(fill.tag) == "noFill":
+            if fill.attrib or list(fill):
+                raise _UnsupportedChart("unsupported-chart-series-style")
+        else:
+            fill_color, fill_opacity = _resolved_solid_fill(fill, palette)
+    line = _resolved_line(line_nodes[0], palette) if line_nodes else None
+    return _ShapePaint(fill_color, fill_opacity, fill_explicit, line)
+
+
+def _resolved_marker(
+    marker: ET.Element | None,
+    palette: ColorPalette | None,
+) -> _MarkerPaint:
+    if marker is None:
+        return _MarkerPaint(None, 5.0, _resolved_shape_paint(None, palette))
+    if marker.attrib:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    allowed = {"symbol", "size", "spPr"}
+    names = [_local_name(child.tag) for child in marker]
+    if any(name not in allowed for name in names) or len(names) != len(set(names)):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    symbol_node = marker.find("c:symbol", C_NS)
+    symbol = _element_val(symbol_node)
+    if symbol_node is not None and (
+        set(symbol_node.attrib) != {"val"} or list(symbol_node)
     ):
         raise _UnsupportedChart("unsupported-chart-series-style")
-    return color
+    if symbol not in {None, "circle", "none"}:
+        raise _UnsupportedChart("unsupported-chart-series-style")
+    size_node = marker.find("c:size", C_NS)
+    size = 5.0
+    if size_node is not None:
+        raw_size = size_node.attrib.get("val", "")
+        if set(size_node.attrib) != {"val"} or list(size_node) or re.fullmatch(r"[0-9]+", raw_size) is None:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        size = float(raw_size)
+        if not 2 <= size <= 72:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+    return _MarkerPaint(
+        symbol,
+        size,
+        _resolved_shape_paint(marker.find("c:spPr", C_NS), palette),
+    )
 
 
-def _canonical_chart_colors(payload: dict[str, Any], plot: ET.Element) -> list[str] | None:
-    """Recover colors from canonical series or pie data-point formatting."""
+def _automatic_color(palette: ColorPalette | None, index: int) -> str:
+    if palette is not None:
+        resolved = palette.resolve_scheme(f"accent{index % 6 + 1}")
+        if resolved:
+            return f"#{resolved.upper()}"
+    return _FALLBACK_CHART_COLORS[index % len(_FALLBACK_CHART_COLORS)]
+
+
+def _line_color(line: _LinePaint | None, default: str | None) -> str | None:
+    if line is None:
+        return default
+    if not line.visible:
+        return None
+    return default if line.automatic else line.color
+
+
+def _series_visual_style(
+    shape: _ShapePaint,
+    marker: _MarkerPaint,
+    *,
+    chart_type: str,
+    auto_color: str,
+) -> SeriesVisualStyle:
+    fill_default = auto_color if chart_type in {"area", "bar", "bubble", "column"} else None
+    fill = shape.fill if shape.fill_explicit else fill_default
+    if chart_type in {"line", "scatter"}:
+        line_default = auto_color
+    elif chart_type == "area":
+        line_default = auto_color
+    else:
+        line_default = None
+    stroke = _line_color(shape.line, line_default)
+    marker_fill = marker.shape.fill if marker.shape.fill_explicit else auto_color
+    marker_stroke = _line_color(marker.shape.line, auto_color)
+    line = shape.line
+    marker_line = marker.shape.line
+    return SeriesVisualStyle(
+        fill=fill,
+        fill_opacity=shape.fill_opacity,
+        stroke=stroke,
+        stroke_opacity=line.opacity if line is not None else 1.0,
+        stroke_width=line.width if line is not None else 1.5,
+        line_cap=line.cap if line is not None else "round",
+        marker_fill=marker_fill,
+        marker_fill_opacity=marker.shape.fill_opacity,
+        marker_stroke=marker_stroke,
+        marker_stroke_opacity=marker_line.opacity if marker_line is not None else 1.0,
+        marker_stroke_width=marker_line.width if marker_line is not None else 1.0,
+        marker_size=marker.size,
+    )
+
+
+def _pie_visual_styles(
+    payload: dict[str, Any],
+    series: ET.Element,
+    palette: ColorPalette | None,
+) -> list[SeriesVisualStyle]:
+    chart_type = payload["type"]
+    expected_count = len(payload["categories"]) + (1 if chart_type == "of_pie" else 0)
+    base_shape = _resolved_shape_paint(series.find("c:spPr", C_NS), palette)
+    point_nodes = series.findall("c:dPt", C_NS)
+    points: dict[int, _ShapePaint] = {}
+    for point in point_nodes:
+        if point.attrib:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        allowed = {"idx", "bubble3D", "explosion", "spPr"}
+        names = [_local_name(child.tag) for child in point]
+        if any(name not in allowed for name in names) or len(names) != len(set(names)):
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        idx = point.find("c:idx", C_NS)
+        if idx is None or set(idx.attrib) != {"val"} or list(idx):
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        try:
+            point_index = int(idx.attrib["val"])
+        except ValueError:
+            raise _UnsupportedChart("unsupported-chart-series-style") from None
+        bubble_3d = point.find("c:bubble3D", C_NS)
+        if bubble_3d is not None and (
+            not set(bubble_3d.attrib).issubset({"val"})
+            or list(bubble_3d)
+            or ooxml_bool(bubble_3d.attrib.get("val"), True)
+        ):
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        if point_index < 0 or point_index >= expected_count or point_index in points:
+            raise _UnsupportedChart("unsupported-chart-series-style")
+        points[point_index] = _resolved_shape_paint(point.find("c:spPr", C_NS), palette)
+    if points and set(points) != set(range(expected_count)):
+        raise _UnsupportedChart("unsupported-chart-series-style")
+
+    styles: list[SeriesVisualStyle] = []
+    for index in range(expected_count):
+        auto = _automatic_color(palette, index)
+        point_shape = points.get(index, base_shape)
+        fill = point_shape.fill if point_shape.fill_explicit else auto
+        stroke = _line_color(point_shape.line, "#FFFFFF")
+        line = point_shape.line
+        styles.append(
+            SeriesVisualStyle(
+                fill=fill,
+                fill_opacity=point_shape.fill_opacity,
+                stroke=stroke,
+                stroke_opacity=line.opacity if line is not None else 1.0,
+                stroke_width=line.width if line is not None else 1.0,
+                line_cap=line.cap if line is not None else "round",
+                marker_fill=fill,
+                marker_stroke=stroke,
+            )
+        )
+    return styles
+
+
+def _chart_visual_styles(
+    payload: dict[str, Any],
+    plot: ET.Element,
+    palette: ColorPalette | None,
+) -> list[SeriesVisualStyle]:
     chart_type = payload["type"]
     series_nodes = plot.findall("c:ser", C_NS)
     if chart_type in {"pie", "doughnut", "of_pie"}:
-        if any(series.find("c:spPr", C_NS) is not None for series in series_nodes):
+        if len(series_nodes) != 1:
             raise _UnsupportedChart("unsupported-chart-series-style")
-        point_nodes = [
-            point
-            for series in series_nodes
-            for point in series.findall("c:dPt", C_NS)
-        ]
-        if not point_nodes:
-            return None
-        expected_count = len(payload["categories"]) + (1 if chart_type == "of_pie" else 0)
-        colors: dict[int, str] = {}
-        for point in point_nodes:
-            if point.attrib or [_local_name(child.tag) for child in point] != ["idx", "spPr"]:
-                raise _UnsupportedChart("unsupported-chart-series-style")
-            idx = point.find("c:idx", C_NS)
-            sp_pr = point.find("c:spPr", C_NS)
-            try:
-                point_index = int(idx.attrib.get("val", "")) if idx is not None else -1
-            except ValueError:
-                raise _UnsupportedChart("unsupported-chart-series-style") from None
-            if (
-                idx is None
-                or set(idx.attrib) != {"val"}
-                or list(idx)
-                or sp_pr is None
-                or point_index in colors
-            ):
-                raise _UnsupportedChart("unsupported-chart-series-style")
-            colors[point_index] = _canonical_sp_pr_color(sp_pr, line_visible=True)
-        if set(colors) != set(range(expected_count)):
+        styles = _pie_visual_styles(payload, series_nodes[0], palette)
+    else:
+        if any(series.find("c:dPt", C_NS) is not None for series in series_nodes):
             raise _UnsupportedChart("unsupported-chart-series-style")
-        return [f"#{colors[index]}" for index in range(expected_count)]
-
-    if any(series.find("c:dPt", C_NS) is not None for series in series_nodes):
-        raise _UnsupportedChart("unsupported-chart-series-style")
-    sp_pr_nodes = [series.find("c:spPr", C_NS) for series in series_nodes]
-    if not any(sp_pr is not None for sp_pr in sp_pr_nodes):
-        return None
-    if any(sp_pr is None for sp_pr in sp_pr_nodes):
-        raise _UnsupportedChart("unsupported-chart-series-style")
-    line_visible = not (
-        chart_type == "scatter"
-        and payload.get("scatter_style", "marker") == "marker"
-    )
-    return [
-        f"#{_canonical_sp_pr_color(sp_pr, line_visible=line_visible)}"
-        for sp_pr in sp_pr_nodes
-        if sp_pr is not None
+        styles = []
+        for index, series in enumerate(series_nodes):
+            auto = _automatic_color(palette, index)
+            shape = _resolved_shape_paint(series.find("c:spPr", C_NS), palette)
+            marker = _resolved_marker(series.find("c:marker", C_NS), palette)
+            styles.append(
+                _series_visual_style(
+                    shape,
+                    marker,
+                    chart_type=chart_type,
+                    auto_color=auto,
+                )
+            )
+    colors = [
+        style.fill or style.stroke or style.marker_fill or _automatic_color(palette, index)
+        for index, style in enumerate(styles)
     ]
+    if colors:
+        payload["style"] = {"colors": colors}
+    return styles
 
 
 def _validate_chart_semantics(
     payload: dict[str, Any],
     plot_area: ET.Element,
     plot: ET.Element,
-) -> None:
+    *,
+    palette: ColorPalette | None = None,
+) -> list[SeriesVisualStyle]:
     """Reject valid chart features the compact marker cannot reproduce."""
     chart_type = payload["type"]
-    colors = _canonical_chart_colors(payload, plot)
-    if colors:
-        payload["style"] = {"colors": colors}
+    visual_styles = _chart_visual_styles(payload, plot, palette)
     for tag in (
         "trendline", "errBars", "dropLines", "hiLowLines", "upDownBars",
     ):
@@ -330,11 +632,6 @@ def _validate_chart_semantics(
         marker_states: set[bool] = set()
         for series in plot.findall("c:ser", C_NS):
             marker_node = series.find("c:marker", C_NS)
-            if marker_node is not None and any(
-                child.tag.rsplit("}", 1)[-1] != "symbol"
-                for child in marker_node
-            ):
-                raise _UnsupportedChart("unsupported-chart-line-style")
             symbol = _element_val(series.find("c:marker/c:symbol", C_NS))
             if symbol not in {None, "circle", "none"}:
                 raise _UnsupportedChart("unsupported-chart-line-style")
@@ -389,11 +686,6 @@ def _validate_chart_semantics(
             marker = series.find("c:marker", C_NS)
             if marker is None:
                 raise _UnsupportedChart("unsupported-chart-scatter-style")
-            if any(
-                child.tag.rsplit("}", 1)[-1] != "symbol"
-                for child in marker
-            ):
-                raise _UnsupportedChart("unsupported-chart-scatter-style")
             symbol = _element_val(marker.find("c:symbol", C_NS))
             if symbol != expected_marker:
                 raise _UnsupportedChart("unsupported-chart-scatter-style")
@@ -425,6 +717,7 @@ def _validate_chart_semantics(
         second_size = _element_val(plot.find("c:secondPieSize", C_NS))
         if second_size not in {None, "75"}:
             raise _UnsupportedChart("unsupported-chart-of-pie-options")
+    return visual_styles
 
 
 def _apply_chart_metadata(
