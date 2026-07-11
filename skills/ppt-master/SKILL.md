@@ -787,6 +787,14 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > template use stay on this deterministic route. Adaptive pages may define new
 > layout keys, but they repeat the same Master layer and one internally
 > consistent Layout/placeholder contract.
+> Template export also installs the locked `typography.title` size into every
+> Master `titleStyle` level and the locked `typography.body` size into every
+> `bodyStyle` and `otherStyle` level. It changes only existing
+> `a:defRPr@sz` defaults: generated slide runs and Layout placeholder prototypes
+> keep their direct sizes, while newly inserted/reset placeholder text inherits
+> project defaults instead of Office fallback sizes. Missing or invalid locked
+> title/body sizes fail template export. Baseline, preserve, and flat modes do
+> not rewrite Master text-style sizes.
 > In template mode, `pptx_layouts` contains exactly one locked
 > layout key/name per page; reuse a key for a shared structure instead of
 > creating one key per content instance.

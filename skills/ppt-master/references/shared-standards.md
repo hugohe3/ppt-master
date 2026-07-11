@@ -13,7 +13,7 @@ Other files link here instead of restating its contracts.
 | §4 Required Page Contract and Conditional Packaging | Complete-page authority, semantic markers, editable text/grouping, and package promotion | Required / Conditional |
 | §5 Workflow Authority | Pointer to the serial post-processing/export procedure | Workflow pointer |
 | §6 Advanced SVG Effects and Authoring Techniques | Color/alpha, gradients, shadows, glow, overlays, lines, text treatments, transforms, freeform geometry, chart geometry, and constructed visual styles | Contract + optional recipes |
-| §7 Conditional PPT Interfaces | Pattern fills, native tables/charts, and Master/Layout/placeholder metadata | Conditional |
+| §7 Conditional PPT Interfaces | Pattern fills, native tables/charts, Master text styles, and Master/Layout/placeholder metadata | Conditional |
 | §8 Scope Boundary | Concerns intentionally owned by another reference or workflow | Boundary |
 
 **Advanced capability index**:
@@ -1075,7 +1075,26 @@ match that row. Strict uses the selected template key/name. Adaptive may create
 a new key/name while repeating the same Master contract. Reuse one layout key
 only when pages share the same static Layout layer and placeholder contract;
 different content is not a reason to create a new layout. Direct diagnostic
-exports may pass the CLI flag without a spec lock.
+exports may select the mode with the CLI flag instead of a locked
+`pptx_structure.mode` row, but still require `spec_lock.md` typography
+`title` / `body` rows.
+
+**Master text-style contract**: Template mode requires numeric `title` and
+`body` rows under `spec_lock.md` `typography`. Export maps the locked `title`
+size to every `a:defRPr` in Master `p:titleStyle`, and maps the locked `body`
+size to every level in both `p:bodyStyle` and `p:otherStyle`.
+
+| Master style | Locked source | XML field changed |
+|---|---|---|
+| `p:titleStyle` | `typography.title` | Every `a:defRPr@sz` |
+| `p:bodyStyle` | `typography.body` | Every `a:defRPr@sz` |
+| `p:otherStyle` | `typography.body` | Every `a:defRPr@sz` |
+
+**Hard rule — narrow scope**: This update changes only Master
+`p:txStyles//a:defRPr@sz`. It does not rewrite direct run sizes on generated
+slides, so the initial slide rendering remains controlled by the authored SVG.
+Missing `title` or `body` rows fail template export. `baseline`, `preserve`,
+and `flat` modes do not apply this Master text-style update.
 
 | Metadata | Placement | Behavior |
 |---|---|---|

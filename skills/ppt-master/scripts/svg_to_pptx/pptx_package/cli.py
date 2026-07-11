@@ -38,7 +38,11 @@ from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
 from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
 from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
-from ..drawingml.theme_fonts import ThemeFontError, load_theme_font_spec
+from ..drawingml.theme_fonts import (
+    ThemeFontError,
+    load_master_text_style_spec,
+    load_theme_font_spec,
+)
 from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
 from .slide_xml import TRANSITIONS
 from .template_structure import (
@@ -345,10 +349,13 @@ Recorded narration:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
     theme_font_spec = None
+    master_text_style_spec = None
     theme_color_spec = None
     if pptx_structure in {'baseline', 'template'}:
         try:
             theme_font_spec = load_theme_font_spec(project_path)
+            if pptx_structure == 'template':
+                master_text_style_spec = load_master_text_style_spec(project_path)
             theme_color_spec = load_theme_color_spec(project_path)
         except (ThemeFontError, ThemeColorError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
@@ -743,6 +750,7 @@ Recorded narration:
         pptx_structure=pptx_structure,
         native_structure_contract=native_structure_contract,
         theme_font_spec=theme_font_spec,
+        master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,
     )
 

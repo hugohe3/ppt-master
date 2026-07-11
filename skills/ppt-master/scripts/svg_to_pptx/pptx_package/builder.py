@@ -54,7 +54,9 @@ from ..drawingml.theme_colors import (
     rewrite_chart_accent_colors,
 )
 from ..drawingml.theme_fonts import (
+    MasterTextStyleSpec,
     ThemeFontSpec,
+    apply_master_text_style_spec,
     apply_theme_font_spec,
 )
 from ..drawingml.utils import EMU_PER_PX
@@ -3335,6 +3337,7 @@ def create_pptx_with_native_svg(
     pptx_structure: str = "baseline",
     native_structure_contract: NativeStructureContract | None = None,
     theme_font_spec: ThemeFontSpec | None = None,
+    master_text_style_spec: MasterTextStyleSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
@@ -3384,6 +3387,8 @@ def create_pptx_with_native_svg(
             ``preserve`` mode.
         theme_font_spec: Locked project major/minor fonts for baseline/template
             theme inheritance. Preserve and flat modes ignore this value.
+        master_text_style_spec: Required locked title/body sizes for template
+            slide-master text styles. Other structure modes ignore this value.
         theme_color_spec: Locked project color scheme for context-aware
             baseline/template theme inheritance. Preserve and flat modes
             ignore this value.
@@ -3403,6 +3408,11 @@ def create_pptx_with_native_svg(
     use_compat_mode = False
     if pptx_structure not in {"baseline", "template", "preserve", "flat"}:
         raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
+    if pptx_structure == "template" and master_text_style_spec is None:
+        raise ValueError(
+            "Template export requires locked typography title/body sizes "
+            "in master_text_style_spec"
+        )
     if use_native_shapes and pptx_structure == "template":
         template_specs = parse_template_slides(svg_files)
     elif use_native_shapes and pptx_structure == "preserve":
@@ -3547,6 +3557,18 @@ def create_pptx_with_native_svg(
         )
         if active_theme_color_spec is not None:
             apply_theme_color_spec(extract_dir, active_theme_color_spec)
+        if pptx_structure == "template":
+            master_count = apply_master_text_style_spec(
+                extract_dir,
+                master_text_style_spec,
+            )
+            if verbose:
+                print(
+                    "  Template master text styles: "
+                    f"{master_count} master(s), "
+                    f"title {master_text_style_spec.title_hpt / 100:g}pt, "
+                    f"body {master_text_style_spec.body_hpt / 100:g}pt"
+                )
         structure = _read_slide_layout_targets(extract_dir, len(svg_files))
 
         media_dir = extract_dir / 'ppt' / 'media'
