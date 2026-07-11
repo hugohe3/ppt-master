@@ -33,14 +33,16 @@
 
 这会跑 `pptx_template_import.py`,把文件重建成可复用的资产包——版式 SVG + `design_spec.md` + 抽取出的主题色、字体、图片。生成时引用的就是这个资产包。
 
+在 create-template brief 中选择 `library`（沿用原默认）或 `project`。项目范围要求给出已初始化的目标项目；写入前统一检查模板根目录和素材文件名，再把 bundle 直接安装到该项目，不做全局注册。
+
 复刻出的模板可以放在两个位置之一:
 
 | 位置 | 路径 | 说明 |
 |---|---|---|
 | **注册进 skill 库** | `skills/ppt-master/templates/layouts/<id>/` | 全局,所有项目可复用;跑 `register_template.py` 后,问"有哪些模板"时会被列出来 |
-| **放进项目里** | `projects/<project>/templates/` | 项目本地;给路径即用,无需注册 |
+| **放进项目里** | `projects/<project>/templates/` | 只归属该项目;原地消费,无需注册 |
 
-无论放哪,生成时都靠在对话里给出它的**目录路径**来引用——工作流只认显式路径,绝不认裸模板名:
+全局库 package 在生成时靠对话里给出**目录路径**来引用；项目范围 create-template 可在同一对话里把已验证的精确路径直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。若要把项目范围设计复用于另一个项目，应重新以 `library` 范围创建，因为图片/图标池位于原项目模板根目录的同级位置。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/academic_defense/
@@ -82,7 +84,7 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 
 ## 转场与动画
 
-导出的 deck 自带**页间转场**和**页内元素入场动画**,输出为真正的 OOXML——不是嵌入视频。默认元素进入页面时自动级联入场,无需设置,在 PowerPoint 和 Keynote 中原生播放,无需额外工具。只有当你想要特定顺序、效果或时序时,才需要定制。
+导出的 deck 用真正的 OOXML 保存**页间转场**和可选的**页内元素入场动画**，不是嵌入视频。默认保留 `fade` 页间转场，页内动画为 `none`；只有显式使用 `-a auto`、其它效果或 `animations.json` 才会启用对象入场。未知效果、Start 模式、非法时序值或缺失对象引用会直接阻断导出，候选 PPTX 还会在发布前回读动画目标、效果和 timing 结构。Microsoft PowerPoint 是动效行为的主要验证目标；Keynote、WPS、LibreOffice 可能重新映射个别效果。
 
 完整说明 → [转场与动画](./animations.md)
 
@@ -121,7 +123,7 @@ PPT Master 最初是纯对话设计;可视化编辑是在很多用户提出后�
 | 视觉质量不理想 | 换成大上下文 Claude 模型 + `gpt-image-2`——harness 决定下限,模型决定上限。 |
 | 文字溢出或元素重叠 | 重跑那一页,或用实时预览修;详见 [FAQ](./faq.md)。 |
 | 没有生图 API key | 零配置的网络图片搜索仍可作为兜底;见 [FAQ](./faq.md)。 |
-| 动画或部分效果在别的软件里不对 | 文件是标准 `.pptx`,PowerPoint / Keynote / WPS / LibreOffice 都能打开;元素动画在 PowerPoint 2016+ 和 Keynote 还原最完整,更老的 Office 会把部分效果降级为 Appear。 |
+| 动画或部分效果在别的软件里不对 | Microsoft PowerPoint 是动效行为的主要验证目标。Keynote / WPS / LibreOffice 可以打开 `.pptx`，但可能重新映射或省略个别效果或 Start 语义；动效关键交付应在 PowerPoint 中验证。 |
 | 担心长 deck 撑爆上下文 | 生成可走分段模式;详见 [FAQ](./faq.md)。 |
 
 模型选择、费用、图表可编辑性、自定义模板等,都在 [FAQ](./faq.md) 里。

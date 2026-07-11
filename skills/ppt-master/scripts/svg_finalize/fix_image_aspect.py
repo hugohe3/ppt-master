@@ -3,11 +3,12 @@
 SVG Image Aspect Ratio Fix Tool
 
 Fixes the dimensions of <image> elements in SVG to match the original image aspect ratio.
-This prevents images from being stretched when PowerPoint converts SVG to editable shapes.
+This prevents images from being stretched by PowerPoint SVG rendering paths that do not
+honor preserveAspectRatio consistently.
 
 Principle:
-    When PowerPoint converts SVG to editable shapes, it ignores the preserveAspectRatio attribute
-    and directly stretches the image to fill the area specified by width/height.
+    Some PowerPoint SVG rendering paths ignore the preserveAspectRatio attribute and directly
+    stretch the image to fill the area specified by width/height.
 
     This tool reads the actual image aspect ratio and recalculates the x, y, width, height of
     <image> elements so that images are centered and maintain their original aspect ratio.
@@ -331,7 +332,7 @@ def fix_image_aspect_in_svg(svg_path: str, dry_run: bool = False, verbose: bool 
 def main() -> None:
     """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
-        description='Fix image aspect ratios in SVG to prevent stretching when PowerPoint converts to shapes',
+        description='Normalize SVG image boxes for PowerPoint SVG rendering diagnostics',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 Examples:

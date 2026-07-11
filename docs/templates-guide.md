@@ -21,10 +21,10 @@ The workflow **defaults to free design** — it will not ask whether you want a 
 Send a path to a template directory in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
 > "use this template: `skills/ppt-master/templates/layouts/academic_defense/`" ✅
-> "用这个模板做汇报：`projects/last_deck/template/`" ✅
+> "用这个模板做汇报：`projects/last_deck/templates/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-The AI copies that directory's SVGs, `design_spec.md`, and assets into your project, then proceeds to the Strategist phase. The path can point to anywhere — the built-in library under `skills/ppt-master/templates/layouts/`, a previous project's `template/` folder, or any other location on disk.
+The AI installs that directory's SVGs, `design_spec.md`, and assets into your project, then proceeds to the Strategist phase. The path may point to the built-in library under `skills/ppt-master/templates/layouts/` or another self-contained template directory. When the path already is the current project's own `<project>/templates/` root, the workflow consumes it in place instead of copying it onto itself. A project-scoped create-template run may hand this exact validated path directly to Step 3 in the same conversation; this is the only exception to the initial-message rule. Do not use a different project's `templates/` root as an external package: its `../images/` and runtime icon references are owner-local. Promote that design through library scope first.
 
 ### What does NOT trigger the template flow
 
@@ -133,7 +133,9 @@ The workflow does not silently infer values — before generation it lists these
 
 | Field | Notes |
 |-------|-------|
-| **Template ID** | Directory / index key. Prefer ASCII slug like `acme_consulting`; non-ASCII names work but must be filesystem-safe |
+| **Output scope** | `library` (default; reusable by every project and registered globally) or `project` (thin bundle written directly into one initialized project's template root) |
+| **Target project** | Required only for `project`; give the exact initialized project path |
+| **Template ID** | Portable template identity; in library scope it is also the directory / index key. Prefer ASCII slug like `acme_consulting`; non-ASCII names work but must be filesystem-safe |
 | **Display name** | Human-readable name for documentation |
 | **Category** | One of `brand` / `general` / `scenario` / `government` / `special` |
 | **Use cases** | Annual report / consulting / defense / government briefing / ... |
@@ -148,7 +150,9 @@ The workflow does not silently infer values — before generation it lists these
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-> Why so strict? Because a template is a library asset that future projects will reuse. Getting it right once is far cheaper than regenerating after the fact.
+For project scope, one more hard preflight runs before any final file is written: the target must already be initialized, its `templates/` root must be empty, and the planned bitmap/icon filenames must not collide with anything already in `images/` or `icons/`. A failed check stops before partial output; the workflow does not merge or overwrite.
+
+> Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
 ### Step 3 — `standard`, `fidelity`, or `mirror`?
 
@@ -168,15 +172,16 @@ This is the most easily confused decision when deriving a template.
 
 **How mirror is consumed**: the Strategist picks one mirror page per project page, and the Executor copies that complete SVG and edits visible text in place while preserving decoration, sprite crops, geometry, and every `data-pptx-*` structure declaration.
 
-### Step 4 — Registration and discovery
+### Step 4 — Validation, registration, and discovery
 
-After generation, the workflow:
+After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate. What happens next depends on the confirmed output scope:
 
-1. Runs [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) (hard gate — no entry without passing)
-2. Registers the template ID in [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json)
-3. Syncs the table in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md)
+| Scope | Output | Discovery behavior |
+|---|---|---|
+| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Register in the matching `layouts_index.json` or `decks_index.json` after validation |
+| `project` | Direct `<project>/templates/` bundle; bitmaps in `<project>/images/`; extracted icons in both `<project>/templates/icons/` and `<project>/icons/` | Skip every global index and library README update |
 
-Registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use it in a new project, follow the SKILL.md Step 3 rule: name its directory path in your first message, e.g. `use this template: skills/ppt-master/templates/layouts/<your_template_id>/`.
+Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use it in a new project, follow the SKILL.md Step 3 rule: name its directory path in your first message, e.g. `use this template: skills/ppt-master/templates/layouts/<your_template_id>/`. A project-scoped template is intentionally private to that project and is consumed in place through the explicit `<project>/templates/` path.
 
 When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
 
@@ -184,6 +189,8 @@ When a deck/layout template is selected, the Strategist confirmation stage asks 
 - **strict** — choose one template SVG per page and keep its Master/Layout/Placeholder contract unchanged
 
 ### What a derived template looks like
+
+Library scope (the default) remains a self-contained package:
 
 ```
 skills/ppt-master/templates/layouts/<your_template_id>/
@@ -215,14 +222,31 @@ skills/ppt-master/templates/layouts/<your_template_id>/
 └── *.png / *.jpg
 ```
 
+Project scope writes a thin bundle directly into the initialized project's existing roots. It does not create `<project>/templates/<template_id>/`:
+
+```
+projects/<project>/
+├── templates/
+│   ├── design_spec.md
+│   ├── 01_cover.svg
+│   ├── 02_chapter.svg
+│   ├── 03_content.svg
+│   ├── 04_ending.svg
+│   └── icons/             # package/validation copy
+├── images/
+│   └── *.png / *.jpg      # SVG references use ../images/<name>
+└── icons/
+    └── *.svg              # runtime copy of extracted icons
+```
+
 ### Project-level customization vs global template
 
-Don't confuse the two:
+Choose the output scope according to ownership:
 
-- **Derive a new template** = enter the global library at `skills/ppt-master/templates/layouts/`, available to all future projects
-- **Project-level customization** = edit only the SVGs under `projects/<project>/templates/` for this one deck; not registered, no impact elsewhere
+- **Library scope (`library`, default)** = enter `skills/ppt-master/templates/<kind>/<id>/`, register globally, and make the package available to future projects
+- **Project scope (`project`)** = create the same validated template contract directly under `projects/<project>/templates/`, keep its runtime images/icons beside that project, and skip global registration
 
-`/create-template` is for the former. For the latter, just edit the SVGs in the project directory directly — no workflow needed.
+`/create-template` supports both. Project scope is the safe route when the template exists only to drive the current deck; it still gets the normal brief, explicit Master/Layout metadata, and template validation without polluting the global library. Choose library scope when another project must consume the result.
 
 ---
 

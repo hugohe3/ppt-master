@@ -146,6 +146,11 @@ def px_to_emu(px: float) -> int:
     return round(px * EMU_PER_PX)
 
 
+def font_px_to_hpt(font_size_px: float) -> int:
+    """Convert SVG px to DrawingML hundredths-of-a-point at 0.1pt precision."""
+    return int(round(font_size_px * FONT_PX_TO_HUNDREDTHS_PT / 10.0)) * 10
+
+
 def _f(val: str | None, default: float = 0.0) -> float:
     """Parse a float attribute value, returning default if missing."""
     if val is None:

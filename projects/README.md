@@ -32,17 +32,19 @@ project_name_format_YYYYMMDD/
 │   ├── 01_xxx.svg
 │   └── ...
 ├── templates/                    # Project-level templates (if any)
-└── *.pptx
+└── exports/
+    └── *.pptx                    # Native DrawingML deliverables
 ```
 
 Projects can remain at different stages and do not necessarily have all artifacts at once. For example:
 
 - Only `sources/` archiving and the Design Specification & Content Outline (design_spec) are complete
 - `svg_output/` has been generated, but post-processing has not yet been executed
-- `svg_final/`, `notes/`, and `*.pptx` are all complete
+- `svg_final/` is a self-contained visual preview, and `exports/*.pptx` is complete
 
 ## Notes
 
 - Contents under this directory are excluded by `.gitignore`
+- `svg_final/` may be opened directly or inserted manually as an SVG image; PowerPoint's manual Convert to Shape behavior is not supported
 - Completed projects can be moved to the `examples/` directory for sharing
 - Files outside the workspace are copied by default; files within the workspace are moved directly to the project's `sources/`

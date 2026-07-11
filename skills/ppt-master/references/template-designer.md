@@ -4,15 +4,19 @@
 
 ## Core Mission
 
-Generate reusable page templates for the **global template library** based on a finalized template brief, and write a concise `design_spec.md` that captures the source-derived basic norms that make the template reusable.
+Generate reusable page templates at the output scope confirmed by `create-template`, and write a concise `design_spec.md` that captures the source-derived basic norms that make the template reusable.
 
-> This is a standalone role: only triggered via the `/create-template` workflow. It is **not** the project-level template selection/customization step in the main PPT generation pipeline.
+> This is a standalone role: only triggered via the `/create-template` workflow. It may write a global library package or a project-local thin bundle; it is not the template selection step in the main PPT generation pipeline.
 
 ## Usage
 
 - **Trigger**: `/create-template` workflow
-- **Output location**: `templates/<kind_dir>/<template_name>/` where `<kind_dir>` is `decks` (default — full-PPT replica with identity) or `layouts` (structure-only, no identity segment)
-- **Input**: finalized template brief (template ID, display name, kind, applicable scenarios, tone, theme mode, canvas format, optional reference assets, accepted basic template norms)
+- **Output location**: `library` (default) → `skills/ppt-master/templates/<kind_dir>/<template_name>/`; `project` → the confirmed `<target_project>/templates/` root with no nested template-ID directory
+- **Input**: finalized template brief (output scope, target project when project-scoped, template ID, display name, kind, applicable scenarios, tone, theme mode, canvas format, optional reference assets, accepted basic template norms)
+
+**Hard rule — scope is execution metadata**: Use `output_scope` and `target_project` to route files, but do not write either field into portable `design_spec.md` frontmatter. Do not create a new PPTX structure mode; deck/layout output still declares `native_structure_mode: template`.
+
+**Project-scope precondition**: The workflow has already confirmed an initialized target project, an empty `<target_project>/templates/`, and collision-free destination filenames in `images/` and `icons/`. Do not begin final writes before that all-at-once preflight passes.
 
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
@@ -94,7 +98,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 - Cluster slides from `manifest.json` by `pageType` + visual structure (column count, hero-image vs. icon-grid vs. quote, etc.)
 - One SVG per cluster — do **not** emit a variant for a cluster represented by a single source slide unless that slide is structurally distinct from existing variants
 - One variant per visually distinct cluster — let the source's structural diversity drive the count. Collapse only **near-duplicates** (same column count, same hero element, same content density); do not collapse genuine structural differences just to keep the variant count down. If you find yourself wanting one variant per source slide, that is the signal the user should be in `mirror` mode, not `fidelity`
-- Record every emitted page in `design_spec.md §V Page Roster`; the corresponding index entry (`decks_index.json` or `layouts_index.json`) is generated automatically by `register_template.py` from the directory's actual SVG files
+- Record every emitted page in `design_spec.md §V Page Roster`; in library scope, `register_template.py` generates the corresponding index entry from the directory's actual SVG files. Project scope skips registration
 
 > Variants reuse the parent type's placeholder set — see §4 (Placeholder Reference) below.
 
@@ -103,7 +107,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 When the brief sets `Replication mode: mirror`, preserve literal page appearance while reconstructing layer ownership:
 
 - Visual source: `<import_workspace>/svg-flat/slide_NN.svg` (the self-contained "what PowerPoint shows" view). Structural source: `svg/master_*.svg`, `svg/layout_*.svg`, and `svg/inheritance.json`.
-- Output: `templates/<kind_dir>/<template_id>/<NNN>_<page_type>.svg`, where `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
+- Output: `<template_target>/<NNN>_<page_type>.svg`, where `<template_target>` is the library package directory or the project `templates/` root. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
 - Required metadata rewrite: declare the output Layout on the root, mark inherited Master/Layout visuals as direct preview layers, and map source content slots to semantic `data-pptx-placeholder` markers where the imported contract exposes them. Add `data-pptx-role` only to structural page-frame objects whose behavior is not already expressed by those specialized markers.
 - Other allowed modifications: rewrite `<image href="...">` paths to local assets and rename assets semantically. Keep geometry, decoration, sprite-sheet wrappers, original example text, chart previews, and fonts visually unchanged.
 - Forbidden: simplifying decorative complexity, merging similar slides, or dropping inherited preview chrome.
@@ -129,6 +133,10 @@ When the brief sets `Replication mode: mirror`, preserve literal page appearance
 Re-declaring any of these in a template `design_spec.md` is noise — Strategist already has them in context, and duplication forces every relaxation to sweep N templates instead of one source. **If a rule is generic, omit it. If this template breaks a generic rule, write only the deviation.**
 
 **Required skeleton:**
+
+The frontmatter is portable across library and project scope. Do not add
+`output_scope` or `target_project`; those belong only to the workflow execution
+brief.
 
 ```markdown
 ---
@@ -284,7 +292,7 @@ Use clear placeholder markers for replaceable content:
 
 ### 4. Placeholder Reference (canonical convention, overridable per template)
 
-This is the **default vocabulary** used across the library. Newly created templates SHOULD prefer these names so projects that consume the library find familiar slots; designers MAY substitute or extend them when a style genuinely needs different vocabulary (e.g. consulting decks lead with `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`; a brand cover may need `{{BRAND_LOGO}}`).
+This is the **default vocabulary** used across template packages. Newly created templates SHOULD prefer these names so downstream projects find familiar slots; designers MAY substitute or extend them when a style genuinely needs different vocabulary (e.g. consulting decks lead with `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`; a brand cover may need `{{BRAND_LOGO}}`).
 
 `svg_quality_checker.py --template-mode` emits **advisory warnings** when a page lacks the conventional placeholder for its type. To silence those warnings — and document the template's actual contract — declare a `placeholders:` map in `design_spec.md` frontmatter:
 
@@ -316,13 +324,13 @@ placeholders:
 | `{{CLOSING_MESSAGE}}` | Closing message | Ending page | Style-specific |
 | `{{COPYRIGHT}}` | Copyright | Ending page | Optional |
 
-For TOC pages in **newly created library templates**, use indexed placeholders:
+For TOC pages in **newly created templates**, use indexed placeholders:
 
 - `{{TOC_ITEM_1_TITLE}}`, `{{TOC_ITEM_1_DESC}}`
 - `{{TOC_ITEM_2_TITLE}}`, `{{TOC_ITEM_2_DESC}}`
 - ...
 
-Do **not** create new TOC placeholder families such as `{{CHAPTER_01_TITLE}}` for new templates. Existing templates may contain legacy placeholder variants, but new library assets should converge on the indexed TOC contract.
+Do **not** create new TOC placeholder families such as `{{CHAPTER_01_TITLE}}` for new templates. Existing templates may contain legacy placeholder variants, but new output should converge on the indexed TOC contract.
 
 Variants reuse their parent type's placeholder set by default: every `03*_content*.svg` shares the content placeholder list above, unless the spec frontmatter declares an override for that specific stem.
 
@@ -334,7 +342,7 @@ When rebuilding from imported PPTX references, placeholder insertion takes prior
 
 ### File Save Location
 
-Standard mode (default):
+Library scope keeps the existing self-contained package. Standard mode (default):
 
 ```
 templates/<kind_dir>/<template_name>/
@@ -344,10 +352,11 @@ templates/<kind_dir>/<template_name>/
 ├── 02_toc.svg          # Optional
 ├── 03_content.svg
 ├── 04_ending.svg
-└── *.png / *.jpg       # Image assets (if any)
+├── icons/              # Extracted vector assets (if any)
+└── *.png / *.jpg       # Bitmap assets (if any)
 ```
 
-Fidelity mode adds variants and extension pages, e.g.:
+Fidelity mode adds variants and extension pages in the same package, e.g.:
 
 ```
 templates/<kind_dir>/<template_name>/
@@ -383,6 +392,26 @@ templates/<kind_dir>/<template_name>/
 
 Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. Literal source text may remain, but every page still carries explicit native structure metadata.
 
+Project scope writes directly into an initialized project's existing roots. The roster names still follow the selected replication mode, but the package is not nested under `<template_name>`:
+
+```
+<target_project>/
+├── templates/
+│   ├── design_spec.md
+│   ├── 01_cover.svg
+│   ├── 02_chapter.svg
+│   ├── 03_content.svg
+│   ├── 04_ending.svg
+│   ├── ...                    # Fidelity variants or mirror pages
+│   └── icons/                 # Package/validation copy
+├── images/
+│   └── *.png / *.jpg          # Bitmap assets; template SVG href is ../images/<name>
+└── icons/
+    └── *.svg                  # Identical runtime copy of extracted icons
+```
+
+**Hard rule — project routing**: Keep `design_spec.md`, template SVGs, and non-bitmap package assets in `templates/`; place every bitmap in `images/`; duplicate each extracted icon into `templates/icons/` and runtime `icons/`. Do not write bitmaps into the project template root and do not create `<target_project>/templates/<template_name>/`. This output belongs only to the target project; use library scope for a self-contained cross-project package.
+
 ### Template Preview
 
 After each template is generated, provide a brief summary table listing each template's status.
@@ -403,7 +432,7 @@ If suitable template resources already exist, use them directly instead of gener
 2. **Adjust colors**: Modify colors per the project design spec
 3. **Customize**: Make project-specific adjustments
 
-This section describes downstream reuse. The `Template_Designer` role itself is responsible for creating or normalizing the reusable library asset first.
+This section describes downstream reuse of an existing library package. The `Template_Designer` role may instead create the same contract directly in project scope when `create-template` selected that output.
 
 **Example library structure** (query the appropriate kind's index — `templates/layouts/layouts_index.json` for structure-only templates, `templates/decks/decks_index.json` for full-PPT replicas, `templates/brands/brands_index.json` for identity-only presets):
 
@@ -428,11 +457,13 @@ templates/
 ## Template_Designer Phase Complete
 
 - [x] Read `references/template-designer.md`
+- [x] Output scope confirmed: `library` | `project`; project-scope preflight passed before final writes
 - [x] Replication mode confirmed: `standard` | `fidelity` | `mirror`
-- [x] Every page listed in `design_spec.md §V Page Roster` saved to `templates/<layouts|decks>/<template_name>/` (decks for full-PPT replicas, layouts for structure-only)
+- [x] Every page listed in `design_spec.md §V Page Roster` saved to the selected template target (library package directory or project `templates/` root)
 - [x] Naming convention applied (standard / fidelity: letter-suffix variants; mirror: `<NNN>_<page_type>.svg`)
 - [x] Templates follow design spec (colors, fonts, layout)
 - [x] Placeholder markers are clear and standardized; mirror may keep literal text but still maps imported semantic slots
 - [x] Every SVG is a complete preview with explicit Master/Layout/Slide/placeholder metadata and `native_structure_mode: template`
-- [ ] **Next step**: Validate assets and register the template via `register_template.py <id> --kind <deck|layout>`
+- [x] Project scope, when selected: bitmaps routed to `images/`; extracted icons copied to both `templates/icons/` and runtime `icons/`
+- [ ] **Next step**: Validate assets; register only library scope, otherwise hand the in-place project bundle to main Step 3
 ```

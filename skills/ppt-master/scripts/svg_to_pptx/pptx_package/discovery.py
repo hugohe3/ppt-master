@@ -16,7 +16,7 @@ def find_svg_files(
         project_path: Project directory path.
         source: SVG source directory alias or name.
             - 'output': svg_output (hand-authored source; native default)
-            - 'final': svg_final (post-processed; legacy SVG-image path source)
+            - 'final': svg_final (post-processed preview; diagnostic input)
             - or any subdirectory name
 
     Returns:

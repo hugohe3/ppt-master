@@ -1,4 +1,4 @@
-"""check-plan: compare planned text / table / chart edits against source capacity."""
+"""Check planned text/table/chart edits and preserved SmartArt source risks."""
 
 from __future__ import annotations
 
@@ -463,9 +463,8 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 }
             )
     # --- Guardrail 2: source slides with non-text content not covered by edits ---
-    # For each plan slide, if the source slide has tables/charts in the library
-    # but the plan slide provides no matching table_edits/chart_edits, warn that
-    # text-fill will silently leave the original template content in place.
+    # Tables/charts may be covered by explicit edits. SmartArt is preserve-only,
+    # so selecting a source slide that contains it always needs a content review.
     lib_slides = _library_slide_index(library)
     for plan_slide_index, slide in enumerate(plan.get("slides", []), start=1):
         source_slide = int(slide.get("source_slide", 0))
@@ -474,7 +473,8 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
             continue
         lib_tables = lib_slide.get("tables", [])
         lib_charts = lib_slide.get("charts", [])
-        if not lib_tables and not lib_charts:
+        lib_diagrams = lib_slide.get("diagrams", [])
+        if not lib_tables and not lib_charts and not lib_diagrams:
             continue
         # Check whether the plan slide provides edits covering the non-text content.
         has_table_edits = bool(slide.get("table_edits"))
@@ -484,9 +484,16 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
             uncovered_kinds.append("table")
         if lib_charts and not has_chart_edits:
             uncovered_kinds.append("chart")
+        if lib_diagrams:
+            uncovered_kinds.append("smartart")
         if not uncovered_kinds:
             continue
         kind_str = "/".join(uncovered_kinds)
+        guidance = "add table_edits/chart_edits, or pick another source slide"
+        if lib_diagrams:
+            guidance = "SmartArt remains unchanged, so pick another source slide or accept this warning"
+            if any(kind in uncovered_kinds for kind in ("table", "chart")):
+                guidance = f"add table/chart edits where supported; {guidance}"
         summary["warn"] += 1
         results.append(
             {
@@ -494,11 +501,16 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 "code": "non_text_content_unedited",
                 "plan_slide": plan_slide_index,
                 "source_slide": source_slide,
+                "uncovered_kinds": uncovered_kinds,
+                "diagram_ids": [
+                    diagram.get("diagram_id")
+                    for diagram in lib_diagrams
+                    if diagram.get("diagram_id")
+                ],
                 "message": (
                     f"source slide {source_slide} has non-text content ({kind_str}) "
-                    "with no matching edits in the plan; text-fill leaves it untouched "
-                    "and original template content may show through "
-                    "(add table_edits/chart_edits, or pick another source slide)"
+                    "outside the plan's supported edits; template-fill leaves it untouched "
+                    f"and original template content may show through ({guidance})"
                 ),
             }
         )

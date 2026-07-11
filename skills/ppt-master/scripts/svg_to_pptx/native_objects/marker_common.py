@@ -17,6 +17,7 @@ from ..drawingml.utils import (
     ctx_w,
     ctx_x,
     ctx_y,
+    font_px_to_hpt,
     matrix_multiply,
     parse_transform_matrix,
     transform_point,
@@ -822,7 +823,7 @@ def _font_size_hpt(value: Any, default_px: int = 18) -> int:
         scaled = px * FONT_PX_TO_HUNDREDTHS_PT
         if not math.isfinite(scaled):
             return None
-        size = int(round(scaled / 10.0)) * 10
+        size = font_px_to_hpt(px)
         if not _TEXT_FONT_SIZE_MIN <= size <= _TEXT_FONT_SIZE_MAX:
             return None
         return size

@@ -95,7 +95,7 @@ English | [中文](./README_CN.md)
 
 ---
 
-Drop in your source material, and the deck you get back is **more than just editable**: it has native slide transitions and entrance animations, speaker notes that can become audio narration, charts and tables that can ship as real data-backed PowerPoint objects, and it can follow your own PPT template — a complete deck you can present as-is and keep refining. How to use each capability → [Getting Started](./docs/getting-started.md).
+Drop in your source material, and the deck you get back is **more than just editable**: it has native slide transitions plus opt-in entrance animations (off by default), speaker notes that can become audio narration, charts and tables that can ship as real data-backed PowerPoint objects, and it can follow your own PPT template — a complete deck you can present as-is and keep refining. How to use each capability → [Getting Started](./docs/getting-started.md).
 
 > **⚠️ PPT Master is a harness, not a complete agent.** `harness + model = agent` — the tool owns the workflow; the model sets the ceiling. To form a genuinely high-quality agent, use **Claude with a large context window (~1M tokens) + AI image generation (`gpt-image-2`)**. Other models can run the pipeline but cannot reach the same quality ceiling. If results disappoint, upgrade the model — don't blame the harness.
 
@@ -318,7 +318,7 @@ AI:  Sure. Let's confirm the design spec:
 
 The AI handles everything — content analysis, visual design, SVG generation, and PPTX export.
 
-> **Output:** Native-shapes `.pptx` (directly editable) saved to `exports/<name>_<timestamp>.pptx`. A copy of `svg_output/` is always snapshotted to `backup/<timestamp>/svg_output/` for re-export / archival. Pass `--svg-snapshot` to additionally emit an SVG-image preview pptx alongside the native pptx in `exports/` (see [FAQ](./docs/faq.md)). Requires Office 2016+. By default charts and tables export as SVG-derived shapes (pixel-consistent across PowerPoint / Keynote / WPS); pass `--native-objects` to instead emit them as **real editable PowerPoint chart / table objects backed by data** (rendering may vary across apps), saved as `exports/<name>_<timestamp>_native_charts.pptx`.
+> **Output:** The SVG pipeline has one PPTX export route: PPT Master's converter reads `svg_output/` and writes a directly editable native DrawingML deck to `exports/<name>_<timestamp>.pptx`. Step 7 still always runs `finalize_svg.py`, producing self-contained files in `svg_final/` for visual inspection or manual insertion as SVG pictures; PowerPoint's manual **Convert to Shape** command is outside the supported contract. A copy of `svg_output/` is always snapshotted to `backup/<timestamp>/svg_output/` for re-export / archival. By default charts and tables export as SVG-derived shapes (pixel-consistent across PowerPoint / Keynote / WPS); pass `--native-objects` to instead emit them as **real editable PowerPoint chart / table objects backed by data** (rendering may vary across apps), saved as `exports/<name>_<timestamp>_native_charts.pptx`.
 
 > **Already have a `.pptx` you want to reuse?** Hand the AI that deck plus your material and ask it to "fill this deck with the new content" — it fills text, table, and chart data into your existing design and exports only the pages you pick, staying natively editable. See the [FAQ](./docs/faq.md) and [template-fill workflow](./skills/ppt-master/workflows/template-fill-pptx.md).
 

@@ -43,33 +43,23 @@ cd ppt-master
 
 ---
 
-## Step 3 — Install uv and Dependencies
-
-**3.1 — Install uv (Python package manager)**
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-> This installs `uv` globally. After installation, **restart PowerShell** and verify: `uv --version`
-
-**3.2 — Install project dependencies**
+## Step 3 — Install Dependencies
 
 ```powershell
 cd C:\Users\YourName\ppt-master   # ← adjust to your actual path
-uv sync
+pip install -r requirements.txt
 ```
 
-> `uv sync` creates an isolated virtual environment (`.venv/`) and installs all dependencies into it — no global pollution, no `pip` required.
+> If `pip` is not recognized, try `python -m pip install -r requirements.txt`.
 
-Wait for it to finish. You should see `Resolved 18 packages` or similar at the end.
+Wait for it to finish. You should see `Successfully installed ...` at the end.
 
 ---
 
 ## Step 4 — Verify Your Setup
 
 ```powershell
-uv run python -c "import pptx; import fitz; print('All core dependencies OK')"
+python -c "import pptx; import fitz; print('All core dependencies OK')"
 ```
 
 ✅ Output: `All core dependencies OK` → you're good.
@@ -92,11 +82,10 @@ If a `.pptx` file appears in `exports/` that opens in PowerPoint — **you're do
 
 ## Step 6 — Optional Enhancements (most users can skip this)
 
-With Python and `requirements.txt` installed, you already have everything needed to generate presentations. The items below are **edge-case fallbacks and enhancements** — install only if you hit the specific scenario.
+With Python and `requirements.txt` installed, you already have everything needed to generate presentations. PPTX export writes native DrawingML shapes, so it does not require CairoSVG, GTK, or a separate SVG rasterization stack. The item below is an **edge-case fallback** — install it only if you hit the specific scenario.
 
 | Enhancement | Install only if… | How to install | Verify |
 |-------------|-----------------|----------------|--------|
-| **CairoSVG** — higher quality PNG fallbacks | You want crisper PNG fallbacks for Office versions that don't render SVG natively. `svglib` (already installed) is fine for most cases. | Install [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases), then `uv add cairosvg` | `uv run python -c "import cairosvg"` |
 | **Pandoc** — legacy document formats | You need to convert `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`/`.html`/`.epub`/`.ipynb` work natively in Python. | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
 
 ---
@@ -128,30 +117,25 @@ The python.org installer ships `python.exe` but not `python3.exe`. **Just replac
 ### `pip install` fails with permission errors
 
 ```powershell
-$env:UV_PYTHON = (Get-Command python).Source
-uv sync
+pip install --user -r requirements.txt
 ```
 
 Or run PowerShell as Administrator.
 
-### `uv sync` fails due to network issues
+### `pip install` fails due to network issues
 
 ```powershell
-$env:UV_INDEX_URL = "https://pypi.tuna.tsinghua.edu.cn/simple"
-uv sync
-# Or via proxy:
-$env:HTTPS_PROXY = "http://your-proxy:port"
-uv sync
+pip install -r requirements.txt --proxy http://your-proxy:port
 ```
 
 ### `ModuleNotFoundError`
 
-You ran `python` directly instead of `uv run python`. Use `uv run python` to ensure the virtual environment is active.
+`pip` installed to a different Python. Use `python -m pip install -r requirements.txt` to match.
 
 ### `import fitz` fails
 
-1. Upgrade uv: `uv self update`
-2. Pre-built wheel: `uv pip install PyMuPDF --only-binary :all:`
+1. Upgrade pip: `python -m pip install --upgrade pip`
+2. Pre-built wheel: `pip install PyMuPDF --only-binary :all:`
 3. Still failing → install [Visual C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 ### PowerShell says "running scripts is disabled"

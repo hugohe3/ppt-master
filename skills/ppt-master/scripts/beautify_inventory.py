@@ -3,7 +3,7 @@
 PPT Master - Beautify Inventory Builder
 
 Mechanically merge a source deck's extracts into one per-slide ledger for the
-beautify-pptx workflow: text blocks + tables + charts (from a
+beautify-pptx workflow: text blocks + tables + charts + SmartArt structure (from a
 `template_fill_pptx.py analyze` slide_library.json) joined with the images
 bound to each slide (from a `ppt_to_md.py` image_manifest.json). The deterministic
 join only — `ignored` and `needs_confirmation` are emitted empty for the agent
@@ -103,12 +103,27 @@ def build_inventory(slide_library: dict, images_by_slide: dict[int, list[dict]])
             }
             for c in slide.get("charts", [])
         ]
+        diagrams = [
+            {
+                "diagram_id": diagram.get("diagram_id"),
+                "shape_name": diagram.get("shape_name"),
+                "geometry": diagram.get("geometry"),
+                "layout": diagram.get("layout", {}),
+                "root_ids": diagram.get("root_ids", []),
+                "nodes": diagram.get("nodes", []),
+                "connections": diagram.get("connections", []),
+                "status": diagram.get("status"),
+                "warnings": diagram.get("warnings", []),
+            }
+            for diagram in slide.get("diagrams", [])
+        ]
         slides_out.append({
             "slide_index": idx,
             "page_type": slide.get("page_type"),
             "text_blocks": text_blocks,
             "tables": tables,
             "charts": charts,
+            "diagrams": diagrams,
             "images": images_by_slide.get(idx, []),
             "ignored": [],            # agent fills: hidden shapes, master-only text, image crop/rotation
             "needs_confirmation": [],  # agent fills: combo/dual-axis charts, merged-cell tables, overcrowded pages

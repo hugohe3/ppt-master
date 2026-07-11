@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 import json
+import math
 import shutil
 import argparse
 from datetime import datetime
@@ -15,6 +16,13 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from pptx_animations import (  # noqa: E402
+    ANIMATIONS,
+    animation_seconds_to_milliseconds,
+    normalize_animation_effect,
+    normalize_animation_trigger,
+)
+from pptx_transitions import validate_seconds  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -30,7 +38,11 @@ from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
 from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
 from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
-from ..drawingml.theme_fonts import ThemeFontError, load_theme_font_spec
+from ..drawingml.theme_fonts import (
+    ThemeFontError,
+    load_master_text_style_spec,
+    load_theme_font_spec,
+)
 from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
 from .slide_xml import TRANSITIONS
 from .template_structure import (
@@ -42,12 +54,12 @@ from .template_structure import (
     parse_template_slides,
     template_lock_errors,
 )
-from ..animation_config import load_animation_config, validate_animation_config
-
-try:
-    from pptx_animations import ANIMATIONS as _ANIMATIONS
-except ImportError:
-    _ANIMATIONS = {}
+from ..animation_config import (
+    load_animation_config,
+    validate_animation_config,
+    validate_animation_config_errors,
+    validate_transition_config,
+)
 
 
 def _as_dict(value: object) -> dict:
@@ -79,6 +91,8 @@ def _recorded_narration_on_click_slides(
     animation_cli_overrides: dict[str, bool],
 ) -> list[str]:
     """Return slides whose effective recorded-video animation trigger is on-click."""
+    if animation_cli_overrides.get('animation') and animation is None:
+        return []
     slides_cfg = _as_dict(_as_dict(animation_config).get('slides'))
     blocked: list[str] = []
     for svg_path in ref_files:
@@ -87,14 +101,20 @@ def _recorded_narration_on_click_slides(
 
         slide_animation = animation
         if not animation_cli_overrides.get('animation') and 'effect' in anim_cfg:
-            cfg_effect = str(anim_cfg.get('effect'))
-            slide_animation = None if cfg_effect == 'none' else cfg_effect
-        if slide_animation is None:
+            slide_animation = normalize_animation_effect(anim_cfg.get('effect'))
+        groups_cfg = _as_dict(slide_cfg.get('groups'))
+        has_explicit_animation = any(
+            isinstance(group_cfg, dict)
+            and 'effect' in group_cfg
+            and normalize_animation_effect(group_cfg.get('effect')) is not None
+            for group_cfg in groups_cfg.values()
+        )
+        if slide_animation is None and not has_explicit_animation:
             continue
 
         slide_trigger = animation_trigger
         if not animation_cli_overrides.get('animation_trigger') and anim_cfg.get('trigger'):
-            slide_trigger = str(anim_cfg.get('trigger'))
+            slide_trigger = normalize_animation_trigger(anim_cfg.get('trigger'))
         if slide_trigger == 'on-click':
             blocked.append(svg_path.stem)
     return blocked
@@ -107,20 +127,14 @@ def main(argv: list[str] | None = None) -> int:
                     else ['fade', 'push', 'wipe', 'split', 'strips', 'cover', 'random'])
     )
 
-    animation_choices = (
-        ['none'] + (list(_ANIMATIONS.keys()) if _ANIMATIONS
-                    else ['fade', 'fly', 'zoom', 'appear'])
-        + ['auto', 'mixed', 'random']
-    )
+    animation_choices = ['none', *ANIMATIONS, 'auto', 'mixed', 'random']
 
     parser = argparse.ArgumentParser(
-        description='PPT Master - SVG to PPTX Tool (Office Compatibility Mode)',
+        description='PPT Master - SVG to native DrawingML PPTX Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
     %(prog)s examples/ppt169_demo                         # Default: native pptx -> exports/, svg_output -> backup/<ts>/
-    %(prog)s examples/ppt169_demo --svg-snapshot         # Also emit SVG-rendered snapshot pptx
-    %(prog)s examples/ppt169_demo --only legacy          # Only SVG image version (skips native)
     %(prog)s examples/ppt169_demo -o out.pptx            # Explicit path (no backup/)
 
     # Disable transition / change transition effect
@@ -129,9 +143,9 @@ Examples:
 
 SVG source directory (-s):
     output   - svg_output (hand-authored source; native default)
-    final    - svg_final (post-processed; legacy SVG-image path source)
+    final    - svg_final (post-processed preview; diagnostic native input only)
     <any>    - Specify a subdirectory name directly
-    Omit -s to use the default: native reads svg_output, legacy reads svg_final.
+    Omit -s to use the default: native export reads svg_output.
 
 Transition effects (-t/--transition):
     {', '.join(transition_choices)}
@@ -153,13 +167,6 @@ Per-element entrance animation (-a/--animation, native shapes mode):
            mixed (legacy) cycles a larger 16-effect pool by group order;
            random samples from the same legacy pool. Use "-a none" to disable
            element builds explicitly.
-
-Compatibility mode (enabled by default):
-    - Automatically generates PNG fallback images, SVG embedded as extension
-    - Compatible with all Office versions (including Office LTSC 2021)
-    - Newer Office still displays SVG (editable), older versions display PNG
-    - Requires svglib: pip install svglib reportlab
-    - Use --no-compat to disable (only Office 2019+ supported)
 
 Speaker notes (enabled by default):
     - Automatically reads Markdown notes files from the notes/ directory
@@ -186,24 +193,13 @@ Recorded narration:
     parser.add_argument('project_path', type=str, help='Project directory path')
     parser.add_argument('-o', '--output', type=str, default=None, help='Output file path')
     parser.add_argument('-s', '--source', type=str, default=None,
-                        help='SVG source directory. Default: native reads '
-                             'svg_output/ (high-fidelity, preserves icons / '
-                             'preserveAspectRatio / rx-ry); legacy reads '
-                             'svg_final/ (PPT-internal SVG parser fallback). '
-                             'Pass output/final/<name> to force one source.')
+                        help='Native SVG source directory. Default: svg_output/. '
+                             'Pass output/final/<name> only for diagnostics.')
     parser.add_argument('-f', '--format', type=str,
                         choices=list(CANVAS_FORMATS.keys()), default=None,
                         help='Specify canvas format')
     parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
 
-    parser.add_argument('--no-compat', action='store_true',
-                        help='Disable Office compatibility mode (pure SVG only, requires Office 2019+)')
-
-    mode_group = parser.add_mutually_exclusive_group()
-    mode_group.add_argument('--only', type=str, choices=['native', 'legacy'], default=None,
-                            help='Only generate one version: native (editable shapes) or legacy (SVG image)')
-    mode_group.add_argument('--native', action='store_true', default=False,
-                            help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
     merge_group = parser.add_mutually_exclusive_group()
     merge_group.add_argument('--merge-paragraphs', action='store_true', dest='merge_paragraphs',
                              help='Compatibility no-op: mergeable paragraph blocks are merged '
@@ -238,14 +234,6 @@ Recorded narration:
             'flat leaves generated structure slide-local for debugging/comparison.'
         ),
     )
-    parser.add_argument('--svg-snapshot', action='store_true', default=False,
-                        help='Also emit the SVG-rendered snapshot pptx alongside '
-                             'the native pptx in exports/ (named '
-                             '<project>_<ts>_svg.pptx). Off by default — the '
-                             'native pptx is the canonical output; live preview '
-                             'already provides the SVG visual reference. '
-                             'Note: the svg_output/ source snapshot is always written to backup/<ts>/ '
-                             'regardless of this flag.')
     parser.add_argument('--no-image-optimize', action='store_true',
                         help='Disable native PPTX raster image optimization; embeds original image bytes.')
     parser.add_argument('--image-max-dimension', type=int, default=2560,
@@ -264,12 +252,20 @@ Recorded narration:
             number = float(value)
         except ValueError as exc:
             raise argparse.ArgumentTypeError(f"must be a number: {value}") from exc
+        if not math.isfinite(number):
+            raise argparse.ArgumentTypeError("must be finite")
         if number < 0:
             raise argparse.ArgumentTypeError("must be non-negative")
         return number
 
+    def positive_float(value: str) -> float:
+        number = non_negative_float(value)
+        if number <= 0:
+            raise argparse.ArgumentTypeError("must be greater than zero")
+        return number
+
     parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
-                        help='Page transition effect (default: fade, use "none" to disable)')
+                        help='Page transition effect (default: fade; "none" removes visual motion)')
     parser.add_argument('--transition-duration', type=non_negative_float, default=None,
                         help='Transition duration in seconds (default: 0.4)')
     parser.add_argument('--auto-advance', type=non_negative_float, default=None,
@@ -284,7 +280,7 @@ Recorded narration:
                              'richer pool for visual variation, fallback cycles fade/'
                              'wipe/fly/zoom), "mixed" (legacy 16-effect pool), or '
                              '"random".')
-    parser.add_argument('--animation-duration', type=non_negative_float, default=None,
+    parser.add_argument('--animation-duration', type=positive_float, default=None,
                         help='Per-element entrance duration in seconds (default: 0.4)')
     parser.add_argument('--animation-trigger', type=str,
                         choices=['on-click', 'with-previous', 'after-previous'],
@@ -311,22 +307,8 @@ Recorded narration:
                         help='Prepare PowerPoint recorded timings and narrations from a complete audio '
                              'directory. Default-flow exports get the _narrated name suffix '
                              '(<project>_<ts>_narrated.pptx) to tell them apart from silent exports.')
-    parser.add_argument('--narration-padding', type=float, default=0.5,
+    parser.add_argument('--narration-padding', type=non_negative_float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
-
-    parser.add_argument('--cache-dir', type=str, default=None,
-                        help='Cache directory for SVG→PNG renders (default: '
-                             '<project>/.cache/svg_png). Cache key uses SVG content '
-                             'hash + size + renderer; safe across renderer switches. '
-                             'Removed automatically after a successful export.')
-    parser.add_argument('--no-cache', action='store_true',
-                        help='Disable the SVG→PNG cache for this run (still parallel).')
-    parser.add_argument('--keep-cache', action='store_true',
-                        help='Keep the SVG→PNG cache directory after export '
-                             '(default: removed on success to keep project clean).')
-    parser.add_argument('--workers', type=int, default=None,
-                        help='Parallel workers for SVG→PNG pre-rendering. '
-                             'Default: min(cpu, pages, 8). Set 1 for sequential.')
 
     args = parser.parse_args(argv)
 
@@ -367,10 +349,13 @@ Recorded narration:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
     theme_font_spec = None
+    master_text_style_spec = None
     theme_color_spec = None
     if pptx_structure in {'baseline', 'template'}:
         try:
             theme_font_spec = load_theme_font_spec(project_path)
+            if pptx_structure == 'template':
+                master_text_style_spec = load_master_text_style_spec(project_path)
             theme_color_spec = load_theme_color_spec(project_path)
         except (ThemeFontError, ThemeColorError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
@@ -397,49 +382,17 @@ Recorded narration:
     if canvas_format is None and detected_format and detected_format != 'unknown':
         canvas_format = detected_format
 
-    # Determine which versions to generate.
-    # Default is native-only; SVG snapshot is opt-in via --svg-snapshot.
-    # --only native / --only legacy still force a single version explicitly.
-    only_mode = args.only
-    if only_mode == 'native':
-        gen_native, gen_legacy = True, False
-    elif only_mode == 'legacy':
-        gen_native, gen_legacy = False, True
-    else:
-        gen_native = True
-        gen_legacy = args.svg_snapshot
-
-    # Pipeline split: native pptx gets the high-fidelity svg_output/ source
-    # (icons, preserveAspectRatio, rounded-rect rx/ry are all preserved by the
-    # converter); legacy pptx still needs svg_final/ because PowerPoint's
-    # internal SVG parser cannot handle <use data-icon> or honour
-    # preserveAspectRatio. An explicit -s overrides both branches so callers
-    # can keep the previous single-source behaviour for unusual workflows.
-    explicit_source = args.source is not None
-    native_source = args.source if explicit_source else 'output'
-    legacy_source = args.source if explicit_source else 'final'
-
-    native_files: list[Path] = []
-    legacy_files: list[Path] = []
-    native_source_dir = ''
-    legacy_source_dir = ''
-
-    if gen_native:
-        native_files, native_source_dir = find_svg_files(project_path, native_source)
-    if gen_legacy:
-        legacy_files, legacy_source_dir = find_svg_files(project_path, legacy_source)
-
-    # Reference list for cross-product lookups (notes / narration matching).
-    # native_files and legacy_files share filenames because svg_final/ is
-    # copytree'd from svg_output/, so either list works for matching.
-    ref_files = native_files or legacy_files
-    if not ref_files:
+    # Native DrawingML is the only PPTX product. ``-s`` remains an explicit
+    # diagnostic source override; standard export always reads svg_output/.
+    native_source = args.source or 'output'
+    native_files, native_source_dir = find_svg_files(project_path, native_source)
+    ref_files = native_files
+    if not native_files:
         print("Error: No SVG files found")
         return 1
 
     if (
-        gen_native
-        and pptx_structure in {'template', 'preserve'}
+        pptx_structure in {'template', 'preserve'}
         and structure_lock is not None
     ):
         try:
@@ -491,37 +444,24 @@ Recorded narration:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     backup_dir: Path | None = None
-    legacy_path: Path | None = None
     if args.output:
-        output_base = Path(args.output)
-        native_path = output_base
-        if gen_legacy:
-            stem = output_base.stem
-            legacy_path = output_base.parent / f"{stem}_svg{output_base.suffix}"
+        native_path = Path(args.output)
     else:
         exports_dir = project_path / "exports"
         exports_dir.mkdir(parents=True, exist_ok=True)
         # --native-objects yields a materially different file (real editable
         # PowerPoint chart/table objects instead of flattened shapes), so mark
-        # it in the default-flow name to tell it apart from a plain shape export
-        # and the _svg snapshot. Narration flags likewise mark _narrated (audio
-        # embedded per slide + auto-advance timings); both entry points share
-        # the tag. Flag-driven (not content-sniffed) so the name is predictable;
-        # an explicit -o keeps the caller's exact name untouched.
+        # it in the default-flow name to tell it apart from a plain shape export.
+        # Narration flags likewise mark _narrated (audio embedded per slide +
+        # auto-advance timings). Flag-driven (not content-sniffed) so the name
+        # is predictable; an explicit -o keeps the caller's exact name untouched.
         native_tag = "_native_charts" if args.native_objects else ""
         narrated_tag = "_narrated" if (args.recorded_narration or args.narration_audio_dir) else ""
         native_path = exports_dir / f"{project_name}_{timestamp}{native_tag}{narrated_tag}.pptx"
-        # svg_output/ snapshot always goes under backup/<ts>/ in default-flow
-        # mode (no -o). --svg-snapshot only controls the optional legacy
-        # SVG-rendered pptx, which now sits alongside the native pptx in
-        # exports/ rather than nested inside backup/.
+        # Preserve the authored svg_output/ beside every default-flow export.
         backup_dir = project_path / "backup" / timestamp
-        if gen_legacy:
-            legacy_path = exports_dir / f"{project_name}_{timestamp}_svg.pptx"
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
-    if legacy_path is not None:
-        legacy_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
 
@@ -620,15 +560,41 @@ Recorded narration:
     except Exception as exc:
         print(f"Error: Failed to load animation config: {exc}")
         return 1
+    config_errors: list[str] = []
+    if animation_config:
+        config_errors.extend(validate_transition_config(animation_config))
+        config_errors.extend(validate_animation_config_errors(animation_config))
+    config_errors = list(dict.fromkeys(config_errors))
+    if config_errors:
+        for error in config_errors:
+            print(f"Error: {error}", file=sys.stderr)
+        return 1
+
+    config_warnings: list[str] = []
+    if animation_config:
+        reference_messages = validate_animation_config(project_path, animation_config)
+        config_warnings = [
+            message for message in reference_messages
+            if ' has no id and cannot be customized in animations.json' in message
+        ]
+        reference_errors = [
+            message for message in reference_messages
+            if message not in config_warnings
+        ]
+        if reference_errors:
+            for error in reference_errors:
+                print(f"Error: {error}", file=sys.stderr)
+            return 1
+
     if animation_config and verbose:
         config_label = args.animation_config or str(project_path / 'animations.json')
         print(f"  Animation config: {config_label}")
-        for warning in validate_animation_config(project_path, animation_config):
+        for warning in config_warnings:
             print(f"  [warn] {warning}")
 
     defaults = animation_config.get('defaults', {}) if animation_config else {}
-    transition_defaults = defaults.get('transition', {}) if isinstance(defaults, dict) else {}
-    animation_defaults = defaults.get('animation', {}) if isinstance(defaults, dict) else {}
+    transition_defaults = _as_dict(defaults.get('transition')) if isinstance(defaults, dict) else {}
+    animation_defaults = _as_dict(defaults.get('animation')) if isinstance(defaults, dict) else {}
 
     transition_arg = args.transition
     transition_effect = (
@@ -637,37 +603,77 @@ Recorded narration:
         else transition_defaults.get('effect', 'fade')
     )
     transition = None if transition_effect == 'none' else transition_effect
-    transition_duration = (
-        args.transition_duration
-        if args.transition_duration is not None
-        else float(transition_defaults.get('duration', 0.4))
-    )
+    try:
+        transition_duration = validate_seconds(
+            (
+                args.transition_duration
+                if args.transition_duration is not None
+                else transition_defaults.get('duration', 0.4)
+            ),
+            "transition duration",
+            allow_zero=transition is None,
+        )
+        auto_advance = (
+            args.auto_advance
+            if args.auto_advance is not None
+            else transition_defaults.get('auto_advance')
+        )
+        if auto_advance is not None:
+            auto_advance = validate_seconds(
+                auto_advance,
+                "transition auto_advance",
+                allow_zero=True,
+            )
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
-    animation_arg = args.animation
-    animation_effect = (
-        animation_arg
-        if animation_arg is not None
-        # Per-element entrance is opt-in by default: auto-firing element builds
-        # read as the "AI deck" tell and were unsolicited. Page transitions stay
-        # on (see transition default above). Re-enable with -a auto / animations.json.
-        else animation_defaults.get('effect', 'none')
-    )
-    animation = None if animation_effect == 'none' else animation_effect
-    animation_duration = (
-        args.animation_duration
-        if args.animation_duration is not None
-        else float(animation_defaults.get('duration', 0.4))
-    )
-    animation_stagger = (
-        args.animation_stagger
-        if args.animation_stagger is not None
-        else float(animation_defaults.get('stagger', 0.5))
-    )
-    animation_trigger = (
-        args.animation_trigger
-        if args.animation_trigger is not None
-        else animation_defaults.get('trigger', 'after-previous')
-    )
+    try:
+        animation_effect = (
+            args.animation
+            if args.animation is not None
+            # Per-element entrance is opt-in by default: auto-firing element builds
+            # read as the "AI deck" tell and were unsolicited. Page transitions stay
+            # on (see transition default above). Re-enable with -a auto / animations.json.
+            else animation_defaults.get('effect', 'none')
+        )
+        animation = normalize_animation_effect(animation_effect)
+        animation_duration = validate_seconds(
+            (
+                args.animation_duration
+                if args.animation_duration is not None
+                else animation_defaults.get('duration', 0.4)
+            ),
+            "animation duration",
+            allow_zero=False,
+        )
+        animation_seconds_to_milliseconds(
+            animation_duration,
+            "animation duration",
+            allow_zero=False,
+        )
+        animation_stagger = validate_seconds(
+            (
+                args.animation_stagger
+                if args.animation_stagger is not None
+                else animation_defaults.get('stagger', 0.5)
+            ),
+            "animation stagger",
+            allow_zero=True,
+        )
+        animation_seconds_to_milliseconds(
+            animation_stagger,
+            "animation stagger",
+            allow_zero=True,
+        )
+        animation_trigger = normalize_animation_trigger(
+            args.animation_trigger
+            if args.animation_trigger is not None
+            else animation_defaults.get('trigger', 'after-previous')
+        )
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
     animation_cli_overrides = {
         'transition': args.transition is not None,
@@ -679,7 +685,7 @@ Recorded narration:
         'animation_trigger': args.animation_trigger is not None,
     }
 
-    if args.recorded_narration and gen_native:
+    if args.recorded_narration:
         on_click_slides = _recorded_narration_on_click_slides(
             ref_files,
             animation_config,
@@ -699,17 +705,6 @@ Recorded narration:
                 print(f"  ... and {len(on_click_slides) - 20} more", file=sys.stderr)
             return 1
 
-    if args.no_cache:
-        cache_dir: Path | None = None
-    elif args.cache_dir:
-        cache_dir = Path(args.cache_dir)
-        if not cache_dir.is_absolute():
-            cache_dir = project_path / cache_dir
-    else:
-        cache_dir = project_path / '.cache' / 'svg_png'
-
-    # svg_files is per-product (native vs legacy may now read different
-    # directories); everything else is shared.
     # Optional per-project document properties. Absent file → factual fields
     # are still stamped at export; only the authored fields stay blank.
     doc_metadata = None
@@ -733,8 +728,7 @@ Recorded narration:
         verbose=verbose,
         transition=transition,
         transition_duration=transition_duration,
-        auto_advance=args.auto_advance,
-        use_compat_mode=not args.no_compat,
+        auto_advance=auto_advance,
         notes=notes,
         enable_notes=enable_notes,
         animation=animation,
@@ -746,8 +740,6 @@ Recorded narration:
         narration_audio=narration_audio,
         use_narration_timings=use_narration_timings,
         narration_padding=args.narration_padding,
-        cache_dir=cache_dir,
-        workers=args.workers,
         merge_paragraphs=args.merge_paragraphs,
         image_optimize=not args.no_image_optimize,
         image_max_dimension=args.image_max_dimension,
@@ -758,61 +750,36 @@ Recorded narration:
         pptx_structure=pptx_structure,
         native_structure_contract=native_structure_contract,
         theme_font_spec=theme_font_spec,
+        master_text_style_spec=master_text_style_spec,
         theme_color_spec=theme_color_spec,
     )
 
-    success = True
+    if verbose:
+        print("PPT Master - SVG to native DrawingML PPTX Tool")
+        print("=" * 50)
+        print(f"  Project path: {project_path}")
+        print(f"  SVG directory: {native_source_dir}")
+        print(f"  Output file: {native_path}")
+        print()
 
-    # --- Native shapes version (primary) ---
-    if gen_native:
-        if verbose:
-            print("PPT Master - SVG to PPTX Tool")
-            print("=" * 50)
-            print(f"  Project path: {project_path}")
-            print(f"  SVG directory: {native_source_dir}")
-            print(f"  Output file: {native_path}")
-            print()
-
-        try:
-            ok = create_pptx_with_native_svg(
-                output_path=native_path,
-                use_native_shapes=True,
-                svg_files=native_files,
-                conversion_trace_path=(
-                    native_path.with_name(native_path.name + '.trace.json')
-                    if args.conversion_trace else None
-                ),
-                **shared_kwargs,
-            )
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
-        success = success and ok
-
-    # --- SVG image reference version ---
-    if gen_legacy:
-        if verbose:
-            if gen_native:
-                print()
-                print("-" * 50)
-            print("PPT Master - SVG to PPTX Tool (SVG Reference)")
-            print("=" * 50)
-            print(f"  Project path: {project_path}")
-            print(f"  SVG directory: {legacy_source_dir}")
-            print(f"  Output file: {legacy_path}")
-            print()
-
-        ok = create_pptx_with_native_svg(
-            output_path=legacy_path,
-            use_native_shapes=False,
-            svg_files=legacy_files,
+    try:
+        success = create_pptx_with_native_svg(
+            output_path=native_path,
+            use_native_shapes=True,
+            svg_files=native_files,
+            conversion_trace_path=(
+                native_path.with_name(native_path.name + '.trace.json')
+                if args.conversion_trace else None
+            ),
             **shared_kwargs,
         )
-        success = success and ok
+    except (TemplateStructureError, ValueError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
-    # svg_output/ snapshot — runs once per export in default-flow mode,
-    # decoupled from --svg-snapshot. Preserves the AI-generated SVG sources
-    # under backup/<ts>/svg_output/ for later inspection / re-export.
+    # Archive svg_output/ once per default-flow export. This preserves the
+    # authored SVG sources under backup/<ts>/svg_output/ for inspection and
+    # deterministic re-export.
     if success and backup_dir is not None:
         svg_output_src = project_path / "svg_output"
         if svg_output_src.is_dir():
@@ -847,16 +814,6 @@ Recorded narration:
             except (OSError, ValueError) as exc:
                 if verbose:
                     print(f"  [warn] preserve contract backup skipped: {exc}")
-
-    if success and cache_dir is not None and cache_dir.is_dir() and not args.keep_cache:
-        try:
-            shutil.rmtree(cache_dir)
-            cache_parent = cache_dir.parent
-            if cache_parent.is_dir() and cache_parent.name == '.cache' and not any(cache_parent.iterdir()):
-                cache_parent.rmdir()
-        except Exception as exc:
-            if verbose:
-                print(f"  [warn] cache cleanup skipped: {exc}")
 
     return 0 if success else 1
 

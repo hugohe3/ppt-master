@@ -77,7 +77,9 @@ uvx ppt-master update-repo
 
 ## Q: 生成的 PPT 可以编辑吗？
 
-可以。主 `.pptx`（原生 PowerPoint 形状，文字、图形、颜色均可直接编辑，无需转换）以时间戳命名保存至 `exports/`。Executor 的原始 SVG 源（`svg_output/` 副本）始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重跑 `finalize_svg → svg_to_pptx` 重建 pptx，无需再走 LLM。加 `--svg-snapshot` 会额外在 `exports/` 内并排生成 SVG 快照版 pptx，便于跨平台单文件分发；默认关闭——日常开发/诊断场景中 live preview 已经提供了 SVG 视觉参考。需要 **Office 2016** 或更高版本。
+可以。唯一受支持的 PPTX 产物路线，是由项目转换器读取 `svg_output/` 并生成原生 DrawingML `.pptx`；文字、图形和颜色无需额外转换即可编辑，文件以时间戳命名保存至 `exports/`。Executor 的原始 SVG 源（`svg_output/` 副本）始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或基于该版重跑 `finalize_svg → svg_to_pptx` 重建 PPTX，无需再走 LLM。
+
+Step 7 仍会强制生成 `svg_final/`。其中每页都是自包含的视觉预览 SVG，可直接在浏览器或 IDE 中打开，也可作为 SVG 图片手动插入 PowerPoint；项目只保证其作为预览或图片显示，不保证 PowerPoint 手工“转换为形状”后的结果。需要可编辑形状时，请使用 `exports/` 中由项目转换器生成的原生 PPTX。
 
 ## Q: 为什么一段正文被拆成了好几个文本框？能不能一段一个文本框？
 
@@ -254,12 +256,13 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 - 期望的风格基调和配色（如"现代克制、深蓝主色调"）
 - 类别偏好（`brand` 品牌 / `general` 通用 / `scenario` 场景 / `government` 政务 / `special` 特殊）
 - 画布格式（默认 16:9，如需其他格式请注明）
+- 输出范围：进入索引的 `library`（默认）或一个已经初始化的 `project`
 
-不需要一次提供所有细节——AI 代理会通过对话追问补齐缺失信息（模板 ID、主题模式等）。
+不需要一次提供所有细节——AI 代理会通过对话追问补齐缺失信息（输出范围、模板 ID、主题模式等）。
 
 **第三步 — 等待完成**
 
-AI 代理会自动完成后续工作 — 分析截图、构建布局定义、注册模板，使其出现在 PPT Master 工作流的模板选项中。
+AI 代理会自动完成后续工作——分析截图、构建布局定义并验证模板。`library` 范围会完成全局注册，使其进入模板发现；`project` 范围则把薄模板直接写入该项目的 `templates/` 根目录，并明确跳过全局注册。
 
 > **提示**：对风格和使用场景描述得越具体，生成的模板就越符合你的预期。
 

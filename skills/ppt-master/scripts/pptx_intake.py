@@ -4,8 +4,8 @@ PPT Master - PPTX Intake Enrichment
 
 Extract reusable PPTX intake facts into a standard analysis bundle. This is a
 read-only companion to `ppt_to_md.py`: Markdown remains the content source,
-while this bundle provides canvas, visual identity, slide geometry, tables, and
-native chart data for downstream workflows.
+while this bundle provides canvas, visual identity, slide geometry, tables,
+native chart data, and SmartArt structure for downstream workflows.
 
 Usage:
     python3 scripts/pptx_intake.py <source.pptx> -o <output_dir>
@@ -90,6 +90,49 @@ def _table_summary(slide_library: dict[str, Any]) -> dict[str, Any]:
     return {"table_count": len(tables), "tables": tables}
 
 
+def _diagram_summary(slide_library: dict[str, Any]) -> dict[str, Any]:
+    diagrams: list[dict[str, Any]] = []
+    text_item_count = 0
+    unreadable_count = 0
+    warning_count = 0
+    slides_with_diagrams: set[int] = set()
+    for slide in slide_library.get("slides", []):
+        slide_index = slide.get("slide_index")
+        for diagram in slide.get("diagrams", []):
+            node_count = int(diagram.get("node_count") or 0)
+            text_count = int(diagram.get("text_count") or 0)
+            text_item_count += text_count
+            if not diagram.get("text_extracted"):
+                unreadable_count += 1
+            if diagram.get("status") != "ok" or diagram.get("warnings"):
+                warning_count += 1
+            if isinstance(slide_index, int):
+                slides_with_diagrams.add(slide_index)
+            diagrams.append(
+                {
+                    "slide_index": slide_index,
+                    "diagram_id": diagram.get("diagram_id"),
+                    "layout": diagram.get("layout", {}),
+                    "node_count": node_count,
+                    "text_count": text_count,
+                    "connection_count": int(diagram.get("connection_count") or 0),
+                    "max_depth": int(diagram.get("max_depth") or 0),
+                    "text_extracted": bool(diagram.get("text_extracted")),
+                    "has_persisted_drawing": bool(diagram.get("has_persisted_drawing")),
+                    "status": diagram.get("status"),
+                    "warnings": diagram.get("warnings", []),
+                }
+            )
+    return {
+        "diagram_count": len(diagrams),
+        "text_item_count": text_item_count,
+        "unreadable_count": unreadable_count,
+        "warning_count": warning_count,
+        "slides_with_diagrams": sorted(slides_with_diagrams),
+        "diagrams": diagrams,
+    }
+
+
 def build_source_profile(
     pptx_path: Path,
     identity: dict[str, Any],
@@ -118,7 +161,8 @@ def build_source_profile(
                 "into locked constraints after user confirmation."
             ),
             "template_fill": (
-                "Use slide slots, tables, charts, and geometry as the native PPTX fill contract."
+                "Use slide slots, tables, charts, diagrams, and geometry as the native PPTX "
+                "fill contract; diagrams are inventory-only and remain unchanged."
             ),
         },
         "artifacts": {
@@ -142,12 +186,14 @@ def build_source_profile(
                     "slide_index": slide.get("slide_index"),
                     "page_type": slide.get("page_type"),
                     "slot_count": len(slide.get("slots", [])),
+                    "diagram_count": len(slide.get("diagrams", [])),
                 }
                 for slide in slide_library.get("slides", [])
             ],
         },
         "tables": _table_summary(slide_library),
         "charts": _chart_summary(slide_library),
+        "diagrams": _diagram_summary(slide_library),
     }
 
 
