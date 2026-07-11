@@ -17,7 +17,7 @@ Each example follows this layout:
 ├── images/              # Image assets
 ├── notes/               # Speaker notes per page
 ├── svg_output/          # Original SVGs (with placeholders)
-└── svg_final/           # Final SVGs (icons + images embedded)
+└── svg_final/           # Self-contained preview SVGs (icons + images embedded)
 ```
 
 > Examples deliberately omit `sources/` (original PDFs / DOCX) and `exports/` (PPTX output) to keep repo size small. Real projects under `projects/` will have both.

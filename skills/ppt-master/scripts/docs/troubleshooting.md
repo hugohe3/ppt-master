@@ -15,11 +15,14 @@ python3 scripts/project_manager.py validate <project_path>
 
 1. Check the file path and filename.
 2. Confirm naming conventions are consistent.
-3. Preview via a local server if browser file loading is inconsistent:
+3. Run the mandatory post-processing step when you need a self-contained preview:
 
 ```bash
-python3 -m http.server --directory <svg_output_path> 8000
+python3 scripts/finalize_svg.py <project_path>
+python3 -m http.server --directory <project_path>/svg_final 8000
 ```
+
+`svg_final/` is the visual-preview artifact and may be inserted into PowerPoint as an SVG picture. Fix authored content in `svg_output/`, then regenerate `svg_final/`; do not edit the derived preview as the source.
 
 ## Speaker Notes Do Not Split
 
@@ -44,7 +47,11 @@ python3 scripts/finalize_svg.py <project_path>
 python3 scripts/svg_to_pptx.py <project_path>
 ```
 
-Do not export directly from `svg_output/` when `svg_final/` exists.
+Keep all three steps even though they have different consumers: Step 7.2 creates the mandatory `svg_final/` visual preview, while the supported native PPTX exporter reads `svg_output/` directly. Do not pass `-s final` for a release export; that override is diagnostic-only.
+
+## Inserted SVG Does Not Convert Cleanly to Shapes
+
+PowerPoint's manual Convert-to-Shape behavior is unsupported. `svg_final/` is supported only as a visual preview / SVG picture. Use the native PPTX generated from `svg_output/` when editable DrawingML shapes are required.
 
 ## Recorded Narration Missing
 

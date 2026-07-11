@@ -167,7 +167,7 @@ class ProjectManager:
                 f"- Created: {date_str}\n\n"
                 "## Directories\n\n"
                 "- `svg_output/`: raw SVG output\n"
-                "- `svg_final/`: finalized SVG output\n"
+                "- `svg_final/`: self-contained SVG visual preview; may be inserted manually as an SVG image, but PowerPoint Convert to Shape is unsupported\n"
                 "- `images/`: runtime image pool; converter assets keep their original short filenames when possible\n"
                 "- `icons/`: project icon set — selected library icons copied in (via icon_sync.py) plus any custom icons you add; embedded from here at export\n"
                 "- `notes/`: speaker notes\n"
@@ -175,7 +175,7 @@ class ProjectManager:
                 "- `live_preview/`: browser preview runtime files and history (lock.json, server.log, edits.jsonl, annotations.jsonl)\n"
                 "- `sources/`: source materials and normalized markdown\n"
                 "- `analysis/`: machine-extracted intermediate analysis (PPTX intake, image_analysis.csv) — the pipeline's canonical must-read source/asset facts\n"
-                "- `exports/`: main native pptx (timestamped); `_svg.pptx` sibling added with `--svg-snapshot`, `_native_charts.pptx` name with `--native-objects`, `_narrated.pptx` name when narration audio is embedded\n"
+                "- `exports/`: native DrawingML pptx (timestamped); `_native_charts.pptx` name with `--native-objects`, `_narrated.pptx` name when narration audio is embedded\n"
                 "- `backup/<timestamp>/`: svg_output/ archive (always written in default-flow mode; safe to delete old timestamps)\n"
             ),
             encoding="utf-8",

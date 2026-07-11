@@ -6,6 +6,8 @@
 
 **Hard rule — minimal semantics without semantic loss**: `baseline` / free-design roots declare `data-pptx-page-role`; `template` / `preserve` roots already use `data-pptx-layout` and do not duplicate that identity. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by layer, placeholder, or native-object metadata; the marked element uses a stable unique `id`. Ordinary page content keeps normal SVG structure without duplicate semantic classification. See [`semantic-svg.md`](./semantic-svg.md).
 
+**Hard rule — supported PPTX route**: The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter. Step 7.2 still generates `svg_final/` as a mandatory self-contained visual preview that may be inserted as an SVG picture. Do not treat PowerPoint's manual Convert-to-Shape operation as an authoring target or compatibility requirement.
+
 > Note: this rule covers page design only. Speaker notes, animations, transitions, narration, and direct native-PPTX workflows retain their separate artifacts and package-level processing.
 
 ---
@@ -506,15 +508,15 @@ Auto-split `notes/total.md` into per-page files in `notes/`.
 # 1. Split speaker notes
 python3 scripts/total_md_split.py <project_path>
 
-# 2. SVG post-processing (auto-embed icons, images, etc.)
+# 2. SVG post-processing (auto-embed icons/images and flatten positioned text)
 python3 scripts/finalize_svg.py <project_path>
+# Output: svg_final/ self-contained SVG visual previews
 
 # 3. Export PPTX
 python3 scripts/svg_to_pptx.py <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
-#
-# Add --svg-snapshot to additionally emit:
-#   exports/<project_name>_<timestamp>_svg.pptx      ← SVG snapshot pptx (sibling of native pptx)
 ```
+
+`svg_final/` may be opened directly or manually inserted into PowerPoint as an SVG picture. It is not a second PPTX route. Use `-s final` only for converter diagnostics; release exports use the default `svg_output/` source. Manual Convert-to-Shape behavior is unsupported.

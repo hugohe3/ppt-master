@@ -9,12 +9,12 @@ Replaces the previous three independent finalize_svg steps:
                      reference points to a pre-cropped asset.
     fix-aspect    →  for each <image>, read the source bitmap dimensions and
                      adjust x/y/width/height so the rendered box matches the
-                     image aspect ratio (PowerPoint's "Convert to Shape"
-                     ignores preserveAspectRatio and stretches otherwise).
-    embed-images  →  Base64-inline every external image reference so the
-                     legacy/preview pptx (which packages the SVG verbatim)
-                     can resolve them — pptx-internal SVG cannot follow
-                     ``../images/…`` relative URIs.
+                     image aspect ratio in PowerPoint SVG rendering paths that
+                     do not honor preserveAspectRatio consistently.
+    embed-images  →  Base64-inline every embeddable external image reference
+                     so ``svg_final/`` remains portable when opened or manually
+                     inserted as an SVG image. EMF/WMF keep the documented
+                     external-reference exception.
 
 Why merge: each step independently parsed + serialized the SVG, each step
 re-read the same bitmap from disk, and the two spatial transforms (crop and

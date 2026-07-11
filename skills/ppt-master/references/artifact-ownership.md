@@ -27,8 +27,8 @@ Global artifact ownership rules for PPT Master projects.
 | `svg_output/` | Page-design author source | Main-agent handwritten SVG pages containing the complete visible design | Quality checker and native PPTX export read this as the canonical visual/page-layout source; templates and locks do not add missing visible objects at export |
 | `notes/total.md` | Speaker-note source | Complete notes before splitting | Step 6 writes; Step 7.1 splits |
 | `notes/slide_*.md` | Split notes | Per-slide notes generated from `total.md` | Derived by `total_md_split.py` |
-| `svg_final/` | Derived preview/export SVGs | Self-contained post-processed SVGs | Rebuild from `svg_output/` with `finalize_svg.py` |
-| `exports/` | Delivery artifacts | Native PPTX and optional SVG snapshot PPTX | Step 7.3 writes final outputs |
+| `svg_final/` | Derived visual preview | Self-contained post-processed SVGs that may be opened directly or inserted as SVG pictures | Rebuild from `svg_output/` with `finalize_svg.py`; do not use as a supported PPTX source |
+| `exports/` | Delivery artifacts | Native DrawingML PPTX and its explicit native-object/narration variants | Step 7.3 writes final outputs from `svg_output/` |
 | `backup/<timestamp>/svg_output/` | Frozen author-source archive | Re-export source without re-running LLM | `svg_to_pptx.py` writes a snapshot during export |
 | `animations.json` | Optional animation config | Object-level animation sidecar | Created only by explicit animation workflow/request |
 
@@ -46,8 +46,9 @@ Global artifact ownership rules for PPT Master projects.
 | SVG source | `svg_output/` is the only author source for generated pages. |
 | Page-design closure | On SVG-authoring routes, every visible exported-slide object exists in the corresponding page SVG or an explicitly referenced visual asset. |
 | Package-behavior separation | Speaker notes, animations, transitions, narration, and direct native-PPTX workflows keep their owning artifacts; do not force them into SVG metadata. |
-| Post-processed SVG | `svg_final/` is disposable and must be rebuildable from `svg_output/`. |
-| Export source | Native PPTX export reads `svg_output/` by default. SVG snapshot export reads `svg_final/` only when requested. |
+| Post-processed SVG | `svg_final/` is disposable, must be rebuilt in Step 7.2, and serves only as a self-contained visual preview / manually insertable SVG picture. |
+| Export source | The only supported generated-PPTX route reads `svg_output/` through the project SVG-to-DrawingML converter. A diagnostic `-s final` override does not change ownership or create a supported release route. |
+| Shape-conversion boundary | PowerPoint's manual Convert-to-Shape operation on `svg_final/` is outside the project compatibility contract. |
 | Confirmation | Final `confirm_ui/result.json` or chat confirmation overrides recommendations. |
 
 **Forbidden - mixed ownership**: Do not copy chart values from Markdown into `analysis/` by hand, do not edit `svg_final/` as the source of a fix, and do not treat `design_spec.md` prose as a replacement for `spec_lock.md`.
@@ -62,6 +63,5 @@ Global artifact ownership rules for PPT Master projects.
 | `notes/slide_*.md` | `notes/total.md` | `python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>` |
 | `svg_final/` | `svg_output/` plus project assets | `python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>` |
 | Native PPTX | `svg_output/` plus notes/assets | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
-| SVG snapshot PPTX | `svg_final/` | `svg_to_pptx.py --svg-snapshot` |
 
 **Default - regenerate derived views**: When a source artifact changes, regenerate the derived artifact at the owning step instead of patching the derived file directly.

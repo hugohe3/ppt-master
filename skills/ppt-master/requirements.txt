@@ -12,8 +12,8 @@
 # ─────────────────────────────────────────────────────────────
 # Batch-convert SVG files to PowerPoint presentations.
 # 用于将 SVG 文件批量转换为 PowerPoint 演示文稿
-# Uses Office-compatible mode (PNG + SVG dual format) by default, supports all Office versions.
-# 默认使用 Office 兼容模式（PNG + SVG 双格式），支持所有 Office 版本
+# Converts supported SVG elements to editable native DrawingML shapes.
+# 将受支持的 SVG 元素转换为可编辑的原生 DrawingML 形状
 python-pptx>=0.6.21
 XlsxWriter>=3.0.0
 
@@ -21,19 +21,6 @@ XlsxWriter>=3.0.0
 # notes_to_audio.py generates per-slide narration audio on macOS/Linux/Windows.
 # notes_to_audio.py 用于在 macOS/Linux/Windows 上生成逐页旁白音频。
 edge-tts>=7.2.8
-
-# Office compatibility dependencies (choose one, CairoSVG preferred)
-# Office 兼容模式依赖（二选一，优先使用 cairosvg）
-# Converts SVG to PNG fallback images for Office LTSC 2021 etc.
-# 用于将 SVG 转换为 PNG 后备图片，确保 Office LTSC 2021 等版本正常显示
-#
-# Option A / 方案 A: CairoSVG (recommended / 推荐, ~25MB, full gradient/filter support)
-#   pip install cairosvg
-#   macOS: brew install cairo
-#
-# Option B / 方案 B: svglib (lightweight / 轻量, ~5MB, some gradients may be lost)
-svglib>=1.5.0
-reportlab>=4.0.0
 
 # ─────────────────────────────────────────────────────────────
 # PDF to Markdown tool / PDF 转 Markdown 工具 (skills/ppt-master/scripts/source_to_md/pdf_to_md.py)
@@ -76,8 +63,8 @@ openpyxl>=3.1.0
 # ─────────────────────────────────────────────────────────────
 # Image processing tools / 图片处理工具
 # ─────────────────────────────────────────────────────────────
-# fix_image_aspect.py - Fix image aspect ratio (prevent stretching during PPT shape conversion)
-# fix_image_aspect.py - 修复图片宽高比（防止 PPT 转形状时拉伸）
+# fix_image_aspect.py - Normalize image boxes for PowerPoint SVG rendering diagnostics
+# fix_image_aspect.py - 为 PowerPoint SVG 渲染诊断归一化图片框
 # gemini_watermark_remover.py - Remove watermarks from Gemini-generated images
 # gemini_watermark_remover.py - 去除 Gemini 生成图片的水印
 Pillow>=9.0.0

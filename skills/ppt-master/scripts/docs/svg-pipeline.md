@@ -4,6 +4,8 @@
 
 These tools cover post-processing, SVG validation, speaker notes, recorded narration, and PPTX export.
 
+The supported delivery contract has one PPTX path: `svg_output/` → the project SVG-to-DrawingML converter → native PPTX. The mandatory `finalize_svg.py` step separately creates self-contained `svg_final/` visual previews, which may be opened directly or inserted into PowerPoint as SVG pictures. There is no SVG-image PPTX output, and PowerPoint's manual Convert-to-Shape operation is unsupported.
+
 ## Recommended Pipeline
 
 Run these steps in order:
@@ -23,7 +25,8 @@ It aggregates:
 - static same-document `<use>` expansion from `svg_to_pptx/use_expander.py`
 - `align_embed_images.py` (`crop-images` / `fix-aspect` / `embed-images` aliases route here)
 - `flatten_tspan.py`
-- `svg_rect_to_path.py`
+
+`svg_final/` remains a required Step 7.2 artifact even though the native exporter reads `svg_output/`. It is the self-contained visual reference and may be manually inserted as an SVG picture.
 
 ## `svg_to_pptx.py`
 
@@ -36,7 +39,9 @@ python3 scripts/svg_to_pptx.py <project_path> --pptx-structure template  # expli
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure preserve  # imported source package contract
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # structure diagnostic
 # Template-import visual round-trip diagnostic only:
-python3 scripts/svg_to_pptx.py <template_import_output> --only native -s svg-flat
+python3 scripts/svg_to_pptx.py <template_import_output> -s svg-flat
+# Post-processed-source comparison diagnostic only (never a release export):
+python3 scripts/svg_to_pptx.py <project_path> -s final
 python3 scripts/svg_to_pptx.py <project_path> --no-notes
 python3 scripts/svg_to_pptx.py <project_path> -t none
 python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
@@ -50,17 +55,15 @@ Behavior:
 - Default output (default-flow mode, no `-o`):
   - `exports/<project_name>_<timestamp>.pptx` — native editable pptx (canonical output)
   - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, always written so the pptx can be rebuilt via `finalize_svg → svg_to_pptx` without re-running the LLM
-- `--svg-snapshot` (opt-in) additionally emits:
-  - `exports/<project_name>_<timestamp>_svg.pptx` — SVG snapshot pptx for visual reference, sibling of the native pptx
-  - Live preview already serves as the SVG visual reference for day-to-day use; the snapshot pptx is for distribution or frozen-state archival
-- Explicit `-o/--output` skips `backup/`; pair with `--svg-snapshot` to also emit the side-by-side `_svg.pptx` next to the chosen path
+- `finalize_svg.py` always creates `svg_final/` before export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX.
+- Explicit `-o/--output` changes the native PPTX destination and skips `backup/`.
 - Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:
   - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it.
   - With `--no-merge`: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
   - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the default; pages with tight typographic alignment (covers, charts, tables) usually want `--no-merge`
   - Mergeable detection is conservative: only fires when the children form a clean paragraph block; mixed-layout `<text>` falls through to the default per-line path
-- Native export reads `svg_output/`; `--svg-snapshot` and legacy export read
-  `svg_final/`. Use `-s` only as an explicit diagnostic override.
+- Native release export reads `svg_output/`. `-s final` is an explicit diagnostic override for comparing conversion behavior against post-processed SVGs; it does not change artifact ownership or create a supported release path.
+- `svg_final/` may be opened directly or inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is outside the compatibility contract.
 - On every SVG-authoring route, each file in `svg_output/` is the complete visible
   page-design source. Templates and locks may guide authoring, but finalize/export
   never use them to overlay visible content missing from the SVG. Notes, animation,
@@ -102,12 +105,6 @@ Behavior:
 - `mixed` (legacy) is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a larger 16-effect pool across the whole deck; `random` samples from that same legacy pool
 - `--animation-duration` controls per-element entrance length (default `0.4`); `--animation-stagger` adds gap between elements in `after-previous` mode (default `0.5`)
 - Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`
-
-Performance (legacy `_svg.pptx` PNG fallback, only when `--svg-snapshot` or `--only legacy`):
-- SVG→PNG is pre-rendered in a process pool before the main loop. Default workers = `min(cpu, pages, 8)`; override with `--workers N` (set `1` for sequential, `0` is treated as sequential).
-- Results are cached at `<project>/.cache/svg_png/` keyed by SVG content hash + size + active renderer (`cairosvg` vs `svglib`). Switching renderers naturally invalidates the cache; nothing to clean by hand.
-- `--cache-dir <path>` relocates the cache; `--no-cache` forces re-render without writing/reading the cache (handy when debugging rendering).
-- Native mode (`--only native`) is unaffected — that path embeds DrawingML shapes and never touches PNG.
 
 Dependency:
 
@@ -187,16 +184,6 @@ Use this after SVG generation to inspect existing SVG geometry when manual compa
 python3 scripts/svg_finalize/flatten_tspan.py examples/<project>/svg_output
 python3 scripts/svg_finalize/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
-
-### `svg_rect_to_path.py`
-
-```bash
-python3 scripts/svg_finalize/svg_rect_to_path.py <project_path>
-python3 scripts/svg_finalize/svg_rect_to_path.py <project_path> -s final
-python3 scripts/svg_finalize/svg_rect_to_path.py path/to/file.svg
-```
-
-Use when rounded corners must survive PowerPoint shape conversion.
 
 ### `align_embed_images.py`
 
