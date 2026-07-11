@@ -146,7 +146,7 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 
 **Per-block expression**: render each `design_spec.md §IX Content` block in its written texture — a full-sentence block as wrapped prose, a fragment/label block as bullets/keywords. **Never split a full-sentence block into a bullet list** — splitting loses the information that the block was continuous reasoning, not a set of parallel points; not because a bullet lays out easier, and not because an inherited template slot is shaped as a list. If a block carries no clear texture, infer the mode from its wording and the page layout.
 
-- **Prose render recipe**: one `<text>` per paragraph; wrap lines with sibling `<tspan>` that reset `x` to the block's left edge and advance `dy` by the font size × a line-height factor. **Default — line-height by density (may override per content fit)**: ~1.4–1.5× for dense / small-body blocks (CLReq comfortable minimum), 1.6–2.0× for large-type, sparse, or `breathing` blocks. Fit about width ÷ font-size CJK glyphs per line (Latin fits roughly twice that); the last line runs short. Use the body ramp size, not a new one.
+- **Prose render recipe**: one `<text>` per paragraph; wrap lines with sibling `<tspan>` where the first line uses `dy="0"` and every subsequent line repeats the parent `<text>`'s **exact `x`** and the **same positive relative `dy`** (the line-height). Equal relative `dy` + matching `x` is what merges the lines into one editable PowerPoint text frame; a growing/cumulative `dy`, an irregular gap, or a mismatched `x` (e.g. `x="0"` under `<text x="60">`) splits them into separate single-line boxes. Set the line-height `dy` from the font size × a line-height factor. **Default — line-height by density (may override per content fit)**: ~1.4–1.5× for dense / small-body blocks (CLReq comfortable minimum), 1.6–2.0× for large-type, sparse, or `breathing` blocks. Fit about width ÷ font-size CJK glyphs per line (Latin fits roughly twice that); the last line runs short. Use the body ramp size, not a new one.
 - **Template precedence**: when an inherited template slot is a bullet list but the §IX block is prose, the prose wins — widen or reflow the container to hold the paragraph, or drop that card; do not pour the sentence back into the list slot.
 - **Mode precedence**: the locked mode shapes voice / register, not §IX's authored titles or page order. When a `§IX` title is a user-authored topic label, keep it — do not upgrade it to an assertion just because the mode (e.g. `pyramid`) favors them; mode title-tendencies apply only to AI-drafted titles.
 
@@ -226,11 +226,15 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 
 ### 3.0 Native Preset Shape Selection
 
-**Default — use one native preset when it exactly expresses one object (may
-override for page-specific geometry)**: apply the decision gate in
-[`native-shape-authoring.md`](./native-shape-authoring.md) before drawing a
-literal stock shape, block arrow, standard flowchart node, connector, callout,
-ribbon, or Office symbol.
+**Reach for a native preset whenever one expresses a complete object — this is
+the default, not the exception.** Block arrows, chevrons, banners / ribbons,
+callouts, flowchart nodes, stars, and other Office symbols should be **authored
+as presets** via `preset_shape_svg.py`, not drawn as plain `<path>`s or faked
+with rectangles: presets are what give the slide real PowerPoint shapes with
+adjustment handles and the designed, non-flat-card look. When a page calls for
+one of these, use the preset. Apply the decision gate in
+[`native-shape-authoring.md`](./native-shape-authoring.md) to pick the right
+shape and to keep only the exceptions below as ordinary SVG.
 
 | Decision | Action |
 |---|---|

@@ -414,7 +414,7 @@ These forms are needed only when the stated PPT behavior matters:
 
 | Desired behavior | Required form |
 |---|---|
-| One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` and use non-positional `<tspan>` children. A `tspan` with `x`, `y`, or `dy` starts a new positioned line and is flattened to another text frame. Separate `<text>` elements remain valid when separate frames are intended. |
+| One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line; evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` **merge into one frame as multiple paragraphs** (the default paragraph-merge), while an irregular gap or a mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
 | Free-design page family/chrome extraction | Use the semantic markers in §4.1. Marker-free pages retain conservative filename/id fallbacks, but no visual content is inferred. |
