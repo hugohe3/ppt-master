@@ -125,15 +125,43 @@ def _payload_from_chart_xml(
     ]
     if not chart_nodes:
         raise _UnsupportedChart("unsupported-chart-plot")
+    date_system = chart_root.find("c:date1904", C_NS)
+    if date_system is not None and (
+        not set(date_system.attrib).issubset({"val"}) or list(date_system)
+    ):
+        raise _UnsupportedChart("unsupported-date-system")
+    uses_1904_dates = _strict_axis_bool(
+        date_system,
+        date_system is not None,
+    )
     if len(chart_nodes) > 1:
-        raise _UnsupportedChart("unsupported-combo-chart")
-    if plot_area.find("c:dateAx", C_NS) is not None:
-        raise _UnsupportedChart("unsupported-date-axis")
+        if uses_1904_dates and any(
+            _category_cache_is_numeric(chart) for chart in chart_nodes
+        ):
+            raise _UnsupportedChart("unsupported-date-system")
+        payload, visual_styles = _combo_payload(
+            chart_root,
+            plot_area,
+            chart_nodes,
+            xfrm,
+            palette=palette,
+        )
+        return payload, visual_styles
 
     chart = chart_nodes[0]
     chart_tag = _local_name(chart.tag)
+    has_date_axis = plot_area.find("c:dateAx", C_NS) is not None
+    if uses_1904_dates and has_date_axis:
+        raise _UnsupportedChart("unsupported-date-system")
+    if has_date_axis:
+        _validate_canonical_series_order(
+            [chart],
+            "unsupported-chart-series-order",
+        )
     if chart_tag in {"area3DChart", "bar3DChart", "line3DChart", "pie3DChart", "surface3DChart"}:
         raise _UnsupportedChart("unsupported-3d-chart")
+    if has_date_axis and chart_tag not in {"areaChart", "stockChart"}:
+        raise _UnsupportedChart("unsupported-date-axis")
     if chart_tag == "barChart":
         payload = _category_payload(chart, _bar_chart_type(chart), xfrm)
     elif chart_tag in {"areaChart", "lineChart", "ofPieChart", "pieChart", "doughnutChart"}:
@@ -144,20 +172,374 @@ def _payload_from_chart_xml(
             "pieChart": "pie",
             "doughnutChart": "doughnut",
         }[chart_tag]
-        payload = _category_payload(chart, chart_type, xfrm)
+        payload = _category_payload(
+            chart,
+            chart_type,
+            xfrm,
+            category_kind="date" if has_date_axis else "text",
+        )
     elif chart_tag == "scatterChart":
         payload = _xy_payload(chart, "scatter", xfrm)
     elif chart_tag == "bubbleChart":
         payload = _xy_payload(chart, "bubble", xfrm)
+    elif chart_tag == "stockChart":
+        payload, visual_styles = _stock_payload(
+            chart_root,
+            plot_area,
+            chart,
+            xfrm,
+            palette=palette,
+        )
+        return payload, visual_styles
     else:
         raise _UnsupportedChart("unsupported-chart-type")
+
+    if has_date_axis:
+        payload["axes"] = _single_axis_contract(
+            plot_area,
+            chart,
+            category_kind="date",
+            cross_between="midCat",
+        )
+        expected_category_format = payload["axes"]["category"].get(
+            "number_format",
+            "m/d/yyyy",
+        )
+        if _numeric_category_cache_format(chart) != expected_category_format:
+            raise _UnsupportedChart("unsupported-chart-category-format")
 
     visual_styles = _validate_chart_semantics(
         payload,
         plot_area,
         chart,
         palette=palette,
+        validate_axes=not has_date_axis,
     )
+    _apply_chart_metadata(payload, chart_root, plot_area, chart)
+    return payload, visual_styles
+
+
+def _combo_payload(
+    chart_root: ET.Element,
+    plot_area: ET.Element,
+    chart_nodes: list[ET.Element],
+    xfrm: Xfrm,
+    *,
+    palette: ColorPalette | None,
+) -> tuple[dict[str, Any], list[SeriesVisualStyle]]:
+    series_indices_by_plot = [
+        _plot_series_indices(chart, "unsupported-combo-series-order")
+        for chart in chart_nodes
+    ]
+    flat_series_indices = [
+        index
+        for series_indices in series_indices_by_plot
+        for index in series_indices
+    ]
+    if sorted(flat_series_indices) != list(range(len(flat_series_indices))):
+        raise _UnsupportedChart("unsupported-combo-series-order")
+    axes_by_id = _axis_nodes_by_id(plot_area)
+    if not axes_by_id:
+        raise _UnsupportedChart("unsupported-combo-chart")
+    axes: dict[str, dict[str, Any]] = {}
+    axis_pairs: dict[str, tuple[str, str]] = {}
+    primary_categories: list[Any] | None = None
+    primary_categories_are_numeric = False
+    plots: list[dict[str, Any]] = []
+    visual_styles: list[SeriesVisualStyle] = []
+    colors: list[str] = []
+    referenced_axis_ids: set[str] = set()
+
+    for chart, series_indices in zip(chart_nodes, series_indices_by_plot):
+        chart_tag = _local_name(chart.tag)
+        if chart_tag == "barChart":
+            if _bar_chart_type(chart) != "column":
+                raise _UnsupportedChart("unsupported-combo-chart")
+            chart_type = "column"
+        elif chart_tag == "lineChart":
+            chart_type = "line"
+        elif chart_tag == "areaChart":
+            chart_type = "area"
+        else:
+            raise _UnsupportedChart("unsupported-combo-chart")
+
+        cat_id, cat_axis, val_id, val_axis = _plot_axis_pair(chart, axes_by_id)
+        if _local_name(cat_axis.tag) != "catAx":
+            raise _UnsupportedChart("unsupported-combo-chart")
+        val_position = _element_val(val_axis.find("c:axPos", C_NS))
+        if val_position == "l":
+            axis_name = "primary"
+            category_role = "category"
+            value_role = "value"
+            allowed_value_crosses = {"autoZero"}
+        elif val_position == "r":
+            axis_name = "secondary"
+            category_role = "secondary_category"
+            value_role = "secondary_value"
+            allowed_value_crosses = {"max"}
+        else:
+            raise _UnsupportedChart("unsupported-combo-chart")
+
+        axis_pair = (cat_id, val_id)
+        previous_pair = axis_pairs.get(axis_name)
+        if previous_pair is not None and previous_pair != axis_pair:
+            raise _UnsupportedChart("unsupported-combo-chart")
+        if any(
+            set(existing_pair).intersection(axis_pair)
+            for name, existing_pair in axis_pairs.items()
+            if name != axis_name
+        ):
+            raise _UnsupportedChart("unsupported-combo-chart")
+        axis_pairs[axis_name] = axis_pair
+
+        category_axis = _axis_config_from_xml(
+            cat_axis,
+            role=category_role,
+            expected_cross_axis_id=val_id,
+            allowed_crosses={"autoZero"},
+            expected_cross_between=None,
+        )
+        value_axis = _axis_config_from_xml(
+            val_axis,
+            role=value_role,
+            expected_cross_axis_id=cat_id,
+            allowed_crosses=allowed_value_crosses,
+            expected_cross_between="between",
+        )
+        for role, config in (
+            (category_role, category_axis),
+            (value_role, value_axis),
+        ):
+            if role in axes and axes[role] != config:
+                raise _UnsupportedChart("unsupported-combo-chart")
+            axes[role] = config
+        referenced_axis_ids.update((cat_id, val_id))
+
+        categories_are_numeric = _category_cache_is_numeric(chart)
+        if categories_are_numeric:
+            expected_category_format = category_axis.get(
+                "number_format",
+                "General",
+            )
+            if _numeric_category_cache_format(chart) != expected_category_format:
+                raise _UnsupportedChart("unsupported-combo-category-format")
+        plot_payload = _category_payload(
+            chart,
+            chart_type,
+            xfrm,
+            category_kind="numeric" if categories_are_numeric else "text",
+        )
+        if axis_name == "primary" and primary_categories is None:
+            primary_categories = list(plot_payload["categories"])
+            primary_categories_are_numeric = categories_are_numeric
+        plot_styles = _validate_chart_semantics(
+            plot_payload,
+            plot_area,
+            chart,
+            palette=palette,
+            validate_axes=False,
+        )
+        visual_styles.extend(plot_styles)
+        colors.extend(
+            str(color)
+            for color in plot_payload.get("style", {}).get("colors", [])
+        )
+        _apply_plot_data_labels(plot_payload, chart)
+        plot_entry: dict[str, Any] = {
+            "axis": axis_name,
+            "categories": list(plot_payload["categories"]),
+            "category_numeric": categories_are_numeric,
+            "series": plot_payload["series"],
+            "series_indices": series_indices,
+            "type": chart_type,
+        }
+        for key in ("data_labels", "grouping", "line_style"):
+            if plot_payload.get(key) is not None:
+                plot_entry[key] = plot_payload[key]
+        plots.append(plot_entry)
+
+    if primary_categories is None or not plots:
+        raise _UnsupportedChart("unsupported-combo-chart")
+    if referenced_axis_ids != set(axes_by_id):
+        raise _UnsupportedChart("unsupported-combo-chart")
+
+    category_layouts = {
+        (
+            bool(plot["category_numeric"]),
+            tuple(plot["categories"]),
+        )
+        for plot in plots
+    }
+    if len(category_layouts) == 1:
+        for plot in plots:
+            plot.pop("categories")
+            plot.pop("category_numeric")
+    payload: dict[str, Any] = {
+        **_bounds_payload(xfrm),
+        "axes": axes,
+        "categories": primary_categories,
+        "plots": plots,
+        "type": "combo",
+    }
+    if primary_categories_are_numeric:
+        payload["category_numeric"] = True
+    if colors:
+        payload["style"] = {"colors": colors}
+    _apply_chart_metadata(
+        payload,
+        chart_root,
+        plot_area,
+        chart_nodes[0],
+        include_plot_labels=False,
+    )
+    return payload, visual_styles
+
+
+def _validate_stock_semantics(
+    plot_area: ET.Element,
+    chart: ET.Element,
+) -> None:
+    allowed_children = {"axId", "dLbls", "hiLowLines", "ser", "upDownBars"}
+    if any(_local_name(child.tag) not in allowed_children for child in chart):
+        raise _UnsupportedChart("unsupported-stock-chart")
+    if plot_area.find("c:dTable", C_NS) is not None:
+        raise _UnsupportedChart("unsupported-chart-data-table")
+    for tag in ("dropLines", "errBars", "trendline"):
+        if chart.find(f".//c:{tag}", C_NS) is not None:
+            raise _UnsupportedChart("unsupported-chart-analysis-features")
+    if _data_labels_payload(chart.find("c:dLbls", C_NS)) is not None:
+        raise _UnsupportedChart("unsupported-chart-data-labels")
+    if len(chart.findall("c:dLbls", C_NS)) > 1:
+        raise _UnsupportedChart("unsupported-stock-chart")
+
+    hi_low_lines = chart.findall("c:hiLowLines", C_NS)
+    up_down_bars = chart.findall("c:upDownBars", C_NS)
+    if len(hi_low_lines) != 1 or len(up_down_bars) != 1:
+        raise _UnsupportedChart("unsupported-stock-chart")
+    hi_low_styles = hi_low_lines[0].findall("c:spPr", C_NS)
+    if (
+        hi_low_lines[0].attrib
+        or len(hi_low_styles) > 1
+        or any(_local_name(child.tag) != "spPr" for child in hi_low_lines[0])
+    ):
+        raise _UnsupportedChart("unsupported-stock-chart")
+    up_down = up_down_bars[0]
+    if up_down.attrib or any(
+        _local_name(child.tag) not in {"downBars", "gapWidth", "upBars"}
+        for child in up_down
+    ):
+        raise _UnsupportedChart("unsupported-stock-chart")
+    gap_widths = up_down.findall("c:gapWidth", C_NS)
+    if (
+        len(gap_widths) != 1
+        or set(gap_widths[0].attrib) != {"val"}
+        or list(gap_widths[0])
+        or _element_val(gap_widths[0]) != "150"
+    ):
+        raise _UnsupportedChart("unsupported-stock-chart")
+    for tag in ("upBars", "downBars"):
+        nodes = up_down.findall(f"c:{tag}", C_NS)
+        styles = nodes[0].findall("c:spPr", C_NS) if nodes else []
+        if (
+            len(nodes) != 1
+            or nodes[0].attrib
+            or len(styles) > 1
+            or any(_local_name(child.tag) != "spPr" for child in nodes[0])
+        ):
+            raise _UnsupportedChart("unsupported-stock-chart")
+
+    allowed_series_children = {
+        "cat", "extLst", "idx", "marker", "order", "smooth", "spPr",
+        "tx", "val",
+    }
+    for series_node in chart.findall("c:ser", C_NS):
+        if any(
+            _local_name(child.tag) not in allowed_series_children
+            for child in series_node
+        ):
+            raise _UnsupportedChart("unsupported-stock-chart")
+        for child_name in allowed_series_children - {"extLst"}:
+            if len(series_node.findall(f"c:{child_name}", C_NS)) > 1:
+                raise _UnsupportedChart("unsupported-stock-chart")
+        marker = series_node.find("c:marker", C_NS)
+        symbol = marker.find("c:symbol", C_NS) if marker is not None else None
+        if (
+            marker is not None
+            and (
+                marker.attrib
+                or len(marker) != 1
+                or symbol is None
+                or set(symbol.attrib) != {"val"}
+                or list(symbol)
+                or _element_val(symbol) != "none"
+            )
+        ):
+            raise _UnsupportedChart("unsupported-stock-chart")
+        smooth = series_node.find("c:smooth", C_NS)
+        if smooth is not None:
+            if set(smooth.attrib) != {"val"} or list(smooth):
+                raise _UnsupportedChart("unsupported-stock-chart")
+            if _strict_axis_bool(smooth, False):
+                raise _UnsupportedChart("unsupported-stock-chart")
+        for child_name in ("idx", "order"):
+            child = series_node.find(f"c:{child_name}", C_NS)
+            if child is None or set(child.attrib) != {"val"} or list(child):
+                raise _UnsupportedChart("unsupported-stock-chart")
+
+
+def _stock_payload(
+    chart_root: ET.Element,
+    plot_area: ET.Element,
+    chart: ET.Element,
+    xfrm: Xfrm,
+    *,
+    palette: ColorPalette | None,
+) -> tuple[dict[str, Any], list[SeriesVisualStyle]]:
+    series_nodes = chart.findall("c:ser", C_NS)
+    if len(series_nodes) != 4:
+        raise _UnsupportedChart("unsupported-stock-chart")
+    categories = _numeric_values(series_nodes[0].find("c:cat", C_NS))
+    if not categories:
+        raise _UnsupportedChart("unsupported-chart-cache")
+    series: list[dict[str, Any]] = []
+    for index, series_node in enumerate(series_nodes, start=1):
+        expected_index = str(index - 1)
+        if (
+            _element_val(series_node.find("c:idx", C_NS)) != expected_index
+            or _element_val(series_node.find("c:order", C_NS)) != expected_index
+        ):
+            raise _UnsupportedChart("unsupported-stock-chart")
+        if _numeric_values(series_node.find("c:cat", C_NS)) != categories:
+            raise _UnsupportedChart("unsupported-chart-cache")
+        values = _numeric_values(series_node.find("c:val", C_NS))
+        if len(values) != len(categories):
+            raise _UnsupportedChart("unsupported-chart-cache")
+        series.append({
+            "name": _series_name(series_node, index),
+            "values": values,
+        })
+    axes = _single_axis_contract(
+        plot_area,
+        chart,
+        category_kind="date",
+        cross_between="between",
+    )
+    expected_category_format = axes["category"].get(
+        "number_format",
+        "m/d/yyyy",
+    )
+    category_cache_format = _numeric_category_cache_format(chart)
+    if category_cache_format not in {"General", expected_category_format}:
+        raise _UnsupportedChart("unsupported-chart-category-format")
+    _validate_stock_semantics(plot_area, chart)
+    payload: dict[str, Any] = {
+        **_bounds_payload(xfrm),
+        "axes": axes,
+        "categories": categories,
+        "series": series,
+        "type": "stock",
+    }
+    visual_styles = _chart_visual_styles(payload, chart, palette)
     _apply_chart_metadata(payload, chart_root, plot_area, chart)
     return payload, visual_styles
 
@@ -539,29 +921,299 @@ def _chart_visual_styles(
     return styles
 
 
-def _validate_chart_semantics(
-    payload: dict[str, Any],
+def _strict_axis_bool(elem: ET.Element | None, default: bool) -> bool:
+    if elem is None:
+        return default
+    raw = elem.attrib.get("val")
+    if raw is None:
+        return default
+    key = raw.strip().lower()
+    if key in {"1", "on", "true"}:
+        return True
+    if key in {"0", "false", "off"}:
+        return False
+    raise _UnsupportedChart("unsupported-chart-axis-options")
+
+
+def _validate_canonical_series_order(
+    plots: list[ET.Element],
+    status: str,
+) -> None:
+    expected_index = 0
+    for plot in plots:
+        for series in plot.findall("c:ser", C_NS):
+            expected = str(expected_index)
+            for child_name in ("idx", "order"):
+                child = series.find(f"c:{child_name}", C_NS)
+                if (
+                    child is None
+                    or set(child.attrib) != {"val"}
+                    or list(child)
+                    or _element_val(child) != expected
+                ):
+                    raise _UnsupportedChart(status)
+            expected_index += 1
+
+
+def _plot_series_indices(plot: ET.Element, status: str) -> list[int]:
+    indices: list[int] = []
+    for series in plot.findall("c:ser", C_NS):
+        values: list[int] = []
+        for child_name in ("idx", "order"):
+            child = series.find(f"c:{child_name}", C_NS)
+            raw_value = _element_val(child)
+            if (
+                child is None
+                or set(child.attrib) != {"val"}
+                or list(child)
+                or raw_value is None
+                or re.fullmatch(r"[0-9]+", raw_value) is None
+            ):
+                raise _UnsupportedChart(status)
+            values.append(int(raw_value))
+        if values[0] != values[1]:
+            raise _UnsupportedChart(status)
+        indices.append(values[0])
+    if not indices or len(set(indices)) != len(indices):
+        raise _UnsupportedChart(status)
+    return indices
+
+
+def _axis_number(elem: ET.Element | None) -> int | float | None:
+    if elem is None:
+        return None
+    raw = elem.attrib.get("val")
+    try:
+        number = float(raw) if raw is not None else math.nan
+    except (TypeError, ValueError, OverflowError):
+        raise _UnsupportedChart("unsupported-chart-axis-options") from None
+    if not math.isfinite(number):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    return int(number) if number.is_integer() else number
+
+
+def _axis_nodes_by_id(plot_area: ET.Element) -> dict[str, ET.Element]:
+    if plot_area.find("c:serAx", C_NS) is not None:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    axes: dict[str, ET.Element] = {}
+    for tag in ("catAx", "dateAx", "valAx"):
+        for axis in plot_area.findall(f"c:{tag}", C_NS):
+            axis_id = _element_val(axis.find("c:axId", C_NS))
+            if not axis_id or axis_id in axes:
+                raise _UnsupportedChart("unsupported-chart-axis-options")
+            axes[axis_id] = axis
+    return axes
+
+
+def _plot_axis_pair(
+    plot: ET.Element,
+    axes_by_id: dict[str, ET.Element],
+) -> tuple[str, ET.Element, str, ET.Element]:
+    axis_ids = [_element_val(elem) for elem in plot.findall("c:axId", C_NS)]
+    if len(axis_ids) != 2 or any(not axis_id for axis_id in axis_ids):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if len(set(axis_ids)) != 2:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    resolved = [(axis_id, axes_by_id.get(str(axis_id))) for axis_id in axis_ids]
+    if any(axis is None for _, axis in resolved):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    category_axes = [
+        (str(axis_id), axis)
+        for axis_id, axis in resolved
+        if axis is not None and _local_name(axis.tag) in {"catAx", "dateAx"}
+    ]
+    value_axes = [
+        (str(axis_id), axis)
+        for axis_id, axis in resolved
+        if axis is not None and _local_name(axis.tag) == "valAx"
+    ]
+    if len(category_axes) != 1 or len(value_axes) != 1:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    cat_id, cat_axis = category_axes[0]
+    val_id, val_axis = value_axes[0]
+    return cat_id, cat_axis, val_id, val_axis
+
+
+def _axis_config_from_xml(
+    axis: ET.Element,
+    *,
+    role: str,
+    expected_cross_axis_id: str,
+    allowed_crosses: set[str],
+    expected_cross_between: str | None,
+) -> dict[str, Any]:
+    axis_kind = _local_name(axis.tag)
+    allowed_children = {
+        "auto", "axId", "axPos", "baseTimeUnit", "crossAx", "crossBetween",
+        "crosses", "delete", "lblAlgn", "lblOffset", "majorGridlines",
+        "majorTickMark", "majorUnit", "minorTickMark", "noMultiLvlLbl",
+        "numFmt", "scaling", "spPr", "tickLblPos", "title", "txPr",
+    }
+    if any(_local_name(child.tag) not in allowed_children for child in axis):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if axis.attrib:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    for child_name in allowed_children:
+        if len(axis.findall(f"c:{child_name}", C_NS)) > 1:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+    simple_children = {
+        "auto", "axId", "axPos", "baseTimeUnit", "crossAx",
+        "crossBetween", "crosses", "delete", "lblAlgn", "lblOffset",
+        "majorTickMark", "majorUnit", "minorTickMark", "noMultiLvlLbl",
+        "tickLblPos",
+    }
+    if any(
+        _local_name(child.tag) in simple_children
+        and (set(child.attrib) != {"val"} or list(child))
+        for child in axis
+    ):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if axis.find("c:minorGridlines", C_NS) is not None:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+
+    scaling = axis.find("c:scaling", C_NS)
+    config: dict[str, Any] = {}
+    if scaling is not None:
+        if scaling.attrib or any(
+            _local_name(child.tag) not in {"max", "min", "orientation"}
+            for child in scaling
+        ):
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        for child_name in ("orientation", "max", "min"):
+            if len(scaling.findall(f"c:{child_name}", C_NS)) > 1:
+                raise _UnsupportedChart("unsupported-chart-axis-options")
+        if any(
+            set(child.attrib) != {"val"} or list(child)
+            for child in scaling
+        ):
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        orientation = _element_val(scaling.find("c:orientation", C_NS)) or "minMax"
+        if orientation not in {"maxMin", "minMax"}:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        config["reverse"] = orientation == "maxMin"
+        minimum = _axis_number(scaling.find("c:min", C_NS))
+        maximum = _axis_number(scaling.find("c:max", C_NS))
+        if minimum is not None:
+            config["minimum"] = minimum
+        if maximum is not None:
+            config["maximum"] = maximum
+        if minimum is not None and maximum is not None and minimum >= maximum:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+    else:
+        config["reverse"] = False
+
+    position_aliases = {"b": "bottom", "l": "left", "r": "right", "t": "top"}
+    position = position_aliases.get(_element_val(axis.find("c:axPos", C_NS)) or "")
+    if position is None:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if role in {"category", "secondary_category"}:
+        if position not in {"bottom", "top"}:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        config["kind"] = "date" if axis_kind == "dateAx" else "text"
+    else:
+        if position not in {"left", "right"} or axis_kind != "valAx":
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        config["kind"] = "value"
+    config["position"] = position
+    config["visible"] = not _strict_axis_bool(axis.find("c:delete", C_NS), False)
+
+    tick_label_aliases = {
+        "high": "high",
+        "low": "low",
+        "nextTo": "next_to",
+        "none": "none",
+    }
+    tick_label_position = _element_val(axis.find("c:tickLblPos", C_NS)) or "nextTo"
+    if tick_label_position not in tick_label_aliases:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    config["label_position"] = tick_label_aliases[tick_label_position]
+    config["major_gridlines"] = axis.find("c:majorGridlines", C_NS) is not None
+
+    num_fmt = axis.find("c:numFmt", C_NS)
+    if num_fmt is not None:
+        if list(num_fmt) or not set(num_fmt.attrib).issubset({"formatCode", "sourceLinked"}):
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        number_format = num_fmt.attrib.get("formatCode", "")
+        if not number_format.strip():
+            raise _UnsupportedChart("unsupported-chart-axis-number-format")
+        config["number_format"] = number_format
+
+    major_unit = _axis_number(axis.find("c:majorUnit", C_NS))
+    if major_unit is not None:
+        if role not in {"value", "secondary_value"} or major_unit <= 0:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        config["major_unit"] = major_unit
+
+    if _element_val(axis.find("c:crossAx", C_NS)) != expected_cross_axis_id:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    crosses = _element_val(axis.find("c:crosses", C_NS)) or "autoZero"
+    if crosses not in allowed_crosses:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    cross_between = _element_val(axis.find("c:crossBetween", C_NS))
+    if cross_between != expected_cross_between:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    auto = axis.find("c:auto", C_NS)
+    if auto is not None and not _strict_axis_bool(auto, True):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    major_tick = _element_val(axis.find("c:majorTickMark", C_NS))
+    minor_tick = _element_val(axis.find("c:minorTickMark", C_NS))
+    if major_tick not in {None, "none", "out"} or minor_tick not in {None, "none"}:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    label_alignment = _element_val(axis.find("c:lblAlgn", C_NS))
+    label_offset = _element_val(axis.find("c:lblOffset", C_NS))
+    no_multi_level = _element_val(axis.find("c:noMultiLvlLbl", C_NS))
+    if role in {"category", "secondary_category"}:
+        if label_alignment not in {None, "ctr"}:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        if label_offset not in {None, "100"}:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        if no_multi_level not in {None, "0"}:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+    elif any(
+        value is not None
+        for value in (label_alignment, label_offset, no_multi_level, auto)
+    ):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if axis_kind == "dateAx":
+        if _element_val(axis.find("c:baseTimeUnit", C_NS)) not in {None, "days"}:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+    elif axis.find("c:baseTimeUnit", C_NS) is not None:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    return config
+
+
+def _single_axis_contract(
     plot_area: ET.Element,
     plot: ET.Element,
     *,
-    palette: ColorPalette | None = None,
-) -> list[SeriesVisualStyle]:
-    """Reject valid chart features the compact marker cannot reproduce."""
-    chart_type = payload["type"]
-    visual_styles = _chart_visual_styles(payload, plot, palette)
-    for tag in (
-        "trendline", "errBars", "dropLines", "hiLowLines", "upDownBars",
-    ):
-        if plot.find(f".//c:{tag}", C_NS) is not None:
-            raise _UnsupportedChart("unsupported-chart-analysis-features")
-    if plot_area.find("c:dTable", C_NS) is not None:
-        raise _UnsupportedChart("unsupported-chart-data-table")
-    ser_lines = plot.find("c:serLines", C_NS)
-    if ser_lines is not None and (
-        chart_type != "of_pie" or ser_lines.attrib or list(ser_lines)
-    ):
-        raise _UnsupportedChart("unsupported-chart-analysis-features")
+    category_kind: str,
+    cross_between: str,
+) -> dict[str, dict[str, Any]]:
+    axes_by_id = _axis_nodes_by_id(plot_area)
+    cat_id, cat_axis, val_id, val_axis = _plot_axis_pair(plot, axes_by_id)
+    if set(axes_by_id) != {cat_id, val_id}:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if _local_name(cat_axis.tag) != ("dateAx" if category_kind == "date" else "catAx"):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    category = _axis_config_from_xml(
+        cat_axis,
+        role="category",
+        expected_cross_axis_id=val_id,
+        allowed_crosses={"autoZero"},
+        expected_cross_between=None,
+    )
+    value = _axis_config_from_xml(
+        val_axis,
+        role="value",
+        expected_cross_axis_id=cat_id,
+        allowed_crosses={"autoZero"},
+        expected_cross_between=cross_between,
+    )
+    return {"category": category, "value": value}
 
+
+def _validate_legacy_axes(payload: dict[str, Any], plot_area: ET.Element) -> None:
+    """Keep the original narrow axis gate for payloads without axes metadata."""
     grouping = payload.get("grouping")
     axes = plot_area.findall("c:catAx", C_NS) + plot_area.findall("c:valAx", C_NS)
     for axis in axes:
@@ -616,6 +1268,34 @@ def _validate_chart_semantics(
             raise _UnsupportedChart("unsupported-chart-axis-options")
         if axis.find("c:minorGridlines", C_NS) is not None:
             raise _UnsupportedChart("unsupported-chart-axis-options")
+
+
+def _validate_chart_semantics(
+    payload: dict[str, Any],
+    plot_area: ET.Element,
+    plot: ET.Element,
+    *,
+    palette: ColorPalette | None = None,
+    validate_axes: bool = True,
+) -> list[SeriesVisualStyle]:
+    """Reject valid chart features the compact marker cannot reproduce."""
+    chart_type = payload["type"]
+    grouping = payload.get("grouping")
+    visual_styles = _chart_visual_styles(payload, plot, palette)
+    for tag in (
+        "trendline", "errBars", "dropLines", "hiLowLines", "upDownBars",
+    ):
+        if plot.find(f".//c:{tag}", C_NS) is not None:
+            raise _UnsupportedChart("unsupported-chart-analysis-features")
+    if plot_area.find("c:dTable", C_NS) is not None:
+        raise _UnsupportedChart("unsupported-chart-data-table")
+    ser_lines = plot.find("c:serLines", C_NS)
+    if ser_lines is not None and (
+        chart_type != "of_pie" or ser_lines.attrib or list(ser_lines)
+    ):
+        raise _UnsupportedChart("unsupported-chart-analysis-features")
+    if validate_axes:
+        _validate_legacy_axes(payload, plot_area)
 
     if chart_type == "line":
         smooth_nodes = [plot.find("c:smooth", C_NS), *plot.findall("c:ser/c:smooth", C_NS)]
@@ -720,11 +1400,32 @@ def _validate_chart_semantics(
     return visual_styles
 
 
+def _apply_plot_data_labels(payload: dict[str, Any], plot: ET.Element) -> None:
+    if plot.find("c:ser/c:dLbls", C_NS) is not None:
+        raise _UnsupportedChart("unsupported-chart-series-data-labels")
+    data_labels = _data_labels_payload(plot.find("c:dLbls", C_NS))
+    if not data_labels:
+        return
+    if payload["type"] not in {"area", "bar", "column", "line"}:
+        raise _UnsupportedChart("unsupported-chart-data-labels")
+    try:
+        validate_data_label_position(
+            data_labels.get("position"),
+            payload["type"],
+            payload.get("grouping"),
+        )
+    except RuntimeError:
+        raise _UnsupportedChart("unsupported-chart-data-labels") from None
+    payload["data_labels"] = data_labels
+
+
 def _apply_chart_metadata(
     payload: dict[str, Any],
     chart_root: ET.Element,
     plot_area: ET.Element,
     plot: ET.Element,
+    *,
+    include_plot_labels: bool = True,
 ) -> None:
     """Copy visible classic-chart chrome supported by the native schema."""
     chart = chart_root.find("c:chart", C_NS)
@@ -766,26 +1467,17 @@ def _apply_chart_metadata(
             payload["show_legend"] = True
             payload["legend_position"] = position
 
-    if plot.find("c:ser/c:dLbls", C_NS) is not None:
-        raise _UnsupportedChart("unsupported-chart-series-data-labels")
-    data_labels = _data_labels_payload(plot.find("c:dLbls", C_NS))
-    if data_labels:
-        if payload["type"] not in {"area", "bar", "column", "line"}:
-            raise _UnsupportedChart("unsupported-chart-data-labels")
-        try:
-            validate_data_label_position(
-                data_labels.get("position"),
-                payload["type"],
-                payload.get("grouping"),
-            )
-        except RuntimeError:
-            raise _UnsupportedChart("unsupported-chart-data-labels") from None
-        payload["data_labels"] = data_labels
+    if include_plot_labels:
+        _apply_plot_data_labels(payload, plot)
 
     axis_titles: dict[str, str] = {}
+    category_axis_nodes = (
+        plot_area.findall("c:catAx", C_NS)
+        + plot_area.findall("c:dateAx", C_NS)
+    )
     category_titles = [
         text
-        for axis in plot_area.findall("c:catAx", C_NS)
+        for axis in category_axis_nodes
         if (text := _chart_text(axis.find("c:title", C_NS)))
     ]
     value_titles = [
@@ -793,7 +1485,21 @@ def _apply_chart_metadata(
         for axis in plot_area.findall("c:valAx", C_NS)
         if (text := _chart_text(axis.find("c:title", C_NS)))
     ]
-    if payload["type"] in {"scatter", "bubble"}:
+    if payload["type"] == "combo":
+        if len(set(category_titles)) > 1:
+            raise _UnsupportedChart("unsupported-chart-axis-titles")
+        if category_titles:
+            axis_titles["category"] = category_titles[0]
+        for axis in plot_area.findall("c:valAx", C_NS):
+            text = _chart_text(axis.find("c:title", C_NS))
+            if not text:
+                continue
+            position = _element_val(axis.find("c:axPos", C_NS))
+            key = "secondary_value" if position == "r" else "value"
+            if key in axis_titles:
+                raise _UnsupportedChart("unsupported-chart-axis-titles")
+            axis_titles[key] = text
+    elif payload["type"] in {"scatter", "bubble"}:
         if category_titles:
             raise _UnsupportedChart("unsupported-chart-axis-titles")
         titled_value_axes = [
@@ -1116,18 +1822,29 @@ def _data_labels_payload(dlabels: ET.Element | None) -> dict[str, Any] | None:
     return config
 
 
-def _category_payload(chart: ET.Element, chart_type: str, xfrm: Xfrm) -> dict[str, Any]:
+def _category_payload(
+    chart: ET.Element,
+    chart_type: str,
+    xfrm: Xfrm,
+    *,
+    category_kind: str = "text",
+) -> dict[str, Any]:
     series_nodes = chart.findall("c:ser", C_NS)
     if not series_nodes:
         raise _UnsupportedChart("unsupported-chart-cache")
 
-    categories = _category_values(series_nodes[0].find("c:cat", C_NS))
+    category_reader = (
+        _numeric_values
+        if category_kind in {"date", "numeric"}
+        else _category_values
+    )
+    categories = category_reader(series_nodes[0].find("c:cat", C_NS))
     if not categories:
         raise _UnsupportedChart("unsupported-chart-cache")
 
     series: list[dict[str, Any]] = []
     for idx, ser in enumerate(series_nodes, start=1):
-        if _category_values(ser.find("c:cat", C_NS)) != categories:
+        if category_reader(ser.find("c:cat", C_NS)) != categories:
             raise _UnsupportedChart("unsupported-chart-cache")
         values = _numeric_values(ser.find("c:val", C_NS))
         if not values or len(values) != len(categories):
@@ -1219,6 +1936,47 @@ def _category_values(cat: ET.Element | None) -> list[str]:
         raise _UnsupportedChart("unsupported-formatted-category-cache")
     numbers = _numeric_cache_values(cache)
     return [str(value) for value in numbers]
+
+
+def _category_cache_is_numeric(chart: ET.Element) -> bool:
+    """Return the cache representation shared by every series in one plot."""
+    result: bool | None = None
+    for series in chart.findall("c:ser", C_NS):
+        category = series.find("c:cat", C_NS)
+        has_text = _first_cache(category, ("strCache", "strLit")) is not None
+        has_number = _first_cache(category, ("numCache", "numLit")) is not None
+        if has_text == has_number:
+            raise _UnsupportedChart("unsupported-combo-category-layout")
+        current = has_number
+        if result is not None and current != result:
+            raise _UnsupportedChart("unsupported-combo-category-layout")
+        result = current
+    if result is None:
+        raise _UnsupportedChart("unsupported-combo-category-layout")
+    return result
+
+
+def _numeric_category_cache_format(chart: ET.Element) -> str:
+    """Return one exact numeric category-cache format shared by the plot."""
+    formats: set[str] = set()
+    for series in chart.findall("c:ser", C_NS):
+        cache = _first_cache(
+            series.find("c:cat", C_NS),
+            ("numCache", "numLit"),
+        )
+        if cache is None:
+            raise _UnsupportedChart("unsupported-chart-category-format")
+        number_format = cache.findtext(
+            "c:formatCode",
+            default="",
+            namespaces=C_NS,
+        )
+        if not number_format.strip():
+            raise _UnsupportedChart("unsupported-chart-category-format")
+        formats.add(number_format)
+    if len(formats) != 1:
+        raise _UnsupportedChart("unsupported-chart-category-format")
+    return next(iter(formats))
 
 
 def _series_name(ser: ET.Element, index: int) -> str:

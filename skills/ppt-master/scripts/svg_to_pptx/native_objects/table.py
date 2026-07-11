@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -59,15 +60,17 @@ def _cell_payload(value: Any) -> dict[str, Any]:
     return {"text": "" if value is None else str(value)}
 
 
-_TABLE_SPAN_KEYS = {
+_TABLE_CANONICAL_SPAN_KEYS = {
     "col_span",
+    "row_span",
+}
+_TABLE_UNSUPPORTED_SPAN_KEYS = {
     "colSpan",
     "grid_span",
     "gridSpan",
     "hMerge",
     "merge",
     "merged",
-    "row_span",
     "rowSpan",
     "vMerge",
 }
@@ -79,6 +82,27 @@ _TABLE_TOP_LEVEL_SPAN_KEYS = {
 }
 _TABLE_MAX_ROWS = 1000
 _TABLE_MAX_COLUMNS = 1000
+
+
+@dataclass(frozen=True)
+class _TableMergeRegion:
+    row: int
+    col: int
+    row_span: int
+    col_span: int
+
+
+@dataclass(frozen=True)
+class _TableBorderSpec:
+    style: str
+    color: str | None = None
+    width: float | None = None
+
+
+@dataclass(frozen=True)
+class _TableParagraph:
+    text: str
+    align: str | None = None
 
 
 def _table_rows(payload: dict[str, Any]) -> list[list[Any]]:
@@ -95,24 +119,153 @@ def _table_rows(payload: dict[str, Any]) -> list[list[Any]]:
     return table_rows
 
 
-def _check_table_spans(payload: dict[str, Any], table_rows: list[list[Any]]) -> None:
+def _table_cell_paragraphs(
+    cell_data: dict[str, Any],
+) -> tuple[_TableParagraph, ...] | None:
+    if "paragraphs" not in cell_data:
+        return None
+    if "text" in cell_data:
+        raise RuntimeError(
+            "Native PPTX table cell text and paragraphs are mutually exclusive"
+        )
+    raw_paragraphs = cell_data.get("paragraphs")
+    if not isinstance(raw_paragraphs, list) or not raw_paragraphs:
+        raise RuntimeError(
+            "Native PPTX table cell paragraphs must be a non-empty list"
+        )
+
+    paragraphs: list[_TableParagraph] = []
+    for idx, value in enumerate(raw_paragraphs, start=1):
+        if isinstance(value, str):
+            paragraphs.append(_TableParagraph(value))
+            continue
+        if not isinstance(value, dict) or "text" not in value:
+            raise RuntimeError(
+                f"Native PPTX table paragraph {idx} must be a string or text object"
+            )
+        if set(value) - {"text", "align"}:
+            raise RuntimeError(
+                f"Native PPTX table paragraph {idx} accepts text/align only"
+            )
+        text = value.get("text")
+        if not isinstance(text, str):
+            raise RuntimeError(
+                f"Native PPTX table paragraph {idx} text must be a string"
+            )
+        align = value.get("align")
+        if align is not None and align not in {"l", "ctr", "r"}:
+            raise RuntimeError(
+                f"Native PPTX table paragraph {idx} align must be l, ctr, or r"
+            )
+        paragraphs.append(_TableParagraph(text, align))
+    return tuple(paragraphs)
+
+
+def _table_span_value(
+    cell_data: dict[str, Any],
+    key: str,
+    *,
+    row_idx: int,
+    col_idx: int,
+) -> int:
+    value = cell_data.get(key, 1)
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise RuntimeError(
+            f"Native PPTX table cell R{row_idx}C{col_idx} {key} must be a "
+            "positive JSON integer"
+        )
+    return value
+
+
+def _merge_covered_cell_is_blank(value: Any) -> bool:
+    if value is None or value == "":
+        return True
+    if not isinstance(value, dict):
+        return False
+    if any(key != "text" for key in value):
+        return False
+    text = value.get("text")
+    return text is None or text == ""
+
+
+def _resolve_table_merge_layout(
+    payload: dict[str, Any],
+    table_rows: list[list[Any]],
+    col_count: int,
+) -> dict[tuple[int, int], _TableMergeRegion]:
     for key in _TABLE_TOP_LEVEL_SPAN_KEYS:
         if key in payload:
             raise RuntimeError(
-                "Native PPTX table merged cells are not supported; use SVG fallback "
-                "or merge cells in PowerPoint after export"
+                f"Native PPTX table uses unsupported top-level merged-cell field: {key}"
             )
+
+    owners: dict[tuple[int, int], _TableMergeRegion] = {}
     for row_idx, row in enumerate(table_rows, start=1):
         for col_idx, cell in enumerate(row, start=1):
-            if not isinstance(cell, dict):
-                continue
-            used_keys = sorted(key for key in _TABLE_SPAN_KEYS if key in cell)
-            if used_keys:
-                keys = ", ".join(used_keys)
-                raise RuntimeError(
-                    f"Native PPTX table cell R{row_idx}C{col_idx} uses unsupported "
-                    f"merged-cell field(s): {keys}"
+            if isinstance(cell, dict):
+                used_keys = sorted(
+                    key for key in _TABLE_UNSUPPORTED_SPAN_KEYS if key in cell
                 )
+                if used_keys:
+                    keys = ", ".join(used_keys)
+                    raise RuntimeError(
+                        f"Native PPTX table cell R{row_idx}C{col_idx} uses "
+                        f"unsupported merged-cell field(s): {keys}; use row_span/col_span "
+                        "on the merge anchor"
+                    )
+
+            position = (row_idx - 1, col_idx - 1)
+            owner = owners.get(position)
+            if owner is not None:
+                if isinstance(cell, dict) and any(
+                    key in cell for key in _TABLE_CANONICAL_SPAN_KEYS
+                ):
+                    raise RuntimeError(
+                        f"Native PPTX table merge anchor R{row_idx}C{col_idx} overlaps "
+                        f"merge rooted at R{owner.row + 1}C{owner.col + 1}"
+                    )
+                if not _merge_covered_cell_is_blank(cell):
+                    raise RuntimeError(
+                        f"Native PPTX table merge-covered cell R{row_idx}C{col_idx} "
+                        "must be blank"
+                    )
+                continue
+
+            cell_data = _cell_payload(cell)
+            row_span = _table_span_value(
+                cell_data, "row_span", row_idx=row_idx, col_idx=col_idx,
+            )
+            col_span = _table_span_value(
+                cell_data, "col_span", row_idx=row_idx, col_idx=col_idx,
+            )
+            if row_span == 1 and col_span == 1:
+                continue
+            if (
+                row_idx - 1 + row_span > len(table_rows)
+                or col_idx - 1 + col_span > col_count
+            ):
+                raise RuntimeError(
+                    f"Native PPTX table merge rooted at R{row_idx}C{col_idx} exceeds "
+                    f"the resolved {len(table_rows)}x{col_count} grid"
+                )
+
+            region = _TableMergeRegion(
+                row=row_idx - 1,
+                col=col_idx - 1,
+                row_span=row_span,
+                col_span=col_span,
+            )
+            for covered_row in range(region.row, region.row + region.row_span):
+                for covered_col in range(region.col, region.col + region.col_span):
+                    covered_position = (covered_row, covered_col)
+                    prior = owners.get(covered_position)
+                    if prior is not None:
+                        raise RuntimeError(
+                            f"Native PPTX table merge rooted at R{row_idx}C{col_idx} "
+                            f"overlaps merge rooted at R{prior.row + 1}C{prior.col + 1}"
+                        )
+                    owners[covered_position] = region
+    return owners
 
 
 def _grid_is_strict(payload: dict[str, Any]) -> bool:
@@ -177,29 +330,40 @@ def _validate_table_lengths(payload: dict[str, Any], table_rows: list[list[Any]]
 def _validate_table_cell_formatting(payload: dict[str, Any], table_rows: list[list[Any]]) -> None:
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     _table_bool(style.get("band_row"), "style.band_row", default=True)
+    if "borders" in style:
+        raise RuntimeError(
+            "Native PPTX table per-side borders are supported on cells only"
+        )
     for row in table_rows:
         for cell in row:
             cell_data = _cell_payload(cell)
+            _table_cell_paragraphs(cell_data)
             if "bold" in cell_data:
                 _table_bool(cell_data["bold"], "cell bold", default=False)
             for side in ("left", "right", "top", "bottom"):
                 _table_padding_value(cell_data, style, side)
-            border_width = _table_border_width(cell_data, style)
-            if border_width > 0:
+            for border in _table_border_specs(cell_data, style).values():
+                if border is None or border.style == "none":
+                    continue
+                assert border.width is not None
                 _powerpoint_line_width_emu(
-                    border_width,
+                    border.width,
                     "table border_width",
                 )
             _table_anchor(cell_data, style)
 
 
-def _validate_table_payload(payload: dict[str, Any]) -> tuple[list[list[Any]], int]:
+def _validate_table_payload(
+    payload: dict[str, Any],
+) -> tuple[list[list[Any]], int, dict[tuple[int, int], _TableMergeRegion]]:
     table_rows = _table_rows(payload)
-    _check_table_spans(payload, table_rows)
     col_count = _validate_table_lengths(payload, table_rows)
+    for row in table_rows:
+        row.extend([""] * (col_count - len(row)))
+    merge_layout = _resolve_table_merge_layout(payload, table_rows, col_count)
     _table_header_rows(payload, len(table_rows))
     _validate_table_cell_formatting(payload, table_rows)
-    return table_rows, col_count
+    return table_rows, col_count, merge_layout
 
 
 def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
@@ -207,9 +371,16 @@ def _native_table_metadata_texts(table_rows: list[list[Any]]) -> dict[str, int]:
     for row in table_rows:
         for cell in row:
             cell_data = _cell_payload(cell)
-            text = _normalized_fallback_text(cell_data.get("text"))
-            if text:
-                counts[text] = counts.get(text, 0) + 1
+            paragraphs = _table_cell_paragraphs(cell_data)
+            texts = (
+                [paragraph.text for paragraph in paragraphs]
+                if paragraphs is not None
+                else [cell_data.get("text")]
+            )
+            for value in texts:
+                text = _normalized_fallback_text(value)
+                if text:
+                    counts[text] = counts.get(text, 0) + 1
     return counts
 
 
@@ -363,34 +534,157 @@ def _table_border_width(cell_data: dict[str, Any], style: dict[str, Any]) -> flo
     return _number(1 if width_raw is None else width_raw, "table border_width")
 
 
+_TABLE_BORDER_SIDES = ("left", "right", "top", "bottom")
+_TABLE_BORDER_TAGS = {
+    "left": "lnL",
+    "right": "lnR",
+    "top": "lnT",
+    "bottom": "lnB",
+}
+
+
+def _strict_table_border_color(value: Any, side: str) -> str:
+    raw = value if isinstance(value, str) else ""
+    if len(raw) != 7 or not raw.startswith("#"):
+        raise RuntimeError(
+            f"Native PPTX table {side} border color must be #RRGGBB"
+        )
+    try:
+        int(raw[1:], 16)
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Native PPTX table {side} border color must be #RRGGBB"
+        ) from exc
+    return raw[1:].upper()
+
+
+def _table_border_override(value: Any, side: str) -> _TableBorderSpec:
+    if not isinstance(value, dict):
+        raise RuntimeError(
+            f"Native PPTX table {side} border must be an object"
+        )
+    border_style = value.get("style")
+    if border_style == "none":
+        if set(value) != {"style"}:
+            raise RuntimeError(
+                f"Native PPTX table {side} border style none accepts no other fields"
+            )
+        return _TableBorderSpec("none")
+    if border_style != "solid":
+        raise RuntimeError(
+            f"Native PPTX table {side} border style must be solid or none"
+        )
+    if set(value) != {"style", "color", "width"}:
+        raise RuntimeError(
+            f"Native PPTX table {side} solid border requires style/color/width only"
+        )
+    width = _number(value.get("width"), f"table {side} border width")
+    if width <= 0:
+        raise RuntimeError(
+            f"Native PPTX table {side} solid border width must be positive"
+        )
+    _powerpoint_line_width_emu(width, f"table {side} border width")
+    return _TableBorderSpec(
+        "solid",
+        color=_strict_table_border_color(value.get("color"), side),
+        width=width,
+    )
+
+
+def _table_border_specs(
+    cell_data: dict[str, Any],
+    style: dict[str, Any],
+) -> dict[str, _TableBorderSpec | None]:
+    raw_borders = cell_data.get("borders")
+    if raw_borders is None:
+        border_overrides: dict[str, Any] = {}
+    elif not isinstance(raw_borders, dict):
+        raise RuntimeError("Native PPTX table cell borders must be an object")
+    else:
+        unknown = sorted(set(raw_borders) - set(_TABLE_BORDER_SIDES))
+        if unknown:
+            raise RuntimeError(
+                "Native PPTX table cell borders use unsupported side(s): "
+                + ", ".join(unknown)
+            )
+        border_overrides = raw_borders
+
+    legacy_width = _table_border_width(cell_data, style)
+    legacy_spec = (
+        _TableBorderSpec(
+            "solid",
+            color=_clean_hex(
+                cell_data.get(
+                    "border_color",
+                    cell_data.get("borderColor", style.get("border_color")),
+                ),
+                "#D9DEE7",
+            ),
+            width=legacy_width,
+        )
+        if legacy_width > 0
+        else None
+    )
+    return {
+        side: (
+            _table_border_override(border_overrides[side], side)
+            if side in border_overrides
+            else legacy_spec
+        )
+        for side in _TABLE_BORDER_SIDES
+    }
+
+
 def _table_border_xml(
     cell_data: dict[str, Any],
     style: dict[str, Any],
     theme_color_spec: ThemeColorSpec | None,
 ) -> str:
-    color_raw = cell_data.get("border_color", cell_data.get("borderColor", style.get("border_color")))
-    width = _table_border_width(cell_data, style)
-    if width <= 0:
+    border_xml: list[str] = []
+    for side, border in _table_border_specs(cell_data, style).items():
+        if border is None:
+            continue
+        tag = _TABLE_BORDER_TAGS[side]
+        if border.style == "none":
+            border_xml.append(f'<a:{tag}><a:noFill/></a:{tag}>')
+            continue
+        assert border.color is not None and border.width is not None
+        line_width = _powerpoint_line_width_emu(
+            border.width, f"table {side} border width",
+        )
+        border_xml.append(
+            f'<a:{tag} w="{line_width}">'
+            f'<a:solidFill>{color_node_xml(border.color, theme_color_spec, "stroke")}'
+            '</a:solidFill>'
+            '<a:prstDash val="solid"/>'
+            f'</a:{tag}>'
+        )
+    return "".join(border_xml)
+
+
+def _table_merge_attrs(
+    region: _TableMergeRegion | None,
+    row_idx: int,
+    col_idx: int,
+) -> str:
+    if region is None:
         return ""
-    color = _clean_hex(color_raw, "#D9DEE7")
-    line = (
-        f'<a:solidFill>{color_node_xml(color, theme_color_spec, "stroke")}</a:solidFill>'
-        '<a:prstDash val="solid"/>'
-    )
-    line_width = _powerpoint_line_width_emu(width, "table border_width")
-    return "".join(
-        f'<a:{tag} w="{line_width}">{line}</a:{tag}>'
-        for tag in ("lnL", "lnR", "lnT", "lnB")
-    )
+    attrs: list[str] = []
+    if row_idx == region.row and region.row_span > 1:
+        attrs.append(f'rowSpan="{region.row_span}"')
+    if col_idx == region.col and region.col_span > 1:
+        attrs.append(f'gridSpan="{region.col_span}"')
+    if col_idx > region.col:
+        attrs.append('hMerge="1"')
+    if row_idx > region.row:
+        attrs.append('vMerge="1"')
+    return (" " + " ".join(attrs)) if attrs else ""
 
 
 def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
-    table_rows, col_count = _validate_table_payload(payload)
+    table_rows, col_count, merge_layout = _validate_table_payload(payload)
     header_rows = _table_header_rows(payload, len(table_rows))
     preserve_source_style = elem.get("data-pptx-native-source") == "pptx"
-
-    for row in table_rows:
-        row.extend([""] * (col_count - len(row)))
 
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     header_fill = _clean_hex(style.get("header_fill"), "#1F4E79")
@@ -432,7 +726,20 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     for row_idx, row in enumerate(table_rows):
         is_header = row_idx < header_rows
         cells_xml: list[str] = []
-        for cell in row:
+        for col_idx, cell in enumerate(row):
+            merge_region = merge_layout.get((row_idx, col_idx))
+            merge_attrs = _table_merge_attrs(merge_region, row_idx, col_idx)
+            if merge_region is not None and (
+                row_idx != merge_region.row or col_idx != merge_region.col
+            ):
+                cells_xml.append(
+                    f'<a:tc{merge_attrs}>'
+                    '<a:txBody><a:bodyPr/><a:lstStyle/><a:p/></a:txBody>'
+                    '<a:tcPr/>'
+                    '</a:tc>'
+                )
+                continue
+
             cell_data = _cell_payload(cell)
             if preserve_source_style:
                 fill = (
@@ -460,7 +767,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 align = str(cell_data.get("align") or ("ctr" if is_header else "l"))
             if align not in {"l", "ctr", "r"}:
                 align = "l"
-            text = "" if cell_data.get("text") is None else str(cell_data.get("text"))
+            paragraphs = _table_cell_paragraphs(cell_data)
             if preserve_source_style:
                 bold = (
                     _table_bool(cell_data["bold"], "cell bold", default=False)
@@ -479,7 +786,52 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 )
                 if is_header and "font_size" not in cell_data:
                     cell_font_size = header_font_size
-            paragraph_props = f'<a:pPr algn="{align}"/>' if align != "l" else "<a:pPr/>"
+            language = (
+                str(cell_data.get("lang") or style.get("lang") or "").strip()
+                or None
+            )
+            if paragraphs is None:
+                text = (
+                    "" if cell_data.get("text") is None
+                    else str(cell_data.get("text"))
+                )
+                paragraph_props = (
+                    f'<a:pPr algn="{align}"/>' if align != "l" else "<a:pPr/>"
+                )
+                text_run_xml = _table_text_run(
+                    text,
+                    color=color,
+                    bold=bold,
+                    font_size=cell_font_size,
+                    font_face=font_face,
+                    language=language,
+                    theme_color_spec=ctx.theme_color_spec,
+                )
+                paragraphs_xml = (
+                    f"<a:p>{paragraph_props}{text_run_xml}</a:p>"
+                )
+            else:
+                paragraph_parts: list[str] = []
+                for paragraph in paragraphs:
+                    paragraph_align = paragraph.align or align
+                    paragraph_props = (
+                        f'<a:pPr algn="{paragraph_align}"/>'
+                        if paragraph.align is not None or paragraph_align != "l"
+                        else "<a:pPr/>"
+                    )
+                    text_run_xml = _table_text_run(
+                        paragraph.text,
+                        color=color,
+                        bold=bold,
+                        font_size=cell_font_size,
+                        font_face=font_face,
+                        language=language,
+                        theme_color_spec=ctx.theme_color_spec,
+                    )
+                    paragraph_parts.append(
+                        f"<a:p>{paragraph_props}{text_run_xml}</a:p>"
+                    )
+                paragraphs_xml = "".join(paragraph_parts)
             anchor_keys = {"valign", "vertical_align"}
             anchor_attr = ""
             if not preserve_source_style or anchor_keys.intersection(cell_data) or anchor_keys.intersection(style):
@@ -496,24 +848,11 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 '</a:solidFill>'
                 if fill else ""
             )
-            text_run_xml = _table_text_run(
-                text,
-                color=color,
-                bold=bold,
-                font_size=cell_font_size,
-                font_face=font_face,
-                language=(
-                    str(cell_data.get("lang") or style.get("lang") or "").strip()
-                    or None
-                ),
-                theme_color_spec=ctx.theme_color_spec,
-            )
             cells_xml.append(
-                "<a:tc>"
+                f"<a:tc{merge_attrs}>"
                 "<a:txBody><a:bodyPr/><a:lstStyle/>"
-                f"<a:p>{paragraph_props}"
-                f"{text_run_xml}"
-                "</a:p></a:txBody>"
+                f"{paragraphs_xml}"
+                "</a:txBody>"
                 f'<a:tcPr{tc_pr_attrs}>{border_xml}{fill_xml}</a:tcPr>'
                 "</a:tc>"
             )

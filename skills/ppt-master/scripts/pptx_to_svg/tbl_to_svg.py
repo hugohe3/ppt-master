@@ -305,10 +305,11 @@ def convert_tbl(
     # and dropped cells don't render anything. PowerPoint expresses merges via
     # gridSpan/rowSpan on the anchor cell + hMerge/vMerge on the dropped cells.
     cells = _build_cell_grid(rows, len(col_widths))
+    merge_status = _canonical_native_merge_status(rows, len(col_widths))
     if xfrm.rot or xfrm.flip_h or xfrm.flip_v:
         native_status = "unsupported-native-transform"
-    elif _table_has_merges(rows):
-        native_status = "unsupported-merge"
+    elif merge_status:
+        native_status = merge_status
     elif len(rows) > 1000 or len(col_widths) > 1000:
         native_status = "unsupported-table-size"
     elif (
@@ -474,6 +475,14 @@ class _CellSlot:
     is_dropped: bool = False  # True for h/vMerge slaves: don't paint anything
 
 
+@dataclass(frozen=True)
+class _CanonicalMergeRegion:
+    row: int
+    col: int
+    row_span: int
+    col_span: int
+
+
 def _build_cell_grid(rows: list[ET.Element], col_count: int) -> list[list[_CellSlot | None]]:
     """Map each (row, col) to the <a:tc> that owns it.
 
@@ -544,17 +553,130 @@ def _safe_int(value: str | None, default: int) -> int:
         return default
 
 
-def _table_has_merges(rows: list[ET.Element]) -> bool:
-    """Return True when the table uses merged cells."""
-    for row in rows:
-        for tc in row.findall("a:tc", NS):
-            if ooxml_bool(tc.attrib.get("hMerge")) or ooxml_bool(tc.attrib.get("vMerge")):
-                return True
-            if _safe_int(tc.attrib.get("gridSpan"), 1) > 1:
-                return True
-            if _safe_int(tc.attrib.get("rowSpan"), 1) > 1:
-                return True
-    return False
+def _strict_merge_bool(value: str | None) -> bool:
+    if value is None:
+        return False
+    normalized = value.strip().lower()
+    if normalized in {"1", "on", "true"}:
+        return True
+    if normalized in {"0", "false", "off"}:
+        return False
+    raise ValueError("invalid OOXML boolean")
+
+
+def _strict_merge_span(value: str | None) -> int:
+    if value is None:
+        return 1
+    normalized = value.strip()
+    if not normalized.isdigit():
+        raise ValueError("invalid OOXML span")
+    span = int(normalized)
+    if span <= 0:
+        raise ValueError("invalid OOXML span")
+    return span
+
+
+def _canonical_merge_slave_is_empty(tc: ET.Element) -> bool:
+    tc_pr = tc.find("a:tcPr", NS)
+    if tc_pr is None or tc_pr.attrib or list(tc_pr):
+        return False
+    tx_body = tc.find("a:txBody", NS)
+    if tx_body is None:
+        return False
+    paragraph_count = 0
+    for child in tx_body:
+        name = child.tag.rsplit("}", 1)[-1]
+        if name in {"bodyPr", "lstStyle"}:
+            if child.attrib or list(child):
+                return False
+            continue
+        if name == "p" and not child.attrib and not list(child):
+            paragraph_count += 1
+            continue
+        return False
+    return paragraph_count > 0 and not (tx_body.text or "").strip()
+
+
+def _canonical_native_merge_status(
+    rows: list[ET.Element],
+    col_count: int,
+) -> str | None:
+    """Accept only explicit rectangular merge topology safe for regeneration."""
+    physical_rows = [row.findall("a:tc", NS) for row in rows]
+    merge_attrs = {"gridSpan", "rowSpan", "hMerge", "vMerge"}
+    if not any(
+        any(name in tc.attrib for name in merge_attrs)
+        for row_cells in physical_rows
+        for tc in row_cells
+    ):
+        return None
+    if col_count <= 0 or any(
+        len(row_cells) != col_count for row_cells in physical_rows
+    ):
+        return "unsupported-merge-topology"
+
+    states: dict[tuple[int, int], tuple[ET.Element, int, int, bool, bool]] = {}
+    try:
+        for row_idx, row_cells in enumerate(physical_rows):
+            for col_idx, tc in enumerate(row_cells):
+                states[(row_idx, col_idx)] = (
+                    tc,
+                    _strict_merge_span(tc.get("rowSpan")),
+                    _strict_merge_span(tc.get("gridSpan")),
+                    _strict_merge_bool(tc.get("hMerge")),
+                    _strict_merge_bool(tc.get("vMerge")),
+                )
+    except ValueError:
+        return "unsupported-merge-topology"
+
+    anchors: list[_CanonicalMergeRegion] = []
+    for (
+        (row_idx, col_idx),
+        (_tc, row_span, col_span, h_merge, v_merge),
+    ) in states.items():
+        if not h_merge and not v_merge and (row_span > 1 or col_span > 1):
+            anchors.append(
+                _CanonicalMergeRegion(row_idx, col_idx, row_span, col_span)
+            )
+
+    owners: dict[tuple[int, int], _CanonicalMergeRegion] = {}
+    for region in anchors:
+        if (
+            region.row + region.row_span > len(rows)
+            or region.col + region.col_span > col_count
+        ):
+            return "unsupported-merge-topology"
+        for covered_row in range(region.row, region.row + region.row_span):
+            for covered_col in range(region.col, region.col + region.col_span):
+                position = (covered_row, covered_col)
+                if position in owners:
+                    return "unsupported-merge-topology"
+                owners[position] = region
+
+    for (
+        (row_idx, col_idx),
+        (tc, row_span, col_span, h_merge, v_merge),
+    ) in states.items():
+        region = owners.get((row_idx, col_idx))
+        if region is None:
+            if h_merge or v_merge or row_span != 1 or col_span != 1:
+                return "unsupported-merge-topology"
+            continue
+
+        is_anchor = row_idx == region.row and col_idx == region.col
+        expected_row_span = region.row_span if row_idx == region.row else 1
+        expected_col_span = region.col_span if col_idx == region.col else 1
+        if (
+            row_span != expected_row_span
+            or col_span != expected_col_span
+            or h_merge != (col_idx > region.col)
+            or v_merge != (row_idx > region.row)
+        ):
+            return "unsupported-merge-topology"
+        if not is_anchor and not _canonical_merge_slave_is_empty(tc):
+            return "unsupported-merge-topology"
+
+    return None
 
 
 def _table_has_unsupported_style(tbl: ET.Element) -> bool:
@@ -578,6 +700,105 @@ def _table_has_unsupported_style(tbl: ET.Element) -> bool:
     )
 
 
+_DIRECT_BORDER_TAGS = {
+    "lnL": "left",
+    "lnR": "right",
+    "lnT": "top",
+    "lnB": "bottom",
+}
+_DIRECT_BORDER_WIDTH_MAX = 20116800
+_OPAQUE_COLOR_MODIFIERS = {
+    "tint",
+    "shade",
+    "lumMod",
+    "lumOff",
+    "satMod",
+    "satOff",
+}
+
+
+def _validate_opaque_border_color(color_elem: ET.Element | None) -> None:
+    if color_elem is None:
+        raise ValueError("missing border color")
+    name = color_elem.tag.rsplit("}", 1)[-1]
+    if name not in {"srgbClr", "schemeClr"} or set(color_elem.attrib) != {"val"}:
+        raise ValueError("unsupported border color")
+    for modifier in color_elem:
+        modifier_name = modifier.tag.rsplit("}", 1)[-1]
+        if (
+            modifier_name not in _OPAQUE_COLOR_MODIFIERS
+            or set(modifier.attrib) != {"val"}
+            or list(modifier)
+        ):
+            raise ValueError("unsupported border color modifier")
+        value = modifier.get("val", "")
+        if not value.isdigit() or not 0 <= int(value) <= 100000:
+            raise ValueError("invalid border color modifier")
+
+
+def _direct_border_payload(
+    ln: ET.Element,
+    palette: ColorPalette | None,
+) -> dict[str, Any]:
+    if set(ln.attrib) - {"w"}:
+        raise ValueError("unsupported border line attribute")
+    width_emu: int | None = None
+    if "w" in ln.attrib:
+        raw_width = ln.get("w", "")
+        if not raw_width.isdigit():
+            raise ValueError("invalid border width")
+        width_emu = int(raw_width)
+        if not 0 < width_emu <= _DIRECT_BORDER_WIDTH_MAX:
+            raise ValueError("invalid border width")
+
+    children = list(ln)
+    child_names = [child.tag.rsplit("}", 1)[-1] for child in children]
+    if child_names == ["noFill"]:
+        no_fill = children[0]
+        if no_fill.attrib or list(no_fill):
+            raise ValueError("invalid noFill border")
+        return {"style": "none"}
+
+    if child_names.count("solidFill") != 1 or any(
+        name not in {"solidFill", "prstDash"} for name in child_names
+    ):
+        raise ValueError("unsupported border paint")
+    if child_names.count("prstDash") > 1 or width_emu is None:
+        raise ValueError("invalid solid border")
+    dash = next(
+        (child for child in children if child.tag.rsplit("}", 1)[-1] == "prstDash"),
+        None,
+    )
+    if dash is not None and (
+        dash.attrib != {"val": "solid"} or list(dash)
+    ):
+        raise ValueError("unsupported border dash")
+
+    solid_fill = next(
+        child for child in children
+        if child.tag.rsplit("}", 1)[-1] == "solidFill"
+    )
+    if solid_fill.attrib or len(list(solid_fill)) != 1:
+        raise ValueError("invalid solid border fill")
+    color_elem = find_color_elem(solid_fill)
+    _validate_opaque_border_color(color_elem)
+    try:
+        color, alpha = resolve_color(color_elem, palette)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("invalid solid border color") from exc
+    if color is None or alpha != 1.0:
+        raise ValueError("border color must resolve to opaque RGB")
+
+    width = _round_payload_number(emu_to_px(str(width_emu)))
+    if width <= 0:
+        raise ValueError("border width is too small")
+    return {
+        "style": "solid",
+        "color": color,
+        "width": width,
+    }
+
+
 def _table_has_unsupported_direct_formatting(
     tbl: ET.Element,
     palette: ColorPalette | None,
@@ -592,10 +813,20 @@ def _table_has_unsupported_direct_formatting(
             if tc_pr.get("anchor") not in {None, "t", "ctr", "b"}:
                 return True
             if any(
-                child.tag.rsplit("}", 1)[-1] != "solidFill"
+                child.tag.rsplit("}", 1)[-1]
+                not in {"solidFill", *_DIRECT_BORDER_TAGS}
                 for child in tc_pr
             ):
                 return True
+            for border_tag in _DIRECT_BORDER_TAGS:
+                borders = tc_pr.findall(f"a:{border_tag}", NS)
+                if len(borders) > 1:
+                    return True
+                if borders:
+                    try:
+                        _direct_border_payload(borders[0], palette)
+                    except ValueError:
+                        return True
             solid_fill = tc_pr.find("a:solidFill", NS)
             if solid_fill is not None:
                 if solid_fill.find(".//a:alpha", NS) is not None:
@@ -631,17 +862,12 @@ def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
         return True
 
     paragraphs = tx_body.findall("a:p", NS)
-    if len(paragraphs) > 1:
-        return True
-
-    alignments: set[str | None] = set()
     run_signatures: set[tuple[str | None, str | None, bytes | None]] = set()
     for paragraph in paragraphs:
         p_pr = paragraph.find("a:pPr", NS)
         alignment = p_pr.get("algn") if p_pr is not None else None
         if alignment not in {None, "l", "ctr", "r"}:
             return True
-        alignments.add(alignment)
         if p_pr is not None:
             if any(name != "algn" for name in p_pr.attrib):
                 return True
@@ -665,7 +891,7 @@ def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
         if not paragraph.findall("a:r", NS) and end_r_pr is not None:
             run_signatures.add(_effective_run_signature(end_r_pr, default_r_pr))
 
-    return len(alignments) > 1 or len(run_signatures) > 1
+    return len(run_signatures) > 1
 
 
 def _run_props_have_unsupported_formatting(r_pr: ET.Element | None) -> bool:
@@ -761,7 +987,12 @@ def _native_table_payload(
             if slot is None or slot.is_dropped:
                 row_payload.append("")
                 continue
-            row_payload.append(_native_cell_payload(slot.element, palette))
+            cell_payload = _native_cell_payload(slot.element, palette)
+            if slot.row_span > 1:
+                cell_payload["row_span"] = slot.row_span
+            if slot.col_span > 1:
+                cell_payload["col_span"] = slot.col_span
+            row_payload.append(cell_payload)
         rows_payload.append(row_payload)
     payload["rows"] = rows_payload
     return payload
@@ -770,7 +1001,11 @@ def _native_table_payload(
 def _native_cell_payload(tc: ET.Element, palette: ColorPalette | None) -> dict[str, Any]:
     tx_body = tc.find("a:txBody", NS)
     tc_pr = tc.find("a:tcPr", NS)
-    cell: dict[str, Any] = {"text": _cell_plain_text(tx_body)}
+    paragraph_payloads = _cell_paragraph_payloads(tx_body)
+    if len(paragraph_payloads) > 1:
+        cell: dict[str, Any] = {"paragraphs": paragraph_payloads}
+    else:
+        cell = {"text": _cell_plain_text(tx_body)}
 
     fill = _cell_fill_hex(tc_pr, palette)
     if fill:
@@ -781,15 +1016,19 @@ def _native_cell_payload(tc: ET.Element, palette: ColorPalette | None) -> dict[s
     font_size = _cell_font_size_px(tx_body)
     if font_size:
         cell["font_size"] = font_size
-    align = _cell_align(tx_body)
-    if align:
-        cell["align"] = align
+    if len(paragraph_payloads) <= 1:
+        align = _cell_align(tx_body)
+        if align:
+            cell["align"] = align
     valign = _cell_valign(tc_pr)
     if valign:
         cell["valign"] = valign
     bold = _cell_bold(tx_body)
     if bold is not None:
         cell["bold"] = bold
+    borders = _cell_borders_payload(tc_pr, palette)
+    if borders:
+        cell["borders"] = borders
     _copy_cell_margins(tc_pr, cell)
     return cell
 
@@ -803,6 +1042,23 @@ def _cell_plain_text(tx_body: ET.Element | None) -> str:
         if text:
             paragraphs.append(text)
     return "\n".join(paragraphs)
+
+
+def _cell_paragraph_payloads(
+    tx_body: ET.Element | None,
+) -> list[str | dict[str, str]]:
+    if tx_body is None:
+        return []
+    payloads: list[str | dict[str, str]] = []
+    for paragraph in tx_body.findall("a:p", NS):
+        text = "".join(node.text or "" for node in paragraph.findall(".//a:t", NS))
+        p_pr = paragraph.find("a:pPr", NS)
+        align = p_pr.get("algn") if p_pr is not None else None
+        if align in {"l", "ctr", "r"}:
+            payloads.append({"text": text, "align": align})
+        else:
+            payloads.append(text)
+    return payloads
 
 
 def _cell_fill_hex(tc_pr: ET.Element | None, palette: ColorPalette | None) -> str | None:
@@ -856,6 +1112,20 @@ def _cell_bold(tx_body: ET.Element | None) -> bool | None:
         if r_pr.get("b") is not None:
             return ooxml_bool(r_pr.get("b"))
     return None
+
+
+def _cell_borders_payload(
+    tc_pr: ET.Element | None,
+    palette: ColorPalette | None,
+) -> dict[str, dict[str, Any]]:
+    if tc_pr is None:
+        return {}
+    borders: dict[str, dict[str, Any]] = {}
+    for border_tag, side in _DIRECT_BORDER_TAGS.items():
+        ln = tc_pr.find(f"a:{border_tag}", NS)
+        if ln is not None:
+            borders[side] = _direct_border_payload(ln, palette)
+    return borders
 
 
 def _text_run_props_in_priority(tx_body: ET.Element | None) -> list[ET.Element]:
