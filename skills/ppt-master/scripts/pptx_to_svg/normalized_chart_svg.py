@@ -12,6 +12,7 @@ import html
 import math
 import re
 from dataclasses import dataclass
+from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
 
@@ -201,9 +202,9 @@ def _render_category(
     content: _Rect,
     chart_type: str,
 ) -> list[str]:
-    categories = [str(value) for value in payload.get("categories") or []]
+    categories = _category_labels(payload)
     series = payload.get("series") or []
-    if not categories or not series:
+    if categories is None or not categories or not series:
         return []
     styles = _complete_styles(styles, len(series))
     axis_titles = payload.get("axis_titles") if isinstance(payload.get("axis_titles"), dict) else {}
@@ -297,6 +298,52 @@ def _render_category(
             )
         )
     return parts
+
+
+def _category_labels(payload: dict[str, Any]) -> list[str] | None:
+    raw_categories = payload.get("categories") or []
+    axes = payload.get("axes")
+    category_axis = axes.get("category") if isinstance(axes, dict) else None
+    if not isinstance(category_axis, dict) or category_axis.get("kind") != "date":
+        return [str(value) for value in raw_categories]
+
+    number_format = str(category_axis.get("number_format") or "").lower()
+    normalized_format = re.sub(r'\\.|"[^"]*"|\[[^]]*]', "", number_format)
+    labels: list[str] = []
+    for raw_value in raw_categories:
+        try:
+            serial = float(raw_value)
+        except (TypeError, ValueError, OverflowError):
+            return None
+        if not math.isfinite(serial):
+            return None
+        date_parts = _excel_1900_date_parts(serial)
+        if date_parts is None:
+            return None
+        year, month, day = date_parts
+        if "yyyy-mm-dd" in normalized_format:
+            labels.append(f"{year:04d}-{month:02d}-{day:02d}")
+        elif "mm/dd/yyyy" in normalized_format:
+            labels.append(f"{month:02d}/{day:02d}/{year:04d}")
+        elif "m/d/yyyy" in normalized_format:
+            labels.append(f"{month}/{day}/{year:04d}")
+        else:
+            labels.append(f"{year:04d}-{month:02d}-{day:02d}")
+    return labels
+
+
+def _excel_1900_date_parts(serial: float) -> tuple[int, int, int] | None:
+    day_number = math.floor(serial)
+    if day_number < 1:
+        return None
+    if day_number == 60:
+        return 1900, 2, 29
+    epoch = date(1899, 12, 31) if day_number < 60 else date(1899, 12, 30)
+    try:
+        value = epoch + timedelta(days=day_number)
+    except (OverflowError, ValueError):
+        return None
+    return value.year, value.month, value.day
 
 
 def _category_segments(

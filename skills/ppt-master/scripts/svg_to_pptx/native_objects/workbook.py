@@ -127,6 +127,28 @@ def _minimal_workbook(rows: list[list[Any]]) -> bytes:
 
 
 def _minimal_category_chart_workbook(chart_data: dict[str, Any]) -> bytes:
+    if chart_data.get("kind") == "combo" and chart_data.get("independent_categories"):
+        plots = chart_data["plots"]
+        column_count = max(
+            int(plot["start_column"]) + len(plot["series"]) - 1
+            for plot in plots
+        )
+        rows: list[list[Any]] = [[None] * column_count]
+        for plot in plots:
+            category_column = int(plot["category_column"]) - 1
+            start_column = int(plot["start_column"]) - 1
+            for offset, series in enumerate(plot["series"]):
+                rows[0][start_column + offset] = series["name"]
+            for point_index, category in enumerate(plot["categories"], start=1):
+                while len(rows) <= point_index:
+                    rows.append([None] * column_count)
+                rows[point_index][category_column] = category
+                for offset, series in enumerate(plot["series"]):
+                    rows[point_index][start_column + offset] = (
+                        series["values"][point_index - 1]
+                    )
+        return _minimal_workbook(rows)
+
     categories = chart_data["categories"]
     series = chart_data["series"]
     rows: list[list[Any]] = [[None] + [item["name"] for item in series]]

@@ -200,7 +200,7 @@ def _validate_native_object_marker_payload(
     off_x, off_y, ext_cx, ext_cy, _ = _validate_bounds_inputs(elem, payload, bounds_ctx)
     table_rows = None
     if kind == "table":
-        table_rows, col_count = _validate_table_payload(payload)
+        table_rows, col_count, _merge_layout = _validate_table_payload(payload)
         if ext_cx < col_count or ext_cy < len(table_rows):
             raise RuntimeError(
                 "Native PPTX table bounds must provide at least one EMU per row and column"
