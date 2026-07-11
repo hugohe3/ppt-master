@@ -201,8 +201,8 @@ Use when rounded corners must survive PowerPoint shape conversion.
 ### `align_embed_images.py`
 
 ```bash
-uv run scripts/svg_finalize/align_embed_images.py path/to/slide.svg
-uv run scripts/svg_finalize/align_embed_images.py --dry-run path/to/slide.svg
+uvx ppt-master align-embed-images path/to/slide.svg
+uvx ppt-master align-embed-images --dry-run path/to/slide.svg
 ```
 
 Use for rare single-file diagnostics when image `slice` / `meet` alignment and
