@@ -6,11 +6,13 @@ description: Generate a new layout or deck template based on existing project fi
 
 > **Role invoked**: [Template_Designer](../references/template-designer.md)
 
-Generate a complete set of reusable PPT templates for the **global template library**.
+Generate a complete layout/deck template package for either the **global template library** or one initialized project.
 
-> This workflow is for **library asset creation**, not project-level one-off customization. The output must be reusable by future PPT projects and discoverable from the appropriate index file.
+**Default — library scope**: Preserve the existing reusable-library behavior. Write `skills/ppt-master/templates/<kind>/<id>/` and register it in the matching discovery index.
 
-> **Boundary against template-fill**: this workflow does not fill content into a PPTX and does not directly output the user's final generated deck. It creates a reusable `templates/<kind>/<id>/` package. To generate a deck from that package, the user must provide the resulting template directory path to the main SKILL.md pipeline.
+**Project scope**: Write a thin template bundle directly into `<project>/templates/` for the named project. Do not add a nested template-ID directory and do not register any global index.
+
+> **Boundary against template-fill**: this workflow does not fill content into a PPTX and does not directly output the user's final generated deck. It creates a reusable template contract at the selected scope. To generate a deck from a library package, return its directory path to the main SKILL.md pipeline. A project-scoped package is already installed at that project's Step 3 path and is consumed in place.
 
 > **Companion workflow**: identity-only locking (colors / typography / logo / voice without SVG pages) is handled by [`create-brand.md`](./create-brand.md). Use that when the user wants brand identity but free page layout; use this when fixed page structures are required.
 
@@ -18,17 +20,34 @@ Generate a complete set of reusable PPT templates for the **global template libr
 
 This workflow produces one of two kinds of templates depending on whether the source PPT carries a specific brand identity:
 
-| Kind | When | Output dir | What `design_spec.md` writes |
+| Kind | When | Library-scope output dir | What `design_spec.md` writes |
 |---|---|---|---|
 | **deck** (default) | Source is a specific organization's branded PPT (e.g. company report, university defense template); the visual identity is part of the replica | `templates/decks/<id>/` | Full segments: identity + structure + middle |
 | **layout** | Source is a generic stylistic template (no specific brand); only the structural skeleton should be reusable; color / typography decided per-deck downstream | `templates/layouts/<id>/` | Structure segments only (canvas / page structure / page types / SVG roster); identity segment omitted |
 
 Default to **deck** unless the user explicitly says "structure only" / "layout only" / "no brand identity". When in doubt, lean deck — losing identity later is easy; reconstructing it from a layout-mode strip is not. See [`docs/zh/templates-architecture.md`](../../../docs/zh/templates-architecture.md) for the full kind / schema / fusion model.
 
+## Output scope — library (default) vs project
+
+Output scope is a workflow execution choice, not a new template kind or PPTX structure mode. Surface it in the Step 2 brief; do not invent a CLI flag or persist `output_scope` / `target_project` into portable `design_spec.md` frontmatter.
+
+| Scope | Final output | Asset routing | Registration |
+|---|---|---|---|
+| `library` (default) | `skills/ppt-master/templates/<kind_dir>/<template_id>/` | Keep the existing self-contained package: SVG/spec/assets under the package, including `icons/` when present | Run `register_template.py` against the matching global index |
+| `project` | `<target_project>/templates/` **root** | `design_spec.md`, template SVGs, and non-bitmap package assets → `templates/`; bitmaps → `images/` and SVG references → `../images/<name>`; extracted icon assets → both `templates/icons/` (package/validation copy) and `icons/` (runtime copy) | Do not update any global index; bundle belongs only to this target project |
+
+For `project`, `target_project` is required and must be an existing project initialized by `project_manager.py init`. Before the first final-output write, run one complete preflight:
+
+1. Confirm the target project and its `templates/`, `images/`, and `icons/` directories exist.
+2. Confirm `<target_project>/templates/` is empty.
+3. Resolve every final bitmap and extracted-icon filename, then confirm none would overwrite an existing file in `<target_project>/images/` or `<target_project>/icons/`.
+
+Any failed check aborts before writing `design_spec.md`, SVGs, images, or icons. Do not merge into a non-empty template root and do not overwrite a name conflict. Temporary Step 1 analysis workspaces remain allowed because they are not final project outputs.
+
 ## Process Overview
 
 ```
-Reference Intake & Analysis -> Basic Norm Extraction -> Fact-Based Brief Proposal -> User Confirmation Gate -> Create Directory + Invoke Template_Designer -> Validate Assets -> Register Index -> Output
+Reference Intake & Analysis -> Basic Norm Extraction -> Fact-Based Brief Proposal -> User Confirmation Gate -> Preflight + Invoke Template_Designer -> Validate Assets -> [Register Library Index] -> Output
 ```
 
 The first three steps derive the brief from facts, not guesses. **No final template directory may be created and no template SVG / `design_spec.md` may be written until `[TEMPLATE_BRIEF_CONFIRMED]` is emitted in Step 3.** Reference-analysis intermediates produced by `pptx_template_import.py` (typically under `/tmp/pptx_template_import/`) are explicitly **not** subject to this gate — they are temporary workspaces feeding Step 2.
@@ -202,6 +221,8 @@ Compose a single message that surfaces every Required brief item to the user, **
 
 | Field | Must show |
 |---|---|
+| Output scope | Recommended `library` (existing default) plus `project`; explain that `project` writes directly into one initialized project's template root and skips global registration |
+| Target project | Required only for `project`; show the exact initialized project directory path, not a project nickname |
 | Template kind | Recommended localized label with English ID, plus both options and the rule for choosing |
 | Category | Recommended localized category with English ID, plus `brand` / `general` / `scenario` / `government` / `special` with localized explanations |
 | Theme mode | Recommended localized mode with English ID, plus available modes such as `light` / `dark` / `mixed` with localized explanations |
@@ -215,7 +236,9 @@ Items to surface:
 
 | Item | Required | Provenance by input type |
 |------|----------|--------------------------|
-| New template ID | Yes | `[decision]` — user chooses ASCII slug; if Chinese brand name, must be filesystem-safe and match the target kind's index exactly |
+| Output scope | Yes | `[decision]` — `library` (default, globally reusable and indexed) or `project` (direct thin bundle for one initialized project) |
+| Target project | Yes for `project`; N/A for `library` | `[decision]` — explicit path to the initialized target project; validate it during the Step 4 preflight |
+| New template ID | Yes | `[decision]` — user chooses ASCII slug; if Chinese brand name, it must be filesystem-safe. In library scope it also becomes the matching index key |
 | Template display name | Yes | `[decision]` (often the source deck title — `[suggested]` from `summary.md` for type A) |
 | Category | Yes | `[decision]` — one of `brand` / `general` / `scenario` / `government` / `special` |
 | Applicable scenarios | Yes | `[suggested]` from analysis; user confirms |
@@ -241,7 +264,7 @@ For type A, also include in this message:
 
 The user replies with corrections, additions, or "all good".
 
-> **Persist the brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 4, declare a YAML frontmatter block at the top with the confirmed brief (`template_id`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, `source_viewbox`, `replication_mode`, `native_structure_mode`, etc.). `register_template.py` reads this in Step 6, so the brief flows directly into the index without the AI re-deriving it from prose. See Step 6 for the recommended frontmatter shape.
+> **Persist the portable brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 4, declare a YAML frontmatter block at the top with the confirmed portable fields (`template_id`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `canvas_width`, `canvas_height`, `canvas_viewbox`, `source_viewbox`, `replication_mode`, `native_structure_mode`, etc.). Do not persist the execution-only `output_scope` or `target_project` fields. In library scope, `register_template.py` reads this frontmatter in Step 6 so the brief flows directly into the index without the AI re-deriving it from prose.
 
 ---
 
@@ -260,28 +283,38 @@ Skipping this gate — including silently inferring values from the reference so
 - [ ] Every finite-option field has shown a recommended value, other available options, and unavailable options with reasons when applicable
 - [ ] User-facing labels and option explanations match the user's language; English enum IDs appear only as precision aids
 - [ ] User has replied with values or explicit acceptance of suggested defaults
-- [ ] The template is clearly positioned as a **global library template**
+- [ ] Output scope is confirmed; `library` remains the default, while `project` includes an explicit initialized target-project path
 - [ ] The canvas format is fixed before SVG generation
 - [ ] Replication mode is consistent with the input type (`fidelity` / `mirror` allowed for A and B with B's caveats noted; forbidden for C / D)
 - [ ] Basic template norms from prior content have been surfaced and accepted, or explicitly marked N/A when no reference exists
-- [ ] Metadata is complete enough to register into the relevant index
+- [ ] For `library`, metadata is complete enough to register into the relevant index; for `project`, the portable template metadata is complete and no global registration is planned
 - [ ] Marker `[TEMPLATE_BRIEF_CONFIRMED]` emitted on its own line after the echoed brief
 
 Step 4 MUST NOT run until `[TEMPLATE_BRIEF_CONFIRMED]` has been emitted in the current conversation.
 
 ---
 
-## Step 4: Create Template Directory + Invoke Template_Designer
+## Step 4: Preflight Output + Invoke Template_Designer
 
 > **Precondition**: `[TEMPLATE_BRIEF_CONFIRMED]` was emitted in Step 3. If not, return to Step 3.
 
-Create the final template directory:
+Select the final target from the confirmed output scope:
 
 ```bash
+# library scope (default)
 mkdir -p "skills/ppt-master/templates/<kind_dir>/<template_id>"
+
+# project scope
+# Do not create a nested template-ID directory. The initialized project already
+# owns <target_project>/templates/, images/, and icons/.
 ```
 
-> **Output location**: Templates go to `skills/ppt-master/templates/<kind>/<template_id>/`. The generated directory name must match the final template ID used in the relevant index.
+| Scope | Template target | Required action before generation |
+|---|---|---|
+| `library` | `skills/ppt-master/templates/<kind_dir>/<template_id>/` | Preserve the existing directory creation behavior; the generated directory name matches the final template ID used in the relevant index |
+| `project` | `<target_project>/templates/` | Run the full project preflight from "Output scope" above before any final-output write; stop on a non-empty template root or image/icon filename conflict |
+
+The project preflight is atomic at workflow level: discover and settle every output filename first, check all destinations together, then begin generation. Do not partially write a project bundle and discover a later collision.
 
 **Switch to the Template_Designer role** and generate per role definition. The role input is the finalized brief from Step 3 plus the analysis bundle from Step 1, including the accepted basic template norms.
 
@@ -318,42 +351,50 @@ Downstream, both template-adherence choices stay on `pptx_structure.mode: templa
 2. **Renames each file** using the source-order-first convention `<NNN>_<page_type>.svg`, where `<NNN>` is the source-order index zero-padded to 3 digits and `<page_type>` is typically `cover` / `toc` / `chapter` / `content` / `ending` (fall back to `content` when the type cannot be confidently classified). Examples: `001_cover.svg`, `002_toc.svg`, `003_content.svg`, ..., `050_ending.svg`.
    - Type A: derive `<page_type>` from `manifest.json.pageTypeCandidates`
    - Type B: derive `<page_type>` from the source filename when it follows the PPT Master convention (`01_cover.svg` → `cover`, `03a_content_two_col.svg` → `content`); otherwise infer from page content or fall back to `content`
-3. **Copies bundled assets** into the template directory and rewrites the `<image href="...">` paths inside each copied SVG to point at the local copies. Asset filenames may be renamed to semantic names (`brand_emblem.png` instead of `image3.png`) when it improves readability — but the rewrite must be consistent across every page.
+3. **Routes bundled assets** according to the selected scope and rewrites every `<image href="...">` consistently. Asset filenames may be renamed to semantic names (`brand_emblem.png` instead of `image3.png`) when it improves readability.
    - Type A: assets come from `<import_workspace>/assets/`
    - Type B: resolve relative paths in source `<image href="...">` against the source SVG location and copy each unique asset; if the source already follows PPT Master conventions (assets co-located with SVGs in the same directory), copy the whole asset set and then rewrite paths
-4. **Copies `icons/` when present** and preserves every extracted `<use data-icon="..."/>` reference. Do not inline these assets manually in the template working SVGs; the shared icon embedding path owns re-inlining before export.
+   - Library scope: keep bundled assets inside the template package and point SVG references at those package-local files.
+   - Project scope: write bitmap assets to `<target_project>/images/`, point SVG references at `../images/<name>`, and keep other package assets under `<target_project>/templates/`.
+4. **Copies `icons/` when present** and preserves every extracted `<use data-icon="..."/>` reference. Library scope keeps one package copy under the template directory. Project scope writes the package/validation copy to `<target_project>/templates/icons/` and an identical runtime copy to `<target_project>/icons/`. Do not inline these assets manually in the template working SVGs; the shared icon embedding path owns re-inlining before export.
 5. Writes `design_spec.md` per [template-designer.md](../references/template-designer.md) §1. The §V Page Roster remains the content-fit index; explicit SVG metadata is the native Master/Layout contract. Mirror is only the template-creation replication mode; downstream generation still treats the finished package as a selectable / reusable roster, not as a forced 1:1 slide sequence.
 
 Mirror mode does not simplify the visual page, but it still reconstructs layer ownership. The sprite-sheet preservation rule applies because flat SVGs already contain the original crop wrappers; do not flatten them when annotating the page.
 
 **Expected outputs from this step** (full spec → [template-designer.md](../references/template-designer.md)):
 
-1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare brief frontmatter for `register_template.py`. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
+1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare portable brief frontmatter; `register_template.py` consumes it only in library scope. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
 2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` / `fidelity` / `mirror` mode rosters, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
    - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root `data-pptx-layout` / `data-pptx-layout-name`, direct Master/Layout layers, and direct semantic `data-pptx-placeholder` markers. Minimal structural `data-pptx-role` hints are added only when those specialized markers cannot express required behavior. Both strict and adaptive downstream use set `mode: template` and require `page_layouts` plus `pptx_layouts` for every page.
-4. Template assets (optional) — Logos / PNG / JPG / reference SVG bundled with the template package
+4. Template assets (optional) — library scope bundles Logos / PNG / JPG / reference SVG inside the package; project scope applies the `templates/` / `images/` / dual-icon routing defined above
 
 ---
 
 ## Step 5: Validate Template Assets
 
+Set `<template_target>` to the selected output directory:
+
+| Scope | `<template_target>` |
+|---|---|
+| `library` | `skills/ppt-master/templates/<kind_dir>/<template_id>` |
+| `project` | `<target_project>/templates` |
+
 ```bash
-# Replace <kind_dir> with "decks" or "layouts" depending on the kind decided above
-ls -la "skills/ppt-master/templates/<kind_dir>/<template_id>"
+ls -la "<template_target>"
 ```
 
 Run SVG validation on the template directory:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/templates/<kind_dir>/<template_id>" --template-mode --format <canvas_format>
+python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_target>" --template-mode --format <canvas_format>
 ```
 
 `--template-mode` makes the checker:
 
 - glob `*.svg` in the template directory directly (templates do not live under `svg_output/`)
 - skip `spec_lock.md` drift checks (templates do not ship a spec_lock)
-- enforce roster ↔ `design_spec.md` consistency as **errors** (orphan files / missing files break the target kind's index)
+- enforce roster ↔ `design_spec.md` consistency as **errors** (orphan files / missing files break the template contract and, in library scope, the target kind's index)
 - emit advisory **warnings** when a page lacks a conventional placeholder — these are hints, not failures. Declare a `placeholders:` block in `design_spec.md` frontmatter to silence them when your template intentionally uses a different vocabulary
 - require every SVG root to declare an output Layout and every SVG to contain at least one direct Master/Layout/placeholder declaration
 - validate cross-page Master equality plus same-key Layout/placeholder equality
@@ -367,18 +408,25 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 - [ ] `design_spec.md` frontmatter declares `canvas_format`, `canvas_width`, `canvas_height`, and `canvas_viewbox`; PPTX/SVG-backed templates also declare `source_canvas_width`, `source_canvas_height`, and `source_viewbox`
 - [ ] SVG `viewBox` matches the declared canvas dimensions, not just the aspect ratio (for `ppt169`: `0 0 1280 720`; for `banner`: `0 0 1920 1080`); `width` / `height`, if written, equal it
 - [ ] Placeholder names follow the canonical convention where applicable; templates with intentionally different vocabularies (e.g. `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`) should declare a `placeholders:` frontmatter block to silence advisory warnings
-- [ ] Asset files referenced by SVGs actually exist in the template package
+- [ ] Asset files referenced by SVGs exist at their resolved paths. In project scope, bitmap references resolve through `../images/`; no bitmap remains accidentally stranded in `templates/`
 - [ ] `design_spec.md` frontmatter declares `native_structure_mode: template`; no `native_structure.json` or `source_template.pptx` is packaged
 - [ ] Every SVG root declares `data-pptx-layout` and `data-pptx-layout-name`; direct Master/Layout elements and semantic placeholders obey the explicit paint-order contract. Structural `data-pptx-role` is used only when specialized metadata cannot express required package/page-number/animation behavior
-- [ ] If any SVG references an extracted vector `data-icon`, the corresponding SVG asset exists directly under the package's `icons/` directory; do not add a separate illustration embedding script
+- [ ] If any SVG references an extracted vector `data-icon`, the corresponding SVG asset exists under the package's `icons/` directory. Project scope also has the identical runtime copy under `<target_project>/icons/`; do not add a separate illustration embedding script
 - [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
-- [ ] For `mirror` mode: file count equals source page count (type A: `ls templates/<kind_dir>/<id>/*_*.svg | wc -l` matches the cleaned flat `<import_workspace>/svg-flat/slide_*.svg | wc -l`; type B: matches the source SVG count); filenames follow the `<NNN>_<page_type>.svg` convention; **no `{{...}}` placeholder strings appear in any copied SVG** (`grep -l "{{" templates/<kind_dir>/<id>/*.svg` should return nothing — if the type B source itself contains placeholders, the user should be in `standard` mode, not `mirror`); §V Page Roster in `design_spec.md` lists every emitted file with a one-line description of what the page contains and what content slot it suits
+- [ ] For `mirror` mode: file count equals source page count (type A: `<template_target>/*_*.svg` matches the cleaned flat `<import_workspace>/svg-flat/slide_*.svg` count; type B: matches the source SVG count); filenames follow the `<NNN>_<page_type>.svg` convention; **no `{{...}}` placeholder strings appear in any copied SVG** (`grep -l "{{" "<template_target>"/*.svg` should return nothing — if the type B source itself contains placeholders, the user should be in `standard` mode, not `mirror`); §V Page Roster in `design_spec.md` lists every emitted file with a one-line description of what the page contains and what content slot it suits
 
-This step is a **hard gate**. Do not register a template into the library index until validation passes.
+This step is a **hard gate**. In library scope, do not register until validation passes. In project scope, do not hand the in-place bundle to the main pipeline until validation passes.
 
 ---
 
-## Step 6: Register Template in Library Index
+## Step 6: Register Template in Library Index (Library Scope Only)
+
+Branch on the confirmed output scope:
+
+| Scope | Action |
+|---|---|
+| `library` | Run the registrar below after Step 5 passes |
+| `project` | Skip the registrar entirely. Do not edit `decks_index.json`, `layouts_index.json`, or any library README; continue to Step 7 with index status `Not registered (project-local)` |
 
 Run the unified registrar with the kind flag; it derives the corresponding index entry from `design_spec.md` (frontmatter when present, prose fallback otherwise) plus the actual SVG file list:
 
@@ -454,7 +502,7 @@ README files describe each kind in prose only — they do not list templates. Di
 
 ## Step 7: Output Confirmation
 
-`register_template.py` already printed a "Template Creation Complete" card during Step 6 — copy it verbatim into the conversation. The card includes the template name, path, category, primary color, index status, and the full SVG file roster (auto-collected from disk, so `fidelity`-mode variant pages and TOC pages are listed correctly without manual editing).
+For `library`, `register_template.py` already printed a "Template Creation Complete" card during Step 6 — copy it verbatim into the conversation. The card includes the template name, path, category, primary color, index status, and the full SVG file roster (auto-collected from disk, so `fidelity`-mode variant pages and TOC pages are listed correctly without manual editing).
 
 For a standard-mode template the card looks like:
 
@@ -478,6 +526,29 @@ For a standard-mode template the card looks like:
 | `04_ending.svg` | Done |
 ```
 
+For `project`, produce the same evidence-driven file roster from `<target_project>/templates/*.svg`, but use this scope-aware card:
+
+```markdown
+## Template Creation Complete
+
+**Template Name**: <template_id> (<display_name>)
+**Kind**: deck | layout
+**Output Scope**: project
+**Template Path**: `<target_project>/templates/`
+**Bitmap Path**: `<target_project>/images/`
+**Runtime Icon Path**: `<target_project>/icons/`
+**Index Registration**: Not registered (project-local)
+
+### Files Included
+
+| File | Status |
+|------|--------|
+| `design_spec.md` | Done |
+| `<actual-template>.svg` | Done |
+```
+
+The next main-pipeline Step 3 input is the exact `<target_project>/templates/` path. It is an in-place bundle: do not copy it onto itself and do not move its `../images/` assets again. Do not reuse this root from another project; choose library scope when cross-project portability is required.
+
 ---
 
 ## Color Scheme Quick Reference
@@ -496,6 +567,6 @@ For a standard-mode template the card looks like:
 1. **SVG technical constraints**: See [shared-standards.md](../references/shared-standards.md) — do not restate them in the template's `design_spec.md`
 2. **Color consistency**: All SVG files must use the same color scheme as `design_spec.md §II Color Scheme`
 3. **Placeholder convention**: `{{}}` format only; default names listed in [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). Override per template via `placeholders:` frontmatter when needed.
-4. **Discovery requirement**: A template directory is only discoverable after `register_template.py` has been run against it (Step 6)
+4. **Discovery requirement**: A library template is discoverable only after `register_template.py` has been run against it (Step 6). A project-scoped template intentionally stays out of global discovery and is consumed by its explicit `<project>/templates/` path.
 
 > **Full role specification**: [template-designer.md](../references/template-designer.md)

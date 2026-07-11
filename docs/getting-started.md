@@ -33,14 +33,16 @@ You: Replicate this as a template via /create-template: projects/brand/our_deck.
 
 That runs `pptx_template_import.py` and rebuilds the file into a reusable bundle — layout SVGs + `design_spec.md` + extracted theme colors, fonts, and images. That bundle is what you point to at generation time.
 
+During the create-template brief, choose `library` (the existing default) or `project`. Project scope requires an initialized target project, verifies the project template root and asset names before writing, then installs the bundle directly into that project without global registration.
+
 A created template lives in one of two places:
 
 | Location | Path | Notes |
 |---|---|---|
 | **Registered in the skill library** | `skills/ppt-master/templates/layouts/<id>/` | Global, reusable across every project; run `register_template.py` so it shows up when you ask "what templates are available?" |
-| **Inside a project** | `projects/<project>/templates/` | Project-local; works by path, no registration needed |
+| **Inside a project** | `projects/<project>/templates/` | Private to that owning project; consumed in place, no registration needed |
 
-Either way, you invoke it during generation by giving its **directory path** in chat — the workflow triggers on an explicit path only, never on a bare template name:
+For a library package, invoke it during generation by giving its **directory path** in chat. A project-scoped create-template run may hand its exact validated path directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. To reuse a project-scoped design in another project, recreate it with `library` scope because its image/icon pools live beside the owning project's template root.
 
 ```
 You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/academic_defense/

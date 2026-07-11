@@ -33,14 +33,16 @@
 
 这会跑 `pptx_template_import.py`,把文件重建成可复用的资产包——版式 SVG + `design_spec.md` + 抽取出的主题色、字体、图片。生成时引用的就是这个资产包。
 
+在 create-template brief 中选择 `library`（沿用原默认）或 `project`。项目范围要求给出已初始化的目标项目；写入前统一检查模板根目录和素材文件名，再把 bundle 直接安装到该项目，不做全局注册。
+
 复刻出的模板可以放在两个位置之一:
 
 | 位置 | 路径 | 说明 |
 |---|---|---|
 | **注册进 skill 库** | `skills/ppt-master/templates/layouts/<id>/` | 全局,所有项目可复用;跑 `register_template.py` 后,问"有哪些模板"时会被列出来 |
-| **放进项目里** | `projects/<project>/templates/` | 项目本地;给路径即用,无需注册 |
+| **放进项目里** | `projects/<project>/templates/` | 只归属该项目;原地消费,无需注册 |
 
-无论放哪,生成时都靠在对话里给出它的**目录路径**来引用——工作流只认显式路径,绝不认裸模板名:
+全局库 package 在生成时靠对话里给出**目录路径**来引用；项目范围 create-template 可在同一对话里把已验证的精确路径直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。若要把项目范围设计复用于另一个项目，应重新以 `library` 范围创建，因为图片/图标池位于原项目模板根目录的同级位置。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/academic_defense/
