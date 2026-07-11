@@ -134,7 +134,7 @@
 > ```
 > Omit the row for free design and brand-only templates. Both values require one `page_layouts` and one `pptx_layouts` row per page. `strict` keeps the selected Layout contract; `adaptive` may create a new explicit Layout under the same template Master.
 >
-> - `baseline` — default for free design and brand-only routes. Preserve conservative shared Master/background/chrome behavior, then assign filename-backed Cover/Agenda/Section/Closing/Content layouts. It may also promote exact family-wide leading chrome into a Layout. Actual content stays slide-local; no placeholders or visual-similarity inference are authored.
+> - `baseline` — default for free design and brand-only routes. Preserve conservative shared Master/background/chrome behavior, then assign Cover/Agenda/Section/Closing/Content from root `data-pptx-page-role`. It may also promote exact family-wide leading structurally marked chrome into a Layout. Marker-free legacy SVGs retain filename/id fallback. Actual content stays slide-local; no placeholders or visual-similarity inference are authored.
 > - `template` — required whenever Step 3 loaded a deck/layout template. Requires complete `page_layouts` and `pptx_layouts` sections plus explicit SVG structure metadata on every generated page.
 > - `preserve` — legacy strict-only compatibility for an existing project that already ships `native_structure.json` + `source_template.pptx`. Do not select it for newly created templates.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
@@ -191,7 +191,7 @@
 
 ## forbidden
 - Mixing icon libraries
-- rgba()
-- `<style>`, `class`, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<script>`, `<iframe>`, `<symbol>`+`<use>`
-- `<g opacity>` (set opacity on each child element individually)
-- HTML named entities in text (`&nbsp;`, `&mdash;`, `&copy;`, `&ndash;`, `&reg;`, `&hellip;`, `&bull;` …) — write as raw Unicode (`—`, `©`, `→`, NBSP, etc.); XML reserved chars `& < > " '` must be escaped as `&amp; &lt; &gt; &quot; &apos;`. See shared-standards.md §1.0
+- `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
+- HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
+
+> **Execution reminder — not authoring authority**: the baseline blacklist above is intentionally terse. Add only deck-specific execution locks. General SVG required / forbidden / conditional rules are owned by [`shared-standards.md`](../references/shared-standards.md); do not copy its feature matrix or parameter contracts into `spec_lock.md`.

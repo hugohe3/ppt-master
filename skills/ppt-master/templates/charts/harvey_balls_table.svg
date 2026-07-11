@@ -4,7 +4,8 @@
     Purpose: Qualitative assessment, scoring, and vendor comparison
     Use cases: Vendor evaluations, project status, skill matrices
     Design Principles: Left-aligned features, centered Harvey balls, clean minimalist consulting grid
-    Note: Harvey ball shapes are inlined (no <use>/<defs>) so the SVG-to-PPTX converter renders them.
+    Note: Harvey ball shapes stay inlined for direct per-cell editing.
+    Static same-document <use> is supported, but PPTX import does not reconstruct reuse structure.
     -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
     <!-- ==================== Header ==================== -->

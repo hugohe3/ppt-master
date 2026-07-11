@@ -26,6 +26,11 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from ..geometry_properties import (
+    GeometryStyleError,
+    materialize_inline_geometry_properties,
+)
+
 
 _NON_VISUAL_TAGS = frozenset({"defs", "title", "desc", "metadata", "style"})
 _STRUCTURE_ATTRS = frozenset({
@@ -703,6 +708,13 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
     except (OSError, ET.ParseError) as exc:
         raise TemplateStructureError(
             f"{svg_path.name}: unable to parse SVG structure metadata: {exc}"
+        ) from exc
+
+    try:
+        materialize_inline_geometry_properties(root)
+    except GeometryStyleError as exc:
+        raise TemplateStructureError(
+            f"{svg_path.name}: invalid inline geometry: {exc}"
         ) from exc
 
     if _local_tag(root) != "svg":

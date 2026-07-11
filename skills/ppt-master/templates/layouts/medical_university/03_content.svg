@@ -18,7 +18,7 @@
     <!-- 右上角 Logo -->
     <rect x="1100" y="20" width="140" height="30" fill="none" />
     <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif"
-        font-size="16" font-weight="bold">
+        font-size="16" font-weight="bold" id="semantic-03_content-logo-1" data-pptx-role="logo">
         {{LOGO}}
     </text>
 

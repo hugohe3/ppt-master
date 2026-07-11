@@ -22,7 +22,8 @@ from .utils import (
     svg_length_x, svg_length_y, svg_length_size,
     ctx_x, ctx_y, ctx_w, ctx_h,
     rect_to_dml_xfrm,
-    parse_hex_color, resolve_url_id, get_effective_filter_id,
+    combine_opacity, parse_hex_color, parse_svg_color,
+    resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
     detect_text_lang, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
@@ -30,7 +31,7 @@ from .utils import (
 from .styles import (
     build_solid_fill, build_gradient_fill,
     build_fill_xml, build_stroke_xml, build_effect_xml, classify_filter_effect,
-    get_fill_opacity, get_stroke_opacity,
+    get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .paths import (
     PathCommand, parse_svg_path, svg_path_to_absolute,
@@ -363,7 +364,10 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_effect_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
 
     transform = elem.get('transform')
 
@@ -554,7 +558,7 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
         # Use the stroke color/gradient as fill for the arc shape
         stroke_val = _get_attr(elem, 'stroke', ctx)
-        op = get_fill_opacity(elem, ctx)
+        op = get_stroke_opacity(elem, ctx)
         grad_id = resolve_url_id(stroke_val) if stroke_val else None
         if grad_id and grad_id in ctx.defs:
             fill = build_gradient_fill(
@@ -564,9 +568,14 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 "fill",
             )
         elif stroke_val:
-            color = parse_hex_color(stroke_val)
+            color, color_alpha = parse_svg_color(stroke_val)
             fill = (
-                build_solid_fill(color, op, ctx.theme_color_spec, "fill")
+                build_solid_fill(
+                    color,
+                    combine_opacity(op, color_alpha),
+                    ctx.theme_color_spec,
+                    "fill",
+                )
                 if color else '<a:noFill/>'
             )
         else:
@@ -577,7 +586,10 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         effect = ''
         filt_id = get_effective_filter_id(elem, ctx)
         if filt_id and filt_id in ctx.defs:
-            effect = build_effect_xml(ctx.defs[filt_id])
+            effect = build_effect_xml(
+                ctx.defs[filt_id],
+                get_element_opacity(elem, ctx),
+            )
 
         shape_id = ctx.next_id()
         return ShapeResult(
@@ -609,7 +621,10 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_effect_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
 
     geom = '<a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>'
 
@@ -815,7 +830,10 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_effect_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(
+            ctx.defs[filt_id],
+            get_element_opacity(elem, ctx),
+        )
 
     shape_id = ctx.next_id()
     off_x = px_to_emu(min_x)
@@ -1198,6 +1216,8 @@ def _extract_text_bullet(
     bullet = {
         'char': _TEXT_BULLET_MARKERS.get(marker, marker),
         'fill': marker_run.get('fill'),
+        'fill_raw': marker_run.get('fill_raw'),
+        'opacity': marker_run.get('opacity'),
         'source_prefix_width_px': _estimate_text_runs_width(prefix_runs, include_headroom=False),
         'margin_px': max(
             _estimate_text_runs_width(replacement_runs, include_headroom=False),
@@ -1226,10 +1246,21 @@ def _build_bullet_xml(
     if not bullet:
         return ''
     fill = bullet.get('fill')
-    if isinstance(fill, str) and re.fullmatch(r'[0-9A-Fa-f]{6}', fill):
+    fill_raw = bullet.get('fill_raw')
+    color, color_alpha = parse_svg_color(
+        fill_raw if isinstance(fill_raw, str) else ''
+    )
+    if color is None and isinstance(fill, str):
+        color = parse_hex_color(fill)
+    if color:
+        opacity = combine_opacity(bullet.get('opacity'), color_alpha)
+        alpha_xml = (
+            f'<a:alphaMod val="{int(opacity * 100000)}"/>'
+            if opacity is not None else ''
+        )
         theme_spec = ctx.theme_color_spec if ctx is not None else None
         color_xml = (
-            f'<a:buClr>{color_node_xml(fill, theme_spec, "text")}</a:buClr>'
+            f'<a:buClr>{color_node_xml(color, theme_spec, "text", alpha_xml)}</a:buClr>'
         )
     else:
         color_xml = '<a:buClrTx/>'
@@ -1272,6 +1303,16 @@ def _textbox_padding(font_size: float) -> float:
     )
 
 
+def _text_opacity_ratio(value: str | None) -> float:
+    """Parse a text opacity component and clamp it to the SVG ``0..1`` range."""
+    if value is None:
+        return 1.0
+    try:
+        return max(0.0, min(1.0, float(value)))
+    except ValueError:
+        return 1.0
+
+
 def _override_run_attrs(
     parent_attrs: dict[str, Any],
     tspan: ET.Element,
@@ -1282,6 +1323,27 @@ def _override_run_attrs(
 
     def tspan_attr(name: str) -> str | None:
         return inline_style.get(name) or tspan.get(name)
+
+    object_opacity = float(run_attrs.get('_object_opacity', 1.0))
+    fill_opacity = float(run_attrs.get('_fill_opacity', 1.0))
+    stroke_opacity = float(run_attrs.get('_stroke_opacity', 1.0))
+    if tspan_attr('opacity') is not None:
+        object_opacity *= _text_opacity_ratio(tspan_attr('opacity'))
+    if tspan_attr('fill-opacity') is not None:
+        fill_opacity = _text_opacity_ratio(tspan_attr('fill-opacity'))
+    if tspan_attr('stroke-opacity') is not None:
+        stroke_opacity = _text_opacity_ratio(tspan_attr('stroke-opacity'))
+    run_attrs['_object_opacity'] = object_opacity
+    run_attrs['_fill_opacity'] = fill_opacity
+    run_attrs['_stroke_opacity'] = stroke_opacity
+    effective_fill_opacity = object_opacity * fill_opacity
+    effective_stroke_opacity = object_opacity * stroke_opacity
+    run_attrs['opacity'] = (
+        effective_fill_opacity if effective_fill_opacity < 1.0 else None
+    )
+    run_attrs['stroke_opacity'] = (
+        effective_stroke_opacity if effective_stroke_opacity < 1.0 else None
+    )
 
     if tspan_attr('font-weight'):
         run_attrs['font_weight'] = tspan_attr('font-weight')
@@ -1299,11 +1361,6 @@ def _override_run_attrs(
             run_attrs.get('stroke_width', 1.0),
             font_size=float(run_attrs.get('font_size', 16)),
         )
-    if tspan_attr('stroke-opacity'):
-        try:
-            run_attrs['stroke_opacity'] = float(tspan_attr('stroke-opacity') or '1')
-        except ValueError:
-            pass
     if tspan_attr('font-size'):
         run_attrs['font_size'] = parse_svg_length(
             tspan_attr('font-size'),
@@ -1411,8 +1468,11 @@ def _build_text_fill_xml(
             "text",
         )
 
+    parsed_color, color_alpha = parse_svg_color(fill_raw)
+    fill = parsed_color or fill
+    opacity = combine_opacity(opacity, color_alpha)
     alpha_xml = ''
-    if opacity is not None and opacity < 1.0:
+    if opacity is not None:
         alpha_xml = f'<a:alphaMod val="{int(opacity * 100000)}"/>'
     theme_spec = ctx.theme_color_spec if ctx is not None else None
     return (
@@ -1431,14 +1491,14 @@ def _build_text_outline_xml(
     if not stroke_raw or stroke_raw.strip().lower() in ('none', 'transparent'):
         return ''
 
-    color = parse_hex_color(stroke_raw)
+    color, color_alpha = parse_svg_color(stroke_raw)
     if not color:
         return ''
 
     stroke_width = _f(str(run.get('stroke_width', 1.0)), 1.0)
-    stroke_opacity = run.get('stroke_opacity')
+    stroke_opacity = combine_opacity(run.get('stroke_opacity'), color_alpha)
     alpha_xml = ''
-    if stroke_opacity is not None and stroke_opacity < 1.0:
+    if stroke_opacity is not None:
         alpha_xml = f'<a:alphaMod val="{int(stroke_opacity * 100000)}"/>'
 
     theme_spec = ctx.theme_color_spec if ctx is not None else None
@@ -1520,9 +1580,13 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     fill_raw = _get_attr(elem, 'fill', ctx) or '#000000'
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
+    object_opacity = get_element_opacity(elem, ctx)
+    object_opacity = 1.0 if object_opacity is None else object_opacity
+    fill_opacity = _text_opacity_ratio(_get_attr(elem, 'fill-opacity', ctx))
     stroke_raw = _get_attr(elem, 'stroke', ctx) or ''
     stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
+    stroke_opacity_value = _text_opacity_ratio(_get_attr(elem, 'stroke-opacity', ctx))
     font_style = _get_attr(elem, 'font-style', ctx) or ''
     text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
     letter_spacing_px = _parse_letter_spacing_px(
@@ -1543,6 +1607,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'text_decoration': text_decoration,
         'letter_spacing': letter_spacing_px,
         '_scale_x': ctx.scale_x or 1.0,
+        '_object_opacity': object_opacity,
+        '_fill_opacity': fill_opacity,
+        '_stroke_opacity': stroke_opacity_value,
         'opacity': opacity,
         'stroke_raw': stroke_raw,
         'stroke_width': stroke_width,
@@ -1724,9 +1791,15 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         filter_elem = ctx.defs[filt_id]
         effect_kind = classify_filter_effect(filter_elem)
         if effect_kind == 'glow':
-            text_effect_xml = build_effect_xml(filter_elem)
+            text_effect_xml = build_effect_xml(
+                filter_elem,
+                get_element_opacity(elem, ctx),
+            )
         elif effect_kind == 'shadow':
-            shape_effect_xml = build_effect_xml(filter_elem)
+            shape_effect_xml = build_effect_xml(
+                filter_elem,
+                get_element_opacity(elem, ctx),
+            )
 
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
@@ -2369,6 +2442,18 @@ def _resolve_image_meet_fit(
     return (dx, dy, fit_w, fit_h)
 
 
+def _build_image_blip_xml(r_id: str, opacity: float | None) -> str:
+    """Build an image blip with native DrawingML transparency when requested."""
+    if opacity is None:
+        return f'<a:blip r:embed="{r_id}"/>'
+    alpha = int(round(opacity * 100000))
+    return (
+        f'<a:blip r:embed="{r_id}">'
+        f'<a:alphaModFix amt="{alpha}"/>'
+        '</a:blip>'
+    )
+
+
 def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <image> to DrawingML picture element.
 
@@ -2439,6 +2524,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Image optimization only downscales the full source image; it never crops
     # pixels out of the embedded media.
     src_rect_xml = _resolve_image_src_rect(elem, img_data, w, h)
+    blip_xml = _build_image_blip_xml(r_id, get_element_opacity(elem, ctx))
 
     # Resolve preserveAspectRatio="<align> meet" by shrinking the picture
     # frame to match the image's aspect ratio. Skipped when a real clip-path
@@ -2495,7 +2581,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <p:nvPr/>
 </p:nvPicPr>
 <p:blipFill>
-<a:blip r:embed="{r_id}"/>
+{blip_xml}
 {src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>
@@ -2514,8 +2600,14 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
     """Convert SVG <ellipse> to DrawingML ellipse shape."""
     raw_cx = svg_length_x(elem.get('cx'), ctx)
     raw_cy = svg_length_y(elem.get('cy'), ctx)
-    raw_rx = svg_length_x(elem.get('rx'), ctx)
-    raw_ry = svg_length_y(elem.get('ry'), ctx)
+    rx_attr = elem.get('rx')
+    ry_attr = elem.get('ry')
+    raw_rx = svg_length_x(rx_attr, ctx) if rx_attr is not None else 0.0
+    raw_ry = svg_length_y(ry_attr, ctx) if ry_attr is not None else 0.0
+    if rx_attr is not None and ry_attr is None:
+        raw_ry = raw_rx
+    elif ry_attr is not None and rx_attr is None:
+        raw_rx = raw_ry
     cx_ = ctx_x(raw_cx, ctx)
     cy_ = ctx_y(raw_cy, ctx)
     rx = raw_rx * ctx.scale_x
@@ -2668,6 +2760,10 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
         transform,
     )
     clip_geom = _resolve_clip_geometry(elem, ctx, svg_x, svg_y, svg_w, svg_h)
+    blip_xml = _build_image_blip_xml(
+        r_id,
+        get_element_opacity(image_elem, ctx),
+    )
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
@@ -2676,7 +2772,7 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
 <p:nvPr/>
 </p:nvPicPr>
 <p:blipFill>
-<a:blip r:embed="{r_id}"/>
+{blip_xml}
 {src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>

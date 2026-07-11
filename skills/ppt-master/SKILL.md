@@ -27,6 +27,7 @@ description: >
 |---|---|
 | Any route that authors or regenerates slide visuals through SVG | `svg_output/` is the complete page-design source: every visible text, image, shape, chart/table fallback, and layout element that should appear on the exported slide is present in that page SVG or referenced by it. |
 | Templates, `design_spec.md`, and `spec_lock.md` | Authoring/control inputs. They guide SVG creation but MUST NOT supply visible slide content that is absent from the completed SVG during export. |
+| Semantic SVG markers | Minimal rendering-neutral compiler hints used only after existing Layout/Layer/Placeholder/Native metadata has been considered. They never replace native SVG geometry, text, styles, grouping, or asset references. |
 | SVG-to-PPTX export | Translation only: map SVG content to DrawingML/native objects and reorganize represented content into Master/Layout/Slide structure without inventing new visible page content. |
 | Direct PPTX and presentation-behavior workflows | Remain separate. `template-fill-pptx`, `native-enhance-pptx`, animations, transitions, speaker notes, narration, and package relationships are not required to round-trip through SVG. |
 
@@ -360,7 +361,7 @@ First, read the role definition:
 Read references/strategist.md
 ```
 
-> ⚠️ **Mandatory gate**: before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and follow its full I–XI section structure. See `strategist.md` Section 1.
+> ⚠️ **Mandatory gate**: before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and follow its full I–X section structure. See `strategist.md` Section 1.
 
 **Artifact ownership**: fact-channel and source/derived artifact boundaries are defined in [`references/artifact-ownership.md`](references/artifact-ownership.md). This Step uses those ownership rules; it does not redefine them.
 
@@ -616,6 +617,8 @@ uvx ppt-master svg-editor <project_path> --live --daemon
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities.
 
+Every `baseline` / free-design page root MUST declare one canonical `data-pptx-page-role`; `template` / `preserve` pages already declare `data-pptx-layout` and MUST NOT duplicate that identity merely to satisfy this rule. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
+
 **Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
 ```bash
 uvx ppt-master svg-quality-check <project_path>
@@ -656,7 +659,8 @@ uvx ppt-master svg-quality-check <project_path>
 > ⚠️ Run the three sub-steps **one at a time** — each must complete successfully before the next.
 > ❌ **NEVER** combine them into a single code block or shell invocation.
 
-Canonical three-command pipeline (mirrors `references/shared-standards.md` §5):
+Canonical three-command pipeline (this step is the workflow authority;
+`references/shared-standards.md` §5 points here):
 
 **Step 7.1** — Split speaker notes:
 ```bash
@@ -715,17 +719,20 @@ uvx ppt-master svg-to-pptx <project_path>
 > native slide background into the slide master (every slide must carry an
 > explicit background; minority slides keep their own, which overrides the
 > master fill). Baseline may also promote a shared **leading** prefix of
-> top-level SVG elements whose exact id tokens mark page chrome (`logo`,
-> `footer`, `header`, `watermark`, `chrome`, `pageNumber` / `slideNumber`).
+> top-level SVG elements whose explicit `data-pptx-role` marks page chrome
+> (`logo`, `footer`, `header`, `watermark`, `chrome`, `page-number`). Exact id
+> tokens remain a compatibility fallback only when the role marker is absent.
 > Promotion requires identical generated OOXML on a strict majority of slides
 > sharing the master, no slide-timing reference, and z-order safety; overlay
 > chrome stays slide-local. Minority slides (covers, section pages) keep every
 > shape slide-local and are bound to a generated `Cover` layout with
 > `showMasterSp="0"`, so promoted master chrome never appears on them. Image
 > relationships for promoted chrome are copied to the master. After the SVG
-> pages are complete, baseline assigns conservative filename-backed layout
-> families: explicit cover / agenda / section / closing names become `Cover`,
-> `Agenda`, `Section`, and `Closing`; every other page becomes `Content`. It also
+> pages are complete, baseline assigns conservative semantic layout families:
+> root `data-pptx-page-role` values `cover` / `toc` / `section` / `ending` become
+> `Cover` / `Agenda` / `Section` / `Closing`, while `content` becomes `Content`.
+> Filename tokens remain a compatibility fallback for marker-free legacy SVGs.
+> It also
 > preserves an existing safety `Cover` assignment made while hiding promoted
 > Master chrome. It does not inspect visual similarity or infer placeholders,
 > and all actual page content remains slide-local. When every slide in one
@@ -738,9 +745,10 @@ uvx ppt-master svg-to-pptx <project_path>
 > unchanged. Baseline also prunes base-template slide layouts no generated slide
 > references, so the PowerPoint new-slide picker only offers layouts that belong
 > to the deck, and
-> converts `pageNumber` / `slideNumber` chrome whose text exactly equals the
+> converts `data-pptx-role="page-number"` chrome whose text exactly equals the
 > slide's display number into an auto-updating PowerPoint slide-number field
-> (other numbering schemes keep their literal text). For projects with a
+> (legacy page-number id tokens remain a fallback; other numbering schemes keep
+> their literal text). For projects with a
 > `spec_lock.md` typography contract, baseline also installs `title_family` as
 > the PowerPoint theme major font and `body_family` / `font_family` as the minor
 > font; matching SVG runs use theme tokens so later theme edits can cascade
@@ -860,6 +868,7 @@ Before switching roles, **MUST first read** the corresponding reference file. Ou
 | Resource | Path |
 |----------|------|
 | Shared technical constraints | `references/shared-standards.md` |
+| Semantic SVG marker contract | `references/semantic-svg.md` |
 | Canvas format specification | `references/canvas-formats.md` |
 | Image-text layout patterns (Primary structures + Modifier layers — combine freely) | `references/image-layout-patterns.md` |
 | Image layout sizing (math for side-by-side container dimensions) | `references/image-layout-spec.md` |

@@ -142,34 +142,7 @@ page_types: [cover, toc, chapter, content, ending]
 
 ---
 
-## VIII. SVG Technical Constraints
-
-### Mandatory Rules
-
-- viewBox fixed at `0 0 1280 720`
-- Use `<rect>` elements for backgrounds
-- Use `<tspan>` for text wrapping
-- All colors in HEX format (no rgba)
-- Use `fill-opacity` / `stroke-opacity` for transparency
-
-### Prohibited Elements (PPT Incompatible)
-
-| Prohibited Item      | Alternative                    |
-| -------------------- | ------------------------------ |
-| `clipPath` | Allowed only on `<image>` under `shared-standards.md` §1.2 |
-| `mask` | Do not use masking |
-| `<style>`            | Use inline styles              |
-| `class`              | Use inline attributes (`id` inside `<defs>` is allowed) |
-| `foreignObject`      | Use `<tspan>` for wrapping     |
-| `textPath`           | Use standard `<text>`          |
-| `animate*` / `set`   | Do not use animations          |
-| `<g opacity>`        | Set opacity on each element individually |
-
-> `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval). The converter maps them to native DrawingML arrow heads.
-
----
-
-## IX. Placeholder Specification
+## VIII. Placeholder Specification
 
 | Placeholder         | Usage                        |
 | ------------------- | ---------------------------- |
@@ -197,7 +170,7 @@ page_types: [cover, toc, chapter, content, ending]
 
 ---
 
-## X. Usage Notes
+## IX. Usage Notes
 
 ### 1. Copy Template to Project
 
@@ -213,7 +186,7 @@ cp templates/layouts/medical_university/* projects/<project>/templates/
 
 ---
 
-## XI. Medical Content-Specific Components
+## X. Medical Content-Specific Components
 
 ### Data Card (Vital Signs)
 

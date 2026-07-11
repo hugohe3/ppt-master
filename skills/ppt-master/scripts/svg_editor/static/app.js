@@ -901,7 +901,48 @@
         applyElementAttrs(el, sa);
     }
 
+    var INLINE_GEOMETRY_STYLE_PROPERTIES = {
+        rect: new Set(["x", "y", "width", "height", "rx", "ry"]),
+        circle: new Set(["cx", "cy", "r"]),
+        ellipse: new Set(["cx", "cy", "rx", "ry"]),
+        image: new Set(["x", "y", "width", "height"]),
+        svg: new Set(["x", "y", "width", "height"]),
+        use: new Set(["x", "y", "width", "height"])
+    };
+
+    function stripEditedInlineGeometry(el, attrs) {
+        var style = el.getAttribute("style");
+        var supported = INLINE_GEOMETRY_STYLE_PROPERTIES[localName(el)];
+        if (!style || !supported) return;
+        var edited = new Set(Object.keys(attrs || {}).map(function (key) {
+            return String(key).toLowerCase();
+        }).filter(function (key) { return supported.has(key); }));
+        if (edited.size === 0) return;
+
+        var retained = [];
+        var changed = false;
+        style.split(";").forEach(function (rawDeclaration) {
+            var declaration = rawDeclaration.trim();
+            if (!declaration) return;
+            var colon = declaration.indexOf(":");
+            if (colon < 0) {
+                retained.push(declaration);
+                return;
+            }
+            var name = declaration.slice(0, colon).trim().toLowerCase();
+            if (edited.has(name)) {
+                changed = true;
+                return;
+            }
+            retained.push(declaration);
+        });
+        if (!changed) return;
+        if (retained.length > 0) el.setAttribute("style", retained.join("; "));
+        else el.removeAttribute("style");
+    }
+
     function applyElementAttrs(el, attrs) {
+        stripEditedInlineGeometry(el, attrs);
         if (localName(el) === "g" && el.hasAttribute("data-icon") &&
                 attrs.x !== undefined && attrs.y !== undefined) {
             // The preview expands <use data-icon> into a <g>, but disk still owns
@@ -2620,7 +2661,7 @@
         var attrs = {};
         attrs[key] = value;
         stageEditRequest(eid, { attrs: attrs })
-            .then(function () { el.setAttribute(key, value); })
+            .then(function () { applyElementAttrs(el, attrs); })
             .catch(function (err) { showError(t("err_edit") + err.message); });
     }
 
@@ -2856,7 +2897,7 @@
             var attrs = {};
             attrs[key] = value;
             return stageEditRequest(el.id, { attrs: attrs }).then(function () {
-                el.setAttribute(key, value);
+                applyElementAttrs(el, attrs);
             });
         });
         Promise.all(jobs)
