@@ -1,20 +1,64 @@
 # Shared Technical Standards
 
-This file is the sole authoring authority for SVG constraints shared across PPT
-Master routes. Generated specs, templates, role prompts, and user-facing docs
-may link here, but must not restate the rules.
+Mandatory reference for every PPT Master route that authors or regenerates slide visuals through SVG: owns shared XML/SVG constraints, editable PPTX mappings, advanced effects, geometry recipes, and PPT-specific interfaces.
+Other files link here instead of restating its contracts.
 
-The policy is intentionally negative:
+**Document map**:
 
-- **Required** entries exist only when every SVG needs the same foundation.
-- **Forbidden** entries identify constructs the pipeline rejects or cannot
-  preserve safely.
-- **Conditional** entries document features that work only through a restricted
-  syntax, an approximation, an opt-in flag, or PPT-specific metadata.
+| Section | Owns | Strength |
+|---|---|---|
+| §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the exhaustive structural blacklist, native line ends, image clipping, and static local reuse | Required / Forbidden / Conditional |
+| §2 Conditional Compatibility Mappings | Inline geometry and approximate group opacity | Conditional |
+| §3 Canvas Format Quick Reference | Pointer to the complete canvas catalog | Reference |
+| §4 Required Page Contract and Conditional Packaging | Complete-page authority, semantic markers, editable text/grouping, and package promotion | Required / Conditional |
+| §5 Workflow Authority | Pointer to the serial post-processing/export procedure | Workflow pointer |
+| §6 Advanced SVG Effects and Authoring Techniques | Color/alpha, gradients, shadows, glow, overlays, lines, text treatments, transforms, freeform geometry, chart geometry, and constructed visual styles | Contract + optional recipes |
+| §7 Conditional PPT Interfaces | Pattern fills, native tables/charts, and Master/Layout/placeholder metadata | Conditional |
+| §8 Scope Boundary | Concerns intentionally owned by another reference or workflow | Boundary |
 
-Anything else already handled by the converter is freely usable and is not
-listed as an "allowed feature." Unknown visual elements still fail quality
-checking/export rather than being dropped silently.
+**Advanced capability index**:
+
+| Capability family | Available authoring vocabulary | Detail |
+|---|---|---|
+| Color and transparency | CSS alpha colors; fill, stroke, text, picture, stop, element, and group opacity | §2.2, §6.2 |
+| Gradients and paint | Linear/radial fills, transparent stops, gradient text, gradient strokes, and preset patterns | §6.3, §7 |
+| Depth and light | Soft/colored/directional shadow, glow, layered-geometry fallback, and paper-layer elevation | §6.4 |
+| Image treatment | Directional scrim, bottom fade, vignette, spotlight, brand wash, picture fading, and glass-like surfaces | §1.2, §6.5 |
+| Lines and connectors | Preset/custom dash, cap/join, gradient flow strokes, markers, and explicit-grid paths | §1.1, §6.6 |
+| Text treatments | Mixed runs, tracking, underline, strikethrough, gradient fill, outline, transparency, watermark text, and text glow | §4.2, §6.7 |
+| Transforms and composition | Translate, scale, rotate, mirror, supported matrix composition, layering, and static local reuse | §1.3, §6.8 |
+| Freeform geometry | Full SVG path vocabulary, curves, organic containers, multi-subpaths, and asymmetric rounded rectangles | §6.9 |
+| Radial/chart geometry | Pie/donut arcs, dashed-circle ring segments, gauges, progress rings, sunbursts, and diagonal polygon arrowheads | §6.10 |
+| Constructed visual styles | Faux glass, hand-drawn marks, ink wash, Riso offset, pixel grid, halftone, isometric facets, paper cut, and line-plus-area data treatment | §6.11 |
+| Unsupported-effect fallbacks | Raster baking or explicit-geometry alternatives for blur, inner shadow, soft edge, reflection, turbulence, blend modes, and arbitrary masks | §6.12 |
+| Selection quick reference | Grouped scenario routing; fidelity remains in owning subsections | §6.13 |
+
+**Fidelity labels**:
+
+| Label | Meaning |
+|---|---|
+| `Native-stable` | Generated PPTX uses the corresponding native DrawingML property or object and retains the documented semantics within the technique-specific limits. |
+| `Native-normalized` | Export targets an editable DrawingML equivalent, but normalizes the SVG into another structure such as a freeform, run property, or simplified paint/effect. |
+| `Approximate` | DrawingML has no exact SVG equivalent; export targets the intended effect through a documented approximation, and material differences require output review. |
+| `Bake-required` | The runtime effect is outside the native contract; pre-render it into an image or rebuild it with explicit supported geometry. |
+
+**Reading rules**:
+
+- **Required** / **Forbidden** statements are non-negotiable technical boundaries.
+- **Conditional** contracts apply only when the corresponding feature is used.
+- **Reference — not a constraint** passages expose capabilities and recipes; they do not require every page or visual style to use them.
+- The locked `visual_style` controls whether and how strongly a compatible effect is used. It never expands the technical boundary.
+
+**Hard rule — one-way fidelity vocabulary**: the labels above describe the
+`svg_output/` → generated PPTX path. They do not promise reconstruction of the
+original SVG syntax, `<defs>` graph, `<use>` structure, path commands, or
+`<tspan>` layout after PPTX-to-SVG import, nor pixel identity across PowerPoint,
+LibreOffice, Keynote, and WPS.
+
+**Hard rule — capability boundary**: a recipe never expands converter support.
+Use only the target elements and syntax documented by each conditional
+contract. Unsupported element tags fail preflight; browser-rendered attributes
+outside these contracts must not be assumed to have a DrawingML mapping.
 
 ---
 
@@ -77,18 +121,20 @@ when the referenced marker fits this native-arrow contract:
 |---|---|
 | Reference | Exact local `url(#id)` to a `<marker>` in `<defs>` |
 | Orientation | `orient="auto"` |
-| Shape | Closed 3-vertex path/polygon (triangle), closed 4-vertex path/polygon (diamond), or one `<circle>`/`<ellipse>` (oval) |
+| Shape | A 3-vertex `<polygon>` / closed M/L-only path (triangle), 4-vertex `<polygon>` / closed M/L-only path (diamond), or one `<circle>` / `<ellipse>` (oval) |
+| Path grammar | One explicit `M`/`L` command per vertex followed by `Z`; do not use `H`, `V`, curves, or an implicit multi-point `L` command inside a marker path |
 | Color parity | Marker fill matches the parent line stroke; DrawingML arrows inherit the line color |
 
 The converter maps the three shapes to DrawingML triangle, diamond, and oval
-line ends. Other marker shapes do not have a native mapping and are dropped
-with a warning.
+line ends. Prefer `<polygon>` for triangle/diamond markers because the vertex
+count is unambiguous. Other marker shapes do not have a native mapping and are
+dropped with a warning.
 
 ---
 
 ### 1.2 Image Clipping (Conditional Contract)
 
-`clip-path` has a native picture-crop mapping only on `<image>` elements and
+`clip-path` has a native picture-geometry mapping only on `<image>` elements and
 only under this contract:
 
 | Concern | Required form |
@@ -100,12 +146,13 @@ only under this contract:
 
 | SVG clip shape | DrawingML output |
 |---|---|
-| `<circle>` / `<ellipse>` | `<a:prstGeom prst="ellipse"/>` |
-| `<rect rx="..."/>` | `<a:prstGeom prst="roundRect"/>` with adj value |
-| `<path>` / `<polygon>` | `<a:custGeom>` with path commands |
+| `<circle>` / `<ellipse>` | Full-frame `<a:prstGeom prst="ellipse"/>`; child center/radii are not preserved |
+| `<rect rx="..."/>` | Full-frame `<a:prstGeom prst="roundRect"/>` with one radius adjustment; child x/y/width/height are not preserved |
+| `<path>` / `<polygon>` | `<a:custGeom>` with coordinates mapped into the image frame |
 
 `clip-path` on shapes, groups, or text is forbidden; author the target geometry
-directly instead.
+directly instead. Use a path/polygon clip when the intended contour does not
+cover the full picture frame.
 
 ---
 
@@ -264,50 +311,462 @@ and intentionally does not mirror commands, flags, or output behavior.
 
 ---
 
-## 6. Conditional Paint Servers and Filters
+## 6. Advanced SVG Effects and Authoring Techniques
 
-### 6.1 Simple Gradients
+**Reference — not a constraint**: “Advanced” means capability depth, not rarity.
+Use any compatible technique when it serves the locked visual style and content.
 
-Gradient paint is conditional because the native route implements a simple
-DrawingML subset, not the full SVG paint-server model:
+### 6.1 Availability, Precedence, and Fidelity
 
-- Define `linearGradient` or `radialGradient` as a direct child of `<defs>`
-  with a unique `id`.
-- Reference it with the exact local form `url(#id)` from a supported
-  `fill`/`stroke` context.
-- Put the intended colors and offsets directly on its `<stop>` children.
-- Do not depend on external references, inherited gradient chains,
-  `gradientTransform`, or `spreadMethod`; those semantics are not preserved by
-  native export.
+| Decision layer | Authority |
+|---|---|
+| Technical validity | Required / Forbidden / Conditional contracts in this file |
+| Project values | `<project_path>/spec_lock.md` colors, fonts, icons, and images |
+| Aesthetic fit | Locked `visual_style` / `visual_style_behavior` |
+| Per-page choice | Content purpose, hierarchy, legibility, semantics, and rhythm |
 
-Native export reduces a linear gradient to its angle. A radial gradient becomes
-a centered circular DrawingML gradient; SVG focal-point and radius geometry
-(`cx`, `cy`, `r`, `fx`, `fy`) remains useful in browser preview but is not
-preserved in the native object.
-
-The quality checker validates the definition location, reference, and
-fill/stroke context.
-
-### 6.2 Shadow and Glow Filters
-
-Filters are conditional native-effect metadata, not a general SVG filter
-surface. An element's `filter` must be an exact local `url(#id)` reference to
-a direct `<defs><filter>` definition that can be reduced to one DrawingML
-outer shadow or glow.
-
-The accepted graph may contain:
-
-- `feDropShadow`; or `feGaussianBlur` with optional `feOffset` and `feFlood`
-- `feComposite`, `feMerge`, and `feMergeNode` for the standard composition
-- `feComponentTransfer` with a linear `feFuncA` for alpha adjustment
-
-At least one `feDropShadow` or `feGaussianBlur` is required. A non-zero offset
-selects an outer shadow; otherwise the exporter emits a glow. Other filter
-primitives and arbitrary multi-effect graphs are forbidden because the
-converter would otherwise approximate or ignore them.
+**Hard rule — illustrative colors**: colors below demonstrate syntax only;
+generated pages use matching `spec_lock.md` roles. Fidelity labels are defined
+at the front of this document. Review an `Approximate` result in native PPTX
+when the effect carries material meaning.
 
 ---
 
+### 6.2 Color, Alpha, and Opacity
+
+Supported paint grammar: recognized named colors, `rgb()` / `rgba()`, `hsl()` /
+`hsla()`, and `#RGB` / `#RGBA` / `#RRGGBB` / `#RRGGBBAA`. Bare hexadecimal
+without `#` is invalid.
+
+| Authoring surface | Native result | Fidelity |
+|---|---|---|
+| `fill-opacity`; `stroke-opacity` | Fill, text, line, or outline alpha | `Native-stable` |
+| CSS color alpha | Alpha-bearing named/functional/HEX paint | `Native-normalized` |
+| Element `opacity` | Alpha compiled into supported paint/effect channels | `Native-normalized` |
+| `<image opacity>` | Picture `<a:alphaModFix>` | `Native-stable` |
+| `<stop stop-opacity>` | Per-stop gradient alpha | `Native-stable` |
+| `<g opacity>` | Alpha multiplied into each supported descendant shape, text run, picture, and effect | `Approximate` |
+| Pattern child/color alpha | Preset-pattern foreground/background alpha | Conditional; §7 |
+
+```text
+effective fill alpha
+= color alpha × element opacity × fill-opacity × ancestor group opacity
+```
+
+**Hard rule — alpha grammar**: write `opacity`, `fill-opacity`,
+`stroke-opacity`, and `stop-opacity` as finite numbers from `0` to `1`.
+`fill="transparent"` / `stroke="transparent"` become no fill/line; use a color
+plus alpha when a painted transparent layer must remain represented. Group
+alpha is not isolated compositing, so overlapping descendants may differ from
+the browser. Transparent groups around `data-pptx-native` chart/table markers
+cannot be promoted under `--native-objects`; export the SVG fallback or remove
+the group opacity.
+
+---
+
+### 6.3 Gradients and Paint Effects
+
+| Concern | Contract |
+|---|---|
+| Definition | Direct `<linearGradient>` / `<radialGradient>` child of `<defs>` with unique `id` |
+| Reference | Exact local `url(#id)` |
+| Stops | Direct `<stop>` children; explicit color; finite offset `0..1` or `0%..100%`; optional stop alpha |
+| Coordinates | Normalized values / percentages; do not depend on `gradientUnits` user-space geometry |
+| Forbidden | External/quoted refs, `href` inheritance, `gradientTransform`, `spreadMethod`, CSS gradients |
+
+| Target | Contract and fidelity |
+|---|---|
+| `<rect>`, `<circle>`, `<ellipse>`, `<path>`, `<polygon>` fill/stroke | Linear `Native-normalized`; radial `Approximate` |
+| `<line>` / `<polyline>` | Gradient stroke only; linear `Native-normalized`, radial `Approximate` |
+| `<text>` / non-positional `<tspan>` | Gradient fill only; no gradient text outline |
+| `<image>` | No gradient paint; use §6.5 overlays |
+
+Linear export preserves stops/alpha/direction but reduces coordinates to an
+angle. Radial export becomes a centered circular gradient and does not preserve
+`cx/cy/r/fx/fy`. Gradient strokes remain editable, but PPTX-to-SVG re-import may
+retain only the first stop. Stop alpha and element opacity multiply.
+The quality checker validates definition location, references, and paint context.
+
+```xml
+<defs>
+  <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#2563EB"/>
+    <stop offset="100%" stop-color="#10B981" stop-opacity="0.7"/>
+  </linearGradient>
+</defs>
+<path d="M100 200 C260 80 420 320 620 180" fill="none"
+      stroke="url(#flow)" stroke-width="12"/>
+```
+
+Preset patterns are a separate PPT interface in §7.
+
+---
+
+### 6.4 Shadows, Glow, and Elevation
+
+Filters are native-effect metadata, not a general pixel-filter surface.
+
+| Concern | Contract |
+|---|---|
+| Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
+| Public targets | `<rect>`, `<circle>`, `<path>`, `<text>` |
+| Required primitive | `feDropShadow` or `feGaussianBlur` |
+| Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
+| Classification | Meaningful non-zero offset → one outer shadow; zero/no offset → one glow |
+| Fidelity | `Approximate`; one filter becomes one DrawingML effect |
+
+Flood/color alpha, linear `feFuncA slope`, element opacity, and ancestor opacity
+multiply. Native export does not preserve filter-region, `in/in2/result`, merge
+order, or composite topology. Other primitives, multiple independent effects,
+filters on `<image>` / `<tspan>` / unsupported targets are forbidden. Do not
+put a filter on a multi-element `<g>`; apply it to supported objects or use
+explicit layers.
+
+```xml
+<defs>
+  <filter id="softShadow" x="-15%" y="-20%" width="130%" height="150%">
+    <feDropShadow dx="0" dy="6" stdDeviation="8"
+                  flood-color="#000000" flood-opacity="0.10"/>
+  </filter>
+  <filter id="expandedShadow" x="-15%" y="-20%" width="130%" height="150%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="b"/>
+    <feOffset in="b" dx="0" dy="6" result="o"/>
+    <feFlood flood-color="#000000" flood-opacity="0.10" result="c"/>
+    <feComposite in="c" in2="o" operator="in" result="s"/>
+    <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="titleGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="b"/>
+    <feFlood flood-color="#38BDF8" flood-opacity="0.45" result="c"/>
+    <feComposite in="c" in2="b" operator="in" result="g"/>
+    <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+```
+
+Even `feDropShadow` with `dx="0" dy="0"` becomes glow. Use an existing accent
+color for glow; black reads as diffuse shadow.
+
+| Elevation | Use | `dy` | `stdDeviation` | Alpha |
+|---|---|---:|---:|---:|
+| Floor | Backgrounds, dividers, equal peers, body containers, decorative lines/icons, single-layer pages | — | — | — |
+| Resting | Card over photo/panel, secondary callout | 2–4 | 4–8 | 0.06–0.10 |
+| Raised | Primary CTA, focused card, overlay | 6–10 | 10–16 | 0.12–0.20 |
+| Glow | Short display text, metric, focus accent | 0 offset | 4–8 | 0.35–0.55 |
+
+**Reference — not a constraint**: keep one light direction and at most two
+non-floor tiers; two or three shadowed objects usually suffice. Do not lift
+every peer card or stack strong shadow, border, gradient, and tint on one
+container. Same-family colored shadow is reserved for a focal accent. On dark
+backgrounds, prefer a light hairline or restrained glow; never glow body copy.
+Negative `dy` is valid for an intentional upward paper-layer light source when
+every affected layer uses the same direction. For older/strict renderers,
+replace a filter with two or three offset translucent shapes behind the object:
+alpha `0.03–0.05`, increasing offset/radius, and optional same-family tint near
+`0.04` (`Native-stable`).
+
+---
+
+### 6.5 Image Treatments, Overlays, and Glass-like Surfaces
+
+| Need | Authoring contract | Fidelity |
+|---|---|---|
+| Cover/crop | Readable raster dimensions + aligned `slice` | Native `srcRect`; `Native-stable`; otherwise native crop cannot be guaranteed |
+| Contain/fit | Aligned `meet` | Fitted picture frame; `Native-normalized` |
+| Stretch | `preserveAspectRatio="none"` | Native stretched frame |
+| Uniform fade | `<image opacity="...">` | Native picture alpha |
+| Shaped picture | §1.2 image-only `clip-path` | Preset/custom picture geometry |
+
+**Hard rule — fit/clip interaction**: a non-trivial clip disables `meet`
+frame-fit. Match the image box to the source ratio or use `slice`. Do not apply
+filters directly to `<image>`.
+
+| Overlay | Construction | Typical stops / alpha |
+|---|---|---|
+| Directional scrim | Linear rect, darkest beside text | `0%: 0.88; 55%: 0.30; 100%: 0` |
+| Bottom title fade | Vertical rect over lower image | black `0 → 0.72` |
+| Vignette/spotlight | Centered radial rect (`cx=50%`, `cy=50%`, `r=70%`); native center only | black `0 → 0.58` |
+| Brand wash | Directional existing brand-color gradient | `0.80 → 0.10` |
+| Faux glass | Visible fields + diagonal linear panel (`0,0 → 1,1`) + highlight stroke; optional §6.4 elevation | white `0.38 → 0.12`; stroke about `0.55` |
+
+Layer in document order: image → scrim/wash → text. True source/backdrop blur is
+`Bake-required`; faux glass is explicit layering, not blur. Validate contrast
+against the actual image. All overlay gradients follow §6.3 linear/radial
+fidelity.
+
+---
+
+### 6.6 Lines, Connectors, Borders, and Markers
+
+| Surface | Contract / native result |
+|---|---|
+| Solid stroke/width/alpha | `Native-stable` editable line |
+| `4,4`; `2,2`; `8,4`; `8,4,2,4` | `dash`; `sysDot`; `lgDash`; `lgDashDot` (`Native-normalized`) |
+| Other custom dash | Exactly two positive finite unitless numbers (`dash gap`); export scales/quantizes against stroke width; longer arrays reduce to the first pair; `Native-normalized` |
+| `stroke-linecap` | `butt`, `round`, `square`; `Native-stable` |
+| `stroke-linejoin` | `miter`, `round`, `bevel`; `Native-stable` |
+| Gradient stroke | §6.3; re-import may flatten to first stop |
+| `marker-start` / `marker-end` | §1.1 native line end; type `Native-normalized`, size `Approximate` (`sm/med/lg`) |
+
+Match marker fill to the parent stroke. Use markers for connectors and §6.10
+calculated geometry for a manual diagonal arrowhead. When exact grid spacing
+matters, use one multi-subpath path rather than a fixed-density preset pattern:
+
+```xml
+<path d="M40 0V120 M80 0V120 M0 40H120 M0 80H120"
+      fill="none" stroke="#2E6EA8" stroke-width="0.8"/>
+```
+
+---
+
+### 6.7 Advanced Text Treatments
+
+| Treatment | SVG surface | Result / boundary |
+|---|---|---|
+| Underline / strike / both | `text-decoration="underline"`, `line-through`, or both | `Native-stable`; both emits both run properties |
+| Mixed runs | Non-positional `<tspan>` | One `Native-normalized` editable frame; §4.2 |
+| Tracking | Numeric `letter-spacing` | `Native-normalized`; unitless/`px` = SVG px, `pt` converts to px, `em` resolves against run size |
+| Transparency | `opacity` / `fill-opacity` on text/run | `Native-normalized` run alpha, not isolated compositing |
+| Gradient fill | §6.3 gradient on text/run | Editable fill; geometry normalizes |
+| Outline | Solid `stroke`, `stroke-width`, `stroke-opacity` | `Native-normalized` editable run outline; re-import does not reconstruct it |
+| Shadow/glow | §6.4 filter on `<text>` only | Shape shadow / run glow; `Approximate` |
+| Native bullet | Leading `· • ● ▪ ■ ◆ ◇ ◦ ‣` + non-empty content | `·`/`•` → `•`; others unchanged; color/alpha from marker run; font/size follow text |
+
+```xml
+<text x="100" y="200" font-size="20" xml:space="preserve">Current <tspan
+  fill="#999999" text-decoration="line-through">old</tspan> value</text>
+```
+
+Use strikethrough for removed/former values; it is ordinary notation, not a
+style-exclusive effect. Imported double underline/strike normalizes to single.
+Bullet detection allows optional leading whitespace, requires non-empty content,
+and leaves non-leading decorative glyphs as ordinary text.
+Keep body tracking normal; CJK tracking defaults near/below 2% of font size and
+above 5% triggers review. Text outline is solid only. `textPath`, masks, blend
+modes, generated effects, and text-image knockouts are outside editable text.
+
+---
+
+### 6.8 Transforms, Layering, and Static Reuse
+
+| Surface | Contract / fidelity |
+|---|---|
+| `rotate(angle[, cx, cy])` | Geometry/image/text/ordinary group; `Native-normalized` |
+| `translate(x y)` | Geometry/image/group; pure translation also safe on text; `Native-normalized` |
+| Positive scale / negative mirror | Geometry/image only; explicit pivot; `Native-normalized` |
+| `matrix(a b c d e f)` | Geometry/image only; transformed axes finite, non-zero, orthogonal; excludes rounded rects; `Native-normalized` |
+| Source order | Back-to-front PPT z-order; `Native-stable` |
+| `<g opacity>` | Descendant alpha; `Approximate`, §2.2 |
+| Local `<use>` | §1.3 compile-time reuse; `Native-normalized` |
+
+Set text size/position directly; do not scale or general-matrix text. `skewX`,
+`skewY`, zero/non-orthogonal axes, and shear matrices are forbidden. Native
+chart/table markers allow translate/scale only. The §6.10 thick-circle shortcut
+does not inherit general transform support. Positive rotation is clockwise and
+pivoted rotation normalizes the native frame. A legal transform sequence can
+still produce non-orthogonal axes; importer/live-editor matrices do not expand
+the hand-authored contract.
+Mirror around vertical pivot `cx` with
+`translate(cx 0) scale(-1 1) translate(-cx 0)`; use the analogous Y sequence
+for a horizontal pivot.
+
+Layer back-to-front: background/image → scrim/shadow → main geometry → labels /
+icons → top annotation. Finalization and native export independently expand
+`<use>` into cloned editable primitives; PowerPoint does not retain a symbol /
+instance graph.
+
+---
+
+### 6.9 Freeform Shapes and Curves
+
+| Input | Native normalization | Fidelity |
+|---|---|---|
+| `M/L/H/V`, absolute or relative | Absolute `M/L` | `Native-normalized` |
+| `C` | Cubic Bézier | `Native-normalized` |
+| `S/Q/T` | Explicit cubic controls | `Native-normalized` |
+| `A` | Cubic segments of at most 90° | `Approximate` |
+| `Z`; polygon/polyline | Closed/open freeform | `Native-normalized` |
+
+Command identity, relative coordinates, shorthand, arc parameters, and original
+handles are not retained. Geometry needs non-zero bounds. Use a closed cubic
+path for organic silhouettes, polygon/closed path for ribbons/facets, open path
+for curved connectors, multi-`M` path for exact linework, and a §1.2 path clip
+for organic pictures. Filled silhouettes end with `Z`; open paths use
+`fill="none"`. Do not depend on `fill-rule="evenodd"`; build explicit visible
+geometry or bake an essential knockout.
+For a fixed background, a background-colored overlay is also valid.
+
+| Rounded rect input | Result |
+|---|---|
+| One positive radius, or `0 < rx == ry <= min(width,height)/2` | `Native-stable` adjustable `roundRect` without distorting transforms; the same short-side limit applies to one-radius input |
+| `0 < abs(rx-ry) < 0.5px` after scaling | One normalized native radius; `Approximate` |
+| `abs(rx-ry) >= 0.5px`, either positive | Cubic custom geometry; no radius handle; `Approximate` |
+| Equal radius above half the short side | Native short-side clamp may differ from SVG; `Approximate` |
+
+---
+
+### 6.10 Radial Geometry, Donuts, Gauges, Sunbursts, and Diagonal Arrowheads
+
+For center `(cx,cy)`, radius `r`, and degrees `θ`:
+
+```text
+x = cx + r × cos(θ × π / 180)
+y = cy + r × sin(θ × π / 180)
+```
+
+For clockwise pie/donut sectors, default to `-90°` only when the chart starts at
+12 o'clock. A full-circle percentage sector spans `percentage × 360°`;
+large-arc is `1` above `180°`; outer sweep is `1`, inner return is `0`. Split
+both outer and inner boundaries of a full ring into at least two arcs each.
+Calculated endpoints survive subject to EMU rounding; `A` curves remain cubic
+approximations. Verify all spans plus gaps against the planned sweep.
+Explicit arc sectors are editable `Approximate` freeforms. Thin circles using a
+§6.6 preset/two-number dash stay `Native-normalized` ellipse lines.
+
+```xml
+<!-- 75% donut: center 400,400; outer 180; inner 100; -90° → 180°. -->
+<path d="M400 220 A180 180 0 1 1 220 400
+         L300 400 A100 100 0 1 0 400 300 Z" fill="#2563EB"/>
+```
+
+**Gauge**: require `max > min`, `p = clamp((value-min)/(max-min),0,1)`, and
+`0 < planned clockwise sweep <= 360°`; value sweep is `p × planned sweep`.
+`valueEndAngle = startAngle + valueSweep`; large-arc is `1` iff
+`abs(valueSweep) > 180°`.
+Omit the value sector at `p=0`. At `p=1` with `360°`, split both boundaries into
+at least two arcs. Track/value share center, radii, start, and sweep flags.
+
+**Sunburst — `Approximate`**: one explicit annular sector per node; each depth owns one radius
+band and child angular intervals partition the parent. Do not use one `evenodd`
+compound ring.
+
+**Thick-circle shorthand — `Approximate`, non-position-sensitive only**:
+
+- One circle per segment; `fill="none"`; no element transform or ancestor full-matrix.
+- Exactly two non-preset finite unitless values (`dash gap`); finite unitless `stroke-dashoffset`.
+- `0 < stroke-width < 2r`, `stroke-width/r >= 0.15`,
+  `0 < dash < 2πr`, `gap >= 0`, and `dash + gap >= 2πr`.
+- Native construction uses only the first dash and re-imports as a freeform.
+  Its native start is 90° counterclockwise from the SVG preview; use explicit
+  arcs whenever start angle, cap, or radial precision matters.
+
+```xml
+<circle cx="400" cy="400" r="140" fill="none" stroke="#2563EB"
+        stroke-width="48" stroke-dasharray="615.75 263.90" stroke-dashoffset="0"/>
+```
+
+**Diagonal polygon arrowhead**: for a non-zero line, calculate rather than use a
+fixed triangle:
+
+```text
+dx=x2-x1; dy=y2-y1; len=√(dx²+dy²); ux=dx/len; uy=dy/len
+px=-uy; py=ux
+tip=(x2,y2)
+back1=(x2-ux×12+px×5, y2-uy×12+py×5)
+back2=(x2-ux×12-px×5, y2-uy×12-py×5)
+```
+
+Use §1.1 markers for ordinary connectors; the polygon is for a manually drawn
+filled `Native-normalized` arrowhead. Example:
+`<polygon points="370,430 365.6,417.8 358.2,424.6"/>`.
+
+---
+
+### 6.11 Constructed Visual Styles
+
+**Hard rule — explicit construction**: these are supported-layer recipes, not
+browser-filter permissions.
+
+**Reference — not a constraint**: use them only when they match the locked style.
+
+| Intent | Construction | Boundary / fidelity |
+|---|---|---|
+| Faux glass | §6.5 translucent panel + highlight stroke + visible fields | No backdrop blur; `Native-normalized` |
+| Hand-drawn mark | Rotated translucent bar + irregular `Q/C` paths + round caps | No roughness filter; `Native-normalized` |
+| Ink wash | Few same-family translucent closed curves/strokes | No feather/wet edge; `Native-normalized` |
+| Riso offset | Duplicate text/shape with small offset, second ink, lower alpha | No blend mode; `Native-normalized` |
+| Pixel grid | Integer-aligned rects on one cell grid | `shape-rendering` preview-only; `Native-stable` |
+| Halftone | Sparse calculated circles | `Native-stable`; bake dense screens / use suitable §7 preset |
+| Isometric facets | Shared-vertex top/front/side polygons, one light direction | 2D only; `Native-normalized` |
+| Paper cut | Ordered organic paths + consistent §6.4 shadow per layer | Filter each layer, not group; `Approximate` |
+| Gradient ribbon | Thick cubic path + §6.3 gradient stroke | `Native-normalized`; no mesh gradient; re-import may flatten color |
+| Line-plus-area data | Low-alpha closed area first, crisp line above | Keep area subordinate; `Native-normalized` |
+
+**Minimal construction anchors**:
+
+```xml
+<!-- Hand-drawn + ink. -->
+<rect x="80" y="80" width="240" height="28" fill="#FDE68A"
+      opacity="0.72" transform="rotate(-1,200,94)"/>
+<path d="M90 150 Q210 142 330 151" fill="none" stroke="#1F2937"
+      stroke-width="3" stroke-linecap="round"/>
+<path d="M80 220 C160 160 250 180 330 230 Z" fill="#1F2937" opacity="0.16"/>
+<path d="M90 240 C180 210 250 260 340 220" fill="none" stroke="#1F2937"
+      stroke-width="10" stroke-linecap="round" opacity="0.70"/>
+
+<!-- Riso, pixel cells, sparse dots. -->
+<text x="86" y="320" font-family="Arial, sans-serif" font-size="64"
+      fill="#EC4899" opacity="0.85">PRINT</text>
+<text x="92" y="326" font-family="Arial, sans-serif" font-size="64"
+      fill="#2563EB">PRINT</text>
+<g id="pixel-cells" shape-rendering="crispEdges" fill="#2563EB">
+  <rect x="400" y="80" width="16" height="16"/><rect x="416" y="80" width="16" height="16"/>
+</g>
+<g id="sparse-dots" fill="#EC4899"><circle cx="410" cy="140" r="3"/><circle cx="426" cy="140" r="6"/></g>
+
+<!-- Isometric facets + line-over-area. -->
+<g id="isometric-facets" transform="translate(520 160)">
+  <polygon points="0,0 80,-24 160,0 80,24" fill="#60A5FA"/>
+  <polygon points="0,0 0,48 80,72 80,24" fill="#3B82F6"/>
+  <polygon points="80,24 80,72 160,48 160,0" fill="#2563EB"/>
+</g>
+<path d="M760 260 L860 220 L960 250 L960 340 L760 340 Z" fill="#2563EB" opacity="0.10"/>
+<path d="M760 260 L860 220 L960 250" fill="none" stroke="#2563EB" stroke-width="4"/>
+```
+
+**Default — integer pixel grid (may override for deliberate irregular
+treatment)**: avoid soft scaling; use explicit dots only for sparse editable
+halftone and route dense full-slide texture to §6.12.
+
+---
+
+### 6.12 Unsupported Effects and Native-Safe Alternatives
+
+| Unsupported intent | Do not author | Fidelity | Alternative |
+|---|---|---|---|
+| Source/backdrop blur; procedural texture | Plain blur, `feTurbulence`, `feDisplacementMap`, `feColorMatrix`, arbitrary filter graph | `Bake-required` | §6.4 effect, explicit geometry, translucent layers, or baked texture |
+| Inner shadow, soft edge, reflection | Non-outer-shadow/glow graph | `Bake-required` | Explicit inset/highlight/shadow layers or image |
+| Per-pixel compositing | Mask, blend mode, knockout, arbitrary alpha composite | `Bake-required` | Direct geometry; §1.2 image clip; otherwise bake |
+| Exact custom tile | Unannotated `<pattern>` / `patternTransform` | `Bake-required` | Multi-subpath geometry, suitable §7 preset, or bake |
+| Sheared object | Skew/shear matrix | `Bake-required` | Pre-transform geometry path; bake text/image |
+
+**Hard rule — blur semantics**: within §6.4, zero-offset `feGaussianBlur` means
+glow; it does not blur the object or backdrop. Use a low-alpha raster for dense
+grain and explicit circles/paths only for sparse editable marks.
+
+---
+
+### 6.13 Scenario Quick Reference
+
+**Reference — not a constraint**: fidelity remains authoritative in the owning
+subsection; this table only routes scenarios.
+
+| Decision family | Scenario routing | Authority / boundary |
+|---|---|---|
+| Elevation | Floating card → resting shadow; one CTA → colored shadow; equal peers/background → flat; maximum predictability → layered shapes; title/metric → glow | §6.4; never body-copy glow |
+| Image/material | Text over image → directional scrim; bottom title → bottom fade; centered hero → vignette; brand wash → brand overlay; glass card → faux glass | §6.5; no backdrop blur |
+| Lines | Draft/optional → dash; process direction → marker; flow/series → gradient stroke; exact grid → multi-subpath path | §6.6 / §6.3 |
+| Text | Removed/former value → line-through; eyebrow → tracking; watermark/outline heading → text outline; list → native bullet | §6.7 |
+| Composition | Move/rotate/mirror → §6.8 transform; repeated static mark → local `<use>` | §6.8; preserve z-order |
+| Hand/print | Annotation → highlighter/curve; ink wash → layered alpha paths; Riso → offset duplicate | §6.11; no turbulence, true bleed, or blend mode |
+| Pixel/halftone | Pixel accent → integer rect grid; sparse screen → circles | §6.11; dense screen → §6.12 |
+| Faceted/layered | Pseudo-3D → 2D facets; paper cut → direct shadow per layer | §6.11; no 3D transform/group composite shadow |
+| Data/freeform | Series depth → area first + line above; organic card → closed cubic; shaped image → §1.2 path clip | §6.11 / §6.9 |
+| Radial | Donut/gauge → explicit arcs; sunburst → sector per node; position-insensitive ring → shorthand | §6.10; shorthand has 90° preview/native offset |
+| Arrow | Manual diagonal arrowhead → calculated triangle; ordinary connector → marker | §6.10 / §1.1 |
+| Unsupported | Dense grain, complex composite, or skew → explicit alternative or baked asset | §6.12; foreground text/data stay editable SVG |
+
+---
 ## 7. Conditional PPT Interfaces
 
 The interfaces below exist only for PPT behavior that ordinary SVG semantics
