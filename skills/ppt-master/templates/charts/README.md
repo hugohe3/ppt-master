@@ -16,16 +16,20 @@ See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typograp
 
 Supported data chart templates include a `<g data-pptx-native="chart">` marker by default, and pure text-grid table templates include a `<g data-pptx-native="table">` marker the same way. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart or table using the JSON metadata inside the child `<metadata data-pptx-native="...">` node.
 
-Native marker authoring is default for supported data charts and text-grid tables; native object activation is opt-in via `--native-objects`. Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable frame aligns with the fallback drawing. Keep legends, explanatory cards, and source notes outside the marker when they should remain as separate editable shapes. Tables with merged, spanning, or graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route.
+`--native-objects` is an explicit editable-first opt-in and may be lossy or visually normalized. Marker-local value labels, center KPIs, callouts, quadrant notes, fixed axis ranges, custom binning/splits, and exact ChartEx colors may not survive native replacement unless represented by the payload. Detectable information-loss risks should be reported as warnings, not handled by disabling an otherwise supported native marker. Review those warnings and compare the native export with the default SVG export before delivery.
 
-| Family | Native-marker templates | Use when |
+Native marker authoring remains active for all 23 currently supported data-chart templates:
+
+| Family | Active native-marker templates | Native output |
 |---|---|---|
-| Category comparison | `column_chart`, `horizontal_bar_chart`, `grouped_bar_chart`, `stacked_bar_chart` | Comparing named categories, rankings, or stacked totals |
-| Time trend | `line_chart`, `area_chart`, `stacked_area_chart`, `dual_axis_line_chart` | Showing direction, volume, cumulative share, or two-axis trends |
-| Part-to-whole | `pie_chart`, `donut_chart`, `pie_of_pie_chart`, `bar_of_pie_chart`, `treemap_chart`, `sunburst_chart` | Showing share, long-tail split, or hierarchy composition |
-| Distribution and relationship | `scatter_chart`, `bubble_chart`, `histogram_chart`, `pareto_chart`, `box_plot_chart` | Showing correlation, spread, frequency, defects, or statistical ranges |
-| Specialty business charts | `waterfall_chart`, `funnel_chart`, `stock_chart`, `radar_chart` | Showing bridges, conversion stages, OHLC movement, or multi-axis capability profiles |
-| Text-grid tables | `basic_table`, `financial_statement_table` | Presenting rectangular text/number grids that should become editable PowerPoint tables |
+| Category comparison | `column_chart`, `horizontal_bar_chart`, `grouped_bar_chart`, `stacked_bar_chart` | Classic category charts |
+| Time trend | `line_chart`, `area_chart`, `stacked_area_chart`, `dual_axis_line_chart` | Classic line/area/combo charts |
+| Part-to-whole | `pie_chart`, `donut_chart`, `pie_of_pie_chart`, `bar_of_pie_chart`, `treemap_chart`, `sunburst_chart` | Classic pie-family or ChartEx hierarchy charts |
+| Distribution and relationship | `scatter_chart`, `bubble_chart`, `histogram_chart`, `pareto_chart`, `box_plot_chart` | Classic XY or ChartEx distribution charts |
+| Specialty business charts | `waterfall_chart`, `funnel_chart`, `stock_chart`, `radar_chart` | ChartEx or classic specialty charts |
+| Text-grid tables | `basic_table`, `financial_statement_table` | Native DrawingML tables |
+
+Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable frame aligns with the fallback drawing. Keep legends, explanatory cards, source notes, center KPIs, and custom callouts outside the marker when they must remain as separate editable shapes; otherwise accept and review the native-export warning. Tables with merged, spanning, or graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route.
 
 ## Usage
 

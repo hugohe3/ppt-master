@@ -192,8 +192,9 @@ python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 
 Behavior:
 - extracts slide text in reading order
-- converts PowerPoint tables to Markdown tables
-- transcribes native chart data (type + categories × series values) into a Markdown table, so chart numbers are not lost in conversion
+- converts PowerPoint tables to Markdown tables; cell-internal line breaks become `<br>` so they cannot break the pipe-table row structure
+- transcribes category charts as category × series tables and scatter/bubble charts as typed X/Y[/size] point tables
+- preserves every readable chart dimension or series and emits `[Chart data warning: <reason>]` for missing caches/count mismatches; `[Chart data unavailable: <reason>]` is reserved for charts with no readable points (and unsupported ChartEx), so XY data is never flattened into a misleading category table
 - transcribes SmartArt semantic nodes as hierarchical Markdown; unreadable diagram data emits an explicit placeholder and conversion warning
 - exports embedded pictures to a sibling `_files/` directory
 - appends speaker notes when present
@@ -247,9 +248,20 @@ python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
 
 Supported unmerged tables and conservative classic-chart caches carry
 `data-pptx-native` metadata beside their SVG fallback. Markers remain dormant
-unless a later export uses `--native-objects`. Unsupported tables keep their
-rendered SVG table; unsupported charts keep a baked preview or explicit
-placeholder. Both carry `data-pptx-native-status`.
+unless a later export uses `--native-objects`. That opt-in is editable-first:
+it may normalize styling or omit marker-local details not represented by the
+payload, and export reports that risk without disabling an otherwise supported
+active marker. Unsupported tables keep their
+rendered SVG table; unsupported charts keep a baked preview when one exists.
+Charts without a baked preview use an explicit placeholder marked
+`data-pptx-visual-status="placeholder"` and
+`data-pptx-route-status="reconstruction-only"`. Validation and export report
+that route as a warning. Default export keeps the placeholder; when the same
+group has a valid active native-chart payload, `--native-objects` may still
+reconstruct the editable chart. Invalid or contradictory status declarations
+remain errors.
+Fallback-only native capability uses `data-pptx-native-status` and remains a
+warning when the SVG fallback itself is complete.
 
 Exporter-canonical charts recover canonical solid series/slice colors and exact
 one- or two-paragraph title styling; two paragraphs retain their `title` /

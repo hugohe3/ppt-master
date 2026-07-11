@@ -931,6 +931,8 @@ Native PowerPoint tables and Excel-backed charts activate at export time only. T
 
 **Hard rule — activation is the opt-in, dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Pass `--native-objects` only when editability in PowerPoint matters more than cross-renderer layout fidelity: it emits the PowerPoint object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint chart/table object rather than a pixel-identical SVG drawing.
 
+The native route is deliberately editable-first and may be lossy: marker-local labels, callouts, KPIs, guide lines, custom split/bin semantics, or styling that is absent from the payload may disappear or normalize. Export warns about this route-level risk and any narrower issue it can detect. Loss of visual parity is not grounds to remove an active marker that the emitter can otherwise convert; use the default SVG-fallback export when exact authored artwork matters more than editability.
+
 | Marker | Native output | Required metadata |
 |---|---|---|
 | `<g data-pptx-native="table">` | `<p:graphicFrame>` with `<a:tbl>` | bounds + `columns` or `rows` |
@@ -952,6 +954,18 @@ to at least one EMU per resolved row and column.
 **Validation**: `svg_quality_checker.py` validates native marker kind, JSON
 metadata, bounds/fallback availability, table rows/columns, supported chart
 type, and chart data shape before export.
+
+**Hard rule — imported visual/route status**: A PPTX chart with a complete baked preview
+may carry `data-pptx-visual-status="source-preview"`. When no preview exists,
+the importer emits its typed reconstruction aid with both
+`data-pptx-visual-status="placeholder"` and
+`data-pptx-route-status="reconstruction-only"`. The valid pair is diagnostic:
+quality checking and export warn, default export keeps the placeholder, and
+`--native-objects` may reconstruct an editable chart when the same group has a
+valid active `data-pptx-native="chart"` payload. The allowed values and pair
+remain closed; unknown, whitespace-padded, or contradictory values fail.
+`data-pptx-native` and `data-pptx-native-status` are mutually exclusive on the
+same visible group.
 
 ```xml
 <g id="p03-revenue-chart" data-pptx-native="chart">
@@ -981,8 +995,11 @@ If present, `header_rows` must be an integer from `0` through the resolved row
 count. Write `strict_grid`, `style.band_row`, and cell `bold` as JSON booleans.
 Cell objects accept `text`, `fill`, `color`,
 `align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
-`border_width`; the same `padding`, `border_color`, and `border_width` keys may
-also live under `style` as table defaults. Native table typography mirrors the
+`border_width`, plus optional `lang`; the same `padding`, `border_color`,
+`border_width`, and `lang` keys may also live under `style` as table defaults.
+When `lang` is absent, export derives `zh-CN` for CJK text and `en-US`
+otherwise. `style.band_row: false` disables both `<a:tblPr bandRow>` and
+materialized alternating row fills. Native table typography mirrors the
 visible SVG fallback: put `style.font_family` and `style.font_size` on the
 marker from the table text already drawn, then use `style.header_font_size` or
 per-cell `font_size` only when the fallback visibly differs. If the fallback
