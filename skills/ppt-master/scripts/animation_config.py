@@ -33,6 +33,7 @@ from svg_to_pptx.animation_config import (  # noqa: E402
     build_group_listing,
     load_animation_config,
     validate_animation_config,
+    validate_animation_config_errors,
     validate_transition_config,
     write_scaffold,
 )
@@ -112,15 +113,28 @@ def main(argv: list[str] | None = None) -> int:
         if not config:
             print('No animations.json found; default animation policy will be used.')
             return 0
-        errors = validate_transition_config(config)
+        errors = list(dict.fromkeys(
+            validate_transition_config(config)
+            + validate_animation_config_errors(config)
+        ))
         if errors:
             for error in errors:
                 print(f'Error: {error}', file=sys.stderr)
             return 1
-        warnings = validate_animation_config(project_path, config)
-        if warnings:
-            for warning in warnings:
-                print(f'Warning: {warning}', file=sys.stderr)
+        reference_messages = validate_animation_config(project_path, config)
+        reference_warnings = [
+            message for message in reference_messages
+            if ' has no id and cannot be customized in animations.json' in message
+        ]
+        reference_errors = [
+            message for message in reference_messages
+            if message not in reference_warnings
+        ]
+        for warning in reference_warnings:
+            print(f'Warning: {warning}', file=sys.stderr)
+        if reference_errors:
+            for error in reference_errors:
+                print(f'Error: {error}', file=sys.stderr)
             return 1
         print('Animation config validated successfully.')
         return 0

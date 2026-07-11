@@ -59,6 +59,9 @@ class ConvertContext:
     # Top-level <g id="..."> groups, recorded as (shape_id, svg_id) in z-order.
     # Used by the PPTX builder to emit per-element entrance timing.
     anim_targets: list = field(default_factory=list)
+    # Explicit sidecar group ids may override the legacy chrome-name heuristic.
+    # Explicit structural layer/role/placeholder markers remain non-animatable.
+    animation_group_overrides: frozenset[str] = frozenset()
     # Default-on flag: merge mergeable paragraph blocks into one editable
     # text frame with multiple <a:p>. Disable it for strict line fidelity.
     merge_paragraphs: bool = True
@@ -173,6 +176,7 @@ class ConvertContext:
             depth=self.depth + 1,
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
+            animation_group_overrides=self.animation_group_overrides,
             merge_paragraphs=self.merge_paragraphs,
             native_objects_enabled=self.native_objects_enabled,
             image_optimize=self.image_optimize,

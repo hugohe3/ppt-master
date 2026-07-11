@@ -86,6 +86,7 @@ Behavior:
   - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes
   - `--recorded-narration audio` prepares PowerPoint's "recorded timings and narrations": every slide must have matching `m4a` / `mp3` / `wav` audio, `ffprobe` must read every duration, and `--animation-trigger on-click` is rejected
   - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
+  - Narration timing is merged into the existing slide timing DOM; object entrance rows and the resolved page transition are preserved rather than regenerated
   - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
   - Either narration flag names the default-flow export `<project_name>_<timestamp>_narrated.pptx`, telling it apart from silent exports in the same directory
   - This is intended for direct PowerPoint video export with "Use recorded timings and narrations"
@@ -93,6 +94,7 @@ Behavior:
   - Voice choices can be listed with `python3 scripts/notes_to_audio.py --list-common-voices`, `python3 scripts/notes_to_audio.py --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
 - Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
 - Per-element animation applies to top-level SVG `<g id="...">` groups in z-order; aim for 3–8 content groups per slide. Existing layer/slide-number placeholder semantics are read before minimal structural roles; exact id tokens remain a fallback only when all explicit markers are absent
+- An explicit `animations.json` group entry may override the marker-free legacy chrome-name heuristic. It cannot override `data-pptx-layer` or an explicit static role/placeholder marker
 - Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
 - `on-click` is for live presentations only; recorded narration rejects it because the tool does not generate object-level click timings
 - Flat SVG roots without top-level groups fall back to at most 8 visible primitives; beyond that, animation is skipped on the slide
@@ -102,9 +104,13 @@ Behavior:
   ids (hero/figure-/image/img-/kpi) cycle through a richer pool
   (zoom/dissolve/circle/box/diamond/wheel), while unmatched ids cycle through
   fade/wipe/fly/zoom.
-- `mixed` (legacy) is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a larger 16-effect pool across the whole deck; `random` samples from that same legacy pool
+- `mixed` (legacy) is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a larger 16-effect pool across the whole deck; `random` uses a stable seed from the effective deck input, and `--conversion-trace` records each resolved effect when enabled
 - `--animation-duration` controls per-element entrance length (default `0.4`); `--animation-stagger` adds gap between elements in `after-previous` mode (default `0.5`)
 - Optional object-level overrides live in `<project>/animations.json` or a path passed via `--animation-config`; build and validate them with `animation_config.py scaffold|validate`
+- Animation configuration is strict: unknown effects/modes/triggers, invalid finite/range/order values, missing slides/groups, and structural-layer targets fail export without fallback or silent omission
+- Generated export reads every slide back and verifies animation row order, trigger, shape target, resolved effect tuple, duration, and offset. Package validation then checks timing placement, `p:cTn` ids, and `p:spTgt` references before publication
+- The animation writer does not emit `p:bldP` for groups or pictures. Direct-PPTX routes preserve source object animation and perform structural package validation only; they do not author effects
+- The full registry, OOXML rules, and compatibility boundary are documented in [`pptx-animations.md`](./pptx-animations.md)
 
 Dependency:
 

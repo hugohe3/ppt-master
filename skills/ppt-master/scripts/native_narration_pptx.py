@@ -42,6 +42,10 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from pptx_animations import (  # noqa: E402
+    object_animation_fingerprint,
+    validate_pptx_animation_package,
+)
 from pptx_transitions import (  # noqa: E402
     AdvanceUpdate,
     EnterUpdate,
@@ -358,6 +362,7 @@ def _apply_audio(
 
     slide_xml_path = extract_dir / slide.part_name
     slide_xml = slide_xml_path.read_text(encoding="utf-8")
+    source_animation_fingerprint = object_animation_fingerprint(slide_xml)
     shape_id = next_shape_id(slide_xml)
     slide_xml = inject_narration(
         slide_xml,
@@ -384,6 +389,10 @@ def _apply_audio(
             slide_xml,
             enter=enter,
             advance=advance,
+        )
+    if object_animation_fingerprint(slide_xml) != source_animation_fingerprint:
+        raise RuntimeError(
+            f"Slide {slide.index} object animations changed while adding narration"
         )
     slide_xml_path.write_text(slide_xml, encoding="utf-8")
     return timings_enabled and wrote_advance
@@ -788,11 +797,22 @@ def apply_project(args: argparse.Namespace) -> int:
             ):
                 slide_xml_path = extract_dir / slide.part_name
                 slide_xml = slide_xml_path.read_text(encoding="utf-8")
+                source_animation_fingerprint = object_animation_fingerprint(
+                    slide_xml
+                )
                 slide_xml, _uses_timings = apply_slide_motion_xml(
                     slide_xml,
                     enter=enter_update,
                     advance=AdvanceUpdate(mode="preserve"),
                 )
+                if (
+                    object_animation_fingerprint(slide_xml)
+                    != source_animation_fingerprint
+                ):
+                    raise RuntimeError(
+                        f"Slide {slide.index} object animations changed while "
+                        "updating the transition"
+                    )
                 slide_xml_path.write_text(
                     slide_xml,
                     encoding="utf-8",
@@ -817,6 +837,15 @@ def apply_project(args: argparse.Namespace) -> int:
             except ValueError as exc:
                 raise RuntimeError(
                     f"PPTX transition package validation failed: {exc}"
+                ) from exc
+            try:
+                validate_pptx_animation_package(
+                    candidate_path,
+                    require_supported_effects=False,
+                )
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"PPTX animation/timing package validation failed: {exc}"
                 ) from exc
             candidate_path.replace(output_path)
 

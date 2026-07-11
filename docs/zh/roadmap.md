@@ -25,7 +25,7 @@
 - **PPTX 导出质变**：SVG clipPath → DrawingML picture geometry、marker → 原生箭头、输出归集到 `exports/`
 - **图表库 70 个 + 图标三库**（simple-icons / phosphor-duotone / brand-logo）
 - **`spec_lock.md` 机器可读契约**：Strategist 锁定后 Executor 每页强制重读，跨页一致性有了保证
-- **元素级动画默认开启** + 旁白音频 / 视频导出([`workflows/generate-audio.md`](../../skills/ppt-master/workflows/generate-audio.md))
+- **元素级动画能力** + 旁白音频 / 视频导出（[`workflows/generate-audio.md`](../../skills/ppt-master/workflows/generate-audio.md)）；当前行为为按需开启，元素动画默认 `none`
 
 ### 2026-05（视觉编辑 + AI 图系统化）
 
@@ -76,9 +76,11 @@
 
 - **原生 PPTX 导出图片媒体大小封顶** — 保持生成 deck 可编辑、不嵌入巨幅源图：新增原生图片尺寸模式——`cap`（默认）只对超大源图限制最大边长，`display` 按渲染 SVG 框尺寸做更激进压缩；原生导出保留完整嵌入像素，SVG/PPT 显示裁剪仍走可编辑的 picture-crop 元数据；`finalize_svg` 保留原有 slice/meet 行为，另加默认按渲染尺寸下采样以产出紧凑 SVG 快照。文档落地 `cap` / `display` 两模式与 `--no-image-optimize` 逃生舱
 
-### 2026-07（分阶段确认 UI + 原生图表 / 表格成熟）
+### 2026-07（分阶段确认 UI + 原生对象 + 动效加固）
 
 - **Step 4 确认 gate 重构为三阶段向导 + 可视化预览** — 原来单次「八项确认」gate 拆成一个浏览器会话内的三阶段流程（方向锚点 → 设计系统 → 图片 / 执行方式），每个下游阶段都从用户**实际已确认**的上游选择重新推导，而非 AI 原始推荐——于是图片策略天然吻合已确认的配色系统。确认页为难以凭名字判断的选项补上视觉辅助：18 个 `visual_style` 每个一张专属 real-SVG 页面缩略图、真实图标库样本、AI 图参考图预览。`recommendations.json` 改用规范的 `stage` 选择器（`tier` 仅作内部向后兼容读取），用户可见措辞统一为「阶段」；聊天 fallback 镜像同样的分阶段顺序
+
+- **页间转场与元素入场动画完成无静默降级加固** — 当前默认保持页间 `fade` / 0.4 秒、元素入场 `none`，对象动画仍通过 `-a` 或 `animations.json` 按需开启。未知效果 / Start 模式、非有限或越界时长、非法顺序，以及缺失 slide/group 引用都会直接失败，不再偷换为 `fade`、其它 Start 模式或继承值。公开产物替换前会回读候选 PPTX，校验根级 timing 位置、时间节点 ID 唯一性、shape 引用、效果 / 时长 / Start 语义及旁白 timing 合并。直接 PPTX 路线只保留源对象动画，不把它翻译成生成路线的动画模型。Microsoft PowerPoint 是动效行为的主要验证目标；其它演示软件仅作为兼容目标，不承诺完全相同的播放结果
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 

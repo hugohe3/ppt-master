@@ -39,10 +39,17 @@ try:
     from svg_to_pptx.animation_config import (
         load_animation_config as _load_animation_config,
         validate_animation_config as _validate_animation_config,
+        validate_animation_config_errors as _validate_animation_config_errors,
+        validate_transition_config as _validate_transition_config,
     )
-except ImportError:
+except ImportError as exc:
     _load_animation_config = None
     _validate_animation_config = None
+    _validate_animation_config_errors = None
+    _validate_transition_config = None
+    _animation_config_import_error = str(exc)
+else:
+    _animation_config_import_error = None
 
 try:
     from svg_to_pptx.drawingml.utils import (
@@ -2363,9 +2370,21 @@ class SVGQualityChecker:
 
     def _check_animation_config_contract(self, dir_path: Path) -> None:
         """Project-level animations.json reference checks."""
-        if _load_animation_config is None or _validate_animation_config is None:
-            return
         project_path = self._resolve_project_path(dir_path)
+        config_path = project_path / 'animations.json'
+        if (
+            _load_animation_config is None
+            or _validate_animation_config is None
+            or _validate_animation_config_errors is None
+            or _validate_transition_config is None
+        ):
+            if config_path.is_file():
+                detail = _animation_config_import_error or 'unknown import error'
+                self._animation_issues.append((
+                    'error',
+                    f'animations.json validation is unavailable: {detail}',
+                ))
+            return
         try:
             config = _load_animation_config(project_path)
         except Exception as exc:
@@ -2373,8 +2392,19 @@ class SVGQualityChecker:
             return
         if not config:
             return
-        for warning in _validate_animation_config(project_path, config):
-            self._animation_issues.append(('warning', warning))
+        fatal_errors = list(dict.fromkeys(
+            _validate_transition_config(config)
+            + _validate_animation_config_errors(config)
+        ))
+        for error in fatal_errors:
+            self._animation_issues.append(('error', error))
+        for message in _validate_animation_config(project_path, config):
+            severity = (
+                'warning'
+                if ' has no id and cannot be customized in animations.json' in message
+                else 'error'
+            )
+            self._animation_issues.append((severity, message))
 
     def _check_template_contract(self, dir_path: Path,
                                  svg_files: List[Path]) -> None:

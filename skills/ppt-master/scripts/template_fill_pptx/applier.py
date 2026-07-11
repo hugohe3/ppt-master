@@ -12,6 +12,10 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from pptx_animations import (
+    object_animation_fingerprint,
+    validate_pptx_animation_package,
+)
 from pptx_transitions import (
     parse_source_xml,
     serialize_source_xml,
@@ -97,6 +101,9 @@ def apply_plan(
         new_rid = f"rId{next_rel_number + offset}"
 
         source_slide_xml = entries[source_ref.part_name]
+        source_animation_fingerprint = object_animation_fingerprint(
+            source_slide_xml
+        )
         slide_root = parse_source_xml(source_slide_xml)
         replacements = item.get("replacements", [])
         if not isinstance(replacements, list):
@@ -152,12 +159,20 @@ def apply_plan(
             next_embedding_number=next_embedding_number,
         )
         try:
-            entries[new_part] = serialize_source_xml(
+            serialized_slide = serialize_source_xml(
                 slide_root,
                 source_slide_xml,
             )
         except ValueError as exc:
             raise RuntimeError(str(exc)) from exc
+        if (
+            object_animation_fingerprint(serialized_slide)
+            != source_animation_fingerprint
+        ):
+            raise RuntimeError(
+                f'Slide {source_slide} object animations changed during template fill'
+            )
+        entries[new_part] = serialized_slide
         notes_text = str(item.get("notes") or item.get("speaker_notes") or "")
         entries[new_rels], note_entries = _slide_rels_with_notes(
             _xml_bytes(slide_rels_root),
@@ -216,5 +231,14 @@ def apply_plan(
         except ValueError as exc:
             raise RuntimeError(
                 f"PPTX transition package validation failed: {exc}"
+            ) from exc
+        try:
+            validate_pptx_animation_package(
+                candidate_path,
+                require_supported_effects=False,
+            )
+        except ValueError as exc:
+            raise RuntimeError(
+                f"PPTX animation/timing package validation failed: {exc}"
             ) from exc
         candidate_path.replace(output_path)
