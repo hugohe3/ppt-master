@@ -869,6 +869,17 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `--native-objects` fails rather than discard the edit. Legacy markers
 > without a baseline remain native-compatible and only warn that stale detection
 > is unavailable.
+> Imported table markers may also cover the verified narrow P2 subset:
+> canonical rectangular merges with blank covered cells, safe per-side borders,
+> and plain multi-paragraph cells. Run-level table rich text, noncanonical merge
+> topology, and unsafe direct formatting remain fallback-only. Imported classic
+> charts additionally cover verified column/line/area combos, canonical OHLC
+> stock, and area date-axis cases with a closed category/value axis field set.
+> This is not full `AxisSpec` or ChartEx import support; unmodeled chart/axis
+> semantics continue to fail closed without reducing existing active-marker
+> SVG-to-native conversion. Safe stock series style may pass the structural
+> gate, but stock series / high-low / up-down local styling may still normalize
+> under the documented editable-first contract.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`. `none` removes only the visual transition; an explicit automatic advance remains valid.
