@@ -93,6 +93,7 @@ Read `<project_dir>/analysis/<stem>.slide_library.json` (intake prefixes per-dec
 | `slides[].slots[].role` | Title / body / label candidate hint |
 | `slides[].tables[]` | Native PowerPoint tables with `table_id`, row / column counts, and per-cell coordinates + text |
 | `slides[].charts[]` | Native PowerPoint charts with `chart_id` |
+| `slides[].diagrams[]` | SmartArt layout, semantic nodes, hierarchy/connections, geometry, and extraction status; inventory-only |
 
 **Selection rule**: Pick pages by content fitness, not by source order alone. A source page is useful only if its visible structure can carry the target message without heavy redesign.
 
@@ -107,6 +108,9 @@ A page's layout already encodes a rhetorical shape — a single hero statement, 
 | `slots[].geometry` | Estimate whether each text slot is a short label, medium title, body block, caption, or decorative number |
 | `slots[].text_metrics.font_size_px` | Estimate text capacity together with geometry; larger type means fewer safe characters |
 | `slots[].text_summary` | Read the source page's original rhetorical pattern, not its literal placeholder wording |
+| `diagrams[].layout` + `nodes` | Understand the SmartArt's source meaning; template-fill preserves it unchanged and cannot map new text into it |
+
+**SmartArt boundary**: A selected source slide keeps its original native SmartArt parts. `check-plan` warns because the fill plan cannot replace SmartArt node text; choose another layout unless the original diagram content is intentionally retained, or explicitly accept the warning.
 
 **Hard rule**: The target story controls output order. Source slides may move forward, move backward, be omitted, or be reused several times when their layout matches multiple target messages. Never treat source slide order as a default outline unless the user explicitly asks to preserve it.
 
@@ -249,6 +253,7 @@ Interpret the report:
 | Short label exceeds visual width | Rewrite shorter or choose a layout with a larger label slot; do not shrink font by default |
 | Title too long | Rewrite first; only use font-size changes as a last resort |
 | Body much longer than source slot | Compress, split across another selected page, or choose a larger source page |
+| SmartArt source content remains unchanged | Pick another source slide unless the original SmartArt wording is intended; otherwise record the accepted warning |
 | Missing target | Fix `slot_id` / `shape_id`; do not apply the plan |
 
 `check-plan` emits stable `code` fields in its JSON results so warnings can be tracked without parsing message text. Warnings are advisory and do not fail the command; record any intentionally accepted warning in `accepted_warnings` when it matters for review. Errors are blocking and must be fixed before apply.
@@ -334,11 +339,13 @@ If the extracted text is correct but visual overflow is likely, reduce the text 
 | Replace text in existing text frames | Supported |
 | Edit native PowerPoint table cell text | Supported |
 | Edit native PowerPoint chart categories / series data | Supported |
+| Read SmartArt node text / hierarchy / layout | Supported in intake and planning |
+| Preserve existing native SmartArt unchanged | Supported by recursive private-part cloning |
 | Preserve original visual design | Supported by cloning slide parts directly |
 | Page-to-page transitions | Supported via `apply --transition` or per-slide `transition` |
 | Replace images | Not in v1 |
 | Object-level entrance animations | Not in v1; preserved from source only, set as a separate task |
 | Edit chart formatting / axes / legend layout | Not in v1 |
-| Edit SmartArt deeply | Not in v1 |
+| Edit or generate native SmartArt | Not supported; regenerated visual routes use ordinary editable shapes |
 | Automatic visual overflow detection | Not in v1; use text-capacity judgment from the library slots |
 | Material-divergence reshaping (§c content strategy) | Not applicable — this workflow fills text into existing slots, it does not author an outline from a source, so the main pipeline's `content_divergence` free-text field has no role here |

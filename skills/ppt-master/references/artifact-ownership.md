@@ -10,12 +10,12 @@ Global artifact ownership rules for PPT Master projects.
 
 | Artifact | Owner | Role | Read/write contract |
 |---|---|---|---|
-| `sources/` content-type files | Content contract | Main pipeline source for text, tables, and chart data values | Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judges by content; do not replace values with PPTX geometry JSON in the main pipeline |
+| `sources/` content-type files | Content contract | Main pipeline source for text, tables, chart data values, and SmartArt node wording | Strategist reads content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judges by content; do not replace values with PPTX geometry JSON in the main pipeline |
 | `sources/` converted-source originals | Source archive | Imported source files that have a converted content contract (`.pdf` / `.pptx` / `.docx` / `.xlsx` / `.html` / `.epub` / `.tex` / `.rst` / `.ipynb` / `.typ`, etc.) and source-adjacent extracted assets | Read via the converted `<stem>.md` in the main pipeline; direct-PPTX workflows read the `.pptx` by route |
 | `sources/*.conversion_profile.json`, `sources/*_files/image_manifest.json` | Pipeline sidecar | Conversion audit record / asset index | NOT read as slide content; open only to audit a conversion or resolve assets |
 | `analysis/source_profile.json` | Machine fact index | Compact Strategist-facing PPTX intake digest | Main pipeline reads as factual context and recommendation candidates |
 | `analysis/<stem>.identity.json` | Native deck identity facts | Canvas, theme palette/fonts, observed usage | Read selectively when detailed identity facts are needed |
-| `analysis/<stem>.slide_library.json` | Native PPTX structure facts | Text slots, geometry, native tables, native chart caches | Direct PPTX workflows use as native fill/structure contract |
+| `analysis/<stem>.slide_library.json` | Native PPTX structure facts | Text slots, geometry, native tables, native chart caches, SmartArt nodes/connections | Direct PPTX workflows use as native fill/structure contract |
 | `analysis/image_analysis.csv` | Regenerated image fact view | Measured facts about the current `images/` folder | Re-run `analyze_images.py` before reading image facts after changes |
 | `design_spec.md` | Human design narrative | Explains design intent, outline, rationale, and resource plan | Strategist writes; humans and later roles read for intent |
 | `spec_lock.md` | Execution contract | Literal colors, typography, icons, images, page rhythm, templates, and charts | Executor re-reads before every page; values must be used verbatim |
@@ -38,9 +38,9 @@ Global artifact ownership rules for PPT Master projects.
 
 | Invariant | Rule |
 |---|---|
-| Content values | Main pipeline text, tables, and chart values come from content-type files in `sources/` (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), not from `slide_library.json`. |
+| Content values | Main pipeline text, tables, chart values, and SmartArt node wording come from content-type files in `sources/` (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`), not from `slide_library.json`. |
 | Sources read policy | In `sources/`, read content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judge by content — a `.json` / `.csv` may be core content or just data. Exclude known sidecars: `*.conversion_profile.json` and `*_files/image_manifest.json`. `analysis/` facts (`source_profile.json`, `<stem>.slide_library.json`) are read per Step 4 / direct-PPTX workflow, not in the `sources/` content scan. |
-| PPTX structure | `slide_library.json` owns native geometry and slot facts for direct PPTX workflows. |
+| PPTX structure | `slide_library.json` owns native geometry, slot facts, and SmartArt layout/relationships for direct PPTX workflows. |
 | Design contract | `design_spec.md` explains; `spec_lock.md` executes. Executor must not infer execution values from prose. |
 | Image facts | `images/` is live state; `analysis/image_analysis.csv` is a regenerated view, not a durable cache. |
 | SVG source | `svg_output/` is the only author source for generated pages. |

@@ -191,8 +191,8 @@ Source documents (PDF / DOCX / EPUB / XLSX / PPTX / web pages) are normalized be
 
 | Channel | Artifact | Owner | Used for |
 |---|---|---|---|
-| Content contract | `sources/` content-type files (primarily `<stem>.md`) | `source_to_md/*` converters + `import-sources` | text, tables, chart values, citations, and source narrative |
-| Structured analysis | `analysis/*.json` / `analysis/*.csv` | intake and analysis tools | PPTX identity, slide geometry, native tables/charts, image dimensions/colors/subjects |
+| Content contract | `sources/` content-type files (primarily `<stem>.md`) | `source_to_md/*` converters + `import-sources` | text, tables, chart values, SmartArt node wording, citations, and source narrative |
+| Structured analysis | `analysis/*.json` / `analysis/*.csv` | intake and analysis tools | PPTX identity, slide geometry, native tables/charts, SmartArt relationships, image dimensions/colors/subjects |
 
 For PPTX sources, `project_manager.py import-sources` runs both `ppt_to_md.py` and `pptx_intake.py`. The Markdown remains the content source for the main generation pipeline. The intake bundle writes `<stem>.identity.json`, `<stem>.slide_library.json`, and merges a compact multi-deck index into `analysis/source_profile.json`. Strategist reads the compact index for source facts and opens raw per-deck artifacts only when a workflow needs them. That distinction matters: the main pipeline may rethink page count and story, while `template-fill` and `beautify` promote parts of the same intake facts into stronger constraints.
 
