@@ -56,6 +56,19 @@ _PLACEHOLDERS = frozenset({
     "footer",
     "slide-number",
 })
+TEMPLATE_PLACEHOLDER_TYPES = {
+    "title": "title",
+    "subtitle": "subTitle",
+    "body": "body",
+    "picture": "pic",
+    "chart": "chart",
+    "table": "tbl",
+    "object": "obj",
+    "media": "media",
+    "date": "dt",
+    "footer": "ftr",
+    "slide-number": "sldNum",
+}
 _TEXT_PLACEHOLDERS = frozenset({
     "title",
     "subtitle",
@@ -81,6 +94,7 @@ _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
 PPTX_STRUCTURE_MODES = frozenset({"baseline", "template", "preserve", "flat"})
 TEMPLATE_ADHERENCE_MODES = frozenset({"strict", "adaptive"})
 NATIVE_STRUCTURE_SCHEMA = "ppt-master.native-structure.v1"
+OOXML_UINT32_MAX = (1 << 32) - 1
 
 
 class TemplateStructureError(RuntimeError):
@@ -202,6 +216,67 @@ class TemplateSlideSpec:
             for item in self.elements
             if item.layer == "layout" or item.placeholder
         )
+
+
+@dataclass(frozen=True)
+class TemplatePlaceholderBinding:
+    """Resolved PowerPoint identity for one template placeholder."""
+
+    element: TemplateElementSpec
+    placeholder_type: str
+    assigned_idx: int | None
+
+    @property
+    def effective_idx(self) -> int:
+        """Return the OOXML idx value after applying its default of zero."""
+        return self.assigned_idx if self.assigned_idx is not None else 0
+
+
+def template_placeholder_bindings(
+    spec: TemplateSlideSpec,
+) -> tuple[TemplatePlaceholderBinding, ...]:
+    """Assign deterministic, collision-free PowerPoint placeholder identities."""
+    next_idx = 1
+    used_indices: dict[int, str] = {}
+    bindings: list[TemplatePlaceholderBinding] = []
+    for item in spec.placeholders:
+        placeholder_type = TEMPLATE_PLACEHOLDER_TYPES.get(item.placeholder or "")
+        if placeholder_type is None:
+            raise TemplateStructureError(
+                f"{spec.svg_path.name}: unsupported placeholder type "
+                f"{item.placeholder!r}"
+            )
+        if item.placeholder == "title" and item.placeholder_idx is None:
+            assigned_idx = None
+        else:
+            assigned_idx = (
+                item.placeholder_idx
+                if item.placeholder_idx is not None
+                else next_idx
+            )
+        effective_idx = assigned_idx if assigned_idx is not None else 0
+        if effective_idx > OOXML_UINT32_MAX:
+            raise TemplateStructureError(
+                f"{spec.svg_path.name}: layout {spec.layout_key!r} placeholder "
+                f"{item.element_id!r} idx exceeds the OOXML UInt32 maximum "
+                f"{OOXML_UINT32_MAX}"
+            )
+        previous = used_indices.get(effective_idx)
+        if previous is not None:
+            raise TemplateStructureError(
+                f"{spec.svg_path.name}: layout {spec.layout_key!r} gives "
+                f"placeholders {previous!r} and {item.element_id!r} the same "
+                f"effective idx {effective_idx}; omitted idx defaults to 0 in OOXML"
+            )
+        used_indices[effective_idx] = item.element_id
+        if assigned_idx is not None:
+            next_idx = max(next_idx, assigned_idx + 1)
+        bindings.append(TemplatePlaceholderBinding(
+            element=item,
+            placeholder_type=placeholder_type,
+            assigned_idx=assigned_idx,
+        ))
+    return tuple(bindings)
 
 
 def _local_tag(elem: ET.Element) -> str:
@@ -661,7 +736,13 @@ def _parse_placeholder_idx(
             f"{svg_path.name}: {element_id} data-pptx-placeholder-idx must be "
             "a non-negative integer"
         )
-    return int(value)
+    parsed = int(value)
+    if parsed > OOXML_UINT32_MAX:
+        raise TemplateStructureError(
+            f"{svg_path.name}: {element_id} data-pptx-placeholder-idx must be "
+            f"at most {OOXML_UINT32_MAX}"
+        )
+    return parsed
 
 
 def _validate_placeholder_element(
@@ -945,6 +1026,7 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
         by_layout.setdefault(spec.layout_key, []).append(spec)
     for layout_key, layout_specs in by_layout.items():
         prototype = layout_specs[0]
+        template_placeholder_bindings(prototype)
         for spec in layout_specs[1:]:
             if spec.layout_name != prototype.layout_name:
                 raise TemplateStructureError(

@@ -814,12 +814,19 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > consistent Layout/placeholder contract.
 > Template export also installs the locked `typography.title` size into every
 > Master `titleStyle` level and the locked `typography.body` size into every
-> `bodyStyle` and `otherStyle` level. It changes only existing
-> `a:defRPr@sz` defaults: generated slide runs and Layout placeholder prototypes
-> keep their direct sizes, while newly inserted/reset placeholder text inherits
-> project defaults instead of Office fallback sizes. Missing or invalid locked
-> title/body sizes fail template export. Baseline, preserve, and flat modes do
-> not rewrite Master text-style sizes.
+> `bodyStyle` and `otherStyle` level. Each text-bearing Layout placeholder also
+> writes its prototype run size to `a:lstStyle/a:lvl1pPr/a:defRPr@sz`, so a
+> newly inserted or reset placeholder keeps that Layout's local size before it
+> falls back to the Master. Generated slide runs and Layout prompt runs keep
+> their direct sizes. Missing or invalid locked title/body sizes fail template
+> export. Baseline, preserve, and flat modes do not apply either text-default
+> update.
+> Before publishing the temporary PPTX, template export reopens the finished
+> package and verifies `Presentation → Master ↔ Layout ← Slide` registration,
+> named custom Layout parts and content types, collision-free placeholder
+> identities, prototype bounds, and prompt/level-one sizes. This read-back gate
+> is template-only and does not compare later same-Layout slides' local geometry
+> or direct text formatting.
 > In template mode, `pptx_layouts` contains exactly one locked
 > layout key/name per page; reuse a key for a shared structure instead of
 > creating one key per content instance.
