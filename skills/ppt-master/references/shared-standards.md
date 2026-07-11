@@ -415,11 +415,53 @@ These forms are needed only when the stated PPT behavior matters:
 | Desired behavior | Required form |
 |---|---|
 | One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` and use non-positional `<tspan>` children. A `tspan` with `x`, `y`, or `dy` starts a new positioned line and is flattened to another text frame. Separate `<text>` elements remain valid when separate frames are intended. |
-| Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Raw top-level primitives and anonymous groups remain valid when neither behavior is needed. |
+| Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
 | Free-design page family/chrome extraction | Use the semantic markers in §4.1. Marker-free pages retain conservative filename/id fallbacks, but no visual content is inferred. |
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
+
+### 4.3 Element Grouping (Mandatory)
+
+Wrap logically related elements in top-level `<g id="...">` groups. This is **required on every generated page**, not an optional convenience: it produces real PowerPoint groups in the exported PPTX (easier to select / move / edit) and gives each content unit a stable anchor for optional per-element entrance animation. Plain `<g>` is the normal grouping primitive; `<g opacity="0..1">` additionally maps to the per-descendant alpha approximation in §2.2.
+
+**Semantic-group rule**: direct children of `<svg>` are semantic content groups, **not** raw drawing atoms. Aim for **3–8 top-level content `<g id>` groups per slide** (the budget excludes page chrome — see below); each content group becomes one entrance step under the chosen animation trigger (one click in `on-click`, one cascade slot in `after-previous`, parallel in `with-previous`). Leaving titles, body lines, list items, cards, or decorative clusters as ungrouped top-level `<text>` / `<rect>` / `<path>` is a contract violation, not a style choice.
+
+**Chrome is excluded automatically.** Existing `data-pptx-layer` and `data-pptx-placeholder="slide-number"` semantics are read first; otherwise explicit `data-pptx-role` values (`background`, `decoration`, `header`, `footer`, `chrome`, `watermark`, `page-number`, `logo`) mark static framing (§4.1, [`semantic-svg.md`](semantic-svg.md)). Marker-free legacy SVGs keep id-token fallbacks. Keep the `<g>` wrapper on chrome for editing/grouping even though it does not count against the 3–8 content budget.
+
+**What to group** (one `<g id>` per unit):
+
+| Grouping unit | Contains |
+|---|---|
+| Card / panel | Background rect + optional shadow (only if it floats over a photo/colored panel, §6.4) + icon + title + body text |
+| Process step | Number/marker + icon + label + description |
+| List item | Bullet / number + icon + title + description |
+| Icon-text combo | Icon element + adjacent label |
+| Page header | Title + subtitle + accent decoration |
+| Page footer | Page number + branding |
+| Decorative cluster | Related decorative shapes (rings, dots, orbs) |
+
+An authored native preset fragment (§1.5) is already an atomic `<g id>` and counts as one content group; keep its labels / decorations in a sibling parent `<g>`, never inside the preset group.
+
+**Forbidden**:
+
+- One giant `<g>` around the whole slide (collapses to a single animation step).
+- Many ungrouped top-level `<rect>` / `<text>` / `<path>` — fallback animation caps at 8 primitives, dense pages may skip animation, and selection/editing degrades.
+- One group per icon / text line / mark (too many steps).
+- Anonymous top-level groups — every top-level semantic group needs a descriptive `id`.
+
+**Naming — required.** A descriptive `id` on every top-level content `<g>` (`card-1`, `step-discover`, `header`, `footer`) is mandatory; it is the animation anchor and the group identity in PPTX. Without it, the exporter falls back to at most 8 top-level primitives or skips animation on dense pages.
+
+```xml
+<g id="card-benefits-1">
+  <!-- Shadow only if the card floats over a colored panel; on flat white, omit it. -->
+  <rect x="60" y="115" width="565" height="260" rx="20" fill="#FFFFFF" filter="url(#shadow)"/>
+  <use data-icon="chunk-filled/bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>
+  <text x="105" y="270" font-size="56" font-weight="bold" fill="#0071E3">10×</text>
+  <text x="250" y="270" font-size="30" font-weight="bold" fill="#1D1D1F">Faster</text>
+  <text x="105" y="310" font-size="18" fill="#6E6E73">Reduce production time from days to hours.</text>
+</g>
+```
 
 ---
 
@@ -574,7 +616,15 @@ color for glow; black reads as diffuse shadow.
 | Raised | Primary CTA, focused card, overlay | 6–10 | 10–16 | 0.12–0.20 |
 | Glow | Short display text, metric, focus accent | 0 offset | 4–8 | 0.35–0.55 |
 
-**Reference — not a constraint**: keep one light direction and at most two
+**Strong default — single light source per page**: every `feOffset` shadow on
+one slide shares the same `dx`/`dy` direction (default `dx="0"`, `dy="4"`–`dy="8"`,
+light from upper front). Contradictory shadow directions read as multiple light
+sources — a clear low-quality tell. The one sanctioned exception is a deliberate
+upward paper-layer light, where every affected layer flips direction together;
+never mix directions on the same plane. This is a strong default, not a
+checker-enforced hard rule.
+
+**Reference — not a constraint**: keep at most two
 non-floor tiers; two or three shadowed objects usually suffice. Do not lift
 every peer card or stack strong shadow, border, gradient, and tint on one
 container. Same-family colored shadow is reserved for a focal accent. On dark
