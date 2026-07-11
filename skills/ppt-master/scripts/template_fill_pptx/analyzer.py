@@ -9,18 +9,24 @@ from xml.etree import ElementTree as ET
 
 from .chart_read import empty_chart_data, read_chart_data
 from .diagram_read import read_smartart_diagrams
+from .edit_safety import (
+    _chart_edit_capability,
+    _chart_frames,
+    _chart_reference,
+    _table_cell_merge_info,
+    _table_merge_topology,
+    _unsupported_chart_capability,
+)
 from .ooxml import (
     CHART_REL_TYPE,
     NS,
     SlideRef,
-    _chart_containers,
     _container_geometry,
     _emu_to_px,
     _normalize_part,
     _paragraph_texts,
     _parse_slide_refs,
     _read_xml,
-    _qn,
     _shape_identity,
     _slide_relationships,
     _table_containers,
@@ -36,16 +42,37 @@ def _analyze_tables(slide_root: ET.Element, source_slide: int) -> list[dict[str,
     tables: list[dict[str, Any]] = []
     for order, container in enumerate(_table_containers(slide_root), start=1):
         shape_id, _shape_name = _shape_identity(container, order)
+        table = container.find(".//a:tbl", NS)
+        if table is None:
+            continue
+        merge_topology = _table_merge_topology(table)
+        merge_anchors = {
+            (int(item["row"]), int(item["col"])): item.get("anchor")
+            for item in merge_topology["slave_cells"]
+        }
         rows: list[dict[str, Any]] = []
         max_columns = 0
-        for row_index, row in enumerate(container.findall(".//a:tbl/a:tr", NS)):
+        for row_index, row in enumerate(table.findall("a:tr", NS)):
             cells: list[dict[str, Any]] = []
             for col_index, cell in enumerate(row.findall("a:tc", NS)):
+                merge_info = _table_cell_merge_info(cell)
+                merge_anchor = merge_anchors.get((row_index, col_index))
+                if merge_anchor is not None:
+                    merge_info["merge_anchor"] = merge_anchor
+                    merge_info["anchor_row"] = merge_anchor["row"]
+                    merge_info["anchor_col"] = merge_anchor["col"]
+                elif merge_info["is_merge_slave"]:
+                    merge_info["anchor_row"] = None
+                    merge_info["anchor_col"] = None
+                else:
+                    merge_info["anchor_row"] = row_index
+                    merge_info["anchor_col"] = col_index
                 cells.append(
                     {
                         "row": row_index,
                         "col": col_index,
                         "text": "\n".join(_paragraph_texts(cell)),
+                        **merge_info,
                     }
                 )
             max_columns = max(max_columns, len(cells))
@@ -56,6 +83,7 @@ def _analyze_tables(slide_root: ET.Element, source_slide: int) -> list[dict[str,
                 "row_count": len(rows),
                 "column_count": max_columns,
                 "rows": rows,
+                "merge_topology": merge_topology,
             }
         )
     return tables
@@ -64,19 +92,47 @@ def _analyze_tables(slide_root: ET.Element, source_slide: int) -> list[dict[str,
 def _analyze_charts(zf: zipfile.ZipFile, slide_root: ET.Element, slide_ref: SlideRef) -> list[dict[str, Any]]:
     charts: list[dict[str, Any]] = []
     relationships = _slide_relationships(zf, slide_ref.rels_name)
-    for order, container in enumerate(_chart_containers(slide_root), start=1):
+    for order, container in enumerate(_chart_frames(slide_root), start=1):
         shape_id, _shape_name = _shape_identity(container, order)
-        chart = container.find(".//c:chart", NS)
-        rel_id = chart.attrib.get(_qn(NS["r"], "id")) if chart is not None else ""
+        chart_kind, rel_id = _chart_reference(container)
         payload: dict[str, Any] = {"chart_id": f"s{slide_ref.index:02d}_ch{shape_id}"}
         payload.update(empty_chart_data())
+        payload["chart_kind"] = chart_kind
+        if chart_kind == "chartex":
+            payload["chart_type"] = "chartEx"
+            payload["plot_types"] = ["chartEx"]
+            payload["edit_capability"] = _unsupported_chart_capability(
+                "chart_edit_chartex_unsupported",
+                "template-fill chart edits do not support ChartEx",
+            )
+            charts.append(payload)
+            continue
+        if chart_kind != "classic":
+            payload["edit_capability"] = _unsupported_chart_capability(
+                "chart_edit_plot_type_unsupported",
+                "template-fill chart edits require a classic DrawingML chart reference",
+            )
+            charts.append(payload)
+            continue
+
         rel = relationships.get(rel_id)
         if rel and rel.get("type") == CHART_REL_TYPE:
             chart_part = _normalize_part(rel["target"], slide_ref.part_name)
             try:
-                payload.update(read_chart_data(_read_xml(zf, chart_part)))
+                chart_root = _read_xml(zf, chart_part)
+                payload.update(read_chart_data(chart_root))
+                payload["edit_capability"] = _chart_edit_capability(chart_root)
             except RuntimeError:
                 payload.update(empty_chart_data())
+                payload["edit_capability"] = _unsupported_chart_capability(
+                    "chart_edit_part_unavailable",
+                    "template-fill could not read the classic chart part",
+                )
+        else:
+            payload["edit_capability"] = _unsupported_chart_capability(
+                "chart_edit_relationship_unsupported",
+                "template-fill chart edits require a classic chart relationship",
+            )
         charts.append(payload)
     return charts
 

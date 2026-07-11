@@ -10,10 +10,16 @@ from __future__ import annotations
 
 import io
 import re
+import sys
 import zipfile
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from .edit_safety import (
+    _chart_frames,
+    _chart_reference,
+    _require_supported_chart_edit,
+)
 from .ooxml import (
     CHART_CONTENT_TYPE,
     CHART_REL_TYPE,
@@ -21,7 +27,6 @@ from .ooxml import (
     PACKAGE_REL_TYPE,
     REL_NS,
     XLSX_CONTENT_TYPE,
-    _chart_containers,
     _normalize_part,
     _qn,
     _rels_name_for_part,
@@ -34,11 +39,15 @@ from .selectors import _chart_selectors
 
 def _chart_key_maps(slide_root: ET.Element, source_slide: int) -> dict[str, dict[str, str]]:
     maps: dict[str, dict[str, str]] = {}
-    for order, container in enumerate(_chart_containers(slide_root), start=1):
+    for order, container in enumerate(_chart_frames(slide_root), start=1):
         shape_id, shape_name = _shape_identity(container, order)
-        chart = container.find(".//c:chart", NS)
-        rel_id = chart.attrib.get(_qn(NS["r"], "id")) if chart is not None else ""
-        info = {"shape_id": shape_id, "shape_name": shape_name, "rel_id": rel_id or ""}
+        chart_kind, rel_id = _chart_reference(container)
+        info = {
+            "shape_id": shape_id,
+            "shape_name": shape_name,
+            "rel_id": rel_id,
+            "chart_kind": chart_kind,
+        }
         maps[f"chart_id:s{source_slide:02d}_ch{shape_id}"] = info
         maps[f"shape_id:{shape_id}"] = info
         if shape_name:
@@ -168,6 +177,13 @@ def _set_value_cache(series: ET.Element, values: list[Any], column_index: int) -
 
 
 def _apply_chart_edit_to_chart_xml(chart_root: ET.Element, chart_edit: dict[str, Any]) -> None:
+    capability = _require_supported_chart_edit(chart_root)
+    for warning in capability.get("warnings", []):
+        if not isinstance(warning, dict):
+            continue
+        code = warning.get("code") or "chart_edit_category_flattened"
+        message = warning.get("message") or "chart categories will be flattened"
+        print(f"  Warning: {message} [{code}]", file=sys.stderr)
     categories = [str(item) for item in chart_edit.get("categories", [])]
     series_payload = chart_edit.get("series", [])
     if not categories or not isinstance(series_payload, list) or not series_payload:
@@ -346,6 +362,17 @@ def _apply_chart_edits_to_slide_package(
                 continue
             errors.append(", ".join(selectors) or "<missing selector>")
             continue
+        chart_kind = chart_info.get("chart_kind", "")
+        if chart_kind != "classic":
+            code = (
+                "chart_edit_chartex_unsupported"
+                if chart_kind == "chartex"
+                else "chart_edit_plot_type_unsupported"
+            )
+            raise RuntimeError(
+                "template-fill chart edits require a supported classic chart "
+                f"[{code}]"
+            )
         rel_id = chart_info.get("rel_id", "")
         rel = _find_relationship(rels_root, rel_id)
         if rel is None:

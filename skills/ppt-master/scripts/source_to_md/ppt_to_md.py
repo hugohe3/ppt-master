@@ -17,8 +17,10 @@ Dependency:
 API stability note:
     Detecting slide-internal jumps (``ppaction://hlinksldjump``) reads
     ``run._r`` (the CT_TextRun lxml element) because python-pptx exposes no
-    public API to distinguish an internal jump from an external URL. This
-    access pattern is stable across python-pptx 0.6.x; pin python-pptx<0.7.
+    public API to distinguish an internal jump from an external URL. XY chart
+    extraction likewise reads ``series._element`` for X values and bubble sizes,
+    which the public chart API does not expose. Keep these private accesses
+    localized here and covered by conversion smoke tests.
 """
 
 from __future__ import annotations
@@ -57,6 +59,10 @@ configure_utf8_stdio()
 
 
 EMU_PER_INCH = 914400
+DRAWINGML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+PRESENTATIONML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
+RELATIONSHIP_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+CHARTEX_URI = "http://schemas.microsoft.com/office/drawing/2014/chartex"
 OFFICE_VECTOR_EXTENSIONS = {"emf", "wmf"}
 IMAGE_EXT_BY_CONTENT_TYPE = {
     "image/bmp": "bmp",
@@ -133,7 +139,10 @@ def sanitize_filename(value: str) -> str:
 
 def escape_table_cell(value: str) -> str:
     """Escape Markdown table syntax inside a cell."""
-    return normalize_text(value).replace("|", r"\|") or " "
+    normalized = value.replace("\r\n", "\n").replace("\r", "\n")
+    lines = [re.sub(r"\s+", " ", line).strip() for line in normalized.split("\n")]
+    with_breaks = "<br>".join(lines)
+    return with_breaks.replace("|", r"\|") or " "
 
 
 def _safe_position(shape: object, attr: str) -> int:
@@ -384,55 +393,260 @@ def _format_chart_value(value: object) -> str:
     return str(value)
 
 
-def chart_to_markdown(chart: object, name: str) -> str:
-    """Render a chart's data as a Markdown table so the numbers survive conversion.
-
-    A native PowerPoint chart stores its data in embedded XML, not in any text
-    frame — emitting only a `[Chart]` placeholder drops every value. The markdown
-    is the content contract for downstream generation, so transcribe categories ×
-    series here. `scripts/pptx_intake.py` writes the same data in structured JSON
-    form for tooling; this is the human- and content-readable mirror.
-    """
+def _chart_header(chart: object, name: str) -> tuple[str, str]:
+    """Return the Markdown chart header and its best-effort type label."""
     try:
         chart_type = str(chart.chart_type)
-    except (ValueError, AttributeError):
+    except (ValueError, AttributeError, KeyError):
         chart_type = ""
+    raw_name = "" if name is None else str(name)
+    chart_name = normalize_text(raw_name).replace("\n", " ") or "Chart"
+    header = f"> [Chart] {chart_name}" + (f" — {chart_type}" if chart_type else "")
+    return header, chart_type
 
+
+def _chart_warning_lines(warnings: list[str]) -> list[str]:
+    """Return stable, de-duplicated Markdown warning blocks."""
+    lines: list[str] = []
+    seen: set[str] = set()
+    for warning in warnings:
+        normalized = normalize_text(warning).replace("\n", " ") or "unknown warning"
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        lines.append(f"> [Chart data warning: {normalized}]")
+    return lines
+
+
+def _chart_data_unavailable(
+    header: str,
+    reason: str,
+    *,
+    warnings: list[str] | None = None,
+) -> str:
+    """Attach an explicit data-read failure to a chart heading."""
+    normalized_reason = normalize_text(reason).replace("\n", " ") or "unknown reason"
+    lines = [header]
+    lines.extend(_chart_warning_lines(warnings or []))
+    lines.append(f"> [Chart data unavailable: {normalized_reason}]")
+    return "\n".join(lines)
+
+
+def _chart_value_cell(value: object) -> str:
+    """Return one chart table cell while keeping missing values visibly empty."""
+    rendered = _format_chart_value(value)
+    return escape_table_cell(rendered) if rendered else ""
+
+
+def _chart_series_element(series: object) -> object | None:
+    """Return python-pptx's series XML carrier when its public API is insufficient."""
+    element = getattr(series, "_element", None)
+    if element is not None:
+        return element
+    return getattr(series, "_ser", None)
+
+
+def _chart_series_name(series: object, index: int) -> str:
+    """Return a stable, Markdown-safe series name."""
+    try:
+        raw_name = series.name
+    except (ValueError, AttributeError, KeyError):
+        raw_name = None
+    label = str(raw_name) if raw_name not in (None, "") else f"Series {index}"
+    return escape_table_cell(label)
+
+
+def _chart_numeric_cache_values(
+    parent: object | None,
+) -> tuple[list[object | None] | None, str | None]:
+    """Read one XY display cache through python-pptx's OOXML value helpers."""
+    if parent is None:
+        return None, "missing numeric value container"
+    try:
+        point_count = int(parent.ptCount_val)
+        values = [parent.pt_v(index) for index in range(point_count)]
+    except (AttributeError, IndexError, TypeError, ValueError):
+        return None, "invalid or unavailable numeric display cache"
+    if point_count <= 0 or all(value is None for value in values):
+        return None, "numeric display cache contains no values"
+    return values, None
+
+
+def _chart_family(chart_type: str, series: list[object]) -> str:
+    """Classify category, scatter, and bubble charts without misreading XY as category."""
+    type_key = chart_type.upper()
+    if "BUBBLE" in type_key:
+        return "bubble"
+    if "SCATTER" in type_key:
+        return "scatter"
+    for item in series:
+        element = _chart_series_element(item)
+        if element is None:
+            continue
+        if element.find(qn("c:bubbleSize")) is not None:
+            return "bubble"
+        if element.find(qn("c:xVal")) is not None or element.find(qn("c:yVal")) is not None:
+            return "scatter"
+    return "category"
+
+
+def _xy_chart_to_markdown(
+    series: list[object],
+    *,
+    family: str,
+    header: str,
+) -> str:
+    """Render scatter/bubble series as typed per-point X/Y[/size] rows."""
+    table_header = ["Series", "Point", "X", "Y"]
+    if family == "bubble":
+        table_header.append("Size")
+    rows: list[list[str]] = []
+    warnings: list[str] = []
+
+    for series_index, item in enumerate(series, start=1):
+        series_name = _chart_series_name(item, series_index)
+        element = _chart_series_element(item)
+        if element is None:
+            x_values = None
+            warnings.append(f"{series_name}: series XML is unavailable for X data")
+        else:
+            x_values, x_error = _chart_numeric_cache_values(
+                element.find(qn("c:xVal"))
+            )
+            if x_error:
+                warnings.append(f"{series_name}: X data {x_error}")
+        try:
+            y_values = list(item.values)
+        except (ValueError, TypeError, AttributeError, KeyError):
+            y_values = []
+            warnings.append(f"{series_name}: Y values are unavailable")
+
+        size_values: list[object | None] | None = None
+        if family == "bubble":
+            if element is None:
+                size_error = "missing series XML"
+            else:
+                size_values, size_error = _chart_numeric_cache_values(
+                    element.find(qn("c:bubbleSize"))
+                )
+            if size_error:
+                warnings.append(f"{series_name}: bubble sizes {size_error}")
+
+        x_values = x_values or []
+        point_count = max(
+            len(x_values),
+            len(y_values),
+            len(size_values or []),
+        )
+        if point_count == 0:
+            warnings.append(f"{series_name}: no readable points")
+            continue
+
+        point_counts = {len(x_values), len(y_values)}
+        if family == "bubble":
+            point_counts.add(len(size_values or []))
+        if len(point_counts) > 1:
+            dimensions = "X/Y/size" if family == "bubble" else "X/Y"
+            warnings.append(
+                f"{series_name}: {dimensions} point counts differ; "
+                "missing cells are blank"
+            )
+
+        for point_index in range(point_count):
+            x_value = x_values[point_index] if point_index < len(x_values) else None
+            y_value = y_values[point_index] if point_index < len(y_values) else None
+            row = [
+                series_name,
+                str(point_index + 1),
+                _chart_value_cell(x_value),
+                _chart_value_cell(y_value),
+            ]
+            if family == "bubble":
+                size_value = (
+                    size_values[point_index]
+                    if size_values is not None and point_index < len(size_values)
+                    else None
+                )
+                row.append(_chart_value_cell(size_value))
+            rows.append(row)
+
+    if not rows:
+        return _chart_data_unavailable(
+            header,
+            "chart has no readable XY points",
+            warnings=warnings,
+        )
+    lines = [header]
+    lines.extend(_chart_warning_lines(warnings))
+    lines.extend([
+        "",
+        "| " + " | ".join(table_header) + " |",
+        "| " + " | ".join(["---"] * len(table_header)) + " |",
+    ])
+    lines.extend("| " + " | ".join(row) + " |" for row in rows)
+    return "\n".join(lines)
+
+
+def _category_chart_to_markdown(chart: object, series: list[object], header: str) -> str:
+    """Render a conventional category chart through python-pptx's public API."""
     categories: list[str] = []
+    warnings: list[str] = []
+    has_category_xml = any(
+        (element := _chart_series_element(item)) is not None
+        and element.find(qn("c:cat")) is not None
+        for item in series
+    )
     try:
         plots = list(chart.plots)
         if plots:
             categories = [
-                escape_table_cell(str(cat)) if cat is not None else ""
-                for cat in plots[0].categories
+                escape_table_cell(str(category)) if category is not None else ""
+                for category in plots[0].categories
             ]
-    except (ValueError, IndexError, AttributeError):
-        categories = []
+    except (ValueError, TypeError, IndexError, AttributeError, KeyError):
+        if has_category_xml:
+            warnings.append("chart categories are unavailable; using point numbers")
+    if not has_category_xml and not categories:
+        warnings.append("chart categories are missing; using point numbers")
+    elif has_category_xml and not categories:
+        warnings.append("chart categories are empty; using point numbers")
 
     series_data: list[tuple[str, list[object]]] = []
-    try:
-        for index, series in enumerate(chart.series, start=1):
-            try:
-                values = list(series.values)
-            except (ValueError, TypeError, AttributeError):
-                values = []
-            label = str(series.name) if getattr(series, "name", None) else f"Series {index}"
-            series_data.append((escape_table_cell(label), values))
-    except (ValueError, AttributeError):
-        series_data = []
+    for index, item in enumerate(series, start=1):
+        series_name = _chart_series_name(item, index)
+        try:
+            values = list(item.values)
+        except (ValueError, TypeError, AttributeError, KeyError):
+            warnings.append(f"{series_name}: series values are unavailable")
+            continue
+        series_data.append((series_name, values))
 
-    header = f"> [Chart] {name}" + (f" — {chart_type}" if chart_type else "")
-    row_count = len(categories) if categories else max((len(v) for _, v in series_data), default=0)
+    row_count = max(
+        len(categories),
+        max((len(values) for _, values in series_data), default=0),
+    )
     if not series_data or row_count == 0:
-        return header
+        return _chart_data_unavailable(
+            header,
+            "chart has no readable category-series data",
+            warnings=warnings,
+        )
+    point_counts = {len(values) for _, values in series_data}
+    if categories:
+        point_counts.add(len(categories))
+    if len(point_counts) > 1:
+        warnings.append("category/series point counts differ; missing cells are blank")
 
-    table_header = (["Category"] if categories else ["#"]) + [sname for sname, _ in series_data]
-    lines = [
-        header,
+    table_header = (["Category"] if categories else ["#"]) + [
+        series_name for series_name, _ in series_data
+    ]
+    lines = [header]
+    lines.extend(_chart_warning_lines(warnings))
+    lines.extend([
         "",
         "| " + " | ".join(table_header) + " |",
         "| " + " | ".join(["---"] * len(table_header)) + " |",
-    ]
+    ])
     for row_index in range(row_count):
         if categories:
             label = categories[row_index] if row_index < len(categories) else ""
@@ -440,9 +654,83 @@ def chart_to_markdown(chart: object, name: str) -> str:
             label = str(row_index + 1)
         cells = [label]
         for _, values in series_data:
-            cells.append(_format_chart_value(values[row_index]) if row_index < len(values) else "")
+            value = values[row_index] if row_index < len(values) else None
+            cells.append(_chart_value_cell(value))
         lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines)
+
+
+def chart_to_markdown(chart: object, name: str) -> str:
+    """Render category, scatter, and bubble data without flattening chart semantics.
+
+    A native PowerPoint chart stores its data in embedded XML, not in any text
+    frame. Public python-pptx APIs cover category values and scatter/bubble Y
+    values, but not XY X coordinates or bubble sizes. Read only those missing
+    display caches from the series XML. Preserve every readable value and emit
+    explicit warnings for missing dimensions or series rather than discarding
+    the chart's remaining content.
+    """
+    header, chart_type = _chart_header(chart, name)
+    try:
+        series = list(chart.series)
+    except (ValueError, TypeError, AttributeError, KeyError):
+        return _chart_data_unavailable(header, "chart series are unavailable")
+    if not series:
+        return _chart_data_unavailable(header, "chart has no readable series")
+
+    family = _chart_family(chart_type, series)
+    if family in {"scatter", "bubble"}:
+        return _xy_chart_to_markdown(series, family=family, header=header)
+    return _category_chart_to_markdown(chart, series, header)
+
+
+def _chart_reference_id(element: object) -> str | None:
+    """Return the first chart relationship id carried by an OOXML shape subtree."""
+    for descendant in element.iter():
+        if descendant.tag.rsplit("}", 1)[-1] != "chart":
+            continue
+        relationship_id = descendant.get(f"{{{RELATIONSHIP_NS}}}id")
+        if relationship_id:
+            return relationship_id
+    return None
+
+
+def _unexposed_chartex_markdown(
+    slide: object,
+    emitted_relationship_ids: set[str],
+) -> list[str]:
+    """Report ChartEx objects omitted from ``slide.shapes`` by python-pptx."""
+    blocks: list[str] = []
+    seen_relationship_ids: set[str] = set()
+    slide_element = getattr(slide, "element", None)
+    if slide_element is None:
+        slide_element = getattr(slide, "_element", None)
+    if slide_element is None:
+        return blocks
+    for graphic_data in slide_element.iter(f"{{{DRAWINGML_NS}}}graphicData"):
+        if graphic_data.get("uri") != CHARTEX_URI:
+            continue
+        relationship_id = _chart_reference_id(graphic_data)
+        if relationship_id and (
+            relationship_id in emitted_relationship_ids
+            or relationship_id in seen_relationship_ids
+        ):
+            continue
+        if relationship_id:
+            seen_relationship_ids.add(relationship_id)
+
+        name = "ChartEx chart"
+        current = graphic_data
+        while current is not None:
+            name_element = current.find(f".//{{{PRESENTATIONML_NS}}}cNvPr")
+            if name_element is not None and name_element.get("name"):
+                name = name_element.get("name")
+                break
+            current = current.getparent() if hasattr(current, "getparent") else None
+        chart_name = normalize_text(str(name)).replace("\n", " ") or "ChartEx chart"
+        header = f"> [Chart] {chart_name} — ChartEx"
+        blocks.append(_chart_data_unavailable(header, "unsupported ChartEx data model"))
+    return blocks
 
 
 def _image_part_for_shape(shape: object) -> object | None:
@@ -787,6 +1075,7 @@ def convert_presentation_to_markdown(
             if diagram.get("shape_id") is not None
         }
         emitted_diagram_ids: set[str] = set()
+        emitted_chart_relationship_ids: set[str] = set()
         for item in iter_leaf_shapes(slide.shapes):
             shape = item.shape
 
@@ -843,10 +1132,31 @@ def convert_presentation_to_markdown(
                     continue
 
             if getattr(shape, "has_chart", False):
+                shape_element = getattr(shape, "element", None)
+                if shape_element is None:
+                    shape_element = getattr(shape, "_element", None)
+                relationship_id = (
+                    _chart_reference_id(shape_element)
+                    if shape_element is not None
+                    else None
+                )
+                if relationship_id:
+                    emitted_chart_relationship_ids.add(relationship_id)
                 try:
                     blocks.append(chart_to_markdown(shape.chart, getattr(shape, "name", "Chart")))
-                except (ValueError, AttributeError, KeyError):
-                    blocks.append(f"> [Chart] {getattr(shape, 'name', 'Chart')}")
+                except (ValueError, TypeError, AttributeError, KeyError) as exc:
+                    raw_name = getattr(shape, "name", "Chart")
+                    name = normalize_text("" if raw_name is None else str(raw_name)) or "Chart"
+                    blocks.append(
+                        _chart_data_unavailable(
+                            f"> [Chart] {name}",
+                            f"chart read failed ({type(exc).__name__})",
+                        )
+                    )
+
+        blocks.extend(
+            _unexposed_chartex_markdown(slide, emitted_chart_relationship_ids)
+        )
 
         for diagram in slide_diagrams:
             if str(diagram.get("diagram_id")) in emitted_diagram_ids:

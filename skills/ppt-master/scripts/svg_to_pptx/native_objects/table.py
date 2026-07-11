@@ -7,7 +7,7 @@ from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.theme_colors import ThemeColorSpec, color_node_xml
-from ..drawingml.utils import _xml_escape
+from ..drawingml.utils import _xml_escape, detect_text_lang
 from .chart_style import _font_face_xml
 from .marker_common import (
     TABLE_URI,
@@ -32,17 +32,20 @@ def _table_text_run(
     bold: bool | None,
     font_size: int | None,
     font_face: str | None,
+    language: str | None,
     theme_color_spec: ThemeColorSpec | None,
 ) -> str:
     size_attr = f' sz="{font_size}"' if font_size is not None else ""
     bold_attr = f' b="{_bool_attr(bold)}"' if bold is not None else ""
+    resolved_language = language or detect_text_lang(text)
+    language_attr = f' lang="{_xml_escape(resolved_language)}"'
     color_xml = (
         f'<a:solidFill>{color_node_xml(color, theme_color_spec, "text")}</a:solidFill>'
         if color else ""
     )
     space_attr = ' xml:space="preserve"' if text != text.strip() else ""
     return (
-        f'<a:r><a:rPr lang="en-US"{size_attr}{bold_attr}>'
+        f'<a:r><a:rPr{language_attr}{size_attr}{bold_attr}>'
         f'{color_xml}'
         f'{_font_face_xml(font_face)}'
         "</a:rPr>"
@@ -397,6 +400,11 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
     band_fill = _clean_hex(style.get("band_fill"), "#F3F6FA")
     font_face = str(style["font_family"]) if style.get("font_family") else None
     body_font_size = _font_size_hpt(style.get("font_size"), 18)
+    band_rows_enabled = _table_bool(
+        style.get("band_row"),
+        "style.band_row",
+        default=True,
+    )
     header_font_size = _font_size_hpt(
         style.get("header_font_size", style.get("font_size")),
         18,
@@ -440,7 +448,9 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 fill = _clean_hex(
                     cell_data.get("fill"),
                     header_fill if is_header else (
-                        band_fill if row_idx % 2 == 0 and row_idx else body_fill
+                        band_fill
+                        if band_rows_enabled and row_idx % 2 == 0 and row_idx
+                        else body_fill
                     ),
                 )
                 color = _clean_hex(
@@ -492,6 +502,10 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
                 bold=bold,
                 font_size=cell_font_size,
                 font_face=font_face,
+                language=(
+                    str(cell_data.get("lang") or style.get("lang") or "").strip()
+                    or None
+                ),
                 theme_color_spec=ctx.theme_color_spec,
             )
             cells_xml.append(
@@ -507,7 +521,7 @@ def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str
 
     shape_id = ctx.next_id()
     first_row = _bool_attr(header_rows > 0)
-    band_row = _bool_attr(_table_bool(style.get("band_row"), "style.band_row", default=True))
+    band_row = _bool_attr(band_rows_enabled)
     table_style_id = style.get("table_style_id")
     if table_style_id is None and not preserve_source_style:
         table_style_id = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"

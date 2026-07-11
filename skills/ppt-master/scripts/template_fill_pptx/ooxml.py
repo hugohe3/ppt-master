@@ -75,6 +75,13 @@ def _read_xml(zf: zipfile.ZipFile, name: str) -> ET.Element:
 
 
 def _xml_bytes(root: ET.Element) -> bytes:
+    root_namespace = root.tag[1:].split("}", 1)[0] if root.tag.startswith("{") else ""
+    if root_namespace in {REL_NS, CT_NS}:
+        # OPC relationship/content-type roots conventionally use the default
+        # namespace. ElementTree's global prefix registry can be changed while
+        # parsing source parts; restore the package-root form before writing so
+        # strict consumers such as LibreOffice accept the generated package.
+        ET.register_namespace("", root_namespace)
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 

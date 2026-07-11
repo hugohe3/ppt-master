@@ -5,6 +5,7 @@ from __future__ import annotations
 import unicodedata
 from typing import Any
 
+from .edit_safety import _is_verified_category_capability
 from .selectors import (
     _chart_selectors,
     _replacement_selectors,
@@ -53,6 +54,78 @@ def _chart_lookup(library: dict[str, Any]) -> dict[tuple[int, str], dict[str, An
             if chart.get("shape_name"):
                 lookup[(slide_index, f"shape_name:{chart['shape_name']}")] = chart
     return lookup
+
+
+def _table_cell_lookup(table: dict[str, Any]) -> dict[tuple[int, int], dict[str, Any]]:
+    lookup: dict[tuple[int, int], dict[str, Any]] = {}
+    for row in table.get("rows", []):
+        for cell in row.get("cells", []):
+            if not isinstance(cell, dict):
+                continue
+            try:
+                key = (int(cell.get("row", -1)), int(cell.get("col", -1)))
+            except (TypeError, ValueError):
+                continue
+            lookup[key] = cell
+    return lookup
+
+
+def _table_merge_slave_lookup(
+    table: dict[str, Any],
+) -> dict[tuple[int, int], dict[str, int] | None]:
+    lookup: dict[tuple[int, int], dict[str, int] | None] = {}
+    topology = table.get("merge_topology")
+    if isinstance(topology, dict):
+        for slave in topology.get("slave_cells", []):
+            if not isinstance(slave, dict):
+                continue
+            try:
+                key = (int(slave.get("row", -1)), int(slave.get("col", -1)))
+            except (TypeError, ValueError):
+                continue
+            anchor = slave.get("anchor")
+            lookup[key] = anchor if isinstance(anchor, dict) else None
+
+    for key, cell in _table_cell_lookup(table).items():
+        if cell.get("is_merge_slave") is True or cell.get("merge_role") == "slave":
+            anchor = cell.get("merge_anchor")
+            lookup.setdefault(key, anchor if isinstance(anchor, dict) else None)
+    return lookup
+
+
+def _chart_edit_capability_review(
+    chart: dict[str, Any],
+) -> tuple[tuple[str, str] | None, list[tuple[str, str]]]:
+    capability = chart.get("edit_capability")
+    if not isinstance(capability, dict):
+        return None, [
+            (
+                "chart_edit_capability_unknown",
+                "chart edit capability is missing; runtime will inspect the actual "
+                "chart XML before mutation, and re-running template analysis is recommended",
+            )
+        ]
+    if capability.get("supported") is not True:
+        return (
+            str(capability.get("code") or "chart_edit_capability_unknown"),
+            str(capability.get("message") or "chart edit capability is unsupported"),
+        ), []
+    if not _is_verified_category_capability(capability):
+        return (
+            "chart_edit_capability_unknown",
+            "chart edit capability is not the verified single-plot c:cat/c:val model",
+        ), []
+
+    capability_warnings: list[tuple[str, str]] = []
+    raw_warnings = capability.get("warnings")
+    if isinstance(raw_warnings, list):
+        for item in raw_warnings:
+            if not isinstance(item, dict):
+                continue
+            code = str(item.get("code") or "chart_edit_category_flattened")
+            message = str(item.get("message") or "chart categories will be flattened")
+            capability_warnings.append((code, message))
+    return None, capability_warnings
 
 
 def _visual_width(text: str) -> float:
@@ -339,10 +412,18 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 continue
             row_count = int(table.get("row_count") or 0)
             column_count = int(table.get("column_count") or 0)
+            table_cells = _table_cell_lookup(table)
+            merge_slaves = _table_merge_slave_lookup(table)
             for cell in cells:
                 row = int(cell.get("row", -1))
                 col = int(cell.get("col", -1))
-                if row < 0 or col < 0 or row >= row_count or col >= column_count:
+                if (
+                    row < 0
+                    or col < 0
+                    or row >= row_count
+                    or col >= column_count
+                    or (table_cells and (row, col) not in table_cells)
+                ):
                     results.append(
                         {
                             "status": "ERROR",
@@ -351,6 +432,32 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                             "source_slide": source_slide,
                             "selector": selectors[0] if selectors else "",
                             "message": f"table cell out of bounds: row={row} col={col}",
+                        }
+                    )
+                    summary["error"] += 1
+                    continue
+                if (row, col) in merge_slaves:
+                    anchor = merge_slaves[(row, col)]
+                    anchor_hint = ""
+                    if anchor is not None:
+                        anchor_hint = (
+                            f"; edit merge anchor row={anchor.get('row')} "
+                            f"col={anchor.get('col')} instead"
+                        )
+                    results.append(
+                        {
+                            "status": "ERROR",
+                            "code": "table_cell_is_merge_slave",
+                            "plan_slide": slide_index,
+                            "source_slide": source_slide,
+                            "selector": selectors[0] if selectors else "",
+                            "table_id": table.get("table_id"),
+                            "row": row,
+                            "col": col,
+                            "message": (
+                                f"table cell row={row} col={col} is a merged-cell slave"
+                                f"{anchor_hint}"
+                            ),
                         }
                     )
                     summary["error"] += 1
@@ -397,23 +504,35 @@ def check_plan(library: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
                 )
                 summary["error"] += 1
                 continue
-            if len(chart.get("plot_types") or []) > 1:
+            capability_error, capability_warnings = _chart_edit_capability_review(chart)
+            if capability_error is not None:
+                error_code, error_message = capability_error
                 results.append(
                     {
                         "status": "ERROR",
-                        "code": "chart_combo_unsupported",
+                        "code": error_code,
                         "plan_slide": slide_index,
                         "source_slide": source_slide,
                         "selector": selectors[0] if selectors else "",
                         "chart_id": chart.get("chart_id"),
-                        "message": (
-                            "template-fill chart edits do not support multi-plot / combination charts; "
-                            "use beautify/main pipeline to redraw the chart, or leave the native chart untouched"
-                        ),
+                        "message": error_message,
                     }
                 )
                 summary["error"] += 1
                 continue
+            for warning_code, warning_message in capability_warnings:
+                results.append(
+                    {
+                        "status": "WARN",
+                        "code": warning_code,
+                        "plan_slide": slide_index,
+                        "source_slide": source_slide,
+                        "selector": selectors[0] if selectors else "",
+                        "chart_id": chart.get("chart_id"),
+                        "message": warning_message,
+                    }
+                )
+                summary["warn"] += 1
             categories = chart_edit.get("categories", [])
             series = chart_edit.get("series", [])
             if not isinstance(categories, list) or not isinstance(series, list) or not series:

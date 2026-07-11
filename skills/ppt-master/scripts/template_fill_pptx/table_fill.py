@@ -8,6 +8,7 @@ from __future__ import annotations
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from .edit_safety import _table_cell_merge_info
 from .ooxml import NS, _shape_identity, _table_containers
 from .selectors import _table_cell_text, _table_selectors
 from .text_fill import _set_container_text
@@ -32,6 +33,7 @@ def _apply_table_edits_to_slide(
 ) -> None:
     maps = _table_key_maps(slide_root, source_slide)
     errors: list[str] = []
+    pending_edits: list[tuple[ET.Element, str]] = []
     for table_edit in table_edits:
         selectors = _table_selectors(table_edit)
         table_frame = next((maps[key] for key in selectors if key in maps), None)
@@ -54,6 +56,16 @@ def _apply_table_edits_to_slide(
             if col_index < 0 or col_index >= len(row_cells):
                 errors.append(f"{selectors[0] if selectors else '<table>'} row={row_index} col={col_index}")
                 continue
-            _set_container_text(row_cells[col_index], _table_cell_text(cell_edit))
+            target_cell = row_cells[col_index]
+            if _table_cell_merge_info(target_cell)["is_merge_slave"]:
+                target = selectors[0] if selectors else "<table>"
+                errors.append(
+                    f"{target} row={row_index} col={col_index} is a merged-cell slave "
+                    "[table_cell_is_merge_slave]; edit the merge anchor instead"
+                )
+                continue
+            pending_edits.append((target_cell, _table_cell_text(cell_edit)))
     if errors:
         raise RuntimeError(f"Invalid table edit target(s) on slide {source_slide}: {'; '.join(errors)}")
+    for target_cell, text in pending_edits:
+        _set_container_text(target_cell, text)

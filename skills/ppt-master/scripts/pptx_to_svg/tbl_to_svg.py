@@ -288,11 +288,21 @@ def _build_cell_grid(rows: list[ET.Element], col_count: int) -> list[list[_CellS
     grid: list[list[_CellSlot | None]] = [[None] * col_count for _ in rows]
 
     for r, row in enumerate(rows):
+        row_cells = row.findall("a:tc", NS)
+        # PowerPoint writes one physical <a:tc> for every grid column, including
+        # explicit hMerge/vMerge continuation cells. In that canonical form the
+        # physical index is the grid column; advancing by gridSpan would consume
+        # the continuation cell twice and shift every following cell left.
+        explicit_grid = len(row_cells) >= col_count
         c = 0
-        for tc in row.findall("a:tc", NS):
-            # Skip already-occupied slots from a row above's rowSpan anchor.
-            while c < col_count and grid[r][c] is not None:
-                c += 1
+        for physical_col, tc in enumerate(row_cells):
+            if explicit_grid:
+                c = physical_col
+            else:
+                # Retain best-effort support for compact/non-canonical rows that
+                # omit explicit merge continuation cells.
+                while c < col_count and grid[r][c] is not None:
+                    c += 1
             if c >= col_count:
                 break
 
@@ -302,10 +312,8 @@ def _build_cell_grid(rows: list[ET.Element], col_count: int) -> list[list[_CellS
             v_merge = ooxml_bool(tc.attrib.get("vMerge"))
 
             if h_merge or v_merge:
-                # This cell is a merge slave; leave the slot tied to the anchor
-                # if one was already placed there, else mark as dropped placeholder.
-                if grid[r][c] is None:
-                    grid[r][c] = _CellSlot(element=tc, is_dropped=True)
+                # Merge slaves are physical cells but have no independent paint.
+                grid[r][c] = _CellSlot(element=tc, is_dropped=True)
                 c += 1
                 continue
 
@@ -326,7 +334,7 @@ def _build_cell_grid(rows: list[ET.Element], col_count: int) -> list[list[_CellS
                         grid[rr][cc] = _CellSlot(
                             element=tc, is_dropped=True,
                         )
-            c += slot.col_span
+            c += 1 if explicit_grid else slot.col_span
 
     return grid
 
