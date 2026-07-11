@@ -192,7 +192,7 @@ The plan structure:
 | `layout_rationale` | Human review aid for page selection. Include `layout_pattern`, `why_fit`, and `risk`; it is not a mechanical checker gate. |
 | `accepted_warnings` | Optional audit trail for warnings the user or agent explicitly accepts. `check-plan` warnings remain non-blocking; errors must be fixed. |
 | `notes` | Optional spoken speaker notes for the filled slide — see **Speaker notes** below; write prose, not a copy of the on-slide text |
-| `transition` | Optional per-slide page transition; overrides the `apply --transition` default. Accepts an effect name (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`), `none` to strip it, or `{ "effect": "push", "duration": 0.6 }` |
+| `transition` | Optional per-slide page transition; overrides the `apply --transition` default. Accepts an effect name (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`), `none` to remove the visual effect, `keep` to preserve the source, or an object such as `{ "effect": "push", "duration": 0.6, "advance_after": 5 }` |
 | `replacements` | Target by `slot_id` whenever possible; `shape_id` and `shape_name` are fallback selectors |
 | `table_edits` | Optional native table cell edits; target by `table_id` whenever possible and use zero-based `row` / `col` |
 | `chart_edits` | Optional native chart data edits; target by `chart_id`, set `categories`, and provide one or more `series` |
@@ -267,7 +267,7 @@ Run:
 python3 skills/ppt-master/scripts/template_fill_pptx.py apply "<project_dir>/sources/<source.pptx>" "<project_dir>/analysis/fill_plan.json" -o "<project_dir>/exports/<output.pptx>"
 ```
 
-By default `apply` gives every cloned slide a `fade` transition (`0.5s`), because most native templates ship an empty `<p:transition/>` that renders as *no* motion. Override the default with `--transition <effect>` (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`) and `--transition-duration <seconds>`; pass `--transition none` for no motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field in the plan overrides whatever the CLI selects for that slide.
+By default `apply` gives every cloned slide a `fade` transition (`0.5s`), preserving the v1 route contract. Override it with `--transition <effect>` (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random`) and `--transition-duration <seconds>`; pass `--transition none` for no visual motion, or `--transition keep` to preserve each source slide's existing transition unchanged. A per-slide `transition` field overrides the CLI. `advance_after` keeps click advance enabled and adds timed advance; it also works with `none` (timing-only transition) and `keep` (source effect preserved, Choice/Fallback timing updated together).
 
 `apply` appends a timestamp automatically. For example, `-o "<project_dir>/exports/demo.pptx"` writes `demo_YYYYMMDD_HHMMSS.pptx`. If the filename already ends with `_YYYYMMDD_HHMMSS`, it is left unchanged.
 
@@ -278,12 +278,12 @@ The script:
 | Clones selected source slides | Original slide design, relationships, images, layouts, and animations are preserved where PowerPoint supports them |
 | Replaces text nodes | Text frames remain editable in PowerPoint |
 | Writes `notes` fields | Speaker notes are embedded as native PowerPoint notes slides |
-| Applies `--transition` / per-slide `transition` | Populates each slide's `<p:transition>` with a native PowerPoint page transition |
+| Applies `--transition` / per-slide `transition` | Applies the requested visual-transition and slide-advance policy; `keep` may preserve no carrier and `none` may remove it |
 | Rebuilds presentation slide list | Output deck contains only the planned slide sequence |
 | Adds timestamp to PPTX filename | Matches the main SVG-to-PPTX export convention |
 | Drops orphaned source parts | Output carries only the selected pages and the layouts / media / charts they still reference (reachability prune) |
 
-**Animation policy**: Template-fill preserves each cloned slide's existing object animation XML (the SVG pipeline's generated object animation defaults are not applied here). Page transitions are the one motion layer this workflow writes directly, and `apply` adds a `fade` transition by default so a filled deck is never left with the template's empty no-motion transitions; change it with `apply --transition` / a per-slide `transition` field, or opt out with `--transition keep` (preserve source) or `--transition none`. If the user asks to change object-level animation order / timing / effects, treat that as a separate direct-PPTX animation customization task.
+**Animation policy**: Template-fill preserves each cloned slide's existing object animation XML (the SVG pipeline's generated object animation defaults are not applied here). Page transitions are the one motion layer this workflow writes directly, and `apply` adds a `fade` transition by default; change it with `apply --transition` / a per-slide `transition` field, or opt out with `--transition keep` (preserve source) or `--transition none`. `keep` preserves direct and `mc:AlternateContent` transition effects without converting unknown effects to `fade`; explicit replacement removes the old logical carrier before writing one new carrier. If the user asks to change object-level animation order / timing / effects, treat that as a separate direct-PPTX animation customization task.
 
 ---
 

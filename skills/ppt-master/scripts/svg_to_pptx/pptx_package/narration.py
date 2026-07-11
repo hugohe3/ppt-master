@@ -8,6 +8,13 @@ import re
 import subprocess
 from pathlib import Path
 
+from pptx_transitions import (
+    AdvanceUpdate,
+    EnterUpdate,
+    apply_slide_motion_xml,
+    read_slide_transition_xml,
+)
+
 
 MEDIA_REL_TYPE = "http://schemas.microsoft.com/office/2007/relationships/media"
 AUDIO_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
@@ -193,6 +200,12 @@ def inject_narration(
       </p:par>
     </p:tnLst>
   </p:timing>'''
+        if "<p:extLst" in slide_xml:
+            return slide_xml.replace(
+                "<p:extLst",
+                timing_xml + "\n  <p:extLst",
+                1,
+            )
         return slide_xml.replace("</p:sld>", timing_xml + "\n</p:sld>", 1)
 
     pattern = re.compile(r'(<p:cTn\s+id="1"[^>]*>\s*<p:childTnLst>)', re.S)
@@ -209,28 +222,20 @@ def apply_recorded_timing(
     transition_effect: str | None = "fade",
 ) -> str:
     """Set slide auto-advance timing so exported video follows narration length."""
-    adv_ms = max(1, int(advance_after * 1000))
-    dur_ms = max(1, int(transition_duration * 1000))
-
-    transition_match = re.search(r"<p:transition\b[^>]*>", slide_xml)
-    if transition_match:
-        tag = transition_match.group(0)
-        is_self_closing = tag.rstrip().endswith("/>")
-        base_tag = tag.rstrip()
-        if is_self_closing:
-            base_tag = re.sub(r"\s*/>$", ">", base_tag, count=1)
-        if "advTm=" in base_tag:
-            new_tag = re.sub(r'\sadvTm="[^"]*"', f' advTm="{adv_ms}"', base_tag, count=1)
-        else:
-            new_tag = base_tag[:-1] + f' advTm="{adv_ms}">'
-        if is_self_closing:
-            new_tag = new_tag[:-1] + "/>"
-        return slide_xml[:transition_match.start()] + new_tag + slide_xml[transition_match.end():]
-
-    effect = transition_effect or "fade"
-    transition_xml = f'''  <p:transition p14:dur="{dur_ms}" xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" advTm="{adv_ms}">
-    <p:{effect}/>
-  </p:transition>'''
-    if "<p:timing>" in slide_xml:
-        return slide_xml.replace("<p:timing>", transition_xml + "\n  <p:timing>", 1)
-    return slide_xml.replace("</p:sld>", transition_xml + "\n</p:sld>", 1)
+    summary = read_slide_transition_xml(slide_xml)
+    if summary.logical_count:
+        enter = EnterUpdate(policy="preserve")
+    elif transition_effect is None or transition_effect == "none":
+        enter = EnterUpdate(policy="none")
+    else:
+        enter = EnterUpdate(
+            policy="replace",
+            effect=transition_effect,
+            duration=transition_duration,
+        )
+    updated, _uses_timings = apply_slide_motion_xml(
+        slide_xml,
+        enter=enter,
+        advance=AdvanceUpdate(mode="narration", after=advance_after),
+    )
+    return updated

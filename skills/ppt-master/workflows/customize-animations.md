@@ -99,7 +99,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 | Effect | Behavior |
 |---|---|
-| `none` | Disable page transition |
+| `none` | Remove visual page transition; timed advance may remain |
 | `fade` | Neutral default for technical decks |
 | `push` | Directional slide entry |
 | `wipe` | Directional reveal |
@@ -112,9 +112,9 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 
 | Field | Behavior |
 |---|---|
-| `effect` | One supported page transition effect |
-| `duration` | Transition duration in seconds |
-| `auto_advance` | Optional seconds before automatic slide advance |
+| `effect` | One supported page transition effect; `none` removes only the visual effect |
+| `duration` | Finite transition duration in seconds; must be greater than zero |
+| `auto_advance` | Optional finite non-negative seconds before automatic slide advance; click remains enabled, and this field is valid with `effect: none` |
 
 ### 3.2 Supported In-Slide Animations
 
@@ -251,7 +251,7 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path>
 ```
 
-**Validation**: the exported native PPTX should reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`.
+**Validation**: the exported native PPTX should reflect the object-level overrides. `--animation none` still disables all per-element animation and overrides `animations.json`. Unknown transition effects, NaN/Infinity, non-positive transition duration, and negative automatic advance fail validation; they never fall back to `fade`. A `defaults.transition.auto_advance` value participates in normal defaults resolution.
 
 ---
 

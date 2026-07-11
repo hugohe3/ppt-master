@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 import json
+import math
 import shutil
 import argparse
 from datetime import datetime
@@ -15,6 +16,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from pptx_transitions import validate_seconds  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -42,7 +44,11 @@ from .template_structure import (
     parse_template_slides,
     template_lock_errors,
 )
-from ..animation_config import load_animation_config, validate_animation_config
+from ..animation_config import (
+    load_animation_config,
+    validate_animation_config,
+    validate_transition_config,
+)
 
 try:
     from pptx_animations import ANIMATIONS as _ANIMATIONS
@@ -236,13 +242,21 @@ Recorded narration:
             number = float(value)
         except ValueError as exc:
             raise argparse.ArgumentTypeError(f"must be a number: {value}") from exc
+        if not math.isfinite(number):
+            raise argparse.ArgumentTypeError("must be finite")
         if number < 0:
             raise argparse.ArgumentTypeError("must be non-negative")
         return number
 
+    def positive_float(value: str) -> float:
+        number = non_negative_float(value)
+        if number <= 0:
+            raise argparse.ArgumentTypeError("must be greater than zero")
+        return number
+
     parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
-                        help='Page transition effect (default: fade, use "none" to disable)')
-    parser.add_argument('--transition-duration', type=non_negative_float, default=None,
+                        help='Page transition effect (default: fade; "none" removes visual motion)')
+    parser.add_argument('--transition-duration', type=positive_float, default=None,
                         help='Transition duration in seconds (default: 0.4)')
     parser.add_argument('--auto-advance', type=non_negative_float, default=None,
                         help='Auto-advance interval in seconds (default: manual advance)')
@@ -283,7 +297,7 @@ Recorded narration:
                         help='Prepare PowerPoint recorded timings and narrations from a complete audio '
                              'directory. Default-flow exports get the _narrated name suffix '
                              '(<project>_<ts>_narrated.pptx) to tell them apart from silent exports.')
-    parser.add_argument('--narration-padding', type=float, default=0.5,
+    parser.add_argument('--narration-padding', type=non_negative_float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
 
     args = parser.parse_args(argv)
@@ -533,6 +547,15 @@ Recorded narration:
     except Exception as exc:
         print(f"Error: Failed to load animation config: {exc}")
         return 1
+    transition_config_errors = (
+        validate_transition_config(animation_config)
+        if animation_config
+        else []
+    )
+    if transition_config_errors:
+        for error in transition_config_errors:
+            print(f"Error: {error}", file=sys.stderr)
+        return 1
     if animation_config and verbose:
         config_label = args.animation_config or str(project_path / 'animations.json')
         print(f"  Animation config: {config_label}")
@@ -540,7 +563,7 @@ Recorded narration:
             print(f"  [warn] {warning}")
 
     defaults = animation_config.get('defaults', {}) if animation_config else {}
-    transition_defaults = defaults.get('transition', {}) if isinstance(defaults, dict) else {}
+    transition_defaults = _as_dict(defaults.get('transition')) if isinstance(defaults, dict) else {}
     animation_defaults = defaults.get('animation', {}) if isinstance(defaults, dict) else {}
 
     transition_arg = args.transition
@@ -550,11 +573,30 @@ Recorded narration:
         else transition_defaults.get('effect', 'fade')
     )
     transition = None if transition_effect == 'none' else transition_effect
-    transition_duration = (
-        args.transition_duration
-        if args.transition_duration is not None
-        else float(transition_defaults.get('duration', 0.4))
-    )
+    try:
+        transition_duration = validate_seconds(
+            (
+                args.transition_duration
+                if args.transition_duration is not None
+                else transition_defaults.get('duration', 0.4)
+            ),
+            "transition duration",
+            allow_zero=False,
+        )
+        auto_advance = (
+            args.auto_advance
+            if args.auto_advance is not None
+            else transition_defaults.get('auto_advance')
+        )
+        if auto_advance is not None:
+            auto_advance = validate_seconds(
+                auto_advance,
+                "transition auto_advance",
+                allow_zero=True,
+            )
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
     animation_arg = args.animation
     animation_effect = (
@@ -635,7 +677,7 @@ Recorded narration:
         verbose=verbose,
         transition=transition,
         transition_duration=transition_duration,
-        auto_advance=args.auto_advance,
+        auto_advance=auto_advance,
         notes=notes,
         enable_notes=enable_notes,
         animation=animation,
@@ -679,7 +721,7 @@ Recorded narration:
             ),
             **shared_kwargs,
         )
-    except TemplateStructureError as exc:
+    except (TemplateStructureError, ValueError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
 

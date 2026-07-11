@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import mimetypes
 import os
 import posixpath
@@ -15,7 +16,7 @@ import tempfile
 import uuid
 import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -25,6 +26,16 @@ from xml.sax.saxutils import escape
 
 from pptx import Presentation
 from pptx.util import Emu
+
+from pptx_transitions import (
+    TRANSITIONS,
+    create_transition_xml,
+    normalize_transition_effect,
+    set_directory_use_timings,
+    validate_generated_transition_xml,
+    validate_pptx_transition_package,
+    validate_seconds,
+)
 
 from ..drawingml.converter import convert_svg_to_slide_shapes
 from ..drawingml.theme_colors import (
@@ -69,7 +80,6 @@ from .narration import (
     probe_audio_duration,
 )
 from .slide_xml import (
-    ANIMATIONS_AVAILABLE, TRANSITIONS,
     create_slide_xml_with_svg, create_slide_rels_xml,
 )
 from .template_structure import (
@@ -82,15 +92,12 @@ from .template_structure import (
     parse_template_slides,
 )
 
-# Re-import create_transition_xml only if available
 try:
     from pptx_animations import (
-        create_transition_xml,
         create_sequence_timing_xml,
         pick_animation_effect,
     )
 except ImportError:
-    create_transition_xml = None
     create_sequence_timing_xml = None
     pick_animation_effect = None
 
@@ -2762,14 +2769,21 @@ def _to_float(value: Any, default: float) -> float:
         number = float(value)
     except (TypeError, ValueError):
         return default
-    return number if number >= 0 else default
+    return number if math.isfinite(number) and number >= 0 else default
 
 
 def _slide_config(animation_config: dict[str, Any] | None, svg_stem: str) -> dict[str, Any]:
     if not animation_config:
         return {}
-    slides = _as_dict(animation_config.get('slides'))
-    return _as_dict(slides.get(svg_stem))
+    slides_value = animation_config.get('slides', {})
+    if not isinstance(slides_value, dict):
+        raise ValueError('animations.json field "slides" must be an object')
+    slide_value = slides_value.get(svg_stem, {})
+    if not isinstance(slide_value, dict):
+        raise ValueError(
+            f'animations.json slide "{svg_stem}" must be an object'
+        )
+    return slide_value
 
 
 def _slide_transition_settings(
@@ -2779,15 +2793,30 @@ def _slide_transition_settings(
     auto_advance: float | None,
     cli_overrides: dict[str, bool],
 ) -> tuple[str | None, float, float | None]:
-    trans_cfg = _as_dict(slide_cfg.get('transition'))
+    trans_value = slide_cfg.get('transition', {})
+    if not isinstance(trans_value, dict):
+        raise ValueError('animations.json slide transition must be an object')
+    trans_cfg = trans_value
     effect = transition
     if not cli_overrides.get('transition') and 'effect' in trans_cfg:
-        cfg_effect = str(trans_cfg.get('effect'))
-        effect = None if cfg_effect == 'none' else cfg_effect
+        raw_effect = trans_cfg['effect']
+        if not isinstance(raw_effect, str):
+            raise ValueError('animations.json transition effect must be a string')
+        cfg_effect = normalize_transition_effect(raw_effect)
+        effect = cfg_effect
     if not cli_overrides.get('transition_duration'):
-        duration = _to_float(trans_cfg.get('duration'), duration)
+        if 'duration' in trans_cfg:
+            duration = validate_seconds(
+                trans_cfg.get('duration'),
+                "transition duration",
+                allow_zero=False,
+            )
     if not cli_overrides.get('auto_advance') and 'auto_advance' in trans_cfg:
-        auto_advance = _to_float(trans_cfg.get('auto_advance'), auto_advance or 0)
+        auto_advance = validate_seconds(
+            trans_cfg.get('auto_advance'),
+            "transition auto_advance",
+            allow_zero=True,
+        )
     return effect, duration, auto_advance
 
 
@@ -3487,6 +3516,7 @@ def create_pptx_with_native_svg(
         notes_slides_created: set[int] = set()
         narration_slides_created: set[int] = set()
         audio_exts_used: set[str] = set()
+        package_uses_timings = False
         mixed_animation_offset = 0
         conversion_trace: list[dict[str, Any]] | None = [] if conversion_trace_path else None
         structure_trace: list[dict[str, Any]] | None = (
@@ -3553,16 +3583,19 @@ def create_pptx_with_native_svg(
                     # to precede <p:timing> inside <p:sld>. Both use the same
                     # </p:sld> string-replace anchor, so transition must be
                     # injected first and timing second.
-                    if slide_transition and ANIMATIONS_AVAILABLE and create_transition_xml:
-                        transition_xml = '\n' + create_transition_xml(
+                    if slide_transition is not None or slide_auto_advance is not None:
+                        transition_fragment = create_transition_xml(
                             effect=slide_transition,
                             duration=slide_transition_duration,
                             advance_after=slide_auto_advance,
                         )
-                        slide_xml = slide_xml.replace(
-                            '</p:sld>',
-                            transition_xml + '\n</p:sld>',
-                        )
+                        if transition_fragment:
+                            slide_xml = slide_xml.replace(
+                                '</p:sld>',
+                                '\n' + transition_fragment + '\n</p:sld>',
+                            )
+                        if slide_auto_advance is not None:
+                            package_uses_timings = True
 
                     if (slide_animation and slide_animation != 'none'
                             and create_sequence_timing_xml
@@ -3732,6 +3765,9 @@ def create_pptx_with_native_svg(
                     with open(rels_path, 'w', encoding='utf-8') as f:
                         f.write(rels_xml)
 
+                resolved_advance_after = slide_auto_advance
+                resolved_advance_on_click = True
+
                 # --- Process notes (shared between native and legacy mode) ---
                 notes_content = ''
                 if enable_notes:
@@ -3819,10 +3855,34 @@ def create_pptx_with_native_svg(
                             slide_xml,
                             advance_after=duration + narration_padding,
                             transition_duration=slide_transition_duration,
-                            transition_effect=slide_transition or 'fade',
+                            transition_effect=slide_transition,
                         )
+                        resolved_advance_after = duration + narration_padding
+                        resolved_advance_on_click = False
+                        package_uses_timings = True
                     slide_xml_path.write_text(slide_xml, encoding='utf-8')
                     narration_slides_created.add(slide_num)
+
+                final_slide_xml = slide_xml_path.read_text(encoding='utf-8')
+                try:
+                    resolved_motion = validate_generated_transition_xml(
+                        final_slide_xml,
+                        effect=slide_transition,
+                        duration=slide_transition_duration,
+                        advance_on_click=resolved_advance_on_click,
+                        advance_after=resolved_advance_after,
+                    )
+                except ValueError as exc:
+                    raise RuntimeError(
+                        f'Slide {slide_num} transition validation failed: {exc}'
+                    ) from exc
+
+                if conversion_trace is not None:
+                    motion_summary = asdict(resolved_motion)
+                    for trace_entry in reversed(conversion_trace):
+                        if trace_entry.get('slide_num') == slide_num:
+                            trace_entry['motion'] = motion_summary
+                            break
 
                 if verbose:
                     if use_native_shapes:
@@ -4006,6 +4066,9 @@ def create_pptx_with_native_svg(
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
 
+        if package_uses_timings:
+            set_directory_use_timings(extract_dir)
+
         rels_problems = _verify_internal_rels_targets(extract_dir)
         if rels_problems:
             details = '\n'.join(f'  - {p}' for p in rels_problems)
@@ -4028,6 +4091,15 @@ def create_pptx_with_native_svg(
                 if file_path.is_file():
                     arcname = file_path.relative_to(extract_dir)
                     zf.write(file_path, arcname)
+        try:
+            validate_pptx_transition_package(
+                temp_output_path,
+                require_use_timings=package_uses_timings,
+            )
+        except ValueError as exc:
+            raise RuntimeError(
+                f'PPTX transition package validation failed: {exc}'
+            ) from exc
         shutil.move(str(temp_output_path), str(output_path))
         permission_warnings = _relax_output_permissions(output_path)
 

@@ -43,94 +43,9 @@ import argparse
 from typing import Optional, Dict, Any
 
 from console_encoding import configure_utf8_stdio
+from pptx_transitions import TRANSITIONS, create_transition_xml
 
 configure_utf8_stdio()
-
-
-# ============================================================================
-# Transition effect definitions
-# ============================================================================
-
-TRANSITIONS: Dict[str, Dict[str, Any]] = {
-    'fade': {
-        'name': 'Fade',
-        'element': 'fade',
-        'attrs': {},
-    },
-    'push': {
-        'name': 'Push',
-        'element': 'push',
-        'attrs': {'dir': 'r'},  # Push from right
-    },
-    'wipe': {
-        'name': 'Wipe',
-        'element': 'wipe',
-        'attrs': {'dir': 'r'},  # Wipe from right
-    },
-    'split': {
-        'name': 'Split',
-        'element': 'split',
-        'attrs': {'orient': 'horz', 'dir': 'out'},
-    },
-    'strips': {
-        'name': 'Strips',
-        'element': 'strips',
-        'attrs': {'dir': 'rd'},  # Diagonal wipe from bottom-right
-    },
-    'cover': {
-        'name': 'Cover',
-        'element': 'cover',
-        'attrs': {'dir': 'r'},
-    },
-    'random': {
-        'name': 'Random',
-        'element': 'random',
-        'attrs': {},
-    },
-}
-
-def create_transition_xml(
-    effect: str = 'fade',
-    duration: float = 0.5,
-    advance_after: Optional[float] = None
-) -> str:
-    """
-    Generate a slide transition effect XML fragment
-
-    Args:
-        effect: Transition effect name (fade/push/wipe/split/strips/cover/random)
-        duration: Transition duration (seconds, precise to milliseconds)
-        advance_after: Auto-advance interval (seconds); None means manual advance
-
-    Returns:
-        A <p:transition> element string insertable into slide XML
-    """
-    if effect not in TRANSITIONS:
-        effect = 'fade'
-
-    trans_info = TRANSITIONS[effect]
-    element_name = trans_info['element']
-    attrs = trans_info['attrs']
-
-    # Build dur attribute (milliseconds, precise control via Office 2010 extension)
-    dur_ms = int(duration * 1000)
-    dur_attr = f' p14:dur="{dur_ms}" xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main"'
-
-    # Build auto-advance attribute
-    adv_attr = ''
-    if advance_after is not None:
-        adv_tm = int(advance_after * 1000)  # Convert to milliseconds
-        adv_attr = f' advTm="{adv_tm}"'
-
-    # Build effect element attributes
-    effect_attrs = ' '.join(f'{k}="{v}"' for k, v in attrs.items())
-    if effect_attrs:
-        effect_attrs = ' ' + effect_attrs
-
-    # Generate XML
-    return f'''  <p:transition{dur_attr}{adv_attr}>
-    <p:{element_name}{effect_attrs}/>
-  </p:transition>'''
 
 
 # ============================================================================

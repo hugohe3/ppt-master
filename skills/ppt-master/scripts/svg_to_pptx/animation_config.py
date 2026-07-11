@@ -12,11 +12,12 @@ from xml.etree import ElementTree as ET
 from .drawingml.utils import SVG_NS
 from .semantic_markers import is_static_page_frame
 
+from pptx_transitions import TRANSITIONS, validate_seconds
+
 try:
-    from pptx_animations import ANIMATIONS, TRANSITIONS
+    from pptx_animations import ANIMATIONS
 except ImportError:
     ANIMATIONS = {}
-    TRANSITIONS = {}
 
 
 _NON_VISUAL_TAGS = frozenset(('defs', 'title', 'desc', 'metadata', 'style'))
@@ -143,6 +144,61 @@ def _valid_transition_effect(effect: str) -> bool:
     return effect == 'none' or effect in TRANSITIONS
 
 
+def validate_transition_config(config: dict[str, Any]) -> list[str]:
+    """Return fatal transition-sidecar errors that must block export."""
+    errors: list[str] = []
+    defaults = config.get('defaults', {})
+    if not isinstance(defaults, dict):
+        errors.append('animations.json field "defaults" must be an object')
+    else:
+        errors.extend(_transition_scope_errors(defaults, 'defaults'))
+
+    slides = config.get('slides', {})
+    if not isinstance(slides, dict):
+        errors.append('animations.json field "slides" must be an object')
+        return errors
+    for slide_name, slide_cfg in slides.items():
+        if not isinstance(slide_cfg, dict):
+            errors.append(f'animations.json slide "{slide_name}" must be an object')
+            continue
+        errors.extend(
+            _transition_scope_errors(slide_cfg, f'slide "{slide_name}"')
+        )
+    return errors
+
+
+def _transition_scope_errors(scope: dict[str, Any], label: str) -> list[str]:
+    if 'transition' not in scope:
+        return []
+    transition = scope['transition']
+    if not isinstance(transition, dict):
+        return [f'animations.json {label} field "transition" must be an object']
+
+    errors: list[str] = []
+    if 'effect' in transition:
+        effect = transition['effect']
+        if not isinstance(effect, str):
+            errors.append(
+                f'animations.json {label} transition effect must be a string'
+            )
+        elif not _valid_transition_effect(effect):
+            errors.append(
+                f'animations.json {label} has unknown transition effect: {effect}'
+            )
+    for field, allow_zero in (('duration', False), ('auto_advance', True)):
+        if field not in transition:
+            continue
+        try:
+            validate_seconds(
+                transition[field],
+                f'animations.json {label} transition {field}',
+                allow_zero=allow_zero,
+            )
+        except ValueError as exc:
+            errors.append(str(exc))
+    return errors
+
+
 def validate_animation_config(
     project_path: Path,
     config: dict[str, Any] | None = None,
@@ -154,7 +210,7 @@ def validate_animation_config(
     if not config:
         return []
 
-    warnings: list[str] = []
+    warnings = validate_transition_config(config)
     targets_by_slide, anonymous_groups = scan_project_targets(project_path)
     for item in anonymous_groups:
         warnings.append(f'{item} has no id and cannot be customized in animations.json')
@@ -162,7 +218,8 @@ def validate_animation_config(
     known_slides = set(targets_by_slide)
     slides = config.get('slides', {})
     if slides and not isinstance(slides, dict):
-        return ['animations.json field "slides" must be an object']
+        warnings.append('animations.json field "slides" must be an object')
+        return list(dict.fromkeys(warnings))
 
     defaults = config.get('defaults', {})
     if isinstance(defaults, dict):
@@ -195,15 +252,10 @@ def validate_animation_config(
                 warnings.append(
                     f'animations.json group "{slide_name}/{group_id}" has unknown effect: {effect}'
                 )
-    return warnings
+    return list(dict.fromkeys(warnings))
 
 
 def _validate_scope_effects(scope: dict[str, Any], label: str, warnings: list[str]) -> None:
-    transition = scope.get('transition', {})
-    if isinstance(transition, dict):
-        effect = transition.get('effect')
-        if effect is not None and not _valid_transition_effect(str(effect)):
-            warnings.append(f'animations.json {label} has unknown transition effect: {effect}')
     animation = scope.get('animation', {})
     if isinstance(animation, dict):
         effect = animation.get('effect')
@@ -221,6 +273,13 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
     to remind the editor that deck-wide overrides exist and most pages should
     inherit them.
     """
+    transition_defaults = {'effect': 'fade', 'duration': 0.4}
+    animation_defaults = {
+        'effect': 'auto',
+        'duration': 0.4,
+        'stagger': 0.5,
+        'trigger': 'after-previous',
+    }
     targets_by_slide, _anonymous = scan_project_targets(project_path)
     slides: dict[str, Any] = {}
     for slide_name, targets in targets_by_slide.items():
@@ -229,17 +288,16 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
             if target.chrome:
                 continue
             groups[target.group_id] = {}
-        slides[slide_name] = {'groups': groups}
+        slides[slide_name] = {
+            'transition': dict(transition_defaults),
+            'animation': dict(animation_defaults),
+            'groups': groups,
+        }
     return {
         'version': 1,
         'defaults': {
-            'transition': {'effect': 'fade', 'duration': 0.4},
-            'animation': {
-                'effect': 'auto',
-                'duration': 0.4,
-                'stagger': 0.5,
-                'trigger': 'after-previous',
-            },
+            'transition': transition_defaults,
+            'animation': animation_defaults,
         },
         'slides': slides,
     }

@@ -6,7 +6,7 @@ PPT Master's exported PPTX supports **page transitions** (slide-to-slide) and **
 
 | Layer | Default | Why |
 |---|---|---|
-| Page transition | `fade`, 0.4s | Calm baseline that suits most decks |
+| Page transition | CLI: `fade`, 0.4s | Calm baseline that suits most decks; the public Python builder retains its legacy 0.5s default |
 | Per-element animation | **`none` (off)** | A page appears as a whole. Auto-firing element builds are an unsolicited "AI deck" tell, so element entrance is opt-in. Turn it on with `-a auto` (or another effect): effects map from group id (chart→wipe, card-/step-/pillar-→fly, title/takeaway→fade); image-like ids (`hero` / `figure-` / `image` / `img-` / `kpi`) cycle a richer visual pool (zoom / dissolve / circle / box / diamond / wheel) so multiple images vary across the deck; unmatched ids cycle a small fade/wipe/fly/zoom pool |
 
 To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` — no need to rerun the LLM. `-s final` is reserved for diagnostic comparison and is not a supported release source. To turn per-element animation on for the whole deck, pass `-a auto`.
@@ -28,13 +28,19 @@ python3 skills/ppt-master/scripts/animation_config.py validate <project>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
 ```
 
-Minimal sidecar:
+Single-slide sidecar excerpt (repeat the complete slide block for every SVG in `svg_output/`):
 
 ```json
 {
   "version": 1,
+  "defaults": {
+    "transition": { "effect": "fade", "duration": 0.4 },
+    "animation": { "effect": "auto", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" }
+  },
   "slides": {
     "03_market": {
+      "transition": { "effect": "fade", "duration": 0.4 },
+      "animation": { "effect": "auto", "duration": 0.4, "stagger": 0.5, "trigger": "after-previous" },
       "groups": {
         "title": { "effect": "fade", "order": 1 },
         "chart": { "effect": "wipe", "order": 2, "duration": 0.6 },
@@ -62,20 +68,25 @@ Rules:
 # Pick a different effect
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
 
-# Disable
+# Remove the visual transition
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
 
 # Auto-advance every 5 seconds (kiosk-style playback)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
+
+# Auto-advance with no visual transition
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none --auto-advance 5
 ```
 
 Available effects: `fade`, `push`, `wipe`, `split`, `strips`, `cover`, `random`.
 
 Flags:
 
-- `-t/--transition` — effect name, or `none` to disable. Default: `fade`.
+- `-t/--transition` — effect name, or `none` for no visual transition. Default: `fade`. `none` does not remove an explicitly configured automatic advance.
 - `--transition-duration` — seconds, default `0.4`.
-- `--auto-advance` — seconds; omit for presenter-controlled advance.
+- `--auto-advance` — seconds; click remains enabled, so the slide advances on click or when the timer expires. Omit for presenter-controlled advance.
+
+**Hard rule — no silent downgrade**: an unknown transition effect or invalid/non-finite duration fails export. It is never replaced by `fade`. Recorded narration keeps the resolved visual transition; `-t none --recorded-narration ...` writes narration-driven advance timing without restoring a visual effect.
 
 ## Per-Element Animations
 
@@ -103,7 +114,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
         --animation-stagger 0.7 --animation-duration 0.5
 
 # All groups animate in unison on slide entry
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a auto --animation-trigger with-previous
 ```
 
 22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus three auto-vary modes:
@@ -144,12 +155,13 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 - **Native DrawingML output only.** Page transitions and per-element animations are authored on the PPTX produced by the project converter from `svg_output/`. `svg_final/` remains a static SVG visual preview, not an animated or alternate PPTX route.
 - **Office version drift on element animations.** Effects use the `<p:animEffect filter=...>` path (vs. `presetID` lookup tables) to stay stable across Office versions. Most filters render identically in PowerPoint 2016+; older Office may downgrade some filters to plain Appear.
 - **Manual SVG shape conversion is unsupported.** Inserting an `svg_final/` page as an SVG picture does not establish element animation anchors; use the native PPTX when editable animated shapes are required.
+- **Source extension preservation.** Direct-PPTX routes preserve unknown transition `AlternateContent` when configured to keep the source. When advance timing changes, Choice and Fallback receive the same `advClick` / `advTm` values.
 
 ## Quick Reference
 
 | Goal | Command |
 |---|---|
-| Disable transitions | `-t none` |
+| Remove visual transition | `-t none` |
 | Change transition effect | `-t push` (or any from the list above) |
 | Slower transition | `--transition-duration 0.8` |
 | Auto-play | `--auto-advance 5` |
@@ -160,4 +172,7 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 | Slower per-element reveal | `--animation-duration 0.5` |
 | Wider gap in after-previous | `--animation-stagger 0.7` |
 
-See also: [`scripts/docs/svg-pipeline.md`](../scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.
+See also:
+
+- [`scripts/docs/svg-pipeline.md`](../scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.
+- [`pptx-transitions.md`](../scripts/docs/pptx-transitions.md) for the shared OOXML writer, MCE preservation, and read-back contract.
