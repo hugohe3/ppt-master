@@ -142,7 +142,7 @@ for cmd_name, script_rel in commands.items():
     script_to_cmd[script_name] = cmd_name
 
 # 需要处理的文件目录
-target_dirs = ['AGENTS.md', 'CLAUDE.md', 'skills/ppt-master/', 'docs/', 'projects/']
+target_dirs = ['AGENTS.md', 'CLAUDE.md', 'CONTRIBUTING.md', 'skills/ppt-master/', 'docs/', 'examples/', 'projects/']
 exclude_keywords = ['superpowers', 'windows-installation', 'code-style']
 
 # 收集所有目标 .md 文件

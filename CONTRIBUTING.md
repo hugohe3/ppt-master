@@ -98,7 +98,7 @@ This guide does not duplicate its required, forbidden, or conditional entries.
 Validate the affected SVG file or directory before submitting:
 
 ```bash
-python3 skills/ppt-master/scripts/svg_quality_checker.py <file_or_directory>
+uvx ppt-master svg-quality-check <file_or_directory>
 ```
 
 ## Reporting Bugs

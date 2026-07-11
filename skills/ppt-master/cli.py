@@ -58,6 +58,7 @@ COMMANDS = {
     "pptx-intake":            "pptx_intake.py",
     "beautify-identity":      "beautify_identity.py",
     "beautify-inventory":     "beautify_inventory.py",
+    "align-embed-images":     "svg_finalize/align_embed_images.py",
 }
 
 COMMAND_DESCRIPTIONS = {
@@ -108,6 +109,7 @@ COMMAND_DESCRIPTIONS = {
     "pptx-intake":            "Standard PPTX intake enrichment",
     "beautify-identity":      "Extract visual identity from PPTX",
     "beautify-inventory":     "Extract slide inventory from PPTX",
+    "align-embed-images":     "Single-pass image alignment + Base64 embedding",
 }
 
 

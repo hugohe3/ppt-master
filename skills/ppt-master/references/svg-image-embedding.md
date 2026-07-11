@@ -140,8 +140,8 @@ uvx ppt-master svg-to-pptx <project_path>
 For processing specific SVGs without the full pipeline:
 
 ```bash
-python3 scripts/svg_finalize/align_embed_images.py <svg_file>
-python3 scripts/svg_finalize/align_embed_images.py --dry-run <svg_file>
+uvx ppt-master align-embed-images <svg_file>
+uvx ppt-master align-embed-images --dry-run <svg_file>
 ```
 
 Use `finalize_svg.py --only align-images` for project-level batches. The old
