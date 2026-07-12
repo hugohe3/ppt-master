@@ -633,6 +633,12 @@ Each completed SVG MUST be a standalone, complete representation of that slide's
 
 Every newly generated page root MUST declare the locked `data-pptx-layout` and `data-pptx-layout-name`, including free-design/brand-only pages that remain in `baseline` mode. Every mapped page MUST also mark the standard placeholder slots it actually has — `title` / `subtitle` / `body` / `picture` / `slide-number` / `footer` per [`executor-base.md`](references/executor-base.md) §1.2 — and its `data-pptx-layer` marks: the deck-wide background as `master`, this layout key's static framing as `layout`. A mapped page normally ships at least its title placeholder and master-background mark, or its Layout exports as a bare frame with no insertable slots. Do not duplicate that identity with `data-pptx-page-role`; only a legacy baseline project whose whole `pptx_layouts` section is absent uses the canonical page-role marker. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
 
+**First-page gate (Mandatory)** — after the **first** SVG page, before drawing page 2:
+```bash
+python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>/svg_output/<first_page>.svg
+```
+Fix every `error` on page 1 first — structural violations are systematic, and a first-page error repeated deck-wide costs a whole-deck rewrite.
+
 **Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
@@ -647,6 +653,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```markdown
 ## ✅ Executor Phase Complete
 - [x] Live preview started before the first SVG and kept available at the reported URL
+- [x] First-page gate run after page 1 (errors fixed before page 2)
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
 - [x] Speaker notes generated at notes/total.md
