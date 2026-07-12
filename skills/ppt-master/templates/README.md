@@ -21,11 +21,11 @@ The `layouts/` directory contains pre-built page layout templates organized by d
 - **Human browsing**: [layouts/README.md](./layouts/README.md)
 - **Slim lookup (discovery only)**: [layouts/layouts_index.json](./layouts/layouts_index.json) — used to answer "what templates exist?". Step 3 triggers on an explicit directory path supplied by the user, not on names from this index.
 
-New layout/deck packages are complete workspaces. Whether created under this library or under `projects/`, they use the same `templates/`, `images/`, `icons/`, and `exports/<id>_template_preview.pptx` structure. Step 3 receives the workspace root. Existing flat library packages remain readable; flat placement alone does not imply legacy Master/Layout metadata.
+Every brand/layout/deck package uses one workspace routing contract. Whether created under this library or under `projects/`, source files live in `templates/`, bitmaps in `images/`, runtime icons in `icons/`, and on-demand review files in `exports/`. Empty optional directories are omitted, so a normal checked-in workspace has no `exports/`. Library `exports/` directories are Git-ignored, and Step 3 never copies them. Existing flat packages remain readable; flat placement alone does not imply legacy Master/Layout metadata.
 
 ## Brand Identity Presets
 
-The `brands/` directory holds brand-only templates: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Brands follow the **same explicit-path trigger rule as layout templates** — at SKILL.md Step 3 the user supplies the brand directory path to apply it; bare brand names never trigger. Both layout and brand inputs land in the same project directory (`<project_path>/templates/`). When supplied together, Step 3 fuses them into a single `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3 for the precedence table.
+The `brands/` directory holds brand-only templates: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Brands follow the **same explicit-path trigger and workspace routing as layout templates** — at SKILL.md Step 3 the user supplies the workspace root; bare brand names never trigger. `templates/`, `images/`, and `icons/` map to their matching project peers. When supplied together, Step 3 fuses them into one `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3 for the precedence table.
 
 A brand is structurally a layout template minus its page roster. Use a brand when the user wants identity locking with free page layout; use a layout template when fixed page structures are also required.
 

@@ -240,7 +240,9 @@ Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
 **Step 1 — Prepare Reference Material**
 
-The recommended input is the original `.pptx`. PPT Master extracts theme identity, the complete Master/Layout topology, placeholder metadata, and reusable assets, then reconstructs every source Master and Layout as complete structured SVG pages. Source Master/Layout groups are flattened object by object into direct atomic layer elements; supported appearance, parent relationships, picker names, placeholder type/index/bounds, and stacking order are retained, but the source group-editing hierarchy is not. When that template is used, `adaptive` may create a new explicit Layout under the retained Master; `strict` preserves the selected Master/Layout/slot contract.
+The recommended input is the original `.pptx`. PPT Master extracts theme identity, declared Master/Layout topology, placeholder metadata, native-shape evidence, and reusable assets. `standard` and `fidelity` use the source as visual reference and author a new SVG roster plus a new Master/Layout/slot system; they neither preserve nor distill source topology. `mirror` instead restores source slide order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`.
+
+Large imported SVGs may contain native-shape metadata, hidden carriers, and preview fingerprints. That lossless representation stays in the temporary analysis workspace, while the model reads a lightweight inspection projection. The projection is never an export source. `standard` / `fidelity` use compact canonical metadata. Mirror materializes from the lossless source, reuses only metadata already supported by the converter on unchanged Slide-local/slot objects, and keeps an SVG fallback for unsupported or edited objects.
 
 If no source PPTX exists, screenshots of the key page types still work — cover, TOC, chapter, content, and closing — but geometry, fonts, and inheritance must then be inferred visually.
 
@@ -252,13 +254,13 @@ Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Ma
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")
 - Category preference (`brand` / `general` / `scenario` / `government` / `special`)
 - Canvas format, if not the default 16:9
-- Output scope: indexed `library` (default) or one already initialized `project`; both use the same complete workspace shape
+- Output scope: indexed `library` (default) or one already initialized `project`; both use the same workspace routing and omit empty optional asset directories
 
 You don't need to supply every detail upfront — the AI agent will ask follow-up questions to fill in anything missing (output scope, template ID, theme mode, etc.).
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, validating the template, and exporting `exports/<id>_template_preview.pptx` for visual review in PowerPoint. Both scopes contain the same `templates/`, `images/`, `icons/`, and `exports/` core: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Give that workspace root to Step 3. Older flat packages with `design_spec.md` at the root remain compatible, and flat placement alone is not a reason to run structure restoration. Because the new workspace shapes match, a complete result can be migrated or reused between the two locations without restructuring it.
+The AI agent will handle the rest — analyzing your references, building the layout definitions, and validating the template. If you request PowerPoint review, it also generates `exports/<id>_template_preview.pptx` on demand. Both scopes require `templates/` and use optional `images/`, `icons/`, and `exports/`: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Empty optional directories are omitted. Give that workspace root to Step 3; it never copies `exports/`, and library review exports are Git-ignored. Older flat packages with `design_spec.md` at the root remain compatible, and flat placement alone is not a reason to run structure restoration.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 

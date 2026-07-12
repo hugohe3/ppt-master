@@ -97,8 +97,8 @@ Use this table before reasoning about implementation details. Most failed runs s
 | Raw PPTX template plus new material/topic | `template-fill-pptx` | clone/fill native slides; no SVG generation |
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | `beautify-pptx` | regenerate through SVG; content and pagination are locked |
 | Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | `native-enhance-pptx` | direct OOXML patch; no design regeneration |
-| User wants a reusable template workspace from a PPTX or design reference | `create-template` or `create-brand` | outputs a workspace root that later triggers Step 3; create-template also exports a review PPTX |
-| User supplies an explicit template path | main SVG pipeline Step 3 | current Layout/Deck workspaces resolve `templates/design_spec.md`; Brand packages and legacy-flat roots resolve direct `design_spec.md`; restore only legacy SVG semantics |
+| User wants a reusable template workspace from a PPTX or design reference | `create-template` or `create-brand` | outputs a workspace root that later triggers Step 3; create-template can export an on-demand review PPTX |
+| User supplies an explicit template path | main SVG pipeline Step 3 | current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible legacy-flat roots resolve direct `design_spec.md`; restore only legacy SVG semantics |
 | User asks to tune object-level animation order/effect/timing | `customize-animations` | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | `live-preview` | browser workflow; annotations apply only at defined handoff points |
 
@@ -263,19 +263,21 @@ Templates are **opt-in, not default**. The default Strategist flow is free desig
 
 **Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
 
-**Mechanical trigger, not semantic matching.** A bare name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Layout/Deck workspaces resolve `templates/design_spec.md`; Brand packages keep their direct root `design_spec.md`, as do compatible legacy-flat Layout/Deck packages. Flat placement is not a reason to restore structure; only legacy Master/Layout/placeholder semantics trigger `restore-pptx-structure`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+**Mechanical trigger, not semantic matching.** A bare name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Brand/Layout/Deck workspaces resolve `templates/design_spec.md`; compatible legacy-flat packages resolve direct `design_spec.md`. Flat placement is not a reason to restore structure; only legacy Master/Layout/placeholder semantics trigger `restore-pptx-structure`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
 
-New `create-template` Layout/Deck outputs use one physical contract in both locations:
+All current Brand/Layout/Deck packages use one workspace routing contract. Brand workspaces omit the SVG roster; empty optional directories are omitted:
 
 ```text
 <template_workspace>/
 ├── templates/   # design_spec.md, SVG prototypes, templates/icons/ when used
-├── images/      # bitmap assets referenced as ../images/<name>
-├── icons/       # runtime copy of extracted vector assets
-└── exports/     # <id>_template_preview.pptx
+├── images/      # optional; bitmap assets referenced as ../images/<name>
+├── icons/       # optional; runtime copy of extracted vector assets
+└── exports/     # optional, on-demand review files; Git-ignored in the library
 ```
 
-`<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior, and `exports/` is review evidence rather than a template input.
+`<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior. Empty optional directories are absent, and template application never copies `exports/`.
+
+`standard` and `fidelity` write new SVG documents and a new Master/Layout/slot system; source topology is visual evidence only and is neither preserved nor distilled. `mirror` restores source page order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Because structural layers cannot be `<g>`, fixed-layer source group wrappers are mechanically expanded into direct atoms while preserving ownership, paint order, and appearance.
 
 The three template kinds own different segments of the design contract:
 
@@ -283,7 +285,7 @@ The three template kinds own different segments of the design contract:
 |---|---|---|---|
 | `brand` | identity | colors, typography, logo, voice, icon style | locks identity; structure remains free |
 | `layout` | structure | canvas, page structure, page types, SVG roster | locks structure; identity is confirmed in the Strategist confirmation stage |
-| `deck` | identity + structure + template overview | full replica-style package | locks the full template grammar, with only content-specific choices left |
+| `deck` | identity + structure + template overview | complete identity + structure package | locks the full template grammar, with only content-specific choices left |
 
 When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the middle/template-overview segment. Same-kind conflicts are surfaced as conflicts rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
 
@@ -462,7 +464,9 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why per-element dispatch, not whole-file translation.** SVG's hierarchical model maps cleanly onto DrawingML's group / shape / picture types — there's no need for a holistic optimizer that re-plans the slide. Each shape kind gets its own narrow translator, which keeps each translator simple enough to debug and unit-test in isolation. The output quality of a slide is the sum of independent local conversions; that property is fragile under whole-file translation but robust under element dispatch.
 
-**Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is a self-contained visual-preview artifact rather than a PPTX source; users may insert it as an SVG picture, while PowerPoint's manual Convert to Shape command remains outside the supported contract.
+**Why imported and authored shape metadata are separate.** A lossless imported SVG may need native-shape metadata, hidden carriers, and preview fingerprints to recover an advanced PowerPoint shape. That representation stays in the temporary analysis workspace. `svg_authoring_view.py` creates a lightweight inspection projection without opaque payload or duplicate hidden carriers; the projection is never an export source. `standard` / `fidelity` use compact canonical metadata. Mirror materializes from the lossless source and may reuse converter-supported metadata on unchanged Slide-local/slot objects; fixed structural layers remain direct atoms, and unsupported or edited objects keep their current SVG fallback.
+
+**Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; when requested, create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is a self-contained visual-preview artifact rather than a PPTX source; users may insert it as an SVG picture, while PowerPoint's manual Convert to Shape command remains outside the supported contract.
 
 **Why structure is authored before visual generation.** Master and Layout are not post-processing discoveries. Strategist writes the Master roster and complete page mapping before SVG generation; Executor writes those identities, fixed atoms, and slots while composing each page. This keeps free design unconstrained at the visual level while making PowerPoint ownership explicit. Export only compiles declared structure. Legacy or unmapped projects enter `restore-pptx-structure`; they never trigger an exporter heuristic.
 
@@ -472,15 +476,15 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why reusable bounds are design zones, not measured text boxes.** Slot bounds come from the intended safe area, column, panel inset, or picture frame—not glyph width, line count, or the current content's tight box. The current Slide retains its own authored carrier geometry, so 4:6, 3:7, and 5:5 instances may share one Layout when they express the same semantic composition. Text length therefore cannot accidentally split or mutate the reusable Layout contract.
 
-**Why strict and adaptive templates share one structured route.** `page_layouts` records the complete input prototype, while `pptx_masters` and `pptx_layouts` record output ownership from planning onward. Strict preserves the prototype contract. Adaptive retains its Master and assigns a new Layout key only when fixed Layout atoms or slot topology/bounds change; that mapping is updated during page authoring rather than inferred later. Non-mirror skin remains project-controlled, while mirror keeps reused visual identities except for the intentional flattening of source Master/Layout groups.
+**Why strict and adaptive templates share one structured route.** `page_layouts` records the complete input prototype, while `pptx_masters` and `pptx_layouts` record output ownership from planning onward. Strict preserves the declared prototype contract. Adaptive retains its Master and assigns a new Layout key only when fixed Layout atoms or slot topology/bounds change; that mapping is updated during page authoring rather than inferred later. Non-mirror skin remains project-controlled, while mirror keeps restored output visual identities.
 
 **Why explicit-Layout text defaults are split between Master and Layout.** Structured export writes locked title/body sizes into Master text defaults. Each generated Layout text slot also copies its carrier's first run size into the level-one default while retaining the prompt's direct size. This preserves Layout-specific scale when placeholder text is inserted or reset; direct runs on generated Slides remain unchanged.
 
 **Why structured output is read back before publication.** Metadata preflight cannot prove package serialization preserved every relationship and registration. Export therefore reopens the temporary PPTX and validates Presentation → Master → Layout → Slide registration, physical part/content-type rosters, picker identities, exact static-object order, placeholder type/effective index/bounds, carrier bindings, hidden proxies, and zero-slot Layouts before publishing the file.
 
-**Why reusable templates reconstruct the source topology.** `pptx_template_import.py` emits layered Master/Layout/Slide references plus native structure facts. `create-template` reconstructs every source Master and Layout, including unused Layouts, as complete annotated SVG prototypes. Source Master/Layout groups are flattened into atoms; parent relationships, picker names, placeholder identities, and bounds remain auditable in the template specification. The original PPTX remains an analysis input, not a packaged export dependency.
+**Why template creation has authored and restoration modes.** `pptx_template_import.py` emits layered Master/Layout/Slide references plus native structure facts. `standard` / `fidelity` use those assets and visuals as references, then author a new topology from the confirmed reusable behavior. Mirror instead restores the source roster and topology one-to-one, allowing only mechanical normalization required by the explicit structured contract. The original PPTX remains analysis evidence, not a packaged export dependency.
 
-**Why create-template uses one workspace shape in both scopes.** `create-template` keeps `library` as its default indexed output and may instead write under an initialized project. Both roots contain the same `templates/`, `images/`, `icons/`, and `exports/` core, including `<id>_template_preview.pptx`; SVG asset references are identical. This makes the complete workspace migratable and reusable without a library-only package branch or a reduced project branch. The sole scope difference is global index registration, and both use the same `structured` contract.
+**Why create-template uses one workspace routing contract in both scopes.** `create-template` keeps `library` as its default indexed output and may instead write under an initialized project. Both roots require `templates/`; `images/`, `icons/`, and on-demand `exports/` appear only when they contain real files, and SVG asset references are identical. This makes the workspace migratable and reusable without a library-only package branch or a reduced project branch. The sole scope difference is global index registration, and both use the same `structured` contract.
 
 **Why each template SVG stays complete while still compiling to native structure.** A template SVG repeats the inherited Master/Layout visuals together with sample Slide content so it opens as a complete standalone page. During generation, `page_layouts` selects that prototype and the output SVG remains complete. Export removes repeated inherited atoms, emits real Master/Layout parts, and leaves actual slot carriers and Slide-local content on the Slide.
 
@@ -539,7 +543,7 @@ Standalone workflows are route definitions, not optional decorations. They exist
 | `topic-research` | user provides only a topic and no source material | gather web materials before Step 1 |
 | `template-fill-pptx` | raw PPTX template + new material/topic | direct native slide clone/fill; no SVG pipeline |
 | `beautify-pptx` | existing PPTX, preserve page count/order/wording 1:1, improve layout | regenerate through SVG pipeline with source identity/content locked |
-| `create-template` | build a reusable layout/deck template workspace | output a portable workspace root plus `exports/<id>_template_preview.pptx`; only library scope registers it |
+| `create-template` | build a reusable layout/deck template workspace | output a portable workspace root; optionally generate `exports/<id>_template_preview.pptx`; only library scope registers it |
 | `create-brand` | extract or define a reusable brand identity | output `templates/brands/<id>/` |
 | `resume-execute` | fresh chat after the planning session; user says to continue a project | enter the execution session without rerunning Strategist |
 | `refine-spec` | user explicitly wants to review/refine the spec before generation | stop after full spec/lock for revision, then resume |

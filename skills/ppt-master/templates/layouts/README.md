@@ -45,7 +45,7 @@ Layouts may include additional supporting sections (Layout Patterns, Spacing Gui
 
 ## Standard workspace contract
 
-New layout creation uses the same complete workspace shape in both output scopes:
+New layout creation uses the same portable workspace routing in both output scopes:
 
 ```text
 <template_workspace>/
@@ -55,9 +55,9 @@ New layout creation uses the same complete workspace shape in both output scopes
 │   ├── 02_chapter.svg
 │   ├── 03_content.svg
 │   └── 04_ending.svg
-├── images/
-├── icons/
-└── exports/
+├── images/                         # Optional; omit when unused
+├── icons/                          # Optional; omit when unused
+└── exports/                        # Optional, on-demand review output; Git-ignored
     └── <layout_id>_template_preview.pptx
 ```
 
@@ -68,7 +68,9 @@ New layout creation uses the same complete workspace shape in both output scopes
 
 `02_toc.svg` and other roster variants remain optional. All SVGs use `viewBox="0 0 1280 720"` for ppt169. Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`.
 
-The preview PPTX is a required review artifact and is not a template input. Template application consumes the workspace root's `templates/`, `images/`, and `icons/`; it does not copy `exports/`.
+Omit empty optional directories instead of adding placeholder files. Generate a preview PPTX only when local PowerPoint review is requested; it is derived output, library `exports/` is Git-ignored, and template application never copies it.
+
+`standard` and `fidelity` author new SVG documents and a new Master/Layout/slot contract. `mirror` restores the source roster, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`; this normalization must preserve ownership, paint order, and appearance.
 
 **Legacy compatibility**: Existing flat packages with `design_spec.md` and SVGs at their root remain readable. Flat placement alone does not trigger [`restore-pptx-structure`](../../workflows/restore-pptx-structure.md); restoration is required only when SVG Master/Layout/slot metadata is absent or legacy. New `create-template` outputs always use the workspace contract above.
 
@@ -85,7 +87,7 @@ Templates use `{{PLACEHOLDER}}` to mark replaceable content. New layouts should 
 1. Run [`workflows/create-template.md`](../../workflows/create-template.md) (default produces a deck; explicit "structure only / no identity" option produces a layout)
 2. Choose the workspace root: library `skills/ppt-master/templates/layouts/<id>/` or project `projects/<name>/`
 3. Validate: `python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/templates" --template-mode --format ppt169`
-4. Export the review deck: `python3 skills/ppt-master/scripts/template_preview_pptx.py "<template_workspace>"`
+4. Optional — when PowerPoint review is requested, export the review deck: `python3 skills/ppt-master/scripts/template_preview_pptx.py "<template_workspace>"`
 5. For library scope only, register: `python3 skills/ppt-master/scripts/register_template.py <id> --kind layout`
 
 The register step updates [`layouts_index.json`](./layouts_index.json) — the single source of truth for layout discovery.

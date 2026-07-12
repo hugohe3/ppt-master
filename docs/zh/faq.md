@@ -244,7 +244,9 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **第一步 — 准备参考材料**
 
-**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、全部 Master/Layout、placeholder type/idx 和可复用图片资源，再重建一个干净 Master 与语义 Layout，输出完整且显式分层的 SVG。使用该模板生成新 deck 时，`adaptive` 可在同一 Master 下创建新 Layout，`strict` 保持所选 Layout 契约不变；两者都从 SVG 确定性还原原生结构。
+**最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把来源当作视觉参考，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则按来源页序恢复 Master/Layout 身份与父子关系、placeholder 事实和受支持的视觉对象，不做语义归纳。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
+
+完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，但模型只读取轻量 inspection projection；projection 永远不是导出源。`standard` / `fidelity` 使用紧凑 canonical metadata。Mirror 从无损来源物化，只在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；不支持或已修改的对象保留当前 SVG fallback。
 
 没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 
@@ -256,13 +258,13 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 - 期望的风格基调和配色（如"现代克制、深蓝主色调"）
 - 类别偏好（`brand` 品牌 / `general` 通用 / `scenario` 场景 / `government` 政务 / `special` 特殊）
 - 画布格式（默认 16:9，如需其他格式请注明）
-- 输出范围：进入索引的 `library`（默认）或一个已经初始化的 `project`；两者使用相同的完整工作区结构
+- 输出范围：进入索引的 `library`（默认）或一个已经初始化的 `project`；两者使用相同路由并省略空的可选目录
 
 不需要一次提供所有细节——AI 代理会通过对话追问补齐缺失信息（输出范围、模板 ID、主题模式等）。
 
 **第三步 — 等待完成**
 
-AI 代理会自动完成后续工作——分析截图、构建布局定义、验证模板，并导出 `exports/<id>_template_preview.pptx`，方便在 PowerPoint 中直观看模板效果。两种范围都包含相同的 `templates/`、`images/`、`icons/` 与 `exports/` 核心结构：`library` 写入 `skills/ppt-master/templates/<kind>/<id>/` 并完成全局注册；`project` 写入 `projects/<name>/` 并跳过注册。把这个工作区根目录交给 Step 3 即可。旧式平铺包仍可把 `design_spec.md` 放在根目录，目录平铺本身不要求恢复结构。由于新工作区形态一致，完整结果可在两个位置之间迁移或复用，无需重新组织目录。
+AI 代理会自动完成后续工作——分析参考、构建布局定义并验证模板。如果你明确需要 PowerPoint 审阅文件，它还会按需生成 `exports/<id>_template_preview.pptx`。两种范围都要求 `templates/`，并使用可选的 `images/`、`icons/` 与 `exports/`：`library` 写入 `skills/ppt-master/templates/<kind>/<id>/` 并完成全局注册；`project` 写入 `projects/<name>/` 并跳过注册；空的可选目录直接省略。把这个工作区根目录交给 Step 3 即可，Step 3 不会复制 `exports/`，全局库的预览导出也由 Git 忽略。旧式平铺包仍可把 `design_spec.md` 放在根目录，目录平铺本身不要求恢复结构。
 
 > **提示**：对风格和使用场景描述得越具体，生成的模板就越符合你的预期。
 

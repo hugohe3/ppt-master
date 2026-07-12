@@ -2,7 +2,7 @@
 
 This directory holds **brand-only templates**: identity bundles (color / typography / logo / voice / icon style) without an SVG page roster. Strategist locks the brand's identity segment as truth; Executor designs pages freely under those constraints.
 
-Brand is one of three template kinds in the library — alongside [`layouts/`](../layouts/) (structure-only) and [`decks/`](../decks/) (full-PPT replica). Full data model: [`docs/zh/templates-architecture.md`](../../../../docs/zh/templates-architecture.md).
+Brand is one of three template kinds in the library — alongside [`layouts/`](../layouts/) (structure-only) and [`decks/`](../decks/) (complete identity + structure). Full data model: [`docs/zh/templates-architecture.md`](../../../../docs/zh/templates-architecture.md).
 
 ## How brands are consumed
 
@@ -10,7 +10,7 @@ Brand application follows the **same explicit-path rule and workspace routing as
 
 | User input at SKILL.md Step 3 | Behavior |
 |---|---|
-| An explicit brand workspace path (e.g. `templates/brands/anthropic/`) | Resolve `templates/design_spec.md`; stage `templates/`, `images/`, and `icons/` into the matching project directories; Strategist locks the identity segment |
+| An explicit brand workspace path (e.g. `templates/brands/anthropic/`) | Resolve `templates/design_spec.md`; stage `templates/` plus any existing `images/` and `icons/` into the matching project directories; Strategist locks the identity segment |
 | Bare brand name only ("use anthropic brand"), brand mention without path, or silence | Skip — same mechanical rule as all template kinds: bare names never trigger |
 | Brand path + layout path | Fuse into one `design_spec.md` — brand owns identity segment (color / typography / logo / voice / icon style); layout owns structure segment (canvas / page roster). See `SKILL.md` Step 3. |
 | Brand path + deck path | Fuse — brand identity overrides deck identity; structure + middle segments come from deck |
@@ -41,7 +41,7 @@ templates/brands/<brand_id>/
 │   ├── logo.<ext>            # optional — primary logo
 │   └── <brand>_wordmark.svg  # optional — alternate lockups and visual assets
 ├── icons/                     # optional — branded icon overrides
-└── exports/                   # optional local derived artifacts; Git-ignored
+└── exports/                   # normally absent; real local derived artifacts only; Git-ignored
 ```
 
 Logo filenames are descriptive, not contractual — `templates/design_spec.md` §IV lists exact `../images/...` paths and usage contexts. Single-lockup brands typically ship one logo; dual-lockup brands ship separately named files.

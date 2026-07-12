@@ -31,16 +31,16 @@ For the first, give the AI your `.pptx` plus your material (or a topic) and ask 
 You: Replicate this as a template via /create-template: projects/brand/our_deck.pptx
 ```
 
-That runs `pptx_template_import.py` and rebuilds the file into a reusable workspace — layout SVGs + `design_spec.md` + extracted theme colors, fonts, and images. It also exports `exports/<id>_template_preview.pptx`, so you can open the reconstructed template in PowerPoint and judge it before generation. The workspace root is what you point to at generation time.
+That runs `pptx_template_import.py` and rebuilds the file into a reusable workspace — layout SVGs + `design_spec.md` + extracted theme colors, fonts, and images. If you want a PowerPoint review file, run the optional preview export; it creates `exports/<id>_template_preview.pptx` on demand. The workspace root is what you point to at generation time.
 
-During the create-template brief, choose `library` (the existing default) or `project`. Both create the same complete `templates/`, `images/`, `icons/`, and `exports/` workspace. Project scope requires an initialized target project; library scope alone adds global registration.
+During the create-template brief, choose `library` (the existing default) or `project`. Both require `templates/` and use optional `images/`, `icons/`, and on-demand `exports/`; empty optional directories are omitted. Project scope requires an initialized target project; library scope alone adds global registration.
 
 A created template lives in one of two places:
 
 | Location | Path | Notes |
 |---|---|---|
-| **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Complete workspace plus global registration, so it appears when you ask "what templates are available?" |
-| **Under projects** | `projects/<name>/` | The same complete workspace without global registration |
+| **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Portable workspace plus global registration, so it appears when you ask "what templates are available?" |
+| **Under projects** | `projects/<name>/` | The same portable workspace without global registration |
 
 Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for compatibility it also accepts older flat packages whose `design_spec.md` is directly at the supplied root. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 

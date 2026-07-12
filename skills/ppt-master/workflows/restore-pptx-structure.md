@@ -10,6 +10,8 @@ Restore an existing SVG-authored project or template before quality checking or 
 
 **Hard rule — structure, not packaging**: Directory shape is not PowerPoint structure evidence. A current template workspace uses `templates/design_spec.md`; a compatible legacy-flat package uses `design_spec.md` at its root. Do not run this workflow merely to move a flat package into the current workspace shape.
 
+**Boundary against template creation**: This workflow normalizes one existing project's/package's structure without visual redesign. It does not choose a reusable-template replication mode. When its result becomes type-B input to [`create-template`](./create-template.md), `standard` / `fidelity` treat it as visual reference and author new structure; `mirror` restores its explicit source ownership one-to-one.
+
 ---
 
 ## 1. Route Boundary
@@ -21,7 +23,7 @@ Restore an existing SVG-authored project or template before quality checking or 
 | Legacy `preserve` plus `native_structure.json` / `source_template.pptx` | Use the native facts as restoration evidence; rebuild the SVG contract instead of preserving package parts |
 | Existing `mode: structured` project | Validate and repair only the reported mismatch; do not re-infer the deck |
 | Legacy-flat template package whose SVG roots and slots already satisfy the current structured contract | Consume it through the compatibility reader; do not restore or relocate it solely because `design_spec.md` and SVGs are flat |
-| Current template workspace with `templates/`, `images/`, `icons/`, and `exports/` | Inspect SVG metadata to decide whether restoration is needed; the workspace folders themselves do not prove or disprove structure |
+| Current template workspace with `templates/` and optional `images/`, `icons/`, or `exports/` | Inspect SVG metadata to decide whether restoration is needed; the workspace folders themselves do not prove or disprove structure |
 | Raw PPTX intended as a reusable template | Run [`create-template`](./create-template.md), not this workflow |
 | Existing PPTX receiving notes/audio/timing/transitions | Keep the direct [`native-enhance-pptx`](./native-enhance-pptx.md) route; do not create SVGs |
 | Raw PPTX template receiving new content | Keep the direct [`template-fill-pptx`](./template-fill-pptx.md) route |
@@ -44,7 +46,7 @@ Record the source evidence used for restoration in a short `README.md` inside th
 
 **Hard rule**: Never delete the legacy sources during restoration. If the requested migration would rewrite several existing files and the user has not already authorized that operation, obtain the repository-required bulk-modification confirmation first.
 
-**Hard rule — no packaging migration**: Keep the input workspace/package placement unchanged. This workflow edits the semantic SVG/lock contract only; it does not normalize a legacy-flat package into `templates/`, `images/`, `icons/`, and `exports/`.
+**Hard rule — no packaging migration**: Keep the input workspace/package placement unchanged. This workflow edits the semantic SVG/lock contract only; it does not normalize a legacy-flat package into the current `templates/` plus optional `images/`, `icons/`, and `exports/` routing.
 
 ---
 
@@ -54,9 +56,15 @@ Use this evidence priority:
 
 | Priority | Evidence | Contract |
 |---:|---|---|
-| 1 | Original PPTX plus verified native structure facts | Preserve Master/Layout names, ownership, placeholder type/index/bounds, and page assignment |
+| 1 | Original PPTX plus verified native structure facts | Use the source contract as compatibility evidence for this no-redesign restoration; record any required normalization |
 | 2 | Legacy template SVGs or explicit legacy structure metadata | Preserve stable identities and reusable geometry after removing legacy-only fields |
 | 3 | Completed SVG pages only | Classify deliberately across the full deck; do not let the exporter infer structure |
+
+**Hard rule — reachable native graph only**: The current structured contract
+materializes Master/Layout identities through output-page references. If native
+evidence contains a Layout unused by every output page, or a Master reachable
+only through such Layouts, stop and list the exact identities. Do not silently
+drop them, synthesize a carrier page, or claim full source-graph restoration.
 
 **Hard rule**: Decide from SVG/lock semantics, never from whether `design_spec.md` is at the workspace root or under `templates/`.
 
@@ -72,6 +80,8 @@ Classify each visible object:
 **Hard rule — no Master/Layout groups**: A fixed Master or Layout visual must not be a `<g>`. Recursively expand every legacy/source group into individual root-level atomic elements. Compose and apply group transforms, opacity, inherited paint, clip behavior, and styles to each atom while preserving paint order. The restoration target preserves supported visual output and Master/Layout topology; it does not preserve source grouping as an editing unit.
 
 **Hard rule — no visual redesign**: Do not change wording, geometry, paint, assets, or z-order except for the normalization required to flatten a fixed Master/Layout group. Render before and after any transform-flattening edit and require pixel equivalence.
+
+**Hard rule — native metadata below structural layers**: Keep the complete lossless import artifact in the backup/evidence set. An unchanged imported shape may keep the source metadata already supported by the converter when it remains Slide-local or inside a slot; no additional opt-in marker exists. A logical `<g>` cannot become Master/Layout because those layers require direct atoms. Normalize fixed-layer objects into direct atom(s), rebuilding a preset when supported and otherwise keeping the current SVG fallback. Any geometry, paint, text, or fingerprint change invalidates stale source metadata. `data-pptx-native` remains reserved for chart/table markers.
 
 ---
 
@@ -187,5 +197,6 @@ After the checker reports zero errors, return to `SKILL.md` Step 7.2 and Step 7.
 - [x] Every slot has explicit bounds and a valid carrier or proxy contract
 - [x] `spec_lock.md` contains complete `structured` Master and page mappings
 - [x] Group-flattening edits are pixel-equivalent and the quality gate reports zero errors
+- [x] Imported native metadata is used only through supported existing attributes on unchanged Slide-local/slot objects; Master/Layout objects remain direct atoms
 - [ ] **Next**: Resume the canonical post-processing and release export steps
 ```
