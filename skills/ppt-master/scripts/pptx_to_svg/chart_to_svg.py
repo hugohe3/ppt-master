@@ -19,6 +19,7 @@ from svg_to_pptx.native_objects.chart_data import (
     validate_data_label_position,
 )
 
+from .chartex_to_svg import UnsupportedChartEx, extract_native_chartex_payload
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import NS, Xfrm, ooxml_bool
 from .normalized_chart_svg import SeriesVisualStyle, render_normalized_chart_svg
@@ -59,13 +60,25 @@ def extract_native_chart_payload(
     pkg: OoxmlPackage,
     palette: ColorPalette | None = None,
 ) -> ChartResult:
-    """Return native chart metadata for a supported classic chart."""
+    """Return native chart metadata for a supported classic or ChartEx chart."""
     if graphic_data is None:
         return ChartResult(native_status="unsupported-chart-reference")
 
     uri = graphic_data.attrib.get("uri", "")
     if uri == CHARTEX_URI or graphic_data.find("cx:chart", C_NS) is not None:
-        return ChartResult(native_status="unsupported-chartex")
+        try:
+            payload = extract_native_chartex_payload(
+                graphic_data,
+                xfrm,
+                slide_part,
+                pkg,
+                palette,
+            )
+        except UnsupportedChartEx as exc:
+            return ChartResult(native_status=exc.status)
+        except RuntimeError:
+            return ChartResult(native_status="unsupported-chartex-parse")
+        return ChartResult(native_payload=payload)
     if uri != CHART_URI:
         return ChartResult(native_status="unsupported-chart-uri")
     if xfrm.rot or xfrm.flip_h or xfrm.flip_v:
@@ -164,20 +177,37 @@ def _payload_from_chart_xml(
         raise _UnsupportedChart("unsupported-date-axis")
     if chart_tag == "barChart":
         payload = _category_payload(chart, _bar_chart_type(chart), xfrm)
-    elif chart_tag in {"areaChart", "lineChart", "ofPieChart", "pieChart", "doughnutChart"}:
+    elif chart_tag in {
+        "areaChart",
+        "doughnutChart",
+        "lineChart",
+        "ofPieChart",
+        "pieChart",
+        "radarChart",
+    }:
         chart_type = {
             "areaChart": "area",
+            "doughnutChart": "doughnut",
             "lineChart": "line",
             "ofPieChart": "of_pie",
             "pieChart": "pie",
-            "doughnutChart": "doughnut",
+            "radarChart": "radar",
         }[chart_tag]
+        category_kind = "date" if has_date_axis else "text"
+        if chart_tag == "radarChart" and _category_cache_is_numeric(chart):
+            category_kind = "numeric"
         payload = _category_payload(
             chart,
             chart_type,
             xfrm,
-            category_kind="date" if has_date_axis else "text",
+            category_kind=category_kind,
         )
+        if chart_tag == "radarChart":
+            if category_kind == "numeric":
+                payload["categories"] = [
+                    str(value) for value in payload["categories"]
+                ]
+            payload["radar_style"] = _effective_radar_style(chart)
     elif chart_tag == "scatterChart":
         payload = _xy_payload(chart, "scatter", xfrm)
         payload["axes"] = _xy_axis_contract(plot_area, chart)
@@ -1161,8 +1191,8 @@ def _axis_config_from_xml(
     if cross_between != expected_cross_between:
         raise _UnsupportedChart("unsupported-chart-axis-options")
     auto = axis.find("c:auto", C_NS)
-    if auto is not None and not _strict_axis_bool(auto, True):
-        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if auto is not None:
+        _strict_axis_bool(auto, True)
     major_tick = _element_val(axis.find("c:majorTickMark", C_NS))
     minor_tick = _element_val(axis.find("c:minorTickMark", C_NS))
     if major_tick not in {None, "none", "out"} or minor_tick not in {None, "none"}:
@@ -1339,6 +1369,121 @@ def _validate_legacy_axes(payload: dict[str, Any], plot_area: ET.Element) -> Non
             raise _UnsupportedChart("unsupported-chart-axis-options")
 
 
+def _validate_normalized_axis_topology(
+    payload: dict[str, Any],
+    plot_area: ET.Element,
+    plot: ET.Element,
+) -> None:
+    """Validate a category/value pair whose presentation will normalize."""
+    axes_by_id = _axis_nodes_by_id(plot_area)
+    cat_id, cat_axis, val_id, val_axis = _plot_axis_pair(plot, axes_by_id)
+    if set(axes_by_id) != {cat_id, val_id}:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+
+    plot_axis_nodes = plot.findall("c:axId", C_NS)
+    if any(set(node.attrib) != {"val"} or list(node) for node in plot_axis_nodes):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    for axis, axis_id, cross_axis_id in (
+        (cat_axis, cat_id, val_id),
+        (val_axis, val_id, cat_id),
+    ):
+        if axis.attrib:
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        id_nodes = axis.findall("c:axId", C_NS)
+        cross_nodes = axis.findall("c:crossAx", C_NS)
+        if (
+            len(id_nodes) != 1
+            or len(cross_nodes) != 1
+            or set(id_nodes[0].attrib) != {"val"}
+            or set(cross_nodes[0].attrib) != {"val"}
+            or list(id_nodes[0])
+            or list(cross_nodes[0])
+            or _element_val(id_nodes[0]) != axis_id
+            or _element_val(cross_nodes[0]) != cross_axis_id
+        ):
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+
+    position_nodes = (
+        cat_axis.findall("c:axPos", C_NS),
+        val_axis.findall("c:axPos", C_NS),
+    )
+    if any(
+        len(nodes) != 1
+        or set(nodes[0].attrib) != {"val"}
+        or list(nodes[0])
+        for nodes in position_nodes
+    ):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    category_position = _element_val(position_nodes[0][0])
+    value_position = _element_val(position_nodes[1][0])
+    if payload["type"] == "bar":
+        valid_positions = (
+            category_position in {"l", "r"}
+            and value_position in {"b", "t"}
+        )
+    else:
+        valid_positions = (
+            category_position in {"b", "t"}
+            and value_position in {"l", "r"}
+        )
+    if not valid_positions:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+
+
+def _validate_or_normalize_legacy_axes(
+    payload: dict[str, Any],
+    plot_area: ET.Element,
+    plot: ET.Element,
+) -> None:
+    """Keep exact legacy payloads while allowing presentation normalization."""
+    try:
+        _validate_legacy_axes(payload, plot_area)
+    except _UnsupportedChart as exc:
+        if exc.status not in {
+            "unsupported-chart-axis-number-format",
+            "unsupported-chart-axis-options",
+        }:
+            raise
+        if payload["type"] in {"area", "column", "line"}:
+            try:
+                payload["axes"] = _single_axis_contract(
+                    plot_area,
+                    plot,
+                    category_kind="text",
+                    cross_between="between",
+                )
+                return
+            except _UnsupportedChart:
+                payload.pop("axes", None)
+        _validate_normalized_axis_topology(payload, plot_area, plot)
+
+
+def _effective_radar_style(plot: ET.Element) -> str:
+    """Map Office radar marker variants to the writer's uniform style set."""
+    style_nodes = plot.findall("c:radarStyle", C_NS)
+    if len(style_nodes) > 1:
+        raise _UnsupportedChart("unsupported-chart-radar-style")
+    style_node = style_nodes[0] if style_nodes else None
+    if style_node is not None and (
+        set(style_node.attrib) != {"val"} or list(style_node)
+    ):
+        raise _UnsupportedChart("unsupported-chart-radar-style")
+    style = _element_val(style_node) if style_node is not None else "standard"
+    if style == "filled":
+        return "filled"
+    if style not in {"marker", "standard"}:
+        raise _UnsupportedChart("unsupported-chart-radar-style")
+
+    default_marker = style == "marker"
+    marker_states: list[bool] = []
+    for series in plot.findall("c:ser", C_NS):
+        symbol = _element_val(series.find("c:marker/c:symbol", C_NS))
+        marker_states.append(
+            default_marker if symbol is None else symbol != "none"
+        )
+    return "lineMarker" if any(marker_states) else "line"
+
+
 def _effective_scatter_style(
     plot: ET.Element,
     visual_styles: list[SeriesVisualStyle],
@@ -1421,6 +1566,34 @@ def _effective_scatter_style(
     return effective_styles.pop()
 
 
+def _bounded_plot_integer(
+    plot: ET.Element,
+    name: str,
+    *,
+    minimum: int,
+    maximum: int,
+    status: str,
+) -> int | None:
+    nodes = plot.findall(f"c:{name}", C_NS)
+    if len(nodes) > 1:
+        raise _UnsupportedChart(status)
+    if not nodes:
+        return None
+    node = nodes[0]
+    raw_value = node.attrib.get("val")
+    if (
+        set(node.attrib) != {"val"}
+        or list(node)
+        or raw_value is None
+        or re.fullmatch(r"-?[0-9]+", raw_value) is None
+    ):
+        raise _UnsupportedChart(status)
+    value = int(raw_value)
+    if not minimum <= value <= maximum:
+        raise _UnsupportedChart(status)
+    return value
+
+
 def _validate_chart_semantics(
     payload: dict[str, Any],
     plot_area: ET.Element,
@@ -1440,13 +1613,20 @@ def _validate_chart_semantics(
             raise _UnsupportedChart("unsupported-chart-analysis-features")
     if plot_area.find("c:dTable", C_NS) is not None:
         raise _UnsupportedChart("unsupported-chart-data-table")
-    ser_lines = plot.find("c:serLines", C_NS)
-    if ser_lines is not None and (
-        chart_type != "of_pie" or ser_lines.attrib or list(ser_lines)
-    ):
+    ser_line_nodes = plot.findall("c:serLines", C_NS)
+    if len(ser_line_nodes) > 1:
         raise _UnsupportedChart("unsupported-chart-analysis-features")
+    if ser_line_nodes:
+        ser_lines = ser_line_nodes[0]
+        if (
+            chart_type != "of_pie"
+            or ser_lines.attrib
+            or len(ser_lines) > 1
+            or any(_local_name(child.tag) != "spPr" for child in ser_lines)
+        ):
+            raise _UnsupportedChart("unsupported-chart-analysis-features")
     if validate_axes:
-        _validate_legacy_axes(payload, plot_area)
+        _validate_or_normalize_legacy_axes(payload, plot_area, plot)
 
     if chart_type == "line":
         smooth_nodes = [plot.find("c:smooth", C_NS), *plot.findall("c:ser/c:smooth", C_NS)]
@@ -1471,16 +1651,20 @@ def _validate_chart_semantics(
             raise _UnsupportedChart("unsupported-chart-line-style")
 
     if chart_type in {"bar", "column"}:
-        gap_width = _element_val(plot.find("c:gapWidth", C_NS))
-        if gap_width not in {None, "150"}:
-            raise _UnsupportedChart("unsupported-chart-bar-options")
-        overlap = _element_val(plot.find("c:overlap", C_NS))
-        expected_overlap = "100" if grouping in {"stacked", "percentStacked"} else "0"
-        if overlap is None:
-            if expected_overlap != "0":
-                raise _UnsupportedChart("unsupported-chart-bar-options")
-        elif overlap != expected_overlap:
-            raise _UnsupportedChart("unsupported-chart-bar-options")
+        _bounded_plot_integer(
+            plot,
+            "gapWidth",
+            minimum=0,
+            maximum=500,
+            status="unsupported-chart-bar-options",
+        )
+        _bounded_plot_integer(
+            plot,
+            "overlap",
+            minimum=-100,
+            maximum=100,
+            status="unsupported-chart-bar-options",
+        )
 
     if chart_type == "bubble":
         bubble_scale = _element_val(plot.find("c:bubbleScale", C_NS))
@@ -1565,16 +1749,7 @@ def _apply_chart_metadata(
         return
 
     title_element = chart.find("c:title", C_NS)
-    overlay = title_element.find("c:overlay", C_NS) if title_element is not None else None
-    if overlay is not None and ooxml_bool(overlay.attrib.get("val"), True):
-        raise _UnsupportedChart("unsupported-chart-title-overlay")
     title_entries = _canonical_title_entries(title_element)
-    if (
-        title_element is not None
-        and title_element.find("c:tx/c:rich", C_NS) is not None
-        and title_entries is None
-    ):
-        raise _UnsupportedChart("unsupported-chart-title-format")
     title = _chart_text(title_element)
     if title:
         if title_entries is not None:
@@ -1588,11 +1763,6 @@ def _apply_chart_metadata(
     if legend is not None:
         delete = legend.find("c:delete", C_NS)
         if delete is None or not ooxml_bool(delete.attrib.get("val"), True):
-            if legend.find("c:legendEntry", C_NS) is not None:
-                raise _UnsupportedChart("unsupported-chart-legend-filter")
-            overlay = legend.find("c:overlay", C_NS)
-            if overlay is not None and ooxml_bool(overlay.attrib.get("val"), True):
-                raise _UnsupportedChart("unsupported-chart-legend-overlay")
             position = _element_val(legend.find("c:legendPos", C_NS)) or "r"
             if position not in {"b", "l", "r", "t"}:
                 raise _UnsupportedChart("unsupported-chart-legend-position")
