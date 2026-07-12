@@ -38,8 +38,12 @@ _STRUCTURE_ATTRS = frozenset({
     "data-pptx-layout",
     "data-pptx-layout-kind",
     "data-pptx-layout-name",
+    "data-pptx-master",
+    "data-pptx-master-name",
     "data-pptx-placeholder",
+    "data-pptx-placeholder-binding",
     "data-pptx-placeholder-bounds",
+    "data-pptx-placeholder-carrier",
     "data-pptx-placeholder-idx",
     "data-pptx-editable",
 })
@@ -88,14 +92,18 @@ _OBJECT_PLACEHOLDER_TAGS = frozenset({
     "polyline",
     "text",
     "image",
+    "svg",
+    "use",
 })
 _LAYOUT_KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
-_LOCK_ROW_RE = re.compile(r"^-\s+([A-Za-z0-9_]+)\s*:\s*(.+?)\s*$")
+_MASTER_KEY_RE = _LAYOUT_KEY_RE
+_LOCK_ROW_RE = re.compile(
+    r"^-\s+([A-Za-z0-9][A-Za-z0-9._-]*)\s*:\s*(.+?)\s*$"
+)
 _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
-PPTX_STRUCTURE_MODES = frozenset({"baseline", "template", "preserve", "flat"})
+PPTX_STRUCTURE_MODES = frozenset({"structured", "preserve", "flat"})
 TEMPLATE_ADHERENCE_MODES = frozenset({"strict", "adaptive"})
-LAYOUT_STRATEGIES = frozenset({"distill"})
-DISTILLED_LAYOUT_KINDS = frozenset({"distilled", "utility"})
+PLACEHOLDER_BINDING_MODES = frozenset({"carrier", "proxy"})
 _TEMPLATE_SKIN_ATTRS = frozenset({
     "color",
     "fill",
@@ -147,7 +155,15 @@ class PptxLayoutReference:
     slide_num: int
     layout_key: str
     layout_name: str | None = None
-    layout_kind: str | None = None
+    master_key: str | None = None
+
+
+@dataclass(frozen=True)
+class PptxMasterReference:
+    """One named Master declared by the structured project lock."""
+
+    master_key: str
+    master_name: str
 
 
 @dataclass(frozen=True)
@@ -166,11 +182,11 @@ class PptxStructureLock:
 
     mode: str
     template_adherence: str | None = None
+    masters: tuple[PptxMasterReference, ...] = ()
     layouts: tuple[PptxLayoutReference, ...] = ()
     prototypes: tuple[PptxPrototypeReference, ...] = ()
     source_template: Path | None = None
     native_structure: Path | None = None
-    layout_strategy: str | None = None
 
 
 @dataclass(frozen=True)
@@ -224,6 +240,8 @@ class TemplateElementSpec:
     placeholder: str | None = None
     placeholder_bounds: tuple[float, float, float, float] | None = None
     placeholder_idx: int | None = None
+    placeholder_binding: str | None = None
+    placeholder_carrier_tag: str | None = None
     is_background: bool = False
 
     def contract_signature(self) -> tuple[object, ...]:
@@ -235,6 +253,8 @@ class TemplateElementSpec:
             self.placeholder,
             self.placeholder_bounds,
             self.placeholder_idx,
+            self.placeholder_binding,
+            self.placeholder_carrier_tag,
             self.is_background,
         )
 
@@ -245,10 +265,11 @@ class TemplateSlideSpec:
 
     slide_num: int
     svg_path: Path
+    master_key: str
+    master_name: str
     layout_key: str
     layout_name: str
     elements: tuple[TemplateElementSpec, ...]
-    layout_kind: str | None = None
 
     @property
     def master_elements(self) -> tuple[TemplateElementSpec, ...]:
@@ -271,29 +292,9 @@ class TemplateSlideSpec:
         )
 
 
-def _is_composite_distilled_placeholder_contract(
-    tag: str,
-    placeholder: str | None,
-    layout_kind: str | None,
-) -> bool:
-    """Return whether raw SVG metadata declares a composite region proxy."""
-    return (
-        layout_kind == "distilled"
-        and tag == "g"
-        and placeholder == "object"
-    )
-
-
-def is_composite_distilled_placeholder(
-    item: TemplateElementSpec,
-    layout_kind: str | None,
-) -> bool:
-    """Return the single parsed-contract predicate for a composite region proxy."""
-    return _is_composite_distilled_placeholder_contract(
-        item.tag,
-        item.placeholder,
-        layout_kind,
-    )
+def is_proxy_placeholder(item: TemplateElementSpec) -> bool:
+    """Return whether a visible composite slot uses an invisible binding proxy."""
+    return item.placeholder_binding == "proxy"
 
 
 @dataclass(frozen=True)
@@ -499,6 +500,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             continue
         if current_section not in {
             "pptx_structure",
+            "pptx_masters",
             "pptx_layouts",
             "page_layouts",
         }:
@@ -508,16 +510,20 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             sections[current_section].append((match.group(1), match.group(2)))
 
     structure_rows = sections.get("pptx_structure", [])
+    master_rows = sections.get("pptx_masters", [])
     layout_rows = sections.get("pptx_layouts", [])
     prototype_rows = sections.get("page_layouts", [])
     structure_section_present = "pptx_structure" in sections
+    master_section_present = "pptx_masters" in sections
     layout_section_present = "pptx_layouts" in sections
     prototype_section_present = "page_layouts" in sections
     if (
         not structure_rows
+        and not master_rows
         and not layout_rows
         and not prototype_rows
         and not structure_section_present
+        and not master_section_present
         and not layout_section_present
         and not prototype_section_present
     ):
@@ -554,30 +560,17 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     if mode == "preserve" and template_adherence == "adaptive":
         raise TemplateStructureError(
             "spec_lock.md preserve mode requires template_adherence: strict; "
-            "adaptive template use must export through template mode"
+            "adaptive template use must export through structured mode"
         )
-
-    strategy_rows = [
-        value.strip().lower()
-        for key, value in structure_rows
-        if key == "layout_strategy"
-    ]
-    if len(strategy_rows) > 1:
+    if template_adherence and mode not in {"structured", "preserve"}:
         raise TemplateStructureError(
-            "spec_lock.md pptx_structure allows at most one "
-            "'- layout_strategy:' row"
+            "spec_lock.md template_adherence is allowed only in structured or "
+            "preserve mode"
         )
-    layout_strategy = strategy_rows[0] if strategy_rows else None
-    if layout_strategy and layout_strategy not in LAYOUT_STRATEGIES:
-        allowed = ", ".join(sorted(LAYOUT_STRATEGIES))
+    if any(key == "layout_strategy" for key, _value in structure_rows):
         raise TemplateStructureError(
-            "spec_lock.md pptx_structure.layout_strategy must be one of: "
-            f"{allowed}"
-        )
-    if layout_strategy and mode not in {"baseline", "template"}:
-        raise TemplateStructureError(
-            "spec_lock.md pptx_structure.layout_strategy is allowed only when "
-            "mode is baseline or template"
+            "spec_lock.md pptx_structure.layout_strategy is obsolete; SVG pages "
+            "must declare their final structured Master/Layout contract directly"
         )
 
     source_rows = [
@@ -612,21 +605,47 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             "when pptx_structure.mode is preserve"
         )
 
+    masters: list[PptxMasterReference] = []
+    seen_master_keys: set[str] = set()
+    for master_key, raw_name in master_rows:
+        master_name = raw_name.strip()
+        if not _MASTER_KEY_RE.fullmatch(master_key):
+            raise TemplateStructureError(
+                f"spec_lock.md has invalid Master key {master_key!r}; use 1-64 "
+                "ASCII letters, digits, dots, underscores, or hyphens"
+            )
+        if master_key in seen_master_keys:
+            raise TemplateStructureError(
+                f"spec_lock.md pptx_masters repeats Master key {master_key!r}"
+            )
+        if not master_name:
+            raise TemplateStructureError(
+                f"spec_lock.md Master {master_key!r} has an empty name"
+            )
+        seen_master_keys.add(master_key)
+        masters.append(PptxMasterReference(master_key, master_name))
+
+    if mode == "structured":
+        if not master_rows:
+            raise TemplateStructureError(
+                "spec_lock.md structured mode requires a non-empty pptx_masters section"
+            )
+    elif master_section_present:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_masters is allowed only when "
+            "pptx_structure.mode is structured"
+        )
+
     prototypes: list[PptxPrototypeReference] = []
     seen_prototype_slides: set[int] = set()
     template_dir = (project_path / "templates").resolve()
     template_replication_mode = _template_replication_mode(template_dir)
-    if mode != "template" and prototype_rows:
+    if mode != "structured" and prototype_rows:
         raise TemplateStructureError(
             "spec_lock.md page_layouts is allowed only when pptx_structure.mode "
-            "is template"
+            "is structured"
         )
-    parsed_prototype_rows = (
-        prototype_rows
-        if mode == "template" and layout_strategy == "distill"
-        else []
-    )
-    for page_key, raw_value in parsed_prototype_rows:
+    for page_key, raw_value in prototype_rows:
         page_match = _LOCK_PAGE_RE.fullmatch(page_key)
         if not page_match or int(page_match.group(1)) <= 0:
             raise TemplateStructureError(
@@ -668,9 +687,13 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             replication_mode=template_replication_mode,
         ))
 
-    if mode == "template" and layout_strategy == "distill" and not prototypes:
+    if mode == "structured" and template_adherence and not prototypes:
         raise TemplateStructureError(
-            "spec_lock.md template mode requires one page_layouts row per page"
+            "spec_lock.md structured template use requires one page_layouts row per page"
+        )
+    if prototypes and not template_adherence:
+        raise TemplateStructureError(
+            "spec_lock.md page_layouts requires template_adherence: strict or adaptive"
         )
 
     references: list[PptxLayoutReference] = []
@@ -687,130 +710,75 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
                 f"spec_lock.md pptx_layouts repeats page P{slide_num:02d}"
             )
         seen_slides.add(slide_num)
-        layout_key, separator, remainder = raw_value.partition("|")
-        layout_key = layout_key.strip()
-        layout_name = remainder.strip() if separator else None
-        layout_kind = None
-        if layout_strategy == "distill" and separator:
-            name_part, kind_separator, kind_part = remainder.rpartition("|")
-            if kind_separator:
-                layout_name = name_part.strip()
-                layout_kind = kind_part.strip().lower()
+        parts = [part.strip() for part in raw_value.split("|")]
+        master_key: str | None = None
+        if mode == "structured":
+            if len(parts) != 3 or not all(parts):
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} structured mapping must be "
+                    "'<master_key> | <layout_key> | <PowerPoint layout name>'"
+                )
+            master_key, layout_key, layout_name = parts
+            if not _MASTER_KEY_RE.fullmatch(master_key):
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} has invalid Master key "
+                    f"{master_key!r}"
+                )
+            if master_key not in seen_master_keys:
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} references undeclared Master "
+                    f"{master_key!r}"
+                )
+        else:
+            if len(parts) not in {1, 2} or not parts[0]:
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} preserve mapping must be "
+                    "'<layout_key>' or '<layout_key> | <PowerPoint layout name>'"
+                )
+            layout_key = parts[0]
+            layout_name = parts[1] if len(parts) == 2 else None
         if not _LAYOUT_KEY_RE.fullmatch(layout_key):
             raise TemplateStructureError(
                 f"spec_lock.md P{slide_num:02d} has invalid layout key "
                 f"{layout_key!r}"
             )
-        if separator and not layout_name:
-            raise TemplateStructureError(
-                f"spec_lock.md P{slide_num:02d} has an empty layout name"
-            )
-        if layout_strategy == "distill" and separator and not layout_kind:
-            raise TemplateStructureError(
-                f"spec_lock.md P{slide_num:02d} distilled mapping must end with "
-                "'| distilled' or '| utility'"
-            )
-        if layout_kind and layout_kind not in DISTILLED_LAYOUT_KINDS:
-            allowed = ", ".join(sorted(DISTILLED_LAYOUT_KINDS))
-            raise TemplateStructureError(
-                f"spec_lock.md P{slide_num:02d} layout kind must be one of: "
-                f"{allowed}"
-            )
         references.append(PptxLayoutReference(
             slide_num=slide_num,
             layout_key=layout_key,
             layout_name=layout_name,
-            layout_kind=layout_kind,
+            master_key=master_key,
         ))
 
-    deferred_template = mode == "template" and layout_strategy == "distill"
-    if deferred_template and template_adherence not in TEMPLATE_ADHERENCE_MODES:
-        raise TemplateStructureError(
-            "spec_lock.md deferred template distillation requires exactly one "
-            "template_adherence row: strict or adaptive"
-        )
-    if mode in {"template", "preserve"} and not references and not deferred_template:
+    if mode in {"structured", "preserve"} and not references:
         raise TemplateStructureError(
             f"spec_lock.md {mode} mode requires one pptx_layouts row per page"
         )
-    if deferred_template and layout_section_present and not references:
+    if mode == "structured" and layout_section_present and not layout_rows:
         raise TemplateStructureError(
-            "spec_lock.md deferred template distillation must omit the whole "
-            "pptx_layouts section while pending; an empty section is invalid"
+            "spec_lock.md structured pptx_layouts section cannot be empty"
         )
-    if deferred_template and any(
-        reference.layout_name is None for reference in references
-    ):
-        raise TemplateStructureError(
-            "spec_lock.md deferred template pptx_layouts rows require "
-            "'<layout_key> | <PowerPoint layout name> | distilled'"
-        )
-    if mode == "baseline" and layout_section_present and not references:
-        raise TemplateStructureError(
-            "spec_lock.md baseline pptx_layouts section must contain one row per "
-            "page; omit the whole section for an undistilled or legacy baseline "
-            "project"
-        )
-    if mode == "baseline" and any(
-        reference.layout_name is None for reference in references
-    ):
-        raise TemplateStructureError(
-            "spec_lock.md baseline pptx_layouts rows require "
-            "'<layout_key> | <PowerPoint layout name>'"
-        )
-    if layout_strategy == "distill" and mode == "baseline":
-        if not references:
-            raise TemplateStructureError(
-                "spec_lock.md layout_strategy: distill requires a complete "
-                "pptx_layouts mapping"
-            )
-        if any(reference.layout_kind is None for reference in references):
-            raise TemplateStructureError(
-                "spec_lock.md layout_strategy: distill requires every pptx_layouts "
-                "row to end with '| distilled' or '| utility'"
-            )
-        if not any(
-            reference.layout_kind == "distilled" for reference in references
-        ):
-            raise TemplateStructureError(
-                "spec_lock.md layout_strategy: distill requires at least one "
-                "user-selected distilled Layout"
-            )
-        utility_keys = {
-            reference.layout_key
-            for reference in references
-            if reference.layout_kind == "utility"
-        }
-        if len(utility_keys) > 1:
-            raise TemplateStructureError(
-                "spec_lock.md layout_strategy: distill allows at most one shared "
-                "utility Layout key; found: " + ", ".join(sorted(utility_keys))
-            )
-    if layout_strategy == "distill" and mode == "template" and references:
-        non_distilled = sorted({
-            reference.layout_kind or "<missing>"
-            for reference in references
-            if reference.layout_kind != "distilled"
-        })
-        if non_distilled:
-            raise TemplateStructureError(
-                "spec_lock.md deferred template distillation requires every "
-                "pptx_layouts row to end with '| distilled'; found: "
-                + ", ".join(non_distilled)
-            )
-    layout_kinds_by_key: dict[str, set[str | None]] = {}
+    layout_contracts: dict[str, tuple[str | None, str | None]] = {}
     for reference in references:
-        layout_kinds_by_key.setdefault(reference.layout_key, set()).add(
-            reference.layout_kind
+        contract = (reference.master_key, reference.layout_name)
+        previous = layout_contracts.setdefault(reference.layout_key, contract)
+        if previous != contract:
+            raise TemplateStructureError(
+                f"spec_lock.md layout key {reference.layout_key!r} must be globally "
+                "unique to one Master and one Layout name"
+            )
+    if mode == "structured":
+        unused_masters = sorted(
+            seen_master_keys - {
+                reference.master_key
+                for reference in references
+                if reference.master_key is not None
+            }
         )
-    mixed_kind_keys = sorted(
-        key for key, kinds in layout_kinds_by_key.items() if len(kinds) > 1
-    )
-    if mixed_kind_keys:
-        raise TemplateStructureError(
-            "spec_lock.md reuses layout key(s) with different layout kinds: "
-            + ", ".join(mixed_kind_keys)
-        )
+        if unused_masters:
+            raise TemplateStructureError(
+                "spec_lock.md pptx_masters contains unreferenced Master key(s): "
+                + ", ".join(unused_masters)
+            )
     if mode == "flat" and layout_section_present:
         raise TemplateStructureError(
             "spec_lock.md pptx_layouts section is not allowed when "
@@ -819,7 +787,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     return PptxStructureLock(
         mode=mode,
         template_adherence=template_adherence,
-        layout_strategy=layout_strategy,
+        masters=tuple(masters),
         layouts=tuple(sorted(references, key=lambda item: item.slide_num)),
         prototypes=tuple(sorted(prototypes, key=lambda item: item.slide_num)),
         source_template=source_template,
@@ -1049,56 +1017,53 @@ def _parse_placeholder_idx(
     return parsed
 
 
-def _validate_placeholder_element(
-    elem: ET.Element,
+def _validate_placeholder_carrier(
+    carrier: ET.Element,
     placeholder: str,
     *,
     svg_path: Path,
     element_id: str,
-    layout_kind: str | None,
 ) -> None:
-    tag = _local_tag(elem)
+    tag = _local_tag(carrier)
     if placeholder in _TEXT_PLACEHOLDERS and tag != "text":
         raise TemplateStructureError(
             f"{svg_path.name}: {element_id} placeholder '{placeholder}' must be "
-            "declared on a direct <text> element"
+            "carried by one direct <text> child"
         )
     if placeholder == "picture" and tag not in {"image", "svg"}:
         raise TemplateStructureError(
             f"{svg_path.name}: {element_id} picture placeholder must be declared "
-            "on a direct <image> or nested crop <svg> element"
+            "with one direct <image> or crop <svg> carrier"
         )
     if placeholder == "media" and tag not in {"image", "svg"}:
         raise TemplateStructureError(
             f"{svg_path.name}: {element_id} media placeholder must be declared "
-            "on a direct <image> or nested crop <svg> element"
+            "with one direct <image> or crop <svg> carrier"
         )
-    composite_distilled_object = _is_composite_distilled_placeholder_contract(
-        tag,
-        placeholder,
-        layout_kind,
-    )
-    if (
-        placeholder == "object"
-        and tag not in _OBJECT_PLACEHOLDER_TAGS
-        and not composite_distilled_object
-    ):
+    if placeholder == "object" and tag not in _OBJECT_PLACEHOLDER_TAGS:
         raise TemplateStructureError(
-            f"{svg_path.name}: {element_id} object placeholder must resolve to "
-            "one direct text, image, or basic SVG shape; only a completed "
-            "distilled Layout may use one direct group as a Layout-only region "
-            "proxy"
+            f"{svg_path.name}: {element_id} object placeholder carrier must be "
+            "one direct text, image, or basic SVG shape"
         )
     if placeholder in {"chart", "table"}:
-        native_kind = (elem.get("data-pptx-native") or "").strip().lower()
+        native_kind = (carrier.get("data-pptx-native") or "").strip().lower()
         if tag != "g" or native_kind != placeholder:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id} placeholder '{placeholder}' must be "
-                f"a direct <g data-pptx-native=\"{placeholder}\"> marker"
+                f"carried by one direct <g data-pptx-native=\"{placeholder}\"> marker"
             )
 
 
-def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
+def _structure_attrs(elem: ET.Element) -> list[str]:
+    return sorted(attr for attr in _STRUCTURE_ATTRS if elem.get(attr) is not None)
+
+
+def parse_template_slide(
+    svg_path: Path,
+    slide_num: int,
+    *,
+    structured: bool = True,
+) -> TemplateSlideSpec:
     """Parse one SVG's explicit template layout and structure elements."""
     try:
         root = ET.parse(svg_path).getroot()
@@ -1117,6 +1082,26 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
     if _local_tag(root) != "svg":
         raise TemplateStructureError(f"{svg_path.name}: root element must be <svg>")
 
+    master_key = (root.get("data-pptx-master") or "").strip()
+    master_name = (root.get("data-pptx-master-name") or "").strip()
+    if structured and not master_key:
+        raise TemplateStructureError(
+            f"{svg_path.name}: structured export requires root data-pptx-master"
+        )
+    if structured and not master_name:
+        raise TemplateStructureError(
+            f"{svg_path.name}: structured export requires root data-pptx-master-name"
+        )
+    if not master_key:
+        master_key = "preserved-source"
+    if not master_name:
+        master_name = "Preserved Source Master"
+    if not _MASTER_KEY_RE.fullmatch(master_key):
+        raise TemplateStructureError(
+            f"{svg_path.name}: invalid data-pptx-master {master_key!r}; use 1-64 "
+            "ASCII letters, digits, dots, underscores, or hyphens"
+        )
+
     layout_key = (root.get("data-pptx-layout") or "").strip()
     if not layout_key:
         raise TemplateStructureError(
@@ -1128,18 +1113,16 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             "ASCII letters, digits, dots, underscores, or hyphens"
         )
     layout_name = (root.get("data-pptx-layout-name") or "").strip()
+    if structured and not layout_name:
+        raise TemplateStructureError(
+            f"{svg_path.name}: structured export requires root data-pptx-layout-name"
+        )
     if not layout_name:
         layout_name = re.sub(r"[-_.]+", " ", layout_key).strip().title() or layout_key
-    layout_kind_raw = root.get("data-pptx-layout-kind")
-    layout_kind = (layout_kind_raw or "").strip().lower() or None
-    if layout_kind_raw is not None and layout_kind is None:
+    if structured and root.get("data-pptx-layout-kind") is not None:
         raise TemplateStructureError(
-            f"{svg_path.name}: data-pptx-layout-kind cannot be empty"
-        )
-    if layout_kind and layout_kind not in DISTILLED_LAYOUT_KINDS:
-        allowed = ", ".join(sorted(DISTILLED_LAYOUT_KINDS))
-        raise TemplateStructureError(
-            f"{svg_path.name}: data-pptx-layout-kind must be one of: {allowed}"
+            f"{svg_path.name}: data-pptx-layout-kind is obsolete; the root "
+            "Master/Layout identity is already final"
         )
 
     illegal_root_attrs = sorted(
@@ -1147,8 +1130,9 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
         if (
             attr not in {
                 "data-pptx-layout",
-                "data-pptx-layout-kind",
                 "data-pptx-layout-name",
+                "data-pptx-master",
+                "data-pptx-master-name",
             }
             and root.get(attr) is not None
         )
@@ -1170,18 +1154,6 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             + ", ".join(duplicate_ids)
         )
 
-    direct_children = set(root)
-    for elem in root.iter():
-        if elem is root or elem in direct_children:
-            continue
-        nested_attrs = sorted(attr for attr in _STRUCTURE_ATTRS if elem.get(attr) is not None)
-        if nested_attrs:
-            element_id = elem.get("id") or _local_tag(elem) or "<unnamed>"
-            raise TemplateStructureError(
-                f"{svg_path.name}: {element_id} uses Layout metadata below the SVG "
-                "root; structure metadata is allowed only on direct children"
-            )
-
     elements: list[TemplateElementSpec] = []
     canvas = _svg_canvas(root)
     last_order_rank = -1
@@ -1200,18 +1172,21 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
         )
         bounds_raw = elem.get("data-pptx-placeholder-bounds")
         placeholder_idx_raw = elem.get("data-pptx-placeholder-idx")
+        binding_raw = elem.get("data-pptx-placeholder-binding")
+        carrier_raw = elem.get("data-pptx-placeholder-carrier")
         editable_raw = elem.get("data-pptx-editable")
         is_background = _is_full_canvas_solid_rect(elem, canvas)
         effective_layer = layer or ("slide" if is_background else None)
 
         if (
             elem.get("data-pptx-layout") is not None
-            or elem.get("data-pptx-layout-kind") is not None
             or elem.get("data-pptx-layout-name") is not None
+            or elem.get("data-pptx-master") is not None
+            or elem.get("data-pptx-master-name") is not None
         ):
             raise TemplateStructureError(
-                f"{svg_path.name}: data-pptx-layout, data-pptx-layout-name, and "
-                "data-pptx-layout-kind belong on the root <svg> only"
+                f"{svg_path.name}: Master/Layout identity attributes belong on "
+                "the root <svg> only"
             )
         if layer and layer not in _LAYERS:
             raise TemplateStructureError(
@@ -1242,6 +1217,11 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
                 f"{svg_path.name}: data-pptx-layer='slide' is allowed only on a "
                 "direct full-canvas solid background rect"
             )
+        if structured and layer in {"master", "layout"} and tag == "g":
+            raise TemplateStructureError(
+                f"{svg_path.name}: {element_id or tag} is a <g> on the {layer} "
+                "layer; Master/Layout fixed elements must be root-level atoms"
+            )
         if bounds_raw is not None and not placeholder:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} has placeholder bounds without "
@@ -1251,6 +1231,17 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} has placeholder idx without "
                 "data-pptx-placeholder"
+            )
+        if binding_raw is not None and not placeholder:
+            raise TemplateStructureError(
+                f"{svg_path.name}: {element_id or tag} has placeholder binding "
+                "without data-pptx-placeholder"
+            )
+        if carrier_raw is not None:
+            raise TemplateStructureError(
+                f"{svg_path.name}: {element_id or tag} declares "
+                "data-pptx-placeholder-carrier on a root child; the marker belongs "
+                "on the direct child inside a placeholder <g>"
             )
         if (effective_layer or placeholder) and not element_id:
             raise TemplateStructureError(
@@ -1279,23 +1270,15 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             )
         last_order_rank = order_rank
 
-        if placeholder:
-            _validate_placeholder_element(
-                elem,
-                placeholder,
-                svg_path=svg_path,
-                element_id=element_id,
-                layout_kind=layout_kind,
-            )
         placeholder_bounds = _parse_placeholder_bounds(
             bounds_raw,
             svg_path=svg_path,
             element_id=element_id or tag,
         )
-        if layout_kind == "distilled" and placeholder and placeholder_bounds is None:
+        if structured and placeholder and placeholder_bounds is None:
             raise TemplateStructureError(
-                f"{svg_path.name}: distilled Layout placeholder {element_id!r} "
-                "requires explicit data-pptx-placeholder-bounds; derive the "
+                f"{svg_path.name}: Layout placeholder {element_id!r} requires "
+                "explicit data-pptx-placeholder-bounds; define the "
                 "reusable frame from the design zone, not the current text bounds"
             )
         placeholder_idx = _parse_placeholder_idx(
@@ -1303,6 +1286,127 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
             svg_path=svg_path,
             element_id=element_id or tag,
         )
+
+        placeholder_binding: str | None = None
+        placeholder_carrier_tag: str | None = None
+        if placeholder and structured:
+            if tag != "g":
+                raise TemplateStructureError(
+                    f"{svg_path.name}: placeholder {element_id!r} must be declared "
+                    "on a root-level <g> authoring boundary"
+                )
+            wrapper_visual_attrs = sorted(
+                name
+                for name in elem.attrib
+                if name != "id" and not name.startswith("data-pptx-")
+            )
+            if wrapper_visual_attrs:
+                raise TemplateStructureError(
+                    f"{svg_path.name}: placeholder group {element_id!r} must be a "
+                    "render-neutral authoring boundary; move these attributes to "
+                    "its content: " + ", ".join(wrapper_visual_attrs)
+                )
+            placeholder_binding = (binding_raw or "carrier").strip().lower()
+            if binding_raw is not None and not binding_raw.strip():
+                raise TemplateStructureError(
+                    f"{svg_path.name}: placeholder {element_id!r} has an empty "
+                    "data-pptx-placeholder-binding"
+                )
+            if placeholder_binding not in PLACEHOLDER_BINDING_MODES:
+                allowed = ", ".join(sorted(PLACEHOLDER_BINDING_MODES))
+                raise TemplateStructureError(
+                    f"{svg_path.name}: placeholder {element_id!r} binding must be "
+                    f"one of: {allowed}"
+                )
+            visual_children = [
+                child for child in elem if _local_tag(child) not in _NON_VISUAL_TAGS
+            ]
+            carrier_children = [
+                child
+                for child in visual_children
+                if (child.get("data-pptx-placeholder-carrier") or "")
+                .strip()
+                .lower()
+                == "true"
+            ]
+            for child in elem:
+                marker = child.get("data-pptx-placeholder-carrier")
+                if marker is not None and marker.strip().lower() != "true":
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: placeholder {element_id!r} carrier marker "
+                        "must be exactly 'true'"
+                    )
+                illegal_child_attrs = [
+                    attr
+                    for attr in _structure_attrs(child)
+                    if attr != "data-pptx-placeholder-carrier"
+                ]
+                if illegal_child_attrs:
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: placeholder {element_id!r} child uses "
+                        "nested structure metadata: " + ", ".join(illegal_child_attrs)
+                    )
+                for descendant in child.iter():
+                    if descendant is child:
+                        continue
+                    nested_attrs = _structure_attrs(descendant)
+                    if nested_attrs:
+                        nested_id = descendant.get("id") or _local_tag(descendant)
+                        raise TemplateStructureError(
+                            f"{svg_path.name}: {nested_id} uses nested structure "
+                            "metadata: " + ", ".join(nested_attrs)
+                        )
+            if placeholder_binding == "proxy":
+                if placeholder != "object":
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: placeholder {element_id!r} may use proxy "
+                        "binding only with data-pptx-placeholder='object'"
+                    )
+                if carrier_children:
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: proxy placeholder {element_id!r} must not "
+                        "declare a carrier child"
+                    )
+                if not visual_children:
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: proxy placeholder {element_id!r} must "
+                        "contain visible Slide-local content"
+                    )
+            else:
+                if len(visual_children) != 1 or len(carrier_children) != 1:
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: carrier placeholder {element_id!r} must "
+                        "contain exactly one visual direct child and mark it "
+                        "data-pptx-placeholder-carrier='true'"
+                    )
+                carrier = carrier_children[0]
+                placeholder_carrier_tag = _local_tag(carrier)
+                _validate_placeholder_carrier(
+                    carrier,
+                    placeholder,
+                    svg_path=svg_path,
+                    element_id=element_id,
+                )
+        elif placeholder:
+            placeholder_binding = "carrier"
+            placeholder_carrier_tag = tag
+            _validate_placeholder_carrier(
+                elem,
+                placeholder,
+                svg_path=svg_path,
+                element_id=element_id,
+            )
+        else:
+            for descendant in elem.iter():
+                if descendant is elem:
+                    continue
+                nested_attrs = _structure_attrs(descendant)
+                if nested_attrs:
+                    nested_id = descendant.get("id") or _local_tag(descendant)
+                    raise TemplateStructureError(
+                        f"{svg_path.name}: {nested_id} uses structure metadata below "
+                        "the SVG root: " + ", ".join(nested_attrs)
+                    )
 
         if effective_layer or placeholder:
             elements.append(TemplateElementSpec(
@@ -1313,6 +1417,8 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
                 placeholder=placeholder,
                 placeholder_bounds=placeholder_bounds,
                 placeholder_idx=placeholder_idx,
+                placeholder_binding=placeholder_binding,
+                placeholder_carrier_tag=placeholder_carrier_tag,
                 is_background=is_background,
             ))
         visual_order += 1
@@ -1331,25 +1437,12 @@ def parse_template_slide(svg_path: Path, slide_num: int) -> TemplateSlideSpec:
     spec = TemplateSlideSpec(
         slide_num=slide_num,
         svg_path=svg_path,
+        master_key=master_key,
+        master_name=master_name,
         layout_key=layout_key,
         layout_name=layout_name,
-        layout_kind=layout_kind,
         elements=tuple(elements),
     )
-    if layout_kind == "utility" and (spec.layout_elements or spec.placeholders):
-        raise TemplateStructureError(
-            f"{svg_path.name}: utility Layouts must contain zero Layout elements "
-            "and placeholders"
-        )
-    if (
-        layout_kind == "distilled"
-        and not spec.layout_elements
-        and not spec.placeholders
-    ):
-        raise TemplateStructureError(
-            f"{svg_path.name}: distilled Layout must define at least one Layout "
-            "element or placeholder"
-        )
     return spec
 
 
@@ -1364,19 +1457,29 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
             "Explicit Layout export requires at least one SVG slide"
         )
 
-    expected_master = tuple(
-        item.contract_signature() for item in specs[0].master_elements
-    )
-    for spec in specs[1:]:
-        actual_master = tuple(
-            item.contract_signature() for item in spec.master_elements
+    by_master: dict[str, list[TemplateSlideSpec]] = {}
+    for spec in specs:
+        by_master.setdefault(spec.master_key, []).append(spec)
+    for master_key, master_specs in by_master.items():
+        prototype = master_specs[0]
+        expected_master = tuple(
+            item.contract_signature() for item in prototype.master_elements
         )
-        if actual_master != expected_master:
-            raise TemplateStructureError(
-                f"{spec.svg_path.name}: master layer contract differs from "
-                f"{specs[0].svg_path.name}; every structured slide must repeat the same "
-                "explicit master elements in the same order"
+        for spec in master_specs[1:]:
+            if spec.master_name != prototype.master_name:
+                raise TemplateStructureError(
+                    f"{spec.svg_path.name}: Master {master_key!r} uses name "
+                    f"{spec.master_name!r}, expected {prototype.master_name!r}"
+                )
+            actual_master = tuple(
+                item.contract_signature() for item in spec.master_elements
             )
+            if actual_master != expected_master:
+                raise TemplateStructureError(
+                    f"{spec.svg_path.name}: Master {master_key!r} contract differs "
+                    f"from {prototype.svg_path.name}; slides sharing one Master must "
+                    "repeat the same root-level atoms in the same order"
+                )
 
     by_layout: dict[str, list[TemplateSlideSpec]] = {}
     for spec in specs:
@@ -1390,10 +1493,11 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
                     f"{spec.svg_path.name}: layout {layout_key!r} uses name "
                     f"{spec.layout_name!r}, expected {prototype.layout_name!r}"
                 )
-            if spec.layout_kind != prototype.layout_kind:
+            if spec.master_key != prototype.master_key:
                 raise TemplateStructureError(
-                    f"{spec.svg_path.name}: layout {layout_key!r} uses kind "
-                    f"{spec.layout_kind!r}, expected {prototype.layout_kind!r}"
+                    f"{spec.svg_path.name}: globally unique layout {layout_key!r} "
+                    f"belongs to Master {spec.master_key!r}, expected "
+                    f"{prototype.master_key!r}"
                 )
             if spec.layout_contract != prototype.layout_contract:
                 raise TemplateStructureError(
@@ -1407,7 +1511,7 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
 def parse_optional_layout_slides(
     svg_files: list[Path],
 ) -> list[TemplateSlideSpec] | None:
-    """Parse an all-or-none Layout contract, or return unmapped baseline absence."""
+    """Parse an all-or-none structured Layout contract, or return no metadata."""
     roots: list[tuple[Path, ET.Element]] = []
     has_structure_metadata = False
     for svg_path in svg_files:
@@ -1427,6 +1531,16 @@ def parse_optional_layout_slides(
     if not has_structure_metadata:
         return None
 
+    missing_master_keys = [
+        svg_path.name
+        for svg_path, root in roots
+        if not (root.get("data-pptx-master") or "").strip()
+    ]
+    missing_master_names = [
+        svg_path.name
+        for svg_path, root in roots
+        if not (root.get("data-pptx-master-name") or "").strip()
+    ]
     missing_keys = [
         svg_path.name
         for svg_path, root in roots
@@ -1437,8 +1551,16 @@ def parse_optional_layout_slides(
         for svg_path, root in roots
         if not (root.get("data-pptx-layout-name") or "").strip()
     ]
-    if missing_keys or missing_names:
+    if missing_master_keys or missing_master_names or missing_keys or missing_names:
         missing_fields: list[str] = []
+        if missing_master_keys:
+            missing_fields.append(
+                "data-pptx-master: " + ", ".join(missing_master_keys)
+            )
+        if missing_master_names:
+            missing_fields.append(
+                "data-pptx-master-name: " + ", ".join(missing_master_names)
+            )
         if missing_keys:
             missing_fields.append(
                 "data-pptx-layout: " + ", ".join(missing_keys)
@@ -1450,31 +1572,17 @@ def parse_optional_layout_slides(
         raise TemplateStructureError(
             "Explicit Layout metadata is all-or-none: once any SVG uses PPTX "
             "structure metadata, every generated page root must declare "
-            "data-pptx-layout and data-pptx-layout-name with non-empty values; "
+            "Master/Layout keys and names with non-empty values; "
             "missing "
             + "; ".join(missing_fields)
         )
-    specs = parse_template_slides(svg_files)
-    empty_layouts = sorted({
-        spec.layout_key
-        for spec in specs
-        if spec.layout_kind != "utility"
-        if not spec.layout_elements and not spec.placeholders
-    })
-    if empty_layouts:
-        raise TemplateStructureError(
-            "Explicit baseline Layout contracts must define at least one "
-            "data-pptx-layer='layout' element or data-pptx-placeholder per "
-            "layout key; empty: "
-            + ", ".join(empty_layouts)
-        )
-    return specs
+    return parse_template_slides(svg_files)
 
 
 def parse_preserve_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
     """Parse preserve-mode slides before source master grouping is known."""
     specs = [
-        parse_template_slide(svg_path, slide_num)
+        parse_template_slide(svg_path, slide_num, structured=False)
         for slide_num, svg_path in enumerate(svg_files, start=1)
     ]
     if not specs:
@@ -1487,7 +1595,7 @@ def template_lock_errors(
     structure_lock: PptxStructureLock,
 ) -> list[str]:
     """Return mismatches between parsed SVG layouts and the project lock."""
-    if structure_lock.mode not in {"baseline", "template", "preserve"}:
+    if structure_lock.mode not in {"structured", "preserve"}:
         return []
     errors: list[str] = []
     references = {
@@ -1524,12 +1632,24 @@ def template_lock_errors(
                 f"does not match spec_lock P{spec.slide_num:02d} layout name "
                 f"{reference.layout_name!r}"
             )
-        if spec.layout_kind != reference.layout_kind:
+        if reference.master_key and spec.master_key != reference.master_key:
             errors.append(
-                f"{spec.svg_path.name}: data-pptx-layout-kind="
-                f"{spec.layout_kind!r} does not match spec_lock "
-                f"P{spec.slide_num:02d} layout kind {reference.layout_kind!r}"
+                f"{spec.svg_path.name}: data-pptx-master={spec.master_key!r} "
+                f"does not match spec_lock P{spec.slide_num:02d} Master key "
+                f"{reference.master_key!r}"
             )
+    if structure_lock.mode == "structured":
+        master_names = {
+            master.master_key: master.master_name for master in structure_lock.masters
+        }
+        for spec in specs:
+            expected_name = master_names.get(spec.master_key)
+            if expected_name is not None and spec.master_name != expected_name:
+                errors.append(
+                    f"{spec.svg_path.name}: data-pptx-master-name="
+                    f"{spec.master_name!r} does not match spec_lock Master "
+                    f"{spec.master_key!r} name {expected_name!r}"
+                )
     return errors
 
 
@@ -1970,8 +2090,8 @@ def _mirror_slide_local_signature(
 
     Visible text values may change, but their element topology, attributes,
     grouping, paint, geometry, and referenced asset bytes remain literal.
-    Structure metadata may change when adaptive distillation promotes or
-    demotes the same stable SVG id.
+    Structure metadata may change when adaptive template authoring assigns an
+    evolved Layout identity to the same stable SVG id.
     """
     try:
         root = ET.parse(spec.svg_path).getroot()
@@ -2021,11 +2141,8 @@ def template_prototype_errors(
     *,
     require_complete_roster: bool = True,
 ) -> list[str]:
-    """Compare deferred-template pages with their selected SVG prototypes."""
-    if (
-        structure_lock.mode != "template"
-        or structure_lock.layout_strategy != "distill"
-    ):
+    """Compare structured template pages with their selected SVG prototypes."""
+    if structure_lock.mode != "structured" or not structure_lock.prototypes:
         return []
     errors: list[str] = []
     prototypes = {
@@ -2079,14 +2196,16 @@ def template_prototype_errors(
             errors.append(str(exc))
             continue
         if (
-            tuple(item.contract_signature() for item in spec.master_elements)
+            spec.master_key != prototype.master_key
+            or spec.master_name != prototype.master_name
+            or tuple(item.contract_signature() for item in spec.master_elements)
             != tuple(
                 item.contract_signature() for item in prototype.master_elements
             )
             or actual_master_structure != expected_master_structure
         ):
             errors.append(
-                f"{spec.svg_path.name}: distilled template Master structure differs "
+                f"{spec.svg_path.name}: template Master structure differs "
                 f"from prototype {reference.svg_path.name}; strict and adaptive "
                 "routes must retain its ids, topology, geometry, and content"
                 + (" including mirror visual styling" if literal_visual else "")
@@ -2176,14 +2295,14 @@ def template_prototype_errors(
         if adherence == "adaptive" and not reuses_prototype_key:
             if spec.layout_name == prototype.layout_name:
                 errors.append(
-                    f"{spec.svg_path.name}: adaptive template distillation created "
+                    f"{spec.svg_path.name}: adaptive template authoring created "
                     f"new layout key {spec.layout_key!r} but reused prototype picker "
                     f"name {prototype.layout_name!r}; assign a new key and name to "
                     "the evolved Layout contract"
                 )
             if reusable_contract_same:
                 errors.append(
-                    f"{spec.svg_path.name}: adaptive template distillation changed "
+                    f"{spec.svg_path.name}: adaptive template authoring changed "
                     "only the Layout key/name while the reusable static, "
                     "placeholder, and default-bounds contract is unchanged; "
                     f"reuse prototype identity {prototype.layout_key!r} / "
@@ -2200,7 +2319,7 @@ def template_prototype_errors(
             if adherence == "strict":
                 errors.append(
                     f"{reference.svg_path.name}: deferred strict template "
-                    "distillation requires explicit data-pptx-placeholder-bounds "
+                    "authoring requires explicit data-pptx-placeholder-bounds "
                     "on every prototype placeholder; missing: "
                     + ", ".join(missing_bounds)
                 )
@@ -2214,14 +2333,14 @@ def template_prototype_errors(
             continue
         if spec.layout_key != prototype.layout_key:
             errors.append(
-                f"{spec.svg_path.name}: strict template distillation must keep "
+                f"{spec.svg_path.name}: strict template use must keep "
                 f"prototype layout key {prototype.layout_key!r}, found "
                 f"{spec.layout_key!r}"
             )
         if spec.layout_name != prototype.layout_name:
             if adherence == "strict":
                 errors.append(
-                    f"{spec.svg_path.name}: strict template distillation must keep "
+                    f"{spec.svg_path.name}: strict template use must keep "
                     f"prototype layout name {prototype.layout_name!r}, found "
                     f"{spec.layout_name!r}"
                 )
@@ -2403,14 +2522,27 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
         return []
     errors: list[str] = []
     direct_children = set(root)
+    allowed_carriers = {
+        carrier
+        for slot in root
+        if (slot.get("data-pptx-placeholder") or "").strip()
+        for carrier in slot
+        if carrier.get("data-pptx-placeholder-carrier") is not None
+    }
     for elem in root.iter():
         if elem is root or elem in direct_children:
             continue
-        if any(elem.get(attr) is not None for attr in _STRUCTURE_ATTRS):
+        attrs = _structure_attrs(elem)
+        if elem in allowed_carriers:
+            attrs = [
+                attr for attr in attrs
+                if attr != "data-pptx-placeholder-carrier"
+            ]
+        if attrs:
             element_id = elem.get("id") or _local_tag(elem) or "<unnamed>"
             errors.append(
                 f"{svg_path.name}: {element_id} uses template metadata below the SVG "
-                "root; structure metadata is allowed only on direct children"
+                "root; only a direct slot child may declare its carrier marker"
             )
     canvas = _svg_canvas(root)
     last_order_rank = -1

@@ -2,7 +2,7 @@
 """
 PPT Master - Template Package Validation
 
-Read a generated template-mode PPTX back and verify its reusable Layout graph.
+Read a generated structured PPTX back and verify its reusable Master/Layout graph.
 
 Usage:
     Imported by svg_to_pptx.pptx_package.builder.
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         print(__doc__)
         raise SystemExit(0)
     print(
-        "Use this validator through the template-mode SVG-to-PPTX exporter.",
+        "Use this validator through the structured SVG-to-PPTX exporter.",
         file=sys.stderr,
     )
     raise SystemExit(1)
@@ -41,7 +41,7 @@ from .template_structure import (
     TemplatePlaceholderBinding,
     TemplateSlideSpec,
     TemplateStructureError,
-    is_composite_distilled_placeholder,
+    is_proxy_placeholder,
     template_placeholder_bindings,
 )
 
@@ -898,6 +898,8 @@ def validate_pptx_template_package(
             used_master_parts: set[str] = set()
             layout_parts_by_master: dict[str, set[str]] = {}
             master_specs_by_part: dict[str, TemplateSlideSpec] = {}
+            master_parts_by_key: dict[str, str] = {}
+            keys_by_master_part: dict[str, str] = {}
             for layout_key, layout_specs in specs_by_layout.items():
                 prototype = layout_specs[0]
                 layout_part = layout_parts_by_key.get(layout_key)
@@ -926,20 +928,6 @@ def validate_pptx_template_package(
                         f"{layout_part} has picker name {actual_name!r}, expected "
                         f"{expected_name!r}"
                     )
-
-                if layout_specs[0].layout_kind == "utility" and c_sld is not None:
-                    if c_sld.find(f"{{{PML_NS}}}bg") is not None:
-                        errors.append(
-                            f"{layout_part} utility Layout must not define a background"
-                        )
-                    shape_tree = c_sld.find(f"{{{PML_NS}}}spTree")
-                    if shape_tree is not None and any(
-                        child.tag in _TOP_LEVEL_VISIBLE_TAGS
-                        for child in shape_tree
-                    ):
-                        errors.append(
-                            f"{layout_part} utility Layout must not contain shapes"
-                        )
 
                 override_values = overrides.get(f"/{layout_part}", [])
                 if override_values != [SLIDE_LAYOUT_CONTENT_TYPE]:
@@ -1004,10 +992,6 @@ def validate_pptx_template_package(
                     slide_root = slide_roots.get(spec.slide_num)
                     if slide_root is None:
                         continue
-                    # Atomic distilled carriers bind directly. A composite
-                    # object region remains ordinary and uses one hidden,
-                    # transparent matching proxy to suppress empty inherited
-                    # placeholder paint in non-PowerPoint renderers.
                     expected_slide_bindings = bindings
                     slide_placeholders[spec.slide_num] = _validate_placeholder_roster(
                         slide_root,
@@ -1037,96 +1021,106 @@ def validate_pptx_template_package(
                             f"Slide {spec.slide_num} has no pre-promotion p:bg "
                             "payload for exact read-back"
                         )
-                    if spec.layout_kind == "distilled":
-                        expected_distilled_names = [
-                            f"{item.element_id} Distilled Carrier"
-                            for item in spec.placeholders
-                        ]
-                        expected_distilled_names.extend(
-                            "Distilled Binding "
-                            f"{binding.placeholder_type} {binding.effective_idx}"
-                            for binding in bindings
-                            if is_composite_distilled_placeholder(
-                                binding.element,
-                                spec.layout_kind,
-                            )
+                    expected_carrier_names = [
+                        (
+                            f"{item.element_id} Proxy Content"
+                            if is_proxy_placeholder(item)
+                            else f"{item.element_id} Placeholder Carrier"
                         )
-                        _validate_named_shape_roster(
+                        for item in spec.placeholders
+                    ]
+                    expected_carrier_names.extend(
+                        "Placeholder Binding "
+                        f"{binding.placeholder_type} {binding.effective_idx}"
+                        for binding in bindings
+                        if is_proxy_placeholder(binding.element)
+                    )
+                    _validate_named_shape_roster(
+                        slide_root,
+                        expected_carrier_names,
+                        f"Slide {spec.slide_num}",
+                        errors,
+                        exact=False,
+                        ordered=True,
+                    )
+                    bindings_by_element = {
+                        binding.element.element_id: binding
+                        for binding in bindings
+                    }
+                    for item in spec.placeholders:
+                        proxy_binding = is_proxy_placeholder(item)
+                        carrier_name = (
+                            f"{item.element_id} Proxy Content"
+                            if proxy_binding
+                            else f"{item.element_id} Placeholder Carrier"
+                        )
+                        carrier = _top_level_shape_by_name(slide_root, carrier_name)
+                        carrier_placeholder = (
+                            carrier.find(f".//{{{PML_NS}}}ph")
+                            if carrier is not None
+                            else None
+                        )
+                        if proxy_binding:
+                            if carrier_placeholder is not None:
+                                errors.append(
+                                    f"Slide {spec.slide_num} proxy content "
+                                    f"{carrier_name!r} must remain ordinary"
+                                )
+                        elif carrier is not None and carrier_placeholder is None:
+                            errors.append(
+                                f"Slide {spec.slide_num} carrier "
+                                f"{carrier_name!r} must own its p:ph binding"
+                            )
+                        if not proxy_binding:
+                            continue
+                        placeholder_binding = bindings_by_element[item.element_id]
+                        binding_name = (
+                            "Placeholder Binding "
+                            f"{placeholder_binding.placeholder_type} "
+                            f"{placeholder_binding.effective_idx}"
+                        )
+                        binding_shape = _top_level_shape_by_name(
                             slide_root,
-                            expected_distilled_names,
-                            f"Slide {spec.slide_num}",
-                            errors,
-                            exact=False,
-                            ordered=True,
+                            binding_name,
                         )
-                        bindings_by_element = {
-                            binding.element.element_id: binding
-                            for binding in bindings
+                        if binding_shape is None:
+                            continue
+                        c_nv_pr = next(
+                            binding_shape.iter(f"{{{PML_NS}}}cNvPr"),
+                            None,
+                        )
+                        if (
+                            c_nv_pr is None
+                            or c_nv_pr.get("hidden", "0").lower()
+                            not in {"1", "true"}
+                        ):
+                            errors.append(
+                                f"Slide {spec.slide_num} binding proxy "
+                                f"{binding_name!r} must be hidden"
+                            )
+                        if binding_shape.find(f".//{{{PML_NS}}}ph") is None:
+                            errors.append(
+                                f"Slide {spec.slide_num} binding proxy "
+                                f"{binding_name!r} has no p:ph"
+                            )
+                        alpha_values = {
+                            alpha.get("val")
+                            for alpha in binding_shape.findall(
+                                f".//{{{DML_NS}}}srgbClr/{{{DML_NS}}}alpha"
+                            )
                         }
-                        for item in spec.placeholders:
-                            carrier_name = (
-                                f"{item.element_id} Distilled Carrier"
+                        proxy_text = "".join(
+                            node.text or ""
+                            for node in binding_shape.findall(
+                                f".//{{{DML_NS}}}t"
                             )
-                            carrier = _top_level_shape_by_name(
-                                slide_root,
-                                carrier_name,
+                        )
+                        if "0" not in alpha_values or proxy_text != "\u200b":
+                            errors.append(
+                                f"Slide {spec.slide_num} binding proxy "
+                                f"{binding_name!r} must contain exactly one fully "
+                                "transparent zero-width run"
                             )
-                            carrier_placeholder = (
-                                carrier.find(f".//{{{PML_NS}}}ph")
-                                if carrier is not None
-                                else None
-                            )
-                            composite_object = is_composite_distilled_placeholder(
-                                item,
-                                spec.layout_kind,
-                            )
-                            if composite_object:
-                                if carrier_placeholder is not None:
-                                    errors.append(
-                                        f"Slide {spec.slide_num} composite carrier "
-                                        f"{carrier_name!r} must remain ordinary"
-                                    )
-                            elif carrier is not None and carrier_placeholder is None:
-                                errors.append(
-                                    f"Slide {spec.slide_num} atomic carrier "
-                                    f"{carrier_name!r} must own its p:ph binding"
-                                )
-                            placeholder_binding = bindings_by_element[
-                                item.element_id
-                            ]
-                            if not composite_object:
-                                continue
-                            binding_name = (
-                                "Distilled Binding "
-                                f"{placeholder_binding.placeholder_type} "
-                                f"{placeholder_binding.effective_idx}"
-                            )
-                            binding_shape = _top_level_shape_by_name(
-                                slide_root,
-                                binding_name,
-                            )
-                            if binding_shape is None:
-                                continue
-                            c_nv_pr = next(
-                                binding_shape.iter(f"{{{PML_NS}}}cNvPr"),
-                                None,
-                            )
-                            if (
-                                c_nv_pr is None
-                                or c_nv_pr.get("hidden", "0").lower()
-                                not in {"1", "true"}
-                            ):
-                                errors.append(
-                                    f"Slide {spec.slide_num} binding proxy "
-                                    f"{binding_name!r} must be hidden"
-                                )
-                            if binding_shape.find(
-                                f".//{{{PML_NS}}}ph"
-                            ) is None:
-                                errors.append(
-                                    f"Slide {spec.slide_num} binding proxy "
-                                    f"{binding_name!r} has no p:ph"
-                                )
 
                 prototype_placeholders = slide_placeholders.get(
                     prototype.slide_num,
@@ -1136,10 +1130,7 @@ def validate_pptx_template_package(
                     idx = binding.effective_idx
                     layout_placeholder = layout_placeholders.get(idx)
                     prototype_placeholder = prototype_placeholders.get(idx)
-                    if is_composite_distilled_placeholder(
-                        binding.element,
-                        prototype.layout_kind,
-                    ):
+                    if is_proxy_placeholder(binding.element):
                         prototype_placeholder = None
                     if layout_placeholder is None:
                         continue
@@ -1225,7 +1216,32 @@ def validate_pptx_template_package(
                     continue
                 reader.xml(master_part)
                 used_master_parts.add(master_part)
-                master_specs_by_part.setdefault(master_part, prototype)
+                previous_master_part = master_parts_by_key.setdefault(
+                    prototype.master_key,
+                    master_part,
+                )
+                if previous_master_part != master_part:
+                    errors.append(
+                        f"Master key {prototype.master_key!r} targets both "
+                        f"{previous_master_part} and {master_part}"
+                    )
+                previous_master_key = keys_by_master_part.setdefault(
+                    master_part,
+                    prototype.master_key,
+                )
+                if previous_master_key != prototype.master_key:
+                    errors.append(
+                        f"Master keys {previous_master_key!r} and "
+                        f"{prototype.master_key!r} both target {master_part}"
+                    )
+                previous_master_spec = master_specs_by_part.setdefault(
+                    master_part,
+                    prototype,
+                )
+                if previous_master_spec.master_key != prototype.master_key:
+                    errors.append(
+                        f"{master_part} is shared by conflicting SVG Master contracts"
+                    )
                 layout_parts_by_master.setdefault(master_part, set()).add(
                     layout_part
                 )
@@ -1237,6 +1253,18 @@ def validate_pptx_template_package(
                     continue
                 master_spec = master_specs_by_part.get(master_part)
                 if master_spec is not None:
+                    master_c_sld = master_root.find(f"{{{PML_NS}}}cSld")
+                    actual_master_name = (
+                        master_c_sld.get("name")
+                        if master_c_sld is not None
+                        else None
+                    )
+                    if actual_master_name != master_spec.master_name:
+                        errors.append(
+                            f"Master {master_part} has picker name "
+                            f"{actual_master_name!r}, expected "
+                            f"{master_spec.master_name!r}"
+                        )
                     _validate_named_shape_roster(
                         master_root,
                         tuple(

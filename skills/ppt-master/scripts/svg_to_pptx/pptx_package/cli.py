@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 import json
 import math
+import re
 import shutil
 import argparse
 from datetime import datetime
@@ -48,11 +49,7 @@ from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_d
 from .slide_xml import TRANSITIONS
 from .template_structure import (
     TemplateStructureError,
-    load_native_structure_contract,
     load_pptx_structure_lock,
-    native_structure_lock_errors,
-    parse_optional_layout_slides,
-    parse_preserve_slides,
     parse_template_slides,
     template_lock_errors,
     template_prototype_errors,
@@ -67,6 +64,50 @@ from ..animation_config import (
 
 def _as_dict(value: object) -> dict:
     return value if isinstance(value, dict) else {}
+
+
+_PPTX_STRUCTURE_SECTION_RE = re.compile(
+    r"(?ms)^##[ \t]+pptx_structure[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)"
+)
+_PPTX_STRUCTURE_MODE_RE = re.compile(
+    r"(?m)^-[ \t]+mode[ \t]*:[ \t]*([^\s#]+)[ \t]*(?:#.*)?$"
+)
+_LEGACY_PPTX_STRUCTURE_MODES = frozenset({
+    'baseline',
+    'generated',
+    'preserve',
+    'template',
+})
+
+
+def _declared_pptx_structure_mode(project_path: Path) -> str | None:
+    """Return the explicitly locked SVG export mode, without legacy fallback."""
+    lock_path = project_path / 'spec_lock.md'
+    try:
+        content = lock_path.read_text(encoding='utf-8')
+    except OSError:
+        return None
+    section_match = _PPTX_STRUCTURE_SECTION_RE.search(content)
+    if section_match is None:
+        return None
+    mode_match = _PPTX_STRUCTURE_MODE_RE.search(section_match.group(1))
+    return mode_match.group(1).strip().lower() if mode_match else None
+
+
+def _print_structure_migration_error(mode: str | None) -> None:
+    """Explain how a legacy or absent SVG structure contract is restored."""
+    label = repr(mode) if mode else 'missing (legacy implicit baseline)'
+    print(
+        "Error: release SVG export requires spec_lock.md "
+        "pptx_structure.mode: structured; found " + label + ".",
+        file=sys.stderr,
+    )
+    print(
+        "  Restore explicit Master/Layout metadata first by following "
+        "skills/ppt-master/workflows/restore-pptx-structure.md, then rerun "
+        "the quality gate and export.",
+        file=sys.stderr,
+    )
 
 
 def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]]:
@@ -269,20 +310,22 @@ Recorded narration:
                              'to tell it apart from a plain shape export.')
     parser.add_argument(
         '--pptx-structure',
-        choices=['baseline', 'template', 'preserve', 'flat'],
+        choices=[
+            'structured',
+            'flat',
+            'baseline',
+            'template',
+            'preserve',
+            'generated',
+        ],
         default=None,
         help=(
-            'PPTX structure strategy for native export. When omitted, read '
-            'spec_lock.md pptx_structure.mode, falling back to baseline. baseline '
-            'compiles an all-page explicit Layout contract when pptx_layouts and '
-            'matching SVG metadata are present; otherwise it promotes safe repeated '
-            'background/chrome and extracts conservative semantic page-role layout '
-            'families (legacy filenames/ids remain fallbacks); '
-            'template consumes finalized explicit '
-            'data-pptx-layout/layer/placeholder metadata to build reusable layouts '
-            '(a deferred page_layouts prototype contract must be distilled first); '
-            'preserve is legacy compatibility for imported source packages; '
-            'flat leaves generated structure slide-local for debugging/comparison.'
+            'PPTX structure strategy for native export. Release export requires '
+            'spec_lock.md pptx_structure.mode: structured and complete explicit '
+            'Master/Layout metadata in every SVG. flat is an explicit diagnostic '
+            'override that leaves all generated objects slide-local. baseline, '
+            'template, preserve, and generated are accepted only so legacy '
+            'invocations can receive a targeted migration error.'
         ),
     )
     parser.add_argument('--no-image-optimize', action='store_true',
@@ -367,50 +410,44 @@ Recorded narration:
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
         return 1
+
     structure_lock = None
     native_structure_contract = None
     pptx_structure = args.pptx_structure
-    if pptx_structure is None or pptx_structure in {'template', 'preserve'}:
+    declared_structure_mode = _declared_pptx_structure_mode(project_path)
+    if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
+        _print_structure_migration_error(pptx_structure)
+        return 1
+    if pptx_structure is None:
+        if declared_structure_mode != 'structured':
+            _print_structure_migration_error(declared_structure_mode)
+            return 1
+        pptx_structure = 'structured'
+    elif pptx_structure == 'structured' and declared_structure_mode != 'structured':
+        _print_structure_migration_error(declared_structure_mode)
+        return 1
+
+    if pptx_structure == 'structured':
         try:
             structure_lock = load_pptx_structure_lock(project_path)
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
-    if pptx_structure is None:
-        pptx_structure = structure_lock.mode if structure_lock else 'baseline'
-    elif (
-        pptx_structure == 'template'
-        and structure_lock is not None
-        and structure_lock.mode != 'template'
-    ):
-        # Keep the explicit diagnostic override for non-template projects, but
-        # never detach a real template project from its pending/ready lock.
-        structure_lock = None
-    elif pptx_structure == 'preserve':
-        if structure_lock is None or structure_lock.mode != 'preserve':
+        if structure_lock is None or structure_lock.mode != 'structured':
             print(
-                "Error: --pptx-structure preserve requires a preserve-mode "
-                "spec_lock.md with source_template/native_structure rows",
+                "Error: spec_lock.md must contain one complete "
+                "pptx_structure.mode: structured contract",
                 file=sys.stderr,
             )
             return 1
-    if pptx_structure == 'preserve':
-        if structure_lock is None:
-            print("Error: preserve mode requires spec_lock.md", file=sys.stderr)
-            return 1
-        try:
-            native_structure_contract = load_native_structure_contract(structure_lock)
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
+
     theme_font_spec = None
     master_text_style_spec = None
     theme_color_spec = None
-    if pptx_structure in {'baseline', 'template'}:
+    if pptx_structure == 'structured':
         try:
             theme_font_spec = load_theme_font_spec(project_path)
-            if pptx_structure == 'template':
-                master_text_style_spec = load_master_text_style_spec(project_path)
+            master_text_style_spec = load_master_text_style_spec(project_path)
             theme_color_spec = load_theme_color_spec(project_path)
         except (ThemeFontError, ThemeColorError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
@@ -446,104 +483,13 @@ Recorded narration:
         print("Error: No SVG files found")
         return 1
 
+    # Compatibility kwargs remain until the builder's old baseline-specific
+    # parameters are removed. Structured export never activates either path.
     structured_baseline = False
     baseline_layout_specs = None
-    if pptx_structure == 'baseline':
+    if pptx_structure == 'structured' and structure_lock is not None:
         try:
-            baseline_layout_specs = parse_optional_layout_slides(native_files)
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
-
-        if structure_lock is None:
-            if baseline_layout_specs is not None:
-                try:
-                    structure_lock = load_pptx_structure_lock(project_path)
-                except TemplateStructureError as exc:
-                    print(f"Error: {exc}", file=sys.stderr)
-                    return 1
-            elif args.pptx_structure == 'baseline':
-                # A diagnostic baseline override may bypass a stale or damaged
-                # template/preserve lock. A valid baseline lock remains
-                # authoritative, so its pptx_layouts mapping cannot be silently
-                # downgraded to the unmapped page-role route.
-                try:
-                    candidate_lock = load_pptx_structure_lock(project_path)
-                except TemplateStructureError:
-                    candidate_lock = None
-                if candidate_lock is not None and candidate_lock.mode == 'baseline':
-                    structure_lock = candidate_lock
-
-        locked_layouts = structure_lock.layouts if structure_lock is not None else ()
-        if (
-            structure_lock is not None
-            and structure_lock.layout_strategy == 'distill'
-            and (baseline_layout_specs is None or not locked_layouts)
-        ):
-            print(
-                "Error: post-design Layout distillation is incomplete; add a "
-                "complete spec_lock.md pptx_layouts mapping and matching "
-                "data-pptx-layout metadata before export",
-                file=sys.stderr,
-            )
-            return 1
-        if baseline_layout_specs is None:
-            if locked_layouts:
-                print(
-                    "Error: spec_lock.md pptx_layouts requires every baseline SVG "
-                    "root to declare data-pptx-layout and data-pptx-layout-name",
-                    file=sys.stderr,
-                )
-                return 1
-        else:
-            if not locked_layouts or structure_lock is None:
-                print(
-                    "Error: explicit baseline Layout metadata requires a complete "
-                    "spec_lock.md pptx_layouts mapping",
-                    file=sys.stderr,
-                )
-                return 1
-            lock_errors = template_lock_errors(
-                baseline_layout_specs,
-                structure_lock,
-            )
-            if lock_errors:
-                print(
-                    "Error: PPTX structure does not match spec_lock.md:",
-                    file=sys.stderr,
-                )
-                for message in lock_errors:
-                    print(f"  {message}", file=sys.stderr)
-                return 1
-            structured_baseline = True
-            try:
-                master_text_style_spec = load_master_text_style_spec(project_path)
-            except ThemeFontError as exc:
-                print(f"Error: {exc}", file=sys.stderr)
-                return 1
-
-    if (
-        pptx_structure in {'template', 'preserve'}
-        and structure_lock is not None
-    ):
-        if (
-            pptx_structure == 'template'
-            and structure_lock.layout_strategy == 'distill'
-            and not structure_lock.layouts
-        ):
-            print(
-                "Error: template Layout distillation is still pending; run the "
-                "distill-layouts workflow to write the complete pptx_layouts "
-                "mapping and final SVG Layout metadata before export",
-                file=sys.stderr,
-            )
-            return 1
-        try:
-            template_specs = (
-                parse_preserve_slides(native_files)
-                if pptx_structure == 'preserve'
-                else parse_template_slides(native_files)
-            )
+            template_specs = parse_template_slides(native_files)
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
@@ -559,30 +505,13 @@ Recorded narration:
         )
         if prototype_errors:
             print(
-                "Error: distilled template structure does not match page_layouts "
+                "Error: structured template output does not match page_layouts "
                 "prototypes:",
                 file=sys.stderr,
             )
             for message in prototype_errors:
                 print(f"  {message}", file=sys.stderr)
             return 1
-        if pptx_structure == 'preserve':
-            if native_structure_contract is None:
-                print("Error: preserve mode contract is unavailable", file=sys.stderr)
-                return 1
-            preserve_errors = native_structure_lock_errors(
-                template_specs,
-                structure_lock,
-                native_structure_contract,
-            )
-            if preserve_errors:
-                print(
-                    "Error: PPTX structure does not match native_structure.json:",
-                    file=sys.stderr,
-                )
-                for message in preserve_errors:
-                    print(f"  {message}", file=sys.stderr)
-                return 1
 
     release_blocked = _release_blocked_graphics(native_files)
     if release_blocked:
@@ -992,26 +921,6 @@ Recorded narration:
                     print(f"  [warn] svg_output backup skipped: {exc}")
         elif verbose:
             print(f"  [info] svg_output/ not found, backup skipped")
-        if pptx_structure == 'preserve' and structure_lock is not None:
-            try:
-                preserve_sources = [
-                    project_path / 'spec_lock.md',
-                    structure_lock.source_template,
-                    structure_lock.native_structure,
-                ]
-                for source in preserve_sources:
-                    if source is None or not source.is_file():
-                        continue
-                    source_path = source.resolve()
-                    relative = source_path.relative_to(project_path.resolve())
-                    destination = backup_dir / relative
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(source_path, destination)
-                if verbose:
-                    print(f"  preserve contract backup: {backup_dir}")
-            except (OSError, ValueError) as exc:
-                if verbose:
-                    print(f"  [warn] preserve contract backup skipped: {exc}")
 
     return 0 if success else 1
 
