@@ -51,6 +51,7 @@ from .template_structure import (
     load_native_structure_contract,
     load_pptx_structure_lock,
     native_structure_lock_errors,
+    parse_optional_layout_slides,
     parse_preserve_slides,
     parse_template_slides,
     template_lock_errors,
@@ -272,9 +273,10 @@ Recorded narration:
         help=(
             'PPTX structure strategy for native export. When omitted, read '
             'spec_lock.md pptx_structure.mode, falling back to baseline. baseline '
-            'promotes safe repeated background/chrome and extracts conservative '
-            'semantic page-role layout families plus exact family-wide '
-            'structurally marked chrome (legacy filenames/ids remain fallbacks); '
+            'compiles an all-page explicit Layout contract when pptx_layouts and '
+            'matching SVG metadata are present; otherwise it promotes safe repeated '
+            'background/chrome and extracts conservative semantic page-role layout '
+            'families (legacy filenames/ids remain fallbacks); '
             'template consumes explicit '
             'data-pptx-layout/layer/placeholder metadata to build reusable layouts; '
             'preserve is legacy compatibility for imported source packages; '
@@ -366,19 +368,15 @@ Recorded narration:
     structure_lock = None
     native_structure_contract = None
     pptx_structure = args.pptx_structure
-    if pptx_structure is None:
+    if pptx_structure is None or pptx_structure == 'preserve':
         try:
             structure_lock = load_pptx_structure_lock(project_path)
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
+    if pptx_structure is None:
         pptx_structure = structure_lock.mode if structure_lock else 'baseline'
     elif pptx_structure == 'preserve':
-        try:
-            structure_lock = load_pptx_structure_lock(project_path)
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
         if structure_lock is None or structure_lock.mode != 'preserve':
             print(
                 "Error: --pptx-structure preserve requires a preserve-mode "
@@ -437,6 +435,70 @@ Recorded narration:
     if not native_files:
         print("Error: No SVG files found")
         return 1
+
+    structured_baseline = False
+    baseline_layout_specs = None
+    if pptx_structure == 'baseline':
+        try:
+            baseline_layout_specs = parse_optional_layout_slides(native_files)
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+
+        if structure_lock is None:
+            if baseline_layout_specs is not None:
+                try:
+                    structure_lock = load_pptx_structure_lock(project_path)
+                except TemplateStructureError as exc:
+                    print(f"Error: {exc}", file=sys.stderr)
+                    return 1
+            elif args.pptx_structure == 'baseline':
+                # A diagnostic baseline override may bypass a stale or damaged
+                # template/preserve lock. A valid baseline lock remains
+                # authoritative, so its pptx_layouts mapping cannot be silently
+                # downgraded to the legacy page-role route.
+                try:
+                    candidate_lock = load_pptx_structure_lock(project_path)
+                except TemplateStructureError:
+                    candidate_lock = None
+                if candidate_lock is not None and candidate_lock.mode == 'baseline':
+                    structure_lock = candidate_lock
+
+        locked_layouts = structure_lock.layouts if structure_lock is not None else ()
+        if baseline_layout_specs is None:
+            if locked_layouts:
+                print(
+                    "Error: spec_lock.md pptx_layouts requires every baseline SVG "
+                    "root to declare data-pptx-layout and data-pptx-layout-name",
+                    file=sys.stderr,
+                )
+                return 1
+        else:
+            if not locked_layouts or structure_lock is None:
+                print(
+                    "Error: explicit baseline Layout metadata requires a complete "
+                    "spec_lock.md pptx_layouts mapping",
+                    file=sys.stderr,
+                )
+                return 1
+            lock_errors = template_lock_errors(
+                baseline_layout_specs,
+                structure_lock,
+            )
+            if lock_errors:
+                print(
+                    "Error: PPTX structure does not match spec_lock.md:",
+                    file=sys.stderr,
+                )
+                for message in lock_errors:
+                    print(f"  {message}", file=sys.stderr)
+                return 1
+            structured_baseline = True
+            try:
+                master_text_style_spec = load_master_text_style_spec(project_path)
+            except ThemeFontError as exc:
+                print(f"Error: {exc}", file=sys.stderr)
+                return 1
 
     if (
         pptx_structure in {'template', 'preserve'}
@@ -835,6 +897,8 @@ Recorded narration:
         image_quality=args.image_quality,
         native_objects=args.native_objects,
         pptx_structure=pptx_structure,
+        structured_baseline=structured_baseline,
+        baseline_layout_specs=baseline_layout_specs,
         native_structure_contract=native_structure_contract,
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,

@@ -8,7 +8,7 @@ These markers are not a second content model and do not abbreviate SVG.
 
 | Marker | Placement | Purpose |
 |---|---|---|
-| `data-pptx-page-role` | Root `<svg>` | Select the baseline PowerPoint Layout family. Required on newly generated baseline/free-design pages; template/preserve pages already use `data-pptx-layout`. |
+| `data-pptx-page-role` | Root `<svg>` | Select the compatibility Layout family only for a legacy baseline page whose project has no `pptx_layouts` mapping. New baseline/free-design pages use `data-pptx-layout` instead. |
 | `data-pptx-role` | A structural page-frame element | Identify the few objects whose package or animation behavior is not already expressed by specialized metadata. The element also needs a stable unique `id`. |
 
 The complete geometry, text, styles, grouping, and asset references remain in
@@ -19,7 +19,7 @@ content.
 
 Use the existing specialized contracts for specialized facts:
 
-- `data-pptx-layout` and `data-pptx-layer` own Master/Layout/Slide structure;
+- `data-pptx-layout`, `data-pptx-layout-name`, and `data-pptx-layer` own Master/Layout/Slide structure. A new baseline/free-design page with a locked `pptx_layouts` row uses these markers while remaining `pptx_structure.mode: baseline`;
 - `data-pptx-placeholder` owns PowerPoint placeholder identity;
 - `data-pptx-native` owns native chart/table reconstruction.
 - `data-pptx-object`, `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*`,
@@ -33,6 +33,18 @@ paths are never scanned, classified, or automatically upgraded to a preset.
 Do not duplicate those facts with `data-pptx-role`. Consumers resolve semantics
 in this order: specialized metadata, minimal compiler hints, then legacy
 filename/id conventions.
+
+Layout structure is authored, never discovered. Reuse a Layout key only when its
+static Layout layer and placeholder contract match exactly. Do not cluster
+visually similar pages, move concrete content into a Layout, or mark a complex
+page-specific group merely to manufacture reuse.
+
+Ordinary placeholder carriers are direct atomic objects: one text frame, image,
+crop SVG, or other supported atomic shape. This is a narrow exception to the
+top-level content-group budget, and the carrier does not count toward that
+budget. Do not use an arbitrary composite `<g>` as a placeholder; keep complex
+groups Slide-local. Native chart/table marker groups remain governed by their
+separate specialized contract.
 
 ## 2. Canonical Values
 
@@ -65,7 +77,7 @@ continue to own that decision.
 
 ## 3. Examples
 
-### Free-design page
+### Legacy baseline fallback page
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +96,11 @@ continue to own that decision.
 </svg>
 ```
 
-### Reusable template page
+### Explicit authored Layout page
+
+This form applies to a new free-design/brand-only baseline page as well as to a
+template page. The structure metadata does not change baseline mode into
+template mode and does not imply a `page_layouts` reference.
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg"
@@ -119,15 +135,17 @@ continue to own that decision.
 ## 4. Validation and Compatibility
 
 The quality checker validates marker placement, canonical values, and stable
-unique IDs. Baseline export consumes explicit markers before compatibility
-heuristics:
+unique IDs. Export consumes explicit authored Layout metadata before baseline
+compatibility hints and heuristics:
 
-- root page role is preferred over filename-based Layout classification;
+- root `data-pptx-layout` is authoritative when the page has a locked mapping;
+- on an unmapped legacy baseline page, root page role is preferred over filename-based Layout classification;
 - `data-pptx-placeholder="slide-number"` is preferred over a generic role or id;
 - explicit structural role is preferred over id-token chrome detection;
 - animation target scanning uses the structural role before id-token fallback.
 
 Filename and id heuristics remain compatibility fallbacks only for older SVGs
-that lack the corresponding marker. A canonical page role is authoritative over
-the filename. Any explicit structural role prevents id-based reinterpretation;
-an unknown role remains renderable but produces a quality-check warning.
+that lack the corresponding marker. On an unmapped legacy baseline page, a
+canonical page role is authoritative over the filename. Any explicit structural
+role prevents id-based reinterpretation; an unknown role remains renderable but
+produces a quality-check warning.

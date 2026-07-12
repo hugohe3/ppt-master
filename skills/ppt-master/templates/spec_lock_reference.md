@@ -136,7 +136,7 @@
 > ```
 > Omit the row for free design and brand-only templates. Both values require one `page_layouts` and one `pptx_layouts` row per page. `strict` keeps the selected Layout contract; `adaptive` may create a new explicit Layout under the same template Master.
 >
-> - `baseline` — default for free design and brand-only routes. Preserve conservative shared Master/background/chrome behavior, then assign Cover/Agenda/Section/Closing/Content from root `data-pptx-page-role`. It may also promote exact family-wide leading structurally marked chrome into a Layout. Marker-free legacy SVGs retain filename/id fallback. Actual content stays slide-local; no placeholders or visual-similarity inference are authored.
+> - `baseline` — default for free design and brand-only routes. New projects pair this mode with a complete `pptx_layouts` section and explicit root Layout/layer/placeholder metadata while remaining `baseline`; no deck/layout template or `page_layouts` section is implied. A legacy baseline lock whose entire `pptx_layouts` section is absent retains root `data-pptx-page-role`, conservative shared chrome promotion, and filename/id compatibility fallback. Actual content stays Slide-local in both paths.
 > - `template` — required whenever Step 3 loaded a deck/layout template. Requires complete `page_layouts` and `pptx_layouts` sections plus explicit SVG structure metadata on every generated page.
 > - `preserve` — legacy strict-only compatibility for an existing project that already ships `native_structure.json` + `source_template.pptx`. Do not select it for newly created templates.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
@@ -151,7 +151,7 @@
 
 ## pptx_layouts
 
-> Emit this section only when `pptx_structure.mode` is `template` or legacy `preserve`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Strict template use copies the selected SVG key/name; adaptive use may declare a new stable key/name. Preserve uses the legacy native contract.
+> Emit this section for every new generated deck, including free-design and brand-only decks that remain `pptx_structure.mode: baseline`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Baseline keys/names describe the authored output composition, strict template use copies the selected SVG key/name, adaptive template use may declare a new stable key/name, and preserve uses the legacy native contract. Only a legacy baseline project may omit the whole section and fall back to `data-pptx-page-role`.
 >
 > Example:
 > ```
@@ -161,7 +161,7 @@
 > - P04: section | Section Header
 > ```
 >
-> Reuse one key only when pages share the same static layout layer and placeholder contract. Do not generate one unique key per slide merely because every page has different content. A one-off cover/section layout is valid; content differences stay slide-local.
+> Reuse one key only when pages share the same reusable static Layout layer and placeholder type/index/bounds contract. Give genuinely different reusable compositions different keys even when they share a page role. Do not generate one unique key per slide merely because its wording, data, or imagery differs. Choose keys from the authored page plan, never from visual clustering, filenames, or content similarity. Keep concrete content and complex grouped compositions Slide-local; do not move them into the Layout to manufacture reuse.
 
 ## page_layouts
 - P01: 01_cover
@@ -174,7 +174,7 @@
 >
 > **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and create a new explicit Layout; strict mode must choose an existing compatible Layout or revise the outline.
 >
-> **Whole section omitted** → free design or brand-only route.
+> **Whole section omitted** → free design or brand-only route. This omission applies only to `page_layouts`; every new route still emits complete `pptx_layouts` output mappings.
 >
 > **Strategist source**: copy the per-page SVG choices from `design_spec.md §VI Page Roster` (or §IX outline if Roster is absent). Names must match files in `templates/` exactly — typos cause silent fallback to free design.
 

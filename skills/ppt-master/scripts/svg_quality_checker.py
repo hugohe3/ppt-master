@@ -177,6 +177,7 @@ try:
         load_native_structure_contract as _load_native_structure_contract,
         load_pptx_structure_lock as _load_pptx_structure_lock,
         native_structure_lock_errors as _native_structure_lock_errors,
+        parse_optional_layout_slides as _parse_optional_layout_slides,
         parse_preserve_slides as _parse_preserve_structure_slides,
         parse_template_slides as _parse_template_structure_slides,
         template_lock_errors as _template_lock_errors,
@@ -189,6 +190,7 @@ except ImportError:
     _load_native_structure_contract = None
     _load_pptx_structure_lock = None
     _native_structure_lock_errors = None
+    _parse_optional_layout_slides = None
     _parse_preserve_structure_slides = None
     _parse_template_structure_slides = None
     _template_lock_errors = None
@@ -2174,6 +2176,7 @@ class SVGQualityChecker:
         """Validate project-level layout reuse and spec_lock mappings."""
         if (
             _load_pptx_structure_lock is None
+            or _parse_optional_layout_slides is None
             or _parse_template_structure_slides is None
             or _template_lock_errors is None
             or _TemplateStructureError is None
@@ -2242,7 +2245,20 @@ class SVGQualityChecker:
                 break
         locked_mode = structure_lock.mode if structure_lock is not None else None
         structure_locked = locked_mode in {'template', 'preserve'}
-        if not has_metadata and not structure_locked:
+        standard_project = (
+            not self.template_mode
+            and (project_path / 'svg_output').is_dir()
+        )
+        baseline_mode = not self.template_mode and (
+            locked_mode == 'baseline'
+            or (locked_mode is None and standard_project)
+        )
+        baseline_layout_locked = bool(
+            baseline_mode
+            and structure_lock is not None
+            and structure_lock.layouts
+        )
+        if not has_metadata and not structure_locked and not baseline_layout_locked:
             return
 
         try:
@@ -2250,10 +2266,36 @@ class SVGQualityChecker:
                 if _parse_preserve_structure_slides is None:
                     return
                 specs = _parse_preserve_structure_slides(svg_files)
+            elif baseline_mode:
+                specs = _parse_optional_layout_slides(svg_files)
+                if specs is None:
+                    if structure_lock is not None and structure_lock.layouts:
+                        self._pptx_structure_issues.append((
+                            'error',
+                            'spec_lock.md pptx_layouts requires every baseline SVG '
+                            'root to declare data-pptx-layout and '
+                            'data-pptx-layout-name',
+                        ))
+                    elif has_metadata:
+                        _parse_template_structure_slides(svg_files)
+                    return
             else:
                 specs = _parse_template_structure_slides(svg_files)
         except _TemplateStructureError as exc:
             self._pptx_structure_issues.append(('error', str(exc)))
+            return
+        if baseline_mode:
+            if structure_lock is None or not structure_lock.layouts:
+                self._pptx_structure_issues.append((
+                    'error',
+                    'explicit baseline Layout metadata requires a complete '
+                    'spec_lock.md pptx_layouts mapping',
+                ))
+                return
+            self._pptx_structure_issues.extend(
+                ('error', message)
+                for message in _template_lock_errors(specs, structure_lock)
+            )
             return
         if not structure_locked:
             return
