@@ -966,6 +966,7 @@ def _chart_plot_xml(
                 axis_title_font_size=axis_title_font_size,
                 axis_titles=axis_titles,
                 chart_style=chart_style,
+                axes=chart_data.get("axes") or {},
             )
             return (
                 f'<c:scatterChart><c:scatterStyle val="{scatter_style}"/>'
@@ -982,6 +983,7 @@ def _chart_plot_xml(
             axis_title_font_size=axis_title_font_size,
             axis_titles=axis_titles,
             chart_style=chart_style,
+            axes=chart_data.get("axes") or {},
         )
         return (
             '<c:bubbleChart><c:varyColors val="0"/>'
@@ -1209,7 +1211,11 @@ def _xy_axis_xml(
     axis_title_font_size: int,
     axis_titles: dict[str, Any],
     chart_style: dict[str, str | None],
+    axes: dict[str, dict[str, Any]] | None = None,
 ) -> str:
+    normalized_axes = axes or {}
+    x_axis = normalized_axes.get("x", {})
+    y_axis = normalized_axes.get("y", {})
     axis_sp_pr = _chart_line_sp_pr_xml(chart_style.get("axis_color"))
     axis_tx_pr = _chart_tx_pr_xml(
         axis_font_size,
@@ -1228,24 +1234,56 @@ def _xy_axis_xml(
         color=chart_style.get("text_color"),
         font_face=chart_style.get("font_face"),
     )
-    return (
-        "<c:valAx>"
-        f'<c:axId val="{x_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        f'<c:delete val="0"/><c:axPos val="b"/>{x_title_xml}<c:majorTickMark val="out"/>'
-        '<c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/>'
-        f"{axis_sp_pr}{axis_tx_pr}"
-        f'<c:crossAx val="{y_ax_id}"/><c:crosses val="autoZero"/>'
-        '<c:crossBetween val="midCat"/>'
-        "</c:valAx>"
-        "<c:valAx>"
-        f'<c:axId val="{y_ax_id}"/><c:scaling><c:orientation val="minMax"/></c:scaling>'
-        f'<c:delete val="0"/><c:axPos val="l"/>{_major_gridlines_xml(chart_style.get("grid_color"))}'
-        f'{y_title_xml}<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
-        '<c:tickLblPos val="nextTo"/>'
-        f"{axis_sp_pr}{axis_tx_pr}"
-        f'<c:crossAx val="{x_ax_id}"/><c:crosses val="autoZero"/>'
-        '<c:crossBetween val="midCat"/>'
-        "</c:valAx>"
+
+    def value_axis_xml(
+        axis_id: str,
+        cross_axis_id: str,
+        config: dict[str, Any],
+        *,
+        default_position: str,
+        default_gridlines: bool,
+        title_xml: str,
+    ) -> str:
+        delete = _bool_attr(not config.get("visible", True))
+        position = _axis_position(config, default_position)
+        gridlines = _axis_major_gridlines_xml(
+            config,
+            default=default_gridlines,
+            color=chart_style.get("grid_color"),
+        )
+        number_format = _axis_number_format_xml(config)
+        tick_label_position = _axis_label_position(config, "nextTo")
+        major_unit = (
+            f'<c:majorUnit val="{config["major_unit"]}"/>'
+            if config.get("major_unit") is not None else ""
+        )
+        return (
+            "<c:valAx>"
+            f'<c:axId val="{axis_id}"/>{_axis_scaling_xml(config)}'
+            f'<c:delete val="{delete}"/><c:axPos val="{position}"/>'
+            f"{gridlines}{title_xml}{number_format}"
+            '<c:majorTickMark val="out"/><c:minorTickMark val="none"/>'
+            f'<c:tickLblPos val="{tick_label_position}"/>'
+            f"{axis_sp_pr}{axis_tx_pr}"
+            f'<c:crossAx val="{cross_axis_id}"/><c:crosses val="autoZero"/>'
+            f'<c:crossBetween val="midCat"/>{major_unit}'
+            "</c:valAx>"
+        )
+
+    return value_axis_xml(
+        x_ax_id,
+        y_ax_id,
+        x_axis,
+        default_position="b",
+        default_gridlines=False,
+        title_xml=x_title_xml,
+    ) + value_axis_xml(
+        y_ax_id,
+        x_ax_id,
+        y_axis,
+        default_position="l",
+        default_gridlines=True,
+        title_xml=y_title_xml,
     )
 
 

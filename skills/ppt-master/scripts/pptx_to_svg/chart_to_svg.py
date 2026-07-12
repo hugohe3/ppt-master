@@ -180,8 +180,10 @@ def _payload_from_chart_xml(
         )
     elif chart_tag == "scatterChart":
         payload = _xy_payload(chart, "scatter", xfrm)
+        payload["axes"] = _xy_axis_contract(plot_area, chart)
     elif chart_tag == "bubbleChart":
         payload = _xy_payload(chart, "bubble", xfrm)
+        payload["axes"] = _xy_axis_contract(plot_area, chart)
     elif chart_tag == "stockChart":
         payload, visual_styles = _stock_payload(
             chart_root,
@@ -213,7 +215,9 @@ def _payload_from_chart_xml(
         plot_area,
         chart,
         palette=palette,
-        validate_axes=not has_date_axis,
+        validate_axes=not (
+            has_date_axis or chart_tag in {"bubbleChart", "scatterChart"}
+        ),
     )
     _apply_chart_metadata(payload, chart_root, plot_area, chart)
     return payload, visual_styles
@@ -1110,6 +1114,10 @@ def _axis_config_from_xml(
         if position not in {"bottom", "top"}:
             raise _UnsupportedChart("unsupported-chart-axis-options")
         config["kind"] = "date" if axis_kind == "dateAx" else "text"
+    elif role == "x":
+        if position not in {"bottom", "top"} or axis_kind != "valAx":
+            raise _UnsupportedChart("unsupported-chart-axis-options")
+        config["kind"] = "value"
     else:
         if position not in {"left", "right"} or axis_kind != "valAx":
             raise _UnsupportedChart("unsupported-chart-axis-options")
@@ -1140,7 +1148,7 @@ def _axis_config_from_xml(
 
     major_unit = _axis_number(axis.find("c:majorUnit", C_NS))
     if major_unit is not None:
-        if role not in {"value", "secondary_value"} or major_unit <= 0:
+        if role not in {"value", "secondary_value", "x", "y"} or major_unit <= 0:
             raise _UnsupportedChart("unsupported-chart-axis-options")
         config["major_unit"] = major_unit
 
@@ -1212,6 +1220,67 @@ def _single_axis_contract(
     return {"category": category, "value": value}
 
 
+def _xy_axis_contract(
+    plot_area: ET.Element,
+    plot: ET.Element,
+) -> dict[str, dict[str, Any]]:
+    """Return the closed two-value-axis contract used by XY charts."""
+    axes_by_id = _axis_nodes_by_id(plot_area)
+    plot_axis_nodes = plot.findall("c:axId", C_NS)
+    if len(plot_axis_nodes) != 2 or any(
+        set(node.attrib) != {"val"} or list(node)
+        for node in plot_axis_nodes
+    ):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    axis_ids = [_element_val(node) for node in plot_axis_nodes]
+    if any(not axis_id for axis_id in axis_ids) or len(set(axis_ids)) != 2:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    if set(axes_by_id) != set(axis_ids):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+
+    resolved = [
+        (str(axis_id), axes_by_id.get(str(axis_id)))
+        for axis_id in axis_ids
+    ]
+    if any(
+        axis is None or _local_name(axis.tag) != "valAx"
+        for _, axis in resolved
+    ):
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+    horizontal = [
+        (axis_id, axis)
+        for axis_id, axis in resolved
+        if axis is not None
+        and _element_val(axis.find("c:axPos", C_NS)) in {"b", "t"}
+    ]
+    vertical = [
+        (axis_id, axis)
+        for axis_id, axis in resolved
+        if axis is not None
+        and _element_val(axis.find("c:axPos", C_NS)) in {"l", "r"}
+    ]
+    if len(horizontal) != 1 or len(vertical) != 1:
+        raise _UnsupportedChart("unsupported-chart-axis-options")
+
+    x_id, x_axis = horizontal[0]
+    y_id, y_axis = vertical[0]
+    x_config = _axis_config_from_xml(
+        x_axis,
+        role="x",
+        expected_cross_axis_id=y_id,
+        allowed_crosses={"autoZero"},
+        expected_cross_between="midCat",
+    )
+    y_config = _axis_config_from_xml(
+        y_axis,
+        role="y",
+        expected_cross_axis_id=x_id,
+        allowed_crosses={"autoZero"},
+        expected_cross_between="midCat",
+    )
+    return {"x": x_config, "y": y_config}
+
+
 def _validate_legacy_axes(payload: dict[str, Any], plot_area: ET.Element) -> None:
     """Keep the original narrow axis gate for payloads without axes metadata."""
     grouping = payload.get("grouping")
@@ -1268,6 +1337,88 @@ def _validate_legacy_axes(payload: dict[str, Any], plot_area: ET.Element) -> Non
             raise _UnsupportedChart("unsupported-chart-axis-options")
         if axis.find("c:minorGridlines", C_NS) is not None:
             raise _UnsupportedChart("unsupported-chart-axis-options")
+
+
+def _effective_scatter_style(
+    plot: ET.Element,
+    visual_styles: list[SeriesVisualStyle],
+) -> str:
+    """Normalize plot-level line intent plus uniform series overrides."""
+    style_nodes = plot.findall("c:scatterStyle", C_NS)
+    if len(style_nodes) > 1:
+        raise _UnsupportedChart("unsupported-chart-scatter-style")
+    style_node = style_nodes[0] if style_nodes else None
+    if style_node is not None and (
+        set(style_node.attrib) != {"val"} or list(style_node)
+    ):
+        raise _UnsupportedChart("unsupported-chart-scatter-style")
+    plot_style = _element_val(style_node) or "marker"
+    if plot_style not in {"line", "lineMarker", "marker", "smooth", "smoothMarker"}:
+        raise _UnsupportedChart("unsupported-chart-scatter-style")
+    plot_has_line = plot_style in {"line", "lineMarker", "smooth", "smoothMarker"}
+    plot_is_smooth = plot_style in {"smooth", "smoothMarker"}
+
+    style_by_state = {
+        (False, True, False): "marker",
+        (True, False, False): "line",
+        (True, True, False): "lineMarker",
+        (True, False, True): "smooth",
+        (True, True, True): "smoothMarker",
+    }
+    effective_styles: set[str] = set()
+    series_nodes = plot.findall("c:ser", C_NS)
+    if len(series_nodes) != len(visual_styles):
+        raise _UnsupportedChart("unsupported-chart-scatter-style")
+    for series, visual_style in zip(series_nodes, visual_styles):
+        line_node = series.find("c:spPr/a:ln", C_NS)
+        has_line = plot_has_line if line_node is None else (
+            visual_style.stroke is not None
+            and visual_style.stroke_opacity > 0
+        )
+        markers = series.findall("c:marker", C_NS)
+        if len(markers) != 1:
+            raise _UnsupportedChart("unsupported-chart-scatter-style")
+        marker = markers[0]
+        symbol = marker.find("c:symbol", C_NS) if marker is not None else None
+        if (
+            marker is None
+            or symbol is None
+            or set(symbol.attrib) != {"val"}
+            or list(symbol)
+        ):
+            raise _UnsupportedChart("unsupported-chart-scatter-style")
+        symbol_value = _element_val(symbol)
+        if symbol_value not in {"circle", "none"}:
+            raise _UnsupportedChart("unsupported-chart-scatter-style")
+        has_marker = symbol_value == "circle"
+
+        smooth_nodes = series.findall("c:smooth", C_NS)
+        if len(smooth_nodes) > 1:
+            raise _UnsupportedChart("unsupported-chart-scatter-style")
+        smooth = smooth_nodes[0] if smooth_nodes else None
+        is_smooth = plot_is_smooth
+        if smooth is not None:
+            if not set(smooth.attrib).issubset({"val"}) or list(smooth):
+                raise _UnsupportedChart("unsupported-chart-scatter-style")
+            raw_smooth = smooth.attrib.get("val")
+            key = raw_smooth.strip().lower() if raw_smooth is not None else "true"
+            if key in {"1", "on", "true"}:
+                is_smooth = True
+            elif key in {"0", "false", "off"}:
+                is_smooth = False
+            else:
+                raise _UnsupportedChart("unsupported-chart-scatter-style")
+        if is_smooth and not has_line:
+            raise _UnsupportedChart("unsupported-chart-scatter-style")
+
+        effective_style = style_by_state.get((has_line, has_marker, is_smooth))
+        if effective_style is None:
+            raise _UnsupportedChart("unsupported-chart-scatter-style")
+        effective_styles.add(effective_style)
+
+    if len(effective_styles) != 1:
+        raise _UnsupportedChart("unsupported-chart-scatter-style")
+    return effective_styles.pop()
 
 
 def _validate_chart_semantics(
@@ -1355,26 +1506,7 @@ def _validate_chart_semantics(
             raise _UnsupportedChart("unsupported-chart-bubble-options")
 
     if chart_type == "scatter":
-        scatter_style = _element_val(plot.find("c:scatterStyle", C_NS)) or "marker"
-        expected_marker = (
-            "circle"
-            if scatter_style in {"lineMarker", "marker", "smoothMarker"}
-            else "none"
-        )
-        expected_smooth = scatter_style in {"smooth", "smoothMarker"}
-        for series in plot.findall("c:ser", C_NS):
-            marker = series.find("c:marker", C_NS)
-            if marker is None:
-                raise _UnsupportedChart("unsupported-chart-scatter-style")
-            symbol = _element_val(marker.find("c:symbol", C_NS))
-            if symbol != expected_marker:
-                raise _UnsupportedChart("unsupported-chart-scatter-style")
-            smooth = series.find("c:smooth", C_NS)
-            actual_smooth = bool(
-                smooth is not None and ooxml_bool(smooth.attrib.get("val"), True)
-            )
-            if actual_smooth != expected_smooth:
-                raise _UnsupportedChart("unsupported-chart-scatter-style")
+        payload["scatter_style"] = _effective_scatter_style(plot, visual_styles)
 
     if chart_type in {"pie", "doughnut", "of_pie"}:
         for explosion in plot.findall(".//c:explosion", C_NS):
@@ -1898,10 +2030,6 @@ def _xy_payload(chart: ET.Element, chart_type: str, xfrm: Xfrm) -> dict[str, Any
         "series": series,
         "type": chart_type,
     }
-    if chart_type == "scatter":
-        style = _element_val(chart.find("c:scatterStyle", C_NS))
-        if style:
-            payload["scatter_style"] = style
     return payload
 
 
