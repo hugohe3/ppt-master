@@ -1183,6 +1183,18 @@ _TEMPLATE_PLACEHOLDER_PROMPTS = {
     "footer": "Footer",
 }
 
+_PARAGRAPH_BULLET_CHOICE_TAGS = {
+    f"{{{DML_NS}}}buNone",
+    f"{{{DML_NS}}}buAutoNum",
+    f"{{{DML_NS}}}buChar",
+    f"{{{DML_NS}}}buBlip",
+}
+_PARAGRAPH_PROPERTIES_TRAILING_TAGS = {
+    f"{{{DML_NS}}}tabLst",
+    f"{{{DML_NS}}}defRPr",
+    f"{{{DML_NS}}}extLst",
+}
+
 
 def _template_runtime_slides(
     extract_dir: Path,
@@ -1699,7 +1711,7 @@ def _placeholder_text_body(
     tx_body.append(list_style)
 
     paragraph = ET.SubElement(tx_body, f"{{{DML_NS}}}p")
-    if item.placeholder == "body":
+    if item.placeholder in {"body", "subtitle"}:
         paragraph_props = ET.SubElement(paragraph, f"{{{DML_NS}}}pPr")
         ET.SubElement(paragraph_props, f"{{{DML_NS}}}buNone")
     if item.placeholder in {"slide-number", "date"}:
@@ -1739,44 +1751,44 @@ def _placeholder_text_body(
     return tx_body
 
 
-def _set_body_placeholder_no_bullets(
+def _insert_no_bullet_choice(paragraph_props: ET.Element) -> None:
+    """Disable inherited bullets unless the paragraph already chooses a mode."""
+    if any(
+        child.tag in _PARAGRAPH_BULLET_CHOICE_TAGS
+        for child in paragraph_props
+    ):
+        return
+    insert_at = next(
+        (
+            index
+            for index, child in enumerate(paragraph_props)
+            if child.tag in _PARAGRAPH_PROPERTIES_TRAILING_TAGS
+        ),
+        len(paragraph_props),
+    )
+    paragraph_props.insert(insert_at, ET.Element(f"{{{DML_NS}}}buNone"))
+
+
+def _set_placeholder_no_inherited_bullets(
     shape: ET.Element,
     item: TemplateElementSpec,
 ) -> None:
-    """Preserve SVG prose instead of inheriting master bullet defaults."""
-    if item.placeholder != "body":
+    """Keep prose bullet-free while preserving explicit subtitle bullets."""
+    if item.placeholder not in {"body", "subtitle"}:
         return
     tx_body = shape.find(f"{{{PML_NS}}}txBody")
     if tx_body is None:
         return
-    bullet_tags = {
-        f"{{{DML_NS}}}buNone",
-        f"{{{DML_NS}}}buAutoNum",
-        f"{{{DML_NS}}}buChar",
-        f"{{{DML_NS}}}buBlip",
-    }
-    trailing_tags = {
-        f"{{{DML_NS}}}tabLst",
-        f"{{{DML_NS}}}defRPr",
-        f"{{{DML_NS}}}extLst",
-    }
     for paragraph in tx_body.findall(f"{{{DML_NS}}}p"):
         paragraph_props = paragraph.find(f"{{{DML_NS}}}pPr")
         if paragraph_props is None:
             paragraph_props = ET.Element(f"{{{DML_NS}}}pPr")
             paragraph.insert(0, paragraph_props)
-        for child in list(paragraph_props):
-            if child.tag in bullet_tags:
-                paragraph_props.remove(child)
-        insert_at = next(
-            (
-                index
-                for index, child in enumerate(paragraph_props)
-                if child.tag in trailing_tags
-            ),
-            len(paragraph_props),
-        )
-        paragraph_props.insert(insert_at, ET.Element(f"{{{DML_NS}}}buNone"))
+        if item.placeholder == "body":
+            for child in list(paragraph_props):
+                if child.tag in _PARAGRAPH_BULLET_CHOICE_TAGS:
+                    paragraph_props.remove(child)
+        _insert_no_bullet_choice(paragraph_props)
 
 
 def _set_placeholder_theme_font_role(
@@ -1887,7 +1899,7 @@ def _patch_slide_placeholder(
         raise TemplateStructureError(
             f"Placeholder {item.element_id!r} has no non-visual properties"
         )
-    _set_body_placeholder_no_bullets(shape, item)
+    _set_placeholder_no_inherited_bullets(shape, item)
     _set_placeholder_theme_font_role(shape, item, theme_font_spec)
     for existing in list(nv_pr):
         if existing.tag == f"{{{PML_NS}}}ph":

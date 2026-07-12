@@ -38,8 +38,8 @@ def flatten_positional_tspans(
 
     Delegates to ``svg_finalize.flatten_tspan.flatten_text_with_tspans`` so
     the in-memory transform exactly matches the on-disk one. When
-    ``merge_paragraphs`` is True, mergeable paragraph blocks are preserved
-    as a single <text> for downstream multi-<a:p> conversion.
+    ``merge_paragraphs`` is True, eligible blocks remain one <text> for
+    downstream hard-line and paragraph conversion.
 
     Returns True if any tspan was rewritten.
     """

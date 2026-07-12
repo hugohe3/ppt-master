@@ -14,7 +14,7 @@ from .utils import (
     SVG_NS, ANGLE_UNIT, DASH_PRESETS,
     px_to_emu, _f, _get_attr, parse_svg_length,
     combine_opacity, parse_inline_style, parse_opacity, parse_stop_style,
-    parse_svg_color, resolve_url_id,
+    matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
 )
 
 
@@ -444,6 +444,33 @@ def _emit_line_end(
     return f'<a:{dml_tag} type="{typ}" w="{w_bucket}" len="{len_bucket}"/>'
 
 
+def _effective_stroke_scale(elem: ET.Element, ctx: ConvertContext) -> float:
+    """Approximate the effective SVG geometry transform as one line-width scale."""
+    vector_effect = _get_attr(elem, 'vector-effect', ctx)
+    if vector_effect and vector_effect.strip().lower() == 'non-scaling-stroke':
+        return 1.0
+
+    if ctx.use_transform_matrix:
+        matrix = ctx.transform_matrix
+    else:
+        matrix = (
+            ctx.scale_x, 0.0,
+            0.0, ctx.scale_y,
+            ctx.translate_x, ctx.translate_y,
+        )
+
+    # The context already contains ancestor transforms. Shape converters apply
+    # the leaf element's transform directly, so compose that local matrix once.
+    transform = elem.get('transform')
+    if transform:
+        matrix = matrix_multiply(matrix, parse_transform_matrix(transform))
+
+    # DrawingML has one line width. sqrt(|det|) equals the uniform scale for a
+    # similarity transform and the principal-scale geometric mean otherwise.
+    a, b, c, d, _e, _f = matrix
+    return math.sqrt(abs(a * d - b * c))
+
+
 def build_stroke_xml(
     elem: ET.Element,
     ctx: ConvertContext,
@@ -454,8 +481,8 @@ def build_stroke_xml(
     if not stroke or stroke.strip().lower() in ('none', 'transparent'):
         return '<a:ln><a:noFill/></a:ln>'
 
-    width = parse_svg_length(_get_attr(elem, 'stroke-width', ctx), 1.0)
-    width_emu = px_to_emu(width)
+    source_width = parse_svg_length(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    width_emu = px_to_emu(source_width * _effective_stroke_scale(elem, ctx))
     validate_ooxml_line_width(width_emu)
 
     # Dash pattern
@@ -471,7 +498,7 @@ def build_stroke_xml(
                 parts = re.split(r'[\s,]+', dasharray.strip())
                 d_raw = float(parts[0])
                 sp_raw = float(parts[1]) if len(parts) > 1 else d_raw
-                sw = max(width, 0.001)
+                sw = max(source_width, 0.001)
                 d_pct = int(d_raw / sw * 100000)
                 sp_pct = int(sp_raw / sw * 100000)
                 dash_xml = f'<a:custDash><a:ds d="{d_pct}" sp="{sp_pct}"/></a:custDash>'

@@ -203,10 +203,9 @@ def copy_text_attrs(
 PARAGRAPH_MARK_ATTR = "data-paragraph-line-height"
 PARAGRAPH_SPACE_BEFORE_ATTR = "data-paragraph-space-before"
 PARAGRAPH_TOP_INSET_ATTR = "data-paragraph-top-inset"
-# Marks a line-break tspan as a SOFT break inside the current paragraph
-# (SVG used dy to simulate text wrapping; the downstream converter should
-# merge its runs into the previous <a:p> rather than start a new one).
-PARAGRAPH_SOFT_BREAK_ATTR = "data-paragraph-soft-break"
+# Internal line-break marker consumed by the DrawingML converter. Explicit
+# soft joins remain represented solely by author-owned data-pptx-break="soft".
+PARAGRAPH_LINE_BREAK_ATTR = "data-paragraph-line-break"
 
 # Tolerance for detecting "base line-height" vs "paragraph gap": dy values
 # within ±DY_TOLERANCE_PX of each other are considered the same line-height.
@@ -283,19 +282,25 @@ def _classify_paragraph_block(
     text_el: ET.Element,
     is_svg_tag,
     is_new_line_tspan,
-) -> tuple[float, list[float], list[bool], list[list[ET.Element]], ET.Element | None] | None:
+) -> tuple[
+    float,
+    list[float],
+    list[bool],
+    list[list[ET.Element]],
+    ET.Element | None,
+] | None:
     """Detect a mergeable paragraph block.
 
     Returns ``(base_line_height_px, extra_space_before_px_per_line,
-    is_soft_break_per_line, line_groups, synthetic_first_line)`` if the children
+    is_line_break_per_line, line_groups, synthetic_first_line)`` if the children
     form a mergeable paragraph. Each list has one entry per direct-child tspan
     (line), including a synthetic first line when the source used leading text:
 
       - extra_space_before_px_per_line[i]: extra px above base line-height,
         used as <a:spcBef> on the downstream <a:p>. First entry is 0.
-      - is_soft_break_per_line[i]: True if this line should merge into the
-        previous <a:p> (SVG dy was simulating word-wrap); False if it starts
-        a fresh <a:p>. First entry is always False (paragraph head).
+      - is_line_break_per_line[i]: True if the line stays in the previous
+        <a:p> behind an explicit line break; False if it starts a fresh <a:p>.
+        First entry is always False (paragraph head).
 
     Conditions (all must hold):
       - No direct text under <text>, except simple leading text that can be
@@ -376,7 +381,7 @@ def _classify_paragraph_block(
         return None
 
     extras: list[float] = [0.0]  # first line never has space-before
-    soft_breaks: list[bool] = [False]  # first line starts a paragraph
+    line_breaks: list[bool] = [False]  # first line starts a paragraph
     for idx, d in enumerate(dy_values[1:], start=1):
         if d + DY_TOLERANCE_PX < base:
             return None  # below base — line overlap, not a paragraph
@@ -385,25 +390,24 @@ def _classify_paragraph_block(
         extra = d - base
         if extra < 0:
             extra = 0.0
-        # dy at the base line-height = soft break (SVG was simulating wrap);
-        # dy strictly greater than base = hard paragraph break. List markers
-        # also start a fresh paragraph so bullet/ordered items do not merge
-        # into the previous item when exported to PowerPoint.
-        is_soft = (
+        # Equal-dy visual lines are authored line breaks, not permission for
+        # Office to reflow them. Larger gaps and list markers start a fresh
+        # paragraph so spacing and bullet semantics remain independent.
+        is_line = (
             abs(extra) <= DY_TOLERANCE_PX
             and not _starts_with_list_marker(line_groups[idx])
         )
-        extras.append(0.0 if is_soft else extra)
-        soft_breaks.append(is_soft)
+        extras.append(0.0 if is_line else extra)
+        line_breaks.append(is_line)
 
-    return base, extras, soft_breaks, line_groups, synthetic_first
+    return base, extras, line_breaks, line_groups, synthetic_first
 
 
 def _emit_mergeable_paragraph(
     text_el: ET.Element,
     base_dy: float | None,
     extras: list[float],
-    soft_breaks: list[bool],
+    line_breaks: list[bool],
     line_groups: list[list[ET.Element]],
     synthetic_first: ET.Element | None = None,
 ) -> None:
@@ -412,8 +416,7 @@ def _emit_mergeable_paragraph(
     The base line-height goes on the parent <text> via PARAGRAPH_MARK_ATTR.
     Each direct-child tspan is normalized: x/y/dy stripped; inline-run
     styling and nested tspans are preserved. Per-tspan attrs:
-      - PARAGRAPH_SOFT_BREAK_ATTR="1" on tspans that should be appended to
-        the previous <a:p> downstream (SVG used dy to simulate wrap)
+      - PARAGRAPH_LINE_BREAK_ATTR="1" on authored visual line breaks
       - PARAGRAPH_SPACE_BEFORE_ATTR on tspans that open a new paragraph
         with an extra gap (omitted when 0)
     """
@@ -447,19 +450,21 @@ def _emit_mergeable_paragraph(
             text_el.remove(child)
 
     extras_iter = iter(extras)
-    soft_iter = iter(soft_breaks)
+    line_break_iter = iter(line_breaks)
     for tspan in normalized_lines:
         for k in ("x", "y", "dy"):
             if k in tspan.attrib:
                 del tspan.attrib[k]
+        tspan.attrib.pop(PARAGRAPH_LINE_BREAK_ATTR, None)
+        tspan.attrib.pop(PARAGRAPH_SPACE_BEFORE_ATTR, None)
         try:
             extra = next(extras_iter)
-            soft = next(soft_iter)
+            line_break = next(line_break_iter)
         except StopIteration:
             extra = 0.0
-            soft = False
-        if soft:
-            tspan.set(PARAGRAPH_SOFT_BREAK_ATTR, "1")
+            line_break = False
+        if line_break:
+            tspan.set(PARAGRAPH_LINE_BREAK_ATTR, "1")
         elif extra > 1e-6:
             tspan.set(PARAGRAPH_SPACE_BEFORE_ATTR, format_number(extra))
 
@@ -528,12 +533,15 @@ def _emit_explicit_paragraph(
 
     line_groups = [list(line.elements) for line in contract.visual_lines]
     extras = [line.space_before for line in contract.visual_lines]
-    soft_breaks = [line.break_kind == "soft" for line in contract.visual_lines]
+    line_breaks = [
+        line.break_kind == "line"
+        for line in contract.visual_lines
+    ]
     _emit_mergeable_paragraph(
         text_el,
         contract.base_line_height,
         extras,
-        soft_breaks,
+        line_breaks,
         line_groups,
     )
 
@@ -563,12 +571,13 @@ def flatten_text_with_tspans(
     """Flatten multi-line tspan text into independent text nodes when needed.
 
     When ``merge_paragraphs`` is True, mergeable paragraph blocks (same x,
-    dy clustered around one base line-height) are kept as a single <text>
-    so downstream conversion emits one editable PowerPoint text frame
-    with multiple <a:p>. Default False preserves the original behavior:
-    every line-break tspan becomes its own <text>, matching the SVG's
-    pixel-fidelity contract. ``enforce_native_carrier=False`` is reserved for
-    that on-disk visual preview; PPTX export keeps the native carrier guard.
+    dy clustered around one base line-height) remain one <text>. Downstream
+    conversion emits one editable PowerPoint text frame with authored hard
+    line breaks and paragraph gaps. Default False preserves the original
+    behavior: every positioned tspan becomes its own <text>, matching the
+    SVG's strict line-layout contract. ``enforce_native_carrier=False`` is
+    reserved for that on-disk visual preview; PPTX export keeps the native
+    carrier guard.
     """
     root = tree.getroot()
     if root in _NORMALIZED_ROOTS:
@@ -657,22 +666,22 @@ def flatten_text_with_tspans(
         # Paragraph fast-path (opt-in via merge_paragraphs=True): if the
         # children form a mergeable paragraph (same x, dy clustered around
         # one base line-height with optional paragraph gaps, no nested
-        # positional tspans), keep as one <text> and let the downstream
-        # converter emit multiple <a:p> runs. When disabled, every tspan
-        # gets its own independent <text> so the SVG's exact line layout
-        # is preserved in PowerPoint.
+        # positional tspans), keep one <text> and let the downstream converter
+        # preserve hard line/paragraph boundaries in one frame. When disabled,
+        # every tspan gets its own independent <text> so the SVG's exact line
+        # layout is preserved in PowerPoint.
         if (
             merge_paragraphs
             and (contract is None or contract.requested_mode == "auto")
         ):
             paragraph = _classify_paragraph_block(text_el, is_svg_tag, is_new_line_tspan)
             if paragraph is not None:
-                base_dy, extras, soft_breaks, line_groups, synthetic_first = paragraph
+                base_dy, extras, line_breaks, line_groups, synthetic_first = paragraph
                 _emit_mergeable_paragraph(
                     text_el,
                     base_dy,
                     extras,
-                    soft_breaks,
+                    line_breaks,
                     line_groups,
                     synthetic_first=synthetic_first,
                 )
@@ -953,8 +962,9 @@ def main() -> None:
         help=(
             "Opt-in: merge mergeable paragraph blocks (same x, dy clustered "
             "around one base line-height) into a single <text> annotated for "
-            "downstream multi-<a:p> conversion. Default off — every line-break "
-            "tspan becomes its own <text>, preserving SVG pixel fidelity."
+            "downstream hard-line and paragraph conversion. Default off — "
+            "every line-break tspan becomes its own <text>, preserving SVG "
+            "pixel fidelity."
         ),
     )
 

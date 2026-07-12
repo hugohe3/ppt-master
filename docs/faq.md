@@ -81,7 +81,7 @@ Yes. The only PPTX export route in the SVG pipeline is PPT Master's own `svg_out
 
 ## Q: Why is one paragraph split into multiple text boxes? Can I get one text box per paragraph instead?
 
-By default, mergeable body-text paragraphs export as one editable PowerPoint text frame with multiple paragraphs. Resizing the box reflows text inside it.
+By default, mergeable body text exports as one editable PowerPoint text frame. Authored SVG visual lines remain hard line breaks inside that frame; larger gaps and list items remain separate paragraphs. Only text explicitly marked with `data-pptx-break="soft"` joins authored rows during export. The frame still uses normal PowerPoint wrapping, so deleting a hard break or editing the text reflows it within the frame.
 
 If you need strict line-layout fidelity, re-export with `--no-merge`:
 
@@ -91,7 +91,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> --no-merge
 
 With `--no-merge`, every visual line becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.
 
-**Trade-off**: default paragraph merging lets PowerPoint wrap merged paragraphs to a different line count than the SVG source. Best for long-form body text (abstracts, multi-paragraph sections, reference lists); use `--no-merge` for layout-tight pages. The detection is conservative — mixed-layout `<text>` falls through to the per-line path automatically.
+**Trade-off**: default merging keeps one editable frame and preserves authored line boundaries. Use `--no-merge` only when every visual line must also remain an independently movable text box. The detection is conservative — mixed-layout `<text>` falls through to the per-line path automatically.
 
 When you're chatting with the AI, you can also just ask for strict line fidelity on layout-sensitive pages — the AI will add `--no-merge` when re-exporting.
 
