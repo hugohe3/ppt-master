@@ -21,7 +21,6 @@ class ShapeResult:
 
     xml: str
     bounds_emu: tuple[int, int, int, int] | None = None
-    trace_metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -69,8 +68,8 @@ class ConvertContext:
     # Explicit sidecar group ids may override the legacy chrome-name heuristic.
     # Explicit structural layer/role/placeholder markers remain non-animatable.
     animation_group_overrides: frozenset[str] = frozenset()
-    # Default-on flag: merge eligible dy-stacked lines into one editable text
-    # frame while preserving authored line and paragraph boundaries.
+    # Default-on flag: merge mergeable paragraph blocks into one editable
+    # text frame with multiple <a:p>. Disable it for strict line fidelity.
     merge_paragraphs: bool = True
     # Explicit opt-in: convert data-pptx-native table/chart marker groups to
     # native PowerPoint graphicFrames. Default stays off to preserve SVG output.

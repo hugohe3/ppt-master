@@ -72,7 +72,6 @@ def _local_name(name: object) -> str:
 @dataclass
 class ProjectionStats:
     txbody_metadata: int = 0
-    text_carrier_metadata: int = 0
     hidden_geometry_carriers: int = 0
     geometry_preview_wrappers: int = 0
     geometry_detail_markers: int = 0
@@ -82,7 +81,6 @@ class ProjectionStats:
     def as_dict(self) -> dict[str, object]:
         return {
             "txbody_metadata": self.txbody_metadata,
-            "text_carrier_metadata": self.text_carrier_metadata,
             "hidden_geometry_carriers": self.hidden_geometry_carriers,
             "geometry_preview_wrappers": self.geometry_preview_wrappers,
             "geometry_detail_markers": self.geometry_detail_markers,
@@ -92,7 +90,6 @@ class ProjectionStats:
 
     def merge(self, other: "ProjectionStats") -> None:
         self.txbody_metadata += other.txbody_metadata
-        self.text_carrier_metadata += other.text_carrier_metadata
         self.hidden_geometry_carriers += other.hidden_geometry_carriers
         self.geometry_preview_wrappers += other.geometry_preview_wrappers
         self.geometry_detail_markers += other.geometry_detail_markers
@@ -190,11 +187,8 @@ def _project_subtree(parent: ET.Element, stats: ProjectionStats) -> None:
         part = child.get("data-pptx-part")
         tag = _local_name(child.tag)
 
-        if tag == "metadata" and part in {"txbody", "text-carrier"}:
-            if part == "txbody":
-                stats.txbody_metadata += 1
-            else:
-                stats.text_carrier_metadata += 1
+        if tag == "metadata" and part == "txbody":
+            stats.txbody_metadata += 1
             _remove_child(parent, child)
             continue
 

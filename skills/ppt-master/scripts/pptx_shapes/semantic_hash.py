@@ -39,13 +39,6 @@ _ROOT_TEXT_STYLE_ATTRS = frozenset({
     "word-spacing",
 })
 
-_TEXT_CONTRACT_ATTRS = frozenset({
-    "data-pptx-text-mode",
-    "data-pptx-text-bounds",
-    "data-pptx-break",
-    "data-pptx-join",
-})
-
 NATIVE_FALLBACK_SHA256_ATTR = "data-pptx-fallback-sha256"
 _NATIVE_FALLBACK_IGNORED_TAGS = frozenset({"metadata", "title", "desc"})
 _NATIVE_FALLBACK_IGNORED_ATTRS = frozenset({
@@ -246,7 +239,6 @@ def _preview_subtree(
             if name != "id"
             and name != "data-pptx-preview-sha256"
             and not name.startswith("data-pptx-runtime-")
-            and name not in _TEXT_CONTRACT_ATTRS
         ),
         "children": children,
     }
@@ -446,11 +438,7 @@ def _element_payload(element: ET.Element) -> dict:
         "attrs": sorted(
             (name, value)
             for name, value in element.attrib.items()
-            if name != "id"
-            and (
-                not name.startswith("data-pptx-")
-                or name in _TEXT_CONTRACT_ATTRS
-            )
+            if not name.startswith("data-pptx-") and name != "id"
         ),
         "text": element.text or "",
         "children": [
