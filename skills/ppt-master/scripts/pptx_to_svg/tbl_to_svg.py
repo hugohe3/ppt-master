@@ -37,6 +37,7 @@ Cell painting order:
 from __future__ import annotations
 
 import copy
+import math
 from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
@@ -52,10 +53,12 @@ from .emu_units import (
 )
 from .fill_to_svg import FillResult, resolve_fill
 from .ln_to_svg import resolve_stroke
-from .txbody_to_svg import convert_txbody
+from .txbody_to_svg import _resolve_theme_typeface, convert_txbody
 
 
 BUILTIN_MEDIUM_STYLE_2_ACCENT_1 = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"
+_POWERPOINT_COORD_MIN = -(2**31)
+_POWERPOINT_COORD_MAX = 2**31 - 1
 
 _BUILTIN_MEDIUM_STYLE_2_ACCENT_1_XML = ET.fromstring(
     f'''<a:tblStyle xmlns:a="{NS["a"]}"
@@ -286,6 +289,17 @@ def convert_tbl(
         return TableResult()
     table_style = _resolve_table_style(tbl, table_styles)
     row_heights_px = [_row_height_px(r) for r in rows]
+    grid_topology_invalid = any(
+        len(row.findall("a:tc", NS)) != len(col_widths_px)
+        for row in rows
+    )
+    source_geometry_invalid = (
+        grid_topology_invalid
+        or any(width <= 0 for width in col_widths_px)
+        or any(height <= 0 for height in row_heights_px)
+        or sum(col_widths_px) <= 0
+        or sum(row_heights_px) <= 0
+    )
 
     # PowerPoint's tblGrid widths and tr heights together describe the
     # *intrinsic* table size. The graphicFrame xfrm width/height may differ;
@@ -312,9 +326,9 @@ def convert_tbl(
         native_status = merge_status
     elif len(rows) > 1000 or len(col_widths) > 1000:
         native_status = "unsupported-table-size"
-    elif (
-        any(width < 0 for width in col_widths)
-        or any(height < 0 for height in row_heights)
+    elif source_geometry_invalid or (
+        any(width <= 0 for width in col_widths)
+        or any(height <= 0 for height in row_heights)
         or sum(col_widths) <= 0
         or sum(row_heights) <= 0
     ):
@@ -333,6 +347,7 @@ def convert_tbl(
             row_heights,
             cells,
             palette,
+            theme_fonts or {},
         )
     )
 
@@ -434,11 +449,10 @@ def _column_widths_px(tbl: ET.Element) -> list[float]:
     for col in grid.findall("a:gridCol", NS):
         w_emu = col.attrib.get("w")
         if w_emu is None:
-            continue
-        try:
-            widths.append(emu_to_px(int(w_emu)))
-        except ValueError:
             widths.append(0.0)
+            continue
+        value = _safe_emu_integer(w_emu)
+        widths.append(emu_to_px(value) if value is not None else 0.0)
     return widths
 
 
@@ -446,10 +460,25 @@ def _row_height_px(row: ET.Element) -> float:
     h_emu = row.attrib.get("h")
     if h_emu is None:
         return 0.0
-    try:
-        return emu_to_px(int(h_emu))
-    except ValueError:
-        return 0.0
+    value = _safe_emu_integer(h_emu)
+    return emu_to_px(value) if value is not None else 0.0
+
+
+def _safe_emu_integer(raw_value: str) -> int | None:
+    """Return a bounded ASCII DrawingML coordinate without float overflow."""
+    token = raw_value.strip(" \t\r\n")
+    digits = token[1:] if token.startswith("-") else token
+    if (
+        not digits
+        or not digits.isascii()
+        or not digits.isdigit()
+        or len(digits) > 10
+    ):
+        return None
+    value = int(token)
+    if not _POWERPOINT_COORD_MIN <= value <= _POWERPOINT_COORD_MAX:
+        return None
+    return value
 
 
 def _cumulative_starts(origin: float, sizes: list[float]) -> list[float]:
@@ -740,8 +769,14 @@ def _direct_border_payload(
     ln: ET.Element,
     palette: ColorPalette | None,
 ) -> dict[str, Any]:
-    if set(ln.attrib) - {"w"}:
+    if set(ln.attrib) - {"w", "cap", "cmpd", "algn"}:
         raise ValueError("unsupported border line attribute")
+    if ln.get("cap") not in {None, "flat"}:
+        raise ValueError("unsupported border cap")
+    if ln.get("cmpd") not in {None, "sng"}:
+        raise ValueError("unsupported border compound style")
+    if ln.get("algn") not in {None, "ctr"}:
+        raise ValueError("unsupported border alignment")
     width_emu: int | None = None
     if "w" in ln.attrib:
         raw_width = ln.get("w", "")
@@ -759,11 +794,17 @@ def _direct_border_payload(
             raise ValueError("invalid noFill border")
         return {"style": "none"}
 
+    decoration_names = {"round", "headEnd", "tailEnd"}
     if child_names.count("solidFill") != 1 or any(
-        name not in {"solidFill", "prstDash"} for name in child_names
+        name not in {"solidFill", "prstDash", *decoration_names}
+        for name in child_names
     ):
         raise ValueError("unsupported border paint")
-    if child_names.count("prstDash") > 1 or width_emu is None:
+    if (
+        child_names.count("prstDash") > 1
+        or any(child_names.count(name) > 1 for name in decoration_names)
+        or width_emu is None
+    ):
         raise ValueError("invalid solid border")
     dash = next(
         (child for child in children if child.tag.rsplit("}", 1)[-1] == "prstDash"),
@@ -773,6 +814,30 @@ def _direct_border_payload(
         dash.attrib != {"val": "solid"} or list(dash)
     ):
         raise ValueError("unsupported border dash")
+    line_join = next(
+        (child for child in children if child.tag.rsplit("}", 1)[-1] == "round"),
+        None,
+    )
+    if line_join is not None and (line_join.attrib or list(line_join)):
+        raise ValueError("unsupported border line join")
+    for endpoint_name in ("headEnd", "tailEnd"):
+        endpoint = next(
+            (
+                child for child in children
+                if child.tag.rsplit("}", 1)[-1] == endpoint_name
+            ),
+            None,
+        )
+        if endpoint is None:
+            continue
+        if (
+            set(endpoint.attrib) - {"type", "w", "len"}
+            or endpoint.get("type") not in {None, "none"}
+            or endpoint.get("w") not in {None, "med"}
+            or endpoint.get("len") not in {None, "med"}
+            or list(endpoint)
+        ):
+            raise ValueError("unsupported border endpoint")
 
     solid_fill = next(
         child for child in children
@@ -805,6 +870,8 @@ def _table_has_unsupported_direct_formatting(
 ) -> bool:
     """Reject direct cell features the compact native schema cannot retain."""
     for tc in tbl.findall(".//a:tc", NS):
+        if _table_cell_has_unsupported_topology(tc):
+            return True
         tc_pr = tc.find("a:tcPr", NS)
         if tc_pr is not None:
             allowed_attrs = {"marL", "marR", "marT", "marB", "anchor"}
@@ -814,9 +881,18 @@ def _table_has_unsupported_direct_formatting(
                 return True
             if any(
                 child.tag.rsplit("}", 1)[-1]
-                not in {"solidFill", *_DIRECT_BORDER_TAGS}
+                not in {"solidFill", "noFill", *_DIRECT_BORDER_TAGS}
                 for child in tc_pr
             ):
+                return True
+            fills = [
+                child for child in tc_pr
+                if child.tag.rsplit("}", 1)[-1] in {"solidFill", "noFill"}
+            ]
+            if len(fills) > 1:
+                return True
+            no_fill = tc_pr.find("a:noFill", NS)
+            if no_fill is not None and (no_fill.attrib or list(no_fill)):
                 return True
             for border_tag in _DIRECT_BORDER_TAGS:
                 borders = tc_pr.findall(f"a:{border_tag}", NS)
@@ -836,16 +912,119 @@ def _table_has_unsupported_direct_formatting(
         tx_body = tc.find("a:txBody", NS)
         if _text_body_has_unsupported_formatting(tx_body):
             return True
-        if (
-            tx_body is not None
-            and tx_body.find(".//a:solidFill", NS) is not None
-            and _cell_text_color(tx_body, palette) is None
-        ):
-            return True
     return False
 
 
+def _table_cell_has_unsupported_topology(tc: ET.Element) -> bool:
+    """Accept only the closed optional txBody -> optional tcPr cell sequence."""
+    if any(
+        name not in {"gridSpan", "rowSpan", "hMerge", "vMerge"}
+        for name in tc.attrib
+    ):
+        return True
+    tx_body_tag = f"{{{NS['a']}}}txBody"
+    tc_pr_tag = f"{{{NS['a']}}}tcPr"
+    child_tags = [child.tag for child in tc]
+    child_index = 0
+    if child_tags[:1] == [tx_body_tag]:
+        child_index += 1
+    if child_tags[child_index:child_index + 1] == [tc_pr_tag]:
+        child_index += 1
+    return child_index != len(child_tags)
+
+
 def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
+    if tx_body is None:
+        return False
+    if tx_body.attrib:
+        return True
+
+    body_pr_tag = f"{{{NS['a']}}}bodyPr"
+    list_style_tag = f"{{{NS['a']}}}lstStyle"
+    paragraph_tag = f"{{{NS['a']}}}p"
+    body_tags = [child.tag for child in tx_body]
+    body_index = 0
+    if not body_tags or body_tags[0] != body_pr_tag:
+        return True
+    body_index += 1
+    if body_index < len(body_tags) and body_tags[body_index] == list_style_tag:
+        body_index += 1
+    if body_index == len(body_tags) or any(
+        tag != paragraph_tag for tag in body_tags[body_index:]
+    ):
+        return True
+
+    relationship_prefix = f"{{{NS['r']}}}"
+    forbidden_run_children = {
+        f"{{{NS['a']}}}extLst",
+        f"{{{NS['a']}}}hlinkClick",
+        f"{{{NS['a']}}}hlinkMouseOver",
+    }
+    if any(
+        node.tag in forbidden_run_children
+        or any(name.startswith(relationship_prefix) for name in node.attrib)
+        for node in tx_body.iter()
+    ):
+        return True
+
+    body_pr = tx_body.find("a:bodyPr", NS)
+    if body_pr is None or body_pr.attrib or list(body_pr):
+        return True
+    list_style = tx_body.find("a:lstStyle", NS)
+    if list_style is not None and (list_style.attrib or list(list_style)):
+        return True
+    for paragraph in tx_body.findall("a:p", NS):
+        if paragraph.attrib:
+            return True
+        p_pr_tag = f"{{{NS['a']}}}pPr"
+        run_tag = f"{{{NS['a']}}}r"
+        end_r_pr_tag = f"{{{NS['a']}}}endParaRPr"
+        direct_tags = [child.tag for child in paragraph]
+        paragraph_index = 0
+        if direct_tags[:1] == [p_pr_tag]:
+            paragraph_index += 1
+        while (
+            paragraph_index < len(direct_tags)
+            and direct_tags[paragraph_index] == run_tag
+        ):
+            paragraph_index += 1
+        if (
+            paragraph_index < len(direct_tags)
+            and direct_tags[paragraph_index] == end_r_pr_tag
+        ):
+            paragraph_index += 1
+        if paragraph_index != len(direct_tags):
+            return True
+
+        p_pr = paragraph.find("a:pPr", NS)
+        if p_pr is not None:
+            p_pr_tags = [child.tag.rsplit("}", 1)[-1] for child in p_pr]
+            if p_pr_tags.count("defRPr") > 1 or p_pr_tags.count("buNone") > 1:
+                return True
+            if any(tag.startswith("bu") and tag != "buNone" for tag in p_pr_tags):
+                return True
+
+        for run in paragraph.findall("a:r", NS):
+            if run.attrib:
+                return True
+            r_pr_tag = f"{{{NS['a']}}}rPr"
+            text_tag = f"{{{NS['a']}}}t"
+            run_tags = [child.tag for child in run]
+            if run_tags not in ([text_tag], [r_pr_tag, text_tag]):
+                return True
+            text_node = run.find("a:t", NS)
+            if text_node is None or list(text_node):
+                return True
+            allowed_text_attrs = {"{http://www.w3.org/XML/1998/namespace}space"}
+            if any(name not in allowed_text_attrs for name in text_node.attrib):
+                return True
+    return False
+
+
+def _legacy_text_body_has_unsupported_formatting(
+    tx_body: ET.Element | None,
+) -> bool:
+    """Return the pre-P2-T4 gate so active plain payloads stay unchanged."""
     if tx_body is None:
         return False
     body_pr = tx_body.find("a:bodyPr", NS)
@@ -861,9 +1040,8 @@ def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
     ):
         return True
 
-    paragraphs = tx_body.findall("a:p", NS)
     run_signatures: set[tuple[str | None, str | None, bytes | None]] = set()
-    for paragraph in paragraphs:
+    for paragraph in tx_body.findall("a:p", NS):
         p_pr = paragraph.find("a:pPr", NS)
         alignment = p_pr.get("algn") if p_pr is not None else None
         if alignment not in {None, "l", "ctr", "r"}:
@@ -878,23 +1056,29 @@ def _text_body_has_unsupported_formatting(tx_body: ET.Element | None) -> bool:
                 return True
 
         default_r_pr = p_pr.find("a:defRPr", NS) if p_pr is not None else None
-        if _run_props_have_unsupported_formatting(default_r_pr):
+        if _legacy_run_props_have_unsupported_formatting(default_r_pr):
             return True
         for run in paragraph.findall("a:r", NS):
             r_pr = run.find("a:rPr", NS)
-            if _run_props_have_unsupported_formatting(r_pr):
+            if _legacy_run_props_have_unsupported_formatting(r_pr):
                 return True
-            run_signatures.add(_effective_run_signature(r_pr, default_r_pr))
+            run_signatures.add(
+                _legacy_effective_run_signature(r_pr, default_r_pr)
+            )
         end_r_pr = paragraph.find("a:endParaRPr", NS)
-        if _run_props_have_unsupported_formatting(end_r_pr):
+        if _legacy_run_props_have_unsupported_formatting(end_r_pr):
             return True
         if not paragraph.findall("a:r", NS) and end_r_pr is not None:
-            run_signatures.add(_effective_run_signature(end_r_pr, default_r_pr))
+            run_signatures.add(
+                _legacy_effective_run_signature(end_r_pr, default_r_pr)
+            )
 
     return len(run_signatures) > 1
 
 
-def _run_props_have_unsupported_formatting(r_pr: ET.Element | None) -> bool:
+def _legacy_run_props_have_unsupported_formatting(
+    r_pr: ET.Element | None,
+) -> bool:
     if r_pr is None:
         return False
     if ooxml_bool(r_pr.get("i")):
@@ -924,7 +1108,7 @@ def _run_props_have_unsupported_formatting(r_pr: ET.Element | None) -> bool:
     )
 
 
-def _effective_run_signature(
+def _legacy_effective_run_signature(
     r_pr: ET.Element | None,
     default_r_pr: ET.Element | None,
 ) -> tuple[str | None, str | None, bytes | None]:
@@ -955,6 +1139,7 @@ def _native_table_payload(
     row_heights: list[float],
     cells: list[list[_CellSlot | None]],
     palette: ColorPalette | None,
+    theme_fonts: dict[str, str],
 ) -> dict[str, Any]:
     """Build the SVG data-pptx-native payload for an unmerged table."""
     tbl_pr = tbl.find("a:tblPr", NS)
@@ -987,7 +1172,11 @@ def _native_table_payload(
             if slot is None or slot.is_dropped:
                 row_payload.append("")
                 continue
-            cell_payload = _native_cell_payload(slot.element, palette)
+            cell_payload = _native_cell_payload(
+                slot.element,
+                palette,
+                theme_fonts,
+            )
             if slot.row_span > 1:
                 cell_payload["row_span"] = slot.row_span
             if slot.col_span > 1:
@@ -998,11 +1187,22 @@ def _native_table_payload(
     return payload
 
 
-def _native_cell_payload(tc: ET.Element, palette: ColorPalette | None) -> dict[str, Any]:
+def _native_cell_payload(
+    tc: ET.Element,
+    palette: ColorPalette | None,
+    theme_fonts: dict[str, str],
+) -> dict[str, Any]:
     tx_body = tc.find("a:txBody", NS)
     tc_pr = tc.find("a:tcPr", NS)
     paragraph_payloads = _cell_paragraph_payloads(tx_body)
-    if len(paragraph_payloads) > 1:
+    rich_paragraphs = _cell_rich_paragraph_payloads(
+        tx_body,
+        palette,
+        theme_fonts,
+    )
+    if rich_paragraphs is not None:
+        cell: dict[str, Any] = {"paragraphs": rich_paragraphs}
+    elif len(paragraph_payloads) > 1:
         cell: dict[str, Any] = {"paragraphs": paragraph_payloads}
     else:
         cell = {"text": _cell_plain_text(tx_body)}
@@ -1010,12 +1210,13 @@ def _native_cell_payload(tc: ET.Element, palette: ColorPalette | None) -> dict[s
     fill = _cell_fill_hex(tc_pr, palette)
     if fill:
         cell["fill"] = fill
-    color = _cell_text_color(tx_body, palette)
-    if color:
-        cell["color"] = color
-    font_size = _cell_font_size_px(tx_body)
-    if font_size:
-        cell["font_size"] = font_size
+    if rich_paragraphs is None:
+        color = _cell_text_color(tx_body, palette)
+        if color:
+            cell["color"] = color
+        font_size = _cell_font_size_px(tx_body)
+        if font_size:
+            cell["font_size"] = font_size
     if len(paragraph_payloads) <= 1:
         align = _cell_align(tx_body)
         if align:
@@ -1023,9 +1224,10 @@ def _native_cell_payload(tc: ET.Element, palette: ColorPalette | None) -> dict[s
     valign = _cell_valign(tc_pr)
     if valign:
         cell["valign"] = valign
-    bold = _cell_bold(tx_body)
-    if bold is not None:
-        cell["bold"] = bold
+    if rich_paragraphs is None:
+        bold = _cell_bold(tx_body)
+        if bold is not None:
+            cell["bold"] = bold
     borders = _cell_borders_payload(tc_pr, palette)
     if borders:
         cell["borders"] = borders
@@ -1061,6 +1263,147 @@ def _cell_paragraph_payloads(
     return payloads
 
 
+def _effective_run_attr(
+    r_pr: ET.Element | None,
+    default_r_pr: ET.Element | None,
+    name: str,
+) -> str | None:
+    if r_pr is not None and r_pr.get(name) is not None:
+        return r_pr.get(name)
+    return default_r_pr.get(name) if default_r_pr is not None else None
+
+
+def _effective_run_child(
+    r_pr: ET.Element | None,
+    default_r_pr: ET.Element | None,
+    name: str,
+) -> ET.Element | None:
+    child = r_pr.find(f"a:{name}", NS) if r_pr is not None else None
+    if child is not None:
+        return child
+    return default_r_pr.find(f"a:{name}", NS) if default_r_pr is not None else None
+
+
+def _native_run_font_family(
+    r_pr: ET.Element | None,
+    default_r_pr: ET.Element | None,
+    theme_fonts: dict[str, str],
+) -> str | None:
+    faces: list[str] = []
+    for tag in ("latin", "ea"):
+        node = _effective_run_child(r_pr, default_r_pr, tag)
+        raw_face = node.get("typeface") if node is not None else None
+        face = _resolve_theme_typeface(raw_face, theme_fonts)
+        if face and face not in faces:
+            faces.append(face)
+    if len(faces) != 1:
+        return None
+    face = faces[0].strip()
+    return face if face and "," not in face else None
+
+
+def _native_run_payload(
+    run: ET.Element,
+    default_r_pr: ET.Element | None,
+    palette: ColorPalette | None,
+    theme_fonts: dict[str, str],
+) -> dict[str, Any]:
+    r_pr = run.find("a:rPr", NS)
+    text = run.findtext("a:t", default="", namespaces=NS)
+    payload: dict[str, Any] = {"text": text}
+
+    for source, target in (("b", "bold"), ("i", "italic")):
+        raw = _effective_run_attr(r_pr, default_r_pr, source)
+        if raw is not None:
+            payload[target] = ooxml_bool(raw)
+
+    underline = _effective_run_attr(r_pr, default_r_pr, "u")
+    if underline is not None:
+        payload["underline"] = underline != "none"
+    strike = _effective_run_attr(r_pr, default_r_pr, "strike")
+    if strike is not None:
+        payload["strike"] = strike != "noStrike"
+
+    font_size = _canonical_source_font_size_px(
+        _effective_run_attr(r_pr, default_r_pr, "sz")
+    )
+    if font_size is not None:
+        payload["font_size"] = font_size
+
+    solid_fill = _effective_run_child(r_pr, default_r_pr, "solidFill")
+    if solid_fill is not None and not _solid_fill_is_unsafe(solid_fill, palette):
+        try:
+            color, _alpha = resolve_color(find_color_elem(solid_fill), palette)
+        except (AttributeError, OverflowError, TypeError, ValueError):
+            color = None
+        if color:
+            payload["color"] = color
+
+    font_family = _native_run_font_family(
+        r_pr,
+        default_r_pr,
+        theme_fonts,
+    )
+    if font_family:
+        payload["font_family"] = font_family
+
+    for source, target in (("lang", "lang"), ("altLang", "alt_lang")):
+        language = _effective_run_attr(r_pr, default_r_pr, source)
+        if language and language.strip():
+            payload[target] = language.strip()
+    return payload
+
+
+def _cell_rich_paragraph_payloads(
+    tx_body: ET.Element | None,
+    palette: ColorPalette | None,
+    theme_fonts: dict[str, str],
+) -> list[dict[str, Any]] | None:
+    """Materialize runs only when the legacy plain contract was insufficient."""
+    if tx_body is None or not _legacy_text_body_has_unsupported_formatting(tx_body):
+        return None
+
+    paragraphs: list[tuple[str | None, list[dict[str, Any]]]] = []
+    style_signatures: set[tuple[tuple[str, Any], ...]] = set()
+    needs_runs = False
+    run_only_fields = {
+        "italic", "underline", "strike", "font_family", "lang", "alt_lang",
+    }
+    for paragraph in tx_body.findall("a:p", NS):
+        p_pr = paragraph.find("a:pPr", NS)
+        align = p_pr.get("algn") if p_pr is not None else None
+        if align not in {"l", "ctr", "r"}:
+            align = None
+        default_r_pr = p_pr.find("a:defRPr", NS) if p_pr is not None else None
+        runs = [
+            _native_run_payload(run, default_r_pr, palette, theme_fonts)
+            for run in paragraph.findall("a:r", NS)
+        ]
+        paragraphs.append((align, runs))
+        for run in runs:
+            style = tuple(sorted((key, value) for key, value in run.items() if key != "text"))
+            style_signatures.add(style)
+            if run_only_fields.intersection(run):
+                needs_runs = True
+
+    if len(style_signatures) > 1:
+        needs_runs = True
+    if not needs_runs:
+        return None
+
+    payloads: list[dict[str, Any]] = []
+    for align, runs in paragraphs:
+        paragraph_payload: dict[str, Any]
+        if runs:
+            paragraph_payload = {"runs": runs}
+        else:
+            paragraph_payload = {"text": ""}
+        if align is not None:
+            paragraph_payload["align"] = align
+        payloads.append(paragraph_payload)
+    return payloads
+
+
 def _cell_fill_hex(tc_pr: ET.Element | None, palette: ColorPalette | None) -> str | None:
     fill = resolve_fill(tc_pr, palette)
     color = fill.attrs.get("fill") if fill.attrs else None
@@ -1072,20 +1415,40 @@ def _cell_fill_hex(tc_pr: ET.Element | None, palette: ColorPalette | None) -> st
 def _cell_text_color(tx_body: ET.Element | None, palette: ColorPalette | None) -> str | None:
     for r_pr in _text_run_props_in_priority(tx_body):
         solid_fill = r_pr.find("a:solidFill", NS)
-        if solid_fill is not None:
-            color, _alpha = resolve_color(find_color_elem(solid_fill), palette)
-            return color
+        if solid_fill is not None and not _solid_fill_is_unsafe(solid_fill, palette):
+            try:
+                color, _alpha = resolve_color(find_color_elem(solid_fill), palette)
+            except (AttributeError, OverflowError, TypeError, ValueError):
+                continue
+            if color:
+                return color
     return None
 
 
 def _cell_font_size_px(tx_body: ET.Element | None) -> int | float | None:
     for r_pr in _text_run_props_in_priority(tx_body):
-        if not r_pr.get("sz"):
-            continue
-        size = hundredths_pt_to_px(r_pr.get("sz"))
-        if size > 0:
-            return _round_payload_number(size)
+        size = _canonical_source_font_size_px(r_pr.get("sz"))
+        if size is not None:
+            return size
     return None
+
+
+def _canonical_source_font_size_px(raw_size: str | None) -> int | float | None:
+    """Return a writer-stable font size for one bounded DrawingML token."""
+    if (
+        raw_size is None
+        or not raw_size.isascii()
+        or not raw_size.isdigit()
+        or len(raw_size) > 6
+    ):
+        return None
+    size_hpt = int(raw_size)
+    if not 100 <= size_hpt <= 400000:
+        return None
+    # The writer emits sizes at 0.1pt precision; canonicalize on first import
+    # so source and native reimport payloads stay stable.
+    canonical_hpt = round(size_hpt / 10) * 10
+    return _round_payload_number(hundredths_pt_to_px(canonical_hpt))
 
 
 def _cell_align(tx_body: ET.Element | None) -> str | None:
@@ -1150,7 +1513,10 @@ def _copy_cell_margins(tc_pr: ET.Element | None, cell: dict[str, Any]) -> None:
     ):
         if source not in tc_pr.attrib:
             continue
-        cell[target] = _round_payload_number(emu_to_px(tc_pr.attrib[source]))
+        value = _safe_emu_integer(tc_pr.attrib[source])
+        if value is None or value < 0:
+            continue
+        cell[target] = _round_payload_number(emu_to_px(value))
 
 
 # ---------------------------------------------------------------------------
@@ -1171,10 +1537,42 @@ def _convert_cell_text(
 ):
     """Render cell text. PowerPoint's <a:tcPr> can override txBody insets via
     its own marL/marR/marT/marB attrs; convert_txbody reads from <a:bodyPr>,
-    so we materialise a synthetic bodyPr by mutating the txBody in place when
-    tcPr has its own insets. (We undo the mutation afterwards to keep the
-    slide tree pristine for any subsequent passes.)"""
-    body_pr = tx_body.find("a:bodyPr", NS)
+    so we materialise a synthetic bodyPr when tcPr has its own insets. Invalid
+    malformed source font-size and run-color values are removed from a private
+    render copy; they have already been omitted from the native payload and
+    must not crash fallback SVG generation."""
+    render_tx_body = tx_body
+    run_props = [
+        node
+        for node in tx_body.iter()
+        if node.tag in {
+            f"{{{NS['a']}}}defRPr",
+            f"{{{NS['a']}}}endParaRPr",
+            f"{{{NS['a']}}}rPr",
+        }
+    ]
+    if any(
+        _run_props_need_render_normalization(node, palette)
+        for node in run_props
+    ):
+        render_tx_body = copy.deepcopy(tx_body)
+        for node in render_tx_body.iter():
+            if node.tag not in {
+                f"{{{NS['a']}}}defRPr",
+                f"{{{NS['a']}}}endParaRPr",
+                f"{{{NS['a']}}}rPr",
+            }:
+                continue
+            if (
+                node.get("sz") is not None
+                and _canonical_source_font_size_px(node.get("sz")) is None
+            ):
+                node.attrib.pop("sz", None)
+            solid_fill = node.find("a:solidFill", NS)
+            if solid_fill is not None and _solid_fill_is_unsafe(solid_fill, palette):
+                node.remove(solid_fill)
+
+    body_pr = render_tx_body.find("a:bodyPr", NS)
     overrides = _tcPr_inset_overrides(tcPr)
     saved: dict[str, str | None] = {}
     if overrides and body_pr is not None:
@@ -1182,13 +1580,23 @@ def _convert_cell_text(
             saved[key] = body_pr.attrib.get(key)
             body_pr.set(key, val)
     try:
-        return convert_txbody(
-            tx_body, cell_xfrm, palette, theme_fonts=theme_fonts,
-            fallback_run_props=fallback_run_props,
-            slide_number=slide_number,
-            id_prefix=id_prefix,
-            id_seq=id_seq,
-        )
+        try:
+            return convert_txbody(
+                render_tx_body, cell_xfrm, palette, theme_fonts=theme_fonts,
+                fallback_run_props=fallback_run_props,
+                slide_number=slide_number,
+                id_prefix=id_prefix,
+                id_seq=id_seq,
+            )
+        except (AttributeError, OverflowError, TypeError, ValueError):
+            plain_tx_body = _plain_table_text_body(render_tx_body, overrides)
+            return convert_txbody(
+                plain_tx_body, cell_xfrm, palette, theme_fonts=theme_fonts,
+                fallback_run_props=(),
+                slide_number=slide_number,
+                id_prefix=id_prefix,
+                id_seq=id_seq,
+            )
     finally:
         if overrides and body_pr is not None:
             for key, prior in saved.items():
@@ -1198,14 +1606,99 @@ def _convert_cell_text(
                     body_pr.set(key, prior)
 
 
+def _run_props_need_render_normalization(
+    run_props: ET.Element,
+    palette: ColorPalette | None,
+) -> bool:
+    size = run_props.get("sz")
+    if size is not None and _canonical_source_font_size_px(size) is None:
+        return True
+    solid_fill = run_props.find("a:solidFill", NS)
+    return solid_fill is not None and _solid_fill_is_unsafe(solid_fill, palette)
+
+
+def _solid_fill_is_unsafe(
+    solid_fill: ET.Element,
+    palette: ColorPalette | None,
+) -> bool:
+    color = find_color_elem(solid_fill)
+    if color is not None and not _color_numeric_tokens_are_finite(color):
+        return True
+    try:
+        resolve_color(color, palette)
+    except (AttributeError, OverflowError, TypeError, ValueError):
+        return True
+    return False
+
+
+def _color_numeric_tokens_are_finite(color: ET.Element) -> bool:
+    """Reject non-finite numeric tokens before the resolver can clamp them."""
+    base_numeric_attrs = {
+        "hslClr": ("hue", "sat", "lum"),
+        "scrgbClr": ("r", "g", "b"),
+    }
+    modifier_tags = {
+        "alpha", "alphaMod", "alphaOff", "hueMod", "hueOff",
+        "lumMod", "lumOff", "satMod", "satOff", "shade", "tint",
+    }
+    for node in color.iter():
+        name = node.tag.rsplit("}", 1)[-1]
+        attrs = base_numeric_attrs.get(name, ())
+        if name in modifier_tags:
+            attrs = ("val",)
+        for attr in attrs:
+            raw = node.get(attr)
+            if raw is None:
+                return False
+            try:
+                value = float(raw)
+            except (OverflowError, TypeError, ValueError):
+                return False
+            if not math.isfinite(value):
+                return False
+    return True
+
+
+def _plain_table_text_body(
+    tx_body: ET.Element,
+    overrides: dict[str, str],
+) -> ET.Element:
+    """Return a text-preserving style-free fallback after malformed styling."""
+    plain = copy.deepcopy(tx_body)
+    body_pr = plain.find("a:bodyPr", NS)
+    if body_pr is None:
+        body_pr = ET.Element(f"{{{NS['a']}}}bodyPr")
+        plain.insert(0, body_pr)
+    body_pr.clear()
+    for key, value in overrides.items():
+        body_pr.set(key, value)
+    list_style = plain.find("a:lstStyle", NS)
+    if list_style is not None:
+        list_style.clear()
+    for paragraph in plain.findall("a:p", NS):
+        p_pr = paragraph.find("a:pPr", NS)
+        if p_pr is not None:
+            align = p_pr.get("algn")
+            p_pr.clear()
+            if align in {"l", "ctr", "r"}:
+                p_pr.set("algn", align)
+    for path in (".//a:rPr", ".//a:defRPr", ".//a:endParaRPr"):
+        for run_props in plain.findall(path, NS):
+            run_props.clear()
+    return plain
+
+
 def _tcPr_inset_overrides(tcPr: ET.Element | None) -> dict[str, str]:
     if tcPr is None:
         return {}
     out: dict[str, str] = {}
     for src, dst in (("marL", "lIns"), ("marR", "rIns"),
                      ("marT", "tIns"), ("marB", "bIns")):
-        if src in tcPr.attrib:
-            out[dst] = tcPr.attrib[src]
+        if src not in tcPr.attrib:
+            continue
+        value = _safe_emu_integer(tcPr.attrib[src])
+        if value is not None and value >= 0:
+            out[dst] = str(value)
     return out
 
 
