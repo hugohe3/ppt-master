@@ -7,6 +7,7 @@ Frosted-glass SaaS — translucent layered panels, flowing gradient light, float
 ## 1. Shape & decoration
 
 - Shape language: rounded translucent glass panels (low fill-opacity over the dark field) with bright hairline edges; layered, floating cards that imply blur and frost; rounded corners (`rx` 12-20).
+- Composition geometry: one hero glass panel set off-axis over a radial bloom; overlapping translucent discs building the focal cluster; a large glass ring encircling the key metric; panels stepped in depth to imply sequence; a diagonal light beam crossing the dark field.
 - Decoration: soft radial light blooms in the background; thin luminous edge highlights along panels; restrained — the glass material is the decoration, not added ornament. Realize the radial bloom / glow halo as a `<circle>` / `<ellipse>` with a `<radialGradient>` fill, never a `rect rx=w/2` standing in for it.
 - Whitespace: dark negative space reads as depth; let panels float on it with room to breathe.
 

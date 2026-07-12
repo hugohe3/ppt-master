@@ -7,6 +7,7 @@ Photo-led editorial — large full-bleed photography dominates the page, text po
 ## 1. Shape & decoration
 
 - Shape language: large full-bleed / edge-to-edge image fields are the page's spine; text sits in restrained columns, caption blocks, kickers, or overlay headlines. Minimal chrome — the photograph carries the page.
+- Composition geometry: an L-shaped text zone carved out of the full bleed; a headline straddling the photo edge; a diptych / triptych panel split; one floating caption card breaking the image boundary — moves that serve the photograph, never bury it.
 - Decoration: thin rules, section numbering, small figure notes; nothing competes with the image.
 - Whitespace: generous around text; the photo fills, the type breathes beside it. Asymmetric magazine composition.
 

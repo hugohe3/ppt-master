@@ -7,6 +7,7 @@ Approachable and modern. Rounded cards, gentle elevation, friendly rhythm. For p
 ## 1. Shape & decoration
 
 - Shape language: rounded rectangles (`rx` 12-16), pill tags, soft containers. Consistent radius deck-wide.
+- Composition geometry: a large soft disc or blob bleeding off one edge as the color field; a pill chain or arc path replacing the boxed step row; one hero panel overlapping a full-width tinted band; an oversized rounded numeral behind the point. Cards are the container language, not the composition — vary the stage they sit on.
 - Decoration: cards as the primary container; icon accents; numbered circles; gentle dividers. Moderate, in service of clarity.
 - Whitespace: comfortable padding inside cards; even gutters; balanced rather than austere.
 

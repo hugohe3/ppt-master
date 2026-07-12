@@ -92,7 +92,7 @@ Each style has its own file with: shape & decoration, typography character, colo
 
 ## 3. Escape hatch — `custom`
 
-When no preset captures the intended aesthetic, set `- visual_style: custom` in `spec_lock.md` and add a `- visual_style_behavior:` line: one paragraph naming shape language, decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. `custom` is a tail-case, not a default; reach for a preset first.
+When no preset captures the intended aesthetic, set `- visual_style: custom` in `spec_lock.md` and add a `- visual_style_behavior:` line: one paragraph naming shape language, composition geometry (page-scale moves), decoration density, whitespace, typographic character, and texture — **no HEX, no color names as values**. `custom` is a tail-case, not a default; reach for a preset first.
 
 ---
 

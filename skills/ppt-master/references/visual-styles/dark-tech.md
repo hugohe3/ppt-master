@@ -7,6 +7,7 @@ Dark canvas, luminous accents, geometric precision. For tech, AI, dev tools, dat
 ## 1. Shape & decoration
 
 - Shape language: crisp geometry; thin glowing rules; hexagon / circuit / grid motifs used sparingly. Slight rounding (`rx` 4-8) or sharp.
+- Composition geometry: a glowing diagonal circuit trace splitting the field; concentric orbit rings staging a central metric; a hexagon node cluster mapping components; an oversized low-opacity numeral or glyph floating behind the content layer; thin bracket frames zoning the page.
 - Decoration: glow accents, fine grid backgrounds, monospace labels, node / connector lines. Restrained — precision over clutter.
 - Whitespace: dark negative space reads as depth; let elements float on it.
 
