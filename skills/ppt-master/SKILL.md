@@ -870,19 +870,25 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > without a baseline remain native-compatible and only warn that stale detection
 > is unavailable.
 > Imported table markers may also cover the verified narrow P2 subset:
-> canonical rectangular merges with blank covered cells, safe per-side borders,
-> and plain multi-paragraph cells. Run-level table rich text, noncanonical merge
-> topology, and unsafe direct formatting remain fallback-only. Imported classic
-> charts additionally cover verified column/line/area combos, canonical OHLC
-> stock, area date-axis cases, and verified scatter/bubble charts with a closed
-> `axes.x` / `axes.y` value-axis pair. XY import derives effective scatter style
-> from uniform series line/marker/smooth state. Every supported XY axis field is
-> retained for native read-back; the normalized fallback newly consumes only
-> the two major-gridline flags. This is not full `AxisSpec` or ChartEx import
-> support; unmodeled chart/axis semantics continue to fail closed without
-> reducing existing active-marker SVG-to-native conversion. Safe stock series
-> style may pass the structural gate, but stock series / high-low / up-down local
-> styling may still normalize under the documented editable-first contract.
+> exact physical row/grid topology, canonical rectangular merges with blank
+> covered cells, safe per-side borders, plain multi-paragraph cells, and closed
+> run-level rich text. A rich paragraph contains non-empty `runs`; each run
+> requires `text` and may use only
+> `bold` / `italic` / `underline` / `strike` / `color` / `font_size` /
+> `font_family` / `lang` / `alt_lang`. Presentation-only source run XML
+> normalizes, while relationship-bearing text, extensions, line breaks, fields,
+> tabs, bullets, broken text topology, noncanonical merges, and unsafe direct
+> formatting remain fallback-only. Imported classic charts
+> additionally cover verified column/line/area combos, canonical OHLC stock,
+> area date-axis cases, verified scatter/bubble axes, radar, safe `of_pie`
+> `serLines`, and the closed axis/title/legend plus bar-gap/overlap normalization
+> cases. The importer also accepts the seven closed ChartEx data models:
+> treemap, sunburst, histogram, pareto, box-whisker, waterfall, and funnel.
+> ChartEx data topology is retained for native read-back, but style, axis,
+> labels, and binning details may normalize. These additions do not create a
+> full `AxisSpec`, arbitrary ChartEx import, arbitrary rich OOXML, or new
+> normalized-renderer coverage; unmodeled semantics continue to fail closed
+> without reducing existing active-marker SVG-to-native conversion.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`. `none` removes only the visual transition; an explicit automatic advance remains valid.

@@ -1066,10 +1066,19 @@ Cell objects accept `text`, `fill`, `color`,
 `align`, `valign`, `bold`, `font_size`, `padding`, `border_color`, and
 `border_width`, plus optional `lang`; the same `padding`, `border_color`,
 `border_width`, and `lang` keys may also live under `style` as table defaults.
-For plain multi-paragraph text, replace `text` with a non-empty `paragraphs`
-list. Each entry is either a string or `{ "text": "...", "align": "l|ctr|r" }`;
-empty paragraph strings are preserved, and `text` / `paragraphs` are mutually
-exclusive. This is paragraph-level plain text, not run-level rich text.
+For multi-paragraph text, replace cell `text` with a non-empty `paragraphs`
+list. Each entry is either a string or an object containing optional
+`align: "l|ctr|r"` and exactly one of `text` or non-empty `runs`; empty
+paragraph strings are preserved, and cell `text` / `paragraphs` are mutually
+exclusive. Each run is an object with required string `text` and optional JSON
+boolean `bold`, `italic`, `underline`, and `strike`, plus optional `color`,
+`font_size`, one-typeface `font_family`, `lang`, and `alt_lang`. Unknown fields,
+wrong types, empty run lists, multi-typeface `font_family`, and unsupported
+colors fail fast. PPTX import requires exact physical row/grid topology and
+normalizes source presentation-only run XML outside this closed schema, but
+relationship-bearing text, extensions, structural line breaks, fields, tabs,
+bullets, malformed run topology, and unsupported text-body structure remain
+fallback-only.
 Per-side cell borders use `borders.left|right|top|bottom`, where each value is
 either `{ "style": "none" }` or
 `{ "style": "solid", "color": "#RRGGBB", "width": <positive-px> }`.
@@ -1260,12 +1269,25 @@ outside the safe parsing boundary stay fallback-only.
 
 **PPTX chart-import boundary**: The importer recognizes conservative classic
 single-plot charts plus the verified scatter/bubble XY-axis, column/line/area
-combo, area date-axis, and canonical OHLC stock subsets above. ChartEx output
-can be authored from marker metadata, but ChartEx **import** is still
-unsupported. Full `AxisSpec`, radar import, arbitrary stock variants, and axis,
-combo, or date-axis semantics outside the closed fields above remain
-fallback-only; this does not reduce the existing SVG-marker-to-native writer
-support.
+combo, area date-axis, canonical OHLC stock, radar, safe `of_pie` `serLines`,
+axis/title/legend normalization, and bar/column gap/overlap subsets. Imported
+`gapWidth` must be one canonical integer in `0..500`; imported `overlap` must be
+one canonical integer in `-100..100`. Both values intentionally normalize to
+the native writer contract rather than claiming exact source-style retention.
+Malformed, duplicate, or out-of-range values fail closed.
+
+ChartEx import is closed to seven validated data models: `treemap`, `sunburst`,
+`histogram`, `pareto`, `box_whisker`, `waterfall`, and `funnel`. The importer
+retains their supported hierarchy/category/value/series/subtotal topology for
+native read-back. Numeric cache values must be non-empty and finite, and cache
+counts/indexes must be canonical non-negative decimal integers with exact,
+contiguous topology; malformed, non-numeric, `NaN`, infinite, sparse, duplicate,
+or mismatched caches fail closed. ChartEx style, axis, label, and binning details
+outside the payload normalize. Full `AxisSpec`, arbitrary ChartEx families or
+presentation fidelity, arbitrary stock variants, and axis/combo/date-axis
+semantics outside the closed fields above remain fallback-only. The C4/C5
+import work does not expand the normalized SVG renderer and does not reduce
+existing SVG-marker-to-native writer support.
 
 **Deferred chart types**: Exploded pie / doughnut variants, `map`, `heatmap`,
 `bullet`, and `gantt` are intentionally outside the current native-object
