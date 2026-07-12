@@ -142,10 +142,10 @@ The projection removes opaque text payload, duplicate hidden geometry carriers, 
 Factor large decorative vector groups out of the lightweight projections so the model-facing SVGs stay readable while export remains native shapes. Never run this in place on the lossless import SVGs:
 
 ```bash
-# standard / fidelity analysis path
+# layered view — primary read surface in every mode
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg" --icons-dir "<import_workspace>/icons" --inplace --id-prefix layered --min-decoration-bytes 3000 --clean-stale
 
-# mirror inspection path; the lossless layered/flat sources remain authoritative
+# flat view — mirror inspection and optional composition spot checks; the lossless layered/flat sources remain authoritative for mirror
 python3 skills/ppt-master/scripts/extract_svg_assets.py "<import_workspace>/authoring-svg-flat" --icons-dir "<import_workspace>/icons" --inplace --id-prefix flat --min-decoration-bytes 3000 --clean-stale
 ```
 
@@ -155,8 +155,7 @@ The projected SVGs in `<import_workspace>/authoring-svg/` / `<import_workspace>/
 
 | Mode | Required read set |
 |---|---|
-| `standard` | `manifest.json`, exported assets, and enough cleaned `authoring-svg-flat/slide_NN.svg` pages to ground the confirmed visual direction. Source Master/Layout files are not needed for output design. |
-| `fidelity` | `manifest.json`, exported assets, and every cleaned `authoring-svg-flat/slide_NN.svg` page so the newly designed roster covers the useful visual range. Source topology remains non-binding. |
+| `standard` / `fidelity` | `manifest.json`, exported assets, `svg/inheritance.json`, and every cleaned layered projection (`authoring-svg/master_*.svg` / `layout_*.svg` / `slide_NN.svg`). The layered view is the complete read surface: it covers Layouts unused by any sample slide (invisible in `svg-flat/` yet still template vocabulary), and per-page composition follows from `inheritance.json`. Cleaned flat pages are optional composition spot checks, not a required second pass over the same shapes. Source topology remains non-binding; the two modes differ in output design (`fidelity` designs a broader roster covering the useful visual range), not in read coverage. |
 | `mirror` | `manifest.json`, `native_structure.json`, `svg/inheritance.json`, every cleaned layered Master/Layout/Slide projection, and every cleaned flat slide projection. Verify the projection against the lossless file inventory; restoration itself reads the matching lossless files by identity rather than placing their opaque payload in model context. |
 
 Use `summary.md` only for orientation. Use screenshots or the original PPTX only for visual cross-checking. Do not bulk-read opaque lossless payload into model context.
@@ -169,7 +168,7 @@ Interpretation rule (carries forward into Steps 2 and 4):
 - exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
 - exported `icons/*.svg` are the canonical reusable vector illustration pool, but they are **not** part of the default read set. Read the cleaned SVGs and `*_vector_asset_inventory.json` first; open a specific icon SVG only when the cleaned page or inventory shows that the extracted asset is relevant to the current design decision. This is what makes the SVG work surface smaller.
 - cleaned layered projections are mirror verification views; they expose source ownership without requiring the model to read opaque payload. Do not use them to promote, demote, merge, or split source structure.
-- cleaned complete-page projections are visual references for authored modes and verification views for mirror. They are never the lossless restoration source.
+- cleaned complete-page projections are optional composition spot checks for authored modes and verification views for mirror. They are never the lossless restoration source.
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
 **Mirror reachability gate**: compare every `native_structure.json.layouts[*].usedBySlides`
@@ -199,8 +198,7 @@ Distinguish observed facts from template rules: "`slide_07` uses a left photo cr
 
 **Read gate**:
 
-- `standard`: report the projected reference pages inspected
-- `fidelity`: read and report every projected complete-page SVG
+- `standard` / `fidelity`: read and report every projected Master, Layout, and Slide plus the inheritance map; flat pages are optional spot checks
 - `mirror`: verify and report every projected Master, Layout, and Slide plus the inheritance map, while keeping opaque payload out of model context
 
 Do not treat lightweight projections as final template assets. `standard` / `fidelity` author new SVGs. Mirror restores from the lossless import and uses projections only for inspection.
