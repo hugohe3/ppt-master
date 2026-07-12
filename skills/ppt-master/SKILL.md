@@ -874,12 +874,15 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > and plain multi-paragraph cells. Run-level table rich text, noncanonical merge
 > topology, and unsafe direct formatting remain fallback-only. Imported classic
 > charts additionally cover verified column/line/area combos, canonical OHLC
-> stock, and area date-axis cases with a closed category/value axis field set.
-> This is not full `AxisSpec` or ChartEx import support; unmodeled chart/axis
-> semantics continue to fail closed without reducing existing active-marker
-> SVG-to-native conversion. Safe stock series style may pass the structural
-> gate, but stock series / high-low / up-down local styling may still normalize
-> under the documented editable-first contract.
+> stock, area date-axis cases, and verified scatter/bubble charts with a closed
+> `axes.x` / `axes.y` value-axis pair. XY import derives effective scatter style
+> from uniform series line/marker/smooth state. Every supported XY axis field is
+> retained for native read-back; the normalized fallback newly consumes only
+> the two major-gridline flags. This is not full `AxisSpec` or ChartEx import
+> support; unmodeled chart/axis semantics continue to fail closed without
+> reducing existing active-marker SVG-to-native conversion. Safe stock series
+> style may pass the structural gate, but stock series / high-low / up-down local
+> styling may still normalize under the documented editable-first contract.
 
 **Optional animation flags** (page transitions are on by default; per-element entrance is off by default — turn it on only when the user asks for it):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`. `none` removes only the visual transition; an explicit automatic advance remains valid.
