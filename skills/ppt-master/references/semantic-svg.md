@@ -1,204 +1,126 @@
 # Minimal Semantic SVG Markers
 
-PPT Master uses a small set of rendering-neutral compiler hints only where
-ordinary SVG cannot reliably express a required PowerPoint packaging decision.
-These markers are not a second content model and do not abbreviate SVG.
+PPT Master uses rendering-neutral compiler hints only where ordinary SVG cannot express PowerPoint Master, Layout, placeholder, native-object, or package behavior.
 
 ## 1. Boundary
 
 | Marker | Placement | Purpose |
 |---|---|---|
-| `data-pptx-page-role` | Root `<svg>` | Select the compatibility Layout family for an unmapped baseline page, including free design before Layout distillation and legacy projects without `pptx_layouts`. |
-| `data-pptx-role` | A structural page-frame element | Identify the few objects whose package or animation behavior is not already expressed by specialized metadata. The element also needs a stable unique `id`. |
+| `data-pptx-master` / `data-pptx-master-name` | Root `<svg>` | Bind the page to one named PowerPoint Slide Master. |
+| `data-pptx-layout` / `data-pptx-layout-name` | Root `<svg>` | Bind the page to one named Layout under that Master. |
+| `data-pptx-layer="master"` | Direct atomic child of root | Promote one fixed visual object to the named Master. |
+| `data-pptx-layer="layout"` | Direct atomic child of root | Promote one fixed visual object to the named Layout. |
+| `data-pptx-placeholder` | Direct child `<g id>` of root | Declare one reusable Layout slot whose visible content remains Slide-local. |
+| `data-pptx-role` | Structural page-frame element | Supply package, page-number, or animation behavior not already expressed by specialized metadata. |
 
-The complete geometry, text, styles, grouping, and asset references remain in
-ordinary SVG. Removing these markers must not change browser rendering. Do not
-copy visible values into metadata, and do not mark ordinary titles, body text,
-cards, KPIs, diagrams, charts, icons, or images merely to describe their
-content.
+The completed SVG remains the full visible page. Removing the metadata must not change browser rendering. Do not copy visible text, geometry, style, or asset values into metadata.
 
-Use the existing specialized contracts for specialized facts:
+**Hard rule — structure exists at design time**: Every newly generated page declares its final Master and Layout before drawing begins. The exporter compiles this contract; it never selects, clusters, distills, or visually infers it.
 
-- `data-pptx-layout`, `data-pptx-layout-name`, `data-pptx-layout-kind`, and
-  `data-pptx-layer` own Master/Layout/Slide structure. A free-design page uses
-  them only after explicit post-design distillation. A deferred template page
-  carries the selected prototype key/name and layer provenance during design,
-  then adds the final kind only after distillation;
-- `data-pptx-placeholder` owns the Layout placeholder prototype. A distilled
-  carrier remains an ordinary object on the completed Slide. Legacy immediate
-  template and pre-authored structured routes may also bind the Slide shape;
-- `data-pptx-native` owns native chart/table reconstruction.
-- `data-pptx-object`, `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*`,
-  `data-pptx-geometry-*`, `data-pptx-authoring`, and `data-pptx-part` own
-  imported round-trip and authored preset-shape semantics under
-  [`shared-standards.md`](./shared-standards.md) §§1.4–1.5.
+**Hard rule — specialized metadata wins**: Use Master/Layout/placeholder metadata for native structure, `data-pptx-native` for chart/table reconstruction, and the imported/authored shape metadata defined in [`shared-standards.md`](./shared-standards.md) §§1.4–1.5. Do not duplicate those facts with `data-pptx-role`.
 
-Authored preset metadata comes only from `preset_shape_svg.py`; ordinary SVG
-paths are never scanned, classified, or automatically upgraded to a preset.
+---
 
-Do not duplicate those facts with `data-pptx-role`. Consumers resolve semantics
-in this order: specialized metadata, minimal compiler hints, then legacy
-filename/id conventions.
+## 2. Master and Layout Atoms
 
-The exporter consumes Layout structure; it never discovers or clusters it.
-[`distill-layouts`](../workflows/distill-layouts.md) is the explicit authoring
-workflow that converts user-selected baseline pages or every deferred template
-page into final metadata before export. On template routes, `page_layouts`
-selects the input prototype and `pptx_layouts` records the post-design output.
-Reuse a key only when its placeholder default frames and static Layout layer
-match. Do not move concrete content into a Layout or mark a complex
-page-specific group merely to manufacture reuse.
+Master and fixed Layout visuals are atomic root children:
 
-Ordinary placeholder carriers are direct atomic objects: one text frame, image,
-crop SVG, or other supported atomic shape. This is a narrow exception to the
-top-level content-group budget, and the carrier does not count toward that
-budget. A final post-design `distilled` page may additionally mark one direct
-completed `<g>` as an `object` region proxy with explicit design-zone bounds;
-the visible group remains ordinary and export adds a hidden transparent binding
-proxy. Reusable template SVGs, pending template pages, utility pages, and legacy
-immediate contracts may not use this exception. Native chart/table marker
-groups remain governed by their separate specialized contract.
+```xml
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720"
+     data-pptx-master="master-default"
+     data-pptx-master-name="Default Master"
+     data-pptx-layout="content-two-column"
+     data-pptx-layout-name="Two Column">
+  <rect id="master-bg" data-pptx-layer="master"
+        x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  <path id="layout-rule" data-pptx-layer="layout"
+        d="M72 132H1208" stroke="#CBD5E1"/>
+</svg>
+```
 
-## 2. Canonical Values
-
-### Page roles
-
-| Value | Meaning | Baseline Layout |
-|---|---|---|
-| `cover` | Opening cover | `Cover` |
-| `toc` | Agenda or contents page | `Agenda` |
-| `section` | Chapter divider or transition | `Section` |
-| `content` | Ordinary information page | `Content` |
-| `ending` | Closing, thanks, Q&A, or contact page | `Closing` |
-
-### Layout kinds
-
-| Value | Meaning |
+| Requirement | Rule |
 |---|---|
-| `distilled` | A completed baseline selection or deferred template page distilled into reusable placeholder defaults and optional static framing. Every placeholder has explicit `data-pptx-placeholder-bounds`. |
-| `utility` | The empty Freeform Layout shared by baseline pages not selected for distillation. It is forbidden on deferred template routes. |
+| Placement | Every Master/Layout atom is a direct child of the root SVG and has a stable unique `id`. |
+| Grouping | A `<g>` may not carry `data-pptx-layer="master|layout"`. Imported PowerPoint groups are recursively flattened and their transform/style/opacity/z-order semantics are pushed into atomic children. |
+| Atomicity | One marked child must compile to one DrawingML object. A nested crop `<svg>` is allowed only when it is the supported single-picture carrier, not an arbitrary container. |
+| Consistency | Pages sharing one Master key repeat the identical ordered Master atom contract. Pages sharing one `(master, layout)` pair repeat the identical ordered Layout atom contract. |
+| Ownership | Concrete titles, body text, metrics, charts, tables, images, and page-specific decoration stay Slide-local or inside a declared slot. |
 
-### Structural roles
+> Note: Flattening a source PPTX group preserves supported appearance and native-layer ownership, but intentionally does not preserve the source group-editing hierarchy.
+
+---
+
+## 3. Layout Slots
+
+### 3.1 Carrier-bound slot
+
+Use one direct root group as the authoring boundary and one compatible direct child as the visible PowerPoint placeholder carrier:
+
+```xml
+<g id="title-slot"
+   data-pptx-placeholder="title"
+   data-pptx-placeholder-bounds="72 48 1136 72">
+  <text id="title-carrier"
+        data-pptx-placeholder-carrier="true"
+        x="72" y="100">Actual title</text>
+</g>
+```
+
+| Requirement | Rule |
+|---|---|
+| Placement | The slot `<g id>` is a direct root child. Structural metadata may not be nested below it. |
+| Bounds | `data-pptx-placeholder-bounds="x y width height"` is mandatory, finite, and positive. It describes the reusable design zone, not the current glyph/content tight bounds. |
+| Carrier | The group contains exactly one compatible direct drawable child marked `data-pptx-placeholder-carrier="true"`. Export unwraps that child into the real Slide placeholder binding. |
+| Identity | `data-pptx-placeholder-idx` is optional; effective indices must be unique within one Layout. Preserve a source index when reconstructing an existing PPTX. |
+| Fixed decoration | Reusable decoration does not belong in the slot. Author it as a root Layout atom. Page-specific labels/captions use another slot or remain Slide-local. |
+
+Canonical placeholder values are `title`, `subtitle`, `body`, `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and `slide-number`. Carrier compatibility is defined in [`shared-standards.md`](./shared-standards.md) §7.
+
+### 3.2 Explicit composite proxy
+
+When one reusable region is a composite object that cannot bind to one real PowerPoint placeholder, declare the downgrade explicitly:
+
+```xml
+<g id="hero-composite-slot"
+   data-pptx-placeholder="object"
+   data-pptx-placeholder-binding="proxy"
+   data-pptx-placeholder-bounds="544 160 664 472">
+  <rect x="544" y="160" width="664" height="472" fill="#E2E8F0"/>
+  <text x="576" y="214">Visible composite content</text>
+</g>
+```
+
+The visible group stays Slide-local. Export creates one hidden transparent matching placeholder proxy. Proxy binding is valid only for `object`; it is an explicit fallback, not the default slot form.
+
+### 3.3 Zero-slot Layout
+
+A Layout may contain no slot groups. Cover, poster, full-visual, or other fixed-composition pages still declare their Master/Layout root identity and any fixed atoms; do not manufacture a full-page `object` placeholder merely to make the Layout non-empty.
+
+---
+
+## 4. Minimal Structural Roles
+
+Use `data-pptx-role` only when no specialized marker owns the behavior:
 
 | Value | Compiler behavior |
 |---|---|
-| `background` | Treat an otherwise unmarked background as static page framing for animation purposes. |
-| `decoration` | Treat decorative page framing as static for animation purposes. |
-| `header` | Eligible for conservative repeated-chrome promotion; skip automatic entrance animation. |
-| `footer` | Eligible for conservative repeated-chrome promotion; skip automatic entrance animation. |
-| `logo` | Eligible for conservative repeated-chrome promotion; skip automatic entrance animation. |
-| `watermark` | Eligible for conservative repeated-chrome promotion; skip automatic entrance animation. |
-| `chrome` | Generic repeated page-frame object eligible for conservative promotion. |
-| `page-number` | Identify a free-design page-number object; template `data-pptx-placeholder="slide-number"` already owns this behavior. |
+| `background` | Treat an otherwise unmarked background as static page framing for animation. |
+| `decoration` | Exclude decorative framing from automatic entrance animation. |
+| `header`, `footer`, `logo`, `watermark`, `chrome` | Identify Slide-local static framing without claiming Master/Layout ownership. |
+| `page-number` | Identify a Slide-local number when no `slide-number` placeholder exists. |
 
-`background` and `decoration` do not by themselves authorize Master/Layout
-promotion. The existing background and exact-shared-structure safety checks
-continue to own that decision.
+Do not add structural roles to ordinary titles, body copy, cards, KPIs, diagrams, charts, icons, or images.
 
-## 3. Examples
+---
 
-### Unmapped baseline fallback page
+## 5. Validation and Migration
 
-```xml
-<svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 1280 720"
-     data-pptx-page-role="content">
-  <rect id="page-bg" data-pptx-role="background"
-        x="0" y="0" width="1280" height="720" fill="#F7F9FC"/>
+The quality checker rejects:
 
-  <!-- Ordinary content keeps normal SVG structure; no duplicate role needed. -->
-  <g id="growth-story">
-    <text x="72" y="82" font-size="32" fill="#172033">Quarterly growth</text>
-  </g>
+- a missing root Master/Layout identity or a page-to-lock mismatch;
+- a Master/Layout `<g>`, nested structure marker, missing/stale id, or inconsistent shared atom contract;
+- a slot without positive bounds, a carrier-bound slot without exactly one compatible carrier, or a proxy binding on a non-`object` slot;
+- incomplete page mappings, cross-Master Layout-key reuse, or conflicting same-key Layout contracts.
 
-  <text id="slide-number" data-pptx-role="page-number"
-        x="1200" y="680" font-size="14" fill="#667085">7</text>
-</svg>
-```
-
-### Post-design distilled Layout page
-
-This form applies after the user selects a completed free-design/brand-only
-baseline page, or after a deferred template page is reconciled with its
-`page_layouts` prototype. Baseline does not imply an input prototype; template
-does. Bounds are Layout defaults while current Slide geometry may differ. The
-atomic carriers keep their matching Slide bindings, while a composite object
-region remains an ordinary visible group with a hidden transparent binding
-proxy. The generated Layout receives the reusable PowerPoint placeholders.
-
-```xml
-<svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 1280 720"
-     data-pptx-layout="editorial-visual"
-     data-pptx-layout-name="Editorial Visual"
-     data-pptx-layout-kind="distilled">
-  <path id="layout-rule" data-pptx-layer="layout"
-        data-pptx-editable="false"
-        d="M72 132H1208" stroke="#D0D5DD"/>
-
-  <!-- Current x/y may differ from the reusable design-zone bounds. -->
-  <text id="title-slot" data-pptx-placeholder="title"
-        data-pptx-placeholder-bounds="72 48 1136 64"
-        x="88" y="104" font-size="32" fill="#172033">Quarterly growth</text>
-
-  <text id="body-slot" data-pptx-placeholder="body"
-        data-pptx-placeholder-idx="1"
-        data-pptx-placeholder-bounds="72 160 432 472"
-        x="80" y="190" font-size="20" fill="#344054">Main narrative</text>
-
-  <image id="picture-slot" data-pptx-placeholder="picture"
-         data-pptx-placeholder-idx="2"
-         data-pptx-placeholder-bounds="544 160 664 472"
-         href="../images/quarterly-growth.png"
-         x="576" y="176" width="616" height="440"
-         preserveAspectRatio="xMidYMid slice"/>
-
-  <!-- Logo has no specialized marker, so the minimal structural hint is useful. -->
-  <text id="brand-mark" data-pptx-role="logo"
-        x="1180" y="46" text-anchor="end">ACME</text>
-
-  <!-- The placeholder already owns slide-number behavior; do not add a role. -->
-  <text id="page-number" data-pptx-placeholder="slide-number"
-        data-pptx-placeholder-idx="3"
-        data-pptx-placeholder-bounds="1152 664 56 24"
-        x="1200" y="680" text-anchor="end">7</text>
-</svg>
-```
-
-### Unselected page after distillation
-
-The page declares the complete project mapping but keeps every page-specific
-visible object Slide-local. No child may carry Layout or placeholder metadata;
-an exact shared Master contract is allowed when every page repeats it.
-
-```xml
-<svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 1280 720"
-     data-pptx-layout="freeform-unselected"
-     data-pptx-layout-name="Freeform"
-     data-pptx-layout-kind="utility">
-  <g id="page-content">
-    <!-- The complete free-form design remains ordinary SVG. -->
-  </g>
-</svg>
-```
-
-## 4. Validation and Compatibility
-
-The quality checker validates marker placement, canonical values, and stable
-unique IDs. Export consumes explicit authored Layout metadata before baseline
-compatibility hints and heuristics:
-
-- root `data-pptx-layout` is authoritative when the page has a locked mapping;
-- post-design distillation also requires root `data-pptx-layout-kind` to match the lock;
-- a deferred template project with no `pptx_layouts` is pending and cannot enter release export;
-- on an unmapped baseline page, root page role is preferred over filename-based Layout classification;
-- `data-pptx-placeholder="slide-number"` is preferred over a generic role or id;
-- explicit structural role is preferred over id-token chrome detection;
-- animation target scanning uses the structural role before id-token fallback.
-
-Filename and id heuristics remain compatibility fallbacks only for older SVGs
-that lack the corresponding marker. On an unmapped baseline page, a
-canonical page role is authoritative over the filename. Any explicit structural
-role prevents id-based reinterpretation; an unknown role remains renderable but
-produces a quality-check warning.
+Legacy SVGs using unmapped `baseline`, `preserve`, `layout_strategy: distill`, `data-pptx-layout-kind`, `distilled`, `utility`, direct atomic placeholders, or missing Master identity are not a second supported authoring contract. Run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before generation or export. When original PPTX/native facts exist, migration restores those identities first; otherwise the main Agent explicitly derives a structure from the complete SVG pages. Export never performs that derivation.

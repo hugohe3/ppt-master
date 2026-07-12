@@ -14,7 +14,7 @@
 | **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template.md` (layout branch) |
 | **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template.md` (deck branch, default) |
 
-Every Layout/Deck SVG is a complete preview with explicit `data-pptx-layout`, Master/Layout layers, and semantic placeholders. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express, and ordinary content is not duplicated into a metadata taxonomy. PPTX-import artifacts are analysis inputs only and are not packaged into new templates. The template guides authoring of a complete generated page SVG; export never reaches back into the template to overlay visible content missing from that generated SVG. Strict use keeps the selected Layout contract; adaptive use may create a new Layout under the same Master. Both export through `pptx_structure.mode: template`; legacy `preserve` remains compatibility-only.
+Every newly created or restored Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. PPTX-import artifacts are analysis inputs only and are not packaged into new templates. Strict keeps the selected Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. Legacy packages first run `restore-pptx-structure`.
 
 The three are **parallel reference bundles**. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
@@ -28,14 +28,14 @@ kind: brand
 # templates/layouts/academic_defense/design_spec.md
 ---
 kind: layout
-native_structure_mode: template
+native_structure_mode: structured
 ...
 ---
 
 # templates/decks/招商银行/design_spec.md
 ---
 kind: deck
-native_structure_mode: template
+native_structure_mode: structured
 ...
 ---
 ```
@@ -109,7 +109,7 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
-native_structure_mode: template
+native_structure_mode: structured
 summary: <one-line use cases>
 canvas_format: <ppt169 | ppt43 | a4 | ...>
 page_count: <N>
@@ -137,7 +137,7 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
-native_structure_mode: template
+native_structure_mode: structured
 summary: <one-line use cases>
 canvas_format: <ppt169 | ...>
 page_count: <N>
@@ -281,7 +281,7 @@ This lets both AI and humans trace which segment came from where.
 
 ## 5. Relationship with SKILL.md Step 3
 
-**Trigger rule stays path-based** — an explicit directory path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. The only narrow handoff exception is a project-scoped `create-template` run in the current conversation: after validation, it may pass its exact `<project>/templates/` output directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays path-based** — an explicit directory path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. Before copying a Layout/Deck package, Step 3 validates the current structured contract; an old `native_structure_mode: template`, missing Master identity, direct atomic placeholder, or distillation-era package first runs `restore-pptx-structure`. The only narrow handoff exception is a project-scoped `create-template` run in the current conversation: after validation, it may pass its exact `<project>/templates/` output directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|
@@ -315,4 +315,4 @@ In library scope, the frontmatter `kind` field determines whether the file lands
 - **No field-level override syntax in the fusion layer** — field-level adjustment uses the existing Strategist confirmation stage path
 - **No batch conflict resolution for three or more of the same kind** — ask the user to narrow it down in chat first
 - **No bilingual name mapping table** — templates are named in their brand / scenario's native language (Chinese templates use Chinese names; English templates use snake_case); no forced unification
-- **No new structure mode or output CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes still declare `native_structure_mode: template`
+- **No output-scope structure fork or CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes declare `native_structure_mode: structured`

@@ -306,7 +306,7 @@ Catalog read: 76 templates
 
 ## IX. Content Outline
 
-> **Native Layout boundary**: Each `Layout` line below describes visual composition intent, not a final PowerPoint Layout key. Free-design/brand-only pages stay unconstrained during SVG authoring. Template pages select an input prototype through `page_layouts`. Distillation-capable template routes defer the final output mapping, and [`distill-layouts`](../workflows/distill-layouts.md) writes reusable native Layouts only from completed pages. A strict legacy selection whose prototype lacks explicit placeholder bounds instead uses the Strategist's planning-time kindless immediate mapping and does not enter deferred distillation.
+> **Native Layout boundary**: Each `Layout` line below describes visual composition intent and feeds the planning-time structured mapping. Before SVG generation, Strategist writes the Master roster and exactly one `<master_key> | <layout_key> | <PowerPoint layout name>` row per page. Free-design/brand-only pages use that structure from their first draft; template pages also select an input prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Legacy prototypes first run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md); no deferred distillation or immediate-compatibility fallback exists.
 
 ### Part 1: [Chapter Name]
 
