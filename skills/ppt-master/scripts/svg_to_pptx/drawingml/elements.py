@@ -6,8 +6,10 @@ import base64
 import binascii
 import hashlib
 import io
+import json
 import math
 import re
+from decimal import Decimal, ROUND_HALF_EVEN
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote_to_bytes
@@ -1790,6 +1792,9 @@ def _strip_leading_chars_from_runs(
     stripped: list[dict[str, Any]] = []
     remaining = char_count
     for run in runs:
+        if run.get('_break'):
+            stripped.append(run)
+            continue
         text = str(run.get('text', ''))
         if remaining >= len(text):
             remaining -= len(text)
@@ -2024,7 +2029,11 @@ def _collect_tspan_runs(
     if tspan.text:
         t = _normalize_text(tspan.text, preserve_space=child_preserve_space)
         if t:
-            runs.append({**own_attrs, 'text': t})
+            runs.append({
+                **own_attrs,
+                '_preserve_space': child_preserve_space,
+                'text': t,
+            })
 
     for child in tspan:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
@@ -2033,7 +2042,11 @@ def _collect_tspan_runs(
             if child.tail:
                 t = _normalize_text(child.tail, preserve_space=child_preserve_space)
                 if t:
-                    runs.append({**own_attrs, 'text': t})
+                    runs.append({
+                        **own_attrs,
+                        '_preserve_space': child_preserve_space,
+                        'text': t,
+                    })
 
     return runs
 
@@ -2041,6 +2054,8 @@ def _collect_tspan_runs(
 def _build_text_runs(
     elem: ET.Element,
     parent_attrs: dict[str, Any],
+    *,
+    respect_preserved_edges: bool = False,
 ) -> list[dict[str, Any]]:
     """Build a list of text runs from a <text> element, handling <tspan> children.
 
@@ -2054,7 +2069,11 @@ def _build_text_runs(
     if elem.text:
         t = _normalize_text(elem.text, preserve_space=preserve_space)
         if t:
-            runs.append({**parent_attrs, 'text': t})
+            runs.append({
+                **parent_attrs,
+                '_preserve_space': preserve_space,
+                'text': t,
+            })
 
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
@@ -2063,13 +2082,19 @@ def _build_text_runs(
             if child.tail:
                 t = _normalize_text(child.tail, preserve_space=preserve_space)
                 if t:
-                    runs.append({**parent_attrs, 'text': t})
+                    runs.append({
+                        **parent_attrs,
+                        '_preserve_space': preserve_space,
+                        'text': t,
+                    })
 
     # Strip the paragraph's overall leading / trailing whitespace once unless
     # xml:space="preserve" asks us to keep source indentation.
     if runs and not preserve_space:
-        runs[0]['text'] = runs[0]['text'].lstrip(' ')
-        runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
+        if not respect_preserved_edges or not runs[0].get('_preserve_space'):
+            runs[0]['text'] = runs[0]['text'].lstrip(' ')
+        if not respect_preserved_edges or not runs[-1].get('_preserve_space'):
+            runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
         runs = [r for r in runs if r['text']]
 
     return runs
@@ -2192,6 +2217,151 @@ def _build_run_xml(
 </a:r>'''
 
 
+_TEXT_CONTRACT_MARK_ATTR = 'data-pptx-runtime-text-contract'
+_TEXT_CONTRACT_SOURCE_ATTR = 'data-pptx-runtime-source-text-id'
+_TEXT_CONTRACT_REQUESTED_ATTR = 'data-pptx-runtime-requested-mode'
+_TEXT_CONTRACT_EFFECTIVE_ATTR = 'data-pptx-runtime-effective-mode'
+_TEXT_CONTRACT_LINE_INDEX_ATTR = 'data-pptx-runtime-line-index'
+_TEXT_CONTRACT_LINE_COUNT_ATTR = 'data-pptx-runtime-line-count'
+_TEXT_CONTRACT_REASON_ATTR = 'data-pptx-runtime-mode-reason'
+_TEXT_CONTRACT_TOP_INSET_ATTR = 'data-paragraph-top-inset'
+
+
+def _contract_round(
+    value: float,
+    multiplier: int,
+    *factors: float,
+) -> int:
+    """Apply decimal ties-to-even rounding for explicit contract metrics."""
+    scaled = Decimal(str(value)) * Decimal(multiplier)
+    for factor in factors:
+        scaled *= Decimal(str(factor))
+    return int(scaled.to_integral_value(rounding=ROUND_HALF_EVEN))
+
+
+def _trim_explicit_paragraph_edges(
+    paragraphs: list[list[dict[str, Any]]],
+) -> None:
+    """Trim only the block's outer whitespace, preserving join boundaries."""
+    text_runs = [
+        run
+        for paragraph in paragraphs
+        for run in paragraph
+        if not run.get('_break') and run.get('text')
+    ]
+    if not text_runs:
+        return
+    if not text_runs[0].get('_preserve_space'):
+        text_runs[0]['text'] = str(text_runs[0]['text']).lstrip(' ')
+    if not text_runs[-1].get('_preserve_space'):
+        text_runs[-1]['text'] = str(text_runs[-1]['text']).rstrip(' ')
+    for paragraph in paragraphs:
+        paragraph[:] = [
+            run for run in paragraph
+            if run.get('_break') or run.get('text')
+        ]
+
+
+def _append_explicit_soft_join(
+    paragraph: list[dict[str, Any]],
+    next_runs: list[dict[str, Any]],
+    join_kind: str,
+) -> None:
+    """Append an explicit soft-wrapped line using the declared join policy."""
+    if join_kind == 'space' and paragraph and next_runs:
+        previous_text = str(paragraph[-1].get('text', ''))
+        next_text = str(next_runs[0].get('text', ''))
+        if (
+            previous_text
+            and next_text
+            and not previous_text[-1].isspace()
+            and not next_text[0].isspace()
+        ):
+            paragraph[-1] = {**paragraph[-1], 'text': previous_text + ' '}
+    paragraph.extend(next_runs)
+
+
+def _paragraph_content_sha256(
+    paragraphs: list[list[dict[str, Any]]],
+    bullets: list[dict[str, Any] | None] | None = None,
+) -> str:
+    """Hash paragraph/run/break structure without copying text into traces."""
+    tokens: list[list[dict[str, str]]] = []
+    paragraph_bullets = bullets or [None] * len(paragraphs)
+    for paragraph, bullet in zip(paragraphs, paragraph_bullets):
+        paragraph_tokens: list[dict[str, str]] = []
+        if bullet:
+            paragraph_tokens.append({
+                'kind': 'bullet',
+                'text': str(bullet.get('char', '•')),
+            })
+        for item in paragraph:
+            if item.get('_break'):
+                paragraph_tokens.append({'kind': 'break'})
+            else:
+                paragraph_tokens.append({
+                    'kind': 'run',
+                    'text': str(item.get('text', '')),
+                })
+        tokens.append(paragraph_tokens)
+    payload = json.dumps(tokens, ensure_ascii=False, separators=(',', ':'))
+    return hashlib.sha256(payload.encode('utf-8')).hexdigest()
+
+
+def _validate_compiled_text_shape(
+    shape_xml: str,
+    *,
+    expected_paragraphs: int,
+    expected_breaks: int,
+    expected_bounds: tuple[int, int, int, int],
+) -> None:
+    """Reparse the generated shape and verify contract-owned structure."""
+    wrapper = (
+        '<root '
+        'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+        'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
+        + shape_xml
+        + '</root>'
+    )
+    try:
+        root = ET.fromstring(wrapper)
+    except ET.ParseError as exc:
+        raise ValueError(f'[TEXT_READBACK_XML] Invalid generated text XML: {exc}') from exc
+    ns = {
+        'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
+        'p': 'http://schemas.openxmlformats.org/presentationml/2006/main',
+    }
+    shape = root.find('p:sp', ns)
+    if shape is None:
+        raise ValueError('[TEXT_READBACK_SHAPE] Generated text is not one p:sp')
+    paragraphs = shape.findall('./p:txBody/a:p', ns)
+    breaks = shape.findall('.//a:br', ns)
+    if len(paragraphs) != expected_paragraphs:
+        raise ValueError(
+            '[TEXT_READBACK_PARAGRAPHS] Generated paragraph count '
+            f'{len(paragraphs)} != {expected_paragraphs}'
+        )
+    if len(breaks) != expected_breaks:
+        raise ValueError(
+            '[TEXT_READBACK_BREAKS] Generated line-break count '
+            f'{len(breaks)} != {expected_breaks}'
+        )
+    off = shape.find('./p:spPr/a:xfrm/a:off', ns)
+    ext = shape.find('./p:spPr/a:xfrm/a:ext', ns)
+    if off is None or ext is None:
+        raise ValueError('[TEXT_READBACK_BOUNDS] Generated text has no complete a:xfrm')
+    actual = (
+        int(off.get('x', '0')),
+        int(off.get('y', '0')),
+        int(off.get('x', '0')) + int(ext.get('cx', '0')),
+        int(off.get('y', '0')) + int(ext.get('cy', '0')),
+    )
+    if actual != expected_bounds:
+        raise ValueError(
+            f'[TEXT_READBACK_BOUNDS] Generated bounds {actual} != {expected_bounds}'
+        )
+
+
 def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <text> to DrawingML text shape with multi-run support."""
     x = ctx_x(svg_length_x(elem.get('x'), ctx), ctx)
@@ -2242,38 +2412,63 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         'stroke_opacity': stroke_opacity,
     }
 
-    # Paragraph mode: flatten_tspan marks <text> with data-paragraph-line-height
-    # when its direct-child tspans form a mergeable paragraph (same x, dy
-    # clustered around one base line-height). Each direct tspan becomes one
-    # <a:p> so the paragraph survives as a single editable text frame.
-    # Per-line data-paragraph-space-before encodes paragraph gaps (extra dy
-    # above the base line-height) for the corresponding <a:p>.
-    # Paragraph mode is controlled by ctx.merge_paragraphs. When off, ignore
-    # any data-paragraph-* markers and fall through to the original
-    # one-text-per-tspan path so the SVG's pixel layout is preserved.
+    # Legacy paragraphs continue to use the internal data-paragraph-* IR.
+    # Explicit contracts additionally preserve author-declared break/join
+    # semantics and may remain a paragraph even when they contain one line.
+    explicit_contract = elem.get(_TEXT_CONTRACT_MARK_ATTR) == '1'
+    requested_mode = elem.get(_TEXT_CONTRACT_REQUESTED_ATTR)
+    effective_mode = elem.get(_TEXT_CONTRACT_EFFECTIVE_ATTR)
+    explicit_paragraph = (
+        explicit_contract
+        and requested_mode == 'paragraph'
+        and effective_mode == 'paragraph'
+    )
     line_height_attr = elem.get('data-paragraph-line-height') if ctx.merge_paragraphs else None
     line_height_px = _f(line_height_attr) if line_height_attr is not None else None
     paragraph_runs: list[list[dict[str, Any]]] | None = None
     paragraph_space_before: list[float] = []
     paragraph_bullets: list[dict[str, Any] | None] = []
+    single_bullet: dict[str, Any] | None = None
     # Per-tspan widths (visual lines as the deck author drew them) regardless
     # of how many merge into one <a:p>; used to size the textbox so PowerPoint
     # has room to wrap text to the SVG's original line widths.
     visual_line_widths: list[float] = []
-    if line_height_px is not None and line_height_px > 0:
+    if explicit_paragraph or (line_height_px is not None and line_height_px > 0):
         preserve_space = _preserves_space(elem)
         paragraph_runs = []
         for child in elem:
             if child.tag != f'{{{SVG_NS}}}tspan':
                 continue
             line_runs = _collect_tspan_runs(child, parent_attrs, preserve_space)
-            if line_runs and not preserve_space:
+            if line_runs and not preserve_space and not explicit_paragraph:
                 line_runs[0]['text'] = line_runs[0]['text'].lstrip(' ')
                 line_runs[-1]['text'] = line_runs[-1]['text'].rstrip(' ')
                 line_runs = [r for r in line_runs if r['text']]
             if not line_runs:
                 continue
             visual_line_widths.append(_estimate_bullet_line_width(line_runs))
+            if explicit_paragraph:
+                break_kind = child.get('data-pptx-break')
+                if not paragraph_runs:
+                    paragraph_runs.append(line_runs)
+                    paragraph_space_before.append(0.0)
+                    continue
+                if break_kind == 'soft':
+                    _append_explicit_soft_join(
+                        paragraph_runs[-1],
+                        line_runs,
+                        child.get('data-pptx-join') or 'none',
+                    )
+                    continue
+                if break_kind == 'line':
+                    paragraph_runs[-1].append({'_break': True})
+                    paragraph_runs[-1].extend(line_runs)
+                    continue
+                paragraph_runs.append(line_runs)
+                sb_attr = child.get('data-paragraph-space-before')
+                paragraph_space_before.append(_f(sb_attr) if sb_attr else 0.0)
+                continue
+
             soft_break = child.get('data-paragraph-soft-break') == '1'
             if soft_break and paragraph_runs:
                 # Append to the previous paragraph. A Latin line-wrap needs a
@@ -2296,6 +2491,8 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 paragraph_runs.append(line_runs)
                 sb_attr = child.get('data-paragraph-space-before')
                 paragraph_space_before.append(_f(sb_attr) if sb_attr else 0.0)
+        if explicit_paragraph and paragraph_runs and not preserve_space:
+            _trim_explicit_paragraph_edges(paragraph_runs)
         if not paragraph_runs:
             paragraph_runs = None
             paragraph_space_before = []
@@ -2309,9 +2506,18 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             paragraph_runs = stripped_paragraphs
 
     if paragraph_runs is not None:
-        runs = [r for line in paragraph_runs for r in line]
+        runs = [
+            run
+            for paragraph in paragraph_runs
+            for run in paragraph
+            if not run.get('_break')
+        ]
     else:
-        runs = _build_text_runs(elem, parent_attrs)
+        runs = _build_text_runs(
+            elem,
+            parent_attrs,
+            respect_preserved_edges=explicit_contract,
+        )
         runs, single_bullet = _extract_text_bullet(runs)
 
     if not runs:
@@ -2331,8 +2537,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         # Total height assumes the visual line count from the SVG source;
         # if PowerPoint wraps to more or fewer lines after the user resizes,
         # the user resizes the height accordingly.
+        effective_line_height = line_height_px or 0.0
         text_height = (
-            line_height_px * (len(visual_line_widths) - 1)
+            effective_line_height * (len(visual_line_widths) - 1)
             + sum(paragraph_space_before)
             + font_size * 1.5
         )
@@ -2342,19 +2549,38 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             fs_px = float(runs[0].get('font_size', font_size)) if runs else font_size
             text_width += _bullet_margin_px(single_bullet, fs_px)
         text_height = font_size * 1.5
-    padding = _textbox_padding(font_size)
+    explicit_bounds: tuple[float, float, float, float] | None = None
+    if explicit_paragraph:
+        bounds_raw = elem.get('data-pptx-text-bounds')
+        try:
+            values = [float(value) for value in re.split(r'[\s,]+', bounds_raw or '') if value]
+        except ValueError as exc:
+            raise ValueError('[TEXT_BOUNDS_FORMAT] Invalid explicit text bounds') from exc
+        if len(values) != 4:
+            raise ValueError('[TEXT_BOUNDS_FORMAT] Explicit text bounds require x y width height')
+        explicit_bounds = (values[0], values[1], values[2], values[3])
 
-    # Adjust position based on text-anchor
-    if text_anchor == 'middle':
-        box_x = x - text_width / 2 - padding
-    elif text_anchor == 'end':
-        box_x = x - text_width - padding
+    if explicit_bounds is not None:
+        raw_box_x, raw_box_y, raw_box_w, raw_box_h = explicit_bounds
+        box_x = ctx_x(raw_box_x, ctx)
+        box_y = ctx_y(raw_box_y, ctx)
+        box_w = ctx_w(raw_box_w, ctx)
+        box_h = ctx_h(raw_box_h, ctx)
+        padding = 0.0
     else:
-        box_x = x - padding
+        padding = _textbox_padding(font_size)
 
-    box_y = y - font_size * 0.85
-    box_w = text_width + padding * 2
-    box_h = text_height + padding
+        # Adjust position based on text-anchor
+        if text_anchor == 'middle':
+            box_x = x - text_width / 2 - padding
+        elif text_anchor == 'end':
+            box_x = x - text_width - padding
+        else:
+            box_x = x - padding
+
+        box_y = y - font_size * 0.85
+        box_w = text_width + padding * 2
+        box_h = text_height + padding
 
     text_transform = elem.get('transform', '')
     if text_transform and 'rotate' not in text_transform and not ctx.use_transform_matrix:
@@ -2432,18 +2658,53 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     if paragraph_runs is not None:
         # SVG dy(px) -> hundredths-of-a-point: dy_pt = dy_px * 0.75, then x100.
-        line_spc_val = round(line_height_px * FONT_PX_TO_HUNDREDTHS_PT)
-        ln_spc_xml = f'<a:lnSpc><a:spcPts val="{line_spc_val}"/></a:lnSpc>'
+        metric_scale = ctx.scale_y if explicit_paragraph else 1.0
+        if line_height_px is not None and line_height_px > 0:
+            if explicit_paragraph:
+                line_spc_val = _contract_round(
+                    line_height_px,
+                    FONT_PX_TO_HUNDREDTHS_PT,
+                    metric_scale,
+                )
+            else:
+                line_spc_val = round(
+                    line_height_px * FONT_PX_TO_HUNDREDTHS_PT
+                )
+            ln_spc_xml = f'<a:lnSpc><a:spcPts val="{line_spc_val}"/></a:lnSpc>'
+        else:
+            ln_spc_xml = ''
         paragraph_xml_chunks = []
-        for line, extra_px, bullet in zip(paragraph_runs, paragraph_space_before, paragraph_bullets):
+        for line, extra_px, bullet in zip(
+            paragraph_runs,
+            paragraph_space_before,
+            paragraph_bullets,
+        ):
             spc_bef_xml = ''
             if extra_px > 0:
-                spc_bef_val = round(extra_px * FONT_PX_TO_HUNDREDTHS_PT)
+                if explicit_paragraph:
+                    spc_bef_val = _contract_round(
+                        extra_px,
+                        FONT_PX_TO_HUNDREDTHS_PT,
+                        metric_scale,
+                    )
+                else:
+                    spc_bef_val = round(
+                        extra_px * FONT_PX_TO_HUNDREDTHS_PT
+                    )
                 spc_bef_xml = f'<a:spcBef><a:spcPts val="{spc_bef_val}"/></a:spcBef>'
-            runs_inner = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in line)
+            runs_inner = '\n'.join(
+                '<a:br/>'
+                if item.get('_break')
+                else _build_run_xml(item, fonts, ctx, text_effect_xml)
+                for item in line
+            )
+            first_run = next((item for item in line if not item.get('_break')), None)
             p_pr_xml = _paragraph_pr_xml(
                 algn=algn,
-                font_size=float(line[0].get('font_size', font_size)) if line else font_size,
+                font_size=(
+                    float(first_run.get('font_size', font_size))
+                    if first_run is not None else font_size
+                ),
                 body_xml=f'{ln_spc_xml}{spc_bef_xml}',
                 bullet=bullet,
                 ctx=ctx,
@@ -2462,10 +2723,16 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         )
         paragraphs_xml = f'<a:p>\n{p_pr_xml}\n{runs_xml}\n</a:p>'
 
-    off_x = px_to_emu(box_x)
-    off_y = px_to_emu(box_y)
-    ext_cx = px_to_emu(box_w)
-    ext_cy = px_to_emu(box_h)
+    if explicit_bounds is not None:
+        off_x = _contract_round(box_x, 9525)
+        off_y = _contract_round(box_y, 9525)
+        ext_cx = _contract_round(box_w, 9525)
+        ext_cy = _contract_round(box_h, 9525)
+    else:
+        off_x = px_to_emu(box_x)
+        off_y = px_to_emu(box_y)
+        ext_cx = px_to_emu(box_w)
+        ext_cy = px_to_emu(box_h)
 
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
@@ -2474,8 +2741,12 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # headroom; PowerPoint wraps long paragraphs inside this design width.
     # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
     if paragraph_runs is not None:
+        top_inset = 0
+        if explicit_paragraph:
+            top_inset_px = _f(elem.get(_TEXT_CONTRACT_TOP_INSET_ATTR))
+            top_inset = _contract_round(top_inset_px, 9525, ctx.scale_y)
         body_pr_xml = (
-            '<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" '
+            f'<a:bodyPr wrap="square" lIns="0" tIns="{top_inset}" rIns="0" bIns="0" '
             'anchor="t" anchorCtr="0"/>'
         )
     else:
@@ -2484,7 +2755,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             'anchor="t" anchorCtr="0">\n<a:spAutoFit/>\n</a:bodyPr>'
         )
 
-    return ShapeResult(xml=f'''<p:sp>
+    shape_xml = f'''<p:sp>
 <p:nvSpPr>
 <p:cNvPr id="{shape_id}" name="TextBox {shape_id}"/>
 <p:cNvSpPr txBox="1"/><p:nvPr/>
@@ -2502,7 +2773,57 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <a:lstStyle/>
 {paragraphs_xml}
 </p:txBody>
-</p:sp>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
+</p:sp>'''
+    bounds_emu = (off_x, off_y, off_x + ext_cx, off_y + ext_cy)
+    paragraph_count = len(paragraph_runs) if paragraph_runs is not None else 1
+    break_count = (
+        sum(
+            1
+            for paragraph in paragraph_runs
+            for item in paragraph
+            if item.get('_break')
+        )
+        if paragraph_runs is not None else 0
+    )
+    trace_metadata: dict[str, Any] = {}
+    if explicit_contract:
+        effective_paragraphs = (
+            paragraph_runs
+            if paragraph_runs is not None
+            else [runs]
+        )
+        effective_bullets = (
+            paragraph_bullets
+            if paragraph_runs is not None
+            else [single_bullet]
+        )
+        trace_metadata = {
+            'text_contract': True,
+            'source_text_id': elem.get(_TEXT_CONTRACT_SOURCE_ATTR),
+            'requested_mode': requested_mode,
+            'effective_mode': effective_mode,
+            'resolution_reason': elem.get(_TEXT_CONTRACT_REASON_ATTR),
+            'visual_line_count': int(elem.get(_TEXT_CONTRACT_LINE_COUNT_ATTR) or '1'),
+            'line_index': int(elem.get(_TEXT_CONTRACT_LINE_INDEX_ATTR) or '1'),
+            'paragraph_count': paragraph_count,
+            'break_count': break_count,
+            'content_sha256': _paragraph_content_sha256(
+                effective_paragraphs,
+                effective_bullets,
+            ),
+            'readback': {'status': 'passed'},
+        }
+        _validate_compiled_text_shape(
+            shape_xml,
+            expected_paragraphs=paragraph_count,
+            expected_breaks=break_count,
+            expected_bounds=bounds_emu,
+        )
+    return ShapeResult(
+        xml=shape_xml,
+        bounds_emu=bounds_emu,
+        trace_metadata=trace_metadata,
+    )
 
 
 # ---------------------------------------------------------------------------

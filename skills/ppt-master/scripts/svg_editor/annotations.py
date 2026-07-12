@@ -158,6 +158,8 @@ def promote_tspan_to_text(
         return False, 'not-found'
     if _local_name(target) != 'tspan' or _local_name(text_el) != 'text':
         return False, 'not-tspan'
+    if text_el.get('data-pptx-text-mode') == 'paragraph':
+        return False, 'explicit-paragraph-line-move'
 
     grandparent: Optional[ET.Element] = None
     for candidate in root.iter():

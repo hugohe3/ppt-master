@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import binascii
 import hashlib
+import json
 import math
 import re
 from pathlib import Path
@@ -158,6 +159,117 @@ def _txbody_metadata(elem: ET.Element) -> ET.Element | None:
     return None
 
 
+def _text_carrier_metadata(elem: ET.Element) -> ET.Element | None:
+    for child in elem:
+        if (
+            child.tag.replace(f'{{{SVG_NS}}}', '') == 'metadata'
+            and child.get('data-pptx-part') == 'text-carrier'
+        ):
+            return child
+    return None
+
+
+def _decode_text_carrier_nvsppr(metadata: ET.Element) -> ET.Element:
+    """Decode the versioned native carrier identity metadata."""
+    if metadata.get('data-pptx-text-carrier-version') != '1':
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_VERSION] Unsupported text-carrier metadata version'
+        )
+    if metadata.get('data-pptx-text-carrier-eligible') != '1':
+        reason = metadata.get('data-pptx-text-carrier-reason') or 'unknown'
+        raise SvgNativeConversionError(
+            f'[TEXT_NATIVE_CARRIER_INELIGIBLE] Native text carrier is not eligible: {reason}'
+        )
+    if metadata.get('data-pptx-encoding') != 'base64':
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_ENCODING] Eligible text carrier requires base64 nvSpPr'
+        )
+    try:
+        raw = base64.b64decode((metadata.text or '').strip(), validate=True)
+        nv_sp_pr = ET.fromstring(raw)
+    except (ValueError, binascii.Error, ET.ParseError) as exc:
+        raise SvgNativeConversionError(
+            f'[TEXT_NATIVE_CARRIER_XML] Invalid text-carrier nvSpPr: {exc}'
+        ) from exc
+    p_ns = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+    if nv_sp_pr.tag != f'{{{p_ns}}}nvSpPr':
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_XML] text-carrier payload must be p:nvSpPr'
+        )
+    if has_relationship_attributes(nv_sp_pr):
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_REL] text-carrier nvSpPr contains relationships'
+        )
+    return nv_sp_pr
+
+
+def _replace_native_text_carrier(
+    geometry: ShapeResult,
+    compiled_text: ShapeResult,
+    carrier_metadata: ET.Element,
+) -> ShapeResult:
+    """Attach a rebuilt paragraph txBody to its original native p:sp."""
+    shape_match = re.search(r'<p:cNvPr id="(\d+)"', geometry.xml)
+    if shape_match is None:
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_SHAPE] Native geometry has no output shape id'
+        )
+    output_shape_id = int(shape_match.group(1))
+    nv_sp_pr = _decode_text_carrier_nvsppr(carrier_metadata)
+    p_ns = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+    a_ns = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+    c_nv_pr = nv_sp_pr.find(f'{{{p_ns}}}cNvPr')
+    if c_nv_pr is None:
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_XML] text-carrier nvSpPr has no p:cNvPr'
+        )
+    c_nv_pr.set('id', str(output_shape_id))
+    ET.register_namespace('p', p_ns)
+    ET.register_namespace('a', a_ns)
+    nv_sp_pr_xml = ET.tostring(nv_sp_pr, encoding='unicode')
+
+    txbody_match = re.search(r'<p:txBody>.*?</p:txBody>', compiled_text.xml, re.DOTALL)
+    xfrm_match = re.search(r'<a:xfrm(?:\s[^>]*)?>.*?</a:xfrm>', compiled_text.xml, re.DOTALL)
+    if txbody_match is None or xfrm_match is None:
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_COMPILE] Rebuilt paragraph lacks txBody or xfrm'
+        )
+    combined_xml, nv_count = re.subn(
+        r'<p:nvSpPr>.*?</p:nvSpPr>',
+        lambda _match: nv_sp_pr_xml,
+        geometry.xml,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if nv_count != 1:
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_SHAPE] Native geometry has no replaceable p:nvSpPr'
+        )
+    combined_xml, xfrm_count = re.subn(
+        r'<a:xfrm(?:\s[^>]*)?>.*?</a:xfrm>',
+        lambda _match: xfrm_match.group(0),
+        combined_xml,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if xfrm_count != 1:
+        raise SvgNativeConversionError(
+            '[TEXT_NATIVE_CARRIER_SHAPE] Native geometry has no replaceable a:xfrm'
+        )
+    metadata = {
+        **compiled_text.trace_metadata,
+        'txbody_restore': 'rebuilt-same-shape',
+    }
+    return _append_shape_text(
+        ShapeResult(
+            xml=combined_xml,
+            bounds_emu=compiled_text.bounds_emu,
+            trace_metadata=metadata,
+        ),
+        txbody_match.group(0),
+    )
+
+
 _TXBODY_UNCHANGED_ATTR = 'data-pptx-runtime-txbody-unchanged'
 _PREVIEW_UNCHANGED_ATTR = 'data-pptx-runtime-preview-unchanged'
 
@@ -264,6 +376,7 @@ def _append_shape_text(
             + shape.xml[closing:]
         ),
         bounds_emu=shape.bounds_emu,
+        trace_metadata=shape.trace_metadata,
     )
 
 
@@ -417,6 +530,74 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             and child.get('data-pptx-part') not in allowed_parts
             for child in elem
         )
+        visible_texts = [
+            descendant
+            for descendant in elem.iter()
+            if descendant.tag.replace(f'{{{SVG_NS}}}', '') == 'text'
+            and ''.join(descendant.itertext()).strip()
+        ]
+        contracted_texts = [
+            text
+            for text in visible_texts
+            if text.get('data-pptx-runtime-text-contract') == '1'
+        ]
+        if contracted_texts:
+            if len(contracted_texts) != 1 or len(visible_texts) != 1:
+                raise SvgNativeConversionError(
+                    '[TEXT_NATIVE_TEXT_COUNT] Native carrier requires exactly one '
+                    'non-empty explicit text block'
+                )
+            contract_text = contracted_texts[0]
+            requested_mode = contract_text.get('data-pptx-runtime-requested-mode')
+            effective_mode = contract_text.get('data-pptx-runtime-effective-mode')
+            if requested_mode in {'auto', 'lines'} or effective_mode != 'paragraph':
+                raise SvgNativeConversionError(
+                    '[TEXT_NATIVE_MODE_UNSUPPORTED] Native text carriers only '
+                    'support explicit paragraph mode'
+                )
+            carrier_meta = _text_carrier_metadata(elem)
+            if carrier_meta is None:
+                raise SvgNativeConversionError(
+                    '[TEXT_NATIVE_CARRIER_METADATA_REQUIRED] Re-import the source '
+                    'PPTX to obtain versioned text-carrier metadata'
+                )
+            if len(carrier_children) != 1 or has_foreign_visual:
+                raise SvgNativeConversionError(
+                    '[TEXT_NATIVE_CARRIER_STRUCTURE] Native text carrier has '
+                    'unsupported visible geometry children'
+                )
+            geometry_ctx = child_ctx
+            if transform and not native_subtree_active:
+                geometry_ctx = ctx.child(
+                    0, 0, 1.0, 1.0,
+                    transform_matrix=parse_transform_matrix(transform),
+                    filter_id=filter_id,
+                    style_overrides=style_overrides,
+                    opacity_multiplier=local_opacity,
+                )
+            geometry_result = convert_element(carrier_children[0], geometry_ctx)
+            ctx.sync_from_child(geometry_ctx)
+            if geometry_result is None:
+                raise SvgNativeConversionError(
+                    '[TEXT_NATIVE_CARRIER_SHAPE] Native carrier has no geometry shape'
+                )
+            compiled_text = convert_text(contract_text, child_ctx)
+            ctx.sync_from_child(child_ctx)
+            if compiled_text is None:
+                raise SvgNativeConversionError(
+                    '[TEXT_NATIVE_CARRIER_COMPILE] Explicit paragraph compiled empty'
+                )
+            restored = _replace_native_text_carrier(
+                geometry_result,
+                compiled_text,
+                carrier_meta,
+            )
+            if should_animate_group and elem_id:
+                shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored.xml)
+                if shape_match:
+                    ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
+            return restored
+
         native_text = _decode_unchanged_txbody(elem, txbody_meta)
         if len(carrier_children) == 1 and not has_foreign_visual and native_text is not None:
             geometry_ctx = child_ctx
@@ -477,7 +658,11 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             shape_match = re.search(r'<p:cNvPr id="(\d+)"', child_results[0].xml)
             if shape_match:
                 ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
-        return child_results[0]
+        child_result = child_results[0]
+        return ShapeResult(
+            xml=child_result.xml,
+            bounds_emu=child_result.bounds_emu,
+        )
 
     # Multiple children, or a top-level semantic one-child group: wrap in
     # <p:grpSp> so PowerPoint can animate the group as one unit.
@@ -879,6 +1064,72 @@ def _geometry_trace_metadata(elem: ET.Element, result: ShapeResult) -> dict[str,
     return {'output_geometry': 'unknown', 'fidelity': 'visual-only'}
 
 
+def _aggregate_text_contract_trace(
+    events: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Aggregate per-shape text events into stable source-block mappings."""
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for event in events:
+        if not event.get('text_contract'):
+            continue
+        source_id = event.get('source_text_id')
+        if not isinstance(source_id, str) or not source_id:
+            continue
+        grouped.setdefault(source_id, []).append(event)
+
+    blocks: list[dict[str, Any]] = []
+    for source_id, source_events in grouped.items():
+        ordered = sorted(
+            source_events,
+            key=lambda event: int(event.get('line_index') or 1),
+        )
+        shape_ids = [
+            int(event['shape_id'])
+            for event in ordered
+            if event.get('shape_id') is not None
+        ]
+        bounds = [
+            event['bounds_emu']
+            for event in ordered
+            if isinstance(event.get('bounds_emu'), list)
+            and len(event['bounds_emu']) == 4
+        ]
+        union_bounds = None
+        if bounds:
+            union_bounds = [
+                min(value[0] for value in bounds),
+                min(value[1] for value in bounds),
+                max(value[2] for value in bounds),
+                max(value[3] for value in bounds),
+            ]
+        content_hashes = [
+            str(event.get('content_sha256'))
+            for event in ordered
+            if event.get('content_sha256')
+        ]
+        if len(content_hashes) == 1:
+            content_sha256 = content_hashes[0]
+        else:
+            payload = json.dumps(content_hashes, separators=(',', ':'))
+            content_sha256 = hashlib.sha256(payload.encode('utf-8')).hexdigest()
+        blocks.append({
+            'source': {'element_id': source_id},
+            'requested_mode': ordered[0].get('requested_mode'),
+            'effective_mode': ordered[0].get('effective_mode'),
+            'resolution_reason': ordered[0].get('resolution_reason'),
+            'visual_line_count': ordered[0].get('visual_line_count'),
+            'output_shape_ids': shape_ids,
+            'output_shape_count': len(shape_ids),
+            'paragraph_count': sum(int(event.get('paragraph_count') or 0) for event in ordered),
+            'break_count': sum(int(event.get('break_count') or 0) for event in ordered),
+            'slide_bounds_emu': union_bounds,
+            'content_sha256': content_sha256,
+            'txbody_restore': ordered[0].get('txbody_restore', 'not-applicable'),
+            'readback': {'status': 'passed'},
+        })
+    return blocks
+
+
 def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Dispatch an SVG element to the appropriate converter."""
     tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
@@ -939,6 +1190,7 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
             if result.bounds_emu is not None:
                 metadata['bounds_emu'] = list(result.bounds_emu)
             metadata.update(_geometry_trace_metadata(elem, result))
+            metadata.update(result.trace_metadata)
             trace('native', **metadata)
         else:
             trace('skip', reason='empty-or-non-rendering')
@@ -1171,7 +1423,11 @@ def convert_svg_to_slide_shapes(
     # merge_paragraphs additionally folds mergeable paragraph blocks into a
     # single annotated <text> for downstream multi-<a:p> conversion.
     from ..tspan_flattener import flatten_positional_tspans
-    flattened = flatten_positional_tspans(tree, merge_paragraphs=merge_paragraphs)
+    flattened = flatten_positional_tspans(
+        tree,
+        merge_paragraphs=merge_paragraphs,
+        source_name=svg_path.name,
+    )
     if flattened:
         trace_steps.append({
             'action': 'flatten-positional-tspans',
@@ -1316,6 +1572,7 @@ def convert_svg_to_slide_shapes(
             },
             'preprocess': trace_steps,
             'events': trace_events or [],
+            'text_blocks': _aggregate_text_contract_trace(trace_events or []),
         })
 
     shapes_xml = '\n'.join(shapes)
