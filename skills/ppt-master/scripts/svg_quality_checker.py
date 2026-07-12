@@ -1955,6 +1955,14 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate the intrinsic structured Master/Layout SVG contract."""
+        if (
+            not self.template_mode
+            and svg_path.parent.name == 'svg_output'
+            and _declared_pptx_structure_mode(
+                self._resolve_project_path(svg_path)
+            ) == 'flat'
+        ):
+            return
         has_structure_metadata = any(
             elem.get(attr) is not None
             for elem in root.iter()
@@ -2487,6 +2495,11 @@ class SVGQualityChecker:
             not self.template_mode
             and (project_path / 'svg_output').is_dir()
         )
+        if (
+            standard_project
+            and _declared_pptx_structure_mode(project_path) == 'flat'
+        ):
+            return
         has_metadata = False
         for svg_path in svg_files:
             try:
