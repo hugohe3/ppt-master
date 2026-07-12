@@ -6,11 +6,11 @@ Brand is one of three template kinds in the library — alongside [`layouts/`](.
 
 ## How brands are consumed
 
-Brand application follows the **same explicit-path rule as all template kinds** at SKILL.md Step 3, and lands in the **same project directory** (`<project_path>/templates/`):
+Brand application follows the **same explicit-path rule and workspace routing as all template kinds** at SKILL.md Step 3:
 
 | User input at SKILL.md Step 3 | Behavior |
 |---|---|
-| An explicit brand directory path (e.g. `templates/brands/anthropic/`) | Copy `design_spec.md` + logo files + asset subdirectories into `<project_path>/templates/`; Strategist locks identity segment |
+| An explicit brand workspace path (e.g. `templates/brands/anthropic/`) | Resolve `templates/design_spec.md`; stage `templates/`, `images/`, and `icons/` into the matching project directories; Strategist locks the identity segment |
 | Bare brand name only ("use anthropic brand"), brand mention without path, or silence | Skip — same mechanical rule as all template kinds: bare names never trigger |
 | Brand path + layout path | Fuse into one `design_spec.md` — brand owns identity segment (color / typography / logo / voice / icon style); layout owns structure segment (canvas / page roster). See `SKILL.md` Step 3. |
 | Brand path + deck path | Fuse — brand identity overrides deck identity; structure + middle segments come from deck |
@@ -29,25 +29,24 @@ Read skills/ppt-master/workflows/create-brand.md
 
 Three input paths are supported: brand asset (logo / brand site URL / branded PPTX / brand PDF), verbal spec dictated in chat, or empty skeleton for the user to fill in later.
 
-## Package structure
+## Workspace structure
 
-Every brand directory is self-contained:
+Every brand uses the same workspace routing as layout and deck templates. Brand identity remains roster-free; omit empty optional directories instead of adding placeholder files.
 
 ```
 templates/brands/<brand_id>/
-├── design_spec.md            # required — brand identity spec (7 sections)
-├── logo.<ext>                # optional — primary brand logo (single-lockup brands)
-│   …or…
-├── <brand>_wordmark.<ext>    # optional — wordmark variant (dual-lockup brands)
-├── <brand>_mark.<ext>        # optional — symbol / icon variant (dual-lockup brands)
-├── images/                   # optional — branded photos
-├── illustrations/            # optional — branded illustrations
-└── icons/                    # optional — branded icon overrides
+├── templates/
+│   └── design_spec.md        # required — brand identity spec
+├── images/                    # optional — logos and visual assets
+│   ├── logo.<ext>            # optional — primary logo
+│   └── <brand>_wordmark.svg  # optional — alternate lockups and visual assets
+├── icons/                     # optional — branded icon overrides
+└── exports/                   # optional local derived artifacts; Git-ignored
 ```
 
-Logo filenames are descriptive, not contractual — `design_spec.md` §IV lists the exact files and the contexts in which each is used. Single-lockup brands typically ship one `logo.<ext>`; dual-lockup brands (e.g. Google's wordmark + G mark) ship separately named files.
+Logo filenames are descriptive, not contractual — `templates/design_spec.md` §IV lists exact `../images/...` paths and usage contexts. Single-lockup brands typically ship one logo; dual-lockup brands ship separately named files.
 
-`design_spec.md` carries a YAML frontmatter block with `kind: brand` and is the single source of truth for the brand identity. The six required sections are: I Brand Overview / II Color Scheme / III Typography / IV Logo / V Voice & Tone / VI Icon Style.
+`templates/design_spec.md` carries a YAML frontmatter block with `kind: brand` and is the single source of truth for the brand identity. The six required sections are: I Brand Overview / II Color Scheme / III Typography / IV Logo / V Voice & Tone / VI Icon Style.
 
 ## Discovery index
 

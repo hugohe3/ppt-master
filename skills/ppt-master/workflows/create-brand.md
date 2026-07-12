@@ -1,10 +1,10 @@
 ---
-description: Generate a brand-only template under `templates/brands/<id>/` — a design_spec.md that captures the user's colors / typography / logo / voice / icon style without an SVG page roster, so subsequent PPT projects inherit brand identity while keeping page layout free.
+description: Generate a brand-only workspace under `templates/brands/<id>/` that captures colors, typography, logos, voice, and icon style without an SVG page roster.
 ---
 
 # Create Brand Workflow
 
-> Standalone preset-creation workflow. Output is a brand template package at `skills/ppt-master/templates/brands/<brand_id>/`. Structurally a brand is a template minus the SVG page roster — Strategist locks the brand's color / typography / logo / voice as truth; Executor designs pages freely under those constraints.
+> Standalone preset-creation workflow. Output is a complete brand workspace at `skills/ppt-master/templates/brands/<brand_id>/`. A brand keeps the common workspace shape but omits the SVG page roster: Strategist locks identity while Executor designs pages freely.
 
 This workflow edits the global brand library, not any specific `projects/<x>/`. Consumption follows the same explicit-path rule as layout templates (see [Downstream consumption](#downstream-consumption-informational) at the end).
 
@@ -14,7 +14,7 @@ This workflow edits the global brand library, not any specific `projects/<x>/`. 
 
 | User signal | Action |
 |---|---|
-| "set up brand" / "extract brand from this logo" / 建立品牌 / 做品牌规范 | Run this workflow |
+| "set up brand" / "extract brand from this logo" | Run this workflow |
 | User provides a brand asset (logo / brand site URL / branded PPTX / brand PDF) and wants it locked across future projects | Run this workflow |
 | User mentions brand color or font once for a single deck only | Skip — handle inline via Strategist h.5 |
 | `templates/brands/<requested_id>/` already exists | Ask: update / replace / use a new id — never silently overwrite |
@@ -66,7 +66,7 @@ Whatever the user gives is `[user]`-labelled. Skip Step 3 unless the user explic
 
 ## Step 2C: Empty skeleton
 
-Write `templates/brands/<brand_id>/design_spec.md` with the full schema, every value as a TODO comment. Tell the user where the file is. No further prompting — the user owns it from here.
+Write `templates/brands/<brand_id>/templates/design_spec.md` with the full schema, every value as a TODO comment. Tell the user where the file is. No further prompting — the user owns it from here.
 
 ---
 
@@ -85,15 +85,15 @@ For fields not covered by the asset, ask the user in a single bundled message. S
 
 ---
 
-## Step 4: Materialize the brand package
+## Step 4: Materialize the brand workspace
 
-Create the package directory:
+Create the required template source directory. Create `images/`, `icons/`, or `exports/` only when writing a real asset or derived artifact; never add placeholder files for empty directories.
 
 ```bash
-mkdir -p "skills/ppt-master/templates/brands/<brand_id>"
+mkdir -p "skills/ppt-master/templates/brands/<brand_id>/templates"
 ```
 
-### Mandatory: `design_spec.md`
+### Mandatory: `templates/design_spec.md`
 
 ```markdown
 ---
@@ -132,7 +132,7 @@ primary_color: "#XXXXXX"
 | mono | <family> | optional |
 
 ## IV. Logo
-- File: `./logo.<ext>` (relative to this design_spec.md)
+- File: `../images/logo.<ext>` (relative to this design_spec.md)
 - Usage: cover-only \| every-page \| never
 
 ## V. Voice & Tone
@@ -145,28 +145,27 @@ primary_color: "#XXXXXX"
 - Preference: linear \| filled \| duotone   # optional, drives icon library search
 
 ## VII. Visual Assets (optional)
-- Images: `./images/`               # branded photos, prioritised before AI image generation
-- Illustrations: `./illustrations/` # branded illustrations, prioritised before AI generation
-- Icons: `./icons/`                 # branded icon overrides; falls back to `templates/icons/`
+- Images and illustrations: `../images/` # brand visual assets
+- Icons: `../icons/`                     # branded icon overrides
 ```
 
 **Section scope rules**:
-- Layout / canvas / spacing / radius / shadow / page roster / signature design elements are OUT of brand scope. Those live in layout / deck templates (`templates/layouts/<id>/design_spec.md` or `templates/decks/<id>/design_spec.md`) or `shared-standards.md`. Do NOT add those sections here.
+- Layout / canvas / spacing / radius / shadow / page roster / signature design elements are OUT of brand scope. Those live in layout / deck workspaces (`templates/layouts/<id>/templates/design_spec.md` or `templates/decks/<id>/templates/design_spec.md`) or `shared-standards.md`. Do NOT add those sections here.
 - HEX must be `#RRGGBB`
 - Font names are free strings; not validated against locally installed fonts
 - §VII is fully optional — list only directories that actually exist
 
 ### Optional: logo file
 
-If the user provided a logo, copy it to `templates/brands/<brand_id>/logo.<ext>` (preserve source extension).
+If the user provided a logo, copy it to `templates/brands/<brand_id>/images/logo.<ext>` and preserve its source extension. Use descriptive filenames when several lockups exist.
 
 ### Optional: visual asset directories
 
-If the user provided brand photo / illustration / icon folders, copy them as `images/` / `illustrations/` / `icons/` under `templates/brands/<brand_id>/`. Reference each in §VII of `design_spec.md`. Skip the entire section if none exist.
+Copy brand photos and illustrations into the workspace `images/` directory. Copy branded icon overrides into `icons/`. Reference only directories and assets that actually exist in §VII of `templates/design_spec.md`.
 
 ### NOT created here
 
-No SVG page roster. No canvas spec. No signature design elements. If the user later wants brand-anchored page templates, run `create-template.md` with this brand as a style reference.
+No SVG page roster, canvas spec, signature design elements, or preview PPTX. Do not create an empty `exports/` directory. If the user later wants brand-anchored page templates, run `create-template.md` with this brand as a style reference.
 
 ---
 
@@ -189,16 +188,16 @@ Emit the confirmation card:
 ```markdown
 ## ✅ Brand Saved
 - Path: `skills/ppt-master/templates/brands/<brand_id>/`
-- Files: design_spec.md{, logo.<ext>}{, images/}{, illustrations/}{, icons/}
+- Files: templates/design_spec.md{, images/logo.<ext>}{, images/*}{, icons/*}
 - Fields locked: <list>
 - Provenance: <fact / approx / user counts>
 
 How to use in a project:
-- Include the brand directory path in your initial Step 3 input — e.g. "做一个 Q4 总结 PPT, 用 skills/ppt-master/templates/brands/<brand_id>/ 这个品牌"
+- Include the brand workspace path in the initial Step 3 input, for example: "Create a Q4 summary using skills/ppt-master/templates/brands/<brand_id>/"
 - Same explicit-path rule as layout templates: bare brand names never trigger
 - May be supplied together with a layout template path; Step 3 fuses both into a single `design_spec.md` (brand wins on identity tokens, layout wins on page structure) — see `SKILL.md` Step 3
 - To list available brands: open `templates/brands/brands_index.json`
-- To edit: modify `templates/brands/<brand_id>/design_spec.md` directly, then re-run `python3 skills/ppt-master/scripts/register_template.py --kind brand <brand_id>`
+- To edit: modify `templates/brands/<brand_id>/templates/design_spec.md`, then re-run `python3 skills/ppt-master/scripts/register_template.py --kind brand <brand_id>`
 ```
 
 ---
@@ -209,7 +208,7 @@ Brand application happens in [`SKILL.md` Step 3](../SKILL.md) under the **same e
 
 | User input at SKILL.md Step 3 | Behavior |
 |---|---|
-| Explicit brand directory path supplied | Step 3 copies the brand into `<project_path>/templates/` (same target as a layout template); Strategist locks color / typography / logo / voice as truth at Step 4 |
+| Explicit brand workspace path supplied | Step 3 resolves `templates/design_spec.md`, stages `templates/`, `images/`, and `icons/` into their project peers, and locks color / typography / logo / voice as truth at Step 4 |
 | Bare brand name, brand mention without path, or silence | Skip — no auto-application based on directory count or any other implicit signal |
 | Both a brand path and a layout template path supplied in the same message | Step 3 fuses both into a single `design_spec.md` inside `<project_path>/templates/` (brand wins on identity tokens, layout wins on page structure). See `SKILL.md` Step 3 for the field-precedence table and the two conflict gates that may surface a clarifying question |
 
@@ -220,7 +219,7 @@ Brand application happens in [`SKILL.md` Step 3](../SKILL.md) under the **same e
 ## Notes
 
 1. **Brand is identity, not layout** — colors / typography / logo / voice / icon style only. Page roster, canvas spec, and signature design elements belong to layout templates; do not duplicate them here.
-2. **Self-contained package** — all brand assets (logo, images, illustrations, icons) live inside `templates/brands/<brand_id>/`. Nothing leaks to workspace root or `projects/`.
+2. **Common workspace routing** — brand assets use the same `templates/`, `images/`, `icons/`, and `exports/` routes as other template kinds; empty optional directories are omitted.
 3. **No script dependency** — Step 2A reuses existing converters plus AI inline reading. A dedicated `brand_extract.py` is not introduced unless future user feedback demands batch processing or precise color picking from raster logos.
 4. **Multi-brand support** — `templates/brands/` accepts any number of brands; agency / freelancer / multi-client workflows are natural.
 5. **Precedence rule** — when a brand and a layout template both apply, Step 3 fuses them into one `design_spec.md`: brand wins on color / typography / logo / voice / icon style; layout wins on canvas / page roster / spacing / font-size hierarchy / signature visual elements. See `SKILL.md` Step 3 for the full precedence table.

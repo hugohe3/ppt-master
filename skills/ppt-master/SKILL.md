@@ -219,7 +219,7 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 
 **Default — free design.** Proceed directly to Step 4. Do NOT query any `*_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
 
-**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template workspace path. Step 3 consumes an explicit workspace whose `templates/design_spec.md` declares `kind: layout` / `kind: deck`, a direct brand package, or a legacy flat package whose root `design_spec.md` declares one of those kinds.
+**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template workspace path. Step 3 consumes an explicit workspace whose `templates/design_spec.md` declares `kind: brand` / `kind: layout` / `kind: deck`, or a compatible legacy-flat package whose root `design_spec.md` declares one of those kinds.
 
 Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use `template-fill` for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
 
@@ -227,7 +227,7 @@ Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use
 
 | User input contains | Step 3 action |
 |---|---|
-| One or more explicit template workspace paths (each resolves to `templates/design_spec.md`, or to a legacy/direct root `design_spec.md`, with `kind: brand` / `kind: layout` / `kind: deck` in YAML frontmatter) | Normalize each source directory, read its `kind`, dispatch per the kind matrix below, fuse if multiple |
+| One or more explicit template workspace paths (each resolves to `templates/design_spec.md`, or to a compatible legacy-flat root `design_spec.md`, with `kind: brand` / `kind: layout` / `kind: deck` in YAML frontmatter) | Normalize each source directory, read its `kind`, dispatch per the kind matrix below, fuse if multiple |
 | Current `create-template` workflow just completed project scope and validated its exact `<project>/` workspace | Consume that single workspace in place; it cannot join multi-path fusion |
 | Anything else — bare template names ("用 academic_defense"), style descriptions ("麦肯锡风格"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
@@ -249,7 +249,7 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 
 | Kind | Physical dir | Contains | Frontmatter |
 |---|---|---|---|
-| **brand** | `templates/brands/<id>/` (direct package; `create-brand` contract) | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
+| **brand** | `templates/brands/<id>/templates/` inside a complete workspace | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
 | **layout** | `templates/layouts/<id>/templates/` inside a complete workspace | structure-only segment: canvas / page structure / page types / SVG roster | `kind: layout` |
 | **deck** | `templates/decks/<id>/templates/` inside a complete workspace | full replica: identity + structure + middle (template overview) segments | `kind: deck` |
 
@@ -265,27 +265,26 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 
 | User path's `kind` | Step 3 action |
 |---|---|
-| `kind: brand` | Install the direct package's spec/non-image assets in `<project>/templates/` and bitmaps in `<project>/images/`. Strategist locks identity; structure stays free. |
-| `kind: layout` | Install the workspace's `templates/`, `images/`, and `icons/` into the matching project roots; ignore `exports/`. Strategist locks structure; identity is decided in confirmation fields e–g. |
-| `kind: deck` | Install the workspace's `templates/`, `images/`, and `icons/` into the matching project roots; ignore `exports/`. Strategist locks all segments; confirmation narrows to deck-content fields. |
+| `kind: brand` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. Strategist locks identity; structure stays free. |
+| `kind: layout` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. Strategist locks structure; identity is decided in confirmation fields e–g. |
+| `kind: deck` | Install `templates/` plus any existing `images/` and `icons/` into the matching project roots; ignore `exports/`. Strategist locks all segments; confirmation narrows to deck-content fields. |
 
 Normalize every explicit path before any write:
 
 | Input shape | Spec / SVG source | Asset source | Install rule |
 |---|---|---|---|
-| Current Layout/Deck workspace: `<root>/templates/design_spec.md` | `<root>/templates/` | `<root>/images/`, `<root>/icons/` | Map those three roots to the target project's matching roots; ignore `<root>/exports/` |
-| Direct Brand package: `<root>/design_spec.md`, `kind: brand` | `<root>/` | Package-local files | Spec/non-bitmap assets → project `templates/`; bitmaps → project `images/` |
-| Compatible legacy-flat Layout/Deck: `<root>/design_spec.md` | `<root>/` | Package-local files | Preserve the existing flat-package routing: SVG/spec/non-bitmaps → project `templates/`; bitmaps → project `images/`; route declared icons to project `icons/` |
+| Current workspace: `<root>/templates/design_spec.md` | `<root>/templates/` | Any existing `<root>/images/`, `<root>/icons/` | Map the existing portable roots to the target project's matching roots; ignore `<root>/exports/` |
+| Compatible legacy-flat package: `<root>/design_spec.md` | `<root>/` | Package-local files | SVG/spec/non-bitmaps → project `templates/`; bitmaps → project `images/`; route declared icons to project `icons/` |
 
 **Atomic install preflight (mandatory)**: Resolve source and destination paths, enumerate the complete file mapping, and reject every destination collision before copying any file. Equality between a current project workspace root and the target project root means in-place consumption and no copy. For an external single path, a collision stops Step 3 rather than overwriting. For multi-path fusion, do not copy packages sequentially: resolve segment conflicts and asset-name conflicts first, construct one final mapping, then write it once. Never use recursive copy as an implicit conflict policy.
 
 Never infer that a flat directory has legacy Master/Layout semantics solely from packaging.
 
-The same current-workspace split applies to layout and deck: source/spec in `templates/`, bitmaps in `images/`, runtime vectors in `icons/`, review artifacts in `exports/`. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
+The same current-workspace routing applies to all three kinds: source/spec in `templates/`, visual assets in `images/`, runtime icons in `icons/`, and review artifacts in `exports/`. Empty optional roots are omitted rather than retained with placeholder files. Brand workspaces normally have no `exports/` because they have no SVG roster. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
 
 When `create-template` used project output scope, its workspace root is the target project itself and all core directories are already final. Resolve both roots before copying: equality means **in-place consumption**, so skip the installation. An in-place workspace cannot participate in multi-path fusion; use external workspaces for fusion. Never place the local source under a nested `templates/local_master/` directory because the confirmation and quality gates read the project `templates/` root.
 
-A project-scoped workspace has the same portable core structure as a library workspace. It may be copied or promoted across roots as one unit (`templates/`, `images/`, `icons/`); `exports/` stays review-only. Do not pass only another project's `templates/` subdirectory because that would omit sibling assets.
+A project-scoped workspace has the same portable routing as a library workspace. It may be copied or promoted across roots as one unit (`templates/` plus any existing `images/` and `icons/`); `exports/` stays review-only. Do not pass only another project's `templates/` subdirectory because that would omit sibling assets.
 
 Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy or consume those semantic contracts through Step 3. Run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) on the package first, then return with the migrated workspace path. Old flat packaging remains readable when its SVG structure is already current.
 
