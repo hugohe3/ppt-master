@@ -216,6 +216,11 @@ except ImportError:
 HEX_VALUE_RE = re.compile(
     r"#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
 )
+
+# Master/Layout validation is temporarily dormant until its ownership contract
+# is resolved. The exporter remains the authority for structured PPTX assembly.
+_CHECK_PPTX_MASTER_LAYOUT = False
+
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
 )
@@ -814,7 +819,8 @@ class SVGQualityChecker:
                 self._check_native_object_markers(root, result)
 
                 # 8d. Validate explicit master/layout/placeholder metadata.
-                self._check_pptx_structure_metadata(root, svg_path, result)
+                if _CHECK_PPTX_MASTER_LAYOUT:
+                    self._check_pptx_structure_metadata(root, svg_path, result)
 
                 # 8e. Validate rendering-neutral page/structure compiler hints.
                 self._check_semantic_markers(root, svg_path, result)
@@ -2460,10 +2466,11 @@ class SVGQualityChecker:
             result = self.check_file(str(svg_file), expected_format)
             self._print_result(result)
 
-        self._check_pptx_structure_contract(dir_path, svg_files)
-        if self.template_mode and dir_path.is_dir():
-            self._check_template_contract(dir_path, svg_files)
-        elif dir_path.is_dir():
+        if _CHECK_PPTX_MASTER_LAYOUT:
+            self._check_pptx_structure_contract(dir_path, svg_files)
+            if self.template_mode and dir_path.is_dir():
+                self._check_template_contract(dir_path, svg_files)
+        if not self.template_mode and dir_path.is_dir():
             self._check_animation_config_contract(dir_path)
             self._check_illustration_resource_contract(dir_path)
 
