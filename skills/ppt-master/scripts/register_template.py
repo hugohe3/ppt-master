@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """Register a brand / layout / deck template into the global template index.
 
-Three kinds, three physical directories, three index files (see
+Three kinds, three workspace roots, three index files (see
 ``docs/zh/templates-architecture.md`` for the data model):
 
-| --kind  | Source dir              | Index file                    |
+| --kind  | Workspace roots         | Index file                    |
 |---------|-------------------------|-------------------------------|
 | brand   | ``templates/brands/``   | ``brands_index.json``         |
 | layout  | ``templates/layouts/``  | ``layouts_index.json``        |
 | deck    | ``templates/decks/``    | ``decks_index.json``          |
+
+Current layout/deck workspaces keep the source roster under
+``<workspace>/templates/`` and the review PPTX under ``<workspace>/exports/``.
+Legacy flat roots remain readable. Brand packaging is unchanged.
 
 Index entry schemas (the JSON file is the single source of truth — README
 files describe the kind and usage in prose but do **not** enumerate templates;
@@ -166,6 +170,18 @@ def _summary_from_use_cases(use_cases: str | None) -> str | None:
     return f"{cleaned}."
 
 
+def _template_content_dir(template_root: Path) -> Path:
+    """Resolve the canonical source directory, with legacy-flat compatibility."""
+    nested = template_root / "templates"
+    if (nested / "design_spec.md").is_file():
+        return nested
+    if (template_root / "design_spec.md").is_file():
+        return template_root
+    raise SpecParseError(
+        f"missing templates/design_spec.md or legacy design_spec.md in {template_root}"
+    )
+
+
 def _list_pages(template_dir: Path) -> list[str]:
     return sorted(p.stem for p in template_dir.glob("*.svg"))
 
@@ -189,9 +205,9 @@ def _derive_page_types(pages: list[str]) -> list[str]:
 
 def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
     """Build the index entry + extras for a single template."""
+    template_root = template_dir
+    template_dir = _template_content_dir(template_root)
     spec_path = template_dir / "design_spec.md"
-    if not spec_path.exists():
-        raise SpecParseError(f"missing design_spec.md in {template_dir}")
 
     frontmatter, body = _read_spec(spec_path)
     fm = frontmatter or {}
@@ -243,6 +259,12 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
     extras = OrderedDict(
         pages=pages,
         primary_color=str(primary_color),
+        page_prefix="templates/" if template_dir != template_root else "",
+        preview=(
+            f"exports/{template_id}_template_preview.pptx"
+            if (template_root / "exports" / f"{template_id}_template_preview.pptx").is_file()
+            else ""
+        ),
     )
     return {"entry": entry, "extras": extras}
 
@@ -275,7 +297,11 @@ def _enumerate_ids(kind: str) -> list[str]:
         return []
     return sorted(
         p.name for p in base.iterdir()
-        if p.is_dir() and (p / "design_spec.md").exists()
+        if p.is_dir()
+        and (
+            (p / "templates" / "design_spec.md").is_file()
+            or (p / "design_spec.md").is_file()
+        )
     )
 
 
@@ -300,13 +326,20 @@ def _print_completion_card(kind: str, template_id: str, entry: dict, extras: dic
     print()
     if kind != "brand":
         pages = extras.get("pages") or []
+        page_prefix = extras.get("page_prefix") or ""
+        preview = extras.get("preview") or ""
+        if preview:
+            print(f"**Review PPTX**: `{preview}`")
+            print()
         if pages:
             print("### Files Included")
             print()
             print("| File | Status |")
             print("|------|--------|")
             for page in pages:
-                print(f"| `{page}.svg` | Done |")
+                print(f"| `{page_prefix}{page}.svg` | Done |")
+            if preview:
+                print(f"| `{preview}` | Verified |")
             print()
 
 
