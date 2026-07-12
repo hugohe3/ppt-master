@@ -214,6 +214,22 @@ Do **not** invent a layout entry, and do **not** assume a template just because 
 - `pptx_structure.mode: baseline` or missing with the whole `pptx_layouts` section absent → legacy compatibility only. Omit explicit PPTX layer/layout/placeholder metadata, keep the root page role and necessary structural hints, and let baseline export use conservative promotion plus page-role-backed Layout families. Filenames and ids are fallbacks only when the corresponding marker is absent.
 - A layout key may repeat across non-adjacent pages. Reuse is based on identical static/placeholder contracts, not page proximity or content wording.
 
+**Page scaffold — author every mapped page in this document order.** One shape resolves the direct-child rule, the paint order, and the grouping exception at first write:
+
+```xml
+<svg viewBox="…" data-pptx-layout="<key>" data-pptx-layout-name="<name>">
+  <rect id="master-bg" data-pptx-layer="master" …/>              <!-- deck background -->
+  <g id="footer-chrome" data-pptx-layer="master" …>…</g>         <!-- every-page chrome -->
+  <g id="zone-framing" data-pptx-layer="layout" …>…</g>          <!-- this key's framing -->
+  <text id="page-title" data-pptx-placeholder="title" …>…</text> <!-- direct child, never inside a <g> -->
+  <text id="page-number" data-pptx-placeholder="slide-number" …>…</text>
+  <g id="content-block-1">…</g>                                  <!-- 3–8 content groups -->
+  <g id="content-block-2">…</g>
+</svg>
+```
+
+Master/layout layers and placeholders are always direct children of the root and precede every content group; a placeholder written inside a content `<g>` fails export.
+
 **Per-page chart reference — `page_charts` section**:
 
 Before drawing each page, look up its entry in `page_charts` to decide which chart structure applies (the SVG itself was loaded in §1.0):

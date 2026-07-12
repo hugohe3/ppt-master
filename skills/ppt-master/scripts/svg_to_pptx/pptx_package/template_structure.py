@@ -1302,10 +1302,69 @@ def native_structure_lock_errors(
     return errors
 
 
+def _placement_lint_errors(svg_path: Path) -> list[str]:
+    """Enumerate every placement/paint-order violation in one pass.
+
+    ``parse_template_slide`` fails fast on the first error, which discloses
+    violations one whole fix-cycle at a time. The quality checker runs this
+    pre-lint first so a single run reports every offender of the two
+    highest-frequency classes: structure metadata below the root, and
+    template paint-order violations.
+    """
+    try:
+        root = ET.parse(svg_path).getroot()
+    except (OSError, ET.ParseError):
+        return []
+    if _local_tag(root) != "svg":
+        return []
+    errors: list[str] = []
+    direct_children = set(root)
+    for elem in root.iter():
+        if elem is root or elem in direct_children:
+            continue
+        if any(elem.get(attr) is not None for attr in _STRUCTURE_ATTRS):
+            element_id = elem.get("id") or _local_tag(elem) or "<unnamed>"
+            errors.append(
+                f"{svg_path.name}: {element_id} uses template metadata below the SVG "
+                "root; structure metadata is allowed only on direct children"
+            )
+    canvas = _svg_canvas(root)
+    last_order_rank = -1
+    for elem in root:
+        tag = _local_tag(elem)
+        if tag in _NON_VISUAL_TAGS:
+            continue
+        layer = (elem.get("data-pptx-layer") or "").strip().lower() or None
+        if layer not in _LAYERS:
+            layer = None
+        is_background = _is_full_canvas_solid_rect(elem, canvas)
+        effective_layer = layer or ("slide" if is_background else None)
+        if is_background and effective_layer is not None:
+            order_rank = {"master": 0, "layout": 1, "slide": 2}[effective_layer]
+        elif effective_layer == "master":
+            order_rank = 3
+        elif effective_layer == "layout":
+            order_rank = 4
+        else:
+            order_rank = 5
+        if order_rank < last_order_rank:
+            errors.append(
+                f"{svg_path.name}: {elem.get('id') or tag} violates template paint "
+                "order; use Master background, Layout background, Slide background, "
+                "Master shapes, Layout shapes, then Slide content/placeholders"
+            )
+            continue
+        last_order_rank = order_rank
+    return errors
+
+
 def validate_template_svg(svg_path: Path) -> list[str]:
     """Return per-file template metadata errors for quality-check integration."""
+    errors = _placement_lint_errors(svg_path)
     try:
         parse_template_slide(svg_path, 1)
     except TemplateStructureError as exc:
-        return [str(exc)]
-    return []
+        message = str(exc)
+        if message not in errors:
+            errors.append(message)
+    return errors
