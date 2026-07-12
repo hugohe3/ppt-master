@@ -1,6 +1,6 @@
 # FAQ
 
-[English](./faq.md) | [中文](./zh/faq.md)
+[English](./faq.md) | [Chinese](./zh/faq.md)
 
 ---
 
@@ -193,7 +193,7 @@ If generation feels slow, check your model's token throughput. The bottleneck is
 
 Default recommendation: **continuous one-shot generation**. 10–15 page decks fit comfortably in a 200K window, and cross-page visual consistency is best when the Executor can see prior pages in the same session (it actively aligns style, font sizes, and rhythm).
 
-Only when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `继续生成 projects/<project_name>` (or "resume execution projects/<project_name>") to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
+Only when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `resume execution projects/<project_name>` to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
 
 Split mode is a **compromise** — it pays ~6K tokens (re-reading SKILL.md) to drop 60–200K of planning-session noise, then reuses the freed budget in the execution session to re-read `sources/` for richer slide content. **Not needed when signals are normal**; the hint won't appear, and you can always ignore it and stay in continuous mode.
 
@@ -252,13 +252,13 @@ Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Ma
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")
 - Category preference (`brand` / `general` / `scenario` / `government` / `special`)
 - Canvas format, if not the default 16:9
-- Output scope: indexed `library` (default) or one already initialized `project`
+- Output scope: indexed `library` (default) or one already initialized `project`; both use the same complete workspace shape
 
 You don't need to supply every detail upfront — the AI agent will ask follow-up questions to fill in anything missing (output scope, template ID, theme mode, etc.).
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, and validating the template. Library scope registers it so it appears in global discovery. Project scope writes the thin bundle directly into that project's `templates/` root and deliberately skips global registration.
+The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, validating the template, and exporting `exports/<id>_template_preview.pptx` for visual review in PowerPoint. Both scopes contain the same `templates/`, `images/`, `icons/`, and `exports/` core: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Give that workspace root to Step 3. Older flat packages with `design_spec.md` at the root remain compatible, and flat placement alone is not a reason to run structure restoration. Because the new workspace shapes match, a complete result can be migrated or reused between the two locations without restructuring it.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 

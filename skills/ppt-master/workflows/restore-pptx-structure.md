@@ -4,9 +4,11 @@ description: Restore legacy SVG projects to the explicit structured Master/Layou
 
 # Restore PPTX Structure Workflow
 
-Restore an existing SVG-authored project before quality checking or release export when its Master/Layout contract is absent or legacy.
+Restore an existing SVG-authored project or template before quality checking or release export when its Master/Layout contract is absent or legacy.
 
 **Trigger**: Run when `svg_quality_checker.py` or `svg_to_pptx.py` reports a missing or legacy `pptx_structure.mode`, or when the user explicitly asks to migrate an older SVG project.
+
+**Hard rule — structure, not packaging**: Directory shape is not PowerPoint structure evidence. A current template workspace uses `templates/design_spec.md`; a compatible legacy-flat package uses `design_spec.md` at its root. Do not run this workflow merely to move a flat package into the current workspace shape.
 
 ---
 
@@ -18,13 +20,15 @@ Restore an existing SVG-authored project before quality checking or release expo
 | Legacy `template`, `layout_strategy: distill`, `data-pptx-layout-kind`, or `utility` | Replace the distillation contract with one explicit structured contract |
 | Legacy `preserve` plus `native_structure.json` / `source_template.pptx` | Use the native facts as restoration evidence; rebuild the SVG contract instead of preserving package parts |
 | Existing `mode: structured` project | Validate and repair only the reported mismatch; do not re-infer the deck |
+| Legacy-flat template package whose SVG roots and slots already satisfy the current structured contract | Consume it through the compatibility reader; do not restore or relocate it solely because `design_spec.md` and SVGs are flat |
+| Current template workspace with `templates/`, `images/`, `icons/`, and `exports/` | Inspect SVG metadata to decide whether restoration is needed; the workspace folders themselves do not prove or disprove structure |
 | Raw PPTX intended as a reusable template | Run [`create-template`](./create-template.md), not this workflow |
 | Existing PPTX receiving notes/audio/timing/transitions | Keep the direct [`native-enhance-pptx`](./native-enhance-pptx.md) route; do not create SVGs |
 | Raw PPTX template receiving new content | Keep the direct [`template-fill-pptx`](./template-fill-pptx.md) route |
 
 **Hard rule**: Keep restoration in the main agent and inspect the complete page roster. Do not delegate page classification, cluster by visual similarity, or write a batch SVG generator.
 
-🚧 **GATE**: Read `spec_lock.md`, every file in `svg_output/`, every template SVG named by `page_layouts`, and any original PPTX/native structure facts that belong to this project.
+🚧 **GATE**: Take the explicit project/template workspace root as input. For a project, read `spec_lock.md`, every file in `svg_output/`, and every template SVG named by `page_layouts`. For a template, resolve `templates/design_spec.md` first and fall back to legacy root `design_spec.md`, then read every sibling template SVG. In either case, read any original PPTX/native structure facts that belong to the workspace.
 
 ---
 
@@ -40,6 +44,8 @@ Record the source evidence used for restoration in a short `README.md` inside th
 
 **Hard rule**: Never delete the legacy sources during restoration. If the requested migration would rewrite several existing files and the user has not already authorized that operation, obtain the repository-required bulk-modification confirmation first.
 
+**Hard rule — no packaging migration**: Keep the input workspace/package placement unchanged. This workflow edits the semantic SVG/lock contract only; it does not normalize a legacy-flat package into `templates/`, `images/`, `icons/`, and `exports/`.
+
 ---
 
 ## 3. Determine the Structure
@@ -51,6 +57,8 @@ Use this evidence priority:
 | 1 | Original PPTX plus verified native structure facts | Preserve Master/Layout names, ownership, placeholder type/index/bounds, and page assignment |
 | 2 | Legacy template SVGs or explicit legacy structure metadata | Preserve stable identities and reusable geometry after removing legacy-only fields |
 | 3 | Completed SVG pages only | Classify deliberately across the full deck; do not let the exporter infer structure |
+
+**Hard rule**: Decide from SVG/lock semantics, never from whether `design_spec.md` is at the workspace root or under `templates/`.
 
 Classify each visible object:
 
