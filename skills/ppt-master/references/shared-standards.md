@@ -414,8 +414,7 @@ table/chart markers are rejected; omit that flag to export their SVG fallback.
 
 ### 4.1 Semantic SVG Marker Contract
 
-Semantic markers are minimal compiler hints orthogonal to native SVG semantics.
-Root Master/Layout identity, atomic layer elements, grouped slots, and native-object metadata are authoritative and read first. Every new page carries its final structured contract from the start of SVG authoring. Add `data-pptx-role` only when no specialized marker expresses the required page-frame behavior; the element also uses a stable unique `id`. Do not classify ordinary page content or move visible facts out of SVG attributes/text into metadata. See [`semantic-svg.md`](semantic-svg.md) for the canonical vocabulary and examples.
+Semantic markers are minimal compiler hints orthogonal to native SVG semantics. Free-design and brand-only pages use flat export and omit Master/Layout/layer/placeholder markers. On deck/layout template routes, root Master/Layout identity, atomic layer elements, grouped slots, and native-object metadata are authoritative and read first; each page carries its final structured contract from the start of SVG authoring. Add `data-pptx-role` only when no specialized marker expresses the required page-frame behavior; the element also uses a stable unique `id`. Do not classify ordinary page content or move visible facts out of SVG attributes/text into metadata. See [`semantic-svg.md`](semantic-svg.md) for the canonical vocabulary and examples.
 
 - **Canvas authority**: `viewBox` MUST match the selected canvas dimensions.
   Root `width` and `height` are optional and do not override it. Root `<svg>`
@@ -437,16 +436,16 @@ These forms are needed only when the stated PPT behavior matters:
 | One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line. Evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` stay in one frame: equal effective `font-size` may flow in the current paragraph, while a font-size change, list marker, or accepted larger gap starts a new paragraph. An unmergeable gap or mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
-| Reusable free-design PowerPoint Layout | Strategist declares the Master roster and complete page-to-Layout map before drawing. Executor writes the root identities, atomic fixed layers, and grouped slots while authoring each page. Export compiles only those declarations. |
+| Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export uses PowerPoint's default Master and Blank Layout. Do not author Master/Layout identities, layers, or placeholder slots. |
 | Reusable template-based PowerPoint Layout | Select one complete input SVG per page in `page_layouts` and declare the output Master/Layout mapping at planning time. Strict preserves the prototype contract; adaptive retains its Master and may assign a new explicit Layout key during page authoring. Non-mirror skin follows `spec_lock`. |
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
 
 ### 4.3 Element Grouping (Mandatory)
 
-Wrap logically related Slide-local elements in top-level `<g id="...">` groups. This is **required on every generated page**, not an optional convenience: it produces real PowerPoint groups in the exported PPTX and gives each content unit a stable animation anchor. Plain `<g>` is the normal grouping primitive; `<g opacity="0..1">` additionally maps to the per-descendant alpha approximation in §2.2. Direct atomic Master/Layout elements are the required exception and may never be layer groups. A top-level slot `<g>` is already a semantic group and is excluded from the ordinary content-group budget.
+Wrap logically related Slide-local elements in top-level `<g id="...">` groups. This is **required on every generated page**, not an optional convenience: it produces real PowerPoint groups in the exported PPTX and gives each content unit a stable animation anchor. Plain `<g>` is the normal grouping primitive; `<g opacity="0..1">` additionally maps to the per-descendant alpha approximation in §2.2. Flat free-design/brand-only pages use only ordinary semantic groups. On structured template pages, direct atomic Master/Layout elements are the required exception and a top-level slot `<g>` is already a semantic group.
 
-**Semantic-group rule**: apart from atomic Master/Layout objects and the optional Slide background, direct Slide content uses semantic groups. Aim for **3–8 ordinary top-level content `<g id>` groups per slide**; slot groups and structural atoms are excluded. Each ordinary group becomes one entrance step under the chosen animation trigger. Leaving Slide-local titles, body lines, list items, cards, or decorative clusters as ungrouped top-level atoms is a contract violation.
+**Semantic-group rule**: direct Slide content uses semantic groups. Aim for **3–8 ordinary top-level content `<g id>` groups per slide**; on structured template pages, slot groups and atomic Master/Layout objects are excluded. Each ordinary group becomes one entrance step under the chosen animation trigger. Leaving Slide-local titles, body lines, list items, cards, or decorative clusters as ungrouped top-level atoms is a contract violation.
 
 **Structural atoms and slots are excluded automatically.** `data-pptx-layer` and `data-pptx-placeholder` semantics are read first; otherwise explicit `data-pptx-role` values (`background`, `decoration`, `header`, `footer`, `chrome`, `watermark`, `page-number`, `logo`) mark Slide-local static framing (§4.1, [`semantic-svg.md`](semantic-svg.md)). A normal slot group has exactly one direct compatible carrier; several drawing atoms require the explicit composite `object` proxy fallback. Native chart/table carrier groups retain their specialized §7 contract.
 
@@ -1341,11 +1340,11 @@ defaults to `bottom` and accepts `top`, `left`, or `right`.
 
 **Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
 
-### Structured Layout Routing
+### PPTX Structure Routing
 
-Every new SVG project has one deterministic route: `pptx_structure.mode: structured`. `spec_lock.md` contains a complete Master roster and one page-to-Master/Layout row before the first page is drawn. Free design defaults to one Master. `standard` / `fidelity` templates use their newly authored contract; mirror templates use the restored source identities and parentage expressed through the same explicit interface.
+Every new SVG project declares one deterministic route. Free-design and brand-only projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export uses PowerPoint's default Master and Blank Layout and keeps all represented content Slide-local. Deck/layout template projects use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use restored source identities and parentage.
 
-**Hard rule — no structure inference**: Export does not assign Layout families, promote repeated chrome, cluster pages, infer placeholders, or repair missing metadata. It compiles only the declared root identities, atomic fixed layers, and slot groups. Legacy or unmapped projects must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) first.
+**Hard rule — no structure inference**: Flat export performs no promotion or deduplication; every object stays Slide-local. Structured template export compiles only declared root identities, atomic fixed layers, and slot groups—it does not assign Layout families, cluster pages, infer placeholders, or repair missing metadata. Legacy structured/template projects must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) first.
 
 **Layout reuse**: Reuse one Layout key only when its ordered fixed Layout atoms and slot ids/types/effective indices/default bounds/binding modes are identical. Different wording, data, imagery, crop, or Slide-local carrier geometry does not create a new Layout. A genuinely different reusable contract gets a new key even when both pages are semantically `content`.
 
@@ -1355,7 +1354,7 @@ Every new SVG project has one deterministic route: `pptx_structure.mode: structu
 
 ### Explicit PPTX Master / Layout / Placeholder Metadata
 
-**Trigger**: Every newly generated SVG page uses this interface. `spec_lock.md` declares `pptx_structure.mode: structured`, a complete `pptx_masters` roster, and one `pptx_layouts` row per page before authoring begins. Template routes additionally keep `page_layouts` as input-prototype provenance.
+**Trigger**: This explicit metadata interface applies only to deck/layout template projects and structure-restoration workflows. `spec_lock.md` declares `pptx_structure.mode: structured`, a complete `pptx_masters` roster, one `pptx_layouts` row per page, and `page_layouts` as input-prototype provenance. Flat free-design/brand-only SVGs use none of these metadata fields.
 
 **Project lock**: A Master row is `<master_key>: <PowerPoint picker name>`. A page row is `P<NN>: <master_key> | <layout_key> | <PowerPoint layout name>`. The SVG root values MUST match those rows. A Layout key belongs to exactly one Master and must be globally unique. Reuse one key only when pages share identical ordered Layout atoms and slot ids/types/effective indices/default bounds/binding modes. Every structured route requires numeric `spec_lock.md` typography `title` / `body` rows.
 
@@ -1400,7 +1399,7 @@ prototype size remain unchanged.
 | `data-pptx-placeholder-binding="proxy"` | composite `object` slot `<g>` only | Keeps the visible group ordinary and creates one hidden transparent binding proxy |
 | `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
 
-**Hard rule — explicit only**: Structured export never promotes visually similar content by inference. Every SVG requires the four root Master/Layout identity attributes. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the current contract.
+**Hard rule — explicit only**: On a structured deck/layout template route, every SVG requires the four root Master/Layout identity attributes. Every Master/Layout atom and slot requires a unique stable `id` and is a direct root child. Layouts with zero slots are valid. `data-pptx-layout-kind`, `distilled`, and `utility` are legacy metadata and fail the structured contract. Flat free-design/brand-only pages omit the entire interface.
 
 **Layer order**: Author the SVG in PowerPoint paint order: Master background,
 Layout background, optional Slide background, remaining Master atoms, remaining Layout atoms,
@@ -1480,7 +1479,7 @@ video or audio media from a decorative SVG group.
 
 ### Legacy Structure Migration Boundary
 
-Existing projects or packages that carry `native_structure.json` / `source_template.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or no root Master identity must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before generation or export.
+Existing structured/template projects or packages that carry `native_structure.json` / `source_template.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or an incomplete root Master identity must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before generation or export. A project explicitly declaring `pptx_structure.mode: flat` is the current free-design/brand-only route and does not require restoration merely because it has no Master/Layout metadata.
 
 When original PPTX/native facts exist, migration preserves the reachable source Master roster, Layout parent relationships and picker names, placeholder type/index/bounds, and visible supported geometry while normalizing the package into the explicit contract. Source Master/Layout groups are recursively flattened into atomic SVG elements. The current structured roster cannot materialize a source Layout that no output page references, or a Master reachable only through such Layouts; stop and report those identities instead of silently dropping them or inventing a carrier page. A subsequent `create-template` run treats the result according to its selected mode: `standard` / `fidelity` author a new topology, while mirror keeps the restored source topology only when the source graph satisfies that reachability boundary. When no native facts exist, the main Agent explicitly derives a structured contract from the complete SVG pages; the exporter never performs that derivation.
 

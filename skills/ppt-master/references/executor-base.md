@@ -4,7 +4,7 @@
 
 **Hard rule — complete page SVG**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content.
 
-**Hard rule — structure from the first page draft**: Every new page reads its locked Master/Layout row and declares `data-pptx-master`, `data-pptx-master-name`, `data-pptx-layout`, and `data-pptx-layout-name` on the root. Do not add `data-pptx-layout-kind` or duplicate identity with `data-pptx-page-role`. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by layer, placeholder, or native-object metadata; the marked element uses a stable unique `id`. See [`semantic-svg.md`](./semantic-svg.md).
+**Hard rule — route-specific PowerPoint structure**: Free-design and brand-only projects use `pptx_structure.mode: flat`: write no root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder`; every visible object remains Slide-local under PowerPoint's default Master and Blank Layout. Deck/layout template projects use `mode: structured`: every page reads its locked Master/Layout row and declares the four root identity attributes from the first draft. Do not add `data-pptx-layout-kind` or duplicate identity with `data-pptx-page-role`. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by specialized metadata; the marked element uses a stable unique `id`. See [`semantic-svg.md`](./semantic-svg.md).
 
 **Hard rule — supported PPTX route**: The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter. Step 7.2 still generates `svg_final/` as a mandatory self-contained visual preview that may be inserted as an SVG picture. Do not treat PowerPoint's manual Convert-to-Shape operation as an authoring target or compatibility requirement.
 
@@ -42,7 +42,7 @@ Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative
 1. **Mirror-mode template** (template's `design_spec.md` frontmatter has `replication_mode: mirror`) → see §1.1 below. The page is consumed as a **visual reference**, not as a placeholder shell.
 2. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → inherit the structure of `templates/<basename>.svg` (already in context from §1.0).
 3. `template_adherence` is present but this page has no `page_layouts` entry → stop; the template contract is incomplete. Adaptive mode must still select a reference SVG.
-4. No deck/layout template at all → free design using the complete `pptx_masters` / `pptx_layouts` contract already planned in `spec_lock.md`.
+4. No deck/layout template at all → flat free design: use the visual composition planned in §IX, but write no native Master/Layout mapping or SVG structure metadata.
 
 > Note: `page_layouts` disambiguates the multiple content variants a template may ship; missing mappings are contract errors.
 
@@ -92,9 +92,9 @@ Before generating each page, output which template is used:
 
 ### 1.2 PowerPoint Master / Layout Mapping
 
-`page_layouts` selects an input SVG prototype only on deck/layout template routes. `pptx_masters` and `pptx_layouts` always declare the output PowerPoint structure before the first page is drawn.
+This section applies only to deck/layout template routes. `page_layouts` selects the input SVG prototype, and `pptx_masters` / `pptx_layouts` declare the structured output before the first page is drawn. Free-design and brand-only routes use `pptx_structure.mode: flat`, omit all three sections, skip the rest of §1.2, and keep every SVG object Slide-local.
 
-**Hard rule — current mode only**: `pptx_structure.mode` is `structured`. Missing mode or legacy values (`baseline`, `template`, `preserve`, `flat`), `layout_strategy`, Layout-kind fields, partial mappings, and old direct placeholders must stop generation and route to [`restore-pptx-structure`](../workflows/restore-pptx-structure.md).
+**Hard rule — template mode only**: A deck/layout template project uses `pptx_structure.mode: structured`. Missing mode or legacy values (`baseline`, `template`, `preserve`), `layout_strategy`, Layout-kind fields, partial mappings, and old direct placeholders must stop generation and route to [`restore-pptx-structure`](../workflows/restore-pptx-structure.md). `flat` is valid only when no deck/layout template is active.
 
 **Hard rule — root identity**: A row `P<NN>: <master_key> | <layout_key> | <layout name>` binds the page to a Master listed in `pptx_masters`. Put that Master key/name and Layout key/name on the root SVG. A Layout key belongs to exactly one Master and remains globally unique.
 
@@ -193,16 +193,17 @@ Before drawing each page, look up its entry in `page_layouts` to decide which ba
 
 Do **not** invent a prototype entry, and do **not** assume a template just because `templates/` exists. For either template-adherence value, a missing or invalid `page_layouts` row is an upstream contract error. Free design is a separate deck route, never a per-page fallback.
 
-**Per-page PowerPoint layout lookup — `pptx_layouts` section**:
+**Per-page PowerPoint layout lookup — structured deck/layout templates only**:
 
-- `pptx_structure.mode` must equal `structured`; any other or missing value routes to legacy restoration.
+- When `pptx_structure.mode` is `flat`, skip this lookup and the structured scaffold below. `pptx_masters`, `pptx_layouts`, `page_layouts`, and the corresponding SVG metadata must all be absent.
+- When a deck/layout template is active, `pptx_structure.mode` must equal `structured`; any other or missing value routes to legacy restoration.
 - Read the current page row as `<master_key> | <layout_key> | <layout name>` and resolve `master_key` in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
 - Write matching root Master/Layout key and picker names. Do not write `data-pptx-layout-kind` or `data-pptx-page-role`.
 - On strict template use, the row and SVG contract match the selected prototype exactly.
 - On adaptive template use, retain the prototype Master. If the final composition changes fixed Layout atoms or slot topology/bounds, allocate a new key/name and update this row before completing the page.
 - A Layout key may repeat across non-adjacent pages only when its fixed atoms and slot contracts are identical.
 
-**Structured-page scaffold**:
+**Structured template-page scaffold**:
 
 ```xml
 <svg viewBox="…"
@@ -230,7 +231,7 @@ Do **not** invent a prototype entry, and do **not** assume a template just becau
 </svg>
 ```
 
-Master/Layout atoms and slot groups are direct root children and precede ordinary content groups. Structural metadata nested inside an ordinary content group fails export.
+On structured template pages, Master/Layout atoms and slot groups are direct root children and precede ordinary content groups. Structural metadata nested inside an ordinary content group fails export. Flat pages use ordinary top-level semantic groups only.
 
 **Per-page chart reference — `page_charts` section**:
 
@@ -245,7 +246,7 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 ## 3. Execution Guidelines
 
 - **Proximity**: group related elements with tight spacing; separate unrelated groups
-- **Element grouping (Mandatory)**: wrap every logical Slide-local content unit — title, core-message line, each content block, card, list item, and diagram — in a top-level `<g id="...">` with a descriptive id. Slot `<g>` elements are already semantic groups and are excluded from the 3–8 ordinary content-group budget. Direct Master/Layout atoms are the required exception to grouping and may never be wrapped in a layer `<g>`. Authored native preset fragments (`preset_shape_svg.py`) already are one atomic `<g id>` each and count as one ordinary content group; keep their labels in a sibling parent `<g>`.
+- **Element grouping (Mandatory)**: wrap every logical Slide-local content unit — title, core-message line, each content block, card, list item, and diagram — in a top-level `<g id="...">` with a descriptive id. Flat free-design/brand-only pages use ordinary semantic groups for every logical unit. On structured template pages, slot `<g>` elements are already semantic groups and direct Master/Layout atoms are the required exception to grouping. Authored native preset fragments (`preset_shape_svg.py`) already are one atomic `<g id>` each and count as one ordinary content group; keep their labels in a sibling parent `<g>`.
 - **Spec adherence**: follow color, layout, canvas format, and typography in the spec
 - **Template structure**: if templates exist, inherit the visual framework
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
@@ -254,7 +255,7 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 - **Reference — image-led promotional pages (not a constraint)**: for travel, venue, product-introduction, hospitality, event, real-estate, and brochure-style decks, let images define the page skeleton before placing text. Consult [`image-layout-patterns.md`](image-layout-patterns.md) §Imported Deck Patterns and prefer patterns such as `#74` TOC image-navigation cards, `#75` asymmetric chapter banners, `#77` photo mosaic with a text cell, `#78` ambient banner + evidence photo + text panel, `#79` ribbon-header image cards, and `#80` side hero image + staggered evidence cards before falling back to plain left/right image-text splits.
 - **Phased batch generation** (recommended):
   1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per §3.1 below on every chart page — coordinate calibration is a post-generation step (see [`workflows/verify-charts.md`](../workflows/verify-charts.md)) that depends on these markers — and **native object metadata** per §3.2 on every eligible data-chart page. **First-page gate (Mandatory)**: after completing the first page, run `python3 scripts/svg_quality_checker.py <project_path>/svg_output/<first_page>.svg` and fix every error before drawing page 2 — structural violations are systematic, and a first-page error repeated deck-wide costs a whole-deck rewrite.
-  2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. **PPTX-structure warnings (empty Layout, framing-only Layout, bare Master, duplicate layout keys) are never acknowledge-and-release**: list each one and either fix the page/lock or state per warning why the flagged state is intended (e.g. a zero-slot cover) before proceeding. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
+  2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. On a structured deck/layout template route, PPTX-structure warnings (empty Layout, framing-only Layout, bare Master, duplicate layout keys) are never acknowledge-and-release: list each one and either fix the page/lock or state per warning why the flagged state is intended (e.g. a zero-slot cover) before proceeding. Flat free-design/brand-only routes have no Master/Layout checkpoint. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
 ### 3.0 Native Preset Shape Selection

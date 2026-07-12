@@ -6,7 +6,7 @@ description: Restore legacy SVG projects to the explicit structured Master/Layou
 
 Restore an existing SVG-authored project or template before quality checking or release export when its Master/Layout contract is absent or legacy.
 
-**Trigger**: Run when `svg_quality_checker.py` or `svg_to_pptx.py` reports a missing or legacy `pptx_structure.mode`, or when the user explicitly asks to migrate an older SVG project.
+**Trigger**: Run when a structured/template project reports a missing or legacy `pptx_structure.mode`, or when the user explicitly asks to migrate an older structured SVG project. Do not run for a current free-design/brand-only project that explicitly declares `pptx_structure.mode: flat`; missing Master/Layout identity is intentional on that route.
 
 **Hard rule — structure, not packaging**: Directory shape is not PowerPoint structure evidence. A current template workspace uses `templates/design_spec.md`; a compatible legacy-flat package uses `design_spec.md` at its root. Do not run this workflow merely to move a flat package into the current workspace shape.
 

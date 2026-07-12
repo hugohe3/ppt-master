@@ -78,6 +78,7 @@ _LEGACY_PPTX_STRUCTURE_MODES = frozenset({
     'preserve',
     'template',
 })
+_RELEASE_PPTX_STRUCTURE_MODES = frozenset({'flat', 'structured'})
 
 
 def _declared_pptx_structure_mode(project_path: Path) -> str | None:
@@ -98,14 +99,15 @@ def _print_structure_migration_error(mode: str | None) -> None:
     """Explain how a legacy or absent SVG structure contract is restored."""
     label = repr(mode) if mode else 'missing (legacy implicit baseline)'
     print(
-        "Error: release SVG export requires spec_lock.md "
-        "pptx_structure.mode: structured; found " + label + ".",
+        "Error: release SVG export requires an explicit spec_lock.md "
+        "pptx_structure.mode: flat (free design / brand-only) or structured "
+        "(deck/layout template); found " + label + ".",
         file=sys.stderr,
     )
     print(
-        "  Restore explicit Master/Layout metadata first by following "
-        "skills/ppt-master/workflows/restore-pptx-structure.md, then rerun "
-        "the quality gate and export.",
+        "  New free-design and brand-only projects use mode: flat. Restore "
+        "legacy template/structured metadata by following skills/ppt-master/"
+        "workflows/restore-pptx-structure.md before export.",
         file=sys.stderr,
     )
 
@@ -320,12 +322,12 @@ Recorded narration:
         ],
         default=None,
         help=(
-            'PPTX structure strategy for native export. Release export requires '
-            'spec_lock.md pptx_structure.mode: structured and complete explicit '
-            'Master/Layout metadata in every SVG. flat is an explicit diagnostic '
-            'override that leaves all generated objects slide-local. baseline, '
-            'template, preserve, and generated are accepted only so legacy '
-            'invocations can receive a targeted migration error.'
+            'PPTX structure strategy for native export. Omitting this flag reads '
+            'spec_lock.md: flat is the free-design/brand-only release mode and '
+            'uses the default PowerPoint Master plus Blank Layout with all SVG '
+            'objects slide-local; structured is the deck/layout-template mode and '
+            'requires complete explicit metadata. baseline, template, preserve, '
+            'and generated are accepted only to report a migration error.'
         ),
     )
     parser.add_argument('--no-image-optimize', action='store_true',
@@ -419,24 +421,27 @@ Recorded narration:
         _print_structure_migration_error(pptx_structure)
         return 1
     if pptx_structure is None:
-        if declared_structure_mode != 'structured':
+        if declared_structure_mode not in _RELEASE_PPTX_STRUCTURE_MODES:
             _print_structure_migration_error(declared_structure_mode)
             return 1
-        pptx_structure = 'structured'
+        pptx_structure = declared_structure_mode
     elif pptx_structure == 'structured' and declared_structure_mode != 'structured':
         _print_structure_migration_error(declared_structure_mode)
         return 1
 
-    if pptx_structure == 'structured':
+    if (
+        pptx_structure in _RELEASE_PPTX_STRUCTURE_MODES
+        and declared_structure_mode == pptx_structure
+    ):
         try:
             structure_lock = load_pptx_structure_lock(project_path)
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
-        if structure_lock is None or structure_lock.mode != 'structured':
+        if structure_lock is None or structure_lock.mode != pptx_structure:
             print(
                 "Error: spec_lock.md must contain one complete "
-                "pptx_structure.mode: structured contract",
+                f"pptx_structure.mode: {pptx_structure} contract",
                 file=sys.stderr,
             )
             return 1

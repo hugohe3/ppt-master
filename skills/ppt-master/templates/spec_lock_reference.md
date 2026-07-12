@@ -125,27 +125,28 @@
 > **Missing or empty section** → Executor falls back to `dense` for every page (legacy pre-rhythm behavior). Remove the section only for legacy decks; new decks MUST fill it.
 
 ## pptx_structure
-- mode: structured
+- mode: flat
 
-> One deck-wide native PowerPoint structure policy. New projects always use `structured`; Master/Layout structure exists before the first SVG is drawn.
+> One deck-wide native PowerPoint structure policy. Free-design and brand-only routes use `flat`; deck/layout template routes use `structured`.
 >
-> When Step 3 loaded a deck/layout template, add exactly one of:
-> ```
-> - template_adherence: adaptive
-> - template_adherence: strict
-> ```
-> Omit the row for free design and brand-only templates. Both values require one `page_layouts` row per page. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before they can be selected.
+> `flat` keeps every SVG object Slide-local and exports through the default PowerPoint Master plus Blank Layout. In this mode, omit the complete `pptx_masters`, `pptx_layouts`, and `page_layouts` sections, and do not add root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder*` metadata to generated pages.
 >
-> Template example:
+> When Step 3 loaded a deck/layout template, replace the `flat` row above with exactly one of:
 > ```
 > - mode: structured
 > - template_adherence: adaptive
 > ```
+> or:
+> ```
+> - mode: structured
+> - template_adherence: strict
+> ```
+> Both values require complete `page_layouts`, `pptx_masters`, and `pptx_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before they can be selected.
 
 ## pptx_masters
 - master-default: Default Master
 
-> One row per Master: `<master_key>: <PowerPoint picker name>`. Free design defaults to one Master. Add another only when the design genuinely needs it or the source PPTX carries multiple Masters. Keys are deck-unique and stable.
+> Deck/layout template routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
 
 ## pptx_layouts
 - P01: master-default | cover-hero-split | Cover — Hero Split
@@ -153,7 +154,7 @@
 - P03: master-default | content-two-column | Two Column
 - P04: master-default | content-two-column | Two Column
 
-> Include exactly one row per page before SVG generation. Value format: `<master_key> | <layout_key> | <PowerPoint layout name>`.
+> Deck/layout template routes only. Include exactly one row per page before SVG generation. Value format: `<master_key> | <layout_key> | <PowerPoint layout name>`. Omit this entire section when `pptx_structure.mode: flat`.
 >
 > The page SVG repeats all three identities on its root through `data-pptx-master`, `data-pptx-master-name`, `data-pptx-layout`, and `data-pptx-layout-name`. A Layout key belongs to exactly one Master and must be globally unique even when two source Masters use the same picker name.
 >
@@ -172,11 +173,11 @@
 
 > For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the input prototype mapping; `pptx_layouts` is the output mapping and is present at the same time. Strict preserves the prototype Master/Layout/slot contract. Adaptive retains its Master contract and may explicitly assign a new Layout key while authoring. Non-mirror skin follows the project lock.
 >
-> **No entry for a page** is valid only when the entire route is free design or brand-only. It is an error in template mode.
+> **No entry for a page** is an error in structured template mode.
 >
 > **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and finalize a new explicit Layout after design; strict mode must choose an existing compatible Layout or revise the outline.
 >
-> **Whole section omitted** → free design or brand-only route. Template strict/adaptive routes require complete `page_layouts`. A legacy package that cannot satisfy the current structured contract must migrate before use; it never enters a compatibility branch inside normal generation.
+> **Whole section omitted** → required for free-design and brand-only `flat` routes. Template strict/adaptive routes require complete `page_layouts`. A legacy package that cannot satisfy the current structured contract must migrate before use; it never enters a compatibility branch inside normal generation.
 >
 > **Strategist source**: record each project-page choice in project `design_spec.md §IX Content Outline`, using the copied template package's `templates/design_spec.md §V Page Roster` descriptions as the roster authority. Basenames must match files in `templates/` exactly. A typo is a blocking contract error: stop before drawing and report it; never fall back to free design inside template mode.
 

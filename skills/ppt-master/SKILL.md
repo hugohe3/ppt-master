@@ -38,7 +38,7 @@ description: >
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
 > 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
 > 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
-> 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also look up the complete `pptx_masters` / `pptx_layouts` structure, `pptx_structure.template_adherence` when present, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), `page_layouts` (the input template SVG), and `page_charts`. Master/Layout structure exists before drawing; export never infers it later. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
+> 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also read `pptx_structure.mode`, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), and `page_charts`. Only a deck/layout template route (`mode: structured`) looks up `page_layouts` (the input template SVG), `pptx_masters`, `pptx_layouts`, and `template_adherence`; free-design and brand-only routes use `mode: flat` and omit those sections. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
 > 9. **SVG MUST BE HAND-WRITTEN, NOT SCRIPT-GENERATED** — Every SVG page is written by the main agent directly, one page at a time (see rules 6 and 7). Writing or running a Python / Node / shell script that produces the SVG files in batch — looping over pages, templating from data, or emitting them via a generator — is FORBIDDEN, including under "save tokens", "quick draft", or "user is in a hurry" pretexts. The script-generation path was tried on a feature branch and abandoned: cross-page visual consistency depends on per-page authoring with full upstream context, which a generator script cannot reproduce. **Narrow exception**: `preset_shape_svg.py` may print one deterministic stock-shape fragment to stdout after the main agent has selected its semantic role, frame, and paint. It cannot write `svg_output/`, choose layout, batch shapes, or generate a page; the main agent reads the fragment and inserts it through the normal hand-authored page edit
 > 10. **FOLLOW DETERMINISTIC ROUTING RULES** — Do not add blocking routing questions when this skill defines a route. If the user request violates a route precondition, state the required prerequisite and stop that route instead of asking the user to choose around the rule. Ordinary finite options, stylistic preferences, and recoverable details are surfaced with a recommended value plus alternatives at the next existing confirmation gate.
 
@@ -307,7 +307,7 @@ A project-scoped workspace has the same portable routing as a library workspace.
 
 Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy or consume those semantic contracts through Step 3. Run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) on the package first, then return with the migrated workspace path. Old flat packaging remains readable when its SVG structure is already current.
 
-The Strategist confirmation stage decides whether the selected template is used `strict` or `adaptive`. New projects use `pptx_structure.mode: structured`, map every page to one input SVG in `page_layouts`, and write complete `pptx_masters` / `pptx_layouts` output mappings before SVG generation. Strict preserves the template's declared Master/Layout/slot contract. Adaptive keeps the template Master and may assign a new Layout key during authoring when the composition genuinely changes. Non-mirror paint and typography follow the project skin rules.
+The Strategist confirmation stage decides whether the selected deck/layout template is used `strict` or `adaptive`. Those template projects use `pptx_structure.mode: structured`, map every page to one input SVG in `page_layouts`, and write complete `pptx_masters` / `pptx_layouts` output mappings before SVG generation. Brand-only projects remain on the free-design `mode: flat` route. Strict preserves the template's declared Master/Layout/slot contract. Adaptive keeps the template Master and may assign a new Layout key during authoring when the composition genuinely changes. Non-mirror paint and typography follow the project skin rules.
 
 #### Multi-path fusion
 
@@ -625,7 +625,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
-**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus the complete `pptx_masters` / `pptx_layouts` structure and the per-page `page_rhythm` / `page_layouts` / `page_charts` lookups. Resists context-compression drift on long decks. See executor-base.md §2.1.
+**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus `pptx_structure.mode` and the per-page `page_rhythm` / `page_charts` lookups. Read `page_layouts` / `pptx_masters` / `pptx_layouts` only on a structured deck/layout template route; they are absent in flat free-design and brand-only projects. Resists context-compression drift on long decks. See executor-base.md §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
@@ -636,7 +636,7 @@ Each completed SVG MUST be a standalone, complete representation of that slide's
 
 Template pages MUST start from the complete `page_layouts` SVG, keep all inherited visible objects in `svg_output/`, and preserve the locked root Master/Layout identity plus stable atomic Master/Layout and slot ids. Strict keeps the prototype structure unchanged. Adaptive keeps its Master contract and, when Layout atoms or slot topology/bounds genuinely evolve, assigns a new key/name and updates `spec_lock.md` immediately. Non-mirror fill/stroke/effects/font sizes still follow `spec_lock`.
 
-Free-design and brand-only pages are also structured from the first draft. Use the planned Master roster and page Layout mapping, author Master/Layout fixed visuals only as direct root atoms (never `<g>`), and author reusable content zones as top-level slot groups with positive bounds plus exactly one compatible carrier. Every mapped page MUST mark the standard slots it actually has — `title` / `subtitle` / `body` / `picture` / `slide-number` / `footer` — and its `data-pptx-layer` marks: the deck-wide background and every-page chrome as `master`, this layout key's static framing (including chrome repeated on content pages but absent from the cover) as `layout`, per [`executor-base.md`](references/executor-base.md) §1.2. Repeated chrome stays on its appropriate Master/Layout layer; a per-page heading that should not remain Slide-local is authored as a `title` or `subtitle` slot, never as a fixed Layout atom. Any text or image whose value varies across pages sharing one Layout key MUST be carried by a slot or remain Slide-local. A page shipping only a marked background exports a bare Master and an empty Layout. A Layout may intentionally have zero slots — a stated decision for a fixed composition, never a silent default. Do not add `data-pptx-layout-kind`, `distilled`, `utility`, or a full-page fake slot.
+Free-design and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export uses PowerPoint's default Master and Blank Layout; it does not promote or deduplicate page content.
 
 Do not duplicate specialized identity with `data-pptx-role`. Add it only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
 
@@ -652,7 +652,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
-- **PPTX-structure warnings are the exception — never acknowledge-and-release.** For each empty-Layout / framing-only-Layout / bare-Master / duplicate-layout-key warning, output one disposition line: either the fix applied (merge keys in `spec_lock.md pptx_layouts` + SVG roots, mark the missing slots/layers) or why the flagged state is intended (e.g. "P01 cover is a fixed composition, zero-slot by design"). "0 errors" alone does not pass this gate.
+- **Structured template routes only — PPTX-structure warnings are the exception.** For each empty-Layout / framing-only-Layout / bare-Master / duplicate-layout-key warning, output one disposition line: either the fix applied (merge keys in `spec_lock.md pptx_layouts` + SVG roots, mark the missing slots/layers) or why the flagged state is intended (e.g. "P01 cover is a fixed composition, zero-slot by design"). Flat free-design and brand-only routes have no Master/Layout checkpoint. "0 errors" alone does not pass a structured template gate when such warnings remain undispositioned.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
@@ -664,7 +664,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - [x] First-page gate run after page 1 (errors fixed before page 2)
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
-- [x] PPTX-structure warnings dispositioned one by one (each fixed or stated as intended)
+- [x] Structured-template PPTX warnings dispositioned one by one when applicable
 - [x] Speaker notes generated at notes/total.md
 ```
 
@@ -742,10 +742,16 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > pages remain ordinary SVG pictures unless the user independently accepts the
 > results of an unsupported Office conversion.
 
-> **PPTX structure mode** — release export requires
-> `spec_lock.md` `pptx_structure.mode: structured`, a complete
-> `pptx_masters` roster, and exactly one `pptx_layouts` row per page in
-> `<master_key> | <layout_key> | <PowerPoint layout name>` form. Every SVG
+> **PPTX structure mode** — release export reads the explicit route from
+> `spec_lock.md`. Free-design and brand-only projects use
+> `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` /
+> `page_layouts`, and author no Master/Layout/layer/placeholder metadata in
+> SVG. Export keeps every represented object Slide-local under PowerPoint's
+> default Master and Blank Layout.
+>
+> Deck/layout template projects use `pptx_structure.mode: structured`, a
+> complete `pptx_masters` roster, and exactly one `pptx_layouts` row per page
+> in `<master_key> | <layout_key> | <PowerPoint layout name>` form. Every SVG
 > root repeats the Master/Layout keys and picker names. Master/Layout fixed
 > visuals are direct root atoms; a `<g data-pptx-layer="master|layout">` is
 > forbidden. Reusable slots are direct root `<g id>` elements with positive
@@ -753,15 +759,17 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > uses only the explicit `object` + `proxy` fallback, and a Layout may
 > intentionally have zero slots.
 >
-> Export creates the declared Masters and Layouts, promotes the represented
+> Structured template export creates the declared Masters and Layouts,
+> promotes the represented
 > atoms, binds slot carriers, installs the locked theme/text defaults, and
 > reopens the candidate package to verify Presentation → Master → Layout →
 > Slide registration, picker names, static-object rosters, placeholder
 > type/index/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
 > It never selects pages, clusters visuals, promotes repeated chrome by
-> heuristic, or invents missing structure. Legacy `baseline`, `template`,
+> heuristic, or invents missing structure. Legacy structured/template projects
+> using `baseline`, `template`,
 > `preserve`, `layout_strategy`, `data-pptx-layout-kind`,
-> `distilled`/`utility`, direct atomic placeholders, or missing Master
+> `distilled`/`utility`, direct atomic placeholders, or incomplete Master
 > identity must run
 > [`restore-pptx-structure`](workflows/restore-pptx-structure.md) before
 > export.

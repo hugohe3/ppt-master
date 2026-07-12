@@ -66,8 +66,8 @@ Convert project SVGs into PPTX.
 ```bash
 python3 scripts/svg_to_pptx.py <project_path>
 python3 scripts/svg_to_pptx.py <project_path> --native-objects
-python3 scripts/svg_to_pptx.py <project_path> --pptx-structure structured  # current release structure
-python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # structure diagnostic
+python3 scripts/svg_to_pptx.py <project_path> --pptx-structure structured  # deck/layout template override
+python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # free-design/brand-only override
 # Template-import visual round-trip diagnostic only:
 python3 scripts/svg_to_pptx.py <template_import_output> -s svg-flat
 # Post-processed-source comparison diagnostic only (never a release export):
@@ -101,16 +101,16 @@ Behavior:
   inputs and package-level processing.
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.
 - Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
-- Omitting `--pptx-structure` reads `spec_lock.md`; release export requires `mode: structured`. The lock must include a complete `pptx_masters` roster and one `pptx_layouts` row per page. `flat` is diagnostic-only.
-- Every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct atomic children; layer `<g>` elements are invalid.
-- Each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid.
+- Omitting `--pptx-structure` reads `spec_lock.md`. Free-design and brand-only releases declare `mode: flat`, omit Master/Layout mappings and SVG structure metadata, and use PowerPoint's default Master plus Blank Layout. Deck/layout template releases declare `mode: structured` with a complete `pptx_masters` roster and one `pptx_layouts` row per page.
+- On structured template routes, every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct atomic children; layer `<g>` elements are invalid.
+- On structured template routes, each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid. Flat pages keep all SVG objects Slide-local.
 - Structured export maps locked typography/colors into PowerPoint Master/Layout/theme defaults, creates one reusable Layout per declared key, and reopens the package to verify the full Presentation → Master → Layout → Slide graph, fixed-object order, placeholder identities/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
 - Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive retains its Master and may use a new Layout identity only when fixed Layout atoms or slot topology/bounds change.
-- Legacy `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, and missing Master identity are rejected with a pointer to [`restore-pptx-structure`](../../workflows/restore-pptx-structure.md). Export never migrates or infers them.
+- Legacy structured/template contracts using `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, or incomplete Master identity are rejected with a pointer to [`restore-pptx-structure`](../../workflows/restore-pptx-structure.md). Explicit flat free-design/brand-only projects intentionally omit Master identity.
 - Native output uses content-hash media filenames, so identical images are reused and different images cannot overwrite each other by sharing a basename.
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.
 - Native export writes to a temporary file first and publishes the requested PPTX only after conversion succeeds. A failed conversion does not replace the main output file.
-- Before publishing structured-baseline or template-mode native output, export reopens the temporary PPTX and validates the Slide → Layout → Master graph and registrations, Layout identity, placeholder identity, reusable bounds, and prompt/level-one sizes. A mismatch aborts publication; legacy baseline, preserve, and flat skip this gate.
+- Before publishing structured template output, export reopens the temporary PPTX and validates the Slide → Layout → Master graph and registrations, Layout identity, placeholder identity, reusable bounds, and prompt/level-one sizes. A mismatch aborts publication. Flat release output intentionally skips this structured graph gate.
 - SVG clip paths are still restricted for authored SVGs, but nested crop wrappers generated by PPTX import are mapped back to native picture crop / geometry when possible.
 - Speaker notes are embedded automatically unless `--no-notes` is used
 - Recorded narration is opt-in:
