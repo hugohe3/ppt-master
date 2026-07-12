@@ -7,6 +7,7 @@ Warm hand-drawn sketchnote — soft paper field, black ink doodle line work, gen
 ## 1. Shape & decoration
 
 - Shape language: rounded shapes drawn with a slight wobble; pastel block fills that slightly overshoot their outlines (hand-painted feel); simple cartoon icons. Draw that wobble as a `<path>` with non-aligned points — a `<rect rx>` is not wobble.
+- Composition geometry: a wavy-arrow journey path structuring the whole page; a radial mind-map around a central doodle; a hand-drawn banner ribbon carrying the title; numbered circles hopping along a dotted route; one cloud frame around the idea that matters.
 - Decoration: small doodles — stars, sparkles, dots, underlines — sprinkled sparingly for warmth; wavy hand-drawn arrows connecting ideas with short inline labels.
 - Whitespace: airy and well-organized; generous gaps between elements keep it friendly, never dense.
 

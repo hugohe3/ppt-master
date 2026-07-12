@@ -7,6 +7,7 @@
 ## 1. Shape & decoration
 
 - Shape language: everything aligns to a visible pixel grid — blocky shapes, stepped edges, sharp transitions, no smooth curves; optional 1-pixel darker outlines for definition.
+- Composition geometry: a stepped pixel staircase as the divider; an oversized sprite anchoring the page; a HUD frame with corner brackets zoning content; a tile ground-band along the bottom edge; a pixel progress bar as the sequence device.
 - Decoration: classic game framing — HUD bars, tile floors, sprite icons, chunky pixel borders. References NES / SNES / arcade composition.
 - Whitespace: grid-disciplined; let blocks sit on clean tiled ground rather than crowd.
 

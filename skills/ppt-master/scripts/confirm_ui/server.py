@@ -270,6 +270,11 @@ def _wait_for_result(
             except OSError:
                 pass
 
+        skip_error = _stage_skip_error(result_file.parent)
+        if skip_error:
+            logger.error('%s', skip_error)
+            return 2
+
         returncode = proc.poll()
         if returncode is not None:
             logger.error('confirm UI exited before a fresh result was written')
@@ -346,6 +351,44 @@ def _result_stage_number(stage: Optional[str]) -> int:
     return 0
 
 
+def _stage_skip(rec_stage_number: int, result_stage: Optional[str]) -> bool:
+    """Detect a staged recommendation running ahead of the confirmed progression.
+
+    Stages confirm strictly in order (stage1 → stage2 → stage3): a
+    recommendation may only run one stage past the last confirmed result, so
+    e.g. a ``stage3`` file while only stage 1 is confirmed is a skip — the
+    page must not render it (an active template never exempts stage 2).
+    Legacy single-pass recommendations (no ``stage``) are not staged and are
+    exempt, as is any state after the final confirmation.
+    """
+    if rec_stage_number <= 1 or result_stage == 'final':
+        return False
+    return rec_stage_number > _result_stage_number(result_stage) + 1
+
+
+def _stage_skip_error(confirm_dir: Path) -> Optional[str]:
+    """Return a directive error when recommendations.json skips a stage."""
+    try:
+        rec_data = _read_json_object(confirm_dir / RECOMMENDATIONS_NAME)
+    except (OSError, json.JSONDecodeError, ValueError):
+        return None
+    rec_stage_number = _recommendation_stage(rec_data)
+    result_stage = _result_stage(confirm_dir / RESULT_NAME)
+    if not _stage_skip(rec_stage_number, result_stage):
+        return None
+    expected = _stage_name(_result_stage_number(result_stage) + 1)
+    reattach = (
+        '--daemon --wait' if expected == 'stage1'
+        else '--wait-only --wait-stage stage2'
+    )
+    return (
+        f'stage skip detected: recommendations.json is {_stage_name(rec_stage_number)} but the last '
+        f'confirmed result is {result_stage or "absent"} — the page will not render a skipped stage. '
+        f'Stages confirm in order and an active template does not exempt stage2 (SKILL.md Step 4). '
+        f'Overwrite recommendations.json with the {expected} recommendations, then re-run with {reattach}.'
+    )
+
+
 def _file_version(path: Path) -> Optional[float]:
     """Return a cheap file version for polling state, or None when absent."""
     try:
@@ -389,7 +432,10 @@ def _build_session_state(
 
     result_stage = _result_stage(result_file)
     result_stage_number = _result_stage_number(result_stage)
+    stage_skip = _stage_skip(rec_stage_number, result_stage)
 
+    # A skipped stage is never presented: the page keeps its "deriving…" state
+    # (waiting_agent) until the AI rewrites recommendations.json in order.
     if result_stage == 'final':
         expected_stage_number = None
         status = 'done'
@@ -400,17 +446,20 @@ def _build_session_state(
         current_stage = _stage_name(rec_stage_number) if rec_stage_number >= 3 else 'stage2'
     elif result_stage == 'stage1':
         expected_stage_number = 2
-        status = 'ready_user' if rec_stage_number >= 2 else 'waiting_agent'
-        current_stage = _stage_name(rec_stage_number) if rec_stage_number >= 2 else 'stage1'
+        ready = rec_stage_number >= 2 and not stage_skip
+        status = 'ready_user' if ready else 'waiting_agent'
+        current_stage = _stage_name(rec_stage_number) if ready else 'stage1'
     else:
-        expected_stage_number = rec_stage_number or 1
-        status = 'ready_user' if rec_stage_number else 'waiting_agent'
-        current_stage = rec_stage or 'stage1'
+        expected_stage_number = 1 if stage_skip else (rec_stage_number or 1)
+        ready = bool(rec_stage_number) and not stage_skip
+        status = 'ready_user' if ready else 'waiting_agent'
+        current_stage = rec_stage if ready else 'stage1'
 
     return {
         'session_id': previous.get('session_id') or uuid.uuid4().hex,
         'status': status,
         'current_stage': current_stage,
+        'stage_skip': stage_skip,
         'expected_stage': _stage_name(expected_stage_number),
         'expected_stage_number': expected_stage_number,
         'recommendation_stage': rec_stage,
@@ -540,6 +589,11 @@ def _wait_only_for_result(
         if _result_stage(result_file) == target_stage:
             logger.info('confirmation stage=%s received: %s', target_stage, result_file)
             return 0
+
+        skip_error = _stage_skip_error(result_file.parent)
+        if skip_error:
+            logger.error('%s', skip_error)
+            return 2
 
         lock = _read_lock(lock_file)
         pid = _lock_pid(lock)

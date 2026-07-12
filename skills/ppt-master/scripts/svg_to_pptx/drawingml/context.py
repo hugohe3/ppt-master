@@ -33,6 +33,12 @@ class ConvertContext:
 
     defs: dict[str, ET.Element] = field(default_factory=dict)
     id_counter: int = 2  # 1 is reserved for spTree root
+    # Imported PPTX shape ids are reserved before conversion so newly authored
+    # SVG elements cannot steal an id referenced by a native connector.
+    reserved_shape_ids: frozenset[int] = frozenset()
+    source_shape_id_map: dict[tuple[str, str], int] = field(default_factory=dict)
+    claimed_shape_ids: set[int] = field(default_factory=set)
+    referenced_shape_ids: set[int] = field(default_factory=set)
     slide_num: int = 1
     translate_x: float = 0.0
     translate_y: float = 0.0
@@ -88,8 +94,48 @@ class ConvertContext:
     def next_id(self) -> int:
         """Allocate the next shape ID."""
         cid = self.id_counter
-        self.id_counter += 1
+        while cid in self.reserved_shape_ids or cid in self.claimed_shape_ids:
+            cid += 1
+        self.id_counter = cid + 1
+        self.claimed_shape_ids.add(cid)
         return cid
+
+    def claim_shape_id(
+        self,
+        source_id: str | None,
+        source_scope: str | None = None,
+    ) -> int:
+        """Claim a pre-reserved imported shape id, or allocate a fresh one."""
+        if source_id is None:
+            return self.next_id()
+        scope = source_scope or 'slide'
+        key = (scope, source_id)
+        shape_id = self.source_shape_id_map.get(key)
+        if shape_id is None:
+            raise ValueError(
+                f'Unreserved data-pptx-shape-id {source_id!r} in scope {scope!r}'
+            )
+        if shape_id in self.claimed_shape_ids:
+            raise ValueError(
+                f'Duplicate data-pptx-shape-id {source_id!r} in scope {scope!r}'
+            )
+        self.claimed_shape_ids.add(shape_id)
+        return shape_id
+
+    def reference_shape_id(
+        self,
+        source_id: str,
+        source_scope: str | None = None,
+    ) -> int:
+        """Resolve and record a connector target in the imported id space."""
+        scope = source_scope or 'slide'
+        shape_id = self.source_shape_id_map.get((scope, source_id))
+        if shape_id is None:
+            raise ValueError(
+                f'Unknown connector shape reference {source_id!r} in scope {scope!r}'
+            )
+        self.referenced_shape_ids.add(shape_id)
+        return shape_id
 
     def next_rel_id(self) -> str:
         """Allocate the next relationship ID (rIdN)."""
@@ -155,6 +201,10 @@ class ConvertContext:
         return ConvertContext(
             defs=self.defs,
             id_counter=self.id_counter,
+            reserved_shape_ids=self.reserved_shape_ids,
+            source_shape_id_map=self.source_shape_id_map,
+            claimed_shape_ids=self.claimed_shape_ids,
+            referenced_shape_ids=self.referenced_shape_ids,
             slide_num=self.slide_num,
             translate_x=self.translate_x + dx,
             translate_y=self.translate_y + dy,

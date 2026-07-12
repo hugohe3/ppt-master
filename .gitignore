@@ -190,3 +190,7 @@ projects/*
 !projects/README.md
 
 dist/
+# Derived template review exports (local review only; never template input)
+skills/ppt-master/templates/brands/*/exports/
+skills/ppt-master/templates/decks/*/exports/
+skills/ppt-master/templates/layouts/*/exports/

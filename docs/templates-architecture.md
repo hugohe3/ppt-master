@@ -8,50 +8,68 @@
 
 ## 1. The three kinds
 
-| Kind | Library-scope dir | What it writes | What it does NOT write | Originating workflow |
+| Kind | Library workspace root | What it writes | What it does NOT write | Originating workflow |
 |---|---|---|---|---|
 | **Brand** | `templates/brands/<id>/` | Identity segment only: color / typography / logo / voice / icon style | No canvas, page structure, SVG roster | `workflows/create-brand.md` |
 | **Layout** | `templates/layouts/<id>/` | Structure segment only: canvas / page structure / page types / SVG roster | No brand identity (no logo, no locked brand color) | `workflows/create-template.md` (layout branch) |
 | **Deck** | `templates/decks/<id>/` | All segments: identity + structure + middle (template overview) | — | `workflows/create-template.md` (deck branch, default) |
 
-Every Layout/Deck SVG is a complete preview with explicit `data-pptx-layout`, Master/Layout layers, and semantic placeholders. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express, and ordinary content is not duplicated into a metadata taxonomy. PPTX-import artifacts are analysis inputs only and are not packaged into new templates. The template guides authoring of a complete generated page SVG; export never reaches back into the template to overlay visible content missing from that generated SVG. Strict use keeps the selected Layout contract; adaptive use may create a new Layout under the same Master. Both export through `pptx_structure.mode: template`; legacy `preserve` remains compatibility-only.
+Every newly created or restored Layout/Deck SVG is a complete preview with root Master/Layout key and picker names, direct atomic Master/Layout elements, and top-level semantic slot groups. A normal slot has positive design-zone bounds and exactly one compatible carrier; composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid. These specialized markers are authoritative; minimal `data-pptx-role` hints are added only for structural page-frame behavior they cannot express. `standard` / `fidelity` author new SVGs and new structure without preserving or distilling source topology. Mirror restores the source roster, identities, parentage, placeholder facts, and supported visuals without semantic synthesis; fixed-layer source groups are mechanically expanded into direct atoms. Strict keeps the selected declared Layout contract; adaptive retains the Master and may create a new Layout identity while authoring. Both export through `pptx_structure.mode: structured`. Packages with legacy Master/Layout semantics first run `restore-pptx-structure`; a legacy flat directory with `design_spec.md` at its root remains a supported compatibility shape and flat placement alone does not trigger restoration.
 
 The three are **parallel reference bundles**. In library scope, the physical directory and the frontmatter `kind` field correspond one-to-one:
 
 ```yaml
-# templates/brands/anthropic/design_spec.md
+# templates/brands/anthropic/templates/design_spec.md
 ---
 kind: brand
 ...
 ---
 
-# templates/layouts/academic_defense/design_spec.md
+# templates/layouts/academic_defense/templates/design_spec.md
 ---
 kind: layout
-native_structure_mode: template
+native_structure_mode: structured
 ...
 ---
 
-# templates/decks/招商银行/design_spec.md
+# templates/decks/china_merchants_bank/templates/design_spec.md
 ---
 kind: deck
-native_structure_mode: template
+native_structure_mode: structured
 ...
 ---
 ```
 
 ### Output scope is separate from kind
 
-`create-template` confirms where a layout/deck contract is owned. This execution choice does not add a fourth kind and does not add a PPTX structure mode:
+`create-template` confirms where a Layout/Deck workspace is placed. This execution choice does not add a fourth kind and does not add a PPTX structure mode:
 
-| Scope | Final location | Asset routing | Discovery |
+| Scope | Workspace root | Core workspace | Discovery |
 |---|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Self-contained package, including package-local bitmaps and `icons/` | Register in the matching global index |
-| `project` | Direct `<target_project>/templates/` root, never `<target_project>/templates/<id>/` | Spec/SVG/non-bitmap package assets in `templates/`; bitmaps in `images/` with `../images/<name>` references; extracted icons copied to both `templates/icons/` and runtime `icons/` | No global index or library README update |
+| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Required `templates/`; optional `images/`, `icons/`, and on-demand `exports/` | Register in the matching global index |
+| `project` | `projects/<name>/` | The same routing contract | No global index update |
 
-Project scope retains `kind: layout` or `kind: deck` in portable frontmatter. `output_scope` and `target_project` stay in the workflow brief and are not persisted into `design_spec.md`.
+Both roots have the same core shape:
 
-Before any project-scoped final write, validate the initialized target, require an empty `templates/` root, and check all planned image/icon destination filenames for conflicts. Fail before writing anything; never merge or overwrite.
+```text
+<template_workspace>/
+├── templates/
+│   ├── design_spec.md
+│   ├── *.svg
+│   └── icons/                  # package/validation copy when used
+├── images/                     # optional; SVG href uses ../images/<name>
+├── icons/                      # optional; runtime vector assets
+└── exports/                    # optional; created only for on-demand review
+    └── <id>_template_preview.pptx
+```
+
+Empty optional directories are omitted; do not add placeholder files. An on-demand preview PPTX is derived review evidence, not a source template asset. Step 3 reads the workspace root and consumes `templates/` plus any existing `images/` and `icons/`; it ignores `exports/`. Library `exports/` directories are Git-ignored.
+
+PPTX import uses a two-level metadata model. The temporary lossless SVG keeps native-shape metadata, hidden carriers, and preview evidence; `svg_authoring_view.py` creates a lightweight model-facing projection without opaque payload or duplicate hidden carriers. The projection is never an export source. Authored modes use compact canonical metadata. Mirror may reuse converter-supported metadata on unchanged Slide-local/slot objects; fixed structural layers remain direct atoms, and unsupported or edited objects keep their SVG fallback. Export compiles only the declared SVG structure and never infers ownership.
+
+Both scopes retain `kind: layout` or `kind: deck` in portable frontmatter. `output_scope` and `target_project` stay in the workflow brief and are not persisted into `design_spec.md`.
+
+Before any final write, resolve the selected workspace root, require an empty `templates/` root, and check all planned image and icon destination filenames for conflicts. Check a preview-PPTX destination only when review export was requested. Project scope additionally requires an initialized target project. Fail before writing anything; never merge or overwrite.
 
 ### Segment partition
 
@@ -65,9 +83,9 @@ To make multi-path fusion override cleanly, every field belongs to a named segme
 
 ### Why Deck is its own kind
 
-A deck is the **full replica** of an existing PPT — the SVG geometry was drawn for that color palette and those typefaces, and identity + structure have been combat-tested together in the source deck. Its value is "validated cohesion", which a free layout + brand combo can't always reach.
+A deck is the **full identity + structure reference** derived from an existing PPT or confirmed design direction — its geometry, color palette, and typefaces form one coherent system. Its value is "validated cohesion", which a free layout + brand combo can't always reach.
 
-But a deck is **not "an immutable replica"** — it's "a replica that serves as the default base, overridable by explicitly-supplied brand / layout". This gives users maximum freedom: by default you get a complete solution; when needed, swap identity or structure explicitly.
+Its construction depends on replication mode. `standard` / `fidelity` author a new system from visual reference; mirror restores source identities and parentage one-to-one. Once packaged, either form is a complete reference solution that can be overridden by an explicitly supplied brand or layout.
 
 ---
 
@@ -109,7 +127,7 @@ primary_color: "<HEX>"
 ---
 layout_id: <slug>
 kind: layout
-native_structure_mode: template
+native_structure_mode: structured
 summary: <one-line use cases>
 canvas_format: <ppt169 | ppt43 | a4 | ...>
 page_count: <N>
@@ -137,7 +155,7 @@ page_types: [<cover, toc, chapter, content, ending, ...>]
 ---
 deck_id: <slug>
 kind: deck
-native_structure_mode: template
+native_structure_mode: structured
 summary: <one-line use cases>
 canvas_format: <ppt169 | ...>
 page_count: <N>
@@ -168,7 +186,7 @@ primary_color: "<HEX>"
 
 Each index maps one-to-one with its physical directory; fields are trimmed to what Strategist actually needs to pick (following the "meta + summary" pattern from `charts_index.json`, but preserving structured metadata that helps selection).
 
-These indexes cover library scope only. Project-scoped template output is intentionally absent from all three indexes and remains usable through its explicit `<project>/templates/` path.
+These indexes cover library scope only. A project-root workspace is intentionally absent from all three indexes and remains usable through its explicit `projects/<name>/` path. Because both scopes use the same workspace shape, moving or copying the complete core workspace between them does not require asset-path rewriting; only library registration changes.
 
 ### `templates/brands/brands_index.json`
 
@@ -269,7 +287,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 
 ```markdown
 > **Fused from:**
-> - deck: `templates/decks/招商银行/` (base)
+> - deck: `templates/decks/china_merchants_bank/` (base)
 > - brand: `templates/brands/anthropic/` (identity override)
 > - layout: `templates/layouts/academic_defense/` (structure override)
 > - conflicts resolved: Color Scheme from anthropic (user picked a)
@@ -281,17 +299,17 @@ This lets both AI and humans trace which segment came from where.
 
 ## 5. Relationship with SKILL.md Step 3
 
-**Trigger rule stays path-based** — an explicit directory path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. The only narrow handoff exception is a project-scoped `create-template` run in the current conversation: after validation, it may pass its exact `<project>/templates/` output directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
+**Trigger rule stays path-based** — an explicit workspace-root path is still required (see [[feedback-template-explicit-path-only]]), and bare names never trigger. Step 3 first resolves `<workspace>/templates/design_spec.md`; for compatibility, it also accepts a legacy flat root containing `<workspace>/design_spec.md`. Flat placement is only a directory-shape compatibility case. It does not trigger `restore-pptx-structure`; restoration is required only when the SVG contract has legacy semantics such as `native_structure_mode: template`, missing Master identity, direct atomic placeholders, or distillation-era markers. The only narrow handoff exception is a `create-template` run in the current conversation: after validation, it may pass its exact workspace root directly into Step 3. The `kind` field decides **how AI handles the path after triggering**:
 
 | User path's `kind` | Step 3 action (per-kind branch) |
 |---|---|
-| `kind: brand` | Spec/non-bitmap assets → `<project>/templates/`; logo/illustration/icon bitmaps → `<project>/images/` |
-| `kind: layout` | Spec/SVG roster → `<project>/templates/`; bitmaps → `<project>/images/` |
-| `kind: deck` | Spec/template SVGs/non-bitmap assets → `<project>/templates/`; logo/background/other bitmaps → `<project>/images/` |
-| Multi-path | Fuse one `design_spec.md` per the table above; merge SVG/non-bitmap assets into `templates/` and bitmaps into `images/` |
+| `kind: brand` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
+| `kind: layout` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
+| `kind: deck` | Map workspace `templates/` plus existing `images/` and `icons/` to the matching project peers; ignore `exports/` |
+| Multi-path | Fuse one `design_spec.md` per the table above, then merge the existing portable roots after resolving collisions |
 | Same-kind multiple | Run the "git-style conflict resolution" prompt above to determine the merge |
 
-Bitmaps share the project's runtime `images/` pool and template SVGs reference them through `../images/`. If the explicit input path is already that same project's `<project>/templates/` root (the `create-template` project-scope output), Step 3 consumes the bundle in place: do not copy it onto itself and do not move its images again. That in-place directory is one complete bundle and cannot participate in multi-path fusion. It is private to its owning project because its image/icon pools are siblings of `templates/`; cross-project reuse requires a self-contained library-scope package.
+Bitmaps share the workspace `images/` pool and template SVGs reference them through `../images/`. If the explicit input root is already the target project's root, Step 3 consumes the workspace in place: do not copy it onto itself and do not move its assets again. Otherwise, the complete core workspace is portable: it may be copied from a project root to a library root, from the library to a project, or reused from another workspace without changing its internal structure. Registration is the only scope-specific step.
 
 ### Strategist confirmation stage narrowing per kind
 
@@ -303,10 +321,10 @@ When a deck path is supplied, the user already has a complete solution; the Stra
 
 | Workflow | Produces |
 |---|---|
-| `workflows/create-brand.md` | brand directory (identity-only), reverse-engineered from brand assets |
-| `workflows/create-template.md` | layout or deck contract. Output scope is `library` by default (`templates/<kind>/<id>/` + registration) or `project` when confirmed (direct `<project>/templates/`, project asset routing, no registration). The internal kind branch still defaults to deck; explicit "structure only / drop the brand color" selects layout |
+| `workflows/create-brand.md` | identity-only brand workspace using the common routes; empty optional directories are omitted |
+| `workflows/create-template.md` | complete layout or deck workspace. `standard` / `fidelity` author new semantic SVGs; mirror restores the source contract. Output scope is `library` by default (`templates/<kind>/<id>/` + registration) or `project` when confirmed (`projects/<name>/`, no registration). Both use the same optional-directory routing; preview PPTX is on demand. The internal kind branch still defaults to deck; explicit "structure only / drop the brand color" selects layout |
 
-In library scope, the frontmatter `kind` field determines whether the file lands under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics while writing layout/deck output directly to the project's template root.
+In library scope, the frontmatter `kind` field determines which workspace parent is used under `templates/brands/` / `templates/layouts/` / `templates/decks/`. Project scope keeps the same kind semantics at the project workspace root. A complete workspace may migrate between scopes without reshaping; add or remove only the library index registration.
 
 ---
 
@@ -315,4 +333,4 @@ In library scope, the frontmatter `kind` field determines whether the file lands
 - **No field-level override syntax in the fusion layer** — field-level adjustment uses the existing Strategist confirmation stage path
 - **No batch conflict resolution for three or more of the same kind** — ask the user to narrow it down in chat first
 - **No bilingual name mapping table** — templates are named in their brand / scenario's native language (Chinese templates use Chinese names; English templates use snake_case); no forced unification
-- **No new structure mode or output CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes still declare `native_structure_mode: template`
+- **No output-scope structure fork or CLI flag** — output scope is a `create-template` brief decision; both layout/deck scopes declare `native_structure_mode: structured`

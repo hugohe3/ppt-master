@@ -1,6 +1,6 @@
 # Deck Templates
 
-**Deck = full-PPT replica.** Each deck reverse-engineers a specific organization's branded presentation and bundles its **identity + structure + middle** segments into one atomic asset. Use a deck when you want the complete look of a particular institution (color, typography, logo, page structure, voice) preserved as a whole.
+**Deck = full identity + structure reference.** Each deck reverse-engineers a specific organization's branded presentation and bundles its **identity + structure + middle** segments into one atomic asset. Use a deck when you want the complete look of a particular institution (color, typography, logo, page structure, voice) preserved as a coherent authored system.
 
 Single source of truth for what decks exist: [`decks_index.json`](./decks_index.json) (`deck_id → { summary, canvas_format, page_count, primary_color }`). This README explains the kind; it does **not** enumerate decks.
 
@@ -10,7 +10,7 @@ Full data model: [`docs/zh/templates-architecture.md`](../../../../docs/zh/templ
 
 ## Trigger rule
 
-Deck selection is **opt-in by explicit path**. The main workflow defaults to free design. A deck is only used when the user gives an explicit directory path in their initial message (e.g. `skills/ppt-master/templates/decks/招商银行/`). Bare names do not trigger. See [`SKILL.md`](../../SKILL.md) Step 3.
+Deck selection is **opt-in by explicit path**. The main workflow defaults to free design. For a current package, the user supplies the explicit workspace root (for example, `skills/ppt-master/templates/decks/<deck_id>/`), not its inner `templates/` directory. A legacy-flat deck root containing `design_spec.md` remains a compatible input. Bare names do not trigger. See [`SKILL.md`](../../SKILL.md) Step 3.
 
 `decks_index.json` is a **discovery aid**, not a trigger — it lets the AI answer "what decks exist?" by listing ids and paths. Listing alone never advances the pipeline.
 
@@ -54,12 +54,44 @@ When the user gives a deck path **with** a brand path or layout path, identity /
 
 ---
 
+## Standard workspace contract
+
+New deck creation uses the same portable workspace routing in both output scopes:
+
+```text
+<template_workspace>/
+├── templates/
+│   ├── design_spec.md
+│   ├── 01_cover.svg
+│   ├── 02_chapter.svg
+│   ├── 03_content.svg
+│   └── 04_ending.svg
+├── images/                         # Optional; omit when unused
+├── icons/                          # Optional; omit when unused
+└── exports/                        # Optional, on-demand review output; Git-ignored
+    └── <deck_id>_template_preview.pptx
+```
+
+| Scope | `<template_workspace>` | Difference |
+|---|---|---|
+| Library | `skills/ppt-master/templates/decks/<deck_id>/` | Register in `decks_index.json` |
+| Project | `projects/<project_name>/` | Do not register globally |
+
+Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`. Omit empty optional directories instead of adding placeholder files. Generate a preview PPTX only when local PowerPoint review is requested; it is derived output, library `exports/` is Git-ignored, and template application never copies it.
+
+`standard` and `fidelity` author new SVG documents and a new Master/Layout/slot contract. `mirror` restores the source roster, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`; this normalization must preserve ownership, paint order, and appearance.
+
+**Legacy compatibility**: Existing flat packages with `design_spec.md` and SVGs at their root remain readable. Flat placement alone does not trigger [`restore-pptx-structure`](../../workflows/restore-pptx-structure.md); restoration is required only when SVG Master/Layout/slot metadata is absent or legacy. New `create-template` outputs always use the workspace contract above.
+
+---
+
 ## Creating a new deck
 
 1. Run [`workflows/create-template.md`](../../workflows/create-template.md) (default kind is `deck`)
-2. Resulting directory lands under `templates/decks/<id>/`
-3. Validate: `uvx ppt-master svg-quality-check templates/decks/<id> --template-mode --format ppt169`
-4. Register: `uvx ppt-master register-template <id> --kind deck`
+2. Choose the workspace root: library `skills/ppt-master/templates/decks/<id>/` or project `projects/<name>/`
+3. Validate: `uvx ppt-master svg-quality-check "<template_workspace>/templates" --template-mode --format ppt169`
+4. Optional — when PowerPoint review is requested, export the review deck: `uvx ppt-master template-preview-pptx "<template_workspace>"`
+5. For library scope only, register: `uvx ppt-master register-template <id> --kind deck`
 
 The register step updates [`decks_index.json`](./decks_index.json) — the single source of truth for deck discovery.
 

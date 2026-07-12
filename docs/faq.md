@@ -1,6 +1,6 @@
 # FAQ
 
-[English](./faq.md) | [中文](./zh/faq.md)
+[English](./faq.md) | [Chinese](./zh/faq.md)
 
 ---
 
@@ -91,7 +91,7 @@ uvx ppt-master svg-to-pptx <project_path> --no-merge
 
 With `--no-merge`, every visual line becomes its own PowerPoint text frame. This preserves the SVG's exact line layout pixel-for-pixel, which matters for covers, charts, tables, and any page with tight typographic alignment.
 
-**Trade-off**: default paragraph merging lets PowerPoint wrap merged paragraphs to a different line count than the SVG source. Best for long-form body text (abstracts, multi-paragraph sections, reference lists); use `--no-merge` for layout-tight pages. The detection is conservative — mixed-layout `<text>` falls through to the per-line path automatically.
+**Trade-off**: default merging keeps one editable frame and preserves authored line boundaries. Use `--no-merge` only when every visual line must also remain an independently movable text box. The detection is conservative — mixed-layout `<text>` falls through to the per-line path automatically.
 
 When you're chatting with the AI, you can also just ask for strict line fidelity on layout-sensitive pages — the AI will add `--no-merge` when re-exporting.
 
@@ -193,7 +193,7 @@ If generation feels slow, check your model's token throughput. The bottleneck is
 
 Default recommendation: **continuous one-shot generation**. 10–15 page decks fit comfortably in a 200K window, and cross-page visual consistency is best when the Executor can see prior pages in the same session (it actively aligns style, font sizes, and rhythm).
 
-Only when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `继续生成 projects/<project_name>` (or "resume execution projects/<project_name>") to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
+Only when signals are heavy (≥ 18 pages, thick source material, or `topic-research` ran with substantial web-fetch accumulation) does the AI surface an optional **split mode** hint at the Strategist phase: the planning session (Strategist confirmation stage + image acquisition) ends in the current chat; you open a fresh chat window and type `resume execution projects/<project_name>` to enter the execution session (SVG generation + export). The new session reloads `design_spec` / `spec_lock` / `sources` / `images` from disk and continues from there.
 
 Split mode is a **compromise** — it pays ~6K tokens (re-reading SKILL.md) to drop 60–200K of planning-session noise, then reuses the freed budget in the execution session to re-read `sources/` for richer slide content. **Not needed when signals are normal**; the hint won't appear, and you can always ignore it and stay in continuous mode.
 
@@ -240,7 +240,9 @@ Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
 **Step 1 — Prepare Reference Material**
 
-The recommended input is the original `.pptx`. PPT Master extracts theme identity, every Master/Layout, placeholder metadata, and reusable assets, then rebuilds one clean Master plus semantic Layouts as complete, explicitly annotated SVG pages. When that template is used, `adaptive` may create a new explicit Layout under the same Master; `strict` keeps the selected Layout contract unchanged. Both routes reconstruct native structure from the SVGs.
+The recommended input is the original `.pptx`. PPT Master extracts theme identity, declared Master/Layout topology, placeholder metadata, native-shape evidence, and reusable assets. `standard` and `fidelity` use the source as visual reference and author a new SVG roster plus a new Master/Layout/slot system; they neither preserve nor distill source topology. `mirror` instead restores source slide order, Master/Layout identities and parentage, placeholder facts, and supported visuals without semantic synthesis. Fixed Master/Layout group wrappers are mechanically expanded into direct atoms because structural layers cannot be `<g>`.
+
+Large imported SVGs may contain native-shape metadata, hidden carriers, and preview fingerprints. That lossless representation stays in the temporary analysis workspace, while the model reads a lightweight inspection projection. The projection is never an export source. `standard` / `fidelity` use compact canonical metadata. Mirror materializes from the lossless source, reuses only metadata already supported by the converter on unchanged Slide-local/slot objects, and keeps an SVG fallback for unsupported or edited objects.
 
 If no source PPTX exists, screenshots of the key page types still work — cover, TOC, chapter, content, and closing — but geometry, fonts, and inheritance must then be inferred visually.
 
@@ -252,13 +254,13 @@ Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Ma
 - Desired tone and color palette (e.g., "modern and restrained, dark blue primary")
 - Category preference (`brand` / `general` / `scenario` / `government` / `special`)
 - Canvas format, if not the default 16:9
-- Output scope: indexed `library` (default) or one already initialized `project`
+- Output scope: indexed `library` (default) or one already initialized `project`; both use the same workspace routing and omit empty optional asset directories
 
 You don't need to supply every detail upfront — the AI agent will ask follow-up questions to fill in anything missing (output scope, template ID, theme mode, etc.).
 
 **Step 3 — Wait for the Result**
 
-The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, and validating the template. Library scope registers it so it appears in global discovery. Project scope writes the thin bundle directly into that project's `templates/` root and deliberately skips global registration.
+The AI agent will handle the rest — analyzing your references, building the layout definitions, and validating the template. If you request PowerPoint review, it also generates `exports/<id>_template_preview.pptx` on demand. Both scopes require `templates/` and use optional `images/`, `icons/`, and `exports/`: library scope writes `skills/ppt-master/templates/<kind>/<id>/` and registers it; project scope writes `projects/<name>/` and skips registration. Empty optional directories are omitted. Give that workspace root to Step 3; it never copies `exports/`, and library review exports are Git-ignored. Older flat packages with `design_spec.md` at the root remain compatible, and flat placement alone is not a reason to run structure restoration.
 
 > **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
 

@@ -125,17 +125,17 @@ def _font_size_hpt(raw: str, field: str) -> int:
 
 
 def load_master_text_style_spec(project_path: Path) -> MasterTextStyleSpec:
-    """Load required title/body defaults for template slide-master txStyles."""
+    """Load required title/body defaults for explicit Layout master txStyles."""
     lock_path = project_path / "spec_lock.md"
     if not lock_path.is_file():
         raise ThemeFontError(
-            "template mode requires spec_lock.md typography title and body rows"
+            "explicit Layout export requires spec_lock.md typography title and body rows"
         )
     rows = _typography_rows(lock_path)
     missing = [field for field in ("title", "body") if field not in rows]
     if missing:
         raise ThemeFontError(
-            "template mode requires spec_lock.md typography rows: "
+            "explicit Layout export requires spec_lock.md typography rows: "
             + ", ".join(missing)
         )
     return MasterTextStyleSpec(

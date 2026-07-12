@@ -14,7 +14,7 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 
 - Topic-only requests run [`topic-research`](skills/ppt-master/workflows/topic-research.md) before SKILL.md Step 1.
 - Raw PPTX template plus new material/topic routes to [`template-fill-pptx`](skills/ppt-master/workflows/template-fill-pptx.md), not the SVG pipeline.
-- Raw PPTX cannot be consumed as a Step 3 SVG template; run [`create-template`](skills/ppt-master/workflows/create-template.md) first and return with the generated template directory path.
+- Raw PPTX cannot be consumed as a Step 3 SVG template; run [`create-template`](skills/ppt-master/workflows/create-template.md) first and return with the generated template workspace root.
 - PPTX beautify is strictly 1:1 page count/order and verbatim wording via [`beautify-pptx`](skills/ppt-master/workflows/beautify-pptx.md); any split/merge/drop/reorder routes to the main pipeline.
 - Finished PPTX native enhancement uses [`native-enhance-pptx`](skills/ppt-master/workflows/native-enhance-pptx.md) and must not enter SVG regeneration.
 - [`visual-review`](skills/ppt-master/workflows/visual-review.md), [`customize-animations`](skills/ppt-master/workflows/customize-animations.md), and [`generate-audio`](skills/ppt-master/workflows/generate-audio.md) are explicit-request workflows.
@@ -69,8 +69,10 @@ uvx ppt-master image-gen --render-md <project_path>/images/image_prompts.json
 uvx ppt-master image-gen "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 # Spot illustrations — slice one AI grid sheet into individual elements (see image-generator.md §4.3):
 uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names a,b,c --trim --alpha
-uvx ppt-master svg-editor <project_path> --live --daemon
+uvx ppt-master confirm-ui <project_path> --live --daemon
 uvx ppt-master svg-quality-check <project_path>
+# create-template review deck (workspace root may be global or project-scoped)
+uvx ppt-master template-preview-pptx <template_workspace>
 uvx ppt-master animation-config scaffold <project_path>  # optional, only for custom object-level animation
 uvx ppt-master animation-config validate <project_path>  # optional, before re-export
 

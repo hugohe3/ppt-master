@@ -39,6 +39,7 @@ AUDIO_CONTENT_TYPES = {
 NARRATION_EXTENSIONS = tuple(AUDIO_CONTENT_TYPES.keys())
 
 AUDIO_MARKER_SIZE_EMU = 457200  # 48 SVG px
+AUDIO_MARKER_OFF_CANVAS_EMU = -AUDIO_MARKER_SIZE_EMU
 AUDIO_MARKER_PNG_BYTES = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABsUlEQVR4nO2aQZaDIAyG"
     "cd4cQRdzgHqxeiy9mB5gFvUO7Qon0gAhJEDf+G/a92rJ9ycEqNaYS3XVSQ94uz+esWu"
@@ -207,7 +208,14 @@ def _create_audio_pic_element(
 
     shape_properties = ET.SubElement(pic, _qn(PML_NS, "spPr"))
     transform = ET.SubElement(shape_properties, _qn(DRAWINGML_NS, "xfrm"))
-    ET.SubElement(transform, _qn(DRAWINGML_NS, "off"), {"x": "0", "y": "0"})
+    ET.SubElement(
+        transform,
+        _qn(DRAWINGML_NS, "off"),
+        {
+            "x": str(AUDIO_MARKER_OFF_CANVAS_EMU),
+            "y": str(AUDIO_MARKER_OFF_CANVAS_EMU),
+        },
+    )
     ET.SubElement(
         transform,
         _qn(DRAWINGML_NS, "ext"),
@@ -232,7 +240,7 @@ def create_audio_pic_xml(
     media_rid: str,
     poster_rid: str,
 ) -> str:
-    """Create a visible audio picture shape carrying narration media."""
+    """Create an off-canvas audio picture shape carrying narration media."""
     element = _create_audio_pic_element(
         shape_id,
         shape_name,

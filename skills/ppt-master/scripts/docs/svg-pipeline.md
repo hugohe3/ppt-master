@@ -6,6 +6,37 @@ These tools cover post-processing, SVG validation, speaker notes, recorded narra
 
 The supported delivery contract has one PPTX path: `svg_output/` → the project SVG-to-DrawingML converter → native PPTX. The mandatory `finalize_svg.py` step separately creates self-contained `svg_final/` visual previews, which may be opened directly or inserted into PowerPoint as SVG pictures. There is no SVG-image PPTX output, and PowerPoint's manual Convert-to-Shape operation is unsupported.
 
+## `svg_authoring_view.py`
+
+Create a lightweight inspection/authoring projection of one PPTX-imported SVG
+or a directory of imported SVGs:
+
+```bash
+uvx ppt-master svg-authoring-view <svg-file-or-directory> -o <output-dir>
+```
+
+The operation is non-destructive and refuses existing output files unless
+`--force` is explicit. It never writes back to the source SVG. The JSON report
+on stdout records original/projected byte counts and removals by category.
+
+The projected copy:
+
+- removes embedded `txbody` metadata;
+- removes hidden native geometry carriers while retaining and unwrapping their
+  visible preview geometry;
+- removes source-object identity/style/hash attributes that are only useful to
+  an exact import round trip;
+- keeps visible paths, text, images, stable ids, Master/Layout root markers,
+  and supported compact `data-pptx-object` / `data-pptx-prst` /
+  `data-pptx-frame` intent; and
+- rewrites relative local asset references for the projection's new location.
+
+The complete imported SVG remains the evidence source for mirror restoration.
+The exporter does not read the import workspace or the projection. The
+projection is deliberately not a template generator, not a replacement for
+the explicit Master/Layout restoration workflow, and not a supported release
+input to `svg_to_pptx.py`.
+
 ## Recommended Pipeline
 
 Run these steps in order:
@@ -35,9 +66,8 @@ Convert project SVGs into PPTX.
 ```bash
 uvx ppt-master svg-to-pptx <project_path>
 uvx ppt-master svg-to-pptx <project_path> --native-objects
-uvx ppt-master svg-to-pptx <project_path> --pptx-structure template  # explicit SVG template metadata
-uvx ppt-master svg-to-pptx <project_path> --pptx-structure preserve  # imported source package contract
-uvx ppt-master svg-to-pptx <project_path> --pptx-structure flat  # structure diagnostic
+uvx ppt-master svg-to-pptx <project_path> --pptx-structure structured  # deck/layout template override
+uvx ppt-master svg-to-pptx <project_path> --pptx-structure flat  # free-design/brand-only override
 # Template-import visual round-trip diagnostic only:
 uvx ppt-master svg-to-pptx <template_import_output> -s svg-flat
 # Post-processed-source comparison diagnostic only (never a release export):
@@ -58,7 +88,7 @@ Behavior:
 - `finalize_svg.py` always creates `svg_final/` before export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX.
 - Explicit `-o/--output` changes the native PPTX destination and skips `backup/`.
 - Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:
-  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it.
+  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height) collapse into one editable text frame. Equal effective font sizes may join as flowing prose; a font-size change, list marker, or accepted larger gap starts a new `<a:p>` with precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it without erasing those paragraph boundaries.
   - With `--no-merge`: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
   - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the default; pages with tight typographic alignment (covers, charts, tables) usually want `--no-merge`
   - Mergeable detection is conservative: only fires when the children form a clean paragraph block; mixed-layout `<text>` falls through to the default per-line path
@@ -71,16 +101,16 @@ Behavior:
   inputs and package-level processing.
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.
 - Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
-- Omitting `--pptx-structure` reads `spec_lock.md` and falls back to `baseline`. Baseline assigns Layout families from root `data-pptx-page-role`, keeps content Slide-local, and promotes only exact family-wide backgrounds plus exact leading structurally marked chrome; filenames and ids are compatibility fallbacks for marker-free legacy SVGs. It never infers placeholders or visual similarity. Template mode builds reusable PowerPoint structure only from explicit SVG metadata and validates every `pptx_layouts` row plus cross-slide equality. Both strict and adaptive template adherence use this mode; adaptive may introduce a new Layout key under the same Master.
-- Template/preserve placeholder semantics distinguish title, subtitle, body, picture, chart, table, generic object, media, date, footer, and slide number. Reconstructed titles are normally type-matched without an index; explicit imported title indices and all other source indices are retained. Imported `subTitle`, `obj`, `media`, and `dt` identities remain distinct through `manifest.json`, `native_structure.json`, Layout XML, and Slide XML.
-- Baseline/template native export reads `spec_lock.md` typography into the PowerPoint theme: `title_family` becomes the major font and `body_family` / `font_family` becomes the minor font. Matching SVG text emits `+mj-*` / `+mn-*` tokens, while unrelated emphasis/code/brand families stay concrete. Preserve mode keeps the imported source theme; flat mode keeps fixed-font diagnostic output.
-- Template mode also requires numeric `typography.title` and `typography.body` rows. It writes the title size to every Master `p:titleStyle` level and the body size to every `p:bodyStyle` / `p:otherStyle` level. Each generated Layout text placeholder also stores the prototype's first direct run size in `a:lstStyle/a:lvl1pPr/a:defRPr@sz` while retaining its prompt run size. Slide direct-run sizes remain unchanged. Missing title/body rows fail template export; baseline, preserve, and flat modes do not apply these updates.
-- Baseline/template native export also maps canonical `spec_lock.md` color roles into the PowerPoint color scheme and emits context-safe `schemeClr` tokens for exact matches in SVG fills/text/strokes, gradients/patterns/bullets, native tables, and native-chart accent series. Local colors, inverse white/black, and effects stay concrete. Preserve mode keeps the imported source color scheme; flat mode keeps fixed-color diagnostic output.
-- Preserve mode is legacy strict-only compatibility for existing projects that already carry `native_structure.json` + `source_template.pptx`. Current template creation does not emit the pair.
+- Omitting `--pptx-structure` reads `spec_lock.md`. Free-design and brand-only releases declare `mode: flat`, omit Master/Layout mappings and SVG structure metadata, and use PowerPoint's default Master plus Blank Layout. Deck/layout template releases declare `mode: structured` with a complete `pptx_masters` roster and one `pptx_layouts` row per page.
+- On structured template routes, every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct atomic children; layer `<g>` elements are invalid.
+- On structured template routes, each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid. Flat pages keep all SVG objects Slide-local.
+- Structured export maps locked typography/colors into PowerPoint Master/Layout/theme defaults, creates one reusable Layout per declared key, and reopens the package to verify the full Presentation → Master → Layout → Slide graph, fixed-object order, placeholder identities/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
+- Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive retains its Master and may use a new Layout identity only when fixed Layout atoms or slot topology/bounds change.
+- Legacy structured/template contracts using `baseline`, `template`, `preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled`/`utility`, direct atomic placeholders, or incomplete Master identity are rejected with a pointer to [`restore-pptx-structure`](../../workflows/restore-pptx-structure.md). Explicit flat free-design/brand-only projects intentionally omit Master identity.
 - Native output uses content-hash media filenames, so identical images are reused and different images cannot overwrite each other by sharing a basename.
 - `[Content_Types].xml` is generated from the actual media extensions written into the PPTX. Unknown media extensions fail unless Python's `mimetypes` can identify them.
 - Native export writes to a temporary file first and publishes the requested PPTX only after conversion succeeds. A failed conversion does not replace the main output file.
-- Before publishing template-mode native output, export reopens the temporary PPTX and validates the Slide → Layout → Master graph and registrations, Layout identity, placeholder identity, reusable bounds, and prompt/level-one sizes. A mismatch aborts publication; other structure modes skip this gate.
+- Before publishing structured template output, export reopens the temporary PPTX and validates the Slide → Layout → Master graph and registrations, Layout identity, placeholder identity, reusable bounds, and prompt/level-one sizes. A mismatch aborts publication. Flat release output intentionally skips this structured graph gate.
 - SVG clip paths are still restricted for authored SVGs, but nested crop wrappers generated by PPTX import are mapped back to native picture crop / geometry when possible.
 - Speaker notes are embedded automatically unless `--no-notes` is used
 - Recorded narration is opt-in:
@@ -95,7 +125,7 @@ Behavior:
   - Long-audio import and automatic long-audio splitting are not supported; keep narration assets page-level
   - Voice choices can be listed with `uvx ppt-master notes-to-audio --list-common-voices`, `uvx ppt-master notes-to-audio --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
 - Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
-- Per-element animation applies to top-level SVG `<g id="...">` groups in z-order; aim for 3–8 content groups per slide. Existing layer/slide-number placeholder semantics are read before minimal structural roles; exact id tokens remain a fallback only when all explicit markers are absent
+- Per-element animation applies to ordinary top-level SVG `<g id="...">` groups in z-order; aim for 3–8 Slide-local content groups per slide. Master/Layout atoms and slot groups are structural and excluded; exact id tokens remain a fallback only when explicit structural roles are absent
 - An explicit `animations.json` group entry may override the marker-free legacy chrome-name heuristic. It cannot override `data-pptx-layer` or an explicit static role/placeholder marker
 - Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
 - `on-click` is for live presentations only; recorded narration rejects it because the tool does not generate object-level click timings
@@ -146,12 +176,19 @@ uvx ppt-master svg-quality-check examples/project
 uvx ppt-master svg-quality-check examples/project --format ppt169
 uvx ppt-master svg-quality-check --all examples
 uvx ppt-master svg-quality-check examples/project --export
+uvx ppt-master svg-quality-check path/to/template/templates --template-mode
 ```
 
 Checks include:
 - `viewBox`
 - banned elements
 - line-break structure
+- explicit Master/Layout/slot structure for reusable templates
+- duplicate empty Layout contracts under different keys
+
+Template mode accepts compact canonical preset shapes marked with
+`data-pptx-authoring="preset"`. It validates the explicit structured SVG
+contract; it does not implement a separate source-payload opt-in marker.
 
 ## `svg_position_calculator.py`
 
