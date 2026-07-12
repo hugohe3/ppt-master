@@ -1981,13 +1981,10 @@ def _replace_shape_xfrm(
     sp_pr.insert(0, xfrm)
 
 
-def _set_layout_level_one_default_size(
+def _layout_level_one_paragraph_properties(
     list_style: ET.Element,
-    source_run_pr: ET.Element | None,
-) -> None:
-    """Persist the prototype run size as the Layout's level-one text default."""
-    if source_run_pr is None or source_run_pr.get("sz") is None:
-        return
+) -> ET.Element:
+    """Return the Layout list style's level-one paragraph properties."""
     level_tag = f"{{{DML_NS}}}lvl1pPr"
     level_props = list_style.find(level_tag)
     if level_props is None:
@@ -2005,6 +2002,17 @@ def _set_layout_level_one_default_size(
             len(list_style),
         )
         list_style.insert(insert_at, level_props)
+    return level_props
+
+
+def _set_layout_level_one_default_size(
+    list_style: ET.Element,
+    source_run_pr: ET.Element | None,
+) -> None:
+    """Persist the prototype run size as the Layout's level-one text default."""
+    if source_run_pr is None or source_run_pr.get("sz") is None:
+        return
+    level_props = _layout_level_one_paragraph_properties(list_style)
     default_props = level_props.find(f"{{{DML_NS}}}defRPr")
     if default_props is None:
         default_props = ET.Element(f"{{{DML_NS}}}defRPr")
@@ -2019,6 +2027,42 @@ def _set_layout_level_one_default_size(
         )
         level_props.insert(insert_at, default_props)
     default_props.set("sz", source_run_pr.get("sz", ""))
+
+
+def _set_no_bullet_paragraph_properties(
+    paragraph_props: ET.Element,
+    *,
+    replace_existing: bool = False,
+) -> None:
+    """Disable inherited bullets and hanging indent for a prose paragraph."""
+    if replace_existing:
+        for child in list(paragraph_props):
+            if child.tag in _PARAGRAPH_BULLET_CHOICE_TAGS:
+                paragraph_props.remove(child)
+
+    bullet_choice = next(
+        (
+            child
+            for child in paragraph_props
+            if child.tag in _PARAGRAPH_BULLET_CHOICE_TAGS
+        ),
+        None,
+    )
+    if bullet_choice is not None and bullet_choice.tag != f"{{{DML_NS}}}buNone":
+        return
+    if bullet_choice is None:
+        insert_at = next(
+            (
+                index
+                for index, child in enumerate(paragraph_props)
+                if child.tag in _PARAGRAPH_PROPERTIES_TRAILING_TAGS
+            ),
+            len(paragraph_props),
+        )
+        paragraph_props.insert(insert_at, ET.Element(f"{{{DML_NS}}}buNone"))
+
+    paragraph_props.set("marL", "0")
+    paragraph_props.set("indent", "0")
 
 
 def _placeholder_text_body(
@@ -2053,12 +2097,17 @@ def _placeholder_text_body(
         else ET.Element(f"{{{DML_NS}}}lstStyle")
     )
     _set_layout_level_one_default_size(list_style, source_run_pr)
+    if item.placeholder in {"body", "subtitle"}:
+        _set_no_bullet_paragraph_properties(
+            _layout_level_one_paragraph_properties(list_style),
+            replace_existing=item.placeholder == "body",
+        )
     tx_body.append(list_style)
 
     paragraph = ET.SubElement(tx_body, f"{{{DML_NS}}}p")
     if item.placeholder in {"body", "subtitle"}:
         paragraph_props = ET.SubElement(paragraph, f"{{{DML_NS}}}pPr")
-        ET.SubElement(paragraph_props, f"{{{DML_NS}}}buNone")
+        _set_no_bullet_paragraph_properties(paragraph_props)
     if item.placeholder in {"slide-number", "date"}:
         field_type = (
             "slidenum"
@@ -2096,24 +2145,6 @@ def _placeholder_text_body(
     return tx_body
 
 
-def _insert_no_bullet_choice(paragraph_props: ET.Element) -> None:
-    """Disable inherited bullets unless the paragraph already chooses a mode."""
-    if any(
-        child.tag in _PARAGRAPH_BULLET_CHOICE_TAGS
-        for child in paragraph_props
-    ):
-        return
-    insert_at = next(
-        (
-            index
-            for index, child in enumerate(paragraph_props)
-            if child.tag in _PARAGRAPH_PROPERTIES_TRAILING_TAGS
-        ),
-        len(paragraph_props),
-    )
-    paragraph_props.insert(insert_at, ET.Element(f"{{{DML_NS}}}buNone"))
-
-
 def _set_placeholder_no_inherited_bullets(
     shape: ET.Element,
     item: TemplateElementSpec,
@@ -2129,11 +2160,10 @@ def _set_placeholder_no_inherited_bullets(
         if paragraph_props is None:
             paragraph_props = ET.Element(f"{{{DML_NS}}}pPr")
             paragraph.insert(0, paragraph_props)
-        if item.placeholder == "body":
-            for child in list(paragraph_props):
-                if child.tag in _PARAGRAPH_BULLET_CHOICE_TAGS:
-                    paragraph_props.remove(child)
-        _insert_no_bullet_choice(paragraph_props)
+        _set_no_bullet_paragraph_properties(
+            paragraph_props,
+            replace_existing=item.placeholder == "body",
+        )
 
 
 def _set_placeholder_theme_font_role(
