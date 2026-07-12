@@ -155,13 +155,14 @@
 >
 > Example:
 > ```
-> - P01: cover | Cover
-> - P02: title-content | Title and Content
-> - P03: title-content | Title and Content
-> - P04: section | Section Header
+> - P01: cover-hero-split | Cover — Hero Split
+> - P02: kpi-band-trio | KPI Band Trio
+> - P03: section-divider | Section Divider
+> - P04: timeline-spine | Timeline Spine
+> - P05: section-divider | Section Divider
 > ```
 >
-> Reuse one key only when pages share the same reusable static Layout layer and placeholder type/index/bounds contract. Give genuinely different reusable compositions different keys even when they share a page role. Do not generate one unique key per slide merely because its wording, data, or imagery differs. Choose keys from the authored page plan, never from visual clustering, filenames, or content similarity. Keep concrete content and complex grouped compositions Slide-local; do not move them into the Layout to manufacture reuse.
+> **Different reusable composition → different key.** A free-design deck of visually distinct pages yields close to one key per page; reuse one key only for a genuinely repeated composition — the same static Layout layer and placeholder type/index/bounds contract (recurring section dividers, a repeated content template). Name keys after the composition (`timeline-spine`), never after PowerPoint stock roles: distinct compositions collapsing into `title-content` / `section` role keys produces a deck whose Layouts do not match its pages. Do not split a genuinely shared key merely because slide-local wording, data, or imagery differs. Choose keys from the authored page plan, never from visual clustering, filenames, or content similarity. Keep concrete content and complex grouped compositions Slide-local; do not move them into the Layout to manufacture reuse.
 
 ## page_layouts
 - P01: 01_cover

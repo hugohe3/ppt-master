@@ -1716,6 +1716,28 @@ class SVGQualityChecker:
             for attr in structure_attrs
         ):
             return
+        if root.get('data-pptx-layout') is not None:
+            if not any(
+                elem.get('data-pptx-placeholder') is not None
+                for elem in root.iter()
+            ):
+                result['warnings'].append(
+                    "Mapped page declares data-pptx-layout but no data-pptx-placeholder "
+                    "slot; its Layout exports without insertable placeholders. Mark the "
+                    "page's real slots (title / subtitle / body / picture / slide-number "
+                    "/ footer) unless the page genuinely has none."
+                )
+            if not any(
+                elem.get('data-pptx-layer') is not None
+                for elem in root.iter()
+            ):
+                result['warnings'].append(
+                    "Mapped page declares data-pptx-layout but no data-pptx-layer mark; "
+                    "the exported Master gets no shared background/chrome and the Layout "
+                    "gets no static framing. Mark the deck-wide background "
+                    'data-pptx-layer="master" and this layout key\'s framing '
+                    'data-pptx-layer="layout".'
+                )
         if _validate_template_structure_svg is None:
             result['warnings'].append(
                 "Detected PPTX template structure metadata, but its validator "
