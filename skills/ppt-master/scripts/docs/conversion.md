@@ -247,11 +247,17 @@ python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
 | `flat` | One self-contained slide SVG per page under `svg/` |
 
 Supported text-grid tables and conservative classic-chart caches carry
-`data-pptx-native` metadata beside their SVG fallback. Table import accepts
-unmerged grids plus canonical rectangular merges, safe solid/no-fill per-side
-borders, and plain multi-paragraph cells. Noncanonical/overlapping merges,
-nonblank merge slaves, unsafe border XML, non-solid fills, and mixed run-level
-rich text remain fallback-only. Markers remain dormant
+`data-pptx-native` metadata beside their SVG fallback. Table import requires
+exact physical row/grid topology and accepts canonical rectangular merges,
+safe solid/no-fill per-side borders, plain multi-paragraph cells, and a closed
+run-rich paragraph schema.
+Each run requires `text` and may use only `bold`, `italic`, `underline`,
+`strike`, `color`, `font_size`, one `font_family`, `lang`, and `alt_lang`.
+Presentation-only source run XML normalizes. Relationship-bearing text,
+extensions, noncanonical/overlapping merges, nonblank merge slaves, unsafe
+border XML, non-solid fills, structural line breaks/fields/tabs/bullets, and
+broken text topology remain fallback-only.
+Markers remain dormant
 unless a later export uses `--native-objects`. That opt-in is editable-first:
 it may normalize styling or omit marker-local details not represented by the
 payload, and export reports that risk without disabling an otherwise supported
@@ -266,8 +272,8 @@ SVG fallback and core payload colors, while native opt-in may still normalize
 unmodeled alpha, line, marker, or no-fill details. Common General, decimal,
 grouped, percent, and simple currency-prefix data-label formats render
 deterministically; an unknown Excel format program keeps the active payload but
-does not claim a normalized fallback. Active types outside the
-current renderer, including `of_pie`, continue to use an explicit placeholder marked
+does not claim a normalized fallback. Active types outside the current renderer
+continue to use an explicit placeholder marked
 `data-pptx-visual-status="placeholder"` and
 `data-pptx-route-status="reconstruction-only"`. Validation and export report
 that route as a warning. Default export keeps the placeholder; when the same
@@ -305,14 +311,24 @@ number-format, min/max/major-unit, reverse, and major-gridline fields; the nativ
 writer emits every field in those closed contracts. Scatter style is derived
 from uniform effective series line/marker/smooth state. The normalized XY
 fallback newly consumes only the two major-gridline flags, not the remaining
-axis fields. This is not a full `AxisSpec`: ChartEx import, arbitrary stock
-variants, other date-axis chart families, and unlisted axis semantics remain
-fallback-only.
+axis fields. The importer also accepts radar, safe `of_pie` `serLines`, the
+closed axis/title/legend normalization cases, and bar/column `gapWidth` /
+`overlap`. `gapWidth` must be one integer in `0..500` and `overlap` one integer
+in `-100..100`; both normalize in native output, while malformed, duplicate, or
+out-of-range values fail closed. These additions do not expand the normalized
+renderer.
 Safe stock series style may pass the structural gate, while stock series,
 `hiLowLines`, and up-down bar local styling can still normalize under the
 editable-first contract.
-ChartEx native **output** still consumes valid payload colors in its color-style
-part; other ChartEx style details remain normalized.
+ChartEx import accepts exactly the validated treemap, sunburst, histogram,
+pareto, box-whisker, waterfall, and funnel data models. Their supported
+hierarchy/category/value/series/subtotal topology round-trips to native output.
+Numeric caches must be non-empty and finite, with canonical non-negative counts
+and indexes and exact contiguous point topology. Source style, axes, labels,
+and binning details may normalize. This is not full `AxisSpec`, arbitrary
+ChartEx import or presentation fidelity, arbitrary stock variants, other
+date-axis chart families, or unlisted axis semantics. ChartEx native output
+still consumes valid payload colors in its color-style part.
 
 Exporter-canonical charts recover canonical solid series/slice colors and exact
 one- or two-paragraph title styling; two paragraphs retain their `title` /
