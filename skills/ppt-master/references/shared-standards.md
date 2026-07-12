@@ -434,45 +434,11 @@ These forms are needed only when the stated PPT behavior matters:
 
 | Desired behavior | Required form |
 |---|---|
-| One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line; evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` merge into one frame with hard line breaks. A larger accepted gap or list marker starts a new paragraph; flowing prose opts into reflow via the explicit paragraph contract below. The merged frame keeps normal PowerPoint wrapping for later edits. An unmergeable gap or mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
+| One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line; evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` merge into one frame as multiple paragraphs, while an irregular gap or a mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
 | Reusable free-design PowerPoint Layout | Strategist declares the Master roster and complete page-to-Layout map before drawing. Executor writes the root identities, atomic fixed layers, and grouped slots while authoring each page. Export compiles only those declarations. |
 | Reusable template-based PowerPoint Layout | Select one complete input SVG per page in `page_layouts` and declare the output Master/Layout mapping at planning time. Strict preserves the prototype contract; adaptive retains its Master and may assign a new explicit Layout key during page authoring. Non-mirror skin follows `spec_lock`. |
-
-**Explicit paragraph contract — reflowable prose**: authored rows export as
-hard line breaks unless the block declares otherwise. When a block is flowing
-prose whose wrap positions carry no design intent, declare the contract so the
-exported frame edits as one reflowing paragraph:
-
-```xml
-<text id="p04-body" data-pptx-text-mode="paragraph"
-      data-pptx-text-bounds="80 224 520 120"
-      x="80" y="238" font-size="16" fill="#334155">
-  <tspan x="80" dy="0">Continuous narrative text that was</tspan>
-  <tspan x="80" dy="24" data-pptx-break="soft" data-pptx-join="space">wrapped to the column width and now</tspan>
-  <tspan x="80" dy="24" data-pptx-break="soft" data-pptx-join="space">reflows freely after export.</tspan>
-</text>
-```
-
-- The contract is all-or-nothing and checker-validated (`[TEXT_*]` codes): a
-  unique `id`, `data-pptx-text-mode="paragraph"`, and
-  `data-pptx-text-bounds="x y w h"` on the `<text>`; every line after the
-  first declares `data-pptx-break` — `soft` joins into the same reflowing
-  paragraph, `line` keeps an authored hard break, `paragraph` starts a new
-  paragraph whose extra `dy` over the base line-height becomes paragraph
-  spacing. `soft` also declares `data-pptx-join`: `none` between CJK glyphs,
-  `space` for Latin words.
-- Bounds are the exported text frame verbatim, so take them from the design
-  zone the prose was fitted to: `x` matches the line anchor (frame left for
-  `text-anchor="start"`, frame center for `middle`), width is the intended
-  wrap width, `y` sits about `0.9 × font-size` above the first baseline, and
-  the frame bottom covers the last baseline. `soft`/`line` rows keep the base
-  line-height `dy`; ancestors allow pure-translate transforms only, and
-  `dx`/`rotate`/`textLength`/baseline shifts stay out of contracted text.
-- Keep designed breaks — titles, verse, aligned label stacks — out of `soft`;
-  without the contract those rows stay hard breaks, which preserves layout but
-  makes later prose edits line-by-line.
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
 
@@ -1463,8 +1429,8 @@ by this solid-background rule.
 | `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `media` |
 
 **Text slot carrier**: A multiline text placeholder must remain one
-native text frame. Use the default paragraph merge; `--no-merge` and explicit
-`data-pptx-text-mode="lines"` cannot supply several line shapes as one
+native text frame. Use the default paragraph merge; `--no-merge` cannot supply
+several line shapes as one
 PowerPoint placeholder prototype/binding. Leave strict-line text Slide-local
 when separate frames are the required result.
 
