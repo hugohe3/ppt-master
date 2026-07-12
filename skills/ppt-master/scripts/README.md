@@ -87,7 +87,7 @@ python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-on
 ```
 
 `svg_authoring_view.py` creates a lightweight, non-destructive inspection copy
-of PPTX-imported SVGs. It removes embedded `txbody` / `text-carrier` payloads,
+of PPTX-imported SVGs. It removes embedded `txbody` payloads,
 duplicate hidden geometry carriers, and import-identity attributes from the
 copy while retaining visible fallback geometry, text, images, stable element
 ids, root Master/Layout markers, and supported compact native-shape intent.
