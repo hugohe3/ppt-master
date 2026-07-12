@@ -2318,6 +2318,10 @@ class SVGQualityChecker:
                 ('error', message)
                 for message in _template_lock_errors(specs, structure_lock)
             )
+            self._pptx_structure_issues.extend(
+                ('warning', message)
+                for message in self._duplicate_layout_key_warnings(specs)
+            )
             return
         if not structure_locked:
             return
@@ -2349,6 +2353,68 @@ class SVGQualityChecker:
                 contract,
             )
         )
+
+    def _duplicate_layout_key_warnings(self, specs) -> List[str]:
+        """Flag distinct layout keys whose static contracts are identical.
+
+        Keys split by page topic over one shared skeleton compile into
+        duplicate PowerPoint Layouts; the fingerprint compares the
+        id-insensitive layout-layer drawing plus the placeholder contract.
+        """
+        prototypes: Dict[str, Path] = {}
+        for spec in specs:
+            prototypes.setdefault(spec.layout_key, spec.svg_path)
+        if len(prototypes) < 2:
+            return []
+        fingerprint_keys: Dict[tuple, List[str]] = {}
+        for layout_key, svg_path in prototypes.items():
+            fingerprint = self._layout_contract_fingerprint(svg_path)
+            if fingerprint is None:
+                continue
+            fingerprint_keys.setdefault(fingerprint, []).append(layout_key)
+        messages = []
+        for keys in fingerprint_keys.values():
+            if len(keys) < 2:
+                continue
+            joined = ', '.join(sorted(keys))
+            messages.append(
+                f"layout keys {joined} declare identical static Layout framing "
+                "and placeholder contracts; they compile to duplicate Layouts. "
+                "Either merge them into one composition key (spec_lock.md "
+                "pptx_layouts + each SVG root), or — when the compositions "
+                "genuinely differ — promote each key's distinguishing zone "
+                'framing (table backing panel, column panels, hero frame) to '
+                'data-pptx-layer="layout" so the keys diverge.'
+            )
+        return messages
+
+    @staticmethod
+    def _layout_contract_fingerprint(svg_path: Path):
+        """Id-insensitive static contract: layout-layer XML + placeholder slots."""
+        try:
+            root = ET.parse(str(svg_path)).getroot()
+        except (OSError, ET.ParseError):
+            return None
+        layout_parts = []
+        placeholder_parts = []
+        for child in list(root):
+            if child.get('data-pptx-layer') == 'layout':
+                clone = copy.deepcopy(child)
+                for elem in clone.iter():
+                    elem.attrib.pop('id', None)
+                xml = ET.tostring(clone, encoding='unicode')
+                layout_parts.append(re.sub(r'\s+', ' ', xml).strip())
+            placeholder = child.get('data-pptx-placeholder')
+            if placeholder is not None:
+                placeholder_parts.append((
+                    placeholder,
+                    child.tag.rsplit('}', 1)[-1],
+                    child.get('x') or '',
+                    child.get('y') or '',
+                    child.get('data-pptx-placeholder-bounds') or '',
+                    child.get('data-pptx-placeholder-idx') or '',
+                ))
+        return (tuple(layout_parts), tuple(sorted(placeholder_parts)))
 
     def _check_illustration_resource_contract(self, dir_path: Path) -> None:
         """Project-level illustration resource checks."""
