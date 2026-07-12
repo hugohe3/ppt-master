@@ -90,6 +90,7 @@ description: >
 | `${SKILL_DIR}/scripts/latex_render.py` | LaTeX formula rendering (manifest-driven PNG assets) |
 | `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (multi-provider) |
 | `${SKILL_DIR}/scripts/slice_images.py` | Slice one AI illustration sheet into individual spot-illustration elements |
+| `${SKILL_DIR}/scripts/svg_authoring_view.py` | Create a lightweight non-destructive inspection projection of PPTX-imported SVGs; never a release source |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/preset_shape_svg.py` | Print one registry-backed native PowerPoint preset fragment to stdout for hand-authored SVG insertion |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
@@ -131,6 +132,24 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 **MUST**: Raw `.pptx` template plus "generate PPTX" routes to `template-fill-pptx` by default. The SVG generation route consumes only an explicit template workspace path with a valid `templates/design_spec.md`, or a supported direct/legacy package root with `design_spec.md`.
 
 **MUST**: Beautify is strictly 1:1. Any split, merge, drop, reorder, or page-count change routes to the main pipeline.
+
+**MUST — reusable template mode boundary**: `create-template` has two distinct
+contracts. `standard` and `fidelity` author new SVG prototypes and their own
+Master/Layout/slot system; source visuals and assets are references, and source
+Master/Layout topology is neither preserved nor distilled. `mirror` is a
+restoration path: preserve the source slide roster/order, visual appearance,
+Master/Layout parentage and identities, placeholder type/index/bounds, native
+object ownership, and supported native-shape metadata. The lossless import is
+the restoration authority; the lightweight authoring projection exists only to
+keep model context small. Mechanical normalization may express the source facts
+in the current explicit SVG contract and expand fixed-layer group wrappers into
+direct atoms, but it MUST NOT merge, split, promote, demote, rename, or
+re-parent source structure. Export compiles the selected contract and never
+infers a different one. Because the current structured roster materializes only
+identities referenced by emitted page prototypes, `mirror` is available only
+when every source Layout is used by a source Slide and every source Master is
+reachable through those Layouts. Otherwise stop and report the exact
+unreachable identities; never drop them or invent a carrier page.
 
 **FALLBACK**: Ambiguous requests such as "make this PPT more professional" require exactly one discriminator question: preserve original page count/order and slide wording, or treat the deck as source material and restructure it?
 
@@ -251,7 +270,7 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 |---|---|---|---|
 | **brand** | `templates/brands/<id>/templates/` inside a complete workspace | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
 | **layout** | `templates/layouts/<id>/templates/` inside a complete workspace | structure-only segment: canvas / page structure / page types / SVG roster | `kind: layout` |
-| **deck** | `templates/decks/<id>/templates/` inside a complete workspace | full replica: identity + structure + middle (template overview) segments | `kind: deck` |
+| **deck** | `templates/decks/<id>/templates/` inside a complete workspace | full identity + structure reference with the middle (template overview) segment | `kind: deck` |
 
 **Segment ownership** (governs fusion override priority):
 
@@ -280,7 +299,7 @@ Normalize every explicit path before any write:
 
 Never infer that a flat directory has legacy Master/Layout semantics solely from packaging.
 
-The same current-workspace routing applies to all three kinds: source/spec in `templates/`, visual assets in `images/`, runtime icons in `icons/`, and review artifacts in `exports/`. Empty optional roots are omitted rather than retained with placeholder files. Brand workspaces normally have no `exports/` because they have no SVG roster. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
+The same current-workspace routing applies to all three kinds: source/spec in `templates/`, visual assets in `images/`, runtime icons in `icons/`, and on-demand review artifacts in `exports/`. Empty optional roots are omitted rather than retained with placeholder files, so a normal workspace has no `exports/` until a review file is explicitly generated. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
 
 When `create-template` used project output scope, its workspace root is the target project itself and all core directories are already final. Resolve both roots before copying: equality means **in-place consumption**, so skip the installation. An in-place workspace cannot participate in multi-path fusion; use external workspaces for fusion. Never place the local source under a nested `templates/local_master/` directory because the confirmation and quality gates read the project `templates/` root.
 
@@ -288,7 +307,7 @@ A project-scoped workspace has the same portable routing as a library workspace.
 
 Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy or consume those semantic contracts through Step 3. Run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) on the package first, then return with the migrated workspace path. Old flat packaging remains readable when its SVG structure is already current.
 
-The Strategist confirmation stage decides whether the selected template is used `strict` or `adaptive`. New projects use `pptx_structure.mode: structured`, map every page to one input SVG in `page_layouts`, and write complete `pptx_masters` / `pptx_layouts` output mappings before SVG generation. Strict preserves the referenced Master/Layout/slot contract. Adaptive keeps the template Master and may assign a new Layout key during authoring when the composition genuinely changes. Non-mirror paint and typography follow the project skin rules.
+The Strategist confirmation stage decides whether the selected template is used `strict` or `adaptive`. New projects use `pptx_structure.mode: structured`, map every page to one input SVG in `page_layouts`, and write complete `pptx_masters` / `pptx_layouts` output mappings before SVG generation. Strict preserves the template's declared Master/Layout/slot contract. Adaptive keeps the template Master and may assign a new Layout key during authoring when the composition genuinely changes. Non-mirror paint and typography follow the project skin rules.
 
 #### Multi-path fusion
 

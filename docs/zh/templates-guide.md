@@ -18,13 +18,13 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 ### 怎么触发模板流程
 
-在对话里写出 Layout/Deck 工作区根目录，或直接 Brand 包路径（位置不重要，只要明确即可）：
+在对话里写出 Brand/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
 
 > "用这个模板做：`skills/ppt-master/templates/layouts/academic_defense/`" ✅
 > "用上次那个模板：`projects/last_deck/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-对于当前 Layout/Deck，这里给的是**模板工作区根目录**。Step 3 会解析其中的 `templates/design_spec.md`，校验 structured SVG 合同，然后把 `templates/`、`images/` 与 `icons/` 安装进目标项目；如果工作区本来就是该项目根目录，则原地消费。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样结构的工作区。Brand 包继续使用根目录 `design_spec.md` 合同。当前对话刚完成 create-template 时，可把精确的已验证工作区根目录直接交给 Step 3；这是“首条消息显式路径”规则的唯一例外。
+对于当前所有模板类型，这里给的都是**模板工作区根目录**。Step 3 会解析其中的 `templates/design_spec.md`，然后把 `templates/` 及实际存在的 `images/`、`icons/` 安装进目标项目；如果工作区本来就是该项目根目录，则原地消费，并且始终不复制 `exports/`。Deck/Layout 还会校验 structured SVG 合同。路径可以指向 `skills/ppt-master/templates/<kind>/<id>/` 下的内置库工作区、`projects/<name>/` 下的项目工作区，或其他保持同样路由的工作区。当前对话刚完成 create-template 时，可把精确的已验证工作区根目录直接交给 Step 3；这是“首条消息显式路径”规则的唯一例外。
 
 > **兼容性预检：** Step 3 也接受旧式平铺包，即 `design_spec.md` 与 SVG 直接位于所给根目录。目录平铺本身不需要恢复；只有 SVG 仍使用旧的原子 placeholder / 未映射 Master/Layout 语义时，才先运行 [`restore-pptx-structure`](../../skills/ppt-master/workflows/restore-pptx-structure.md)。Step 3 不会先复制语义旧包、再延后恢复。
 
@@ -123,7 +123,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 ### 第一步：准备参考材料
 
-**强烈推荐：直接给原始 `.pptx` 文件。** 导入器会读取 OOXML，提取全部 Master、Layout、placeholder、主题与可复用素材，并生成分层分析参考。Template_Designer 据此重建一个干净 Master 与语义 Layout，输出完整且显式分层的 SVG；原 PPTX 只作分析输入，不进入新模板包。
+**强烈推荐：直接给原始 `.pptx` 文件。** 导入器会读取 OOXML，提取全部 Master、Layout、placeholder、主题、原生形状事实与可复用素材，并生成分层分析参考。`standard` / `fidelity` 把它们当视觉参考，创作新的 SVG roster 与 Master/Layout/slot 系统；mirror 则一对一恢复来源身份、父子关系、placeholder 事实和受支持视觉。原 PPTX 只作分析证据，不进入新模板包。
 
 也可以基于品牌指南从零设计：提供 logo、主色 HEX、字体、调性描述、几张氛围参考图，AI 会现场设计页面骨架。适合品牌方还没有成型 PPT、只有 VI 手册的场景。
 
@@ -135,7 +135,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 | 字段 | 说明 |
 |------|------|
-| **输出范围** | `library`（默认）或 `project`；两者都写完整且相同的工作区，只有 library 会进入全局索引 |
+| **输出范围** | `library`（默认）或 `project`；两者使用相同的可移植工作区路由，只有 library 会进入全局索引 |
 | **目标项目** | 仅 `project` 必填；必须给出已初始化项目的精确路径 |
 | **模板 ID** | 模板的可移植身份；在 `library` 下同时也是目录名 / 索引键。优先 ASCII slug，如 `acme_consulting`；中文品牌名也行，但要文件系统安全 |
 | **显示名称** | 文档中的人类可读名 |
@@ -144,15 +144,15 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 | **调性概要** | 一句话，如"现代克制、数据驱动" |
 | **主题模式** | 浅色 / 深色 / 渐变…… |
 | **画布格式** | 默认 `ppt169`（16:9），其他格式需提前指定 |
-| **复刻模式** | `standard`（默认 5 页基本套）/ `fidelity`（按视觉版式簇生成变体）/ `mirror`（逐页保持原视觉，同时补齐显式层级归属） |
-| **原生结构事实** | 简报会列出源 Master/Layout 数量、placeholder 身份和多母版情况；最终一律重建显式 SVG 结构（`template`）。 |
-| **保真级别** | （`standard` / `fidelity` 有源时必填）`literal`（按原样复刻几何/装饰/精灵图裁剪）/ `adapted`（借结构和调性、允许设计演化）。封面 / 章节 / 结尾通常用 `literal`。**`mirror` 模式不询问**——隐含 literal |
+| **复刻模式** | `standard`（默认精简基本套）/ `fidelity`（每个可复用语义家族一个变体）/ `mirror`（每张源页一个恢复原型）。`standard` / `fidelity` 创作新 SVG 语义；mirror 恢复来源结构，不做归纳。 |
+| **原生结构事实** | 简报会列出源 Master/Layout 数量、父子关系、placeholder 身份和多母版情况。`standard` / `fidelity` 只把它们当参考；mirror 通过当前 `structured` 合同一对一恢复。 |
+| **保真级别** | （`standard` / `fidelity` 有源时必填）`literal`（在新创作结构内尽量复现原几何、装饰和精灵图裁剪）/ `adapted`（借调性与构图、允许设计演化）。封面 / 章节 / 结尾通常用 `literal`。**`mirror` 模式不询问**——它恢复来源视觉。 |
 | **关键词** | 3–5 个标签，用于索引检索 |
 | 主题色 / 设计风格 / 素材清单 | 可选，可让 AI 从源里自动提取 |
 
 确认后，工作流会回显一份完整简报并写入标记 `[TEMPLATE_BRIEF_CONFIRMED]`，从这一刻起后续步骤才会启动。**这是一个硬门——简报没确认，不会开始生成**。
 
-无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析四个目标目录，要求 `templates/` 为空，并检查 `images/`、`icons/`、`templates/icons/` 与 `exports/` 中计划写入的位图、图标和预览 PPTX 文件名没有冲突。项目范围还要求目标项目已经初始化。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
+无论选择哪种范围，第一次写最终文件前都会做一次完整预检：解析必需的 `templates/` 和实际需要的可选素材目录，要求 `templates/` 为空，并检查 `images/`、`icons/` 与 `templates/icons/` 中计划写入的位图和图标文件名没有冲突；只有明确要求审阅 PPTX 时才检查 `exports/`。项目范围还要求目标项目已经初始化。任一检查失败都会在写入前停止，不合并、不覆盖，也不会留下半套输出。
 
 > 为什么这么严？无论模板进入全局库，还是只服务当前项目，它都是结构契约。先确认归属和几何，可避免半成品或资产落错目录。
 
@@ -162,26 +162,30 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 | | **standard** | **fidelity** | **mirror** |
 |---|---|---|---|
-| 输出页数 | 5 页（封面/章节/目录/内容/结尾） | 视觉上真正不同的版式簇各一个变体——数量由源决定 | 每张源页 1:1 一页 |
-| 抽象程度 | 高 —— 干净可复用骨架 | 中 —— 聚类后清理 | **零** —— 原样复制 |
+| 输出页数 | 4–5 页（封面/章节/内容/结尾，可选目录） | 每个可复用语义家族一个变体——数量由源决定 | 每张源页一个恢复原型（1:1 页面集合） |
+| 抽象程度 | 高 —— 干净可复用骨架 | 中 —— 语义家族重新设计 | 拓扑层面不抽象，只做 structured 合同要求的机械归一化 |
 | 作者占位符 | 是（`{{TITLE}}`、`{{CONTENT_AREA}}` 等） | 是 | 可保留原文字，但导入识别出的原生内容槽仍带语义 metadata |
 | 适合场景 | 你只需要"调性 + 基本骨架"，未来用模板生成全新 deck | 源 PPTX 本身就是高度定制的版式库 | 别人的精装 deck 直接好用、想把每页都当参考页 |
-| 典型例子 | 给品牌做基础模板 | 复刻一套政府汇报的 20 种章节版式 | 把一份 50 页的麦肯锡风格 deck 整套用作模板 |
-| 必须有 PPTX 源吗 | 否 | **是** | **是** |
+| 典型例子 | 给品牌做基础模板 | 复刻一套政府汇报的 20 种章节版式 | 把 50 张源构图都保留为视觉忠实的模板原型 |
+| 来源要求 | 无 | PPTX 或 SVG 视觉参考 | PPTX，或带完整显式结构合同的 SVG |
 | 装饰复杂度 | 通常较简洁 | 需要保留精灵图裁剪等结构 | 保留原几何，并补齐显式层级归属 |
 
 **关于精灵图**：PPTX 导出的素材常常是**一张大图 + 多页通过 viewBox 裁剪不同区域**。`fidelity` 和 `mirror` 模式下必须保留这层嵌套 `<svg viewBox=...>` 包装，不能扁平化为单张 `<image>`——否则裁剪信息丢失，画面会错位。工作流会自动校验这一点。
+
+**关于 PowerPoint 原生形状**：完整导入 SVG 保留在临时分析工作区，模型读取的是移除 opaque payload 和重复 carrier 的轻量 projection；projection 永远不是导出源。创作模式使用紧凑 canonical metadata。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已支持的 metadata；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback。
+
+**当前 mirror 边界**：每个来源 Layout 都必须至少被一张来源 Slide 使用，每个来源 Master 也必须能通过这些 Layout 到达。当前 structured 模板 roster 还不能在不虚构额外页面的情况下物化只存在于选择器里的未使用身份，因此预检会列出具体未使用身份并停止，而不是静默丢弃。
 
 **`mirror` 模板怎么消费**：Strategist 为每个项目页选择一张 mirror 参考，Executor 复制完整 SVG 并原位修改可见文字，同时保留装饰、精灵图裁剪、几何坐标和全部 `data-pptx-*` 结构声明。
 
 ### 第四步：验证、预览导出、注册与发现
 
-模板生成完，两种范围都会先跑 [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) 作为硬门，并导出 `exports/<id>_template_preview.pptx`。先打开这份 PPTX，逐页判断模板在 PowerPoint 中的实际样子，再交给后续生成。唯一按范围分流的动作是全局注册：
+模板生成完，两种范围都会先跑 [`svg_quality_checker.py`](../../skills/ppt-master/scripts/svg_quality_checker.py) 作为硬门。如果需要 PowerPoint 审阅文件，再运行可选预览导出；它会按需创建 `exports/<id>_template_preview.pptx`。唯一按范围分流的动作是全局注册：
 
 | 范围 | 工作区根目录 | 预览 | 发现行为 |
 |---|---|---|---|
-| `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | `exports/<id>_template_preview.pptx` | 校验与预览导出后注册到对应 `layouts_index.json` 或 `decks_index.json` |
-| `project` | `projects/<name>/` | `exports/<id>_template_preview.pptx` | 跳过全局索引注册 |
+| `library`（默认） | `skills/ppt-master/templates/<kind>/<id>/` | 可选 `exports/<id>_template_preview.pptx` | 校验后注册到对应 `layouts_index.json` 或 `decks_index.json` |
+| `project` | `projects/<name>/` | 可选 `exports/<id>_template_preview.pptx` | 跳过全局索引注册 |
 
 全局注册让模板**可被发现**——下次有人问“有哪些模板可用？”时，AI 会从索引里把它列出来。两种范围的用法相同：按 SKILL.md Step 3 的规则，在第一条消息里给出工作区根目录，例如 `用这个模板：skills/ppt-master/templates/layouts/<your_template_id>/` 或 `用这个模板：projects/<name>/`。项目工作区也可以迁移或被其他工作区复用，因为核心结构完全一致；只有放进全局库并需要被发现时才执行注册。
 
@@ -205,11 +209,11 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 │   ├── 03a_content_two_col.svg # fidelity 变体
 │   ├── 04_ending.svg
 │   └── icons/                  # 使用时的 package / 校验副本
-├── images/
+├── images/                         # 可选
 │   └── *.png / *.jpg           # SVG 统一引用 ../images/<name>
-├── icons/
+├── icons/                          # 可选
 │   └── *.svg                   # 提取向量素材的运行期副本
-└── exports/
+└── exports/                        # 可选；按需生成审阅文件
     └── <id>_template_preview.pptx
 ```
 
@@ -220,9 +224,9 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 ### 全局注册与项目放置
 
 - **全局库范围（`library`，默认）**把工作区写入 `skills/ppt-master/templates/<kind>/<id>/`，并完成全局注册。
-- **项目范围（`project`）**把同一份完整工作区写入 `projects/<name>/`，并跳过注册。
+- **项目范围（`project`）**把同一份可移植工作区写入 `projects/<name>/`，并跳过注册。
 
-项目范围不是私有或缩减格式。Step 3 可以直接接收任一工作区根目录；完整核心工作区也可以在两类根目录之间复制或迁移，无需改形。如果迁入全局库，再执行注册，让发现索引反映新位置。
+项目范围不是私有或缩减格式。Step 3 可以直接接收任一工作区根目录；`templates/` 及实际存在的 `images/`、`icons/` 可以在两类根目录之间复制或迁移，无需改形。如果迁入全局库，再执行注册，让发现索引反映新位置。
 
 ---
 
@@ -230,11 +234,11 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 避免常见误解：
 
-- **可复用模板是一份完整 SVG 重建契约，不是源 PPTX package**。每页可独立预览，显式 metadata 负责在导出时还原 Master/Layout/Slide
+- **可复用模板是一份显式 SVG 契约，不是打包后的源 PPTX**。创作模式新建该合同，mirror 通过该合同恢复来源归属；每页都能独立预览，导出只编译已声明的 Master/Layout/Slide 结构
 - **模板不是"风格皮肤"**。它包含结构（页面有几块、信息层级如何分布）+ 风格（配色、字体、装饰），两者不可分割。试图只换"皮肤"不换结构，往往会让信息架构和视觉打架
 - **模板不会替你做内容决策**。策略师仍然会按内容判断每页用哪个版式、要不要扩展为变体，模板提供候选，不预设结果
 - **`fidelity` 模式不等于像素级搬运**。即便是 `literal` 保真，AI 仍会把杂质和不必要的重复结构清理掉——载体保留几何，但不照抄冗余
-- **`mirror` 模式确实是像素级搬运——但它继承源 PPT 的导入限制**。图表、SmartArt、OLE 对象、EMF / WMF 媒体如果在 `pptx_template_import.py` 里 round-trip 失败，mirror 也会同样失败。flat SVG 是事实源——`<workspace>/svg-flat/` 里看着断了，mirror 模板也会断
+- **`mirror` 的目标是受支持范围内的视觉与来源拓扑忠实，不是字节级 OOXML**。它继承源 PPT 的导入限制，只允许固定结构层 group 展开等机械归一化。不支持的原生对象保留可用 SVG fallback 或明确报告；mirror 不归纳替代 ownership。
 
 ---
 

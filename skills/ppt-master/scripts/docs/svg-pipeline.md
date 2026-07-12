@@ -6,6 +6,37 @@ These tools cover post-processing, SVG validation, speaker notes, recorded narra
 
 The supported delivery contract has one PPTX path: `svg_output/` → the project SVG-to-DrawingML converter → native PPTX. The mandatory `finalize_svg.py` step separately creates self-contained `svg_final/` visual previews, which may be opened directly or inserted into PowerPoint as SVG pictures. There is no SVG-image PPTX output, and PowerPoint's manual Convert-to-Shape operation is unsupported.
 
+## `svg_authoring_view.py`
+
+Create a lightweight inspection/authoring projection of one PPTX-imported SVG
+or a directory of imported SVGs:
+
+```bash
+python3 scripts/svg_authoring_view.py <svg-file-or-directory> -o <output-dir>
+```
+
+The operation is non-destructive and refuses existing output files unless
+`--force` is explicit. It never writes back to the source SVG. The JSON report
+on stdout records original/projected byte counts and removals by category.
+
+The projected copy:
+
+- removes embedded `txbody` and `text-carrier` metadata;
+- removes hidden native geometry carriers while retaining and unwrapping their
+  visible preview geometry;
+- removes source-object identity/style/hash attributes that are only useful to
+  an exact import round trip;
+- keeps visible paths, text, images, stable ids, Master/Layout root markers,
+  and supported compact `data-pptx-object` / `data-pptx-prst` /
+  `data-pptx-frame` intent; and
+- rewrites relative local asset references for the projection's new location.
+
+The complete imported SVG remains the evidence source for mirror restoration.
+The exporter does not read the import workspace or the projection. The
+projection is deliberately not a template generator, not a replacement for
+the explicit Master/Layout restoration workflow, and not a supported release
+input to `svg_to_pptx.py`.
+
 ## Recommended Pipeline
 
 Run these steps in order:
@@ -145,12 +176,19 @@ python3 scripts/svg_quality_checker.py examples/project
 python3 scripts/svg_quality_checker.py examples/project --format ppt169
 python3 scripts/svg_quality_checker.py --all examples
 python3 scripts/svg_quality_checker.py examples/project --export
+python3 scripts/svg_quality_checker.py path/to/template/templates --template-mode
 ```
 
 Checks include:
 - `viewBox`
 - banned elements
 - line-break structure
+- explicit Master/Layout/slot structure for reusable templates
+- duplicate empty Layout contracts under different keys
+
+Template mode accepts compact canonical preset shapes marked with
+`data-pptx-authoring="preset"`. It validates the explicit structured SVG
+contract; it does not implement a separate source-payload opt-in marker.
 
 ## `svg_position_calculator.py`
 

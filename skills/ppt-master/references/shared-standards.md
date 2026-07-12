@@ -28,7 +28,7 @@ Other files link here instead of restating its contracts.
 | Text treatments | Mixed runs, tracking, underline, strikethrough, gradient fill, outline, transparency, watermark text, and text glow | §4.2, §6.7 |
 | Transforms and composition | Translate, scale, rotate, mirror, supported matrix composition, layering, and static local reuse | §1.3, §6.8 |
 | Freeform geometry | Full SVG path vocabulary, curves, organic containers, multi-subpaths, and asymmetric rounded rectangles | §6.9 |
-| Imported PowerPoint shapes | All 187 preset geometries, adjustments, logical frames, custom geometry, connectors, and unchanged native text bodies | §1.4 |
+| Imported PowerPoint shapes | Lossless import payload, lightweight inspection projection, and selective restoration of preset/custom geometry, connectors, and unchanged native text bodies | §1.4 |
 | Authored PowerPoint preset shapes | Registry-generated visible fragments that export as one native preset shape or connector | §1.5; [`native-shape-authoring.md`](./native-shape-authoring.md) |
 | Radial/chart geometry | Pie/donut arcs, dashed-circle ring segments, gauges, progress rings, sunbursts, and diagonal polygon arrowheads | §6.10 |
 | Constructed visual styles | Faux glass, hand-drawn marks, ink wash, Riso offset, pixel grid, halftone, isometric facets, paper cut, and line-plus-area data treatment | §6.11 |
@@ -214,8 +214,10 @@ the original `<use>` / `<symbol>` structure.
 ### 1.4 Imported Native PowerPoint Shapes (Conditional Contract)
 
 `pptx_to_svg.py` emits rendering-neutral metadata when a visible SVG object
-originates from `p:sp`, `p:cxnSp`, or `p:grpSp`. This contract is for imported
-round-trip SVG; ordinary authored SVG does not need these attributes.
+originates from `p:sp`, `p:cxnSp`, or `p:grpSp`. This contract is for lossless
+import SVGs and unchanged imported objects that remain Slide-local or inside a
+slot during mirror restoration. Ordinary authored SVG does not need these
+attributes, and no separate source-payload opt-in marker exists.
 
 | Metadata | Placement | Required behavior |
 |---|---|---|
@@ -231,6 +233,29 @@ round-trip SVG; ordinary authored SVG does not need these attributes.
 | `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
 | `data-pptx-shape-style` | Native carrier | Preserve a relationship-free `p:style` independently of text, including shapes with no visible text. |
 | `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, or visible typography edits invalidate the payload and use the normal SVG text fallback. |
+
+**Import/authoring representation split**:
+
+| Representation | Contract |
+|---|---|
+| Lossless import SVG | Keep complete native payload, hidden carriers, and preview evidence in the temporary analysis workspace. This is the round-trip source, not the model-facing authored page. |
+| Lightweight authoring projection | Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and logical ids needed to locate an adopted object in the lossless import. It is not an export source. |
+| `standard` / `fidelity` output | Use compact canonical metadata for newly authored shapes; do not transplant opaque import payload or source topology. |
+| `mirror` output | Keep supported imported metadata only on unchanged Slide-local/slot objects. Expand fixed Master/Layout group wrappers into direct atoms while preserving source ownership, paint order, and visible appearance. |
+
+**Hard rule — structural-layer boundary**: An unchanged imported logical object
+may keep currently supported metadata while it remains Slide-local or inside a
+slot. A logical `<g>` cannot be assigned to Master/Layout because those layers
+require direct atoms. Mechanically expand a fixed-layer source group into direct
+atoms, rebuilding a preset when supported and otherwise retaining the visible
+SVG fallback. Do not use this normalization to change ownership or appearance.
+
+**Hard rule — selective payload**: Do not copy every imported metadata block into
+an authored template. Keep the full lossless import SVG separately as the
+audit/fallback source. Mirror may reuse only metadata already supported by the
+converter on unchanged Slide-local/slot objects; unsupported or edited objects
+use the current SVG fallback. `data-pptx-native` remains reserved for native
+chart/table markers.
 
 **Registry and rendering rules**:
 
@@ -270,7 +295,9 @@ reconstruction are also normalized rather than byte-identical OOXML.
 New SVG pages may opt one complete geometric object into a native DrawingML
 preset through the deterministic fragment helper. Selection behavior lives in
 [`native-shape-authoring.md`](./native-shape-authoring.md); this section owns
-the machine contract.
+the machine contract. This is compact canonical authoring metadata: it describes
+the intended preset, frame, adjustments, paint, and preview fingerprint without
+embedding source OOXML or relying on an imported-payload marker.
 
 | Metadata / structure | Required behavior |
 |---|---|
@@ -1350,7 +1377,7 @@ defaults to `bottom` and accepts `top`, `left`, or `right`.
 
 ### Structured Layout Routing
 
-Every new SVG project has one deterministic route: `pptx_structure.mode: structured`. `spec_lock.md` contains a complete Master roster and one page-to-Master/Layout row before the first page is drawn. Free design defaults to one Master; templates preserve their restored Master topology.
+Every new SVG project has one deterministic route: `pptx_structure.mode: structured`. `spec_lock.md` contains a complete Master roster and one page-to-Master/Layout row before the first page is drawn. Free design defaults to one Master. `standard` / `fidelity` templates use their newly authored contract; mirror templates use the restored source identities and parentage expressed through the same explicit interface.
 
 **Hard rule — no structure inference**: Export does not assign Layout families, promote repeated chrome, cluster pages, infer placeholders, or repair missing metadata. It compiles only the declared root identities, atomic fixed layers, and slot groups. Legacy or unmapped projects must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) first.
 
@@ -1366,7 +1393,7 @@ Every new SVG project has one deterministic route: `pptx_structure.mode: structu
 
 **Project lock**: A Master row is `<master_key>: <PowerPoint picker name>`. A page row is `P<NN>: <master_key> | <layout_key> | <PowerPoint layout name>`. The SVG root values MUST match those rows. A Layout key belongs to exactly one Master and must be globally unique. Reuse one key only when pages share identical ordered Layout atoms and slot ids/types/effective indices/default bounds/binding modes. Every structured route requires numeric `spec_lock.md` typography `title` / `body` rows.
 
-**Template behavior**: Strict preserves the selected prototype's Master/Layout/slot contract. Adaptive retains its Master and may allocate a new Layout key/name only when fixed Layout atoms or slot topology/bounds change; update the lock during authoring. Mirror additionally preserves literal paint, typography, effects, atomic geometry, and referenced assets for every reused identity. The source PPTX group hierarchy may still be flattened because Master/Layout groups are outside the current SVG contract.
+**Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and may allocate a new Layout key/name only when fixed Layout atoms or slot topology/bounds change; update the lock during authoring. Mirror-created prototypes preserve restored source identity, literal paint, typography, effects, atomic geometry, and referenced assets. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology.
 
 **Master text-style contract**: Structured export maps the
 locked `title` size to every `a:defRPr` in Master `p:titleStyle`, and map the
@@ -1489,7 +1516,7 @@ video or audio media from a decorative SVG group.
 
 Existing projects or packages that carry `native_structure.json` / `source_template.pptx`, `pptx_structure.mode: baseline|template|preserve`, `layout_strategy`, `data-pptx-layout-kind`, `distilled` / `utility`, direct atomic placeholders, or no root Master identity must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before generation or export.
 
-When original PPTX/native facts exist, migration preserves the source Master roster, Layout parent relationships and picker names, placeholder type/index/bounds, and visible supported geometry. Source Master/Layout groups are recursively flattened into atomic SVG elements. When no native facts exist, the main Agent explicitly derives a structured contract from the complete SVG pages; the exporter never performs that derivation.
+When original PPTX/native facts exist, migration preserves the reachable source Master roster, Layout parent relationships and picker names, placeholder type/index/bounds, and visible supported geometry while normalizing the package into the explicit contract. Source Master/Layout groups are recursively flattened into atomic SVG elements. The current structured roster cannot materialize a source Layout that no output page references, or a Master reachable only through such Layouts; stop and report those identities instead of silently dropping them or inventing a carrier page. A subsequent `create-template` run treats the result according to its selected mode: `standard` / `fidelity` author a new topology, while mirror keeps the restored source topology only when the source graph satisfies that reachability boundary. When no native facts exist, the main Agent explicitly derives a structured contract from the complete SVG pages; the exporter never performs that derivation.
 
 ---
 
