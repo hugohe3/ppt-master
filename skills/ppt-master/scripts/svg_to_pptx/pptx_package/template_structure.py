@@ -404,7 +404,14 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
 
     structure_rows = sections.get("pptx_structure", [])
     layout_rows = sections.get("pptx_layouts", [])
-    if not structure_rows and not layout_rows:
+    structure_section_present = "pptx_structure" in sections
+    layout_section_present = "pptx_layouts" in sections
+    if (
+        not structure_rows
+        and not layout_rows
+        and not structure_section_present
+        and not layout_section_present
+    ):
         return None
     mode_rows = [value.strip().lower() for key, value in structure_rows if key == "mode"]
     if len(mode_rows) != 1:
@@ -509,10 +516,22 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
         raise TemplateStructureError(
             f"spec_lock.md {mode} mode requires one pptx_layouts row per page"
         )
-    if mode not in {"template", "preserve"} and references:
+    if mode == "baseline" and layout_section_present and not references:
         raise TemplateStructureError(
-            "spec_lock.md pptx_layouts is allowed only when pptx_structure.mode "
-            "is template or preserve"
+            "spec_lock.md baseline pptx_layouts section must contain one row per "
+            "page; omit the whole section only for a legacy baseline project"
+        )
+    if mode == "baseline" and any(
+        reference.layout_name is None for reference in references
+    ):
+        raise TemplateStructureError(
+            "spec_lock.md baseline pptx_layouts rows require "
+            "'<layout_key> | <PowerPoint layout name>'"
+        )
+    if mode == "flat" and layout_section_present:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_layouts section is not allowed when "
+            "pptx_structure.mode is flat"
         )
     return PptxStructureLock(
         mode=mode,
@@ -1042,6 +1061,72 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
     return specs
 
 
+def parse_optional_layout_slides(
+    svg_files: list[Path],
+) -> list[TemplateSlideSpec] | None:
+    """Parse an all-or-none explicit Layout contract, or return legacy absence."""
+    roots: list[tuple[Path, ET.Element]] = []
+    has_structure_metadata = False
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError) as exc:
+            raise TemplateStructureError(
+                f"{svg_path.name}: unable to inspect SVG Layout metadata: {exc}"
+            ) from exc
+        roots.append((svg_path, root))
+        has_structure_metadata = has_structure_metadata or any(
+            elem.get(attr) is not None
+            for elem in root.iter()
+            for attr in _STRUCTURE_ATTRS
+        )
+
+    if not has_structure_metadata:
+        return None
+
+    missing_keys = [
+        svg_path.name
+        for svg_path, root in roots
+        if not (root.get("data-pptx-layout") or "").strip()
+    ]
+    missing_names = [
+        svg_path.name
+        for svg_path, root in roots
+        if not (root.get("data-pptx-layout-name") or "").strip()
+    ]
+    if missing_keys or missing_names:
+        missing_fields: list[str] = []
+        if missing_keys:
+            missing_fields.append(
+                "data-pptx-layout: " + ", ".join(missing_keys)
+            )
+        if missing_names:
+            missing_fields.append(
+                "data-pptx-layout-name: " + ", ".join(missing_names)
+            )
+        raise TemplateStructureError(
+            "Explicit Layout metadata is all-or-none: once any SVG uses PPTX "
+            "structure metadata, every generated page root must declare "
+            "data-pptx-layout and data-pptx-layout-name with non-empty values; "
+            "missing "
+            + "; ".join(missing_fields)
+        )
+    specs = parse_template_slides(svg_files)
+    empty_layouts = sorted({
+        spec.layout_key
+        for spec in specs
+        if not spec.layout_elements and not spec.placeholders
+    })
+    if empty_layouts:
+        raise TemplateStructureError(
+            "Explicit baseline Layout contracts must define at least one "
+            "data-pptx-layer='layout' element or data-pptx-placeholder per "
+            "layout key; empty: "
+            + ", ".join(empty_layouts)
+        )
+    return specs
+
+
 def parse_preserve_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
     """Parse preserve-mode slides before source master grouping is known."""
     specs = [
@@ -1058,7 +1143,7 @@ def template_lock_errors(
     structure_lock: PptxStructureLock,
 ) -> list[str]:
     """Return mismatches between parsed SVG layouts and the project lock."""
-    if structure_lock.mode not in {"template", "preserve"}:
+    if structure_lock.mode not in {"baseline", "template", "preserve"}:
         return []
     errors: list[str] = []
     references = {

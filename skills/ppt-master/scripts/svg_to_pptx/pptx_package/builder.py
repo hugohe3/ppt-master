@@ -155,7 +155,7 @@ class PptxStructureContext:
 
 @dataclass
 class _TemplateRuntimeSlide:
-    """Parsed slide package state used by explicit template structure export."""
+    """Parsed slide package state used by explicit Layout structure export."""
 
     spec: TemplateSlideSpec
     slide_path: Path
@@ -1192,7 +1192,7 @@ def _template_runtime_slides(
     """Load slide XML state and join it with SVG-to-shape trace ids."""
     if not conversion_traces:
         raise TemplateStructureError(
-            "Template export requires native conversion traces for every slide"
+            "Explicit Layout export requires native conversion traces for every slide"
         )
     trace_by_slide = {
         int(trace.get("slide_num", 0)): trace
@@ -1247,9 +1247,15 @@ def _template_shape_for_item(
         ):
             return None
     if not shape_ids:
+        text_hint = (
+            "; multiline text placeholders require the default paragraph merge "
+            "and cannot use --no-merge"
+            if item.placeholder and item.tag == "text"
+            else ""
+        )
         raise TemplateStructureError(
             f"{state.spec.svg_path.name}: metadata element {item.element_id!r} "
-            "did not produce one top-level native shape"
+            f"did not produce one top-level native shape{text_hint}"
         )
     raise TemplateStructureError(
         f"{state.spec.svg_path.name}: metadata element {item.element_id!r} "
@@ -1402,7 +1408,7 @@ def _move_template_background(
         if c_sld is None or background is None:
             raise TemplateStructureError(
                 f"{state.spec.svg_path.name}: explicit background disappeared "
-                "during template structure assembly"
+                "during explicit Layout structure assembly"
             )
         c_sld.remove(background)
 
@@ -1488,7 +1494,7 @@ def _apply_template_slide_backgrounds(
             if c_sld is None or c_sld.find(f"{{{PML_NS}}}bg") is None:
                 raise TemplateStructureError(
                     f"{state.spec.svg_path.name}: slide background disappeared "
-                    "during template structure assembly"
+                    "during explicit Layout structure assembly"
                 )
             applied += 1
             continue
@@ -1934,7 +1940,7 @@ def _set_template_layout_header_footer(
     _write_xml_tree(layout_path, tree)
 
 
-def _apply_template_structure(
+def _apply_explicit_layout_structure(
     extract_dir: Path,
     structure: PptxStructureContext,
     specs: list[TemplateSlideSpec],
@@ -2056,7 +2062,7 @@ def _apply_template_structure(
 
     if verbose:
         print(
-            "  Template structure: "
+            "  Explicit Layout structure: "
             f"{len(specs_by_layout)} layout(s), "
             f"{len(master_items)} master element(s), "
             f"{layout_shape_count} layout element(s), "
@@ -2565,7 +2571,7 @@ def _prune_unused_slide_layouts(
         master_path.write_text(master_xml, encoding="utf-8")
 
     if verbose and pruned:
-        print(f"  Baseline layout prune: removed {pruned} unused base layout(s)")
+        print(f"  Layout prune: removed {pruned} unused base layout(s)")
     return pruned
 
 
@@ -3365,6 +3371,8 @@ def create_pptx_with_native_svg(
     theme_font_spec: ThemeFontSpec | None = None,
     master_text_style_spec: MasterTextStyleSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
+    structured_baseline: bool = False,
+    baseline_layout_specs: list[TemplateSlideSpec] | None = None,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
 
@@ -3414,10 +3422,18 @@ def create_pptx_with_native_svg(
         theme_font_spec: Locked project major/minor fonts for baseline/template
             theme inheritance. Preserve and flat modes ignore this value.
         master_text_style_spec: Required locked title/body sizes for template
-            slide-master text styles. Other structure modes ignore this value.
+            and structured-baseline slide-master text styles. Other structure
+            routes ignore this value.
         theme_color_spec: Locked project color scheme for context-aware
             baseline/template theme inheritance. Preserve and flat modes
             ignore this value.
+        structured_baseline: Explicitly route a baseline/free-design deck
+            through the reusable Layout compiler. This is an all-or-none
+            route selected by the project contract, never inferred here from
+            visual similarity or root metadata.
+        baseline_layout_specs: Fully parsed explicit Layout contracts for a
+            structured baseline deck. Required exactly when
+            ``structured_baseline`` is true.
 
     Returns:
         Whether all slides were successfully created.
@@ -3434,13 +3450,44 @@ def create_pptx_with_native_svg(
     use_compat_mode = False
     if pptx_structure not in {"baseline", "template", "preserve", "flat"}:
         raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
-    if pptx_structure == "template" and master_text_style_spec is None:
+    if structured_baseline and pptx_structure != "baseline":
         raise ValueError(
-            "Template export requires locked typography title/body sizes "
+            "structured_baseline is available only with pptx_structure='baseline'"
+        )
+    if structured_baseline:
+        if not baseline_layout_specs:
+            raise TemplateStructureError(
+                "Structured baseline export requires explicit Layout specs for every slide"
+            )
+        expected_slide_nums = list(range(1, len(svg_files) + 1))
+        actual_slide_nums = [spec.slide_num for spec in baseline_layout_specs]
+        if actual_slide_nums != expected_slide_nums:
+            raise TemplateStructureError(
+                "Structured baseline Layout specs must cover every generated slide "
+                "exactly once in slide order"
+            )
+        actual_paths = [spec.svg_path.resolve() for spec in baseline_layout_specs]
+        expected_paths = [svg_path.resolve() for svg_path in svg_files]
+        if actual_paths != expected_paths:
+            raise TemplateStructureError(
+                "Structured baseline Layout specs do not match the generated SVG files"
+            )
+    elif baseline_layout_specs is not None:
+        raise ValueError(
+            "baseline_layout_specs requires structured_baseline=True"
+        )
+    if (
+        pptx_structure == "template" or structured_baseline
+    ) and master_text_style_spec is None:
+        context = "Structured baseline" if structured_baseline else "Template"
+        raise ValueError(
+            f"{context} export requires locked typography title/body sizes "
             "in master_text_style_spec"
         )
     if use_native_shapes and pptx_structure == "template":
         template_specs = parse_template_slides(svg_files)
+    elif use_native_shapes and structured_baseline:
+        template_specs = baseline_layout_specs
     elif use_native_shapes and pptx_structure == "preserve":
         if native_structure_contract is None:
             raise TemplateStructureError(
@@ -3460,8 +3507,13 @@ def create_pptx_with_native_svg(
         })
         if native_placeholders:
             kinds = ", ".join(str(kind) for kind in native_placeholders)
+            context = (
+                "Structured baseline"
+                if structured_baseline
+                else pptx_structure.capitalize()
+            )
             raise TemplateStructureError(
-                f"Template {kinds} placeholder(s) require --native-objects so each "
+                f"{context} {kinds} placeholder(s) require --native-objects so each "
                 "marker becomes one native PowerPoint object"
             )
 
@@ -3503,7 +3555,12 @@ def create_pptx_with_native_svg(
                 "  Native table/chart objects: "
                 f"{'Enabled' if native_objects else 'Disabled'}"
             )
-            print(f"  PPTX structure: {pptx_structure}")
+            structure_label = (
+                "baseline (explicit layouts)"
+                if structured_baseline
+                else pptx_structure
+            )
+            print(f"  PPTX structure: {structure_label}")
             if image_optimize:
                 if image_sizing == 'display':
                     image_mode = (
@@ -3583,14 +3640,19 @@ def create_pptx_with_native_svg(
         )
         if active_theme_color_spec is not None:
             apply_theme_color_spec(extract_dir, active_theme_color_spec)
-        if pptx_structure == "template":
+        if pptx_structure == "template" or structured_baseline:
             master_count = apply_master_text_style_spec(
                 extract_dir,
                 master_text_style_spec,
             )
             if verbose:
+                context = (
+                    "Structured baseline"
+                    if structured_baseline
+                    else "Template"
+                )
                 print(
-                    "  Template master text styles: "
+                    f"  {context} master text styles: "
                     f"{master_count} master(s), "
                     f"title {master_text_style_spec.title_hpt / 100:g}pt, "
                     f"body {master_text_style_spec.body_hpt / 100:g}pt"
@@ -4078,33 +4140,52 @@ def create_pptx_with_native_svg(
                 extract_dir,
                 len(svg_files),
                 conversion_trace if conversion_trace is not None else structure_trace,
+                context=(
+                    "Structured baseline"
+                    if structured_baseline
+                    else "Baseline"
+                ),
                 verbose=verbose,
             )
-            _promote_common_slide_backgrounds_to_masters(
-                extract_dir,
-                structure,
-                len(svg_files),
-                verbose=verbose,
-            )
-            _promote_common_chrome_shapes_to_masters(
-                extract_dir,
-                structure,
-                len(svg_files),
-                conversion_trace if conversion_trace is not None else structure_trace,
-                verbose=verbose,
-            )
-            _extract_baseline_layout_families(
-                extract_dir,
-                structure,
-                svg_files,
-                verbose=verbose,
-            )
-            _promote_common_chrome_shapes_to_layouts(
-                extract_dir,
-                len(svg_files),
-                conversion_trace if conversion_trace is not None else structure_trace,
-                verbose=verbose,
-            )
+            if structured_baseline:
+                if template_specs is None:
+                    raise TemplateStructureError(
+                        "Structured baseline metadata was not parsed before export"
+                    )
+                _apply_explicit_layout_structure(
+                    extract_dir,
+                    structure,
+                    template_specs,
+                    conversion_trace if conversion_trace is not None else structure_trace,
+                    active_theme_font_spec,
+                    verbose=verbose,
+                )
+            else:
+                _promote_common_slide_backgrounds_to_masters(
+                    extract_dir,
+                    structure,
+                    len(svg_files),
+                    verbose=verbose,
+                )
+                _promote_common_chrome_shapes_to_masters(
+                    extract_dir,
+                    structure,
+                    len(svg_files),
+                    conversion_trace if conversion_trace is not None else structure_trace,
+                    verbose=verbose,
+                )
+                _extract_baseline_layout_families(
+                    extract_dir,
+                    structure,
+                    svg_files,
+                    verbose=verbose,
+                )
+                _promote_common_chrome_shapes_to_layouts(
+                    extract_dir,
+                    len(svg_files),
+                    conversion_trace if conversion_trace is not None else structure_trace,
+                    verbose=verbose,
+                )
             _prune_unused_slide_layouts(
                 extract_dir,
                 structure,
@@ -4128,7 +4209,7 @@ def create_pptx_with_native_svg(
                 raise TemplateStructureError(
                     "Template structure metadata was not parsed before export"
                 )
-            _apply_template_structure(
+            _apply_explicit_layout_structure(
                 extract_dir,
                 structure,
                 template_specs,
@@ -4258,18 +4339,23 @@ def create_pptx_with_native_svg(
                     zf.write(file_path, arcname)
         if (
             use_native_shapes
-            and pptx_structure == "template"
+            and (pptx_structure == "template" or structured_baseline)
             and success_count == len(svg_files)
         ):
             if template_specs is None:
                 raise TemplateStructureError(
-                    "Template structure metadata was not parsed before validation"
+                    "Explicit Layout metadata was not parsed before validation"
                 )
             try:
                 validate_pptx_template_package(temp_output_path, template_specs)
             except ValueError as exc:
+                context = (
+                    "Structured baseline"
+                    if structured_baseline
+                    else "Template"
+                )
                 raise TemplateStructureError(
-                    f"PPTX template package validation failed: {exc}"
+                    f"PPTX {context.lower()} package validation failed: {exc}"
                 ) from exc
         try:
             validate_pptx_transition_package(

@@ -38,7 +38,7 @@ description: >
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
 > 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
 > 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
-> 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also look up the confirmed `pptx_structure.template_adherence` when present, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), `page_layouts` (which template SVG to inherit), `page_charts` (which chart template to adapt, if any), and — when `pptx_structure.mode` is `template` or `preserve` — `pptx_layouts` (which native PowerPoint layout the page references). Deck/layout template routes require both mappings for every page: `strict` reuses the selected layout contract; `adaptive` may create a new explicit layout contract from the selected reference. Empty / absent `page_layouts` rows are reserved for free design and brand-only routes — see executor-base.md §2.1. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
+> 8. **SPEC_LOCK RE-READ PER PAGE** — Before generating each SVG page, Executor MUST `read_file <project_path>/spec_lock.md`. All colors / fonts / icons / images MUST come from this file — no values from memory or invented on the fly. Executor MUST also look up the confirmed `pptx_structure.template_adherence` when present, the current page's `page_rhythm` (`anchor` / `dense` / `breathing`), `pptx_layouts` (the native PowerPoint Layout every newly generated page references), `page_layouts` (the input template SVG, only for a deck/layout template route), and `page_charts` (which chart template to adapt, if any). Deck/layout template routes require both Layout mappings for every page: `strict` reuses the selected contract; `adaptive` may create a new explicit contract from the selected reference. Free-design and brand-only baseline routes require `pptx_layouts` but omit `page_layouts`; only legacy projects may omit the output mapping — see executor-base.md §2.1. This rule exists to resist context-compression drift on long decks and to break the uniform "every page is a card grid" default
 > 9. **SVG MUST BE HAND-WRITTEN, NOT SCRIPT-GENERATED** — Every SVG page is written by the main agent directly, one page at a time (see rules 6 and 7). Writing or running a Python / Node / shell script that produces the SVG files in batch — looping over pages, templating from data, or emitting them via a generator — is FORBIDDEN, including under "save tokens", "quick draft", or "user is in a hurry" pretexts. The script-generation path was tried on a feature branch and abandoned: cross-page visual consistency depends on per-page authoring with full upstream context, which a generator script cannot reproduce. **Narrow exception**: `preset_shape_svg.py` may print one deterministic stock-shape fragment to stdout after the main agent has selected its semantic role, frame, and paint. It cannot write `svg_output/`, choose layout, batch shapes, or generate a page; the main agent reads the fragment and inserts it through the normal hand-authored page edit
 > 10. **FOLLOW DETERMINISTIC ROUTING RULES** — Do not add blocking routing questions when this skill defines a route. If the user request violates a route precondition, state the required prerequisite and stop that route instead of asking the user to choose around the rule. Ordinary finite options, stylistic preferences, and recoverable details are surfaced with a recommended value plus alternatives at the next existing confirmation gate.
 
@@ -622,7 +622,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 > Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
-**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus the per-page `page_rhythm` / `page_layouts` / `page_charts` lookups and the route-specific `pptx_structure` / `pptx_layouts` native-layout contract. The contract is absent only on legacy/free inputs that have not yet been normalized; it is mandatory for every current template page. Resists context-compression drift on long decks. See executor-base.md §2.1.
+**Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus the per-page `page_rhythm` / `page_layouts` / `page_charts` lookups and the route-specific `pptx_structure` / `pptx_layouts` native-layout contract. The output Layout contract is absent only on legacy projects that have not yet been normalized; it is mandatory for every newly generated page. Resists context-compression drift on long decks. See executor-base.md §2.1.
 
 > ⚠️ **Main-agent only**: SVG generation MUST stay in the current main agent — page design depends on full upstream context. Do NOT delegate to sub-agents.
 > ⚠️ **Generation rhythm**: generate pages sequentially, one at a time, in the same continuous context. Do NOT batch (e.g., 5 per group).
@@ -631,7 +631,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 Each completed SVG MUST be a standalone, complete representation of that slide's visible design. Template SVGs and locked planning artifacts may guide construction, but export must not reach back to them to add visible objects omitted from `svg_output/`. Speaker notes, animation, narration, transitions, and direct native-PPTX workflows remain separately owned artifacts/capabilities. Before drawing a literal stock shape, apply [`native-shape-authoring.md`](references/native-shape-authoring.md): use the stdout-only helper when one PowerPoint preset exactly matches, keep basic SVG primitives for rect/round-rect/ellipse, and keep free SVG for custom semantics. Never infer a preset from contour similarity.
 
-Every `baseline` / free-design page root MUST declare one canonical `data-pptx-page-role`; `template` / `preserve` pages already declare `data-pptx-layout` and MUST NOT duplicate that identity merely to satisfy this rule. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
+Every newly generated page root MUST declare the locked `data-pptx-layout` and `data-pptx-layout-name`, including free-design/brand-only pages that remain in `baseline` mode. Do not duplicate that identity with `data-pptx-page-role`; only a legacy baseline project whose whole `pptx_layouts` section is absent uses the canonical page-role marker. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
 
 **Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
 ```bash
@@ -733,8 +733,21 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > **PPTX structure mode** — native export first reads
 > `spec_lock.md` `pptx_structure.mode`, then falls back to `baseline` when the
 > section is absent. An explicit `--pptx-structure` CLI value overrides the
-> lock for diagnostics. Baseline keeps the real slide master/layout
-> relationship from the base deck and promotes the strict-majority identical
+> lock for diagnostics. New free-design and brand-only baseline projects write
+> one `pptx_layouts` key/name per page. Every SVG repeats that mapping on its
+> root and explicitly marks reusable Master/Layout elements and native
+> placeholders. Export uses the same deterministic Layout compiler and
+> final-package read-back gate as template mode: pages with the same static
+> Layout/placeholder contract reuse one Layout, genuinely different
+> compositions use different Layouts, and concrete content remains Slide-local.
+> `page_layouts` stays absent because no input template was selected. If any
+> baseline page declares a Layout, every page must declare one and match the
+> lock; partial or unlocked metadata fails export. The exporter never clusters
+> pages by visual similarity.
+>
+> A legacy baseline project whose whole `pptx_layouts` section is absent keeps
+> the real slide master/layout relationship from the base deck and promotes the
+> strict-majority identical
 > native slide background into the slide master (every slide must carry an
 > explicit background; minority slides keep their own, which overrides the
 > master fill). Baseline may also promote a shared **leading** prefix of
@@ -753,7 +766,8 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > Filename tokens remain a compatibility fallback for marker-free legacy SVGs.
 > It also
 > preserves an existing safety `Cover` assignment made while hiding promoted
-> Master chrome. It does not inspect visual similarity or infer placeholders,
+> Master chrome. This legacy route does not inspect visual similarity or infer
+> placeholders,
 > and all actual page content remains slide-local. When every slide in one
 > family carries the exact same explicit background, that background moves to
 > the family layout. The same family may also promote an identical leading
@@ -798,47 +812,55 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > only so existing template packages and projects remain exportable; do not
 > select it for newly created templates.
 
-> **Explicit reusable template export** — deck/layout template routes set
+> **Explicit reusable Layout export** — deck/layout template routes set
 > `spec_lock.md` `pptx_structure.mode: template`. Every SVG root declares
 > `data-pptx-layout`, and direct children
 > explicitly declare master/layout layers, an optional Slide background, or
 > PowerPoint placeholders. This
-> mode builds named reusable layouts and placeholder mappings; it does not
-> infer them from visual similarity. Static master/layout elements must be
+> mode builds named reusable layouts and placeholder mappings. Structured
+> baseline uses the same metadata and compiler without an input template.
+> Neither route infers from visual similarity. Static master/layout elements
+> must be
 > repeated consistently in PowerPoint paint order. Chart/table placeholders
 > additionally require `--native-objects`. The metadata contract and authoring
 > example live in
-> [`references/shared-standards.md`](references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata-template-export).
+> [`references/shared-standards.md`](references/shared-standards.md#explicit-pptx-master--layout--placeholder-metadata).
 > Raw PPTX templates still route to `template-fill-pptx`; `template` structure
 > mode is for explicitly annotated SVG authoring. Both `strict` and `adaptive`
 > template use stay on this deterministic route. Adaptive pages may define new
 > layout keys, but they repeat the same Master layer and one internally
 > consistent Layout/placeholder contract.
-> Template export also installs the locked `typography.title` size into every
+> Structured baseline and template export also install the locked
+> `typography.title` size into every
 > Master `titleStyle` level and the locked `typography.body` size into every
 > `bodyStyle` and `otherStyle` level. Each text-bearing Layout placeholder also
 > writes its prototype run size to `a:lstStyle/a:lvl1pPr/a:defRPr@sz`, so a
 > newly inserted or reset placeholder keeps that Layout's local size before it
 > falls back to the Master. Generated slide runs and Layout prompt runs keep
-> their direct sizes. Missing or invalid locked title/body sizes fail template
-> export. Baseline, preserve, and flat modes do not apply either text-default
-> update.
-> Before publishing the temporary PPTX, template export reopens the finished
-> package and verifies `Presentation → Master ↔ Layout ← Slide` registration,
+> their direct sizes. Missing or invalid locked title/body sizes fail explicit
+> Layout export. Legacy baseline, preserve, and flat modes do not apply either
+> text-default update.
+> Before publishing the temporary PPTX, structured baseline and template export
+> reopen the finished
+> package and verify `Presentation → Master ↔ Layout ← Slide` registration,
 > named custom Layout parts and content types, collision-free placeholder
 > identities, prototype bounds, and prompt/level-one sizes. This read-back gate
-> is template-only and does not compare later same-Layout slides' local geometry
+> does not compare later same-Layout slides' local geometry
 > or direct text formatting.
-> In template mode, `pptx_layouts` contains exactly one locked
-> layout key/name per page; reuse a key for a shared structure instead of
-> creating one key per content instance.
+> In every new generated deck, `pptx_layouts` contains exactly one locked layout
+> key/name per page; reuse a key for a shared structure instead of creating one
+> key per content instance. Only a legacy baseline project may omit the whole
+> section and use page-role compatibility families.
 
 > **Paragraph editability vs line fidelity** — by default, mergeable dy-stacked
 > paragraph blocks collapse into one editable PowerPoint text frame with multiple
 > `<a:p>`, improving body-text editing and resize/reflow behavior. Add `--no-merge`
 > only when the user explicitly asks for strict line-layout fidelity or when a
 > layout-tight page must keep every dy-stacked line as its own text frame. The
-> merge detector is conservative; mixed-layout text falls back to per-line frames.
+> merge detector is conservative; mixed-layout text falls back to per-line
+> frames. A multiline `data-pptx-placeholder` must remain one native text frame;
+> do not combine it with `--no-merge`. Strict-line text stays Slide-local rather
+> than claiming one PowerPoint placeholder.
 
 > **Native table/chart objects** — supported data charts and pure text-grid
 > tables carry `data-pptx-native` markers by default (Executor transcribes
