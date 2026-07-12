@@ -691,9 +691,19 @@ def _next_layout_part_number(extract_dir: Path) -> int:
     return max(numbers, default=0) + 1
 
 
-def _next_slide_layout_id(extract_dir: Path, master_xml: str) -> int:
-    """Return an unused id for a new sldLayoutId entry."""
-    ids = [int(value) for value in re.findall(r'\bid="(\d{9,})"', master_xml)]
+def _next_slide_layout_id(extract_dir: Path) -> int:
+    """Return a package-wide unused id for a new sldLayoutId entry."""
+    ids: list[int] = []
+    masters_dir = extract_dir / "ppt" / "slideMasters"
+    for master_path in sorted(masters_dir.glob("slideMaster*.xml")):
+        master_root = ET.parse(master_path).getroot()
+        ids.extend(
+            int(entry.attrib["id"])
+            for entry in master_root.findall(
+                f"{{{PML_NS}}}sldLayoutIdLst/{{{PML_NS}}}sldLayoutId"
+            )
+            if entry.attrib.get("id", "").isdigit()
+        )
     presentation_path = extract_dir / "ppt" / "presentation.xml"
     if presentation_path.exists():
         ids.extend(
@@ -755,7 +765,7 @@ def _create_cover_layout(extract_dir: Path, master_part: str, base_layout_part: 
     rel_id = _append_relationship(master_rels_path, SLIDE_LAYOUT_REL_TYPE, layout_target)
 
     master_xml = master_path.read_text(encoding="utf-8")
-    layout_id = _next_slide_layout_id(extract_dir, master_xml)
+    layout_id = _next_slide_layout_id(extract_dir)
     entry = f'<p:sldLayoutId id="{layout_id}" r:id="{rel_id}"/>'
     if "</p:sldLayoutIdLst>" not in master_xml:
         raise RuntimeError(f"Slide master has no sldLayoutIdLst: {master_part}")
@@ -857,10 +867,7 @@ def _create_custom_layout(
     layout_list = master_root.find(f"{{{PML_NS}}}sldLayoutIdLst")
     if layout_list is None:
         raise RuntimeError(f"Slide master has no sldLayoutIdLst: {master_part}")
-    layout_id = _next_slide_layout_id(
-        extract_dir,
-        master_path.read_text(encoding="utf-8"),
-    )
+    layout_id = _next_slide_layout_id(extract_dir)
     ET.SubElement(
         layout_list,
         f"{{{PML_NS}}}sldLayoutId",
