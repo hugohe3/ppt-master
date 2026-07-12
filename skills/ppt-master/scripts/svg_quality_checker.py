@@ -1963,6 +1963,8 @@ class SVGQualityChecker:
             svg_path,
             require_structure=require_structure,
         ))
+        if svg_path.parent.name == 'svg_output':
+            self._append_structure_coverage_warnings(root, result)
         if _validate_template_structure_svg is None:
             result['errors'].append(
                 "Structured PPTX metadata validator could not be imported; "
@@ -1971,6 +1973,57 @@ class SVGQualityChecker:
             return
         result['errors'].extend(_validate_template_structure_svg(svg_path))
         result['errors'] = list(dict.fromkeys(result['errors']))
+
+    @staticmethod
+    def _append_structure_coverage_warnings(
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Warn on mapped pages that compile to bare Masters / empty Layouts.
+
+        Zero-slot and framing-only Layouts are legal contracts, so these stay
+        warnings; the workflow gate requires each one to be fixed or
+        explicitly kept with a stated reason.
+        """
+        if not (root.get('data-pptx-layout') or '').strip():
+            return
+        has_layer_mark = any(
+            elem.get('data-pptx-layer') is not None
+            for elem in root.iter()
+        )
+        has_layout_atom = any(
+            child.get('data-pptx-layer') == 'layout'
+            for child in list(root)
+        )
+        has_placeholder = any(
+            elem.get('data-pptx-placeholder') is not None
+            for elem in root.iter()
+        )
+        if not has_layer_mark:
+            result['warnings'].append(
+                'Mapped page declares data-pptx-layout but no data-pptx-layer '
+                'mark; the exported Master gets no shared background/chrome '
+                'and the Layout gets no static framing. Mark the deck-wide '
+                'background data-pptx-layer="master" and this layout key\'s '
+                'framing data-pptx-layer="layout".'
+            )
+        if not has_placeholder and not has_layout_atom:
+            result['warnings'].append(
+                'Mapped page has no placeholder slot and no '
+                'data-pptx-layer="layout" atom; its Layout exports empty. '
+                'Declare the slots the page actually has (title / subtitle / '
+                'body / picture / slide-number / footer) and mark the layout '
+                'key\'s static framing, or state why this fixed composition '
+                'is intentionally zero-slot.'
+            )
+        elif not has_placeholder:
+            result['warnings'].append(
+                'Mapped Layout has static framing but no insertable '
+                'placeholder slot. Keep it only when zero-slot is the '
+                'intended reusable contract; otherwise declare the slots the '
+                'page actually has (title / subtitle / body / picture / '
+                'slide-number / footer).'
+            )
 
     def _check_semantic_markers(
         self,

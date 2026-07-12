@@ -636,7 +636,7 @@ Each completed SVG MUST be a standalone, complete representation of that slide's
 
 Template pages MUST start from the complete `page_layouts` SVG, keep all inherited visible objects in `svg_output/`, and preserve the locked root Master/Layout identity plus stable atomic Master/Layout and slot ids. Strict keeps the prototype structure unchanged. Adaptive keeps its Master contract and, when Layout atoms or slot topology/bounds genuinely evolve, assigns a new key/name and updates `spec_lock.md` immediately. Non-mirror fill/stroke/effects/font sizes still follow `spec_lock`.
 
-Free-design and brand-only pages are also structured from the first draft. Use the planned Master roster and page Layout mapping, author Master/Layout fixed visuals only as direct root atoms (never `<g>`), and author reusable content zones as top-level slot groups with positive bounds plus exactly one compatible carrier. A Layout may intentionally have zero slots. Do not add `data-pptx-layout-kind`, `distilled`, `utility`, or a full-page fake slot.
+Free-design and brand-only pages are also structured from the first draft. Use the planned Master roster and page Layout mapping, author Master/Layout fixed visuals only as direct root atoms (never `<g>`), and author reusable content zones as top-level slot groups with positive bounds plus exactly one compatible carrier. Every mapped page MUST mark the standard slots it actually has — `title` / `subtitle` / `body` / `picture` / `slide-number` / `footer` — and its `data-pptx-layer` marks: the deck-wide background and every-page chrome as `master`, this layout key's static framing (including chrome repeated on content pages but absent from the cover) as `layout`, per [`executor-base.md`](references/executor-base.md) §1.2. Repeated chrome and per-page headings never stay Slide-local by default; a page shipping only a marked background exports a bare Master and an empty Layout. A Layout may intentionally have zero slots — a stated decision for a fixed composition, never a silent default. Do not add `data-pptx-layout-kind`, `distilled`, `utility`, or a full-page fake slot.
 
 Do not duplicate specialized identity with `data-pptx-role`. Add it only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
 
@@ -652,6 +652,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
+- **PPTX-structure warnings are the exception — never acknowledge-and-release.** For each empty-Layout / framing-only-Layout / bare-Master / duplicate-layout-key warning, output one disposition line: either the fix applied (merge keys in `spec_lock.md pptx_layouts` + SVG roots, mark the missing slots/layers) or why the flagged state is intended (e.g. "P01 cover is a fixed composition, zero-slot by design"). "0 errors" alone does not pass this gate.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
@@ -663,6 +664,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - [x] First-page gate run after page 1 (errors fixed before page 2)
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
+- [x] PPTX-structure warnings dispositioned one by one (each fixed or stated as intended)
 - [x] Speaker notes generated at notes/total.md
 ```
 

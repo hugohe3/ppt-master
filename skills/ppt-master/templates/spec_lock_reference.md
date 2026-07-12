@@ -148,8 +148,10 @@
 > One row per Master: `<master_key>: <PowerPoint picker name>`. Free design defaults to one Master. Add another only when the design genuinely needs it or the source PPTX carries multiple Masters. Keys are deck-unique and stable.
 
 ## pptx_layouts
-- P01: master-default | cover-visual | Cover Visual
-- P02: master-default | content-two-column | Two Column
+- P01: master-default | cover-hero-split | Cover — Hero Split
+- P02: master-default | kpi-band-trio | KPI Band Trio
+- P03: master-default | content-two-column | Two Column
+- P04: master-default | content-two-column | Two Column
 
 > Include exactly one row per page before SVG generation. Value format: `<master_key> | <layout_key> | <PowerPoint layout name>`.
 >
@@ -158,6 +160,8 @@
 > Strategist plans the initial family roster. Executor writes the declared structure while drawing each page. If adaptive template use genuinely changes the reusable framing or slot topology/bounds, create a new Layout key and update this mapping immediately; never silently mutate a reused key.
 >
 > Reuse one `(master_key, layout_key)` only when its ordered Layout atoms and slot ids/types/indices/bounds/binding modes are identical. Current text, imagery, crop, or Slide-local geometry does not define Layout identity.
+>
+> **Different reusable composition → different key.** Name keys after the composition (`timeline-spine`, `kpi-band-trio`), never after PowerPoint stock roles or page topics. Distinct compositions collapsing into stock-role keys (`title-content` for eight different pages) and one shared skeleton splitting into per-topic keys (`allocation-fengqing` / `allocation-luoping` over identical framing) both produce Layout rosters that do not match the deck; the quality checker flags the second as duplicate Layouts.
 >
 > A Layout may have zero slots. Do not create an empty `utility` kind or a full-page fake `object` slot; the named Layout and its fixed atoms are sufficient.
 
