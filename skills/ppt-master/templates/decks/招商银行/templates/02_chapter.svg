@@ -7,7 +7,7 @@
   <circle cx="140" cy="620" r="170" fill="#7F0B17" fill-opacity="0.4"/>
   <rect x="738" y="0" width="542" height="720" fill="#7F0B17" fill-opacity="0.16"/>
 
-  <image href="logo_white.png" x="948" y="42" width="250" height="60"/>
+  <image href="../images/logo_white.png" x="948" y="42" width="250" height="60"/>
   <line x1="904" y1="118" x2="1204" y2="118" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.18"/>
 
   <rect x="96" y="144" width="10" height="320" fill="#FFFFFF" fill-opacity="0.9"/>

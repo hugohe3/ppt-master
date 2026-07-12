@@ -29,7 +29,7 @@
   <rect x="448" y="100" width="4" height="520" fill="url(#goldLine)"/>
   
   <!-- Logo（左侧色块中央，白色版本） -->
-  <image x="75" y="260" width="300" height="90" xlink:href="重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
+  <image x="75" y="260" width="300" height="90" xlink:href="../images/重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
   
   <!-- 左侧底部年份水印 -->
   <text x="225" y="650" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.15" font-family="Arial, sans-serif" font-size="72" font-weight="bold">CQU</text>

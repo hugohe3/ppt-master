@@ -10,6 +10,7 @@ Usage:
 Examples:
     python3 scripts/template_preview_pptx.py projects/my_template
     python3 scripts/template_preview_pptx.py templates/decks/my_template -o review.pptx
+    python3 scripts/template_preview_pptx.py templates/decks/legacy --visual-only
 
 Dependencies:
     python-pptx
@@ -180,6 +181,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Replace an existing review PPTX after an intentional re-export.",
     )
+    parser.add_argument(
+        "--visual-only",
+        action="store_true",
+        help=(
+            "Export a legacy SVG roster as slide-local DrawingML for visual review. "
+            "This does not validate or claim a reusable Master/Layout contract."
+        ),
+    )
     return parser
 
 
@@ -206,13 +215,18 @@ def main(argv: list[str] | None = None) -> int:
                 f"output already exists: {output_path}; use --force to replace it"
             )
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        text_style, title_px, body_px = _master_text_style(svg_files)
+        text_style: MasterTextStyleSpec | None = None
+        if not args.visual_only:
+            text_style, title_px, body_px = _master_text_style(svg_files)
 
         print("PPT Master - Template Preview PPTX Exporter")
         print(f"  Workspace: {workspace}")
         print(f"  Template source: {template_dir}")
         print(f"  SVG prototypes: {len(svg_files)}")
-        print(f"  Review Master defaults: title {title_px:g}px, body {body_px:g}px")
+        if args.visual_only:
+            print("  Review mode: visual-only legacy compatibility")
+        else:
+            print(f"  Review Master defaults: title {title_px:g}px, body {body_px:g}px")
         print(f"  Output: {output_path}")
 
         success = create_pptx_with_native_svg(
@@ -225,7 +239,7 @@ def main(argv: list[str] | None = None) -> int:
             animation=None,
             image_optimize=False,
             native_objects=True,
-            pptx_structure="structured",
+            pptx_structure="flat" if args.visual_only else "structured",
             master_text_style_spec=text_style,
         )
         if not success or not output_path.is_file():
@@ -241,8 +255,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 1
 
+        label = "Visual-only template preview" if args.visual_only else "Template preview"
         print(
-            "[OK] Template preview verified: "
+            f"[OK] {label} verified: "
             f"{slide_count} slides, {master_count} master(s), {layout_count} layout(s)"
         )
         print(output_path)

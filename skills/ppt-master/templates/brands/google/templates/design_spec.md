@@ -45,8 +45,8 @@ Google uses a dual-lockup brand system — pick by context, never combine on the
 
 | File | Form | Usage |
 |---|---|---|
-| `./google_wordmark.svg` | Full "Google" wordmark (272×92) | Cover hero, ending sign-off, any moment the full brand reads at a glance |
-| `./google_g_logo.svg` | Square multi-color "G" mark (24×24) | Header / footer corners, page-number neighbors, tight badges, any small-size moment where the wordmark would become illegible |
+| `../images/google_wordmark.svg` | Full "Google" wordmark (272×92) | Cover hero, ending sign-off, any moment the full brand reads at a glance |
+| `../images/google_g_logo.svg` | Square multi-color "G" mark (24×24) | Header / footer corners, page-number neighbors, tight badges, any small-size moment where the wordmark would become illegible |
 
 - Cover: prefer wordmark
 - Per-page: optional — only when wordmark or G mark genuinely fits the layout; do not stamp every page

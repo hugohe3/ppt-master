@@ -9,7 +9,7 @@
     </linearGradient>
   </defs>
   <rect x="0" y="30" width="180" height="4" fill="url(#accentFade)"/>
-  <image href="logo_dark.png" x="940" y="42" width="280" height="48" preserveAspectRatio="xMidYMid meet"/>
+  <image href="../images/logo_dark.png" x="940" y="42" width="280" height="48" preserveAspectRatio="xMidYMid meet"/>
 
 
   <text x="72" y="88" fill="#1F1F1F" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="26" font-weight="700">
@@ -44,4 +44,3 @@
   </text>
 
 </svg>
-

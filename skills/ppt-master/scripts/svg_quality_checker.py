@@ -2379,11 +2379,11 @@ class SVGQualityChecker:
             print(f"[ERROR] Directory does not exist: {directory}")
             return []
 
-        # Brand-only template directories (templates/brands/<id>/) have no SVG
-        # roster — design_spec.md frontmatter declares `kind: brand`. Skip SVG
-        # checks entirely; brand validation lives in register_template.py.
+        # Brand-only template workspaces have no SVG roster. Resolve the current
+        # nested spec first and keep legacy-flat roots readable.
         if self.template_mode and dir_path.is_dir():
-            spec = dir_path / 'design_spec.md'
+            nested_spec = dir_path / 'templates' / 'design_spec.md'
+            spec = nested_spec if nested_spec.is_file() else dir_path / 'design_spec.md'
             if spec.exists() and _design_spec_is_brand(spec):
                 print(
                     f"[INFO] Brand directory detected (kind: brand) — "

@@ -10,9 +10,10 @@ Three kinds, three workspace roots, three index files (see
 | layout  | ``templates/layouts/``  | ``layouts_index.json``        |
 | deck    | ``templates/decks/``    | ``decks_index.json``          |
 
-Current layout/deck workspaces keep the source roster under
-``<workspace>/templates/`` and the review PPTX under ``<workspace>/exports/``.
-Legacy flat roots remain readable. Brand packaging is unchanged.
+Current workspaces keep ``design_spec.md`` and any SVG roster under
+``<workspace>/templates/``. Assets live in optional ``images/`` / ``icons/``
+directories. Explicitly generated review artifacts go to the optional, ignored
+``exports/`` directory. Legacy flat roots remain readable.
 
 Index entry schemas (the JSON file is the single source of truth — README
 files describe the kind and usage in prose but do **not** enumerate templates;

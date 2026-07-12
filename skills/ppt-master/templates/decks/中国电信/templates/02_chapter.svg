@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="02_chapter" data-pptx-layout-name="Section">
   <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-02_chapter-background" data-pptx-layer="layout" data-pptx-editable="false"/>
   <rect x="72" y="84" width="112" height="8" rx="4" fill="#C00000" />
-  <image x="1016" y="44" width="192" height="52" xlink:href="logo.png" preserveAspectRatio="xMaxYMid meet" />
+  <image x="1016" y="44" width="192" height="52" xlink:href="../images/logo.png" preserveAspectRatio="xMaxYMid meet" />
 
   <text x="96" y="244" fill="#C00000" fill-opacity="0.14" font-family="Arial, sans-serif" font-size="176" font-weight="700">{{CHAPTER_NUM}}</text>
   <text x="96" y="316" fill="#111827" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="42" font-weight="700" id="slot-02_chapter-title-1" data-pptx-placeholder="title">{{CHAPTER_TITLE}}</text>
@@ -25,5 +25,5 @@
   <circle cx="966" cy="424" r="8" fill="#C00000" fill-opacity="0.32" />
   <circle cx="998" cy="424" r="8" fill="#C00000" fill-opacity="0.48" />
 
-  <image x="0" y="590" width="1280" height="130" xlink:href="footer_ribbon.png" preserveAspectRatio="xMidYMid slice" />
+  <image x="0" y="590" width="1280" height="130" xlink:href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice" />
 </svg>

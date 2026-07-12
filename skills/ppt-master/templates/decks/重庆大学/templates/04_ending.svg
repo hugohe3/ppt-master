@@ -21,7 +21,7 @@
   <rect x="0" y="6" width="1280" height="2" fill="#D4A84B"/>
   
   <!-- 中央 Logo（大尺寸） -->
-  <image x="390" y="160" width="500" height="150" xlink:href="重庆大学logo.png" preserveAspectRatio="xMidYMid meet"/>
+  <image x="390" y="160" width="500" height="150" xlink:href="../images/重庆大学logo.png" preserveAspectRatio="xMidYMid meet"/>
   
   <!-- 金色装饰分隔线 -->
   <rect x="490" y="340" width="300" height="2" fill="url(#goldAccent)"/>

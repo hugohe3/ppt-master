@@ -48,10 +48,10 @@ POWERCHINA templates may use the group brand logo or subsidiary logos depending 
 
 | File | Form | Usage |
 |---|---|---|
-| `./电建logo.png` | POWERCHINA symbol / primary mark (234x236) | Cover, ending, and compact brand moments where the group identity is required |
-| `./中国水务logo.png` | China Water logo lockup (1108x190) | Subsidiary-led water-business reports; cover or ending lockup |
-| `./华东院logo.png` | East China Institute logo lockup (1438x300) | Institute-led technical reports and engineering proposals |
-| `./水电三局logo.png` | Sinohydro Bureau 3 logo lockup (629x75) | Bureau-led project reports and construction updates |
+| `../images/电建logo.png` | POWERCHINA symbol / primary mark (234x236) | Cover, ending, and compact brand moments where the group identity is required |
+| `../images/中国水务logo.png` | China Water logo lockup (1108x190) | Subsidiary-led water-business reports; cover or ending lockup |
+| `../images/华东院logo.png` | East China Institute logo lockup (1438x300) | Institute-led technical reports and engineering proposals |
+| `../images/水电三局logo.png` | Sinohydro Bureau 3 logo lockup (629x75) | Bureau-led project reports and construction updates |
 
 - Cover / ending: use the selected primary logo at readable size.
 - Per-page header: optional; use a compact logo only when it does not crowd the title bar.

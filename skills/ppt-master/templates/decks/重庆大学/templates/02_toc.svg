@@ -23,7 +23,7 @@
   <text x="60" y="60" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="26" font-weight="bold" id="slot-02_toc-title-1" data-pptx-placeholder="title">{{TOC_TITLE}}</text>
   
   <!-- Logo -->
-  <image x="1040" y="15" width="200" height="50" xlink:href="重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
+  <image x="1040" y="15" width="200" height="50" xlink:href="../images/重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
   
   <!-- 目录内容区 -->
   <!-- 左侧大号数字区域 -->
