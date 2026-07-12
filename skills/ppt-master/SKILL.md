@@ -125,10 +125,10 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Raw PPTX template plus new material/topic, generate a PPTX | [`template-fill-pptx`](workflows/template-fill-pptx.md) |
 | Existing PPTX, preserve page count/order and slide wording 1:1, improve layout | [`beautify-pptx`](workflows/beautify-pptx.md) |
 | Existing PPTX as source material, rethink outline or change page count/order | Main pipeline via `source_to_md.py` plus PPTX intake |
-| Build a reusable template package from a PPTX/design reference | [`create-template`](workflows/create-template.md), then return with the generated template directory path |
+| Build a reusable template package from a PPTX/design reference | [`create-template`](workflows/create-template.md), then return with the generated template workspace path |
 | Finished PPTX, keep content/layout stable and add notes/audio/timing/transitions | [`native-enhance-pptx`](workflows/native-enhance-pptx.md) |
 
-**MUST**: Raw `.pptx` template plus "generate PPTX" routes to `template-fill-pptx` by default. The SVG generation route consumes only an explicit template directory path that already contains a valid template `design_spec.md`.
+**MUST**: Raw `.pptx` template plus "generate PPTX" routes to `template-fill-pptx` by default. The SVG generation route consumes only an explicit template workspace path with a valid `templates/design_spec.md`, or a supported direct/legacy package root with `design_spec.md`.
 
 **MUST**: Beautify is strictly 1:1. Any split, merge, drop, reorder, or page-count change routes to the main pipeline.
 
@@ -219,21 +219,21 @@ Multi-deck: several PPTX files may be imported into one main-pipeline project �
 
 **Default — free design.** Proceed directly to Step 4. Do NOT query any `*_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
 
-**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template directory path. Step 3 only consumes an explicit template directory that already contains `design_spec.md` with `kind: brand` / `kind: layout` / `kind: deck`.
+**Hard boundary — raw PPTX template references are not Step 3 templates.** PPTX-as-source remains valid in Step 1 / Step 2, and raw PPTX template + generated PPTX routes to `template-fill`. But if the user wants the SVG/template-based generation route from that PPTX, stop before Step 3. The user must first run [`workflows/create-template.md`](workflows/create-template.md), then return with the generated template workspace path. Step 3 consumes an explicit workspace whose `templates/design_spec.md` declares `kind: layout` / `kind: deck`, a direct brand package, or a legacy flat package whose root `design_spec.md` declares one of those kinds.
 
 Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use `template-fill` for raw PPTX template + generated PPTX requests; use `beautify` only when the source deck's page count, order, and wording are preserved.
 
-**Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message, plus one narrow workflow handoff: a project-scoped `create-template` run in the current conversation may pass its exact validated `<project>/templates/` output directly into this Step. The trigger rule is mechanical, not interpretive:
+**Template flow triggers ONLY on explicit directory paths** supplied by the user in their initial message, plus one narrow workflow handoff: a project-scoped `create-template` run in the current conversation may pass its exact validated project workspace root directly into this Step. The trigger rule is mechanical, not interpretive:
 
 | User input contains | Step 3 action |
 |---|---|
-| One or more explicit template directory paths (each resolves to a directory containing `design_spec.md` with `kind: brand` / `kind: layout` / `kind: deck` in its YAML frontmatter) | Read each spec's `kind`, dispatch per the kind matrix below, fuse if multiple |
-| Current `create-template` workflow just completed project scope and validated its exact `<project>/templates/` output | Consume that single directory in place; it cannot join multi-path fusion |
+| One or more explicit template workspace paths (each resolves to `templates/design_spec.md`, or to a legacy/direct root `design_spec.md`, with `kind: brand` / `kind: layout` / `kind: deck` in YAML frontmatter) | Normalize each source directory, read its `kind`, dispatch per the kind matrix below, fuse if multiple |
+| Current `create-template` workflow just completed project scope and validated its exact `<project>/` workspace | Consume that single workspace in place; it cannot join multi-path fusion |
 | Anything else — bare template names ("用 academic_defense"), style descriptions ("麦肯锡风格"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
 There is no slug matching, no name lookup, no fuzzy resolution. A name without a path does not trigger — the user must give a path the AI can `cd` into.
 
-**Structured-template preflight (before copy)**: For every deck/layout path, inspect all template SVG roots and slots. Every page must declare root Master/Layout key and picker names; Master/Layout visuals must be direct atoms rather than `<g>`; every slot must be a top-level `<g>` with positive bounds and exactly one compatible carrier, or an explicit composite `object` proxy. A zero-slot Layout is valid. If the package uses a legacy contract, run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) first and return to Step 3 with the migrated directory. Do not copy a legacy package into the project and defer migration.
+**Structured-template preflight (before copy)**: For every deck/layout workspace, inspect all SVG roots and slots under its normalized template source. Every page must declare root Master/Layout key and picker names; Master/Layout visuals must be direct atoms rather than `<g>`; every slot must be a top-level `<g>` with positive bounds and exactly one compatible carrier, or an explicit composite `object` proxy. A zero-slot Layout is valid. If the SVG package uses a legacy semantic contract, run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) first and return to Step 3 with the migrated workspace. A legacy flat directory shape alone is read compatibility and does not trigger restoration.
 
 > Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) never trigger Step 3. They flow into the Strategist confirmation stage as a style brief (color / typography / tone in fields e–g).
 
@@ -249,9 +249,9 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 
 | Kind | Physical dir | Contains | Frontmatter |
 |---|---|---|---|
-| **brand** | `templates/brands/<id>/` | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
-| **layout** | `templates/layouts/<id>/` | structure-only segment: canvas / page structure / page types / SVG roster | `kind: layout` |
-| **deck** | `templates/decks/<id>/` | full replica: identity + structure + middle (template overview) segments | `kind: deck` |
+| **brand** | `templates/brands/<id>/` (direct package; `create-brand` contract) | identity-only segment: color / typography / logo / voice / icon style | `kind: brand` |
+| **layout** | `templates/layouts/<id>/templates/` inside a complete workspace | structure-only segment: canvas / page structure / page types / SVG roster | `kind: layout` |
+| **deck** | `templates/decks/<id>/templates/` inside a complete workspace | full replica: identity + structure + middle (template overview) segments | `kind: deck` |
 
 **Segment ownership** (governs fusion override priority):
 
@@ -265,46 +265,29 @@ The architecture has three independent reference bundles. Full schema in [`docs/
 
 | User path's `kind` | Step 3 action |
 |---|---|
-| `kind: brand` | `design_spec.md` + non-image assets → `<project>/templates/`; logo / illustration / icon **bitmaps** → `<project>/images/`. Strategist locks identity segment as truth; structure stays free. |
-| `kind: layout` | `design_spec.md` + SVG roster → `<project>/templates/`; any **bitmap** assets → `<project>/images/`. Strategist locks structure; identity decided in Strategist confirmation stage e–g. |
-| `kind: deck` | `design_spec.md` + template SVGs → `<project>/templates/`; logos / backgrounds / other **bitmaps** → `<project>/images/`. Strategist locks all segments; Strategist confirmation stage narrows to deck-content fields (audience / page count / outline / tone tweaks). |
+| `kind: brand` | Install the direct package's spec/non-image assets in `<project>/templates/` and bitmaps in `<project>/images/`. Strategist locks identity; structure stays free. |
+| `kind: layout` | Install the workspace's `templates/`, `images/`, and `icons/` into the matching project roots; ignore `exports/`. Strategist locks structure; identity is decided in confirmation fields e–g. |
+| `kind: deck` | Install the workspace's `templates/`, `images/`, and `icons/` into the matching project roots; ignore `exports/`. Strategist locks all segments; confirmation narrows to deck-content fields. |
 
-```bash
-TEMPLATE_DIR="<user-supplied path>"
-PROJECT_TEMPLATES="<project_path>/templates"
-resolve_path() {
-  python3 -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve())' "$1"
-}
-# Bitmaps join the project's single runtime image pool (images/, referenced as
-# ../images/); the spec + template SVGs + other non-image assets stay in
-# templates/ as design reference the Strategist/Executor read but never render.
-if [ "$(resolve_path "${TEMPLATE_DIR}")" = "$(resolve_path "${PROJECT_TEMPLATES}")" ]; then
-  # Project-scoped create-template output is already staged in place.
-  true
-else
-  cp -r "${TEMPLATE_DIR}"/. "${PROJECT_TEMPLATES}/"
-  find "${PROJECT_TEMPLATES}" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' -o -iname '*.bmp' \) -exec mv {} "<project_path>/images/" \;
-fi
-```
+Normalize every explicit path before any write:
 
-The same split applies to all three kinds — bitmaps always land in `images/`, the rest in `templates/`. The spec's `kind` field tells Strategist how to read the `templates/` side; downstream code doesn't distinguish. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
+| Input shape | Spec / SVG source | Asset source | Install rule |
+|---|---|---|---|
+| Current Layout/Deck workspace: `<root>/templates/design_spec.md` | `<root>/templates/` | `<root>/images/`, `<root>/icons/` | Map those three roots to the target project's matching roots; ignore `<root>/exports/` |
+| Direct Brand package: `<root>/design_spec.md`, `kind: brand` | `<root>/` | Package-local files | Spec/non-bitmap assets → project `templates/`; bitmaps → project `images/` |
+| Compatible legacy-flat Layout/Deck: `<root>/design_spec.md` | `<root>/` | Package-local files | Preserve the existing flat-package routing: SVG/spec/non-bitmaps → project `templates/`; bitmaps → project `images/`; route declared icons to project `icons/` |
 
-When `create-template` used project output scope, its directory is already the
-target project's `templates/` root and its bitmap/icon runtime copies are already
-in their final project pools. Resolve both paths before copying: equality means
-**in-place consumption**, so skip both the copy and bitmap move. An in-place
-directory is one complete bundle and cannot participate in multi-path fusion;
-use external library bundles for fusion. Never place the local bundle under a
-nested `templates/local_master/` directory because the confirmation and quality
-gates read the project `templates/` root.
+**Atomic install preflight (mandatory)**: Resolve source and destination paths, enumerate the complete file mapping, and reject every destination collision before copying any file. Equality between a current project workspace root and the target project root means in-place consumption and no copy. For an external single path, a collision stops Step 3 rather than overwriting. For multi-path fusion, do not copy packages sequentially: resolve segment conflicts and asset-name conflicts first, construct one final mapping, then write it once. Never use recursive copy as an implicit conflict policy.
 
-A project-scoped bundle belongs only to its target project: its SVGs may refer
-to sibling `../images/` and runtime `../icons/` pools that are outside the
-template root. Do not copy another project's `templates/` root as an external
-bundle. For cross-project reuse, recreate/promote the design with
-`create-template` library scope so the package is self-contained.
+Never infer that a flat directory has legacy Master/Layout semantics solely from packaging.
 
-Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy or consume them through Step 3. Run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) on the package first, then return with the migrated directory path. This applies to the repository's existing built-in legacy SVG packages until their assets are explicitly migrated.
+The same current-workspace split applies to layout and deck: source/spec in `templates/`, bitmaps in `images/`, runtime vectors in `icons/`, review artifacts in `exports/`. The spec's `kind` tells Strategist how to read the installed source. Template SVGs are not export-time overlays: visible output still lives completely in `svg_output/`. Their complete visuals and explicit Master/Layout/placeholder metadata are nevertheless the authoring prototypes selected by `page_layouts`.
+
+When `create-template` used project output scope, its workspace root is the target project itself and all core directories are already final. Resolve both roots before copying: equality means **in-place consumption**, so skip the installation. An in-place workspace cannot participate in multi-path fusion; use external workspaces for fusion. Never place the local source under a nested `templates/local_master/` directory because the confirmation and quality gates read the project `templates/` root.
+
+A project-scoped workspace has the same portable core structure as a library workspace. It may be copied or promoted across roots as one unit (`templates/`, `images/`, `icons/`); `exports/` stays review-only. Do not pass only another project's `templates/` subdirectory because that would omit sibling assets.
+
+Legacy template packages may ship `native_structure.json` + `source_template.pptx`, omit root Master identity, use direct atomic placeholders, or carry old baseline/distillation metadata. Do not copy or consume those semantic contracts through Step 3. Run [`restore-pptx-structure`](workflows/restore-pptx-structure.md) on the package first, then return with the migrated workspace path. Old flat packaging remains readable when its SVG structure is already current.
 
 The Strategist confirmation stage decides whether the selected template is used `strict` or `adaptive`. New projects use `pptx_structure.mode: structured`, map every page to one input SVG in `page_layouts`, and write complete `pptx_masters` / `pptx_layouts` output mappings before SVG generation. Strict preserves the referenced Master/Layout/slot contract. Adaptive keeps the template Master and may assign a new Layout key during authoring when the composition genuinely changes. Non-mirror paint and typography follow the project skin rules.
 

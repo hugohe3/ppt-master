@@ -84,7 +84,7 @@
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 
-- **原生 package 结构 + 保守 PPTX 对象回转** — 自由设计的 baseline 只提升安全共享背景/chrome，分配文件名页型 Layout，并可进一步提升家族内完全一致的前置 chrome，不推断 placeholder。模板路线确定性编译完整 SVG 中显式声明的 Master/Layout/placeholder，并把锁定 title/body 字号写入母版 `p:txStyles`，不改变页面直接 run 字号。`create-template` 只把源结构当分析输入并统一重建显式 SVG；`strict` 保持所选 Layout，`adaptive` 可在同一 Master 下新建 Layout。默认 `library` 输出继续进入全局索引，`project` 输出则把同一薄模板合同直接安装到一个已初始化项目的模板根目录，不做全局注册。旧 `preserve` 仅保留兼容读取；原始 PPTX 的一次性回填仍走 `template-fill-pptx`。
+- **原生 package 结构 + 保守 PPTX 对象回转** — 每个新 SVG 页面在创作时就声明最终 Master/Layout 身份。固定 Master/Layout 视觉是根级原子，可复用槽位是带真实 carrier 或显式 composite proxy 的有界顶层 group，零槽位 Layout 也合法。导出只确定性编译该合同，把锁定 title/body 字号写入母版 `p:txStyles`，并执行最终 package 回读；不提升重复 chrome，也不推断 placeholder。`create-template` 只把源结构当分析输入并统一重建显式 SVG；`strict` 保持所选 Layout，`adaptive` 可在同一 Master 下新建 Layout。`library` 与 `project` 输出统一采用完整的 `templates/` + `images/` + `icons/` + `exports/<id>_template_preview.pptx` 工作区结构，仅全局注册不同。旧 baseline/template/preserve SVG 包先运行 `restore-pptx-structure`；原始 PPTX 的一次性回填仍走 `template-fill-pptx`。
 
 ---
 

@@ -31,18 +31,18 @@ For the first, give the AI your `.pptx` plus your material (or a topic) and ask 
 You: Replicate this as a template via /create-template: projects/brand/our_deck.pptx
 ```
 
-That runs `pptx_template_import.py` and rebuilds the file into a reusable bundle — layout SVGs + `design_spec.md` + extracted theme colors, fonts, and images. That bundle is what you point to at generation time.
+That runs `pptx_template_import.py` and rebuilds the file into a reusable workspace — layout SVGs + `design_spec.md` + extracted theme colors, fonts, and images. It also exports `exports/<id>_template_preview.pptx`, so you can open the reconstructed template in PowerPoint and judge it before generation. The workspace root is what you point to at generation time.
 
-During the create-template brief, choose `library` (the existing default) or `project`. Project scope requires an initialized target project, verifies the project template root and asset names before writing, then installs the bundle directly into that project without global registration.
+During the create-template brief, choose `library` (the existing default) or `project`. Both create the same complete `templates/`, `images/`, `icons/`, and `exports/` workspace. Project scope requires an initialized target project; library scope alone adds global registration.
 
 A created template lives in one of two places:
 
 | Location | Path | Notes |
 |---|---|---|
-| **Registered in the skill library** | `skills/ppt-master/templates/layouts/<id>/` | Global, reusable across every project; run `register_template.py` so it shows up when you ask "what templates are available?" |
-| **Inside a project** | `projects/<project>/templates/` | Private to that owning project; consumed in place, no registration needed |
+| **Registered in the skill library** | `skills/ppt-master/templates/<kind>/<id>/` | Complete workspace plus global registration, so it appears when you ask "what templates are available?" |
+| **Under projects** | `projects/<name>/` | The same complete workspace without global registration |
 
-For a library package, invoke it during generation by giving its **directory path** in chat. A project-scoped create-template run may hand its exact validated path directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. To reuse a project-scoped design in another project, recreate it with `library` scope because its image/icon pools live beside the owning project's template root.
+Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for compatibility it also accepts older flat packages whose `design_spec.md` is directly at the supplied root. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
 You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/academic_defense/
@@ -60,7 +60,7 @@ The whole loop is three steps. Install first — you only need Python; see [Quic
 2. **Tell the AI in chat** what to turn into a deck (add a template path if you set one up above; otherwise it's free design):
    ```
    You: Make a deck from projects/q3-report/sources/report.pdf
-   You: 把这份内容做成 PPT：<paste your text>
+   You: Turn this text into a deck: <paste your text>
    ```
 3. **Get an editable `.pptx`** at `exports/<name>_<timestamp>.pptx` — real DrawingML shapes, text boxes, and charts you can click and edit in PowerPoint, Keynote, WPS, or LibreOffice.
 
@@ -98,7 +98,7 @@ Turn the speaker notes into per-slide voice narration, embed the audio back into
 
 ```
 You: Generate narration for this deck and re-export with audio embedded.
-You: 给这个 PPT 生成音频
+You: Generate narration audio for this deck
 ```
 
 Narration defaults to `edge-tts` (about 90 locales); optional cloud providers cover higher-quality voices. The AI recommends a voice for the deck's language and asks once before generating.

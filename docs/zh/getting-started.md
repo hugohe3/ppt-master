@@ -31,18 +31,18 @@
 你：用 /create-template 把这个复刻成模板：projects/brand/our_deck.pptx
 ```
 
-这会跑 `pptx_template_import.py`,把文件重建成可复用的资产包——版式 SVG + `design_spec.md` + 抽取出的主题色、字体、图片。生成时引用的就是这个资产包。
+这会跑 `pptx_template_import.py`,把文件重建成可复用工作区——版式 SVG + `design_spec.md` + 抽取出的主题色、字体、图片。它还会导出 `exports/<id>_template_preview.pptx`,方便先在 PowerPoint 里判断模板还原效果。生成时引用的是工作区根目录。
 
-在 create-template brief 中选择 `library`（沿用原默认）或 `project`。项目范围要求给出已初始化的目标项目；写入前统一检查模板根目录和素材文件名，再把 bundle 直接安装到该项目，不做全局注册。
+在 create-template 简报中选择 `library`（沿用原默认）或 `project`。两种范围都会创建完整且相同的 `templates/`、`images/`、`icons/` 与 `exports/` 工作区。项目范围要求给出已初始化的目标项目；只有全局库范围会执行注册。
 
 复刻出的模板可以放在两个位置之一:
 
 | 位置 | 路径 | 说明 |
 |---|---|---|
-| **注册进 skill 库** | `skills/ppt-master/templates/layouts/<id>/` | 全局,所有项目可复用;跑 `register_template.py` 后,问"有哪些模板"时会被列出来 |
-| **放进项目里** | `projects/<project>/templates/` | 只归属该项目;原地消费,无需注册 |
+| **注册进 skill 库** | `skills/ppt-master/templates/<kind>/<id>/` | 完整工作区并执行全局注册；问“有哪些模板”时会被列出来 |
+| **放在 projects 下** | `projects/<name>/` | 相同的完整工作区，不执行全局注册 |
 
-全局库 package 在生成时靠对话里给出**目录路径**来引用；项目范围 create-template 可在同一对话里把已验证的精确路径直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。若要把项目范围设计复用于另一个项目，应重新以 `library` 范围创建，因为图片/图标池位于原项目模板根目录的同级位置。
+两种结果都通过对话里给出**工作区根目录路径**来引用。Step 3 会解析 `templates/design_spec.md`；为兼容旧包，也接受 `design_spec.md` 直接位于所给根目录的平铺形态。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
 
 ```
 你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/academic_defense/

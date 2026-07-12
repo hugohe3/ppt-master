@@ -1,6 +1,6 @@
 # Technical Design
 
-[English](./technical-design.md) | [中文](./zh/technical-design.md)
+[English](./technical-design.md) | [Chinese](./zh/technical-design.md)
 
 ---
 
@@ -24,7 +24,7 @@ User Input (PDF/DOCX/XLSX/PPTX/URL/Markdown/topic text)
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
 [Template / Brand / Layout (optional)] — default: skip, proceed with free design
-    Trigger only on an explicit template directory path containing design_spec.md kind: brand/layout/deck
+    Trigger only on an explicit Layout/Deck workspace root or direct Brand/legacy package path
     Raw PPTX template requests route to template-fill; reusable SVG templates are created by create-template first
     ↓
 [Strategist] - three-stage Strategist confirmation stage & Design Specifications → design_spec.md + spec_lock.md
@@ -97,8 +97,8 @@ Use this table before reasoning about implementation details. Most failed runs s
 | Raw PPTX template plus new material/topic | `template-fill-pptx` | clone/fill native slides; no SVG generation |
 | Existing PPTX, preserve page count/order/wording 1:1, improve layout | `beautify-pptx` | regenerate through SVG; content and pagination are locked |
 | Finished PPTX, keep content/layout stable, add notes/audio/timings/transitions | `native-enhance-pptx` | direct OOXML patch; no design regeneration |
-| User wants a reusable template package from a PPTX or design reference | `create-template` or `create-brand` | outputs a directory that later triggers Step 3 |
-| User supplies an explicit `templates/.../<id>/` directory with `kind: brand/layout/deck` | main SVG pipeline Step 3 | deck/layout SVGs must satisfy the current structured contract; legacy packages first run `restore-pptx-structure` |
+| User wants a reusable template workspace from a PPTX or design reference | `create-template` or `create-brand` | outputs a workspace root that later triggers Step 3; create-template also exports a review PPTX |
+| User supplies an explicit template path | main SVG pipeline Step 3 | current Layout/Deck workspaces resolve `templates/design_spec.md`; Brand packages and legacy-flat roots resolve direct `design_spec.md`; restore only legacy SVG semantics |
 | User asks to tune object-level animation order/effect/timing | `customize-animations` | optional export policy via `animations.json` |
 | User asks to preview, select, annotate, or re-export browser edits | `live-preview` | browser workflow; annotations apply only at defined handoff points |
 
@@ -263,7 +263,19 @@ Templates are **opt-in, not default**. The default Strategist flow is free desig
 
 **Why default to free design.** Templates are floors that easily become ceilings: they lock the deck into the template's visual idioms regardless of how the content actually wants to be presented. Free-design layouts derive structure from the source content rather than imposing it from a fixed grammar, so the visual rhythm tracks the content rather than fighting it. Constrained mode is genuinely better in narrow cases (brand-locked decks, strongly-typed scenarios like academic defense or government report), so it stays available — but the AI doesn't proactively reach for it; the user does.
 
-**Mechanical trigger, not semantic matching.** A bare name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 only consumes a path that resolves to a directory whose `design_spec.md` declares `kind: brand`, `kind: layout`, or `kind: deck`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+**Mechanical trigger, not semantic matching.** A bare name like `academic_defense`, a brand mention, or a style phrase such as "McKinsey style" does not trigger Step 3 even if a matching library directory exists. Step 3 consumes an explicit path. Current Layout/Deck workspaces resolve `templates/design_spec.md`; Brand packages keep their direct root `design_spec.md`, as do compatible legacy-flat Layout/Deck packages. Flat placement is not a reason to restore structure; only legacy Master/Layout/placeholder semantics trigger `restore-pptx-structure`. Discoverability is handled by template indexes and explicit Q&A ("what templates are available?"), not by runtime fuzzy matching.
+
+New `create-template` Layout/Deck outputs use one physical contract in both locations:
+
+```text
+<template_workspace>/
+├── templates/   # design_spec.md, SVG prototypes, templates/icons/ when used
+├── images/      # bitmap assets referenced as ../images/<name>
+├── icons/       # runtime copy of extracted vector assets
+└── exports/     # <id>_template_preview.pptx
+```
+
+`<template_workspace>` is either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/`. Step 3 receives that root. The workspace is portable between locations without reshaping; global index registration is the only scope-specific behavior, and `exports/` is review evidence rather than a template input.
 
 The three template kinds own different segments of the design contract:
 
@@ -275,7 +287,7 @@ The three template kinds own different segments of the design contract:
 
 When several paths are supplied, fusion is segment-level, not field-level. A brand overrides the identity segment, a layout overrides the structure segment, and a deck supplies the middle/template-overview segment. Same-kind conflicts are surfaced as conflicts rather than resolved by implicit ordering. This keeps template composition debuggable: a fused spec can say exactly which bundle owns each segment.
 
-**Raw PPTX templates are outside Step 3.** A `.pptx` may be source material, and PPTX intake can extract its identity and geometry. But a raw PPTX template plus a request to generate a new PPTX routes to `template-fill`, because the user's expectation is native slide cloning and text/table/chart replacement. The SVG route can consume only a reusable template package; to use a PPTX's design language in the SVG route, the PPTX must first pass through `create-template`, then the resulting template directory path can be supplied to Step 3.
+**Raw PPTX templates are outside Step 3.** A `.pptx` may be source material, and PPTX intake can extract its identity and geometry. But a raw PPTX template plus a request to generate a new PPTX routes to `template-fill`, because the user's expectation is native slide cloning and text/table/chart replacement. The SVG route can consume only a reusable template workspace; to use a PPTX's design language in the SVG route, the PPTX must first pass through `create-template`, then the resulting workspace-root path can be supplied to Step 3.
 
 **Layouts are opt-in; charts and icons are not.** The asymmetry isn't an inconsistency — *layout* is what locks visual idiom (the floor/ceiling problem above), while charts and icons are reusable primitives that don't impose deck-wide style. Same `templates/` directory, different role in the visual contract.
 
@@ -450,7 +462,7 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why per-element dispatch, not whole-file translation.** SVG's hierarchical model maps cleanly onto DrawingML's group / shape / picture types — there's no need for a holistic optimizer that re-plans the slide. Each shape kind gets its own narrow translator, which keeps each translator simple enough to debug and unit-test in isolation. The output quality of a slide is the sum of independent local conversions; that property is fragile under whole-file translation but robust under element dispatch.
 
-**Why there is only one PPTX export route.** Native export reads `svg_output/` and translates supported SVG elements into DrawingML shapes. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard run, but it is a self-contained visual-preview artifact rather than a PPTX source; users may insert it as an SVG picture, while PowerPoint's manual Convert to Shape command remains outside the supported contract.
+**Why there is only one PPTX compiler route.** Native export reads authored SVGs and translates supported SVG elements into DrawingML shapes. The normal deck path reads `svg_output/`; create-template invokes the same structured compiler on validated template prototypes to produce `exports/<id>_template_preview.pptx` as review evidence. The project does not package whole-slide SVG media or alternate raster renderings into a second PPTX. `svg_final/` is still generated on every standard deck run, but it is a self-contained visual-preview artifact rather than a PPTX source; users may insert it as an SVG picture, while PowerPoint's manual Convert to Shape command remains outside the supported contract.
 
 **Why structure is authored before visual generation.** Master and Layout are not post-processing discoveries. Strategist writes the Master roster and complete page mapping before SVG generation; Executor writes those identities, fixed atoms, and slots while composing each page. This keeps free design unconstrained at the visual level while making PowerPoint ownership explicit. Export only compiles declared structure. Legacy or unmapped projects enter `restore-pptx-structure`; they never trigger an exporter heuristic.
 
@@ -468,7 +480,7 @@ These direct routes share some analysis primitives with the main pipeline, espec
 
 **Why reusable templates reconstruct the source topology.** `pptx_template_import.py` emits layered Master/Layout/Slide references plus native structure facts. `create-template` reconstructs every source Master and Layout, including unused Layouts, as complete annotated SVG prototypes. Source Master/Layout groups are flattened into atoms; parent relationships, picker names, placeholder identities, and bounds remain auditable in the template specification. The original PPTX remains an analysis input, not a packaged export dependency.
 
-**Why project-scoped thin templates are an output policy, not another structure mode.** `create-template` keeps `library` as its default indexed output and may instead write the same validated contract directly into an initialized project's `templates/` root. Project bitmaps go to `images/`, extracted icons keep a package copy plus a runtime copy, and no global index is touched. Both scopes use the same `structured` contract.
+**Why create-template uses one workspace shape in both scopes.** `create-template` keeps `library` as its default indexed output and may instead write under an initialized project. Both roots contain the same `templates/`, `images/`, `icons/`, and `exports/` core, including `<id>_template_preview.pptx`; SVG asset references are identical. This makes the complete workspace migratable and reusable without a library-only package branch or a reduced project branch. The sole scope difference is global index registration, and both use the same `structured` contract.
 
 **Why each template SVG stays complete while still compiling to native structure.** A template SVG repeats the inherited Master/Layout visuals together with sample Slide content so it opens as a complete standalone page. During generation, `page_layouts` selects that prototype and the output SVG remains complete. Export removes repeated inherited atoms, emits real Master/Layout parts, and leaves actual slot carriers and Slide-local content on the Slide.
 
@@ -527,7 +539,7 @@ Standalone workflows are route definitions, not optional decorations. They exist
 | `topic-research` | user provides only a topic and no source material | gather web materials before Step 1 |
 | `template-fill-pptx` | raw PPTX template + new material/topic | direct native slide clone/fill; no SVG pipeline |
 | `beautify-pptx` | existing PPTX, preserve page count/order/wording 1:1, improve layout | regenerate through SVG pipeline with source identity/content locked |
-| `create-template` | build a reusable layout/deck template package | output a directory Step 3 can consume later |
+| `create-template` | build a reusable layout/deck template workspace | output a portable workspace root plus `exports/<id>_template_preview.pptx`; only library scope registers it |
 | `create-brand` | extract or define a reusable brand identity | output `templates/brands/<id>/` |
 | `resume-execute` | fresh chat after the planning session; user says to continue a project | enter the execution session without rerunning Strategist |
 | `refine-spec` | user explicitly wants to review/refine the spec before generation | stop after full spec/lock for revision, then resume |

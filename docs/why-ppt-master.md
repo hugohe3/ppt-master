@@ -1,6 +1,6 @@
 # Why PPT Master
 
-[English](./why-ppt-master.md) | [中文](./zh/why-ppt-master.md)
+[English](./why-ppt-master.md) | [Chinese](./zh/why-ppt-master.md)
 
 ---
 

@@ -18,21 +18,21 @@ The workflow **defaults to free design** — it will not ask whether you want a 
 
 ### How to enter the template flow
 
-Send a path to a template directory in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
+Send the Layout/Deck workspace root or direct Brand package path in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
 > "use this template: `skills/ppt-master/templates/layouts/academic_defense/`" ✅
-> "用这个模板做汇报：`projects/last_deck/templates/`" ✅
-> "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
+> "use last deck's template: `projects/last_deck/`" ✅
+> "make a product introduction with `/Users/me/Desktop/our_brand_v3/`" ✅
 
-The AI first validates that directory's structured SVG contract, then installs its SVGs, `design_spec.md`, and assets into your project and proceeds to Strategist. The path may point to the built-in library under `skills/ppt-master/templates/layouts/` or another self-contained template directory. When the path already is the current project's own `<project>/templates/` root, the workflow consumes it in place instead of copying it onto itself. A project-scoped create-template run may hand this exact validated path directly to Step 3 in the same conversation; this is the only exception to the initial-message rule. Do not use a different project's `templates/` root as an external package: its `../images/` and runtime icon references are owner-local. Promote that design through library scope first.
+For a current Layout/Deck, the path is the **template workspace root**. Step 3 resolves `templates/design_spec.md`, validates the structured SVG contract, then installs `templates/`, `images/`, and `icons/` into the target project or consumes them in place when the workspace is already that project. The path may point to a built-in library workspace under `skills/ppt-master/templates/<kind>/<id>/`, a project workspace under `projects/<name>/`, or another workspace with the same shape. Brand packages keep their direct root `design_spec.md` contract. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation; this is the only exception to the initial-message rule.
 
-> **Legacy package preflight:** existing built-in or external SVG packages may still use the former atomic-placeholder/unmapped contract. Before first use, run [`restore-pptx-structure`](../skills/ppt-master/workflows/restore-pptx-structure.md). Step 3 does not copy a legacy package and defer migration.
+> **Compatibility preflight:** Step 3 also accepts an older flat package with `design_spec.md` and SVGs directly at the supplied root. Flat placement by itself does not require restoration. Run [`restore-pptx-structure`](../skills/ppt-master/workflows/restore-pptx-structure.md) only when the SVGs use the former atomic-placeholder/unmapped Master/Layout semantics; Step 3 does not copy such a semantic-legacy package and defer migration.
 
 ### What does NOT trigger the template flow
 
-- **A bare template name without a path**: "use the academic_defense template" / "用 招商银行 模板" / "做一份 pixel_retro 模板的答辩" → free design. The AI does not look the name up. You must give a path.
-- **Style descriptions**: "McKinsey style" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
-- **Vague intent**: "想用个模板" / "I want a template" with no path → free design.
+- **A bare template name without a path**: "use the academic_defense template" / "use the China Merchants Bank template" / "make a pixel_retro defense deck" → free design. The AI does not look the name up. You must give a path.
+- **Style descriptions**: "McKinsey style" / "Google style" / "minimalist" / "Keynote style" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
+- **Vague intent**: "I want a template" with no path → free design.
 
 This is intentional — the AI never makes a fuzzy / interpretive judgment about whether your wording maps to a template, and never resolves a name to a path on your behalf. If you want a template, give the path.
 
@@ -44,7 +44,7 @@ Templates are organized into three kinds, each in its own directory:
 
 - [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
 - [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; academic_defense, government_blue/red, ai_ops, medical_university, pixel_retro, psychology_attachment
-- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full-PPT replicas (identity + structure + middle segments); 招商银行, 中国电建_*, 中汽研_*, 重庆大学, 中国电信
+- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full-PPT replicas (identity + structure + middle segments); China Merchants Bank, Power Construction Corporation of China, Chongqing University, China Telecom
 
 Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
 
@@ -56,7 +56,7 @@ Free design is **not** "no structure" or "no style" — the AI plans a fresh Mas
 
 ### Styles are not templates
 
-A **style** is a description ("minimalist" / "Keynote-style" / "magazine 风") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you give it an explicit directory path.
+A **style** is a description ("minimalist" / "Keynote-style" / "editorial") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you give it an explicit directory path.
 
 | | Template | Style |
 |---|---|---|
@@ -75,11 +75,11 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 
 | Style | One-line characterization |
 |---|---|
-| **Minimalist / 极简风** | High whitespace, 2-3 colors, single focal point per page |
-| **Information-dense / 信息密集** | McKinsey-style structured tables, high density, conclusion-first |
+| **Minimalist** | High whitespace, 2-3 colors, single focal point per page |
+| **Information-dense** | McKinsey-style structured tables, high density, conclusion-first |
 | **Keynote-style** | Single-page hero text, premium whitespace, Apple-feel |
-| **Editorial / 杂志风** | Large hero images, asymmetric layouts, strong typography contrast |
-| **Editorial illustration / 文艺手绘** | Warm tones, hand-drawn feel, zine-like |
+| **Editorial** | Large hero images, asymmetric layouts, strong typography contrast |
+| **Editorial illustration** | Warm tones, hand-drawn feel, zine-like |
 
 **Scenario / Industry**
 
@@ -96,10 +96,10 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 
 | Style | One-line characterization |
 |---|---|
-| **Dark tech / 暗色科技** | Dark backgrounds, neon accents, futuristic |
+| **Dark tech** | Dark backgrounds, neon accents, futuristic |
 | **Pixel retro** | 8-bit, scanlines, gaming aesthetic |
-| **Neo-Chinese / 新中式** | Restrained traditional motifs, ink / vermilion |
-| **Scandinavian / 北欧极简** | Light, natural, restrained |
+| **Neo-Chinese** | Restrained traditional motifs, ink / vermilion |
+| **Scandinavian** | Light, natural, restrained |
 | **Memphis / pop** | High-saturation blocks, geometric, 80s |
 | **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
 
@@ -135,7 +135,7 @@ The workflow does not silently infer values — before generation it lists these
 
 | Field | Notes |
 |-------|-------|
-| **Output scope** | `library` (default; reusable by every project and registered globally) or `project` (thin bundle written directly into one initialized project's template root) |
+| **Output scope** | `library` (default) or `project`; both write the same complete workspace, while only library scope registers it globally |
 | **Target project** | Required only for `project`; give the exact initialized project path |
 | **Template ID** | Portable template identity; in library scope it is also the directory / index key. Prefer ASCII slug like `acme_consulting`; non-ASCII names work but must be filesystem-safe |
 | **Display name** | Human-readable name for documentation |
@@ -152,7 +152,7 @@ The workflow does not silently infer values — before generation it lists these
 
 After confirmation the workflow echoes the finalized brief and emits the marker `[TEMPLATE_BRIEF_CONFIRMED]`. Subsequent steps only run after that marker. **This is a hard gate — no brief, no generation.**
 
-For project scope, one more hard preflight runs before any final file is written: the target must already be initialized, its `templates/` root must be empty, and the planned bitmap/icon filenames must not collide with anything already in `images/` or `icons/`. A failed check stops before partial output; the workflow does not merge or overwrite.
+Before either scope writes final files, one hard preflight resolves all four destinations, requires an empty `templates/` root, and rejects bitmap, icon, or preview-PPTX filename collisions in `images/`, `icons/`, `templates/icons/`, and `exports/`. Project scope additionally requires an initialized target project. A failed check stops before partial output; the workflow does not merge or overwrite.
 
 > Why so strict? A template is a structural contract, whether it is reused globally or only inside the current project. Confirming ownership and geometry first avoids partial or misplaced output.
 
@@ -174,81 +174,55 @@ This is the most easily confused decision when deriving a template.
 
 **How mirror is consumed**: the Strategist picks one mirror page per project page, and the Executor copies that complete SVG and edits visible text in place while preserving decoration, sprite crops, geometry, and the normalized structured declarations. Mirror preserves supported appearance, not the source PPTX group-editing hierarchy.
 
-### Step 4 — Validation, registration, and discovery
+### Step 4 — Validation, review export, registration, and discovery
 
-After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate. What happens next depends on the confirmed output scope:
+After generation, both scopes run [`svg_quality_checker.py`](../skills/ppt-master/scripts/svg_quality_checker.py) as a hard gate and export `exports/<id>_template_preview.pptx`. Open that PPTX to inspect every template page as PowerPoint will present it before relying on the workspace downstream. The only scope-specific action is library registration:
 
-| Scope | Output | Discovery behavior |
-|---|---|---|
-| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | Register in the matching `layouts_index.json` or `decks_index.json` after validation |
-| `project` | Direct `<project>/templates/` bundle; bitmaps in `<project>/images/`; extracted icons in both `<project>/templates/icons/` and `<project>/icons/` | Skip every global index and library README update |
+| Scope | Workspace root | Preview | Discovery behavior |
+|---|---|---|---|
+| `library` (default) | `skills/ppt-master/templates/<kind>/<id>/` | `exports/<id>_template_preview.pptx` | Register in the matching `layouts_index.json` or `decks_index.json` after validation and preview export |
+| `project` | `projects/<name>/` | `exports/<id>_template_preview.pptx` | Skip global index registration |
 
-Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use it in a new project, follow the SKILL.md Step 3 rule: name its directory path in your first message, e.g. `use this template: skills/ppt-master/templates/layouts/<your_template_id>/`. A project-scoped template is intentionally private to that project and is consumed in place through the explicit `<project>/templates/` path.
+Library registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use either scope, follow the SKILL.md Step 3 rule: name the workspace root in your first message, for example `use this template: skills/ppt-master/templates/layouts/<your_template_id>/` or `use this template: projects/<name>/`. A project workspace can also be migrated or reused elsewhere because its core shape is identical; register it only if it is placed in the library and should appear in discovery.
 
 When a deck/layout template is selected, the Strategist confirmation stage asks how it should be used:
 
 - **adaptive** — choose one template SVG per page; keep its Master and assign a new explicit Layout key during authoring when fixed Layout atoms or slot topology/bounds must change
 - **strict** — choose one template SVG per page and keep its Master/Layout/slot contract unchanged
 
-### What a derived template looks like
+### What a derived template workspace looks like
 
-Library scope (the default) remains a self-contained package:
-
-```
-skills/ppt-master/templates/layouts/<your_template_id>/
-├── design_spec.md          # design spec; §VI lists every page
-├── 01_cover.svg
-├── 02_chapter.svg
-├── 02_toc.svg              # optional
-├── 03_content.svg
-├── 03a_content_two_col.svg # variant in fidelity mode
-├── 04_ending.svg
-├── logo.png                # brand asset
-└── bg_pattern.jpg
-```
-
-`standard` and `fidelity` SVGs use a unified authoring-placeholder vocabulary (`{{TITLE}}`, `{{CHAPTER_TITLE}}`, `{{PAGE_TITLE}}`, `{{CONTENT_AREA}}`, ...). Each native slot is a top-level `<g>` with semantic type and positive bounds; a normal slot contains exactly one carrier. Fixed Master/Layout visuals are direct root atoms and never layer `<g>` elements. A Layout may intentionally expose zero slots.
-
-A `mirror` template emits one SVG per source slide, named by source order. It may keep literal example text instead of `{{...}}` markers, but imported native slots still carry semantic metadata:
+Library and project scopes use the same core structure; substitute either `skills/ppt-master/templates/<kind>/<id>/` or `projects/<name>/` for `<template_workspace>`:
 
 ```
-skills/ppt-master/templates/layouts/<your_template_id>/
-├── design_spec.md          # frontmatter sets replication_mode: mirror; §V Page Roster describes every page in detail
-├── 001_cover.svg
-├── 002_toc.svg
-├── 003_content.svg
-├── 004_content.svg
-├── ...
-├── 049_content.svg
-├── 050_ending.svg
-└── *.png / *.jpg
-```
-
-Project scope writes a thin bundle directly into the initialized project's existing roots. It does not create `<project>/templates/<template_id>/`:
-
-```
-projects/<project>/
+<template_workspace>/
 ├── templates/
 │   ├── design_spec.md
 │   ├── 01_cover.svg
 │   ├── 02_chapter.svg
+│   ├── 02_toc.svg              # optional
 │   ├── 03_content.svg
+│   ├── 03a_content_two_col.svg # fidelity variant
 │   ├── 04_ending.svg
-│   └── icons/             # package/validation copy
+│   └── icons/                  # package/validation copy when used
 ├── images/
-│   └── *.png / *.jpg      # SVG references use ../images/<name>
-└── icons/
-    └── *.svg              # runtime copy of extracted icons
+│   └── *.png / *.jpg           # SVG references use ../images/<name>
+├── icons/
+│   └── *.svg                   # runtime copy of extracted vectors
+└── exports/
+    └── <id>_template_preview.pptx
 ```
 
-### Project-level customization vs global template
+`standard` and `fidelity` SVGs use a unified authoring-placeholder vocabulary (`{{TITLE}}`, `{{CHAPTER_TITLE}}`, `{{PAGE_TITLE}}`, `{{CONTENT_AREA}}`, ...). Each native slot is a top-level `<g>` with semantic type and positive bounds; a normal slot contains exactly one carrier. Fixed Master/Layout visuals are direct root atoms and never layer `<g>` elements. A Layout may intentionally expose zero slots.
 
-Choose the output scope according to ownership:
+A `mirror` workspace uses the same tree but places its source-ordered `001_cover.svg`, `002_toc.svg`, … files under `templates/`. It may keep literal example text instead of `{{...}}` markers, while imported native slots still carry semantic metadata.
 
-- **Library scope (`library`, default)** = enter `skills/ppt-master/templates/<kind>/<id>/`, register globally, and make the package available to future projects
-- **Project scope (`project`)** = create the same validated template contract directly under `projects/<project>/templates/`, keep its runtime images/icons beside that project, and skip global registration
+### Library registration vs project placement
 
-`/create-template` supports both. Project scope is the safe route when the template exists only to drive the current deck; it still gets the normal brief, explicit Master/Layout metadata, and template validation without polluting the global library. Choose library scope when another project must consume the result.
+- **Library scope (`library`, default)** writes the workspace under `skills/ppt-master/templates/<kind>/<id>/` and registers it globally.
+- **Project scope (`project`)** writes the same complete workspace at `projects/<name>/` and skips registration.
+
+The result is not a private or reduced project-only format. You can point Step 3 at either workspace root, copy the complete core workspace between roots, or migrate a project result into the library without restructuring it. If it moves into the library, run registration so discovery reflects its new location.
 
 ---
 

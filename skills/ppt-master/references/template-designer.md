@@ -4,19 +4,20 @@
 
 ## Core Mission
 
-Generate reusable page templates at the output scope confirmed by `create-template`, and write a concise `design_spec.md` that captures the source-derived basic norms that make the template reusable.
+Generate reusable page templates inside the complete workspace selected by `create-template`, and write a concise `design_spec.md` that captures the source-derived basic norms that make the template reusable.
 
-> This is a standalone role: only triggered via the `/create-template` workflow. It may write a global library package or a project-local thin bundle; it is not the template selection step in the main PPT generation pipeline.
+> This is a standalone role: only triggered via the `/create-template` workflow. Library and project outputs use one workspace shape; it is not the template selection step in the main PPT generation pipeline.
 
 ## Usage
 
 - **Trigger**: `/create-template` workflow
-- **Output location**: `library` (default) → `skills/ppt-master/templates/<kind_dir>/<template_name>/`; `project` → the confirmed `<target_project>/templates/` root with no nested template-ID directory
+- **Workspace root**: `library` (default) → `skills/ppt-master/templates/<kind_dir>/<template_name>/`; `project` → the confirmed `<target_project>/`
+- **Template source**: `<template_workspace>/templates/` in both scopes
 - **Input**: finalized template brief (output scope, target project when project-scoped, template ID, display name, kind, applicable scenarios, tone, theme mode, canvas format, optional reference assets, accepted basic template norms)
 
 **Hard rule — scope is execution metadata**: Use `output_scope` and `target_project` to route files, but do not write either field into portable `design_spec.md` frontmatter. Do not create a new PPTX structure mode; deck/layout output declares `native_structure_mode: structured`.
 
-**Project-scope precondition**: The workflow has already confirmed an initialized target project, an empty `<target_project>/templates/`, and collision-free destination filenames in `images/` and `icons/`. Do not begin final writes before that all-at-once preflight passes.
+**Workspace precondition**: The workflow has already resolved the selected root, confirmed an empty `<template_workspace>/templates/`, and checked collision-free destination filenames in `images/`, `icons/`, `templates/icons/`, and `exports/`. Project scope additionally requires an initialized target project. Do not begin final writes before that all-at-once preflight passes.
 
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
@@ -100,7 +101,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 - Cluster slides from `manifest.json` by `pageType` + visual structure (column count, hero-image vs. icon-grid vs. quote, etc.)
 - One SVG per cluster — do **not** emit a variant for a cluster represented by a single source slide unless that slide is structurally distinct from existing variants
 - One variant per visually distinct cluster — let the source's structural diversity drive the count. Collapse only **near-duplicates** (same column count, same hero element, same content density); do not collapse genuine structural differences just to keep the variant count down. If you find yourself wanting one variant per source slide, that is the signal the user should be in `mirror` mode, not `fidelity`
-- Record every emitted page in `design_spec.md §V Page Roster`; in library scope, `register_template.py` generates the corresponding index entry from the directory's actual SVG files. Project scope skips registration
+- Record every emitted page in `design_spec.md §V Page Roster`; in library scope, `register_template.py` generates the corresponding index entry from `<template_workspace>/templates/*.svg`. Project scope skips registration
 
 > Variants reuse the parent type's placeholder set — see §4 (Placeholder Reference) below.
 
@@ -109,7 +110,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 When the brief sets `Replication mode: mirror`, preserve literal page appearance while reconstructing layer ownership:
 
 - Visual source: `<import_workspace>/svg-flat/slide_NN.svg` (the self-contained "what PowerPoint shows" view). Structural source: `svg/master_*.svg`, `svg/layout_*.svg`, and `svg/inheritance.json`.
-- Output: `<template_target>/<NNN>_<page_type>.svg`, where `<template_target>` is the library package directory or the project `templates/` root. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
+- Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` in both scopes. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
 - Required metadata rewrite: declare the output Master/Layout key and picker names on the root, mark inherited Master/Layout visuals as direct atomic elements, and map source content slots to top-level semantic slot groups where the imported contract exposes them. Add `data-pptx-role` only to structural page-frame objects whose behavior is not already expressed by specialized markers.
 - Other allowed modifications: rewrite `<image href="...">` paths to local assets and rename assets semantically. Keep geometry, decoration, sprite-sheet wrappers, original example text, chart previews, and fonts visually unchanged.
 - Forbidden: simplifying decorative complexity, merging similar slides, or dropping inherited preview chrome.
@@ -358,24 +359,37 @@ When rebuilding from imported PPTX references, placeholder insertion takes prior
 
 ### File Save Location
 
-Library scope keeps the existing self-contained package. Standard mode (default):
+Both scopes use one complete workspace shape. Only the workspace root differs:
+
+| Scope | `<template_workspace>` |
+|---|---|
+| `library` | `skills/ppt-master/templates/<kind_dir>/<template_name>/` |
+| `project` | `<target_project>/` |
+
+Standard mode (default):
 
 ```
-templates/<kind_dir>/<template_name>/
-├── design_spec.md     # Design specification (required)
-├── 01_cover.svg
-├── 02_chapter.svg
-├── 02_toc.svg          # Optional
-├── 03_content.svg
-├── 04_ending.svg
-├── icons/              # Extracted vector assets (if any)
-└── *.png / *.jpg       # Bitmap assets (if any)
+<template_workspace>/
+├── templates/
+│   ├── design_spec.md
+│   ├── 01_cover.svg
+│   ├── 02_chapter.svg
+│   ├── 02_toc.svg              # Optional
+│   ├── 03_content.svg
+│   ├── 04_ending.svg
+│   └── icons/                  # Package/validation copy, when used
+├── images/
+│   └── *.png / *.jpg           # SVG href is ../images/<name>
+├── icons/
+│   └── *.svg                   # Runtime copy, when used
+└── exports/
+    └── <template_id>_template_preview.pptx
 ```
 
-Fidelity mode adds variants and extension pages in the same package, e.g.:
+Fidelity mode changes only the roster under `templates/`, e.g.:
 
 ```
-templates/<kind_dir>/<template_name>/
+<template_workspace>/templates/
 ├── design_spec.md
 ├── 01_cover.svg
 ├── 02a_chapter_full.svg
@@ -385,14 +399,13 @@ templates/<kind_dir>/<template_name>/
 ├── 03b_content_data_card.svg
 ├── 03c_content_quote.svg
 ├── 04_ending.svg
-├── 05_section_break.svg
-└── *.png / *.jpg
+└── 05_section_break.svg
 ```
 
 Mirror mode emits one SVG per source slide, named by source order:
 
 ```
-templates/<kind_dir>/<template_name>/
+<template_workspace>/templates/
 ├── design_spec.md
 ├── 001_cover.svg
 ├── 002_toc.svg
@@ -402,35 +415,18 @@ templates/<kind_dir>/<template_name>/
 ├── 006_content.svg
 ├── ...
 ├── 049_content.svg
-├── 050_ending.svg
-└── *.png / *.jpg
+└── 050_ending.svg
 ```
 
 Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. Literal source text may remain, but every page still carries explicit native structure metadata.
 
-Project scope writes directly into an initialized project's existing roots. The roster names still follow the selected replication mode, but the package is not nested under `<template_name>`:
-
-```
-<target_project>/
-├── templates/
-│   ├── design_spec.md
-│   ├── 01_cover.svg
-│   ├── 02_chapter.svg
-│   ├── 03_content.svg
-│   ├── 04_ending.svg
-│   ├── ...                    # Fidelity variants or mirror pages
-│   └── icons/                 # Package/validation copy
-├── images/
-│   └── *.png / *.jpg          # Bitmap assets; template SVG href is ../images/<name>
-└── icons/
-    └── *.svg                  # Identical runtime copy of extracted icons
-```
-
-**Hard rule — project routing**: Keep `design_spec.md`, template SVGs, and non-bitmap package assets in `templates/`; place every bitmap in `images/`; duplicate each extracted icon into `templates/icons/` and runtime `icons/`. Do not write bitmaps into the project template root and do not create `<target_project>/templates/<template_name>/`. This output belongs only to the target project; use library scope for a self-contained cross-project package.
+**Hard rule — common routing**: Keep `design_spec.md`, template SVGs, and non-bitmap template-source assets in `templates/`; place every bitmap in `images/`; duplicate each extracted icon into `templates/icons/` and runtime `icons/`; write the review deck to `exports/`. Do not branch asset placement by output scope.
 
 ### Template Preview
 
-After each template is generated, provide a brief summary table listing each template's status.
+After SVG validation, run `template_preview_pptx.py <template_workspace>`. The template is incomplete until `exports/<template_id>_template_preview.pptx` reopens with one slide per SVG prototype and the expected Master/Layout counts. The first export refuses a collision; an intentional post-fix replacement uses `--force`. The review PPTX is derived evidence and never a template-application input.
+
+Provide a brief summary table listing each template's status and the review PPTX path.
 
 If the template is based on PPTX import output, briefly note:
 - which extracted assets were reused directly
@@ -444,11 +440,11 @@ If the template is based on PPTX import output, briefly note:
 
 If suitable template resources already exist, use them directly instead of generating new ones:
 
-1. **Copy template**: copy the spec + explicitly layered template SVGs into the project's `templates/`, and any bundled bitmaps into the project's `images/` (the runtime image pool, referenced as `../images/`).
+1. **Copy template workspace**: copy or stage `templates/`, `images/`, and `icons/` together; exclude `exports/` from template application.
 2. **Adjust colors**: Modify colors per the project design spec
 3. **Customize**: Make project-specific adjustments
 
-This section describes downstream reuse of an existing library package. The `Template_Designer` role may instead create the same contract directly in project scope when `create-template` selected that output.
+This section describes downstream reuse of an existing workspace. Library and project scopes carry the same portable template contract.
 
 **Example library structure** (query the appropriate kind's index — `templates/layouts/layouts_index.json` for structure-only templates, `templates/decks/decks_index.json` for full-PPT replicas, `templates/brands/brands_index.json` for identity-only presets):
 
@@ -473,13 +469,13 @@ templates/
 ## Template_Designer Phase Complete
 
 - [x] Read `references/template-designer.md`
-- [x] Output scope confirmed: `library` | `project`; project-scope preflight passed before final writes
+- [x] Output scope confirmed: `library` | `project`; the common workspace preflight passed before final writes
 - [x] Replication mode confirmed: `standard` | `fidelity` | `mirror`
-- [x] Every page listed in `design_spec.md §V Page Roster` saved to the selected template target (library package directory or project `templates/` root)
+- [x] Every page listed in `design_spec.md §V Page Roster` saved to `<template_workspace>/templates/`
 - [x] Naming convention applied (standard / fidelity: letter-suffix variants; mirror: `<NNN>_<page_type>.svg`)
 - [x] Templates follow design spec (colors, fonts, layout)
 - [x] Placeholder markers are clear and standardized; every slot has explicit design-zone bounds; mirror may keep literal text but still maps imported semantic slots
 - [x] Every SVG is a complete preview with explicit root Master/Layout identity, atomic Master/Layout elements, grouped slot/carrier metadata, and `native_structure_mode: structured`; source Layouts are materialized, or mirror reports unsupported Layouts explicitly
-- [x] Project scope, when selected: bitmaps routed to `images/`; extracted icons copied to both `templates/icons/` and runtime `icons/`
-- [ ] **Next step**: Validate assets; register only library scope, otherwise hand the in-place project bundle to main Step 3
+- [x] Both scopes route bitmaps to `images/` and copy extracted icons to both `templates/icons/` and runtime `icons/`
+- [ ] **Next step**: Validate assets, export and verify `exports/<template_id>_template_preview.pptx`, then register only library scope
 ```

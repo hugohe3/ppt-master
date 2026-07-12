@@ -184,7 +184,7 @@ Items are evidence-driven (`file exists at path X`, `status N is Generated`), no
 
 ## 11. Forbidden Patterns Across the Whole Layer
 
-- `> 重要：` / `> 注意：` Chinese exclamations (use `> Note` or omit)
+- Localized warning/exclamation blockquotes (use `> Note` or omit)
 - Emoji as decoration in headings (✅ in checkpoint headings is the only sanctioned use)
 - Smiley face / sparkle / fire emoji
 - Footnotes (`[^1]`)
