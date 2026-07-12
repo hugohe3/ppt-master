@@ -48,9 +48,9 @@ Anthropic uses a six-petal star **mark** that is most commonly seen locked up wi
 
 | File | Form | Usage |
 |---|---|---|
-| `./anthropic_claude_lockup.svg` | Mark + "Claude" wordmark (112×24) | Cover hero, ending sign-off, any moment when the brand needs to read as Claude-the-product at a glance |
-| `./anthropic_mark.svg` | Square orange six-petal mark (24×24) | Header / footer corners, page-number neighbors, tight badges, any small-size moment where the lockup would become illegible — also the recommended choice when the deck is about Anthropic the company rather than Claude the product |
-| `./claude_wordmark.svg` | "Claude" wordmark alone (82×24) | When the visual context already establishes the brand and only the product name needs to be reinforced |
+| `../images/anthropic_claude_lockup.svg` | Mark + "Claude" wordmark (112×24) | Cover hero, ending sign-off, any moment when the brand needs to read as Claude-the-product at a glance |
+| `../images/anthropic_mark.svg` | Square orange six-petal mark (24×24) | Header / footer corners, page-number neighbors, tight badges, any small-size moment where the lockup would become illegible — also the recommended choice when the deck is about Anthropic the company rather than Claude the product |
+| `../images/claude_wordmark.svg` | "Claude" wordmark alone (82×24) | When the visual context already establishes the brand and only the product name needs to be reinforced |
 
 - Cover: prefer the lockup when the deck is Claude-facing; prefer the mark alone when the deck is Anthropic-company-facing
 - Per-page: optional — only when one of these genuinely fits the layout; do not stamp every page

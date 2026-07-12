@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" data-pptx-layout="04_ending" data-pptx-layout-name="Closing">
   <rect width="1280" height="720" fill="#8F0F1B" id="layout-04_ending-background" data-pptx-layer="layout" data-pptx-editable="false"/>
-  <image href="cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
   <rect width="1280" height="720" fill="#7F0B17" fill-opacity="0.22"
     id="ending-overlay" transform="translate(0 0)"/>
 

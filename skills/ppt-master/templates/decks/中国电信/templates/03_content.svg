@@ -8,7 +8,7 @@
 
   <text x="40" y="73" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="22" font-weight="700">{{SECTION_NAME}}</text>
   <text x="228" y="72" fill="#2B2F33" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="24" font-weight="700" id="slot-03_content-title-1" data-pptx-placeholder="title">{{PAGE_TITLE}}</text>
-  <image x="1032" y="38" width="176" height="48" xlink:href="logo.png" preserveAspectRatio="xMidYMid meet" />
+  <image x="1032" y="38" width="176" height="48" xlink:href="../images/logo.png" preserveAspectRatio="xMidYMid meet" />
 
   <rect x="72" y="132" width="1136" height="486" rx="24" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2" stroke-dasharray="8 8" />
   <text x="640" y="386" text-anchor="middle" fill="#9CA3AF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="20" id="slot-03_content-body-2" data-pptx-placeholder="body">{{CONTENT_AREA}}</text>

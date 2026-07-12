@@ -20,7 +20,7 @@
   <text x="60" y="55" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="24" font-weight="bold" id="slot-03_content-title-1" data-pptx-placeholder="title">{{PAGE_TITLE}}</text>
   
   <!-- Logo（右上角，在斜切带上） -->
-  <image x="1040" y="12" width="200" height="50" xlink:href="重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
+  <image x="1040" y="12" width="200" height="50" xlink:href="../images/重庆大学logo2.png" preserveAspectRatio="xMidYMid meet"/>
   
   <!-- 左侧金色装饰竖线（贯穿内容区） -->
   <rect x="40" y="130" width="3" height="480" fill="#D4A84B" fill-opacity="0.6"/>

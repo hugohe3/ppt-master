@@ -49,8 +49,8 @@ CATARC uses separate large and header lockups. Choose the large logo for brand m
 
 | File | Form | Usage |
 |---|---|---|
-| `./大型 logo.png` | Large CATARC lockup (592x238) | Cover hero, chapter/ending brand moments, and dark page lockups |
-| `./右上角 logo.png` | Compact header logo (113x50) | Upper-right page header, title bar, and navigation areas |
+| `../images/大型 logo.png` | Large CATARC lockup (592x238) | Cover hero, chapter/ending brand moments, and dark page lockups |
+| `../images/右上角 logo.png` | Compact header logo (113x50) | Upper-right page header, title bar, and navigation areas |
 
 - Cover / ending: use `大型 logo.png` where the brand must read strongly.
 - Content pages: use `右上角 logo.png` only when the layout has enough title-bar space.
