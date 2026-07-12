@@ -240,7 +240,7 @@ Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
 **Step 1 — Prepare Reference Material**
 
-The recommended input is the original `.pptx`. PPT Master extracts theme identity, every Master/Layout, placeholder metadata, and reusable assets, then rebuilds one clean Master plus semantic Layouts as complete, explicitly annotated SVG pages. When that template is used, `adaptive` may create a new explicit Layout under the same Master; `strict` keeps the selected Layout contract unchanged. Both routes reconstruct native structure from the SVGs.
+The recommended input is the original `.pptx`. PPT Master extracts theme identity, the complete Master/Layout topology, placeholder metadata, and reusable assets, then reconstructs every source Master and Layout as complete structured SVG pages. Source Master/Layout groups are flattened object by object into direct atomic layer elements; supported appearance, parent relationships, picker names, placeholder type/index/bounds, and stacking order are retained, but the source group-editing hierarchy is not. When that template is used, `adaptive` may create a new explicit Layout under the retained Master; `strict` preserves the selected Master/Layout/slot contract.
 
 If no source PPTX exists, screenshots of the key page types still work — cover, TOC, chapter, content, and closing — but geometry, fonts, and inheritance must then be inferred visually.
 
