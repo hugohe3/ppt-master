@@ -40,7 +40,7 @@ from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
 from .custgeom_to_svg import convert_custom_geom
 from .effect_to_svg import convert_effects
-from .emu_units import NS, Xfrm, fmt_num, ooxml_bool
+from .emu_units import NS, Xfrm, fmt_num
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
 from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
@@ -59,9 +59,6 @@ from .txbody_to_svg import (
     is_vertical_txbody,
     DEFAULT_FONT_SIZE_PX,
 )
-
-
-_TEXT_CARRIER_VERSION = "1"
 
 
 # ---------------------------------------------------------------------------
@@ -288,33 +285,17 @@ def assemble_part_solo(
 # Per-node dispatch
 # ---------------------------------------------------------------------------
 
-def _convert_node(
-    node: ShapeNode,
-    ctx: AssemblyContext,
-    *,
-    top_level: bool,
-    transformed_ancestor: bool = False,
-) -> str:
+def _convert_node(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     if node.hidden and not ctx.keep_hidden:
         return ""
     if node.kind == SHAPE:
-        return _convert_shape(
-            node,
-            ctx,
-            top_level=top_level,
-            transformed_ancestor=transformed_ancestor,
-        )
+        return _convert_shape(node, ctx, top_level=top_level)
     if node.kind == PICTURE:
         return _convert_picture(node, ctx, top_level=top_level)
     if node.kind == CONNECTOR:
         return _convert_connector(node, ctx, top_level=top_level)
     if node.kind == GROUP:
-        return _convert_group(
-            node,
-            ctx,
-            top_level=top_level,
-            transformed_ancestor=transformed_ancestor,
-        )
+        return _convert_group(node, ctx, top_level=top_level)
     if node.kind == GRAPHIC:
         return _convert_graphic_fallback(node, ctx, top_level=top_level)
     return ""
@@ -324,13 +305,7 @@ def _convert_node(
 # Shape (<p:sp>)
 # ---------------------------------------------------------------------------
 
-def _convert_shape(
-    node: ShapeNode,
-    ctx: AssemblyContext,
-    *,
-    top_level: bool,
-    transformed_ancestor: bool,
-) -> str:
+def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     sp_pr = node.xml.find("p:spPr", NS)
 
     # Check for blipFill (image-filled shape, e.g. Canva exports where images
@@ -414,16 +389,6 @@ def _convert_shape(
                 text_result.svg,
             )
         )
-        inner_parts.append(
-            _text_carrier_metadata(
-                node,
-                sp_pr,
-                tx_body,
-                is_vertical=is_vertical,
-                has_blip_fill=blip_fill_elem is not None,
-                transformed_ancestor=transformed_ancestor,
-            )
-        )
     if text_result.svg:
         inner_parts.append(text_result.svg)
     inner = "\n".join(inner_parts) if inner_parts else ""
@@ -455,148 +420,6 @@ def _txbody_metadata(
         '<metadata data-pptx-part="txbody" data-pptx-encoding="base64" '
         f'data-pptx-text-sha256="{digest}">{encoded}</metadata>'
     )
-
-
-def _style_ref_is_visible(node: ShapeNode, ref_name: str) -> bool:
-    """Return whether a shape-style reference selects a visible style entry."""
-    style = node.xml.find("p:style", NS)
-    ref = style.find(f"a:{ref_name}", NS) if style is not None else None
-    if ref is None:
-        return False
-    raw_idx = ref.get("idx")
-    if raw_idx is None:
-        return True
-    try:
-        return int(raw_idx) > 0
-    except ValueError:
-        return True
-
-
-def _has_visible_shape_fill(node: ShapeNode, sp_pr: ET.Element | None) -> bool:
-    """Return whether the source shape owns a visible non-image fill."""
-    if sp_pr is not None:
-        if sp_pr.find("a:noFill", NS) is not None:
-            return False
-        if any(
-            sp_pr.find(f"a:{tag}", NS) is not None
-            for tag in ("solidFill", "gradFill", "pattFill", "grpFill")
-        ):
-            return True
-    return _style_ref_is_visible(node, "fillRef")
-
-
-def _has_visible_shape_line(node: ShapeNode, sp_pr: ET.Element | None) -> bool:
-    """Return whether the source shape owns a visible outline."""
-    line = sp_pr.find("a:ln", NS) if sp_pr is not None else None
-    if line is not None:
-        return line.find("a:noFill", NS) is None
-    return _style_ref_is_visible(node, "lnRef")
-
-
-def _has_visible_shape_effect(node: ShapeNode, sp_pr: ET.Element | None) -> bool:
-    """Return whether the source shape owns a visible effect or 3D treatment."""
-    if sp_pr is not None:
-        for tag in ("effectLst", "effectDag"):
-            effect = sp_pr.find(f"a:{tag}", NS)
-            if effect is not None and len(effect):
-                return True
-        if any(
-            sp_pr.find(f"a:{tag}", NS) is not None
-            for tag in ("scene3d", "sp3d")
-        ):
-            return True
-    return _style_ref_is_visible(node, "effectRef")
-
-
-def _text_carrier_ineligibility_reasons(
-    node: ShapeNode,
-    sp_pr: ET.Element | None,
-    tx_body: ET.Element,
-    nv_sp_pr: ET.Element | None,
-    *,
-    is_vertical: bool,
-    has_blip_fill: bool,
-    transformed_ancestor: bool,
-) -> list[str]:
-    """Return stable reasons why a native text carrier is unsafe to rewrite."""
-    reasons: list[str] = []
-    c_nv_sp_pr = (
-        nv_sp_pr.find("p:cNvSpPr", NS)
-        if nv_sp_pr is not None
-        else None
-    )
-    owns_text_frame = (
-        node.placeholder is not None
-        or (
-            c_nv_sp_pr is not None
-            and ooxml_bool(c_nv_sp_pr.get("txBox"))
-        )
-    )
-
-    if is_vertical:
-        reasons.append("vertical-text")
-    if (
-        transformed_ancestor
-        or abs(node.xfrm.rot) > 1e-9
-        or node.xfrm.flip_h
-        or node.xfrm.flip_v
-    ):
-        reasons.append("rotated-or-flipped")
-    if not owns_text_frame:
-        reasons.append("missing-frame-owner")
-    if has_blip_fill:
-        reasons.append("blip-fill")
-    if _has_visible_shape_fill(node, sp_pr):
-        reasons.append("visible-fill")
-    if _has_visible_shape_line(node, sp_pr):
-        reasons.append("visible-line")
-    if _has_visible_shape_effect(node, sp_pr):
-        reasons.append("visible-effect")
-    if has_relationship_attributes(tx_body):
-        reasons.append("txbody-relationships")
-    if nv_sp_pr is None:
-        reasons.append("missing-nvsppr")
-    elif has_relationship_attributes(nv_sp_pr):
-        reasons.append("nvsppr-relationships")
-    return reasons
-
-
-def _text_carrier_metadata(
-    node: ShapeNode,
-    sp_pr: ET.Element | None,
-    tx_body: ET.Element,
-    *,
-    is_vertical: bool,
-    has_blip_fill: bool,
-    transformed_ancestor: bool,
-) -> str:
-    """Describe whether a native text frame can accept a rebuilt txBody."""
-    nv_sp_pr = node.xml.find("p:nvSpPr", NS)
-    reasons = _text_carrier_ineligibility_reasons(
-        node,
-        sp_pr,
-        tx_body,
-        nv_sp_pr,
-        is_vertical=is_vertical,
-        has_blip_fill=has_blip_fill,
-        transformed_ancestor=transformed_ancestor,
-    )
-    eligible = not reasons
-    reason = ",".join(reasons) if reasons else "eligible"
-    attrs = [
-        'data-pptx-part="text-carrier"',
-        f'data-pptx-text-carrier-version="{_TEXT_CARRIER_VERSION}"',
-        f'data-pptx-text-carrier-eligible="{1 if eligible else 0}"',
-        f'data-pptx-text-carrier-reason="{reason}"',
-    ]
-
-    if nv_sp_pr is None or has_relationship_attributes(nv_sp_pr):
-        return f'<metadata {" ".join(attrs)}/>'
-
-    raw = ET.tostring(nv_sp_pr, encoding="utf-8")
-    encoded = base64.b64encode(raw).decode("ascii")
-    attrs.append('data-pptx-encoding="base64"')
-    return f'<metadata {" ".join(attrs)}>{encoded}</metadata>'
 
 
 def _resolve_geometry(node: ShapeNode, sp_pr: ET.Element | None) -> GeomResult | None:
@@ -857,28 +680,11 @@ def _convert_connector(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool
 # Group (<p:grpSp>)
 # ---------------------------------------------------------------------------
 
-def _convert_group(
-    node: ShapeNode,
-    ctx: AssemblyContext,
-    *,
-    top_level: bool,
-    transformed_ancestor: bool,
-) -> str:
+def _convert_group(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     """Render group contents flat (children already remapped to slide space)."""
     inner_parts: list[str] = []
-    child_has_transformed_ancestor = (
-        transformed_ancestor
-        or abs(node.xfrm.rot) > 1e-9
-        or node.xfrm.flip_h
-        or node.xfrm.flip_v
-    )
     for child in node.children:
-        chunk = _convert_node(
-            child,
-            ctx,
-            top_level=False,
-            transformed_ancestor=child_has_transformed_ancestor,
-        )
+        chunk = _convert_node(child, ctx, top_level=False)
         if chunk:
             inner_parts.append(chunk)
     if not inner_parts:
