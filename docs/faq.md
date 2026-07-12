@@ -81,7 +81,7 @@ Yes. The only PPTX export route in the SVG pipeline is PPT Master's own `svg_out
 
 ## Q: Why is one paragraph split into multiple text boxes? Can I get one text box per paragraph instead?
 
-By default, mergeable body text exports as one editable PowerPoint text frame. Authored SVG visual lines remain hard line breaks inside that frame; larger gaps and list items remain separate paragraphs. Only text explicitly marked with `data-pptx-break="soft"` joins authored rows during export. The frame still uses normal PowerPoint wrapping, so deleting a hard break or editing the text reflows it within the frame.
+By default, mergeable body text exports as one editable PowerPoint text frame. Authored SVG visual lines remain hard line breaks inside that frame; larger gaps and list items remain separate paragraphs. Only text explicitly marked with `data-pptx-break="soft"` joins authored rows during export — the Executor declares that marker on flowing body prose at draw time, so ordinary paragraphs edit as one reflowing paragraph while deliberately designed line breaks (titles, verse, aligned labels) stay hard breaks. The frame still uses normal PowerPoint wrapping, so deleting a hard break or editing the text reflows it within the frame.
 
 If you need strict line-layout fidelity, re-export with `--no-merge`:
 
