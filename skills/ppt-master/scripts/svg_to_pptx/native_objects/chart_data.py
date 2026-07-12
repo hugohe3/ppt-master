@@ -227,6 +227,8 @@ _AXIS_ROLE_DEFAULTS = {
     "secondary_category": ("text", "bottom"),
     "secondary_value": ("value", "right"),
     "value": ("value", "left"),
+    "x": ("value", "bottom"),
+    "y": ("value", "left"),
 }
 
 
@@ -269,7 +271,7 @@ def _chart_axes(
             )
         if role in {"category", "secondary_category"} and kind not in {"date", "text"}:
             raise RuntimeError(f"Native PPTX chart axes.{role}.kind must be date or text")
-        if role in {"value", "secondary_value"} and kind != "value":
+        if role in {"value", "secondary_value", "x", "y"} and kind != "value":
             raise RuntimeError(f"Native PPTX chart axes.{role}.kind must be value")
 
         position_aliases = {
@@ -291,7 +293,7 @@ def _chart_axes(
             )
         allowed_positions = (
             {"bottom", "top"}
-            if role in {"category", "secondary_category"}
+            if role in {"category", "secondary_category", "x"}
             else {"left", "right"}
         )
         if position not in allowed_positions:
@@ -345,7 +347,7 @@ def _chart_axes(
                 continue
             number = _chart_number(value)
             if field == "major_unit":
-                if role not in {"value", "secondary_value"}:
+                if role not in {"value", "secondary_value", "x", "y"}:
                     raise RuntimeError(
                         f"Native PPTX chart axes.{role}.major_unit is unsupported"
                     )
@@ -1207,6 +1209,7 @@ def _xy_chart_data(
         raise RuntimeError(
             f"Native PPTX {chart_type} chart data labels are outside current support"
         )
+    axes = _chart_axes(payload, {"x", "y"})
     raw_series = payload.get("series", [])
     if not isinstance(raw_series, list) or not raw_series:
         raise RuntimeError("Native PPTX XY chart requires non-empty series")
@@ -1262,6 +1265,7 @@ def _xy_chart_data(
     if chart_type == "scatter" and scatter_style not in style_aliases:
         raise RuntimeError("Native PPTX scatter_style is unsupported")
     return {
+        "axes": axes,
         "kind": "xy",
         "type": chart_type,
         "scatter_style": style_aliases.get(scatter_style, "marker"),

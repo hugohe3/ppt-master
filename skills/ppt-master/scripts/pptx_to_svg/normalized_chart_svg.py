@@ -641,7 +641,31 @@ def _render_xy(
     y_values = [float(value) for item in series for value in item.get("y") or []]
     x_lo, x_hi, x_ticks = _nice_scale(x_values, include_zero=False)
     y_lo, y_hi, y_ticks = _nice_scale(y_values, include_zero=False)
-    parts = _xy_grid_and_ticks(plot, x_ticks, y_ticks, x_lo, x_hi, y_lo, y_hi, label_size)
+    axes = payload.get("axes")
+    x_axis = axes.get("x") if isinstance(axes, dict) else None
+    y_axis = axes.get("y") if isinstance(axes, dict) else None
+    x_major_gridlines = (
+        bool(x_axis.get("major_gridlines", False))
+        if isinstance(x_axis, dict)
+        else False
+    )
+    y_major_gridlines = (
+        bool(y_axis.get("major_gridlines", True))
+        if isinstance(y_axis, dict)
+        else True
+    )
+    parts = _xy_grid_and_ticks(
+        plot,
+        x_ticks,
+        y_ticks,
+        x_lo,
+        x_hi,
+        y_lo,
+        y_hi,
+        label_size,
+        show_x_gridlines=x_major_gridlines,
+        show_y_gridlines=y_major_gridlines,
+    )
     parts.extend(_xy_axis_titles(plot, content, axis_titles, label_size))
     nonnegative_bubble_sizes = [
         float(value)
@@ -707,14 +731,16 @@ def _vertical_grid_and_ticks(
     percent: bool,
     *,
     show_labels: bool,
+    show_gridlines: bool = True,
 ) -> list[str]:
     parts: list[str] = []
     for tick in ticks:
         y = _map(tick, lo, hi, plot.y + plot.h, plot.y)
-        parts.append(
-            f'<line x1="{_fmt(plot.x)}" y1="{_fmt(y)}" x2="{_fmt(plot.x + plot.w)}" '
-            f'y2="{_fmt(y)}" stroke="#D9D9D9" stroke-width="0.7"/>'
-        )
+        if show_gridlines:
+            parts.append(
+                f'<line x1="{_fmt(plot.x)}" y1="{_fmt(y)}" x2="{_fmt(plot.x + plot.w)}" '
+                f'y2="{_fmt(y)}" stroke="#D9D9D9" stroke-width="0.7"/>'
+            )
         if show_labels:
             label = _format_percent(tick) if percent else _format_number(tick)
             parts.append(_text(plot.x - 5.0, y + size * 0.32, label, size=size, anchor="end", fill="#666666"))
@@ -810,6 +836,9 @@ def _xy_grid_and_ticks(
     y_lo: float,
     y_hi: float,
     size: float,
+    *,
+    show_x_gridlines: bool,
+    show_y_gridlines: bool,
 ) -> list[str]:
     parts = _vertical_grid_and_ticks(
         plot,
@@ -819,9 +848,15 @@ def _xy_grid_and_ticks(
         size,
         False,
         show_labels=True,
+        show_gridlines=show_y_gridlines,
     )
     for tick in x_ticks:
         x = _map(tick, x_lo, x_hi, plot.x, plot.x + plot.w)
+        if show_x_gridlines:
+            parts.append(
+                f'<line x1="{_fmt(x)}" y1="{_fmt(plot.y)}" x2="{_fmt(x)}" '
+                f'y2="{_fmt(plot.y + plot.h)}" stroke="#D9D9D9" stroke-width="0.7"/>'
+            )
         parts.append(_text(x, plot.y + plot.h + size + 4.0, _format_number(tick), size=size, anchor="middle", fill="#666666"))
     parts.append(
         f'<line x1="{_fmt(plot.x)}" y1="{_fmt(plot.y + plot.h)}" '
