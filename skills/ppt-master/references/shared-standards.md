@@ -389,13 +389,18 @@ table/chart markers are rejected; omit that flag to export their SVG fallback.
 
 Semantic markers are minimal compiler hints orthogonal to native SVG semantics.
 Existing `data-pptx-layout` / layer / placeholder / native-object metadata is
-authoritative and read first. New free-design/brand-only baseline pages and all
-template/preserve pages declare their locked Layout. Only a legacy baseline
-project whose whole `pptx_layouts` section is absent uses
-`data-pptx-page-role`. Add `data-pptx-role` only when no specialized marker
-expresses the required page-frame behavior; the element also uses a stable
-unique `id`. Do not classify ordinary page content or move visible facts out of
-SVG attributes/text into metadata. See
+authoritative and read first. Deferred template pages carry the selected
+prototype structure while authored but do not finalize `pptx_layouts` or root
+kind until the complete design exists. Legacy immediate-template/preserve pages
+declare their locked output Layout while authored. Free-design/brand-only
+baseline pages remain unmapped during visual design; only the explicit post-design
+[`distill-layouts`](../workflows/distill-layouts.md) workflow adds a complete
+Layout mapping after the user selects reusable pages or after every deferred
+template page is complete. An unmapped baseline page
+may use `data-pptx-page-role` for compatibility routing. Add `data-pptx-role`
+only when no specialized marker expresses the required page-frame behavior;
+the element also uses a stable unique `id`. Do not classify ordinary page
+content or move visible facts out of SVG attributes/text into metadata. See
 [`semantic-svg.md`](semantic-svg.md) for the canonical vocabulary and examples.
 
 - **Canvas authority**: `viewBox` MUST match the selected canvas dimensions.
@@ -418,7 +423,8 @@ These forms are needed only when the stated PPT behavior matters:
 | One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line; evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` merge into one frame with hard line breaks. A larger accepted gap or list marker starts a new paragraph; `data-pptx-break="soft"` explicitly joins authored rows. The merged frame keeps normal PowerPoint wrapping for later edits. An unmergeable gap or mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
-| Free-design PowerPoint Layout | Use the locked `pptx_layouts` key/name plus the explicit metadata in §7. A legacy baseline project without that section uses §4.1 page-family/chrome hints. No route infers visual similarity. |
+| Reusable free-design PowerPoint Layout | Finish the free design first, then run [`distill-layouts`](../workflows/distill-layouts.md) on pages explicitly selected by the user. The workflow writes the complete `pptx_layouts` mapping and §7 metadata; the exporter itself never infers visual similarity. Before distillation, an unmapped baseline project uses §4.1 compatibility routing. |
+| Reusable template-based PowerPoint Layout | Select one complete input SVG per page in `page_layouts`, finish every visible page, then run [`distill-layouts`](../workflows/distill-layouts.md). Strict restores prototype structure/bounds; adaptive keeps Master ids/topology/geometry and may finalize an evolved Layout. Non-mirror skin follows `spec_lock`. |
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
 
@@ -1324,21 +1330,37 @@ defaults to `bottom` and accepts `top`, `left`, or `right`.
 ### Baseline Layout Routing
 
 Native `baseline` export has two deterministic routes. A new free-design or
-brand-only project writes one `pptx_layouts` row per page and repeats that
-key/name on every SVG root; export compiles the explicit Master/Layout/
-placeholder contract in the next section. A legacy project whose entire mapping
-section is absent keeps the compatibility family pass below. Mixing declared
-and undeclared pages is invalid. Neither route performs visual clustering.
+brand-only project initially omits `pptx_layouts` and keeps all page geometry
+Slide-local while the visual design is still free. If the user later selects
+finished pages for reuse, [`distill-layouts`](../workflows/distill-layouts.md)
+atomically writes one mapping row for every page: selected pages use explicit
+`distilled` contracts and unselected pages share an empty `utility` Layout.
+Existing structured baseline projects remain readable. An unmapped project uses
+the compatibility family pass below. Mixing declared and undeclared pages is
+invalid. The authoring workflow may distill a user-selected design; the exporter
+never performs visual clustering.
 
-**Explicit baseline route**: Reuse one Layout key only when pages have the same
-static Layout layer and placeholder type/index/bounds contract. Different
-wording, data, or imagery stays Slide-local and does not create a new Layout;
-a genuinely different reusable composition gets a different key, even when both
-pages have the semantic role `content`.
+**Explicit baseline route**: Reuse one distilled Layout key only when pages have
+the same reusable placeholder type/index/default-bounds contract and any static
+Layout layer is identical. A distilled Layout may be placeholder-only; it does
+not need decorative Layout shapes. Different wording, data, imagery, or
+Slide-local geometry stays on the Slide and does not create a new Layout. For
+example, 4:6, 3:7, and 5:5 members may share one Layout when their semantic
+zones are the same; the Layout stores one default frame while each Slide keeps
+its authored local frame. A genuinely different reusable composition gets a
+different key, even when both pages have the semantic role `content`.
 
-**Legacy compatibility route**: After every unstructured SVG page has been
-converted, assign the coarse page families below without changing SVG authoring
-or live preview.
+**Utility Layout**: In a distilled project, every unselected page maps to the
+same `utility` Layout. That Layout has no Layout shapes and no
+placeholders; every page-specific visible object remains Slide-local. A shared
+deck Master contract may still repeat on the page. The utility Layout exists only
+to keep the post-distillation mapping complete and must not be used as evidence
+that the page itself was distilled.
+
+**Unmapped compatibility route**: Before free-design distillation, or when
+reading a legacy project whose whole mapping section is absent, assign the
+coarse page families below after every unstructured SVG page has been converted.
+This does not change SVG authoring or live preview.
 
 | Root `data-pptx-page-role` | Output layout |
 |---|---|
@@ -1358,8 +1380,8 @@ used it to hide promoted Master shapes from a minority page.
 
 **Hard rule — no visual inference**: Keep every actual title, body, picture,
 chart, table, and page-specific shape on the Slide. Explicit baseline Layouts
-consume authored metadata; legacy baseline Layouts do not infer placeholders or
-promote visually similar content.
+consume authored metadata; unmapped compatibility Layouts do not infer
+placeholders or promote visually similar content.
 
 **Background rule**: Move a Slide `p:bg` to its family Layout only when every
 slide in that family carries exactly the same explicit background. Otherwise,
@@ -1376,22 +1398,38 @@ and every non-identical object Slide-local.
 
 ### Explicit PPTX Master / Layout / Placeholder Metadata
 
-**Trigger**: New free-design/brand-only routes use
-`pptx_structure.mode: baseline` plus complete `pptx_layouts`; deck/layout template routes use
-`pptx_structure.mode: template` plus complete `page_layouts` and
-`pptx_layouts`. Preserve keeps its source-package contract. Direct diagnostics
-may pass `--pptx-structure template`. In baseline, explicit Layout metadata
-without a complete lock is an error rather than a dormant hint.
+**Trigger**: Free-design/brand-only routes use `pptx_structure.mode: baseline`
+without `pptx_layouts` during visual authoring. Explicit post-design
+distillation adds `layout_strategy: distill` plus complete `pptx_layouts`.
+Distillation-capable deck/layout template routes use
+`pptx_structure.mode: template` plus `layout_strategy: distill` and complete
+`page_layouts`, but omit `pptx_layouts` until every page is complete. A
+bounds-missing strict legacy prototype and existing template locks without the
+strategy retain immediate mappings. Preserve keeps its source-package contract.
+Direct diagnostics may pass `--pptx-structure template`. In baseline, explicit
+Layout metadata without a complete lock is an error rather than a dormant hint.
+In deferred template authoring, provisional prototype metadata is allowed while
+the output mapping is wholly absent, but release export remains blocked until
+distillation writes the complete mapping and root kind.
 
-**Project lock**: The standard pipeline writes one `pptx_layouts` row per page
-using `P<NN>: <layout_key> | <PowerPoint layout name>`. The SVG root values MUST
-match that row. Baseline derives the key/name from the authored composition and
-does not create `page_layouts`. Template strict uses the selected template
-key/name; adaptive may create a new key/name while repeating the same Master
-contract. Reuse one layout key only when pages share the same static Layout
-layer and placeholder contract; different content is not a reason to create a
-new Layout. Every explicit route requires numeric `spec_lock.md` typography
-`title` / `body` rows.
+**Project lock**: Legacy immediate-template and existing explicit routes write
+one `pptx_layouts` row per page using
+`P<NN>: <layout_key> | <PowerPoint layout name>`. Post-design distillation uses
+`P<NN>: <layout_key> | <PowerPoint layout name> | <layout_kind>`, where every
+baseline kind is `distilled` or `utility`; every deferred template kind is
+`distilled`. The SVG root values MUST match that row.
+Baseline distillation derives the key/name only from the completed pages that
+the user selected and does not create `page_layouts`. Template `page_layouts`
+is the input-prototype mapping: strict restores its key/name/Master/Layout/
+placeholder structural contract, while adaptive repeats its Master ids/topology/geometry and may create a
+new Layout key/name. Adaptive may retain the prototype key/name only when its
+static Layout, placeholder identities, and default bounds remain unchanged.
+Mirror additionally keeps literal paint, typography, effects, grouping, and
+geometry for every reused Master/Layout identity; only visible text changes.
+Reuse one key only when pages share the same
+placeholder default-frame contract and any static Layout layer; different
+content or local geometry is not a reason to create a new Layout. Every explicit
+route requires numeric `spec_lock.md` typography `title` / `body` rows.
 
 **Master text-style contract**: Structured baseline and template export map the
 locked `title` size to every `a:defRPr` in Master `p:titleStyle`, and map the
@@ -1406,7 +1444,7 @@ locked `body` size to every level in both `p:bodyStyle` and `p:otherStyle`.
 **Hard rule — narrow scope**: This Master update changes only Master
 `p:txStyles//a:defRPr@sz`. It does not rewrite direct run sizes on generated
 slides, so the initial slide rendering remains controlled by the authored SVG.
-Missing `title` or `body` rows fail explicit Layout export. Legacy baseline,
+Missing `title` or `body` rows fail explicit Layout export. Unmapped baseline,
 `preserve`, and `flat` do not apply this Master text-style update.
 
 **Layout level-one text-default contract**: For every text-bearing placeholder
@@ -1421,19 +1459,23 @@ prototype size remain unchanged.
 |---|---|---|
 | `data-pptx-layout="content"` | root `<svg>` | Binds the slide to one generated reusable layout key |
 | `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
+| `data-pptx-layout-kind="distilled"` | root `<svg>` | Marks a completed baseline selection or deferred template page as `distilled`; baseline-only unselected shells use `utility` |
 | `data-pptx-layer="master"` | direct visual child | Moves one repeated static object/background into the slide master |
 | `data-pptx-layer="layout"` | direct visual child | Moves one repeated static object/background into the selected layout |
 | `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
-| `data-pptx-placeholder="..."` | direct visual child | Keeps actual content on the slide and maps it to a generated layout placeholder |
+| `data-pptx-placeholder="..."` | direct visual child | Supplies a generated Layout placeholder prototype. Legacy immediate/pre-authored template contracts and `distilled` atomic carriers bind the current Slide shape; a final distilled composite object region remains ordinary and uses a hidden binding proxy. |
 | `data-pptx-placeholder-bounds="x y width height"` | placeholder element | Overrides the reusable placeholder frame in SVG user units |
 | `data-pptx-placeholder-idx="1"` | placeholder element | Retains an imported source layout placeholder index; optional for reconstructed layouts |
 | `data-pptx-editable="false"` | master/layout element or slide background | Declares intentional editing outside ordinary slide content |
 
 **Hard rule — explicit only**: Structured baseline and template export never
-promote visually similar content by inference. Every SVG requires root
-`data-pptx-layout` and `data-pptx-layout-name`; every
-master/layout/placeholder element requires a unique `id` and must be a direct
-child of the root SVG.
+promote visually similar content by inference. Every mapped SVG requires root
+`data-pptx-layout` and `data-pptx-layout-name`; a distilled mapping also
+requires `data-pptx-layout-kind`. Every master/layout/placeholder element
+requires a unique `id` and must be a direct child of the root SVG. A baseline
+`utility` page is the narrow exception: it declares the root contract but contains no
+Layout element or placeholder. It may repeat the exact Master contract shared
+by every mapped page.
 
 **Layer order**: Author the SVG in PowerPoint paint order: Master background,
 Layout background, optional Slide background, Master shapes, Layout shapes,
@@ -1458,24 +1500,27 @@ by this solid-background rule.
 | `date`, `footer`, `slide-number` | direct `<text>` | `dt`, `ftr`, `sldNum` |
 | `picture` | direct `<image>` or imported crop `<svg>` | `pic` |
 | `chart`, `table` | direct matching `data-pptx-native` marker group | `chart`, `tbl` |
-| `object` | one direct text, image, or basic SVG shape | `obj` |
+| `object` | one direct text, image, or basic SVG shape; final `distilled` output may instead use one direct composite group as a Layout-only region proxy | `obj` |
 | `media` | direct `<image>` or imported crop `<svg>` | `media` |
 
 **Text placeholder carrier**: A multiline text placeholder must remain one
 native text frame. Use the default paragraph merge; `--no-merge` and explicit
-`data-pptx-text-mode="lines"` cannot bind several line shapes to one PowerPoint
-placeholder. Leave strict-line text Slide-local when separate frames are the
-required result.
+`data-pptx-text-mode="lines"` cannot supply several line shapes as one
+PowerPoint placeholder prototype/binding. Leave strict-line text Slide-local
+when separate frames are the required result.
 
 `title` is normally type-matched without an index in reconstructed layouts; if
 an imported source title explicitly has one, preserve that exact index. Every
 indexed placeholder on one layout uses a unique OOXML UInt32 index. Explicit
-Layout export writes the semantic type on both the Layout and Slide placeholder
-(except `obj`, whose OOXML default is already
-`obj`) so PowerPoint and `python-pptx` retain the same identity. Date, footer,
-and slide-number placeholders enable their matching Layout `p:hf` flags; a
-date placeholder also gets a `datetimeFigureOut` field in the reusable Layout
-definition. The current Slide keeps its authored date content.
+legacy immediate-template/pre-authored export writes the semantic type on both the Layout and
+Slide placeholder (except `obj`, whose OOXML default is already `obj`) so
+PowerPoint and `python-pptx` retain the same identity. Distilled export always
+writes that identity on the Layout; atomic Slide carriers retain a matching
+binding, while a composite object region uses an ordinary visible carrier plus
+a hidden transparent proxy.
+Date, footer, and slide-number placeholders enable their matching Layout `p:hf`
+flags; a date placeholder also gets a `datetimeFigureOut` field in the reusable
+Layout definition. The current Slide keeps its authored date content.
 
 Because an omitted `p:ph@idx` has the effective value `0`, an omitted-index
 title reserves `0`; no other placeholder on that Layout may use the same
@@ -1483,23 +1528,44 @@ effective index.
 
 **Placeholder prototype**: The first slide using a layout key supplies that
 layout's placeholder formatting. `data-pptx-placeholder-bounds` supplies the
-reusable frame; when omitted, the exporter uses the prototype object's native
-DrawingML bounds. Repeat the same placeholder ids/types on every slide using
-that layout. Actual slide content and local geometry may differ.
+reusable default frame. Legacy immediate-template and pre-existing explicit
+contracts may omit it and fall back to the prototype object's native DrawingML
+bounds. Every newly created template page and every `distilled` Layout provides
+it on every placeholder: derive the bounds from
+the intended design zone, column, panel inset, safe area, or picture frame —
+never from text length, glyph width, line count, or a tight content bounding
+box. Repeat the same placeholder ids/types/default bounds on every slide using
+that layout. For `distilled`, the Layout always owns the reusable `p:ph`.
+Atomic text/picture/native-object carriers keep a matching Slide binding so the
+approved rendering stays identical. A direct composite `<g>` is allowed only as
+a final distilled `object` region proxy: its visible Slide group remains
+ordinary, and export adds one hidden transparent matching binding shape to
+suppress empty inherited placeholder paint in PowerPoint-compatible renderers.
+The placeholder bounds define the Layout default only; actual Slide content and
+local geometry may differ.
 
 **Final-package read-back gate**: After writing a temporary structured-baseline
 or template-mode PPTX and before publishing it, export reopens the package and
 verifies that
 each Slide targets exactly one Layout, one layout key always resolves to the
 same part, different keys do not collapse onto one part, and every Layout is
-registered through its Master and the Presentation. It also verifies the
-Layout picker name/content type, placeholder type and effective index,
-matching `p:hf` flags, prototype-derived or explicitly overridden frame,
-direct prompt size, and level-one default size. Later slides may keep different
-slide-local geometry; only the reusable Layout frame is checked against the
-explicit/prototype contract. Any mismatch fails export without replacing the
-requested output.
-This gate applies to structured baseline and `template`; legacy baseline,
+registered through its Master and the Presentation. Physical Slide/Layout/
+Master part rosters, their content-type overrides, and their Presentation/
+Master registrations must be exact. It also verifies the Layout picker name,
+placeholder type and effective index, matching `p:hf` flags, prototype-derived
+or explicitly overridden frame, direct prompt size, and level-one default size.
+Every owned `p:bg` is checked as an exact zero-or-one payload against the pre-
+promotion result; this includes preserving the base Master background when no
+authored Master background replaces it. During the same export, every finished
+Slide, Layout, and Master must reproduce its exact top-level shape-name roster
+and order after packaging. For `distilled`, the gate additionally verifies that
+each atomic visible carrier owns the expected binding, each composite visible
+carrier remains ordinary, and every composite binding proxy is hidden.
+A `utility` Layout must read back with no background, shape, or
+placeholder. Later slides may keep different slide-local geometry; only the reusable
+Layout frame is checked against the explicit/prototype contract. Any mismatch
+fails export without replacing the requested output.
+This gate applies to structured baseline and `template`; unmapped baseline,
 `preserve`, and `flat` retain their existing behavior.
 
 **Static structure consistency**: Repeat the same master element ids on every

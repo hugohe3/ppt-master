@@ -19,6 +19,7 @@ from __future__ import annotations
 import posixpath
 import sys
 import zipfile
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -40,6 +41,7 @@ from .template_structure import (
     TemplatePlaceholderBinding,
     TemplateSlideSpec,
     TemplateStructureError,
+    is_composite_distilled_placeholder,
     template_placeholder_bindings,
 )
 
@@ -50,13 +52,30 @@ REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 )
+SLIDE_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
+)
 SLIDE_MASTER_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
 )
 SLIDE_LAYOUT_CONTENT_TYPE = (
     "application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"
 )
+SLIDE_CONTENT_TYPE = (
+    "application/vnd.openxmlformats-officedocument.presentationml.slide+xml"
+)
+SLIDE_MASTER_CONTENT_TYPE = (
+    "application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"
+)
 PRESENTATION_COLLECTION_ID_MIN = 1 << 31
+PRESENTATION_SLIDE_ID_MIN = 256
+_TOP_LEVEL_VISIBLE_TAGS = frozenset({
+    f"{{{PML_NS}}}sp",
+    f"{{{PML_NS}}}pic",
+    f"{{{PML_NS}}}graphicFrame",
+    f"{{{PML_NS}}}grpSp",
+    f"{{{PML_NS}}}cxnSp",
+})
 
 
 @dataclass(frozen=True)
@@ -135,6 +154,140 @@ class _PackageReader:
         result = tuple(relationships)
         self._rels_cache[source_part] = result
         return result
+
+
+def _top_level_shape_names(
+    root: ET.Element,
+    context: str,
+    errors: list[str],
+) -> tuple[str, ...]:
+    """Return deterministic names for every visible top-level OOXML shape."""
+    c_sld = root.find(f"{{{PML_NS}}}cSld")
+    shape_tree = (
+        c_sld.find(f"{{{PML_NS}}}spTree") if c_sld is not None else None
+    )
+    if shape_tree is None:
+        errors.append(f"{context} has no p:cSld/p:spTree")
+        return ()
+    names: list[str] = []
+    for child in shape_tree:
+        if child.tag not in _TOP_LEVEL_VISIBLE_TAGS:
+            continue
+        c_nv_pr = next(child.iter(f"{{{PML_NS}}}cNvPr"), None)
+        name = c_nv_pr.get("name") if c_nv_pr is not None else None
+        if not name:
+            errors.append(f"{context} contains a top-level shape without a name")
+            continue
+        names.append(name)
+    return tuple(names)
+
+
+def _validate_named_shape_roster(
+    root: ET.Element,
+    expected_names: set[str] | tuple[str, ...] | list[str],
+    context: str,
+    errors: list[str],
+    *,
+    exact: bool,
+    ordered: bool = False,
+) -> None:
+    """Validate reusable structure and ordinary Slide carriers by stable name."""
+    expected_sequence = tuple(expected_names)
+    expected_set = set(expected_sequence)
+    actual_names = _top_level_shape_names(root, context, errors)
+    counts = Counter(actual_names)
+    duplicates = sorted(name for name, count in counts.items() if count > 1)
+    if duplicates:
+        errors.append(
+            f"{context} repeats structured shape name(s): " + ", ".join(duplicates)
+        )
+    actual_set = set(actual_names)
+    missing = sorted(expected_set - actual_set)
+    if missing:
+        errors.append(
+            f"{context} is missing structured shape(s): " + ", ".join(missing)
+        )
+    if exact:
+        unexpected = sorted(actual_set - expected_set)
+        if unexpected:
+            errors.append(
+                f"{context} contains unexpected shape(s): "
+                + ", ".join(unexpected)
+            )
+    if ordered and not missing:
+        actual_sequence = (
+            actual_names
+            if exact
+            else tuple(name for name in actual_names if name in expected_set)
+        )
+        if actual_sequence != expected_sequence:
+            errors.append(
+                f"{context} structured shape order is {actual_sequence}, "
+                f"expected {expected_sequence}"
+            )
+
+
+def _top_level_shape_by_name(
+    root: ET.Element,
+    name: str,
+) -> ET.Element | None:
+    c_sld = root.find(f"{{{PML_NS}}}cSld")
+    shape_tree = (
+        c_sld.find(f"{{{PML_NS}}}spTree") if c_sld is not None else None
+    )
+    if shape_tree is None:
+        return None
+    for child in shape_tree:
+        if child.tag not in _TOP_LEVEL_VISIBLE_TAGS:
+            continue
+        c_nv_pr = next(child.iter(f"{{{PML_NS}}}cNvPr"), None)
+        if c_nv_pr is not None and c_nv_pr.get("name") == name:
+            return child
+    return None
+
+
+def _has_explicit_background(root: ET.Element) -> bool:
+    c_sld = root.find(f"{{{PML_NS}}}cSld")
+    return c_sld is not None and c_sld.find(f"{{{PML_NS}}}bg") is not None
+
+
+def _xml_payload_signature(elem: ET.Element) -> tuple[object, ...]:
+    """Return a namespace-stable exact XML payload signature."""
+    return (
+        elem.tag,
+        tuple(sorted(elem.attrib.items())),
+        (elem.text or "").strip(),
+        tuple(_xml_payload_signature(child) for child in elem),
+    )
+
+
+def _background_payload_signatures(
+    root: ET.Element,
+) -> tuple[tuple[object, ...], ...]:
+    c_sld = root.find(f"{{{PML_NS}}}cSld")
+    backgrounds = (
+        c_sld.findall(f"{{{PML_NS}}}bg")
+        if c_sld is not None
+        else []
+    )
+    return tuple(_xml_payload_signature(background) for background in backgrounds)
+
+
+def _expected_background_signature(
+    background_xml: str,
+) -> tuple[object, ...]:
+    """Parse a standalone p:bg fragment regardless of its serialized prefix."""
+    try:
+        wrapper = ET.fromstring(
+            f'<root xmlns:p="{PML_NS}" xmlns:a="{DML_NS}">'
+            f"{background_xml}</root>"
+        )
+    except ET.ParseError as exc:
+        raise ValueError(f"invalid expected p:bg payload: {exc}") from exc
+    children = list(wrapper)
+    if len(children) != 1 or children[0].tag != f"{{{PML_NS}}}bg":
+        raise ValueError("expected background payload must contain exactly one p:bg")
+    return _xml_payload_signature(children[0])
 
 
 def _relationships_part_for(source_part: str) -> str:
@@ -461,6 +614,8 @@ def _validate_registered_part_roster(
     entries: list[ET.Element],
     expected_targets: set[str],
     context: str,
+    *,
+    min_id: int = PRESENTATION_COLLECTION_ID_MIN,
 ) -> set[int]:
     relationships = [
         relationship
@@ -513,8 +668,74 @@ def _validate_registered_part_roster(
         entries,
         context,
         reader.errors,
-        min_value=PRESENTATION_COLLECTION_ID_MIN,
+        min_value=min_id,
     )
+
+
+def _numbered_part_family(
+    names: frozenset[str],
+    directory: str,
+    stem: str,
+) -> set[str]:
+    """Return exact numbered XML parts such as slide12.xml in one directory."""
+    prefix = f"{directory}/{stem}"
+    parts: set[str] = set()
+    for name in names:
+        if not name.startswith(prefix) or not name.endswith(".xml"):
+            continue
+        number = name[len(prefix):-4]
+        if (
+            number.isdigit()
+            and int(number) > 0
+            and posixpath.dirname(name) == directory
+        ):
+            parts.add(name)
+    return parts
+
+
+def _validate_physical_part_roster(
+    reader: _PackageReader,
+    expected_parts: set[str],
+    directory: str,
+    stem: str,
+    context: str,
+) -> None:
+    actual_parts = _numbered_part_family(reader.names, directory, stem)
+    if actual_parts != expected_parts:
+        reader.errors.append(
+            f"{context} physical part roster differs; "
+            f"missing={sorted(expected_parts - actual_parts)}, "
+            f"extra={sorted(actual_parts - expected_parts)}"
+        )
+
+
+def _validate_content_type_part_roster(
+    overrides: dict[str, list[str]],
+    expected_parts: set[str],
+    directory: str,
+    stem: str,
+    content_type: str,
+    errors: list[str],
+    context: str,
+) -> None:
+    family = _numbered_part_family(
+        frozenset(name.lstrip("/") for name in overrides),
+        directory,
+        stem,
+    )
+    if family != expected_parts:
+        errors.append(
+            f"[Content_Types].xml {context} Override roster differs; "
+            f"missing={sorted(expected_parts - family)}, "
+            f"extra={sorted(family - expected_parts)}"
+        )
+    for part in sorted(expected_parts):
+        values = overrides.get(f"/{part}", [])
+        if values != [content_type]:
+            errors.append(
+                f"[Content_Types].xml must declare {part} exactly once as "
+                f"{content_type}"
+            )
 
 
 def _validate_presentation_master_registration(
@@ -538,13 +759,43 @@ def _validate_presentation_master_registration(
     )
 
 
+def _validate_presentation_slide_registration(
+    reader: _PackageReader,
+    slide_parts: set[str],
+) -> None:
+    presentation_part = "ppt/presentation.xml"
+    presentation_root = reader.xml(presentation_part)
+    if presentation_root is None:
+        return
+    slide_id_entries = presentation_root.findall(
+        f"{{{PML_NS}}}sldIdLst/{{{PML_NS}}}sldId"
+    )
+    _validate_registered_part_roster(
+        reader,
+        presentation_part,
+        SLIDE_REL_TYPE,
+        slide_id_entries,
+        slide_parts,
+        "Presentation p:sldIdLst",
+        min_id=PRESENTATION_SLIDE_ID_MIN,
+    )
+
+
 def validate_pptx_template_package(
     pptx_path: str | Path,
     specs: list[TemplateSlideSpec],
+    *,
+    expected_backgrounds: dict[str, str | None] | None = None,
+    expected_shape_rosters: dict[str, tuple[str, ...]] | None = None,
 ) -> None:
-    """Validate a finished template-mode PPTX against its explicit SVG contract."""
+    """Validate a finished structured PPTX against its explicit SVG contract.
+
+    Export supplies pre-packaging background and shape expectations for exact
+    serialization read-back. Callers that only have the finished package still
+    receive the portable structure, ownership, and relationship checks.
+    """
     if not specs:
-        raise ValueError("template package validation requires at least one slide spec")
+        raise ValueError("structured package validation requires at least one slide spec")
 
     specs_by_layout: dict[str, list[TemplateSlideSpec]] = {}
     bindings_by_layout: dict[str, tuple[TemplatePlaceholderBinding, ...]] = {}
@@ -564,6 +815,40 @@ def validate_pptx_template_package(
         with zipfile.ZipFile(path) as package:
             reader = _PackageReader(package, errors)
             overrides = _content_type_overrides(reader)
+            if expected_backgrounds is not None:
+                for part, background_xml in sorted(expected_backgrounds.items()):
+                    root = reader.xml(part)
+                    if root is None:
+                        continue
+                    if background_xml is None:
+                        expected_signatures: tuple[tuple[object, ...], ...] = ()
+                    else:
+                        try:
+                            expected_signatures = (
+                                _expected_background_signature(background_xml),
+                            )
+                        except ValueError as exc:
+                            errors.append(f"{part} {exc}")
+                            continue
+                    actual_signatures = _background_payload_signatures(root)
+                    if actual_signatures != expected_signatures:
+                        errors.append(
+                            f"{part} p:bg count/payload differs from the exact "
+                            "structured-export expectation"
+                        )
+            if expected_shape_rosters is not None:
+                for part, roster in sorted(expected_shape_rosters.items()):
+                    root = reader.xml(part)
+                    if root is None:
+                        continue
+                    _validate_named_shape_roster(
+                        root,
+                        roster,
+                        part,
+                        errors,
+                        exact=True,
+                        ordered=True,
+                    )
             layout_parts_by_key: dict[str, str] = {}
             keys_by_layout_part: dict[str, str] = {}
             slide_roots: dict[int, ET.Element] = {}
@@ -612,7 +897,9 @@ def validate_pptx_template_package(
 
             used_master_parts: set[str] = set()
             layout_parts_by_master: dict[str, set[str]] = {}
+            master_specs_by_part: dict[str, TemplateSlideSpec] = {}
             for layout_key, layout_specs in specs_by_layout.items():
+                prototype = layout_specs[0]
                 layout_part = layout_parts_by_key.get(layout_key)
                 if layout_part is None:
                     errors.append(f"layout key {layout_key!r} has no resolved Layout part")
@@ -640,6 +927,20 @@ def validate_pptx_template_package(
                         f"{expected_name!r}"
                     )
 
+                if layout_specs[0].layout_kind == "utility" and c_sld is not None:
+                    if c_sld.find(f"{{{PML_NS}}}bg") is not None:
+                        errors.append(
+                            f"{layout_part} utility Layout must not define a background"
+                        )
+                    shape_tree = c_sld.find(f"{{{PML_NS}}}spTree")
+                    if shape_tree is not None and any(
+                        child.tag in _TOP_LEVEL_VISIBLE_TAGS
+                        for child in shape_tree
+                    ):
+                        errors.append(
+                            f"{layout_part} utility Layout must not contain shapes"
+                        )
+
                 override_values = overrides.get(f"/{layout_part}", [])
                 if override_values != [SLIDE_LAYOUT_CONTENT_TYPE]:
                     errors.append(
@@ -661,20 +962,172 @@ def validate_pptx_template_package(
                     f"Layout {layout_key!r}",
                     errors,
                 )
+                expected_layout_names = tuple(
+                    f"{item.element_id} Layout"
+                    if item.layer == "layout"
+                    else f"{item.element_id} Placeholder"
+                    for item in prototype.elements
+                    if (
+                        (item.layer == "layout" and not item.is_background)
+                        or item.placeholder
+                    )
+                )
+                _validate_named_shape_roster(
+                    layout_root,
+                    expected_layout_names,
+                    f"Layout {layout_key!r}",
+                    errors,
+                    exact=True,
+                    ordered=True,
+                )
+                expected_layout_background = any(
+                    item.is_background for item in prototype.layout_elements
+                )
+                actual_layout_background = _has_explicit_background(layout_root)
+                if actual_layout_background != expected_layout_background:
+                    errors.append(
+                        f"Layout {layout_key!r} background ownership is "
+                        f"{actual_layout_background}, expected "
+                        f"{expected_layout_background} from the SVG contract"
+                    )
+                if (
+                    expected_layout_background
+                    and expected_backgrounds is not None
+                    and layout_part not in expected_backgrounds
+                ):
+                    errors.append(
+                        f"Layout {layout_key!r} has no pre-promotion p:bg payload "
+                        "for exact read-back"
+                    )
                 slide_placeholders: dict[int, dict[int, _Placeholder]] = {}
                 for spec in layout_specs:
                     slide_root = slide_roots.get(spec.slide_num)
                     if slide_root is None:
                         continue
+                    # Atomic distilled carriers bind directly. A composite
+                    # object region remains ordinary and uses one hidden,
+                    # transparent matching proxy to suppress empty inherited
+                    # placeholder paint in non-PowerPoint renderers.
+                    expected_slide_bindings = bindings
                     slide_placeholders[spec.slide_num] = _validate_placeholder_roster(
                         slide_root,
-                        bindings,
+                        expected_slide_bindings,
                         f"Slide {spec.slide_num}",
                         errors,
                         is_layout=False,
                     )
+                    expected_slide_background = any(
+                        item.layer == "slide" and item.is_background
+                        for item in spec.elements
+                    )
+                    actual_slide_background = _has_explicit_background(slide_root)
+                    if actual_slide_background != expected_slide_background:
+                        errors.append(
+                            f"Slide {spec.slide_num} background ownership is "
+                            f"{actual_slide_background}, expected "
+                            f"{expected_slide_background} from the SVG contract"
+                        )
+                    slide_part = f"ppt/slides/slide{spec.slide_num}.xml"
+                    if (
+                        expected_slide_background
+                        and expected_backgrounds is not None
+                        and slide_part not in expected_backgrounds
+                    ):
+                        errors.append(
+                            f"Slide {spec.slide_num} has no pre-promotion p:bg "
+                            "payload for exact read-back"
+                        )
+                    if spec.layout_kind == "distilled":
+                        expected_distilled_names = [
+                            f"{item.element_id} Distilled Carrier"
+                            for item in spec.placeholders
+                        ]
+                        expected_distilled_names.extend(
+                            "Distilled Binding "
+                            f"{binding.placeholder_type} {binding.effective_idx}"
+                            for binding in bindings
+                            if is_composite_distilled_placeholder(
+                                binding.element,
+                                spec.layout_kind,
+                            )
+                        )
+                        _validate_named_shape_roster(
+                            slide_root,
+                            expected_distilled_names,
+                            f"Slide {spec.slide_num}",
+                            errors,
+                            exact=False,
+                            ordered=True,
+                        )
+                        bindings_by_element = {
+                            binding.element.element_id: binding
+                            for binding in bindings
+                        }
+                        for item in spec.placeholders:
+                            carrier_name = (
+                                f"{item.element_id} Distilled Carrier"
+                            )
+                            carrier = _top_level_shape_by_name(
+                                slide_root,
+                                carrier_name,
+                            )
+                            carrier_placeholder = (
+                                carrier.find(f".//{{{PML_NS}}}ph")
+                                if carrier is not None
+                                else None
+                            )
+                            composite_object = is_composite_distilled_placeholder(
+                                item,
+                                spec.layout_kind,
+                            )
+                            if composite_object:
+                                if carrier_placeholder is not None:
+                                    errors.append(
+                                        f"Slide {spec.slide_num} composite carrier "
+                                        f"{carrier_name!r} must remain ordinary"
+                                    )
+                            elif carrier is not None and carrier_placeholder is None:
+                                errors.append(
+                                    f"Slide {spec.slide_num} atomic carrier "
+                                    f"{carrier_name!r} must own its p:ph binding"
+                                )
+                            placeholder_binding = bindings_by_element[
+                                item.element_id
+                            ]
+                            if not composite_object:
+                                continue
+                            binding_name = (
+                                "Distilled Binding "
+                                f"{placeholder_binding.placeholder_type} "
+                                f"{placeholder_binding.effective_idx}"
+                            )
+                            binding_shape = _top_level_shape_by_name(
+                                slide_root,
+                                binding_name,
+                            )
+                            if binding_shape is None:
+                                continue
+                            c_nv_pr = next(
+                                binding_shape.iter(f"{{{PML_NS}}}cNvPr"),
+                                None,
+                            )
+                            if (
+                                c_nv_pr is None
+                                or c_nv_pr.get("hidden", "0").lower()
+                                not in {"1", "true"}
+                            ):
+                                errors.append(
+                                    f"Slide {spec.slide_num} binding proxy "
+                                    f"{binding_name!r} must be hidden"
+                                )
+                            if binding_shape.find(
+                                f".//{{{PML_NS}}}ph"
+                            ) is None:
+                                errors.append(
+                                    f"Slide {spec.slide_num} binding proxy "
+                                    f"{binding_name!r} has no p:ph"
+                                )
 
-                prototype = layout_specs[0]
                 prototype_placeholders = slide_placeholders.get(
                     prototype.slide_num,
                     {},
@@ -683,7 +1136,12 @@ def validate_pptx_template_package(
                     idx = binding.effective_idx
                     layout_placeholder = layout_placeholders.get(idx)
                     prototype_placeholder = prototype_placeholders.get(idx)
-                    if layout_placeholder is None or prototype_placeholder is None:
+                    if is_composite_distilled_placeholder(
+                        binding.element,
+                        prototype.layout_kind,
+                    ):
+                        prototype_placeholder = None
+                    if layout_placeholder is None:
                         continue
                     context = (
                         f"Layout {layout_key!r} placeholder "
@@ -699,12 +1157,18 @@ def validate_pptx_template_package(
                             round(value * EMU_PER_PX)
                             for value in binding.element.placeholder_bounds
                         )
-                    else:
+                    elif prototype_placeholder is not None:
                         expected_bounds = _shape_bounds(
                             prototype_placeholder.shape,
                             f"Slide {prototype.slide_num} placeholder "
                             f"{binding.element.element_id!r}",
                             errors,
+                        )
+                    else:
+                        expected_bounds = None
+                        errors.append(
+                            f"{context} has neither explicit bounds nor a bound "
+                            "prototype Slide placeholder"
                         )
                     if (
                         actual_bounds is not None
@@ -716,22 +1180,31 @@ def validate_pptx_template_package(
                             f"{expected_bounds}"
                         )
 
-                    prototype_size = _first_run_size(prototype_placeholder.shape)
-                    if prototype_size is not None:
-                        prompt_size = _first_run_size(layout_placeholder.shape)
+                    prompt_size = _first_run_size(layout_placeholder.shape)
+                    default_size = _level_one_default_size(
+                        layout_placeholder.shape
+                    )
+                    if prototype_placeholder is not None:
+                        prototype_size = _first_run_size(
+                            prototype_placeholder.shape
+                        )
+                        if prototype_size is None:
+                            continue
                         if prompt_size != prototype_size:
                             errors.append(
                                 f"{context} prompt size is {prompt_size!r}, expected "
                                 f"{prototype_size!r}"
                             )
-                        default_size = _level_one_default_size(
-                            layout_placeholder.shape
-                        )
                         if default_size != prototype_size:
                             errors.append(
                                 f"{context} level-1 default size is "
                                 f"{default_size!r}, expected {prototype_size!r}"
                             )
+                    elif prompt_size is not None and default_size != prompt_size:
+                        errors.append(
+                            f"{context} level-1 default size is {default_size!r}, "
+                            f"expected its prompt size {prompt_size!r}"
+                        )
 
                 master_target = _single_relationship_target(
                     reader,
@@ -752,6 +1225,7 @@ def validate_pptx_template_package(
                     continue
                 reader.xml(master_part)
                 used_master_parts.add(master_part)
+                master_specs_by_part.setdefault(master_part, prototype)
                 layout_parts_by_master.setdefault(master_part, set()).add(
                     layout_part
                 )
@@ -761,6 +1235,40 @@ def validate_pptx_template_package(
                 master_root = reader.xml(master_part)
                 if master_root is None:
                     continue
+                master_spec = master_specs_by_part.get(master_part)
+                if master_spec is not None:
+                    _validate_named_shape_roster(
+                        master_root,
+                        tuple(
+                            f"{item.element_id} Master"
+                            for item in master_spec.master_elements
+                            if not item.is_background
+                        ),
+                        f"Master {master_part}",
+                        errors,
+                        exact=True,
+                        ordered=True,
+                    )
+                    expected_master_background = any(
+                        item.is_background
+                        for item in master_spec.master_elements
+                    )
+                    if (
+                        expected_master_background
+                        and not _has_explicit_background(master_root)
+                    ):
+                        errors.append(
+                            f"Master {master_part} is missing its explicit background"
+                        )
+                    if (
+                        expected_master_background
+                        and expected_backgrounds is not None
+                        and master_part not in expected_backgrounds
+                    ):
+                        errors.append(
+                            f"Master {master_part} has no pre-promotion p:bg payload "
+                            "for exact read-back"
+                        )
                 layout_id_entries = master_root.findall(
                     f"{{{PML_NS}}}sldLayoutIdLst/"
                     f"{{{PML_NS}}}sldLayoutId"
@@ -784,10 +1292,64 @@ def validate_pptx_template_package(
                             f"{previous_owner} and {master_part}"
                         )
 
+            expected_slide_parts = {
+                f"ppt/slides/slide{spec.slide_num}.xml"
+                for spec in specs
+            }
+            expected_layout_parts = set(layout_parts_by_key.values())
+            _validate_physical_part_roster(
+                reader,
+                expected_slide_parts,
+                "ppt/slides",
+                "slide",
+                "Slide",
+            )
+            _validate_physical_part_roster(
+                reader,
+                expected_layout_parts,
+                "ppt/slideLayouts",
+                "slideLayout",
+                "Layout",
+            )
+            _validate_physical_part_roster(
+                reader,
+                used_master_parts,
+                "ppt/slideMasters",
+                "slideMaster",
+                "Master",
+            )
+            _validate_content_type_part_roster(
+                overrides,
+                expected_slide_parts,
+                "ppt/slides",
+                "slide",
+                SLIDE_CONTENT_TYPE,
+                errors,
+                "Slide",
+            )
+            _validate_content_type_part_roster(
+                overrides,
+                expected_layout_parts,
+                "ppt/slideLayouts",
+                "slideLayout",
+                SLIDE_LAYOUT_CONTENT_TYPE,
+                errors,
+                "Layout",
+            )
+            _validate_content_type_part_roster(
+                overrides,
+                used_master_parts,
+                "ppt/slideMasters",
+                "slideMaster",
+                SLIDE_MASTER_CONTENT_TYPE,
+                errors,
+                "Master",
+            )
+            _validate_presentation_slide_registration(reader, expected_slide_parts)
             _validate_presentation_master_registration(reader, used_master_parts)
     except (OSError, zipfile.BadZipFile) as exc:
         raise ValueError(f"cannot read template PPTX package {path}: {exc}") from exc
 
     if errors:
         details = "\n".join(f"  - {error}" for error in errors)
-        raise ValueError(f"template package read-back failed:\n{details}")
+        raise ValueError(f"structured package read-back failed:\n{details}")

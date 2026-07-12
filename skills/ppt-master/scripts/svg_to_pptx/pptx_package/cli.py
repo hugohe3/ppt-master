@@ -55,6 +55,7 @@ from .template_structure import (
     parse_preserve_slides,
     parse_template_slides,
     template_lock_errors,
+    template_prototype_errors,
 )
 from ..animation_config import (
     load_animation_config,
@@ -277,8 +278,9 @@ Recorded narration:
             'matching SVG metadata are present; otherwise it promotes safe repeated '
             'background/chrome and extracts conservative semantic page-role layout '
             'families (legacy filenames/ids remain fallbacks); '
-            'template consumes explicit '
-            'data-pptx-layout/layer/placeholder metadata to build reusable layouts; '
+            'template consumes finalized explicit '
+            'data-pptx-layout/layer/placeholder metadata to build reusable layouts '
+            '(a deferred page_layouts prototype contract must be distilled first); '
             'preserve is legacy compatibility for imported source packages; '
             'flat leaves generated structure slide-local for debugging/comparison.'
         ),
@@ -368,7 +370,7 @@ Recorded narration:
     structure_lock = None
     native_structure_contract = None
     pptx_structure = args.pptx_structure
-    if pptx_structure is None or pptx_structure == 'preserve':
+    if pptx_structure is None or pptx_structure in {'template', 'preserve'}:
         try:
             structure_lock = load_pptx_structure_lock(project_path)
         except TemplateStructureError as exc:
@@ -376,6 +378,14 @@ Recorded narration:
             return 1
     if pptx_structure is None:
         pptx_structure = structure_lock.mode if structure_lock else 'baseline'
+    elif (
+        pptx_structure == 'template'
+        and structure_lock is not None
+        and structure_lock.mode != 'template'
+    ):
+        # Keep the explicit diagnostic override for non-template projects, but
+        # never detach a real template project from its pending/ready lock.
+        structure_lock = None
     elif pptx_structure == 'preserve':
         if structure_lock is None or structure_lock.mode != 'preserve':
             print(
@@ -456,7 +466,7 @@ Recorded narration:
                 # A diagnostic baseline override may bypass a stale or damaged
                 # template/preserve lock. A valid baseline lock remains
                 # authoritative, so its pptx_layouts mapping cannot be silently
-                # downgraded to the legacy page-role route.
+                # downgraded to the unmapped page-role route.
                 try:
                     candidate_lock = load_pptx_structure_lock(project_path)
                 except TemplateStructureError:
@@ -465,6 +475,18 @@ Recorded narration:
                     structure_lock = candidate_lock
 
         locked_layouts = structure_lock.layouts if structure_lock is not None else ()
+        if (
+            structure_lock is not None
+            and structure_lock.layout_strategy == 'distill'
+            and (baseline_layout_specs is None or not locked_layouts)
+        ):
+            print(
+                "Error: post-design Layout distillation is incomplete; add a "
+                "complete spec_lock.md pptx_layouts mapping and matching "
+                "data-pptx-layout metadata before export",
+                file=sys.stderr,
+            )
+            return 1
         if baseline_layout_specs is None:
             if locked_layouts:
                 print(
@@ -504,6 +526,18 @@ Recorded narration:
         pptx_structure in {'template', 'preserve'}
         and structure_lock is not None
     ):
+        if (
+            pptx_structure == 'template'
+            and structure_lock.layout_strategy == 'distill'
+            and not structure_lock.layouts
+        ):
+            print(
+                "Error: template Layout distillation is still pending; run the "
+                "distill-layouts workflow to write the complete pptx_layouts "
+                "mapping and final SVG Layout metadata before export",
+                file=sys.stderr,
+            )
+            return 1
         try:
             template_specs = (
                 parse_preserve_slides(native_files)
@@ -517,6 +551,19 @@ Recorded narration:
         if lock_errors:
             print("Error: PPTX structure does not match spec_lock.md:", file=sys.stderr)
             for message in lock_errors:
+                print(f"  {message}", file=sys.stderr)
+            return 1
+        prototype_errors = template_prototype_errors(
+            template_specs,
+            structure_lock,
+        )
+        if prototype_errors:
+            print(
+                "Error: distilled template structure does not match page_layouts "
+                "prototypes:",
+                file=sys.stderr,
+            )
+            for message in prototype_errors:
                 print(f"  {message}", file=sys.stderr)
             return 1
         if pptx_structure == 'preserve':

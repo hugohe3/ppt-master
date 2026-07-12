@@ -49,6 +49,8 @@ These overlap with what the locked `mode`, visual style, and §6.1 already shape
 
 **Keep both files in sync on every change.** Any revision the user approves must land in both `design_spec.md` and `spec_lock.md`; on divergence `spec_lock.md` wins (see [`strategist.md`](../references/strategist.md) §6.2). Iterate as many rounds as the user wants. The loop ends only when the user explicitly approves the spec.
 
+**Re-run the template bounds preflight after structural revisions.** If the user changes `template_adherence` or any `page_layouts` choice, repeat the Strategist preflight in [`strategist.md`](../references/strategist.md) §6.2 before approval and hand-back. Inspect every newly selected prototype. A distillation-capable strict route requires explicit `data-pptx-placeholder-bounds` on every prototype placeholder; adaptive may still defer and author new design-zone bounds when a legacy prototype lacks them. If strict selects any bounds-missing prototype, keep the user's strict choice but switch the lock to legacy immediate-template compatibility: omit `layout_strategy`, write the complete kindless `pptx_layouts` mapping before generation, and surface the required warning. Update both artifacts together; never leave the pre-revision deferred state in `spec_lock.md`.
+
 ---
 
 ## Step 3: Hand back

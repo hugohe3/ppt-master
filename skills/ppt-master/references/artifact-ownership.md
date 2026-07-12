@@ -18,7 +18,7 @@ Global artifact ownership rules for PPT Master projects.
 | `analysis/<stem>.slide_library.json` | Native PPTX structure facts | Text slots, geometry, native tables, native chart caches, SmartArt nodes/connections | Direct PPTX workflows use as native fill/structure contract |
 | `analysis/image_analysis.csv` | Regenerated image fact view | Measured facts about the current `images/` folder | Re-run `analyze_images.py` before reading image facts after changes |
 | `design_spec.md` | Human design narrative | Explains design intent, outline, rationale, and resource plan | Strategist writes; humans and later roles read for intent |
-| `spec_lock.md` | Execution contract | Literal colors, typography, icons, images, page rhythm, templates, and charts | Executor re-reads before every page; values must be used verbatim |
+| `spec_lock.md` | Execution contract | Literal colors, typography, icons, images, page rhythm, input template prototypes, charts, and any finalized native Layout mapping | Strategist writes the planning contract; Executor re-reads it before every page; only `distill-layouts` may add/finalize a deferred baseline or template `pptx_layouts` contract |
 | `images/` | Runtime image pool | User, extracted, AI, web, formula, slice, EMF/WMF assets | Step 5 writes here; `analysis/image_analysis.csv` derives from current contents |
 | `icons/` | Project icon inventory | Icons copied by `icon_sync.py` for this project | Executor uses locked project icons; exporter may fall back to global library only as documented |
 | `templates/` | Project template reference | Step 3 imported specs, template SVGs, and non-image assets | Strategist/Executor read only when Step 3 is triggered |
@@ -42,6 +42,8 @@ Global artifact ownership rules for PPT Master projects.
 | Sources read policy | In `sources/`, read content-type files (`.md` / `.markdown` / `.txt` / `.csv` / `.tsv` / `.json` / `.jsonl` / `.yaml` / `.yml`) and judge by content — a `.json` / `.csv` may be core content or just data. Exclude known sidecars: `*.conversion_profile.json` and `*_files/image_manifest.json`. `analysis/` facts (`source_profile.json`, `<stem>.slide_library.json`) are read per Step 4 / direct-PPTX workflow, not in the `sources/` content scan. |
 | PPTX structure | `slide_library.json` owns native geometry, slot facts, and SmartArt layout/relationships for direct PPTX workflows. |
 | Design contract | `design_spec.md` explains; `spec_lock.md` executes. Executor must not infer execution values from prose. |
+| Free-design Layout authority | Before distillation, absence of `pptx_layouts` is intentional. After explicit user selection, `spec_lock.md` owns the complete page-to-Layout mapping and `svg_output/` owns the matching root/layer/placeholder/bounds metadata. Do not add a second manifest or infer Layouts during export. |
+| Template Layout authority | `page_layouts` owns the per-page input prototype. On a deferred template route, absence of `pptx_layouts` means pending visual construction; after distillation, `spec_lock.md` owns the complete output mapping and `svg_output/` owns the final structure. Templates validate provenance but never add missing visible objects during export. |
 | Image facts | `images/` is live state; `analysis/image_analysis.csv` is a regenerated view, not a durable cache. |
 | SVG source | `svg_output/` is the only author source for generated pages. |
 | Page-design closure | On SVG-authoring routes, every visible exported-slide object exists in the corresponding page SVG or an explicitly referenced visual asset. |
