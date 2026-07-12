@@ -38,7 +38,7 @@ from .utils import (
     rect_to_dml_xfrm,
     combine_opacity, parse_hex_color, parse_svg_color,
     resolve_url_id, get_effective_filter_id,
-    parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
+    parse_inline_style, parse_font_family, estimate_text_width,
     detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
     matrix_multiply, parse_transform_matrix, transform_point, _xml_escape,
 )
@@ -2225,6 +2225,7 @@ _TEXT_CONTRACT_LINE_INDEX_ATTR = 'data-pptx-runtime-line-index'
 _TEXT_CONTRACT_LINE_COUNT_ATTR = 'data-pptx-runtime-line-count'
 _TEXT_CONTRACT_REASON_ATTR = 'data-pptx-runtime-mode-reason'
 _TEXT_CONTRACT_TOP_INSET_ATTR = 'data-paragraph-top-inset'
+_PARAGRAPH_LINE_BREAK_ATTR = 'data-paragraph-line-break'
 
 
 def _contract_round(
@@ -2469,28 +2470,14 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 paragraph_space_before.append(_f(sb_attr) if sb_attr else 0.0)
                 continue
 
-            soft_break = child.get('data-paragraph-soft-break') == '1'
-            if soft_break and paragraph_runs:
-                # Append to the previous paragraph. A Latin line-wrap needs a
-                # space to keep two words apart (SVG used a dy break, not
-                # punctuation); CJK wraps mid-sentence with no inter-character
-                # space, so a joining space there is a spurious artifact.
-                prev = paragraph_runs[-1]
-                prev_text = prev[-1]['text'] if prev else ''
-                next_text = line_runs[0]['text']
-                boundary_is_cjk = (
-                    (prev_text and is_cjk_char(prev_text[-1]))
-                    or (next_text and is_cjk_char(next_text[0]))
-                )
-                if prev and not prev_text.endswith(' ') \
-                        and not next_text.startswith(' ') \
-                        and not boundary_is_cjk:
-                    prev[-1] = {**prev[-1], 'text': prev_text + ' '}
-                prev.extend(line_runs)
-            else:
-                paragraph_runs.append(line_runs)
-                sb_attr = child.get('data-paragraph-space-before')
-                paragraph_space_before.append(_f(sb_attr) if sb_attr else 0.0)
+            line_break = child.get(_PARAGRAPH_LINE_BREAK_ATTR) == '1'
+            if line_break and paragraph_runs:
+                paragraph_runs[-1].append({'_break': True})
+                paragraph_runs[-1].extend(line_runs)
+                continue
+            paragraph_runs.append(line_runs)
+            sb_attr = child.get('data-paragraph-space-before')
+            paragraph_space_before.append(_f(sb_attr) if sb_attr else 0.0)
         if explicit_paragraph and paragraph_runs and not preserve_space:
             _trim_explicit_paragraph_edges(paragraph_runs)
         if not paragraph_runs:
@@ -2530,8 +2517,8 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Estimate text dimensions
     if paragraph_runs is not None:
         # Use the WIDEST visual line (per-tspan as the deck author drew it),
-        # not the joined-up paragraph: soft-broken paragraphs concatenate
-        # many lines into one <a:p>, and measuring the joined string would
+        # not the joined-up paragraph: explicit soft joins concatenate many
+        # visual lines into one <a:p>, and measuring the joined string would
         # blow the textbox past the canvas.
         text_width = max(visual_line_widths) if visual_line_widths else 0.0
         # Total height assumes the visual line count from the SVG source;
@@ -2734,12 +2721,10 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         ext_cx = px_to_emu(box_w)
         ext_cy = px_to_emu(box_h)
 
-    # Paragraph mode: wrap="square" so text reflows when the user resizes,
-    # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a
-    # long joined-up <a:p> on one line, blowing past the canvas. The cx we
-    # write below is the longest source SVG line without single-line renderer
-    # headroom; PowerPoint wraps long paragraphs inside this design width.
-    # Single-line text keeps wrap="none" + spAutoFit for tight fidelity.
+    # Hard breaks preserve the authored initial layout; wrap="square" keeps the
+    # frame editable so deleting a break or changing text restores normal
+    # PowerPoint wrapping. Paragraph frames avoid spAutoFit, which could resize
+    # them past their SVG bounds. Single-line text keeps its tight-frame path.
     if paragraph_runs is not None:
         top_inset = 0
         if explicit_paragraph:
