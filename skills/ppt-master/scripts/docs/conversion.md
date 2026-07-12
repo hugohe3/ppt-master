@@ -296,13 +296,18 @@ direct-format override subset. Other built-in/custom style families remain
 outside this guarantee.
 
 The chart importer also accepts the verified column/line/area combo subset,
-canonical four-series OHLC stock charts with shared numeric date caches, and
-area charts with numeric date axes. Combo primary/secondary plots may retain
-independent category caches and workbook ranges. Axis read-back is limited to
-the closed category/value roles and the supported kind/position/visibility,
-label-position, number-format, min/max/major-unit, reverse, and major-gridline
-fields. This is not a full `AxisSpec`: ChartEx import, arbitrary stock variants,
-other date-axis chart families, and unlisted axis semantics remain fallback-only.
+canonical four-series OHLC stock charts with shared numeric date caches, area
+charts with numeric date axes, and verified scatter/bubble charts with a closed
+pair of `axes.x` / `axes.y` value axes. Combo primary/secondary plots may retain
+independent category caches and workbook ranges. Both the category/value and XY
+contracts read back the supported kind/position/visibility, label-position,
+number-format, min/max/major-unit, reverse, and major-gridline fields; the native
+writer emits every field in those closed contracts. Scatter style is derived
+from uniform effective series line/marker/smooth state. The normalized XY
+fallback newly consumes only the two major-gridline flags, not the remaining
+axis fields. This is not a full `AxisSpec`: ChartEx import, arbitrary stock
+variants, other date-axis chart families, and unlisted axis semantics remain
+fallback-only.
 Safe stock series style may pass the structural gate, while stock series,
 `hiLowLines`, and up-down bar local styling can still normalize under the
 editable-first contract.

@@ -1157,7 +1157,23 @@ This contract is not a full `AxisSpec`: logarithmic scales, minor units/gridline
 crossing values, display units, tick skipping, and other unlisted OOXML semantics
 remain unsupported and fail closed on import.
 
-**XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`; `bubble` also requires one `series[].size` / `series[].sizes` value per point. `series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or `{x, y, size}` objects.
+**Narrow XY-axis schema**: `scatter` and `bubble` may use a closed `axes` object
+with only `x` and `y` roles. Both roles have `kind: "value"`; `x.position`
+is `bottom` or `top`, while `y.position` is `left` or `right`. Each accepts the
+same closed fields above, and `major_unit` is valid on both value axes. PPTX
+import requires the plot to reference exactly two mutually cross-linked
+`c:valAx` nodes and separately enforces the closed field/topology gates. The
+native writer emits and the importer reads back every field in this closed
+contract. Scatter import derives the effective `scatter_style` from a uniform
+per-series line/marker/smooth state; unsupported or nonuniform states remain
+fallback-only. The normalized SVG fallback newly consumes only
+`axes.x.major_gridlines` and `axes.y.major_gridlines`; the other fields do not
+imply full visual-axis parity.
+
+**XY chart schema**: `scatter` and `bubble` use `series[].x` + `series[].y`;
+`bubble` also requires one `series[].size` / `series[].sizes` value per point.
+`series[].points` is also accepted as `[x, y]` / `[x, y, size]` tuples or
+`{x, y, size}` objects.
 
 **Chart typography**: Metadata sizes use the same px-style unit as SVG text
 (`1px = 0.75pt`). `style.font_family` and the role-specific
@@ -1243,12 +1259,13 @@ editable-first contract. HLC, volume, noncanonical structure, and style XML
 outside the safe parsing boundary stay fallback-only.
 
 **PPTX chart-import boundary**: The importer recognizes conservative classic
-single-plot charts plus the verified column/line/area combo, area date-axis, and
-canonical OHLC stock subsets above. ChartEx output can be authored from marker
-metadata, but ChartEx **import** is still unsupported. Full `AxisSpec`, radar
-import, arbitrary stock variants, and combo/date-axis semantics outside the
-closed fields above remain fallback-only; this does not reduce the existing
-SVG-marker-to-native writer support.
+single-plot charts plus the verified scatter/bubble XY-axis, column/line/area
+combo, area date-axis, and canonical OHLC stock subsets above. ChartEx output
+can be authored from marker metadata, but ChartEx **import** is still
+unsupported. Full `AxisSpec`, radar import, arbitrary stock variants, and axis,
+combo, or date-axis semantics outside the closed fields above remain
+fallback-only; this does not reduce the existing SVG-marker-to-native writer
+support.
 
 **Deferred chart types**: Exploded pie / doughnut variants, `map`, `heatmap`,
 `bullet`, and `gantt` are intentionally outside the current native-object
