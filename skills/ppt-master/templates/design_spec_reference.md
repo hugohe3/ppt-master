@@ -306,6 +306,8 @@ Catalog read: 76 templates
 
 ## IX. Content Outline
 
+> **Native Layout boundary**: Each `Layout` line below describes visual composition intent, not a final PowerPoint Layout key. Free-design/brand-only pages stay unconstrained during SVG authoring. Template pages select an input prototype through `page_layouts`. Distillation-capable template routes defer the final output mapping, and [`distill-layouts`](../workflows/distill-layouts.md) writes reusable native Layouts only from completed pages. A strict legacy selection whose prototype lacks explicit placeholder bounds instead uses the Strategist's planning-time kindless immediate mapping and does not enter deferred distillation.
+
 ### Part 1: [Chapter Name]
 
 #### Slide 01 - Cover

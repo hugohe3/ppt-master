@@ -75,7 +75,7 @@
 >
 > **Size slots are anchors, not a closed menu.** Common slots (`title` / `subtitle` / `annotation`) cover frequent cases. Add role-specific slots (e.g. `cover_title: 88`, `hero_number: 56`, `subheading: 32`, `lead: 30`, `footnote: 16`, `chart_annotation: 16`) for the roles the deck actually uses — common for cover-heavy decks, consulting-style hero numbers, dense pages. **Mandatory — scan `§IX` and declare a slot for every role that recurs across pages, not just the four defaults.** A report / `text`-mode deck almost always recurs a per-page **core-message / lead line** and **page numbers / source credits / footnotes** → declare `lead` and `footnote` for them. `subheading` and `lead` sit between `subtitle` and `body` (their bands overlap `subtitle`) — pick by role, not size — and the core-message `lead` is a **primary** line, **always ≥ `body`**, never smaller. Leaving a recurring lead / footnote undeclared forces the Executor to improvise an unlocked size (and a core line improvised below `body` inverts the hierarchy). **Structural roles (title / body / subtitle / annotation / footnote) render at their locked size on every page — one role, one size, deck-wide.** Intermediate in-band sizes are for special / feature elements only (hero number, display title, one-off emphasis); declare a recurring one as its own slot so it stays consistent too.
 >
-> **Template Master defaults**: `pptx_structure.mode: template` requires both unitless `title` and `body`. Native export writes `title` into every Master `titleStyle` default and `body` into every `bodyStyle` / `otherStyle` default, changing only `a:defRPr@sz`. Direct page-run sizes and role-specific Layout placeholder prototype sizes remain unchanged. Other structure modes do not rewrite Master text-style sizes.
+> **Explicit Layout Master defaults**: `pptx_structure.mode: template` and a structured baseline after Layout distillation both require unitless `title` and `body`. Native export writes `title` into every Master `titleStyle` default and `body` into every `bodyStyle` / `otherStyle` default, changing only `a:defRPr@sz`. Direct page-run sizes and role-specific Layout placeholder prototype sizes remain unchanged. Unmapped baseline, `preserve`, and `flat` do not rewrite Master text-style sizes.
 >
 > **⚠️ PPT-safe stack discipline (HARD rule).** Native `baseline` / `template` export maps `title_family` to the PowerPoint theme major font and `body_family` (or `font_family`) to the theme minor font. Runs whose resolved face matches either role use `+mj-*` / `+mn-*` theme tokens; other role families remain concrete per-run typefaces. Every exported Latin / EA face MUST therefore resolve to cross-platform pre-installed fonts: `"Microsoft YaHei"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that resolve to non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) may be used only when the Design Spec notes the font-install or embedding requirement. `preserve` keeps the source template theme; `flat` keeps concrete fonts for diagnostics.
 >
@@ -134,12 +134,21 @@
 > - template_adherence: adaptive
 > - template_adherence: strict
 > ```
-> Omit the row for free design and brand-only templates. Both values require one `page_layouts` and one `pptx_layouts` row per page. `strict` keeps the selected Layout contract; `adaptive` may create a new explicit Layout under the same template Master.
+> Omit the row for free design and brand-only templates. Both values require one `page_layouts` row per page in new projects. Add `- layout_strategy: distill` and omit `pptx_layouts` until every complete SVG page exists, except when strict uses a legacy template page whose placeholder bounds are missing. That compatibility case omits the strategy and writes the complete kindless output mapping before generation. Adaptive may still distill new design-zone bounds.
 >
-> - `baseline` — default for free design and brand-only routes. New projects pair this mode with a complete `pptx_layouts` section and explicit root Layout/layer/placeholder metadata while remaining `baseline`; no deck/layout template or `page_layouts` section is implied. A legacy baseline lock whose entire `pptx_layouts` section is absent retains root `data-pptx-page-role`, conservative shared chrome promotion, and filename/id compatibility fallback. Actual content stays Slide-local in both paths.
-> - `template` — required whenever Step 3 loaded a deck/layout template. Requires complete `page_layouts` and `pptx_layouts` sections plus explicit SVG structure metadata on every generated page.
+> New template example:
+> ```
+> - mode: template
+> - template_adherence: adaptive
+> - layout_strategy: distill
+> ```
+>
+> - `baseline` — default for free design and brand-only routes. During visual construction, omit `pptx_layouts` and explicit root Layout/layer/placeholder metadata so the page composition remains unconstrained. Baseline compatibility export remains available until the user explicitly runs [`distill-layouts`](../workflows/distill-layouts.md).
+> - `template` — required whenever Step 3 loaded a deck/layout template. Distillation-capable projects pair it with `layout_strategy: distill`, a complete `page_layouts` input mapping, and no planning-time `pptx_layouts`. Bounds-missing strict legacy prototypes and existing locks without a strategy retain immediate/pre-authored mappings.
 > - `preserve` — legacy strict-only compatibility for an existing project that already ships `native_structure.json` + `source_template.pptx`. Do not select it for newly created templates.
 > - `flat` — diagnostic escape hatch. Do not lock this in a normal project; pass it on the CLI when comparing slide-local output.
+>
+> **Post-design distillation**: Baseline adds `- layout_strategy: distill` only after the user selects completed pages. A distillation-capable template route locks the strategy during planning but defers the whole `pptx_layouts` section. [`distill-layouts`](../workflows/distill-layouts.md) writes the complete final mapping and matching root kind after visual generation. Export rejects the pending or partial state. Strict legacy immediate compatibility skips this state.
 >
 > Preserve example:
 > ```
@@ -151,33 +160,37 @@
 
 ## pptx_layouts
 
-> Emit this section for every new generated deck, including free-design and brand-only decks that remain `pptx_structure.mode: baseline`. Include exactly one row per generated page. Value format: `<layout_key> | <PowerPoint layout name>`. Baseline keys/names describe the authored output composition, strict template use copies the selected SVG key/name, adaptive template use may declare a new stable key/name, and preserve uses the legacy native contract. Only a legacy baseline project may omit the whole section and fall back to `data-pptx-page-role`.
+> Distillation-capable template projects and free-design/brand-only baseline projects omit this section during visual generation. [`distill-layouts`](../workflows/distill-layouts.md) writes it only from completed SVG pages. Bounds-missing strict legacy templates, other immediate locks without `layout_strategy`, and preserve locks retain pre-authored rows.
 >
-> Example:
+> Legacy template/preserve value format: `<layout_key> | <PowerPoint layout name>`. Post-design distillation adds one final kind segment: `<layout_key> | <PowerPoint layout name> | <layout_kind>`. Baseline accepts `distilled` or `utility`; template distillation requires `distilled` on every page.
+>
+> Distilled baseline example:
 > ```
-> - P01: cover-hero-split | Cover — Hero Split
-> - P02: kpi-band-trio | KPI Band Trio
-> - P03: section-divider | Section Divider
-> - P04: timeline-spine | Timeline Spine
-> - P05: section-divider | Section Divider
+> - P01: freeform-unselected | Freeform | utility
+> - P02: editorial-visual | Editorial Visual | distilled
+> - P03: freeform-unselected | Freeform | utility
 > ```
 >
-> **One key per distinct composition — chrome, zone framing, and placeholder contract.** Series pages repeating one composition (e.g., three directional timetable pages) share one key; a genuinely different composition gets its own key, and its distinguishing zone framing (table backing panel, column panels, hero frame) is authored at the Layout layer so different keys compile to genuinely different Layouts. Name keys after the composition (`timeline-spine`, `section-divider`), never after PowerPoint stock roles or page topics: role keys (`title-content`) collapse different compositions into one mismatched Layout, and topic keys (`timetable-yungui` / `timetable-guangxi`) split one composition into duplicate Layouts. Do not split a shared key merely because slide-local wording, data, or imagery differs. Choose keys from the authored page plan, never from visual clustering, filenames, or content similarity. Zone labels, data, and complex grouped compositions stay Slide-local; do not move concrete content into the Layout to manufacture reuse.
+> **Distilled Layout**: `distilled` means a completed page supplied the final reusable contract. Baseline uses user-selected pages; template routes use every `page_layouts` prototype under strict/adaptive rules. Every placeholder carries explicit `data-pptx-placeholder-bounds` derived from its design zone, never from text length or glyph bounds. The same Layout may serve Slides with different local proportions; bounds define only the reusable default.
+>
+> **Utility Layout**: `utility` is the single empty `freeform-unselected` Layout for unselected baseline pages. It is forbidden in template distillation because every template page has an input prototype.
+>
+> **All-or-none final state**: Once distillation starts, include exactly one row per generated page and matching `data-pptx-layout` / name / kind on every SVG root. Partial mappings are invalid.
 
 ## page_layouts
 - P01: 01_cover
 - P03: 02a_chapter
 - P04: 03a_content_abstract
 
-> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. Strict inherits it unchanged; adaptive uses it as the architecture reference and may output a new `pptx_layouts` key.
+> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the input prototype mapping, not the final native Layout mapping. Strict restores its structural contract and bounds after design; adaptive retains its Master ids/topology/geometry and may output a new Layout contract. Non-mirror skin follows the project lock.
 >
 > **No entry for a page** is valid only when the entire route is free design or brand-only. It is an error in template mode.
 >
-> **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and create a new explicit Layout; strict mode must choose an existing compatible Layout or revise the outline.
+> **Hard rule**: Use both `page_layouts` and `page_charts` only with a compatible shell. Adaptive mode may start from a neutral content template and finalize a new explicit Layout after design; strict mode must choose an existing compatible Layout or revise the outline.
 >
-> **Whole section omitted** → free design or brand-only route. This omission applies only to `page_layouts`; every new route still emits complete `pptx_layouts` output mappings.
+> **Whole section omitted** → free design or brand-only route, except for an already-existing legacy immediate-template project that predates explicit prototype mapping. New template strict/adaptive routes require complete `page_layouts`. On a distillation-capable route, `pptx_layouts` appears only after post-design distillation; a bounds-missing strict legacy selection instead writes the complete kindless mapping during planning.
 >
-> **Strategist source**: copy the per-page SVG choices from `design_spec.md §VI Page Roster` (or §IX outline if Roster is absent). Names must match files in `templates/` exactly — typos cause silent fallback to free design.
+> **Strategist source**: record each project-page choice in project `design_spec.md §IX Content Outline`, using the copied template package's `templates/design_spec.md §V Page Roster` descriptions as the roster authority. Basenames must match files in `templates/` exactly. A typo is a blocking contract error: stop before drawing and report it; never fall back to free design inside template mode.
 
 ## page_charts
 - P05: column_chart

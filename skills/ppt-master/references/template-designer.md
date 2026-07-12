@@ -49,9 +49,11 @@ Input priority for PPTX-backed template creation:
 7. `summary.md` only as a fast scan; never as the canonical fact source
 8. screenshots / original PPTX only for style verification
 
-**Native structure output**: Always set `native_structure_mode: template`. Do not ship `native_structure.json` or `source_template.pptx`. Reconstruct one clean Master plus semantic Layouts through explicit SVG structure metadata. Every page remains a complete standalone SVG preview.
+**Native structure output**: Always set `native_structure_mode: template`. Do not ship `native_structure.json` or `source_template.pptx`. Reconstruct one clean Master plus semantic Layouts through explicit SVG structure metadata. Every page remains a complete standalone SVG preview, and every retained source Layout is represented by at least one complete template page even when no source Slide used it. Mirror is the page-count exception: retain the Layouts referenced by source Slides, report unused source Layouts, and use fidelity when the full picker roster must be materialized.
 
 **Downstream boundary**: The Strategist confirmation stage selects `strict` or `adaptive` when a project consumes this package. Both export through explicit template mode. Strict keeps the referenced Layout contract; adaptive may create a new Layout while retaining the template Master. Template_Designer does not preselect that project-level choice.
+
+When the source has a native Layout graph, `design_spec.md §V` must be followed by a `Source Layout Consolidation` table. Record every retained source Layout key/name and its output SVG plus rebuilt Layout key/picker name; if mirror cannot materialize an unused source Layout, record the explicit unused reason. This table is the audit artifact for consolidation and must not be replaced by prose such as “similar layouts merged.”
 
 ---
 
@@ -186,6 +188,8 @@ native_structure_mode: template
 ## V. Page Roster
 One row per emitted SVG describing what this template's version of cover / chapter / content / ending looks like (background treatment, decorative anchors, layout rhythm, image behavior, content density, intended content slot). Record the rebuilt Layout key and PowerPoint picker name. For `fidelity` mode, note the cluster source and visual differentiator. For `mirror` mode the roster is the load-bearing content-fit index, so each row must distinguish siblings by column count, hero element, density, and suitable content. Roster entries must match the actual SVG files on disk.
 
+For a source-derived native template, add `### Source Layout Consolidation` immediately after the roster with columns `Source Layout key/name`, `Output SVG`, `Rebuilt key/picker name`, and `Disposition`. Include one row for every retained source Layout, including consolidated and explicitly unused mirror Layouts.
+
 ## VI. Assets (omit when none)
 Logos, cover backgrounds, brand textures bundled with the template package — file name, dimensions, intended usage.
 
@@ -242,6 +246,7 @@ Do:
 - use a background image asset when the original decorative layer is too complex to recreate cleanly
 - use cleaned slide SVG references to inspect composition, spacing, text hierarchy, and fixed decorative structure only after factual metadata has been anchored
 - read every reference SVG under `svg/` — `master_*.svg`, `layout_*.svg`, and every `slide_*.svg` regardless of slide count. Master / layout files describe the deck's shared visual language (read first); slide files describe per-page content (read after). Partial coverage drops template fidelity.
+- materialize every retained source Layout into at least one complete template page by composing its Master layer, Layout layer, placeholder contract, and an appropriate Slide sample. When several source Layouts consolidate into one semantic output Layout, record that mapping; never silently drop an unused source Layout.
 - rename adopted assets to semantic names (`cover_bg.png`, `brand_emblem.png`) rather than carrying raw `image3.png` into the final template
 
 Do not:
@@ -255,11 +260,15 @@ Do not:
 |---|---|
 | Output semantic layout | Root `data-pptx-layout` + stable `data-pptx-layout-name` |
 | Rebuilt master/layout visual | Direct preview child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"` |
-| Semantic content slot | Direct content child with `data-pptx-placeholder`; add `data-pptx-placeholder-idx` when same-role slots require stable disambiguation |
+| Semantic content slot | Direct content child with `data-pptx-placeholder` and explicit `data-pptx-placeholder-bounds`; add `data-pptx-placeholder-idx` when same-role slots require stable disambiguation |
 | Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
 | Structural page-frame hint | Optional `data-pptx-role` only when background/decoration/header/footer/logo/watermark/chrome/page-number behavior is not already expressed by layer/placeholder metadata; stable unique `id` required |
 
 Repeat inherited visuals in every standalone SVG so browser preview remains complete. Template export validates their equality, moves one copy into the generated Master/Layout parts, and removes the repeated Slide copies. Do not flatten inherited visuals into unmarked slide content.
+
+**Forbidden — deck-instance Layout kind**: Do not carry `data-pptx-layout-kind="distilled|utility"` into a reusable template package. The package owns a pre-authored prototype; downstream completed pages receive their final kind during post-design distillation.
+
+**Composite distilled-source boundary**: When Type B input contains a final distilled top-level group marked as an `object` region proxy, do not copy that marker into the reusable package. Preserve the group as the standalone visual sample, remove its placeholder attributes, and add a separate direct atomic `rect` placeholder proxy at the same design-zone bounds with `fill="none" stroke="none"`. Give that proxy a stable semantic id/type/index. Composite group placeholders are final deck-instance metadata; template prototypes remain atomic.
 
 Use the imported placeholder types verbatim: `title`, `subtitle`, `body`,
 `picture`, `chart`, `table`, `object`, `media`, `date`, `footer`, and
@@ -267,6 +276,8 @@ Use the imported placeholder types verbatim: `title`, `subtitle`, `body`,
 `media`, or `dt` placeholders into a generic body marker. A reconstructed
 title normally has no index. Assign stable indices only when repeated roles need
 disambiguation inside the rebuilt Layout.
+
+**Hard rule — explicit design-zone bounds**: Every placeholder in a newly created template carries `data-pptx-placeholder-bounds="x y width height"`. For imported placeholders, use the source Layout geometry from `manifest.json` / `native_structure.json`. For new or consolidated slots, use the intended safe area, column, panel inset, or media frame. Do not use character count, glyph width, current wrapping, or the tight sample-content box.
 
 ### 3. Placeholder Markers
 
@@ -277,6 +288,7 @@ Use clear placeholder markers for replaceable content:
 ```xml
 <!-- Text placeholder -->
 <text id="title-slot" data-pptx-placeholder="title"
+      data-pptx-placeholder-bounds="80 280 1120 96"
       x="80" y="320" fill="#FFFFFF" font-size="48" font-weight="bold">
   {{TITLE}}
 </text>
@@ -462,8 +474,8 @@ templates/
 - [x] Every page listed in `design_spec.md §V Page Roster` saved to the selected template target (library package directory or project `templates/` root)
 - [x] Naming convention applied (standard / fidelity: letter-suffix variants; mirror: `<NNN>_<page_type>.svg`)
 - [x] Templates follow design spec (colors, fonts, layout)
-- [x] Placeholder markers are clear and standardized; mirror may keep literal text but still maps imported semantic slots
-- [x] Every SVG is a complete preview with explicit Master/Layout/Slide/placeholder metadata and `native_structure_mode: template`
+- [x] Placeholder markers are clear and standardized; every slot has explicit design-zone bounds; mirror may keep literal text but still maps imported semantic slots
+- [x] Every SVG is a complete preview with explicit Master/Layout/Slide/placeholder metadata and `native_structure_mode: template`; retained source Layouts are materialized, or mirror reports unused Layouts explicitly
 - [x] Project scope, when selected: bitmaps routed to `images/`; extracted icons copied to both `templates/icons/` and runtime `icons/`
 - [ ] **Next step**: Validate assets; register only library scope, otherwise hand the in-place project bundle to main Step 3
 ```
