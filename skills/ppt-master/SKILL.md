@@ -910,7 +910,9 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > text collapses into one editable PowerPoint text frame. Evenly spaced authored
 > visual lines stay in one paragraph as hard line breaks; larger gaps and list
 > items start new paragraphs. Only an explicit `data-pptx-break="soft"` joins
-> SVG-authored rows during export. The merged frame keeps normal PowerPoint
+> SVG-authored rows during export; the Executor declares that contract on
+> flowing prose blocks at draw time (see `references/executor-base.md` §2.1),
+> while designed breaks stay hard. The merged frame keeps normal PowerPoint
 > wrapping, so deleting a hard break or editing the text reflows it within the
 > frame. Add `--no-merge` only when the user explicitly asks for every
 > dy-stacked line to remain its own text frame. The merge detector is
