@@ -88,7 +88,7 @@ Behavior:
 - `finalize_svg.py` always creates `svg_final/` before export. This directory is the self-contained SVG visual preview; it is not packaged as a second PPTX.
 - Explicit `-o/--output` changes the native PPTX destination and skips `backup/`.
 - Paragraph merging is enabled by default and trades some SVG line-layout fidelity for PowerPoint editability:
-  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height, optional larger gap for paragraph breaks) collapse into one editable text frame with multiple `<a:p>` and precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it.
+  - Default: mergeable paragraph blocks (same x, dy clustered around one base line-height) collapse into one editable text frame. Equal effective font sizes may join as flowing prose; a font-size change, list marker, or accepted larger gap starts a new `<a:p>` with precise `<a:lnSpc>` / `<a:spcBef>`. Resizing the box reflows text inside it without erasing those paragraph boundaries.
   - With `--no-merge`: every dy-stacked `<tspan>` becomes its own text frame — exact SVG line layout is preserved but a 12-line paragraph is 12 separate textboxes
   - Side effect: PowerPoint may wrap merged paragraphs to a different line count than the SVG source. Long body text (abstracts, multi-paragraph sections, reference lists) usually benefits from the default; pages with tight typographic alignment (covers, charts, tables) usually want `--no-merge`
   - Mergeable detection is conservative: only fires when the children form a clean paragraph block; mixed-layout `<text>` falls through to the default per-line path
