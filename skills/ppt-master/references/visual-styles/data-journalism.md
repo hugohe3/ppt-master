@@ -7,6 +7,7 @@ Bloomberg / Economist news-infographic — publication-grade information density
 ## 1. Shape & decoration
 
 - Shape language: a dense multi-column grid carrying many small charts and data tables inline; editorial sidebars and pull-stats; hairline dividers; hero numbers; a running source / footnote line. Information density is the look — kept legible by a rigorous grid.
+- Composition geometry: the chart as the page's spine — layout wraps the visualization instead of boxing it; a hero number at full column scale; a full-width spanner rule dropping into a stat band; a sidebar cut into the grid; small-multiple strips instead of one boxed chart.
 - Decoration: minimal beyond the data — a single accent rule, sparing annotation. Charts and numbers are the visual interest, not ornament.
 - Whitespace: tight but structured; the grid earns density without clutter.
 

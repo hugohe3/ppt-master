@@ -7,6 +7,7 @@ Whiteboard-ink minimalism — a pale field, confident black hand-ink line work, 
 ## 1. Shape & decoration
 
 - Shape language: hand-drawn line work with slight, intentional wobble — boxes, arrows, dividers and brackets sketched as if on a thoughtful whiteboard; never mechanically straight — realize it as `<path>` / `<polyline>` with off-grid points, not `<rect>` / `<line>` primitives. Line defines structure; no filled cards.
+- Composition geometry: a circled central concept with branch arrows carrying the page; a hand-drawn Venn or overlap sketch as the argument; strike-through-and-replace geometry for before/after; one oversized bracket grouping the evidence under the claim.
 - Decoration: minimal — a few doodle marks (stars, dashes, dots, underlines) for emphasis. Restraint is the look; clutter breaks the "considered" feel.
 - Whitespace: generous and empty; the pale field carries most of the canvas, elements float with room around them.
 
