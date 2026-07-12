@@ -31,6 +31,8 @@ from xml.etree import ElementTree as ET
 def flatten_positional_tspans(
     tree: ET.ElementTree,
     merge_paragraphs: bool = False,
+    *,
+    source_name: str | None = None,
 ) -> bool:
     """Flatten positional ``<tspan>`` elements into independent ``<text>``.
 
@@ -45,4 +47,8 @@ def flatten_positional_tspans(
     if str(scripts_dir) not in sys.path:
         sys.path.insert(0, str(scripts_dir))
     from svg_finalize.flatten_tspan import flatten_text_with_tspans  # type: ignore
-    return flatten_text_with_tspans(tree, merge_paragraphs=merge_paragraphs)
+    return flatten_text_with_tspans(
+        tree,
+        merge_paragraphs=merge_paragraphs,
+        source_name=source_name,
+    )

@@ -242,6 +242,10 @@ _UNSAFE_COLOR_RE = re.compile(r'[;:@\\]|url\s*\(', re.IGNORECASE)
 _SAFE_ATTR_NAME_RE = re.compile(r'^[A-Za-z_][A-Za-z0-9_.:-]*$')
 _MAX_ATTR_VALUE_LEN = 256
 _MAX_EDIT_TEXT_LEN = 5000
+_PURE_TRANSLATE_RE = re.compile(
+    r'^\s*(?:translate\(\s*[-+]?\d+(?:\.\d+)?'
+    r'(?:(?:\s*,\s*|\s+)[-+]?\d+(?:\.\d+)?)?\s*\)\s*)+$'
+)
 _ADDABLE_BATCH_ATTRS = frozenset({
     'fill', 'stroke', 'opacity',
     'font-size', 'font-family', 'font-weight', 'text-anchor',
@@ -314,6 +318,42 @@ def _find_by_id(root: ET.Element, element_id: str) -> Optional[ET.Element]:
     return None
 
 
+def _explicit_paragraph_owner(
+    root: ET.Element,
+    target: ET.Element,
+) -> Optional[ET.Element]:
+    """Return the explicit paragraph <text> owning target, if any."""
+    for candidate in root.iter():
+        tag = candidate.tag.split('}', 1)[-1]
+        if tag != 'text' or candidate.get('data-pptx-text-mode') != 'paragraph':
+            continue
+        if candidate is target or target in candidate.iter():
+            return candidate
+    return None
+
+
+def _validate_explicit_paragraph_edit(
+    root: ET.Element,
+    target: ET.Element,
+    attrs: dict,
+) -> Optional[str]:
+    """Protect paragraph frame/visual-line ownership in Live Preview."""
+    owner = _explicit_paragraph_owner(root, target)
+    if owner is None:
+        return None
+    if target is not owner and {'x', 'y', 'dy', 'transform'} & attrs.keys():
+        return 'explicit paragraph lines cannot be moved independently; switch to lines mode'
+    if target is owner and {'x', 'y'} & attrs.keys():
+        return 'move an explicit paragraph with a pure translate, not parent x/y'
+    if target is owner and 'data-pptx-text-bounds' in attrs:
+        return 'explicit paragraph bounds require a dedicated frame edit operation'
+    if target is owner and 'transform' in attrs:
+        transform = attrs.get('transform')
+        if transform is not None and not _PURE_TRANSLATE_RE.fullmatch(transform):
+            return 'explicit paragraphs only support pure translate transforms'
+    return None
+
+
 def _apply_edit_record(root: ET.Element, record: dict) -> tuple[bool, Optional[str]]:
     element_id = record.get('element_id')
     if not isinstance(element_id, str):
@@ -339,6 +379,9 @@ def _apply_edit_record(root: ET.Element, record: dict) -> tuple[bool, Optional[s
         target = _find_by_id(root, element_id)
         if target is None:
             return False, 'not-found'
+        paragraph_error = _validate_explicit_paragraph_edit(root, target, attrs)
+        if paragraph_error:
+            return False, paragraph_error
         _strip_edited_inline_geometry(target, attrs.keys())
         ok, reason = set_attributes(root, element_id, attrs)
         if not ok:
@@ -788,6 +831,9 @@ def create_app(
             attr_err = _validate_edit_attrs(attrs, set(target.attrib.keys()))
             if attr_err:
                 return jsonify({'error': attr_err}), 400
+            paragraph_error = _validate_explicit_paragraph_edit(root, target, attrs)
+            if paragraph_error:
+                return jsonify({'error': paragraph_error}), 400
 
         changes = []
         staged: dict = {'element_id': element_id}

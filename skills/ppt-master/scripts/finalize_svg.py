@@ -57,6 +57,7 @@ from svg_to_pptx.geometry_properties import (
     GeometryStyleError,
     materialize_inline_geometry_in_file,
 )
+from svg_to_pptx.text_contract import RUNTIME_ATTRS, TextContractError
 from svg_to_pptx.use_expander import (
     UseExpansionError,
     expand_local_use_references_in_file,
@@ -89,13 +90,22 @@ def process_flatten_text(svg_file: Path, verbose: bool = False) -> bool:
         from xml.etree import ElementTree as ET
 
         tree = ET.parse(str(svg_file))
-        changed = flatten_text_with_tspans(tree)
+        changed = flatten_text_with_tspans(
+            tree,
+            enforce_native_carrier=False,
+            source_name=svg_file.name,
+        )
 
         if changed:
+            for element in tree.getroot().iter():
+                for attribute in RUNTIME_ATTRS:
+                    element.attrib.pop(attribute, None)
             tree.write(str(svg_file), encoding='unicode', xml_declaration=False)
             if verbose:
                 safe_print(f"   [OK] {svg_file.name}: text flattened")
         return changed
+    except TextContractError:
+        raise
     except Exception as e:
         if verbose:
             safe_print(f"   [ERROR] {svg_file.name}: {e}")
@@ -361,10 +371,19 @@ Aliases (still accepted):
         safe_print("[ERROR] --image-scale must be >= 1")
         sys.exit(1)
 
-    success = finalize_project(args.project_dir, options, args.dry_run, args.quiet,
-                               compress=args.compress,
-                               max_dimension=args.max_dimension,
-                               image_scale=args.image_scale)
+    try:
+        success = finalize_project(
+            args.project_dir,
+            options,
+            args.dry_run,
+            args.quiet,
+            compress=args.compress,
+            max_dimension=args.max_dimension,
+            image_scale=args.image_scale,
+        )
+    except TextContractError as exc:
+        safe_print(f"[ERROR] {exc.format()}")
+        sys.exit(1)
     sys.exit(0 if success else 1)
 
 
