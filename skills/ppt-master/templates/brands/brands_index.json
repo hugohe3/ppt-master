@@ -1,15 +1,19 @@
 {
   "anthropic": {
-    "summary": "Anthropic brand identity — AI/LLM tech talks, developer conferences, technical training, product launches",
+    "summary": "Anthropic / Claude brand family — AI research, product talks, developer conferences, technical training, and launches",
     "primary_color": "#D97757"
   },
   "google": {
     "summary": "Google brand identity — multi-product corporate decks, developer events (Google I/O style), education and training in the Google ecosystem",
     "primary_color": "#4285F4"
   },
+  "中国电信": {
+    "summary": "China Telecom brand identity for digital infrastructure, government-enterprise solutions, transformation planning, and corporate reporting",
+    "primary_color": "#004EA2"
+  },
   "中国电建": {
     "summary": "POWERCHINA brand identity for engineering project reports, technical proposals, business negotiations, and corporate promotion",
-    "primary_color": "#00418D"
+    "primary_color": "#004EA1"
   },
   "中汽研": {
     "summary": "CATARC brand identity for product certification, evaluation reports, automotive technology promotion, and business visits",

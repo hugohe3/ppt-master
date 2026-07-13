@@ -16,6 +16,7 @@ primary_color: "#4285F4"
 | Brand Name | Google |
 | Use Cases | Product launches, developer events (Google I/O style), corporate updates, multi-product decks, ecosystem education / training |
 | Tone | Modern, friendly, optimistic, clear, multi-color expressive |
+| Sources | Bundled Google SVG assets; [Google Brand Resource Center](https://about.google/brand-resource-center/guidance/), reviewed 2026-07-13 |
 
 ## II. Color Scheme
 
@@ -26,7 +27,7 @@ primary_color: "#4285F4"
 | accent (warm) | `#FBBC05` | fact | Google Yellow |
 | accent (alert) | `#EA4335` | fact | Google Red |
 | text | `#202124` | approx | Standard Material / Google product UI text |
-| bg | `#FFFFFF` | fact | |
+| bg | `#FFFFFF` | approx | Default light presentation background |
 
 The four primary brand colors (Blue / Green / Yellow / Red) carry equal weight in Google brand usage; the `primary` / `secondary` / `accent` role split above is a slide-layout presentation hierarchy convention, not a brand prominence statement. Strategist may rotate any of the four into the dominant role per page rhythm.
 
@@ -37,7 +38,7 @@ The four primary brand colors (Blue / Green / Yellow / Red) carry equal weight i
 | title | `Google Sans, Roboto, "Microsoft YaHei", sans-serif` | 500–700 |
 | body | `Roboto, "Microsoft YaHei", sans-serif` | 400 |
 
-> `Google Sans` is a proprietary brand font; decks rendering on machines without it installed should either embed it into the PPTX or accept the `Roboto` / `Microsoft YaHei` fallback. When locking, Strategist notes "requires install or PPTX embed".
+> `Google Sans` is proprietary. PPT Master does not bundle or automatically embed it; use the `Roboto` / `Microsoft YaHei` fallback unless the user supplies an installed/approved font workflow.
 
 ## IV. Logo
 
@@ -50,7 +51,8 @@ Google uses a dual-lockup brand system — pick by context, never combine on the
 
 - Cover: prefer wordmark
 - Per-page: optional — only when wordmark or G mark genuinely fits the layout; do not stamp every page
-- Clearspace: leave at least 0.5× logo height of empty space on all sides; never overlap text or photographic backgrounds
+- Use only unmodified approved artwork and follow the official guidance for the actual context; never imply affiliation, sponsorship, or endorsement
+- Clearspace: follow the applicable official asset guidance; never crowd the logo or place it on a busy background
 
 ## V. Voice & Tone
 
@@ -61,6 +63,6 @@ Google uses a dual-lockup brand system — pick by context, never combine on the
 
 ## VI. Icon Style
 
-- Preference: filled
+- Preference: one consistent Material-aligned family; filled or stroke according to the deck context
 
-> Aligns with Material Icons' default filled style. When the deck uses `templates/icons/`, prefer `tabler-filled` or `chunk-filled`; avoid stroke-only libraries to stay consistent with Google's product UI aesthetic.
+> This is a presentation convention, not permission to imitate Google's visual identity. When the deck uses `templates/icons/`, choose one compatible family and keep weight/fill treatment consistent.
