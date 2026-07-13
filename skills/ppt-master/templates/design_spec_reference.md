@@ -250,6 +250,8 @@ Catalog read: 76 templates
 
 > **Audit rule**: `Summary-quote` must be copy-pasted verbatim — paraphrasing breaks the audit. Every template name listed must `grep` cleanly inside `charts_index.json` (so misspellings/inventions fail). If fewer than 3 viz pages exist, list what exists and note "fewer than 3 viz pages"; runners-up still required for each page that does exist.
 
+> **Native-preset candidates → append to `Usage`**: for a page already in this list, when its content calls for a literal stock PowerPoint shape (chevron, block arrow, standard flowchart node, callout, banner, star — judged from the page plan, not a template's name), append a candidate note to that page's `Usage`, e.g. `…usage…; native-preset candidate: chevron; Executor applies executor-base §3.0`. The Executor still selects the exact preset, frame, and paint. See [`strategist.md`](../references/strategist.md) Template Match.
+
 ---
 
 ## VIII. Image Resource List (if needed)
