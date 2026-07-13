@@ -107,6 +107,7 @@ def convert_txbody(
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     fallback_lst_styles: tuple[ET.Element, ...] = (),
+    fallback_run_props: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextResult:
@@ -119,6 +120,7 @@ def convert_txbody(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
         default_font_size_px=default_font_size_px,
         fallback_lst_styles=fallback_lst_styles,
+        fallback_run_props=fallback_run_props,
         slide_number=slide_number, id_prefix=id_prefix, id_seq=id_seq,
     )
     if not paragraphs or not _has_visible_text(paragraphs):
@@ -193,6 +195,7 @@ def convert_vertical_txbody(
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     fallback_lst_styles: tuple[ET.Element, ...] = (),
+    fallback_run_props: tuple[ET.Element, ...] = (),
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextResult:
@@ -210,6 +213,7 @@ def convert_vertical_txbody(
         tx_body, palette, theme_fonts or {}, default_fill=default_fill,
         default_font_size_px=default_font_size_px,
         fallback_lst_styles=fallback_lst_styles,
+        fallback_run_props=fallback_run_props,
         slide_number=slide_number, id_prefix=id_prefix, id_seq=id_seq,
     )
     runs = [
@@ -344,6 +348,7 @@ def _parse_paragraphs(
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     fallback_lst_styles: tuple[ET.Element, ...] = (),
+    fallback_run_props: tuple[ET.Element, ...] = (),
     slide_number: int | None = None,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
@@ -361,6 +366,7 @@ def _parse_paragraphs(
         para = _parse_paragraph(
             p_elem, palette, theme_fonts, autonum_state,
             lst_styles=lst_styles,
+            fallback_run_props=fallback_run_props,
             default_fill=default_fill,
             default_font_size_px=default_font_size_px,
             slide_number=slide_number,
@@ -378,6 +384,7 @@ def _parse_paragraph(
     autonum_state: dict[int, int],
     *,
     lst_styles: tuple[ET.Element, ...] = (),
+    fallback_run_props: tuple[ET.Element, ...] = (),
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     slide_number: int | None = None,
@@ -422,6 +429,7 @@ def _parse_paragraph(
                 text, rpr, end_rpr, palette, theme_fonts,
                 def_rpr=def_rpr,
                 list_def_rpr=list_def_rpr,
+                fallback_run_props=fallback_run_props,
                 default_fill=default_fill,
                 default_font_size_px=default_font_size_px,
                 id_prefix=id_prefix, id_seq=id_seq,
@@ -449,6 +457,7 @@ def _parse_paragraph(
                     text, rpr, end_rpr, palette, theme_fonts,
                     def_rpr=def_rpr,
                     list_def_rpr=list_def_rpr,
+                    fallback_run_props=fallback_run_props,
                     default_fill=default_fill,
                     default_font_size_px=default_font_size_px,
                     id_prefix=id_prefix, id_seq=id_seq,
@@ -467,13 +476,16 @@ def _build_run(
     *,
     def_rpr: ET.Element | None = None,
     list_def_rpr: ET.Element | None = None,
+    fallback_run_props: tuple[ET.Element, ...] = (),
     default_fill: str = DEFAULT_FILL_HEX,
     default_font_size_px: float = DEFAULT_FONT_SIZE_PX,
     id_prefix: str = "txt",
     id_seq: list[int] | None = None,
 ) -> TextRun:
     """Resolve a single <a:r> run from its rPr and fallback run properties."""
-    style_chain = (rpr, def_rpr, list_def_rpr, end_rpr)
+    style_chain = (
+        rpr, def_rpr, list_def_rpr, end_rpr,
+    ) + fallback_run_props
     # font-size: rPr > pPr/defRPr > lstStyle/lvlNpPr/defRPr > endParaRPr > default
     sz = _attr_chain(style_chain, "sz")
     font_size_px = hundredths_pt_to_px(sz, default_font_size_px)

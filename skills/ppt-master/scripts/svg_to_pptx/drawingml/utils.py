@@ -7,6 +7,8 @@ import math
 import re
 from xml.etree import ElementTree as ET
 
+from pptx_shapes import validate_ooxml_xfrm
+
 from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
 # ---------------------------------------------------------------------------
@@ -264,31 +266,68 @@ def _rotate_matrix(angle_deg: float, cx: float | None = None, cy: float | None =
     )
 
 
+def _skew_matrix(angle_deg: float, *, x_axis: bool) -> AffineMatrix:
+    radians = math.radians(angle_deg)
+    if abs(math.cos(radians)) <= 1e-12:
+        raise ValueError(f'Invalid SVG skew angle {angle_deg!r}')
+    tangent = math.tan(radians)
+    if x_axis:
+        return (1.0, 0.0, tangent, 1.0, 0.0, 0.0)
+    return (1.0, tangent, 0.0, 1.0, 0.0, 0.0)
+
+
 def parse_transform_matrix(transform_str: str) -> AffineMatrix:
-    """Parse an SVG transform list into one affine matrix."""
+    """Parse a complete SVG transform list into one affine matrix.
+
+    Unsupported or malformed operations fail closed.  Treating an unknown
+    operation as the identity would silently discard a visible SVG edit.
+    """
     if not transform_str:
         return IDENTITY_MATRIX
 
     matrix = IDENTITY_MATRIX
-    for name, raw_args in _TRANSFORM_RE.findall(transform_str):
+    cursor = 0
+    matched = False
+    for match in _TRANSFORM_RE.finditer(transform_str):
+        if re.fullmatch(r'[\s,]*', transform_str[cursor:match.start()]) is None:
+            raise ValueError(f'Invalid SVG transform syntax {transform_str!r}')
+        matched = True
+        name, raw_args = match.groups()
+        if re.fullmatch(r'(?:[\s,]*' + _NUMBER_RE.pattern + r')*[\s,]*', raw_args) is None:
+            raise ValueError(f'Invalid arguments for SVG transform {name!r}')
         args = [float(n) for n in _NUMBER_RE.findall(raw_args)]
+        if not all(math.isfinite(value) for value in args):
+            raise ValueError(f'Non-finite arguments for SVG transform {name!r}')
         name = name.lower()
-        local = IDENTITY_MATRIX
-
-        if name == 'matrix' and len(args) >= 6:
+        if name == 'matrix' and len(args) == 6:
             local = (args[0], args[1], args[2], args[3], args[4], args[5])
-        elif name == 'translate' and args:
+        elif name == 'translate' and len(args) in {1, 2}:
             local = _translate_matrix(args[0], args[1] if len(args) > 1 else 0.0)
-        elif name == 'scale' and args:
+        elif name == 'scale' and len(args) in {1, 2}:
             local = _scale_matrix(args[0], args[1] if len(args) > 1 else None)
-        elif name == 'rotate' and args:
+        elif name == 'rotate' and len(args) in {1, 3}:
             local = _rotate_matrix(
                 args[0],
                 args[1] if len(args) > 2 else None,
                 args[2] if len(args) > 2 else None,
             )
+        elif name == 'skewx' and len(args) == 1:
+            local = _skew_matrix(args[0], x_axis=True)
+        elif name == 'skewy' and len(args) == 1:
+            local = _skew_matrix(args[0], x_axis=False)
+        else:
+            raise ValueError(
+                f'Unsupported or malformed SVG transform {match.group(0)!r}'
+            )
 
         matrix = matrix_multiply(matrix, local)
+        cursor = match.end()
+
+    if (
+        not matched
+        or re.fullmatch(r'[\s,]*', transform_str[cursor:]) is None
+    ):
+        raise ValueError(f'Invalid SVG transform syntax {transform_str!r}')
 
     return matrix
 
@@ -299,12 +338,32 @@ def transform_point(matrix: AffineMatrix, x: float, y: float) -> tuple[float, fl
     return a * x + c * y + e, b * x + d * y + f
 
 
+def validate_dml_shape_matrix(matrix: AffineMatrix) -> None:
+    """Reject affine shear that a DrawingML shape transform cannot express."""
+    a, b, c, d, _e, _f = matrix
+    x_length = math.hypot(a, b)
+    y_length = math.hypot(c, d)
+    if x_length <= 1e-12 or y_length <= 1e-12:
+        raise ValueError(
+            'SVG zero-scale transform cannot be represented by a visible '
+            'DrawingML shape'
+        )
+    dot = a * c + b * d
+    if abs(dot) > x_length * y_length * 1e-9:
+        raise ValueError(
+            'SVG shear/skew cannot be represented by a DrawingML '
+            'shape transform'
+        )
+
+
 def rect_to_dml_xfrm(
     x: float,
     y: float,
     w: float,
     h: float,
     matrix: AffineMatrix,
+    *,
+    preserve_degenerate_axes: bool = False,
 ) -> tuple[str, int, int, int, int, tuple[int, int, int, int]]:
     """Map a transformed SVG rectangle to DrawingML xfrm attributes.
 
@@ -322,11 +381,18 @@ def rect_to_dml_xfrm(
     vx = p3[0] - p0[0]
     vy = p3[1] - p0[1]
 
-    rect_w = max(math.hypot(ux, uy), 0.001)
-    rect_h = max(math.hypot(vx, vy), 0.001)
+    rect_w = math.hypot(ux, uy)
+    rect_h = math.hypot(vx, vy)
+    validate_dml_shape_matrix(matrix)
+    if not preserve_degenerate_axes:
+        rect_w = max(rect_w, 0.001)
+        rect_h = max(rect_h, 0.001)
     cross = ux * vy - uy * vx
 
-    if cross < 0:
+    if rect_w <= 1e-12 and rect_h > 1e-12:
+        angle_deg = math.degrees(math.atan2(vy, vx)) - 90.0
+        flip_attr = ''
+    elif cross < 0:
         angle_deg = math.degrees(math.atan2(-uy, -ux))
         flip_attr = ' flipH="1"'
     else:
@@ -342,6 +408,7 @@ def rect_to_dml_xfrm(
     off_y = px_to_emu(center_y - rect_h / 2)
     ext_cx = px_to_emu(rect_w)
     ext_cy = px_to_emu(rect_h)
+    validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
 
     xs = [p0[0], p1[0], p2[0], p3[0]]
     ys = [p0[1], p1[1], p2[1], p3[1]]

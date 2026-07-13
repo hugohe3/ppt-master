@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 import json
 import math
+import re
 import shutil
 import argparse
 from datetime import datetime
@@ -37,6 +38,7 @@ if __package__ in {None, ''}:
 from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
 from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
+from ..native_objects.marker_status import native_marker_release_block_reason
 from ..drawingml.theme_colors import ThemeColorError, load_theme_color_spec
 from ..drawingml.theme_fonts import (
     ThemeFontError,
@@ -47,12 +49,10 @@ from .narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_d
 from .slide_xml import TRANSITIONS
 from .template_structure import (
     TemplateStructureError,
-    load_native_structure_contract,
     load_pptx_structure_lock,
-    native_structure_lock_errors,
-    parse_preserve_slides,
     parse_template_slides,
     template_lock_errors,
+    template_prototype_errors,
 )
 from ..animation_config import (
     load_animation_config,
@@ -64,6 +64,52 @@ from ..animation_config import (
 
 def _as_dict(value: object) -> dict:
     return value if isinstance(value, dict) else {}
+
+
+_PPTX_STRUCTURE_SECTION_RE = re.compile(
+    r"(?ms)^##[ \t]+pptx_structure[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)"
+)
+_PPTX_STRUCTURE_MODE_RE = re.compile(
+    r"(?m)^-[ \t]+mode[ \t]*:[ \t]*([^\s#]+)[ \t]*(?:#.*)?$"
+)
+_LEGACY_PPTX_STRUCTURE_MODES = frozenset({
+    'baseline',
+    'generated',
+    'preserve',
+    'template',
+})
+_RELEASE_PPTX_STRUCTURE_MODES = frozenset({'flat', 'structured'})
+
+
+def _declared_pptx_structure_mode(project_path: Path) -> str | None:
+    """Return the explicitly locked SVG export mode, without legacy fallback."""
+    lock_path = project_path / 'spec_lock.md'
+    try:
+        content = lock_path.read_text(encoding='utf-8')
+    except OSError:
+        return None
+    section_match = _PPTX_STRUCTURE_SECTION_RE.search(content)
+    if section_match is None:
+        return None
+    mode_match = _PPTX_STRUCTURE_MODE_RE.search(section_match.group(1))
+    return mode_match.group(1).strip().lower() if mode_match else None
+
+
+def _print_structure_migration_error(mode: str | None) -> None:
+    """Explain how a legacy or absent SVG structure contract is restored."""
+    label = repr(mode) if mode else 'missing (legacy implicit baseline)'
+    print(
+        "Error: release SVG export requires an explicit spec_lock.md "
+        "pptx_structure.mode: flat (free design / brand-only) or structured "
+        "(deck/layout template); found " + label + ".",
+        file=sys.stderr,
+    )
+    print(
+        "  New free-design and brand-only projects use mode: flat. Restore "
+        "legacy template/structured metadata by following skills/ppt-master/"
+        "workflows/restore-pptx-structure.md before export.",
+        file=sys.stderr,
+    )
 
 
 def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]]:
@@ -81,6 +127,50 @@ def _native_object_fallbacks(svg_files: list[Path]) -> list[tuple[str, str, str]
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
             fallbacks.append((svg_path.name, marker_id, status))
     return fallbacks
+
+
+def _release_blocked_graphics(
+    svg_files: list[Path],
+) -> list[tuple[str, str, str]]:
+    """Return graphics whose status metadata is invalid."""
+    blocked: list[tuple[str, str, str]] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        for elem in root.iter():
+            if elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            reason = native_marker_release_block_reason(elem)
+            if reason is None:
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            blocked.append((svg_path.name, marker_id, reason))
+    return blocked
+
+
+def _reconstruction_only_graphics(
+    svg_files: list[Path],
+) -> list[tuple[str, str, bool]]:
+    """Return valid placeholder routes for non-blocking diagnostics."""
+    diagnostics: list[tuple[str, str, bool]] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        for elem in root.iter():
+            if elem.tag.rsplit('}', 1)[-1] == 'metadata':
+                continue
+            if elem.get('data-pptx-route-status') != 'reconstruction-only':
+                continue
+            if native_marker_release_block_reason(elem) is not None:
+                continue
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            active_native = bool((elem.get('data-pptx-native') or '').strip())
+            diagnostics.append((svg_path.name, marker_id, active_native))
+    return diagnostics
 
 
 def _recorded_narration_on_click_slides(
@@ -214,24 +304,30 @@ Recorded narration:
                              'conversion decisions for debugging.')
     parser.add_argument('--native-objects', action='store_true', default=False,
                         help='Opt in to converting explicit data-pptx-native table/chart '
-                             'markers into native PowerPoint objects. Default off: marked '
-                             'groups export through their SVG fallback children. When set, '
+                             'markers into editable PowerPoint objects. This editable-first '
+                             'replacement may normalize styling or omit unmodeled marker-local '
+                             'visuals. Default off: marked groups export through their SVG '
+                             'fallback children. When set, '
                              'the default-flow export is named <project>_<ts>_native_charts.pptx '
                              'to tell it apart from a plain shape export.')
     parser.add_argument(
         '--pptx-structure',
-        choices=['baseline', 'template', 'preserve', 'flat'],
+        choices=[
+            'structured',
+            'flat',
+            'baseline',
+            'template',
+            'preserve',
+            'generated',
+        ],
         default=None,
         help=(
-            'PPTX structure strategy for native export. When omitted, read '
-            'spec_lock.md pptx_structure.mode, falling back to baseline. baseline '
-            'promotes safe repeated background/chrome and extracts conservative '
-            'semantic page-role layout families plus exact family-wide '
-            'structurally marked chrome (legacy filenames/ids remain fallbacks); '
-            'template consumes explicit '
-            'data-pptx-layout/layer/placeholder metadata to build reusable layouts; '
-            'preserve is legacy compatibility for imported source packages; '
-            'flat leaves generated structure slide-local for debugging/comparison.'
+            'PPTX structure strategy for native export. Omitting this flag reads '
+            'spec_lock.md: flat is the free-design/brand-only release mode and '
+            'uses the default PowerPoint Master plus Blank Layout with all SVG '
+            'objects slide-local; structured is the deck/layout-template mode and '
+            'requires complete explicit metadata. baseline, template, preserve, '
+            'and generated are accepted only to report a migration error.'
         ),
     )
     parser.add_argument('--no-image-optimize', action='store_true',
@@ -316,46 +412,47 @@ Recorded narration:
     if not project_path.exists():
         print(f"Error: Path does not exist: {project_path}")
         return 1
+
     structure_lock = None
     native_structure_contract = None
     pptx_structure = args.pptx_structure
+    declared_structure_mode = _declared_pptx_structure_mode(project_path)
+    if pptx_structure in _LEGACY_PPTX_STRUCTURE_MODES:
+        _print_structure_migration_error(pptx_structure)
+        return 1
     if pptx_structure is None:
+        if declared_structure_mode not in _RELEASE_PPTX_STRUCTURE_MODES:
+            _print_structure_migration_error(declared_structure_mode)
+            return 1
+        pptx_structure = declared_structure_mode
+    elif pptx_structure == 'structured' and declared_structure_mode != 'structured':
+        _print_structure_migration_error(declared_structure_mode)
+        return 1
+
+    if (
+        pptx_structure in _RELEASE_PPTX_STRUCTURE_MODES
+        and declared_structure_mode == pptx_structure
+    ):
         try:
             structure_lock = load_pptx_structure_lock(project_path)
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
-        pptx_structure = structure_lock.mode if structure_lock else 'baseline'
-    elif pptx_structure == 'preserve':
-        try:
-            structure_lock = load_pptx_structure_lock(project_path)
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
-        if structure_lock is None or structure_lock.mode != 'preserve':
+        if structure_lock is None or structure_lock.mode != pptx_structure:
             print(
-                "Error: --pptx-structure preserve requires a preserve-mode "
-                "spec_lock.md with source_template/native_structure rows",
+                "Error: spec_lock.md must contain one complete "
+                f"pptx_structure.mode: {pptx_structure} contract",
                 file=sys.stderr,
             )
             return 1
-    if pptx_structure == 'preserve':
-        if structure_lock is None:
-            print("Error: preserve mode requires spec_lock.md", file=sys.stderr)
-            return 1
-        try:
-            native_structure_contract = load_native_structure_contract(structure_lock)
-        except TemplateStructureError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
-            return 1
+
     theme_font_spec = None
     master_text_style_spec = None
     theme_color_spec = None
-    if pptx_structure in {'baseline', 'template'}:
+    if pptx_structure == 'structured':
         try:
             theme_font_spec = load_theme_font_spec(project_path)
-            if pptx_structure == 'template':
-                master_text_style_spec = load_master_text_style_spec(project_path)
+            master_text_style_spec = load_master_text_style_spec(project_path)
             theme_color_spec = load_theme_color_spec(project_path)
         except (ThemeFontError, ThemeColorError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
@@ -391,16 +488,13 @@ Recorded narration:
         print("Error: No SVG files found")
         return 1
 
-    if (
-        pptx_structure in {'template', 'preserve'}
-        and structure_lock is not None
-    ):
+    # Compatibility kwargs remain until the builder's old baseline-specific
+    # parameters are removed. Structured export never activates either path.
+    structured_baseline = False
+    baseline_layout_specs = None
+    if pptx_structure == 'structured' and structure_lock is not None:
         try:
-            template_specs = (
-                parse_preserve_slides(native_files)
-                if pptx_structure == 'preserve'
-                else parse_template_slides(native_files)
-            )
+            template_specs = parse_template_slides(native_files)
         except TemplateStructureError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1
@@ -410,25 +504,61 @@ Recorded narration:
             for message in lock_errors:
                 print(f"  {message}", file=sys.stderr)
             return 1
-        if pptx_structure == 'preserve':
-            if native_structure_contract is None:
-                print("Error: preserve mode contract is unavailable", file=sys.stderr)
-                return 1
-            preserve_errors = native_structure_lock_errors(
-                template_specs,
-                structure_lock,
-                native_structure_contract,
+        prototype_errors = template_prototype_errors(
+            template_specs,
+            structure_lock,
+        )
+        if prototype_errors:
+            print(
+                "Error: structured template output does not match page_layouts "
+                "prototypes:",
+                file=sys.stderr,
             )
-            if preserve_errors:
-                print(
-                    "Error: PPTX structure does not match native_structure.json:",
-                    file=sys.stderr,
-                )
-                for message in preserve_errors:
-                    print(f"  {message}", file=sys.stderr)
-                return 1
+            for message in prototype_errors:
+                print(f"  {message}", file=sys.stderr)
+            return 1
+
+    release_blocked = _release_blocked_graphics(native_files)
+    if release_blocked:
+        print(
+            "Error: invalid PPTX graphic status metadata cannot enter an export. "
+            "Correct the reported visual/route/native status attributes first.",
+            file=sys.stderr,
+        )
+        for filename, marker_id, status in release_blocked[:20]:
+            print(f"  {filename}: {marker_id} ({status})", file=sys.stderr)
+        if len(release_blocked) > 20:
+            print(
+                f"  ... and {len(release_blocked) - 20} more",
+                file=sys.stderr,
+            )
+        return 1
+
+    reconstruction_only = _reconstruction_only_graphics(native_files)
+    if reconstruction_only:
+        print(
+            "Warning: reconstruction-only PPTX chart placeholder(s) have no baked "
+            "preview. Default export keeps the placeholder; --native-objects "
+            "reconstructs entries that carry a valid active native marker.",
+            file=sys.stderr,
+        )
+        for filename, marker_id, active_native in reconstruction_only[:20]:
+            route = "active native reconstruction" if active_native else "placeholder fallback"
+            print(f"  {filename}: {marker_id} ({route})", file=sys.stderr)
+        if len(reconstruction_only) > 20:
+            print(
+                f"  ... and {len(reconstruction_only) - 20} more",
+                file=sys.stderr,
+            )
 
     if args.native_objects:
+        print(
+            "Warning: --native-objects is an editable-first replacement route. "
+            "Native charts/tables may normalize styling or omit SVG details that "
+            "are not represented by marker metadata; use the default export when "
+            "exact fallback artwork is required.",
+            file=sys.stderr,
+        )
         fallbacks = _native_object_fallbacks(native_files)
         if fallbacks:
             print(
@@ -748,6 +878,8 @@ Recorded narration:
         image_quality=args.image_quality,
         native_objects=args.native_objects,
         pptx_structure=pptx_structure,
+        structured_baseline=structured_baseline,
+        baseline_layout_specs=baseline_layout_specs,
         native_structure_contract=native_structure_contract,
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,
@@ -794,26 +926,6 @@ Recorded narration:
                     print(f"  [warn] svg_output backup skipped: {exc}")
         elif verbose:
             print(f"  [info] svg_output/ not found, backup skipped")
-        if pptx_structure == 'preserve' and structure_lock is not None:
-            try:
-                preserve_sources = [
-                    project_path / 'spec_lock.md',
-                    structure_lock.source_template,
-                    structure_lock.native_structure,
-                ]
-                for source in preserve_sources:
-                    if source is None or not source.is_file():
-                        continue
-                    source_path = source.resolve()
-                    relative = source_path.relative_to(project_path.resolve())
-                    destination = backup_dir / relative
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(source_path, destination)
-                if verbose:
-                    print(f"  preserve contract backup: {backup_dir}")
-            except (OSError, ValueError) as exc:
-                if verbose:
-                    print(f"  [warn] preserve contract backup skipped: {exc}")
 
     return 0 if success else 1
 

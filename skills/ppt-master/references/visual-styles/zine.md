@@ -7,6 +7,7 @@ Risograph zine / DIY poster — misregistered color layers, halftone dots, a tig
 ## 1. Shape & decoration
 
 - Shape language: cut-and-paste blocks, offset color shapes, rough frames; outlines in a near-black ink tone. Corner radius low or zero — print-flat, not soft-digital.
+- Composition geometry: rotated pasted-on blocks (slight skew) building the collage stage; a torn-strip band as the section divider; an oversized halftone shape bleeding behind the content; a photocopy frame or taped corner anchoring the focal block; column scraps at mixed widths.
 - Decoration: the riso print artifacts — 1-3px color-layer misregistration, halftone-dot `<pattern>` texture, overlapping color blocks that imply a third color where they cross. Texture is the decoration.
 - Whitespace: poster-like — bold focal blocks with raw margins; deliberate roughness over clean alignment.
 
