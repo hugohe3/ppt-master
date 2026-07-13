@@ -640,9 +640,9 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     seen_prototype_slides: set[int] = set()
     template_dir = (project_path / "templates").resolve()
     template_replication_mode = _template_replication_mode(template_dir)
-    if mode != "structured" and prototype_rows:
+    if mode != "structured" and prototype_section_present:
         raise TemplateStructureError(
-            "spec_lock.md page_layouts is allowed only when pptx_structure.mode "
+            "spec_lock.md page_layouts section is allowed only when pptx_structure.mode "
             "is structured"
         )
     for page_key, raw_value in prototype_rows:
