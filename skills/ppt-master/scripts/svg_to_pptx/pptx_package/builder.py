@@ -399,6 +399,7 @@ _TOP_LEVEL_SHAPE_TAGS = {
     f"{{{PML_NS}}}cxnSp",
     f"{{{PML_NS}}}graphicFrame",
 }
+_FLAT_SYSTEM_PLACEHOLDER_TYPES = frozenset({"dt", "ftr", "sldNum"})
 _REL_ATTRS = {
     f"{{{REL_NS}}}embed",
     f"{{{REL_NS}}}link",
@@ -3083,6 +3084,201 @@ def _prune_unused_slide_layouts(
     return pruned
 
 
+def _flat_structure_name(value: str | None) -> str:
+    """Return one compact package identity for a free-design deck."""
+    normalized = " ".join((value or "").split()).strip()
+    return (normalized or "Free Design")[:120]
+
+
+def _flat_placeholder_type(shape: ET.Element) -> str | None:
+    """Return one system placeholder type carried by a top-level shape."""
+    if shape.tag != f"{{{PML_NS}}}sp":
+        return None
+    placeholder = shape.find(
+        f"{{{PML_NS}}}nvSpPr/{{{PML_NS}}}nvPr/{{{PML_NS}}}ph"
+    )
+    return placeholder.get("type") if placeholder is not None else None
+
+
+def _clean_flat_structure_part(
+    part_path: Path,
+    name: str,
+    *,
+    is_layout: bool,
+) -> tuple[int, tuple[str, ...]]:
+    """Keep only standard footer hooks in one project-owned flat shell."""
+    try:
+        tree = ET.parse(part_path)
+    except (OSError, ET.ParseError) as exc:
+        raise RuntimeError(
+            f"Cannot parse flat structure part {part_path}: {exc}"
+        ) from exc
+    root = tree.getroot()
+    common_slide = root.find(f"{{{PML_NS}}}cSld")
+    if common_slide is None:
+        raise RuntimeError(f"Flat structure part has no p:cSld: {part_path}")
+    shape_tree = common_slide.find(f"{{{PML_NS}}}spTree")
+    if shape_tree is None:
+        raise RuntimeError(f"Flat structure part has no p:spTree: {part_path}")
+
+    removed = 0
+    retained: list[str] = []
+    for child in list(shape_tree):
+        if child.tag not in _TOP_LEVEL_SHAPE_TAGS:
+            continue
+        placeholder_type = _flat_placeholder_type(child)
+        if placeholder_type in _FLAT_SYSTEM_PLACEHOLDER_TYPES:
+            retained.append(placeholder_type)
+            continue
+        shape_tree.remove(child)
+        removed += 1
+    for parent in (common_slide, root):
+        for extension_list in parent.findall(f"{{{PML_NS}}}extLst"):
+            parent.remove(extension_list)
+
+    common_slide.set("name", name)
+    if is_layout:
+        root.set("type", "blank")
+        root.set("preserve", "1")
+    _write_xml_tree(part_path, tree)
+    return removed, tuple(retained)
+
+
+def _name_flat_themes(extract_dir: Path, name: str) -> int:
+    """Replace stock Office theme identities with the current deck identity."""
+    theme_paths = sorted((extract_dir / "ppt" / "theme").glob("theme*.xml"))
+    if not theme_paths:
+        raise RuntimeError("Flat PPTX package has no theme part")
+    for theme_path in theme_paths:
+        try:
+            tree = ET.parse(theme_path)
+        except (OSError, ET.ParseError) as exc:
+            raise RuntimeError(
+                f"Cannot parse flat theme {theme_path}: {exc}"
+            ) from exc
+        root = tree.getroot()
+        root.set("name", name)
+        for tag in ("clrScheme", "fontScheme", "fmtScheme"):
+            scheme = root.find(f".//{{{DML_NS}}}{tag}")
+            if scheme is not None:
+                scheme.set("name", name)
+        _write_xml_tree(theme_path, tree)
+    return len(theme_paths)
+
+
+def _prepare_flat_structure(
+    extract_dir: Path,
+    structure: PptxStructureContext,
+    slide_count: int,
+    master_text_style_spec: MasterTextStyleSpec | None,
+    structure_name: str | None,
+    *,
+    verbose: bool = False,
+) -> None:
+    """Materialize one clean current-deck Master and Blank Layout for flat export."""
+    pruned = _prune_unused_slide_layouts(
+        extract_dir,
+        structure,
+        slide_count,
+        verbose=False,
+    )
+    live_structure = _read_slide_layout_targets(extract_dir, slide_count)
+    layout_parts = {
+        _resolve_package_target(
+            f"ppt/slides/slide{slide_num}.xml",
+            live_structure.slide_layout_target(slide_num),
+        )
+        for slide_num in range(1, slide_count + 1)
+    }
+    master_parts = set(live_structure.slide_master_parts.values())
+    physical_layouts = {
+        str(path.relative_to(extract_dir)).replace("\\", "/")
+        for path in (extract_dir / "ppt" / "slideLayouts").glob("slideLayout*.xml")
+    }
+    physical_masters = {
+        str(path.relative_to(extract_dir)).replace("\\", "/")
+        for path in (extract_dir / "ppt" / "slideMasters").glob("slideMaster*.xml")
+    }
+    if len(layout_parts) != 1 or layout_parts != physical_layouts:
+        raise RuntimeError(
+            "Flat export must retain exactly one slide-referenced Blank Layout"
+        )
+    if len(master_parts) != 1 or master_parts != physical_masters:
+        raise RuntimeError(
+            "Flat export must retain exactly one slide-referenced Master"
+        )
+
+    identity = _flat_structure_name(structure_name)
+    theme_name = identity
+    master_name = f"{identity} — Master"
+    layout_name = f"{identity} — Blank"
+    master_path = extract_dir / next(iter(master_parts))
+    layout_path = extract_dir / next(iter(layout_parts))
+    removed_master_shapes, retained_master_placeholders = _clean_flat_structure_part(
+        master_path,
+        master_name,
+        is_layout=False,
+    )
+    removed_layout_shapes, retained_layout_placeholders = _clean_flat_structure_part(
+        layout_path,
+        layout_name,
+        is_layout=True,
+    )
+    theme_count = _name_flat_themes(extract_dir, theme_name)
+    master_count = (
+        apply_master_text_style_spec(extract_dir, master_text_style_spec)
+        if master_text_style_spec is not None
+        else 0
+    )
+
+    for part_path, expected_name, expected_layout in (
+        (master_path, master_name, False),
+        (layout_path, layout_name, True),
+    ):
+        root = ET.parse(part_path).getroot()
+        common_slide = root.find(f"{{{PML_NS}}}cSld")
+        if common_slide is None or common_slide.get("name") != expected_name:
+            raise RuntimeError(
+                f"Flat structure identity read-back failed: {part_path}"
+            )
+        shape_tree = common_slide.find(f"{{{PML_NS}}}spTree")
+        if shape_tree is None:
+            raise RuntimeError(f"Flat structure shell has no shape tree: {part_path}")
+        actual_placeholder_types = tuple(
+            sorted(
+                _flat_placeholder_type(child) or ""
+                for child in shape_tree
+                if child.tag in _TOP_LEVEL_SHAPE_TAGS
+            )
+        )
+        expected_placeholder_types = tuple(
+            sorted(_FLAT_SYSTEM_PLACEHOLDER_TYPES)
+        )
+        if actual_placeholder_types != expected_placeholder_types:
+            raise RuntimeError(
+                "Flat structure shell must retain only one each of the date, "
+                f"footer, and slide-number hooks: {part_path}"
+            )
+        if expected_layout and root.get("type") != "blank":
+            raise RuntimeError(f"Flat layout is not typed as Blank: {part_path}")
+
+    if verbose:
+        print(
+            "  Flat structure: project-owned Master + Blank Layout "
+            f"({pruned} stock layout(s), "
+            f"{removed_master_shapes + removed_layout_shapes} stock content "
+            "shape(s) removed, "
+            f"{len(retained_master_placeholders) + len(retained_layout_placeholders)} "
+            "system footer hook(s) retained)"
+        )
+        text_style_status = (
+            f"{master_count} master text style(s)"
+            if master_text_style_spec is not None
+            else "stock text defaults retained (diagnostic caller)"
+        )
+        print(f"  Flat theme: {theme_count} theme part(s), {text_style_status}")
+
+
 def _append_relationship(
     rels_path: Path,
     rel_type: str,
@@ -3874,6 +4070,7 @@ def create_pptx_with_native_svg(
     native_objects: bool = False,
     conversion_trace_path: Path | None = None,
     doc_metadata: dict[str, Any] | None = None,
+    structure_name: str | None = None,
     pptx_structure: str = "structured",
     native_structure_contract: NativeStructureContract | None = None,
     theme_font_spec: ThemeFontSpec | None = None,
@@ -3917,6 +4114,8 @@ def create_pptx_with_native_svg(
         native_objects: Convert explicit ``data-pptx-native`` table/chart
             markers to native PowerPoint objects. Default off.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
+        structure_name: Current deck identity used to name a flat Master, Layout,
+            and theme.
         pptx_structure: PPTX structure strategy. ``baseline`` promotes safe
             shared native backgrounds and leading chrome to slide masters,
             then extracts semantic page-role layout families and exact
@@ -3924,17 +4123,17 @@ def create_pptx_with_native_svg(
             SVGs retain filename/id fallback;
             ``structured`` consumes explicit SVG master/layout/placeholder
             metadata; ``preserve`` reuses an imported source PPTX package;
-            ``flat`` keeps generated structure slide-local.
+            ``flat`` keeps generated content Slide-local and builds one clean
+            project-owned Master/Blank-Layout shell.
         native_structure_contract: Validated source package contract for
             ``preserve`` mode.
-        theme_font_spec: Locked project major/minor fonts for baseline/structured
-            theme inheritance. Preserve and flat modes ignore this value.
+        theme_font_spec: Locked project major/minor fonts for flat/structured
+            release-theme inheritance. Direct diagnostic flat callers may omit it.
         master_text_style_spec: Required locked title/body sizes for structured
-            slide-master text styles. Other structure
-            routes ignore this value.
+            and release flat slide-master text styles. Direct diagnostic flat
+            callers may omit it; other routes ignore this value.
         theme_color_spec: Locked project color scheme for context-aware
-            baseline/structured theme inheritance. Preserve and flat modes
-            ignore this value.
+            flat/structured theme inheritance. Preserve mode ignores this value.
         structured_baseline: Obsolete compatibility argument; must remain false.
         baseline_layout_specs: Obsolete compatibility argument; must remain None.
 
@@ -4105,14 +4304,16 @@ def create_pptx_with_native_svg(
             _clear_preserved_slide_collections(extract_dir)
         active_theme_font_spec = (
             theme_font_spec
-            if use_native_shapes and pptx_structure in {"baseline", "structured"}
+            if use_native_shapes
+            and pptx_structure in {"baseline", "flat", "structured"}
             else None
         )
         if active_theme_font_spec is not None:
             apply_theme_font_spec(extract_dir, active_theme_font_spec)
         active_theme_color_spec = (
             theme_color_spec
-            if use_native_shapes and pptx_structure in {"baseline", "structured"}
+            if use_native_shapes
+            and pptx_structure in {"baseline", "flat", "structured"}
             else None
         )
         if active_theme_color_spec is not None:
@@ -4631,6 +4832,20 @@ def create_pptx_with_native_svg(
                 extract_dir,
                 structure,
                 len(svg_files),
+                verbose=verbose,
+            )
+
+        if (
+            use_native_shapes
+            and pptx_structure == "flat"
+            and success_count == len(svg_files)
+        ):
+            _prepare_flat_structure(
+                extract_dir,
+                structure,
+                len(svg_files),
+                master_text_style_spec,
+                structure_name,
                 verbose=verbose,
             )
 

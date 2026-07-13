@@ -48,7 +48,7 @@ class ThemeFontSpec:
 
 @dataclass(frozen=True)
 class MasterTextStyleSpec:
-    """Title/body defaults written to a template slide master's txStyles."""
+    """Title/body defaults written to one generated slide master's txStyles."""
 
     title_hpt: int
     body_hpt: int
@@ -125,17 +125,17 @@ def _font_size_hpt(raw: str, field: str) -> int:
 
 
 def load_master_text_style_spec(project_path: Path) -> MasterTextStyleSpec:
-    """Load required title/body defaults for explicit Layout master txStyles."""
+    """Load required title/body defaults for generated Master text styles."""
     lock_path = project_path / "spec_lock.md"
     if not lock_path.is_file():
         raise ThemeFontError(
-            "explicit Layout export requires spec_lock.md typography title and body rows"
+            "Master export requires spec_lock.md typography title and body rows"
         )
     rows = _typography_rows(lock_path)
     missing = [field for field in ("title", "body") if field not in rows]
     if missing:
         raise ThemeFontError(
-            "explicit Layout export requires spec_lock.md typography rows: "
+            "Master export requires spec_lock.md typography rows: "
             + ", ".join(missing)
         )
     return MasterTextStyleSpec(
@@ -217,7 +217,7 @@ def apply_master_text_style_spec(
     extract_dir: Path,
     spec: MasterTextStyleSpec,
 ) -> int:
-    """Install locked title/body sizes into template slide-master txStyles."""
+    """Install locked title/body sizes into generated slide-master txStyles."""
     master_dir = extract_dir / "ppt" / "slideMasters"
     master_paths = sorted(master_dir.glob("slideMaster*.xml"))
     if not master_paths:
