@@ -217,9 +217,31 @@ HEX_VALUE_RE = re.compile(
     r"#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
 )
 
-# Master/Layout validation is temporarily dormant until its ownership contract
-# is resolved. The exporter remains the authority for structured PPTX assembly.
-_CHECK_PPTX_MASTER_LAYOUT = False
+# Master/Layout preflight validation. Structured deck/layout-template projects
+# are checked at authoring time; the exporter remains the final OOXML/package
+# authority. Flat projects only receive the negative guard that rejects authored
+# structure metadata. Template roster/placeholder checks always run; the legacy
+# template structure override stays dormant until the bundled library migrates
+# off native_structure_mode: template. Current structured templates opt in via
+# their design_spec.md declaration without waiting for that migration.
+_CHECK_PPTX_STRUCTURED_PROJECT = True
+_CHECK_PPTX_TEMPLATE_MODE = False
+# Explicit migration debt: remove each entry after that bundled workspace adopts
+# native_structure_mode: structured. New/custom workspaces are never exempt.
+_BUNDLED_LEGACY_TEMPLATE_DIRS = frozenset({
+    'decks/中国电信/templates',
+    'decks/中国电建/templates',
+    'decks/中汽研/templates',
+    'decks/招商银行/templates',
+    'decks/重庆大学/templates',
+    'layouts/academic_defense/templates',
+    'layouts/ai_ops/templates',
+    'layouts/government_blue/templates',
+    'layouts/government_red/templates',
+    'layouts/medical_university/templates',
+    'layouts/pixel_retro/templates',
+    'layouts/psychology_attachment/templates',
+})
 
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
@@ -574,6 +596,56 @@ def _design_spec_is_brand(spec_path: Path) -> bool:
     return False
 
 
+def _declared_template_structure_mode(target_path: Path) -> str | None:
+    """Return a template directory's explicit native structure mode."""
+    directory = target_path.parent if target_path.is_file() else target_path
+    spec_path = directory / 'design_spec.md'
+    try:
+        text = spec_path.read_text(encoding='utf-8')
+    except OSError:
+        return None
+    if not text.startswith('---\n'):
+        return None
+    end = text.find('\n---\n', 4)
+    if end == -1:
+        return None
+    match = re.search(
+        r'^native_structure_mode:\s*([A-Za-z0-9_-]+)\s*$',
+        text[4:end],
+        re.MULTILINE,
+    )
+    return match.group(1).lower() if match else None
+
+
+def _is_bundled_legacy_template(target_path: Path) -> bool:
+    """Return whether a template is in the explicit bundled migration set."""
+    directory = target_path.parent if target_path.is_file() else target_path
+    library_root = Path(__file__).resolve().parents[1] / 'templates'
+    try:
+        relative_path = directory.resolve().relative_to(library_root.resolve())
+    except ValueError:
+        return False
+    return relative_path.as_posix() in _BUNDLED_LEGACY_TEMPLATE_DIRS
+
+
+def _legacy_template_structure_deferred(target_path: Path) -> bool:
+    """Return whether a known bundled legacy template may defer structure."""
+    return bool(
+        not _CHECK_PPTX_TEMPLATE_MODE
+        and _declared_template_structure_mode(target_path) == 'template'
+        and _is_bundled_legacy_template(target_path)
+    )
+
+
+def _template_structure_checks_enabled(target_path: Path) -> bool:
+    """Return whether positive structure checks apply to this template."""
+    declared_mode = _declared_template_structure_mode(target_path)
+    return bool(
+        declared_mode == 'structured'
+        or (_CHECK_PPTX_TEMPLATE_MODE and declared_mode == 'template')
+    )
+
+
 def _local_name(elem: ET.Element) -> str:
     """Return an XML element's namespace-free local tag name."""
     tag = elem.tag
@@ -819,7 +891,11 @@ class SVGQualityChecker:
                 self._check_native_object_markers(root, result)
 
                 # 8d. Validate explicit master/layout/placeholder metadata.
-                if _CHECK_PPTX_MASTER_LAYOUT:
+                if (
+                    _template_structure_checks_enabled(svg_path)
+                    if self.template_mode
+                    else _CHECK_PPTX_STRUCTURED_PROJECT
+                ):
                     self._check_pptx_structure_metadata(root, svg_path, result)
 
                 # 8e. Validate rendering-neutral page/structure compiler hints.
@@ -1955,14 +2031,28 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate the intrinsic structured Master/Layout SVG contract."""
-        if (
-            not self.template_mode
-            and svg_path.parent.name == 'svg_output'
-            and _declared_pptx_structure_mode(
+        if not self.template_mode and svg_path.parent.name == 'svg_output':
+            declared_mode = _declared_pptx_structure_mode(
                 self._resolve_project_path(svg_path)
-            ) == 'flat'
-        ):
-            return
+            )
+            if declared_mode == 'flat':
+                forbidden_attrs = sorted({
+                    attr
+                    for elem in root.iter()
+                    for attr in _PPTX_STRUCTURE_ATTRS
+                    if elem.get(attr) is not None
+                })
+                if forbidden_attrs:
+                    result['errors'].append(
+                        f"{svg_path.name}: pptx_structure.mode: flat forbids "
+                        "Master/Layout/layer/placeholder metadata; remove "
+                        + ', '.join(forbidden_attrs)
+                    )
+                return
+            if declared_mode != 'structured':
+                # The project-level gate emits one actionable migration error.
+                # Avoid burying it under repeated per-page structure failures.
+                return
         has_structure_metadata = any(
             elem.get(attr) is not None
             for elem in root.iter()
@@ -2432,6 +2522,8 @@ class SVGQualityChecker:
 
         if not dir_path.exists():
             print(f"[ERROR] Directory does not exist: {directory}")
+            self.summary['errors'] += 1
+            self.issue_types['Input issues'] += 1
             return []
 
         # Brand-only template workspaces have no SVG roster. Resolve the current
@@ -2465,7 +2557,9 @@ class SVGQualityChecker:
                 svg_files = sorted(svg_output.glob('*.svg'))
 
         if not svg_files:
-            print(f"[WARN] No SVG files found")
+            print(f"[ERROR] No SVG files found in: {directory}")
+            self.summary['errors'] += 1
+            self.issue_types['Input issues'] += 1
             return []
 
         print(f"\n[SCAN] Checking {len(svg_files)} SVG file(s)...\n")
@@ -2474,10 +2568,24 @@ class SVGQualityChecker:
             result = self.check_file(str(svg_file), expected_format)
             self._print_result(result)
 
-        if _CHECK_PPTX_MASTER_LAYOUT:
+        if self.template_mode:
+            check_structure = _template_structure_checks_enabled(dir_path)
+            if _legacy_template_structure_deferred(dir_path):
+                print(
+                    "[INFO] Legacy native_structure_mode: template detected; "
+                    "roster and placeholder checks remain active while positive "
+                    "structure checks await library migration."
+                )
+            if check_structure:
+                self._check_pptx_structure_contract(dir_path, svg_files)
+            if dir_path.is_dir():
+                self._check_template_contract(
+                    dir_path,
+                    svg_files,
+                    check_structure=check_structure,
+                )
+        elif _CHECK_PPTX_STRUCTURED_PROJECT:
             self._check_pptx_structure_contract(dir_path, svg_files)
-            if self.template_mode and dir_path.is_dir():
-                self._check_template_contract(dir_path, svg_files)
         if not self.template_mode and dir_path.is_dir():
             self._check_animation_config_contract(dir_path)
             self._check_illustration_resource_contract(dir_path)
@@ -2495,10 +2603,33 @@ class SVGQualityChecker:
             not self.template_mode
             and (project_path / 'svg_output').is_dir()
         )
-        if (
-            standard_project
-            and _declared_pptx_structure_mode(project_path) == 'flat'
-        ):
+        declared_mode = (
+            _declared_pptx_structure_mode(project_path)
+            if standard_project
+            else None
+        )
+        if standard_project and declared_mode == 'flat':
+            if (
+                _load_pptx_structure_lock is None
+                or _TemplateStructureError is None
+            ):
+                self._pptx_structure_issues.append((
+                    'error',
+                    'Flat PPTX project validation is unavailable because the '
+                    'template_structure module could not be imported.',
+                ))
+                return
+            try:
+                structure_lock = _load_pptx_structure_lock(project_path)
+            except _TemplateStructureError as exc:
+                self._pptx_structure_issues.append(('error', str(exc)))
+                return
+            if structure_lock is None or structure_lock.mode != 'flat':
+                self._pptx_structure_issues.append((
+                    'error',
+                    'spec_lock.md must contain one complete '
+                    'pptx_structure.mode: flat contract.',
+                ))
             return
         has_metadata = False
         for svg_path in svg_files:
@@ -2547,16 +2678,18 @@ class SVGQualityChecker:
             )
             return
 
-        declared_mode = _declared_pptx_structure_mode(project_path)
         if standard_project and declared_mode != 'structured':
             label = repr(declared_mode) if declared_mode else (
                 'missing (legacy implicit baseline)'
             )
             self._pptx_structure_issues.append((
                 'error',
-                'release SVG projects require spec_lock.md '
-                f'pptx_structure.mode: structured; found {label}. Follow '
-                'skills/ppt-master/workflows/restore-pptx-structure.md before export.',
+                'release SVG projects require an explicit spec_lock.md '
+                'pptx_structure.mode: flat (free design / brand-only) or '
+                f'structured (deck/layout template); found {label}. New '
+                'free-design projects use mode: flat; restore legacy '
+                'template/structured metadata by following skills/ppt-master/'
+                'workflows/restore-pptx-structure.md before export.',
             ))
             return
 
@@ -3242,14 +3375,21 @@ class SVGQualityChecker:
             )
             self._animation_issues.append((severity, message))
 
-    def _check_template_contract(self, dir_path: Path,
-                                 svg_files: List[Path]) -> None:
+    def _check_template_contract(
+        self,
+        dir_path: Path,
+        svg_files: List[Path],
+        *,
+        check_structure: bool,
+    ) -> None:
         """Check reusable-template structure, roster, and placeholder hints.
 
         - **Roster mismatch (orphan / missing)** is reported as an *error*: a
           stale roster will produce a wrong ``layouts_index.json`` entry.
-        - **Explicit structure gaps** are errors: every reusable SVG declares
-          its Master and Layout identity. Zero-placeholder Layouts are valid.
+        - **Explicit structure gaps** are errors when positive structure checks
+          are enabled: every current reusable SVG declares its Master and Layout
+          identity. Zero-placeholder Layouts are valid. Legacy library templates
+          still receive roster and placeholder checks while awaiting migration.
         - **Placeholder gaps** are reported as *warnings*. Templates may
           legitimately omit conventional placeholders or swap them out (e.g.
           ``{{CLOSING_MESSAGE}}`` instead of ``{{THANK_YOU}}``), and a content
@@ -3260,107 +3400,125 @@ class SVGQualityChecker:
         Issues are aggregated and printed in :py:meth:`print_summary` so the
         per-file report stays focused on intrinsic SVG validity.
         """
-        native_contract_path = dir_path / 'native_structure.json'
-        source_template_path = dir_path / 'source_template.pptx'
-        legacy_structure_detected = False
-        for svg_file in svg_files:
-            try:
-                root = ET.parse(svg_file).getroot()
-            except (OSError, ET.ParseError):
-                continue
-            if not root.get('data-pptx-master'):
-                legacy_structure_detected = True
-                self._template_issues.append((
-                    'error',
-                    'explicit_master_missing',
-                    f"{svg_file.name}: reusable templates require root "
-                    "data-pptx-master metadata",
-                ))
-            if not root.get('data-pptx-master-name'):
-                legacy_structure_detected = True
-                self._template_issues.append((
-                    'error',
-                    'explicit_master_name_missing',
-                    f"{svg_file.name}: reusable templates require root "
-                    "data-pptx-master-name metadata",
-                ))
-            if not root.get('data-pptx-layout'):
-                self._template_issues.append((
-                    'error',
-                    'explicit_structure_missing',
-                    f"{svg_file.name}: reusable templates require root "
-                    "data-pptx-layout metadata",
-                ))
-            if not root.get('data-pptx-layout-name'):
-                self._template_issues.append((
-                    'error',
-                    'explicit_structure_name_missing',
-                    f"{svg_file.name}: reusable templates require root "
-                    "data-pptx-layout-name metadata",
-                ))
-            if root.get('data-pptx-layout-kind') is not None:
-                legacy_structure_detected = True
-                self._template_issues.append((
-                    'error',
-                    'deck_instance_layout_kind',
-                    f"{svg_file.name}: reusable template prototypes must omit "
-                    "legacy data-pptx-layout-kind metadata",
-                ))
-            if any(
-                child.get('data-pptx-placeholder') is not None
-                and child.tag.rsplit('}', 1)[-1] != 'g'
-                for child in list(root)
-            ):
-                legacy_structure_detected = True
-            missing_bounds = [
-                child.get('id') or child.tag.rsplit('}', 1)[-1]
-                for child in list(root)
-                if child.get('data-pptx-placeholder') is not None
-                and child.get('data-pptx-placeholder-bounds') is None
-            ]
-            if missing_bounds:
-                legacy_structure_detected = True
-                self._template_issues.append((
-                    'error',
-                    'placeholder_bounds_missing',
-                    f"{svg_file.name}: reusable templates require "
-                    "explicit design-zone data-pptx-placeholder-bounds; missing: "
-                    + ', '.join(missing_bounds),
-                ))
-        if native_contract_path.exists() or source_template_path.exists():
-            legacy_structure_detected = True
-            self._template_issues.append((
-                'error',
-                'legacy_native_structure_pair',
-                "legacy native_structure.json/source_template.pptx template "
-                "contracts must be restored through "
-                "skills/ppt-master/workflows/restore-pptx-structure.md",
-            ))
-
         spec_path = dir_path / 'design_spec.md'
         spec_text = spec_path.read_text(encoding='utf-8') if spec_path.exists() else ""
-        mode_match = re.search(
-            r'^native_structure_mode:\s*([A-Za-z0-9_-]+)\s*$',
-            spec_text,
-            re.MULTILINE,
-        )
-        declared_structure_mode = mode_match.group(1).lower() if mode_match else None
-        if declared_structure_mode != 'structured':
-            legacy_structure_detected = True
+        declared_structure_mode = _declared_template_structure_mode(dir_path)
+        legacy_structure_deferred = _legacy_template_structure_deferred(dir_path)
+        mode_error_recorded = False
+        if declared_structure_mode != 'structured' and not legacy_structure_deferred:
+            mode_error_recorded = True
+            if declared_structure_mode == 'template':
+                mode_error = (
+                    "legacy native_structure_mode: template is accepted only for "
+                    "the explicit bundled-library migration set; restore this "
+                    "workspace to native_structure_mode: structured"
+                )
+            else:
+                mode_error = (
+                    "design_spec.md frontmatter must declare "
+                    "native_structure_mode: structured; only the explicit bundled "
+                    "legacy migration set may temporarily declare template"
+                )
             self._template_issues.append((
                 'error',
                 'explicit_structure_mode',
-                "design_spec.md frontmatter must declare "
-                "native_structure_mode: structured",
+                mode_error,
             ))
-        if legacy_structure_detected:
-            self._template_issues.append((
-                'error',
-                'legacy_structure_contract',
-                "legacy template structure detected; run "
-                "skills/ppt-master/workflows/restore-pptx-structure.md before "
-                "Step 3 consumption",
-            ))
+        if check_structure:
+            native_contract_path = dir_path / 'native_structure.json'
+            source_template_path = dir_path / 'source_template.pptx'
+            legacy_structure_detected = False
+            for svg_file in svg_files:
+                try:
+                    root = ET.parse(svg_file).getroot()
+                except (OSError, ET.ParseError):
+                    continue
+                if not root.get('data-pptx-master'):
+                    legacy_structure_detected = True
+                    self._template_issues.append((
+                        'error',
+                        'explicit_master_missing',
+                        f"{svg_file.name}: reusable templates require root "
+                        "data-pptx-master metadata",
+                    ))
+                if not root.get('data-pptx-master-name'):
+                    legacy_structure_detected = True
+                    self._template_issues.append((
+                        'error',
+                        'explicit_master_name_missing',
+                        f"{svg_file.name}: reusable templates require root "
+                        "data-pptx-master-name metadata",
+                    ))
+                if not root.get('data-pptx-layout'):
+                    self._template_issues.append((
+                        'error',
+                        'explicit_structure_missing',
+                        f"{svg_file.name}: reusable templates require root "
+                        "data-pptx-layout metadata",
+                    ))
+                if not root.get('data-pptx-layout-name'):
+                    self._template_issues.append((
+                        'error',
+                        'explicit_structure_name_missing',
+                        f"{svg_file.name}: reusable templates require root "
+                        "data-pptx-layout-name metadata",
+                    ))
+                if root.get('data-pptx-layout-kind') is not None:
+                    legacy_structure_detected = True
+                    self._template_issues.append((
+                        'error',
+                        'deck_instance_layout_kind',
+                        f"{svg_file.name}: reusable template prototypes must omit "
+                        "legacy data-pptx-layout-kind metadata",
+                    ))
+                if any(
+                    child.get('data-pptx-placeholder') is not None
+                    and child.tag.rsplit('}', 1)[-1] != 'g'
+                    for child in list(root)
+                ):
+                    legacy_structure_detected = True
+                missing_bounds = [
+                    child.get('id') or child.tag.rsplit('}', 1)[-1]
+                    for child in list(root)
+                    if child.get('data-pptx-placeholder') is not None
+                    and child.get('data-pptx-placeholder-bounds') is None
+                ]
+                if missing_bounds:
+                    legacy_structure_detected = True
+                    self._template_issues.append((
+                        'error',
+                        'placeholder_bounds_missing',
+                        f"{svg_file.name}: reusable templates require "
+                        "explicit design-zone data-pptx-placeholder-bounds; missing: "
+                        + ', '.join(missing_bounds),
+                    ))
+            if native_contract_path.exists() or source_template_path.exists():
+                legacy_structure_detected = True
+                self._template_issues.append((
+                    'error',
+                    'legacy_native_structure_pair',
+                    "legacy native_structure.json/source_template.pptx template "
+                    "contracts must be restored through "
+                    "skills/ppt-master/workflows/restore-pptx-structure.md",
+                ))
+
+            if declared_structure_mode != 'structured':
+                legacy_structure_detected = True
+                if not mode_error_recorded:
+                    self._template_issues.append((
+                        'error',
+                        'explicit_structure_mode',
+                        "design_spec.md frontmatter must declare "
+                        "native_structure_mode: structured",
+                    ))
+            if legacy_structure_detected:
+                self._template_issues.append((
+                    'error',
+                    'legacy_structure_contract',
+                    "legacy template structure detected; run "
+                    "skills/ppt-master/workflows/restore-pptx-structure.md before "
+                    "Step 3 consumption",
+                ))
         spec_pages = self._extract_spec_roster(spec_text) if spec_text else []
         custom_contract = self._extract_frontmatter_placeholders(spec_text) if spec_text else {}
 
@@ -3384,9 +3542,15 @@ class SVGQualityChecker:
                 ))
         elif spec_path.exists():
             # design_spec.md is present but the roster parser found nothing —
-            # surface as a warning. Legacy specs may lack an explicit roster.
+            # current structured templates fail closed; allowlisted legacy
+            # library specs retain the historical warning until migration.
+            severity = (
+                'error'
+                if declared_structure_mode == 'structured'
+                else 'warning'
+            )
             self._template_issues.append((
-                'warning',
+                severity,
                 'roster_unknown',
                 f"could not extract page roster from {spec_path.name}; "
                 "skipping orphan/missing checks",
@@ -3855,20 +4019,23 @@ def print_usage() -> None:
     print("Usage:")
     print("  python3 scripts/svg_quality_checker.py <svg_file>")
     print("  python3 scripts/svg_quality_checker.py <directory>")
-    print("  python3 scripts/svg_quality_checker.py <template_dir> --template-mode")
+    print("  python3 scripts/svg_quality_checker.py <workspace>/templates --template-mode")
     print("  python3 scripts/svg_quality_checker.py --all examples")
     print("\nExamples:")
     print("  python3 scripts/svg_quality_checker.py examples/project/svg_output/slide_01.svg")
     print("  python3 scripts/svg_quality_checker.py examples/project/svg_output")
     print("  python3 scripts/svg_quality_checker.py examples/project")
-    print("  python3 scripts/svg_quality_checker.py templates/layouts/academic_defense --template-mode")
-    print("  python3 scripts/svg_quality_checker.py templates/decks/招商银行 --template-mode")
+    print("  python3 scripts/svg_quality_checker.py templates/layouts/academic_defense/templates --template-mode")
+    print("  python3 scripts/svg_quality_checker.py templates/decks/招商银行/templates --template-mode")
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
-    print("  --template-mode               Validate a templates/{layouts,decks}/<id> directory:")
-    print("                                  glob *.svg directly, skip spec_lock checks,")
-    print("                                  enforce roster ↔ design_spec.md Page Roster consistency,")
-    print("                                  and emit advisory placeholder-convention warnings.")
+    print("  --template-mode               Validate a template workspace's templates/ directory:")
+    print("                                  glob *.svg directly and skip spec_lock checks;")
+    print("                                  always enforce roster consistency and emit placeholder hints.")
+    print("                                  native_structure_mode: structured also enables complete")
+    print("                                  per-file and cross-page structure validation. Legacy")
+    print("                                  native_structure_mode: template defers only those structure")
+    print("                                  checks until the bundled template library is migrated.")
 
 
 def main() -> None:
