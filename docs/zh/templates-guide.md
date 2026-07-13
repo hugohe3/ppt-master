@@ -20,7 +20,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 在对话里写出 Brand/Layout/Deck 工作区根目录（位置不重要，只要明确即可）：
 
-> "用这个模板做：`skills/ppt-master/templates/layouts/academic_defense/`" ✅
+> "用这个模板做：`skills/ppt-master/templates/layouts/presentation_core/`" ✅
 > "用上次那个模板：`projects/last_deck/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
@@ -30,7 +30,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 ### 什么**不会**触发模板流程
 
-- **只写模板名、不给路径**："用 academic_defense 模板" / "做一份 招商银行 模板的产品介绍" → 走自由设计。AI 不会替你把名字解析成路径。要用模板，请直接给路径。
+- **只写模板名、不给路径**："用 presentation_core 模板" / "做一份 招商银行 模板的产品介绍" → 走自由设计。AI 不会替你把名字解析成路径。要用模板，请直接给路径。
 - **风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → 走自由设计。这些描述会顺着对话流到 Strategist 那边作为风格说明使用，但**不会复制任何模板文件**。
 - **模糊意图**："想用个模板" / "选一个吧"——没给路径 → 走自由设计。
 
@@ -43,7 +43,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 模板按三种身份分目录：
 
 - [`templates/brands/README.md`](../../skills/ppt-master/templates/brands/README.md) — 仅身份预设（color / typography / logo / voice / icon style），无 SVG 页面；Anthropic、Google
-- [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md) — 仅结构样板（canvas / page structure / page types / SVG roster），无身份；academic_defense、government_blue/red、ai_ops、medical_university、pixel_retro、psychology_attachment
+- [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md) — 仅结构样板（canvas / page structure / page types / SVG roster），无身份；presentation_core
 - [`templates/decks/README.md`](../../skills/ppt-master/templates/decks/README.md) — 完整 PPT 复刻（身份 + 结构 + 中间段）；招商银行、中国电建_*、中汽研_*、重庆大学、中国电信
 
 完整数据模型与三类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
@@ -65,7 +65,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 | 数值锁定 | 是 — 来源于模板的 `design_spec.md` | 否 — Strategist 现场推适合 deck 的具体值 |
 | 适用场景 | 品牌锁定的 deck；强视觉约定的场景 | 心里有感觉但没有具体品牌承诺 |
 
-风格描述可能看起来像模板名（比如 "学术风" 听上去像 `academic_defense/` 模板目录），但走的是**两套机制**——模板需要你给一个真实可复制的路径，风格描述是解释性语言。字面接近，落地完全是两条路。
+风格描述和模板名仍走**两套机制**：“极简风”是解释性语言，`presentation_core/` 则是真实模板目录，必须提供显式路径。
 
 ### 常见风格描述
 
@@ -103,7 +103,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 | **孟菲斯/波普风** | 高饱和大色块、几何图形、80 年代 |
 | **赛博朋克/蒸汽波** | 霓虹紫粉、网格、迷幻 |
 
-你描述风格时，AI **不会基于这些词去挑模板**——它把这些词解释为对应的色彩 / 字体 / 版式建议，放到 策略师确认阶段里 `d` 项的第二层（视觉风格），然后驱动 e/f/g/h（色彩 / 图标 / 字体 / 图片）。你可以确认或调整。如果你想要的风格刚好对上库里某个模板（如 `academic_defense` / `pixel_retro` / `psychology_attachment`），有两条路可选：把模板的目录路径发出来锁定值，或描述风格让 AI 现场推适配你内容的值。
+你描述风格时，AI **不会基于这些词去挑模板**——它把这些词解释为对应的色彩 / 字体 / 版式建议，放到 策略师确认阶段里 `d` 项的第二层（视觉风格），然后驱动 e/f/g/h（色彩 / 图标 / 字体 / 图片）。你可以确认或调整。要使用内置 `presentation_core` 结构，就发送其工作区路径；要保持结构自由，则只描述风格，让 AI 现场适配内容。
 
 ---
 

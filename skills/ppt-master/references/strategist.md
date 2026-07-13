@@ -98,7 +98,7 @@ The deck's **visual aesthetic** — shape language, decoration density, whitespa
 
 Write the locked value to `spec_lock.md` `- visual_style:` and the rationale to `design_spec.md`. Executor loads only that one visual-style file.
 
-> **Template vs preset**: a style mention may sound like a template name ("academic style" vs the `academic_defense/` template directory). Step 3 only triggers on an explicit template directory path supplied by the user — bare names and style words never copy templates; they map to a visual-style preset here. If a template was triggered upstream, its files are already in `<project_path>/templates/` and its fused design_spec governs.
+> **Template vs preset**: a style mention and a template name remain different inputs ("minimalist" vs the `presentation_core/` template directory). Step 3 only triggers on an explicit template directory path supplied by the user — bare names and style words never copy templates; they map to a visual-style preset here. If a template was triggered upstream, its files are already in `<project_path>/templates/` and its fused design_spec governs.
 
 **Legacy template boundary**: A template containing `native_structure.json`, `source_template.pptx`, missing root Master identity, direct atomic placeholders, or old `baseline` / `preserve` / distillation metadata must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before Step 3. Do not plan against a legacy compatibility contract.
 

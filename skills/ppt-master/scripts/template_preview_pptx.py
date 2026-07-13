@@ -46,6 +46,10 @@ _FRONTMATTER_ID_RE = re.compile(
     r"^(?:template_id|deck_id|layout_id)\s*:\s*(.+?)\s*$",
     re.MULTILINE,
 )
+_REPLICATION_MODE_RE = re.compile(
+    r"^replication_mode\s*:\s*(standard|fidelity|mirror)\s*$",
+    re.MULTILINE,
+)
 _FONT_SIZE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)(?:px)?$")
 _FILENAME_UNSAFE_RE = re.compile(r"[\\/:*?\"<>|\x00-\x1f]+")
 _TITLE_PLACEHOLDERS = frozenset({"title", "subtitle"})
@@ -85,6 +89,13 @@ def _template_id(spec_path: Path, workspace: Path) -> str:
     raw = match.group(1).strip().strip("'\"") if match else workspace.name
     safe = _FILENAME_UNSAFE_RE.sub("_", raw).strip(" ._")
     return safe or "template"
+
+
+def _replication_mode(spec_path: Path) -> str:
+    """Read the template replication mode, defaulting legacy packages to standard."""
+    text = spec_path.read_text(encoding="utf-8")
+    match = _REPLICATION_MODE_RE.search(text)
+    return match.group(1) if match else "standard"
 
 
 def _style_property(style: str, name: str) -> str | None:
@@ -146,12 +157,62 @@ def _master_text_style(svg_files: list[Path]) -> tuple[MasterTextStyleSpec, floa
     )
 
 
-def _verify_output(output_path: Path) -> tuple[int, int, int]:
-    """Reopen the review deck and return slide/master/layout counts."""
+def _verify_output(
+    output_path: Path,
+    *,
+    require_full_placeholder_frames: bool,
+) -> tuple[int, int, int, int]:
+    """Reopen the review deck and verify counts plus authored placeholder frames."""
     presentation = Presentation(str(output_path))
     master_count = len(presentation.slide_masters)
     layout_count = sum(len(master.slide_layouts) for master in presentation.slide_masters)
-    return len(presentation.slides), master_count, layout_count
+    placeholder_count = 0
+    if require_full_placeholder_frames:
+        for slide_number, slide in enumerate(presentation.slides, 1):
+            layout_placeholders = {
+                shape.placeholder_format.idx: shape
+                for shape in slide.slide_layout.placeholders
+            }
+            slide_placeholders = {
+                shape.placeholder_format.idx: shape
+                for shape in slide.placeholders
+            }
+            if set(slide_placeholders) != set(layout_placeholders):
+                raise ValueError(
+                    f"review slide {slide_number} placeholder indexes do not match "
+                    f"its Layout: {sorted(slide_placeholders)} != "
+                    f"{sorted(layout_placeholders)}"
+                )
+            for placeholder_idx, slide_shape in slide_placeholders.items():
+                layout_shape = layout_placeholders[placeholder_idx]
+                if (
+                    slide_shape.placeholder_format.type
+                    != layout_shape.placeholder_format.type
+                ):
+                    raise ValueError(
+                        f"review slide {slide_number} placeholder {placeholder_idx} "
+                        "type does not match its Layout"
+                    )
+                slide_frame = (
+                    slide_shape.left,
+                    slide_shape.top,
+                    slide_shape.width,
+                    slide_shape.height,
+                )
+                layout_frame = (
+                    layout_shape.left,
+                    layout_shape.top,
+                    layout_shape.width,
+                    layout_shape.height,
+                )
+                if slide_frame != layout_frame:
+                    raise ValueError(
+                        f"review slide {slide_number} placeholder {placeholder_idx} "
+                        f"uses a tight/local frame {slide_frame}; expected full "
+                        f"Layout frame {layout_frame}"
+                    )
+                placeholder_count += 1
+    return len(presentation.slides), master_count, layout_count, placeholder_count
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -202,7 +263,12 @@ def main(argv: list[str] | None = None) -> int:
         if not svg_files:
             raise ValueError(f"template directory has no SVG prototypes: {template_dir}")
 
-        template_id = _template_id(template_dir / "design_spec.md", workspace)
+        spec_path = template_dir / "design_spec.md"
+        template_id = _template_id(spec_path, workspace)
+        replication_mode = _replication_mode(spec_path)
+        use_full_placeholder_frames = (
+            not args.visual_only and replication_mode != "mirror"
+        )
         output_path = (
             Path(args.output).expanduser().resolve()
             if args.output
@@ -225,8 +291,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  SVG prototypes: {len(svg_files)}")
         if args.visual_only:
             print("  Review mode: visual-only legacy compatibility")
+        elif replication_mode == "mirror":
+            print("  Review placeholder frames: preserved source Slide geometry")
         else:
             print(f"  Review Master defaults: title {title_px:g}px, body {body_px:g}px")
+            print("  Review placeholder frames: full Layout bounds")
         print(f"  Output: {output_path}")
 
         success = create_pptx_with_native_svg(
@@ -240,6 +309,7 @@ def main(argv: list[str] | None = None) -> int:
             image_optimize=False,
             native_objects=True,
             pptx_structure="flat" if args.visual_only else "structured",
+            use_layout_placeholder_frames=use_full_placeholder_frames,
             master_text_style_spec=text_style,
             structure_name=template_id,
         )
@@ -247,7 +317,10 @@ def main(argv: list[str] | None = None) -> int:
             print("Error: template preview export did not produce a PPTX", file=sys.stderr)
             return 1
 
-        slide_count, master_count, layout_count = _verify_output(output_path)
+        slide_count, master_count, layout_count, placeholder_count = _verify_output(
+            output_path,
+            require_full_placeholder_frames=use_full_placeholder_frames,
+        )
         if slide_count != len(svg_files):
             print(
                 "Error: review PPTX slide count does not match the template SVG roster "
@@ -257,9 +330,15 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
         label = "Visual-only template preview" if args.visual_only else "Template preview"
+        placeholder_status = (
+            f", {placeholder_count} full-frame placeholder(s)"
+            if use_full_placeholder_frames
+            else ""
+        )
         print(
             f"[OK] {label} verified: "
-            f"{slide_count} slides, {master_count} master(s), {layout_count} layout(s)"
+            f"{slide_count} slides, {master_count} master(s), "
+            f"{layout_count} layout(s){placeholder_status}"
         )
         print(output_path)
         return 0

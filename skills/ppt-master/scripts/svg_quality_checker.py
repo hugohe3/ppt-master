@@ -251,13 +251,6 @@ _BUNDLED_LEGACY_TEMPLATE_DIRS = frozenset({
     'decks/中汽研/templates',
     'decks/招商银行/templates',
     'decks/重庆大学/templates',
-    'layouts/academic_defense/templates',
-    'layouts/ai_ops/templates',
-    'layouts/government_blue/templates',
-    'layouts/government_red/templates',
-    'layouts/medical_university/templates',
-    'layouts/pixel_retro/templates',
-    'layouts/psychology_attachment/templates',
 })
 
 _BARE_HEX_VALUE_RE = re.compile(
@@ -4080,7 +4073,7 @@ def print_usage() -> None:
     print("  python3 scripts/svg_quality_checker.py examples/project/svg_output/slide_01.svg")
     print("  python3 scripts/svg_quality_checker.py examples/project/svg_output")
     print("  python3 scripts/svg_quality_checker.py examples/project")
-    print("  python3 scripts/svg_quality_checker.py templates/layouts/academic_defense/templates --template-mode")
+    print("  python3 scripts/svg_quality_checker.py templates/layouts/presentation_core/templates --template-mode")
     print("  python3 scripts/svg_quality_checker.py templates/decks/招商银行/templates --template-mode")
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")

@@ -421,6 +421,19 @@ Mirror mode does not simplify the visual target or synthesize layer ownership. T
    - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root Master/Layout key/name, direct atomic Master/Layout elements, and direct slot `<g>` elements with explicit design-zone bounds plus exactly one compatible carrier. Composite regions use only the explicit `object` + `proxy` downgrade. Minimal structural `data-pptx-role` hints are added only when specialized metadata cannot express required behavior. Both strict and adaptive downstream set `mode: structured` and require complete `page_layouts`, `pptx_masters`, and `pptx_layouts` from planning onward.
 4. Template assets (optional) — both scopes apply the same `templates/` / `images/` / dual-icon routing defined above
 
+**Hard rule — placeholder examples are executable defaults**: In authored
+`standard` / `fidelity` templates, a carrier is not a floating review label. It
+becomes the prototype Slide placeholder, while
+`data-pptx-placeholder-bounds` becomes the reusable Layout frame.
+
+| Concern | Requirement |
+|---|---|
+| Full editable frame | `data-pptx-placeholder-bounds` describes the complete intended text, picture, chart, table, or object box. Never derive it from the sample text's glyph bounds or leave it as a one-line tight box. |
+| Generic text entry | General `body` and text-carried `object` slots begin at the upper-left, use left paragraph alignment, and wrap inside the full frame. Title/subtitle alignment follows the authored composition. |
+| Centered exceptions | Center alignment is reserved for semantically short focal content such as KPI values, short process nodes, hero statements, and compact takeaways. Record a template-wide exception in `design_spec.md §IV` when it is part of the layout grammar. |
+| Review Slide binding | `template_preview_pptx.py` sizes each authored Slide carrier to the same complete frame as its registered Layout placeholder. A review deck whose Slide carrier is only the prompt text's tight box fails Step 6. |
+| Mirror boundary | `mirror` preserves source Slide carrier geometry exactly; do not normalize it to the Layout frame when the source intentionally overrides that frame. |
+
 ---
 
 ## Step 5: Validate Template Assets
@@ -462,6 +475,7 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/t
 - [ ] `design_spec.md` frontmatter declares `native_structure_mode: structured`; no `native_structure.json` or `source_template.pptx` is packaged
 - [ ] Every SVG root declares Master/Layout key and picker names; Master/Layout visuals are direct atoms, never `<g>`, and obey the explicit paint-order contract. Structural `data-pptx-role` is used only when specialized metadata cannot express required package/page-number/animation behavior
 - [ ] Every slot is a direct `<g id>` with explicit design-zone bounds and exactly one compatible direct carrier, or an explicit composite `object` proxy; zero-slot Layouts remain valid
+- [ ] For `standard` / `fidelity`, every placeholder bound is the complete editable box rather than the current marker text's tight bounds; general body/object carriers begin at the upper-left and only intentional short focal roles remain centered
 - [ ] `standard` / `fidelity` output SVGs and their Master/Layout/slot contracts were newly authored without preserving or distilling source topology
 - [ ] Mirror output preserves source slide order, Master/Layout identity and parentage, placeholder facts, and ownership; fixed-layer group expansion is mechanical and pixel-equivalent, and the Source Restoration Map lists every source slide
 - [ ] Mirror preflight proved that the source graph has no unused Layout or unreachable Master that the one-prototype-per-source-slide roster would silently omit
@@ -498,6 +512,8 @@ python3 skills/ppt-master/scripts/template_preview_pptx.py "<template_workspace>
 - [ ] Review PPTX exists under `<template_workspace>/exports/`
 - [ ] PPTX slide count equals the template SVG roster count
 - [ ] Package read-back reports the expected Master and Layout counts
+- [ ] For `standard` / `fidelity`, every carrier-bound placeholder on each review Slide has exactly the same type, effective index, and full frame as its registered Layout placeholder; `template_preview_pptx.py` verifies this automatically
+- [ ] For `mirror`, source Slide-local placeholder geometry remains unchanged even when it differs from the Layout default frame
 - [ ] The user can open one file and review every template page in deterministic filename order
 
 If this optional step is run, every validation item becomes a hard gate for the review artifact. Fix the owning SVG/spec/asset before reporting the preview as verified. Failure of an unrequested preview does not block a workspace that already passed Step 5.

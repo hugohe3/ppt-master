@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="presentation_core_master" data-pptx-master-name="Presentation Core"
+  data-pptx-layout="kpi_dashboard" data-pptx-layout-name="KPI Dashboard">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="kpi-dashboard-card-one" x="64" y="152" width="264" height="128" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="kpi-dashboard-card-two" x="360" y="152" width="264" height="128" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="kpi-dashboard-card-three" x="656" y="152" width="264" height="128" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="kpi-dashboard-card-four" x="952" y="152" width="264" height="128" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="kpi-dashboard-evidence-panel" x="64" y="320" width="1152" height="320" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="kpi-dashboard-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="64 40 1152 72">
+    <text id="kpi-dashboard-title-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="kpi-dashboard-one-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="80 168 232 96">
+    <text id="kpi-dashboard-one-carrier" data-pptx-placeholder-carrier="true"
+      x="196" y="224" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_1}}</text>
+  </g>
+  <g id="kpi-dashboard-two-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="376 168 232 96">
+    <text id="kpi-dashboard-two-carrier" data-pptx-placeholder-carrier="true"
+      x="492" y="224" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_2}}</text>
+  </g>
+  <g id="kpi-dashboard-three-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="3"
+    data-pptx-placeholder-bounds="672 168 232 96">
+    <text id="kpi-dashboard-three-carrier" data-pptx-placeholder-carrier="true"
+      x="788" y="224" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_3}}</text>
+  </g>
+  <g id="kpi-dashboard-four-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="4"
+    data-pptx-placeholder-bounds="968 168 232 96">
+    <text id="kpi-dashboard-four-carrier" data-pptx-placeholder-carrier="true"
+      x="1084" y="224" text-anchor="middle" fill="#334155"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="28" font-weight="700">{{KPI_4}}</text>
+  </g>
+  <g id="kpi-dashboard-evidence-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="5"
+    data-pptx-placeholder-bounds="88 344 1104 272">
+    <text id="kpi-dashboard-evidence-carrier" data-pptx-placeholder-carrier="true"
+      x="88" y="382" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CONTENT_AREA}}</text>
+  </g>
+</svg>

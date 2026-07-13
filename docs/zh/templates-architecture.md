@@ -27,7 +27,7 @@ kind: brand
 ...
 ---
 
-# templates/layouts/academic_defense/templates/design_spec.md
+# templates/layouts/presentation_core/templates/design_spec.md
 ---
 kind: layout
 native_structure_mode: structured
@@ -289,7 +289,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 > **Fused from:**
 > - deck: `templates/decks/招商银行/` （base）
 > - brand: `templates/brands/anthropic/` （identity 段覆盖）
-> - layout: `templates/layouts/academic_defense/` （structure 段覆盖）
+> - layout: `templates/layouts/presentation_core/` （structure 段覆盖）
 > - conflicts resolved: Color Scheme from anthropic（用户选 a）
 ```
 
