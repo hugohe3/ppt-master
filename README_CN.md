@@ -13,7 +13,15 @@
 [English](./README.md) | 中文
 
 <details open>
-<summary>本项目由 <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a> 等赞助方支持，得以持续免费开源。</summary>
+<summary>本项目由 <a href="https://www.kimi.com/code/?aff=ppt-master">Kimi</a>、<a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a>、<a href="https://apikey.fun/register?aff=PPT-MASTER">APIKEY.FUN</a>、<a href="https://runapi.co/register?aff=WMLJ">RunAPI</a>、<a href="https://www.compshare.cn/coding-plan?ytag=GPU_YY-git_pptmaster0624">优云智算</a> 等赞助方支持，得以持续免费开源。</summary>
+
+<p align="center">
+  <a href="https://www.kimi.com/code/?aff=ppt-master"><img src="https://gcdn.moonshot.cn/growth-cdn/sponsor/kimi-zh.png" alt="Kimi" width="100%"></a>
+</p>
+
+感谢 [Kimi](https://www.kimi.com/code/?aff=ppt-master) 赞助本项目！[Kimi K2.7](https://platform.kimi.com/docs/guide/kimi-k2-7-code-quickstart) 是 Moonshot AI 推出的开源智能体模型。搭配 PPT Master，Kimi 可以理解 PDF、DOCX、网页等原始资料，提炼重点、规划演示逻辑，并生成可在 PowerPoint 中继续修改的原生可编辑 PPTX。
+
+**立即体验 [Kimi Code](https://www.kimi.com/code/?aff=ppt-master)，或通过 Kimi 开放平台（[中文站](https://platform.kimi.com?aff=ppt-master)｜[Global](https://platform.kimi.ai?aff=ppt-master)）使用 API。**
 
 <table>
   <tr>
