@@ -241,6 +241,7 @@ def main(argv: list[str] | None = None) -> int:
             native_objects=True,
             pptx_structure="flat" if args.visual_only else "structured",
             master_text_style_spec=text_style,
+            structure_name=template_id,
         )
         if not success or not output_path.is_file():
             print("Error: template preview export did not produce a PPTX", file=sys.stderr)

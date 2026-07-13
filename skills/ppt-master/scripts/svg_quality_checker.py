@@ -191,6 +191,23 @@ except ImportError:
     _validate_template_structure_svg = None
 
 try:
+    from svg_to_pptx.drawingml.theme_colors import (
+        ThemeColorError as _ThemeColorError,
+        load_theme_color_spec as _load_theme_color_spec,
+    )
+    from svg_to_pptx.drawingml.theme_fonts import (
+        ThemeFontError as _ThemeFontError,
+        load_master_text_style_spec as _load_master_text_style_spec,
+        load_theme_font_spec as _load_theme_font_spec,
+    )
+except ImportError:
+    _ThemeColorError = None
+    _ThemeFontError = None
+    _load_theme_color_spec = None
+    _load_master_text_style_spec = None
+    _load_theme_font_spec = None
+
+try:
     from svg_finalize.embed_icons import (
         resolve_icon_path as _resolve_icon_path,
     )
@@ -308,6 +325,39 @@ def _declared_pptx_structure_mode(project_path: Path) -> str | None:
         return None
     mode_match = _PPTX_STRUCTURE_MODE_RE.search(section_match.group(1))
     return mode_match.group(1).strip().lower() if mode_match else None
+
+
+def _generated_theme_contract_errors(project_path: Path) -> List[str]:
+    """Validate the current-project theme contract required by release export."""
+    if (
+        _ThemeColorError is None
+        or _ThemeFontError is None
+        or _load_theme_color_spec is None
+        or _load_master_text_style_spec is None
+        or _load_theme_font_spec is None
+    ):
+        return [
+            "PowerPoint theme contract validation is unavailable because the "
+            "theme loader modules could not be imported."
+        ]
+    try:
+        theme_font_spec = _load_theme_font_spec(project_path)
+        _load_master_text_style_spec(project_path)
+        theme_color_spec = _load_theme_color_spec(project_path)
+    except (_ThemeFontError, _ThemeColorError) as exc:
+        return [str(exc)]
+
+    missing: List[str] = []
+    if theme_font_spec is None:
+        missing.append("typography font_family/title_family/body_family")
+    if theme_color_spec is None:
+        missing.append("colors")
+    if not missing:
+        return []
+    return [
+        "spec_lock.md generated PowerPoint theme contract is missing: "
+        + ", ".join(missing)
+    ]
 
 
 def _placeholder_bounds_error(value: str) -> str | None:
@@ -2608,6 +2658,11 @@ class SVGQualityChecker:
             if standard_project
             else None
         )
+        if standard_project and declared_mode in {'flat', 'structured'}:
+            self._pptx_structure_issues.extend(
+                ('error', message)
+                for message in _generated_theme_contract_errors(project_path)
+            )
         if standard_project and declared_mode == 'flat':
             if (
                 _load_pptx_structure_lock is None
