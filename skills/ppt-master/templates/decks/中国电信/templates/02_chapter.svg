@@ -1,29 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="02_chapter" data-pptx-layout-name="Section">
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-02_chapter-background" data-pptx-layer="layout" data-pptx-editable="false"/>
-  <rect x="72" y="84" width="112" height="8" rx="4" fill="#C00000" />
-  <image x="1016" y="44" width="192" height="52" xlink:href="../images/logo.png" preserveAspectRatio="xMaxYMid meet" />
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="china_telecom_brand_master" data-pptx-master-name="China Telecom Brand"
+  data-pptx-layout="section" data-pptx-layout-name="Section Header">
+  <rect id="brand-master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="brand-master-top-rule" x="0" y="0" width="1280" height="8" fill="#C00000"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <image id="brand-master-footer-ribbon" x="0" y="554" width="1280" height="166"
+    xlink:href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <text id="brand-master-footer-label" x="72" y="650" fill="#FFFFFF"
+    font-family="Arial, Microsoft YaHei, sans-serif" font-size="14"
+    data-pptx-layer="master" data-pptx-editable="false">CHINA TELECOM</text>
 
-  <text x="96" y="244" fill="#C00000" fill-opacity="0.14" font-family="Arial, sans-serif" font-size="176" font-weight="700">{{CHAPTER_NUM}}</text>
-  <text x="96" y="316" fill="#111827" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="42" font-weight="700" id="slot-02_chapter-title-1" data-pptx-placeholder="title">{{CHAPTER_TITLE}}</text>
-  <text x="96" y="364" fill="#6B7280" font-family="Arial, sans-serif" font-size="18">DIGITAL TRANSFORMATION / CHINA TELECOM</text>
-  <rect x="96" y="398" width="164" height="6" rx="3" fill="#C00000" />
-
-  <rect x="96" y="446" width="252" height="86" rx="20" fill="#F8FAFC" stroke="#E5E7EB" stroke-width="2" />
-  <rect x="124" y="478" width="92" height="4" rx="2" fill="#C00000" />
-  <text x="124" y="514" fill="#6B7280" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="15">章节过渡页</text>
-
-  <rect x="852" y="132" width="356" height="356" rx="28" fill="#F8FAFC" stroke="#E5E7EB" stroke-width="2" />
-  <rect x="888" y="186" width="132" height="4" rx="2" fill="#C00000" />
-  <rect x="900" y="248" width="186" height="4" rx="2" fill="#C00000" fill-opacity="0.78" />
-  <rect x="900" y="270" width="144" height="4" rx="2" fill="#E55B5B" fill-opacity="0.6" />
-  <rect x="900" y="292" width="206" height="4" rx="2" fill="#C00000" fill-opacity="0.4" />
-  <rect x="900" y="342" width="228" height="4" rx="2" fill="#C00000" fill-opacity="0.22" />
-  <rect x="900" y="360" width="176" height="4" rx="2" fill="#E55B5B" fill-opacity="0.34" />
-  <rect x="900" y="378" width="252" height="4" rx="2" fill="#C00000" fill-opacity="0.16" />
-  <circle cx="934" cy="424" r="8" fill="#C00000" fill-opacity="0.18" />
-  <circle cx="966" cy="424" r="8" fill="#C00000" fill-opacity="0.32" />
-  <circle cx="998" cy="424" r="8" fill="#C00000" fill-opacity="0.48" />
-
-  <image x="0" y="590" width="1280" height="130" xlink:href="../images/footer_ribbon.png" preserveAspectRatio="xMidYMid slice" />
+  <rect id="section-top-accent" x="72" y="84" width="112" height="8" rx="4" fill="#C00000"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <image id="section-logo" x="1016" y="44" width="192" height="52" xlink:href="../images/logo.png"
+    preserveAspectRatio="xMaxYMid meet" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="section-title-rule" x="96" y="398" width="164" height="6" rx="3" fill="#C00000"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="section-note-card" x="96" y="446" width="252" height="86" rx="20"
+    fill="#F8FAFC" stroke="#E5E7EB" stroke-width="2"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="section-note-accent" x="124" y="478" width="92" height="4" rx="2" fill="#C00000"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <text id="section-note" x="124" y="514" fill="#6B7280"
+    font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="15"
+    data-pptx-layer="layout" data-pptx-editable="false">章节过渡页</text>
+  <rect id="section-visual-card" x="852" y="132" width="356" height="356" rx="28"
+    fill="#F8FAFC" stroke="#E5E7EB" stroke-width="2"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="section-visual-accent" x="888" y="186" width="132" height="4" rx="2" fill="#C00000"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <image id="section-slogan" x="884" y="236" width="284" height="96"
+    xlink:href="../images/slogan_red.png" preserveAspectRatio="xMidYMid meet"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <image id="section-skyline" x="876" y="348" width="300" height="92"
+    xlink:href="../images/skyline_bg.png" preserveAspectRatio="xMidYMid meet"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="section-number-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="96 148 300 116">
+    <text id="section-number-carrier" data-pptx-placeholder-carrier="true"
+      x="96" y="242" fill="#C00000" fill-opacity="0.14"
+      font-family="Arial, sans-serif" font-size="112" font-weight="700">{{CHAPTER_NUM}}</text>
+  </g>
+  <g id="section-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="96 270 680 72">
+    <text id="section-title-carrier" data-pptx-placeholder-carrier="true"
+      x="96" y="318" fill="#111827"
+      font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif"
+      font-size="42" font-weight="700">{{CHAPTER_TITLE}}</text>
+  </g>
+  <g id="section-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="96 346 680 40">
+    <text id="section-subtitle-carrier" data-pptx-placeholder-carrier="true"
+      x="96" y="374" fill="#6B7280"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="18">{{CHAPTER_SUBTITLE}}</text>
+  </g>
 </svg>

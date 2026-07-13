@@ -30,7 +30,7 @@ For every current template kind, the path is the **template workspace root**. St
 
 ### What does NOT trigger the template flow
 
-- **A bare template name without a path**: "use the presentation_core template" / "use the China Merchants Bank template" → free design. The AI does not look the name up. You must give a path.
+- **A bare template name without a path**: "use the presentation_core template" / "use the China Telecom template" → free design. The AI does not look the name up. You must give a path.
 - **Style descriptions**: "McKinsey style" / "Google style" / "minimalist" / "Keynote style" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
 - **Vague intent**: "I want a template" with no path → free design.
 
@@ -44,7 +44,7 @@ Templates are organized into three kinds, each in its own directory:
 
 - [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
 - [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
-- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); China Merchants Bank, Power Construction Corporation of China, Chongqing University, China Telecom
+- [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); CATARC and China Telecom
 
 Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
 

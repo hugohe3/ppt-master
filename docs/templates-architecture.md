@@ -223,7 +223,7 @@ These indexes cover library scope only. A project-root workspace is intentionall
 ```json
 {
   "<deck_id>": {
-    "summary": "China Merchants Bank transaction banking deck",
+    "summary": "China Telecom government-enterprise briefing deck",
     "canvas_format": "ppt169",
     "page_count": 5,
     "primary_color": "#XXXXXX"

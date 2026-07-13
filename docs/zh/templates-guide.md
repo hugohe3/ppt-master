@@ -30,7 +30,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 ### 什么**不会**触发模板流程
 
-- **只写模板名、不给路径**："用 presentation_core 模板" / "做一份 招商银行 模板的产品介绍" → 走自由设计。AI 不会替你把名字解析成路径。要用模板，请直接给路径。
+- **只写模板名、不给路径**："用 presentation_core 模板" / "做一份中国电信模板的产品介绍" → 走自由设计。AI 不会替你把名字解析成路径。要用模板，请直接给路径。
 - **风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → 走自由设计。这些描述会顺着对话流到 Strategist 那边作为风格说明使用，但**不会复制任何模板文件**。
 - **模糊意图**："想用个模板" / "选一个吧"——没给路径 → 走自由设计。
 
@@ -44,7 +44,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 - [`templates/brands/README.md`](../../skills/ppt-master/templates/brands/README.md) — 仅身份预设（color / typography / logo / voice / icon style），无 SVG 页面；Anthropic、Google
 - [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md) — 仅结构样板（canvas / page structure / page types / SVG roster），无身份；presentation_core
-- [`templates/decks/README.md`](../../skills/ppt-master/templates/decks/README.md) — 完整 PPT 复刻（身份 + 结构 + 中间段）；招商银行、中国电建_*、中汽研_*、重庆大学、中国电信
+- [`templates/decks/README.md`](../../skills/ppt-master/templates/decks/README.md) — 完整 PPT 复刻（身份 + 结构 + 中间段）；中汽研、中国电信
 
 完整数据模型与三类的合成 / 冲突解决规则见 [`templates-architecture.md`](./templates-architecture.md)。
 
