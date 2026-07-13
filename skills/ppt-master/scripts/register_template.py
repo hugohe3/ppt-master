@@ -80,6 +80,24 @@ KIND_CONFIG = {
     },
 }
 
+_BRAND_REQUIRED_SECTIONS = (
+    "Brand Overview",
+    "Color Scheme",
+    "Typography",
+    "Logo",
+    "Voice & Tone",
+    "Icon Style",
+)
+_BRAND_FORBIDDEN_SECTIONS = (
+    "Page Roster",
+    "Signature Design Elements",
+)
+_BRAND_PROVENANCE_VALUES = {"fact", "approx", "user"}
+_BRAND_ASSET_REF_RE = re.compile(
+    r"`((?:\.\./)+(?:images|icons)/[^`]+)`"
+)
+_HEX_COLOR_RE = re.compile(r"#[0-9A-Fa-f]{6}")
+
 
 # ---------------------------------------------------------------------------
 # design_spec.md parsing
@@ -200,6 +218,130 @@ def _derive_page_types(pages: list[str]) -> list[str]:
     return types
 
 
+def _numbered_section(body: str, title: str) -> str | None:
+    match = re.search(
+        rf"^##\s+[IVX]+\.\s+{re.escape(title)}\s*$.*?(?=^##\s+|\Z)",
+        body,
+        re.MULTILINE | re.DOTALL,
+    )
+    return match.group(0) if match else None
+
+
+def _validate_brand_spec(
+    template_id: str,
+    template_root: Path,
+    template_dir: Path,
+    frontmatter: dict,
+    body: str,
+    pages: list[str],
+) -> None:
+    """Reject brand workspaces that cannot be locked as portable identity truth.
+
+    Args:
+        template_id: Directory name used as the registry key.
+        template_root: Brand workspace root containing assets and templates.
+        template_dir: Directory containing ``design_spec.md`` and any page SVGs.
+        frontmatter: Parsed design-spec frontmatter.
+        body: Markdown content after the frontmatter block.
+        pages: SVG page stems discovered beside the design spec.
+    """
+    errors: list[str] = []
+
+    declared_id = str(frontmatter.get("brand_id") or "").strip()
+    if declared_id != template_id:
+        errors.append(
+            f"frontmatter brand_id must match directory {template_id!r}, "
+            f"got {declared_id!r}"
+        )
+
+    declared_kind = str(frontmatter.get("kind") or "").strip()
+    if declared_kind != "brand":
+        errors.append(
+            "frontmatter kind must be 'brand', "
+            f"got {declared_kind!r}"
+        )
+
+    if pages:
+        errors.append(
+            "brand workspaces must not contain page SVGs under templates/: "
+            + ", ".join(f"{page}.svg" for page in pages)
+        )
+
+    for title in _BRAND_REQUIRED_SECTIONS:
+        if _numbered_section(body, title) is None:
+            errors.append(f"missing required section: {title}")
+
+    for title in _BRAND_FORBIDDEN_SECTIONS:
+        if re.search(
+            rf"^##\s+(?:[IVX]+\.\s+)?{re.escape(title)}\s*$",
+            body,
+            re.MULTILINE,
+        ):
+            errors.append(f"brand scope must not declare section: {title}")
+
+    declared_primary = str(frontmatter.get("primary_color") or "").strip()
+    if _HEX_COLOR_RE.fullmatch(declared_primary) is None:
+        errors.append(
+            "frontmatter primary_color must use #RRGGBB, "
+            f"got {declared_primary!r}"
+        )
+
+    color_section = _numbered_section(body, "Color Scheme") or ""
+    primary_rows: list[str] = []
+    for line in color_section.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        role = cells[0].strip("` ")
+        raw_color = cells[1].strip("` ")
+        if role.lower() == "role" or re.fullmatch(r":?-+:?", role):
+            continue
+        if _HEX_COLOR_RE.fullmatch(raw_color) is None:
+            errors.append(
+                f"color row {role!r} must use #RRGGBB, "
+                f"got {raw_color!r}"
+            )
+            continue
+        if role.lower() == "primary":
+            primary_rows.append(raw_color.upper())
+        provenance = cells[2].strip("` ").lower()
+        if provenance not in _BRAND_PROVENANCE_VALUES:
+            errors.append(
+                f"color {raw_color} must declare provenance as "
+                "fact, approx, or user"
+            )
+
+    if not primary_rows:
+        errors.append("Color Scheme must declare one primary color row")
+    elif len(primary_rows) > 1:
+        errors.append("Color Scheme must declare only one primary color row")
+    elif (
+        _HEX_COLOR_RE.fullmatch(declared_primary)
+        and primary_rows[0] != declared_primary.upper()
+    ):
+        errors.append(
+            "Color Scheme primary must match frontmatter primary_color: "
+            f"{primary_rows[0]} != {declared_primary.upper()}"
+        )
+
+    root = template_root.resolve()
+    for raw_ref in sorted(set(_BRAND_ASSET_REF_RE.findall(body))):
+        asset = (template_dir / raw_ref).resolve()
+        try:
+            asset.relative_to(root)
+        except ValueError:
+            errors.append(f"asset reference escapes brand workspace: {raw_ref}")
+            continue
+        if not asset.is_file():
+            errors.append(f"referenced brand asset does not exist: {raw_ref}")
+
+    if errors:
+        details = "\n".join(f"  - {error}" for error in errors)
+        raise SpecParseError(f"invalid brand specification:\n{details}")
+
+
 # ---------------------------------------------------------------------------
 # Per-kind extraction
 # ---------------------------------------------------------------------------
@@ -233,6 +375,14 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
     primary_color = fm.get("primary_color") or _extract_primary_color(body) or ""
 
     if kind == "brand":
+        _validate_brand_spec(
+            template_id,
+            template_root,
+            template_dir,
+            fm,
+            body,
+            pages,
+        )
         entry = OrderedDict(
             summary=summary,
             primary_color=str(primary_color),

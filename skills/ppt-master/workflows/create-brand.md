@@ -52,6 +52,8 @@ Identify which of (colors / typography / logo / voice / icon style) the asset di
 - `[approx]` — visual estimate (PNG/JPG color picking)
 - `[user]` — supplied via chat fill-in in Step 3
 
+**Hard rule — brand truth boundary**: Use `fact` only for a literal value extracted from an official asset/manual. Use `user` for values dictated in chat. Values inferred from an existing deck, website appearance, raster sampling, or presentation convention remain `approx`. Keep approximate presentation neutrals minimal; do not invent a semantic info/success/alert palette and lock it as brand identity.
+
 ---
 
 ## Step 2B: Verbal spec capture
@@ -66,7 +68,7 @@ Whatever the user gives is `[user]`-labelled. Skip Step 3 unless the user explic
 
 ## Step 2C: Empty skeleton
 
-Write `templates/brands/<brand_id>/templates/design_spec.md` with the full schema, every value as a TODO comment. Tell the user where the file is. No further prompting — the user owns it from here.
+Write `templates/brands/<brand_id>/templates/design_spec.md` with the full schema, every value as a TODO comment. Tell the user where the file is. Do not register the incomplete skeleton; registration requires concrete identity values. No further prompting — the user owns it from here.
 
 ---
 
@@ -80,6 +82,7 @@ For fields not covered by the asset, ask the user in a single bundled message. S
 | text / bg HEX | only if dark-mode or inverted scheme mentioned |
 | title / body font | when the asset gave no font reference |
 | logo usage | when a logo file was provided |
+| brand scope | when assets mix a company, product, subsidiary, or campaign identity |
 | voice & tone | when audience or formality was mentioned |
 | icon style preference | when icon consistency was mentioned |
 
@@ -100,7 +103,6 @@ mkdir -p "skills/ppt-master/templates/brands/<brand_id>/templates"
 brand_id: <slug>
 kind: brand
 summary: <one-line use case, e.g. "ACME Corp marketing decks">
-keywords: [<3-5 short tags>]
 primary_color: "#XXXXXX"
 ---
 
@@ -114,15 +116,16 @@ primary_color: "#XXXXXX"
 | Brand Name | <display name> |
 | Use Cases | <summary> |
 | Tone | <one-line tone summary> |
+| Sources | <official URL or bundled asset paths; include retrieval/version date when known> |
 
 ## II. Color Scheme
 | Role | HEX | Provenance |
 |---|---|---|
 | primary | #XXXXXX | fact \| approx \| user |
-| secondary | #XXXXXX | |
-| accent | #XXXXXX | |
-| text | #XXXXXX | optional, default `#1A1A1A` |
-| bg | #XXXXXX | optional, default `#FFFFFF` |
+| secondary | #XXXXXX | fact \| approx \| user |
+| accent | #XXXXXX | fact \| approx \| user |
+| text | #XXXXXX | fact \| approx \| user; optional, default `#1A1A1A` |
+| bg | #XXXXXX | fact \| approx \| user; optional, default `#FFFFFF` |
 
 ## III. Typography
 | Role | Family | Weight |
@@ -154,6 +157,9 @@ primary_color: "#XXXXXX"
 - HEX must be `#RRGGBB`
 - Font names are free strings; not validated against locally installed fonts
 - §VII is fully optional — list only directories that actually exist
+- A company/product family may share one preset when the user explicitly wants that scope. Name the combined scope in §I and identify the owner of every logo/lockup in §IV; never relabel a product mark as the company mark.
+- One preset has one default presenting entity. Subsidiary/campaign assets may remain as explicit alternates, but they never silently replace the default identity; create a separate brand workspace when their colors, typography, or voice differ.
+- Record official usage or trademark restrictions next to the affected asset. Do not turn an observed public logo into permission to imply affiliation, sponsorship, or endorsement.
 
 ### Optional: logo file
 
@@ -169,18 +175,18 @@ No SVG page roster, canvas spec, signature design elements, or preview PPTX. Do 
 
 ---
 
-## Step 5: Register and hand off
+## Step 5: Validate, register, and hand off
 
-Update `templates/brands/brands_index.json` with the new entry (create the file if missing):
+Run the registrar in dry-run mode first. It validates the mandatory frontmatter, brand ID, required sections, roster-free scope, `#RRGGBB` colors and primary-color consistency, color provenance, and every referenced `images/` / `icons/` asset:
 
-```json
-{
-  "<brand_id>": {
-    "summary": "<from design_spec.md frontmatter>",
-    "keywords": [...],
-    "primary_color": "#XXXXXX"
-  }
-}
+```bash
+python3 skills/ppt-master/scripts/register_template.py --kind brand <brand_id> --dry-run
+```
+
+Fix every reported error, then register the same workspace:
+
+```bash
+python3 skills/ppt-master/scripts/register_template.py --kind brand <brand_id>
 ```
 
 Emit the confirmation card:
