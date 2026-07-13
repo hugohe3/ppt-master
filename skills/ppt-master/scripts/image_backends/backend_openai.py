@@ -527,7 +527,7 @@ def _edit_image(api_key: str, prompt: str, reference_image: str,
     """
     size_preset = _read_size_preset()
     size = _select_size(model, aspect_ratio, image_size, size_preset)
-    quality = _read_quality(image_size)
+    quality = None if _is_dall_e_2(model) else _read_quality(image_size)
     output_ext = ".png"
     request = {
         "prompt": prompt,
