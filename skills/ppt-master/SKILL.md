@@ -636,7 +636,7 @@ Each completed SVG MUST be a standalone, complete representation of that slide's
 
 Template pages MUST start from the complete `page_layouts` SVG, keep all inherited visible objects in `svg_output/`, and preserve the locked root Master/Layout identity plus stable atomic Master/Layout and slot ids. Strict keeps the prototype structure unchanged. Adaptive keeps its Master contract and, when Layout atoms or slot topology/bounds genuinely evolve, assigns a new key/name and updates `spec_lock.md` immediately. Non-mirror fill/stroke/effects/font sizes still follow `spec_lock`.
 
-Free-design and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export uses PowerPoint's default Master and Blank Layout; it does not promote or deduplicate page content.
+Free-design and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
 
 Do not duplicate specialized identity with `data-pptx-role`. Add it only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
 
@@ -652,7 +652,7 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ```
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
-- **Structured template routes only — PPTX-structure warnings are the exception.** For each empty-Layout / framing-only-Layout / bare-Master / duplicate-layout-key warning, output one disposition line: either the fix applied (merge keys in `spec_lock.md pptx_layouts` + SVG roots, mark the missing slots/layers) or why the flagged state is intended (e.g. "P01 cover is a fixed composition, zero-slot by design"). Flat free-design and brand-only routes have no positive Master/Layout checkpoint; the checker instead enforces a complete flat lock and the absence of Master/Layout/layer/placeholder metadata. "0 errors" alone does not pass a structured template gate when such warnings remain undispositioned.
+- **Structured template routes only — PPTX-structure warnings are the exception.** For each empty-Layout / framing-only-Layout / bare-Master / duplicate-layout-key warning, output one disposition line: either the fix applied (merge keys in `spec_lock.md pptx_layouts` + SVG roots, mark the missing slots/layers) or why the flagged state is intended (e.g. "P01 cover is a fixed composition, zero-slot by design"). Flat free-design and brand-only routes have no positive Master/Layout checkpoint; the checker instead enforces a complete flat lock including colors/fonts/title-body defaults, plus the absence of Master/Layout/layer/placeholder metadata. "0 errors" alone does not pass a structured template gate when such warnings remain undispositioned.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
@@ -746,8 +746,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `spec_lock.md`. Free-design and brand-only projects use
 > `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` /
 > `page_layouts`, and author no Master/Layout/layer/placeholder metadata in
-> SVG. Export keeps every represented object Slide-local under PowerPoint's
-> default Master and Blank Layout.
+> SVG. Export keeps every represented object Slide-local while materializing
+> one clean project-owned Master and one Blank Layout from the current lock;
+> stock content placeholders and unused built-in Layouts are removed; only the
+> standard date/footer/slide-number capability hooks remain.
 >
 > Deck/layout template projects use `pptx_structure.mode: structured`, a
 > complete `pptx_masters` roster, and exactly one `pptx_layouts` row per page

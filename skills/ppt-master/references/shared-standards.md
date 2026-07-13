@@ -436,7 +436,7 @@ These forms are needed only when the stated PPT behavior matters:
 | One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line. Evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` stay in one frame: equal effective `font-size` may flow in the current paragraph, while a font-size change, list marker, or accepted larger gap starts a new paragraph. An unmergeable gap or mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
 | Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
-| Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export uses PowerPoint's default Master and Blank Layout. Do not author Master/Layout identities, layers, or placeholder slots. |
+| Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Do not author Master/Layout identities, layers, or placeholder slots. |
 | Reusable template-based PowerPoint Layout | Select one complete input SVG per page in `page_layouts` and declare the output Master/Layout mapping at planning time. Strict preserves the prototype contract; adaptive retains its Master and may assign a new explicit Layout key during page authoring. Non-mirror skin follows `spec_lock`. |
 
 **Hard rule — supported shape conversion**: Every PPT editability claim in this specification refers to the project converter reading `svg_output/` and emitting native DrawingML. `svg_final/` is a self-contained visual preview that may be inserted into PowerPoint as an SVG picture. PowerPoint's manual Convert-to-Shape operation is unsupported; do not narrow the authoring contract to its undocumented SVG subset.
@@ -1342,7 +1342,7 @@ defaults to `bottom` and accepts `top`, `left`, or `right`.
 
 ### PPTX Structure Routing
 
-Every new SVG project declares one deterministic route. Free-design and brand-only projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export uses PowerPoint's default Master and Blank Layout and keeps all represented content Slide-local. Deck/layout template projects use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use restored source identities and parentage.
+Every new SVG project declares one deterministic route. Free-design and brand-only projects use `pptx_structure.mode: flat`, omit `pptx_masters` / `pptx_layouts` / `page_layouts`, and author no Master/Layout/layer/placeholder metadata. Export keeps all represented content Slide-local while materializing one clean project-owned Master plus one Blank Layout from the current color/typography lock; stock content placeholders and unused built-in Layouts are removed, while the standard date/footer/slide-number capability hooks remain. Deck/layout template projects use `mode: structured`; `standard` / `fidelity` templates use their authored contract, while mirror templates use restored source identities and parentage.
 
 **Hard rule — no structure inference**: Flat export performs no promotion or deduplication; every object stays Slide-local. Structured template export compiles only declared root identities, atomic fixed layers, and slot groups—it does not assign Layout families, cluster pages, infer placeholders, or repair missing metadata. Legacy structured/template projects must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) first.
 
@@ -1360,7 +1360,7 @@ Every new SVG project declares one deterministic route. Free-design and brand-on
 
 **Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and may allocate a new Layout key/name only when fixed Layout atoms or slot topology/bounds change; update the lock during authoring. Mirror-created prototypes preserve restored source identity, literal paint, typography, effects, atomic geometry, and referenced assets. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology.
 
-**Master text-style contract**: Structured export maps the
+**Master text-style contract**: Flat and structured export map the
 locked `title` size to every `a:defRPr` in Master `p:titleStyle`, and map the
 locked `body` size to every level in both `p:bodyStyle` and `p:otherStyle`.
 
@@ -1373,7 +1373,7 @@ locked `body` size to every level in both `p:bodyStyle` and `p:otherStyle`.
 **Hard rule — narrow scope**: This Master update changes only Master
 `p:txStyles//a:defRPr@sz`. It does not rewrite direct run sizes on generated
 slides, so the initial slide rendering remains controlled by the authored SVG.
-Missing `title` or `body` rows fail structured export.
+Missing `title` or `body` rows fail flat or structured export.
 
 **Layout level-one text-default contract**: For every text-bearing placeholder
 whose first prototype run has a direct `a:rPr@sz`, explicit Layout export copies that
