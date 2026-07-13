@@ -23,6 +23,8 @@
 
 **立即体验 [Kimi Code](https://www.kimi.com/code/?aff=ppt-master)，或通过 Kimi 开放平台（[中文站](https://platform.kimi.com?aff=ppt-master)｜[Global](https://platform.kimi.ai?aff=ppt-master)）使用 API。**
 
+<hr>
+
 <table>
   <tr>
     <td width="180"><a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a></td>
