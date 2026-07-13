@@ -7,8 +7,8 @@ Other files link here instead of restating its contracts.
 
 | Section | Owns | Strength |
 |---|---|---|
-| §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the exhaustive structural blacklist, native line ends, image clipping, static local reuse, and imported/authored native-shape semantics | Required / Forbidden / Conditional |
-| §2 Conditional Compatibility Mappings | Inline geometry and approximate group opacity | Conditional |
+| §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the closed generated-authoring surface, structural blacklist, native line ends, image clipping, static local reuse, and imported/authored native-shape semantics | Required / Forbidden / Conditional |
+| §2 Conditional Compatibility Mappings | Literal inline geometry and the converter-only group-opacity boundary | Conditional / Forbidden |
 | §3 Canvas Format Quick Reference | Pointer to the complete canvas catalog | Reference |
 | §4 Required Page Contract and Conditional Packaging | Complete-page authority, semantic markers, editable text/grouping, and package promotion | Required / Conditional |
 | §5 Workflow Authority | Pointer to the serial post-processing/export procedure | Workflow pointer |
@@ -20,7 +20,7 @@ Other files link here instead of restating its contracts.
 
 | Capability family | Available authoring vocabulary | Detail |
 |---|---|---|
-| Color and transparency | CSS alpha colors; fill, stroke, text, picture, stop, element, and group opacity | §2.2, §6.2 |
+| Color and transparency | CSS alpha colors; fill, stroke, text, picture, stop, and element opacity; converter-only group-opacity compatibility | §2.2, §6.2 |
 | Gradients and paint | Linear/radial fills, transparent stops, gradient text, gradient strokes, and preset patterns | §6.3, §7 |
 | Depth and light | Soft/colored/directional shadow, glow, layered-geometry fallback, and paper-layer elevation | §6.4 |
 | Image treatment | Directional scrim, bottom fade, vignette, spotlight, brand wash, picture fading, and glass-like surfaces | §1.2, §6.5 |
@@ -50,6 +50,17 @@ Other files link here instead of restating its contracts.
 - **Conditional** contracts apply only when the corresponding feature is used.
 - **Reference — not a constraint** passages expose capabilities and recipes; they do not require every page or visual style to use them.
 - The locked `visual_style` controls whether and how strongly a compatible effect is used. It never expands the technical boundary.
+
+**Hard rule — generated authoring is fail-closed**: `svg_output/` and reusable
+template SVGs may use only properties and conditional interfaces explicitly
+listed in this file. `svg_quality_checker.py` rejects unknown inline visual
+properties and incomplete conditional contracts before export.
+
+**Hard rule — compatibility is not authoring permission**: the converter may
+retain broader read compatibility for imported or historical SVG, including
+normalization and documented approximation. That compatibility does not add a
+feature to the generated-authoring surface. Do not remove converter support
+merely to enforce a narrower authoring contract.
 
 **Hard rule — one-way fidelity vocabulary**: the labels above describe the
 `svg_output/` → generated PPTX path. They do not promise reconstruction of the
@@ -92,9 +103,25 @@ One offending character invalidates the file and aborts export.
 | `<script>` / event attributes | Scripts and interactivity |
 | `<iframe>` | Embedded frames |
 
-The blacklist above is exhaustive for globally forbidden SVG syntax. Features
-that require a restricted form are not globally forbidden; they are documented
-under the conditional contracts below.
+The blacklist above is exhaustive for globally forbidden structural syntax.
+It is not a positive allowlist for every browser-rendered property. Features
+that require a restricted form are valid only under the conditional contracts
+below; unlisted visual properties are unsupported.
+
+**Hard rule — inline visual-property allowlist**:
+
+| Property family | Allowed inline `style` properties |
+|---|---|
+| Paint and line | `fill`, `stroke`, `stroke-width`, `stroke-dasharray`, `stroke-linecap`, `stroke-linejoin`, `fill-opacity`, `stroke-opacity`, `vector-effect` |
+| Text | `font-family`, `font-size`, `font-weight`, `font-style`, `text-anchor`, `letter-spacing`, `text-decoration` |
+| Alpha and definition paint | `opacity`, `stop-color`, `stop-opacity`, `flood-color`, `flood-opacity` |
+| Literal geometry | The element-specific properties in §2.1 |
+| Preview-only | `shape-rendering`; it does not change native geometry |
+
+Conditional properties with a required XML form stay out of inline style:
+write `filter="url(#id)"`, `clip-path="url(#id)"`, and
+`marker-start` / `marker-end` as direct attributes. `!important`, unknown CSS
+properties, blend modes, isolation, and backdrop filters fail quality check.
 
 > **`marker-start` / `marker-end` is conditional** — see §1.1.
 >
@@ -106,8 +133,8 @@ under the conditional contracts below.
 >
 > **Authored native preset fragments are conditional** — see §1.5.
 >
-> **Inline CSS geometry, group opacity, simple gradients, and filters are
-> conditional** — see §2 and §6.
+> **Inline CSS geometry, simple gradients, and filters are conditional;
+> generated group opacity is forbidden** — see §2 and §6.
 >
 > **PPT preset patterns and native chart/table/template metadata are
 > conditional** — see §7.
@@ -171,13 +198,13 @@ the original `<use>` / `<symbol>` structure.
 
 | Concern | Required form |
 |---|---|
-| Reference syntax | Exact same-document fragment: `href="#id"` or `xlink:href="#id"`. If both attributes exist, their values MUST match. |
+| Reference syntax | Author new SVG with the SVG 2 form `href="#id"`. Legacy `xlink:href="#id"` remains read-compatible and Live Preview normalizes it to `href`; if both attributes exist, their values MUST match. |
 | Referenced target | One of `<symbol>`, `<g>`, `<use>`, `<rect>`, `<circle>`, `<ellipse>`, `<line>`, `<path>`, `<polygon>`, `<polyline>`, `<text>`, or `<image>`. Nested local `<use>` is recursively expanded. |
 | Instance position | `<use x>` / `<use y>` are finite unitless or `px` values; omitted values default to `0`. |
 | Symbol viewport | A referenced `<symbol>` MUST have a finite four-number `viewBox` with positive width/height. Its `<use>` MUST have positive finite unitless or `px` `width` and `height`. |
 | Aspect ratio | Default/aligned `meet` values and plain `preserveAspectRatio="none"` are supported. `slice`, `refX`, and `refY` are forbidden. |
 | Viewport boundary | Symbol artwork MUST stay inside its `viewBox`; expansion does not reproduce symbol overflow clipping. |
-| Internal references | Reusable subtrees use exact fragment forms: `href="#id"`, `xlink:href="#id"`, and `url(#id)`. The expander rewrites these references together with instance-local cloned IDs. |
+| Internal references | Author exact `href="#id"` and `url(#id)` fragments. The expander also reads legacy `xlink:href="#id"` and rewrites all instance-local cloned IDs. |
 | Structural metadata | Neither the `<use>` instance nor its referenced subtree may carry `data-pptx-layer*`, `data-pptx-native*`, or `data-pptx-placeholder*`. Author those objects directly instead of reusing them. |
 | Safety limits | A reachable reference chain may contain at most 64 instances, and one SVG may expand at most 10,000 local `<use>` instances. |
 
@@ -193,8 +220,7 @@ the original `<use>` / `<symbol>` structure.
 **Contract example**:
 
 ```xml
-<svg xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns="http://www.w3.org/2000/svg">
   <defs>
     <symbol id="statusDot" viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet">
       <circle cx="10" cy="10" r="8" fill="#16A34A"/>
@@ -205,7 +231,7 @@ the original `<use>` / `<symbol>` structure.
     </g>
   </defs>
   <use href="#statusDot" x="80" y="120" width="32" height="32"/>
-  <use xlink:href="#legendRow" x="120" y="120"/>
+  <use href="#legendRow" x="120" y="120"/>
 </svg>
 ```
 
@@ -382,14 +408,19 @@ only for literal declarations in an element's own `style` attribute; PPT Master
 does not compute CSS cascade or custom properties. Root canvas authority remains
 the `viewBox`, regardless of root `<svg>` compatibility width/height values.
 
-### 2.2 Group Opacity Is Approximate
+### 2.2 Group Opacity Is Converter-Only Compatibility
 
-`<g opacity="0.3">...</g>` maps the group alpha onto each descendant shape,
-text run, picture, and supported
-shadow/glow effect. Nested group and child opacity values multiply. Overlapping
-children may differ from SVG isolated-group compositing because DrawingML has no
-equivalent group-alpha model. With `--native-objects`, transparent native
-table/chart markers are rejected; omit that flag to export their SVG fallback.
+**Forbidden — generated group opacity**: Do not author `<g opacity="...">` or
+inline group `opacity` below `1` in `svg_output/` or reusable templates. Put the
+required alpha on each descendant paint, text run, picture, or supported effect.
+The quality checker rejects generated group opacity because DrawingML has no
+isolated group-alpha model and overlapping descendants produce a different
+result.
+
+The converter retains direct-read compatibility for historical/imported SVG by
+multiplying group alpha into descendants. That path is `Approximate`; nested
+group/child alpha multiplies, and `--native-objects` rejects transparent native
+table/chart markers. It is not an authoring permission.
 
 ---
 
@@ -443,7 +474,7 @@ These forms are needed only when the stated PPT behavior matters:
 
 ### 4.3 Element Grouping (Mandatory)
 
-Wrap logically related Slide-local elements in top-level `<g id="...">` groups. This is **required on every generated page**, not an optional convenience: it produces real PowerPoint groups in the exported PPTX and gives each content unit a stable animation anchor. Plain `<g>` is the normal grouping primitive; `<g opacity="0..1">` additionally maps to the per-descendant alpha approximation in §2.2. Flat free-design/brand-only pages use only ordinary semantic groups. On structured template pages, direct atomic Master/Layout elements are the required exception and a top-level slot `<g>` is already a semantic group.
+Wrap logically related Slide-local elements in top-level `<g id="...">` groups. This is **required on every generated page**, not an optional convenience: it produces real PowerPoint groups in the exported PPTX and gives each content unit a stable animation anchor. Plain `<g>` is the grouping primitive; keep alpha on individual descendants per §2.2. Flat free-design/brand-only pages use only ordinary semantic groups. On structured template pages, direct atomic Master/Layout elements are the required exception and a top-level slot `<g>` is already a semantic group.
 
 **Semantic-group rule**: direct Slide content uses semantic groups. Aim for **3–8 ordinary top-level content `<g id>` groups per slide**; on structured template pages, slot groups and atomic Master/Layout objects are excluded. Each ordinary group becomes one entrance step under the chosen animation trigger. Leaving Slide-local titles, body lines, list items, cards, or decorative clusters as ungrouped top-level atoms is a contract violation.
 
@@ -527,22 +558,23 @@ without `#` is invalid.
 | Element `opacity` | Alpha compiled into supported paint/effect channels | `Native-normalized` |
 | `<image opacity>` | Picture `<a:alphaModFix>` | `Native-stable` |
 | `<stop stop-opacity>` | Per-stop gradient alpha | `Native-stable` |
-| `<g opacity>` | Alpha multiplied into each supported descendant shape, text run, picture, and effect | `Approximate` |
+| `<g opacity>` | Direct-converter compatibility only; generated SVG authoring is forbidden | `Approximate`; §2.2 |
 | Pattern child/color alpha | Preset-pattern foreground/background alpha | Conditional; §7 |
 
 ```text
 effective fill alpha
-= color alpha × element opacity × fill-opacity × ancestor group opacity
+= color alpha × element opacity × fill-opacity
 ```
 
+The converter-only historical path may additionally multiply ancestor group
+opacity; generated SVG never depends on that approximation.
+
 **Hard rule — alpha grammar**: write `opacity`, `fill-opacity`,
-`stroke-opacity`, and `stop-opacity` as finite numbers from `0` to `1`.
+`stroke-opacity`, `stop-opacity`, and `flood-opacity` as finite unitless numbers
+from `0` to `1`.
 `fill="transparent"` / `stroke="transparent"` become no fill/line; use a color
 plus alpha when a painted transparent layer must remain represented. Group
-alpha is not isolated compositing, so overlapping descendants may differ from
-the browser. Transparent groups around `data-pptx-native` chart/table markers
-cannot be promoted under `--native-objects`; export the SVG fallback or remove
-the group opacity.
+opacity below `1` is forbidden in generated SVG; assign alpha to descendants.
 
 ---
 
@@ -597,12 +629,12 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Classification | Meaningful non-zero offset → one outer shadow; zero/no offset → one glow |
 | Fidelity | `Approximate`; one filter becomes one DrawingML effect |
 
-Flood/color alpha, linear `feFuncA slope`, element opacity, and ancestor opacity
-multiply. Native export does not preserve filter-region, `in/in2/result`, merge
-order, or composite topology. Other primitives, multiple independent effects,
-filters on `<image>` / `<tspan>` / unsupported targets are forbidden. Do not
-put a filter on a multi-element `<g>`; apply it to supported objects or use
-explicit layers.
+Flood/color alpha, linear `feFuncA slope`, and element opacity multiply. The
+converter-only historical path may also multiply ancestor group opacity.
+Native export does not preserve filter-region, `in/in2/result`, merge order, or
+composite topology. Other primitives, multiple independent effects, filters on
+`<image>` / `<tspan>` / `<g>` / unsupported targets are forbidden; apply the
+effect to supported objects or use explicit layers.
 
 ```xml
 <defs>
@@ -746,7 +778,7 @@ modes, generated effects, and text-image knockouts are outside editable text.
 | Positive scale / negative mirror | Geometry/image only; explicit pivot; `Native-normalized` |
 | `matrix(a b c d e f)` | Geometry/image only; transformed axes finite, non-zero, orthogonal; excludes rounded rects; `Native-normalized` |
 | Source order | Back-to-front PPT z-order; `Native-stable` |
-| `<g opacity>` | Descendant alpha; `Approximate`, §2.2 |
+| `<g opacity>` | Converter-only historical compatibility; forbidden in generated SVG, §2.2 |
 | Local `<use>` | §1.3 compile-time reuse; `Native-normalized` |
 
 Set text size/position directly; do not scale or general-matrix text. `skewX`,
@@ -970,7 +1002,8 @@ the tile's arbitrary geometry. Use this interface only when that preset mapping
 is intended.
 
 `data-pptx-pattern="<preset>"` is required to select the intended preset from
-the enum below; without it, export falls back to `ltUpDiag`.
+the enum below. The converter retains an `ltUpDiag` fallback for historical
+input, but generated authoring without the annotation fails quality check.
 
 Pattern colors may come from importer metadata (`data-pptx-fg` /
 `data-pptx-bg`) or from the pattern's child paint. Without metadata, the first
@@ -990,8 +1023,8 @@ itself is never used as a repeatable tile.
 | Checks & confetti | `smCheck` · `lgCheck` · `smConfetti` · `lgConfetti` |
 | Decorative | `horzBrick` · `diagBrick` · `weave` · `plaid` · `trellis` · `zigZag` · `wave` · `sphere` · `divot` · `shingle` · `solidDmnd` · `openDmnd` · `dotDmnd` |
 
-`svg_quality_checker.py` warns when the annotation is missing and errors when
-the preset is outside this enum.
+`svg_quality_checker.py` errors when a referenced pattern lacks the annotation,
+uses `patternTransform`, or names a preset outside this enum.
 
 ### Native PPTX Table / Chart Markers (Opt-in)
 
