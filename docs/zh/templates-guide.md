@@ -174,7 +174,7 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 
 **关于 PowerPoint 原生形状**：完整导入 SVG 保留在临时分析工作区，模型读取的是移除 opaque payload 和重复 carrier 的轻量 projection；projection 永远不是导出源。创作模式使用紧凑 canonical metadata。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已支持的 metadata；固定 Master/Layout 层保持直接原子，不支持或已修改的对象保留当前 SVG fallback。
 
-**当前 mirror 边界**：每个来源 Layout 都必须至少被一张来源 Slide 使用，每个来源 Master 也必须能通过这些 Layout 到达。当前 structured 模板 roster 还不能在不虚构额外页面的情况下物化只存在于选择器里的未使用身份，因此预检会列出具体未使用身份并停止，而不是静默丢弃。
+**Mirror 图谱边界**：mirror 保留完整且受支持的来源 Master/Layout 图谱。它为每张来源 Slide 输出一个完整原型，并为未被任何来源 Slide 使用的 Layout 额外输出一个定义专用的 `layout_<layout_key>.svg`。后者通过独立 Layout roster 注册进 PowerPoint，不会变成发布页面；其父 Master 也随之保留。预检只在必要来源事实或受支持几何缺失时停止，不会仅因 Layout 未使用而停止。
 
 **`mirror` 模板怎么消费**：Strategist 为每个项目页选择一张 mirror 参考，Executor 复制完整 SVG 并原位修改可见文字，同时保留装饰、精灵图裁剪、几何坐标和全部 `data-pptx-*` 结构声明。
 

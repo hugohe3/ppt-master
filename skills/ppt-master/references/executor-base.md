@@ -92,11 +92,11 @@ Before generating each page, output which template is used:
 
 ### 1.2 PowerPoint Master / Layout Mapping
 
-This section applies only to deck/layout template routes. `page_layouts` selects the input SVG prototype, and `pptx_masters` / `pptx_layouts` declare the structured output before the first page is drawn. Free-design and brand-only routes use `pptx_structure.mode: flat`, omit all three sections, skip the rest of §1.2, and keep every SVG object Slide-local.
+This section applies only to deck/layout template routes. `page_layouts` selects the input SVG prototype, `pptx_masters` / `pptx_layouts` declare unique reusable output definitions, and `page_pptx_layouts` assigns every generated page before the first page is drawn. Free-design and brand-only routes use `pptx_structure.mode: flat`, omit all four sections, skip the rest of §1.2, and keep every SVG object Slide-local.
 
 **Hard rule — template mode only**: A deck/layout template project uses `pptx_structure.mode: structured`. Missing mode or legacy values (`baseline`, `template`, `preserve`), `layout_strategy`, Layout-kind fields, partial mappings, and old direct placeholders must stop generation and route to [`restore-pptx-structure`](../workflows/restore-pptx-structure.md). `flat` is valid only when no deck/layout template is active.
 
-**Hard rule — root identity**: A row `P<NN>: <master_key> | <layout_key> | <layout name>` binds the page to a Master listed in `pptx_masters`. Put that Master key/name and Layout key/name on the root SVG. A Layout key belongs to exactly one Master and remains globally unique.
+**Hard rule — root identity**: A `page_pptx_layouts` row binds the page to one key in `pptx_layouts`; that unique definition supplies its Master key, Layout picker name, and prototype source. Put the declared Master key/name and Layout key/name on the root SVG. A Layout key belongs to exactly one Master and remains globally unique.
 
 **Hard rule — atomic fixed layers**: Every `data-pptx-layer="master|layout"` visual is one direct root child that compiles to one DrawingML object. A marked `<g>` is forbidden. When reconstructing source PPTX groups, recursively push supported transforms, paint, opacity, and z-order into atomic children. Repeat the identical ordered Master atom contract on every page using that Master and the identical ordered Layout atom contract on every page sharing that `(master, layout)` pair.
 

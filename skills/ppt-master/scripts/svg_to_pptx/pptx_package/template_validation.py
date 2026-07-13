@@ -867,23 +867,32 @@ def validate_pptx_template_package(
     pptx_path: str | Path,
     specs: list[TemplateSlideSpec],
     *,
+    layout_specs: list[TemplateSlideSpec] | None = None,
+    expected_layout_parts: dict[str, str] | None = None,
+    expected_master_parts: dict[str, str] | None = None,
     expected_backgrounds: dict[str, str | None] | None = None,
     expected_shape_rosters: dict[str, tuple[str, ...]] | None = None,
 ) -> None:
     """Validate a finished structured PPTX against its explicit SVG contract.
 
-    Export supplies pre-packaging background and shape expectations for exact
-    serialization read-back. Callers that only have the finished package still
-    receive the portable structure, ownership, and relationship checks.
+    ``specs`` describes published slides. ``layout_specs`` may additionally
+    include internal prototypes for unused Layouts. Export supplies exact part,
+    background, and shape expectations for deterministic serialization
+    read-back. Callers with only published-slide specs retain the original
+    portable relationship checks.
     """
     if not specs:
         raise ValueError("structured package validation requires at least one slide spec")
 
+    structure_specs = layout_specs or specs
     specs_by_layout: dict[str, list[TemplateSlideSpec]] = {}
+    public_specs_by_layout: dict[str, list[TemplateSlideSpec]] = {}
     bindings_by_layout: dict[str, tuple[TemplatePlaceholderBinding, ...]] = {}
     try:
-        for spec in specs:
+        for spec in structure_specs:
             specs_by_layout.setdefault(spec.layout_key, []).append(spec)
+        for spec in specs:
+            public_specs_by_layout.setdefault(spec.layout_key, []).append(spec)
         for layout_key, layout_specs in specs_by_layout.items():
             bindings_by_layout[layout_key] = template_placeholder_bindings(
                 layout_specs[0]
@@ -931,8 +940,22 @@ def validate_pptx_template_package(
                         exact=True,
                         ordered=True,
                     )
-            layout_parts_by_key: dict[str, str] = {}
-            keys_by_layout_part: dict[str, str] = {}
+            layout_parts_by_key = dict(expected_layout_parts or {})
+            keys_by_layout_part = {
+                part: key for key, part in layout_parts_by_key.items()
+            }
+            if len(keys_by_layout_part) != len(layout_parts_by_key):
+                errors.append(
+                    "expected Layout part mapping assigns one part to multiple keys"
+                )
+            if expected_layout_parts is not None and (
+                set(expected_layout_parts) != set(specs_by_layout)
+            ):
+                errors.append(
+                    "expected Layout key roster differs from the SVG contract; "
+                    f"missing={sorted(set(specs_by_layout) - set(expected_layout_parts))}, "
+                    f"extra={sorted(set(expected_layout_parts) - set(specs_by_layout))}"
+                )
             slide_roots: dict[int, ET.Element] = {}
 
             for spec in specs:
@@ -958,10 +981,7 @@ def validate_pptx_template_package(
                     )
                     continue
                 reader.xml(layout_part)
-                previous_part = layout_parts_by_key.setdefault(
-                    spec.layout_key,
-                    layout_part,
-                )
+                previous_part = layout_parts_by_key.setdefault(spec.layout_key, layout_part)
                 if previous_part != layout_part:
                     errors.append(
                         f"layout key {spec.layout_key!r} targets both {previous_part} "
@@ -980,8 +1000,25 @@ def validate_pptx_template_package(
             used_master_parts: set[str] = set()
             layout_parts_by_master: dict[str, set[str]] = {}
             master_specs_by_part: dict[str, TemplateSlideSpec] = {}
-            master_parts_by_key: dict[str, str] = {}
-            keys_by_master_part: dict[str, str] = {}
+            master_parts_by_key = dict(expected_master_parts or {})
+            keys_by_master_part = {
+                part: key for key, part in master_parts_by_key.items()
+            }
+            expected_master_keys = {
+                spec.master_key for spec in structure_specs
+            }
+            if len(keys_by_master_part) != len(master_parts_by_key):
+                errors.append(
+                    "expected Master part mapping assigns one part to multiple keys"
+                )
+            if expected_master_parts is not None and (
+                set(expected_master_parts) != expected_master_keys
+            ):
+                errors.append(
+                    "expected Master key roster differs from the SVG contract; "
+                    f"missing={sorted(expected_master_keys - set(expected_master_parts))}, "
+                    f"extra={sorted(set(expected_master_parts) - expected_master_keys)}"
+                )
             for layout_key, layout_specs in specs_by_layout.items():
                 prototype = layout_specs[0]
                 layout_part = layout_parts_by_key.get(layout_key)
@@ -1070,7 +1107,7 @@ def validate_pptx_template_package(
                         "for exact read-back"
                     )
                 slide_placeholders: dict[int, dict[int, _Placeholder]] = {}
-                for spec in layout_specs:
+                for spec in public_specs_by_layout.get(layout_key, []):
                     slide_root = slide_roots.get(spec.slide_num)
                     if slide_root is None:
                         continue

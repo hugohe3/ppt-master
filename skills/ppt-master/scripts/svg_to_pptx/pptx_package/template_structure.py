@@ -47,6 +47,9 @@ _STRUCTURE_ATTRS = frozenset({
     "data-pptx-placeholder-idx",
     "data-pptx-editable",
 })
+_FLAT_FORBIDDEN_STRUCTURE_ATTRS = frozenset(
+    _STRUCTURE_ATTRS - {"data-pptx-editable"}
+)
 _LAYERS = frozenset({"master", "layout", "slide"})
 _PLACEHOLDERS = frozenset({
     "title",
@@ -150,12 +153,23 @@ class TemplateStructureError(RuntimeError):
 
 @dataclass(frozen=True)
 class PptxLayoutReference:
-    """One spec_lock page-to-PowerPoint-layout declaration."""
+    """One spec_lock page-to-PowerPoint-layout assignment."""
 
     slide_num: int
     layout_key: str
     layout_name: str | None = None
     master_key: str | None = None
+
+
+@dataclass(frozen=True)
+class PptxLayoutDefinition:
+    """One reusable PowerPoint Layout declared by a structured project lock."""
+
+    layout_key: str
+    master_key: str
+    layout_name: str
+    prototype_slide_num: int | None = None
+    prototype_svg_path: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -183,6 +197,7 @@ class PptxStructureLock:
     mode: str
     template_adherence: str | None = None
     masters: tuple[PptxMasterReference, ...] = ()
+    layout_definitions: tuple[PptxLayoutDefinition, ...] = ()
     layouts: tuple[PptxLayoutReference, ...] = ()
     prototypes: tuple[PptxPrototypeReference, ...] = ()
     source_template: Path | None = None
@@ -480,6 +495,37 @@ def _template_replication_mode(template_dir: Path) -> str | None:
     return None
 
 
+def _template_svg_path(
+    template_dir: Path,
+    raw_basename: str,
+    context: str,
+) -> tuple[str, Path]:
+    """Resolve one flat template SVG basename inside the project workspace."""
+    basename = (
+        raw_basename[:-4]
+        if raw_basename.lower().endswith(".svg")
+        else raw_basename
+    )
+    if (
+        not basename
+        or basename in {".", ".."}
+        or "/" in basename
+        or "\\" in basename
+        or any(ord(char) < 0x20 for char in basename)
+    ):
+        raise TemplateStructureError(
+            f"spec_lock.md {context} has invalid template SVG basename "
+            f"{raw_basename!r}"
+        )
+    svg_path = (template_dir / f"{basename}.svg").resolve()
+    if svg_path.parent != template_dir or not svg_path.is_file():
+        raise TemplateStructureError(
+            f"spec_lock.md {context} references missing template SVG "
+            f"templates/{basename}.svg"
+        )
+    return basename, svg_path
+
+
 def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     """Load optional native-structure sections from spec_lock.md."""
     lock_path = project_path / "spec_lock.md"
@@ -502,6 +548,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             "pptx_structure",
             "pptx_masters",
             "pptx_layouts",
+            "page_pptx_layouts",
             "page_layouts",
         }:
             continue
@@ -512,19 +559,23 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
     structure_rows = sections.get("pptx_structure", [])
     master_rows = sections.get("pptx_masters", [])
     layout_rows = sections.get("pptx_layouts", [])
+    page_layout_rows = sections.get("page_pptx_layouts", [])
     prototype_rows = sections.get("page_layouts", [])
     structure_section_present = "pptx_structure" in sections
     master_section_present = "pptx_masters" in sections
     layout_section_present = "pptx_layouts" in sections
+    page_layout_section_present = "page_pptx_layouts" in sections
     prototype_section_present = "page_layouts" in sections
     if (
         not structure_rows
         and not master_rows
         and not layout_rows
+        and not page_layout_rows
         and not prototype_rows
         and not structure_section_present
         and not master_section_present
         and not layout_section_present
+        and not page_layout_section_present
         and not prototype_section_present
     ):
         return None
@@ -658,28 +709,11 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             )
         seen_prototype_slides.add(slide_num)
         raw_basename = raw_value.strip()
-        basename = (
-            raw_basename[:-4]
-            if raw_basename.lower().endswith(".svg")
-            else raw_basename
+        basename, svg_path = _template_svg_path(
+            template_dir,
+            raw_basename,
+            f"page_layouts P{slide_num:02d}",
         )
-        if (
-            not basename
-            or basename in {".", ".."}
-            or "/" in basename
-            or "\\" in basename
-            or any(ord(char) < 0x20 for char in basename)
-        ):
-            raise TemplateStructureError(
-                f"spec_lock.md P{slide_num:02d} has invalid template SVG basename "
-                f"{raw_basename!r}"
-            )
-        svg_path = (template_dir / f"{basename}.svg").resolve()
-        if svg_path.parent != template_dir or not svg_path.is_file():
-            raise TemplateStructureError(
-                f"spec_lock.md P{slide_num:02d} references missing template SVG "
-                f"templates/{basename}.svg"
-            )
         prototypes.append(PptxPrototypeReference(
             slide_num=slide_num,
             template_basename=basename,
@@ -696,98 +730,164 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             "spec_lock.md page_layouts requires template_adherence: strict or adaptive"
         )
 
+    layout_definitions: list[PptxLayoutDefinition] = []
     references: list[PptxLayoutReference] = []
-    seen_slides: set[int] = set()
-    for page_key, raw_value in layout_rows:
-        page_match = _LOCK_PAGE_RE.fullmatch(page_key)
-        if not page_match or int(page_match.group(1)) <= 0:
+    if mode == "structured":
+        if not layout_rows:
             raise TemplateStructureError(
-                f"spec_lock.md pptx_layouts key {page_key!r} must be P<NN>"
+                "spec_lock.md structured mode requires a non-empty "
+                "pptx_layouts definition section"
             )
-        slide_num = int(page_match.group(1))
-        if slide_num in seen_slides:
-            raise TemplateStructureError(
-                f"spec_lock.md pptx_layouts repeats page P{slide_num:02d}"
-            )
-        seen_slides.add(slide_num)
-        parts = [part.strip() for part in raw_value.split("|")]
-        master_key: str | None = None
-        if mode == "structured":
+        seen_layout_keys: set[str] = set()
+        for layout_key, raw_value in layout_rows:
+            if not _LAYOUT_KEY_RE.fullmatch(layout_key):
+                raise TemplateStructureError(
+                    f"spec_lock.md has invalid Layout key {layout_key!r}; use 1-64 "
+                    "ASCII letters, digits, dots, underscores, or hyphens"
+                )
+            if layout_key in seen_layout_keys:
+                raise TemplateStructureError(
+                    f"spec_lock.md pptx_layouts repeats Layout key {layout_key!r}"
+                )
+            seen_layout_keys.add(layout_key)
+            parts = [part.strip() for part in raw_value.split("|")]
             if len(parts) != 3 or not all(parts):
                 raise TemplateStructureError(
-                    f"spec_lock.md P{slide_num:02d} structured mapping must be "
-                    "'<master_key> | <layout_key> | <PowerPoint layout name>'"
+                    f"spec_lock.md Layout {layout_key!r} must be "
+                    "'<master_key> | <PowerPoint layout name> | "
+                    "<P<NN> or template:<basename>>'"
                 )
-            master_key, layout_key, layout_name = parts
+            master_key, layout_name, raw_source = parts
             if not _MASTER_KEY_RE.fullmatch(master_key):
                 raise TemplateStructureError(
-                    f"spec_lock.md P{slide_num:02d} has invalid Master key "
+                    f"spec_lock.md Layout {layout_key!r} has invalid Master key "
                     f"{master_key!r}"
                 )
             if master_key not in seen_master_keys:
                 raise TemplateStructureError(
-                    f"spec_lock.md P{slide_num:02d} references undeclared Master "
-                    f"{master_key!r}"
+                    f"spec_lock.md Layout {layout_key!r} references undeclared "
+                    f"Master {master_key!r}"
                 )
-        else:
+            prototype_slide_num: int | None = None
+            prototype_svg_path: Path | None = None
+            page_match = _LOCK_PAGE_RE.fullmatch(raw_source)
+            if page_match and int(page_match.group(1)) > 0:
+                prototype_slide_num = int(page_match.group(1))
+            elif raw_source.startswith("template:"):
+                raw_basename = raw_source.split(":", 1)[1].strip()
+                _basename, prototype_svg_path = _template_svg_path(
+                    template_dir,
+                    raw_basename,
+                    f"pptx_layouts Layout {layout_key!r}",
+                )
+            else:
+                raise TemplateStructureError(
+                    f"spec_lock.md Layout {layout_key!r} prototype source must be "
+                    "P<NN> or template:<basename>"
+                )
+            layout_definitions.append(PptxLayoutDefinition(
+                layout_key=layout_key,
+                master_key=master_key,
+                layout_name=layout_name,
+                prototype_slide_num=prototype_slide_num,
+                prototype_svg_path=prototype_svg_path,
+            ))
+
+        seen_slides: set[int] = set()
+        for page_key, raw_value in page_layout_rows:
+            page_match = _LOCK_PAGE_RE.fullmatch(page_key)
+            if not page_match or int(page_match.group(1)) <= 0:
+                raise TemplateStructureError(
+                    f"spec_lock.md page_pptx_layouts key {page_key!r} must be P<NN>"
+                )
+            slide_num = int(page_match.group(1))
+            if slide_num in seen_slides:
+                raise TemplateStructureError(
+                    "spec_lock.md page_pptx_layouts repeats page "
+                    f"P{slide_num:02d}"
+                )
+            seen_slides.add(slide_num)
+            layout_key = raw_value.strip()
+            if not _LAYOUT_KEY_RE.fullmatch(layout_key):
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} has invalid Layout key "
+                    f"{layout_key!r}"
+                )
+            if layout_key not in seen_layout_keys:
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} references undeclared Layout "
+                    f"{layout_key!r}"
+                )
+            references.append(PptxLayoutReference(
+                slide_num=slide_num,
+                layout_key=layout_key,
+            ))
+        if not references:
+            raise TemplateStructureError(
+                "spec_lock.md structured mode requires one page_pptx_layouts "
+                "assignment per generated page"
+            )
+        unused_masters = sorted(
+            seen_master_keys - {
+                definition.master_key for definition in layout_definitions
+            }
+        )
+        if unused_masters:
+            raise TemplateStructureError(
+                "spec_lock.md pptx_masters contains Master key(s) without a "
+                "Layout definition: " + ", ".join(unused_masters)
+            )
+    elif mode == "preserve":
+        if page_layout_section_present:
+            raise TemplateStructureError(
+                "spec_lock.md page_pptx_layouts is reserved for structured mode; "
+                "preserve mode maps source Layouts directly in pptx_layouts"
+            )
+        seen_slides: set[int] = set()
+        for page_key, raw_value in layout_rows:
+            page_match = _LOCK_PAGE_RE.fullmatch(page_key)
+            if not page_match or int(page_match.group(1)) <= 0:
+                raise TemplateStructureError(
+                    f"spec_lock.md pptx_layouts key {page_key!r} must be P<NN>"
+                )
+            slide_num = int(page_match.group(1))
+            if slide_num in seen_slides:
+                raise TemplateStructureError(
+                    f"spec_lock.md pptx_layouts repeats page P{slide_num:02d}"
+                )
+            seen_slides.add(slide_num)
+            parts = [part.strip() for part in raw_value.split("|")]
             if len(parts) not in {1, 2} or not parts[0]:
                 raise TemplateStructureError(
                     f"spec_lock.md P{slide_num:02d} preserve mapping must be "
                     "'<layout_key>' or '<layout_key> | <PowerPoint layout name>'"
                 )
             layout_key = parts[0]
-            layout_name = parts[1] if len(parts) == 2 else None
-        if not _LAYOUT_KEY_RE.fullmatch(layout_key):
+            if not _LAYOUT_KEY_RE.fullmatch(layout_key):
+                raise TemplateStructureError(
+                    f"spec_lock.md P{slide_num:02d} has invalid Layout key "
+                    f"{layout_key!r}"
+                )
+            references.append(PptxLayoutReference(
+                slide_num=slide_num,
+                layout_key=layout_key,
+                layout_name=parts[1] if len(parts) == 2 else None,
+            ))
+        if not references:
             raise TemplateStructureError(
-                f"spec_lock.md P{slide_num:02d} has invalid layout key "
-                f"{layout_key!r}"
+                "spec_lock.md preserve mode requires one pptx_layouts row per page"
             )
-        references.append(PptxLayoutReference(
-            slide_num=slide_num,
-            layout_key=layout_key,
-            layout_name=layout_name,
-            master_key=master_key,
-        ))
-
-    if mode in {"structured", "preserve"} and not references:
-        raise TemplateStructureError(
-            f"spec_lock.md {mode} mode requires one pptx_layouts row per page"
-        )
-    if mode == "structured" and layout_section_present and not layout_rows:
-        raise TemplateStructureError(
-            "spec_lock.md structured pptx_layouts section cannot be empty"
-        )
-    layout_contracts: dict[str, tuple[str | None, str | None]] = {}
-    for reference in references:
-        contract = (reference.master_key, reference.layout_name)
-        previous = layout_contracts.setdefault(reference.layout_key, contract)
-        if previous != contract:
+    else:
+        if layout_section_present or page_layout_section_present:
             raise TemplateStructureError(
-                f"spec_lock.md layout key {reference.layout_key!r} must be globally "
-                "unique to one Master and one Layout name"
+                "spec_lock.md pptx_layouts/page_pptx_layouts sections are not "
+                "allowed when pptx_structure.mode is flat"
             )
-    if mode == "structured":
-        unused_masters = sorted(
-            seen_master_keys - {
-                reference.master_key
-                for reference in references
-                if reference.master_key is not None
-            }
-        )
-        if unused_masters:
-            raise TemplateStructureError(
-                "spec_lock.md pptx_masters contains unreferenced Master key(s): "
-                + ", ".join(unused_masters)
-            )
-    if mode == "flat" and layout_section_present:
-        raise TemplateStructureError(
-            "spec_lock.md pptx_layouts section is not allowed when "
-            "pptx_structure.mode is flat"
-        )
     return PptxStructureLock(
         mode=mode,
         template_adherence=template_adherence,
         masters=tuple(masters),
+        layout_definitions=tuple(layout_definitions),
         layouts=tuple(sorted(references, key=lambda item: item.slide_num)),
         prototypes=tuple(sorted(prototypes, key=lambda item: item.slide_num)),
         source_template=source_template,
@@ -1446,17 +1546,10 @@ def parse_template_slide(
     return spec
 
 
-def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
-    """Parse a deck and enforce cross-slide master/layout contracts."""
-    specs = [
-        parse_template_slide(svg_path, slide_num)
-        for slide_num, svg_path in enumerate(svg_files, start=1)
-    ]
-    if not specs:
-        raise TemplateStructureError(
-            "Explicit Layout export requires at least one SVG slide"
-        )
-
+def _validate_template_slide_contracts(
+    specs: list[TemplateSlideSpec],
+) -> None:
+    """Enforce cross-prototype Master and Layout structure identity."""
     by_master: dict[str, list[TemplateSlideSpec]] = {}
     for spec in specs:
         by_master.setdefault(spec.master_key, []).append(spec)
@@ -1505,6 +1598,19 @@ def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
                     f"from prototype {prototype.svg_path.name}; repeat the same layout "
                     "layers and placeholder ids/types in the same order"
                 )
+
+
+def parse_template_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
+    """Parse a deck and enforce cross-slide master/layout contracts."""
+    specs = [
+        parse_template_slide(svg_path, slide_num)
+        for slide_num, svg_path in enumerate(svg_files, start=1)
+    ]
+    if not specs:
+        raise TemplateStructureError(
+            "Explicit Layout export requires at least one SVG slide"
+        )
+    _validate_template_slide_contracts(specs)
     return specs
 
 
@@ -1579,6 +1685,33 @@ def parse_optional_layout_slides(
     return parse_template_slides(svg_files)
 
 
+def flat_structure_metadata_errors(svg_files: list[Path]) -> list[str]:
+    """Return every Master/Layout marker forbidden by flat export."""
+    errors: list[str] = []
+    for svg_path in svg_files:
+        try:
+            root = ET.parse(svg_path).getroot()
+        except (OSError, ET.ParseError) as exc:
+            errors.append(
+                f"{svg_path.name}: unable to inspect flat-mode metadata: {exc}"
+            )
+            continue
+        for elem in root.iter():
+            attrs = sorted(
+                attr
+                for attr in _FLAT_FORBIDDEN_STRUCTURE_ATTRS
+                if elem.get(attr) is not None
+            )
+            if not attrs:
+                continue
+            element_id = (elem.get("id") or _local_tag(elem)).strip()
+            errors.append(
+                f"{svg_path.name}: flat mode forbids Master/Layout structure "
+                f"metadata on {element_id!r}: " + ", ".join(attrs)
+            )
+    return errors
+
+
 def parse_preserve_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
     """Parse preserve-mode slides before source master grouping is known."""
     specs = [
@@ -1588,6 +1721,74 @@ def parse_preserve_slides(svg_files: list[Path]) -> list[TemplateSlideSpec]:
     if not specs:
         raise TemplateStructureError("Preserve export requires at least one SVG slide")
     return specs
+
+
+def structured_layout_definition_files(
+    specs: list[TemplateSlideSpec],
+    structure_lock: PptxStructureLock,
+) -> list[Path]:
+    """Validate the unique Layout roster and return unused prototype SVGs.
+
+    A generated page can be the carrier for a used Layout definition. A Layout
+    with no generated page must point at one installed template SVG; the builder
+    converts that SVG on an internal trailing slide and removes the carrier slide
+    after registering the reusable Layout.
+    """
+    if structure_lock.mode != "structured":
+        return []
+    definitions = {
+        definition.layout_key: definition
+        for definition in structure_lock.layout_definitions
+    }
+    specs_by_slide = {spec.slide_num: spec for spec in specs}
+    used_layout_keys = {spec.layout_key for spec in specs}
+    master_names = {
+        master.master_key: master.master_name
+        for master in structure_lock.masters
+    }
+    combined_specs = list(specs)
+    definition_files: list[Path] = []
+    next_slide_num = max(specs_by_slide, default=0) + 1
+    for definition in structure_lock.layout_definitions:
+        if definition.prototype_slide_num is not None:
+            prototype = specs_by_slide.get(definition.prototype_slide_num)
+            if prototype is None:
+                raise TemplateStructureError(
+                    f"spec_lock.md Layout {definition.layout_key!r} uses missing "
+                    f"prototype page P{definition.prototype_slide_num:02d}"
+                )
+        elif definition.prototype_svg_path is not None:
+            prototype = parse_template_slide(
+                definition.prototype_svg_path,
+                next_slide_num,
+            )
+            next_slide_num += 1
+            combined_specs.append(prototype)
+            if definition.layout_key not in used_layout_keys:
+                definition_files.append(definition.prototype_svg_path)
+        else:
+            raise TemplateStructureError(
+                f"spec_lock.md Layout {definition.layout_key!r} has no prototype"
+            )
+        expected_master_name = master_names.get(definition.master_key)
+        if (
+            prototype.layout_key != definition.layout_key
+            or prototype.layout_name != definition.layout_name
+            or prototype.master_key != definition.master_key
+            or prototype.master_name != expected_master_name
+        ):
+            raise TemplateStructureError(
+                f"spec_lock.md Layout {definition.layout_key!r} definition does "
+                f"not match prototype {prototype.svg_path.name} root identity"
+            )
+    missing_definitions = sorted(used_layout_keys - set(definitions))
+    if missing_definitions:
+        raise TemplateStructureError(
+            "spec_lock.md pptx_layouts is missing generated Layout key(s): "
+            + ", ".join(missing_definitions)
+        )
+    _validate_template_slide_contracts(combined_specs)
+    return definition_files
 
 
 def template_lock_errors(
@@ -1606,15 +1807,22 @@ def template_lock_errors(
     expected_slides = set(references)
     missing = sorted(actual_slides - expected_slides)
     extra = sorted(expected_slides - actual_slides)
+    assignment_section = (
+        "page_pptx_layouts"
+        if structure_lock.mode == "structured"
+        else "pptx_layouts"
+    )
     if missing:
         pages = ", ".join(f"P{slide_num:02d}" for slide_num in missing)
         errors.append(
-            f"spec_lock.md pptx_layouts is missing generated page(s): {pages}"
+            f"spec_lock.md {assignment_section} is missing generated page(s): "
+            f"{pages}"
         )
     if extra:
         pages = ", ".join(f"P{slide_num:02d}" for slide_num in extra)
         errors.append(
-            f"spec_lock.md pptx_layouts references absent page(s): {pages}"
+            f"spec_lock.md {assignment_section} references absent page(s): "
+            f"{pages}"
         )
     for spec in specs:
         reference = references.get(spec.slide_num)
@@ -1623,26 +1831,40 @@ def template_lock_errors(
         if spec.layout_key != reference.layout_key:
             errors.append(
                 f"{spec.svg_path.name}: data-pptx-layout={spec.layout_key!r} "
-                f"does not match spec_lock P{spec.slide_num:02d} layout key "
+                f"does not match spec_lock P{spec.slide_num:02d} Layout key "
                 f"{reference.layout_key!r}"
             )
-        if reference.layout_name and spec.layout_name != reference.layout_name:
-            errors.append(
-                f"{spec.svg_path.name}: data-pptx-layout-name={spec.layout_name!r} "
-                f"does not match spec_lock P{spec.slide_num:02d} layout name "
-                f"{reference.layout_name!r}"
-            )
-        if reference.master_key and spec.master_key != reference.master_key:
-            errors.append(
-                f"{spec.svg_path.name}: data-pptx-master={spec.master_key!r} "
-                f"does not match spec_lock P{spec.slide_num:02d} Master key "
-                f"{reference.master_key!r}"
-            )
+        if structure_lock.mode == "preserve":
+            if reference.layout_name and spec.layout_name != reference.layout_name:
+                errors.append(
+                    f"{spec.svg_path.name}: data-pptx-layout-name="
+                    f"{spec.layout_name!r} does not match spec_lock "
+                    f"P{spec.slide_num:02d} Layout name "
+                    f"{reference.layout_name!r}"
+                )
     if structure_lock.mode == "structured":
+        definitions = {
+            definition.layout_key: definition
+            for definition in structure_lock.layout_definitions
+        }
         master_names = {
             master.master_key: master.master_name for master in structure_lock.masters
         }
         for spec in specs:
+            definition = definitions.get(spec.layout_key)
+            if definition is not None:
+                if spec.layout_name != definition.layout_name:
+                    errors.append(
+                        f"{spec.svg_path.name}: data-pptx-layout-name="
+                        f"{spec.layout_name!r} does not match Layout "
+                        f"{spec.layout_key!r} name {definition.layout_name!r}"
+                    )
+                if spec.master_key != definition.master_key:
+                    errors.append(
+                        f"{spec.svg_path.name}: data-pptx-master="
+                        f"{spec.master_key!r} does not match Layout "
+                        f"{spec.layout_key!r} Master {definition.master_key!r}"
+                    )
             expected_name = master_names.get(spec.master_key)
             if expected_name is not None and spec.master_name != expected_name:
                 errors.append(
@@ -1650,6 +1872,10 @@ def template_lock_errors(
                     f"{spec.master_name!r} does not match spec_lock Master "
                     f"{spec.master_key!r} name {expected_name!r}"
                 )
+        try:
+            structured_layout_definition_files(specs, structure_lock)
+        except TemplateStructureError as exc:
+            errors.append(str(exc))
     return errors
 
 

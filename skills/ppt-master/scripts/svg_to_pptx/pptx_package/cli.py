@@ -51,6 +51,7 @@ from .template_structure import (
     TemplateStructureError,
     load_pptx_structure_lock,
     parse_template_slides,
+    structured_layout_definition_files,
     template_lock_errors,
     template_prototype_errors,
 )
@@ -507,6 +508,7 @@ Recorded narration:
     # parameters are removed. Structured export never activates either path.
     structured_baseline = False
     baseline_layout_specs = None
+    layout_definition_files: list[Path] = []
     if pptx_structure == 'structured' and structure_lock is not None:
         try:
             template_specs = parse_template_slides(native_files)
@@ -518,6 +520,14 @@ Recorded narration:
             print("Error: PPTX structure does not match spec_lock.md:", file=sys.stderr)
             for message in lock_errors:
                 print(f"  {message}", file=sys.stderr)
+            return 1
+        try:
+            layout_definition_files = structured_layout_definition_files(
+                template_specs,
+                structure_lock,
+            )
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
             return 1
         prototype_errors = template_prototype_errors(
             template_specs,
@@ -902,6 +912,7 @@ Recorded narration:
         pptx_structure=pptx_structure,
         structured_baseline=structured_baseline,
         baseline_layout_specs=baseline_layout_specs,
+        layout_definition_files=layout_definition_files,
         native_structure_contract=native_structure_contract,
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,

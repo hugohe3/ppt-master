@@ -84,7 +84,7 @@
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 
-- **原生 package 结构 + 按模式创建模板** — deck/layout-template SVG 页面在创作时就声明最终 Master/Layout 身份。固定 Master/Layout 视觉是根级原子，可复用槽位是带真实 carrier 或显式 composite proxy 的有界顶层 group，零槽位 Layout 也合法。`structured` 导出只确定性编译该合同并执行最终 package 回读；不提升重复 chrome，也不推断 placeholder。`flat` 自由设计 / brand-only 导出则保持所有内容 Slide-local，同时把 stock Office 脚手架替换成一个属于项目的干净 Master、一个 Blank Layout 和按 deck 命名的当前 lock 主题；删除 title/body 等 stock 内容、裁掉未使用 Layout，仅保留标准日期、页脚和页码能力钩子。两条生成路线都把锁定 title/body 字号写入母版 `p:txStyles`。`standard` / `fidelity` 重新创作 SVG roster 和新的 Master/Layout 系统，不保留、也不蒸馏来源拓扑。`mirror` 按来源页序恢复 Master/Layout 身份与父子关系、placeholder 事实和受支持视觉，不做语义归纳；固定结构层的来源 group 只允许机械展开成直接原子。无损导入保留在分析区，轻量 projection 仅供检查。`library` 与 `project` 都要求 `templates/`，`images/` / `icons/` 可选，`exports/` 仅在按需生成评审文件时出现；只有全局注册不同。旧 baseline/template/preserve SVG 包先运行 `restore-pptx-structure`；原始 PPTX 的一次性回填仍走 `template-fill-pptx`。
+- **原生 package 结构 + 按模式创建模板** — deck/layout-template SVG 页面在创作时就声明最终 Master/Layout 身份。固定 Master/Layout 视觉是根级原子，可复用槽位是带真实 carrier 或显式 composite proxy 的有界顶层 group，零槽位 Layout 也合法。`structured` 导出只确定性编译该合同并执行最终 package 回读；不提升重复 chrome，也不推断 placeholder。`flat` 自由设计 / brand-only 导出则保持所有内容 Slide-local，同时把 stock Office 脚手架替换成一个属于项目的干净 Master、一个 Blank Layout 和按 deck 命名的当前 lock 主题；删除 title/body 等 stock 内容、裁掉未使用 Layout，仅保留标准日期、页脚和页码能力钩子。两条生成路线都把锁定 title 与确定性的九级 body 层级写入母版 `p:txStyles`，同时保留段落和项目符号设置。`standard` / `fidelity` 重新创作 SVG roster 和新的 Master/Layout 系统，不保留、也不蒸馏来源拓扑。`mirror` 恢复完整且受支持的来源图谱，包括未使用 Layout 的定义专用原型；固定结构层的来源 group 只允许机械展开成直接原子，不做语义归纳。无损导入保留在分析区，轻量 projection 仅供检查。`library` 与 `project` 都要求 `templates/`，`images/` / `icons/` 可选，`exports/` 仅在按需生成评审文件时出现；只有全局注册不同。旧 baseline/template/preserve SVG 包先运行 `restore-pptx-structure`；原始 PPTX 的一次性回填仍走 `template-fill-pptx`。
 
 - **原生预设授权引导跨角色强化** — 用真正的 PowerPoint 预设（`prstGeom`，带调节手柄、非扁平卡片外观）被重申为库存几何（块箭头、chevron、横幅、标注、流程节点、星形）的**默认**而非例外。预设是每页由 helper（`preset_shape_svg.py`）现生成的，所以引导落在提示词层而非模板示范：Executor 现在在逐页作图仪式内主动够预设——按对象意图在画图当下决定，绝不扫描已完成路径——并写明准确的 paint 边界（渐变填充/描边或 pattern 填充保持普通 SVG，因为 helper 只对 fill 和 stroke 画 `none` 或纯色 HEX）。Strategist 在上游预热：给 §VII 页面的 Usage **追加**一条非破坏性的 `native-preset candidate` 注记，按页面计划而非模板名触发；Executor 仍自定具体预设、frame 与 paint。把预设片段烤进 `templates/charts/` 经评估否决——冻死的 frame/fingerprint 会诱导原样复制，违反授权契约
 
@@ -117,7 +117,7 @@
 
 **对应 Issue**：[#53](https://github.com/hugohe3/ppt-master/issues/53)、[#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。结构完整的 PPTX 现在可以通过两种显式方式形成经过确认的可复用模板包：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 恢复当前可达且受支持的来源结构。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
+PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。结构完整的 PPTX 现在可以通过两种显式方式形成经过确认的可复用模板包：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 恢复完整且受支持的来源结构，包括未使用的 Layout 定义。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
 

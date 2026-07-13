@@ -239,12 +239,9 @@ HEX_VALUE_RE = re.compile(
 # authority. Flat projects only receive the negative guard that rejects authored
 # structure metadata. Template roster/placeholder checks always run. Current
 # bundled templates opt in to complete structure validation through their
-# native_structure_mode: structured declaration.
+# native_structure_mode: structured declaration. Legacy template-mode packages
+# fail closed and must run the explicit restoration workflow.
 _CHECK_PPTX_STRUCTURED_PROJECT = True
-_CHECK_PPTX_TEMPLATE_MODE = False
-# Compatibility hook for historical packages. The bundled library has no
-# remaining structure-validation exemptions.
-_BUNDLED_LEGACY_TEMPLATE_DIRS = frozenset()
 
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
@@ -653,33 +650,9 @@ def _declared_template_structure_mode(target_path: Path) -> str | None:
     return match.group(1).lower() if match else None
 
 
-def _is_bundled_legacy_template(target_path: Path) -> bool:
-    """Return whether a template is in the explicit bundled migration set."""
-    directory = target_path.parent if target_path.is_file() else target_path
-    library_root = Path(__file__).resolve().parents[1] / 'templates'
-    try:
-        relative_path = directory.resolve().relative_to(library_root.resolve())
-    except ValueError:
-        return False
-    return relative_path.as_posix() in _BUNDLED_LEGACY_TEMPLATE_DIRS
-
-
-def _legacy_template_structure_deferred(target_path: Path) -> bool:
-    """Return whether a known bundled legacy template may defer structure."""
-    return bool(
-        not _CHECK_PPTX_TEMPLATE_MODE
-        and _declared_template_structure_mode(target_path) == 'template'
-        and _is_bundled_legacy_template(target_path)
-    )
-
-
 def _template_structure_checks_enabled(target_path: Path) -> bool:
     """Return whether positive structure checks apply to this template."""
-    declared_mode = _declared_template_structure_mode(target_path)
-    return bool(
-        declared_mode == 'structured'
-        or (_CHECK_PPTX_TEMPLATE_MODE and declared_mode == 'template')
-    )
+    return _declared_template_structure_mode(target_path) == 'structured'
 
 
 def _local_name(elem: ET.Element) -> str:
@@ -2606,12 +2579,6 @@ class SVGQualityChecker:
 
         if self.template_mode:
             check_structure = _template_structure_checks_enabled(dir_path)
-            if _legacy_template_structure_deferred(dir_path):
-                print(
-                    "[INFO] Legacy native_structure_mode: template detected; "
-                    "roster and placeholder checks remain active while positive "
-                    "structure checks await library migration."
-                )
             if check_structure:
                 self._check_pptx_structure_contract(dir_path, svg_files)
             if dir_path.is_dir():
@@ -2810,18 +2777,31 @@ class SVGQualityChecker:
             master.master_key: master.master_name
             for master in structure_lock.masters
         }
+        definitions = {
+            definition.layout_key: definition
+            for definition in structure_lock.layout_definitions
+        }
         errors: List[str] = []
         for spec in specs:
             page = f"P{spec.slide_num:02d}"
             reference = references.get(spec.slide_num)
             if reference is None:
-                errors.append(f"spec_lock.md pptx_layouts is missing {page}")
+                errors.append(
+                    f"spec_lock.md page_pptx_layouts is missing {page}"
+                )
                 continue
-            if spec.master_key != reference.master_key:
+            definition = definitions.get(reference.layout_key)
+            if definition is None:
+                errors.append(
+                    f"spec_lock.md pptx_layouts is missing Layout "
+                    f"{reference.layout_key!r}"
+                )
+                continue
+            if spec.master_key != definition.master_key:
                 errors.append(
                     f"{spec.svg_path.name}: data-pptx-master={spec.master_key!r} "
-                    f"does not match spec_lock {page} Master key "
-                    f"{reference.master_key!r}"
+                    f"does not match spec_lock Layout {reference.layout_key!r} "
+                    f"Master key {definition.master_key!r}"
                 )
             if spec.layout_key != reference.layout_key:
                 errors.append(
@@ -2829,11 +2809,11 @@ class SVGQualityChecker:
                     f"does not match spec_lock {page} layout key "
                     f"{reference.layout_key!r}"
                 )
-            if spec.layout_name != reference.layout_name:
+            if spec.layout_name != definition.layout_name:
                 errors.append(
                     f"{spec.svg_path.name}: data-pptx-layout-name="
-                    f"{spec.layout_name!r} does not match spec_lock {page} "
-                    f"layout name {reference.layout_name!r}"
+                    f"{spec.layout_name!r} does not match spec_lock Layout "
+                    f"{reference.layout_key!r} name {definition.layout_name!r}"
                 )
             expected_master_name = master_names.get(spec.master_key)
             if expected_master_name != spec.master_name:
@@ -3429,8 +3409,8 @@ class SVGQualityChecker:
           stale roster will produce a wrong ``layouts_index.json`` entry.
         - **Explicit structure gaps** are errors when positive structure checks
           are enabled: every current reusable SVG declares its Master and Layout
-          identity. Zero-placeholder Layouts are valid. Legacy library templates
-          still receive roster and placeholder checks while awaiting migration.
+          identity. Zero-placeholder Layouts are valid. Legacy template-mode
+          packages fail and must run the structure-restoration workflow.
         - **Placeholder gaps** are reported as *warnings*. Templates may
           legitimately omit conventional placeholders or swap them out (e.g.
           ``{{CLOSING_MESSAGE}}`` instead of ``{{THANK_YOU}}``), and a content
@@ -3444,26 +3424,15 @@ class SVGQualityChecker:
         spec_path = dir_path / 'design_spec.md'
         spec_text = spec_path.read_text(encoding='utf-8') if spec_path.exists() else ""
         declared_structure_mode = _declared_template_structure_mode(dir_path)
-        legacy_structure_deferred = _legacy_template_structure_deferred(dir_path)
         mode_error_recorded = False
-        if declared_structure_mode != 'structured' and not legacy_structure_deferred:
+        if declared_structure_mode != 'structured':
             mode_error_recorded = True
-            if declared_structure_mode == 'template':
-                mode_error = (
-                    "legacy native_structure_mode: template is accepted only for "
-                    "the explicit bundled-library migration set; restore this "
-                    "workspace to native_structure_mode: structured"
-                )
-            else:
-                mode_error = (
-                    "design_spec.md frontmatter must declare "
-                    "native_structure_mode: structured; only the explicit bundled "
-                    "legacy migration set may temporarily declare template"
-                )
             self._template_issues.append((
                 'error',
                 'explicit_structure_mode',
-                mode_error,
+                "design_spec.md frontmatter must declare "
+                "native_structure_mode: structured; legacy template-mode "
+                "workspaces must run restore-pptx-structure",
             ))
         if check_structure:
             native_contract_path = dir_path / 'native_structure.json'
@@ -3583,15 +3552,9 @@ class SVGQualityChecker:
                 ))
         elif spec_path.exists():
             # design_spec.md is present but the roster parser found nothing —
-            # current structured templates fail closed; allowlisted legacy
-            # library specs retain the historical warning until migration.
-            severity = (
-                'error'
-                if declared_structure_mode == 'structured'
-                else 'warning'
-            )
+            # reusable template workspaces always fail closed.
             self._template_issues.append((
-                severity,
+                'error',
                 'roster_unknown',
                 f"could not extract page roster from {spec_path.name}; "
                 "skipping orphan/missing checks",
@@ -4075,8 +4038,8 @@ def print_usage() -> None:
     print("                                  always enforce roster consistency and emit placeholder hints.")
     print("                                  native_structure_mode: structured also enables complete")
     print("                                  per-file and cross-page structure validation. Legacy")
-    print("                                  native_structure_mode: template defers only those structure")
-    print("                                  checks until the bundled template library is migrated.")
+    print("                                  native_structure_mode: template fails and must run")
+    print("                                  restore-pptx-structure before validation.")
 
 
 def main() -> None:
