@@ -75,7 +75,7 @@
 >
 > **Size slots are anchors, not a closed menu.** Common slots (`title` / `subtitle` / `annotation`) cover frequent cases. Add role-specific slots (e.g. `cover_title: 88`, `hero_number: 56`, `subheading: 32`, `lead: 30`, `footnote: 16`, `chart_annotation: 16`) for the roles the deck actually uses — common for cover-heavy decks, consulting-style hero numbers, dense pages. **Mandatory — scan `§IX` and declare a slot for every role that recurs across pages, not just the four defaults.** A report / `text`-mode deck almost always recurs a per-page **core-message / lead line** and **page numbers / source credits / footnotes** → declare `lead` and `footnote` for them. `subheading` and `lead` sit between `subtitle` and `body` (their bands overlap `subtitle`) — pick by role, not size — and the core-message `lead` is a **primary** line, **always ≥ `body`**, never smaller. Leaving a recurring lead / footnote undeclared forces the Executor to improvise an unlocked size (and a core line improvised below `body` inverts the hierarchy). **Structural roles (title / body / subtitle / annotation / footnote) render at their locked size on every page — one role, one size, deck-wide.** Intermediate in-band sizes are for special / feature elements only (hero number, display title, one-off emphasis); declare a recurring one as its own slot so it stays consistent too.
 >
-> **Generated Master defaults**: `pptx_structure.mode: flat` and `mode: structured` require unitless `title` and `body`. Native export writes `title` into every generated Master `titleStyle` default and `body` into every `bodyStyle` / `otherStyle` default, changing only `a:defRPr@sz`. Direct page-run sizes and role-specific structured-Layout placeholder prototype sizes remain unchanged.
+> **Generated Master defaults**: `pptx_structure.mode: flat` and `mode: structured` require unitless `title` and `body`. Native export writes `title` into every generated Master `titleStyle` default and derives a deterministic nine-level, non-increasing size hierarchy from `body` for `bodyStyle` / `otherStyle`. It changes only each level's `a:defRPr@sz`, preserving indentation, bullets, and paragraph settings. Direct page-run sizes and role-specific structured-Layout placeholder prototype sizes remain unchanged.
 >
 > **⚠️ PPT-safe stack discipline (HARD rule).** Flat and structured export map `title_family` to the PowerPoint theme major font and `body_family` (or `font_family`) to the theme minor font. Runs whose resolved face matches either role use `+mj-*` / `+mn-*` theme tokens; other role families remain concrete per-run typefaces. Every exported Latin / EA face MUST therefore resolve to cross-platform pre-installed fonts: `"Microsoft YaHei"` / `SimSun` / `Arial` / `"Times New Roman"` / `Consolas`. Stacks that resolve to non-preinstalled typefaces (Inter / Google Fonts / brand typefaces) may be used only when the Design Spec notes the font-install or embedding requirement.
 >
@@ -129,7 +129,7 @@
 
 > One deck-wide native PowerPoint structure policy. Free-design and brand-only routes use `flat`; deck/layout template routes use `structured`.
 >
-> `flat` keeps every SVG object Slide-local. Export materializes one clean project-owned Master plus one Blank Layout, maps the current color/typography lock into the theme and Master defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. In this mode, omit the complete `pptx_masters`, `pptx_layouts`, and `page_layouts` sections, and do not add root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder*` metadata to generated pages.
+> `flat` keeps every SVG object Slide-local. Export materializes one clean project-owned Master plus one Blank Layout, maps the current color/typography lock into the theme and Master defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. In this mode, omit `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts`, and do not add root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder*` metadata to generated pages.
 >
 > When Step 3 loaded a deck/layout template, replace the `flat` row above with exactly one of:
 > ```
@@ -141,7 +141,7 @@
 > - mode: structured
 > - template_adherence: strict
 > ```
-> Both values require complete `page_layouts`, `pptx_masters`, and `pptx_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before they can be selected.
+> Both values require complete `pptx_masters`, `pptx_layouts`, `page_pptx_layouts`, and `page_layouts` sections. Existing legacy template SVGs that lack the current root Master identity, grouped slot/carrier contract, or positive bounds must run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) before they can be selected.
 
 ## pptx_masters
 - master-default: Default Master
@@ -149,16 +149,16 @@
 > Deck/layout template routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
 
 ## pptx_layouts
-- P01: master-default | cover-hero-split | Cover — Hero Split
-- P02: master-default | kpi-band-trio | KPI Band Trio
-- P03: master-default | content-two-column | Two Column
-- P04: master-default | content-two-column | Two Column
+- cover-hero-split: master-default | Cover — Hero Split | template:01_cover
+- kpi-band-trio: master-default | KPI Band Trio | P02
+- content-two-column: master-default | Two Column | template:03a_content_abstract
+- quote-focus: master-default | Quote Focus | template:04_quote_focus
 
-> Deck/layout template routes only. Include exactly one row per page before SVG generation. Value format: `<master_key> | <layout_key> | <PowerPoint layout name>`. Omit this entire section when `pptx_structure.mode: flat`.
+> Deck/layout template routes only. This is the unique reusable Layout roster, not a page roster. Value format: `<master_key> | <PowerPoint layout name> | <prototype source>`. A prototype source is either `P<NN>` for one generated page carrying that exact Layout contract, or `template:<basename>` for an installed `templates/<basename>.svg`. Omit this section when `pptx_structure.mode: flat`.
 >
-> The page SVG repeats all three identities on its root through `data-pptx-master`, `data-pptx-master-name`, `data-pptx-layout`, and `data-pptx-layout-name`. A Layout key belongs to exactly one Master and must be globally unique even when two source Masters use the same picker name.
+> Every Layout key appears exactly once, belongs to exactly one declared Master, and is globally unique even when two Masters use the same picker name. Every declared Master owns at least one Layout definition. A Layout may remain unused by generated pages; such a Layout must use `template:<basename>` so export can register it without manufacturing a published slide.
 >
-> Strategist plans the initial family roster. Executor writes the declared structure while drawing each page. If adaptive template use genuinely changes the reusable framing or slot topology/bounds, create a new Layout key and update this mapping immediately; never silently mutate a reused key.
+> The definition prototype repeats its identity through root `data-pptx-master`, `data-pptx-master-name`, `data-pptx-layout`, and `data-pptx-layout-name`. Strategist plans the initial roster. If adaptive use genuinely changes reusable framing or slot topology/bounds, Executor adds a new definition and updates the page assignment immediately; never mutate a reused key silently.
 >
 > Reuse one `(master_key, layout_key)` only when its ordered Layout atoms and slot ids/types/indices/bounds/binding modes are identical. Current text, imagery, crop, or Slide-local geometry does not define Layout identity.
 >
@@ -166,12 +166,20 @@
 >
 > A Layout may have zero slots. Do not create an empty `utility` kind or a full-page fake `object` slot; the named Layout and its fixed atoms are sufficient.
 
+## page_pptx_layouts
+- P01: cover-hero-split
+- P02: kpi-band-trio
+- P03: content-two-column
+- P04: content-two-column
+
+> Deck/layout template routes only. Include exactly one row per generated page. The value is one key declared in `pptx_layouts`; Master and picker name come from that unique definition and are not repeated per page. The generated SVG root must match the assigned definition. Omit this section when `pptx_structure.mode: flat`.
+
 ## page_layouts
 - P01: 01_cover
 - P03: 02a_chapter
 - P04: 03a_content_abstract
 
-> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the input prototype mapping; `pptx_layouts` is the output mapping and is present at the same time. Strict preserves the prototype Master/Layout/slot contract. Adaptive retains its Master contract and may explicitly assign a new Layout key while authoring. Non-mirror skin follows the project lock.
+> For a deck/layout template route, include one entry per page. Key: `P<NN>` matching §IX. Value: the template SVG basename without extension. This is the authoring-input prototype mapping; `page_pptx_layouts` is the output page assignment, while `pptx_layouts` defines the unique reusable roster. Strict preserves the prototype Master/Layout/slot contract. Adaptive retains its Master contract and may explicitly define and assign a new Layout key while authoring. Non-mirror skin follows the project lock.
 >
 > **No entry for a page** is an error in structured template mode.
 >

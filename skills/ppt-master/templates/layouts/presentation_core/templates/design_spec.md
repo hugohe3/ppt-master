@@ -13,7 +13,7 @@ source_canvas_height: 720
 source_viewbox: "0 0 1280 720"
 replication_mode: fidelity
 native_structure_mode: structured
-page_count: 18
+page_count: 20
 page_types:
   - title_slide
   - title_content
@@ -33,6 +33,8 @@ page_types:
   - title_picture
   - two_picture_caption
   - screenshot_focus
+  - chart_insight
+  - table_summary
 placeholders:
   01_title_slide: ["{{TITLE}}", "{{SUBTITLE}}"]
   02_title_content: ["{{PAGE_TITLE}}", "{{CONTENT_AREA}}"]
@@ -52,6 +54,8 @@ placeholders:
   16_title_picture: ["{{PAGE_TITLE}}"]
   17_two_picture_caption: ["{{PAGE_TITLE}}", "{{LEFT_CAPTION}}", "{{RIGHT_CAPTION}}"]
   18_screenshot_focus: ["{{PAGE_TITLE}}", "{{ANNOTATION}}", "{{SOURCE}}"]
+  19_chart_insight: ["{{PAGE_TITLE}}", "{{KEY_MESSAGE}}", "{{SOURCE}}"]
+  20_table_summary: ["{{PAGE_TITLE}}", "{{KEY_MESSAGE}}", "{{SOURCE}}"]
 ---
 
 # Presentation Core — Design Specification
@@ -76,6 +80,7 @@ identity decisions and are not owned by this layout.
 | Regular vocabulary | Nine familiar PowerPoint layouts preserve the expected title, content, comparison, caption, picture, and blank starting points. |
 | Editorial rhythm | Hero, split, card, process, and data layouts alternate breathing and dense structures instead of repeating one card grid. |
 | Image system | Picture layouts use explicit native picture regions for one-image, paired-image, captioned-image, and screenshot scenarios. |
+| Native data system | Dedicated chart and table layouts use real native object slots plus a concise interpretation rail, while retaining complete SVG fallbacks. |
 | Text entry | General body and object slots begin at the upper-left; centered alignment is reserved for KPI values, short process nodes, and focused statements. |
 | Neutral framing | Pale panels and hairlines reveal intended zones in the prototype; downstream deck or brand skin controls final paint. |
 
@@ -101,3 +106,5 @@ identity decisions and are not owned by this layout.
 | `16_title_picture.svg` | `title_picture` | Title and Picture | Page title over one large native picture region |
 | `17_two_picture_caption.svg` | `two_picture_caption` | Two Pictures with Captions | Two equal native pictures with independent captions |
 | `18_screenshot_focus.svg` | `screenshot_focus` | Screenshot Focus | Screenshot frame with annotation and source rail |
+| `19_chart_insight.svg` | `chart_insight` | Chart and Insight | Native chart region with interpretation and source rails |
+| `20_table_summary.svg` | `table_summary` | Table and Summary | Native table region with summary and source rails |

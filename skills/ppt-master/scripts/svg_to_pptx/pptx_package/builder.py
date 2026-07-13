@@ -101,6 +101,7 @@ from .template_structure import (
     TemplateElementSpec,
     TemplateSlideSpec,
     TemplateStructureError,
+    flat_structure_metadata_errors,
     is_proxy_placeholder,
     match_native_placeholders,
     parse_preserve_slides,
@@ -111,6 +112,9 @@ from .template_validation import validate_pptx_template_package
 
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+)
+SLIDE_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
 )
 SLIDE_MASTER_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
@@ -2630,7 +2634,12 @@ def _apply_explicit_layout_structure(
     *,
     use_layout_placeholder_frames: bool = False,
     verbose: bool = False,
-) -> tuple[dict[str, str | None], dict[str, tuple[str, ...]]]:
+) -> tuple[
+    dict[str, str | None],
+    dict[str, tuple[str, ...]],
+    dict[str, str],
+    dict[str, str],
+]:
     """Materialize explicit SVG master/layout/placeholder metadata into OOXML."""
     master_parts_by_key = _assign_structured_masters(
         extract_dir,
@@ -2674,6 +2683,7 @@ def _apply_explicit_layout_structure(
     placeholder_count = 0
     layout_shape_count = 0
     created_layout_parts: set[str] = set()
+    layout_parts_by_key: dict[str, str] = {}
     for layout_key, layout_specs in specs_by_layout.items():
         layout_states = [states_by_slide[spec.slide_num] for spec in layout_specs]
         master_parts = {
@@ -2700,6 +2710,7 @@ def _apply_explicit_layout_structure(
         layout_path = extract_dir / layout_part
         layout_rels_path = _relationships_path_for_part(extract_dir, layout_part)
         created_layout_parts.add(layout_part)
+        layout_parts_by_key[layout_key] = layout_part
 
         placeholder_bindings = {
             binding.element.element_id: binding
@@ -2815,7 +2826,12 @@ def _apply_explicit_layout_structure(
             f"{len(slide_backgrounds)} slide background(s), "
             f"{placeholder_count} placeholder definition(s)"
         )
-    return expected_backgrounds, expected_shape_rosters
+    return (
+        expected_backgrounds,
+        expected_shape_rosters,
+        layout_parts_by_key,
+        master_parts_by_key,
+    )
 
 
 def _apply_preserved_structure(
@@ -3252,6 +3268,132 @@ def _remove_content_type_override(content_types_path: Path, part_name: str) -> N
     new_content, removed = pattern.subn("", content, count=1)
     if removed:
         content_types_path.write_text(new_content, encoding="utf-8")
+
+
+def _remove_trailing_layout_definition_slides(
+    extract_dir: Path,
+    public_slide_count: int,
+    total_slide_count: int,
+) -> int:
+    """Remove internal carrier slides after their Layouts are registered."""
+    if total_slide_count <= public_slide_count:
+        return 0
+    presentation_part = "ppt/presentation.xml"
+    presentation_path = extract_dir / presentation_part
+    presentation_rels = _relationships_path_for_part(
+        extract_dir,
+        presentation_part,
+    )
+    tree = ET.parse(presentation_path)
+    root = tree.getroot()
+    slide_list = root.find(f"{{{PML_NS}}}sldIdLst")
+    if slide_list is None:
+        raise RuntimeError("presentation.xml has no p:sldIdLst")
+    entries_by_rel_id = {
+        entry.get(f"{{{REL_NS}}}id", ""): entry
+        for entry in slide_list.findall(f"{{{PML_NS}}}sldId")
+    }
+    relationships = _read_relationships(presentation_rels)
+    content_types_path = extract_dir / "[Content_Types].xml"
+    removed = 0
+    for slide_num in range(public_slide_count + 1, total_slide_count + 1):
+        slide_part = f"ppt/slides/slide{slide_num}.xml"
+        rel_ids = [
+            rel_id
+            for rel_id, attrs in relationships.items()
+            if attrs.get("Type") == SLIDE_REL_TYPE
+            and _resolve_package_target(
+                presentation_part,
+                attrs.get("Target", ""),
+            ) == slide_part
+        ]
+        if len(rel_ids) != 1:
+            raise RuntimeError(
+                f"Internal Layout carrier {slide_part} must have exactly one "
+                "Presentation relationship"
+            )
+        rel_id = rel_ids[0]
+        entry = entries_by_rel_id.get(rel_id)
+        if entry is None:
+            raise RuntimeError(
+                f"presentation.xml has no p:sldId entry for {slide_part}"
+            )
+        slide_list.remove(entry)
+        _remove_relationship(presentation_rels, rel_id)
+        slide_path = extract_dir / slide_part
+        slide_rels = _relationships_path_for_part(extract_dir, slide_part)
+        if not slide_path.is_file() or not slide_rels.is_file():
+            raise RuntimeError(
+                f"Internal Layout carrier package parts are incomplete: {slide_part}"
+            )
+        slide_path.unlink()
+        slide_rels.unlink()
+        _remove_content_type_override(content_types_path, slide_part)
+        removed += 1
+    _write_xml_tree(presentation_path, tree)
+    return removed
+
+
+def _prune_unreferenced_definition_payload_parts(extract_dir: Path) -> int:
+    """Remove generated native/media payload left by deleted carrier slides.
+
+    Definition-only SVGs are first converted as ordinary slides so their
+    reusable structure can be promoted. Removing those internal slides may
+    leave chart, workbook, or media parts with no remaining relationship. Run
+    an iterative incoming-reference sweep so chart-owned workbooks/styles are
+    removed after their orphan chart part and relationship sidecar disappear.
+    """
+    candidate_prefixes = (
+        "ppt/charts/",
+        "ppt/embeddings/",
+        "ppt/media/",
+    )
+    content_types_path = extract_dir / "[Content_Types].xml"
+    removed = 0
+    while True:
+        referenced_parts: set[str] = set()
+        for rels_path in extract_dir.rglob("*.rels"):
+            rels_rel = rels_path.relative_to(extract_dir).as_posix()
+            try:
+                root = ET.parse(rels_path).getroot()
+            except ET.ParseError as exc:
+                raise RuntimeError(
+                    f"Invalid relationships XML while pruning {rels_rel}: {exc}"
+                ) from exc
+            for elem in root:
+                attrs = _relationship_attrs(elem)
+                if attrs.get("TargetMode", "").lower() == "external":
+                    continue
+                target = attrs.get("Target")
+                if not target:
+                    continue
+                resolved = _resolve_internal_opc_target(rels_rel, target)
+                if resolved is not None:
+                    referenced_parts.add(resolved)
+
+        orphan_paths: list[tuple[Path, str]] = []
+        for path in extract_dir.rglob("*"):
+            if not path.is_file():
+                continue
+            part_name = path.relative_to(extract_dir).as_posix()
+            if "/_rels/" in part_name:
+                continue
+            if not part_name.startswith(candidate_prefixes):
+                continue
+            canonical = _canonical_opc_part_path(part_name)
+            if canonical is not None and canonical not in referenced_parts:
+                orphan_paths.append((path, part_name))
+        if not orphan_paths:
+            break
+
+        for path, part_name in orphan_paths:
+            rels_path = _relationships_path_for_part(extract_dir, part_name)
+            if rels_path.is_file():
+                rels_path.unlink()
+            path.unlink()
+            _remove_content_type_override(content_types_path, part_name)
+            removed += 1
+    return removed
 
 
 def _prune_unused_slide_layouts(
@@ -4317,12 +4459,16 @@ def create_pptx_with_native_svg(
     theme_color_spec: ThemeColorSpec | None = None,
     structured_baseline: bool = False,
     baseline_layout_specs: list[TemplateSlideSpec] | None = None,
+    layout_definition_files: list[Path] | None = None,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
 
     Args:
         svg_files: List of SVG files.
         output_path: Output PPTX path.
+        layout_definition_files: Optional structured SVG prototypes for Layouts
+            that no generated page uses. They are converted on internal carrier
+            slides, registered, and removed before the package is published.
         canvas_format: Canvas format key.
         verbose: Whether to output detailed information.
         transition: Transition effect name.
@@ -4382,18 +4528,48 @@ def create_pptx_with_native_svg(
     Returns:
         Whether all slides were successfully created.
     """
+    public_svg_files = list(svg_files)
+    definition_svg_files = list(layout_definition_files or [])
+    if definition_svg_files and pptx_structure != "structured":
+        raise ValueError(
+            "layout_definition_files requires pptx_structure='structured'"
+        )
+    public_paths = {path.resolve() for path in public_svg_files}
+    seen_definition_paths: set[Path] = set()
+    for path in definition_svg_files:
+        resolved = path.resolve()
+        if not path.is_file():
+            raise ValueError(f"Layout definition SVG does not exist: {path}")
+        if resolved in public_paths:
+            raise ValueError(
+                f"Layout definition SVG is already a generated page: {path}"
+            )
+        if resolved in seen_definition_paths:
+            raise ValueError(f"Layout definition SVG is repeated: {path}")
+        seen_definition_paths.add(resolved)
+    public_slide_count = len(public_svg_files)
+    svg_files = public_svg_files + definition_svg_files
+    total_slide_count = len(svg_files)
+
     if not use_native_shapes:
         raise ValueError(
             "SVG-image PPTX export is no longer supported; use svg_final/ "
             "directly for preview and native DrawingML PPTX for delivery"
         )
-    if not svg_files:
+    if not public_svg_files:
         print("Error: No SVG files found")
         return False
 
     use_compat_mode = False
     if pptx_structure not in {"baseline", "structured", "preserve", "flat"}:
         raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
+    if pptx_structure == "flat":
+        flat_errors = flat_structure_metadata_errors(public_svg_files)
+        if flat_errors:
+            details = "\n".join(f"  - {error}" for error in flat_errors)
+            raise TemplateStructureError(
+                "Flat PPTX structure validation failed:\n" + details
+            )
     if use_layout_placeholder_frames and pptx_structure != "structured":
         raise ValueError(
             "use_layout_placeholder_frames requires pptx_structure='structured'"
@@ -4413,6 +4589,7 @@ def create_pptx_with_native_svg(
         )
     if use_native_shapes and pptx_structure == "structured":
         template_specs = parse_template_slides(svg_files)
+        public_template_specs = template_specs[:public_slide_count]
     elif use_native_shapes and pptx_structure == "preserve":
         if native_structure_contract is None:
             raise TemplateStructureError(
@@ -4421,12 +4598,16 @@ def create_pptx_with_native_svg(
         template_specs = parse_preserve_slides(svg_files)
         for spec in template_specs:
             native_structure_contract.layout(spec.layout_key)
+        public_template_specs = template_specs
     else:
         template_specs = None
+        public_template_specs = None
     template_background_expectations: dict[str, str | None] | None = None
     template_shape_roster_expectations: (
         dict[str, tuple[str, ...]] | None
     ) = None
+    template_layout_parts_by_key: dict[str, str] | None = None
+    template_master_parts_by_key: dict[str, str] | None = None
     if template_specs is not None and not native_objects:
         native_placeholders = sorted({
             item.placeholder
@@ -4475,7 +4656,12 @@ def create_pptx_with_native_svg(
 
     if verbose:
         print(f"  Slide dimensions: {pixel_width} x {pixel_height} px")
-        print(f"  SVG file count: {len(svg_files)}")
+        print(f"  SVG file count: {public_slide_count}")
+        if definition_svg_files:
+            print(
+                "  Unused Layout definitions: "
+                f"{len(definition_svg_files)} internal prototype(s)"
+            )
         if use_native_shapes:
             print(f"  Mode: Native DrawingML shapes (directly editable)")
             print(
@@ -4617,6 +4803,7 @@ def create_pptx_with_native_svg(
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
+            is_layout_definition = slide_num > public_slide_count
             expected_animation_targets: list[tuple[int, int, str, float]] = []
             expected_animation_duration = animation_duration
             expected_animation_trigger = normalize_animation_trigger(animation_trigger)
@@ -4624,29 +4811,44 @@ def create_pptx_with_native_svg(
             try:
                 # ---- Native shapes mode ----
                 if use_native_shapes:
-                    slide_cfg = _slide_config(animation_config, svg_path.stem)
-                    slide_transition, slide_transition_duration, slide_auto_advance = (
-                        _slide_transition_settings(
+                    slide_cfg = (
+                        {}
+                        if is_layout_definition
+                        else _slide_config(animation_config, svg_path.stem)
+                    )
+                    if is_layout_definition:
+                        slide_transition = None
+                        slide_transition_duration = transition_duration
+                        slide_auto_advance = None
+                        slide_animation = None
+                        slide_animation_duration = animation_duration
+                        slide_animation_stagger = animation_stagger
+                        slide_animation_trigger = animation_trigger
+                    else:
+                        (
+                            slide_transition,
+                            slide_transition_duration,
+                            slide_auto_advance,
+                        ) = _slide_transition_settings(
                             slide_cfg,
                             transition,
                             transition_duration,
                             auto_advance,
                             animation_cli_overrides,
                         )
-                    )
-                    (
-                        slide_animation,
-                        slide_animation_duration,
-                        slide_animation_stagger,
-                        slide_animation_trigger,
-                    ) = _slide_animation_settings(
-                        slide_cfg,
-                        animation,
-                        animation_duration,
-                        animation_stagger,
-                        animation_trigger,
-                        animation_cli_overrides,
-                    )
+                        (
+                            slide_animation,
+                            slide_animation_duration,
+                            slide_animation_stagger,
+                            slide_animation_trigger,
+                        ) = _slide_animation_settings(
+                            slide_cfg,
+                            animation,
+                            animation_duration,
+                            animation_stagger,
+                            animation_trigger,
+                            animation_cli_overrides,
+                        )
                     groups_value = slide_cfg.get('groups', {})
                     if not isinstance(groups_value, dict):
                         raise ValueError(
@@ -4891,7 +5093,7 @@ def create_pptx_with_native_svg(
 
                 # --- Process notes (shared between native and legacy mode) ---
                 notes_content = ''
-                if enable_notes:
+                if enable_notes and not is_layout_definition:
                     svg_stem = svg_path.stem
                     notes_content = notes.get(svg_stem, '') if notes else ''
                     notes_text = markdown_to_plain_text(notes_content) if notes_content else ''
@@ -4922,7 +5124,11 @@ def create_pptx_with_native_svg(
 
                 # --- Process narration audio (shared between native and legacy mode) ---
                 svg_stem = svg_path.stem
-                audio_path = narration_audio.get(svg_stem) if narration_audio else None
+                audio_path = (
+                    narration_audio.get(svg_stem)
+                    if narration_audio and not is_layout_definition
+                    else None
+                )
                 if audio_path:
                     slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
                     rels_path = extract_dir / 'ppt' / 'slides' / '_rels' / f'slide{slide_num}.xml.rels'
@@ -5027,7 +5233,13 @@ def create_pptx_with_native_svg(
                     has_notes = slide_num in notes_slides_created
                     notes_str = " +notes" if has_notes else ""
                     narration_str = " +narration" if slide_num in narration_slides_created else ""
-                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}{narration_str}")
+                    definition_str = (
+                        " [Layout definition]" if is_layout_definition else ""
+                    )
+                    print(
+                        f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}"
+                        f"{notes_str}{narration_str}{definition_str}"
+                    )
 
                 success_count += 1
 
@@ -5114,6 +5326,8 @@ def create_pptx_with_native_svg(
             (
                 template_background_expectations,
                 template_shape_roster_expectations,
+                template_layout_parts_by_key,
+                template_master_parts_by_key,
             ) = _apply_explicit_layout_structure(
                 extract_dir,
                 structure,
@@ -5132,7 +5346,9 @@ def create_pptx_with_native_svg(
                     "  Structured master text styles: "
                     f"{master_count} master(s), "
                     f"title {master_text_style_spec.title_hpt / 100:g}pt, "
-                    f"body {master_text_style_spec.body_hpt / 100:g}pt"
+                    "body levels "
+                    f"{master_text_style_spec.body_levels_hpt[0] / 100:g}–"
+                    f"{master_text_style_spec.body_levels_hpt[-1] / 100:g}pt"
                 )
             _prune_unused_slide_layouts(
                 extract_dir,
@@ -5164,6 +5380,33 @@ def create_pptx_with_native_svg(
                 conversion_trace if conversion_trace is not None else structure_trace,
                 verbose=verbose,
             )
+
+        if (
+            use_native_shapes
+            and pptx_structure == "structured"
+            and definition_svg_files
+            and success_count == total_slide_count
+        ):
+            removed = _remove_trailing_layout_definition_slides(
+                extract_dir,
+                public_slide_count,
+                total_slide_count,
+            )
+            pruned_payload_parts = _prune_unreferenced_definition_payload_parts(
+                extract_dir
+            )
+            for slide_num in range(public_slide_count + 1, total_slide_count + 1):
+                slide_part = f"ppt/slides/slide{slide_num}.xml"
+                if template_background_expectations is not None:
+                    template_background_expectations.pop(slide_part, None)
+                if template_shape_roster_expectations is not None:
+                    template_shape_roster_expectations.pop(slide_part, None)
+            if verbose:
+                print(
+                    "  Layout definition carriers: "
+                    f"removed {removed} internal slide(s), pruned "
+                    f"{pruned_payload_parts} orphan payload part(s)"
+                )
 
         # Update [Content_Types].xml
         content_types_path = extract_dir / '[Content_Types].xml'
@@ -5244,7 +5487,7 @@ def create_pptx_with_native_svg(
         # author, 2013 dates, "generated using python-pptx", Slides=0) with
         # accurate, tool-neutral document properties.
         pres_format = _presentation_format(width_emu, height_emu)
-        _stamp_docprops(extract_dir, len(svg_files), pres_format, doc_metadata)
+        _stamp_docprops(extract_dir, public_slide_count, pres_format, doc_metadata)
 
         # Repackage PPTX to a temporary file first. The public output path is
         # replaced only after every slide and relationship has succeeded.
@@ -5259,14 +5502,17 @@ def create_pptx_with_native_svg(
             and pptx_structure == "structured"
             and success_count == len(svg_files)
         ):
-            if template_specs is None:
+            if template_specs is None or public_template_specs is None:
                 raise TemplateStructureError(
                     "Explicit Layout metadata was not parsed before validation"
                 )
             try:
                 validate_pptx_template_package(
                     temp_output_path,
-                    template_specs,
+                    public_template_specs,
+                    layout_specs=template_specs,
+                    expected_layout_parts=template_layout_parts_by_key,
+                    expected_master_parts=template_master_parts_by_key,
                     expected_backgrounds=template_background_expectations,
                     expected_shape_rosters=template_shape_roster_expectations,
                 )
@@ -5299,8 +5545,12 @@ def create_pptx_with_native_svg(
             conversion_trace_path.parent.mkdir(parents=True, exist_ok=True)
             payload = {
                 'output': str(output_path),
-                'slide_count': len(svg_files),
-                'slides': conversion_trace,
+                'slide_count': public_slide_count,
+                'slides': [
+                    entry
+                    for entry in conversion_trace
+                    if int(entry.get('slide_num', 0)) <= public_slide_count
+                ],
             }
             conversion_trace_path.write_text(
                 json.dumps(payload, ensure_ascii=False, indent=2),
@@ -5314,7 +5564,10 @@ def create_pptx_with_native_svg(
                 print(f"  [warn] {warning}")
             if conversion_trace_path and conversion_trace is not None:
                 print(f"  Trace: {conversion_trace_path}")
-            print(f"  Succeeded: {success_count}, Failed: {len(svg_files) - success_count}")
+            print(
+                f"  Slides: {public_slide_count}; "
+                f"Layout definitions: {len(definition_svg_files)}"
+            )
             if use_compat_mode and has_any_image:
                 print(f"  Mode: Office compatibility mode (supports all Office versions)")
                 if PNG_RENDERER == 'svglib' and renderer_hint:

@@ -43,8 +43,10 @@ import re
 import sys
 from collections import OrderedDict
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from config import CANVAS_FORMATS
 
 try:
     import yaml  # type: ignore
@@ -342,6 +344,140 @@ def _validate_brand_spec(
         raise SpecParseError(f"invalid brand specification:\n{details}")
 
 
+def _validate_svg_template_spec(
+    kind: str,
+    template_id: str,
+    template_dir: Path,
+    frontmatter: dict,
+    pages: list[str],
+) -> None:
+    """Reject Layout/Deck workspaces whose registry facts drift from SVGs."""
+    errors: list[str] = []
+    id_key = KIND_CONFIG[kind]["id_key"]
+    declared_id = str(frontmatter.get(id_key) or "").strip()
+    if declared_id != template_id:
+        errors.append(
+            f"frontmatter {id_key} must match directory {template_id!r}, "
+            f"got {declared_id!r}"
+        )
+    declared_kind = str(frontmatter.get("kind") or "").strip()
+    if declared_kind != kind:
+        errors.append(
+            f"frontmatter kind must be {kind!r}, got {declared_kind!r}"
+        )
+    if not str(frontmatter.get("summary") or "").strip():
+        errors.append("frontmatter summary must be non-empty")
+    if not pages:
+        errors.append(f"{kind} workspace must contain at least one template SVG")
+
+    raw_page_count = frontmatter.get("page_count")
+    if isinstance(raw_page_count, bool) or not isinstance(raw_page_count, int):
+        errors.append("frontmatter page_count must be an integer")
+    elif raw_page_count != len(pages):
+        errors.append(
+            f"frontmatter page_count is {raw_page_count}, but templates/ "
+            f"contains {len(pages)} SVG files"
+        )
+
+    canvas_format = str(frontmatter.get("canvas_format") or "").strip()
+    canvas = CANVAS_FORMATS.get(canvas_format)
+    if canvas is None:
+        errors.append(
+            "frontmatter canvas_format must be one of: "
+            + ", ".join(sorted(CANVAS_FORMATS))
+        )
+    else:
+        expected_canvas_fields = {
+            "canvas_width": canvas["width"],
+            "canvas_height": canvas["height"],
+            "canvas_viewbox": canvas["viewbox"],
+        }
+        for field, expected in expected_canvas_fields.items():
+            actual = frontmatter.get(field)
+            if str(actual) != str(expected):
+                errors.append(
+                    f"frontmatter {field} must be {expected!r} for "
+                    f"{canvas_format}, got {actual!r}"
+                )
+
+    if frontmatter.get("native_structure_mode") != "structured":
+        errors.append(
+            "frontmatter native_structure_mode must be 'structured'"
+        )
+    if frontmatter.get("replication_mode") not in {
+        "standard",
+        "fidelity",
+        "mirror",
+    }:
+        errors.append(
+            "frontmatter replication_mode must be standard, fidelity, or mirror"
+        )
+
+    if kind == "layout":
+        raw_page_types = frontmatter.get("page_types")
+        expected_page_types = _derive_page_types(pages)
+        if not isinstance(raw_page_types, list) or not all(
+            isinstance(item, str) and item.strip()
+            for item in raw_page_types
+        ):
+            errors.append("frontmatter page_types must be a non-empty string list")
+        elif raw_page_types != expected_page_types:
+            errors.append(
+                "frontmatter page_types must exactly match the SVG filename "
+                f"roster: expected {expected_page_types!r}, got {raw_page_types!r}"
+            )
+    else:
+        primary_color = str(frontmatter.get("primary_color") or "").strip()
+        if _HEX_COLOR_RE.fullmatch(primary_color) is None:
+            errors.append(
+                "frontmatter primary_color must use #RRGGBB, "
+                f"got {primary_color!r}"
+            )
+
+    svg_paths = [template_dir / f"{page}.svg" for page in pages]
+    if canvas is not None:
+        expected_viewbox = str(canvas["viewbox"])
+        for svg_path in svg_paths:
+            try:
+                root = ET.parse(svg_path).getroot()
+            except (OSError, ET.ParseError) as exc:
+                errors.append(f"{svg_path.name} is not valid SVG XML: {exc}")
+                continue
+            actual_canvas = (
+                root.get("width"),
+                root.get("height"),
+                root.get("viewBox"),
+            )
+            expected_canvas = (
+                str(canvas["width"]),
+                str(canvas["height"]),
+                expected_viewbox,
+            )
+            if actual_canvas != expected_canvas:
+                errors.append(
+                    f"{svg_path.name} canvas is {actual_canvas!r}, expected "
+                    f"{expected_canvas!r}"
+                )
+
+    if svg_paths:
+        try:
+            from svg_to_pptx.pptx_package.template_structure import (
+                TemplateStructureError,
+                parse_template_slides,
+            )
+        except ImportError as exc:
+            errors.append(f"structured SVG roster is invalid: {exc}")
+        else:
+            try:
+                parse_template_slides(svg_paths)
+            except TemplateStructureError as exc:
+                errors.append(f"structured SVG roster is invalid: {exc}")
+
+    if errors:
+        details = "\n".join(f"  - {error}" for error in errors)
+        raise SpecParseError(f"invalid {kind} specification:\n{details}")
+
+
 # ---------------------------------------------------------------------------
 # Per-kind extraction
 # ---------------------------------------------------------------------------
@@ -388,20 +524,32 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
             primary_color=str(primary_color),
         )
     elif kind == "layout":
-        page_types = fm.get("page_types") or _derive_page_types(pages)
-        if isinstance(page_types, str):
-            page_types = [t.strip() for t in re.split(r"[,，]", page_types) if t.strip()]
+        _validate_svg_template_spec(
+            kind,
+            template_id,
+            template_dir,
+            fm,
+            pages,
+        )
+        page_types = fm["page_types"]
         entry = OrderedDict(
             summary=summary,
-            canvas_format=str(fm.get("canvas_format", "ppt169")),
-            page_count=int(fm.get("page_count", len(pages))),
+            canvas_format=str(fm["canvas_format"]),
+            page_count=int(fm["page_count"]),
             page_types=list(page_types),
         )
     elif kind == "deck":
+        _validate_svg_template_spec(
+            kind,
+            template_id,
+            template_dir,
+            fm,
+            pages,
+        )
         entry = OrderedDict(
             summary=summary,
-            canvas_format=str(fm.get("canvas_format", "ppt169")),
-            page_count=int(fm.get("page_count", len(pages))),
+            canvas_format=str(fm["canvas_format"]),
+            page_count=int(fm["page_count"]),
             primary_color=str(primary_color),
         )
     else:

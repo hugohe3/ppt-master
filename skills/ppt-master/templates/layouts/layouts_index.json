@@ -2,7 +2,7 @@
   "presentation_core": {
     "summary": "A structure-first presentation layout system combining familiar PowerPoint defaults with advanced editorial, image, and data compositions.",
     "canvas_format": "ppt169",
-    "page_count": 18,
+    "page_count": 20,
     "page_types": [
       "title_slide",
       "title_content",
@@ -21,7 +21,9 @@
       "data_story",
       "title_picture",
       "two_picture_caption",
-      "screenshot_focus"
+      "screenshot_focus",
+      "chart_insight",
+      "table_summary"
     ]
   }
 }

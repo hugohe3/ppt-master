@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="presentation_core_master" data-pptx-master-name="Presentation Core"
+  data-pptx-layout="chart_insight" data-pptx-layout-name="Chart and Insight">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="chart-insight-chart-panel" x="64" y="152" width="760" height="456" rx="12"
+    fill="#F4F6F8" stroke="#D6DCE3" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="chart-insight-message-panel" x="856" y="152" width="360" height="456" rx="12"
+    fill="#F4F6F8" stroke="#D6DCE3" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="chart-insight-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="64 40 1152 72">
+    <text id="chart-insight-title-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="chart-insight-chart-slot" data-pptx-placeholder="chart" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="88 176 712 408">
+    <g id="chart-insight-chart-carrier" data-pptx-placeholder-carrier="true"
+      data-pptx-native="chart"
+      data-pptx-fallback-sha256="e39e729fbcd88647bc948bf86f6974592347d171897ee0568376b13330fdb95b">
+      <metadata data-pptx-native="chart">{"name":"chart_insight","x":88,"y":176,"width":712,"height":408,"type":"column","categories":["Q1","Q2","Q3","Q4"],"series":[{"name":"Actual","values":[42,55,63,78]},{"name":"Plan","values":[48,58,68,74]}],"show_legend":true,"legend_position":"bottom","style":{"colors":["#64748B","#CBD5E1"],"chart_area_fill":"#F4F6F8","plot_area_fill":"#FFFFFF","text_color":"#475569","axis_color":"#CBD5E1","grid_color":"#E2E8F0","font_family":"Arial"}}</metadata>
+      <rect x="88" y="176" width="712" height="408" rx="8" fill="#FFFFFF"/>
+      <rect x="586" y="202" width="12" height="12" rx="2" fill="#64748B"/>
+      <text x="606" y="213" fill="#64748B" font-family="Arial, sans-serif" font-size="14">Actual</text>
+      <rect x="676" y="202" width="12" height="12" rx="2" fill="#CBD5E1"/>
+      <text x="696" y="213" fill="#64748B" font-family="Arial, sans-serif" font-size="14">Plan</text>
+      <line x1="144" y1="520" x2="752" y2="520" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="144" y1="440" x2="752" y2="440" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="144" y1="360" x2="752" y2="360" stroke="#E2E8F0" stroke-width="1"/>
+      <line x1="144" y1="280" x2="752" y2="280" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="190" y="394" width="34" height="126" rx="3" fill="#64748B"/>
+      <rect x="228" y="376" width="34" height="144" rx="3" fill="#CBD5E1"/>
+      <rect x="330" y="355" width="34" height="165" rx="3" fill="#64748B"/>
+      <rect x="368" y="346" width="34" height="174" rx="3" fill="#CBD5E1"/>
+      <rect x="470" y="331" width="34" height="189" rx="3" fill="#64748B"/>
+      <rect x="508" y="316" width="34" height="204" rx="3" fill="#CBD5E1"/>
+      <rect x="610" y="286" width="34" height="234" rx="3" fill="#64748B"/>
+      <rect x="648" y="298" width="34" height="222" rx="3" fill="#CBD5E1"/>
+      <text x="224" y="554" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="15">Q1</text>
+      <text x="364" y="554" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="15">Q2</text>
+      <text x="504" y="554" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="15">Q3</text>
+      <text x="644" y="554" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="15">Q4</text>
+    </g>
+  </g>
+  <g id="chart-insight-message-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="888 184 296 360">
+    <text id="chart-insight-message-carrier" data-pptx-placeholder-carrier="true"
+      x="888" y="232" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="chart-insight-source-slot" data-pptx-placeholder="footer" data-pptx-placeholder-idx="3"
+    data-pptx-placeholder-bounds="888 552 296 32">
+    <text id="chart-insight-source-carrier" data-pptx-placeholder-carrier="true"
+      x="888" y="576" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="14">{{SOURCE}}</text>
+  </g>
+</svg>

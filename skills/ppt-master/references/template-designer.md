@@ -58,14 +58,14 @@ Use `summary.md` only for orientation. Open screenshots or the original PPTX onl
 
 Every page remains a complete standalone SVG preview.
 
-**Hard rule — mirror graph reachability**: The current structured template
-compiler materializes only Master/Layout identities referenced by emitted SVG
-prototypes. Before accepting `mirror`, verify that every source Layout has a
-non-empty `usedBySlides` set and that every source Master owns at least one such
-Layout. If the source package contains an unused Layout or an otherwise
-unreachable Master, stop and report that full-graph mirror is not representable
-by the current template roster. Never silently drop it, merge it, or invent a
-carrier page.
+**Hard rule — complete mirror graph**: Restore every supported source Layout,
+including Layouts unused by source Slides. Emit one complete source-page
+prototype per source Slide and one definition-only
+`layout_<layout_key>.svg` prototype for each otherwise unrepresented Layout.
+The definition prototype carries the exact parent Master identity, Layout
+identity, fixed atoms, and placeholder contract but is not a generated page.
+This also retains a source Master that is reachable only through unused Layouts.
+Never silently drop or merge an identity, and never invent a carrier page.
 
 **Hard rule — no duplicate authored Layout contracts**: In `standard` / `fidelity`, distinct output Layout keys must differ in fixed Layout atoms or slot topology/type/index/bounds/binding. Topic, sample wording, or Slide-local content alone never justifies another authored key. Mirror keeps source Layout identities even when two source contracts are visibly equivalent.
 
@@ -129,12 +129,12 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 When the brief sets `Replication mode: mirror`, restore the imported template rather than designing a new one:
 
 - Restoration source: lossless `svg/master_*.svg`, `svg/layout_*.svg`, `svg/slide_NN.svg`, `svg-flat/slide_NN.svg`, `svg/inheritance.json`, and `native_structure.json`. Use matching lightweight projections only to inspect the result without loading opaque payload into model context.
-- Precondition: every source Layout is referenced by at least one source slide, and every source Master is reachable through those referenced Layouts. Otherwise report that full-graph mirror is currently unsupported and stop before writing output.
-- Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` in both scopes. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
+- Precondition: the import evidence identifies every source Master/Layout, parent relationship, picker name, placeholder contract, and fixed visual layer. Stop only when required facts or supported geometry are missing; unused identities are not a stop condition.
+- Output: `<template_workspace>/templates/<NNN>_<page_type>.svg` for every source slide, plus `layout_<layout_key>.svg` for every source Layout unused by all source slides. `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix; definition-only files are not generated pages.
 - Required restoration: preserve source Master/Layout keys and picker names, Layout-to-Master parentage, slide assignments, placeholder type/index/bounds, supported native-object metadata, geometry, decoration, sprite-sheet wrappers, original example text, chart previews, fonts, effects, and paint order whenever the importer represents them.
 - Allowed normalization: add or normalize explicit root declarations and asset paths, and recursively expand fixed Master/Layout group wrappers into direct atoms. The mapping must remain one-to-one at the ownership level and must not change paint order or appearance.
 - Forbidden: commonality extraction, semantic synthesis, merging, splitting, promotion, demotion, renaming, re-parenting, decorative simplification, placeholder invention, or replacement of supported source-native metadata / SVG fallback with a model-authored approximation.
-- `design_spec.md` §V Page Roster lists every emitted file, and `Source Restoration Map` records the preserved source Master/Layout assignment.
+- `design_spec.md` §V Page Roster lists every emitted file and marks definition-only prototypes explicitly. `Source Restoration Map` records each source-slide assignment plus every unused Layout definition and its parent Master.
 
 **Mirror consumption boundary**: `mirror` applies only while creating the template package from the source deck. Once created, the package is consumed as an ordinary deck / layout template roster: downstream generation may select, repeat, skip, reorder, or adapt pages according to the new content. The `replication_mode: mirror` field must not force the generated deck to preserve the source page count, source order, or one-output-slide-per-template-slide mapping.
 
