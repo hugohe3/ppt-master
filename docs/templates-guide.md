@@ -20,7 +20,7 @@ The workflow **defaults to free design** — it will not ask whether you want a 
 
 Send the Brand/Layout/Deck workspace root in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
-> "use this template: `skills/ppt-master/templates/layouts/academic_defense/`" ✅
+> "use this template: `skills/ppt-master/templates/layouts/presentation_core/`" ✅
 > "use last deck's template: `projects/last_deck/`" ✅
 > "make a product introduction with `/Users/me/Desktop/our_brand_v3/`" ✅
 
@@ -30,7 +30,7 @@ For every current template kind, the path is the **template workspace root**. St
 
 ### What does NOT trigger the template flow
 
-- **A bare template name without a path**: "use the academic_defense template" / "use the China Merchants Bank template" / "make a pixel_retro defense deck" → free design. The AI does not look the name up. You must give a path.
+- **A bare template name without a path**: "use the presentation_core template" / "use the China Merchants Bank template" → free design. The AI does not look the name up. You must give a path.
 - **Style descriptions**: "McKinsey style" / "Google style" / "minimalist" / "Keynote style" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
 - **Vague intent**: "I want a template" with no path → free design.
 
@@ -43,7 +43,7 @@ To browse what's available in the built-in library, ask "what templates are avai
 Templates are organized into three kinds, each in its own directory:
 
 - [`templates/brands/README.md`](../skills/ppt-master/templates/brands/README.md) — identity-only presets (color / typography / logo / voice / icon style), no SVG pages; Anthropic, Google
-- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; academic_defense, government_blue/red, ai_ops, medical_university, pixel_retro, psychology_attachment
+- [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md) — structure-only patterns (canvas / page structure / page types / SVG roster), no identity; presentation_core
 - [`templates/decks/README.md`](../skills/ppt-master/templates/decks/README.md) — full identity + structure references (including the middle segment); China Merchants Bank, Power Construction Corporation of China, Chongqing University, China Telecom
 
 Full data model + fusion / conflict-resolution rules: [`docs/zh/templates-architecture.md`](./zh/templates-architecture.md) (Chinese only for now).
@@ -65,7 +65,7 @@ A **style** is a description ("minimalist" / "Keynote-style" / "editorial") — 
 | Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
 | Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
 
-A style mention may resemble a template name (e.g., "academic style" sounds like the `academic_defense/` template directory), but they go through different machinery — a template requires a real path the AI can copy from, a style mention is interpretive language. Similar words, different paths in the most literal sense.
+A style description and a template name still go through different machinery: "minimalist" is interpretive language, while `presentation_core/` is a real template directory that requires an explicit path.
 
 ### Common styles you can describe
 
@@ -103,7 +103,7 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 | **Memphis / pop** | High-saturation blocks, geometric, 80s |
 | **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
 
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `pixel_retro` / `psychology_attachment`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
+When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's confirmation stage, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. To use the built-in `presentation_core` structure, send its workspace path; to keep structure free, describe only the style and let the AI adapt it to the deck content.
 
 ---
 

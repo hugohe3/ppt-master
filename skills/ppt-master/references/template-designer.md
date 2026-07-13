@@ -492,8 +492,7 @@ templates/
 │   ├── anthropic/         # Anthropic brand identity (logo + colors + typography)
 │   └── google/            # Google brand identity
 ├── layouts/
-│   ├── academic_defense/  # Academic-defense structure (no identity)
-│   └── pixel_retro/       # Pixel retro / cyberpunk structure (no identity)
+│   └── presentation_core/ # General structure system (no identity)
 └── decks/
     ├── <bank_deck>/        # Example banking deck
     └── <engineering_deck>/ # Example engineering deck

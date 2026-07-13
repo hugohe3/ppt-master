@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="presentation_core_master" data-pptx-master-name="Presentation Core"
+  data-pptx-layout="data_story" data-pptx-layout-name="Data Story">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="data-story-evidence-panel" x="64" y="152" width="760" height="456" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="data-story-insight-panel" x="856" y="152" width="360" height="456" rx="12" fill="#F4F6F8"
+    stroke="#D6DCE3" stroke-width="1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="data-story-source-rule" x="64" y="632" width="1152" height="2" fill="#D6DCE3"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="data-story-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="64 40 1152 72">
+    <text id="data-story-title-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="data-story-evidence-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="88 176 712 408">
+    <text id="data-story-evidence-carrier" data-pptx-placeholder-carrier="true"
+      x="88" y="214" fill="#94A3B8"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="22">{{CONTENT_AREA}}</text>
+  </g>
+  <g id="data-story-insight-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="888 184 296 360">
+    <text id="data-story-insight-carrier" data-pptx-placeholder-carrier="true"
+      x="888" y="240" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="data-story-source-slot" data-pptx-placeholder="footer" data-pptx-placeholder-idx="3"
+    data-pptx-placeholder-bounds="64 648 1152 32">
+    <text id="data-story-source-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="670" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="14">{{SOURCE}}</text>
+  </g>
+</svg>

@@ -1,87 +1,27 @@
 {
-  "academic_defense": {
-    "summary": "Thesis defense, academic presentations, research progress reports, grant applications.",
+  "presentation_core": {
+    "summary": "A structure-first presentation layout system combining familiar PowerPoint defaults with advanced editorial, image, and data compositions.",
     "canvas_format": "ppt169",
-    "page_count": 5,
+    "page_count": 18,
     "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending"
-    ]
-  },
-  "ai_ops": {
-    "summary": "Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports.",
-    "canvas_format": "ppt169",
-    "page_count": 6,
-    "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending",
-      "reference_style"
-    ]
-  },
-  "government_blue": {
-    "summary": "Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation.",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending"
-    ]
-  },
-  "government_red": {
-    "summary": "Government briefings, policy interpretation, work summaries, project introductions, investment promotion.",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending"
-    ]
-  },
-  "medical_university": {
-    "summary": "Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending"
-    ]
-  },
-  "pixel_retro": {
-    "summary": "Tech talks, programming tutorials, game introductions, geek-style showcases.",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending"
-    ]
-  },
-  "psychology_attachment": {
-    "summary": "Psychotherapy training, academic lectures, counseling case analysis, professional sharing.",
-    "canvas_format": "ppt169",
-    "page_count": 5,
-    "page_types": [
-      "cover",
-      "toc",
-      "chapter",
-      "content",
-      "ending"
+      "title_slide",
+      "title_content",
+      "section_header",
+      "two_content",
+      "comparison",
+      "title_only",
+      "blank",
+      "content_caption",
+      "picture_caption",
+      "hero_statement",
+      "editorial_split",
+      "three_card",
+      "kpi_dashboard",
+      "process_timeline",
+      "data_story",
+      "title_picture",
+      "two_picture_caption",
+      "screenshot_focus"
     ]
   }
 }

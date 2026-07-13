@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="presentation_core_master" data-pptx-master-name="Presentation Core"
+  data-pptx-layout="screenshot_focus" data-pptx-layout-name="Screenshot Focus">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="screenshot-focus-frame" x="64" y="152" width="824" height="464" rx="12"
+    fill="#EEF2F6" stroke="#CBD5E1" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="screenshot-focus-browser-bar" x="64" y="152" width="824" height="44" rx="12"
+    fill="#E2E8F0" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="screenshot-focus-browser-dot-one" cx="92" cy="174" r="6" fill="#94A3B8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="screenshot-focus-browser-dot-two" cx="116" cy="174" r="6" fill="#94A3B8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <circle id="screenshot-focus-browser-dot-three" cx="140" cy="174" r="6" fill="#94A3B8"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="screenshot-focus-note-panel" x="920" y="152" width="296" height="464" rx="12"
+    fill="#F4F6F8" stroke="#D6DCE3" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="screenshot-focus-note-accent" x="944" y="184" width="4" height="80" rx="2"
+    fill="#CBD5E1" data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="screenshot-focus-source-rule" x="952" y="520" width="232" height="2" fill="#D6DCE3"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="screenshot-focus-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="64 40 1152 72">
+    <text id="screenshot-focus-title-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="screenshot-focus-picture-slot" data-pptx-placeholder="picture"
+    data-pptx-placeholder-idx="1" data-pptx-placeholder-bounds="64 196 824 420">
+    <image id="screenshot-focus-picture-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="196" width="824" height="420" preserveAspectRatio="none"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/>
+  </g>
+  <g id="screenshot-focus-annotation-slot" data-pptx-placeholder="body"
+    data-pptx-placeholder-idx="2" data-pptx-placeholder-bounds="968 184 216 304">
+    <text id="screenshot-focus-annotation-carrier" data-pptx-placeholder-carrier="true"
+      x="968" y="304" fill="#475569" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="22">{{ANNOTATION}}</text>
+  </g>
+  <g id="screenshot-focus-source-slot" data-pptx-placeholder="footer"
+    data-pptx-placeholder-idx="3" data-pptx-placeholder-bounds="952 536 232 40">
+    <text id="screenshot-focus-source-carrier" data-pptx-placeholder-carrier="true"
+      x="952" y="564" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="14">{{SOURCE}}</text>
+  </g>
+</svg>

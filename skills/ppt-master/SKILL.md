@@ -248,7 +248,7 @@ Do **not** reinterpret this boundary as 1:1 redesign or free SVG generation. Use
 |---|---|
 | One or more explicit template workspace paths (each resolves to `templates/design_spec.md`, or to a compatible legacy-flat root `design_spec.md`, with `kind: brand` / `kind: layout` / `kind: deck` in YAML frontmatter) | Normalize each source directory, read its `kind`, dispatch per the kind matrix below, fuse if multiple |
 | Current `create-template` workflow just completed project scope and validated its exact `<project>/` workspace | Consume that single workspace in place; it cannot join multi-path fusion |
-| Anything else — bare template names ("用 academic_defense"), style descriptions ("麦肯锡风格"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
+| Anything else — bare template names ("用 presentation_core"), style descriptions ("麦肯锡风格"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
 There is no slug matching, no name lookup, no fuzzy resolution. A name without a path does not trigger — the user must give a path the AI can `cd` into.
 
@@ -256,7 +256,7 @@ There is no slug matching, no name lookup, no fuzzy resolution. A name without a
 
 > Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) never trigger Step 3. They flow into the Strategist confirmation stage as a style brief (color / typography / tone in fields e–g).
 
-> Bare names ("academic_defense", "招商银行", "anthropic") do NOT trigger Step 3 even if a matching directory exists in the library. The user must give a path. AI must not "helpfully" resolve a name to a path.
+> Bare names ("presentation_core", "招商银行", "anthropic") do NOT trigger Step 3 even if a matching directory exists in the library. The user must give a path. AI must not "helpfully" resolve a name to a path.
 
 > "What templates exist?" is out-of-band Q&A — answer by listing entries from `brands_index.json` / `layouts_index.json` / `decks_index.json` together with their paths. Listing alone does not advance the pipeline; the user must send a path back to trigger Step 3.
 
@@ -356,7 +356,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 > **Fused from:**
 > - deck: `templates/decks/招商银行/` （base）
 > - brand: `templates/brands/anthropic/` （identity override）
-> - layout: `templates/layouts/academic_defense/` （structure override）
+> - layout: `templates/layouts/presentation_core/` （structure override）
 > - conflicts resolved: Color Scheme from anthropic（user picked a）
 ```
 

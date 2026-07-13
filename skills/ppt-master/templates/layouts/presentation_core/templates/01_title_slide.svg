@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="presentation_core_master" data-pptx-master-name="Presentation Core"
+  data-pptx-layout="title_slide" data-pptx-layout-name="Title Slide">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="title-slide-accent" x="64" y="216" width="8" height="192" rx="4" fill="#CBD5E1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="title-slide-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="112 216 1056 116">
+    <text id="title-slide-title-carrier" data-pptx-placeholder-carrier="true"
+      x="112" y="292" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="54" font-weight="700">{{TITLE}}</text>
+  </g>
+  <g id="title-slide-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="112 350 880 64">
+    <text id="title-slide-subtitle-carrier" data-pptx-placeholder-carrier="true"
+      x="112" y="393" fill="#64748B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="26">{{SUBTITLE}}</text>
+  </g>
+</svg>

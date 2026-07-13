@@ -45,7 +45,7 @@
 两种结果都通过对话里给出**工作区根目录路径**来引用。Step 3 会解析 `templates/design_spec.md`；为兼容旧包，也接受 `design_spec.md` 直接位于所给根目录的平铺形态。create-template 可在同一对话里把已验证的精确工作区根目录直接交给 Step 3。两种情况都以路径为准，绝不认裸模板名。完整工作区可以在全局库与 `projects/` 之间复制或迁移，无需调整目录结构；只有全局库注册不同。
 
 ```
-你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/academic_defense/
+你：用 sources/report.pdf 做 deck,模板用 skills/ppt-master/templates/layouts/presentation_core/
 ```
 
 完整说明 → [模板指南](./templates-guide.md)
