@@ -34,7 +34,7 @@ native_structure_mode: structured
 ...
 ---
 
-# templates/decks/招商银行/templates/design_spec.md
+# templates/decks/中国电信/templates/design_spec.md
 ---
 kind: deck
 native_structure_mode: structured
@@ -225,7 +225,7 @@ primary_color: "<HEX>"
 ```json
 {
   "<deck_id>": {
-    "summary": "China Merchants Bank transaction banking deck",
+    "summary": "China Telecom government-enterprise briefing deck",
     "canvas_format": "ppt169",
     "page_count": 5,
     "primary_color": "#XXXXXX"
@@ -287,7 +287,7 @@ AI: 你给了两个 brand，检测到段级冲突：
 
 ```markdown
 > **Fused from:**
-> - deck: `templates/decks/招商银行/` （base）
+> - deck: `templates/decks/中国电信/` （base）
 > - brand: `templates/brands/anthropic/` （identity 段覆盖）
 > - layout: `templates/layouts/presentation_core/` （structure 段覆盖）
 > - conflicts resolved: Color Scheme from anthropic（用户选 a）

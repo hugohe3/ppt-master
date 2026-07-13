@@ -1,212 +1,66 @@
 ---
 deck_id: 中国电信
 kind: deck
-native_structure_mode: template
-summary: China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.
-canvas_format: ppt169
-page_count: 5
+category: brand
+summary: 中国电信政企数字化、转型规划与内部汇报的克制红灰品牌模板。
+keywords: [中国电信, 政企, 数字化, 企业汇报]
 primary_color: "#C00000"
+canvas_format: ppt169
+canvas_width: 1280
+canvas_height: 720
+canvas_viewbox: "0 0 1280 720"
+source_canvas_width: 1280
+source_canvas_height: 720
+source_viewbox: "0 0 1280 720"
+replication_mode: fidelity
+native_structure_mode: structured
+page_count: 5
 ---
 
-# China Telecom Template - Design Specification
-
-> Suitable for telecom solution proposals, digital transformation briefings, government-enterprise reports, and executive review materials.
-
----
+# 中国电信 — Design Specification
 
 ## I. Template Overview
 
-| Property | Description |
-| --- | --- |
-| **Template Name** | `中国电信` |
-| **Use Cases** | China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报 |
-| **Design Tone** | Authoritative, structured, restrained, enterprise-government hybrid |
-| **Theme Mode** | Light theme (white background + telecom red title bar + silver-gray structural lane + restrained brand imagery) |
+- 适用于政企数字化方案、转型规划、内部评审和客户汇报。
+- 视觉基调为白底、通信红结构条、银灰内容承载区与少量城市线稿，强调权威、清晰和克制。
+- 整套模板使用 China Telecom Brand 与 China Telecom Content 两个 Master，并提供五个可直接从 PowerPoint 布局库调用的 Layout。
 
----
+## II. Color Scheme
 
-## II. Canvas Specification
-
-| Property | Value |
-| --- | --- |
-| **Format** | Standard 16:9 |
-| **Dimensions** | 1280 × 720 px |
-| **viewBox** | `0 0 1280 720` |
-| **Page Margins** | Left/Right 72px, Top 88px, Bottom 56px |
-| **Safe Area** | x: 72-1208, y: 88-664 |
-
----
-
-## III. Color Scheme
-
-### Primary Colors
-
-| Role | Value | Notes |
+| Role | Color | Application |
 | --- | --- | --- |
-| **Telecom Red** | `#C00000` | Main header blocks, numbering, emphasis |
-| **Light Silver Gray** | `#D9D9D9` | Structural lane, chapter ribbon backing |
-| **Warm White** | `#FFFFFF` | Main background |
-| **Line Gray** | `#CFCFCF` | Divider lines and subtle frames |
-| **Graphite** | `#2B2F33` | Primary text |
+| Telecom red | #C00000 | 页眉胶囊、编号、分隔线和关键强调 |
+| Silver gray | #D9D9D9 | 页眉结构带 |
+| Panel gray | #F8FAFC | 内容承载区与品牌卡片 |
+| Graphite | #111827 | 标题和关键文字 |
+| Muted gray | #6B7280 | 辅助说明与页脚 |
+| White | #FFFFFF | Master 背景与反白文字 |
 
-### Secondary Colors
+## IV. Signature Design Elements
 
-| Role | Value | Notes |
-| --- | --- | --- |
-| **Muted Gray** | `#6B7280` | Secondary text and descriptions |
-| **Soft Red** | `#E55B5B` | Auxiliary emphasis |
-| **Near Black** | `#111827` | Key headings |
-| **Skyline Blue** | `#DCEAF8` | Decorative cityline / digital texture |
+- 内容页和目录页使用“红色胶囊 + 银灰长带”的页眉结构，右侧保留横向品牌图形。
+- 封面、章节页和结束页复用红色口号、城市线稿与底部红色飘带，但控制在独立品牌卡片中。
+- China Telecom Brand Master 统一承载白底、顶部红线、底部品牌飘带与英文标识；China Telecom Content Master 统一承载红灰页眉、横向品牌标识和页脚分隔线。
+- 内容承载区采用浅灰圆角面板；实际内容由完整 object 占位框承载，不显示提示性虚线。
+- 标题与通用内容保持左对齐；只在品牌图形内部使用居中构图。
 
----
+## V. Page Roster
 
-## IV. Typography System
+| File | Master | Layout key | PowerPoint picker name | Visual character | Reusable slots |
+| --- | --- | --- | --- | --- | --- |
+| (01_cover.svg) | China Telecom Brand | cover | Cover | 左侧标题簇、右侧品牌卡片、底部飘带 | 标题、副标题、单位、日期 |
+| (02_toc.svg) | China Telecom Content | agenda | Agenda | 左侧品牌说明卡、右侧四行编号目录 | 页面标题、四个目录项、页码 |
+| (02_chapter.svg) | China Telecom Brand | section | Section Header | 左侧章节信息、右侧品牌卡片、底部飘带 | 章节号、章节标题、章节副标题 |
+| (03_content.svg) | China Telecom Content | content | Title and Content | 红灰页眉与大面积浅灰开放内容区 | 栏目标、页面标题、内容对象、来源、页码 |
+| (04_ending.svg) | China Telecom Brand | closing | Closing | 左侧结束语、右侧品牌卡片、底部飘带 | 结束标题、副标题、联系信息、页码 |
 
-### Font Stack
+## VI. Assets
 
-`"Microsoft YaHei", "微软雅黑", "PingFang SC", "Source Han Sans SC", Arial, sans-serif`
-
-### Font Size Hierarchy
-
-| Level | Usage | Size | Weight |
-| --- | --- | --- | --- |
-| H1 | Cover title | 42px | Bold |
-| H2 | Chapter / content title | 28px | Bold |
-| H3 | Section label / TOC item | 20px | Bold |
-| P | Body text | 16px | Regular |
-| Meta | Subtitle / annotations | 13px | Regular |
-| Number | TOC / chapter index | 30px | Bold |
-
----
-
-## V. Page Structure
-
-### General Layout
-
-| Area | Position | Description |
-| --- | --- | --- |
-| **Logo Area** | x=72, y=36 | Fixed top-left brand logo |
-| **Header Ribbon** | y=32 to 96 | Red capsule + gray lane for TOC/content pages |
-| **Main Content Area** | y=132 to 618 | Main text/layout body |
-| **Visual Sidebar** | x=922 to 1208 | Fixed image-only rail on cover / TOC / chapter / ending pages |
-| **Footer Ribbon** | y=548 to 720 | Fixed decorative bottom image area on cover/ending |
-| **Footer Meta** | y=650 to 690 | Source / page number / contact info |
-
-### Structural Rules
-
-- Cover and ending pages reuse the image-based footer ribbon to preserve the brand atmosphere.
-- TOC and content pages use dedicated visual sidebars/cards for imagery, keeping text and images in separate safe zones.
-- Chapter pages are cleaner section-divider pages and should not inherit the content-page header ribbon.
-- Each page should contain at most one formal logo mark; sidebars should rely on slogan and skyline imagery instead of repeated logo lockups.
-- The content page remains open-canvas by default and should not reserve a large fixed sidebar.
-- Repeated telecom motifs use one reusable structure family rather than unrelated decorative variants.
-
----
-
-## VI. Page Types
-
-### 1. Cover Page (`01_cover.svg`)
-
-- Top-left fixed logo
-- Left-aligned title cluster with red accent rule
-- Right-side visual card containing slogan and skyline imagery
-- Bottom full-width ribbon background
-
-### 2. Table of Contents (`02_toc.svg`)
-
-- Red rounded title capsule + gray structural lane
-- Top-right compact logo for page-level brand anchoring
-- Left visual card with restrained brand imagery
-- Right text list area for up to 4 major sections
-- Dotted leaders and right-aligned descriptions
-
-### 3. Chapter Page (`02_chapter.svg`)
-
-- Clean section-divider page without the content-page header ribbon
-- Top-right compact logo anchored away from the title area
-- Large chapter number and title in the left safe zone
-- Right-side visual card with fixed imagery and no duplicated large logo
-- Footer ribbon used as a restrained anchor
-
-### 4. Content Page (`03_content.svg`)
-
-- Red section tab at top-left, gray lane at top-right
-- Top-right compact logo for page-level brand anchoring
-- Open-canvas content area for flexible charts, tables, and mixed layouts
-- Only keep lightweight corner / footer-level brand control
-- Footer source and page number
-
-### 5. Ending Page (`04_ending.svg`)
-
-- White background
-- Left closing statement block
-- Right closing visual card with restrained skyline / slogan composition
-- Full-width footer ribbon
-
----
-
-## VII. SVG Page Roster
-
-| File | Role | Description |
-|------|------|-------------|
-| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
-| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
-| `02_toc.svg` | toc | Table of contents listing major sections |
-| `03_content.svg` | content | Main content page; body of the deck |
-| `04_ending.svg` | ending | Closing/thank-you page |
-
-## VIII. Layout Modes
-
-| Mode | Use Cases |
+| File | Intended usage |
 | --- | --- |
-| **Title + Open Canvas** | Executive summary, key messages |
-| **Two Column** | Solution architecture, comparison |
-| **Card Grid** | Capability modules, initiatives |
-| **Timeline / Process** | Implementation roadmap |
-| **Chart + Notes** | Data dashboards, KPI explanation |
-
----
-
-## IX. Spacing Specification
-
-| Element | Value |
-| --- | --- |
-| Outer margin | 72px |
-| Header inner padding | 24px |
-| Content block gap | 24px |
-| Card padding | 20px |
-| Border radius | 18px |
-| Title-to-subtitle gap | 18px |
-| Text-to-image safety gap | 32px |
-
----
-
-## X. Placeholder Specification
-
-| Placeholder | Purpose | Applicable Page |
-| --- | --- | --- |
-| `{{TITLE}}` | Main title | Cover |
-| `{{SUBTITLE}}` | Subtitle | Cover |
-| `{{DATE}}` | Date | Cover |
-| `{{AUTHOR}}` | Author / organization | Cover |
-| `{{CHAPTER_NUM}}` | Chapter number | Chapter |
-| `{{CHAPTER_TITLE}}` | Chapter title | Chapter |
-| `{{PAGE_TITLE}}` | Page title | Content |
-| `{{CONTENT_AREA}}` | Content placeholder | Content |
-| `{{SECTION_NAME}}` | Section name | Content |
-| `{{SOURCE}}` | Source note | Content |
-| `{{PAGE_NUM}}` | Page number | Content, Ending |
-| `{{TOC_ITEM_1_TITLE}}` ~ `{{TOC_ITEM_4_TITLE}}` | TOC titles | TOC |
-| `{{TOC_ITEM_1_DESC}}` ~ `{{TOC_ITEM_4_DESC}}` | TOC descriptions | TOC |
-| `{{THANK_YOU}}` | Closing heading | Ending |
-| `{{ENDING_SUBTITLE}}` | Closing subtitle | Ending |
-| `{{CONTACT_INFO}}` | Contact information | Ending |
-
----
-
-## XI. Usage Guide
-
-1. Reuse `logo.png` and `footer_ribbon.png` as fixed brand assets; `slogan_red.png` and `skyline_bg.png` should be used selectively and only on the cover / ending pages.
-2. Keep generated text inside the documented safe areas; only chapter pages use a strong left/right split.
-3. Prefer red emphasis only for structure and key figures; do not over-saturate the content area.
-4. Reference only assets packaged with this template.
+| logo.png | 封面、章节页和结束页品牌标识 |
+| header_brand.png | 目录页和内容页横向页眉标识 |
+| footer_ribbon.png | 封面、章节页和结束页底部品牌飘带 |
+| slogan_red.png | 右侧品牌卡片口号 |
+| skyline_bg.png | 右侧品牌卡片城市线稿 |
+| top_emblem.png | 保留的备用横向品牌资产 |

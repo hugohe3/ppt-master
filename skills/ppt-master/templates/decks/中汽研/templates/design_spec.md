@@ -1,214 +1,62 @@
 ---
 deck_id: 中汽研
 kind: deck
-native_structure_mode: template
-summary: Product certification display, evaluation presentations, technology promotion, business visits.
-canvas_format: ppt169
-page_count: 5
+category: brand
+summary: 中汽研认证展示、技术交流与业务来访场景的深蓝专业模板。
+keywords: [中汽研, 认证, 评测, 技术交流]
 primary_color: "#004098"
+canvas_format: ppt169
+canvas_width: 1280
+canvas_height: 720
+canvas_viewbox: "0 0 1280 720"
+source_canvas_width: 1280
+source_canvas_height: 720
+source_viewbox: "0 0 1280 720"
+replication_mode: fidelity
+native_structure_mode: structured
+page_count: 5
 ---
 
-# CATARC (中汽研) Standard Template - Design Specification
-
-> Suitable for CATARC product certification, evaluation & certification, technology showcases, business visits, and similar scenarios.
-
----
+# 中汽研 — Design Specification
 
 ## I. Template Overview
 
-| Property       | Description                                                |
-| -------------- | ---------------------------------------------------------- |
-| **Template Name** | 中汽研                                                   |
-| **Use Cases**  | Product certification display, evaluation presentations, technology promotion, business visits |
-| **Design Tone** | Professional, authoritative, trustworthy, consulting style |
-| **Theme Mode** | Light theme (white background + deep blue accent)          |
+- 适用于产品认证展示、评测汇报、技术推广和业务来访。
+- 视觉以中汽研深蓝、白底内容页、方形章节编号和简洁网格为识别核心，强调专业、可信和工程秩序。
+- 整套模板使用 CATARC Dark 与 CATARC Light 两个 Master，并提供五个可直接从 PowerPoint 布局库调用的 Layout。
 
----
+## II. Color Scheme
 
-## II. Canvas Specification
+| Role | Color | Application |
+| --- | --- | --- |
+| CATARC blue | #004098 | 深色页面背景、章节编号块、结构线 |
+| Deep blue | #003B82 | 封面背景 |
+| Panel gray | #F8FAFC | 内容承载区 |
+| Border gray | #E0E0E0 | 分隔线和面板边界 |
+| Primary text | #333333 | 内容页标题和正文 |
+| White | #FFFFFF | 深色页面文字与 Master 背景 |
 
-| Property       | Value                         |
-| -------------- | ----------------------------- |
-| **Format**     | Standard 16:9                 |
-| **Dimensions** | 1280 × 720 px                |
-| **viewBox**    | `0 0 1280 720`               |
-| **Page Margins** | Left/Right 60px, Top 80px, Bottom 40px |
-| **Safe Area**  | x: 60-1220, y: 80-680        |
+## IV. Signature Design Elements
 
----
+- 白底内容页使用“蓝色方形章节号 + 左对齐标题 + 右上角 Logo”的稳定页眉。
+- 封面、章节页和结束页保留深蓝底、低透明度圆形与细网格，但删除无内容价值的复杂渐变和动态图片依赖。
+- CATARC Dark Master 统一承载深蓝背景和上下结构线；章节页与结束页各自保留原稿中的圆形几何，封面不继承圆形。CATARC Light Master 统一承载白底、章节号方块、页眉 Logo、分隔线和底部蓝线。
+- 目录页延续数字与双竖线的行式导航，并保留右侧独立数据对象区。
+- 通用内容对象从框体左上角开始；封面、章节页、结束页以及小型章节号属于短焦点内容，允许在完整占位框中居中。
 
-## III. Color Scheme
+## V. Page Roster
 
-### Primary Colors
+| File | Master | Layout key | PowerPoint picker name | Visual character | Reusable slots |
+| --- | --- | --- | --- | --- | --- |
+| (01_cover.svg) | CATARC Dark | cover | Cover | 深蓝背景、居中大型 Logo 与标题簇 | 标题、副标题、单位、英文单位 |
+| (02_toc.svg) | CATARC Light | agenda | Agenda | 数字双竖线目录、右侧数据面板 | 页面标题、五个目录项、数据对象、页码 |
+| (02_chapter.svg) | CATARC Dark | section | Section Header | 深蓝章节页、居中章节号和标题 | 章节号、章节标题、章节副标题 |
+| (03_content.svg) | CATARC Light | content | Title and Content | 方形章节号页眉与开放内容面板 | 章节号、页面标题、内容对象、页码 |
+| (04_ending.svg) | CATARC Dark | closing | Closing | 深蓝网格背景、居中 Logo 与结束语 | 结束标题、英文副标题、联系信息、页脚 |
 
-| Role           | Color Value | Notes                            |
-| -------------- | ----------- | -------------------------------- |
-| **Primary Deep Blue** | `#004098` | Title bar, navigation bar, chapter number blocks, decorative bars |
-| **Background White** | `#FFFFFF` | Main page background            |
-| **Auxiliary Light Gray** | `#F5F5F5` | Secondary content background blocks |
-| **Border Gray** | `#E0E0E0` | Dividers, borders               |
-| **Accent Red** | `#CC0000`  | Key information highlight        |
+## VI. Assets
 
-### Text Colors
-
-| Role           | Color Value | Usage                  |
-| -------------- | ----------- | ---------------------- |
-| **Primary Text** | `#333333` | Body text, headings    |
-| **White Text** | `#FFFFFF`  | Text on dark backgrounds |
-| **Secondary Text** | `#666666` | Dimmed chapters, auxiliary descriptions |
-| **Light Auxiliary** | `#999999` | Annotations, page numbers, hints |
-
-### Functional Colors
-
-| Usage      | Color Value | Description    |
-| ---------- | ----------- | -------------- |
-| **Success** | `#4CAF50` | Pass / Certified |
-| **Warning** | `#CC0000` | Failed / Attention |
-
----
-
-## IV. Typography System
-
-### Font Stack
-
-**Font Stack**: `"Microsoft YaHei", "微软雅黑", "SimHei", Arial, Calibri, sans-serif`
-
-### Font Size Hierarchy
-
-| Level | Usage              | Size | Weight  |
-| ----- | ------------------ | ---- | ------- |
-| H1    | Cover main title   | 48px | Bold    |
-| H2    | Page heading       | 28px | Bold    |
-| H3    | Section title / Subtitle | 24px | Bold |
-| P     | Body content       | 18px | Regular |
-| High  | Emphasized data    | 36px | Bold    |
-| Sub   | Auxiliary notes    | 14px | Regular |
-
----
-
-## V. Page Structure
-
-### Common Layout
-
-| Area       | Position/Height | Description                            |
-| ---------- | --------------- | -------------------------------------- |
-| **Top**    | y=0, h=4px      | Deep blue bar spanning full width      |
-| **Title Bar** | y=30, h=50px | Chapter number block + Title text + Top-right Logo |
-| **Content** | y=100, h=560px | Main content area                     |
-| **Footer** | y=680, h=40px   | Page number (right-aligned), bottom decorative line |
-
-### Navigation Design
-
-- **Top Decorative Line**: Deep blue (`#004098`), height 4px, spanning full width
-- **Bottom Decorative Line**: Deep blue (`#004098`), height 4px, y=716
-- **Title Bar** (y=30):
-  - Chapter number block: Deep blue square (50×50px), white number/text centered
-  - Title text: 20px from number block, 28px font size, `#333333`
-  - Top-right Logo: Fixed at x=1107, size 113×50px
-
----
-
-## VI. Page Types
-
-### 1. Cover Page (01_cover.svg)
-
-- Supports background image (AI-generated / user-provided)
-- Semi-transparent overlay for text readability
-- Large centered Logo
-- Main title + subtitle
-- Organization name (Chinese & English)
-
-### 2. Table of Contents (02_toc.svg)
-
-- Double vertical line `||` separator design
-- Supports up to 5 chapters
-- Left decorative vertical line
-- Optional statistics display area on the right
-
-### 3. Chapter Page (02_chapter.svg)
-
-- Deep blue gradient background
-- Large chapter number
-- Chapter title + English subtitle
-
-### 4. Content Page (03_content.svg)
-
-- White background
-- Standard navigation bar
-- Flexible content area
-- Supports multiple layout patterns
-
-### 5. Ending Page (04_ending.svg)
-
-- Deep blue solid background
-- Centered Logo
-- Thank-you message
-- Organization information
-
----
-
-## VII. SVG Page Roster
-
-| File | Role | Description |
-|------|------|-------------|
-| `01_cover.svg` | cover | Title slide; brand/project name + presenter + date |
-| `02_chapter.svg` | chapter | Chapter divider page (large number + chapter title) |
-| `02_toc.svg` | toc | Table of contents listing major sections |
-| `03_content.svg` | content | Main content page; body of the deck |
-| `04_ending.svg` | ending | Closing/thank-you page |
-
-## VIII. Layout Patterns (Recommended)
-
-| Pattern              | Use Cases                      |
-| -------------------- | ------------------------------ |
-| **Single Column Center** | Cover, conclusion, key points |
-| **Left-Right Split (5:5)** | Comparison display          |
-| **Left-Right Split (4:6)** | Image-text mixed layout     |
-| **Top-Bottom Split** | Process description, standards list |
-| **Three-Column Cards** | Project listings             |
-| **Matrix Grid**      | Category display               |
-| **Table**            | Data comparison, specification lists |
-
----
-
-## IX. Spacing Guidelines
-
-| Element        | Value  |
-| -------------- | ------ |
-| Card gap       | 24px   |
-| Content block gap | 32px |
-| Card padding   | 24px   |
-| Card border radius | 8px |
-| Icon-to-text gap | 12px |
-
----
-
-## X. Placeholder Specification
-
-Templates use `{{PLACEHOLDER}}` format. Common placeholders:
-
-| Placeholder          | Description        |
-| -------------------- | ------------------ |
-| `{{TITLE}}`          | Main title         |
-| `{{SUBTITLE}}`       | Subtitle           |
-| `{{AUTHOR}}`         | Author / Organization (Chinese) |
-| `{{AUTHOR_EN}}`      | Author / Organization (English) |
-| `{{PAGE_TITLE}}`     | Page title         |
-| `{{CHAPTER_NUM}}`    | Chapter number     |
-| `{{PAGE_NUM}}`       | Page number        |
-| `{{TOC_ITEM_N_TITLE}}` | TOC item title   |
-| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
-| `{{THANK_YOU}}`      | Thank-you message  |
-| `{{CONTACT_INFO}}`   | Primary contact info |
-| `{{LOGO_LARGE}}`     | Large Logo filename |
-| `{{LOGO_HEADER}}`    | Header Logo filename |
-| `{{COVER_BG_IMAGE}}` | Cover background image filename |
-
----
-
-## XI. Usage Notes (Recommended)
-
-1. **Template Deployment**: Copy the template to your project directory.
-2. **Asset Replacement**: Replace `大型 logo.png` (592×238) and `右上角 logo.png` (113×50) in the `images` directory.
-3. **Content Generation**: Select appropriate page templates based on content needs, and replace content using `{{}}` placeholders.
-4. **SVG Generation**: Generate final SVG files via automation scripts.
+| File | Intended usage |
+| --- | --- |
+| 大型 logo.png | 封面和结束页主标识 |
+| 右上角 logo.png | 目录页和内容页页眉标识 |

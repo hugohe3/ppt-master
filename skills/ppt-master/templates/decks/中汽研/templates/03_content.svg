@@ -1,57 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="03_content" data-pptx-layout-name="Content">
-    <!-- 模板: 内容页 - 中汽研风格 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="catarc_light_master" data-pptx-master-name="CATARC Light"
+  data-pptx-layout="content" data-pptx-layout-name="Title and Content">
+  <rect id="light-master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="light-master-top-rule" x="0" y="0" width="1280" height="4" fill="#004098"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="light-master-number-block" x="60" y="30" width="50" height="50" fill="#004098"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <image id="light-master-logo" x="1107" y="30" width="113" height="50"
+    xlink:href="../images/右上角 logo.png" preserveAspectRatio="xMidYMid meet"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <line id="light-master-header-rule" x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0"
+    stroke-width="1" data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="light-master-bottom-rule" x="0" y="716" width="1280" height="4" fill="#004098"
+    data-pptx-layer="master" data-pptx-editable="false"/>
 
-    <!-- 白色背景 -->
-    <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"  id="layout-03_content-background" data-pptx-layer="layout" data-pptx-editable="false"/>
-
-    <!-- 顶部深蓝色装饰线 -->
-    <rect x="0" y="0" width="1280" height="4" fill="#004098" />
-
-    <!-- 页眉导航栏 -->
-    <!-- 章节序号块 - 深蓝色正方形 -->
-    <rect x="60" y="30" width="50" height="50" fill="#004098" />
-    <text x="85" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold"
-        fill="#FFFFFF">{{CHAPTER_NUM}}</text>
-
-    <!-- 页面标题 -->
-    <text x="130" y="65" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="28" font-weight="bold"
-        fill="#333333" id="slot-03_content-title-1" data-pptx-placeholder="title">{{PAGE_TITLE}}</text>
-
-    <!-- 右上角Logo -->
-    <image href="../images/{{LOGO_HEADER}}" x="1107" y="30" width="113" height="50"
-        preserveAspectRatio="xMidYMid meet" id="semantic-03_content-logo-1" data-pptx-role="logo" />
-
-    <!-- 内容区域 - 灵活布局，由 Executor 根据实际内容自由设计 -->
-    <!-- 可使用的布局模式：
-       - 单栏文字列表
-       - 左右双栏对比
-       - 卡片式分块（如 2×2 四宫格）
-       - 图文混排（左图右文、上图下文、通栏图）
-       - 表格
-       - 时间轴
-       - 流程图
-  -->
-    <rect x="60" y="100" width="1160" height="570" fill="none" stroke="#E0E0E0" stroke-width="2"
-        stroke-dasharray="8,8" />
-    <text x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="18" font-family="Microsoft YaHei, sans-serif" id="slot-03_content-body-2" data-pptx-placeholder="body">
-        {{CONTENT_AREA}}
-    </text>
-    <text x="640" y="400" text-anchor="middle" fill="#CBD5E1" font-size="14" font-family="Microsoft YaHei, sans-serif">
-        (由 Executor 根据实际内容自由布局)
-    </text>
-
-    <!-- 常用设计元素参考 -->
-    <!-- 色块容器: <rect fill="#F5F5F5" rx="4"/> -->
-    <!-- 强调色块: <rect fill="#004098"/> -->
-    <!-- 圆点列表: <circle r="5" fill="#004098"/> -->
-    <!-- 分隔线: <line stroke="#E0E0E0" stroke-width="1"/> -->
-
-    <!-- 底部装饰线 -->
-    <rect x="0" y="716" width="1280" height="4" fill="#004098" />
-
-    <!-- 页码 -->
-    <text x="1220" y="705" text-anchor="end" font-family="Arial, sans-serif" font-size="14"
-        fill="#999999" id="slot-03_content-slide_number-3" data-pptx-placeholder="slide-number">{{PAGE_NUM}}</text>
-
+  <rect id="content-panel" x="60" y="110" width="1160" height="550" rx="10"
+    fill="#F8FAFC" stroke="#E0E0E0" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="content-panel-accent" x="60" y="110" width="6" height="550" fill="#004098"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="content-chapter-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="60 30 50 50">
+    <text id="content-chapter-carrier" data-pptx-placeholder-carrier="true"
+      x="85" y="65" text-anchor="middle" fill="#FFFFFF"
+      font-family="Arial, sans-serif" font-size="24" font-weight="700">{{CHAPTER_NUM}}</text>
+  </g>
+  <g id="content-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="130 32 920 48">
+    <text id="content-title-carrier" data-pptx-placeholder-carrier="true"
+      x="130" y="65" fill="#333333"
+      font-family="Microsoft YaHei, SimHei, Arial, sans-serif"
+      font-size="28" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="content-object-slot" data-pptx-placeholder="object" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="88 138 1104 494">
+    <text id="content-object-carrier" data-pptx-placeholder-carrier="true"
+      x="88" y="172" fill="#7890A8"
+      font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">{{CONTENT_AREA}}</text>
+  </g>
+  <g id="content-slide-number-slot" data-pptx-placeholder="slide-number"
+    data-pptx-placeholder-idx="3" data-pptx-placeholder-bounds="1140 682 80 24">
+    <text id="content-slide-number-carrier" data-pptx-placeholder-carrier="true"
+      x="1220" y="702" text-anchor="end" fill="#999999"
+      font-family="Arial, sans-serif" font-size="14">{{PAGE_NUM}}</text>
+  </g>
 </svg>

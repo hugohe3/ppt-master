@@ -237,21 +237,14 @@ HEX_VALUE_RE = re.compile(
 # Master/Layout preflight validation. Structured deck/layout-template projects
 # are checked at authoring time; the exporter remains the final OOXML/package
 # authority. Flat projects only receive the negative guard that rejects authored
-# structure metadata. Template roster/placeholder checks always run; the legacy
-# template structure override stays dormant until the bundled library migrates
-# off native_structure_mode: template. Current structured templates opt in via
-# their design_spec.md declaration without waiting for that migration.
+# structure metadata. Template roster/placeholder checks always run. Current
+# bundled templates opt in to complete structure validation through their
+# native_structure_mode: structured declaration.
 _CHECK_PPTX_STRUCTURED_PROJECT = True
 _CHECK_PPTX_TEMPLATE_MODE = False
-# Explicit migration debt: remove each entry after that bundled workspace adopts
-# native_structure_mode: structured. New/custom workspaces are never exempt.
-_BUNDLED_LEGACY_TEMPLATE_DIRS = frozenset({
-    'decks/中国电信/templates',
-    'decks/中国电建/templates',
-    'decks/中汽研/templates',
-    'decks/招商银行/templates',
-    'decks/重庆大学/templates',
-})
+# Compatibility hook for historical packages. The bundled library has no
+# remaining structure-validation exemptions.
+_BUNDLED_LEGACY_TEMPLATE_DIRS = frozenset()
 
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
@@ -4074,7 +4067,7 @@ def print_usage() -> None:
     print("  python3 scripts/svg_quality_checker.py examples/project/svg_output")
     print("  python3 scripts/svg_quality_checker.py examples/project")
     print("  python3 scripts/svg_quality_checker.py templates/layouts/presentation_core/templates --template-mode")
-    print("  python3 scripts/svg_quality_checker.py templates/decks/招商银行/templates --template-mode")
+    print("  python3 scripts/svg_quality_checker.py templates/decks/中国电信/templates --template-mode")
     print("\nOptions:")
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
     print("  --template-mode               Validate a template workspace's templates/ directory:")
