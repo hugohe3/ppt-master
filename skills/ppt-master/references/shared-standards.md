@@ -8,7 +8,7 @@ Other files link here instead of restating its contracts.
 | Section | Owns | Strength |
 |---|---|---|
 | §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the closed generated-authoring surface, structural blacklist, native line ends, image clipping, static local reuse, and imported/authored native-shape semantics | Required / Forbidden / Conditional |
-| §2 Conditional Compatibility Mappings | Literal inline geometry and the converter-only group-opacity boundary | Conditional / Forbidden |
+| §2 Conditional Compatibility Mappings | Literal inline geometry and the approximate group-opacity compatibility boundary | Conditional / Default |
 | §3 Canvas Format Quick Reference | Pointer to the complete canvas catalog | Reference |
 | §4 Required Page Contract and Conditional Packaging | Complete-page authority, semantic markers, editable text/grouping, and package promotion | Required / Conditional |
 | §5 Workflow Authority | Pointer to the serial post-processing/export procedure | Workflow pointer |
@@ -20,7 +20,7 @@ Other files link here instead of restating its contracts.
 
 | Capability family | Available authoring vocabulary | Detail |
 |---|---|---|
-| Color and transparency | CSS alpha colors; fill, stroke, text, picture, stop, and element opacity; converter-only group-opacity compatibility | §2.2, §6.2 |
+| Color and transparency | Default opaque `#RRGGBB` paint plus channel-specific alpha; compatible CSS-color spellings, picture/atomic-element opacity, and approximate group opacity | §2.2, §6.2 |
 | Gradients and paint | Linear/radial fills, transparent stops, gradient text, gradient strokes, and preset patterns | §6.3, §7 |
 | Depth and light | Soft/colored/directional shadow, glow, layered-geometry fallback, and paper-layer elevation | §6.4 |
 | Image treatment | Directional scrim, bottom fade, vignette, spotlight, brand wash, picture fading, and glass-like surfaces | §1.2, §6.5 |
@@ -54,13 +54,16 @@ Other files link here instead of restating its contracts.
 **Hard rule — generated authoring is fail-closed**: `svg_output/` and reusable
 template SVGs may use only properties and conditional interfaces explicitly
 listed in this file. `svg_quality_checker.py` rejects unknown inline visual
-properties and incomplete conditional contracts before export.
+properties and conditional contracts that have no reliable compatibility
+mapping; documented fallback forms remain valid and receive warnings.
 
-**Hard rule — compatibility is not authoring permission**: the converter may
-retain broader read compatibility for imported or historical SVG, including
-normalization and documented approximation. That compatibility does not add a
-feature to the generated-authoring surface. Do not remove converter support
-merely to enforce a narrower authoring contract.
+**Default — recommended authoring and supported input stay separate (may
+preserve supported input)**: generated SVG uses one predictable default
+spelling, while converter-supported equivalent spellings remain valid input.
+The checker may recommend normalization, but such warnings do not require
+modification or block export. Only invalid, unsafe, or unreliably convertible
+input is an error; do not remove converter support to enforce a narrower
+generation preference.
 
 **Hard rule — one-way fidelity vocabulary**: the labels above describe the
 `svg_output/` → generated PPTX path. They do not promise reconstruction of the
@@ -118,6 +121,12 @@ below; unlisted visual properties are unsupported.
 | Literal geometry | The element-specific properties in §2.1 |
 | Preview-only | `shape-rendering`; it does not change native geometry |
 
+**Default — one generated value spelling (may preserve supported input)**: the
+table allows inline placement of those property names. New generated paint
+prefers the spelling in §6.2 whether it appears as an attribute or inside
+`style`. Converter-compatible aliases remain valid input in both locations and
+produce recommendation warnings rather than errors.
+
 Conditional properties with a required XML form stay out of inline style:
 write `filter="url(#id)"`, `clip-path="url(#id)"`, and
 `marker-start` / `marker-end` as direct attributes. `!important`, unknown CSS
@@ -133,8 +142,8 @@ properties, blend modes, isolation, and backdrop filters fail quality check.
 >
 > **Authored native preset fragments are conditional** — see §1.5.
 >
-> **Inline CSS geometry, simple gradients, and filters are conditional;
-> generated group opacity is forbidden** — see §2 and §6.
+> **Inline CSS geometry, simple gradients, filters, and approximate group
+> opacity are conditional** — see §2 and §6.
 >
 > **PPT preset patterns and native chart/table/template metadata are
 > conditional** — see §7.
@@ -408,19 +417,20 @@ only for literal declarations in an element's own `style` attribute; PPT Master
 does not compute CSS cascade or custom properties. Root canvas authority remains
 the `viewBox`, regardless of root `<svg>` compatibility width/height values.
 
-### 2.2 Group Opacity Is Converter-Only Compatibility
+### 2.2 Group Opacity Compatibility
 
-**Forbidden — generated group opacity**: Do not author `<g opacity="...">` or
-inline group `opacity` below `1` in `svg_output/` or reusable templates. Put the
-required alpha on each descendant paint, text run, picture, or supported effect.
-The quality checker rejects generated group opacity because DrawingML has no
-isolated group-alpha model and overlapping descendants produce a different
-result.
+**Default — descendant alpha (may preserve compatible group opacity)**: New
+`svg_output/` and reusable templates put alpha on the affected descendant
+paint, text run, picture, or supported effect. DrawingML has no isolated
+group-alpha model, so overlapping descendants can look different when one
+group value is distributed across them.
 
-The converter retains direct-read compatibility for historical/imported SVG by
-multiplying group alpha into descendants. That path is `Approximate`; nested
-group/child alpha multiplies, and `--native-objects` rejects transparent native
-table/chart markers. It is not an authoring permission.
+The converter nevertheless accepts `<g opacity="...">` and inline group
+`opacity` by multiplying group alpha into descendants. That path is
+`Approximate`; nested group/child alpha multiplies, and `--native-objects`
+rejects transparent native table/chart markers. The quality checker reports a
+non-blocking fidelity warning so existing or intentionally authored input can
+continue without modification.
 
 ---
 
@@ -547,34 +557,59 @@ when the effect carries material meaning.
 
 ### 6.2 Color, Alpha, and Opacity
 
-Supported paint grammar: recognized named colors, `rgb()` / `rgba()`, `hsl()` /
-`hsla()`, and `#RGB` / `#RGBA` / `#RRGGBB` / `#RRGGBBAA`. Bare hexadecimal
-without `#` is invalid.
+Compatible paint grammar includes recognized named colors, `rgb()` / `rgba()`,
+`hsl()` / `hsla()`, and `#RGB` / `#RGBA` / `#RRGGBB` / `#RRGGBBAA`. The
+converter also tolerates legacy bare 3/4/6/8-digit hexadecimal tokens.
 
-| Authoring surface | Native result | Fidelity |
+**Default — canonical generated paint tokens (may preserve compatible
+alternatives)**: New `svg_output/` and reusable template SVGs write solid paint
+as uppercase six-digit `#RRGGBB`. `fill` / `stroke` may instead use lowercase
+`none` or the exact local reference form `url(#id)`. Named colors, lowercase or
+short/alpha HEX, functional colors, and bare legacy HEX remain supported input.
+The quality checker prints an optional canonical rewrite as a recommendation
+warning; it does not require modification or block export.
+
+| Intent | Canonical authoring | Native result / fidelity |
 |---|---|---|
-| `fill-opacity`; `stroke-opacity` | Fill, text, line, or outline alpha | `Native-stable` |
-| CSS color alpha | Alpha-bearing named/functional/HEX paint | `Native-normalized` |
-| Element `opacity` | Alpha compiled into supported paint/effect channels | `Native-normalized` |
-| `<image opacity>` | Picture `<a:alphaModFix>` | `Native-stable` |
-| `<stop stop-opacity>` | Per-stop gradient alpha | `Native-stable` |
-| `<g opacity>` | Direct-converter compatibility only; generated SVG authoring is forbidden | `Approximate`; §2.2 |
-| Pattern child/color alpha | Preset-pattern foreground/background alpha | Conditional; §7 |
+| Solid fill or text paint | `fill="#RRGGBB"` | Solid DrawingML paint; `Native-stable` |
+| Fill/text alpha | Opaque `fill` + `fill-opacity="0..1"` | Fill/run alpha; `Native-stable` |
+| Stroke alpha | Opaque `stroke` + `stroke-opacity="0..1"` | Line/outline alpha; `Native-stable` |
+| Gradient-stop alpha | Opaque `stop-color` + `stop-opacity="0..1"` | Per-stop alpha; `Native-stable` |
+| Shadow/glow alpha | Opaque `flood-color` + `flood-opacity="0..1"` | Effect alpha; `Native-stable` within §6.4 |
+| Picture fade | `<image opacity="0..1">` | Picture `<a:alphaModFix>`; `Native-stable` |
+| One atomic whole-object fade | Non-group element `opacity="0..1"` | Alpha compiled into its supported paint/effect channels; `Native-normalized` |
+| Pattern alpha | Opaque pattern child paint + child fill/stroke opacity | Conditional; §7 |
+| CSS color alpha | Alpha-bearing named/functional/HEX paint | `Native-normalized`; recommendation warning only |
+| Group fade | `<g opacity>` compatibility | `Approximate`; fidelity warning; §2.2 |
 
 ```text
 effective fill alpha
-= color alpha × element opacity × fill-opacity
+= color alpha × ancestor group opacity × element opacity × fill-opacity
 ```
 
-The converter-only historical path may additionally multiply ancestor group
-opacity; generated SVG never depends on that approximation.
+**Default — opaque color authority (may preserve compatible alpha colors)**:
+New generated SVG puts alpha on the semantic channel that owns it. Existing or
+intentional alpha-bearing color tokens remain convertible; they normalize into
+the matching DrawingML color/alpha channels.
 
-**Hard rule — alpha grammar**: write `opacity`, `fill-opacity`,
-`stroke-opacity`, `stop-opacity`, and `flood-opacity` as finite unitless numbers
-from `0` to `1`.
+**Default — channel-specific alpha (may override for one atomic whole-object
+fade)**: use `fill-opacity`, `stroke-opacity`, `stop-opacity`, or
+`flood-opacity` when only that channel fades. Use element `opacity` only when
+an image or one non-group atomic object intentionally fades all of its
+supported paint/effect channels together. Do not use element `opacity` as an
+alias for `rgba()` on a fill-only object.
+
+**Default — alpha grammar (may preserve compatible alternatives)**: write
+`opacity`, `fill-opacity`, `stroke-opacity`, `stop-opacity`, and
+`flood-opacity` as finite unitless numbers from `0` to `1`. The converter also
+accepts finite numeric values that SVG/CSS clamps into that interval;
+`stop-opacity` and `flood-opacity` additionally accept finite percentages. The
+checker reports those supported non-default spellings as recommendation warnings.
+Malformed or non-finite values remain errors because the exporter cannot
+preserve their intent.
 `fill="transparent"` / `stroke="transparent"` become no fill/line; use a color
-plus alpha when a painted transparent layer must remain represented. Group
-opacity below `1` is forbidden in generated SVG; assign alpha to descendants.
+plus alpha when a painted transparent layer must remain represented. Prefer
+descendant alpha over group opacity when isolated compositing matters (§2.2).
 
 ---
 
@@ -629,8 +664,9 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Classification | Meaningful non-zero offset → one outer shadow; zero/no offset → one glow |
 | Fidelity | `Approximate`; one filter becomes one DrawingML effect |
 
-Flood/color alpha, linear `feFuncA slope`, and element opacity multiply. The
-converter-only historical path may also multiply ancestor group opacity.
+Flood opacity, linear `feFuncA slope`, and element opacity multiply. The
+converter-only historical path may also multiply flood-color alpha and
+ancestor group opacity.
 Native export does not preserve filter-region, `in/in2/result`, merge order, or
 composite topology. Other primitives, multiple independent effects, filters on
 `<image>` / `<tspan>` / `<g>` / unsupported targets are forbidden; apply the
@@ -747,6 +783,7 @@ matters, use one multi-subpath path rather than a fixed-density preset pattern:
 |---|---|---|
 | Underline / strike / both | `text-decoration="underline"`, `line-through`, or both | `Native-stable`; both emits both run properties |
 | Mixed runs | Non-positional `<tspan>` | One `Native-normalized` editable frame; §4.2 |
+| Font size | Generated default is a finite unitless SVG px value; compatible `px`, `pt`, `pc`/`pica`, `in`, `cm`, `mm`, `q`, `em`, and `rem` values receive a recommendation warning only | Converted to SVG px, then editable DrawingML point size; unsupported units/percentages error |
 | Tracking | Numeric `letter-spacing` | `Native-normalized`; unitless/`px` = SVG px, `pt` converts to px, `em` resolves against run size |
 | Transparency | `opacity` / `fill-opacity` on text/run | `Native-normalized` run alpha, not isolated compositing |
 | Gradient fill | §6.3 gradient on text/run | Editable fill; geometry normalizes |
@@ -778,7 +815,7 @@ modes, generated effects, and text-image knockouts are outside editable text.
 | Positive scale / negative mirror | Geometry/image only; explicit pivot; `Native-normalized` |
 | `matrix(a b c d e f)` | Geometry/image only; transformed axes finite, non-zero, orthogonal; excludes rounded rects; `Native-normalized` |
 | Source order | Back-to-front PPT z-order; `Native-stable` |
-| `<g opacity>` | Converter-only historical compatibility; forbidden in generated SVG, §2.2 |
+| `<g opacity>` | Compatible approximate mapping; generated SVG prefers descendant alpha, §2.2 |
 | Local `<use>` | §1.3 compile-time reuse; `Native-normalized` |
 
 Set text size/position directly; do not scale or general-matrix text. `skewX`,
@@ -1001,9 +1038,11 @@ required.
 the tile's arbitrary geometry. Use this interface only when that preset mapping
 is intended.
 
-`data-pptx-pattern="<preset>"` is required to select the intended preset from
-the enum below. The converter retains an `ltUpDiag` fallback for historical
-input, but generated authoring without the annotation fails quality check.
+`data-pptx-pattern="<preset>"` is the generated default for selecting the
+intended preset from the enum below. The converter retains an `ltUpDiag`
+fallback when the annotation is absent; the checker reports that fallback as a
+non-blocking fidelity warning. Invalid explicit preset names remain errors
+because they violate the closed OOXML enum.
 
 Pattern colors may come from importer metadata (`data-pptx-fg` /
 `data-pptx-bg`) or from the pattern's child paint. Without metadata, the first
@@ -1023,8 +1062,9 @@ itself is never used as a repeatable tile.
 | Checks & confetti | `smCheck` · `lgCheck` · `smConfetti` · `lgConfetti` |
 | Decorative | `horzBrick` · `diagBrick` · `weave` · `plaid` · `trellis` · `zigZag` · `wave` · `sphere` · `divot` · `shingle` · `solidDmnd` · `openDmnd` · `dotDmnd` |
 
-`svg_quality_checker.py` errors when a referenced pattern lacks the annotation,
-uses `patternTransform`, or names a preset outside this enum.
+`svg_quality_checker.py` warns when a referenced pattern lacks the annotation;
+it errors when the pattern uses `patternTransform` or names a preset outside
+this enum.
 
 ### Native PPTX Table / Chart Markers (Opt-in)
 
@@ -1284,10 +1324,10 @@ the visible SVG fallback: the largest panel-like `<rect>` becomes the chart
 background, fallback text supplies label color, and fallback strokes supply
 axis/grid colors. Override any of them explicitly under `style` with
 `chart_area_fill`, `plot_area_fill`, `text_color`, `axis_color`, and
-`grid_color`; use `"none"` for transparent chart or plot area fill. Color
-values may be `#RRGGBB`, `#RGB`, `rgb(...)` / `rgba(...)`, or common CSS names
-such as `white`, `black`, and `gray`; the exporter normalizes them to 6-digit
-OOXML RGB. Bar and column series also disable PowerPoint's negative-value
+`grid_color`; use `"none"` for transparent chart or plot area fill. Generated
+payloads default to uppercase `#RRGGBB`. The exporter retains compatibility for
+`#RGB`, `rgb(...)` / `rgba(...)`, and common CSS names, normalizing them to
+6-digit OOXML RGB. Bar and column series also disable PowerPoint's negative-value
 inversion so negative bars keep the same series fill instead of turning into
 white/theme fill.
 

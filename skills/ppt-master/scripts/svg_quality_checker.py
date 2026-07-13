@@ -60,6 +60,7 @@ try:
         parse_font_family as _parse_export_font_family,
         parse_inline_style as _parse_inline_style,
         parse_svg_color as _parse_export_color,
+        parse_svg_length as _parse_export_length,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
     )
@@ -70,6 +71,7 @@ except ImportError:
     _parse_export_font_family = None
     _parse_inline_style = None
     _parse_export_color = None
+    _parse_export_length = None
     _rect_to_dml_xfrm = None
     _validate_dml_shape_matrix = None
 
@@ -246,6 +248,21 @@ _CHECK_PPTX_STRUCTURED_PROJECT = True
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
 )
+_CANONICAL_SOLID_PAINT_RE = re.compile(r"#[0-9A-F]{6}")
+_CANONICAL_PAINT_PROPERTIES = (
+    'fill',
+    'stroke',
+    'stop-color',
+    'flood-color',
+    'data-pptx-fg',
+    'data-pptx-bg',
+)
+_CANONICAL_PAINT_ALPHA_PROPERTY = {
+    'fill': 'fill-opacity',
+    'stroke': 'stroke-opacity',
+    'stop-color': 'stop-opacity',
+    'flood-color': 'flood-opacity',
+}
 SVG_NS = "http://www.w3.org/2000/svg"
 XLINK_NS = "http://www.w3.org/1999/xlink"
 _NON_VISUAL_SVG_TAGS = frozenset({
@@ -743,6 +760,36 @@ def _finite_unit_interval(raw: str) -> float | None:
     return value
 
 
+def _compatible_opacity(
+    raw: str,
+    *,
+    allow_percentage: bool = False,
+) -> float | None:
+    """Parse a finite opacity form supported by the matching converter path.
+
+    Every exported opacity path accepts and clamps unitless numbers. Gradient
+    stops and filter flood alpha additionally accept percentages; ordinary
+    element, fill, stroke, text, picture, and group opacity paths do not.
+    """
+    value_text = raw.strip()
+    is_percent = value_text.endswith('%')
+    if is_percent and not allow_percentage:
+        return None
+    if is_percent:
+        value_text = value_text[:-1].strip()
+    if re.fullmatch(_NUMBER_TOKEN, value_text) is None:
+        return None
+    try:
+        value = float(value_text)
+    except ValueError:
+        return None
+    if not math.isfinite(value):
+        return None
+    if is_percent:
+        value /= 100.0
+    return max(0.0, min(1.0, value))
+
+
 def _normalized_gradient_value(raw: str) -> float | None:
     """Parse a normalized gradient coordinate or percentage."""
     value_text = raw.strip()
@@ -998,6 +1045,8 @@ class SVGQualityChecker:
                 # 2b. Validate the closed authoring-property surface and
                 # conditional definition interfaces before export.
                 self._check_authoring_property_contract(root, result)
+                self._check_paint_compatibility(root, result)
+                self._check_reference_spelling(root, result)
                 self._check_definition_contract(root, result)
                 self._check_marker_contract(root, result)
                 self._check_clip_path_contract(root, result)
@@ -1316,44 +1365,165 @@ class SVGQualityChecker:
                     )
         result['errors'].extend(sorted(paint_reference_errors))
 
-        # Paint grammar: use the exporter's parser so authoring validation and
-        # native conversion accept the same CSS color subset.
-        paint_values = [
-            (attr, value)
-            for attr in (
-                'fill', 'stroke', 'stop-color', 'flood-color',
-                'data-pptx-fg', 'data-pptx-bg',
-            )
-            for value in self._svg_property_values(content, attr)
-        ]
+    @staticmethod
+    def _canonical_alpha_literal(value: float) -> str:
+        """Return a compact deterministic alpha literal in the closed interval."""
+        bounded = max(0.0, min(1.0, value))
+        return f'{bounded:.6f}'.rstrip('0').rstrip('.') or '0'
+
+    def _check_paint_compatibility(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject unsupported paint and advise one generated-SVG spelling.
+
+        The exporter parser owns compatibility. Any paint it can parse remains
+        valid input; the checker only warns when that spelling differs from the
+        generated-SVG default (uppercase ``#RRGGBB`` plus explicit alpha).
+        """
         if _parse_export_color is None:
             result['warnings'].append(
                 "Unable to import svg_to_pptx color parser; skipped paint syntax check"
             )
-        else:
-            invalid_paints = set()
-            for attr, value in paint_values:
-                normalized = value.strip()
-                if attr in {'fill', 'stroke'} and (
-                    normalized.lower() == 'none'
-                    or re.fullmatch(r'url\(#[^)]+\)', normalized)
-                ):
+            return
+
+        unsupported: Counter[tuple[str, str]] = Counter()
+        recommendations: Counter[tuple[str, str, str]] = Counter()
+        unsupported_examples: Dict[tuple[str, str], List[str]] = defaultdict(list)
+        recommendation_examples: Dict[tuple[str, str, str], List[str]] = defaultdict(list)
+
+        def remember_example(store: Dict, key: tuple, label: str) -> None:
+            labels = store[key]
+            if label not in labels and len(labels) < 3:
+                labels.append(label)
+
+        for elem in root.iter():
+            label = _element_label(elem)
+            style_declarations: list[tuple[str, str]] = []
+            for fragment in (elem.get('style') or '').split(';'):
+                fragment = fragment.strip()
+                if not fragment or ':' not in fragment:
                     continue
-                if _BARE_HEX_VALUE_RE.fullmatch(normalized):
-                    invalid_paints.add(value)
+                name, value = fragment.split(':', 1)
+                name = name.strip().lower()
+                value = value.strip()
+                if name and value:
+                    style_declarations.append((name, value))
+            style_values = dict(style_declarations)
+
+            paint_entries = [
+                (name, elem.get(name), 'attribute')
+                for name in _CANONICAL_PAINT_PROPERTIES
+                if elem.get(name) is not None
+            ]
+            paint_entries.extend(
+                (name, value, 'inline style')
+                for name, value in style_declarations
+                if name in _CANONICAL_PAINT_PROPERTIES
+            )
+
+            for name, raw_value, source in paint_entries:
+                assert raw_value is not None
+                value = raw_value.strip()
+                source_label = f'{label} {source}'
+
+                if name in {'fill', 'stroke'}:
+                    if value == 'none' or re.fullmatch(r'url\(#[^)]+\)', value):
+                        continue
+                    if value.lower() == 'none':
+                        key = (name, raw_value, f'{name}="none"')
+                        recommendations[key] += 1
+                        remember_example(recommendation_examples, key, source_label)
+                        continue
+                    if value.lower() == 'transparent':
+                        key = (name, raw_value, f'{name}="none"')
+                        recommendations[key] += 1
+                        remember_example(recommendation_examples, key, source_label)
+                        continue
+
+                if _CANONICAL_SOLID_PAINT_RE.fullmatch(value):
                     continue
-                color, _alpha = _parse_export_color(normalized)
+
+                color, color_alpha = _parse_export_color(value)
                 if color is None:
-                    invalid_paints.add(value)
-            if invalid_paints:
-                shown = ', '.join(sorted(invalid_paints)[:5])
-                more = len(invalid_paints) - 5
-                suffix = f" (+{more} more)" if more > 0 else ""
-                result['errors'].append(
-                    "Unsupported SVG paint value(s) for PPTX export: "
-                    f"{shown}{suffix}. Use a supported named color, rgb()/rgba(), "
-                    "hsl()/hsla(), or #RGB/#RGBA/#RRGGBB/#RRGGBBAA."
-                )
+                    key = (name, raw_value)
+                    unsupported[key] += 1
+                    remember_example(unsupported_examples, key, source_label)
+                    continue
+
+                replacement = f'{name}=\"#{color}\"'
+                alpha_name = _CANONICAL_PAINT_ALPHA_PROPERTY.get(name)
+                if color_alpha < 1.0 and alpha_name is not None:
+                    existing_alpha_raw = (
+                        style_values.get(alpha_name) or elem.get(alpha_name)
+                    )
+                    existing_alpha = (
+                        _compatible_opacity(
+                            existing_alpha_raw,
+                            allow_percentage=alpha_name in {
+                                'stop-opacity',
+                                'flood-opacity',
+                            },
+                        )
+                        if existing_alpha_raw is not None else 1.0
+                    )
+                    effective_alpha = (
+                        color_alpha * existing_alpha
+                        if existing_alpha is not None else color_alpha
+                    )
+                    replacement += (
+                        f' {alpha_name}=\"'
+                        f'{self._canonical_alpha_literal(effective_alpha)}\"'
+                    )
+                elif color_alpha < 1.0:
+                    replacement += (
+                        '; put alpha on the matching pattern child fill/stroke '
+                        'opacity'
+                    )
+                key = (name, raw_value, replacement)
+                recommendations[key] += 1
+                remember_example(recommendation_examples, key, source_label)
+
+        for (name, raw_value), count in sorted(unsupported.items()):
+            allowed = (
+                '#RRGGBB, none, or url(#id)'
+                if name in {'fill', 'stroke'} else '#RRGGBB'
+            )
+            examples = ', '.join(unsupported_examples[(name, raw_value)])
+            result['errors'].append(
+                f"Unsupported SVG paint {name}={raw_value!r} in {count} "
+                f"location(s) ({examples}); use {allowed} or another color "
+                "accepted by svg_to_pptx"
+            )
+
+        for (name, raw_value, replacement), count in sorted(recommendations.items()):
+            examples = ', '.join(
+                recommendation_examples[(name, raw_value, replacement)]
+            )
+            result['warnings'].append(
+                f"Recommendation: {name}={raw_value!r} is converter-compatible "
+                f"in {count} location(s) ({examples}); generated SVG should "
+                f"prefer {replacement}. No change is required for export."
+            )
+
+    def _check_reference_spelling(self, root: ET.Element, result: Dict) -> None:
+        """Recommend SVG 2 ``href`` while retaining legacy XLink input."""
+        labels = []
+        xlink_href = f'{{{XLINK_NS}}}href'
+        for elem in root.iter():
+            if _local_name(elem).lower() not in {'image', 'use'}:
+                continue
+            if elem.get(xlink_href) is not None:
+                labels.append(_element_label(elem))
+        if labels:
+            examples = ', '.join(labels[:3])
+            suffix = f' (+{len(labels) - 3} more)' if len(labels) > 3 else ''
+            result['warnings'].append(
+                f"Recommendation: legacy xlink:href is supported on {len(labels)} "
+                f"reference(s) ({examples}{suffix}); generated SVG should prefer "
+                "href. No change is required for export."
+            )
 
     def _check_authoring_property_contract(
         self,
@@ -1361,7 +1531,9 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate inline CSS and alpha values against the authoring surface."""
-        issues: set[str] = set()
+        errors: set[str] = set()
+        recommendations: set[str] = set()
+        fidelity_warnings: set[str] = set()
         for elem in root.iter():
             label = _element_label(elem)
             style_declarations: list[tuple[str, str]] = []
@@ -1370,7 +1542,7 @@ class SVGQualityChecker:
                 if not fragment:
                     continue
                 if ':' not in fragment:
-                    issues.add(
+                    errors.add(
                         f"{label} has malformed inline style declaration {fragment!r}"
                     )
                     continue
@@ -1378,46 +1550,67 @@ class SVGQualityChecker:
                 name = name.strip().lower()
                 value = value.strip()
                 if not name or not value:
-                    issues.add(
+                    errors.add(
                         f"{label} has malformed inline style declaration {fragment!r}"
                     )
                     continue
                 style_declarations.append((name, value))
                 if name in _BAKE_REQUIRED_VISUAL_PROPERTIES:
-                    issues.add(
+                    errors.add(
                         f"{label} uses Bake-required visual property {name!r}; "
                         "bake the effect or rebuild it with supported geometry"
                     )
                 elif name not in _SUPPORTED_INLINE_STYLE_PROPERTIES:
-                    issues.add(
+                    errors.add(
                         f"{label} uses unsupported inline style property {name!r}; "
                         "native PPTX export would ignore it"
                     )
                 if '!important' in value.lower():
-                    issues.add(
+                    errors.add(
                         f"{label} inline style property {name!r} cannot use !important"
                     )
 
             for attr_name in elem.attrib:
                 local_attr = attr_name.rsplit('}', 1)[-1]
                 if local_attr in _BAKE_REQUIRED_VISUAL_PROPERTIES:
-                    issues.add(
+                    errors.add(
                         f"{label} uses Bake-required visual attribute {local_attr!r}; "
                         "bake the effect or rebuild it with supported geometry"
                     )
 
             for name in _ALPHA_PROPERTIES:
                 direct_value = elem.get(name)
-                if direct_value is not None and _finite_unit_interval(direct_value) is None:
-                    issues.add(
-                        f"{label} {name} must be a finite unitless number from "
-                        f"0 to 1; got {direct_value!r}"
+                alpha_entries = []
+                if direct_value is not None:
+                    alpha_entries.append((name, direct_value))
+                alpha_entries.extend(
+                    (f'style {name}', style_value)
+                    for style_name, style_value in style_declarations
+                    if style_name == name
+                )
+                for entry_name, raw_value in alpha_entries:
+                    allow_percentage = name in {'stop-opacity', 'flood-opacity'}
+                    compatible_value = _compatible_opacity(
+                        raw_value,
+                        allow_percentage=allow_percentage,
                     )
-                for style_name, style_value in style_declarations:
-                    if style_name == name and _finite_unit_interval(style_value) is None:
-                        issues.add(
-                            f"{label} style {name} must be a finite unitless number "
-                            f"from 0 to 1; got {style_value!r}"
+                    if compatible_value is None:
+                        accepted_form = (
+                            'a finite number or percentage opacity'
+                            if allow_percentage
+                            else 'a finite unitless numeric opacity'
+                        )
+                        errors.add(
+                            f"{label} {entry_name} must be {accepted_form}; "
+                            f"got {raw_value!r}"
+                        )
+                    elif _finite_unit_interval(raw_value) is None:
+                        recommendations.add(
+                            f"Recommendation: {label} {entry_name}={raw_value!r} "
+                            "is converter-compatible; generated SVG should prefer "
+                            f"the unitless 0..1 value "
+                            f"{self._canonical_alpha_literal(compatible_value)!r}. "
+                            "No change is required for export."
                         )
 
             if _local_name(elem).lower() != 'g':
@@ -1429,15 +1622,19 @@ class SVGQualityChecker:
             raw_opacity = style_opacity if style_opacity is not None else elem.get('opacity')
             if raw_opacity is None:
                 continue
-            opacity = _finite_unit_interval(raw_opacity)
+            opacity = _compatible_opacity(raw_opacity)
             if opacity is not None and opacity < 1.0:
-                issues.add(
-                    f"{label} uses <g opacity={raw_opacity!r}>; generated SVG "
-                    "must put alpha on individual descendants because native "
-                    "PPTX export cannot preserve isolated group compositing"
+                fidelity_warnings.add(
+                    f"Fidelity warning: {label} uses group opacity={raw_opacity!r}. "
+                    "The converter distributes this alpha to descendants and "
+                    "cannot preserve isolated group compositing; generated SVG "
+                    "should prefer descendant alpha. Existing input remains "
+                    "convertible and does not require modification."
                 )
 
-        result['errors'].extend(sorted(issues))
+        result['errors'].extend(sorted(errors))
+        result['warnings'].extend(sorted(recommendations))
+        result['warnings'].extend(sorted(fidelity_warnings))
 
     def _check_definition_contract(
         self,
@@ -1884,28 +2081,51 @@ class SVGQualityChecker:
         result['errors'].extend(sorted(issues))
 
     def _check_font_size_values(self, content: str, result: Dict):
-        """Require font-size values to be unitless numeric SVG px values."""
-        numeric_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
-        bad_values = set()
+        """Keep supported font-size units compatible and recommend unitless px."""
+        canonical_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
+        values = set()
 
         for match in re.finditer(r'\bfont-size\s*=\s*(["\'])(.*?)\1', content, re.IGNORECASE):
-            raw = match.group(2).strip()
-            if not numeric_re.fullmatch(raw):
-                bad_values.add(raw)
+            values.add(match.group(2).strip())
 
         for match in re.finditer(r'\bfont-size\s*:\s*([^;"\']+)', content, re.IGNORECASE):
-            raw = match.group(1).strip()
-            if not numeric_re.fullmatch(raw):
-                bad_values.add(raw)
+            values.add(match.group(1).strip())
 
-        if bad_values:
-            shown_values = sorted(bad_values)
+        if _parse_export_length is None:
+            result['warnings'].append(
+                "Unable to import svg_to_pptx length parser; skipped font-size syntax check"
+            )
+            return
+
+        unsupported = set()
+        compatible_noncanonical = set()
+        for raw in values:
+            parsed_px = _parse_export_length(raw, math.nan, font_size=16)
+            if not math.isfinite(parsed_px) or parsed_px < 0:
+                unsupported.add(raw)
+                continue
+            if not canonical_re.fullmatch(raw):
+                compatible_noncanonical.add(raw)
+
+        if unsupported:
+            shown_values = sorted(unsupported)
             shown = ', '.join(shown_values[:5])
             more = len(shown_values) - 5
             suffix = f" (+{more} more)" if more > 0 else ""
             result['errors'].append(
-                f"font-size must be a unitless numeric px value; found {shown}{suffix}. "
-                "Write e.g. font-size=\"28\", never font-size=\"28px\" or \"21pt\"."
+                f"Unsupported font-size value(s): {shown}{suffix}. Use a finite "
+                "non-negative SVG length supported by svg_to_pptx."
+            )
+
+        if compatible_noncanonical:
+            shown_values = sorted(compatible_noncanonical)
+            shown = ', '.join(shown_values[:5])
+            more = len(shown_values) - 5
+            suffix = f" (+{more} more)" if more > 0 else ""
+            result['warnings'].append(
+                f"Recommendation: font-size value(s) {shown}{suffix} are "
+                "converter-compatible; generated SVG should prefer unitless px "
+                "values such as font-size=\"28\". No change is required for export."
             )
 
     def _check_fonts(self, content: str, result: Dict):
@@ -2415,14 +2635,15 @@ class SVGQualityChecker:
             pat_id = pattern.get('id', '<unnamed>')
             prst = pattern.get('data-pptx-pattern')
             if pat_id in referenced_patterns and not prst:
-                result['errors'].append(
-                    f"<pattern id=\"{pat_id}\"> has no data-pptx-pattern attribute — "
-                    "generated SVG cannot rely on the converter's `ltUpDiag` "
-                    "compatibility fallback. Add a valid data-pptx-pattern; "
+                result['warnings'].append(
+                    f"Fidelity warning: <pattern id=\"{pat_id}\"> has no "
+                    "data-pptx-pattern attribute, so the converter will use its "
+                    "compatible `ltUpDiag` fallback. Generated SVG should declare a valid "
+                    "data-pptx-pattern to make the intended preset explicit; "
                     "set data-pptx-fg/data-pptx-bg or matching child paints "
-                    "when explicit pattern colors are required."
+                    "when explicit pattern colors are required. No change is "
+                    "required for export."
                 )
-                continue
             if pat_id in referenced_patterns and pattern.get('patternTransform'):
                 result['errors'].append(
                     f"<pattern id=\"{pat_id}\"> cannot use patternTransform; "
@@ -2629,8 +2850,8 @@ class SVGQualityChecker:
         """Warn on mapped pages that compile to bare Masters / empty Layouts.
 
         Zero-slot and framing-only Layouts are legal contracts, so these stay
-        warnings; the workflow gate requires each one to be fixed or
-        explicitly kept with a stated reason.
+        advisory warnings. They neither fail the workflow gate nor require a
+        per-warning disposition.
         """
         if not (root.get('data-pptx-layout') or '').strip():
             return
@@ -2650,26 +2871,29 @@ class SVGQualityChecker:
             result['warnings'].append(
                 'Mapped page declares data-pptx-layout but no data-pptx-layer '
                 'mark; the exported Master gets no shared background/chrome '
-                'and the Layout gets no static framing. Mark the deck-wide '
+                'and the Layout gets no static framing. Generated templates '
+                'should mark the deck-wide '
                 'background data-pptx-layer="master" and this layout key\'s '
-                'framing data-pptx-layer="layout".'
+                'framing data-pptx-layer="layout". No change or disposition '
+                'is required.'
             )
         if not has_placeholder and not has_layout_atom:
             result['warnings'].append(
                 'Mapped page has no placeholder slot and no '
                 'data-pptx-layer="layout" atom; its Layout exports empty. '
-                'Declare the slots the page actually has (title / subtitle / '
+                'Generated templates should declare the slots the page actually '
+                'has (title / subtitle / '
                 'body / picture / slide-number / footer) and mark the layout '
-                'key\'s static framing, or state why this fixed composition '
-                'is intentionally zero-slot.'
+                'key\'s static framing unless this is intentionally a fixed '
+                'zero-slot composition. No change or disposition is required.'
             )
         elif not has_placeholder:
             result['warnings'].append(
                 'Mapped Layout has static framing but no insertable '
-                'placeholder slot. Keep it only when zero-slot is the '
-                'intended reusable contract; otherwise declare the slots the '
-                'page actually has (title / subtitle / body / picture / '
-                'slide-number / footer).'
+                'placeholder slot. Generated templates should declare the '
+                'slots the page actually has (title / subtitle / body / '
+                'picture / slide-number / footer) unless zero-slot is the '
+                'intended reusable contract. No change or disposition is required.'
             )
 
     def _check_semantic_markers(
@@ -3043,6 +3267,8 @@ class SVGQualityChecker:
             return 'viewBox issues'
         elif 'foreignObject' in error_msg:
             return 'foreignObject'
+        elif 'paint' in error_msg.lower() or 'color value' in error_msg.lower():
+            return 'Paint issues'
         elif 'font' in error_msg.lower():
             return 'Font issues'
         else:
@@ -3393,7 +3619,8 @@ class SVGQualityChecker:
                 "contracts genuinely differ — assign distinct explicit default "
                 "placeholder bounds and/or mark only truly stable framing as "
                 'data-pptx-layer="layout". Slide-local content geometry does not '
-                "define a Layout."
+                "define a Layout. This recommendation is advisory; no change or "
+                "disposition is required."
             )
         return messages
 
@@ -4365,8 +4592,13 @@ class SVGQualityChecker:
             print(f"\n[TIP] Common fixes:")
             print(f"  1. XML well-formedness: write typography as raw Unicode (—, ©, →, NBSP); escape XML reserved chars as &amp; &lt; &gt; &quot; &apos; — never use HTML named entities like &nbsp; &mdash; &copy;")
             print(f"  2. viewBox issues: root viewBox is the canvas authority (see references/canvas-formats.md)")
-            print(f"  3. foreignObject: Use <text> + <tspan> for manual line breaks")
-            print(f"  4. Font issues: use PPT-safe exported typefaces (e.g. Microsoft YaHei / Arial / Consolas)")
+            print(
+                "  3. Paint recommendation: generated SVG prefers uppercase "
+                "#RRGGBB plus channel-specific opacity; compatible alternatives "
+                "remain non-blocking"
+            )
+            print(f"  4. foreignObject: Use <text> + <tspan> for manual line breaks")
+            print(f"  5. Font issues: use PPT-safe exported typefaces (e.g. Microsoft YaHei / Arial / Consolas)")
 
     def _print_animation_summary(self):
         """Print animations.json validation issues if present."""
@@ -4572,6 +4804,8 @@ def print_usage() -> None:
     print("                                  per-file and cross-page structure validation. Legacy")
     print("                                  native_structure_mode: template fails and must run")
     print("                                  restore-pptx-structure before validation.")
+    print("  Warnings are advisory: they require no modification and do not affect exit status;")
+    print("  only errors make the command exit with status 1.")
 
 
 def main() -> None:
