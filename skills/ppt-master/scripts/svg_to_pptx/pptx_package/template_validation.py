@@ -49,6 +49,7 @@ from .template_structure import (
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
 SLIDE_LAYOUT_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 )
@@ -57,6 +58,9 @@ SLIDE_REL_TYPE = (
 )
 SLIDE_MASTER_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
+)
+THEME_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
 )
 SLIDE_LAYOUT_CONTENT_TYPE = (
     "application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"
@@ -154,6 +158,51 @@ class _PackageReader:
         result = tuple(relationships)
         self._rels_cache[source_part] = result
         return result
+
+
+def _validate_unique_creation_ids(
+    reader: _PackageReader,
+    parts: set[str],
+) -> None:
+    """Reject cloned PowerPoint parts that retain the same p14:creationId."""
+    owners: dict[int, str] = {}
+    for part in sorted(parts):
+        root = reader.xml(part)
+        if root is None:
+            continue
+        c_sld = root.find(f"{{{PML_NS}}}cSld")
+        if c_sld is None:
+            continue
+        seen_in_part: set[int] = set()
+        for creation_id in c_sld.findall(
+            f"{{{PML_NS}}}extLst/{{{PML_NS}}}ext/"
+            f"{{{P14_NS}}}creationId"
+        ):
+            raw_value = creation_id.get("val")
+            try:
+                value = int(raw_value or "")
+            except ValueError:
+                reader.errors.append(
+                    f"{part} has invalid p14:creationId value {raw_value!r}"
+                )
+                continue
+            if value < 0 or value > OOXML_UINT32_MAX:
+                reader.errors.append(
+                    f"{part} p14:creationId {value} is outside OOXML UInt32"
+                )
+                continue
+            if value in seen_in_part:
+                reader.errors.append(
+                    f"{part} repeats p14:creationId {value}"
+                )
+                continue
+            seen_in_part.add(value)
+            previous_owner = owners.setdefault(value, part)
+            if previous_owner != part:
+                reader.errors.append(
+                    f"p14:creationId {value} is shared by "
+                    f"{previous_owner} and {part}"
+                )
 
 
 def _top_level_shape_names(
@@ -757,6 +806,39 @@ def _validate_presentation_master_registration(
         master_parts,
         "Presentation p:sldMasterIdLst",
     )
+
+
+def _validate_master_theme_ownership(
+    reader: _PackageReader,
+    master_parts: set[str],
+) -> None:
+    """Require a separate Theme part for every structured Slide Master."""
+    owners: dict[str, str] = {}
+    for master_part in sorted(master_parts):
+        resolved = _single_relationship_target(
+            reader,
+            master_part,
+            THEME_REL_TYPE,
+            f"Master {master_part}",
+        )
+        if resolved is None:
+            continue
+        _relationship, theme_part = resolved
+        if not (
+            theme_part.startswith("ppt/theme/")
+            and theme_part.endswith(".xml")
+        ):
+            reader.errors.append(
+                f"Master {master_part} targets non-Theme part {theme_part}"
+            )
+            continue
+        reader.xml(theme_part)
+        previous_owner = owners.setdefault(theme_part, master_part)
+        if previous_owner != master_part:
+            reader.errors.append(
+                f"Theme {theme_part} is shared by structured Masters "
+                f"{previous_owner} and {master_part}"
+            )
 
 
 def _validate_presentation_slide_registration(
@@ -1373,8 +1455,13 @@ def validate_pptx_template_package(
                 errors,
                 "Master",
             )
+            _validate_unique_creation_ids(
+                reader,
+                expected_slide_parts | expected_layout_parts | used_master_parts,
+            )
             _validate_presentation_slide_registration(reader, expected_slide_parts)
             _validate_presentation_master_registration(reader, used_master_parts)
+            _validate_master_theme_ownership(reader, used_master_parts)
     except (OSError, zipfile.BadZipFile) as exc:
         raise ValueError(f"cannot read template PPTX package {path}: {exc}") from exc
 

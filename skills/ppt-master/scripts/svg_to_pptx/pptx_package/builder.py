@@ -115,6 +115,10 @@ SLIDE_LAYOUT_REL_TYPE = (
 SLIDE_MASTER_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
 )
+THEME_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
+)
+THEME_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.theme+xml"
 PML_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 DML_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -801,6 +805,7 @@ def _create_custom_layout(
     base_layout_path = extract_dir / base_layout_part
     tree = ET.parse(base_layout_path)
     root = tree.getroot()
+    _reseed_p14_creation_id(root)
     root.set("type", "cust")
     root.set("preserve", "1")
     root.set("showMasterSp", "1" if show_master_shapes else "0")
@@ -897,6 +902,22 @@ def _set_master_picker_name(master_path: Path, master_name: str) -> None:
     _write_xml_tree(master_path, tree)
 
 
+def _reseed_p14_creation_id(root: ET.Element) -> None:
+    """Give a cloned Slide/Master/Layout part a fresh PowerPoint creation id."""
+    c_sld = root.find(f"{{{PML_NS}}}cSld")
+    if c_sld is None:
+        return
+    creation_ids = c_sld.findall(
+        f"{{{PML_NS}}}extLst/{{{PML_NS}}}ext/"
+        f"{{{P14_NS}}}creationId"
+    )
+    for creation_id in creation_ids:
+        value = 0
+        while value == 0:
+            value = uuid.uuid4().int & OOXML_UINT32_MAX
+        creation_id.set("val", str(value))
+
+
 def _next_master_part_number(extract_dir: Path) -> int:
     numbers = [
         int(match.group(1))
@@ -904,6 +925,103 @@ def _next_master_part_number(extract_dir: Path) -> int:
         if (match := re.fullmatch(r"slideMaster(\d+)\.xml", path.name))
     ]
     return max(numbers, default=0) + 1
+
+
+def _next_theme_part_number(extract_dir: Path) -> int:
+    numbers = [
+        int(match.group(1))
+        for path in (extract_dir / "ppt" / "theme").glob("theme*.xml")
+        if (match := re.fullmatch(r"theme(\d+)\.xml", path.name))
+    ]
+    return max(numbers, default=0) + 1
+
+
+def _clone_master_theme(
+    extract_dir: Path,
+    source_master_part: str,
+    master_part: str,
+    master_name: str,
+) -> str:
+    """Give a cloned Slide Master its own Theme package part."""
+    source_master_rels = _relationships_path_for_part(
+        extract_dir,
+        source_master_part,
+    )
+    theme_targets = [
+        attrs["Target"]
+        for attrs in _read_relationships(source_master_rels).values()
+        if attrs.get("Type") == THEME_REL_TYPE and attrs.get("Target")
+    ]
+    if len(theme_targets) != 1:
+        raise RuntimeError(
+            "Source Slide Master must have one Theme relationship: "
+            f"{source_master_part}"
+        )
+    source_theme_part = _resolve_package_target(
+        source_master_part,
+        theme_targets[0],
+    )
+    source_theme_path = extract_dir / source_theme_part
+    if not source_theme_path.exists():
+        raise RuntimeError(
+            f"Slide Master Theme part is missing: {source_theme_part}"
+        )
+
+    theme_num = _next_theme_part_number(extract_dir)
+    theme_part = f"ppt/theme/theme{theme_num}.xml"
+    theme_path = extract_dir / theme_part
+    shutil.copyfile(source_theme_path, theme_path)
+    theme_tree = ET.parse(theme_path)
+    theme_tree.getroot().set("name", f"{master_name} Theme")
+    _write_xml_tree(theme_path, theme_tree)
+
+    source_theme_rels = _relationships_path_for_part(
+        extract_dir,
+        source_theme_part,
+    )
+    if source_theme_rels.exists():
+        theme_rels = _relationships_path_for_part(extract_dir, theme_part)
+        theme_rels.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source_theme_rels, theme_rels)
+
+    master_rels = _relationships_path_for_part(extract_dir, master_part)
+    theme_relationships = [
+        (rel_id, attrs)
+        for rel_id, attrs in _read_relationships(master_rels).items()
+        if attrs.get("Type") == THEME_REL_TYPE
+    ]
+    if len(theme_relationships) != 1:
+        raise RuntimeError(
+            f"Cloned Slide Master must have one Theme relationship: {master_part}"
+        )
+    theme_rel_id, _attrs = theme_relationships[0]
+    theme_target = posixpath.relpath(theme_part, posixpath.dirname(master_part))
+    rels_content = master_rels.read_text(encoding="utf-8")
+    theme_rel_pattern = re.compile(
+        rf'(<Relationship\b[^>]*\bId="{re.escape(theme_rel_id)}"'
+        rf'[^>]*\bTarget=")[^"]*(")'
+    )
+    rels_content, replaced = theme_rel_pattern.subn(
+        rf"\g<1>{theme_target}\g<2>",
+        rels_content,
+        count=1,
+    )
+    if replaced != 1:
+        raise RuntimeError(
+            f"Could not retarget cloned Slide Master Theme: {master_part}"
+        )
+    master_rels.write_text(rels_content, encoding="utf-8")
+
+    content_types_path = extract_dir / "[Content_Types].xml"
+    content_types_path.write_text(
+        _add_content_type_override(
+            content_types_path.read_text(encoding="utf-8"),
+            theme_part,
+            THEME_CONTENT_TYPE,
+        ),
+        encoding="utf-8",
+    )
+    return theme_part
 
 
 def _clone_structured_master(
@@ -920,6 +1038,7 @@ def _clone_structured_master(
 
     tree = ET.parse(master_path)
     root = tree.getroot()
+    _reseed_p14_creation_id(root)
     c_sld = root.find(f"{{{PML_NS}}}cSld")
     if c_sld is None:
         raise RuntimeError(f"Slide master has no p:cSld: {source_master_part}")
@@ -940,6 +1059,12 @@ def _clone_structured_master(
     for rel_id, attrs in tuple(_read_relationships(master_rels).items()):
         if attrs.get("Type") == SLIDE_LAYOUT_REL_TYPE:
             _remove_relationship(master_rels, rel_id)
+    _clone_master_theme(
+        extract_dir,
+        source_master_part,
+        master_part,
+        master_name,
+    )
 
     presentation_rels = extract_dir / "ppt" / "_rels" / "presentation.xml.rels"
     relationship_target = posixpath.relpath(master_part, "ppt")
