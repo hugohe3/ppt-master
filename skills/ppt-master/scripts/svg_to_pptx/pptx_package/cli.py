@@ -51,6 +51,7 @@ from .template_structure import (
     TemplateStructureError,
     load_pptx_structure_lock,
     parse_template_slides,
+    structured_layout_definition_files,
     template_lock_errors,
     template_prototype_errors,
 )
@@ -324,10 +325,10 @@ Recorded narration:
         help=(
             'PPTX structure strategy for native export. Omitting this flag reads '
             'spec_lock.md: flat is the free-design/brand-only release mode and '
-            'uses the default PowerPoint Master plus Blank Layout with all SVG '
-            'objects slide-local; structured is the deck/layout-template mode and '
-            'requires complete explicit metadata. baseline, template, preserve, '
-            'and generated are accepted only to report a migration error.'
+            'builds one clean project-owned Master plus Blank Layout while keeping '
+            'all SVG objects slide-local; structured is the deck/layout-template '
+            'mode and requires complete explicit metadata. baseline, template, '
+            'preserve, and generated are accepted only to report a migration error.'
         ),
     )
     parser.add_argument('--no-image-optimize', action='store_true',
@@ -449,13 +450,28 @@ Recorded narration:
     theme_font_spec = None
     master_text_style_spec = None
     theme_color_spec = None
-    if pptx_structure == 'structured':
+    if pptx_structure in {'flat', 'structured'}:
         try:
             theme_font_spec = load_theme_font_spec(project_path)
             master_text_style_spec = load_master_text_style_spec(project_path)
             theme_color_spec = load_theme_color_spec(project_path)
         except (ThemeFontError, ThemeColorError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
+            return 1
+        missing_theme_fields = []
+        if theme_font_spec is None:
+            missing_theme_fields.append(
+                'typography font_family/title_family/body_family'
+            )
+        if theme_color_spec is None:
+            missing_theme_fields.append('colors')
+        if missing_theme_fields:
+            print(
+                f"Error: {pptx_structure} export requires a current-project "
+                "theme contract in spec_lock.md; missing: "
+                + ", ".join(missing_theme_fields),
+                file=sys.stderr,
+            )
             return 1
     if args.image_max_dimension < 1:
         print("Error: --image-max-dimension must be >= 1", file=sys.stderr)
@@ -492,6 +508,7 @@ Recorded narration:
     # parameters are removed. Structured export never activates either path.
     structured_baseline = False
     baseline_layout_specs = None
+    layout_definition_files: list[Path] = []
     if pptx_structure == 'structured' and structure_lock is not None:
         try:
             template_specs = parse_template_slides(native_files)
@@ -503,6 +520,14 @@ Recorded narration:
             print("Error: PPTX structure does not match spec_lock.md:", file=sys.stderr)
             for message in lock_errors:
                 print(f"  {message}", file=sys.stderr)
+            return 1
+        try:
+            layout_definition_files = structured_layout_definition_files(
+                template_specs,
+                structure_lock,
+            )
+        except TemplateStructureError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
             return 1
         prototype_errors = template_prototype_errors(
             template_specs,
@@ -852,9 +877,16 @@ Recorded narration:
             else:
                 print("  [warn] metadata.json ignored (top level is not an object)", file=sys.stderr)
 
+    structure_name = project_name
+    if isinstance(doc_metadata, dict):
+        metadata_title = doc_metadata.get('title')
+        if isinstance(metadata_title, str) and metadata_title.strip():
+            structure_name = metadata_title
+
     shared_kwargs = dict(
         canvas_format=canvas_format,
         doc_metadata=doc_metadata,
+        structure_name=structure_name,
         verbose=verbose,
         transition=transition,
         transition_duration=transition_duration,
@@ -880,6 +912,7 @@ Recorded narration:
         pptx_structure=pptx_structure,
         structured_baseline=structured_baseline,
         baseline_layout_specs=baseline_layout_specs,
+        layout_definition_files=layout_definition_files,
         native_structure_contract=native_structure_contract,
         theme_font_spec=theme_font_spec,
         master_text_style_spec=master_text_style_spec,

@@ -48,10 +48,21 @@ class ThemeFontSpec:
 
 @dataclass(frozen=True)
 class MasterTextStyleSpec:
-    """Title/body defaults written to a template slide master's txStyles."""
+    """Title/body defaults written to one generated slide master's txStyles."""
 
     title_hpt: int
     body_hpt: int
+
+    @property
+    def body_levels_hpt(self) -> tuple[int, ...]:
+        """Return a deterministic nine-level PowerPoint body-size hierarchy."""
+        factors = (16, 15, 14, 13, 12, 11, 10, 9, 8)
+        minimum = min(self.body_hpt, 800)
+        sizes = []
+        for factor in factors:
+            scaled = round((self.body_hpt * factor / 16) / 50) * 50
+            sizes.append(max(minimum, scaled))
+        return tuple(sizes)
 
 
 def _font_face(font_family: str) -> ThemeFontFace:
@@ -125,17 +136,17 @@ def _font_size_hpt(raw: str, field: str) -> int:
 
 
 def load_master_text_style_spec(project_path: Path) -> MasterTextStyleSpec:
-    """Load required title/body defaults for explicit Layout master txStyles."""
+    """Load required title/body defaults for generated Master text styles."""
     lock_path = project_path / "spec_lock.md"
     if not lock_path.is_file():
         raise ThemeFontError(
-            "explicit Layout export requires spec_lock.md typography title and body rows"
+            "Master export requires spec_lock.md typography title and body rows"
         )
     rows = _typography_rows(lock_path)
     missing = [field for field in ("title", "body") if field not in rows]
     if missing:
         raise ThemeFontError(
-            "explicit Layout export requires spec_lock.md typography rows: "
+            "Master export requires spec_lock.md typography rows: "
             + ", ".join(missing)
         )
     return MasterTextStyleSpec(
@@ -213,11 +224,29 @@ def _style_run_properties(style: ET.Element, label: str) -> list[ET.Element]:
     return run_properties
 
 
+def _style_level_run_properties(
+    style: ET.Element,
+    label: str,
+) -> tuple[ET.Element, ...]:
+    """Return direct level 1-9 defaults from one Master text style."""
+    levels: list[ET.Element] = []
+    for level in range(1, 10):
+        run_properties = style.find(
+            f"{{{DML_NS}}}lvl{level}pPr/{{{DML_NS}}}defRPr"
+        )
+        if run_properties is None:
+            raise ThemeFontError(
+                f"slide master {label} has no level-{level} a:defRPr"
+            )
+        levels.append(run_properties)
+    return tuple(levels)
+
+
 def apply_master_text_style_spec(
     extract_dir: Path,
     spec: MasterTextStyleSpec,
 ) -> int:
-    """Install locked title/body sizes into template slide-master txStyles."""
+    """Install locked title/body sizes into generated slide-master txStyles."""
     master_dir = extract_dir / "ppt" / "slideMasters"
     master_paths = sorted(master_dir.glob("slideMaster*.xml"))
     if not master_paths:
@@ -234,22 +263,38 @@ def apply_master_text_style_spec(
         if text_styles is None:
             raise ThemeFontError(f"Slide master has no p:txStyles: {master_path}")
 
-        style_sizes = (
-            ("titleStyle", spec.title_hpt),
-            ("bodyStyle", spec.body_hpt),
-            ("otherStyle", spec.body_hpt),
-        )
-        for style_name, size in style_sizes:
+        title_style = text_styles.find(f"{{{PML_NS}}}titleStyle")
+        if title_style is None:
+            raise ThemeFontError(
+                f"Slide master has no p:titleStyle: {master_path}"
+            )
+        for run_properties in _style_run_properties(
+            title_style,
+            "p:titleStyle",
+        ):
+            run_properties.set("sz", str(spec.title_hpt))
+
+        body_levels = spec.body_levels_hpt
+        for style_name in ("bodyStyle", "otherStyle"):
             style = text_styles.find(f"{{{PML_NS}}}{style_name}")
             if style is None:
                 raise ThemeFontError(
                     f"Slide master has no p:{style_name}: {master_path}"
                 )
-            for run_properties in _style_run_properties(
-                style,
-                f"p:{style_name}",
+            for run_properties, size in zip(
+                _style_level_run_properties(
+                    style,
+                    f"p:{style_name}",
+                ),
+                body_levels,
             ):
                 run_properties.set("sz", str(size))
+
+        style_sizes = (
+            ("titleStyle", (spec.title_hpt,)),
+            ("bodyStyle", body_levels),
+            ("otherStyle", body_levels),
+        )
 
         tree.write(master_path, encoding="utf-8", xml_declaration=True)
 
@@ -264,20 +309,27 @@ def apply_master_text_style_spec(
             raise ThemeFontError(
                 f"Slide master lost p:txStyles after update: {master_path}"
             )
-        for style_name, expected_size in style_sizes:
+        for style_name, expected_sizes in style_sizes:
             style = read_back_styles.find(f"{{{PML_NS}}}{style_name}")
-            actual_sizes = (
-                {
+            if style is None:
+                actual_sizes: tuple[str | None, ...] = ()
+            elif style_name == "titleStyle":
+                actual_sizes = tuple(
                     item.get("sz")
                     for item in _style_run_properties(
                         style,
                         f"p:{style_name}",
                     )
-                }
-                if style is not None
-                else set()
-            )
-            if actual_sizes != {str(expected_size)}:
+                )
+            else:
+                actual_sizes = tuple(
+                    item.get("sz")
+                    for item in _style_level_run_properties(
+                        style,
+                        f"p:{style_name}",
+                    )
+                )
+            if actual_sizes != tuple(str(size) for size in expected_sizes):
                 raise ThemeFontError(
                     f"Slide master p:{style_name} size read-back failed: "
                     f"{master_path}"

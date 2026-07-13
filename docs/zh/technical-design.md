@@ -61,7 +61,7 @@
 
 凡是通过 SVG 创作或重新设计页面的工作流，`svg_output/` 都是完整的页面设计权威。最终幻灯片中应出现的文字、图片、形状、图示、图表 / 表格 fallback、背景和模板派生布局元素，都必须已经存在于对应页面 SVG 中，或被它明确引用。模板、`design_spec.md` 和 `spec_lock.md` 负责指导 SVG 创作；导出器不能把它们当成第二层画面来源，在导出阶段补入 SVG 缺失的页面内容。
 
-最小语义标记不会削弱这条闭包。每张新页面从第一版 SVG 起就声明 Master/Layout 身份。固定 Master/Layout 视觉是根节点直接原子元素；可复用内容槽位是顶层 group，带显式设计区域 bounds 和一个兼容 carrier；复合 `object` 区域走显式 proxy 降级，Layout 也允许零槽。`data-pptx-role` 只补充专用 metadata 尚未表达的少量页面框架、package 或动画行为。旧结构或 unmapped SVG 必须先运行 `restore-pptx-structure`，导出器不做结构推断。
+最小语义标记不会削弱这条闭包。自由设计与 brand-only 页面使用 `pptx_structure.mode: flat`：所有已表达对象保持 Slide 本地，不创作任何 Master/Layout 身份、分层或 placeholder metadata。导出器根据当前配色/字体 lock 生成一个属于本项目的干净 Master 和一个 Blank Layout，删除 title/body 等内置内容占位符与未使用的内置 Layout，仅保留标准日期、页脚和页码能力钩子，但不提升任何 Slide 内容。结构化 deck/layout 模板路线上，每张新页面从第一版 SVG 起就声明 Master/Layout 身份。固定 Master/Layout 视觉是根节点直接原子元素；可复用内容槽位是顶层 group，带显式设计区域 bounds 和一个兼容 carrier；复合 `object` 区域走显式 proxy 降级，Layout 也允许零槽。`data-pptx-role` 只补充专用 metadata 尚未表达的少量页面框架、package 或动画行为。结构合同缺失或使用旧形态的 legacy structured/template 项目必须先运行 `restore-pptx-structure`；flat 项目是有意不带 mapping，不算 legacy。导出器不做 Master/Layout 结构或 placeholder 推断。
 
 | 领域 | 权威来源 |
 |---|---|
@@ -263,7 +263,7 @@ PPT Master 不只服务 PPT——同一套 SVG → DrawingML 流水线还能产�
 
 **为什么默认自由设计。** 模板是地板，但很容易变成天花板：它会把整个 deck 锁进模板自有的视觉惯用语，无视内容本身想要怎样被呈现。自由设计的布局从源内容的结构推导而来，而不是从一套固定语法套上去——视觉节奏跟着内容走，而不是跟内容打架。约束模式在窄场景里确实更好（品牌锁定的 deck、强类型场景如学术答辩或政府报告），所以它一直在；但 AI 不主动去抓，是用户去抓。
 
-**机械触发，不做语义匹配。** 像 `academic_defense` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，即使库里存在相似目录，也不会触发 Step 3。Step 3 只消费显式路径。当前 Brand/Layout/Deck 工作区均解析 `templates/design_spec.md`；兼容的旧式平铺包从根目录读取 `design_spec.md`。目录平铺本身不是恢复理由；只有旧 Master/Layout/placeholder 语义才触发 `restore-pptx-structure`。发现性交给模板索引和显式问答（“有哪些模板可以用？”），不交给运行时 fuzzy matching。
+**机械触发，不做语义匹配。** 像 `presentation_core` 这样的裸名字、品牌提及，或“麦肯锡风格”这类风格短语，即使库里存在相似目录，也不会触发 Step 3。Step 3 只消费显式路径。当前 Brand/Layout/Deck 工作区均解析 `templates/design_spec.md`；兼容的旧式平铺包从根目录读取 `design_spec.md`。目录平铺本身不是恢复理由；只有旧 Master/Layout/placeholder 语义才触发 `restore-pptx-structure`。发现性交给模板索引和显式问答（“有哪些模板可以用？”），不交给运行时 fuzzy matching。
 
 当前 Brand/Layout/Deck 都采用同一工作区路由合同；Brand 不含 SVG roster，空的可选目录直接省略：
 
@@ -332,7 +332,7 @@ Strategist 阶段产出两份看起来冗余但服务不同对象的产物：
 
 为什么两份都要？没有 `spec_lock.md` 的话，Executor 在长 deck 里会逐页重读 `design_spec.md`，LLM 上下文压缩漂移会逐渐扭曲色值和字体。`spec_lock.md` 是**抗漂移机制**——SKILL.md 强制要求生成每一页前 `read_file <project>/spec_lock.md`，让数值在 20+ 页里保持字面一致。
 
-这份 lock 同时也是逐页路由表。除了全局配色和字体，它还承载 `page_rhythm`（`anchor` / `dense` / `breathing`）、`page_layouts`（某页是否继承某个 layout 模板 SVG）、`page_charts`（某页应适配哪个图表模板）、带放置/裁剪契约的图片行，以及决定加载哪些执行规则文件的 `mode` / `visual_style`。空值本身也是信号：没有模板、没有图表、没有图片，很多时候是设计选择，而不是漏填。
+这份 lock 同时也是逐页路由表。除了全局配色和字体，它还承载 `page_rhythm`（`anchor` / `dense` / `breathing`）、`page_charts`（某页应适配哪个图表模板）、带放置/裁剪契约的图片行，以及决定加载哪些执行规则文件的 `mode` / `visual_style`。结构化 deck/layout 模板项目额外承载 `page_layouts`（每页继承哪个输入模板 SVG）、唯一的 `pptx_masters` / `pptx_layouts` 定义，以及 `page_pptx_layouts` 页面分配；flat 自由设计 / brand-only 项目只保留 `pptx_structure.mode: flat`，那些段整段省略，而不是写成空值。其余字段的空值本身仍是信号：没有图表、没有图片，很多时候是设计选择，而不是漏填。
 
 `update_spec.py` 把生成后的修改用两个协调步骤传播：把新值写入 `spec_lock.md`，然后字面替换到每一份 `svg_output/*.svg`。工具的范围**故意收得很窄**——只支持 `colors.*`（HEX 值，大小写不敏感替换）和 `typography.font_family`（属性级）。其他字段（字号、图标、图片、画布）**有意不支持**——它们的替换需要属性级或语义级理解，风险/收益不值得做批量传播。这些情况手动改 `spec_lock.md` 然后重做受影响的页面。
 
@@ -468,7 +468,7 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实�
 
 **为什么只有一条 PPTX 编译路线。** Native 导出把作者 SVG 中受支持的元素逐个翻译成 DrawingML 形状。常规 deck 路线读取 `svg_output/`；用户需要时，create-template 对通过校验的模板原型调用同一 structured 编译器，生成 `exports/<id>_template_preview.pptx` 作为审阅证据。项目不会把整页 SVG 媒体或另一套位图渲染打包成第二类 PPTX。`svg_final/` 仍由常规 deck 的强制后处理生成，但只承担自包含视觉预览和 SVG 图片插入，不为 PowerPoint 手工“转换为形状”提供兼容兜底。
 
-**为什么结构必须在视觉生成前确定。** Master 和 Layout 不是后处理阶段才发现的结果。Strategist 在 SVG 生成前写出 Master roster 和完整页面 mapping；Executor 在构图时同步写入这些身份、固定原子元素和槽位。这样，自由设计在视觉层面仍然开放，PowerPoint 归属却从一开始就是显式合同。导出器只编译声明；旧项目或 unmapped 项目进入 `restore-pptx-structure`，不会触发导出期启发式推断。
+**为什么模板路线的结构必须在视觉生成前确定。** Master 和 Layout 不是后处理阶段才发现的结果。在结构化 deck/layout 模板路线上，Strategist 在 SVG 生成前写出唯一 Master/Layout 定义和完整页面分配；Executor 在构图时同步写入这些身份、固定原子元素和槽位，导出器只编译声明。自由设计与 brand-only deck 做的是相反的取舍：保持 `mode: flat`，所有对象留在 Slide 本地，不写任何结构 metadata，导出时只获得一个属于本项目的干净 Master/Blank-Layout 壳——可复用结构是模板路线的交付物，不是自由设计的创作税。legacy structured/template 项目进入 `restore-pptx-structure`；两条路线都不会触发启发式 Master/Layout 提升或 placeholder 推断。
 
 **为什么 Master/Layout 视觉必须原子化。** 一个 Master 或固定 Layout 对象必须是根节点的直接子元素。导入 PPTX 时，group 的 transform、opacity、style 和 z-order 会下推到各个原子对象。这个选择有意放弃来源 group 的整体编辑层级，换取简单、可比较、可确定重建的结构归属，避免嵌套结构歧义。
 
@@ -476,11 +476,11 @@ PowerPoint 的 DrawingML 是 SVG 表达力的严格子集。在转换器已实�
 
 **为什么可复用 bounds 是设计区域，不是量出来的文本框。** bounds 来自安全区、分栏、面板内框或图片框，而不是字形宽度、行数或当前内容紧包围盒。当前 Slide 保留自己的 carrier 几何，因此只要语义构图相同，4:6、3:7、5:5 的实例都可复用同一 Layout。文本长度不会意外拆分或改变可复用合同。
 
-**为什么 strict 与 adaptive 模板共享一条 structured 路线。** `page_layouts` 记录完整输入原型，`pptx_masters` 与 `pptx_layouts` 从规划阶段起记录输出归属。strict 保持声明的原型合同；adaptive 保持原型 Master，只有固定 Layout 原子或槽位 topology/bounds 改变时才使用新 Layout key，并在页面创作时立即更新 mapping，而不是事后推断。非 mirror 的皮肤由项目控制；mirror 保持已恢复的输出视觉身份。
+**为什么 strict 与 adaptive 模板共享一条 structured 路线。** `page_layouts` 记录完整创作原型，`pptx_masters` / `pptx_layouts` 记录唯一可复用定义，`page_pptx_layouts` 记录页面分配。strict 保持声明的原型合同；adaptive 保持原型 Master，只有固定 Layout 原子或槽位 topology/bounds 改变时才定义新 Layout，并在页面创作时立即更新分配，而不是事后推断。模板定义即使暂时没有页面使用，也能注册进最终文件。非 mirror 的皮肤由项目控制；mirror 保持已恢复的输出视觉身份。
 
-**为什么显式版式把文字默认值分在 Master 与 Layout 两层。** Structured 导出把锁定的 title/body 字号写入 Master 文本默认值；每个 Layout 文字槽位也把 carrier 首个 run 的字号写入一级默认值，同时保留提示文字的直接字号。这样，插入或重置 placeholder 时仍能继承 Layout 特定尺度，而生成 Slide 上的直接 run 不变。
+**为什么显式版式把文字默认值分在 Master 与 Layout 两层。** Flat 与 structured 导出都会把锁定的 title 字号和确定性的九级 body 层级写入 Master 文本默认值，同时保留原有缩进与项目符号设置；在 structured 路线上，每个 Layout 文字槽位还会把 carrier 首个 run 的字号写入一级默认值，同时保留提示文字的直接字号。这样，插入或重置 placeholder 时仍能继承 Layout 特定尺度，而生成 Slide 上的直接 run 不变。
 
-**为什么 structured 输出要在发布前回读。** 元数据预检不能证明 package 序列化保留了所有 relationship 与注册信息。导出器会重新打开临时 PPTX，校验 Presentation → Master → Layout → Slide 注册链、物理 part/content-type roster、选择器身份、固定对象顺序、placeholder 类型/有效索引/bounds、carrier 绑定、隐藏 proxy 与零槽 Layout，只有通过后才发布。
+**为什么 structured 输出要在发布前回读。** 元数据预检不能证明 package 序列化保留了所有 relationship 与注册信息。导出器会重新打开临时 PPTX，把已发布 Slide 与完整 Master/Layout roster 分开校验，包括没有任何 Slide 使用的定义；同时核对 Presentation → Master → Layout → Slide 注册链、物理 part/content-type roster、选择器身份、固定对象顺序、placeholder 类型/有效索引/bounds、carrier 绑定、隐藏 proxy 与零槽 Layout，只有通过后才发布。
 
 **为什么模板创建分为创作模式和恢复模式。** `pptx_template_import.py` 输出分层 Master/Layout/Slide 参考和 native 结构事实。`standard` / `fidelity` 把这些素材和视觉当参考，再按照确认后的可复用行为创作新拓扑。Mirror 则一对一恢复来源 roster 与拓扑，只允许显式 structured 合同要求的机械归一化。原始 PPTX 保留为分析证据，不成为最终模板依赖。
 

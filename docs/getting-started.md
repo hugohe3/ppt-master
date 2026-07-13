@@ -45,7 +45,7 @@ A created template lives in one of two places:
 Invoke either result by giving its **workspace-root path** in chat. Step 3 resolves `templates/design_spec.md`; for compatibility it also accepts older flat packages whose `design_spec.md` is directly at the supplied root. A create-template run may hand its exact validated workspace root directly to Step 3 in the same conversation. Both cases stay path-based; a bare template name never triggers. The complete workspace can be copied or migrated between the library and `projects/` without restructuring it; only library registration changes.
 
 ```
-You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/academic_defense/
+You: Make a deck from sources/report.pdf with template skills/ppt-master/templates/layouts/presentation_core/
 ```
 
 Full guide → [Templates Guide](./templates-guide.md)
