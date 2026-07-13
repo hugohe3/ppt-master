@@ -393,7 +393,7 @@ Catalog read: 71 templates
 1. viewBox: `0 0 1280 720`
 2. 背景用 `<rect>`
 3. 文字换行用 `<tspan>`（禁 `<foreignObject>`）
-4. 透明度用 `fill-opacity` / `stroke-opacity`；禁 `rgba()`
+4. 透明度默认用 `fill-opacity` / `stroke-opacity`；`rgba()` 保持转换兼容
 5. 禁 `mask` / `<style>` / `class` / `foreignObject`
 6. 禁 `textPath` / `animate*` / `script`
 7. 字符用 Unicode（`—` `–` `©` `®` `→` 等），HTML 实体禁

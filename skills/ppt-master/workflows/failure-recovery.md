@@ -28,7 +28,7 @@ Central recovery rules for common PPT Master failures. Route-specific workflow f
 | Live preview closed by user | No | Continue generation | No | Restart through `live-preview` only if requested |
 | Browser annotations submitted during generation | No | Defer application until after Step 7 | User asks to apply annotations | `live-preview` Step 2 |
 | `svg_quality_checker.py` error | Yes | Fix the affected SVG, then rerun checker | No unless required asset is missing | Step 6 Visual Construction |
-| `svg_quality_checker.py` warning | No | Fix when straightforward; otherwise acknowledge residual risk | No | Step 6 warning handling |
+| `svg_quality_checker.py` warning | No | Continue without mandatory modification or acknowledgement; preserve compatible user syntax, and report material fidelity/quality advice when useful | No | Step 6 advisory warning handling |
 | Missing `notes/total.md` | Yes | Generate speaker notes before Step 7 | No | Step 6 Logic Construction |
 | Step 7 image readiness missing manual files | Yes | None for manual assets; list required filenames and prompts | Yes | Step 7 image readiness gate |
 | `total_md_split.py` failure | Yes | Fix notes format/path, rerun only Step 7.1 | Usually no | Step 7.1 |

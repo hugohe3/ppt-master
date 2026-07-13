@@ -374,13 +374,13 @@ Catalog read: 71 templates
 1. viewBox: `0 0 1280 720`
 2. 背景使用 `<rect>` 元素
 3. 文字换行使用 `<tspan>`（`<foreignObject>` 禁用）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`；`rgba()` 禁用
+4. 透明度默认使用 `fill-opacity` / `stroke-opacity`；`rgba()` 保持转换兼容
 5. 禁用：`mask`、`<style>`、`class`、`foreignObject`、`textPath`、`animate*`、`script`
 6. 字符使用原生 Unicode（— – © ® → NBSP），HTML 命名实体禁用；`&` `<` `>` `"` `'` 必须转义
 7. `clipPath` 仅允许用于 `<image>` 元素
 
 ### PPT Compatibility Rules:
 
-- `<g opacity="...">` 禁用（设到每个子元素）
+- opacity 默认设到每个子元素；`<g opacity="...">` 可转换但会产生近似保真 warning
 - 图片透明用叠加 `<rect>` 蒙版
 - 仅内联样式；外部 CSS 与 `@font-face` 禁用

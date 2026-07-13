@@ -465,7 +465,8 @@ Catalog read: 71 templates
 2. Background 用 `<rect>`
 3. Text wrap 用 `<tspan>`
 4. 透明度用 `fill-opacity` / `stroke-opacity`
-5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`, `<symbol>`+`<use>` 自定义, `<g opacity>`, rgba()
+5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`, `<symbol>`+`<use>` 自定义
+   - Transparency defaults to explicit alpha attributes; `rgba()` and `<g opacity>` remain converter-compatible, with group opacity carrying an approximate-fidelity warning.
 6. HTML named entities 禁用，写 raw Unicode
 7. `marker-start` / `marker-end` 仅 `<marker>` in `<defs>` 且 orient="auto"
 8. `clipPath` 仅作用于 `<image>`，且 single shape child

@@ -182,9 +182,13 @@ python3 scripts/svg_quality_checker.py path/to/template/templates --template-mod
 Checks include:
 - `viewBox`
 - banned elements
+- paint compatibility: unsupported values error; supported non-default spellings such as `rgba()` receive non-blocking recommendations for `#RRGGBB` plus explicit alpha
 - line-break structure
 - explicit Master/Layout/slot structure for reusable templates
 - duplicate empty Layout contracts under different keys
+
+Warnings are advisory: they require no modification or acknowledgement and do
+not affect the command's zero exit status. Only errors block the quality gate.
 
 Template mode accepts compact canonical preset shapes marked with
 `data-pptx-authoring="preset"`. It validates the explicit structured SVG

@@ -403,7 +403,7 @@ Catalog read: 71 templates
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` elements（#FFF8EE 奶油底）
 3. Text wrapping uses `<tspan>`（`<foreignObject>` FORBIDDEN）
-4. Transparency uses `fill-opacity` / `stroke-opacity`；`rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`
 6. 文字字符直接写 Unicode（`—` `→` `·` 等），HTML 命名实体 FORBIDDEN；`&` 在文字里必须 `&amp;`
 7. `clipPath` 只用于 `<image>`（圆 / 圆角矩形 / 多边形），不用于 shape / group / text
@@ -411,7 +411,7 @@ Catalog read: 71 templates
 
 ### PPT Compatibility Rules:
 
-- `<g opacity="...">` FORBIDDEN — 设在子元素上
+- Prefer opacity on each child; `<g opacity="...">` remains converter-compatible with an approximate-fidelity warning
 - Image 透明走 overlay 蒙层
 - 仅 inline 样式；`@font-face` FORBIDDEN
 - Memphis 装饰碎片用基础 SVG 图元（circle / rect / path / polygon），不用 `<pattern>`+`<use>`

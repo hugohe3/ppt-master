@@ -417,11 +417,11 @@ One file per page, saved to `notes/`:
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` elements
 3. Text wrapping uses `<tspan>`（`<foreignObject>` FORBIDDEN）
-4. Transparency uses `fill-opacity` / `stroke-opacity`；`rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`
 6. Text characters: raw Unicode (`—`, `→`, `©`, NBSP)；HTML named entities FORBIDDEN；XML reserved chars escape as `&amp; &lt; &gt; &quot; &apos;`
 7. `clipPath` 仅可用在 `<image>` 上（rounded crop 等）
-8. `<g opacity>` FORBIDDEN — 每个 child 单独设 opacity
+8. Prefer opacity on each child; `<g opacity>` remains converter-compatible with an approximate-fidelity warning
 
 ### Glassmorphism 实现专项
 
@@ -433,6 +433,6 @@ One file per page, saved to `notes/`:
 
 ### PPT Compatibility Rules
 
-- `<g opacity="...">` FORBIDDEN
+- Prefer descendant opacity; `<g opacity="...">` remains converter-compatible with an approximate-fidelity warning
 - 图像透明用 overlay mask layer
 - Inline styles only；no external CSS / `@font-face`

@@ -374,13 +374,13 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` elements
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
-4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
 6. FORBIDDEN: `textPath`, `animate*`, `script`
 7. `marker-start` / `marker-end` conditionally allowed: `<marker>` must be in `<defs>`, `orient="auto"`, shape must be triangle / diamond / circle
 
 ### PPT Compatibility Rules:
 
-- `<g opacity="...">` FORBIDDEN (group opacity); set opacity on each child element individually
+- Prefer opacity on each child element; `<g opacity="...">` remains compatible with an approximate-fidelity warning
 - Image transparency uses overlay mask layer (`<rect fill="bg-color" opacity="0.x"/>`)
 - Inline styles only; external CSS and `@font-face` FORBIDDEN

@@ -372,14 +372,14 @@
 1. viewBox: `0 0 1280 720`
 2. 背景用 `<rect>`
 3. 文本换行使用 `<tspan>`（`<foreignObject>` 禁用）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`；禁止 `rgba()`
+4. 透明度默认使用 `fill-opacity` / `stroke-opacity`；`rgba()` 保持转换兼容
 5. 禁用：`clipPath`（image 除外）、`mask`、`<style>`、`class`、`foreignObject`
 6. 禁用：`textPath`、`<animate*>`、`<script>`、`<symbol>+<use>`
 7. `marker-start` / `marker-end` 条件允许（定义在 `<defs>`，箭头为三角形/菱形/圆）
 
 ### PPT 兼容规则：
 
-- 禁止 `<g opacity="...">`（分组不透明度）；分别在子元素上设置
+- 默认分别在子元素上设置 opacity；`<g opacity="...">` 可转换但会产生近似保真 warning
 - 图片透明度使用遮罩矩形覆盖
 - 仅内联样式；禁止外部 CSS 和 `@font-face`
 - 图标一律使用 `tabler-filled/` 前缀（本项目锁定单一图标库）

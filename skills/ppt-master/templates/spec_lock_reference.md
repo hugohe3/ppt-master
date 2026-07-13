@@ -207,4 +207,11 @@
 - `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<set>`, `<script>` / event attributes, `<iframe>`
 - HTML named entities in text; write typography as raw Unicode and escape XML reserved characters
 
-> **Execution reminder — not authoring authority**: the baseline blacklist above is intentionally terse. Add only deck-specific execution locks. General SVG required / forbidden / conditional rules are owned by [`shared-standards.md`](../references/shared-standards.md); do not copy its feature matrix or parameter contracts into `spec_lock.md`.
+> **Execution reminder — not authoring authority**: the baseline blacklist above
+> is intentionally terse. Add only deck-specific execution locks. General SVG
+> required / forbidden / conditional rules are owned by
+> [`shared-standards.md`](../references/shared-standards.md); do not copy its
+> feature matrix or parameter contracts into `spec_lock.md`. In particular, do
+> not move supported-but-non-default spellings such as `rgba()` or compatible
+> `<g opacity>` into the generic forbidden list merely to enforce a generation
+> preference; their checker warnings remain advisory.

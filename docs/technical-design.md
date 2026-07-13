@@ -179,6 +179,15 @@ This table shows conceptual counterparts, not an authoring allowlist or a
 promise of lossless semantics. Restricted or approximate mappings are owned by
 [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md).
 
+The boundary deliberately uses **recommended narrow writes and broad reads**.
+New `svg_output/` and reusable templates default to one paint spelling:
+uppercase opaque `#RRGGBB`, with transparency carried by the matching
+`fill-opacity`, `stroke-opacity`, `stop-opacity`, `flood-opacity`, or atomic
+element `opacity`. The converter still accepts named colors, functional CSS
+colors, short/alpha HEX, and other documented historical forms at import or
+direct-read boundaries. The checker may recommend the default spelling, but a
+supported alternative remains valid and does not block export.
+
 The conversion is a translation between two dialects of the same idea — not a format mismatch.
 
 SVG is also the only format that simultaneously satisfies every role in the pipeline: **AI can reliably generate it, humans can preview and debug it in any browser, and scripts can translate it under an explicit compatibility contract** — all before a single line of DrawingML is written.
@@ -388,7 +397,7 @@ The architectural reasons worth knowing here:
 - **Why an exception list, not an allowlist.** SVG is a wide specification; enumerating every allowed feature would require constant maintenance as the converter grows. A centralized exception list leaves ordinary implemented constructs available by default.
 - **Why empirical, not derived from spec.** The compatibility boundary grew from real PPT export failures, not from reading the OOXML specification. Some theoretically representable effects remain unreliable across PowerPoint versions, so the contract reflects the actually shippable subset.
 - **XML well-formedness remains a precondition.** Malformed SVG fails before DrawingML compatibility matters. The canonical contract owns the accepted authoring forms so XML guidance cannot drift across architecture and prompt documents.
-- **Compatibility validation runs before post-processing.** `svg_quality_checker.py` evaluates `svg_output/`; post-processing rewrites SVG and could mask source-level violations. Fixes are always re-authoring in the Executor — there is intentionally no auto-fix mode (see Quality Gate).
+- **Compatibility validation runs before post-processing.** `svg_quality_checker.py` evaluates `svg_output/`; post-processing rewrites SVG and could mask source-level violations. Blocking errors are re-authored by the Executor; warnings do not trigger a rewrite, and there is intentionally no auto-fix mode (see Quality Gate).
 
 ---
 
@@ -398,7 +407,7 @@ The architectural reasons worth knowing here:
 
 **Why placed before post-processing, not after.** Post-processing rewrites SVG (icon embedding, image inlining), which would mask source-level violations. Reading `svg_output/` directly catches the Executor's actual output, before any cleanup that might paper over a bug.
 
-**Severity model: errors block, warnings don't, and there is intentionally no auto-fix.** Errors require the Executor to re-author the offending page in context — a compatibility violation is not necessarily a mechanical patch, because the replacement must preserve the same design intent. Auto-fix would silently lose that intent and ship a worse-looking page.
+**Severity model: errors block, warnings don't, and there is intentionally no auto-fix.** Errors require the Executor to re-author the offending page in context — a compatibility violation is not necessarily a mechanical patch, because the replacement must preserve the same design intent. Warnings never require a return modification or acknowledgement: recommendation warnings expose the generated default, while fidelity/quality warnings describe optional review. Auto-fix would silently overwrite valid user intent and can ship a worse-looking page.
 
 **Why chart coordinate verification hangs off the same gate.** Chart pages have geometric correctness requirements (bar heights / pie sweep angles / axis tick positions) that aren't structural and aren't caught by SVG validity rules. The natural place to catch them is the same gate where the AI is asked to revisit its output — bundling the cognitive context "look at what you generated and fix it" into one phase, rather than splitting structural and geometric review into separate review rounds.
 

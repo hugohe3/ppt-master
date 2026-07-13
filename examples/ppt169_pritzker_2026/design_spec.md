@@ -327,7 +327,8 @@
 
 1. viewBox: `0 0 1280 720`
 2. `<rect>` 背景，`<tspan>` 文本换行
-3. 透明度用 `fill-opacity` / `stroke-opacity`，禁用 `rgba()`
-4. 禁用：`mask`, `<style>`, `class`, `foreignObject`, `textPath`, `<animate*>`, `<script>`, `<g opacity>`
+3. 透明度默认用 `fill-opacity` / `stroke-opacity`；`rgba()` 保持转换兼容
+4. 禁用：`mask`, `<style>`, `class`, `foreignObject`, `textPath`, `<animate*>`, `<script>`
+   - `<g opacity>` 可转换但会产生近似保真 warning，默认改用子元素透明度
 5. 字符：`—` `·` `→` 等用原生 Unicode，禁用 HTML named entities
 6. 全幅图用 `preserveAspectRatio="xMidYMid slice"`；半透明 scrim 用 `<rect fill-opacity>`
