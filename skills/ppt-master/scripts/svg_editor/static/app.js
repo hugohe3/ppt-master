@@ -1730,10 +1730,10 @@
             Array.from(el.attributes).forEach(function (attr) {
                 if (attr.name.indexOf("on") === 0) el.removeAttribute(attr.name);
                 // Strip dangerous URI protocols from href/xlink:href
-                if ((attr.name === "href" || attr.name === "xlink:href") &&
+                if (attr.localName === "href" &&
                     (/^\s*javascript\s*:/i.test(attr.value) ||
                      /^\s*data\s*:/i.test(attr.value))) {
-                    el.removeAttribute(attr.name);
+                    el.removeAttributeNode(attr);
                 }
             });
         });

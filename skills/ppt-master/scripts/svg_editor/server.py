@@ -97,6 +97,7 @@ from svg_to_pptx.geometry_properties import (  # noqa: E402
 
 _ICONS_DIR = _SCRIPTS_DIR.parent.parent / 'templates' / 'icons'
 _USE_ICON_PATTERN = re.compile(r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>')
+_XLINK_HREF = '{http://www.w3.org/1999/xlink}href'
 
 # Per-path mtime caches: key = absolute path str, value = (mtime, payload).
 # Entry is evicted/replaced when the file's mtime changes, so stale data
@@ -134,6 +135,24 @@ def _cache_get(cache: dict, lock: threading.Lock, path: str, mtime: float):
 def _cache_put(cache: dict, lock: threading.Lock, path: str, mtime: float, value) -> None:
     with lock:
         cache[path] = (mtime, value)
+
+
+def _normalize_preview_hrefs(root: ET.Element) -> None:
+    """Normalize legacy XLink references in the browser-only SVG copy.
+
+    ElementTree otherwise serializes an unregistered/legacy namespace with an
+    arbitrary prefix. The HTML SVG parser only gives special namespace handling
+    to ``xlink:href``; an arbitrary prefix can therefore render as an inert
+    attribute after ``innerHTML`` insertion. SVG 2 ``href`` works for both
+    images and local ``use`` references and avoids that parser boundary.
+    """
+    for elem in root.iter():
+        legacy_href = elem.get(_XLINK_HREF)
+        if legacy_href is None:
+            continue
+        if elem.get('href') is None:
+            elem.set('href', legacy_href)
+        elem.attrib.pop(_XLINK_HREF, None)
 
 
 # Lock / liveness helpers are shared with confirm_ui via server_common.
@@ -648,6 +667,7 @@ def create_app(
                     if '}' in tag:
                         tag = tag.split('}', 1)[1]
                     id_to_tag[eid] = tag
+            _normalize_preview_hrefs(root)
             content = ET.tostring(root, encoding='unicode', xml_declaration=False)
             content, warnings = _inline_icons(content)
             if not pending_edits:

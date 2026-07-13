@@ -19,9 +19,11 @@ from copy import deepcopy
 from typing import Optional
 
 SVG_NS = 'http://www.w3.org/2000/svg'
+XLINK_NS = 'http://www.w3.org/1999/xlink'
 
-# Register namespace to avoid ns0: prefix in output
+# Register namespaces to avoid generated ns0/ns1 prefixes in saved SVGs.
 ET.register_namespace('', SVG_NS)
+ET.register_namespace('xlink', XLINK_NS)
 
 
 def assign_temp_ids(root: ET.Element) -> None:
