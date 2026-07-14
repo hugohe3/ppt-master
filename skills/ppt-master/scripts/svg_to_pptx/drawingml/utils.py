@@ -1,7 +1,7 @@
 """Coordinate, transform, color, and font helpers for DrawingML conversion.
 
-See references/shared-standards.md §2.1 and §6.8 for project geometry and
-transform authoring contracts.
+See references/shared-standards.md §2.1, §6.6, and §6.8 for project geometry,
+line-presentation, and transform authoring contracts.
 """
 
 from __future__ import annotations
@@ -136,32 +136,20 @@ _SERIF_LATIN = {
     'Book Antiqua', 'Cambria', 'SimSun', 'Liberation Serif', 'DejaVu Serif',
 }
 
-# SVG stroke-dasharray -> DrawingML prstDash
+# Parsed SVG stroke-dasharray values -> DrawingML prstDash
 DASH_PRESETS = {
-    '4,4': 'dash',  '4 4': 'dash',
-    '6,3': 'dash',  '6 3': 'dash',
-    '2,2': 'sysDot', '2 2': 'sysDot',
-    '8,4': 'lgDash', '8 4': 'lgDash',
-    '8,4,2,4': 'lgDashDot', '8 4 2 4': 'lgDashDot',
+    (4.0, 4.0): 'dash',
+    (6.0, 3.0): 'dash',
+    (2.0, 2.0): 'sysDot',
+    (8.0, 4.0): 'lgDash',
+    (8.0, 4.0, 2.0, 4.0): 'lgDashDot',
 }
-
-
-def is_thick_circle_shorthand(
-    dasharray: str | None,
-    stroke: str | None,
-    stroke_width: float,
-    radius: float,
-) -> bool:
-    """Return whether one circle uses the converter's thick-arc shorthand."""
-    if not dasharray or dasharray.strip().lower() == 'none':
-        return False
-    if not stroke or stroke.strip().lower() == 'none':
-        return False
-    if dasharray.strip() in DASH_PRESETS:
-        return False
-    if stroke_width <= 0 or radius <= 0:
-        return False
-    return stroke_width / radius >= 0.15
+PROJECT_STROKE_ENUM_VALUES = {
+    'stroke-linecap': frozenset({'butt', 'round', 'square'}),
+    'stroke-linejoin': frozenset({'bevel', 'miter', 'round'}),
+    'vector-effect': frozenset({'none', 'non-scaling-stroke'}),
+}
+THICK_CIRCLE_COVERAGE_TOLERANCE = 1.0
 
 
 # ---------------------------------------------------------------------------
@@ -207,6 +195,16 @@ def _f(val: str | None, default: float = 0.0) -> float:
 _LENGTH_RE = re.compile(r'^\s*([-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?)\s*([A-Za-z%]*)\s*$')
 _CANONICAL_PROJECT_GEOMETRY_LENGTH_RE = re.compile(
     r'^-?(?:\d+(?:\.\d+)?|\.\d+)$'
+)
+_PROJECT_STROKE_DASH_NUMBER_PATTERN = (
+    r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?'
+)
+_PROJECT_STROKE_DASH_NUMBER_RE = re.compile(
+    _PROJECT_STROKE_DASH_NUMBER_PATTERN
+)
+_PROJECT_STROKE_DASHARRAY_RE = re.compile(
+    rf'\s*{_PROJECT_STROKE_DASH_NUMBER_PATTERN}'
+    rf'(?:(?:\s+|\s*,\s*){_PROJECT_STROKE_DASH_NUMBER_PATTERN})+\s*'
 )
 PROJECT_GEOMETRY_LENGTH_ATTRIBUTES = {
     'svg': frozenset({'x', 'y', 'width', 'height'}),
@@ -315,6 +313,117 @@ def format_project_geometry_length(value: float) -> str:
         return '0'
     text = f'{value:.15f}'.rstrip('0').rstrip('.')
     return '0' if text in {'', '-0'} else text
+
+
+def _parse_project_stroke_dasharray(
+    raw: str,
+    *,
+    allow_zero_gap: bool = False,
+) -> tuple[str | None, tuple[float, ...], tuple[str, ...]] | None:
+    """Parse one project dash array without accepting general SVG lengths."""
+    text = raw.strip()
+    if text == 'none':
+        return None
+    if not _PROJECT_STROKE_DASHARRAY_RE.fullmatch(text):
+        raise ValueError(
+            'must be "none" or at least two finite unitless numbers separated '
+            'by spaces or single commas'
+        )
+    tokens = tuple(_PROJECT_STROKE_DASH_NUMBER_RE.findall(text))
+    values = tuple(float(token) for token in tokens)
+    if not all(math.isfinite(value) for value in values):
+        raise ValueError('must contain only finite numbers')
+    if values[0] <= 0:
+        raise ValueError('dash length must be positive')
+    if allow_zero_gap:
+        if values[1] < 0:
+            raise ValueError('dash gap must be non-negative')
+    elif values[1] <= 0:
+        raise ValueError('dash gap must be positive')
+    if any(value <= 0 for value in values[2:]):
+        raise ValueError('additional dash and gap values must be positive')
+    return DASH_PRESETS.get(values), values, tokens
+
+
+def parse_project_stroke_dasharray(
+    raw: str,
+    *,
+    allow_zero_gap: bool = False,
+) -> tuple[str | None, tuple[float, ...]] | None:
+    """Return the registered preset and numeric values for one dash array."""
+    parsed = _parse_project_stroke_dasharray(
+        raw,
+        allow_zero_gap=allow_zero_gap,
+    )
+    if parsed is None:
+        return None
+    preset, values, _tokens = parsed
+    return preset, values
+
+
+def noncanonical_stroke_dash_numbers(raw: str) -> tuple[str, ...]:
+    """Return compatible dash numbers outside the generated-SVG spelling."""
+    parsed = _parse_project_stroke_dasharray(raw, allow_zero_gap=True)
+    if parsed is None:
+        return ()
+    _preset, _values, tokens = parsed
+    return tuple(
+        token
+        for token in tokens
+        if not _CANONICAL_PROJECT_GEOMETRY_LENGTH_RE.fullmatch(token)
+    )
+
+
+def parse_project_stroke_enum(attribute: str, raw: str) -> str:
+    """Parse one closed line-presentation enumeration."""
+    allowed = PROJECT_STROKE_ENUM_VALUES.get(attribute)
+    if allowed is None:
+        raise ValueError(f'has no registered project enumeration for {attribute!r}')
+    value = raw.strip()
+    if value not in allowed:
+        choices = ', '.join(sorted(allowed))
+        raise ValueError(f'must be one of: {choices}')
+    return value
+
+
+def is_thick_circle_shorthand(
+    dasharray: str | None,
+    stroke: str | None,
+    fill: str | None,
+    stroke_width: float,
+    radius: float,
+) -> bool:
+    """Return whether one circle uses the converter's thick-arc shorthand."""
+    if (
+        not dasharray
+        or not stroke
+        or stroke.strip().lower() in {'none', 'transparent'}
+    ):
+        return False
+    if not fill or fill.strip().lower() != 'none':
+        return False
+    if stroke_width <= 0 or radius <= 0 or stroke_width >= 2 * radius:
+        return False
+    if stroke_width / radius < 0.15:
+        return False
+    try:
+        parsed = parse_project_stroke_dasharray(
+            dasharray,
+            allow_zero_gap=True,
+        )
+    except ValueError:
+        return False
+    if parsed is None:
+        return False
+    preset, values = parsed
+    if preset is not None or len(values) != 2:
+        return False
+    dash, gap = values
+    circumference = 2 * math.pi * radius
+    return (
+        dash < circumference
+        and dash + gap + THICK_CIRCLE_COVERAGE_TOLERANCE >= circumference
+    )
 
 
 def svg_length_x(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
@@ -590,6 +699,7 @@ def _iter_visual_transform_tree(elem: ET.Element) -> Iterator[ET.Element]:
 
 
 _TRANSFORM_ARC_STYLE_ATTRS = (
+    'fill',
     'stroke',
     'stroke-width',
     'stroke-dasharray',
@@ -629,6 +739,7 @@ def _is_project_thick_circle(
     return is_thick_circle_shorthand(
         arc_styles.get('stroke-dasharray'),
         arc_styles.get('stroke'),
+        arc_styles.get('fill'),
         stroke_width,
         radius,
     )
@@ -708,7 +819,10 @@ def _project_thick_circle_ids(
 ) -> set[int]:
     thick_circle_ids: set[int] = set()
 
-    def visit(elem: ET.Element, inherited: dict[str, str] | None = None) -> None:
+    def visit(
+        elem: ET.Element,
+        inherited: dict[str, str] | None = None,
+    ) -> None:
         arc_styles = _transform_arc_styles(elem, inherited)
         if _is_project_thick_circle(elem, arc_styles):
             thick_circle_ids.add(id(elem))
@@ -717,6 +831,62 @@ def _project_thick_circle_ids(
 
     visit(root)
     return thick_circle_ids
+
+
+_PROJECT_STROKE_STYLE_ATTRIBUTES = (
+    'stroke-dasharray',
+    'stroke-dashoffset',
+    'stroke-linecap',
+    'stroke-linejoin',
+    'vector-effect',
+)
+
+
+def iter_project_stroke_styles(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str, str, str]]:
+    """Yield project line-style values with their declaration source."""
+    for elem in root.iter():
+        for attribute in _PROJECT_STROKE_STYLE_ATTRIBUTES:
+            raw = elem.get(attribute)
+            if raw is not None:
+                yield elem, attribute, raw, 'attribute'
+        inline_style = parse_inline_style(elem.get('style'))
+        for attribute in _PROJECT_STROKE_STYLE_ATTRIBUTES:
+            raw = inline_style.get(attribute)
+            if raw is not None:
+                yield elem, attribute, raw, 'inline style'
+
+
+def project_stroke_style_errors(root: ET.Element) -> list[str]:
+    """Return blocking line-style grammar and mapping errors for preflight."""
+    thick_circle_ids = _project_thick_circle_ids(root)
+    errors: set[str] = set()
+    for elem, attribute, raw, source in iter_project_stroke_styles(root):
+        label = _transform_element_label(elem)
+        try:
+            if attribute == 'stroke-dasharray':
+                parse_project_stroke_dasharray(
+                    raw,
+                    allow_zero_gap=id(elem) in thick_circle_ids,
+                )
+            elif attribute == 'stroke-dashoffset':
+                if source != 'attribute':
+                    raise ValueError(
+                        'is supported only as a direct attribute on a '
+                        'thick-circle arc'
+                    )
+                parse_project_geometry_length(raw, attribute)
+                if id(elem) not in thick_circle_ids:
+                    raise ValueError(
+                        'is supported only on a circle that satisfies the '
+                        'thick-circle arc contract'
+                    )
+            else:
+                parse_project_stroke_enum(attribute, raw)
+        except ValueError as exc:
+            errors.add(f'{label} {source} {attribute}={raw!r}: {exc}')
+    return sorted(errors)
 
 
 def _contains_thick_circle(elem: ET.Element, thick_circle_ids: set[int]) -> bool:

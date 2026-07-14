@@ -782,12 +782,28 @@ fidelity.
 | Surface | Contract / native result |
 |---|---|
 | Solid stroke/width/alpha | `Native-stable` editable line |
-| `4,4`; `2,2`; `8,4`; `8,4,2,4` | `dash`; `sysDot`; `lgDash`; `lgDashDot` (`Native-normalized`) |
-| Other custom dash | Exactly two positive finite unitless numbers (`dash gap`); export scales/quantizes against stroke width; longer arrays reduce to the first pair; `Native-normalized` |
+| `4,4`; `6,3`; `2,2`; `8,4`; `8,4,2,4` (comma or space separators) | `dash`; `dash`; `sysDot`; `lgDash`; `lgDashDot` (`Native-normalized`) |
+| Canonical custom dash | Exactly two positive finite unitless ordinary decimals (`dash gap`); export scales/quantizes against stroke width; `Native-normalized` |
+| Compatible custom dash | Three or more positive finite unitless values are accepted but reduce to the first pair with a Checker recommendation; compatible numeric spellings also warn |
 | `stroke-linecap` | `butt`, `round`, `square`; `Native-stable` |
 | `stroke-linejoin` | `miter`, `round`, `bevel`; `Native-stable` |
+| `vector-effect` | Exactly `none` or `non-scaling-stroke`; export resolves the choice into native line width (`Native-normalized`) |
+| `stroke-dashoffset` | No general line mapping; allowed only as a direct finite unitless ordinary-decimal attribute on a §6.10 thick-circle shorthand (`px` suffix is compatible input and warns) |
 | Gradient stroke | §6.3; re-import may flatten to first stop |
 | `marker-start` / `marker-end` | §1.1 native line end; type `Native-normalized`, size `Approximate` (`sm/med/lg`) |
+
+The dash grammar is closed: exact lowercase `none`, or at least two finite
+unitless numbers separated by whitespace or one comma. Generated SVG uses
+ordinary decimal spellings. A leading plus sign, exponent, trailing decimal
+point, surrounding whitespace, or longer custom list is compatible input and
+produces a non-blocking normalization recommendation. Unknown units, one-value
+arrays, empty or repeated comma fields, non-finite values, and negative or zero
+entries are errors. The only zero exception is a gap declared directly on the
+§6.10 thick-circle element.
+
+Generated cap, join, and `vector-effect` values use the exact lowercase tokens
+in the table. Surrounding whitespace is compatible input and produces a
+recommendation; every other token is an error.
 
 Match marker fill to the parent stroke. Use markers for connectors and §6.10
 calculated geometry for a manual diagonal arrowhead. When exact grid spacing
@@ -957,9 +973,11 @@ compound ring.
 
 - One circle per segment; `fill="none"`; the circle may use one `rotate` for its
   start angle, and ancestor transforms must be translate-only.
-- Exactly two non-preset finite unitless values (`dash gap`); finite unitless `stroke-dashoffset`.
+- Exactly two non-preset finite unitless ordinary-decimal values (`dash gap`);
+  `stroke-dashoffset` is a direct finite unitless ordinary-decimal attribute.
 - `0 < stroke-width < 2r`, `stroke-width/r >= 0.15`,
-  `0 < dash < 2πr`, `gap >= 0`, and `dash + gap >= 2πr`.
+  `0 < dash < 2πr`, `gap >= 0`, and `dash + gap >= 2πr - 1` SVG unit. The
+  one-unit tolerance exists only for integer-rounded circumference values.
 - Native construction uses only the first dash and re-imports as a freeform.
   Its native start is 90° counterclockwise from the SVG preview; use explicit
   arcs whenever start angle, cap, or radial precision matters.

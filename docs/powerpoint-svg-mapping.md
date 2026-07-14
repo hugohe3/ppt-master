@@ -146,6 +146,7 @@ Preset-shape selection and its exact atomic fragment contract are documented in 
 | Pattern fill | Annotated project pattern definition | Native `a:pattFill` | `Native-normalized` | Only registered PowerPoint preset patterns are supported |
 | No outline | `stroke="none"` or the registered absence of a line | `a:noFill` under `a:ln` | `Native-stable` | Do not simulate absence with zero-width ambiguous CSS |
 | Solid outline | Registered `stroke` and width | Native `a:ln` | `Native-stable` | Width and paint must use canonical units/grammar |
+| Outline scaling under transforms | Exact `vector-effect="none"` or `vector-effect="non-scaling-stroke"` | Choice resolved into native line width | `Native-normalized` | Other values are rejected; generated spelling is exact and lowercase |
 | Dashed or dotted outline | Registered dash array | Preset or custom DrawingML dash | `Native-normalized` | Unsupported dash semantics are rejected |
 | Line cap and join | Registered cap/join values | Native line cap/join properties | `Native-stable` | Only documented values are accepted |
 | Line arrowheads | Registered start/end markers | Native head/tail end properties | `Approximate` for marker size | See the conditional marker contract |

@@ -61,15 +61,20 @@ try:
         font_px_to_hpt as _font_px_to_hpt,
         is_canonical_project_geometry_length as _is_canonical_project_geometry_length,
         iter_project_geometry_lengths as _iter_project_geometry_lengths,
+        iter_project_stroke_styles as _iter_project_stroke_styles,
         iter_project_transforms as _iter_project_transforms,
         matrix_multiply as _matrix_multiply,
+        noncanonical_stroke_dash_numbers as _noncanonical_stroke_dash_numbers,
         noncanonical_transform_numbers as _noncanonical_transform_numbers,
         parse_transform_matrix as _parse_transform_matrix,
         parse_font_family as _parse_export_font_family,
         parse_inline_style as _parse_inline_style,
         parse_project_geometry_length as _parse_project_geometry_length,
+        parse_project_stroke_dasharray as _parse_project_stroke_dasharray,
+        parse_project_stroke_enum as _parse_project_stroke_enum,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
+        project_stroke_style_errors as _project_stroke_style_errors,
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
@@ -82,15 +87,20 @@ except ImportError:
     _font_px_to_hpt = None
     _is_canonical_project_geometry_length = None
     _iter_project_geometry_lengths = None
+    _iter_project_stroke_styles = None
     _iter_project_transforms = None
     _matrix_multiply = None
+    _noncanonical_stroke_dash_numbers = None
     _noncanonical_transform_numbers = None
     _parse_transform_matrix = None
     _parse_export_font_family = None
     _parse_inline_style = None
     _parse_project_geometry_length = None
+    _parse_project_stroke_dasharray = None
+    _parse_project_stroke_enum = None
     _parse_export_color = None
     _parse_export_length = None
+    _project_stroke_style_errors = None
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
     _validate_dml_shape_matrix = None
@@ -1084,13 +1094,16 @@ class SVGQualityChecker:
                 # 2a. Validate direct geometry lengths and stroke widths.
                 self._check_geometry_length_values(root, result)
 
-                # 2b. Validate complete path-data and point-list grammar.
+                # 2b. Validate line-presentation grammar and mappings.
+                self._check_stroke_style_values(root, result)
+
+                # 2c. Validate complete path-data and point-list grammar.
                 self._check_freeform_geometry_values(root, result)
 
-                # 2c. Validate complete transform grammar and native mappings.
+                # 2d. Validate complete transform grammar and native mappings.
                 self._check_transform_values(root, result)
 
-                # 2d. Validate the closed authoring-property surface and
+                # 2e. Validate the closed authoring-property surface and
                 # conditional definition interfaces before export.
                 self._check_authoring_property_contract(root, result)
                 self._check_paint_compatibility(root, result)
@@ -1099,10 +1112,10 @@ class SVGQualityChecker:
                 self._check_marker_contract(root, result)
                 self._check_clip_path_contract(root, result)
 
-                # 2e. Validate the supported shadow/glow filter interface.
+                # 2f. Validate the supported shadow/glow filter interface.
                 self._check_filter_effects(root, result)
 
-                # 2f. Validate gradient definitions, stops, and coordinates.
+                # 2g. Validate gradient definitions, stops, and coordinates.
                 self._check_gradient_interfaces(root, result)
 
                 # 3. Check font-size values
@@ -2173,6 +2186,108 @@ class SVGQualityChecker:
                 f"converter-compatible in {count} location(s) ({shown_examples}); "
                 f"generated SVG should prefer the unitless px spelling "
                 f'{attribute}="{normalized}". No change is required for export.'
+            )
+
+    def _check_stroke_style_values(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject invalid line styles and advise project-canonical spellings."""
+        helpers = (
+            _format_project_geometry_length,
+            _is_canonical_project_geometry_length,
+            _iter_project_stroke_styles,
+            _noncanonical_stroke_dash_numbers,
+            _parse_project_geometry_length,
+            _parse_project_stroke_dasharray,
+            _parse_project_stroke_enum,
+            _project_stroke_style_errors,
+        )
+        if any(helper is None for helper in helpers):
+            result['warnings'].append(
+                "Unable to import svg_to_pptx line-style validators; native "
+                "export will still validate line-presentation syntax."
+            )
+            return
+
+        result['errors'].extend(_project_stroke_style_errors(root))
+        recommendations: Counter[tuple[str, str, str, str]] = Counter()
+        examples: Dict[tuple[str, str, str, str], List[str]] = defaultdict(list)
+
+        for elem, attribute, raw, source in _iter_project_stroke_styles(root):
+            label = f'{_element_label(elem)} {source}'
+            normalized = None
+            reason = ''
+
+            if attribute == 'stroke-dasharray':
+                try:
+                    parsed = _parse_project_stroke_dasharray(
+                        raw,
+                        allow_zero_gap=True,
+                    )
+                    noncanonical = _noncanonical_stroke_dash_numbers(raw)
+                except ValueError:
+                    continue
+                if parsed is None:
+                    if raw != 'none':
+                        normalized = 'none'
+                        reason = 'remove surrounding whitespace'
+                else:
+                    preset, values = parsed
+                    longer_custom = preset is None and len(values) > 2
+                    if noncanonical or longer_custom or raw != raw.strip():
+                        kept_values = values[:2] if longer_custom else values
+                        normalized = ' '.join(
+                            _format_project_geometry_length(value)
+                            for value in kept_values
+                        )
+                        reasons = []
+                        if noncanonical:
+                            reasons.append('use ordinary decimal numbers')
+                        if longer_custom:
+                            reasons.append(
+                                'make the first-pair export normalization explicit'
+                            )
+                        if raw != raw.strip():
+                            reasons.append('remove surrounding whitespace')
+                        reason = '; '.join(reasons)
+            elif attribute == 'stroke-dashoffset':
+                try:
+                    value = _parse_project_geometry_length(raw, attribute)
+                except ValueError:
+                    continue
+                if not _is_canonical_project_geometry_length(raw):
+                    normalized = _format_project_geometry_length(value)
+                    reason = 'use the unitless px spelling'
+            else:
+                try:
+                    value = _parse_project_stroke_enum(attribute, raw)
+                except ValueError:
+                    continue
+                if raw != value:
+                    normalized = value
+                    reason = 'remove surrounding whitespace'
+
+            if normalized is None:
+                continue
+            key = (attribute, raw, normalized, reason)
+            recommendations[key] += 1
+            if label not in examples[key] and len(examples[key]) < 3:
+                examples[key].append(label)
+
+        for (attribute, raw, normalized, reason), count in sorted(
+            recommendations.items()
+        ):
+            shown_examples = ', '.join(
+                examples[(attribute, raw, normalized, reason)]
+            )
+            result['warnings'].append(
+                f"Recommendation: line style {attribute}={raw!r} is "
+                f"converter-compatible in {count} location(s) "
+                f"({shown_examples}); generated SVG should prefer "
+                f'{attribute}="{normalized}" to {reason}. No change is '
+                "required for export."
             )
 
     def _check_freeform_geometry_values(

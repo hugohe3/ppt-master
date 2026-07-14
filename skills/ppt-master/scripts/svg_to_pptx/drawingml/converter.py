@@ -39,6 +39,7 @@ from .utils import (
     parse_transform_operations,
     parse_transform_matrix,
     project_geometry_length_errors,
+    project_stroke_style_errors,
     project_transform_errors,
     resolve_url_id,
     supports_full_project_transform,
@@ -95,6 +96,22 @@ def _require_project_transforms(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project transform(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_stroke_styles(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject invalid project line-style syntax and mappings before conversion."""
+    errors = project_stroke_style_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project line style(s): '
         f'{preview}{suffix}'
     )
 
@@ -1143,6 +1160,7 @@ def convert_svg_to_slide_shapes(
         )
 
     _require_project_freeform_geometry(root, svg_path)
+    _require_project_stroke_styles(root, svg_path)
     _require_project_transforms(root, svg_path)
 
     viewport_width, viewport_height = _root_viewport_size(root)
@@ -1202,6 +1220,7 @@ def convert_svg_to_slide_shapes(
             print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
+    _require_project_stroke_styles(root, svg_path)
     _require_project_transforms(root, svg_path)
 
     # Flatten positional <tspan> (those with x/y/non-zero dy) into independent

@@ -11,10 +11,11 @@ from pptx_shapes import validate_ooxml_line_width
 from .context import ConvertContext
 from .theme_colors import ThemeColorSpec, color_node_xml
 from .utils import (
-    SVG_NS, ANGLE_UNIT, DASH_PRESETS,
+    SVG_NS, ANGLE_UNIT,
     px_to_emu, _f, _get_attr, parse_svg_length,
     combine_opacity, parse_inline_style, parse_opacity, parse_stop_style,
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
+    parse_project_stroke_dasharray, parse_project_stroke_enum,
 )
 
 
@@ -447,8 +448,13 @@ def _emit_line_end(
 def _effective_stroke_scale(elem: ET.Element, ctx: ConvertContext) -> float:
     """Approximate the effective SVG geometry transform as one line-width scale."""
     vector_effect = _get_attr(elem, 'vector-effect', ctx)
-    if vector_effect and vector_effect.strip().lower() == 'non-scaling-stroke':
-        return 1.0
+    if vector_effect:
+        vector_effect = parse_project_stroke_enum(
+            'vector-effect',
+            vector_effect,
+        )
+        if vector_effect == 'non-scaling-stroke':
+            return 1.0
 
     if ctx.use_transform_matrix:
         matrix = ctx.transform_matrix
@@ -488,33 +494,38 @@ def build_stroke_xml(
     # Dash pattern
     dash_xml = ''
     dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
-    if dasharray and dasharray != 'none':
-        preset = DASH_PRESETS.get(dasharray.strip())
-        if preset:
-            dash_xml = f'<a:prstDash val="{preset}"/>'
-        else:
-            # Unknown pattern → build custDash proportional to stroke width
-            try:
-                parts = re.split(r'[\s,]+', dasharray.strip())
-                d_raw = float(parts[0])
-                sp_raw = float(parts[1]) if len(parts) > 1 else d_raw
+    if dasharray:
+        parsed_dasharray = parse_project_stroke_dasharray(dasharray)
+        if parsed_dasharray is not None:
+            preset, values = parsed_dasharray
+            if preset:
+                dash_xml = f'<a:prstDash val="{preset}"/>'
+            else:
+                # The project contract normalizes compatible longer arrays to
+                # their first dash/gap pair before DrawingML quantization.
+                d_raw, sp_raw = values[:2]
                 sw = max(source_width, 0.001)
-                d_pct = int(d_raw / sw * 100000)
-                sp_pct = int(sp_raw / sw * 100000)
-                dash_xml = f'<a:custDash><a:ds d="{d_pct}" sp="{sp_pct}"/></a:custDash>'
-            except (ValueError, IndexError):
-                dash_xml = '<a:prstDash val="sysDash"/>'
+                d_pct = max(1, round(d_raw / sw * 100000))
+                sp_pct = max(1, round(sp_raw / sw * 100000))
+                dash_xml = (
+                    '<a:custDash>'
+                    f'<a:ds d="{d_pct}" sp="{sp_pct}"/>'
+                    '</a:custDash>'
+                )
 
     # Line cap
     cap_map = {'round': 'rnd', 'square': 'sq', 'butt': 'flat'}
     cap_attr = ''
     linecap = _get_attr(elem, 'stroke-linecap', ctx)
-    if linecap and linecap in cap_map:
+    if linecap:
+        linecap = parse_project_stroke_enum('stroke-linecap', linecap)
         cap_attr = f' cap="{cap_map[linecap]}"'
 
     # Line join
     join_xml = ''
     linejoin = _get_attr(elem, 'stroke-linejoin', ctx)
+    if linejoin:
+        linejoin = parse_project_stroke_enum('stroke-linejoin', linejoin)
     if linejoin == 'round':
         join_xml = '<a:round/>'
     elif linejoin == 'bevel':
