@@ -11,6 +11,7 @@ import re
 import sys
 import tempfile
 import unittest
+import warnings
 import zipfile
 from pathlib import Path
 from unittest.mock import patch
@@ -90,6 +91,7 @@ from template_preview_pptx import _canvas_viewbox as preview_canvas_viewbox
 from template_import.manifest import (
     _effective_inherited_image_assets,
     build_manifest,
+    extract_placeholder_text_style,
 )
 from template_import.native_structure import build_native_structure
 from pptx_effects import project_effect_status_errors, txbody_has_run_effects
@@ -1184,6 +1186,33 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             ),
             {'layout-shape.png', 'master-shared.png'},
         )
+
+    def test_manifest_text_style_uses_explicit_element_precedence(self):
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        shape = ET.fromstring(f'''<p:sp xmlns:p="{pml}" xmlns:a="{dml}">
+  <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r>
+    <a:rPr sz="2400" b="1"/><a:t>Primary</a:t>
+  </a:r><a:endParaRPr sz="1200" i="1"/></a:p></p:txBody>
+</p:sp>''')
+        fallback_shape = ET.fromstring(
+            f'''<p:sp xmlns:p="{pml}" xmlns:a="{dml}">
+  <p:txBody><a:bodyPr/><a:lstStyle/><a:p>
+    <a:endParaRPr sz="1200" i="1"/>
+  </a:p></p:txBody>
+</p:sp>'''
+        )
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', DeprecationWarning)
+            primary = extract_placeholder_text_style(shape)
+            fallback = extract_placeholder_text_style(fallback_shape)
+
+        self.assertEqual(primary['fontSizePx'], 32.0)
+        self.assertTrue(primary['bold'])
+        self.assertNotIn('italic', primary)
+        self.assertEqual(fallback['fontSizePx'], 16.0)
+        self.assertTrue(fallback['italic'])
 
     def test_top_level_group_ids_are_unique_animation_anchors(self):
         duplicate = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
