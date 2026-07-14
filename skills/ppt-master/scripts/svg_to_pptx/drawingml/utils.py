@@ -213,6 +213,23 @@ PROJECT_FILTER_EFFECT_PRIMITIVES = frozenset({
     'feGaussianBlur',
 })
 PROJECT_FILTER_PUBLIC_TARGETS = frozenset({'rect', 'circle', 'path', 'text'})
+_PROJECT_MARKER_NUMBER_TOKEN = (
+    r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
+)
+_PROJECT_MARKER_POINT_TOKEN = (
+    rf'{_PROJECT_MARKER_NUMBER_TOKEN}'
+    rf'(?:\s*,\s*|\s+){_PROJECT_MARKER_NUMBER_TOKEN}'
+)
+_PROJECT_MARKER_TRIANGLE_PATH_RE = re.compile(
+    rf'^\s*M\s*{_PROJECT_MARKER_POINT_TOKEN}'
+    rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{2}}\s*Z\s*$',
+    re.IGNORECASE,
+)
+_PROJECT_MARKER_DIAMOND_PATH_RE = re.compile(
+    rf'^\s*M\s*{_PROJECT_MARKER_POINT_TOKEN}'
+    rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{3}}\s*Z\s*$',
+    re.IGNORECASE,
+)
 PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS = frozenset({
     'defs',
     'desc',
@@ -1730,6 +1747,192 @@ def project_definition_errors(root: ET.Element) -> list[str]:
             errors.add(f'{label} must be a direct child of <defs>')
         if not (elem.get('id') or '').strip():
             errors.add(f'{label} requires a non-empty unique id')
+    return sorted(errors)
+
+
+def _project_marker_polygon_vertex_count(raw: str) -> int | None:
+    """Return the number of finite marker polygon vertices, or ``None``."""
+    tokens = [token for token in re.split(r'[\s,]+', raw.strip()) if token]
+    if not tokens or len(tokens) % 2:
+        return None
+    try:
+        values = [float(token) for token in tokens]
+    except ValueError:
+        return None
+    if not all(math.isfinite(value) for value in values):
+        return None
+    return len(values) // 2
+
+
+def _project_effective_presentation_value(
+    elem: ET.Element,
+    name: str,
+    parent_by_id: dict[int, ET.Element],
+) -> str | None:
+    """Resolve one inherited presentation value for project validation."""
+    current: ET.Element | None = elem
+    while current is not None:
+        style_values = parse_inline_style(current.get('style'))
+        if name in style_values:
+            return style_values[name]
+        direct = current.get(name)
+        if direct is not None:
+            return direct
+        current = parent_by_id.get(id(current))
+    return None
+
+
+def project_marker_errors(root: ET.Element) -> list[str]:
+    """Validate SVG line-end markers against the native arrow contract."""
+    definitions, _duplicates = project_definition_index(root)
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    errors: set[str] = set()
+    checked_markers: set[str] = set()
+
+    for elem in root.iter():
+        for attribute_name in ('marker-start', 'marker-end'):
+            raw_reference = elem.get(attribute_name)
+            if (
+                raw_reference is None
+                or raw_reference.strip().lower() == 'none'
+            ):
+                continue
+
+            label = _transform_element_label(elem)
+            tag = (_svg_element_tag(elem) or '').lower()
+            if tag not in {'line', 'path'}:
+                errors.add(
+                    f'{label} {attribute_name} is allowed only on <line> '
+                    'or <path>'
+                )
+
+            match = re.fullmatch(r'url\(#([^)]+)\)', raw_reference.strip())
+            if match is None:
+                errors.add(
+                    f'{label} {attribute_name} must be an exact local '
+                    f'url(#id) reference; got {raw_reference!r}'
+                )
+                continue
+
+            marker_id = match.group(1)
+            marker = definitions.get(marker_id)
+            if marker is None or _svg_element_tag(marker) != 'marker':
+                errors.add(
+                    f'{label} {attribute_name}=url(#{marker_id}) has no '
+                    f'matching direct <defs><marker id="{marker_id}"> '
+                    'definition'
+                )
+                continue
+
+            visual_children = [
+                child
+                for child in list(marker)
+                if _svg_element_tag(child)
+                not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
+            ]
+            shape = visual_children[0] if len(visual_children) == 1 else None
+            if marker_id not in checked_markers:
+                checked_markers.add(marker_id)
+                marker_label = f'<marker id="{marker_id}">'
+                if marker.get('orient') not in {
+                    'auto',
+                    'auto-start-reverse',
+                }:
+                    errors.add(
+                        f'{marker_label} requires orient="auto" or '
+                        'orient="auto-start-reverse"'
+                    )
+                marker_units = marker.get('markerUnits', 'strokeWidth')
+                if marker_units not in {'strokeWidth', 'userSpaceOnUse'}:
+                    errors.add(
+                        f'{marker_label} has unsupported '
+                        f'markerUnits={marker_units!r}'
+                    )
+                for size_attribute in ('markerWidth', 'markerHeight'):
+                    raw_size = marker.get(size_attribute)
+                    if raw_size is None:
+                        continue
+                    try:
+                        size = float(raw_size)
+                    except ValueError:
+                        size = math.nan
+                    if not math.isfinite(size) or size <= 0:
+                        errors.add(
+                            f'{marker_label} {size_attribute} must be a '
+                            f'positive finite number; got {raw_size!r}'
+                        )
+
+                if shape is None:
+                    errors.add(
+                        f'{marker_label} must contain exactly one direct '
+                        'triangle/diamond path or polygon, circle, or ellipse'
+                    )
+                else:
+                    shape_tag = (_svg_element_tag(shape) or '').lower()
+                    if shape.get('transform'):
+                        errors.add(
+                            f'{marker_label} child <{shape_tag}> cannot use '
+                            'transform'
+                        )
+                    if shape_tag == 'path':
+                        path_data = shape.get('d', '')
+                        if not (
+                            _PROJECT_MARKER_TRIANGLE_PATH_RE.fullmatch(path_data)
+                            or _PROJECT_MARKER_DIAMOND_PATH_RE.fullmatch(path_data)
+                        ):
+                            errors.add(
+                                f'{marker_label} path must be a closed 3- or '
+                                '4-vertex path with one explicit M/L command '
+                                'per vertex'
+                            )
+                    elif shape_tag == 'polygon':
+                        vertex_count = _project_marker_polygon_vertex_count(
+                            shape.get('points', '')
+                        )
+                        if vertex_count not in {3, 4}:
+                            errors.add(
+                                f'{marker_label} polygon must contain exactly '
+                                '3 or 4 finite vertices'
+                            )
+                    elif shape_tag not in {'circle', 'ellipse'}:
+                        errors.add(
+                            f'{marker_label} child <{shape_tag}> has no native '
+                            'line-end mapping'
+                        )
+
+            if shape is None:
+                continue
+            stroke_value = _project_effective_presentation_value(
+                elem,
+                'stroke',
+                parent_by_id,
+            )
+            marker_fill = (
+                _project_effective_presentation_value(
+                    shape,
+                    'fill',
+                    parent_by_id,
+                )
+                or '#000000'
+            )
+            stroke_color, _stroke_alpha = parse_svg_color(stroke_value or '')
+            fill_color, _fill_alpha = parse_svg_color(marker_fill)
+            if stroke_color is None or fill_color is None:
+                errors.add(
+                    f'{label} {attribute_name} marker fill and line stroke '
+                    'must both be supported solid colors'
+                )
+            elif stroke_color != fill_color:
+                errors.add(
+                    f'{label} {attribute_name}=url(#{marker_id}) marker fill '
+                    f'{marker_fill!r} does not match effective line stroke '
+                    f'{stroke_value!r}'
+                )
+
     return sorted(errors)
 
 
