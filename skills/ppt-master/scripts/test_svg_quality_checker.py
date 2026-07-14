@@ -62,6 +62,14 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             svg_path.write_text(content, encoding='utf-8')
             return SVGQualityChecker().check_file(str(svg_path))
 
+    @staticmethod
+    def _text_bound_warnings(result: dict) -> list[str]:
+        return [
+            warning
+            for warning in result['warnings']
+            if 'estimated horizontal bounds exceed the viewBox' in warning
+        ]
+
     def _assert_checker_and_exporter_reject(
         self,
         content: str,
@@ -821,6 +829,18 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self.assertEqual(noncanonical_sizes, [])
         self.assertEqual(undersized_text, [])
 
+    def test_chart_text_bound_warnings_match_real_overflows(self):
+        chart_root = SCRIPT_DIR.parent / 'templates' / 'charts'
+        warned = set()
+        for svg_path in chart_root.glob('*.svg'):
+            result = SVGQualityChecker().check_file(str(svg_path))
+            if self._text_bound_warnings(result):
+                warned.add(svg_path.name)
+        self.assertEqual(
+            warned,
+            {'bullet_chart.svg', 'pyramid_isometric.svg'},
+        )
+
     def test_chart_catalog_passes_checker_and_export_routes(self):
         chart_root = SCRIPT_DIR.parent / 'templates' / 'charts'
         index = json.loads(
@@ -1371,6 +1391,97 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             with self.subTest(attribute=attribute):
                 with self.assertRaises(UseExpansionError):
                     expand_local_use_references(root)
+
+    def test_single_line_text_warning_uses_rendered_bounds(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">'
+            '<text x="10" y="30" font-size="20">\n'
+            f'  {" " * 120}Fit\n'
+            '</text>'
+            '<text x="150" y="70" font-size="20">WWWW</text>'
+            '</svg>'
+        )
+        result = self._check(source)
+        bounds_warnings = self._text_bound_warnings(result)
+        self.assertEqual(len(bounds_warnings), 1)
+        self.assertIn("'WWWW'", bounds_warnings[0])
+        self.assertNotIn("'Fit'", bounds_warnings[0])
+
+    def test_single_line_text_warning_allows_one_pixel_tolerance(self):
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 200 100" font-size="20">
+  <text x="141" y="30">WWWW</text>
+  <text x="142" y="70">MMMM</text>
+</svg>'''
+        )
+        bounds_warnings = self._text_bound_warnings(result)
+        self.assertEqual(len(bounds_warnings), 1)
+        self.assertIn("'MMMM'", bounds_warnings[0])
+        self.assertNotIn("'WWWW'", bounds_warnings[0])
+
+    def test_single_line_text_warning_respects_text_anchor(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 200 100" font-size="20">
+  <text x="100" y="20" text-anchor="middle">WWWWWWWW</text>
+  <text x="40" y="20" text-anchor="middle">WWWWWWWW</text>
+  <text x="160" y="20" text-anchor="middle">WWWWWWWW</text>
+  <text x="200" y="50" text-anchor="end">WWWWWWWW</text>
+  <text x="100" y="50" text-anchor="end">WWWWWWWW</text>
+  <text x="210" y="50" text-anchor="end">WWWWWWWW</text>
+</svg>'''
+        result = self._check(source)
+        bounds_warnings = self._text_bound_warnings(result)
+        self.assertEqual(len(bounds_warnings), 1)
+        self.assertIn('Detected 4 single-line text element(s)', bounds_warnings[0])
+
+    def test_single_line_text_warning_resolves_inline_runs_and_transforms(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 200 100" font-size="20">
+  <defs><g id="hidden"><text x="190" y="20">WWWW</text></g></defs>
+  <g font-weight="semibold">
+    <text x="150" y="20">WW<tspan>WW</tspan></text>
+  </g>
+  <text x="150" y="30" letter-spacing="50">A<tspan
+        fill="#FF0000">B</tspan></text>
+  <text x="50" y="40"><tspan x="10">WWWWWW</tspan>
+    <tspan x="10" dy="20">WWWWWW</tspan></text>
+  <g transform="translate(-200 0)"><text x="250" y="60">WWWW</text></g>
+  <g transform="translate(100 0)"><text x="50" y="80">WWWW</text></g>
+  <g transform="translate(100 0)"><g transform="rotate(180 0 45)">
+    <text x="10" y="45" font-size="10">ii</text>
+  </g></g>
+  <text x="190" y="90">{{LONG_PLACEHOLDER}}</text>
+</svg>'''
+        result = self._check(source)
+        bounds_warnings = self._text_bound_warnings(result)
+        self.assertEqual(len(bounds_warnings), 1)
+        self.assertIn('Detected 2 single-line text element(s)', bounds_warnings[0])
+
+    def test_single_line_text_warning_includes_inherited_tracking(self):
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 200 100">
+  <g font-size="20" font-weight="semibold" letter-spacing="10">
+    <text x="100" y="50">iiiiiiii</text>
+  </g>
+</svg>'''
+        )
+        bounds_warnings = self._text_bound_warnings(result)
+        self.assertEqual(len(bounds_warnings), 1)
+        self.assertIn("'iiiiiiii'", bounds_warnings[0])
+
+    def test_single_line_text_warning_measures_negative_tracking_bounds(self):
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 200 100">
+  <text x="50" y="25" font-size="20" letter-spacing="-100">AB</text>
+  <text x="300" y="50" font-size="20" letter-spacing="-100">AB</text>
+</svg>'''
+        )
+        bounds_warnings = self._text_bound_warnings(result)
+        self.assertEqual(len(bounds_warnings), 1)
+        self.assertIn('Detected 2 single-line text element(s)', bounds_warnings[0])
 
     def test_text_property_contract_preserves_registered_drawingml_semantics(self):
         source = '''<svg xmlns="http://www.w3.org/2000/svg"
