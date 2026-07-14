@@ -17,25 +17,25 @@
             </feMerge>
         </filter>
         <!-- Layer 1 to Layer 2 Gradients -->
-        <linearGradient id="gPR" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gPS" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gPO" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gPA" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gSR" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gSS" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gSO" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gIS" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gIA" gradientUnits="userSpaceOnUse" x1="200" y1="0" x2="560" y2="0"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPR" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gPA" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.6"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSR" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.6"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gIS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gIA" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.6"/></linearGradient>
         <!-- Layer 2 to Layer 3 Gradients -->
-        <linearGradient id="gRP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gRI" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gSP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gSM" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.6"/><stop offset="100%" stop-color="#EC4899" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gOP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gOI" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gOO" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gAP" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#64748B" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
-        <linearGradient id="gAO" gradientUnits="userSpaceOnUse" x1="720" y1="0" x2="1080" y2="0"><stop offset="0%" stop-color="#64748B" stop-opacity="0.6"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gRP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gRI" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gSM" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.6"/><stop offset="100%" stop-color="#EC4899" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gOP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gOI" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gOO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gAP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#64748B" stop-opacity="0.6"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="gAO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#64748B" stop-opacity="0.6"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.6"/></linearGradient>
     </defs>
     <rect width="1280" height="720" fill="#F8FAFC"/>
     <!-- ==================== Header ==================== -->
@@ -49,7 +49,7 @@
     <g>
         <!-- Layer 1 to Layer 2 -->
         <!-- Product Sales flows -->
-        <path d="M 200 186.25 C 380 186.25, 380 186.25, 560 186.25" fill="none" stroke="url(#gPR)" stroke-width="112.5"/>
+        <rect x="200" y="130" width="360" height="112.5" fill="url(#gPR)"/>
         <path d="M 200 276.25 C 380 276.25, 380 341.25, 560 341.25" fill="none" stroke="url(#gPS)" stroke-width="67.5"/>
         <path d="M 200 343.75 C 380 343.75, 380 496.25, 560 496.25" fill="none" stroke="url(#gPO)" stroke-width="67.5"/>
         <path d="M 200 388.75 C 380 388.75, 380 606.25, 560 606.25" fill="none" stroke="url(#gPA)" stroke-width="22.5"/>
@@ -62,7 +62,7 @@
         <path d="M 200 608.75 C 380 608.75, 380 628.75, 560 628.75" fill="none" stroke="url(#gIA)" stroke-width="22.5"/>
         <!-- Layer 2 to Layer 3 -->
         <!-- R&D flows -->
-        <path d="M 720 193 C 900 193, 900 193, 1080 193" fill="none" stroke="url(#gRP)" stroke-width="126"/>
+        <rect x="720" y="130" width="360" height="126" fill="url(#gRP)"/>
         <path d="M 720 271.75 C 900 271.75, 900 500.75, 1080 500.75" fill="none" stroke="url(#gRI)" stroke-width="31.5"/>
         <!-- Sales flows -->
         <path d="M 720 330 C 900 330, 900 278.5, 1080 278.5" fill="none" stroke="url(#gSP)" stroke-width="45"/>
@@ -73,10 +73,10 @@
         <path d="M 720 570.5 C 900 570.5, 900 599.5, 1080 599.5" fill="none" stroke="url(#gOO)" stroke-width="9"/>
         <!-- Admin flows -->
         <path d="M 720 599.5 C 900 599.5, 900 350.5, 1080 350.5" fill="none" stroke="url(#gAP)" stroke-width="9"/>
-        <path d="M 720 622 C 900 622, 900 622, 1080 622" fill="none" stroke="url(#gAO)" stroke-width="36"/>
+        <rect x="720" y="604" width="360" height="36" fill="url(#gAO)"/>
     </g>
     <!-- ==================== LAYER 1: Revenue Sources ==================== -->
-    <g filter="url(#nodeShadow)">
+    <g>
         <rect x="40" y="130" width="160" height="270" rx="4" fill="#3B82F6"/>
         <text x="120" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Product Sales</text>
         <text x="120" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$60M</text>
@@ -87,7 +87,7 @@
         <text x="120" y="603" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Investment $10M</text>
     </g>
     <!-- ==================== LAYER 2: Departments ==================== -->
-    <g filter="url(#nodeShadow)">
+    <g>
         <rect x="560" y="130" width="160" height="157.5" rx="4" fill="#8B5CF6"/>
         <text x="640" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">R&amp;D</text>
         <text x="640" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$35M</text>
@@ -101,7 +101,7 @@
         <text x="640" y="623" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Admin $10M</text>
     </g>
     <!-- ==================== LAYER 3: Expense Types ==================== -->
-    <g filter="url(#nodeShadow)">
+    <g>
         <rect x="1080" y="130" width="160" height="225" rx="4" fill="#0EA5E9"/>
         <text x="1160" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Personnel</text>
         <text x="1160" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$50M</text>

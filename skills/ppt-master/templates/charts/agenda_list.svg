@@ -41,7 +41,7 @@
     <line x1="80" y1="160" x2="1200" y2="160" stroke="#E2E8F0" stroke-width="2"/>
 
     <!-- ==================== Vertical Timeline Rail ==================== -->
-    <line x1="130" y1="220" x2="130" y2="620" stroke="url(#rail)" stroke-width="3" stroke-linecap="round"/>
+    <rect x="128.5" y="218.5" width="3" height="403" rx="1.5" fill="url(#rail)"/>
 
     <!-- ==================== Agenda Items ==================== -->
     <!-- Item 01 -->

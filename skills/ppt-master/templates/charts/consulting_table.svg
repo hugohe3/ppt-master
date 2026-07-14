@@ -6,14 +6,6 @@
     Design Principles: Left-align text, right-align numbers, weak borders, visual integration
     -->
     <defs>
-        <!-- Shadow for the emphasized Total block -->
-        <filter id="highlightShadow" x="-5%" y="-15%" width="110%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.1"/>
-            <feComposite in2="SourceAlpha" operator="in"/>
-            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
         <!-- Gradient for Visual Data Bars -->
         <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#3B82F6"/>
@@ -111,7 +103,7 @@
         <!-- Thick separator line to emphasize the bottom block -->
         <line x1="0" y1="370" x2="1120" y2="370" stroke="#0F172A" stroke-width="3"/>
         <!-- Emphasized background card -->
-        <g filter="url(#highlightShadow)">
+        <g>
             <rect x="0" y="390" width="1120" height="70" fill="#0F172A" rx="8"/>
             <!-- Accent line -->
             <rect x="0" y="390" width="6" height="70" fill="#3B82F6" rx="3"/>

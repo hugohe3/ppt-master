@@ -41,7 +41,7 @@
         </metadata>
     <!-- chart-plot-area: pie | center: 420,400 | radius: 200 -->
     <!-- ==================== Pie Chart Graphic ==================== -->
-    <g id="pieChart" transform="translate(420, 400)" filter="url(#softShadow)">
+    <g id="pieChart" transform="translate(420, 400)">
         <!-- 
         Center: (420, 400)
         Radius: 200px

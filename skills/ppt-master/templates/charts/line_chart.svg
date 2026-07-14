@@ -24,14 +24,6 @@
             <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.25" />
             <stop offset="100%" style="stop-color:#10B981;stop-opacity:0.02" />
         </linearGradient>
-        <!-- Data Node Shadow -->
-        <filter id="dotShadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.15" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
     </defs>
     <!-- Background -->
     <rect width="1280" height="720" fill="#F8FAFC"/>
@@ -104,7 +96,7 @@
         <polyline points="225,422 310,398 395,370 480,342 565,318 650,302 735,278 820,250 905,238 990,222 1075,198 1160,182" 
                   fill="none" stroke="url(#lineGrad1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         <!-- Line 1 Data Nodes -->
-        <g stroke="#FFFFFF" stroke-width="2.5" fill="#3B82F6" filter="url(#dotShadow)">
+        <g stroke="#FFFFFF" stroke-width="2.5" fill="#3B82F6">
             <circle cx="225" cy="422" r="6"/>
             <circle cx="310" cy="398" r="6"/>
             <circle cx="395" cy="370" r="6"/>
@@ -125,7 +117,7 @@
         <polyline points="225,502 310,490 395,478 480,462 565,450 650,438 735,422 820,406 905,398 990,382 1075,358 1160,342" 
                   fill="none" stroke="url(#lineGrad2)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         <!-- Line 2 Data Nodes -->
-        <g stroke="#FFFFFF" stroke-width="2.5" fill="#10B981" filter="url(#dotShadow)">
+        <g stroke="#FFFFFF" stroke-width="2.5" fill="#10B981">
             <circle cx="225" cy="502" r="6"/>
             <circle cx="310" cy="490" r="6"/>
             <circle cx="395" cy="478" r="6"/>

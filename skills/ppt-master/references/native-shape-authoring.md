@@ -45,7 +45,7 @@ paths or contours, or upgrade ordinary SVG during export.
 | Literal geometric body | `triangle`, `diamond`, `pentagon`, `hexagon`, `octagon`, `star5` | Use only when the named geometry itself is the intent. |
 | Solid block direction | `rightArrow`, `leftArrow`, `upArrow`, `downArrow`, `leftRightArrow`, `upDownArrow`, `chevron` | Thin relationship geometry remains an ordinary SVG `<line>` / `<path>` with no attachment semantics. |
 | Standard flowchart node | `flowChartProcess`, `flowChartDecision`, `flowChartInputOutput`, `flowChartTerminator`, `flowChartDocument` | Use only for an actual flowchart; ordinary content cards remain cards. |
-| Standard connector route | `straightConnector1`, `bentConnector*`, `curvedConnector*` | The SVG route must match the selected preset; otherwise use a free path. |
+| Explicit standalone connector | `straightConnector1`, `bentConnector*`, `curvedConnector*` | Use only when the user explicitly requests a PowerPoint Connector object. Diagram relationships otherwise stay ordinary SVG line/path shapes with no attachment semantics. |
 | Stock callout | `wedgeRectCallout`, `wedgeRoundRectCallout`, `wedgeEllipseCallout`, `cloudCallout` | Brand-specific or custom-tail callouts remain free SVG. |
 | Stock ribbon or scroll | `ribbon*`, `ellipseRibbon*`, `verticalScroll`, `horizontalScroll` | Select only when the stock contour is visually acceptable. |
 | Standalone math symbol | `mathPlus`, `mathMinus`, `mathMultiply`, `mathDivide`, `mathEqual`, `mathNotEqual` | Inline formulas and prose symbols remain text/formula assets. |
@@ -57,6 +57,14 @@ Use registry search for a less common literal shape:
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list --search arrow
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py describe rightArrow
 ```
+
+**Shape-first diagram rule**: chart-template adaptations use ordinary line/path
+shapes for thin relationships and ordinary `shape` presets for solid block
+directions. Connector-family presets are reserved for an explicit request for
+a standalone PowerPoint Connector; they are not the default for architecture,
+process, hierarchy, or framework diagrams and do not gain attachment semantics.
+Existing Connector topology imported from a source PPTX remains owned by the
+preserve/mirror round-trip contract.
 
 **Forbidden — false native semantics**:
 
@@ -81,7 +89,7 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
   --adjust "adj1=val 50000"
 ```
 
-For a native connector:
+For an explicitly requested standalone native connector only:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render bentConnector3 \

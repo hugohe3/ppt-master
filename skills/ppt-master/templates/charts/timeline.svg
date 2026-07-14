@@ -93,7 +93,7 @@
         <line x1="120" y1="360" x2="1160" y2="360" stroke="#E2E8F0" stroke-width="10" stroke-linecap="round"/>
         <line x1="736" y1="360" x2="1160" y2="360" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" stroke-dasharray="2,8"/>
         <!-- Active progress track (gradient) -->
-        <line x1="120" y1="360" x2="736" y2="360" stroke="url(#trackGrad)" stroke-width="10" stroke-linecap="round"/>
+        <rect x="115" y="355" width="626" height="10" rx="5" fill="url(#trackGrad)"/>
     </g>
 
     <!-- ==================== TODAY Indicator ==================== -->

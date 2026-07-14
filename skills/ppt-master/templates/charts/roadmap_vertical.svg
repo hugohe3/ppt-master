@@ -32,7 +32,7 @@
     <!-- Background Track -->
     <line x1="180" y1="115" x2="180" y2="690" stroke="#E2E8F0" stroke-width="4" stroke-linecap="round"/>
     <!-- Active Progress Track -->
-    <line x1="180" y1="115" x2="180" y2="360" stroke="url(#lineGrad)" stroke-width="4" stroke-linecap="round"/>
+    <rect x="178" y="113" width="4" height="249" rx="2" fill="url(#lineGrad)"/>
     <!-- ==================== Timeline Nodes ==================== -->
     <!-- Node 1 (Completed) -->
     <text x="150" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="end">2025 Q1</text>

@@ -18,14 +18,6 @@
             <stop offset="60%" stop-color="#F8FAFC" stop-opacity="0.4"/>
             <stop offset="100%" stop-color="#F8FAFC" stop-opacity="0"/>
         </radialGradient>
-        <!-- Standard Drop Shadow -->
-        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
-            <feOffset dx="0" dy="4" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
         <!-- Hub Glow -->
         <filter id="hubGlow" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
@@ -83,7 +75,7 @@
     <circle cx="664" cy="428" r="2" fill="#FFFFFF" opacity="0.8"/>
     <!-- ===== Spoke 1: Data Architecture (Top) - Blue ===== -->
     <!-- Center: 640, 120 -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="520" y="80" width="240" height="80" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <rect x="520" y="104" width="4" height="32" rx="2" fill="#3B82F6"/>
@@ -99,7 +91,7 @@
           font-size="12" font-weight="500" fill="#64748B">Data Lake &amp; Analytics</text>
     <!-- ===== Spoke 2: AI Engine (Top Right) - Sky ===== -->
     <!-- Center: 870, 230 -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="750" y="190" width="240" height="80" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <rect x="750" y="214" width="4" height="32" rx="2" fill="#0EA5E9"/>
@@ -114,7 +106,7 @@
           font-size="12" font-weight="500" fill="#64748B">Model Training &amp; Inference</text>
     <!-- ===== Spoke 3: Business Logic (Bottom Right) - Indigo ===== -->
     <!-- Center: 870, 530 -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="750" y="490" width="240" height="80" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <rect x="750" y="514" width="4" height="32" rx="2" fill="#6366F1"/>
@@ -133,7 +125,7 @@
           font-size="12" font-weight="500" fill="#64748B">Workflow &amp; Rule Engines</text>
     <!-- ===== Spoke 4: Integration Services (Bottom) - Blue ===== -->
     <!-- Center: 640, 640 -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="520" y="600" width="240" height="80" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <rect x="520" y="624" width="4" height="32" rx="2" fill="#3B82F6"/>
@@ -152,7 +144,7 @@
           font-size="12" font-weight="500" fill="#64748B">API Gateway &amp; Event Bus</text>
     <!-- ===== Spoke 5: Security & Compliance (Bottom Left) - Sky ===== -->
     <!-- Center: 410, 530 -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="290" y="490" width="240" height="80" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <rect x="290" y="514" width="4" height="32" rx="2" fill="#0EA5E9"/>
@@ -167,7 +159,7 @@
           font-size="12" font-weight="500" fill="#64748B">IAM &amp; Zero-Trust Architecture</text>
     <!-- ===== Spoke 6: User Experience (Top Left) - Indigo ===== -->
     <!-- Center: 410, 230 -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="290" y="190" width="240" height="80" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <rect x="290" y="214" width="4" height="32" rx="2" fill="#6366F1"/>

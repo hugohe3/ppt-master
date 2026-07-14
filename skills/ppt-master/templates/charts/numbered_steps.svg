@@ -6,14 +6,6 @@
     Supports: 5 horizontal steps
     -->
     <defs>
-        <!-- Standard Card Shadow -->
-        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
         <!-- Background Gradient -->
         <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#F8FAFC"/>
@@ -21,7 +13,7 @@
         </linearGradient>
         <!-- Arrow Marker for Connectors -->
         <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-            <path d="M 0 1 L 8 5 L 0 9 Z" fill="#94A3B8"/>
+            <path d="M 0 1 L 8 5 L 0 9 Z" fill="#CBD5E1"/>
         </marker>
     </defs>
     <!-- Background -->
@@ -37,14 +29,14 @@
     <line x1="665" y1="265" x2="815" y2="265" stroke="#CBD5E1" stroke-width="2.5" marker-end="url(#arrow)"/>
     <line x1="895" y1="265" x2="1045" y2="265" stroke="#CBD5E1" stroke-width="2.5" marker-end="url(#arrow)"/>
     <!-- ==================== Step 1: Discovery ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <circle cx="165" cy="265" r="38" fill="#8B5CF6"/>
         <circle cx="165" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="165" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">01</text>
         <text x="165" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="165" y1="303" x2="165" y2="355" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="60" y="355" width="210" height="280" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="60" y="380" width="4" height="36" fill="#8B5CF6"/>
         <text x="80" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">Discovery</text>
@@ -58,14 +50,14 @@
         <text x="115" y="591" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#8B5CF6">2 Weeks</text>
     </g>
     <!-- ==================== Step 2: Design ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <circle cx="395" cy="265" r="38" fill="#3B82F6"/>
         <circle cx="395" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="395" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">02</text>
         <text x="395" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="395" y1="303" x2="395" y2="355" stroke="#3B82F6" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="290" y="355" width="210" height="280" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="290" y="380" width="4" height="36" fill="#3B82F6"/>
         <text x="310" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">Design</text>
@@ -79,14 +71,14 @@
         <text x="345" y="591" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#3B82F6">3 Weeks</text>
     </g>
     <!-- ==================== Step 3: Development ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <circle cx="625" cy="265" r="38" fill="#10B981"/>
         <circle cx="625" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="625" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">03</text>
         <text x="625" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="625" y1="303" x2="625" y2="355" stroke="#10B981" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="520" y="355" width="210" height="280" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="520" y="380" width="4" height="36" fill="#10B981"/>
         <text x="540" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">Development</text>
@@ -100,14 +92,14 @@
         <text x="575" y="591" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#10B981">6 Weeks</text>
     </g>
     <!-- ==================== Step 4: Testing ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <circle cx="855" cy="265" r="38" fill="#F59E0B"/>
         <circle cx="855" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="855" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">04</text>
         <text x="855" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="855" y1="303" x2="855" y2="355" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="750" y="355" width="210" height="280" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="750" y="380" width="4" height="36" fill="#F59E0B"/>
         <text x="770" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">Testing</text>
@@ -121,14 +113,14 @@
         <text x="805" y="591" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#D97706">3 Weeks</text>
     </g>
     <!-- ==================== Step 5: Launch ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <circle cx="1085" cy="265" r="38" fill="#F43F5E"/>
         <circle cx="1085" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="1085" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">05</text>
         <text x="1085" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="1085" y1="303" x2="1085" y2="355" stroke="#F43F5E" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="980" y="355" width="210" height="280" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="980" y="380" width="4" height="36" fill="#F43F5E"/>
         <text x="1000" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A">Launch</text>
