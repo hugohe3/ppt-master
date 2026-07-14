@@ -84,8 +84,13 @@ from svg_to_pptx.native_objects import (
     stamp_native_fallback_baseline,
 )
 from svg_to_pptx.pptx_package.template_structure import (
+    NativeLayoutSpec,
+    NativePlaceholderSpec,
+    TemplateElementSpec,
+    TemplateSlideSpec,
     TemplateStructureError,
     _validate_placeholder_carrier,
+    match_native_placeholders,
     parse_template_slide,
 )
 from svg_to_pptx.use_expander import UseExpansionError, expand_local_use_references
@@ -4610,6 +4615,48 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             slide_xml.count('<a:prstGeom prst="rightArrow">'),
             1,
         )
+
+    def test_native_placeholder_match_uses_effective_zero_index(self):
+        def slide_spec(idx: int) -> TemplateSlideSpec:
+            element = TemplateElementSpec(
+                element_id='title-slot',
+                order=1,
+                tag='g',
+                placeholder='title',
+                placeholder_idx=idx,
+            )
+            return TemplateSlideSpec(
+                slide_num=1,
+                svg_path=Path('01_cover.svg'),
+                master_key='master',
+                master_name='Master',
+                layout_key='layout',
+                layout_name='Layout',
+                elements=(element,),
+            )
+
+        source_placeholder = NativePlaceholderSpec(
+            semantic_role='title',
+            placeholder_type='title',
+            idx=None,
+        )
+        layout = NativeLayoutSpec(
+            key='layout',
+            name='Layout',
+            package_part='ppt/slideLayouts/slideLayout1.xml',
+            master_key='master',
+            placeholders=(source_placeholder,),
+        )
+
+        matches = match_native_placeholders(slide_spec(0), layout)
+        self.assertEqual(matches[0][1], source_placeholder)
+        self.assertIsNone(source_placeholder.idx)
+        self.assertEqual(source_placeholder.effective_idx, 0)
+        with self.assertRaisesRegex(
+            TemplateStructureError,
+            'title idx=1.*has no compatible source placeholder',
+        ):
+            match_native_placeholders(slide_spec(1), layout)
 
     def test_stale_compact_preset_is_not_a_structured_atom_or_carrier(self):
         fragment = render_preset_shape_fragment(
