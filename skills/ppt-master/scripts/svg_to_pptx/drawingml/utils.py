@@ -2001,7 +2001,7 @@ def parse_project_filter_params(
                 color = parsed_color
                 color_alpha = parsed_alpha
         elif tag == 'feFuncA' and child.get('type') == 'linear':
-            slope = max(0.0, _f(child.get('slope'), 0.3))
+            slope = required_number(child, 'slope')
             transfer_opacity = (
                 slope
                 if transfer_opacity is None
@@ -2159,7 +2159,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                     ('dy', False, False),
                 )
             elif primitive_tag == 'feFuncA':
-                numeric_attrs = (('slope', True, False),)
+                numeric_attrs = (('slope', True, True),)
             if primitive_tag == 'feDropShadow':
                 numeric_attrs += (
                     ('dx', False, True),
