@@ -1927,7 +1927,7 @@ def parse_project_filter_params(
     filter_elem: ET.Element,
 ) -> dict[str, float | str | bool]:
     """Extract the shared native shadow/glow parameters from one filter."""
-    std_dev = 4.0
+    std_dev: float | None = None
     dx = 0.0
     dy = 0.0
     paint_opacity: float | None = None
@@ -1935,6 +1935,27 @@ def parse_project_filter_params(
     color_alpha = 1.0
     color = '000000'
     has_offset = False
+
+    def required_number(primitive: ET.Element, attribute_name: str) -> float:
+        primitive_tag = _svg_element_tag(primitive) or str(primitive.tag)
+        raw_value = primitive.get(attribute_name)
+        if raw_value is None:
+            raise ValueError(
+                f'<{primitive_tag}> requires explicit {attribute_name}'
+            )
+        try:
+            value = float(raw_value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                f'<{primitive_tag}> {attribute_name} must be a finite number; '
+                f'got {raw_value!r}'
+            ) from exc
+        if not math.isfinite(value):
+            raise ValueError(
+                f'<{primitive_tag}> {attribute_name} must be a finite number; '
+                f'got {raw_value!r}'
+            )
+        return value
 
     for child in filter_elem.iter():
         tag = _svg_element_tag(child)
@@ -1944,9 +1965,9 @@ def parse_project_filter_params(
             return style_values.get(name) or child.get(name, default)
 
         if tag == 'feDropShadow':
-            std_dev = _f(child.get('stdDeviation'), 4.0)
-            dx = _f(child.get('dx'), 0.0)
-            dy = _f(child.get('dy'), 0.0)
+            std_dev = required_number(child, 'stdDeviation')
+            dx = required_number(child, 'dx')
+            dy = required_number(child, 'dy')
             if abs(dx) > 0.01 or abs(dy) > 0.01:
                 has_offset = True
             paint_opacity = parse_opacity(
@@ -1961,7 +1982,7 @@ def parse_project_filter_params(
                 color = parsed_color
                 color_alpha = parsed_alpha
         elif tag == 'feGaussianBlur':
-            std_dev = _f(child.get('stdDeviation'), 4.0)
+            std_dev = required_number(child, 'stdDeviation')
         elif tag == 'feOffset':
             dx = _f(child.get('dx'), 0.0)
             dy = _f(child.get('dy'), 0.0)
@@ -1994,6 +2015,9 @@ def parse_project_filter_params(
     else:
         opacity = paint_opacity * transfer_opacity
     opacity = max(0.0, min(1.0, opacity * color_alpha))
+
+    if std_dev is None:
+        raise ValueError('filter requires feDropShadow or feGaussianBlur')
 
     return {
         'std_dev': std_dev,
@@ -2126,18 +2150,30 @@ def project_filter_errors(root: ET.Element) -> list[str]:
 
         for primitive in filter_elem.iter():
             primitive_tag = _svg_element_tag(primitive)
-            numeric_attrs: tuple[tuple[str, bool], ...] = ()
+            numeric_attrs: tuple[tuple[str, bool, bool], ...] = ()
             if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
-                numeric_attrs = (('stdDeviation', True),)
+                numeric_attrs = (('stdDeviation', True, True),)
             elif primitive_tag == 'feOffset':
-                numeric_attrs = (('dx', False), ('dy', False))
+                numeric_attrs = (
+                    ('dx', False, False),
+                    ('dy', False, False),
+                )
             elif primitive_tag == 'feFuncA':
-                numeric_attrs = (('slope', True),)
+                numeric_attrs = (('slope', True, False),)
             if primitive_tag == 'feDropShadow':
-                numeric_attrs += (('dx', False), ('dy', False))
-            for attribute_name, non_negative in numeric_attrs:
+                numeric_attrs += (
+                    ('dx', False, True),
+                    ('dy', False, True),
+                )
+            for attribute_name, non_negative, required in numeric_attrs:
                 raw_value = primitive.get(attribute_name)
                 if raw_value is None:
+                    if required:
+                        geometry_is_valid = False
+                        errors.add(
+                            f'{label} <{primitive_tag}> requires explicit '
+                            f'{attribute_name}'
+                        )
                     continue
                 try:
                     value = float(raw_value)

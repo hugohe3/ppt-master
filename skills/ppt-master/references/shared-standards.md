@@ -758,6 +758,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
 | Public targets | `<rect>`, `<circle>`, `<path>`, `<text>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
+| Required geometry | Explicit `stdDeviation` on either effect primitive; explicit `dx` and `dy` on `feDropShadow` |
 | Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
 | Numeric values | Finite unitless values; non-negative `stdDeviation`; finite `dx` / `dy`; `feFuncA slope` within `0..1`; mapped glow `rad = stdDeviation × 9525`, shadow `blurRad = stdDeviation × 2 × 9525`, and shadow `dist = hypot(dx,dy) × 9525` must round into DrawingML `0..27273042316900` |
 | Classification | Meaningful non-zero offset → one outer shadow; zero/no offset → one glow |
@@ -825,8 +826,9 @@ If a shape has both an unsupported shape-level effect and one of these run-level
 fallback reasons, the canonical compound marker records both reasons.
 This conditional guard is not a public run-effect authoring surface.
 The quality checker and exporter preflight enforce the same definition,
-reference, primitive, target, and numeric-value contract; malformed values are
-never replaced by effect defaults during native export.
+reference, primitive, target, and numeric-value contract. Missing required
+geometry and malformed values are never replaced by effect defaults during
+native export.
 
 ```xml
 <defs>
