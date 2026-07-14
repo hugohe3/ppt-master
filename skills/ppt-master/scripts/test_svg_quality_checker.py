@@ -337,6 +337,80 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 target.writestr(info, replacements.get(info.filename, data))
         rewritten.replace(path)
 
+    @staticmethod
+    def _write_relationship_run_effect_fixture(
+        path: Path,
+        cases: list[tuple[str | None, bool]],
+    ) -> None:
+        """Write text slides with optional hyperlinks and run effects."""
+        presentation = Presentation()
+        blank = presentation.slide_layouts[6]
+        for index, (_effect, has_relationship) in enumerate(cases, start=1):
+            slide = presentation.slides.add_slide(blank)
+            shape = slide.shapes.add_shape(
+                MSO_SHAPE.RECTANGLE,
+                Emu(914400),
+                Emu(914400),
+                Emu(2743200),
+                Emu(914400),
+            )
+            shape.name = f'RELATIONSHIP EFFECT TEXT {index}'
+            paragraph = shape.text_frame.paragraphs[0]
+            run = paragraph.add_run()
+            run.text = f'LINK {index}'
+            if has_relationship:
+                run.hyperlink.address = 'https://example.com/'
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [
+                (info, source.read(info.filename))
+                for info in source.infolist()
+            ]
+        member_data = {info.filename: data for info, data in members}
+        replacements: dict[str, bytes] = {}
+
+        for index, (effect_xml, _has_relationship) in enumerate(
+            cases,
+            start=1,
+        ):
+            slide_part = f'ppt/slides/slide{index}.xml'
+            slide_root = ET.fromstring(member_data[slide_part])
+            target = next(
+                shape
+                for shape in slide_root.findall(f'.//{{{pml}}}sp')
+                if (
+                    shape.find(f'{{{pml}}}nvSpPr/{{{pml}}}cNvPr')
+                    is not None
+                    and shape.find(
+                        f'{{{pml}}}nvSpPr/{{{pml}}}cNvPr'
+                    ).get('name') == f'RELATIONSHIP EFFECT TEXT {index}'
+                )
+            )
+            run = target.find(f'.//{{{dml}}}r')
+            assert run is not None
+            run_properties = run.find(f'{{{dml}}}rPr')
+            if run_properties is None:
+                run_properties = ET.Element(f'{{{dml}}}rPr')
+                run.insert(0, run_properties)
+            if effect_xml is not None:
+                # CT_TextCharacterProperties orders the effect group before
+                # hlinkClick / hlinkMouseOver / extLst.
+                run_properties.insert(0, ET.fromstring(effect_xml))
+            replacements[slide_part] = ET.tostring(
+                slide_root,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
+
     @classmethod
     def _write_picture_group_effect_fixture(cls, path: Path) -> None:
         """Write one real picture and one group with source effects."""
@@ -2697,6 +2771,98 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     )
                     self.assertTrue(checker_result['passed'])
                     convert_svg_to_slide_shapes(svg_path)
+
+    def test_relationship_text_run_effect_import_fails_closed(self):
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        run_effect = f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="38100"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>'''
+        cases = [
+            (run_effect, True),
+            (f'<a:effectLst xmlns:a="{dml}"/>', True),
+            (f'<a:effectDag xmlns:a="{dml}"/>', True),
+            (None, True),
+            (run_effect, False),
+        ]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'relationship-run-effects.pptx'
+            self._write_relationship_run_effect_fixture(pptx_path, cases)
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            self.assertEqual(len(imported.slides), 5)
+
+            effect_svg = imported.slides[0].svg
+            effect_root = ET.fromstring(effect_svg)
+            self.assertIn('LINK 1', ''.join(effect_root.itertext()))
+            self.assertFalse(any(
+                elem.get('data-pptx-part') == 'txbody'
+                for elem in effect_root.iter()
+            ))
+            marked = [
+                elem
+                for elem in effect_root.iter()
+                if elem.get('data-pptx-effect-status') == 'unsupported'
+            ]
+            self.assertEqual(len(marked), 2)
+            self.assertEqual(
+                {elem.get('data-pptx-effect-reason') for elem in marked},
+                {'unsupported-run-effect-route:relationship-bearing-text'},
+            )
+            status_errors = project_effect_status_errors(effect_root)
+            self.assertEqual(len(status_errors), 1)
+            self.assertIn(
+                'unsupported-run-effect-route:relationship-bearing-text',
+                status_errors[0],
+            )
+            self._assert_checker_and_exporter_reject(
+                effect_svg,
+                'unsupported-run-effect-route:relationship-bearing-text',
+                'unsupported imported PPTX effect',
+            )
+
+            for artifact in imported.slides[1:4]:
+                with self.subTest(slide=artifact.index):
+                    plain_root = ET.fromstring(artifact.svg)
+                    self.assertIn(
+                        f'LINK {artifact.index}',
+                        ''.join(plain_root.itertext()),
+                    )
+                    self.assertFalse(any(
+                        elem.get('data-pptx-part') == 'txbody'
+                        for elem in plain_root.iter()
+                    ))
+                    self.assertEqual(
+                        project_effect_status_errors(plain_root),
+                        [],
+                    )
+                    self.assertFalse(any(
+                        elem.get('data-pptx-effect-status') is not None
+                        for elem in plain_root.iter()
+                    ))
+                    plain_path = (
+                        root_dir / f'relationship-{artifact.index}.svg'
+                    )
+                    plain_path.write_text(artifact.svg, encoding='utf-8')
+                    checker_result = SVGQualityChecker().check_file(
+                        str(plain_path)
+                    )
+                    self.assertTrue(checker_result['passed'])
+                    convert_svg_to_slide_shapes(plain_path)
+
+            native_svg = imported.slides[4].svg
+            native_root = ET.fromstring(native_svg)
+            self.assertTrue(any(
+                elem.get('data-pptx-part') == 'txbody'
+                for elem in native_root.iter()
+            ))
+            self.assertEqual(project_effect_status_errors(native_root), [])
+            native_path = root_dir / 'relationship-control.svg'
+            native_path.write_text(native_svg, encoding='utf-8')
+            native_xml = convert_svg_to_slide_shapes(native_path)[0]
+            self.assertEqual(native_xml.count('<a:glow'), 1)
 
     def test_picture_and_group_effect_import_is_explicit(self):
         dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
