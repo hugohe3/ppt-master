@@ -533,7 +533,15 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
     ctx.defs.extend(fill.defs)
     ctx.defs.extend(stroke.defs)
     ctx.defs.extend(effect.defs)
-    geom.attrs.update(dict(effect.metadata))
+    effect_attrs = dict(effect.metadata)
+    effect_reason = effect_attrs.get(EFFECT_REASON_ATTR)
+    existing_reason = geom.attrs.get(EFFECT_REASON_ATTR)
+    if effect_reason is not None and existing_reason is not None:
+        effect_attrs.update(unsupported_effect_metadata(
+            existing_reason,
+            effect_reason,
+        ))
+    geom.attrs.update(effect_attrs)
 
     attrs = {**fill.attrs, **stroke.attrs}
     for key, value in style_defaults.items():

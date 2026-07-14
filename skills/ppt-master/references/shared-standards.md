@@ -279,6 +279,12 @@ attributes, and no separate source-payload opt-in marker exists.
 | `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical object and native carrier; imported `p:pic` carrier and logical object; imported `p:grpSp` logical group; imported table `p:graphicFrame` logical group | Record why an encountered source object or text-run `effectLst` / `effectDag` cannot enter the registered target-specific effect mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
 | `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, visible typography, or incompatible child-topology edits invalidate the payload. A source payload with run-level effects then blocks checker/export instead of losing those effects; an effect-free payload uses the normal SVG text fallback. |
 
+One effect reason remains its existing plain token. If one imported object has
+multiple independent unsupported reasons, both marker copies store the same
+deduplicated, lexicographically sorted compact JSON string array in
+`data-pptx-effect-reason`; adding a later reason must not overwrite an earlier
+one. This array is still diagnostic metadata, not an authoring surface.
+
 **Import/authoring representation split**:
 
 | Representation | Contract |
@@ -815,6 +821,8 @@ keeps the visible table fallback, and stamps its imported `p:graphicFrame`
 logical group with the blocking effect status. The existing replacement status
 still records any independent table fallback reason; empty effect containers
 and effect-free cells remain eligible for the closed native Table schema.
+If a shape has both an unsupported shape-level effect and one of these run-level
+fallback reasons, the canonical compound marker records both reasons.
 This conditional guard is not a public run-effect authoring surface.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
