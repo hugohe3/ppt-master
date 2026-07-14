@@ -180,7 +180,9 @@ stealth. Checker and exporter preflight consume this same contract; other
 marker shapes have no native mapping and block export instead of being silently
 dropped. PPTX import likewise accepts only these five DrawingML line-end types
 (plus `none`); an unknown source value stops import instead of being relabeled
-as a supported shape.
+as a supported shape. Optional DrawingML `w` and `len` values default to `med`;
+explicit values must be `sm`, `med`, or `lg`, and invalid source buckets stop
+import instead of being normalized to `med`.
 
 ---
 
