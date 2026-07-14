@@ -311,7 +311,9 @@ def count_drawable_shapes(root: ET.Element | None) -> int:
 
 def extract_placeholder_text_style(sp: ET.Element) -> dict[str, Any]:
     style: dict[str, Any] = {}
-    rpr = sp.find(".//a:rPr", NS) or sp.find(".//a:endParaRPr", NS)
+    rpr = sp.find(".//a:rPr", NS)
+    if rpr is None:
+        rpr = sp.find(".//a:endParaRPr", NS)
     if rpr is None:
         return style
     if rpr.attrib.get("sz"):
