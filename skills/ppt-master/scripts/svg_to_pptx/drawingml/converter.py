@@ -52,6 +52,7 @@ from .utils import (
     project_geometry_length_errors,
     project_gradient_errors,
     project_image_aspect_ratio_errors,
+    project_marker_errors,
     project_opacity_errors,
     project_paint_errors,
     project_paint_reference_errors,
@@ -303,6 +304,22 @@ def _require_project_paint_references(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project paint reference(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_line_end_markers(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject markers outside the native line-end contract."""
+    errors = project_marker_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project line-end marker(s): '
         f'{preview}{suffix}'
     )
 
@@ -1448,6 +1465,7 @@ def convert_svg_to_slide_shapes(
     _require_project_paints(root, svg_path)
     _require_project_definitions(root, svg_path)
     _require_project_paint_references(root, svg_path)
+    _require_project_line_end_markers(root, svg_path)
     _require_project_gradients(root, svg_path)
     _require_project_effect_status(root, svg_path)
     _require_project_filters(root, svg_path)

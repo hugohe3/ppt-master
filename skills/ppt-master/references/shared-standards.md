@@ -174,8 +174,9 @@ when the referenced marker fits this native-arrow contract:
 
 The converter maps the three shapes to DrawingML triangle, diamond, and oval
 line ends. Prefer `<polygon>` for triangle/diamond markers because the vertex
-count is unambiguous. Other marker shapes do not have a native mapping and are
-dropped with a warning.
+count is unambiguous. Checker and exporter preflight consume this same contract;
+other marker shapes have no native mapping and block export instead of being
+silently dropped.
 
 ---
 

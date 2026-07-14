@@ -2568,6 +2568,22 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             slide_xml,
         )
 
+    def test_invalid_line_end_marker_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <marker id="broken" orient="0">
+      <path d="M 0 0 L 10 5 L 0 10" fill="#112233"/>
+    </marker>
+  </defs>
+  <line x1="80" y1="80" x2="300" y2="80" stroke="#112233"
+        marker-end="url(#broken)"/>
+</svg>''',
+            '<marker id="broken"> requires orient="auto"',
+            'invalid project line-end marker',
+        )
+
     def test_invalid_filter_contract_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
             '''<svg xmlns="http://www.w3.org/2000/svg"
