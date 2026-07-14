@@ -346,10 +346,16 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     # Text body (a:txBody)
     tx_body = node.xml.find("p:txBody", NS)
     is_vertical = is_vertical_txbody(tx_body, node.xfrm)
-    if is_vertical and geom is not None and txbody_has_run_effects(tx_body):
-        geom.attrs.update(unsupported_effect_metadata(
-            "unsupported-run-effect-route:vertical-text"
-        ))
+    has_run_effects = txbody_has_run_effects(tx_body)
+    if geom is not None and has_run_effects:
+        if is_vertical:
+            geom.attrs.update(unsupported_effect_metadata(
+                "unsupported-run-effect-route:vertical-text"
+            ))
+        elif tx_body is not None and has_relationship_attributes(tx_body):
+            geom.attrs.update(unsupported_effect_metadata(
+                "unsupported-run-effect-route:relationship-bearing-text"
+            ))
 
     # Geometry (fill is "none" when blipFill is present, so only stroke draws)
     geom_xml = _build_geometry_xml(node, sp_pr, ctx, geom=geom)

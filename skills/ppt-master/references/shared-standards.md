@@ -794,8 +794,13 @@ text body contains the same non-empty run-effect containers, import keeps the
 normalized geometry and visible vertical text but stamps the logical shape and
 native carrier with the blocking §1.4 effect status; effect-free and empty
 effect containers keep the existing normalized fallback.
+Relationship-bearing text bodies also cannot carry the opaque payload across
+parts. When such a body contains a non-empty run effect, import keeps its
+rebuilt visible text but stamps the same two blocking object markers;
+relationship-bearing text without a run effect keeps the existing visual
+fallback.
 This conditional guard is not a public run-effect authoring surface and does
-not cover relationship-bearing text bodies or table-cell text bodies.
+not cover table-cell text bodies.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
 never replaced by effect defaults during native export.
