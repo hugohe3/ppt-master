@@ -30,7 +30,7 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm
-from pptx_to_svg.txbody_to_svg import convert_vertical_txbody
+from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
 from svg_to_pptx.animation_config import (
     build_group_listing,
     build_scaffold,
@@ -114,6 +114,40 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             '<a:t>AB</a:t></a:r></a:p></p:txBody>'
         )
         return base64.b64encode(native_txbody.encode('utf-8')).decode('ascii')
+
+    @staticmethod
+    def _txbody_preview(paragraphs: str) -> str:
+        tx_body = ET.fromstring(f'''
+<p:txBody xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+ xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:bodyPr anchor="t" wrap="none" lIns="0" rIns="0" tIns="0" bIns="0"/>
+  <a:lstStyle/>{paragraphs}
+</p:txBody>''')
+        return convert_txbody(
+            tx_body,
+            Xfrm(x=20, y=20, w=500, h=300),
+            None,
+        ).svg
+
+    @staticmethod
+    def _visible_text_baselines(svg_fragment: str) -> dict[str, list[float]]:
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            f'{svg_fragment}</svg>'
+        )
+        baselines: dict[str, list[float]] = {}
+        namespace = '{http://www.w3.org/2000/svg}'
+        for text in root.iter(f'{namespace}text'):
+            cursor_y = float(text.get('y') or '0')
+            for span in text.findall(f'{namespace}tspan'):
+                if span.get('y') is not None:
+                    cursor_y = float(span.get('y') or '0')
+                if span.get('dy') is not None:
+                    cursor_y += float(span.get('dy') or '0')
+                value = ''.join(span.itertext())
+                if value:
+                    baselines.setdefault(value, []).append(cursor_y)
+        return baselines
 
     def _assert_checker_and_exporter_reject(
         self,
@@ -3112,6 +3146,56 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         )
         text = next(root.iter('{http://www.w3.org/2000/svg}text'))
         self.assertEqual(''.join(text.itertext()), '甲  乙')
+
+    def test_txbody_preview_leading_break_advances_once_at_its_size(self):
+        cases = {'1800': 69.2, '3600': 98.0}
+        for break_size, expected_baseline in cases.items():
+            with self.subTest(break_size=break_size):
+                svg = self._txbody_preview(f'''
+  <a:p>
+    <a:pPr><a:defRPr sz="1800"/></a:pPr>
+    <a:br><a:rPr sz="{break_size}"/></a:br>
+    <a:r><a:rPr sz="1800"/><a:t>B</a:t></a:r>
+  </a:p>''')
+                baselines = self._visible_text_baselines(svg)
+                self.assertAlmostEqual(baselines['B'][0], expected_baseline)
+
+    def test_txbody_preview_empty_break_line_uses_its_own_break_size(self):
+        cases = {
+            ('1800', '1800'): 98.0,
+            ('3600', '1800'): 98.0,
+            ('1800', '3600'): 126.8,
+        }
+        for (first_break, empty_break), expected_baseline in cases.items():
+            with self.subTest(
+                first_break=first_break,
+                empty_break=empty_break,
+            ):
+                svg = self._txbody_preview(f'''
+  <a:p>
+    <a:r><a:rPr sz="1800"/><a:t>A</a:t></a:r>
+    <a:br><a:rPr sz="{first_break}"/></a:br>
+    <a:br><a:rPr sz="{empty_break}"/></a:br>
+    <a:r><a:rPr sz="1800"/><a:t>B</a:t></a:r>
+  </a:p>''')
+                baselines = self._visible_text_baselines(svg)
+                self.assertAlmostEqual(baselines['A'][0], 40.4)
+                self.assertAlmostEqual(baselines['B'][0], expected_baseline)
+
+    def test_txbody_preview_empty_paragraph_uses_end_para_size(self):
+        cases = {'1800': 98.0, '3600': 126.8}
+        for empty_size, expected_baseline in cases.items():
+            with self.subTest(empty_size=empty_size):
+                svg = self._txbody_preview(f'''
+  <a:p><a:r><a:rPr sz="1800"/><a:t>A</a:t></a:r></a:p>
+  <a:p>
+    <a:pPr><a:defRPr sz="1800"/></a:pPr>
+    <a:endParaRPr sz="{empty_size}"/>
+  </a:p>
+  <a:p><a:r><a:rPr sz="1800"/><a:t>B</a:t></a:r></a:p>''')
+                baselines = self._visible_text_baselines(svg)
+                self.assertAlmostEqual(baselines['A'][0], 40.4)
+                self.assertAlmostEqual(baselines['B'][0], expected_baseline)
 
     def test_text_property_compatibility_aliases_warn_and_normalize(self):
         compatible = '''<svg xmlns="http://www.w3.org/2000/svg"
