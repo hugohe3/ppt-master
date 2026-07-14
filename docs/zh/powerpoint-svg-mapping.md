@@ -153,7 +153,7 @@ PowerPoint 意图
 | 内侧对齐轮廓 | 无已登记的普通 SVG stroke 表达 | 显式内缩几何或烘焙资产 | 精确轮廓对齐为 `Bake-required` | PPTX 回导仅接受省略/`ctr` 的 `algn`；`in` 会阻断，不得退化为居中描边 |
 | transform 下的轮廓缩放 | 精确的 `vector-effect="none"` 或 `vector-effect="non-scaling-stroke"` | 选择被解析为原生线宽 | `Native-normalized` | 拒绝其他取值；生成拼法必须精确且为小写 |
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
-| 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | `Native-stable` | 仅接受文档化取值 |
+| 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | 固定 join 合同内为 `Native-stable` | 回导仅接受一个 join；miter 必须精确使用 `lim="800000"` |
 | 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 仅 triangle、stealth、arrow、diamond、oval 遵循条件 marker 合同 |
 | 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移仍可稳定分类时，才重建单一 shape/connector 来源 `outerShdw` | 零偏移来源阴影和不支持的图结构不会被静默改成其他效果 |
 | 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate`；单一 shape/connector 来源发光保持已登记的半径换算 | 发光承载语义强调时需复核 |
