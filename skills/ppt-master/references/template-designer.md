@@ -81,7 +81,7 @@ The output page set is determined by **replication mode**, declared in the final
 
 | Mode | When to use | Roster |
 |------|-------------|--------|
-| `standard` (default) | Most templates — clean, reusable, balanced coverage | `01_cover`, `02_chapter`, `03_content`, `04_ending`, optional `02_toc` |
+| `standard` (default) | Most templates — clean, reusable, balanced coverage | `01_cover`, `02_chapter`, `03_content`, `04_ending`; with the optional TOC the roster is `01_cover`, `02_toc`, `03_chapter`, `04_content`, `05_ending` |
 | `fidelity` | User wants a broader, source-aligned but newly designed template | Standard roster + intentionally designed variants that cover useful reference compositions |
 | `mirror` | User wants the source template restored | One SVG prototype restored from the lossless source per source slide, named `<NNN>_<page_type>.svg` by source order |
 
@@ -99,7 +99,7 @@ The output page set is determined by **replication mode**, declared in the final
 
 **Design philosophy**: Templates define visual consistency and structural pages; content pages maintain maximum flexibility.
 
-**Naming note**: TOC page keeps `02_toc.svg` naming for template library compatibility and sort order.
+**Naming note**: The numeric prefix is the template's own presentation order and stays contiguous with no duplicate index. When the optional TOC page is included it takes `02_toc.svg` and the later types shift by one: `01_cover`, `02_toc`, `03_chapter`, `04_content`, `05_ending`. Numbers carry no meaning across templates — tooling derives the page type from the token after the underscore, so both spellings of each type are equivalent.
 
 ### Fidelity mode
 
@@ -113,7 +113,7 @@ When the brief sets `Replication mode: fidelity`, design a broader reusable rost
 | Content | `03a_content_two_col.svg`, `03b_content_data_card.svg`, `03c_content_quote.svg` |
 | Ending | `04a_ending_thanks.svg`, `04b_ending_contact.svg` |
 
-Extension page types beyond the canonical four (transition / appendix / disclaimer / divider) take the next free index: `05_section_break.svg`, `06_appendix.svg`, `07_disclaimer.svg`.
+Extension page types beyond the canonical four (transition / appendix / disclaimer / divider) take the next free index after the roster: `05_section_break.svg`, `06_appendix.svg`, `07_disclaimer.svg` in a four-page roster (one higher when `02_toc` is present).
 
 **Roster decision**:
 
@@ -411,10 +411,10 @@ Standard mode (default):
 ├── templates/
 │   ├── design_spec.md
 │   ├── 01_cover.svg
-│   ├── 02_chapter.svg
-│   ├── 02_toc.svg              # Optional
-│   ├── 03_content.svg
-│   ├── 04_ending.svg
+│   ├── 02_toc.svg              # Optional; without it: 02_chapter, 03_content, 04_ending
+│   ├── 03_chapter.svg
+│   ├── 04_content.svg
+│   ├── 05_ending.svg
 │   └── icons/                  # Package/validation copy, when used
 ├── images/                         # Optional; omit when unused
 │   └── *.png / *.jpg           # SVG href is ../images/<name>
@@ -430,14 +430,14 @@ Fidelity mode changes only the roster under `templates/`, e.g.:
 <template_workspace>/templates/
 ├── design_spec.md
 ├── 01_cover.svg
-├── 02a_chapter_full.svg
-├── 02b_chapter_minimal.svg
 ├── 02_toc.svg
-├── 03a_content_two_col.svg
-├── 03b_content_data_card.svg
-├── 03c_content_quote.svg
-├── 04_ending.svg
-└── 05_section_break.svg
+├── 03a_chapter_full.svg
+├── 03b_chapter_minimal.svg
+├── 04a_content_two_col.svg
+├── 04b_content_data_card.svg
+├── 04c_content_quote.svg
+├── 05_ending.svg
+└── 06_section_break.svg
 ```
 
 Mirror mode emits one SVG per source slide, named by source order:

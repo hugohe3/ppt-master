@@ -203,11 +203,11 @@ PPT Master 的“模板”是一份**结构 + 风格**的预设包：每张 SVG 
 ├── templates/
 │   ├── design_spec.md
 │   ├── 01_cover.svg
-│   ├── 02_chapter.svg
-│   ├── 02_toc.svg              # 可选
-│   ├── 03_content.svg
-│   ├── 03a_content_two_col.svg # fidelity 变体
-│   ├── 04_ending.svg
+│   ├── 02_toc.svg              # 可选；不含时为 02_chapter、03_content、04_ending
+│   ├── 03_chapter.svg
+│   ├── 04_content.svg
+│   ├── 04a_content_two_col.svg # fidelity 变体
+│   ├── 05_ending.svg
 │   └── icons/                  # 使用时的 package / 校验副本
 ├── images/                         # 可选
 │   └── *.png / *.jpg           # SVG 统一引用 ../images/<name>

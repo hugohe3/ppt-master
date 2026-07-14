@@ -203,11 +203,11 @@ Library and project scopes use the same core structure; substitute either `skill
 ├── templates/
 │   ├── design_spec.md
 │   ├── 01_cover.svg
-│   ├── 02_chapter.svg
-│   ├── 02_toc.svg              # optional
-│   ├── 03_content.svg
-│   ├── 03a_content_two_col.svg # fidelity variant
-│   ├── 04_ending.svg
+│   ├── 02_toc.svg              # optional; without it: 02_chapter, 03_content, 04_ending
+│   ├── 03_chapter.svg
+│   ├── 04_content.svg
+│   ├── 04a_content_two_col.svg # fidelity variant
+│   ├── 05_ending.svg
 │   └── icons/                  # package/validation copy when used
 ├── images/                         # optional
 │   └── *.png / *.jpg           # SVG references use ../images/<name>
