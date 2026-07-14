@@ -80,6 +80,11 @@ def resolve_stroke(
         raise ValueError(
             f"Unsupported DrawingML compound line: {compound!r}"
         )
+    alignment = ln.attrib.get("algn")
+    if alignment not in {None, "ctr"}:
+        raise ValueError(
+            f"Unsupported DrawingML line alignment: {alignment!r}"
+        )
 
     # Width (a:ln@w in EMU)
     width_emu = ln.attrib.get("w")
