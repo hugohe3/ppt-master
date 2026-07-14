@@ -89,7 +89,9 @@ def resolve_stroke(
 
     # Cap
     cap = ln.attrib.get("cap")
-    if cap and cap in CAP_MAP:
+    if cap is not None:
+        if cap not in CAP_MAP:
+            raise ValueError(f"Unsupported DrawingML line cap: {cap!r}")
         attrs["stroke-linecap"] = CAP_MAP[cap]
 
     # Fill: noFill / solidFill / gradFill

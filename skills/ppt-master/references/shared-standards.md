@@ -992,6 +992,9 @@ fidelity.
 PPTX import accepts `a:ln@w` only as an integer DrawingML `ST_LineWidth` value
 from `0` through `20116800` EMU. Malformed, negative, or oversized source widths
 stop import instead of being dropped and replaced by a default SVG line width.
+An explicit source `a:ln@cap` must be `flat`, `rnd`, or `sq`, which map to SVG
+`butt`, `round`, and `square`; unknown values stop import instead of falling
+back to the SVG default cap.
 
 The dash grammar is closed: exact lowercase `none`, or at least two finite
 unitless numbers separated by whitespace or one comma. Generated SVG uses
