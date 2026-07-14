@@ -224,6 +224,11 @@ class NativePlaceholderSpec:
     idx: int | None
     geometry: tuple[float, float, float, float] | None = None
 
+    @property
+    def effective_idx(self) -> int:
+        """Return the OOXML index after applying the omitted-value default."""
+        return self.idx if self.idx is not None else 0
+
 
 @dataclass(frozen=True)
 class NativeLayoutSpec:
@@ -2744,7 +2749,7 @@ def match_native_placeholders(
                     continue
                 if (
                     item.placeholder_idx is not None
-                    and candidate.idx != item.placeholder_idx
+                    and candidate.effective_idx != item.placeholder_idx
                 ):
                     continue
                 candidate_index = index
