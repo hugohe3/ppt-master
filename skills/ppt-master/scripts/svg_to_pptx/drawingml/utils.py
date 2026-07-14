@@ -5,6 +5,7 @@ from __future__ import annotations
 import colorsys
 import math
 import re
+from collections.abc import Iterator
 from xml.etree import ElementTree as ET
 
 from pptx_shapes import validate_ooxml_xfrm
@@ -182,6 +183,34 @@ def _f(val: str | None, default: float = 0.0) -> float:
 
 
 _LENGTH_RE = re.compile(r'^\s*([-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?)\s*([A-Za-z%]*)\s*$')
+_CANONICAL_PROJECT_GEOMETRY_LENGTH_RE = re.compile(
+    r'^-?(?:\d+(?:\.\d+)?|\.\d+)$'
+)
+PROJECT_GEOMETRY_LENGTH_ATTRIBUTES = {
+    'svg': frozenset({'x', 'y', 'width', 'height'}),
+    'rect': frozenset({'x', 'y', 'width', 'height', 'rx', 'ry'}),
+    'circle': frozenset({'cx', 'cy', 'r'}),
+    'ellipse': frozenset({'cx', 'cy', 'rx', 'ry'}),
+    'line': frozenset({'x1', 'y1', 'x2', 'y2'}),
+    'text': frozenset({'x', 'y'}),
+    'tspan': frozenset({'x', 'y', 'dx', 'dy'}),
+    'image': frozenset({'x', 'y', 'width', 'height'}),
+    'use': frozenset({'x', 'y', 'width', 'height'}),
+}
+PROJECT_NON_NEGATIVE_LENGTH_ATTRIBUTES = frozenset({
+    'width', 'height', 'r', 'rx', 'ry', 'stroke-width',
+})
+
+
+def _parse_svg_length_parts(val: str) -> tuple[float, str]:
+    """Parse one finite SVG length into its numeric part and lowercase unit."""
+    match = _LENGTH_RE.match(str(val))
+    if not match:
+        raise ValueError(f'SVG length must be one finite literal, got {val!r}')
+    number = float(match.group(1))
+    if not math.isfinite(number):
+        raise ValueError(f'SVG length must be finite, got {val!r}')
+    return number, match.group(2).lower()
 
 
 def parse_svg_length(
@@ -196,18 +225,18 @@ def parse_svg_length(
     Unitless and ``px`` values are already SVG px. Percentages need a caller
     supplied reference length because SVG uses different bases for x, y,
     width, height, and radii.
+
+    A default applies only when the attribute is absent. Present but malformed,
+    non-finite, unsupported, or context-free percentage values fail closed.
     """
     if val is None:
         return default
-    match = _LENGTH_RE.match(str(val))
-    if not match:
-        return default
-
-    number = float(match.group(1))
-    unit = match.group(2).lower() or 'px'
+    number, unit = _parse_svg_length_parts(str(val))
     if unit == '%':
         if percent_base is None:
-            return default
+            raise ValueError(
+                f'SVG percentage length requires a reference length, got {val!r}'
+            )
         return percent_base * number / 100.0
     if unit in ('', 'px'):
         return number
@@ -224,8 +253,46 @@ def parse_svg_length(
     if unit == 'q':
         return number * 96.0 / 101.6
     if unit in ('em', 'rem'):
+        if not math.isfinite(font_size):
+            raise ValueError(
+                f'SVG relative length requires a finite font size, got {val!r}'
+            )
         return number * font_size
-    return default
+    raise ValueError(f'Unsupported SVG length unit {unit!r} in {val!r}')
+
+
+def parse_project_geometry_length(raw: str, attribute: str) -> float:
+    """Parse one project geometry value without widening the authoring surface."""
+    number, unit = _parse_svg_length_parts(raw)
+    if unit not in {'', 'px'}:
+        raise ValueError(
+            f'uses unsupported unit {unit!r}; project geometry accepts only '
+            'unitless values or the compatible px suffix'
+        )
+    numeric_literal = raw.strip()
+    if unit == 'px':
+        numeric_literal = numeric_literal[:-2].strip()
+    if not _CANONICAL_PROJECT_GEOMETRY_LENGTH_RE.fullmatch(numeric_literal):
+        raise ValueError(
+            'uses an unsupported numeric spelling; use an ordinary decimal '
+            'without a leading plus sign, exponent, or trailing decimal point'
+        )
+    if attribute in PROJECT_NON_NEGATIVE_LENGTH_ATTRIBUTES and number < 0:
+        raise ValueError('must be non-negative')
+    return number
+
+
+def is_canonical_project_geometry_length(raw: str) -> bool:
+    """Return whether a project geometry value uses the generated-SVG spelling."""
+    return bool(_CANONICAL_PROJECT_GEOMETRY_LENGTH_RE.fullmatch(raw.strip()))
+
+
+def format_project_geometry_length(value: float) -> str:
+    """Format a parsed project geometry value as a plain unitless decimal."""
+    if abs(value) < 1e-15:
+        return '0'
+    text = f'{value:.15f}'.rstrip('0').rstrip('.')
+    return '0' if text in {'', '-0'} else text
 
 
 def svg_length_x(val: str | None, ctx: ConvertContext, default: float = 0.0) -> float:
@@ -536,6 +603,44 @@ def parse_inline_style(style_str: str | None) -> dict[str, str]:
         if name and value:
             styles[name] = value
     return styles
+
+
+def iter_project_geometry_lengths(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str, str, str]]:
+    """Yield project geometry values as element, attribute, raw value, source."""
+    for elem in root.iter():
+        tag = elem.tag.rsplit('}', 1)[-1] if '}' in str(elem.tag) else str(elem.tag)
+        for attribute in sorted(
+            PROJECT_GEOMETRY_LENGTH_ATTRIBUTES.get(tag, frozenset())
+        ):
+            raw = elem.get(attribute)
+            if raw is not None:
+                yield elem, attribute, raw, 'attribute'
+
+        direct_stroke_width = elem.get('stroke-width')
+        if direct_stroke_width is not None:
+            yield elem, 'stroke-width', direct_stroke_width, 'attribute'
+
+        style_stroke_width = parse_inline_style(elem.get('style')).get('stroke-width')
+        if style_stroke_width is not None:
+            yield elem, 'stroke-width', style_stroke_width, 'inline style'
+
+
+def project_geometry_length_errors(root: ET.Element) -> list[str]:
+    """Return blocking project geometry errors for converter preflight."""
+    errors: list[str] = []
+    for elem, attribute, raw, source in iter_project_geometry_lengths(root):
+        tag = elem.tag.rsplit('}', 1)[-1] if '}' in str(elem.tag) else str(elem.tag)
+        elem_id = elem.get('id')
+        label = f'<{tag} id={elem_id!r}>' if elem_id else f'<{tag}>'
+        try:
+            parse_project_geometry_length(raw, attribute)
+        except ValueError as exc:
+            errors.append(
+                f'{label} {source} {attribute}={raw!r}: {exc}'
+            )
+    return errors
 
 
 def _finite_float(raw: str) -> float:

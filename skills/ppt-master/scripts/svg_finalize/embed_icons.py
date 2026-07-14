@@ -56,6 +56,7 @@ if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
 from console_encoding import configure_utf8_stdio  # noqa: E402
+from svg_to_pptx.drawingml.utils import parse_project_geometry_length  # noqa: E402
 
 configure_utf8_stdio()
 
@@ -312,7 +313,7 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
     for attr in ['x', 'y', 'width', 'height']:
         value = _attr_value(use_match, attr)
         if value is not None:
-            attrs[attr] = float(value)
+            attrs[attr] = parse_project_geometry_length(value, attr)
 
     # Extract fill color
     fill_value = _attr_value(use_match, 'fill')

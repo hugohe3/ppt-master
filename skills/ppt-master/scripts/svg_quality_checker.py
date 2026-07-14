@@ -57,11 +57,15 @@ try:
         DRAWINGML_TEXT_FONT_SIZE_MAX as _DRAWINGML_TEXT_FONT_SIZE_MAX,
         DRAWINGML_TEXT_FONT_SIZE_MIN as _DRAWINGML_TEXT_FONT_SIZE_MIN,
         IDENTITY_MATRIX as _IDENTITY_MATRIX,
+        format_project_geometry_length as _format_project_geometry_length,
         font_px_to_hpt as _font_px_to_hpt,
+        is_canonical_project_geometry_length as _is_canonical_project_geometry_length,
+        iter_project_geometry_lengths as _iter_project_geometry_lengths,
         matrix_multiply as _matrix_multiply,
         parse_transform_matrix as _parse_transform_matrix,
         parse_font_family as _parse_export_font_family,
         parse_inline_style as _parse_inline_style,
+        parse_project_geometry_length as _parse_project_geometry_length,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
@@ -71,11 +75,15 @@ except ImportError:
     _DRAWINGML_TEXT_FONT_SIZE_MAX = None
     _DRAWINGML_TEXT_FONT_SIZE_MIN = None
     _IDENTITY_MATRIX = None
+    _format_project_geometry_length = None
     _font_px_to_hpt = None
+    _is_canonical_project_geometry_length = None
+    _iter_project_geometry_lengths = None
     _matrix_multiply = None
     _parse_transform_matrix = None
     _parse_export_font_family = None
     _parse_inline_style = None
+    _parse_project_geometry_length = None
     _parse_export_color = None
     _parse_export_length = None
     _rect_to_dml_xfrm = None
@@ -1055,6 +1063,9 @@ class SVGQualityChecker:
 
                 # 2. Check forbidden elements
                 self._check_forbidden_elements(content, root, result)
+
+                # 2a. Validate direct geometry lengths and stroke widths.
+                self._check_geometry_length_values(root, result)
 
                 # 2b. Validate the closed authoring-property surface and
                 # conditional definition interfaces before export.
@@ -2094,6 +2105,53 @@ class SVGQualityChecker:
 
         result['errors'].extend(sorted(issues))
 
+    def _check_geometry_length_values(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject invalid project geometry and advise the unitless spelling."""
+        if (
+            _format_project_geometry_length is None
+            or _is_canonical_project_geometry_length is None
+            or _iter_project_geometry_lengths is None
+            or _parse_project_geometry_length is None
+        ):
+            result['warnings'].append(
+                "Unable to import svg_to_pptx geometry length validators; "
+                "native export will still validate project geometry."
+            )
+            return
+
+        errors: set[str] = set()
+        recommendations: Counter[tuple[str, str, str]] = Counter()
+        examples: Dict[tuple[str, str, str], List[str]] = defaultdict(list)
+
+        for elem, attribute, raw, source in _iter_project_geometry_lengths(root):
+            label = f'{_element_label(elem)} {source}'
+            try:
+                value = _parse_project_geometry_length(raw, attribute)
+            except ValueError as exc:
+                errors.add(f"{label} {attribute}={raw!r}: {exc}")
+                continue
+            if _is_canonical_project_geometry_length(raw):
+                continue
+            normalized = _format_project_geometry_length(value)
+            key = (attribute, raw, normalized)
+            recommendations[key] += 1
+            if label not in examples[key] and len(examples[key]) < 3:
+                examples[key].append(label)
+
+        result['errors'].extend(sorted(errors))
+        for (attribute, raw, normalized), count in sorted(recommendations.items()):
+            shown_examples = ', '.join(examples[(attribute, raw, normalized)])
+            result['warnings'].append(
+                f"Recommendation: project geometry {attribute}={raw!r} is "
+                f"converter-compatible in {count} location(s) ({shown_examples}); "
+                f"generated SVG should prefer the unitless px spelling "
+                f'{attribute}="{normalized}". No change is required for export.'
+            )
+
     def _check_font_size_values(self, content: str, result: Dict):
         """Keep supported font-size units compatible and recommend unitless px."""
         canonical_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
@@ -2115,7 +2173,11 @@ class SVGQualityChecker:
         drawingml_out_of_range = set()
         compatible_noncanonical = set()
         for raw in values:
-            parsed_px = _parse_export_length(raw, math.nan, font_size=16)
+            try:
+                parsed_px = _parse_export_length(raw, math.nan, font_size=16)
+            except (TypeError, ValueError):
+                unsupported.add(raw)
+                continue
             if not math.isfinite(parsed_px) or parsed_px < 0:
                 unsupported.add(raw)
                 continue

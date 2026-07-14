@@ -8,7 +8,7 @@ Other files link here instead of restating its contracts.
 | Section | Owns | Strength |
 |---|---|---|
 | §1 Required Foundation, Forbidden Features, and Conditional Interfaces | XML validity, the closed generated-authoring surface, structural blacklist, native line ends, image clipping, static local reuse, and imported/authored native-shape semantics | Required / Forbidden / Conditional |
-| §2 Conditional Compatibility Mappings | Literal inline geometry and the approximate group-opacity compatibility boundary | Conditional / Default |
+| §2 Conditional Compatibility Mappings | Direct geometry-length grammar, literal inline geometry, and the approximate group-opacity compatibility boundary | Required / Conditional / Default |
 | §3 Canvas Format Quick Reference | Pointer to the complete canvas catalog | Reference |
 | §4 Required Page Contract and Conditional Packaging | Complete-page authority, semantic markers, editable text/grouping, and package promotion | Required / Conditional |
 | §5 Workflow Authority | Pointer to the serial post-processing/export procedure | Workflow pointer |
@@ -209,8 +209,8 @@ the original `<use>` / `<symbol>` structure.
 |---|---|
 | Reference syntax | Author new SVG with the SVG 2 form `href="#id"`. Legacy `xlink:href="#id"` remains read-compatible and Live Preview normalizes it to `href`; if both attributes exist, their values MUST match. |
 | Referenced target | One of `<symbol>`, `<g>`, `<use>`, `<rect>`, `<circle>`, `<ellipse>`, `<line>`, `<path>`, `<polygon>`, `<polyline>`, `<text>`, or `<image>`. Nested local `<use>` is recursively expanded. |
-| Instance position | `<use x>` / `<use y>` are finite unitless or `px` values; omitted values default to `0`. |
-| Symbol viewport | A referenced `<symbol>` MUST have a finite four-number `viewBox` with positive width/height. Its `<use>` MUST have positive finite unitless or `px` `width` and `height`. |
+| Instance position | Generated `<use x>` / `<use y>` use finite unitless values; an explicit `px` suffix is read-compatible. Omitted values default to `0`. |
+| Symbol viewport | A referenced `<symbol>` MUST have a finite four-number `viewBox` with positive width/height. Its `<use>` MUST have positive finite unitless `width` and `height`; an explicit `px` suffix is read-compatible. |
 | Aspect ratio | Default/aligned `meet` values and plain `preserveAspectRatio="none"` are supported. `slice`, `refX`, and `refY` are forbidden. |
 | Viewport boundary | Symbol artwork MUST stay inside its `viewBox`; expansion does not reproduce symbol overflow clipping. |
 | Internal references | Author exact `href="#id"` and `url(#id)` fragments. The expander also reads legacy `xlink:href="#id"` and rewrites all instance-local cloned IDs. |
@@ -388,7 +388,30 @@ hyperlinks.
 
 ## 2. Conditional Compatibility Mappings
 
-### 2.1 Literal Inline Geometry
+### 2.1 Literal Geometry Lengths and Inline Geometry
+
+**Hard rule — direct geometry length grammar**: New generated SVG writes the
+following XML geometry values and `stroke-width` as finite unitless ordinary
+decimals in the page `viewBox` coordinate space, for example `x="120"` and
+`stroke-width="2"`. The explicit `px` suffix is read-compatible and receives a
+recommendation warning. No other unit is registered for this surface.
+
+| Element / surface | Direct length attributes |
+|---|---|
+| `<svg>`, `<rect>`, `<image>`, `<use>` | `x`, `y`, `width`, `height`; `<rect>` also `rx`, `ry` |
+| `<circle>` | `cx`, `cy`, `r` |
+| `<ellipse>` | `cx`, `cy`, `rx`, `ry` |
+| `<line>` | `x1`, `y1`, `x2`, `y2` |
+| `<text>` / positional `<tspan>` | `x`, `y`; `<tspan>` also `dx`, `dy` |
+| Any supported painted element | `stroke-width` |
+
+`width`, `height`, `r`, `rx`, `ry`, and `stroke-width` must be non-negative;
+the stricter positive `<use>` symbol-viewport rule remains in §1.3. `pt`,
+`pc` / `pica`, `in`, `cm`, `mm`, `q`, `em`, `rem`, percentages, unknown units,
+non-finite values, expressions, scientific notation, leading plus signs, and
+trailing decimal points are invalid here even when generic SVG/CSS defines
+them. A missing attribute may use its documented SVG/project default; an
+explicitly supplied invalid value never falls back to that default.
 
 The following geometry properties may appear in the same element's
 `style="..."`. The pipeline materializes them as
