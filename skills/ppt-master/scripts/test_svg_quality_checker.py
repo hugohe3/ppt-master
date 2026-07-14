@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Regression tests for SVG checker compatibility severity."""
 
+import io
 import sys
 import tempfile
 import unittest
@@ -29,6 +30,7 @@ from svg_to_pptx.native_objects import (
     native_import_source,
     native_replacement_kind,
     native_replacement_status,
+    stamp_native_fallback_baseline,
 )
 from svg_to_pptx.pptx_package.template_structure import (
     TemplateStructureError,
@@ -630,6 +632,133 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             )
 
         self.assertEqual(canonical_result, legacy_result)
+
+    def test_authored_hashless_native_marker_has_no_baseline_warning(self):
+        content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="table" data-pptx-replace-with="table">
+    <metadata type="application/json">{"x":80,"y":80,"width":320,"height":180,"rows":[["A"]]}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        result = self._check(content)
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['warnings'], [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'authored.svg'
+            svg_path.write_text(content, encoding='utf-8')
+            stderr = io.StringIO()
+            with patch('sys.stderr', new=stderr):
+                convert_svg_to_slide_shapes(svg_path, native_objects=True)
+
+        self.assertNotIn('fallback-sha256', stderr.getvalue())
+
+    def test_imported_hashless_native_marker_warns_but_remains_compatible(self):
+        for source_attribute in (
+            'data-pptx-import-source="pptx"',
+            'data-pptx-native-source="pptx"',
+        ):
+            content = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="table" data-pptx-replace-with="table" {source_attribute}>
+    <metadata type="application/json">{{"x":80,"y":80,"width":320,"height":180,"rows":[["A"]]}}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+            with self.subTest(source_attribute=source_attribute):
+                result = self._check(content)
+                self.assertTrue(result['passed'])
+                self.assertIn(
+                    'imported marker has no data-pptx-fallback-sha256 baseline',
+                    '\n'.join(result['warnings']),
+                )
+
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / 'imported.svg'
+                    svg_path.write_text(content, encoding='utf-8')
+                    stderr = io.StringIO()
+                    with patch('sys.stderr', new=stderr):
+                        convert_svg_to_slide_shapes(
+                            svg_path,
+                            native_objects=True,
+                        )
+                self.assertIn(
+                    'imported marker has no data-pptx-fallback-sha256 baseline',
+                    stderr.getvalue(),
+                )
+
+    def test_explicit_authored_fallback_baseline_still_blocks_stale_native_export(self):
+        root = ET.fromstring(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="table" data-pptx-replace-with="table">
+    <metadata type="application/json">{"x":80,"y":80,"width":320,"height":180,"rows":[["A"]]}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        )
+        marker = next(elem for elem in root if elem.tag.endswith('g'))
+        stamp_native_fallback_baseline(marker, document_root=root)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'sealed-authored.svg'
+            ET.ElementTree(root).write(svg_path, encoding='unicode')
+            fresh_result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertTrue(fresh_result['passed'])
+            self.assertEqual(fresh_result['warnings'], [])
+            convert_svg_to_slide_shapes(svg_path, native_objects=True)
+
+            rect = next(elem for elem in marker if elem.tag.endswith('rect'))
+            rect.set('fill', '#EEEEEE')
+            ET.ElementTree(root).write(svg_path, encoding='unicode')
+            stale_result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertTrue(stale_result['passed'])
+            self.assertIn(
+                'visible SVG fallback differs from its recorded baseline',
+                '\n'.join(stale_result['warnings']),
+            )
+            convert_svg_to_slide_shapes(svg_path)
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'fallback was edited after its baseline',
+            ):
+                convert_svg_to_slide_shapes(svg_path, native_objects=True)
+
+    def test_explicit_authored_invalid_fallback_baseline_still_fails_native_export(self):
+        content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="table" data-pptx-replace-with="table"
+     data-pptx-fallback-sha256="invalid">
+    <metadata type="application/json">{"x":80,"y":80,"width":320,"height":180,"rows":[["A"]]}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        result = self._check(content)
+        self.assertTrue(result['passed'])
+        self.assertIn(
+            'must be a 64-digit SHA-256',
+            '\n'.join(result['warnings']),
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'invalid-baseline.svg'
+            svg_path.write_text(content, encoding='utf-8')
+            convert_svg_to_slide_shapes(svg_path)
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'must be a 64-digit SHA-256',
+            ):
+                convert_svg_to_slide_shapes(svg_path, native_objects=True)
+
+    def test_authored_template_markers_do_not_preseed_static_fallback_hashes(self):
+        template_root = SCRIPT_DIR.parent / 'templates'
+        offenders = []
+        for svg_path in template_root.rglob('*.svg'):
+            root = ET.parse(svg_path).getroot()
+            for elem in root.iter():
+                if not native_replacement_kind(elem):
+                    continue
+                if native_import_source(elem) == 'pptx':
+                    continue
+                if elem.get('data-pptx-fallback-sha256') is not None:
+                    offenders.append(str(svg_path.relative_to(template_root)))
+        self.assertEqual(offenders, [])
 
     def test_compact_authored_preset_exports_one_native_shape(self):
         fragment = render_preset_shape_fragment(

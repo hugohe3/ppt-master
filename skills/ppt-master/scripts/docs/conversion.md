@@ -299,8 +299,11 @@ while `--native-charts-and-tables` fails before replacement so it cannot discard
 referenced document-level target roots (even when hidden) are included
 conservatively; marker-local `display:none` subtrees are excluded, and external
 file bytes are not read.
-A legacy marker without the hash remains native-compatible and warns in the
-checker/native route that stale detection is unavailable.
+Generated authoring and reusable templates omit import provenance and do not
+preseed a static fallback hash; that state is normal and does not warn. A legacy
+imported marker that still carries PPTX import provenance but lacks the hash
+remains native-compatible and warns in the checker/native route that stale
+detection is unavailable.
 
 Legacy `data-pptx-native*`, `data-pptx-visual-status`, and
 `data-pptx-route-status` spellings remain read-compatible. New importer output
