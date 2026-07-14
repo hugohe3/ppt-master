@@ -455,11 +455,16 @@ def _require_unchanged_preset_preview(group: ET.Element) -> None:
 def _decode_unchanged_txbody(
     group: ET.Element,
     metadata: ET.Element,
+    *,
+    trust_runtime_snapshot: bool = True,
 ) -> str | None:
     expected_hash = metadata.get('data-pptx-text-sha256')
     if not expected_hash:
         raise SvgNativeConversionError('txbody metadata requires a text hash')
-    snapshot = group.get(_TXBODY_UNCHANGED_ATTR)
+    snapshot = (
+        group.get(_TXBODY_UNCHANGED_ATTR)
+        if trust_runtime_snapshot else None
+    )
     if snapshot == '0':
         return None
     if snapshot != '1' and svg_text_fingerprint(group) != expected_hash:
@@ -499,6 +504,50 @@ def _append_shape_text(
         ),
         bounds_emu=shape.bounds_emu,
     )
+
+
+def preserved_native_text_body(
+    group: ET.Element,
+    *,
+    trust_runtime_snapshot: bool = True,
+) -> tuple[ET.Element, str] | None:
+    """Return the geometry carrier and unchanged native text body, if usable."""
+    metadata = _txbody_metadata(group)
+    logical_text_shape = (
+        group.get('data-pptx-object') == 'shape'
+        and (
+            group.get('data-pptx-prst') is not None
+            or group.get('data-pptx-geometry-kind') == 'custom'
+        )
+        and metadata is not None
+    )
+    if not logical_text_shape:
+        return None
+    native_text = _decode_unchanged_txbody(
+        group,
+        metadata,
+        trust_runtime_snapshot=trust_runtime_snapshot,
+    )
+    carrier_children = [
+        child for child in group
+        if child.get('data-pptx-part') == 'geometry'
+    ]
+    allowed_parts = {
+        'geometry',
+        'geometry-detail',
+        'geometry-preview',
+        'txbody',
+    }
+    has_foreign_visual = any(
+        child.tag.replace(f'{{{SVG_NS}}}', '') not in {'text', 'metadata'}
+        and child.get('data-pptx-part') not in allowed_parts
+        for child in group
+    )
+    if len(carrier_children) != 1 or has_foreign_visual:
+        return None
+    if native_text is None:
+        return None
+    return carrier_children[0], native_text
 
 
 # ---------------------------------------------------------------------------
@@ -623,57 +672,33 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     ):
         _require_unchanged_preset_preview(elem)
 
-    txbody_meta = _txbody_metadata(elem)
-    logical_text_shape = (
-        elem.get('data-pptx-object') == 'shape'
-        and (
-            elem.get('data-pptx-prst') is not None
-            or elem.get('data-pptx-geometry-kind') == 'custom'
-        )
-        and txbody_meta is not None
-    )
-    if logical_text_shape:
-        carrier_children = [
-            child for child in elem
-            if child.get('data-pptx-part') == 'geometry'
-        ]
-        allowed_parts = {
-            'geometry',
-            'geometry-detail',
-            'geometry-preview',
-            'txbody',
-        }
-        has_foreign_visual = any(
-            child.tag.replace(f'{{{SVG_NS}}}', '') not in {'text', 'metadata'}
-            and child.get('data-pptx-part') not in allowed_parts
-            for child in elem
-        )
-        native_text = _decode_unchanged_txbody(elem, txbody_meta)
-        if len(carrier_children) == 1 and not has_foreign_visual and native_text is not None:
-            geometry_ctx = child_ctx
-            if transform and not native_subtree_active:
-                geometry_ctx = ctx.child(
-                    0, 0, 1.0, 1.0,
-                    transform_matrix=parse_transform_matrix(transform),
-                    filter_id=filter_id,
-                    style_overrides=style_overrides,
-                    opacity_multiplier=local_opacity,
-                )
-            geometry_result = convert_element(carrier_children[0], geometry_ctx)
-            ctx.sync_from_child(geometry_ctx)
-            if geometry_result is None:
-                raise SvgNativeConversionError(
-                    'Logical text shape has no convertible geometry carrier'
-                )
-            restored = _append_shape_text(
-                geometry_result,
-                native_text,
+    preserved_text = preserved_native_text_body(elem)
+    if preserved_text is not None:
+        geometry_carrier, native_text = preserved_text
+        geometry_ctx = child_ctx
+        if transform and not native_subtree_active:
+            geometry_ctx = ctx.child(
+                0, 0, 1.0, 1.0,
+                transform_matrix=parse_transform_matrix(transform),
+                filter_id=filter_id,
+                style_overrides=style_overrides,
+                opacity_multiplier=local_opacity,
             )
-            if should_animate_group and elem_id:
-                shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored.xml)
-                if shape_match:
-                    ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
-            return restored
+        geometry_result = convert_element(geometry_carrier, geometry_ctx)
+        ctx.sync_from_child(geometry_ctx)
+        if geometry_result is None:
+            raise SvgNativeConversionError(
+                'Logical text shape has no convertible geometry carrier'
+            )
+        restored = _append_shape_text(
+            geometry_result,
+            native_text,
+        )
+        if should_animate_group and elem_id:
+            shape_match = re.search(r'<p:cNvPr id="(\d+)"', restored.xml)
+            if shape_match:
+                ctx.anim_targets.append((int(shape_match.group(1)), elem_id))
+        return restored
 
     child_results: list[ShapeResult] = []
     for child in elem:

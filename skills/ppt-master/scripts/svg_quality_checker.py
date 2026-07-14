@@ -164,16 +164,24 @@ except ImportError:
 
 try:
     from svg_to_pptx.drawingml.converter import (
+        SvgNativeConversionError as _SvgNativeConversionError,
         collect_unsupported_visuals as _collect_unsupported_visuals,
+        preserved_native_text_body as _preserved_native_text_body,
     )
 except ImportError:
+    _SvgNativeConversionError = None
     _collect_unsupported_visuals = None
+    _preserved_native_text_body = None
 
 try:
     from svg_to_pptx.drawingml.elements import (
+        drawingml_text_frame_width_emu as _drawingml_text_frame_width_emu,
+        estimate_single_line_text_frame_width as _estimate_single_line_text_frame_width,
         validate_preset_geometry_metadata as _validate_preset_geometry_metadata,
     )
 except ImportError:
+    _drawingml_text_frame_width_emu = None
+    _estimate_single_line_text_frame_width = None
     _validate_preset_geometry_metadata = None
 
 try:
@@ -2442,6 +2450,7 @@ class SVGQualityChecker:
         result['info']['text_elements'] = text_count
         result['info']['tspan_elements'] = tspan_count
 
+        self._check_text_frame_extents(root, result)
         self._check_single_line_text_bounds(root, result)
         self._check_unmergeable_leading_text(root, result)
 
@@ -2496,6 +2505,155 @@ class SVGQualityChecker:
             runs[-1] = (owner, text.rstrip(' '))
         return [(owner, text) for owner, text in runs if text]
 
+    @staticmethod
+    def _unchanged_txbody_group_ids(
+        root: ET.Element,
+        errors: List[str] | None = None,
+    ) -> set[int]:
+        """Return imported shape groups whose original text body will survive."""
+        if _preserved_native_text_body is None:
+            return set()
+        unchanged: set[int] = set()
+        for group in root.iter(f'{{{SVG_NS}}}g'):
+            try:
+                if _preserved_native_text_body(
+                    group,
+                    trust_runtime_snapshot=False,
+                ) is not None:
+                    unchanged.add(id(group))
+            except _SvgNativeConversionError as exc:
+                if errors is not None:
+                    errors.append(
+                        f'{_element_label(group)} has invalid preserved '
+                        f'txBody metadata: {exc}'
+                    )
+        return unchanged
+
+    @staticmethod
+    def _has_ancestor_id(
+        elem: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+        ancestor_ids: set[int],
+    ) -> bool:
+        current = parent_by_id.get(id(elem))
+        while current is not None:
+            if id(current) in ancestor_ids:
+                return True
+            current = parent_by_id.get(id(current))
+        return False
+
+    @classmethod
+    def _resolved_single_line_text_runs(
+        cls,
+        text_el: ET.Element,
+        parent_by_id: Dict[int, ET.Element],
+        font_sizes: Dict[int, float],
+        letter_spacings: Dict[int, float],
+    ) -> List[Dict] | None:
+        """Resolve the same run metrics used by generated text-frame sizing."""
+        source_runs = cls._single_line_text_runs(text_el)
+        if source_runs is None:
+            return None
+        resolved: List[Dict] = []
+        for owner, text in source_runs:
+            raw_weight = (
+                _effective_presentation_value(
+                    owner,
+                    'font-weight',
+                    parent_by_id,
+                )
+                or 'normal'
+            ).strip().lower()
+            weight = _parse_project_font_weight(raw_weight).canonical
+            family = (
+                _effective_presentation_value(
+                    owner,
+                    'font-family',
+                    parent_by_id,
+                )
+                or ''
+            )
+            resolved.append({
+                'owner': owner,
+                'text': text,
+                'font_size': font_sizes[id(owner)],
+                'font_weight': weight,
+                'font_family': family,
+                'letter_spacing': letter_spacings[id(owner)],
+            })
+        return resolved
+
+    def _check_text_frame_extents(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject measurable generated text that would emit a non-positive cx."""
+        helpers = (
+            _drawingml_text_frame_width_emu,
+            _estimate_single_line_text_frame_width,
+            _parse_project_font_weight,
+            _resolve_project_font_sizes,
+            _resolve_project_letter_spacings,
+        )
+        if any(helper is None for helper in helpers):
+            return
+        try:
+            font_sizes = _resolve_project_font_sizes(root)
+            letter_spacings = _resolve_project_letter_spacings(root, font_sizes)
+        except ValueError:
+            return
+
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        unchanged_groups = self._unchanged_txbody_group_ids(
+            root,
+            result['errors'],
+        )
+        errors: List[str] = []
+        for text_el in root.iter(f'{{{SVG_NS}}}text'):
+            chain: List[ET.Element] = []
+            current: ET.Element | None = text_el
+            while current is not None:
+                chain.append(current)
+                current = parent_by_id.get(id(current))
+            if any(
+                _local_name(current) in _NON_VISUAL_SVG_TAGS
+                for current in chain
+            ):
+                continue
+            if self._has_ancestor_id(text_el, parent_by_id, unchanged_groups):
+                continue
+            try:
+                runs = self._resolved_single_line_text_runs(
+                    text_el,
+                    parent_by_id,
+                    font_sizes,
+                    letter_spacings,
+                )
+                if not runs:
+                    continue
+                if not ''.join(str(run['text']) for run in runs).strip():
+                    continue
+                text_width = _estimate_single_line_text_frame_width(runs)
+                ext_cx = _drawingml_text_frame_width_emu(
+                    text_width,
+                    font_sizes[id(text_el)],
+                )
+            except (KeyError, TypeError, ValueError):
+                continue
+            if ext_cx >= 1:
+                continue
+            errors.append(
+                f'{_element_label(text_el)} negative letter-spacing produces '
+                'a non-positive DrawingML text-frame extent '
+                f'(cx={ext_cx})'
+            )
+        result['errors'].extend(errors)
+
     def _check_single_line_text_bounds(
         self,
         root: ET.Element,
@@ -2503,6 +2661,8 @@ class SVGQualityChecker:
     ) -> None:
         """Warn only when an estimable single line exceeds the viewBox."""
         helpers = (
+            _drawingml_text_frame_width_emu,
+            _estimate_single_line_text_frame_width,
             _estimate_text_width,
             _IDENTITY_MATRIX,
             _matrix_multiply,
@@ -2533,6 +2693,7 @@ class SVGQualityChecker:
             for parent in root.iter()
             for child in list(parent)
         }
+        unchanged_groups = self._unchanged_txbody_group_ids(root)
         issues: List[str] = []
         for text_el in root.iter(f'{{{SVG_NS}}}text'):
             chain: List[ET.Element] = []
@@ -2547,36 +2708,41 @@ class SVGQualityChecker:
                 continue
             if text_el.get('data-paragraph-line-height') is not None:
                 continue
+            if self._has_ancestor_id(text_el, parent_by_id, unchanged_groups):
+                continue
 
-            runs = self._single_line_text_runs(text_el)
+            try:
+                runs = self._resolved_single_line_text_runs(
+                    text_el,
+                    parent_by_id,
+                    font_sizes,
+                    letter_spacings,
+                )
+            except (KeyError, TypeError, ValueError):
+                continue
             if not runs:
                 continue
-            visible_text = ''.join(text for _owner, text in runs)
+            visible_text = ''.join(str(run['text']) for run in runs)
             if '{{' in visible_text and '}}' in visible_text:
                 continue
 
             try:
                 x = _parse_project_geometry_length(text_el.get('x') or '0', 'x')
                 y = _parse_project_geometry_length(text_el.get('y') or '0', 'y')
+                frame_width = _estimate_single_line_text_frame_width(runs)
+                if _drawingml_text_frame_width_emu(
+                    frame_width,
+                    font_sizes[id(text_el)],
+                ) < 1:
+                    continue
                 text_advance = 0.0
                 text_left = math.inf
                 text_right = -math.inf
-                for owner, text in runs:
-                    raw_weight = (
-                        _effective_presentation_value(
-                            owner,
-                            'font-weight',
-                            parent_by_id,
-                        )
-                        or 'normal'
-                    ).strip().lower()
-                    weight = (
-                        'bold'
-                        if _parse_project_font_weight(raw_weight).value
-                        else 'normal'
-                    )
-                    font_size = font_sizes[id(owner)]
-                    spacing = letter_spacings[id(owner)]
+                for run in runs:
+                    text = str(run['text'])
+                    weight = str(run['font_weight'])
+                    font_size = float(run['font_size'])
+                    spacing = float(run['letter_spacing'])
                     for index, character in enumerate(text):
                         character_width = _estimate_text_width(
                             character,
