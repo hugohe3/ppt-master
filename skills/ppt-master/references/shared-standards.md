@@ -1746,6 +1746,20 @@ Every new SVG project declares one deterministic route. Free-design and brand-on
 
 **Template behavior**: Strict preserves the selected prototype's declared Master/Layout/slot contract. Adaptive retains its Master and may allocate a new Layout key/name only when fixed Layout atoms or slot topology/bounds change; update the lock during authoring. Mirror-created prototypes preserve restored source identity, literal paint, typography, effects, atomic geometry, and referenced assets. `standard` / `fidelity` never make source topology authoritative; mirror does not synthesize a replacement topology.
 
+**Imported inherited-shape visibility**: PPTX import reads
+`p:sld@showMasterSp` and `p:sldLayout@showMasterSp` as XML Schema booleans;
+an absent value, `1`, or `true` enables the relevant inherited shapes, while
+`0` or `false` disables them. A disabled Slide value suppresses both Layout
+and Master drawable shapes on that page. A disabled Layout value suppresses
+only its parent Master's drawable shapes; the Layout's own shapes remain.
+Neither flag changes background inheritance, Slide-local objects,
+placeholder geometry/style inheritance, or the Master/Layout relationship
+graph. Flat SVG import bakes the effective visibility. Layered import keeps
+every standalone part SVG and records the source-owned booleans as
+`slides[].showInheritedShapes` and `layouts[].showMasterShapes` in
+`inheritance.json`, `manifest.json`, and `native_structure.json`. This is an
+import/analysis fact; it does not introduce a generated-authoring SVG marker.
+
 **Master text-style contract**: Flat and structured export map the
 locked `title` size to every `a:defRPr` in Master `p:titleStyle`. Level 1 in
 both `p:bodyStyle` and `p:otherStyle` uses the locked `body` size; levels 2–9

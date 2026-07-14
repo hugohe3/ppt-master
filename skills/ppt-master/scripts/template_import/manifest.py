@@ -31,6 +31,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
+
 
 NS = {
     "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
@@ -59,6 +61,7 @@ class SlideRecord:
     slide_path: str
     layout_path: str | None
     master_path: str | None
+    show_inherited_shapes: bool
     background_asset: str | None
     background_source: str | None
     image_assets: list[str]
@@ -88,9 +91,11 @@ def summarize_part_record(
 
     bg_asset = detect_background_asset(root, rels)
     image_targets = extract_image_targets(root, rels)
+    sp_tree = root.find("p:cSld/p:spTree", NS) if root is not None else None
+    shape_image_targets = extract_image_targets(sp_tree, rels)
     display_name = part_display_name(root, part_path)
     layout_type = root.attrib.get("type") if root is not None else None
-    return {
+    record = {
         "path": part_path,
         "name": PurePosixPath(part_path).name,
         "displayName": display_name,
@@ -101,6 +106,10 @@ def summarize_part_record(
         "theme": theme,
         "backgroundAsset": copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None),
         "imageAssets": [copied_assets.get(target, PurePosixPath(target).name) for target in image_targets],
+        "shapeImageAssets": [
+            copied_assets.get(target, PurePosixPath(target).name)
+            for target in shape_image_targets
+        ],
         "placeholders": extract_placeholders(root),
         "textSamples": extract_text_samples(root),
         "textCount": len(root.findall(".//a:t", NS)) if root is not None else 0,
@@ -108,6 +117,13 @@ def summarize_part_record(
         "drawableShapeCount": count_drawable_shapes(root),
         "usedBySlides": used_by_slides,
     }
+    if root is not None and root.tag == f"{{{NS['p']}}}sldLayout":
+        record["showMasterShapes"] = parse_ooxml_boolean(
+            root.attrib.get("showMasterSp"),
+            default=True,
+            context=f"{part_path} showMasterSp",
+        )
+    return record
 
 
 def normalize_part(path: str, base: str | None = None) -> str:
@@ -447,6 +463,38 @@ def choose_common_assets(asset_usage: Counter[str]) -> list[str]:
     return sorted(common)
 
 
+def _effective_inherited_image_assets(
+    *,
+    show_inherited_shapes: bool,
+    layout_record: dict[str, Any] | None,
+    master_record: dict[str, Any] | None,
+) -> set[str]:
+    """Return visible inherited shape images, excluding background assets."""
+    if not show_inherited_shapes:
+        return set()
+
+    def shape_images(record: dict[str, Any] | None) -> set[str]:
+        if record is None:
+            return set()
+        if "shapeImageAssets" in record:
+            return {
+                asset
+                for asset in record.get("shapeImageAssets", [])
+                if asset
+            }
+        background = record.get("backgroundAsset")
+        return {
+            asset
+            for asset in record.get("imageAssets", [])
+            if asset and asset != background
+        }
+
+    assets = shape_images(layout_record)
+    if layout_record is None or layout_record.get("showMasterShapes", True):
+        assets.update(shape_images(master_record))
+    return assets
+
+
 def write_summary(output_path: Path, manifest: dict[str, Any]) -> None:
     """Render a short human digest derived from manifest.json.
 
@@ -687,6 +735,12 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     slide_path=slide_path,
                     layout_path=layout_path,
                     master_path=master_path,
+                    show_inherited_shapes=parse_ooxml_boolean(
+                        slide_root.attrib.get("showMasterSp")
+                        if slide_root is not None else None,
+                        default=True,
+                        context=f"{slide_path} showMasterSp",
+                    ),
                     background_asset=resolved_bg,
                     background_source=bg_source,
                     image_assets=resolved_images,
@@ -763,15 +817,12 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             if slide.background_asset:
                 per_slide_assets.add(slide.background_asset)
             layout_record = layout_by_path.get(slide.layout_path or "")
-            if layout_record:
-                if layout_record.get("backgroundAsset"):
-                    per_slide_assets.add(layout_record["backgroundAsset"])
-                per_slide_assets.update(layout_record.get("imageAssets", []))
             master_record = master_by_path.get(slide.master_path or "")
-            if master_record:
-                if master_record.get("backgroundAsset"):
-                    per_slide_assets.add(master_record["backgroundAsset"])
-                per_slide_assets.update(master_record.get("imageAssets", []))
+            per_slide_assets.update(_effective_inherited_image_assets(
+                show_inherited_shapes=slide.show_inherited_shapes,
+                layout_record=layout_record,
+                master_record=master_record,
+            ))
             for asset in per_slide_assets:
                 if asset:
                     asset_usage[asset] += 1
@@ -805,6 +856,7 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     "slidePath": slide.slide_path,
                     "layoutPath": slide.layout_path,
                     "masterPath": slide.master_path,
+                    "showInheritedShapes": slide.show_inherited_shapes,
                     "backgroundAsset": slide.background_asset,
                     "backgroundSource": slide.background_source,
                     "imageAssets": slide.image_assets,

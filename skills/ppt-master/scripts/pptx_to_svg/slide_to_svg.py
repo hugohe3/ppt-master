@@ -43,7 +43,12 @@ from .effect_to_svg import convert_effects
 from .emu_units import NS, Xfrm, fmt_num, format_canvas_px_from_emu
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
-from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
+from .ooxml_loader import (
+    OoxmlPackage,
+    PartRef,
+    SlideRef,
+    inherited_shape_visibility,
+)
 from .pic_to_svg import convert_blip_fill, convert_picture
 from .prstgeom_to_svg import GeomResult, convert_prst_geom
 from .preset_svg_markup import serialize_preset_layers
@@ -112,9 +117,10 @@ def assemble_slide(
     """Convert one slide to a complete SVG string + media files map.
 
     inheritance_mode controls how master/layout shapes are rendered:
-        - "flat" (default): emit master + layout non-placeholder shapes inline
-          inside the slide SVG. This is the historical behavior, used for
-          round-trip fidelity with svg_to_pptx.
+        - "flat" (default): emit the effective visible Master/Layout
+          non-placeholder shapes inline inside the slide SVG, honoring both
+          source ``showMasterSp`` flags. This view is used for round-trip
+          fidelity with svg_to_pptx.
         - "layered": skip inherited shapes entirely. The slide SVG contains
           only its own shapes. Callers (e.g. /create-template's PPTX import)
           render master/layout once each as separate SVGs and record the
@@ -1083,8 +1089,13 @@ def _theme_background_fill(
 
 def _emit_inherited_shapes(slide: SlideRef, ctx: AssemblyContext) -> list[str]:
     parts: list[str] = []
-    for prefix, part in (("master-", slide.master), ("layout-", slide.layout)):
-        if part is None:
+    show_layout_shapes, show_master_shapes = inherited_shape_visibility(slide)
+    inherited_parts = (
+        ("master-", slide.master, show_master_shapes),
+        ("layout-", slide.layout, show_layout_shapes),
+    )
+    for prefix, part, visible in inherited_parts:
+        if part is None or not visible:
             continue
         original_part = ctx.slide_part
         original_prefix = ctx.group_id_prefix

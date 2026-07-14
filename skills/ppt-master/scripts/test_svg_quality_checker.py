@@ -36,6 +36,7 @@ from pptx_to_svg.preset_authoring import (
 )
 from pptx_to_svg.emu_units import Xfrm
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
+from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
 from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
 from svg_to_pptx.animation_config import (
     build_group_listing,
@@ -76,6 +77,11 @@ from svg_to_pptx.pptx_package.template_structure import (
 )
 from svg_to_pptx.use_expander import UseExpansionError, expand_local_use_references
 from template_preview_pptx import _canvas_viewbox as preview_canvas_viewbox
+from template_import.manifest import (
+    _effective_inherited_image_assets,
+    build_manifest,
+)
+from template_import.native_structure import build_native_structure
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -110,6 +116,91 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             svg_path = output_dir / 'fixture.svg'
             svg_path.write_text(content, encoding='utf-8')
             return SVGQualityChecker().check_file(str(svg_path))
+
+    @staticmethod
+    def _write_show_master_fixture(
+        path: Path,
+        *,
+        slide_values: list[str | None],
+        layout_value: str | None = None,
+    ) -> None:
+        """Write a real PPTX with distinct Master/Layout/Slide contributions."""
+        presentation = Presentation()
+        layout = presentation.slide_layouts[0]
+        for index, _value in enumerate(slide_values, start=1):
+            slide = presentation.slides.add_slide(layout)
+            slide.shapes.title.text = f'SLIDE LOCAL {index}'
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+
+        def inherited_shape(name: str, color: str, shape_id: int, x: int) -> ET.Element:
+            return ET.fromstring(f'''<p:sp xmlns:p="{pml}" xmlns:a="{dml}">
+  <p:nvSpPr><p:cNvPr id="{shape_id}" name="{name}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr>
+    <a:xfrm><a:off x="{x}" y="914400"/><a:ext cx="1828800" cy="914400"/></a:xfrm>
+    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+    <a:solidFill><a:srgbClr val="{color}"/></a:solidFill>
+    <a:ln><a:noFill/></a:ln>
+  </p:spPr>
+</p:sp>''')
+
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [(info, source.read(info.filename)) for info in source.infolist()]
+        member_data = {info.filename: data for info, data in members}
+        replacements: dict[str, bytes] = {}
+
+        master_part = 'ppt/slideMasters/slideMaster1.xml'
+        master_root = ET.fromstring(member_data[master_part])
+        master_tree = master_root.find(f'{{{pml}}}cSld/{{{pml}}}spTree')
+        assert master_tree is not None
+        master_tree.append(inherited_shape('MASTER RED', 'FF0000', 901, 914400))
+        master_c_sld = master_root.find(f'{{{pml}}}cSld')
+        assert master_c_sld is not None
+        old_background = master_c_sld.find(f'{{{pml}}}bg')
+        background = ET.fromstring(f'''<p:bg xmlns:p="{pml}" xmlns:a="{dml}">
+  <p:bgPr><a:solidFill><a:srgbClr val="00FF00"/></a:solidFill><a:effectLst/></p:bgPr>
+</p:bg>''')
+        if old_background is None:
+            master_c_sld.insert(0, background)
+        else:
+            position = list(master_c_sld).index(old_background)
+            master_c_sld.remove(old_background)
+            master_c_sld.insert(position, background)
+        replacements[master_part] = ET.tostring(
+            master_root, encoding='utf-8', xml_declaration=True
+        )
+
+        layout_part = 'ppt/slideLayouts/slideLayout1.xml'
+        layout_root = ET.fromstring(member_data[layout_part])
+        if layout_value is None:
+            layout_root.attrib.pop('showMasterSp', None)
+        else:
+            layout_root.set('showMasterSp', layout_value)
+        layout_tree = layout_root.find(f'{{{pml}}}cSld/{{{pml}}}spTree')
+        assert layout_tree is not None
+        layout_tree.append(inherited_shape('LAYOUT BLUE', '0000FF', 902, 3657600))
+        replacements[layout_part] = ET.tostring(
+            layout_root, encoding='utf-8', xml_declaration=True
+        )
+
+        for index, value in enumerate(slide_values, start=1):
+            slide_part = f'ppt/slides/slide{index}.xml'
+            slide_root = ET.fromstring(member_data[slide_part])
+            if value is None:
+                slide_root.attrib.pop('showMasterSp', None)
+            else:
+                slide_root.set('showMasterSp', value)
+            replacements[slide_part] = ET.tostring(
+                slide_root, encoding='utf-8', xml_declaration=True
+            )
+
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
 
     @staticmethod
     def _text_bound_warnings(result: dict) -> list[str]:
@@ -479,6 +570,209 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 (int(size.get('cx')), int(size.get('cy'))),
                 (source_width, source_height),
             )
+
+    def test_pptx_import_respects_master_shape_visibility(self):
+        for raw, expected in (
+            (None, True),
+            ('1', True),
+            ('true', True),
+            ('0', False),
+            ('false', False),
+        ):
+            with self.subTest(boolean=raw):
+                self.assertEqual(
+                    parse_ooxml_boolean(
+                        raw,
+                        default=True,
+                        context='test showMasterSp',
+                    ),
+                    expected,
+                )
+        with self.assertRaisesRegex(RuntimeError, 'invalid boolean value'):
+            parse_ooxml_boolean(
+                'TRUE',
+                default=True,
+                context='test showMasterSp',
+            )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            invalid_path = root / 'invalid-layout-visibility.pptx'
+            self._write_show_master_fixture(
+                invalid_path,
+                slide_values=['false'],
+                layout_value='TRUE',
+            )
+            with self.assertRaisesRegex(
+                RuntimeError,
+                'slideLayout1.xml showMasterSp: invalid boolean value',
+            ):
+                convert_pptx_to_svg(
+                    invalid_path,
+                    options=ConvertOptions(inheritance_mode='flat'),
+                )
+
+            source_path = root / 'slide-visibility.pptx'
+            output_dir = root / 'slide-visibility-output'
+            self._write_show_master_fixture(
+                source_path,
+                slide_values=[None, 'false'],
+            )
+            converted = convert_pptx_to_svg(
+                source_path,
+                output_dir=output_dir,
+                options=ConvertOptions(inheritance_mode='both'),
+            )
+            visible, hidden = (artifact.svg for artifact in converted.flat_slides)
+            self.assertIn('#FF0000', visible)
+            self.assertIn('#0000FF', visible)
+            self.assertIn('#00FF00', visible)
+            self.assertNotIn('#FF0000', hidden)
+            self.assertNotIn('#0000FF', hidden)
+            self.assertIn('#00FF00', hidden)
+            self.assertIn('SLIDE LOCAL 2', hidden)
+
+            hidden_root = ET.fromstring(hidden)
+            hidden_title = next(
+                element
+                for element in hidden_root.iter()
+                if element.tag.rsplit('}', 1)[-1] == 'text'
+                and 'SLIDE LOCAL 2' in ''.join(element.itertext())
+            )
+            self.assertGreater(float(hidden_title.get('x', '0')), 0)
+            self.assertGreater(float(hidden_title.get('y', '0')), 0)
+
+            self.assertTrue(any(
+                '#FF0000' in artifact.svg for artifact in converted.masters
+            ))
+            self.assertTrue(any(
+                '#0000FF' in artifact.svg for artifact in converted.layouts
+            ))
+            graph = json.loads(
+                (output_dir / 'svg' / 'inheritance.json').read_text(
+                    encoding='utf-8'
+                )
+            )
+            self.assertEqual(
+                [slide['showInheritedShapes'] for slide in graph['slides']],
+                [True, False],
+            )
+            self.assertTrue(all(
+                slide['layout'] and slide['master']
+                for slide in graph['slides']
+            ))
+            source_layout = next(
+                layout
+                for layout in graph['layouts']
+                if layout['partPath'].endswith('slideLayout1.xml')
+            )
+            self.assertTrue(source_layout['showMasterShapes'])
+
+            manifest = build_manifest(source_path, root / 'manifest-default')
+            self.assertEqual(
+                [slide['showInheritedShapes'] for slide in manifest['slides']],
+                [True, False],
+            )
+            structure = build_native_structure(source_path, manifest)
+            self.assertEqual(
+                [slide['showInheritedShapes'] for slide in structure['slides']],
+                [True, False],
+            )
+
+            layout_hidden_path = root / 'layout-visibility.pptx'
+            layout_output_dir = root / 'layout-visibility-output'
+            self._write_show_master_fixture(
+                layout_hidden_path,
+                slide_values=['1', 'true'],
+                layout_value='false',
+            )
+            layout_hidden = convert_pptx_to_svg(
+                layout_hidden_path,
+                output_dir=layout_output_dir,
+                options=ConvertOptions(inheritance_mode='both'),
+            )
+            for artifact in layout_hidden.flat_slides:
+                flat = artifact.svg
+                self.assertNotIn('#FF0000', flat)
+                self.assertIn('#0000FF', flat)
+                self.assertIn('#00FF00', flat)
+
+            layout_graph = json.loads(
+                (layout_output_dir / 'svg' / 'inheritance.json').read_text(
+                    encoding='utf-8'
+                )
+            )
+            source_layout = next(
+                layout
+                for layout in layout_graph['layouts']
+                if layout['partPath'].endswith('slideLayout1.xml')
+            )
+            self.assertFalse(source_layout['showMasterShapes'])
+            self.assertTrue(all(
+                slide['showInheritedShapes']
+                for slide in layout_graph['slides']
+            ))
+
+            manifest = build_manifest(
+                layout_hidden_path,
+                root / 'manifest-layout-hidden',
+            )
+            manifest_layout = next(
+                layout
+                for layout in manifest['layouts']
+                if layout['path'].endswith('slideLayout1.xml')
+            )
+            self.assertFalse(manifest_layout['showMasterShapes'])
+            self.assertTrue(all(
+                slide['showInheritedShapes'] for slide in manifest['slides']
+            ))
+            structure = build_native_structure(layout_hidden_path, manifest)
+            structure_layout = next(
+                layout
+                for layout in structure['layouts']
+                if layout['packagePart'].endswith('slideLayout1.xml')
+            )
+            self.assertFalse(structure_layout['showMasterShapes'])
+            self.assertTrue(all(
+                slide['showInheritedShapes'] for slide in structure['slides']
+            ))
+
+        layout_assets = {
+            'backgroundAsset': 'layout-background.png',
+            'shapeImageAssets': ['layout-shape.png'],
+            'showMasterShapes': False,
+        }
+        master_assets = {
+            # The same media is both the overridden Master background and a
+            # visible Master picture; shapeImageAssets must retain that use.
+            'backgroundAsset': 'master-shared.png',
+            'shapeImageAssets': ['master-shared.png'],
+        }
+        self.assertEqual(
+            _effective_inherited_image_assets(
+                show_inherited_shapes=False,
+                layout_record=layout_assets,
+                master_record=master_assets,
+            ),
+            set(),
+        )
+        self.assertEqual(
+            _effective_inherited_image_assets(
+                show_inherited_shapes=True,
+                layout_record=layout_assets,
+                master_record=master_assets,
+            ),
+            {'layout-shape.png'},
+        )
+        layout_assets['showMasterShapes'] = True
+        self.assertEqual(
+            _effective_inherited_image_assets(
+                show_inherited_shapes=True,
+                layout_record=layout_assets,
+                master_record=master_assets,
+            ),
+            {'layout-shape.png', 'master-shared.png'},
+        )
 
     def test_top_level_group_ids_are_unique_animation_anchors(self):
         duplicate = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
