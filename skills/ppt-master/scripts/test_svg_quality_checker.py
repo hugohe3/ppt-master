@@ -2508,6 +2508,42 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'invalid project filter',
         )
 
+    def test_filter_effect_geometry_must_be_explicit(self):
+        cases = (
+            (
+                'Gaussian blur standard deviation',
+                '<feGaussianBlur/>',
+                '<feGaussianBlur> requires explicit stdDeviation',
+            ),
+            (
+                'drop shadow standard deviation',
+                '<feDropShadow dx="0" dy="4"/>',
+                '<feDropShadow> requires explicit stdDeviation',
+            ),
+            (
+                'drop shadow horizontal offset',
+                '<feDropShadow dy="4" stdDeviation="6"/>',
+                '<feDropShadow> requires explicit dx',
+            ),
+            (
+                'drop shadow vertical offset',
+                '<feDropShadow dx="0" stdDeviation="6"/>',
+                '<feDropShadow> requires explicit dy',
+            ),
+        )
+        for label, primitive, expected in cases:
+            with self.subTest(label=label):
+                self._assert_checker_and_exporter_reject(
+                    f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs><filter id="effect">{primitive}</filter></defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#effect)"/>
+</svg>''',
+                    expected,
+                    'invalid project filter',
+                )
+
     def test_filter_coordinates_block_drawingml_overflow(self):
         cases = (
             (
