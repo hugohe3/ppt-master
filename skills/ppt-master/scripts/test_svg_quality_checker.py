@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -43,6 +44,16 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     def _check(self, content: str) -> dict:
         with tempfile.TemporaryDirectory() as tmp_dir:
             svg_path = Path(tmp_dir) / 'fixture.svg'
+            svg_path.write_text(content, encoding='utf-8')
+            return SVGQualityChecker().check_file(str(svg_path))
+
+    def _check_with_spec_lock(self, content: str, lock_text: str) -> dict:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            project = Path(tmp_dir)
+            output_dir = project / 'svg_output'
+            output_dir.mkdir()
+            (project / 'spec_lock.md').write_text(lock_text, encoding='utf-8')
+            svg_path = output_dir / 'fixture.svg'
             svg_path.write_text(content, encoding='utf-8')
             return SVGQualityChecker().check_file(str(svg_path))
 
@@ -791,22 +802,50 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             f'{fragment}</svg>'
         )
 
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            project = Path(tmp_dir)
-            output_dir = project / 'svg_output'
-            output_dir.mkdir()
-            (project / 'spec_lock.md').write_text(
+        result = self._check_with_spec_lock(
+            source,
+            (
                 '# Execution Lock\n\n'
                 '## colors\n'
-                '- primary: #2563EB\n',
-                encoding='utf-8',
-            )
-            svg_path = output_dir / '01_cube.svg'
-            svg_path.write_text(source, encoding='utf-8')
-            result = SVGQualityChecker().check_file(str(svg_path))
+                '- primary: #2563EB\n'
+            ),
+        )
 
         self.assertTrue(result['passed'])
         self.assertNotIn('spec_lock drift', '\n'.join(result['warnings']))
+
+    def test_spec_lock_color_fallback_normalizes_every_declared_color(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 160 120">
+  <rect x="10" y="10" width="60" height="40" fill="#2563EB"/>
+  <rect x="90" y="10" width="60" height="40" fill="#10B981"/>
+</svg>'''
+        lock_text = (
+            '# Execution Lock\n\n'
+            '## colors\n'
+            '- primary: #2563EB\n'
+            '- success: #10B981\n'
+        )
+
+        with patch('svg_quality_checker._parse_export_color', None):
+            result = self._check_with_spec_lock(source, lock_text)
+
+        self.assertTrue(result['passed'])
+        self.assertNotIn('spec_lock drift', '\n'.join(result['warnings']))
+
+    def test_spec_lock_color_fallback_accepts_empty_color_section(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 160 120">
+  <rect x="10" y="10" width="60" height="40" fill="#FFFFFF"/>
+</svg>'''
+        lock_text = '# Execution Lock\n\n## colors\n'
+
+        with patch('svg_quality_checker._parse_export_color', None):
+            result = self._check_with_spec_lock(source, lock_text)
+
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertIn('spec_lock drift', '\n'.join(result['warnings']))
 
     def test_foreign_namespace_cannot_impersonate_compact_svg_path(self):
         fragment = render_preset_shape_fragment(
