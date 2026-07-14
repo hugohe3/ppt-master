@@ -476,7 +476,7 @@ These forms are needed only when the stated PPT behavior matters:
 |---|---|
 | One editable PPT text frame with mixed inline formatting | Put the logical line in one `<text>` with non-positional `<tspan>` children. A `<tspan>` with `x`/`y`/`dy` starts a new positioned line. Evenly `dy`-stacked lines that repeat the parent `<text>`'s `x` stay in one frame: equal effective `font-size` may flow in the current paragraph, while a font-size change, list marker, or accepted larger gap starts a new paragraph. An unmergeable gap or mismatched `x` flattens to separate frames. Separate `<text>` elements stay valid when separate frames are intended. |
 | Stable object grouping or object-level animation anchor | Wrap the intended object in `<g id="...">`. Content grouping is **mandatory** per §4.3 — a top-level `<g id>` is also the animation anchor; it is not an optional convenience. |
-| Native PowerPoint background promotion | Use a direct, full-canvas, solid `<rect>` without transform, filter, clip, rounding, or visible stroke. Other SVG backgrounds remain ordinary slide shapes. Template routes add the ownership metadata in §7. |
+| Native PowerPoint background promotion | Outside structured mode, the first eligible visual layer may be a direct full-canvas `<rect>` or one inside a simple single-child group. Its fill must have a registered native mapping (solid, linear/radial gradient, or preset pattern), and it must have no transform, filter, clip, rounding, or visible stroke. Export writes the fill as Slide `p:bg`; image elements remain pictures. Structured routes use the narrower explicit solid-background ownership contract in §7. |
 | Free-design / brand-only PowerPoint structure | Use `pptx_structure.mode: flat`. Keep every represented object Slide-local; export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Do not author Master/Layout identities, layers, or placeholder slots. |
 | Reusable template-based PowerPoint Layout | Select one complete authoring SVG per page in `page_layouts`, declare each unique Master/Layout definition once, and assign pages through `page_pptx_layouts`. Strict preserves the prototype contract; adaptive retains its Master and may define and assign a new explicit Layout key during page authoring. Non-mirror skin follows `spec_lock`. |
 
@@ -1484,16 +1484,19 @@ then slot groups and Slide-local content groups. Backgrounds are a special inher
 plane beneath every shape; this order keeps standalone SVG preview and
 PowerPoint rendering aligned. The exporter rejects interleaved layers.
 
-**Solid background ownership**: A direct full-canvas solid `<rect>` becomes a
-real `p:bg`, not a selectable shape. Mark it `data-pptx-layer="master"` for the
-deck-wide default, `data-pptx-layer="layout"` for a page-type override, or
+**Solid background ownership**: Structured export deliberately narrows scoped
+background ownership to a direct full-canvas solid `<rect>` and disables the
+generic conversion-level promotion described in §4.2. Mark the solid rect
+`data-pptx-layer="master"` for the deck-wide default,
+`data-pptx-layer="layout"` for a page-type override, or
 `data-pptx-layer="slide"` for a one-slide override. An unmarked direct
-full-canvas solid rect in the background plane is also treated as Slide scope. A
-Layout background overrides the Master background; a Slide background
+full-canvas solid rect in the background plane is also treated as Slide scope.
+A Layout background overrides the Master background; a Slide background
 overrides both. Use the Master for a globally stable color and the Layout for
-cover/section/content variants under the same design language. Gradients,
-images, textures, transformed rects, and visible-stroke rects are not promoted
-by this solid-background rule.
+cover/section/content variants under the same design language. Gradient and
+preset-pattern rects remain ordinary shapes on declared Master/Layout layers
+or as Slide-local content; images remain pictures. Textures, transformed rects,
+and visible-stroke rects also remain ordinary objects.
 
 | Placeholder value | Direct carrier inside slot `<g>` | PowerPoint placeholder |
 |---|---|---|

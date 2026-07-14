@@ -4892,6 +4892,7 @@ def create_pptx_with_native_svg(
                             animation_group_overrides=explicit_animation_groups,
                             theme_font_spec=active_theme_font_spec,
                             theme_color_spec=active_theme_color_spec,
+                            promote_background=pptx_structure != "structured",
                             trace_out=conversion_trace
                             if conversion_trace is not None
                             else structure_trace,

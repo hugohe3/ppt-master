@@ -1019,6 +1019,7 @@ def convert_svg_to_slide_shapes(
     theme_font_spec: ThemeFontSpec | None = None,
     theme_color_spec: ThemeColorSpec | None = None,
     trace_out: list[dict[str, Any]] | None = None,
+    promote_background: bool = True,
 ) -> tuple[
     str,
     dict[str, bytes],
@@ -1054,6 +1055,9 @@ def convert_svg_to_slide_shapes(
             locked colors emit DrawingML scheme tokens while local colors stay
             fixed.
         trace_out: Optional list populated with one per-slide trace dictionary.
+        promote_background: Promote the first eligible full-canvas rectangle
+            into native ``p:bg``. Structured export disables this generic pass
+            and applies its narrower explicit background contract later.
 
     Returns:
         (slide_xml, media_files, rel_entries, anim_targets,
@@ -1219,7 +1223,11 @@ def convert_svg_to_slide_shapes(
         child.tag.replace(f'{{{SVG_NS}}}', '') == 'g'
         for child in root
     )
-    background_xml, background_skip_id = _extract_background_candidate(root, ctx)
+    background_xml, background_skip_id = (
+        _extract_background_candidate(root, ctx)
+        if promote_background
+        else ('', None)
+    )
     promoted_backgrounds = 1 if background_xml else 0
     if background_xml and trace_events is not None:
         trace_events.append({
