@@ -38,9 +38,15 @@ from .utils import (
     parse_svg_length,
     parse_transform_operations,
     parse_transform_matrix,
+    project_definition_errors,
+    project_definition_index,
+    project_filter_errors,
     project_geometry_length_errors,
+    project_gradient_errors,
     project_image_aspect_ratio_errors,
     project_opacity_errors,
+    project_paint_errors,
+    project_paint_reference_errors,
     project_stroke_style_errors,
     project_transform_errors,
     resolve_url_id,
@@ -146,6 +152,86 @@ def _require_project_opacities(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project opacity value(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_paints(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject invalid paint values before native conversion."""
+    errors = project_paint_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project paint value(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_definitions(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject definitions outside the direct, unique local-ref contract."""
+    errors = project_definition_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project definition(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_paint_references(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject unresolved or context-invalid local paint references."""
+    errors = project_paint_reference_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project paint reference(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_gradients(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject gradients outside the normalized native interface."""
+    errors = project_gradient_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project gradient(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_filters(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject filters outside the native shadow/glow interface."""
+    errors = project_filter_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project filter(s): '
         f'{preview}{suffix}'
     )
 
@@ -828,19 +914,8 @@ def _extract_background_candidate(
 
 def collect_defs(root: ET.Element) -> dict[str, ET.Element]:
     """Collect all <defs> children into an {id: element} dictionary."""
-    defs: dict[str, ET.Element] = {}
-    for defs_elem in root.iter(f'{{{SVG_NS}}}defs'):
-        for child in defs_elem:
-            elem_id = child.get('id')
-            if elem_id:
-                defs[elem_id] = child
-    # Also check for defs without namespace
-    for defs_elem in root.iter('defs'):
-        for child in defs_elem:
-            elem_id = child.get('id')
-            if elem_id:
-                defs[elem_id] = child
-    return defs
+    definitions, _duplicates = project_definition_index(root)
+    return definitions
 
 
 def _build_source_shape_id_map(root: ET.Element) -> dict[tuple[str, str], int]:
@@ -1196,6 +1271,11 @@ def convert_svg_to_slide_shapes(
     _require_project_freeform_geometry(root, svg_path)
     _require_project_stroke_styles(root, svg_path)
     _require_project_opacities(root, svg_path)
+    _require_project_paints(root, svg_path)
+    _require_project_definitions(root, svg_path)
+    _require_project_paint_references(root, svg_path)
+    _require_project_gradients(root, svg_path)
+    _require_project_filters(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)
 
@@ -1258,6 +1338,11 @@ def convert_svg_to_slide_shapes(
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
     _require_project_stroke_styles(root, svg_path)
     _require_project_opacities(root, svg_path)
+    _require_project_paints(root, svg_path)
+    _require_project_definitions(root, svg_path)
+    _require_project_paint_references(root, svg_path)
+    _require_project_gradients(root, svg_path)
+    _require_project_filters(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)
 

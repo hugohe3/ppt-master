@@ -1,8 +1,7 @@
 """Coordinate, transform, color, and font helpers for DrawingML conversion.
 
-See references/shared-standards.md §2.1, §6.2, §6.5, §6.6, and §6.8 for
-project geometry, opacity, image-fit, line-presentation, and transform
-authoring contracts.
+See references/shared-standards.md §2.1 and §6.2–§6.8 for project geometry,
+paint/effects, image-fit, line-presentation, and transform authoring contracts.
 """
 
 from __future__ import annotations
@@ -10,6 +9,7 @@ from __future__ import annotations
 import colorsys
 import math
 import re
+from collections import Counter
 from collections.abc import Iterator
 from xml.etree import ElementTree as ET
 
@@ -172,6 +172,47 @@ PROJECT_OPACITY_PROPERTIES = (
 PROJECT_PERCENTAGE_OPACITY_PROPERTIES = frozenset({
     'stop-opacity',
     'flood-opacity',
+})
+PROJECT_PAINT_PROPERTIES = (
+    'fill',
+    'stroke',
+    'stop-color',
+    'flood-color',
+    'data-pptx-fg',
+    'data-pptx-bg',
+)
+PROJECT_REFERENCE_PAINT_PROPERTIES = frozenset({'fill', 'stroke'})
+PROJECT_DEFINITION_TAGS = frozenset({
+    'clipPath',
+    'filter',
+    'linearGradient',
+    'marker',
+    'pattern',
+    'radialGradient',
+})
+PROJECT_GRADIENT_TAGS = frozenset({'linearGradient', 'radialGradient'})
+PROJECT_FILTER_PRIMITIVES = frozenset({
+    'feDropShadow',
+    'feGaussianBlur',
+    'feOffset',
+    'feFlood',
+    'feComposite',
+    'feMerge',
+    'feMergeNode',
+    'feComponentTransfer',
+    'feFuncA',
+})
+PROJECT_FILTER_EFFECT_PRIMITIVES = frozenset({
+    'feDropShadow',
+    'feGaussianBlur',
+})
+PROJECT_FILTER_PUBLIC_TARGETS = frozenset({'rect', 'circle', 'path', 'text'})
+PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS = frozenset({
+    'defs',
+    'desc',
+    'metadata',
+    'style',
+    'title',
 })
 THICK_CIRCLE_COVERAGE_TOLERANCE = 1.0
 
@@ -1539,6 +1580,451 @@ def parse_svg_color(color_str: str) -> tuple[str | None, float]:
     if len(color_str) == 6 and all(c in '0123456789abcdefABCDEF' for c in color_str):
         return color_str.upper(), 1.0
     return None, 1.0
+
+
+def parse_project_paint(
+    raw: str,
+    property_name: str,
+) -> tuple[str, str | None, float]:
+    """Parse one paint value from the closed project grammar.
+
+    Returns ``(kind, value, alpha)`` where ``kind`` is ``color``, ``none``,
+    or ``reference``. Color values are normalized to ``RRGGBB``; reference
+    values contain the local definition id.
+    """
+    if property_name not in PROJECT_PAINT_PROPERTIES:
+        raise ValueError(f'unknown project paint property {property_name!r}')
+
+    value = raw.strip()
+    if property_name in PROJECT_REFERENCE_PAINT_PROPERTIES:
+        if value.lower() == 'none':
+            return 'none', None, 1.0
+        reference = re.fullmatch(r'url\(#([^)]+)\)', value)
+        if reference is not None:
+            return 'reference', reference.group(1), 1.0
+
+    color, alpha = parse_svg_color(value)
+    if color is not None:
+        return 'color', color, alpha
+
+    accepted = (
+        'a supported color, none, or an exact local url(#id) reference'
+        if property_name in PROJECT_REFERENCE_PAINT_PROPERTIES
+        else 'a supported color'
+    )
+    raise ValueError(f'must be {accepted}')
+
+
+def is_project_paint_default_form(raw: str, property_name: str) -> bool:
+    """Return whether paint uses the generated project spelling."""
+    value = raw.strip()
+    if property_name in PROJECT_REFERENCE_PAINT_PROPERTIES:
+        if value == 'none':
+            return True
+        if re.fullmatch(r'url\(#[^)]+\)', value) is not None:
+            return True
+    return re.fullmatch(r'#[0-9A-F]{6}', value) is not None
+
+
+def iter_project_paints(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str, str, str]]:
+    """Yield project paint values as element, property, raw value, source."""
+    for elem in root.iter():
+        for property_name in PROJECT_PAINT_PROPERTIES:
+            raw = elem.get(property_name)
+            if raw is not None:
+                yield elem, property_name, raw, 'attribute'
+
+        for fragment in (elem.get('style') or '').split(';'):
+            fragment = fragment.strip()
+            if not fragment:
+                continue
+            if ':' in fragment:
+                name, raw = fragment.split(':', 1)
+                name = name.strip().lower()
+                raw = raw.strip()
+            else:
+                name = fragment.lower()
+                raw = ''
+            if name in PROJECT_PAINT_PROPERTIES:
+                yield elem, name, raw, 'inline style'
+
+
+def project_paint_errors(root: ET.Element) -> list[str]:
+    """Return blocking project paint errors for converter preflight."""
+    errors: list[str] = []
+    for elem, property_name, raw, source in iter_project_paints(root):
+        tag = _svg_element_tag(elem) or str(elem.tag)
+        elem_id = elem.get('id')
+        label = f'<{tag} id={elem_id!r}>' if elem_id else f'<{tag}>'
+        try:
+            parse_project_paint(raw, property_name)
+        except ValueError as exc:
+            errors.append(
+                f'{label} {source} {property_name}={raw!r}: {exc}'
+            )
+    return errors
+
+
+def project_definition_index(
+    root: ET.Element,
+) -> tuple[dict[str, ET.Element], set[str]]:
+    """Return direct ``<defs>`` children by id plus duplicate ids."""
+    definitions: dict[str, ET.Element] = {}
+    duplicates: set[str] = set()
+    for defs_elem in root.iter():
+        if _svg_element_tag(defs_elem) != 'defs':
+            continue
+        for child in defs_elem:
+            definition_id = (child.get('id') or '').strip()
+            if not definition_id:
+                continue
+            if definition_id in definitions:
+                duplicates.add(definition_id)
+            definitions[definition_id] = child
+    return definitions, duplicates
+
+
+def project_definition_errors(root: ET.Element) -> list[str]:
+    """Return errors for definitions outside the closed local-ref contract."""
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    definitions, duplicate_definition_ids = project_definition_index(root)
+    errors = {
+        f'Duplicate direct <defs> id {definition_id!r} makes local references ambiguous'
+        for definition_id in duplicate_definition_ids
+    }
+    all_id_counts = Counter(
+        elem.get('id')
+        for elem in root.iter()
+        if (elem.get('id') or '').strip()
+    )
+    for definition_id in definitions:
+        if all_id_counts[definition_id] > 1:
+            errors.add(
+                f'Definition id {definition_id!r} is duplicated in the SVG; '
+                'local references require one unique target'
+            )
+
+    for elem in root.iter():
+        tag = _svg_element_tag(elem)
+        if tag not in PROJECT_DEFINITION_TAGS:
+            continue
+        label = _transform_element_label(elem)
+        parent = parent_by_id.get(id(elem))
+        if parent is None or _svg_element_tag(parent) != 'defs':
+            errors.add(f'{label} must be a direct child of <defs>')
+        if not (elem.get('id') or '').strip():
+            errors.add(f'{label} requires a non-empty unique id')
+    return sorted(errors)
+
+
+def project_paint_reference_errors(root: ET.Element) -> list[str]:
+    """Validate local paint-server references and their native contexts."""
+    definitions, _duplicates = project_definition_index(root)
+    pattern_descendant_ids = {
+        id(descendant)
+        for pattern in root.iter()
+        if _svg_element_tag(pattern) == 'pattern'
+        for descendant in pattern.iter()
+        if descendant is not pattern
+    }
+    fill_shape_tags = frozenset({
+        'rect', 'circle', 'ellipse', 'path', 'polygon', 'polyline',
+    })
+    stroke_shape_tags = fill_shape_tags | {'line'}
+    errors: set[str] = set()
+
+    for elem in root.iter():
+        style_values = parse_inline_style(elem.get('style'))
+        for property_name in PROJECT_REFERENCE_PAINT_PROPERTIES:
+            raw = (
+                style_values[property_name]
+                if property_name in style_values
+                else elem.get(property_name)
+            )
+            if raw is None:
+                continue
+            try:
+                kind, reference_id, _alpha = parse_project_paint(
+                    raw,
+                    property_name,
+                )
+            except ValueError:
+                continue
+            if kind != 'reference' or reference_id is None:
+                continue
+
+            elem_tag = _svg_element_tag(elem) or str(elem.tag)
+            elem_tag_lower = elem_tag.lower()
+            target = definitions.get(reference_id)
+            if target is None:
+                errors.add(
+                    f'<{elem_tag}> {property_name}=url(#{reference_id}) has no '
+                    'matching direct <defs> definition'
+                )
+                continue
+
+            has_text_descendant = any(
+                (_svg_element_tag(descendant) or '').lower() in {'text', 'tspan'}
+                for descendant in elem.iter()
+                if descendant is not elem
+            )
+            if id(elem) in pattern_descendant_ids:
+                allowed_tags: tuple[str, ...] = ()
+            elif property_name == 'fill' and elem_tag_lower in fill_shape_tags:
+                allowed_tags = ('lineargradient', 'radialgradient', 'pattern')
+            elif property_name == 'stroke' and elem_tag_lower in stroke_shape_tags:
+                allowed_tags = ('lineargradient', 'radialgradient')
+            elif property_name == 'fill' and elem_tag_lower in {'text', 'tspan'}:
+                allowed_tags = ('lineargradient', 'radialgradient')
+            elif property_name == 'fill' and elem_tag_lower == 'g':
+                allowed_tags = (
+                    ('lineargradient', 'radialgradient')
+                    if has_text_descendant
+                    else ('lineargradient', 'radialgradient', 'pattern')
+                )
+            elif (
+                property_name == 'stroke'
+                and elem_tag_lower == 'g'
+                and not has_text_descendant
+            ):
+                allowed_tags = ('lineargradient', 'radialgradient')
+            else:
+                allowed_tags = ()
+
+            if not allowed_tags:
+                errors.add(
+                    f'<{elem_tag}> {property_name}=url(#{reference_id}) is not '
+                    'supported by native PPTX conversion in this context'
+                )
+                continue
+
+            target_tag = (_svg_element_tag(target) or str(target.tag)).lower()
+            if target_tag not in allowed_tags:
+                tag_labels = {
+                    'lineargradient': 'linearGradient',
+                    'radialgradient': 'radialGradient',
+                    'pattern': 'pattern',
+                }
+                expected = '/'.join(tag_labels[tag] for tag in allowed_tags)
+                errors.add(
+                    f'<{elem_tag}> {property_name}=url(#{reference_id}) resolves '
+                    f'to <{_svg_element_tag(target) or target.tag}>; expected '
+                    f'{expected}'
+                )
+    return sorted(errors)
+
+
+def parse_project_gradient_ratio(raw: str) -> float:
+    """Parse one normalized gradient coordinate or stop offset."""
+    number, unit = _parse_svg_length_parts(raw)
+    if unit == '%':
+        number /= 100.0
+    elif unit:
+        raise ValueError('must be unitless or a percentage')
+    if not 0.0 <= number <= 1.0:
+        raise ValueError('must be within 0..1 or 0%..100%')
+    return number
+
+
+def project_gradient_errors(root: ET.Element) -> list[str]:
+    """Validate the normalized native gradient authoring interface."""
+    errors: set[str] = set()
+    for gradient in root.iter():
+        tag = _svg_element_tag(gradient)
+        if tag not in PROJECT_GRADIENT_TAGS:
+            continue
+        gradient_id = gradient.get('id')
+        label = f'<{tag} id="{gradient_id}">' if gradient_id else f'<{tag}>'
+        attribute_names = {
+            name.rsplit('}', 1)[-1]
+            for name in gradient.attrib
+        }
+        if 'href' in attribute_names:
+            errors.add(
+                f'{label} cannot inherit from href/xlink:href; '
+                'define gradient stops directly'
+            )
+        if 'gradientTransform' in attribute_names:
+            errors.add(f'{label} cannot use gradientTransform')
+        if 'spreadMethod' in attribute_names:
+            errors.add(f'{label} cannot use spreadMethod')
+        gradient_units = gradient.get('gradientUnits')
+        if gradient_units not in {None, 'objectBoundingBox'}:
+            errors.add(
+                f'{label} cannot use gradientUnits={gradient_units!r}; '
+                'use normalized objectBoundingBox coordinates'
+            )
+
+        coordinate_names = (
+            ('x1', 'y1', 'x2', 'y2')
+            if tag == 'linearGradient'
+            else ('cx', 'cy', 'r', 'fx', 'fy')
+        )
+        for coordinate_name in coordinate_names:
+            raw_coordinate = gradient.get(coordinate_name)
+            if raw_coordinate is None:
+                continue
+            try:
+                coordinate = parse_project_gradient_ratio(raw_coordinate)
+            except ValueError:
+                errors.add(
+                    f'{label} {coordinate_name} must be a normalized finite '
+                    f'value from 0 to 1 or 0% to 100%; got {raw_coordinate!r}'
+                )
+                continue
+            if coordinate_name == 'r' and coordinate <= 0:
+                errors.add(f'{label} r must be greater than 0')
+
+        stops: list[ET.Element] = []
+        for child in list(gradient):
+            child_tag = _svg_element_tag(child) or str(child.tag)
+            if child_tag in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS:
+                continue
+            if child_tag != 'stop':
+                errors.add(
+                    f'{label} has unsupported direct child <{child_tag}>; '
+                    'gradient definitions may contain only direct <stop> children'
+                )
+                continue
+            stops.append(child)
+        if not stops:
+            errors.add(f'{label} requires at least one direct <stop> child')
+        for index, stop in enumerate(stops, start=1):
+            stop_label = f'{label} stop #{index}'
+            raw_offset = stop.get('offset')
+            try:
+                if raw_offset is None:
+                    raise ValueError
+                parse_project_gradient_ratio(raw_offset)
+            except ValueError:
+                errors.add(
+                    f'{stop_label} offset must be explicit and within 0..1 '
+                    f'or 0%..100%; got {raw_offset!r}'
+                )
+            style_values = parse_inline_style(stop.get('style'))
+            if not (style_values.get('stop-color') or stop.get('stop-color')):
+                errors.add(f'{stop_label} requires an explicit stop-color')
+    return sorted(errors)
+
+
+def project_filter_errors(root: ET.Element) -> list[str]:
+    """Validate filters against the native shadow/glow approximation."""
+    definitions, _duplicates = project_definition_index(root)
+    filters_by_id = {
+        filter_id: elem
+        for filter_id, elem in definitions.items()
+        if _svg_element_tag(elem) == 'filter'
+    }
+    errors: set[str] = set()
+
+    for elem in root.iter():
+        tag = (_svg_element_tag(elem) or str(elem.tag)).lower()
+        label = _transform_element_label(elem)
+        style_values = parse_inline_style(elem.get('style'))
+        if style_values.get('filter'):
+            errors.add(
+                f'{label} filter must use a direct filter="url(#id)" '
+                'attribute; inline style filters are not supported'
+            )
+
+        raw_filter = elem.get('filter')
+        if raw_filter is None:
+            continue
+        if tag not in PROJECT_FILTER_PUBLIC_TARGETS:
+            errors.add(
+                f'{label} cannot use filter; supported native targets are '
+                'rect, circle, path, and text'
+            )
+        match = re.fullmatch(r'url\(#([^)]+)\)', raw_filter.strip())
+        if match is None:
+            errors.add(
+                f'{label} filter must be an exact local url(#id) reference; '
+                f'got {raw_filter!r}'
+            )
+            continue
+        filter_id = match.group(1)
+        if filter_id not in filters_by_id:
+            errors.add(
+                f'{label} filter=url(#{filter_id}) has no matching direct '
+                f'<defs><filter id="{filter_id}"> definition'
+            )
+
+    for filter_id, filter_elem in filters_by_id.items():
+        label = f'filter #{filter_id}'
+        primitives = [
+            _svg_element_tag(descendant) or str(descendant.tag)
+            for descendant in filter_elem.iter()
+            if descendant is not filter_elem
+        ]
+        unsupported = sorted(set(primitives) - PROJECT_FILTER_PRIMITIVES)
+        if unsupported:
+            errors.add(
+                f'{label} uses unsupported filter primitive(s): '
+                f'{", ".join(unsupported)}'
+            )
+        effect_primitives = [
+            primitive
+            for primitive in primitives
+            if primitive in PROJECT_FILTER_EFFECT_PRIMITIVES
+        ]
+        if not effect_primitives:
+            errors.add(f'{label} must contain feDropShadow or feGaussianBlur')
+        elif len(effect_primitives) > 1:
+            errors.add(
+                f'{label} contains multiple shadow/glow primitives; one '
+                'filter must map to exactly one native effect'
+            )
+        if any(
+            _svg_element_tag(descendant) == 'feFuncA'
+            and descendant.get('type') != 'linear'
+            for descendant in filter_elem.iter()
+        ):
+            errors.add(f'{label} requires feFuncA type="linear"')
+
+        for primitive in filter_elem.iter():
+            primitive_tag = _svg_element_tag(primitive)
+            numeric_attrs: tuple[tuple[str, bool], ...] = ()
+            if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
+                numeric_attrs = (('stdDeviation', True),)
+            elif primitive_tag == 'feOffset':
+                numeric_attrs = (('dx', False), ('dy', False))
+            elif primitive_tag == 'feFuncA':
+                numeric_attrs = (('slope', True),)
+            if primitive_tag == 'feDropShadow':
+                numeric_attrs += (('dx', False), ('dy', False))
+            for attribute_name, non_negative in numeric_attrs:
+                raw_value = primitive.get(attribute_name)
+                if raw_value is None:
+                    continue
+                try:
+                    value = float(raw_value)
+                except (TypeError, ValueError):
+                    value = math.nan
+                if (
+                    not math.isfinite(value)
+                    or (non_negative and value < 0)
+                    or (
+                        primitive_tag == 'feFuncA'
+                        and attribute_name == 'slope'
+                        and value > 1
+                    )
+                ):
+                    qualifier = (
+                        ' from 0 to 1'
+                        if primitive_tag == 'feFuncA'
+                        else ''
+                    )
+                    errors.add(
+                        f'{label} <{primitive_tag}> {attribute_name} must be a '
+                        f'finite number{qualifier}; got {raw_value!r}'
+                    )
+    return sorted(errors)
 
 
 def parse_hex_color(color_str: str) -> str | None:
