@@ -1003,6 +1003,10 @@ SVG stroke is centered and cannot preserve the source outline boundary.
 An explicit source `a:ln@cap` must be `flat`, `rnd`, or `sq`, which map to SVG
 `butt`, `round`, and `square`; unknown values stop import instead of falling
 back to the SVG default cap.
+An imported line has at most one direct `a:round`, `a:bevel`, or `a:miter`
+join. Round and bevel are empty; miter requires the project's fixed
+`lim="800000"`. Ambiguous joins, payload-bearing join elements, a missing
+limit, and other miter limits stop import rather than losing corner geometry.
 PPTX import maps only the registered DrawingML `prstDash` values; `solid`
 remains an intentional line with no SVG dash array, while an unknown source
 value stops import instead of being mistaken for `solid`.

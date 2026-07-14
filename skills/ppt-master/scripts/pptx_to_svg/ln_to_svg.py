@@ -184,12 +184,30 @@ def resolve_stroke(
             attrs["stroke-dasharray"] = " ".join(ds_parts)
 
     # Join
-    if ln.find("a:round", NS) is not None:
-        attrs["stroke-linejoin"] = "round"
-    elif ln.find("a:bevel", NS) is not None:
-        attrs["stroke-linejoin"] = "bevel"
-    elif ln.find("a:miter", NS) is not None:
-        attrs["stroke-linejoin"] = "miter"
+    join_names = {
+        f"{{{NS['a']}}}round": "round",
+        f"{{{NS['a']}}}bevel": "bevel",
+        f"{{{NS['a']}}}miter": "miter",
+    }
+    joins = [child for child in ln if child.tag in join_names]
+    if len(joins) > 1:
+        raise ValueError("DrawingML line must contain at most one join")
+    if joins:
+        join = joins[0]
+        linejoin = join_names[join.tag]
+        if list(join):
+            raise ValueError("Invalid DrawingML line join structure")
+        if linejoin in {"round", "bevel"} and join.attrib:
+            raise ValueError("Invalid DrawingML line join structure")
+        if linejoin == "miter":
+            if set(join.attrib) - {"lim"}:
+                raise ValueError("Invalid DrawingML line join structure")
+            limit = join.attrib.get("lim")
+            if limit != "800000":
+                raise ValueError(
+                    f"Unsupported DrawingML miter limit: {limit!r}"
+                )
+        attrs["stroke-linejoin"] = linejoin
 
     # Arrow markers (head / tail)
     if id_seq is None:

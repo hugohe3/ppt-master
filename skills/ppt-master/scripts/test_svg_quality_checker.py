@@ -2735,6 +2735,43 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ):
             resolve_stroke(sp_pr, None)
 
+    def test_native_line_join_requires_unambiguous_default_geometry(self):
+        invalid_cases = (
+            (
+                '<a:round/><a:bevel/>',
+                'DrawingML line must contain at most one join',
+            ),
+            (
+                '<a:round unexpected="1"/>',
+                'Invalid DrawingML line join structure',
+            ),
+            (
+                '<a:miter lim="400000"/>',
+                "Unsupported DrawingML miter limit: '400000'",
+            ),
+            (
+                '<a:miter/>',
+                'Unsupported DrawingML miter limit: None',
+            ),
+        )
+        for join_markup, expected in invalid_cases:
+            with self.subTest(join_markup=join_markup):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>{join_markup}</a:ln>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln><a:miter lim="800000"/></a:ln>
+</p:spPr>''')
+        stroke = resolve_stroke(sp_pr, None)
+        self.assertEqual(stroke.attrs['stroke-linejoin'], 'miter')
+
     def test_unknown_native_preset_dash_is_rejected_on_import(self):
         sp_pr = ET.fromstring('''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
