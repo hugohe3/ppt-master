@@ -153,9 +153,20 @@ def resolve_stroke(
             attrs["stroke-opacity"] = fmt_num(alpha, 4)
 
     # Dash pattern
-    prst_dash = ln.find("a:prstDash", NS)
-    if prst_dash is not None:
-        preset = prst_dash.attrib.get("val", "")
+    preset_tag = f"{{{NS['a']}}}prstDash"
+    custom_tag = f"{{{NS['a']}}}custDash"
+    dashes = [child for child in ln if child.tag in {preset_tag, custom_tag}]
+    if len(dashes) > 1:
+        raise ValueError("DrawingML line must contain at most one dash")
+    dash = dashes[0] if dashes else None
+    if dash is not None and dash.tag == preset_tag:
+        if (
+            set(dash.attrib) != {"val"}
+            or list(dash)
+            or (dash.text or "").strip()
+        ):
+            raise ValueError("Invalid DrawingML preset dash structure")
+        preset = dash.attrib["val"]
         if preset not in PRST_DASH_TO_ARRAY:
             raise ValueError(
                 f"Unsupported DrawingML preset dash: {preset!r}"
@@ -163,43 +174,44 @@ def resolve_stroke(
         dasharray = PRST_DASH_TO_ARRAY[preset]
         if dasharray:
             attrs["stroke-dasharray"] = dasharray
-    else:
-        cust_dash = ln.find("a:custDash", NS)
-        if cust_dash is not None:
-            ds_parts: list[str] = []
-            sw = float(attrs.get("stroke-width", "1") or "1") or 1.0
-            dash_stops = list(cust_dash)
-            expected_tag = f"{{{NS['a']}}}ds"
-            if not dash_stops or any(
-                ds.tag != expected_tag
-                or set(ds.attrib) != {"d", "sp"}
-                or list(ds)
-                for ds in dash_stops
-            ):
-                raise ValueError("Invalid DrawingML custom dash structure")
-            for ds in dash_stops:
-                # d, sp are percentages of stroke width (1000ths)
-                values: dict[str, int] = {}
-                for name in ("d", "sp"):
-                    raw_value = ds.attrib[name]
-                    try:
-                        value = int(raw_value)
-                    except (ValueError, TypeError):
-                        raise ValueError(
-                            f"Invalid DrawingML custom dash {name}: "
-                            f"{raw_value!r}"
-                        ) from None
-                    if not 0 < value <= _OOXML_INT_MAX:
-                        raise ValueError(
-                            f"DrawingML custom dash {name}={value} is "
-                            "outside the positive OOXML integer range"
-                        )
-                    values[name] = value
-                d_pct = values["d"]
-                sp_pct = values["sp"]
-                ds_parts.append(fmt_num(d_pct / 100000.0 * sw, 10))
-                ds_parts.append(fmt_num(sp_pct / 100000.0 * sw, 10))
-            attrs["stroke-dasharray"] = " ".join(ds_parts)
+    elif dash is not None:
+        cust_dash = dash
+        if cust_dash.attrib or (cust_dash.text or "").strip():
+            raise ValueError("Invalid DrawingML custom dash structure")
+        ds_parts: list[str] = []
+        sw = float(attrs.get("stroke-width", "1") or "1") or 1.0
+        dash_stops = list(cust_dash)
+        expected_tag = f"{{{NS['a']}}}ds"
+        if not dash_stops or any(
+            ds.tag != expected_tag
+            or set(ds.attrib) != {"d", "sp"}
+            or list(ds)
+            for ds in dash_stops
+        ):
+            raise ValueError("Invalid DrawingML custom dash structure")
+        for ds in dash_stops:
+            # d, sp are percentages of stroke width (1000ths)
+            values: dict[str, int] = {}
+            for name in ("d", "sp"):
+                raw_value = ds.attrib[name]
+                try:
+                    value = int(raw_value)
+                except (ValueError, TypeError):
+                    raise ValueError(
+                        f"Invalid DrawingML custom dash {name}: "
+                        f"{raw_value!r}"
+                    ) from None
+                if not 0 < value <= _OOXML_INT_MAX:
+                    raise ValueError(
+                        f"DrawingML custom dash {name}={value} is "
+                        "outside the positive OOXML integer range"
+                    )
+                values[name] = value
+            d_pct = values["d"]
+            sp_pct = values["sp"]
+            ds_parts.append(fmt_num(d_pct / 100000.0 * sw, 10))
+            ds_parts.append(fmt_num(sp_pct / 100000.0 * sw, 10))
+        attrs["stroke-dasharray"] = " ".join(ds_parts)
 
     # Join
     join_names = {
