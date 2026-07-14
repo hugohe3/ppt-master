@@ -60,6 +60,7 @@ try:
         PROJECT_OPACITY_PROPERTIES as _OPACITY_PROPERTIES,
         PROJECT_PAINT_PROPERTIES as _PAINT_PROPERTIES,
         PROJECT_PERCENTAGE_OPACITY_PROPERTIES as _PERCENTAGE_OPACITY_PROPERTIES,
+        estimate_text_width as _estimate_text_width,
         format_project_geometry_length as _format_project_geometry_length,
         format_project_image_aspect_ratio as _format_project_image_aspect_ratio,
         format_project_opacity as _format_project_opacity,
@@ -97,6 +98,7 @@ try:
         project_stroke_style_errors as _project_stroke_style_errors,
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
+        transform_point as _transform_point,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
     )
 except ImportError:
@@ -109,6 +111,7 @@ except ImportError:
     _format_project_geometry_length = None
     _format_project_image_aspect_ratio = None
     _format_project_opacity = None
+    _estimate_text_width = None
     _font_px_to_hpt = None
     _is_canonical_project_geometry_length = None
     _is_project_opacity_default_form = None
@@ -143,6 +146,7 @@ except ImportError:
     _project_stroke_style_errors = None
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
+    _transform_point = None
     _validate_dml_shape_matrix = None
 
 try:
@@ -174,10 +178,18 @@ except ImportError:
 
 try:
     from svg_to_pptx.drawingml.text_properties import (
+        parse_project_font_weight as _parse_project_font_weight,
+        parse_project_text_anchor as _parse_project_text_anchor,
         project_text_property_diagnostics as _project_text_property_diagnostics,
+        resolve_project_font_sizes as _resolve_project_font_sizes,
+        resolve_project_letter_spacings as _resolve_project_letter_spacings,
     )
 except ImportError:
+    _parse_project_font_weight = None
+    _parse_project_text_anchor = None
     _project_text_property_diagnostics = None
+    _resolve_project_font_sizes = None
+    _resolve_project_letter_spacings = None
 
 try:
     from pptx_to_svg.preset_authoring import (
@@ -2430,14 +2442,220 @@ class SVGQualityChecker:
         result['info']['text_elements'] = text_count
         result['info']['tspan_elements'] = tspan_count
 
-        # Check for overly long single-line text (may need wrapping)
-        text_matches = re.findall(r'<text[^>]*>([^<]{100,})</text>', content)
-        if text_matches:
-            result['warnings'].append(
-                f"Detected {len(text_matches)} potentially overly long single-line text(s) (consider using tspan for wrapping)"
-            )
-
+        self._check_single_line_text_bounds(root, result)
         self._check_unmergeable_leading_text(root, result)
+
+    @classmethod
+    def _single_line_text_runs(
+        cls,
+        text_el: ET.Element,
+    ) -> List[Tuple[ET.Element, str]] | None:
+        """Return normalized inline runs, or ``None`` for positioned text."""
+        runs: List[Tuple[ET.Element, str]] = []
+
+        def preserves_space(elem: ET.Element) -> bool:
+            return (
+                elem.get('{http://www.w3.org/XML/1998/namespace}space')
+                or elem.get('xml:space')
+            ) == 'preserve'
+
+        def append_run(owner: ET.Element, raw: str, preserve: bool) -> None:
+            normalized = raw if preserve else re.sub(r'\s+', ' ', raw)
+            if normalized:
+                runs.append((owner, normalized))
+
+        def collect(container: ET.Element, preserve: bool) -> bool:
+            if container.text:
+                append_run(container, container.text, preserve)
+            for child in list(container):
+                if not cls._is_tspan(child):
+                    return False
+                if any(child.get(name) is not None for name in ('x', 'y', 'dx', 'dy')):
+                    return False
+                if any(
+                    name.startswith('data-paragraph-')
+                    for name in child.attrib
+                ):
+                    return False
+                child_preserve = preserve or preserves_space(child)
+                if not collect(child, child_preserve):
+                    return False
+                if child.tail:
+                    append_run(container, child.tail, preserve)
+            return True
+
+        preserve = preserves_space(text_el)
+        if not collect(text_el, preserve):
+            return None
+        if any('\n' in text or '\r' in text for _owner, text in runs):
+            return None
+        if runs and not preserve:
+            owner, text = runs[0]
+            runs[0] = (owner, text.lstrip(' '))
+            owner, text = runs[-1]
+            runs[-1] = (owner, text.rstrip(' '))
+        return [(owner, text) for owner, text in runs if text]
+
+    def _check_single_line_text_bounds(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Warn only when an estimable single line exceeds the viewBox."""
+        helpers = (
+            _estimate_text_width,
+            _IDENTITY_MATRIX,
+            _matrix_multiply,
+            _parse_project_font_weight,
+            _parse_project_geometry_length,
+            _parse_project_text_anchor,
+            _parse_transform_matrix,
+            _resolve_project_font_sizes,
+            _resolve_project_letter_spacings,
+            _transform_point,
+        )
+        if any(helper is None for helper in helpers):
+            return
+
+        viewbox = _parse_viewbox_values(root.get('viewBox') or '')
+        if viewbox is None:
+            return
+        min_x, _min_y, width, _height = viewbox
+        max_x = min_x + width
+        try:
+            font_sizes = _resolve_project_font_sizes(root)
+            letter_spacings = _resolve_project_letter_spacings(root, font_sizes)
+        except ValueError:
+            return
+
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
+        issues: List[str] = []
+        for text_el in root.iter(f'{{{SVG_NS}}}text'):
+            chain: List[ET.Element] = []
+            current: ET.Element | None = text_el
+            while current is not None:
+                chain.append(current)
+                current = parent_by_id.get(id(current))
+            if any(
+                _local_name(current) in _NON_VISUAL_SVG_TAGS
+                for current in chain
+            ):
+                continue
+            if text_el.get('data-paragraph-line-height') is not None:
+                continue
+
+            runs = self._single_line_text_runs(text_el)
+            if not runs:
+                continue
+            visible_text = ''.join(text for _owner, text in runs)
+            if '{{' in visible_text and '}}' in visible_text:
+                continue
+
+            try:
+                x = _parse_project_geometry_length(text_el.get('x') or '0', 'x')
+                y = _parse_project_geometry_length(text_el.get('y') or '0', 'y')
+                text_advance = 0.0
+                text_left = math.inf
+                text_right = -math.inf
+                for owner, text in runs:
+                    raw_weight = (
+                        _effective_presentation_value(
+                            owner,
+                            'font-weight',
+                            parent_by_id,
+                        )
+                        or 'normal'
+                    ).strip().lower()
+                    weight = (
+                        'bold'
+                        if _parse_project_font_weight(raw_weight).value
+                        else 'normal'
+                    )
+                    font_size = font_sizes[id(owner)]
+                    spacing = letter_spacings[id(owner)]
+                    for index, character in enumerate(text):
+                        character_width = _estimate_text_width(
+                            character,
+                            font_size,
+                            weight,
+                        )
+                        if not character.isspace():
+                            text_left = min(text_left, text_advance)
+                            text_right = max(
+                                text_right,
+                                text_advance + character_width,
+                            )
+                        text_advance += character_width
+                        if index < len(text) - 1:
+                            text_advance += spacing
+            except (KeyError, TypeError, ValueError):
+                continue
+            if not all(math.isfinite(value) for value in (
+                text_advance,
+                text_left,
+                text_right,
+            )):
+                continue
+
+            raw_anchor = (
+                _effective_presentation_value(
+                    text_el,
+                    'text-anchor',
+                    parent_by_id,
+                )
+                or 'start'
+            ).strip().lower()
+            try:
+                anchor = _parse_project_text_anchor(raw_anchor).value
+            except ValueError:
+                continue
+            if anchor == 'middle':
+                anchor_x = x - text_advance / 2
+            elif anchor == 'end':
+                anchor_x = x - text_advance
+            elif anchor == 'start':
+                anchor_x = x
+            else:
+                continue
+            left = anchor_x + text_left
+            right = anchor_x + text_right
+
+            matrix = _IDENTITY_MATRIX
+            try:
+                for current in reversed(chain):
+                    raw_transform = current.get('transform')
+                    if raw_transform:
+                        matrix = _matrix_multiply(
+                            matrix,
+                            _parse_transform_matrix(raw_transform),
+                        )
+                start = _transform_point(matrix, left, y)
+                end = _transform_point(matrix, right, y)
+            except (TypeError, ValueError):
+                continue
+            estimated_left = min(start[0], end[0])
+            estimated_right = max(start[0], end[0])
+            if estimated_left >= min_x - 1 and estimated_right <= max_x + 1:
+                continue
+
+            snippet = re.sub(r'\s+', ' ', visible_text).strip()
+            if len(snippet) > 40:
+                snippet = f'{snippet[:37]}...'
+            issues.append(f'{_element_label(text_el)} {snippet!r}')
+
+        if issues:
+            sample = '; '.join(issues[:3])
+            suffix = '' if len(issues) <= 3 else f'; +{len(issues) - 3} more'
+            result['warnings'].append(
+                f'Detected {len(issues)} single-line text element(s) whose '
+                'estimated horizontal bounds exceed the viewBox '
+                f'({sample}{suffix}); consider repositioning or using '
+                'positioned <tspan> lines'
+            )
 
     def _check_unmergeable_leading_text(self, root: ET.Element, result: Dict) -> None:
         """Warn when leading text cannot be normalized for paragraph merging."""
