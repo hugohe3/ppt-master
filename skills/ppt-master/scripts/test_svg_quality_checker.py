@@ -2617,6 +2617,13 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self.assertIn('stdDeviation="10"', glow_def)
         self.assertNotIn('feMorphology', glow_def)
 
+        zero_glow = effect_result(f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="0"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>''')
+        self.assertIsNotNone(zero_glow.filter_id)
+        self.assertEqual(dict(zero_glow.metadata), {})
+        self.assertIn('stdDeviation="0"', ''.join(zero_glow.defs))
+
         high_saturation = effect_result(f'''<a:effectLst xmlns:a="{dml}">
   <a:glow rad="95250"><a:srgbClr val="2563EB">
     <a:satMod val="175000"/>
@@ -2701,6 +2708,14 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
                 'dist="38100"/></a:effectLst>'
             ), 'missing-color'),
+            'missing glow radius': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow>'
+                '<a:srgbClr val="000000"/></a:glow></a:effectLst>'
+            ), 'missing-rad'),
+            'empty glow radius': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="">'
+                '<a:srgbClr val="000000"/></a:glow></a:effectLst>'
+            ), "rad=''"),
             'invalid srgb color': ((
                 f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
                 'dist="38100"><a:srgbClr val="bogus"/>'
