@@ -126,9 +126,9 @@ preset 形状选择与精确原子片段合同见 [`native-shape-authoring.md`](
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 图片 | 引用项目资产或 data URI 的 `<image>` | `p:pic`、media part 与 relationship | 重建为 `<image>` | 源必须可解析，尺寸必须合法 |
-| 图片拉伸填满框 | `preserveAspectRatio="none"` | 原生拉伸 picture frame | `Native-stable` | 应有意使用；它会改变源宽高比 |
-| 图片裁剪填充 | 受支持的对齐 `slice` 形式 | 原生 `a:srcRect` 裁剪 | 源尺寸可读时为 `Native-stable` | 裁剪对齐与源 metadata 必须确定 |
-| 图片适应框 | 受支持的对齐 `meet` 形式 | 原生 fitted picture frame | `Native-normalized` | 留白/未使用框区域遵循对齐合同 |
+| 图片拉伸填满框 | `preserveAspectRatio="none"` | 原生拉伸 picture frame | `Native-stable` | `none` 必须单独出现；它会有意改变源宽高比 |
+| 图片裁剪填充 | 一个已登记对齐值加显式 `slice` | 原生 `a:srcRect` 裁剪 | 源尺寸可读时为 `Native-stable` | 对齐值区分大小写；未知模式与额外 token 为 error |
+| 图片适应框 | 省略时使用默认值，或一个已登记对齐值加显式 `meet` | 原生 fitted picture frame | `Native-normalized` | 仅写对齐值是兼容输入，Checker 会给出规范化建议 |
 | 图片透明度 | 原子 image `opacity` | 原生 `a:alphaModFix` | `Native-stable` | 值必须有限，并在可接受 opacity 语法内 |
 | 图片裁成形状 | 仅作用于 image 的已登记 `clip-path` | picture preset 或 custom geometry | `Native-normalized` | 不接受任意 mask |
 | 导入的裁剪图片 | 导入器产生的嵌套 crop SVG 表达 | 重新导出为原生 `a:srcRect` | crop 合同内为 `Native-stable` | 不得手工将嵌套 SVG 泛化为不受限功能 |

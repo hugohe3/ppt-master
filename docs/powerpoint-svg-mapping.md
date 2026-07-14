@@ -126,9 +126,9 @@ Preset-shape selection and its exact atomic fragment contract are documented in 
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Picture | `<image>` with a project asset or data URI | `p:pic`, media part, and relationship | Reconstructed as `<image>` | Source must resolve, and dimensions must be valid |
-| Stretch picture to frame | `preserveAspectRatio="none"` | Stretched native picture frame | `Native-stable` | Use intentionally; it changes the source aspect ratio |
-| Crop picture to fill | Supported aligned `slice` form | Native `a:srcRect` crop | `Native-stable` when source dimensions are readable | Crop alignment and source metadata must be deterministic |
-| Fit picture inside frame | Supported aligned `meet` form | Native fitted picture frame | `Native-normalized` | Letterboxing/unused frame area follows the alignment contract |
+| Stretch picture to frame | `preserveAspectRatio="none"` | Stretched native picture frame | `Native-stable` | `none` must stand alone; it intentionally changes the source aspect ratio |
+| Crop picture to fill | One registered alignment plus explicit `slice` | Native `a:srcRect` crop | `Native-stable` when source dimensions are readable | Alignment is case-sensitive; unknown modes and extra tokens are errors |
+| Fit picture inside frame | Omitted default, or one registered alignment plus explicit `meet` | Native fitted picture frame | `Native-normalized` | Alignment-only shorthand is compatible input that receives a normalization recommendation |
 | Picture transparency | Atomic image `opacity` | Native `a:alphaModFix` | `Native-stable` | Value must be finite and within the accepted opacity grammar |
 | Picture clipped to a shape | Image-only registered `clip-path` | Picture preset or custom geometry | `Native-normalized` | Arbitrary masks are not accepted |
 | Imported cropped picture | Nested crop SVG representation produced by import | Native `a:srcRect` on re-export | `Native-stable` within the crop contract | Do not manually generalize nested SVG into an unrestricted feature |

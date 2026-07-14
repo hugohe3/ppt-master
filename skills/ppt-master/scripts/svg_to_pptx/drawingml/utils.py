@@ -1,7 +1,7 @@
 """Coordinate, transform, color, and font helpers for DrawingML conversion.
 
-See references/shared-standards.md §2.1, §6.6, and §6.8 for project geometry,
-line-presentation, and transform authoring contracts.
+See references/shared-standards.md §2.1, §6.5, §6.6, and §6.8 for project
+geometry, image-fit, line-presentation, and transform authoring contracts.
 """
 
 from __future__ import annotations
@@ -149,6 +149,18 @@ PROJECT_STROKE_ENUM_VALUES = {
     'stroke-linejoin': frozenset({'bevel', 'miter', 'round'}),
     'vector-effect': frozenset({'none', 'non-scaling-stroke'}),
 }
+PROJECT_IMAGE_ASPECT_RATIO_ANCHORS = {
+    'xMinYMin': (0.0, 0.0),
+    'xMidYMin': (0.5, 0.0),
+    'xMaxYMin': (1.0, 0.0),
+    'xMinYMid': (0.0, 0.5),
+    'xMidYMid': (0.5, 0.5),
+    'xMaxYMid': (1.0, 0.5),
+    'xMinYMax': (0.0, 1.0),
+    'xMidYMax': (0.5, 1.0),
+    'xMaxYMax': (1.0, 1.0),
+}
+PROJECT_IMAGE_ASPECT_RATIO_MODES = frozenset({'meet', 'slice'})
 THICK_CIRCLE_COVERAGE_TOLERANCE = 1.0
 
 
@@ -313,6 +325,44 @@ def format_project_geometry_length(value: float) -> str:
         return '0'
     text = f'{value:.15f}'.rstrip('0').rstrip('.')
     return '0' if text in {'', '-0'} else text
+
+
+def parse_project_image_aspect_ratio(raw: str | None) -> tuple[str, str]:
+    """Parse the closed project ``<image>`` aspect-ratio grammar."""
+    if raw is None:
+        return 'xMidYMid', 'meet'
+
+    text = raw.strip()
+    if not text:
+        raise ValueError('must not be empty; omit the attribute for the default')
+
+    parts = text.split()
+    align = parts[0]
+    if align == 'none':
+        if len(parts) != 1:
+            raise ValueError('value "none" must appear alone')
+        return align, 'meet'
+
+    if align not in PROJECT_IMAGE_ASPECT_RATIO_ANCHORS:
+        choices = ', '.join(PROJECT_IMAGE_ASPECT_RATIO_ANCHORS)
+        raise ValueError(
+            f'alignment must be "none" or one of: {choices}'
+        )
+    if len(parts) > 2:
+        raise ValueError('accepts at most one alignment and one mode token')
+
+    mode = parts[1] if len(parts) == 2 else 'meet'
+    if mode not in PROJECT_IMAGE_ASPECT_RATIO_MODES:
+        choices = ', '.join(sorted(PROJECT_IMAGE_ASPECT_RATIO_MODES))
+        raise ValueError(f'mode must be one of: {choices}')
+    return align, mode
+
+
+def format_project_image_aspect_ratio(align: str, mode: str) -> str:
+    """Format one parsed image aspect ratio for generated project SVG."""
+    if align == 'none':
+        return 'none'
+    return f'{align} {mode}'
 
 
 def _parse_project_stroke_dasharray(
@@ -1243,6 +1293,31 @@ def project_geometry_length_errors(root: ET.Element) -> list[str]:
             errors.append(
                 f'{label} {source} {attribute}={raw!r}: {exc}'
             )
+    return errors
+
+
+def iter_project_image_aspect_ratios(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str]]:
+    """Yield explicit ``preserveAspectRatio`` values from image elements."""
+    for elem in root.iter():
+        if _svg_element_tag(elem) != 'image':
+            continue
+        raw = elem.get('preserveAspectRatio')
+        if raw is not None:
+            yield elem, raw
+
+
+def project_image_aspect_ratio_errors(root: ET.Element) -> list[str]:
+    """Return blocking project image aspect-ratio errors for preflight."""
+    errors: list[str] = []
+    for elem, raw in iter_project_image_aspect_ratios(root):
+        elem_id = elem.get('id')
+        label = f'<image id={elem_id!r}>' if elem_id else '<image>'
+        try:
+            parse_project_image_aspect_ratio(raw)
+        except ValueError as exc:
+            errors.append(f'{label} preserveAspectRatio={raw!r}: {exc}')
     return errors
 
 

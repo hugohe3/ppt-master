@@ -758,6 +758,17 @@ alpha `0.03–0.05`, increasing offset/radius, and optional same-family tint nea
 | Uniform fade | `<image opacity="...">` | Native picture alpha |
 | Shaped picture | §1.2 image-only `clip-path` | Preset/custom picture geometry |
 
+**Hard rule — closed image aspect-ratio grammar**: on `<image>`, omit
+`preserveAspectRatio` for the default `xMidYMid meet`, use `none` alone for
+stretch, or use one of the nine case-sensitive alignments (`xMinYMin`,
+`xMidYMin`, `xMaxYMin`, `xMinYMid`, `xMidYMid`, `xMaxYMid`, `xMinYMax`,
+`xMidYMax`, `xMaxYMax`) followed by explicit `meet` or `slice`. Generated SVG
+always includes the mode on an aligned value. An alignment without a mode and
+values needing whitespace normalization are compatible input and receive a
+Checker recommendation. Empty values, `defer`, unknown/wrong-case alignments or
+modes, `none` with a mode, and extra tokens are errors; the converter never
+guesses a fallback.
+
 **Hard rule — fit/clip interaction**: a non-trivial clip disables `meet`
 frame-fit. Match the image box to the source ratio or use `slice`. Do not apply
 filters directly to `<image>`.
