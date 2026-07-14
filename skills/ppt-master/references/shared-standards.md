@@ -1002,9 +1002,11 @@ Generated cap, join, and `vector-effect` values use the exact lowercase tokens
 in the table. Surrounding whitespace is compatible input and produces a
 recommendation; every other token is an error.
 
-Match marker fill to the parent stroke. Use markers for connectors and §6.10
-calculated geometry for a manual diagonal arrowhead. When exact grid spacing
-matters, use one multi-subpath path rather than a fixed-density preset pattern:
+Match marker paint to the parent stroke using the shape-specific channel from
+§1.1: fill for closed/oval line ends and stroke for the open arrow. Use markers
+for connectors and §6.10 calculated geometry for a manual diagonal arrowhead.
+When exact grid spacing matters, use one multi-subpath path rather than a
+fixed-density preset pattern:
 
 ```xml
 <path d="M40 0V120 M80 0V120 M0 40H120 M0 80H120"
