@@ -18,6 +18,7 @@ from ..drawingml.utils import (
     ctx_y,
     font_px_to_hpt,
     matrix_multiply,
+    parse_project_geometry_length,
     parse_transform_matrix,
     transform_point,
 )
@@ -199,6 +200,26 @@ def _maybe_number(value: Any) -> float | None:
     except (TypeError, ValueError, OverflowError):
         return None
     return number if math.isfinite(number) else None
+
+
+def _project_geometry_number(
+    elem: ET.Element,
+    attribute: str,
+    default: float = 0.0,
+) -> float:
+    """Read one fallback geometry value through the project length contract."""
+    raw = elem.get(attribute)
+    if raw is None:
+        return default
+    try:
+        return parse_project_geometry_length(raw, attribute)
+    except ValueError as exc:
+        tag = _local_tag(elem)
+        elem_id = elem.get("id")
+        label = f"<{tag} id={elem_id!r}>" if elem_id else f"<{tag}>"
+        raise RuntimeError(
+            f"Native PPTX fallback {label} {attribute}={raw!r}: {exc}"
+        ) from exc
 
 
 def _powerpoint_emu_value(
@@ -474,35 +495,41 @@ def _element_local_bbox(elem: ET.Element) -> tuple[float, float, float, float] |
         return bbox
 
     if tag in {"rect", "image", "use"}:
-        x = _maybe_number(elem.get("x")) or 0.0
-        y = _maybe_number(elem.get("y")) or 0.0
-        width = _maybe_number(elem.get("width")) or 0.0
-        height = _maybe_number(elem.get("height")) or 0.0
+        x = _project_geometry_number(elem, "x")
+        y = _project_geometry_number(elem, "y")
+        width = _project_geometry_number(elem, "width")
+        height = _project_geometry_number(elem, "height")
         if width <= 0 or height <= 0:
             return None
         return x, y, x + width, y + height
 
     if tag == "circle":
-        cx = _maybe_number(elem.get("cx")) or 0.0
-        cy = _maybe_number(elem.get("cy")) or 0.0
-        r = _maybe_number(elem.get("r")) or 0.0
+        cx = _project_geometry_number(elem, "cx")
+        cy = _project_geometry_number(elem, "cy")
+        r = _project_geometry_number(elem, "r")
         if r <= 0:
             return None
         return cx - r, cy - r, cx + r, cy + r
 
     if tag == "ellipse":
-        cx = _maybe_number(elem.get("cx")) or 0.0
-        cy = _maybe_number(elem.get("cy")) or 0.0
-        rx = _maybe_number(elem.get("rx")) or 0.0
-        ry = _maybe_number(elem.get("ry")) or 0.0
+        cx = _project_geometry_number(elem, "cx")
+        cy = _project_geometry_number(elem, "cy")
+        rx = _project_geometry_number(elem, "rx")
+        ry = _project_geometry_number(elem, "ry")
         if rx <= 0 or ry <= 0:
             return None
         return cx - rx, cy - ry, cx + rx, cy + ry
 
     if tag == "line":
         points = [
-            (_maybe_number(elem.get("x1")) or 0.0, _maybe_number(elem.get("y1")) or 0.0),
-            (_maybe_number(elem.get("x2")) or 0.0, _maybe_number(elem.get("y2")) or 0.0),
+            (
+                _project_geometry_number(elem, "x1"),
+                _project_geometry_number(elem, "y1"),
+            ),
+            (
+                _project_geometry_number(elem, "x2"),
+                _project_geometry_number(elem, "y2"),
+            ),
         ]
         return _bbox_from_points(points)
 
@@ -515,8 +542,8 @@ def _element_local_bbox(elem: ET.Element) -> tuple[float, float, float, float] |
         return _path_bbox(elem.get("d"))
 
     if tag == "text":
-        x = _maybe_number(elem.get("x")) or 0.0
-        y = _maybe_number(elem.get("y")) or 0.0
+        x = _project_geometry_number(elem, "x")
+        y = _project_geometry_number(elem, "y")
         font_size = _maybe_number(elem.get("font-size")) or 16.0
         text = "".join(elem.itertext())
         width = max(len(text), 1) * font_size * 0.55
