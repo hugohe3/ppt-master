@@ -1749,6 +1749,21 @@ def _estimate_text_runs_width(
     return width * (base + (ceiling - base) * caps)
 
 
+def estimate_single_line_text_frame_width(
+    runs: list[dict[str, Any]],
+) -> float:
+    """Estimate the content width used by one generated DrawingML textbox."""
+    content_runs, bullet = _extract_text_bullet(runs)
+    width = _estimate_text_runs_width(content_runs)
+    if bullet:
+        font_size = (
+            float(content_runs[0].get('font_size', 16))
+            if content_runs else 16.0
+        )
+        width += _bullet_margin_px(bullet, font_size)
+    return width
+
+
 def _first_nonspace_run(runs: list[dict[str, Any]]) -> dict[str, Any] | None:
     for run in runs:
         if str(run.get('text', '')).strip():
@@ -1900,6 +1915,14 @@ def _textbox_padding(font_size: float) -> float:
         _TEXTBOX_PADDING_MIN_PX,
         min(_TEXTBOX_PADDING_MAX_PX, font_size * _TEXTBOX_PADDING_RATIO),
     )
+
+
+def drawingml_text_frame_width_emu(
+    text_width: float,
+    font_size: float,
+) -> int:
+    """Return the exact horizontal extent used by a generated text frame."""
+    return px_to_emu(text_width + _textbox_padding(font_size) * 2)
 
 
 def _text_opacity_ratio(value: str | None) -> float:
@@ -2498,8 +2521,14 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
-    ext_cx = px_to_emu(box_w)
+    ext_cx = drawingml_text_frame_width_emu(text_width, font_size)
     ext_cy = px_to_emu(box_h)
+    if ext_cx < 1 or ext_cy < 1:
+        raise ValueError(
+            'negative letter-spacing produces a non-positive DrawingML '
+            f'text-frame extent (cx={ext_cx}, cy={ext_cy})'
+        )
+    validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
 
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a

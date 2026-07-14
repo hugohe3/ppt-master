@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Regression tests for SVG checker compatibility severity."""
 
+import base64
 import io
 import json
 import math
+import re
 import sys
 import tempfile
 import unittest
@@ -16,7 +18,11 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from svg_quality_checker import SVGQualityChecker
-from pptx_shapes import CONNECTOR_PRESET_TYPES, get_preset_registry
+from pptx_shapes import (
+    CONNECTOR_PRESET_TYPES,
+    get_preset_registry,
+    svg_text_fingerprint,
+)
 from pptx_to_svg.preset_authoring import (
     materialize_compact_authored_preset_tree,
     render_preset_shape_fragment,
@@ -69,6 +75,18 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             for warning in result['warnings']
             if 'estimated horizontal bounds exceed the viewBox' in warning
         ]
+
+    @staticmethod
+    def _native_txbody_payload() -> str:
+        native_txbody = (
+            '<p:txBody '
+            'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            '<a:bodyPr/><a:lstStyle/><a:p><a:r>'
+            '<a:rPr lang="en-US" sz="1500" spc="-7500"/>'
+            '<a:t>AB</a:t></a:r></a:p></p:txBody>'
+        )
+        return base64.b64encode(native_txbody.encode('utf-8')).decode('ascii')
 
     def _assert_checker_and_exporter_reject(
         self,
@@ -1475,13 +1493,235 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         result = self._check(
             '''<svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 200 100">
-  <text x="50" y="25" font-size="20" letter-spacing="-100">AB</text>
-  <text x="300" y="50" font-size="20" letter-spacing="-100">AB</text>
+  <text x="5" y="25" font-size="20" letter-spacing="-20">AB</text>
+  <text x="195" y="50" font-size="20" letter-spacing="-20">AB</text>
 </svg>'''
         )
         bounds_warnings = self._text_bound_warnings(result)
         self.assertEqual(len(bounds_warnings), 1)
         self.assertIn('Detected 2 single-line text element(s)', bounds_warnings[0])
+
+    def test_non_positive_text_frame_extents_block_checker_and_exporter(self):
+        for anchor in ('start', 'middle', 'end'):
+            source = (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<text x="320" y="100" font-size="20" '
+                f'text-anchor="{anchor}" letter-spacing="-30">AB</text>'
+                '</svg>'
+            )
+            with self.subTest(anchor=anchor):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'non-positive DrawingML text-frame extent',
+                    'non-positive DrawingML text-frame extent',
+                )
+
+    def test_zero_emu_text_frame_extent_is_rejected(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="100" font-size="20"
+        letter-spacing="-23.4285714285714">AB</text>
+</svg>''',
+            'non-positive DrawingML text-frame extent (cx=0)',
+            r'non-positive DrawingML text-frame extent \(cx=0',
+        )
+
+    def test_representable_negative_tracking_keeps_positive_text_frames(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="100" font-size="20" letter-spacing="-20">AB</text>
+  <text x="40" y="160" font-size="20" letter-spacing="-100">A</text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'negative-tracking.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertIn(' spc="-1500"', slide_xml)
+        self.assertIn(' spc="-7500"', slide_xml)
+        extents = [
+            int(value)
+            for value in re.findall(r'<a:ext cx="(-?\d+)" cy="\d+"', slide_xml)
+            if int(value) != 0
+        ]
+        self.assertEqual(len(extents), 2)
+        self.assertTrue(all(value >= 1 for value in extents))
+
+    def test_inherited_inline_tracking_cannot_hide_collapsed_text_frame(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20">
+  <g letter-spacing="-30">
+    <text x="40" y="100">A<tspan style="letter-spacing:-100">BC</tspan></text>
+  </g>
+</svg>''',
+            'non-positive DrawingML text-frame extent',
+            'non-positive DrawingML text-frame extent',
+        )
+
+    def test_positioned_paragraph_tracking_is_still_blocked_by_exporter(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20" letter-spacing="-30">
+  <text x="40" y="80">
+    <tspan x="40" y="80">AB</tspan>
+    <tspan x="40" dy="24">AB</tspan>
+  </text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'paragraph-negative-tracking.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'non-positive DrawingML text-frame extent',
+            ):
+                convert_svg_to_slide_shapes(svg_path)
+
+    def test_bullet_text_uses_the_same_positive_frame_boundary(self):
+        safe = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="100" font-size="20" letter-spacing="-20">• AB</text>
+</svg>'''
+        safe_result = self._check(safe)
+        self.assertTrue(safe_result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'safe-bullet.svg'
+            svg_path.write_text(safe, encoding='utf-8')
+            safe_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertIn('<a:buChar char="•"/>', safe_xml)
+        self.assertIn(' spc="-1500"', safe_xml)
+
+        self._assert_checker_and_exporter_reject(
+            safe.replace('letter-spacing="-20"', 'letter-spacing="-100"'),
+            'non-positive DrawingML text-frame extent',
+            'non-positive DrawingML text-frame extent',
+        )
+
+    def test_whitespace_only_text_does_not_create_a_false_frame_error(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="100" font-size="20" letter-spacing="-100"
+        xml:space="preserve">  </text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'whitespace-only.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertNotIn('<p:txBody>', slide_xml)
+
+    def test_unchanged_imported_txbody_bypasses_generated_frame_check(self):
+        root = ET.fromstring(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <g id="imported-shape" data-pptx-object="shape" data-pptx-prst="rect">
+    <rect data-pptx-part="geometry" x="20" y="40" width="160" height="80"
+          fill="#FFFFFF"/>
+    <text x="40" y="100" font-size="20" letter-spacing="-100">AB</text>
+  </g>
+</svg>'''
+        )
+        group = next(root.iter('{http://www.w3.org/2000/svg}g'))
+        digest = svg_text_fingerprint(group)
+        metadata = ET.SubElement(
+            group,
+            '{http://www.w3.org/2000/svg}metadata',
+            {
+                'data-pptx-part': 'txbody',
+                'data-pptx-encoding': 'base64',
+                'data-pptx-text-sha256': digest,
+            },
+        )
+        metadata.text = self._native_txbody_payload()
+        result = {'errors': [], 'warnings': []}
+
+        SVGQualityChecker()._check_text_frame_extents(root, result)
+
+        self.assertEqual(result['errors'], [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'imported-txbody.svg'
+            svg_path.write_text(
+                ET.tostring(root, encoding='unicode'),
+                encoding='utf-8',
+            )
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(slide_xml.count('<p:txBody'), 1)
+        self.assertIn(' spc="-7500"', slide_xml)
+        self.assertNotIn('cx="-816864"', slide_xml)
+
+    def test_invalid_unchanged_txbody_payload_does_not_bypass_checker(self):
+        root = ET.fromstring(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <g id="imported-shape" data-pptx-object="shape" data-pptx-prst="rect">
+    <text x="40" y="100" font-size="20" letter-spacing="-100">AB</text>
+  </g>
+</svg>'''
+        )
+        group = next(root.iter('{http://www.w3.org/2000/svg}g'))
+        digest = svg_text_fingerprint(group)
+        metadata = ET.SubElement(
+            group,
+            '{http://www.w3.org/2000/svg}metadata',
+            {
+                'data-pptx-part': 'txbody',
+                'data-pptx-encoding': 'base64',
+                'data-pptx-text-sha256': digest,
+            },
+        )
+        metadata.text = 'not-base64'
+        result = {'errors': [], 'warnings': []}
+
+        SVGQualityChecker()._check_text_frame_extents(root, result)
+
+        self.assertIn('invalid preserved txBody metadata', '\n'.join(result['errors']))
+
+    def test_checker_does_not_trust_authored_runtime_txbody_snapshot(self):
+        root = ET.fromstring(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <g id="imported-shape" data-pptx-object="shape" data-pptx-prst="rect"
+     data-pptx-runtime-txbody-unchanged="1">
+    <rect data-pptx-part="geometry" x="20" y="40" width="160" height="80"
+          fill="#FFFFFF"/>
+    <text x="40" y="100" font-size="20" letter-spacing="-100">AB</text>
+    <metadata data-pptx-part="txbody" data-pptx-encoding="base64"
+              data-pptx-text-sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+  </g>
+</svg>'''
+        )
+        metadata = next(root.iter('{http://www.w3.org/2000/svg}metadata'))
+        metadata.text = self._native_txbody_payload()
+        result = {'errors': [], 'warnings': []}
+
+        SVGQualityChecker()._check_text_frame_extents(root, result)
+
+        self.assertIn(
+            'non-positive DrawingML text-frame extent',
+            '\n'.join(result['errors']),
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'forged-runtime-snapshot.svg'
+            svg_path.write_text(
+                ET.tostring(root, encoding='unicode'),
+                encoding='utf-8',
+            )
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'non-positive DrawingML text-frame extent',
+            ):
+                convert_svg_to_slide_shapes(svg_path)
 
     def test_text_property_contract_preserves_registered_drawingml_semantics(self):
         source = '''<svg xmlns="http://www.w3.org/2000/svg"

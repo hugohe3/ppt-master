@@ -895,7 +895,7 @@ other value is invalid; the converter must not replace it with a default.
 | `font-style` | `normal` or `italic` | None | `italic` maps to `i="1"`; oblique, angle, relative, and CSS-wide values are invalid |
 | `text-anchor` | `start`, `middle`, or `end` on `<svg>`, `<g>`, or `<text>` | None | Maps to left/center/right paragraph alignment plus normalized frame position; it is invalid on `<tspan>` because run-level anchoring has no mapping |
 | `text-decoration` | `none`, `underline`, `line-through`, or `underline line-through` | `line-through underline` → canonical order | Maps to the single underline and strike run properties; unknown, repeated, or substring-like tokens are invalid |
-| `letter-spacing` | Finite unitless ordinary decimal SVG px | The same ordinary decimal with `px`, `pt`, or `em`; normalize to unitless px | Maps to `a:rPr@spc`; the final value must fit DrawingML `-400000..400000`; keywords, percentages, exponents, leading plus signs, trailing decimal points, non-finite values, and other units are invalid |
+| `letter-spacing` | Finite unitless ordinary decimal SVG px | The same ordinary decimal with `px`, `pt`, or `em`; normalize to unitless px | Maps to `a:rPr@spc`; the final value must fit DrawingML `-400000..400000`, and negative tracking must still leave the generated DrawingML text frame with a positive extent; keywords, percentages, exponents, leading plus signs, trailing decimal points, non-finite values, and other units are invalid |
 
 The registered text properties follow SVG inheritance, including declarations
 on the root `<svg>`: inline `style` overrides the same element's direct
@@ -903,6 +903,15 @@ attribute, which overrides its ancestor. Relative font sizes and `em` tracking
 resolve against the same effective inherited size in Checker and converter.
 Every declaration is validated even when a later declaration overrides it, so
 hidden garbage cannot bypass preflight.
+
+The DrawingML character-spacing range is necessary but not sufficient for
+negative tracking. After run assembly, the generated text frame must retain a
+positive horizontal and vertical extent. Checker rejects directly measurable
+single-line violations, and the converter revalidates every generated text
+frame before writing OOXML. It must not clamp, take the absolute value of, or
+otherwise hide a non-positive extent. An unchanged imported native text body
+reuses the geometry carrier's positive shape frame and attaches the preserved
+`txBody` payload instead of regenerating a text frame from the SVG estimate.
 
 **Hard rule — element-specific text surface**:
 
