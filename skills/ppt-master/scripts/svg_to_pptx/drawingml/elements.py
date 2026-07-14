@@ -28,6 +28,14 @@ from resource_paths import resolve_external_image_reference
 from .context import ConvertContext, ShapeResult
 from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
+from .text_properties import (
+    drawingml_letter_spacing,
+    parse_project_font_style,
+    parse_project_font_weight,
+    parse_project_letter_spacing,
+    parse_project_text_anchor,
+    parse_project_text_decoration,
+)
 from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT,
     PROJECT_IMAGE_ASPECT_RATIO_ANCHORS,
@@ -1663,38 +1671,12 @@ def _preserves_space(elem: ET.Element) -> bool:
     return xml_space == 'preserve'
 
 
-def _parse_letter_spacing_px(
-    value: str | None,
-    *,
-    font_size: float,
-    scale_x: float = 1.0,
-) -> float:
-    """Parse an SVG letter-spacing value into scaled pixels."""
-    if not value:
-        return 0.0
-    raw = value.strip().lower()
-    if raw in {'normal', 'inherit', 'initial', 'unset'}:
-        return 0.0
-
-    match = re.fullmatch(r'([-+]?(?:\d*\.\d+|\d+\.?))(px|pt|em)?', raw)
-    if not match:
-        return 0.0
-
-    amount = float(match.group(1))
-    unit = match.group(2) or 'px'
-    if unit == 'em':
-        return amount * font_size
-    if unit == 'pt':
-        return amount * 4.0 / 3.0 * scale_x
-    return amount * scale_x
-
-
 def _letter_spacing_to_drawingml_spc(letter_spacing_px: float) -> str:
     """Convert SVG px letter spacing into DrawingML rPr@spc."""
-    if abs(letter_spacing_px) < 1e-9:
+    spacing = drawingml_letter_spacing(letter_spacing_px)
+    if spacing == 0:
         return ''
-    spc_val = round(letter_spacing_px * FONT_PX_TO_HUNDREDTHS_PT)
-    return f' spc="{spc_val}"'
+    return f' spc="{spacing}"'
 
 
 def _is_serif_run(run: dict[str, Any]) -> bool:
@@ -1930,6 +1912,7 @@ def _text_opacity_ratio(value: str | None) -> float:
 def _override_run_attrs(
     parent_attrs: dict[str, Any],
     tspan: ET.Element,
+    ctx: ConvertContext,
 ) -> dict[str, Any]:
     """Layer a tspan's styling attributes over the inherited run attrs."""
     run_attrs = dict(parent_attrs)
@@ -1960,7 +1943,9 @@ def _override_run_attrs(
     )
 
     if tspan_attr('font-weight'):
-        run_attrs['font_weight'] = tspan_attr('font-weight')
+        run_attrs['font_weight'] = parse_project_font_weight(
+            tspan_attr('font-weight')
+        ).canonical
     if tspan_attr('fill'):
         child_fill = tspan_attr('fill')
         run_attrs['fill_raw'] = child_fill
@@ -1975,7 +1960,10 @@ def _override_run_attrs(
             run_attrs.get('stroke_width', 1.0),
             font_size=float(run_attrs.get('font_size', 16)),
         )
-    if tspan_attr('font-size'):
+    resolved_font_size = ctx.text_font_sizes.get(id(tspan))
+    if resolved_font_size is not None:
+        run_attrs['font_size'] = resolved_font_size * ctx.scale_y
+    elif tspan_attr('font-size'):
         run_attrs['font_size'] = parse_svg_length(
             tspan_attr('font-size'),
             run_attrs['font_size'],
@@ -1984,21 +1972,29 @@ def _override_run_attrs(
     if tspan_attr('font-family'):
         run_attrs['font_family'] = tspan_attr('font-family')
     if tspan_attr('font-style'):
-        run_attrs['font_style'] = tspan_attr('font-style')
+        run_attrs['font_style'] = parse_project_font_style(
+            tspan_attr('font-style')
+        ).canonical
     if tspan_attr('text-decoration'):
-        run_attrs['text_decoration'] = tspan_attr('text-decoration')
-    if tspan_attr('letter-spacing'):
-        run_attrs['letter_spacing'] = _parse_letter_spacing_px(
+        run_attrs['text_decoration'] = parse_project_text_decoration(
+            tspan_attr('text-decoration')
+        ).canonical
+    resolved_letter_spacing = ctx.text_letter_spacings.get(id(tspan))
+    if resolved_letter_spacing is not None:
+        run_attrs['letter_spacing'] = resolved_letter_spacing * ctx.scale_x
+    elif tspan_attr('letter-spacing'):
+        run_attrs['letter_spacing'] = parse_project_letter_spacing(
             tspan_attr('letter-spacing'),
             font_size=float(run_attrs.get('font_size', 16)),
             scale_x=float(run_attrs.get('_scale_x', 1.0)),
-        )
+        ).value
     return run_attrs
 
 
 def _collect_tspan_runs(
     tspan: ET.Element,
     inherited_attrs: dict[str, Any],
+    ctx: ConvertContext,
     preserve_space: bool = False,
 ) -> list[dict[str, Any]]:
     """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
@@ -2006,7 +2002,7 @@ def _collect_tspan_runs(
     Order: tspan.text → (each nested child tspan's runs → that child's tail under THIS tspan's attrs).
     """
     runs: list[dict[str, Any]] = []
-    own_attrs = _override_run_attrs(inherited_attrs, tspan)
+    own_attrs = _override_run_attrs(inherited_attrs, tspan, ctx)
     child_preserve_space = preserve_space or _preserves_space(tspan)
 
     if tspan.text:
@@ -2017,7 +2013,9 @@ def _collect_tspan_runs(
     for child in tspan:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            runs.extend(_collect_tspan_runs(child, own_attrs, child_preserve_space))
+            runs.extend(
+                _collect_tspan_runs(child, own_attrs, ctx, child_preserve_space)
+            )
             if child.tail:
                 t = _normalize_text(child.tail, preserve_space=child_preserve_space)
                 if t:
@@ -2029,6 +2027,7 @@ def _collect_tspan_runs(
 def _build_text_runs(
     elem: ET.Element,
     parent_attrs: dict[str, Any],
+    ctx: ConvertContext,
 ) -> list[dict[str, Any]]:
     """Build a list of text runs from a <text> element, handling <tspan> children.
 
@@ -2047,7 +2046,9 @@ def _build_text_runs(
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            runs.extend(_collect_tspan_runs(child, parent_attrs, preserve_space))
+            runs.extend(
+                _collect_tspan_runs(child, parent_attrs, ctx, preserve_space)
+            )
             if child.tail:
                 t = _normalize_text(child.tail, preserve_space=preserve_space)
                 if t:
@@ -2149,10 +2150,13 @@ def _build_run_xml(
     # / integer snapping — whatever the px works out to is the size, e.g.
     # 18px -> 13.5pt, 24px -> 18.0pt, 42px -> 31.5pt.
     sz = font_px_to_hpt(fs_px)
-    b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
+    b_attr = ' b="1"' if parse_project_font_weight(fw).value else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
-    u_attr = ' u="sng"' if 'underline' in text_dec else ''
-    strike_attr = ' strike="sngStrike"' if 'line-through' in text_dec else ''
+    underline, strike = parse_project_text_decoration(
+        text_dec or 'none'
+    ).value
+    u_attr = ' u="sng"' if underline else ''
+    strike_attr = ' strike="sngStrike"' if strike else ''
     spc_attr = _letter_spacing_to_drawingml_spc(letter_spacing_px)
 
     fonts = parse_font_family(ff) if ff else default_fonts
@@ -2184,13 +2188,23 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <text> to DrawingML text shape with multi-run support."""
     x = ctx_x(svg_length_x(elem.get('x'), ctx), ctx)
     y = ctx_y(svg_length_y(elem.get('y'), ctx), ctx)
+    resolved_font_size = ctx.text_font_sizes.get(id(elem))
     font_size = (
-        parse_svg_length(_get_attr(elem, 'font-size', ctx), 16, font_size=16)
-        * ctx.scale_y
+        resolved_font_size * ctx.scale_y
+        if resolved_font_size is not None
+        else parse_svg_length(
+            _get_attr(elem, 'font-size', ctx),
+            16,
+            font_size=16,
+        ) * ctx.scale_y
     )
-    font_weight = _get_attr(elem, 'font-weight', ctx) or '400'
+    font_weight = parse_project_font_weight(
+        _get_attr(elem, 'font-weight', ctx) or '400'
+    ).canonical
     font_family_str = _get_attr(elem, 'font-family', ctx) or ''
-    text_anchor = _get_attr(elem, 'text-anchor', ctx) or 'start'
+    text_anchor = parse_project_text_anchor(
+        _get_attr(elem, 'text-anchor', ctx) or 'start'
+    ).canonical
     fill_raw = _get_attr(elem, 'fill', ctx) or '#000000'
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
@@ -2201,13 +2215,24 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
     stroke_opacity_value = _text_opacity_ratio(_get_attr(elem, 'stroke-opacity', ctx))
-    font_style = _get_attr(elem, 'font-style', ctx) or ''
-    text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
-    letter_spacing_px = _parse_letter_spacing_px(
-        _get_attr(elem, 'letter-spacing', ctx),
-        font_size=font_size,
-        scale_x=ctx.scale_x or 1.0,
-    )
+    font_style = parse_project_font_style(
+        _get_attr(elem, 'font-style', ctx) or 'normal'
+    ).canonical
+    text_decoration = parse_project_text_decoration(
+        _get_attr(elem, 'text-decoration', ctx) or 'none'
+    ).canonical
+    raw_letter_spacing = _get_attr(elem, 'letter-spacing', ctx)
+    resolved_letter_spacing = ctx.text_letter_spacings.get(id(elem))
+    if resolved_letter_spacing is not None:
+        letter_spacing_px = resolved_letter_spacing * ctx.scale_x
+    elif raw_letter_spacing is not None:
+        letter_spacing_px = parse_project_letter_spacing(
+            raw_letter_spacing,
+            font_size=font_size,
+            scale_x=ctx.scale_x or 1.0,
+        ).value
+    else:
+        letter_spacing_px = 0.0
 
     fonts = parse_font_family(font_family_str)
 
@@ -2254,7 +2279,12 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         for child in elem:
             if child.tag != f'{{{SVG_NS}}}tspan':
                 continue
-            line_runs = _collect_tspan_runs(child, parent_attrs, preserve_space)
+            line_runs = _collect_tspan_runs(
+                child,
+                parent_attrs,
+                ctx,
+                preserve_space,
+            )
             if line_runs and not preserve_space:
                 line_runs[0]['text'] = line_runs[0]['text'].lstrip(' ')
                 line_runs[-1]['text'] = line_runs[-1]['text'].rstrip(' ')
@@ -2299,7 +2329,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if paragraph_runs is not None:
         runs = [r for line in paragraph_runs for r in line]
     else:
-        runs = _build_text_runs(elem, parent_attrs)
+        runs = _build_text_runs(elem, parent_attrs, ctx)
         runs, single_bullet = _extract_text_bullet(runs)
 
     full_text = ''.join(r['text'] for r in runs) if runs else ''

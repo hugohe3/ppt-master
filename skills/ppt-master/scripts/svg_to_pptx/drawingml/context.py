@@ -56,6 +56,11 @@ class ConvertContext:
     rel_id_counter: int = 2  # rId1 reserved for slideLayout
     svg_dir: Path | None = None
     inherited_styles: dict[str, str] = field(default_factory=dict)
+    # Effective SVG font sizes keyed by element identity. Shared resolution
+    # keeps relative sizes and em tracking identical across checker/exporter.
+    text_font_sizes: dict[int, float] = field(default_factory=dict)
+    # Effective source-pixel tracking resolved where each declaration occurs.
+    text_letter_spacings: dict[int, float] = field(default_factory=dict)
     # SVG group opacity is post-compositing, not an inherited presentation
     # property. DrawingML has no equivalent group alpha, so native export
     # approximates it by multiplying this value into each descendant object.
@@ -222,6 +227,8 @@ class ConvertContext:
             rel_id_counter=self.rel_id_counter,
             svg_dir=self.svg_dir,
             inherited_styles=merged,
+            text_font_sizes=self.text_font_sizes,
+            text_letter_spacings=self.text_letter_spacings,
             opacity_multiplier=self.opacity_multiplier * local_opacity,
             depth=self.depth + 1,
             # anim_targets is intentionally a fresh list on the child;

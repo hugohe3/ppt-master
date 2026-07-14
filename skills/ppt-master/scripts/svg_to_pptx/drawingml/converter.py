@@ -31,6 +31,12 @@ from .paths import (
 )
 from .theme_colors import ThemeColorSpec
 from .theme_fonts import ThemeFontSpec
+from .text_properties import (
+    materialize_project_text_metrics,
+    project_text_property_errors,
+    resolve_project_font_sizes,
+    resolve_project_letter_spacings,
+)
 from .utils import (
     EMU_PER_PX,
     SVG_NS,
@@ -272,6 +278,22 @@ def _require_project_filters(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project filter(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_text_properties(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject text declarations outside the closed DrawingML mapping."""
+    errors = project_text_property_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project text property(s): '
         f'{preview}{suffix}'
     )
 
@@ -1319,6 +1341,7 @@ def convert_svg_to_slide_shapes(
             f'{preview}{suffix}'
         )
 
+    _require_project_text_properties(root, svg_path)
     _require_project_freeform_geometry(root, svg_path)
     _require_project_stroke_styles(root, svg_path)
     _require_project_opacities(root, svg_path)
@@ -1387,6 +1410,7 @@ def convert_svg_to_slide_shapes(
             print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
+    _require_project_text_properties(root, svg_path)
     _require_project_stroke_styles(root, svg_path)
     _require_project_opacities(root, svg_path)
     _require_project_paints(root, svg_path)
@@ -1396,6 +1420,13 @@ def convert_svg_to_slide_shapes(
     _require_project_filters(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)
+
+    try:
+        materialize_project_text_metrics(root)
+    except ValueError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: text-metric materialization failed: {exc}'
+        ) from exc
 
     # Flatten positional <tspan> (those with x/y/non-zero dy) into independent
     # <text> elements. DrawingML runs cannot reposition mid-paragraph, so a
@@ -1414,6 +1445,18 @@ def convert_svg_to_slide_shapes(
         })
         if verbose:
             print('  Flattened positional <tspan> into independent <text>')
+
+    _require_project_text_properties(root, svg_path)
+    try:
+        text_font_sizes = resolve_project_font_sizes(root)
+        text_letter_spacings = resolve_project_letter_spacings(
+            root,
+            text_font_sizes,
+        )
+    except ValueError as exc:
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: invalid project text-metric inheritance: {exc}'
+        ) from exc
 
     unsupported = collect_unsupported_visuals(root)
     if unsupported:
@@ -1444,6 +1487,9 @@ def convert_svg_to_slide_shapes(
         trace_events=trace_events,
         theme_font_spec=theme_font_spec,
         theme_color_spec=theme_color_spec,
+        inherited_styles=_extract_inheritable_styles(root),
+        text_font_sizes=text_font_sizes,
+        text_letter_spacings=text_letter_spacings,
     )
 
     shapes: list[str] = []
