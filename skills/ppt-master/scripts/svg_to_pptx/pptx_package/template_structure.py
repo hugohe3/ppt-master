@@ -26,6 +26,11 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from pptx_to_svg.preset_authoring import (
+    authored_preset_encoding,
+    validate_authored_preset_group,
+)
+
 from ..drawingml.utils import (
     parse_project_geometry_length,
     project_geometry_length_errors,
@@ -380,6 +385,14 @@ def template_placeholder_bindings(
 
 def _local_tag(elem: ET.Element) -> str:
     return elem.tag.rsplit("}", 1)[-1] if isinstance(elem.tag, str) else ""
+
+
+def _is_authored_preset_atom(elem: ET.Element) -> bool:
+    """Return whether one group is a valid compact authored-shape atom."""
+    return (
+        authored_preset_encoding(elem) == "compact"
+        and not validate_authored_preset_group(elem)
+    )
 
 
 def _svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
@@ -1155,10 +1168,14 @@ def _validate_placeholder_carrier(
             f"{svg_path.name}: {element_id} media placeholder must be declared "
             "with one direct <image> or crop <svg> carrier"
         )
-    if placeholder == "object" and tag not in _OBJECT_PLACEHOLDER_TAGS:
+    if (
+        placeholder == "object"
+        and tag not in _OBJECT_PLACEHOLDER_TAGS
+        and not _is_authored_preset_atom(carrier)
+    ):
         raise TemplateStructureError(
             f"{svg_path.name}: {element_id} object placeholder carrier must be "
-            "one direct text, image, or basic SVG shape"
+            "one direct text, image, basic SVG shape, or authored preset atom"
         )
     if placeholder in {"chart", "table"}:
         try:
@@ -1351,7 +1368,12 @@ def parse_template_slide(
                 f"{svg_path.name}: data-pptx-layer='slide' is allowed only on a "
                 "direct full-canvas solid background rect"
             )
-        if structured and layer in {"master", "layout"} and tag == "g":
+        if (
+            structured
+            and layer in {"master", "layout"}
+            and tag == "g"
+            and not _is_authored_preset_atom(elem)
+        ):
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id or tag} is a <g> on the {layer} "
                 "layer; Master/Layout fixed elements must be root-level atoms"

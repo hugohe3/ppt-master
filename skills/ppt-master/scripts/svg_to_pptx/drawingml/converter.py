@@ -19,9 +19,7 @@ from pptx_shapes import (
     validate_ooxml_xfrm,
 )
 from pptx_to_svg.preset_authoring import (
-    AUTHORING_ATTR,
-    AUTHORING_VALUE,
-    validate_authored_preset_group,
+    materialize_compact_authored_preset_tree,
     validate_authored_preset_tree,
 )
 from resource_paths import icon_search_dirs_for_svg
@@ -601,13 +599,6 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         elem.get('data-pptx-object') in {'shape', 'connector'}
         and elem.get('data-pptx-prst') is not None
     ):
-        if elem.get(AUTHORING_ATTR) == AUTHORING_VALUE:
-            authoring_errors = validate_authored_preset_group(elem)
-            if authoring_errors:
-                raise SvgNativeConversionError(
-                    'Invalid authored preset shape: '
-                    + '; '.join(authoring_errors)
-                )
         _require_unchanged_preset_preview(elem)
 
     txbody_meta = _txbody_metadata(elem)
@@ -1272,6 +1263,15 @@ def convert_svg_to_slide_shapes(
         raise SvgNativeConversionError(
             'Invalid authored preset structure: ' + '; '.join(authored_errors)
         )
+    # Validate the source contract once, then lower compact groups to the
+    # established expanded transport IR.  Downstream conversion validates the
+    # generated preview hash, not the source-format allowlist again.
+    try:
+        materialize_compact_authored_preset_tree(root)
+    except ValueError as exc:
+        raise SvgNativeConversionError(
+            f'Invalid compact authored preset: {exc}'
+        ) from exc
     _mark_unchanged_txbody_groups(root)
     _mark_unchanged_preset_previews(root)
     if native_objects:

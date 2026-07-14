@@ -5,12 +5,19 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from svg_quality_checker import SVGQualityChecker
+from pptx_shapes import CONNECTOR_PRESET_TYPES, get_preset_registry
+from pptx_to_svg.preset_authoring import (
+    materialize_compact_authored_preset_tree,
+    render_preset_shape_fragment,
+    validate_authored_preset_tree,
+)
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
@@ -25,6 +32,7 @@ from svg_to_pptx.native_objects import (
 from svg_to_pptx.pptx_package.template_structure import (
     TemplateStructureError,
     _validate_placeholder_carrier,
+    parse_template_slide,
 )
 from svg_to_pptx.use_expander import UseExpansionError, expand_local_use_references
 
@@ -595,6 +603,472 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             )
 
         self.assertEqual(canonical_result, legacy_result)
+
+    def test_compact_authored_preset_exports_one_native_shape(self):
+        fragment = render_preset_shape_fragment(
+            'rightArrow',
+            (10, 20, 100, 40),
+            adjustments={'adj1': 50000, 'adj2': 50000},
+            element_id='next-step',
+            style={'fill': '#2563EB', 'stroke': 'none'},
+        )
+        self.assertNotIn('data-pptx-part', fragment)
+        self.assertNotIn('data-pptx-preview-sha256', fragment)
+        self.assertNotIn('visibility="hidden"', fragment)
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">'
+            f'{fragment}</svg>'
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'compact.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            result = SVGQualityChecker().check_file(str(svg_path))
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertEqual(result['warnings'], [])
+        self.assertEqual(slide_xml.count('<p:sp>'), 1)
+        self.assertEqual(
+            slide_xml.count('<a:prstGeom prst="rightArrow">'),
+            1,
+        )
+        self.assertNotIn('<p:cxnSp>', slide_xml)
+
+    def test_compact_multi_path_preset_exports_one_native_shape(self):
+        fragment = render_preset_shape_fragment(
+            'cube',
+            (10, 20, 100, 80),
+            element_id='cube-node',
+            style={'fill': '#2563EB', 'stroke': 'none'},
+        )
+        group = ET.fromstring(fragment)
+        self.assertEqual(len(group), 4)
+        self.assertTrue(all(child.tag == 'path' for child in group))
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140">'
+            f'{fragment}</svg>'
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'compact-multi.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(slide_xml.count('<p:sp>'), 1)
+        self.assertEqual(slide_xml.count('<a:prstGeom prst="cube">'), 1)
+
+    def test_every_registered_preset_supports_compact_authoring(self):
+        registry = get_preset_registry()
+        for index, preset in enumerate(registry.names):
+            connector = preset in CONNECTOR_PRESET_TYPES
+            style = (
+                {
+                    'fill': 'none',
+                    'stroke': '#334155',
+                    'stroke-width': '2',
+                }
+                if connector
+                else {'fill': '#2563EB', 'stroke': 'none'}
+            )
+            with self.subTest(preset=preset):
+                fragment = render_preset_shape_fragment(
+                    preset,
+                    (10, 20, 100, 60),
+                    object_kind='connector' if connector else 'shape',
+                    element_id=f'preset-{index}',
+                    style=style,
+                )
+                root = ET.fromstring(
+                    '<svg xmlns="http://www.w3.org/2000/svg">'
+                    f'{fragment}</svg>'
+                )
+                self.assertEqual(validate_authored_preset_tree(root), [])
+                self.assertEqual(
+                    materialize_compact_authored_preset_tree(root),
+                    1,
+                )
+                self.assertEqual(validate_authored_preset_tree(root), [])
+
+    def test_compact_authored_connector_exports_one_native_connector(self):
+        fragment = render_preset_shape_fragment(
+            'bentConnector3',
+            (10, 20, 100, 80),
+            object_kind='connector',
+            element_id='relationship',
+            style={
+                'fill': 'none',
+                'stroke': '#334155',
+                'stroke-width': '2',
+            },
+        )
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140">'
+            f'{fragment}</svg>'
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'compact-connector.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(slide_xml.count('<p:cxnSp>'), 1)
+        self.assertEqual(
+            slide_xml.count('<a:prstGeom prst="bentConnector3">'),
+            1,
+        )
+        self.assertNotIn('<p:sp>', slide_xml)
+
+    def test_compact_authored_preset_rejects_stale_visible_path(self):
+        fragment = render_preset_shape_fragment(
+            'diamond',
+            (20, 20, 80, 60),
+            element_id='decision',
+            style={'fill': '#F59E0B', 'stroke': 'none'},
+        )
+        stale = fragment.replace('M 20 50', 'M 21 50', 1)
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{stale}</svg>'
+        )
+        self._assert_checker_and_exporter_reject(
+            source,
+            'Compact authored preset path 1 differs from registry output',
+            'Invalid authored preset structure',
+        )
+
+    def test_compact_authored_preset_rejects_noncanonical_frame_spelling(self):
+        fragment = render_preset_shape_fragment(
+            'diamond',
+            (20, 20, 80, 60),
+            element_id='decision',
+            style={'fill': '#F59E0B', 'stroke': 'none'},
+        ).replace(
+            'data-pptx-frame="20 20 80 60"',
+            'data-pptx-frame="2e1,20,+80,60.0"',
+            1,
+        )
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{fragment}</svg>'
+        )
+
+        self._assert_checker_and_exporter_reject(
+            source,
+            'data-pptx-frame must use the helper',
+            'Invalid authored preset structure',
+        )
+
+    def test_compact_preset_ancestor_paint_is_compatible_with_warning(self):
+        fragment = render_preset_shape_fragment(
+            'diamond',
+            (20, 20, 80, 60),
+            element_id='decision',
+            style={'fill': '#F59E0B', 'stroke': 'none'},
+        )
+        result = self._check(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            '<g id="faded" fill-opacity="0.25">'
+            f'{fragment}</g></svg>'
+        )
+
+        self.assertTrue(result['passed'])
+        self.assertIn(
+            'Compact authored preset(s) use compatible ancestor paint',
+            '\n'.join(result['warnings']),
+        )
+
+    def test_registry_derived_preset_layers_do_not_drift_from_spec_lock(self):
+        fragment = render_preset_shape_fragment(
+            'cube',
+            (20, 20, 80, 60),
+            element_id='cube',
+            style={'fill': '#2563EB', 'stroke': 'none'},
+        )
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{fragment}</svg>'
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            project = Path(tmp_dir)
+            output_dir = project / 'svg_output'
+            output_dir.mkdir()
+            (project / 'spec_lock.md').write_text(
+                '# Execution Lock\n\n'
+                '## colors\n'
+                '- primary: #2563EB\n',
+                encoding='utf-8',
+            )
+            svg_path = output_dir / '01_cube.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            result = SVGQualityChecker().check_file(str(svg_path))
+
+        self.assertTrue(result['passed'])
+        self.assertNotIn('spec_lock drift', '\n'.join(result['warnings']))
+
+    def test_foreign_namespace_cannot_impersonate_compact_svg_path(self):
+        fragment = render_preset_shape_fragment(
+            'diamond',
+            (20, 20, 80, 60),
+            element_id='decision',
+            style={'fill': '#F59E0B', 'stroke': 'none'},
+        )
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{fragment}</svg>'
+        )
+        group = list(root)[0]
+        list(group)[0].tag = '{urn:foreign}path'
+        source = ET.tostring(root, encoding='unicode')
+
+        self._assert_checker_and_exporter_reject(
+            source,
+            'may contain only direct SVG paths',
+            'Invalid authored preset structure',
+        )
+
+    def test_expanded_authored_preset_remains_compatible(self):
+        fragment = render_preset_shape_fragment(
+            'triangle',
+            (20, 20, 80, 60),
+            element_id='triangle-node',
+            style={'fill': '#7C3AED', 'stroke': 'none'},
+        )
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{fragment}</svg>'
+        )
+        self.assertEqual(materialize_compact_authored_preset_tree(root), 1)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'expanded.svg'
+            ET.ElementTree(root).write(
+                svg_path,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+            result = SVGQualityChecker().check_file(str(svg_path))
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertTrue(result['passed'])
+        self.assertIn(
+            'Compatible expanded authored-preset fragment(s) detected',
+            '\n'.join(result['warnings']),
+        )
+        self.assertEqual(slide_xml.count('<a:prstGeom prst="triangle">'), 1)
+
+    def test_malformed_expanded_preset_does_not_receive_migration_warning(self):
+        fragment = render_preset_shape_fragment(
+            'triangle',
+            (20, 20, 80, 60),
+            element_id='triangle-node',
+            style={'fill': '#7C3AED', 'stroke': 'none'},
+        )
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{fragment}</svg>'
+        )
+        self.assertEqual(materialize_compact_authored_preset_tree(root), 1)
+        group = list(root)[0]
+        preview = next(
+            child
+            for child in group
+            if child.get('data-pptx-part') == 'geometry-preview'
+        )
+        group.remove(preview)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'malformed-expanded.svg'
+            ET.ElementTree(root).write(
+                svg_path,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+            result = SVGQualityChecker().check_file(str(svg_path))
+
+        self.assertFalse(result['passed'])
+        self.assertNotIn(
+            'Compatible expanded authored-preset fragment(s) detected',
+            '\n'.join(result['warnings']),
+        )
+
+    def test_expanded_authored_preset_rejects_compact_only_group_style(self):
+        fragment = render_preset_shape_fragment(
+            'triangle',
+            (20, 20, 80, 60),
+            element_id='triangle-node',
+            style={'fill': '#7C3AED', 'stroke': 'none'},
+        )
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{fragment}</svg>'
+        )
+        self.assertEqual(materialize_compact_authored_preset_tree(root), 1)
+        list(root)[0].set('fill-opacity', '0.5')
+        source = ET.tostring(root, encoding='unicode')
+
+        self._assert_checker_and_exporter_reject(
+            source,
+            'unsupported attributes: fill-opacity',
+            'Invalid authored preset structure',
+        )
+
+    def test_compact_authored_preset_is_a_structured_fixed_atom(self):
+        fragment = render_preset_shape_fragment(
+            'rightArrow',
+            (20, 20, 80, 40),
+            element_id='master-arrow',
+            style={'fill': '#2563EB', 'stroke': 'none'},
+        ).replace(
+            ' fill="#2563EB"',
+            ' data-pptx-layer="master" data-pptx-editable="false" '
+            'fill="#2563EB"',
+            1,
+        )
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
+            'data-pptx-master="master" data-pptx-master-name="Master" '
+            'data-pptx-layout="layout" data-pptx-layout-name="Layout">'
+            f'{fragment}</svg>'
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / '01_cover.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            spec = parse_template_slide(svg_path, 1)
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(len(spec.elements), 1)
+        self.assertEqual(spec.elements[0].element_id, 'master-arrow')
+        self.assertEqual(spec.elements[0].layer, 'master')
+        self.assertEqual(
+            slide_xml.count('<a:prstGeom prst="rightArrow">'),
+            1,
+        )
+
+    def test_stale_compact_preset_is_not_a_structured_atom_or_carrier(self):
+        fragment = render_preset_shape_fragment(
+            'diamond',
+            (20, 20, 80, 60),
+            element_id='decision',
+            style={'fill': '#F59E0B', 'stroke': 'none'},
+        ).replace('M 20 50', 'M 21 50', 1)
+        carrier = ET.fromstring(fragment)
+        carrier.set('data-pptx-placeholder-carrier', 'true')
+        with self.assertRaisesRegex(
+            TemplateStructureError,
+            'object placeholder carrier must be',
+        ):
+            _validate_placeholder_carrier(
+                carrier,
+                'object',
+                svg_path=Path('template.svg'),
+                element_id='object-slot',
+            )
+
+        carrier.attrib.pop('data-pptx-placeholder-carrier')
+        carrier.set('data-pptx-layer', 'master')
+        carrier.set('data-pptx-editable', 'false')
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
+            'data-pptx-master="master" data-pptx-master-name="Master" '
+            'data-pptx-layout="layout" data-pptx-layout-name="Layout"/>'
+        )
+        root.append(carrier)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / '01_cover.svg'
+            ET.ElementTree(root).write(
+                svg_path,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+            with self.assertRaisesRegex(
+                TemplateStructureError,
+                'is a <g> on the master layer',
+            ):
+                parse_template_slide(svg_path, 1)
+
+    def test_expanded_authored_preset_does_not_gain_structured_atom_status(self):
+        fragment = render_preset_shape_fragment(
+            'rightArrow',
+            (20, 20, 80, 40),
+            element_id='master-arrow',
+            style={'fill': '#2563EB', 'stroke': 'none'},
+        )
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" '
+            'data-pptx-master="master" data-pptx-master-name="Master" '
+            'data-pptx-layout="layout" data-pptx-layout-name="Layout">'
+            f'{fragment}</svg>'
+        )
+        self.assertEqual(materialize_compact_authored_preset_tree(root), 1)
+        group = list(root)[0]
+        group.set('data-pptx-layer', 'master')
+        group.set('data-pptx-editable', 'false')
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / '01_cover.svg'
+            ET.ElementTree(root).write(
+                svg_path,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+            with self.assertRaisesRegex(
+                TemplateStructureError,
+                'is a <g> on the master layer',
+            ):
+                parse_template_slide(svg_path, 1)
+
+    def test_compact_authored_preset_is_an_object_slot_carrier(self):
+        carrier = ET.fromstring(render_preset_shape_fragment(
+            'diamond',
+            (20, 20, 80, 60),
+            element_id='object-preset',
+            style={'fill': '#F59E0B', 'stroke': 'none'},
+        ))
+        carrier.set('data-pptx-placeholder-carrier', 'true')
+
+        _validate_placeholder_carrier(
+            carrier,
+            'object',
+            svg_path=Path('template.svg'),
+            element_id='object-slot',
+        )
+
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">'
+            f'{ET.tostring(carrier, encoding="unicode")}</svg>'
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'object-carrier.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(
+            slide_xml.count('<a:prstGeom prst="diamond">'),
+            1,
+        )
+
+    def test_local_use_rejects_authored_preset_metadata(self):
+        attributes = (
+            'data-pptx-authoring="preset"',
+            'data-pptx-object="shape"',
+            'data-pptx-prst="diamond"',
+            'data-pptx-frame="20 20 80 60"',
+            'data-pptx-av-adj="val 50000"',
+        )
+        for attribute in attributes:
+            root = ET.fromstring(
+                '<svg xmlns="http://www.w3.org/2000/svg">'
+                f'<defs><g id="source" {attribute}>'
+                '<path d="M 0 5 L 5 0 L 10 5 L 5 10 Z"/>'
+                '</g></defs><use href="#source"/></svg>'
+            )
+            with self.subTest(attribute=attribute):
+                with self.assertRaises(UseExpansionError):
+                    expand_local_use_references(root)
 
 
 if __name__ == '__main__':

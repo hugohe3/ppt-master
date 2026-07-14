@@ -175,10 +175,14 @@ except ImportError:
 try:
     from pptx_to_svg.preset_authoring import (
         AUTHORING_ATTR as _AUTHORING_ATTR,
+        authored_preset_encoding as _authored_preset_encoding,
+        validate_authored_preset_group as _validate_authored_preset_group,
         validate_authored_preset_tree as _validate_authored_preset_tree,
     )
 except ImportError:
     _AUTHORING_ATTR = 'data-pptx-authoring'
+    _authored_preset_encoding = None
+    _validate_authored_preset_group = None
     _validate_authored_preset_tree = None
 
 try:
@@ -270,6 +274,7 @@ except ImportError:
 try:
     from svg_to_pptx.pptx_package.template_structure import (
         TemplateStructureError as _TemplateStructureError,
+        _is_authored_preset_atom as _is_authored_preset_atom,
         load_pptx_structure_lock as _load_pptx_structure_lock,
         parse_template_slide as _parse_template_structure_slide,
         parse_template_slides as _parse_template_structure_slides,
@@ -280,6 +285,7 @@ try:
     )
 except ImportError:
     _TemplateStructureError = None
+    _is_authored_preset_atom = None
     _load_pptx_structure_lock = None
     _parse_template_structure_slide = None
     _parse_template_structure_slides = None
@@ -415,6 +421,77 @@ _MARKER_DIAMOND_PATH_RE = re.compile(
 )
 
 
+def _compact_preset_ancestor_paint(
+    root: ET.Element,
+) -> list[tuple[str, tuple[str, ...]]]:
+    """Return compact presets affected by compatible ancestor paint."""
+    if (
+        _authored_preset_encoding is None
+        or _validate_authored_preset_group is None
+    ):
+        return []
+    parents = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    affected: list[tuple[str, tuple[str, ...]]] = []
+    for group in root.iter():
+        if (
+            _authored_preset_encoding(group) != 'compact'
+            or _validate_authored_preset_group(group)
+        ):
+            continue
+        relevant = {'opacity'}
+        if group.get('fill') != 'none' and group.get('fill-opacity') is None:
+            relevant.add('fill-opacity')
+        if group.get('stroke') != 'none':
+            for name in (
+                'stroke-opacity',
+                'stroke-dasharray',
+                'stroke-linecap',
+                'stroke-linejoin',
+            ):
+                if group.get(name) is None:
+                    relevant.add(name)
+
+        inherited: set[str] = set()
+        ancestor = parents.get(group)
+        while ancestor is not None:
+            declarations = {
+                name: ancestor.get(name) or ''
+                for name in relevant
+                if ancestor.get(name) is not None
+            }
+            for declaration in (ancestor.get('style') or '').split(';'):
+                name, separator, value = declaration.partition(':')
+                name = name.strip().lower()
+                if separator and name in relevant:
+                    declarations[name] = value.strip()
+            for name, value in declarations.items():
+                normalized = value.strip().lower()
+                if name in {'opacity', 'fill-opacity', 'stroke-opacity'}:
+                    try:
+                        if float(normalized) == 1:
+                            continue
+                    except ValueError:
+                        pass
+                elif name == 'stroke-dasharray' and normalized == 'none':
+                    continue
+                elif name == 'stroke-linecap' and normalized == 'butt':
+                    continue
+                elif name == 'stroke-linejoin' and normalized == 'miter':
+                    continue
+                inherited.add(name)
+            ancestor = parents.get(ancestor)
+        if inherited:
+            affected.append((
+                group.get('id') or '(no id)',
+                tuple(sorted(inherited)),
+            ))
+    return affected
+
+
 def _declared_pptx_structure_mode(project_path: Path) -> str | None:
     """Return the explicitly locked SVG structure mode without a fallback."""
     lock_path = project_path / 'spec_lock.md'
@@ -534,7 +611,10 @@ def _local_pptx_structure_errors(
                     f"{svg_path.name}: {element_id} data-pptx-layer={layer!r} "
                     "must be a direct child of the root <svg>"
                 )
-            if tag == 'g':
+            if tag == 'g' and not (
+                _is_authored_preset_atom is not None
+                and _is_authored_preset_atom(elem)
+            ):
                 errors.append(
                     f"{svg_path.name}: {element_id} is a <g> marked as {layer}; "
                     "Master/Layout fixed visuals must be root-level atomic elements"
@@ -1128,7 +1208,12 @@ class SVGQualityChecker:
                 #    Templates do not ship a spec_lock.md, so skip in template
                 #    mode to avoid noise.
                 if not self.template_mode:
-                    self._check_spec_lock_drift(content, svg_path, result)
+                    self._check_spec_lock_drift(
+                        content,
+                        svg_path,
+                        result,
+                        root=root,
+                    )
 
                 # 10. Check web-sourced image attribution. Templates don't carry
                 #    image_sources.json; skip in template mode.
@@ -2597,6 +2682,43 @@ class SVGQualityChecker:
                         'update the native carrier or restore the generated detail paths'
                     )
         result['errors'].extend(sorted(issues))
+        if (
+            _authored_preset_encoding is not None
+            and _validate_authored_preset_group is not None
+        ):
+            expanded = [
+                elem.get('id') or '(no id)'
+                for elem in root.iter()
+                if _authored_preset_encoding(elem) == 'expanded'
+                and not _validate_authored_preset_group(elem)
+            ]
+            if expanded:
+                examples = ', '.join(expanded[:3])
+                suffix = '' if len(expanded) <= 3 else f', +{len(expanded) - 3} more'
+                result['warnings'].append(
+                    'Compatible expanded authored-preset fragment(s) detected '
+                    f'({len(expanded)}: {examples}{suffix}). New project-authored '
+                    'pages and templates use the compact helper form; the '
+                    'expanded carrier/preview form remains readable for compatibility. '
+                    'No change is required while it remains ordinary Slide-local input.'
+                )
+        inherited_paint = _compact_preset_ancestor_paint(root)
+        if inherited_paint:
+            examples = ', '.join(
+                f'{element_id} ({"/".join(properties)})'
+                for element_id, properties in inherited_paint[:3]
+            )
+            suffix = (
+                ''
+                if len(inherited_paint) <= 3
+                else f', +{len(inherited_paint) - 3} more'
+            )
+            result['warnings'].append(
+                'Compact authored preset(s) use compatible ancestor paint or '
+                f'opacity ({examples}{suffix}). Canonical page/template authoring '
+                'keeps preset paint local and reruns the helper with channel alpha; '
+                'export remains supported.'
+            )
 
     def _check_preset_geometry_transforms(
         self,
@@ -3108,7 +3230,14 @@ class SVGQualityChecker:
                 return data
         return None
 
-    def _check_spec_lock_drift(self, content: str, svg_path: Path, result: Dict):
+    def _check_spec_lock_drift(
+        self,
+        content: str,
+        svg_path: Path,
+        result: Dict,
+        *,
+        root: ET.Element,
+    ):
         """Detect values used in the SVG that fall outside spec_lock.md.
 
         Covers colors (fill / stroke / stop-color / flood-color / pattern
@@ -3129,6 +3258,31 @@ class SVGQualityChecker:
                 color, _alpha = _parse_export_color(v)
                 if color:
                     allowed_colors.add(color)
+
+        # A validated compact preset may contain registry-derived darken/lighten
+        # layer colors.  Their base paint still comes from spec_lock; the exact
+        # child HEX values are deterministic compiler evidence, not color drift.
+        if (
+            _authored_preset_encoding is not None
+            and _validate_authored_preset_group is not None
+        ):
+            for group in root.iter():
+                if (
+                    _authored_preset_encoding(group) != 'compact'
+                    or _validate_authored_preset_group(group)
+                ):
+                    continue
+                for child in group:
+                    for attribute in ('fill', 'stroke'):
+                        raw_value = child.get(attribute)
+                        if raw_value is None:
+                            continue
+                        if _parse_export_color is not None:
+                            color, _alpha = _parse_export_color(raw_value)
+                        else:
+                            color = _normalize_hex_rgb(raw_value)
+                        if color:
+                            allowed_colors.add(color)
             else:
                 color = _normalize_hex_rgb(v)
                 if color:

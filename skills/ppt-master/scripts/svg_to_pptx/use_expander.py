@@ -47,6 +47,11 @@ _URL_FUNCTION_START_RE = re.compile(r'\burl\s*\(', re.IGNORECASE)
 _MAX_LOCAL_USE_DEPTH = 64
 _MAX_LOCAL_USE_INSTANCES = 10_000
 _NON_REUSABLE_METADATA_PREFIXES = (
+    'data-pptx-authoring',
+    'data-pptx-object',
+    'data-pptx-prst',
+    'data-pptx-frame',
+    'data-pptx-av-',
     'data-pptx-layer',
     'data-pptx-replace-with',
     'data-pptx-replacement-',
