@@ -72,17 +72,17 @@
     <g id="yearBands">
         <!-- 2024 band -->
         <rect x="100" y="334" width="540" height="52" rx="26" fill="#F8FAFC"/>
-        <text x="120" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#CBD5E1" letter-spacing="2">
+        <text x="120" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#CBD5E1" letter-spacing="2">
             <tspan>2024</tspan>
         </text>
         <!-- 2025 band -->
         <rect x="650" y="334" width="330" height="52" rx="26" fill="#F8FAFC"/>
-        <text x="670" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#CBD5E1" letter-spacing="2">
+        <text x="670" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#CBD5E1" letter-spacing="2">
             <tspan>2025</tspan>
         </text>
         <!-- 2026 band -->
         <rect x="990" y="334" width="190" height="52" rx="26" fill="#F8FAFC"/>
-        <text x="1010" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#CBD5E1" letter-spacing="2">
+        <text x="1010" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#CBD5E1" letter-spacing="2">
             <tspan>2026</tspan>
         </text>
     </g>
@@ -100,7 +100,7 @@
     <g id="todayMarker">
         <line x1="736" y1="148" x2="736" y2="334" stroke="#6366F1" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.45"/>
         <rect x="691" y="124" width="90" height="26" rx="13" fill="#6366F1"/>
-        <text x="736" y="142" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        <text x="736" y="142" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
             <tspan>· TODAY ·</tspan>
         </text>
     </g>
@@ -222,7 +222,7 @@
         <!-- Status pill at top -->
         <rect x="650" y="430" width="110" height="24" rx="12" fill="#EEF2FF"/>
         <circle cx="664" cy="442" r="4" fill="#6366F1"/>
-        <text x="676" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#4338CA" letter-spacing="1.5">
+        <text x="676" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" letter-spacing="1.5">
             <tspan>IN PROGRESS</tspan>
         </text>
         <text x="736" y="482" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="800" fill="#0F172A" text-anchor="middle">

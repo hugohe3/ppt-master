@@ -29,7 +29,7 @@
     <text x="80" y="252" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="19" font-weight="700" fill="#0F172A">Smart Data Analytics</text>
     <text x="80" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" font-weight="600" fill="#3B82F6" letter-spacing="1.5">AI-DRIVEN ENGINE</text>
+          font-size="12" font-weight="600" fill="#3B82F6" letter-spacing="1.5">AI-DRIVEN ENGINE</text>
     <text x="80" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">AI-driven multi-dimensional analytics</text>
     <text x="80" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -54,7 +54,7 @@
     <text x="485" y="252" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="19" font-weight="700" fill="#0F172A">Real-time Collaboration</text>
     <text x="485" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" font-weight="600" fill="#10B981" letter-spacing="1.5">TEAM SYNCHRONIZATION</text>
+          font-size="12" font-weight="600" fill="#10B981" letter-spacing="1.5">TEAM SYNCHRONIZATION</text>
     <text x="485" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">Support for simultaneous online editing,</text>
     <text x="485" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -77,7 +77,7 @@
     <text x="890" y="252" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="19" font-weight="700" fill="#0F172A">Security &amp; Compliance</text>
     <text x="890" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" font-weight="600" fill="#F59E0B" letter-spacing="1.5">ENTERPRISE GRADE</text>
+          font-size="12" font-weight="600" fill="#F59E0B" letter-spacing="1.5">ENTERPRISE GRADE</text>
     <text x="890" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">Enterprise-grade data encryption and</text>
     <text x="890" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -108,7 +108,7 @@
     <text x="80" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="19" font-weight="700" fill="#0F172A">Workflow Automation</text>
     <text x="80" y="562" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" font-weight="600" fill="#6366F1" letter-spacing="1.5">PROCESS ORCHESTRATION</text>
+          font-size="12" font-weight="600" fill="#6366F1" letter-spacing="1.5">PROCESS ORCHESTRATION</text>
     <text x="80" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">Visual process orchestration with</text>
     <text x="80" y="622" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -132,7 +132,7 @@
     <text x="485" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="19" font-weight="700" fill="#0F172A">Open API Integration</text>
     <text x="485" y="562" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" font-weight="600" fill="#F43F5E" letter-spacing="1.5">SEAMLESS CONNECTIONS</text>
+          font-size="12" font-weight="600" fill="#F43F5E" letter-spacing="1.5">SEAMLESS CONNECTIONS</text>
     <text x="485" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">Access to 200+ standard APIs that</text>
     <text x="485" y="622" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -159,7 +159,7 @@
     <text x="890" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="19" font-weight="700" fill="#0F172A">Smart Reporting Center</text>
     <text x="890" y="562" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="11" font-weight="600" fill="#0EA5E9" letter-spacing="1.5">ADVANCED DASHBOARDS</text>
+          font-size="12" font-weight="600" fill="#0EA5E9" letter-spacing="1.5">ADVANCED DASHBOARDS</text>
     <text x="890" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">One-click generation of custom data</text>
     <text x="890" y="622" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"

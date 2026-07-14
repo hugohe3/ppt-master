@@ -3,6 +3,7 @@
 
 import io
 import json
+import math
 import sys
 import tempfile
 import unittest
@@ -25,6 +26,7 @@ from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
 )
+from svg_to_pptx.drawingml.utils import parse_inline_style
 from svg_to_pptx.native_objects import (
     NativeMarkerAttributeError,
     native_fallback_kind,
@@ -787,6 +789,37 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 )
         self.assertEqual(anonymous_groups, [])
         self.assertEqual(duplicate_ids, [])
+
+    def test_chart_templates_use_canonical_readable_font_sizes(self):
+        chart_root = SCRIPT_DIR.parent / 'templates' / 'charts'
+        noncanonical_sizes = []
+        undersized_text = []
+        for svg_path in chart_root.glob('*.svg'):
+            root = ET.parse(svg_path).getroot()
+            for elem in root.iter():
+                styles = parse_inline_style(elem.get('style'))
+                raw_size = styles.get('font-size', elem.get('font-size'))
+                if raw_size is None:
+                    continue
+                try:
+                    size = float(raw_size)
+                except ValueError:
+                    noncanonical_sizes.append(
+                        f'{svg_path.name}: {raw_size}'
+                    )
+                    continue
+                if not math.isfinite(size):
+                    noncanonical_sizes.append(
+                        f'{svg_path.name}: {raw_size}'
+                    )
+                    continue
+                if size < 12:
+                    element_id = elem.get('id') or elem.tag.rsplit('}', 1)[-1]
+                    undersized_text.append(
+                        f'{svg_path.name}: {element_id}={raw_size}'
+                    )
+        self.assertEqual(noncanonical_sizes, [])
+        self.assertEqual(undersized_text, [])
 
     def test_chart_catalog_passes_checker_and_export_routes(self):
         chart_root = SCRIPT_DIR.parent / 'templates' / 'charts'

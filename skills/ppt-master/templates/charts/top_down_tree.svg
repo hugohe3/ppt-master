@@ -66,7 +66,7 @@
         <text x="150" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A" text-anchor="middle">Jane Smith</text>
         <text x="150" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569" text-anchor="middle">VP of Engineering</text>
         <rect x="95" y="320" width="110" height="22" rx="11" fill="#E2E8F0"/>
-        <text x="150" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#334155" text-anchor="middle">Engineering</text>
+        <text x="150" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">Engineering</text>
     </g>
     <!-- VP 2: Product (Emerald Theme) -->
     <g id="product-vp-node">
@@ -74,7 +74,7 @@
         <text x="395" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#064E3B" text-anchor="middle">Mike Johnson</text>
         <text x="395" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#059669" text-anchor="middle">VP of Product</text>
         <rect x="340" y="320" width="110" height="22" rx="11" fill="#D1FAE5"/>
-        <text x="395" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#047857" text-anchor="middle">Product</text>
+        <text x="395" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#047857" text-anchor="middle">Product</text>
     </g>
     <!-- VP 3: Sales (Amber Theme) -->
     <g id="sales-vp-node">
@@ -82,7 +82,7 @@
         <text x="640" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#78350F" text-anchor="middle">Emily Davis</text>
         <text x="640" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#D97706" text-anchor="middle">VP of Sales</text>
         <rect x="585" y="320" width="110" height="22" rx="11" fill="#FEF3C7"/>
-        <text x="640" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#B45309" text-anchor="middle">Sales</text>
+        <text x="640" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#B45309" text-anchor="middle">Sales</text>
     </g>
     <!-- VP 4: Finance (Violet Theme) -->
     <g id="finance-vp-node">
@@ -90,7 +90,7 @@
         <text x="885" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#4C1D95" text-anchor="middle">Robert Wilson</text>
         <text x="885" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#7C3AED" text-anchor="middle">VP of Finance</text>
         <rect x="830" y="320" width="110" height="22" rx="11" fill="#EDE9FE"/>
-        <text x="885" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#6D28D9" text-anchor="middle">Finance</text>
+        <text x="885" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#6D28D9" text-anchor="middle">Finance</text>
     </g>
     <!-- VP 5: HR (Rose Theme) -->
     <g id="human-resources-vp-node">
@@ -98,7 +98,7 @@
         <text x="1130" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#881337" text-anchor="middle">Sarah Brown</text>
         <text x="1130" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#E11D48" text-anchor="middle">VP of HR</text>
         <rect x="1065" y="320" width="130" height="22" rx="11" fill="#FFE4E6"/>
-        <text x="1130" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#BE123C" text-anchor="middle">Human Resources</text>
+        <text x="1130" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#BE123C" text-anchor="middle">Human Resources</text>
     </g>
     <!-- ==================== Level 3: Departments ==================== -->
     <!-- Group 1: Engineering -->

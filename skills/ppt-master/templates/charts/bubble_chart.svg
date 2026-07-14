@@ -264,13 +264,13 @@
               font-size="12" fill="#64748B" text-anchor="middle">Bubble Size = Market Share</text>
         <circle cx="40" cy="60" r="10" fill="#CBD5E1"/>
         <text x="40" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#64748B" text-anchor="middle">10%</text>
+              font-size="12" fill="#64748B" text-anchor="middle">10%</text>
         <circle cx="90" cy="55" r="18" fill="#CBD5E1"/>
         <text x="90" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#64748B" text-anchor="middle">20%</text>
+              font-size="12" fill="#64748B" text-anchor="middle">20%</text>
         <circle cx="145" cy="48" r="25" fill="#CBD5E1"/>
         <text x="145" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#64748B" text-anchor="middle">30%</text>
+              font-size="12" fill="#64748B" text-anchor="middle">30%</text>
     </g>
     <!-- Data Source -->
     <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 

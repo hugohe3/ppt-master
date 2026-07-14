@@ -239,9 +239,9 @@
                   font-size="12" fill="#F43F5E">Outlier</text>
         </g>
         <text x="15" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#94A3B8">IQR = Q3 - Q1</text>
+              font-size="12" fill="#94A3B8">IQR = Q3 - Q1</text>
         <text x="15" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#94A3B8">异常值 > Q3+1.5*IQR</text>
+              font-size="12" fill="#94A3B8">异常值 > Q3+1.5*IQR</text>
     </g>
     <!-- Stats Summary -->
     <g id="statsSummary" transform="translate(1040, 390)">

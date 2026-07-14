@@ -158,21 +158,21 @@
         <!-- Milestone 1 -->
         <polygon points="400,165 410,155 420,165 410,175" fill="#EF4444"/>
         <text x="410" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#EF4444" text-anchor="middle">PRD Sign-off</text>
+              font-size="12" font-weight="600" fill="#EF4444" text-anchor="middle">PRD Sign-off</text>
         <!-- Milestone 2 -->
         <polygon points="640,285 650,275 660,285 650,295" fill="#EF4444"/>
         <text x="650" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#EF4444" text-anchor="middle">Design Review</text>
+              font-size="12" font-weight="600" fill="#EF4444" text-anchor="middle">Design Review</text>
         <!-- Milestone 3 -->
         <polygon points="1070,525 1080,515 1090,525 1080,535" fill="#EF4444"/>
         <text x="1080" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#EF4444" text-anchor="middle">Launch</text>
+              font-size="12" font-weight="600" fill="#EF4444" text-anchor="middle">Launch</text>
     </g>
     <!-- Today Line -->
     <line x1="680" y1="105" x2="680" y2="640" stroke="#EF4444" stroke-width="2" stroke-dasharray="6,3"/>
     <rect x="656" y="85" width="48" height="20" rx="3" fill="#EF4444"/>
     <text x="680" y="99" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">TODAY</text>
+          font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">TODAY</text>
     <!-- Legend -->
     <g id="legend" transform="translate(60, 650)">
         <rect x="0" y="0" width="16" height="16" rx="2" fill="url(#taskGrad1)"/>

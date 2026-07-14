@@ -50,9 +50,9 @@
         <!-- Metrics Box -->
         <rect x="146" y="486" width="308" height="54" rx="6" fill="#F8FAFC" stroke="#F1F5F9" stroke-width="1"/>
         <line x1="300" y1="496" x2="300" y2="530" stroke="#E2E8F0" stroke-width="1"/>
-        <text x="223" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#64748B">Avg Latency</text>
+        <text x="223" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Avg Latency</text>
         <text x="223" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">&lt; 50 ms</text>
-        <text x="377" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#64748B">Pool Size</text>
+        <text x="377" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Pool Size</text>
         <text x="377" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">~2,000</text>
     </g>
     <!-- Arrow 1-2 -->
@@ -83,9 +83,9 @@
         <!-- Metrics Box -->
         <rect x="516" y="486" width="308" height="54" rx="6" fill="#F8FAFC" stroke="#F1F5F9" stroke-width="1"/>
         <line x1="670" y1="496" x2="670" y2="530" stroke="#E2E8F0" stroke-width="1"/>
-        <text x="593" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#64748B">Avg Latency</text>
+        <text x="593" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Avg Latency</text>
         <text x="593" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#6366F1">&lt; 100 ms</text>
-        <text x="747" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#64748B">Top-K Size</text>
+        <text x="747" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Top-K Size</text>
         <text x="747" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#6366F1">~200</text>
     </g>
     <!-- Arrow 2-3 -->
@@ -116,9 +116,9 @@
         <!-- Metrics Box -->
         <rect x="886" y="486" width="308" height="54" rx="6" fill="#F8FAFC" stroke="#F1F5F9" stroke-width="1"/>
         <line x1="1040" y1="496" x2="1040" y2="530" stroke="#E2E8F0" stroke-width="1"/>
-        <text x="963" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#64748B">Avg Latency</text>
+        <text x="963" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Avg Latency</text>
         <text x="963" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#8B5CF6">&lt; 30 ms</text>
-        <text x="1117" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#64748B">Final Exp.</text>
+        <text x="1117" y="508" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Final Exp.</text>
         <text x="1117" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#8B5CF6">~20</text>
     </g>
     <!-- ==================== Bottom Section: Data Flow ==================== -->

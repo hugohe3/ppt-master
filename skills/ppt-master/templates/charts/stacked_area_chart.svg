@@ -149,35 +149,35 @@
         <text x="100" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#3730A3">Subscription</text>
         <text x="85" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#312E81">755M</text>
         <rect x="190" y="652" width="75" height="22" rx="11" fill="#E0E7FF"/>
-        <text x="227.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#4338CA" text-anchor="middle">48.5%</text>
+        <text x="227.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#4338CA" text-anchor="middle">48.5%</text>
         <!-- Card 2: Advertising -->
         <rect x="296" y="610" width="216" height="80" rx="10" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5" filter="url(#cardShadow)"/>
         <circle cx="321" cy="635" r="5" fill="#0EA5E9"/>
         <text x="336" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#0369A1">Advertising</text>
         <text x="321" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#0C4A6E">453M</text>
         <rect x="426" y="652" width="75" height="22" rx="11" fill="#E0F2FE"/>
-        <text x="463.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#0284C7" text-anchor="middle">29.1%</text>
+        <text x="463.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#0284C7" text-anchor="middle">29.1%</text>
         <!-- Card 3: Value-Added -->
         <rect x="532" y="610" width="216" height="80" rx="10" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <circle cx="557" cy="635" r="5" fill="#10B981"/>
         <text x="572" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#047857">Value-Added</text>
         <text x="557" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#064E3B">293M</text>
         <rect x="662" y="652" width="75" height="22" rx="11" fill="#D1FAE5"/>
-        <text x="699.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#059669" text-anchor="middle">18.8%</text>
+        <text x="699.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#059669" text-anchor="middle">18.8%</text>
         <!-- Card 4: Other -->
         <rect x="768" y="610" width="216" height="80" rx="10" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1.5" filter="url(#cardShadow)"/>
         <circle cx="793" cy="635" r="5" fill="#F59E0B"/>
         <text x="808" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#B45309">Other</text>
         <text x="793" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#78350F">56M</text>
         <rect x="898" y="652" width="75" height="22" rx="11" fill="#FEF3C7"/>
-        <text x="935.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#D97706" text-anchor="middle">3.6%</text>
+        <text x="935.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#D97706" text-anchor="middle">3.6%</text>
         <!-- Card 5: Total Revenue -->
         <rect x="1004" y="610" width="216" height="80" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <circle cx="1029" cy="635" r="5" fill="#64748B"/>
         <text x="1044" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#334155">Total Revenue</text>
         <text x="1029" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#0F172A">1,557M</text>
         <rect x="1134" y="652" width="75" height="22" rx="11" fill="#D1FAE5"/>
-        <text x="1171.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#059669" text-anchor="middle">+11.2%</text>
+        <text x="1171.5" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#059669" text-anchor="middle">+11.2%</text>
     </g>
     <!-- ==================== Footer ==================== -->
     <text x="1220" y="705" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#94A3B8" text-anchor="end">Data Source: Finance Department</text>
