@@ -39,7 +39,7 @@ from pptx_to_svg.preset_authoring import (
     render_preset_shape_fragment,
     validate_authored_preset_tree,
 )
-from pptx_to_svg.emu_units import Xfrm
+from pptx_to_svg.emu_units import Xfrm, format_ooxml_alpha
 from pptx_to_svg.effect_to_svg import (
     convert_effects,
     unsupported_target_effect_metadata,
@@ -64,7 +64,7 @@ from svg_to_pptx.drawingml.converter import (
     convert_svg_to_slide_shapes,
 )
 from svg_to_pptx.drawingml.context import ConvertContext
-from svg_to_pptx.drawingml.styles import build_stroke_xml
+from svg_to_pptx.drawingml.styles import build_stroke_xml, get_stroke_opacity
 from svg_to_pptx.pptx_package.builder import create_pptx_with_native_svg
 from svg_to_pptx.pptx_package.dimensions import (
     CANVAS_FORMATS as PACKAGE_CANVAS_FORMATS,
@@ -2736,6 +2736,33 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         )
         stroke_xml = build_stroke_xml(line, ConvertContext())
         self.assertIn('<a:ln w="1">', stroke_xml)
+
+    def test_minimum_positive_native_alpha_round_trips(self):
+        self.assertEqual(format_ooxml_alpha(0.00001), '0.00001')
+        self.assertEqual(format_ooxml_alpha(0.99999), '0.99999')
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>
+    <a:solidFill>
+      <a:srgbClr val="112233"><a:alpha val="1"/></a:srgbClr>
+    </a:solidFill>
+  </a:ln>
+</p:spPr>''')
+        stroke = resolve_stroke(sp_pr, None)
+        opacity = stroke.attrs['stroke-opacity']
+        self.assertEqual(opacity, '0.00001')
+        line = ET.fromstring(
+            '<line xmlns="http://www.w3.org/2000/svg" '
+            f'stroke="#112233" stroke-opacity="{opacity}"/>'
+        )
+        context = ConvertContext()
+        stroke_xml = build_stroke_xml(
+            line,
+            context,
+            get_stroke_opacity(line, context),
+        )
+        self.assertIn('<a:alpha val="1"/>', stroke_xml)
 
     def test_compound_native_line_is_rejected_on_import(self):
         for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):

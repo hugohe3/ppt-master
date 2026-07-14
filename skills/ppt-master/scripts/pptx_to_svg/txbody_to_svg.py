@@ -27,7 +27,8 @@ from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import (
-    NS, Xfrm, fmt_num, emu_to_px, hundredths_pt_to_px,
+    NS, Xfrm, fmt_num, emu_to_px, format_ooxml_alpha,
+    hundredths_pt_to_px,
 )
 from .fill_to_svg import resolve_fill
 
@@ -1152,7 +1153,9 @@ def _text_base_attrs(run: TextRun | None, x: float, y: float,
     parts.append(f'font-size="{fmt_num(run.font_size_px)}"')
     parts.append(f'fill="{run.fill}"')
     if run.fill_opacity < 1.0:
-        parts.append(f'fill-opacity="{fmt_num(run.fill_opacity, 4)}"')
+        parts.append(
+            f'fill-opacity="{format_ooxml_alpha(run.fill_opacity)}"'
+        )
     if run.bold:
         parts.append('font-weight="bold"')
     if run.italic:
@@ -1180,7 +1183,9 @@ def _run_tspan_attrs(run: TextRun) -> str:
         f'font-size="{fmt_num(run.font_size_px)}"',
     ]
     if run.fill_opacity < 1.0:
-        parts.append(f'fill-opacity="{fmt_num(run.fill_opacity, 4)}"')
+        parts.append(
+            f'fill-opacity="{format_ooxml_alpha(run.fill_opacity)}"'
+        )
     if run.bold:
         parts.append('font-weight="bold"')
     if run.italic:

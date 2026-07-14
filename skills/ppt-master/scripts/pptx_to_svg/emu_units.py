@@ -238,6 +238,11 @@ def _fmt(val: float, ndigits: int = 2) -> str:
 fmt_num = _fmt
 
 
+def format_ooxml_alpha(alpha: float) -> str:
+    """Format a normalized alpha without losing 1/100000 OOXML precision."""
+    return _fmt(alpha, 5)
+
+
 def format_canvas_px_from_emu(emu: int) -> str:
     """Format a slide-size coordinate with enough precision to recover EMU."""
     with localcontext() as context:
