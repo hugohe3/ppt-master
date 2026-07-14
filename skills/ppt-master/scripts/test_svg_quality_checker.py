@@ -57,7 +57,6 @@ from svg_to_pptx.canvas_contract import (
 )
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
-    _txbody_has_run_effects,
     convert_svg_to_slide_shapes,
 )
 from svg_to_pptx.pptx_package.builder import create_pptx_with_native_svg
@@ -92,7 +91,7 @@ from template_import.manifest import (
     build_manifest,
 )
 from template_import.native_structure import build_native_structure
-from pptx_effects import project_effect_status_errors
+from pptx_effects import project_effect_status_errors, txbody_has_run_effects
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -259,6 +258,73 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 }:
                     sp_pr.remove(child)
             sp_pr.append(ET.fromstring(effect_xml))
+            replacements[slide_part] = ET.tostring(
+                slide_root,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
+
+    @staticmethod
+    def _write_vertical_run_effect_fixture(
+        path: Path,
+        effects: list[str | None],
+    ) -> None:
+        """Write vertical text slides with supplied run-effect containers."""
+        presentation = Presentation()
+        blank = presentation.slide_layouts[6]
+        for index, _effect in enumerate(effects, start=1):
+            slide = presentation.slides.add_slide(blank)
+            shape = slide.shapes.add_shape(
+                MSO_SHAPE.RECTANGLE,
+                Emu(914400),
+                Emu(914400),
+                Emu(1371600),
+                Emu(2743200),
+            )
+            shape.name = f'VERTICAL EFFECT TEXT {index}'
+            shape.text = '甲乙'
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [(info, source.read(info.filename)) for info in source.infolist()]
+        member_data = {info.filename: data for info, data in members}
+        replacements: dict[str, bytes] = {}
+
+        for index, effect_xml in enumerate(effects, start=1):
+            slide_part = f'ppt/slides/slide{index}.xml'
+            slide_root = ET.fromstring(member_data[slide_part])
+            target = next(
+                shape
+                for shape in slide_root.findall(f'.//{{{pml}}}sp')
+                if (
+                    shape.find(f'{{{pml}}}nvSpPr/{{{pml}}}cNvPr')
+                    is not None
+                    and shape.find(
+                        f'{{{pml}}}nvSpPr/{{{pml}}}cNvPr'
+                    ).get('name') == f'VERTICAL EFFECT TEXT {index}'
+                )
+            )
+            tx_body = target.find(f'{{{pml}}}txBody')
+            assert tx_body is not None
+            body_pr = tx_body.find(f'{{{dml}}}bodyPr')
+            assert body_pr is not None
+            body_pr.set('vert', 'eaVert')
+            run = tx_body.find(f'.//{{{dml}}}r')
+            assert run is not None
+            run_properties = run.find(f'{{{dml}}}rPr')
+            if run_properties is None:
+                run_properties = ET.Element(f'{{{dml}}}rPr')
+                run.insert(0, run_properties)
+            if effect_xml is not None:
+                run_properties.append(ET.fromstring(effect_xml))
             replacements[slide_part] = ET.tostring(
                 slide_root,
                 encoding='utf-8',
@@ -2564,6 +2630,74 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     ):
                         convert_svg_to_slide_shapes(artifact_path)
 
+    def test_vertical_text_run_effect_import_fails_closed(self):
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        effects = [
+            f'''<a:effectLst xmlns:a="{dml}">
+  <a:outerShdw blurRad="38100" dist="38100" dir="5400000">
+    <a:srgbClr val="000000"/>
+  </a:outerShdw>
+</a:effectLst>''',
+            f'<a:effectLst xmlns:a="{dml}"/>',
+            f'<a:effectDag xmlns:a="{dml}"/>',
+            None,
+        ]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'vertical-run-effects.pptx'
+            self._write_vertical_run_effect_fixture(pptx_path, effects)
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            self.assertEqual(len(imported.slides), 4)
+
+            effect_svg = imported.slides[0].svg
+            effect_root = ET.fromstring(effect_svg)
+            self.assertIn('甲', ''.join(effect_root.itertext()))
+            self.assertIn('乙', ''.join(effect_root.itertext()))
+            self.assertFalse(any(
+                elem.get('data-pptx-part') == 'txbody'
+                for elem in effect_root.iter()
+            ))
+            marked = [
+                elem
+                for elem in effect_root.iter()
+                if elem.get('data-pptx-effect-status') == 'unsupported'
+            ]
+            self.assertEqual(len(marked), 2)
+            self.assertEqual(
+                {elem.get('data-pptx-effect-reason') for elem in marked},
+                {'unsupported-run-effect-route:vertical-text'},
+            )
+            status_errors = project_effect_status_errors(effect_root)
+            self.assertEqual(len(status_errors), 1)
+            self.assertIn(
+                'unsupported-run-effect-route:vertical-text',
+                status_errors[0],
+            )
+            self._assert_checker_and_exporter_reject(
+                effect_svg,
+                'unsupported-run-effect-route:vertical-text',
+                'unsupported imported PPTX effect',
+            )
+
+            for artifact in imported.slides[1:]:
+                with self.subTest(slide=artifact.index):
+                    root = ET.fromstring(artifact.svg)
+                    self.assertEqual(project_effect_status_errors(root), [])
+                    self.assertFalse(any(
+                        elem.get('data-pptx-effect-status') is not None
+                        for elem in root.iter()
+                    ))
+                    svg_path = root_dir / f'vertical-{artifact.index}.svg'
+                    svg_path.write_text(artifact.svg, encoding='utf-8')
+                    checker_result = SVGQualityChecker().check_file(
+                        str(svg_path)
+                    )
+                    self.assertTrue(checker_result['passed'])
+                    convert_svg_to_slide_shapes(svg_path)
+
     def test_picture_and_group_effect_import_is_explicit(self):
         dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
         empty_sp_pr = ET.fromstring(
@@ -4365,9 +4499,9 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             '<a:t>AB</a:t></a:r></a:p>'
         )
 
-        self.assertTrue(_txbody_has_run_effects(inherited_list))
-        self.assertTrue(_txbody_has_run_effects(paragraph_end_dag))
-        self.assertFalse(_txbody_has_run_effects(empty_containers))
+        self.assertTrue(txbody_has_run_effects(inherited_list))
+        self.assertTrue(txbody_has_run_effects(paragraph_end_dag))
+        self.assertFalse(txbody_has_run_effects(empty_containers))
 
     def test_checker_does_not_trust_authored_runtime_txbody_snapshot(self):
         root = ET.fromstring(
