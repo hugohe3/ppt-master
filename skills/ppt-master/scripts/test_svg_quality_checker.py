@@ -2563,6 +2563,44 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'invalid project filter',
         )
 
+    def test_filter_flood_opacity_must_be_explicit(self):
+        cases = (
+            (
+                'drop-shadow shorthand',
+                '<feDropShadow dx="0" dy="4" stdDeviation="6" '
+                'flood-color="#000000"/>',
+                '<feDropShadow> requires explicit flood-opacity',
+            ),
+            (
+                'expanded flood primitive',
+                '<feGaussianBlur stdDeviation="6"/>'
+                '<feFlood flood-color="#000000"/>',
+                '<feFlood> requires explicit flood-opacity',
+            ),
+        )
+        for label, graph, expected in cases:
+            with self.subTest(label=label):
+                self._assert_checker_and_exporter_reject(
+                    f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs><filter id="effect">{graph}</filter></defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#effect)"/>
+</svg>''',
+                    expected,
+                    'invalid project filter',
+                )
+
+        styled = ET.fromstring('''<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="effect">
+      <feGaussianBlur stdDeviation="6"/>
+      <feFlood flood-color="#000000" style="flood-opacity:0.2"/>
+    </filter>
+  </defs>
+</svg>''')
+        self.assertEqual(project_filter_errors(styled), [])
+
     def test_filter_coordinates_block_drawingml_overflow(self):
         cases = (
             (
@@ -2573,13 +2611,13 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             (
                 'shadow blur radius',
                 '<feDropShadow dx="1" dy="0" '
-                'stdDeviation="1431655765"/>',
+                'stdDeviation="1431655765" flood-opacity="0.2"/>',
                 'DrawingML blurRad must map within',
             ),
             (
                 'shadow distance',
                 '<feDropShadow dx="2863311530" dy="0" '
-                'stdDeviation="1"/>',
+                'stdDeviation="1" flood-opacity="0.2"/>',
                 'DrawingML dist must map within',
             ),
             (
@@ -2612,7 +2650,8 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     </filter>
     <filter id="shadow">
       <feDropShadow dx="{glow_std_dev!r}" dy="0"
-                    stdDeviation="{shadow_std_dev!r}"/>
+                    stdDeviation="{shadow_std_dev!r}"
+                    flood-opacity="0.2"/>
     </filter>
   </defs>
   <rect x="80" y="80" width="300" height="180"
