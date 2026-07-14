@@ -56,6 +56,36 @@ class EffectResult:
         return cls(metadata=tuple(unsupported_effect_metadata(reason).items()))
 
 
+def unsupported_target_effect_metadata(
+    sp_pr: ET.Element | None,
+    target: str,
+) -> dict[str, str]:
+    """Mark source effects that cannot attach to this SVG target type."""
+    if sp_pr is None:
+        return {}
+    effect_names: list[str] = []
+    for container in sp_pr:
+        if (
+            not isinstance(container.tag, str)
+            or _local_name(container) not in _EFFECT_CONTAINER_NAMES
+        ):
+            continue
+        container_name = _local_name(container)
+        if container_name == "effectDag":
+            effect_names.append(container_name)
+            continue
+        effect_names.extend(
+            _local_name(child)
+            for child in container
+            if isinstance(child.tag, str)
+        )
+    if not effect_names:
+        return {}
+    return unsupported_effect_metadata(
+        f"unsupported-effect-target:{target}:" + ",".join(effect_names)
+    )
+
+
 def convert_effects(
     sp_pr: ET.Element | None,
     palette: ColorPalette | None,

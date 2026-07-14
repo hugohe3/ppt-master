@@ -37,7 +37,10 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm
-from pptx_to_svg.effect_to_svg import convert_effects
+from pptx_to_svg.effect_to_svg import (
+    convert_effects,
+    unsupported_target_effect_metadata,
+)
 from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
 from pptx_to_svg.preset_svg_markup import serialize_preset_layers
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
@@ -261,6 +264,89 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 xml_declaration=True,
             )
 
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
+
+    @classmethod
+    def _write_picture_group_effect_fixture(cls, path: Path) -> None:
+        """Write one real picture and one group with source effects."""
+        presentation = Presentation()
+        slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+        image_bytes = base64.b64decode(cls._TINY_PNG_URI.split(',', 1)[1])
+        picture = slide.shapes.add_picture(
+            io.BytesIO(image_bytes),
+            Emu(914400),
+            Emu(914400),
+            Emu(914400),
+            Emu(914400),
+        )
+        picture.name = 'EFFECT PICTURE'
+        group = slide.shapes.add_group_shape()
+        group.name = 'EFFECT GROUP'
+        group.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Emu(2743200),
+            Emu(914400),
+            Emu(1371600),
+            Emu(914400),
+        )
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [(info, source.read(info.filename)) for info in source.infolist()]
+        slide_part = 'ppt/slides/slide1.xml'
+        member_data = {info.filename: data for info, data in members}
+        slide_root = ET.fromstring(member_data[slide_part])
+
+        picture_xml = next(
+            elem
+            for elem in slide_root.findall(f'.//{{{pml}}}pic')
+            if elem.find(f'{{{pml}}}nvPicPr/{{{pml}}}cNvPr').get('name')
+            == 'EFFECT PICTURE'
+        )
+        picture_sp_pr = picture_xml.find(f'{{{pml}}}spPr')
+        assert picture_sp_pr is not None
+        blip_fill = picture_xml.find(f'{{{pml}}}blipFill')
+        assert blip_fill is not None
+        blip = blip_fill.find(f'{{{dml}}}blip')
+        assert blip is not None
+        blip_fill.insert(
+            list(blip_fill).index(blip) + 1,
+            ET.fromstring(
+                f'<a:srcRect xmlns:a="{dml}" '
+                'l="10000" t="10000" r="10000" b="10000"/>'
+            ),
+        )
+        picture_sp_pr.append(ET.fromstring(f'''<a:effectLst xmlns:a="{dml}">
+  <a:outerShdw blurRad="38100" dist="38100" dir="5400000">
+    <a:srgbClr val="000000"/>
+  </a:outerShdw>
+</a:effectLst>'''))
+
+        group_xml = next(
+            elem
+            for elem in slide_root.findall(f'.//{{{pml}}}grpSp')
+            if elem.find(f'{{{pml}}}nvGrpSpPr/{{{pml}}}cNvPr').get('name')
+            == 'EFFECT GROUP'
+        )
+        group_sp_pr = group_xml.find(f'{{{pml}}}grpSpPr')
+        assert group_sp_pr is not None
+        group_sp_pr.append(ET.fromstring(
+            f'<a:effectLst xmlns:a="{dml}"><a:reflection/></a:effectLst>'
+        ))
+
+        replacements = {
+            slide_part: ET.tostring(
+                slide_root,
+                encoding='utf-8',
+                xml_declaration=True,
+            ),
+        }
         rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
         with zipfile.ZipFile(rewritten, 'w') as target:
             for info, data in members:
@@ -2445,6 +2531,99 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                         'unsupported imported PPTX effect',
                     ):
                         convert_svg_to_slide_shapes(artifact_path)
+
+    def test_picture_and_group_effect_import_is_explicit(self):
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        empty_sp_pr = ET.fromstring(
+            f'<p:spPr xmlns:p="http://schemas.openxmlformats.org/'
+            f'presentationml/2006/main" xmlns:a="{dml}">'
+            '<a:effectLst/></p:spPr>'
+        )
+        self.assertEqual(
+            unsupported_target_effect_metadata(empty_sp_pr, 'picture'),
+            {},
+        )
+        nested_groups = ET.fromstring('''<svg>
+  <g data-pptx-object="group" data-pptx-shape-id="10"
+     data-pptx-shape-scope="slide" data-pptx-effect-status="unsupported"
+     data-pptx-effect-reason="unsupported-effect-target:group:reflection">
+    <g data-pptx-object="group" data-pptx-shape-id="11"
+       data-pptx-shape-scope="slide" data-pptx-effect-status="unsupported"
+       data-pptx-effect-reason="unsupported-effect-target:group:reflection"/>
+  </g>
+</svg>''')
+        self.assertEqual(len(project_effect_status_errors(nested_groups)), 2)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'target-effects.pptx'
+            self._write_picture_group_effect_fixture(pptx_path)
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(
+                    inheritance_mode='flat',
+                    embed_images=True,
+                ),
+            )
+            self.assertEqual(len(imported.slides), 1)
+            svg = imported.slides[0].svg
+            root = ET.fromstring(svg)
+            status_errors = project_effect_status_errors(root)
+            self.assertEqual(len(status_errors), 2)
+            self.assertTrue(any(
+                'unsupported-effect-target:picture:outerShdw' in error
+                for error in status_errors
+            ))
+            self.assertTrue(any(
+                'unsupported-effect-target:group:reflection' in error
+                for error in status_errors
+            ))
+            marked = [
+                elem
+                for elem in root.iter()
+                if elem.get('data-pptx-effect-status') == 'unsupported'
+            ]
+            self.assertEqual(len(marked), 3)
+            self.assertEqual(
+                sum(elem.get('data-pptx-object') == 'picture' for elem in marked),
+                2,
+            )
+            self.assertEqual(
+                sum(elem.get('data-pptx-object') == 'group' for elem in marked),
+                1,
+            )
+            self.assertNotIn('<filter', svg)
+            self.assertTrue(any(
+                elem.tag.endswith('svg')
+                and elem.get('data-pptx-object') == 'picture'
+                for elem in root.iter()
+            ))
+            self.assertTrue(any(
+                elem.tag.endswith('image')
+                for elem in root.iter()
+            ))
+            self.assertTrue(any(
+                elem.get('data-pptx-object') == 'shape'
+                for elem in root.iter()
+            ))
+
+            svg_path = root_dir / 'target-effects.svg'
+            svg_path.write_text(svg, encoding='utf-8')
+            checker_result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertFalse(checker_result['passed'])
+            self.assertEqual(len(checker_result['errors']), 2)
+            self.assertEqual(
+                sum(
+                    'unsupported source PPTX effect' in error
+                    for error in checker_result['errors']
+                ),
+                2,
+            )
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'unsupported imported PPTX effect',
+            ):
+                convert_svg_to_slide_shapes(svg_path)
 
     def test_missing_paint_reference_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
