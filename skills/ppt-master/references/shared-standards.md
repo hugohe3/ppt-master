@@ -178,7 +178,9 @@ the open arrow form requires `<path>`. Four-vertex shapes must be simple and
 non-degenerate: convex geometry maps to diamond and concave geometry maps to
 stealth. Checker and exporter preflight consume this same contract; other
 marker shapes have no native mapping and block export instead of being silently
-dropped.
+dropped. PPTX import likewise accepts only these five DrawingML line-end types
+(plus `none`); an unknown source value stops import instead of being relabeled
+as a supported shape.
 
 ---
 

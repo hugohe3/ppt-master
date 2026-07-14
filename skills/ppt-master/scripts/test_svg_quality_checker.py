@@ -46,7 +46,7 @@ from pptx_to_svg.effect_to_svg import (
 )
 from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
 from pptx_to_svg.preset_svg_markup import serialize_preset_layers
-from pptx_to_svg.ln_to_svg import _build_arrow_marker
+from pptx_to_svg.ln_to_svg import _build_arrow_marker, resolve_stroke
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
 from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
 from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
@@ -2617,6 +2617,18 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     'w="med" len="med"/>',
                     slide_xml,
                 )
+
+    def test_unknown_native_line_end_shape_is_rejected_on_import(self):
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln><a:tailEnd type="futureArrow"/></a:ln>
+</p:spPr>''')
+        with self.assertRaisesRegex(
+            ValueError,
+            "Unsupported DrawingML line-end type: 'futureArrow'",
+        ):
+            resolve_stroke(sp_pr, None)
 
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
