@@ -26,6 +26,10 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from ..drawingml.utils import (
+    parse_project_geometry_length,
+    project_geometry_length_errors,
+)
 from ..geometry_properties import (
     GeometryStyleError,
     materialize_inline_geometry_properties,
@@ -404,14 +408,14 @@ def _is_full_canvas_solid_rect(
         return False
     try:
         geometry = (
-            float(elem.get("x", "0")),
-            float(elem.get("y", "0")),
-            float(elem.get("width", "0")),
-            float(elem.get("height", "0")),
+            parse_project_geometry_length(elem.get("x", "0"), "x"),
+            parse_project_geometry_length(elem.get("y", "0"), "y"),
+            parse_project_geometry_length(elem.get("width", "0"), "width"),
+            parse_project_geometry_length(elem.get("height", "0"), "height"),
         )
         corner_radius = (
-            float(elem.get("rx", "0")),
-            float(elem.get("ry", "0")),
+            parse_project_geometry_length(elem.get("rx", "0"), "rx"),
+            parse_project_geometry_length(elem.get("ry", "0"), "ry"),
         )
     except ValueError:
         return False
@@ -1191,6 +1195,18 @@ def parse_template_slide(
 
     if _local_tag(root) != "svg":
         raise TemplateStructureError(f"{svg_path.name}: root element must be <svg>")
+
+    geometry_errors = project_geometry_length_errors(root)
+    if geometry_errors:
+        preview = "; ".join(geometry_errors[:8])
+        suffix = (
+            "" if len(geometry_errors) <= 8
+            else f"; +{len(geometry_errors) - 8} more"
+        )
+        raise TemplateStructureError(
+            f"{svg_path.name}: invalid project geometry length(s): "
+            f"{preview}{suffix}"
+        )
 
     master_key = (root.get("data-pptx-master") or "").strip()
     master_name = (root.get("data-pptx-master-name") or "").strip()
