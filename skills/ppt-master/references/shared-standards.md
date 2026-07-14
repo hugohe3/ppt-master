@@ -168,15 +168,17 @@ when the referenced marker fits this native-arrow contract:
 |---|---|
 | Reference | Exact local `url(#id)` to a `<marker>` in `<defs>` |
 | Orientation | `orient="auto"` or `orient="auto-start-reverse"`; the latter reverses `marker-start` while behaving like `auto` at `marker-end` |
-| Shape | A 3-vertex `<polygon>` / closed M/L-only path (triangle), 4-vertex `<polygon>` / closed M/L-only path (diamond), or one `<circle>` / `<ellipse>` (oval) |
-| Path grammar | One explicit `M`/`L` command per vertex followed by `Z`; do not use `H`, `V`, curves, or an implicit multi-point `L` command inside a marker path |
+| Shape | One direct shape representing a DrawingML `triangle`, `stealth`, `arrow`, `diamond`, or `oval` line end: a 3-vertex `<polygon>` / closed path (triangle), a simple concave 4-vertex `<polygon>` / closed path (stealth), an open 3-vertex path (arrow), a simple convex 4-vertex `<polygon>` / closed path (diamond), or one `<circle>` / `<ellipse>` (oval) |
+| Path grammar | Use one explicit `M`/`L` command per vertex. Triangle, stealth, and diamond paths end in `Z`; arrow paths remain open after the third vertex. Do not use `H`, `V`, curves, or an implicit multi-point `L` command inside a marker path |
 | Color parity | Marker fill matches the parent line stroke; DrawingML arrows inherit the line color |
 
-The converter maps the three shapes to DrawingML triangle, diamond, and oval
-line ends. Prefer `<polygon>` for triangle/diamond markers because the vertex
-count is unambiguous. Checker and exporter preflight consume this same contract;
-other marker shapes have no native mapping and block export instead of being
-silently dropped.
+The converter maps these five shapes to their corresponding DrawingML line-end
+types. Prefer `<polygon>` for the closed triangle, stealth, and diamond forms;
+the open arrow form requires `<path>`. Four-vertex shapes must be simple and
+non-degenerate: convex geometry maps to diamond and concave geometry maps to
+stealth. Checker and exporter preflight consume this same contract; other
+marker shapes have no native mapping and block export instead of being silently
+dropped.
 
 ---
 

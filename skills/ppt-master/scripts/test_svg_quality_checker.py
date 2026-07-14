@@ -2575,6 +2575,49 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     stroke_xml,
                 )
 
+    def test_native_line_end_shape_types_pass_checker_and_exporter(self):
+        drawingml_ns = (
+            'http://schemas.openxmlformats.org/drawingml/2006/main'
+        )
+        for marker_type in (
+            'triangle',
+            'stealth',
+            'arrow',
+            'diamond',
+            'oval',
+        ):
+            with self.subTest(marker_type=marker_type):
+                end = ET.Element(
+                    f'{{{drawingml_ns}}}tailEnd',
+                    {'type': marker_type, 'w': 'med', 'len': 'med'},
+                )
+                marker_id, marker_markup = _build_arrow_marker(
+                    end,
+                    '#112233',
+                    id_prefix='roundtrip-',
+                    seq=[0],
+                    reversed_=False,
+                )
+                svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>{marker_markup}</defs>
+  <line x1="80" y1="80" x2="300" y2="80" stroke="#112233"
+        marker-end="url(#{marker_id})"/>
+</svg>'''
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / f'{marker_type}.svg'
+                    svg_path.write_text(svg, encoding='utf-8')
+                    checker_result = SVGQualityChecker().check_file(
+                        str(svg_path)
+                    )
+                    self.assertEqual(checker_result['errors'], [])
+                    slide_xml, *_rest = convert_svg_to_slide_shapes(svg_path)
+                self.assertIn(
+                    f'<a:tailEnd type="{marker_type}" '
+                    'w="med" len="med"/>',
+                    slide_xml,
+                )
+
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
             'http://schemas.openxmlformats.org/drawingml/2006/main'
@@ -2620,6 +2663,22 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         marker-end="url(#broken)"/>
 </svg>''',
             '<marker id="broken"> requires orient="auto"',
+            'invalid project line-end marker',
+        )
+
+    def test_unclassifiable_line_end_shape_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <marker id="broken" orient="auto">
+      <path d="M 0 0 L 10 10 L 0 10 L 10 0 Z" fill="#112233"/>
+    </marker>
+  </defs>
+  <line x1="80" y1="80" x2="300" y2="80" stroke="#112233"
+        marker-end="url(#broken)"/>
+</svg>''',
+            'a simple closed 4-vertex diamond/stealth',
             'invalid project line-end marker',
         )
 
