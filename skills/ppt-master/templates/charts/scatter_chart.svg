@@ -35,8 +35,8 @@
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Ad Spend vs. Sales Revenue Correlation</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">2025 REGIONAL DATA · SAMPLE SIZE N=28</text>
     <!-- ==================== Chart Area ==================== -->
-    <g id="scatter_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="scatter_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "scatter_chart",
               "x": 30,

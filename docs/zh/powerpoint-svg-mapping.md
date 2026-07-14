@@ -67,7 +67,7 @@ PowerPoint 意图
 | 正文占位符 | 含一个文本 carrier 的结构化 slot 组 | `body` 类型 `p:ph` | `Native-stable` | 多行 carrier 仍必须是一个文本框 |
 | 日期、页脚与页码占位符 | 结构化文本 slot | `dt`、`ftr` 与 `sldNum` 类型 `p:ph`，带匹配的 Layout 页眉/页脚标志 | `Native-stable` | 占位符 index 必须唯一且合法 |
 | 图片占位符 | 含一个图片或受支持 crop carrier 的结构化 slot | `pic` 类型 `p:ph` | 在图片合同内为 `Native-stable` | slot 必须恰好含一个兼容的直接 carrier |
-| 图表或表格占位符 | 含一个匹配原生对象 carrier 的结构化 slot | `chart` 或 `tbl` 类型 `p:ph` | 仅原生对象导出时为 `Native-stable` | 需要合法 JSON metadata 与 `--native-objects` |
+| 图表或表格占位符 | 含一个匹配原生对象 carrier 的结构化 slot | `chart` 或 `tbl` 类型 `p:ph` | 仅原生 Chart/Table 导出时为 `Native-stable` | 需要合法 JSON metadata 与 `--native-charts-and-tables` |
 | 通用对象占位符 | 一个兼容 carrier，或显式复合 proxy binding | `obj` 类型 `p:ph` | 原生 binding；复合可见内容仍为普通 shape | 复合 slot 必须使用已登记 proxy 降级方案 |
 | 媒体占位符 | 一个图片或受支持 crop carrier | `media` 类型 `p:ph` | 仅为原生占位符 binding | 不会从装饰性 SVG 内容生成视频或音频 |
 | 空文本占位符 | 空或仅空白的已标记 text carrier | 使用合法 1 pt 下限的不可见 U+200B run，生成一个原生文本 shape | `Native-stable` | 不得添加假破折号、小于 1 pt 的文字或与背景同色的可见字符 |
@@ -161,26 +161,28 @@ preset 形状选择与精确原子片段合同见 [`native-shape-authoring.md`](
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 视觉绘制表格 | 普通 SVG shape、line 与 text | 相互独立的可编辑 PowerPoint shape | 保真度遵循各组件对应行 | 它不是原生表格，也没有 PowerPoint 表格编辑模型 |
-| 原生可编辑表格 | 一个带子 JSON metadata 和可见 fallback 的 `<g data-pptx-native="table">` | 启用原生对象时产生含 `a:tbl` 的 `p:graphicFrame` | 导入受支持表格重建 fallback 加原生 metadata | metadata 必须形成已登记矩形 schema；需要 `--native-objects` |
+| PowerPoint 原生表格 | 一个带 `<metadata type="application/json">` 和可见 fallback 的 `<g data-pptx-replace-with="table">` | 启用原生 Chart/Table 替换时产生含 `a:tbl` 的 `p:graphicFrame` | 导入受支持表格重建 fallback 加替换 metadata | metadata 必须形成已登记矩形 schema；需要 `--native-charts-and-tables` |
 | 合并表格单元格 | 规范原生表格 merge metadata | 原生水平/垂直合并语义 | 封闭 schema 内为 `Native-stable` | 拒绝重叠、歧义或非矩形合并 |
 | 表格单元格格式 | 已登记原生表格单元格格式字段 | 原生单元格 fill、border、text 与 alignment | `Native-normalized` | 不猜测封闭 schema 以外的字段 |
 | 不受支持的原生表格功能 | SVG fallback 或直接源保留 | 保留可见 fallback，或在直接路线保留源 OOXML | 显式 fallback / `Direct preservation` | 不得临时扩展 JSON |
 
-原生对象是可选功能。默认导出保留 SVG fallback，因为它的视觉稳定；原生导出优先 PowerPoint 可编辑性，并可能对外观做归一化。
+PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fallback，并转换为仍可独立编辑的 DrawingML shape，以保持视觉稳定；原生导出改为提供对象的数据源以及图表/表格专属编辑模型，并可能归一化外观。
+
+导入的图表组使用 `data-pptx-fallback-kind="source-preview|normalized|placeholder"` 对可见 fallback 分类；其中 `placeholder` 自身即表示仅用于重建的 fallback。`data-pptx-replacement-status` 则记录 fallback-only 图表或表格导入无法提出有效替换声明的原因。该合同下的导入组均使用 `data-pptx-import-source="pptx"`，有效声明还可携带 `data-pptx-fallback-sha256` 防止陈旧 metadata 覆盖后续视觉编辑。旧 `data-pptx-native*`、`data-pptx-visual-status` 和 `data-pptx-route-status` 写法仍可读，但不再是规范创作格式。
 
 ## 8. PowerPoint 图表
 
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
 | 视觉绘制图表 | 普通 SVG 几何与文本 | 相互独立的可编辑 PowerPoint shape | 保真度遵循各组件对应行 | 没有“编辑数据”工作簿 |
-| 原生经典图表 | 一个带已登记 JSON 数据和可见 fallback 的 `<g data-pptx-native="chart">` | `p:graphicFrame`、经典 chart part 与嵌入工作簿 | 受支持的导入重建 fallback 加原生 metadata | chart type 与数据必须匹配封闭 schema；需要 `--native-objects` |
+| PowerPoint 原生经典图表 | 一个带 `<metadata type="application/json">` 已登记 JSON 数据和可见 fallback 的 `<g data-pptx-replace-with="chart">` | `p:graphicFrame`、经典 chart part 与嵌入工作簿 | 受支持的导入重建 fallback 加替换 metadata | chart type 与数据必须匹配封闭 schema；需要 `--native-charts-and-tables` |
 | 原生 ChartEx 图表 | 具有受支持 ChartEx family 的相同 marker 接口 | `cx:chart` part 与嵌入工作簿 | 受支持 family 可按语义重建 | 仅接受已登记 family/field 组合 |
 | 图表标题、图例、坐标轴、标签与系列格式 | 已登记原生图表 metadata | 原生 chart 属性 | `Native-normalized` | 精确字段与受支持 family 仍以 `shared-standards.md` 为规范 |
-| 图表说明、来源或脚注 | native marker 之外的普通伴随 SVG text | 图表旁边可编辑的 Slide 文本框 | 作为文本时为 `Native-stable` | 不得把 Slide 文案隐藏在 chart JSON 里 |
-| 已编辑 SVG fallback 与过期原生 metadata | 更新后的可见 SVG 加过期 hash | 默认导出保留可见 SVG；原生替换失败 | 显式安全行为 | 编译器绝不默默丢弃更新的视觉编辑 |
+| 图表说明、来源或脚注 | replacement marker 之外的普通伴随 SVG text | 图表旁边可编辑的 Slide 文本框 | 作为文本时为 `Native-stable` | 不得把 Slide 文案隐藏在 chart JSON 里 |
+| 已编辑 SVG fallback 与过期替换 metadata | 更新后的可见 SVG 加过期 hash | 默认导出保留可见 SVG；原生替换失败 | 显式安全行为 | 编译器绝不默默丢弃更新的视觉编辑 |
 | 不支持的 3D 或延后图表 family | SVG 绘制图表、烘焙资产或直接源保留 | 不猜测原生图表 | fallback / `Direct preservation` | 不支持的 alias 必须使原生校验失败 |
 
-完整图表/表格 schema 和受支持 family 列表有意仅保留在[规范化原生对象合同](../../skills/ppt-master/references/shared-standards.md#native-pptx-table--chart-markers-opt-in)中。
+完整图表/表格 schema 和受支持 family 列表有意仅保留在[规范化替换合同](../../skills/ppt-master/references/shared-standards.md#powerpoint-native-chart--table-replacement-markers-opt-in)中。
 
 ## 9. PowerPoint 播放与打包功能
 

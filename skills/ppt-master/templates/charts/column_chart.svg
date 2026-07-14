@@ -39,8 +39,8 @@
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">Q3 2025 · Unit: Millions</text>
     <!-- Chart Area -->
-    <g id="column_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="column_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "column_chart",
               "x": 125,

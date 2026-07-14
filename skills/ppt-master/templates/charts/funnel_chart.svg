@@ -44,8 +44,8 @@
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">Quarterly Performance · Total Volume: 10,000</text>
     <!-- Funnel Chart -->
-    <g id="funnel_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="funnel_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "funnel_chart",
               "x": 340,

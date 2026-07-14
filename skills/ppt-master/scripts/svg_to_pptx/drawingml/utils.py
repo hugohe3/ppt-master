@@ -946,8 +946,12 @@ def _contains_rounded_rect(elem: ET.Element) -> bool:
 
 
 def _contains_native_marker(elem: ET.Element) -> bool:
+    # Import lazily to avoid the native-object package's dependency on this
+    # shared DrawingML utility module during initialization.
+    from ..native_objects.marker_attributes import native_replacement_kind
+
     return any(
-        descendant.get('data-pptx-native') in {'table', 'chart'}
+        native_replacement_kind(descendant) in {'table', 'chart'}
         for descendant in _iter_visual_transform_tree(elem)
     )
 

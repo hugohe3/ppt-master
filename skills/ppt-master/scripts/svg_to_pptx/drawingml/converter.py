@@ -65,15 +65,54 @@ from .elements import (
 )
 from ..animation_config import is_chrome_id
 from ..native_objects import (
+    NativeMarkerAttributeError,
     convert_native_object,
+    native_metadata_payload_matches,
+    native_replacement_kind,
     native_marker_transform,
     snapshot_native_fallback_freshness,
 )
+from ..native_objects.marker_status import native_marker_status_errors
 from ..semantic_markers import is_static_page_frame
 
 
 class SvgNativeConversionError(RuntimeError):
     """Raised when an SVG cannot be faithfully converted to native DrawingML."""
+
+
+def _require_chart_table_marker_attributes(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject contradictory chart/table marker aliases before either route."""
+    errors: list[str] = []
+    for elem in root.iter():
+        if elem.tag.rsplit('}', 1)[-1] == 'metadata':
+            continue
+        marker_errors = native_marker_status_errors(elem)
+        if marker_errors:
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+            errors.extend(f'{marker_id}: {error}' for error in marker_errors)
+            continue
+        marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
+        kind = native_replacement_kind(elem)
+        if not kind:
+            continue
+        for child in elem:
+            if child.tag.rsplit('}', 1)[-1] != 'metadata':
+                continue
+            try:
+                native_metadata_payload_matches(child, kind)
+            except NativeMarkerAttributeError as exc:
+                errors.append(f'{marker_id}: {exc}')
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid chart/table replacement metadata: '
+        f'{preview}{suffix}'
+    )
 
 
 def _require_project_freeform_geometry(
@@ -454,7 +493,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """
     transform = elem.get('transform', '')
     native_subtree_active = ctx.native_objects_enabled and any(
-        descendant.get('data-pptx-native')
+        native_replacement_kind(descendant)
         and descendant.tag.replace(f'{{{SVG_NS}}}', '') != 'metadata'
         for descendant in elem.iter()
     )
@@ -540,8 +579,9 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     if native_subtree_active and child_ctx.opacity_multiplier < 1.0:
         raise SvgNativeConversionError(
-            "Group opacity cannot be applied to data-pptx-native table/chart "
-            "objects; export without --native-objects to use the SVG fallback"
+            "Group opacity cannot be applied to data-pptx-replace-with chart/table "
+            "objects; export without --native-charts-and-tables to use the "
+            "shape-based SVG fallback"
         )
 
     if child_ctx.native_objects_enabled:
@@ -1192,8 +1232,8 @@ def convert_svg_to_slide_shapes(
             size from rendered SVG boxes.
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used for opaque optimized rasters.
-        native_objects: Convert explicit ``data-pptx-native`` table/chart
-            markers to native PowerPoint objects. Default off.
+        native_objects: Convert explicit ``data-pptx-replace-with`` chart/table
+            markers to native PowerPoint Chart/Table objects. Default off.
         animation_group_overrides: Explicit top-level SVG group ids from
             ``animations.json`` that override the legacy chrome-name fallback.
             Explicit structural layer/role/placeholder markers remain excluded.
@@ -1223,6 +1263,7 @@ def convert_svg_to_slide_shapes(
     """
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
+    _require_chart_table_marker_attributes(root, svg_path)
     authored_errors = validate_authored_preset_tree(root)
     if authored_errors:
         raise SvgNativeConversionError(
@@ -1231,7 +1272,13 @@ def convert_svg_to_slide_shapes(
     _mark_unchanged_txbody_groups(root)
     _mark_unchanged_preset_previews(root)
     if native_objects:
-        snapshot_native_fallback_freshness(root)
+        try:
+            snapshot_native_fallback_freshness(root)
+        except NativeMarkerAttributeError as exc:
+            raise SvgNativeConversionError(
+                f'{Path(svg_path).name}: conflicting chart/table replacement '
+                f'metadata: {exc}'
+            ) from exc
     trace_events: list[dict[str, Any]] | None = [] if trace_out is not None else None
     trace_steps: list[dict[str, Any]] = []
 

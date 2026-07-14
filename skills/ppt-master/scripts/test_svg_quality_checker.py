@@ -15,6 +15,18 @@ from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
 )
+from svg_to_pptx.native_objects import (
+    NativeMarkerAttributeError,
+    native_fallback_kind,
+    native_import_source,
+    native_replacement_kind,
+    native_replacement_status,
+)
+from svg_to_pptx.pptx_package.template_structure import (
+    TemplateStructureError,
+    _validate_placeholder_carrier,
+)
+from svg_to_pptx.use_expander import UseExpansionError, expand_local_use_references
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -179,6 +191,355 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'has no matching direct <defs> definition',
             'invalid project paint reference',
         )
+
+    def test_chart_table_replacement_attributes_resolve_canonical_and_legacy(self):
+        import xml.etree.ElementTree as ET
+
+        canonical = ET.fromstring(
+            '<g data-pptx-replace-with="table" '
+            'data-pptx-replacement-status="unsupported-table-style" '
+            'data-pptx-import-source="pptx" '
+            'data-pptx-fallback-kind="normalized"/>'
+        )
+        legacy = ET.fromstring(
+            '<g data-pptx-native="table" '
+            'data-pptx-native-status="unsupported-table-style" '
+            'data-pptx-native-source="pptx" '
+            'data-pptx-visual-status="normalized"/>'
+        )
+        for elem in (canonical, legacy):
+            self.assertEqual(native_replacement_kind(elem), 'table')
+            self.assertEqual(
+                native_replacement_status(elem),
+                'unsupported-table-style',
+            )
+            self.assertEqual(native_import_source(elem), 'pptx')
+            self.assertEqual(native_fallback_kind(elem), 'normalized')
+
+    def test_conflicting_chart_table_replacement_aliases_are_errors(self):
+        import xml.etree.ElementTree as ET
+
+        elem = ET.fromstring(
+            '<g data-pptx-replace-with="chart" data-pptx-native="table"/>'
+        )
+        with self.assertRaisesRegex(
+            NativeMarkerAttributeError,
+            'data-pptx-replace-with.*conflicts',
+        ):
+            native_replacement_kind(elem)
+
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="conflict" data-pptx-replace-with="chart" data-pptx-native="table"/>
+</svg>'''
+        )
+        self.assertFalse(result['passed'])
+        self.assertIn(
+            'data-pptx-replace-with',
+            '\n'.join(result['errors']),
+        )
+        self.assertNotIn(
+            'legacy attribute data-pptx-native',
+            '\n'.join(result['warnings']),
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'conflict.svg'
+            svg_path.write_text(
+                '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="conflict" data-pptx-replace-with="chart" data-pptx-native="table"/>
+</svg>''',
+                encoding='utf-8',
+            )
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'invalid chart/table replacement metadata',
+            ):
+                convert_svg_to_slide_shapes(svg_path)
+
+    def test_all_chart_table_replacement_alias_pairs_reject_conflicts(self):
+        import xml.etree.ElementTree as ET
+
+        cases = (
+            (
+                'data-pptx-replace-with="chart" data-pptx-native="table"',
+                native_replacement_kind,
+            ),
+            (
+                'data-pptx-replacement-status="one" data-pptx-native-status="two"',
+                native_replacement_status,
+            ),
+            (
+                'data-pptx-import-source="pptx" data-pptx-native-source="other"',
+                native_import_source,
+            ),
+            (
+                'data-pptx-fallback-kind="normalized" '
+                'data-pptx-visual-status="source-preview"',
+                native_fallback_kind,
+            ),
+        )
+        for attributes, getter in cases:
+            with self.subTest(attributes=attributes):
+                elem = ET.fromstring(f'<g {attributes}/>')
+                with self.assertRaises(NativeMarkerAttributeError):
+                    getter(elem)
+
+    def test_matching_chart_table_replacement_aliases_are_accepted(self):
+        import xml.etree.ElementTree as ET
+
+        cases = (
+            (
+                '<g data-pptx-replace-with="chart" data-pptx-native="chart"/>',
+                native_replacement_kind,
+                'chart',
+            ),
+            (
+                '<g data-pptx-replacement-status="reason" '
+                'data-pptx-native-status="reason"/>',
+                native_replacement_status,
+                'reason',
+            ),
+            (
+                '<g data-pptx-import-source="pptx" '
+                'data-pptx-native-source="pptx"/>',
+                native_import_source,
+                'pptx',
+            ),
+            (
+                '<g data-pptx-fallback-kind="normalized" '
+                'data-pptx-visual-status="normalized"/>',
+                native_fallback_kind,
+                'normalized',
+            ),
+        )
+        for markup, getter, expected in cases:
+            with self.subTest(markup=markup):
+                self.assertEqual(getter(ET.fromstring(markup)), expected)
+
+    def test_invalid_replacement_tokens_block_checker_and_default_export(self):
+        cases = (
+            ('data-pptx-replace-with="diagram"', 'unsupported data-pptx-replace-with'),
+            ('data-pptx-replace-with="Chart"', 'must use lowercase chart or table'),
+            ('data-pptx-replace-with=" chart "', 'surrounding whitespace'),
+            ('data-pptx-replacement-status=""', 'must not be empty'),
+            ('data-pptx-replacement-status=" reason "', 'surrounding whitespace'),
+            ('data-pptx-import-source="other"', 'unsupported data-pptx-import-source'),
+            ('data-pptx-fallback-kind="Normalized"', 'unsupported data-pptx-fallback-kind'),
+        )
+        for attributes, expected in cases:
+            content = (
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+                f'<g id="marker" {attributes}/></svg>'
+            )
+            with self.subTest(attributes=attributes):
+                result = self._check(content)
+                self.assertFalse(result['passed'])
+                self.assertIn(expected, '\n'.join(result['errors']))
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / 'invalid-token.svg'
+                    svg_path.write_text(content, encoding='utf-8')
+                    with self.assertRaisesRegex(
+                        SvgNativeConversionError,
+                        'invalid chart/table replacement metadata',
+                    ):
+                        convert_svg_to_slide_shapes(svg_path)
+
+    def test_replacement_status_uses_closed_importer_reason_codes(self):
+        legal = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="fallback" data-pptx-replacement-status="unsupported-table-style">
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        made_up = legal.replace('unsupported-table-style', 'made-up-reason')
+
+        legal_result = self._check(legal)
+        self.assertTrue(legal_result['passed'])
+        self.assertEqual(legal_result['errors'], [])
+
+        made_up_result = self._check(made_up)
+        self.assertFalse(made_up_result['passed'])
+        self.assertIn(
+            "unsupported data-pptx-replacement-status value: 'made-up-reason'",
+            '\n'.join(made_up_result['errors']),
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            legal_path = Path(tmp_dir) / 'legal.svg'
+            made_up_path = Path(tmp_dir) / 'made-up.svg'
+            legal_path.write_text(legal, encoding='utf-8')
+            made_up_path.write_text(made_up, encoding='utf-8')
+            convert_svg_to_slide_shapes(legal_path)
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'unsupported data-pptx-replacement-status value',
+            ):
+                convert_svg_to_slide_shapes(made_up_path)
+
+    def test_legacy_replacement_attributes_remain_non_blocking(self):
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="legacy-table" data-pptx-native="table"
+     data-pptx-native-source="pptx" data-pptx-visual-status="normalized"
+     data-pptx-x="80" data-pptx-y="80"
+     data-pptx-width="320" data-pptx-height="180">
+    <metadata data-pptx-kind="table">{"rows":[["A"]]}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        )
+        warning_text = '\n'.join(result['warnings'])
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertIn('legacy attribute data-pptx-native', warning_text)
+        self.assertIn('legacy metadata attribute data-pptx-kind', warning_text)
+
+    def test_canonical_placeholder_fallback_does_not_require_route_status(self):
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="placeholder" data-pptx-fallback-kind="placeholder">
+    <rect x="80" y="80" width="320" height="180" fill="#EEEEEE"/>
+  </g>
+</svg>'''
+        )
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertIn(
+            'reconstruction-only placeholder',
+            '\n'.join(result['warnings']),
+        )
+
+    def test_legacy_placeholder_fallback_still_requires_legacy_route_status(self):
+        result = self._check(
+            '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="placeholder" data-pptx-visual-status="placeholder">
+    <rect x="80" y="80" width="320" height="180" fill="#EEEEEE"/>
+  </g>
+</svg>'''
+        )
+        self.assertFalse(result['passed'])
+        self.assertIn(
+            "data-pptx-route-status='reconstruction-only'",
+            '\n'.join(result['errors']),
+        )
+
+    def test_metadata_kind_must_match_parent_replacement_kind(self):
+        content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="chart" data-pptx-replace-with="chart"
+     data-pptx-x="80" data-pptx-y="80"
+     data-pptx-width="320" data-pptx-height="180">
+    <metadata type="application/json" data-pptx-kind="table">{"rows":[["A"]]}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        result = self._check(content)
+        self.assertFalse(result['passed'])
+        self.assertIn(
+            "metadata kind 'table' conflicts with parent replacement kind 'chart'",
+            '\n'.join(result['errors']),
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'metadata-conflict.svg'
+            svg_path.write_text(content, encoding='utf-8')
+            for native_objects in (False, True):
+                with self.subTest(native_objects=native_objects):
+                    with self.assertRaisesRegex(
+                        SvgNativeConversionError,
+                        "metadata kind 'table' conflicts",
+                    ):
+                        convert_svg_to_slide_shapes(
+                            svg_path,
+                            native_objects=native_objects,
+                        )
+
+    def test_conflicting_legacy_metadata_kind_aliases_are_errors(self):
+        content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="chart" data-pptx-replace-with="chart"
+     data-pptx-x="80" data-pptx-y="80"
+     data-pptx-width="320" data-pptx-height="180">
+    <metadata type="application/json" data-pptx-native="chart"
+              data-pptx-kind="table">{"series":[]}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        result = self._check(content)
+        self.assertFalse(result['passed'])
+        self.assertIn(
+            'metadata data-pptx-native conflicts with data-pptx-kind',
+            '\n'.join(result['errors']),
+        )
+        self.assertNotIn(
+            'legacy metadata attribute',
+            '\n'.join(result['warnings']),
+        )
+
+    def test_structured_placeholder_wraps_replacement_alias_conflicts(self):
+        import xml.etree.ElementTree as ET
+
+        carrier = ET.fromstring(
+            '<g data-pptx-replace-with="chart" data-pptx-native="table"/>'
+        )
+        with self.assertRaisesRegex(
+            TemplateStructureError,
+            'conflicting chart/table replacement metadata',
+        ):
+            _validate_placeholder_carrier(
+                carrier,
+                'chart',
+                svg_path=Path('template.svg'),
+                element_id='chart-slot',
+            )
+
+    def test_local_use_rejects_all_canonical_replacement_metadata(self):
+        import xml.etree.ElementTree as ET
+
+        attributes = (
+            'data-pptx-replace-with="chart"',
+            'data-pptx-replacement-status="reason"',
+            'data-pptx-import-source="pptx"',
+            'data-pptx-fallback-kind="normalized"',
+            'data-pptx-fallback-sha256="' + ('0' * 64) + '"',
+        )
+        for attribute in attributes:
+            root = ET.fromstring(
+                '<svg xmlns="http://www.w3.org/2000/svg">'
+                f'<defs><g id="source" {attribute}><rect width="10" height="10"/></g></defs>'
+                '<use href="#source"/></svg>'
+            )
+            with self.subTest(attribute=attribute):
+                with self.assertRaises(UseExpansionError):
+                    expand_local_use_references(root)
+
+    def test_canonical_and_legacy_table_markers_export_identically(self):
+        payload = '{"x":80,"y":80,"width":320,"height":180,"rows":[["A"]]}'
+        canonical = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="table" data-pptx-replace-with="table">
+    <metadata type="application/json">{payload}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+        legacy = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <g id="table" data-pptx-native="table">
+    <metadata data-pptx-native="table">{payload}</metadata>
+    <rect x="80" y="80" width="320" height="180" fill="#FFFFFF"/>
+  </g>
+</svg>'''
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            canonical_path = Path(tmp_dir) / 'canonical.svg'
+            legacy_path = Path(tmp_dir) / 'legacy.svg'
+            canonical_path.write_text(canonical, encoding='utf-8')
+            legacy_path.write_text(legacy, encoding='utf-8')
+            canonical_result = convert_svg_to_slide_shapes(
+                canonical_path,
+                native_objects=True,
+            )
+            legacy_result = convert_svg_to_slide_shapes(
+                legacy_path,
+                native_objects=True,
+            )
+
+        self.assertEqual(canonical_result, legacy_result)
 
 
 if __name__ == '__main__':

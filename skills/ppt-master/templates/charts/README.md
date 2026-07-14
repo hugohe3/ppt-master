@@ -12,15 +12,15 @@ To browse the library, open `charts_index.json` and scan the `charts` block top-
 
 See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typography, and SVG authoring conventions all templates must follow.
 
-## Native editable export markers
+## Native Chart/Table replacement markers
 
-Supported data chart templates include a `<g data-pptx-native="chart">` marker by default, and pure text-grid table templates include a `<g data-pptx-native="table">` marker the same way. The default SVG export path is unchanged: the fallback vector artwork is exported exactly as drawn. When `svg_to_pptx.py --native-objects` is enabled, that marked fallback group is replaced with an editable PowerPoint chart or table using the JSON metadata inside the child `<metadata data-pptx-native="...">` node.
+Supported data chart templates include a `<g data-pptx-replace-with="chart">` marker by default, and pure text-grid table templates include a `<g data-pptx-replace-with="table">` marker the same way. The default SVG export path is unchanged: the fallback vector artwork is exported as shape-based DrawingML exactly as drawn. When `svg_to_pptx.py --native-charts-and-tables` is enabled, that fallback group is replaced with a native PowerPoint Chart or Table object using the JSON metadata inside its child `<metadata type="application/json">` node. The legacy `--native-objects` spelling remains a compatibility alias.
 
-`--native-objects` is an explicit editable-first opt-in and may be lossy or visually normalized. Marker-local value labels, center KPIs, callouts, quadrant notes, fixed axis ranges, and custom binning/splits may not survive native replacement unless represented by the payload. ChartEx palette entries do survive when supplied through valid payload colors, but this does not preserve every ChartEx style detail. Detectable information-loss risks should be reported as warnings, not handled by disabling an otherwise supported native marker. Review those warnings and compare the native export with the default SVG export before delivery.
+`--native-charts-and-tables` is an explicit native-object opt-in and may be lossy or visually normalized. Replacement-local value labels, center KPIs, callouts, quadrant notes, fixed axis ranges, and custom binning/splits may not survive native replacement unless represented by the payload. ChartEx palette entries do survive when supplied through valid payload colors, but this does not preserve every ChartEx style detail. Detectable information-loss risks should be reported as warnings, not handled by disabling an otherwise supported replacement marker. Review those warnings and compare the native-object export with the default shape-based export before delivery.
 
-Native marker authoring remains active for all 23 currently supported data-chart templates:
+Native replacement authoring remains active for all 23 currently supported data-chart templates:
 
-| Family | Active native-marker templates | Native output |
+| Family | Active replacement templates | Native output |
 |---|---|---|
 | Category comparison | `column_chart`, `horizontal_bar_chart`, `grouped_bar_chart`, `stacked_bar_chart` | Classic category charts |
 | Time trend | `line_chart`, `area_chart`, `stacked_area_chart`, `dual_axis_line_chart` | Classic line/area/combo charts |
@@ -29,7 +29,7 @@ Native marker authoring remains active for all 23 currently supported data-chart
 | Specialty business charts | `waterfall_chart`, `funnel_chart`, `stock_chart`, `radar_chart` | ChartEx or classic specialty charts |
 | Text-grid tables | `basic_table`, `financial_statement_table` | Native DrawingML tables |
 
-Markers must include explicit `name`, `x`, `y`, `width`, and `height` fields so the editable frame aligns with the fallback drawing. Keep legends, explanatory cards, source notes, center KPIs, and custom callouts outside the marker when they must remain as separate editable shapes; otherwise accept and review the native-export warning. Canonical rectangular merged text cells may use anchor-only `row_span` / `col_span` metadata with blank covered cells; nonrectangular merges and graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route. Per-side borders, plain multi-paragraph cells, and the closed run-rich paragraph schema use the contracts in [`shared-standards.md`](../../references/shared-standards.md#native-pptx-table--chart-markers-opt-in). Relationship-bearing text, structural line breaks, fields, tabs, bullets, and arbitrary rich-text OOXML stay on the SVG fallback route.
+Replacement payloads must include explicit `name`, `x`, `y`, `width`, and `height` fields so the native frame aligns with the fallback drawing. Keep legends, explanatory cards, source notes, center KPIs, and custom callouts outside the marked group when they must remain separate shapes; otherwise accept and review the native-object export warning. Canonical rectangular merged text cells may use anchor-only `row_span` / `col_span` metadata with blank covered cells; nonrectangular merges and graphical cells (harvey balls, rating dots, avatars) stay unmarked on the SVG fallback route. Per-side borders, plain multi-paragraph cells, and the closed run-rich paragraph schema use the contracts in [`shared-standards.md`](../../references/shared-standards.md#powerpoint-native-chart--table-replacement-markers-opt-in). Relationship-bearing text, structural line breaks, fields, tabs, bullets, and arbitrary rich-text OOXML stay on the SVG fallback route.
 
 ## Usage
 

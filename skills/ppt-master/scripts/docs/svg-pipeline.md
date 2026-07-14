@@ -65,7 +65,7 @@ Convert project SVGs into PPTX.
 
 ```bash
 python3 scripts/svg_to_pptx.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> --native-objects
+python3 scripts/svg_to_pptx.py <project_path> --native-charts-and-tables
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure structured  # deck/layout template override
 python3 scripts/svg_to_pptx.py <project_path> --pptx-structure flat  # free-design/brand-only override
 # Template-import visual round-trip diagnostic only:

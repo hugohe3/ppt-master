@@ -83,7 +83,7 @@ Classify each visible object:
 
 **Hard rule — no visual redesign**: Do not change wording, geometry, paint, assets, or z-order except for the normalization required to flatten a fixed Master/Layout group. Render before and after any transform-flattening edit and require pixel equivalence.
 
-**Hard rule — native metadata below structural layers**: Keep the complete lossless import artifact in the backup/evidence set. An unchanged imported shape may keep the source metadata already supported by the converter when it remains Slide-local or inside a slot; no additional opt-in marker exists. A logical `<g>` cannot become Master/Layout because those layers require direct atoms. Normalize fixed-layer objects into direct atom(s), rebuilding a preset when supported and otherwise keeping the current SVG fallback. Any geometry, paint, text, or fingerprint change invalidates stale source metadata. `data-pptx-native` remains reserved for chart/table markers.
+**Hard rule — native metadata below structural layers**: Keep the complete lossless import artifact in the backup/evidence set. An unchanged imported shape may keep the source metadata already supported by the converter when it remains Slide-local or inside a slot; no additional opt-in marker exists. A logical `<g>` cannot become Master/Layout because those layers require direct atoms. Normalize fixed-layer objects into direct atom(s), rebuilding a preset when supported and otherwise keeping the current SVG fallback. Any geometry, paint, text, or fingerprint change invalidates stale source metadata. `data-pptx-replace-with` remains reserved for optional PowerPoint-native Chart/Table replacement markers.
 
 ---
 

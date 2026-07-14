@@ -4496,8 +4496,8 @@ def create_pptx_with_native_svg(
             from rendered SVG boxes.
         image_scale: Target image pixels per SVG display pixel.
         image_quality: JPEG quality used for opaque optimized rasters.
-        native_objects: Convert explicit ``data-pptx-native`` table/chart
-            markers to native PowerPoint objects. Default off.
+        native_objects: Replace explicit ``data-pptx-replace-with`` chart/table
+            fallback groups with native PowerPoint Chart/Table objects. Default off.
         conversion_trace_path: Optional JSON path for native conversion diagnostics.
         structure_name: Current deck identity used to name a flat Master, Layout,
             and theme.
@@ -4621,8 +4621,9 @@ def create_pptx_with_native_svg(
                 pptx_structure.capitalize()
             )
             raise TemplateStructureError(
-                f"{context} {kinds} placeholder(s) require --native-objects so each "
-                "marker becomes one native PowerPoint object"
+                f"{context} {kinds} placeholder(s) require "
+                "--native-charts-and-tables so each marker becomes one native "
+                "PowerPoint Chart/Table object"
             )
 
     # Check compatibility mode dependencies

@@ -246,8 +246,10 @@ python3 scripts/pptx_to_svg.py deck.pptx --inheritance-mode flat
 | `layered` | Only the layered `svg/` view and inheritance metadata |
 | `flat` | One self-contained slide SVG per page under `svg/` |
 
-Supported text-grid tables and conservative classic-chart caches carry
-`data-pptx-native` metadata beside their SVG fallback. Table import requires
+Supported text-grid tables and conservative classic-chart caches carry a
+`data-pptx-replace-with` claim beside their SVG fallback, with the replacement
+payload in a child `<metadata type="application/json">`. The parent claim
+selects the table or chart schema. Table import requires
 exact physical row/grid topology and accepts canonical rectangular merges,
 safe solid/no-fill per-side borders, plain multi-paragraph cells, and a closed
 run-rich paragraph schema.
@@ -258,15 +260,18 @@ extensions, noncanonical/overlapping merges, nonblank merge slaves, unsafe
 border XML, non-solid fills, structural line breaks/fields/tabs/bullets, and
 broken text topology remain fallback-only.
 Markers remain dormant
-unless a later export uses `--native-objects`. That opt-in is editable-first:
-it may normalize styling or omit marker-local details not represented by the
+unless a later export uses `--native-charts-and-tables`. That opt-in is
+data-object-first: the default fallback still exports as editable DrawingML
+shapes, while the opt-in supplies a data source and PowerPoint's
+chart/table-specific object model.
+The native-object route may normalize styling or omit marker-local details not represented by the
 payload, and export reports that risk without disabling an otherwise supported
 active marker. Unsupported tables keep their
 rendered SVG table; unsupported charts keep a baked preview when one exists.
 For the currently supported parsed classic families (column/bar/line/area,
 pie/doughnut, scatter, and bubble), a chart without a baked preview receives a
 deterministic readable fallback marked
-`data-pptx-visual-status="normalized"`. Unknown style XML still fails closed;
+`data-pptx-fallback-kind="normalized"`. Unknown style XML still fails closed;
 common solid/no-fill/line/marker forms and scheme colors are normalized for the
 SVG fallback and core payload colors, while native opt-in may still normalize
 unmodeled alpha, line, marker, or no-fill details. Common General, decimal,
@@ -274,27 +279,34 @@ grouped, percent, and simple currency-prefix data-label formats render
 deterministically; an unknown Excel format program keeps the active payload but
 does not claim a normalized fallback. Active types outside the current renderer
 continue to use an explicit placeholder marked
-`data-pptx-visual-status="placeholder"` and
-`data-pptx-route-status="reconstruction-only"`. Validation and export report
-that route as a warning. Default export keeps the placeholder; when the same
-group has a valid active native-chart payload, `--native-objects` may still
-reconstruct the editable chart. Invalid or contradictory status declarations
-remain errors.
-Fallback-only native capability uses `data-pptx-native-status` and remains a
-warning when the SVG fallback itself is complete.
+`data-pptx-fallback-kind="placeholder"`. Validation and export report that
+reconstruction-only fallback as a warning. Default export keeps the
+placeholder; when the same group has a valid active chart replacement payload,
+`--native-charts-and-tables` may still reconstruct the PowerPoint-native chart.
+Invalid or contradictory fallback declarations remain errors. Fallback-only
+replacement capability uses `data-pptx-replacement-status` and remains a
+warning when the SVG fallback itself is complete. Imported table/chart groups
+under this contract carry `data-pptx-import-source="pptx"`, whether active or
+fallback-only; generated authoring omits this provenance attribute.
 
 Active imported markers also carry `data-pptx-fallback-sha256`, computed over
 their canonical fallback plus reachable document-level SVG fragment definitions.
 A later visible edit, reachable definition change, local reference-target
-change, or marker transform makes the native metadata stale. The mandatory
+change, or marker transform makes the replacement metadata stale. The mandatory
 quality checker reports the mismatch; default export keeps the edited fallback,
-while `--native-objects` fails before replacement so it cannot discard that edit.
+while `--native-charts-and-tables` fails before replacement so it cannot discard that edit.
 `visibility:hidden` content, marker-local unused definitions, and explicitly
 referenced document-level target roots (even when hidden) are included
 conservatively; marker-local `display:none` subtrees are excluded, and external
 file bytes are not read.
 A legacy marker without the hash remains native-compatible and warns in the
 checker/native route that stale detection is unavailable.
+
+Legacy `data-pptx-native*`, `data-pptx-visual-status`, and
+`data-pptx-route-status` spellings remain read-compatible. New importer output
+and generated SVG use the replacement/fallback names above. The old
+`--native-objects` option remains a compatibility alias for
+`--native-charts-and-tables`.
 
 For table style `{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}`, the importer resolves
 the normalized `wholeTbl`, `firstRow`, `band1H`/`band2H`, theme color/font, and
@@ -319,7 +331,7 @@ out-of-range values fail closed. These additions do not expand the normalized
 renderer.
 Safe stock series style may pass the structural gate, while stock series,
 `hiLowLines`, and up-down bar local styling can still normalize under the
-editable-first contract.
+data-object-first contract.
 ChartEx import accepts exactly the validated treemap, sunburst, histogram,
 pareto, box-whisker, waterfall, and funnel data models. Their supported
 hierarchy/category/value/series/subtotal topology round-trips to native output.

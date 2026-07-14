@@ -50,8 +50,8 @@
               font-size="15" fill="#475569">Division C</text>
     </g>
     <!-- Chart Area -->
-    <g id="grouped_bar_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="grouped_bar_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "grouped_bar_chart",
               "x": 125,

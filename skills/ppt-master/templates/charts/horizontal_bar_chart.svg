@@ -36,8 +36,8 @@
     <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">2025 Consumer Survey Report · Sample Size N=5,000</text>
     <!-- Chart Area -->
-    <g id="horizontal_bar_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="horizontal_bar_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "horizontal_bar_chart",
               "x": 290,

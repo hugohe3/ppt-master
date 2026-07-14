@@ -214,7 +214,7 @@ the original `<use>` / `<symbol>` structure.
 | Aspect ratio | Default/aligned `meet` values and plain `preserveAspectRatio="none"` are supported. `slice`, `refX`, and `refY` are forbidden. |
 | Viewport boundary | Symbol artwork MUST stay inside its `viewBox`; expansion does not reproduce symbol overflow clipping. |
 | Internal references | Author exact `href="#id"` and `url(#id)` fragments. The expander also reads legacy `xlink:href="#id"` and rewrites all instance-local cloned IDs. |
-| Structural metadata | Neither the `<use>` instance nor its referenced subtree may carry `data-pptx-layer*`, `data-pptx-native*`, or `data-pptx-placeholder*`. Author those objects directly instead of reusing them. |
+| Structural metadata | Neither the `<use>` instance nor its referenced subtree may carry `data-pptx-layer*`, chart/table replacement metadata (`data-pptx-replace-with`, `data-pptx-replacement-*`, `data-pptx-import-source`, or `data-pptx-fallback-*`), or `data-pptx-placeholder*`. Author those objects directly instead of reusing them. |
 | Safety limits | A reachable reference chain may contain at most 64 instances, and one SVG may expand at most 10,000 local `<use>` instances. |
 
 **Forbidden — unsafe local references**:
@@ -289,8 +289,8 @@ SVG fallback. Do not use this normalization to change ownership or appearance.
 an authored template. Keep the full lossless import SVG separately as the
 audit/fallback source. Mirror may reuse only metadata already supported by the
 converter on unchanged Slide-local/slot objects; unsupported or edited objects
-use the current SVG fallback. `data-pptx-native` remains reserved for native
-chart/table markers.
+use the current SVG fallback. `data-pptx-replace-with` remains reserved for the
+optional PowerPoint-native Chart/Table replacement contract.
 
 **Registry and rendering rules**:
 
@@ -450,7 +450,7 @@ group value is distributed across them.
 
 The converter nevertheless accepts `<g opacity="...">` and inline group
 `opacity` by multiplying group alpha into descendants. That path is
-`Approximate`; nested group/child alpha multiplies, and `--native-objects`
+`Approximate`; nested group/child alpha multiplies, and `--native-charts-and-tables`
 rejects transparent native table/chart markers. The quality checker reports a
 non-blocking fidelity warning so existing or intentionally authored input can
 continue without modification.
@@ -1159,22 +1159,27 @@ itself is never used as a repeatable tile.
 it errors when the pattern uses `patternTransform` or names a preset outside
 this enum.
 
-### Native PPTX Table / Chart Markers (Opt-in)
+### PowerPoint-Native Chart / Table Replacement Markers (Opt-in)
 
 Native PowerPoint tables and Excel-backed charts activate at export time only. The default chart/table route remains hand-authored SVG geometry so the deck stays pixel-stable across PowerPoint / Keynote / LibreOffice / WPS.
 
 **Authoring — markers are standard on supported data charts and text-grid tables**: Executor writes the marker at draw time on every data chart whose type falls in the supported set and on every pure text-grid data table ([executor-base.md §3.2](executor-base.md)), so any deck can later form native objects without regeneration. Canonical rectangular merged text cells may use the narrow `row_span` / `col_span` contract below; graphical cells stay unmarked on the SVG fallback route. The marker group supplies both: visible SVG fallback children for browser/live-preview rendering, and JSON metadata for `svg_to_pptx` native export.
 
-**Hard rule — activation is the opt-in, dormant unless exported with `--native-objects`**: A marker only declares that a group is eligible for native export. Normal `svg_to_pptx.py` runs keep the fallback SVG children. Pass `--native-objects` only when editability in PowerPoint matters more than cross-renderer layout fidelity: it emits the PowerPoint object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint chart/table object rather than a pixel-identical SVG drawing.
+**Hard rule — activation is the opt-in, dormant unless exported with `--native-charts-and-tables`**: A marker only declares that a group is eligible for PowerPoint-native Chart/Table replacement. Normal `svg_to_pptx.py` runs keep the fallback SVG children and convert them into independently editable DrawingML shapes. Pass `--native-charts-and-tables` only when the data source and chart/table-specific object model matter more than cross-renderer layout fidelity: it emits the PowerPoint Chart/Table object and skips the fallback children to avoid duplicates. Native styling preserves the core palette, text, axis, grid, and background colors where possible, but it is still a PowerPoint Chart/Table object rather than a pixel-identical SVG drawing.
 
-The native route is deliberately editable-first and may be lossy: marker-local labels, callouts, KPIs, guide lines, custom split/bin semantics, or styling that is absent from the payload may disappear or normalize. Export warns about this route-level risk and any narrower issue it can detect. Loss of visual parity is not grounds to remove an active marker that the emitter can otherwise convert; use the default SVG-fallback export when exact authored artwork matters more than editability.
+The native route is deliberately data-object-first and may be lossy: marker-local labels, callouts, KPIs, guide lines, custom split/bin semantics, or styling that is absent from the payload may disappear or normalize. Export warns about this route-level risk and any narrower issue it can detect. Loss of visual parity is not grounds to remove an active marker that the emitter can otherwise convert; use the default SVG-fallback export when exact authored artwork matters more than a native data source and object-specific controls.
 
-| Marker | Native output | Required metadata |
+| Replacement marker | Native output | Required metadata |
 |---|---|---|
-| `<g data-pptx-native="table">` | `<p:graphicFrame>` with `<a:tbl>` | bounds + `columns` or `rows` |
-| `<g data-pptx-native="chart">` | `<p:graphicFrame>` with `c:chart` / `cx:chart` + chart part + embedded workbook | bounds + `type`, plus chart data |
+| `<g data-pptx-replace-with="table">` | `<p:graphicFrame>` with `<a:tbl>` | bounds + `columns` or `rows` |
+| `<g data-pptx-replace-with="chart">` | `<p:graphicFrame>` with `c:chart` / `cx:chart` + chart part + embedded workbook | bounds + `type`, plus chart data |
 
-**Metadata placement**: Put JSON in a child `<metadata data-pptx-native="...">`. Attribute JSON (`data-pptx-json="..."`) is supported but harder to XML-escape correctly.
+**Metadata placement**: Put JSON in one child
+`<metadata type="application/json">`. The parent group's
+`data-pptx-replace-with` value selects the table or chart schema, so the
+metadata child does not repeat an object-kind attribute. Attribute JSON
+(`data-pptx-json="..."`) remains read-compatible but is harder to XML-escape
+correctly and is not canonical authoring.
 
 **Bounds**: Provide `x`, `y`, `width`, and `height` in metadata, or as
 `data-pptx-x` / `data-pptx-y` / `data-pptx-width` / `data-pptx-height` on the
@@ -1187,7 +1192,7 @@ inside PowerPoint's 32-bit DrawingML coordinate range; `width` and `height`
 must resolve to at least one EMU. Native table frames must additionally resolve
 to at least one EMU per resolved row and column.
 
-**Validation**: `svg_quality_checker.py` validates native marker kind, JSON
+**Validation**: `svg_quality_checker.py` validates replacement marker kind, JSON
 metadata, bounds/fallback availability, table rows/columns, supported chart
 type, chart data shape, and any imported fallback baseline before export.
 
@@ -1196,8 +1201,8 @@ by `pptx_to_svg.py` carry `data-pptx-fallback-sha256`, a canonical hash of the
 marker fallback plus reachable document-level SVG fragment definitions. Editing
 geometry/text/paint, switching a local `url(#...)` or `href="#..."` target,
 changing a reachable definition, or changing the marker transform makes the
-native metadata stale. The mandatory quality checker warns and the default route
-keeps the edited SVG; `--native-objects` hard-fails before replacement so it
+replacement metadata stale. The mandatory quality checker warns and the default route
+keeps the edited SVG; `--native-charts-and-tables` hard-fails before replacement so it
 cannot discard that edit. Metadata/title/description nodes, `data-pptx-*`
 runtime attributes, marker-local stable ID renames, and marker-local
 `display:none` subtrees are excluded. `visibility:hidden` content,
@@ -1208,23 +1213,42 @@ Hashless legacy markers remain native-compatible and warn in the checker/native
 route that stale detection is unavailable. A stale hash is an integrity mismatch,
 not a visual-parity gate on an unchanged active marker.
 
-**Hard rule — imported visual/route status**: A PPTX chart with a complete baked preview
-may carry `data-pptx-visual-status="source-preview"`. Supported parsed classic
-families without a preview use a deterministic readable fallback marked
-`data-pptx-visual-status="normalized"`; it is explicitly not source-exact.
-When no current renderer exists, the importer emits its typed reconstruction aid with both
-`data-pptx-visual-status="placeholder"` and
-`data-pptx-route-status="reconstruction-only"`. The valid pair is diagnostic:
-quality checking and export warn, default export keeps the placeholder, and
-`--native-objects` may reconstruct an editable chart when the same group has a
-valid active `data-pptx-native="chart"` payload. The allowed values and pair
-remain closed; unknown, whitespace-padded, or contradictory values fail.
-`data-pptx-native` and `data-pptx-native-status` are mutually exclusive on the
-same visible group.
+**Hard rule — imported fallback kind**: A PPTX chart with a complete baked
+preview may carry `data-pptx-fallback-kind="source-preview"`. Supported parsed
+classic families without a preview use a deterministic readable fallback
+marked `data-pptx-fallback-kind="normalized"`; it is explicitly not
+source-exact. When no current renderer exists, the importer emits its typed
+reconstruction aid with `data-pptx-fallback-kind="placeholder"`. That value
+alone records the diagnostic reconstruction-only fallback: quality checking
+and export warn, default export keeps the placeholder, and
+`--native-charts-and-tables` may reconstruct a PowerPoint-native chart when the same
+group has a valid active `data-pptx-replace-with="chart"` payload. The allowed
+values remain closed; unknown, whitespace-padded, or contradictory values fail.
+`data-pptx-replacement-status` records the closed reason code when imported
+content has a complete visual fallback but cannot make an active replacement
+claim. It and `data-pptx-replace-with` are mutually exclusive on the same
+visible group.
+
+**Imported replacement provenance**: A table/chart group created by
+`pptx_to_svg.py` under this contract—whether it has an active replacement claim
+or a fallback-only status—carries `data-pptx-import-source="pptx"`. This records
+provenance for the imported-style normalization path; it does not identify the
+replacement kind, and generated authoring omits it.
+
+**Legacy read compatibility**: The converter and checker continue to read
+`data-pptx-native`, `data-pptx-native-status`, `data-pptx-native-source`, and
+`data-pptx-visual-status`. The legacy pair
+`data-pptx-visual-status="placeholder"` plus
+`data-pptx-route-status="reconstruction-only"` maps to canonical
+`data-pptx-fallback-kind="placeholder"`; canonical authoring has no route-status
+attribute. `--native-objects` remains a compatibility alias for
+`--native-charts-and-tables`. New generated SVG and documented commands MUST
+use the canonical spellings. If a legacy and canonical attribute are both
+present, they must resolve to the same value; a conflict fails validation.
 
 ```xml
-<g id="p03-revenue-chart" data-pptx-native="chart">
-  <metadata data-pptx-native="chart">
+<g id="p03-revenue-chart" data-pptx-replace-with="chart">
+  <metadata type="application/json">
     {
       "x": 120, "y": 150, "width": 520, "height": 320,
       "type": "column",
@@ -1281,7 +1305,7 @@ has no explicit table font, use the deck body family and locked body size from
 
 **Hard rule — table metadata is the native source of truth**: Every row,
 summary line, value, and cell-level style that must survive
-`--native-objects` must be present in `columns` / `rows`. SVG fallback text is
+`--native-charts-and-tables` must be present in `columns` / `rows`. SVG fallback text is
 discarded during native export. `svg_quality_checker.py` warns when visible
 fallback `<text>` inside a native table marker does not appear in metadata.
 For numeric or currency columns, use cell objects with `align: "r"`; SVG
@@ -1385,8 +1409,8 @@ becomes the second rich-text line of that classic chart title. `title`,
 `subtitle`, and axis-title values may be strings or objects with `text`,
 `font_size`, `font_family`, and `color` when the fallback uses local role
 typography. `svg_quality_checker.py` rejects `title`, `subtitle`, or axis-title
-metadata whose text is not visible inside the native marker's fallback. Direct
-`--native-objects` export keeps the chart native but omits that inconsistent
+metadata whose text is not visible inside the replacement marker's fallback. Direct
+`--native-charts-and-tables` export keeps the chart native but omits that inconsistent
 chrome with a warning. chartEx keeps PowerPoint's empty `<cx:title>` and emits
 the title / subtitle as companion editable text boxes until chartEx rich titles
 are validated. Axis
@@ -1450,7 +1474,7 @@ order. Use either `series` with four entries, or top-level `open`, `high`,
 stock charts with shared numeric date caches, `hiLowLines`, and `upDownBars`.
 Safe stock series style may pass the structural gate, but stock series,
 `hiLowLines`, and up-down bar local styling can still normalize under the
-editable-first contract. HLC, volume, noncanonical structure, and style XML
+data-object-first contract. HLC, volume, noncanonical structure, and style XML
 outside the safe parsing boundary stay fallback-only.
 
 **PPTX chart-import boundary**: The importer recognizes conservative classic
@@ -1504,7 +1528,7 @@ cylinder, pyramid variants, and `surface`) are unsupported.
 Native legends are opt-in through `show_legend: true`; `legend_position`
 defaults to `bottom` and accepts `top`, `left`, or `right`.
 
-**Forbidden — native marker transforms**: Do not rotate, skew, or matrix-transform native table/chart marker groups. Translate / scale is accepted; complex transforms fail export because PowerPoint native table/chart frames do not preserve arbitrary SVG transforms.
+**Forbidden — replacement marker transforms**: Do not rotate, skew, or matrix-transform table/chart replacement groups. Translate / scale is accepted; complex transforms fail export because PowerPoint-native table/chart frames do not preserve arbitrary SVG transforms.
 
 ### PPTX Structure Routing
 
@@ -1596,7 +1620,7 @@ and visible-stroke rects also remain ordinary objects.
 | `title`, `subtitle`, `body` | one `<text data-pptx-placeholder-carrier="true">` | `title`, `subTitle`, `body` |
 | `date`, `footer`, `slide-number` | one `<text data-pptx-placeholder-carrier="true">` | `dt`, `ftr`, `sldNum` |
 | `picture` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `pic` |
-| `chart`, `table` | one matching `data-pptx-native` marker group, marked as carrier | `chart`, `tbl` |
+| `chart`, `table` | one matching `data-pptx-replace-with` marker group, marked as carrier | `chart`, `tbl` |
 | `object` | one text, image, or basic SVG shape marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
 | `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `media` |
 
@@ -1650,7 +1674,7 @@ generated OOXML must be identical within the affected master/layout group.
 Static structure may carry shapes, text, or images; non-image/external relationships are rejected. Every static object is atomic; a `<g data-pptx-layer="master|layout">` is forbidden. A full-canvas first rect may be marked as a Master or Layout background.
 
 **Native object slot carriers**: `chart` / `table` slots require
-`--native-objects`; fallback groups contain several shapes and cannot map to one
+`--native-charts-and-tables`; fallback groups contain several shapes and cannot map to one
 PowerPoint placeholder. `object` is the generic PowerPoint content slot and
 uses either one carrier object or the explicit composite proxy downgrade. `media` currently binds
 an authored image/crop to a native `media` placeholder; it does not synthesize

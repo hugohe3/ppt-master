@@ -55,8 +55,8 @@
     <text x="1009" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="13" font-weight="600" fill="#6C5CE7" text-anchor="middle">Phase 05: Recovery</text>
     <!-- Chart Area -->
-    <g id="dual_axis_line_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="dual_axis_line_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "dual_axis_line_chart",
               "x": 14,

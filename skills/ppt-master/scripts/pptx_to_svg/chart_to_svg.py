@@ -1,8 +1,8 @@
-"""Extract editable native chart metadata from PPTX chart parts.
+"""Extract native Chart replacement metadata from PPTX chart parts.
 
 The visual chart preview still comes from the existing graphicFrame fallback.
-This module only builds a conservative ``data-pptx-native="chart"`` payload
-when the chart XML cache can be mapped to the current native chart schema.
+This module only builds a conservative ``data-pptx-replace-with="chart"``
+payload when the chart XML cache can be mapped to the current chart schema.
 """
 
 from __future__ import annotations

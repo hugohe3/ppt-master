@@ -212,6 +212,19 @@ except ImportError:
     _native_object_marker_warnings = None
 
 try:
+    from svg_to_pptx.native_objects import (
+        native_fallback_kind as _native_fallback_kind,
+        native_marker_legacy_warnings as _native_marker_legacy_warnings,
+        native_replacement_kind as _native_replacement_kind,
+        native_replacement_status as _native_replacement_status,
+    )
+except ImportError:
+    _native_fallback_kind = None
+    _native_marker_legacy_warnings = None
+    _native_replacement_kind = None
+    _native_replacement_status = None
+
+try:
     from svg_to_pptx.native_objects.marker_status import (
         native_marker_release_block_reason as _native_marker_release_block_reason,
         native_marker_status_errors as _native_marker_status_errors,
@@ -2744,19 +2757,25 @@ class SVGQualityChecker:
         """Validate opt-in native table/chart markers before PPTX export."""
         invalid_status_elements: set[ET.Element] = set()
         for elem in root.iter():
+            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
             if elem.tag.rsplit('}', 1)[-1] == 'metadata':
                 continue
             has_status = any(
                 elem.get(name) is not None
                 for name in (
+                    'data-pptx-replace-with',
+                    'data-pptx-native',
+                    'data-pptx-fallback-kind',
                     'data-pptx-visual-status',
                     'data-pptx-route-status',
+                    'data-pptx-replacement-status',
                     'data-pptx-native-status',
+                    'data-pptx-import-source',
+                    'data-pptx-native-source',
                 )
             )
             if not has_status:
                 continue
-            marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
             if (
                 _native_marker_status_errors is None
                 or _native_marker_release_block_reason is None
@@ -2774,10 +2793,27 @@ class SVGQualityChecker:
             if status_errors:
                 invalid_status_elements.add(elem)
                 continue
-            if elem.get('data-pptx-route-status') == 'reconstruction-only':
+            if _native_marker_legacy_warnings is not None:
+                for warning in _native_marker_legacy_warnings(elem):
+                    result['warnings'].append(
+                        f"PPTX replacement marker {marker_id}: {warning}"
+                    )
+            try:
+                fallback_kind = (
+                    _native_fallback_kind(elem)
+                    if _native_fallback_kind is not None else None
+                )
+                replacement_kind = (
+                    _native_replacement_kind(elem)
+                    if _native_replacement_kind is not None else ''
+                )
+            except ValueError:
+                # The shared status validator reported the alias conflict.
+                continue
+            if fallback_kind == 'placeholder':
                 route = (
-                    "--native-objects may reconstruct its active native marker"
-                    if (elem.get('data-pptx-native') or '').strip()
+                    "the native Chart/Table route may reconstruct its active marker"
+                    if replacement_kind
                     else "default export keeps the visible placeholder"
                 )
                 result['warnings'].append(
@@ -2786,10 +2822,16 @@ class SVGQualityChecker:
                 )
 
         for elem in root.iter():
-            status = elem.get('data-pptx-native-status')
-            if not status or elem.tag.rsplit('}', 1)[-1] == 'metadata':
+            if elem.tag.rsplit('}', 1)[-1] == 'metadata':
                 continue
-            if elem.get('data-pptx-native'):
+            if _native_replacement_status is None or _native_replacement_kind is None:
+                continue
+            try:
+                status = _native_replacement_status(elem)
+                replacement_kind = _native_replacement_kind(elem)
+            except ValueError:
+                continue
+            if not status or replacement_kind:
                 continue
             marker_id = elem.get('id') or elem.get('data-name') or '<unnamed>'
             result['warnings'].append(
@@ -2799,16 +2841,17 @@ class SVGQualityChecker:
         markers = [
             elem for elem in root.iter()
             if (
-                elem.get('data-pptx-native')
+                _native_replacement_kind is not None
                 and elem.tag.rsplit('}', 1)[-1] != 'metadata'
                 and elem not in invalid_status_elements
+                and _native_replacement_kind(elem)
             )
         ]
         if not markers:
             return
         if _validate_native_object_marker is None:
             result['warnings'].append(
-                "Detected data-pptx-native markers, but native-object validator "
+                "Detected data-pptx-replace-with markers, but replacement validator "
                 "could not be imported; export-time validation will still run."
             )
             return
@@ -2818,6 +2861,18 @@ class SVGQualityChecker:
             for parent in root.iter()
             for child in parent
         }
+
+        def append_metadata_legacy_warnings(marker: ET.Element) -> None:
+            if _native_marker_legacy_warnings is None:
+                return
+            marker_id = marker.get('id') or '<unnamed>'
+            for child in marker:
+                if child.tag.rsplit('}', 1)[-1] != 'metadata':
+                    continue
+                for warning in _native_marker_legacy_warnings(child):
+                    result['warnings'].append(
+                        f"PPTX replacement marker {marker_id}: {warning}"
+                    )
 
         for marker in markers:
             marker_id = marker.get('id') or '<unnamed>'
@@ -2837,22 +2892,24 @@ class SVGQualityChecker:
                     )
                 except RuntimeError as exc:
                     result['errors'].append(
-                        f"Invalid data-pptx-native marker {marker_id}: {exc}"
+                        f"Invalid data-pptx-replace-with marker {marker_id}: {exc}"
                     )
                     continue
                 for warning in warnings:
                     result['warnings'].append(
-                        f"data-pptx-native marker {marker_id}: {warning}"
+                        f"data-pptx-replace-with marker {marker_id}: {warning}"
                     )
+                append_metadata_legacy_warnings(marker)
                 continue
 
             try:
                 _validate_native_object_marker(marker, ancestors=ancestors_tuple)
             except RuntimeError as exc:
                 result['errors'].append(
-                    f"Invalid data-pptx-native marker {marker_id}: {exc}"
+                    f"Invalid data-pptx-replace-with marker {marker_id}: {exc}"
                 )
                 continue
+            append_metadata_legacy_warnings(marker)
             if _native_object_marker_warnings is None:
                 continue
             for warning in _native_object_marker_warnings(
@@ -2861,7 +2918,7 @@ class SVGQualityChecker:
                 document_root=root,
             ):
                 result['warnings'].append(
-                    f"data-pptx-native marker {marker_id}: {warning}"
+                    f"data-pptx-replace-with marker {marker_id}: {warning}"
                 )
 
     def _check_pptx_structure_metadata(

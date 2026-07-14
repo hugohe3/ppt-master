@@ -47,8 +47,8 @@
     <text x="60" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="18" fill="#64748B">2025 Salary Report · Unit: 10K/Year</text>
     <!-- Chart Area -->
-    <g id="box_plot_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="box_plot_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "box_plot_chart",
               "x": 30,

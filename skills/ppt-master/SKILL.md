@@ -639,7 +639,7 @@ Template pages MUST start from the complete `page_layouts` SVG, keep all inherit
 
 Free-design and brand-only pages use `pptx_structure.mode: flat`. Draw the complete page directly: keep backgrounds, repeated chrome, headings, text, images, and decoration as ordinary Slide-local SVG content. Do not plan `pptx_masters` / `pptx_layouts` / `page_pptx_layouts`, do not add root Master/Layout identity, and do not add `data-pptx-layer` or `data-pptx-placeholder` metadata. Group logical content normally with top-level `<g id>` elements. Export materializes one clean project-owned Master plus one Blank Layout, applies the locked theme colors/fonts/title-body defaults, removes stock content placeholders and unused built-in Layouts, and retains only the standard date/footer/slide-number capability hooks. It does not promote or deduplicate page content.
 
-Do not duplicate specialized identity with `data-pptx-role`. Add it only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-native`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
+Do not duplicate specialized identity with `data-pptx-role`. Add it only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by `data-pptx-layer`, `data-pptx-placeholder`, or `data-pptx-replace-with`; such an element needs a stable unique `id`. Do not add generic content roles to ordinary titles, body text, cards, KPIs, diagrams, charts, icons, or images. Full contract: [`references/semantic-svg.md`](references/semantic-svg.md).
 
 **First-page gate (Mandatory)** — after the **first** SVG page, before drawing page 2:
 ```bash
@@ -709,8 +709,8 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
-# Add --native-objects to emit real editable chart/table objects instead of flattened shapes:
-#   exports/<project_name>_<timestamp>_native_charts.pptx  ← native chart/table objects (data-pptx-native markers)
+# Add --native-charts-and-tables to replace marked fallbacks with PowerPoint-native Chart/Table objects:
+#   exports/<project_name>_<timestamp>_native_charts_tables.pptx  ← native Chart/Table replacements (data-pptx-replace-with markers)
 # Re-export with --recorded-narration audio (generate-audio workflow) embeds per-slide narration:
 #   exports/<project_name>_<timestamp>_narrated.pptx  ← narrated pptx (embedded audio + auto-advance timings)
 ```
@@ -804,35 +804,41 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > it with `--no-merge`. Strict-line text stays Slide-local rather than claiming
 > one PowerPoint placeholder.
 
-> **Native table/chart objects** — supported data charts and pure text-grid
-> tables carry `data-pptx-native` markers by default (Executor transcribes
+> **PowerPoint-native Chart/Table replacements** — supported data charts and pure text-grid
+> tables carry `data-pptx-replace-with` markers by default (Executor transcribes
 > them at draw time; see `references/executor-base.md` §3.2) and the markers
 > stay dormant.
-> Add `--native-objects` only when the user explicitly wants
-> PowerPoint-editable native tables/charts and accepts that those objects may
+> Add `--native-charts-and-tables` only when the user explicitly wants
+> data-backed PowerPoint-native Chart/Table objects and their object-specific
+> editing controls, and accepts that those objects may
 > render differently across PowerPoint / Keynote / LibreOffice / WPS; marker-local
-> details not represented by native metadata may be omitted. This is a lossy
-> editable-first contract, not a reason to disable an otherwise supported marker. Without
-> the flag, marked groups export through their SVG fallback children like
-> ordinary SVG content. Imported objects that carry
-> `data-pptx-native-status` are fallback-only; the quality checker and
-> `--native-objects` export surface their reason as warnings rather than silently
-> claiming editability. An imported chart with no baked preview is a different
-> case: `data-pptx-visual-status="placeholder"` plus
-> `data-pptx-route-status="reconstruction-only"` records a diagnostic route.
+> details not represented by the replacement payload may be omitted. This is a lossy
+> data-object-first contract, not a reason to disable an otherwise supported
+> marker. Without the flag, marked groups export through their SVG fallback
+> children as independently editable DrawingML shapes. Imported objects that carry
+> `data-pptx-replacement-status` are fallback-only; the quality checker and
+> `--native-charts-and-tables` export surface their reason as warnings rather than silently
+> claiming a native data object. An imported chart with no baked preview is a different
+> case: `data-pptx-fallback-kind="placeholder"` records its
+> reconstruction-only fallback.
 > Default export keeps that placeholder with a warning; when the same group has
-> a valid active `data-pptx-native="chart"` payload, `--native-objects` may still
-> reconstruct the editable chart. Invalid or contradictory status declarations
+> a valid active `data-pptx-replace-with="chart"` payload,
+> `--native-charts-and-tables` may still
+> reconstruct the PowerPoint-native chart. Invalid or contradictory status declarations
 > remain export errors. For supported parsed classic families, the importer
 > instead emits a deterministic visible fallback with
-> `data-pptx-visual-status="normalized"`; this is readable reconstruction, not
+> `data-pptx-fallback-kind="normalized"`; this is readable reconstruction, not
 > a claim of Office pixel parity. Active imported table/chart markers also carry
+> `data-pptx-import-source="pptx"` and
 > `data-pptx-fallback-sha256`. If their fallback, reachable SVG fragment
 > definition, local reference target, or marker transform changes later, default
 > export keeps that SVG, the mandatory quality checker warns, and
-> `--native-objects` fails rather than discard the edit. Legacy markers
+> `--native-charts-and-tables` fails rather than discard the edit. Legacy markers
 > without a baseline remain native-compatible and only warn that stale detection
-> is unavailable.
+> is unavailable. Legacy `data-pptx-native*`, `data-pptx-visual-status`, and
+> `data-pptx-route-status` spellings remain read-compatible; generated SVG uses
+> only the canonical replacement/fallback attributes. `--native-objects`
+> remains a compatibility alias for `--native-charts-and-tables`.
 > Imported table markers may also cover the verified narrow P2 subset:
 > exact physical row/grid topology, canonical rectangular merges with blank
 > covered cells, safe per-side borders, plain multi-paragraph cells, and closed

@@ -49,8 +49,8 @@
         <text x="254" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#475569">Decrease</text>
     </g>
     <!-- ==================== Chart Area ==================== -->
-    <g id="waterfall_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="waterfall_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "waterfall_chart",
               "x": 120,
