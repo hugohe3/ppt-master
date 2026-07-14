@@ -2723,6 +2723,58 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </p:spPr>''')
         self.assertEqual(resolve_stroke(centered, None).attrs, {})
 
+    def test_native_line_paint_must_be_unique_and_resolvable(self):
+        cases = (
+            (
+                '<a:noFill/><a:solidFill><a:srgbClr val="112233"/>'
+                '</a:solidFill>',
+                'DrawingML line must contain at most one paint',
+            ),
+            (
+                '<a:pattFill/>',
+                'Unsupported DrawingML line paint: pattFill',
+            ),
+            (
+                '<a:solidFill/>',
+                'DrawingML solid line color cannot be resolved',
+            ),
+            (
+                '<a:gradFill/>',
+                'DrawingML gradient line requires a color stop',
+            ),
+        )
+        for paint_markup, expected in cases:
+            with self.subTest(paint_markup=paint_markup):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>{paint_markup}</a:ln>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
+        valid_cases = (
+            ('<a:noFill/>', 'none'),
+            (
+                '<a:solidFill><a:srgbClr val="112233"/></a:solidFill>',
+                '#112233',
+            ),
+            (
+                '<a:gradFill><a:gsLst><a:gs pos="0">'
+                '<a:srgbClr val="445566"/></a:gs></a:gsLst></a:gradFill>',
+                '#445566',
+            ),
+        )
+        for paint_markup, expected_stroke in valid_cases:
+            with self.subTest(valid_paint=paint_markup):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>{paint_markup}</a:ln>
+</p:spPr>''')
+                stroke = resolve_stroke(sp_pr, None)
+                self.assertEqual(stroke.attrs['stroke'], expected_stroke)
+
     def test_unknown_native_line_cap_is_rejected_on_import(self):
         sp_pr = ET.fromstring('''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
