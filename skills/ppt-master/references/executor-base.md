@@ -132,7 +132,7 @@ This section applies only to deck/layout template routes. `page_layouts` selects
 | Page-type default | Direct full-canvas solid `<rect data-pptx-layer="layout">` repeated on every page sharing that layout key |
 | One-page exception | Direct full-canvas solid `<rect data-pptx-layer="slide">` |
 
-The exporter writes these solid fills as real Master/Layout/Slide `p:bg`, not selectable full-canvas shapes. Gradients, images, textures, and overlay panels stay explicit shapes unless the shared standard says otherwise.
+The exporter writes these solid fills as real Master/Layout/Slide `p:bg`, not selectable full-canvas shapes. In structured mode, gradients, preset patterns, images, textures, and overlay panels remain explicit shapes or pictures; the generic background-promotion rule outside structured mode does not expand this ownership contract.
 
 ---
 
