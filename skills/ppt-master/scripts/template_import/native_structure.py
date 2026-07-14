@@ -120,6 +120,7 @@ def build_native_structure(
             "theme": master.get("theme") or {"colors": {}, "fonts": {}},
             "backgroundAsset": master.get("backgroundAsset"),
             "imageAssets": master.get("imageAssets", []),
+            "shapeImageAssets": master.get("shapeImageAssets", []),
             "drawableShapeCount": master.get("drawableShapeCount", 0),
             "layoutKeys": [
                 layout_key_by_path[layout["path"]]
@@ -137,8 +138,10 @@ def build_native_structure(
             "type": layout.get("layoutType"),
             "packagePart": layout["path"],
             "masterKey": master_key_by_path.get(layout.get("parentPath")),
+            "showMasterShapes": layout.get("showMasterShapes", True),
             "backgroundAsset": layout.get("backgroundAsset"),
             "imageAssets": layout.get("imageAssets", []),
+            "shapeImageAssets": layout.get("shapeImageAssets", []),
             "drawableShapeCount": layout.get("drawableShapeCount", 0),
             "placeholders": layout.get("placeholders", []),
             "usedBySlides": layout.get("usedBySlides", []),
@@ -152,6 +155,7 @@ def build_native_structure(
             "pageType": slide.get("pageType"),
             "layoutKey": layout_key_by_path.get(slide.get("layoutPath")),
             "masterKey": master_key_by_path.get(slide.get("masterPath")),
+            "showInheritedShapes": slide.get("showInheritedShapes", True),
             "placeholders": slide.get("placeholders", []),
             "layeredSvgFile": slide.get("svgFile"),
             "flatSvgFile": slide.get("flatSvgFile"),

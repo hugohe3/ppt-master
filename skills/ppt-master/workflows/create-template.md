@@ -104,8 +104,8 @@ python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.p
 
 This produces, in one workspace:
 
-- `manifest.json` — single source of truth: slide size, theme colors, fonts, per-master theme summaries, asset inventory, placeholder metadata, SVG file paths, per-slide / per-layout / per-master metadata, page-type candidates
-- `native_structure.json` — analysis contract: stable master/layout keys, layout picker names, placeholder type/index/geometry, source hash, and source-graph quality facts
+- `manifest.json` — single source of truth: slide size, theme colors, fonts, per-master theme summaries, asset inventory, placeholder metadata, SVG file paths, per-slide / per-layout / per-master metadata (including source-owned inherited-shape visibility), page-type candidates
+- `native_structure.json` — analysis contract: stable master/layout keys, layout picker names, placeholder type/index/geometry, inherited-shape visibility, source hash, and source-graph quality facts
 - `source_template.pptx` — byte-preserved analysis copy for visual/package cross-checking; it is not copied into the final template package
 - `summary.md` — short human-readable digest derived from manifest.json (for quick scanning only)
 - `assets/` — extracted reusable image assets; `manifest.json` owns the asset-name mapping and SVG `href` values reuse that mapping
@@ -113,9 +113,9 @@ This produces, in one workspace:
   - `svg/master_*.svg` — every slide master in the deck rendered once, including masters that no sample slide currently uses (template packages routinely ship more masters than the visible samples reference)
   - `svg/layout_*.svg` — every slide layout in the deck rendered once (its own contribution; master shapes do **not** repeat here)
   - `svg/slide_NN.svg` — each slide's own shapes and slide-local background; master / layout shapes and backgrounds are **not** inlined here
-  - `svg/inheritance.json` — which layout & master each slide consumes
+  - `svg/inheritance.json` — which Layout/Master each Slide consumes plus source-owned `showInheritedShapes` / `showMasterShapes` booleans; Layout shapes follow the Slide's `showInheritedShapes`, while Master shapes require that value and the referenced Layout's `showMasterShapes`; backgrounds remain independent
 - `svg-flat/` — **companion view** (one self-contained SVG per slide):
-  - `svg-flat/slide_NN.svg` — master + layout + slide painted into a single SVG so opening any slide on its own shows the full page like PowerPoint would. Use this for previews / screenshot pipelines / "what does the slide actually look like" sanity checks.
+  - `svg-flat/slide_NN.svg` — effective Master/Layout contributions permitted by the source visibility flags plus Slide-local content, painted into one SVG so opening any slide on its own shows the full page like PowerPoint would. Background inheritance remains independent. Use this for previews / screenshot pipelines / "what does the slide actually look like" sanity checks.
 - The default `--inheritance-mode both` emits both views. Pass `layered` to skip `svg-flat/`, or `flat` for round-trip use cases (legacy: `svg/` becomes self-contained slides without the master/layout/inheritance files).
 
 Import fidelity rules:

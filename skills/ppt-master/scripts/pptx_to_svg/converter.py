@@ -20,7 +20,12 @@ from pathlib import Path, PurePosixPath
 
 from .color_resolver import ColorPalette
 from .emu_units import NS
-from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
+from .ooxml_loader import (
+    OoxmlPackage,
+    PartRef,
+    SlideRef,
+    part_show_master_sp,
+)
 from .slide_to_svg import assemble_part_solo, assemble_slide
 
 
@@ -82,9 +87,9 @@ class ConvertOptions:
           renders every master and layout to its own SVG, plus
           svg/inheritance.json describing the reuse graph. Optimised for
           template authors who need to see "what is shared vs. unique".
-        - "flat": inline inherited shapes into every slide. Used by
-          svg_to_pptx round-trip and any caller that wants self-contained
-          slides (preview pages, screenshot pipelines).
+        - "flat": inline the inherited shapes visible under the source
+          ``showMasterSp`` flags. Used by svg_to_pptx round-trip and any caller
+          that wants self-contained slides (preview pages, screenshot pipelines).
     """
 
     media_subdir: str = "assets"
@@ -105,6 +110,7 @@ class PartArtifact:
     media_files: dict[str, bytes] = field(default_factory=dict)
     parent_master_part_path: str | None = None
     theme_part_path: str | None = None
+    show_master_shapes: bool = True
 
 
 @dataclass
@@ -116,6 +122,7 @@ class SlideArtifact:
     media_files: dict[str, bytes] = field(default_factory=dict)
     layout_part_path: str | None = None
     master_part_path: str | None = None
+    show_inherited_shapes: bool = True
 
 
 @dataclass
@@ -244,6 +251,7 @@ def _convert_slide(
     mode = inheritance_mode or options.inheritance_mode
     if mode == "both":
         mode = "layered"  # primary view in both-mode
+    show_inherited_shapes = part_show_master_sp(slide.part)
     svg, media = assemble_slide(
         pkg, slide, palette,
         theme_fonts=theme_fonts,
@@ -259,6 +267,7 @@ def _convert_slide(
         media_files=media,
         layout_part_path=slide.layout.path if slide.layout else None,
         master_part_path=slide.master.path if slide.master else None,
+        show_inherited_shapes=show_inherited_shapes,
     )
 
 
@@ -343,6 +352,9 @@ def _render_part(
         media_files=media,
         parent_master_part_path=parent_master.path if parent_master is not None else None,
         theme_part_path=theme_part.path if theme_part is not None else None,
+        show_master_shapes=(
+            part_show_master_sp(part) if role == "layout" else True
+        ),
     )
 
 
@@ -404,7 +416,7 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
 
 
 def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:
-    """Record which layout/master each slide consumes (layered mode only)."""
+    """Record layered parentage plus source-owned shape-visibility booleans."""
     layout_by_path = {art.part_path: art.filename for art in result.layouts}
     master_by_path = {art.part_path: art.filename for art in result.masters}
 
@@ -424,6 +436,7 @@ def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:
                 "master": master_by_path.get(art.parent_master_part_path or ""),
                 "parentPartPath": art.parent_master_part_path,
                 "themePath": art.theme_part_path,
+                "showMasterShapes": art.show_master_shapes,
             }
             for art in result.layouts
         ],
@@ -433,6 +446,7 @@ def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:
                 "index": slide.index,
                 "layout": layout_by_path.get(slide.layout_part_path or ""),
                 "master": master_by_path.get(slide.master_part_path or ""),
+                "showInheritedShapes": slide.show_inherited_shapes,
             }
             for slide in result.slides
         ],
