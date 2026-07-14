@@ -154,6 +154,7 @@ preset selection and authoring behavior are documented in
 | Pattern fill | Annotated project pattern definition | Native `a:pattFill` | `Native-normalized` | Only registered PowerPoint preset patterns are supported |
 | No outline | `stroke="none"` or the registered absence of a line | `a:noFill` under `a:ln` | `Native-stable` | Do not simulate absence with zero-width ambiguous CSS |
 | Solid outline | Registered `stroke` and width | Native `a:ln` | `Native-stable` | Width and paint must use canonical units/grammar |
+| Compound outline | No registered single-stroke SVG representation | Explicit geometry alternative or baked asset | `Bake-required` for the compound-line identity | PPTX import accepts only omitted/`sng` `cmpd`; other source values stop instead of becoming a single line |
 | Outline scaling under transforms | Exact `vector-effect="none"` or `vector-effect="non-scaling-stroke"` | Choice resolved into native line width | `Native-normalized` | Other values are rejected; generated spelling is exact and lowercase |
 | Dashed or dotted outline | Registered dash array | Preset or custom DrawingML dash | `Native-normalized` | Unsupported dash semantics are rejected |
 | Line cap and join | Registered cap/join values | Native line cap/join properties | `Native-stable` | Only documented values are accepted |

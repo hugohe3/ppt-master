@@ -149,6 +149,7 @@ PowerPoint 意图
 | 图案填充 | 带注解的项目 pattern 定义 | 原生 `a:pattFill` | `Native-normalized` | 仅支持已登记 PowerPoint 预设 pattern |
 | 无轮廓 | `stroke="none"` 或已登记线缺省 | `a:ln` 内的 `a:noFill` | `Native-stable` | 不得用零线宽模糊 CSS 模拟缺省 |
 | 实线轮廓 | 已登记 `stroke` 与宽度 | 原生 `a:ln` | `Native-stable` | 宽度与 paint 必须使用规范单位/语法 |
+| 复合轮廓线 | 无已登记的单一 SVG stroke 表达 | 显式几何替代或烘焙资产 | 复合线身份为 `Bake-required` | PPTX 回导仅接受省略/`sng` 的 `cmpd`；其他源值会阻断，不得退化为单线 |
 | transform 下的轮廓缩放 | 精确的 `vector-effect="none"` 或 `vector-effect="non-scaling-stroke"` | 选择被解析为原生线宽 | `Native-normalized` | 拒绝其他取值；生成拼法必须精确且为小写 |
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
 | 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | `Native-stable` | 仅接受文档化取值 |
