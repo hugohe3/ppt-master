@@ -33,7 +33,19 @@ GROUP = "grpSp"
 GRAPHIC = "graphicFrame"
 
 _TITLE_PLACEHOLDER_TYPES = {"title", "ctrTitle"}
-_BODY_PLACEHOLDER_TYPES = {"body", "subTitle"}
+_BODY_PLACEHOLDER_TYPES = {
+    "body",
+    "chart",
+    "clipArt",
+    "dgm",
+    "media",
+    "obj",
+    "pic",
+    "subTitle",
+    "tbl",
+}
+_DEFAULT_PLACEHOLDER_TYPE = "obj"
+_DEFAULT_PLACEHOLDER_INDEX = "0"
 _TX_STYLE_TITLE_KEY = ("__txStyleTitle", None)
 _TX_STYLE_BODY_KEY = ("__txStyleBody", None)
 _TX_STYLE_OTHER_KEY = ("__txStyleOther", None)
@@ -278,14 +290,12 @@ def _lookup_placeholder_xfrm(
     ph: PlaceholderInfo,
     table: dict[tuple[str | None, str | None], Xfrm],
 ) -> Xfrm | None:
-    """Find an inherited xfrm for a placeholder. PowerPoint matches first by
-    (type, idx) exactly, then by type alone, then by idx alone — so a slide
-    body with idx="1" can pull from a layout body that omits idx, and a slide
-    title with no idx can pull from a master title that has idx="0"."""
+    """Find inherited geometry after applying the OOXML placeholder defaults."""
+    ph_type, ph_idx = _placeholder_identity(ph.type, ph.idx)
     for key in (
-        (ph.type, ph.idx),
-        (ph.type, None),
-        (None, ph.idx),
+        (ph_type, ph_idx),
+        (ph_type, None),
+        (None, ph_idx),
     ):
         hit = table.get(key)
         if hit is not None and (hit.w > 0 or hit.h > 0):
@@ -298,12 +308,13 @@ def _lookup_placeholder_lst_styles(
     table: dict[tuple[str | None, str | None], list[ET.Element]],
 ) -> tuple[ET.Element, ...]:
     """Find inherited txBody/lstStyle elements for a placeholder."""
+    ph_type, ph_idx = _placeholder_identity(ph.type, ph.idx)
     styles: list[ET.Element] = []
     seen: set[int] = set()
     for key in (
-        (ph.type, ph.idx),
-        (ph.type, None),
-        (None, ph.idx),
+        (ph_type, ph_idx),
+        (ph_type, None),
+        (None, ph_idx),
         _placeholder_tx_style_key(ph),
     ):
         for style in table.get(key, []):
@@ -318,11 +329,23 @@ def _lookup_placeholder_lst_styles(
 def _placeholder_tx_style_key(
     ph: PlaceholderInfo,
 ) -> tuple[str | None, str | None]:
-    if ph.type in _TITLE_PLACEHOLDER_TYPES:
+    ph_type, _ph_idx = _placeholder_identity(ph.type, ph.idx)
+    if ph_type in _TITLE_PLACEHOLDER_TYPES:
         return _TX_STYLE_TITLE_KEY
-    if ph.type in _BODY_PLACEHOLDER_TYPES:
+    if ph_type in _BODY_PLACEHOLDER_TYPES:
         return _TX_STYLE_BODY_KEY
     return _TX_STYLE_OTHER_KEY
+
+
+def _placeholder_identity(
+    ph_type: str | None,
+    ph_idx: str | None,
+) -> tuple[str, str]:
+    """Resolve the schema defaults used for placeholder inheritance keys."""
+    return (
+        _DEFAULT_PLACEHOLDER_TYPE if ph_type is None else ph_type,
+        _DEFAULT_PLACEHOLDER_INDEX if ph_idx is None else ph_idx,
+    )
 
 
 def _build_placeholder_xfrm_table(
@@ -353,8 +376,10 @@ def _build_placeholder_xfrm_table(
             xfrm = parse_xfrm(xfrm_elem)
             if xfrm.w <= 0 and xfrm.h <= 0:
                 continue
-            ph_type = ph_elem.attrib.get("type")
-            ph_idx = ph_elem.attrib.get("idx")
+            ph_type, ph_idx = _placeholder_identity(
+                ph_elem.attrib.get("type"),
+                ph_elem.attrib.get("idx"),
+            )
             for key in ((ph_type, ph_idx),
                         (ph_type, None),
                         (None, ph_idx)):
@@ -382,8 +407,10 @@ def _build_placeholder_lst_style_table(
             lst_style = sp.find("p:txBody/a:lstStyle", NS)
             if lst_style is None:
                 continue
-            ph_type = ph_elem.attrib.get("type")
-            ph_idx = ph_elem.attrib.get("idx")
+            ph_type, ph_idx = _placeholder_identity(
+                ph_elem.attrib.get("type"),
+                ph_elem.attrib.get("idx"),
+            )
             for key in ((ph_type, ph_idx),
                         (ph_type, None),
                         (None, ph_idx)):

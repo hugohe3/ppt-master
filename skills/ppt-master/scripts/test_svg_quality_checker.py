@@ -434,11 +434,18 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         rewritten.replace(path)
 
     @staticmethod
-    def _write_inherited_run_effect_fixture(path: Path) -> None:
-        """Write placeholder text that inherits one run effect from its layout."""
+    def _write_inherited_run_effect_fixture(
+        path: Path,
+        *,
+        style_source: str = 'layout',
+    ) -> None:
+        """Write placeholder text inheriting one Layout or Master run effect."""
+        if style_source not in {'layout', 'master'}:
+            raise ValueError("style_source must be 'layout' or 'master'")
         presentation = Presentation()
         layout = presentation.slide_layouts[1]
         layout_part = str(layout.part.partname).lstrip('/')
+        master_part = str(layout.slide_master.part.partname).lstrip('/')
         slide_parts: list[str] = []
         for index in range(1, 4):
             slide = presentation.slides.add_slide(layout)
@@ -478,19 +485,42 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         layout_placeholder, layout_placeholder_properties = body_placeholder(
             layout_root
         )
-        layout_placeholder_properties.set('type', 'body')
+        layout_placeholder_properties.attrib.pop('type', None)
         list_style = layout_placeholder.find(
             f'{{{pml}}}txBody/{{{dml}}}lstStyle'
         )
         assert list_style is not None
-        level_properties = ET.SubElement(list_style, f'{{{dml}}}lvl1pPr')
-        default_properties = ET.SubElement(
-            level_properties,
-            f'{{{dml}}}defRPr',
-        )
+
+        if style_source == 'layout':
+            style_root = list_style
+        else:
+            master_root = ET.fromstring(member_data[master_part])
+            style_root = master_root.find(
+                f'{{{pml}}}txStyles/{{{pml}}}bodyStyle'
+            )
+            assert style_root is not None
+
+        level_properties = style_root.find(f'{{{dml}}}lvl1pPr')
+        if level_properties is None:
+            level_properties = ET.SubElement(
+                style_root,
+                f'{{{dml}}}lvl1pPr',
+            )
+        default_properties = level_properties.find(f'{{{dml}}}defRPr')
+        if default_properties is None:
+            default_properties = ET.SubElement(
+                level_properties,
+                f'{{{dml}}}defRPr',
+            )
         default_properties.append(ET.fromstring(f'''<a:effectLst xmlns:a="{dml}">
   <a:glow rad="38100"><a:srgbClr val="2563EB"/></a:glow>
 </a:effectLst>'''))
+        if style_source == 'master':
+            replacements[master_part] = ET.tostring(
+                master_root,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
         replacements[layout_part] = ET.tostring(
             layout_root,
             encoding='utf-8',
@@ -3312,66 +3342,82 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             2: 'unsupported-run-effect-route:vertical-text',
             3: 'unsupported-run-effect-route:relationship-bearing-text',
         }
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            root_dir = Path(tmp_dir)
-            pptx_path = root_dir / 'inherited-run-effects.pptx'
-            self._write_inherited_run_effect_fixture(pptx_path)
-            imported = convert_pptx_to_svg(
-                pptx_path,
-                options=ConvertOptions(inheritance_mode='flat'),
+
+        def assert_artifact(artifact) -> None:
+            reason = expected_reasons[artifact.index]
+            root = ET.fromstring(artifact.svg)
+            self.assertIn('INHERITED', ''.join(root.itertext()))
+            self.assertEqual(project_filter_errors(root), [])
+            marked = [
+                elem
+                for elem in root.iter()
+                if elem.get('data-pptx-effect-status') == 'unsupported'
+            ]
+            self.assertEqual(len(marked), 2)
+            self.assertEqual(
+                {
+                    elem.get('data-pptx-effect-reason')
+                    for elem in marked
+                },
+                {reason},
             )
-            self.assertEqual(len(imported.slides), 3)
+            logical_shape = next(
+                elem
+                for elem in marked
+                if elem.tag.rsplit('}', 1)[-1] == 'g'
+            )
+            self.assertEqual(
+                logical_shape.get('data-name'),
+                'Content Placeholder 2',
+            )
+            title_shape = next(
+                elem
+                for elem in root.iter()
+                if elem.get('data-name') == 'Title 1'
+            )
+            self.assertIsNone(title_shape.get('data-pptx-effect-status'))
+            status_errors = project_effect_status_errors(root)
+            self.assertEqual(len(status_errors), 1)
+            self.assertIn(reason, status_errors[0])
 
-            for artifact in imported.slides:
-                with self.subTest(slide=artifact.index):
-                    reason = expected_reasons[artifact.index]
-                    root = ET.fromstring(artifact.svg)
-                    self.assertIn(
-                        f'INHERITED EFFECT {artifact.index}',
-                        ''.join(root.itertext()),
-                    )
-                    self.assertEqual(project_filter_errors(root), [])
-                    marked = [
-                        elem
-                        for elem in root.iter()
-                        if elem.get('data-pptx-effect-status') == 'unsupported'
-                    ]
-                    self.assertEqual(len(marked), 2)
-                    self.assertEqual(
-                        {
-                            elem.get('data-pptx-effect-reason')
-                            for elem in marked
-                        },
-                        {reason},
-                    )
-                    logical_shape = next(
-                        elem
-                        for elem in marked
-                        if elem.tag.rsplit('}', 1)[-1] == 'g'
-                    )
-                    status_errors = project_effect_status_errors(root)
-                    self.assertEqual(len(status_errors), 1)
-                    self.assertIn(reason, status_errors[0])
+            metadata = [
+                elem
+                for elem in logical_shape.iter()
+                if elem.get('data-pptx-part') == 'txbody'
+            ]
+            if artifact.index == 1:
+                self.assertEqual(len(metadata), 1)
+                payload = base64.b64decode(
+                    (metadata[0].text or '').strip()
+                ).decode('utf-8')
+                self.assertNotIn('<a:effectLst', payload)
+            else:
+                self.assertEqual(metadata, [])
 
-                    metadata = [
-                        elem
-                        for elem in logical_shape.iter()
-                        if elem.get('data-pptx-part') == 'txbody'
-                    ]
-                    if artifact.index == 1:
-                        self.assertEqual(len(metadata), 1)
-                        payload = base64.b64decode(
-                            (metadata[0].text or '').strip()
-                        ).decode('utf-8')
-                        self.assertNotIn('<a:effectLst', payload)
-                    else:
-                        self.assertEqual(metadata, [])
+            self._assert_checker_and_exporter_reject(
+                artifact.svg,
+                reason,
+                'unsupported imported PPTX effect',
+            )
 
-                    self._assert_checker_and_exporter_reject(
-                        artifact.svg,
-                        reason,
-                        'unsupported imported PPTX effect',
+        for style_source in ('layout', 'master'):
+            with self.subTest(style_source=style_source):
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    pptx_path = (
+                        Path(tmp_dir) / f'{style_source}-run-effects.pptx'
                     )
+                    self._write_inherited_run_effect_fixture(
+                        pptx_path,
+                        style_source=style_source,
+                    )
+                    imported = convert_pptx_to_svg(
+                        pptx_path,
+                        options=ConvertOptions(inheritance_mode='flat'),
+                    )
+                    self.assertEqual(len(imported.slides), 3)
+                    for artifact in imported.slides:
+                        with self.subTest(slide=artifact.index):
+                            assert_artifact(artifact)
 
     def test_table_cell_run_effect_import_fails_closed(self):
         cases = [
