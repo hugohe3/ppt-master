@@ -2599,6 +2599,33 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'invalid project filter',
         )
 
+    def test_filter_rejects_object_bounding_box_primitive_units(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <filter id="effect" primitiveUnits="objectBoundingBox">
+      <feGaussianBlur stdDeviation="0.1"/>
+      <feFlood flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#effect)"/>
+</svg>''',
+            'primitiveUnits must be userSpaceOnUse',
+            'invalid project filter',
+        )
+
+        user_space = ET.fromstring('''<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="effect" primitiveUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="6"/>
+      <feFlood flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+</svg>''')
+        self.assertEqual(project_filter_errors(user_space), [])
+
     def test_filter_flood_opacity_must_be_explicit(self):
         cases = (
             (

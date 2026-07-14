@@ -1927,6 +1927,12 @@ def parse_project_filter_params(
     filter_elem: ET.Element,
 ) -> dict[str, float | str | bool]:
     """Extract the shared native shadow/glow parameters from one filter."""
+    primitive_units = filter_elem.get('primitiveUnits')
+    if primitive_units not in (None, 'userSpaceOnUse'):
+        raise ValueError(
+            'filter primitiveUnits must be userSpaceOnUse when explicit; '
+            f'got {primitive_units!r}'
+        )
     std_dev: float | None = None
     dx = 0.0
     dy = 0.0
@@ -2132,6 +2138,13 @@ def project_filter_errors(root: ET.Element) -> list[str]:
     for filter_id, filter_elem in filters_by_id.items():
         label = f'filter #{filter_id}'
         parameters_are_valid = True
+        primitive_units = filter_elem.get('primitiveUnits')
+        if primitive_units not in (None, 'userSpaceOnUse'):
+            parameters_are_valid = False
+            errors.add(
+                f'{label} primitiveUnits must be userSpaceOnUse when '
+                f'explicit; got {primitive_units!r}'
+            )
         primitives = [
             _svg_element_tag(descendant) or str(descendant.tag)
             for descendant in filter_elem.iter()
