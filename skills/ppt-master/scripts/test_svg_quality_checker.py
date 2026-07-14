@@ -760,6 +760,33 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     offenders.append(str(svg_path.relative_to(template_root)))
         self.assertEqual(offenders, [])
 
+    def test_chart_templates_name_all_top_level_groups(self):
+        chart_root = SCRIPT_DIR.parent / 'templates' / 'charts'
+        anonymous_groups = []
+        duplicate_ids = []
+        for svg_path in chart_root.glob('*.svg'):
+            root = ET.parse(svg_path).getroot()
+            seen_ids = set()
+            for elem in root.iter():
+                element_id = elem.get('id')
+                if not element_id:
+                    continue
+                if element_id in seen_ids:
+                    duplicate_ids.append(
+                        f'{svg_path.name}: {element_id}'
+                    )
+                seen_ids.add(element_id)
+            for index, child in enumerate(list(root), start=1):
+                if child.tag.rsplit('}', 1)[-1] != 'g':
+                    continue
+                if (child.get('id') or '').strip():
+                    continue
+                anonymous_groups.append(
+                    f'{svg_path.name}: root child {index}'
+                )
+        self.assertEqual(anonymous_groups, [])
+        self.assertEqual(duplicate_ids, [])
+
     def test_compact_authored_preset_exports_one_native_shape(self):
         fragment = render_preset_shape_fragment(
             'rightArrow',

@@ -25,7 +25,7 @@
     <rect x="100" y="150" width="1140" height="430" rx="12" fill="#F8FAFC" fill-opacity="0.6" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="6 4"/>
     <text x="670" y="175" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#2563EB" letter-spacing="1">PARENT CONTAINER · RECOMMENDATION PIPELINE · INPUT: CONTEXT → OUTPUT: EXPOSURE</text>
     <!-- ==================== Card 1: Recall ==================== -->
-    <g>
+    <g id="recall-stage-card">
         <rect x="130" y="200" width="340" height="352" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <!-- Header & Badge -->
         <rect x="130" y="220" width="6" height="40" rx="3" fill="#3B82F6"/>
@@ -58,7 +58,7 @@
     <!-- Arrow 1-2 -->
     <line x1="475" y1="376" x2="495" y2="376" stroke="#CBD5E1" stroke-width="3" marker-end="url(#mcArrow)"/>
     <!-- ==================== Card 2: Ranking ==================== -->
-    <g>
+    <g id="ranking-stage-card">
         <rect x="500" y="200" width="340" height="352" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <!-- Header & Badge -->
         <rect x="500" y="220" width="6" height="40" rx="3" fill="#6366F1"/>
@@ -91,7 +91,7 @@
     <!-- Arrow 2-3 -->
     <line x1="845" y1="376" x2="865" y2="376" stroke="#CBD5E1" stroke-width="3" marker-end="url(#mcArrow)"/>
     <!-- ==================== Card 3: Rerank ==================== -->
-    <g>
+    <g id="rerank-stage-card">
         <rect x="870" y="200" width="340" height="352" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <!-- Header & Badge -->
         <rect x="870" y="220" width="6" height="40" rx="3" fill="#8B5CF6"/>

@@ -145,7 +145,7 @@
   <text x="1135" y="500" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">STAGE OUTPUT</text>
   <text x="1135" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#BE123C">Products</text>
   <!-- ==================== Stage Arrows ==================== -->
-  <g fill="#CBD5E1">
+  <g id="stage-arrows" fill="#CBD5E1">
     <g id="stage-arrow-01-02" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="315 368 30 24" data-pptx-av-adj1="val 33333" data-pptx-av-adj2="val 70833" fill="#CBD5E1" stroke="none">
       <path d="M 315 376 L 328 376 L 328 368 L 345 380 L 328 392 L 328 384 L 315 384 Z"/>
     </g>

@@ -46,7 +46,7 @@
     <text x="640" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#94A3B8" letter-spacing="1" text-anchor="middle">DEPARTMENT</text>
     <text x="1160" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#94A3B8" letter-spacing="1" text-anchor="middle">EXPENSE TYPE</text>
     <!-- ==================== FLOW PATHS (Background) ==================== -->
-    <g>
+    <g id="sankey-flows">
         <!-- Layer 1 to Layer 2 -->
         <!-- Product Sales flows -->
         <rect x="200" y="130" width="360" height="112.5" fill="url(#gPR)"/>
@@ -76,7 +76,7 @@
         <rect x="720" y="604" width="360" height="36" fill="url(#gAO)"/>
     </g>
     <!-- ==================== LAYER 1: Revenue Sources ==================== -->
-    <g>
+    <g id="revenue-sources">
         <rect x="40" y="130" width="160" height="270" rx="4" fill="#3B82F6"/>
         <text x="120" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Product Sales</text>
         <text x="120" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$60M</text>
@@ -87,7 +87,7 @@
         <text x="120" y="603" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Investment $10M</text>
     </g>
     <!-- ==================== LAYER 2: Departments ==================== -->
-    <g>
+    <g id="department-allocations">
         <rect x="560" y="130" width="160" height="157.5" rx="4" fill="#8B5CF6"/>
         <text x="640" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">R&amp;D</text>
         <text x="640" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$35M</text>
@@ -101,7 +101,7 @@
         <text x="640" y="623" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Admin $10M</text>
     </g>
     <!-- ==================== LAYER 3: Expense Types ==================== -->
-    <g>
+    <g id="expense-types">
         <rect x="1080" y="130" width="160" height="225" rx="4" fill="#0EA5E9"/>
         <text x="1160" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Personnel</text>
         <text x="1160" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$50M</text>

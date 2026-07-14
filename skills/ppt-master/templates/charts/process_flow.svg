@@ -30,7 +30,7 @@
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Business Process Flow</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5">STANDARD OPERATING PROCEDURE · PIPELINE FLOWCHART</text>
     <!-- ==================== Process Arrows ==================== -->
-    <g>
+    <g id="process-connectors">
         <!-- Start -> Req -->
         <line x1="200" y1="200" x2="275" y2="200" stroke="#64748B" stroke-width="3" marker-end="url(#arrowMain)" />
         <!-- Req -> Decision -->

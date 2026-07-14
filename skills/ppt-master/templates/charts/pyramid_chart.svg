@@ -28,7 +28,7 @@
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Strategic Capability Pyramid</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">FIVE-TIER EVOLUTION MODEL · FROM FOUNDATION TO VISION</text>
     <!-- Translate group to perfectly center vertically -->
-    <g transform="translate(0, 35)">
+    <g id="pyramid-stack" transform="translate(0, 35)">
         <!-- ==================== Connecting Lines ==================== -->
         <g>
             <line x1="393" y1="195" x2="680" y2="195" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.8"/>
