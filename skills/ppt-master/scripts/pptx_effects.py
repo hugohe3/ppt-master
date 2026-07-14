@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared diagnostic contract for unsupported imported shape effects."""
+"""Shared diagnostic contract for unsupported imported object effects."""
 
 from __future__ import annotations
 
@@ -9,6 +9,11 @@ from xml.etree import ElementTree as ET
 EFFECT_STATUS_ATTR = "data-pptx-effect-status"
 EFFECT_REASON_ATTR = "data-pptx-effect-reason"
 UNSUPPORTED_EFFECT_STATUS = "unsupported"
+_EFFECT_OBJECT_IDENTITY_ATTRS = (
+    "data-pptx-object",
+    "data-pptx-shape-id",
+    "data-pptx-shape-scope",
+)
 
 
 def project_effect_status_errors(root: ET.Element) -> list[str]:
@@ -29,6 +34,7 @@ def project_effect_status_errors(root: ET.Element) -> list[str]:
             parent is not None
             and parent.get(EFFECT_STATUS_ATTR) == raw_status
             and parent.get(EFFECT_REASON_ATTR) == raw_reason
+            and _same_source_object(parent, elem)
         ):
             # Import duplicates the marker on the logical object and carrier
             # so stripping either copy cannot erase the block. Report it once.
@@ -65,4 +71,24 @@ def unsupported_effect_metadata(reason: str) -> dict[str, str]:
 def _element_label(elem: ET.Element) -> str:
     tag = elem.tag.rsplit("}", 1)[-1]
     elem_id = elem.get("id") or elem.get("data-name")
-    return f'<{tag} id="{elem_id}">' if elem_id else f"<{tag}>"
+    if elem_id:
+        return f'<{tag} id="{elem_id}">'
+    shape_id = elem.get("data-pptx-shape-id")
+    if shape_id:
+        object_kind = elem.get("data-pptx-object") or "object"
+        scope = elem.get("data-pptx-shape-scope") or "unknown"
+        return (
+            f'<{tag} data-pptx-object="{object_kind}" '
+            f'data-pptx-shape-id="{shape_id}" '
+            f'data-pptx-shape-scope="{scope}">'
+        )
+    return f"<{tag}>"
+
+
+def _same_source_object(parent: ET.Element, child: ET.Element) -> bool:
+    """Return whether a parent/child marker describes one imported object."""
+    return all(
+        child.get(attr) is not None
+        and child.get(attr) == parent.get(attr)
+        for attr in _EFFECT_OBJECT_IDENTITY_ATTRS
+    )

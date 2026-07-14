@@ -276,7 +276,7 @@ attributes, and no separate source-payload opt-in marker exists.
 | `data-pptx-geometry-kind="custom"` + `data-pptx-custgeom` | Custom-geometry carrier | Preserve the validated original `a:custGeom` subtree. If the visible path hash is unchanged, export restores formulas, handles, connection sites, text rectangle, and path list exactly; edited paths compile from current SVG geometry. |
 | `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
 | `data-pptx-shape-style` | Native carrier | Preserve a relationship-free `p:style` independently of text, including shapes with no visible text. |
-| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical shape and native carrier | Record why an encountered source `effectLst` / `effectDag` cannot enter the one-effect shadow/glow mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
+| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical object and native carrier; imported `p:pic` carrier and logical object; imported `p:grpSp` logical group | Record why an encountered source `effectLst` / `effectDag` cannot enter the registered target-specific effect mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
 | `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, or visible typography edits invalidate the payload and use the normal SVG text fallback. |
 
 **Import/authoring representation split**:
@@ -780,6 +780,10 @@ Each supported source effect must contain exactly one resolvable DrawingML
 color choice. Malformed choices and valid color semantics outside the
 registered color/modifier subset also receive effect-status metadata; the
 importer never substitutes black or drops an unhandled modifier.
+Picture and group targets do not expose the public filter mapping: any source
+effect DAG or non-empty effect list on `p:pic/p:spPr` or `p:grpSp/p:grpSpPr`
+keeps the base object but receives effect-status metadata instead of attaching
+an invalid filter to `<image>` or ordinary `<g>`.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
 never replaced by effect defaults during native export.
@@ -1304,16 +1308,16 @@ halftone and route dense full-slide texture to §6.12.
 glow; it does not blur the object or backdrop. Use a low-alpha raster for dense
 grain and explicit circles/paths only for sparse editable marks.
 
-**Hard rule — unsupported imported shape effects remain explicit**:
-`pptx_to_svg.py` keeps the underlying `p:sp` / `p:cxnSp` object but stamps
-blocking effect-status metadata for inner shadow, object blur, soft edge,
-reflection, multiple effects, and effect DAGs.
+**Hard rule — unsupported imported object effects remain explicit**:
+`pptx_to_svg.py` keeps the underlying object but stamps blocking effect-status
+metadata for unsupported shape/connector effects and for every picture/group
+effect DAG or non-empty effect list.
 Before release export, rasterize the affected object from the source PPTX or
 rebuild its effect with supported explicit geometry; baking the effect-less
 analysis SVG alone cannot recover the source appearance. This diagnostic path
-currently covers `p:sp` / `p:cxnSp`; picture, group, and text-run source effects
-remain outside it and are not claimed as preserved. Handled shape/connector
-effects must never become outer shadow/glow or disappear without a diagnostic.
+covers `p:sp`, `p:cxnSp`, `p:pic`, and `p:grpSp` source effects. Text-run source
+effects remain outside it and are not claimed as preserved. Handled object
+effects must never become a different effect or disappear without a diagnostic.
 
 ---
 

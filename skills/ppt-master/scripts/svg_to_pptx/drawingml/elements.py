@@ -23,6 +23,7 @@ from pptx_shapes import (
     load_shape_type_values,
     validate_ooxml_xfrm,
 )
+from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
 from pptx_to_svg.preset_authoring import AUTHORING_ATTR, AUTHORING_VALUE
 from resource_paths import resolve_external_image_reference
 
@@ -4025,6 +4026,8 @@ class NestedSvgCropSpec:
 _NESTED_CROP_OUTER_ATTRIBUTES = frozenset({
     'clip-path',
     'data-pptx-crop',
+    EFFECT_REASON_ATTR,
+    EFFECT_STATUS_ATTR,
     'data-pptx-frame',
     'data-pptx-layer',
     'data-pptx-object',

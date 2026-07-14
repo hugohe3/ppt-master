@@ -40,7 +40,7 @@ from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
 from .custgeom_to_svg import convert_custom_geom
-from .effect_to_svg import convert_effects
+from .effect_to_svg import convert_effects, unsupported_target_effect_metadata
 from .emu_units import NS, Xfrm, fmt_num, format_canvas_px_from_emu
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
@@ -662,8 +662,21 @@ def _convert_picture(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) 
     if not result.svg:
         return ""
     ctx.media.update(result.media)
-    picture_svg = _inject_root_svg_attrs(result.svg, _object_metadata(node, ctx))
-    return _wrap_shape_group(picture_svg, node, ctx, top_level=top_level)
+    effect_metadata = unsupported_target_effect_metadata(
+        node.xml.find("p:spPr", NS),
+        "picture",
+    )
+    picture_svg = _inject_root_svg_attrs(
+        result.svg,
+        {**_object_metadata(node, ctx), **effect_metadata},
+    )
+    return _wrap_shape_group(
+        picture_svg,
+        node,
+        ctx,
+        top_level=top_level,
+        extra_attrs=_metadata_group_attrs(effect_metadata),
+    )
 
 
 def _inject_root_svg_attrs(markup: str, attrs: dict[str, str]) -> str:
@@ -707,7 +720,17 @@ def _convert_group(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     if not inner_parts:
         return ""
     inner = "\n".join(inner_parts)
-    return _wrap_shape_group(inner, node, ctx, top_level=top_level)
+    effect_metadata = unsupported_target_effect_metadata(
+        node.xml.find("p:grpSpPr", NS),
+        "group",
+    )
+    return _wrap_shape_group(
+        inner,
+        node,
+        ctx,
+        top_level=top_level,
+        extra_attrs=_metadata_group_attrs(effect_metadata),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1208,6 +1231,14 @@ def _attrs_to_xml(attrs: dict[str, str]) -> str:
     if not attrs:
         return ""
     return "".join(f' {key}="{_xml_escape(value)}"' for key, value in attrs.items())
+
+
+def _metadata_group_attrs(attrs: dict[str, str]) -> list[str]:
+    """Serialize import metadata for a logical object wrapper."""
+    return [
+        f'{key}="{_xml_escape(value)}"'
+        for key, value in attrs.items()
+    ]
 
 
 def _geometry_group_attrs(geom: GeomResult | None) -> list[str]:
