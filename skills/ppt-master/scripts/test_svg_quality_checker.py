@@ -2560,6 +2560,10 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     reversed_=False,
                 )
                 marker = ET.fromstring(marker_markup)
+                if marker_type == 'arrow':
+                    marker_path = next(iter(marker))
+                    self.assertEqual(marker_path.get('fill'), 'none')
+                    self.assertEqual(marker_path.get('stroke'), '#112233')
                 line = ET.fromstring(
                     '<line xmlns="http://www.w3.org/2000/svg" '
                     'stroke="#112233" '
@@ -2708,6 +2712,36 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'a simple closed 4-vertex diamond/stealth',
             'invalid project line-end marker',
         )
+
+    def test_open_arrow_marker_requires_matching_stroke(self):
+        cases = (
+            (
+                'filled arrow',
+                'fill="#112233"',
+                'open arrow marker requires fill="none"',
+            ),
+            (
+                'mismatched arrow stroke',
+                'fill="none" stroke="#445566"',
+                "marker stroke '#445566' does not match effective line stroke",
+            ),
+        )
+        for label, marker_paint, expected in cases:
+            with self.subTest(label=label):
+                self._assert_checker_and_exporter_reject(
+                    f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <marker id="arrow" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10" {marker_paint}/>
+    </marker>
+  </defs>
+  <line x1="80" y1="80" x2="300" y2="80" stroke="#112233"
+        marker-end="url(#arrow)"/>
+</svg>''',
+                    expected,
+                    'invalid project line-end marker',
+                )
 
     def test_invalid_filter_contract_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
