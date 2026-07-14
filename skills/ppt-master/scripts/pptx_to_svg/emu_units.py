@@ -85,7 +85,7 @@ def angle_to_deg(val: float | int | str | None, default: float = 0.0) -> float:
 
 
 def percent_to_ratio(val: float | int | str | None, default: float = 0.0) -> float:
-    """DrawingML positive percent (100000 = 100%) -> ratio in [0, 1]."""
+    """Convert DrawingML percentage units (100000 = 100%) to a ratio."""
     if val is None:
         return default
     try:

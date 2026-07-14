@@ -279,7 +279,7 @@ def _apply_modifiers(hex_color: str, color_elem: ET.Element) -> tuple[str, float
         elif tag == "alpha":
             alpha = max(0.0, min(1.0, val_ratio))
         elif tag == "alphaMod":
-            alpha *= val_ratio
+            alpha = max(0.0, min(1.0, alpha * val_ratio))
         elif tag == "alphaOff":
             alpha = max(0.0, min(1.0, alpha + val_ratio))
         elif tag == "gray":
