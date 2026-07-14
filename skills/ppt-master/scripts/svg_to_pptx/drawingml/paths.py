@@ -1,12 +1,18 @@
-"""SVG path parsing, normalization, and DrawingML path command generation."""
+"""SVG path parsing, normalization, and DrawingML path command generation.
+
+See references/shared-standards.md §6.9 for the project freeform grammar.
+"""
 
 from __future__ import annotations
 
 import math
 import re
+from collections import deque
+from collections.abc import Iterator
 from dataclasses import dataclass, field
+from xml.etree import ElementTree as ET
 
-from .utils import px_to_emu
+from .utils import SVG_NS, px_to_emu
 
 
 @dataclass
@@ -25,53 +31,299 @@ _ARG_COUNTS = {
     'A': 7, 'a': 7, 'Z': 0, 'z': 0,
 }
 
+_PATH_COMMAND_CHARS = 'MmLlHhVvCcSsQqTtAaZz'
+_PATH_NUMBER_PATTERN = (
+    r'[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?'
+)
+_PATH_TOKEN_RE = re.compile(
+    rf'(?P<command>[{_PATH_COMMAND_CHARS}])|(?P<number>{_PATH_NUMBER_PATTERN})'
+)
+_POINT_TOKEN_RE = re.compile(_PATH_NUMBER_PATTERN)
+_TOKEN_SEPARATOR_RE = re.compile(r'[ \t\r\n]*(?:,[ \t\r\n]*)?')
+_TRAILING_WHITESPACE_RE = re.compile(r'[ \t\r\n]*')
+_CANONICAL_FREEFORM_NUMBER_RE = re.compile(
+    r'-?(?:\d+(?:\.\d+)?|\.\d+)$'
+)
 
-def parse_svg_path(d: str) -> list[PathCommand]:
-    """Parse SVG path d attribute into a list of PathCommands."""
-    if not d:
-        return []
+
+@dataclass(frozen=True)
+class _GeometryToken:
+    kind: str
+    raw: str
+    offset: int
+
+
+def _tokenize_path_data(d: str) -> list[_GeometryToken]:
+    """Tokenize one complete path-data value without skipping input."""
+    if not d or not d.strip():
+        raise ValueError('path d must not be empty')
+
+    tokens: list[_GeometryToken] = []
+    cursor = 0
+    previous_kind: str | None = None
+    for match in _PATH_TOKEN_RE.finditer(d):
+        kind = 'command' if match.lastgroup == 'command' else 'number'
+        gap = d[cursor:match.start()]
+        if _TOKEN_SEPARATOR_RE.fullmatch(gap) is None:
+            raise ValueError(
+                f'path d contains unsupported syntax at offset {cursor}: {gap!r}'
+            )
+        if ',' in gap and (
+            previous_kind is None
+            or previous_kind == 'command'
+            or kind == 'command'
+        ):
+            raise ValueError(
+                f'path d has a misplaced comma at offset {cursor}'
+            )
+        tokens.append(_GeometryToken(kind, match.group(), match.start()))
+        previous_kind = kind
+        cursor = match.end()
+
+    trailing = d[cursor:]
+    if _TRAILING_WHITESPACE_RE.fullmatch(trailing) is None:
+        raise ValueError(
+            f'path d contains unsupported trailing syntax at offset '
+            f'{cursor}: {trailing!r}'
+        )
+    if not tokens:
+        raise ValueError('path d must contain a supported command')
+    return tokens
+
+
+def _finite_token_value(token: _GeometryToken, context: str) -> float:
+    value = float(token.raw)
+    if not math.isfinite(value):
+        raise ValueError(
+            f'{context} contains a non-finite number {token.raw!r} at '
+            f'offset {token.offset}'
+        )
+    return value
+
+
+def _expand_arc_argument_tokens(
+    argument_tokens: list[_GeometryToken],
+    command_token: _GeometryToken,
+) -> list[_GeometryToken]:
+    """Split compact SVG arc flags without weakening the numeric grammar."""
+    pending = deque(argument_tokens)
+    expanded: list[_GeometryToken] = []
+    argument_index = 0
+    while pending:
+        token = pending.popleft()
+        position = argument_index % _ARG_COUNTS[command_token.raw]
+        if position in {3, 4}:
+            if not token.raw or token.raw[0] not in {'0', '1'}:
+                raise ValueError(
+                    f'path arc flag at offset {token.offset} must be exactly '
+                    f'0 or 1; got {token.raw!r}'
+                )
+            expanded.append(
+                _GeometryToken('number', token.raw[0], token.offset)
+            )
+            remainder = token.raw[1:]
+            if remainder:
+                next_position = (position + 1) % _ARG_COUNTS[command_token.raw]
+                if (
+                    next_position in {3, 4}
+                    and remainder[0] not in {'0', '1'}
+                ) or (
+                    next_position not in {3, 4}
+                    and re.fullmatch(_PATH_NUMBER_PATTERN, remainder) is None
+                ):
+                    raise ValueError(
+                        f'path arc flag at offset {token.offset} must be '
+                        f'exactly 0 or 1; got {token.raw!r}'
+                    )
+                pending.appendleft(
+                    _GeometryToken('number', remainder, token.offset + 1)
+                )
+        else:
+            expanded.append(token)
+        argument_index += 1
+
+    return expanded
+
+
+def _tokenize_points(points: str) -> list[_GeometryToken]:
+    """Tokenize one complete polygon/polyline points value."""
+    if not points or not points.strip():
+        raise ValueError('points must not be empty')
+
+    tokens: list[_GeometryToken] = []
+    cursor = 0
+    for match in _POINT_TOKEN_RE.finditer(points):
+        gap = points[cursor:match.start()]
+        if _TOKEN_SEPARATOR_RE.fullmatch(gap) is None:
+            raise ValueError(
+                f'points contains unsupported syntax at offset {cursor}: {gap!r}'
+            )
+        if not tokens and ',' in gap:
+            raise ValueError('points cannot start with a comma')
+        tokens.append(_GeometryToken('number', match.group(), match.start()))
+        cursor = match.end()
+
+    trailing = points[cursor:]
+    if _TRAILING_WHITESPACE_RE.fullmatch(trailing) is None:
+        raise ValueError(
+            f'points contains unsupported trailing syntax at offset '
+            f'{cursor}: {trailing!r}'
+        )
+    if not tokens:
+        raise ValueError('points must contain coordinate pairs')
+    return tokens
+
+
+def _parse_svg_path_tokens(
+    d: str,
+) -> tuple[list[PathCommand], list[_GeometryToken]]:
+    """Parse path data and retain its semantic numeric tokens."""
+    tokens = _tokenize_path_data(d)
+    if tokens[0].kind != 'command' or tokens[0].raw not in {'M', 'm'}:
+        raise ValueError('path d must begin with M or m')
 
     commands: list[PathCommand] = []
-    tokens = re.findall(
-        r'[MmLlHhVvCcSsQqTtAaZz]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?', d
+    number_tokens: list[_GeometryToken] = []
+    token_index = 0
+    while token_index < len(tokens):
+        command_token = tokens[token_index]
+        if command_token.kind != 'command':
+            raise ValueError(
+                f'path d requires a command at offset {command_token.offset}'
+            )
+        command = command_token.raw
+        token_index += 1
+        if command in {'Z', 'z'}:
+            commands.append(PathCommand(command, []))
+            continue
+
+        argument_tokens: list[_GeometryToken] = []
+        while token_index < len(tokens) and tokens[token_index].kind == 'number':
+            argument_tokens.append(tokens[token_index])
+            token_index += 1
+
+        argument_count = _ARG_COUNTS[command]
+        if command in {'A', 'a'}:
+            argument_tokens = _expand_arc_argument_tokens(
+                argument_tokens,
+                command_token,
+            )
+        if not argument_tokens:
+            raise ValueError(
+                f'path command {command!r} at offset {command_token.offset} '
+                f'requires {argument_count} argument(s)'
+            )
+        if len(argument_tokens) % argument_count:
+            raise ValueError(
+                f'path command {command!r} at offset {command_token.offset} '
+                f'has {len(argument_tokens)} argument(s); expected a multiple '
+                f'of {argument_count}'
+            )
+
+        for group_index in range(0, len(argument_tokens), argument_count):
+            group = argument_tokens[group_index:group_index + argument_count]
+            values = [_finite_token_value(token, 'path d') for token in group]
+            if command in {'A', 'a'}:
+                if values[0] < 0 or values[1] < 0:
+                    raise ValueError('path arc radii must be non-negative')
+
+            emitted_command = command
+            if command == 'M' and group_index > 0:
+                emitted_command = 'L'
+            elif command == 'm' and group_index > 0:
+                emitted_command = 'l'
+            commands.append(PathCommand(emitted_command, values))
+            number_tokens.extend(group)
+    return commands, number_tokens
+
+
+def parse_svg_path(d: str) -> list[PathCommand]:
+    """Parse one complete supported SVG path value or fail closed."""
+    commands, _ = _parse_svg_path_tokens(d)
+    return commands
+
+
+def parse_svg_points(
+    points: str,
+    *,
+    min_points: int = 2,
+) -> list[tuple[float, float]]:
+    """Parse complete polygon/polyline points into finite coordinate pairs."""
+    tokens = _tokenize_points(points)
+    if len(tokens) % 2:
+        raise ValueError(
+            f'points has {len(tokens)} numeric value(s); expected coordinate pairs'
+        )
+    point_count = len(tokens) // 2
+    if point_count < min_points:
+        raise ValueError(
+            f'points requires at least {min_points} coordinate pair(s); '
+            f'found {point_count}'
+        )
+    values = [_finite_token_value(token, 'points') for token in tokens]
+    return [
+        (values[index], values[index + 1])
+        for index in range(0, len(values), 2)
+    ]
+
+
+def noncanonical_path_numbers(d: str) -> tuple[str, ...]:
+    """Return compatible path numbers that generated SVG should normalize."""
+    _, number_tokens = _parse_svg_path_tokens(d)
+    return tuple(
+        token.raw
+        for token in number_tokens
+        if _CANONICAL_FREEFORM_NUMBER_RE.fullmatch(token.raw) is None
     )
 
-    current_cmd: str | None = None
-    current_args: list[float] = []
 
-    def flush() -> None:
-        nonlocal current_cmd, current_args
-        if current_cmd is None:
-            return
+def noncanonical_points_numbers(points: str, *, min_points: int) -> tuple[str, ...]:
+    """Return compatible point numbers that generated SVG should normalize."""
+    parse_svg_points(points, min_points=min_points)
+    return tuple(
+        token.raw
+        for token in _tokenize_points(points)
+        if _CANONICAL_FREEFORM_NUMBER_RE.fullmatch(token.raw) is None
+    )
 
-        n = _ARG_COUNTS.get(current_cmd, 0)
-        if n == 0:
-            commands.append(PathCommand(current_cmd, []))
-        elif n > 0 and len(current_args) >= n:
-            i = 0
-            while i + n <= len(current_args):
-                commands.append(PathCommand(current_cmd, current_args[i:i + n]))
-                # After first M, implicit commands become L
-                if current_cmd == 'M':
-                    current_cmd = 'L'
-                elif current_cmd == 'm':
-                    current_cmd = 'l'
-                i += n
-        current_args = []
 
-    for token in tokens:
-        if token in 'MmLlHhVvCcSsQqTtAaZz':
-            flush()
-            current_cmd = token
-            current_args = []
+def iter_project_freeform_geometry(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str, str | None, int | None]]:
+    """Yield path/points values and their minimum point-count contract."""
+    for elem in root.iter():
+        raw_tag = str(elem.tag)
+        if raw_tag.startswith('{'):
+            namespace, tag = raw_tag[1:].split('}', 1)
+            if namespace != SVG_NS:
+                continue
         else:
-            try:
-                current_args.append(float(token))
-            except ValueError:
-                pass
+            tag = raw_tag
+        if tag == 'path':
+            yield elem, 'd', elem.get('d'), None
+        elif tag == 'polygon':
+            yield elem, 'points', elem.get('points'), 3
+        elif tag == 'polyline':
+            yield elem, 'points', elem.get('points'), 2
 
-    flush()
-    return commands
+
+def project_freeform_geometry_errors(root: ET.Element) -> list[str]:
+    """Return blocking path/points grammar errors for converter preflight."""
+    errors: list[str] = []
+    for elem, attribute, raw, min_points in iter_project_freeform_geometry(root):
+        tag = elem.tag.rsplit('}', 1)[-1] if '}' in str(elem.tag) else str(elem.tag)
+        elem_id = elem.get('id')
+        label = f'<{tag} id={elem_id!r}>' if elem_id else f'<{tag}>'
+        try:
+            if raw is None:
+                raise ValueError(f'<{tag}> requires {attribute}')
+            if attribute == 'd':
+                parse_svg_path(raw)
+            else:
+                parse_svg_points(raw, min_points=min_points or 2)
+        except ValueError as exc:
+            errors.append(f'{label} {attribute}: {exc}')
+    return errors
 
 
 def svg_path_to_absolute(commands: list[PathCommand]) -> list[PathCommand]:

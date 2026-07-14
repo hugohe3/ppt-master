@@ -10,6 +10,11 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from ..drawingml.context import ConvertContext, IDENTITY_MATRIX
+from ..drawingml.paths import (
+    parse_svg_path,
+    parse_svg_points,
+    svg_path_to_absolute,
+)
 from ..drawingml.utils import (
     EMU_PER_PX,
     ctx_h,
@@ -51,7 +56,6 @@ _NATIVE_TRANSFORM_ARGS_RE = re.compile(
 )
 _HEX_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 _RGB_RE = re.compile(r"^rgba?\(([^)]+)\)$", re.IGNORECASE)
-_POINT_RE = re.compile(r"[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?")
 _CSS_NAMED_COLORS = {
     "aliceblue": "F0F8FF",
     "black": "000000",
@@ -363,118 +367,49 @@ def _apply_matrix_bbox(
     return result
 
 
-def _points_attr_bbox(value: str | None) -> tuple[float, float, float, float] | None:
-    numbers = [float(item) for item in _POINT_RE.findall(value or "")]
-    points = [
-        (numbers[idx], numbers[idx + 1])
-        for idx in range(0, len(numbers) - 1, 2)
-    ]
+def _points_attr_bbox(
+    value: str | None,
+    *,
+    min_points: int,
+) -> tuple[float, float, float, float] | None:
+    try:
+        points = parse_svg_points(value or "", min_points=min_points)
+    except ValueError as exc:
+        raise RuntimeError(f"Invalid native fallback points: {exc}") from exc
     return _bbox_from_points(points)
 
 
 def _path_bbox(value: str | None) -> tuple[float, float, float, float] | None:
-    tokens = re.findall(r"[AaCcHhLlMmQqSsTtVvZz]|[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?", value or "")
+    try:
+        commands = svg_path_to_absolute(parse_svg_path(value or ""))
+    except ValueError as exc:
+        raise RuntimeError(f"Invalid native fallback path d: {exc}") from exc
+
     points: list[tuple[float, float]] = []
-    index = 0
-    command = ""
-    current_x = 0.0
-    current_y = 0.0
     subpath_x = 0.0
     subpath_y = 0.0
 
-    def read_number() -> float | None:
-        nonlocal index
-        if index >= len(tokens) or re.fullmatch(r"[A-Za-z]", tokens[index]):
-            return None
-        number = float(tokens[index])
-        index += 1
-        return number
-
-    def add_point(x_value: float, y_value: float, *, relative: bool) -> tuple[float, float]:
-        x = current_x + x_value if relative else x_value
-        y = current_y + y_value if relative else y_value
-        points.append((x, y))
-        return x, y
-
-    while index < len(tokens):
-        token = tokens[index]
-        if re.fullmatch(r"[A-Za-z]", token):
-            command = token
-            index += 1
-        if not command:
-            break
-
-        relative = command.islower()
-        op = command.upper()
-        if op == "Z":
-            current_x, current_y = subpath_x, subpath_y
-            points.append((current_x, current_y))
-            command = ""
-            continue
-
-        if op in {"M", "L", "T"}:
-            x_raw = read_number()
-            y_raw = read_number()
-            if x_raw is None or y_raw is None:
-                break
-            current_x, current_y = add_point(x_raw, y_raw, relative=relative)
-            if op == "M":
-                subpath_x, subpath_y = current_x, current_y
-                command = "l" if relative else "L"
-            continue
-
-        if op == "H":
-            x_raw = read_number()
-            if x_raw is None:
-                break
-            current_x = current_x + x_raw if relative else x_raw
-            points.append((current_x, current_y))
-            continue
-
-        if op == "V":
-            y_raw = read_number()
-            if y_raw is None:
-                break
-            current_y = current_y + y_raw if relative else y_raw
-            points.append((current_x, current_y))
-            continue
-
-        if op == "C":
-            values = [read_number() for _ in range(6)]
-            if any(item is None for item in values):
-                break
-            for point_idx in range(0, 6, 2):
-                current_x, current_y = add_point(
-                    values[point_idx],  # type: ignore[arg-type]
-                    values[point_idx + 1],  # type: ignore[arg-type]
-                    relative=relative,
-                )
-            continue
-
-        if op in {"S", "Q"}:
-            values = [read_number() for _ in range(4)]
-            if any(item is None for item in values):
-                break
-            for point_idx in range(0, 4, 2):
-                current_x, current_y = add_point(
-                    values[point_idx],  # type: ignore[arg-type]
-                    values[point_idx + 1],  # type: ignore[arg-type]
-                    relative=relative,
-                )
-            continue
-
-        if op == "A":
-            values = [read_number() for _ in range(7)]
-            if any(item is None for item in values):
-                break
-            current_x, current_y = add_point(
-                values[5],  # type: ignore[arg-type]
-                values[6],  # type: ignore[arg-type]
-                relative=relative,
+    for command in commands:
+        values = command.args
+        if command.cmd == "M":
+            subpath_x, subpath_y = values
+            points.append((subpath_x, subpath_y))
+        elif command.cmd in {"L", "T"}:
+            points.append((values[0], values[1]))
+        elif command.cmd == "C":
+            points.extend(
+                (values[index], values[index + 1])
+                for index in range(0, 6, 2)
             )
-            continue
-
-        break
+        elif command.cmd in {"S", "Q"}:
+            points.extend(
+                (values[index], values[index + 1])
+                for index in range(0, 4, 2)
+            )
+        elif command.cmd == "A":
+            points.append((values[5], values[6]))
+        elif command.cmd == "Z":
+            points.append((subpath_x, subpath_y))
 
     return _bbox_from_points(points)
 
@@ -534,7 +469,10 @@ def _element_local_bbox(elem: ET.Element) -> tuple[float, float, float, float] |
         return _bbox_from_points(points)
 
     if tag in {"polygon", "polyline"}:
-        return _points_attr_bbox(elem.get("points"))
+        return _points_attr_bbox(
+            elem.get("points"),
+            min_points=3 if tag == "polygon" else 2,
+        )
 
     if tag == "path":
         # This intentionally approximates path geometry from command endpoints.
