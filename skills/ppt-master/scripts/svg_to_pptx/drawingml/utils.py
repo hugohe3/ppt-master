@@ -1987,6 +1987,11 @@ def parse_project_filter_params(
                 color = parsed_color
                 color_alpha = parsed_alpha
         elif tag == 'feGaussianBlur':
+            if child.get('edgeMode') is not None:
+                raise ValueError(
+                    '<feGaussianBlur> edgeMode is unsupported by the native '
+                    'effect mapping'
+                )
             std_dev = required_number(child, 'stdDeviation')
         elif tag == 'feOffset':
             dx = _f(child.get('dx'), 0.0)
@@ -2178,6 +2183,15 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                 errors.add(
                     f'{label} <feFuncA> intercept is unsupported; project '
                     'alpha transfer maps slope multiplication only'
+                )
+            if (
+                primitive_tag == 'feGaussianBlur'
+                and primitive.get('edgeMode') is not None
+            ):
+                parameters_are_valid = False
+                errors.add(
+                    f'{label} <feGaussianBlur> edgeMode is unsupported by '
+                    'the native effect mapping'
                 )
             numeric_attrs: tuple[tuple[str, bool, bool], ...] = ()
             if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
