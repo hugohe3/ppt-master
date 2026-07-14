@@ -12,6 +12,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
+from pptx_shapes.formula import validate_ooxml_line_width
+
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .emu_units import NS, emu_to_px, fmt_num
 
@@ -76,10 +78,14 @@ def resolve_stroke(
     width_emu = ln.attrib.get("w")
     if width_emu is not None:
         try:
-            width_px = emu_to_px(int(width_emu))
-            attrs["stroke-width"] = fmt_num(width_px, 3)
+            width_value = int(width_emu)
         except (ValueError, TypeError):
-            pass
+            raise ValueError(
+                f"Invalid DrawingML line width: {width_emu!r}"
+            ) from None
+        validate_ooxml_line_width(width_value)
+        width_px = emu_to_px(width_value)
+        attrs["stroke-width"] = fmt_num(width_px, 3)
 
     # Cap
     cap = ln.attrib.get("cap")

@@ -989,6 +989,10 @@ fidelity.
 | Gradient stroke | §6.3; re-import may flatten to first stop |
 | `marker-start` / `marker-end` | §1.1 native line end; type `Native-normalized`, size `Approximate` (`sm/med/lg`) |
 
+PPTX import accepts `a:ln@w` only as an integer DrawingML `ST_LineWidth` value
+from `0` through `20116800` EMU. Malformed, negative, or oversized source widths
+stop import instead of being dropped and replaced by a default SVG line width.
+
 The dash grammar is closed: exact lowercase `none`, or at least two finite
 unitless numbers separated by whitespace or one comma. Generated SVG uses
 ordinary decimal spellings. A leading plus sign, exponent, trailing decimal
