@@ -276,6 +276,7 @@ attributes, and no separate source-payload opt-in marker exists.
 | `data-pptx-geometry-kind="custom"` + `data-pptx-custgeom` | Custom-geometry carrier | Preserve the validated original `a:custGeom` subtree. If the visible path hash is unchanged, export restores formulas, handles, connection sites, text rectangle, and path list exactly; edited paths compile from current SVG geometry. |
 | `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
 | `data-pptx-shape-style` | Native carrier | Preserve a relationship-free `p:style` independently of text, including shapes with no visible text. |
+| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical shape and native carrier | Record why an encountered source `effectLst` / `effectDag` cannot enter the one-effect shadow/glow mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
 | `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, or visible typography edits invalidate the payload and use the normal SVG text fallback. |
 
 **Import/authoring representation split**:
@@ -768,6 +769,17 @@ The sole `<g filter>` exception is the hash-locked
 of an imported preset object and reference the same filter as that object's one
 hidden geometry carrier. The preview is render-only and never becomes a second
 PowerPoint object; this exception does not authorize filters on ordinary groups.
+PPTX shape/connector import emits a public filter only for exactly one source
+`outerShdw` with a meaningful non-zero offset, or exactly one source `glow`.
+Glow import uses the registered Gaussian/flood/composite graph and preserves
+its radius conversion. Zero-offset outer shadow, duplicate or foreign-namespace
+effect containers, multiple effects, `effectDag`, unknown effects, and invalid
+numeric or color data receive the blocking §1.4 effect-status metadata instead
+of being reclassified or silently omitted.
+Each supported source effect must contain exactly one resolvable DrawingML
+color choice. Malformed choices and valid color semantics outside the
+registered color/modifier subset also receive effect-status metadata; the
+importer never substitutes black or drops an unhandled modifier.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
 never replaced by effect defaults during native export.
@@ -1291,6 +1303,17 @@ halftone and route dense full-slide texture to §6.12.
 **Hard rule — blur semantics**: within §6.4, zero-offset `feGaussianBlur` means
 glow; it does not blur the object or backdrop. Use a low-alpha raster for dense
 grain and explicit circles/paths only for sparse editable marks.
+
+**Hard rule — unsupported imported shape effects remain explicit**:
+`pptx_to_svg.py` keeps the underlying `p:sp` / `p:cxnSp` object but stamps
+blocking effect-status metadata for inner shadow, object blur, soft edge,
+reflection, multiple effects, and effect DAGs.
+Before release export, rasterize the affected object from the source PPTX or
+rebuild its effect with supported explicit geometry; baking the effect-less
+analysis SVG alone cannot recover the source appearance. This diagnostic path
+currently covers `p:sp` / `p:cxnSp`; picture, group, and text-run source effects
+remain outside it and are not claimed as preserved. Handled shape/connector
+effects must never become outer shadow/glow or disappear without a diagnostic.
 
 ---
 

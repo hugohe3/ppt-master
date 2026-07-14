@@ -18,6 +18,7 @@ from pptx_shapes import (
     svg_text_fingerprint,
     validate_ooxml_xfrm,
 )
+from pptx_effects import project_effect_status_errors
 from pptx_to_svg.preset_authoring import (
     materialize_compact_authored_preset_tree,
     validate_authored_preset_tree,
@@ -334,6 +335,22 @@ def _require_project_filters(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project filter(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_effect_status(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject source effects that the importer cannot map without distortion."""
+    errors = project_effect_status_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: unsupported imported PPTX effect(s): '
         f'{preview}{suffix}'
     )
 
@@ -1417,6 +1434,7 @@ def convert_svg_to_slide_shapes(
     _require_project_definitions(root, svg_path)
     _require_project_paint_references(root, svg_path)
     _require_project_gradients(root, svg_path)
+    _require_project_effect_status(root, svg_path)
     _require_project_filters(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)
@@ -1488,6 +1506,7 @@ def convert_svg_to_slide_shapes(
     _require_project_definitions(root, svg_path)
     _require_project_paint_references(root, svg_path)
     _require_project_gradients(root, svg_path)
+    _require_project_effect_status(root, svg_path)
     _require_project_filters(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)

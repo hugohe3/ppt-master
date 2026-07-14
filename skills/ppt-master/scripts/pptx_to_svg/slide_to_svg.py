@@ -35,6 +35,7 @@ from pptx_shapes import (
     svg_native_fallback_markup_fingerprint,
     svg_text_fingerprint,
 )
+from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
@@ -498,19 +499,23 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
         id_prefix="m", id_seq=ctx.marker_seq,
         style_stroke_default=style_defaults.get("stroke"),
     )
-    filter_id, effect_defs = convert_effects(sp_pr, ctx.palette,
-                                             id_prefix="fx",
-                                             id_seq=ctx.filter_seq)
+    effect = convert_effects(
+        sp_pr,
+        ctx.palette,
+        id_prefix="fx",
+        id_seq=ctx.filter_seq,
+    )
 
     ctx.defs.extend(fill.defs)
     ctx.defs.extend(stroke.defs)
-    ctx.defs.extend(effect_defs)
+    ctx.defs.extend(effect.defs)
+    geom.attrs.update(dict(effect.metadata))
 
     attrs = {**fill.attrs, **stroke.attrs}
     for key, value in style_defaults.items():
         attrs.setdefault(key, value)
-    if filter_id is not None:
-        attrs["filter"] = f"url(#{filter_id})"
+    if effect.filter_id is not None:
+        attrs["filter"] = f"url(#{effect.filter_id})"
 
     # Default fill / stroke when not specified by spPr (matches PowerPoint
     # behavior: a:noFill on shape-level fill if there's a txBody, else any
@@ -1216,6 +1221,8 @@ def _geometry_group_attrs(geom: GeomResult | None) -> list[str]:
         "data-pptx-preview-sha256",
         "data-pptx-geometry-status",
         "data-pptx-geometry-reason",
+        EFFECT_STATUS_ATTR,
+        EFFECT_REASON_ATTR,
     )
     attrs: list[str] = []
     for key, value in geom.attrs.items():

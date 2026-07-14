@@ -158,11 +158,11 @@ preset selection and authoring behavior are documented in
 | Dashed or dotted outline | Registered dash array | Preset or custom DrawingML dash | `Native-normalized` | Unsupported dash semantics are rejected |
 | Line cap and join | Registered cap/join values | Native line cap/join properties | `Native-stable` | Only documented values are accepted |
 | Line arrowheads | Registered start/end markers | Native head/tail end properties | `Approximate` for marker size | See the conditional marker contract |
-| Outer shadow | One supported shadow filter graph | Native outer shadow in `a:effectLst` | `Approximate` | Unsupported graph shapes are not silently simplified |
-| Glow | One supported glow filter graph | Native glow in `a:effectLst` | `Approximate` | Review when the glow carries semantic emphasis |
+| Outer shadow | One supported shadow filter graph | Native outer shadow in `a:effectLst` | `Approximate`; one imported source `outerShdw` is reconstructed only when its non-zero offset remains classifiable | Zero-offset source shadows and unsupported graph shapes are not silently reclassified |
+| Glow | One supported glow filter graph | Native glow in `a:effectLst` | `Approximate`; one imported source glow keeps the registered radius conversion | Review when the glow carries semantic emphasis |
 | Whole-object transparency | Atomic element `opacity` | Alpha distributed into supported native channels | `Native-normalized` | Prefer channel-specific alpha unless the whole atomic object fades |
 | Group transparency | Compatible `<g opacity>` | Descendant-normalized approximation | `Approximate` with a warning | Generated SVG should prefer descendant alpha |
-| Inner shadow, soft edge, reflection, blur, turbulence, blend mode, or arbitrary mask | No registered native mapping | Explicit geometry alternative or raster asset | `Bake-required` | Converter and checker must not invent a visual downgrade |
+| Inner shadow, soft edge, reflection, blur, turbulence, blend mode, or arbitrary mask | No registered native mapping | Explicit geometry alternative or raster asset | `Bake-required`; shape/connector PPTX import keeps the base object and emits blocking effect-status diagnostics for source effect containers | Handled shape/connector effects cannot be reclassified or omitted; picture, group, and text-run source effects remain outside this diagnostic path |
 
 ## 7. PowerPoint tables
 

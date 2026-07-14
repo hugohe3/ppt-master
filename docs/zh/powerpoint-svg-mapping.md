@@ -153,11 +153,11 @@ PowerPoint 意图
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
 | 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | `Native-stable` | 仅接受文档化取值 |
 | 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 见条件 marker 合同 |
-| 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate` | 不会默默简化不支持的图结构 |
-| 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate` | 发光承载语义强调时需复核 |
+| 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移仍可稳定分类时，才重建单一来源 `outerShdw` | 零偏移来源阴影和不支持的图结构不会被静默改成其他效果 |
+| 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate`；单一来源发光保持已登记的半径换算 | 发光承载语义强调时需复核 |
 | 整个对象透明度 | 原子元素 `opacity` | alpha 分发至受支持原生通道 | `Native-normalized` | 除非整个原子对象需要淡出，否则优先通道专属 alpha |
 | 组透明度 | 兼容 `<g opacity>` | 后代归一化近似 | `Approximate`，并产生 warning | 生成 SVG 应优先后代 alpha |
-| 内阴影、柔化边缘、倒影、模糊、湍流、混合模式或任意 mask | 无已登记原生映射 | 显式几何替代或栅格资产 | `Bake-required` | 转换器和 Checker 不得发明视觉降级方案 |
+| 内阴影、柔化边缘、倒影、模糊、湍流、混合模式或任意 mask | 无已登记原生映射 | 显式几何替代或栅格资产 | `Bake-required`；shape/connector 的 PPTX 回导保留基础对象，并对来源效果容器产生阻塞性的效果状态诊断 | 已处理的 shape/connector 效果不能被改成其他类型或静默省略；图片、组和文字 run 的来源效果尚不在该诊断路径内 |
 
 ## 7. PowerPoint 表格
 

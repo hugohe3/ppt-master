@@ -31,6 +31,17 @@ except ImportError:
     print("Warning: Unable to import project_utils")
     CANVAS_FORMATS = {}
 
+try:
+    from pptx_effects import (
+        EFFECT_REASON_ATTR as _EFFECT_REASON_ATTR,
+        EFFECT_STATUS_ATTR as _EFFECT_STATUS_ATTR,
+        project_effect_status_errors as _project_effect_status_errors,
+    )
+except ImportError:
+    _EFFECT_REASON_ATTR = 'data-pptx-effect-reason'
+    _EFFECT_STATUS_ATTR = 'data-pptx-effect-status'
+    _project_effect_status_errors = None
+
 from svg_to_pptx.canvas_contract import (
     CanvasContractError,
     parse_project_svg_root,
@@ -1245,6 +1256,7 @@ class SVGQualityChecker:
                 self._check_clip_path_contract(root, result)
 
                 # 2h. Validate the supported shadow/glow filter interface.
+                self._check_imported_effect_status(root, result)
                 self._check_filter_effects(root, result)
 
                 # 2i. Validate gradient definitions, stops, and coordinates.
@@ -2003,6 +2015,25 @@ class SVGQualityChecker:
             )
             return
         result['errors'].extend(_project_filter_errors(root))
+
+    def _check_imported_effect_status(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject source PPTX effects that have no faithful SVG mapping."""
+        if _project_effect_status_errors is None:
+            if any(
+                elem.get(_EFFECT_STATUS_ATTR) is not None
+                or elem.get(_EFFECT_REASON_ATTR) is not None
+                for elem in root.iter()
+            ):
+                result['errors'].append(
+                    'Unable to import the PPTX effect-status validator; '
+                    'cannot verify imported effect fidelity'
+                )
+            return
+        result['errors'].extend(_project_effect_status_errors(root))
 
     def _check_gradient_interfaces(self, root: ET.Element, result: Dict) -> None:
         """Validate the normalized native gradient authoring interface."""

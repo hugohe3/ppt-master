@@ -16,6 +16,7 @@ from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE
 from pptx.util import Emu
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -36,6 +37,7 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm
+from pptx_to_svg.effect_to_svg import convert_effects
 from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
 from pptx_to_svg.preset_svg_markup import serialize_preset_layers
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
@@ -86,6 +88,7 @@ from template_import.manifest import (
     build_manifest,
 )
 from template_import.native_structure import build_native_structure
+from pptx_effects import project_effect_status_errors
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -198,6 +201,64 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 slide_root.set('showMasterSp', value)
             replacements[slide_part] = ET.tostring(
                 slide_root, encoding='utf-8', xml_declaration=True
+            )
+
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
+
+    @staticmethod
+    def _write_effect_fixture(path: Path, effects: list[str]) -> None:
+        """Write one real slide per supplied shape-level effect container."""
+        presentation = Presentation()
+        blank = presentation.slide_layouts[6]
+        for index, _effect in enumerate(effects, start=1):
+            slide = presentation.slides.add_slide(blank)
+            shape = slide.shapes.add_shape(
+                MSO_SHAPE.CUBE,
+                Emu(914400),
+                Emu(914400),
+                Emu(2743200),
+                Emu(1828800),
+            )
+            shape.name = f'EFFECT TARGET {index}'
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [(info, source.read(info.filename)) for info in source.infolist()]
+        replacements: dict[str, bytes] = {}
+        member_data = {info.filename: data for info, data in members}
+        for index, effect_xml in enumerate(effects, start=1):
+            slide_part = f'ppt/slides/slide{index}.xml'
+            slide_root = ET.fromstring(member_data[slide_part])
+            target = next(
+                shape
+                for shape in slide_root.findall(f'.//{{{pml}}}sp')
+                if (
+                    shape.find(f'{{{pml}}}nvSpPr/{{{pml}}}cNvPr')
+                    is not None
+                    and shape.find(
+                        f'{{{pml}}}nvSpPr/{{{pml}}}cNvPr'
+                    ).get('name') == f'EFFECT TARGET {index}'
+                )
+            )
+            sp_pr = target.find(f'{{{pml}}}spPr')
+            assert sp_pr is not None
+            for child in list(sp_pr):
+                if child.tag in {
+                    f'{{{dml}}}effectLst',
+                    f'{{{dml}}}effectDag',
+                }:
+                    sp_pr.remove(child)
+            sp_pr.append(ET.fromstring(effect_xml))
+            replacements[slide_part] = ET.tostring(
+                slide_root,
+                encoding='utf-8',
+                xml_declaration=True,
             )
 
         rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
@@ -2075,6 +2136,315 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             '<g> cannot use filter' in error
             for error in project_filter_errors(ordinary)
         ))
+
+    def test_pptx_effect_import_is_closed_and_fail_closed(self):
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+
+        def effect_result(container: str):
+            sp_pr = ET.fromstring(
+                f'<p:spPr xmlns:p="http://schemas.openxmlformats.org/'
+                f'presentationml/2006/main" xmlns:a="{dml}">'
+                f'{container}</p:spPr>'
+            )
+            return convert_effects(sp_pr, None)
+
+        outer = effect_result(f'''<a:effectLst xmlns:a="{dml}">
+  <a:outerShdw blurRad="38100" dist="38100" dir="5400000">
+    <a:srgbClr val="000000"><a:alpha val="50000"/></a:srgbClr>
+  </a:outerShdw>
+</a:effectLst>''')
+        self.assertIsNotNone(outer.filter_id)
+        self.assertEqual(dict(outer.metadata), {})
+        self.assertIn('stdDeviation="2"', ''.join(outer.defs))
+
+        glow = effect_result(f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="95250"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>''')
+        glow_def = ''.join(glow.defs)
+        self.assertIn('stdDeviation="10"', glow_def)
+        self.assertNotIn('feMorphology', glow_def)
+
+        high_saturation = effect_result(f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="95250"><a:srgbClr val="2563EB">
+    <a:satMod val="175000"/>
+  </a:srgbClr></a:glow>
+</a:effectLst>''')
+        self.assertIsNotNone(high_saturation.filter_id)
+        self.assertEqual(dict(high_saturation.metadata), {})
+
+        unsupported_cases = {
+            'innerShdw': (
+                f'<a:effectLst xmlns:a="{dml}"><a:innerShdw '
+                'blurRad="38100" dist="38100" dir="5400000">'
+                '<a:srgbClr val="000000"/></a:innerShdw></a:effectLst>'
+            ),
+            'blur': (
+                f'<a:effectLst xmlns:a="{dml}"><a:blur rad="38100"/>'
+                '</a:effectLst>'
+            ),
+            'softEdge': (
+                f'<a:effectLst xmlns:a="{dml}"><a:softEdge rad="38100"/>'
+                '</a:effectLst>'
+            ),
+            'reflection': (
+                f'<a:effectLst xmlns:a="{dml}"><a:reflection blurRad="0"/>'
+                '</a:effectLst>'
+            ),
+        }
+        for effect_name, container in unsupported_cases.items():
+            with self.subTest(effect=effect_name):
+                result = effect_result(container)
+                self.assertIsNone(result.filter_id)
+                self.assertEqual(result.defs, ())
+                self.assertEqual(
+                    dict(result.metadata)['data-pptx-effect-reason'],
+                    f'unsupported-effect:{effect_name}',
+                )
+
+        zero_offset = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+            'blurRad="38100" dist="0" dir="0">'
+            '<a:srgbClr val="000000"/></a:outerShdw></a:effectLst>'
+        )
+        self.assertIn(
+            'offset-is-not-classifiable',
+            dict(zero_offset.metadata)['data-pptx-effect-reason'],
+        )
+        invalid_glow = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:glow rad="1.5"/>'
+            '</a:effectLst>'
+        )
+        self.assertIn(
+            "rad='1.5'",
+            dict(invalid_glow.metadata)['data-pptx-effect-reason'],
+        )
+        multiple = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:outerShdw dist="38100"/>'
+            '<a:reflection/></a:effectLst>'
+        )
+        self.assertEqual(
+            dict(multiple.metadata)['data-pptx-effect-reason'],
+            'multiple-effects:outerShdw,reflection',
+        )
+        effect_dag = effect_result(f'<a:effectDag xmlns:a="{dml}"/>')
+        self.assertEqual(
+            dict(effect_dag.metadata)['data-pptx-effect-reason'],
+            'unsupported-effect-container:effectDag',
+        )
+
+        invalid_subset_cases = {
+            'duplicate containers': ((
+                f'<a:effectLst xmlns:a="{dml}"/>'
+                f'<a:effectLst xmlns:a="{dml}"/>'
+            ), 'multiple-effect-containers'),
+            'foreign container namespace': ((
+                '<x:effectLst xmlns:x="urn:foreign"/>'
+            ), 'invalid-effect-container-namespace'),
+            'foreign effect namespace': ((
+                f'<a:effectLst xmlns:a="{dml}" xmlns:x="urn:foreign">'
+                '<x:outerShdw/></a:effectLst>'
+            ), 'invalid-effect-namespace'),
+            'missing color': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+                'dist="38100"/></a:effectLst>'
+            ), 'missing-color'),
+            'invalid srgb color': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+                'dist="38100"><a:srgbClr val="bogus"/>'
+                '</a:outerShdw></a:effectLst>'
+            ), 'invalid-color:srgbClr'),
+            'multiple colors': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+                'dist="38100"><a:srgbClr val="000000"/>'
+                '<a:srgbClr val="FFFFFF"/></a:outerShdw></a:effectLst>'
+            ), 'multiple-colors'),
+            'invalid alpha': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="38100">'
+                '<a:srgbClr val="000000"><a:alpha val="bad"/>'
+                '</a:srgbClr></a:glow></a:effectLst>'
+            ), 'invalid-alpha-val'),
+            'unsupported color modifier': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="38100">'
+                '<a:srgbClr val="000000"><a:gamma/>'
+                '</a:srgbClr></a:glow></a:effectLst>'
+            ), 'unsupported-color-modifier:gamma'),
+            'oversized distance': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+                f'dist="{"9" * 400}"><a:srgbClr val="000000"/>'
+                '</a:outerShdw></a:effectLst>'
+            ), 'dist='),
+            'oversized radius': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow '
+                f'rad="{"9" * 400}"><a:srgbClr val="000000"/>'
+                '</a:glow></a:effectLst>'
+            ), 'rad='),
+            'oversized direction': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+                f'dist="38100" dir="{"9" * 400}">'
+                '<a:srgbClr val="000000"/></a:outerShdw></a:effectLst>'
+            ), 'dir='),
+        }
+        for case_name, (container, expected_reason) in invalid_subset_cases.items():
+            with self.subTest(case=case_name):
+                result = effect_result(container)
+                self.assertIsNone(result.filter_id)
+                self.assertEqual(result.defs, ())
+                self.assertIn(
+                    expected_reason,
+                    dict(result.metadata)['data-pptx-effect-reason'],
+                )
+
+        def round_trip_supported(result):
+            filter_id = result.filter_id
+            svg = (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 1280 720"><defs>'
+                + ''.join(result.defs)
+                + f'</defs><rect x="10" y="10" width="100" height="60" '
+                f'fill="#FFFFFF" filter="url(#{filter_id})"/></svg>'
+            )
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                svg_path = Path(tmp_dir) / 'tiny-effect.svg'
+                svg_path.write_text(svg, encoding='utf-8')
+                output, *_rest = convert_svg_to_slide_shapes(svg_path)
+                return output
+
+        tiny_outer = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+            'blurRad="1" dist="100" dir="0">'
+            '<a:srgbClr val="000000"/></a:outerShdw></a:effectLst>'
+        )
+        tiny_outer_xml = round_trip_supported(tiny_outer)
+        self.assertIn('<a:outerShdw blurRad="1" dist="100"', tiny_outer_xml)
+        self.assertNotIn('<a:glow', tiny_outer_xml)
+
+        tiny_glow = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:glow rad="1">'
+            '<a:srgbClr val="000000"/></a:glow></a:effectLst>'
+        )
+        self.assertIn('<a:glow rad="1">', round_trip_supported(tiny_glow))
+
+        marked_svg = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <rect x="80" y="80" width="300" height="180" fill="#FFFFFF"
+        data-pptx-effect-status="unsupported"
+        data-pptx-effect-reason="unsupported-effect:reflection"/>
+</svg>'''
+        self._assert_checker_and_exporter_reject(
+            marked_svg,
+            'unsupported source PPTX effect: unsupported-effect:reflection',
+            'unsupported imported PPTX effect',
+        )
+
+    def test_real_pptx_effect_import_matrix(self):
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        containers = [
+            f'''<a:effectLst xmlns:a="{dml}">
+  <a:outerShdw blurRad="38100" dist="38100" dir="5400000">
+    <a:srgbClr val="000000"><a:alpha val="50000"/></a:srgbClr>
+  </a:outerShdw>
+</a:effectLst>''',
+            f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="95250"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>''',
+            f'''<a:effectLst xmlns:a="{dml}"><a:innerShdw
+  blurRad="38100" dist="38100" dir="5400000"><a:srgbClr val="000000"/>
+</a:innerShdw></a:effectLst>''',
+            f'<a:effectLst xmlns:a="{dml}"><a:blur rad="38100"/></a:effectLst>',
+            f'<a:effectLst xmlns:a="{dml}"><a:softEdge rad="38100"/></a:effectLst>',
+            f'<a:effectLst xmlns:a="{dml}"><a:reflection/></a:effectLst>',
+            f'''<a:effectLst xmlns:a="{dml}"><a:outerShdw
+  blurRad="38100" dist="0" dir="0"><a:srgbClr val="000000"/>
+</a:outerShdw></a:effectLst>''',
+            f'''<a:effectLst xmlns:a="{dml}">
+  <a:outerShdw blurRad="38100" dist="38100" dir="5400000">
+    <a:srgbClr val="000000"/>
+  </a:outerShdw><a:reflection/>
+</a:effectLst>''',
+            f'<a:effectDag xmlns:a="{dml}"/>',
+        ]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'effects.pptx'
+            self._write_effect_fixture(pptx_path, containers)
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            self.assertEqual(len(imported.slides), len(containers))
+
+            outer_svg = imported.slides[0].svg
+            outer_root = ET.fromstring(outer_svg)
+            self.assertEqual(project_effect_status_errors(outer_root), [])
+            self.assertEqual(project_filter_errors(outer_root), [])
+            outer_path = root_dir / 'outer.svg'
+            outer_path.write_text(outer_svg, encoding='utf-8')
+            outer_xml, *_rest = convert_svg_to_slide_shapes(outer_path)
+            self.assertEqual(outer_xml.count('<a:outerShdw'), 1)
+
+            glow_svg = imported.slides[1].svg
+            glow_root = ET.fromstring(glow_svg)
+            self.assertEqual(project_effect_status_errors(glow_root), [])
+            self.assertEqual(project_filter_errors(glow_root), [])
+            self.assertNotIn('feMorphology', glow_svg)
+            self.assertIn('stdDeviation="10"', glow_svg)
+            glow_path = root_dir / 'glow.svg'
+            glow_path.write_text(glow_svg, encoding='utf-8')
+            glow_xml, *_rest = convert_svg_to_slide_shapes(glow_path)
+            self.assertIn('<a:glow rad="95250">', glow_xml)
+
+            expected_reasons = (
+                'unsupported-effect:innerShdw',
+                'unsupported-effect:blur',
+                'unsupported-effect:softEdge',
+                'unsupported-effect:reflection',
+                'offset-is-not-classifiable',
+                'multiple-effects:outerShdw,reflection',
+                'unsupported-effect-container:effectDag',
+            )
+            for artifact, expected_reason in zip(
+                imported.slides[2:],
+                expected_reasons,
+            ):
+                with self.subTest(reason=expected_reason):
+                    artifact_root = ET.fromstring(artifact.svg)
+                    status_errors = project_effect_status_errors(artifact_root)
+                    self.assertEqual(len(status_errors), 1)
+                    self.assertTrue(any(
+                        expected_reason in error
+                        for error in status_errors
+                    ))
+                    marked = [
+                        elem
+                        for elem in artifact_root.iter()
+                        if elem.get('data-pptx-effect-status') == 'unsupported'
+                    ]
+                    self.assertEqual(len(marked), 2)
+                    self.assertEqual(
+                        {elem.get('data-pptx-effect-reason') for elem in marked},
+                        {next(
+                            elem.get('data-pptx-effect-reason')
+                            for elem in marked
+                        )},
+                    )
+                    self.assertTrue(any(
+                        elem.get('data-pptx-object') == 'shape'
+                        and elem.get('data-pptx-prst') == 'cube'
+                        for elem in marked
+                    ))
+                    self.assertTrue(any(
+                        elem.get('data-pptx-part') == 'geometry'
+                        and elem.get('data-pptx-prst') == 'cube'
+                        for elem in marked
+                    ))
+                    self.assertNotIn('<filter', artifact.svg)
+                    artifact_path = root_dir / f'unsupported-{artifact.index}.svg'
+                    artifact_path.write_text(artifact.svg, encoding='utf-8')
+                    with self.assertRaisesRegex(
+                        SvgNativeConversionError,
+                        'unsupported imported PPTX effect',
+                    ):
+                        convert_svg_to_slide_shapes(artifact_path)
 
     def test_missing_paint_reference_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
