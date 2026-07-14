@@ -132,6 +132,8 @@ _COMPATIBLE_LETTER_SPACING_RE = re.compile(
     re.IGNORECASE,
 )
 _XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace'
+_XML_SPACE_ATTRIBUTE = f'{{{_XML_NAMESPACE}}}space'
+_PROJECT_XML_SPACE_VALUES = frozenset({'default', 'preserve'})
 _DRAWINGML_TEXT_SPACING_MIN = -400_000
 _DRAWINGML_TEXT_SPACING_MAX = 400_000
 
@@ -173,6 +175,74 @@ def _attribute_name(raw_name: str) -> str:
     if raw_name.startswith(f'{{{_XML_NAMESPACE}}}'):
         return f'xml:{raw_name.rsplit("}", 1)[-1]}'
     return _local_name(raw_name)
+
+
+def resolve_project_xml_space(
+    elem: ET.Element,
+    inherited: str = 'default',
+) -> str:
+    """Resolve the exact project ``xml:space`` value for one text element."""
+    if inherited not in _PROJECT_XML_SPACE_VALUES:
+        raise ValueError(f'invalid inherited xml:space value {inherited!r}')
+    raw = elem.get(_XML_SPACE_ATTRIBUTE)
+    if raw is None:
+        raw = elem.get('xml:space')
+    if raw is None:
+        return inherited
+    if raw not in _PROJECT_XML_SPACE_VALUES:
+        raise ValueError("xml:space must be exactly 'default' or 'preserve'")
+    return raw
+
+
+def normalize_project_text_segments(
+    segments: list[tuple[str, str]],
+) -> list[tuple[int, str]]:
+    """Normalize text whitespace while retaining the source segment owner.
+
+    Each input tuple is ``(effective_xml_space, raw_text)``. The returned
+    tuples are ``(input_index, normalized_text)`` so callers can retain run
+    formatting. Project whitespace follows rendered SVG behavior: tabs and
+    line endings become ordinary spaces; ``default`` runs collapse across
+    element boundaries and lose only overall leading/trailing spaces;
+    ``preserve`` runs retain every resulting ordinary space. Unicode spacing
+    characters such as NBSP are text, not XML whitespace, and remain intact.
+    """
+    output: list[tuple[int, str]] = []
+    pending_default_space: int | None = None
+
+    def append(index: int, text: str) -> None:
+        if not text:
+            return
+        if output and output[-1][0] == index:
+            owner, existing = output[-1]
+            output[-1] = (owner, existing + text)
+        else:
+            output.append((index, text))
+
+    def flush_pending() -> None:
+        nonlocal pending_default_space
+        if pending_default_space is not None and output:
+            append(pending_default_space, ' ')
+        pending_default_space = None
+
+    for index, (xml_space, raw_text) in enumerate(segments):
+        if xml_space not in _PROJECT_XML_SPACE_VALUES:
+            raise ValueError(
+                f'xml:space must be exactly default or preserve; got '
+                f'{xml_space!r}'
+            )
+        text = re.sub(r'[\t\r\n]', ' ', raw_text)
+        for char in text:
+            if xml_space == 'default' and char == ' ':
+                if pending_default_space is None:
+                    pending_default_space = index
+                continue
+            flush_pending()
+            append(index, char)
+
+    # A pending default-mode space is the overall trailing space and is
+    # intentionally discarded. Preserved trailing spaces were emitted inline.
+    return output
 
 
 def _is_unregistered_prefixed_text_property(name: str) -> bool:
@@ -539,6 +609,20 @@ def _diagnose_text_declaration(
 ) -> tuple[bool, TextPropertyDiagnostic | None]:
     """Return whether a declaration belongs to the text contract and its issue."""
     label = _element_label(elem)
+    if name == 'xml:space':
+        if source != 'attribute' or tag not in {'text', 'tspan'}:
+            return True, TextPropertyDiagnostic(
+                'error', label, source, name, raw,
+                f'{label} can use xml:space only as a direct attribute on '
+                '<text> or <tspan>',
+            )
+        if raw not in _PROJECT_XML_SPACE_VALUES:
+            return True, TextPropertyDiagnostic(
+                'error', label, source, name, raw,
+                f'{label} attribute xml:space={raw!r}: expected exactly '
+                "'default' or 'preserve'",
+            )
+        return True, None
     if _is_unregistered_prefixed_text_property(name):
         return True, TextPropertyDiagnostic(
             'error', label, source, name, raw,

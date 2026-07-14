@@ -992,6 +992,26 @@ runs or a text frame from the SVG estimate.
 - Any other unregistered `font-*` or `text-*` property is also an error; the
   closed grammar must not grow through an ignored CSS spelling.
 
+**Hard rule — project text whitespace**:
+
+- `xml:space` is the project's closed authoring control for significant text
+  whitespace. It is valid only as an exact direct attribute on `<text>` or
+  `<tspan>`, accepts only the case-sensitive values `default` and `preserve`,
+  inherits through the text tree, and may be reset on a child `<tspan>`.
+- The project maps this control to the visible Chromium/SVG2 behavior used by
+  Live Preview; it does not claim the legacy SVG 1.1 newline-deletion model.
+  XML line endings and tabs become U+0020 SPACE. In `default` mode, contiguous
+  U+0020 characters collapse across inline run boundaries and leading or
+  trailing default-mode spaces in the resulting text chunk are removed. In
+  `preserve` mode, every resulting U+0020 character remains significant.
+- Only XML whitespace is normalized. NBSP, ideographic space, and other
+  Unicode spacing characters remain literal text and must not be rewritten by
+  a generic Unicode-whitespace regular expression.
+- Source line breaks do not create PowerPoint paragraphs. Use the registered
+  positioned-`tspan`/paragraph structure for visual lines, and preserve DOM
+  text/tail order plus original style inheritance when normalizing that
+  structure.
+
 These allowlists are additive to the global structural blacklist and the
 paint, font-size, opacity, filter, and transform value contracts owned by their
 respective sections; they do not weaken those contracts.

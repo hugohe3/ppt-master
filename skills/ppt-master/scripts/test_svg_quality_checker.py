@@ -28,6 +28,8 @@ from pptx_to_svg.preset_authoring import (
     render_preset_shape_fragment,
     validate_authored_preset_tree,
 )
+from pptx_to_svg.emu_units import Xfrm
+from pptx_to_svg.txbody_to_svg import convert_vertical_txbody
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
@@ -2729,6 +2731,180 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self.assertEqual(slide_xml.count(' spc="150"'), 2)
         self.assertIn('algn="r"', slide_xml)
 
+    def test_text_whitespace_contract_matches_rendered_run_boundaries(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-family="Arial" font-size="20">
+  <text x="20" y="50">A <tspan fill="#FF0000"> B </tspan> C</text>
+  <text x="20" y="100"><tspan xml:space="preserve">  D  </tspan></text>
+  <text x="20" y="150" xml:space="preserve"><tspan
+        xml:space="default">  E  </tspan></text>
+  <text x="20" y="200">F  G　H</text>
+  <text x="20" y="250" xml:space="preserve">H
+	I</text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'text-whitespace.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        texts = re.findall(r'<a:t(?: [^>]*)?>(.*?)</a:t>', slide_xml, re.S)
+        self.assertEqual(
+            texts,
+            ['A ', 'B ', 'C', '  D  ', 'E', 'F  G　H', 'H  I'],
+        )
+        self.assertNotIn('<a:t>H\n', slide_xml)
+        self.assertEqual(slide_xml.count(' xml:space="preserve"'), 4)
+
+    def test_paragraph_runs_use_the_same_xml_space_inheritance(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-family="Arial" font-size="20">
+  <text x="20" y="50" data-paragraph-line-height="24">
+    <tspan x="20" xml:space="preserve">  First  </tspan>
+    <tspan x="20" dy="24" xml:space="default">  Second  </tspan>
+  </text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'paragraph-whitespace.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(slide_xml.count('<a:p>'), 1)
+        self.assertIn(
+            '<a:t xml:space="preserve">  First  Second</a:t>',
+            slide_xml,
+        )
+
+    def test_paragraph_merge_preserves_inline_sibling_space_and_inheritance(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="80" font-family="Arial" font-size="24">
+    <tspan x="40" dy="0" font-family="Arial Black"
+           font-weight="bold">&#183; Stable:</tspan>
+    <tspan fill="#FF0000">distributed ownership</tspan>
+    <tspan x="40" dy="40" font-family="Arial Black"
+           font-weight="bold">&#183; Future:</tspan>
+    <tspan fill="#FF0000">long-term incentives</tspan>
+  </text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'paragraph-inline-siblings.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        texts = re.findall(r'<a:t(?: [^>]*)?>(.*?)</a:t>', slide_xml, re.S)
+        self.assertEqual(
+            ''.join(texts),
+            'Stable: distributed ownership'
+            'Future: long-term incentives',
+        )
+        self.assertEqual(slide_xml.count('<a:buChar char="•"/>'), 2)
+        visible_runs = [
+            run
+            for run in re.findall(r'<a:r>(.*?)</a:r>', slide_xml, re.S)
+            if re.search(r'<a:t(?: [^>]*)?>[^ <]', run)
+        ]
+        self.assertEqual(len(visible_runs), 4)
+        self.assertIn('typeface="Arial Black"', visible_runs[0])
+        self.assertIn(' b="1"', visible_runs[0])
+        self.assertIn('typeface="Arial"', visible_runs[1])
+        self.assertNotIn(' b="1"', visible_runs[1])
+        self.assertIn('typeface="Arial Black"', visible_runs[2])
+        self.assertIn(' b="1"', visible_runs[2])
+        self.assertIn('typeface="Arial"', visible_runs[3])
+        self.assertNotIn(' b="1"', visible_runs[3])
+
+    def test_flattened_lines_keep_tail_and_xml_space_overrides(self):
+        cases = {
+            'tail': (
+                '<text x="10" y="20" font-size="20">'
+                '<tspan x="10" dy="20">A</tspan> B</text>',
+                ['A B'],
+            ),
+            'child_preserve': (
+                '<text x="10" y="20" font-size="20">'
+                '<tspan x="10" dy="20" xml:space="preserve">'
+                '  A  </tspan></text>',
+                ['  A  '],
+            ),
+            'child_default_reset': (
+                '<text x="10" y="20" font-size="20" '
+                'xml:space="preserve"><tspan x="10" dy="20" '
+                'xml:space="default">  A  </tspan></text>',
+                ['A'],
+            ),
+            'preserved_leading_text': (
+                '<text x="10" y="20" font-size="20" '
+                'xml:space="preserve">  A  '
+                '<tspan x="10" dy="20">B</tspan></text>',
+                ['  A  ', 'B'],
+            ),
+        }
+        for name, (body, expected) in cases.items():
+            source = (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                f'viewBox="0 0 640 360">{body}</svg>'
+            )
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp_dir:
+                svg_path = Path(tmp_dir) / f'{name}.svg'
+                svg_path.write_text(source, encoding='utf-8')
+                slide_xml = convert_svg_to_slide_shapes(
+                    svg_path,
+                    merge_paragraphs=False,
+                )[0]
+                texts = re.findall(
+                    r'<a:t(?: [^>]*)?>(.*?)</a:t>',
+                    slide_xml,
+                    re.S,
+                )
+                self.assertEqual(texts, expected)
+
+    def test_explicit_default_xml_space_matches_the_omitted_default(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'viewBox="0 0 640 360"><text x="40" y="100" '
+            'font-size="24">  A  B  </text></svg>'
+        )
+        explicit = source.replace(
+            'font-size="24"',
+            'font-size="24" xml:space="default"',
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'default-space.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            omitted_xml = convert_svg_to_slide_shapes(svg_path)[0]
+            svg_path.write_text(explicit, encoding='utf-8')
+            explicit_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(omitted_xml, explicit_xml)
+        self.assertIn('<a:t>A B</a:t>', explicit_xml)
+
+    def test_vertical_text_import_keeps_literal_space_advances(self):
+        tx_body = ET.fromstring('''
+<p:txBody xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+ xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:bodyPr vert="eaVert"/><a:lstStyle/><a:p><a:r>
+    <a:rPr sz="1800"/><a:t xml:space="preserve">甲  乙</a:t>
+  </a:r></a:p>
+</p:txBody>''')
+        result = convert_vertical_txbody(
+            tx_body,
+            Xfrm(x=0, y=0, w=100, h=400),
+            None,
+        )
+        self.assertEqual(result.svg.count('<tspan'), 4)
+        root = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            f'{result.svg}</svg>'
+        )
+        text = next(root.iter('{http://www.w3.org/2000/svg}text'))
+        self.assertEqual(''.join(text.itertext()), '甲  乙')
+
     def test_text_property_compatibility_aliases_warn_and_normalize(self):
         compatible = '''<svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 640 360">
@@ -2787,6 +2963,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'baseline': ('style="dominant-baseline:middle"', 'dominant-baseline'),
             'unknown_attribute': ('textLength="120"', 'textLength'),
             'inline_filter': ('style="filter:url(#shadow)"', 'filter'),
+            'xml_space': ('xml:space="Preserve"', 'xml:space'),
         }
         for name, (declaration, expected) in cases.items():
             content = (
@@ -2799,6 +2976,28 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 self._assert_checker_and_exporter_reject(
                     content,
                     expected,
+                    'invalid project text property',
+                )
+
+    def test_xml_space_is_scoped_to_text_and_tspan(self):
+        invalid_sources = {
+            'root': (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360" xml:space="preserve">'
+                '<text x="40" y="100" font-size="24">Text</text></svg>'
+            ),
+            'group': (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360"><g xml:space="preserve">'
+                '<text x="40" y="100" font-size="24">Text</text>'
+                '</g></svg>'
+            ),
+        }
+        for name, source in invalid_sources.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'xml:space only as a direct attribute on <text> or <tspan>',
                     'invalid project text property',
                 )
 

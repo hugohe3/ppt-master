@@ -231,11 +231,7 @@ def convert_vertical_txbody(
     glyphs: list[tuple[str, TextRun]] = []
     for run in runs:
         for char in run.text:
-            if char in "\r\n":
-                continue
-            if char == " ":
-                continue
-            glyphs.append((char, run))
+            glyphs.append((" " if char in "\t\r\n" else char, run))
 
     if not glyphs:
         return TextResult()
