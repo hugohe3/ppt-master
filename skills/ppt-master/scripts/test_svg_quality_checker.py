@@ -27,6 +27,7 @@ from svg_quality_checker import SVGQualityChecker
 from pptx_shapes import (
     CONNECTOR_PRESET_TYPES,
     get_preset_registry,
+    svg_preset_preview_fingerprint,
     svg_text_fingerprint,
 )
 from pptx_to_svg.preset_authoring import (
@@ -35,6 +36,8 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm
+from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
+from pptx_to_svg.preset_svg_markup import serialize_preset_layers
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
 from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
 from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
@@ -60,6 +63,7 @@ from svg_to_pptx.drawingml.elements import parse_project_nested_svg_crop
 from svg_to_pptx.drawingml.utils import (
     estimate_text_width,
     parse_inline_style,
+    project_filter_errors,
     split_project_text_clusters,
 )
 from svg_to_pptx.native_objects import (
@@ -1930,6 +1934,147 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'stdDeviation must be a finite number',
             'invalid project filter',
         )
+
+    def test_imported_preset_preview_may_mirror_carrier_filter(self):
+        rendered = render_preset_geometry(
+            'cube',
+            Xfrm(x=100, y=120, w=300, h=160),
+        )
+        semantic_attrs = {
+            'data-pptx-object': 'shape',
+            'data-pptx-shape-id': '2',
+            'data-pptx-shape-scope': 'slide',
+            'data-pptx-frame': '100 120 300 160',
+            'data-pptx-prst': 'cube',
+        }
+        markup = serialize_preset_layers(
+            rendered.paths,
+            semantic_attrs,
+            {
+                'fill': '#FFFFFF',
+                'stroke': 'none',
+                'filter': 'url(#shadow)',
+            },
+        )
+        svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6"
+                    flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <g id="imported-cube" data-pptx-object="shape"
+     data-pptx-shape-id="2" data-pptx-shape-scope="slide"
+     data-pptx-frame="100 120 300 160" data-pptx-prst="cube"
+     data-pptx-preview-sha256="{markup.preview_hash}">
+    {markup.markup}
+  </g>
+</svg>'''
+        root = ET.fromstring(svg)
+        self.assertEqual(project_filter_errors(root), [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'imported-effect.svg'
+            svg_path.write_text(svg, encoding='utf-8')
+            with contextlib.redirect_stdout(io.StringIO()):
+                checker_result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertEqual(checker_result['errors'], [])
+            slide_xml, *_rest = convert_svg_to_slide_shapes(svg_path)
+        self.assertEqual(slide_xml.count('<p:sp>'), 1)
+        self.assertNotIn('<p:grpSp>', slide_xml)
+        self.assertEqual(slide_xml.count('<a:outerShdw'), 1)
+
+        preview = next(
+            elem
+            for elem in root.iter()
+            if elem.get('data-pptx-part') == 'geometry-preview'
+        )
+        preview.set('filter', 'url(#different)')
+        self.assertTrue(any(
+            '<g> cannot use filter' in error
+            for error in project_filter_errors(root)
+        ))
+
+        def imported_parts(
+            document: ET.Element,
+        ) -> tuple[ET.Element, ET.Element, ET.Element]:
+            logical = next(
+                elem
+                for elem in document.iter()
+                if elem.get('id') == 'imported-cube'
+            )
+            native_carrier = next(
+                elem
+                for elem in logical
+                if elem.get('data-pptx-part') == 'geometry'
+            )
+            visible_preview = next(
+                elem
+                for elem in logical
+                if elem.get('data-pptx-part') == 'geometry-preview'
+            )
+            return logical, native_carrier, visible_preview
+
+        def refresh_preview_hash(
+            logical: ET.Element,
+            native_carrier: ET.Element,
+        ) -> None:
+            digest = svg_preset_preview_fingerprint(logical)
+            logical.set('data-pptx-preview-sha256', digest)
+            native_carrier.set('data-pptx-preview-sha256', digest)
+
+        foreign_child_root = ET.fromstring(svg)
+        logical, carrier, visible_preview = imported_parts(foreign_child_root)
+        ET.SubElement(visible_preview, '{http://www.w3.org/2000/svg}rect', {
+            'x': '100',
+            'y': '120',
+            'width': '10',
+            'height': '10',
+        })
+        refresh_preview_hash(logical, carrier)
+        self.assertTrue(any(
+            '<g> cannot use filter' in error
+            for error in project_filter_errors(foreign_child_root)
+        ))
+
+        duplicate_preview_root = ET.fromstring(svg)
+        logical, carrier, visible_preview = imported_parts(duplicate_preview_root)
+        logical.append(ET.fromstring(ET.tostring(visible_preview)))
+        refresh_preview_hash(logical, carrier)
+        self.assertTrue(any(
+            '<g> cannot use filter' in error
+            for error in project_filter_errors(duplicate_preview_root)
+        ))
+
+        stale_root = ET.fromstring(svg)
+        logical, carrier, _visible_preview = imported_parts(stale_root)
+        logical.set('data-pptx-preview-sha256', '0' * 64)
+        carrier.set('data-pptx-preview-sha256', '0' * 64)
+        self.assertTrue(any(
+            '<g> cannot use filter' in error
+            for error in project_filter_errors(stale_root)
+        ))
+
+        mismatched_carrier_root = ET.fromstring(svg)
+        _logical, carrier, _visible_preview = imported_parts(
+            mismatched_carrier_root
+        )
+        carrier.set('data-pptx-prst', 'rect')
+        self.assertTrue(any(
+            '<g> cannot use filter' in error
+            for error in project_filter_errors(mismatched_carrier_root)
+        ))
+
+        ordinary = ET.fromstring('''<svg xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="shadow"><feDropShadow dx="0" dy="4"
+    stdDeviation="6"/></filter></defs>
+  <g filter="url(#shadow)"><rect x="0" y="0" width="10" height="10"/></g>
+</svg>''')
+        self.assertTrue(any(
+            '<g> cannot use filter' in error
+            for error in project_filter_errors(ordinary)
+        ))
 
     def test_missing_paint_reference_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
