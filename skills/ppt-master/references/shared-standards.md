@@ -1342,11 +1342,13 @@ Before release export, rasterize the affected object from the source PPTX or
 rebuild its effect with supported explicit geometry; baking the effect-less
 analysis SVG alone cannot recover the source appearance. This diagnostic path
 covers `p:sp`, `p:cxnSp`, `p:pic`, and `p:grpSp` source effects. Text-run source
-effects do not use effect-status metadata; the metadata-backed logical-shape
-guard in §6.4 preserves them unchanged or blocks a lossy edit. Other text-body
-routes remain outside that guard and are not claimed as preserved. Handled
-object effects must never become a different effect or disappear without a
-diagnostic.
+effects follow the route-specific §6.4 contract: unchanged metadata-backed
+horizontal text preserves its native `txBody`, while a lossy edit blocks from
+that payload; vertical and relationship-bearing shape-text routes keep their
+visible fallback and stamp the logical shape plus carrier with effect-status;
+table-cell text keeps the visible table fallback, disables native Table replacement,
+and stamps the imported `p:graphicFrame` group. Handled object or text-run
+effects must never become a different effect or disappear without a diagnostic.
 
 ---
 
