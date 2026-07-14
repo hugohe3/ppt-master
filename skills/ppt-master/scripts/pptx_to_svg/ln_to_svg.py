@@ -223,6 +223,10 @@ def _build_arrow_marker(
 
     if typ == "oval":
         body = f'<circle cx="5" cy="5" r="4" fill="{stroke_color}"/>'
+    elif typ == "arrow":
+        body = (
+            f'<path d="{path}" fill="none" stroke="{stroke_color}"/>'
+        )
     else:
         body = f'<path d="{path}" fill="{stroke_color}"/>'
 

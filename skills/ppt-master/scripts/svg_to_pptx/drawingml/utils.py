@@ -1947,6 +1947,11 @@ def project_marker_errors(root: ET.Element) -> list[str]:
                 not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
             ]
             shape = visual_children[0] if len(visual_children) == 1 else None
+            marker_shape_type = (
+                classify_project_marker_shape(marker)
+                if shape is not None
+                else None
+            )
             if marker_id not in checked_markers:
                 checked_markers.add(marker_id)
                 marker_label = f'<marker id="{marker_id}">'
@@ -1990,7 +1995,6 @@ def project_marker_errors(root: ET.Element) -> list[str]:
                             f'{marker_label} child <{shape_tag}> cannot use '
                             'transform'
                         )
-                    marker_shape_type = classify_project_marker_shape(marker)
                     if marker_shape_type is None and shape_tag == 'path':
                         errors.add(
                             f'{marker_label} path must be a closed 3-vertex '
@@ -2023,26 +2027,38 @@ def project_marker_errors(root: ET.Element) -> list[str]:
                 'stroke',
                 parent_by_id,
             )
-            marker_fill = (
-                _project_effective_presentation_value(
+            marker_fill = _project_effective_presentation_value(
+                shape,
+                'fill',
+                parent_by_id,
+            ) or '#000000'
+            if marker_shape_type == 'arrow':
+                if marker_fill.strip().lower() != 'none':
+                    errors.add(
+                        f'{label} {attribute_name}=url(#{marker_id}) open '
+                        'arrow marker requires fill="none"'
+                    )
+                marker_channel = 'stroke'
+                marker_paint = _project_effective_presentation_value(
                     shape,
-                    'fill',
+                    marker_channel,
                     parent_by_id,
-                )
-                or '#000000'
-            )
+                ) or 'none'
+            else:
+                marker_channel = 'fill'
+                marker_paint = marker_fill
             stroke_color, _stroke_alpha = parse_svg_color(stroke_value or '')
-            fill_color, _fill_alpha = parse_svg_color(marker_fill)
-            if stroke_color is None or fill_color is None:
+            marker_color, _marker_alpha = parse_svg_color(marker_paint)
+            if stroke_color is None or marker_color is None:
                 errors.add(
-                    f'{label} {attribute_name} marker fill and line stroke '
-                    'must both be supported solid colors'
+                    f'{label} {attribute_name} marker {marker_channel} and '
+                    'line stroke must both be supported solid colors'
                 )
-            elif stroke_color != fill_color:
+            elif stroke_color != marker_color:
                 errors.add(
-                    f'{label} {attribute_name}=url(#{marker_id}) marker fill '
-                    f'{marker_fill!r} does not match effective line stroke '
-                    f'{stroke_value!r}'
+                    f'{label} {attribute_name}=url(#{marker_id}) marker '
+                    f'{marker_channel} {marker_paint!r} does not match '
+                    f'effective line stroke {stroke_value!r}'
                 )
 
     return sorted(errors)
