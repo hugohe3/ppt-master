@@ -32,6 +32,7 @@ from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
 )
+from svg_to_pptx.drawingml.elements import parse_project_nested_svg_crop
 from svg_to_pptx.drawingml.utils import (
     estimate_text_width,
     parse_inline_style,
@@ -55,6 +56,12 @@ from svg_to_pptx.use_expander import UseExpansionError, expand_local_use_referen
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     """Keep supported aliases advisory and unsupported input blocking."""
+
+    _TINY_PNG_URI = (
+        'data:image/png;base64,'
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk'
+        '+A8AAQUBAScY42YAAAAASUVORK5CYII='
+    )
 
     def _check(self, content: str) -> dict:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -109,6 +116,773 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 expected_exporter_text,
             ):
                 convert_svg_to_slide_shapes(svg_path)
+
+    def _nested_crop_source(
+        self,
+        *,
+        view_box: str = '0.1 0.2 0.7 0.6',
+        outer_extra: str = '',
+        inner: str | None = None,
+        definitions: str = '',
+        ancestor_start: str = '',
+        ancestor_end: str = '',
+    ) -> str:
+        inner_markup = inner or (
+            f'<image href="{self._TINY_PNG_URI}" x="0" y="0" '
+            'width="1" height="1" preserveAspectRatio="none"/>'
+        )
+        return (
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'xmlns:xlink="http://www.w3.org/1999/xlink" '
+            'viewBox="0 0 640 360">'
+            f'{definitions}{ancestor_start}'
+            '<svg x="100" y="80" width="200" height="100" '
+            f'viewBox="{view_box}" preserveAspectRatio="none"'
+            f'{outer_extra}>{inner_markup}</svg>{ancestor_end}</svg>'
+        )
+
+    def test_imported_nested_crop_round_trips_to_native_src_rect(self):
+        source = self._nested_crop_source(
+            inner=(
+                f'<image href="{self._TINY_PNG_URI}" x="0" y="0" '
+                'width="1" height="1" preserveAspectRatio="none" '
+                'opacity="0.8"/>'
+            ),
+        )
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'nested-crop.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(slide_xml.count('<p:pic>'), 1)
+        self.assertIn(
+            '<a:srcRect l="10000" t="20000" r="20000" b="20000"/>',
+            slide_xml,
+        )
+        self.assertIn('<a:alphaModFix amt="80000"/>', slide_xml)
+
+    def test_nested_crop_accepts_registered_import_and_structure_metadata(self):
+        source = self._nested_crop_source(
+            outer_extra=(
+                ' id="picture-carrier" data-pptx-frame="100 80 200 100"'
+                ' data-pptx-layer="layout" data-pptx-object="picture"'
+                ' data-pptx-placeholder-carrier="true"'
+                ' data-pptx-shape-id="7" data-pptx-shape-name="Picture 7"'
+                ' data-pptx-shape-scope="layout"'
+            ),
+        )
+        root = ET.fromstring(source)
+        wrappers = list(root.iter('{http://www.w3.org/2000/svg}svg'))
+        crop = parse_project_nested_svg_crop(wrappers[1])
+        self.assertEqual((crop.width, crop.height), (200.0, 100.0))
+
+    def test_imported_nested_crop_preserves_signed_src_rect_values(self):
+        cases = {
+            '-0.1 0.2 1.05 0.7': (
+                '<a:srcRect l="-10000" t="20000" r="5000" b="10000"/>'
+            ),
+            '1.2 0 0.1 1': (
+                '<a:srcRect l="120000" t="0" r="-30000" b="0"/>'
+            ),
+        }
+        for view_box, expected_src_rect in cases.items():
+            with self.subTest(view_box=view_box):
+                source = self._nested_crop_source(view_box=view_box)
+                result = self._check(source)
+                self.assertTrue(result['passed'])
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / 'signed-crop.svg'
+                    svg_path.write_text(source, encoding='utf-8')
+                    slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+                self.assertIn(expected_src_rect, slide_xml)
+
+    def test_generic_nested_svg_is_not_silently_dropped(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <svg x="100" y="80" width="200" height="100" viewBox="0 0 200 100">
+    <rect x="0" y="0" width="200" height="100" fill="#FF0000"/>
+    <text x="20" y="55" font-size="20">Nested</text>
+  </svg>
+</svg>'''
+        self._assert_checker_and_exporter_reject(
+            source,
+            'invalid imported crop wrapper',
+            'invalid nested SVG crop wrapper',
+        )
+
+    def test_nested_crop_cannot_hide_extra_visual_siblings(self):
+        valid_inner = (
+            f'<image href="{self._TINY_PNG_URI}" x="0" y="0" '
+            'width="1" height="1" preserveAspectRatio="none"/>'
+        )
+        source = self._nested_crop_source(
+            inner=valid_inner + '<rect x="0" y="0" width="1" height="1"/>',
+        )
+        self._assert_checker_and_exporter_reject(
+            source,
+            'expected exactly one direct SVG-namespace <image> child',
+            'expected exactly one direct SVG-namespace <image> child',
+        )
+
+    def test_nested_crop_clip_marker_and_reference_are_one_closed_contract(self):
+        definitions = (
+            '<defs><clipPath id="crop-clip" '
+            'clipPathUnits="objectBoundingBox">'
+            '<ellipse cx="0.5" cy="0.5" rx="0.5" ry="0.5"/>'
+            '</clipPath></defs>'
+        )
+        source = self._nested_crop_source(
+            definitions=definitions,
+            outer_extra=(
+                ' data-pptx-crop="1" clip-path="url(#crop-clip)"'
+            ),
+        )
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'clipped-crop.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertIn('<a:prstGeom prst="ellipse">', slide_xml)
+
+        invalid_sources = {
+            'clip without marker': self._nested_crop_source(
+                definitions=definitions,
+                outer_extra=' clip-path="url(#crop-clip)"',
+            ),
+            'marker without clip': self._nested_crop_source(
+                definitions=definitions,
+                outer_extra=' data-pptx-crop="1"',
+            ),
+            'missing clip': self._nested_crop_source(
+                outer_extra=(
+                    ' data-pptx-crop="1" clip-path="url(#missing)"'
+                ),
+            ),
+            'malformed clip': self._nested_crop_source(
+                outer_extra=' data-pptx-crop="1" clip-path="crop-clip"',
+            ),
+        }
+        for name, invalid_source in invalid_sources.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    invalid_source,
+                    'clip',
+                    'clip',
+                )
+
+    def test_preset_clip_geometry_must_cover_the_complete_image_frame(self):
+        def source_for(shape: str, *, units: str = 'userSpaceOnUse') -> str:
+            return (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 100 100"><defs>'
+                f'<clipPath id="clip" clipPathUnits="{units}">{shape}'
+                '</clipPath></defs>'
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="20" '
+                'width="40" height="40" clip-path="url(#clip)"/></svg>'
+            )
+
+        valid_source = source_for(
+            '<circle cx="30" cy="40" r="20"/>'
+        )
+        result = self._check(valid_source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'full-circle-clip.svg'
+            svg_path.write_text(valid_source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertIn('<a:prstGeom prst="ellipse">', slide_xml)
+
+        invalid_sources = {
+            'partial circle': source_for(
+                '<circle cx="30" cy="40" r="10"/>'
+            ),
+            'offset rect': source_for(
+                '<rect x="15" y="20" width="35" height="40"/>'
+            ),
+            'non-uniform rounded rect': source_for(
+                '<rect x="10" y="20" width="40" height="40" '
+                'rx="4" ry="8"/>'
+            ),
+        }
+        for name, source in invalid_sources.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'must cover the complete frame',
+                    'invalid project clip-path',
+                )
+
+    def test_clip_definition_and_shape_require_the_svg_namespace(self):
+        foreign_definition = (
+            '<svg xmlns="http://www.w3.org/2000/svg" xmlns:q="urn:foreign" '
+            'viewBox="0 0 100 100"><defs>'
+            '<q:clipPath id="clip"><q:circle cx="30" cy="40" r="20"/>'
+            '</q:clipPath></defs>'
+            f'<image href="{self._TINY_PNG_URI}" x="10" y="20" '
+            'width="40" height="40" clip-path="url(#clip)"/></svg>'
+        )
+        foreign_child = foreign_definition.replace(
+            '<q:clipPath id="clip"><q:circle',
+            '<clipPath id="clip"><q:circle',
+        ).replace('</q:clipPath>', '</clipPath>')
+        for name, source in {
+            'foreign definition': foreign_definition,
+            'foreign child': foreign_child,
+        }.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'clip',
+                    'invalid project clip-path',
+                )
+
+    def test_picture_clip_cannot_depend_on_a_winding_rule(self):
+        def source_for(clip_extra: str, shape_extra: str) -> str:
+            return (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 100 100"><defs>'
+                f'<clipPath id="clip"{clip_extra}>'
+                '<path d="M 10 20 L 50 20 L 50 60 L 10 60 Z"'
+                f'{shape_extra}/></clipPath></defs>'
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="20" '
+                'width="40" height="40" clip-path="url(#clip)"/></svg>'
+            )
+
+        invalid_sources = {
+            'clipPath attribute': source_for(
+                ' clip-rule="evenodd"',
+                '',
+            ),
+            'shape attribute': source_for(
+                '',
+                ' fill-rule="evenodd"',
+            ),
+            'inline style': source_for(
+                '',
+                ' style="clip-rule: evenodd"',
+            ),
+        }
+        for name, source in invalid_sources.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'winding-rule control',
+                    'invalid project clip-path',
+                )
+
+    def test_nested_crop_requires_svg_namespace_and_visual_ancestry(self):
+        foreign_inner = (
+            f'<q:image xmlns:q="urn:foreign" href="{self._TINY_PNG_URI}" '
+            'x="0" y="0" width="1" height="1" '
+            'preserveAspectRatio="none"/>'
+        )
+        invalid_sources = {
+            'foreign image': self._nested_crop_source(inner=foreign_inner),
+            'defs ancestor': self._nested_crop_source(
+                ancestor_start='<defs>',
+                ancestor_end='</defs>',
+            ),
+            'text ancestor': self._nested_crop_source(
+                ancestor_start='<text x="0" y="0">',
+                ancestor_end='</text>',
+            ),
+            'render-only ancestor': self._nested_crop_source(
+                ancestor_start='<g data-pptx-part="geometry-detail">',
+                ancestor_end='</g>',
+            ),
+            'render-only self': self._nested_crop_source(
+                outer_extra=' data-pptx-part="geometry-detail"',
+            ),
+        }
+        for name, source in invalid_sources.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'invalid imported crop wrapper',
+                    'invalid nested SVG crop wrapper',
+                )
+
+    def test_plain_and_nested_images_share_strict_source_validation(self):
+        truncated_emf = bytearray(44)
+        truncated_emf[0:4] = b'\x01\x00\x00\x00'
+        truncated_emf[40:44] = b' EMF'
+        truncated_emf_uri = (
+            'data:image/x-emf;base64,'
+            + base64.b64encode(bytes(truncated_emf)).decode('ascii')
+        )
+        truncated_wmf_uri = (
+            'data:image/x-wmf;base64,'
+            + base64.b64encode(b'\xd7\xcd\xc6\x9a').decode('ascii')
+        )
+        fake_emf_eof = bytearray(96)
+        fake_emf_eof[0:4] = (1).to_bytes(4, 'little')
+        fake_emf_eof[4:8] = (88).to_bytes(4, 'little')
+        fake_emf_eof[40:44] = b' EMF'
+        fake_emf_eof[44:48] = (0x00010000).to_bytes(4, 'little')
+        fake_emf_eof[48:52] = (96).to_bytes(4, 'little')
+        fake_emf_eof[52:56] = (2).to_bytes(4, 'little')
+        fake_emf_eof[88:92] = (14).to_bytes(4, 'little')
+        fake_emf_eof[92:96] = (8).to_bytes(4, 'little')
+        fake_emf_eof_uri = (
+            'data:image/x-emf;base64,'
+            + base64.b64encode(bytes(fake_emf_eof)).decode('ascii')
+        )
+        duplicate_header_emf = bytearray(196)
+        duplicate_header_emf[0:88] = fake_emf_eof[0:88]
+        duplicate_header_emf[48:52] = (196).to_bytes(4, 'little')
+        duplicate_header_emf[52:56] = (3).to_bytes(4, 'little')
+        duplicate_header_emf[88:92] = (1).to_bytes(4, 'little')
+        duplicate_header_emf[92:96] = (88).to_bytes(4, 'little')
+        duplicate_header_emf[176:180] = (14).to_bytes(4, 'little')
+        duplicate_header_emf[180:184] = (20).to_bytes(4, 'little')
+        duplicate_header_emf[188:192] = (16).to_bytes(4, 'little')
+        duplicate_header_emf[192:196] = (20).to_bytes(4, 'little')
+        duplicate_header_emf_uri = (
+            'data:image/x-emf;base64,'
+            + base64.b64encode(bytes(duplicate_header_emf)).decode('ascii')
+        )
+        early_eof_emf = bytearray(128)
+        early_eof_emf[0:88] = fake_emf_eof[0:88]
+        early_eof_emf[48:52] = (128).to_bytes(4, 'little')
+        early_eof_emf[52:56] = (3).to_bytes(4, 'little')
+        for offset in (88, 108):
+            early_eof_emf[offset:offset + 4] = (14).to_bytes(4, 'little')
+            early_eof_emf[offset + 4:offset + 8] = (20).to_bytes(
+                4,
+                'little',
+            )
+            early_eof_emf[offset + 12:offset + 16] = (16).to_bytes(
+                4,
+                'little',
+            )
+            early_eof_emf[offset + 16:offset + 20] = (20).to_bytes(
+                4,
+                'little',
+            )
+        early_eof_emf_uri = (
+            'data:image/x-emf;base64,'
+            + base64.b64encode(bytes(early_eof_emf)).decode('ascii')
+        )
+        bad_size_last_emf = bytearray(108)
+        bad_size_last_emf[0:88] = fake_emf_eof[0:88]
+        bad_size_last_emf[48:52] = (108).to_bytes(4, 'little')
+        bad_size_last_emf[88:92] = (14).to_bytes(4, 'little')
+        bad_size_last_emf[92:96] = (20).to_bytes(4, 'little')
+        bad_size_last_emf[100:104] = (16).to_bytes(4, 'little')
+        bad_size_last_emf[104:108] = (16).to_bytes(4, 'little')
+        bad_size_last_emf_uri = (
+            'data:image/x-emf;base64,'
+            + base64.b64encode(bytes(bad_size_last_emf)).decode('ascii')
+        )
+        palette_mismatch_emf = bytearray(112)
+        palette_mismatch_emf[0:88] = fake_emf_eof[0:88]
+        palette_mismatch_emf[48:52] = (112).to_bytes(4, 'little')
+        palette_mismatch_emf[88:92] = (14).to_bytes(4, 'little')
+        palette_mismatch_emf[92:96] = (24).to_bytes(4, 'little')
+        palette_mismatch_emf[96:100] = (1).to_bytes(4, 'little')
+        palette_mismatch_emf[100:104] = (16).to_bytes(4, 'little')
+        palette_mismatch_emf[108:112] = (24).to_bytes(4, 'little')
+        palette_mismatch_emf_uri = (
+            'data:image/x-emf;base64,'
+            + base64.b64encode(bytes(palette_mismatch_emf)).decode('ascii')
+        )
+        valid_wmf = bytes.fromhex(
+            '0100 0900 0003 0c000000 0000 03000000 0000 '
+            '03000000 0000'
+        )
+        invalid_version_wmf = bytearray(valid_wmf)
+        invalid_version_wmf[4:6] = b'\x00\x00'
+        invalid_version_wmf_uri = (
+            'data:image/x-wmf;base64,'
+            + base64.b64encode(bytes(invalid_version_wmf)).decode('ascii')
+        )
+        inflated_max_wmf = bytearray(valid_wmf)
+        inflated_max_wmf[12:16] = (4).to_bytes(4, 'little')
+        inflated_max_wmf_uri = (
+            'data:image/x-wmf;base64,'
+            + base64.b64encode(bytes(inflated_max_wmf)).decode('ascii')
+        )
+        oversized_eof_wmf = bytes.fromhex(
+            '0100 0900 0003 0d000000 0000 04000000 0000 '
+            '04000000 0000 0000'
+        )
+        oversized_eof_wmf_uri = (
+            'data:image/x-wmf;base64,'
+            + base64.b64encode(oversized_eof_wmf).decode('ascii')
+        )
+        early_eof_wmf = bytes.fromhex(
+            '0100 0900 0003 0f000000 0000 03000000 0000 '
+            '03000000 0000 03000000 0000'
+        )
+        early_eof_wmf_uri = (
+            'data:image/x-wmf;base64,'
+            + base64.b64encode(early_eof_wmf).decode('ascii')
+        )
+        plain_sources = {
+            'missing href': (
+                '<image x="10" y="10" width="40" height="40"/>'
+            ),
+            'empty href': (
+                '<image href="" x="10" y="10" width="40" height="40"/>'
+            ),
+            'dual href': (
+                f'<image href="{self._TINY_PNG_URI}" '
+                f'xlink:href="{self._TINY_PNG_URI}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'invalid base64': (
+                '<image href="data:image/png;base64,%%%" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'empty payload': (
+                '<image href="data:image/png;base64," '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'wrong mime': (
+                '<image href="data:text/plain;base64,QQ==" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'invalid image bytes': (
+                '<image href="data:image/png;base64,QQ==" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'truncated emf': (
+                f'<image href="{truncated_emf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'truncated wmf': (
+                f'<image href="{truncated_wmf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'truncated emf eof record': (
+                f'<image href="{fake_emf_eof_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'duplicate emf header': (
+                f'<image href="{duplicate_header_emf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'nonfinal emf eof record': (
+                f'<image href="{early_eof_emf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'mismatched emf eof size-last': (
+                f'<image href="{bad_size_last_emf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'mismatched emf palette count': (
+                f'<image href="{palette_mismatch_emf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'invalid wmf version': (
+                f'<image href="{invalid_version_wmf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'inflated wmf maximum record': (
+                f'<image href="{inflated_max_wmf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'oversized wmf eof record': (
+                f'<image href="{oversized_eof_wmf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+            'nonfinal wmf eof record': (
+                f'<image href="{early_eof_wmf_uri}" '
+                'x="10" y="10" width="40" height="40"/>'
+            ),
+        }
+        for name, image_markup in plain_sources.items():
+            with self.subTest(kind='plain', name=name):
+                source = (
+                    '<svg xmlns="http://www.w3.org/2000/svg" '
+                    'xmlns:xlink="http://www.w3.org/1999/xlink" '
+                    f'viewBox="0 0 100 100">{image_markup}</svg>'
+                )
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'invalid image source',
+                    'invalid project image',
+                )
+
+        nested_inner = (
+            '<image href="data:image/png;base64,%%%" x="0" y="0" '
+            'width="1" height="1" preserveAspectRatio="none"/>'
+        )
+        self._assert_checker_and_exporter_reject(
+            self._nested_crop_source(inner=nested_inner),
+            'invalid image source',
+            'invalid project image',
+        )
+
+    def test_external_image_bytes_must_match_their_extension(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+            '<image href="broken.png" x="10" y="10" '
+            'width="40" height="40"/></svg>'
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'fixture.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            (Path(tmp_dir) / 'broken.png').write_bytes(b'not a png')
+            result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertFalse(result['passed'])
+            self.assertIn('does not match', '\n'.join(result['errors']))
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'invalid project image',
+            ):
+                convert_svg_to_slide_shapes(svg_path)
+
+    def test_images_require_explicit_positive_dimensions(self):
+        image_cases = {
+            'missing width': (
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+                'height="40"/>'
+            ),
+            'missing height': (
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+                'width="40"/>'
+            ),
+            'zero width': (
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+                'width="0" height="40"/>'
+            ),
+            'zero height': (
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+                'width="40" height="0"/>'
+            ),
+            'style overrides width with zero': (
+                f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+                'width="40" height="40" style="width: 0"/>'
+            ),
+        }
+        for name, image_markup in image_cases.items():
+            with self.subTest(name=name):
+                source = (
+                    '<svg xmlns="http://www.w3.org/2000/svg" '
+                    f'viewBox="0 0 100 100">{image_markup}</svg>'
+                )
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'positive',
+                    'invalid project image',
+                )
+
+    def test_compatible_inline_image_dimensions_remain_exportable(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+            f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+            'style="width: 40px; height: 40px"/></svg>'
+        )
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'inline-image-frame.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(slide_xml.count('<p:pic>'), 1)
+
+    def test_external_svg_image_is_a_registered_source_format(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+            '<image href="asset.svg" x="10" y="10" '
+            'width="40" height="40"/></svg>'
+        )
+        asset = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'
+            '<rect width="10" height="10" fill="#2563EB"/></svg>'
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'fixture.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            (Path(tmp_dir) / 'asset.svg').write_text(asset, encoding='utf-8')
+            result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertTrue(result['passed'])
+            _slide_xml, media_files, *_rest = convert_svg_to_slide_shapes(
+                svg_path
+            )
+        self.assertEqual(tuple(media_files), ('s1_img1.svg',))
+
+    def test_complete_wmf_record_stream_is_a_registered_source_format(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+            '<image href="asset.wmf" x="10" y="10" '
+            'width="40" height="40"/></svg>'
+        )
+        # Standard 18-byte METAHEADER plus one 6-byte META_EOF record.
+        asset = bytes.fromhex(
+            '0100 0900 0003 0c000000 0000 03000000 0000 '
+            '03000000 0000'
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'fixture.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            (Path(tmp_dir) / 'asset.wmf').write_bytes(asset)
+            result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertTrue(result['passed'])
+            _slide_xml, media_files, *_rest = convert_svg_to_slide_shapes(
+                svg_path
+            )
+        self.assertEqual(tuple(media_files), ('s1_img1.wmf',))
+
+    def test_complete_emf_record_stream_is_a_registered_source_format(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+            '<image href="asset.emf" x="10" y="10" '
+            'width="40" height="40"/></svg>'
+        )
+        # Minimal nondegenerate EMR_HEADER plus EMR_EOF. Accept both the
+        # MS-EMF all-record count and LibreOffice's post-header count, plus a
+        # legal EOF carrying one palette entry.
+        cases = ((2, 0), (1, 0), (2, 1))
+        for record_count, palette_entries in cases:
+            with self.subTest(
+                record_count=record_count,
+                palette_entries=palette_entries,
+            ):
+                eof_size = 20 + palette_entries * 4
+                asset = bytearray(88 + eof_size)
+                asset[0:4] = (1).to_bytes(4, 'little')
+                asset[4:8] = (88).to_bytes(4, 'little')
+                asset[8:24] = b''.join(
+                    value.to_bytes(4, 'little', signed=True)
+                    for value in (0, 0, 100, 100)
+                )
+                asset[24:40] = b''.join(
+                    value.to_bytes(4, 'little', signed=True)
+                    for value in (0, 0, 2540, 2540)
+                )
+                asset[40:44] = b' EMF'
+                asset[44:48] = (0x00010000).to_bytes(4, 'little')
+                asset[48:52] = len(asset).to_bytes(4, 'little')
+                asset[52:56] = record_count.to_bytes(4, 'little')
+                asset[68:72] = palette_entries.to_bytes(4, 'little')
+                asset[72:80] = b''.join(
+                    value.to_bytes(4, 'little') for value in (100, 100)
+                )
+                asset[80:88] = b''.join(
+                    value.to_bytes(4, 'little') for value in (25, 25)
+                )
+                asset[88:92] = (14).to_bytes(4, 'little')
+                asset[92:96] = eof_size.to_bytes(4, 'little')
+                asset[96:100] = palette_entries.to_bytes(4, 'little')
+                asset[100:104] = (16).to_bytes(4, 'little')
+                asset[-4:] = eof_size.to_bytes(4, 'little')
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / 'fixture.svg'
+                    svg_path.write_text(source, encoding='utf-8')
+                    (Path(tmp_dir) / 'asset.emf').write_bytes(asset)
+                    result = SVGQualityChecker().check_file(str(svg_path))
+                    self.assertTrue(result['passed'])
+                    _slide_xml, media_files, *_rest = (
+                        convert_svg_to_slide_shapes(svg_path)
+                    )
+                self.assertEqual(tuple(media_files), ('s1_img1.emf',))
+
+    def test_template_image_token_does_not_bypass_href_cardinality(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'xmlns:xlink="http://www.w3.org/1999/xlink" '
+            'viewBox="0 0 100 100">'
+            '<image href="{{IMAGE}}" xlink:href="other.png" '
+            'x="10" y="10" width="40" height="40"/></svg>'
+        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'template.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            result = SVGQualityChecker(template_mode=True).check_file(
+                str(svg_path)
+            )
+        self.assertFalse(result['passed'])
+        self.assertIn(
+            'requires exactly one href or xlink:href',
+            '\n'.join(result['errors']),
+        )
+
+    def test_foreign_namespace_visuals_fail_checker_and_exporter_preflight(self):
+        source = (
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'xmlns:q="urn:foreign" viewBox="0 0 100 100">'
+            f'<q:image href="{self._TINY_PNG_URI}" x="10" y="10" '
+            'width="40" height="40"/></svg>'
+        )
+        self._assert_checker_and_exporter_reject(
+            source,
+            'must use the SVG namespace',
+            'invalid project image',
+        )
+
+    def test_unnamespaced_image_fails_checker_and_exporter_preflight(self):
+        source = (
+            '<svg viewBox="0 0 100 100">'
+            f'<image href="{self._TINY_PNG_URI}" x="10" y="10" '
+            'width="40" height="40"/></svg>'
+        )
+        self._assert_checker_and_exporter_reject(
+            source,
+            'must use the SVG namespace',
+            'invalid project image',
+        )
+
+    def test_nested_crop_contract_rejects_malformed_transport_wrappers(self):
+        valid_inner = (
+            f'<image href="{self._TINY_PNG_URI}" x="0" y="0" '
+            'width="1" height="1" preserveAspectRatio="none"/>'
+        )
+        invalid_sources = {
+            'indirect image': self._nested_crop_source(
+                inner=f'<g>{valid_inner}</g>',
+            ),
+            'empty href': self._nested_crop_source(
+                inner=(
+                    '<image href="" x="0" y="0" width="1" height="1" '
+                    'preserveAspectRatio="none"/>'
+                ),
+            ),
+            'dual href': self._nested_crop_source(
+                inner=(
+                    f'<image href="{self._TINY_PNG_URI}" '
+                    f'xlink:href="{self._TINY_PNG_URI}" x="0" y="0" '
+                    'width="1" height="1" preserveAspectRatio="none"/>'
+                ),
+            ),
+            'non-unit image': self._nested_crop_source(
+                inner=valid_inner.replace('width="1"', 'width="2"'),
+            ),
+            'inner transform': self._nested_crop_source(
+                inner=valid_inner.replace('/>', ' transform="translate(1 0)"/>'),
+            ),
+            'inner style geometry': self._nested_crop_source(
+                inner=valid_inner.replace('/>', ' style="width: 1px"/>'),
+            ),
+            'outer paint': self._nested_crop_source(outer_extra=' fill="#FF0000"'),
+            'outer style geometry': self._nested_crop_source(
+                outer_extra=' style="width: 200px; height: 100px"',
+            ),
+            'unknown metadata': self._nested_crop_source(
+                outer_extra=' data-pptx-unknown="value"',
+            ),
+            'wrong outer fit': self._nested_crop_source().replace(
+                'viewBox="0.1 0.2 0.7 0.6" preserveAspectRatio="none"',
+                'viewBox="0.1 0.2 0.7 0.6" preserveAspectRatio="xMidYMid meet"',
+            ),
+            'comma viewBox': self._nested_crop_source(view_box='0.1,0.2,0.7,0.6'),
+            'exponent viewBox': self._nested_crop_source(view_box='1e-1 0.2 0.7 0.6'),
+            'out-of-range percentage': self._nested_crop_source(
+                view_box='21474.83648 0 0.1 1',
+            ),
+            'collapsed crop': self._nested_crop_source(view_box='0 0 0.000001 1'),
+            'redundant crop': self._nested_crop_source(view_box='0 0 1 1'),
+        }
+        for name, source in invalid_sources.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    source,
+                    'invalid imported crop wrapper',
+                    'invalid nested SVG crop wrapper',
+                )
 
     def test_canonical_generated_spelling_has_no_compatibility_warning(self):
         result = self._check(

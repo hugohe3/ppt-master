@@ -131,13 +131,13 @@ preset selection and authoring behavior are documented in
 
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
-| Picture | `<image>` with a project asset or data URI | `p:pic`, media part, and relationship | Reconstructed as `<image>` | Source must resolve, and dimensions must be valid |
+| Picture | `<image>` with explicit positive dimensions and exactly one project-asset or image data-URI source | `p:pic`, media part, and relationship | Reconstructed as `<image>` | Source must resolve, use a registered format, and contain decodable bytes matching its MIME/extension; invalid frames or media fail before packaging |
 | Stretch picture to frame | `preserveAspectRatio="none"` | Stretched native picture frame | `Native-stable` | `none` must stand alone; it intentionally changes the source aspect ratio |
 | Crop picture to fill | One registered alignment plus explicit `slice` | Native `a:srcRect` crop | `Native-stable` when source dimensions are readable | Alignment is case-sensitive; unknown modes and extra tokens are errors |
 | Fit picture inside frame | Omitted default, or one registered alignment plus explicit `meet` | Native fitted picture frame | `Native-normalized` | Alignment-only shorthand is compatible input that receives a normalization recommendation |
 | Picture transparency | Atomic image `opacity` | Native `a:alphaModFix` | `Native-stable` | Value must be finite and within the accepted opacity grammar |
-| Picture clipped to a shape | Image-only registered `clip-path` | Picture preset or custom geometry | `Native-normalized` | Arbitrary masks are not accepted |
-| Imported cropped picture | Nested crop SVG representation produced by import | Native `a:srcRect` on re-export | `Native-stable` within the crop contract | Do not manually generalize nested SVG into an unrestricted feature |
+| Picture clipped to a shape | Registered image/crop-wrapper `clip-path` with one SVG-namespace shape | Picture preset or custom geometry | `Native-normalized` | Circle/ellipse/rect presets must cover the complete picture frame; use path/polygon for partial or offset contours; masks and winding-rule-dependent contours are not accepted |
+| Imported cropped picture | Exact SVG-namespace nested crop wrapper produced by import, containing one direct unit-frame image in the visual root/`g` tree | Native signed `a:srcRect` on re-export | `Native-stable` within the crop contract, including negative crop values | Any generalized nested viewport, non-visual/render-only owner, extra visual child, unrepresentable crop window, redundant uncropped wrapper, or unresolved clip-marker pair is rejected |
 | Picture recolor, artistic filter, blur, or complex mask | No general authoring mapping | Rebuild with supported overlays or pre-render | `Bake-required` | Arbitrary SVG filters and blend modes fail the main contract |
 
 ## 6. PowerPoint fill, line, and effect features

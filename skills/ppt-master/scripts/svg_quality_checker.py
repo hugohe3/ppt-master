@@ -181,12 +181,18 @@ try:
     from svg_to_pptx.drawingml.elements import (
         drawingml_text_frame_width_emu as _drawingml_text_frame_width_emu,
         estimate_single_line_text_frame_width as _estimate_single_line_text_frame_width,
+        project_clip_path_errors as _project_clip_path_errors,
+        project_image_errors as _project_image_errors,
+        project_nested_svg_crop_errors as _project_nested_svg_crop_errors,
         validate_single_line_text_run_advances as _validate_single_line_text_run_advances,
         validate_preset_geometry_metadata as _validate_preset_geometry_metadata,
     )
 except ImportError:
     _drawingml_text_frame_width_emu = None
     _estimate_single_line_text_frame_width = None
+    _project_clip_path_errors = None
+    _project_image_errors = None
+    _project_nested_svg_crop_errors = None
     _validate_single_line_text_run_advances = None
     _validate_preset_geometry_metadata = None
 
@@ -359,14 +365,12 @@ try:
         icon_search_dirs_for_svg as _icon_search_dirs_for_svg,
         project_root_for_svg_path as _project_root_for_svg_path,
         resolve_external_image_reference as _resolve_external_image_reference,
-        unresolved_external_image_reference_path as _unresolved_external_image_reference_path,
     )
 except ImportError:
     _SVG_WORK_DIR_NAMES = frozenset()
     _icon_search_dirs_for_svg = None
     _project_root_for_svg_path = None
     _resolve_external_image_reference = None
-    _unresolved_external_image_reference_path = None
 
 
 HEX_VALUE_RE = re.compile(
@@ -427,7 +431,6 @@ _PPTX_STRUCTURE_SECTION_RE = re.compile(
 _PPTX_STRUCTURE_MODE_RE = re.compile(
     r"(?m)^-[ \t]+mode[ \t]*:[ \t]*([^\s#]+)[ \t]*(?:#.*)?$"
 )
-_CLIP_SHAPE_TAGS = frozenset({'circle', 'ellipse', 'rect', 'path', 'polygon'})
 _SUPPORTED_INLINE_STYLE_PROPERTIES = frozenset({
     'cx', 'cy', 'fill', 'fill-opacity', 'filter', 'flood-color',
     'flood-opacity', 'font-family', 'font-size', 'font-style', 'font-weight',
@@ -1158,6 +1161,10 @@ class SVGQualityChecker:
                 # 1. Check viewBox
                 self._check_viewbox(root, result, expected_format)
 
+                # 1a. Validate exact importer transport before compatible
+                # inline geometry is materialized on the shared tree.
+                self._check_nested_svg_crop_contract(root, result)
+
                 # 2. Check forbidden elements
                 self._check_forbidden_elements(content, root, result)
 
@@ -1168,6 +1175,7 @@ class SVGQualityChecker:
                 self._check_stroke_style_values(root, result)
 
                 # 2c. Validate image fit/crop grammar and mappings.
+                self._check_image_contract(root, svg_path, result)
                 self._check_image_aspect_ratio_values(root, result)
 
                 # 2d. Validate complete path-data and point-list grammar.
@@ -1896,69 +1904,13 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Validate image clip paths against the native picture geometry mapping."""
-        definitions, _duplicates = _direct_defs_index(root)
-        issues: set[str] = set()
-        checked_clips: set[str] = set()
-        for elem in root.iter():
-            raw_ref = elem.get('clip-path')
-            if raw_ref is None or raw_ref.strip().lower() == 'none':
-                continue
-            label = _element_label(elem)
-            tag = _local_name(elem).lower()
-            is_imported_crop = tag == 'svg' and elem.get('data-pptx-crop') == '1'
-            if tag != 'image' and not is_imported_crop:
-                issues.add(
-                    f"{label} clip-path is allowed only on <image> or an imported "
-                    "data-pptx-crop=\"1\" wrapper"
-                )
-            match = re.fullmatch(r'url\(#([^)]+)\)', raw_ref.strip())
-            if match is None:
-                issues.add(
-                    f"{label} clip-path must be an exact local url(#id) "
-                    f"reference; got {raw_ref!r}"
-                )
-                continue
-            clip_id = match.group(1)
-            clip = definitions.get(clip_id)
-            if clip is None or _local_name(clip) != 'clipPath':
-                issues.add(
-                    f"{label} clip-path=url(#{clip_id}) has no matching direct "
-                    f"<defs><clipPath id=\"{clip_id}\"> definition"
-                )
-                continue
-            if clip_id in checked_clips:
-                continue
-            checked_clips.add(clip_id)
-            clip_label = f'<clipPath id="{clip_id}">'
-            clip_units = clip.get('clipPathUnits', 'userSpaceOnUse')
-            if clip_units not in {'userSpaceOnUse', 'objectBoundingBox'}:
-                issues.add(
-                    f"{clip_label} has unsupported clipPathUnits={clip_units!r}"
-                )
-            if clip.get('transform'):
-                issues.add(f"{clip_label} cannot use transform")
-            visual_children = [
-                child for child in list(clip)
-                if _local_name(child) not in _NON_VISUAL_SVG_TAGS
-            ]
-            if len(visual_children) != 1:
-                issues.add(
-                    f"{clip_label} must contain exactly one direct supported shape"
-                )
-                continue
-            shape = visual_children[0]
-            shape_tag = _local_name(shape).lower()
-            if shape_tag not in _CLIP_SHAPE_TAGS:
-                issues.add(
-                    f"{clip_label} child <{shape_tag}> is unsupported; use "
-                    "circle, ellipse, rect, path, or polygon"
-                )
-            if shape.get('transform'):
-                issues.add(
-                    f"{clip_label} child <{shape_tag}> cannot use transform"
-                )
-
-        result['errors'].extend(sorted(issues))
+        if _project_clip_path_errors is None:
+            result['errors'].append(
+                'Unable to import the clip-path validator; cannot verify '
+                'native picture geometry references'
+            )
+            return
+        result['errors'].extend(_project_clip_path_errors(root))
 
     def _check_filter_effects(self, root: ET.Element, result: Dict) -> None:
         """Validate filters against the native shadow/glow approximation."""
@@ -2194,6 +2146,41 @@ class SVGQualityChecker:
                 f'preserveAspectRatio="{normalized}". No change is required '
                 "for export."
             )
+
+    def _check_nested_svg_crop_contract(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reserve nested SVG for the imported picture-crop transport."""
+        if _project_nested_svg_crop_errors is None:
+            result['errors'].append(
+                'Unable to import the nested SVG crop validator; cannot '
+                'verify imported picture-crop wrappers'
+            )
+            return
+        result['errors'].extend(_project_nested_svg_crop_errors(root))
+
+    def _check_image_contract(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ) -> None:
+        """Validate picture frames, references, and bytes before export."""
+        if _project_image_errors is None:
+            result['errors'].append(
+                'Unable to import the image validator; cannot verify picture '
+                'frames or media'
+            )
+            return
+        result['errors'].extend(
+            _project_image_errors(
+                root,
+                svg_path.parent,
+                allow_template_placeholders=self.template_mode,
+            )
+        )
 
     def _check_freeform_geometry_values(
         self,
@@ -2992,9 +2979,14 @@ class SVGQualityChecker:
         """Check image file existence and resolution vs display size."""
         svg_dir = svg_path.parent
         checked = set()
+        parent_by_id = {
+            id(child): parent
+            for parent in root.iter()
+            for child in list(parent)
+        }
 
         for image in root.iter():
-            if _local_name(image).lower() != 'image':
+            if image.tag != f'{{{SVG_NS}}}image':
                 continue
 
             href = image.get('href') or image.get(f'{{{XLINK_NS}}}href')
@@ -3002,7 +2994,7 @@ class SVGQualityChecker:
                 continue
             if self.template_mode and '{{' in href and '}}' in href:
                 continue
-            if _resolve_external_image_reference is None or _unresolved_external_image_reference_path is None:
+            if _resolve_external_image_reference is None:
                 result['warnings'].append(
                     "Detected image references, but shared image resolver could not be imported; "
                     "export will still validate them."
@@ -3014,14 +3006,24 @@ class SVGQualityChecker:
 
             img_path = _resolve_external_image_reference(svg_dir, href)
             if img_path is None:
-                resolved_path = _unresolved_external_image_reference_path(svg_dir, href)
-                result['errors'].append(
-                    f"Image file not found: {href} (resolved to {resolved_path})")
+                # The shared image-source contract already reports the
+                # blocking resolution failure. This pass adds quality advice
+                # only for valid, resolved images.
                 continue
 
             # Check resolution vs display size
-            display_w_str = image.get('width')
-            display_h_str = image.get('height')
+            display_owner = image
+            parent = parent_by_id.get(id(image))
+            if (
+                parent is not None
+                and parent is not root
+                and parent.tag == f'{{{SVG_NS}}}svg'
+            ):
+                # Imported crops use a unit-frame inner image. Quality advice
+                # must compare the source against the visible outer frame.
+                display_owner = parent
+            display_w_str = display_owner.get('width')
+            display_h_str = display_owner.get('height')
             if not display_w_str or not display_h_str:
                 continue
 
