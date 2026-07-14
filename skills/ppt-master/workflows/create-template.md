@@ -382,7 +382,19 @@ The role interprets the package according to replication mode:
 | `standard` / `fidelity` | Newly authored SVGs based on the confirmed brief and visual references | Design an intentional new Master/Layout/slot system. Source topology is neither preserved nor distilled into the output. |
 | `mirror` | Lossless imported SVG/native-structure evidence | Restore source pages, Master/Layout identities and parentage, placeholder identity/bounds, ownership, and supported native-object metadata one-to-one. Lightweight projections are inspection views only. |
 
-**Hard rule — mode-specific authorship**: `standard` and `fidelity` author new SVG documents and compact canonical metadata. `mirror` restores the lossless source contract and may only normalize transport details required by the current compiler. Mirror never performs commonality extraction, semantic synthesis, merge/split, promotion/demotion, renaming, or re-parenting.
+**Hard rule — mode-specific authorship**: `standard` and `fidelity` author new
+project-canonical SVG documents. When one registered PowerPoint preset exactly
+expresses one complete object, they use the compact canonical
+`<g>` emitted by `preset_shape_svg.py`, following
+[`native-shape-authoring.md`](../references/native-shape-authoring.md); its
+paint comes from the confirmed brief and template `design_spec.md`. After
+inserting the complete helper group, add only the registered structural
+attributes required by its Master/Layout or object-slot role; geometry and
+paint changes require a new helper render. `mirror` restores the expanded
+lossless source contract and may only normalize transport details required by
+the current compiler. Mirror never performs commonality
+extraction, semantic synthesis, merge/split, promotion/demotion, renaming, or
+re-parenting.
 
 **Hard rule — multi-Master package boundary**: More than one Master is valid only when `mirror` restores the source graph or an authored template intentionally defines distinct reusable design families. `standard` / `fidelity` must not create one Master per Layout or duplicate equivalent Masters merely for organization. Every declared Master must own at least one emitted Layout, and every declared Layout must be selected by at least one prototype SVG so the complete graph can be compiled and verified.
 
@@ -395,11 +407,22 @@ The role interprets the package according to replication mode:
 
 SVG authors own the semantic roster, parentage, picker names, direct atoms, and slots. The exporter owns OOXML part cloning, Theme isolation, relationship registration, and package identity. Do not encode package repair workarounds in individual template SVGs.
 
-Do not package `native_structure.json` or `source_template.pptx` as template inputs. In `standard` / `fidelity`, author Master/Layout direct atoms and bounded slot groups deliberately from the intended reusable behavior. In `mirror`, use the lossless layered and flat SVGs plus inheritance/native facts to preserve source ownership. Recursively expand fixed Master/Layout group wrappers only because the structured contract requires direct atoms; preserve transforms, styles, paint order, and appearance, and never flatten or regroup by semantic judgment.
+Do not package `native_structure.json` or `source_template.pptx` as template inputs. In `standard` / `fidelity`, author Master/Layout direct semantic atoms and bounded slot groups deliberately from the intended reusable behavior. A validated compact canonical authored-preset `<g>` compiles to one native shape and therefore counts as one semantic atom; it may own a Master/Layout fixed layer or serve as the one direct carrier of an `object` slot. Ordinary groups are not structural atoms or single-object carriers. In `mirror`, use the lossless layered and flat SVGs plus inheritance/native facts to preserve source ownership. Recursively expand fixed Master/Layout group wrappers only because the structured contract requires semantic atoms; preserve transforms, styles, paint order, and appearance, and never flatten or regroup by semantic judgment.
 
 `design_spec.md §V` records the newly authored roster for `standard` / `fidelity`. For `mirror`, add the `Source Restoration Map` required by [template-designer.md](../references/template-designer.md), with one row per source slide and its preserved Master/Layout assignment. Do not add a synthesis-decision table.
 
-**Native-shape metadata boundary**: The lightweight authoring projection removes opaque payload only from model context; it never becomes the restoration source. `standard` / `fidelity` use compact canonical shapes and assets rather than copied source payload. `mirror` reuses only native metadata already supported by the converter on unchanged Slide-local/slot objects. Fixed layers are normalized to direct atoms; unsupported or edited objects keep the current SVG fallback and are reported rather than silently replaced by stale metadata.
+**Native-shape metadata boundary**: The lightweight authoring projection
+removes opaque payload only from model context; it never becomes the
+restoration source. `standard` / `fidelity` use helper-generated compact
+canonical preset groups and project SVG/assets rather than copied source
+payload. `mirror` preserves the expanded lossless representation and reuses
+only native metadata already supported by the converter on unchanged
+Slide-local/slot objects. Fixed layers are normalized to semantic atoms;
+unsupported or edited objects keep the current SVG fallback and are reported
+rather than silently replaced by stale metadata. Do not reproduce the preset
+syntax here; its single authority is
+[`shared-standards.md`](../references/shared-standards.md), with selection and
+usage guidance in the native-shape reference.
 
 Downstream, both template-adherence choices use `pptx_structure.mode: structured`. `page_layouts` selects one complete authoring prototype per page, `pptx_masters` / `pptx_layouts` declare unique reusable definitions, and `page_pptx_layouts` assigns generated pages. Strict preserves the selected prototype contract. Adaptive keeps its Master and may explicitly create and assign a new Layout key/name while authoring the page that needs it. A retained Layout may remain unassigned while still registering through its definition SVG. A mirror-created package does not force a future generated deck to keep the source page count or order.
 
@@ -430,7 +453,7 @@ Mirror mode does not simplify the visual target or synthesize layer ownership. T
 1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare portable brief frontmatter; `register_template.py` consumes it only in library scope. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
 2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` / `fidelity` / `mirror` mode rosters, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
-   - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root Master/Layout key/name, direct atomic Master/Layout elements, and direct slot `<g>` elements with explicit design-zone bounds plus exactly one compatible carrier. Composite regions use only the explicit `object` + `proxy` downgrade. Minimal structural `data-pptx-role` hints are added only when specialized metadata cannot express required behavior. Both strict and adaptive downstream set `mode: structured` and require complete `page_layouts`, `page_pptx_layouts`, `pptx_masters`, and `pptx_layouts` from planning onward.
+   - `{{...}}` placeholders are the authoring vocabulary used to generate final slide content. Each emitted SVG also carries the native reconstruction contract: root Master/Layout key/name, direct atomic Master/Layout elements, and direct slot `<g>` elements with explicit design-zone bounds plus exactly one compatible carrier. A validated compact canonical authored-preset `<g>` counts as one semantic atom or one `object` carrier; ordinary groups do not. Composite regions use only the explicit `object` + `proxy` downgrade. Minimal structural `data-pptx-role` hints are added only when specialized metadata cannot express required behavior. Both strict and adaptive downstream set `mode: structured` and require complete `page_layouts`, `page_pptx_layouts`, `pptx_masters`, and `pptx_layouts` from planning onward.
 4. Template assets (optional) — both scopes apply the same `templates/` / `images/` / dual-icon routing defined above
 
 **Hard rule — placeholder examples are executable defaults**: In authored
@@ -470,7 +493,7 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "<template_workspace>/t
 - enforce roster ↔ `design_spec.md` consistency as **errors** (orphan files / missing files break the template contract and, in library scope, the target kind's index)
 - emit advisory **warnings** when a page lacks a conventional placeholder — these are hints, not failures. Declare a `placeholders:` block in `design_spec.md` frontmatter to silence them when your template intentionally uses a different vocabulary
 - require every SVG root to declare one output Master and Layout; zero-slot Layouts are valid
-- reject Master/Layout `<g>` elements, nested structure markers, missing slot bounds, and carrier-bound slots without exactly one compatible carrier
+- reject ordinary Master/Layout `<g>` elements, nested structure markers, missing slot bounds, and carrier-bound slots without exactly one compatible carrier; a validated compact canonical authored-preset `<g>` is the sole fixed-layer group exception and may be one `object` carrier
 - validate cross-page Master equality plus same-key Layout atom/slot equality
 - warn when distinct Layout keys have identical static framing/slot contracts. Resolve this for `standard` / `fidelity`; mirror may retain the distinct source identities and records that fact in its Source Restoration Map
 
@@ -487,8 +510,8 @@ This checker validates the authoring contract, not the compiled OOXML package. T
 - [ ] Placeholder names follow the canonical convention where applicable; templates with intentionally different vocabularies (e.g. `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`) should declare a `placeholders:` frontmatter block to silence advisory warnings
 - [ ] Asset files referenced by SVGs exist at their resolved paths. In both scopes, bitmap references resolve through `../images/`; no bitmap remains accidentally stranded in `templates/`
 - [ ] `design_spec.md` frontmatter declares `native_structure_mode: structured`; no `native_structure.json` or `source_template.pptx` is packaged
-- [ ] Every SVG root declares Master/Layout key and picker names; Master/Layout visuals are direct atoms, never `<g>`, and obey the explicit paint-order contract. Structural `data-pptx-role` is used only when specialized metadata cannot express required package/page-number/animation behavior
-- [ ] Every slot is a direct `<g id>` with explicit design-zone bounds and exactly one compatible direct carrier, or an explicit composite `object` proxy; zero-slot Layouts remain valid
+- [ ] Every SVG root declares Master/Layout key and picker names; Master/Layout visuals are direct semantic atoms and obey the explicit paint-order contract. Ordinary `<g>` elements remain forbidden there; a validated helper-generated compact canonical preset `<g>` is the sole group exception because it compiles to one native shape. Structural `data-pptx-role` is used only when specialized metadata cannot express required package/page-number/animation behavior
+- [ ] Every slot is a direct `<g id>` with explicit design-zone bounds and exactly one compatible direct carrier, or an explicit composite `object` proxy. A validated compact canonical preset `<g>` may be the one carrier of an `object` slot; an ordinary multi-object group may not. Zero-slot Layouts remain valid
 - [ ] For `standard` / `fidelity`, every placeholder bound is the complete editable box rather than the current marker text's tight bounds; general body/object carriers begin at the upper-left and only intentional short focal roles remain centered
 - [ ] `standard` / `fidelity` output SVGs and their Master/Layout/slot contracts were newly authored without preserving or distilling source topology
 - [ ] Every additional authored Master represents a distinct reusable design family, not one Layout or an equivalent duplicate; every declared Master owns at least one emitted Layout and every declared Layout has at least one emitted prototype

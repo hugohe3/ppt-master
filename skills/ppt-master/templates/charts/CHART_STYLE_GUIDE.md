@@ -278,13 +278,16 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 |---|---|---|
 | 基础节点与容器 | `<rect>`、`<circle>`、`<ellipse>` | 导出为原生可编辑 Shape |
 | 细关系线或方向箭头 | `<line>`；折线路径优先拆成少量线段，仅末段带已登记 marker | 导出为静态可编辑线形状，不创建 `p:cxnSp` |
-| 实心块箭头、chevron、标准流程节点 | 模板只表达结构与视觉意图 | 生成实际页面时，若纯色 preset 精确匹配，则调用 `preset_shape_svg.py` 生成普通 `shape`；不得把 helper 片段冻结进模板 |
+| 实心块箭头、chevron、标准流程节点 | 当纯色 preset 精确匹配时，保存 `preset_shape_svg.py` 生成的完整 compact 原子 `<g>` | group 只写一次 metadata / 基础 paint，直接可见 path 是 registry 层且只带必要的分层 paint 覆盖；改动 preset、frame、adjustment 或 paint 时必须整体重新生成 |
 | 自定义轮廓、品牌图形、数据几何 | `<path>`、`<polygon>` | 导出为可编辑 `p:sp/a:custGeom`，无需伪装成 preset |
 | 数据图表 | SVG Shape fallback；符合合同的模板可带 chart replacement marker | 默认仍为 Shape 图表；仅显式 opt-in 时替换为 native Chart |
 
-**硬规则**：图表模板不得包含 `data-pptx-object="connector"`、Connector
-端点 attachment metadata，或 helper 生成的 authored-preset carrier。
-概念流程图、架构图、关系图也不得添加
+**硬规则**：图表模板不得包含 `data-pptx-object="connector"` 或 Connector
+端点 attachment metadata。authored preset 只能粘贴 helper 输出的完整 compact
+原子 `<g>`：不得手写或局部修改 metadata / path，也不得加入 hidden carrier、
+preview wrapper 或 fingerprint。修改时整体重生成。PPTX 导入与 `mirror` 的
+expanded 无损表达属于独立合同，不得复制为新模板创作格式。概念流程图、
+架构图、关系图也不得添加
 `data-pptx-replace-with="chart"`。来源 PPTX 已有 Connector 的导入/回导保真
 属于独立合同，不通过模板示例扩张到新页面创作。
 
@@ -383,7 +386,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 - [ ] 主要元素有语义化 `<g id="...">`
 - [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
 - [ ] 细关系箭头使用普通 line/path Shape，不含 Connector 或 attachment metadata
-- [ ] helper 生成的 preset 片段未冻结进模板；实心 stock shape 在实际页面中按 frame/paint 重新生成
+- [ ] authored preset 是 helper 输出的完整 compact 原子 `<g>`；无 carrier / preview wrapper / fingerprint，且 metadata / path 未手改
 - [ ] 只有受支持的数据图表/文本表格使用 replacement marker；概念图示不冒充 native Chart
 
 ### 阴影

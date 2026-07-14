@@ -54,8 +54,8 @@ PowerPoint 意图
 |---|---|---|---|---|
 | 自由设计演示文稿结构 | `pptx_structure.mode: flat`；页面内容保持 Slide-local | 一个干净的项目 Master 和一个 Blank Layout，已表达对象留在 Slide | flat 路线包拓扑为 `Native-stable` | 禁止编写 Master/Layout/layer/placeholder metadata |
 | 基于模板的演示文稿结构 | `pptx_structure.mode: structured` 加显式 Master/Layout/页面分配 | 声明的 `p:sldMaster`、`p:sldLayout`、注册与 Slide 父子关系 | 在显式结构合同内为 `Native-stable` | 导出器绝不猜测 Master、Layout 或占位符拓扑 |
-| 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象 | 可复用 Master part 与 picker 身份 | 源结构由模板/导入工作流恢复 | Master atom 必须为直接、稳定对象，并在所属页面间一致 |
-| 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象 | 某个 Master 下的可复用 Layout part | 可恢复源 Layout；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key |
+| 幻灯片母版 | 根 Master 身份加原子级 `data-pptx-layer="master"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 可复用 Master part 与 picker 身份 | 源结构由模板/导入工作流恢复 | Master atom 必须为直接、稳定对象，并在所属页面间一致；普通组或 expanded authored 组不具备该资格 |
+| 幻灯片版式 | 根 Layout 身份加原子级 `data-pptx-layer="layout"` 对象；一个校验通过的 compact authored-preset `<g>` 计为一个 semantic atom | 某个 Master 下的可复用 Layout part | 可恢复源 Layout；adaptive 创作可分配新 Layout | 仅当固定 atom 和 slot 合同完全相同时才复用 Layout key；普通组或 expanded authored 组不具备该资格 |
 | strict 模板 Layout | 选中的原型合同 | 保留现有已声明 Layout 拓扑 | 页面遵循原型时为 `Native-stable` | 不得改变固定 Layout atom 和 slot 结构 |
 | adaptive 模板 Layout | 选定 Master 加显式的当前或新声明 Layout | 可在可复用结构变化时创建新 Layout 身份 | 更新 lock 与页面映射后为 `Native-stable` | 绝不默默改变已复用 Layout key |
 | structured 模式以外的 Slide 背景填充 | 第一个合格的全幅 `<rect>`，可直接位于根下或位于简单单子组中，使用已登记纯色、线性/径向渐变或预设图案填充 | Slide 的原生 `p:bg` | 保真度遵循下文对应 paint 行 | transform、filter、clip、圆角、可见 stroke 或未映射 fill 会阻止提升 |
@@ -68,7 +68,7 @@ PowerPoint 意图
 | 日期、页脚与页码占位符 | 结构化文本 slot | `dt`、`ftr` 与 `sldNum` 类型 `p:ph`，带匹配的 Layout 页眉/页脚标志 | `Native-stable` | 占位符 index 必须唯一且合法 |
 | 图片占位符 | 含一个图片或受支持 crop carrier 的结构化 slot | `pic` 类型 `p:ph` | 在图片合同内为 `Native-stable` | slot 必须恰好含一个兼容的直接 carrier |
 | 图表或表格占位符 | 含一个匹配原生对象 carrier 的结构化 slot | `chart` 或 `tbl` 类型 `p:ph` | 仅原生 Chart/Table 导出时为 `Native-stable` | 需要合法 JSON metadata 与 `--native-charts-and-tables` |
-| 通用对象占位符 | 一个兼容 carrier，或显式复合 proxy binding | `obj` 类型 `p:ph` | 原生 binding；复合可见内容仍为普通 shape | 复合 slot 必须使用已登记 proxy 降级方案 |
+| 通用对象占位符 | 一个兼容 carrier（可为一个校验通过的 compact authored-preset `<g>`），或显式复合 proxy binding | `obj` 类型 `p:ph` | 原生 binding；复合可见内容仍为普通 shape | 复合 slot 必须使用已登记 proxy 降级方案；expanded authored 组不能作为单对象 carrier |
 | 媒体占位符 | 一个图片或受支持 crop carrier | `media` 类型 `p:ph` | 仅为原生占位符 binding | 不会从装饰性 SVG 内容生成视频或音频 |
 | 空文本占位符 | 空或仅空白的已标记 text carrier | 使用合法 1 pt 下限的不可见 U+200B run，生成一个原生文本 shape | `Native-stable` | 不得添加假破折号、小于 1 pt 的文字或与背景同色的可见字符 |
 | cover/content/ending 等页面角色 | flat 路线根 `data-pptx-page-role` 编译提示 | 路由/校验提示；不是 PowerPoint 原生页面类型 | 没有独立 OOXML 对象 | structured 页面改用显式 Master/Layout 身份 |
@@ -87,19 +87,19 @@ PowerPoint 意图
 | 圆或椭圆 | `<circle>` 或 `<ellipse>` | `a:prstGeom prst="ellipse"` | `Native-stable` | 需要时，bounds 和 radius 必须有限且为正 |
 | 直线 | `<line>` | 可编辑 line/freeform shape | `Native-normalized` | 拒绝浏览器专属 line 效果 |
 | 带箭头的线 | 带已登记起点/终点 marker 的 `<line>` 或受支持 path | 原生 DrawingML 线首/线尾 | `Native-normalized`；marker 大小为近似 | marker 定义必须遵循条件 marker 合同 |
-| 原生连接符 | 带 connector metadata 的已创作 preset connector 片段 | `p:cxnSp` | 导入 connector 保留紧凑 metadata | 已登记 preset/connector schema 内为 `Native-stable` |
+| 原生连接符 | 带 connector metadata 和直接可见 path 的项目创作 compact preset 组 | `p:cxnSp` | 导入 connector 保留源拓扑往返所需的 expanded 证据 | 已登记 preset/connector schema 内为 `Native-stable` |
 | 任意多边形 | `<path>` | 带 `a:custGeom` 的 `p:sp` | 导入自定义几何重建为 path | `Native-normalized`；SVG arc 转为三次曲线段 |
 | 多边形 | `<polygon>` | 闭合自定义几何 | `Native-normalized` | points 必须有限且合法 |
 | 折线 | `<polyline>` | 开放自定义几何 | `Native-normalized` | points 使用与其他生成几何相同的有限、已登记语法 |
-| PowerPoint 预设形状 | 由 registry 生成的 authored preset 片段 | 一个可编辑 preset `p:sp` | preset 身份与 adjustment 可以经导入/导出保留 | 使用 [`preset_shape_svg.py`](../../skills/ppt-master/scripts/preset_shape_svg.py)；不得手工发明 metadata |
-| 导入的预设形状 | 导入 metadata 加可见 SVG fallback | payload 合法且未改变时恢复 preset | 在导入合同内为 `Native-stable` | 不支持的 preset 保留为显式诊断 fallback，不猜测几何 |
-| 动作按钮形状 | authored `actionButton*` preset 片段 | 仅生成可见 preset 几何 | 形状几何可往返 | 不创建单击动作、导航目标或超链接 |
+| PowerPoint 预设形状 | 由 registry 生成的 compact `<g>`，由该组承载 preset 意图与基础 paint，并直接包含可见 `<path>` 子元素 | 一个可编辑 preset `p:sp` | preset 身份与 adjustment 可以经导入/导出保留 | 质检与导出动态重渲染 registry；规范创作表达不含隐藏 carrier、preview wrapper 或已存储 preview hash |
+| 导入的预设形状 | 含隐藏原生 carrier、可见 preview 证据与新鲜度 metadata 的 expanded 导入/往返组 | payload 合法且未改变时恢复 preset | 在导入合同内为 `Native-stable` | 不支持的 preset 保留为显式诊断 fallback，不猜测几何 |
+| 动作按钮形状 | compact authored `actionButton*` preset 组 | 仅生成可见 preset 几何 | 形状几何可往返 | 不创建单击动作、导航目标或超链接 |
 | 组 | `<g>` | `p:grpSp`，或对特殊 carrier 执行文档化的 flatten/collapse | 分组内容可重建为 `<g>` | 结构 atom 与 placeholder 合同优先于普通分组 |
 | 复用本地 symbol | 已登记的同文档 `<use>` 合同或项目 icon placeholder | 在生成 Slide 中展开为可编辑 shape | 回导不承诺恢复原 symbol 图 | 拒绝外部 use、不受支持的 symbol 能力和结构 metadata 复用 |
 | 图标 | 由项目图标管线解析的 `<use data-icon="library/name">` | 展开后的可编辑矢量原语/组 | 重建几何，不恢复原图标库引用 | 图标标识区分大小写，必须存在于已同步图标库 |
 | SmartArt / DiagramML | 无主 SVG 对象映射 | 主重设计路线可以用普通 shape 重建语义 | 原生/模板路线中为 `Direct preservation`，否则为 preview 或显式 fallback | 不得将装饰性组标记为原生 SmartArt |
 
-preset 形状选择与精确原子片段合同见 [`native-shape-authoring.md`](../../skills/ppt-master/references/native-shape-authoring.md)。
+项目创作 preset 有意采用 compact 表达，而 PPTX 导入继续保留无损往返裁决所需的 expanded 证据。精确机器合同仍属于 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md)，preset 选择与创作行为见 [`native-shape-authoring.md`](../../skills/ppt-master/references/native-shape-authoring.md)。
 
 ## 4. PowerPoint 文本功能
 
@@ -219,11 +219,11 @@ sidecar 工作流见 [`animations.md`](../../skills/ppt-master/references/animat
 
 | PowerPoint 源对象 | 项目 SVG 重建 |
 |---|---|
-| 预设形状 | SVG 原语/path，受支持时加紧凑 preset metadata |
+| 预设形状 | 受支持时重建为含原生 carrier 与可见 preview 证据的 expanded preset 组 |
 | 自定义几何 | `<path>` |
 | 文本体 | `<text>` 与 `<tspan>` run/段落 |
 | 图片 | `<image>`，或已登记嵌套 crop 表达 |
-| 连接符 | 线/path 加 connector metadata |
+| 连接符 | expanded 线/path preview 加 connector/frame/topology 证据 |
 | 组 | `<g>` |
 | 受支持原生表格/图表 | 可见 fallback 加原生对象 metadata |
 | 不支持的 graphic frame 或 SmartArt | 显式 preview、placeholder 或 unsupported 状态 |

@@ -56,7 +56,9 @@
     <!-- ==================== Process Nodes ==================== -->
     <g id="processFlowNodes">
         <!-- Start Node -->
-        <rect x="60" y="160" width="140" height="80" rx="40" fill="#334155" filter="url(#cardShadow)" />
+        <g id="process-start-node" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="flowChartTerminator" data-pptx-frame="60 160 140 80" fill="#334155" stroke="none">
+            <path d="M 82.52 160 L 177.48 160 A 22.52 40 0 0 1 177.48 240 L 82.52 240 A 22.52 40 0 0 1 82.52 160 Z"/>
+        </g>
         <text x="130" y="198" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">Start</text>
         <text x="130" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8" text-anchor="middle">Initiation</text>
         <!-- Requirements Node -->
@@ -65,7 +67,9 @@
         <rect x="330" y="210" width="80" height="20" rx="10" fill="#1D4ED8" fill-opacity="0.5" />
         <text x="370" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#DBEAFE" text-anchor="middle">1-2 Days</text>
         <!-- Decision Node -->
-        <path d="M 620,150 L 700,200 L 620,250 L 540,200 Z" fill="#F59E0B" filter="url(#cardShadow)" />
+        <g id="process-decision-node" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="flowChartDecision" data-pptx-frame="540 150 160 100" fill="#F59E0B" stroke="none">
+            <path d="M 540 200 L 620 150 L 700 200 L 620 250 Z"/>
+        </g>
         <text x="620" y="196" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Feasible?</text>
         <text x="620" y="216" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">Review</text>
         <!-- Solution Design Node -->
@@ -89,7 +93,9 @@
         <rect x="575" y="370" width="90" height="20" rx="10" fill="#FFEDD5" />
         <text x="620" y="384" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#9A3412" text-anchor="middle">Adjust Scope</text>
         <!-- Complete Node -->
-        <rect x="1060" y="480" width="140" height="80" rx="40" fill="#334155" filter="url(#cardShadow)" />
+        <g id="process-complete-node" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="flowChartTerminator" data-pptx-frame="1060 480 140 80" fill="#334155" stroke="none">
+            <path d="M 1082.52 480 L 1177.48 480 A 22.52 40 0 0 1 1177.48 560 L 1082.52 560 A 22.52 40 0 0 1 1082.52 480 Z"/>
+        </g>
         <text x="1130" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF" text-anchor="middle">Complete</text>
         <text x="1130" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8" text-anchor="middle">Deployment</text>
     </g>
@@ -99,7 +105,9 @@
     <text x="160" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A" text-anchor="middle">Legend</text>
     <rect x="80" y="520" width="30" height="20" rx="4" fill="#3B82F6" />
     <text x="125" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Process Step</text>
-    <path d="M 95,555 L 115,565 L 95,575 L 75,565 Z" fill="#F59E0B" />
+    <g id="legend-decision-node" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="diamond" data-pptx-frame="75 555 40 20" fill="#F59E0B" stroke="none">
+        <path d="M 75 565 L 95 555 L 115 565 L 95 575 Z"/>
+    </g>
     <text x="125" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Decision Node</text>
     <rect x="80" y="590" width="30" height="20" rx="4" fill="#FFFFFF" stroke="#F97316" stroke-width="2" />
     <text x="125" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Exception / Loop</text>

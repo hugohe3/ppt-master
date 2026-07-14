@@ -98,7 +98,7 @@ This section applies only to deck/layout template routes. `page_layouts` selects
 
 **Hard rule — root identity**: A `page_pptx_layouts` row binds the page to one key in `pptx_layouts`; that unique definition supplies its Master key, Layout picker name, and prototype source. Put the declared Master key/name and Layout key/name on the root SVG. A Layout key belongs to exactly one Master and remains globally unique.
 
-**Hard rule — atomic fixed layers**: Every `data-pptx-layer="master|layout"` visual is one direct root child that compiles to one DrawingML object. A marked `<g>` is forbidden. When reconstructing source PPTX groups, recursively push supported transforms, paint, opacity, and z-order into atomic children. Repeat the identical ordered Master atom contract on every page using that Master and the identical ordered Layout atom contract on every page sharing that `(master, layout)` pair.
+**Hard rule — atomic fixed layers**: Every `data-pptx-layer="master|layout"` visual is one direct root semantic atom that compiles to one DrawingML object. An ordinary marked `<g>` is forbidden; one validated compact authored-preset `<g>` emitted by `preset_shape_svg.py` is the sole group exception because it compiles to one native shape. When reconstructing source PPTX groups, recursively push supported transforms, paint, opacity, and z-order into atomic children. Repeat the identical ordered Master atom contract on every page using that Master and the identical ordered Layout atom contract on every page sharing that `(master, layout)` pair.
 
 **Hard rule — PowerPoint paint order**: Direct children appear in this order: Master background atoms, Layout background atoms, optional Slide background, remaining Master atoms, remaining Layout atoms, then slot groups and Slide-local content groups. Backgrounds are the inheritance plane beneath all shapes.
 
@@ -248,7 +248,7 @@ Before drawing each page, look up its entry in `page_charts` to decide which cha
 ## 3. Execution Guidelines
 
 - **Proximity**: group related elements with tight spacing; separate unrelated groups
-- **Element grouping (Mandatory)**: wrap every logical Slide-local content unit — title, core-message line, each content block, card, list item, and diagram — in a top-level `<g id="...">` with a descriptive id. Flat free-design/brand-only pages use ordinary semantic groups for every logical unit. On structured template pages, slot `<g>` elements are already semantic groups and direct Master/Layout atoms are the required exception to grouping. Authored native preset fragments (`preset_shape_svg.py`) already are one atomic `<g id>` each and count as one ordinary content group; keep their labels in a sibling parent `<g>`.
+- **Element grouping (Mandatory)**: wrap every logical Slide-local content unit — title, core-message line, each content block, card, list item, and diagram — in a top-level `<g id="...">` with a descriptive id. Flat free-design/brand-only pages use ordinary semantic groups for every logical unit. On structured template pages, slot `<g>` elements are already semantic groups and direct Master/Layout atoms are the required exception to grouping. Authored native preset fragments (`preset_shape_svg.py`) already are one atomic `<g id>` each and count as one ordinary content group. When a preset needs labels or decorations, put the preset and those siblings inside a separate parent content group; never put them inside the preset group itself.
 - **Spec adherence**: follow color, layout, canvas format, and typography in the spec
 - **Template structure**: if templates exist, inherit the visual framework
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
@@ -284,9 +284,10 @@ This automatic decision applies only before drawing a new object. Do not scan
 existing SVG, classify path contours, or upgrade ordinary SVG during export.
 
 **Hard rule**: do not hand-write `data-pptx-authoring`, `data-pptx-prst`,
-`data-pptx-frame`, adjustment, carrier, preview, or fingerprint metadata. The
-helper generates them atomically from the shared 187-shape registry. Rerun the
-helper when geometry or paint changes.
+`data-pptx-frame`, adjustment metadata, or registry paths. The helper generates
+one compact atomic `<g>` from the shared 187-shape registry, with semantic
+metadata and base paint written once. Rerun the helper when geometry or paint
+changes; never edit one of its direct paths.
 
 For chart-template and diagram authoring, thin relationships use ordinary
 `<line>` / supported open `<path>` geometry with registered arrow markers;

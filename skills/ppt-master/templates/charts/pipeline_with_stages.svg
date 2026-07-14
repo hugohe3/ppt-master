@@ -30,7 +30,9 @@
   </text>
   <!-- ==================== Left Row Label (Stages) ==================== -->
   <rect x="30" y="150" width="30" height="30" rx="6" fill="#334155"/>
-  <path d="M 36 162 H 47 V 158 L 55 165 L 47 172 V 168 H 36 Z" fill="#FFFFFF"/>
+  <g id="pipeline-stages-label-arrow" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="36 158 19 14" data-pptx-av-adj1="val 42857" data-pptx-av-adj2="val 57143" fill="#FFFFFF" stroke="none">
+    <path d="M 36 162 L 47 162 L 47 158 L 55 165 L 47 172 L 47 168 L 36 168 Z"/>
+  </g>
   <text x="45" y="350" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" letter-spacing="4" transform="rotate(-90, 45, 350)">PIPELINE STAGES</text>
   <!-- ==================== Main Pipeline Frame ==================== -->
   <rect x="100" y="150" width="1150" height="36" fill="#F8FAFC" rx="8"/>
@@ -144,14 +146,24 @@
   <text x="1135" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#BE123C">Products</text>
   <!-- ==================== Stage Arrows ==================== -->
   <g fill="#CBD5E1">
-    <path d="M 315 376 L 328 376 L 328 368 L 345 380 L 328 392 L 328 384 L 315 384 Z"/>
-    <path d="M 545 376 L 558 376 L 558 368 L 575 380 L 558 392 L 558 384 L 545 384 Z"/>
-    <path d="M 775 376 L 788 376 L 788 368 L 805 380 L 788 392 L 788 384 L 775 384 Z"/>
-    <path d="M 1005 376 L 1018 376 L 1018 368 L 1035 380 L 1018 392 L 1018 384 L 1005 384 Z"/>
+    <g id="stage-arrow-01-02" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="315 368 30 24" data-pptx-av-adj1="val 33333" data-pptx-av-adj2="val 70833" fill="#CBD5E1" stroke="none">
+      <path d="M 315 376 L 328 376 L 328 368 L 345 380 L 328 392 L 328 384 L 315 384 Z"/>
+    </g>
+    <g id="stage-arrow-02-03" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="545 368 30 24" data-pptx-av-adj1="val 33333" data-pptx-av-adj2="val 70833" fill="#CBD5E1" stroke="none">
+      <path d="M 545 376 L 558 376 L 558 368 L 575 380 L 558 392 L 558 384 L 545 384 Z"/>
+    </g>
+    <g id="stage-arrow-03-04" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="775 368 30 24" data-pptx-av-adj1="val 33333" data-pptx-av-adj2="val 70833" fill="#CBD5E1" stroke="none">
+      <path d="M 775 376 L 788 376 L 788 368 L 805 380 L 788 392 L 788 384 L 775 384 Z"/>
+    </g>
+    <g id="stage-arrow-04-05" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="1005 368 30 24" data-pptx-av-adj1="val 33333" data-pptx-av-adj2="val 70833" fill="#CBD5E1" stroke="none">
+      <path d="M 1005 376 L 1018 376 L 1018 368 L 1035 380 L 1018 392 L 1018 384 L 1005 384 Z"/>
+    </g>
   </g>
   <!-- ==================== Bottom Flow Diagram ==================== -->
   <rect x="30" y="610" width="30" height="30" rx="6" fill="#334155"/>
-  <path d="M 36 622 H 47 V 618 L 55 625 L 47 632 V 628 H 36 Z" fill="#FFFFFF"/>
+  <g id="end-to-end-label-arrow" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="rightArrow" data-pptx-frame="36 618 19 14" data-pptx-av-adj1="val 42857" data-pptx-av-adj2="val 57143" fill="#FFFFFF" stroke="none">
+    <path d="M 36 622 L 47 622 L 47 618 L 55 625 L 47 632 L 47 628 L 36 628 Z"/>
+  </g>
   <text x="45" y="675" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" transform="rotate(-90, 45, 675)">END TO END</text>
   <rect x="100" y="610" width="1150" height="90" rx="8" fill="none" stroke="#E2E8F0" stroke-width="2"/>
   <text x="675" y="632" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="0.5">Origin: Raw Data ————— 5-Stage Processing ————— Destination: Business Products</text>

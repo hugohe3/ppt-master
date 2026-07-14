@@ -53,10 +53,25 @@ Use `summary.md` only for orientation. Open screenshots or the original PPTX onl
 
 | Mode | Output structure contract |
 |---|---|
-| `standard` / `fidelity` | Author new SVG prototypes and an intentional new Master/Layout/slot system. Source visual language and assets may guide the design, but source ownership, keys, picker names, parent relationships, placeholders, and repeated Slide-local elements do not define or seed the output topology. Use compact canonical metadata for authored objects. |
-| `mirror` | Restore the source graph one-to-one: keep source Master/Layout identities and parentage, slide assignments, placeholder type/index/bounds, and supported visual/native-object facts. Mechanical normalization maps fixed-layer source groups into the direct atoms required by the current explicit SVG contract while preserving ownership, paint order, and appearance; it must not semantically redesign the graph. |
+| `standard` / `fidelity` | Author project-canonical SVG prototypes and an intentional new Master/Layout/slot system. Source visual language and assets may guide the design, but source ownership, keys, picker names, parent relationships, placeholders, and repeated Slide-local elements do not define or seed the output topology. Use the compact authored-preset group only for exact registered preset matches. |
+| `mirror` | Restore the source graph one-to-one: keep source Master/Layout identities and parentage, slide assignments, placeholder type/index/bounds, and supported visual/native-object facts. Preserve the expanded lossless representation required for supported native-object round trips. Mechanical normalization maps fixed-layer source groups into the direct atoms required by the current explicit SVG contract while preserving ownership, paint order, and appearance; it must not semantically redesign the graph. |
 
 Every page remains a complete standalone SVG preview.
+
+**Authored preset rule**: In `standard` / `fidelity`, when one registered
+PowerPoint preset exactly expresses one complete object, use
+`preset_shape_svg.py` as defined by
+[`native-shape-authoring.md`](./native-shape-authoring.md). Its compact
+canonical `<g>` is one semantic atom after validation: it may remain
+Slide-local, serve as the one direct carrier of an `object` slot, or carry
+Master/Layout fixed-layer ownership. This is the only `<g>` exception to the
+fixed-layer atomicity rule; ordinary groups remain forbidden there. Preset
+paint comes from the confirmed brief and this template's `design_spec.md`
+color scheme. Do not copy an expanded import carrier/preview/fingerprint
+bundle into an authored template. `mirror` instead preserves the supported
+expanded lossless source representation. The exact syntax and validation
+contract remain owned by
+[`shared-standards.md`](./shared-standards.md) and the native-shape reference.
 
 **Hard rule — complete mirror graph**: Restore every supported source Layout,
 including Layouts unused by source Slides. Emit one complete source-page
@@ -263,7 +278,7 @@ The imported PPTX has a different authority level in each replication mode.
 
 | Mode | Required behavior |
 |---|---|
-| `standard` | Use source visuals/assets as references, then author the compact canonical roster and its Master/Layout/slot structure from the confirmed brief. Do not preserve or distill source topology. |
+| `standard` | Use source visuals/assets as references, then author the project-canonical roster and its Master/Layout/slot structure from the confirmed brief. Do not preserve or distill source topology. |
 | `fidelity` | Use the complete visual roster as design reference, then author a broader canonical roster and its own Master/Layout/slot structure. Match the source visual language closely, but do not cluster, merge, or split source Layouts into output families. |
 | `mirror` | Restore source pages, inheritance, placeholders, native objects, and visuals from the lossless import. Do not simplify, redesign, rename structure, or infer new common structure. |
 
@@ -280,14 +295,15 @@ template.
 |---|---|---|
 | Lossless import SVG | Round-trip and mirror-restoration source | Retain complete imported metadata, native object boundaries, hidden carriers, and source-scope identity. It is authoritative for mirror restoration. |
 | Lightweight authoring projection | Model-readable inspection surface | Omit opaque native payload and duplicate hidden carriers from model context; retain visible shape intent and logical ids needed to locate an adopted object in the lossless import |
-| `standard` / `fidelity` output | Newly authored contract | Use compact canonical metadata for new shapes. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
-| `mirror` output | Restored contract | Keep currently supported imported metadata on unchanged Slide-local/slot objects. Normalize fixed structural layers into direct atoms from the lossless source. The projection never becomes the restoration source. |
+| `standard` / `fidelity` output | Newly authored contract | Use `preset_shape_svg.py` compact canonical `<g>` output for exact preset matches, with paint from the confirmed brief / `design_spec.md`; use ordinary project SVG for other geometry. Reuse exported image/vector assets, not opaque source shape payload or source topology. |
+| `mirror` output | Restored contract | Keep the expanded lossless representation and currently supported imported metadata on unchanged Slide-local/slot objects. Normalize fixed structural layers into semantic atoms from the lossless source. The projection never becomes the restoration source. |
 
 **Validation**: Mirror does not silently use stale metadata or a lightweight
 projection. If an imported object cannot use the converter's supported native
 metadata after normalization, keep its current SVG fallback and report the
-limitation. `standard` / `fidelity` regenerate compact canonical shapes instead
-of transplanting opaque source payload. `data-pptx-replace-with` remains
+limitation. For exact registered preset matches, `standard` / `fidelity`
+regenerate the compact helper group instead of transplanting opaque source
+payload; other geometry stays ordinary project SVG. `data-pptx-replace-with` remains
 reserved for optional PowerPoint-native Chart/Table replacement markers.
 
 **Explicit template SVG contract**:
@@ -295,7 +311,7 @@ reserved for optional PowerPoint-native Chart/Table replacement markers.
 | Authored/restored fact | Template SVG declaration |
 |---|---|
 | Master/Layout identity | Root `data-pptx-master` / `data-pptx-master-name` plus `data-pptx-layout` / `data-pptx-layout-name`; authored keys for `standard` / `fidelity`, source keys for `mirror` |
-| Authored Master/Layout visual | In `standard` / `fidelity`, use a direct atomic child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"`; `<g>` is forbidden for a structural layer |
+| Authored Master/Layout visual | In `standard` / `fidelity`, use a direct atomic child with `data-pptx-layer="master|layout"` and `data-pptx-editable="false"`. An ordinary `<g>` is forbidden; one validated compact canonical authored-preset `<g>` is a semantic atom and is the sole group exception. |
 | Restored Master/Layout visual | In `mirror`, recursively expand each fixed-layer source group into direct atoms with the same Master/Layout ownership, transforms, styles, paint order, and appearance; semantic regrouping is forbidden |
 | Content slot | Direct `<g id>` with `data-pptx-placeholder` and explicit `data-pptx-placeholder-bounds`; `standard` / `fidelity` author the slot, while `mirror` preserves source type/index/bounds and carrier identity |
 | Page-only background | Direct full-canvas solid rect with `data-pptx-layer="slide"` |
@@ -305,7 +321,14 @@ Repeat inherited visuals in every standalone SVG so browser preview remains comp
 
 **Forbidden — legacy structure contract**: Do not carry `data-pptx-layout-kind`, `distilled`, `utility`, unmapped `baseline`, `preserve`, or direct atomic placeholders into a reusable template package. Route that source through [`restore-pptx-structure`](../workflows/restore-pptx-structure.md) first.
 
-**Composite slot boundary**: A normal slot group has exactly one compatible direct carrier. Only a genuinely composite region may declare `data-pptx-placeholder="object"` with `data-pptx-placeholder-binding="proxy"`; the visible group stays Slide-local and export creates a hidden transparent binding proxy. Do not use proxy binding as the default template slot form.
+**Composite slot boundary**: A normal slot group has exactly one compatible
+direct carrier. A validated compact canonical authored-preset `<g>` counts as
+one carrier for an `object` slot because it compiles to one native shape; an
+ordinary multi-object `<g>` does not. Only a genuinely composite region may
+declare `data-pptx-placeholder="object"` with
+`data-pptx-placeholder-binding="proxy"`; the visible group stays Slide-local
+and export creates a hidden transparent binding proxy. Do not use proxy binding
+as the default template slot form.
 
 In `mirror`, preserve imported placeholder types, indices, bounds, and carrier
 identity exactly when the importer supports them. Do not replace source
@@ -515,7 +538,7 @@ templates/
 - [x] Placeholder markers are clear and standardized for `standard` / `fidelity`; mirror preserves literal source text plus source placeholder type/index/bounds
 - [x] Every SVG is a complete preview with explicit root Master/Layout identity and `native_structure_mode: structured`; authored modes use canonical fixed layers/slots, while mirror preserves source ownership and mechanically expands fixed-layer groups into direct atoms
 - [x] Authored `standard` / `fidelity` Layout keys are non-duplicative; mirror keeps distinct source Layout identities even when their current visible contracts are equivalent
-- [x] Model context used lightweight projections; lossless imports remained authoritative for mirror restoration, while `standard` / `fidelity` used compact canonical authored metadata
+- [x] Model context used lightweight projections; lossless expanded imports remained authoritative for mirror restoration, while `standard` / `fidelity` used helper-generated compact canonical preset groups and `design_spec.md` paint
 - [x] Both scopes route bitmaps to `images/` and copy extracted icons to both `templates/icons/` and runtime `icons/`
 - [ ] **Next step**: Validate assets, optionally export a review PPTX, then register only library scope
 ```

@@ -90,7 +90,8 @@ python3 scripts/template_preview_pptx.py <legacy_template_workspace> --visual-on
 of PPTX-imported SVGs. It removes embedded `txbody` payloads,
 duplicate hidden geometry carriers, and import-identity attributes from the
 copy while retaining visible fallback geometry, text, images, stable element
-ids, root Master/Layout markers, and supported compact native-shape intent.
+ids, root Master/Layout markers, and selected native-shape intent for
+inspection.
 Relative local image references are rewritten so the projected copy still
 renders from its new location. The full imported SVG remains unchanged and is
 the evidence source for mirror restoration; the projection is inspection-only.
@@ -131,7 +132,19 @@ python3 scripts/preset_shape_svg.py describe rightArrow
 python3 scripts/preset_shape_svg.py render rightArrow --id process-arrow --frame 120 180 240 96 --fill '#2563EB'
 ```
 
-The helper never writes a page or project file. Select one exact semantic stock-shape match, inspect the emitted fragment, and insert it into the hand-authored SVG with the normal patch workflow. Keep ordinary rectangles, ellipses, freeform geometry, charts, icons, and ambiguous silhouettes as regular SVG. See [`references/native-shape-authoring.md`](../references/native-shape-authoring.md) for the selection and metadata contract.
+The helper never writes a page or project file. Select one exact semantic
+stock-shape match, inspect the emitted fragment, and insert it into the
+hand-authored SVG with the normal patch workflow. Its project-authored output
+is one compact atomic `<g>` with direct registry-generated visible paths;
+quality check and export rerender the registry instead of relying on a hidden
+carrier, preview wrapper, or stored preview fingerprint. PPTX import and
+round-trip SVGs deliberately keep their expanded carrier/preview evidence and
+are not rewritten into this authored form. Keep ordinary rectangles, ellipses,
+freeform geometry, charts, icons, and ambiguous silhouettes as regular SVG.
+See [`references/shared-standards.md`](../references/shared-standards.md) for
+the normative contract and
+[`references/native-shape-authoring.md`](../references/native-shape-authoring.md)
+for selection and authoring guidance.
 
 Post-processing and export:
 
@@ -148,7 +161,7 @@ python3 scripts/svg_to_pptx.py <project_path>
 
 For SVG-authoring routes, `svg_output/` is the complete visible page-design source: every exported text, image, shape, background, and template-derived layout element is present in the page SVG or explicitly referenced by it. Export may translate represented content into Master/Layout/Slide parts or native objects, but it does not retrieve missing visible content from templates or planning files. Speaker notes, animation, narration, transitions, `template-fill-pptx`, and `native-enhance-pptx` remain separately owned capabilities.
 
-Native `svg_to_pptx.py` release export reads the project's explicit structure mode. Free-design and brand-only projects use `flat`, omit Master/Layout mappings and SVG structure metadata, keep every represented object Slide-local, and materialize one clean project-owned Master plus one Blank Layout from the current color/typography lock. Stock content placeholders and unused built-in Layouts are removed; only the standard date/footer/slide-number capability hooks remain. Deck/layout template projects use `structured`: each project supplies unique Master/Layout definitions and one Layout assignment per generated page before SVG generation, and every SVG root repeats its assigned identity. A template-backed definition may remain unused and still register without a published carrier slide. Fixed Master/Layout visuals are direct atomic children; reusable slots are top-level groups with positive design-zone bounds plus one compatible carrier. Composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid.
+Native `svg_to_pptx.py` release export reads the project's explicit structure mode. Free-design and brand-only projects use `flat`, omit Master/Layout mappings and SVG structure metadata, keep every represented object Slide-local, and materialize one clean project-owned Master plus one Blank Layout from the current color/typography lock. Stock content placeholders and unused built-in Layouts are removed; only the standard date/footer/slide-number capability hooks remain. Deck/layout template projects use `structured`: each project supplies unique Master/Layout definitions and one Layout assignment per generated page before SVG generation, and every SVG root repeats its assigned identity. A template-backed definition may remain unused and still register without a published carrier slide. Fixed Master/Layout visuals are direct semantic atoms; ordinary groups are invalid there, while one validated compact authored-preset `<g>` is the sole group exception because it compiles to one native shape. Reusable slots are top-level groups with positive design-zone bounds plus one compatible carrier. Composite `object` regions use explicit proxy binding, and zero-slot Layouts are valid.
 
 Structured template export compiles only the declared structure, maps locked typography/colors into PowerPoint defaults, creates the named Master/Layout parts, and reads the package back before publication. It never clusters pages, promotes repeated chrome heuristically, or invents placeholders. Flat export is the normal free-design/brand-only route: it creates only the clean project-owned shell and performs no promotion or deduplication of Slide content.
 

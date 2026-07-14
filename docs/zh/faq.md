@@ -246,7 +246,7 @@ beautify 和主管线的一句话判别：**原来的分页是要保留的信息
 
 **最推荐的方式是直接给原始 `.pptx` 文件**。PPT Master 会提取主题色、字体、Master/Layout、placeholder type/idx、原生形状信息和可复用图片资源。`standard` 与 `fidelity` 把来源当作视觉参考，重新设计 SVG roster 和新的 Master/Layout/slot 系统，不保留、也不蒸馏来源拓扑。`mirror` 则按来源页序恢复 Master/Layout 身份与父子关系、placeholder 事实和受支持的视觉对象，不做语义归纳。由于结构层禁止 `<g>`，来源 Master/Layout 的 group wrapper 只允许机械展开成直接原子。
 
-完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，但模型只读取轻量 inspection projection；projection 永远不是导出源。`standard` / `fidelity` 使用紧凑 canonical metadata。Mirror 从无损来源物化，只在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；不支持或已修改的对象保留当前 SVG fallback。
+完整导入 SVG 可以保留高级 PowerPoint 形状所需的 metadata、隐藏 carrier 和预览指纹，但模型只读取轻量 inspection projection；projection 永远不是导出源。`standard` / `fidelity` 创作项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 从无损来源物化，只在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；不支持或已修改的对象保留当前 SVG fallback。
 
 没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 

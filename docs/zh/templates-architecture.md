@@ -67,7 +67,7 @@ native_structure_mode: structured
 
 空的可选目录直接省略，不添加占位文件。按需生成的预览 PPTX 是派生审阅证据，不是模板源资产。Step 3 读取工作区根目录，只消费 `templates/` 及实际存在的 `images/`、`icons/`，不会复制或使用 `exports/`；全局库下的 `exports/` 统一由 Git 忽略。
 
-原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据；轻量 authoring projection 移除大体积载荷与重复 carrier，只供模型检查，永远不是导出源。创作模式使用紧凑 canonical metadata。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback。导出只编译声明的结构，不推断归属。
+原生形状 metadata 采用两级模型。完整导入 SVG 保存 native metadata、隐藏 carrier 和预览证据；轻量 authoring projection 移除大体积载荷与重复 carrier，只供模型检查，永远不是导出源。创作模式使用项目规范化 SVG，只有精确匹配已登记 preset 时才使用 compact authored-preset 组。Mirror 可在未改的 Slide-local/slot 对象上复用转换器已经支持的 metadata；固定结构层保持直接原子，不支持或已修改的对象保留 SVG fallback。导出只编译声明的结构，不推断归属。
 
 两种范围都在可移植 frontmatter 中保留 `kind: layout` 或 `kind: deck`。`output_scope` 与 `target_project` 只属于工作流简报，不写入 `design_spec.md`。
 
