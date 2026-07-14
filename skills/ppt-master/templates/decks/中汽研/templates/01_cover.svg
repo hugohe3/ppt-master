@@ -1,54 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720" data-pptx-layout="01_cover" data-pptx-layout-name="Cover">
-    <!-- 模板: 封面页 - 中汽研风格 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="catarc_dark_master" data-pptx-master-name="CATARC Dark"
+  data-pptx-layout="cover" data-pptx-layout-name="Cover">
+  <rect id="dark-master-background" x="0" y="0" width="1280" height="720" fill="#004098"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="dark-master-top-rule" x="0" y="0" width="1280" height="4" fill="#FFFFFF" fill-opacity="0.35"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="dark-master-bottom-rule" x="0" y="716" width="1280" height="4" fill="#FFFFFF" fill-opacity="0.35"
+    data-pptx-layer="master" data-pptx-editable="false"/>
 
-    <rect id="layout-01_cover-marker" data-pptx-layer="layout"
-        data-pptx-editable="false" x="0" y="0" width="1" height="1"
-        fill="#FFFFFF" fill-opacity="0" />
+  <image id="cover-logo" x="344" y="92" width="592" height="238"
+    xlink:href="../images/大型 logo.png" preserveAspectRatio="xMidYMid meet"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <line id="cover-separator" x1="440" y1="542" x2="840" y2="542" stroke="#FFFFFF"
+    stroke-width="1" stroke-opacity="0.4" data-pptx-layer="layout" data-pptx-editable="false"/>
 
-    <!-- 背景层 - 使用封面背景图（AI生成或用户提供） -->
-    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720"
-        preserveAspectRatio="xMidYMid slice" id="semantic-01_cover-background-1" data-pptx-role="background" />
-
-    <!-- 半透明遮罩层 - 增强文字可读性 -->
-    <rect id="cover-overlay" x="0" y="0" width="1280" height="720"
-        fill="#001F4D" fill-opacity="0.4" transform="translate(0 0)" />
-
-    <!-- 顶部装饰线 -->
-    <rect x="0" y="0" width="1280" height="4" fill="#FFFFFF" fill-opacity="0.3" />
-
-    <!-- 大型Logo - 居中偏上 -->
-    <image href="../images/{{LOGO_LARGE}}" x="344" y="120" width="592" height="238"
-        preserveAspectRatio="xMidYMid meet" id="semantic-01_cover-logo-1" data-pptx-role="logo" />
-
-    <!-- 主标题区域 -->
-    <text x="640" y="440" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="48"
-        font-weight="bold" fill="#FFFFFF" id="slot-01_cover-title-1" data-pptx-placeholder="title">
-        {{TITLE}}
-    </text>
-
-    <!-- 副标题 -->
-    <text x="640" y="500" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26"
-        fill="#FFFFFF" fill-opacity="0.85" id="slot-01_cover-subtitle-2" data-pptx-placeholder="subtitle">
-        {{SUBTITLE}}
-    </text>
-
-    <!-- 分隔线 -->
-    <line x1="440" y1="540" x2="840" y2="540" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.4" />
-
-    <!-- 单位名称（中文） -->
-    <text x="640" y="590" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22"
-        fill="#FFFFFF" fill-opacity="0.9">
-        {{AUTHOR}}
-    </text>
-
-    <!-- 单位名称（英文） - 可选 -->
-    <text x="640" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#FFFFFF"
-        fill-opacity="0.7">
-        {{AUTHOR_EN}}
-    </text>
-
-    <!-- 底部装饰线 -->
-    <rect x="0" y="716" width="1280" height="4" fill="#004098" />
-
+  <g id="cover-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="160 356 960 92">
+    <text id="cover-title-carrier" data-pptx-placeholder-carrier="true"
+      x="640" y="416" text-anchor="middle" fill="#FFFFFF"
+      font-family="Microsoft YaHei, SimHei, Arial, sans-serif"
+      font-size="48" font-weight="700">{{TITLE}}</text>
+  </g>
+  <g id="cover-subtitle-slot" data-pptx-placeholder="subtitle" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="220 452 840 56">
+    <text id="cover-subtitle-carrier" data-pptx-placeholder-carrier="true"
+      x="640" y="490" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.86"
+      font-family="Microsoft YaHei, Arial, sans-serif" font-size="26">{{SUBTITLE}}</text>
+  </g>
+  <g id="cover-author-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="300 560 680 44">
+    <text id="cover-author-carrier" data-pptx-placeholder-carrier="true"
+      x="640" y="590" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.9"
+      font-family="Microsoft YaHei, Arial, sans-serif" font-size="22">{{AUTHOR}}</text>
+  </g>
+  <g id="cover-footer-slot" data-pptx-placeholder="footer" data-pptx-placeholder-idx="3"
+    data-pptx-placeholder-bounds="300 606 680 32">
+    <text id="cover-footer-carrier" data-pptx-placeholder-carrier="true"
+      x="640" y="628" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.7"
+      font-family="Arial, Microsoft YaHei, sans-serif" font-size="16">{{AUTHOR_EN}}</text>
+  </g>
 </svg>

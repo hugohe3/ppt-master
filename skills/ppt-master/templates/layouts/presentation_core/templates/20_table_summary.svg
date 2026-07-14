@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"
+  data-pptx-master="presentation_core_master" data-pptx-master-name="Presentation Core"
+  data-pptx-layout="table_summary" data-pptx-layout-name="Table and Summary">
+  <rect id="master-background" x="0" y="0" width="1280" height="720" fill="#FFFFFF"
+    data-pptx-layer="master" data-pptx-editable="false"/>
+  <rect id="table-summary-table-panel" x="64" y="152" width="824" height="456" rx="12"
+    fill="#F4F6F8" stroke="#D6DCE3" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <rect id="table-summary-message-panel" x="920" y="152" width="296" height="456" rx="12"
+    fill="#F4F6F8" stroke="#D6DCE3" stroke-width="1"
+    data-pptx-layer="layout" data-pptx-editable="false"/>
+  <g id="table-summary-title-slot" data-pptx-placeholder="title"
+    data-pptx-placeholder-bounds="64 40 1152 72">
+    <text id="table-summary-title-carrier" data-pptx-placeholder-carrier="true"
+      x="64" y="90" fill="#1E293B" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="36" font-weight="700">{{PAGE_TITLE}}</text>
+  </g>
+  <g id="table-summary-table-slot" data-pptx-placeholder="table" data-pptx-placeholder-idx="1"
+    data-pptx-placeholder-bounds="88 176 776 408">
+    <g id="table-summary-table-carrier" data-pptx-placeholder-carrier="true"
+      data-pptx-native="table"
+      data-pptx-fallback-sha256="6537e9228a8e8691fd1870f794329de56b7c51a8c6c40fe4e37d2d8963659f61">
+      <metadata data-pptx-native="table">{"name":"table_summary","x":88,"y":176,"width":776,"height":408,"strict_grid":true,"column_widths":[3,2,2],"row_heights":[1,1,1,1,1],"style":{"font_family":"Arial","font_size":17,"header_font_size":16,"header_fill":"#E2E8F0","header_text":"#334155","body_fill":"#FFFFFF","body_text":"#475569","band_fill":"#F8FAFC","border_color":"#D6DCE3","border_width":1,"padding":{"left":12,"right":12,"top":6,"bottom":6},"valign":"middle"},"columns":[{"text":"Metric","bold":true},{"text":"Current","align":"r","bold":true},{"text":"Target","align":"r","bold":true}],"rows":[[{"text":"Adoption"},{"text":"68%","align":"r","bold":true},{"text":"80%","align":"r"}],[{"text":"Cycle time"},{"text":"12 d","align":"r","bold":true},{"text":"8 d","align":"r"}],[{"text":"Quality"},{"text":"94%","align":"r","bold":true},{"text":"97%","align":"r"}],[{"text":"Cost index"},{"text":"1.08","align":"r","bold":true},{"text":"1.00","align":"r"}]]}</metadata>
+      <rect x="88" y="176" width="776" height="408" rx="8" fill="#FFFFFF" stroke="#D6DCE3" stroke-width="1"/>
+      <rect x="88" y="176" width="776" height="72" rx="8" fill="#E2E8F0"/>
+      <rect x="88" y="248" width="776" height="84" fill="#FFFFFF"/>
+      <rect x="88" y="332" width="776" height="84" fill="#F8FAFC"/>
+      <rect x="88" y="416" width="776" height="84" fill="#FFFFFF"/>
+      <rect x="88" y="500" width="776" height="84" rx="8" fill="#F8FAFC"/>
+      <line x1="480" y1="176" x2="480" y2="584" stroke="#D6DCE3" stroke-width="1"/>
+      <line x1="672" y1="176" x2="672" y2="584" stroke="#D6DCE3" stroke-width="1"/>
+      <line x1="88" y1="248" x2="864" y2="248" stroke="#D6DCE3" stroke-width="1"/>
+      <line x1="88" y1="332" x2="864" y2="332" stroke="#D6DCE3" stroke-width="1"/>
+      <line x1="88" y1="416" x2="864" y2="416" stroke="#D6DCE3" stroke-width="1"/>
+      <line x1="88" y1="500" x2="864" y2="500" stroke="#D6DCE3" stroke-width="1"/>
+      <text x="112" y="222" fill="#334155" font-family="Arial, sans-serif" font-size="16" font-weight="700">Metric</text>
+      <text x="648" y="222" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="16" font-weight="700">Current</text>
+      <text x="840" y="222" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="16" font-weight="700">Target</text>
+      <text x="112" y="300" fill="#475569" font-family="Arial, sans-serif" font-size="17">Adoption</text>
+      <text x="648" y="300" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="17" font-weight="700">68%</text>
+      <text x="840" y="300" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="17">80%</text>
+      <text x="112" y="384" fill="#475569" font-family="Arial, sans-serif" font-size="17">Cycle time</text>
+      <text x="648" y="384" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="17" font-weight="700">12 d</text>
+      <text x="840" y="384" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="17">8 d</text>
+      <text x="112" y="468" fill="#475569" font-family="Arial, sans-serif" font-size="17">Quality</text>
+      <text x="648" y="468" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="17" font-weight="700">94%</text>
+      <text x="840" y="468" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="17">97%</text>
+      <text x="112" y="552" fill="#475569" font-family="Arial, sans-serif" font-size="17">Cost index</text>
+      <text x="648" y="552" text-anchor="end" fill="#334155" font-family="Arial, sans-serif" font-size="17" font-weight="700">1.08</text>
+      <text x="840" y="552" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="17">1.00</text>
+    </g>
+  </g>
+  <g id="table-summary-message-slot" data-pptx-placeholder="body" data-pptx-placeholder-idx="2"
+    data-pptx-placeholder-bounds="952 184 232 344">
+    <text id="table-summary-message-carrier" data-pptx-placeholder-carrier="true"
+      x="952" y="232" fill="#334155" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="24" font-weight="700">{{KEY_MESSAGE}}</text>
+  </g>
+  <g id="table-summary-source-slot" data-pptx-placeholder="footer" data-pptx-placeholder-idx="3"
+    data-pptx-placeholder-bounds="952 552 232 32">
+    <text id="table-summary-source-carrier" data-pptx-placeholder-carrier="true"
+      x="952" y="576" fill="#94A3B8" font-family="Arial, Microsoft YaHei, sans-serif"
+      font-size="14">{{SOURCE}}</text>
+  </g>
+</svg>

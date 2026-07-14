@@ -40,7 +40,7 @@
 - **Kubernetes Blueprint 示例 deck 交付**（[`examples/ppt169_kubernetes_blueprint_2026/`](../../examples/ppt169_kubernetes_blueprint_2026/)） — P0 三档第二档落地：等距工程图美学 + 蓝图青/琥珀色板 + 全手写 SVG 几何（无 raster 图）+ 自定义"逐笔绘制"动画，10 页 Kubernetes 架构走读实压「几何形状泛化 + chart 结构扩展性」
 - **AI 图 `custom` 兜底出口** — `rendering` / `palette` / hero 构图三处允许声明 `custom` + 一段 `*_behavior` prose，替换原"找不到匹配就硬塞 vector-illustration / cool-corporate"的假兜底；端到端契约：[`image-renderings/_index.md`](../../skills/ppt-master/references/image-renderings/_index.md) §1.5 + [`image-palettes/_index.md`](../../skills/ppt-master/references/image-palettes/_index.md) §2 + Strategist h.5 hard-rule（每维 ≤1 custom，单候选可双 custom）+ spec_lock 字段 + Image_Generator Step 2 消费分支
 - **Template 架构三分类收口**（[`docs/zh/templates-architecture.md`](./templates-architecture.md)） — brand / layout / deck 三独立目录 + 每类独立 schema + 段级合成 + git-style 冲突解决；SKILL.md Step 3 按 kind 分支处理，触发规则仍是「显式路径才触发」
-- **Pattern 填充 PPTX 安全网** — `svg_quality_checker.py` 现在对未标 `data-pptx-pattern` 的 `<pattern>` 元素发 warning（会静默回退 `ltUpDiag` 斜纹）、对超出 OOXML `ST_PresetPatternVal` 枚举的值发 error（schema 校验失败 PPT 无法打开）；`shared-standards.md §7` 落地了完整 preset 清单，以及从导入元数据或子元素 paint 解析颜色的合同
+- **Pattern 填充 PPTX 安全网** — `svg_quality_checker.py` 现在拒绝被引用但缺少 `data-pptx-pattern`、使用 `patternTransform`，或命名超出 OOXML `ST_PresetPatternVal` 枚举值的 `<pattern>`；转换器仅为历史输入保留 `ltUpDiag` 回退。`shared-standards.md §7` 落地了完整 preset 清单，以及从导入元数据或子元素 paint 解析颜色的合同
 - **LaTeX 数学公式渲染上线**（[`scripts/latex_render.py`](../../skills/ppt-master/scripts/latex_render.py)） — Strategist 在 Typography 确认中锁定 `mixed` / `render-all` / `text-only` 三档策略，显式写 `images/formula_manifest.json`；脚本走 codecogs → quicklatex → mathpad → wikimedia 四源 fallback chain，输出透明 PNG 进 §VIII 表的 `Acquire Via: formula` / `Status: Rendered` 行；公式密集型 deck（学术 / 工程 / 教学）首次拥有原生渲染路径，规则面禁止扫源文件 `$...$` 自动渲染（公式选取是 Strategist 决策）
 - **实时预览直接编辑 — L1 / L2 / L3**（[`workflows/live-preview.md`](../../skills/ppt-master/workflows/live-preview.md)） — 浏览器编辑器新增无需 AI 往返的确定性就地编辑：文字内容（L1）、fill / stroke / font-size 等样式属性（L2）、以及画布上的几何操作（L3）——在选中元素上拖拽即移动、方向键微调（`Shift` = 10px）、多选、加右键重叠选择器选取堆叠元素。编辑支持 `Ctrl+Z` 撤销 + 合并，点 **Apply changes** 写回 `svg_output/`；移动经 finalize / 导出保位（移动的 text、提升的多行 tspan、重定位的 icon 都在 PPTX 中如实再现）。重新导出仍由对话触发；画布上的缩放手柄尚未实现（缩放走几何输入框）
 
@@ -84,7 +84,9 @@
 
 - **`--native-objects` 从休眠 marker 硬化为可用级 opt-in** — 那条窄「原生对象」例外（见下文 Non-goals）现在导出的图表与纯文本表格会**保留 deck 自己的设计**，不再塌回 PowerPoint 的白底默认主题。classic 原生图表显式写入 chart-area / plot-area / 轴线 / 网格线 / 标签文字颜色——从可见的 SVG fallback 推断（最大面板型 `<rect>` → 背景、fallback 文字 → 标签、fallback 描边 → 轴线/网格），或用 `style` 显式覆盖（`chart_area_fill` / `plot_area_fill` / `text_color` / `axis_color` / `grid_color`，`"none"` 表透明）；颜色解析把命名色、`#RGB` 简写、`rgb()` / `rgba()` 归一为 OOXML hex；bar/column 系列关掉负值反色，负值柱保持系列色。激活导出命名为 `<name>_<ts>_native_charts.pptx` 以与默认压平形状导出区分。**默认路线不变**——图表/表格仍以 SVG 派生的 DrawingML 形状导出以保跨渲染器保真；原生对象仍是下文 Non-goals 里那条刻意的 opt-in 取舍
 
-- **原生 package 结构 + 按模式创建模板** — 每个新 SVG 页面在创作时就声明最终 Master/Layout 身份。固定 Master/Layout 视觉是根级原子，可复用槽位是带真实 carrier 或显式 composite proxy 的有界顶层 group，零槽位 Layout 也合法。导出只确定性编译该合同，把锁定 title/body 字号写入母版 `p:txStyles`，并执行最终 package 回读；不提升重复 chrome，也不推断 placeholder。`standard` / `fidelity` 重新创作 SVG roster 和新的 Master/Layout 系统，不保留、也不蒸馏来源拓扑。`mirror` 按来源页序恢复 Master/Layout 身份与父子关系、placeholder 事实和受支持视觉，不做语义归纳；固定结构层的来源 group 只允许机械展开成直接原子。无损导入保留在分析区，轻量 projection 仅供检查。`library` 与 `project` 都要求 `templates/`，`images/` / `icons/` 可选，`exports/` 仅在按需生成评审文件时出现；只有全局注册不同。旧 baseline/template/preserve SVG 包先运行 `restore-pptx-structure`；原始 PPTX 的一次性回填仍走 `template-fill-pptx`。
+- **原生 package 结构 + 按模式创建模板** — deck/layout-template SVG 页面在创作时就声明最终 Master/Layout 身份。固定 Master/Layout 视觉是根级原子，可复用槽位是带真实 carrier 或显式 composite proxy 的有界顶层 group，零槽位 Layout 也合法。`structured` 导出只确定性编译该合同并执行最终 package 回读；不提升重复 chrome，也不推断 placeholder。`flat` 自由设计 / brand-only 导出则保持所有内容 Slide-local，同时把 stock Office 脚手架替换成一个属于项目的干净 Master、一个 Blank Layout 和按 deck 命名的当前 lock 主题；删除 title/body 等 stock 内容、裁掉未使用 Layout，仅保留标准日期、页脚和页码能力钩子。两条生成路线都把锁定 title 与确定性的九级 body 层级写入母版 `p:txStyles`，同时保留段落和项目符号设置。`standard` / `fidelity` 重新创作 SVG roster 和新的 Master/Layout 系统，不保留、也不蒸馏来源拓扑。`mirror` 恢复完整且受支持的来源图谱，包括未使用 Layout 的定义专用原型；固定结构层的来源 group 只允许机械展开成直接原子，不做语义归纳。无损导入保留在分析区，轻量 projection 仅供检查。`library` 与 `project` 都要求 `templates/`，`images/` / `icons/` 可选，`exports/` 仅在按需生成评审文件时出现；只有全局注册不同。旧 baseline/template/preserve SVG 包先运行 `restore-pptx-structure`；原始 PPTX 的一次性回填仍走 `template-fill-pptx`。
+
+- **原生预设授权引导跨角色强化** — 用真正的 PowerPoint 预设（`prstGeom`，带调节手柄、非扁平卡片外观）被重申为库存几何（块箭头、chevron、横幅、标注、流程节点、星形）的**默认**而非例外。预设是每页由 helper（`preset_shape_svg.py`）现生成的，所以引导落在提示词层而非模板示范：Executor 现在在逐页作图仪式内主动够预设——按对象意图在画图当下决定，绝不扫描已完成路径——并写明准确的 paint 边界（渐变填充/描边或 pattern 填充保持普通 SVG，因为 helper 只对 fill 和 stroke 画 `none` 或纯色 HEX）。Strategist 在上游预热：给 §VII 页面的 Usage **追加**一条非破坏性的 `native-preset candidate` 注记，按页面计划而非模板名触发；Executor 仍自定具体预设、frame 与 paint。把预设片段烤进 `templates/charts/` 经评估否决——冻死的 frame/fingerprint 会诱导原样复制，违反授权契约
 
 ---
 
@@ -94,6 +96,7 @@
 
 - **多 deck intake 与材料发散度的真实使用校准（刚落地）** — 多 deck 合并 intake（`<stem>` 前缀 + `decks[]` 合并索引）与材料发散度自由文字项（§c 受众下）均已上线（见上「2026-06」），接下来按真实使用信号校准：多份源 deck 同名（stem 冲突）的处理目前是后者覆盖前者，是否需要去重 / 加序号待信号；发散度的自由文字让 Strategist 判得准不准、放开写时「事实守源」边界守不守得住，待真实生成验证。两者都不预先加机械阈值
 - **插画能力（机制 + 部署层）的真实 deck 校准（刚落地）** — 切片管线、边缘质量收紧，以及决策层（风格倾向 / 贯穿母题 / 角色地图，见上「2026-06」）均已上线，接下来按真实使用信号校准：一次大图切多格的风格 / 色板一致性与 `--alpha` 软蒙版对格内不规则构图的鲁棒性、离线 readiness gate 的手动放图 + 重切体验、风格倾向是否翻对了该翻的风格、母题在真实 deck 上读成「设计系统」还是「过度装饰」、以及 source 边界（provided/web 不静默生成 AI）守得住否。不预先加机械阈值 / 配额；同尺寸瓷砖若真反复出现再考虑更窄的 lint
+- **预设上的原生投影——作为独立增强延后** — 受支持的投影技术上能与原生预设共存（效果继承到 hidden carrier，导出为 `prstGeom` + `outerShdw`），但只有精确嵌套才对：带 id 的逻辑组包一层**无 id 单子** `<g filter="url(#id)">`。天真写法（filter 挂在顶层带 id 组上）会静默产生双 `outerShdw`，且 `shared-standards` 目前禁止在多元素 `<g>` 上加 filter。因此预设带阴影刻意不并入当前预设引导——带阴影的库存形状保守留普通 SVG。要做对需精确结构规范 + `shared-standards` / `native-shape-authoring` 全仓 sweep，可能再加一条 checker 规则抓双阴影；按真实信号再启动
 - 其余：mode / visual-style 体系的验证与校准已收口（见上「2026-06」），结构（5 mode + 18 visual-style + custom）定型、四对近邻消歧并成一张 Close-calls 表、四项校准收紧已落地。后续方向由真实使用信号与反馈驱动；长期改进见下「持续维护方向」，已评估不做的见「明确不做」
 
 ---
@@ -114,7 +117,7 @@
 
 **对应 Issue**：[#53](https://github.com/hugohe3/ppt-master/issues/53)、[#118](https://github.com/hugohe3/ppt-master/issues/118)
 
-PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。结构完整的 PPTX 现在可以通过两种显式方式形成经过确认的可复用模板包：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 恢复当前可达且受支持的来源结构。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
+PPT Master 主路线是「AI 从零生成 SVG → DrawingML」，整条管线围绕完全可控的形状/文字/版式构建。结构完整的 PPTX 现在可以通过两种显式方式形成经过确认的可复用模板包：`standard` / `fidelity` 以视觉证据为参考，创作新的 SVG 与 Master/Layout 系统；`mirror` 恢复完整且受支持的来源结构，包括未使用的 Layout 定义。但「打开任意 PPTX 后不经规范化就盲填所有占位框」仍是另一种产品形态。
 
 **基础诉求其实很简单**：如果只是「固定位置替换 Excel 数据到 PPT 模板」，直接让 AI 写一段 `python-pptx` 脚本即可，几行代码搞定，不需要本项目这套管线。
 

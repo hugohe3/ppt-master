@@ -16,22 +16,21 @@ primary_color: "#004098"
 | Brand Name | CATARC / 中汽研 |
 | Use Cases | Product certification display, evaluation presentations, automotive technology promotion, business visits, high-end technical reporting |
 | Tone | Professional, authoritative, trustworthy, technical-consulting style |
+| Sources | Bundled CATARC logo assets and the validated CATARC deck identity, reviewed 2026-07-13 |
 
 ## II. Color Scheme
 
 | Role | HEX | Provenance | Notes |
 |---|---|---|---|
-| primary | `#004098` | approx | CATARC deep blue, inherited from the standard CATARC deck template |
-| secondary | `#003366` | approx | Dark business blue for covers, chapter pages, and formal section headers |
-| accent (blue) | `#0050B3` | approx | Bright blue for technology emphasis and gradients |
-| accent (tech) | `#1890FF` | approx | Modern tech blue for forward-looking automotive topics |
-| accent (cyan) | `#00E5FF` | approx | High-energy data / future-tech highlights; use sparingly |
-| accent (red) | `#CC0000` | approx | Certification warnings, failed checks, and key risk emphasis |
+| primary | `#004098` | approx | Working primary blue aligned with the validated CATARC deck template |
+| secondary | `#003B82` | approx | Dark blue for chapter pages, headers, and restrained depth |
 | text | `#333333` | approx | Primary body text on light backgrounds |
 | muted-text | `#666666` | approx | Secondary descriptions and notes |
 | bg | `#FFFFFF` | approx | Standard light presentation background |
-| surface | `#F5F5F5` | approx | Secondary content blocks and cards |
+| surface | `#F8FAFC` | approx | Secondary content blocks and cards |
 | border | `#E0E0E0` | approx | Dividers, table borders, and technical grids |
+
+This compact palette intentionally matches the retained CATARC deck identity. It is an internal presentation approximation, not a claim about official CATARC design tokens. Derive success, warning, and error colors from the content context rather than treating them as brand colors.
 
 ## III. Typography
 
@@ -70,3 +69,4 @@ CATARC uses separate large and header lockups. Choose the large logo for brand m
 - Preference: filled or clean stroke icons
 - Recommended libraries: `tabler-filled`, `chunk-filled`, or `tabler-outline`
 - Prefer automotive, certification, testing, dashboard, data, process, and compliance metaphors. Avoid playful or consumer-app icon styling.
+- This icon guidance is a presentation convention, not an official CATARC icon token set.

@@ -250,6 +250,8 @@ Catalog read: 76 templates
 
 > **Audit rule**: `Summary-quote` must be copy-pasted verbatim — paraphrasing breaks the audit. Every template name listed must `grep` cleanly inside `charts_index.json` (so misspellings/inventions fail). If fewer than 3 viz pages exist, list what exists and note "fewer than 3 viz pages"; runners-up still required for each page that does exist.
 
+> **Native-preset candidates → append to `Usage`**: for a page already in this list, when its content calls for a literal stock PowerPoint shape (chevron, block arrow, standard flowchart node, callout, banner, star — judged from the page plan, not a template's name), append a candidate note to that page's `Usage`, e.g. `…usage…; native-preset candidate: chevron; Executor applies executor-base §3.0`. The Executor still selects the exact preset, frame, and paint. See [`strategist.md`](../references/strategist.md) Template Match.
+
 ---
 
 ## VIII. Image Resource List (if needed)
@@ -306,7 +308,7 @@ Catalog read: 76 templates
 
 ## IX. Content Outline
 
-> **Native Layout boundary**: Each `Layout` line below always describes visual composition intent. On free-design and brand-only routes, it does not create native Master/Layout identity: `spec_lock.md` uses `pptx_structure.mode: flat`, omits `pptx_masters` / `pptx_layouts` / `page_layouts`, and every SVG object stays Slide-local under the default PowerPoint Master and Blank Layout. Deck/layout template routes use `mode: structured`: Strategist writes the Master roster and exactly one `<master_key> | <layout_key> | <PowerPoint layout name>` row per page, and also selects an input prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Legacy prototypes first run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md); no deferred distillation or immediate-compatibility fallback exists.
+> **Native Layout boundary**: Each `Layout` line below always describes visual composition intent. On free-design and brand-only routes, it does not create native Master/Layout identity: `spec_lock.md` uses `pptx_structure.mode: flat`, omits `pptx_masters` / `pptx_layouts` / `page_pptx_layouts` / `page_layouts`, and every SVG object stays Slide-local. Export materializes one clean project-owned Master plus one Blank Layout from the current lock, removes stock content placeholders/Layout inventory, and retains only the standard date/footer/slide-number capability hooks. Deck/layout template routes use `mode: structured`: Strategist writes each unique Master/Layout definition once, assigns every page through `page_pptx_layouts`, and selects its authoring prototype through `page_layouts`. Strict preserves the prototype contract. Adaptive keeps its Master and may define and assign a new Layout key during page authoring only when fixed Layout atoms or slot topology/bounds change. Legacy prototypes first run [`restore-pptx-structure`](../workflows/restore-pptx-structure.md); no deferred distillation or immediate-compatibility fallback exists.
 
 ### Part 1: [Chapter Name]
 

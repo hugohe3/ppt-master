@@ -43,8 +43,10 @@ import re
 import sys
 from collections import OrderedDict
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from config import CANVAS_FORMATS
 
 try:
     import yaml  # type: ignore
@@ -79,6 +81,24 @@ KIND_CONFIG = {
         "needs_svg_roster": True,
     },
 }
+
+_BRAND_REQUIRED_SECTIONS = (
+    "Brand Overview",
+    "Color Scheme",
+    "Typography",
+    "Logo",
+    "Voice & Tone",
+    "Icon Style",
+)
+_BRAND_FORBIDDEN_SECTIONS = (
+    "Page Roster",
+    "Signature Design Elements",
+)
+_BRAND_PROVENANCE_VALUES = {"fact", "approx", "user"}
+_BRAND_ASSET_REF_RE = re.compile(
+    r"`((?:\.\./)+(?:images|icons)/[^`]+)`"
+)
+_HEX_COLOR_RE = re.compile(r"#[0-9A-Fa-f]{6}")
 
 
 # ---------------------------------------------------------------------------
@@ -200,6 +220,264 @@ def _derive_page_types(pages: list[str]) -> list[str]:
     return types
 
 
+def _numbered_section(body: str, title: str) -> str | None:
+    match = re.search(
+        rf"^##\s+[IVX]+\.\s+{re.escape(title)}\s*$.*?(?=^##\s+|\Z)",
+        body,
+        re.MULTILINE | re.DOTALL,
+    )
+    return match.group(0) if match else None
+
+
+def _validate_brand_spec(
+    template_id: str,
+    template_root: Path,
+    template_dir: Path,
+    frontmatter: dict,
+    body: str,
+    pages: list[str],
+) -> None:
+    """Reject brand workspaces that cannot be locked as portable identity truth.
+
+    Args:
+        template_id: Directory name used as the registry key.
+        template_root: Brand workspace root containing assets and templates.
+        template_dir: Directory containing ``design_spec.md`` and any page SVGs.
+        frontmatter: Parsed design-spec frontmatter.
+        body: Markdown content after the frontmatter block.
+        pages: SVG page stems discovered beside the design spec.
+    """
+    errors: list[str] = []
+
+    declared_id = str(frontmatter.get("brand_id") or "").strip()
+    if declared_id != template_id:
+        errors.append(
+            f"frontmatter brand_id must match directory {template_id!r}, "
+            f"got {declared_id!r}"
+        )
+
+    declared_kind = str(frontmatter.get("kind") or "").strip()
+    if declared_kind != "brand":
+        errors.append(
+            "frontmatter kind must be 'brand', "
+            f"got {declared_kind!r}"
+        )
+
+    if pages:
+        errors.append(
+            "brand workspaces must not contain page SVGs under templates/: "
+            + ", ".join(f"{page}.svg" for page in pages)
+        )
+
+    for title in _BRAND_REQUIRED_SECTIONS:
+        if _numbered_section(body, title) is None:
+            errors.append(f"missing required section: {title}")
+
+    for title in _BRAND_FORBIDDEN_SECTIONS:
+        if re.search(
+            rf"^##\s+(?:[IVX]+\.\s+)?{re.escape(title)}\s*$",
+            body,
+            re.MULTILINE,
+        ):
+            errors.append(f"brand scope must not declare section: {title}")
+
+    declared_primary = str(frontmatter.get("primary_color") or "").strip()
+    if _HEX_COLOR_RE.fullmatch(declared_primary) is None:
+        errors.append(
+            "frontmatter primary_color must use #RRGGBB, "
+            f"got {declared_primary!r}"
+        )
+
+    color_section = _numbered_section(body, "Color Scheme") or ""
+    primary_rows: list[str] = []
+    for line in color_section.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        role = cells[0].strip("` ")
+        raw_color = cells[1].strip("` ")
+        if role.lower() == "role" or re.fullmatch(r":?-+:?", role):
+            continue
+        if _HEX_COLOR_RE.fullmatch(raw_color) is None:
+            errors.append(
+                f"color row {role!r} must use #RRGGBB, "
+                f"got {raw_color!r}"
+            )
+            continue
+        if role.lower() == "primary":
+            primary_rows.append(raw_color.upper())
+        provenance = cells[2].strip("` ").lower()
+        if provenance not in _BRAND_PROVENANCE_VALUES:
+            errors.append(
+                f"color {raw_color} must declare provenance as "
+                "fact, approx, or user"
+            )
+
+    if not primary_rows:
+        errors.append("Color Scheme must declare one primary color row")
+    elif len(primary_rows) > 1:
+        errors.append("Color Scheme must declare only one primary color row")
+    elif (
+        _HEX_COLOR_RE.fullmatch(declared_primary)
+        and primary_rows[0] != declared_primary.upper()
+    ):
+        errors.append(
+            "Color Scheme primary must match frontmatter primary_color: "
+            f"{primary_rows[0]} != {declared_primary.upper()}"
+        )
+
+    root = template_root.resolve()
+    for raw_ref in sorted(set(_BRAND_ASSET_REF_RE.findall(body))):
+        asset = (template_dir / raw_ref).resolve()
+        try:
+            asset.relative_to(root)
+        except ValueError:
+            errors.append(f"asset reference escapes brand workspace: {raw_ref}")
+            continue
+        if not asset.is_file():
+            errors.append(f"referenced brand asset does not exist: {raw_ref}")
+
+    if errors:
+        details = "\n".join(f"  - {error}" for error in errors)
+        raise SpecParseError(f"invalid brand specification:\n{details}")
+
+
+def _validate_svg_template_spec(
+    kind: str,
+    template_id: str,
+    template_dir: Path,
+    frontmatter: dict,
+    pages: list[str],
+) -> None:
+    """Reject Layout/Deck workspaces whose registry facts drift from SVGs."""
+    errors: list[str] = []
+    id_key = KIND_CONFIG[kind]["id_key"]
+    declared_id = str(frontmatter.get(id_key) or "").strip()
+    if declared_id != template_id:
+        errors.append(
+            f"frontmatter {id_key} must match directory {template_id!r}, "
+            f"got {declared_id!r}"
+        )
+    declared_kind = str(frontmatter.get("kind") or "").strip()
+    if declared_kind != kind:
+        errors.append(
+            f"frontmatter kind must be {kind!r}, got {declared_kind!r}"
+        )
+    if not str(frontmatter.get("summary") or "").strip():
+        errors.append("frontmatter summary must be non-empty")
+    if not pages:
+        errors.append(f"{kind} workspace must contain at least one template SVG")
+
+    raw_page_count = frontmatter.get("page_count")
+    if isinstance(raw_page_count, bool) or not isinstance(raw_page_count, int):
+        errors.append("frontmatter page_count must be an integer")
+    elif raw_page_count != len(pages):
+        errors.append(
+            f"frontmatter page_count is {raw_page_count}, but templates/ "
+            f"contains {len(pages)} SVG files"
+        )
+
+    canvas_format = str(frontmatter.get("canvas_format") or "").strip()
+    canvas = CANVAS_FORMATS.get(canvas_format)
+    if canvas is None:
+        errors.append(
+            "frontmatter canvas_format must be one of: "
+            + ", ".join(sorted(CANVAS_FORMATS))
+        )
+    else:
+        expected_canvas_fields = {
+            "canvas_width": canvas["width"],
+            "canvas_height": canvas["height"],
+            "canvas_viewbox": canvas["viewbox"],
+        }
+        for field, expected in expected_canvas_fields.items():
+            actual = frontmatter.get(field)
+            if str(actual) != str(expected):
+                errors.append(
+                    f"frontmatter {field} must be {expected!r} for "
+                    f"{canvas_format}, got {actual!r}"
+                )
+
+    if frontmatter.get("native_structure_mode") != "structured":
+        errors.append(
+            "frontmatter native_structure_mode must be 'structured'"
+        )
+    if frontmatter.get("replication_mode") not in {
+        "standard",
+        "fidelity",
+        "mirror",
+    }:
+        errors.append(
+            "frontmatter replication_mode must be standard, fidelity, or mirror"
+        )
+
+    if kind == "layout":
+        raw_page_types = frontmatter.get("page_types")
+        expected_page_types = _derive_page_types(pages)
+        if not isinstance(raw_page_types, list) or not all(
+            isinstance(item, str) and item.strip()
+            for item in raw_page_types
+        ):
+            errors.append("frontmatter page_types must be a non-empty string list")
+        elif raw_page_types != expected_page_types:
+            errors.append(
+                "frontmatter page_types must exactly match the SVG filename "
+                f"roster: expected {expected_page_types!r}, got {raw_page_types!r}"
+            )
+    else:
+        primary_color = str(frontmatter.get("primary_color") or "").strip()
+        if _HEX_COLOR_RE.fullmatch(primary_color) is None:
+            errors.append(
+                "frontmatter primary_color must use #RRGGBB, "
+                f"got {primary_color!r}"
+            )
+
+    svg_paths = [template_dir / f"{page}.svg" for page in pages]
+    if canvas is not None:
+        expected_viewbox = str(canvas["viewbox"])
+        for svg_path in svg_paths:
+            try:
+                root = ET.parse(svg_path).getroot()
+            except (OSError, ET.ParseError) as exc:
+                errors.append(f"{svg_path.name} is not valid SVG XML: {exc}")
+                continue
+            actual_canvas = (
+                root.get("width"),
+                root.get("height"),
+                root.get("viewBox"),
+            )
+            expected_canvas = (
+                str(canvas["width"]),
+                str(canvas["height"]),
+                expected_viewbox,
+            )
+            if actual_canvas != expected_canvas:
+                errors.append(
+                    f"{svg_path.name} canvas is {actual_canvas!r}, expected "
+                    f"{expected_canvas!r}"
+                )
+
+    if svg_paths:
+        try:
+            from svg_to_pptx.pptx_package.template_structure import (
+                TemplateStructureError,
+                parse_template_slides,
+            )
+        except ImportError as exc:
+            errors.append(f"structured SVG roster is invalid: {exc}")
+        else:
+            try:
+                parse_template_slides(svg_paths)
+            except TemplateStructureError as exc:
+                errors.append(f"structured SVG roster is invalid: {exc}")
+
+    if errors:
+        details = "\n".join(f"  - {error}" for error in errors)
+        raise SpecParseError(f"invalid {kind} specification:\n{details}")
+
+
 # ---------------------------------------------------------------------------
 # Per-kind extraction
 # ---------------------------------------------------------------------------
@@ -233,25 +511,45 @@ def _extract_entry(kind: str, template_id: str, template_dir: Path) -> dict:
     primary_color = fm.get("primary_color") or _extract_primary_color(body) or ""
 
     if kind == "brand":
+        _validate_brand_spec(
+            template_id,
+            template_root,
+            template_dir,
+            fm,
+            body,
+            pages,
+        )
         entry = OrderedDict(
             summary=summary,
             primary_color=str(primary_color),
         )
     elif kind == "layout":
-        page_types = fm.get("page_types") or _derive_page_types(pages)
-        if isinstance(page_types, str):
-            page_types = [t.strip() for t in re.split(r"[,，]", page_types) if t.strip()]
+        _validate_svg_template_spec(
+            kind,
+            template_id,
+            template_dir,
+            fm,
+            pages,
+        )
+        page_types = fm["page_types"]
         entry = OrderedDict(
             summary=summary,
-            canvas_format=str(fm.get("canvas_format", "ppt169")),
-            page_count=int(fm.get("page_count", len(pages))),
+            canvas_format=str(fm["canvas_format"]),
+            page_count=int(fm["page_count"]),
             page_types=list(page_types),
         )
     elif kind == "deck":
+        _validate_svg_template_spec(
+            kind,
+            template_id,
+            template_dir,
+            fm,
+            pages,
+        )
         entry = OrderedDict(
             summary=summary,
-            canvas_format=str(fm.get("canvas_format", "ppt169")),
-            page_count=int(fm.get("page_count", len(pages))),
+            canvas_format=str(fm["canvas_format"]),
+            page_count=int(fm["page_count"]),
             primary_color=str(primary_color),
         )
     else:

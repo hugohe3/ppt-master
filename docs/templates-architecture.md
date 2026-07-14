@@ -25,7 +25,7 @@ kind: brand
 ...
 ---
 
-# templates/layouts/academic_defense/templates/design_spec.md
+# templates/layouts/presentation_core/templates/design_spec.md
 ---
 kind: layout
 native_structure_mode: structured
@@ -223,7 +223,7 @@ These indexes cover library scope only. A project-root workspace is intentionall
 ```json
 {
   "<deck_id>": {
-    "summary": "China Merchants Bank transaction banking deck",
+    "summary": "China Telecom government-enterprise briefing deck",
     "canvas_format": "ppt169",
     "page_count": 5,
     "primary_color": "#XXXXXX"
@@ -289,7 +289,7 @@ When fusion happens (any multi-path case), the resulting `<project>/templates/de
 > **Fused from:**
 > - deck: `templates/decks/china_merchants_bank/` (base)
 > - brand: `templates/brands/anthropic/` (identity override)
-> - layout: `templates/layouts/academic_defense/` (structure override)
+> - layout: `templates/layouts/presentation_core/` (structure override)
 > - conflicts resolved: Color Scheme from anthropic (user picked a)
 ```
 
