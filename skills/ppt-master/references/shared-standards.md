@@ -132,6 +132,11 @@ write `filter="url(#id)"`, `clip-path="url(#id)"`, and
 `marker-start` / `marker-end` as direct attributes. `!important`, unknown CSS
 properties, blend modes, isolation, and backdrop filters fail quality check.
 
+The table registers property names, not arbitrary CSS values. Text property
+values and their element-specific placement are a closed grammar owned by
+§6.7; unknown or unmapped declarations on `<text>` / `<tspan>`, and unsupported
+inherited text properties, fail both Checker preflight and native export.
+
 > **`marker-start` / `marker-end` is conditional** — see §1.1.
 >
 > **`clipPath` on `<image>` is conditional** — see §1.2.
@@ -879,12 +884,58 @@ matters, use one multi-subpath path rather than a fixed-density preset pattern:
 
 ### 6.7 Advanced Text Treatments
 
+**Hard rule — closed text property grammar**: generated text uses only the
+values in the `Canonical authoring` column. Registered compatible input remains
+convertible and receives a non-blocking normalization recommendation. Every
+other value is invalid; the converter must not replace it with a default.
+
+| Property | Canonical authoring | Compatible input | DrawingML mapping / rejection boundary |
+|---|---|---|---|
+| `font-weight` | `normal`, `bold`, or an exact integer hundred from `100` through `900` | `medium` → `500`; `semibold` → `600` | `normal` and `100..500` map to regular; `bold` and `600..900` map to `b="1"`; therefore numeric weights are `Native-normalized` |
+| `font-style` | `normal` or `italic` | None | `italic` maps to `i="1"`; oblique, angle, relative, and CSS-wide values are invalid |
+| `text-anchor` | `start`, `middle`, or `end` on `<svg>`, `<g>`, or `<text>` | None | Maps to left/center/right paragraph alignment plus normalized frame position; it is invalid on `<tspan>` because run-level anchoring has no mapping |
+| `text-decoration` | `none`, `underline`, `line-through`, or `underline line-through` | `line-through underline` → canonical order | Maps to the single underline and strike run properties; unknown, repeated, or substring-like tokens are invalid |
+| `letter-spacing` | Finite unitless ordinary decimal SVG px | The same ordinary decimal with `px`, `pt`, or `em`; normalize to unitless px | Maps to `a:rPr@spc`; the final value must fit DrawingML `-400000..400000`; keywords, percentages, exponents, leading plus signs, trailing decimal points, non-finite values, and other units are invalid |
+
+The registered text properties follow SVG inheritance, including declarations
+on the root `<svg>`: inline `style` overrides the same element's direct
+attribute, which overrides its ancestor. Relative font sizes and `em` tracking
+resolve against the same effective inherited size in Checker and converter.
+Every declaration is validated even when a later declaration overrides it, so
+hidden garbage cannot bypass preflight.
+
+**Hard rule — element-specific text surface**:
+
+- Inheritable text declarations belong only on `<svg>`, `<g>`, `<text>`, or
+  `<tspan>`; placing them on geometry, image, definition, or reuse elements is
+  an error rather than ignored decoration.
+- `<text>` accepts `x`, `y`, registered paint/alpha/run properties, the text
+  properties above, `font-family`, `font-size`, direct `filter`, direct
+  `transform`, `xml:space`, `id`, and project `data-*` metadata.
+- `<tspan>` accepts `x`, `y`, `dx`, `dy`, registered paint/alpha/run
+  properties, `font-family`, `font-size`, `font-weight`, `font-style`,
+  `letter-spacing`, `text-decoration`, `xml:space`, `id`, and project `data-*`
+  metadata. It does not accept `text-anchor`, `filter`, or `transform`.
+- `word-spacing`, `dominant-baseline`, `alignment-baseline`, `baseline-shift`,
+  font shorthand/variant/stretch/feature/variation/synthesis controls,
+  `font-kerning`/`kerning`, `font-size-adjust`, `line-height`, text alignment,
+  indent/shadow/rendering controls, white-space/word-break/hyphenation
+  controls, `writing-mode`, `vertical-align`, `direction`, `unicode-bidi`, and
+  `text-transform` have no registered native mapping and are errors as direct
+  attributes or inline style.
+- Any other unregistered `font-*` or `text-*` property is also an error; the
+  closed grammar must not grow through an ignored CSS spelling.
+
+These allowlists are additive to the global structural blacklist and the
+paint, font-size, opacity, filter, and transform value contracts owned by their
+respective sections; they do not weaken those contracts.
+
 | Treatment | SVG surface | Result / boundary |
 |---|---|---|
 | Underline / strike / both | `text-decoration="underline"`, `line-through`, or both | `Native-stable`; both emits both run properties |
 | Mixed runs | Non-positional `<tspan>` | One `Native-normalized` editable frame; §4.2 |
 | Font size | Generated default is a finite unitless SVG px value; compatible `px`, `pt`, `pc`/`pica`, `in`, `cm`, `mm`, `q`, `em`, and `rem` values receive a recommendation warning only | Converted to SVG px, then editable DrawingML point size; unsupported units/percentages error |
-| Tracking | Numeric `letter-spacing` | `Native-normalized`; unitless/`px` = SVG px, `pt` converts to px, `em` resolves against run size |
+| Tracking | §6.7 closed `letter-spacing` grammar | `Native-normalized`; compatible units normalize to SVG px before DrawingML conversion |
 | Transparency | `opacity` / `fill-opacity` on text/run | `Native-normalized` run alpha, not isolated compositing |
 | Gradient fill | §6.3 gradient on text/run | Editable fill; geometry normalizes |
 | Outline | Solid `stroke`, `stroke-width`, `stroke-opacity` | `Native-normalized` editable run outline; re-import does not reconstruct it |

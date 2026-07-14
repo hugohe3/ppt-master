@@ -1125,6 +1125,244 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 with self.assertRaises(UseExpansionError):
                     expand_local_use_references(root)
 
+    def test_text_property_contract_preserves_registered_drawingml_semantics(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-style="italic">
+  <g id="text-group" style="font-weight:600; text-anchor:end;
+     letter-spacing:2; text-decoration:underline line-through">
+    <text x="500" y="160" font-family="Arial" font-size="24">
+      <tspan font-weight="500">Regular</tspan><tspan font-weight="600">Bold</tspan>
+    </text>
+  </g>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertEqual(result['warnings'], [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'text-contract.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(slide_xml.count('<a:r>'), 2)
+        self.assertEqual(slide_xml.count(' b="1"'), 1)
+        self.assertEqual(slide_xml.count(' i="1"'), 2)
+        self.assertEqual(slide_xml.count(' u="sng"'), 2)
+        self.assertEqual(slide_xml.count(' strike="sngStrike"'), 2)
+        self.assertEqual(slide_xml.count(' spc="150"'), 2)
+        self.assertIn('algn="r"', slide_xml)
+
+    def test_text_property_compatibility_aliases_warn_and_normalize(self):
+        compatible = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="100" font-family="Arial" font-size="24"
+        font-weight="medium" letter-spacing="2px"
+        text-decoration="line-through underline">Medium</text>
+  <text x="40" y="180" font-family="Arial" font-size="24"
+        font-weight="semibold">Semibold</text>
+</svg>'''
+        canonical = compatible.replace(
+            'font-weight="medium"', 'font-weight="500"'
+        ).replace(
+            'letter-spacing="2px"', 'letter-spacing="2"'
+        ).replace(
+            'text-decoration="line-through underline"',
+            'text-decoration="underline line-through"',
+        ).replace('font-weight="semibold"', 'font-weight="600"')
+
+        result = self._check(compatible)
+        warning_text = '\n'.join(result['warnings'])
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertIn("font-weight='medium'", warning_text)
+        self.assertIn('font-weight="500"', warning_text)
+        self.assertIn("font-weight='semibold'", warning_text)
+        self.assertIn('font-weight="600"', warning_text)
+        self.assertIn("letter-spacing='2px'", warning_text)
+        self.assertIn('letter-spacing="2"', warning_text)
+        self.assertIn(
+            "text-decoration='line-through underline'",
+            warning_text,
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'text-compatible.svg'
+            svg_path.write_text(compatible, encoding='utf-8')
+            compatible_xml = convert_svg_to_slide_shapes(svg_path)[0]
+            svg_path.write_text(canonical, encoding='utf-8')
+            canonical_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertEqual(compatible_xml, canonical_xml)
+        self.assertEqual(compatible_xml.count(' b="1"'), 1)
+        self.assertIn(' spc="150"', compatible_xml)
+        self.assertIn(' u="sng"', compatible_xml)
+        self.assertIn(' strike="sngStrike"', compatible_xml)
+
+    def test_invalid_text_properties_block_checker_and_exporter(self):
+        cases = {
+            'anchor': ('text-anchor="banana"', 'text-anchor'),
+            'weight': ('font-weight="heavy"', 'font-weight'),
+            'style': ('font-style="oblique"', 'font-style'),
+            'decoration': ('text-decoration="notunderline"', 'text-decoration'),
+            'spacing': ('letter-spacing="banana"', 'letter-spacing'),
+            'spacing_keyword': ('letter-spacing="normal"', 'letter-spacing'),
+            'word_spacing': ('word-spacing="2"', 'word-spacing'),
+            'baseline': ('style="dominant-baseline:middle"', 'dominant-baseline'),
+            'unknown_attribute': ('textLength="120"', 'textLength'),
+            'inline_filter': ('style="filter:url(#shadow)"', 'filter'),
+        }
+        for name, (declaration, expected) in cases.items():
+            content = (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                f'<text x="40" y="100" font-size="24" {declaration}>'
+                'Broken</text></svg>'
+            )
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    content,
+                    expected,
+                    'invalid project text property',
+                )
+
+    def test_compatible_letter_spacing_units_match_unitless_px(self):
+        cases = (
+            ('2px', '2', '150'),
+            ('3pt', '4', '300'),
+            ('1em', '24', '1800'),
+        )
+        for compatible, canonical, spacing in cases:
+            source = (
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<text x="40" y="100" font-family="Arial" font-size="24" '
+                f'letter-spacing="{compatible}">Tracking</text></svg>'
+            )
+            normalized = source.replace(
+                f'letter-spacing="{compatible}"',
+                f'letter-spacing="{canonical}"',
+            )
+            with self.subTest(value=compatible):
+                result = self._check(source)
+                self.assertTrue(result['passed'])
+                self.assertIn(
+                    f'letter-spacing="{canonical}"',
+                    '\n'.join(result['warnings']),
+                )
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / 'tracking.svg'
+                    svg_path.write_text(source, encoding='utf-8')
+                    compatible_xml = convert_svg_to_slide_shapes(svg_path)[0]
+                    svg_path.write_text(normalized, encoding='utf-8')
+                    canonical_xml = convert_svg_to_slide_shapes(svg_path)[0]
+                self.assertEqual(compatible_xml, canonical_xml)
+                self.assertIn(f' spc="{spacing}"', compatible_xml)
+
+    def test_relative_font_sizes_share_one_inheritance_model(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20">
+  <g id="relative-text" font-size="1.5em" letter-spacing="1em">
+    <text x="40" y="100" font-family="Arial" font-size="2em">Parent<tspan
+          font-size=".5em">Child</tspan></text>
+    <text x="40" y="180" font-family="Arial" font-size="2em">
+      <tspan x="40" dy="60" font-size=".5em">Positioned child</tspan>
+    </text>
+  </g>
+</svg>'''
+        result = self._check(source)
+        warning_text = '\n'.join(result['warnings'])
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['errors'], [])
+        self.assertIn('letter-spacing="30"', warning_text)
+        self.assertNotIn('letter-spacing="60"', warning_text)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'relative-text.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+
+        self.assertIn(' sz="4500"', slide_xml)
+        self.assertIn(' sz="2250"', slide_xml)
+        self.assertIn(' spc="2250"', slide_xml)
+        self.assertNotIn(' spc="4500"', slide_xml)
+
+    def test_invalid_inherited_and_overridden_text_values_cannot_hide(self):
+        cases = {
+            'root_inheritance': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360" font-weight="heavy">'
+                '<text x="40" y="100" font-size="24">Broken</text></svg>'
+            ), 'font-weight'),
+            'overridden_attribute': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<text x="40" y="100" font-size="24" font-weight="heavy" '
+                'style="font-weight:700">Broken</text></svg>'
+            ), 'font-weight'),
+            'tspan_anchor': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<text x="40" y="100" font-size="24">'
+                '<tspan text-anchor="end">Broken</tspan></text></svg>'
+            ), 'text-anchor'),
+            'spacing_range': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<text x="40" y="100" font-size="24" '
+                'letter-spacing="5333.35">Broken</text></svg>'
+            ), 'letter-spacing'),
+            'malformed_inheritance': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<g style="font-weight"><text x="40" y="100" '
+                'font-size="24">Broken</text></g></svg>'
+            ), 'malformed inline style'),
+            'hidden_invalid_font_size': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<text x="40" y="100" '
+                'style="font-size:banana; font-size:24">Broken</text></svg>'
+            ), 'font-size'),
+            'wrong_element': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<rect x="20" y="20" width="100" height="60" '
+                'font-weight="bold"/></svg>'
+            ), 'cannot carry text property'),
+            'unsupported_group_property': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<g line-height="2"><text x="40" y="100" '
+                'font-size="24">Broken</text></g></svg>'
+            ), 'line-height'),
+            'unsupported_group_style': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<g style="font-feature-settings:smcp"><text x="40" '
+                'y="100" font-size="24">Broken</text></g></svg>'
+            ), 'font-feature-settings'),
+            'unregistered_prefixed_property': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<g font-optical-sizing="auto"><text x="40" y="100" '
+                'font-size="24">Broken</text></g></svg>'
+            ), 'font-optical-sizing'),
+            'malformed_prefixed_property': ((
+                '<svg xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 640 360">'
+                '<g style="font-optical-sizing"><text x="40" y="100" '
+                'font-size="24">Broken</text></g></svg>'
+            ), 'malformed inline style'),
+        }
+        for name, (content, expected) in cases.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    content,
+                    expected,
+                    'invalid project text property',
+                )
+
 
 if __name__ == '__main__':
     unittest.main()

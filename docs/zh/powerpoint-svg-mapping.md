@@ -110,12 +110,13 @@ PowerPoint 意图
 | 多段落 | 可合并的 text/tspan 结构 | 同一文本框内的多个 `a:p` 段落 | `Native-normalized` | 严格独立定位的行可保持为独立文本框 |
 | 字体 | 根据项目 lock 解析的规范 `font-family` | 直接 typeface 或已登记 theme font | 在安装字体/替换边界内为 `Native-stable` | 校验会报告未锁定或不可用字体 |
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
-| 粗体、斜体、下划线与删除线 | `<text>`/`<tspan>` 上的已登记文本属性 | DrawingML run 属性 | `Native-stable` | 仅接受文档化取值 |
+| 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
+| 斜体、下划线与删除线 | `<text>`/`<tspan>` 上已登记的 `font-style` / `text-decoration` | DrawingML 斜体、下划线与删除线 run 属性 | 已登记 token 为 `Native-stable` | 拒绝未知 token；精确语法属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
 | 文本填充与透明度 | 规范 fill 加 run alpha | DrawingML run fill 与 alpha | `Native-normalized` | 使用语义 alpha 通道，不使用未登记 CSS 效果 |
 | 文本轮廓 | 文本上已登记 stroke | DrawingML run outline | `Native-normalized` | 轮廓承载精细视觉意义时需复核 |
-| 文本对齐 | `text-anchor` 与已登记段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 浏览器排版启发式不属于合同 |
+| 文本对齐 | 已登记的 `text-anchor` 与段落语义 | 段落对齐加归一化文本框位置 | `Native-normalized` | 不支持 run 级锚定与浏览器 baseline 启发式；精确放置属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
 | 文本框垂直对齐 | 无规范生成 SVG 控制；生成文本框使用顶部对齐 | 顶部对齐的 DrawingML text body | 导入的垂直文本可能被归一化，但主路线不公开通用创作控制 | 不得从 SVG baseline 或浏览器排版行为推断垂直对齐 |
-| 字符间距 | 已登记 `letter-spacing` | DrawingML 字符间距 | `Native-normalized` | 拒绝不受支持的 CSS 排版 |
+| 字符间距 | 已登记 `letter-spacing` | DrawingML 字符间距 | `Native-normalized` | 按 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) 拒绝不受支持的 CSS 排版与超出 DrawingML 范围的间距 |
 | 项目符号段落 | 已识别的前导项目符号形式 | 原生 DrawingML bullet | `Native-normalized` | 仅提升已登记 bullet 语法 |
 | 旋转文本 | 文本对象上受支持的 transform | 旋转文本 shape | `Native-normalized` | 倾斜文本与浏览器专属 transform 不受支持 |
 | 文本阴影或发光 | 受支持 filter/effect 合同 | 一个原生外阴影或发光 | `Approximate` | 仅支持一个已登记效果图；实质效果需复核 |
