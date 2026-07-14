@@ -20,6 +20,8 @@ XLINK_NS = 'http://www.w3.org/1999/xlink'
 
 EMU_PER_PX = 9525  # 1 SVG px = 9525 EMU (96 DPI)
 FONT_PX_TO_HUNDREDTHS_PT = 75  # 1px = 0.75pt -> 75 hundredths-of-a-point
+DRAWINGML_TEXT_FONT_SIZE_MIN = 100
+DRAWINGML_TEXT_FONT_SIZE_MAX = 400_000
 ANGLE_UNIT = 60000  # DrawingML angle: 60000ths of a degree
 
 # SVG attributes inheritable from parent <g>
@@ -149,8 +151,24 @@ def px_to_emu(px: float) -> int:
 
 
 def font_px_to_hpt(font_size_px: float) -> int:
-    """Convert SVG px to DrawingML hundredths-of-a-point at 0.1pt precision."""
-    return int(round(font_size_px * FONT_PX_TO_HUNDREDTHS_PT / 10.0)) * 10
+    """Convert one legal SVG font size to DrawingML hundredths-of-a-point."""
+    try:
+        px = float(font_size_px)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(
+            f"SVG font-size must be numeric, got {font_size_px!r}"
+        ) from exc
+    scaled = px * FONT_PX_TO_HUNDREDTHS_PT
+    if not math.isfinite(scaled):
+        raise ValueError(f"SVG font-size must be finite, got {font_size_px!r}")
+    size = int(round(scaled / 10.0)) * 10
+    if not DRAWINGML_TEXT_FONT_SIZE_MIN <= size <= DRAWINGML_TEXT_FONT_SIZE_MAX:
+        raise ValueError(
+            f"SVG font-size {font_size_px!r}px converts to DrawingML sz={size}; "
+            f"expected {DRAWINGML_TEXT_FONT_SIZE_MIN}.."
+            f"{DRAWINGML_TEXT_FONT_SIZE_MAX} (1..4000pt)"
+        )
+    return size
 
 
 def _f(val: str | None, default: float = 0.0) -> float:
