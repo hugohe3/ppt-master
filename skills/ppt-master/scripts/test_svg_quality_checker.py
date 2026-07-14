@@ -2729,6 +2729,20 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         stroke = resolve_stroke(sp_pr, None)
         self.assertEqual(stroke.attrs['stroke-dasharray'], '1 2 3 4')
 
+    def test_native_custom_dash_keeps_minimum_positive_stop(self):
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln w="9525">
+    <a:custDash><a:ds d="1" sp="2"/></a:custDash>
+  </a:ln>
+</p:spPr>''')
+        stroke = resolve_stroke(sp_pr, None)
+        self.assertEqual(
+            stroke.attrs['stroke-dasharray'],
+            '0.00001 0.00002',
+        )
+
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
             'http://schemas.openxmlformats.org/drawingml/2006/main'

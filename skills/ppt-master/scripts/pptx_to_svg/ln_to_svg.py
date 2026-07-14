@@ -168,8 +168,8 @@ def resolve_stroke(
                     values[name] = value
                 d_pct = values["d"]
                 sp_pct = values["sp"]
-                ds_parts.append(fmt_num(d_pct / 100000.0 * sw, 2))
-                ds_parts.append(fmt_num(sp_pct / 100000.0 * sw, 2))
+                ds_parts.append(fmt_num(d_pct / 100000.0 * sw, 10))
+                ds_parts.append(fmt_num(sp_pct / 100000.0 * sw, 10))
             attrs["stroke-dasharray"] = " ".join(ds_parts)
 
     # Join
