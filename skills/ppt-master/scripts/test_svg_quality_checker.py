@@ -2412,11 +2412,35 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self.assertIn('<a:outerShdw blurRad="1" dist="100"', tiny_outer_xml)
         self.assertNotIn('<a:glow', tiny_outer_xml)
 
+        low_alpha_outer = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
+            'blurRad="9525" dist="9525" dir="0">'
+            '<a:srgbClr val="000000"><a:alpha val="1"/>'
+            '</a:srgbClr></a:outerShdw></a:effectLst>'
+        )
+        self.assertIn(
+            '<a:alpha val="1"/>',
+            round_trip_supported(low_alpha_outer),
+        )
+
         tiny_glow = effect_result(
             f'<a:effectLst xmlns:a="{dml}"><a:glow rad="1">'
             '<a:srgbClr val="000000"/></a:glow></a:effectLst>'
         )
         self.assertIn('<a:glow rad="1">', round_trip_supported(tiny_glow))
+
+        for alpha in (0, 1, 2, 3, 7, 13, 29, 12345, 50001, 99999, 100000):
+            with self.subTest(glow_alpha=alpha):
+                alpha_glow = effect_result(
+                    f'<a:effectLst xmlns:a="{dml}"><a:glow rad="9525">'
+                    '<a:srgbClr val="000000">'
+                    f'<a:alpha val="{alpha}"/></a:srgbClr>'
+                    '</a:glow></a:effectLst>'
+                )
+                self.assertIn(
+                    f'<a:alpha val="{alpha}"/>',
+                    round_trip_supported(alpha_glow),
+                )
 
         marked_svg = '''<svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 1280 720">

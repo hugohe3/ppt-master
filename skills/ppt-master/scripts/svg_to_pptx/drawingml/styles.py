@@ -726,7 +726,7 @@ def build_shadow_xml(
     # composite (different blending path). Scale by 0.75 to match the SVG
     # preview after blur has been corrected to 2.0× σ.
     opacity_multiplier = 1.0 if opacity is None else opacity
-    alpha_val = int(p['opacity'] * opacity_multiplier * 75000)
+    alpha_val = int(round(p['opacity'] * opacity_multiplier * 75000))
     algn = _infer_shadow_alignment(dx, dy)
 
     return f'''<a:effectLst>
@@ -751,7 +751,7 @@ def build_glow_xml(
     p = _parse_filter_params(filter_elem)
     rad = px_to_emu(p['std_dev'])
     opacity_multiplier = 1.0 if opacity is None else opacity
-    alpha_val = int(p['opacity'] * opacity_multiplier * 100000)
+    alpha_val = int(round(p['opacity'] * opacity_multiplier * 100000))
 
     return f'''<a:effectLst>
 <a:glow rad="{rad}">
