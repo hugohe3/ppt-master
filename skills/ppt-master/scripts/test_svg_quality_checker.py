@@ -184,6 +184,22 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'invalid project gradient',
         )
 
+    def test_converter_string_path_preserves_inline_geometry_diagnostic(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 160 120">
+  <rect x="10" y="10" height="40" fill="#2563EB"
+        style="width: 60"/>
+</svg>'''
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'string-path.svg'
+            svg_path.write_text(source, encoding='utf-8')
+
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                "string-path.svg: inline geometry materialization failed",
+            ):
+                convert_svg_to_slide_shapes(str(svg_path))
+
     def test_degenerate_gradient_stroke_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
             '''<svg xmlns="http://www.w3.org/2000/svg"
