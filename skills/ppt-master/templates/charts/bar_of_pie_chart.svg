@@ -24,8 +24,8 @@
         <text x="60" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>BAR OF PIE · STACKED DETAIL FOR SMALL SEGMENTS</tspan></text>
     </g>
-    <g id="bar_of_pie_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="bar_of_pie_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "bar_of_pie_chart",
               "x": 80,

@@ -48,7 +48,11 @@ def _reconstruction_only_graphics(result: object) -> list[tuple[int, str]]:
         except ET.ParseError:
             continue
         for elem in root.iter():
-            if elem.get("data-pptx-route-status") != "reconstruction-only":
+            fallback_kind = (
+                elem.get("data-pptx-fallback-kind")
+                or elem.get("data-pptx-visual-status")
+            )
+            if fallback_kind != "placeholder":
                 continue
             marker_id = elem.get("id") or elem.get("data-name") or "<unnamed>"
             diagnostics.append((artifact.index, marker_id))
@@ -133,7 +137,8 @@ def main() -> int:
         print(
             "Warning: chart placeholder(s) without a baked preview are "
             "reconstruction-only. Default export keeps the placeholder; "
-            "--native-objects may reconstruct entries with a valid active marker:",
+            "--native-charts-and-tables may reconstruct entries with a valid "
+            "replacement marker:",
             file=sys.stderr,
         )
         for slide_index, marker_id in reconstruction_only[:20]:

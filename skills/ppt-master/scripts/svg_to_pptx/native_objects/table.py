@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from .marker_attributes import native_import_source
+
 from ..drawingml.context import ConvertContext, ShapeResult
 from ..drawingml.theme_colors import ThemeColorSpec, color_node_xml
 from ..drawingml.utils import _xml_escape, detect_text_lang, font_px_to_hpt
@@ -556,7 +558,7 @@ def _native_table_warnings(elem: ET.Element, table_rows: list[list[Any]]) -> lis
     suffix = "" if len(missing) <= 5 else f", and {len(missing) - 5} more"
     return [
         "Native PPTX table fallback text is missing from metadata columns/rows "
-        f"and will disappear with --native-objects: {sample}{suffix}"
+        f"and will disappear with --native-charts-and-tables: {sample}{suffix}"
     ]
 
 
@@ -838,7 +840,7 @@ def _table_merge_attrs(
 def _build_native_table(elem: ET.Element, ctx: ConvertContext, payload: dict[str, Any]) -> ShapeResult:
     table_rows, col_count, merge_layout = _validate_table_payload(payload)
     header_rows = _table_header_rows(payload, len(table_rows))
-    preserve_source_style = elem.get("data-pptx-native-source") == "pptx"
+    preserve_source_style = native_import_source(elem) == "pptx"
 
     style = payload.get("style") if isinstance(payload.get("style"), dict) else {}
     header_fill = _clean_hex(style.get("header_fill"), "#1F4E79")

@@ -326,7 +326,7 @@ AI：好的，先确认设计规范：
 
 AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
-> **输出说明：** 标准导出从 `svg_output/` 经项目转换器生成原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`；这是唯一的 PPTX 产物路线，文字和图形可直接编辑。`svg_output/` 始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或后续重跑。流程仍会强制生成 `svg_final/`：它是一组自包含的视觉预览 SVG，可直接打开，也可作为 SVG 图片手动插入 PowerPoint；PowerPoint 手工“转换为形状”不在支持范围。图表和表格默认导出为 SVG 派生的 DrawingML 形状（在 PowerPoint / Keynote / WPS 间像素一致）；加 `--native-objects` 则在同一原生导出路线中改为**带数据、可直接编辑的 PowerPoint 原生图表 / 表格对象**（跨软件渲染可能略有差异），保存为 `exports/<name>_<timestamp>_native_charts.pptx`。
+> **输出说明：** 标准导出从 `svg_output/` 经项目转换器生成原生 DrawingML `.pptx`，保存至 `exports/<name>_<timestamp>.pptx`；这是唯一的 PPTX 产物路线，文字和图形可直接编辑。`svg_output/` 始终镜像到 `backup/<timestamp>/svg_output/`，便于归档或后续重跑。流程仍会强制生成 `svg_final/`：它是一组自包含的视觉预览 SVG，可直接打开，也可作为 SVG 图片手动插入 PowerPoint；PowerPoint 手工“转换为形状”不在支持范围。图表和表格默认导出为 SVG 派生、可逐形状编辑的 DrawingML 对象，优先保证 PowerPoint / Keynote / WPS 间的视觉一致性；加 `--native-charts-and-tables` 则把符合合同的组替换为带数据源和对象专属编辑能力的 PowerPoint 原生 Chart/Table 对象，跨软件渲染可能略有差异，保存为 `exports/<name>_<timestamp>_native_charts_tables.pptx`。两条路线都可编辑，区别在于 PowerPoint 对象模型，而不是“能否编辑”。
 
 > **已有一份想复用的 `.pptx`？** 把那份 deck 连同素材给 AI，说「套模板」即可——它会把新内容（文字、表格、图表数据）填进你现有的设计，只导出你挑选的页面，且保持原生可编辑。详见 [常见问题](./docs/zh/faq.md) 与 [套模板工作流](./skills/ppt-master/workflows/template-fill-pptx.md)。
 

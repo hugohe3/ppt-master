@@ -11,6 +11,8 @@ from pptx_shapes import (
     svg_native_fallback_fingerprint,
 )
 
+from .marker_attributes import native_replacement_kind
+
 
 NATIVE_FALLBACK_RUNTIME_ATTR = "data-pptx-runtime-fallback-unchanged"
 _NATIVE_FALLBACK_RUNTIME_TOKEN_ATTR = "data-pptx-runtime-fallback-token"
@@ -39,7 +41,7 @@ def snapshot_native_fallback_freshness(root: ET.Element) -> None:
     for elem in root.iter():
         if elem.tag.rsplit("}", 1)[-1] == "metadata":
             continue
-        if not (elem.get("data-pptx-native") or "").strip():
+        if not native_replacement_kind(elem):
             continue
         expected, invalid = _expected_native_fallback_hash(elem)
         if invalid:
@@ -71,13 +73,14 @@ def native_fallback_contract_warnings(
     if invalid:
         return [
             f"{NATIVE_FALLBACK_SHA256_ATTR} must be a 64-digit SHA-256; "
-            "default SVG fallback export remains available, but "
-            "--native-objects will fail"
+            "the shape-based SVG fallback remains available, but "
+            "--native-charts-and-tables will fail"
         ]
     if expected is None:
         return [
-            f"has no {NATIVE_FALLBACK_SHA256_ATTR} baseline; legacy marker "
-            "remains native-compatible, but stale fallback edits cannot be detected"
+            f"has no {NATIVE_FALLBACK_SHA256_ATTR} baseline; the marker remains "
+            "compatible with Chart/Table replacement, but stale fallback edits "
+            "cannot be detected"
         ]
     if _native_fallback_is_fresh(
         elem,
@@ -88,7 +91,8 @@ def native_fallback_contract_warnings(
         return []
     return [
         "visible SVG fallback differs from its recorded baseline; default "
-        "fallback export remains available, but --native-objects will fail"
+        "shape-based fallback export remains available, but "
+        "--native-charts-and-tables will fail"
     ]
 
 
@@ -98,7 +102,7 @@ def require_fresh_native_fallback(
     use_runtime_snapshot: bool = False,
     document_root: ET.Element | None = None,
 ) -> None:
-    """Fail the editable replacement route when a recorded fallback is stale."""
+    """Fail Chart/Table replacement when a recorded fallback is stale."""
     expected, invalid = _expected_native_fallback_hash(elem)
     if invalid:
         raise RuntimeError(
@@ -115,7 +119,8 @@ def require_fresh_native_fallback(
         return
     raise RuntimeError(
         "Visible native-object SVG fallback was edited after its baseline was "
-        "recorded; --native-objects stopped to avoid discarding the SVG edit. "
+        "recorded; --native-charts-and-tables stopped to avoid discarding the "
+        "SVG edit. "
         "Use the default fallback export, or deliberately update the native "
         "metadata and baseline together"
     )

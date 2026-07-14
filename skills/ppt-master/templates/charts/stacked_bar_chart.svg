@@ -35,8 +35,8 @@
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Quarterly Revenue Breakdown</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">2024-2025 FINANCIAL YEAR · UNIT: $M</text>
     <!-- ==================== Chart Area ==================== -->
-    <g id="stacked_bar_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="stacked_bar_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "stacked_bar_chart",
               "x": 120,

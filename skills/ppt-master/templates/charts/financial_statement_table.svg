@@ -19,8 +19,8 @@
     <text x="80" y="70" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Income Statement Summary</text>
     <text x="80" y="100" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">Q1 - Q3 2025 · IN MILLIONS USD (UNAUDITED)</text>
     <!-- ==================== Table Structure ==================== -->
-    <g id="financial_statement_table" data-pptx-native="table">
-        <metadata data-pptx-native="table">
+    <g id="financial_statement_table" data-pptx-replace-with="table">
+        <metadata type="application/json">
             {
               "name": "financial_statement_table",
               "x": 80,

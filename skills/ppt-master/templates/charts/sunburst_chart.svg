@@ -22,8 +22,8 @@
           font-size="34" font-weight="800" fill="#0F172A"><tspan>Revenue Mix by Segment</tspan></text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" font-weight="700" fill="#64748B" letter-spacing="1"><tspan>2025 PORTFOLIO REVENUE · HIERARCHICAL SHARE VIEW</tspan></text>
-    <g id="sunburst_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="sunburst_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "sunburst_chart",
               "x": 224,

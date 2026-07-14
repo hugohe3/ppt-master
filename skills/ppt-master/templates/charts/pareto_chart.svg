@@ -32,8 +32,8 @@
         <circle cx="305" cy="6" r="4" fill="#FFFFFF" stroke="#F43F5E" stroke-width="2"/>
         <text x="330" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Cumulative %</text>
     </g>
-    <g id="pareto_chart" data-pptx-native="chart">
-        <metadata data-pptx-native="chart">
+    <g id="pareto_chart" data-pptx-replace-with="chart">
+        <metadata type="application/json">
             {
               "name": "pareto_chart",
               "x": 56,

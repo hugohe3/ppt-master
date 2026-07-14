@@ -71,8 +71,8 @@ class ConvertContext:
     # Default-on flag: merge mergeable paragraph blocks into one editable
     # text frame with multiple <a:p>. Disable it for strict line fidelity.
     merge_paragraphs: bool = True
-    # Explicit opt-in: convert data-pptx-native table/chart marker groups to
-    # native PowerPoint graphicFrames. Default stays off to preserve SVG output.
+    # Explicit opt-in: replace marked chart/table fallback groups with editable
+    # PowerPoint graphicFrames. Default stays off to preserve SVG output.
     native_objects_enabled: bool = False
     # Native PPTX image optimization. Keeps generated decks compact by
     # downsampling oversized raster assets to their rendered size.

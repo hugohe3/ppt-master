@@ -34,6 +34,7 @@ from ..geometry_properties import (
     GeometryStyleError,
     materialize_inline_geometry_properties,
 )
+from ..native_objects import NativeMarkerAttributeError, native_replacement_kind
 
 
 _NON_VISUAL_TAGS = frozenset({"defs", "title", "desc", "metadata", "style"})
@@ -1160,11 +1161,18 @@ def _validate_placeholder_carrier(
             "one direct text, image, or basic SVG shape"
         )
     if placeholder in {"chart", "table"}:
-        native_kind = (carrier.get("data-pptx-native") or "").strip().lower()
+        try:
+            native_kind = native_replacement_kind(carrier)
+        except NativeMarkerAttributeError as exc:
+            raise TemplateStructureError(
+                f"{svg_path.name}: {element_id} placeholder '{placeholder}' has "
+                f"conflicting chart/table replacement metadata: {exc}"
+            ) from exc
         if tag != "g" or native_kind != placeholder:
             raise TemplateStructureError(
                 f"{svg_path.name}: {element_id} placeholder '{placeholder}' must be "
-                f"carried by one direct <g data-pptx-native=\"{placeholder}\"> marker"
+                f"carried by one direct <g data-pptx-replace-with=\"{placeholder}\"> "
+                "marker"
             )
 
 

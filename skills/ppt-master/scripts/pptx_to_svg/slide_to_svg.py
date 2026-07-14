@@ -714,26 +714,43 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
     uri = graphic_data.attrib.get("uri", "graphicFrame") if graphic_data is not None else "graphicFrame"
 
     if uri == "http://schemas.openxmlformats.org/drawingml/2006/table":
-        rendered, native_attrs = _render_graphic_table(node, ctx, graphic_data)
+        rendered, replacement_attrs, payload_metadata = _render_graphic_table(
+            node,
+            ctx,
+            graphic_data,
+        )
         if rendered:
+            inner = (
+                f"{payload_metadata}\n{rendered}"
+                if payload_metadata
+                else rendered
+            )
             return _wrap_shape_group(
-                rendered,
+                inner,
                 node,
                 ctx,
                 top_level=top_level,
-                extra_attrs=native_attrs,
+                extra_attrs=replacement_attrs,
             )
 
-    chart_native_attrs: list[str] = []
+    chart_replacement_attrs: list[str] = []
+    chart_payload_metadata = ""
     if uri in {CHART_URI, CHARTEX_URI}:
-        rendered, chart_native_attrs = _render_graphic_chart(node, ctx, graphic_data)
+        rendered, chart_replacement_attrs, chart_payload_metadata = (
+            _render_graphic_chart(node, ctx, graphic_data)
+        )
         if rendered:
+            inner = (
+                f"{chart_payload_metadata}\n{rendered}"
+                if chart_payload_metadata
+                else rendered
+            )
             return _wrap_shape_group(
-                rendered,
+                inner,
                 node,
                 ctx,
                 top_level=top_level,
-                extra_attrs=chart_native_attrs,
+                extra_attrs=chart_replacement_attrs,
             )
 
     if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole" and ctx.render_graphic_previews:
@@ -758,8 +775,14 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         f'text-anchor="middle" font-size="14" fill="#999999">'
         f"[{_xml_escape(label)}]</text>"
     )
+    if chart_payload_metadata:
+        placeholder = f"{chart_payload_metadata}\n{placeholder}"
     return _wrap_shape_group(
-        placeholder, node, ctx, top_level=top_level, extra_attrs=chart_native_attrs,
+        placeholder,
+        node,
+        ctx,
+        top_level=top_level,
+        extra_attrs=chart_replacement_attrs,
     )
 
 
@@ -773,17 +796,30 @@ def _graphic_preview_label(node: ShapeNode, label: str) -> str:
     )
 
 
+def _replacement_payload_metadata(payload: object) -> str:
+    payload_json = json.dumps(
+        payload,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    return (
+        '<metadata type="application/json">'
+        f'{_xml_text_escape(payload_json)}</metadata>'
+    )
+
+
 def _render_graphic_table(
     node: ShapeNode,
     ctx: AssemblyContext,
     graphic_data: ET.Element | None,
-) -> tuple[str, list[str]]:
+) -> tuple[str, list[str], str]:
     """Convert the <a:tbl> child of a graphicFrame to SVG plus metadata."""
     if graphic_data is None:
-        return "", []
+        return "", [], ""
     tbl = graphic_data.find("a:tbl", NS)
     if tbl is None:
-        return "", []
+        return "", [], ""
     table_styles_part = ctx.pkg.resolve_table_styles()
     result = convert_tbl(
         tbl, node.xfrm, ctx.palette,
@@ -798,33 +834,27 @@ def _render_graphic_table(
     )
     if result.defs:
         ctx.defs.extend(result.defs)
-    native_attrs: list[str] = ['data-pptx-native-source="pptx"']
+    replacement_attrs: list[str] = ['data-pptx-import-source="pptx"']
+    payload_metadata = ""
     if result.native_payload:
         if node.name and not result.native_payload.get("name"):
             result.native_payload["name"] = node.name
-        payload_json = json.dumps(
-            result.native_payload,
-            allow_nan=False,
-            ensure_ascii=False,
-            separators=(",", ":"),
-        )
-        native_attrs.extend([
-            'data-pptx-native="table"',
-            f'data-pptx-json="{_xml_escape(payload_json)}"',
-        ])
+        payload_metadata = _replacement_payload_metadata(result.native_payload)
+        replacement_attrs.append('data-pptx-replace-with="table"')
     elif result.native_status:
-        native_attrs.append(
-            f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
+        replacement_attrs.append(
+            'data-pptx-replacement-status="'
+            f'{_xml_escape(result.native_status)}"'
         )
-    return result.svg, native_attrs
+    return result.svg, replacement_attrs, payload_metadata
 
 
 def _render_graphic_chart(
     node: ShapeNode,
     ctx: AssemblyContext,
     graphic_data: ET.Element | None,
-) -> tuple[str, list[str]]:
-    """Return a chart preview plus native chart marker attributes."""
+) -> tuple[str, list[str], str]:
+    """Return a chart fallback plus native Chart replacement metadata."""
     result = extract_native_chart_payload(
         graphic_data,
         node.xfrm,
@@ -832,39 +862,30 @@ def _render_graphic_chart(
         ctx.pkg,
         ctx.palette,
     )
-    native_attrs: list[str] = ['data-pptx-native-source="pptx"']
+    replacement_attrs: list[str] = ['data-pptx-import-source="pptx"']
+    payload_metadata = ""
     if result.native_payload:
         if node.name and not result.native_payload.get("name"):
             result.native_payload["name"] = node.name
-        payload_json = json.dumps(
-            result.native_payload,
-            allow_nan=False,
-            ensure_ascii=False,
-            separators=(",", ":"),
-        )
-        native_attrs.extend([
-            'data-pptx-native="chart"',
-            f'data-pptx-json="{_xml_escape(payload_json)}"',
-        ])
+        payload_metadata = _replacement_payload_metadata(result.native_payload)
+        replacement_attrs.append('data-pptx-replace-with="chart"')
     elif result.native_status:
-        native_attrs.append(
-            f'data-pptx-native-status="{_xml_escape(result.native_status)}"'
+        replacement_attrs.append(
+            'data-pptx-replacement-status="'
+            f'{_xml_escape(result.native_status)}"'
         )
 
     rendered = ""
     if ctx.render_graphic_previews:
         rendered = _render_graphic_preview(node, ctx)
     if rendered:
-        native_attrs.append('data-pptx-visual-status="source-preview"')
+        replacement_attrs.append('data-pptx-fallback-kind="source-preview"')
     elif result.normalized_svg:
         rendered = result.normalized_svg
-        native_attrs.append('data-pptx-visual-status="normalized"')
+        replacement_attrs.append('data-pptx-fallback-kind="normalized"')
     else:
-        native_attrs.extend([
-            'data-pptx-visual-status="placeholder"',
-            'data-pptx-route-status="reconstruction-only"',
-        ])
-    return rendered, native_attrs
+        replacement_attrs.append('data-pptx-fallback-kind="placeholder"')
+    return rendered, replacement_attrs, payload_metadata
 
 
 def _render_graphic_preview(node: ShapeNode, ctx: AssemblyContext) -> str:
@@ -1145,7 +1166,7 @@ def _wrap_shape_group(
     if extra_attrs:
         attrs.extend(extra_attrs)
         if any(
-            attribute.split("=", 1)[0] == "data-pptx-native"
+            attribute.split("=", 1)[0] == "data-pptx-replace-with"
             for attribute in extra_attrs
         ):
             fallback_hash = svg_native_fallback_markup_fingerprint(
@@ -1250,7 +1271,10 @@ def _connector_metadata(node: ShapeNode, scope: str) -> dict[str, str]:
 
 
 def _xml_escape(text: str) -> str:
+    return _xml_text_escape(text).replace('"', "&quot;")
+
+
+def _xml_text_escape(text: str) -> str:
     return (text.replace("&", "&amp;")
                 .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace('"', "&quot;"))
+                .replace(">", "&gt;"))

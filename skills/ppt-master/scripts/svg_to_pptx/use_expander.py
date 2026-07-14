@@ -48,7 +48,13 @@ _MAX_LOCAL_USE_DEPTH = 64
 _MAX_LOCAL_USE_INSTANCES = 10_000
 _NON_REUSABLE_METADATA_PREFIXES = (
     'data-pptx-layer',
+    'data-pptx-replace-with',
+    'data-pptx-replacement-',
+    'data-pptx-import-source',
+    'data-pptx-fallback-',
     'data-pptx-native',
+    'data-pptx-visual-status',
+    'data-pptx-route-status',
     'data-pptx-placeholder',
 )
 _REFERENCE_TAGS = frozenset({

@@ -28,6 +28,10 @@ from ..drawingml.utils import (
     parse_transform_matrix,
     transform_point,
 )
+from .marker_attributes import (
+    NativeMarkerAttributeError,
+    native_metadata_payload_matches,
+)
 
 TABLE_URI = "http://schemas.openxmlformats.org/drawingml/2006/table"
 CHART_URI = "http://schemas.openxmlformats.org/drawingml/2006/chart"
@@ -728,17 +732,15 @@ def _load_payload(elem: ET.Element, kind: str) -> dict[str, Any]:
         for child in elem:
             if _local_tag(child) != "metadata":
                 continue
-            metadata_kind = (child.get("data-pptx-native") or child.get("data-pptx-kind") or kind).lower()
-            metadata_type = (child.get("type") or "").lower()
-            if metadata_kind == kind or metadata_type == "application/json":
+            if native_metadata_payload_matches(child, kind):
                 raw = "".join(child.itertext()).strip()
                 break
 
     if not raw:
         raise RuntimeError(
-            f"Native PPTX {kind} marker requires JSON metadata; add a matching "
-            f"<metadata data-pptx-native=\"{kind}\"> payload for a real "
-            "data-backed object, or remove data-pptx-native from SVG-only "
+            f"PPTX {kind} replacement marker requires JSON metadata; add "
+            '<metadata type="application/json"> for a real data-backed '
+            "object, or remove data-pptx-replace-with from SVG-only "
             "KPI/diagram groups"
         )
 

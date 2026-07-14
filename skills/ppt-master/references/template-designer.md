@@ -287,8 +287,8 @@ template.
 projection. If an imported object cannot use the converter's supported native
 metadata after normalization, keep its current SVG fallback and report the
 limitation. `standard` / `fidelity` regenerate compact canonical shapes instead
-of transplanting opaque source payload. `data-pptx-native` remains reserved for
-native chart/table markers.
+of transplanting opaque source payload. `data-pptx-replace-with` remains
+reserved for optional PowerPoint-native Chart/Table replacement markers.
 
 **Explicit template SVG contract**:
 

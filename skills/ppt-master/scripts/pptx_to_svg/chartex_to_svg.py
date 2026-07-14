@@ -51,8 +51,9 @@ def extract_native_chartex_payload(
 ) -> dict[str, Any]:
     """Return a writer-valid payload for one supported ChartEx reference.
 
-    ``UnsupportedChartEx.status`` is suitable for ``data-pptx-native-status``
-    when the reference, relationship, data topology, or cache is unusable.
+    ``UnsupportedChartEx.status`` is suitable for
+    ``data-pptx-replacement-status`` when the reference, relationship, data
+    topology, or cache is unusable.
     Style-part failures never reject an otherwise valid data payload.
     """
     if graphic_data is None:

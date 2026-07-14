@@ -67,7 +67,7 @@ See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for
 | Body placeholder | Structured slot group with one text carrier | `p:ph` type `body` | `Native-stable` | A multiline carrier remains one text frame |
 | Date, footer, and slide-number placeholders | Structured text slots | `p:ph` types `dt`, `ftr`, and `sldNum`, with matching Layout header/footer flags | `Native-stable` | Placeholder indices must be unique and legal |
 | Picture placeholder | Structured slot with one image or supported crop carrier | `p:ph` type `pic` | `Native-stable` within the picture contract | The slot must contain exactly one compatible direct carrier |
-| Chart or table placeholder | Structured slot with one matching native-object carrier | `p:ph` type `chart` or `tbl` | `Native-stable` only on native-object export | Requires valid JSON metadata and `--native-objects` |
+| Chart or table placeholder | Structured slot with one matching native-object carrier | `p:ph` type `chart` or `tbl` | `Native-stable` only on native Chart/Table export | Requires valid JSON metadata and `--native-charts-and-tables` |
 | Generic object placeholder | One compatible carrier, or an explicit composite proxy binding | `p:ph` type `obj` | Native binding; composite visible content remains ordinary shapes | Composite slots must use the registered proxy downgrade |
 | Media placeholder | One image or supported crop carrier | `p:ph` type `media` | Native placeholder binding only | It does not synthesize video or audio from decorative SVG content |
 | Empty text placeholder | Empty or whitespace-only marked text carrier | Invisible U+200B run at the legal 1 pt minimum, producing one native text shape | `Native-stable` | Do not add a dummy dash, sub-1 pt text, or background-colored visible glyph |
@@ -161,26 +161,28 @@ Preset-shape selection and its exact atomic fragment contract are documented in 
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Visually drawn table | Ordinary SVG shapes, lines, and text | Independent editable PowerPoint shapes | Fidelity follows each component row | It is not a native table and has no PowerPoint table editing model |
-| Native editable table | One `<g data-pptx-native="table">` with child JSON metadata and visible fallback | `p:graphicFrame` containing `a:tbl` when native objects are enabled | Imported supported tables reconstruct a fallback plus native metadata | Metadata must form the registered rectangular schema; requires `--native-objects` |
+| PowerPoint-native table | One `<g data-pptx-replace-with="table">` with child `<metadata type="application/json">` and a visible fallback | `p:graphicFrame` containing `a:tbl` when native Chart/Table replacement is enabled | Imported supported tables reconstruct a fallback plus replacement metadata | Metadata must form the registered rectangular schema; requires `--native-charts-and-tables` |
 | Merged table cells | Canonical native-table merge metadata | Native horizontal/vertical merge semantics | `Native-stable` within the closed schema | Overlapping, ambiguous, or non-rectangular merges are rejected |
 | Table cell formatting | Registered native-table cell formatting fields | Native cell fill, border, text, and alignment | `Native-normalized` | Fields outside the closed schema are not guessed |
 | Unsupported native table feature | SVG fallback or direct source preservation | Visible fallback remains, or source OOXML stays on a direct route | Explicit fallback / `Direct preservation` | Do not extend JSON ad hoc |
 
-Native objects are opt-in. Default export keeps the SVG fallback because it is visually stable; native export prioritizes PowerPoint editability and may normalize appearance.
+PowerPoint-native Chart/Table objects are opt-in. Default export keeps the SVG fallback as independently editable DrawingML shapes for visual stability; native export instead provides the object's data-source and table/chart-specific editing model, and may normalize appearance.
+
+Imported chart groups classify their visible fallback with `data-pptx-fallback-kind="source-preview|normalized|placeholder"`; `placeholder` alone denotes the reconstruction-only fallback. `data-pptx-replacement-status` instead records why a fallback-only chart or table import cannot make an active replacement claim. Imported groups in this contract use `data-pptx-import-source="pptx"` and active claims may carry `data-pptx-fallback-sha256` for stale-edit protection. Legacy `data-pptx-native*`, `data-pptx-visual-status`, and `data-pptx-route-status` spellings remain read-compatible but are not canonical authoring.
 
 ## 8. PowerPoint charts
 
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
 | Visually drawn chart | Ordinary SVG geometry and text | Independent editable PowerPoint shapes | Fidelity follows each component row | It has no “Edit Data” workbook |
-| Native classic chart | One `<g data-pptx-native="chart">` with registered JSON data and a visible fallback | `p:graphicFrame`, classic chart part, and embedded workbook | Supported imports reconstruct a fallback plus native metadata | Chart type and data must match the closed schema; requires `--native-objects` |
+| PowerPoint-native classic chart | One `<g data-pptx-replace-with="chart">` with registered JSON data in `<metadata type="application/json">` and a visible fallback | `p:graphicFrame`, classic chart part, and embedded workbook | Supported imports reconstruct a fallback plus replacement metadata | Chart type and data must match the closed schema; requires `--native-charts-and-tables` |
 | Native ChartEx chart | Same marker interface with a supported ChartEx family | `cx:chart` part and embedded workbook | Supported families can reconstruct semantically | Only the registered family/field combinations are accepted |
 | Chart title, legend, axes, labels, and series formatting | Registered native-chart metadata | Native chart properties | `Native-normalized` | Exact fields and supported families remain normative in `shared-standards.md` |
-| Chart caption, source, or footnote | Ordinary companion SVG text outside the native marker | Editable slide text boxes beside the chart | `Native-stable` as text | Do not hide slide prose inside chart JSON |
-| Edited SVG fallback with stale native metadata | Updated visible SVG plus stale hash | Default export keeps the visible SVG; native replacement fails | Explicit safety behavior | The compiler never discards a newer visual edit silently |
+| Chart caption, source, or footnote | Ordinary companion SVG text outside the replacement marker | Editable slide text boxes beside the chart | `Native-stable` as text | Do not hide slide prose inside chart JSON |
+| Edited SVG fallback with stale replacement metadata | Updated visible SVG plus stale hash | Default export keeps the visible SVG; native replacement fails | Explicit safety behavior | The compiler never discards a newer visual edit silently |
 | Unsupported 3D or deferred chart family | SVG-drawn chart, baked asset, or direct source preservation | No guessed native chart | Fallback / `Direct preservation` | Unsupported aliases must fail native validation |
 
-The exhaustive chart/table schemas and supported family list intentionally remain in the [normative native-object contract](../skills/ppt-master/references/shared-standards.md#native-pptx-table--chart-markers-opt-in).
+The exhaustive chart/table schemas and supported family list intentionally remain in the [normative replacement contract](../skills/ppt-master/references/shared-standards.md#powerpoint-native-chart--table-replacement-markers-opt-in).
 
 ## 9. PowerPoint playback and package features
 
