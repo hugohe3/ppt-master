@@ -38,7 +38,8 @@ from .utils import (
     resolve_url_id, get_effective_filter_id,
     parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
     detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
-    is_thick_circle_shorthand,
+    is_thick_circle_shorthand, parse_project_geometry_length,
+    parse_project_stroke_dasharray,
     matrix_multiply, parse_transform_matrix, parse_transform_operations,
     transform_point, _xml_escape,
 )
@@ -1023,9 +1024,10 @@ def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
     """Detect if a circle uses stroke-dasharray to simulate an arc segment."""
     dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
     stroke = _get_attr(elem, 'stroke', ctx)
+    fill = _get_attr(elem, 'fill', ctx)
     sw = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 0)
     r = svg_length_size(elem.get('r'), ctx, 0)
-    return is_thick_circle_shorthand(dasharray, stroke, sw, r)
+    return is_thick_circle_shorthand(dasharray, stroke, fill, sw, r)
 
 
 def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
@@ -1041,9 +1043,22 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # --- Donut-chart arc segment detection ---
     if preset_geom is None and _is_donut_circle(elem, ctx):
         dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
-        dash_vals = re.split(r'[\s,]+', dasharray.strip())
-        dash_len = float(dash_vals[0]) if dash_vals else 0
-        dash_offset = svg_length_size(elem.get('stroke-dashoffset'), ctx, 0)
+        parsed_dasharray = parse_project_stroke_dasharray(
+            dasharray,
+            allow_zero_gap=True,
+        )
+        if parsed_dasharray is None:
+            raise ValueError('Thick-circle arc requires one dash/gap pair')
+        _preset, dash_values = parsed_dasharray
+        dash_len = dash_values[0]
+        raw_dash_offset = elem.get('stroke-dashoffset')
+        dash_offset = (
+            parse_project_geometry_length(
+                raw_dash_offset,
+                'stroke-dashoffset',
+            )
+            if raw_dash_offset is not None else 0.0
+        )
         stroke_width = svg_length_size(_get_attr(elem, 'stroke-width', ctx), ctx, 1)
 
         rotate_deg = 0.0
