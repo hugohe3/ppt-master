@@ -997,6 +997,9 @@ positive legal width to remain non-zero and quantize back to its source EMU.
 PPTX import accepts an omitted `a:ln@cmpd` or explicit `sng`. Other compound
 line values (`dbl`, `thickThin`, `thinThick`, `tri`) have no registered
 single-stroke SVG mapping and stop import instead of becoming an ordinary line.
+PPTX import likewise accepts an omitted `a:ln@algn` or explicit `ctr`.
+Inside-aligned (`in`) and unknown source values stop import because an ordinary
+SVG stroke is centered and cannot preserve the source outline boundary.
 An explicit source `a:ln@cap` must be `flat`, `rnd`, or `sq`, which map to SVG
 `butt`, `round`, and `square`; unknown values stop import instead of falling
 back to the SVG default cap.

@@ -2702,6 +2702,27 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </p:spPr>''')
         self.assertEqual(resolve_stroke(single, None).attrs, {})
 
+    def test_noncentered_native_line_is_rejected_on_import(self):
+        for alignment in ('in', 'futureAlignment'):
+            with self.subTest(alignment=alignment):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln algn="{alignment}"/>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    f"Unsupported DrawingML line alignment: '{alignment}'",
+                ):
+                    resolve_stroke(sp_pr, None)
+
+        centered = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln algn="ctr"/>
+</p:spPr>''')
+        self.assertEqual(resolve_stroke(centered, None).attrs, {})
+
     def test_unknown_native_line_cap_is_rejected_on_import(self):
         sp_pr = ET.fromstring('''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
