@@ -2675,6 +2675,21 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </p:spPr>''')
         self.assertEqual(resolve_stroke(omitted_type, None).attrs, {})
 
+    def test_native_line_end_requires_visible_line_paint(self):
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>
+    <a:noFill/>
+    <a:tailEnd type="triangle"/>
+  </a:ln>
+</p:spPr>''')
+        with self.assertRaisesRegex(
+            ValueError,
+            'DrawingML line end requires a visible line paint',
+        ):
+            resolve_stroke(sp_pr, None)
+
     def test_unknown_native_line_end_size_is_rejected_on_import(self):
         for attribute, dimension in (("w", "width"), ("len", "length")):
             with self.subTest(attribute=attribute):
