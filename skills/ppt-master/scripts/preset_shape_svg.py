@@ -2,8 +2,8 @@
 """
 PPT Master - Preset Shape SVG Fragment Tool
 
-List DrawingML presets or print one canonical native-preset SVG fragment to
-stdout for manual insertion into a hand-authored slide.
+List DrawingML presets or print one compact canonical native-preset SVG group to
+stdout for manual insertion into a hand-authored page or template.
 
 Usage:
     python3 scripts/preset_shape_svg.py list [--search QUERY]
@@ -38,7 +38,7 @@ configure_utf8_stdio()
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Print one canonical DrawingML preset SVG fragment. "
+            "Print one compact canonical DrawingML preset SVG group. "
             "This tool never writes SVG files or page layouts."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -78,7 +78,7 @@ def build_parser() -> argparse.ArgumentParser:
         nargs=4,
         type=float,
         metavar=("X", "Y", "WIDTH", "HEIGHT"),
-        help="Absolute SVG frame in page coordinates.",
+        help="SVG frame in the fragment's insertion coordinate space.",
     )
     render_parser.add_argument(
         "--object-kind",
@@ -93,7 +93,7 @@ def build_parser() -> argparse.ArgumentParser:
     render_parser.add_argument(
         "--fill",
         default="none",
-        help="Solid SVG fill from spec_lock, or none.",
+        help="Solid SVG fill, or none.",
     )
     render_parser.add_argument(
         "--fill-opacity",
@@ -103,7 +103,7 @@ def build_parser() -> argparse.ArgumentParser:
     render_parser.add_argument(
         "--stroke",
         default="none",
-        help="Solid SVG stroke from spec_lock, or none.",
+        help="Solid SVG stroke, or none.",
     )
     render_parser.add_argument(
         "--stroke-width",

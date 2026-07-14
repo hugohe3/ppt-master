@@ -2,14 +2,19 @@
 """
 PPT Master - Authored Preset Shape Contract
 
-Build and validate canonical SVG fragments for newly authored PowerPoint
-preset shapes.
+Build and validate compact canonical SVG groups for newly authored PowerPoint
+preset shapes while retaining expanded authored input compatibility.
 
 Usage:
     Import render_preset_shape_fragment or validate_authored_preset_group.
 
 Examples:
-    fragment = render_preset_shape_fragment("rightArrow", (80, 120, 240, 96))
+    fragment = render_preset_shape_fragment(
+        "rightArrow",
+        (80, 120, 240, 96),
+        element_id="next-step",
+        style={"fill": "#2563EB", "stroke": "none"},
+    )
 
 Dependencies:
     None (only uses standard library and local PPT Master modules)
@@ -36,11 +41,16 @@ from pptx_shapes import (
 
 from .emu_units import EMU_PER_PX, Xfrm, fmt_num
 from .preset_registry_to_svg import render_preset_geometry
-from .preset_svg_markup import attrs_to_xml, serialize_preset_layers
+from .preset_svg_markup import (
+    attrs_to_xml,
+    serialize_compact_preset_layers,
+    serialize_preset_layers,
+)
 
 
 AUTHORING_ATTR = "data-pptx-authoring"
 AUTHORING_VALUE = "preset"
+_SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 _ID_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_.:-]*")
 _PAINT_RE = re.compile(r"(?:none|#[0-9A-Fa-f]{6})")
 _INTEGER_RE = re.compile(r"[+-]?\d+")
@@ -60,6 +70,12 @@ _SEMANTIC_ATTRS = (
     "data-pptx-prst",
     "data-pptx-frame",
 )
+_TEMPLATE_ATOM_ATTRS = (
+    "data-pptx-layer",
+    "data-pptx-editable",
+    "data-pptx-placeholder-carrier",
+    "data-pptx-role",
+)
 
 
 def render_preset_shape_fragment(
@@ -72,7 +88,7 @@ def render_preset_shape_fragment(
     name: str | None = None,
     style: Mapping[str, str] | None = None,
 ) -> str:
-    """Render one complete authored preset fragment for manual SVG insertion."""
+    """Render one compact authored preset fragment for SVG insertion."""
     registry = get_preset_registry()
     if preset not in registry:
         raise ValueError(f"Unknown DrawingML preset shape: {preset!r}")
@@ -120,35 +136,65 @@ def render_preset_shape_fragment(
     for guide_name, formula in adjustment_values.items():
         semantic_attrs[f"{_ADJUSTMENT_PREFIX}{guide_name}"] = str(formula)
 
-    style_attrs = _validate_style(style or {})
+    raw_style = dict(style or {})
+    if "fill" not in raw_style or "stroke" not in raw_style:
+        raise ValueError(
+            "Compact authored preset requires explicit local fill and stroke"
+        )
+    style_attrs = _validate_style(raw_style)
+    if (
+        style_attrs.get("stroke", "none") != "none"
+        and "stroke-width" not in style_attrs
+    ):
+        style_attrs["stroke-width"] = "1"
     if object_kind == "connector":
         if style_attrs.get("fill", "none") != "none":
             raise ValueError("Authored connector fill must be none")
         if not _has_visible_stroke(style_attrs):
             raise ValueError("Authored connector requires a visible stroke")
-    markup = serialize_preset_layers(
-        rendered.paths,
-        semantic_attrs,
-        style_attrs,
-    )
     group_attrs = {
         "id": element_id,
         **semantic_attrs,
-        "data-pptx-preview-sha256": markup.preview_hash,
+        **style_attrs,
     }
     return (
         f'<g{attrs_to_xml(group_attrs)}>\n'
-        f"{markup.markup}\n"
+        f"{serialize_compact_preset_layers(rendered.paths, style_attrs)}\n"
         "</g>"
     )
 
 
+def authored_preset_encoding(group: ET.Element) -> str | None:
+    """Return ``compact`` / ``expanded`` for an authored preset group."""
+    if (
+        _local_name(group.tag) != "g"
+        or group.get(AUTHORING_ATTR) != AUTHORING_VALUE
+    ):
+        return None
+    parts = {
+        child.get("data-pptx-part")
+        for child in group
+        if child.get("data-pptx-part") is not None
+    }
+    if parts:
+        return "expanded"
+    return "compact"
+
+
 def validate_authored_preset_group(group: ET.Element) -> list[str]:
-    """Return canonical authored-preset contract errors for one logical group."""
-    if group.get(AUTHORING_ATTR) != AUTHORING_VALUE:
+    """Return authored-preset contract errors for one logical group."""
+    encoding = authored_preset_encoding(group)
+    if encoding is None:
         return []
+    if encoding == "compact":
+        return _validate_compact_authored_preset_group(group)
+    return _validate_expanded_authored_preset_group(group)
+
+
+def _validate_compact_authored_preset_group(group: ET.Element) -> list[str]:
+    """Validate the project-canonical compact authored-preset form."""
     errors: list[str] = []
-    if _local_name(group.tag) != "g":
+    if not _is_svg_element(group, "g"):
         return [f'{AUTHORING_ATTR}="{AUTHORING_VALUE}" requires an SVG <g>']
     element_id = group.get("id")
     if element_id is None:
@@ -158,7 +204,157 @@ def validate_authored_preset_group(group: ET.Element) -> list[str]:
 
     unexpected_group_attrs = sorted(
         name for name in group.attrib
-        if _is_unexpected_group_attr(name)
+        if _is_unexpected_group_attr(name, compact=True)
+    )
+    if unexpected_group_attrs:
+        errors.append(
+            "Authored preset logical group has unsupported attributes: "
+            + ", ".join(unexpected_group_attrs)
+        )
+    if group.get("data-pptx-preview-sha256") is not None:
+        errors.append(
+            "Compact authored preset derives preview integrity from the registry; "
+            "remove data-pptx-preview-sha256"
+        )
+    if (group.text or "").strip():
+        errors.append("Compact authored preset cannot contain text content")
+
+    direct_children = list(group)
+    if not direct_children:
+        errors.append("Compact authored preset requires visible direct path layers")
+        return errors
+    if any(child.get("data-pptx-part") is not None for child in direct_children):
+        errors.append(
+            "Compact authored preset cannot mix transport carrier/preview markers"
+        )
+        return errors
+    if any(
+        not _is_svg_element(child, "path")
+        for child in direct_children
+    ):
+        errors.append(
+            "Compact authored preset is atomic and may contain only direct SVG paths"
+        )
+        return errors
+    if any(list(child) for child in direct_children):
+        errors.append("Compact authored preset paths cannot contain child elements")
+    if any(
+        (child.text or "").strip() or (child.tail or "").strip()
+        for child in direct_children
+    ):
+        errors.append(
+            "Compact authored preset paths may contain only whitespace around markup"
+        )
+
+    preset = group.get("data-pptx-prst") or ""
+    object_kind = group.get("data-pptx-object") or ""
+    if object_kind not in {"shape", "connector"}:
+        errors.append(
+            "Authored preset data-pptx-object must be 'shape' or 'connector'"
+        )
+    if preset in CONNECTOR_PRESET_TYPES and object_kind != "connector":
+        errors.append(
+            f"Connector preset {preset!r} requires data-pptx-object='connector'"
+        )
+    if object_kind == "connector" and preset not in CONNECTOR_PRESET_TYPES:
+        errors.append(
+            f"Authored connector requires a connector preset, got {preset!r}"
+        )
+
+    try:
+        frame = _parse_frame(group.get("data-pptx-frame"), object_kind)
+        canonical_frame = " ".join(fmt_num(value, 8) for value in frame)
+        if group.get("data-pptx-frame") != canonical_frame:
+            raise ValueError(
+                "Compact authored preset data-pptx-frame must use the helper's "
+                f"canonical spelling {canonical_frame!r}"
+            )
+        adjustments = {
+            name[len(_ADJUSTMENT_PREFIX):]: value
+            for name, value in group.attrib.items()
+            if name.startswith(_ADJUSTMENT_PREFIX)
+        }
+        _validate_adjustments(preset, adjustments)
+        rendered = render_preset_geometry(
+            preset,
+            Xfrm(x=frame[0], y=frame[1], w=frame[2], h=frame[3]),
+            adjustments,
+        )
+        raw_style = {
+            name: group.attrib[name]
+            for name in _STYLE_ATTRS
+            if name in group.attrib
+        }
+        if "fill" not in raw_style or "stroke" not in raw_style:
+            raise ValueError(
+                "Compact authored preset requires explicit local fill and stroke"
+            )
+        style_attrs = _validate_style(raw_style)
+        noncanonical_style = sorted(
+            name for name, value in style_attrs.items()
+            if raw_style.get(name) != value
+        )
+        if noncanonical_style:
+            raise ValueError(
+                "Compact authored preset style uses non-canonical values: "
+                + ", ".join(noncanonical_style)
+            )
+        if style_attrs.get("stroke", "none") != "none" and (
+            "stroke-width" not in style_attrs
+        ):
+            raise ValueError(
+                "Compact authored preset with a visible stroke requires stroke-width"
+            )
+        if object_kind == "connector":
+            if style_attrs.get("fill", "none") != "none":
+                raise ValueError("Authored connector fill must be none")
+            if not _has_visible_stroke(style_attrs):
+                raise ValueError("Authored connector requires a visible stroke")
+        expected_markup = serialize_compact_preset_layers(
+            rendered.paths,
+            style_attrs,
+        )
+        expected_root = ET.fromstring(
+            f'<g xmlns="http://www.w3.org/2000/svg">{expected_markup}</g>'
+        )
+    except (ET.ParseError, ValueError) as exc:
+        errors.append(f"Cannot regenerate compact authored preset: {exc}")
+        return errors
+
+    expected_children = list(expected_root)
+    if len(direct_children) != len(expected_children):
+        errors.append(
+            "Compact authored preset path count differs from registry output: "
+            f"expected {len(expected_children)}, found {len(direct_children)}"
+        )
+        return errors
+    for index, (actual, expected) in enumerate(
+        zip(direct_children, expected_children),
+        start=1,
+    ):
+        if actual.attrib != expected.attrib:
+            errors.append(
+                f"Compact authored preset path {index} differs from registry output"
+            )
+    return errors
+
+
+def _validate_expanded_authored_preset_group(group: ET.Element) -> list[str]:
+    """Validate the legacy expanded authored-preset compatibility form."""
+    if group.get(AUTHORING_ATTR) != AUTHORING_VALUE:
+        return []
+    errors: list[str] = []
+    if not _is_svg_element(group, "g"):
+        return [f'{AUTHORING_ATTR}="{AUTHORING_VALUE}" requires an SVG <g>']
+    element_id = group.get("id")
+    if element_id is None:
+        errors.append("Authored preset logical group requires a stable id")
+    elif _ID_RE.fullmatch(element_id) is None:
+        errors.append(f"Authored preset logical group has invalid id {element_id!r}")
+
+    unexpected_group_attrs = sorted(
+        name for name in group.attrib
+        if _is_unexpected_group_attr(name, compact=False)
     )
     if unexpected_group_attrs:
         errors.append(
@@ -202,9 +398,9 @@ def validate_authored_preset_group(group: ET.Element) -> list[str]:
 
     carrier = carriers[0]
     preview = previews[0]
-    if _local_name(carrier.tag) != "path":
+    if not _is_svg_element(carrier, "path"):
         errors.append("Authored preset geometry carrier must be an SVG <path>")
-    if _local_name(preview.tag) != "g":
+    if not _is_svg_element(preview, "g"):
         errors.append("Authored preset geometry preview must be an SVG <g>")
     if carrier.get("visibility") != "hidden":
         errors.append('Authored preset carrier requires visibility="hidden"')
@@ -353,7 +549,7 @@ def validate_authored_preset_tree(root: ET.Element) -> list[str]:
         parent = parents.get(element)
         if (
             parent is None
-            or _local_name(parent.tag) != "g"
+            or not _is_svg_element(parent, "g")
             or parent.get(AUTHORING_ATTR) != AUTHORING_VALUE
         ):
             errors.append(
@@ -361,6 +557,69 @@ def validate_authored_preset_tree(root: ET.Element) -> list[str]:
                 "child of its authored logical group"
             )
     return errors
+
+
+def materialize_compact_authored_preset_tree(root: ET.Element) -> int:
+    """Expand validated compact authored presets in memory for conversion.
+
+    Source SVG stays compact.  The converter reuses the established lossless
+    carrier/preview path internally, so compact and expanded inputs share one
+    DrawingML implementation.
+    """
+    materialized = 0
+    for group in list(root.iter()):
+        if authored_preset_encoding(group) != "compact":
+            continue
+        errors = _validate_compact_authored_preset_group(group)
+        if errors:
+            raise ValueError("; ".join(errors))
+
+        preset = group.get("data-pptx-prst") or ""
+        object_kind = group.get("data-pptx-object") or ""
+        frame = _parse_frame(group.get("data-pptx-frame"), object_kind)
+        adjustments = {
+            name[len(_ADJUSTMENT_PREFIX):]: value
+            for name, value in group.attrib.items()
+            if name.startswith(_ADJUSTMENT_PREFIX)
+        }
+        rendered = render_preset_geometry(
+            preset,
+            Xfrm(x=frame[0], y=frame[1], w=frame[2], h=frame[3]),
+            adjustments,
+        )
+        style_attrs = _validate_style({
+            name: group.attrib[name]
+            for name in _STYLE_ATTRS
+            if name in group.attrib
+        })
+        semantic_attrs = {
+            name: value
+            for name, value in group.attrib.items()
+            if name in _SEMANTIC_ATTRS
+            or name.startswith(_ADJUSTMENT_PREFIX)
+            or name == "data-pptx-shape-name"
+        }
+        markup = serialize_preset_layers(
+            rendered.paths,
+            semantic_attrs,
+            style_attrs,
+        )
+
+        for name in _STYLE_ATTRS:
+            group.attrib.pop(name, None)
+        group.set("data-pptx-preview-sha256", markup.preview_hash)
+        for child in list(group):
+            group.remove(child)
+        wrapper = ET.fromstring(
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            f"{markup.markup}"
+            "</svg>"
+        )
+        for child in list(wrapper):
+            wrapper.remove(child)
+            group.append(child)
+        materialized += 1
+    return materialized
 
 
 def _validate_frame(
@@ -549,14 +808,18 @@ def _is_unexpected_carrier_attr(name: str) -> bool:
     return not name.startswith(_ADJUSTMENT_PREFIX)
 
 
-def _is_unexpected_group_attr(name: str) -> bool:
-    if name in {
+def _is_unexpected_group_attr(name: str, *, compact: bool) -> bool:
+    allowed = {
         "id",
         "transform",
         "data-pptx-preview-sha256",
         "data-pptx-shape-name",
         *_SEMANTIC_ATTRS,
-    }:
+    }
+    if compact:
+        allowed.update(_STYLE_ATTRS)
+        allowed.update(_TEMPLATE_ATOM_ATTRS)
+    if name in allowed:
         return False
     if name.startswith(_ADJUSTMENT_PREFIX):
         return False
@@ -571,6 +834,13 @@ def _carrier_path(paths) -> str:
 
 def _local_name(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
+
+
+def _is_svg_element(element: ET.Element, local_name: str) -> bool:
+    return element.tag in {
+        local_name,
+        f"{{{_SVG_NAMESPACE}}}{local_name}",
+    }
 
 
 def _element_label(element: ET.Element) -> str:
