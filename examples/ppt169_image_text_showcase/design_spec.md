@@ -354,7 +354,7 @@ No-template-match: all pages use custom layouts designed to demonstrate image-te
 1. viewBox: `0 0 1280 720`
 2. 背景用 `<rect>`
 3. 文字换行用 `<tspan>`，禁止 `<foreignObject>`
-4. 透明度用 `fill-opacity` / `stop-opacity`，禁止 `rgba()`
+4. 透明度默认用 `fill-opacity` / `stop-opacity`；`rgba()` 保持转换兼容
 5. 禁止：`mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`
 6. 文字符号写原始 Unicode，禁止 HTML 实体（&nbsp; &mdash; 等）
 7. `clipPath` 仅用于 `<image>` 裁切（P09圆形、P18六边形）

@@ -340,7 +340,7 @@ Catalog read: 71 templates
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` (`#FFFFFF` 纸白)
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
-4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`
 6. Text chars: raw Unicode for typographic marks (em dash `—`, en dash `–`, `→`, NBSP, `©`); HTML named entities FORBIDDEN
 7. `marker-start` / `marker-end` conditionally allowed (triangle / diamond / circle in `<defs>` with `orient="auto"`)
@@ -348,7 +348,7 @@ Catalog read: 71 templates
 
 ### PPT Compatibility Rules
 
-- `<g opacity="...">` FORBIDDEN — set opacity per child
+- Prefer opacity per child; `<g opacity="...">` remains converter-compatible with an approximate-fidelity warning
 - Image transparency via overlay `<rect fill="bg" opacity="0.x"/>`
 - Inline styles only; external CSS / `@font-face` FORBIDDEN
 - Stick to PPT-safe fonts in `typography` stacks; converter writes first Latin + first CJK only

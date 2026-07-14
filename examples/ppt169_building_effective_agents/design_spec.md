@@ -369,7 +369,7 @@ No additional chart templates needed — the article's 8 architectural diagrams 
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` elements
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
-4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`
 6. FORBIDDEN: `textPath`, `animate*`, `script`
 7. `marker-start` / `marker-end` conditionally allowed per shared-standards.md §1.1
@@ -377,6 +377,6 @@ No additional chart templates needed — the article's 8 architectural diagrams 
 
 ### PPT Compatibility Rules:
 
-- `<g opacity="...">` FORBIDDEN (group opacity); set on each child element individually
+- Prefer opacity on each child element; `<g opacity="...">` remains compatible with an approximate-fidelity warning
 - Image transparency uses overlay mask layer
 - Inline styles only; external CSS and `@font-face` FORBIDDEN

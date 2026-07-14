@@ -399,10 +399,10 @@ Runners-up considered: fewer than 3 viz pages — this is a magazine-style news 
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` elements
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
-4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`
 6. FORBIDDEN: `textPath`, `animate*`, `script`
 7. Text characters: write typography & symbols as raw Unicode; HTML named entities FORBIDDEN. XML reserved chars use `&amp;` `&lt;` `&gt;` `&quot;` `&apos;`
 8. `clipPath` conditionally allowed only on `<image>` elements
-9. `<g opacity>` FORBIDDEN — set opacity on each child individually
+9. Prefer opacity on each child; `<g opacity>` remains converter-compatible with an approximate-fidelity warning
 10. Dark theme: all text must use light colors (contrast ratio >= 4.5:1 against #0A0A0A)

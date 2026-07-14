@@ -463,7 +463,7 @@
 1. viewBox: `0 0 1280 720`
 2. Background uses `<rect>` elements with `#F5EFE0` paper color
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
-4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
+4. Transparency defaults to `fill-opacity` / `stroke-opacity`; `rgba()` remains converter-compatible
 5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`, `textPath`, `animate*`, `script`
 6. Text characters: raw Unicode (`—`, `→`, `©`, NBSP); HTML named entities (`&nbsp;`, `&mdash;`) FORBIDDEN. XML reserved chars escape as `&amp; &lt; &gt; &quot; &apos;`
 7. **Risograph 美学专项**：
@@ -475,7 +475,7 @@
 
 ### PPT Compatibility Rules
 
-- `<g opacity="...">` FORBIDDEN；每个子元素单独设置 opacity
+- 默认逐子元素设置 opacity；`<g opacity="...">` 可转换但会产生近似保真 warning
 - Image transparency 用覆盖层 (`<rect fill="bg-color" opacity="0.x"/>`)
 - Inline styles only；external CSS 与 `@font-face` FORBIDDEN
 - Impact 字体是 PPT 内置 display 字体，可安全使用；Microsoft YaHei / Consolas 同样 Windows 预装

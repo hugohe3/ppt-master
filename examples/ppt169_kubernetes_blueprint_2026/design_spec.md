@@ -300,7 +300,7 @@ Standard PPT Master SVG constraints (see `references/shared-standards.md`). Key 
 
 1. Every isometric line drawing is hand-authored SVG — `<polygon>` / `<line>` / `<path>` primitives; no raster fallback
 2. The blueprint grid background is a `<pattern>` ref'd by `<rect>` (allowed) — not `class` / `<style>`
-3. `<g opacity>` forbidden; set opacity per child
-4. All transparency via `stop-opacity` / `fill-opacity`; no `rgba()`
+3. Prefer opacity per child; `<g opacity>` remains converter-compatible with an approximate-fidelity warning
+4. Transparency defaults to `stop-opacity` / `fill-opacity`; `rgba()` remains converter-compatible
 5. Component codes (`kube-apiserver`, `etcd`, `PVC`, etc.) MUST use `font-family="Consolas, 'Courier New', monospace"` for the mono visual contract
 6. Coordinate labels in footer use the same mono family — engineering-document texture

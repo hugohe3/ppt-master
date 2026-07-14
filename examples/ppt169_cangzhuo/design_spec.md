@@ -349,12 +349,12 @@ Catalog read: 71 templates
 1. viewBox: `0 0 1280 720`
 2. 背景用 `<rect>` 元素铺底色
 3. 文本换行用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度用 `fill-opacity` / `stroke-opacity`（禁止 `rgba()`）
+4. 透明度默认用 `fill-opacity` / `stroke-opacity`；`rgba()` 保持转换兼容
 5. 禁止：`mask` / `<style>` / `class` / `foreignObject` / `textPath` / `animate*` / `script`
 6. 文本中的字符直接写 Unicode（— · → " " ©），禁止 HTML 实体（`&nbsp;` `&mdash;` 等）；XML 保留字按需转义（`&amp;` `&lt;`）
 
 ### PPT Compatibility Rules:
 
-- 禁止 `<g opacity="...">`，opacity 写在子元素上
+- opacity 默认写在子元素上；`<g opacity="...">` 可转换但会产生近似保真 warning
 - 图片半透明用覆盖矩形（`<rect fill="bg-color" opacity="0.x"/>`）
 - 仅允许行内样式；禁止外部 CSS 和 `@font-face`

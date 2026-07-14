@@ -281,7 +281,7 @@ Applied by Executor when an image's `license_tier == "attribution-required"`. Th
 
 - **Position**: bottom-right of the image's container, hugging the image edge (within ~8 px)
 - **Font size**: 6–8pt equivalent (≈ 0.7–1 % of canvas short edge)
-- **Color**: `#999` on light/photo backgrounds; `rgba(255,255,255,0.6)` on dark/photo
+- **Color**: `fill="#999999"` on light/photo backgrounds; `fill="#FFFFFF" fill-opacity="0.6"` on dark/photo
 - **Content**: `© {author} / {provider_short} / {license_short}`
   - `provider_short`: `Openverse` / `Wikimedia` / `Pexels` / `Pixabay`
   - `license_short`: `CC BY 4.0` / `CC BY-SA 4.0` / `Public Domain`
@@ -301,8 +301,8 @@ Use single-letter labels (a/b/c) only when needed for disambiguation.
 
 ### 7.3 Hero / full-bleed image
 
-- Bottom 1.5 cm gradient overlay: transparent → `rgba(0,0,0,0.5)`
-- 7pt white semi-transparent text inside the overlay band, right-aligned ~24 px from edge
+- Bottom 1.5 cm gradient overlay: `stop-color="#000000" stop-opacity="0"` → `stop-color="#000000" stop-opacity="0.5"`
+- 7pt text with `fill="#FFFFFF" fill-opacity="0.6"` inside the overlay band, right-aligned ~24 px from edge
 
 ### 7.4 Source for the credit text
 

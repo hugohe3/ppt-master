@@ -79,7 +79,5 @@
 
 ## forbidden
 - Mixing icon libraries
-- rgba()
 - `<style>`, `class`, `<foreignObject>`, `textPath`, `@font-face`, `<animate*>`, `<script>`
-- `<g opacity>` (set opacity on each child individually)
 - HTML named entities in text — write raw Unicode; XML reserved chars use &amp; &lt; &gt; &quot; &apos;
