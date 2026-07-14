@@ -173,10 +173,10 @@ def resolve_stroke(
 # Arrow marker generation
 # ---------------------------------------------------------------------------
 
-# Bucket -> markerWidth/markerHeight ratio (in stroke widths).
-# Tuned to roughly match PowerPoint's rendered arrowhead size; the spec is
-# under-defined but PowerPoint draws noticeably larger heads than 1.5–3.5×.
-SIZE_BUCKET = {"sm": 3.0, "med": 5.0, "lg": 7.0}
+# Bucket -> markerWidth/markerHeight ratio (in stroke widths).  These values
+# are the stable representatives of the SVG-to-DrawingML bucket thresholds,
+# so importing and exporting preserves both ``w`` and ``len`` categories.
+SIZE_BUCKET = {"sm": 1.5, "med": 2.5, "lg": 3.5}
 
 
 def _build_arrow_marker(

@@ -46,6 +46,7 @@ from pptx_to_svg.effect_to_svg import (
 )
 from pptx_to_svg.preset_registry_to_svg import render_preset_geometry
 from pptx_to_svg.preset_svg_markup import serialize_preset_layers
+from pptx_to_svg.ln_to_svg import _build_arrow_marker
 from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
 from pptx_to_svg.ooxml_loader import parse_ooxml_boolean
 from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
@@ -62,6 +63,8 @@ from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
 )
+from svg_to_pptx.drawingml.context import ConvertContext
+from svg_to_pptx.drawingml.styles import build_stroke_xml
 from svg_to_pptx.pptx_package.builder import create_pptx_with_native_svg
 from svg_to_pptx.pptx_package.dimensions import (
     CANVAS_FORMATS as PACKAGE_CANVAS_FORMATS,
@@ -2491,6 +2494,47 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'zero intrinsic height',
             'invalid project gradient',
         )
+
+    def test_imported_line_end_size_buckets_round_trip(self):
+        drawingml_ns = (
+            'http://schemas.openxmlformats.org/drawingml/2006/main'
+        )
+        for width_bucket in ('sm', 'med', 'lg'):
+            for length_bucket in ('sm', 'med', 'lg'):
+                with self.subTest(
+                    width=width_bucket,
+                    length=length_bucket,
+                ):
+                    end = ET.Element(
+                        f'{{{drawingml_ns}}}tailEnd',
+                        {
+                            'type': 'triangle',
+                            'w': width_bucket,
+                            'len': length_bucket,
+                        },
+                    )
+                    marker_id, marker_markup = _build_arrow_marker(
+                        end,
+                        '#112233',
+                        id_prefix='roundtrip-',
+                        seq=[0],
+                        reversed_=False,
+                    )
+                    marker = ET.fromstring(marker_markup)
+                    line = ET.fromstring(
+                        '<line xmlns="http://www.w3.org/2000/svg" '
+                        'stroke="#112233" '
+                        f'marker-end="url(#{marker_id})"/>'
+                    )
+                    stroke_xml = build_stroke_xml(
+                        line,
+                        ConvertContext(defs={marker_id: marker}),
+                    )
+                    self.assertIn(
+                        '<a:tailEnd type="triangle" '
+                        f'w="{width_bucket}" len="{length_bucket}"/>',
+                        stroke_xml,
+                    )
 
     def test_invalid_filter_contract_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
