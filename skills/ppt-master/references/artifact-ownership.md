@@ -62,9 +62,9 @@ Global artifact ownership rules for PPT Master projects.
 
 | Derived artifact | Regenerate from | Command / owner |
 |---|---|---|
-| `analysis/image_analysis.csv` | Current `images/` | `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` |
-| `notes/slide_*.md` | `notes/total.md` | `python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>` |
-| `svg_final/` | `svg_output/` plus project assets | `python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>` |
-| Native PPTX | `svg_output/` plus notes/assets | `python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>` |
+| `analysis/image_analysis.csv` | Current `images/` | `uvx ppt-master analyze-images <project_path>/images` |
+| `notes/slide_*.md` | `notes/total.md` | `uvx ppt-master total-md-split <project_path>` |
+| `svg_final/` | `svg_output/` plus project assets | `uvx ppt-master finalize-svg <project_path>` |
+| Native PPTX | `svg_output/` plus notes/assets | `uvx ppt-master svg-to-pptx <project_path>` |
 
 **Default - regenerate derived views**: When a source artifact changes, regenerate the derived artifact at the owning step instead of patching the derived file directly.

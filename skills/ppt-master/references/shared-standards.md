@@ -346,7 +346,7 @@ embedding source OOXML or relying on an imported-payload marker.
 Generate one fragment at a time:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
+uvx ppt-master preset-shape-svg render rightArrow \
   --id p03-growth-arrow \
   --frame 160 210 320 112 \
   --fill "#2563EB" \

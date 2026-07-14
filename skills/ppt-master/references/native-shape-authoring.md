@@ -54,8 +54,8 @@ paths or contours, or upgrade ordinary SVG during export.
 Use registry search for a less common literal shape:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py list --search arrow
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py describe rightArrow
+uvx ppt-master preset-shape-svg list --search arrow
+uvx ppt-master preset-shape-svg describe rightArrow
 ```
 
 **Forbidden — false native semantics**:
@@ -73,7 +73,7 @@ Run one command for one selected object. Colors must come from the current
 page's re-read `spec_lock.md`.
 
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
+uvx ppt-master preset-shape-svg render rightArrow \
   --id p03-growth-arrow \
   --frame 160 210 320 112 \
   --fill "#2563EB" \
@@ -84,7 +84,7 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
 For a native connector:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render bentConnector3 \
+uvx ppt-master preset-shape-svg render bentConnector3 \
   --id p03-flow-connector \
   --object-kind connector \
   --frame 420 180 220 140 \

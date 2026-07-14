@@ -170,7 +170,7 @@ routes by source type, and writes the standard Markdown plus conversion profile.
 
 | User Provides | Action |
 |---------------|--------|
-| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | `python3 ${SKILL_DIR}/scripts/source_to_md.py <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
+| PDF / DOCX / Office document / XLSX / XLSM / PPTX / EPUB / HTML / LaTeX / RST / web URL | `uvx ppt-master source-to-md <file_or_URL_or_dir> [<file_or_URL_or_dir> ...]` |
 | CSV / TSV | Read directly as plain-text table source |
 | Markdown | Read directly |
 
@@ -205,7 +205,7 @@ inputs or directory inputs, `-o` is an output directory. Backend converter detai
 🚧 **GATE**: Step 1 complete; source content is ready (Markdown file, user-provided text, or requirements described in conversation are all valid).
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+uvx ppt-master project init <project_name> --format <format>
 ```
 
 Format options must be named with concrete dimensions. Default: `ppt169` = `1280x720`, `viewBox="0 0 1280 720"`. Other examples: `ppt43` = `1024x768`, `story` = `1080x1920`, `banner` = `1920x1080`. For the full format list, see `references/canvas-formats.md`.
@@ -214,13 +214,13 @@ Import source content (choose based on the situation):
 
 | Situation | Action |
 |-----------|--------|
-| Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files_or_dirs...> --move` |
+| Has source files (PDF/MD/etc.) | `uvx ppt-master project import-sources <project_path> <source_files_or_dirs...> --move` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
 For PPTX sources, `import-sources` automatically runs the standard intake enrichment:
 
 ```bash
-python3 ${SKILL_DIR}/scripts/pptx_intake.py <project_path>/sources/<source.pptx> -o <project_path>/analysis
+uvx ppt-master pptx-intake <project_path>/sources/<source.pptx> -o <project_path>/analysis
 ```
 
 For each PPTX it writes `<stem>.identity.json` (canvas, theme palette/fonts, observed usage) and `<stem>.slide_library.json` (text slots, geometry, native tables, native chart caches, SmartArt nodes/connections), and merges that deck's Strategist-facing digest into the single multi-deck index `analysis/source_profile.json` (`decks[]`, one self-contained entry per source deck, with prefixed artifact pointers). In the main generation path these are source facts and recommendation candidates, not replica constraints; beautify and template-fill workflows decide separately which fields become locked constraints.
@@ -417,22 +417,22 @@ Steps:
 1. **Write Stage 1** to `<project_path>/confirm_ui/recommendations.json` with `"stage": "stage1"` and only the anchor fields. New recommendations MUST use the canonical `stage` selector. Enumerable anchors (`canvas` / `mode` / `visual_style` / `delivery_purpose`) name a recommended canonical `id` in a `recommend` block (the page lists common options from `confirm_ui/static/catalogs.json`); `visual_style` also carries the ≥3-style `visual_style_spectrum` (safe / shifted / bold — same hard rule as h.5). When Step 3 loaded a deck/layout template, also set `recommend.template_adherence` to `strict` or `adaptive`; omit the field entirely for free design and brand-only templates so the page does not display it. `audience` and `content_divergence` are plain `{ "value": "<free text>" }`. `content_divergence` is the **free-text** field shown under audience in §c — how closely to follow the source vs how freely to reshape it (blank = balanced; facts stay sourced at every level); it is consumed by Strategist when authoring `§IX`, recorded in `design_spec.md §I`, carries no page-count coupling, and is **not** written to `spec_lock.md`. Set `lang` to the page language (`zh` / `en` / `ja`); visible text matches `lang`, or provide multilingual `name_zh` / `name_en` / `name_ja` + `note_zh` / `note_en` / `note_ja` — when the user's language is Japanese, set `lang: "ja"` and always include the `_ja` variants (labels resolve in the page language first — a `ja` page falls back ja → en → zh, so missing `_ja` labels silently render in English; zh/en pages keep their zh↔en fallback and only try `_ja` last).
 2. **Launch + wait for Stage 1.** Background launch; the parent returns when the page writes the stage-1 `result.json`. **Long tool timeout — 600000 ms** (the `--wait` ≈590 s budget):
    ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --daemon --wait
+   uvx ppt-master confirm-ui <project_path> --daemon --wait
    ```
    Page opens at the launch-log URL such as `http://127.0.0.1:5050` — the **same port as the Step 6 live preview** (they never run at once: this page shuts down at the end of Step 4). If 5050 is held, the launcher **auto-advances** (5051, …) — read the actual URL from the launch log and report it. The page does **not** close after Stage 1: it shows a "deriving…" state and polls for Stage 2. **Launch or wait failure is non-fatal**: if it fails or times out (flask missing, port blocked, no GUI / remote / web host), do **NOT** troubleshoot — **on any non-zero exit, re-check `result.json` once** for a fresh `status: stage1-confirmed` before dropping to the chat fallback. **On success (exit 0 with a stage-1 result), do not pause or report — go straight to step 3 in the same turn.**
 3. **Re-derive Stage 2 from the confirmed anchors, write it, then wait for the design-system handoff — immediately, same turn (the page is polling for it).** Read the stage-1 `result.json` (`status: stage1-confirmed`). Using the user's **actual** confirmed anchors (not your originals), author the design-system candidates and **overwrite** `recommendations.json` with `"stage": "stage2"`: page count (content volume × `delivery_purpose`); color and typography as **generative ≥3-candidate** fields (creative recommendations always offer real choice; fewer than 3 only on the honest-shortfall exception, with a stated reason; color: core `palette` with background/secondary_bg/primary/accent/secondary_accent/body_text; typography: CJK + Latin for `heading` and `body` with `css` preview stacks + `body_size` as the body baseline in **px** (every canvas) — **one fixed value per confirmed `delivery_purpose`** (`text` 20 / `balanced` 24 / `presentation` 32), not a range; each typography candidate must include topic-matched `sample_heading` / `sample_heading_latin` / `sample_body` / `sample_body_latin` preview text, never a fixed unrelated industry sample); enumerable `icons` / `formula_policy` (recommended `id`). **Stage 2 is never skipped** — an active deck/layout template (`strict` adherence included) does not exempt it: the template skin becomes the recommended color / typography candidate and real alternatives fill the remaining cards. Never jump `recommendations.json` from `stage1` to `stage3`: the server refuses to render a skipped stage (the page stays on "deriving…") and the waits exit non-zero until the stages are written in order. The still-open page polls, renders Stage 2, and preserves the user's Stage 1 picks. Then attach to the already-running page; if Windows cleaned up the server, `--wait-only` auto-recovers it on the recorded/default port so the browser reconnects:
    ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only --wait-stage stage2
+   uvx ppt-master confirm-ui <project_path> --wait-only --wait-stage stage2
    ```
    This returns when the page writes the stage-2 `result.json` (`status: stage2-confirmed`). On a non-zero exit, re-check `result.json` once before falling back to chat — except a `stage skip detected` error, which is not a page failure: you wrote a stage out of order; rewrite `recommendations.json` with the stage the error names and re-attach.
 4. **Re-derive Stage 3 from the confirmed anchors + design system, then wait for the final confirmation.** Read the stage-2 `result.json`. Author the image and execution recommendations and **overwrite** `recommendations.json` with `"stage": "stage3"`: `image_usage` as one or more source ids (`["ai"]`, `["ai","provided"]`, `["web","placeholder"]`, or `["none"]`; `none` is exclusive); `image_strategy.candidates` as **exactly three non-custom** rendering × palette recommendations from h.5 when `image_usage` includes `ai` (the page adds the fourth Custom card itself); enumerable `image_ai_path` / `generation_mode` and `refine_spec` (recommended `id` / boolean). If the recommendation involves several image sources, keep the source list structured in `recommend.image_usage` and write the usage rationale / page-role guidance into `image_notes` (for example, "封面和章节页用 AI 主视觉，产品页优先用户素材，行业背景页可用网络参考"). Write `image_ai_path` only when `image_usage` includes `ai`. Spot-illustration lean is **not** a candidate field here: it derives from the locked `visual_style`'s illustration propensity and is expressed only in the recommendation rationale / `image_notes`, never as a new confirmation field. Generated-image style palettes are **color behavior only**; final image colors follow the confirmed Stage-2 `color`. Custom image-strategy dimensions are handled by the built-in Custom card, are prose-only, and should not promise a gallery reference image. Then attach to the already-running page; `--wait-only` auto-recovers a dead server as above (same 600000 ms budget):
    ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --wait-only
+   uvx ppt-master confirm-ui <project_path> --wait-only
    ```
    This is the ⛔ BLOCKING completion: returns when the page writes the final `result.json` (`status: confirmed`, `stage: final`, carrying Stage 1 + Stage 2 + Stage 3 fields). On a non-zero exit, re-check `result.json` once (a `stage skip detected` error means Stage 2 was never confirmed — go back to step 3, not the chat fallback). Confirmed sizes are **already px** (the system is px-only — no pt anywhere, no conversion): write `result.json` `typography.body_size` / `sizes` into `design_spec.md` / `spec_lock.md` / SVG verbatim. `generation_mode: "split"` / `refine_spec: true` are explicit user choices.
 5. **Close the confirm page (Mandatory cleanup — every path).** Shut the server down before leaving Step 4 so it cannot keep holding port 5050 (which Step 6 live preview reuses):
    ```bash
-   python3 ${SKILL_DIR}/scripts/confirm_ui/server.py <project_path> --shutdown
+   uvx ppt-master confirm-ui <project_path> --shutdown
    ```
    **Idempotent and required regardless of whether Confirm was clicked**: clicking the final Confirm already shuts the page down (then a no-op); the chat-fallback path leaves it running. Run it after reading the confirmation, before Step 5.
 
@@ -494,7 +494,7 @@ After the Strategist confirmation stage is approved and **before outputting `des
 2. Write `<project_path>/images/formula_manifest.json` with only the formulas selected for rendering.
 3. Run:
    ```bash
-   python3 ${SKILL_DIR}/scripts/latex_render.py <project_path>
+   uvx ppt-master latex-render <project_path>
    ```
 4. Include the rendered formula PNGs as `Acquire Via: formula`, `Status: Rendered`, `Type: Latex Formula` rows in `design_spec.md §VIII Image Resource List`; also list them in `spec_lock.md images` with `| no-crop`.
 
@@ -502,7 +502,7 @@ The formula renderer uses a provider fallback chain by default: `codecogs,quickl
 
 If the user provided images or formula PNGs were rendered, run analysis **before outputting the design spec**. It writes `analysis/image_analysis.csv` — the authoritative regenerated image-fact view in the `analysis/` folder, which MUST be read before authoring §VIII:
 ```bash
-python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
+uvx ppt-master analyze-images <project_path>/images
 ```
 
 > 🔁 **Image facts are regenerated on demand, never a durable store.** `images/` is a live working folder — pictures are extracted from the source at import, the user may drop or replace files at any time, and Step 5 writes web/AI images into it. The single source of truth is therefore the **current contents of `images/`**, and `analysis/image_analysis.csv` is a *regenerated view* of it, not a fact to keep in sync. Re-run `analyze_images.py <project_path>/images` immediately **before any step that reads image facts** so the view reflects the live folder: before the §h image-usage recommendation (see [strategist.md](references/strategist.md) §h), here before authoring §VIII, after Step 5 acquisition (so web/AI files join the view), and again any time the user says they added or replaced images. This is the staleness strategy — re-derive on use, no cache to invalidate.
@@ -546,8 +546,8 @@ Then **lazy-load the path-specific reference** for each row that actually needs 
 | Acquire Via | Load reference (only if any such row exists) | Run |
 |---|---|---|
 | `ai` | `references/image-generator.md` | write `<project_path>/images/image_prompts.json`, then follow `image-generator.md §7 Path Selection` (`image_gen.py --manifest` is **Path A only**) |
-| `web` | `references/image-searcher.md` | `python3 ${SKILL_DIR}/scripts/image_search.py ...` (≥2 web rows → `--batch images/image_queries.json`) |
-| `slice` | `references/image-generator.md` §4.3 | derived — **after** the parent `ai` sheet row is `Generated`, run `python3 ${SKILL_DIR}/scripts/slice_images.py <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha` (see workflow step 2.5) |
+| `web` | `references/image-searcher.md` | `uvx ppt-master image-search ...` (≥2 web rows → `--batch images/image_queries.json`) |
+| `slice` | `references/image-generator.md` §4.3 | derived — **after** the parent `ai` sheet row is `Generated`, run `uvx ppt-master slice-images <project_path>/images/<sheet>.png --grid RxC --names ... --trim --alpha` (see workflow step 2.5) |
 | `user` / `formula` / `placeholder` | (skip) | (skip) |
 
 A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.json` and `image_sources.json`.
@@ -566,7 +566,7 @@ Workflow:
 2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](references/image-base.md) §3 dispatch table
 2.5. **Slice any spot-illustration sheets (only if `slice` rows exist).** For each generated `ai` **sheet** row, run `slice_images.py` (grid + the element `--names` matching the `slice` rows, `--trim --alpha`) so every element file lands in `images/`; mark each `slice` row `Generated`. A sheet still in `Needs-Manual` cannot be sliced — leave its `slice` rows `Needs-Manual` and surface them at the Step 7 readiness gate. Contract: [image-generator.md](references/image-generator.md) §4.3.
 3. Verify every row reaches a terminal status: `Generated` (ai success / sliced element), `Sourced` (web success), or `Needs-Manual`. `Failed` is not a terminal status: it means the current run did not generate that item, but the item remains retryable. The agent must resolve every residual `Failed` item by rerunning the confirmed path or marking it `Needs-Manual` before Executor starts
-4. Re-derive image facts now that web / AI / sliced files are in the folder — `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
+4. Re-derive image facts now that web / AI / sliced files are in the folder — `uvx ppt-master analyze-images <project_path>/images` — so `analysis/image_analysis.csv` reflects every acquired image **including the sliced elements** (real measured sizes) before the Executor lays them out. Image facts are regenerated on use, never a stale store (see Step 4's image-facts note).
 
 **✅ Checkpoint — Confirm acquisition attempted for every row**:
 ```markdown
@@ -613,7 +613,7 @@ Read references/visual-styles/<locked-style>.md   # aesthetic (spec_lock.md `vis
 
 **Live Preview Auto-Startup (Mandatory)**: before the first SVG, automatically start the browser editor in live mode and keep it running continuously through Executor + Step 7 export:
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
+uvx ppt-master confirm-ui <project_path> --live --daemon
 ```
 - Start it immediately when Executor begins; `svg_output/` may be empty. Editor opens at the launch-log URL such as `http://127.0.0.1:5050`; if another project already holds it, the launcher **auto-advances to the next free port** — read the actual URL from the launch log and report that.
 - Treat the launch URL as a checkpoint value: before writing the first SVG, either report the actual URL from the launcher or state the launch failure explicitly. Do not silently continue while claiming preview is available.
@@ -624,7 +624,7 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --live --daemon
 
 **Pre-generation Batch Read (Mandatory)**: before the first SVG, batch-read every distinct layout SVG referenced in `spec_lock.page_layouts` and every distinct chart SVG referenced in `spec_lock.page_charts` (plus any §VII backup charts). One read per file, up front — do not re-read these during page generation. See executor-base.md §1.0.
 
-> Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
+> Image facts: trust the `analysis/image_analysis.csv` regenerated at the end of Step 5. If `images/` changed since (the user swapped or added files), re-run `uvx ppt-master analyze-images <project_path>/images` before laying images out — facts are re-derived on use, never a stale store (Step 4 image-facts note).
 
 **Per-page spec_lock re-read (Mandatory)**: before **each** SVG page, `read_file <project_path>/spec_lock.md` and use only its colors / fonts / icons / images, plus `pptx_structure.mode` and the per-page `page_rhythm` / `page_charts` lookups. Read `page_layouts` / `page_pptx_layouts` / `pptx_masters` / `pptx_layouts` only on a structured deck/layout template route; they are absent in flat free-design and brand-only projects. Resists context-compression drift on long decks. See executor-base.md §2.1.
 
@@ -643,13 +643,13 @@ Do not duplicate specialized identity with `data-pptx-role`. Add it only to stru
 
 **First-page gate (Mandatory)** — after the **first** SVG page, before drawing page 2:
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>/svg_output/<first_page>.svg
+uvx ppt-master svg-quality-check <project_path>/svg_output/<first_page>.svg
 ```
 Fix every `error` on page 1 first — structural violations are systematic, and a first-page error repeated deck-wide costs a whole-deck rewrite.
 
 **Quality Check Gate (Mandatory)** — after all SVGs, BEFORE annotation handling and speaker notes:
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
+uvx ppt-master svg-quality-check <project_path>
 ```
 - Any `error` (banned/unsupported SVG features, invalid values, unresolved references, viewBox mismatch, etc.) MUST be fixed before proceeding — return to Visual Construction, regenerate that page, re-run check.
 - Every `warning` is advisory and non-blocking: do not return the page for mandatory modification, do not auto-normalize user-authored compatible syntax, and do not require an acknowledgement/disposition line. Recommendation warnings identify the generated-SVG default; fidelity/quality warnings may be reported when material, but the existing input may ship unchanged. If a condition must be corrected before release, the checker must classify it as an `error`, not a `warning`.
@@ -694,18 +694,18 @@ Canonical three-command pipeline (this step is the workflow authority;
 
 **Step 7.1** — Split speaker notes:
 ```bash
-python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
+uvx ppt-master total-md-split <project_path>
 ```
 
 **Step 7.2** — SVG post-processing (icon embedding / image crop & embed / raster image optimization / text flattening):
 ```bash
-python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
+uvx ppt-master finalize-svg <project_path>
 ```
 This mandatory step writes self-contained visual-preview SVGs to `svg_final/`. Those files may be opened directly or manually inserted into PowerPoint as SVG pictures. Default raster handling embeds images at the rendered SVG size budget (`--image-scale 2`, `--max-dimension 2560`); opaque PNG photos may be written as JPEG, and transparent assets remain PNG. The existing EMF/WMF exception still applies: Office vector assets stay externally referenced for lossless native-PPTX passthrough, so the native PPTX remains the source of truth for pages that use them. Use `--no-compress` or a higher `--max-dimension` only for diagnostic / high-fidelity SVG previews.
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
+uvx ppt-master svg-to-pptx <project_path>
 # Output (default-flow mode):
 #   exports/<project_name>_<timestamp>.pptx           ← native pptx (canonical output, reads svg_output/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup (always written)
