@@ -271,7 +271,7 @@ attributes, and no separate source-payload opt-in marker exists.
 | `data-pptx-prst` | Preset carrier and logical `<g>` | One of the locked 187 DrawingML `ST_ShapeType` values. |
 | `data-pptx-av-*` | Preset carrier and logical `<g>` | Preserve the complete validated DrawingML adjustment formula, including non-`val` formulas. |
 | `data-pptx-part="geometry"` | One hidden carrier path | The single native export authority for frame, base fill/line/effect, preset/custom geometry, and object identity. |
-| `data-pptx-part="geometry-preview"` / `geometry-detail` | Visible preview group/paths | Render the preset's independent path fill/stroke layers. These elements are never emitted as duplicate PowerPoint shapes. |
+| `data-pptx-part="geometry-preview"` / `geometry-detail` | Visible preview group/paths | Render the preset's independent path fill/stroke layers. A hash-locked preview group may mirror the carrier's one filter so a multi-path preset renders one aggregate imported effect; these elements are never emitted as duplicate PowerPoint shapes. |
 | `data-pptx-preview-sha256` | Logical preset `<g>` and carrier | Detect edits to visible preset paths or paint. A stale preview fails quality check/export instead of silently restoring old native metadata. |
 | `data-pptx-geometry-kind="custom"` + `data-pptx-custgeom` | Custom-geometry carrier | Preserve the validated original `a:custGeom` subtree. If the visible path hash is unchanged, export restores formulas, handles, connection sites, text rectangle, and path list exactly; edited paths compile from current SVG geometry. |
 | `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
@@ -763,6 +763,11 @@ Native export does not preserve filter-region, `in/in2/result`, merge order, or
 composite topology. Other primitives, multiple independent effects, filters on
 `<image>` / `<tspan>` / `<g>` / unsupported targets are forbidden; apply the
 effect to supported objects or use explicit layers.
+The sole `<g filter>` exception is the hash-locked
+`data-pptx-part="geometry-preview"` transport in §1.4: it must be a direct child
+of an imported preset object and reference the same filter as that object's one
+hidden geometry carrier. The preview is render-only and never becomes a second
+PowerPoint object; this exception does not authorize filters on ordinary groups.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
 never replaced by effect defaults during native export.

@@ -14,7 +14,11 @@ from collections import Counter
 from collections.abc import Iterator
 from xml.etree import ElementTree as ET
 
-from pptx_shapes import validate_ooxml_xfrm
+from pptx_shapes import (
+    resolve_preset_preview_hash,
+    svg_preset_preview_fingerprint,
+    validate_ooxml_xfrm,
+)
 
 from .context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
@@ -1927,6 +1931,11 @@ def project_filter_errors(root: ET.Element) -> list[str]:
         if _svg_element_tag(elem) == 'filter'
     }
     errors: set[str] = set()
+    parents = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
 
     for elem in root.iter():
         tag = (_svg_element_tag(elem) or str(elem.tag)).lower()
@@ -1941,7 +1950,10 @@ def project_filter_errors(root: ET.Element) -> list[str]:
         raw_filter = elem.get('filter')
         if raw_filter is None:
             continue
-        if tag not in PROJECT_FILTER_PUBLIC_TARGETS:
+        if (
+            tag not in PROJECT_FILTER_PUBLIC_TARGETS
+            and not _is_imported_preset_preview_filter_target(elem, parents)
+        ):
             errors.add(
                 f'{label} cannot use filter; supported native targets are '
                 'rect, circle, path, and text'
@@ -2030,6 +2042,76 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         f'finite number{qualifier}; got {raw_value!r}'
                     )
     return sorted(errors)
+
+
+def _is_imported_preset_preview_filter_target(
+    elem: ET.Element,
+    parents: dict[ET.Element, ET.Element],
+) -> bool:
+    """Recognize the render-only aggregate filter on an imported preset.
+
+    DrawingML presets can contain several visible path layers but own one
+    shape-level effect.  The lossless importer therefore keeps the native
+    filter on the hidden geometry carrier and mirrors the same reference onto
+    its hash-locked preview group.  The preview group is never exported as a
+    separate PowerPoint object; ordinary authored ``<g filter>`` remains
+    outside the project contract.
+    """
+    if (
+        _svg_element_tag(elem) != 'g'
+        or elem.get('data-pptx-part') != 'geometry-preview'
+    ):
+        return False
+    parent = parents.get(elem)
+    if (
+        parent is None
+        or _svg_element_tag(parent) != 'g'
+        or parent.get('data-pptx-object') not in {'shape', 'connector'}
+        or not parent.get('data-pptx-prst')
+        or not parent.get('data-pptx-frame')
+    ):
+        return False
+    previews = [
+        child
+        for child in parent
+        if child.get('data-pptx-part') == 'geometry-preview'
+    ]
+    if len(previews) != 1 or previews[0] is not elem:
+        return False
+    preview_children = list(elem)
+    if not preview_children or any(
+        _svg_element_tag(child) != 'path'
+        or child.get('data-pptx-part') != 'geometry-detail'
+        or len(child) != 0
+        for child in preview_children
+    ):
+        return False
+    carriers = [
+        child
+        for child in parent
+        if child.get('data-pptx-part') == 'geometry'
+    ]
+    if len(carriers) != 1:
+        return False
+    carrier = carriers[0]
+    if not (
+        _svg_element_tag(carrier) == 'path'
+        and carrier.get('visibility') == 'hidden'
+        and carrier.get('pointer-events') == 'none'
+        and carrier.get('data-pptx-object') == parent.get('data-pptx-object')
+        and carrier.get('data-pptx-prst') == parent.get('data-pptx-prst')
+        and carrier.get('data-pptx-frame') == parent.get('data-pptx-frame')
+        and carrier.get('filter') == elem.get('filter')
+    ):
+        return False
+    try:
+        expected_hash = resolve_preset_preview_hash(parent)
+    except ValueError:
+        return False
+    return (
+        expected_hash is not None
+        and svg_preset_preview_fingerprint(parent) == expected_hash
+    )
 
 
 def parse_hex_color(color_str: str) -> str | None:
