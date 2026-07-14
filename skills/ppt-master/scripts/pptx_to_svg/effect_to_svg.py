@@ -350,6 +350,8 @@ def _outer_shadow(
 
 
 def _glow(elem: ET.Element, palette: ColorPalette | None) -> str:
+    if elem.get("rad") is None:
+        raise ValueError("missing-rad")
     rad = _blur_radius(elem, "rad")
     color, alpha = _color_alpha(elem, palette)
     # svg_to_pptx maps stdDeviation directly back to a:glow@rad.
