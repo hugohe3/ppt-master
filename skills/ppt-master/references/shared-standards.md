@@ -181,25 +181,29 @@ dropped with a warning.
 
 ### 1.2 Image Clipping (Conditional Contract)
 
-`clip-path` has a native picture-geometry mapping only on `<image>` elements and
-only under this contract:
+`clip-path` has a native picture-geometry mapping only on SVG-namespace
+`<image>` elements (plus the exact imported crop wrapper defined under Images)
+and only under this contract:
 
 | Concern | Required form |
 |---|---|
-| `<clipPath>` element defined inside `<defs>` | Converter looks up clip defs via id index |
-| Contains a **single supported** shape child | The converter uses the first supported child; multiple shapes are not composited |
-| Shape is one of: `<circle>`, `<ellipse>`, `<rect>` (with rx/ry), `<path>`, `<polygon>` | These map to DrawingML geometry (preset or custom) |
-| Used **only on `<image>` elements** | Non-image elements with clip-path are **forbidden** |
+| SVG-namespace `<clipPath>` defined inside `<defs>` | Converter looks up one exact local id; missing, duplicate, foreign-namespace, or malformed references fail |
+| Contains exactly one direct SVG-namespace supported shape child | Multiple shapes are not composited |
+| Shape is one of: `<circle>`, `<ellipse>`, `<rect>` (optional rx/ry), `<path>`, `<polygon>` | These map to DrawingML geometry (preset or custom) |
+| No `clip-rule` or `fill-rule`, whether direct or in inline `style` | DrawingML picture geometry has no equivalent winding-rule control |
+| Used only on `<image>` or an exact imported crop wrapper | Shapes, groups, text, and generalized nested SVG targets are **forbidden** |
 
 | SVG clip shape | DrawingML output |
 |---|---|
-| `<circle>` / `<ellipse>` | Full-frame `<a:prstGeom prst="ellipse"/>`; child center/radii are not preserved |
-| `<rect rx="..."/>` | Full-frame `<a:prstGeom prst="roundRect"/>` with one radius adjustment; child x/y/width/height are not preserved |
+| `<circle>` / `<ellipse>` | Full-frame `<a:prstGeom prst="ellipse"/>`; the child must exactly cover the image frame. A `userSpaceOnUse` circle requires a square physical frame; a normalized `objectBoundingBox` circle may fill any frame |
+| `<rect>` / `<rect rx="..."/>` | A plain full-frame rect is a compatible no-op; rounded form maps to full-frame `<a:prstGeom prst="roundRect"/>` with one physical radius adjustment. The rect must exactly cover the image frame and cannot express non-uniform physical corner radii |
 | `<path>` / `<polygon>` | `<a:custGeom>` with coordinates mapped into the image frame |
 
 `clip-path` on shapes, groups, or text is forbidden; author the target geometry
 directly instead. Use a path/polygon clip when the intended contour does not
-cover the full picture frame.
+cover the full picture frame. A contour that depends on even-odd or another
+explicit winding rule is outside this mapping and must be rebuilt as one
+unambiguous visible contour or pre-rendered.
 
 ---
 
@@ -827,6 +831,47 @@ guesses a fallback.
 **Hard rule — fit/clip interaction**: a non-trivial clip disables `meet`
 frame-fit. Match the image box to the source ratio or use `slice`. Do not apply
 filters directly to `<image>`.
+
+**Hard rule — picture frames and sources are explicit and decodable**: every
+SVG `<image>` has explicit positive `width`/`height` and exactly one non-empty
+`href` or compatible `xlink:href`. A data URI must use a supported `image/*`
+MIME type, valid strict base64 when marked
+`base64`, a non-empty payload, and bytes that decode as the declared format.
+An external asset must resolve, use a supported extension, be non-empty, and
+decode as that extension. The registered formats are PNG, JPEG, GIF, WebP,
+BMP, TIFF, SVG, EMF, and WMF. Explicit template substitution tokens may remain
+unresolved only during template checking; export requires the resolved image.
+Missing, ambiguous, corrupt, mislabeled, or unsupported sources are errors and
+must never be dropped or packaged as invalid zero-byte media.
+
+**Hard rule — nested SVG is an imported crop transport, not a general
+viewport**: every non-root `<svg>` must be the exact picture-crop wrapper emitted
+by `pptx_to_svg`. The outer element has explicit registered project-geometry
+`x`, `y`, positive `width`/`height`, a unit-coordinate `viewBox` made of four
+ordinary decimal values, and
+`preserveAspectRatio="none"`; it contains exactly one direct, empty `<image>`
+with exactly one non-empty `href` or `xlink:href`, `x="0"`, `y="0"`, `width="1"`,
+`height="1"`, and `preserveAspectRatio="none"`. Its ancestor chain contains
+only the root SVG and ordinary visual `<g>` wrappers; definitions, text,
+render-only geometry details, and other non-visual containers cannot own this
+transport. The outer wrapper may additionally carry `id`, a supported
+`transform`, registered structure metadata (`data-pptx-layer` or
+`data-pptx-placeholder-carrier`), and the importer metadata
+`data-pptx-frame`, `data-pptx-object`, `data-pptx-shape-id`,
+`data-pptx-shape-name`, and `data-pptx-shape-scope`. A shape clip is present
+only when exact `data-pptx-crop="1"` and a registered image-only `clip-path`
+occur together and the local clip definition resolves. The inner image may
+add only registered `opacity`. The `viewBox` must quantize without clamping to
+a DrawingML `srcRect` with a positive visible region: each signed crop value
+must fit the OOXML percentage integer range `-2147483648..2147483647`, while
+`l + r < 100000` and
+`t + b < 100000` preserve a positive visible region. Negative crop values and
+crop windows extending outside the source unit rectangle are retained exactly,
+not clamped. `0 0 1 1` is redundant and must be written as a plain `<image>`.
+Extra visual children, indirect images, character data, unknown attributes,
+malformed or unrepresentable crop coordinates, and generalized nested
+viewports are errors. Checker and the converter share this parser so a nested
+subtree cannot pass validation and then silently disappear during export.
 
 | Overlay | Construction | Typical stops / alpha |
 |---|---|---|

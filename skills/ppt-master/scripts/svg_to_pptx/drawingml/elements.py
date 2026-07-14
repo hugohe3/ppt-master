@@ -8,6 +8,7 @@ import hashlib
 import io
 import math
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote_to_bytes
@@ -49,9 +50,11 @@ from .utils import (
     detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
     resolve_text_run_fonts, split_project_text_clusters,
     is_thick_circle_shorthand, parse_project_geometry_length,
+    is_canonical_project_geometry_length,
     parse_project_image_aspect_ratio,
     parse_project_opacity,
     parse_project_stroke_dasharray,
+    project_definition_index,
     matrix_multiply, parse_transform_matrix, parse_transform_operations,
     transform_point, _xml_escape,
 )
@@ -81,31 +84,351 @@ def _resolve_external_image(svg_dir: Path, href: str) -> Path:
     raise FileNotFoundError(f'External image not found: {href}')
 
 
+_PROJECT_IMAGE_FORMATS = {
+    'bmp': 'bmp',
+    'emf': 'emf',
+    'gif': 'gif',
+    'jpeg': 'jpg',
+    'jpg': 'jpg',
+    'png': 'png',
+    'svg': 'svg',
+    'svg+xml': 'svg',
+    'tif': 'tif',
+    'tiff': 'tiff',
+    'webp': 'webp',
+    'wmf': 'wmf',
+    'x-emf': 'emf',
+    'x-wmf': 'wmf',
+}
+_PIL_IMAGE_FORMATS = {
+    'bmp': 'BMP',
+    'gif': 'GIF',
+    'jpg': 'JPEG',
+    'png': 'PNG',
+    'tif': 'TIFF',
+    'tiff': 'TIFF',
+    'webp': 'WEBP',
+}
+
+
+def _normalize_project_image_format(raw: str) -> str | None:
+    return _PROJECT_IMAGE_FORMATS.get(raw.strip().lower().lstrip('.'))
+
+
+def _little_uint(data: bytes, offset: int, size: int) -> int:
+    return int.from_bytes(data[offset:offset + size], 'little', signed=False)
+
+
+def _valid_emf_payload(data: bytes) -> bool:
+    """Validate the EMF header and complete bounded record stream."""
+    if len(data) < 88:
+        return False
+    header_size = _little_uint(data, 4, 4)
+    total_size = _little_uint(data, 48, 4)
+    record_count = _little_uint(data, 52, 4)
+    header_palette_entries = _little_uint(data, 68, 4)
+    if (
+        _little_uint(data, 0, 4) != 1
+        or data[40:44] != b' EMF'
+        or header_size < 88
+        or header_size > total_size
+        or total_size != len(data)
+        or record_count < 1
+    ):
+        return False
+
+    offset = 0
+    count = 0
+    last_type = 0
+    last_size = 0
+    while offset < total_size:
+        if offset + 8 > total_size:
+            return False
+        record_type = _little_uint(data, offset, 4)
+        record_size = _little_uint(data, offset + 4, 4)
+        if record_size < 8 or record_size % 4 or offset + record_size > total_size:
+            return False
+        record_end = offset + record_size
+        if count == 0 and (record_type != 1 or record_size != header_size):
+            return False
+        if count > 0 and record_type == 1:
+            return False
+        if record_type == 14:
+            if (
+                record_size < 20
+                or record_end != total_size
+                or _little_uint(data, record_end - 4, 4) != record_size
+            ):
+                return False
+            palette_entries = _little_uint(data, offset + 8, 4)
+            palette_offset = _little_uint(data, offset + 12, 4)
+            if (
+                palette_entries != header_palette_entries
+                or palette_entries and (
+                    palette_offset < 16
+                    or palette_offset + palette_entries * 4 > record_size - 4
+                )
+            ):
+                return False
+        offset = record_end
+        count += 1
+        last_type = record_type
+        last_size = record_size
+    return (
+        offset == total_size
+        # MS-EMF counts all records. LibreOffice-generated EMF files in the
+        # wild count records after the header, so retain that interoperable
+        # spelling while keeping the complete stream bounded.
+        and count in {record_count, record_count + 1}
+        and last_type == 14
+        and last_size >= 20
+    )
+
+
+def _valid_wmf_payload(data: bytes) -> bool:
+    """Validate a standard or placeable WMF header and record stream."""
+    meta_offset = 0
+    if data.startswith(b'\xd7\xcd\xc6\x9a'):
+        if len(data) < 40:
+            return False
+        checksum = 0
+        for offset in range(0, 20, 2):
+            checksum ^= _little_uint(data, offset, 2)
+        if checksum != _little_uint(data, 20, 2):
+            return False
+        meta_offset = 22
+    if len(data) < meta_offset + 24:
+        return False
+    meta_type = _little_uint(data, meta_offset, 2)
+    header_words = _little_uint(data, meta_offset + 2, 2)
+    version = _little_uint(data, meta_offset + 4, 2)
+    total_words = _little_uint(data, meta_offset + 6, 4)
+    max_record_words = _little_uint(data, meta_offset + 12, 4)
+    if (
+        meta_type not in {1, 2}
+        or header_words != 9
+        or version not in {0x0100, 0x0300}
+        or total_words < 12
+        or max_record_words < 3
+    ):
+        return False
+    total_end = meta_offset + total_words * 2
+    if total_end != len(data):
+        return False
+
+    offset = meta_offset + header_words * 2
+    last_function = -1
+    last_record_words = 0
+    observed_max_record_words = 0
+    while offset < total_end:
+        if offset + 6 > total_end:
+            return False
+        record_words = _little_uint(data, offset, 4)
+        function = _little_uint(data, offset + 4, 2)
+        if (
+            record_words < 3
+            or record_words > max_record_words
+            or offset + record_words * 2 > total_end
+        ):
+            return False
+        record_end = offset + record_words * 2
+        if function == 0 and (record_words != 3 or record_end != total_end):
+            return False
+        offset = record_end
+        last_function = function
+        last_record_words = record_words
+        observed_max_record_words = max(
+            observed_max_record_words,
+            record_words,
+        )
+    return (
+        offset == total_end
+        and last_function == 0
+        and last_record_words == 3
+        and observed_max_record_words == max_record_words
+    )
+
+
+def _valid_project_image_payload(img_format: str, img_data: bytes) -> bool:
+    """Return whether bytes are a supported image of the declared format."""
+    if not img_data:
+        return False
+    if img_format == 'svg':
+        try:
+            root = ET.fromstring(img_data)
+        except ET.ParseError:
+            return False
+        return root.tag == f'{{{SVG_NS}}}svg'
+    if img_format == 'emf':
+        return _valid_emf_payload(img_data)
+    if img_format == 'wmf':
+        return _valid_wmf_payload(img_data)
+
+    expected = _PIL_IMAGE_FORMATS.get(img_format)
+    if expected is None:
+        return False
+    try:
+        from PIL import Image, UnidentifiedImageError  # type: ignore
+    except ImportError:
+        return False
+    try:
+        with Image.open(io.BytesIO(img_data)) as image:
+            actual = (image.format or '').upper()
+            image.verify()
+    except (UnidentifiedImageError, OSError, ValueError, SyntaxError):
+        return False
+    return actual == expected
+
+
 def _decode_data_image_uri(href: str) -> tuple[str, bytes] | None:
-    """Decode SVG image data URIs, including URL-encoded non-base64 payloads."""
+    """Decode and validate one closed-project image data URI."""
     if not href.startswith('data:') or ',' not in href:
         return None
 
     header, payload = href.split(',', 1)
-    match = re.match(r'data:image/([^;,]+)', header, flags=re.IGNORECASE)
+    match = re.fullmatch(
+        r'data:image/([A-Za-z0-9.+-]+)(?:;[^;,]*)*?(?:;base64)?',
+        header,
+        flags=re.IGNORECASE,
+    )
     if not match:
         return None
 
-    img_format = match.group(1).lower()
-    if img_format == 'svg+xml':
-        img_format = 'svg'
-    elif img_format == 'jpeg':
-        img_format = 'jpg'
+    img_format = _normalize_project_image_format(match.group(1))
+    if img_format is None:
+        return None
 
     is_base64 = any(
         part.strip().lower() == 'base64'
         for part in header.split(';')[1:]
     )
-    if is_base64:
-        img_data = base64.b64decode(payload)
-    else:
-        img_data = unquote_to_bytes(payload)
+    try:
+        if is_base64:
+            img_data = base64.b64decode(payload, validate=True)
+        else:
+            img_data = unquote_to_bytes(payload)
+    except (ValueError, binascii.Error):
+        return None
+    if not _valid_project_image_payload(img_format, img_data):
+        return None
     return img_format, img_data
+
+
+@dataclass(frozen=True)
+class ProjectImageSource:
+    """Validated bytes and package extension for one SVG image reference."""
+
+    img_format: str
+    img_data: bytes
+
+
+def _project_image_href(elem: ET.Element) -> str:
+    href_keys = tuple(
+        key for key in ('href', f'{{{XLINK_NS}}}href')
+        if key in elem.attrib
+    )
+    if len(href_keys) != 1:
+        raise ValueError('requires exactly one href or xlink:href')
+    href = elem.get(href_keys[0])
+    if href is None or not href.strip():
+        raise ValueError('href cannot be empty')
+    return href
+
+
+def load_project_image_source(
+    elem: ET.Element,
+    svg_dir: Path | None,
+) -> ProjectImageSource:
+    """Load one exact SVG image source or raise a contract error."""
+    if elem.tag != f'{{{SVG_NS}}}image':
+        raise ValueError('expected an SVG-namespace <image> element')
+    href = _project_image_href(elem)
+    if href.startswith('data:'):
+        decoded = _decode_data_image_uri(href)
+        if decoded is None:
+            raise ValueError(
+                'data URI must contain a supported, non-empty image with '
+                'valid encoding and bytes'
+            )
+        img_format, img_data = decoded
+        return ProjectImageSource(img_format, img_data)
+
+    if svg_dir is None:
+        raise ValueError('external image requires an SVG directory context')
+    try:
+        img_path = _resolve_external_image(svg_dir, href)
+    except FileNotFoundError as exc:
+        raise ValueError(str(exc)) from exc
+    img_format = _normalize_project_image_format(img_path.suffix)
+    if img_format is None:
+        raise ValueError(
+            f'external image has unsupported file extension {img_path.suffix!r}'
+        )
+    try:
+        img_data = img_path.read_bytes()
+    except OSError as exc:
+        raise ValueError(f'cannot read external image {href!r}: {exc}') from exc
+    if not _valid_project_image_payload(img_format, img_data):
+        raise ValueError(
+            f'external image {href!r} is empty, corrupt, or does not match '
+            f'its {img_path.suffix} extension'
+        )
+    return ProjectImageSource(img_format, img_data)
+
+
+def project_image_errors(
+    root: ET.Element,
+    svg_dir: Path | None,
+    *,
+    allow_template_placeholders: bool = False,
+) -> list[str]:
+    """Return source and frame errors for exact SVG image elements."""
+    errors: list[str] = []
+    for elem in root.iter():
+        if elem.tag.rsplit('}', 1)[-1] != 'image':
+            continue
+        label = _element_contract_label(elem)
+        if elem.tag != f'{{{SVG_NS}}}image':
+            errors.append(
+                f'{label} must use the SVG namespace '
+                f'{SVG_NS!r}'
+            )
+            continue
+        style_values = parse_inline_style(elem.get('style'))
+        for attribute in ('width', 'height'):
+            raw = style_values.get(attribute)
+            if raw is None:
+                raw = elem.get(attribute)
+            if raw is None:
+                errors.append(
+                    f'{label} requires explicit positive {attribute}'
+                )
+                continue
+            try:
+                value = parse_project_geometry_length(raw, attribute)
+            except ValueError:
+                # The shared geometry-length contract owns syntax diagnostics.
+                continue
+            if value <= 0:
+                errors.append(
+                    f'{label} {attribute} must be positive; got {raw!r}'
+                )
+        try:
+            raw_href = _project_image_href(elem)
+        except ValueError as exc:
+            errors.append(f'{label} invalid image source: {exc}')
+            continue
+        if (
+            allow_template_placeholders
+            and '{{' in raw_href
+            and '}}' in raw_href
+        ):
+            continue
+        try:
+            load_project_image_source(elem, svg_dir)
+        except ValueError as exc:
+            errors.append(f'{label} invalid image source: {exc}')
+    return sorted(errors)
 
 
 def _wrap_shape(
@@ -2733,6 +3056,244 @@ def _clip_commands_to_geom(
 </a:custGeom>'''
 
 
+_CLIP_SHAPE_TAGS = frozenset({'circle', 'ellipse', 'rect', 'path', 'polygon'})
+_CLIP_NON_VISUAL_ELEMENTS = frozenset({
+    f'{{{SVG_NS}}}{tag}' for tag in ('desc', 'metadata', 'style', 'title')
+})
+
+
+def _element_contract_label(elem: ET.Element) -> str:
+    tag = elem.tag.rsplit('}', 1)[-1]
+    elem_id = (elem.get('id') or '').strip()
+    return f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
+
+
+def _unsupported_clip_rule_properties(elem: ET.Element) -> tuple[str, ...]:
+    style_values = parse_inline_style(elem.get('style'))
+    return tuple(
+        name for name in ('clip-rule', 'fill-rule')
+        if elem.get(name) is not None or name in style_values
+    )
+
+
+def _effective_clip_geometry_length(
+    elem: ET.Element,
+    attribute: str,
+    *,
+    default: float | None = None,
+) -> float:
+    style_values = parse_inline_style(elem.get('style'))
+    raw = style_values.get(attribute)
+    if raw is None:
+        raw = elem.get(attribute)
+    if raw is None:
+        if default is None:
+            raise ValueError(f'requires {attribute}')
+        return default
+    return parse_project_geometry_length(raw, attribute)
+
+
+def _clip_preset_geometry_error(
+    target: ET.Element,
+    shape: ET.Element,
+    clip_units: str,
+) -> str | None:
+    """Reject primitive clips that cannot map to a full-frame preset."""
+    shape_tag = shape.tag.rsplit('}', 1)[-1].lower()
+    if shape_tag not in {'circle', 'ellipse', 'rect'}:
+        return None
+    target_label = _element_contract_label(target)
+    try:
+        target_x = _effective_clip_geometry_length(target, 'x', default=0.0)
+        target_y = _effective_clip_geometry_length(target, 'y', default=0.0)
+        target_w = _effective_clip_geometry_length(target, 'width')
+        target_h = _effective_clip_geometry_length(target, 'height')
+    except ValueError as exc:
+        return f'cannot validate {shape_tag} against {target_label}: {exc}'
+    if target_w <= 0 or target_h <= 0:
+        return (
+            f'cannot validate {shape_tag} against {target_label}: target '
+            'width and height must be positive'
+        )
+
+    object_bbox = clip_units == 'objectBoundingBox'
+    expected_x = 0.0 if object_bbox else target_x
+    expected_y = 0.0 if object_bbox else target_y
+    expected_w = 1.0 if object_bbox else target_w
+    expected_h = 1.0 if object_bbox else target_h
+
+    def close(actual: float, expected: float) -> bool:
+        return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-6)
+
+    try:
+        if shape_tag == 'circle':
+            cx = _effective_clip_geometry_length(shape, 'cx', default=0.0)
+            cy = _effective_clip_geometry_length(shape, 'cy', default=0.0)
+            radius = _effective_clip_geometry_length(shape, 'r', default=0.0)
+            fits = (
+                close(expected_w, expected_h)
+                and close(cx, expected_x + expected_w / 2.0)
+                and close(cy, expected_y + expected_h / 2.0)
+                and close(radius, expected_w / 2.0)
+            )
+        elif shape_tag == 'ellipse':
+            cx = _effective_clip_geometry_length(shape, 'cx', default=0.0)
+            cy = _effective_clip_geometry_length(shape, 'cy', default=0.0)
+            rx = _effective_clip_geometry_length(shape, 'rx', default=0.0)
+            ry = _effective_clip_geometry_length(shape, 'ry', default=0.0)
+            fits = (
+                close(cx, expected_x + expected_w / 2.0)
+                and close(cy, expected_y + expected_h / 2.0)
+                and close(rx, expected_w / 2.0)
+                and close(ry, expected_h / 2.0)
+            )
+        else:
+            rect_x = _effective_clip_geometry_length(shape, 'x', default=0.0)
+            rect_y = _effective_clip_geometry_length(shape, 'y', default=0.0)
+            rect_w = _effective_clip_geometry_length(shape, 'width', default=0.0)
+            rect_h = _effective_clip_geometry_length(shape, 'height', default=0.0)
+            fits = (
+                close(rect_x, expected_x)
+                and close(rect_y, expected_y)
+                and close(rect_w, expected_w)
+                and close(rect_h, expected_h)
+            )
+            if fits:
+                rx_raw = (
+                    parse_inline_style(shape.get('style')).get('rx')
+                    or shape.get('rx')
+                )
+                ry_raw = (
+                    parse_inline_style(shape.get('style')).get('ry')
+                    or shape.get('ry')
+                )
+                rx = (
+                    parse_project_geometry_length(rx_raw, 'rx')
+                    if rx_raw is not None else None
+                )
+                ry = (
+                    parse_project_geometry_length(ry_raw, 'ry')
+                    if ry_raw is not None else None
+                )
+                if rx is None and ry is not None:
+                    rx = ry
+                elif ry is None and rx is not None:
+                    ry = rx
+                rx = rx or 0.0
+                ry = ry or 0.0
+                if rx > 0 or ry > 0:
+                    if object_bbox:
+                        fits = close(rx * target_w, ry * target_h)
+                    else:
+                        fits = close(rx, ry)
+    except ValueError as exc:
+        return f'{shape_tag} geometry for {target_label} is invalid: {exc}'
+
+    if fits:
+        return None
+    return (
+        f'{shape_tag} geometry must cover the complete frame of {target_label} '
+        'for native preset mapping; use path or polygon for partial, offset, '
+        'or non-uniform clips'
+    )
+
+
+def project_clip_path_errors(root: ET.Element) -> list[str]:
+    """Return clip-path errors that would otherwise degrade picture geometry."""
+    definitions, duplicates = project_definition_index(root)
+    errors: set[str] = set()
+    for elem in root.iter():
+        raw_ref = elem.get('clip-path')
+        if raw_ref is None or raw_ref.strip().lower() == 'none':
+            continue
+        label = _element_contract_label(elem)
+        is_svg_image = elem.tag == f'{{{SVG_NS}}}image'
+        is_imported_crop = (
+            elem.tag == f'{{{SVG_NS}}}svg'
+            and elem.get('data-pptx-crop') == '1'
+        )
+        if not is_svg_image and not is_imported_crop:
+            errors.add(
+                f'{label} clip-path is allowed only on <image> or an imported '
+                'data-pptx-crop="1" wrapper'
+            )
+        match = re.fullmatch(r'url\(#([^)]+)\)', raw_ref.strip())
+        if match is None:
+            errors.add(
+                f'{label} clip-path must be an exact local url(#id) '
+                f'reference; got {raw_ref!r}'
+            )
+            continue
+        clip_id = match.group(1)
+        if clip_id in duplicates:
+            errors.add(
+                f'{label} clip-path=url(#{clip_id}) is ambiguous because the '
+                'definition id is duplicated'
+            )
+            continue
+        clip = definitions.get(clip_id)
+        if clip is None or clip.tag != f'{{{SVG_NS}}}clipPath':
+            errors.add(
+                f'{label} clip-path=url(#{clip_id}) has no matching direct '
+                f'<defs><clipPath id="{clip_id}"> definition'
+            )
+            continue
+        clip_label = f'<clipPath id="{clip_id}">'
+        clip_units = clip.get('clipPathUnits', 'userSpaceOnUse')
+        if clip_units not in {'userSpaceOnUse', 'objectBoundingBox'}:
+            errors.add(
+                f'{clip_label} has unsupported clipPathUnits={clip_units!r}'
+            )
+        if clip.get('transform'):
+            errors.add(f'{clip_label} cannot use transform')
+        clip_rules = _unsupported_clip_rule_properties(clip)
+        if clip_rules:
+            errors.add(
+                f'{clip_label} cannot use {", ".join(clip_rules)}; native '
+                'picture geometry has no equivalent winding-rule control'
+            )
+        visual_children = [
+            child for child in list(clip)
+            if child.tag not in _CLIP_NON_VISUAL_ELEMENTS
+        ]
+        if len(visual_children) != 1:
+            errors.add(
+                f'{clip_label} must contain exactly one direct supported shape'
+            )
+            continue
+        shape = visual_children[0]
+        shape_tag = shape.tag.rsplit('}', 1)[-1].lower()
+        if (
+            shape_tag not in _CLIP_SHAPE_TAGS
+            or shape.tag != f'{{{SVG_NS}}}{shape_tag}'
+        ):
+            errors.add(
+                f'{clip_label} child <{shape_tag}> is unsupported; use '
+                'circle, ellipse, rect, path, or polygon'
+            )
+            continue
+        if shape.get('transform'):
+            errors.add(f'{clip_label} child <{shape_tag}> cannot use transform')
+            continue
+        shape_rules = _unsupported_clip_rule_properties(shape)
+        if shape_rules:
+            errors.add(
+                f'{clip_label} child <{shape_tag}> cannot use '
+                f'{", ".join(shape_rules)}; native picture geometry has no '
+                'equivalent winding-rule control'
+            )
+            continue
+        if clip_units in {'userSpaceOnUse', 'objectBoundingBox'}:
+            geometry_error = _clip_preset_geometry_error(
+                elem,
+                shape,
+                clip_units,
+            )
+            if geometry_error is not None:
+                errors.add(f'{clip_label} {geometry_error}')
+    return sorted(errors)
+
+
 def _resolve_clip_geometry(
     elem: ET.Element,
     ctx: ConvertContext,
@@ -2917,7 +3478,13 @@ def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
     try:
         with Image.open(io.BytesIO(data)) as img:
             return img.size
-    except (UnidentifiedImageError, OSError, ValueError):
+    except (
+        UnidentifiedImageError,
+        OSError,
+        SyntaxError,
+        ValueError,
+        ZeroDivisionError,
+    ):
         return (None, None)
 
 
@@ -3248,9 +3815,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     to DrawingML picture geometry (prstGeom or custGeom) so the image is
     natively clipped in PowerPoint.
     """
-    href = elem.get('href') or elem.get(f'{{{XLINK_NS}}}href')
-    if not href:
-        return None
+    source = load_project_image_source(elem, ctx.svg_dir)
 
     # Raw coordinates (pre-context-transform) for clip path calculations
     raw_x = svg_length_x(elem.get('x'), ctx)
@@ -3270,22 +3835,10 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         h = ctx_h(raw_h, ctx)
 
     if w <= 0 or h <= 0:
-        return None
+        raise ValueError('image width and height must be positive')
 
-    # Extract image data
-    if href.startswith('data:'):
-        decoded = _decode_data_image_uri(href)
-        if decoded is None:
-            return None
-        img_format, img_data = decoded
-    else:
-        if ctx.svg_dir is None:
-            return None
-        img_path = _resolve_external_image(ctx.svg_dir, href)
-        img_format = img_path.suffix.lstrip('.').lower()
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = img_path.read_bytes()
+    img_format = source.img_format
+    img_data = source.img_data
 
     img_data, img_format = _optimize_image_for_pptx(
         elem, ctx, img_data, img_format, w, h,
@@ -3462,7 +4015,277 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
 # Without this converter, every cropped picture in a template-import SVG is
 # silently dropped on re-export.
 
-def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
+@dataclass(frozen=True)
+class NestedSvgCropSpec:
+    """Validated transport fields for one imported cropped picture."""
+
+    image: ET.Element
+    x: float
+    y: float
+    width: float
+    height: float
+    src_l: int
+    src_t: int
+    src_r: int
+    src_b: int
+
+
+_NESTED_CROP_OUTER_ATTRIBUTES = frozenset({
+    'clip-path',
+    'data-pptx-crop',
+    'data-pptx-frame',
+    'data-pptx-layer',
+    'data-pptx-object',
+    'data-pptx-placeholder-carrier',
+    'data-pptx-shape-id',
+    'data-pptx-shape-name',
+    'data-pptx-shape-scope',
+    'id',
+    'preserveAspectRatio',
+    'transform',
+    'viewBox',
+    'x',
+    'y',
+    'width',
+    'height',
+})
+_NESTED_CROP_IMAGE_ATTRIBUTES = frozenset({
+    'href',
+    f'{{{XLINK_NS}}}href',
+    'opacity',
+    'preserveAspectRatio',
+    'x',
+    'y',
+    'width',
+    'height',
+})
+_DRAWINGML_PERCENTAGE_MIN = -(2 ** 31)
+_DRAWINGML_PERCENTAGE_MAX = 2 ** 31 - 1
+
+
+def _unsupported_nested_crop_attributes(
+    elem: ET.Element,
+    allowed: frozenset[str],
+) -> list[str]:
+    unsupported = []
+    for name in elem.attrib:
+        if name in allowed:
+            continue
+        unsupported.append(name.rsplit('}', 1)[-1])
+    return sorted(unsupported)
+
+
+def parse_project_nested_svg_crop(elem: ET.Element) -> NestedSvgCropSpec:
+    """Parse the closed nested-SVG transport written by ``pptx_to_svg``."""
+    if elem.tag != f'{{{SVG_NS}}}svg':
+        raise ValueError('expected an SVG-namespace nested <svg> crop wrapper')
+
+    unsupported = _unsupported_nested_crop_attributes(
+        elem,
+        _NESTED_CROP_OUTER_ATTRIBUTES,
+    )
+    if unsupported:
+        raise ValueError(
+            'nested crop <svg> has unsupported attribute(s): '
+            + ', '.join(unsupported)
+        )
+    crop_marker = elem.get('data-pptx-crop')
+    clip_path = elem.get('clip-path')
+    if crop_marker is not None and crop_marker != '1':
+        raise ValueError('nested crop data-pptx-crop must be exactly "1"')
+    if clip_path is None:
+        if crop_marker is not None:
+            raise ValueError(
+                'nested crop data-pptx-crop="1" requires clip-path'
+            )
+    elif clip_path.strip().lower() == 'none':
+        raise ValueError('nested crop clip-path cannot be "none"')
+    elif crop_marker != '1':
+        raise ValueError(
+            'nested crop clip-path requires data-pptx-crop="1"'
+        )
+    if elem.text and elem.text.strip():
+        raise ValueError(
+            'nested crop <svg> cannot contain non-whitespace character data'
+        )
+
+    children = list(elem)
+    if (
+        len(children) != 1
+        or children[0].tag != f'{{{SVG_NS}}}image'
+    ):
+        raise ValueError(
+            'nested <svg> is reserved for imported picture crops; expected '
+            'exactly one direct SVG-namespace <image> child'
+        )
+    image_elem = children[0]
+    if image_elem.tail and image_elem.tail.strip():
+        raise ValueError(
+            'nested crop <svg> cannot contain non-whitespace character data'
+        )
+    if list(image_elem) or (image_elem.text and image_elem.text.strip()):
+        raise ValueError('nested crop <image> must be an empty element')
+
+    unsupported = _unsupported_nested_crop_attributes(
+        image_elem,
+        _NESTED_CROP_IMAGE_ATTRIBUTES,
+    )
+    if unsupported:
+        raise ValueError(
+            'nested crop <image> has unsupported attribute(s): '
+            + ', '.join(unsupported)
+        )
+
+    try:
+        _project_image_href(image_elem)
+    except ValueError as exc:
+        raise ValueError(f'nested crop <image> {exc}') from exc
+
+    required_outer = (
+        'x',
+        'y',
+        'width',
+        'height',
+        'viewBox',
+        'preserveAspectRatio',
+    )
+    missing = [name for name in required_outer if elem.get(name) is None]
+    if missing:
+        raise ValueError(
+            'nested crop <svg> requires explicit x, y, width, height, '
+            'viewBox, and preserveAspectRatio="none"; missing '
+            + ', '.join(missing)
+        )
+    if elem.get('preserveAspectRatio') != 'none':
+        raise ValueError(
+            'nested crop <svg> preserveAspectRatio must be exactly "none"'
+        )
+
+    frame_values: dict[str, float] = {}
+    for name in ('x', 'y', 'width', 'height'):
+        raw = elem.get(name)
+        assert raw is not None
+        try:
+            frame_values[name] = parse_project_geometry_length(raw, name)
+        except ValueError as exc:
+            raise ValueError(
+                f'nested crop <svg> {name}={raw!r}: {exc}'
+            ) from exc
+    if frame_values['width'] <= 0 or frame_values['height'] <= 0:
+        raise ValueError('nested crop <svg> width and height must be positive')
+
+    view_box = elem.get('viewBox') or ''
+    view_box_tokens = view_box.strip().split()
+    if (
+        len(view_box_tokens) != 4
+        or any(
+            not is_canonical_project_geometry_length(token)
+            for token in view_box_tokens
+        )
+    ):
+        raise ValueError(
+            'nested crop viewBox must contain four finite unitless ordinary '
+            'decimals separated by whitespace'
+        )
+    vb_x, vb_y, vb_w, vb_h = (
+        parse_project_geometry_length(token, 'x')
+        for token in view_box_tokens
+    )
+    if vb_w <= 0 or vb_h <= 0:
+        raise ValueError('nested crop viewBox width and height must be positive')
+    src_l = round(vb_x * 100000)
+    src_t = round(vb_y * 100000)
+    src_r = round((1.0 - vb_x - vb_w) * 100000)
+    src_b = round((1.0 - vb_y - vb_h) * 100000)
+    src_values = (src_l, src_t, src_r, src_b)
+    if (
+        any(
+            value < _DRAWINGML_PERCENTAGE_MIN
+            or value > _DRAWINGML_PERCENTAGE_MAX
+            for value in src_values
+        )
+        or src_l + src_r >= 100000
+        or src_t + src_b >= 100000
+    ):
+        raise ValueError(
+            'nested crop viewBox cannot be represented as a DrawingML '
+            'srcRect with a positive visible region within the signed '
+            'percentage range'
+        )
+    if not any(src_values):
+        raise ValueError(
+            'nested crop viewBox="0 0 1 1" is redundant; use a plain <image>'
+        )
+
+    required_image_values = {
+        'x': '0',
+        'y': '0',
+        'width': '1',
+        'height': '1',
+        'preserveAspectRatio': 'none',
+    }
+    invalid_image_values = [
+        f'{name}={image_elem.get(name)!r}'
+        for name, expected in required_image_values.items()
+        if image_elem.get(name) != expected
+    ]
+    if invalid_image_values:
+        raise ValueError(
+            'nested crop <image> must use x="0", y="0", width="1", '
+            'height="1", and preserveAspectRatio="none"; got '
+            + ', '.join(invalid_image_values)
+        )
+
+    return NestedSvgCropSpec(
+        image=image_elem,
+        x=frame_values['x'],
+        y=frame_values['y'],
+        width=frame_values['width'],
+        height=frame_values['height'],
+        src_l=src_l,
+        src_t=src_t,
+        src_r=src_r,
+        src_b=src_b,
+    )
+
+
+def project_nested_svg_crop_errors(root: ET.Element) -> list[str]:
+    """Return contract errors for every nested SVG transport wrapper."""
+    errors: list[str] = []
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    for elem in root.iter():
+        if elem is root or elem.tag.rsplit('}', 1)[-1] != 'svg':
+            continue
+        elem_id = (elem.get('id') or '').strip()
+        label = f'<svg id="{elem_id}">' if elem_id else '<svg>'
+        ancestor = parent_by_id.get(id(elem))
+        invalid_ancestor: ET.Element | None = None
+        while ancestor is not None and ancestor is not root:
+            if (
+                ancestor.tag != f'{{{SVG_NS}}}g'
+                or ancestor.get('data-pptx-part') is not None
+            ):
+                invalid_ancestor = ancestor
+                break
+            ancestor = parent_by_id.get(id(ancestor))
+        if invalid_ancestor is not None:
+            errors.append(
+                f'{label} invalid imported crop wrapper: visual ancestor chain '
+                'may contain only ordinary <g> elements'
+            )
+            continue
+        try:
+            parse_project_nested_svg_crop(elem)
+        except ValueError as exc:
+            errors.append(f'{label} invalid imported crop wrapper: {exc}')
+    return sorted(errors)
+
+
+def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult:
     """Convert a nested <svg> sprite-crop wrapper to a DrawingML picture.
 
     Pattern produced by pptx_to_svg::
@@ -3474,22 +4297,14 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     The viewBox crops the unit-rectangle inner image; that crop is mapped to a
     DrawingML <a:srcRect> so PowerPoint can re-crop / "Reset Picture".
     """
-    image_elem = elem.find(f'{{{SVG_NS}}}image')
-    if image_elem is None:
-        image_elem = elem.find('image')
-    if image_elem is None:
-        return None
+    crop = parse_project_nested_svg_crop(elem)
+    image_elem = crop.image
+    source = load_project_image_source(image_elem, ctx.svg_dir)
 
-    href = image_elem.get('href') or image_elem.get(f'{{{XLINK_NS}}}href')
-    if not href:
-        return None
-
-    svg_x = svg_length_x(elem.get('x'), ctx)
-    svg_y = svg_length_y(elem.get('y'), ctx)
-    svg_w = svg_length_x(elem.get('width'), ctx)
-    svg_h = svg_length_y(elem.get('height'), ctx)
-    if svg_w <= 0 or svg_h <= 0:
-        return None
+    svg_x = crop.x
+    svg_y = crop.y
+    svg_w = crop.width
+    svg_h = crop.height
 
     if ctx.use_transform_matrix:
         x = svg_x
@@ -3502,32 +4317,13 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
         w = ctx_w(svg_w, ctx)
         h = ctx_h(svg_h, ctx)
 
-    src_rect_xml = ''
-    view_box = elem.get('viewBox', '')
-    if view_box:
-        parts = view_box.strip().split()
-        if len(parts) == 4:
-            vb_x, vb_y, vb_w, vb_h = (float(p) for p in parts)
-            l = max(0, min(int(round(vb_x * 100000)), 100000))
-            t = max(0, min(int(round(vb_y * 100000)), 100000))
-            r = max(0, min(int(round((1.0 - vb_x - vb_w) * 100000)), 100000))
-            b = max(0, min(int(round((1.0 - vb_y - vb_h) * 100000)), 100000))
-            if l or t or r or b:
-                src_rect_xml = f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
+    src_rect_xml = (
+        f'<a:srcRect l="{crop.src_l}" t="{crop.src_t}" '
+        f'r="{crop.src_r}" b="{crop.src_b}"/>'
+    )
 
-    if href.startswith('data:'):
-        decoded = _decode_data_image_uri(href)
-        if decoded is None:
-            return None
-        img_format, img_data = decoded
-    else:
-        if ctx.svg_dir is None:
-            return None
-        img_path = _resolve_external_image(ctx.svg_dir, href)
-        img_format = img_path.suffix.lstrip('.').lower()
-        if img_format == 'jpeg':
-            img_format = 'jpg'
-        img_data = img_path.read_bytes()
+    img_format = source.img_format
+    img_data = source.img_data
 
     img_data, img_format = _optimize_image_for_pptx(
         image_elem, ctx, img_data, img_format, w, h,

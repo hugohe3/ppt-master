@@ -69,6 +69,9 @@ from .elements import (
     convert_line, convert_path,
     convert_polygon, convert_polyline,
     convert_text, convert_image, convert_nested_svg,
+    project_clip_path_errors,
+    project_image_errors,
+    project_nested_svg_crop_errors,
 )
 from ..animation_config import is_chrome_id
 from ..native_objects import (
@@ -135,6 +138,54 @@ def _require_project_freeform_geometry(
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project freeform geometry: '
         f'{preview}{suffix}'
+    )
+
+
+def _require_project_nested_svg_crops(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject nested SVG outside the imported picture-crop transport."""
+    errors = project_nested_svg_crop_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid nested SVG crop wrapper(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_clip_paths(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject clip references that cannot produce native picture geometry."""
+    errors = project_clip_path_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project clip-path(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_images(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject invalid picture frames and unresolved or corrupt sources."""
+    path = Path(svg_path)
+    errors = project_image_errors(root, path.parent)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{path.name}: invalid project image(s): {preview}{suffix}'
     )
 
 
@@ -1183,7 +1234,10 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
 
 
 def _local_tag(elem: ET.Element) -> str:
-    return elem.tag.split('}', 1)[-1] if isinstance(elem.tag, str) and '}' in elem.tag else str(elem.tag)
+    if not isinstance(elem.tag, str):
+        return str(elem.tag)
+    prefix = f'{{{SVG_NS}}}'
+    return elem.tag[len(prefix):] if elem.tag.startswith(prefix) else elem.tag
 
 
 def collect_unsupported_visuals(
@@ -1306,6 +1360,8 @@ def convert_svg_to_slide_shapes(
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
     _require_chart_table_marker_attributes(root, svg_path)
+    _require_project_nested_svg_crops(root, svg_path)
+    _require_project_clip_paths(root, svg_path)
     authored_errors = validate_authored_preset_tree(root)
     if authored_errors:
         raise SvgNativeConversionError(
@@ -1435,6 +1491,9 @@ def convert_svg_to_slide_shapes(
             print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
 
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
+    _require_project_nested_svg_crops(root, svg_path)
+    _require_project_images(root, svg_path)
+    _require_project_clip_paths(root, svg_path)
     _require_project_text_properties(root, svg_path)
     _require_project_stroke_styles(root, svg_path)
     _require_project_opacities(root, svg_path)
