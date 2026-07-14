@@ -218,6 +218,8 @@ def _validate_color(
         if resolved is None or _OOXML_HEX_COLOR_RE.fullmatch(resolved) is None:
             raise ValueError(f"unresolvable-color:{color_name}")
     elif color_name == "sysClr":
+        if not (color.get("val") or "").strip():
+            raise ValueError(f"invalid-color:{color_name}")
         raw = color.get("lastClr") or ""
         if _OOXML_HEX_COLOR_RE.fullmatch(raw) is None:
             raise ValueError(f"unresolvable-color:{color_name}")

@@ -2632,6 +2632,14 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self.assertIsNotNone(high_saturation.filter_id)
         self.assertEqual(dict(high_saturation.metadata), {})
 
+        system_color = effect_result(f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="9525"><a:sysClr val="windowText" lastClr="112233"/>
+  </a:glow>
+</a:effectLst>''')
+        self.assertIsNotNone(system_color.filter_id)
+        self.assertEqual(dict(system_color.metadata), {})
+        self.assertIn('flood-color="#112233"', ''.join(system_color.defs))
+
         unsupported_cases = {
             'innerShdw': (
                 f'<a:effectLst xmlns:a="{dml}"><a:innerShdw '
@@ -2721,6 +2729,24 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 'dist="38100"><a:srgbClr val="bogus"/>'
                 '</a:outerShdw></a:effectLst>'
             ), 'invalid-color:srgbClr'),
+            'missing system color value': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="38100">'
+                '<a:sysClr lastClr="112233"/></a:glow></a:effectLst>'
+            ), 'invalid-color:sysClr'),
+            'empty system color value': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="38100">'
+                '<a:sysClr val="" lastClr="112233"/>'
+                '</a:glow></a:effectLst>'
+            ), 'invalid-color:sysClr'),
+            'missing system color fallback': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="38100">'
+                '<a:sysClr val="windowText"/></a:glow></a:effectLst>'
+            ), 'unresolvable-color:sysClr'),
+            'invalid system color fallback': ((
+                f'<a:effectLst xmlns:a="{dml}"><a:glow rad="38100">'
+                '<a:sysClr val="windowText" lastClr="bogus"/>'
+                '</a:glow></a:effectLst>'
+            ), 'unresolvable-color:sysClr'),
             'multiple colors': ((
                 f'<a:effectLst xmlns:a="{dml}"><a:outerShdw '
                 'dist="38100"><a:srgbClr val="000000"/>'
