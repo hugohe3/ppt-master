@@ -520,9 +520,22 @@ continue without modification.
 
 Semantic markers are minimal compiler hints orthogonal to native SVG semantics. Free-design and brand-only pages use flat export, declare one canonical root `data-pptx-page-role` (`cover` / `toc` / `section` / `content` / `ending`), and omit Master/Layout/layer/placeholder markers. On deck/layout template routes, root Master/Layout identity, atomic layer elements, grouped slots, and native-object metadata are authoritative and read first; each page carries its final structured contract from the start of SVG authoring and omits `data-pptx-page-role`. Add `data-pptx-role` only when no specialized marker expresses the required page-frame behavior; the element also uses a stable unique `id`. Do not classify ordinary page content or move visible facts out of SVG attributes/text into metadata. See [`semantic-svg.md`](semantic-svg.md) for the canonical vocabulary and examples.
 
-- **Canvas authority**: `viewBox` MUST match the selected canvas dimensions.
-  Root `width` and `height` are optional and do not override it. Root `<svg>`
-  `transform` is forbidden; apply transforms to child elements or groups.
+- **Canvas authority**: New authoring writes the root canvas exactly as
+  `viewBox="0 0 W H"`, using single spaces and positive ordinary-decimal integer
+  pixels from the selected project/template lock. Numerically identical SVG
+  spellings (integral decimals, exponent or leading-plus notation, and comma
+  separators) are compatible input and receive a normalization warning.
+  Positive fractional dimensions are also read-compatible for custom slide
+  sizes reconstructed from PPTX; export quantizes them once at
+  `1 SVG px = 9,525 EMU`. Missing/malformed/non-finite values, a non-zero
+  origin, non-positive dimensions, or dimensions outside PowerPoint's supported
+  slide-size range are errors. Every public page and internal Layout prototype
+  in one build MUST use the same numeric canvas and match `spec_lock.md`
+  `canvas.viewBox`; standalone templates match `design_spec.md`
+  `canvas_viewbox`. Root `width` and `height` are optional and do not override
+  the `viewBox`. Root `<svg>` `transform` is forbidden; apply transforms to
+  child elements or groups. This root-page rule does not replace the separate
+  nested-crop and `<symbol viewBox>` contracts.
 - **Font portability**: font families used by the deck must resolve to installed
   export faces. `@font-face` remains forbidden; the typography contract lives in
   [`strategist.md §g`](strategist.md).

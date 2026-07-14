@@ -35,6 +35,7 @@ from ..drawingml.utils import (
     parse_project_geometry_length,
     project_geometry_length_errors,
 )
+from ..canvas_contract import CanvasContractError, parse_project_viewbox
 from ..geometry_properties import (
     GeometryStyleError,
     materialize_inline_geometry_properties,
@@ -396,17 +397,8 @@ def _is_authored_preset_atom(elem: ET.Element) -> bool:
 
 
 def _svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
-    raw_viewbox = (root.get("viewBox") or "").strip()
-    values = [part for part in re.split(r"[\s,]+", raw_viewbox) if part]
-    if len(values) != 4:
-        return 0.0, 0.0, 0.0, 0.0
-    try:
-        x, y, width, height = (float(value) for value in values)
-    except ValueError:
-        return 0.0, 0.0, 0.0, 0.0
-    if not all(math.isfinite(value) for value in (x, y, width, height)):
-        return 0.0, 0.0, 0.0, 0.0
-    return x, y, width, height
+    viewbox = parse_project_viewbox(root.get("viewBox"))
+    return 0.0, 0.0, float(viewbox.width), float(viewbox.height)
 
 
 def _is_full_canvas_solid_rect(
@@ -1220,6 +1212,13 @@ def parse_template_slide(
 
     if _local_tag(root) != "svg":
         raise TemplateStructureError(f"{svg_path.name}: root element must be <svg>")
+    try:
+        parse_project_viewbox(
+            root.get("viewBox"),
+            context=f"{svg_path.name} root viewBox",
+        )
+    except CanvasContractError as exc:
+        raise TemplateStructureError(str(exc)) from exc
 
     geometry_errors = project_geometry_length_errors(root)
     if geometry_errors:
@@ -2869,7 +2868,12 @@ def _placement_lint_errors(svg_path: Path) -> list[str]:
                 f"{svg_path.name}: {element_id} uses template metadata below the SVG "
                 "root; only a direct slot child may declare its carrier marker"
             )
-    canvas = _svg_canvas(root)
+    try:
+        canvas = _svg_canvas(root)
+    except CanvasContractError:
+        # Root-canvas validation is owned by parse_template_slide and the
+        # page Checker; placement lint should not duplicate that diagnosis.
+        return errors
     last_order_rank = -1
     for elem in root:
         tag = _local_tag(elem)

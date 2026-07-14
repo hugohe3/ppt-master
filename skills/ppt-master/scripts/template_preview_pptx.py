@@ -50,6 +50,10 @@ _REPLICATION_MODE_RE = re.compile(
     r"^replication_mode\s*:\s*(standard|fidelity|mirror)\s*$",
     re.MULTILINE,
 )
+_CANVAS_VIEWBOX_RE = re.compile(
+    r"^canvas_viewbox\s*:\s*[\"']?([^\"'\r\n]+?)[\"']?\s*$",
+    re.MULTILINE,
+)
 _FONT_SIZE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)(?:px)?$")
 _FILENAME_UNSAFE_RE = re.compile(r"[\\/:*?\"<>|\x00-\x1f]+")
 _TITLE_PLACEHOLDERS = frozenset({"title", "subtitle"})
@@ -96,6 +100,18 @@ def _replication_mode(spec_path: Path) -> str:
     text = spec_path.read_text(encoding="utf-8")
     match = _REPLICATION_MODE_RE.search(text)
     return match.group(1) if match else "standard"
+
+
+def _canvas_viewbox(spec_path: Path) -> str | None:
+    """Read the template's locked root canvas when declared."""
+    text = spec_path.read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        return None
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        return None
+    match = _CANVAS_VIEWBOX_RE.search(text[4:end])
+    return match.group(1).strip() if match else None
 
 
 def _style_property(style: str, name: str) -> str | None:
@@ -266,6 +282,11 @@ def main(argv: list[str] | None = None) -> int:
         spec_path = template_dir / "design_spec.md"
         template_id = _template_id(spec_path, workspace)
         replication_mode = _replication_mode(spec_path)
+        locked_canvas = _canvas_viewbox(spec_path)
+        if locked_canvas is None and not args.visual_only:
+            raise ValueError(
+                "design_spec.md frontmatter must declare canvas_viewbox"
+            )
         use_full_placeholder_frames = (
             not args.visual_only and replication_mode != "mirror"
         )
@@ -302,6 +323,7 @@ def main(argv: list[str] | None = None) -> int:
             svg_files=svg_files,
             output_path=output_path,
             canvas_format=None,
+            expected_viewbox=locked_canvas,
             verbose=True,
             transition=None,
             enable_notes=False,

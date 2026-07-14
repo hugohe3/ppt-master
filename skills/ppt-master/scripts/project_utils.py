@@ -11,9 +11,13 @@ import re
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
-from xml.etree import ElementTree as ET
 
 from console_encoding import configure_utf8_stdio
+from svg_to_pptx.canvas_contract import (
+    CanvasContractError,
+    parse_project_viewbox,
+    read_project_viewbox,
+)
 
 configure_utf8_stdio()
 
@@ -324,36 +328,38 @@ def validate_svg_viewbox(svg_files: List[Path], expected_format: Optional[str] =
         List of warnings
     """
     warnings = []
-    viewboxes = set()
+    viewboxes = {}
 
     # Determine expected viewBox
     expected_viewbox = None
     if expected_format and expected_format in CANVAS_FORMATS:
-        expected_viewbox = CANVAS_FORMATS[expected_format]['viewbox']
+        expected_viewbox = parse_project_viewbox(
+            CANVAS_FORMATS[expected_format]['viewbox'],
+            context=f"canvas format {expected_format!r}",
+        )
 
-    for svg_file in svg_files[:10]:  # Check first 10 files
+    for svg_file in svg_files:
         try:
-            viewbox = ET.parse(svg_file).getroot().get('viewBox')
-            if viewbox:
-                viewboxes.add(viewbox)
-
-                # If expected format is specified, check for match
-                if expected_viewbox and viewbox != expected_viewbox:
-                    warnings.append(
-                        f"{svg_file.name}: root viewBox '{viewbox}' differs from recorded "
-                        f"project format '{expected_format}' ({expected_viewbox}); export uses "
-                        f"the SVG viewBox as the canvas size"
-                    )
-            else:
-                warnings.append(f"{svg_file.name}: root viewBox attribute not found")
-        except Exception as e:
-            warnings.append(f"{svg_file.name}: Failed to read - {e}")
+            viewbox = read_project_viewbox(svg_file)
+        except CanvasContractError as exc:
+            warnings.append(str(exc))
+            continue
+        viewboxes[svg_file.name] = viewbox
+        if expected_viewbox and viewbox != expected_viewbox:
+            warnings.append(
+                f"{svg_file.name}: root viewBox '{viewbox.canonical}' must match "
+                f"project format '{expected_format}' ({expected_viewbox.canonical})"
+            )
 
     # Check for multiple different viewBoxes
-    if len(viewboxes) > 1:
+    distinct = {viewbox for viewbox in viewboxes.values()}
+    if len(distinct) > 1:
+        details = ", ".join(
+            f"{name}={viewbox.canonical}"
+            for name, viewbox in sorted(viewboxes.items())
+        )
         warnings.append(
-            f"Multiple different root viewBox settings detected: {viewboxes}; "
-            "confirm this mixed-canvas project is intentional"
+            "All project SVG root viewBoxes must match; found " + details
         )
 
     return warnings

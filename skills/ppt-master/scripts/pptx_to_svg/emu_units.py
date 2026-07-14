@@ -12,6 +12,7 @@ DrawingML unit conventions:
 
 from __future__ import annotations
 
+from decimal import Decimal, ROUND_HALF_UP, localcontext
 from xml.etree import ElementTree as ET
 
 EMU_PER_INCH = 914400
@@ -235,3 +236,13 @@ def _fmt(val: float, ndigits: int = 2) -> str:
 
 
 fmt_num = _fmt
+
+
+def format_canvas_px_from_emu(emu: int) -> str:
+    """Format a slide-size coordinate with enough precision to recover EMU."""
+    with localcontext() as context:
+        context.prec = 32
+        value = Decimal(emu) / Decimal(EMU_PER_PX)
+        rounded = value.quantize(Decimal("0.00001"), rounding=ROUND_HALF_UP)
+    token = format(rounded, "f").rstrip("0").rstrip(".")
+    return token or "0"
