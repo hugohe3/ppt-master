@@ -1000,6 +1000,10 @@ single-stroke SVG mapping and stop import instead of becoming an ordinary line.
 PPTX import likewise accepts an omitted `a:ln@algn` or explicit `ctr`.
 Inside-aligned (`in`) and unknown source values stop import because an ordinary
 SVG stroke is centered and cannot preserve the source outline boundary.
+An imported line contains at most one direct paint. The registered import
+choices are `a:noFill`, a resolvable `a:solidFill`, and `a:gradFill` normalized
+to its first resolvable stop. Ambiguous paint, unresolved registered paint, and
+pattern/image/group line paint stop import instead of becoming a default color.
 An explicit source `a:ln@cap` must be `flat`, `rnd`, or `sq`, which map to SVG
 `butt`, `round`, and `square`; unknown values stop import instead of falling
 back to the SVG default cap.

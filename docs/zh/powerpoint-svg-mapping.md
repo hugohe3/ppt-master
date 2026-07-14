@@ -151,6 +151,7 @@ PowerPoint 意图
 | 实线轮廓 | 已登记 `stroke` 与宽度 | 原生 `a:ln` | `Native-stable` | 宽度与 paint 必须使用规范单位/语法 |
 | 复合轮廓线 | 无已登记的单一 SVG stroke 表达 | 显式几何替代或烘焙资产 | 复合线身份为 `Bake-required` | PPTX 回导仅接受省略/`sng` 的 `cmpd`；其他源值会阻断，不得退化为单线 |
 | 内侧对齐轮廓 | 无已登记的普通 SVG stroke 表达 | 显式内缩几何或烘焙资产 | 精确轮廓对齐为 `Bake-required` | PPTX 回导仅接受省略/`ctr` 的 `algn`；`in` 会阻断，不得退化为居中描边 |
+| 图案、图片或组派生轮廓 paint | 无已登记的线条 paint SVG 映射 | 显式几何替代或烘焙资产 | `Bake-required` | PPTX 回导会阻断，不得替换为默认纯色线 |
 | transform 下的轮廓缩放 | 精确的 `vector-effect="none"` 或 `vector-effect="non-scaling-stroke"` | 选择被解析为原生线宽 | `Native-normalized` | 拒绝其他取值；生成拼法必须精确且为小写 |
 | 虚线或点线轮廓 | 已登记 dash array | 预设或自定义 DrawingML dash | `Native-normalized` | 拒绝不支持的 dash 语义 |
 | 线端与连接样式 | 已登记 cap/join 值 | 原生 line cap/join 属性 | 固定 join 合同内为 `Native-stable` | 回导仅接受一个 join；miter 必须精确使用 `lim="800000"` |

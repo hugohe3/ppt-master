@@ -41,6 +41,17 @@ PRST_DASH_TO_ARRAY = {
     "sysDashDotDot": "3 3 1 3 1 3",
 }
 _OOXML_INT_MAX = 2**31 - 1
+_LINE_PAINT_TAGS = {
+    f"{{{NS['a']}}}{name}": name
+    for name in (
+        "noFill",
+        "solidFill",
+        "gradFill",
+        "pattFill",
+        "blipFill",
+        "grpFill",
+    )
+}
 
 # DrawingML cap -> SVG stroke-linecap
 CAP_MAP = {
@@ -107,32 +118,39 @@ def resolve_stroke(
         attrs["stroke-linecap"] = CAP_MAP[cap]
 
     # Fill: noFill / solidFill / gradFill
-    no_fill = ln.find("a:noFill", NS)
-    if no_fill is not None:
+    paints = [child for child in ln if child.tag in _LINE_PAINT_TAGS]
+    if len(paints) > 1:
+        raise ValueError("DrawingML line must contain at most one paint")
+    paint = paints[0] if paints else None
+    paint_name = _LINE_PAINT_TAGS.get(paint.tag) if paint is not None else None
+    if paint_name not in {None, "noFill", "solidFill", "gradFill"}:
+        raise ValueError(f"Unsupported DrawingML line paint: {paint_name}")
+    if paint_name == "noFill":
         attrs["stroke"] = "none"
-    else:
-        solid = ln.find("a:solidFill", NS)
-        if solid is not None:
-            color_elem = find_color_elem(solid)
-            hex_, alpha = resolve_color(color_elem, palette)
-            if hex_:
-                attrs["stroke"] = hex_
-                if alpha < 1.0:
-                    attrs["stroke-opacity"] = fmt_num(alpha, 4)
-        else:
-            grad = ln.find("a:gradFill", NS)
-            if grad is not None:
-                # Approximate gradient stroke as the first stop color (SVG
-                # supports gradient strokes via fill="url()" but it adds a lot
-                # of plumbing; first-stop is good enough for v1).
-                first_gs = grad.find("a:gsLst/a:gs", NS)
-                if first_gs is not None:
-                    color_elem = find_color_elem(first_gs)
-                    hex_, alpha = resolve_color(color_elem, palette)
-                    if hex_:
-                        attrs["stroke"] = hex_
-                        if alpha < 1.0:
-                            attrs["stroke-opacity"] = fmt_num(alpha, 4)
+    elif paint_name == "solidFill":
+        color_elem = find_color_elem(paint)
+        hex_, alpha = resolve_color(color_elem, palette)
+        if hex_ is None:
+            raise ValueError("DrawingML solid line color cannot be resolved")
+        attrs["stroke"] = hex_
+        if alpha < 1.0:
+            attrs["stroke-opacity"] = fmt_num(alpha, 4)
+    elif paint_name == "gradFill":
+        # Approximate gradient stroke as the first stop color (SVG supports
+        # gradient strokes via fill="url()" but it adds a lot of plumbing;
+        # first-stop is the registered import normalization).
+        first_gs = paint.find("a:gsLst/a:gs", NS)
+        if first_gs is None:
+            raise ValueError("DrawingML gradient line requires a color stop")
+        color_elem = find_color_elem(first_gs)
+        hex_, alpha = resolve_color(color_elem, palette)
+        if hex_ is None:
+            raise ValueError(
+                "DrawingML gradient line first color cannot be resolved"
+            )
+        attrs["stroke"] = hex_
+        if alpha < 1.0:
+            attrs["stroke-opacity"] = fmt_num(alpha, 4)
 
     # Dash pattern
     prst_dash = ln.find("a:prstDash", NS)
