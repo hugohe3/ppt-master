@@ -39,6 +39,7 @@ except ImportError:
 try:
     from svg_to_pptx.animation_config import (
         load_animation_config as _load_animation_config,
+        usable_animation_group_id as _usable_animation_group_id,
         validate_animation_config as _validate_animation_config,
         validate_animation_config_errors as _validate_animation_config_errors,
         validate_transition_config as _validate_transition_config,
@@ -49,6 +50,9 @@ except ImportError as exc:
     _validate_animation_config_errors = None
     _validate_transition_config = None
     _animation_config_import_error = str(exc)
+
+    def _usable_animation_group_id(raw: str | None) -> str | None:
+        return raw if raw and raw.strip() else None
 else:
     _animation_config_import_error = None
 
@@ -285,6 +289,7 @@ except ImportError:
 try:
     from svg_to_pptx.semantic_markers import (
         SEMANTIC_ATTRS as _SEMANTIC_ATTRS,
+        is_static_page_frame as _is_static_page_frame,
         validate_semantic_markers as _validate_semantic_markers,
     )
 except ImportError:
@@ -292,6 +297,7 @@ except ImportError:
         'data-pptx-page-role',
         'data-pptx-role',
     })
+    _is_static_page_frame = None
     _validate_semantic_markers = None
 
 try:
@@ -1231,7 +1237,7 @@ class SVGQualityChecker:
                 self._check_preset_geometry_transforms(root, result)
 
                 # 8. Check object-level animation anchor quality.
-                self._check_animation_group_ids(root, result)
+                self._check_animation_group_ids(root, svg_path, result)
 
                 # 8b. Check <pattern> elements declare a PPTX preset.
                 self._check_pattern_fills(root, result)
@@ -3359,18 +3365,142 @@ class SVGQualityChecker:
         visit(root, _IDENTITY_MATRIX)
         result['errors'].extend(sorted(issues))
 
-    def _check_animation_group_ids(self, root: ET.Element, result: Dict):
-        """Warn when visible top-level groups cannot be customized."""
+    @staticmethod
+    def _is_full_canvas_root_rect(
+        root: ET.Element,
+        element: ET.Element,
+    ) -> bool:
+        """Return whether one direct rect is the ordinary full-page backdrop."""
+        if (
+            _local_name(element) != 'rect'
+            or _parse_project_geometry_length is None
+            or any(
+                element.get(attribute)
+                for attribute in ('transform', 'filter', 'clip-path')
+            )
+        ):
+            return False
+        viewbox = _parse_viewbox_values(root.get('viewBox') or '')
+        if viewbox is None:
+            return False
+
+        parent_by_id = {id(element): root}
+
+        def inherited(name: str, default: str) -> str:
+            return _effective_presentation_value(
+                element,
+                name,
+                parent_by_id,
+            ) or default
+
+        try:
+            values = {
+                name: _parse_project_geometry_length(
+                    element.get(name) or '0',
+                    name,
+                )
+                for name in ('x', 'y', 'width', 'height', 'rx', 'ry')
+            }
+            stroke_width = _parse_project_geometry_length(
+                inherited('stroke-width', '1'),
+                'stroke-width',
+            )
+            stroke_opacity = (
+                _parse_project_opacity(inherited('stroke-opacity', '1'))
+                if _parse_project_opacity is not None else 1.0
+            )
+        except ValueError:
+            return False
+        fill = inherited('fill', '#000000').strip().lower()
+        stroke = inherited('stroke', 'none').strip().lower()
+        if (
+            fill == 'none'
+            or (
+                stroke != 'none'
+                and stroke_width > 0
+                and stroke_opacity > 0
+            )
+        ):
+            return False
+
+        view_x, view_y, view_width, view_height = viewbox
+        tolerance = 0.5
+        return (
+            values['rx'] == 0
+            and values['ry'] == 0
+            and abs(values['x'] - view_x) <= tolerance
+            and abs(values['y'] - view_y) <= tolerance
+            and abs(values['width'] - view_width) <= tolerance
+            and abs(values['height'] - view_height) <= tolerance
+        )
+
+    def _check_animation_group_ids(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+    ):
+        """Validate top-level animation anchors without policing inner groups."""
         non_visual = {'defs', 'title', 'desc', 'metadata', 'style'}
-        for index, child in enumerate(list(root), start=1):
-            tag = child.tag.split('}', 1)[-1]
+        group_indexes: Dict[str, List[int]] = defaultdict(list)
+        ungrouped: List[str] = []
+        visual_index = 0
+
+        for child in root:
+            tag = _local_name(child)
             if tag in non_visual:
                 continue
-            if tag == 'g' and not child.get('id'):
-                result['warnings'].append(
-                    f"Top-level visible <g> #{index} has no id; "
-                    "object-level animation config cannot reference it"
+            visual_index += 1
+            is_first_visual = visual_index == 1
+
+            if tag == 'g':
+                group_id = _usable_animation_group_id(child.get('id'))
+                if group_id is None:
+                    result['warnings'].append(
+                        f"Top-level visible <g> #{visual_index} has no id; "
+                        "object-level animation config cannot reference it"
+                    )
+                    continue
+                group_indexes[group_id].append(visual_index)
+                continue
+
+            if svg_path.parent.name != 'svg_output':
+                continue
+            if child.get('data-pptx-layer') is not None:
+                continue
+            if (
+                _is_static_page_frame is not None
+                and _is_static_page_frame(
+                    child.get('data-pptx-role'),
+                    child.get('data-pptx-placeholder'),
                 )
+            ):
+                continue
+            if is_first_visual and self._is_full_canvas_root_rect(root, child):
+                continue
+            child_id = (child.get('id') or '').strip()
+            ungrouped.append(
+                f'<{tag} id="{child_id}">'
+                if child_id else f'<{tag}> #{visual_index}'
+            )
+
+        for group_id, indexes in sorted(group_indexes.items()):
+            if len(indexes) > 1:
+                positions = ', '.join(str(item) for item in indexes)
+                result['errors'].append(
+                    f'Duplicate top-level group id {group_id!r} at visible '
+                    f'positions {positions}; animation target ids must be unique'
+                )
+
+        if ungrouped:
+            samples = ', '.join(ungrouped[:3])
+            if len(ungrouped) > 3:
+                samples += ', ...'
+            result['warnings'].append(
+                f'{len(ungrouped)} ungrouped top-level Slide-local element(s) '
+                f'in svg_output ({samples}); wrap each logical content unit '
+                'in a top-level <g id="...">'
+            )
 
     # OOXML ST_PresetPatternVal enum — anything outside this set produces a
     # PPTX schema violation ("PowerPoint found a problem with the content").

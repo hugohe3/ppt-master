@@ -89,15 +89,20 @@ def main(argv: list[str] | None = None) -> int:
                 output_path=args.output,
                 force=args.force,
             )
-        except FileExistsError as exc:
+        except (FileExistsError, ValueError) as exc:
             print(f'Error: {exc}', file=sys.stderr)
-            print('Use --force to overwrite.', file=sys.stderr)
+            if isinstance(exc, FileExistsError):
+                print('Use --force to overwrite.', file=sys.stderr)
             return 1
         print(f'Animation config scaffold written: {output_path}')
         return 0
 
     if args.command == 'list-groups':
-        lines, anonymous = build_group_listing(project_path)
+        try:
+            lines, anonymous = build_group_listing(project_path)
+        except ValueError as exc:
+            print(f'Error: {exc}', file=sys.stderr)
+            return 1
         for line in lines:
             print(line)
         for warning in anonymous:

@@ -73,7 +73,7 @@ from .elements import (
     project_image_errors,
     project_nested_svg_crop_errors,
 )
-from ..animation_config import is_chrome_id
+from ..animation_config import is_chrome_id, usable_animation_group_id
 from ..native_objects import (
     NativeMarkerAttributeError,
     convert_native_object,
@@ -632,7 +632,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if local_opacity is None:
         local_opacity = 1.0
 
-    elem_id = elem.get('id')
+    elem_id = usable_animation_group_id(elem.get('id'))
     semantic_role = elem.get('data-pptx-role')
     placeholder = elem.get('data-pptx-placeholder')
     has_explicit_semantics = (

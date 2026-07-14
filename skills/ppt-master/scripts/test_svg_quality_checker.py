@@ -17,6 +17,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
+from animation_config import main as animation_config_main
 from svg_quality_checker import SVGQualityChecker
 from pptx_shapes import (
     CONNECTOR_PRESET_TYPES,
@@ -30,6 +31,11 @@ from pptx_to_svg.preset_authoring import (
 )
 from pptx_to_svg.emu_units import Xfrm
 from pptx_to_svg.txbody_to_svg import convert_vertical_txbody
+from svg_to_pptx.animation_config import (
+    build_group_listing,
+    build_scaffold,
+    validate_animation_config,
+)
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
@@ -81,6 +87,14 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             svg_path.write_text(content, encoding='utf-8')
             return SVGQualityChecker().check_file(str(svg_path))
 
+    def _check_svg_output(self, content: str) -> dict:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            output_dir = Path(tmp_dir) / 'svg_output'
+            output_dir.mkdir()
+            svg_path = output_dir / 'fixture.svg'
+            svg_path.write_text(content, encoding='utf-8')
+            return SVGQualityChecker().check_file(str(svg_path))
+
     @staticmethod
     def _text_bound_warnings(result: dict) -> list[str]:
         return [
@@ -118,6 +132,200 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 expected_exporter_text,
             ):
                 convert_svg_to_slide_shapes(svg_path)
+
+    def test_top_level_group_ids_are_unique_animation_anchors(self):
+        duplicate = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g id="card"><rect x="10" y="10" width="20" height="20" fill="#000000"/></g>
+  <g id="card"><rect x="40" y="10" width="20" height="20" fill="#000000"/></g>
+</svg>'''
+        result = self._check(duplicate)
+        self.assertTrue(any(
+            "Duplicate top-level group id 'card'" in error
+            for error in result['errors']
+        ))
+
+        nested_anonymous = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g id="card"><g><rect x="10" y="10" width="20" height="20" fill="#000000"/></g></g>
+</svg>'''
+        nested_result = self._check(nested_anonymous)
+        self.assertFalse(any(
+            'Top-level visible <g>' in warning
+            for warning in nested_result['warnings']
+        ))
+
+        blank = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g id="   ">
+    <rect x="10" y="10" width="20" height="20" fill="#000000"/>
+    <rect x="40" y="10" width="20" height="20" fill="#000000"/>
+  </g>
+</svg>'''
+        blank_result = self._check(blank)
+        self.assertTrue(any(
+            'Top-level visible <g> #1 has no id' in warning
+            for warning in blank_result['warnings']
+        ))
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'blank-id.svg'
+            svg_path.write_text(blank, encoding='utf-8')
+            conversion = convert_svg_to_slide_shapes(svg_path)
+            self.assertEqual(conversion[3], [])
+            self.assertIn('<p:grpSp>', conversion[0])
+
+    def test_svg_output_aggregates_only_ordinary_ungrouped_root_atoms(self):
+        content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+     data-pptx-page-role="content">
+  <rect x="0" y="0" width="100" height="100" fill="#FFFFFF"/>
+  <rect id="layout-rule" x="0" y="5" width="100" height="2"
+        fill="#CCCCCC" data-pptx-layer="layout"/>
+  <rect id="footer-rule" x="0" y="95" width="100" height="2"
+        fill="#CCCCCC" data-pptx-role="footer"/>
+  <g id="card"><g><rect x="10" y="10" width="30" height="20" fill="#EEEEEE"/></g></g>
+  <rect id="loose-card" x="50" y="10" width="30" height="20" fill="#EEEEEE"/>
+  <text id="loose-title" x="50" y="45" font-size="20">Loose</text>
+</svg>'''
+        result = self._check_svg_output(content)
+        warnings = [
+            warning for warning in result['warnings']
+            if 'ungrouped top-level Slide-local element(s)' in warning
+        ]
+        self.assertEqual(len(warnings), 1)
+        self.assertIn('2 ungrouped', warnings[0])
+        self.assertIn('<rect id="loose-card">', warnings[0])
+        self.assertIn('<text id="loose-title">', warnings[0])
+
+        outlined_canvas = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect id="outline" x="0" y="0" width="100" height="100"
+        fill="none" stroke="#000000"/>
+</svg>'''
+        outline_result = self._check_svg_output(outlined_canvas)
+        self.assertTrue(any(
+            '1 ungrouped top-level Slide-local element(s)' in warning
+            for warning in outline_result['warnings']
+        ))
+
+        inherited_no_fill = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+     fill="none">
+  <rect id="outline" x="0" y="0" width="100" height="100"/>
+</svg>'''
+        inherited_result = self._check_svg_output(inherited_no_fill)
+        self.assertTrue(any(
+            '1 ungrouped top-level Slide-local element(s)' in warning
+            for warning in inherited_result['warnings']
+        ))
+
+        zero_width_stroke = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect x="0" y="0" width="100" height="100" fill="#FFFFFF"
+        stroke="#000000" stroke-width="0"/>
+</svg>'''
+        zero_stroke_result = self._check_svg_output(zero_width_stroke)
+        self.assertFalse(any(
+            'ungrouped top-level Slide-local element(s)' in warning
+            for warning in zero_stroke_result['warnings']
+        ))
+
+        ordinary_result = self._check(content)
+        self.assertFalse(any(
+            'ungrouped top-level Slide-local element(s)' in warning
+            for warning in ordinary_result['warnings']
+        ))
+
+    def test_animation_tools_reject_duplicate_top_level_group_ids(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            project = Path(tmp_dir)
+            output_dir = project / 'svg_output'
+            output_dir.mkdir()
+            (output_dir / 'fixture.svg').write_text(
+                '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g id="card"><rect x="10" y="10" width="20" height="20" fill="#000000"/></g>
+  <g id="card"><rect x="40" y="10" width="20" height="20" fill="#000000"/></g>
+</svg>''',
+                encoding='utf-8',
+            )
+            config = {
+                'version': 1,
+                'slides': {'fixture': {'groups': {'card': {}}}},
+            }
+            diagnostics = validate_animation_config(project, config)
+            self.assertEqual(
+                sum(
+                    'duplicate top-level group id(s)' in item
+                    for item in diagnostics
+                ),
+                1,
+            )
+            self.assertFalse(any(
+                'references missing group' in item
+                for item in diagnostics
+            ))
+            with self.assertRaisesRegex(ValueError, 'duplicate top-level group id'):
+                build_scaffold(project)
+            with self.assertRaisesRegex(ValueError, 'duplicate top-level group id'):
+                build_group_listing(project)
+
+            (project / 'animations.json').write_text(
+                json.dumps(config),
+                encoding='utf-8',
+            )
+            for arguments in (
+                ['scaffold', str(project), '--force'],
+                ['list-groups', str(project)],
+                ['validate', str(project)],
+            ):
+                with self.subTest(command=arguments[0]):
+                    stderr = io.StringIO()
+                    with patch('sys.stderr', stderr):
+                        self.assertEqual(animation_config_main(arguments), 1)
+                    self.assertIn(
+                        'duplicate top-level group id',
+                        stderr.getvalue(),
+                    )
+
+    def test_animation_group_ids_are_scoped_to_each_slide(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            project = Path(tmp_dir)
+            output_dir = project / 'svg_output'
+            output_dir.mkdir()
+            for slide_name in ('01_cover', '02_content'):
+                (output_dir / f'{slide_name}.svg').write_text(
+                    '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g id="card"><rect x="10" y="10" width="20" height="20" fill="#000000"/></g>
+</svg>''',
+                    encoding='utf-8',
+                )
+            scaffold = build_scaffold(project)
+            self.assertEqual(
+                set(scaffold['slides']),
+                {'01_cover', '02_content'},
+            )
+            self.assertEqual(
+                scaffold['slides']['01_cover']['groups'],
+                {'card': {}},
+            )
+            lines, anonymous = build_group_listing(project)
+            self.assertEqual(
+                lines,
+                ['01_cover: card', '02_content: card'],
+            )
+            self.assertEqual(anonymous, [])
+
+    def test_animation_scan_ignores_anonymous_nested_groups(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            project = Path(tmp_dir)
+            output_dir = project / 'svg_output'
+            output_dir.mkdir()
+            (output_dir / 'fixture.svg').write_text(
+                '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g id="card"><g><rect x="10" y="10" width="20" height="20" fill="#000000"/></g></g>
+  <g id="   "><rect x="40" y="10" width="20" height="20" fill="#000000"/></g>
+</svg>''',
+                encoding='utf-8',
+            )
+            lines, anonymous = build_group_listing(project)
+            self.assertEqual(lines, ['fixture: card'])
+            self.assertEqual(
+                anonymous,
+                ['fixture: top-level group #2'],
+            )
 
     def _nested_crop_source(
         self,
