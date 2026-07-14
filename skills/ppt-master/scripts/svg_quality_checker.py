@@ -1248,6 +1248,7 @@ class SVGQualityChecker:
                 # conditional definition interfaces before export.
                 self._check_authoring_property_contract(root, result)
                 self._check_text_property_contract(root, result)
+                self._check_preserved_txbody_contract(root, result)
                 self._check_paint_compatibility(root, result)
                 self._check_reference_spelling(root, result)
                 self._check_definition_contract(root, result)
@@ -2617,7 +2618,6 @@ class SVGQualityChecker:
     @staticmethod
     def _unchanged_txbody_group_ids(
         root: ET.Element,
-        errors: List[str] | None = None,
     ) -> set[int]:
         """Return imported shape groups whose original text body will survive."""
         if _preserved_native_text_body is None:
@@ -2630,13 +2630,32 @@ class SVGQualityChecker:
                     trust_runtime_snapshot=False,
                 ) is not None:
                     unchanged.add(id(group))
-            except _SvgNativeConversionError as exc:
-                if errors is not None:
-                    errors.append(
-                        f'{_element_label(group)} has invalid preserved '
-                        f'txBody metadata: {exc}'
-                    )
+            except _SvgNativeConversionError:
+                # The dedicated txBody contract check owns the diagnostic.
+                continue
         return unchanged
+
+    @staticmethod
+    def _check_preserved_txbody_contract(
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Validate imported txBody payloads independently of text geometry."""
+        if _preserved_native_text_body is None:
+            return
+        errors: set[str] = set()
+        for group in root.iter(f'{{{SVG_NS}}}g'):
+            try:
+                _preserved_native_text_body(
+                    group,
+                    trust_runtime_snapshot=False,
+                )
+            except _SvgNativeConversionError as exc:
+                errors.add(
+                    f'{_element_label(group)} cannot preserve source '
+                    f'txBody: {exc}'
+                )
+        result['errors'].extend(sorted(errors))
 
     @staticmethod
     def _has_ancestor_id(
@@ -2815,10 +2834,7 @@ class SVGQualityChecker:
             for parent in root.iter()
             for child in list(parent)
         }
-        unchanged_groups = self._unchanged_txbody_group_ids(
-            root,
-            result['errors'],
-        )
+        unchanged_groups = self._unchanged_txbody_group_ids(root)
         errors: List[str] = []
         for text_el in root.iter(f'{{{SVG_NS}}}text'):
             chain: List[ET.Element] = []

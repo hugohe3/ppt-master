@@ -57,6 +57,7 @@ from svg_to_pptx.canvas_contract import (
 )
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
+    _txbody_has_run_effects,
     convert_svg_to_slide_shapes,
 )
 from svg_to_pptx.pptx_package.builder import create_pptx_with_native_svg
@@ -362,13 +363,20 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ]
 
     @staticmethod
-    def _native_txbody_payload() -> str:
+    def _native_txbody_payload(*, run_effect: bool = False) -> str:
+        effect_xml = (
+            '<a:effectLst><a:outerShdw blurRad="38100" dist="38100" '
+            'dir="5400000"><a:srgbClr val="000000"/>'
+            '</a:outerShdw></a:effectLst>'
+            if run_effect else ''
+        )
         native_txbody = (
             '<p:txBody '
             'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
             'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
             '<a:bodyPr/><a:lstStyle/><a:p><a:r>'
-            '<a:rPr lang="en-US" sz="1500" spc="-7500"/>'
+            '<a:rPr lang="en-US" sz="1500" spc="-7500">'
+            f'{effect_xml}</a:rPr>'
             '<a:t>AB</a:t></a:r></a:p></p:txBody>'
         )
         return base64.b64encode(native_txbody.encode('utf-8')).decode('ascii')
@@ -4207,9 +4215,135 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         metadata.text = 'not-base64'
         result = {'errors': [], 'warnings': []}
 
-        SVGQualityChecker()._check_text_output_geometry(root, result)
+        SVGQualityChecker()._check_preserved_txbody_contract(root, result)
 
-        self.assertIn('invalid preserved txBody metadata', '\n'.join(result['errors']))
+        self.assertIn('cannot preserve source txBody', '\n'.join(result['errors']))
+
+    def test_edited_imported_text_cannot_drop_run_effects(self):
+        def imported_text_root(*, run_effect: bool) -> ET.Element:
+            root = ET.fromstring(
+                '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <g id="imported-shape" data-pptx-object="shape" data-pptx-prst="rect">
+    <rect data-pptx-part="geometry" x="20" y="40" width="160" height="80"
+          fill="#FFFFFF"/>
+    <text x="40" y="100" font-size="20">AB</text>
+  </g>
+</svg>'''
+            )
+            group = next(root.iter('{http://www.w3.org/2000/svg}g'))
+            metadata = ET.SubElement(
+                group,
+                '{http://www.w3.org/2000/svg}metadata',
+                {
+                    'data-pptx-part': 'txbody',
+                    'data-pptx-encoding': 'base64',
+                    'data-pptx-text-sha256': svg_text_fingerprint(group),
+                },
+            )
+            metadata.text = self._native_txbody_payload(
+                run_effect=run_effect,
+            )
+            return root
+
+        unchanged = imported_text_root(run_effect=True)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            unchanged_path = Path(tmp_dir) / 'unchanged-run-effect.svg'
+            unchanged_path.write_text(
+                ET.tostring(unchanged, encoding='unicode'),
+                encoding='utf-8',
+            )
+            unchanged_xml = convert_svg_to_slide_shapes(unchanged_path)[0]
+        self.assertEqual(unchanged_xml.count('<a:outerShdw'), 1)
+
+        structurally_changed = imported_text_root(run_effect=True)
+        group = next(
+            structurally_changed.iter('{http://www.w3.org/2000/svg}g')
+        )
+        group.append(ET.fromstring(
+            '<circle xmlns="http://www.w3.org/2000/svg" cx="220" cy="80" '
+            'r="12" fill="#2563EB"/>'
+        ))
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            structural_path = Path(tmp_dir) / 'structural-run-effect.svg'
+            structural_path.write_text(
+                ET.tostring(structurally_changed, encoding='unicode'),
+                encoding='utf-8',
+            )
+            structural_result = SVGQualityChecker().check_file(
+                str(structural_path)
+            )
+            self.assertFalse(structural_result['passed'])
+            self.assertIn(
+                'cannot be restored as one native text shape',
+                '\n'.join(structural_result['errors']),
+            )
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'cannot be restored as one native text shape',
+            ):
+                convert_svg_to_slide_shapes(structural_path)
+
+        edited = imported_text_root(run_effect=True)
+        next(edited.iter('{http://www.w3.org/2000/svg}text')).text = 'AC'
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            edited_path = Path(tmp_dir) / 'edited-run-effect.svg'
+            edited_path.write_text(
+                ET.tostring(edited, encoding='unicode'),
+                encoding='utf-8',
+            )
+            checker_result = SVGQualityChecker().check_file(str(edited_path))
+            self.assertFalse(checker_result['passed'])
+            self.assertIn(
+                'source txBody contains run-level effects',
+                '\n'.join(checker_result['errors']),
+            )
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'source txBody contains run-level effects',
+            ):
+                convert_svg_to_slide_shapes(edited_path)
+
+        editable = imported_text_root(run_effect=False)
+        next(editable.iter('{http://www.w3.org/2000/svg}text')).text = 'AC'
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            editable_path = Path(tmp_dir) / 'edited-plain-text.svg'
+            editable_path.write_text(
+                ET.tostring(editable, encoding='unicode'),
+                encoding='utf-8',
+            )
+            editable_result = SVGQualityChecker().check_file(str(editable_path))
+            self.assertTrue(editable_result['passed'])
+            editable_xml = convert_svg_to_slide_shapes(editable_path)[0]
+        self.assertNotIn('<a:outerShdw', editable_xml)
+        self.assertIn('<a:t>AC</a:t>', editable_xml)
+
+    def test_txbody_run_effect_detection_covers_inherited_properties(self):
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+
+        def txbody(properties: str) -> ET.Element:
+            return ET.fromstring(
+                f'<p:txBody xmlns:p="{pml}" xmlns:a="{dml}">'
+                f'<a:bodyPr/><a:lstStyle/>{properties}</p:txBody>'
+            )
+
+        inherited_list = txbody(
+            '<a:p><a:pPr><a:defRPr><a:effectLst>'
+            '<a:glow rad="38100"><a:srgbClr val="000000"/></a:glow>'
+            '</a:effectLst></a:defRPr></a:pPr></a:p>'
+        )
+        paragraph_end_dag = txbody(
+            '<a:p><a:endParaRPr><a:effectDag><a:blur rad="38100"/>'
+            '</a:effectDag></a:endParaRPr></a:p>'
+        )
+        empty_containers = txbody(
+            '<a:p><a:r><a:rPr><a:effectLst/><a:effectDag/></a:rPr>'
+            '<a:t>AB</a:t></a:r></a:p>'
+        )
+
+        self.assertTrue(_txbody_has_run_effects(inherited_list))
+        self.assertTrue(_txbody_has_run_effects(paragraph_end_dag))
+        self.assertFalse(_txbody_has_run_effects(empty_containers))
 
     def test_checker_does_not_trust_authored_runtime_txbody_snapshot(self):
         root = ET.fromstring(
