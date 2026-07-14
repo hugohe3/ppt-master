@@ -31,11 +31,13 @@ from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
 from .text_properties import (
     drawingml_letter_spacing,
+    normalize_project_text_segments,
     parse_project_font_style,
     parse_project_font_weight,
     parse_project_letter_spacing,
     parse_project_text_anchor,
     parse_project_text_decoration,
+    resolve_project_xml_space,
 )
 from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT,
@@ -1971,28 +1973,20 @@ _TEXT_BULLET_RE = re.compile(
 )
 
 
-def _normalize_text(text: str, *, preserve_space: bool = False) -> str:
-    """Collapse runs of whitespace into a single space; do NOT strip the ends.
-
-    Stripping at this layer would silently delete the inline boundary
-    spaces in nested-tspan structures like
-    ``<tspan>foo <tspan>bar</tspan> baz</tspan>``: the parent's text
-    ("foo ") and the child's tail (" baz") would each lose the only space
-    that separated them from the inner run, producing "foobarbaz".
-
-    The paragraph's overall leading / trailing whitespace is removed once
-    in ``_build_text_runs`` after all inline runs have been concatenated.
-    """
-    if not text:
-        return ''
-    if preserve_space:
-        return text
-    return re.sub(r'\s+', ' ', text)
-
-
-def _preserves_space(elem: ET.Element) -> bool:
-    xml_space = elem.get('{http://www.w3.org/XML/1998/namespace}space') or elem.get('xml:space')
-    return xml_space == 'preserve'
+def _normalize_text_run_whitespace(
+    runs: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Apply the shared whitespace contract without losing run ownership."""
+    normalized: list[dict[str, Any]] = []
+    segments = [
+        (str(run.get('_xml_space', 'default')), str(run.get('text', '')))
+        for run in runs
+    ]
+    for index, text in normalize_project_text_segments(segments):
+        run = {**runs[index], 'text': text}
+        run.pop('_xml_space', None)
+        normalized.append(run)
+    return normalized
 
 
 def _letter_spacing_to_drawingml_spc(letter_spacing_px: float) -> str:
@@ -2384,7 +2378,7 @@ def _collect_tspan_runs(
     tspan: ET.Element,
     inherited_attrs: dict[str, Any],
     ctx: ConvertContext,
-    preserve_space: bool = False,
+    inherited_xml_space: str = 'default',
 ) -> list[dict[str, Any]]:
     """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
 
@@ -2392,23 +2386,27 @@ def _collect_tspan_runs(
     """
     runs: list[dict[str, Any]] = []
     own_attrs = _override_run_attrs(inherited_attrs, tspan, ctx)
-    child_preserve_space = preserve_space or _preserves_space(tspan)
+    own_xml_space = resolve_project_xml_space(tspan, inherited_xml_space)
 
     if tspan.text:
-        t = _normalize_text(tspan.text, preserve_space=child_preserve_space)
-        if t:
-            runs.append({**own_attrs, 'text': t})
+        runs.append({
+            **own_attrs,
+            'text': tspan.text,
+            '_xml_space': own_xml_space,
+        })
 
     for child in tspan:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
             runs.extend(
-                _collect_tspan_runs(child, own_attrs, ctx, child_preserve_space)
+                _collect_tspan_runs(child, own_attrs, ctx, own_xml_space)
             )
             if child.tail:
-                t = _normalize_text(child.tail, preserve_space=child_preserve_space)
-                if t:
-                    runs.append({**own_attrs, 'text': t})
+                runs.append({
+                    **own_attrs,
+                    'text': child.tail,
+                    '_xml_space': own_xml_space,
+                })
 
     return runs
 
@@ -2425,32 +2423,29 @@ def _build_text_runs(
     recursively so inline format changes inside a tspan still produce distinct runs.
     """
     runs: list[dict[str, Any]] = []
-    preserve_space = _preserves_space(elem)
+    xml_space = resolve_project_xml_space(elem)
 
     if elem.text:
-        t = _normalize_text(elem.text, preserve_space=preserve_space)
-        if t:
-            runs.append({**parent_attrs, 'text': t})
+        runs.append({
+            **parent_attrs,
+            'text': elem.text,
+            '_xml_space': xml_space,
+        })
 
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
             runs.extend(
-                _collect_tspan_runs(child, parent_attrs, ctx, preserve_space)
+                _collect_tspan_runs(child, parent_attrs, ctx, xml_space)
             )
             if child.tail:
-                t = _normalize_text(child.tail, preserve_space=preserve_space)
-                if t:
-                    runs.append({**parent_attrs, 'text': t})
+                runs.append({
+                    **parent_attrs,
+                    'text': child.tail,
+                    '_xml_space': xml_space,
+                })
 
-    # Strip the paragraph's overall leading / trailing whitespace once unless
-    # xml:space="preserve" asks us to keep source indentation.
-    if runs and not preserve_space:
-        runs[0]['text'] = runs[0]['text'].lstrip(' ')
-        runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
-        runs = [r for r in runs if r['text']]
-
-    return runs
+    return _normalize_text_run_whitespace(runs)
 
 
 def _build_text_fill_xml(
@@ -2712,7 +2707,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # has room to wrap text to the SVG's original line widths.
     visual_line_widths: list[float] = []
     if line_height_px is not None and line_height_px > 0:
-        preserve_space = _preserves_space(elem)
+        xml_space = resolve_project_xml_space(elem)
         paragraph_runs = []
         for child in elem:
             if child.tag != f'{{{SVG_NS}}}tspan':
@@ -2721,12 +2716,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 child,
                 parent_attrs,
                 ctx,
-                preserve_space,
+                xml_space,
             )
-            if line_runs and not preserve_space:
-                line_runs[0]['text'] = line_runs[0]['text'].lstrip(' ')
-                line_runs[-1]['text'] = line_runs[-1]['text'].rstrip(' ')
-                line_runs = [r for r in line_runs if r['text']]
+            line_runs = _normalize_text_run_whitespace(line_runs)
             if not line_runs:
                 continue
             visual_line_widths.append(

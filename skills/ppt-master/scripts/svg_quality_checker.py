@@ -198,16 +198,20 @@ except ImportError:
 
 try:
     from svg_to_pptx.drawingml.text_properties import (
+        normalize_project_text_segments as _normalize_project_text_segments,
         parse_project_font_weight as _parse_project_font_weight,
         parse_project_text_anchor as _parse_project_text_anchor,
         project_text_property_diagnostics as _project_text_property_diagnostics,
+        resolve_project_xml_space as _resolve_project_xml_space,
         resolve_project_font_sizes as _resolve_project_font_sizes,
         resolve_project_letter_spacings as _resolve_project_letter_spacings,
     )
 except ImportError:
+    _normalize_project_text_segments = None
     _parse_project_font_weight = None
     _parse_project_text_anchor = None
     _project_text_property_diagnostics = None
+    _resolve_project_xml_space = None
     _resolve_project_font_sizes = None
     _resolve_project_letter_spacings = None
 
@@ -2453,22 +2457,27 @@ class SVGQualityChecker:
         text_el: ET.Element,
     ) -> List[Tuple[ET.Element, str]] | None:
         """Return normalized inline runs, or ``None`` for positioned text."""
-        runs: List[Tuple[ET.Element, str]] = []
+        if (
+            _normalize_project_text_segments is None
+            or _resolve_project_xml_space is None
+        ):
+            return None
+        raw_runs: List[Tuple[ET.Element, str, str]] = []
 
-        def preserves_space(elem: ET.Element) -> bool:
-            return (
-                elem.get('{http://www.w3.org/XML/1998/namespace}space')
-                or elem.get('xml:space')
-            ) == 'preserve'
+        def append_run(owner: ET.Element, raw: str, xml_space: str) -> None:
+            if raw:
+                raw_runs.append((owner, xml_space, raw))
 
-        def append_run(owner: ET.Element, raw: str, preserve: bool) -> None:
-            normalized = raw if preserve else re.sub(r'\s+', ' ', raw)
-            if normalized:
-                runs.append((owner, normalized))
-
-        def collect(container: ET.Element, preserve: bool) -> bool:
+        def collect(container: ET.Element, inherited_xml_space: str) -> bool:
+            try:
+                xml_space = _resolve_project_xml_space(
+                    container,
+                    inherited_xml_space,
+                )
+            except ValueError:
+                return False
             if container.text:
-                append_run(container, container.text, preserve)
+                append_run(container, container.text, xml_space)
             for child in list(container):
                 if not cls._is_tspan(child):
                     return False
@@ -2479,24 +2488,22 @@ class SVGQualityChecker:
                     for name in child.attrib
                 ):
                     return False
-                child_preserve = preserve or preserves_space(child)
-                if not collect(child, child_preserve):
+                if not collect(child, xml_space):
                     return False
                 if child.tail:
-                    append_run(container, child.tail, preserve)
+                    append_run(container, child.tail, xml_space)
             return True
 
-        preserve = preserves_space(text_el)
-        if not collect(text_el, preserve):
+        if not collect(text_el, 'default'):
             return None
-        if any('\n' in text or '\r' in text for _owner, text in runs):
-            return None
-        if runs and not preserve:
-            owner, text = runs[0]
-            runs[0] = (owner, text.lstrip(' '))
-            owner, text = runs[-1]
-            runs[-1] = (owner, text.rstrip(' '))
-        return [(owner, text) for owner, text in runs if text]
+        normalized = _normalize_project_text_segments([
+            (xml_space, raw)
+            for _owner, xml_space, raw in raw_runs
+        ])
+        return [
+            (raw_runs[index][0], text)
+            for index, text in normalized
+        ]
 
     @staticmethod
     def _unchanged_txbody_group_ids(

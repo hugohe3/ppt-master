@@ -108,6 +108,7 @@ PowerPoint 意图
 | 文本框 | `<text>` | 带 `p:txBody` 的可编辑 `p:sp` | 重建为 `<text>`，需要时含 `<tspan>` | 文本必须是良构 XML，且仅使用已登记属性 |
 | 行内混合格式 | 不带定位的 `<tspan>` run | 同一文本框内的 DrawingML run | `Native-normalized`；已登记 run 格式仍可编辑 | 改变文本框几何的定位可能会拆分结果 |
 | 多段落 | 可合并的 text/tspan 结构 | 同一文本框内的多个 `a:p` 段落 | `Native-normalized` | 严格独立定位的行可保持为独立文本框 |
+| 有意义的文本空白 | `<text>`/`<tspan>` 上精确的 `xml:space="default"` 或 `xml:space="preserve"` | 可编辑 DrawingML run 中归一化或保留的 U+0020 文本 | `Native-normalized`；保留行内 run 所有权 | 使用项目 Chromium/SVG2 合同：LF/TAB 转为空格，`default` 跨 run 折叠，`preserve` 全部保留，Unicode 间隔字符保持字面值；CSS `white-space` 与 SVG 1.1 遗留换行删除不在映射内 |
 | 字体 | 根据项目 lock 解析的规范 `font-family` | 直接 typeface 或已登记 theme font | 在安装字体/替换边界内为 `Native-stable` | 校验会报告未锁定或不可用字体 |
 | 字号 | 有限、无单位的 SVG px，例如 `font-size="24"` | DrawingML 百分之一磅；`1 px = 0.75 pt` | 单位转换后为 `Native-stable` | 生成创作只使用无单位 px；已登记历史单位是会产生 warning 的兼容输入，未知单位为 error；DrawingML 下限为 1 pt |
 | 字重 | `<text>`/`<tspan>` 上已登记的 `font-weight` | DrawingML 常规/粗体 run 开关 | `Native-normalized`；数值字重会折叠到 DrawingML 布尔边界 | 精确取值语法与别名属于 [`shared-standards.md` §6.7](../../skills/ppt-master/references/shared-standards.md#67-advanced-text-treatments) |
