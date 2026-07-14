@@ -664,6 +664,13 @@ retain only the first stop. Stop alpha and element opacity multiply.
 The quality checker and exporter preflight both validate definition location,
 references, gradient structure, and paint context from the same closed contract.
 
+**Hard rule — non-degenerate gradient geometry**: an `objectBoundingBox`
+gradient stroke requires non-zero intrinsic width and height. SVG stroke width
+does not expand that object bounding box, so a perfectly horizontal or vertical
+gradient ribbon disappears even when its stroke is thick. Author such a ribbon
+as a closed shape with gradient `fill`, or use a path whose intrinsic geometry
+has both dimensions. Checker and exporter reject the degenerate stroke form.
+
 ```xml
 <defs>
   <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
@@ -1041,7 +1048,7 @@ browser-filter permissions.
 | Halftone | Sparse calculated circles | `Native-stable`; bake dense screens / use suitable §7 preset |
 | Isometric facets | Shared-vertex top/front/side polygons, one light direction | 2D only; `Native-normalized` |
 | Paper cut | Ordered organic paths + consistent §6.4 shadow per layer | Filter each layer, not group; `Approximate` |
-| Gradient ribbon | Thick cubic path + §6.3 gradient stroke | `Native-normalized`; no mesh gradient; re-import may flatten color |
+| Gradient ribbon | Non-degenerate cubic path + §6.3 gradient stroke; closed gradient-filled shape for horizontal/vertical ribbons | `Native-normalized`; no mesh gradient; re-import may flatten color |
 | Line-plus-area data | Low-alpha closed area first, crisp line above | Keep area subordinate; `Native-normalized` |
 
 **Minimal construction anchors**:

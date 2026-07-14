@@ -165,6 +165,61 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'invalid project gradient',
         )
 
+    def test_degenerate_gradient_stroke_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <path d="M100 200 C260 200 420 200 620 200" fill="none"
+        stroke="url(#flow)" stroke-width="40"/>
+</svg>''',
+            'objectBoundingBox gradients do not include stroke width',
+            'invalid project gradient',
+        )
+
+    def test_isolated_move_does_not_expand_gradient_stroke_bounds(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <path d="M100 200 H620 M100 201" fill="none"
+        stroke="url(#flow)" stroke-width="40"/>
+</svg>''',
+            'zero intrinsic height',
+            'invalid project gradient',
+        )
+
+    def test_expanded_use_gradient_stroke_matches_exporter_preflight(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+    <symbol id="edge" viewBox="0 0 100 20">
+      <path d="M0 10 H100" fill="none"/>
+    </symbol>
+  </defs>
+  <g stroke="url(#flow)" stroke-width="10">
+    <use href="#edge" x="100" y="100" width="200" height="40"/>
+  </g>
+</svg>''',
+            'zero intrinsic height',
+            'invalid project gradient',
+        )
+
     def test_invalid_filter_contract_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
             '''<svg xmlns="http://www.w3.org/2000/svg"

@@ -150,11 +150,13 @@ try:
         iter_project_freeform_geometry as _iter_project_freeform_geometry,
         noncanonical_path_numbers as _noncanonical_path_numbers,
         noncanonical_points_numbers as _noncanonical_points_numbers,
+        project_gradient_geometry_errors as _project_gradient_geometry_errors,
     )
 except ImportError:
     _iter_project_freeform_geometry = None
     _noncanonical_path_numbers = None
     _noncanonical_points_numbers = None
+    _project_gradient_geometry_errors = None
 
 try:
     from svg_to_pptx.drawingml.converter import (
@@ -1807,13 +1809,32 @@ class SVGQualityChecker:
 
     def _check_gradient_interfaces(self, root: ET.Element, result: Dict) -> None:
         """Validate the normalized native gradient authoring interface."""
-        if _project_gradient_errors is None:
+        if (
+            _project_gradient_errors is None
+            or _project_gradient_geometry_errors is None
+        ):
             result['warnings'].append(
                 "Unable to import the shared gradient validator; native export "
                 "will still validate gradient definitions."
             )
             return
-        result['errors'].extend(_project_gradient_errors(root))
+        gradient_errors = set(_project_gradient_errors(root))
+        gradient_errors.update(_project_gradient_geometry_errors(root))
+        if (
+            _expand_local_use_references is not None
+            and _UseExpansionError is not None
+        ):
+            expanded_root = copy.deepcopy(root)
+            try:
+                _expand_local_use_references(expanded_root)
+            except _UseExpansionError:
+                # The local-reference check owns the actionable diagnostic.
+                pass
+            else:
+                gradient_errors.update(
+                    _project_gradient_geometry_errors(expanded_root)
+                )
+        result['errors'].extend(sorted(gradient_errors))
 
     def _check_geometry_length_values(
         self,

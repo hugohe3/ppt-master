@@ -81,7 +81,7 @@
         <circle cx="-133.4" cy="77" r="5" fill="#FFFFFF" stroke="#F43F5E" stroke-width="2.5"/>
         <circle cx="-123.8" cy="-71.5" r="5" fill="#FFFFFF" stroke="#F43F5E" stroke-width="2.5"/>
         <!-- Product A Area -->
-        <polygon points="0,-198 162,-93.5 143,82.5 0,154 -152.4,88 -167.7,-96.8" fill="url(#gradProdA)" stroke="#4F46E5" stroke-width="3" filter="url(#cardShadow)"/>
+        <polygon points="0,-198 162,-93.5 143,82.5 0,154 -152.4,88 -167.7,-96.8" fill="url(#gradProdA)" stroke="#4F46E5" stroke-width="3"/>
         <circle cx="0" cy="-198" r="5" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2.5"/>
         <circle cx="162" cy="-93.5" r="5" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2.5"/>
         <circle cx="143" cy="82.5" r="5" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2.5"/>

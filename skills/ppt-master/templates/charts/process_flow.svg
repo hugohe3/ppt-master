@@ -44,7 +44,8 @@
         <rect x="605" y="270" width="30" height="24" rx="4" fill="#F8FAFC" />
         <text x="620" y="287" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#EF4444" text-anchor="middle">No</text>
         <!-- Re-eval -> Req (Loop back) -->
-        <path d="M 530,360 L 370,360 L 370,245" fill="none" stroke="#F97316" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#arrowOrange)" />
+        <line x1="530" y1="360" x2="370" y2="360" stroke="#F97316" stroke-width="3" stroke-dasharray="6 4" stroke-linecap="round" />
+        <line x1="370" y1="360" x2="370" y2="245" stroke="#F97316" stroke-width="3" stroke-dasharray="6 4" stroke-linecap="round" marker-end="url(#arrowOrange)" />
         <!-- Design -> Dev -->
         <line x1="890" y1="240" x2="890" y2="315" stroke="#64748B" stroke-width="3" marker-end="url(#arrowMain)" />
         <!-- Dev -> Test -->

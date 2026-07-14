@@ -30,7 +30,7 @@
   </text>
   <!-- ==================== Left Row Label (Stages) ==================== -->
   <rect x="30" y="150" width="30" height="30" rx="6" fill="#334155"/>
-  <text x="45" y="171" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">→</text>
+  <path d="M 36 162 H 47 V 158 L 55 165 L 47 172 V 168 H 36 Z" fill="#FFFFFF"/>
   <text x="45" y="350" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" letter-spacing="4" transform="rotate(-90, 45, 350)">PIPELINE STAGES</text>
   <!-- ==================== Main Pipeline Frame ==================== -->
   <rect x="100" y="150" width="1150" height="36" fill="#F8FAFC" rx="8"/>
@@ -151,7 +151,7 @@
   </g>
   <!-- ==================== Bottom Flow Diagram ==================== -->
   <rect x="30" y="610" width="30" height="30" rx="6" fill="#334155"/>
-  <text x="45" y="631" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">→</text>
+  <path d="M 36 622 H 47 V 618 L 55 625 L 47 632 V 628 H 36 Z" fill="#FFFFFF"/>
   <text x="45" y="675" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" transform="rotate(-90, 45, 675)">END TO END</text>
   <rect x="100" y="610" width="1150" height="90" rx="8" fill="none" stroke="#E2E8F0" stroke-width="2"/>
   <text x="675" y="632" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="0.5">Origin: Raw Data ————— 5-Stage Processing ————— Destination: Business Products</text>

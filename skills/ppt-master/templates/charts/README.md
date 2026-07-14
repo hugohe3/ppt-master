@@ -12,6 +12,31 @@ To browse the library, open `charts_index.json` and scan the `charts` block top-
 
 See [`CHART_STYLE_GUIDE.md`](./CHART_STYLE_GUIDE.md) for color palette, typography, and SVG authoring conventions all templates must follow.
 
+## Visualization output model
+
+This library is **Shape-first**. Infographics, process diagrams, architecture
+diagrams, frameworks, and the default rendering of data charts export as
+independently editable PowerPoint shapes:
+
+- Use ordinary SVG primitives for basic nodes and containers. Thin directional
+  relationships use `<line>` / supported open `<path>` geometry with registered
+  arrow markers; they remain static editable shapes and do not create node
+  attachment or automatic routing.
+- Use a stock PowerPoint preset for a solid block arrow, chevron, or standard
+  flowchart node only when adapting the selected template into the final page.
+  Generate that page-specific fragment with `preset_shape_svg.py`; never freeze
+  its frame/fingerprint-bearing output inside a reusable chart template.
+- Keep custom contours, branded geometry, and data-driven marks as ordinary
+  `<path>` / `<polygon>` geometry. They still export as editable DrawingML
+  shapes; native preset identity is not required for editability.
+- Do not put authored Connector metadata or endpoint attachment metadata in
+  this template library. Existing Connector topology imported from a source
+  PPTX belongs to the preserve/mirror round-trip contract, not chart-template
+  authoring.
+
+Data-backed charts retain the separate opt-in replacement route described
+below. Conceptual diagrams and frameworks are never labeled as native charts.
+
 ## Native Chart/Table replacement markers
 
 Supported data chart templates include a `<g data-pptx-replace-with="chart">` marker by default, and pure text-grid table templates include a `<g data-pptx-replace-with="table">` marker the same way. The default SVG export path is unchanged: the fallback vector artwork is exported as shape-based DrawingML exactly as drawn. When `svg_to_pptx.py --native-charts-and-tables` is enabled, that fallback group is replaced with a native PowerPoint Chart or Table object using the JSON metadata inside its child `<metadata type="application/json">` node. The legacy `--native-objects` spelling remains a compatibility alias.

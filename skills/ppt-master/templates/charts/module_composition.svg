@@ -7,16 +7,8 @@
     -->
     <defs>
         <marker id="mcArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L10,5 L0,10 Z" fill="#94A3B8"/>
+            <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
         </marker>
-        <!-- Standard Card Drop Shadow -->
-        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
     </defs>
     <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
@@ -33,7 +25,7 @@
     <rect x="100" y="150" width="1140" height="430" rx="12" fill="#F8FAFC" fill-opacity="0.6" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="6 4"/>
     <text x="670" y="175" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#2563EB" letter-spacing="1">PARENT CONTAINER · RECOMMENDATION PIPELINE · INPUT: CONTEXT → OUTPUT: EXPOSURE</text>
     <!-- ==================== Card 1: Recall ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="130" y="200" width="340" height="352" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <!-- Header & Badge -->
         <rect x="130" y="220" width="6" height="40" rx="3" fill="#3B82F6"/>
@@ -66,7 +58,7 @@
     <!-- Arrow 1-2 -->
     <line x1="475" y1="376" x2="495" y2="376" stroke="#CBD5E1" stroke-width="3" marker-end="url(#mcArrow)"/>
     <!-- ==================== Card 2: Ranking ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="500" y="200" width="340" height="352" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <!-- Header & Badge -->
         <rect x="500" y="220" width="6" height="40" rx="3" fill="#6366F1"/>
@@ -99,7 +91,7 @@
     <!-- Arrow 2-3 -->
     <line x1="845" y1="376" x2="865" y2="376" stroke="#CBD5E1" stroke-width="3" marker-end="url(#mcArrow)"/>
     <!-- ==================== Card 3: Rerank ==================== -->
-    <g filter="url(#cardShadow)">
+    <g>
         <rect x="870" y="200" width="340" height="352" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <!-- Header & Badge -->
         <rect x="870" y="220" width="6" height="40" rx="3" fill="#8B5CF6"/>
@@ -131,7 +123,8 @@
     </g>
     <!-- ==================== Bottom Section: Data Flow ==================== -->
     <rect x="40" y="610" width="40" height="80" rx="8" fill="#64748B"/>
-    <text x="60" y="658" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#FFFFFF">⇄</text>
+    <path d="M 47 636 H 64 V 631 L 74 641 L 64 651 V 646 H 47 Z" fill="#FFFFFF"/>
+    <path d="M 73 664 H 56 V 669 L 46 659 L 56 649 V 654 H 73 Z" fill="#FFFFFF"/>
     <rect x="100" y="610" width="1140" height="80" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6 4"/>
     <text x="670" y="632" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569" letter-spacing="1">END-TO-END DATA FLOW · UPSTREAM LOGS → ENGINE PROCESSING → DOWNSTREAM FEEDBACK</text>
     <!-- Flow Baseline -->

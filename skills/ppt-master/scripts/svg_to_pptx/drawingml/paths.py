@@ -12,7 +12,14 @@ from collections.abc import Iterator
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
-from .utils import SVG_NS, px_to_emu
+from .utils import (
+    SVG_NS,
+    parse_inline_style,
+    parse_project_geometry_length,
+    project_definition_index,
+    px_to_emu,
+    resolve_url_id,
+)
 
 
 @dataclass
@@ -324,6 +331,134 @@ def project_freeform_geometry_errors(root: ET.Element) -> list[str]:
         except ValueError as exc:
             errors.append(f'{label} {attribute}: {exc}')
     return errors
+
+
+def _project_path_like_bounds(
+    elem: ET.Element,
+) -> tuple[float, float, float, float] | None:
+    """Return intrinsic bounds for line-like SVG geometry."""
+    tag = elem.tag.rsplit('}', 1)[-1] if '}' in str(elem.tag) else str(elem.tag)
+    points: list[tuple[float, float]] = []
+
+    if tag == 'line':
+        points = [
+            (
+                parse_project_geometry_length(elem.get('x1', '0'), 'x1'),
+                parse_project_geometry_length(elem.get('y1', '0'), 'y1'),
+            ),
+            (
+                parse_project_geometry_length(elem.get('x2', '0'), 'x2'),
+                parse_project_geometry_length(elem.get('y2', '0'), 'y2'),
+            ),
+        ]
+    elif tag in {'polygon', 'polyline'}:
+        min_points = 3 if tag == 'polygon' else 2
+        points = parse_svg_points(elem.get('points', ''), min_points=min_points)
+    elif tag == 'path':
+        commands = normalize_path_commands(
+            svg_path_to_absolute(parse_svg_path(elem.get('d', '')))
+        )
+        current_point: tuple[float, float] | None = None
+        subpath_start: tuple[float, float] | None = None
+        for command in commands:
+            if command.cmd == 'M':
+                current_point = (command.args[0], command.args[1])
+                subpath_start = current_point
+            elif command.cmd == 'L':
+                end_point = (command.args[0], command.args[1])
+                if current_point is not None:
+                    points.extend((current_point, end_point))
+                current_point = end_point
+            elif command.cmd == 'C':
+                if current_point is not None:
+                    points.append(current_point)
+                points.extend(
+                    (command.args[index], command.args[index + 1])
+                    for index in range(0, 6, 2)
+                )
+                current_point = (command.args[4], command.args[5])
+            elif command.cmd == 'Z' and current_point is not None:
+                if subpath_start is not None:
+                    points.extend((current_point, subpath_start))
+                    current_point = subpath_start
+
+    if not points:
+        return None
+    xs = [point[0] for point in points]
+    ys = [point[1] for point in points]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def project_gradient_geometry_errors(root: ET.Element) -> list[str]:
+    """Reject object-bounding-box gradient strokes on degenerate geometry."""
+    definitions, _duplicates = project_definition_index(root)
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    errors: set[str] = set()
+
+    for elem in root.iter():
+        tag = elem.tag.rsplit('}', 1)[-1] if '}' in str(elem.tag) else str(elem.tag)
+        if tag not in {'line', 'path', 'polygon', 'polyline'}:
+            continue
+
+        current: ET.Element | None = elem
+        stroke: str | None = None
+        while current is not None:
+            style_values = parse_inline_style(current.get('style'))
+            if 'stroke' in style_values:
+                stroke = style_values['stroke']
+                break
+            if current.get('stroke') is not None:
+                stroke = current.get('stroke')
+                break
+            current = parent_by_id.get(id(current))
+
+        gradient_id = resolve_url_id(stroke)
+        gradient = definitions.get(gradient_id) if gradient_id else None
+        if gradient is None:
+            continue
+        gradient_tag = (
+            gradient.tag.rsplit('}', 1)[-1]
+            if '}' in str(gradient.tag)
+            else str(gradient.tag)
+        )
+        if gradient_tag not in {'linearGradient', 'radialGradient'}:
+            continue
+        if gradient.get('gradientUnits') not in {None, 'objectBoundingBox'}:
+            continue
+
+        try:
+            bounds = _project_path_like_bounds(elem)
+        except ValueError:
+            # The existing geometry preflight owns malformed geometry errors.
+            continue
+        if bounds is None:
+            continue
+        min_x, min_y, max_x, max_y = bounds
+        zero_width = math.isclose(
+            min_x, max_x, rel_tol=0.0, abs_tol=1e-9
+        )
+        zero_height = math.isclose(
+            min_y, max_y, rel_tol=0.0, abs_tol=1e-9
+        )
+        if not zero_width and not zero_height:
+            continue
+
+        dimension = 'width and height' if zero_width and zero_height else (
+            'width' if zero_width else 'height'
+        )
+        elem_id = elem.get('id')
+        label = f'<{tag} id={elem_id!r}>' if elem_id else f'<{tag}>'
+        errors.add(
+            f'{label} stroke=url(#{gradient_id}) has zero intrinsic {dimension}; '
+            'objectBoundingBox gradients do not include stroke width and will '
+            'not render. Use a non-degenerate path or a closed filled shape'
+        )
+
+    return sorted(errors)
 
 
 def svg_path_to_absolute(commands: list[PathCommand]) -> list[PathCommand]:

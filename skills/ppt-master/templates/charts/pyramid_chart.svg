@@ -38,7 +38,7 @@
             <line x1="600" y1="540" x2="680" y2="540" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.8"/>
         </g>
         <!-- ==================== Pyramid Object ==================== -->
-        <g filter="url(#cardShadow)">
+        <g>
             <!-- L1 (Base) -->
             <polygon points="144,500 576,500 624,580 96,580" fill="#06B6D4" />
             <!-- L2 -->

@@ -3,19 +3,9 @@
     Chevron Chain with Tail Template
     Structure: 4-6 sequential chevron blocks + a final wedge representing the aggregate outcome
     Use cases: Porter's value chain (primary + support activities mapped to margin), process leading to a summary deliverable, contribution chain ending in a result
-    Design Principles: Interlocking chevron blocks with right-facing outcome wedge in accent color. Differs from chevron_process by the appended summary tail. Single subtle shadow on the whole chain to keep §3 shadow budget under 3.
+    Design Principles: Interlocking chevron blocks with right-facing outcome wedge in accent color. Differs from chevron_process by the appended summary tail.
     -->
     <defs>
-        <filter id="chainShadow" x="-3%" y="-8%" width="106%" height="116%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="3" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge>
-                <feMergeNode in="shadow"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
         <linearGradient id="marginGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#10B981"/>
             <stop offset="100%" stop-color="#059669"/>
@@ -57,8 +47,8 @@
         <tspan>PRIMARY ACTIVITIES</tspan>
     </text>
 
-    <!-- ==================== Value Chain (shadow on group) ==================== -->
-    <g id="chain" filter="url(#chainShadow)">
+    <!-- ==================== Value Chain ==================== -->
+    <g id="chain">
         <!-- ===== Support Activities: 4 horizontal bars, aligned right edge to last chevron point at x=980 ===== -->
         <g id="support">
             <rect x="60" y="140" width="920" height="44" rx="6" fill="#DBEAFE"/>

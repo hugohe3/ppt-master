@@ -269,6 +269,25 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 [`shared-standards.md`](../../references/shared-standards.md)；新增或修改模板时，
 必须对目标文件运行 `svg_quality_checker.py` 并通过校验。
 
+### 6.1 Shape-first 对象模型
+
+`templates/charts/` 的图示默认由独立、可编辑的 PowerPoint Shape 组成，
+不依赖节点吸附、自动布线或 Connector attachment：
+
+| 图示对象 | 模板表达 | 最终 PPTX / 页面创作规则 |
+|---|---|---|
+| 基础节点与容器 | `<rect>`、`<circle>`、`<ellipse>` | 导出为原生可编辑 Shape |
+| 细关系线或方向箭头 | `<line>`；折线路径优先拆成少量线段，仅末段带已登记 marker | 导出为静态可编辑线形状，不创建 `p:cxnSp` |
+| 实心块箭头、chevron、标准流程节点 | 模板只表达结构与视觉意图 | 生成实际页面时，若纯色 preset 精确匹配，则调用 `preset_shape_svg.py` 生成普通 `shape`；不得把 helper 片段冻结进模板 |
+| 自定义轮廓、品牌图形、数据几何 | `<path>`、`<polygon>` | 导出为可编辑 `p:sp/a:custGeom`，无需伪装成 preset |
+| 数据图表 | SVG Shape fallback；符合合同的模板可带 chart replacement marker | 默认仍为 Shape 图表；仅显式 opt-in 时替换为 native Chart |
+
+**硬规则**：图表模板不得包含 `data-pptx-object="connector"`、Connector
+端点 attachment metadata，或 helper 生成的 authored-preset carrier。
+概念流程图、架构图、关系图也不得添加
+`data-pptx-replace-with="chart"`。来源 PPTX 已有 Connector 的导入/回导保真
+属于独立合同，不通过模板示例扩张到新页面创作。
+
 ---
 
 ## 7. 旧色映射速查表
@@ -363,6 +382,9 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 ### 结构
 - [ ] 主要元素有语义化 `<g id="...">`
 - [ ] `svg_quality_checker.py` 对目标模板通过；通用 SVG 合同不在本清单复述
+- [ ] 细关系箭头使用普通 line/path Shape，不含 Connector 或 attachment metadata
+- [ ] helper 生成的 preset 片段未冻结进模板；实心 stock shape 在实际页面中按 frame/paint 重新生成
+- [ ] 只有受支持的数据图表/文本表格使用 replacement marker；概念图示不冒充 native Chart
 
 ### 阴影
 - [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）
@@ -473,7 +495,7 @@ echo "Small fonts:" && grep -c 'font-size="[0-9]"' "skills/ppt-master/templates/
 
 **判定**："4 个并列方面" → 2×2；"3 个并列方面" → 1×3；"6 个能力点" → 2×3；"4 个关键指标" → 1×4。`page_rhythm` 标 `breathing` 的页面 **不要** 用卡片网格（见 executor-base.md §2.1）。
 
-### 11.5 倾斜虚线连接箭头 (Diagonal Dashed Connector)
+### 11.5 倾斜虚线关系箭头 (Diagonal Dashed Relationship Arrow)
 
 **用途**：表达"跨象限/跨层级"的关系——优先级迁移、影响传导、虚线汇报、对角趋势。水平/垂直箭头表达的是"流程进度"，倾斜虚线箭头表达的是"关系或方向引导"，两者语义不一样。
 

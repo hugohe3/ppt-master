@@ -11,20 +11,6 @@
             <stop offset="0%" stop-color="#FFFFFF"/>
             <stop offset="100%" stop-color="#F1F5F9"/>
         </radialGradient>
-        <!-- Text Glow for Core Keywords -->
-        <filter id="textGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2"/>
-            <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
-            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <!-- Pill Shadow -->
-        <filter id="pillShadow" x="-10%" y="-20%" width="120%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-            <feOffset dx="0" dy="2"/>
-            <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
-            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
     </defs>
     <!-- Background -->
     <rect width="1280" height="720" fill="url(#bgGrad)"/>
@@ -34,12 +20,12 @@
     <!-- ==================== Word Cloud Geometry ==================== -->
     <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
         <!-- Tier 1: Extreme (Center Core) -->
-        <g font-weight="900" font-size="64" letter-spacing="-1" filter="url(#textGlow)">
+        <g font-weight="900" font-size="64" letter-spacing="-1">
             <text x="640" y="340" fill="#4F46E5">Artificial Intelligence</text>
             <text x="640" y="420" fill="#7C3AED">Large Language Models</text>
         </g>
         <!-- Tier 2: High (Inner Ring) -->
-        <g font-weight="800" font-size="44" letter-spacing="-0.5" filter="url(#textGlow)">
+        <g font-weight="800" font-size="44" letter-spacing="-0.5">
             <text x="320" y="280" fill="#F43F5E">Digital Transformation</text>
             <text x="960" y="280" fill="#0EA5E9">Cloud Computing</text>
             <text x="320" y="480" fill="#10B981">Smart Manufacturing</text>
@@ -84,7 +70,7 @@
         </g>
     </g>
     <!-- ==================== UI Legend ==================== -->
-    <g filter="url(#pillShadow)">
+    <g>
         <rect x="340" y="640" width="600" height="40" rx="20" fill="#FFFFFF"/>
     </g>
     <text x="640" y="665" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="600" fill="#475569" text-anchor="middle">

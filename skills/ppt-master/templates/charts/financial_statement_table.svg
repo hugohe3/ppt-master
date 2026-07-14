@@ -204,9 +204,7 @@
         <!-- Double lines for final total -->
         <line x1="0" y1="475" x2="1120" y2="475" stroke="#0F172A" stroke-width="2"/>
         <line x1="0" y1="480" x2="1120" y2="480" stroke="#0F172A" stroke-width="1"/>
-        <g filter="url(#bottomGlow)">
-            <rect x="0" y="485" width="1120" height="60" fill="#FFFFFF"/>
-        </g>
+        <rect x="0" y="485" width="1120" height="60" fill="#FFFFFF" filter="url(#bottomGlow)"/>
         <text x="20" y="522" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="800" fill="#0F172A">Net Operating Income</text>
         <text x="460" y="522" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="700" fill="#0F172A" text-anchor="end">42.0</text>
         <text x="640" y="522" font-family="Roboto, -apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="700" fill="#0F172A" text-anchor="end">51.5</text>

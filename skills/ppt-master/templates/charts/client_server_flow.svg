@@ -15,13 +15,6 @@
                 orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L10,5 L0,10 Z" fill="#10B981"/>
         </marker>
-        <filter id="csShadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
-            <feOffset dx="0" dy="4" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
     </defs>
     <rect width="1280" height="720" fill="#FFFFFF"/>
     <!-- Title -->
@@ -38,7 +31,7 @@
           font-size="16" font-weight="700" fill="#FFFFFF">CLIENT</text>
     <g id="client-1">
     <!-- Client Module 1: Web -->
-    <g filter="url(#csShadow)">
+    <g>
         <rect x="90" y="200" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1"/>
     </g>
     <rect x="90" y="200" width="6" height="100" fill="#3B82F6"/>
@@ -53,7 +46,7 @@
         </g>
     <g id="client-2">
     <!-- Client Module 2: Mobile -->
-    <g filter="url(#csShadow)">
+    <g>
         <rect x="90" y="320" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1"/>
     </g>
     <rect x="90" y="320" width="6" height="100" fill="#3B82F6"/>
@@ -68,7 +61,7 @@
         </g>
     <g id="client-3">
     <!-- Client Module 3: Third-party -->
-    <g filter="url(#csShadow)">
+    <g>
         <rect x="90" y="440" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1"/>
     </g>
     <rect x="90" y="440" width="6" height="100" fill="#3B82F6"/>
@@ -91,7 +84,7 @@
           font-size="16" font-weight="700" fill="#FFFFFF">SERVER</text>
     <g id="server-1">
     <!-- Server Module 1: Gateway -->
-    <g filter="url(#csShadow)">
+    <g>
         <rect x="930" y="200" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1"/>
     </g>
     <rect x="930" y="200" width="6" height="100" fill="#10B981"/>
@@ -106,7 +99,7 @@
         </g>
     <g id="server-2">
     <!-- Server Module 2: Services -->
-    <g filter="url(#csShadow)">
+    <g>
         <rect x="930" y="320" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1"/>
     </g>
     <rect x="930" y="320" width="6" height="100" fill="#10B981"/>
@@ -121,7 +114,7 @@
         </g>
     <g id="server-3">
     <!-- Server Module 3: Data -->
-    <g filter="url(#csShadow)">
+    <g>
         <rect x="930" y="440" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1"/>
     </g>
     <rect x="930" y="440" width="6" height="100" fill="#10B981"/>

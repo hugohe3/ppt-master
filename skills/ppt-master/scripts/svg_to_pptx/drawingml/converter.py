@@ -27,7 +27,10 @@ from pptx_to_svg.preset_authoring import (
 from resource_paths import icon_search_dirs_for_svg
 
 from .context import ConvertContext, ShapeResult
-from .paths import project_freeform_geometry_errors
+from .paths import (
+    project_freeform_geometry_errors,
+    project_gradient_geometry_errors,
+)
 from .theme_colors import ThemeColorSpec
 from .theme_fonts import ThemeFontSpec
 from .utils import (
@@ -248,7 +251,7 @@ def _require_project_gradients(
     svg_path: Path | str,
 ) -> None:
     """Reject gradients outside the normalized native interface."""
-    errors = project_gradient_errors(root)
+    errors = project_gradient_errors(root) + project_gradient_geometry_errors(root)
     if not errors:
         return
     preview = '; '.join(errors[:8])

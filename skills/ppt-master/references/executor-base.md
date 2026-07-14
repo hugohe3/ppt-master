@@ -288,10 +288,14 @@ existing SVG, classify path contours, or upgrade ordinary SVG during export.
 helper generates them atomically from the shared 187-shape registry. Rerun the
 helper when geometry or paint changes.
 
-Connector-family presets require `--object-kind connector`, `fill="none"`, and
-a visible stroke. They export as unconnected `p:cxnSp`; do not hand-add
-endpoint/site metadata. `actionButton*` presets provide visual geometry only,
-not actions or hyperlinks.
+For chart-template and diagram authoring, thin relationships use ordinary
+`<line>` / supported open `<path>` geometry with registered arrow markers;
+solid directional blocks use ordinary `shape` presets such as `rightArrow` or
+`chevron`. Do not select a connector-family preset merely because two nodes are
+related, and never hand-add endpoint/site metadata. Connector-family presets
+remain available only for an explicit request for a standalone unconnected
+`p:cxnSp`; imported Connector topology stays under the preserve/mirror contract.
+`actionButton*` presets provide visual geometry only, not actions or hyperlinks.
 
 **Hard rule — narrow helper scope**: the helper prints one shape fragment to
 stdout. It does not write a page or choose layout. Read the fragment and insert
@@ -335,9 +339,12 @@ into `svg_output/`.
 grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 ```
 
-> All chart templates in `templates/charts/` include this marker as a reference. If you are drawing a chart and the marker is absent, you have a bug.
+> Calculator-supported data-chart templates in `templates/charts/` include this
+> marker as a reference. If a data chart covered by §3.1 lacks it, that is a
+> bug. Conceptual diagrams, frameworks, and other non-data visualizations in
+> the same library do not use a plot-area marker.
 - **Technical specs**: see [shared-standards.md](shared-standards.md) for SVG/PPT constraints
-- **Card containers — use the documented patterns**: when a content page needs section cards (4 quadrants, parallel aspects, capability blocks, info cards), use the patterns codified in [`templates/charts/CHART_STYLE_GUIDE.md`](../templates/charts/CHART_STYLE_GUIDE.md) §11 — half-rounded section tab (§11.1), nested card border without stroke (§11.2), card-grid skeletons (§11.3), diagonal dashed connector for cross-quadrant relationships (§11.5), ground-anchor ellipse as a non-filter depth marker (§11.6), bidirectional interaction arrows for paired protocols (§11.7). Do not reinvent the "tinted full-rounded rect + white cover-rect to hide the bottom corners" hack; it survives in older templates but breaks SVG→PPTX color editing. Reference templates: [`labeled_card.svg`](../templates/charts/labeled_card.svg), [`quadrant_text_bullets.svg`](../templates/charts/quadrant_text_bullets.svg), [`kpi_cards.svg`](../templates/charts/kpi_cards.svg), [`matrix_2x2.svg`](../templates/charts/matrix_2x2.svg), [`team_roster.svg`](../templates/charts/team_roster.svg), [`client_server_flow.svg`](../templates/charts/client_server_flow.svg).
+- **Card containers — use the documented patterns**: when a content page needs section cards (4 quadrants, parallel aspects, capability blocks, info cards), use the patterns codified in [`templates/charts/CHART_STYLE_GUIDE.md`](../templates/charts/CHART_STYLE_GUIDE.md) §11 — half-rounded section tab (§11.1), nested card border without stroke (§11.2), card-grid skeletons (§11.3), diagonal dashed relationship arrow for cross-quadrant relationships (§11.5), ground-anchor ellipse as a non-filter depth marker (§11.6), bidirectional interaction arrows for paired protocols (§11.7). Do not reinvent the "tinted full-rounded rect + white cover-rect to hide the bottom corners" hack; it survives in older templates but breaks SVG→PPTX color editing. Reference templates: [`labeled_card.svg`](../templates/charts/labeled_card.svg), [`quadrant_text_bullets.svg`](../templates/charts/quadrant_text_bullets.svg), [`kpi_cards.svg`](../templates/charts/kpi_cards.svg), [`matrix_2x2.svg`](../templates/charts/matrix_2x2.svg), [`team_roster.svg`](../templates/charts/team_roster.svg), [`client_server_flow.svg`](../templates/charts/client_server_flow.svg).
 - **Reference — prefer semantic shapes over preset stacks (not a constraint)**: when a slide needs to express "ascending / converging / breaking through / stacking" — i.e., a relationship that goes beyond a generic arrow — prefer a single custom `<polygon>` or `<path>` that encodes the semantics geometrically, rather than stacking multiple preset arrows. A converging-tip path or a podium polygon reads faster than three arrows pointing at a label. Examples of this technique appear in many imported corporate decks; see `projects/01_template_import/svg_output/slide_01.svg` shape-158 for a reference (gradient-filled inward-pointing arrow). Do not codify these as templates — they are page-specific; the rule is just "consider polygon before stacking presets."
 - **Reference — visual depth through restraint (not a constraint)**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Shadow typically suits 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow.
 

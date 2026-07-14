@@ -6,17 +6,6 @@
     Feature: Modern pill-stacked aesthetic, embedded data labels, AI Insight dashboard
     -->
     <defs>
-        <!-- Stack Shadow -->
-        <filter id="stackShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feFlood flood-color="#0F172A" flood-opacity="0.1" result="shadowColor"/>
-            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
-            <feMerge>
-                <feMergeNode in="shadow"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
         <!-- Panel Shadow -->
         <filter id="panelShadow" x="-10%" y="-10%" width="120%" height="120%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
@@ -79,7 +68,7 @@
         <!-- chart-plot-area: 140,150,1080,550 -->
         <!-- ==================== Stacked Bars ==================== -->
         <!-- Q1'24 (Total: 300) -->
-        <g filter="url(#stackShadow)">
+        <g>
             <rect x="196" y="438" width="80" height="112" rx="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="196" y="366" width="80" height="72" rx="4" fill="#0EA5E9" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="196" y="326" width="80" height="40" rx="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
@@ -92,7 +81,7 @@
         <text x="236" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">300</text>
         <text x="236" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">Q1'24</text>
         <!-- Q2'24 (Total: 350) -->
-        <g filter="url(#stackShadow)">
+        <g>
             <rect x="388" y="422" width="80" height="128" rx="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="388" y="342" width="80" height="80" rx="4" fill="#0EA5E9" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="388" y="294" width="80" height="48" rx="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
@@ -105,7 +94,7 @@
         <text x="428" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">350</text>
         <text x="428" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">Q2'24</text>
         <!-- Q3'24 (Total: 400) -->
-        <g filter="url(#stackShadow)">
+        <g>
             <rect x="580" y="406" width="80" height="144" rx="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="580" y="318" width="80" height="88" rx="4" fill="#0EA5E9" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="580" y="258" width="80" height="60" rx="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
@@ -118,7 +107,7 @@
         <text x="620" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">400</text>
         <text x="620" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">Q3'24</text>
         <!-- Q4'24 (Total: 450) -->
-        <g filter="url(#stackShadow)">
+        <g>
             <rect x="772" y="390" width="80" height="160" rx="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="772" y="294" width="80" height="96" rx="4" fill="#0EA5E9" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="772" y="222" width="80" height="72" rx="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
@@ -131,7 +120,7 @@
         <text x="812" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">450</text>
         <text x="812" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">Q4'24</text>
         <!-- Q1'25 (Total: 500) -->
-        <g filter="url(#stackShadow)">
+        <g>
             <rect x="964" y="374" width="80" height="176" rx="4" fill="#6366F1" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="964" y="270" width="80" height="104" rx="4" fill="#0EA5E9" stroke="#FFFFFF" stroke-width="2"/>
             <rect x="964" y="186" width="80" height="84" rx="4" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
