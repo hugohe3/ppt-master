@@ -992,6 +992,8 @@ fidelity.
 PPTX import accepts `a:ln@w` only as an integer DrawingML `ST_LineWidth` value
 from `0` through `20116800` EMU. Malformed, negative, or oversized source widths
 stop import instead of being dropped and replaced by a default SVG line width.
+The EMU-to-pixel token retains enough decimal precision for the smallest
+positive legal width to remain non-zero and quantize back to its source EMU.
 An explicit source `a:ln@cap` must be `flat`, `rnd`, or `sq`, which map to SVG
 `butt`, `round`, and `square`; unknown values stop import instead of falling
 back to the SVG default cap.

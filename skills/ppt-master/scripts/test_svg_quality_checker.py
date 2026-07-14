@@ -2665,6 +2665,22 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, expected):
                     resolve_stroke(sp_pr, None)
 
+    def test_minimum_positive_native_line_width_round_trips(self):
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln w="1"/>
+</p:spPr>''')
+        stroke = resolve_stroke(sp_pr, None)
+        width = stroke.attrs['stroke-width']
+        self.assertEqual(width, '0.0001')
+        line = ET.fromstring(
+            '<line xmlns="http://www.w3.org/2000/svg" '
+            f'stroke="#112233" stroke-width="{width}"/>'
+        )
+        stroke_xml = build_stroke_xml(line, ConvertContext())
+        self.assertIn('<a:ln w="1">', stroke_xml)
+
     def test_unknown_native_line_cap_is_rejected_on_import(self):
         sp_pr = ET.fromstring('''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"

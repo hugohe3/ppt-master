@@ -86,7 +86,7 @@ def resolve_stroke(
             ) from None
         validate_ooxml_line_width(width_value)
         width_px = emu_to_px(width_value)
-        attrs["stroke-width"] = fmt_num(width_px, 3)
+        attrs["stroke-width"] = fmt_num(width_px, 5)
 
     # Cap
     cap = ln.attrib.get("cap")
