@@ -2,6 +2,7 @@
 """Regression tests for SVG checker compatibility severity."""
 
 import base64
+import copy
 import contextlib
 import io
 import json
@@ -399,6 +400,117 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 # CT_TextCharacterProperties orders the effect group before
                 # hlinkClick / hlinkMouseOver / extLst.
                 run_properties.insert(0, ET.fromstring(effect_xml))
+            replacements[slide_part] = ET.tostring(
+                slide_root,
+                encoding='utf-8',
+                xml_declaration=True,
+            )
+
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
+
+    @staticmethod
+    def _write_table_run_effect_fixture(
+        path: Path,
+        cases: list[tuple[str, bool]],
+    ) -> None:
+        """Write one real table per run-effect placement and transform case."""
+        presentation = Presentation()
+        blank = presentation.slide_layouts[6]
+        for index, (_placement, _rotated) in enumerate(cases, start=1):
+            slide = presentation.slides.add_slide(blank)
+            frame = slide.shapes.add_table(
+                1,
+                1,
+                Emu(914400),
+                Emu(914400),
+                Emu(2743200),
+                Emu(914400),
+            )
+            frame.name = f'TABLE EFFECT TEXT {index}'
+            frame.table.cell(0, 0).text = f'CELL {index}'
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        effect_list = ET.fromstring(f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="38100"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>''')
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [
+                (info, source.read(info.filename))
+                for info in source.infolist()
+            ]
+        member_data = {info.filename: data for info, data in members}
+        replacements: dict[str, bytes] = {}
+
+        for index, (placement, rotated) in enumerate(cases, start=1):
+            slide_part = f'ppt/slides/slide{index}.xml'
+            slide_root = ET.fromstring(member_data[slide_part])
+            frame = next(
+                candidate
+                for candidate in slide_root.findall(f'.//{{{pml}}}graphicFrame')
+                if (
+                    candidate.find(
+                        f'{{{pml}}}nvGraphicFramePr/{{{pml}}}cNvPr'
+                    ) is not None
+                    and candidate.find(
+                        f'{{{pml}}}nvGraphicFramePr/{{{pml}}}cNvPr'
+                    ).get('name') == f'TABLE EFFECT TEXT {index}'
+                )
+            )
+            tx_body = frame.find(f'.//{{{dml}}}tc/{{{dml}}}txBody')
+            assert tx_body is not None
+            paragraph = tx_body.find(f'{{{dml}}}p')
+            assert paragraph is not None
+            run = paragraph.find(f'{{{dml}}}r')
+            assert run is not None
+
+            if placement.startswith('rPr:'):
+                run_properties = run.find(f'{{{dml}}}rPr')
+                if run_properties is None:
+                    run_properties = ET.Element(f'{{{dml}}}rPr')
+                    run.insert(0, run_properties)
+                container = placement.split(':', 1)[1]
+                if container == 'effectLst':
+                    run_properties.insert(0, copy.deepcopy(effect_list))
+                elif container.startswith('empty-'):
+                    run_properties.insert(
+                        0,
+                        ET.Element(f'{{{dml}}}{container.removeprefix("empty-")}'),
+                    )
+                else:
+                    raise AssertionError(
+                        f'unknown run effect container: {container}'
+                    )
+            elif placement == 'defRPr':
+                paragraph_properties = paragraph.find(f'{{{dml}}}pPr')
+                if paragraph_properties is None:
+                    paragraph_properties = ET.Element(f'{{{dml}}}pPr')
+                    paragraph.insert(0, paragraph_properties)
+                default_properties = ET.SubElement(
+                    paragraph_properties,
+                    f'{{{dml}}}defRPr',
+                )
+                default_properties.append(copy.deepcopy(effect_list))
+            elif placement == 'endParaRPr':
+                end_properties = paragraph.find(f'{{{dml}}}endParaRPr')
+                if end_properties is None:
+                    end_properties = ET.SubElement(
+                        paragraph,
+                        f'{{{dml}}}endParaRPr',
+                    )
+                end_properties.insert(0, copy.deepcopy(effect_list))
+            elif placement != 'none':
+                raise AssertionError(f'unknown table effect placement: {placement}')
+
+            if rotated:
+                xfrm = frame.find(f'{{{pml}}}xfrm')
+                assert xfrm is not None
+                xfrm.set('rot', '60000')
             replacements[slide_part] = ET.tostring(
                 slide_root,
                 encoding='utf-8',
@@ -2863,6 +2975,119 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             native_path.write_text(native_svg, encoding='utf-8')
             native_xml = convert_svg_to_slide_shapes(native_path)[0]
             self.assertEqual(native_xml.count('<a:glow'), 1)
+
+    def test_table_cell_run_effect_import_fails_closed(self):
+        cases = [
+            ('rPr:effectLst', False),
+            ('defRPr', False),
+            ('endParaRPr', False),
+            ('rPr:empty-effectLst', False),
+            ('rPr:empty-effectDag', False),
+            ('none', False),
+            ('rPr:effectLst', True),
+        ]
+        effect_slides = {1, 2, 3, 7}
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'table-run-effects.pptx'
+            self._write_table_run_effect_fixture(pptx_path, cases)
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            self.assertEqual(len(imported.slides), len(cases))
+
+            for artifact in imported.slides:
+                with self.subTest(slide=artifact.index):
+                    root = ET.fromstring(artifact.svg)
+                    group = next(
+                        elem
+                        for elem in root.iter()
+                        if (
+                            elem.tag.rsplit('}', 1)[-1] == 'g'
+                            and elem.get('data-name')
+                            == f'TABLE EFFECT TEXT {artifact.index}'
+                        )
+                    )
+                    self.assertIn(
+                        f'CELL {artifact.index}',
+                        ''.join(root.itertext()),
+                    )
+                    svg_path = root_dir / f'table-{artifact.index}.svg'
+                    svg_path.write_text(artifact.svg, encoding='utf-8')
+
+                    if artifact.index in effect_slides:
+                        self.assertIsNone(
+                            group.get('data-pptx-replace-with')
+                        )
+                        expected_status = (
+                            'unsupported-native-transform'
+                            if artifact.index == 7
+                            else 'unsupported-table-direct-formatting'
+                        )
+                        self.assertEqual(
+                            group.get('data-pptx-replacement-status'),
+                            expected_status,
+                        )
+                        self.assertEqual(
+                            group.get('data-pptx-effect-status'),
+                            'unsupported',
+                        )
+                        self.assertEqual(
+                            group.get('data-pptx-effect-reason'),
+                            'unsupported-run-effect-route:table-cell-text',
+                        )
+                        self.assertFalse(any(
+                            elem.tag.rsplit('}', 1)[-1] == 'metadata'
+                            and elem.get('type') == 'application/json'
+                            for elem in group
+                        ))
+                        status_errors = project_effect_status_errors(root)
+                        self.assertEqual(len(status_errors), 1)
+                        checker_result = SVGQualityChecker().check_file(
+                            str(svg_path)
+                        )
+                        self.assertFalse(checker_result['passed'])
+                        self.assertIn(
+                            'unsupported-run-effect-route:table-cell-text',
+                            '\n'.join(checker_result['errors']),
+                        )
+                        for native_objects in (False, True):
+                            with self.assertRaisesRegex(
+                                SvgNativeConversionError,
+                                'unsupported imported PPTX effect',
+                            ):
+                                convert_svg_to_slide_shapes(
+                                    svg_path,
+                                    native_objects=native_objects,
+                                )
+                        continue
+
+                    self.assertEqual(project_effect_status_errors(root), [])
+                    self.assertEqual(
+                        group.get('data-pptx-replace-with'),
+                        'table',
+                    )
+                    self.assertIsNone(
+                        group.get('data-pptx-replacement-status')
+                    )
+                    self.assertIsNone(group.get('data-pptx-effect-status'))
+                    self.assertTrue(any(
+                        elem.tag.rsplit('}', 1)[-1] == 'metadata'
+                        and elem.get('type') == 'application/json'
+                        for elem in group
+                    ))
+                    checker_result = SVGQualityChecker().check_file(
+                        str(svg_path)
+                    )
+                    self.assertTrue(checker_result['passed'])
+                    default_xml = convert_svg_to_slide_shapes(svg_path)[0]
+                    native_xml = convert_svg_to_slide_shapes(
+                        svg_path,
+                        native_objects=True,
+                    )[0]
+                    self.assertNotIn('<a:tbl>', default_xml)
+                    self.assertIn('<a:tbl>', native_xml)
 
     def test_picture_and_group_effect_import_is_explicit(self):
         dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'

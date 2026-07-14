@@ -276,7 +276,7 @@ attributes, and no separate source-payload opt-in marker exists.
 | `data-pptx-geometry-kind="custom"` + `data-pptx-custgeom` | Custom-geometry carrier | Preserve the validated original `a:custGeom` subtree. If the visible path hash is unchanged, export restores formulas, handles, connection sites, text rectangle, and path list exactly; edited paths compile from current SVG geometry. |
 | `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
 | `data-pptx-shape-style` | Native carrier | Preserve a relationship-free `p:style` independently of text, including shapes with no visible text. |
-| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical object and native carrier; imported `p:pic` carrier and logical object; imported `p:grpSp` logical group | Record why an encountered source object or text-run `effectLst` / `effectDag` cannot enter the registered target-specific effect mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
+| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical object and native carrier; imported `p:pic` carrier and logical object; imported `p:grpSp` logical group; imported table `p:graphicFrame` logical group | Record why an encountered source object or text-run `effectLst` / `effectDag` cannot enter the registered target-specific effect mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
 | `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, visible typography, or incompatible child-topology edits invalidate the payload. A source payload with run-level effects then blocks checker/export instead of losing those effects; an effect-free payload uses the normal SVG text fallback. |
 
 **Import/authoring representation split**:
@@ -799,8 +799,13 @@ parts. When such a body contains a non-empty run effect, import keeps its
 rebuilt visible text but stamps the same two blocking object markers;
 relationship-bearing text without a run effect keeps the existing visual
 fallback.
-This conditional guard is not a public run-effect authoring surface and does
-not cover table-cell text bodies.
+Table-cell text bodies use neither the opaque payload nor the public filter
+mapping. A non-empty run effect disables the native Table replacement payload,
+keeps the visible table fallback, and stamps its imported `p:graphicFrame`
+logical group with the blocking effect status. The existing replacement status
+still records any independent table fallback reason; empty effect containers
+and effect-free cells remain eligible for the closed native Table schema.
+This conditional guard is not a public run-effect authoring surface.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
 never replaced by effect defaults during native export.
@@ -1533,8 +1538,11 @@ boolean `bold`, `italic`, `underline`, and `strike`, plus optional `color`,
 `font_size`, one-typeface `font_family`, `lang`, and `alt_lang`. Unknown fields,
 wrong types, empty run lists, multi-typeface `font_family`, and unsupported
 colors fail fast. PPTX import requires exact physical row/grid topology and
-normalizes source presentation-only run XML outside this closed schema, but
-relationship-bearing text, extensions, structural line breaks, fields, tabs,
+normalizes source presentation-only run XML outside this closed schema only
+when it contains no non-empty `rPr` / `defRPr` / `endParaRPr` `effectLst` or
+`effectDag`. A table-cell run effect follows the blocking effect contract above
+instead of entering either the native payload or an effect-free fallback.
+Relationship-bearing text, extensions, structural line breaks, fields, tabs,
 bullets, malformed run topology, and unsupported text-body structure remain
 fallback-only.
 Per-side cell borders use `borders.left|right|top|bottom`, where each value is
