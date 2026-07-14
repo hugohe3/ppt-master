@@ -212,9 +212,11 @@ except ImportError:
 try:
     from svg_finalize.embed_icons import (
         resolve_icon_path as _resolve_icon_path,
+        suggest_icon_name as _suggest_icon_name,
     )
 except ImportError:
     _resolve_icon_path = None
+    _suggest_icon_name = None
 
 try:
     from resource_paths import (
@@ -652,6 +654,12 @@ PPT_SAFE_FONTS = {
 # values outside every band — i.e. outside this envelope — are drift.
 RAMP_MIN_RATIO = 0.5
 RAMP_MAX_RATIO = 5.0
+
+# Oversampling alone does not imply distortion and is often harmless for small
+# logos. Warn about downscaling only when the source also has material on-disk
+# weight, because PPTX embeds the compressed source asset rather than raw pixels.
+IMAGE_DOWNSIZE_WARN_RATIO = 4.0
+IMAGE_DOWNSIZE_WARN_MIN_BYTES = 1024 * 1024
 
 # Modes / visual styles that legitimately use unbounded hero / poster type
 # (huge cover numerals, act dividers, single-number reveals). For these the
@@ -2305,16 +2313,23 @@ class SVGQualityChecker:
                 from PIL import Image as PILImage
                 with PILImage.open(img_path) as img:
                     actual_w, actual_h = img.size
+                source_bytes = img_path.stat().st_size
 
                 if actual_w < display_w or actual_h < display_h:
                     result['warnings'].append(
                         f"Image {href} is {actual_w}x{actual_h} but displayed at "
                         f"{int(display_w)}x{int(display_h)} — may appear blurry")
-                elif actual_w > display_w * 4 and actual_h > display_h * 4:
+                elif (
+                    actual_w > display_w * IMAGE_DOWNSIZE_WARN_RATIO
+                    and actual_h > display_h * IMAGE_DOWNSIZE_WARN_RATIO
+                    and source_bytes >= IMAGE_DOWNSIZE_WARN_MIN_BYTES
+                ):
+                    source_mib = source_bytes / (1024 * 1024)
                     result['warnings'].append(
                         f"Image {href} is {actual_w}x{actual_h} but displayed at "
-                        f"{int(display_w)}x{int(display_h)} — consider downsizing "
-                        f"to reduce file size")
+                        f"{int(display_w)}x{int(display_h)} and the source is "
+                        f"{source_mib:.1f} MiB — file-size advisory only, not an "
+                        f"aspect-ratio warning; consider a smaller source asset")
             except ImportError:
                 pass  # PIL not available, skip resolution check
             except Exception:
@@ -2356,9 +2371,17 @@ class SVGQualityChecker:
             icon_path, _ = _resolve_icon_path(icon_name, icons_dir, fallback_dir)
             if not icon_path.exists():
                 fallback_msg = f", then {fallback_dir}" if fallback_dir else ""
+                suggestion = (
+                    _suggest_icon_name(icon_name, icons_dir, fallback_dir)
+                    if _suggest_icon_name is not None else None
+                )
+                hint = (
+                    f"; identifiers are case-sensitive; use '{suggestion}'"
+                    if suggestion else ""
+                )
                 result['errors'].append(
                     f"Icon not found: {icon_name} (searched {icons_dir}"
-                    f"{fallback_msg})"
+                    f"{fallback_msg}){hint}"
                 )
 
     def _check_unsupported_visual_elements(

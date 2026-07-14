@@ -800,7 +800,12 @@ def _load_payload(elem: ET.Element, kind: str) -> dict[str, Any]:
                 break
 
     if not raw:
-        raise RuntimeError(f"Native PPTX {kind} marker requires JSON metadata")
+        raise RuntimeError(
+            f"Native PPTX {kind} marker requires JSON metadata; add a matching "
+            f"<metadata data-pptx-native=\"{kind}\"> payload for a real "
+            "data-backed object, or remove data-pptx-native from SVG-only "
+            "KPI/diagram groups"
+        )
 
     try:
         payload = json.loads(raw)

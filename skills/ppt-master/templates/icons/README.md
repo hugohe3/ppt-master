@@ -53,6 +53,8 @@ Use placeholder syntax **during SVG generation**:
 - `width`, `height` — Size (recommend 32–48px for legibility)
 - `fill` — Color
 
+`data-icon` is case-sensitive because it resolves a real filename. Bundled library directories and basenames are canonical lowercase: use `tabler-outline/award`, not `tabler-outline/Award`. Custom icons retain the exact case of their files; the resolver intentionally does not lowercase identifiers.
+
 `finalize_svg.py` auto-embeds all placeholders during post-processing. To run manually:
 
 ```bash

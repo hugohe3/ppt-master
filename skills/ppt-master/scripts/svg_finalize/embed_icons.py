@@ -72,6 +72,7 @@ ICON_BASE_SIZES = {
     'phosphor-duotone': 256,
     'simple-icons': 24,
 }
+_ICON_LIBRARY_ALIASES = {'chunk': 'chunk-filled'}
 DEFAULT_ICON_BASE_SIZE = 24
 BaseGeometry = float | tuple[float, float, float, float]
 
@@ -168,12 +169,9 @@ def _extract_shape_elements(content: str, color: str) -> list[str]:
 
 def _resolve_in_dir(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
     """Resolve `icon_name` against a single icons dir (no fallback)."""
-    # Backward compat: 'chunk/name' → 'chunk-filled/name'
-    _LIB_ALIASES = {'chunk': 'chunk-filled'}
-
     if '/' in icon_name:
         lib, name = icon_name.split('/', 1)
-        lib = _LIB_ALIASES.get(lib, lib)  # resolve aliases
+        lib = _ICON_LIBRARY_ALIASES.get(lib, lib)  # resolve aliases
         icon_path = icons_dir / lib / f'{name}.svg'
         base_size = ICON_BASE_SIZES.get(lib, 24)
     else:
@@ -185,6 +183,59 @@ def _resolve_in_dir(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
             base_size = 16
 
     return icon_path, base_size
+
+
+def _casefold_icon_name_in_dir(icon_name: str, icons_dir: Path) -> str | None:
+    """Return the exact on-disk identifier when only casing differs."""
+    if not icons_dir.is_dir():
+        return None
+
+    search_dirs: list[Path] = []
+    expected_name = icon_name
+    if '/' in icon_name:
+        raw_lib, expected_name = icon_name.split('/', 1)
+        requested_lib = _ICON_LIBRARY_ALIASES.get(raw_lib.casefold(), raw_lib)
+        library_dir = icons_dir / requested_lib
+        if not library_dir.is_dir():
+            library_dir = next(
+                (
+                    path for path in icons_dir.iterdir()
+                    if path.is_dir()
+                    and path.name.casefold() == requested_lib.casefold()
+                ),
+                library_dir,
+            )
+        search_dirs.append(library_dir)
+    else:
+        search_dirs.extend((icons_dir / 'chunk-filled', icons_dir))
+
+    expected_filename = f'{expected_name}.svg'.casefold()
+    for search_dir in search_dirs:
+        if not search_dir.is_dir():
+            continue
+        matches = sorted(
+            path for path in search_dir.iterdir()
+            if path.is_file()
+            and path.suffix.casefold() == '.svg'
+            and path.name.casefold() == expected_filename
+        )
+        if len(matches) != 1:
+            continue
+        relative = matches[0].relative_to(icons_dir).with_suffix('')
+        return relative.as_posix()
+    return None
+
+
+def suggest_icon_name(
+    icon_name: str,
+    icons_dir: Path,
+    fallback_dir: Path | None = None,
+) -> str | None:
+    """Suggest an exact project-first icon identifier without auto-correcting it."""
+    suggestion = _casefold_icon_name_in_dir(icon_name, icons_dir)
+    if suggestion is None and fallback_dir is not None:
+        suggestion = _casefold_icon_name_in_dir(icon_name, fallback_dir)
+    return suggestion
 
 
 def resolve_icon_path(icon_name: str, icons_dir: Path, fallback_dir: Path | None = None) -> tuple[Path, float]:
@@ -419,11 +470,25 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
             continue
 
         icon_path, _ = resolve_icon_path(str(icon_name), icons_dir, fallback_dir)
+        if not icon_path.exists():
+            suggestion = suggest_icon_name(str(icon_name), icons_dir, fallback_dir)
+            hint = (
+                f"; identifiers are case-sensitive; use '{suggestion}'"
+                if suggestion else ""
+            )
+            print(
+                f"[WARN] Icon not found: {icon_name}{hint} "
+                f"(in {svg_path.name})"
+            )
+            continue
+
         elements, style, base_size = extract_paths_from_icon(icon_path)
         color = resolve_icon_color(attrs, style)
-        
         if not elements:
-            print(f"[WARN] Icon not found: {icon_name} (in {svg_path.name})")
+            print(
+                f"[WARN] Icon has no embeddable shapes: {icon_name} "
+                f"(in {svg_path.name})"
+            )
             continue
         
         replacement = generate_icon_group(attrs, elements, style, base_size)
