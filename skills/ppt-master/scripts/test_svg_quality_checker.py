@@ -32,7 +32,11 @@ from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
 )
-from svg_to_pptx.drawingml.utils import parse_inline_style
+from svg_to_pptx.drawingml.utils import (
+    estimate_text_width,
+    parse_inline_style,
+    split_project_text_clusters,
+)
 from svg_to_pptx.native_objects import (
     NativeMarkerAttributeError,
     native_fallback_kind,
@@ -1521,8 +1525,8 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self._assert_checker_and_exporter_reject(
             '''<svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 640 360">
-  <text x="40" y="100" font-size="20"
-        letter-spacing="-23.4285714285714">AB</text>
+  <text x="40" y="100" font-size="19.9733333333333"
+        letter-spacing="-23.4266666666667">AB</text>
 </svg>''',
             'non-positive DrawingML text-frame extent (cx=0)',
             r'non-positive DrawingML text-frame extent \(cx=0',
@@ -1553,6 +1557,175 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         self.assertEqual(len(extents), 2)
         self.assertTrue(all(value >= 1 for value in extents))
 
+    def test_non_positive_inline_run_advance_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20">
+  <text x="40" y="100">CONTROL PREFIX <tspan
+        letter-spacing="-100">AB</tspan></text>
+</svg>''',
+            'non-positive DrawingML text-run advance',
+            'non-positive DrawingML text-run advance',
+        )
+
+    def test_equivalent_inline_runs_cannot_bypass_tracking_validation(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20">
+  <text x="40" y="100">CONTROL PREFIX <tspan
+        letter-spacing="-100">A</tspan><tspan
+        letter-spacing="-100">B</tspan></text>
+</svg>''',
+            'non-positive DrawingML text-run advance',
+            'non-positive DrawingML text-run advance',
+        )
+
+    def test_equivalent_inline_runs_are_emitted_as_one_drawingml_run(self):
+        equivalent_sources = (
+            'A<tspan>B</tspan>',
+            '<tspan font-family="Helvetica">A</tspan>'
+            '<tspan font-family="Arial">B</tspan>',
+            '<tspan font-size="20">A</tspan>'
+            '<tspan font-size="20.01">B</tspan>',
+        )
+        for inline_text in equivalent_sources:
+            with self.subTest(inline_text=inline_text):
+                source = (
+                    '<svg xmlns="http://www.w3.org/2000/svg" '
+                    'viewBox="0 0 640 360">'
+                    '<text x="40" y="100" font-size="20" '
+                    f'letter-spacing="2">{inline_text}</text></svg>'
+                )
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    svg_path = Path(tmp_dir) / 'coalesced-runs.svg'
+                    svg_path.write_text(source, encoding='utf-8')
+                    slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+                self.assertEqual(slide_xml.count('<a:r>'), 1)
+                self.assertIn('<a:t>AB</a:t>', slide_xml)
+
+    def test_distinct_output_run_properties_remain_separate(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20" letter-spacing="-100">
+  <text x="40" y="100"><tspan fill="#FF0000">A</tspan><tspan
+        fill="#0000FF">B</tspan><tspan fill="#0000FF">中</tspan></text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'distinct-runs.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(slide_xml.count('<a:r>'), 3)
+        self.assertIn('<a:rPr lang="en-US"', slide_xml)
+        self.assertIn('<a:rPr lang="zh-CN"', slide_xml)
+
+    def test_project_text_clusters_match_rendered_tracking_units(self):
+        self.assertEqual(split_project_text_clusters('e\u0301'), ['e\u0301'])
+        self.assertEqual(split_project_text_clusters('中\ufe00'), ['中\ufe00'])
+        self.assertEqual(split_project_text_clusters('✊🏽'), ['✊🏽'])
+        self.assertEqual(split_project_text_clusters('👨\u200d👩\u200d👧\u200d👦'), [
+            '👨\u200d👩\u200d👧\u200d👦',
+        ])
+        self.assertEqual(split_project_text_clusters('🇨🇳🇺🇸🇫'), ['🇨🇳', '🇺🇸', '🇫'])
+        self.assertEqual(split_project_text_clusters('क्ष'), ['क्ष'])
+        self.assertEqual(split_project_text_clusters('A\u200dB'), ['A\u200d', 'B'])
+        self.assertEqual(split_project_text_clusters('A्B'), ['A्', 'B'])
+        self.assertEqual(split_project_text_clusters('क्A'), ['क्', 'A'])
+        self.assertEqual(split_project_text_clusters('क्中'), ['क्', '中'])
+        self.assertEqual(split_project_text_clusters('ᨠ᩠ᨡ'), ['ᨠ᩠ᨡ'])
+        self.assertEqual(split_project_text_clusters('ᨠ᩠ꪀ'), ['ᨠ᩠', 'ꪀ'])
+        self.assertEqual(
+            estimate_text_width('e\u0301', 80),
+            estimate_text_width('é', 80),
+        )
+
+    def test_single_graphemes_do_not_receive_internal_tracking(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="80" letter-spacing="-88">
+  <text x="40" y="100">é</text>
+  <text x="40" y="220">🇨🇳</text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'single-graphemes.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(slide_xml.count(' spc="-6600"'), 2)
+
+    def test_virama_does_not_join_text_across_unicode_scripts(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="80" letter-spacing="-100">
+  <text x="40" y="100">A्B</text>
+</svg>''',
+            'non-positive DrawingML',
+            'non-positive DrawingML',
+        )
+
+    def test_soft_break_joining_space_does_not_inherit_negative_tracking(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20" letter-spacing="-21">
+  <text x="40" y="80" data-paragraph-line-height="24">
+    <tspan x="40">AB</tspan>
+    <tspan x="40" dy="24" data-paragraph-soft-break="1">CD</tspan>
+  </text>
+</svg>'''
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'soft-break.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            slide_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertEqual(slide_xml.count('<a:p>'), 1)
+        self.assertEqual(slide_xml.count('<a:r>'), 3)
+        self.assertEqual(slide_xml.count(' spc="-1575"'), 2)
+        self.assertIn('<a:t xml:space="preserve"> </a:t>', slide_xml)
+
+    def test_zero_text_run_advance_is_rejected_without_narrowing_safe_tracking(self):
+        invalid_metrics = (
+            ('20', '-22'),
+            ('20', '-21.999999'),
+            ('20.01', '-22'),
+        )
+        for font_size, letter_spacing in invalid_metrics:
+            with self.subTest(
+                font_size=font_size,
+                letter_spacing=letter_spacing,
+            ):
+                self._assert_checker_and_exporter_reject(
+                    '<svg xmlns="http://www.w3.org/2000/svg" '
+                    'viewBox="0 0 640 360">'
+                    f'<text x="40" y="100" font-size="{font_size}" '
+                    f'letter-spacing="{letter_spacing}">AB</text></svg>',
+                    "non-positive DrawingML text-run advance for 'AB' "
+                    '(advance=0px)',
+                    r"non-positive DrawingML text-run advance for 'AB' "
+                    r"\(advance=0px\)",
+                )
+
+        safe = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360">
+  <text x="40" y="100" font-size="20" letter-spacing="-21">AB</text>
+</svg>'''
+        safe_result = self._check(safe)
+        self.assertTrue(safe_result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'positive-run-advance.svg'
+            svg_path.write_text(safe, encoding='utf-8')
+            safe_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertIn(' spc="-1575"', safe_xml)
+
+        quantized_safe = safe.replace(
+            'letter-spacing="-21"',
+            'letter-spacing="-21.993"',
+        )
+        quantized_result = self._check(quantized_safe)
+        self.assertTrue(quantized_result['passed'])
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'quantized-positive-run-advance.svg'
+            svg_path.write_text(quantized_safe, encoding='utf-8')
+            quantized_xml = convert_svg_to_slide_shapes(svg_path)[0]
+        self.assertIn(' spc="-1649"', quantized_xml)
+
     def test_inherited_inline_tracking_cannot_hide_collapsed_text_frame(self):
         self._assert_checker_and_exporter_reject(
             '''<svg xmlns="http://www.w3.org/2000/svg"
@@ -1568,8 +1741,8 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     def test_positioned_paragraph_tracking_is_still_blocked_by_exporter(self):
         source = '''<svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 640 360" font-size="20" letter-spacing="-30">
-  <text x="40" y="80">
-    <tspan x="40" y="80">AB</tspan>
+  <text x="40" y="80" data-paragraph-line-height="24">
+    <tspan x="40">AB</tspan>
     <tspan x="40" dy="24">AB</tspan>
   </text>
 </svg>'''
@@ -1584,6 +1757,37 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 'non-positive DrawingML text-frame extent',
             ):
                 convert_svg_to_slide_shapes(svg_path)
+
+    def test_bad_paragraph_run_cannot_hide_behind_a_wider_line(self):
+        source = '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20">
+  <text x="40" y="80" data-paragraph-line-height="24">
+    <tspan x="40">HEALTHY PARAGRAPH LINE</tspan>
+    <tspan x="40" dy="24" letter-spacing="-100">AB</tspan>
+  </text>
+</svg>'''
+        result = self._check(source)
+        self.assertTrue(result['passed'])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'mixed-paragraph-tracking.svg'
+            svg_path.write_text(source, encoding='utf-8')
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                'non-positive DrawingML text-run advance',
+            ):
+                convert_svg_to_slide_shapes(svg_path)
+
+    def test_bad_bullet_run_cannot_hide_behind_normal_text(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 640 360" font-size="20">
+  <text x="40" y="100">• HEALTHY PREFIX <tspan
+        letter-spacing="-100">AB</tspan></text>
+</svg>''',
+            'non-positive DrawingML text-run advance',
+            'non-positive DrawingML text-run advance',
+        )
 
     def test_bullet_text_uses_the_same_positive_frame_boundary(self):
         safe = '''<svg xmlns="http://www.w3.org/2000/svg"
@@ -1646,7 +1850,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         metadata.text = self._native_txbody_payload()
         result = {'errors': [], 'warnings': []}
 
-        SVGQualityChecker()._check_text_frame_extents(root, result)
+        SVGQualityChecker()._check_text_output_geometry(root, result)
 
         self.assertEqual(result['errors'], [])
 
@@ -1684,7 +1888,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         metadata.text = 'not-base64'
         result = {'errors': [], 'warnings': []}
 
-        SVGQualityChecker()._check_text_frame_extents(root, result)
+        SVGQualityChecker()._check_text_output_geometry(root, result)
 
         self.assertIn('invalid preserved txBody metadata', '\n'.join(result['errors']))
 
@@ -1705,7 +1909,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         metadata.text = self._native_txbody_payload()
         result = {'errors': [], 'warnings': []}
 
-        SVGQualityChecker()._check_text_frame_extents(root, result)
+        SVGQualityChecker()._check_text_output_geometry(root, result)
 
         self.assertIn(
             'non-positive DrawingML text-frame extent',
