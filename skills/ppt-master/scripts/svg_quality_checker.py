@@ -1912,8 +1912,14 @@ class SVGQualityChecker:
                 if marker_id not in checked_markers:
                     checked_markers.add(marker_id)
                     marker_label = f'<marker id="{marker_id}">'
-                    if marker.get('orient') != 'auto':
-                        issues.add(f'{marker_label} requires orient="auto"')
+                    if marker.get('orient') not in {
+                        'auto',
+                        'auto-start-reverse',
+                    }:
+                        issues.add(
+                            f'{marker_label} requires orient="auto" or '
+                            'orient="auto-start-reverse"'
+                        )
                     marker_units = marker.get('markerUnits', 'strokeWidth')
                     if marker_units not in {'strokeWidth', 'userSpaceOnUse'}:
                         issues.add(

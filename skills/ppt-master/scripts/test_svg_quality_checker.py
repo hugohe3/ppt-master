@@ -2536,6 +2536,38 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                         stroke_xml,
                     )
 
+    def test_imported_head_end_uses_supported_reversible_orientation(self):
+        drawingml_ns = (
+            'http://schemas.openxmlformats.org/drawingml/2006/main'
+        )
+        head_end = ET.Element(
+            f'{{{drawingml_ns}}}headEnd',
+            {'type': 'triangle', 'w': 'med', 'len': 'med'},
+        )
+        marker_id, marker_markup = _build_arrow_marker(
+            head_end,
+            '#112233',
+            id_prefix='roundtrip-',
+            seq=[0],
+            reversed_=True,
+        )
+        svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>{marker_markup}</defs>
+  <line x1="80" y1="80" x2="300" y2="80" stroke="#112233"
+        marker-start="url(#{marker_id})"/>
+</svg>'''
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'head-end.svg'
+            svg_path.write_text(svg, encoding='utf-8')
+            checker_result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertEqual(checker_result['errors'], [])
+            slide_xml, *_rest = convert_svg_to_slide_shapes(svg_path)
+        self.assertIn(
+            '<a:headEnd type="triangle" w="med" len="med"/>',
+            slide_xml,
+        )
+
     def test_invalid_filter_contract_blocks_checker_and_exporter(self):
         self._assert_checker_and_exporter_reject(
             '''<svg xmlns="http://www.w3.org/2000/svg"
