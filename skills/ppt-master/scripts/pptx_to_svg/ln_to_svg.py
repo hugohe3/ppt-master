@@ -196,8 +196,14 @@ def _build_arrow_marker(
 
     w_b = end_elem.attrib.get("w", "med")
     l_b = end_elem.attrib.get("len", "med")
-    mw = SIZE_BUCKET.get(l_b, 2.5)
-    mh = SIZE_BUCKET.get(w_b, 2.5)
+    for dimension, bucket in (("width", w_b), ("length", l_b)):
+        if bucket not in SIZE_BUCKET:
+            raise ValueError(
+                f"Unsupported DrawingML line-end {dimension} bucket: "
+                f"{bucket!r}"
+            )
+    mw = SIZE_BUCKET[l_b]
+    mh = SIZE_BUCKET[w_b]
 
     seq[0] += 1
     marker_id = f"{id_prefix}arrow{seq[0]}"

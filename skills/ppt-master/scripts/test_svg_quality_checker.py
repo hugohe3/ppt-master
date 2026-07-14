@@ -2630,6 +2630,21 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ):
             resolve_stroke(sp_pr, None)
 
+    def test_unknown_native_line_end_size_is_rejected_on_import(self):
+        for attribute, dimension in (("w", "width"), ("len", "length")):
+            with self.subTest(attribute=attribute):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln><a:tailEnd type="triangle" {attribute}="xl"/></a:ln>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    f"Unsupported DrawingML line-end {dimension} bucket: "
+                    "'xl'",
+                ):
+                    resolve_stroke(sp_pr, None)
+
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
             'http://schemas.openxmlformats.org/drawingml/2006/main'
