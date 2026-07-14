@@ -183,6 +183,10 @@ dropped. PPTX import likewise accepts only these five DrawingML line-end types
 as a supported shape. Optional DrawingML `w` and `len` values default to `med`;
 explicit values must be `sm`, `med`, or `lg`, and invalid source buckets stop
 import instead of being normalized to `med`.
+Each imported line contains at most one direct, empty `a:headEnd` and one direct,
+empty `a:tailEnd`, carrying only optional `type`, `w`, and `len`. Omitted `type`
+means `none`; an explicitly empty token, duplicate endpoint, unknown attribute,
+or child payload stops import instead of being ignored.
 
 ---
 
