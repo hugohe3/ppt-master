@@ -14,6 +14,16 @@ _EFFECT_OBJECT_IDENTITY_ATTRS = (
     "data-pptx-shape-id",
     "data-pptx-shape-scope",
 )
+_DML_NAMESPACE = "http://schemas.openxmlformats.org/drawingml/2006/main"
+_TEXT_PROPERTY_TAGS = frozenset({
+    f"{{{_DML_NAMESPACE}}}defRPr",
+    f"{{{_DML_NAMESPACE}}}endParaRPr",
+    f"{{{_DML_NAMESPACE}}}rPr",
+})
+_RUN_EFFECT_CONTAINER_TAGS = frozenset({
+    f"{{{_DML_NAMESPACE}}}effectLst",
+    f"{{{_DML_NAMESPACE}}}effectDag",
+})
 
 
 def project_effect_status_errors(root: ET.Element) -> list[str]:
@@ -66,6 +76,22 @@ def unsupported_effect_metadata(reason: str) -> dict[str, str]:
         EFFECT_STATUS_ATTR: UNSUPPORTED_EFFECT_STATUS,
         EFFECT_REASON_ATTR: reason,
     }
+
+
+def txbody_has_run_effects(txbody: ET.Element | None) -> bool:
+    """Return whether rebuilding a text body would discard a run effect."""
+    if txbody is None:
+        return False
+    for properties in txbody.iter():
+        if properties.tag not in _TEXT_PROPERTY_TAGS:
+            continue
+        for child in properties:
+            if child.tag in _RUN_EFFECT_CONTAINER_TAGS and any(
+                isinstance(effect.tag, str)
+                for effect in child
+            ):
+                return True
+    return False
 
 
 def _element_label(elem: ET.Element) -> str:

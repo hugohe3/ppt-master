@@ -276,7 +276,7 @@ attributes, and no separate source-payload opt-in marker exists.
 | `data-pptx-geometry-kind="custom"` + `data-pptx-custgeom` | Custom-geometry carrier | Preserve the validated original `a:custGeom` subtree. If the visible path hash is unchanged, export restores formulas, handles, connection sites, text rectangle, and path list exactly; edited paths compile from current SVG geometry. |
 | `data-pptx-start/end-shape-id/site` | Connector logical `<g>` and carrier | Restore `a:stCxn` / `a:endCxn` after scoped shape-id allocation. A connector may retain one zero frame axis; it must not be expanded from visible stroke or marker bounds. |
 | `data-pptx-shape-style` | Native carrier | Preserve a relationship-free `p:style` independently of text, including shapes with no visible text. |
-| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical object and native carrier; imported `p:pic` carrier and logical object; imported `p:grpSp` logical group | Record why an encountered source `effectLst` / `effectDag` cannot enter the registered target-specific effect mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
+| `data-pptx-effect-status="unsupported"` + `data-pptx-effect-reason` | Imported `p:sp` / `p:cxnSp` logical object and native carrier; imported `p:pic` carrier and logical object; imported `p:grpSp` logical group | Record why an encountered source object or text-run `effectLst` / `effectDag` cannot enter the registered target-specific effect mapping without changing semantics. Checker and export stop with the recorded reason; these attributes are diagnostics, not a preserved effect payload or authoring syntax. |
 | `metadata[data-pptx-part="txbody"]` | Logical shape `<g>` | Preserve unchanged `p:txBody`, including an empty text body. Content, whitespace, positioning, visible typography, or incompatible child-topology edits invalidate the payload. A source payload with run-level effects then blocks checker/export instead of losing those effects; an effect-free payload uses the normal SVG text fallback. |
 
 **Import/authoring representation split**:
@@ -789,9 +789,13 @@ unchanged `metadata[data-pptx-part="txbody"]` payload. If visible text,
 typography, or child topology invalidates that payload, checker and exporter
 stop when the source `rPr` / `defRPr` / `endParaRPr` contains a non-empty
 `effectLst` or `effectDag`; effect-free edited text keeps the normal fallback.
+The separate vertical-text output cannot carry that payload. When its source
+text body contains the same non-empty run-effect containers, import keeps the
+normalized geometry and visible vertical text but stamps the logical shape and
+native carrier with the blocking §1.4 effect status; effect-free and empty
+effect containers keep the existing normalized fallback.
 This conditional guard is not a public run-effect authoring surface and does
-not cover the separate vertical-text output, relationship-bearing text bodies,
-or table-cell text bodies.
+not cover relationship-bearing text bodies or table-cell text bodies.
 The quality checker and exporter preflight enforce the same definition,
 reference, primitive, target, and numeric-value contract; malformed values are
 never replaced by effect defaults during native export.

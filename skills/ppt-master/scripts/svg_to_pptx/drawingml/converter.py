@@ -18,7 +18,7 @@ from pptx_shapes import (
     svg_text_fingerprint,
     validate_ooxml_xfrm,
 )
-from pptx_effects import project_effect_status_errors
+from pptx_effects import project_effect_status_errors, txbody_has_run_effects
 from pptx_to_svg.preset_authoring import (
     materialize_compact_authored_preset_tree,
     validate_authored_preset_tree,
@@ -455,14 +455,6 @@ def _txbody_metadata(elem: ET.Element) -> ET.Element | None:
 
 _TXBODY_UNCHANGED_ATTR = 'data-pptx-runtime-txbody-unchanged'
 _PREVIEW_UNCHANGED_ATTR = 'data-pptx-runtime-preview-unchanged'
-_DML_NAMESPACE = 'http://schemas.openxmlformats.org/drawingml/2006/main'
-_TEXT_PROPERTY_TAGS = frozenset({
-    f'{{{_DML_NAMESPACE}}}defRPr',
-    f'{{{_DML_NAMESPACE}}}endParaRPr',
-    f'{{{_DML_NAMESPACE}}}rPr',
-})
-_EFFECT_LIST_TAG = f'{{{_DML_NAMESPACE}}}effectLst'
-_EFFECT_DAG_TAG = f'{{{_DML_NAMESPACE}}}effectDag'
 
 
 def _mark_unchanged_txbody_groups(root: ET.Element) -> None:
@@ -555,28 +547,14 @@ def _decode_unchanged_txbody(
             'txbody metadata must not contain part-local relationship attributes'
         )
     if not unchanged:
-        if _txbody_has_run_effects(txbody):
+        if txbody_has_run_effects(txbody):
             raise SvgNativeConversionError(
                 'Visible text or typography was edited while the source '
                 'txBody contains run-level effects; export stopped to avoid '
                 'silently discarding those effects'
             )
         return None
-    return decoded, _txbody_has_run_effects(txbody)
-
-
-def _txbody_has_run_effects(txbody: ET.Element) -> bool:
-    """Return whether fallback text rebuilding would discard a run effect."""
-    for properties in txbody.iter():
-        if properties.tag not in _TEXT_PROPERTY_TAGS:
-            continue
-        for child in properties:
-            if child.tag in {_EFFECT_LIST_TAG, _EFFECT_DAG_TAG} and any(
-                isinstance(effect.tag, str)
-                for effect in child
-            ):
-                return True
-    return False
+    return decoded, txbody_has_run_effects(txbody)
 
 
 def _append_shape_text(

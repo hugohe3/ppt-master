@@ -35,7 +35,12 @@ from pptx_shapes import (
     svg_native_fallback_markup_fingerprint,
     svg_text_fingerprint,
 )
-from pptx_effects import EFFECT_REASON_ATTR, EFFECT_STATUS_ATTR
+from pptx_effects import (
+    EFFECT_REASON_ATTR,
+    EFFECT_STATUS_ATTR,
+    txbody_has_run_effects,
+    unsupported_effect_metadata,
+)
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
@@ -338,12 +343,17 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
             blip_image = _clip_blip_image(blip_result.svg, geom, ctx)
             ctx.media.update(blip_result.media)
 
-    # Geometry (fill is "none" when blipFill is present, so only stroke draws)
-    geom_xml = _build_geometry_xml(node, sp_pr, ctx, geom=geom)
-
     # Text body (a:txBody)
     tx_body = node.xml.find("p:txBody", NS)
     is_vertical = is_vertical_txbody(tx_body, node.xfrm)
+    if is_vertical and geom is not None and txbody_has_run_effects(tx_body):
+        geom.attrs.update(unsupported_effect_metadata(
+            "unsupported-run-effect-route:vertical-text"
+        ))
+
+    # Geometry (fill is "none" when blipFill is present, so only stroke draws)
+    geom_xml = _build_geometry_xml(node, sp_pr, ctx, geom=geom)
+
     text_default_fill = _resolve_text_style_default(node, ctx)
     if tx_body is not None and is_vertical:
         text_result = convert_vertical_txbody(
