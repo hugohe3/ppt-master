@@ -2005,6 +2005,11 @@ def parse_project_filter_params(
                 color = parsed_color
                 color_alpha = parsed_alpha
         elif tag == 'feFuncA' and child.get('type') == 'linear':
+            if child.get('intercept') is not None:
+                raise ValueError(
+                    '<feFuncA> intercept is unsupported; project alpha '
+                    'transfer maps slope multiplication only'
+                )
             slope = required_number(child, 'slope')
             transfer_opacity = (
                 slope
@@ -2165,6 +2170,15 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         f'{label} <{primitive_tag}> requires explicit '
                         'flood-opacity'
                     )
+            if (
+                primitive_tag == 'feFuncA'
+                and primitive.get('intercept') is not None
+            ):
+                parameters_are_valid = False
+                errors.add(
+                    f'{label} <feFuncA> intercept is unsupported; project '
+                    'alpha transfer maps slope multiplication only'
+                )
             numeric_attrs: tuple[tuple[str, bool, bool], ...] = ()
             if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
                 numeric_attrs = (('stdDeviation', True, True),)
