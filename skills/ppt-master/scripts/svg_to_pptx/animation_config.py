@@ -61,6 +61,11 @@ def is_chrome_id(elem_id: str | None) -> bool:
     return any(t in _CHROME_ID_TOKENS for t in tokens if t)
 
 
+def usable_animation_group_id(raw: str | None) -> str | None:
+    """Return one nonblank SVG animation anchor verbatim, else ``None``."""
+    return raw if raw and raw.strip() else None
+
+
 def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
     """Scan one SVG for top-level visible group ids and anonymous groups."""
     root = ET.parse(str(svg_path)).getroot()
@@ -75,8 +80,8 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
         visual_index += 1
         if tag != 'g':
             continue
-        group_id = child.get('id')
-        if not group_id:
+        group_id = usable_animation_group_id(child.get('id'))
+        if group_id is None:
             anonymous_groups.append(f'{svg_path.stem}: top-level group #{visual_index}')
             continue
         role = child.get('data-pptx-role')
@@ -105,6 +110,31 @@ def scan_svg_targets(svg_path: Path) -> tuple[list[GroupTarget], list[str]]:
         )
 
     return targets, anonymous_groups
+
+
+def _duplicate_target_ids(targets: list[GroupTarget]) -> tuple[str, ...]:
+    """Return duplicate top-level animation anchors in deterministic order."""
+    counts: dict[str, int] = {}
+    for target in targets:
+        counts[target.group_id] = counts.get(target.group_id, 0) + 1
+    return tuple(sorted(group_id for group_id, count in counts.items() if count > 1))
+
+
+def _duplicate_target_error(slide_name: str, duplicates: tuple[str, ...]) -> str:
+    rendered = ', '.join(repr(group_id) for group_id in duplicates)
+    return (
+        f'SVG slide "{slide_name}" has duplicate top-level group id(s): '
+        f'{rendered}; animation target ids must be unique'
+    )
+
+
+def _require_unique_target_ids(
+    slide_name: str,
+    targets: list[GroupTarget],
+) -> None:
+    duplicates = _duplicate_target_ids(targets)
+    if duplicates:
+        raise ValueError(_duplicate_target_error(slide_name, duplicates))
 
 
 def scan_project_targets(project_path: Path) -> tuple[dict[str, list[GroupTarget]], list[str]]:
@@ -428,6 +458,14 @@ def validate_animation_config(
     for item in anonymous_groups:
         warnings.append(f'{item} has no id and cannot be customized in animations.json')
 
+    duplicates_by_slide: dict[str, tuple[str, ...]] = {}
+    for slide_name, targets in targets_by_slide.items():
+        duplicates = _duplicate_target_ids(targets)
+        if duplicates:
+            duplicates_by_slide[slide_name] = duplicates
+    for slide_name, duplicates in duplicates_by_slide.items():
+        warnings.append(_duplicate_target_error(slide_name, duplicates))
+
     known_slides = set(targets_by_slide)
     slides = config.get('slides', {})
     if not isinstance(slides, dict):
@@ -442,14 +480,20 @@ def validate_animation_config(
         if not isinstance(slide_cfg, dict):
             continue
 
+        slide_targets = targets_by_slide.get(slide_name, [])
+        duplicate_ids = duplicates_by_slide.get(slide_name, ())
+        ambiguous_ids = set(duplicate_ids)
         known_groups = {
             target.group_id: target
-            for target in targets_by_slide.get(slide_name, [])
+            for target in slide_targets
+            if target.group_id not in ambiguous_ids
         }
         groups = slide_cfg.get('groups', {})
         if not isinstance(groups, dict):
             continue
         for group_id, group_cfg in groups.items():
+            if group_id in ambiguous_ids:
+                continue
             if group_id not in known_groups:
                 warnings.append(
                     f'animations.json references missing group: {slide_name}/{group_id}'
@@ -485,6 +529,7 @@ def build_scaffold(project_path: Path) -> dict[str, Any]:
     targets_by_slide, _anonymous = scan_project_targets(project_path)
     slides: dict[str, Any] = {}
     for slide_name, targets in targets_by_slide.items():
+        _require_unique_target_ids(slide_name, targets)
         groups: dict[str, Any] = {}
         for target in targets:
             if target.chrome:
@@ -515,6 +560,7 @@ def build_group_listing(project_path: Path) -> tuple[list[str], list[str]]:
     targets_by_slide, anonymous = scan_project_targets(project_path)
     lines: list[str] = []
     for slide_name, targets in targets_by_slide.items():
+        _require_unique_target_ids(slide_name, targets)
         ids = [t.group_id for t in targets if not t.chrome]
         if not ids:
             lines.append(f'{slide_name}: (no animatable groups)')

@@ -150,7 +150,7 @@ Flags:
 
 ## 5. Anchor Logic — Top-Level `<g id="...">`
 
-Per-element animations are anchored on **top-level `<g id="...">` content groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). One group produces one animation-pane entrance row; whether that row needs a click depends on the selected Start mode.
+Per-element animations are anchored on **top-level `<g id="...">` content groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). IDs must be unique within the page. One group produces one animation-pane entrance row; whether that row needs a click depends on the selected Start mode. Nested implementation groups may remain anonymous because the sidecar does not target them.
 
 Aim for **3–8 content groups per slide**. This is also the granularity PowerPoint uses for group-select / group-move, so it improves editing ergonomics regardless of animation.
 
