@@ -126,7 +126,7 @@
     <!-- ==================== Global Target Axis ==================== -->
     <line x1="980" y1="140" x2="980" y2="615" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 4" />
     <rect x="945" y="125" width="70" height="24" rx="12" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5" />
-    <text x="980" y="141" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#64748B" text-anchor="middle">100% GOAL</text>
+    <text x="980" y="141" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#64748B" text-anchor="middle">100% GOAL</text>
     <!-- ==================== Legend ==================== -->
     <g id="legend" transform="translate(60, 660)">
         <rect x="0" y="0" width="16" height="16" rx="4" fill="url(#gradEmerald)"/>

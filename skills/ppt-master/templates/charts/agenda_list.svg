@@ -31,7 +31,7 @@
             <text x="90" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#3B82F6" text-anchor="middle">
                 <tspan>75</tspan><tspan font-size="20" dx="2">min</tspan>
             </text>
-            <text x="90" y="64" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#1E3A8A" text-anchor="middle" letter-spacing="2">
+            <text x="90" y="64" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#1E3A8A" text-anchor="middle" letter-spacing="2">
                 <tspan>TOTAL DURATION</tspan>
             </text>
         </g>
@@ -118,7 +118,7 @@
             <tspan>04</tspan>
         </text>
         <text x="190" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#0F172A">
-            <tspan>Q4 Goals &amp; OKR Planning</tspan><tspan dx="10" font-size="11" font-weight="800" fill="#6366F1" letter-spacing="2">· DECISION</tspan>
+            <tspan>Q4 Goals &amp; OKR Planning</tspan><tspan dx="10" font-size="12" font-weight="800" fill="#6366F1" letter-spacing="2">· DECISION</tspan>
         </text>
         <text x="190" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#64748B">
             <tspan>Collaborative session to finalize departmental objectives and assign ownership.</tspan>

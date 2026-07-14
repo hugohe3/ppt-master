@@ -30,10 +30,10 @@
             <text x="22" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#10B981">
                 <tspan>+18%</tspan>
             </text>
-            <text x="92" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="800" fill="#065F46" letter-spacing="1.5">
+            <text x="92" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#065F46" letter-spacing="1.5">
                 <tspan>MARGIN VS PEERS</tspan>
             </text>
-            <text x="92" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#10B981">
+            <text x="92" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#10B981">
                 <tspan>FY24 weighted avg</tspan>
             </text>
         </g>
@@ -126,14 +126,14 @@
         <text x="147" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
             <tspan>Logistics</tspan>
         </text>
-        <text x="147" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+        <text x="147" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#4F46E5" text-anchor="middle">
             <tspan>Inventory · Warehousing</tspan>
         </text>
         <!-- Chev 2 rect center: x=(240+415)/2=327 -->
         <text x="327" y="428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
             <tspan>Operations</tspan>
         </text>
-        <text x="327" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+        <text x="327" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#4F46E5" text-anchor="middle">
             <tspan>Machining · Assembly</tspan>
         </text>
         <!-- Chev 3 rect center: x=(420+595)/2=507 -->
@@ -143,7 +143,7 @@
         <text x="507" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
             <tspan>Logistics</tspan>
         </text>
-        <text x="507" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+        <text x="507" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#4F46E5" text-anchor="middle">
             <tspan>Distribution · Shipping</tspan>
         </text>
         <!-- Chev 4 rect center: x=(600+775)/2=687 -->
@@ -153,14 +153,14 @@
         <text x="687" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
             <tspan>&amp; Sales</tspan>
         </text>
-        <text x="687" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+        <text x="687" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#4F46E5" text-anchor="middle">
             <tspan>Advertising · Promotions</tspan>
         </text>
         <!-- Chev 5 rect center: x=(780+955)/2=867 -->
         <text x="867" y="428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#3730A3" text-anchor="middle">
             <tspan>Service</tspan>
         </text>
-        <text x="867" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#4F46E5" text-anchor="middle">
+        <text x="867" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#4F46E5" text-anchor="middle">
             <tspan>Support · Maintenance</tspan>
         </text>
     </g>
@@ -171,7 +171,7 @@
         <text x="1050" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="3">
             <tspan>MARGIN</tspan>
         </text>
-        <text x="1050" y="328" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="2" opacity="0.85">
+        <text x="1050" y="328" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="2" opacity="0.85">
             <tspan>VALUE − COST</tspan>
         </text>
     </g>
@@ -182,10 +182,10 @@
         <text x="20" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="800" fill="#0F172A">
             <tspan>9</tspan>
         </text>
-        <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">
+        <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569" letter-spacing="1">
             <tspan>ACTIVITY AREAS</tspan>
         </text>
-        <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8">
+        <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">
             <tspan>4 support · 5 primary</tspan>
         </text>
     </g>
@@ -194,10 +194,10 @@
         <text x="20" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="800" fill="#3B82F6">
             <tspan>100%</tspan>
         </text>
-        <text x="90" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">
+        <text x="90" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569" letter-spacing="1">
             <tspan>COVERAGE</tspan>
         </text>
-        <text x="90" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8">
+        <text x="90" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">
             <tspan>All 9 areas reviewed</tspan>
         </text>
     </g>
@@ -206,10 +206,10 @@
         <text x="20" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="800" fill="#6366F1">
             <tspan>6</tspan>
         </text>
-        <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">
+        <text x="50" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569" letter-spacing="1">
             <tspan>OPTIMIZATION TARGETS</tspan>
         </text>
-        <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8">
+        <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">
             <tspan>Cost-reduction or differentiation</tspan>
         </text>
     </g>

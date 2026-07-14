@@ -159,13 +159,13 @@
         <text x="1080" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">ROI Slope</text>
         <text x="1220" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#E11D48" text-anchor="end">5.2x</text>
         <!-- AI Insight Box -->
-        <rect x="1075" y="405" width="150" height="140" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1"/>
+        <rect x="1070" y="405" width="160" height="140" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1"/>
         <text x="1090" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#4338CA">💡 AI Insight</text>
         <text x="1090" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#3730A3">Online ROI</text>
         <text x="1090" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#3730A3">outperforms offline</text>
         <text x="1090" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#312E81">by 31%.</text>
-        <text x="1090" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="700" fill="#4338CA">Recommendation:</text>
-        <text x="1090" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="800" fill="#312E81">SCALE ONLINE SPEND</text>
+        <text x="1090" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#4338CA">Recommendation:</text>
+        <text x="1150" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#312E81" text-anchor="middle">SCALE ONLINE SPEND</text>
     </g>
     <!-- ==================== Footer ==================== -->
     <text x="60" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#94A3B8">Data Source: Marketing Analytics Department</text>

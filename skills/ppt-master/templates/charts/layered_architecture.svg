@@ -27,7 +27,7 @@
         <text x="174" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Web Console</text>
         <text x="174" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">React SPA</text>
         <line x1="126" y1="244" x2="322" y2="244" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="126" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">HTTPS &amp; WebSocket interfaces</text>
+        <text x="126" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">HTTPS &amp; WebSocket interfaces</text>
     </g>
     <!-- Card 1.2 -->
     <g id="app-mobile-card">
@@ -37,7 +37,7 @@
         <text x="406" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Mobile App</text>
         <text x="406" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">iOS / Android</text>
         <line x1="358" y1="244" x2="554" y2="244" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="358" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Native HTTP/2 client access</text>
+        <text x="358" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Native HTTP/2 client access</text>
     </g>
     <!-- Card 1.3 -->
     <g id="app-open-api-card">
@@ -47,7 +47,7 @@
         <text x="638" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Open API</text>
         <text x="638" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">API Gateway</text>
         <line x1="590" y1="244" x2="786" y2="244" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="590" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">REST &amp; GraphQL for partners</text>
+        <text x="590" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">REST &amp; GraphQL for partners</text>
     </g>
     <!-- Card 1.4 -->
     <g id="app-cli-tools-card">
@@ -57,7 +57,7 @@
         <text x="870" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">CLI Tools</text>
         <text x="870" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">DevOps</text>
         <line x1="822" y1="244" x2="1018" y2="244" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="822" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Command-line automation &amp; CI</text>
+        <text x="822" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Command-line automation &amp; CI</text>
     </g>
     <!-- ==================== Layer 2: Service Layer ==================== -->
     <rect x="40" y="296" width="40" height="140" rx="8" fill="#6366F1"/>
@@ -72,7 +72,7 @@
         <text x="174" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Core Routing</text>
         <text x="174" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">API Gateway</text>
         <line x1="126" y1="400" x2="322" y2="400" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="126" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Traffic control &amp; rate limiting</text>
+        <text x="126" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Traffic control &amp; rate limiting</text>
     </g>
     <!-- Card 2.2 -->
     <g id="service-microservices-card">
@@ -82,7 +82,7 @@
         <text x="406" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Microservices</text>
         <text x="406" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Domain Logic</text>
         <line x1="358" y1="400" x2="554" y2="400" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="358" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Independent business services</text>
+        <text x="358" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Independent business services</text>
     </g>
     <!-- Card 2.3 -->
     <g id="service-iam-card">
@@ -92,7 +92,7 @@
         <text x="638" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">IAM Service</text>
         <text x="638" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Auth &amp; Security</text>
         <line x1="590" y1="400" x2="786" y2="400" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="590" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Centralized SSO and RBAC</text>
+        <text x="590" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Centralized SSO and RBAC</text>
     </g>
     <!-- Card 2.4 -->
     <g id="service-event-bus-card">
@@ -102,7 +102,7 @@
         <text x="870" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Event Bus</text>
         <text x="870" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Message Queue</text>
         <line x1="822" y1="400" x2="1018" y2="400" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="822" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Kafka-based async decoupling</text>
+        <text x="822" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Kafka-based async decoupling</text>
     </g>
     <!-- ==================== Layer 3: Data Layer ==================== -->
     <rect x="40" y="452" width="40" height="140" rx="8" fill="#8B5CF6"/>
@@ -117,7 +117,7 @@
         <text x="174" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Relational DB</text>
         <text x="174" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">PostgreSQL</text>
         <line x1="126" y1="556" x2="398" y2="556" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="126" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">ACID compliant core data storage</text>
+        <text x="126" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">ACID compliant core data storage</text>
     </g>
     <!-- Card 3.2 -->
     <g id="data-cache-layer-card">
@@ -127,7 +127,7 @@
         <text x="490" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Cache Layer</text>
         <text x="490" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Redis Cluster</text>
         <line x1="442" y1="556" x2="714" y2="556" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="442" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Sub-millisecond hot data access</text>
+        <text x="442" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Sub-millisecond hot data access</text>
     </g>
     <!-- Card 3.3 -->
     <g id="data-object-storage-card">
@@ -137,7 +137,7 @@
         <text x="806" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Object Storage</text>
         <text x="806" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">S3 Compatible</text>
         <line x1="758" y1="556" x2="1014" y2="556" stroke="#F1F5F9" stroke-width="1"/>
-        <text x="758" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Scalable unstructured data</text>
+        <text x="758" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#475569">Scalable unstructured data</text>
     </g>
     <!-- ==================== Right Column: Capabilities ==================== -->
     <rect x="1200" y="140" width="40" height="452" rx="8" fill="#10B981"/>

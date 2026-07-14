@@ -34,7 +34,7 @@
         <circle cx="165" cy="265" r="38" fill="#8B5CF6"/>
         <circle cx="165" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="165" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">01</text>
-        <text x="165" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
+        <text x="165" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="165" y1="303" x2="165" y2="355" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
     <g>
@@ -57,7 +57,7 @@
         <circle cx="395" cy="265" r="38" fill="#3B82F6"/>
         <circle cx="395" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="395" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">02</text>
-        <text x="395" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
+        <text x="395" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="395" y1="303" x2="395" y2="355" stroke="#3B82F6" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
     <g>
@@ -80,7 +80,7 @@
         <circle cx="625" cy="265" r="38" fill="#10B981"/>
         <circle cx="625" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="625" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">03</text>
-        <text x="625" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
+        <text x="625" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="625" y1="303" x2="625" y2="355" stroke="#10B981" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
     <g>
@@ -103,7 +103,7 @@
         <circle cx="855" cy="265" r="38" fill="#F59E0B"/>
         <circle cx="855" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="855" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">04</text>
-        <text x="855" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
+        <text x="855" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="855" y1="303" x2="855" y2="355" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
     <g>
@@ -126,7 +126,7 @@
         <circle cx="1085" cy="265" r="38" fill="#F43F5E"/>
         <circle cx="1085" cy="265" r="32" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
         <text x="1085" y="261" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">05</text>
-        <text x="1085" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
+        <text x="1085" y="279" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" fill-opacity="0.8" letter-spacing="1">STEP</text>
     </g>
     <line x1="1085" y1="303" x2="1085" y2="355" stroke="#F43F5E" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.5"/>
     <g>

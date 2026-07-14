@@ -113,7 +113,7 @@
         <g>
             <circle cx="195" cy="573" r="30" fill="#F59E0B" opacity="0.95"/>
             <text x="195" y="571" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">Feature E</text>
-            <text x="195" y="587" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">Score: 40</text>
+            <text x="195" y="587" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">Score: 40</text>
         </g>
         <!-- Feature F: Time Waster -->
         <g>
@@ -157,7 +157,7 @@
         <!-- Time Wasters -->
         <circle cx="1090" cy="365" r="6" fill="#F43F5E"/>
         <text x="1105" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#BE123C">Thankless: DROP</text>
-        <text x="1152" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8" text-anchor="middle">Bubble Size = Cost</text>
+        <text x="1152" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8" text-anchor="middle">Bubble Size = Cost</text>
     </g>
     <!-- Source Footer -->
     <text x="60" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#94A3B8">Source: Market Research Department</text>
