@@ -230,6 +230,16 @@ _PROJECT_MARKER_DIAMOND_PATH_RE = re.compile(
     rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{3}}\s*Z\s*$',
     re.IGNORECASE,
 )
+_PROJECT_MARKER_ARROW_PATH_RE = re.compile(
+    rf'^\s*M\s*{_PROJECT_MARKER_POINT_TOKEN}'
+    rf'(?:\s*L\s*{_PROJECT_MARKER_POINT_TOKEN}){{2}}\s*$',
+    re.IGNORECASE,
+)
+_PROJECT_MARKER_COMMAND_POINT_RE = re.compile(
+    rf'[ML]\s*({_PROJECT_MARKER_NUMBER_TOKEN})'
+    rf'(?:\s*,\s*|\s+)({_PROJECT_MARKER_NUMBER_TOKEN})',
+    re.IGNORECASE,
+)
 PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS = frozenset({
     'defs',
     'desc',
@@ -1762,6 +1772,122 @@ def _project_marker_polygon_vertex_count(raw: str) -> int | None:
     if not all(math.isfinite(value) for value in values):
         return None
     return len(values) // 2
+
+
+def _project_marker_polygon_points(
+    raw: str,
+) -> list[tuple[float, float]] | None:
+    """Parse finite marker polygon points from the closed project grammar."""
+    tokens = [token for token in re.split(r'[\s,]+', raw.strip()) if token]
+    if not tokens or len(tokens) % 2:
+        return None
+    try:
+        values = [float(token) for token in tokens]
+    except ValueError:
+        return None
+    if not all(math.isfinite(value) for value in values):
+        return None
+    return list(zip(values[::2], values[1::2]))
+
+
+def _project_marker_path_points(raw: str) -> list[tuple[float, float]]:
+    """Return the explicit M/L points from an already-validated marker path."""
+    points = [
+        (float(x), float(y))
+        for x, y in _PROJECT_MARKER_COMMAND_POINT_RE.findall(raw)
+    ]
+    return [
+        point
+        for point in points
+        if all(math.isfinite(coordinate) for coordinate in point)
+    ]
+
+
+def _project_marker_cross(
+    first: tuple[float, float],
+    second: tuple[float, float],
+    third: tuple[float, float],
+) -> float:
+    """Return the signed turn for three marker vertices."""
+    return (
+        (second[0] - first[0]) * (third[1] - second[1])
+        - (second[1] - first[1]) * (third[0] - second[0])
+    )
+
+
+def _project_marker_segments_cross(
+    first_start: tuple[float, float],
+    first_end: tuple[float, float],
+    second_start: tuple[float, float],
+    second_end: tuple[float, float],
+) -> bool:
+    """Return whether two non-adjacent marker edges strictly intersect."""
+    first_a = _project_marker_cross(first_start, first_end, second_start)
+    first_b = _project_marker_cross(first_start, first_end, second_end)
+    second_a = _project_marker_cross(second_start, second_end, first_start)
+    second_b = _project_marker_cross(second_start, second_end, first_end)
+    return first_a * first_b < 0 and second_a * second_b < 0
+
+
+def _project_marker_quadrilateral_type(
+    points: list[tuple[float, float]],
+) -> str | None:
+    """Classify one simple four-point marker as diamond or stealth."""
+    if len(points) != 4:
+        return None
+    if (
+        _project_marker_segments_cross(points[0], points[1], points[2], points[3])
+        or _project_marker_segments_cross(
+            points[1], points[2], points[3], points[0]
+        )
+    ):
+        return None
+    turns = [
+        _project_marker_cross(
+            points[index],
+            points[(index + 1) % 4],
+            points[(index + 2) % 4],
+        )
+        for index in range(4)
+    ]
+    if any(abs(turn) <= 1e-12 for turn in turns):
+        return None
+    signs = {turn > 0 for turn in turns}
+    return 'diamond' if len(signs) == 1 else 'stealth'
+
+
+def classify_project_marker_shape(marker_elem: ET.Element) -> str | None:
+    """Classify one marker into a DrawingML line-end shape, if representable."""
+    visual_children = [
+        child
+        for child in list(marker_elem)
+        if _svg_element_tag(child)
+        not in PROJECT_NON_VISUAL_DEFINITION_CHILD_TAGS
+    ]
+    if len(visual_children) != 1:
+        return None
+    shape = visual_children[0]
+    tag = (_svg_element_tag(shape) or '').lower()
+    if tag in {'circle', 'ellipse'}:
+        return 'oval'
+    if tag == 'path':
+        path_data = shape.get('d', '')
+        if _PROJECT_MARKER_TRIANGLE_PATH_RE.fullmatch(path_data):
+            return 'triangle'
+        if _PROJECT_MARKER_ARROW_PATH_RE.fullmatch(path_data):
+            return 'arrow'
+        if _PROJECT_MARKER_DIAMOND_PATH_RE.fullmatch(path_data):
+            points = _project_marker_path_points(path_data)
+            return _project_marker_quadrilateral_type(points)
+        return None
+    if tag == 'polygon':
+        points = _project_marker_polygon_points(shape.get('points', ''))
+        if points is None:
+            return None
+        if len(points) == 3:
+            return 'triangle'
+        return _project_marker_quadrilateral_type(points)
+    return None
 
 
 def _project_effective_presentation_value(

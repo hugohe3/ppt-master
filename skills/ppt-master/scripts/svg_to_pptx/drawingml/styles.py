@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import math
-import re
 from xml.etree import ElementTree as ET
 
 from pptx_shapes import validate_ooxml_line_width
@@ -14,6 +13,7 @@ from .utils import (
     SVG_NS, ANGLE_UNIT,
     px_to_emu, _f, _get_attr, parse_svg_length,
     combine_opacity, parse_inline_style, parse_opacity, parse_stop_style,
+    classify_project_marker_shape,
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
     parse_project_filter_params, project_filter_drawingml_coordinates,
     parse_project_stroke_dasharray, parse_project_stroke_enum,
@@ -303,15 +303,6 @@ def build_pattern_fill(
 # Marker (arrow-head) support
 # ---------------------------------------------------------------------------
 
-# Matches an (x, y) pair in a path "d" attribute: "M 10, 20" / "L -5 7.5" / etc.
-_MARKER_POINT_RE = re.compile(
-    r'[MLml]\s*(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)'
-)
-_MARKER_POLY_POINT_RE = re.compile(
-    r'(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)'
-)
-
-
 def _marker_size_buckets(w_attr: float, h_attr: float) -> tuple[str, str]:
     """Map SVG markerWidth / markerHeight to DrawingML (w, len) buckets.
 
@@ -338,44 +329,17 @@ def _classify_marker(marker_elem: ET.Element) -> tuple[str, str, str] | None:
         w, len in {'sm', 'med', 'lg'}
     or None if the marker cannot be classified.
 
-    Current coverage (80/20): triangles (3-vertex closed paths or polygons),
-    diamonds (4-vertex symmetric), and circles / ellipses. Anything else
-    returns None so the caller can warn and skip.
+    Current coverage is the five DrawingML line-end shapes: triangle, stealth,
+    arrow, diamond, and oval. Anything else returns ``None``.
     """
     mw = _f(marker_elem.get('markerWidth'), 3.0)
     mh = _f(marker_elem.get('markerHeight'), 3.0)
     w_bucket, len_bucket = _marker_size_buckets(mw, mh)
 
-    for child in marker_elem:
-        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-
-        if tag in ('circle', 'ellipse'):
-            return ('oval', w_bucket, len_bucket)
-
-        if tag == 'path':
-            d = child.get('d', '')
-            if not d:
-                continue
-            points = _MARKER_POINT_RE.findall(d)
-            n = len(points)
-            closed = bool(re.search(r'[Zz]\s*$', d.strip()))
-            if n == 3 and closed:
-                return ('triangle', w_bucket, len_bucket)
-            if n == 4 and closed:
-                return ('diamond', w_bucket, len_bucket)
-            continue
-
-        if tag in ('polygon', 'polyline'):
-            pts_attr = child.get('points', '')
-            pts = _MARKER_POLY_POINT_RE.findall(pts_attr)
-            n = len(pts)
-            if n == 3:
-                return ('triangle', w_bucket, len_bucket)
-            if n == 4:
-                return ('diamond', w_bucket, len_bucket)
-            continue
-
-    return None
+    marker_type = classify_project_marker_shape(marker_elem)
+    if marker_type is None:
+        return None
+    return marker_type, w_bucket, len_bucket
 
 
 def _emit_line_end(
@@ -409,7 +373,7 @@ def _emit_line_end(
     if cls is None:
         print(
             f'  Warning: marker "{marker_id}" shape cannot be classified; '
-            f'skipping (supported: triangle, diamond, oval)'
+            'skipping (supported: triangle, stealth, arrow, diamond, oval)'
         )
         return ''
 
