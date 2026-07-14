@@ -172,7 +172,7 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 >
 > 3. Enumerate the concepts the deck actually needs (home, chart, users, …) based on the confirmed outline.
 > 4. Search for each concept's filename in the chosen library: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
-> 5. Use the verified filename (without `.svg`) as the icon name; always include the library prefix (e.g., `chunk-filled/home`).
+> 5. Use the verified filename (without `.svg`) as the icon name; always include the library prefix (e.g., `chunk-filled/home`). Icon identifiers are case-sensitive: bundled-library basenames are lowercase and MUST be copied exactly (`tabler-outline/award`, never `tabler-outline/Award`). Do not rely on downstream lowercasing; custom icons preserve their file's exact case.
 > 6. **Copy each chosen icon into the project as you confirm it** — `python3 skills/ppt-master/scripts/icon_sync.py <project_path> <lib/name> [<lib/name> …]`. This populates `<project>/icons/<lib>/` (the set the Executor embeds from) and, more importantly, **validates existence on the spot**.
 > 7. List the final icon inventory and chosen library in `design_spec.md` §VI; record the same in `spec_lock.md icons` (including `stroke_width` for stroke-style libraries). Executor may only use icons from this list.
 >

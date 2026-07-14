@@ -4,7 +4,7 @@
 
 **Hard rule — complete page SVG**: Every visible object intended for the exported slide MUST exist in the final page SVG or be explicitly referenced by it. Templates and `spec_lock.md` guide construction; they are not export-time overlays for missing visible content.
 
-**Hard rule — route-specific PowerPoint structure**: Free-design and brand-only projects use `pptx_structure.mode: flat`: write no root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder`; every visible object remains Slide-local. Export materializes one clean project-owned Master plus one Blank Layout from the current lock. Deck/layout template projects use `mode: structured`: every page reads its locked Master/Layout row and declares the four root identity attributes from the first draft. Do not add `data-pptx-layout-kind` or duplicate identity with `data-pptx-page-role`. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by specialized metadata; the marked element uses a stable unique `id`. See [`semantic-svg.md`](./semantic-svg.md).
+**Hard rule — route-specific PowerPoint structure**: Free-design and brand-only projects use `pptx_structure.mode: flat`: write no root Master/Layout identity, `data-pptx-layer`, or `data-pptx-placeholder`; every visible object remains Slide-local, and the root declares exactly one canonical `data-pptx-page-role` (`cover` / `toc` / `section` / `content` / `ending`). Export materializes one clean project-owned Master plus one Blank Layout from the current lock. Deck/layout template projects use `mode: structured`: every page reads its locked Master/Layout row and declares the four root identity attributes from the first draft. Do not add `data-pptx-layout-kind` or duplicate identity with `data-pptx-page-role`. Add `data-pptx-role` only to structural page-frame objects whose package, page-number, or animation behavior is not already expressed by specialized metadata; the marked element uses a stable unique `id`. See [`semantic-svg.md`](./semantic-svg.md).
 
 **Hard rule — supported PPTX route**: The only supported generated-PPTX path is `svg_output/` through the project SVG-to-DrawingML converter. Step 7.2 still generates `svg_final/` as a mandatory self-contained visual preview that may be inserted as an SVG picture. Do not treat PowerPoint's manual Convert-to-Shape operation as an authoring target or compatibility requirement.
 
@@ -165,7 +165,7 @@ Before the first SVG page, output a confirmation listing: canvas dimensions, bod
 - Images MUST reference files listed under `images`; no invented filenames
 - Formula PNGs are images with `Acquire Via: formula` / `Status: Rendered`; place them only from the listed file path and never recreate the formula as text.
 
-If a page needs a value not in `spec_lock.md`, surface it — do not silently invent one.
+If a page needs a value not in `spec_lock.md`, surface it — do not silently invent one. When an intentional deck-wide or recurring color, type role/size, icon, or image is approved, extend `spec_lock.md` **before** drawing the first affected object, re-read the lock, and only then author the page; do not draw with a temporary hardcoded value and retroactively silence drift warnings.
 
 **Per-page layout rhythm — `page_rhythm` section**:
 
@@ -195,7 +195,7 @@ Do **not** invent a prototype entry, and do **not** assume a template just becau
 
 **Per-page PowerPoint layout lookup — structured deck/layout templates only**:
 
-- When `pptx_structure.mode` is `flat`, skip this lookup and the structured scaffold below. `pptx_masters`, `pptx_layouts`, `page_layouts`, and the corresponding SVG metadata must all be absent.
+- When `pptx_structure.mode` is `flat`, skip this lookup and the structured scaffold below. `pptx_masters`, `pptx_layouts`, `page_layouts`, and the corresponding SVG metadata must all be absent; each root still declares its canonical `data-pptx-page-role`.
 - When a deck/layout template is active, `pptx_structure.mode` must equal `structured`; any other or missing value routes to legacy restoration.
 - Read the current page row as `<master_key> | <layout_key> | <layout name>` and resolve `master_key` in `pptx_masters`. Missing, malformed, or partial mappings stop before drawing.
 - Write matching root Master/Layout key and picker names. Do not write `data-pptx-layout-kind` or `data-pptx-page-role`.
@@ -345,6 +345,8 @@ grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 
 **Hard rule**: every data chart whose type appears in the **Supported chart types** list of [shared-standards.md](shared-standards.md) "Native PPTX Table / Chart Markers" (the single authority for the eligible set, marker contract, and JSON schemas) gets `data-pptx-native="chart"` plus a `<metadata data-pptx-native="chart">` JSON child on its top-level `<g>`, transcribing the same data just plotted. Every pure text-grid data table gets `data-pptx-native="table"` the same way, transcribing all visible cell text into `columns` / `rows`.
 
+`data-pptx-native` is a **data-backed replacement claim**, not a generic label for a group that contains numbers. Add it only when the matching JSON payload can be written in the same edit; if the object is meant to remain SVG geometry, do not add the marker.
+
 - Chart types absent from that list and conceptual/diagrammatic graphics (process flows, cycles, quadrant cards, timelines, KPI cards) get **no marker** — `svg_quality_checker.py` rejects unsupported marker types.
 - Canonical rectangular merged text cells may carry a table marker by putting anchor-only `row_span` / `col_span` in metadata and leaving covered cells blank. Nonrectangular/overlapping merges, nonblank covered cells, and graphical cells (icons, harvey balls, rating dots) get **no table marker** and stay on the SVG fallback route.
 - Transcribe, don't restyle: `categories` / `series[].values` are the numbers just plotted; `style.colors` carries the series HEX values already used on the page (from `spec_lock.colors`).
@@ -379,6 +381,8 @@ Examples: `01_封面.svg` / `02_目录.svg` / `03_核心优势.svg`; `01_cover.s
 Strategist chooses the library and inventory; Executor only implements. Library details and one-library rule: [`../templates/icons/README.md`](../templates/icons/README.md). This section defines placeholder syntax.
 
 > **Resolution is project-first.** Strategist copied the chosen icons into `<project_path>/icons/<lib>/` (via `icon_sync.py`); `finalize_svg.py embed-icons` embeds from there, falling back to the global library per-icon. **Custom icons**: drop an `.svg` into `<project_path>/icons/<lib>/` (any `<lib>`, e.g. `custom/`) and reference it as `data-icon="<lib>/<name>"` — it embeds like any other. Reference only icons in the `spec_lock.md` inventory.
+
+> **Icon identifiers are case-sensitive filenames.** For bundled libraries, copy the verified lowercase basename exactly (`tabler-outline/award`, never `tabler-outline/Award`) into `spec_lock.md` and every `data-icon` value. Custom icon identifiers preserve the custom file's exact case; the pipeline never silently lowercases names.
 
 **Built-in icons — Placeholder method (recommended)**:
 

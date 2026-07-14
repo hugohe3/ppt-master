@@ -6,6 +6,7 @@ PPT Master uses rendering-neutral compiler hints only where ordinary SVG cannot 
 
 | Marker | Placement | Purpose |
 |---|---|---|
+| `data-pptx-page-role` | Root `<svg>` on flat pages only | Classify a free-design/brand-only page as `cover`, `toc`, `section`, `content`, or `ending`. |
 | `data-pptx-master` / `data-pptx-master-name` | Root `<svg>` | Bind the page to one named PowerPoint Slide Master. |
 | `data-pptx-layout` / `data-pptx-layout-name` | Root `<svg>` | Bind the page to one named Layout under that Master. |
 | `data-pptx-layer="master"` | Direct atomic child of root | Promote one fixed visual object to the named Master. |
@@ -15,7 +16,7 @@ PPT Master uses rendering-neutral compiler hints only where ordinary SVG cannot 
 
 The completed SVG remains the full visible page. Removing the metadata must not change browser rendering. Do not copy visible text, geometry, style, or asset values into metadata.
 
-**Hard rule — route boundary**: Free-design and brand-only pages use `pptx_structure.mode: flat` and omit every Master/Layout/layer/placeholder marker in this document. Deck/layout template pages declare their final Master and Layout before drawing begins; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
+**Hard rule — route boundary**: Free-design and brand-only pages use `pptx_structure.mode: flat`, declare one canonical root `data-pptx-page-role`, and omit every Master/Layout/layer/placeholder marker in this document. Deck/layout template pages declare their final Master and Layout before drawing begins and omit `data-pptx-page-role`; the structured exporter compiles that contract and never selects, clusters, distills, or visually infers it.
 
 **Hard rule — specialized metadata wins**: Use Master/Layout/placeholder metadata for native structure, `data-pptx-native` for chart/table reconstruction, and the imported/authored shape metadata defined in [`shared-standards.md`](./shared-standards.md) §§1.4–1.5. Do not duplicate those facts with `data-pptx-role`.
 
