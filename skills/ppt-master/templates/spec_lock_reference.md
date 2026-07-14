@@ -146,7 +146,7 @@
 ## pptx_masters
 - master-default: Default Master
 
-> Deck/layout template routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
+> Deck/layout template routes only. One row per Master: `<master_key>: <PowerPoint picker name>`. A key contains 1–64 ASCII letters, digits, dots, underscores, or hyphens; its first character is a letter or digit. Spaces belong only in the PowerPoint picker name, never in the key. Keys are deck-unique and stable. Omit this entire section when `pptx_structure.mode: flat`.
 
 ## pptx_layouts
 - cover-hero-split: master-default | Cover — Hero Split | template:01_cover
@@ -154,7 +154,7 @@
 - content-two-column: master-default | Two Column | template:03a_content_abstract
 - quote-focus: master-default | Quote Focus | template:04_quote_focus
 
-> Deck/layout template routes only. This is the unique reusable Layout roster, not a page roster. Value format: `<master_key> | <PowerPoint layout name> | <prototype source>`. A prototype source is either `P<NN>` for one generated page carrying that exact Layout contract, or `template:<basename>` for an installed `templates/<basename>.svg`. Omit this section when `pptx_structure.mode: flat`.
+> Deck/layout template routes only. This is the unique reusable Layout roster, not a page roster. Layout keys use the same grammar as Master keys. Value format: `<master_key> | <PowerPoint layout name> | <prototype source>`. Supply all three non-empty fields separated by `|`. A prototype source is either `P<NN>` for one generated page carrying that exact Layout contract, or `template:<basename>` for an installed `templates/<basename>.svg`; the `template:` prefix is required, so a bare basename is invalid. Omit this section when `pptx_structure.mode: flat`.
 >
 > Every Layout key appears exactly once, belongs to exactly one declared Master, and is globally unique even when two Masters use the same picker name. Every declared Master owns at least one Layout definition. A Layout may remain unused by generated pages; such a Layout must use `template:<basename>` so export can register it without manufacturing a published slide.
 >
