@@ -15,6 +15,7 @@ from collections.abc import Iterator
 from xml.etree import ElementTree as ET
 
 from pptx_shapes import (
+    OOXML_COORDINATE_MAX,
     resolve_preset_preview_hash,
     svg_preset_preview_fingerprint,
     validate_ooxml_xfrm,
@@ -1922,6 +1923,124 @@ def project_gradient_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
+def parse_project_filter_params(
+    filter_elem: ET.Element,
+) -> dict[str, float | str | bool]:
+    """Extract the shared native shadow/glow parameters from one filter."""
+    std_dev = 4.0
+    dx = 0.0
+    dy = 0.0
+    paint_opacity: float | None = None
+    transfer_opacity: float | None = None
+    color_alpha = 1.0
+    color = '000000'
+    has_offset = False
+
+    for child in filter_elem.iter():
+        tag = _svg_element_tag(child)
+        style_values = parse_inline_style(child.get('style'))
+
+        def effect_attr(name: str, default: str | None = None) -> str | None:
+            return style_values.get(name) or child.get(name, default)
+
+        if tag == 'feDropShadow':
+            std_dev = _f(child.get('stdDeviation'), 4.0)
+            dx = _f(child.get('dx'), 0.0)
+            dy = _f(child.get('dy'), 0.0)
+            if abs(dx) > 0.01 or abs(dy) > 0.01:
+                has_offset = True
+            paint_opacity = parse_opacity(
+                effect_attr('flood-opacity'),
+                0.3,
+                allow_percentage=True,
+            )
+            parsed_color, parsed_alpha = parse_svg_color(
+                effect_attr('flood-color', '#000000')
+            )
+            if parsed_color:
+                color = parsed_color
+                color_alpha = parsed_alpha
+        elif tag == 'feGaussianBlur':
+            std_dev = _f(child.get('stdDeviation'), 4.0)
+        elif tag == 'feOffset':
+            dx = _f(child.get('dx'), 0.0)
+            dy = _f(child.get('dy'), 0.0)
+            if abs(dx) > 0.01 or abs(dy) > 0.01:
+                has_offset = True
+        elif tag == 'feFlood':
+            paint_opacity = parse_opacity(
+                effect_attr('flood-opacity'),
+                0.3,
+                allow_percentage=True,
+            )
+            parsed_color, parsed_alpha = parse_svg_color(
+                effect_attr('flood-color', '#000000')
+            )
+            if parsed_color:
+                color = parsed_color
+                color_alpha = parsed_alpha
+        elif tag == 'feFuncA' and child.get('type') == 'linear':
+            slope = max(0.0, _f(child.get('slope'), 0.3))
+            transfer_opacity = (
+                slope
+                if transfer_opacity is None
+                else transfer_opacity * slope
+            )
+
+    if paint_opacity is None:
+        opacity = transfer_opacity if transfer_opacity is not None else 0.3
+    elif transfer_opacity is None:
+        opacity = paint_opacity
+    else:
+        opacity = paint_opacity * transfer_opacity
+    opacity = max(0.0, min(1.0, opacity * color_alpha))
+
+    return {
+        'std_dev': std_dev,
+        'dx': dx,
+        'dy': dy,
+        'opacity': opacity,
+        'color': color,
+        'has_offset': has_offset,
+    }
+
+
+def project_filter_drawingml_coordinates(
+    params: dict[str, float | str | bool],
+    effect_kind: str | None = None,
+) -> dict[str, int]:
+    """Map filter geometry into validated DrawingML effect coordinates."""
+    kind = effect_kind or ('shadow' if params['has_offset'] else 'glow')
+    std_dev = float(params['std_dev'])
+    dx = float(params['dx'])
+    dy = float(params['dy'])
+    if kind == 'shadow':
+        coordinates_px = {
+            'blurRad': std_dev * 2.0,
+            'dist': math.hypot(dx, dy),
+        }
+    elif kind == 'glow':
+        coordinates_px = {'rad': std_dev}
+    else:
+        raise ValueError(f'unsupported native filter kind {kind!r}')
+
+    coordinates: dict[str, int] = {}
+    for attribute_name, value_px in coordinates_px.items():
+        scaled = value_px * EMU_PER_PX
+        if not math.isfinite(scaled):
+            raise ValueError(
+                f'DrawingML {attribute_name} must be finite after EMU mapping'
+            )
+        mapped = round(scaled)
+        if not 0 <= mapped <= OOXML_COORDINATE_MAX:
+            raise ValueError(
+                f'DrawingML {attribute_name} must map within '
+                f'0..{OOXML_COORDINATE_MAX}; got {mapped}'
+            )
+        coordinates[attribute_name] = mapped
+    return coordinates
+
+
 def project_filter_errors(root: ET.Element) -> list[str]:
     """Validate filters against the native shadow/glow approximation."""
     definitions, _duplicates = project_definition_index(root)
@@ -1974,6 +2093,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
 
     for filter_id, filter_elem in filters_by_id.items():
         label = f'filter #{filter_id}'
+        geometry_is_valid = True
         primitives = [
             _svg_element_tag(descendant) or str(descendant.tag)
             for descendant in filter_elem.iter()
@@ -2032,6 +2152,8 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         and value > 1
                     )
                 ):
+                    if attribute_name in {'stdDeviation', 'dx', 'dy'}:
+                        geometry_is_valid = False
                     qualifier = (
                         ' from 0 to 1'
                         if primitive_tag == 'feFuncA'
@@ -2041,6 +2163,12 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         f'{label} <{primitive_tag}> {attribute_name} must be a '
                         f'finite number{qualifier}; got {raw_value!r}'
                     )
+        if len(effect_primitives) == 1 and geometry_is_valid:
+            try:
+                params = parse_project_filter_params(filter_elem)
+                project_filter_drawingml_coordinates(params)
+            except (TypeError, ValueError) as exc:
+                errors.add(f'{label} {exc}')
     return sorted(errors)
 
 
