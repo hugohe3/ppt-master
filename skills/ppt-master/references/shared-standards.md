@@ -1013,7 +1013,10 @@ join. Round and bevel are empty; miter requires the project's fixed
 limit, and other miter limits stop import rather than losing corner geometry.
 PPTX import maps only the registered DrawingML `prstDash` values; `solid`
 remains an intentional line with no SVG dash array, while an unknown source
-value stops import instead of being mistaken for `solid`.
+value stops import instead of being mistaken for `solid`. A line contains at
+most one direct `a:prstDash` or `a:custDash`; preset dash has exactly one `val`
+attribute and no payload. Duplicate, mixed, or payload-bearing dash definitions
+stop import instead of being resolved by document order.
 An imported `a:custDash` contains one or more direct, empty `a:ds` children;
 each stop has exactly `d` and `sp`, both positive OOXML integers. Missing or
 extra fields, foreign children, malformed numbers, and values outside the

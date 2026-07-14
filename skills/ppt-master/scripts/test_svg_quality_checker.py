@@ -2836,6 +2836,37 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ):
             resolve_stroke(sp_pr, None)
 
+    def test_native_line_dash_choice_must_be_unique_and_exact(self):
+        cases = (
+            (
+                '<a:prstDash val="dash"/><a:custDash>'
+                '<a:ds d="100000" sp="100000"/></a:custDash>',
+                'DrawingML line must contain at most one dash',
+            ),
+            (
+                '<a:prstDash val="dash"/><a:prstDash val="dot"/>',
+                'DrawingML line must contain at most one dash',
+            ),
+            (
+                '<a:prstDash val="dash" extra="1"/>',
+                'Invalid DrawingML preset dash structure',
+            ),
+            (
+                '<a:custDash extra="1">'
+                '<a:ds d="100000" sp="100000"/></a:custDash>',
+                'Invalid DrawingML custom dash structure',
+            ),
+        )
+        for dash_markup, expected in cases:
+            with self.subTest(dash_markup=dash_markup):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>{dash_markup}</a:ln>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
     def test_invalid_native_custom_dash_is_rejected_on_import(self):
         cases = (
             ('', 'Invalid DrawingML custom dash structure'),
