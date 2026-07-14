@@ -40,6 +40,7 @@ PRST_DASH_TO_ARRAY = {
     "sysDashDot": "3 3 1 3",
     "sysDashDotDot": "3 3 1 3 1 3",
 }
+_OOXML_INT_MAX = 2**31 - 1
 
 # DrawingML cap -> SVG stroke-linecap
 CAP_MAP = {
@@ -138,17 +139,38 @@ def resolve_stroke(
         if cust_dash is not None:
             ds_parts: list[str] = []
             sw = float(attrs.get("stroke-width", "1") or "1") or 1.0
-            for ds in cust_dash.findall("a:ds", NS):
+            dash_stops = list(cust_dash)
+            expected_tag = f"{{{NS['a']}}}ds"
+            if not dash_stops or any(
+                ds.tag != expected_tag
+                or set(ds.attrib) != {"d", "sp"}
+                or list(ds)
+                for ds in dash_stops
+            ):
+                raise ValueError("Invalid DrawingML custom dash structure")
+            for ds in dash_stops:
                 # d, sp are percentages of stroke width (1000ths)
-                try:
-                    d_pct = int(ds.attrib.get("d", "0"))
-                    sp_pct = int(ds.attrib.get("sp", "0"))
-                except ValueError:
-                    continue
+                values: dict[str, int] = {}
+                for name in ("d", "sp"):
+                    raw_value = ds.attrib[name]
+                    try:
+                        value = int(raw_value)
+                    except (ValueError, TypeError):
+                        raise ValueError(
+                            f"Invalid DrawingML custom dash {name}: "
+                            f"{raw_value!r}"
+                        ) from None
+                    if not 0 < value <= _OOXML_INT_MAX:
+                        raise ValueError(
+                            f"DrawingML custom dash {name}={value} is "
+                            "outside the positive OOXML integer range"
+                        )
+                    values[name] = value
+                d_pct = values["d"]
+                sp_pct = values["sp"]
                 ds_parts.append(fmt_num(d_pct / 100000.0 * sw, 2))
                 ds_parts.append(fmt_num(sp_pct / 100000.0 * sw, 2))
-            if ds_parts:
-                attrs["stroke-dasharray"] = " ".join(ds_parts)
+            attrs["stroke-dasharray"] = " ".join(ds_parts)
 
     # Join
     if ln.find("a:round", NS) is not None:
