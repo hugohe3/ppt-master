@@ -780,6 +780,10 @@ Each supported source effect must contain exactly one resolvable DrawingML
 color choice. Malformed choices and valid color semantics outside the
 registered color/modifier subset also receive effect-status metadata; the
 importer never substitutes black or drops an unhandled modifier.
+DrawingML color alpha transforms are evaluated in document order. Each
+`alpha`, `alphaMod`, or `alphaOff` result saturates into `0..100%` before the
+next transform, and the importer writes that effective value to the SVG
+`flood-opacity` channel.
 Picture and group targets do not expose the public filter mapping: any source
 effect DAG or non-empty effect list on `p:pic/p:spPr` or `p:grpSp/p:grpSpPr`
 keeps the base object but receives effect-status metadata instead of attaching

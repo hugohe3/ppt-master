@@ -2723,6 +2723,21 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     round_trip_supported(alpha_glow),
                 )
 
+        saturated_alpha = effect_result(
+            f'<a:effectLst xmlns:a="{dml}"><a:glow rad="9525">'
+            '<a:srgbClr val="000000"><a:alphaMod val="200000"/>'
+            '<a:alphaOff val="-50000"/></a:srgbClr>'
+            '</a:glow></a:effectLst>'
+        )
+        self.assertIn(
+            'flood-opacity="0.5"',
+            ''.join(saturated_alpha.defs),
+        )
+        self.assertIn(
+            '<a:alpha val="50000"/>',
+            round_trip_supported(saturated_alpha),
+        )
+
         marked_svg = '''<svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 1280 720">
   <rect x="80" y="80" width="300" height="180" fill="#FFFFFF"
