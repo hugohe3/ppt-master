@@ -995,6 +995,9 @@ stop import instead of being dropped and replaced by a default SVG line width.
 An explicit source `a:ln@cap` must be `flat`, `rnd`, or `sq`, which map to SVG
 `butt`, `round`, and `square`; unknown values stop import instead of falling
 back to the SVG default cap.
+PPTX import maps only the registered DrawingML `prstDash` values; `solid`
+remains an intentional line with no SVG dash array, while an unknown source
+value stops import instead of being mistaken for `solid`.
 
 The dash grammar is closed: exact lowercase `none`, or at least two finite
 unitless numbers separated by whitespace or one comma. Generated SVG uses

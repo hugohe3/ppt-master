@@ -126,7 +126,11 @@ def resolve_stroke(
     prst_dash = ln.find("a:prstDash", NS)
     if prst_dash is not None:
         preset = prst_dash.attrib.get("val", "")
-        dasharray = PRST_DASH_TO_ARRAY.get(preset)
+        if preset not in PRST_DASH_TO_ARRAY:
+            raise ValueError(
+                f"Unsupported DrawingML preset dash: {preset!r}"
+            )
+        dasharray = PRST_DASH_TO_ARRAY[preset]
         if dasharray:
             attrs["stroke-dasharray"] = dasharray
     else:
