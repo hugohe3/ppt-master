@@ -41,6 +41,7 @@ from .utils import (
     detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
     is_thick_circle_shorthand, parse_project_geometry_length,
     parse_project_image_aspect_ratio,
+    parse_project_opacity,
     parse_project_stroke_dasharray,
     matrix_multiply, parse_transform_matrix, parse_transform_operations,
     transform_point, _xml_escape,
@@ -1923,10 +1924,7 @@ def _text_opacity_ratio(value: str | None) -> float:
     """Parse a text opacity component and clamp it to the SVG ``0..1`` range."""
     if value is None:
         return 1.0
-    try:
-        return max(0.0, min(1.0, float(value)))
-    except ValueError:
-        return 1.0
+    return parse_project_opacity(value)
 
 
 def _override_run_attrs(

@@ -40,6 +40,7 @@ from .utils import (
     parse_transform_matrix,
     project_geometry_length_errors,
     project_image_aspect_ratio_errors,
+    project_opacity_errors,
     project_stroke_style_errors,
     project_transform_errors,
     resolve_url_id,
@@ -129,6 +130,22 @@ def _require_project_image_aspect_ratios(
     suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
     raise SvgNativeConversionError(
         f'{Path(svg_path).name}: invalid project image aspect ratio(s): '
+        f'{preview}{suffix}'
+    )
+
+
+def _require_project_opacities(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject malformed opacity values before native conversion."""
+    errors = project_opacity_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project opacity value(s): '
         f'{preview}{suffix}'
     )
 
@@ -1178,6 +1195,7 @@ def convert_svg_to_slide_shapes(
 
     _require_project_freeform_geometry(root, svg_path)
     _require_project_stroke_styles(root, svg_path)
+    _require_project_opacities(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)
 
@@ -1239,6 +1257,7 @@ def convert_svg_to_slide_shapes(
 
     # Recheck compiler-injected icon/use wrappers and cloned definition trees.
     _require_project_stroke_styles(root, svg_path)
+    _require_project_opacities(root, svg_path)
     _require_project_image_aspect_ratios(root, svg_path)
     _require_project_transforms(root, svg_path)
 

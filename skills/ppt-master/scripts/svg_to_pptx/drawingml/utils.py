@@ -1,7 +1,8 @@
 """Coordinate, transform, color, and font helpers for DrawingML conversion.
 
-See references/shared-standards.md §2.1, §6.5, §6.6, and §6.8 for project
-geometry, image-fit, line-presentation, and transform authoring contracts.
+See references/shared-standards.md §2.1, §6.2, §6.5, §6.6, and §6.8 for
+project geometry, opacity, image-fit, line-presentation, and transform
+authoring contracts.
 """
 
 from __future__ import annotations
@@ -161,6 +162,17 @@ PROJECT_IMAGE_ASPECT_RATIO_ANCHORS = {
     'xMaxYMax': (1.0, 1.0),
 }
 PROJECT_IMAGE_ASPECT_RATIO_MODES = frozenset({'meet', 'slice'})
+PROJECT_OPACITY_PROPERTIES = (
+    'opacity',
+    'fill-opacity',
+    'stroke-opacity',
+    'stop-opacity',
+    'flood-opacity',
+)
+PROJECT_PERCENTAGE_OPACITY_PROPERTIES = frozenset({
+    'stop-opacity',
+    'flood-opacity',
+})
 THICK_CIRCLE_COVERAGE_TOLERANCE = 1.0
 
 
@@ -325,6 +337,41 @@ def format_project_geometry_length(value: float) -> str:
         return '0'
     text = f'{value:.15f}'.rstrip('0').rstrip('.')
     return '0' if text in {'', '-0'} else text
+
+
+def parse_project_opacity(
+    raw: str,
+    *,
+    allow_percentage: bool = False,
+) -> float:
+    """Parse and clamp one opacity value from the closed project grammar."""
+    try:
+        number, unit = _parse_svg_length_parts(raw)
+    except ValueError as exc:
+        raise ValueError('must be one finite numeric opacity') from exc
+
+    if unit == '%':
+        if not allow_percentage:
+            raise ValueError('must be unitless; percentages are not supported')
+        number /= 100.0
+    elif unit:
+        raise ValueError(f'uses unsupported unit {unit!r}')
+    return max(0.0, min(1.0, number))
+
+
+def is_project_opacity_default_form(raw: str) -> bool:
+    """Return whether opacity uses the generated finite unitless ``0..1`` form."""
+    try:
+        number, unit = _parse_svg_length_parts(raw)
+    except ValueError:
+        return False
+    return unit == '' and 0.0 <= number <= 1.0
+
+
+def format_project_opacity(value: float) -> str:
+    """Format one parsed opacity as a compact unitless ``0..1`` value."""
+    bounded = max(0.0, min(1.0, value))
+    return f'{bounded:.6f}'.rstrip('0').rstrip('.') or '0'
 
 
 def parse_project_image_aspect_ratio(raw: str | None) -> tuple[str, str]:
@@ -1321,6 +1368,52 @@ def project_image_aspect_ratio_errors(root: ET.Element) -> list[str]:
     return errors
 
 
+def iter_project_opacities(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str, str, str]]:
+    """Yield project opacity values as element, property, raw value, source."""
+    for elem in root.iter():
+        for property_name in PROJECT_OPACITY_PROPERTIES:
+            raw = elem.get(property_name)
+            if raw is not None:
+                yield elem, property_name, raw, 'attribute'
+
+        for fragment in (elem.get('style') or '').split(';'):
+            fragment = fragment.strip()
+            if not fragment:
+                continue
+            if ':' in fragment:
+                name, raw = fragment.split(':', 1)
+                name = name.strip().lower()
+                raw = raw.strip()
+            else:
+                name = fragment.lower()
+                raw = ''
+            if name in PROJECT_OPACITY_PROPERTIES:
+                yield elem, name, raw, 'inline style'
+
+
+def project_opacity_errors(root: ET.Element) -> list[str]:
+    """Return blocking project opacity errors for converter preflight."""
+    errors: list[str] = []
+    for elem, property_name, raw, source in iter_project_opacities(root):
+        tag = _svg_element_tag(elem) or str(elem.tag)
+        elem_id = elem.get('id')
+        label = f'<{tag} id={elem_id!r}>' if elem_id else f'<{tag}>'
+        try:
+            parse_project_opacity(
+                raw,
+                allow_percentage=(
+                    property_name in PROJECT_PERCENTAGE_OPACITY_PROPERTIES
+                ),
+            )
+        except ValueError as exc:
+            errors.append(
+                f'{label} {source} {property_name}={raw!r}: {exc}'
+            )
+    return errors
+
+
 def _finite_float(raw: str) -> float:
     """Parse a finite floating-point number."""
     value = float(raw)
@@ -1349,14 +1442,16 @@ def _parse_alpha_channel(raw: str) -> float:
     return max(0.0, min(1.0, value))
 
 
-def parse_opacity(raw: str | None, default: float = 1.0) -> float:
-    """Parse a number or percentage opacity, falling back to ``default``."""
+def parse_opacity(
+    raw: str | None,
+    default: float = 1.0,
+    *,
+    allow_percentage: bool = False,
+) -> float:
+    """Parse one project opacity or return the code-owned missing default."""
     if raw is None:
         return max(0.0, min(1.0, default))
-    try:
-        return _parse_alpha_channel(raw)
-    except ValueError:
-        return max(0.0, min(1.0, default))
+    return parse_project_opacity(raw, allow_percentage=allow_percentage)
 
 
 def _functional_color_parts(body: str) -> tuple[list[str], str | None]:
@@ -1482,7 +1577,10 @@ def parse_stop_style(style_str: str) -> tuple[str | None, float]:
     if 'stop-color' in style_values:
         color, color_alpha = parse_svg_color(style_values['stop-color'])
     if 'stop-opacity' in style_values:
-        stop_opacity = parse_opacity(style_values['stop-opacity'])
+        stop_opacity = parse_opacity(
+            style_values['stop-opacity'],
+            allow_percentage=True,
+        )
 
     return color, color_alpha * stop_opacity
 
