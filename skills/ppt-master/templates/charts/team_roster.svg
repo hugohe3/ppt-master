@@ -22,7 +22,7 @@
     <text x="640" y="80" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="36" font-weight="800" fill="#0F172A" text-anchor="middle">Meet Our Executive Team</text>
     <text x="640" y="110" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="#64748B" letter-spacing="1" text-anchor="middle">LEADERSHIP DRIVING INNOVATION AND GROWTH</text>
     <!-- ==================== Team Cards ==================== -->
-    <g transform="translate(60, 180)">
+    <g id="executive-team-roster" transform="translate(60, 180)">
         <!-- Card 1 -->
         <g transform="translate(0, 0)">
             <rect width="270" height="420" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow)"/>

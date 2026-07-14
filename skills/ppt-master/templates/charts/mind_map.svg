@@ -54,92 +54,92 @@
     <line x1="230" y1="525" x2="205" y2="564" stroke="#F43F5E" stroke-width="1.5" stroke-opacity="0.3"/>
     <!-- ===== Sub-item Cards ===== -->
     <!-- Top Right (Product) Cards -->
-    <g>
+    <g id="product-ux-optimization-node">
         <rect x="1075" y="139" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="1075" y="139" width="5" height="34" rx="2.5" fill="#10B981"/>
         <text x="1090" y="161" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">UX Optimization</text>
     </g>
-    <g>
+    <g id="product-feature-roadmap-node">
         <rect x="1075" y="183" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="1075" y="183" width="5" height="34" rx="2.5" fill="#10B981"/>
         <text x="1090" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Feature Roadmap</text>
     </g>
-    <g>
+    <g id="product-quality-standards-node">
         <rect x="1075" y="227" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="1075" y="227" width="5" height="34" rx="2.5" fill="#10B981"/>
         <text x="1090" y="249" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Quality Standards</text>
     </g>
     <!-- Bottom Right (Market) Cards -->
-    <g>
+    <g id="market-brand-positioning-node">
         <rect x="1075" y="459" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="1075" y="459" width="5" height="34" rx="2.5" fill="#F59E0B"/>
         <text x="1090" y="481" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Brand Positioning</text>
     </g>
-    <g>
+    <g id="market-channel-expansion-node">
         <rect x="1075" y="503" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="1075" y="503" width="5" height="34" rx="2.5" fill="#F59E0B"/>
         <text x="1090" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Channel Expansion</text>
     </g>
-    <g>
+    <g id="market-competitor-analysis-node">
         <rect x="1075" y="547" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="1075" y="547" width="5" height="34" rx="2.5" fill="#F59E0B"/>
         <text x="1090" y="569" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Competitor Analysis</text>
     </g>
     <!-- Top Left (Technology) Cards (Right Aligned Text) -->
-    <g>
+    <g id="technology-architecture-upgrade-node">
         <rect x="40" y="139" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="200" y="139" width="5" height="34" rx="2.5" fill="#3B82F6"/>
         <text x="190" y="161" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Architecture Upgrade</text>
     </g>
-    <g>
+    <g id="technology-ai-integration-node">
         <rect x="40" y="183" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="200" y="183" width="5" height="34" rx="2.5" fill="#3B82F6"/>
         <text x="190" y="205" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">AI Integration</text>
     </g>
-    <g>
+    <g id="technology-security-compliance-node">
         <rect x="40" y="227" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="200" y="227" width="5" height="34" rx="2.5" fill="#3B82F6"/>
         <text x="190" y="249" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Security &amp; Compliance</text>
     </g>
     <!-- Bottom Left (Operations) Cards (Right Aligned Text) -->
-    <g>
+    <g id="operations-user-growth-node">
         <rect x="40" y="459" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="200" y="459" width="5" height="34" rx="2.5" fill="#F43F5E"/>
         <text x="190" y="481" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">User Growth Strategy</text>
     </g>
-    <g>
+    <g id="operations-supply-chain-node">
         <rect x="40" y="503" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="200" y="503" width="5" height="34" rx="2.5" fill="#F43F5E"/>
         <text x="190" y="525" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Supply Chain Mgt</text>
     </g>
-    <g>
+    <g id="operations-data-driven-decisions-node">
         <rect x="40" y="547" width="165" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
         <rect x="200" y="547" width="5" height="34" rx="2.5" fill="#F43F5E"/>
         <text x="190" y="569" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0F172A">Data-driven Decisions</text>
     </g>
     <!-- ===== Branch Nodes ===== -->
     <!-- Top Right (Product) -->
-    <g>
+    <g id="product-branch-node">
         <rect x="930" y="170" width="120" height="50" rx="25" fill="#10B981"/>
         <text x="990" y="201" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Product</text>
     </g>
     <!-- Bottom Right (Market) -->
-    <g>
+    <g id="market-branch-node">
         <rect x="930" y="500" width="120" height="50" rx="25" fill="#F59E0B"/>
         <text x="990" y="531" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Market</text>
     </g>
     <!-- Top Left (Technology) -->
-    <g>
+    <g id="technology-branch-node">
         <rect x="230" y="170" width="120" height="50" rx="25" fill="#3B82F6"/>
         <text x="290" y="201" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Technology</text>
     </g>
     <!-- Bottom Left (Operations) -->
-    <g>
+    <g id="operations-branch-node">
         <rect x="230" y="500" width="120" height="50" rx="25" fill="#F43F5E"/>
         <text x="290" y="531" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Operations</text>
     </g>
     <!-- ===== Center Node ===== -->
-    <g>
+    <g id="strategy-core-node">
         <circle cx="640" cy="360" r="75" fill="url(#centerGrad)"/>
         <text x="640" y="352" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">Product</text>
         <text x="640" y="380" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">Strategy</text>

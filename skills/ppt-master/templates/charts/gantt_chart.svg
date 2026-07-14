@@ -69,7 +69,7 @@
         <line x1="1240" y1="105" x2="1240" y2="640" stroke="#E2E8F0" stroke-width="1"/>
     </g>
     <!-- Week Dividers (Dashed) -->
-    <g stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,2">
+    <g id="week-dividers" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,2">
         <line x1="320" y1="135" x2="320" y2="640"/>
         <line x1="360" y1="135" x2="360" y2="640"/>
         <line x1="400" y1="135" x2="400" y2="640"/>

@@ -27,7 +27,7 @@
     <text x="640" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5" text-anchor="middle">ENTERPRISE SAAS MARKET · COMPETITIVE LANDSCAPE ASSESSMENT 2025</text>
     <!-- ==================== Connecting Arrows ==================== -->
-    <g stroke="#94A3B8" stroke-width="3">
+    <g id="force-connectors" stroke="#94A3B8" stroke-width="3">
         <!-- Top to Center -->
         <line x1="640" y1="230" x2="640" y2="305" marker-end="url(#arrow)"/>
         <!-- Bottom to Center -->
@@ -39,7 +39,7 @@
     </g>
     <!-- ==================== The Five Forces ==================== -->
     <!-- 1. Center Card: Industry Rivalry (Very High) -->
-    <g transform="translate(640, 380)">
+    <g id="industry-rivalry-card" transform="translate(640, 380)">
         <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="2" filter="url(#cardShadow)"/>
         <!-- Top Accent -->
         <g>
@@ -57,7 +57,7 @@
         <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#4C0519">Price wars are common</text>
     </g>
     <!-- 2. Top Card: Threat of New Entrants (Medium) -->
-    <g transform="translate(640, 160)">
+    <g id="new-entrants-card" transform="translate(640, 160)">
         <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <!-- Top Accent -->
         <g>
@@ -75,7 +75,7 @@
         <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Tech accumulation needed</text>
     </g>
     <!-- 3. Bottom Card: Threat of Substitutes (Low) -->
-    <g transform="translate(640, 600)">
+    <g id="substitutes-card" transform="translate(640, 600)">
         <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <!-- Top Accent -->
         <g>
@@ -93,7 +93,7 @@
         <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">High product differentiation</text>
     </g>
     <!-- 4. Left Card: Power of Suppliers (Medium-High) -->
-    <g transform="translate(300, 380)">
+    <g id="supplier-power-card" transform="translate(300, 380)">
         <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <!-- Top Accent -->
         <g>
@@ -111,7 +111,7 @@
         <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">High dependency on infra</text>
     </g>
     <!-- 5. Right Card: Power of Buyers (High) -->
-    <g transform="translate(980, 380)">
+    <g id="buyer-power-card" transform="translate(980, 380)">
         <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
         <!-- Top Accent -->
         <g>
@@ -146,7 +146,7 @@
     <circle cx="65" cy="230" r="4" fill="#3B82F6"/>
     <text x="80" y="234" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#334155">Focus on differentiation</text>
     <!-- Bottom-Left: Threat Legend -->
-    <g transform="translate(40, 630)">
+    <g id="threat-level-legend" transform="translate(40, 630)">
         <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#64748B">Threat Levels:</text>
         <rect x="100" y="-10" width="12" height="12" rx="3" fill="#10B981"/>
         <text x="120" y="1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569">Low</text>

@@ -10,7 +10,7 @@
     <text x="80" y="70" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Product Portfolio Strategy</text>
     <text x="80" y="100" font-family="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">BCG GROWTH-SHARE MATRIX ANALYSIS</text>
     <!-- ==================== Axis & Labels ==================== -->
-    <g transform="translate(180, 160)">
+    <g id="quadrant-matrix" transform="translate(180, 160)">
         <!-- Y-Axis: Market Growth Rate -->
         <line x1="0" y1="0" x2="0" y2="440" stroke="#0F172A" stroke-width="4"/>
         <polygon points="-8,-12 8,-12 0,-24" fill="#0F172A"/>
