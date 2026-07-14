@@ -848,10 +848,12 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > run-level rich text. A rich paragraph contains non-empty `runs`; each run
 > requires `text` and may use only
 > `bold` / `italic` / `underline` / `strike` / `color` / `font_size` /
-> `font_family` / `lang` / `alt_lang`. Presentation-only source run XML
-> normalizes, while relationship-bearing text, extensions, line breaks, fields,
-> tabs, bullets, broken text topology, noncanonical merges, and unsafe direct
-> formatting remain fallback-only. Imported classic charts
+> `font_family` / `lang` / `alt_lang`. Presentation-only source run XML without
+> a non-empty `effectLst` / `effectDag` normalizes; a table-cell run effect
+> disables native replacement and adds a blocking effect diagnostic.
+> Relationship-bearing text, extensions, line breaks, fields, tabs, bullets,
+> broken text topology, noncanonical merges, and unsafe direct formatting
+> remain fallback-only. Imported classic charts
 > additionally cover verified column/line/area combos, canonical OHLC stock,
 > area date-axis cases, verified scatter/bubble axes, radar, safe `of_pie`
 > `serLines`, and the closed axis/title/legend plus bar-gap/overlap normalization

@@ -902,6 +902,10 @@ def _render_graphic_table(
             'data-pptx-replacement-status="'
             f'{_xml_escape(result.native_status)}"'
         )
+    if result.effect_reason:
+        replacement_attrs.extend(_metadata_group_attrs(
+            unsupported_effect_metadata(result.effect_reason)
+        ))
     return result.svg, replacement_attrs, payload_metadata
 
 

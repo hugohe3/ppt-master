@@ -155,7 +155,7 @@ PowerPoint 意图
 | 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 见条件 marker 合同 |
 | 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移仍可稳定分类时，才重建单一 shape/connector 来源 `outerShdw` | 零偏移来源阴影和不支持的图结构不会被静默改成其他效果 |
 | 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate`；单一 shape/connector 来源发光保持已登记的半径换算 | 发光承载语义强调时需复核 |
-| 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]`；独立竖排及含关系引用的输出使用仅限导入的阻塞效果状态 | `p:txBody` 内原始原生 run 效果 | 仅在原始 payload 仍可用时为 `Native-stable`；会丢失非空 run `effectLst` / `effectDag` 的编辑或降级路径将被阻断 | 不是公开创作语法；表格单元格文本尚不在该保护范围内 |
+| 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]`；竖排、含关系引用及表格单元格降级路径使用仅限导入的阻塞效果状态 | `p:txBody` 内原始原生 run 效果 | 仅在原始 payload 仍可用时为 `Native-stable`；会丢失非空 run `effectLst` / `effectDag` 的编辑或降级路径将被阻断 | 不是公开创作语法；表格单元格 run 效果还会禁用原生 Table 替换 payload |
 | 整个对象透明度 | 原子元素 `opacity` | alpha 分发至受支持原生通道 | `Native-normalized` | 除非整个原子对象需要淡出，否则优先通道专属 alpha |
 | 组透明度 | 兼容 `<g opacity>` | 后代归一化近似 | `Approximate`，并产生 warning | 生成 SVG 应优先后代 alpha |
 | 内阴影、柔化边缘、倒影、模糊、湍流、混合模式或任意 mask | 无已登记原生映射 | 显式几何替代或栅格资产 | `Bake-required`；PPTX 回导保留基础对象，并对不支持的 shape/connector 效果、图片/组效果 DAG 及非空图片/组效果列表产生阻塞诊断 | 已处理的对象效果不能被改成其他类型或静默省略；文字 run 安全边界见上方未变更 `txBody` 行 |
@@ -167,7 +167,7 @@ PowerPoint 意图
 | 视觉绘制表格 | 普通 SVG shape、line 与 text | 相互独立的可编辑 PowerPoint shape | 保真度遵循各组件对应行 | 它不是原生表格，也没有 PowerPoint 表格编辑模型 |
 | PowerPoint 原生表格 | 一个带 `<metadata type="application/json">` 和可见 fallback 的 `<g data-pptx-replace-with="table">` | 启用原生 Chart/Table 替换时产生含 `a:tbl` 的 `p:graphicFrame` | 导入受支持表格重建 fallback 加替换 metadata | metadata 必须形成已登记矩形 schema；需要 `--native-charts-and-tables` |
 | 合并表格单元格 | 规范原生表格 merge metadata | 原生水平/垂直合并语义 | 封闭 schema 内为 `Native-stable` | 拒绝重叠、歧义或非矩形合并 |
-| 表格单元格格式 | 已登记原生表格单元格格式字段 | 原生单元格 fill、border、text 与 alignment | `Native-normalized` | 不猜测封闭 schema 以外的字段 |
+| 表格单元格格式 | 已登记原生表格单元格格式字段 | 原生单元格 fill、border、text 与 alignment | `Native-normalized` | 不猜测封闭 schema 以外的字段；导入的非空 run 效果会阻断，而不是归一化成无效果单元格 |
 | 不受支持的原生表格功能 | SVG fallback 或直接源保留 | 保留可见 fallback，或在直接路线保留源 OOXML | 显式 fallback / `Direct preservation` | 不得临时扩展 JSON |
 
 PowerPoint 原生 Chart/Table 对象是可选功能。默认导出保留 SVG fallback，并转换为仍可独立编辑的 DrawingML shape，以保持视觉稳定；原生导出改为提供对象的数据源以及图表/表格专属编辑模型，并可能归一化外观。

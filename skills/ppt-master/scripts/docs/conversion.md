@@ -255,10 +255,12 @@ safe solid/no-fill per-side borders, plain multi-paragraph cells, and a closed
 run-rich paragraph schema.
 Each run requires `text` and may use only `bold`, `italic`, `underline`,
 `strike`, `color`, `font_size`, one `font_family`, `lang`, and `alt_lang`.
-Presentation-only source run XML normalizes. Relationship-bearing text,
-extensions, noncanonical/overlapping merges, nonblank merge slaves, unsafe
-border XML, non-solid fills, structural line breaks/fields/tabs/bullets, and
-broken text topology remain fallback-only.
+Presentation-only source run XML without a non-empty `effectLst` / `effectDag`
+normalizes. A table-cell run effect disables native replacement and adds a
+blocking effect diagnostic. Relationship-bearing text, extensions,
+noncanonical/overlapping merges, nonblank merge slaves, unsafe border XML,
+non-solid fills, structural line breaks/fields/tabs/bullets, and broken text
+topology remain fallback-only.
 Markers remain dormant
 unless a later export uses `--native-charts-and-tables`. That opt-in is
 data-object-first: the default fallback still exports as editable DrawingML
