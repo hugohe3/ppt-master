@@ -2681,6 +2681,27 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         stroke_xml = build_stroke_xml(line, ConvertContext())
         self.assertIn('<a:ln w="1">', stroke_xml)
 
+    def test_compound_native_line_is_rejected_on_import(self):
+        for compound in ('dbl', 'thickThin', 'thinThick', 'tri'):
+            with self.subTest(compound=compound):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln cmpd="{compound}"/>
+</p:spPr>''')
+                with self.assertRaisesRegex(
+                    ValueError,
+                    f"Unsupported DrawingML compound line: '{compound}'",
+                ):
+                    resolve_stroke(sp_pr, None)
+
+        single = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln cmpd="sng"/>
+</p:spPr>''')
+        self.assertEqual(resolve_stroke(single, None).attrs, {})
+
     def test_unknown_native_line_cap_is_rejected_on_import(self):
         sp_pr = ET.fromstring('''
 <p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"

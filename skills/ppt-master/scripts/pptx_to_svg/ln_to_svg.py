@@ -75,6 +75,12 @@ def resolve_stroke(
     attrs: dict[str, str] = {}
     defs: list[str] = []
 
+    compound = ln.attrib.get("cmpd")
+    if compound not in {None, "sng"}:
+        raise ValueError(
+            f"Unsupported DrawingML compound line: {compound!r}"
+        )
+
     # Width (a:ln@w in EMU)
     width_emu = ln.attrib.get("w")
     if width_emu is not None:
