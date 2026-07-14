@@ -3258,6 +3258,10 @@ class SVGQualityChecker:
                 color, _alpha = _parse_export_color(v)
                 if color:
                     allowed_colors.add(color)
+            else:
+                color = _normalize_hex_rgb(v)
+                if color:
+                    allowed_colors.add(color)
 
         # A validated compact preset may contain registry-derived darken/lighten
         # layer colors.  Their base paint still comes from spec_lock; the exact
@@ -3283,10 +3287,6 @@ class SVGQualityChecker:
                             color = _normalize_hex_rgb(raw_value)
                         if color:
                             allowed_colors.add(color)
-            else:
-                color = _normalize_hex_rgb(v)
-                if color:
-                    allowed_colors.add(color)
 
         typo = lock.get('typography', {})
         numeric_size_re = re.compile(r'^(?:\d+(?:\.\d+)?|\.\d+)$')
