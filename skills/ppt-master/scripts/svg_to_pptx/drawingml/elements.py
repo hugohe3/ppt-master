@@ -30,6 +30,7 @@ from .theme_colors import color_node_xml
 from .theme_fonts import theme_font_tokens
 from .utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT,
+    PROJECT_IMAGE_ASPECT_RATIO_ANCHORS,
     px_to_emu, _f, _get_attr, parse_svg_length,
     svg_length_x, svg_length_y, svg_length_size,
     ctx_x, ctx_y, ctx_w, ctx_h,
@@ -39,6 +40,7 @@ from .utils import (
     parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
     detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
     is_thick_circle_shorthand, parse_project_geometry_length,
+    parse_project_image_aspect_ratio,
     parse_project_stroke_dasharray,
     matrix_multiply, parse_transform_matrix, parse_transform_operations,
     transform_point, _xml_escape,
@@ -2760,14 +2762,6 @@ def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
         return (None, None)
 
 
-def _parse_preserve_aspect_ratio(par: str | None) -> tuple[str, str]:
-    """Parse SVG preserveAspectRatio into ``(align, mode)``."""
-    parts = (par or 'xMidYMid meet').strip().split()
-    align = parts[0] if parts else 'xMidYMid'
-    mode = parts[1] if len(parts) > 1 else 'meet'
-    return align, mode
-
-
 def _image_has_alpha(img: Any) -> bool:
     """Return whether a PIL image carries useful transparency."""
     if img.mode in ('RGBA', 'LA'):
@@ -2918,7 +2912,9 @@ def _optimize_image_for_pptx(
     if getattr(img, 'is_animated', False):
         return img_data, img_format
 
-    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
     target_w, target_h = _fit_full_image_target(
         img.size[0],
         img.size[1],
@@ -2976,8 +2972,7 @@ def _compute_slice_src_rect(
     crop_w_total = max(0.0, img_w - visible_w)
     crop_h_total = max(0.0, img_h - visible_h)
 
-    x_anchor = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}.get(align[:4], 0.5)
-    y_anchor = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}.get(align[4:], 0.5)
+    x_anchor, y_anchor = PROJECT_IMAGE_ASPECT_RATIO_ANCHORS[align]
 
     crop_l = crop_w_total * x_anchor
     crop_r = crop_w_total - crop_l
@@ -3007,7 +3002,9 @@ def _resolve_image_src_rect(
     shrinks the picture frame to match image aspect ratio); none mode keeps
     the legacy stretch behaviour intentionally.
     """
-    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
 
     if align == 'none' or mode != 'slice':
         return ''  # meet handled by frame fit; none → stretch is correct per SVG spec
@@ -3045,7 +3042,9 @@ def _resolve_image_meet_fit(
       - intrinsic image dimensions cannot be read
       - frame already matches image ratio (no-op)
     """
-    align, mode = _parse_preserve_aspect_ratio(elem.get('preserveAspectRatio'))
+    align, mode = parse_project_image_aspect_ratio(
+        elem.get('preserveAspectRatio')
+    )
 
     if align == 'none' or mode == 'slice':
         return None
@@ -3063,8 +3062,7 @@ def _resolve_image_meet_fit(
     if abs(fit_w - box_w) < 0.5 and abs(fit_h - box_h) < 0.5:
         return None  # already matches — no adjustment
 
-    x_anchor = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}.get(align[:4], 0.5)
-    y_anchor = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}.get(align[4:], 0.5)
+    x_anchor, y_anchor = PROJECT_IMAGE_ASPECT_RATIO_ANCHORS[align]
 
     dx = (box_w - fit_w) * x_anchor
     dy = (box_h - fit_h) * y_anchor

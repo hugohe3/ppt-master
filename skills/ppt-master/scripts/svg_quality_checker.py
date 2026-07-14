@@ -58,9 +58,11 @@ try:
         DRAWINGML_TEXT_FONT_SIZE_MIN as _DRAWINGML_TEXT_FONT_SIZE_MIN,
         IDENTITY_MATRIX as _IDENTITY_MATRIX,
         format_project_geometry_length as _format_project_geometry_length,
+        format_project_image_aspect_ratio as _format_project_image_aspect_ratio,
         font_px_to_hpt as _font_px_to_hpt,
         is_canonical_project_geometry_length as _is_canonical_project_geometry_length,
         iter_project_geometry_lengths as _iter_project_geometry_lengths,
+        iter_project_image_aspect_ratios as _iter_project_image_aspect_ratios,
         iter_project_stroke_styles as _iter_project_stroke_styles,
         iter_project_transforms as _iter_project_transforms,
         matrix_multiply as _matrix_multiply,
@@ -70,10 +72,12 @@ try:
         parse_font_family as _parse_export_font_family,
         parse_inline_style as _parse_inline_style,
         parse_project_geometry_length as _parse_project_geometry_length,
+        parse_project_image_aspect_ratio as _parse_project_image_aspect_ratio,
         parse_project_stroke_dasharray as _parse_project_stroke_dasharray,
         parse_project_stroke_enum as _parse_project_stroke_enum,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
+        project_image_aspect_ratio_errors as _project_image_aspect_ratio_errors,
         project_stroke_style_errors as _project_stroke_style_errors,
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
@@ -84,9 +88,11 @@ except ImportError:
     _DRAWINGML_TEXT_FONT_SIZE_MIN = None
     _IDENTITY_MATRIX = None
     _format_project_geometry_length = None
+    _format_project_image_aspect_ratio = None
     _font_px_to_hpt = None
     _is_canonical_project_geometry_length = None
     _iter_project_geometry_lengths = None
+    _iter_project_image_aspect_ratios = None
     _iter_project_stroke_styles = None
     _iter_project_transforms = None
     _matrix_multiply = None
@@ -96,10 +102,12 @@ except ImportError:
     _parse_export_font_family = None
     _parse_inline_style = None
     _parse_project_geometry_length = None
+    _parse_project_image_aspect_ratio = None
     _parse_project_stroke_dasharray = None
     _parse_project_stroke_enum = None
     _parse_export_color = None
     _parse_export_length = None
+    _project_image_aspect_ratio_errors = None
     _project_stroke_style_errors = None
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
@@ -1097,13 +1105,16 @@ class SVGQualityChecker:
                 # 2b. Validate line-presentation grammar and mappings.
                 self._check_stroke_style_values(root, result)
 
-                # 2c. Validate complete path-data and point-list grammar.
+                # 2c. Validate image fit/crop grammar and mappings.
+                self._check_image_aspect_ratio_values(root, result)
+
+                # 2d. Validate complete path-data and point-list grammar.
                 self._check_freeform_geometry_values(root, result)
 
-                # 2d. Validate complete transform grammar and native mappings.
+                # 2e. Validate complete transform grammar and native mappings.
                 self._check_transform_values(root, result)
 
-                # 2e. Validate the closed authoring-property surface and
+                # 2f. Validate the closed authoring-property surface and
                 # conditional definition interfaces before export.
                 self._check_authoring_property_contract(root, result)
                 self._check_paint_compatibility(root, result)
@@ -1112,10 +1123,10 @@ class SVGQualityChecker:
                 self._check_marker_contract(root, result)
                 self._check_clip_path_contract(root, result)
 
-                # 2f. Validate the supported shadow/glow filter interface.
+                # 2g. Validate the supported shadow/glow filter interface.
                 self._check_filter_effects(root, result)
 
-                # 2g. Validate gradient definitions, stops, and coordinates.
+                # 2h. Validate gradient definitions, stops, and coordinates.
                 self._check_gradient_interfaces(root, result)
 
                 # 3. Check font-size values
@@ -2288,6 +2299,53 @@ class SVGQualityChecker:
                 f"({shown_examples}); generated SVG should prefer "
                 f'{attribute}="{normalized}" to {reason}. No change is '
                 "required for export."
+            )
+
+    def _check_image_aspect_ratio_values(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject ambiguous image fit/crop values and advise canonical forms."""
+        helpers = (
+            _format_project_image_aspect_ratio,
+            _iter_project_image_aspect_ratios,
+            _parse_project_image_aspect_ratio,
+            _project_image_aspect_ratio_errors,
+        )
+        if any(helper is None for helper in helpers):
+            result['warnings'].append(
+                "Unable to import svg_to_pptx image aspect-ratio validators; "
+                "native export will still validate image fit/crop syntax."
+            )
+            return
+
+        result['errors'].extend(_project_image_aspect_ratio_errors(root))
+        recommendations: Counter[tuple[str, str]] = Counter()
+        examples: Dict[tuple[str, str], List[str]] = defaultdict(list)
+
+        for elem, raw in _iter_project_image_aspect_ratios(root):
+            try:
+                align, mode = _parse_project_image_aspect_ratio(raw)
+            except ValueError:
+                continue
+            normalized = _format_project_image_aspect_ratio(align, mode)
+            if raw == normalized:
+                continue
+            key = (raw, normalized)
+            recommendations[key] += 1
+            label = _element_label(elem)
+            if label not in examples[key] and len(examples[key]) < 3:
+                examples[key].append(label)
+
+        for (raw, normalized), count in sorted(recommendations.items()):
+            shown_examples = ', '.join(examples[(raw, normalized)])
+            result['warnings'].append(
+                f"Recommendation: image preserveAspectRatio={raw!r} is "
+                f"converter-compatible in {count} location(s) "
+                f"({shown_examples}); generated SVG should prefer "
+                f'preserveAspectRatio="{normalized}". No change is required '
+                "for export."
             )
 
     def _check_freeform_geometry_values(
