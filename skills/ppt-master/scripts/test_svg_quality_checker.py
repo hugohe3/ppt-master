@@ -2,6 +2,7 @@
 """Regression tests for SVG checker compatibility severity."""
 
 import io
+import json
 import sys
 import tempfile
 import unittest
@@ -786,6 +787,63 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 )
         self.assertEqual(anonymous_groups, [])
         self.assertEqual(duplicate_ids, [])
+
+    def test_chart_catalog_passes_checker_and_export_routes(self):
+        chart_root = SCRIPT_DIR.parent / 'templates' / 'charts'
+        index = json.loads(
+            (chart_root / 'charts_index.json').read_text(encoding='utf-8')
+        )
+        indexed_keys = set(index['charts'])
+        svg_paths = sorted(chart_root.glob('*.svg'))
+        svg_keys = {path.stem for path in svg_paths}
+        self.assertEqual(index['meta']['total'], len(indexed_keys))
+        self.assertEqual(svg_keys, indexed_keys)
+
+        for svg_path in svg_paths:
+            with self.subTest(chart=svg_path.stem):
+                checker_result = SVGQualityChecker().check_file(str(svg_path))
+                self.assertEqual(checker_result['errors'], [])
+
+                default_result = convert_svg_to_slide_shapes(svg_path)
+                default_xml = default_result[0]
+                self.assertNotIn('<c:chart ', default_xml)
+                self.assertNotIn('<cx:chart ', default_xml)
+                self.assertNotIn('<a:tbl>', default_xml)
+
+                root = ET.parse(svg_path).getroot()
+                replacement_kinds = {
+                    kind
+                    for elem in root.iter()
+                    if (kind := native_replacement_kind(elem))
+                }
+                stderr = io.StringIO()
+                with patch('sys.stderr', new=stderr):
+                    native_result = convert_svg_to_slide_shapes(
+                        svg_path,
+                        native_objects=True,
+                    )
+                native_xml = native_result[0]
+
+                if not replacement_kinds:
+                    self.assertEqual(native_result, default_result)
+                    continue
+
+                self.assertEqual(len(replacement_kinds), 1)
+                self.assertNotEqual(native_result, default_result)
+                if replacement_kinds == {'chart'}:
+                    self.assertTrue(
+                        '<c:chart ' in native_xml
+                        or '<cx:chart ' in native_xml
+                    )
+                    self.assertNotIn('<a:tbl>', native_xml)
+                elif replacement_kinds == {'table'}:
+                    self.assertIn('<a:tbl>', native_xml)
+                    self.assertNotIn('<c:chart ', native_xml)
+                    self.assertNotIn('<cx:chart ', native_xml)
+                else:
+                    self.fail(
+                        f'unsupported replacement kinds: {replacement_kinds}'
+                    )
 
     def test_compact_authored_preset_exports_one_native_shape(self):
         fragment = render_preset_shape_fragment(
