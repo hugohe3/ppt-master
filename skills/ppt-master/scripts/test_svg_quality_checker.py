@@ -2563,6 +2563,25 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             'invalid project filter',
         )
 
+    def test_filter_alpha_transfer_rejects_unmapped_intercept(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <filter id="effect">
+      <feGaussianBlur stdDeviation="6"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.4" intercept="0.5"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#effect)"/>
+</svg>''',
+            '<feFuncA> intercept is unsupported',
+            'invalid project filter',
+        )
+
     def test_filter_flood_opacity_must_be_explicit(self):
         cases = (
             (
