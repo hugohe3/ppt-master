@@ -236,6 +236,7 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 
         pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
         dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+
         with zipfile.ZipFile(path, 'r') as source:
             members = [(info, source.read(info.filename)) for info in source.infolist()]
         replacements: dict[str, bytes] = {}
@@ -409,6 +410,89 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 encoding='utf-8',
                 xml_declaration=True,
             )
+
+        rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
+        with zipfile.ZipFile(rewritten, 'w') as target:
+            for info, data in members:
+                target.writestr(info, replacements.get(info.filename, data))
+        rewritten.replace(path)
+
+    @staticmethod
+    def _write_inherited_run_effect_fixture(path: Path) -> None:
+        """Write placeholder text that inherits one run effect from its layout."""
+        presentation = Presentation()
+        layout = presentation.slide_layouts[1]
+        layout_part = str(layout.part.partname).lstrip('/')
+        slide_parts: list[str] = []
+        for index in range(1, 4):
+            slide = presentation.slides.add_slide(layout)
+            slide_parts.append(str(slide.part.partname).lstrip('/'))
+            body = slide.placeholders[1]
+            body.text = f'INHERITED EFFECT {index}'
+            if index == 3:
+                body.text_frame.paragraphs[0].runs[0].hyperlink.address = (
+                    'https://example.com/'
+                )
+        presentation.save(path)
+
+        pml = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+
+        def body_placeholder(
+            root: ET.Element,
+        ) -> tuple[ET.Element, ET.Element]:
+            placeholder_path = (
+                f'{{{pml}}}nvSpPr/{{{pml}}}nvPr/{{{pml}}}ph'
+            )
+            for shape in root.findall(f'.//{{{pml}}}sp'):
+                placeholder = shape.find(placeholder_path)
+                if placeholder is not None and placeholder.get('idx') == '1':
+                    return shape, placeholder
+            raise AssertionError('content placeholder idx=1 not found')
+
+        with zipfile.ZipFile(path, 'r') as source:
+            members = [
+                (info, source.read(info.filename))
+                for info in source.infolist()
+            ]
+        member_data = {info.filename: data for info, data in members}
+        replacements: dict[str, bytes] = {}
+
+        layout_root = ET.fromstring(member_data[layout_part])
+        layout_placeholder, layout_placeholder_properties = body_placeholder(
+            layout_root
+        )
+        layout_placeholder_properties.set('type', 'body')
+        list_style = layout_placeholder.find(
+            f'{{{pml}}}txBody/{{{dml}}}lstStyle'
+        )
+        assert list_style is not None
+        level_properties = ET.SubElement(list_style, f'{{{dml}}}lvl1pPr')
+        default_properties = ET.SubElement(
+            level_properties,
+            f'{{{dml}}}defRPr',
+        )
+        default_properties.append(ET.fromstring(f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="38100"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>'''))
+        replacements[layout_part] = ET.tostring(
+            layout_root,
+            encoding='utf-8',
+            xml_declaration=True,
+        )
+
+        vertical_root = ET.fromstring(member_data[slide_parts[1]])
+        vertical_placeholder, _ = body_placeholder(vertical_root)
+        body_properties = vertical_placeholder.find(
+            f'{{{pml}}}txBody/{{{dml}}}bodyPr'
+        )
+        assert body_properties is not None
+        body_properties.set('vert', 'eaVert')
+        replacements[slide_parts[1]] = ET.tostring(
+            vertical_root,
+            encoding='utf-8',
+            xml_declaration=True,
+        )
 
         rewritten = path.with_name(f'{path.stem}-rewritten.pptx')
         with zipfile.ZipFile(rewritten, 'w') as target:
@@ -3139,6 +3223,73 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             native_xml = convert_svg_to_slide_shapes(native_path)[0]
             self.assertEqual(native_xml.count('<a:glow'), 1)
 
+    def test_inherited_text_run_effect_import_fails_closed(self):
+        expected_reasons = {
+            1: 'unsupported-run-effect-route:inherited-text-style',
+            2: 'unsupported-run-effect-route:vertical-text',
+            3: 'unsupported-run-effect-route:relationship-bearing-text',
+        }
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'inherited-run-effects.pptx'
+            self._write_inherited_run_effect_fixture(pptx_path)
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            self.assertEqual(len(imported.slides), 3)
+
+            for artifact in imported.slides:
+                with self.subTest(slide=artifact.index):
+                    reason = expected_reasons[artifact.index]
+                    root = ET.fromstring(artifact.svg)
+                    self.assertIn(
+                        f'INHERITED EFFECT {artifact.index}',
+                        ''.join(root.itertext()),
+                    )
+                    self.assertEqual(project_filter_errors(root), [])
+                    marked = [
+                        elem
+                        for elem in root.iter()
+                        if elem.get('data-pptx-effect-status') == 'unsupported'
+                    ]
+                    self.assertEqual(len(marked), 2)
+                    self.assertEqual(
+                        {
+                            elem.get('data-pptx-effect-reason')
+                            for elem in marked
+                        },
+                        {reason},
+                    )
+                    logical_shape = next(
+                        elem
+                        for elem in marked
+                        if elem.tag.rsplit('}', 1)[-1] == 'g'
+                    )
+                    status_errors = project_effect_status_errors(root)
+                    self.assertEqual(len(status_errors), 1)
+                    self.assertIn(reason, status_errors[0])
+
+                    metadata = [
+                        elem
+                        for elem in logical_shape.iter()
+                        if elem.get('data-pptx-part') == 'txbody'
+                    ]
+                    if artifact.index == 1:
+                        self.assertEqual(len(metadata), 1)
+                        payload = base64.b64decode(
+                            (metadata[0].text or '').strip()
+                        ).decode('utf-8')
+                        self.assertNotIn('<a:effectLst', payload)
+                    else:
+                        self.assertEqual(metadata, [])
+
+                    self._assert_checker_and_exporter_reject(
+                        artifact.svg,
+                        reason,
+                        'unsupported imported PPTX effect',
+                    )
+
     def test_table_cell_run_effect_import_fails_closed(self):
         cases = [
             ('rPr:effectLst', False),
@@ -5052,10 +5203,13 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             '<a:p><a:r><a:rPr><a:effectLst/><a:effectDag/></a:rPr>'
             '<a:t>AB</a:t></a:r></a:p>'
         )
+        local_text = txbody('<a:p><a:r><a:t>AB</a:t></a:r></a:p>')
 
         self.assertTrue(txbody_has_run_effects(inherited_list))
         self.assertTrue(txbody_has_run_effects(paragraph_end_dag))
         self.assertFalse(txbody_has_run_effects(empty_containers))
+        self.assertTrue(txbody_has_run_effects(local_text, inherited_list))
+        self.assertFalse(txbody_has_run_effects(local_text, empty_containers))
 
     def test_checker_does_not_trust_authored_runtime_txbody_snapshot(self):
         root = ET.fromstring(

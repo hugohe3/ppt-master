@@ -155,7 +155,7 @@ PowerPoint 意图
 | 线条箭头 | 已登记起点/终点 marker | 原生 head/tail end 属性 | marker 大小为 `Approximate` | 见条件 marker 合同 |
 | 外阴影 | 一个受支持 shadow filter 图 | `a:effectLst` 中的原生外阴影 | `Approximate`；仅当非零偏移仍可稳定分类时，才重建单一 shape/connector 来源 `outerShdw` | 零偏移来源阴影和不支持的图结构不会被静默改成其他效果 |
 | 发光 | 一个受支持 glow filter 图 | `a:effectLst` 中的原生发光 | `Approximate`；单一 shape/connector 来源发光保持已登记的半径换算 | 发光承载语义强调时需复核 |
-| 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]`；竖排、含关系引用及表格单元格降级路径使用仅限导入的阻塞效果状态 | `p:txBody` 内原始原生 run 效果 | 仅在原始 payload 仍可用时为 `Native-stable`；会丢失非空 run `effectLst` / `effectDag` 的编辑或降级路径将被阻断 | 不是公开创作语法；表格单元格 run 效果还会禁用原生 Table 替换 payload |
+| 导入的文字 run 效果 | 逻辑 shape 上未变更的 `metadata[data-pptx-part="txbody"]`；继承自 Layout/Master 的列表样式以及竖排、含关系引用、表格单元格降级路径使用仅限导入的阻塞效果状态 | `p:txBody` 内原始的 slide-local 原生 run 效果 | 仅在原始 slide-local payload 仍可用时为 `Native-stable`；继承效果、编辑或降级路径若会丢失非空 run `effectLst` / `effectDag` 则被阻断 | 不是公开创作语法；表格单元格 run 效果还会禁用原生 Table 替换 payload |
 | 整个对象透明度 | 原子元素 `opacity` | alpha 分发至受支持原生通道 | `Native-normalized` | 除非整个原子对象需要淡出，否则优先通道专属 alpha |
 | 组透明度 | 兼容 `<g opacity>` | 后代归一化近似 | `Approximate`，并产生 warning | 生成 SVG 应优先后代 alpha |
 | 内阴影、柔化边缘、倒影、模糊、湍流、混合模式或任意 mask | 无已登记原生映射 | 显式几何替代或栅格资产 | `Bake-required`；PPTX 回导保留基础对象，并对不支持的 shape/connector 效果、图片/组效果 DAG 及非空图片/组效果列表产生阻塞诊断 | 已处理的对象效果不能被改成其他类型或静默省略；文字 run 安全边界见上方未变更 `txBody` 行 |

@@ -788,21 +788,27 @@ Picture and group targets do not expose the public filter mapping: any source
 effect DAG or non-empty effect list on `p:pic/p:spPr` or `p:grpSp/p:grpSpPr`
 keeps the base object but receives effect-status metadata instead of attaching
 an invalid filter to `<image>` or ordinary `<g>`.
-Imported metadata-backed logical shapes preserve run-level effects only inside an
-unchanged `metadata[data-pptx-part="txbody"]` payload. If visible text,
-typography, or child topology invalidates that payload, checker and exporter
-stop when the source `rPr` / `defRPr` / `endParaRPr` contains a non-empty
-`effectLst` or `effectDag`; effect-free edited text keeps the normal fallback.
-The separate vertical-text output cannot carry that payload. When its source
-text body contains the same non-empty run-effect containers, import keeps the
-normalized geometry and visible vertical text but stamps the logical shape and
-native carrier with the blocking §1.4 effect status; effect-free and empty
-effect containers keep the existing normalized fallback.
-Relationship-bearing text bodies also cannot carry the opaque payload across
-parts. When such a body contains a non-empty run effect, import keeps its
-rebuilt visible text but stamps the same two blocking object markers;
-relationship-bearing text without a run effect keeps the existing visual
+Imported metadata-backed logical shapes preserve slide-local run-level effects
+only inside an unchanged `metadata[data-pptx-part="txbody"]` payload. If
+visible text, typography, or child topology invalidates that payload, checker
+and exporter stop when the source `rPr` / `defRPr` / `endParaRPr` contains a
+non-empty `effectLst` or `effectDag`; effect-free edited text keeps the normal
 fallback.
+Effects found in the inherited Layout/Master list-style chain are outside that
+slide-local payload. Horizontal import keeps the visible fallback and payload
+but stamps the logical shape and native carrier with
+`unsupported-run-effect-route:inherited-text-style`.
+The separate vertical-text output cannot carry that payload. When its source
+text body or inherited list-style chain contains the same non-empty run-effect
+containers, import keeps the normalized geometry and visible vertical text but
+stamps the logical shape and native carrier with the blocking §1.4 effect
+status; effect-free and empty effect containers keep the existing normalized
+fallback.
+Relationship-bearing text bodies also cannot carry the opaque payload across
+parts. When such a body or its inherited list-style chain contains a non-empty
+run effect, import keeps its rebuilt visible text but stamps the same two
+blocking object markers; relationship-bearing text without a run effect keeps
+the existing visual fallback.
 Table-cell text bodies use neither the opaque payload nor the public filter
 mapping. A non-empty run effect disables the native Table replacement payload,
 keeps the visible table fallback, and stamps its imported `p:graphicFrame`
@@ -1343,12 +1349,14 @@ rebuild its effect with supported explicit geometry; baking the effect-less
 analysis SVG alone cannot recover the source appearance. This diagnostic path
 covers `p:sp`, `p:cxnSp`, `p:pic`, and `p:grpSp` source effects. Text-run source
 effects follow the route-specific §6.4 contract: unchanged metadata-backed
-horizontal text preserves its native `txBody`, while a lossy edit blocks from
-that payload; vertical and relationship-bearing shape-text routes keep their
-visible fallback and stamp the logical shape plus carrier with effect-status;
-table-cell text keeps the visible table fallback, disables native Table replacement,
-and stamps the imported `p:graphicFrame` group. Handled object or text-run
-effects must never become a different effect or disappear without a diagnostic.
+horizontal text preserves slide-local effects in its native `txBody`, while a
+lossy edit blocks from that payload and inherited list-style effects receive a
+separate blocking marker; vertical and relationship-bearing shape-text routes
+keep their visible fallback and stamp the logical shape plus carrier with
+effect-status; table-cell text keeps the visible table fallback, disables
+native Table replacement, and stamps the imported `p:graphicFrame` group.
+Handled object or text-run effects must never become a different effect or
+disappear without a diagnostic.
 
 ---
 

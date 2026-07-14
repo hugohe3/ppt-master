@@ -78,19 +78,20 @@ def unsupported_effect_metadata(reason: str) -> dict[str, str]:
     }
 
 
-def txbody_has_run_effects(txbody: ET.Element | None) -> bool:
-    """Return whether rebuilding a text body would discard a run effect."""
-    if txbody is None:
-        return False
-    for properties in txbody.iter():
-        if properties.tag not in _TEXT_PROPERTY_TAGS:
+def txbody_has_run_effects(*text_style_roots: ET.Element | None) -> bool:
+    """Return whether rebuilding any supplied text style would lose an effect."""
+    for root in text_style_roots:
+        if root is None:
             continue
-        for child in properties:
-            if child.tag in _RUN_EFFECT_CONTAINER_TAGS and any(
-                isinstance(effect.tag, str)
-                for effect in child
-            ):
-                return True
+        for properties in root.iter():
+            if properties.tag not in _TEXT_PROPERTY_TAGS:
+                continue
+            for child in properties:
+                if child.tag in _RUN_EFFECT_CONTAINER_TAGS and any(
+                    isinstance(effect.tag, str)
+                    for effect in child
+                ):
+                    return True
     return False
 
 
