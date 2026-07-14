@@ -455,6 +455,14 @@ def _txbody_metadata(elem: ET.Element) -> ET.Element | None:
 
 _TXBODY_UNCHANGED_ATTR = 'data-pptx-runtime-txbody-unchanged'
 _PREVIEW_UNCHANGED_ATTR = 'data-pptx-runtime-preview-unchanged'
+_DML_NAMESPACE = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+_TEXT_PROPERTY_TAGS = frozenset({
+    f'{{{_DML_NAMESPACE}}}defRPr',
+    f'{{{_DML_NAMESPACE}}}endParaRPr',
+    f'{{{_DML_NAMESPACE}}}rPr',
+})
+_EFFECT_LIST_TAG = f'{{{_DML_NAMESPACE}}}effectLst'
+_EFFECT_DAG_TAG = f'{{{_DML_NAMESPACE}}}effectDag'
 
 
 def _mark_unchanged_txbody_groups(root: ET.Element) -> None:
@@ -518,7 +526,7 @@ def _decode_unchanged_txbody(
     metadata: ET.Element,
     *,
     trust_runtime_snapshot: bool = True,
-) -> str | None:
+) -> tuple[str, bool] | None:
     expected_hash = metadata.get('data-pptx-text-sha256')
     if not expected_hash:
         raise SvgNativeConversionError('txbody metadata requires a text hash')
@@ -526,10 +534,10 @@ def _decode_unchanged_txbody(
         group.get(_TXBODY_UNCHANGED_ATTR)
         if trust_runtime_snapshot else None
     )
-    if snapshot == '0':
-        return None
-    if snapshot != '1' and svg_text_fingerprint(group) != expected_hash:
-        return None
+    unchanged = snapshot == '1' or (
+        snapshot != '0'
+        and svg_text_fingerprint(group) == expected_hash
+    )
     if metadata.get('data-pptx-encoding') != 'base64':
         raise SvgNativeConversionError('txbody metadata requires base64 encoding')
     try:
@@ -546,7 +554,29 @@ def _decode_unchanged_txbody(
         raise SvgNativeConversionError(
             'txbody metadata must not contain part-local relationship attributes'
         )
-    return decoded
+    if not unchanged:
+        if _txbody_has_run_effects(txbody):
+            raise SvgNativeConversionError(
+                'Visible text or typography was edited while the source '
+                'txBody contains run-level effects; export stopped to avoid '
+                'silently discarding those effects'
+            )
+        return None
+    return decoded, _txbody_has_run_effects(txbody)
+
+
+def _txbody_has_run_effects(txbody: ET.Element) -> bool:
+    """Return whether fallback text rebuilding would discard a run effect."""
+    for properties in txbody.iter():
+        if properties.tag not in _TEXT_PROPERTY_TAGS:
+            continue
+        for child in properties:
+            if child.tag in {_EFFECT_LIST_TAG, _EFFECT_DAG_TAG} and any(
+                isinstance(effect.tag, str)
+                for effect in child
+            ):
+                return True
+    return False
 
 
 def _append_shape_text(
@@ -584,7 +614,7 @@ def preserved_native_text_body(
     )
     if not logical_text_shape:
         return None
-    native_text = _decode_unchanged_txbody(
+    decoded_text = _decode_unchanged_txbody(
         group,
         metadata,
         trust_runtime_snapshot=trust_runtime_snapshot,
@@ -604,9 +634,16 @@ def preserved_native_text_body(
         and child.get('data-pptx-part') not in allowed_parts
         for child in group
     )
-    if len(carrier_children) != 1 or has_foreign_visual:
+    if decoded_text is None:
         return None
-    if native_text is None:
+    native_text, has_run_effects = decoded_text
+    if len(carrier_children) != 1 or has_foreign_visual:
+        if has_run_effects:
+            raise SvgNativeConversionError(
+                'The source txBody contains run-level effects but cannot be '
+                'restored as one native text shape; export stopped to avoid '
+                'silently discarding those effects'
+            )
         return None
     return carrier_children[0], native_text
 
