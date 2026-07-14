@@ -591,6 +591,10 @@ as uppercase six-digit `#RRGGBB`. `fill` / `stroke` may instead use lowercase
 short/alpha HEX, functional colors, and bare legacy HEX remain supported input.
 The quality checker prints an optional canonical rewrite as a recommendation
 warning; it does not require modification or block export.
+Explicit empty, malformed, or unrecognized paint values are errors in both
+Checker and exporter preflight; neither converts unknown intent into
+`noFill` or default black. Omitted properties still follow their own element
+contract, such as SVG's default fill or §6.3's required gradient-stop color.
 
 | Intent | Canonical authoring | Native result / fidelity |
 |---|---|---|
@@ -657,7 +661,8 @@ Linear export preserves stops/alpha/direction but reduces coordinates to an
 angle. Radial export becomes a centered circular gradient and does not preserve
 `cx/cy/r/fx/fy`. Gradient strokes remain editable, but PPTX-to-SVG re-import may
 retain only the first stop. Stop alpha and element opacity multiply.
-The quality checker validates definition location, references, and paint context.
+The quality checker and exporter preflight both validate definition location,
+references, gradient structure, and paint context from the same closed contract.
 
 ```xml
 <defs>
@@ -684,6 +689,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Public targets | `<rect>`, `<circle>`, `<path>`, `<text>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
 | Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
+| Numeric values | Finite unitless values; non-negative `stdDeviation`; finite `dx` / `dy`; `feFuncA slope` within `0..1` |
 | Classification | Meaningful non-zero offset → one outer shadow; zero/no offset → one glow |
 | Fidelity | `Approximate`; one filter becomes one DrawingML effect |
 
@@ -694,6 +700,9 @@ Native export does not preserve filter-region, `in/in2/result`, merge order, or
 composite topology. Other primitives, multiple independent effects, filters on
 `<image>` / `<tspan>` / `<g>` / unsupported targets are forbidden; apply the
 effect to supported objects or use explicit layers.
+The quality checker and exporter preflight enforce the same definition,
+reference, primitive, target, and numeric-value contract; malformed values are
+never replaced by effect defaults during native export.
 
 ```xml
 <defs>

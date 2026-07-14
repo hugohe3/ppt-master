@@ -58,6 +58,7 @@ try:
         DRAWINGML_TEXT_FONT_SIZE_MIN as _DRAWINGML_TEXT_FONT_SIZE_MIN,
         IDENTITY_MATRIX as _IDENTITY_MATRIX,
         PROJECT_OPACITY_PROPERTIES as _OPACITY_PROPERTIES,
+        PROJECT_PAINT_PROPERTIES as _PAINT_PROPERTIES,
         PROJECT_PERCENTAGE_OPACITY_PROPERTIES as _PERCENTAGE_OPACITY_PROPERTIES,
         format_project_geometry_length as _format_project_geometry_length,
         format_project_image_aspect_ratio as _format_project_image_aspect_ratio,
@@ -65,9 +66,11 @@ try:
         font_px_to_hpt as _font_px_to_hpt,
         is_canonical_project_geometry_length as _is_canonical_project_geometry_length,
         is_project_opacity_default_form as _is_project_opacity_default_form,
+        is_project_paint_default_form as _is_project_paint_default_form,
         iter_project_geometry_lengths as _iter_project_geometry_lengths,
         iter_project_image_aspect_ratios as _iter_project_image_aspect_ratios,
         iter_project_opacities as _iter_project_opacities,
+        iter_project_paints as _iter_project_paints,
         iter_project_stroke_styles as _iter_project_stroke_styles,
         iter_project_transforms as _iter_project_transforms,
         matrix_multiply as _matrix_multiply,
@@ -79,12 +82,18 @@ try:
         parse_project_geometry_length as _parse_project_geometry_length,
         parse_project_image_aspect_ratio as _parse_project_image_aspect_ratio,
         parse_project_opacity as _parse_project_opacity,
+        parse_project_paint as _parse_project_paint,
         parse_project_stroke_dasharray as _parse_project_stroke_dasharray,
         parse_project_stroke_enum as _parse_project_stroke_enum,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
+        project_definition_errors as _project_definition_errors,
+        project_filter_errors as _project_filter_errors,
+        project_gradient_errors as _project_gradient_errors,
         project_image_aspect_ratio_errors as _project_image_aspect_ratio_errors,
         project_opacity_errors as _project_opacity_errors,
+        project_paint_errors as _project_paint_errors,
+        project_paint_reference_errors as _project_paint_reference_errors,
         project_stroke_style_errors as _project_stroke_style_errors,
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
@@ -95,6 +104,7 @@ except ImportError:
     _DRAWINGML_TEXT_FONT_SIZE_MIN = None
     _IDENTITY_MATRIX = None
     _OPACITY_PROPERTIES = None
+    _PAINT_PROPERTIES = None
     _PERCENTAGE_OPACITY_PROPERTIES = None
     _format_project_geometry_length = None
     _format_project_image_aspect_ratio = None
@@ -102,9 +112,11 @@ except ImportError:
     _font_px_to_hpt = None
     _is_canonical_project_geometry_length = None
     _is_project_opacity_default_form = None
+    _is_project_paint_default_form = None
     _iter_project_geometry_lengths = None
     _iter_project_image_aspect_ratios = None
     _iter_project_opacities = None
+    _iter_project_paints = None
     _iter_project_stroke_styles = None
     _iter_project_transforms = None
     _matrix_multiply = None
@@ -116,12 +128,18 @@ except ImportError:
     _parse_project_geometry_length = None
     _parse_project_image_aspect_ratio = None
     _parse_project_opacity = None
+    _parse_project_paint = None
     _parse_project_stroke_dasharray = None
     _parse_project_stroke_enum = None
     _parse_export_color = None
     _parse_export_length = None
+    _project_definition_errors = None
+    _project_filter_errors = None
+    _project_gradient_errors = None
     _project_image_aspect_ratio_errors = None
     _project_opacity_errors = None
+    _project_paint_errors = None
+    _project_paint_reference_errors = None
     _project_stroke_style_errors = None
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
@@ -313,15 +331,6 @@ _CHECK_PPTX_STRUCTURED_PROJECT = True
 _BARE_HEX_VALUE_RE = re.compile(
     r"(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})"
 )
-_CANONICAL_SOLID_PAINT_RE = re.compile(r"#[0-9A-F]{6}")
-_CANONICAL_PAINT_PROPERTIES = (
-    'fill',
-    'stroke',
-    'stop-color',
-    'flood-color',
-    'data-pptx-fg',
-    'data-pptx-bg',
-)
 _CANONICAL_PAINT_ALPHA_PROPERTY = {
     'fill': 'fill-opacity',
     'stroke': 'stroke-opacity',
@@ -364,28 +373,7 @@ _PPTX_STRUCTURE_SECTION_RE = re.compile(
 _PPTX_STRUCTURE_MODE_RE = re.compile(
     r"(?m)^-[ \t]+mode[ \t]*:[ \t]*([^\s#]+)[ \t]*(?:#.*)?$"
 )
-_SUPPORTED_FILTER_PRIMITIVES = frozenset({
-    'feDropShadow',
-    'feGaussianBlur',
-    'feOffset',
-    'feFlood',
-    'feComposite',
-    'feMerge',
-    'feMergeNode',
-    'feComponentTransfer',
-    'feFuncA',
-})
-_FILTER_EFFECT_PRIMITIVES = frozenset({'feDropShadow', 'feGaussianBlur'})
-_FILTER_PUBLIC_TARGETS = frozenset({'rect', 'circle', 'path', 'text'})
 _CLIP_SHAPE_TAGS = frozenset({'circle', 'ellipse', 'rect', 'path', 'polygon'})
-_DEFINITION_TAGS = frozenset({
-    'clipPath',
-    'filter',
-    'linearGradient',
-    'marker',
-    'pattern',
-    'radialGradient',
-})
 _SUPPORTED_INLINE_STYLE_PROPERTIES = frozenset({
     'cx', 'cy', 'fill', 'fill-opacity', 'filter', 'flood-color',
     'flood-opacity', 'font-family', 'font-size', 'font-style', 'font-weight',
@@ -811,24 +799,6 @@ def _element_label(elem: ET.Element) -> str:
     return f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
 
 
-def _normalized_gradient_value(raw: str) -> float | None:
-    """Parse a normalized gradient coordinate or percentage."""
-    value_text = raw.strip()
-    is_percent = value_text.endswith('%')
-    if is_percent:
-        value_text = value_text[:-1].strip()
-    if re.fullmatch(_NUMBER_TOKEN, value_text) is None:
-        return None
-    try:
-        value = float(value_text)
-    except ValueError:
-        return None
-    if not math.isfinite(value):
-        return None
-    value = value / 100.0 if is_percent else value
-    return value if 0.0 <= value <= 1.0 else None
-
-
 def _marker_polygon_vertex_count(raw: str) -> int | None:
     """Return the number of finite polygon vertices, or ``None``."""
     tokens = [token for token in re.split(r'[\s,]+', raw.strip()) if token]
@@ -1087,6 +1057,7 @@ class SVGQualityChecker:
                 self._check_paint_compatibility(root, result)
                 self._check_reference_spelling(root, result)
                 self._check_definition_contract(root, result)
+                self._check_paint_reference_contract(root, result)
                 self._check_marker_contract(root, result)
                 self._check_clip_path_contract(root, result)
 
@@ -1319,91 +1290,6 @@ class SVGQualityChecker:
         if 'iframe' in local_names:
             result['errors'].append("Detected <iframe> element (should not appear in SVG)")
 
-        # Paint-server references must match the exact definitions consumed by
-        # drawingml.converter.collect_defs: direct children of <defs> only.
-        defs_by_id = {}
-        for defs_elem in elems:
-            if _local_name(defs_elem).lower() != 'defs':
-                continue
-            for child in defs_elem:
-                child_id = child.get('id')
-                if child_id:
-                    defs_by_id[child_id] = child
-        pattern_descendant_ids = {
-            id(descendant)
-            for pattern in elems
-            if _local_name(pattern).lower() == 'pattern'
-            for descendant in pattern.iter()
-            if descendant is not pattern
-        }
-        fill_shape_tags = {'rect', 'circle', 'ellipse', 'path', 'polygon', 'polyline'}
-        stroke_shape_tags = fill_shape_tags | {'line'}
-        paint_reference_errors = set()
-        for elem in elems:
-            style_values = (
-                _parse_inline_style(elem.get('style'))
-                if _parse_inline_style is not None else {}
-            )
-            for attr in ('fill', 'stroke'):
-                value = style_values.get(attr) or elem.get(attr)
-                match = re.fullmatch(r'url\(#([^)]+)\)', (value or '').strip())
-                if match is None:
-                    continue
-                ref_id = match.group(1)
-                target = defs_by_id.get(ref_id)
-                elem_tag = _local_name(elem)
-                elem_tag_lower = elem_tag.lower()
-                if target is None:
-                    paint_reference_errors.add(
-                        f"<{elem_tag}> {attr}=url(#{ref_id}) has no matching "
-                        "direct <defs> definition"
-                    )
-                    continue
-                has_text_descendant = any(
-                    _local_name(descendant).lower() in {'text', 'tspan'}
-                    for descendant in elem.iter()
-                    if descendant is not elem
-                )
-                if id(elem) in pattern_descendant_ids:
-                    allowed_tags = ()
-                elif attr == 'fill' and elem_tag_lower in fill_shape_tags:
-                    allowed_tags = ('lineargradient', 'radialgradient', 'pattern')
-                elif attr == 'stroke' and elem_tag_lower in stroke_shape_tags:
-                    allowed_tags = ('lineargradient', 'radialgradient')
-                elif attr == 'fill' and elem_tag_lower in {'text', 'tspan'}:
-                    allowed_tags = ('lineargradient', 'radialgradient')
-                elif attr == 'fill' and elem_tag_lower == 'g':
-                    allowed_tags = (
-                        ('lineargradient', 'radialgradient')
-                        if has_text_descendant
-                        else ('lineargradient', 'radialgradient', 'pattern')
-                    )
-                elif attr == 'stroke' and elem_tag_lower == 'g' and not has_text_descendant:
-                    allowed_tags = ('lineargradient', 'radialgradient')
-                else:
-                    allowed_tags = ()
-                target_tag = _local_name(target).lower()
-                if not allowed_tags:
-                    paint_reference_errors.add(
-                        f"<{elem_tag}> {attr}=url(#{ref_id}) is not supported "
-                        "by native PPTX conversion in this context"
-                    )
-                    continue
-                if target_tag not in allowed_tags:
-                    tag_labels = {
-                        'lineargradient': 'linearGradient',
-                        'radialgradient': 'radialGradient',
-                        'pattern': 'pattern',
-                    }
-                    expected = '/'.join(
-                        tag_labels[tag] for tag in allowed_tags
-                    )
-                    paint_reference_errors.add(
-                        f"<{elem_tag}> {attr}=url(#{ref_id}) resolves to "
-                        f"<{_local_name(target)}>; expected {expected}"
-                    )
-        result['errors'].extend(sorted(paint_reference_errors))
-
     def _check_paint_compatibility(
         self,
         root: ET.Element,
@@ -1415,20 +1301,25 @@ class SVGQualityChecker:
         valid input; the checker only warns when that spelling differs from the
         generated-SVG default (uppercase ``#RRGGBB`` plus explicit alpha).
         """
-        if (
-            _PERCENTAGE_OPACITY_PROPERTIES is None
-            or _format_project_opacity is None
-            or _parse_export_color is None
-            or _parse_project_opacity is None
-        ):
+        helpers = (
+            _PAINT_PROPERTIES,
+            _PERCENTAGE_OPACITY_PROPERTIES,
+            _format_project_opacity,
+            _is_project_paint_default_form,
+            _iter_project_paints,
+            _parse_inline_style,
+            _parse_project_opacity,
+            _parse_project_paint,
+            _project_paint_errors,
+        )
+        if any(helper is None for helper in helpers):
             result['warnings'].append(
                 "Unable to import svg_to_pptx paint parsers; skipped paint syntax check"
             )
             return
 
-        unsupported: Counter[tuple[str, str]] = Counter()
+        result['errors'].extend(_project_paint_errors(root))
         recommendations: Counter[tuple[str, str, str]] = Counter()
-        unsupported_examples: Dict[tuple[str, str], List[str]] = defaultdict(list)
         recommendation_examples: Dict[tuple[str, str, str], List[str]] = defaultdict(list)
 
         def remember_example(store: Dict, key: tuple, label: str) -> None:
@@ -1436,63 +1327,29 @@ class SVGQualityChecker:
             if label not in labels and len(labels) < 3:
                 labels.append(label)
 
-        for elem in root.iter():
-            label = _element_label(elem)
-            style_declarations: list[tuple[str, str]] = []
-            for fragment in (elem.get('style') or '').split(';'):
-                fragment = fragment.strip()
-                if not fragment or ':' not in fragment:
-                    continue
-                name, value = fragment.split(':', 1)
-                name = name.strip().lower()
-                value = value.strip()
-                if name and value:
-                    style_declarations.append((name, value))
-            style_values = dict(style_declarations)
+        for elem, name, raw_value, source in _iter_project_paints(root):
+            try:
+                kind, normalized, color_alpha = _parse_project_paint(
+                    raw_value,
+                    name,
+                )
+            except ValueError:
+                continue
+            if _is_project_paint_default_form(raw_value, name):
+                continue
 
-            paint_entries = [
-                (name, elem.get(name), 'attribute')
-                for name in _CANONICAL_PAINT_PROPERTIES
-                if elem.get(name) is not None
-            ]
-            paint_entries.extend(
-                (name, value, 'inline style')
-                for name, value in style_declarations
-                if name in _CANONICAL_PAINT_PROPERTIES
-            )
-
-            for name, raw_value, source in paint_entries:
-                assert raw_value is not None
-                value = raw_value.strip()
-                source_label = f'{label} {source}'
-
-                if name in {'fill', 'stroke'}:
-                    if value == 'none' or re.fullmatch(r'url\(#[^)]+\)', value):
-                        continue
-                    if value.lower() == 'none':
-                        key = (name, raw_value, f'{name}="none"')
-                        recommendations[key] += 1
-                        remember_example(recommendation_examples, key, source_label)
-                        continue
-                    if value.lower() == 'transparent':
-                        key = (name, raw_value, f'{name}="none"')
-                        recommendations[key] += 1
-                        remember_example(recommendation_examples, key, source_label)
-                        continue
-
-                if _CANONICAL_SOLID_PAINT_RE.fullmatch(value):
-                    continue
-
-                color, color_alpha = _parse_export_color(value)
-                if color is None:
-                    key = (name, raw_value)
-                    unsupported[key] += 1
-                    remember_example(unsupported_examples, key, source_label)
-                    continue
-
-                replacement = f'{name}=\"#{color}\"'
+            source_label = f'{_element_label(elem)} {source}'
+            if kind == 'none':
+                replacement = f'{name}="none"'
+            elif kind == 'reference':
+                replacement = f'{name}="url(#{normalized})"'
+            elif name in {'fill', 'stroke'} and raw_value.strip().lower() == 'transparent':
+                replacement = f'{name}="none"'
+            else:
+                replacement = f'{name}="#{normalized}"'
                 alpha_name = _CANONICAL_PAINT_ALPHA_PROPERTY.get(name)
                 if color_alpha < 1.0 and alpha_name is not None:
+                    style_values = _parse_inline_style(elem.get('style'))
                     existing_alpha_raw = (
                         style_values.get(alpha_name) or elem.get(alpha_name)
                     )
@@ -1513,29 +1370,18 @@ class SVGQualityChecker:
                         if existing_alpha is not None else color_alpha
                     )
                     replacement += (
-                        f' {alpha_name}=\"'
-                        f'{_format_project_opacity(effective_alpha)}\"'
+                        f' {alpha_name}="'
+                        f'{_format_project_opacity(effective_alpha)}"'
                     )
                 elif color_alpha < 1.0:
                     replacement += (
                         '; put alpha on the matching pattern child fill/stroke '
                         'opacity'
                     )
-                key = (name, raw_value, replacement)
-                recommendations[key] += 1
-                remember_example(recommendation_examples, key, source_label)
 
-        for (name, raw_value), count in sorted(unsupported.items()):
-            allowed = (
-                '#RRGGBB, none, or url(#id)'
-                if name in {'fill', 'stroke'} else '#RRGGBB'
-            )
-            examples = ', '.join(unsupported_examples[(name, raw_value)])
-            result['errors'].append(
-                f"Unsupported SVG paint {name}={raw_value!r} in {count} "
-                f"location(s) ({examples}); use {allowed} or another color "
-                "accepted by svg_to_pptx"
-            )
+            key = (name, raw_value, replacement)
+            recommendations[key] += 1
+            remember_example(recommendation_examples, key, source_label)
 
         for (name, raw_value, replacement), count in sorted(recommendations.items()):
             examples = ', '.join(
@@ -1657,7 +1503,8 @@ class SVGQualityChecker:
     ) -> None:
         """Validate inline CSS and attributes against the authoring surface."""
         errors: set[str] = set()
-        opacity_properties = _OPACITY_PROPERTIES or ()
+        validated_value_properties = set(_OPACITY_PROPERTIES or ())
+        validated_value_properties.update(_PAINT_PROPERTIES or ())
         for elem in root.iter():
             label = _element_label(elem)
             for fragment in (elem.get('style') or '').split(';'):
@@ -1665,7 +1512,7 @@ class SVGQualityChecker:
                 if not fragment:
                     continue
                 if ':' not in fragment:
-                    if fragment.lower() not in opacity_properties:
+                    if fragment.lower() not in validated_value_properties:
                         errors.add(
                             f"{label} has malformed inline style declaration "
                             f"{fragment!r}"
@@ -1675,7 +1522,7 @@ class SVGQualityChecker:
                 name = name.strip().lower()
                 value = value.strip()
                 if not name or not value:
-                    if name not in opacity_properties:
+                    if name not in validated_value_properties:
                         errors.add(
                             f"{label} has malformed inline style declaration "
                             f"{fragment!r}"
@@ -1712,42 +1559,27 @@ class SVGQualityChecker:
         result: Dict,
     ) -> None:
         """Require conditional definitions to be direct, uniquely identified defs."""
-        parent_by_id = {
-            id(child): parent
-            for parent in root.iter()
-            for child in list(parent)
-        }
-        definitions, duplicate_definition_ids = _direct_defs_index(root)
-        issues = {
-            f'Duplicate direct <defs> id {definition_id!r} makes local references ambiguous'
-            for definition_id in duplicate_definition_ids
-        }
-        all_id_counts = Counter(
-            elem.get('id')
-            for elem in root.iter()
-            if (elem.get('id') or '').strip()
-        )
-        for definition_id in definitions:
-            if all_id_counts[definition_id] > 1:
-                issues.add(
-                    f'Definition id {definition_id!r} is duplicated in the SVG; '
-                    'local references require one unique target'
-                )
+        if _project_definition_errors is None:
+            result['warnings'].append(
+                "Unable to import the shared definition validator; native "
+                "export will still validate local definitions."
+            )
+            return
+        result['errors'].extend(_project_definition_errors(root))
 
-        for elem in root.iter():
-            tag = _local_name(elem)
-            if tag not in _DEFINITION_TAGS:
-                continue
-            label = _element_label(elem)
-            parent = parent_by_id.get(id(elem))
-            if parent is None or _local_name(parent) != 'defs':
-                issues.add(
-                    f"{label} must be a direct child of <defs>"
-                )
-            if not (elem.get('id') or '').strip():
-                issues.add(f"{label} requires a non-empty unique id")
-
-        result['errors'].extend(sorted(issues))
+    def _check_paint_reference_contract(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Validate paint-server resolution and native target contexts."""
+        if _project_paint_reference_errors is None:
+            result['warnings'].append(
+                "Unable to import the shared paint-reference validator; native "
+                "export will still validate local paint references."
+            )
+            return
+        result['errors'].extend(_project_paint_reference_errors(root))
 
     def _check_marker_contract(
         self,
@@ -1952,203 +1784,23 @@ class SVGQualityChecker:
 
     def _check_filter_effects(self, root: ET.Element, result: Dict) -> None:
         """Validate filters against the native shadow/glow approximation."""
-        elems = list(root.iter())
-        definitions, _duplicates = _direct_defs_index(root)
-        direct_filters = [
-            elem for elem in definitions.values()
-            if _local_name(elem) == 'filter'
-        ]
-        filters_by_id = {
-            filter_id: elem
-            for filter_id, elem in definitions.items()
-            if _local_name(elem) == 'filter'
-        }
-
-        issues = set()
-        for elem in elems:
-            tag = _local_name(elem).lower()
-            label = _element_label(elem)
-            style_values = (
-                _parse_inline_style(elem.get('style'))
-                if _parse_inline_style is not None else {}
+        if _project_filter_errors is None:
+            result['warnings'].append(
+                "Unable to import the shared filter validator; native export "
+                "will still validate shadow/glow filters."
             )
-            if style_values.get('filter'):
-                issues.add(
-                    f"{label} filter must use a direct filter=\"url(#id)\" "
-                    "attribute; inline style filters are not supported"
-                )
-
-            raw_filter = elem.get('filter')
-            if raw_filter is None:
-                continue
-            if tag not in _FILTER_PUBLIC_TARGETS:
-                issues.add(
-                    f"{label} cannot use filter; supported native targets are "
-                    "rect, circle, path, and text"
-                )
-            match = re.fullmatch(r'url\(#([^)]+)\)', raw_filter.strip())
-            if match is None:
-                issues.add(
-                    f"{label} filter must be an exact local url(#id) reference; "
-                    f"got {raw_filter!r}"
-                )
-                continue
-            filter_id = match.group(1)
-            if filter_id not in filters_by_id:
-                issues.add(
-                    f"{label} filter=url(#{filter_id}) has no matching direct "
-                    f"<defs><filter id=\"{filter_id}\"> definition"
-                )
-
-        for filter_elem in direct_filters:
-            filter_id = filter_elem.get('id')
-            label = f"filter #{filter_id}" if filter_id else '<filter> without id'
-            primitives = [
-                _local_name(descendant)
-                for descendant in filter_elem.iter()
-                if descendant is not filter_elem
-            ]
-            unsupported = sorted(
-                set(primitives) - _SUPPORTED_FILTER_PRIMITIVES
-            )
-            if unsupported:
-                issues.add(
-                    f"{label} uses unsupported filter primitive(s): "
-                    f"{', '.join(unsupported)}"
-                )
-            effect_primitives = [
-                primitive for primitive in primitives
-                if primitive in _FILTER_EFFECT_PRIMITIVES
-            ]
-            if not effect_primitives:
-                issues.add(
-                    f"{label} must contain feDropShadow or feGaussianBlur"
-                )
-            elif len(effect_primitives) > 1:
-                issues.add(
-                    f"{label} contains multiple shadow/glow primitives; one "
-                    "filter must map to exactly one native effect"
-                )
-            if any(
-                _local_name(descendant) == 'feFuncA'
-                and descendant.get('type') != 'linear'
-                for descendant in filter_elem.iter()
-            ):
-                issues.add(f"{label} requires feFuncA type=\"linear\"")
-
-            for primitive in filter_elem.iter():
-                primitive_tag = _local_name(primitive)
-                numeric_attrs: tuple[tuple[str, bool], ...] = ()
-                if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
-                    numeric_attrs = (('stdDeviation', True),)
-                elif primitive_tag == 'feOffset':
-                    numeric_attrs = (('dx', False), ('dy', False))
-                elif primitive_tag == 'feFuncA':
-                    numeric_attrs = (('slope', True),)
-                if primitive_tag == 'feDropShadow':
-                    numeric_attrs += (('dx', False), ('dy', False))
-                for attr_name, non_negative in numeric_attrs:
-                    raw_value = primitive.get(attr_name)
-                    if raw_value is None:
-                        continue
-                    try:
-                        value = float(raw_value)
-                    except ValueError:
-                        value = math.nan
-                    if (
-                        not math.isfinite(value)
-                        or (non_negative and value < 0)
-                        or (
-                            primitive_tag == 'feFuncA'
-                            and attr_name == 'slope'
-                            and value > 1
-                        )
-                    ):
-                        qualifier = ' from 0 to 1' if primitive_tag == 'feFuncA' else ''
-                        issues.add(
-                            f"{label} <{primitive_tag}> {attr_name} must be a "
-                            f"finite number{qualifier}; got {raw_value!r}"
-                        )
-
-        result['errors'].extend(sorted(issues))
+            return
+        result['errors'].extend(_project_filter_errors(root))
 
     def _check_gradient_interfaces(self, root: ET.Element, result: Dict) -> None:
         """Validate the normalized native gradient authoring interface."""
-        issues = set()
-        for gradient in root.iter():
-            tag = _local_name(gradient)
-            if tag not in {'linearGradient', 'radialGradient'}:
-                continue
-            gradient_id = gradient.get('id')
-            label = f"<{tag} id=\"{gradient_id}\">" if gradient_id else f'<{tag}>'
-            attribute_names = {
-                name.rsplit('}', 1)[-1]
-                for name in gradient.attrib
-            }
-            if 'href' in attribute_names:
-                issues.add(
-                    f"{label} cannot inherit from href/xlink:href; "
-                    "define gradient stops directly"
-                )
-            if 'gradientTransform' in attribute_names:
-                issues.add(f"{label} cannot use gradientTransform")
-            if 'spreadMethod' in attribute_names:
-                issues.add(f"{label} cannot use spreadMethod")
-            gradient_units = gradient.get('gradientUnits')
-            if gradient_units not in {None, 'objectBoundingBox'}:
-                issues.add(
-                    f"{label} cannot use gradientUnits={gradient_units!r}; "
-                    "use normalized objectBoundingBox coordinates"
-                )
-
-            coordinate_names = (
-                ('x1', 'y1', 'x2', 'y2')
-                if tag == 'linearGradient'
-                else ('cx', 'cy', 'r', 'fx', 'fy')
+        if _project_gradient_errors is None:
+            result['warnings'].append(
+                "Unable to import the shared gradient validator; native export "
+                "will still validate gradient definitions."
             )
-            for coordinate_name in coordinate_names:
-                raw_coordinate = gradient.get(coordinate_name)
-                if raw_coordinate is None:
-                    continue
-                coordinate = _normalized_gradient_value(raw_coordinate)
-                if coordinate is None:
-                    issues.add(
-                        f"{label} {coordinate_name} must be a normalized finite "
-                        f"value from 0 to 1 or 0% to 100%; got {raw_coordinate!r}"
-                    )
-                elif coordinate_name == 'r' and coordinate <= 0:
-                    issues.add(f"{label} r must be greater than 0")
-
-            stops = []
-            for child in list(gradient):
-                child_tag = _local_name(child)
-                if child_tag in _NON_VISUAL_SVG_TAGS:
-                    continue
-                if child_tag != 'stop':
-                    issues.add(
-                        f"{label} has unsupported direct child <{child_tag}>; "
-                        "gradient definitions may contain only direct <stop> children"
-                    )
-                    continue
-                stops.append(child)
-            if not stops:
-                issues.add(f"{label} requires at least one direct <stop> child")
-            for index, stop in enumerate(stops, start=1):
-                stop_label = f"{label} stop #{index}"
-                raw_offset = stop.get('offset')
-                if raw_offset is None or _normalized_gradient_value(raw_offset) is None:
-                    issues.add(
-                        f"{stop_label} offset must be explicit and within 0..1 "
-                        f"or 0%..100%; got {raw_offset!r}"
-                    )
-                style_values = (
-                    _parse_inline_style(stop.get('style'))
-                    if _parse_inline_style is not None else {}
-                )
-                if not (style_values.get('stop-color') or stop.get('stop-color')):
-                    issues.add(f"{stop_label} requires an explicit stop-color")
-
-        result['errors'].extend(sorted(issues))
+            return
+        result['errors'].extend(_project_gradient_errors(root))
 
     def _check_geometry_length_values(
         self,
@@ -3454,10 +3106,7 @@ class SVGQualityChecker:
 
         # Scan SVG for used values
         color_drifts = set()
-        for attr in (
-            'fill', 'stroke', 'stop-color', 'flood-color',
-            'data-pptx-fg', 'data-pptx-bg',
-        ):
+        for attr in _PAINT_PROPERTIES or ():
             for raw_value in self._svg_property_values(content, attr):
                 normalized = raw_value.strip()
                 if normalized.lower() in {'none', 'transparent'} or re.fullmatch(

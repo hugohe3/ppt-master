@@ -11,6 +11,10 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from svg_quality_checker import SVGQualityChecker
+from svg_to_pptx.drawingml.converter import (
+    SvgNativeConversionError,
+    convert_svg_to_slide_shapes,
+)
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -21,6 +25,24 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
             svg_path = Path(tmp_dir) / 'fixture.svg'
             svg_path.write_text(content, encoding='utf-8')
             return SVGQualityChecker().check_file(str(svg_path))
+
+    def _assert_checker_and_exporter_reject(
+        self,
+        content: str,
+        expected_checker_text: str,
+        expected_exporter_text: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'fixture.svg'
+            svg_path.write_text(content, encoding='utf-8')
+            result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertFalse(result['passed'])
+            self.assertIn(expected_checker_text, '\n'.join(result['errors']))
+            with self.assertRaisesRegex(
+                SvgNativeConversionError,
+                expected_exporter_text,
+            ):
+                convert_svg_to_slide_shapes(svg_path)
 
     def test_canonical_generated_spelling_has_no_compatibility_warning(self):
         result = self._check(
@@ -90,8 +112,8 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 
         error_text = '\n'.join(result['errors'])
         self.assertFalse(result['passed'])
-        self.assertIn('Unsupported SVG paint', error_text)
-        self.assertIn('must be a finite unitless numeric opacity', error_text)
+        self.assertIn('must be a supported color', error_text)
+        self.assertIn('must be one finite numeric opacity', error_text)
         self.assertIn('Unsupported font-size', error_text)
 
     def test_pattern_transform_stays_blocking_without_explicit_preset(self):
@@ -114,6 +136,49 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                             for item in result['errors']))
         self.assertTrue(any('compatible `ltUpDiag` fallback' in item
                             for item in result['warnings']))
+
+    def test_invalid_gradient_contract_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="broken" x1="0" x2="2">
+      <stop offset="120%"/>
+    </linearGradient>
+  </defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="url(#broken)"/>
+</svg>''',
+            'requires an explicit stop-color',
+            'invalid project gradient',
+        )
+
+    def test_invalid_filter_contract_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <filter id="broken">
+      <feGaussianBlur stdDeviation="not-a-number"/>
+    </filter>
+  </defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#broken)"/>
+</svg>''',
+            'stdDeviation must be a finite number',
+            'invalid project filter',
+        )
+
+    def test_missing_paint_reference_blocks_checker_and_exporter(self):
+        self._assert_checker_and_exporter_reject(
+            '''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <rect x="80" y="80" width="300" height="180"
+        fill="url(#missing)"/>
+</svg>''',
+            'has no matching direct <defs> definition',
+            'invalid project paint reference',
+        )
 
 
 if __name__ == '__main__':
