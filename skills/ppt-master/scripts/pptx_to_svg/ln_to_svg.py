@@ -314,6 +314,10 @@ def _build_arrow_marker(
             )
     if typ is None or typ == "none":
         return None, ""
+    if stroke_color.strip().lower() == "none":
+        raise ValueError(
+            "DrawingML line end requires a visible line paint"
+        )
     mw = SIZE_BUCKET[l_b]
     mh = SIZE_BUCKET[w_b]
 

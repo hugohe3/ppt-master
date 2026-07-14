@@ -186,7 +186,9 @@ import instead of being normalized to `med`.
 Each imported line contains at most one direct, empty `a:headEnd` and one direct,
 empty `a:tailEnd`, carrying only optional `type`, `w`, and `len`. Omitted `type`
 means `none`; an explicitly empty token, duplicate endpoint, unknown attribute,
-or child payload stops import instead of being ignored.
+or child payload stops import instead of being ignored. A non-`none` endpoint
+also requires a visible resolved line paint; a `noFill` line/end combination
+stops import instead of producing a project-invalid invisible marker.
 
 ---
 
