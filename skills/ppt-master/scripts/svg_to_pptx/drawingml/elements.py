@@ -2635,8 +2635,10 @@ def _resolve_clip_geometry(
 
     # --- Rect with rx/ry → preset roundRect ---
     if shape_tag == 'rect':
-        rx = _f(shape.get('rx'))
-        ry = _f(shape.get('ry'), rx)
+        rx_attr = shape.get('rx')
+        ry_attr = shape.get('ry')
+        rx = svg_length_x(rx_attr, ctx) if rx_attr is not None else 0.0
+        ry = svg_length_y(ry_attr, ctx) if ry_attr is not None else rx
         if rx <= 0 and ry <= 0:
             return DEFAULT  # plain rect clip is a no-op
         r = max(rx, ry)

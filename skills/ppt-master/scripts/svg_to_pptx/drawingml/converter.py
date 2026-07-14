@@ -30,9 +30,14 @@ from .context import ConvertContext, ShapeResult
 from .theme_colors import ThemeColorSpec
 from .theme_fonts import ThemeFontSpec
 from .utils import (
-    SVG_NS, EMU_PER_PX,
-    _extract_inheritable_styles, _f, _get_attr, parse_transform_matrix, resolve_url_id,
+    EMU_PER_PX,
+    SVG_NS,
+    _extract_inheritable_styles,
+    _get_attr,
     parse_svg_length,
+    parse_transform_matrix,
+    project_geometry_length_errors,
+    resolve_url_id,
 )
 from .styles import (
     build_effect_xml, build_fill_xml,
@@ -633,7 +638,12 @@ def _parse_svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
                 return x, y, w, h
         except ValueError:
             pass
-    return 0.0, 0.0, _f(root.get('width')), _f(root.get('height'))
+    return (
+        0.0,
+        0.0,
+        parse_svg_length(root.get('width'), 0.0),
+        parse_svg_length(root.get('height'), 0.0),
+    )
 
 
 def _is_full_canvas_rect(
@@ -654,7 +664,10 @@ def _is_full_canvas_rect(
         )
     ):
         return False
-    if _f(elem.get('rx')) > 0 or _f(elem.get('ry')) > 0:
+    if (
+        parse_svg_length(elem.get('rx'), 0.0) > 0
+        or parse_svg_length(elem.get('ry'), 0.0) > 0
+    ):
         return False
 
     canvas_x, canvas_y, canvas_w, canvas_h = canvas
@@ -662,13 +675,13 @@ def _is_full_canvas_rect(
         return False
 
     tolerance = 0.5
-    if abs(_f(elem.get('x')) - canvas_x) > tolerance:
+    if abs(parse_svg_length(elem.get('x'), 0.0) - canvas_x) > tolerance:
         return False
-    if abs(_f(elem.get('y')) - canvas_y) > tolerance:
+    if abs(parse_svg_length(elem.get('y'), 0.0) - canvas_y) > tolerance:
         return False
-    if abs(_f(elem.get('width')) - canvas_w) > tolerance:
+    if abs(parse_svg_length(elem.get('width'), 0.0) - canvas_w) > tolerance:
         return False
-    if abs(_f(elem.get('height')) - canvas_h) > tolerance:
+    if abs(parse_svg_length(elem.get('height'), 0.0) - canvas_h) > tolerance:
         return False
 
     fill = _get_attr(elem, 'fill', ctx)
@@ -676,7 +689,7 @@ def _is_full_canvas_rect(
         return False
 
     stroke = _get_attr(elem, 'stroke', ctx)
-    stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1.0)
+    stroke_width = parse_svg_length(_get_attr(elem, 'stroke-width', ctx), 1.0)
     stroke_opacity = get_stroke_opacity(elem, ctx)
     if stroke and stroke != 'none' and stroke_width > 0 and stroke_opacity != 0:
         return False
@@ -1112,6 +1125,18 @@ def convert_svg_to_slide_shapes(
         trace_steps.append(geometry_trace)
         if verbose:
             print(f'  Materialized {geometry_count} inline geometry declaration(s)')
+
+    geometry_length_errors = project_geometry_length_errors(root)
+    if geometry_length_errors:
+        preview = '; '.join(geometry_length_errors[:8])
+        suffix = (
+            '' if len(geometry_length_errors) <= 8
+            else f'; +{len(geometry_length_errors) - 8} more'
+        )
+        raise SvgNativeConversionError(
+            f'{Path(svg_path).name}: invalid project geometry length(s): '
+            f'{preview}{suffix}'
+        )
 
     viewport_width, viewport_height = _root_viewport_size(root)
 
