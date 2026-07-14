@@ -1964,6 +1964,12 @@ def parse_project_filter_params(
         def effect_attr(name: str, default: str | None = None) -> str | None:
             return style_values.get(name) or child.get(name, default)
 
+        def required_effect_attr(name: str) -> str:
+            raw_value = effect_attr(name)
+            if raw_value is None:
+                raise ValueError(f'<{tag}> requires explicit {name}')
+            return raw_value
+
         if tag == 'feDropShadow':
             std_dev = required_number(child, 'stdDeviation')
             dx = required_number(child, 'dx')
@@ -1971,8 +1977,7 @@ def parse_project_filter_params(
             if abs(dx) > 0.01 or abs(dy) > 0.01:
                 has_offset = True
             paint_opacity = parse_opacity(
-                effect_attr('flood-opacity'),
-                0.3,
+                required_effect_attr('flood-opacity'),
                 allow_percentage=True,
             )
             parsed_color, parsed_alpha = parse_svg_color(
@@ -1990,8 +1995,7 @@ def parse_project_filter_params(
                 has_offset = True
         elif tag == 'feFlood':
             paint_opacity = parse_opacity(
-                effect_attr('flood-opacity'),
-                0.3,
+                required_effect_attr('flood-opacity'),
                 allow_percentage=True,
             )
             parsed_color, parsed_alpha = parse_svg_color(
@@ -2117,7 +2121,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
 
     for filter_id, filter_elem in filters_by_id.items():
         label = f'filter #{filter_id}'
-        geometry_is_valid = True
+        parameters_are_valid = True
         primitives = [
             _svg_element_tag(descendant) or str(descendant.tag)
             for descendant in filter_elem.iter()
@@ -2150,6 +2154,17 @@ def project_filter_errors(root: ET.Element) -> list[str]:
 
         for primitive in filter_elem.iter():
             primitive_tag = _svg_element_tag(primitive)
+            if primitive_tag in {'feDropShadow', 'feFlood'}:
+                style_values = parse_inline_style(primitive.get('style'))
+                if (
+                    primitive.get('flood-opacity') is None
+                    and 'flood-opacity' not in style_values
+                ):
+                    parameters_are_valid = False
+                    errors.add(
+                        f'{label} <{primitive_tag}> requires explicit '
+                        'flood-opacity'
+                    )
             numeric_attrs: tuple[tuple[str, bool, bool], ...] = ()
             if primitive_tag in {'feDropShadow', 'feGaussianBlur'}:
                 numeric_attrs = (('stdDeviation', True, True),)
@@ -2169,7 +2184,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                 raw_value = primitive.get(attribute_name)
                 if raw_value is None:
                     if required:
-                        geometry_is_valid = False
+                        parameters_are_valid = False
                         errors.add(
                             f'{label} <{primitive_tag}> requires explicit '
                             f'{attribute_name}'
@@ -2189,7 +2204,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                     )
                 ):
                     if attribute_name in {'stdDeviation', 'dx', 'dy'}:
-                        geometry_is_valid = False
+                        parameters_are_valid = False
                     qualifier = (
                         ' from 0 to 1'
                         if primitive_tag == 'feFuncA'
@@ -2199,7 +2214,7 @@ def project_filter_errors(root: ET.Element) -> list[str]:
                         f'{label} <{primitive_tag}> {attribute_name} must be a '
                         f'finite number{qualifier}; got {raw_value!r}'
                     )
-        if len(effect_primitives) == 1 and geometry_is_valid:
+        if len(effect_primitives) == 1 and parameters_are_valid:
             try:
                 params = parse_project_filter_params(filter_elem)
                 project_filter_drawingml_coordinates(params)
