@@ -346,7 +346,11 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
     # Text body (a:txBody)
     tx_body = node.xml.find("p:txBody", NS)
     is_vertical = is_vertical_txbody(tx_body, node.xfrm)
-    has_run_effects = txbody_has_run_effects(tx_body)
+    local_has_run_effects = txbody_has_run_effects(tx_body)
+    inherited_has_run_effects = txbody_has_run_effects(
+        *node.inherited_lst_styles
+    )
+    has_run_effects = local_has_run_effects or inherited_has_run_effects
     if geom is not None and has_run_effects:
         if is_vertical:
             geom.attrs.update(unsupported_effect_metadata(
@@ -355,6 +359,10 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         elif tx_body is not None and has_relationship_attributes(tx_body):
             geom.attrs.update(unsupported_effect_metadata(
                 "unsupported-run-effect-route:relationship-bearing-text"
+            ))
+        elif inherited_has_run_effects:
+            geom.attrs.update(unsupported_effect_metadata(
+                "unsupported-run-effect-route:inherited-text-style"
             ))
 
     # Geometry (fill is "none" when blipFill is present, so only stroke draws)
