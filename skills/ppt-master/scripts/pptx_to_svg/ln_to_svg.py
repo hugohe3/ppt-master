@@ -243,9 +243,20 @@ def resolve_stroke(
     if id_seq is None:
         id_seq = [0]
     for which, attr in (("headEnd", "marker-start"), ("tailEnd", "marker-end")):
-        end_elem = ln.find(f"a:{which}", NS)
-        if end_elem is None:
+        endpoints = ln.findall(f"a:{which}", NS)
+        if len(endpoints) > 1:
+            raise ValueError(
+                f"DrawingML line must contain at most one {which}"
+            )
+        if not endpoints:
             continue
+        end_elem = endpoints[0]
+        if (
+            set(end_elem.attrib) - {"type", "w", "len"}
+            or list(end_elem)
+            or (end_elem.text or "").strip()
+        ):
+            raise ValueError(f"Invalid DrawingML {which} structure")
         marker_color = attrs.get("stroke") or style_stroke_default or "#000000"
         marker_id, marker_def = _build_arrow_marker(
             end_elem,
@@ -281,10 +292,16 @@ def _build_arrow_marker(
     reversed_: bool,
 ) -> tuple[str | None, str]:
     """Build an SVG <marker> def for an <a:headEnd>/<a:tailEnd>."""
-    typ = end_elem.attrib.get("type", "")
-    if typ in ("none", ""):
-        return None, ""
-    if typ not in {"triangle", "stealth", "arrow", "diamond", "oval"}:
+    typ = end_elem.attrib.get("type")
+    if typ not in {
+        None,
+        "none",
+        "triangle",
+        "stealth",
+        "arrow",
+        "diamond",
+        "oval",
+    }:
         raise ValueError(f"Unsupported DrawingML line-end type: {typ!r}")
 
     w_b = end_elem.attrib.get("w", "med")
@@ -295,6 +312,8 @@ def _build_arrow_marker(
                 f"Unsupported DrawingML line-end {dimension} bucket: "
                 f"{bucket!r}"
             )
+    if typ is None or typ == "none":
+        return None, ""
     mw = SIZE_BUCKET[l_b]
     mh = SIZE_BUCKET[w_b]
 

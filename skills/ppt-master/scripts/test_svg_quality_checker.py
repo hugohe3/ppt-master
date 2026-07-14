@@ -2634,6 +2634,47 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ):
             resolve_stroke(sp_pr, None)
 
+    def test_native_line_end_structure_must_be_unique_and_empty(self):
+        cases = (
+            (
+                '<a:tailEnd type="triangle"/>'
+                '<a:tailEnd type="diamond"/>',
+                'DrawingML line must contain at most one tailEnd',
+            ),
+            (
+                '<a:headEnd type="triangle" extra="1"/>',
+                'Invalid DrawingML headEnd structure',
+            ),
+            (
+                '<a:tailEnd type="triangle"><a:extLst/></a:tailEnd>',
+                'Invalid DrawingML tailEnd structure',
+            ),
+            (
+                '<a:tailEnd type=""/>',
+                "Unsupported DrawingML line-end type: ''",
+            ),
+            (
+                '<a:tailEnd w="xl"/>',
+                "Unsupported DrawingML line-end width bucket: 'xl'",
+            ),
+        )
+        for endpoint_markup, expected in cases:
+            with self.subTest(endpoint_markup=endpoint_markup):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln>{endpoint_markup}</a:ln>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
+        omitted_type = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln><a:tailEnd/></a:ln>
+</p:spPr>''')
+        self.assertEqual(resolve_stroke(omitted_type, None).attrs, {})
+
     def test_unknown_native_line_end_size_is_rejected_on_import(self):
         for attribute, dimension in (("w", "width"), ("len", "length")):
             with self.subTest(attribute=attribute):
