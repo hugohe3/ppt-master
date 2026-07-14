@@ -628,8 +628,8 @@ alias for `rgba()` on a fill-only object.
 accepts finite numeric values that SVG/CSS clamps into that interval;
 `stop-opacity` and `flood-opacity` additionally accept finite percentages. The
 checker reports those supported non-default spellings as recommendation warnings.
-Malformed or non-finite values remain errors because the exporter cannot
-preserve their intent.
+Malformed or non-finite values are errors in both Checker and exporter
+preflight; neither substitutes an opaque default for unknown intent.
 `fill="transparent"` / `stroke="transparent"` become no fill/line; use a color
 plus alpha when a painted transparent layer must remain represented. Prefer
 descendant alpha over group opacity when isolated compositing matters (§2.2).

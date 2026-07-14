@@ -57,12 +57,17 @@ try:
         DRAWINGML_TEXT_FONT_SIZE_MAX as _DRAWINGML_TEXT_FONT_SIZE_MAX,
         DRAWINGML_TEXT_FONT_SIZE_MIN as _DRAWINGML_TEXT_FONT_SIZE_MIN,
         IDENTITY_MATRIX as _IDENTITY_MATRIX,
+        PROJECT_OPACITY_PROPERTIES as _OPACITY_PROPERTIES,
+        PROJECT_PERCENTAGE_OPACITY_PROPERTIES as _PERCENTAGE_OPACITY_PROPERTIES,
         format_project_geometry_length as _format_project_geometry_length,
         format_project_image_aspect_ratio as _format_project_image_aspect_ratio,
+        format_project_opacity as _format_project_opacity,
         font_px_to_hpt as _font_px_to_hpt,
         is_canonical_project_geometry_length as _is_canonical_project_geometry_length,
+        is_project_opacity_default_form as _is_project_opacity_default_form,
         iter_project_geometry_lengths as _iter_project_geometry_lengths,
         iter_project_image_aspect_ratios as _iter_project_image_aspect_ratios,
+        iter_project_opacities as _iter_project_opacities,
         iter_project_stroke_styles as _iter_project_stroke_styles,
         iter_project_transforms as _iter_project_transforms,
         matrix_multiply as _matrix_multiply,
@@ -73,11 +78,13 @@ try:
         parse_inline_style as _parse_inline_style,
         parse_project_geometry_length as _parse_project_geometry_length,
         parse_project_image_aspect_ratio as _parse_project_image_aspect_ratio,
+        parse_project_opacity as _parse_project_opacity,
         parse_project_stroke_dasharray as _parse_project_stroke_dasharray,
         parse_project_stroke_enum as _parse_project_stroke_enum,
         parse_svg_color as _parse_export_color,
         parse_svg_length as _parse_export_length,
         project_image_aspect_ratio_errors as _project_image_aspect_ratio_errors,
+        project_opacity_errors as _project_opacity_errors,
         project_stroke_style_errors as _project_stroke_style_errors,
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
@@ -87,12 +94,17 @@ except ImportError:
     _DRAWINGML_TEXT_FONT_SIZE_MAX = None
     _DRAWINGML_TEXT_FONT_SIZE_MIN = None
     _IDENTITY_MATRIX = None
+    _OPACITY_PROPERTIES = None
+    _PERCENTAGE_OPACITY_PROPERTIES = None
     _format_project_geometry_length = None
     _format_project_image_aspect_ratio = None
+    _format_project_opacity = None
     _font_px_to_hpt = None
     _is_canonical_project_geometry_length = None
+    _is_project_opacity_default_form = None
     _iter_project_geometry_lengths = None
     _iter_project_image_aspect_ratios = None
+    _iter_project_opacities = None
     _iter_project_stroke_styles = None
     _iter_project_transforms = None
     _matrix_multiply = None
@@ -103,11 +115,13 @@ except ImportError:
     _parse_inline_style = None
     _parse_project_geometry_length = None
     _parse_project_image_aspect_ratio = None
+    _parse_project_opacity = None
     _parse_project_stroke_dasharray = None
     _parse_project_stroke_enum = None
     _parse_export_color = None
     _parse_export_length = None
     _project_image_aspect_ratio_errors = None
+    _project_opacity_errors = None
     _project_stroke_style_errors = None
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
@@ -372,13 +386,6 @@ _DEFINITION_TAGS = frozenset({
     'pattern',
     'radialGradient',
 })
-_ALPHA_PROPERTIES = (
-    'opacity',
-    'fill-opacity',
-    'stroke-opacity',
-    'stop-opacity',
-    'flood-opacity',
-)
 _SUPPORTED_INLINE_STYLE_PROPERTIES = frozenset({
     'cx', 'cy', 'fill', 'fill-opacity', 'filter', 'flood-color',
     'flood-opacity', 'font-family', 'font-size', 'font-style', 'font-weight',
@@ -804,49 +811,6 @@ def _element_label(elem: ET.Element) -> str:
     return f'<{tag} id="{elem_id}">' if elem_id else f'<{tag}>'
 
 
-def _finite_unit_interval(raw: str) -> float | None:
-    """Parse a finite unitless number in the closed interval ``0..1``."""
-    if re.fullmatch(_NUMBER_TOKEN, raw.strip()) is None:
-        return None
-    try:
-        value = float(raw)
-    except ValueError:
-        return None
-    if not math.isfinite(value) or not 0.0 <= value <= 1.0:
-        return None
-    return value
-
-
-def _compatible_opacity(
-    raw: str,
-    *,
-    allow_percentage: bool = False,
-) -> float | None:
-    """Parse a finite opacity form supported by the matching converter path.
-
-    Every exported opacity path accepts and clamps unitless numbers. Gradient
-    stops and filter flood alpha additionally accept percentages; ordinary
-    element, fill, stroke, text, picture, and group opacity paths do not.
-    """
-    value_text = raw.strip()
-    is_percent = value_text.endswith('%')
-    if is_percent and not allow_percentage:
-        return None
-    if is_percent:
-        value_text = value_text[:-1].strip()
-    if re.fullmatch(_NUMBER_TOKEN, value_text) is None:
-        return None
-    try:
-        value = float(value_text)
-    except ValueError:
-        return None
-    if not math.isfinite(value):
-        return None
-    if is_percent:
-        value /= 100.0
-    return max(0.0, min(1.0, value))
-
-
 def _normalized_gradient_value(raw: str) -> float | None:
     """Parse a normalized gradient coordinate or percentage."""
     value_text = raw.strip()
@@ -1114,7 +1078,10 @@ class SVGQualityChecker:
                 # 2e. Validate complete transform grammar and native mappings.
                 self._check_transform_values(root, result)
 
-                # 2f. Validate the closed authoring-property surface and
+                # 2f. Validate opacity grammar and native alpha mappings.
+                self._check_opacity_values(root, result)
+
+                # 2g. Validate the closed authoring-property surface and
                 # conditional definition interfaces before export.
                 self._check_authoring_property_contract(root, result)
                 self._check_paint_compatibility(root, result)
@@ -1123,10 +1090,10 @@ class SVGQualityChecker:
                 self._check_marker_contract(root, result)
                 self._check_clip_path_contract(root, result)
 
-                # 2g. Validate the supported shadow/glow filter interface.
+                # 2h. Validate the supported shadow/glow filter interface.
                 self._check_filter_effects(root, result)
 
-                # 2h. Validate gradient definitions, stops, and coordinates.
+                # 2i. Validate gradient definitions, stops, and coordinates.
                 self._check_gradient_interfaces(root, result)
 
                 # 3. Check font-size values
@@ -1437,12 +1404,6 @@ class SVGQualityChecker:
                     )
         result['errors'].extend(sorted(paint_reference_errors))
 
-    @staticmethod
-    def _canonical_alpha_literal(value: float) -> str:
-        """Return a compact deterministic alpha literal in the closed interval."""
-        bounded = max(0.0, min(1.0, value))
-        return f'{bounded:.6f}'.rstrip('0').rstrip('.') or '0'
-
     def _check_paint_compatibility(
         self,
         root: ET.Element,
@@ -1454,9 +1415,14 @@ class SVGQualityChecker:
         valid input; the checker only warns when that spelling differs from the
         generated-SVG default (uppercase ``#RRGGBB`` plus explicit alpha).
         """
-        if _parse_export_color is None:
+        if (
+            _PERCENTAGE_OPACITY_PROPERTIES is None
+            or _format_project_opacity is None
+            or _parse_export_color is None
+            or _parse_project_opacity is None
+        ):
             result['warnings'].append(
-                "Unable to import svg_to_pptx color parser; skipped paint syntax check"
+                "Unable to import svg_to_pptx paint parsers; skipped paint syntax check"
             )
             return
 
@@ -1530,23 +1496,25 @@ class SVGQualityChecker:
                     existing_alpha_raw = (
                         style_values.get(alpha_name) or elem.get(alpha_name)
                     )
-                    existing_alpha = (
-                        _compatible_opacity(
-                            existing_alpha_raw,
-                            allow_percentage=alpha_name in {
-                                'stop-opacity',
-                                'flood-opacity',
-                            },
-                        )
-                        if existing_alpha_raw is not None else 1.0
-                    )
+                    if existing_alpha_raw is None:
+                        existing_alpha = 1.0
+                    else:
+                        try:
+                            existing_alpha = _parse_project_opacity(
+                                existing_alpha_raw,
+                                allow_percentage=(
+                                    alpha_name in _PERCENTAGE_OPACITY_PROPERTIES
+                                ),
+                            )
+                        except ValueError:
+                            existing_alpha = None
                     effective_alpha = (
                         color_alpha * existing_alpha
                         if existing_alpha is not None else color_alpha
                     )
                     replacement += (
                         f' {alpha_name}=\"'
-                        f'{self._canonical_alpha_literal(effective_alpha)}\"'
+                        f'{_format_project_opacity(effective_alpha)}\"'
                     )
                 elif color_alpha < 1.0:
                     replacement += (
@@ -1597,36 +1565,122 @@ class SVGQualityChecker:
                 "href. No change is required for export."
             )
 
+    def _check_opacity_values(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject malformed opacity and advise generated-SVG values."""
+        helpers = (
+            _PERCENTAGE_OPACITY_PROPERTIES,
+            _format_project_opacity,
+            _is_project_opacity_default_form,
+            _iter_project_opacities,
+            _parse_inline_style,
+            _parse_project_opacity,
+            _project_opacity_errors,
+        )
+        if any(helper is None for helper in helpers):
+            result['warnings'].append(
+                "Unable to import svg_to_pptx opacity validators; native "
+                "export will still validate opacity syntax."
+            )
+            return
+
+        result['errors'].extend(_project_opacity_errors(root))
+        recommendations: Counter[tuple[str, str, str]] = Counter()
+        examples: Dict[tuple[str, str, str], List[str]] = defaultdict(list)
+        fidelity_warnings: set[str] = set()
+
+        for elem, property_name, raw, source in _iter_project_opacities(root):
+            try:
+                value = _parse_project_opacity(
+                    raw,
+                    allow_percentage=(
+                        property_name in _PERCENTAGE_OPACITY_PROPERTIES
+                    ),
+                )
+            except ValueError:
+                continue
+            if _is_project_opacity_default_form(raw):
+                continue
+            normalized = _format_project_opacity(value)
+            key = (property_name, raw, normalized)
+            recommendations[key] += 1
+            label = f'{_element_label(elem)} {source}'
+            if label not in examples[key] and len(examples[key]) < 3:
+                examples[key].append(label)
+
+        for elem in root.iter():
+            if _local_name(elem).lower() != 'g':
+                continue
+            style_values = _parse_inline_style(elem.get('style'))
+            raw_opacity = (
+                style_values['opacity']
+                if 'opacity' in style_values else elem.get('opacity')
+            )
+            if raw_opacity is None:
+                continue
+            try:
+                opacity = _parse_project_opacity(raw_opacity)
+            except ValueError:
+                continue
+            if opacity < 1.0:
+                fidelity_warnings.add(
+                    f"Fidelity warning: {_element_label(elem)} uses group "
+                    f"opacity={raw_opacity!r}. The converter distributes this "
+                    "alpha to descendants and cannot preserve isolated group "
+                    "compositing; generated SVG should prefer descendant alpha. "
+                    "Existing input remains convertible and does not require "
+                    "modification."
+                )
+
+        for (property_name, raw, normalized), count in sorted(
+            recommendations.items()
+        ):
+            shown_examples = ', '.join(
+                examples[(property_name, raw, normalized)]
+            )
+            result['warnings'].append(
+                f"Recommendation: {property_name}={raw!r} is "
+                f"converter-compatible in {count} location(s) "
+                f"({shown_examples}); generated SVG should prefer "
+                f'{property_name}="{normalized}". No change is required '
+                "for export."
+            )
+        result['warnings'].extend(sorted(fidelity_warnings))
+
     def _check_authoring_property_contract(
         self,
         root: ET.Element,
         result: Dict,
     ) -> None:
-        """Validate inline CSS and alpha values against the authoring surface."""
+        """Validate inline CSS and attributes against the authoring surface."""
         errors: set[str] = set()
-        recommendations: set[str] = set()
-        fidelity_warnings: set[str] = set()
+        opacity_properties = _OPACITY_PROPERTIES or ()
         for elem in root.iter():
             label = _element_label(elem)
-            style_declarations: list[tuple[str, str]] = []
             for fragment in (elem.get('style') or '').split(';'):
                 fragment = fragment.strip()
                 if not fragment:
                     continue
                 if ':' not in fragment:
-                    errors.add(
-                        f"{label} has malformed inline style declaration {fragment!r}"
-                    )
+                    if fragment.lower() not in opacity_properties:
+                        errors.add(
+                            f"{label} has malformed inline style declaration "
+                            f"{fragment!r}"
+                        )
                     continue
                 name, value = fragment.split(':', 1)
                 name = name.strip().lower()
                 value = value.strip()
                 if not name or not value:
-                    errors.add(
-                        f"{label} has malformed inline style declaration {fragment!r}"
-                    )
+                    if name not in opacity_properties:
+                        errors.add(
+                            f"{label} has malformed inline style declaration "
+                            f"{fragment!r}"
+                        )
                     continue
-                style_declarations.append((name, value))
                 if name in _BAKE_REQUIRED_VISUAL_PROPERTIES:
                     errors.add(
                         f"{label} uses Bake-required visual property {name!r}; "
@@ -1650,63 +1704,7 @@ class SVGQualityChecker:
                         "bake the effect or rebuild it with supported geometry"
                     )
 
-            for name in _ALPHA_PROPERTIES:
-                direct_value = elem.get(name)
-                alpha_entries = []
-                if direct_value is not None:
-                    alpha_entries.append((name, direct_value))
-                alpha_entries.extend(
-                    (f'style {name}', style_value)
-                    for style_name, style_value in style_declarations
-                    if style_name == name
-                )
-                for entry_name, raw_value in alpha_entries:
-                    allow_percentage = name in {'stop-opacity', 'flood-opacity'}
-                    compatible_value = _compatible_opacity(
-                        raw_value,
-                        allow_percentage=allow_percentage,
-                    )
-                    if compatible_value is None:
-                        accepted_form = (
-                            'a finite number or percentage opacity'
-                            if allow_percentage
-                            else 'a finite unitless numeric opacity'
-                        )
-                        errors.add(
-                            f"{label} {entry_name} must be {accepted_form}; "
-                            f"got {raw_value!r}"
-                        )
-                    elif _finite_unit_interval(raw_value) is None:
-                        recommendations.add(
-                            f"Recommendation: {label} {entry_name}={raw_value!r} "
-                            "is converter-compatible; generated SVG should prefer "
-                            f"the unitless 0..1 value "
-                            f"{self._canonical_alpha_literal(compatible_value)!r}. "
-                            "No change is required for export."
-                        )
-
-            if _local_name(elem).lower() != 'g':
-                continue
-            style_opacity = next((
-                value for name, value in reversed(style_declarations)
-                if name == 'opacity'
-            ), None)
-            raw_opacity = style_opacity if style_opacity is not None else elem.get('opacity')
-            if raw_opacity is None:
-                continue
-            opacity = _compatible_opacity(raw_opacity)
-            if opacity is not None and opacity < 1.0:
-                fidelity_warnings.add(
-                    f"Fidelity warning: {label} uses group opacity={raw_opacity!r}. "
-                    "The converter distributes this alpha to descendants and "
-                    "cannot preserve isolated group compositing; generated SVG "
-                    "should prefer descendant alpha. Existing input remains "
-                    "convertible and does not require modification."
-                )
-
         result['errors'].extend(sorted(errors))
-        result['warnings'].extend(sorted(recommendations))
-        result['warnings'].extend(sorted(fidelity_warnings))
 
     def _check_definition_contract(
         self,

@@ -72,7 +72,10 @@ def build_gradient_fill(
 
         direct_stop_op = child.get('stop-opacity')
         if direct_stop_op is not None and 'stop-opacity' not in style_values:
-            stop_opacity *= parse_opacity(direct_stop_op)
+            stop_opacity *= parse_opacity(
+                direct_stop_op,
+                allow_percentage=True,
+            )
 
         alpha_xml = ''
         effective_opacity = combine_opacity(stop_opacity, opacity)
@@ -598,7 +601,11 @@ def _parse_filter_params(
             dy = _f(child.get('dy'), 0.0)
             if abs(dx) > 0.01 or abs(dy) > 0.01:
                 has_offset = True
-            paint_opacity = parse_opacity(effect_attr('flood-opacity'), 0.3)
+            paint_opacity = parse_opacity(
+                effect_attr('flood-opacity'),
+                0.3,
+                allow_percentage=True,
+            )
             parsed_color, parsed_alpha = parse_svg_color(
                 effect_attr('flood-color', '#000000')
             )
@@ -613,7 +620,11 @@ def _parse_filter_params(
             if abs(dx) > 0.01 or abs(dy) > 0.01:
                 has_offset = True
         elif tag == 'feFlood':
-            paint_opacity = parse_opacity(effect_attr('flood-opacity'), 0.3)
+            paint_opacity = parse_opacity(
+                effect_attr('flood-opacity'),
+                0.3,
+                allow_percentage=True,
+            )
             parsed_color, parsed_alpha = parse_svg_color(
                 effect_attr('flood-color', '#000000')
             )
@@ -791,11 +802,8 @@ def get_element_opacity(
         op = parse_inline_style(elem.get('style')).get('opacity') or elem.get('opacity')
     if op is None:
         return base if base < 1.0 else None
-    try:
-        val = base * max(0.0, min(1.0, float(op)))
-        return val if val < 1.0 else None
-    except ValueError:
-        return base if base < 1.0 else None
+    val = base * parse_opacity(op)
+    return val if val < 1.0 else None
 
 
 def get_fill_opacity(
@@ -810,18 +818,12 @@ def get_fill_opacity(
     base = ctx.opacity_multiplier if ctx is not None else 1.0
 
     op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
-    if op:
-        try:
-            base *= max(0.0, min(1.0, float(op)))
-        except ValueError:
-            pass
+    if op is not None:
+        base *= parse_opacity(op)
 
     fill_op = _get_attr(elem, 'fill-opacity', ctx) if ctx else elem.get('fill-opacity')
-    if fill_op:
-        try:
-            base *= max(0.0, min(1.0, float(fill_op)))
-        except ValueError:
-            pass
+    if fill_op is not None:
+        base *= parse_opacity(fill_op)
 
     return base if base < 1.0 else None
 
@@ -838,17 +840,11 @@ def get_stroke_opacity(
     base = ctx.opacity_multiplier if ctx is not None else 1.0
 
     op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
-    if op:
-        try:
-            base *= max(0.0, min(1.0, float(op)))
-        except ValueError:
-            pass
+    if op is not None:
+        base *= parse_opacity(op)
 
     stroke_op = _get_attr(elem, 'stroke-opacity', ctx) if ctx else elem.get('stroke-opacity')
-    if stroke_op:
-        try:
-            base *= max(0.0, min(1.0, float(stroke_op)))
-        except ValueError:
-            pass
+    if stroke_op is not None:
+        base *= parse_opacity(stroke_op)
 
     return base if base < 1.0 else None
