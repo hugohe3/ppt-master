@@ -191,6 +191,8 @@ def _build_arrow_marker(
     typ = end_elem.attrib.get("type", "")
     if typ in ("none", ""):
         return None, ""
+    if typ not in {"triangle", "stealth", "arrow", "diamond", "oval"}:
+        raise ValueError(f"Unsupported DrawingML line-end type: {typ!r}")
 
     w_b = end_elem.attrib.get("w", "med")
     l_b = end_elem.attrib.get("len", "med")
@@ -212,9 +214,6 @@ def _build_arrow_marker(
         path = "M 0 5 L 5 0 L 10 5 L 5 10 z"
     elif typ == "oval":
         path = ""  # use circle below
-    else:
-        # Unknown type — fall back to triangle so user still sees something
-        path = "M 0 0 L 10 5 L 0 10 z"
 
     if typ == "oval":
         body = f'<circle cx="5" cy="5" r="4" fill="{stroke_color}"/>'
@@ -222,7 +221,6 @@ def _build_arrow_marker(
         body = f'<path d="{path}" fill="{stroke_color}"/>'
 
     orient = "auto-start-reverse" if reversed_ else "auto"
-    fill_attr = "" if typ == "arrow" else ""  # no extra
     # Note: stroke="none" prevents marker from inheriting parent stroke.
     marker_def = (
         f'<marker id="{marker_id}" viewBox="0 0 10 10" '
