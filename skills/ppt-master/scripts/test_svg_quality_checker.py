@@ -29,6 +29,7 @@ from animation_config import main as animation_config_main
 from svg_quality_checker import SVGQualityChecker
 from pptx_shapes import (
     CONNECTOR_PRESET_TYPES,
+    OOXML_COORDINATE_MAX,
     get_preset_registry,
     svg_preset_preview_fingerprint,
     svg_text_fingerprint,
@@ -68,6 +69,7 @@ from svg_to_pptx.pptx_package.dimensions import (
 )
 from svg_to_pptx.drawingml.elements import parse_project_nested_svg_crop
 from svg_to_pptx.drawingml.utils import (
+    EMU_PER_PX,
     estimate_text_width,
     parse_inline_style,
     project_filter_errors,
@@ -2369,6 +2371,82 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
 </svg>''',
             'stdDeviation must be a finite number',
             'invalid project filter',
+        )
+
+    def test_filter_coordinates_block_drawingml_overflow(self):
+        cases = (
+            (
+                'glow radius',
+                '<feGaussianBlur stdDeviation="2863311530"/>',
+                'DrawingML rad must map within',
+            ),
+            (
+                'shadow blur radius',
+                '<feDropShadow dx="1" dy="0" '
+                'stdDeviation="1431655765"/>',
+                'DrawingML blurRad must map within',
+            ),
+            (
+                'shadow distance',
+                '<feDropShadow dx="2863311530" dy="0" '
+                'stdDeviation="1"/>',
+                'DrawingML dist must map within',
+            ),
+            (
+                'mapped infinity',
+                '<feGaussianBlur stdDeviation="1e308"/>',
+                'DrawingML rad must be finite after EMU mapping',
+            ),
+        )
+        for label, primitive, expected in cases:
+            with self.subTest(label=label):
+                self._assert_checker_and_exporter_reject(
+                    f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs><filter id="effect">{primitive}</filter></defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#effect)"/>
+</svg>''',
+                    expected,
+                    'invalid project filter',
+                )
+
+    def test_filter_coordinates_accept_drawingml_maximum(self):
+        glow_std_dev = OOXML_COORDINATE_MAX / EMU_PER_PX
+        shadow_std_dev = OOXML_COORDINATE_MAX / (2 * EMU_PER_PX)
+        svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1280 720">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="{glow_std_dev!r}"/>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="{glow_std_dev!r}" dy="0"
+                    stdDeviation="{shadow_std_dev!r}"/>
+    </filter>
+  </defs>
+  <rect x="80" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#glow)"/>
+  <rect x="480" y="80" width="300" height="180"
+        fill="#FFFFFF" filter="url(#shadow)"/>
+</svg>'''
+        root = ET.fromstring(svg)
+        self.assertEqual(project_filter_errors(root), [])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            svg_path = Path(tmp_dir) / 'effect-boundary.svg'
+            svg_path.write_text(svg, encoding='utf-8')
+            checker_result = SVGQualityChecker().check_file(str(svg_path))
+            self.assertEqual(checker_result['errors'], [])
+            slide_xml, *_rest = convert_svg_to_slide_shapes(svg_path)
+        self.assertIn(
+            f'<a:glow rad="{OOXML_COORDINATE_MAX}">',
+            slide_xml,
+        )
+        self.assertIn(
+            f'<a:outerShdw blurRad="{OOXML_COORDINATE_MAX}" '
+            f'dist="{OOXML_COORDINATE_MAX}"',
+            slide_xml,
         )
 
     def test_imported_preset_preview_may_mirror_carrier_filter(self):

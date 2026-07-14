@@ -15,6 +15,7 @@ from .utils import (
     px_to_emu, _f, _get_attr, parse_svg_length,
     combine_opacity, parse_inline_style, parse_opacity, parse_stop_style,
     matrix_multiply, parse_svg_color, parse_transform_matrix, resolve_url_id,
+    parse_project_filter_params, project_filter_drawingml_coordinates,
     parse_project_stroke_dasharray, parse_project_stroke_enum,
 )
 
@@ -570,90 +571,6 @@ def build_stroke_xml(
 </a:ln>'''
 
 
-def _parse_filter_params(
-    filter_elem: ET.Element,
-) -> dict[str, float | str]:
-    """Extract common parameters from an SVG filter element.
-
-    Returns:
-        Dict with keys: std_dev, dx, dy, opacity, color, has_offset.
-    """
-    std_dev = 4.0
-    dx = 0.0
-    dy = 0.0
-    paint_opacity: float | None = None
-    transfer_opacity: float | None = None
-    color_alpha = 1.0
-    color = '000000'
-    has_offset = False
-
-    for child in filter_elem.iter():
-        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        style_values = parse_inline_style(child.get('style'))
-
-        def effect_attr(name: str, default: str | None = None) -> str | None:
-            return style_values.get(name) or child.get(name, default)
-
-        if tag == 'feDropShadow':
-            # Shorthand element: all params in one place
-            std_dev = _f(child.get('stdDeviation'), 4.0)
-            dx = _f(child.get('dx'), 0.0)
-            dy = _f(child.get('dy'), 0.0)
-            if abs(dx) > 0.01 or abs(dy) > 0.01:
-                has_offset = True
-            paint_opacity = parse_opacity(
-                effect_attr('flood-opacity'),
-                0.3,
-                allow_percentage=True,
-            )
-            parsed_color, parsed_alpha = parse_svg_color(
-                effect_attr('flood-color', '#000000')
-            )
-            if parsed_color:
-                color = parsed_color
-                color_alpha = parsed_alpha
-        elif tag == 'feGaussianBlur':
-            std_dev = _f(child.get('stdDeviation'), 4.0)
-        elif tag == 'feOffset':
-            dx = _f(child.get('dx'), 0.0)
-            dy = _f(child.get('dy'), 0.0)
-            if abs(dx) > 0.01 or abs(dy) > 0.01:
-                has_offset = True
-        elif tag == 'feFlood':
-            paint_opacity = parse_opacity(
-                effect_attr('flood-opacity'),
-                0.3,
-                allow_percentage=True,
-            )
-            parsed_color, parsed_alpha = parse_svg_color(
-                effect_attr('flood-color', '#000000')
-            )
-            if parsed_color:
-                color = parsed_color
-                color_alpha = parsed_alpha
-        elif tag == 'feFuncA':
-            if child.get('type') == 'linear':
-                slope = max(0.0, _f(child.get('slope'), 0.3))
-                transfer_opacity = (
-                    slope
-                    if transfer_opacity is None
-                    else transfer_opacity * slope
-                )
-
-    if paint_opacity is None:
-        opacity = transfer_opacity if transfer_opacity is not None else 0.3
-    elif transfer_opacity is None:
-        opacity = paint_opacity
-    else:
-        opacity = paint_opacity * transfer_opacity
-    opacity = max(0.0, min(1.0, opacity * color_alpha))
-
-    return {
-        'std_dev': std_dev, 'dx': dx, 'dy': dy,
-        'opacity': opacity, 'color': color, 'has_offset': has_offset,
-    }
-
-
 def _infer_shadow_alignment(dx: float, dy: float, threshold: float = 0.5) -> str:
     """Infer outer shadow alignment from the SVG offset vector.
 
@@ -711,16 +628,17 @@ def build_shadow_xml(
     if filter_elem is None:
         return ''
 
-    p = _parse_filter_params(filter_elem)
-    std_dev = p['std_dev']
+    p = parse_project_filter_params(filter_elem)
     dx = p['dx']
     dy = p['dy']
     # For shadow, default dy to 4 if no offset was found
     if not p['has_offset']:
         dy = 4.0
+        p = {**p, 'dy': dy}
 
-    blur_rad = px_to_emu(std_dev * 2.0)
-    dist = px_to_emu(math.sqrt(dx * dx + dy * dy))
+    coordinates = project_filter_drawingml_coordinates(p, 'shadow')
+    blur_rad = coordinates['blurRad']
+    dist = coordinates['dist']
     dir_angle = _shadow_dir_angle(dx, dy)
     # PowerPoint renders outerShdw alpha slightly heavier than SVG's filter
     # composite (different blending path). Scale by 0.75 to match the SVG
@@ -748,8 +666,8 @@ def build_glow_xml(
     if filter_elem is None:
         return ''
 
-    p = _parse_filter_params(filter_elem)
-    rad = px_to_emu(p['std_dev'])
+    p = parse_project_filter_params(filter_elem)
+    rad = project_filter_drawingml_coordinates(p, 'glow')['rad']
     opacity_multiplier = 1.0 if opacity is None else opacity
     alpha_val = int(round(p['opacity'] * opacity_multiplier * 100000))
 
@@ -765,7 +683,7 @@ def classify_filter_effect(filter_elem: ET.Element) -> str | None:
     if filter_elem is None:
         return None
 
-    p = _parse_filter_params(filter_elem)
+    p = parse_project_filter_params(filter_elem)
     return 'shadow' if p['has_offset'] else 'glow'
 
 
