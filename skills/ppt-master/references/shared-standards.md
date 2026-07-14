@@ -995,6 +995,11 @@ fidelity.
 | Gradient stroke | §6.3; re-import may flatten to first stop |
 | `marker-start` / `marker-end` | §1.1 native line end; type `Native-normalized`, size `Approximate` (`sm/med/lg`) |
 
+PPTX import formats normalized paint and text alpha with five decimal places,
+matching DrawingML's 1/100000 target precision. The smallest positive source
+alpha therefore remains non-zero and quantizes back instead of becoming fully
+transparent.
+
 PPTX import accepts `a:ln@w` only as an integer DrawingML `ST_LineWidth` value
 from `0` through `20116800` EMU. Malformed, negative, or oversized source widths
 stop import instead of being dropped and replaced by a default SVG line width.

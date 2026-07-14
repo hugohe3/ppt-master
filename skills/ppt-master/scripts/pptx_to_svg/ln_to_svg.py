@@ -15,7 +15,7 @@ from xml.etree import ElementTree as ET
 from pptx_shapes.formula import validate_ooxml_line_width
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
-from .emu_units import NS, emu_to_px, fmt_num
+from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
 
 
 @dataclass
@@ -134,7 +134,7 @@ def resolve_stroke(
             raise ValueError("DrawingML solid line color cannot be resolved")
         attrs["stroke"] = hex_
         if alpha < 1.0:
-            attrs["stroke-opacity"] = fmt_num(alpha, 4)
+            attrs["stroke-opacity"] = format_ooxml_alpha(alpha)
     elif paint_name == "gradFill":
         # Approximate gradient stroke as the first stop color (SVG supports
         # gradient strokes via fill="url()" but it adds a lot of plumbing;
@@ -150,7 +150,7 @@ def resolve_stroke(
             )
         attrs["stroke"] = hex_
         if alpha < 1.0:
-            attrs["stroke-opacity"] = fmt_num(alpha, 4)
+            attrs["stroke-opacity"] = format_ooxml_alpha(alpha)
 
     # Dash pattern
     preset_tag = f"{{{NS['a']}}}prstDash"

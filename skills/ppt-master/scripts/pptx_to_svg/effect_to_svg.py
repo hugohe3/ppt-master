@@ -16,7 +16,7 @@ from pptx_effects import unsupported_effect_metadata
 from pptx_shapes.formula import OOXML_COORDINATE_MAX
 
 from .color_resolver import COLOR_TAGS, ColorPalette, resolve_color
-from .emu_units import NS, emu_to_px, fmt_num
+from .emu_units import NS, emu_to_px, fmt_num, format_ooxml_alpha
 
 
 _OOXML_INTEGER_RE = re.compile(r"[+-]?\d+")
@@ -347,7 +347,8 @@ def _outer_shadow(
     return (
         f'<feDropShadow dx="{dx_token}" dy="{dy_token}" '
         f'stdDeviation="{fmt_num(std, 8)}" '
-        f'flood-color="{color}" flood-opacity="{fmt_num(alpha, 5)}"/>'
+        f'flood-color="{color}" '
+        f'flood-opacity="{format_ooxml_alpha(alpha)}"/>'
     )
 
 
@@ -360,7 +361,8 @@ def _glow(elem: ET.Element, palette: ColorPalette | None) -> str:
     std = rad
     return (
         f'<feGaussianBlur in="SourceAlpha" stdDeviation="{fmt_num(std, 8)}" result="blurred"/>'
-        f'<feFlood flood-color="{color}" flood-opacity="{fmt_num(alpha, 5)}" result="flood"/>'
+        f'<feFlood flood-color="{color}" '
+        f'flood-opacity="{format_ooxml_alpha(alpha)}" result="flood"/>'
         f'<feComposite in="flood" in2="blurred" operator="in" result="glow"/>'
         f'<feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>'
     )

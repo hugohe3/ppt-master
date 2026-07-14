@@ -44,7 +44,7 @@ except ImportError:  # pragma: no cover - optional visual enhancement dependency
     Image = None
     ImageEnhance = None
 
-from .emu_units import NS, Xfrm, fmt_num
+from .emu_units import NS, Xfrm, fmt_num, format_ooxml_alpha
 from .ooxml_loader import OoxmlPackage, PartRef
 
 
@@ -182,7 +182,7 @@ def _blip_opacity_attr(blip: ET.Element) -> str:
         return ""
     if opacity >= 1.0:
         return ""
-    return f' opacity="{fmt_num(opacity, 5)}"'
+    return f' opacity="{format_ooxml_alpha(opacity)}"'
 
 _OFFICE_VECTOR_EXTS = {".emf", ".wmf"}
 

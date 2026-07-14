@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
-from .emu_units import NS, fmt_num, percent_to_ratio
+from .emu_units import NS, fmt_num, format_ooxml_alpha, percent_to_ratio
 
 
 @dataclass
@@ -100,7 +100,7 @@ def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
         return FillResult.inherit()
     attrs: dict[str, str] = {"fill": hex_}
     if alpha < 1.0:
-        attrs["fill-opacity"] = fmt_num(alpha, 4)
+        attrs["fill-opacity"] = format_ooxml_alpha(alpha)
     return FillResult(attrs=attrs)
 
 
@@ -123,7 +123,11 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
         hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
         if hex_ is None:
             continue
-        opacity_attr = f' stop-opacity="{fmt_num(alpha, 4)}"' if alpha < 1.0 else ""
+        opacity_attr = (
+            f' stop-opacity="{format_ooxml_alpha(alpha)}"'
+            if alpha < 1.0
+            else ""
+        )
         stops_xml.append(
             f'<stop offset="{fmt_num(pos_pct, 4)}" stop-color="{hex_}"{opacity_attr}/>'
         )
@@ -199,7 +203,7 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
         # least carries the right tone. Round-trip will lose the texture.
         attrs: dict[str, str] = {"fill": fg_hex}
         if fg_alpha < 1.0:
-            attrs["fill-opacity"] = fmt_num(fg_alpha, 4)
+            attrs["fill-opacity"] = format_ooxml_alpha(fg_alpha)
         return FillResult(attrs=attrs)
     tile_w, tile_h, fg_svg = geom
 
@@ -210,7 +214,7 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
     bg_rect = ""
     if bg_hex is not None:
         bg_opacity = (
-            f' fill-opacity="{fmt_num(bg_alpha, 4)}"'
+            f' fill-opacity="{format_ooxml_alpha(bg_alpha)}"'
             if bg_alpha < 1.0 else ""
         )
         bg_rect = (
@@ -243,11 +247,11 @@ def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
 def _pattern_foreground(prst: str, fg: str,
                         fg_alpha: float) -> tuple[int, int, str] | None:
     stroke_op = (
-        f' stroke-opacity="{fmt_num(fg_alpha, 4)}"'
+        f' stroke-opacity="{format_ooxml_alpha(fg_alpha)}"'
         if fg_alpha < 1.0 else ""
     )
     fill_op = (
-        f' fill-opacity="{fmt_num(fg_alpha, 4)}"'
+        f' fill-opacity="{format_ooxml_alpha(fg_alpha)}"'
         if fg_alpha < 1.0 else ""
     )
 
