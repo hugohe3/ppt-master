@@ -46,7 +46,7 @@ from .styles import (
     get_element_opacity, get_fill_opacity, get_stroke_opacity,
 )
 from .paths import (
-    PathCommand, parse_svg_path, svg_path_to_absolute,
+    PathCommand, parse_svg_path, parse_svg_points, svg_path_to_absolute,
     normalize_path_commands, path_commands_to_drawingml,
 )
 
@@ -1442,22 +1442,10 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 # polygon / polyline
 # ---------------------------------------------------------------------------
 
-def _parse_points(points_str: str) -> list[tuple[float, float]]:
-    """Parse SVG points attribute into a list of (x, y) tuples."""
-    nums = re.findall(r'[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?', points_str)
-    if len(nums) < 4:
-        return []
-    return [(float(nums[i]), float(nums[i + 1])) for i in range(0, len(nums) - 1, 2)]
-
-
 def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <polygon> to DrawingML custom geometry shape."""
     preset_geom = _build_preset_geom_from_meta(elem)
-    points = _parse_points(elem.get('points', ''))
-    if not points:
-        if preset_geom is not None:
-            raise ValueError('Preset-bearing <polygon> requires valid points')
-        return None
+    points = parse_svg_points(elem.get('points', ''), min_points=3)
 
     commands = [PathCommand('M', [points[0][0], points[0][1]])]
     for px_, py_ in points[1:]:
@@ -1526,11 +1514,7 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
 def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <polyline> to DrawingML custom geometry shape."""
     preset_geom = _build_preset_geom_from_meta(elem)
-    points = _parse_points(elem.get('points', ''))
-    if not points:
-        if preset_geom is not None:
-            raise ValueError('Preset-bearing <polyline> requires valid points')
-        return None
+    points = parse_svg_points(elem.get('points', ''), min_points=2)
 
     commands = [PathCommand('M', [points[0][0], points[0][1]])]
     for px_, py_ in points[1:]:
@@ -2670,9 +2654,7 @@ def _resolve_clip_geometry(
 
     # --- Polygon → custGeom ---
     if shape_tag == 'polygon':
-        pts = _parse_points(shape.get('points', ''))
-        if not pts:
-            return DEFAULT
+        pts = parse_svg_points(shape.get('points', ''), min_points=3)
         commands = [PathCommand('M', [pts[0][0], pts[0][1]])]
         for px_, py_ in pts[1:]:
             commands.append(PathCommand('L', [px_, py_]))

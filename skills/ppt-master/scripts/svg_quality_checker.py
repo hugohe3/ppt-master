@@ -90,6 +90,17 @@ except ImportError:
     _validate_dml_shape_matrix = None
 
 try:
+    from svg_to_pptx.drawingml.paths import (
+        iter_project_freeform_geometry as _iter_project_freeform_geometry,
+        noncanonical_path_numbers as _noncanonical_path_numbers,
+        noncanonical_points_numbers as _noncanonical_points_numbers,
+    )
+except ImportError:
+    _iter_project_freeform_geometry = None
+    _noncanonical_path_numbers = None
+    _noncanonical_points_numbers = None
+
+try:
     from svg_to_pptx.drawingml.converter import (
         collect_unsupported_visuals as _collect_unsupported_visuals,
     )
@@ -1067,7 +1078,10 @@ class SVGQualityChecker:
                 # 2a. Validate direct geometry lengths and stroke widths.
                 self._check_geometry_length_values(root, result)
 
-                # 2b. Validate the closed authoring-property surface and
+                # 2b. Validate complete path-data and point-list grammar.
+                self._check_freeform_geometry_values(root, result)
+
+                # 2c. Validate the closed authoring-property surface and
                 # conditional definition interfaces before export.
                 self._check_authoring_property_contract(root, result)
                 self._check_paint_compatibility(root, result)
@@ -2150,6 +2164,64 @@ class SVGQualityChecker:
                 f"converter-compatible in {count} location(s) ({shown_examples}); "
                 f"generated SVG should prefer the unitless px spelling "
                 f'{attribute}="{normalized}". No change is required for export.'
+            )
+
+    def _check_freeform_geometry_values(
+        self,
+        root: ET.Element,
+        result: Dict,
+    ) -> None:
+        """Reject malformed path/points syntax and advise decimal spelling."""
+        helpers = (
+            _format_project_geometry_length,
+            _iter_project_freeform_geometry,
+            _noncanonical_path_numbers,
+            _noncanonical_points_numbers,
+        )
+        if any(helper is None for helper in helpers):
+            result['warnings'].append(
+                "Unable to import svg_to_pptx freeform geometry validators; "
+                "native export will still validate path and points syntax."
+            )
+            return
+
+        errors: set[str] = set()
+        recommendations: Counter[tuple[str, str, str]] = Counter()
+        examples: Dict[tuple[str, str, str], List[str]] = defaultdict(list)
+
+        for elem, attribute, raw, min_points in _iter_project_freeform_geometry(root):
+            label = _element_label(elem)
+            try:
+                if raw is None:
+                    tag = _local_name(elem)
+                    raise ValueError(f'<{tag}> requires {attribute}')
+                if attribute == 'd':
+                    compatible_numbers = _noncanonical_path_numbers(raw)
+                else:
+                    required_points = min_points or 2
+                    compatible_numbers = _noncanonical_points_numbers(
+                        raw,
+                        min_points=required_points,
+                    )
+            except ValueError as exc:
+                errors.add(f'{label} {attribute}: {exc}')
+                continue
+
+            for number in compatible_numbers:
+                normalized = _format_project_geometry_length(float(number))
+                key = (attribute, number, normalized)
+                recommendations[key] += 1
+                if label not in examples[key] and len(examples[key]) < 3:
+                    examples[key].append(label)
+
+        result['errors'].extend(sorted(errors))
+        for (attribute, raw, normalized), count in sorted(recommendations.items()):
+            shown_examples = ', '.join(examples[(attribute, raw, normalized)])
+            result['warnings'].append(
+                f"Recommendation: freeform geometry {attribute} numeric token "
+                f"{raw!r} is converter-compatible in {count} occurrence(s) "
+                f"({shown_examples}); generated SVG should prefer the ordinary "
+                f"decimal spelling {normalized!r}. No change is required for export."
             )
 
     def _check_font_size_values(self, content: str, result: Dict):

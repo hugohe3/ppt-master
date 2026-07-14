@@ -869,6 +869,25 @@ instance graph.
 | `A` | Cubic segments of at most 90° | `Approximate` |
 | `Z`; polygon/polyline | Closed/open freeform | `Native-normalized` |
 
+**Hard rule — complete freeform grammar**: Generated `path@d` and
+`polygon` / `polyline@points` use finite unitless ordinary decimals and only
+the commands registered above. Native export consumes the complete attribute;
+it never extracts recognizable fragments while ignoring other characters.
+Finite scientific notation, a leading plus sign, and a trailing decimal point
+remain read-compatible and receive recommendation warnings; generated SVG does
+not write them. Unknown commands or characters, misplaced/repeated commas,
+non-finite numbers, missing attributes, incomplete command groups, and odd
+point counts are invalid. A path starts with `M` / `m`; `A` radii are
+non-negative and both arc flags are exactly `0` or `1`. Each registered path
+command accepts its uppercase absolute and lowercase relative form. Legal
+separator-free arc flag sequences remain valid and are parsed as individual
+flag tokens. A polygon has at least three coordinate pairs and a polyline at
+least two.
+
+**Validation**: Checker and native export consume the same parser in
+[`paths.py`](../scripts/svg_to_pptx/drawingml/paths.py); native-object fallback
+bounds reuse its normalized commands rather than a second path grammar.
+
 Command identity, relative coordinates, shorthand, arc parameters, and original
 handles are not retained. Geometry needs non-zero bounds. Use a closed cubic
 path for organic silhouettes, polygon/closed path for ribbons/facets, open path

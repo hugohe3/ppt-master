@@ -27,6 +27,7 @@ from pptx_to_svg.preset_authoring import (
 from resource_paths import icon_search_dirs_for_svg
 
 from .context import ConvertContext, ShapeResult
+from .paths import project_freeform_geometry_errors
 from .theme_colors import ThemeColorSpec
 from .theme_fonts import ThemeFontSpec
 from .utils import (
@@ -60,6 +61,22 @@ from ..semantic_markers import is_static_page_frame
 
 class SvgNativeConversionError(RuntimeError):
     """Raised when an SVG cannot be faithfully converted to native DrawingML."""
+
+
+def _require_project_freeform_geometry(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject malformed path and points values with one aggregated error."""
+    errors = project_freeform_geometry_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project freeform geometry: '
+        f'{preview}{suffix}'
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1138,6 +1155,8 @@ def convert_svg_to_slide_shapes(
             f'{preview}{suffix}'
         )
 
+    _require_project_freeform_geometry(root, svg_path)
+
     viewport_width, viewport_height = _root_viewport_size(root)
 
     # Expand project icon placeholders and static same-document <use>
@@ -1155,6 +1174,8 @@ def convert_svg_to_slide_shapes(
             trace_steps.append({'action': 'expand-use-data-icons', 'count': expanded})
         if verbose and expanded:
             print(f'  Expanded {expanded} <use data-icon="..."/> placeholder(s)')
+        if expanded:
+            _require_project_freeform_geometry(root, svg_path)
 
     try:
         injected_geometry_count = materialize_inline_geometry_properties(root)
