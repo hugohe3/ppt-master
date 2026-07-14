@@ -1760,20 +1760,6 @@ def project_definition_errors(root: ET.Element) -> list[str]:
     return sorted(errors)
 
 
-def _project_marker_polygon_vertex_count(raw: str) -> int | None:
-    """Return the number of finite marker polygon vertices, or ``None``."""
-    tokens = [token for token in re.split(r'[\s,]+', raw.strip()) if token]
-    if not tokens or len(tokens) % 2:
-        return None
-    try:
-        values = [float(token) for token in tokens]
-    except ValueError:
-        return None
-    if not all(math.isfinite(value) for value in values):
-        return None
-    return len(values) // 2
-
-
 def _project_marker_polygon_points(
     raw: str,
 ) -> list[tuple[float, float]] | None:
@@ -1995,7 +1981,7 @@ def project_marker_errors(root: ET.Element) -> list[str]:
                 if shape is None:
                     errors.add(
                         f'{marker_label} must contain exactly one direct '
-                        'triangle/diamond path or polygon, circle, or ellipse'
+                        'triangle, stealth, arrow, diamond, or oval shape'
                     )
                 else:
                     shape_tag = (_svg_element_tag(shape) or '').lower()
@@ -2004,27 +1990,27 @@ def project_marker_errors(root: ET.Element) -> list[str]:
                             f'{marker_label} child <{shape_tag}> cannot use '
                             'transform'
                         )
-                    if shape_tag == 'path':
-                        path_data = shape.get('d', '')
-                        if not (
-                            _PROJECT_MARKER_TRIANGLE_PATH_RE.fullmatch(path_data)
-                            or _PROJECT_MARKER_DIAMOND_PATH_RE.fullmatch(path_data)
-                        ):
-                            errors.add(
-                                f'{marker_label} path must be a closed 3- or '
-                                '4-vertex path with one explicit M/L command '
-                                'per vertex'
-                            )
-                    elif shape_tag == 'polygon':
-                        vertex_count = _project_marker_polygon_vertex_count(
-                            shape.get('points', '')
+                    marker_shape_type = classify_project_marker_shape(marker)
+                    if marker_shape_type is None and shape_tag == 'path':
+                        errors.add(
+                            f'{marker_label} path must be a closed 3-vertex '
+                            'triangle, a simple closed 4-vertex '
+                            'diamond/stealth, or an open 3-vertex arrow, '
+                            'with one explicit M/L command per vertex'
                         )
-                        if vertex_count not in {3, 4}:
-                            errors.add(
-                                f'{marker_label} polygon must contain exactly '
-                                '3 or 4 finite vertices'
-                            )
-                    elif shape_tag not in {'circle', 'ellipse'}:
+                    elif (
+                        marker_shape_type is None
+                        and shape_tag == 'polygon'
+                    ):
+                        errors.add(
+                            f'{marker_label} polygon must contain exactly '
+                            '3 finite vertices or 4 finite vertices forming '
+                            'a simple diamond/stealth quadrilateral'
+                        )
+                    elif (
+                        marker_shape_type is None
+                        and shape_tag not in {'circle', 'ellipse'}
+                    ):
                         errors.add(
                             f'{marker_label} child <{shape_tag}> has no native '
                             'line-end mapping'
