@@ -2649,6 +2649,22 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 ):
                     resolve_stroke(sp_pr, None)
 
+    def test_invalid_native_line_width_is_rejected_on_import(self):
+        cases = (
+            ('12.5', "Invalid DrawingML line width: '12.5'"),
+            ('-1', 'DrawingML line width -1 is outside'),
+            ('20116801', 'DrawingML line width 20116801 is outside'),
+        )
+        for width, expected in cases:
+            with self.subTest(width=width):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln w="{width}"/>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
             'http://schemas.openxmlformats.org/drawingml/2006/main'
