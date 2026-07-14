@@ -833,9 +833,12 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 > `data-pptx-fallback-sha256`. If their fallback, reachable SVG fragment
 > definition, local reference target, or marker transform changes later, default
 > export keeps that SVG, the mandatory quality checker warns, and
-> `--native-charts-and-tables` fails rather than discard the edit. Legacy markers
-> without a baseline remain native-compatible and only warn that stale detection
-> is unavailable. Legacy `data-pptx-native*`, `data-pptx-visual-status`, and
+> `--native-charts-and-tables` fails rather than discard the edit. Generated
+> authoring and reusable templates omit import provenance and a static baseline;
+> that hashless authored state is normal and does not warn. Hashless legacy
+> imported markers that still carry PPTX import provenance remain
+> native-compatible and only warn that stale detection is unavailable. Legacy
+> `data-pptx-native*`, `data-pptx-visual-status`, and
 > `data-pptx-route-status` spellings remain read-compatible; generated SVG uses
 > only the canonical replacement/fallback attributes. `--native-objects`
 > remains a compatibility alias for `--native-charts-and-tables`.

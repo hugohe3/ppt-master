@@ -355,6 +355,11 @@ grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
 
 **Hard rule**: every data chart whose type appears in the **Supported chart types** list of [shared-standards.md](shared-standards.md) "PowerPoint-Native Chart / Table Replacement Markers" (the single authority for the eligible set, marker contract, and JSON schemas) gets `data-pptx-replace-with="chart"` plus one `<metadata type="application/json">` JSON child on its top-level `<g>`, transcribing the same data just plotted. Every pure text-grid data table gets `data-pptx-replace-with="table"` the same way, transcribing all visible cell text into `columns` / `rows`. The parent marker determines the JSON schema; do not duplicate a chart/table kind on the metadata child.
 
+Generated authoring MUST omit `data-pptx-import-source` and
+`data-pptx-fallback-sha256`: those attributes record imported-PPTX provenance
+and its sealed fallback baseline. Never copy a static baseline from a chart
+catalog or reusable template; normal content edits would make it stale.
+
 `data-pptx-replace-with` is a **data-backed replacement claim**, not a generic label for a group that contains numbers and not a marker for ordinary PowerPoint shapes or connectors. Add it only when the matching JSON payload can be written in the same edit; if the object is meant to remain SVG geometry, do not add the marker.
 
 - Chart types absent from that list and conceptual/diagrammatic graphics (process flows, cycles, quadrant cards, timelines, KPI cards) get **no marker** — `svg_quality_checker.py` rejects unsupported marker types.

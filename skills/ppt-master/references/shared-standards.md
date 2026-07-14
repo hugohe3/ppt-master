@@ -1301,9 +1301,14 @@ runtime attributes, marker-local stable ID renames, and marker-local
 marker-local unused definitions, and explicitly referenced document-level
 target roots (even when hidden) remain conservatively hashed. External
 image/font file bytes are not read.
-Hashless legacy markers remain native-compatible and warn in the checker/native
-route that stale detection is unavailable. A stale hash is an integrity mismatch,
-not a visual-parity gate on an unchanged active marker.
+Generated authoring and reusable templates omit import provenance and do not
+preseed a static fallback baseline; that hashless authored state is normal and
+does not warn. A hashless legacy imported marker that still carries PPTX import
+provenance remains native-compatible and warns in the checker/native route that
+stale detection is unavailable. An explicitly sealed authored marker that does
+carry a baseline is validated by the same integrity rule; only a missing
+authored baseline is silent. A stale hash is an integrity mismatch, not a
+visual-parity gate on an unchanged active marker.
 
 **Hard rule — imported fallback kind**: A PPTX chart with a complete baked
 preview may carry `data-pptx-fallback-kind="source-preview"`. Supported parsed

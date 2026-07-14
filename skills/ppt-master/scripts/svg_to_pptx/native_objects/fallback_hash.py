@@ -11,7 +11,7 @@ from pptx_shapes import (
     svg_native_fallback_fingerprint,
 )
 
-from .marker_attributes import native_replacement_kind
+from .marker_attributes import native_import_source, native_replacement_kind
 
 
 NATIVE_FALLBACK_RUNTIME_ATTR = "data-pptx-runtime-fallback-unchanged"
@@ -77,10 +77,12 @@ def native_fallback_contract_warnings(
             "--native-charts-and-tables will fail"
         ]
     if expected is None:
+        if native_import_source(elem) != "pptx":
+            return []
         return [
-            f"has no {NATIVE_FALLBACK_SHA256_ATTR} baseline; the marker remains "
-            "compatible with Chart/Table replacement, but stale fallback edits "
-            "cannot be detected"
+            f"imported marker has no {NATIVE_FALLBACK_SHA256_ATTR} baseline; "
+            "the marker remains compatible with Chart/Table replacement, but "
+            "stale fallback edits cannot be detected"
         ]
     if _native_fallback_is_fresh(
         elem,
