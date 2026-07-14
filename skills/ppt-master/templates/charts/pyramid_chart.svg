@@ -40,15 +40,25 @@
         <!-- ==================== Pyramid Object ==================== -->
         <g>
             <!-- L1 (Base) -->
-            <polygon points="144,500 576,500 624,580 96,580" fill="#06B6D4" />
+            <g id="pyramid-level-1" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="trapezoid" data-pptx-frame="96 500 528 80" data-pptx-av-adj="val 60000" fill="#06B6D4" stroke="none">
+                <path d="M 96 580 L 144 500 L 576 500 L 624 580 Z"/>
+            </g>
             <!-- L2 -->
-            <polygon points="198,410 522,410 570,490 150,490" fill="#0EA5E9" />
+            <g id="pyramid-level-2" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="trapezoid" data-pptx-frame="150 410 420 80" data-pptx-av-adj="val 60000" fill="#0EA5E9" stroke="none">
+                <path d="M 150 490 L 198 410 L 522 410 L 570 490 Z"/>
+            </g>
             <!-- L3 -->
-            <polygon points="252,320 468,320 516,400 204,400" fill="#3B82F6" />
+            <g id="pyramid-level-3" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="trapezoid" data-pptx-frame="204 320 312 80" data-pptx-av-adj="val 60000" fill="#3B82F6" stroke="none">
+                <path d="M 204 400 L 252 320 L 468 320 L 516 400 Z"/>
+            </g>
             <!-- L4 -->
-            <polygon points="306,230 414,230 462,310 258,310" fill="#6366F1" />
+            <g id="pyramid-level-4" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="trapezoid" data-pptx-frame="258 230 204 80" data-pptx-av-adj="val 60000" fill="#6366F1" stroke="none">
+                <path d="M 258 310 L 306 230 L 414 230 L 462 310 Z"/>
+            </g>
             <!-- L5 (Top) -->
-            <polygon points="360,140 408,220 312,220" fill="#7C3AED" />
+            <g id="pyramid-level-5" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="triangle" data-pptx-frame="312 140 96 80" fill="#7C3AED" stroke="none">
+                <path d="M 312 220 L 360 140 L 408 220 Z"/>
+            </g>
         </g>
         <!-- Connection Anchor Dots -->
         <g>

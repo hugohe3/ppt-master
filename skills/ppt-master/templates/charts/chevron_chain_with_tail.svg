@@ -60,15 +60,25 @@
         <!-- ===== Primary Activities: 5 chevrons, stride 180, rect width 175, point overhang 25 ===== -->
         <g id="primary">
             <!-- Chev 1: rect 60-235, flat left, point at 260 -->
-            <path d="M 60 380 H 235 L 260 432 L 235 484 H 60 Z" fill="#E0E7FF"/>
+            <g id="primary-chevron-01" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="homePlate" data-pptx-frame="60 380 200 104" data-pptx-av-adj="val 24038" fill="#E0E7FF" stroke="none">
+                <path d="M 60 380 L 235 380 L 260 432 L 235 484 L 60 484 Z"/>
+            </g>
             <!-- Chev 2: rect 240-415, notch 265, point at 440 -->
-            <path d="M 240 380 H 415 L 440 432 L 415 484 H 240 L 265 432 Z" fill="#C7D2FE"/>
+            <g id="primary-chevron-02" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="chevron" data-pptx-frame="240 380 200 104" data-pptx-av-adj="val 24038" fill="#C7D2FE" stroke="none">
+                <path d="M 240 380 L 415 380 L 440 432 L 415 484 L 240 484 L 265 432 Z"/>
+            </g>
             <!-- Chev 3: rect 420-595, notch 445, point at 620 -->
-            <path d="M 420 380 H 595 L 620 432 L 595 484 H 420 L 445 432 Z" fill="#E0E7FF"/>
+            <g id="primary-chevron-03" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="chevron" data-pptx-frame="420 380 200 104" data-pptx-av-adj="val 24038" fill="#E0E7FF" stroke="none">
+                <path d="M 420 380 L 595 380 L 620 432 L 595 484 L 420 484 L 445 432 Z"/>
+            </g>
             <!-- Chev 4: rect 600-775, notch 625, point at 800 -->
-            <path d="M 600 380 H 775 L 800 432 L 775 484 H 600 L 625 432 Z" fill="#C7D2FE"/>
+            <g id="primary-chevron-04" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="chevron" data-pptx-frame="600 380 200 104" data-pptx-av-adj="val 24038" fill="#C7D2FE" stroke="none">
+                <path d="M 600 380 L 775 380 L 800 432 L 775 484 L 600 484 L 625 432 Z"/>
+            </g>
             <!-- Chev 5: rect 780-955, notch 805, point at 980 -->
-            <path d="M 780 380 H 955 L 980 432 L 955 484 H 780 L 805 432 Z" fill="#E0E7FF"/>
+            <g id="primary-chevron-05" data-pptx-authoring="preset" data-pptx-object="shape" data-pptx-prst="chevron" data-pptx-frame="780 380 200 104" data-pptx-av-adj="val 24038" fill="#E0E7FF" stroke="none">
+                <path d="M 780 380 L 955 380 L 980 432 L 955 484 L 780 484 L 805 432 Z"/>
+            </g>
         </g>
 
         <!-- ===== Margin Tail: full-height wedge merging both halves into one outcome point ===== -->

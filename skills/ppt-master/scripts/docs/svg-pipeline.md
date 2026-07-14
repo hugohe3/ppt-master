@@ -27,8 +27,7 @@ The projected copy:
 - removes source-object identity/style/hash attributes that are only useful to
   an exact import round trip;
 - keeps visible paths, text, images, stable ids, Master/Layout root markers,
-  and supported compact `data-pptx-object` / `data-pptx-prst` /
-  `data-pptx-frame` intent; and
+  and selected native-shape intent useful for inspection; and
 - rewrites relative local asset references for the projection's new location.
 
 The complete imported SVG remains the evidence source for mirror restoration.
@@ -36,6 +35,18 @@ The exporter does not read the import workspace or the projection. The
 projection is deliberately not a template generator, not a replacement for
 the explicit Master/Layout restoration workflow, and not a supported release
 input to `svg_to_pptx.py`.
+
+This projection is separate from canonical preset authoring. New project SVGs
+and project-owned templates use the compact authored form: one atomic
+`<g data-pptx-authoring="preset">` owns the preset intent and base paint, with
+the registry-generated visible `<path>` layers as direct children. Quality
+check and export rerender the locked registry to validate that group, so the
+compact form has no hidden carrier, preview wrapper, or serialized preview
+fingerprint. `pptx_to_svg.py` continues to emit the expanded carrier/preview
+evidence required for import and round-trip decisions. The normative boundary
+is owned by [`shared-standards.md`](../../references/shared-standards.md), with
+authoring guidance in
+[`native-shape-authoring.md`](../../references/native-shape-authoring.md).
 
 ## Recommended Pipeline
 
@@ -102,7 +113,7 @@ Behavior:
 - For PPTX template-import workspaces, use `-s svg-flat` when you need a visual round-trip check. The layered `svg/` tree is the machine-readable template source and intentionally does not inline inherited master / layout decoration into each slide.
 - Native mode is strict about unsupported visual SVG elements: if a visual element cannot be represented or safely preserved, export fails with the SVG file, element tag, and position instead of silently dropping content.
 - Omitting `--pptx-structure` reads `spec_lock.md`. Free-design and brand-only releases declare `mode: flat`, omit Master/Layout mappings and SVG structure metadata, and materialize one clean project-owned Master plus one Blank Layout from the current lock. Deck/layout template releases declare `mode: structured` with complete unique `pptx_masters` / `pptx_layouts` rosters and one `page_pptx_layouts` assignment per page. A template-backed Layout definition may remain unused by pages and still register in the final package.
-- On structured template routes, every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct atomic children; layer `<g>` elements are invalid.
+- On structured template routes, every page root repeats Master/Layout keys and picker names. Master/Layout fixed visuals are direct semantic atoms. Ordinary layer `<g>` elements are invalid; one validated compact authored-preset `<g>` emitted by `preset_shape_svg.py` is the sole group exception because it compiles to one native shape.
 - On structured template routes, each normal slot is a direct root `<g id>` with semantic type, positive design-zone bounds, and exactly one compatible carrier. Composite `object` slots use explicit proxy binding; zero-slot Layouts are valid. Flat pages keep all SVG objects Slide-local.
 - Flat export maps locked typography/colors into a clean project-owned theme/Master, removes stock content placeholders and unused built-in Layouts, retains only the standard date/footer/slide-number capability hooks, and keeps one Blank Layout without promoting Slide content. Structured export additionally creates one reusable Layout per declared key and reopens the package to verify the full Presentation → Master → Layout → Slide graph, fixed-object order, placeholder identities/bounds, carrier bindings, hidden proxies, and zero-slot Layouts.
 - Template `page_layouts` remains input provenance. Strict preserves the prototype contract; adaptive retains its Master and may use a new Layout identity only when fixed Layout atoms or slot topology/bounds change.
@@ -190,9 +201,12 @@ Checks include:
 Warnings are advisory: they require no modification or acknowledgement and do
 not affect the command's zero exit status. Only errors block the quality gate.
 
-Template mode accepts compact canonical preset shapes marked with
-`data-pptx-authoring="preset"`. It validates the explicit structured SVG
-contract; it does not implement a separate source-payload opt-in marker.
+Template mode accepts the same compact canonical preset groups as generated
+pages: one atomic `<g data-pptx-authoring="preset">` with direct visible paths.
+It validates those paths dynamically against the locked registry and does not
+require an import-style carrier, preview wrapper, fingerprint, or a separate
+source-payload opt-in marker. Exact syntax remains owned by the linked
+standards rather than this pipeline overview.
 
 ## `svg_position_calculator.py`
 

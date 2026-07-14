@@ -54,8 +54,8 @@ See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for
 |---|---|---|---|---|
 | Free-design deck structure | `pptx_structure.mode: flat`; page content remains slide-local | One clean project Master and one Blank Layout, with represented objects on slides | `Native-stable` package topology for the flat route | No authored Master/Layout/layer/placeholder metadata is allowed |
 | Template-backed deck structure | `pptx_structure.mode: structured` plus explicit Master/Layout/page assignments | Declared `p:sldMaster`, `p:sldLayout`, registrations, and slide parentage | `Native-stable` within the explicit structure contract | The exporter never guesses a Master, Layout, or placeholder topology |
-| Slide Master | Root Master identity plus atomic `data-pptx-layer="master"` objects | Reusable Master part and picker identity | Source structure is restored by template/import workflows | Master atoms must be direct, stable, and identical across their slides |
-| Slide Layout | Root Layout identity plus atomic `data-pptx-layer="layout"` objects | Reusable Layout part under one Master | Source Layouts can be restored; adaptive authoring may allocate a new Layout | Reuse a Layout key only when its fixed atoms and slot contract are identical |
+| Slide Master | Root Master identity plus atomic `data-pptx-layer="master"` objects; one validated compact authored-preset `<g>` counts as one semantic atom | Reusable Master part and picker identity | Source structure is restored by template/import workflows | Master atoms must be direct, stable, and identical across their slides; ordinary or expanded authored groups do not qualify |
+| Slide Layout | Root Layout identity plus atomic `data-pptx-layer="layout"` objects; one validated compact authored-preset `<g>` counts as one semantic atom | Reusable Layout part under one Master | Source Layouts can be restored; adaptive authoring may allocate a new Layout | Reuse a Layout key only when its fixed atoms and slot contract are identical; ordinary or expanded authored groups do not qualify |
 | Strict template Layout | Selected prototype contract | Existing declared Layout topology is preserved | `Native-stable` when the page follows the prototype | Fixed Layout atoms and slot structure may not change |
 | Adaptive template Layout | Selected Master plus an explicit current or newly declared Layout | A new Layout identity may be created when reusable structure changes | `Native-stable` after the lock and page mapping are updated | Never mutate a reused Layout key silently |
 | Slide background fill outside structured mode | First eligible full-canvas `<rect>`, direct or in a simple single-child group, with a registered solid, linear/radial gradient, or preset-pattern fill | Native slide `p:bg` | Fidelity follows the corresponding paint row below | Transform, filter, clip, rounding, visible stroke, or an unmapped fill prevents promotion |
@@ -68,7 +68,7 @@ See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for
 | Date, footer, and slide-number placeholders | Structured text slots | `p:ph` types `dt`, `ftr`, and `sldNum`, with matching Layout header/footer flags | `Native-stable` | Placeholder indices must be unique and legal |
 | Picture placeholder | Structured slot with one image or supported crop carrier | `p:ph` type `pic` | `Native-stable` within the picture contract | The slot must contain exactly one compatible direct carrier |
 | Chart or table placeholder | Structured slot with one matching native-object carrier | `p:ph` type `chart` or `tbl` | `Native-stable` only on native Chart/Table export | Requires valid JSON metadata and `--native-charts-and-tables` |
-| Generic object placeholder | One compatible carrier, or an explicit composite proxy binding | `p:ph` type `obj` | Native binding; composite visible content remains ordinary shapes | Composite slots must use the registered proxy downgrade |
+| Generic object placeholder | One compatible carrier—including one validated compact authored-preset `<g>`—or an explicit composite proxy binding | `p:ph` type `obj` | Native binding; composite visible content remains ordinary shapes | Composite slots must use the registered proxy downgrade; expanded authored groups are not single-object carriers |
 | Media placeholder | One image or supported crop carrier | `p:ph` type `media` | Native placeholder binding only | It does not synthesize video or audio from decorative SVG content |
 | Empty text placeholder | Empty or whitespace-only marked text carrier | Invisible U+200B run at the legal 1 pt minimum, producing one native text shape | `Native-stable` | Do not add a dummy dash, sub-1 pt text, or background-colored visible glyph |
 | Page role such as cover/content/ending | Flat-route root `data-pptx-page-role` compiler hint | Routing/validation hint; not a native PowerPoint page type | No independent OOXML object | Structured pages use explicit Master/Layout identity instead |
@@ -87,19 +87,24 @@ Internal identifiers and PowerPoint display names are separate concerns: Master 
 | Circle or ellipse | `<circle>` or `<ellipse>` | `a:prstGeom prst="ellipse"` | `Native-stable` | Bounds and radii must be finite and positive where required |
 | Straight line | `<line>` | Editable line/freeform shape | `Native-normalized` | Browser-only line effects are rejected |
 | Arrowhead line | `<line>` or supported path with registered start/end markers | Native DrawingML line head/tail ends | `Native-normalized`; marker size is approximate | Marker definitions must follow the conditional marker contract |
-| Native connector | Authored preset connector fragment with connector metadata | `p:cxnSp` | Imported connectors retain compact connector metadata | `Native-stable` for the registered preset/connector schema |
+| Native connector | Compact project-authored preset group with connector metadata and direct visible paths | `p:cxnSp` | Imported connectors retain the expanded round-trip evidence needed for source topology | `Native-stable` for the registered preset/connector schema |
 | Freeform shape | `<path>` | `p:sp` with `a:custGeom` | Imported custom geometry reconstructs as a path | `Native-normalized`; SVG arcs are converted to cubic segments |
 | Polygon | `<polygon>` | Closed custom geometry | `Native-normalized` | Points must be finite and valid |
 | Polyline | `<polyline>` | Open custom geometry | `Native-normalized` | Points use the same finite, registered grammar as other generated geometry |
-| PowerPoint preset shape | Registry-generated authored preset fragment | One editable preset `p:sp` | Preset identity and adjustments can survive import/export | Use [`preset_shape_svg.py`](../skills/ppt-master/scripts/preset_shape_svg.py); do not hand-invent metadata |
-| Imported preset shape | Import metadata plus its visible SVG fallback | Restored preset when the payload is valid and unchanged | `Native-stable` within the import contract | Unsupported presets remain explicit diagnostic fallbacks, not guessed geometry |
-| Action button shape | Authored `actionButton*` preset fragment | Visual preset geometry only | Shape geometry can round-trip | No click action, navigation target, or hyperlink is created |
+| PowerPoint preset shape | Registry-generated compact `<g>` with preset intent/base paint and direct visible `<path>` children | One editable preset `p:sp` | Preset identity and adjustments can survive import/export | Quality check and export rerender the registry dynamically; canonical authoring has no hidden carrier, preview wrapper, or stored preview hash |
+| Imported preset shape | Expanded import/round-trip group with a hidden native carrier, visible preview evidence, and freshness metadata | Restored preset when the payload is valid and unchanged | `Native-stable` within the import contract | Unsupported presets remain explicit diagnostic fallbacks, not guessed geometry |
+| Action button shape | Compact authored `actionButton*` preset group | Visual preset geometry only | Shape geometry can round-trip | No click action, navigation target, or hyperlink is created |
 | Group | `<g>` | `p:grpSp`, or a documented flatten/collapse for a special carrier | Grouped content can reconstruct as `<g>` | Structural atoms and placeholder contracts override ordinary grouping |
 | Reused local symbol | Registered same-document `<use>` contract or project icon placeholder | Expanded editable shapes in the generated slide | Original symbol graph is not promised on import | External use, unsupported symbol features, and structural metadata reuse are rejected |
 | Icon | `<use data-icon="library/name">` resolved by the project icon pipeline | Editable vector primitives/group after expansion | Reconstructed geometry, not the original library reference | Icon identifiers are case-sensitive and must exist in the synchronized library |
 | SmartArt / DiagramML | No main SVG object mapping | Main redesign route may rebuild the meaning with ordinary shapes | `Direct preservation` in native/template routes; otherwise a preview or explicit fallback | Do not label a decorative group as native SmartArt |
 
-Preset-shape selection and its exact atomic fragment contract are documented in [`native-shape-authoring.md`](../skills/ppt-master/references/native-shape-authoring.md).
+Project-authored presets deliberately use a compact representation, while PPTX
+import keeps the expanded evidence needed for lossless round-trip decisions.
+The exact machine contract remains in
+[`shared-standards.md`](../skills/ppt-master/references/shared-standards.md), and
+preset selection and authoring behavior are documented in
+[`native-shape-authoring.md`](../skills/ppt-master/references/native-shape-authoring.md).
 
 ## 4. PowerPoint text features
 
@@ -219,11 +224,11 @@ The importer reconstructs supported PowerPoint semantics into the same project v
 
 | PowerPoint source object | Project SVG reconstruction |
 |---|---|
-| Preset shape | SVG primitive/path plus compact preset metadata when supported |
+| Preset shape | Expanded preset group with native carrier and visible preview evidence when supported |
 | Custom geometry | `<path>` |
 | Text body | `<text>` and `<tspan>` runs/paragraphs |
 | Picture | `<image>`, or the registered nested crop representation |
-| Connector | Line/path plus connector metadata |
+| Connector | Expanded line/path preview plus connector/frame/topology evidence |
 | Group | `<g>` |
 | Supported native table/chart | Visible fallback plus native-object metadata |
 | Unsupported graphic frame or SmartArt | Explicit preview, placeholder, or unsupported status |

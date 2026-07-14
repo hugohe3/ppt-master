@@ -275,15 +275,18 @@ attributes, and no separate source-payload opt-in marker exists.
 |---|---|
 | Lossless import SVG | Keep complete native payload, hidden carriers, and preview evidence in the temporary analysis workspace. This is the round-trip source, not the model-facing authored page. |
 | Lightweight authoring projection | Exclude opaque payload and duplicate hidden carriers from model context while retaining visible shape intent and logical ids needed to locate an adopted object in the lossless import. It is not an export source. |
-| `standard` / `fidelity` output | Use compact canonical metadata for newly authored shapes; do not transplant opaque import payload or source topology. |
-| `mirror` output | Keep supported imported metadata only on unchanged Slide-local/slot objects. Expand fixed Master/Layout group wrappers into direct atoms while preserving source ownership, paint order, and visible appearance. |
+| `standard` / `fidelity` output | Use the compact authored-preset contract (§1.5) for newly authored stock shapes; do not transplant opaque import payload or source topology. |
+| `mirror` output | Keep the expanded lossless representation and supported imported metadata only on unchanged Slide-local/slot objects. Expand fixed Master/Layout group wrappers into direct semantic atoms while preserving source ownership, paint order, and visible appearance. |
 
 **Hard rule — structural-layer boundary**: An unchanged imported logical object
 may keep currently supported metadata while it remains Slide-local or inside a
-slot. A logical `<g>` cannot be assigned to Master/Layout because those layers
-require direct atoms. Mechanically expand a fixed-layer source group into direct
-atoms, rebuilding a preset when supported and otherwise retaining the visible
-SVG fallback. Do not use this normalization to change ownership or appearance.
+slot. An imported logical `<g>` cannot be assigned to Master/Layout because
+those layers require direct semantic atoms. Mechanically expand a fixed-layer
+source group into direct atoms, rebuilding a preset when supported and
+otherwise retaining the visible SVG fallback. A newly authored compact preset
+`<g>` from §1.5 is the sole group exception: validation proves that it compiles
+to exactly one native shape/connector. Do not use this normalization to change
+ownership or appearance.
 
 **Hard rule — selective payload**: Do not copy every imported metadata block into
 an authored template. Keep the full lossless import SVG separately as the
@@ -327,21 +330,22 @@ reconstruction are also normalized rather than byte-identical OOXML.
 
 ### 1.5 Authored Native PowerPoint Presets (Conditional Contract)
 
-New SVG pages may opt one complete geometric object into a native DrawingML
-preset through the deterministic fragment helper. Selection behavior lives in
+New SVG pages and project-owned canonical reusable templates may opt one
+complete geometric object into a native DrawingML preset through the
+deterministic fragment helper. Selection behavior lives in
 [`native-shape-authoring.md`](./native-shape-authoring.md); this section owns
-the machine contract. This is compact canonical authoring metadata: it describes
-the intended preset, frame, adjustments, paint, and preview fingerprint without
-embedding source OOXML or relying on an imported-payload marker.
+the machine contract. This compact canonical form describes the intended
+preset, frame, adjustments, and paint once, keeps only registry-generated
+visible SVG paths, and embeds no source OOXML or serialized preview fingerprint.
 
 | Metadata / structure | Required behavior |
 |---|---|
-| `data-pptx-authoring="preset"` | Appears on the logical group and hidden carrier; distinguishes the strict new authoring contract from legacy/imported metadata. |
+| `data-pptx-authoring="preset"` | Appears once on the logical `<g>`; distinguishes strict project authoring from legacy/imported metadata. |
 | `data-pptx-object` | `shape` or `connector`; connector-family presets must use `connector`, and `connector` must use a connector-family preset. Authored connectors require `fill="none"` plus a visible stroke and export as unconnected `p:cxnSp`. |
-| `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*` | Generated together from the locked registry; group and carrier values must be identical. |
-| One direct `path[data-pptx-part="geometry"]` | Hidden native export authority; carries the same semantics and solid paint used for regeneration. |
-| One direct `g[data-pptx-part="geometry-preview"]` | Complete browser-visible preview with one ordered detail path per registry path. |
-| `data-pptx-preview-sha256` | Identical on group/carrier and equal to an independent registry rerender of metadata, paint, and preview. |
+| `data-pptx-prst`, `data-pptx-frame`, `data-pptx-av-*` | Generated together from the locked registry and written once on the logical group. The frame is the helper's exact four-part, space-separated ordinary-decimal spelling and remains authoritative even when visible path bounds differ; commas, scientific notation, leading `+`, and redundant decimal spellings are rejected. |
+| Local `fill` / `stroke` plus supported paint attributes | Base paint is written once on the group; a visible stroke also carries an explicit width. Canonical page/template authoring keeps channel paint local. Compatible ancestor paint/opacity may compose under the general SVG rules and receives a recommendation warning. |
+| Ordered direct `<path>` children | Browser-visible registry layers only. Each child writes just its required path-level fill/stroke override; labels and decorations stay outside the atomic group. |
+| No carrier / wrapper / fingerprint | `data-pptx-part`, hidden geometry carriers, preview wrappers, and `data-pptx-preview-sha256` belong to expanded import/compatibility transport, not canonical project authoring. |
 
 Generate one fragment at a time:
 
@@ -355,26 +359,53 @@ python3 ${SKILL_DIR}/scripts/preset_shape_svg.py render rightArrow \
 ```
 
 **Hard rule — helper-only metadata**: never add or edit authored preset
-metadata on a hand-written leaf. The helper output is atomic. Regenerate it
-when preset, frame, adjustment, fill, stroke, or stroke width changes. Replace
-the whole fragment with ordinary SVG when free contour editing is required.
+metadata or registry paths by hand. The compact helper output is atomic.
+Regenerate it when preset, frame, adjustment, fill, stroke, or stroke width
+changes. Replace the whole fragment with ordinary SVG when free contour editing
+is required.
+
+Template ownership metadata is orthogonal to preset geometry. After inserting
+the complete helper output, `create-template` may add only the registered
+`data-pptx-layer`, `data-pptx-editable`, `data-pptx-placeholder-carrier`, or
+`data-pptx-role` attribute needed by the surrounding structured contract. It
+must not change preset/frame/adjustment/paint metadata or any direct path.
+
+**Reusable-template boundary**: a project-owned canonical template may retain
+one complete helper-generated atomic fragment when the stock preset is an exact
+semantic match and its paint stays inside the authoring boundary below. The
+fragment is an executable exemplar and one semantic atom, not a freely editable
+template primitive. It may be Slide-local, the one carrier of an `object` slot,
+or a direct Master/Layout fixed atom. An adaptation may reuse it unchanged only
+when preset, frame, adjustments, and paint are unchanged; otherwise regenerate
+the whole fragment with the helper.
+Imported, mirror, and third-party templates are never upgraded by contour
+inference.
 
 **Hard rule — visible page closure**: the helper prints a complete visible
 fragment to stdout; export never invents its preview. The main Agent inserts
-that output into the hand-authored page. The helper cannot write a project,
-select layout, or generate a page.
+that output into the hand-authored page or canonical reusable template. The
+helper cannot write a project, select layout, or generate a page.
 
 **Authoring paint boundary**: v1 accepts `none` or six-digit solid HEX fill and
 stroke, optional fill/stroke opacity, stroke width, line cap, and line join.
-Colors come from `spec_lock.md`. Use ordinary SVG for gradients, patterns,
-filters, or other treatments outside this narrow contract.
+Generated pages take colors from `spec_lock.md`; `create-template` authored
+templates take them from the confirmed brief and template `design_spec.md`.
+Use ordinary SVG for gradients, patterns, filters, or other treatments outside
+this narrow contract. Registry-derived multi-path darken/lighten colors are
+authorized derivatives of the locked base paint and do not count as color
+drift. Mirror preserves source paint under §1.4 instead.
 
 **Validation**: quality check and export both rerender authored fragments from
-`preset + frame + adjustments + carrier paint`. They require one carrier, one
-preview, equal group/carrier semantics, exact ordered registry paths, and a
-matching fingerprint. Preview edits, metadata-only edits, unknown adjustments,
-out-of-range frames/transforms, zero-scale transforms, and shear/skew fail
-closed.
+`preset + frame + adjustments + group paint` and compare every visible path and
+path-level paint override directly. Registry-path edits, geometry metadata that
+leaves those paths stale, unknown adjustments, out-of-range frames/transforms,
+zero-scale transforms, and shear/skew fail closed. Export expands the validated
+compact group only in memory and reuses the lossless native-shape conversion
+path. Older authored carrier/preview fragments remain compatible as ordinary
+Slide-local input and
+receive a non-blocking migration warning; they do not gain the new compact
+group's structured-atom exception. `pptx_to_svg` expanded output remains the
+lossless round-trip form and is not warned as authored input.
 
 **Fidelity boundary**: an unchanged authored fragment is `Native-stable` as
 one `p:sp` or `p:cxnSp`. Text remains outside the atomic fragment and may export
@@ -525,7 +556,10 @@ Wrap logically related Slide-local elements in top-level `<g id="...">` groups. 
 | Page footer | Page number + branding |
 | Decorative cluster | Related decorative shapes (rings, dots, orbs) |
 
-An authored native preset fragment (§1.5) is already an atomic `<g id>` and counts as one content group; keep its labels / decorations in a sibling parent `<g>`, never inside the preset group.
+An authored native preset fragment (§1.5) is already an atomic `<g id>` and
+counts as one content group. Keep it top-level when it stands alone. When it
+needs a label or decoration, place the preset and those siblings inside a
+separate parent content group; never put them inside the preset group itself.
 
 **Forbidden**:
 
@@ -1590,8 +1624,8 @@ prototype size remain unchanged.
 | `data-pptx-master-name="Default Master"` | root `<svg>` | Sets the Master picker/display name |
 | `data-pptx-layout="content"` | root `<svg>` | Binds the slide to one generated reusable layout key |
 | `data-pptx-layout-name="Title and Content"` | root `<svg>` | Sets the PowerPoint layout-picker name; defaults from the layout key |
-| `data-pptx-layer="master"` | direct atomic visual child | Moves one repeated static object/background into the named Slide Master; `<g>` is forbidden |
-| `data-pptx-layer="layout"` | direct atomic visual child | Moves one repeated static object/background into the selected Layout; `<g>` is forbidden |
+| `data-pptx-layer="master"` | direct semantic atom | Moves one repeated static object/background into the named Slide Master; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
+| `data-pptx-layer="layout"` | direct semantic atom | Moves one repeated static object/background into the selected Layout; ordinary `<g>` is forbidden, while one validated compact authored-preset `<g>` (§1.5) is an atomic exception |
 | `data-pptx-layer="slide"` | direct full-canvas solid `<rect>` only | Writes a one-page override as Slide `p:bg` |
 | `data-pptx-placeholder="..."` | direct slot `<g id>` | Declares a reusable Layout slot whose visible content remains Slide-local |
 | `data-pptx-placeholder-bounds="x y width height"` | slot `<g>` | Supplies the positive reusable design-zone frame in SVG user units |
@@ -1628,7 +1662,7 @@ and visible-stroke rects also remain ordinary objects.
 | `date`, `footer`, `slide-number` | one `<text data-pptx-placeholder-carrier="true">` | `dt`, `ftr`, `sldNum` |
 | `picture` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `pic` |
 | `chart`, `table` | one matching `data-pptx-replace-with` marker group, marked as carrier | `chart`, `tbl` |
-| `object` | one text, image, or basic SVG shape marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
+| `object` | one text, image, basic SVG shape, or validated compact authored-preset `<g>` marked as carrier; alternatively the slot group declares `binding="proxy"` | `obj` |
 | `media` | one `<image>` or supported imported crop `<svg>`, marked as carrier | `media` |
 
 **Text slot carrier**: A multiline text placeholder must remain one
@@ -1678,12 +1712,18 @@ fails export without replacing the requested output.
 **Static structure consistency**: Repeat the same master element ids on every
 slide and the same layout element ids on every slide sharing a layout. Their
 generated OOXML must be identical within the affected master/layout group.
-Static structure may carry shapes, text, or images; non-image/external relationships are rejected. Every static object is atomic; a `<g data-pptx-layer="master|layout">` is forbidden. A full-canvas first rect may be marked as a Master or Layout background.
+Static structure may carry shapes, text, or images; non-image/external
+relationships are rejected. Every static object is atomic. An ordinary
+`<g data-pptx-layer="master|layout">` is forbidden; the validated compact
+authored-preset group from §1.5 is the sole group exception because it compiles
+to one native object. A full-canvas first rect may be marked as a Master or
+Layout background.
 
 **Native object slot carriers**: `chart` / `table` slots require
 `--native-charts-and-tables`; fallback groups contain several shapes and cannot map to one
 PowerPoint placeholder. `object` is the generic PowerPoint content slot and
-uses either one carrier object or the explicit composite proxy downgrade. `media` currently binds
+uses either one carrier object—including one validated compact authored-preset
+group—or the explicit composite proxy downgrade. `media` currently binds
 an authored image/crop to a native `media` placeholder; it does not synthesize
 video or audio media from a decorative SVG group.
 
