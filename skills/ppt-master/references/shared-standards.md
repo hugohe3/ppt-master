@@ -1513,7 +1513,9 @@ when separate frames are the required result.
 **Blank text carrier**: Leave a marked text carrier empty or whitespace-only
 when the placeholder must remain visually blank. Export materializes one
 invisible U+200B run so the carrier still becomes a native PowerPoint text
-shape. Do not insert a dummy dash or hide a visible glyph with background paint.
+shape. Do not insert a dummy dash, shrink text below the DrawingML 1pt minimum,
+or hide a visible glyph with opacity/background paint; those workarounds either
+leak content or produce a PPTX that PowerPoint repairs.
 
 `title` is normally type-matched without an index in reconstructed layouts; if
 an imported source title explicitly has one, preserve that exact index. Every

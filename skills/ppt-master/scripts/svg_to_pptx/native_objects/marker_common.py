@@ -12,7 +12,6 @@ from xml.etree import ElementTree as ET
 from ..drawingml.context import ConvertContext, IDENTITY_MATRIX
 from ..drawingml.utils import (
     EMU_PER_PX,
-    FONT_PX_TO_HUNDREDTHS_PT,
     ctx_h,
     ctx_w,
     ctx_x,
@@ -40,8 +39,6 @@ _NATIVE_KINDS = {"table", "chart"}
 _POWERPOINT_COORD_MIN = -(2**31)
 _POWERPOINT_COORD_MAX = 2**31 - 1
 _POWERPOINT_LINE_WIDTH_MAX = 20116800
-_TEXT_FONT_SIZE_MIN = 100
-_TEXT_FONT_SIZE_MAX = 400000
 _NATIVE_TRANSFORM_OPERATION_RE = re.compile(r"([A-Za-z]+)\s*\(([^()]*)\)")
 _NATIVE_TRANSFORM_SEPARATOR_RE = re.compile(r"\s*,?\s*")
 _NATIVE_TRANSFORM_ARGS_RE = re.compile(
@@ -825,13 +822,10 @@ def _font_size_hpt(value: Any, default_px: int = 18) -> int:
             px = float(raw)
         except (TypeError, ValueError, OverflowError):
             return None
-        scaled = px * FONT_PX_TO_HUNDREDTHS_PT
-        if not math.isfinite(scaled):
+        try:
+            return font_px_to_hpt(px)
+        except ValueError:
             return None
-        size = font_px_to_hpt(px)
-        if not _TEXT_FONT_SIZE_MIN <= size <= _TEXT_FONT_SIZE_MAX:
-            return None
-        return size
 
     return convert(value) or convert(default_px) or 1350
 

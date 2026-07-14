@@ -1484,10 +1484,18 @@ def parse_template_slide(
                     )
             else:
                 if len(visual_children) != 1 or len(carrier_children) != 1:
+                    composite_hint = (
+                        " For composite object content, declare "
+                        "data-pptx-placeholder-binding='proxy' in the prototype "
+                        "and page, or create an adaptive Layout; never add a tiny "
+                        "or transparent dummy carrier."
+                        if placeholder == "object" else ""
+                    )
                     raise TemplateStructureError(
                         f"{svg_path.name}: carrier placeholder {element_id!r} must "
                         "contain exactly one visual direct child and mark it "
-                        "data-pptx-placeholder-carrier='true'"
+                        "data-pptx-placeholder-carrier='true'."
+                        f"{composite_hint}"
                     )
                 carrier = carrier_children[0]
                 placeholder_carrier_tag = _local_tag(carrier)

@@ -54,7 +54,10 @@ else:
 
 try:
     from svg_to_pptx.drawingml.utils import (
+        DRAWINGML_TEXT_FONT_SIZE_MAX as _DRAWINGML_TEXT_FONT_SIZE_MAX,
+        DRAWINGML_TEXT_FONT_SIZE_MIN as _DRAWINGML_TEXT_FONT_SIZE_MIN,
         IDENTITY_MATRIX as _IDENTITY_MATRIX,
+        font_px_to_hpt as _font_px_to_hpt,
         matrix_multiply as _matrix_multiply,
         parse_transform_matrix as _parse_transform_matrix,
         parse_font_family as _parse_export_font_family,
@@ -65,7 +68,10 @@ try:
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
     )
 except ImportError:
+    _DRAWINGML_TEXT_FONT_SIZE_MAX = None
+    _DRAWINGML_TEXT_FONT_SIZE_MIN = None
     _IDENTITY_MATRIX = None
+    _font_px_to_hpt = None
     _matrix_multiply = None
     _parse_transform_matrix = None
     _parse_export_font_family = None
@@ -2106,12 +2112,19 @@ class SVGQualityChecker:
             return
 
         unsupported = set()
+        drawingml_out_of_range = set()
         compatible_noncanonical = set()
         for raw in values:
             parsed_px = _parse_export_length(raw, math.nan, font_size=16)
             if not math.isfinite(parsed_px) or parsed_px < 0:
                 unsupported.add(raw)
                 continue
+            if _font_px_to_hpt is not None:
+                try:
+                    _font_px_to_hpt(parsed_px)
+                except ValueError:
+                    drawingml_out_of_range.add(raw)
+                    continue
             if not canonical_re.fullmatch(raw):
                 compatible_noncanonical.add(raw)
 
@@ -2123,6 +2136,20 @@ class SVGQualityChecker:
             result['errors'].append(
                 f"Unsupported font-size value(s): {shown}{suffix}. Use a finite "
                 "non-negative SVG length supported by svg_to_pptx."
+            )
+
+        if drawingml_out_of_range:
+            shown_values = sorted(drawingml_out_of_range)
+            shown = ', '.join(shown_values[:5])
+            more = len(shown_values) - 5
+            suffix = f" (+{more} more)" if more > 0 else ""
+            result['errors'].append(
+                f"font-size value(s) {shown}{suffix} are outside the DrawingML "
+                f"range sz={_DRAWINGML_TEXT_FONT_SIZE_MIN}.."
+                f"{_DRAWINGML_TEXT_FONT_SIZE_MAX} (1..4000pt); PowerPoint would "
+                "repair the exported file. Do not use tiny transparent text as "
+                "a placeholder carrier: leave a text carrier blank or use the "
+                "composite object proxy contract."
             )
 
         if compatible_noncanonical:
