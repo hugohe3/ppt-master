@@ -758,7 +758,7 @@ Filters are native-effect metadata, not a general pixel-filter surface.
 | Definition/reference | Direct `<defs><filter id="...">` child with unique id; direct `filter="url(#id)"` attribute, never inline style |
 | Public targets | `<rect>`, `<circle>`, `<path>`, `<text>` |
 | Required primitive | `feDropShadow` or `feGaussianBlur` |
-| Required geometry | Explicit `stdDeviation` on either effect primitive; explicit `dx` and `dy` on `feDropShadow` |
+| Required parameters | Explicit `stdDeviation` on either effect primitive; explicit `dx` and `dy` on `feDropShadow`; explicit `slope` on linear `feFuncA` |
 | Accepted helpers | `feOffset`, `feFlood`, `feComposite`, `feMerge`, `feMergeNode`, `feComponentTransfer`, linear `feFuncA` |
 | Numeric values | Finite unitless values; non-negative `stdDeviation`; finite `dx` / `dy`; `feFuncA slope` within `0..1`; mapped glow `rad = stdDeviation × 9525`, shadow `blurRad = stdDeviation × 2 × 9525`, and shadow `dist = hypot(dx,dy) × 9525` must round into DrawingML `0..27273042316900` |
 | Classification | Meaningful non-zero offset → one outer shadow; zero/no offset → one glow |
