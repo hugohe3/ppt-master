@@ -96,7 +96,11 @@ from template_import.manifest import (
     extract_placeholder_text_style,
 )
 from template_import.native_structure import build_native_structure
-from pptx_effects import project_effect_status_errors, txbody_has_run_effects
+from pptx_effects import (
+    project_effect_status_errors,
+    txbody_has_run_effects,
+    unsupported_effect_metadata,
+)
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -280,8 +284,11 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
     def _write_vertical_run_effect_fixture(
         path: Path,
         effects: list[str | None],
+        shape_effects: list[str | None] | None = None,
     ) -> None:
-        """Write vertical text slides with supplied run-effect containers."""
+        """Write vertical text slides with optional run and shape effects."""
+        if shape_effects is not None and len(shape_effects) != len(effects):
+            raise ValueError('shape_effects must match the run-effect count')
         presentation = Presentation()
         blank = presentation.slide_layouts[6]
         for index, _effect in enumerate(effects, start=1):
@@ -331,6 +338,15 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 run.insert(0, run_properties)
             if effect_xml is not None:
                 run_properties.append(ET.fromstring(effect_xml))
+            shape_effect_xml = (
+                shape_effects[index - 1]
+                if shape_effects is not None
+                else None
+            )
+            if shape_effect_xml is not None:
+                shape_properties = target.find(f'{{{pml}}}spPr')
+                assert shape_properties is not None
+                shape_properties.append(ET.fromstring(shape_effect_xml))
             replacements[slide_part] = ET.tostring(
                 slide_root,
                 encoding='utf-8',
@@ -3130,6 +3146,73 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                     )
                     self.assertTrue(checker_result['passed'])
                     convert_svg_to_slide_shapes(svg_path)
+
+    def test_compound_shape_and_run_effect_reasons_are_preserved(self):
+        reason_attr = 'data-pptx-effect-reason'
+        normalized = unsupported_effect_metadata(
+            'reason-b',
+            'reason-a',
+            'reason-b',
+        )
+        self.assertEqual(
+            json.loads(normalized[reason_attr]),
+            ['reason-a', 'reason-b'],
+        )
+        self.assertEqual(
+            unsupported_effect_metadata(normalized[reason_attr], 'reason-a'),
+            normalized,
+        )
+
+        dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+        run_effect = f'''<a:effectLst xmlns:a="{dml}">
+  <a:glow rad="38100"><a:srgbClr val="2563EB"/></a:glow>
+</a:effectLst>'''
+        shape_effect = (
+            f'<a:effectLst xmlns:a="{dml}"><a:reflection/>'
+            '</a:effectLst>'
+        )
+        expected_reasons = [
+            'unsupported-effect:reflection',
+            'unsupported-run-effect-route:vertical-text',
+        ]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root_dir = Path(tmp_dir)
+            pptx_path = root_dir / 'compound-run-effects.pptx'
+            self._write_vertical_run_effect_fixture(
+                pptx_path,
+                [run_effect],
+                shape_effects=[shape_effect],
+            )
+            imported = convert_pptx_to_svg(
+                pptx_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            self.assertEqual(len(imported.slides), 1)
+            artifact = imported.slides[0]
+            root = ET.fromstring(artifact.svg)
+            marked = [
+                elem
+                for elem in root.iter()
+                if elem.get('data-pptx-effect-status') == 'unsupported'
+            ]
+            self.assertEqual(len(marked), 2)
+            self.assertEqual(
+                {
+                    tuple(json.loads(elem.get(reason_attr) or '[]'))
+                    for elem in marked
+                },
+                {tuple(expected_reasons)},
+            )
+            status_errors = project_effect_status_errors(root)
+            self.assertEqual(len(status_errors), 1)
+            for reason in expected_reasons:
+                self.assertIn(reason, status_errors[0])
+            self.assertNotIn('<filter', artifact.svg)
+            self._assert_checker_and_exporter_reject(
+                artifact.svg,
+                expected_reasons[0],
+                'unsupported imported PPTX effect',
+            )
 
     def test_relationship_text_run_effect_import_fails_closed(self):
         dml = 'http://schemas.openxmlformats.org/drawingml/2006/main'
