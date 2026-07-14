@@ -643,10 +643,10 @@ Produce one scope-aware, evidence-driven completion card for either location:
 | File | Status |
 |------|--------|
 | `templates/01_cover.svg` | Done |
-| `templates/02_chapter.svg` | Done |
 | `templates/02_toc.svg` | Done |
-| `templates/03_content.svg` | Done |
-| `templates/04_ending.svg` | Done |
+| `templates/03_chapter.svg` | Done |
+| `templates/04_content.svg` | Done |
+| `templates/05_ending.svg` | Done |
 | `exports/<template_id>_template_preview.pptx` | Verified, when requested or required for multi-Master |
 ```
 

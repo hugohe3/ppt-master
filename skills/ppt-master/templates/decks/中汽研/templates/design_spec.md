@@ -50,9 +50,9 @@ page_count: 5
 | --- | --- | --- | --- | --- | --- |
 | (01_cover.svg) | CATARC Dark | cover | Cover | 深蓝背景、居中大型 Logo 与标题簇 | 标题、副标题、单位、英文单位 |
 | (02_toc.svg) | CATARC Light | agenda | Agenda | 数字双竖线目录、右侧数据面板 | 页面标题、五个目录项、数据对象、页码 |
-| (02_chapter.svg) | CATARC Dark | section | Section Header | 深蓝章节页、居中章节号和标题 | 章节号、章节标题、章节副标题 |
-| (03_content.svg) | CATARC Light | content | Title and Content | 方形章节号页眉与开放内容面板 | 章节号、页面标题、内容对象、页码 |
-| (04_ending.svg) | CATARC Dark | closing | Closing | 深蓝网格背景、居中 Logo 与结束语 | 结束标题、英文副标题、联系信息、页脚 |
+| (03_chapter.svg) | CATARC Dark | section | Section Header | 深蓝章节页、居中章节号和标题 | 章节号、章节标题、章节副标题 |
+| (04_content.svg) | CATARC Light | content | Title and Content | 方形章节号页眉与开放内容面板 | 章节号、页面标题、内容对象、页码 |
+| (05_ending.svg) | CATARC Dark | closing | Closing | 深蓝网格背景、居中 Logo 与结束语 | 结束标题、英文副标题、联系信息、页脚 |
 
 ## VI. Assets
 

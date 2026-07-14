@@ -24,6 +24,7 @@ from ..drawingml.utils import (
     font_px_to_hpt,
     matrix_multiply,
     parse_project_geometry_length,
+    parse_transform_operations,
     parse_transform_matrix,
     transform_point,
 )
@@ -45,15 +46,6 @@ _NATIVE_KINDS = {"table", "chart"}
 _POWERPOINT_COORD_MIN = -(2**31)
 _POWERPOINT_COORD_MAX = 2**31 - 1
 _POWERPOINT_LINE_WIDTH_MAX = 20116800
-_NATIVE_TRANSFORM_OPERATION_RE = re.compile(r"([A-Za-z]+)\s*\(([^()]*)\)")
-_NATIVE_TRANSFORM_SEPARATOR_RE = re.compile(r"\s*,?\s*")
-_NATIVE_TRANSFORM_ARGS_RE = re.compile(
-    r"\s*"
-    r"([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)"
-    r"(?:\s*(?:,\s*|\s+)"
-    r"([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?))?"
-    r"\s*"
-)
 _HEX_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 _RGB_RE = re.compile(r"^rgba?\(([^)]+)\)$", re.IGNORECASE)
 _CSS_NAMED_COLORS = {
@@ -268,32 +260,13 @@ def native_marker_transform(transform: str | None) -> tuple[float, float, float,
     if not raw:
         return 0.0, 0.0, 1.0, 1.0
 
-    cursor = 0
-    operation_count = 0
-    for match in _NATIVE_TRANSFORM_OPERATION_RE.finditer(raw):
-        gap = raw[cursor:match.start()]
-        valid_gap = (
-            not gap
-            if operation_count == 0
-            else _NATIVE_TRANSFORM_SEPARATOR_RE.fullmatch(gap) is not None
-        )
-        if not valid_gap:
-            raise RuntimeError(
-                "Native PPTX table/chart markers support translate/scale transforms only"
-            )
-        name = match.group(1).lower()
-        args_match = _NATIVE_TRANSFORM_ARGS_RE.fullmatch(match.group(2))
-        if name not in {"translate", "scale"} or args_match is None:
-            raise RuntimeError(
-                "Native PPTX table/chart markers support translate/scale transforms only"
-            )
-        values = [float(value) for value in args_match.groups() if value is not None]
-        if not all(math.isfinite(value) for value in values):
-            raise RuntimeError("Native PPTX marker transform values must be finite")
-        operation_count += 1
-        cursor = match.end()
-
-    if operation_count == 0 or raw[cursor:]:
+    try:
+        operations = parse_transform_operations(raw)
+    except ValueError as exc:
+        raise RuntimeError(
+            "Native PPTX table/chart markers support translate/scale transforms only"
+        ) from exc
+    if any(name not in {"translate", "scale"} for name, _args in operations):
         raise RuntimeError(
             "Native PPTX table/chart markers support translate/scale transforms only"
         )

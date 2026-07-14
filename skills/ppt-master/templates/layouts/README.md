@@ -66,7 +66,7 @@ New layout creation uses the same portable workspace routing in both output scop
 | Library | `skills/ppt-master/templates/layouts/<layout_id>/` | Register in `layouts_index.json` |
 | Project | `projects/<project_name>/` | Do not register globally |
 
-`02_toc.svg` and other roster variants remain optional. All SVGs use `viewBox="0 0 1280 720"` for ppt169. Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`.
+`02_toc.svg` and other roster variants remain optional; including the TOC shifts the later types to `03_chapter.svg` / `04_content.svg` / `05_ending.svg`, keeping numbering equal to the template's own presentation order. All SVGs use `viewBox="0 0 1280 720"` for ppt169. Bitmaps belong in `images/`; extracted runtime icons belong in `icons/`; template sources and any validation icon copy belong in `templates/`.
 
 Omit empty optional directories instead of adding placeholder files. Generate a preview PPTX only when local PowerPoint review is requested; it is derived output, library `exports/` is Git-ignored, and template application never copies it.
 

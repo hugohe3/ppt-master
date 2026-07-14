@@ -1,4 +1,8 @@
-"""Coordinate helpers, color parsing, and font utilities for DrawingML conversion."""
+"""Coordinate, transform, color, and font helpers for DrawingML conversion.
+
+See references/shared-standards.md §2.1 and §6.8 for project geometry and
+transform authoring contracts.
+"""
 
 from __future__ import annotations
 
@@ -140,6 +144,24 @@ DASH_PRESETS = {
     '8,4': 'lgDash', '8 4': 'lgDash',
     '8,4,2,4': 'lgDashDot', '8 4 2 4': 'lgDashDot',
 }
+
+
+def is_thick_circle_shorthand(
+    dasharray: str | None,
+    stroke: str | None,
+    stroke_width: float,
+    radius: float,
+) -> bool:
+    """Return whether one circle uses the converter's thick-arc shorthand."""
+    if not dasharray or dasharray.strip().lower() == 'none':
+        return False
+    if not stroke or stroke.strip().lower() == 'none':
+        return False
+    if dasharray.strip() in DASH_PRESETS:
+        return False
+    if stroke_width <= 0 or radius <= 0:
+        return False
+    return stroke_width / radius >= 0.15
 
 
 # ---------------------------------------------------------------------------
@@ -312,8 +334,39 @@ def svg_length_size(val: str | None, ctx: ConvertContext, default: float = 0.0) 
 # SVG transform matrix helpers
 # ---------------------------------------------------------------------------
 
-_TRANSFORM_RE = re.compile(r'([a-zA-Z]+)\(([^)]*)\)')
-_NUMBER_RE = re.compile(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?')
+_TRANSFORM_NUMBER_PATTERN = (
+    r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?'
+)
+_TRANSFORM_NUMBER_RE = re.compile(_TRANSFORM_NUMBER_PATTERN)
+_CANONICAL_TRANSFORM_NUMBER_RE = re.compile(
+    r'-?(?:\d+(?:\.\d+)?|\.\d+)$'
+)
+_TRANSFORM_OPERATION_RE = re.compile(r'([A-Za-z]+)\(([^()]*)\)')
+_TRANSFORM_WHITESPACE_RE = re.compile(r'[ \t\r\n]*')
+_TRANSFORM_SEPARATOR_PATTERN = (
+    r'(?:[ \t\r\n]+|[ \t\r\n]*,[ \t\r\n]*)'
+)
+_TRANSFORM_SEPARATOR_RE = re.compile(_TRANSFORM_SEPARATOR_PATTERN)
+_TRANSFORM_ARGUMENTS_RE = re.compile(
+    rf'[ \t\r\n]*{_TRANSFORM_NUMBER_PATTERN}'
+    rf'(?:{_TRANSFORM_SEPARATOR_PATTERN}{_TRANSFORM_NUMBER_PATTERN})*'
+    r'[ \t\r\n]*'
+)
+_TRANSFORM_ARITIES = {
+    'matrix': frozenset({6}),
+    'translate': frozenset({1, 2}),
+    'scale': frozenset({1, 2}),
+    'rotate': frozenset({1, 3}),
+}
+_FULL_TRANSFORM_TAGS = frozenset({
+    'rect', 'circle', 'ellipse', 'line', 'path', 'polygon', 'polyline',
+    'image',
+})
+_TRANSFORM_CONTAINER_TAGS = frozenset({'g', 'use'})
+_TRANSFORM_DEFINITION_BOUNDARIES = frozenset({'clipPath', 'marker', 'pattern'})
+_NON_VISUAL_TRANSFORM_CHILD_TAGS = frozenset({
+    'defs', 'title', 'desc', 'metadata', 'style',
+})
 
 
 def matrix_multiply(left: AffineMatrix, right: AffineMatrix) -> AffineMatrix:
@@ -351,14 +404,118 @@ def _rotate_matrix(angle_deg: float, cx: float | None = None, cy: float | None =
     )
 
 
-def _skew_matrix(angle_deg: float, *, x_axis: bool) -> AffineMatrix:
-    radians = math.radians(angle_deg)
-    if abs(math.cos(radians)) <= 1e-12:
-        raise ValueError(f'Invalid SVG skew angle {angle_deg!r}')
-    tangent = math.tan(radians)
-    if x_axis:
-        return (1.0, 0.0, tangent, 1.0, 0.0, 0.0)
-    return (1.0, tangent, 0.0, 1.0, 0.0, 0.0)
+def _parse_transform_operations(
+    transform_str: str,
+) -> tuple[
+    tuple[tuple[str, tuple[float, ...]], ...],
+    tuple[str, ...],
+]:
+    """Parse a complete project transform list and retain numeric tokens."""
+    if not transform_str:
+        return (), ()
+
+    operations: list[tuple[str, tuple[float, ...]]] = []
+    number_tokens: list[str] = []
+    cursor = 0
+    matches = list(_TRANSFORM_OPERATION_RE.finditer(transform_str))
+    if not matches:
+        if _TRANSFORM_WHITESPACE_RE.fullmatch(transform_str):
+            raise ValueError('SVG transform must not be empty')
+        raise ValueError(f'Invalid SVG transform syntax {transform_str!r}')
+
+    for index, match in enumerate(matches):
+        gap = transform_str[cursor:match.start()]
+        gap_pattern = (
+            _TRANSFORM_WHITESPACE_RE
+            if index == 0 else _TRANSFORM_SEPARATOR_RE
+        )
+        if gap_pattern.fullmatch(gap) is None:
+            if index > 0 and not gap:
+                raise ValueError(
+                    f'SVG transform operations require a separator at '
+                    f'offset {cursor}'
+                )
+            raise ValueError(
+                f'Invalid SVG transform syntax at offset {cursor}: '
+                f'{gap!r}'
+            )
+        name, raw_args = match.groups()
+        if name not in _TRANSFORM_ARITIES:
+            raise ValueError(
+                f'Unsupported SVG transform operation {name!r}; use lowercase '
+                'matrix, translate, scale, or rotate'
+            )
+        if raw_args.strip() and _TRANSFORM_ARGUMENTS_RE.fullmatch(raw_args) is None:
+            raise ValueError(
+                f'Invalid arguments for SVG transform {name!r}: {raw_args!r}'
+            )
+        tokens = tuple(_TRANSFORM_NUMBER_RE.findall(raw_args))
+        values = tuple(float(token) for token in tokens)
+        if not all(math.isfinite(value) for value in values):
+            raise ValueError(f'Non-finite arguments for SVG transform {name!r}')
+        if len(values) not in _TRANSFORM_ARITIES[name]:
+            expected = '/'.join(str(value) for value in sorted(_TRANSFORM_ARITIES[name]))
+            raise ValueError(
+                f'SVG transform {name!r} has {len(values)} argument(s); '
+                f'expected {expected}'
+            )
+        operations.append((name, values))
+        number_tokens.extend(tokens)
+        cursor = match.end()
+
+    trailing = transform_str[cursor:]
+    if _TRANSFORM_WHITESPACE_RE.fullmatch(trailing) is None:
+        raise ValueError(
+            f'Invalid SVG transform trailing syntax at offset {cursor}: '
+            f'{trailing!r}'
+        )
+
+    return tuple(operations), tuple(number_tokens)
+
+
+def parse_transform_operations(
+    transform_str: str,
+) -> tuple[tuple[str, tuple[float, ...]], ...]:
+    """Parse one complete supported SVG transform list."""
+    operations, _ = _parse_transform_operations(transform_str)
+    return operations
+
+
+def noncanonical_transform_numbers(transform_str: str) -> tuple[str, ...]:
+    """Return compatible transform numbers generated SVG should normalize."""
+    _, tokens = _parse_transform_operations(transform_str)
+    return tuple(
+        token
+        for token in tokens
+        if _CANONICAL_TRANSFORM_NUMBER_RE.fullmatch(token) is None
+    )
+
+
+def _transform_operations_matrix(
+    operations: tuple[tuple[str, tuple[float, ...]], ...],
+) -> AffineMatrix:
+    matrix = IDENTITY_MATRIX
+    for name, args in operations:
+        if name == 'matrix':
+            local = (args[0], args[1], args[2], args[3], args[4], args[5])
+        elif name == 'translate':
+            local = _translate_matrix(
+                args[0],
+                args[1] if len(args) > 1 else 0.0,
+            )
+        elif name == 'scale':
+            local = _scale_matrix(
+                args[0],
+                args[1] if len(args) > 1 else None,
+            )
+        else:
+            local = _rotate_matrix(
+                args[0],
+                args[1] if len(args) > 2 else None,
+                args[2] if len(args) > 2 else None,
+            )
+        matrix = matrix_multiply(matrix, local)
+    return matrix
 
 
 def parse_transform_matrix(transform_str: str) -> AffineMatrix:
@@ -369,52 +526,7 @@ def parse_transform_matrix(transform_str: str) -> AffineMatrix:
     """
     if not transform_str:
         return IDENTITY_MATRIX
-
-    matrix = IDENTITY_MATRIX
-    cursor = 0
-    matched = False
-    for match in _TRANSFORM_RE.finditer(transform_str):
-        if re.fullmatch(r'[\s,]*', transform_str[cursor:match.start()]) is None:
-            raise ValueError(f'Invalid SVG transform syntax {transform_str!r}')
-        matched = True
-        name, raw_args = match.groups()
-        if re.fullmatch(r'(?:[\s,]*' + _NUMBER_RE.pattern + r')*[\s,]*', raw_args) is None:
-            raise ValueError(f'Invalid arguments for SVG transform {name!r}')
-        args = [float(n) for n in _NUMBER_RE.findall(raw_args)]
-        if not all(math.isfinite(value) for value in args):
-            raise ValueError(f'Non-finite arguments for SVG transform {name!r}')
-        name = name.lower()
-        if name == 'matrix' and len(args) == 6:
-            local = (args[0], args[1], args[2], args[3], args[4], args[5])
-        elif name == 'translate' and len(args) in {1, 2}:
-            local = _translate_matrix(args[0], args[1] if len(args) > 1 else 0.0)
-        elif name == 'scale' and len(args) in {1, 2}:
-            local = _scale_matrix(args[0], args[1] if len(args) > 1 else None)
-        elif name == 'rotate' and len(args) in {1, 3}:
-            local = _rotate_matrix(
-                args[0],
-                args[1] if len(args) > 2 else None,
-                args[2] if len(args) > 2 else None,
-            )
-        elif name == 'skewx' and len(args) == 1:
-            local = _skew_matrix(args[0], x_axis=True)
-        elif name == 'skewy' and len(args) == 1:
-            local = _skew_matrix(args[0], x_axis=False)
-        else:
-            raise ValueError(
-                f'Unsupported or malformed SVG transform {match.group(0)!r}'
-            )
-
-        matrix = matrix_multiply(matrix, local)
-        cursor = match.end()
-
-    if (
-        not matched
-        or re.fullmatch(r'[\s,]*', transform_str[cursor:]) is None
-    ):
-        raise ValueError(f'Invalid SVG transform syntax {transform_str!r}')
-
-    return matrix
+    return _transform_operations_matrix(parse_transform_operations(transform_str))
 
 
 def transform_point(matrix: AffineMatrix, x: float, y: float) -> tuple[float, float]:
@@ -425,20 +537,341 @@ def transform_point(matrix: AffineMatrix, x: float, y: float) -> tuple[float, fl
 
 def validate_dml_shape_matrix(matrix: AffineMatrix) -> None:
     """Reject affine shear that a DrawingML shape transform cannot express."""
+    if not all(math.isfinite(value) for value in matrix):
+        raise ValueError('SVG transform produces non-finite matrix values')
     a, b, c, d, _e, _f = matrix
     x_length = math.hypot(a, b)
     y_length = math.hypot(c, d)
+    if not math.isfinite(x_length) or not math.isfinite(y_length):
+        raise ValueError('SVG transform produces non-finite axis lengths')
     if x_length <= 1e-12 or y_length <= 1e-12:
         raise ValueError(
             'SVG zero-scale transform cannot be represented by a visible '
             'DrawingML shape'
         )
-    dot = a * c + b * d
-    if abs(dot) > x_length * y_length * 1e-9:
+    normalized_dot = (
+        (a / x_length) * (c / y_length)
+        + (b / x_length) * (d / y_length)
+    )
+    if not math.isfinite(normalized_dot) or abs(normalized_dot) > 1e-9:
         raise ValueError(
             'SVG shear/skew cannot be represented by a DrawingML '
             'shape transform'
         )
+
+
+def _svg_element_tag(elem: ET.Element) -> str | None:
+    raw_tag = str(elem.tag)
+    if raw_tag.startswith('{'):
+        namespace, tag = raw_tag[1:].split('}', 1)
+        return tag if namespace == SVG_NS else None
+    return raw_tag
+
+
+def _transform_element_label(elem: ET.Element) -> str:
+    tag = _svg_element_tag(elem) or str(elem.tag)
+    elem_id = elem.get('id')
+    return f'<{tag} id={elem_id!r}>' if elem_id else f'<{tag}>'
+
+
+def _visual_transform_children(elem: ET.Element) -> list[ET.Element]:
+    return [
+        child
+        for child in elem
+        if _svg_element_tag(child) not in _NON_VISUAL_TRANSFORM_CHILD_TAGS
+    ]
+
+
+def _iter_visual_transform_tree(elem: ET.Element) -> Iterator[ET.Element]:
+    """Yield one rendered subtree while excluding definition/metadata branches."""
+    yield elem
+    for child in _visual_transform_children(elem):
+        yield from _iter_visual_transform_tree(child)
+
+
+_TRANSFORM_ARC_STYLE_ATTRS = (
+    'stroke',
+    'stroke-width',
+    'stroke-dasharray',
+)
+
+
+def _transform_arc_styles(
+    elem: ET.Element,
+    inherited: dict[str, str] | None = None,
+) -> dict[str, str]:
+    values = dict(inherited or {})
+    inline_style = parse_inline_style(elem.get('style'))
+    for name in _TRANSFORM_ARC_STYLE_ATTRS:
+        direct = elem.get(name)
+        if direct is not None:
+            values[name] = direct
+        if name in inline_style:
+            values[name] = inline_style[name]
+    return values
+
+
+def _is_project_thick_circle(
+    elem: ET.Element,
+    arc_styles: dict[str, str],
+) -> bool:
+    if _svg_element_tag(elem) != 'circle':
+        return False
+    try:
+        radius = parse_project_geometry_length(elem.get('r') or '0', 'r')
+        stroke_width = parse_project_geometry_length(
+            arc_styles.get('stroke-width', '0'),
+            'stroke-width',
+        )
+    except ValueError:
+        # Geometry preflight owns malformed length diagnostics.
+        return False
+    return is_thick_circle_shorthand(
+        arc_styles.get('stroke-dasharray'),
+        arc_styles.get('stroke'),
+        stroke_width,
+        radius,
+    )
+
+
+def supports_full_project_transform(
+    elem: ET.Element,
+    inherited_arc_styles: dict[str, str] | None = None,
+) -> bool:
+    """Return whether one subtree can consume an affine matrix without text loss."""
+    tag = _svg_element_tag(elem)
+    arc_styles = _transform_arc_styles(elem, inherited_arc_styles)
+    if _is_project_thick_circle(elem, arc_styles):
+        # Thick-circle arcs consume scalar context plus one local rotation;
+        # treating an ancestor as a full matrix would silently drop it.
+        return False
+    if tag in _FULL_TRANSFORM_TAGS:
+        return True
+    if tag == 'use':
+        # Local/data-icon use references are validated again after expansion.
+        return True
+    if tag == 'svg':
+        children = _visual_transform_children(elem)
+        return len(children) == 1 and _svg_element_tag(children[0]) == 'image'
+    if tag == 'g':
+        children = _visual_transform_children(elem)
+        return bool(children) and all(
+            supports_full_project_transform(child, arc_styles)
+            for child in children
+        )
+    return False
+
+
+def iter_project_transforms(
+    root: ET.Element,
+) -> Iterator[tuple[ET.Element, str]]:
+    """Yield explicit SVG transform attributes from the project surface."""
+    for elem in root.iter():
+        if _svg_element_tag(elem) is None:
+            continue
+        raw = elem.get('transform')
+        if raw is not None:
+            yield elem, raw
+
+
+def _has_positive_rounding(elem: ET.Element) -> bool:
+    for attr in ('rx', 'ry'):
+        raw = elem.get(attr)
+        if raw is None:
+            continue
+        try:
+            if parse_project_geometry_length(raw, attr) > 0:
+                return True
+        except ValueError:
+            # Geometry preflight owns the malformed length diagnostic.
+            continue
+    return False
+
+
+def _contains_rounded_rect(elem: ET.Element) -> bool:
+    return any(
+        _svg_element_tag(descendant) == 'rect'
+        and _has_positive_rounding(descendant)
+        for descendant in _iter_visual_transform_tree(elem)
+    )
+
+
+def _contains_native_marker(elem: ET.Element) -> bool:
+    return any(
+        descendant.get('data-pptx-native') in {'table', 'chart'}
+        for descendant in _iter_visual_transform_tree(elem)
+    )
+
+
+def _project_thick_circle_ids(
+    root: ET.Element,
+) -> set[int]:
+    thick_circle_ids: set[int] = set()
+
+    def visit(elem: ET.Element, inherited: dict[str, str] | None = None) -> None:
+        arc_styles = _transform_arc_styles(elem, inherited)
+        if _is_project_thick_circle(elem, arc_styles):
+            thick_circle_ids.add(id(elem))
+        for child in elem:
+            visit(child, arc_styles)
+
+    visit(root)
+    return thick_circle_ids
+
+
+def _contains_thick_circle(elem: ET.Element, thick_circle_ids: set[int]) -> bool:
+    return any(
+        id(descendant) in thick_circle_ids
+        for descendant in _iter_visual_transform_tree(elem)
+    )
+
+
+def _transform_semantic_error(
+    elem: ET.Element,
+    operations: tuple[tuple[str, tuple[float, ...]], ...],
+    *,
+    is_root: bool,
+    thick_circle_ids: set[int],
+) -> str | None:
+    tag = _svg_element_tag(elem)
+    names = tuple(name for name, _args in operations)
+    label = _transform_element_label(elem)
+
+    if is_root:
+        return (
+            'Root <svg> transform is unsupported; apply transforms to child '
+            'elements or groups'
+        )
+
+    if tag == 'text':
+        if all(name == 'translate' for name in names):
+            return None
+        if len(names) == 1 and names[0] == 'rotate':
+            return None
+        return (
+            f'{label} text transform must be a translate-only list or one '
+            'rotate operation; text scale, matrix, and mixed operations are '
+            'not mapped'
+        )
+
+    if tag in _TRANSFORM_CONTAINER_TAGS:
+        if _contains_native_marker(elem):
+            if all(name in {'translate', 'scale'} for name in names):
+                return None
+            return (
+                f'{label} native table/chart marker transforms support only '
+                'translate and scale'
+            )
+        if _contains_thick_circle(elem, thick_circle_ids):
+            if all(name == 'translate' for name in names):
+                return None
+            return (
+                f'{label} contains a thick-circle arc shorthand; ancestor '
+                'transforms must be translate-only'
+            )
+        if supports_full_project_transform(elem):
+            if 'matrix' in names and _contains_rounded_rect(elem):
+                return (
+                    f'{label} matrix transform cannot target a rounded '
+                    'rectangle subtree'
+                )
+            return None
+        if all(name == 'translate' for name in names):
+            return None
+        if len(names) == 1 and names[0] == 'rotate':
+            return None
+        return (
+            f'{label} contains text or another non-matrix visual; its transform '
+            'must be a translate-only list or one rotate operation'
+        )
+
+    if tag in _FULL_TRANSFORM_TAGS:
+        if id(elem) in thick_circle_ids:
+            if len(names) == 1 and names[0] == 'rotate':
+                return None
+            return (
+                f'{label} thick-circle arc transform must be one rotate '
+                'operation'
+            )
+        if tag == 'rect' and 'matrix' in names and _has_positive_rounding(elem):
+            return f'{label} rounded rectangles cannot use matrix transforms'
+        return None
+
+    if tag == 'svg' and supports_full_project_transform(elem):
+        return None
+
+    return f'{label} has no registered project transform mapping'
+
+
+def project_transform_errors(root: ET.Element) -> list[str]:
+    """Return blocking transform grammar and mapping errors for preflight."""
+    parent_by_id = {
+        id(child): parent
+        for parent in root.iter()
+        for child in list(parent)
+    }
+    thick_circle_ids = _project_thick_circle_ids(root)
+    parsed: dict[int, tuple[AffineMatrix, bool]] = {}
+    errors: set[str] = set()
+
+    for elem, raw in iter_project_transforms(root):
+        label = _transform_element_label(elem)
+        restricted_ancestor = None
+        current = parent_by_id.get(id(elem))
+        while current is not None:
+            current_tag = _svg_element_tag(current)
+            if current_tag in _TRANSFORM_DEFINITION_BOUNDARIES:
+                restricted_ancestor = current_tag
+                break
+            current = parent_by_id.get(id(current))
+        if restricted_ancestor is not None:
+            errors.add(
+                f'{label} cannot use transform inside <{restricted_ancestor}>'
+            )
+            parsed[id(elem)] = (IDENTITY_MATRIX, False)
+            continue
+
+        try:
+            operations = parse_transform_operations(raw)
+            if not operations:
+                raise ValueError('SVG transform must not be empty')
+            matrix = _transform_operations_matrix(operations)
+        except ValueError as exc:
+            errors.add(f'{label} transform={raw!r}: {exc}')
+            parsed[id(elem)] = (IDENTITY_MATRIX, False)
+            continue
+
+        semantic_error = _transform_semantic_error(
+            elem,
+            operations,
+            is_root=elem is root,
+            thick_circle_ids=thick_circle_ids,
+        )
+        if semantic_error is not None:
+            errors.add(semantic_error)
+        parsed[id(elem)] = (matrix, semantic_error is None)
+
+    def validate_branch(elem: ET.Element, parent_matrix: AffineMatrix) -> None:
+        current_matrix = parent_matrix
+        entry = parsed.get(id(elem))
+        if entry is not None:
+            local_matrix, semantic_ok = entry
+            if not semantic_ok:
+                return
+            current_matrix = matrix_multiply(parent_matrix, local_matrix)
+            try:
+                validate_dml_shape_matrix(current_matrix)
+            except ValueError as exc:
+                errors.add(
+                    f'{_transform_element_label(elem)} has an unsupported '
+                    f'cumulative transform: {exc}'
+                )
+                return
+        for child in elem:
+            validate_branch(child, current_matrix)
+
+    validate_branch(root, IDENTITY_MATRIX)
+    return sorted(errors)
 
 
 def rect_to_dml_xfrm(

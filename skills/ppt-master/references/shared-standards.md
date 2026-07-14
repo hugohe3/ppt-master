@@ -835,18 +835,30 @@ modes, generated effects, and text-image knockouts are outside editable text.
 |---|---|
 | `rotate(angle[, cx, cy])` | Geometry/image/text/ordinary group; `Native-normalized` |
 | `translate(x y)` | Geometry/image/group; pure translation also safe on text; `Native-normalized` |
-| Positive scale / negative mirror | Geometry/image only; explicit pivot; `Native-normalized` |
-| `matrix(a b c d e f)` | Geometry/image only; transformed axes finite, non-zero, orthogonal; excludes rounded rects; `Native-normalized` |
+| Positive scale / negative mirror | Geometry/image or a group/use whose expanded visual subtree is geometry/image only; explicit pivot; `Native-normalized` |
+| `matrix(a b c d e f)` | Geometry/image or the same geometry/image-only group/use; transformed axes finite, non-zero, orthogonal; excludes rounded rectangles and subtrees containing them; `Native-normalized` |
 | Source order | Back-to-front PPT z-order; `Native-stable` |
 | `<g opacity>` | Compatible approximate mapping; generated SVG prefers descendant alpha, §2.2 |
 | Local `<use>` | §1.3 compile-time reuse; `Native-normalized` |
 
-Set text size/position directly; do not scale or general-matrix text. `skewX`,
-`skewY`, zero/non-orthogonal axes, and shear matrices are forbidden. Native
-chart/table markers allow translate/scale only. The §6.10 thick-circle shortcut
-does not inherit general transform support. Positive rotation is clockwise and
-pivoted rotation normalizes the native frame. A legal transform sequence can
-still produce non-orthogonal axes; importer/live-editor matrices do not expand
+**Hard rule — closed transform grammar**: Use only lowercase `translate`,
+`scale`, `rotate`, and `matrix` with exact finite unitless argument counts:
+`translate` 1/2, `scale` 1/2, `rotate` 1/3, and `matrix` 6. Separate arguments
+and operations with whitespace or one comma. Leading/trailing/repeated commas,
+adjacent operations without a separator, units, unknown functions, and
+incomplete input fail quality check and export. Generated numeric tokens use
+ordinary decimals; a supported leading `+`, exponent, or trailing decimal point
+remains compatible input and receives a non-blocking normalization warning.
+
+Set text size/position directly. A text transform is either a translate-only
+list or one rotate operation; do not scale, matrix-transform, or mix operations
+on text. A group containing text follows the same translate-only/single-rotate
+limit. `skewX`, `skewY`, zero/non-orthogonal axes, and shear matrices are
+forbidden. Native chart/table markers allow translate/scale only. The §6.10
+thick-circle shortcut does not inherit general transform support. Positive
+rotation is clockwise and pivoted rotation normalizes the native frame. Every
+cumulative matrix, including transforms split across ancestors, must remain
+finite, non-zero, and orthogonal; importer/live-editor matrices do not expand
 the hand-authored contract.
 Mirror around vertical pivot `cx` with
 `translate(cx 0) scale(-1 1) translate(-cx 0)`; use the analogous Y sequence
@@ -943,7 +955,8 @@ compound ring.
 
 **Thick-circle shorthand — `Approximate`, non-position-sensitive only**:
 
-- One circle per segment; `fill="none"`; no element transform or ancestor full-matrix.
+- One circle per segment; `fill="none"`; the circle may use one `rotate` for its
+  start angle, and ancestor transforms must be translate-only.
 - Exactly two non-preset finite unitless values (`dash gap`); finite unitless `stroke-dashoffset`.
 - `0 < stroke-width < 2r`, `stroke-width/r >= 0.15`,
   `0 < dash < 2πr`, `gap >= 0`, and `dash + gap >= 2πr`.

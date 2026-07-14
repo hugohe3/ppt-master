@@ -36,9 +36,13 @@ from .utils import (
     _extract_inheritable_styles,
     _get_attr,
     parse_svg_length,
+    parse_transform_operations,
     parse_transform_matrix,
     project_geometry_length_errors,
+    project_transform_errors,
     resolve_url_id,
+    supports_full_project_transform,
+    validate_dml_shape_matrix,
 )
 from .styles import (
     build_effect_xml, build_fill_xml,
@@ -79,6 +83,22 @@ def _require_project_freeform_geometry(
     )
 
 
+def _require_project_transforms(
+    root: ET.Element,
+    svg_path: Path | str,
+) -> None:
+    """Reject invalid project transform syntax and mappings before conversion."""
+    errors = project_transform_errors(root)
+    if not errors:
+        return
+    preview = '; '.join(errors[:8])
+    suffix = '' if len(errors) <= 8 else f'; +{len(errors) - 8} more'
+    raise SvgNativeConversionError(
+        f'{Path(svg_path).name}: invalid project transform(s): '
+        f'{preview}{suffix}'
+    )
+
+
 # ---------------------------------------------------------------------------
 # Transform & layout helpers
 # ---------------------------------------------------------------------------
@@ -91,17 +111,17 @@ def parse_transform(transform_str: str) -> tuple[float, float, float, float, flo
     ``translate(cx cy) scale(-1 -1) translate(-cx -cy)`` which encode a flip
     around a non-origin pivot.
 
-    When the composed matrix has no shear and no rotation, the decomposition is
-    exact (sx/sy may be negative to represent flips). When rotation is present
-    without shear, sx/sy default to the column magnitudes and angle_deg is the
-    rotation. Shear is not representable in this 5-tuple and silently
-    collapses; callers that need exact fidelity should consume the full matrix
-    via ``parse_transform_matrix``.
+    When the composed matrix has no rotation, the decomposition preserves
+    signed scale for flips. With rotation, scale uses the column magnitudes and
+    angle uses the first transformed axis. Zero or non-orthogonal axes fail
+    before decomposition because this tuple cannot represent them faithfully.
     """
     if not transform_str:
         return 0.0, 0.0, 1.0, 1.0, 0.0
 
-    a, b, c, d, e, f = parse_transform_matrix(transform_str)
+    matrix = parse_transform_matrix(transform_str)
+    validate_dml_shape_matrix(matrix)
+    a, b, c, d, e, f = matrix
 
     # No shear / rotation: direct decomposition preserves the original signs of
     # sx / sy. ctx_x / ctx_y use the simple ``val * sx + tx`` formula, so this
@@ -127,11 +147,6 @@ def parse_transform(transform_str: str) -> tuple[float, float, float, float, flo
 # around (cx, cy). DrawingML grpSp ``rot`` always rotates around the group's
 # own bounding-box centre — we need the SVG pivot so ``convert_g`` can
 # compensate for the offset between those two centres.
-_ROTATE_RE = re.compile(
-    r'rotate\(\s*([-\d.eE+]+)(?:[\s,]+([-\d.eE+]+)[\s,]+([-\d.eE+]+))?\s*\)'
-)
-
-
 def _root_viewport_size(root: ET.Element) -> tuple[float, float]:
     """Return the SVG root viewport size in user units."""
     view_box = root.get('viewBox')
@@ -159,14 +174,12 @@ def _extract_rotate_pivot(transform_str: str) -> tuple[float, float] | None:
     """
     if not transform_str:
         return None
-    ops = [op for op in re.findall(r'(\w+)\s*\(', transform_str) if op]
-    if ops != ['rotate']:
+    operations = parse_transform_operations(transform_str)
+    if len(operations) != 1 or operations[0][0] != 'rotate':
         return None
-    match = _ROTATE_RE.search(transform_str)
-    if not match:
-        return None
-    cx = float(match.group(2)) if match.group(2) is not None else 0.0
-    cy = float(match.group(3)) if match.group(3) is not None else 0.0
+    args = operations[0][1]
+    cx = args[1] if len(args) == 3 else 0.0
+    cy = args[2] if len(args) == 3 else 0.0
     return cx, cy
 
 
@@ -347,8 +360,11 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         child for child in elem
         if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
     ]
-    matrix_supported = not native_subtree_active and bool(transform) and visual_children and all(
-        _supports_matrix_transform(child) for child in visual_children
+    matrix_supported = (
+        not native_subtree_active
+        and bool(transform)
+        and visual_children
+        and supports_full_project_transform(elem)
     )
     # A pure ``rotate(angle [cx cy])`` falls through to the fallback path
     # below (children are rect/text/path/etc. that don't consume a full
@@ -602,30 +618,6 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 # ---------------------------------------------------------------------------
 
 _NON_VISUAL_TAGS = frozenset(('defs', 'title', 'desc', 'metadata', 'style'))
-
-
-def _supports_matrix_transform(elem: ET.Element) -> bool:
-    """Return whether this subtree can consume a full affine matrix directly."""
-    tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
-    if tag in {'rect', 'circle', 'ellipse', 'line', 'path', 'polygon', 'polyline', 'image'}:
-        return True
-    if tag == 'svg':
-        visual_children = [
-            child for child in elem
-            if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
-        ]
-        return len(visual_children) == 1 and (
-            visual_children[0].tag.replace(f'{{{SVG_NS}}}', '') == 'image'
-        )
-    if tag == 'g':
-        visual_children = [
-            child for child in elem
-            if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
-        ]
-        return bool(visual_children) and all(
-            _supports_matrix_transform(child) for child in visual_children
-        )
-    return False
 
 _CONVERTERS = {
     'rect': convert_rect,
@@ -1105,11 +1097,6 @@ def convert_svg_to_slide_shapes(
     """
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
-    if root.get('transform'):
-        raise SvgNativeConversionError(
-            'Root <svg> transform is unsupported; apply transforms to child '
-            'elements or groups'
-        )
     authored_errors = validate_authored_preset_tree(root)
     if authored_errors:
         raise SvgNativeConversionError(
@@ -1156,6 +1143,7 @@ def convert_svg_to_slide_shapes(
         )
 
     _require_project_freeform_geometry(root, svg_path)
+    _require_project_transforms(root, svg_path)
 
     viewport_width, viewport_height = _root_viewport_size(root)
 
@@ -1212,6 +1200,9 @@ def convert_svg_to_slide_shapes(
         })
         if verbose:
             print(f'  Expanded {expanded_local} local <use href="#..."/> instance(s)')
+
+    # Recheck compiler-injected icon/use wrappers and cloned definition trees.
+    _require_project_transforms(root, svg_path)
 
     # Flatten positional <tspan> (those with x/y/non-zero dy) into independent
     # <text> elements. DrawingML runs cannot reposition mid-paragraph, so a
