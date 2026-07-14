@@ -1510,6 +1510,11 @@ several line shapes as one
 PowerPoint placeholder prototype/binding. Leave strict-line text Slide-local
 when separate frames are the required result.
 
+**Blank text carrier**: Leave a marked text carrier empty or whitespace-only
+when the placeholder must remain visually blank. Export materializes one
+invisible U+200B run so the carrier still becomes a native PowerPoint text
+shape. Do not insert a dummy dash or hide a visible glyph with background paint.
+
 `title` is normally type-matched without an index in reconstructed layouts; if
 an imported source title explicitly has one, preserve that exact index. Every
 indexed placeholder on one layout uses a unique OOXML UInt32 index. Structured export writes the semantic type on both the Layout and Slide carrier (except `obj`, whose OOXML default is already `obj`) so PowerPoint and `python-pptx` retain the same identity. A composite object slot instead keeps its visible group ordinary and uses a hidden transparent proxy.

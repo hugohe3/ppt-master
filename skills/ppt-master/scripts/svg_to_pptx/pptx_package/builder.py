@@ -1583,7 +1583,7 @@ def _template_shape_for_item(
         text_hint = (
             "; multiline text placeholders require the default paragraph merge "
             "and cannot use --no-merge"
-            if item.placeholder and item.tag == "text"
+            if item.placeholder and item.placeholder_carrier_tag == "text"
             else ""
         )
         raise TemplateStructureError(

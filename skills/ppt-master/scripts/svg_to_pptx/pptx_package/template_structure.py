@@ -100,9 +100,9 @@ _OBJECT_PLACEHOLDER_TAGS = frozenset({
 })
 _LAYOUT_KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _MASTER_KEY_RE = _LAYOUT_KEY_RE
-_LOCK_ROW_RE = re.compile(
-    r"^-\s+([A-Za-z0-9][A-Za-z0-9._-]*)\s*:\s*(.+?)\s*$"
-)
+# Parse Markdown row syntax before validating each section's key grammar. Keeping
+# those concerns separate prevents malformed keys from disappearing silently.
+_LOCK_ROW_RE = re.compile(r"^-\s+([^:]+?)\s*:\s*(.*?)\s*$")
 _LOCK_PAGE_RE = re.compile(r"^P(\d+)$")
 PPTX_STRUCTURE_MODES = frozenset({"structured", "preserve", "flat"})
 TEMPLATE_ADHERENCE_MODES = frozenset({"strict", "adaptive"})
@@ -538,7 +538,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
 
     sections: dict[str, list[tuple[str, str]]] = {}
     current_section: str | None = None
-    for raw_line in lines:
+    for line_number, raw_line in enumerate(lines, start=1):
         line = raw_line.strip()
         if line.startswith("## "):
             current_section = line[3:].strip()
@@ -554,7 +554,15 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             continue
         match = _LOCK_ROW_RE.fullmatch(line)
         if match:
-            sections[current_section].append((match.group(1), match.group(2)))
+            sections[current_section].append((
+                match.group(1).strip(),
+                match.group(2).strip(),
+            ))
+        elif re.match(r"^-\s+", line):
+            raise TemplateStructureError(
+                f"spec_lock.md {current_section} line {line_number} must use "
+                "'- <key>: <value>' syntax"
+            )
 
     structure_rows = sections.get("pptx_structure", [])
     master_rows = sections.get("pptx_masters", [])
@@ -663,6 +671,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
         if not _MASTER_KEY_RE.fullmatch(master_key):
             raise TemplateStructureError(
                 f"spec_lock.md has invalid Master key {master_key!r}; use 1-64 "
+                "characters, start with an ASCII letter or digit, and use only "
                 "ASCII letters, digits, dots, underscores, or hyphens"
             )
         if master_key in seen_master_keys:
@@ -743,6 +752,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             if not _LAYOUT_KEY_RE.fullmatch(layout_key):
                 raise TemplateStructureError(
                     f"spec_lock.md has invalid Layout key {layout_key!r}; use 1-64 "
+                    "characters, start with an ASCII letter or digit, and use only "
                     "ASCII letters, digits, dots, underscores, or hyphens"
                 )
             if layout_key in seen_layout_keys:
@@ -783,7 +793,7 @@ def load_pptx_structure_lock(project_path: Path) -> PptxStructureLock | None:
             else:
                 raise TemplateStructureError(
                     f"spec_lock.md Layout {layout_key!r} prototype source must be "
-                    "P<NN> or template:<basename>"
+                    f"P<NN> or template:<basename>; found {raw_source!r}"
                 )
             layout_definitions.append(PptxLayoutDefinition(
                 layout_key=layout_key,
@@ -2361,6 +2371,37 @@ def _prototype_placeholder_contract(
     return tuple(item.contract_signature() for item in spec.placeholders)
 
 
+def _layout_contract_difference(
+    actual: tuple[TemplateElementSpec, ...],
+    expected: tuple[TemplateElementSpec, ...],
+) -> str:
+    """Describe the smallest actionable difference in a Layout atom roster."""
+    actual_ids = tuple(item.element_id for item in actual)
+    expected_ids = tuple(item.element_id for item in expected)
+    actual_id_set = set(actual_ids)
+    expected_id_set = set(expected_ids)
+    missing = tuple(item for item in expected_ids if item not in actual_id_set)
+    unexpected = tuple(item for item in actual_ids if item not in expected_id_set)
+    details: list[str] = []
+    if missing:
+        details.append(
+            "missing generated Layout element id(s): "
+            + ", ".join(repr(item) for item in missing)
+        )
+    if unexpected:
+        details.append(
+            "unexpected generated Layout element id(s): "
+            + ", ".join(repr(item) for item in unexpected)
+        )
+    if not details and actual_ids != expected_ids:
+        details.append("generated Layout element order differs")
+    if not details:
+        details.append(
+            "shared Layout element metadata, geometry, topology, or content differs"
+        )
+    return "; ".join(details)
+
+
 def template_prototype_errors(
     specs: list[TemplateSlideSpec],
     structure_lock: PptxStructureLock,
@@ -2598,16 +2639,20 @@ def template_prototype_errors(
             )
         if not layout_contract_same:
             qualifier = "mirror visual/structural" if literal_visual else "structural"
+            difference = _layout_contract_difference(
+                spec.layout_elements,
+                prototype.layout_elements,
+            )
             if adherence == "strict":
                 errors.append(
                     f"{spec.svg_path.name}: strict Layout {qualifier} contract "
-                    f"differs from prototype {reference.svg_path.name}"
+                    f"differs from prototype {reference.svg_path.name}; {difference}"
                 )
             else:
                 errors.append(
                     f"{spec.svg_path.name}: adaptive output reused prototype layout "
                     f"key {prototype.layout_key!r} but changed its {qualifier} "
-                    "contract; assign a new key and name"
+                    f"contract; {difference}; assign a new key and name"
                 )
     return errors
 

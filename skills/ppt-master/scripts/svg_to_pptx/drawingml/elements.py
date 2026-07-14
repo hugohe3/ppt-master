@@ -2314,12 +2314,22 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         runs = _build_text_runs(elem, parent_attrs)
         runs, single_bullet = _extract_text_bullet(runs)
 
-    if not runs:
-        return None
-
-    full_text = ''.join(r['text'] for r in runs)
+    full_text = ''.join(r['text'] for r in runs) if runs else ''
     if not full_text.strip():
-        return None
+        is_placeholder_carrier = (
+            (elem.get('data-pptx-placeholder-carrier') or '').strip().lower()
+            == 'true'
+        )
+        if not is_placeholder_carrier:
+            return None
+        # A declared carrier must compile to one native text shape even when its
+        # authored visual is blank. U+200B is invisible but survives DrawingML.
+        runs = [{**parent_attrs, 'text': '\u200b'}]
+        paragraph_runs = None
+        paragraph_space_before = []
+        paragraph_bullets = []
+        visual_line_widths = []
+        single_bullet = None
 
     # Estimate text dimensions
     if paragraph_runs is not None:
