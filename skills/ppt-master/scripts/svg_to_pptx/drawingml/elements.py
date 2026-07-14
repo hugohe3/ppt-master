@@ -45,8 +45,9 @@ from .utils import (
     rect_to_dml_xfrm,
     combine_opacity, parse_hex_color, parse_svg_color,
     resolve_url_id, get_effective_filter_id,
-    parse_inline_style, parse_font_family, is_cjk_char, estimate_text_width,
-    detect_text_lang, font_px_to_hpt, resolve_text_run_fonts,
+    parse_inline_style, parse_font_family, is_cjk_char,
+    detect_text_lang, estimate_text_cluster_widths, font_px_to_hpt,
+    resolve_text_run_fonts, split_project_text_clusters,
     is_thick_circle_shorthand, parse_project_geometry_length,
     parse_project_image_aspect_ratio,
     parse_project_opacity,
@@ -1693,15 +1694,44 @@ def _is_serif_run(run: dict[str, Any]) -> bool:
 
 
 def _estimate_run_text_width(run: dict[str, Any]) -> float:
-    """Estimate one text run's rendered width, including tracking."""
+    """Estimate one run using the metrics actually emitted to DrawingML."""
     text = str(run.get('text', ''))
-    base_width = estimate_text_width(
+    font_size_px = (
+        font_px_to_hpt(float(run.get('font_size', 16)))
+        / FONT_PX_TO_HUNDREDTHS_PT
+    )
+    cluster_widths = estimate_text_cluster_widths(
         text,
-        float(run.get('font_size', 16)),
+        font_size_px,
         str(run.get('font_weight', '400')),
     )
-    letter_spacing_px = float(run.get('letter_spacing', 0.0) or 0.0)
-    return base_width + letter_spacing_px * max(len(text) - 1, 0)
+    letter_spacing_px = (
+        drawingml_letter_spacing(
+            float(run.get('letter_spacing', 0.0) or 0.0)
+        )
+        / FONT_PX_TO_HUNDREDTHS_PT
+    )
+    return sum(cluster_widths) + letter_spacing_px * max(
+        len(cluster_widths) - 1,
+        0,
+    )
+
+
+def validate_text_run_advances(runs: list[dict[str, Any]]) -> None:
+    """Reject negative tracking that reverses or collapses one output run."""
+    for run in runs:
+        text = str(run.get('text', ''))
+        letter_spacing = float(run.get('letter_spacing', 0.0) or 0.0)
+        if len(split_project_text_clusters(text)) < 2 or letter_spacing >= 0:
+            continue
+        advance = _estimate_run_text_width(run)
+        if advance > 0:
+            continue
+        snippet = re.sub(r'\s+', ' ', text)
+        raise ValueError(
+            'negative letter-spacing produces a non-positive DrawingML '
+            f'text-run advance for {snippet!r} (advance={advance:g}px)'
+        )
 
 
 def _uppercase_fraction(runs: list[dict[str, Any]]) -> float:
@@ -1762,6 +1792,14 @@ def estimate_single_line_text_frame_width(
         )
         width += _bullet_margin_px(bullet, font_size)
     return width
+
+
+def validate_single_line_text_run_advances(
+    runs: list[dict[str, Any]],
+) -> None:
+    """Validate the runs that remain after single-line bullet promotion."""
+    content_runs, _bullet = _extract_text_bullet(runs)
+    validate_text_run_advances(content_runs)
 
 
 def _first_nonspace_run(runs: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -1900,8 +1938,13 @@ def _paragraph_pr_xml(
     return f'<a:pPr {attrs}>{body_xml}{_build_bullet_xml(bullet, ctx)}</a:pPr>'
 
 
-def _estimate_bullet_line_width(runs: list[dict[str, Any]]) -> float:
+def _estimate_bullet_line_width(
+    runs: list[dict[str, Any]],
+    default_fonts: dict[str, str],
+    ctx: ConvertContext,
+) -> float:
     line_runs, bullet = _extract_text_bullet(runs)
+    line_runs = _coalesce_text_runs(line_runs, default_fonts, ctx)
     width = _estimate_text_runs_width(line_runs, include_headroom=False)
     if bullet:
         fs_px = float(line_runs[0].get('font_size', 16)) if line_runs else 16.0
@@ -2149,14 +2192,14 @@ def _build_text_outline_xml(
     )
 
 
-def _build_run_xml(
+def _build_run_properties_xml(
     run: dict[str, Any],
     default_fonts: dict[str, str],
     ctx: ConvertContext | None = None,
     effect_xml: str = '',
 ) -> str:
-    """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
-    text = run['text']
+    """Build the final ``a:rPr`` used to compare and emit one text run."""
+    text = str(run['text'])
     fill = run.get('fill', '000000')
     fill_raw = run.get('fill_raw', '')
     fw = run.get('font_weight', '400')
@@ -2192,17 +2235,66 @@ def _build_run_xml(
     fill_xml = _build_text_fill_xml(fill, fill_raw, opacity, ctx)
     outline_xml = _build_text_outline_xml(run, ctx)
 
-    space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
-
-    return f'''<a:r>
-<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
+    return f'''<a:rPr lang="{lang}" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr}{spc_attr} dirty="0">
 {outline_xml}
 {fill_xml}
 {effect_xml}
 <a:latin typeface="{_xml_escape(run_fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(run_fonts['ea'])}"/>
 <a:cs typeface="{_xml_escape(run_fonts['cs'])}"/>
-</a:rPr>
+</a:rPr>'''
+
+
+def _coalesce_text_runs(
+    runs: list[dict[str, Any]],
+    default_fonts: dict[str, str],
+    ctx: ConvertContext | None,
+) -> list[dict[str, Any]]:
+    """Join adjacent runs that PowerPoint sees as one formatting run."""
+    merged: list[dict[str, Any]] = []
+    previous_properties: str | None = None
+    for run in runs:
+        text = str(run.get('text', ''))
+        if not text:
+            continue
+        properties = _build_run_properties_xml(run, default_fonts, ctx)
+        if merged and properties == previous_properties:
+            candidate = {
+                **merged[-1],
+                'text': str(merged[-1].get('text', '')) + text,
+            }
+            candidate_properties = _build_run_properties_xml(
+                candidate,
+                default_fonts,
+                ctx,
+            )
+            if candidate_properties == previous_properties:
+                merged[-1] = candidate
+                previous_properties = candidate_properties
+                continue
+        merged.append({**run, 'text': text})
+        previous_properties = properties
+    return merged
+
+
+def _build_run_xml(
+    run: dict[str, Any],
+    default_fonts: dict[str, str],
+    ctx: ConvertContext | None = None,
+    effect_xml: str = '',
+) -> str:
+    """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
+    text = str(run['text'])
+    properties_xml = _build_run_properties_xml(
+        run,
+        default_fonts,
+        ctx,
+        effect_xml,
+    )
+    space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
+
+    return f'''<a:r>
+{properties_xml}
 <a:t{space_attr}>{_xml_escape(text)}</a:t>
 </a:r>'''
 
@@ -2314,7 +2406,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 line_runs = [r for r in line_runs if r['text']]
             if not line_runs:
                 continue
-            visual_line_widths.append(_estimate_bullet_line_width(line_runs))
+            visual_line_widths.append(
+                _estimate_bullet_line_width(line_runs, fonts, ctx)
+            )
             soft_break = child.get('data-paragraph-soft-break') == '1'
             if soft_break and paragraph_runs:
                 # Append to the previous paragraph. A Latin line-wrap needs a
@@ -2331,7 +2425,11 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
                 if prev and not prev_text.endswith(' ') \
                         and not next_text.startswith(' ') \
                         and not boundary_is_cjk:
-                    prev[-1] = {**prev[-1], 'text': prev_text + ' '}
+                    prev.append({
+                        **prev[-1],
+                        'text': ' ',
+                        'letter_spacing': 0.0,
+                    })
                 prev.extend(line_runs)
             else:
                 paragraph_runs.append(line_runs)
@@ -2345,7 +2443,9 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             stripped_paragraphs: list[list[dict[str, Any]]] = []
             for line_runs in paragraph_runs:
                 stripped_runs, bullet = _extract_text_bullet(line_runs)
-                stripped_paragraphs.append(stripped_runs)
+                stripped_paragraphs.append(
+                    _coalesce_text_runs(stripped_runs, fonts, ctx)
+                )
                 paragraph_bullets.append(bullet)
             paragraph_runs = stripped_paragraphs
 
@@ -2354,6 +2454,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     else:
         runs = _build_text_runs(elem, parent_attrs, ctx)
         runs, single_bullet = _extract_text_bullet(runs)
+        runs = _coalesce_text_runs(runs, fonts, ctx)
 
     full_text = ''.join(r['text'] for r in runs) if runs else ''
     if not full_text.strip():
@@ -2529,6 +2630,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             f'text-frame extent (cx={ext_cx}, cy={ext_cy})'
         )
     validate_ooxml_xfrm(off_x, off_y, ext_cx, ext_cy)
+    validate_text_run_advances(runs)
 
     # Paragraph mode: wrap="square" so text reflows when the user resizes,
     # but NO spAutoFit — otherwise PowerPoint expands the frame to fit a

@@ -60,7 +60,8 @@ try:
         PROJECT_OPACITY_PROPERTIES as _OPACITY_PROPERTIES,
         PROJECT_PAINT_PROPERTIES as _PAINT_PROPERTIES,
         PROJECT_PERCENTAGE_OPACITY_PROPERTIES as _PERCENTAGE_OPACITY_PROPERTIES,
-        estimate_text_width as _estimate_text_width,
+        detect_text_lang as _detect_text_lang,
+        estimate_text_cluster_widths as _estimate_text_cluster_widths,
         format_project_geometry_length as _format_project_geometry_length,
         format_project_image_aspect_ratio as _format_project_image_aspect_ratio,
         format_project_opacity as _format_project_opacity,
@@ -98,6 +99,7 @@ try:
         project_stroke_style_errors as _project_stroke_style_errors,
         project_transform_errors as _project_transform_errors,
         rect_to_dml_xfrm as _rect_to_dml_xfrm,
+        split_project_text_clusters as _split_project_text_clusters,
         transform_point as _transform_point,
         validate_dml_shape_matrix as _validate_dml_shape_matrix,
     )
@@ -108,10 +110,11 @@ except ImportError:
     _OPACITY_PROPERTIES = None
     _PAINT_PROPERTIES = None
     _PERCENTAGE_OPACITY_PROPERTIES = None
+    _detect_text_lang = None
+    _estimate_text_cluster_widths = None
     _format_project_geometry_length = None
     _format_project_image_aspect_ratio = None
     _format_project_opacity = None
-    _estimate_text_width = None
     _font_px_to_hpt = None
     _is_canonical_project_geometry_length = None
     _is_project_opacity_default_form = None
@@ -146,6 +149,7 @@ except ImportError:
     _project_stroke_style_errors = None
     _project_transform_errors = None
     _rect_to_dml_xfrm = None
+    _split_project_text_clusters = None
     _transform_point = None
     _validate_dml_shape_matrix = None
 
@@ -177,11 +181,13 @@ try:
     from svg_to_pptx.drawingml.elements import (
         drawingml_text_frame_width_emu as _drawingml_text_frame_width_emu,
         estimate_single_line_text_frame_width as _estimate_single_line_text_frame_width,
+        validate_single_line_text_run_advances as _validate_single_line_text_run_advances,
         validate_preset_geometry_metadata as _validate_preset_geometry_metadata,
     )
 except ImportError:
     _drawingml_text_frame_width_emu = None
     _estimate_single_line_text_frame_width = None
+    _validate_single_line_text_run_advances = None
     _validate_preset_geometry_metadata = None
 
 try:
@@ -2450,7 +2456,7 @@ class SVGQualityChecker:
         result['info']['text_elements'] = text_count
         result['info']['tspan_elements'] = tspan_count
 
-        self._check_text_frame_extents(root, result)
+        self._check_text_output_geometry(root, result)
         self._check_single_line_text_bounds(root, result)
         self._check_unmergeable_leading_text(root, result)
 
@@ -2573,6 +2579,19 @@ class SVGQualityChecker:
                 )
                 or ''
             )
+            opacity_chain: List[str] = []
+            current: ET.Element | None = owner
+            while current is not None:
+                style_values = (
+                    _parse_inline_style(current.get('style'))
+                    if _parse_inline_style is not None else {}
+                )
+                raw_opacity = style_values.get('opacity')
+                if raw_opacity is None:
+                    raw_opacity = current.get('opacity')
+                if raw_opacity is not None:
+                    opacity_chain.append(raw_opacity.strip())
+                current = parent_by_id.get(id(current))
             resolved.append({
                 'owner': owner,
                 'text': text,
@@ -2580,21 +2599,105 @@ class SVGQualityChecker:
                 'font_weight': weight,
                 'font_family': family,
                 'letter_spacing': letter_spacings[id(owner)],
+                'font_style': _effective_presentation_value(
+                    owner,
+                    'font-style',
+                    parent_by_id,
+                ) or 'normal',
+                'text_decoration': _effective_presentation_value(
+                    owner,
+                    'text-decoration',
+                    parent_by_id,
+                ) or 'none',
+                'fill_raw': _effective_presentation_value(
+                    owner,
+                    'fill',
+                    parent_by_id,
+                ) or '#000000',
+                'fill_opacity': _effective_presentation_value(
+                    owner,
+                    'fill-opacity',
+                    parent_by_id,
+                ) or '1',
+                'stroke_raw': _effective_presentation_value(
+                    owner,
+                    'stroke',
+                    parent_by_id,
+                ) or 'none',
+                'stroke_width': _effective_presentation_value(
+                    owner,
+                    'stroke-width',
+                    parent_by_id,
+                ) or '1',
+                'stroke_opacity': _effective_presentation_value(
+                    owner,
+                    'stroke-opacity',
+                    parent_by_id,
+                ) or '1',
+                'opacity_chain': tuple(reversed(opacity_chain)),
             })
-        return resolved
+        return cls._coalesce_checker_text_runs(resolved)
 
-    def _check_text_frame_extents(
+    @staticmethod
+    def _coalesce_checker_text_runs(runs: List[Dict]) -> List[Dict]:
+        """Join only runs whose resolved source styles are provably equal."""
+        if _detect_text_lang is None:
+            return runs
+        style_keys = (
+            'font_size',
+            'font_weight',
+            'font_family',
+            'letter_spacing',
+            'font_style',
+            'text_decoration',
+            'fill_raw',
+            'fill_opacity',
+            'stroke_raw',
+            'stroke_width',
+            'stroke_opacity',
+            'opacity_chain',
+        )
+
+        def signature(run: Dict) -> Tuple:
+            return (
+                _detect_text_lang(str(run.get('text', ''))),
+                *(run.get(key) for key in style_keys),
+            )
+
+        merged: List[Dict] = []
+        previous_signature: Tuple | None = None
+        for run in runs:
+            current_signature = signature(run)
+            if merged and current_signature == previous_signature:
+                candidate = {
+                    **merged[-1],
+                    'text': (
+                        str(merged[-1].get('text', ''))
+                        + str(run.get('text', ''))
+                    ),
+                }
+                candidate_signature = signature(candidate)
+                if candidate_signature == previous_signature:
+                    merged[-1] = candidate
+                    previous_signature = candidate_signature
+                    continue
+            merged.append(run)
+            previous_signature = current_signature
+        return merged
+
+    def _check_text_output_geometry(
         self,
         root: ET.Element,
         result: Dict,
     ) -> None:
-        """Reject measurable generated text that would emit a non-positive cx."""
+        """Reject measurable run advances or frames with non-positive geometry."""
         helpers = (
             _drawingml_text_frame_width_emu,
             _estimate_single_line_text_frame_width,
             _parse_project_font_weight,
             _resolve_project_font_sizes,
             _resolve_project_letter_spacings,
+            _validate_single_line_text_run_advances,
         )
         if any(helper is None for helper in helpers):
             return
@@ -2645,13 +2748,17 @@ class SVGQualityChecker:
                 )
             except (KeyError, TypeError, ValueError):
                 continue
-            if ext_cx >= 1:
+            if ext_cx < 1:
+                errors.append(
+                    f'{_element_label(text_el)} negative letter-spacing '
+                    'produces a non-positive DrawingML text-frame extent '
+                    f'(cx={ext_cx})'
+                )
                 continue
-            errors.append(
-                f'{_element_label(text_el)} negative letter-spacing produces '
-                'a non-positive DrawingML text-frame extent '
-                f'(cx={ext_cx})'
-            )
+            try:
+                _validate_single_line_text_run_advances(runs)
+            except ValueError as exc:
+                errors.append(f'{_element_label(text_el)} {exc}')
         result['errors'].extend(errors)
 
     def _check_single_line_text_bounds(
@@ -2662,8 +2769,8 @@ class SVGQualityChecker:
         """Warn only when an estimable single line exceeds the viewBox."""
         helpers = (
             _drawingml_text_frame_width_emu,
+            _estimate_text_cluster_widths,
             _estimate_single_line_text_frame_width,
-            _estimate_text_width,
             _IDENTITY_MATRIX,
             _matrix_multiply,
             _parse_project_font_weight,
@@ -2672,6 +2779,7 @@ class SVGQualityChecker:
             _parse_transform_matrix,
             _resolve_project_font_sizes,
             _resolve_project_letter_spacings,
+            _split_project_text_clusters,
             _transform_point,
         )
         if any(helper is None for helper in helpers):
@@ -2743,20 +2851,24 @@ class SVGQualityChecker:
                     weight = str(run['font_weight'])
                     font_size = float(run['font_size'])
                     spacing = float(run['letter_spacing'])
-                    for index, character in enumerate(text):
-                        character_width = _estimate_text_width(
-                            character,
-                            font_size,
-                            weight,
-                        )
-                        if not character.isspace():
+                    clusters = _split_project_text_clusters(text)
+                    cluster_widths = _estimate_text_cluster_widths(
+                        text,
+                        font_size,
+                        weight,
+                    )
+                    for index, (cluster, cluster_width) in enumerate(zip(
+                        clusters,
+                        cluster_widths,
+                    )):
+                        if not cluster.isspace():
                             text_left = min(text_left, text_advance)
                             text_right = max(
                                 text_right,
-                                text_advance + character_width,
+                                text_advance + cluster_width,
                             )
-                        text_advance += character_width
-                        if index < len(text) - 1:
+                        text_advance += cluster_width
+                        if index < len(clusters) - 1:
                             text_advance += spacing
             except (KeyError, TypeError, ValueError):
                 continue
