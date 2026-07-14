@@ -40,7 +40,7 @@ from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .chart_to_svg import CHART_URI, CHARTEX_URI, extract_native_chart_payload
 from .custgeom_to_svg import convert_custom_geom
 from .effect_to_svg import convert_effects
-from .emu_units import NS, Xfrm, fmt_num
+from .emu_units import NS, Xfrm, fmt_num, format_canvas_px_from_emu
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
 from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
@@ -134,6 +134,9 @@ def assemble_slide(
     )
 
     canvas_w, canvas_h = pkg.slide_size_px
+    canvas_w_token, canvas_h_token = (
+        format_canvas_px_from_emu(value) for value in pkg.slide_size_emu
+    )
 
     # Background (cSld/bg) — emit as the first body element.
     body_parts: list[str] = []
@@ -176,8 +179,8 @@ def assemble_slide(
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" '
         f'xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" '
-        f'width="{fmt_num(canvas_w)}" height="{fmt_num(canvas_h)}" '
-        f'viewBox="0 0 {fmt_num(canvas_w)} {fmt_num(canvas_h)}">'
+        f'width="{canvas_w_token}" height="{canvas_h_token}" '
+        f'viewBox="0 0 {canvas_w_token} {canvas_h_token}">'
         f"{defs_block}"
         + "\n".join(body_parts)
         + "</svg>"
@@ -232,6 +235,9 @@ def assemble_part_solo(
     )
 
     canvas_w, canvas_h = pkg.slide_size_px
+    canvas_w_token, canvas_h_token = (
+        format_canvas_px_from_emu(value) for value in pkg.slide_size_emu
+    )
 
     body_parts: list[str] = []
 
@@ -272,8 +278,8 @@ def assemble_part_solo(
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" '
         f'xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" '
-        f'width="{fmt_num(canvas_w)}" height="{fmt_num(canvas_h)}" '
-        f'viewBox="0 0 {fmt_num(canvas_w)} {fmt_num(canvas_h)}">'
+        f'width="{canvas_w_token}" height="{canvas_h_token}" '
+        f'viewBox="0 0 {canvas_w_token} {canvas_h_token}">'
         f"{defs_block}"
         + "\n".join(body_parts)
         + "</svg>"

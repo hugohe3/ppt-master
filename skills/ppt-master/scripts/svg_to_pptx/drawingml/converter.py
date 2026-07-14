@@ -74,6 +74,11 @@ from .elements import (
     project_nested_svg_crop_errors,
 )
 from ..animation_config import is_chrome_id, usable_animation_group_id
+from ..canvas_contract import (
+    CanvasContractError,
+    parse_project_svg_root,
+    parse_project_viewbox,
+)
 from ..native_objects import (
     NativeMarkerAttributeError,
     convert_native_object,
@@ -399,20 +404,8 @@ def parse_transform(transform_str: str) -> tuple[float, float, float, float, flo
 # compensate for the offset between those two centres.
 def _root_viewport_size(root: ET.Element) -> tuple[float, float]:
     """Return the SVG root viewport size in user units."""
-    view_box = root.get('viewBox')
-    if view_box:
-        raw_parts = re.split(r'[\s,]+', view_box.strip())
-        if len(raw_parts) == 4:
-            try:
-                parts = [float(n) for n in raw_parts]
-            except ValueError:
-                parts = []
-            if parts and parts[2] > 0 and parts[3] > 0:
-                return parts[2], parts[3]
-
-    width = parse_svg_length(root.get('width'), 1280.0)
-    height = parse_svg_length(root.get('height'), 720.0)
-    return max(width, 1.0), max(height, 1.0)
+    viewbox = parse_project_viewbox(root.get('viewBox'))
+    return float(viewbox.width), float(viewbox.height)
 
 
 def _extract_rotate_pivot(transform_str: str) -> tuple[float, float] | None:
@@ -907,21 +900,8 @@ _SUPPORTED_VISUAL_CHILD_TAGS = frozenset(('tspan',))
 
 def _parse_svg_canvas(root: ET.Element) -> tuple[float, float, float, float]:
     """Return the SVG canvas as (x, y, width, height) in SVG units."""
-    view_box = root.get('viewBox', '')
-    parts = re.split(r'[\s,]+', view_box.strip()) if view_box else []
-    if len(parts) == 4:
-        try:
-            x, y, w, h = (float(part) for part in parts)
-            if w > 0 and h > 0:
-                return x, y, w, h
-        except ValueError:
-            pass
-    return (
-        0.0,
-        0.0,
-        parse_svg_length(root.get('width'), 0.0),
-        parse_svg_length(root.get('height'), 0.0),
-    )
+    viewbox = parse_project_viewbox(root.get('viewBox'))
+    return 0.0, 0.0, float(viewbox.width), float(viewbox.height)
 
 
 def _is_full_canvas_rect(
@@ -1359,6 +1339,13 @@ def convert_svg_to_slide_shapes(
     svg_path = Path(svg_path)
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
+    try:
+        parse_project_svg_root(
+            root,
+            context=svg_path.name,
+        )
+    except CanvasContractError as exc:
+        raise SvgNativeConversionError(str(exc)) from exc
     _require_chart_table_marker_attributes(root, svg_path)
     _require_project_nested_svg_crops(root, svg_path)
     _require_project_clip_paths(root, svg_path)

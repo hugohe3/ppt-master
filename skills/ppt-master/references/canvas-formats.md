@@ -1,6 +1,7 @@
 # Canvas Format Specification
 
-> See shared-standards.md for SVG basic rules.
+> See [`shared-standards.md`](shared-standards.md) §4.1 for the normative root
+> `viewBox` grammar, compatibility spellings, and fail-closed validation rules.
 
 ## Format Quick Reference
 
@@ -14,6 +15,13 @@
 | `wechat` | WeChat Article Header | `900x383` | `0 0 900 383` | 2.35:1 | WeChat article cover images |
 | `banner` | Landscape Banner | `1920x1080` | `0 0 1920 1080` | 16:9 | Web banners, digital screens |
 | `a4` | A4 Print | `1240x1754` | `0 0 1240 1754` | 1:sqrt(2) | Print posters, flyers |
+
+The table lists canonical root spellings. New custom canvases likewise use
+`0 0 W H` with positive integer pixels. A fractional positive canvas is accepted
+only as compatible input for an imported custom PowerPoint slide size; it is not
+the default authoring form. All pages and internal Layout prototypes in one
+export use the same numeric canvas and stay within PowerPoint's supported slide
+range (914,400–51,206,400 EMU per side, approximately 96–5,376 SVG px).
 
 `ppt169` is the canonical PPT wide-screen canvas in this repo: `1280x720`, not any arbitrary 16:9 size. Same-ratio canvases such as `banner` (`1920x1080`) must be treated as different coordinate systems.
 

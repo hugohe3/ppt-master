@@ -38,7 +38,7 @@ Each row owns one PowerPoint capability. The mapping cardinality is not always o
 
 | PowerPoint feature | Project representation | PPTX result | Import and fidelity | Validation boundary |
 |---|---|---|---|---|
-| Presentation slide size | Root SVG `viewBox`, selected through the project canvas contract | Presentation width and height; `1 SVG px = 9,525 EMU` at 96 DPI | `Native-stable`; imported coordinates are projected onto the SVG canvas | Every page must use the selected canvas; a root transform is forbidden |
+| Presentation slide size | Root SVG `viewBox="0 0 W H"`, selected through the project canvas contract | Presentation width and height; `1 SVG px = 9,525 EMU` at 96 DPI | `Native-stable`; imported custom PPTX sizes may use compatible fractional dimensions | Values must be finite with a zero origin and positive supported dimensions; every public page/internal Layout prototype must match the lock; a root transform is forbidden |
 | Slide | One complete `svg_output/<slide>.svg` page | One `p:sld` with its relationships | Reconstructed as one complete SVG page | SVG is the visible page authority; notes and package behavior are separate |
 | Object position and size | Absolute SVG coordinates and element bounds | `a:xfrm` offsets and extents | `Native-normalized` through coordinate conversion | Values must be finite and use the registered coordinate grammar |
 | Z-order | SVG source order, back to front | PowerPoint shape-tree order | Reconstructed in shape-tree order | Do not rely on browser-only stacking behavior |
@@ -46,7 +46,7 @@ Each row owns one PowerPoint capability. The mapping cardinality is not always o
 | Theme colors and fonts | Roles locked in `spec_lock.md`; canonical SVG uses the resolved values | Theme-aware tokens where an exact locked role can be retained; otherwise direct DrawingML values | `Native-stable` for registered roles | New pages must not invent unlocked colors, fonts, or text sizes |
 | PowerPoint-only package identity | `spec_lock.md` structure declarations and the package builder | Presentation, Master, Layout, relationship, and content-type registrations | Read back from package structure, not inferred from page appearance | Final-package read-back must match the declared roster |
 
-See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for supported canvases and the normative standards for the exact unit grammar.
+See [`canvas-formats.md`](../skills/ppt-master/references/canvas-formats.md) for supported canvases and [`shared-standards.md`](../skills/ppt-master/references/shared-standards.md) §4.1 for the normative root-`viewBox` contract.
 
 ## 2. Master, Layout, background, and placeholder features
 

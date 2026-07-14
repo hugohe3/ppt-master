@@ -38,7 +38,7 @@ PowerPoint 意图
 
 | PowerPoint 功能 | 项目表达 | PPTX 结果 | 回导与保真度 | 校验边界 |
 |---|---|---|---|---|
-| 演示文稿页面尺寸 | 根 SVG `viewBox`，通过项目画布合同选择 | 演示文稿宽高；96 DPI 下 `1 SVG px = 9,525 EMU` | `Native-stable`；导入坐标投影到 SVG 画布 | 每页必须使用已选画布；禁止根 transform |
+| 演示文稿页面尺寸 | 根 SVG `viewBox="0 0 W H"`，通过项目画布合同选择 | 演示文稿宽高；96 DPI 下 `1 SVG px = 9,525 EMU` | `Native-stable`；回导的自定义 PPTX 尺寸可使用兼容的正小数 | 数值必须有限、原点为零且尺寸为受支持的正值；所有公开页和内部 Layout 原型必须匹配锁；禁止根 transform |
 | 幻灯片 | 一个完整的 `svg_output/<slide>.svg` 页面 | 一个 `p:sld` 及其 relationships | 重建为一张完整 SVG 页面 | SVG 是可见页面权威；备注和包行为单独承载 |
 | 对象位置与尺寸 | SVG 绝对坐标与元素边界 | `a:xfrm` 偏移和范围 | 经坐标换算后为 `Native-normalized` | 数值必须有限，并使用已登记坐标语法 |
 | Z 顺序 | SVG 源码顺序，由后到前 | PowerPoint shape tree 顺序 | 按 shape tree 顺序重建 | 不得依赖浏览器专属堆叠行为 |
@@ -46,7 +46,7 @@ PowerPoint 意图
 | 主题颜色与字体 | `spec_lock.md` 锁定的角色；规范 SVG 使用解析后的值 | 当精确匹配锁定角色时保留 theme token，否则写直接 DrawingML 值 | 已登记角色为 `Native-stable` | 新页面不得自行发明未锁定颜色、字体或字号 |
 | PowerPoint 包身份 | `spec_lock.md` 结构声明与打包器 | Presentation、Master、Layout、relationship 与 content type 注册 | 从包结构读回，不从页面外观推断 | 最终包读回必须与声明的 roster 一致 |
 
-受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，精确单位语法以规范为准。
+受支持的画布见 [`canvas-formats.md`](../../skills/ppt-master/references/canvas-formats.md)，根 `viewBox` 的规范合同见 [`shared-standards.md`](../../skills/ppt-master/references/shared-standards.md) §4.1。
 
 ## 2. Master、Layout、背景与占位符功能
 

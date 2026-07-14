@@ -66,8 +66,7 @@ from ..semantic_markers import (
 )
 from .dimensions import (
     CANVAS_FORMATS,
-    get_slide_dimensions, get_pixel_dimensions,
-    get_viewbox_dimensions, detect_format_from_svg,
+    resolve_svg_canvas,
 )
 from .media import (
     PNG_RENDERER,
@@ -4460,6 +4459,7 @@ def create_pptx_with_native_svg(
     structured_baseline: bool = False,
     baseline_layout_specs: list[TemplateSlideSpec] | None = None,
     layout_definition_files: list[Path] | None = None,
+    expected_viewbox: str | None = None,
 ) -> bool:
     """Create a PPTX file with native DrawingML shapes.
 
@@ -4470,6 +4470,8 @@ def create_pptx_with_native_svg(
             that no generated page uses. They are converted on internal carrier
             slides, registered, and removed before the package is published.
         canvas_format: Canvas format key.
+        expected_viewbox: Optional project/template-lock canvas contract. Every
+            public page and internal Layout definition must match it.
         verbose: Whether to output detailed information.
         transition: Transition effect name.
         transition_duration: Transition duration in seconds.
@@ -4563,6 +4565,14 @@ def create_pptx_with_native_svg(
     use_compat_mode = False
     if pptx_structure not in {"baseline", "structured", "preserve", "flat"}:
         raise ValueError(f"Unsupported pptx_structure: {pptx_structure}")
+    requested_canvas_format = canvas_format
+    canvas, detected_canvas_format = resolve_svg_canvas(
+        svg_files,
+        canvas_format=canvas_format,
+        expected_viewbox=expected_viewbox,
+    )
+    if canvas_format is None:
+        canvas_format = detected_canvas_format
     if pptx_structure == "flat":
         flat_errors = flat_structure_metadata_errors(public_svg_files)
         if flat_errors:
@@ -4634,29 +4644,24 @@ def create_pptx_with_native_svg(
         print("  Will use pure SVG mode (may not display in Office LTSC 2021 and similar versions)")
         use_compat_mode = False
 
-    # Auto-detect canvas format or get dimensions from viewBox
-    custom_pixels: tuple[int, int] | None = None
-    if canvas_format is None:
-        canvas_format = detect_format_from_svg(svg_files[0])
-        if canvas_format and verbose:
+    width_emu, height_emu = canvas.emu_dimensions
+    pixel_width, pixel_height = canvas.pixel_dimensions
+    pixel_width_label, pixel_height_label = canvas.canonical.split()[2:]
+    if verbose and requested_canvas_format is None:
+        if canvas_format:
             format_name = CANVAS_FORMATS.get(canvas_format, {}).get('name', canvas_format)
             print(f"  Detected canvas format: {format_name}")
-
-    if canvas_format is None:
-        custom_pixels = get_viewbox_dimensions(svg_files[0])
-        if custom_pixels and verbose:
-            print(f"  Using SVG viewBox dimensions: {custom_pixels[0]} x {custom_pixels[1]} px")
-
-    if canvas_format is None and custom_pixels is None:
-        canvas_format = 'ppt169'
-        if verbose:
-            print(f"  Using default format: PPT 16:9")
-
-    width_emu, height_emu = get_slide_dimensions(canvas_format or 'ppt169', custom_pixels)
-    pixel_width, pixel_height = get_pixel_dimensions(canvas_format or 'ppt169', custom_pixels)
+        else:
+            print(
+                "  Using SVG viewBox dimensions: "
+                f"{canvas.canonical.removeprefix('0 0 ')} px"
+            )
 
     if verbose:
-        print(f"  Slide dimensions: {pixel_width} x {pixel_height} px")
+        print(
+            f"  Slide dimensions: {pixel_width_label} x "
+            f"{pixel_height_label} px"
+        )
         print(f"  SVG file count: {public_slide_count}")
         if definition_svg_files:
             print(

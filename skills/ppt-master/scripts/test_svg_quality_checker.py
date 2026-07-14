@@ -2,6 +2,7 @@
 """Regression tests for SVG checker compatibility severity."""
 
 import base64
+import contextlib
 import io
 import json
 import math
@@ -9,9 +10,13 @@ import re
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree as ET
+
+from pptx import Presentation
+from pptx.util import Emu
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
@@ -30,15 +35,25 @@ from pptx_to_svg.preset_authoring import (
     validate_authored_preset_tree,
 )
 from pptx_to_svg.emu_units import Xfrm
+from pptx_to_svg.converter import ConvertOptions, convert_pptx_to_svg
 from pptx_to_svg.txbody_to_svg import convert_txbody, convert_vertical_txbody
 from svg_to_pptx.animation_config import (
     build_group_listing,
     build_scaffold,
     validate_animation_config,
 )
+from svg_to_pptx.canvas_contract import (
+    CanvasContractError,
+    parse_project_viewbox,
+)
 from svg_to_pptx.drawingml.converter import (
     SvgNativeConversionError,
     convert_svg_to_slide_shapes,
+)
+from svg_to_pptx.pptx_package.builder import create_pptx_with_native_svg
+from svg_to_pptx.pptx_package.dimensions import (
+    CANVAS_FORMATS as PACKAGE_CANVAS_FORMATS,
+    resolve_svg_canvas,
 )
 from svg_to_pptx.drawingml.elements import parse_project_nested_svg_crop
 from svg_to_pptx.drawingml.utils import (
@@ -60,6 +75,7 @@ from svg_to_pptx.pptx_package.template_structure import (
     parse_template_slide,
 )
 from svg_to_pptx.use_expander import UseExpansionError, expand_local_use_references
+from template_preview_pptx import _canvas_viewbox as preview_canvas_viewbox
 
 
 class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
@@ -166,6 +182,303 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                 expected_exporter_text,
             ):
                 convert_svg_to_slide_shapes(svg_path)
+
+    def test_root_viewbox_uses_one_closed_checker_and_exporter_contract(self):
+        canonical = (
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'viewBox="0 0 1280 720">'
+            '<rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>'
+            '</svg>'
+        )
+        canonical_result = self._check(canonical)
+        self.assertFalse(any(
+            'non-canonical root viewBox' in warning
+            for warning in canonical_result['warnings']
+        ))
+
+        compatible = canonical.replace(
+            'viewBox="0 0 1280 720"',
+            'viewBox="0.0,0,+1.28e3,720.0"',
+        )
+        compatible_result = self._check(compatible)
+        self.assertTrue(compatible_result['passed'])
+        self.assertTrue(any(
+            'Compatible non-canonical root viewBox' in warning
+            for warning in compatible_result['warnings']
+        ))
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            canonical_path = Path(tmp_dir) / 'canonical.svg'
+            compatible_path = Path(tmp_dir) / 'compatible.svg'
+            canonical_path.write_text(canonical, encoding='utf-8')
+            compatible_path.write_text(compatible, encoding='utf-8')
+            self.assertEqual(
+                convert_svg_to_slide_shapes(canonical_path)[0],
+                convert_svg_to_slide_shapes(compatible_path)[0],
+            )
+
+        fractional = canonical.replace('1280 720', '1280.25 720.01')
+        fractional_result = self._check(fractional)
+        self.assertTrue(fractional_result['passed'])
+        self.assertTrue(any(
+            'fractional dimensions are reserved' in warning
+            for warning in fractional_result['warnings']
+        ))
+
+        invalid_cases = {
+            'missing': (
+                canonical.replace(' viewBox="0 0 1280 720"', ''),
+                'root viewBox is required',
+            ),
+            'non-finite': (
+                canonical.replace('0 0 1280 720', '0 0 NaN 720'),
+                'must contain exactly four SVG numbers',
+            ),
+            'nonzero origin': (
+                canonical.replace('0 0 1280 720', '10 0 1280 720'),
+                'origin must be "0 0"',
+            ),
+            'zero width': (
+                canonical.replace('0 0 1280 720', '0 0 0 720'),
+                'width and height must be positive',
+            ),
+            'below PowerPoint range': (
+                canonical.replace('0 0 1280 720', '0 0 0.4 0.4'),
+                "PowerPoint's supported slide range",
+            ),
+            'oversized exponent': (
+                canonical.replace('0 0 1280 720', '0 0 1e999999 720'),
+                "PowerPoint's supported slide range",
+            ),
+            'non-SVG root': (
+                '<g xmlns="http://www.w3.org/2000/svg" '
+                'viewBox="0 0 1280 720"/>',
+                'root element must be <svg>',
+            ),
+        }
+        for name, (content, message) in invalid_cases.items():
+            with self.subTest(name=name):
+                self._assert_checker_and_exporter_reject(
+                    content,
+                    message,
+                    re.escape(message),
+                )
+
+    def test_root_viewbox_matches_spec_lock_and_all_project_pages(self):
+        content = (
+            '<svg xmlns="http://www.w3.org/2000/svg" '
+            'viewBox="0 0 1280 720"/>'
+        )
+        mismatched = self._check_with_spec_lock(
+            content,
+            '## canvas\n- viewBox: 0 0 1024 768\n',
+        )
+        self.assertTrue(any(
+            "spec_lock canvas requires '0 0 1024 768'" in error
+            for error in mismatched['errors']
+        ))
+
+        invalid_lock = self._check_with_spec_lock(
+            content,
+            '## canvas\n- viewBox: 0 0 NaN 720\n',
+        )
+        self.assertTrue(any(
+            'spec_lock canvas viewBox must contain exactly four SVG numbers'
+            in error
+            for error in invalid_lock['errors']
+        ))
+
+        partial_lock = self._check_with_spec_lock(
+            content,
+            '## colors\n- primary: #000000\n',
+        )
+        self.assertFalse(any(
+            'canvas section' in error or 'viewBox mismatch' in error
+            for error in partial_lock['errors']
+        ))
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            project = Path(tmp_dir)
+            output_dir = project / 'svg_output'
+            output_dir.mkdir()
+            (project / 'spec_lock.md').write_text(
+                '## canvas\n- format: PPT 16:9\n',
+                encoding='utf-8',
+            )
+            (output_dir / '01.svg').write_text(content, encoding='utf-8')
+            checker = SVGQualityChecker()
+            with contextlib.redirect_stdout(io.StringIO()):
+                missing_project_lock = checker.check_directory(str(project))
+            self.assertTrue(any(
+                'spec_lock.md canvas section must declare viewBox' in error
+                for result in missing_project_lock
+                for error in result['errors']
+            ))
+
+            (project / 'spec_lock.md').write_text(
+                '## colors\n- primary: #000000\n',
+                encoding='utf-8',
+            )
+            checker = SVGQualityChecker()
+            with contextlib.redirect_stdout(io.StringIO()):
+                missing_canvas_section = checker.check_directory(str(project))
+            self.assertTrue(any(
+                'spec_lock canvas viewBox is required' in error
+                for result in missing_canvas_section
+                for error in result['errors']
+            ))
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            output_dir = Path(tmp_dir) / 'svg_output'
+            output_dir.mkdir()
+            (output_dir / '01.svg').write_text(content, encoding='utf-8')
+            (output_dir / '02.svg').write_text(
+                content.replace('1280 720', '1280.0 720.0'),
+                encoding='utf-8',
+            )
+            checker = SVGQualityChecker()
+            with contextlib.redirect_stdout(io.StringIO()):
+                equivalent = checker.check_directory(str(output_dir))
+            self.assertFalse(any(
+                'viewBox mismatch' in error
+                for result in equivalent
+                for error in result['errors']
+            ))
+
+            (output_dir / '02.svg').write_text(
+                content.replace('1280 720', '1024 768'),
+                encoding='utf-8',
+            )
+            checker = SVGQualityChecker()
+            with contextlib.redirect_stdout(io.StringIO()):
+                mixed = checker.check_directory(str(output_dir))
+            self.assertTrue(any(
+                "first SVG 01.svg requires '0 0 1280 720'" in error
+                for result in mixed
+                for error in result['errors']
+            ))
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            template_dir = Path(tmp_dir)
+            (template_dir / 'design_spec.md').write_text(
+                '---\nkind: layout\n---\n# Test\n',
+                encoding='utf-8',
+            )
+            (template_dir / '01.svg').write_text(content, encoding='utf-8')
+            checker = SVGQualityChecker(template_mode=True)
+            with contextlib.redirect_stdout(io.StringIO()):
+                missing_template_lock = checker.check_directory(str(template_dir))
+            self.assertTrue(any(
+                'design_spec canvas_viewbox viewBox is required' in error
+                for result in missing_template_lock
+                for error in result['errors']
+            ))
+
+    def test_builder_canvas_guard_covers_public_and_internal_svgs(self):
+        self.assertIn('ppt43', PACKAGE_CANVAS_FORMATS)
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {dims}"/>'
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            public = root / 'public.svg'
+            other = root / 'other.svg'
+            public.write_text(svg.format(dims='1280 720'), encoding='utf-8')
+            other.write_text(svg.format(dims='1024 768'), encoding='utf-8')
+
+            with self.assertRaisesRegex(CanvasContractError, 'other.svg'):
+                create_pptx_with_native_svg(
+                    [public, other],
+                    root / 'mixed-public.pptx',
+                    pptx_structure='flat',
+                    verbose=False,
+                )
+            with self.assertRaisesRegex(CanvasContractError, 'other.svg'):
+                create_pptx_with_native_svg(
+                    [public],
+                    root / 'mixed-internal.pptx',
+                    pptx_structure='structured',
+                    layout_definition_files=[other],
+                    verbose=False,
+                )
+            with self.assertRaisesRegex(CanvasContractError, 'canvas format'):
+                resolve_svg_canvas([other], canvas_format='ppt169')
+
+            too_small = root / 'too-small.svg'
+            too_small.write_text(svg.format(dims='100 80'), encoding='utf-8')
+            with self.assertRaisesRegex(
+                CanvasContractError,
+                "PowerPoint's supported slide range",
+            ):
+                resolve_svg_canvas([too_small])
+
+    def test_template_preview_canvas_lock_only_reads_frontmatter(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            spec_path = Path(tmp_dir) / 'design_spec.md'
+            spec_path.write_text(
+                '---\nkind: layout\n---\n\n```yaml\n'
+                'canvas_viewbox: "0 0 1280 720"\n```\n',
+                encoding='utf-8',
+            )
+            self.assertIsNone(preview_canvas_viewbox(spec_path))
+
+            spec_path.write_text(
+                '---\nkind: layout\ncanvas_viewbox: "0 0 1280 720"\n---\n',
+                encoding='utf-8',
+            )
+            self.assertEqual(
+                preview_canvas_viewbox(spec_path),
+                '0 0 1280 720',
+            )
+
+    def test_imported_fractional_root_canvas_round_trips_exact_slide_emu(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            source_path = root / 'source.pptx'
+            svg_path = root / 'fractional.svg'
+            output_path = root / 'fractional.pptx'
+            source_width = 12192001
+            source_height = 6858001
+            presentation = Presentation()
+            presentation.slide_width = Emu(source_width)
+            presentation.slide_height = Emu(source_height)
+            presentation.slides.add_slide(presentation.slide_layouts[6])
+            presentation.save(source_path)
+
+            imported = convert_pptx_to_svg(
+                source_path,
+                options=ConvertOptions(inheritance_mode='flat'),
+            )
+            imported_svg = imported.slides[0].svg
+            svg_path.write_text(imported_svg, encoding='utf-8')
+            imported_root = ET.fromstring(imported_svg)
+            imported_viewbox = parse_project_viewbox(
+                imported_root.get('viewBox')
+            )
+            self.assertEqual(
+                imported_viewbox.emu_dimensions,
+                (source_width, source_height),
+            )
+
+            # Keep the historical first four positional arguments covered;
+            # new optional contracts must be appended to the public API.
+            self.assertTrue(create_pptx_with_native_svg(
+                [svg_path],
+                output_path,
+                None,
+                False,
+                pptx_structure='flat',
+                transition=None,
+                enable_notes=False,
+            ))
+            with zipfile.ZipFile(output_path) as package:
+                presentation = ET.fromstring(package.read('ppt/presentation.xml'))
+            size = presentation.find(
+                '{http://schemas.openxmlformats.org/presentationml/2006/main}sldSz'
+            )
+            self.assertIsNotNone(size)
+            self.assertEqual(
+                (int(size.get('cx')), int(size.get('cy'))),
+                (source_width, source_height),
+            )
 
     def test_top_level_group_ids_are_unique_animation_anchors(self):
         duplicate = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

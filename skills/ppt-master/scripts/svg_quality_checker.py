@@ -31,6 +31,12 @@ except ImportError:
     print("Warning: Unable to import project_utils")
     CANVAS_FORMATS = {}
 
+from svg_to_pptx.canvas_contract import (
+    CanvasContractError,
+    parse_project_svg_root,
+    parse_project_viewbox,
+)
+
 try:
     from update_spec import parse_lock as _parse_spec_lock
 except ImportError:
@@ -901,6 +907,27 @@ def _declared_template_structure_mode(target_path: Path) -> str | None:
     return match.group(1).lower() if match else None
 
 
+def _declared_template_canvas_viewbox(target_path: Path) -> str | None:
+    """Return a template design spec's locked root-canvas value."""
+    directory = target_path.parent if target_path.is_file() else target_path
+    spec_path = directory / 'design_spec.md'
+    try:
+        text = spec_path.read_text(encoding='utf-8')
+    except OSError:
+        return None
+    if not text.startswith('---\n'):
+        return None
+    end = text.find('\n---\n', 4)
+    if end == -1:
+        return None
+    match = re.search(
+        r'^canvas_viewbox:\s*["\']?([^"\'\r\n]+?)["\']?\s*$',
+        text[4:end],
+        re.MULTILINE,
+    )
+    return match.group(1).strip() if match else None
+
+
 def _template_structure_checks_enabled(target_path: Path) -> bool:
     """Return whether positive structure checks apply to this template."""
     return _declared_template_structure_mode(target_path) == 'structured'
@@ -977,16 +1004,11 @@ def _effective_presentation_value(
 
 def _parse_viewbox_values(viewbox: str) -> Tuple[float, float, float, float] | None:
     """Parse a root viewBox into four numeric values."""
-    parts = re.split(r'[\s,]+', viewbox.strip())
-    if len(parts) != 4:
-        return None
     try:
-        values = tuple(float(part) for part in parts)
-    except ValueError:
+        parsed = parse_project_viewbox(viewbox)
+    except CanvasContractError:
         return None
-    if values[2] <= 0 or values[3] <= 0:
-        return None
-    return values
+    return 0.0, 0.0, float(parsed.width), float(parsed.height)
 
 
 def _parse_placeholders_fallback(block: str) -> Dict[str, Tuple[str, ...]]:
@@ -1127,7 +1149,14 @@ class SVGQualityChecker:
         self._pptx_structure_issues: List[Tuple[str, str]] = []
         self._aggregate_counts_applied = False
 
-    def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
+    def check_file(
+        self,
+        svg_file: str,
+        expected_format: str = None,
+        *,
+        expected_viewbox: str | None = None,
+        expected_viewbox_label: str = "expected canvas",
+    ) -> Dict:
         """
         Check a single SVG file
 
@@ -1169,7 +1198,14 @@ class SVGQualityChecker:
             root = self._parse_xml_root(content, result)
             if root is not None:
                 # 1. Check viewBox
-                self._check_viewbox(root, result, expected_format)
+                self._check_viewbox(
+                    root,
+                    svg_path,
+                    result,
+                    expected_format,
+                    expected_viewbox=expected_viewbox,
+                    expected_viewbox_label=expected_viewbox_label,
+                )
 
                 # 1a. Validate exact importer transport before compatible
                 # inline geometry is materialized on the shared tree.
@@ -1320,44 +1356,80 @@ class SVGQualityChecker:
             )
             return None
 
-    def _check_viewbox(self, root: ET.Element, result: Dict, expected_format: str = None):
-        """Check viewBox attribute"""
+    def _check_viewbox(
+        self,
+        root: ET.Element,
+        svg_path: Path,
+        result: Dict,
+        expected_format: str = None,
+        *,
+        expected_viewbox: str | None = None,
+        expected_viewbox_label: str = "expected canvas",
+    ):
+        """Validate the root page canvas and its project-level locks."""
         viewbox = root.get('viewBox')
-        if not viewbox:
-            result['errors'].append("Missing viewBox attribute")
-            return
-
-        result['info']['viewbox'] = viewbox
-
-        parts = re.split(r'[\s,]+', viewbox.strip())
-        if len(parts) != 4:
-            result['errors'].append(
-                f"viewBox must contain exactly four numeric values; got: {viewbox}"
-            )
-            return
         try:
-            values = tuple(float(part) for part in parts)
-        except ValueError:
-            result['errors'].append(
-                f"viewBox must contain exactly four numeric values; got: {viewbox}"
+            parsed = parse_project_svg_root(
+                root,
+                context=svg_path.name,
             )
+        except CanvasContractError as exc:
+            result['errors'].append(str(exc))
             return
-        if values[2] <= 0 or values[3] <= 0:
-            result['errors'].append(
-                f"viewBox width/height must be positive; got: {viewbox}"
+        assert viewbox is not None
+        result['info']['viewbox'] = viewbox
+        if viewbox != parsed.canonical or not parsed.has_integer_dimensions:
+            if parsed.has_integer_dimensions:
+                recommendation = f'write viewBox="{parsed.canonical}"'
+            else:
+                recommendation = (
+                    "fractional dimensions are reserved for compatible imported "
+                    "custom slide sizes; new authoring uses integer pixels"
+                )
+            result['warnings'].append(
+                f"Compatible non-canonical root viewBox {viewbox!r}; {recommendation}."
             )
-            return
 
-        if values[0] != 0 or values[1] != 0 or any(not part.isdigit() for part in parts):
-            result['warnings'].append(f"Unusual viewBox format: {viewbox}")
+        contracts: list[tuple[str, str]] = []
+        if expected_viewbox is not None:
+            contracts.append((expected_viewbox_label, expected_viewbox))
+        elif not self.template_mode:
+            lock = self._get_spec_lock(svg_path)
+            if lock is not None and 'canvas' in lock:
+                locked_viewbox = lock.get('canvas', {}).get('viewBox')
+                if not locked_viewbox:
+                    result['errors'].append(
+                        "spec_lock.md canvas section must declare viewBox"
+                    )
+                else:
+                    contracts.append(("spec_lock canvas", locked_viewbox))
 
-        # Check if it matches expected format
         if expected_format and expected_format in CANVAS_FORMATS:
-            expected_viewbox = CANVAS_FORMATS[expected_format]['viewbox']
-            expected_values = _parse_viewbox_values(expected_viewbox)
-            if expected_values and values != expected_values:
+            contracts.append((
+                f"canvas format {expected_format!r}",
+                CANVAS_FORMATS[expected_format]['viewbox'],
+            ))
+        elif expected_format:
+            result['errors'].append(f"Unsupported canvas format: {expected_format}")
+
+        seen_contracts: set[tuple[str, str]] = set()
+        for label, raw_expected in contracts:
+            contract_key = (label, raw_expected)
+            if contract_key in seen_contracts:
+                continue
+            seen_contracts.add(contract_key)
+            try:
+                expected = parse_project_viewbox(
+                    raw_expected,
+                    context=f"{label} viewBox",
+                )
+            except CanvasContractError as exc:
+                result['errors'].append(str(exc))
+                continue
+            if parsed != expected:
                 result['errors'].append(
-                    f"viewBox mismatch: expected '{expected_viewbox}', got '{viewbox}'"
+                    f"viewBox mismatch: {label} requires '{expected.canonical}', "
+                    f"got '{parsed.canonical}'"
                 )
 
     def _check_forbidden_elements(self, content: str, root: ET.Element, result: Dict):
@@ -4323,10 +4395,59 @@ class SVGQualityChecker:
             self.issue_types['Input issues'] += 1
             return []
 
+        directory_expected_viewbox: str | None = None
+        directory_expected_label = "the first SVG canvas"
+        directory_lock_has_canvas = False
+        if self.template_mode:
+            template_viewbox = _declared_template_canvas_viewbox(dir_path)
+            if template_viewbox:
+                directory_expected_viewbox = template_viewbox
+                directory_expected_label = "design_spec canvas_viewbox"
+            else:
+                directory_expected_viewbox = ""
+                directory_expected_label = "design_spec canvas_viewbox"
+        if expected_format is None and directory_expected_viewbox is None:
+            lock = (
+                None
+                if self.template_mode
+                else self._get_spec_lock(svg_files[0])
+            )
+            if lock is not None:
+                if 'canvas' in lock:
+                    directory_lock_has_canvas = True
+                    locked_viewbox = lock.get('canvas', {}).get('viewBox')
+                    if locked_viewbox:
+                        directory_expected_viewbox = locked_viewbox
+                        directory_expected_label = "spec_lock canvas"
+                else:
+                    directory_expected_viewbox = ""
+                    directory_expected_label = "spec_lock canvas"
+            if (
+                directory_expected_viewbox is None
+                and not directory_lock_has_canvas
+            ):
+                for svg_file in svg_files:
+                    try:
+                        root = ET.parse(svg_file).getroot()
+                        first_canvas = parse_project_viewbox(
+                            root.get('viewBox'),
+                            context=f"{svg_file.name} root viewBox",
+                        )
+                    except (OSError, ET.ParseError, CanvasContractError):
+                        continue
+                    directory_expected_viewbox = first_canvas.canonical
+                    directory_expected_label = f"first SVG {svg_file.name}"
+                    break
+
         print(f"\n[SCAN] Checking {len(svg_files)} SVG file(s)...\n")
 
         for svg_file in svg_files:
-            result = self.check_file(str(svg_file), expected_format)
+            result = self.check_file(
+                str(svg_file),
+                expected_format,
+                expected_viewbox=directory_expected_viewbox,
+                expected_viewbox_label=directory_expected_label,
+            )
             self._print_result(result)
 
         if self.template_mode:

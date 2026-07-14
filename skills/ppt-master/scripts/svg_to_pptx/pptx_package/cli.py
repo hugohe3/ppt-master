@@ -35,7 +35,7 @@ if __package__ in {None, ''}:
     sys.modules.setdefault('svg_to_pptx', package)
     __package__ = 'svg_to_pptx'
 
-from .dimensions import CANVAS_FORMATS, get_project_info, get_viewbox_dimensions
+from .dimensions import CANVAS_FORMATS, get_project_info
 from .discovery import find_svg_files, find_notes_files
 from .builder import create_pptx_with_native_svg
 from ..native_objects import (
@@ -99,6 +99,20 @@ def _declared_pptx_structure_mode(project_path: Path) -> str | None:
         return None
     mode_match = _PPTX_STRUCTURE_MODE_RE.search(section_match.group(1))
     return mode_match.group(1).strip().lower() if mode_match else None
+
+
+def _declared_canvas_viewbox(project_path: Path) -> str | None:
+    """Return the project-lock root canvas without inferring from its name."""
+    lock_path = project_path / 'spec_lock.md'
+    try:
+        from update_spec import parse_lock
+
+        lock = parse_lock(lock_path)
+    except (OSError, ValueError):
+        return None
+    canvas = lock.get('canvas', {})
+    value = canvas.get('viewBox')
+    return value.strip() if isinstance(value, str) and value.strip() else None
 
 
 def _print_structure_migration_error(mode: str | None) -> None:
@@ -293,7 +307,7 @@ Recorded narration:
                              'Pass output/final/<name> only for diagnostics.')
     parser.add_argument('-f', '--format', type=str,
                         choices=list(CANVAS_FORMATS.keys()), default=None,
-                        help='Specify canvas format')
+                        help='Require SVG canvases to match this registered format')
     parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
 
     merge_group = parser.add_mutually_exclusive_group()
@@ -510,14 +524,17 @@ Recorded narration:
     try:
         project_info = get_project_info(str(project_path))
         project_name = project_info.get('name', project_path.name)
-        detected_format = project_info.get('format')
     except Exception:
         project_name = project_path.name
-        detected_format = None
 
     canvas_format = args.format
-    if canvas_format is None and detected_format and detected_format != 'unknown':
-        canvas_format = detected_format
+    expected_viewbox = _declared_canvas_viewbox(project_path)
+    if expected_viewbox is None:
+        print(
+            "Error: spec_lock.md must contain canvas.viewBox for release export",
+            file=sys.stderr,
+        )
+        return 1
 
     # Native DrawingML is the only PPTX product. ``-s`` remains an explicit
     # diagnostic source override; standard export always reads svg_output/.
@@ -648,28 +665,6 @@ Recorded narration:
     native_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
-
-    # Honor the actual SVG pixels over a stale project-recorded format. The
-    # canvas_format read from project init can disagree with what the Executor
-    # actually drew — e.g. a mirror template imported at 2560×1440 while the
-    # project was initialized as ppt169 (1280×720). When the first SVG's real
-    # viewBox doesn't match the recorded format's dimensions, drop the format
-    # so the builder sizes the slide by pixels (custom_pixels path). Standard
-    # decks match exactly, so this only changes behavior on the conflict case.
-    # An explicit --format always wins and is never second-guessed.
-    if args.format is None and canvas_format:
-        fmt_info = CANVAS_FORMATS.get(canvas_format)
-        actual_dims = get_viewbox_dimensions(ref_files[0])
-        if fmt_info and actual_dims:
-            fmt_dims = (fmt_info.get('width'), fmt_info.get('height'))
-            if fmt_dims != actual_dims:
-                if verbose:
-                    print(
-                        f"  Recorded format '{canvas_format}' "
-                        f"({fmt_dims[0]}×{fmt_dims[1]}) differs from SVG viewBox "
-                        f"({actual_dims[0]}×{actual_dims[1]}); exporting by SVG pixels"
-                    )
-                canvas_format = None
 
     enable_notes = not args.no_notes
     notes: dict[str, str] = {}
@@ -914,6 +909,7 @@ Recorded narration:
 
     shared_kwargs = dict(
         canvas_format=canvas_format,
+        expected_viewbox=expected_viewbox,
         doc_metadata=doc_metadata,
         structure_name=structure_name,
         verbose=verbose,
