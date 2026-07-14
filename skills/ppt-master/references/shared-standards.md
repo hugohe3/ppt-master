@@ -1001,7 +1001,9 @@ value stops import instead of being mistaken for `solid`.
 An imported `a:custDash` contains one or more direct, empty `a:ds` children;
 each stop has exactly `d` and `sp`, both positive OOXML integers. Missing or
 extra fields, foreign children, malformed numbers, and values outside the
-positive 32-bit integer range stop import instead of being skipped.
+positive 32-bit integer range stop import instead of being skipped. Import
+formats converted dash lengths with enough decimal precision that a legal
+positive source value never becomes a zero SVG dash or gap.
 
 The dash grammar is closed: exact lowercase `none`, or at least two finite
 unitless numbers separated by whitespace or one comma. Generated SVG uses
