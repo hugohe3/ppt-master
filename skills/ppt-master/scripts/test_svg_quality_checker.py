@@ -2689,6 +2689,46 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
         ):
             resolve_stroke(sp_pr, None)
 
+    def test_invalid_native_custom_dash_is_rejected_on_import(self):
+        cases = (
+            ('', 'Invalid DrawingML custom dash structure'),
+            (
+                '<a:ds d="bad" sp="100000"/>',
+                "Invalid DrawingML custom dash d: 'bad'",
+            ),
+            (
+                '<a:ds d="100000" sp="0"/>',
+                'DrawingML custom dash sp=0 is outside',
+            ),
+            (
+                '<a:ds d="100000" sp="100000" extra="1"/>',
+                'Invalid DrawingML custom dash structure',
+            ),
+        )
+        for dash_stops, expected in cases:
+            with self.subTest(dash_stops=dash_stops):
+                sp_pr = ET.fromstring(f'''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln><a:custDash>{dash_stops}</a:custDash></a:ln>
+</p:spPr>''')
+                with self.assertRaisesRegex(ValueError, expected):
+                    resolve_stroke(sp_pr, None)
+
+    def test_native_custom_dash_preserves_all_stops_on_import(self):
+        sp_pr = ET.fromstring('''
+<p:spPr xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+        xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <a:ln w="9525">
+    <a:custDash>
+      <a:ds d="100000" sp="200000"/>
+      <a:ds d="300000" sp="400000"/>
+    </a:custDash>
+  </a:ln>
+</p:spPr>''')
+        stroke = resolve_stroke(sp_pr, None)
+        self.assertEqual(stroke.attrs['stroke-dasharray'], '1 2 3 4')
+
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
             'http://schemas.openxmlformats.org/drawingml/2006/main'

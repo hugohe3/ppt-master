@@ -998,6 +998,10 @@ back to the SVG default cap.
 PPTX import maps only the registered DrawingML `prstDash` values; `solid`
 remains an intentional line with no SVG dash array, while an unknown source
 value stops import instead of being mistaken for `solid`.
+An imported `a:custDash` contains one or more direct, empty `a:ds` children;
+each stop has exactly `d` and `sp`, both positive OOXML integers. Missing or
+extra fields, foreign children, malformed numbers, and values outside the
+positive 32-bit integer range stop import instead of being skipped.
 
 The dash grammar is closed: exact lowercase `none`, or at least two finite
 unitless numbers separated by whitespace or one comma. Generated SVG uses
