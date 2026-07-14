@@ -2536,6 +2536,45 @@ class SVGQualityCheckerCompatibilityTests(unittest.TestCase):
                         stroke_xml,
                     )
 
+    def test_native_line_end_shape_types_round_trip_in_mapper(self):
+        drawingml_ns = (
+            'http://schemas.openxmlformats.org/drawingml/2006/main'
+        )
+        for marker_type in (
+            'triangle',
+            'stealth',
+            'arrow',
+            'diamond',
+            'oval',
+        ):
+            with self.subTest(marker_type=marker_type):
+                end = ET.Element(
+                    f'{{{drawingml_ns}}}tailEnd',
+                    {'type': marker_type, 'w': 'med', 'len': 'med'},
+                )
+                marker_id, marker_markup = _build_arrow_marker(
+                    end,
+                    '#112233',
+                    id_prefix='roundtrip-',
+                    seq=[0],
+                    reversed_=False,
+                )
+                marker = ET.fromstring(marker_markup)
+                line = ET.fromstring(
+                    '<line xmlns="http://www.w3.org/2000/svg" '
+                    'stroke="#112233" '
+                    f'marker-end="url(#{marker_id})"/>'
+                )
+                stroke_xml = build_stroke_xml(
+                    line,
+                    ConvertContext(defs={marker_id: marker}),
+                )
+                self.assertIn(
+                    f'<a:tailEnd type="{marker_type}" '
+                    'w="med" len="med"/>',
+                    stroke_xml,
+                )
+
     def test_imported_head_end_uses_supported_reversible_orientation(self):
         drawingml_ns = (
             'http://schemas.openxmlformats.org/drawingml/2006/main'
